@@ -142,6 +142,18 @@
 	background: #f0f0f0;
 }
 
+/*
+ * `BoxShadowControl`'s own trigger shows a leading glyph and its label only, never a value — unlike
+ * every other field's trigger, which the shared `.kadence-token-field__trigger` rule's
+ * `justify-content: space-between` pushes a label and a value to opposite ends of. With no value to
+ * balance against, that would strand the icon and label at opposite ends instead, so this scopes an
+ * override to the extra `kb-box-shadow-control__trigger` class this control alone adds — every other
+ * consumer of the shared trigger class is untouched.
+ */
+.kadence-token-field__trigger.kb-box-shadow-control__trigger {
+	justify-content: flex-start;
+}
+
 // Each row: label left, value (and optional Default tag) right, on a 40px line with a 2px-radius hover.
 .kadence-token-field__item.components-button,
 .kadence-token-field__reset.components-button {

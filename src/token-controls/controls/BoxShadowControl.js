@@ -26,6 +26,12 @@
  * `renderPreview` prop — additive there, so every other `TokenPopover` consumer that does not pass
  * it renders unchanged. Only this control opts in for now, per explicit scope.
  *
+ * The trigger itself is icon-plus-label only, never a value — a leading glyph (the `@wordpress/icons`
+ * package's own `shadow` artwork, which draws as a sun) followed by the bound token's label or bare
+ * "Custom", with no resolved value/shorthand text shown alongside either. Every other field's trigger
+ * (`TokenSelector`'s) keeps its label-then-value split; this is a deliberate, shadow-only departure,
+ * not a shared-trigger-style change.
+ *
  * The wrapper composes `ControlShell` exactly as `BoxControl`/`BorderControl` do, minus the props
  * neither applies to a shadow: no `breakpoints`/`onBreakpointChange` (a shadow field isn't
  * responsive here), no `isLinked`/`onToggleLink` (a shadow is one value, not sided, so there is
@@ -39,6 +45,10 @@
  * WordPress dependencies
  */
 import { __experimentalNumberControl as NumberControl, Button, Dropdown, ToggleControl } from '@wordpress/components';
+// `shadow` (renamed to avoid colliding with this file's own `shadow` composite-value variable) draws
+// as a sun-with-rays glyph in `@wordpress/icons`' own artwork — an odd name for that shape, but it is
+// the package's dedicated "shadow" icon, so it is the intended one rather than a generic substitute.
+import { shadow as shadowGlyph } from '@wordpress/icons';
 import { __ } from '@wordpress/i18n';
 
 /**
@@ -184,23 +194,20 @@ function ShadowCustomTab({ shadow, onChange, renderColor, disabled = false }) {
 export function BoxShadowControl({ value, onChange, label, tokens = [], renderColor, disabled = false }) {
 	const aliased = isTokenAlias(value);
 	const shadow = { ...DEFAULT_SHADOW, ...(aliased || !value ? {} : value) };
-	// Aliased reads the bound token's label/value split exactly as `TokenSelector`'s own trigger does;
-	// an unset slot reads as empty, matching `fieldSummary()`'s own unset branch and `TokenSelector`'s
-	// resulting empty trigger, rather than fabricating a value for a field that holds nothing; a
-	// genuine composite reads bare "Custom" with no value text — the Custom tab itself is one click
-	// away and already shows every sub-field, so the trigger does not also spell out a shorthand.
+	// The trigger shows a label only, never a value — for either shape. Aliased still reads
+	// `fieldSummary()`'s bound-token label (dropping the `value` half it also returns, which does not
+	// fit this control's icon-plus-label trigger); a genuine composite reads bare "Custom"; unset
+	// reads as empty text (the leading glyph below still gives it a visible, accessible identity).
 	const summary = aliased
-		? fieldSummary(value, tokens, '', __('Custom', 'kadence-blocks'))
+		? { ...fieldSummary(value, tokens, '', __('Custom', 'kadence-blocks')), value: '' }
 		: !hasValue(value)
 			? { label: '', value: '' }
 			: { label: __('Custom', 'kadence-blocks'), value: '' };
-	// The unset trigger renders no visible label/value (so the field reads as genuinely empty, not a
-	// fabricated custom shadow — see the summary derivation above), which would otherwise leave the
-	// Button with no accessible name at all: `ControlShell` renders `label` as a separate header span,
-	// not as this button's name. An `aria-label` fills that gap only while the trigger is visibly
-	// empty; a set value already names itself through the visible label/value text, so adding one
-	// there would be redundant.
-	const emptyTriggerLabel = !summary.label && !summary.value ? __('Choose shadow', 'kadence-blocks') : undefined;
+	// An unset trigger has no visible label text, which would otherwise leave the Button with no
+	// accessible name at all: `ControlShell` renders `label` as a separate header span, not as this
+	// button's name. An `aria-label` fills that gap only while unset; a bound token or a composite
+	// already names itself through its visible label text, so adding one there would be redundant.
+	const emptyTriggerLabel = !summary.label ? __('Choose shadow', 'kadence-blocks') : undefined;
 
 	return (
 		<ControlShell label={label} disabled={disabled}>
@@ -211,14 +218,16 @@ export function BoxShadowControl({ value, onChange, label, tokens = [], renderCo
 						contentClassName="kadence-token-field__popover"
 						renderToggle={({ isOpen, onToggle }) => (
 							<Button
-								className="kadence-token-field__trigger"
+								className="kadence-token-field__trigger kb-box-shadow-control__trigger"
 								onClick={onToggle}
 								disabled={disabled}
 								aria-expanded={isOpen}
 								aria-label={emptyTriggerLabel}
 							>
+								<span className="kadence-token-field__icon" aria-hidden="true">
+									{shadowGlyph}
+								</span>
 								{summary.label && <span className="kadence-token-field__label">{summary.label}</span>}
-								{summary.value && <span className="kadence-token-field__value">{summary.value}</span>}
 							</Button>
 						)}
 						renderContent={({ onClose }) => (

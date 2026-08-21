@@ -67,7 +67,7 @@ jest.mock('@wordpress/components', () => ({
 	),
 }));
 
-jest.mock('@wordpress/icons', () => ({ globe: 'globe', settings: 'settings', undo: 'undo' }));
+jest.mock('@wordpress/icons', () => ({ globe: 'globe', settings: 'settings', undo: 'undo', shadow: 'shadow-glyph' }));
 jest.mock('@wordpress/i18n', () => ({
 	__: (text) => text,
 	sprintf: (format, ...args) => format.replace(/%s/g, () => args.shift()),
@@ -162,8 +162,19 @@ function change(element, value) {
 
 describe('BoxShadowControl trigger', () => {
 	/**
-	 * The trigger shows the bound token's label when the value is that token's alias, matching
-	 * `TokenSelector`'s own label-then-value split rather than one concatenated string.
+	 * The trigger always shows a leading glyph, in every value state — the field's own visible
+	 * identity, independent of whether anything is set yet.
+	 *
+	 * @return {void}
+	 */
+	it('shows a leading icon glyph', () => {
+		renderControl({ value: '{primitive.shadow.md}' });
+
+		expect(trigger().querySelector('.kadence-token-field__icon')).not.toBeNull();
+	});
+
+	/**
+	 * The trigger shows the bound token's label when the value is that token's alias.
 	 *
 	 * @return {void}
 	 */
@@ -174,14 +185,15 @@ describe('BoxShadowControl trigger', () => {
 	});
 
 	/**
-	 * The trigger shows the token's resolved value alongside its label.
+	 * The trigger shows no value text alongside the bound token's label — unlike every other field's
+	 * `TokenSelector` trigger, this control shows a label only, never a resolved value/shorthand.
 	 *
 	 * @return {void}
 	 */
-	it('shows the token value alongside its label', () => {
+	it('shows no value text alongside the token label', () => {
 		renderControl({ value: '{primitive.shadow.md}' });
 
-		expect(trigger().querySelector('.kadence-token-field__value').textContent).toBe('0px 2px 8px 0px #1717171f');
+		expect(trigger().querySelector('.kadence-token-field__value')).toBeNull();
 	});
 
 	/**
@@ -196,9 +208,9 @@ describe('BoxShadowControl trigger', () => {
 	});
 
 	/**
-	 * A composite value's trigger shows bare "Custom" with no value text — the Custom tab itself is
-	 * one click away and already shows every sub-field, so the trigger does not also spell out a CSS
-	 * shorthand alongside the label the way the aliased branch does.
+	 * A composite value's trigger shows no value text alongside "Custom" either — the Custom tab
+	 * itself is one click away and already shows every sub-field, so the trigger does not also spell
+	 * out a CSS shorthand.
 	 *
 	 * @return {void}
 	 */
@@ -210,24 +222,24 @@ describe('BoxShadowControl trigger', () => {
 
 	/**
 	 * An unset value (the field's actual starting state before a token or a custom shadow is chosen)
-	 * renders an empty trigger — no label, no fabricated all-zero shorthand — matching every other
-	 * control's unset-slot behavior and `fieldSummary()`'s own unset branch.
+	 * renders no label text — no fabricated all-zero shorthand, matching every other control's
+	 * unset-slot behavior and `fieldSummary()`'s own unset branch — though the leading glyph still
+	 * renders, giving the trigger a visible identity even while empty.
 	 *
 	 * @return {void}
 	 */
-	it('renders an empty trigger when the value is unset', () => {
+	it('renders no label text when the value is unset', () => {
 		renderControl({ value: '' });
 
 		expect(trigger().querySelector('.kadence-token-field__label')).toBeNull();
-		expect(trigger().querySelector('.kadence-token-field__value')).toBeNull();
-		expect(trigger().textContent).toBe('');
+		expect(trigger().querySelector('.kadence-token-field__icon')).not.toBeNull();
 	});
 
 	/**
-	 * An unset trigger has no visible text, so it needs an `aria-label` naming it — otherwise a
-	 * screen reader announces the button with no accessible name at all. `ControlShell` renders the
-	 * field's `label` prop in a separate header span, not as this button's name, so the trigger has
-	 * to carry its own.
+	 * An unset trigger has no visible label text, so it needs an `aria-label` naming it — otherwise a
+	 * screen reader announces the button with nothing but a decorative, `aria-hidden` glyph to go on.
+	 * `ControlShell` renders the field's `label` prop in a separate header span, not as this button's
+	 * name, so the trigger has to carry its own.
 	 *
 	 * @return {void}
 	 */
@@ -238,8 +250,8 @@ describe('BoxShadowControl trigger', () => {
 	});
 
 	/**
-	 * A trigger with visible label/value text names itself through that text, so no `aria-label` is
-	 * added on top of it — avoiding a redundant or conflicting accessible name.
+	 * A trigger with visible label text names itself through that text, so no `aria-label` is added on
+	 * top of it — avoiding a redundant or conflicting accessible name.
 	 *
 	 * @return {void}
 	 */
@@ -250,7 +262,7 @@ describe('BoxShadowControl trigger', () => {
 	});
 
 	/**
-	 * Same guard for a composite (Custom) value, the other value shape with visible text.
+	 * Same guard for a composite (Custom) value, the other value shape with visible label text.
 	 *
 	 * @return {void}
 	 */
