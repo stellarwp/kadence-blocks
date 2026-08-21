@@ -735,13 +735,18 @@ return [
 			// contributes no specificity, so this is identical in effect to a hand-written
 			// `.wp-block-kadence-single-icon .kb-svg-icon-wrap` descendant rule.
 			//
-			// `size` names NO css_prop, and that omission is the whole point: it is rendered two incompatible
-			// ways (a raw SVG width/height prop in the editor, a `font-size` CSS rule on the front end) and is
-			// never empty, so it cannot use the low-specificity-CSS-default mechanism `color` uses. Its token
-			// default is delivered by the per-block Adapter and the editor attribute-default catalog instead.
-			// What the binding DOES carry is editor-only metadata — `control_attr` plus the per-device attribute
-			// names — which is what makes the Icon Size control token-pickable. Css_Builder only contributes a
-			// rule for a binding that both references a token and names a css_prop, so this projects nothing.
+			// `size` takes the same low-specificity treatment on the SAME selector, for the same reason: the
+			// token picker lets a user CLEAR the size, and a cleared size renders no font-size of its own, so
+			// something has to name the fallback. This rule does, and a per-instance size still wins by later
+			// source order exactly as a per-instance color does.
+			//
+			// `size` differs from `color` in one way that lives outside this declaration: the editor renders it
+			// as a raw SVG width/height prop rather than a CSS declaration, and an SVG geometry attribute cannot
+			// consume a var(). The editor therefore resolves this same token to a pixel NUMBER for its preview
+			// (see the icon's preview component), which is what keeps the two render paths agreeing on a
+			// cleared size. The per-block Adapter and the editor attribute-default catalog are unaffected: they
+			// seed the registration default so a never-customized icon carries a concrete size, and this rule
+			// answers only for an explicitly cleared one.
 			'block'    => 'kadence/single-icon',
 			'bindings' => [
 				'color' => [
@@ -751,6 +756,8 @@ return [
 				],
 				'size'  => [
 					'token'            => 'semantic.icon-size.default',
+					'css_prop'         => 'font-size',
+					'css_selector'     => '*.kb-svg-icon-wrap',
 					'control_attr'     => 'size',
 					// The block names its per-device size attributes by a prefix convention, which is a naming
 					// rule rather than something safely derivable, so the editor is told them rather than

@@ -104,19 +104,24 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
-	 * The icon `size` binding references a token but names no css_prop, so it stays editor-only metadata and
-	 * contributes no declaration — the icon's font-size must keep coming from the block's own per-instance CSS
-	 * and its token default from the Adapter, never from a low-specificity block-default rule.
+	 * The icon `size` binding emits its font-size fallback onto the same low-specificity descendant rule the
+	 * color binding uses, so an icon whose size has been cleared through the token picker still renders at the
+	 * icon-size token rather than inheriting whatever font-size surrounds it. A per-instance size renders at
+	 * equal specificity but later source order, so it still wins.
 	 *
 	 * @return void
 	 */
-	public function testTheIconSizeBindingContributesNoDeclaration(): void {
+	public function testTheShippedDeclarationsEmitTheSingleIconSizeFallback(): void {
 		$registry = $this->container->get( Token_Registry::class );
 
 		$css = $this->builder( $registry )->css();
 
-		$this->assertStringNotContainsString( 'font-size:var(' . Css_Var::from_id( 'semantic.icon-size.default' ), $css );
-		$this->assertStringNotContainsString( Css_Var::from_id( 'semantic.icon-size.default' ), $css );
+		// Grouped into the same `.kb-svg-icon-wrap` rule as color, with the resolved length as the fallback.
+		$this->assertStringContainsString(
+			'font-size:var(' . Css_Var::from_id( 'semantic.icon-size.default' ) . ',1.5rem);',
+			$css
+		);
+		$this->assertStringContainsString( '.wp-block-kadence-single-icon *.kb-svg-icon-wrap{', $css );
 	}
 
 	/**
