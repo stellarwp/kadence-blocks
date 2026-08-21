@@ -7,6 +7,11 @@
  */
 
 /**
+ * WordPress dependencies
+ */
+import { __ } from '@wordpress/i18n';
+
+/**
  * Internal dependencies
  */
 import { slugifyLibraryTitle } from './libraries';
@@ -512,4 +517,91 @@ export function removeGroupFromGroups(groups, groupId) {
 	}
 
 	return rows.filter((group) => group.id !== groupId);
+}
+
+/**
+ * Overlay pending optimistic edits onto a palette's effective view: a patched swatch label/value
+ * merged in, a swatch or group marked for deletion flagged `pendingDelete: true` (never filtered
+ * out — the caller renders it dimmed until the real response confirms it is gone), and a
+ * not-yet-confirmed swatch/group addition appended. Pure — `hooks/use-palettes.js` calls this to
+ * compute the palette actually rendered, layered on top of whatever the store's real listing
+ * currently holds.
+ *
+ * @param {?Object} palette The palette's effective view (`{ id, label, groups }`), or null.
+ * @param {Object}  overlay The optimistic overlay for this palette's listing key — see
+ *                          `store/constants.js`'s `EMPTY_OPTIMISTIC_SWATCH_EDIT`.
+ *
+ * @since TBD
+ *
+ * @return {?Object} The palette with every pending optimistic edit applied, or the original
+ *                    `palette` unchanged when nothing is pending.
+ */
+export function applyOptimisticOverlay(palette, overlay) {
+	if (!palette) {
+		return palette;
+	}
+
+	const hasNothingPending =
+		Object.keys(overlay.patches).length === 0 &&
+		overlay.deletedTokens.length === 0 &&
+		overlay.deletedGroups.length === 0 &&
+		overlay.addedSwatches.length === 0 &&
+		overlay.addedGroups.length === 0;
+
+	if (hasNothingPending) {
+		return palette;
+	}
+
+	const groups = palette.groups.map((group) => {
+		const pendingGroupDelete = overlay.deletedGroups.includes(group.id);
+
+		const swatches = group.swatches.map((swatch) => ({
+			...swatch,
+			...(overlay.patches[swatch.token] ?? {}),
+			pendingDelete: pendingGroupDelete || overlay.deletedTokens.includes(swatch.token),
+		}));
+
+		const additions = overlay.addedSwatches
+			.filter((added) => added.groupId === group.id)
+			.map(({ groupId, ...swatch }) => ({ ...swatch, pendingDelete: false }));
+
+		return { ...group, pendingDelete: pendingGroupDelete, swatches: [...swatches, ...additions] };
+	});
+
+	const addedGroups = overlay.addedGroups.map((group) => ({
+		...group,
+		pendingDelete: false,
+		swatches: group.swatches.map((swatch) => ({ ...swatch, pendingDelete: false })),
+	}));
+
+	return { ...palette, groups: [...groups, ...addedGroups] };
+}
+
+/**
+ * Validate a typed color-group label and resolve its slug: empty after slugifying, or a slug the
+ * palette already has a group for, is invalid. Shared by `helpers/palette-flows.js`'s
+ * `addGroupFlow` (defensive re-check for any caller that skips the hook) and
+ * `hooks/use-palettes.js`'s `addGroup` (to decide, synchronously and before firing anything, whether
+ * the optimistic addition and the modal's immediate close should even happen).
+ *
+ * @param {string}  label   The typed group label.
+ * @param {?Object} palette The palette being edited's effective view, for the duplicate check.
+ *
+ * @since TBD
+ *
+ * @return {{groupId: string, error: null}|{groupId: null, error: string}} The slugified id on
+ *          success, or a user-facing error message on failure.
+ */
+export function validateNewGroupLabel(label, palette) {
+	const groupId = slugifyPaletteLabel(label);
+
+	if (!groupId) {
+		return { groupId: null, error: __('Enter a color group name.', 'kadence-blocks') };
+	}
+
+	if ((palette?.groups ?? []).some((group) => group.id === groupId)) {
+		return { groupId: null, error: __('A color group with that name already exists.', 'kadence-blocks') };
+	}
+
+	return { groupId, error: null };
 }
