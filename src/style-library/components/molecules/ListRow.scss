@@ -37,6 +37,14 @@
 			visibility: hidden;
 		}
 	}
+
+	// A row mid-delete: still visible (product decision — delete is conservative, not an instant
+	// vanish), just dimmed and inert. Same weight as `SwatchCard`'s identical `--pending-delete`
+	// treatment.
+	&--pending-delete {
+		opacity: 0.5;
+		pointer-events: none;
+	}
 }
 
 .kadence-blocks-style-library__list-row-main {

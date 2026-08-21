@@ -81,7 +81,8 @@ export function ScaleScreen({ config, route, navigate, library }) {
 		label: row.label,
 		value: config.formatValue ? config.formatValue(row) : row.value,
 		preview: config.renderPreview(row),
-		isDraggable: true,
+		isDraggable: !row.pendingDelete,
+		isPendingDelete: Boolean(row.pendingDelete),
 	}));
 
 	// Selecting the already-open token is a no-op (the draft survives — `useSettingsPanel` only

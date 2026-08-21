@@ -17,17 +17,22 @@
  * WordPress dependencies
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from '@wordpress/element';
+import { useRegistry, useSelect } from '@wordpress/data';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
-import { applyRowOrder, scaleInitialValues, scaleRows } from '../helpers/scale';
+import { applyOptimisticScaleOverlay, applyRowOrder, scaleInitialValues, scaleRows } from '../helpers/scale';
 import {
 	addScaleTokenFlow,
 	deleteScaleTokenFlow,
 	reorderScaleTokensFlow,
 	saveScaleTokenFlow,
 } from '../helpers/scale-flows';
+import { isEqual } from '../helpers/settings-schema';
+import { notifyError, notifySuccess } from '../helpers/notify';
+import { STORE_NAME } from '../store';
 
 /**
  * Bind a scale screen's config to live feed state and the four write flows.
@@ -39,18 +44,19 @@ import {
  *
  * @since TBD
  *
- * @return {{rows: Array<Object>, selectedId: string, selectToken: Function, isBusy: boolean, addError: ?Object, saveError: ?Object, deleteError: ?Object, orderError: ?Object, clearAddError: Function, clearSaveError: Function, clearDeleteError: Function, clearOrderError: Function, addToken: Function, saveToken: Function, deleteToken: Function, reorderTokens: Function, tokenById: Function, initialValuesFor: Function}}
+ * @return {{rows: Array<Object>, selectedId: string, selectToken: Function, isBusy: boolean, addError: ?Object, orderError: ?Object, clearAddError: Function, clearOrderError: Function, addToken: Function, saveToken: Function, deleteToken: Function, reorderTokens: Function, tokenById: Function, initialValuesFor: Function}}
  */
 export function useScaleScreen(config, library, route, navigate) {
+	const registry = useRegistry();
 	const [isBusy, setIsBusy] = useState(false);
 	const [addError, setAddError] = useState(null);
-	const [saveError, setSaveError] = useState(null);
-	const [deleteError, setDeleteError] = useState(null);
 	const [orderError, setOrderError] = useState(null);
 	const [pendingOrder, setPendingOrder] = useState(null);
 
 	const feed = library.feed;
 	const feedVersion = feed?.version;
+
+	const overlay = useSelect((select) => select(STORE_NAME).getOptimisticScaleEdit(library.slug), [library.slug]);
 
 	// Mirrors the feed so the queued reorder continuation below always dereferences the live
 	// version at execution time, never a value captured when the drop was enqueued — no re-render
@@ -80,16 +86,14 @@ export function useScaleScreen(config, library, route, navigate) {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [feedVersion]);
 
-	const rows = useMemo(
-		() => (pendingOrder ? applyRowOrder(baseRows, pendingOrder) : baseRows),
-		[baseRows, pendingOrder]
-	);
+	const rows = useMemo(() => {
+		const overlaid = applyOptimisticScaleOverlay(baseRows, overlay);
+		return pendingOrder ? applyRowOrder(overlaid, pendingOrder) : overlaid;
+	}, [baseRows, overlay, pendingOrder]);
 
 	const selectToken = useCallback((id) => navigate({ item: id }), [navigate]);
 
 	const clearAddError = useCallback(() => setAddError(null), []);
-	const clearSaveError = useCallback(() => setSaveError(null), []);
-	const clearDeleteError = useCallback(() => setDeleteError(null), []);
 	const clearOrderError = useCallback(() => setOrderError(null), []);
 
 	const tokenById = useCallback((id) => baseRows.find((row) => row.id === id) ?? null, [baseRows]);
@@ -119,7 +123,19 @@ export function useScaleScreen(config, library, route, navigate) {
 
 	const saveToken = useCallback(
 		(id, draft, initial) => {
-			setSaveError(null);
+			const patch = {};
+			if (draft.label !== initial.label) {
+				patch.label = draft.label;
+			}
+			if (!isEqual(draft.value, initial.value)) {
+				patch.value = draft.value;
+			}
+
+			if (Object.keys(patch).length === 0) {
+				return Promise.resolve();
+			}
+
+			registry.dispatch(STORE_NAME).setOptimisticScalePatch(library.slug, id, patch);
 
 			return saveScaleTokenFlow({
 				slug: library.slug,
@@ -131,16 +147,18 @@ export function useScaleScreen(config, library, route, navigate) {
 				feedVersion,
 				refreshFeed: library.refreshFeed,
 				onBusy: setIsBusy,
-				onError: setSaveError,
+				onError: (err) => notifyError(err.message),
 				buildLeaf: config.buildLeaf,
-			});
+			})
+				.then(() => notifySuccess(__('Token saved.', 'kadence-blocks')))
+				.finally(() => registry.dispatch(STORE_NAME).clearOptimisticScalePatch(library.slug, id));
 		},
-		[library, feed, config, feedVersion]
+		[library, feed, config, feedVersion, registry]
 	);
 
 	const deleteToken = useCallback(
 		(id) => {
-			setDeleteError(null);
+			registry.dispatch(STORE_NAME).setOptimisticScaleDeletion(library.slug, id);
 
 			return deleteScaleTokenFlow({
 				slug: library.slug,
@@ -148,10 +166,12 @@ export function useScaleScreen(config, library, route, navigate) {
 				feedVersion,
 				refreshFeed: library.refreshFeed,
 				onBusy: setIsBusy,
-				onError: setDeleteError,
-			});
+				onError: (err) => notifyError(err.message),
+			})
+				.then(() => notifySuccess(__('Token deleted.', 'kadence-blocks')))
+				.finally(() => registry.dispatch(STORE_NAME).clearOptimisticScaleDeletion(library.slug, id));
 		},
-		[library, feedVersion]
+		[library, feedVersion, registry]
 	);
 
 	const reorderTokens = useCallback(
@@ -202,12 +222,8 @@ export function useScaleScreen(config, library, route, navigate) {
 		selectToken,
 		isBusy,
 		addError,
-		saveError,
-		deleteError,
 		orderError,
 		clearAddError,
-		clearSaveError,
-		clearDeleteError,
 		clearOrderError,
 		addToken,
 		saveToken,

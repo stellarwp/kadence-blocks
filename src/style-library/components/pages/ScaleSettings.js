@@ -10,7 +10,6 @@
  * WordPress dependencies
  */
 import { useEffect, useState } from '@wordpress/element';
-import { Notice } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
 /**
@@ -88,7 +87,8 @@ export function ScaleSettings({ config, route, navigate, library }) {
 	// current `panel.draft`, so storing them in state would either loop the publish effect above
 	// (new identity every render) or hand the guard modal a stale draft. `save` is the raw promise,
 	// re-thrown rejection and all — the modal's own Save button is the one place that needs to see a
-	// failure, unlike the panel's own Save button below, which swallows it into `scale.saveError`.
+	// failure, unlike the panel's own Save button below, which swallows it (the write flow already
+	// routed the failure to a Snackbar via `notifyError`).
 	if (channel) {
 		channel.actionsRef.current = {
 			save: () => scale.saveToken(id, panel.draft, initialValues),
@@ -150,16 +150,6 @@ export function ScaleSettings({ config, route, navigate, library }) {
 			isSaving={pendingAction === 'save'}
 			isDeleting={pendingAction === 'delete'}
 		>
-			{scale.saveError && (
-				<Notice status="error" isDismissible onRemove={scale.clearSaveError}>
-					{scale.saveError.message}
-				</Notice>
-			)}
-			{scale.deleteError && (
-				<Notice status="error" isDismissible onRemove={scale.clearDeleteError}>
-					{scale.deleteError.message}
-				</Notice>
-			)}
 			<SettingsForm schema={schema} values={panel.draft} onChange={panel.setFieldValue} />
 		</SettingsPanel>
 	);
