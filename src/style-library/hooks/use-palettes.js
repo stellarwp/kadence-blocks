@@ -3,12 +3,19 @@
  */
 import { useCallback, useEffect, useMemo, useState } from '@wordpress/element';
 import { useRegistry, useSelect } from '@wordpress/data';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
 import { errorMessage } from '../helpers/library-flows';
-import { isCustomColorToken, reorderGroupSwatches, resolveEditingPaletteId } from '../helpers/palettes';
+import {
+	applyOptimisticOverlay,
+	isCustomColorToken,
+	reorderGroupSwatches,
+	resolveEditingPaletteId,
+} from '../helpers/palettes';
+import { notifyError, notifySuccess } from '../helpers/notify';
 import {
 	activatePaletteFlow,
 	addColorFlow,
@@ -24,7 +31,7 @@ import {
 } from '../helpers/palette-flows';
 import { flattenSchemaTokens } from '../helpers/tokens';
 import { STORE_NAME } from '../store';
-import { EMPTY_LISTING, paletteListingKey } from '../store/constants';
+import { EMPTY_LISTING, EMPTY_OPTIMISTIC_SWATCH_EDIT, paletteListingKey } from '../store/constants';
 
 /**
  * Palette state for the Color Palette screen and its settings panel: the listing, the palette
@@ -135,10 +142,18 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 	// See this function's own docblock for why this is a derivation, not a second copy of state.
 	const editingId = resolveEditingPaletteId(scope, listing);
 
-	const palette = useMemo(
-		() => listing.palettes.find((row) => row.id === editingId) ?? null,
-		[listing.palettes, editingId]
+	const overlay = useSelect(
+		(select) =>
+			namespace && slug
+				? select(STORE_NAME).getOptimisticSwatchEdit(namespace, slug)
+				: EMPTY_OPTIMISTIC_SWATCH_EDIT,
+		[namespace, slug]
 	);
+
+	const palette = useMemo(() => {
+		const row = listing.palettes.find((row) => row.id === editingId) ?? null;
+		return applyOptimisticOverlay(row, overlay);
+	}, [listing.palettes, editingId, overlay]);
 
 	// The local reorder override — see `reorderSwatches` below. Cleared once the real data catches
 	// up (the write's own `onReceive` lands and `palette.groups` changes), mirroring
@@ -284,7 +299,24 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 
 	const saveSwatchEdits = useCallback(
 		(token, draft, initial) => {
-			setSaveError(null);
+			if (namespace && slug) {
+				const patch = {};
+				if (draft.label !== initial.label) {
+					patch.label = draft.label;
+				}
+				if (draft.value !== initial.value) {
+					// `$value`, not `value` — must match the field name every real swatch object carries
+					// (`palette.groups[].swatches[].$value`), or `applyOptimisticOverlay`'s merge would add a
+					// stray `value` key instead of overwriting the one the grid actually renders.
+					patch.$value = draft.value;
+				}
+				if (Object.keys(patch).length > 0) {
+					registry
+						.dispatch(STORE_NAME)
+						.setOptimisticSwatchPatch(paletteListingKey(namespace, slug), token, patch);
+				}
+			}
+
 			return saveSwatchEditsFlow({
 				namespace,
 				slug,
@@ -296,10 +328,18 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 				onReceive,
 				refreshFeed,
 				onBusy: setIsBusy,
-				onError: setSaveError,
-			});
+				onError: (err) => notifyError(err.message),
+			})
+				.then(() => notifySuccess(__('Swatch saved.', 'kadence-blocks')))
+				.finally(() => {
+					if (namespace && slug) {
+						registry
+							.dispatch(STORE_NAME)
+							.clearOptimisticSwatchPatch(paletteListingKey(namespace, slug), token);
+					}
+				});
 		},
-		[namespace, slug, listing.defaultId, editingId, onReceive, refreshFeed]
+		[namespace, slug, listing.defaultId, editingId, onReceive, refreshFeed, registry]
 	);
 
 	const removeSwatch = useCallback(

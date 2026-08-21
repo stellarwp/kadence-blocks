@@ -15,6 +15,7 @@ import { RegistryProvider } from '@wordpress/data';
  */
 import { usePalettes } from '../hooks/use-palettes';
 import * as client from '../api/client';
+import * as notify from '../helpers/notify';
 import { createTestRegistry } from '../store/test-utils';
 
 // A factory, not bare automocking: the real module imports `@wordpress/api-fetch`, which is
@@ -31,6 +32,8 @@ jest.mock('../api/client', () => ({
 	saveSwatch: jest.fn(),
 	setCurrentPalette: jest.fn(),
 }));
+
+jest.mock('../helpers/notify');
 
 const NAMESPACE = 'kb-design-tokens/v1';
 const SLUG = 'default';
@@ -323,6 +326,79 @@ describe('usePalettes', () => {
 			SLUG
 		);
 		expect(probe.latest().palette.groups[0].swatches[0].$value).toBe('#abcabc');
+	});
+
+	it('saveSwatchEdits applies the draft optimistically, then settles on the confirmed response and notifies success', async () => {
+		client.fetchPalettes.mockResolvedValueOnce(listingRows());
+
+		const recoloredRows = listingRows({
+			defaultView: () => ({
+				...defaultView(),
+				groups: [
+					{
+						...defaultView().groups[0],
+						swatches: [
+							{ ...defaultView().groups[0].swatches[0], $value: '#abcabc' },
+							defaultView().groups[0].swatches[1],
+						],
+					},
+				],
+			}),
+		});
+		client.saveSwatch.mockResolvedValueOnce(recoloredRows);
+
+		const probe = mountProbe();
+		await probe.render();
+
+		let writePromise;
+		act(() => {
+			writePromise = probe
+				.latest()
+				.saveSwatchEdits(
+					'primitive.color.brand.primary',
+					{ label: 'Main 1', value: '#abcabc' },
+					{ label: 'Main 1', value: '#111111' }
+				);
+		});
+
+		// Applied immediately, before the write settles — the draft's value, not the pre-save one.
+		expect(probe.latest().palette.groups[0].swatches[0]).toMatchObject({ $value: '#abcabc' });
+
+		await act(async () => writePromise);
+
+		// The real response's row is what onReceive dispatched, and the optimistic patch has cleared.
+		expect(probe.latest().palette.groups[0].swatches[0]).toMatchObject({ $value: '#abcabc' });
+		expect(notify.notifySuccess).toHaveBeenCalledWith('Swatch saved.');
+		expect(notify.notifyError).not.toHaveBeenCalled();
+	});
+
+	it('saveSwatchEdits reverts the optimistic draft and notifies an error when the write fails', async () => {
+		client.fetchPalettes.mockResolvedValueOnce(listingRows());
+		client.saveSwatch.mockRejectedValueOnce(new Error('Conflict'));
+
+		const probe = mountProbe();
+		await probe.render();
+
+		let writePromise;
+		act(() => {
+			writePromise = probe
+				.latest()
+				.saveSwatchEdits(
+					'primitive.color.brand.primary',
+					{ label: 'Main 1', value: '#abcabc' },
+					{ label: 'Main 1', value: '#111111' }
+				)
+				.catch(() => {});
+		});
+
+		expect(probe.latest().palette.groups[0].swatches[0]).toMatchObject({ $value: '#abcabc' });
+
+		await act(async () => writePromise);
+
+		// The optimistic patch clears and the palette reverts to its pre-save values once the write rejects.
+		expect(probe.latest().palette.groups[0].swatches[0]).toMatchObject({ $value: '#111111' });
+		expect(notify.notifyError).toHaveBeenCalledWith('Conflict');
+		expect(notify.notifySuccess).not.toHaveBeenCalled();
 	});
 
 	it('reorderSwatches applies the new order optimistically, then keeps it once the write resolves', async () => {
