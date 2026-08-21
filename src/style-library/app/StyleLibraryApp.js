@@ -6,13 +6,14 @@
  * WordPress dependencies
  */
 import { useEffect, useMemo } from '@wordpress/element';
-import { Spinner, SnackbarList } from '@wordpress/components';
+import { SnackbarList } from '@wordpress/components';
 import { useSelect, useDispatch } from '@wordpress/data';
 
 /**
  * Internal dependencies
  */
 import { AppShell } from '../components/templates/AppShell';
+import { AppShellSkeleton } from '../components/organisms/AppShellSkeleton';
 import { AppHeader } from '../components/organisms/AppHeader';
 import { AppSidebar } from '../components/organisms/AppSidebar';
 import { LibrarySelector } from '../components/organisms/LibrarySelector';
@@ -116,11 +117,7 @@ export function StyleLibraryApp() {
 	}, [resolution, replace]);
 
 	if (!feed.isReady) {
-		return (
-			<div className="kadence-blocks-style-library__loading">
-				<Spinner />
-			</div>
-		);
+		return <AppShellSkeleton />;
 	}
 
 	if (!resolution) {

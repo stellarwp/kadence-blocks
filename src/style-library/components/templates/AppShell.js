@@ -4,12 +4,6 @@
  */
 
 /**
- * WordPress dependencies
- */
-import { Spinner } from '@wordpress/components';
-import { __ } from '@wordpress/i18n';
-
-/**
  * External dependencies
  */
 import classnames from 'classnames';
@@ -18,6 +12,7 @@ import classnames from 'classnames';
  * Internal dependencies
  */
 import './AppShell.scss';
+import { AppShellSkeleton } from '../organisms/AppShellSkeleton';
 
 /**
  * Render the app shell layout.
@@ -54,13 +49,8 @@ export function AppShell({ header, sidebar, content, settingsPanel, isBlocked })
 				/* Covers the header too, not just the content column: while the app is being
 				 * repopulated, the header's own controls describe the library that is on its way out,
 				 * so leaving them live would let a second change start against stale state. */
-				<div
-					className="kadence-blocks-style-library__blocker"
-					role="status"
-					aria-live="polite"
-					aria-label={__('Loading library…', 'kadence-blocks')}
-				>
-					<Spinner />
+				<div className="kadence-blocks-style-library__blocker">
+					<AppShellSkeleton />
 				</div>
 			)}
 		</div>
