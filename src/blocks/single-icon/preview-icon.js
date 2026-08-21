@@ -3,24 +3,33 @@ import { useRef } from '@wordpress/element';
 import { IconRender, Tooltip } from '@kadence/components';
 import { tokenPx } from '../../extension/design-tokens/token-px';
 import { boundTokenAliasForControl } from '../../extension/token-picker';
+import { parseCssLength } from '../../token-controls';
 import metadata from './block.json';
 
 /**
- * Whether a size attribute holds a usable raw number.
+ * The raw pixel number a size attribute holds, or null when it holds no usable number.
  *
- * The attribute accepts a number or a token alias, and the token picker's Reset writes an empty
- * string, so "has a value" cannot be a truthiness check: `0` is a real size, while `''` and an alias
- * the library no longer defines are not numbers at all and would reach the SVG as a broken
- * `width` attribute.
+ * The attribute takes a number or a token alias, and the token picker's Reset writes an empty string,
+ * so "has a value" is neither a truthiness check nor a `Number()` coercion: `0` is a real size, while
+ * `''`, an alias the library no longer defines, and the odd non-number that reaches an attribute
+ * (`true`, `[]`, a whitespace string) all coerce to something finite and would land in the SVG's
+ * `width` attribute as garbage.
+ *
+ * `parseCssLength()` draws that line already, so this reuses it rather than inventing a second
+ * grammar — the same reason the pixel conversion is pinned to one shared fixture. A parsed value with
+ * a unit is not this attribute's shape (it stores a bare number, always px), so it is declined and
+ * left to the token fallback.
  *
  * @param {*} value The stored size.
  *
  * @since TBD
  *
- * @return {boolean} Whether the value is a finite number this can render with.
+ * @return {?number} The unitless number, or null when there is none.
  */
-function hasIconSize(value) {
-	return value !== '' && value !== null && value !== undefined && Number.isFinite(Number(value));
+function iconSizeNumber(value) {
+	const parsed = parseCssLength(value);
+
+	return parsed && parsed.unit === '' ? parsed.size : null;
 }
 
 export function PreviewIcon({ attributes, previewDevice }) {
@@ -84,9 +93,9 @@ export function PreviewIcon({ attributes, previewDevice }) {
 	// `GenIcon` applies its own default, which is the one shape that renders rather than breaking.
 	const previewSizePx =
 		tokenPx(previewSize) ??
-		(hasIconSize(previewSize)
-			? previewSize
-			: (tokenPx(boundTokenAliasForControl(metadata.name, 'size')) ?? undefined));
+		iconSizeNumber(previewSize) ??
+		tokenPx(boundTokenAliasForControl(metadata.name, 'size')) ??
+		undefined;
 	const previewMarginTop = getPreviewSize(
 		previewDevice,
 		margin && undefined !== margin[0] ? margin[0] : undefined,

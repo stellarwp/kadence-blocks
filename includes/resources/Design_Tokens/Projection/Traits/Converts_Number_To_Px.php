@@ -19,12 +19,18 @@ trait Converts_Number_To_Px {
 	 *
 	 * @since TBD
 	 *
+	 * The number grammar is the JS `parseCssLength()` grammar exactly — an optional sign, then digits with
+	 * at most one decimal point and at least one digit after it. A looser `[0-9.]+` would convert
+	 * malformed lengths the JS side declines (`1..2px`, `..px`, `1.2.3rem`), and reject the `+2px` it
+	 * accepts, which is the one way this conversion could render an icon at one size on the front end and
+	 * another in the editor.
+	 *
 	 * @param string $length A resolved CSS length, e.g. "1.5rem", "24px".
 	 *
 	 * @return float|null The pixel value, or null when the unit is not rem/em/px.
 	 */
 	private function to_px( string $length ): ?float {
-		if ( ! preg_match( '/^(-?[0-9.]+)(px|rem|em)$/', trim( $length ), $matches ) ) {
+		if ( ! preg_match( '/^([+-]?\d*\.?\d+)(px|rem|em)$/', trim( $length ), $matches ) ) {
 			return null;
 		}
 

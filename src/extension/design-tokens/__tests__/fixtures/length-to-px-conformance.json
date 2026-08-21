@@ -7,7 +7,23 @@
 		{ "length": "1.5rem", "px": 24 },
 		{ "length": "2.25rem", "px": 36 },
 		{ "length": "0.5em", "px": 8 },
-		{ "length": "-1rem", "px": -16 }
+		{ "length": "-1rem", "px": -16 },
+		{ "length": "+2px", "px": 2 },
+		{ "length": ".5px", "px": 0.5 }
 	],
-	"unconvertible": ["0", "50", "50%", "2vw", "auto", "inherit", "clamp(1rem, 2vw, 3rem)", "1rem 2rem", ""]
+	"unconvertible": [
+		"0",
+		"50",
+		"50%",
+		"2vw",
+		"auto",
+		"inherit",
+		"clamp(1rem, 2vw, 3rem)",
+		"1rem 2rem",
+		"",
+		"1..2px",
+		"..px",
+		"1.2.3rem",
+		"1.rem"
+	]
 }

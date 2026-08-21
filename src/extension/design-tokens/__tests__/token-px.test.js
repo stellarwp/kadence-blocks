@@ -63,6 +63,15 @@ describe('tokenPx literal conversion', () => {
 	});
 
 	/**
+	 * The number grammar rejects a malformed decimal rather than salvaging a prefix of it. PHP's converter
+	 * matches this exactly; a looser `[0-9.]+` there would turn `1.2.3rem` into 19.2px on the front end
+	 * while the editor fell back to its default, which is the drift the shared fixture exists to catch.
+	 */
+	it.each(['1..2px', '..px', '1.2.3rem', '1.rem', '1.px'])('declines the malformed decimal %p', (value) => {
+		expect(tokenPx(value)).toBeNull();
+	});
+
+	/**
 	 * `parseCssLength` accepts a finite number directly, but a bare number has no unit to convert from,
 	 * so it is declined exactly as the unitless string `'50'` is — and exactly as PHP declines it. The
 	 * caller keeps its own raw pixel value in that case.
