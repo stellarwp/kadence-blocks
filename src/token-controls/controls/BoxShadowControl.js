@@ -15,6 +15,14 @@
  * value is a long CSS shorthand that crowds the row the way a short dimension value does not. Other
  * `TokenPopover` consumers (Radius, Spacing, Border Width) keep the default `showValue={true}` and
  * are unaffected.
+ *
+ * The wrapper composes `ControlShell` exactly as `BoxControl`/`BorderControl` do, minus the props
+ * neither applies to a shadow: no `breakpoints`/`onBreakpointChange` (a shadow field isn't
+ * responsive here), no `isLinked`/`onToggleLink` (a shadow is one value, not sided, so there is
+ * nothing to link). The body renders one `.kb-token-control__row` — the same control-box chrome
+ * `SlotGrid` gives Radius/Spacing's rows — but built directly rather than through `SlotGrid`,
+ * because `SlotGrid` always pairs a row with a glyph and a shadow has no side/corner for a glyph to
+ * point at.
  */
 
 /**
@@ -26,8 +34,9 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
+import { ControlShell } from '../templates/ControlShell';
 import { TokenPopover } from '../molecules/TokenPopover';
-import { isTokenAlias } from '../helpers/token-summary';
+import { fieldSummary, isTokenAlias } from '../helpers/token-summary';
 import '../styles/token-controls.scss';
 
 /**
@@ -66,6 +75,22 @@ function commitShadow(shadow, patch) {
 	const { inset, ...rest } = { ...shadow, ...patch };
 
 	return inset === true ? { ...rest, inset: true } : rest;
+}
+
+/**
+ * Render a composite shadow's `box-shadow` CSS shorthand for the trigger's value text, matching the
+ * dimension order `Css_Renderer` emits.
+ *
+ * @param {Object} shadow The composite shadow value, defaults already filled.
+ *
+ * @since TBD
+ *
+ * @return {string} The shorthand string, `inset`-prefixed when the composite is inset.
+ */
+function shadowShorthand(shadow) {
+	const shorthand = `${shadow.offsetX} ${shadow.offsetY} ${shadow.blur} ${shadow.spread} ${shadow.color}`;
+
+	return shadow.inset === true ? `${__('Inset', 'kadence-blocks')} ${shorthand}` : shorthand;
 }
 
 /**
@@ -127,47 +152,55 @@ function ShadowCustomTab({ shadow, onChange, renderColor, disabled = false }) {
 export function BoxShadowControl({ value, onChange, label, tokens = [], renderColor, disabled = false }) {
 	const aliased = isTokenAlias(value);
 	const shadow = { ...DEFAULT_SHADOW, ...(aliased || !value ? {} : value) };
-	const activeEntry = aliased ? tokens.find((entry) => entry.alias === value) : null;
-	const triggerLabel = activeEntry ? activeEntry.label : aliased ? value : __('Custom', 'kadence-blocks');
+	// Aliased reads the bound token's label/value split exactly as `TokenSelector`'s own trigger does;
+	// a composite has no token entry to look up, so it reads "Custom" plus its own resolved shorthand
+	// instead of `fieldSummary()`'s literal-plus-unit shape, which does not fit an object value.
+	const summary = aliased
+		? fieldSummary(value, tokens, '', __('Custom', 'kadence-blocks'))
+		: { label: __('Custom', 'kadence-blocks'), value: shadowShorthand(shadow) };
 
 	return (
-		<div className="kadence-token-field kb-box-shadow-control">
-			{label && <span className="kadence-token-field__label">{label}</span>}
-			<Dropdown
-				className="kadence-token-field__dropdown"
-				contentClassName="kadence-token-field__popover"
-				renderToggle={({ isOpen, onToggle }) => (
-					<Button
-						className="kadence-token-field__trigger"
-						onClick={onToggle}
-						disabled={disabled}
-						aria-expanded={isOpen}
-					>
-						{triggerLabel}
-					</Button>
-				)}
-				renderContent={({ onClose }) => (
-					<TokenPopover
-						value={value}
-						tokens={tokens}
-						resolvedDefault=""
-						initialTab={aliased || !value ? 'style-library' : 'custom'}
-						custom={{ shadow, renderColor, disabled }}
-						renderCustom={(custom) => (
-							<ShadowCustomTab
-								shadow={custom.shadow}
-								renderColor={custom.renderColor}
-								disabled={custom.disabled}
-								onChange={(next) => !disabled && onChange(next)}
+		<ControlShell label={label} disabled={disabled}>
+			<div className="kb-token-control__row">
+				<div className="kadence-token-field kb-box-shadow-control">
+					<Dropdown
+						className="kadence-token-field__dropdown"
+						contentClassName="kadence-token-field__popover"
+						renderToggle={({ isOpen, onToggle }) => (
+							<Button
+								className="kadence-token-field__trigger"
+								onClick={onToggle}
+								disabled={disabled}
+								aria-expanded={isOpen}
+							>
+								{summary.label && <span className="kadence-token-field__label">{summary.label}</span>}
+								{summary.value && <span className="kadence-token-field__value">{summary.value}</span>}
+							</Button>
+						)}
+						renderContent={({ onClose }) => (
+							<TokenPopover
+								value={value}
+								tokens={tokens}
+								resolvedDefault=""
+								initialTab={aliased || !value ? 'style-library' : 'custom'}
+								custom={{ shadow, renderColor, disabled }}
+								renderCustom={(custom) => (
+									<ShadowCustomTab
+										shadow={custom.shadow}
+										renderColor={custom.renderColor}
+										disabled={custom.disabled}
+										onChange={(next) => !disabled && onChange(next)}
+									/>
+								)}
+								onPick={(alias) => !disabled && onChange(alias)}
+								onClear={() => !disabled && onChange('')}
+								onClose={onClose}
+								showValue={false}
 							/>
 						)}
-						onPick={(alias) => !disabled && onChange(alias)}
-						onClear={() => !disabled && onChange('')}
-						onClose={onClose}
-						showValue={false}
 					/>
-				)}
-			/>
-		</div>
+				</div>
+			</div>
+		</ControlShell>
 	);
 }
