@@ -856,8 +856,9 @@ describe('addColorFlow', () => {
 			slug: SLUG,
 			defaultId: DEFAULT_ID,
 			groupId: 'accent',
-			tokens: [],
-			palette: selectedView(),
+			colorSlug: 'custom-1',
+			value: '#222222',
+			label: 'New Color',
 			feedVersion: 'v1',
 			onReceive,
 			refreshFeed,
@@ -888,8 +889,9 @@ describe('addColorFlow', () => {
 				slug: SLUG,
 				defaultId: DEFAULT_ID,
 				groupId: 'accent',
-				tokens: [],
-				palette: selectedView(),
+				colorSlug: 'custom-1',
+				value: '#222222',
+				label: 'New Color',
 				feedVersion: 'v1',
 				onReceive: jest.fn(),
 				refreshFeed: jest.fn(),
@@ -913,9 +915,11 @@ describe('addGroupFlow', () => {
 			namespace: NAMESPACE,
 			slug: SLUG,
 			defaultId: DEFAULT_ID,
+			groupId: 'background',
 			label: 'Background',
-			palette: selectedView(),
-			tokens: [],
+			colorSlug: 'custom-1',
+			value: '#222222',
+			swatchLabel: 'New Color',
 			feedVersion: 'v1',
 			onReceive: jest.fn(),
 			refreshFeed: jest.fn().mockResolvedValue(undefined),
@@ -928,44 +932,6 @@ describe('addGroupFlow', () => {
 
 		expect(newGroup.swatches).toHaveLength(1);
 		expect(token).toBe('primitive.color.custom.custom-1');
-	});
-
-	it('rejects an empty or duplicate group label without requests', async () => {
-		const onError = jest.fn();
-
-		await expect(
-			addGroupFlow({
-				namespace: NAMESPACE,
-				slug: SLUG,
-				defaultId: DEFAULT_ID,
-				label: '   ',
-				palette: selectedView(),
-				tokens: [],
-				feedVersion: 'v1',
-				onReceive: jest.fn(),
-				refreshFeed: jest.fn(),
-				onBusy: jest.fn(),
-				onError,
-			})
-		).rejects.toThrow();
-
-		await expect(
-			addGroupFlow({
-				namespace: NAMESPACE,
-				slug: SLUG,
-				defaultId: DEFAULT_ID,
-				label: 'Accent',
-				palette: selectedView(),
-				tokens: [],
-				feedVersion: 'v1',
-				onReceive: jest.fn(),
-				refreshFeed: jest.fn(),
-				onBusy: jest.fn(),
-				onError,
-			})
-		).rejects.toThrow();
-
-		expect(client.createUserPrimitive).not.toHaveBeenCalled();
 	});
 });
 

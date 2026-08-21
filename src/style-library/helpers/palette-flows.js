@@ -52,8 +52,6 @@ import {
 	addSwatchToGroups,
 	customColorTokenId,
 	isDuplicatePaletteLabel,
-	newSwatchValue,
-	nextCustomColorSlug,
 	removeGroupFromGroups,
 	removeSwatchFromGroups,
 	renameGroupInGroups,
@@ -570,15 +568,19 @@ export function removeSwatchFlow({
  * `guard_swatches()` rejects any swatch whose token does not already resolve to a registered
  * color token, so the primitive must exist before the swatch referencing it can be saved.
  *
+ * The swatch's identity (`colorSlug`/`value`/`label`) is computed by the caller, not here — see
+ * `hooks/use-palettes.js`'s `addColor`, which needs the same identity to apply an optimistic
+ * addition to the overlay store BEFORE this flow's write resolves, and must use the exact values
+ * this flow ends up writing rather than a second, independently-computed guess.
+ *
  * @param {Object}   args
  * @param {string}   args.namespace   The REST namespace.
  * @param {string}   args.slug        The token library slug.
  * @param {string}   args.defaultId   The listing's `$default` palette id.
  * @param {string}   args.groupId     The group to append the new swatch to.
- * @param {Array<string>} args.tokens Every existing token id (feed tokens plus the palette's own
- *                                    swatch tokens) the new slug must avoid colliding with.
- * @param {Object}   args.palette     The palette being edited's effective view, for a
- *                                    friendlier starting color (the group's last swatch's value).
+ * @param {string}   args.colorSlug   The minted primitive's slug (not the full token dot-path).
+ * @param {string}   args.value       The minted swatch's starting `$value`.
+ * @param {string}   args.label       The minted swatch's starting label.
  * @param {string}   args.feedVersion The feed's current version, sent as the primitive create's
  *                                    concurrency guard.
  * @param {Function} args.onReceive   Called with the write's own raw response (the flat
@@ -597,17 +599,15 @@ export function addColorFlow({
 	slug,
 	defaultId,
 	groupId,
-	tokens,
-	palette,
+	colorSlug,
+	value,
+	label,
 	feedVersion,
 	onReceive,
 	refreshFeed,
 	onBusy,
 	onError,
 }) {
-	const colorSlug = nextCustomColorSlug(tokens);
-	const value = newSwatchValue(palette?.groups, groupId);
-	const label = __('New Color', 'kadence-blocks');
 	const token = customColorTokenId(colorSlug);
 
 	onBusy(true);
@@ -638,59 +638,48 @@ export function addColorFlow({
  * drops a group with zero swatches even on the default palette, so the group and its first color
  * are written together in one request.
  *
+ * `groupId`/`colorSlug`/`value`/`swatchLabel` are computed and validated by the caller, not here —
+ * see `hooks/use-palettes.js`'s `addGroup`, which validates via `helpers/palettes.js`'s
+ * `validateNewGroupLabel` and needs the same identity to apply an optimistic addition to the
+ * overlay store before this flow's write resolves.
+ *
  * @param {Object}   args
  * @param {string}   args.namespace   The REST namespace.
  * @param {string}   args.slug        The token library slug.
  * @param {string}   args.defaultId   The listing's `$default` palette id.
+ * @param {string}   args.groupId     The new group's (already-validated, already-slugified) id.
  * @param {string}   args.label       The typed group label.
- * @param {Object}   args.palette     The palette being edited's effective view, for the
- *                                    duplicate group-id check.
- * @param {Array<string>} args.tokens Every existing token id the new swatch's slug must avoid
- *                                    colliding with.
+ * @param {string}   args.colorSlug   The minted primitive's slug for the group's first swatch.
+ * @param {string}   args.value       The minted swatch's starting `$value`.
+ * @param {string}   args.swatchLabel The minted swatch's starting label.
  * @param {string}   args.feedVersion The feed's current version, sent as the primitive create's
  *                                    concurrency guard.
  * @param {Function} args.onReceive   Called with the write's own raw response (the flat
  *                                    embedded-array wire rows), once the write succeeds.
  * @param {Function} args.refreshFeed Replaces the feed for a slug.
  * @param {Function} args.onBusy      Called with a boolean as the chain starts and settles.
- * @param {Function} args.onError     Called with `{ message }` on failure or invalid input.
+ * @param {Function} args.onError     Called with `{ message }` on failure.
  *
  * @since TBD
  *
- * @return {Promise<string>} Resolves with the new group's first swatch's token id; rejects on an
- *                            empty or duplicate group label, or a request failure, after
- *                            `onError`/`onBusy` have run.
+ * @return {Promise<string>} Resolves with the new group's first swatch's token id; rejects on a
+ *                            request failure, after `onError`/`onBusy` have run.
  */
 export function addGroupFlow({
 	namespace,
 	slug,
 	defaultId,
+	groupId,
 	label,
-	palette,
-	tokens,
+	colorSlug,
+	value,
+	swatchLabel,
 	feedVersion,
 	onReceive,
 	refreshFeed,
 	onBusy,
 	onError,
 }) {
-	const groupId = slugifyPaletteLabel(label);
-
-	if (!groupId) {
-		const message = __('Enter a color group name.', 'kadence-blocks');
-		onError({ message });
-		return Promise.reject(new Error(message));
-	}
-
-	if ((palette?.groups ?? []).some((group) => group.id === groupId)) {
-		const message = __('A color group with that name already exists.', 'kadence-blocks');
-		onError({ message });
-		return Promise.reject(new Error(message));
-	}
-
-	const colorSlug = nextCustomColorSlug(tokens);
-	const value = newSwatchValue(palette?.groups, groupId);
-	const swatchLabel = __('New Color', 'kadence-blocks');
 	const token = customColorTokenId(colorSlug);
 
 	onBusy(true);
