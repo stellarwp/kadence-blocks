@@ -26,6 +26,7 @@ import { createTestRegistry } from '../store/test-utils';
 jest.mock('../api/client', () => ({
 	createUserPrimitive: jest.fn(),
 	deletePalette: jest.fn(),
+	deleteSwatch: jest.fn(),
 	deleteUserPrimitive: jest.fn(),
 	fetchPalette: jest.fn(),
 	fetchPalettes: jest.fn(),
@@ -481,6 +482,75 @@ describe('usePalettes', () => {
 		expect(swatch).toMatchObject({ label: 'Main 1', $value: '#111111' });
 		expect(notify.notifyError).toHaveBeenCalledWith('Conflict');
 		expect(notify.notifySuccess).not.toHaveBeenCalled();
+	});
+
+	it('isSwatchCustom recognizes a custom-color-prefixed token, and rejects a baseline one', async () => {
+		client.fetchPalettes.mockResolvedValueOnce(listingRows());
+
+		const probe = mountProbe();
+		await probe.render();
+
+		expect(probe.latest().isSwatchCustom('primitive.color.custom.custom-1')).toBe(true);
+		expect(probe.latest().isSwatchCustom('primitive.color.brand.primary')).toBe(false);
+	});
+
+	it('resetSwatch calls deleteSwatch against the palette being edited, not the default palette, and updates the listing on success', async () => {
+		client.fetchPalettes.mockResolvedValueOnce(listingRows());
+
+		const probe = mountProbe();
+		await probe.render({ route: { scope: SUNSET_ID } });
+
+		expect(probe.latest().editingId).toBe(SUNSET_ID);
+
+		const revertedRows = listingRows({
+			currentId: SUNSET_ID,
+			defaultView: () => defaultView(),
+		});
+		revertedRows[1]._embedded.self[0].groups[0].swatches[0] = {
+			...selectedView().groups[0].swatches[0],
+			$value: '#111111',
+			overridden: false,
+		};
+		client.deleteSwatch.mockResolvedValueOnce(revertedRows);
+
+		await act(async () => probe.latest().resetSwatch('primitive.color.brand.primary'));
+
+		expect(client.deleteSwatch).toHaveBeenCalledWith(NAMESPACE, SUNSET_ID, 'primitive.color.brand.primary', SLUG);
+		expect(probe.latest().palette.groups[0].swatches[0]).toMatchObject({ $value: '#111111', overridden: false });
+		expect(notify.notifySuccess).toHaveBeenCalledWith('Swatch reset.');
+		expect(notify.notifyError).not.toHaveBeenCalled();
+	});
+
+	it('resetSwatch surfaces the error and leaves the override in place when the write fails', async () => {
+		client.fetchPalettes.mockResolvedValueOnce(listingRows());
+		client.deleteSwatch.mockRejectedValueOnce(new Error('Conflict'));
+
+		const probe = mountProbe();
+		await probe.render({ route: { scope: SUNSET_ID } });
+
+		await act(async () =>
+			probe
+				.latest()
+				.resetSwatch('primitive.color.brand.primary')
+				.catch(() => {})
+		);
+
+		expect(probe.latest().palette.groups[0].swatches[0]).toMatchObject({ $value: '#999999', overridden: true });
+		expect(notify.notifyError).toHaveBeenCalledWith('Conflict');
+		expect(notify.notifySuccess).not.toHaveBeenCalled();
+	});
+
+	it('resetSwatch rejects synchronously, without calling deleteSwatch, when editing the default palette', async () => {
+		client.fetchPalettes.mockResolvedValueOnce(listingRows());
+
+		const probe = mountProbe();
+		await probe.render();
+
+		expect(probe.latest().editingId).toBe(DEFAULT_ID);
+
+		await expect(probe.latest().resetSwatch('primitive.color.brand.primary')).rejects.toThrow();
+
+		expect(client.deleteSwatch).not.toHaveBeenCalled();
 	});
 
 	it('removeGroup flags every swatch in that group pendingDelete immediately, before the write resolves', async () => {

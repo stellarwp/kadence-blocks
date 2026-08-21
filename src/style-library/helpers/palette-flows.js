@@ -18,7 +18,9 @@
  * `writeDefaultPaletteFlow` is the single place the default-vs-edited write routing (a palette's
  * structure lives only on its `$default` node — see the module's own docblock below) is encoded.
  * Every structural flow in this file funnels through it; only `saveSwatchEditsFlow`'s color half
- * ever writes the palette being edited.
+ * and `revertSwatchFlow` ever write the palette being edited — both are per-palette VALUE writes
+ * (a delta, or the removal of one), never a structure change, which is why neither goes through
+ * `writeDefaultPaletteFlow`.
  *
  * The central distinction here mirrors `library-flows.js`: the palette a site *renders with*
  * (`$current`) versus the palette the app is *editing*. Opening is free and reversible — it only
@@ -40,6 +42,7 @@ import { __ } from '@wordpress/i18n';
 import {
 	createUserPrimitive,
 	deletePalette,
+	deleteSwatch,
 	deleteUserPrimitive,
 	fetchPalette,
 	savePalette,
@@ -485,6 +488,45 @@ export function reorderSwatchesFlow({
 		onBusy,
 		onError,
 	});
+}
+
+/**
+ * Revert a NON-default palette's own override for a token back to inherited: a per-palette VALUE
+ * write, not a structure change, so unlike every flow above it never touches the default palette's
+ * groups — `id` here is the palette actually being edited. The backend rejects `id === defaultId`
+ * with a 400 (the default palette has nothing to inherit from), so this flow is only ever the
+ * right choice when `use-palettes.js`'s `resetSwatch` confirms the palette being edited isn't the
+ * default one; `removeSwatchFlow` below covers the other case (removing the swatch's definition
+ * entirely, always against the default palette, for a user-created token).
+ *
+ * @param {Object}   args
+ * @param {string}   args.namespace  The REST namespace.
+ * @param {string}   args.slug       The token library slug.
+ * @param {string}   args.id         The palette id being reverted — never the default palette.
+ * @param {string}   args.token      The swatch token dot-path to revert.
+ * @param {Function} args.onReceive  Called with the write's own raw response (the flat
+ *                                   embedded-array wire rows), once the write succeeds.
+ * @param {Function} args.refreshFeed Replaces the feed for a slug.
+ * @param {Function} args.onBusy     Called with a boolean as the chain starts and settles.
+ * @param {Function} args.onError    Called with `{ message }` on failure.
+ *
+ * @since TBD
+ *
+ * @return {Promise<void>} Resolves once the write, `onReceive`, and the feed refresh complete;
+ *                          rejects on failure after `onError`/`onBusy` have run.
+ */
+export function revertSwatchFlow({ namespace, slug, id, token, onReceive, refreshFeed, onBusy, onError }) {
+	onBusy(true);
+
+	return deleteSwatch(namespace, id, token, slug)
+		.then((rows) => onReceive(rows))
+		.then(() => refreshFeed(slug))
+		.then(() => onBusy(false))
+		.catch((err) => {
+			onError({ message: errorMessage(err) });
+			onBusy(false);
+			throw err;
+		});
 }
 
 /**

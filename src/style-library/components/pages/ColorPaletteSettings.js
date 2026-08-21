@@ -1,8 +1,14 @@
 /**
  * The Color Palette screen's settings panel: edits one swatch — its display name (a structure edit
  * written to the default palette) and its color (a granular value write on the palette being
- * edited) — and deletes it (also a structure edit, with a best-effort token cleanup after). Mounted
- * by the app when a swatch token is the open route item; see `ColorPaletteScreen.SettingsPanel`.
+ * edited) — and offers ONE destructive action in the footer, chosen by what kind of swatch is
+ * open: a custom, user-created swatch gets Delete (a structure edit, with a best-effort primitive
+ * cleanup after); a built-in swatch showing this (non-default) palette's own override gets Reset
+ * (reverts that one palette's delta back to inherited, leaving the swatch's definition and every
+ * other palette untouched). A built-in swatch that has no action available here (editing the
+ * default palette itself, or a non-default palette where it is not currently overridden) shows
+ * neither button. Mounted by the app when a swatch token is the open route item; see
+ * `ColorPaletteScreen.SettingsPanel`.
  */
 
 /**
@@ -117,9 +123,15 @@ export function ColorPaletteSettings({ route, navigate, library }) {
 			.finally(() => setPendingAction(null));
 	};
 
-	// Renders for every swatch: what Delete removes is a palette row (user-editable document data),
-	// not the token — `removeSwatch` decides internally whether the underlying token is user-created
-	// and only then best-effort cleans it up (settled decision 8).
+	// A custom swatch is removed entirely (a structure edit, with a best-effort primitive cleanup
+	// after — `removeSwatch` decides that internally). A built-in swatch showing THIS palette's own
+	// override is reverted to inherited instead (`resetSwatch`) — never removed, since its
+	// definition belongs to the default palette, not to the one currently open. A built-in swatch
+	// with nothing to revert here (the default palette itself, or a non-default palette where it
+	// isn't overridden) gets neither action.
+	const isCustom = palettes.isSwatchCustom(token);
+	const canReset = !isCustom && palettes.editingId !== palettes.listing.defaultId && swatch.overridden;
+
 	const onDelete = () => {
 		if (palettes.isBusy) {
 			return;
@@ -135,11 +147,27 @@ export function ColorPaletteSettings({ route, navigate, library }) {
 			.finally(() => setPendingAction(null));
 	};
 
+	const onReset = () => {
+		if (palettes.isBusy) {
+			return;
+		}
+
+		setPendingAction('delete');
+		palettes
+			.resetSwatch(token)
+			// Swallowed: a failure already surfaces via `notifyError` inside `resetSwatch`, and the
+			// panel simply stays open showing the (unchanged) override.
+			.catch(() => {})
+			.finally(() => setPendingAction(null));
+	};
+
 	return (
 		<SettingsPanel
 			onClose={panel.close}
 			onSave={onSave}
-			onDelete={onDelete}
+			onDelete={isCustom ? onDelete : canReset ? onReset : null}
+			deleteLabel={canReset ? __('Reset', 'kadence-blocks') : __('Delete', 'kadence-blocks')}
+			deleteBusyLabel={canReset ? __('Resetting…', 'kadence-blocks') : __('Deleting…', 'kadence-blocks')}
 			isDirty={panel.isDirty}
 			isBusy={palettes.isBusy}
 			isSaving={pendingAction === 'save'}

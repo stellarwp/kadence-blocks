@@ -47,7 +47,7 @@ const TOKEN_PATH = 'swatch.primary';
 const PALETTE = {
 	groups: [
 		{
-			swatches: [{ token: TOKEN_PATH, label: 'Primary', $value: '#123456' }],
+			swatches: [{ token: TOKEN_PATH, label: 'Primary', $value: '#123456', overridden: false }],
 		},
 	],
 };
@@ -77,26 +77,37 @@ function deferred() {
 
 /**
  * Build a `usePalettes` stub whose `isBusy` flips to true the moment `saveSwatchEdits`/
- * `removeSwatch` is called and back to false once `write` settles — mirroring what the real hook's
- * `onBusy` callback does synchronously around each flow. The flip happens before
+ * `removeSwatch`/`resetSwatch` is called and back to false once `write` settles — mirroring what
+ * the real hook's `onBusy` callback does synchronously around each flow. The flip happens before
  * `onSave`/`onDelete` calls `setPendingAction`, so the re-render that state update triggers already
  * reads the busy value in the same `act()`.
  *
- * @param {Object} write The deferred promise the pending write resolves/rejects through.
+ * Defaults to the Delete path (a custom swatch, `isSwatchCustom` returns `true`) so every
+ * pre-existing test in this file keeps exercising exactly the scenario it always has.
+ * `editingId`/`listing` default to the SAME id (as if editing the default palette), which combined
+ * with `isSwatchCustom` defaulting `true` means `canReset` in the component is always `false` here
+ * unless a test overrides `isSwatchCustom`/`editingId`/`listing` explicitly.
+ *
+ * @param {Object}  write     The deferred promise the pending write resolves/rejects through.
+ * @param {Object}  [overrides] Fields to merge over the defaults — e.g. `{ isSwatchCustom: () =>
+ *                              false, editingId: 'secondary' }` for a Reset-path test.
  *
  * @since TBD
  *
  * @return {Object} The `usePalettes` stub.
  */
-function makePalettes(write) {
+function makePalettes(write, overrides = {}) {
 	const state = { isBusy: false };
 	const track = (promise) => promise.finally(() => (state.isBusy = false));
 
 	return {
 		palette: PALETTE,
+		listing: { defaultId: 'default' },
+		editingId: 'default',
 		isLoading: false,
 		saveError: null,
 		clearSaveError: jest.fn(),
+		isSwatchCustom: jest.fn(() => true),
 		saveSwatchEdits: jest.fn(() => {
 			state.isBusy = true;
 			return track(write.promise);
@@ -105,9 +116,14 @@ function makePalettes(write) {
 			state.isBusy = true;
 			return track(write.promise);
 		}),
+		resetSwatch: jest.fn(() => {
+			state.isBusy = true;
+			return track(write.promise);
+		}),
 		get isBusy() {
 			return state.isBusy;
 		},
+		...overrides,
 	};
 }
 
@@ -283,5 +299,122 @@ describe('ColorPaletteSettings busy state', () => {
 
 		expect(findButton('Deleting…')).toBeNull();
 		expect(findButton('Delete').disabled).toBe(false);
+	});
+});
+
+const OVERRIDDEN_PALETTE = {
+	groups: [
+		{
+			swatches: [{ token: TOKEN_PATH, label: 'Primary', $value: '#654321', overridden: true }],
+		},
+	],
+};
+
+describe('ColorPaletteSettings destructive action', () => {
+	/**
+	 * A custom, user-created swatch always shows Delete, never Reset — regardless of which palette
+	 * is open — and clicking it calls `removeSwatch`, not `resetSwatch`.
+	 *
+	 * @return {void}
+	 */
+	it('shows Delete, not Reset, for a custom swatch', () => {
+		const write = deferred();
+		const palettes = makePalettes(write, {
+			isSwatchCustom: jest.fn(() => true),
+			editingId: 'secondary',
+			listing: { defaultId: 'default' },
+			palette: OVERRIDDEN_PALETTE,
+		});
+		renderColorPaletteSettings(palettes);
+
+		expect(findButton('Delete')).not.toBeNull();
+		expect(findButton('Reset')).toBeNull();
+
+		act(() => {
+			findButton('Delete').click();
+		});
+
+		expect(palettes.removeSwatch).toHaveBeenCalledWith(TOKEN_PATH);
+		expect(palettes.resetSwatch).not.toHaveBeenCalled();
+	});
+
+	/**
+	 * A built-in swatch showing this (non-default) palette's own override shows Reset, not Delete,
+	 * and clicking it calls `resetSwatch` — never `removeSwatch` — showing "Resetting…" while the
+	 * write is in flight.
+	 *
+	 * @return {void}
+	 */
+	it('shows Reset, not Delete, for a built-in swatch overridden on a non-default palette', async () => {
+		const write = deferred();
+		const palettes = makePalettes(write, {
+			isSwatchCustom: jest.fn(() => false),
+			editingId: 'secondary',
+			listing: { defaultId: 'default' },
+			palette: OVERRIDDEN_PALETTE,
+		});
+		renderColorPaletteSettings(palettes);
+
+		expect(findButton('Reset')).not.toBeNull();
+		expect(findButton('Delete')).toBeNull();
+
+		act(() => {
+			findButton('Reset').click();
+		});
+
+		expect(palettes.resetSwatch).toHaveBeenCalledWith(TOKEN_PATH);
+		expect(palettes.removeSwatch).not.toHaveBeenCalled();
+		expect(findButton('Resetting…')).not.toBeNull();
+
+		await act(async () => {
+			write.resolve();
+			await write.promise;
+		});
+
+		expect(findButton('Resetting…')).toBeNull();
+	});
+
+	/**
+	 * A built-in swatch shows neither Delete nor Reset while editing the DEFAULT palette itself —
+	 * there is nothing to revert to (the default palette has no inherited value to fall back on)
+	 * and it is not a custom swatch to delete.
+	 *
+	 * @return {void}
+	 */
+	it('shows neither destructive button for a built-in swatch on the default palette', () => {
+		const write = deferred();
+		renderColorPaletteSettings(
+			makePalettes(write, {
+				isSwatchCustom: jest.fn(() => false),
+				editingId: 'default',
+				listing: { defaultId: 'default' },
+				palette: OVERRIDDEN_PALETTE,
+			})
+		);
+
+		expect(findButton('Delete')).toBeNull();
+		expect(findButton('Reset')).toBeNull();
+	});
+
+	/**
+	 * A built-in swatch shows neither button on a non-default palette when it is not currently
+	 * overridden there — nothing to reset (it already shows the inherited value) and nothing to
+	 * delete (it is not a custom swatch).
+	 *
+	 * @return {void}
+	 */
+	it('shows neither destructive button for a built-in, non-overridden swatch on a non-default palette', () => {
+		const write = deferred();
+		renderColorPaletteSettings(
+			makePalettes(write, {
+				isSwatchCustom: jest.fn(() => false),
+				editingId: 'secondary',
+				listing: { defaultId: 'default' },
+				palette: PALETTE,
+			})
+		);
+
+		expect(findButton('Delete')).toBeNull();
+		expect(findButton('Reset')).toBeNull();
 	});
 });

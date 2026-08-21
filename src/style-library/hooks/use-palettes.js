@@ -31,6 +31,7 @@ import {
 	renameGroupFlow,
 	renamePaletteFlow,
 	reorderSwatchesFlow,
+	revertSwatchFlow,
 	saveSwatchEditsFlow,
 } from '../helpers/palette-flows';
 import { flattenSchemaTokens } from '../helpers/tokens';
@@ -84,8 +85,12 @@ import { EMPTY_LISTING, EMPTY_OPTIMISTIC_SWATCH_EDIT, paletteListingKey } from '
  *                  clearOpenError, clearActivateError, clearCreateError, clearRenameError,
  *                  clearDeleteError, clearStructureError,
  *                  openPalette, activatePalette, createPalette, renamePalette, deletePalette,
- *                  saveSwatchEdits, removeSwatch, addColor, addingGroupIds, addGroup,
- *                  reorderSwatches, renameGroup, removeGroup }`. `addingGroupIds` is an
+ *                  saveSwatchEdits, removeSwatch, resetSwatch, isSwatchCustom, addColor,
+ *                  addingGroupIds, addGroup, reorderSwatches, renameGroup, removeGroup }`.
+ *                  `isSwatchCustom(token)` tells the caller whether a swatch should offer Delete
+ *                  (a custom, user-created token) or Reset (a built-in token showing this palette's
+ *                  own override) — `resetSwatch` is the Reset half, `removeSwatch` the Delete half.
+ *                  `addingGroupIds` is an
  *                  `Array<string>` of group ids with an add-color currently in flight.
  */
 export function usePalettes(feed, refreshFeed, route, navigate) {
@@ -386,6 +391,43 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 		[namespace, slug, listing.defaultId, feedTokens, onReceive, refreshFeed, registry]
 	);
 
+	// Same feed-entry-first, prefix-fallback check `removeSwatch`/`removeGroup` each run inline —
+	// exposed here too since `ColorPaletteSettings.js` needs it BEFORE calling either write, to pick
+	// which destructive action applies to a given swatch (see `resetSwatch`'s docblock).
+	const isSwatchCustom = useCallback(
+		(token) => {
+			const feedEntry = feedTokens.find((entry) => entry.id === token);
+			return feedEntry ? Boolean(feedEntry.userCreated) : isCustomColorToken(token);
+		},
+		[feedTokens]
+	);
+
+	// Revert a NON-default palette's own override for a token back to inherited — the counterpart
+	// to `removeSwatch`, for a swatch that is a delta on a built-in token rather than a user-created
+	// one. Not optimistic: unlike a save (where the new value is already known) or a delete (where
+	// "gone" is unambiguous), showing the reverted color instantly would mean guessing the inherited
+	// value ahead of the response, so this only shows a busy state (`SettingsPanel`'s `isDeleting`,
+	// relabeled "Resetting…" by the caller) until the write confirms.
+	const resetSwatch = useCallback(
+		(token) => {
+			if (!namespace || !slug || editingId === listing.defaultId) {
+				return Promise.reject(new Error('A swatch of the default palette cannot be reverted.'));
+			}
+
+			return revertSwatchFlow({
+				namespace,
+				slug,
+				id: editingId,
+				token,
+				onReceive,
+				refreshFeed,
+				onBusy: setIsBusy,
+				onError: (err) => notifyError(err.message),
+			}).then(() => notifySuccess(__('Swatch reset.', 'kadence-blocks')));
+		},
+		[namespace, slug, listing.defaultId, editingId, onReceive, refreshFeed]
+	);
+
 	const addColor = useCallback(
 		(groupId) => {
 			const colorSlug = nextCustomColorSlug(existingTokenIds);
@@ -605,6 +647,8 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 		deletePalette: removePalette,
 		saveSwatchEdits,
 		removeSwatch,
+		resetSwatch,
+		isSwatchCustom,
 		addColor,
 		addingGroupIds,
 		addGroup,

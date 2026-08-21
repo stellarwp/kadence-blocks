@@ -10,6 +10,7 @@ import {
 	renameGroupFlow,
 	renamePaletteFlow,
 	reorderSwatchesFlow,
+	revertSwatchFlow,
 	saveSwatchEditsFlow,
 	writeDefaultPaletteFlow,
 } from '../helpers/palette-flows';
@@ -23,6 +24,7 @@ import * as client from '../api/client';
 jest.mock('../api/client', () => ({
 	createUserPrimitive: jest.fn(),
 	deletePalette: jest.fn(),
+	deleteSwatch: jest.fn(),
 	deleteUserPrimitive: jest.fn(),
 	fetchPalette: jest.fn(),
 	savePalette: jest.fn(),
@@ -752,6 +754,63 @@ describe('renamePaletteFlow', () => {
 
 		expect(onError).toHaveBeenCalledWith({ message: failure.message });
 		expect(onBusy).toHaveBeenLastCalledWith(false);
+	});
+});
+
+describe('revertSwatchFlow', () => {
+	const baseArgs = (overrides) => ({
+		namespace: NAMESPACE,
+		slug: SLUG,
+		id: 'secondary',
+		token: 'primitive.color.brand.primary',
+		onReceive: jest.fn(),
+		refreshFeed: jest.fn().mockResolvedValue({ version: 'v3' }),
+		onBusy: jest.fn(),
+		onError: jest.fn(),
+		...overrides,
+	});
+
+	it('calls deleteSwatch against the palette being edited, not the default palette', async () => {
+		client.deleteSwatch.mockResolvedValue(listingRows());
+		const flowArgs = baseArgs();
+
+		await revertSwatchFlow(flowArgs);
+
+		expect(client.deleteSwatch).toHaveBeenCalledWith(NAMESPACE, 'secondary', 'primitive.color.brand.primary', SLUG);
+		expect(client.fetchPalette).not.toHaveBeenCalled();
+		expect(client.savePalette).not.toHaveBeenCalled();
+	});
+
+	it('dispatches the write response via onReceive and refreshes the feed', async () => {
+		client.deleteSwatch.mockResolvedValue(listingRows());
+		const flowArgs = baseArgs();
+
+		await revertSwatchFlow(flowArgs);
+
+		expect(flowArgs.onReceive).toHaveBeenCalledWith(listingRows());
+		expect(flowArgs.refreshFeed).toHaveBeenCalledWith(SLUG);
+	});
+
+	it('toggles onBusy around the write', async () => {
+		client.deleteSwatch.mockResolvedValue(listingRows());
+		const flowArgs = baseArgs();
+
+		await revertSwatchFlow(flowArgs);
+
+		expect(flowArgs.onBusy).toHaveBeenNthCalledWith(1, true);
+		expect(flowArgs.onBusy).toHaveBeenNthCalledWith(2, false);
+	});
+
+	it('surfaces the error and rejects when the backend refuses the revert (e.g. targeting the default palette)', async () => {
+		const failure = new Error('A swatch of the default palette cannot be reverted.');
+		client.deleteSwatch.mockRejectedValue(failure);
+		const flowArgs = baseArgs();
+
+		await expect(revertSwatchFlow(flowArgs)).rejects.toBe(failure);
+
+		expect(flowArgs.onError).toHaveBeenCalledWith({ message: failure.message });
+		expect(flowArgs.onReceive).not.toHaveBeenCalled();
+		expect(flowArgs.refreshFeed).not.toHaveBeenCalled();
 	});
 });
 
