@@ -594,30 +594,35 @@ return [
 						'mobile' => 'mobileMargin',
 					],
 				],
-				// Border and shadow reuse the brand-wide tokens (and, for shadow, a button-scoped one) the
-				// same way Advanced Text's border/shadow surface does, mirroring its token/css_prop shape
-				// (declarations.php's Advanced Heading entry below) rather than the css_var shape the other
-				// button-* properties above use — there is no existing ownable button border/shadow variable
-				// to point at, so the block-default-CSS projector's low-specificity rule is the delivery
-				// mechanism here.
+				// Border and shadow reuse the brand-wide tokens (and, for shadow, a button-scoped one),
+				// mirroring button-padding/button-margin/button-radius's css_var shape above rather than a
+				// css_prop shape: a css_prop binding only ever reaches Block_Default_Css\Css_Builder, which
+				// resolves exclusively the block's $default preset and can never reflect a *selected*
+				// preset's value. css_var is what lets Preset\Css_Builder (the named-preset projector) emit a
+				// scoped variable a selected preset can actually vary. No control_attr — unlike padding/
+				// margin/radius, the native block attributes for border ([{top:[color,style,size],...},unit])
+				// and shadow ([{color,opacity,hOffset,vOffset,blur,spread,inset}]) are nested per-side/
+				// composite shapes, not a single scalar value, so there is no attribute for a picker/capture
+				// consumer of control_attr (token-picker, preset-picker/capture.js, token-indicators) to
+				// target here.
 				'button-border-width' => [
-					'token'    => 'semantic.border-width.default',
-					'css_prop' => 'border-width',
+					'token'   => 'semantic.border-width.default',
+					'css_var' => 'kb-btn-border-width',
 				],
 				'button-border-style' => [
-					'token'    => 'semantic.border-style.default',
-					'css_prop' => 'border-style',
+					'token'   => 'semantic.border-style.default',
+					'css_var' => 'kb-btn-border-style',
 				],
 				'button-border-color' => [
-					'token'    => 'semantic.color.border',
-					'css_prop' => 'border-color',
+					'token'   => 'semantic.color.border',
+					'css_var' => 'kb-btn-border-color',
 				],
 				// No baseline default: an unstyled button carries no shadow, so the preset's $default omits
 				// this property entirely and the projector emits no box-shadow rule until a preset (or the
 				// user) sets one.
 				'button-shadow'       => [
-					'token'    => 'semantic.shadow.button',
-					'css_prop' => 'box-shadow',
+					'token'   => 'semantic.shadow.button',
+					'css_var' => 'kb-btn-shadow',
 				],
 			],
 		],
