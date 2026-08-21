@@ -61,3 +61,11 @@ export const EMPTY_OPTIMISTIC_SWATCH_EDIT = {
 	addedSwatches: [],
 	addedGroups: [],
 };
+
+/**
+ * The empty optimistic-edit overlay for a scale-type screen's tokens — no pending patch or
+ * deletion. Returned by `getOptimisticScaleEdit` for a slug with nothing pending.
+ *
+ * @since TBD
+ */
+export const EMPTY_OPTIMISTIC_SCALE_EDIT = { patches: {}, deletedTokens: [] };

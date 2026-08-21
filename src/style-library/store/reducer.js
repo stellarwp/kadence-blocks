@@ -6,7 +6,7 @@ import { combineReducers } from '@wordpress/data';
 /**
  * Internal dependencies
  */
-import { EMPTY_OPTIMISTIC_SWATCH_EDIT } from './constants';
+import { EMPTY_OPTIMISTIC_SWATCH_EDIT, EMPTY_OPTIMISTIC_SCALE_EDIT } from './constants';
 
 function libraries(state = [], action) {
 	return action.type === 'RECEIVE_LIBRARIES' ? action.rows : state;
@@ -77,9 +77,47 @@ function optimisticSwatchEdits(state = {}, action) {
 	}
 }
 
+function optimisticScaleEdits(state = {}, action) {
+	const current = state[action.slug] ?? EMPTY_OPTIMISTIC_SCALE_EDIT;
+
+	switch (action.type) {
+		case 'SET_OPTIMISTIC_SCALE_PATCH':
+			return {
+				...state,
+				[action.slug]: { ...current, patches: { ...current.patches, [action.tokenId]: action.patch } },
+			};
+		case 'CLEAR_OPTIMISTIC_SCALE_PATCH': {
+			const { [action.tokenId]: _removed, ...patches } = current.patches;
+			return { ...state, [action.slug]: { ...current, patches } };
+		}
+		case 'SET_OPTIMISTIC_SCALE_DELETION':
+			return {
+				...state,
+				[action.slug]: { ...current, deletedTokens: [...current.deletedTokens, action.tokenId] },
+			};
+		case 'CLEAR_OPTIMISTIC_SCALE_DELETION':
+			return {
+				...state,
+				[action.slug]: {
+					...current,
+					deletedTokens: current.deletedTokens.filter((id) => id !== action.tokenId),
+				},
+			};
+		default:
+			return state;
+	}
+}
+
 /**
  * The Style Library store's root reducer.
  *
  * @since TBD
  */
-export const reducer = combineReducers({ libraries, presets, paletteListings, feeds, optimisticSwatchEdits });
+export const reducer = combineReducers({
+	libraries,
+	presets,
+	paletteListings,
+	feeds,
+	optimisticSwatchEdits,
+	optimisticScaleEdits,
+});

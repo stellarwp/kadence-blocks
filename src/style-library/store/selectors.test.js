@@ -5,8 +5,9 @@ import {
 	getPaletteListing,
 	getDesignTokensFeed,
 	getOptimisticSwatchEdit,
+	getOptimisticScaleEdit,
 } from './selectors';
-import { EMPTY_OPTIMISTIC_SWATCH_EDIT } from './constants';
+import { EMPTY_OPTIMISTIC_SWATCH_EDIT, EMPTY_OPTIMISTIC_SCALE_EDIT } from './constants';
 
 describe('selectors', () => {
 	it('getLibraries() returns the libraries slice', () => {
@@ -153,5 +154,27 @@ describe('selectors', () => {
 		};
 
 		expect(getOptimisticSwatchEdit(state, 'ns', 'default')).toEqual(overlay);
+	});
+
+	it('getOptimisticScaleEdit() returns EMPTY_OPTIMISTIC_SCALE_EDIT for an unresolved slug', () => {
+		const state = { libraries: [], presets: {}, paletteListings: {}, feeds: {}, optimisticScaleEdits: {} };
+
+		expect(getOptimisticScaleEdit(state, 'default')).toBe(EMPTY_OPTIMISTIC_SCALE_EDIT);
+	});
+
+	it('getOptimisticScaleEdit() returns the stored overlay object for a resolved slug', () => {
+		const overlay = {
+			patches: { 'primitive.dimension.radius.sm': { label: 'Small' } },
+			deletedTokens: ['primitive.dimension.custom.radius-2'],
+		};
+		const state = {
+			libraries: [],
+			presets: {},
+			paletteListings: {},
+			feeds: {},
+			optimisticScaleEdits: { default: overlay },
+		};
+
+		expect(getOptimisticScaleEdit(state, 'default')).toEqual(overlay);
 	});
 });

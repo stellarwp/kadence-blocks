@@ -158,3 +158,61 @@ export function setOptimisticAddition(key, kind, entry) {
 export function clearOptimisticAddition(key, kind, id) {
 	return { type: 'CLEAR_OPTIMISTIC_ADDITION', key, kind, id };
 }
+
+/**
+ * Patch a scale-type token's label and/or value in the optimistic overlay, ahead of its write's
+ * response.
+ *
+ * @param {string} slug    Token library slug.
+ * @param {string} tokenId The token's canonical dot-path id.
+ * @param {Object} patch   `{ label?, value? }`.
+ *
+ * @since TBD
+ *
+ * @return {Object} The action.
+ */
+export function setOptimisticScalePatch(slug, tokenId, patch) {
+	return { type: 'SET_OPTIMISTIC_SCALE_PATCH', slug, tokenId, patch };
+}
+
+/**
+ * Clear a scale-type token's pending optimistic patch.
+ *
+ * @param {string} slug    Token library slug.
+ * @param {string} tokenId The token's canonical dot-path id.
+ *
+ * @since TBD
+ *
+ * @return {Object} The action.
+ */
+export function clearOptimisticScalePatch(slug, tokenId) {
+	return { type: 'CLEAR_OPTIMISTIC_SCALE_PATCH', slug, tokenId };
+}
+
+/**
+ * Mark a scale-type token as pending deletion — stays visible, dimmed, until the write settles.
+ *
+ * @param {string} slug    Token library slug.
+ * @param {string} tokenId The token's canonical dot-path id.
+ *
+ * @since TBD
+ *
+ * @return {Object} The action.
+ */
+export function setOptimisticScaleDeletion(slug, tokenId) {
+	return { type: 'SET_OPTIMISTIC_SCALE_DELETION', slug, tokenId };
+}
+
+/**
+ * Clear a scale-type token's pending optimistic deletion.
+ *
+ * @param {string} slug    Token library slug.
+ * @param {string} tokenId The token's canonical dot-path id.
+ *
+ * @since TBD
+ *
+ * @return {Object} The action.
+ */
+export function clearOptimisticScaleDeletion(slug, tokenId) {
+	return { type: 'CLEAR_OPTIMISTIC_SCALE_DELETION', slug, tokenId };
+}

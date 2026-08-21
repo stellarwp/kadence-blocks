@@ -7,7 +7,13 @@
 /**
  * Internal dependencies
  */
-import { presetsKey, paletteListingKey, EMPTY_LISTING, EMPTY_OPTIMISTIC_SWATCH_EDIT } from './constants';
+import {
+	presetsKey,
+	paletteListingKey,
+	EMPTY_LISTING,
+	EMPTY_OPTIMISTIC_SWATCH_EDIT,
+	EMPTY_OPTIMISTIC_SCALE_EDIT,
+} from './constants';
 import { reshapePaletteRows } from '../helpers/palettes';
 
 /**
@@ -105,4 +111,18 @@ export function getDesignTokensFeed(state, slug) {
  */
 export function getOptimisticSwatchEdit(state, namespace, slug) {
 	return state.optimisticSwatchEdits[paletteListingKey(namespace, slug)] ?? EMPTY_OPTIMISTIC_SWATCH_EDIT;
+}
+
+/**
+ * Read the pending optimistic overlay for a scale-type screen's tokens.
+ *
+ * @param {Object} state The store state.
+ * @param {string} slug  Token library slug.
+ *
+ * @since TBD
+ *
+ * @return {Object} The overlay, or `EMPTY_OPTIMISTIC_SCALE_EDIT` when nothing is pending.
+ */
+export function getOptimisticScaleEdit(state, slug) {
+	return state.optimisticScaleEdits[slug] ?? EMPTY_OPTIMISTIC_SCALE_EDIT;
 }

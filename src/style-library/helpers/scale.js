@@ -74,6 +74,33 @@ export function applyRowOrder(rows, orderedIds) {
 }
 
 /**
+ * Overlay pending optimistic edits onto a scale screen's rows: a deleted token stays present,
+ * flagged `pendingDelete: true` (never filtered out, so the caller can render it dimmed), and a
+ * patched token has its `label`/`value` merged in. Pure — mirrors `helpers/palettes.js`'s
+ * `applyOptimisticOverlay`.
+ *
+ * @param {Array<Object>} rows    The screen's rows (`scaleRows()`'s output).
+ * @param {Object}        overlay The optimistic overlay for this slug — see `store/constants.js`'s
+ *                                `EMPTY_OPTIMISTIC_SCALE_EDIT`.
+ *
+ * @since TBD
+ *
+ * @return {Array<Object>} The rows with every pending optimistic edit applied, or the original
+ *                          `rows` reference unchanged when nothing is pending.
+ */
+export function applyOptimisticScaleOverlay(rows, overlay) {
+	if (Object.keys(overlay.patches).length === 0 && overlay.deletedTokens.length === 0) {
+		return rows;
+	}
+
+	return rows.map((row) => ({
+		...row,
+		...(overlay.patches[row.id] ?? {}),
+		pendingDelete: overlay.deletedTokens.includes(row.id),
+	}));
+}
+
+/**
  * The first free terminal slug for a minted custom token: the bare base first, then the base with a
  * numeric suffix (`radius`, `radius-2`, `radius-3`, ...).
  *

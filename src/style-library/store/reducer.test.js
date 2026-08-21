@@ -11,8 +11,12 @@ import {
 	clearOptimisticDeletion,
 	setOptimisticAddition,
 	clearOptimisticAddition,
+	setOptimisticScalePatch,
+	clearOptimisticScalePatch,
+	setOptimisticScaleDeletion,
+	clearOptimisticScaleDeletion,
 } from './actions';
-import { EMPTY_OPTIMISTIC_SWATCH_EDIT } from './constants';
+import { EMPTY_OPTIMISTIC_SWATCH_EDIT, EMPTY_OPTIMISTIC_SCALE_EDIT } from './constants';
 
 describe('reducer', () => {
 	it('starts with empty slices', () => {
@@ -24,6 +28,7 @@ describe('reducer', () => {
 			paletteListings: {},
 			feeds: {},
 			optimisticSwatchEdits: {},
+			optimisticScaleEdits: {},
 		});
 	});
 
@@ -133,6 +138,65 @@ describe('reducer', () => {
 		expect(state.optimisticSwatchEdits).toEqual({
 			a: EMPTY_OPTIMISTIC_SWATCH_EDIT,
 			b: { ...EMPTY_OPTIMISTIC_SWATCH_EDIT, patches: { 'token.blue': { label: 'Blue' } } },
+		});
+	});
+
+	it('setOptimisticScalePatch() and clearOptimisticScalePatch() round-trip a patch', () => {
+		let state = reducer(
+			undefined,
+			setOptimisticScalePatch('default', 'primitive.dimension.radius.sm', { label: 'Small' })
+		);
+
+		expect(state.optimisticScaleEdits).toEqual({
+			default: {
+				...EMPTY_OPTIMISTIC_SCALE_EDIT,
+				patches: { 'primitive.dimension.radius.sm': { label: 'Small' } },
+			},
+		});
+
+		state = reducer(state, clearOptimisticScalePatch('default', 'primitive.dimension.radius.sm'));
+
+		expect(state.optimisticScaleEdits).toEqual({ default: EMPTY_OPTIMISTIC_SCALE_EDIT });
+	});
+
+	it('setOptimisticScaleDeletion() and clearOptimisticScaleDeletion() round-trip a deletion', () => {
+		let state = reducer(undefined, setOptimisticScaleDeletion('default', 'primitive.dimension.custom.radius-2'));
+
+		expect(state.optimisticScaleEdits).toEqual({
+			default: { ...EMPTY_OPTIMISTIC_SCALE_EDIT, deletedTokens: ['primitive.dimension.custom.radius-2'] },
+		});
+
+		state = reducer(state, clearOptimisticScaleDeletion('default', 'primitive.dimension.custom.radius-2'));
+
+		expect(state.optimisticScaleEdits).toEqual({ default: EMPTY_OPTIMISTIC_SCALE_EDIT });
+	});
+
+	it("leaves an unrelated scale slug's optimistic edits untouched by an action on a different slug", () => {
+		let state = reducer(
+			undefined,
+			setOptimisticScalePatch('default', 'primitive.dimension.radius.sm', { label: 'Small' })
+		);
+		state = reducer(state, setOptimisticScalePatch('brand', 'primitive.dimension.spacing.lg', { label: 'Large' }));
+
+		expect(state.optimisticScaleEdits).toEqual({
+			default: {
+				...EMPTY_OPTIMISTIC_SCALE_EDIT,
+				patches: { 'primitive.dimension.radius.sm': { label: 'Small' } },
+			},
+			brand: {
+				...EMPTY_OPTIMISTIC_SCALE_EDIT,
+				patches: { 'primitive.dimension.spacing.lg': { label: 'Large' } },
+			},
+		});
+
+		state = reducer(state, clearOptimisticScalePatch('default', 'primitive.dimension.radius.sm'));
+
+		expect(state.optimisticScaleEdits).toEqual({
+			default: EMPTY_OPTIMISTIC_SCALE_EDIT,
+			brand: {
+				...EMPTY_OPTIMISTIC_SCALE_EDIT,
+				patches: { 'primitive.dimension.spacing.lg': { label: 'Large' } },
+			},
 		});
 	});
 });
