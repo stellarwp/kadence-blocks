@@ -155,6 +155,67 @@ final class Palettes_ControllerTest extends TestCase {
 	}
 
 	/**
+	 * Every swatch the shipped palette defines is flagged `baseline`, so the editor can tell a permanent row
+	 * (which it offers to reset) from a user-added one (which it offers to delete).
+	 *
+	 * @return void
+	 */
+	public function testGetItemMarksBaselineSwatches(): void {
+		// primitive.color.neutral.600 is a registered color the shipped palette lists no swatch for, so it stands
+		// in for a user-added color without needing a minted primitive.
+		$this->controller->update_swatch(
+			$this->swatch_request( 'PUT', 'default', 'primitive.color.neutral.600', '#4A5568' )
+		);
+
+		$swatches = $this->view_swatches( 'default' );
+
+		$this->assertTrue( $swatches['primitive.color.brand.button']['baseline'] );
+		$this->assertFalse( $swatches['primitive.color.neutral.600']['baseline'] );
+	}
+
+	/**
+	 * On the DEFAULT palette `overridden` means "differs from the shipped value", not "the palette stores it" —
+	 * the default stores every swatch, so the latter would mark them all overridden and leave the editor unable
+	 * to tell an edited color from an untouched one.
+	 *
+	 * @return void
+	 */
+	public function testGetItemMarksOnlyEditedSwatchesOverriddenOnTheDefaultPalette(): void {
+		$untouched = $this->view_swatches( 'default' );
+
+		$this->assertFalse( $untouched['primitive.color.brand.primary']['overridden'] );
+		$this->assertFalse( $untouched['primitive.color.brand.button']['overridden'] );
+
+		$this->controller->update_swatch(
+			$this->swatch_request( 'PUT', 'default', 'primitive.color.brand.primary', '#0000ff' )
+		);
+
+		$edited = $this->view_swatches( 'default' );
+
+		$this->assertTrue( $edited['primitive.color.brand.primary']['overridden'] );
+		$this->assertFalse( $edited['primitive.color.brand.button']['overridden'], 'Only the edited swatch is overridden.' );
+	}
+
+	/**
+	 * Reverting an edited default swatch clears its `overridden` flag, so the editor's Reset affordance turns
+	 * itself off again.
+	 *
+	 * @return void
+	 */
+	public function testRevertingADefaultSwatchClearsItsOverriddenFlag(): void {
+		$this->controller->update_swatch(
+			$this->swatch_request( 'PUT', 'default', 'primitive.color.brand.primary', '#0000ff' )
+		);
+		$this->assertTrue( $this->view_swatches( 'default' )['primitive.color.brand.primary']['overridden'] );
+
+		$this->controller->delete_swatch(
+			$this->swatch_request( 'DELETE', 'default', 'primitive.color.brand.primary' )
+		);
+
+		$this->assertFalse( $this->view_swatches( 'default' )['primitive.color.brand.primary']['overridden'] );
+	}
+
+	/**
 	 * Writing a non-default palette persists only the swatches that differ from the default; a swatch equal
 	 * to the default is inherited, not stored.
 	 *
@@ -375,18 +436,64 @@ final class Palettes_ControllerTest extends TestCase {
 	 *
 	 * @return void
 	 */
-	public function testDeleteItemRemovesAUserPaletteButNotTheDefault(): void {
+	public function testDeleteItemRemovesAUserPalette(): void {
 		$this->controller->update_item( $this->write_request( 'ocean', 'Ocean', '#0000ff' ) );
 		$this->assertContains( 'ocean', $this->palettes->palette_ids() );
 
 		$delete = new WP_REST_Request( 'DELETE' );
 		$delete->set_param( 'id', 'ocean' );
 		$this->controller->delete_item( $delete );
-		$this->assertNotContains( 'ocean', $this->palettes->palette_ids() );
 
-		$delete_default = new WP_REST_Request( 'DELETE' );
-		$delete_default->set_param( 'id', 'default' );
-		$this->assertSame( WP_Http::BAD_REQUEST, $this->status_of( $this->controller->delete_item( $delete_default ) ) );
+		$this->assertNotContains( 'ocean', $this->palettes->palette_ids() );
+	}
+
+	/**
+	 * Deleting the default palette drops its stored overrides and resets it to the shipped definition rather
+	 * than removing it: it is a baseline palette, so it stays in the listing, rendering from baseline.
+	 *
+	 * @return void
+	 */
+	public function testDeleteItemResetsTheDefaultPaletteToBaseline(): void {
+		$this->controller->update_swatch(
+			$this->swatch_request( 'PUT', 'default', 'primitive.color.brand.primary', '#0000ff' )
+		);
+		$this->controller->update_swatch(
+			$this->swatch_request( 'PUT', 'default', 'primitive.color.brand.button', '#00ff00' )
+		);
+
+		$delete = new WP_REST_Request( 'DELETE' );
+		$delete->set_param( 'id', 'default' );
+
+		$result = $this->controller->delete_item( $delete );
+
+		$this->assertNotInstanceOf( WP_Error::class, $result );
+		$this->assertContains( 'default', $this->palettes->palette_ids(), 'A baseline palette is reset, never removed.' );
+		$this->assertSame( $this->palettes->baseline_swatch_values(), $this->palettes->swatch_values( 'default' ) );
+	}
+
+	/**
+	 * Resetting the default palette with nothing stored for it changes nothing, so the reset is safe to repeat.
+	 *
+	 * @return void
+	 */
+	public function testDeleteItemOnAnUneditedDefaultPaletteIsANoOp(): void {
+		$delete = new WP_REST_Request( 'DELETE' );
+		$delete->set_param( 'id', 'default' );
+
+		$this->assertNotInstanceOf( WP_Error::class, $this->controller->delete_item( $delete ) );
+		$this->assertSame( $this->palettes->baseline_swatch_values(), $this->palettes->swatch_values( 'default' ) );
+	}
+
+	/**
+	 * Deleting a palette the library does not define at all is a 404.
+	 *
+	 * @return void
+	 */
+	public function testDeleteItemOnAnUnknownPaletteIsNotFound(): void {
+		$delete = new WP_REST_Request( 'DELETE' );
+		$delete->set_param( 'id', 'nope' );
+
+		$this->assertSame( WP_Http::NOT_FOUND, $this->status_of( $this->controller->delete_item( $delete ) ) );
 	}
 
 	/**
@@ -712,6 +819,29 @@ final class Palettes_ControllerTest extends TestCase {
 
 		$this->assertNotInstanceOf( WP_Error::class, $result );
 		$this->assertSame( [ 'primitive.color.brand.primary' => '#DD6B20' ], $this->palettes->swatch_values( 'ocean' ) );
+	}
+
+	/**
+	 * A palette's effective view flattened to `{ token => swatch }`, so a case can assert on one swatch's flags
+	 * without walking the group structure.
+	 *
+	 * @param string $id The palette id to read.
+	 *
+	 * @return array<string, array<string, mixed>> The view's swatches, keyed by token dot-path.
+	 */
+	private function view_swatches( string $id ): array {
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+		$request->set_param( 'id', $id );
+
+		$swatches = [];
+
+		foreach ( $this->controller->get_item( $request )->get_data()['groups'] as $group ) {
+			foreach ( $group['swatches'] as $swatch ) {
+				$swatches[ $swatch['token'] ] = $swatch;
+			}
+		}
+
+		return $swatches;
 	}
 
 	/**

@@ -397,8 +397,14 @@ final class Palettes_Controller extends Controller {
 	}
 
 	/**
-	 * Delete a palette (DELETE /palettes/{id}). The library's `$default` palette cannot be deleted, and a
-	 * request for a palette the library does not define is a 404.
+	 * Drop a palette's stored node (DELETE /palettes/{id}). What that leaves behind depends on whether the
+	 * shipped baseline also defines the palette: a user-created one is gone from the listing, while a baseline
+	 * palette — the `default` among them — RESETS to its shipped definition and stays. Either way the request
+	 * removes only overrides, which is why the two cases share one handler. This matches the DELETE semantics
+	 * of the sibling library and preset controllers, where dropping the default resets it to baseline.
+	 *
+	 * Idempotent for a baseline palette (a reset with nothing stored changes nothing); a palette the library
+	 * does not define at all is a 404.
 	 *
 	 * @since TBD
 	 *
@@ -412,17 +418,6 @@ final class Palettes_Controller extends Controller {
 
 		if ( $this->palettes->palette( $id, $slug ) === null ) {
 			return $this->not_found( $id );
-		}
-
-		if ( $id === $this->palettes->default_palette( $slug ) ) {
-			return new WP_Error(
-				'rest_design_tokens_forbidden',
-				__( 'The default palette cannot be deleted.', 'kadence-blocks' ),
-				[
-					'status'       => WP_Http::BAD_REQUEST,
-					self::ID_PARAM => $id,
-				]
-			);
 		}
 
 		$document = $this->mutator->remove_by_keys( $this->stored_document( $slug ), $this->palette_keys( $id ) );
@@ -611,9 +606,18 @@ final class Palettes_Controller extends Controller {
 	/**
 	 * The effective, editable view of a palette: the DEFAULT palette's full group/swatch structure (the field
 	 * template) with each swatch's value taken from the palette's own delta when it defines one, otherwise the
-	 * inherited default value. Each swatch carries an `overridden` flag so the UI can show which are deltas
-	 * versus inherited. This is what the palette editor renders so every field is present even when the palette
-	 * stores only a few deltas.
+	 * inherited default value. This is what the palette editor renders so every field is present even when the
+	 * palette stores only a few deltas.
+	 *
+	 * Two flags per swatch drive the editor's undo affordance, and they answer different questions:
+	 *
+	 *   - `baseline` — whether the shipped palette defines this swatch. A baseline swatch's row is permanent
+	 *     (see {@see guard_baseline_swatches()}), so the editor offers Reset for it and Delete only for the
+	 *     rest.
+	 *   - `overridden` — whether there is anything to undo. On the DEFAULT palette that means the value
+	 *     differs from the shipped one; on any other palette it means the palette stores its own delta rather
+	 *     than inheriting. Measuring the default palette against its own deltas would mark every swatch
+	 *     overridden, since the default stores them all.
 	 *
 	 * @since TBD
 	 *
@@ -626,7 +630,9 @@ final class Palettes_Controller extends Controller {
 		$template = $this->palettes->palette( $this->palettes->default_palette( $slug ), $slug ) ?? [];
 		$deltas   = $this->palettes->swatch_values( $id, $slug );
 		$own      = $this->palettes->palette( $id, $slug ) ?? [];
+		$baseline = $this->palettes->baseline_swatch_values();
 
+		$is_default   = $id === $this->palettes->default_palette( $slug );
 		$token_key    = Extensions::get_swatch_token_key();
 		$label_key    = Extensions::get_label_key();
 		$value_key    = Sentinels::get_value_key();
@@ -651,13 +657,21 @@ final class Palettes_Controller extends Controller {
 					continue;
 				}
 
-				$token      = $swatch[ $token_key ];
-				$overridden = array_key_exists( $token, $deltas );
+				$token   = $swatch[ $token_key ];
+				$has_own = array_key_exists( $token, $deltas );
+				$value   = $has_own ? $deltas[ $token ] : ( $swatch[ $value_key ] ?? '' );
+
+				// The default palette stores every swatch, so "has its own value" is always true there and says
+				// nothing; what can be undone on it is a value that no longer matches the shipped one.
+				$overridden = $is_default
+					? ( array_key_exists( $token, $baseline ) && $baseline[ $token ] !== $value )
+					: $has_own;
 
 				$swatches[] = [
 					$token_key   => $token,
 					$label_key   => $swatch[ $label_key ] ?? $token,
-					$value_key   => $overridden ? $deltas[ $token ] : ( $swatch[ $value_key ] ?? '' ),
+					$value_key   => $value,
+					'baseline'   => array_key_exists( $token, $baseline ),
 					'overridden' => $overridden,
 				];
 			}
@@ -677,7 +691,7 @@ final class Palettes_Controller extends Controller {
 	}
 
 	/**
-	 * Prepare a palette node for storage: drop the presentational-only `overridden` flag the effective view
+	 * Prepare a palette node for storage: drop the presentational-only `overridden` / `baseline` flags the effective view
 	 * adds to every swatch, and — for a non-default palette — reduce it to its deltas by dropping every swatch
 	 * whose `$value` equals the library's default palette value for that token (and any group left empty). So a
 	 * palette persists only the colors it actually changes; the rest are inherited from the default.
@@ -715,7 +729,7 @@ final class Palettes_Controller extends Controller {
 					continue;
 				}
 
-				unset( $swatch['overridden'] );
+				unset( $swatch['overridden'], $swatch['baseline'] );
 
 				$token = $swatch[ $token_key ];
 				$value = $swatch[ $value_key ] ?? null;
