@@ -238,6 +238,43 @@ describe('BoxShadowControl trigger', () => {
 		expect(trigger().querySelector('.kadence-token-field__value')).toBeNull();
 		expect(trigger().textContent).toBe('');
 	});
+
+	/**
+	 * An unset trigger has no visible text, so it needs an `aria-label` naming it — otherwise a
+	 * screen reader announces the button with no accessible name at all. `ControlShell` renders the
+	 * field's `label` prop in a separate header span, not as this button's name, so the trigger has
+	 * to carry its own.
+	 *
+	 * @return {void}
+	 */
+	it('has an aria-label when the value is unset', () => {
+		renderControl({ value: '' });
+
+		expect(trigger().getAttribute('aria-label')).toBe('Choose shadow');
+	});
+
+	/**
+	 * A trigger with visible label/value text names itself through that text, so no `aria-label` is
+	 * added on top of it — avoiding a redundant or conflicting accessible name.
+	 *
+	 * @return {void}
+	 */
+	it('has no aria-label when a token alias value is set', () => {
+		renderControl({ value: '{primitive.shadow.md}' });
+
+		expect(trigger().hasAttribute('aria-label')).toBe(false);
+	});
+
+	/**
+	 * Same guard for a composite (Custom) value, the other value shape with visible text.
+	 *
+	 * @return {void}
+	 */
+	it('has no aria-label when a composite value is set', () => {
+		renderControl({ value: { color: '#000000', offsetX: '2px', offsetY: '2px', blur: '4px', spread: '0px' } });
+
+		expect(trigger().hasAttribute('aria-label')).toBe(false);
+	});
 });
 
 describe('BoxShadowControl row anatomy', () => {

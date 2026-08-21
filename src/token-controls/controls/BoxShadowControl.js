@@ -164,6 +164,13 @@ export function BoxShadowControl({ value, onChange, label, tokens = [], renderCo
 		: !hasValue(value)
 			? { label: '', value: '' }
 			: { label: __('Custom', 'kadence-blocks'), value: shadowShorthand(shadow) };
+	// The unset trigger renders no visible label/value (so the field reads as genuinely empty, not a
+	// fabricated custom shadow — see the summary derivation above), which would otherwise leave the
+	// Button with no accessible name at all: `ControlShell` renders `label` as a separate header span,
+	// not as this button's name. An `aria-label` fills that gap only while the trigger is visibly
+	// empty; a set value already names itself through the visible label/value text, so adding one
+	// there would be redundant.
+	const emptyTriggerLabel = !summary.label && !summary.value ? __('Choose shadow', 'kadence-blocks') : undefined;
 
 	return (
 		<ControlShell label={label} disabled={disabled}>
@@ -178,6 +185,7 @@ export function BoxShadowControl({ value, onChange, label, tokens = [], renderCo
 								onClick={onToggle}
 								disabled={disabled}
 								aria-expanded={isOpen}
+								aria-label={emptyTriggerLabel}
 							>
 								{summary.label && <span className="kadence-token-field__label">{summary.label}</span>}
 								{summary.value && <span className="kadence-token-field__value">{summary.value}</span>}
