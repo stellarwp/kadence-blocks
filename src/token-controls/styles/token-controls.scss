@@ -670,10 +670,11 @@
 	width: 100%;
 
 	// Tighter on the left than the `7px 10px` other box fields use — the reference seats the
-	// swatch and style preview flush against that edge.
+	// swatch and style preview flush against that edge. Border-color and radius match the base
+	// trigger's original values, not the reference's control-box values.
 	padding: 5px 10px 5px 6px;
-	border: 1px solid #dddddd;
-	border-radius: 5px;
+	border: 1px solid #949494;
+	border-radius: 2px;
 
 	.kadence-token-field {
 		flex: 1 1 auto;
