@@ -435,6 +435,109 @@ describe('BorderControl disabled', () => {
 	});
 });
 
+describe('BorderControl row anatomy', () => {
+	/**
+	 * The linked row bundles the swatch, style preview, and width field into one control box.
+	 *
+	 * @return {void}
+	 */
+	it('renders one control box containing the swatch, style preview, and width field when linked', () => {
+		renderControl({
+			value: { width: '', style: 'solid', color: 'semantic.color.border' },
+			renderColor: ({ value }) => <span className="stub-swatch" data-value={value ?? ''} />,
+		});
+
+		const boxes = container.querySelectorAll('.kb-border-control__box');
+		expect(boxes).toHaveLength(1);
+
+		const box = boxes[0];
+		expect(box.querySelector('.kb-border-control__swatch .stub-swatch')).not.toBeNull();
+		expect(box.querySelector('.kb-border-control__style-preview')).not.toBeNull();
+		expect(box.querySelector('.stub-token-selector')).not.toBeNull();
+	});
+
+	/**
+	 * Unlinked mode renders one control box per side, each with its own swatch/style-preview/width
+	 * triple.
+	 *
+	 * @return {void}
+	 */
+	it('renders four control boxes, each with a swatch and style preview, when unlinked', () => {
+		renderControl({
+			value: { width: ['a', 'b', 'c', 'd'], style: 'solid', color: '' },
+			renderColor: ({ value }) => <span className="stub-swatch" data-value={value ?? ''} />,
+		});
+
+		expect(container.querySelectorAll('.kb-border-control__box')).toHaveLength(4);
+		expect(container.querySelectorAll('.kb-border-control__swatch')).toHaveLength(4);
+		expect(container.querySelectorAll('.kb-border-control__style-preview')).toHaveLength(4);
+	});
+
+	/**
+	 * The style preview's rule carries a modifier class naming the side's current style, and the
+	 * style picker's own select sits inside the preview box rather than as a separate field.
+	 *
+	 * @return {void}
+	 */
+	it('marks the style preview with the current style and keeps the picker select inside it', () => {
+		renderControl({ value: { width: '', style: 'dashed', color: '' } });
+
+		const preview = container.querySelector('.kb-border-control__style-preview');
+
+		expect(preview.querySelector('.kb-border-control__style-preview-rule--dashed')).not.toBeNull();
+		expect(preview.querySelector('select')).not.toBeNull();
+	});
+
+	/**
+	 * `none` hides the preview's rule rather than drawing a muted line.
+	 *
+	 * @return {void}
+	 */
+	it('hides the style preview rule when style is none', () => {
+		renderControl({ value: { width: '', style: 'none', color: '' } });
+
+		const rule = container.querySelector('.kb-border-control__style-preview-rule');
+
+		expect(rule.classList.contains('kb-border-control__style-preview-rule--none')).toBe(true);
+	});
+
+	/**
+	 * `renderColor` is called once per row with that row's own color value, and its `onChange`
+	 * writes back through the same axis the width/style fields already use — a linked write stays a
+	 * scalar, an unlinked write touches only that row's slot.
+	 *
+	 * @return {void}
+	 */
+	it('calls renderColor once per row and writes the touched slot when unlinked', () => {
+		const onChange = jest.fn();
+		renderControl({
+			value: { width: ['a', 'b', 'c', 'd'], style: 'solid', color: 'semantic.color.border' },
+			onChange,
+			renderColor: ({ value, onChange: onColorChange }) => (
+				<button
+					className="stub-color-write"
+					data-value={value ?? ''}
+					onClick={() => onColorChange('semantic.color.accent')}
+				>
+					swatch
+				</button>
+			),
+		});
+
+		const swatches = container.querySelectorAll('.stub-color-write');
+		expect(swatches).toHaveLength(4);
+		expect(Array.from(swatches).every((el) => el.dataset.value === 'semantic.color.border')).toBe(true);
+
+		click(swatches[2]);
+
+		expect(onChange).toHaveBeenCalledWith({
+			width: ['a', 'b', 'c', 'd'],
+			style: 'solid',
+			color: ['semantic.color.border', 'semantic.color.border', 'semantic.color.accent', 'semantic.color.border'],
+		});
+	});
+});
+
 describe('BorderControl style select accessible labels', () => {
 	/**
 	 * Linked mode has one style field standing for every side, so the generic label is accurate.
