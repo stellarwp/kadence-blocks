@@ -39,7 +39,9 @@ use WP_REST_Server;
  *
  * One further guard is specific to the DEFAULT palette: it is the structure template every other palette is
  * projected from, so a write against it may not drop a swatch the shipped baseline defines
- * ({@see guard_baseline_swatches()}). Those rows are permanent — reverted, never removed.
+ * ({@see guard_baseline_swatches()}). Those rows are permanent — reverted, never removed, which is what
+ * {@see delete_swatch()} does with them: restore the shipped color on the default palette, drop the delta
+ * (back to inherited) on any other. Only a user-added swatch's row is actually removable.
  *
  * @since TBD
  */
@@ -477,10 +479,17 @@ final class Palettes_Controller extends Controller {
 	}
 
 	/**
-	 * Revert a single palette swatch to inherited (DELETE /palettes/{id}/swatches/{token}): drop the palette's
-	 * own value for this token so it falls back to the default palette. A token the palette never set is already
-	 * inherited, so the delete is idempotent. The default palette is the base and has nothing to inherit from,
-	 * so reverting one of its swatches is a 400; an unknown palette is a 404.
+	 * Undo a palette's own value for one swatch (DELETE /palettes/{id}/swatches/{token}). What "undo" means
+	 * depends on where the swatch came from, because only one of the two is a row a palette may lose:
+	 *
+	 *   - A swatch the shipped baseline defines is permanent, so this REVERTS its value and keeps the row. On
+	 *     the default palette that means restoring the shipped color; on any other palette it means dropping
+	 *     the delta so the swatch inherits the default palette again.
+	 *   - A user-added swatch has no shipped value to fall back to, so its row is REMOVED. Done on the default
+	 *     palette — which owns the structure every palette is projected from — that retires the color entirely.
+	 *
+	 * Idempotent either way: a token a palette never set is already inherited, and a row already gone stays
+	 * gone. An unknown palette is a 404.
 	 *
 	 * @since TBD
 	 *
@@ -499,18 +508,16 @@ final class Palettes_Controller extends Controller {
 			return $this->not_found( $id );
 		}
 
-		if ( $id === $this->palettes->default_palette( $slug ) ) {
-			return new WP_Error(
-				'rest_design_tokens_forbidden',
-				__( 'A swatch of the default palette cannot be reverted.', 'kadence-blocks' ),
-				[
-					'status'       => WP_Http::BAD_REQUEST,
-					self::ID_PARAM => $id,
-				]
-			);
-		}
+		$baseline = $this->palettes->baseline_swatch_values();
 
-		return $this->write_palette_node( $slug, $id, $this->remove_swatch_from_node( $node, $token ) );
+		// The default palette is the base — it has nothing to inherit from — so a baseline swatch there is
+		// restored to its shipped value rather than dropped. Every other case drops the palette's own entry:
+		// a non-default palette's delta (leaving it inherited) or a user-added row (retiring it).
+		$node = ( $id === $this->palettes->default_palette( $slug ) && array_key_exists( $token, $baseline ) )
+			? $this->set_swatch_in_node( $node, $token, $baseline[ $token ], $slug )
+			: $this->remove_swatch_from_node( $node, $token );
+
+		return $this->write_palette_node( $slug, $id, $node );
 	}
 
 	/**

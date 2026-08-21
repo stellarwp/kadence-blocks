@@ -3,6 +3,7 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Rest\V1;
 
+use Generator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Palettes;
 use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Palettes_Controller;
 use Tests\Support\Classes\TestCase;
@@ -487,23 +488,116 @@ final class Palettes_ControllerTest extends TestCase {
 		);
 
 		$this->assertArrayNotHasKey( 'primitive.color.brand.primary', $this->palettes->swatch_values( 'ocean' ) );
+
+		// Inherited, not gone: the palette now resolves the token to the default palette's value, and the
+		// default palette itself is untouched.
+		$this->assertSame( '#3182CE', $this->palettes->effective_swatch_values( 'ocean' )['primitive.color.brand.primary'] );
+		$this->assertSame( '#3182CE', $this->palettes->swatch_values( 'default' )['primitive.color.brand.primary'] );
 	}
 
 	/**
-	 * A swatch of the default palette cannot be reverted (there is nothing to inherit from), so a delete is a
-	 * 400.
+	 * Deleting a baseline swatch on the default palette restores its shipped color instead of removing the row:
+	 * the default palette has nothing to inherit from, and the row itself is permanent.
 	 *
 	 * @return void
 	 */
-	public function testDeleteSwatchOnTheDefaultPaletteIsForbidden(): void {
-		$this->assertSame(
-			WP_Http::BAD_REQUEST,
-			$this->status_of(
-				$this->controller->delete_swatch(
-					$this->swatch_request( 'DELETE', 'default', 'primitive.color.brand.primary' )
-				) 
-			)
+	public function testDeleteSwatchOnTheDefaultPaletteRevertsToBaseline(): void {
+		$this->controller->update_swatch(
+			$this->swatch_request( 'PUT', 'default', 'primitive.color.brand.primary', '#0000ff' )
 		);
+		$this->assertSame( '#0000ff', $this->palettes->swatch_values( 'default' )['primitive.color.brand.primary'] );
+
+		$result = $this->controller->delete_swatch(
+			$this->swatch_request( 'DELETE', 'default', 'primitive.color.brand.primary' )
+		);
+
+		$this->assertNotInstanceOf( WP_Error::class, $result );
+		$this->assertSame( '#3182CE', $this->palettes->swatch_values( 'default' )['primitive.color.brand.primary'] );
+	}
+
+	/**
+	 * Reverting one baseline swatch on the default palette leaves the palette's other edits alone.
+	 *
+	 * @return void
+	 */
+	public function testDeleteSwatchOnTheDefaultPaletteLeavesSiblingSwatchesAlone(): void {
+		$this->controller->update_swatch(
+			$this->swatch_request( 'PUT', 'default', 'primitive.color.brand.primary', '#0000ff' )
+		);
+		$this->controller->update_swatch(
+			$this->swatch_request( 'PUT', 'default', 'primitive.color.brand.button', '#00ff00' )
+		);
+
+		$this->controller->delete_swatch(
+			$this->swatch_request( 'DELETE', 'default', 'primitive.color.brand.primary' )
+		);
+
+		$values = $this->palettes->swatch_values( 'default' );
+
+		$this->assertSame( '#3182CE', $values['primitive.color.brand.primary'] );
+		$this->assertSame( '#00ff00', $values['primitive.color.brand.button'], 'Only the reverted swatch may change.' );
+	}
+
+	/**
+	 * A swatch the baseline does NOT define has no shipped value to fall back to, so deleting it on the default
+	 * palette removes the row outright — the true delete of a user-added color.
+	 *
+	 * @return void
+	 */
+	public function testDeleteSwatchRemovesANonBaselineSwatchFromTheDefaultPalette(): void {
+		// primitive.color.neutral.600 is a registered color the shipped palette lists no swatch for, so it stands
+		// in for a user-added color without needing a minted primitive.
+		$this->controller->update_swatch(
+			$this->swatch_request( 'PUT', 'default', 'primitive.color.neutral.600', '#4A5568' )
+		);
+		$this->assertArrayHasKey( 'primitive.color.neutral.600', $this->palettes->swatch_values( 'default' ) );
+
+		$this->controller->delete_swatch(
+			$this->swatch_request( 'DELETE', 'default', 'primitive.color.neutral.600' )
+		);
+
+		$this->assertArrayNotHasKey( 'primitive.color.neutral.600', $this->palettes->swatch_values( 'default' ) );
+	}
+
+	/**
+	 * Reverting a swatch a palette never set changes nothing, so a repeated delete is safe.
+	 *
+	 * @dataProvider idempotentDeleteProvider
+	 *
+	 * @param string $id    The palette id to delete the swatch on.
+	 * @param string $token The swatch token dot-path.
+	 *
+	 * @return void
+	 */
+	public function testDeleteSwatchIsIdempotent( string $id, string $token ): void {
+		$this->controller->update_item( $this->write_request( 'ocean', 'Ocean', '#0000ff' ) );
+
+		$before = $this->palettes->swatch_values( $id );
+
+		$this->controller->delete_swatch( $this->swatch_request( 'DELETE', $id, $token ) );
+		$this->controller->delete_swatch( $this->swatch_request( 'DELETE', $id, $token ) );
+
+		$this->assertSame( $before, $this->palettes->swatch_values( $id ) );
+	}
+
+	/**
+	 * @return Generator
+	 */
+	public function idempotentDeleteProvider(): Generator {
+		yield 'a delta the non-default palette never set' => [
+			'id'    => 'ocean',
+			'token' => 'primitive.color.neutral.900',
+		];
+
+		yield 'an unedited baseline swatch on the default palette' => [
+			'id'    => 'default',
+			'token' => 'primitive.color.brand.accent',
+		];
+
+		yield 'a token no palette carries' => [
+			'id'    => 'default',
+			'token' => 'primitive.color.neutral.600',
+		];
 	}
 
 	/**
