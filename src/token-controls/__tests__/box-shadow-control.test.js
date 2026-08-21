@@ -162,14 +162,26 @@ function change(element, value) {
 
 describe('BoxShadowControl trigger', () => {
 	/**
-	 * The trigger shows the bound token's label when the value is that token's alias.
+	 * The trigger shows the bound token's label when the value is that token's alias, matching
+	 * `TokenSelector`'s own label-then-value split rather than one concatenated string.
 	 *
 	 * @return {void}
 	 */
 	it('shows the token label when value is a token alias', () => {
 		renderControl({ value: '{primitive.shadow.md}' });
 
-		expect(trigger().textContent).toBe('Medium');
+		expect(trigger().querySelector('.kadence-token-field__label').textContent).toBe('Medium');
+	});
+
+	/**
+	 * The trigger shows the token's resolved value alongside its label.
+	 *
+	 * @return {void}
+	 */
+	it('shows the token value alongside its label', () => {
+		renderControl({ value: '{primitive.shadow.md}' });
+
+		expect(trigger().querySelector('.kadence-token-field__value').textContent).toBe('0px 2px 8px 0px #1717171f');
 	});
 
 	/**
@@ -180,7 +192,60 @@ describe('BoxShadowControl trigger', () => {
 	it('shows "Custom" when value is a composite object', () => {
 		renderControl({ value: { color: '#000000', offsetX: '2px', offsetY: '2px', blur: '4px', spread: '0px' } });
 
-		expect(trigger().textContent).toBe('Custom');
+		expect(trigger().querySelector('.kadence-token-field__label').textContent).toBe('Custom');
+	});
+
+	/**
+	 * A composite value's trigger shows its own resolved shorthand as the value, not the alias'
+	 * literal display — so the field reads the same "label, then value" way for either value shape.
+	 *
+	 * @return {void}
+	 */
+	it('shows the composite shadow resolved as CSS shorthand alongside "Custom"', () => {
+		renderControl({ value: { color: '#000000', offsetX: '2px', offsetY: '2px', blur: '4px', spread: '0px' } });
+
+		expect(trigger().querySelector('.kadence-token-field__value').textContent).toBe('2px 2px 4px 0px #000000');
+	});
+});
+
+describe('BoxShadowControl row anatomy', () => {
+	/**
+	 * The control renders exactly one control-box row — matching Border Radius's row anatomy — since
+	 * a shadow is a single value with nothing sided to grid.
+	 *
+	 * @return {void}
+	 */
+	it('renders exactly one control-box row', () => {
+		renderControl();
+
+		expect(container.querySelectorAll('.kb-token-control__row')).toHaveLength(1);
+	});
+
+	/**
+	 * The row carries no glyph element — a shadow has nothing spatial to point at, unlike a bordered
+	 * side or a rounded corner.
+	 *
+	 * @return {void}
+	 */
+	it('renders no glyph element', () => {
+		renderControl();
+
+		expect(container.querySelector('.kb-token-control__glyph')).toBeNull();
+	});
+
+	/**
+	 * `ControlShell`'s own header renders the field's label exactly once — the control no longer
+	 * builds its own ad-hoc `<span>` label alongside it.
+	 *
+	 * @return {void}
+	 */
+	it('renders the label once, via ControlShell’s header', () => {
+		renderControl({ label: 'Shadow' });
+
+		const headerLabels = container.querySelectorAll('.kb-token-control__label');
+
+		expect(headerLabels).toHaveLength(1);
+		expect(headerLabels[0].textContent).toBe('Shadow');
 	});
 });
 
