@@ -652,3 +652,158 @@
 		}
 	}
 }
+
+/**
+ * `BorderControl`'s row anatomy: a color swatch, a style-preview box, then the width field's
+ * label/value, all sharing one control box — the two pickers Padding/Margin/Radius's row doesn't
+ * carry.
+ *
+ * The box's own border/radius/padding lives here rather than on `TokenSelector`'s trigger (which
+ * `.kb-token-control__row`'s shared rule styles for every other box field): Border's box wraps
+ * three siblings, not one, so the width trigger's own border is stripped down to nothing and only
+ * the outer box's edge shows.
+ */
+.kb-border-control__box {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	width: 100%;
+	// Tighter on the left than the `7px 10px` other box fields use — the reference seats the
+	// swatch and style preview flush against that edge.
+	padding: 5px 10px 5px 6px;
+	border: 1px solid #dddddd;
+	border-radius: 5px;
+
+	.kadence-token-field {
+		flex: 1 1 auto;
+		min-width: 0;
+	}
+}
+
+/*
+ * Strips the width trigger's own border/radius/padding when it sits inside Border's box — the box
+ * itself now draws that chrome. Scoped through `:has()` off the box's own class (rather than a
+ * class on `.kb-token-control__row` itself, which `SlotGrid` renders and this control does not
+ * touch) so Radius/Spacing's rows, which have no `.kb-border-control__box`, are untouched. Higher
+ * specificity than the shared row rule's `:where()`-wrapped selector wins regardless of source
+ * order.
+ */
+.kb-token-control__row:has(.kb-border-control__box) .kadence-token-field__trigger.components-button {
+	padding: 0;
+	border: 0;
+	border-radius: 0;
+
+	&[aria-expanded="true"] {
+		box-shadow: none;
+	}
+}
+
+/*
+ * The color swatch: sized and rounded to a 20px circle around whatever `renderColor` returns.
+ * `renderColor`'s own chrome (padding, border, a visible name label) is stripped back here — the
+ * row already carries the box border, and the reference row shows only the swatch, not a labeled
+ * field. This only reaches for the swatch's already-established markup (the block editor's
+ * `@kadence/components` `PopColorControl`/`SinglePopColorControl` and the Style Library's
+ * `TokenColorSelectField`); it does not add any new color-picking UI.
+ */
+.kb-border-control__swatch {
+	display: inline-flex;
+	flex: 0 0 auto;
+	align-items: center;
+	justify-content: center;
+	width: 20px;
+	height: 20px;
+
+	// The Style Library's `TokenColorSelectField`: drop its bordered/padded toggle chrome and its
+	// visible name label, leaving just the round swatch it already draws at 20px.
+	.kadence-blocks-style-library__field-token-color-select-toggle {
+		width: 20px;
+		height: 20px;
+		padding: 0;
+		border: 0;
+		gap: 0;
+	}
+
+	.kadence-blocks-style-library__field-token-color-select-label {
+		display: none;
+	}
+
+	// The block editor's `PopColorControl`: drop the base-control wrapper's own margin/padding so
+	// the swatch button it renders (`SinglePopColorControl`, via `.single-pop-color`) is the only
+	// thing that takes up space.
+	.components-base-control.kadence-pop-color-control {
+		margin: 0;
+	}
+
+	.kadence-pop-color-container {
+		gap: 0;
+	}
+
+	.kadence-pop-color-label {
+		display: none;
+	}
+}
+
+/*
+ * The style preview: a 26x20px box with a 16px horizontal rule styled to match the side's current
+ * `border-style` value. The native `<select>` the style picker already is sits on top, sized to
+ * cover the box and invisible — clicking anywhere on the preview opens the same picker, without
+ * building a new one.
+ */
+.kb-border-control__style-preview {
+	position: relative;
+	display: flex;
+	flex: 0 0 auto;
+	align-items: center;
+	justify-content: center;
+	width: 26px;
+	height: 20px;
+	border: 1px solid #dddddd;
+	border-radius: 3px;
+	background: #fff;
+}
+
+.kb-border-control__style-preview-rule {
+	width: 16px;
+	height: 0;
+	border-top: 2px solid #1e1e1e;
+	border-top-style: solid;
+}
+
+.kb-border-control__style-preview-rule--dashed {
+	border-top-style: dashed;
+}
+
+.kb-border-control__style-preview-rule--dotted {
+	border-top-style: dotted;
+}
+
+.kb-border-control__style-preview-rule--double {
+	border-top-style: double;
+	border-top-width: 3px;
+}
+
+// `none` shows no rule at all, rather than a muted line — there is nothing to preview.
+.kb-border-control__style-preview-rule--none {
+	visibility: hidden;
+}
+
+.kb-border-control__style-select.components-base-control {
+	position: absolute;
+	inset: 0;
+	margin: 0;
+
+	.components-base-control__field {
+		margin-bottom: 0;
+		height: 100%;
+	}
+
+	.components-select-control__input {
+		width: 100%;
+		height: 100%;
+		padding: 0;
+		border: 0;
+		opacity: 0;
+		cursor: pointer;
+	}
+}

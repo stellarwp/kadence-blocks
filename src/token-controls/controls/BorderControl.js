@@ -5,14 +5,14 @@
  * Border is not a `BoxControl` the way radius and spacing are — it carries two properties per side
  * (width, style) instead of one, and a third (color) this control deliberately does not touch
  * (color is being reworked separately; see `renderColor`). `SlotGrid` still applies unmodified: its
- * `renderSlot` render-prop was already generic, so this control renders a two-field row per slot
+ * `renderSlot` render-prop was already generic, so this control renders a one-box row per slot
  * instead of `BoxControl`'s single `TokenSelector`.
  *
  * `SlotGrid`'s own `value`/`onChange` props only drive its slot *arrangement* (linked-vs-grid,
  * corner display order, labels) — the `onChange` it would call from inside `renderSlot`'s `onChange`
  * argument is dead here because this `renderSlot` ignores that argument entirely and writes through
- * the `patch` closure instead, since a slot needs to update two parallel arrays (width and style),
- * not the one `SlotGrid` knows how to collapse. That also means `SlotGrid`'s own linked-mode
+ * the `patch` closure instead, since a slot needs to update three parallel axes (width, style, and
+ * color), not the one `SlotGrid` knows how to collapse. That also means `SlotGrid`'s own linked-mode
  * behavior — filling every slot with the written value, or returning a bare scalar when `collapse`
  * is set — never runs; this control has to reproduce "write the scalar directly while linked" itself
  * (`applyToAxis` below), or every write while linked would silently turn a scalar axis into a
@@ -23,6 +23,16 @@
  * screen — only one semantic default exists), so the style field is a plain closed-enum select,
  * not a `TokenSelector`/`TokenPopover` pair. Width reuses `TokenSelector` exactly as radius/spacing
  * do. Color is entirely out of this control's scope — the caller renders it via `renderColor`.
+ *
+ * Each row shares one control box — a 20px color swatch, a style-preview box, then the width
+ * field's label/value — matching Padding/Margin/Radius's row anatomy except for the two pickers up
+ * front. `renderColor` keeps its existing `({ value, onChange, disabled }) => Element` contract;
+ * this control simply calls it once per row (once for the linked row, once per side when unlinked)
+ * with that row's own resolved color scalar instead of the whole axis, the same way it already
+ * reads `width`/`style` per row. A caller's existing `renderColor` — whether it renders a bare
+ * swatch or a small swatch-plus-label field like the Style Library's `TokenColorSelectField` —
+ * already renders something compact enough to sit in that slot once it only ever receives a scalar
+ * (never a four-element list), so no new render-prop was needed.
  */
 
 /**
@@ -55,7 +65,7 @@ const STYLES = [
 ];
 
 /**
- * Write one axis (`width` or `style`) at a slot position, keeping a linked axis a scalar.
+ * Write one axis (`width`, `style`, or `color`) at a slot position, keeping a linked axis a scalar.
  *
  * `writeSlot()` always returns an array unless every slot ends up identical and `collapse` is on —
  * neither fits the linked case here, where `SlotGrid` reports the write as slot index `null` and the
@@ -94,8 +104,10 @@ function applyToAxis(axis, index, next) {
  * @param {?Function} [props.onBreakpointChange]  Breakpoint-change handler.
  * @param {?boolean}  [props.isLinked]            Linked state, when the host controls it.
  * @param {?Function} [props.onToggleLink]        Link-toggle handler; omit to let this own the state.
- * @param {?Function} [props.renderColor]         `({ value, onChange, disabled }) => Element` — the
- *                                                caller's existing color field for `value.color`.
+ * @param {?Function} [props.renderColor]         `({ value, onChange, disabled }) => Element` —
+ *                                                the caller's existing color field for one side's
+ *                                                color. Called once per row with that row's own
+ *                                                resolved scalar (the linked row reads slot 0).
  *                                                Renders nothing when omitted.
  * @param {boolean}   [props.stacked]             Header above a full-width body instead of beside it.
  * @param {boolean}   [props.disabled]            Whether the control is read-only.
@@ -169,6 +181,7 @@ export function BorderControl({
 					const slotIndex = index ?? 0;
 					const widthSlot = readSlot(width, slotIndex);
 					const styleSlot = readSlot(style, slotIndex) || 'none';
+					const colorSlot = readSlot(color, slotIndex);
 					// Linked mode has one field standing for every side, so the generic label is
 					// accurate; unlinked mode names the side so screen readers can tell the four
 					// style selectors apart, matching what the width TokenSelector's icon already
@@ -185,7 +198,32 @@ export function BorderControl({
 								);
 
 					return (
-						<div className="kb-border-control__slot" key={index ?? 'linked'}>
+						<div className="kb-border-control__box" key={index ?? 'linked'}>
+							{renderColor && (
+								<span className="kb-border-control__swatch">
+									{renderColor({
+										value: colorSlot,
+										onChange: (next) =>
+											!disabled && patch({ color: applyToAxis(color, index, next) }),
+										disabled,
+									})}
+								</span>
+							)}
+							<span className="kb-border-control__style-preview">
+								<span
+									className={`kb-border-control__style-preview-rule kb-border-control__style-preview-rule--${styleSlot}`}
+									aria-hidden="true"
+								/>
+								<SelectControl
+									className="kb-border-control__style-select"
+									label={styleLabel}
+									hideLabelFromVision
+									value={styleSlot}
+									options={STYLES}
+									disabled={disabled}
+									onChange={(next) => !disabled && patch({ style: applyToAxis(style, index, next) })}
+								/>
+							</span>
 							<TokenSelector
 								value={widthSlot}
 								icon={slotIcons?.[slotIndex]}
@@ -195,20 +233,10 @@ export function BorderControl({
 								onClear={() => !disabled && patch({ width: applyToAxis(width, index, '') })}
 								onCustom={(next) => !disabled && patch({ width: applyToAxis(width, index, next) })}
 							/>
-							<SelectControl
-								label={styleLabel}
-								hideLabelFromVision
-								value={styleSlot}
-								options={STYLES}
-								disabled={disabled}
-								onChange={(next) => !disabled && patch({ style: applyToAxis(style, index, next) })}
-							/>
 						</div>
 					);
 				}}
 			/>
-			{renderColor &&
-				renderColor({ value: color, onChange: (next) => !disabled && patch({ color: next }), disabled })}
 		</ControlShell>
 	);
 }
