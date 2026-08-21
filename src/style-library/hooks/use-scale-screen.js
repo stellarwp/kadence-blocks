@@ -23,7 +23,14 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { applyOptimisticScaleOverlay, applyRowOrder, scaleInitialValues, scaleRows } from '../helpers/scale';
+import {
+	applyOptimisticScaleOverlay,
+	applyRowOrder,
+	customScaleTokenId,
+	nextScaleSlug,
+	scaleInitialValues,
+	scaleRows,
+} from '../helpers/scale';
 import {
 	addScaleTokenFlow,
 	deleteScaleTokenFlow,
@@ -106,33 +113,71 @@ export function useScaleScreen(config, library, route, navigate) {
 	const clearAddError = useCallback(() => setAddError(null), []);
 	const clearOrderError = useCallback(() => setOrderError(null), []);
 
-	const tokenById = useCallback((id) => baseRows.find((row) => row.id === id) ?? null, [baseRows]);
+	// Reads `rows` (overlay-applied), not `baseRows` — a settings panel opened for a not-yet-
+	// confirmed optimistic addition must find it here, or `ScaleSettings`'s stale-item self-heal
+	// (`if (id && !token) navigate({ item: '' })`) would immediately close the panel that
+	// `addToken`'s `onOptimistic` just opened.
+	const tokenById = useCallback((id) => rows.find((row) => row.id === id) ?? null, [rows]);
 
 	const initialValuesFor = useCallback(
-		(id) => scaleInitialValues(tokenById(id), feed?.values, config.parseValue),
-		[tokenById, feed, config.parseValue]
+		(id) => {
+			// A pending optimistic addition's value lives only on the overlay entry — `feed.values`
+			// has nothing under its id until the write confirms — so it is merged in here rather than
+			// changing `scaleInitialValues`'s own contract (a plain resolved-values map).
+			const pending = overlay.addedTokens.find((entry) => entry.id === id);
+			const values = pending ? { ...feed?.values, [id]: pending.value } : feed?.values;
+
+			return scaleInitialValues(tokenById(id), values, config.parseValue);
+		},
+		[tokenById, feed, overlay.addedTokens, config.parseValue]
 	);
 
-	const addToken = useCallback(() => {
-		setAddError(null);
+	const addToken = useCallback(
+		(onOptimistic) => {
+			setAddError(null);
 
-		return addScaleTokenFlow({
-			groupKey: config.groupKey,
-			tokenType: config.tokenType,
-			slugBase: config.slugBase,
-			label: config.newTokenLabel,
-			value: config.newTokenValue,
-			existingIds: library.tokens.map((token) => token.id),
-			slug: library.slug,
-			feedVersion,
-			refreshFeed: library.refreshFeed,
-			onBusy: setIsBusy,
-			onError: setAddError,
-		}).then((result) => {
-			notifySuccess(__('Token created.', 'kadence-blocks'));
-			return result;
-		});
-	}, [config, library, feedVersion]);
+			const terminalSlug = nextScaleSlug(
+				library.tokens.map((token) => token.id),
+				config.slugBase
+			);
+			const id = customScaleTokenId(config.tokenType, terminalSlug);
+
+			registry.dispatch(STORE_NAME).setOptimisticScaleAddition(library.slug, {
+				id,
+				label: config.newTokenLabel,
+				value: config.newTokenValue,
+				userCreated: true,
+			});
+
+			// Fired synchronously, once the optimistic token is already in the store — the id is
+			// known up front (client-generated, not server-assigned), so the caller can open the new
+			// token's settings panel immediately instead of waiting on the write. `scale.isBusy` is
+			// already true for the whole write below, so the panel opens already showing its buttons
+			// disabled. See `usePalettes`'s `addColor` for the identical pattern.
+			onOptimistic?.(id);
+
+			return addScaleTokenFlow({
+				groupKey: config.groupKey,
+				tokenType: config.tokenType,
+				terminalSlug,
+				label: config.newTokenLabel,
+				value: config.newTokenValue,
+				slug: library.slug,
+				feedVersion,
+				refreshFeed: library.refreshFeed,
+				onBusy: setIsBusy,
+				onError: setAddError,
+			})
+				.then((result) => {
+					notifySuccess(__('Token created.', 'kadence-blocks'));
+					return result;
+				})
+				.finally(() => {
+					registry.dispatch(STORE_NAME).clearOptimisticScaleAddition(library.slug, id);
+				});
+		},
+		[config, library, feedVersion, registry]
+	);
 
 	const saveToken = useCallback(
 		(id, draft, initial) => {

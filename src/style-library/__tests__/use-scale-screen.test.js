@@ -279,6 +279,66 @@ describe('useScaleScreen optimistic save/delete', () => {
 		expect(notify.notifySuccess).toHaveBeenCalledWith('Token created.');
 	});
 
+	it('addToken shows the new row immediately and calls onOptimistic synchronously with its id, while isBusy is already true, before the write settles', async () => {
+		let resolveCreateUserPrimitive;
+		client.createUserPrimitive.mockReturnValueOnce(
+			new Promise((resolve) => {
+				resolveCreateUserPrimitive = resolve;
+			})
+		);
+
+		const probe = mountProbe();
+		await probe.render();
+
+		const onOptimistic = jest.fn();
+		let writePromise;
+		act(() => {
+			writePromise = probe.latest().addToken(onOptimistic);
+		});
+
+		// The optimistic row is present immediately, and `onOptimistic` fired before the write
+		// started settling — a caller can navigate to the new token's settings panel on this same
+		// tick, with `isBusy` already true so the panel opens showing its footer buttons disabled.
+		const newRow = probe.latest().rows.find((row) => row.id === 'primitive.dimension.custom.custom');
+		expect(newRow).toEqual({
+			id: 'primitive.dimension.custom.custom',
+			label: 'New Token',
+			value: '0.5rem',
+			userCreated: true,
+			pendingDelete: false,
+		});
+		expect(onOptimistic).toHaveBeenCalledTimes(1);
+		expect(onOptimistic).toHaveBeenCalledWith('primitive.dimension.custom.custom');
+		expect(probe.latest().isBusy).toBe(true);
+
+		resolveCreateUserPrimitive({ version: 'v2' });
+		await act(async () => writePromise);
+
+		expect(onOptimistic).toHaveBeenCalledTimes(1);
+		expect(notify.notifySuccess).toHaveBeenCalledWith('Token created.');
+	});
+
+	it('addToken removes the optimistic row when the write fails', async () => {
+		client.createUserPrimitive.mockRejectedValueOnce(new Error('Conflict'));
+
+		const probe = mountProbe();
+		await probe.render();
+
+		let writePromise;
+		act(() => {
+			writePromise = probe
+				.latest()
+				.addToken()
+				.catch(() => {});
+		});
+
+		expect(probe.latest().rows.some((row) => row.id === 'primitive.dimension.custom.custom')).toBe(true);
+
+		await act(async () => writePromise);
+
+		expect(probe.latest().rows.some((row) => row.id === 'primitive.dimension.custom.custom')).toBe(false);
+	});
+
 	it('addToken does not notify success when the write fails', async () => {
 		client.createUserPrimitive.mockRejectedValueOnce(new Error('Conflict'));
 

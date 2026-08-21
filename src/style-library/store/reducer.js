@@ -103,6 +103,19 @@ function optimisticScaleEdits(state = {}, action) {
 					deletedTokens: current.deletedTokens.filter((id) => id !== action.tokenId),
 				},
 			};
+		case 'SET_OPTIMISTIC_SCALE_ADDITION':
+			return {
+				...state,
+				[action.slug]: { ...current, addedTokens: [...current.addedTokens, action.entry] },
+			};
+		case 'CLEAR_OPTIMISTIC_SCALE_ADDITION':
+			return {
+				...state,
+				[action.slug]: {
+					...current,
+					addedTokens: current.addedTokens.filter((entry) => entry.id !== action.tokenId),
+				},
+			};
 		default:
 			return state;
 	}

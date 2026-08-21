@@ -218,6 +218,37 @@ export function clearOptimisticScaleDeletion(slug, tokenId) {
 }
 
 /**
+ * Add a not-yet-confirmed scale-type token to the optimistic overlay, so it renders immediately
+ * ahead of its write's response.
+ *
+ * @param {string} slug  Token library slug.
+ * @param {Object} entry `{ id, label, value, userCreated }` — matches `scaleRows()`'s own row
+ *                       shape, so `applyOptimisticScaleOverlay` can append it as-is.
+ *
+ * @since TBD
+ *
+ * @return {Object} The action.
+ */
+export function setOptimisticScaleAddition(slug, entry) {
+	return { type: 'SET_OPTIMISTIC_SCALE_ADDITION', slug, entry };
+}
+
+/**
+ * Clear a pending optimistic scale-token addition — the write's real response has landed (the
+ * store's real feed now carries it), or it failed and the placeholder must be removed.
+ *
+ * @param {string} slug    Token library slug.
+ * @param {string} tokenId The token's canonical dot-path id to remove.
+ *
+ * @since TBD
+ *
+ * @return {Object} The action.
+ */
+export function clearOptimisticScaleAddition(slug, tokenId) {
+	return { type: 'CLEAR_OPTIMISTIC_SCALE_ADDITION', slug, tokenId };
+}
+
+/**
  * Set whether a library has a write in flight — shared across every sibling `usePalettes` instance
  * so a write started in one instance is visible (and disables controls) in the other.
  *

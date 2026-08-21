@@ -31,10 +31,9 @@ describe('addScaleTokenFlow', () => {
 		const result = await addScaleTokenFlow({
 			groupKey: 'radius',
 			tokenType: 'dimension',
-			slugBase: 'radius',
+			terminalSlug: 'radius-2',
 			label: 'New Radius',
 			value: '0.5rem',
-			existingIds: ['primitive.dimension.custom.radius'],
 			slug: 'default',
 			feedVersion: 'v1',
 			refreshFeed,
@@ -67,10 +66,9 @@ describe('addScaleTokenFlow', () => {
 			addScaleTokenFlow({
 				groupKey: 'radius',
 				tokenType: 'dimension',
-				slugBase: 'radius',
+				terminalSlug: 'radius',
 				label: 'New Radius',
 				value: '0.5rem',
-				existingIds: [],
 				slug: 'default',
 				feedVersion: 'v1',
 				refreshFeed,

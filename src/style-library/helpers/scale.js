@@ -75,9 +75,10 @@ export function applyRowOrder(rows, orderedIds) {
 
 /**
  * Overlay pending optimistic edits onto a scale screen's rows: a deleted token stays present,
- * flagged `pendingDelete: true` (never filtered out, so the caller can render it dimmed), and a
- * patched token has its `label`/`value` merged in. Pure — mirrors `helpers/palettes.js`'s
- * `applyOptimisticOverlay`.
+ * flagged `pendingDelete: true` (never filtered out, so the caller can render it dimmed), a
+ * patched token has its `label`/`value` merged in, and a not-yet-confirmed added token is appended
+ * — already in the real `rows` shape (`{ id, label, value, userCreated }`), so it needs no
+ * remapping. Pure — mirrors `helpers/palettes.js`'s `applyOptimisticOverlay`.
  *
  * @param {Array<Object>} rows    The screen's rows (`scaleRows()`'s output).
  * @param {Object}        overlay The optimistic overlay for this slug — see `store/constants.js`'s
@@ -89,15 +90,30 @@ export function applyRowOrder(rows, orderedIds) {
  *                          `rows` reference unchanged when nothing is pending.
  */
 export function applyOptimisticScaleOverlay(rows, overlay) {
-	if (Object.keys(overlay.patches).length === 0 && overlay.deletedTokens.length === 0) {
+	if (
+		Object.keys(overlay.patches).length === 0 &&
+		overlay.deletedTokens.length === 0 &&
+		overlay.addedTokens.length === 0
+	) {
 		return rows;
 	}
 
-	return rows.map((row) => ({
+	// A token the real feed already carries (the write's `refreshFeed` landed) must not also be
+	// appended from the overlay — the overlay is only cleared in the caller's `.finally()`, well
+	// after the refresh, so without this de-dupe the row renders twice for that window.
+	const realIds = new Set(rows.map((row) => row.id));
+
+	const patched = rows.map((row) => ({
 		...row,
 		...(overlay.patches[row.id] ?? {}),
 		pendingDelete: overlay.deletedTokens.includes(row.id),
 	}));
+
+	const additions = overlay.addedTokens
+		.filter((entry) => !realIds.has(entry.id))
+		.map((entry) => ({ ...entry, pendingDelete: false }));
+
+	return [...patched, ...additions];
 }
 
 /**
