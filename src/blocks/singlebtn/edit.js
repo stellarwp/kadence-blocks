@@ -45,7 +45,7 @@ import {
 	Tooltip,
 } from '@kadence/components';
 import classnames from 'classnames';
-import { times, filter, map, uniqueId, get } from 'lodash';
+import { times, filter, map, uniqueId, get, upperFirst } from 'lodash';
 
 import metadata from './block.json';
 /**
@@ -114,14 +114,35 @@ const BORDER_COLOR_SIDE_LABELS = ['Top', 'Right', 'Bottom', 'Left'];
  * @param {Object}   props          The render-prop's argument.
  * @param {*}        props.value    The current color scalar or four-element slot list.
  * @param {Function} props.onChange Called with the next color scalar or slot list.
+ * @param {?string}  [props.label]  The row's own bare side name (e.g. "top"), or `null` while
+ *                                  linked, from `BorderControl`'s per-row `renderColor` call. Built
+ *                                  into the same "%s Border Color" wording the old array branch
+ *                                  below used, so unlinked mode's four swatches — one per row now
+ *                                  instead of stacked in one cluster — keep distinct names.
  *
  * @since TBD
  *
  * @return {JSX.Element} The rendered color field(s).
  */
-function renderBorderColor({ value, onChange }) {
+function renderBorderColor({ value, onChange, label }) {
 	if (!isSlotList(value)) {
-		return <PopColorControl value={value || ''} default={''} hideClear={true} onChange={onChange} />;
+		return (
+			<PopColorControl
+				swatchLabel={
+					label
+						? sprintf(
+								/* translators: %s: border side (Top, Right, Bottom, Left) */
+								__('%s Border Color', 'kadence-blocks'),
+								upperFirst(label)
+							)
+						: undefined
+				}
+				value={value || ''}
+				default={''}
+				hideClear={true}
+				onChange={onChange}
+			/>
+		);
 	}
 
 	return (

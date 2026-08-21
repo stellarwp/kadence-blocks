@@ -26,8 +26,9 @@
  *
  * Each row shares one control box — a 20px color swatch, a style-preview box, then the width
  * field's label/value — matching Padding/Margin/Radius's row anatomy except for the two pickers up
- * front. `renderColor` keeps its existing `({ value, onChange, disabled }) => Element` contract;
- * this control simply calls it once per row (once for the linked row, once per side when unlinked)
+ * front. `renderColor` keeps its existing `({ value, onChange, label, disabled }) => Element`
+ * contract; this control simply calls it once per row (once for the linked row, once per side
+ * when unlinked)
  * with that row's own resolved color scalar instead of the whole axis, the same way it already
  * reads `width`/`style` per row. A caller's existing `renderColor` — whether it renders a bare
  * swatch or a small swatch-plus-label field like the Style Library's `TokenColorSelectField` —
@@ -104,11 +105,15 @@ function applyToAxis(axis, index, next) {
  * @param {?Function} [props.onBreakpointChange]  Breakpoint-change handler.
  * @param {?boolean}  [props.isLinked]            Linked state, when the host controls it.
  * @param {?Function} [props.onToggleLink]        Link-toggle handler; omit to let this own the state.
- * @param {?Function} [props.renderColor]         `({ value, onChange, disabled }) => Element` —
- *                                                the caller's existing color field for one side's
- *                                                color. Called once per row with that row's own
- *                                                resolved scalar (the linked row reads slot 0).
- *                                                Renders nothing when omitted.
+ * @param {?Function} [props.renderColor]         `({ value, onChange, label, disabled }) =>
+ *                                                Element` — the caller's existing color field for
+ *                                                one side's color. Called once per row with that
+ *                                                row's own resolved scalar (the linked row reads
+ *                                                slot 0) and that row's bare side name as `label`
+ *                                                (`null` while linked) so an unlinked caller can
+ *                                                give each of the four swatches a distinct
+ *                                                accessible name; ignoring `label` is fine. Renders
+ *                                                nothing when omitted.
  * @param {boolean}   [props.stacked]             Header above a full-width body instead of beside it.
  * @param {boolean}   [props.disabled]            Whether the control is read-only.
  *
@@ -152,7 +157,11 @@ export function BorderControl({
 
 				// Relinking reads slot 0 of each axis — "the first side wins" is predictable, matching
 				// BoxControl's own relink rule. It does not require the four slots to already match.
-				patch({ width: readSlot(width, 0), style: readSlot(style, 0) });
+				// `color` folds the same way even though this control never promotes it to a list itself
+				// (`toSlotList` above only touches width/style) — a caller's `renderColor` can still widen
+				// it into one through `applyToAxis`, and leaving it unfolded here would relink the visible
+				// width/style fields while `color` stayed a stale four-element list underneath.
+				patch({ width: readSlot(width, 0), style: readSlot(style, 0), color: readSlot(color, 0) });
 			};
 
 	return (
@@ -205,6 +214,13 @@ export function BorderControl({
 										value: colorSlot,
 										onChange: (next) =>
 											!disabled && patch({ color: applyToAxis(color, index, next) }),
+										// The bare side name (e.g. "top"), or `null` while linked -- additive, so a
+										// caller ignoring it keeps its own default name. Passed unformatted (unlike
+										// `styleLabel` below) because each caller already has its own established
+										// wording for naming a color field (`singlebtn/edit.js`'s "%s Border Color",
+										// `BorderField.js`'s plain field name) and composing a sentence here would
+										// fight both.
+										label: index === null ? null : slotLabel,
 										disabled,
 									})}
 								</span>

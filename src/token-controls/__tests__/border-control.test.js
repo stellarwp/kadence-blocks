@@ -269,12 +269,12 @@ describe('BorderControl link toggle (uncontrolled)', () => {
 	});
 
 	/**
-	 * Toggling while unlinked collapses both axes back to slot 0's value, and does not touch
-	 * color, even when the four slots differ.
+	 * Toggling while unlinked collapses all three axes back to slot 0's value — a scalar color
+	 * folds to itself, a no-op.
 	 *
 	 * @return {void}
 	 */
-	it('collapses width and style to slot 0 when toggled while unlinked', () => {
+	it('collapses width, style, and color to slot 0 when toggled while unlinked', () => {
 		const onChange = jest.fn();
 		renderControl({
 			value: {
@@ -291,6 +291,33 @@ describe('BorderControl link toggle (uncontrolled)', () => {
 			width: 'a',
 			style: 'solid',
 			color: 'semantic.color.border',
+		});
+	});
+
+	/**
+	 * A `color` axis a caller's `renderColor` widened into a four-slot list (via `applyToAxis`,
+	 * exactly as `width`/`style` already can be) folds back to slot 0 on relink too, rather than
+	 * staying a stale four-element list underneath a linked view that only ever reads slot 0.
+	 *
+	 * @return {void}
+	 */
+	it('folds a list-shaped color to slot 0 when toggled while unlinked', () => {
+		const onChange = jest.fn();
+		renderControl({
+			value: {
+				width: ['a', 'b', 'c', 'd'],
+				style: ['solid', 'dashed', 'dotted', 'double'],
+				color: ['red', 'green', 'blue', 'yellow'],
+			},
+			onChange,
+		});
+
+		click(linkToggle());
+
+		expect(onChange).toHaveBeenCalledWith({
+			width: 'a',
+			style: 'solid',
+			color: 'red',
 		});
 	});
 });
@@ -471,6 +498,7 @@ describe('BorderControl row anatomy', () => {
 		expect(container.querySelectorAll('.kb-border-control__box')).toHaveLength(4);
 		expect(container.querySelectorAll('.kb-border-control__swatch')).toHaveLength(4);
 		expect(container.querySelectorAll('.kb-border-control__style-preview')).toHaveLength(4);
+		expect(container.querySelectorAll('.kb-border-control__box .stub-token-selector')).toHaveLength(4);
 	});
 
 	/**
@@ -535,6 +563,34 @@ describe('BorderControl row anatomy', () => {
 			style: 'solid',
 			color: ['semantic.color.border', 'semantic.color.border', 'semantic.color.accent', 'semantic.color.border'],
 		});
+	});
+
+	/**
+	 * `renderColor` receives the row's own bare side name as `label`, `null` while linked — so an
+	 * unlinked caller can give each of the four swatches its own accessible name, the way the width
+	 * field's per-slot icon and the style select's own `styleLabel` already do.
+	 *
+	 * @return {void}
+	 */
+	it('passes the row side name as label, null while linked', () => {
+		const receivedLinked = [];
+		renderControl({
+			renderColor: (props) => {
+				receivedLinked.push(props.label);
+				return null;
+			},
+		});
+		expect(receivedLinked).toEqual([null]);
+
+		const receivedUnlinked = [];
+		renderControl({
+			value: { width: ['a', 'b', 'c', 'd'], style: 'solid', color: '' },
+			renderColor: (props) => {
+				receivedUnlinked.push(props.label);
+				return null;
+			},
+		});
+		expect(receivedUnlinked).toEqual(['top', 'right', 'bottom', 'left']);
 	});
 });
 

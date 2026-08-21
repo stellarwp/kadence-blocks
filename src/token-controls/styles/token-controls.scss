@@ -742,6 +742,15 @@
 	.kadence-pop-color-label {
 		display: none;
 	}
+
+	// `@kadence/components`' `SinglePopColorControl` draws its own swatch button
+	// (`.kadence-pop-color-indicate`, `pop-color-control/editor.scss`) at a fixed 28x28 — 8px bigger
+	// than this slot — so it has to be forced down to 20x20 rather than just having its wrapper's
+	// chrome stripped like the rules above.
+	.kadence-pop-color-indicate {
+		width: 20px;
+		height: 20px;
+	}
 }
 
 /*
@@ -761,13 +770,21 @@
 	border: 1px solid #dddddd;
 	border-radius: 3px;
 	background: #fff;
+
+	// The real `<select>` inside is kept at `opacity: 0` (see `.kb-border-control__style-select`
+	// below) rather than replaced with a fake trigger, so keyboard focus lands on it invisibly.
+	// `:focus-within` gives the box itself the outline the trigger would otherwise show, matching
+	// the width trigger's own `:focus-visible` a few pixels away in the same row.
+	&:focus-within {
+		outline: 2px solid #3858e9;
+		outline-offset: 1px;
+	}
 }
 
 .kb-border-control__style-preview-rule {
 	width: 16px;
 	height: 0;
 	border-top: 2px solid #1e1e1e;
-	border-top-style: solid;
 }
 
 .kb-border-control__style-preview-rule--dashed {

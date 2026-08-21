@@ -39,6 +39,11 @@
  */
 
 /**
+ * External dependencies
+ */
+import { upperFirst } from 'lodash';
+
+/**
  * WordPress dependencies
  */
 import { useState } from '@wordpress/element';
@@ -225,17 +230,24 @@ export function BorderField({ field, values, onValueChange }) {
 	// `BoxTokenField`'s `unlinked` is: a choice made on one breakpoint must not leak into another that
 	// never made it, keeping the breakpoints independent.
 	const [unlinked, setUnlinked] = useState({});
-	const storedIsList = isSlotList(widthAtBreakpoint) || isSlotList(styleAtBreakpoint);
+	// `color` can now diverge per side too (`BorderControl` writes it through the same per-slot axis
+	// width/style already use), so a list-shaped color has to force the unlinked view exactly like a
+	// list-shaped width/style does — otherwise the panel would show one linked swatch while the
+	// stored value still carries four different colors.
+	const storedIsList = isSlotList(widthAtBreakpoint) || isSlotList(styleAtBreakpoint) || isSlotList(rawColor);
 	const linked = storedIsList ? false : !unlinked[breakpoint];
 
 	const toggleLink = () => {
 		setUnlinked((current) => ({ ...current, [breakpoint]: linked }));
 
 		// Relinking keeps each axis's first side, matching `BoxTokenField`'s own relink rule; there is
-		// nothing to fold when a breakpoint never actually diverged into a list.
+		// nothing to fold when a breakpoint never actually diverged into a list. `color` folds
+		// alongside width/style — `readSlot` on an already-scalar color is a no-op, so this is safe to
+		// call unconditionally once any axis diverged.
 		if (!linked && storedIsList) {
 			writeWidth(readSlot(widthAtBreakpoint, 0));
 			writeStyle(readSlot(styleAtBreakpoint, 0));
+			writeColor(readSlot(rawColor, 0));
 		}
 	};
 
@@ -257,9 +269,17 @@ export function BorderField({ field, values, onValueChange }) {
 			}}
 			label={field.label}
 			widthTokens={widthTokens}
-			renderColor={({ value: color, onChange: onColorChange }) => (
+			renderColor={({ value: color, onChange: onColorChange, label: sideLabel }) => (
 				<TokenColorSelectField
-					field={{ label: __('Color', 'kadence-blocks'), readOnly: field.readOnly }}
+					// `sideLabel` is the row's bare side name ("top", "right", …), or `null` while linked.
+					// Capitalized and used as the field's own name so unlinked mode's four swatches — one
+					// per row now instead of sharing the linked "Color" name — read as distinct fields to
+					// a screen reader, matching `styleLabel`'s per-side naming a few lines up in
+					// `BorderControl`.
+					field={{
+						label: sideLabel ? upperFirst(sideLabel) : __('Color', 'kadence-blocks'),
+						readOnly: field.readOnly,
+					}}
 					value={color}
 					onChange={onColorChange}
 				/>
