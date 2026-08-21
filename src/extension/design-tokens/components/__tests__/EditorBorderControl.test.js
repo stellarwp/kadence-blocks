@@ -227,25 +227,47 @@ describe('EditorBorderControl native <-> control value bridging', () => {
 
 	/**
 	 * `renderColor` is passed straight through to `BorderControl` untouched — this component neither
-	 * builds nor intercepts it. `BorderControl` calls it once with the whole color slot list it read
-	 * out of `fromNativeBorder`'s output, so the caller's `renderColor` sees the same per-side colors
-	 * this component derived from the native value.
+	 * builds nor intercepts it. `BorderControl` calls it once per row (not once with the whole color
+	 * slot list) with that row's own scalar color and its bare side name as `label`, so the caller's
+	 * `renderColor` sees the same per-side colors this component derived from the native value, one
+	 * side at a time.
 	 *
 	 * @return {void}
 	 */
-	it('passes renderColor straight through to BorderControl, called with the derived color slots', () => {
+	it("passes renderColor straight through to BorderControl, called once per row with that row's own color and side label", () => {
 		const renderColor = jest.fn();
 		const { borderControl } = renderEditorBorderControl({ renderColor });
 
 		expect(borderControl.props.renderColor).toBe(renderColor);
 
-		// Reproduce what BorderControl itself does: call renderColor with the color slot list from
-		// the value this component built, not a value renderColor computed on its own.
-		borderControl.props.renderColor({ value: borderControl.props.value.color, onChange: jest.fn() });
+		// Reproduce what BorderControl itself does per row (see BorderControl.js's `renderSlot`): call
+		// renderColor once per side with that side's own scalar out of the color slot list this
+		// component built, plus the bare side name as `label`, rather than one call with the whole
+		// four-element list.
+		const colors = borderControl.props.value.color;
+		['top', 'right', 'bottom', 'left'].forEach((side, index) => {
+			borderControl.props.renderColor({ value: colors[index], onChange: jest.fn(), label: side });
+		});
 
-		expect(renderColor).toHaveBeenCalledWith({
-			value: ['#111111', '#222222', '#333333', '#444444'],
+		expect(renderColor).toHaveBeenNthCalledWith(1, {
+			value: '#111111',
 			onChange: expect.any(Function),
+			label: 'top',
+		});
+		expect(renderColor).toHaveBeenNthCalledWith(2, {
+			value: '#222222',
+			onChange: expect.any(Function),
+			label: 'right',
+		});
+		expect(renderColor).toHaveBeenNthCalledWith(3, {
+			value: '#333333',
+			onChange: expect.any(Function),
+			label: 'bottom',
+		});
+		expect(renderColor).toHaveBeenNthCalledWith(4, {
+			value: '#444444',
+			onChange: expect.any(Function),
+			label: 'left',
 		});
 	});
 
