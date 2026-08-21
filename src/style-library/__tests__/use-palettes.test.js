@@ -561,6 +561,90 @@ describe('usePalettes', () => {
 		expect(notify.notifySuccess).not.toHaveBeenCalled();
 	});
 
+	it('addColor shows the new swatch immediately and flags its group as adding, before the write resolves', async () => {
+		client.fetchPalettes.mockResolvedValueOnce(listingRows());
+
+		let resolveCreateUserPrimitive;
+		client.createUserPrimitive.mockReturnValueOnce(
+			new Promise((resolve) => {
+				resolveCreateUserPrimitive = resolve;
+			})
+		);
+
+		const probe = mountProbe();
+		await probe.render();
+
+		let writePromise;
+		act(() => {
+			writePromise = probe.latest().addColor('accent');
+		});
+
+		// The optimistic swatch is present immediately, with the group's last color's value and no
+		// duplicate.
+		const swatches = probe.latest().palette.groups[0].swatches;
+		expect(swatches).toHaveLength(3);
+		expect(swatches[2]).toMatchObject({
+			token: 'primitive.color.custom.custom-1',
+			label: 'New Color',
+			$value: '#222222',
+		});
+		expect(probe.latest().addingGroupIds).toEqual(['accent']);
+
+		client.fetchPalette.mockResolvedValueOnce(defaultView());
+		const addedRows = listingRows({
+			defaultView: () => ({
+				...defaultView(),
+				groups: [
+					{
+						...defaultView().groups[0],
+						swatches: [
+							...defaultView().groups[0].swatches,
+							{ token: 'primitive.color.custom.custom-1', label: 'New Color', $value: '#222222' },
+						],
+					},
+				],
+			}),
+		});
+		client.savePalette.mockResolvedValueOnce(addedRows);
+		resolveCreateUserPrimitive({ id: 'primitive.color.custom.custom-1', version: 'v2' });
+
+		await act(async () => writePromise);
+
+		// The real (confirmed) listing's swatch is what remains — same token, no duplicate.
+		const settledSwatches = probe.latest().palette.groups[0].swatches;
+		expect(settledSwatches).toHaveLength(3);
+		expect(settledSwatches.filter((swatch) => swatch.token === 'primitive.color.custom.custom-1')).toHaveLength(1);
+		expect(probe.latest().addingGroupIds).toEqual([]);
+		expect(notify.notifySuccess).toHaveBeenCalledWith('Color added.');
+		expect(notify.notifyError).not.toHaveBeenCalled();
+	});
+
+	it('addColor removes the optimistic swatch and clears addingGroupIds when the write fails', async () => {
+		client.fetchPalettes.mockResolvedValueOnce(listingRows());
+		client.createUserPrimitive.mockRejectedValueOnce(new Error('Conflict'));
+
+		const probe = mountProbe();
+		await probe.render();
+
+		let writePromise;
+		act(() => {
+			writePromise = probe
+				.latest()
+				.addColor('accent')
+				.catch(() => {});
+		});
+
+		expect(probe.latest().palette.groups[0].swatches).toHaveLength(3);
+		expect(probe.latest().addingGroupIds).toEqual(['accent']);
+
+		await act(async () => writePromise);
+
+		expect(probe.latest().palette.groups[0].swatches).toHaveLength(2);
+		expect(probe.latest().addingGroupIds).toEqual([]);
+		expect(notify.notifyError).toHaveBeenCalledWith('Conflict');
+		expect(notify.notifySuccess).not.toHaveBeenCalled();
+	});
+
 	it('reorderSwatches applies the new order optimistically, then keeps it once the write resolves', async () => {
 		client.fetchPalettes.mockResolvedValueOnce(listingRows());
 		client.fetchPalette.mockResolvedValueOnce(defaultView());

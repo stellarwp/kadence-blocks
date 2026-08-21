@@ -11,7 +11,10 @@ import { __ } from '@wordpress/i18n';
 import { errorMessage } from '../helpers/library-flows';
 import {
 	applyOptimisticOverlay,
+	customColorTokenId,
 	isCustomColorToken,
+	newSwatchValue,
+	nextCustomColorSlug,
 	reorderGroupSwatches,
 	resolveEditingPaletteId,
 } from '../helpers/palettes';
@@ -80,8 +83,9 @@ import { EMPTY_LISTING, EMPTY_OPTIMISTIC_SWATCH_EDIT, paletteListingKey } from '
  *                  clearOpenError, clearActivateError, clearCreateError, clearRenameError,
  *                  clearDeleteError, clearStructureError,
  *                  openPalette, activatePalette, createPalette, renamePalette, deletePalette,
- *                  saveSwatchEdits, removeSwatch, addColor, addGroup, reorderSwatches,
- *                  renameGroup, removeGroup }`.
+ *                  saveSwatchEdits, removeSwatch, addColor, addingGroupIds, addGroup,
+ *                  reorderSwatches, renameGroup, removeGroup }`. `addingGroupIds` is an
+ *                  `Array<string>` of group ids with an add-color currently in flight.
  */
 export function usePalettes(feed, refreshFeed, route, navigate) {
 	const [isBusy, setIsBusy] = useState(false);
@@ -91,6 +95,7 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 	const [renameError, setRenameError] = useState(null);
 	const [deleteError, setDeleteError] = useState(null);
 	const [structureError, setStructureError] = useState(null);
+	const [addingGroupIds, setAddingGroupIds] = useState([]);
 
 	const namespace = feed?.rest?.namespace;
 	const slug = feed?.slug;
@@ -382,22 +387,52 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 
 	const addColor = useCallback(
 		(groupId) => {
-			setStructureError(null);
+			const colorSlug = nextCustomColorSlug(existingTokenIds);
+			const value = newSwatchValue(palette?.groups, groupId);
+			const label = __('New Color', 'kadence-blocks');
+			const token = customColorTokenId(colorSlug);
+
+			setAddingGroupIds((ids) => [...ids, groupId]);
+
+			if (namespace && slug) {
+				// `$value`, not `value` — matches the field name every real swatch object carries; see
+				// `setOptimisticSwatchPatch`'s docblock (Task 1) for why this matters.
+				registry.dispatch(STORE_NAME).setOptimisticAddition(paletteListingKey(namespace, slug), 'swatch', {
+					groupId,
+					token,
+					label,
+					$value: value,
+				});
+			}
+
 			return addColorFlow({
 				namespace,
 				slug,
 				defaultId: listing.defaultId,
 				groupId,
-				tokens: existingTokenIds,
-				palette,
+				colorSlug,
+				value,
+				label,
 				feedVersion: feed?.version,
 				onReceive,
 				refreshFeed,
 				onBusy: setIsBusy,
-				onError: setStructureError,
-			});
+				onError: (err) => notifyError(err.message),
+			})
+				.then((newToken) => {
+					notifySuccess(__('Color added.', 'kadence-blocks'));
+					return newToken;
+				})
+				.finally(() => {
+					setAddingGroupIds((ids) => ids.filter((id) => id !== groupId));
+					if (namespace && slug) {
+						registry
+							.dispatch(STORE_NAME)
+							.clearOptimisticAddition(paletteListingKey(namespace, slug), 'swatch', token);
+					}
+				});
 		},
-		[namespace, slug, listing.defaultId, existingTokenIds, palette, feed?.version, onReceive, refreshFeed]
+		[namespace, slug, listing.defaultId, existingTokenIds, palette, feed?.version, onReceive, refreshFeed, registry]
 	);
 
 	const addGroup = useCallback(
@@ -537,6 +572,7 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 		saveSwatchEdits,
 		removeSwatch,
 		addColor,
+		addingGroupIds,
 		addGroup,
 		reorderSwatches,
 		renameGroup,

@@ -287,10 +287,11 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 							palettes
 								.addColor(groupId)
 								.then((newToken) => navigate({ item: newToken }))
-								// Swallowed: a failure already lands in `structureError`, rendered above.
+								// Swallowed: a failure already surfaces as a toast via `notifyError`.
 								.catch(() => {})
 						}
 						addLabel={__('Add color', 'kadence-blocks')}
+						addingGroupIds={palettes.addingGroupIds}
 						groupActions={(group) => (
 							<DropdownMenu
 								icon={moreVertical}

@@ -34,6 +34,9 @@ import './SwatchGrid.scss';
  *                                          heading's actions slot (e.g. an overflow menu); the
  *                                          grid stays agnostic about what the actions are, the
  *                                          same division of labor as `SwatchCard`'s `preview`.
+ * @param {Array<string>}  [props.addingGroupIds] Group ids with an add-color currently in flight —
+ *                                          disables just that group's own add tile, not every
+ *                                          group's.
  *
  * @since TBD
  *
@@ -47,6 +50,7 @@ export function SwatchGrid({
 	onAdd,
 	addLabel,
 	groupActions = null,
+	addingGroupIds = [],
 }) {
 	return (
 		<div className="kadence-blocks-style-library__swatch-grid">
@@ -60,6 +64,7 @@ export function SwatchGrid({
 					onAdd={onAdd}
 					addLabel={addLabel}
 					groupActions={groupActions}
+					isAdding={addingGroupIds.includes(group.id)}
 				/>
 			))}
 		</div>
@@ -80,12 +85,14 @@ export function SwatchGrid({
  * @param {string}        props.addLabel   The add-tile label.
  * @param {Function}      [props.groupActions] Called with `group`, returning the heading's
  *                                         actions slot node.
+ * @param {boolean}       [props.isAdding] Whether THIS group's add-color is currently in flight —
+ *                                         disables just its own add tile.
  *
  * @since TBD
  *
  * @return {JSX.Element} The group.
  */
-function SwatchGridGroup({ group, selectedId, onSelect, onReorder, onAdd, addLabel, groupActions }) {
+function SwatchGridGroup({ group, selectedId, onSelect, onReorder, onAdd, addLabel, groupActions, isAdding }) {
 	const ids = group.items.map((item) => item.id);
 	const { contextProps, sortableContextProps, useSortableItem, activeId } = useReorderableList({
 		ids,
@@ -108,7 +115,7 @@ function SwatchGridGroup({ group, selectedId, onSelect, onReorder, onAdd, addLab
 								useSortableItem={useSortableItem}
 							/>
 						))}
-						<AddTile label={addLabel} onClick={() => onAdd(group.id)} />
+						<AddTile label={addLabel} onClick={() => onAdd(group.id)} disabled={isAdding} />
 					</div>
 				</SortableContext>
 				{/* The floating copy that actually follows the pointer/keyboard focus — see the matching
