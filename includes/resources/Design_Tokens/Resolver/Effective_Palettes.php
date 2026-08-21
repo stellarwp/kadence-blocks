@@ -305,9 +305,14 @@ final class Effective_Palettes {
 	 * The shipped baseline `$default` palette flattened to a `{ token => $value }` map — the colors the
 	 * plugin ships, independent of any stored library.
 	 *
-	 * This is the authoritative answer to "is this swatch part of the shipped palette?", which no other
-	 * seam can give: {@see Baseline_Document::has()} indexes only the primitive/semantic token layers and
+	 * Both halves are load-bearing. Its KEYS are the permanent swatch set, whose rows a palette write may
+	 * never drop; its VALUES are what a delete reverts one of those swatches to. No other seam can answer
+	 * either question: {@see Baseline_Document::has()} indexes only the primitive/semantic token layers and
 	 * deliberately skips "$extensions", so it never sees a palette swatch at all.
+	 *
+	 * Returned whole rather than behind a per-token predicate because every caller needs the values too,
+	 * or walks the whole set — and the flatten re-walks the baseline document, so a predicate would redo it
+	 * once per swatch.
 	 *
 	 * @since TBD
 	 *
@@ -317,20 +322,6 @@ final class Effective_Palettes {
 		$section = $this->palettes_of( $this->baseline->document() );
 
 		return $this->swatch_values_of( $section, $this->pointer_of( $section, Extensions::get_default_key() ) );
-	}
-
-	/**
-	 * Whether a token is a swatch the shipped baseline palette defines — the permanent set, whose rows a
-	 * palette write may never drop and whose values a delete reverts rather than removes.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $token The swatch token dot-path.
-	 *
-	 * @return bool
-	 */
-	public function is_baseline_swatch( string $token ): bool {
-		return array_key_exists( $token, $this->baseline_swatch_values() );
 	}
 
 	/**

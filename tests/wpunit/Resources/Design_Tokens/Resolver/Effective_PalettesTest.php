@@ -3,7 +3,6 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Resolver;
 
-use Generator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Palettes;
 use Tests\Support\Classes\TestCase;
@@ -234,7 +233,8 @@ final class Effective_PalettesTest extends TestCase {
 	}
 
 	/**
-	 * The baseline swatch values expose the shipped colors regardless of what a library has stored over them.
+	 * The baseline swatch values expose the shipped colors regardless of what a library has stored over them —
+	 * a palette edited away from the baseline, or one with the swatch removed outright, does not move them.
 	 *
 	 * @return void
 	 */
@@ -252,44 +252,21 @@ final class Effective_PalettesTest extends TestCase {
 	}
 
 	/**
-	 * A token counts as a baseline swatch only when the shipped default palette actually lists it — being a
-	 * registered color token is not enough.
-	 *
-	 * @dataProvider baselineSwatchProvider
-	 *
-	 * @param string $token    The token dot-path.
-	 * @param bool   $expected Whether the shipped palette defines a swatch for it.
+	 * The key set is the shipped palette's SWATCHES, not the registered color tokens: a color the registry
+	 * knows but the shipped palette lists no swatch for is absent, which is what keeps such a swatch
+	 * deletable rather than permanent.
 	 *
 	 * @return void
 	 */
-	public function testIsBaselineSwatchIdentifiesTheShippedSwatches( string $token, bool $expected ): void {
-		$this->assertSame( $expected, $this->palettes->is_baseline_swatch( $token ) );
-	}
+	public function testBaselineSwatchValuesCoversOnlyTheShippedSwatches(): void {
+		$baseline = $this->palettes->baseline_swatch_values();
 
-	/**
-	 * @return Generator
-	 */
-	public function baselineSwatchProvider(): Generator {
-		yield 'shipped brand swatch' => [
-			'token'    => 'primitive.color.brand.button',
-			'expected' => true,
-		];
+		$this->assertArrayHasKey( 'primitive.color.brand.button', $baseline );
+		$this->assertArrayHasKey( 'primitive.color.neutral.0', $baseline );
 
-		yield 'shipped neutral swatch' => [
-			'token'    => 'primitive.color.neutral.0',
-			'expected' => true,
-		];
-
-		// Registered and projected, but the shipped palette lists no swatch for it.
-		yield 'registered token with no swatch' => [
-			'token'    => 'primitive.color.neutral.600',
-			'expected' => false,
-		];
-
-		yield 'unknown token' => [
-			'token'    => 'primitive.color.custom.abc123',
-			'expected' => false,
-		];
+		// Registered and projected into a palette slot, but the shipped palette lists no swatch for it.
+		$this->assertArrayNotHasKey( 'primitive.color.neutral.600', $baseline );
+		$this->assertArrayNotHasKey( 'primitive.color.custom.abc123', $baseline );
 	}
 
 	/**
