@@ -35,9 +35,10 @@ const FALLBACK_SWATCH_VALUE = '#000000';
  *
  * @since TBD
  *
- * @return {Array<Object>} `[{ id, label, items: [{ id, name, subLine, value, overridden }] }]` —
+ * @return {Array<Object>} `[{ id, label, items: [{ id, name, subLine, value, overridden, baseline }] }]` —
  *         `id` is the swatch token dot-path (stable, unique per palette, and what `?kb-item=`
- *         carries), `subLine` the raw `$value`.
+ *         carries), `subLine` the raw `$value`, `baseline` whether the shipped palette defines the
+ *         swatch (a permanent row).
  */
 export function mapPaletteToSwatchGroups(palette) {
 	if (!palette || !Array.isArray(palette.groups)) {
@@ -53,8 +54,26 @@ export function mapPaletteToSwatchGroups(palette) {
 			subLine: swatch.$value,
 			value: swatch.$value,
 			overridden: Boolean(swatch.overridden),
+			// Fails CLOSED, like `helpers/token-capabilities`: a view that predates the flag reads as
+			// baseline, so a permanent row is never offered a delete it cannot honor.
+			baseline: swatch.baseline !== false,
 		})),
 	}));
+}
+
+/**
+ * Whether every swatch in a group is user-added, which is what makes the whole group removable: a
+ * group delete takes its swatches out of every palette, and a swatch the shipped palette defines has
+ * a permanent row the server refuses to drop.
+ *
+ * @param {Object} group A `mapPaletteToSwatchGroups()` group, `{ id, label, items }`.
+ *
+ * @since TBD
+ *
+ * @return {boolean} True when the group carries no baseline swatch.
+ */
+export function isDeletableGroup(group) {
+	return (group?.items ?? []).every((item) => item.baseline === false);
 }
 
 /**
@@ -232,9 +251,10 @@ export function isDuplicatePaletteLabel(label, listing, excludeId) {
 }
 
 /**
- * Strip the view-only `overridden` flag from every swatch, producing write-payload groups. The
- * effective view is read-only data annotated for display; a write payload sends only what the
- * palette node itself stores.
+ * Strip the view-only flags (`overridden`, `baseline`) from every swatch, producing write-payload
+ * groups. The effective view is read-only data annotated for display; a write payload sends only
+ * what the palette node itself stores. Written as a whitelist rather than a delete list, so a flag
+ * the server adds later is dropped here without this needing to know about it.
  *
  * @param {Array<Object>} groups The effective view's `groups` array.
  *

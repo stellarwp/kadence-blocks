@@ -6,6 +6,7 @@ import {
 	userPrimitiveRenamePath,
 	palettesPath,
 	palettePath,
+	paletteSwatchPath,
 	paletteCurrentPath,
 	documentsPath,
 	libraryTitlePath,
@@ -38,6 +39,20 @@ describe('palette paths', () => {
 	it('URL-encodes the palette id and library', () => {
 		expect(palettePath('kb-design-tokens/v1', 'my id', 'my set')).toBe(
 			'/kb-design-tokens/v1/palettes/my%20id?library=my%20set'
+		);
+	});
+
+	it('builds a single swatch path from the palette id and token dot-path', () => {
+		expect(paletteSwatchPath('kb-design-tokens/v1', 'dark', 'primitive.color.brand.button', 'default')).toBe(
+			'/kb-design-tokens/v1/palettes/dark/swatches/primitive.color.brand.button?library=default'
+		);
+	});
+
+	it('leaves a token dot-path readable while still encoding the id and library', () => {
+		// encodeURIComponent leaves dots and hyphens alone, which is what keeps the route's own
+		// `[\w.-]+` token capture able to match what the client sends.
+		expect(paletteSwatchPath('kb-design-tokens/v1', 'my id', 'primitive.color.brand.button-hover', 'my set')).toBe(
+			'/kb-design-tokens/v1/palettes/my%20id/swatches/primitive.color.brand.button-hover?library=my%20set'
 		);
 	});
 });

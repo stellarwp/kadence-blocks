@@ -11,6 +11,7 @@ import {
 	renameGroupFlow,
 	renamePaletteFlow,
 	reorderSwatchesFlow,
+	resetSwatchFlow,
 	saveSwatchEditsFlow,
 	writeDefaultPaletteFlow,
 } from '../helpers/palette-flows';
@@ -24,6 +25,7 @@ import * as client from '../api/client';
 jest.mock('../api/client', () => ({
 	createUserPrimitive: jest.fn(),
 	deletePalette: jest.fn(),
+	deleteSwatch: jest.fn(),
 	deleteUserPrimitive: jest.fn(),
 	fetchPalette: jest.fn(),
 	savePalette: jest.fn(),
@@ -827,6 +829,65 @@ describe('renamePaletteFlow', () => {
 
 		expect(onError).toHaveBeenCalledWith({ message: failure.message });
 		expect(onBusy).toHaveBeenLastCalledWith(false);
+	});
+});
+
+describe('resetSwatchFlow', () => {
+	const baseArgs = (overrides) => ({
+		namespace: NAMESPACE,
+		slug: SLUG,
+		editingId: 'ocean',
+		token: 'primitive.color.brand.primary',
+		reload: jest.fn().mockResolvedValue(undefined),
+		refreshFeed: jest.fn().mockResolvedValue({ version: 'v3' }),
+		onBusy: jest.fn(),
+		onError: jest.fn(),
+		...overrides,
+	});
+
+	beforeEach(() => {
+		client.deleteSwatch.mockResolvedValue({});
+	});
+
+	it('reverts the swatch on the palette being EDITED, not the default node', async () => {
+		await resetSwatchFlow(baseArgs());
+
+		expect(client.deleteSwatch).toHaveBeenCalledWith(NAMESPACE, 'ocean', 'primitive.color.brand.primary', SLUG);
+	});
+
+	it('writes no palette structure — a reset changes one palette value, nothing shared', async () => {
+		await resetSwatchFlow(baseArgs());
+
+		expect(client.savePalette).not.toHaveBeenCalled();
+		expect(client.fetchPalette).not.toHaveBeenCalled();
+	});
+
+	it('never deletes the underlying primitive — a baseline swatch keeps its row', async () => {
+		await resetSwatchFlow(baseArgs());
+
+		expect(client.deleteUserPrimitive).not.toHaveBeenCalled();
+	});
+
+	it('reloads and refreshes the feed, since the response carries the listing rather than the view', async () => {
+		const flowArgs = baseArgs();
+
+		await resetSwatchFlow(flowArgs);
+
+		expect(flowArgs.reload).toHaveBeenCalled();
+		expect(flowArgs.refreshFeed).toHaveBeenCalledWith(SLUG);
+		expect(flowArgs.onBusy).toHaveBeenNthCalledWith(1, true);
+		expect(flowArgs.onBusy).toHaveBeenLastCalledWith(false);
+	});
+
+	it('reports and re-throws a failed revert', async () => {
+		client.deleteSwatch.mockRejectedValue({ message: 'nope' });
+		const flowArgs = baseArgs();
+
+		await expect(resetSwatchFlow(flowArgs)).rejects.toBeDefined();
+
+		expect(flowArgs.onError).toHaveBeenCalledWith({ message: 'nope' });
+		expect(flowArgs.onBusy).toHaveBeenLastCalledWith(false);
+		expect(flowArgs.reload).not.toHaveBeenCalled();
 	});
 });
 

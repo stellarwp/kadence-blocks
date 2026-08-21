@@ -19,6 +19,26 @@ import { closeSmall } from '@wordpress/icons';
 import './SettingsPanel.scss';
 
 /**
+ * The footer's destructive-button label, in each of its four states. Kept out of the JSX so the
+ * resting and in-flight wording stay side by side, and so every string is a whole `__()` call the
+ * translator sees intact.
+ *
+ * @param {boolean} isReset    Whether the action undoes a value rather than removing the item.
+ * @param {boolean} isDeleting Whether the action is in flight.
+ *
+ * @since TBD
+ *
+ * @return {string} The button label.
+ */
+function destructiveLabel(isReset, isDeleting) {
+	if (isReset) {
+		return isDeleting ? __('Resetting…', 'kadence-blocks') : __('Reset', 'kadence-blocks');
+	}
+
+	return isDeleting ? __('Deleting…', 'kadence-blocks') : __('Delete', 'kadence-blocks');
+}
+
+/**
  * Render the settings panel.
  *
  * @param {Object}         props               The component props.
@@ -32,6 +52,12 @@ import './SettingsPanel.scss';
  * @param {JSX.Element}    props.children       The field area content (typically a `SettingsForm`).
  * @param {?Function}      [props.onDelete]     Footer Delete handler; null hides the button (a non-deletable item).
  * @param {?Function}      [props.onSave]       Footer Save handler; null hides the button.
+ * @param {boolean}        [props.isReset]      Labels the destructive button Reset rather than Delete, for an item
+ *                                                whose row is permanent and whose action only undoes a value.
+ *                                                Optional, defaults to false.
+ * @param {boolean}        [props.isDeleteDisabled] Disables the destructive button on its own — for a Reset with
+ *                                                nothing to undo. Optional, defaults to false; `isBusy` still
+ *                                                disables both buttons regardless.
  * @param {boolean}        [props.isDirty]      Enables Save when true.
  * @param {boolean}        [props.isBusy]       Disables both footer buttons while a write is in flight. Optional,
  *                                                defaults to false, so callers that never pass it are unaffected.
@@ -54,6 +80,8 @@ export function SettingsPanel({
 	children,
 	onDelete = null,
 	onSave = null,
+	isReset = false,
+	isDeleteDisabled = false,
 	isDirty = false,
 	isBusy = false,
 	isSaving = false,
@@ -91,8 +119,15 @@ export function SettingsPanel({
 			)}
 			<div className="kadence-blocks-style-library__settings-panel-footer">
 				{onDelete && (
-					<Button variant="secondary" isDestructive isBusy={isDeleting} disabled={isBusy} onClick={onDelete}>
-						{isDeleting ? __('Deleting…', 'kadence-blocks') : __('Delete', 'kadence-blocks')}
+					<Button
+						variant="secondary"
+						// A Reset only undoes a value, so it is not destructive the way removing a row is.
+						isDestructive={!isReset}
+						isBusy={isDeleting}
+						disabled={isBusy || isDeleteDisabled}
+						onClick={onDelete}
+					>
+						{destructiveLabel(isReset, isDeleting)}
 					</Button>
 				)}
 				{onSave && (

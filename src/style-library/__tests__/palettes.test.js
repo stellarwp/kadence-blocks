@@ -6,6 +6,7 @@ import {
 	findSwatch,
 	isCustomColorToken,
 	isDefaultPalette,
+	isDeletableGroup,
 	isDuplicatePaletteLabel,
 	isUserCreatedPalette,
 	mapPaletteToSwatchGroups,
@@ -32,15 +33,33 @@ const effectivePalette = () => ({
 			id: 'accent',
 			label: 'Accent',
 			swatches: [
-				{ token: 'primitive.color.brand.primary', label: 'Main 1', $value: '#112233', overridden: false },
-				{ token: 'primitive.color.brand.secondary', label: 'Main 2', $value: '#445566', overridden: true },
+				{
+					token: 'primitive.color.brand.primary',
+					label: 'Main 1',
+					$value: '#112233',
+					overridden: false,
+					baseline: true,
+				},
+				{
+					token: 'primitive.color.brand.secondary',
+					label: 'Main 2',
+					$value: '#445566',
+					overridden: true,
+					baseline: true,
+				},
 			],
 		},
 		{
 			id: 'contrast',
 			label: 'Contrast',
 			swatches: [
-				{ token: 'primitive.color.neutral.100', label: 'Neutral 100', $value: '#ffffff', overridden: false },
+				{
+					token: 'primitive.color.neutral.100',
+					label: 'Neutral 100',
+					$value: '#ffffff',
+					overridden: false,
+					baseline: true,
+				},
 			],
 		},
 	],
@@ -61,6 +80,7 @@ describe('mapPaletteToSwatchGroups', () => {
 						subLine: '#112233',
 						value: '#112233',
 						overridden: false,
+						baseline: true,
 					},
 					{
 						id: 'primitive.color.brand.secondary',
@@ -68,6 +88,7 @@ describe('mapPaletteToSwatchGroups', () => {
 						subLine: '#445566',
 						value: '#445566',
 						overridden: true,
+						baseline: true,
 					},
 				],
 			},
@@ -81,10 +102,30 @@ describe('mapPaletteToSwatchGroups', () => {
 						subLine: '#ffffff',
 						value: '#ffffff',
 						overridden: false,
+						baseline: true,
 					},
 				],
 			},
 		]);
+	});
+
+	it('carries the baseline flag through, failing closed when the view omits it', () => {
+		const [group] = mapPaletteToSwatchGroups({
+			groups: [
+				{
+					id: 'accent',
+					label: 'Accent',
+					swatches: [
+						{ token: 'primitive.color.custom.a1b2c3', label: 'Brand', $value: '#111', baseline: false },
+						// A view that predates the flag: treated as baseline, never as removable.
+						{ token: 'primitive.color.brand.primary', label: 'Main 1', $value: '#222' },
+					],
+				},
+			],
+		});
+
+		expect(group.items[0].baseline).toBe(false);
+		expect(group.items[1].baseline).toBe(true);
 	});
 
 	it('uses the token as the item id and carries overridden through', () => {
@@ -107,6 +148,7 @@ describe('findSwatch', () => {
 			label: 'Neutral 100',
 			$value: '#ffffff',
 			overridden: false,
+			baseline: true,
 		});
 		expect(findSwatch(effectivePalette(), 'primitive.color.missing')).toBeNull();
 	});
@@ -198,7 +240,7 @@ describe('slugifyPaletteLabel / isDuplicatePaletteLabel', () => {
 });
 
 describe('stripEffectiveFlags', () => {
-	it('removes overridden and nothing else, immutably', () => {
+	it('removes the view-only flags and nothing else, immutably', () => {
 		const groups = effectivePalette().groups;
 		const stripped = stripEffectiveFlags(groups);
 
@@ -491,5 +533,30 @@ describe('isUserCreatedPalette', () => {
 		expect(isUserCreatedPalette({}, 'ocean')).toBe(false);
 		expect(isUserCreatedPalette(undefined, 'ocean')).toBe(false);
 		expect(isUserCreatedPalette(listing, '')).toBe(false);
+	});
+});
+
+describe('isDeletableGroup', () => {
+	const item = (id, baseline) => ({ id, baseline });
+
+	it('reports a group of only user-added swatches as deletable', () => {
+		expect(isDeletableGroup({ items: [item('primitive.color.custom.a1', false)] })).toBe(true);
+	});
+
+	it('refuses a group carrying any baseline swatch', () => {
+		expect(
+			isDeletableGroup({
+				items: [item('primitive.color.custom.a1', false), item('primitive.color.brand.button', true)],
+			})
+		).toBe(false);
+	});
+
+	it('fails closed on a group whose items carry no signal', () => {
+		expect(isDeletableGroup({ items: [{ id: 'primitive.color.brand.button' }] })).toBe(false);
+	});
+
+	it('treats an empty or absent group as deletable, leaving the caller its own guards', () => {
+		expect(isDeletableGroup({ items: [] })).toBe(true);
+		expect(isDeletableGroup(undefined)).toBe(true);
 	});
 });

@@ -8,7 +8,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from '@wordpress/el
  */
 import { fetchPalette, fetchPalettes } from '../api/client';
 import { errorMessage } from '../helpers/library-flows';
-import { isCustomColorToken, reorderGroupSwatches, resolveEditingPaletteId } from '../helpers/palettes';
+import { findSwatch, isCustomColorToken, reorderGroupSwatches, resolveEditingPaletteId } from '../helpers/palettes';
 import {
 	activatePaletteFlow,
 	addColorFlow,
@@ -20,6 +20,7 @@ import {
 	renameGroupFlow,
 	renamePaletteFlow,
 	reorderSwatchesFlow,
+	resetSwatchFlow,
 	saveSwatchEditsFlow,
 } from '../helpers/palette-flows';
 import { flattenSchemaTokens } from '../helpers/tokens';
@@ -68,8 +69,8 @@ import { flattenSchemaTokens } from '../helpers/tokens';
  *                  clearOpenError, clearActivateError, clearCreateError, clearRenameError,
  *                  clearDeleteError, clearSaveError, clearStructureError,
  *                  openPalette, activatePalette, createPalette, renamePalette, deletePalette,
- *                  saveSwatchEdits, removeSwatch, addColor, addGroup, reorderSwatches,
- *                  renameGroup, removeGroup }`.
+ *                  saveSwatchEdits, isBaselineSwatch, removeSwatch, addColor, addGroup,
+ *                  reorderSwatches, renameGroup, removeGroup }`.
  */
 export function usePalettes(feed, refreshFeed, route, navigate) {
 	const [listing, setListing] = useState({ defaultId: '', currentId: '', palettes: [], userCreated: [] });
@@ -299,9 +300,31 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 		[namespace, slug, listing, editingId, reload, refreshFeed]
 	);
 
+	// Whether a swatch is one the shipped palette defines, read from the server's own per-swatch flag
+	// on the effective view rather than re-derived from the token id. Fails CLOSED the same way
+	// `helpers/token-capabilities` does: a swatch the view does not carry counts as baseline, so an
+	// unrecognized row is offered a reset rather than a delete that cannot be undone.
+	const isBaselineSwatch = useCallback((token) => findSwatch(palette, token)?.baseline !== false, [palette]);
+
 	const removeSwatch = useCallback(
 		(token) => {
 			setSaveError(null);
+
+			// A swatch the shipped palette defines is permanent — the server refuses a default-palette
+			// write that drops one — so the destructive action on it RESETS its value instead, scoped to
+			// the palette on screen. Only a user-added swatch's row actually goes away.
+			if (isBaselineSwatch(token)) {
+				return resetSwatchFlow({
+					namespace,
+					slug,
+					editingId,
+					token,
+					reload,
+					refreshFeed,
+					onBusy: setIsBusy,
+					onError: setSaveError,
+				});
+			}
 
 			// Trust the feed's own `userCreated` flag when the token has a feed entry (defense in
 			// depth against a token id that merely looks custom-prefixed); fall back to the prefix
@@ -321,7 +344,7 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 				onError: setSaveError,
 			});
 		},
-		[namespace, slug, listing, feedTokens, reload, refreshFeed]
+		[namespace, slug, listing, editingId, isBaselineSwatch, feedTokens, reload, refreshFeed]
 	);
 
 	const addColor = useCallback(
@@ -467,6 +490,7 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 		renamePalette,
 		deletePalette: removePalette,
 		saveSwatchEdits,
+		isBaselineSwatch,
 		removeSwatch,
 		addColor,
 		addGroup,

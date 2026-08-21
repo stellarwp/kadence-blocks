@@ -1,7 +1,7 @@
 /**
  * Pure orchestration for the Color Palette screen's write flows: open, activate, create, rename,
- * delete, the settings-panel save (swatch rename + recolor), swatch removal, add color, add color
- * group, and within-group reorder. Extracted out of `hooks/use-palettes` so each flow can be
+ * delete, the settings-panel save (swatch rename + recolor), swatch reset and removal, add color,
+ * add color group, and within-group reorder. Extracted out of `hooks/use-palettes` so each flow can be
  * exercised directly in tests without rendering a component — a flow takes the REST calls it needs
  * (imported here, so a test mocks `api/client`) plus a small set of injected callbacks for the
  * state a caller reacts to (busy, a scoped error slot, and a `reload`/`refreshFeed` pair the hook
@@ -10,8 +10,9 @@
  *
  * `writeDefaultPaletteFlow` is the single place the default-vs-edited write routing (a palette's
  * structure lives only on its `$default` node — see the module's own docblock below) is encoded.
- * Every structural flow in this file funnels through it; only `saveSwatchEditsFlow`'s color half
- * ever writes the palette being edited.
+ * Every structural flow in this file funnels through it; only `saveSwatchEditsFlow`'s color half and
+ * `resetSwatchFlow` ever write the palette being edited — both because they change one palette's
+ * VALUE for a swatch, which is exactly the thing that is not shared structure.
  *
  * The central distinction here mirrors `library-flows.js`: the palette a site *renders with*
  * (`$current`) versus the palette the app is *editing*. Opening is free and reversible — it only
@@ -33,6 +34,7 @@ import { __ } from '@wordpress/i18n';
 import {
 	createUserPrimitive,
 	deletePalette,
+	deleteSwatch,
 	deleteUserPrimitive,
 	fetchPalette,
 	savePalette,
@@ -592,6 +594,53 @@ export function reorderSwatchesFlow({
 		onBusy,
 		onError,
 	});
+}
+
+/**
+ * Reset a swatch the shipped baseline defines: undo the palette's own value for it and keep the row.
+ *
+ * The one flow here that targets `editingId` rather than `defaultId`, and deliberately so — that
+ * single difference is what scopes the undo to the palette on screen. On the default palette the
+ * server restores the shipped color; on any other palette it drops the delta so the swatch inherits
+ * the default palette again, leaving both the default palette and every sibling untouched. Routing
+ * this through the default node instead (the way a structural edit has to) would undo the color for
+ * every palette at once.
+ *
+ * A baseline swatch's row is permanent — the server refuses a default-palette write that drops one —
+ * so there is no primitive to clean up afterwards and no second step. `removeSwatchFlow` is the
+ * counterpart for a user-added swatch, whose row genuinely goes away.
+ *
+ * The server answers with the palette LISTING rather than the palette view, so the `reload` is what
+ * puts the reverted color on screen.
+ *
+ * @param {Object}   args
+ * @param {string}   args.namespace   The REST namespace.
+ * @param {string}   args.slug        The token library slug.
+ * @param {string}   args.editingId   The palette id currently open for editing.
+ * @param {string}   args.token       The swatch token dot-path to reset.
+ * @param {Function} args.reload      Re-reads the listing (and the edited view) from the hook.
+ * @param {Function} args.refreshFeed Replaces the feed for a slug, so its version token matches the
+ *                                    document this write just bumped.
+ * @param {Function} args.onBusy      Called with a boolean as the chain starts and settles.
+ * @param {Function} args.onError     Called with `{ message }` on failure.
+ *
+ * @since TBD
+ *
+ * @return {Promise<void>} Resolves once the revert, the reload, and the feed refresh complete;
+ *                          rejects on failure after `onError`/`onBusy` have run.
+ */
+export function resetSwatchFlow({ namespace, slug, editingId, token, reload, refreshFeed, onBusy, onError }) {
+	onBusy(true);
+
+	return deleteSwatch(namespace, editingId, token, slug)
+		.then(() => reload())
+		.then(() => refreshFeed(slug))
+		.then(() => onBusy(false))
+		.catch((err) => {
+			onError({ message: errorMessage(err) });
+			onBusy(false);
+			throw err;
+		});
 }
 
 /**

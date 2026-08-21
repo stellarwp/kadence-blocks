@@ -1,8 +1,14 @@
 /**
  * The Color Palette screen's settings panel: edits one swatch — its display name (a structure edit
  * written to the default palette) and its color (a granular value write on the palette being
- * edited) — and deletes it (also a structure edit, with a best-effort token cleanup after). Mounted
- * by the app when a swatch token is the open route item; see `ColorPaletteScreen.SettingsPanel`.
+ * edited) — and offers the matching undo. Mounted by the app when a swatch token is the open route
+ * item; see `ColorPaletteScreen.SettingsPanel`.
+ *
+ * The undo is Reset or Delete depending on where the swatch came from, mirroring the split
+ * `ColorPaletteScreen` already makes at palette scope. A swatch the shipped palette defines has a
+ * permanent row, so its action only undoes this palette's value for it; a user-added swatch has no
+ * shipped value behind it, so its row is removed outright (a structure edit, with a best-effort
+ * token cleanup after).
  */
 
 /**
@@ -76,6 +82,8 @@ export function ColorPaletteSettings({ route, navigate, library }) {
 		return null;
 	}
 
+	const isBaseline = palettes.isBaselineSwatch(token);
+
 	// Deliberately does NOT call `panel.resetDraft()` on success. `resetDraft` closes over
 	// `initialValues` from the render it was created in — by the time this promise resolves, that
 	// closure is the PRE-save values, so calling it would silently revert the panel to what the
@@ -91,14 +99,26 @@ export function ColorPaletteSettings({ route, navigate, library }) {
 		<SettingsPanel
 			onClose={panel.close}
 			onSave={onSave}
-			// Renders for every swatch: what Delete removes is a palette row (user-editable document
-			// data), not the token — `removeSwatch` decides internally whether the underlying token
-			// is user-created and only then best-effort cleans it up (settled decision 8).
+			// Renders for every swatch, but means two different things. For a swatch the shipped palette
+			// defines it is a RESET — the row is permanent, and the action only undoes this palette's
+			// value for it (to the shipped color on the default palette, to inherited elsewhere) — so it
+			// is offered only when there is something to undo. For a user-added swatch it is the DELETE
+			// of a palette row (user-editable document data, not the token); `removeSwatch` routes
+			// between the two and, for a delete, decides internally whether the underlying token is
+			// user-created and only then best-effort cleans it up (settled decision 8).
+			isReset={isBaseline}
+			isDeleteDisabled={isBaseline && !swatch.overridden}
 			onDelete={() =>
 				palettes
 					.removeSwatch(token)
-					.then(() => navigate({ item: '' }))
-					// Swallowed: a row-removal write failure already lands in `saveError`, rendered above.
+					// A reset keeps the row, so the panel stays open on it; only a delete leaves nothing
+					// behind to show.
+					.then(() => {
+						if (!isBaseline) {
+							navigate({ item: '' });
+						}
+					})
+					// Swallowed: the write failure already lands in `saveError`, rendered above.
 					.catch(() => {})
 			}
 			isDirty={panel.isDirty}

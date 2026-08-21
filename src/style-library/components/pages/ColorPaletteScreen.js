@@ -31,6 +31,7 @@ import { RenameColorGroupModal } from '../organisms/RenameColorGroupModal';
 import { DeleteColorGroupModal } from '../organisms/DeleteColorGroupModal';
 import { usePalettes } from '../../hooks/use-palettes';
 import {
+	isDeletableGroup,
 	isUserCreatedPalette,
 	mapPaletteToSwatchGroups,
 	paletteDisplayLabel,
@@ -235,10 +236,12 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 											{__('Rename', 'kadence-blocks')}
 										</MenuItem>
 										{/* Absence, not a disabled item, when only one group remains — the server
-										 * rejects an empty `groups` array (`guard_palette_shape()`), and this
-										 * screen's ethos throughout is to hide an affordance it cannot honor rather
-										 * than disable it. */}
-										{gridGroups.length > 1 && (
+										 * rejects an empty `groups` array (`guard_palette_shape()`) — or when the
+										 * group carries a swatch the shipped palette defines, whose row the server
+										 * refuses to drop (`guard_baseline_swatches()`). This screen's ethos
+										 * throughout is to hide an affordance it cannot honor rather than disable
+										 * it. */}
+										{gridGroups.length > 1 && isDeletableGroup(group) && (
 											<MenuItem
 												isDestructive
 												onClick={() => {
