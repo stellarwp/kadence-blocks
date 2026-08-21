@@ -206,6 +206,38 @@ describe('BoxShadowControl trigger', () => {
 
 		expect(trigger().querySelector('.kadence-token-field__value').textContent).toBe('2px 2px 4px 0px #000000');
 	});
+
+	/**
+	 * An inset composite's value reads the literal lowercase `inset` CSS keyword, matching
+	 * `shadowCss()`'s own convention, rather than a translated UI word mixed into an otherwise
+	 * verbatim CSS string.
+	 *
+	 * @return {void}
+	 */
+	it('prefixes the shorthand with the literal "inset" keyword when the composite is inset', () => {
+		renderControl({
+			value: { color: '#000000', offsetX: '2px', offsetY: '2px', blur: '4px', spread: '0px', inset: true },
+		});
+
+		expect(trigger().querySelector('.kadence-token-field__value').textContent).toBe(
+			'inset 2px 2px 4px 0px #000000'
+		);
+	});
+
+	/**
+	 * An unset value (the field's actual starting state before a token or a custom shadow is chosen)
+	 * renders an empty trigger — no label, no fabricated all-zero shorthand — matching every other
+	 * control's unset-slot behavior and `fieldSummary()`'s own unset branch.
+	 *
+	 * @return {void}
+	 */
+	it('renders an empty trigger when the value is unset', () => {
+		renderControl({ value: '' });
+
+		expect(trigger().querySelector('.kadence-token-field__label')).toBeNull();
+		expect(trigger().querySelector('.kadence-token-field__value')).toBeNull();
+		expect(trigger().textContent).toBe('');
+	});
 });
 
 describe('BoxShadowControl row anatomy', () => {

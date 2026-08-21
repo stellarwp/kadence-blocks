@@ -36,7 +36,7 @@ import { __ } from '@wordpress/i18n';
  */
 import { ControlShell } from '../templates/ControlShell';
 import { TokenPopover } from '../molecules/TokenPopover';
-import { fieldSummary, isTokenAlias } from '../helpers/token-summary';
+import { fieldSummary, hasValue, isTokenAlias } from '../helpers/token-summary';
 import '../styles/token-controls.scss';
 
 /**
@@ -79,7 +79,9 @@ function commitShadow(shadow, patch) {
 
 /**
  * Render a composite shadow's `box-shadow` CSS shorthand for the trigger's value text, matching the
- * dimension order `Css_Renderer` emits.
+ * dimension order and literal `inset` keyword `Css_Renderer`/`shadowCss()` emit — the value span is
+ * otherwise verbatim CSS (units, hex, rgba), so this stays untranslated rather than mixing in a UI
+ * word.
  *
  * @param {Object} shadow The composite shadow value, defaults already filled.
  *
@@ -90,7 +92,7 @@ function commitShadow(shadow, patch) {
 function shadowShorthand(shadow) {
 	const shorthand = `${shadow.offsetX} ${shadow.offsetY} ${shadow.blur} ${shadow.spread} ${shadow.color}`;
 
-	return shadow.inset === true ? `${__('Inset', 'kadence-blocks')} ${shorthand}` : shorthand;
+	return shadow.inset === true ? `inset ${shorthand}` : shorthand;
 }
 
 /**
@@ -153,16 +155,20 @@ export function BoxShadowControl({ value, onChange, label, tokens = [], renderCo
 	const aliased = isTokenAlias(value);
 	const shadow = { ...DEFAULT_SHADOW, ...(aliased || !value ? {} : value) };
 	// Aliased reads the bound token's label/value split exactly as `TokenSelector`'s own trigger does;
-	// a composite has no token entry to look up, so it reads "Custom" plus its own resolved shorthand
-	// instead of `fieldSummary()`'s literal-plus-unit shape, which does not fit an object value.
+	// an unset slot reads as empty, matching `fieldSummary()`'s own unset branch and `TokenSelector`'s
+	// resulting empty trigger, rather than fabricating a value for a field that holds nothing; only a
+	// genuine composite reads "Custom" plus its own resolved shorthand, which `fieldSummary()`'s
+	// literal-plus-unit shape does not fit (it is built for scalars, not an object value).
 	const summary = aliased
 		? fieldSummary(value, tokens, '', __('Custom', 'kadence-blocks'))
-		: { label: __('Custom', 'kadence-blocks'), value: shadowShorthand(shadow) };
+		: !hasValue(value)
+			? { label: '', value: '' }
+			: { label: __('Custom', 'kadence-blocks'), value: shadowShorthand(shadow) };
 
 	return (
 		<ControlShell label={label} disabled={disabled}>
 			<div className="kb-token-control__row">
-				<div className="kadence-token-field kb-box-shadow-control">
+				<div className="kadence-token-field">
 					<Dropdown
 						className="kadence-token-field__dropdown"
 						contentClassName="kadence-token-field__popover"
