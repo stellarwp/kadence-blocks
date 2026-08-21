@@ -21,6 +21,7 @@ import {
 } from '@wordpress/components';
 import { globe, settings, undo } from '@wordpress/icons';
 import { __ } from '@wordpress/i18n';
+import { useState } from '@wordpress/element';
 
 /**
  * Internal dependencies
@@ -46,9 +47,13 @@ import { hasValue, isTokenAlias } from '../helpers/token-summary';
  *                                      Defaults to `true`; a shadow's resolved value is a long CSS
  *                                      shorthand that reads awkwardly next to its label the way a
  *                                      short dimension value does, so `BoxShadowControl` opts out.
- * @param {?Function} [props.renderPreview] `({ value, tokens }) => Element`, rendered above `Reset`
- *                                      when supplied. Omit for no preview — every consumer that
- *                                      does not pass it renders exactly as before.
+ * @param {?Function} [props.renderPreview] `({ value, tokens, hoveredEntry }) => Element`, rendered
+ *                                      above `Reset` when supplied. Omit for no preview — every
+ *                                      consumer that does not pass it renders exactly as before.
+ *                                      `hoveredEntry` is `null` while nothing in the list carries
+ *                                      hover/focus (the preview should fall back to `value`),
+ *                                      `{ kind: 'reset' }` while the `Reset` row does, or
+ *                                      `{ kind: 'token', entry }` while a token row does.
  *
  * @since TBD
  *
@@ -69,10 +74,17 @@ function StyleLibraryTab({
 	const hasOverride = isTokenAlias(value) || (value !== '' && value !== undefined && value !== null);
 	// While unset, the size matching the inherited default reads as the active row.
 	const onDefault = !hasOverride && !!defaultValue;
+	// Which row currently carries hover or keyboard focus, so `renderPreview` (today, only the shadow
+	// field's live preview square) can show that option instead of the bound value. This state is
+	// cheap to keep even for consumers that never pass `renderPreview` — nothing reads it then.
+	const [hoveredEntry, setHoveredEntry] = useState(null);
+	const clearHover = () => setHoveredEntry(null);
 
 	return (
 		<div className="kadence-token-field__list">
-			{renderPreview && <div className="kadence-token-field__preview">{renderPreview({ value, tokens })}</div>}
+			{renderPreview && (
+				<div className="kadence-token-field__preview">{renderPreview({ value, tokens, hoveredEntry })}</div>
+			)}
 			<Button
 				className="kadence-token-field__reset"
 				disabled={!hasOverride}
@@ -80,6 +92,10 @@ function StyleLibraryTab({
 					onClear();
 					onClose();
 				}}
+				onMouseEnter={() => setHoveredEntry({ kind: 'reset' })}
+				onMouseLeave={clearHover}
+				onFocus={() => setHoveredEntry({ kind: 'reset' })}
+				onBlur={clearHover}
 			>
 				<span className="kadence-token-field__reset-label">{__('Reset', 'kadence-blocks')}</span>
 				<Icon className="kadence-token-field__reset-icon" icon={undo} size={20} />
@@ -95,6 +111,10 @@ function StyleLibraryTab({
 							onPick(entry.alias);
 							onClose();
 						}}
+						onMouseEnter={() => setHoveredEntry({ kind: 'token', entry })}
+						onMouseLeave={clearHover}
+						onFocus={() => setHoveredEntry({ kind: 'token', entry })}
+						onBlur={clearHover}
 					>
 						<span className="kadence-token-field__item-label">{entry.label}</span>
 						{isDefault && (
@@ -187,12 +207,14 @@ export function CustomTab({ number, unit, units, onUnit, min, max, step, onNumbe
  * @param {boolean}  [props.showValue]      Whether each Style Library row shows its resolved value
  *                                          beside its label. Defaults to `true`; additive only, so
  *                                          every existing consumer keeps showing values.
- * @param {?Function} [props.renderPreview] `({ value, tokens }) => Element`, rendered above the
- *                                          Style Library tab's `Reset` button when supplied — a
- *                                          shadow field's live preview square, for example. Omit
- *                                          for no preview; additive only, so every existing
- *                                          `TokenPopover` consumer that does not pass it is
- *                                          unaffected.
+ * @param {?Function} [props.renderPreview] `({ value, tokens, hoveredEntry }) => Element`, rendered
+ *                                          above the Style Library tab's `Reset` button when
+ *                                          supplied — a shadow field's live preview square, for
+ *                                          example, that tracks whichever row is hovered/focused
+ *                                          via `hoveredEntry` and falls back to `value` while
+ *                                          `hoveredEntry` is `null`. Omit for no preview; additive
+ *                                          only, so every existing `TokenPopover` consumer that
+ *                                          does not pass it is unaffected.
  *
  * @since TBD
  *

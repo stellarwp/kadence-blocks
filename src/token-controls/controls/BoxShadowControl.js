@@ -24,7 +24,9 @@
  *
  * The Style Library tab shows a live preview square above `Reset`, via `TokenPopover`'s optional
  * `renderPreview` prop — additive there, so every other `TokenPopover` consumer that does not pass
- * it renders unchanged. Only this control opts in for now, per explicit scope.
+ * it renders unchanged. Only this control opts in for now, per explicit scope. The square tracks
+ * whichever row is currently hovered or keyboard-focused (`resolveHoverPreviewCss()`), falling back
+ * to the bound value's own shadow (`resolvePreviewCss()`) once hover/focus leaves the list.
  *
  * The trigger itself is icon-plus-label only, never a value — a leading glyph (the `@wordpress/icons`
  * package's own `shadow` artwork, which draws as a sun) followed by the bound token's label or bare
@@ -125,6 +127,30 @@ function resolvePreviewCss(value, tokens, shadow) {
 	const shorthand = `${shadow.offsetX} ${shadow.offsetY} ${shadow.blur} ${shadow.spread} ${shadow.color}`;
 
 	return shadow.inset === true ? `inset ${shorthand}` : shorthand;
+}
+
+/**
+ * Resolve the preview square's `box-shadow` CSS for a given hover/focus state: whichever token row
+ * the pointer or keyboard focus currently sits on, the "Reset" row's cleared state (this control has
+ * no inherited default to fall back to, so cleared reads as shadow-less), or — while nothing is
+ * hovered/focused — the bound slot's own resolved shadow via `resolvePreviewCss()`.
+ *
+ * @param {?Object} hoveredEntry The `TokenPopover` hover/focus state: `null`, `{ kind: 'reset' }`, or
+ *                                `{ kind: 'token', entry }`.
+ * @param {*}       value        The current slot value, used when nothing is hovered/focused.
+ * @param {Array}   tokens       The pickable-token list, used when nothing is hovered/focused.
+ * @param {Object}  shadow       The composite value with defaults already filled.
+ *
+ * @since TBD
+ *
+ * @return {string} The resolved `box-shadow` CSS, or '' for a shadow-less preview.
+ */
+function resolveHoverPreviewCss(hoveredEntry, value, tokens, shadow) {
+	if (!hoveredEntry) {
+		return resolvePreviewCss(value, tokens, shadow);
+	}
+
+	return hoveredEntry.kind === 'token' ? hoveredEntry.entry.value : '';
 }
 
 /**
@@ -249,11 +275,17 @@ export function BoxShadowControl({ value, onChange, label, tokens = [], renderCo
 								onClear={() => !disabled && onChange('')}
 								onClose={onClose}
 								showValue={false}
-								renderPreview={({ value: previewValue, tokens: previewTokens }) => (
+								renderPreview={({ value: previewValue, tokens: previewTokens, hoveredEntry }) => (
 									<div
 										className="kb-box-shadow-control__preview"
 										style={{
-											boxShadow: resolvePreviewCss(previewValue, previewTokens, shadow) || 'none',
+											boxShadow:
+												resolveHoverPreviewCss(
+													hoveredEntry,
+													previewValue,
+													previewTokens,
+													shadow
+												) || 'none',
 										}}
 										aria-hidden="true"
 									/>

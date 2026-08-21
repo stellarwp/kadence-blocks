@@ -214,6 +214,103 @@ describe('TokenPopover renderPreview prop', () => {
 
 		render({ initialTab: 'style-library', value: '{primitive.shadow.md}', tokens, renderPreview });
 
-		expect(renderPreview).toHaveBeenCalledWith({ value: '{primitive.shadow.md}', tokens });
+		expect(renderPreview).toHaveBeenCalledWith({ value: '{primitive.shadow.md}', tokens, hoveredEntry: null });
+	});
+
+	/**
+	 * With nothing hovered or focused yet, `renderPreview` receives `hoveredEntry: null` so the
+	 * caller falls back to the bound value — the regression check for the pre-hover state.
+	 *
+	 * @return {void}
+	 */
+	it('calls renderPreview with a null hoveredEntry before any row is hovered or focused', () => {
+		const renderPreview = jest.fn(() => null);
+		// An empty pickable list avoids rendering a token row, sidestepping the same mocked-`Button`
+		// `isPressed`-on-DOM quirk noted above.
+		const tokens = [];
+
+		render({ initialTab: 'style-library', tokens, renderPreview });
+
+		expect(renderPreview).toHaveBeenLastCalledWith({ value: '', tokens, hoveredEntry: null });
+	});
+
+	/**
+	 * Hovering a token row (mouse enter) passes that entry to `renderPreview` as `{ kind: 'token',
+	 * entry }`; leaving it (mouse leave) falls back to `hoveredEntry: null` again.
+	 *
+	 * @return {void}
+	 */
+	it('updates hoveredEntry to the token row on mouse enter, and back to null on mouse leave', () => {
+		const renderPreview = jest.fn(() => null);
+		const entry = { id: 'md', label: 'Medium', value: '0px 2px 8px #000', alias: '{primitive.shadow.md}' };
+
+		render({ initialTab: 'style-library', tokens: [entry], renderPreview });
+
+		const item = container.querySelector('.kadence-token-field__item');
+
+		act(() => item.dispatchEvent(new MouseEvent('mouseover', { bubbles: true })));
+		expect(renderPreview).toHaveBeenLastCalledWith({
+			value: '',
+			tokens: [entry],
+			hoveredEntry: { kind: 'token', entry },
+		});
+
+		act(() => item.dispatchEvent(new MouseEvent('mouseout', { bubbles: true })));
+		expect(renderPreview).toHaveBeenLastCalledWith({ value: '', tokens: [entry], hoveredEntry: null });
+	});
+
+	/**
+	 * Focusing a token row (keyboard navigation) previews it exactly like a mouse hover does, and
+	 * blurring it falls back to `hoveredEntry: null` — so tabbing through the list, not only
+	 * pointing at it, drives the live preview.
+	 *
+	 * @return {void}
+	 */
+	it('updates hoveredEntry to the token row on focus, and back to null on blur', () => {
+		const renderPreview = jest.fn(() => null);
+		const entry = { id: 'md', label: 'Medium', value: '0px 2px 8px #000', alias: '{primitive.shadow.md}' };
+
+		render({ initialTab: 'style-library', tokens: [entry], renderPreview });
+
+		const item = container.querySelector('.kadence-token-field__item');
+
+		act(() => item.dispatchEvent(new window.FocusEvent('focusin', { bubbles: true })));
+		expect(renderPreview).toHaveBeenLastCalledWith({
+			value: '',
+			tokens: [entry],
+			hoveredEntry: { kind: 'token', entry },
+		});
+
+		act(() => item.dispatchEvent(new window.FocusEvent('focusout', { bubbles: true })));
+		expect(renderPreview).toHaveBeenLastCalledWith({ value: '', tokens: [entry], hoveredEntry: null });
+	});
+
+	/**
+	 * Hovering the `Reset` row previews the cleared state as `{ kind: 'reset' }`, distinct from a
+	 * token-row hover, so a caller can render what the field looks like once cleared.
+	 *
+	 * @return {void}
+	 */
+	it('updates hoveredEntry to the reset kind on hovering the Reset row', () => {
+		const renderPreview = jest.fn(() => null);
+		const tokens = [{ id: 'md', label: 'Medium', value: '0px 2px 8px #000', alias: '{primitive.shadow.md}' }];
+
+		render({ initialTab: 'style-library', value: '{primitive.shadow.md}', tokens, renderPreview });
+
+		const reset = container.querySelector('.kadence-token-field__reset');
+
+		act(() => reset.dispatchEvent(new MouseEvent('mouseover', { bubbles: true })));
+		expect(renderPreview).toHaveBeenLastCalledWith({
+			value: '{primitive.shadow.md}',
+			tokens,
+			hoveredEntry: { kind: 'reset' },
+		});
+
+		act(() => reset.dispatchEvent(new MouseEvent('mouseout', { bubbles: true })));
+		expect(renderPreview).toHaveBeenLastCalledWith({
+			value: '{primitive.shadow.md}',
+			tokens,
+			hoveredEntry: null,
+		});
 	});
 });

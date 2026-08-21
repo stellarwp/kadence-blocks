@@ -411,6 +411,75 @@ describe('BoxShadowControl Style Library tab', () => {
 		expect(preview).not.toBeNull();
 		expect(preview.style.boxShadow).toBe('none');
 	});
+
+	/**
+	 * Hovering a different token row previews that row's shadow instead of the bound value's — the
+	 * live-hover behavior this control opts into via `TokenPopover`'s `hoveredEntry`.
+	 *
+	 * @return {void}
+	 */
+	it('previews the hovered token row’s shadow instead of the bound value', () => {
+		renderControl({ value: '{primitive.shadow.md}' });
+
+		const preview = () => container.querySelector('.kadence-token-field__preview .kb-box-shadow-control__preview');
+
+		expect(preview().style.boxShadow).toBe('0px 2px 8px 0px #1717171f');
+
+		act(() => tokenItem('Large').dispatchEvent(new MouseEvent('mouseover', { bubbles: true })));
+
+		expect(preview().style.boxShadow).toBe('0px 4px 16px 0px #1717172f');
+	});
+
+	/**
+	 * Leaving hover on a token row falls back to the bound value's own shadow again — the preview
+	 * does not stay pinned to whatever was last hovered.
+	 *
+	 * @return {void}
+	 */
+	it('falls back to the bound value’s shadow once hover leaves the token row', () => {
+		renderControl({ value: '{primitive.shadow.md}' });
+
+		const preview = () => container.querySelector('.kadence-token-field__preview .kb-box-shadow-control__preview');
+		const large = tokenItem('Large');
+
+		act(() => large.dispatchEvent(new MouseEvent('mouseover', { bubbles: true })));
+		expect(preview().style.boxShadow).toBe('0px 4px 16px 0px #1717172f');
+
+		act(() => large.dispatchEvent(new MouseEvent('mouseout', { bubbles: true })));
+		expect(preview().style.boxShadow).toBe('0px 2px 8px 0px #1717171f');
+	});
+
+	/**
+	 * Focusing a token row (keyboard navigation) previews it exactly like a mouse hover — the field
+	 * stays keyboard-accessible, not mouse-only.
+	 *
+	 * @return {void}
+	 */
+	it('previews the focused token row’s shadow instead of the bound value', () => {
+		renderControl({ value: '{primitive.shadow.md}' });
+
+		const preview = () => container.querySelector('.kadence-token-field__preview .kb-box-shadow-control__preview');
+
+		act(() => tokenItem('Large').dispatchEvent(new window.FocusEvent('focusin', { bubbles: true })));
+
+		expect(preview().style.boxShadow).toBe('0px 4px 16px 0px #1717172f');
+	});
+
+	/**
+	 * Hovering the Reset row previews the cleared state — shadow-less here, since this control has
+	 * no inherited default for Reset to fall back to.
+	 *
+	 * @return {void}
+	 */
+	it('previews a shadow-less square while hovering Reset', () => {
+		renderControl({ value: '{primitive.shadow.md}' });
+
+		const preview = () => container.querySelector('.kadence-token-field__preview .kb-box-shadow-control__preview');
+
+		act(() => resetButton().dispatchEvent(new MouseEvent('mouseover', { bubbles: true })));
+
+		expect(preview().style.boxShadow).toBe('none');
+	});
 });
 
 describe('BoxShadowControl Custom tab', () => {
