@@ -98,6 +98,30 @@ export function pickableTokensFor(kind, library) {
 }
 
 /**
+ * The alias of the token one block control BINDS, as declared in the preset bindings — the design
+ * system's answer for that control when the block stores nothing of its own.
+ *
+ * A control whose attribute renders as a CSS declaration gets that fallback for free, as the
+ * `var()` the block-default-CSS projector emits. A control whose attribute renders as something a
+ * `var()` cannot reach (a raw SVG geometry attribute, say) has to resolve the same token itself, and
+ * this is where it reads which token that is rather than restating the id the declaration already
+ * owns.
+ *
+ * @param {string} blockName   The block name (e.g. 'kadence/single-icon').
+ * @param {string} controlAttr The attribute the control writes (e.g. 'size').
+ * @param {string} [library]   The token library slug; defaults to the active library.
+ *
+ * @since TBD
+ *
+ * @return {string} The `{dot.alias}` of the bound token, or '' when the control binds none.
+ */
+export function boundTokenAliasForControl(blockName, controlAttr, library) {
+	const property = blockProperties(blockName, library).find((entry) => entry.control_attr === controlAttr);
+
+	return property && property.token ? `{${property.token}}` : '';
+}
+
+/**
  * The role sub-kind of a token id, read from the pool the catalog already tagged (never parsed here) —
  * the discriminator that narrows one $type to the control's sub-kind (a radius control's `dimension`
  * to only radius tokens). Empty when the id is absent from the pool or carries no role.

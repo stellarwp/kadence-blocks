@@ -1,8 +1,28 @@
 import { getPreviewSize, KadenceColorOutput, getSpacingOptionOutput } from '@kadence/helpers';
 import { useRef } from '@wordpress/element';
 import { IconRender, Tooltip } from '@kadence/components';
-import { isTokenAlias } from '../../extension/design-tokens/alias';
 import { tokenPx } from '../../extension/design-tokens/token-px';
+import { boundTokenAliasForControl } from '../../extension/token-picker';
+import metadata from './block.json';
+
+/**
+ * Whether a size attribute holds a usable raw number.
+ *
+ * The attribute accepts a number or a token alias, and the token picker's Reset writes an empty
+ * string, so "has a value" cannot be a truthiness check: `0` is a real size, while `''` and an alias
+ * the library no longer defines are not numbers at all and would reach the SVG as a broken
+ * `width` attribute.
+ *
+ * @param {*} value The stored size.
+ *
+ * @since TBD
+ *
+ * @return {boolean} Whether the value is a finite number this can render with.
+ */
+function hasIconSize(value) {
+	return value !== '' && value !== null && value !== undefined && Number.isFinite(Number(value));
+}
+
 export function PreviewIcon({ attributes, previewDevice }) {
 	const ref = useRef();
 	const {
@@ -52,13 +72,21 @@ export function PreviewIcon({ attributes, previewDevice }) {
 		undefined !== tabletSize || tabletSize === 0 ? tabletSize : undefined,
 		undefined !== mobileSize || mobileSize === 0 ? mobileSize : undefined
 	);
-	// The size attribute may hold a design-token alias, which `IconRender` would write verbatim into the
-	// SVG's `width`/`height` presentation attributes — geometry attributes take a number, not a `var()`.
-	// The front end has no such problem: it renders the same attribute as a `font-size` declaration and
-	// resolves the alias there. So resolve to px here, on the same 16px root assumption PHP uses. A plain
-	// number passes through untouched, and an alias that cannot be resolved falls through to `GenIcon`'s
-	// own default rather than a broken attribute.
-	const previewSizePx = isTokenAlias(previewSize) ? (tokenPx(previewSize) ?? undefined) : previewSize;
+	// `IconRender` writes the size into the SVG's `width`/`height` presentation attributes, and a geometry
+	// attribute takes a number — not a `var()`, and not an empty string, which produces `width=""` and an
+	// icon with no rendered size at all. The front end has neither problem: it renders the same attribute
+	// as a `font-size` declaration, resolving an alias to the token's var() and a cleared size to the
+	// icon-size token's fallback rule. Both of those become a number here instead, on the same 16px root
+	// assumption PHP uses, so the two render paths agree.
+	//
+	// A cleared size therefore falls back to the very token the block-default CSS names for it, read from
+	// the binding rather than restated. Anything still unresolved after that is left `undefined` so
+	// `GenIcon` applies its own default, which is the one shape that renders rather than breaking.
+	const previewSizePx =
+		tokenPx(previewSize) ??
+		(hasIconSize(previewSize)
+			? previewSize
+			: (tokenPx(boundTokenAliasForControl(metadata.name, 'size')) ?? undefined));
 	const previewMarginTop = getPreviewSize(
 		previewDevice,
 		margin && undefined !== margin[0] ? margin[0] : undefined,

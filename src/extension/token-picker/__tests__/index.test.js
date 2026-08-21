@@ -4,7 +4,13 @@
 // ESM module) for its `PresetPicker` component. This module never renders it, so stub it out.
 jest.mock('@kadence/components', () => ({}));
 
-import { pickableTokenPool, pickableTokensFor, pickableTokensForControl, pickableTokensForKey } from '../index';
+import {
+	boundTokenAliasForControl,
+	pickableTokenPool,
+	pickableTokensFor,
+	pickableTokensForControl,
+	pickableTokensForKey,
+} from '../index';
 
 /**
  * The fixture pickable-token pool: layers are interleaved on purpose to prove the semantic-first
@@ -422,5 +428,37 @@ describe('pickableTokensForKey', () => {
 
 	it('returns an empty array for an unknown block', () => {
 		expect(pickableTokensForKey('kadence/does-not-exist', 'button-shadow')).toEqual([]);
+	});
+});
+
+describe('boundTokenAliasForControl', () => {
+	beforeEach(() => {
+		window.kadenceDesignTokensPickable = POOL;
+		window.kadenceDesignTokensPresets = PRESETS;
+	});
+
+	afterEach(() => {
+		delete window.kadenceDesignTokensPickable;
+		delete window.kadenceDesignTokensPresets;
+	});
+
+	it('returns the bound token as an alias, ready to resolve', () => {
+		expect(boundTokenAliasForControl('kadence/single-icon', 'size')).toBe('{semantic.icon-size.default}');
+	});
+
+	it('returns empty for a control that binds no token', () => {
+		expect(boundTokenAliasForControl('kadence/singlebtn', 'borderRadius')).toBe('');
+	});
+
+	it('returns empty for an unmapped attribute or an unknown block', () => {
+		expect(boundTokenAliasForControl('kadence/singlebtn', 'padding')).toBe('');
+		expect(boundTokenAliasForControl('kadence/does-not-exist', 'size')).toBe('');
+	});
+
+	it('fails soft when the catalog is missing', () => {
+		delete window.kadenceDesignTokensPresets;
+
+		expect(() => boundTokenAliasForControl('kadence/single-icon', 'size')).not.toThrow();
+		expect(boundTokenAliasForControl('kadence/single-icon', 'size')).toBe('');
 	});
 });
