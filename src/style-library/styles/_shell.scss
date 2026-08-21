@@ -99,3 +99,25 @@ body.kadence-blocks-style-library-page {
 	justify-content: center;
 	@include mixins.app-viewport-height;
 }
+
+// Core's own `.components-snackbar-list` rule (`position: absolute; width: 100%;`, no offsets) only
+// produces a visible toast inside the block editor, whose own chrome supplies the positioned,
+// bounded ancestor that rule expects. This admin page has no such ancestor, so without this rule the
+// list renders in normal document flow — at the bottom of the app's own content, not the viewport —
+// and ends up entirely below the fold on any screen where the app's content reaches close to the
+// window's height. Pinning it to the viewport with `fixed` sidesteps the ancestor entirely, the same
+// way `wp-admin`'s own toasts anchor to the window regardless of where they're mounted in the DOM.
+.kadence-blocks-style-library__snackbars {
+	position: fixed;
+	inset-inline: 0;
+	bottom: 16px;
+
+	// Core's own `.components-snackbar` is a content-sized pill, but its containing elements
+	// (`.components-snackbar-list__notice-container`, the transition group's own wrapper) are all
+	// block-level and stretch to this list's full width — so the pill sits flush against the left
+	// edge with nothing to center it. Centering the pill itself, rather than trying to center its
+	// ancestors, works regardless of which one actually ends up full-width.
+	.components-snackbar {
+		margin-inline: auto;
+	}
+}
