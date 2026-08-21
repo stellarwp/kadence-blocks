@@ -33,6 +33,52 @@ function presetSpacingProperties(attributes) {
 	};
 }
 
+/**
+ * Whether the button's active preset resolves a border width, style, and/or color.
+ *
+ * Reads the same preset surface the inspector does, so the canvas and the panel cannot disagree
+ * about whether a preset carries a border. A block with no explicit selection — or one naming a
+ * preset that no longer exists — follows the block's default preset, exactly as the server's
+ * `has_preset()` / `default_preset()` fallback does.
+ *
+ * @param {Object} attributes The block attributes.
+ *
+ * @since TBD
+ *
+ * @return {{width: boolean, style: boolean, color: boolean}} Which border properties the preset defines.
+ */
+export function presetBorderProperties(attributes) {
+	const preset = activePresetFor('kadence/singlebtn', attributes);
+	const tokens = blockPresetValues('kadence/singlebtn')?.[preset] ?? {};
+
+	return {
+		width: 'button-border-width' in tokens,
+		style: 'button-border-style' in tokens,
+		color: 'button-border-color' in tokens,
+	};
+}
+
+/**
+ * Whether the button's active preset resolves a box-shadow.
+ *
+ * Reads the same preset surface the inspector does, so the canvas and the panel cannot disagree
+ * about whether a preset carries a shadow. A block with no explicit selection — or one naming a
+ * preset that no longer exists — follows the block's default preset, exactly as the server's
+ * `has_preset()` / `default_preset()` fallback does.
+ *
+ * @param {Object} attributes The block attributes.
+ *
+ * @since TBD
+ *
+ * @return {boolean} Whether the preset defines a box-shadow.
+ */
+export function presetShadowProperties(attributes) {
+	const preset = activePresetFor('kadence/singlebtn', attributes);
+	const tokens = blockPresetValues('kadence/singlebtn')?.[preset] ?? {};
+
+	return 'button-shadow' in tokens;
+}
+
 export default function BackendStyles(props) {
 	const { attributes, isSelected, previewDevice, currentRef, context } = props;
 
@@ -854,6 +900,25 @@ export default function BackendStyles(props) {
 	if (previewMarginBottom) {
 		css.add_property('margin-bottom', getSpacingOptionOutput(previewMarginBottom, previewMarginUnit));
 	}
+	/*
+	 * Mirrors the front end's gate (`render_preset_border` in the block's PHP): point border
+	 * width/style/color at the preset variables, but only for a property the active preset actually
+	 * resolves. Written before the per-side output below, so an explicit attribute still wins.
+	 */
+	const presetBorder = presetBorderProperties(attributes);
+
+	if (presetBorder.width) {
+		css.add_property('border-width', 'var(--kb-btn-border-width)');
+	}
+
+	if (presetBorder.style) {
+		css.add_property('border-style', 'var(--kb-btn-border-style)');
+	}
+
+	if (presetBorder.color) {
+		css.add_property('border-color', 'var(--kb-btn-border-color)');
+	}
+
 	if (previewBorderTopStyle) {
 		css.add_property('border-top', previewBorderTopStyle);
 	}
@@ -881,6 +946,15 @@ export default function BackendStyles(props) {
 		'border-radius',
 		borderRadiusUnit ? borderRadiusUnit : 'px'
 	);
+	/*
+	 * Mirrors the front end's gate (`render_preset_shadow` in the block's PHP): point box-shadow at
+	 * the preset variable, but only when the active preset actually resolves one. Written before the
+	 * explicit shadow output below, so an explicit per-block shadow still wins.
+	 */
+	if (presetShadowProperties(attributes)) {
+		css.add_property('box-shadow', 'var(--kb-btn-shadow)');
+	}
+
 	css.add_property(
 		'box-shadow',
 		undefined !== displayShadow &&

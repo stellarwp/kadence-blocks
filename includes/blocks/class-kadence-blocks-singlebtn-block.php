@@ -127,10 +127,12 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		$css->render_typography( $attributes, 'typography' );
 		$css->render_measure_output( $attributes, 'borderRadius', 'border-radius', [ 'unit_key' => 'borderRadiusUnit' ] );
+		$this->render_preset_border( $css, $attributes );
 		$css->render_border_styles( $attributes, 'borderStyle', true );
 		$this->render_preset_spacing( $css, $attributes );
 		$css->render_measure_output( $attributes, 'padding', 'padding', [ 'unit_key' => 'paddingUnit' ] );
 		$css->render_measure_output( $attributes, 'margin', 'margin', [ 'unit_key' => 'marginUnit' ] );
+		$this->render_preset_shadow( $css, $attributes );
 		if ( isset( $attributes['displayShadow'] ) && true === $attributes['displayShadow'] ) {
 			if ( isset( $attributes['shadow'] ) && is_array( $attributes['shadow'] ) && isset( $attributes['shadow'][0] ) && is_array( $attributes['shadow'][0] ) ) {
 				$css->add_property( 'box-shadow', $this->render_button_shadow( $css, $attributes['shadow'][0] ) );
@@ -539,6 +541,118 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 
 		if ( isset( $values['button-margin'] ) ) {
 			$css->add_property( 'margin', 'var(--kb-btn-margin)' );
+		}
+	}
+
+	/**
+	 * Point border width/style/color at their preset variables, but only for a property the active
+	 * preset actually resolves.
+	 *
+	 * The gate is the whole point, exactly as in `render_preset_spacing()` — a `var()` pointed at an
+	 * undefined custom property is invalid at computed-value time, so emitting unconditionally would
+	 * blank out the border on a button whose preset sets none of it.
+	 *
+	 * Emitted before `render_border_styles()`'s explicit per-side output so an explicit per-block
+	 * border, which lands later in the same rule, still wins.
+	 *
+	 * @since TBD
+	 *
+	 * @param Kadence_Blocks_CSS   $css        The css object.
+	 * @param array<string, mixed> $attributes The block attributes.
+	 *
+	 * @return void
+	 */
+	private function render_preset_border( Kadence_Blocks_CSS $css, array $attributes ): void {
+		try {
+			$registry = kadence_blocks()->get( Token_Registry::class );
+			$library  = kadence_blocks()->get( Active_Token_Library_Store::class );
+			$resolver = kadence_blocks()->get( Preset_Resolver::class );
+
+			// The container is typed `mixed`, and this runs on every button render, so the services are
+			// checked rather than assumed — a misconfigured container degrades to today's border.
+			if (
+				! $registry instanceof Token_Registry
+				|| ! $library instanceof Active_Token_Library_Store
+				|| ! $resolver instanceof Preset_Resolver
+				|| ! $registry->is_active()
+			) {
+				return;
+			}
+
+			$slug     = $library->get();
+			$selected = Cast::to_string( $attributes['kbPreset'] ?? '' );
+			$preset   = $selected !== '' && $resolver->has_preset( 'kadence/singlebtn', $selected, $slug )
+				? $selected
+				: $resolver->default_preset( 'kadence/singlebtn', $slug );
+			$values   = $resolver->resolve( 'kadence/singlebtn', $preset, $slug );
+		} catch ( Throwable $e ) {
+			// This runs in the render path, so a broken token graph must not take the page down with it —
+			// the button simply keeps the border it has today.
+			return;
+		}
+
+		if ( isset( $values['button-border-width'] ) ) {
+			$css->add_property( 'border-width', 'var(--kb-btn-border-width)' );
+		}
+
+		if ( isset( $values['button-border-style'] ) ) {
+			$css->add_property( 'border-style', 'var(--kb-btn-border-style)' );
+		}
+
+		if ( isset( $values['button-border-color'] ) ) {
+			$css->add_property( 'border-color', 'var(--kb-btn-border-color)' );
+		}
+	}
+
+	/**
+	 * Point the button's box-shadow at its preset variable, but only when the active preset actually
+	 * resolves one.
+	 *
+	 * The gate is the whole point, exactly as in `render_preset_spacing()` — a `var()` pointed at an
+	 * undefined custom property is invalid at computed-value time, so emitting unconditionally would
+	 * blank out the shadow on a button whose preset sets none.
+	 *
+	 * Emitted before the explicit `displayShadow` output below so an explicit per-block shadow, which
+	 * lands later in the same rule, still wins.
+	 *
+	 * @since TBD
+	 *
+	 * @param Kadence_Blocks_CSS   $css        The css object.
+	 * @param array<string, mixed> $attributes The block attributes.
+	 *
+	 * @return void
+	 */
+	private function render_preset_shadow( Kadence_Blocks_CSS $css, array $attributes ): void {
+		try {
+			$registry = kadence_blocks()->get( Token_Registry::class );
+			$library  = kadence_blocks()->get( Active_Token_Library_Store::class );
+			$resolver = kadence_blocks()->get( Preset_Resolver::class );
+
+			// The container is typed `mixed`, and this runs on every button render, so the services are
+			// checked rather than assumed — a misconfigured container degrades to today's shadow.
+			if (
+				! $registry instanceof Token_Registry
+				|| ! $library instanceof Active_Token_Library_Store
+				|| ! $resolver instanceof Preset_Resolver
+				|| ! $registry->is_active()
+			) {
+				return;
+			}
+
+			$slug     = $library->get();
+			$selected = Cast::to_string( $attributes['kbPreset'] ?? '' );
+			$preset   = $selected !== '' && $resolver->has_preset( 'kadence/singlebtn', $selected, $slug )
+				? $selected
+				: $resolver->default_preset( 'kadence/singlebtn', $slug );
+			$values   = $resolver->resolve( 'kadence/singlebtn', $preset, $slug );
+		} catch ( Throwable $e ) {
+			// This runs in the render path, so a broken token graph must not take the page down with it —
+			// the button simply keeps the shadow it has today.
+			return;
+		}
+
+		if ( isset( $values['button-shadow'] ) ) {
+			$css->add_property( 'box-shadow', 'var(--kb-btn-shadow)' );
 		}
 	}
 
