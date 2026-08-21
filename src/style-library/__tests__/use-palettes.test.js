@@ -16,6 +16,7 @@ import { RegistryProvider } from '@wordpress/data';
 import { usePalettes } from '../hooks/use-palettes';
 import * as client from '../api/client';
 import * as notify from '../helpers/notify';
+import { STORE_NAME } from '../store';
 import { createTestRegistry } from '../store/test-utils';
 
 // A factory, not bare automocking: the real module imports `@wordpress/api-fetch`, which is
@@ -643,6 +644,117 @@ describe('usePalettes', () => {
 		expect(probe.latest().addingGroupIds).toEqual([]);
 		expect(notify.notifyError).toHaveBeenCalledWith('Conflict');
 		expect(notify.notifySuccess).not.toHaveBeenCalled();
+	});
+
+	it('addGroup shows the new group and its placeholder swatch immediately, before the write resolves', async () => {
+		client.fetchPalettes.mockResolvedValueOnce(listingRows());
+
+		let resolveCreateUserPrimitive;
+		client.createUserPrimitive.mockReturnValueOnce(
+			new Promise((resolve) => {
+				resolveCreateUserPrimitive = resolve;
+			})
+		);
+
+		const probe = mountProbe();
+		await probe.render();
+
+		let writePromise;
+		act(() => {
+			writePromise = probe.latest().addGroup('Muted');
+		});
+
+		// The optimistic group is present immediately, with its placeholder swatch.
+		const groups = probe.latest().palette.groups;
+		expect(groups).toHaveLength(2);
+		const mutedGroup = groups.find((group) => group.id === 'muted');
+		expect(mutedGroup).toMatchObject({ id: 'muted', label: 'Muted' });
+		expect(mutedGroup.swatches).toHaveLength(1);
+		expect(mutedGroup.swatches[0]).toMatchObject({
+			token: 'primitive.color.custom.custom-1',
+			label: 'New Color',
+			$value: '#000000',
+		});
+
+		client.fetchPalette.mockResolvedValueOnce(defaultView());
+		const addedRows = listingRows({
+			defaultView: () => ({
+				...defaultView(),
+				groups: [
+					...defaultView().groups,
+					{
+						id: 'muted',
+						label: 'Muted',
+						swatches: [{ token: 'primitive.color.custom.custom-1', label: 'New Color', $value: '#000000' }],
+					},
+				],
+			}),
+		});
+		client.savePalette.mockResolvedValueOnce(addedRows);
+		resolveCreateUserPrimitive({ id: 'primitive.color.custom.custom-1', version: 'v2' });
+
+		await act(async () => writePromise);
+
+		// The real (confirmed) listing's group is what remains — same id, no duplicate.
+		const settledGroups = probe.latest().palette.groups;
+		expect(settledGroups).toHaveLength(2);
+		expect(settledGroups.filter((group) => group.id === 'muted')).toHaveLength(1);
+		expect(notify.notifySuccess).toHaveBeenCalledWith('Color group added.');
+		expect(notify.notifyError).not.toHaveBeenCalled();
+	});
+
+	it('addGroup removes the optimistic group when the write fails', async () => {
+		client.fetchPalettes.mockResolvedValueOnce(listingRows());
+		client.createUserPrimitive.mockRejectedValueOnce(new Error('Conflict'));
+
+		const probe = mountProbe();
+		await probe.render();
+
+		let writePromise;
+		act(() => {
+			writePromise = probe
+				.latest()
+				.addGroup('Muted')
+				.catch(() => {});
+		});
+
+		expect(probe.latest().palette.groups.some((group) => group.id === 'muted')).toBe(true);
+
+		await act(async () => writePromise);
+
+		expect(probe.latest().palette.groups.some((group) => group.id === 'muted')).toBe(false);
+		expect(notify.notifyError).toHaveBeenCalledWith('Conflict');
+		expect(notify.notifySuccess).not.toHaveBeenCalled();
+	});
+
+	it('addGroup rejects synchronously for a duplicate label, without ever applying an optimistic addition', async () => {
+		client.fetchPalettes.mockResolvedValueOnce(listingRows());
+
+		const probe = mountProbe();
+		await probe.render();
+
+		const dispatchSpy = jest.spyOn(registry.dispatch(STORE_NAME), 'setOptimisticAddition');
+
+		await expect(probe.latest().addGroup('Accent')).rejects.toThrow('A color group with that name already exists.');
+
+		expect(dispatchSpy).not.toHaveBeenCalled();
+		expect(client.createUserPrimitive).not.toHaveBeenCalled();
+		expect(probe.latest().palette.groups).toHaveLength(1);
+	});
+
+	it('addGroup rejects synchronously for an empty label, without ever applying an optimistic addition', async () => {
+		client.fetchPalettes.mockResolvedValueOnce(listingRows());
+
+		const probe = mountProbe();
+		await probe.render();
+
+		const dispatchSpy = jest.spyOn(registry.dispatch(STORE_NAME), 'setOptimisticAddition');
+
+		await expect(probe.latest().addGroup('')).rejects.toThrow('Enter a color group name.');
+
+		expect(dispatchSpy).not.toHaveBeenCalled();
+		expect(client.createUserPrimitive).not.toHaveBeenCalled();
+		expect(probe.latest().palette.groups).toHaveLength(1);
 	});
 
 	it('reorderSwatches applies the new order optimistically, then keeps it once the write resolves', async () => {

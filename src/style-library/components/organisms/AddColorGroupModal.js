@@ -23,30 +23,31 @@ import './AddColorGroupModal.scss';
  *
  * @param {Object}             props         The component props.
  * @param {Object}             props.palette The palette being edited's effective view, for the duplicate-group check.
- * @param {boolean}            props.isBusy  Whether the add request is in flight.
  * @param {?{message: string}} props.error   The current structure error, if any.
  * @param {Function}           props.onClose Called to dismiss the modal.
- * @param {Function}           props.onAdd   Called with the typed label to create the group.
+ * @param {Function}           props.onAdd   Called with the typed label to create the group; fires and forgets —
+ *                                            the caller decides success/failure asynchronously, surfaced via
+ *                                            Snackbar rather than by keeping the modal open.
  *
  * @since TBD
  *
  * @return {JSX.Element} The modal.
  */
-export function AddColorGroupModal({ palette, isBusy, error, onClose, onAdd }) {
+export function AddColorGroupModal({ palette, error, onClose, onAdd }) {
 	const [label, setLabel] = useState('');
 	const groupId = slugifyPaletteLabel(label);
-	const isDuplicate = !isBusy && groupId !== '' && (palette?.groups ?? []).some((group) => group.id === groupId);
+	const isDuplicate = groupId !== '' && (palette?.groups ?? []).some((group) => group.id === groupId);
+
+	const handleAdd = () => {
+		onAdd(label);
+		onClose();
+	};
 
 	return (
 		<Modal
 			title={__('Add Color Group', 'kadence-blocks')}
 			className="kadence-blocks-style-library__add-color-group-modal"
 			onRequestClose={onClose}
-			// Locked while pending: no close icon, Escape does nothing, clicking outside does
-			// nothing. An add request in flight cannot be walked away from mid-request.
-			isDismissible={!isBusy}
-			shouldCloseOnEsc={!isBusy}
-			shouldCloseOnClickOutside={!isBusy}
 		>
 			{error && (
 				<Notice status="error" isDismissible={false}>
@@ -57,7 +58,6 @@ export function AddColorGroupModal({ palette, isBusy, error, onClose, onAdd }) {
 				label={__('Group name', 'kadence-blocks')}
 				value={label}
 				onChange={setLabel}
-				disabled={isBusy}
 				help={
 					isDuplicate
 						? sprintf(
@@ -69,16 +69,11 @@ export function AddColorGroupModal({ palette, isBusy, error, onClose, onAdd }) {
 				}
 			/>
 			<div className="kadence-blocks-style-library__add-color-group-modal-actions">
-				<Button variant="tertiary" onClick={onClose} disabled={isBusy}>
+				<Button variant="tertiary" onClick={onClose}>
 					{__('Cancel', 'kadence-blocks')}
 				</Button>
-				<Button
-					variant="primary"
-					disabled={isBusy || groupId === '' || isDuplicate}
-					onClick={() => onAdd(label)}
-				>
-					{/* The progressive label is the only progress indication — no spinner alongside it. */}
-					{isBusy ? __('Adding…', 'kadence-blocks') : __('Add', 'kadence-blocks')}
+				<Button variant="primary" disabled={groupId === '' || isDuplicate} onClick={handleAdd}>
+					{__('Add', 'kadence-blocks')}
 				</Button>
 			</div>
 		</Modal>

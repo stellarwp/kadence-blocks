@@ -17,6 +17,7 @@ import {
 	nextCustomColorSlug,
 	reorderGroupSwatches,
 	resolveEditingPaletteId,
+	validateNewGroupLabel,
 } from '../helpers/palettes';
 import { notifyError, notifySuccess } from '../helpers/notify';
 import {
@@ -437,22 +438,55 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 
 	const addGroup = useCallback(
 		(label) => {
-			setStructureError(null);
+			const { groupId, error } = validateNewGroupLabel(label, palette);
+
+			if (error) {
+				return Promise.reject(new Error(error));
+			}
+
+			const colorSlug = nextCustomColorSlug(existingTokenIds);
+			const value = newSwatchValue(palette?.groups, groupId);
+			const swatchLabel = __('New Color', 'kadence-blocks');
+			const token = customColorTokenId(colorSlug);
+
+			if (namespace && slug) {
+				// `$value`, not `value` — matches the field name every real swatch object carries; see
+				// `setOptimisticSwatchPatch`'s docblock (Task 1) for why this matters.
+				registry.dispatch(STORE_NAME).setOptimisticAddition(paletteListingKey(namespace, slug), 'group', {
+					id: groupId,
+					label,
+					swatches: [{ token, label: swatchLabel, $value: value }],
+				});
+			}
+
 			return addGroupFlow({
 				namespace,
 				slug,
 				defaultId: listing.defaultId,
+				groupId,
 				label,
-				palette,
-				tokens: existingTokenIds,
+				colorSlug,
+				value,
+				swatchLabel,
 				feedVersion: feed?.version,
 				onReceive,
 				refreshFeed,
 				onBusy: setIsBusy,
-				onError: setStructureError,
-			});
+				onError: (err) => notifyError(err.message),
+			})
+				.then((newToken) => {
+					notifySuccess(__('Color group added.', 'kadence-blocks'));
+					return newToken;
+				})
+				.finally(() => {
+					if (namespace && slug) {
+						registry
+							.dispatch(STORE_NAME)
+							.clearOptimisticAddition(paletteListingKey(namespace, slug), 'group', groupId);
+					}
+				});
 		},
-		[namespace, slug, listing.defaultId, palette, existingTokenIds, feed?.version, onReceive, refreshFeed]
+		[namespace, slug, listing.defaultId, palette, existingTokenIds, feed?.version, onReceive, refreshFeed, registry]
 	);
 
 	const reorderSwatches = useCallback(

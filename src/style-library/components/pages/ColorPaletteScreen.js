@@ -389,7 +389,6 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 			{isAddGroupOpen && (
 				<AddColorGroupModal
 					palette={palettes.palette}
-					isBusy={palettes.isBusy}
 					error={palettes.structureError}
 					onClose={() => {
 						setIsAddGroupOpen(false);
@@ -398,18 +397,11 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 					onAdd={(groupLabel) =>
 						palettes
 							.addGroup(groupLabel)
-							.then((newToken) => {
-								setIsAddGroupOpen(false);
-								palettes.clearStructureError();
-
-								// Selects the group's new swatch so the panel opens on it, mirroring the
-								// grid's own `AddTile` binding above (`addColor(...).then((newToken) =>
-								// navigate({ item: newToken }))`) — `addGroupFlow` resolves with the new
-								// swatch's token the same way `addColorFlow` does.
-								navigate({ item: newToken });
-							})
-							// Swallowed: an invalid/duplicate label or a request failure already lands in
-							// `structureError`, rendered inline — the modal stays open on it.
+							.then((newToken) => navigate({ item: newToken }))
+							// A validation rejection (empty/duplicate name) never reaches here —
+							// `AddColorGroupModal` disables its own Add button for both cases before `onAdd`
+							// can fire. A real write failure is already surfaced via Snackbar inside
+							// `addGroup`.
 							.catch(() => {})
 					}
 				/>
