@@ -6,7 +6,8 @@
  * WordPress dependencies
  */
 import { useEffect, useMemo } from '@wordpress/element';
-import { Spinner } from '@wordpress/components';
+import { Spinner, SnackbarList } from '@wordpress/components';
+import { useSelect, useDispatch } from '@wordpress/data';
 
 /**
  * Internal dependencies
@@ -70,6 +71,15 @@ export function StyleLibraryApp() {
 	const feed = useDesignTokensFeed();
 	const { route, navigate, replace } = useStyleLibraryRoute();
 	const libraries = useLibraries(feed.feed, feed.refreshFeed);
+
+	const snackbarNotices = useSelect(
+		(select) =>
+			select('core/notices')
+				.getNotices()
+				.filter((notice) => notice.type === 'snackbar'),
+		[]
+	);
+	const { removeNotice } = useDispatch('core/notices');
 
 	// The draft channel (see `hooks/use-draft-channel.js`): built here because this is the one
 	// component that already renders both the screen and its settings-panel slot, so it is the only
@@ -241,6 +251,11 @@ export function StyleLibraryApp() {
 					onSave={channel.confirmSave}
 					onDiscard={channel.confirmDiscard}
 					onCancel={channel.cancelGuard}
+				/>
+				<SnackbarList
+					notices={snackbarNotices}
+					onRemove={removeNotice}
+					className="kadence-blocks-style-library__snackbars"
 				/>
 			</BreakpointProvider>
 		</DraftChannelContext.Provider>
