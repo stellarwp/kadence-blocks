@@ -22,6 +22,10 @@
  * `TokenPopover` consumers (Radius, Spacing, Border Width) keep the default `showValue={true}` and
  * are unaffected.
  *
+ * The Style Library tab shows a live preview square above `Reset`, via `TokenPopover`'s optional
+ * `renderPreview` prop — additive there, so every other `TokenPopover` consumer that does not pass
+ * it renders unchanged. Only this control opts in for now, per explicit scope.
+ *
  * The wrapper composes `ControlShell` exactly as `BoxControl`/`BorderControl` do, minus the props
  * neither applies to a shadow: no `breakpoints`/`onBreakpointChange` (a shadow field isn't
  * responsive here), no `isLinked`/`onToggleLink` (a shadow is one value, not sided, so there is
@@ -81,6 +85,36 @@ function commitShadow(shadow, patch) {
 	const { inset, ...rest } = { ...shadow, ...patch };
 
 	return inset === true ? { ...rest, inset: true } : rest;
+}
+
+/**
+ * Resolve the current slot value into `box-shadow` CSS for the Style Library tab's preview square: a
+ * bound token's own resolved value string when aliased, or the composite's own shorthand (matching
+ * the dimension order and literal `inset` keyword `Css_Renderer`/`shadowCss()` emit) when a literal
+ * composite is set. Empty when nothing is set yet, so the preview renders a plain, shadow-less box.
+ *
+ * @param {*}      value  The current slot value (alias string, composite object, or empty).
+ * @param {Array}  tokens The pickable-token list, used to resolve an alias.
+ * @param {Object} shadow The composite value with defaults already filled (ignored for an alias).
+ *
+ * @since TBD
+ *
+ * @return {string} The resolved `box-shadow` CSS, or '' when unset.
+ */
+function resolvePreviewCss(value, tokens, shadow) {
+	if (isTokenAlias(value)) {
+		const entry = tokens.find((candidate) => candidate.alias === value);
+
+		return entry ? entry.value : '';
+	}
+
+	if (!hasValue(value)) {
+		return '';
+	}
+
+	const shorthand = `${shadow.offsetX} ${shadow.offsetY} ${shadow.blur} ${shadow.spread} ${shadow.color}`;
+
+	return shadow.inset === true ? `inset ${shorthand}` : shorthand;
 }
 
 /**
@@ -206,6 +240,15 @@ export function BoxShadowControl({ value, onChange, label, tokens = [], renderCo
 								onClear={() => !disabled && onChange('')}
 								onClose={onClose}
 								showValue={false}
+								renderPreview={({ value: previewValue, tokens: previewTokens }) => (
+									<div
+										className="kb-box-shadow-control__preview"
+										style={{
+											boxShadow: resolvePreviewCss(previewValue, previewTokens, shadow) || 'none',
+										}}
+										aria-hidden="true"
+									/>
+								)}
 							/>
 						)}
 					/>

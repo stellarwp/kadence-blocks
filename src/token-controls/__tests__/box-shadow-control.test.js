@@ -369,6 +369,36 @@ describe('BoxShadowControl Style Library tab', () => {
 		expect(tokenItem('Large')).not.toBeUndefined();
 		expect(container.querySelector('.kadence-token-field__item-value')).toBeNull();
 	});
+
+	/**
+	 * The Style Library tab shows a live preview square above `Reset`, with the currently bound
+	 * token's resolved `box-shadow` value applied — giving a visual sense of the shadow before it is
+	 * picked.
+	 *
+	 * @return {void}
+	 */
+	it('shows a preview square carrying the bound token’s resolved shadow', () => {
+		renderControl({ value: '{primitive.shadow.md}' });
+
+		const preview = container.querySelector('.kadence-token-field__preview .kb-box-shadow-control__preview');
+
+		expect(preview).not.toBeNull();
+		expect(preview.style.boxShadow).toBe('0px 2px 8px 0px #1717171f');
+	});
+
+	/**
+	 * With nothing set yet, the preview square carries no shadow rather than a fabricated one.
+	 *
+	 * @return {void}
+	 */
+	it('shows a shadow-less preview square when the value is unset', () => {
+		renderControl({ value: '' });
+
+		const preview = container.querySelector('.kadence-token-field__preview .kb-box-shadow-control__preview');
+
+		expect(preview).not.toBeNull();
+		expect(preview.style.boxShadow).toBe('none');
+	});
 });
 
 describe('BoxShadowControl Custom tab', () => {

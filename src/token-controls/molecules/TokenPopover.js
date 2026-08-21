@@ -46,12 +46,25 @@ import { hasValue, isTokenAlias } from '../helpers/token-summary';
  *                                      Defaults to `true`; a shadow's resolved value is a long CSS
  *                                      shorthand that reads awkwardly next to its label the way a
  *                                      short dimension value does, so `BoxShadowControl` opts out.
+ * @param {?Function} [props.renderPreview] `({ value, tokens }) => Element`, rendered above `Reset`
+ *                                      when supplied. Omit for no preview — every consumer that
+ *                                      does not pass it renders exactly as before.
  *
  * @since TBD
  *
  * @return {Object} The rendered token list.
  */
-function StyleLibraryTab({ value, tokens, defaultValue, inherited, onPick, onClear, onClose, showValue = true }) {
+function StyleLibraryTab({
+	value,
+	tokens,
+	defaultValue,
+	inherited,
+	onPick,
+	onClear,
+	onClose,
+	showValue = true,
+	renderPreview,
+}) {
 	// Reset clears the slot's override back to the inherited default; it is inert when nothing is set.
 	const hasOverride = isTokenAlias(value) || (value !== '' && value !== undefined && value !== null);
 	// While unset, the size matching the inherited default reads as the active row.
@@ -59,6 +72,7 @@ function StyleLibraryTab({ value, tokens, defaultValue, inherited, onPick, onCle
 
 	return (
 		<div className="kadence-token-field__list">
+			{renderPreview && <div className="kadence-token-field__preview">{renderPreview({ value, tokens })}</div>}
 			<Button
 				className="kadence-token-field__reset"
 				disabled={!hasOverride}
@@ -173,6 +187,12 @@ export function CustomTab({ number, unit, units, onUnit, min, max, step, onNumbe
  * @param {boolean}  [props.showValue]      Whether each Style Library row shows its resolved value
  *                                          beside its label. Defaults to `true`; additive only, so
  *                                          every existing consumer keeps showing values.
+ * @param {?Function} [props.renderPreview] `({ value, tokens }) => Element`, rendered above the
+ *                                          Style Library tab's `Reset` button when supplied — a
+ *                                          shadow field's live preview square, for example. Omit
+ *                                          for no preview; additive only, so every existing
+ *                                          `TokenPopover` consumer that does not pass it is
+ *                                          unaffected.
  *
  * @since TBD
  *
@@ -190,6 +210,7 @@ export function TokenPopover({
 	onClear,
 	onClose,
 	showValue = true,
+	renderPreview,
 }) {
 	return (
 		<TabPanel
@@ -227,6 +248,7 @@ export function TokenPopover({
 						onClear={onClear}
 						onClose={onClose}
 						showValue={showValue}
+						renderPreview={renderPreview}
 					/>
 				) : renderCustom ? (
 					renderCustom(custom)

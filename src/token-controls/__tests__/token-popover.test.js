@@ -162,3 +162,58 @@ describe('TokenPopover showValue prop', () => {
 		expect(container.querySelector('.kadence-token-field__item-label').textContent).toBe('Medium');
 	});
 });
+
+describe('TokenPopover renderPreview prop', () => {
+	/**
+	 * When `renderPreview` is absent — every consumer besides `BoxShadowControl` today, including
+	 * radius/spacing/border — no extra preview markup renders on the Style Library tab. This is the
+	 * regression check that the additive prop leaves existing consumers unchanged.
+	 *
+	 * @return {void}
+	 */
+	it('renders no preview slot when renderPreview is omitted', () => {
+		render({ initialTab: 'style-library', tokens: [], renderPreview: undefined });
+
+		expect(container.querySelector('.kadence-token-field__preview')).toBeNull();
+	});
+
+	/**
+	 * When `renderPreview` is provided, its output renders inside `.kadence-token-field__preview`,
+	 * above the `Reset` button, on the Style Library tab.
+	 *
+	 * @return {void}
+	 */
+	it('renders renderPreview output above Reset when provided', () => {
+		const renderPreview = () => createElement('div', { 'data-testid': 'preview-square' });
+
+		render({ initialTab: 'style-library', tokens: [], renderPreview });
+
+		const list = container.querySelector('.kadence-token-field__list');
+		const preview = list.querySelector('.kadence-token-field__preview');
+		const reset = list.querySelector('.kadence-token-field__reset');
+
+		expect(preview).not.toBeNull();
+		expect(preview.querySelector('[data-testid="preview-square"]')).not.toBeNull();
+
+		const children = Array.from(list.children);
+		expect(children.indexOf(preview)).toBeLessThan(children.indexOf(reset));
+	});
+
+	/**
+	 * `renderPreview` is called with the current slot value and the pickable-token list, so a caller
+	 * can resolve either shape (an alias or a literal) into a preview.
+	 *
+	 * @return {void}
+	 */
+	it('calls renderPreview with the current value and token list', () => {
+		const renderPreview = jest.fn(() => null);
+		// An empty pickable list avoids rendering a token row: the mocked `Button` passes `isPressed`
+		// straight through to a DOM `<button>`, which React warns about for an unknown DOM attribute —
+		// a pre-existing quirk of this test file's stand-in, unrelated to what this assertion checks.
+		const tokens = [];
+
+		render({ initialTab: 'style-library', value: '{primitive.shadow.md}', tokens, renderPreview });
+
+		expect(renderPreview).toHaveBeenCalledWith({ value: '{primitive.shadow.md}', tokens });
+	});
+});

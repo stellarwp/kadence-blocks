@@ -118,6 +118,30 @@
 	overflow-y: auto;
 }
 
+/*
+ * The Style Library tab's optional preview slot (`TokenPopover`'s `renderPreview`), sitting above
+ * `Reset` inside the same list container. Centers whatever square the caller renders; only
+ * `BoxShadowControl` opts in today.
+ */
+.kadence-token-field__preview {
+	display: flex;
+	justify-content: center;
+	padding: 8px 4px 4px;
+}
+
+/*
+ * `BoxShadowControl`'s preview square: a plain gray-100 box with the active shadow's CSS applied, so
+ * a shadow reads at a glance before it is picked. Reuses this file's own established gray-100
+ * selection background and 2px control radius rather than new values.
+ */
+.kb-box-shadow-control__preview {
+	flex: 0 0 auto;
+	width: 48px;
+	height: 48px;
+	border-radius: 2px;
+	background: #f0f0f0;
+}
+
 // Each row: label left, value (and optional Default tag) right, on a 40px line with a 2px-radius hover.
 .kadence-token-field__item.components-button,
 .kadence-token-field__reset.components-button {
