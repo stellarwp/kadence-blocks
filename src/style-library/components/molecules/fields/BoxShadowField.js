@@ -29,7 +29,28 @@ import { __ } from '@wordpress/i18n';
  */
 import { pickableTokensForType } from '../../../helpers/tokens';
 import { BoxShadowControl } from '../../../../token-controls/controls/BoxShadowControl';
+import { boundTokenIds } from './BoxTokenField';
+import { isTokenAlias } from '../../../../token-controls/helpers/token-summary';
 import { TokenColorSelectField } from './TokenColorSelectField';
+
+/**
+ * The bound token id, unwrapped from its brace-wrapped alias, or unset when `value` holds a
+ * composite shadow object instead. `boundTokenIds` (shared with `BorderField`) expects the bare
+ * `primitive.`/`semantic.`-prefixed id a preset's own `tokens` map stores; this field's `value`
+ * carries the brace-wrapped alias `BoxShadowControl` matches against instead (see this file's own
+ * docblock — no envelope, no per-slot conversion), so the brace has to come off first. A composite
+ * object is not an alias at all and passes through unwrapped, matching `boundTokenIds`'
+ * non-string, non-list values with an empty exemption set.
+ *
+ * @param {*} value The stored value: a token alias, or a composite shadow object.
+ *
+ * @since TBD
+ *
+ * @return {Array<string>} The bound token ids, empty when nothing is bound.
+ */
+function boundShadowTokenIds(value) {
+	return boundTokenIds(isTokenAlias(value) ? value.slice(1, -1) : value);
+}
 
 /**
  * Render a box-shadow field from a settings schema entry.
@@ -46,7 +67,13 @@ import { TokenColorSelectField } from './TokenColorSelectField';
  * @return {JSX.Element} The field.
  */
 export function BoxShadowField({ field, value, onChange }) {
-	const tokens = pickableTokensForType('shadow').map((token) => ({
+	// A bare `type` filter alone returns every `shadow` token, including the two `Brand`-group
+	// semantics (`semantic.shadow.media`, `semantic.shadow.button`) that back other blocks' own
+	// default CSS and were never meant to be end-user-pickable here. Passing `role: 'shadow'` — every
+	// shadow token's derived role — engages the primitive narrowing, matching the three-entry list the
+	// Shadow screen itself offers. `boundShadowTokenIds` exempts the currently-bound token from that
+	// narrowing so a bound semantic still renders as its own label rather than a raw id.
+	const tokens = pickableTokensForType('shadow', 'shadow', boundShadowTokenIds(value)).map((token) => ({
 		...token,
 		alias: `{${token.id}}`,
 	}));

@@ -284,8 +284,19 @@ describe('BoxShadowField', () => {
 		document.body.appendChild(container);
 		root = createRoot(container);
 
+		// Mirrors the real pool: three scale primitives plus two `Brand`-group semantics
+		// (`semantic.shadow.media` / `semantic.shadow.button`) that are application-level defaults for
+		// other blocks' default CSS, never meant to be end-user-pickable here. All five share the derived
+		// `role` of "shadow" — `Pickable_Tokens_Catalog::role_of()` reads it off the id's second
+		// dot-segment, which is `shadow` for every one of them.
 		window[PICKABLE_TOKENS_GLOBAL] = {
-			tokens: [{ id: 'semantic.shadow.card', label: 'Card', type: 'shadow' }],
+			tokens: [
+				{ id: 'primitive.shadow.xs', label: 'XS', type: 'shadow', role: 'shadow' },
+				{ id: 'primitive.shadow.sm', label: 'SM', type: 'shadow', role: 'shadow' },
+				{ id: 'primitive.shadow.md', label: 'MD', type: 'shadow', role: 'shadow' },
+				{ id: 'semantic.shadow.media', label: 'Media Shadow', type: 'shadow', role: 'shadow' },
+				{ id: 'semantic.shadow.button', label: 'Button Shadow', type: 'shadow', role: 'shadow' },
+			],
 			values: {},
 		};
 	});
@@ -299,13 +310,53 @@ describe('BoxShadowField', () => {
 		window[PICKABLE_TOKENS_GLOBAL] = originalPool;
 	});
 
-	it("sources tokens via pickableTokensForType('shadow') with an alias attached", () => {
+	it("sources tokens via pickableTokensForType('shadow', 'shadow', ...), excluding the Brand-group semantics", () => {
 		act(() => {
 			root.render(createElement(BoxShadowField, { field: { label: 'Shadow' }, value: '', onChange: jest.fn() }));
 		});
 
-		expect(latestBoxShadowControlProps.tokens).toEqual([
-			{ id: 'semantic.shadow.card', label: 'Card', value: '', role: null, alias: '{semantic.shadow.card}' },
+		expect(latestBoxShadowControlProps.tokens.map((token) => token.id)).toEqual([
+			'primitive.shadow.xs',
+			'primitive.shadow.sm',
+			'primitive.shadow.md',
+		]);
+		expect(latestBoxShadowControlProps.tokens[0].alias).toBe('{primitive.shadow.xs}');
+	});
+
+	it('exempts the bound token from the primitive narrowing when it is a Brand-group semantic', () => {
+		act(() => {
+			root.render(
+				createElement(BoxShadowField, {
+					field: { label: 'Shadow' },
+					value: '{semantic.shadow.button}',
+					onChange: jest.fn(),
+				})
+			);
+		});
+
+		expect(latestBoxShadowControlProps.tokens.map((token) => token.id)).toEqual(
+			expect.arrayContaining(['semantic.shadow.button'])
+		);
+		expect(latestBoxShadowControlProps.tokens).not.toEqual(
+			expect.arrayContaining([expect.objectContaining({ id: 'semantic.shadow.media' })])
+		);
+	});
+
+	it('does not error and exempts nothing when the value is a composite shadow object, not a token reference', () => {
+		act(() => {
+			root.render(
+				createElement(BoxShadowField, {
+					field: { label: 'Shadow' },
+					value: { color: '#000', hOffset: 0, vOffset: 4, blur: 8, spread: 0 },
+					onChange: jest.fn(),
+				})
+			);
+		});
+
+		expect(latestBoxShadowControlProps.tokens.map((token) => token.id)).toEqual([
+			'primitive.shadow.xs',
+			'primitive.shadow.sm',
+			'primitive.shadow.md',
 		]);
 	});
 
