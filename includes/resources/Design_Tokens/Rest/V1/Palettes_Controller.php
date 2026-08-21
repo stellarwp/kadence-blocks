@@ -403,6 +403,9 @@ final class Palettes_Controller extends Controller {
 	 * removes only overrides, which is why the two cases share one handler. This matches the DELETE semantics
 	 * of the sibling library and preset controllers, where dropping the default resets it to baseline.
 	 *
+	 * Deleting the palette `$current` names hands that pointer to the default palette, so the stored document
+	 * never keeps an id that resolves to nothing.
+	 *
 	 * Idempotent for a baseline palette (a reset with nothing stored changes nothing); a palette the library
 	 * does not define at all is a 404.
 	 *
@@ -421,6 +424,19 @@ final class Palettes_Controller extends Controller {
 		}
 
 		$document = $this->mutator->remove_by_keys( $this->stored_document( $slug ), $this->palette_keys( $id ) );
+
+		// Removing the palette `$current` points at leaves that pointer naming an id that is no longer there.
+		// Nothing renders wrong — every reader fail-softs to `$default` — but the stale id stays in storage,
+		// and it springs back the moment the id exists again: a palette later created under the same id would
+		// go live without anyone activating it. Hand the pointer to the default palette instead. Only for a
+		// palette that actually goes away; deleting a baseline one reverts it and leaves it in the listing,
+		// so a pointer at it stays valid.
+		if ( $this->palettes->current( $slug ) === $id && in_array( $id, $this->palettes->user_created( $slug ), true ) ) {
+			$document = $this->mutator->merge(
+				$document,
+				$this->pointer_partial( Extensions::get_current_key(), $this->palettes->default_palette( $slug ) )
+			);
+		}
 
 		return $this->validate_and_save( $document, $id, $slug );
 	}

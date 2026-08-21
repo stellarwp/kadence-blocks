@@ -432,7 +432,8 @@ final class Palettes_ControllerTest extends TestCase {
 	}
 
 	/**
-	 * Deleting a user-created palette removes it; deleting the default palette is a 400.
+	 * Deleting a user-created palette removes it from the listing, since the baseline has no definition to
+	 * fall back to.
 	 *
 	 * @return void
 	 */
@@ -445,6 +446,53 @@ final class Palettes_ControllerTest extends TestCase {
 		$this->controller->delete_item( $delete );
 
 		$this->assertNotContains( 'ocean', $this->palettes->palette_ids() );
+	}
+
+	/**
+	 * Deleting the palette `$current` points at hands the pointer to the default palette rather than leaving
+	 * it naming an id that is no longer there.
+	 *
+	 * @return void
+	 */
+	public function testDeleteItemHandsCurrentToTheDefaultPalette(): void {
+		$this->controller->update_item( $this->write_request( 'ocean', 'Ocean', '#0000ff' ) );
+
+		$activate = new WP_REST_Request( 'PUT' );
+		$activate->set_param( 'current', 'ocean' );
+		$this->controller->set_current( $activate );
+		$this->assertSame( 'ocean', $this->palettes->current() );
+
+		$delete = new WP_REST_Request( 'DELETE' );
+		$delete->set_param( 'id', 'ocean' );
+		$this->controller->delete_item( $delete );
+
+		$this->assertSame( 'default', $this->palettes->current() );
+	}
+
+	/**
+	 * Re-creating a palette under an id that used to be `$current` does not silently make it live: the delete
+	 * that removed the previous one already handed the pointer away, so the new palette waits to be activated.
+	 *
+	 * Without that, the stale pointer survives in the stored document — invisible while the id names nothing,
+	 * because the reader fail-softs to `$default` — and springs back the moment the id exists again.
+	 *
+	 * @return void
+	 */
+	public function testRecreatingADeletedCurrentPaletteDoesNotReactivateIt(): void {
+		$this->controller->update_item( $this->write_request( 'ocean', 'Ocean', '#0000ff' ) );
+
+		$activate = new WP_REST_Request( 'PUT' );
+		$activate->set_param( 'current', 'ocean' );
+		$this->controller->set_current( $activate );
+
+		$delete = new WP_REST_Request( 'DELETE' );
+		$delete->set_param( 'id', 'ocean' );
+		$this->controller->delete_item( $delete );
+
+		// A different palette that happens to reuse the id — nobody activated it.
+		$this->controller->update_item( $this->write_request( 'ocean', 'Ocean Two', '#00ff00' ) );
+
+		$this->assertSame( 'default', $this->palettes->current() );
 	}
 
 	/**
