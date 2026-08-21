@@ -28,11 +28,13 @@
  *   rest of the control's body while off.
  *
  * A whole-shadow token pick (the Style Library tab) has no home in the native item's existing keys —
- * unlike border, where an alias replaces a single side's width slot, a shadow alias replaces the
- * *entire* value. It is stored as an added `alias` key on the native item (`toNativeShadow` keeps the
- * previous literal fields alongside it as a CSS fallback, never dropping them, so `render_shadow()`
- * still emits valid — if stale until resolved — CSS rather than corrupt placeholder text). Picking a
- * literal value again drops `alias`, returning the item to its original plain shape.
+ * unlike border, where an alias replaces a single side's width slot, a shadow alias would replace the
+ * *entire* value. Rather than invent a spot to carry a live alias, a pick resolves to its literal
+ * composite value immediately, at pick time, using the same `tokens` list `BoxShadowControl` already
+ * offers for its trigger label (`[{ id, alias, label, value, type, role }]`). `toNativeShadow` looks
+ * up the picked alias's resolved `value` (the feed's `box-shadow` shorthand string) and writes the
+ * parsed composite straight into the native item's plain fields — no alias key, no live link back to
+ * the token, matching how a per-instance color pick is already handled everywhere else in this plan.
  *
  * Color is out of scope for redesign here, exactly as in `EditorBorderControl` — this component
  * neither builds nor intercepts a color field, it only wires the caller's EXISTING one back in via
@@ -195,25 +197,79 @@ function axisToNative(slot) {
 }
 
 /**
- * Convert the native `[{ color, opacity, hOffset, vOffset, blur, spread, inset, alias? }]` attribute
- * value to `BoxShadowControl`'s alias-or-composite contract.
+ * The feed's resolved `box-shadow` shorthand grammar, matching what `Css_Renderer::shadow()`
+ * produces: an optional leading `inset `, four space-separated dimension tokens (offsetX, offsetY,
+ * blur, spread), then the color as the remainder of the string. Capturing the color as "everything
+ * after the fourth dimension" (rather than a fifth token) keeps a color with internal spaces —
+ * `rgba(23, 23, 23, 0.12)` — intact.
+ *
+ * @since TBD
+ */
+const SHADOW_SHORTHAND_PATTERN = /^(inset\s+)?(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(.+)$/;
+
+/**
+ * Parse a resolved `box-shadow` shorthand string into the composite `{ color, offsetX, offsetY, blur,
+ * spread, inset }` shape `BoxShadowControl` edits.
+ *
+ * @param {*} css The resolved shorthand (e.g. `"0px 2px 8px 0px #1717171f"`, with an optional
+ *                `inset ` prefix), or anything that fails to parse as one.
+ *
+ * @since TBD
+ *
+ * @return {Object} The parsed composite, or the field's default shape when `css` is empty or does
+ *                   not match the shorthand grammar.
+ */
+function parseResolvedShadow(css) {
+	const match = typeof css === 'string' ? css.trim().match(SHADOW_SHORTHAND_PATTERN) : null;
+
+	if (!match) {
+		return { ...DEFAULT_COMPOSITE };
+	}
+
+	const [, insetPrefix, offsetX, offsetY, blur, spread, color] = match;
+
+	return {
+		color,
+		offsetX,
+		offsetY,
+		blur,
+		spread,
+		inset: Boolean(insetPrefix),
+	};
+}
+
+/**
+ * Resolve a picked token alias to its literal composite value, via the same `tokens` list
+ * `BoxShadowControl` already offers for its trigger label.
+ *
+ * @param {string} alias  The picked token alias.
+ * @param {Array}  tokens Pickable `shadow`-type tokens, `[{id, label, value, alias}]`.
+ *
+ * @since TBD
+ *
+ * @return {?Object} The resolved composite, or `null` when the alias matches no pickable token.
+ */
+function resolveShadowAlias(alias, tokens) {
+	const entry = (tokens || []).find((token) => token.alias === alias);
+
+	return entry ? parseResolvedShadow(entry.value) : null;
+}
+
+/**
+ * Convert the native `[{ color, opacity, hOffset, vOffset, blur, spread, inset }]` attribute value to
+ * the composite `BoxShadowControl` edits.
  *
  * @param {?Array} native The native shadow attribute value.
  *
  * @since TBD
  *
- * @return {string|Object} A token alias string, when the item carries one, otherwise the composite
- *                          `{ color, offsetX, offsetY, blur, spread, inset }` shape.
+ * @return {Object} The composite `{ color, offsetX, offsetY, blur, spread, inset }` shape.
  */
 export function fromNativeShadow(native) {
 	const source = native?.[0];
 
 	if (!source) {
 		return { ...DEFAULT_COMPOSITE };
-	}
-
-	if (source.alias) {
-		return source.alias;
 	}
 
 	return {
@@ -227,37 +283,36 @@ export function fromNativeShadow(native) {
 }
 
 /**
- * Convert `BoxShadowControl`'s alias-or-composite value back to the native
+ * Convert `BoxShadowControl`'s value back to the native
  * `[{ color, opacity, hOffset, vOffset, blur, spread, inset }]` attribute shape.
  *
- * @param {string|Object} value          The value `BoxShadowControl` reports through `onChange`.
- * @param {?Array}        previousNative The attribute's current value, kept as the literal CSS
- *                                       fallback when `value` is a freshly-picked alias.
+ * A token alias string (a pick from the Style Library tab) resolves to its literal composite value
+ * immediately, through `tokens`, rather than being stored as a live link back to the token — an
+ * alias that resolves to nothing (a stale or unmapped id) falls back to the composite default so the
+ * write never corrupts the attribute.
+ *
+ * @param {string|Object} value    The value `BoxShadowControl` reports through `onChange`.
+ * @param {Array}         [tokens] Pickable `shadow`-type tokens, `[{id, label, value, alias}]`, used
+ *                                 to resolve a picked alias to its literal value.
  *
  * @since TBD
  *
- * @return {Array} `[{ color, opacity, hOffset, vOffset, blur, spread, inset, alias? }]`.
+ * @return {Array} `[{ color, opacity, hOffset, vOffset, blur, spread, inset }]`.
  */
-export function toNativeShadow(value, previousNative) {
-	if (typeof value === 'string') {
-		const previous = previousNative?.[0] || {};
+export function toNativeShadow(value, tokens = []) {
+	const composite = typeof value === 'string' ? resolveShadowAlias(value, tokens) || DEFAULT_COMPOSITE : value;
 
-		// Keep the previous literal fields as the CSS fallback — `render_shadow()` does not resolve
-		// `alias` and would otherwise have nothing to render until the value is picked again.
-		return [{ ...previous, alias: value }];
-	}
-
-	const { color, opacity } = splitColorOpacity(value?.color);
+	const { color, opacity } = splitColorOpacity(composite?.color);
 
 	return [
 		{
 			color: color || DEFAULT_COMPOSITE.color,
 			opacity,
-			hOffset: axisToNative(value?.offsetX),
-			vOffset: axisToNative(value?.offsetY),
-			blur: axisToNative(value?.blur),
-			spread: axisToNative(value?.spread),
-			inset: value?.inset === true,
+			hOffset: axisToNative(composite?.offsetX),
+			vOffset: axisToNative(composite?.offsetY),
+			blur: axisToNative(composite?.blur),
+			spread: axisToNative(composite?.spread),
+			inset: composite?.inset === true,
 		},
 	];
 }
@@ -301,7 +356,7 @@ export function EditorShadowControl({
 				<BoxShadowControl
 					label={undefined}
 					value={fromNativeShadow(value)}
-					onChange={(next) => onChange(toNativeShadow(next, value))}
+					onChange={(next) => onChange(toNativeShadow(next, tokens))}
 					tokens={tokens}
 					renderColor={renderColor}
 					disabled={disabled}

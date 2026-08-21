@@ -173,68 +173,63 @@ describe('EditorShadowControl native <-> BoxShadowControl value bridging', () =>
 	});
 
 	/**
-	 * Picking a token alias in the Style Library tab writes the alias id into the native item, keeping
-	 * the previous literal fields alongside it as a CSS fallback rather than dropping them.
+	 * Picking a token alias in the Style Library tab resolves it to its literal composite value
+	 * immediately, via the `tokens` list, and writes that literal into the native item — no `alias`
+	 * key, no live link back to the token.
 	 *
 	 * @return {void}
 	 */
-	it('stores a picked token alias alongside the previous literal fields, not in place of them', () => {
-		const { shadowControl, onChange } = renderEditorShadowControl();
-		const alias = 'primitive.shadow.md';
+	it('resolves a picked token alias to its literal composite value, not an alias marker', () => {
+		const { shadowControl, onChange } = renderEditorShadowControl({
+			tokens: [
+				{
+					id: 'primitive.shadow.md',
+					alias: 'primitive.shadow.md',
+					label: 'Medium',
+					value: '2px 3px 4px 5px #111111',
+					type: 'shadow',
+				},
+			],
+		});
 
-		shadowControl.props.onChange(alias);
+		shadowControl.props.onChange('primitive.shadow.md');
 
 		expect(onChange).toHaveBeenCalledWith([
 			{
 				color: '#111111',
-				opacity: 0.4,
+				opacity: 1,
 				hOffset: 2,
 				vOffset: 3,
 				blur: 4,
 				spread: 5,
 				inset: false,
-				alias,
 			},
 		]);
+		expect(onChange.mock.calls[0][0][0]).not.toHaveProperty('alias');
 	});
 
 	/**
-	 * Reading a native item that carries an `alias` reports the alias string straight back to
-	 * `BoxShadowControl`, not the literal fallback fields kept alongside it.
+	 * An alias that resolves to nothing (a stale or unmapped token id) falls back to the composite
+	 * default rather than corrupting the native item or leaving it unwritten.
 	 *
 	 * @return {void}
 	 */
-	it('reads a native item carrying an alias back as the alias string', () => {
-		const alias = 'primitive.shadow.md';
-		const { shadowControl } = renderEditorShadowControl({
-			value: [{ ...NATIVE_VALUE[0], alias }],
-		});
+	it('falls back to the composite default when a picked alias matches no pickable token', () => {
+		const { shadowControl, onChange } = renderEditorShadowControl({ tokens: [] });
 
-		expect(shadowControl.props.value).toBe(alias);
-	});
+		shadowControl.props.onChange('primitive.shadow.unknown');
 
-	/**
-	 * Picking a literal composite value again after an alias drops the `alias` key, returning the
-	 * native item to its plain shape.
-	 *
-	 * @return {void}
-	 */
-	it('drops the alias key when a literal composite value is written after an alias', () => {
-		const { shadowControl, onChange } = renderEditorShadowControl({
-			value: [{ ...NATIVE_VALUE[0], alias: 'primitive.shadow.md' }],
-		});
-
-		shadowControl.props.onChange({
-			color: '#111111',
-			offsetX: '2px',
-			offsetY: '3px',
-			blur: '4px',
-			spread: '5px',
-			inset: false,
-		});
-
-		const written = onChange.mock.calls[0][0][0];
-		expect(written).not.toHaveProperty('alias');
+		expect(onChange).toHaveBeenCalledWith([
+			{
+				color: '#000000',
+				opacity: 1,
+				hOffset: 0,
+				vOffset: 0,
+				blur: 0,
+				spread: 0,
+				inset: false,
+			},
+		]);
 	});
 });
 
@@ -252,21 +247,6 @@ describe('EditorShadowControl enable toggle', () => {
 
 		toggle.props.onChange(true);
 		expect(onEnableChange).toHaveBeenCalledWith(true);
-	});
-
-	/**
-	 * The toggle stays functional when the current value is an aliased token, not just a composite.
-	 *
-	 * @return {void}
-	 */
-	it('keeps the enable toggle independent when the value is a token alias', () => {
-		const { toggle, onEnableChange } = renderEditorShadowControl({
-			enable: true,
-			value: [{ ...NATIVE_VALUE[0], alias: 'primitive.shadow.md' }],
-		});
-
-		toggle.props.onChange(false);
-		expect(onEnableChange).toHaveBeenCalledWith(false);
 	});
 
 	/**
