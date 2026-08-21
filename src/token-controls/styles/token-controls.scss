@@ -742,15 +742,24 @@
 	.kadence-pop-color-label {
 		display: none;
 	}
+}
 
-	// `@kadence/components`' `SinglePopColorControl` draws its own swatch button
-	// (`.kadence-pop-color-indicate`, `pop-color-control/editor.scss`) at a fixed 28x28 — 8px bigger
-	// than this slot — so it has to be forced down to 20x20 rather than just having its wrapper's
-	// chrome stripped like the rules above.
-	.kadence-pop-color-indicate {
-		width: 20px;
-		height: 20px;
-	}
+/*
+ * `@kadence/components`' `SinglePopColorControl` draws its own swatch (`.kadence-pop-color-indicate`,
+ * inside `.kadence-pop-color-icon-indicate`, inside `.kadence-pop-color-control` — see
+ * `single-pop-color-control/index.js:305-312` and `pop-color-control/index.js:55`) at a fixed 28x28,
+ * via `pop-color-control/editor.scss`'s own
+ * `.kadence-pop-color-control .kadence-pop-color-icon-indicate .kadence-pop-color-indicate` rule —
+ * three classes, (0,3,0). Nesting the override inside `.kb-border-control__swatch` alone only adds
+ * one class on top of that same three-class chain's tail, tying rather than beating it — a tie a
+ * later-loaded CSS file could still lose depending on enqueue order. Written here as a standalone
+ * rule qualified by both `.kb-border-control__box` and `.kb-border-control__swatch` (both real
+ * ancestors — see `BorderControl.js`'s row markup) reaches four classes, (0,4,0), which wins outright
+ * regardless of load order.
+ */
+.kb-border-control__box .kb-border-control__swatch .kadence-pop-color-icon-indicate .kadence-pop-color-indicate {
+	width: 20px;
+	height: 20px;
 }
 
 /*
