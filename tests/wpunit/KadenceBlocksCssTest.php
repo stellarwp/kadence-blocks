@@ -750,6 +750,34 @@ class KadenceBlocksCssTest extends WPTestCase {
 	}
 
 	/**
+	 * The Single Icon block's own render_responsive_size() call shape — size/tabletSize/mobileSize onto
+	 * font-size, with no unit key of its own — resolves an alias at every breakpoint, which is what lets the
+	 * icon size reference a design token with no change to the block's CSS generator.
+	 *
+	 * @return void
+	 */
+	public function testRenderResponsiveSizeResolvesTheIconSizeAliasAtEveryBreakpoint(): void {
+		$this->css->set_selector( '.kt-svg-item-123 .kb-svg-icon-wrap' );
+		$this->css->render_responsive_size(
+			[
+				'size'       => '{primitive.dimension.icon-size.lg}',
+				'tabletSize' => '{primitive.dimension.icon-size.sm}',
+				'mobileSize' => 32,
+			],
+			[ 'size', 'tabletSize', 'mobileSize' ],
+			'font-size'
+		);
+		$output = $this->css->css_output();
+
+		$this->assertStringContainsString( 'font-size:var(--kb-token--primitive--dimension--icon-size--lg)', $output,
+			'An aliased desktop size emits the token var with no px unit appended' );
+		$this->assertStringContainsString( 'font-size:var(--kb-token--primitive--dimension--icon-size--sm)', $output,
+			'An aliased tablet size emits its own token var' );
+		$this->assertStringContainsString( 'font-size:32px', $output,
+			'A numeric mobile size still renders with the px unit the attribute implies' );
+	}
+
+	/**
 	 * render_measure resolves an aliased side to the token var (no unit) within the
 	 * shorthand while numeric sides keep their unit.
 	 *

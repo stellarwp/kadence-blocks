@@ -104,6 +104,22 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
+	 * The icon `size` binding references a token but names no css_prop, so it stays editor-only metadata and
+	 * contributes no declaration — the icon's font-size must keep coming from the block's own per-instance CSS
+	 * and its token default from the Adapter, never from a low-specificity block-default rule.
+	 *
+	 * @return void
+	 */
+	public function testTheIconSizeBindingContributesNoDeclaration(): void {
+		$registry = $this->container->get( Token_Registry::class );
+
+		$css = $this->builder( $registry )->css();
+
+		$this->assertStringNotContainsString( 'font-size:var(' . Css_Var::from_id( 'semantic.icon-size.default' ), $css );
+		$this->assertStringNotContainsString( Css_Var::from_id( 'semantic.icon-size.default' ), $css );
+	}
+
+	/**
 	 * The legacy `kadence/icon` container (the pre-3.0 `icons[]` array shape) has no top-level
 	 * `color`/`size` attribute to bind, so none of the preset-binding wiring — all of which keys off the
 	 * `kadence/single-icon` child block — ever registers preset bindings for `kadence/icon` and the builder

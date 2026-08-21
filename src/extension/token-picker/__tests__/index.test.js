@@ -61,6 +61,33 @@ const POOL = {
 			role: 'spacing',
 		},
 		{
+			id: 'primitive.dimension.icon-size.md',
+			alias: '{primitive.dimension.icon-size.md}',
+			label: 'Icon Size MD',
+			type: 'dimension',
+			layer: 'primitive',
+			role: 'icon-size',
+		},
+		{
+			id: 'semantic.icon-size.default',
+			alias: '{semantic.icon-size.default}',
+			label: 'Default Icon Size',
+			type: 'dimension',
+			layer: 'semantic',
+			role: 'icon-size',
+		},
+		{
+			// A Style Library custom token minted under the Icon Sizes group: it lives in the reserved
+			// `custom` namespace but carries the group's role, which is what makes it pickable alongside the
+			// shipped scale steps rather than stranded under a `custom` role of its own.
+			id: 'primitive.dimension.custom.brand-icon',
+			alias: '{primitive.dimension.custom.brand-icon}',
+			label: 'Brand Icon',
+			type: 'dimension',
+			layer: 'primitive',
+			role: 'icon-size',
+		},
+		{
 			id: 'primitive.font-weight.bold',
 			alias: '{primitive.font-weight.bold}',
 			label: 'Bold',
@@ -93,6 +120,9 @@ const POOL = {
 			'semantic.radius.button': '0.5rem',
 			'primitive.dimension.spacing.md': '16px',
 			'semantic.spacing.block': '1.5rem',
+			'primitive.dimension.icon-size.md': '1.5rem',
+			'semantic.icon-size.default': '1.5rem',
+			'primitive.dimension.custom.brand-icon': '2rem',
 			'primitive.font-weight.bold': '700',
 			'primitive.shadow.sm': '0 1px 2px rgba(0,0,0,0.1)',
 			'semantic.shadow.button': '0 2px 4px rgba(0,0,0,0.2)',
@@ -117,6 +147,17 @@ const PRESETS = {
 					{ key: 'button-radius', kind: 'dimension', token: null, control_attr: 'borderRadius' },
 					{ key: 'button-gap', kind: 'dimension', token: null, control_attr: 'gap' },
 					{ key: 'button-shadow', kind: 'shadow', token: 'semantic.shadow.button', control_attr: null },
+				],
+			},
+			'kadence/single-icon': {
+				properties: [
+					{
+						key: 'size',
+						kind: 'dimension',
+						token: 'semantic.icon-size.default',
+						control_attr: 'size',
+						responsive_attrs: { tablet: 'tabletSize', mobile: 'mobileSize' },
+					},
 				],
 			},
 		},
@@ -200,10 +241,21 @@ describe('pickableTokensFor', () => {
 		expect(result.map((token) => token.id)).toEqual([
 			'semantic.radius.button',
 			'semantic.spacing.block',
+			'semantic.icon-size.default',
 			'primitive.dimension.radius.sm',
 			'primitive.dimension.spacing.md',
+			'primitive.dimension.icon-size.md',
+			'primitive.dimension.custom.brand-icon',
 		]);
-		expect(result.map((token) => token.value)).toEqual(['0.5rem', '1.5rem', '4px', '16px']);
+		expect(result.map((token) => token.value)).toEqual([
+			'0.5rem',
+			'1.5rem',
+			'1.5rem',
+			'4px',
+			'16px',
+			'1.5rem',
+			'2rem',
+		]);
 	});
 
 	it('returns only the fontWeight token for the text kind', () => {
@@ -296,6 +348,32 @@ describe('pickableTokensForControl', () => {
 		// so even the bound semantic radius is dropped.
 		expect(result.map((token) => token.id)).toEqual(['primitive.dimension.radius.sm']);
 		expect(result.every((token) => token.role === 'radius')).toBe(true);
+	});
+
+	it('narrows the icon size control to the icon-size scale, dropping radius and spacing', () => {
+		const result = pickableTokensForControl('kadence/single-icon', 'size');
+
+		// The bound `semantic.icon-size.default` fixes the sub-kind, and the primitives-only scoping then
+		// offers the scale steps rather than the component semantic that merely aliases one of them. `size`
+		// alone would infer nothing (it matches no role once de-hyphenated), so the bound token is doing the
+		// narrowing here — without it the whole dimension bucket would be offered.
+		expect(result.map((token) => token.id)).toEqual([
+			'primitive.dimension.icon-size.md',
+			'primitive.dimension.custom.brand-icon',
+		]);
+		expect(result.every((token) => token.role === 'icon-size')).toBe(true);
+	});
+
+	it('offers a Style Library custom icon-size token alongside the shipped scale steps', () => {
+		const custom = pickableTokensForControl('kadence/single-icon', 'size').find(
+			(token) => token.id === 'primitive.dimension.custom.brand-icon'
+		);
+
+		expect(custom).toMatchObject({
+			alias: '{primitive.dimension.custom.brand-icon}',
+			label: 'Brand Icon',
+			value: '2rem',
+		});
 	});
 
 	it('keeps a bound primitive size in the list', () => {

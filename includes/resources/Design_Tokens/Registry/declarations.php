@@ -735,15 +735,30 @@ return [
 			// contributes no specificity, so this is identical in effect to a hand-written
 			// `.wp-block-kadence-single-icon .kb-svg-icon-wrap` descendant rule.
 			//
-			// `size` is deliberately NOT bound here: it is rendered two incompatible ways (an SVG prop in
-			// the editor, a `font-size` CSS rule on the front end) and is never empty, so it cannot use this
-			// low-specificity-CSS-default mechanism at all.
+			// `size` names NO css_prop, and that omission is the whole point: it is rendered two incompatible
+			// ways (a raw SVG width/height prop in the editor, a `font-size` CSS rule on the front end) and is
+			// never empty, so it cannot use the low-specificity-CSS-default mechanism `color` uses. Its token
+			// default is delivered by the per-block Adapter and the editor attribute-default catalog instead.
+			// What the binding DOES carry is editor-only metadata — `control_attr` plus the per-device attribute
+			// names — which is what makes the Icon Size control token-pickable. Css_Builder only contributes a
+			// rule for a binding that both references a token and names a css_prop, so this projects nothing.
 			'block'    => 'kadence/single-icon',
 			'bindings' => [
 				'color' => [
 					'token'        => 'semantic.color.icon',
 					'css_prop'     => 'color',
 					'css_selector' => '*.kb-svg-icon-wrap',
+				],
+				'size'  => [
+					'token'            => 'semantic.icon-size.default',
+					'control_attr'     => 'size',
+					// The block names its per-device size attributes by a prefix convention, which is a naming
+					// rule rather than something safely derivable, so the editor is told them rather than
+					// guessing — the same reason the Button's radius binding declares its own.
+					'responsive_attrs' => [
+						'tablet' => 'tabletSize',
+						'mobile' => 'mobileSize',
+					],
 				],
 			],
 		],

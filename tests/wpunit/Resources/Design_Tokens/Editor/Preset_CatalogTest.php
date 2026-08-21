@@ -19,6 +19,8 @@ final class Preset_CatalogTest extends TestCase {
 
 	private const BUTTON = 'kadence/singlebtn';
 
+	private const ICON = 'kadence/single-icon';
+
 	/**
 	 * @var Preset_Catalog
 	 */
@@ -158,6 +160,40 @@ final class Preset_CatalogTest extends TestCase {
 		$this->assertArrayHasKey( 'secondary', $button['values'] );
 		$this->assertArrayHasKey( 'button-bg', $button['values']['primary'] );
 		$this->assertNotSame( '', $button['values']['primary']['button-bg'] );
+	}
+
+	/**
+	 * The Single Icon catalog surfaces `size` as a dimension-kind control bound to the icon-size token, with
+	 * its per-device attribute names, so the editor's Icon Size control resolves a pickable token list. The
+	 * property carries no css_prop, so this surface is the only thing the binding contributes.
+	 *
+	 * @return void
+	 */
+	public function testItSurfacesTheIconSizeControlSurface(): void {
+		$icon = $this->catalog->all()['libraries'][ Token_Store::default_slug() ][ self::ICON ];
+
+		$by_key = [];
+		foreach ( $icon['properties'] as $property ) {
+			$by_key[ $property['key'] ] = $property;
+		}
+
+		$this->assertSame( 'size', $by_key['size']['control_attr'] );
+		$this->assertSame( 'dimension', $by_key['size']['kind'] );
+		$this->assertSame( 'semantic.icon-size.default', $by_key['size']['token'] );
+		$this->assertSame(
+			[
+				'tablet' => 'tabletSize',
+				'mobile' => 'mobileSize',
+			],
+			$by_key['size']['responsive_attrs']
+		);
+
+		// The color binding is untouched by the size addition and stays a color-kind control.
+		$this->assertSame( 'color', $by_key['color']['kind'] );
+
+		// The default preset resolves the size to the icon-size token's literal, which is what a control
+		// compares against to decide bound-vs-overridden.
+		$this->assertSame( '1.5rem', $icon['values']['default']['size'] );
 	}
 
 	/**
