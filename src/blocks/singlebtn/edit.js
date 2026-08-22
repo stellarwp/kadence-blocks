@@ -418,19 +418,22 @@ export default function KadenceButtonEdit(props) {
 	// lookup can target, so their PHP bindings declare no `control_attr` at all (see declarations.php's
 	// `kadence/singlebtn` block). One PHP binding exists per property (`button-border-width`,
 	// `button-shadow`) — there is one border-width scale and one shadow scale, not a separate one per
-	// state — so every hover/sticky/transparent variant below resolves to the same key on purpose.
-	const borderWidthTokens = pickableTokensForKey('kadence/singlebtn', 'button-border-width') || [];
-	const borderHoverWidthTokens = pickableTokensForKey('kadence/singlebtn', 'button-border-width') || [];
-	const borderTransparentWidthTokens = pickableTokensForKey('kadence/singlebtn', 'button-border-width') || [];
-	const borderTransparentHoverWidthTokens = pickableTokensForKey('kadence/singlebtn', 'button-border-width') || [];
-	const borderStickyWidthTokens = pickableTokensForKey('kadence/singlebtn', 'button-border-width') || [];
-	const borderStickyHoverWidthTokens = pickableTokensForKey('kadence/singlebtn', 'button-border-width') || [];
-	const shadowTokens = pickableTokensForKey('kadence/singlebtn', 'button-shadow') || [];
-	const shadowHoverTokens = pickableTokensForKey('kadence/singlebtn', 'button-shadow') || [];
-	const shadowTransparentTokens = pickableTokensForKey('kadence/singlebtn', 'button-shadow') || [];
-	const shadowTransparentHoverTokens = pickableTokensForKey('kadence/singlebtn', 'button-shadow') || [];
-	const shadowStickyTokens = pickableTokensForKey('kadence/singlebtn', 'button-shadow') || [];
-	const shadowStickyHoverTokens = pickableTokensForKey('kadence/singlebtn', 'button-shadow') || [];
+	// state — so every hover/sticky/transparent variant below reuses the same resolved list rather than
+	// re-filtering the pool per state.
+	const borderWidthPickableTokens = pickableTokensForKey('kadence/singlebtn', 'button-border-width');
+	const borderWidthTokens = borderWidthPickableTokens;
+	const borderHoverWidthTokens = borderWidthPickableTokens;
+	const borderTransparentWidthTokens = borderWidthPickableTokens;
+	const borderTransparentHoverWidthTokens = borderWidthPickableTokens;
+	const borderStickyWidthTokens = borderWidthPickableTokens;
+	const borderStickyHoverWidthTokens = borderWidthPickableTokens;
+	const shadowPickableTokens = pickableTokensForKey('kadence/singlebtn', 'button-shadow');
+	const shadowTokens = shadowPickableTokens;
+	const shadowHoverTokens = shadowPickableTokens;
+	const shadowTransparentTokens = shadowPickableTokens;
+	const shadowTransparentHoverTokens = shadowPickableTokens;
+	const shadowStickyTokens = shadowPickableTokens;
+	const shadowStickyHoverTokens = shadowPickableTokens;
 
 	// The mode describes what THIS device stores, not what it inherits. A breakpoint that stores nothing
 	// has nothing that differs, so it reads as linked — deriving from the inherited corners instead would

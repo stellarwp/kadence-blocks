@@ -328,9 +328,14 @@ describe('pickableTokensForKey', () => {
 		expect(result.every((token) => token.role === 'shadow')).toBe(true);
 	});
 
-	it('leaves pickableTokensForControl returning empty for the same control_attr-less property, proving the paths are independent', () => {
-		expect(pickableTokensForControl('kadence/singlebtn', 'shadow')).toEqual([]);
+	it('succeeds by key on the exact same property that pickableTokensForControl cannot reach by any control_attr guess, proving the two lookup paths are genuinely independent', () => {
+		// Not a vacuous "no control_attr matches, so both return []" comparison: pickableTokensForKey
+		// resolves real tokens for this property (asserted above), while pickableTokensForControl fails to
+		// find it under its own key used AS a controlAttr, or under the attribute the real control writes
+		// ('shadow') — because the property carries no control_attr at all, not because the guess is wrong.
 		expect(pickableTokensForControl('kadence/singlebtn', 'button-shadow')).toEqual([]);
+		expect(pickableTokensForControl('kadence/singlebtn', 'shadow')).toEqual([]);
+		expect(pickableTokensForKey('kadence/singlebtn', 'button-shadow').length).toBeGreaterThan(0);
 	});
 
 	it('returns an empty array for an unmapped key', () => {
