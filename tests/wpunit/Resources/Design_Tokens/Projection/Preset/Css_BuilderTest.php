@@ -94,7 +94,10 @@ final class Css_BuilderTest extends TestCase {
 				. '--global-palette-btn:var(--kb-token--preset--kadence-singlebtn--secondary--button-text);'
 				. '--global-palette-btn-bg-hover:var(--kb-token--preset--kadence-singlebtn--secondary--button-bg-hover);'
 				. '--global-palette-btn-hover:var(--kb-token--preset--kadence-singlebtn--secondary--button-text-hover);'
-				. '--kb-btn-radius:var(--kb-token--preset--kadence-singlebtn--secondary--button-radius);}',
+				. '--kb-btn-radius:var(--kb-token--preset--kadence-singlebtn--secondary--button-radius);'
+				. '--kb-btn-border-width:var(--kb-token--preset--kadence-singlebtn--secondary--button-border-width);'
+				. '--kb-btn-border-style:var(--kb-token--preset--kadence-singlebtn--secondary--button-border-style);'
+				. '--kb-btn-border-color:var(--kb-token--preset--kadence-singlebtn--secondary--button-border-color);}',
 			$css
 		);
 	}
@@ -114,7 +117,10 @@ final class Css_BuilderTest extends TestCase {
 				. '--global-palette-btn:var(--kb-token--preset--kadence-singlebtn--primary--button-text);'
 				. '--global-palette-btn-bg-hover:var(--kb-token--preset--kadence-singlebtn--primary--button-bg-hover);'
 				. '--global-palette-btn-hover:var(--kb-token--preset--kadence-singlebtn--primary--button-text-hover);'
-				. '--kb-btn-radius:var(--kb-token--preset--kadence-singlebtn--primary--button-radius);}',
+				. '--kb-btn-radius:var(--kb-token--preset--kadence-singlebtn--primary--button-radius);'
+				. '--kb-btn-border-width:var(--kb-token--preset--kadence-singlebtn--primary--button-border-width);'
+				. '--kb-btn-border-style:var(--kb-token--preset--kadence-singlebtn--primary--button-border-style);'
+				. '--kb-btn-border-color:var(--kb-token--preset--kadence-singlebtn--primary--button-border-color);}',
 			$css
 		);
 	}
