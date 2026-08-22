@@ -98,7 +98,7 @@ import {
 	combineColorOpacity,
 	splitColorOpacity,
 } from '../../extension/design-tokens/components/EditorShadowControl';
-import { pickableTokensForControl } from '../../extension/token-picker';
+import { pickableTokensForControl, pickableTokensForKey } from '../../extension/token-picker';
 
 /**
  * `EditorBorderControl`'s `renderColor` render-prop: reuses the block's existing `PopColorControl`
@@ -413,24 +413,24 @@ export default function KadenceButtonEdit(props) {
 	const { setPreviewDeviceType: setPreviewDevice } = useDispatch('kadenceblocks/data');
 	const borderRadiusTokens = pickableTokensForControl('kadence/singlebtn', 'borderRadius') || [];
 	const borderRadiusIsRelative = borderRadiusUnit === 'em' || borderRadiusUnit === 'rem';
-	// One pickable-width-token list per border control, keyed the same way its own attribute is —
-	// mirrors `borderRadiusTokens` above, one call per surface rather than one shared list, since a
-	// future per-surface `control_attr` mapping would need its own distinct entry anyway.
-	const borderWidthTokens = pickableTokensForControl('kadence/singlebtn', 'borderStyle') || [];
-	const borderHoverWidthTokens = pickableTokensForControl('kadence/singlebtn', 'borderHoverStyle') || [];
-	const borderTransparentWidthTokens = pickableTokensForControl('kadence/singlebtn', 'borderTransparentStyle') || [];
-	const borderTransparentHoverWidthTokens =
-		pickableTokensForControl('kadence/singlebtn', 'borderTransparentHoverStyle') || [];
-	const borderStickyWidthTokens = pickableTokensForControl('kadence/singlebtn', 'borderStickyStyle') || [];
-	const borderStickyHoverWidthTokens = pickableTokensForControl('kadence/singlebtn', 'borderStickyHoverStyle') || [];
-	// One pickable shadow-token list per shadow control, keyed the same way its own attribute is —
-	// mirrors the border width tokens above.
-	const shadowTokens = pickableTokensForControl('kadence/singlebtn', 'shadow') || [];
-	const shadowHoverTokens = pickableTokensForControl('kadence/singlebtn', 'shadowHover') || [];
-	const shadowTransparentTokens = pickableTokensForControl('kadence/singlebtn', 'shadowTransparent') || [];
-	const shadowTransparentHoverTokens = pickableTokensForControl('kadence/singlebtn', 'shadowTransparentHover') || [];
-	const shadowStickyTokens = pickableTokensForControl('kadence/singlebtn', 'shadowSticky') || [];
-	const shadowStickyHoverTokens = pickableTokensForControl('kadence/singlebtn', 'shadowStickyHover') || [];
+	// Border width and shadow bind through their bindings KEY, not a `control_attr` — the native border
+	// and shadow attributes are nested per-side/composite shapes, not a single scalar a `control_attr`
+	// lookup can target, so their PHP bindings declare no `control_attr` at all (see declarations.php's
+	// `kadence/singlebtn` block). One PHP binding exists per property (`button-border-width`,
+	// `button-shadow`) — there is one border-width scale and one shadow scale, not a separate one per
+	// state — so every hover/sticky/transparent variant below resolves to the same key on purpose.
+	const borderWidthTokens = pickableTokensForKey('kadence/singlebtn', 'button-border-width') || [];
+	const borderHoverWidthTokens = pickableTokensForKey('kadence/singlebtn', 'button-border-width') || [];
+	const borderTransparentWidthTokens = pickableTokensForKey('kadence/singlebtn', 'button-border-width') || [];
+	const borderTransparentHoverWidthTokens = pickableTokensForKey('kadence/singlebtn', 'button-border-width') || [];
+	const borderStickyWidthTokens = pickableTokensForKey('kadence/singlebtn', 'button-border-width') || [];
+	const borderStickyHoverWidthTokens = pickableTokensForKey('kadence/singlebtn', 'button-border-width') || [];
+	const shadowTokens = pickableTokensForKey('kadence/singlebtn', 'button-shadow') || [];
+	const shadowHoverTokens = pickableTokensForKey('kadence/singlebtn', 'button-shadow') || [];
+	const shadowTransparentTokens = pickableTokensForKey('kadence/singlebtn', 'button-shadow') || [];
+	const shadowTransparentHoverTokens = pickableTokensForKey('kadence/singlebtn', 'button-shadow') || [];
+	const shadowStickyTokens = pickableTokensForKey('kadence/singlebtn', 'button-shadow') || [];
+	const shadowStickyHoverTokens = pickableTokensForKey('kadence/singlebtn', 'button-shadow') || [];
 
 	// The mode describes what THIS device stores, not what it inherits. A breakpoint that stores nothing
 	// has nothing that differs, so it reads as linked — deriving from the inherited corners instead would
