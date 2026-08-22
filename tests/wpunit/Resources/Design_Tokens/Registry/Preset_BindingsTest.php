@@ -238,6 +238,11 @@ final class Preset_BindingsTest extends TestCase {
 	 * "semantic.shadow.button" => "shadow"), matching the real `kadence/singlebtn` `button-shadow`
 	 * binding, which has no `control_attr` and so is classified purely from its bound token.
 	 *
+	 * The bound property is deliberately named "button-example", not "button-shadow": `kind()` falls
+	 * back to classifying the property NAME itself when the token's own group doesn't resolve, and
+	 * "button-shadow" would then match the "shadow" needle by name alone — masking whether the
+	 * "unrecognized group falls back to text" case is really exercising that fallback.
+	 *
 	 * @dataProvider tokenGroupKindProvider
 	 *
 	 * @param string $token    The bound token id.
@@ -249,11 +254,11 @@ final class Preset_BindingsTest extends TestCase {
 		$bindings = Preset_Bindings::from_array(
 			[
 				'block'    => 'kadence/singlebtn',
-				'bindings' => [ 'button-shadow' => [ 'token' => $token ] ],
+				'bindings' => [ 'button-example' => [ 'token' => $token ] ],
 			]
 		);
 
-		$this->assertSame( $expected, $bindings->kind( 'button-shadow' ) );
+		$this->assertSame( $expected, $bindings->kind( 'button-example' ) );
 	}
 
 	/**
