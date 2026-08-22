@@ -321,4 +321,28 @@ describe('combineColorOpacity / splitColorOpacity', () => {
 		expect(combineColorOpacity('', 0.5)).toBe('');
 		expect(splitColorOpacity('')).toEqual({ color: '', opacity: 1 });
 	});
+
+	/**
+	 * A non-hex CSS color literal (a custom property reference, `transparent`, or an existing
+	 * `rgba(...)` string) is never routed through `hexToRgba` — combining it with a partial opacity
+	 * would otherwise read every RGB channel as `NaN || 0` and silently produce black.
+	 *
+	 * @return {void}
+	 */
+	it('leaves a non-hex color unconverted rather than corrupting it to black', () => {
+		expect(combineColorOpacity('var(--palette-color)', 0.5)).toBe('var(--palette-color)');
+		expect(combineColorOpacity('transparent', 0.5)).toBe('transparent');
+		expect(combineColorOpacity('rgb(10, 20, 30)', 0.5)).toBe('rgb(10, 20, 30)');
+	});
+
+	/**
+	 * An 8-digit hex (`#RRGGBBAA`) — the shape a resolved shadow token's color can arrive as — carries
+	 * its own alpha in the trailing pair. Splitting it must decode that alpha rather than reporting the
+	 * whole 8-digit string as an opaque color.
+	 *
+	 * @return {void}
+	 */
+	it('decodes an 8-digit hex color into its base color and embedded alpha', () => {
+		expect(splitColorOpacity('#1717171f')).toEqual({ color: '#171717', opacity: 0x1f / 255 });
+	});
 });

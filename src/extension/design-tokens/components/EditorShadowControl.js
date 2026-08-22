@@ -75,6 +75,14 @@ const DEFAULT_COMPOSITE = {
 const RGBA_PATTERN = /^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*([\d.]+))?\s*\)$/i;
 
 /**
+ * A 3-, 6-, or 8-digit hex color, with or without a leading `#` — the only shapes `hexToRgba` can
+ * safely convert. The 8-digit form's trailing pair is its own embedded alpha.
+ *
+ * @since TBD
+ */
+const HEX_PATTERN = /^#?([0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})$/i;
+
+/**
  * A single 0-255 channel as two hex digits.
  *
  * @param {number} channel The channel value.
@@ -124,7 +132,9 @@ function hexToRgba(hex, alpha) {
  *
  * @since TBD
  *
- * @return {string} The combined color, `rgba(...)` when partially transparent.
+ * @return {string} The combined color, `rgba(...)` when partially transparent and `color` is a hex
+ * literal `hexToRgba` can parse; any other CSS color literal (`var(...)`, `transparent`, an existing
+ * `rgba(...)`) passes through unchanged rather than being corrupted into black.
  */
 export function combineColorOpacity(color, opacity) {
 	if (!color) {
@@ -132,6 +142,10 @@ export function combineColorOpacity(color, opacity) {
 	}
 
 	if (opacity === undefined || opacity === null || Number(opacity) >= 1) {
+		return color;
+	}
+
+	if (!HEX_PATTERN.test(color)) {
 		return color;
 	}
 
@@ -155,18 +169,28 @@ export function splitColorOpacity(combined) {
 		return { color: '', opacity: 1 };
 	}
 
-	const match = combined.match(RGBA_PATTERN);
+	const rgbaMatch = combined.match(RGBA_PATTERN);
 
-	if (!match) {
-		return { color: combined, opacity: 1 };
+	if (rgbaMatch) {
+		const [, r, g, b, a] = rgbaMatch;
+
+		return {
+			color: `#${channelToHex(Number(r))}${channelToHex(Number(g))}${channelToHex(Number(b))}`,
+			opacity: a !== undefined ? Number(a) : 1,
+		};
 	}
 
-	const [, r, g, b, a] = match;
+	// An 8-digit hex (`#RRGGBBAA`) carries its own alpha in the trailing pair — decode it rather than
+	// reading the whole 8-digit string as an opaque color, which `PopColorControl` cannot render.
+	const hexAlphaMatch = combined.match(/^#?([0-9a-f]{6})([0-9a-f]{2})$/i);
 
-	return {
-		color: `#${channelToHex(Number(r))}${channelToHex(Number(g))}${channelToHex(Number(b))}`,
-		opacity: a !== undefined ? Number(a) : 1,
-	};
+	if (hexAlphaMatch) {
+		const [, rgb, alphaHex] = hexAlphaMatch;
+
+		return { color: `#${rgb}`, opacity: parseInt(alphaHex, 16) / 255 };
+	}
+
+	return { color: combined, opacity: 1 };
 }
 
 /**
