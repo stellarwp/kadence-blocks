@@ -210,8 +210,10 @@ class SinglebtnTest extends KadenceBlocksUnit {
 		);
 
 		// The final computed value is whichever declaration came last — proving the explicit value,
-		// not the preset's, is what the button actually renders.
-		$css_helper->assertCSSPropertiesEqual( $selector, [ 'box-shadow' => '1px 1px 2px 0px #00ff00' ] );
+		// not the preset's, is what the button actually renders. Sabberworm's CSS parser canonicalizes
+		// a 6-digit hex that can shorten to its 3-digit form when re-serializing, so the shorthand is
+		// what assertCSSPropertiesEqual sees even though the block itself renders the literal '#00ff00'.
+		$css_helper->assertCSSPropertiesEqual( $selector, [ 'box-shadow' => '1px 1px 2px 0px #0f0' ] );
 	}
 
 	/**
