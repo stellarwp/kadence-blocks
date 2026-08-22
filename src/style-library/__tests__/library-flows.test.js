@@ -493,6 +493,36 @@ describe('deleteLibraryFlow', () => {
 		expect(refreshFeed).toHaveBeenCalledWith('default');
 	});
 
+	it('resolves and clears busy even when the post-delete list refetch fails, so a successful delete never reports as a failure', async () => {
+		// The delete itself, and the feed refresh for wherever the app lands, both succeed —
+		// `loadLibraries()` (the list refetch) is the only thing that fails, e.g. a transient GET
+		// error after the DELETE has already gone through.
+		client.deleteLibrary.mockResolvedValue({ deleted: true });
+		const refreshFeed = jest.fn().mockResolvedValue({ slug: 'default' });
+		const loadLibraries = jest.fn().mockRejectedValue(new Error('Network error'));
+		const onBusy = jest.fn();
+		const onError = jest.fn();
+
+		await expect(
+			deleteLibraryFlow({
+				slug: 'brand-b',
+				activeSlug: 'default',
+				refreshFeed,
+				loadLibraries,
+				onBusy,
+				onError,
+				onActiveChanged: jest.fn(),
+			})
+		).resolves.toBeUndefined();
+
+		expect(client.deleteLibrary).toHaveBeenCalledWith('brand-b');
+		expect(loadLibraries).toHaveBeenCalled();
+		// Neither surfaces: a stale list is already reported separately, through
+		// `getResolutionError('getLibraries', [])` feeding the library dropdown's own `openError`.
+		expect(onError).not.toHaveBeenCalled();
+		expect(onBusy).toHaveBeenLastCalledWith(false);
+	});
+
 	it('surfaces the error, clears busy, and rejects when the delete request fails', async () => {
 		const failure = new Error('The design token library could not be deleted.');
 		client.deleteLibrary.mockRejectedValue(failure);

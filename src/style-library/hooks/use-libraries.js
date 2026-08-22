@@ -79,7 +79,10 @@ export function useLibraries(feed, refreshFeed) {
 	// re-resolves after create/rename/delete) — the store keeps serving the previous rows while that
 	// re-fetch is in flight, so there is already data to render and no loading state to show for it.
 	const { libraryRows, isLoading, loadFailure } = useSelect((select) => {
-		const rows = select(STORE_NAME).getLibraries();
+		// Guarded the same way `sortLibraries(libraryRows ?? [])` below already is — the selector's
+		// raw result is trusted nowhere else in this hook, and a throw here would crash the render
+		// instead of leaving the empty-list rendering `sortLibraries`'s own guard already handles.
+		const rows = select(STORE_NAME).getLibraries() ?? [];
 		return {
 			libraryRows: rows,
 			isLoading: select(STORE_NAME).isResolving('getLibraries', []) && rows.length === 0,
