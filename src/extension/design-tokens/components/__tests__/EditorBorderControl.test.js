@@ -139,7 +139,7 @@ describe('EditorBorderControl native <-> control value bridging', () => {
 	 */
 	it('stores and reads back a token alias in the width slot without corrupting it', () => {
 		const { borderControl, onChange } = renderEditorBorderControl();
-		const alias = 'primitive.dimension.border-width.md';
+		const alias = '{primitive.dimension.border-width.md}';
 
 		borderControl.props.onChange({
 			width: [alias, '3px', '4px', '5px'],

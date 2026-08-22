@@ -31,7 +31,8 @@
  */
 import { BreakpointProvider } from '../../../token-controls';
 import { BorderControl } from '../../../token-controls/controls/BorderControl';
-import { isTokenId, readSlot } from '../../../token-controls/helpers/value-shapes';
+import { readSlot } from '../../../token-controls/helpers/value-shapes';
+import { isTokenAlias } from '../../../token-controls/helpers/token-summary';
 
 const SIDES = ['top', 'right', 'bottom', 'left'];
 
@@ -97,7 +98,7 @@ function fromNativeBorder(native) {
 
 			// A token alias is already a full id string — never a bare number — so it never gets a
 			// unit suffix appended; only a literal numeric width does.
-			return isTokenId(size) ? size : `${size}${unit}`;
+			return isTokenAlias(size) ? size : `${size}${unit}`;
 		}),
 		style: SIDES.map((side) => source[side]?.[1] || 'none'),
 		color: SIDES.map((side) => source[side]?.[0] || ''),
@@ -106,12 +107,14 @@ function fromNativeBorder(native) {
 
 /**
  * Split a `BorderControl` width slot (a plain CSS literal like `"2px"`, a token alias like
- * `"primitive.dimension.border-width.md"`, or `""`) into a native `(size, unit)` pair. A literal is
- * split on its trailing unit letters; an alias is stored whole in the size position with `unit` left
- * as the shared border unit unchanged — confirmed against `borderRadius`'s own corner slots
- * (`EditorBoxControl`'s caller in `singlebtn/edit.js` stores an alias directly in a corner via
- * `aliasForValue`, with no wrapping and no unit suffix), so a bare alias id in the size slot is the
- * established convention here too, not a guess.
+ * `"{primitive.dimension.border-width.md}"`, or `""`) into a native `(size, unit)` pair. A literal
+ * is split on its trailing unit letters; an alias is stored whole in the size position with `unit`
+ * left as the shared border unit unchanged — matching `borderRadius`'s own corner slots
+ * (`EditorBoxControl`'s caller in `singlebtn/edit.js` stores an alias directly in a corner, with no
+ * unit suffix), so a brace-wrapped alias id in the size slot is the established convention here too.
+ * Detected with `isTokenAlias()` (checks for the `{...}` wrapper `TokenSelector.onPick` actually
+ * passes), not `isTokenId()` (checks for a bare `primitive.`/`semantic.` id, which this slot never
+ * holds — using it here silently treated every alias as a literal and dropped its width to `''`).
  *
  * @param {string} slot The width slot's value.
  * @param {string} unit The border's shared unit.
@@ -125,7 +128,7 @@ function toNativeSize(slot, unit) {
 		return '';
 	}
 
-	if (isTokenId(slot)) {
+	if (isTokenAlias(slot)) {
 		return slot; // alias — see the confirmation note above.
 	}
 
