@@ -23,6 +23,7 @@ import classnames from 'classnames';
  * Internal dependencies
  */
 import { Skeleton } from '../atoms/Skeleton';
+import { useLoadingAnnouncement } from '../../hooks/use-loading-announcement';
 import './SelectDropdown.scss';
 
 // A fixed placeholder-row count — there is no "expected row count" to read before the real options
@@ -83,6 +84,11 @@ export function SelectDropdown({
 }) {
 	const activeOption = options.find((option) => option.value === value);
 	const activeLabel = activeOption?.label ?? valueLabel ?? value;
+
+	// The skeleton rows below live inside their own `role="status"` region, which only announces
+	// "Loading options…" while it is actually mounted — the moment it is replaced by the real list,
+	// that region is gone too, and nothing is left to tell a screen reader the load finished.
+	useLoadingAnnouncement(isLoading, __('Options loaded.', 'kadence-blocks'));
 
 	return (
 		<div className={classnames('kadence-blocks-style-library__select-dropdown', className)}>

@@ -31,6 +31,7 @@ import { AddColorGroupModal } from '../organisms/AddColorGroupModal';
 import { RenameColorGroupModal } from '../organisms/RenameColorGroupModal';
 import { DeleteColorGroupModal } from '../organisms/DeleteColorGroupModal';
 import { usePalettes } from '../../hooks/use-palettes';
+import { useLoadingAnnouncement } from '../../hooks/use-loading-announcement';
 import {
 	isUserCreatedPalette,
 	mapPaletteToSwatchGroups,
@@ -80,7 +81,14 @@ function SwatchGridSkeleton({ label }) {
 						<div key={id} className="kadence-blocks-style-library__swatch-card">
 							<div className="kadence-blocks-style-library__swatch-card-main">
 								<Skeleton className="kadence-blocks-style-library__swatch-card-preview" />
-								<Skeleton className="kadence-blocks-style-library__swatch-card-name kadence-blocks-style-library__skeleton--bar" />
+								{/* `.swatch-card-name` only declares `max-width: 100%`, never a `width` — a real
+								 * swatch name gets its width from its own text, but this shape has none, and its
+								 * `align-items: flex-start` parent collapses an unsized block to 0 width without
+								 * one. Same fix as the group heading bar above: pin a plausible literal width. */}
+								<Skeleton
+									className="kadence-blocks-style-library__swatch-card-name kadence-blocks-style-library__skeleton--bar"
+									style={{ width: '70%' }}
+								/>
 							</div>
 						</div>
 					))}
@@ -125,6 +133,15 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 	// route, not another `useState`, has to be the source of truth shared with the settings panel's
 	// own separate instance below.
 	const palettes = usePalettes(library.feed, library.refreshFeed, route, navigate);
+
+	// The skeleton below lives inside its own `role="status"` region, which only announces "Loading
+	// X…" while it is actually mounted — the moment it is replaced by the real grid, that region is
+	// gone too, and nothing is left to tell a screen reader the load finished.
+	useLoadingAnnouncement(
+		palettes.isLoading,
+		// translators: %s: the palette screen's label (e.g. "Color Palette").
+		sprintf(__('%s loaded.', 'kadence-blocks'), label)
+	);
 
 	// Plain UI state, not route state — a half-typed modal must not enter browser history.
 	const [isCreateOpen, setIsCreateOpen] = useState(false);

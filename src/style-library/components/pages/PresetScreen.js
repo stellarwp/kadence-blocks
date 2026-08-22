@@ -28,6 +28,7 @@ import { EmptyState } from '../molecules/EmptyState';
 import { Skeleton } from '../atoms/Skeleton';
 import { usePresetScreen } from '../../hooks/use-preset-screen';
 import { useDraftChannel } from '../../hooks/use-draft-channel';
+import { useLoadingAnnouncement } from '../../hooks/use-loading-announcement';
 import { overlayPresetRows } from '../../helpers/presets';
 import { useBreakpoint } from '../../../token-controls/context/breakpoint';
 
@@ -92,6 +93,15 @@ export function PresetScreen({ label, route, navigate, library, preset }) {
 	const { renderPreview, className = '' } = preset;
 	const screen = usePresetScreen(library, preset);
 	const channel = useDraftChannel();
+
+	// The skeleton below lives inside its own `role="status"` region, which only announces "Loading
+	// X…" while it is actually mounted — the moment it is replaced by the real list, that region is
+	// gone too, and nothing is left to tell a screen reader the load finished.
+	useLoadingAnnouncement(
+		screen.isLoading,
+		// translators: %s: the preset screen's label (e.g. "Button").
+		sprintf(__('%s loaded.', 'kadence-blocks'), label)
+	);
 
 	const [isAdding, setIsAdding] = useState(false);
 

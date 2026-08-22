@@ -19,6 +19,7 @@ import { SettingsPanel } from '../templates/SettingsPanel';
 import { SettingsForm } from '../organisms/SettingsForm';
 import { usePalettes } from '../../hooks/use-palettes';
 import { useSettingsPanel } from '../../hooks/use-settings-panel';
+import { useLoadingAnnouncement } from '../../hooks/use-loading-announcement';
 import { findSwatch, swatchInitialValues } from '../../helpers/palettes';
 import { Skeleton } from '../atoms/Skeleton';
 
@@ -62,6 +63,11 @@ export function ColorPaletteSettings({ route, navigate, library }) {
 	// seeding empty at mount and never re-seeding. See that hook's own docblock for the contract.
 	const initialValues = palettes.palette ? swatchInitialValues(palettes.palette, token) : null;
 	const panel = useSettingsPanel({ route, navigate, initialValues });
+
+	// The skeleton below lives inside its own `role="status"` region, which only announces "Loading…"
+	// while it is actually mounted — the moment it is replaced by the real panel, that region is
+	// gone too, and nothing is left to tell a screen reader the load finished.
+	useLoadingAnnouncement(Boolean(token && palettes.isLoading), __('Settings loaded.', 'kadence-blocks'));
 
 	// Self-heal a stale item the same way the app's unknown-screen route does: a token that does not
 	// resolve in the current palette's view (a leftover from another palette, or a hand-edited URL)

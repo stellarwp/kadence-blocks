@@ -18,6 +18,7 @@
  */
 import { useEffect, useState } from '@wordpress/element';
 import { Notice } from '@wordpress/components';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -26,6 +27,7 @@ import { SettingsPanel } from '../templates/SettingsPanel';
 import { SettingsForm } from '../organisms/SettingsForm';
 import { useSettingsPanel } from '../../hooks/use-settings-panel';
 import { useDraftChannel } from '../../hooks/use-draft-channel';
+import { useLoadingAnnouncement } from '../../hooks/use-loading-announcement';
 import { presetNameSchema } from '../../helpers/presets';
 import { Skeleton } from '../atoms/Skeleton';
 
@@ -181,8 +183,8 @@ function PresetSidebarBody({ navigate, route, screen, initialValues, presetLabel
  *
  * @since TBD
  *
- * @return {?JSX.Element} The panel, or null while a stale `kb-item` self-heals for a tick, or while
- *         a valid one's presets are still loading.
+ * @return {?JSX.Element} The panel, a loading skeleton while a valid `kb-item`'s presets are still
+ *         loading, or null while a stale one self-heals for a tick.
  */
 export function PresetSidebar({ route, navigate, screen, preset }) {
 	const { tabs, schemaFor } = preset;
@@ -190,6 +192,11 @@ export function PresetSidebar({ route, navigate, screen, preset }) {
 	const initialValues = screen.initialValuesFor(id);
 	const hasInitialValues = Boolean(initialValues);
 	const presetLabel = screen.payload?.presets?.[id]?.label ?? id;
+
+	// The skeleton below lives inside its own `role="status"` region, which only announces "Loading…"
+	// while it is actually mounted — the moment it is replaced by the real panel, that region is
+	// gone too, and nothing is left to tell a screen reader the load finished.
+	useLoadingAnnouncement(Boolean(id && screen.isLoading), __('Settings loaded.', 'kadence-blocks'));
 
 	// A `kb-item` naming no preset (a stale deep link, or another screen's token id) closes the
 	// panel instead of rendering broken fields — the `ScaleSettings.js` self-healing idiom. Waiting
