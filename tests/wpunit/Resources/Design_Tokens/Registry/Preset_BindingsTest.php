@@ -232,4 +232,69 @@ final class Preset_BindingsTest extends TestCase {
 
 		yield 'null' => [ 'label' => null ];
 	}
+
+	/**
+	 * A token-reference binding's coarse kind is read from its token's group segment (e.g.
+	 * "semantic.shadow.button" => "shadow"), matching the real `kadence/singlebtn` `button-shadow`
+	 * binding, which has no `control_attr` and so is classified purely from its bound token.
+	 *
+	 * @dataProvider tokenGroupKindProvider
+	 *
+	 * @param string $token    The bound token id.
+	 * @param string $expected The expected coarse kind.
+	 *
+	 * @return void
+	 */
+	public function testKindClassifiesATokenReferenceBindingByItsTokenGroup( string $token, string $expected ): void {
+		$bindings = Preset_Bindings::from_array(
+			[
+				'block'    => 'kadence/singlebtn',
+				'bindings' => [ 'button-shadow' => [ 'token' => $token ] ],
+			]
+		);
+
+		$this->assertSame( $expected, $bindings->kind( 'button-shadow' ) );
+	}
+
+	/**
+	 * Token groups covering every coarse kind `kind()` distinguishes: dimension, color, shadow, and
+	 * the text fallback for a group `classify()` matches neither list.
+	 *
+	 * @return Generator
+	 */
+	public function tokenGroupKindProvider(): Generator {
+		yield 'dimension group' => [
+			'token'    => 'semantic.radius.media',
+			'expected' => 'dimension',
+		];
+
+		yield 'color group' => [
+			'token'    => 'semantic.color.button-bg',
+			'expected' => 'color',
+		];
+
+		yield 'shadow group' => [
+			'token'    => 'semantic.shadow.button',
+			'expected' => 'shadow',
+		];
+
+		yield 'unrecognized group falls back to text' => [
+			'token'    => 'semantic.font-weight.bold',
+			'expected' => 'text',
+		];
+	}
+
+	/**
+	 * An inline (non-token-reference) binding, or an undeclared property, falls back to classifying the
+	 * property NAME itself — the shape `button-border-width`'s sibling color/style bindings rely on.
+	 *
+	 * @return void
+	 */
+	public function testKindClassifiesAnUnboundPropertyByItsOwnName(): void {
+		$bindings = Preset_Bindings::from_array( $this->declaration() );
+
+		$this->assertSame( 'dimension', $bindings->kind( 'button-radius' ) );
+		$this->assertSame( 'color', $bindings->kind( 'button-bg-color' ) );
+		$this->assertSame( 'text', $bindings->kind( 'button-label' ) );
+	}
 }
