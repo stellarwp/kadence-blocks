@@ -4,8 +4,8 @@
  * Styles the token field (the corner icon + input-styled trigger that replaces a control's numeric
  * slot) and its Style Library/Custom popover to the sidebar design, plus the whole-value box-shadow
  * chip/picker. Values mirror the design tokens: gray-900 #1e1e1e text, gray-600 #949494 borders and
- * muted values, gray-300 #dddddd dividers, gray-100 #f0f0f0 selection, theme #3858e9 accents, 13px
- * body type, 2px control radius, 4px popover radius.
+ * muted values, gray-400 #cccccc borders, gray-300 #dddddd dividers, gray-100 #f0f0f0 selection,
+ * theme #3858e9 accents, 13px body type, 2px control radius, 4px popover radius.
  */
 
 // The token field is a corner icon beside the trigger, filling the slot the numeric input held.
@@ -130,16 +130,19 @@
 }
 
 /*
- * `BoxShadowControl`'s preview square: a plain gray-100 box with the active shadow's CSS applied, so
- * a shadow reads at a glance before it is picked. Reuses this file's own established gray-100
- * selection background and 2px control radius rather than new values.
+ * `BoxShadowControl`'s preview square: a white box with the active shadow's CSS applied, so a shadow
+ * reads at a glance before it is picked — white rather than this file's own gray-100 selection
+ * background so a dark shadow shows up clearly against it. The gray-400 border (`#cccccc`, mirroring
+ * the design tokens the way this file's other hardcoded colors do — see its header comment) keeps the
+ * square's own edge visible even when the active shadow is empty.
  */
 .kb-box-shadow-control__preview {
 	flex: 0 0 auto;
-	width: 48px;
-	height: 48px;
+	width: 6rem;
+	height: 6rem;
+	border: 1px solid #cccccc;
 	border-radius: 2px;
-	background: #f0f0f0;
+	background: #fff;
 }
 
 /*
