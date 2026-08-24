@@ -96,6 +96,14 @@ function applyToAxis(axis, index, next) {
  * @param {Function}  props.onChange              Called with the next `{ width, style, color }`.
  * @param {string}    props.label                 The control's label.
  * @param {Array}     [props.widthTokens]         Pickable border-width tokens.
+ * @param {*}         [props.defaultValue]        What the width field falls back to when unset —
+ *                                                shown muted in every row (linked or per-side; a
+ *                                                border's width has one default regardless of how
+ *                                                many sides are showing). Without this, an unset
+ *                                                width `TokenSelector` renders nothing at all and
+ *                                                the row collapses to zero height.
+ * @param {boolean}   [props.inherited]           Whether that default comes from another breakpoint,
+ *                                                which tags it `Inherited` instead of `Default`.
  * @param {?Array}    [props.slotIcons]            Per-slot glyphs, in stored order (matches
  *                                                `BoxControl`'s prop).
  * @param {?Object}   [props.status]              `{ bound, modified }`; omit for no indicator.
@@ -128,6 +136,8 @@ export function BorderControl({
 	onChange,
 	label,
 	widthTokens = [],
+	defaultValue,
+	inherited = false,
 	slotIcons = null,
 	status = null,
 	onReset = null,
@@ -243,6 +253,8 @@ export function BorderControl({
 								value={widthSlot}
 								icon={slotIcons?.[slotIndex]}
 								tokens={widthTokens}
+								defaultValue={defaultValue}
+								inherited={inherited}
 								disabled={disabled}
 								onPick={(alias) => !disabled && patch({ width: applyToAxis(width, index, alias) })}
 								onClear={() => !disabled && patch({ width: applyToAxis(width, index, '') })}

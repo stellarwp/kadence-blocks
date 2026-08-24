@@ -72,8 +72,13 @@ jest.mock('@wordpress/icons', () => ({
 // `TokenSelector` already has coverage for. The stand-in exposes `onPick`/`onClear`/`onCustom`
 // directly as buttons so a click can trigger each without driving the popover open first.
 jest.mock('../organisms/TokenSelector', () => ({
-	TokenSelector: ({ value, disabled, onPick, onClear, onCustom }) => (
-		<div className="stub-token-selector" data-value={value ?? ''}>
+	TokenSelector: ({ value, disabled, onPick, onClear, onCustom, defaultValue, inherited }) => (
+		<div
+			className="stub-token-selector"
+			data-value={value ?? ''}
+			data-default-value={defaultValue ?? ''}
+			data-inherited={String(Boolean(inherited))}
+		>
 			<button
 				className="stub-pick"
 				disabled={disabled}
@@ -454,6 +459,61 @@ describe('BorderControl color', () => {
 	 */
 	it('renders nothing and does not throw without renderColor', () => {
 		expect(() => renderControl({ renderColor: undefined })).not.toThrow();
+	});
+});
+
+describe('BorderControl width default', () => {
+	/**
+	 * `defaultValue` reaches the width `TokenSelector` — without it, an unset width field shows
+	 * nothing and the row collapses to zero height.
+	 *
+	 * @return {void}
+	 */
+	it('passes defaultValue through to the width TokenSelector', () => {
+		renderControl({ defaultValue: '2px' });
+
+		expect(widthSelectors()[0].dataset.defaultValue).toBe('2px');
+	});
+
+	/**
+	 * A `defaultValue` of `0` (a real, meaningful preset value) reaches the width `TokenSelector`
+	 * unchanged rather than being coalesced away as if nothing were set.
+	 *
+	 * @return {void}
+	 */
+	it('passes a zero defaultValue through rather than dropping it', () => {
+		renderControl({ defaultValue: '0px' });
+
+		expect(widthSelectors()[0].dataset.defaultValue).toBe('0px');
+	});
+
+	/**
+	 * Every row — not just the linked one — gets the same `defaultValue`, since a border has one
+	 * default width regardless of how many sides are currently showing.
+	 *
+	 * @return {void}
+	 */
+	it('passes the same defaultValue to every row when unlinked', () => {
+		renderControl({
+			value: { width: ['', '', '', ''], style: 'solid', color: '' },
+			defaultValue: '2px',
+		});
+
+		widthSelectors().forEach((selector) => {
+			expect(selector.dataset.defaultValue).toBe('2px');
+		});
+	});
+
+	/**
+	 * `inherited` reaches the width `TokenSelector` too, so it can tag the default `Inherited` instead
+	 * of `Default`.
+	 *
+	 * @return {void}
+	 */
+	it('passes inherited through to the width TokenSelector', () => {
+		renderControl({ defaultValue: '2px', inherited: true });
+
+		expect(widthSelectors()[0].dataset.inherited).toBe('true');
 	});
 });
 
