@@ -8,7 +8,7 @@
  * hook provides). Every write's own response is the same flat embedded-array wire shape a
  * `GET /palettes?_embed` would return, so a flow hands it straight to `onReceive` RAW, with no
  * reshaping and no follow-up fetch needed to learn the fresh state. Reshaping only ever happens in
- * one place, `store/selectors.js`'s `getPaletteListing` (via its exported `reshapePaletteRows`), the
+ * one place, `store/selectors.js`'s `getPaletteListing` (via `helpers/palettes.js`'s `reshapePaletteRows`), the
  * same as for a resolver-driven GET; a flow reshaping its own response before dispatch would let a write's
  * dispatched shape drift from a GET's, leaving the store holding two different shapes under the
  * same key depending on which path last wrote it. Every flow settles pessimistically and re-throws

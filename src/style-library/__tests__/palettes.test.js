@@ -18,6 +18,7 @@ import {
 	renameGroupInGroups,
 	renameSwatchInGroups,
 	reorderGroupSwatches,
+	reshapePaletteRows,
 	resolveEditingPaletteId,
 	slugifyPaletteLabel,
 	stripEffectiveFlags,
@@ -44,6 +45,50 @@ const effectivePalette = () => ({
 			],
 		},
 	],
+});
+
+describe('reshapePaletteRows', () => {
+	it('reshapes flat is_default/is_current/user_created flags into defaultId/currentId/userCreated pointers', () => {
+		const rows = [
+			{
+				id: 'default',
+				label: 'Default',
+				is_default: true,
+				is_current: false,
+				user_created: false,
+				_embedded: { self: [{ groups: [{ id: 'accent', label: 'Accent', swatches: [] }] }] },
+			},
+			{
+				id: 'brand-b',
+				label: 'Brand B',
+				is_default: false,
+				is_current: true,
+				user_created: true,
+				_embedded: { self: [{ groups: [] }] },
+			},
+		];
+
+		expect(reshapePaletteRows(rows)).toEqual({
+			defaultId: 'default',
+			currentId: 'brand-b',
+			palettes: [
+				{ id: 'default', label: 'Default', groups: [{ id: 'accent', label: 'Accent', swatches: [] }] },
+				{ id: 'brand-b', label: 'Brand B', groups: [] },
+			],
+			userCreated: ['brand-b'],
+		});
+	});
+
+	it('defaults defaultId/currentId to an empty string and groups to [] when a row carries neither flag nor an embedded view', () => {
+		const rows = [{ id: 'default', label: 'Default', is_default: false, is_current: false, user_created: false }];
+
+		expect(reshapePaletteRows(rows)).toEqual({
+			defaultId: '',
+			currentId: '',
+			palettes: [{ id: 'default', label: 'Default', groups: [] }],
+			userCreated: [],
+		});
+	});
 });
 
 describe('mapPaletteToSwatchGroups', () => {

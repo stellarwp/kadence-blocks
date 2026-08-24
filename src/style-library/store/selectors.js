@@ -8,6 +8,7 @@
  * Internal dependencies
  */
 import { presetsKey, paletteListingKey, EMPTY_LISTING } from './constants';
+import { reshapePaletteRows } from '../helpers/palettes';
 
 /**
  * Read the libraries list.
@@ -36,40 +37,6 @@ export function getLibraries(state) {
  */
 export function getBlockPresets(state, namespace, block, slug) {
 	return state.presets[presetsKey(namespace, block, slug)] ?? null;
-}
-
-/**
- * Reshape the flat embedded-array wire response into the shape every consumer already expects. The
- * wire shape is a flat array of rows (WP core's `_embed` only resolves top-level collection items,
- * never something nested inside a wrapper key — see the REST controller's own docblock for why)
- * with `is_default`/`is_current`/`user_created` flags per row instead of collection-level pointers;
- * this reshapes those flags back into the pointer-based shape this app's own code was already built
- * around.
- *
- * Used internally by `getPaletteListing` below only — reshaping the raw wire-format rows, exactly
- * as the reducer stores them, into the shape the frontend consumes. Nothing else should call this
- * directly, and specifically not code that writes into the store: `helpers/palette-flows.js`
- * dispatches every write's response RAW, via `onReceive`, with no reshaping before dispatch —
- * reshaping a write's response before it reaches the store would double-reshape it on the next
- * read, since `getPaletteListing` is the one canonical place reshaping happens.
- *
- * @param {Array<Object>} rows The flat embedded-array rows.
- *
- * @since TBD
- *
- * @return {{defaultId: string, currentId: string, palettes: Array<Object>, userCreated: Array<string>}}
- */
-export function reshapePaletteRows(rows) {
-	return {
-		defaultId: rows.find((row) => row.is_default)?.id ?? '',
-		currentId: rows.find((row) => row.is_current)?.id ?? '',
-		palettes: rows.map((row) => ({
-			id: row.id,
-			label: row.label,
-			groups: row._embedded?.self?.[0]?.groups ?? [],
-		})),
-		userCreated: rows.filter((row) => row.user_created).map((row) => row.id),
-	};
 }
 
 /**

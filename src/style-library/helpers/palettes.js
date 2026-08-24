@@ -27,6 +27,45 @@ const CUSTOM_COLOR_PREFIX = 'primitive.color.custom.';
 const FALLBACK_SWATCH_VALUE = '#000000';
 
 /**
+ * Reshape the flat embedded-array wire response into the shape every consumer already expects. The
+ * wire shape is a flat array of rows (WP core's `_embed` only resolves top-level collection items,
+ * never something nested inside a wrapper key — see the REST controller's own docblock for why)
+ * with `is_default`/`is_current`/`user_created` flags per row instead of collection-level pointers;
+ * this reshapes those flags back into the pointer-based shape this app's own code was already built
+ * around.
+ *
+ * Used internally by `store/selectors.js`'s `getPaletteListing` only — reshaping the raw wire-format
+ * rows, exactly as the reducer stores them, into the shape the frontend consumes. Nothing else
+ * should call this directly, and specifically not code that writes into the store:
+ * `helpers/palette-flows.js` dispatches every write's response RAW, via `onReceive`, with no
+ * reshaping before dispatch — reshaping a write's response before it reaches the store would
+ * double-reshape it on the next read, since `getPaletteListing` is the one canonical place
+ * reshaping happens. Deliberately kept out of `store/selectors.js` itself, even though it is only
+ * ever called from there: that module is imported wholesale (`import * as selectors`) as the
+ * store's registered selector map, so a plain helper living there would also become a callable
+ * `select(STORE_NAME).reshapePaletteRows()` — which `@wordpress/data` would invoke with `state` as
+ * the first argument instead of `rows`, throwing the moment anything called it that way.
+ *
+ * @param {Array<Object>} rows The flat embedded-array rows.
+ *
+ * @since TBD
+ *
+ * @return {{defaultId: string, currentId: string, palettes: Array<Object>, userCreated: Array<string>}}
+ */
+export function reshapePaletteRows(rows) {
+	return {
+		defaultId: rows.find((row) => row.is_default)?.id ?? '',
+		currentId: rows.find((row) => row.is_current)?.id ?? '',
+		palettes: rows.map((row) => ({
+			id: row.id,
+			label: row.label,
+			groups: row._embedded?.self?.[0]?.groups ?? [],
+		})),
+		userCreated: rows.filter((row) => row.user_created).map((row) => row.id),
+	};
+}
+
+/**
  * Map a palette effective view to the data half of `SwatchGrid`'s `groups` prop. Pure data only —
  * no JSX: the screen supplies each card's `preview` node and drag flags itself, because a React
  * element in a helper would make this untestable under the pure-function policy.

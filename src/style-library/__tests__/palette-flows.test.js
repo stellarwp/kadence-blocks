@@ -65,7 +65,7 @@ const selectedView = () => ({
 });
 
 // The shape every write response now carries: a flat, fully embedded palette listing — the same
-// RAW wire shape `store/selectors.js`'s `reshapePaletteRows` reshapes on read. Used both as the
+// RAW wire shape `helpers/palettes.js`'s `reshapePaletteRows` reshapes on read. Used both as the
 // resolved value for every mocked write call in this file, standing in for what the REST endpoints
 // actually return, AND as the exact value `onReceive` is asserted to have been called with — a
 // flow no longer reshapes its own response before handing it to `onReceive`, it passes it straight

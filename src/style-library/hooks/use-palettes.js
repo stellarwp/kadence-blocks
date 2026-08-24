@@ -44,7 +44,7 @@ import { EMPTY_LISTING, paletteListingKey } from '../store/constants';
  * which palette the screen had already opened.
  *
  * `palette` is derived directly from `listing.palettes` (the listing selector's own reshape
- * already embeds each row's `groups` — see `store/selectors.js`'s `reshapePaletteRows`), not from
+ * already embeds each row's `groups` — see `helpers/palettes.js`'s `reshapePaletteRows`), not from
  * a second resolver call. There is only one resolver here, `getPaletteListing`, so this hook does
  * not need the two-hop "wait for the listing, then wait for the palette" loading logic a separate
  * per-palette read would require.
@@ -169,7 +169,7 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 	// Dispatches a write's own raw response (the flat embedded-array wire rows) straight into the
 	// store under this library's listing key — reused by every write flow below instead of each
 	// one reshaping its own response, so the store only ever gets this shape from one place (see
-	// `store/selectors.js`'s `reshapePaletteRows` docblock).
+	// `helpers/palettes.js`'s `reshapePaletteRows` docblock).
 	const onReceive = useCallback(
 		(rows) => {
 			if (namespace && slug) {
