@@ -10,7 +10,7 @@ jest.mock('../components/TokenIndicator', () => ({ TokenIndicator: () => null })
 jest.mock('../components/TokenLabel', () => ({ TokenLabel: () => null }));
 jest.mock('../components/TokenControlRow', () => ({ TokenControlRow: () => null }));
 
-import { usePresetBinding, resetAttrPatch } from '../index';
+import { usePresetBinding, resetAttrPatch, presetPropertyValueForDevice } from '../index';
 
 const BLOCK = 'kadence/singlebtn';
 const SET = 'default';
@@ -137,6 +137,132 @@ describe('usePresetBinding device-aware overridden', () => {
 		const state = usePresetBinding(BLOCK, attributes, SET);
 
 		expect(state.borderRadius.overridden).toBe(false);
+	});
+});
+
+describe('presetPropertyValueForDevice', () => {
+	/**
+	 * Seed a property with no `control_attr` — `usePresetBinding` cannot key it by an attribute name,
+	 * so `presetPropertyValueForDevice` is the only way a caller reads its resolved preset value.
+	 *
+	 * @return {void}
+	 */
+	function seedNoAttrProperty() {
+		window.kadenceDesignTokensPresets = {
+			active: SET,
+			libraries: {
+				[SET]: {
+					[BLOCK]: {
+						default: 'primary',
+						presets: [{ slug: 'primary', label: 'Primary' }],
+						properties: [{ key: 'button-border-width', kind: 'dimension', token: null }],
+						values: {
+							primary: { 'button-border-width': '2px' },
+						},
+						responsive: {
+							primary: { tablet: { 'button-border-width': '4px' } },
+						},
+					},
+				},
+			},
+		};
+	}
+
+	beforeEach(() => {
+		seedNoAttrProperty();
+	});
+
+	afterEach(() => {
+		delete window.kadenceDesignTokensPresets;
+	});
+
+	/**
+	 * The active preset's desktop value resolves for a property `usePresetBinding` has no attribute to
+	 * key it by.
+	 *
+	 * @return {void}
+	 */
+	it('resolves the active preset value for a property with no control_attr', () => {
+		const value = presetPropertyValueForDevice(
+			BLOCK,
+			'button-border-width',
+			{ kbPreset: 'primary' },
+			SET,
+			'Desktop'
+		);
+
+		expect(value).toBe('2px');
+	});
+
+	/**
+	 * A resolved value of `0` (a real, meaningful preset value) is not falsy-collapsed to `undefined` —
+	 * distinguishing "the preset sets 0" from "the preset sets nothing" matters to a caller deciding
+	 * whether to show a muted default at all.
+	 *
+	 * @return {void}
+	 */
+	it('resolves a zero preset value rather than treating it as unset', () => {
+		window.kadenceDesignTokensPresets.libraries[SET][BLOCK].values.primary['button-border-width'] = '0px';
+
+		const value = presetPropertyValueForDevice(
+			BLOCK,
+			'button-border-width',
+			{ kbPreset: 'primary' },
+			SET,
+			'Desktop'
+		);
+
+		expect(value).toBe('0px');
+	});
+
+	/**
+	 * On Tablet, the preset's tablet override resolves instead of its desktop value.
+	 *
+	 * @return {void}
+	 */
+	it('resolves the tablet override on Tablet', () => {
+		const value = presetPropertyValueForDevice(
+			BLOCK,
+			'button-border-width',
+			{ kbPreset: 'primary' },
+			SET,
+			'Tablet'
+		);
+
+		expect(value).toBe('4px');
+	});
+
+	/**
+	 * A user-selected preset (`kbPreset` in `attributes`) resolves, not just the block's default preset
+	 * — the whole point of taking `attributes` is to honor a genuine user selection.
+	 *
+	 * @return {void}
+	 */
+	it('resolves the user-selected preset, not just the block default', () => {
+		window.kadenceDesignTokensPresets.libraries[SET][BLOCK].presets.push({ slug: 'secondary', label: 'Secondary' });
+		window.kadenceDesignTokensPresets.libraries[SET][BLOCK].values.secondary = { 'button-border-width': '6px' };
+
+		const value = presetPropertyValueForDevice(
+			BLOCK,
+			'button-border-width',
+			{ kbPreset: 'secondary' },
+			SET,
+			'Desktop'
+		);
+
+		expect(value).toBe('6px');
+	});
+
+	/**
+	 * A property the active preset does not set resolves to `undefined`, so a caller can tell "no
+	 * default" apart from a real, falsy-but-meaningful value like `0`.
+	 *
+	 * @return {void}
+	 */
+	it('resolves undefined when the active preset does not set the property', () => {
+		const value = presetPropertyValueForDevice(BLOCK, 'button-shadow', { kbPreset: 'primary' }, SET, 'Desktop');
+
+		expect(value).toBeUndefined();
 	});
 });
 

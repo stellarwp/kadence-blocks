@@ -202,6 +202,30 @@ describe('EditorBorderControl native <-> control value bridging', () => {
 	});
 
 	/**
+	 * `defaultValue` is passed straight through to `BorderControl` — the caller (`singlebtn/edit.js`)
+	 * resolves the active preset's border width; this component neither computes nor reshapes it.
+	 *
+	 * @return {void}
+	 */
+	it('passes defaultValue straight through to BorderControl', () => {
+		const { borderControl } = renderEditorBorderControl({ defaultValue: '2px' });
+
+		expect(borderControl.props.defaultValue).toBe('2px');
+	});
+
+	/**
+	 * A `defaultValue` of `0` (a real, meaningful preset value) passes through unchanged rather than
+	 * being falsy-collapsed to `undefined` on the way to `BorderControl`.
+	 *
+	 * @return {void}
+	 */
+	it('passes a zero defaultValue through rather than dropping it', () => {
+		const { borderControl } = renderEditorBorderControl({ defaultValue: '0px' });
+
+		expect(borderControl.props.defaultValue).toBe('0px');
+	});
+
+	/**
 	 * `renderColor` is passed straight through to `BorderControl` untouched — this component neither
 	 * builds nor intercepts it. `BorderControl` calls it once with the whole color slot list it read
 	 * out of `fromNativeBorder`'s output, so the caller's `renderColor` sees the same per-side colors

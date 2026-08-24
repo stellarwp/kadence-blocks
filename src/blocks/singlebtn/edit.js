@@ -83,7 +83,7 @@ import {
 import { addFilter, applyFilters, doAction } from '@wordpress/hooks';
 import BackendStyles from './components/backend-styles';
 import { PresetButton } from '../../extension/preset-picker/PresetButton';
-import { usePresetBinding, resetAttr } from '../../extension/token-indicators';
+import { usePresetBinding, resetAttr, presetPropertyValueForDevice } from '../../extension/token-indicators';
 import {
 	anyCornerInherited,
 	deriveMeasureMode,
@@ -332,6 +332,20 @@ export default function KadenceButtonEdit(props) {
 	const borderRadiusPresetValue = presetValueForDevice(
 		tokenBinding.borderRadius?.presetValue,
 		tokenBinding.borderRadius?.responsive,
+		previewDevice
+	);
+
+	// What an unset Border Width field falls back to: the active preset's own resolved width.
+	// `button-border-width` has no `control_attr` (its native attribute is a nested per-side shape
+	// `usePresetBinding` has nothing to key it by — see `declarations.php`'s comment on that binding),
+	// so `tokenBinding` never carries it; read it directly instead. Shown as `EditorBorderControl`'s
+	// `defaultValue` — without it, a cleared width field renders empty and collapses to zero height
+	// (its `TokenSelector`'s trigger has nothing to show), which reads as broken rather than reset.
+	const borderWidthPresetValue = presetPropertyValueForDevice(
+		'kadence/singlebtn',
+		'button-border-width',
+		attributes,
+		undefined,
 		previewDevice
 	);
 
@@ -1144,6 +1158,7 @@ export default function KadenceButtonEdit(props) {
 															previewDevice={previewDevice}
 															onDeviceChange={setPreviewDevice}
 															widthTokens={borderHoverWidthTokens}
+															defaultValue={borderWidthPresetValue}
 															renderColor={renderBorderColor}
 														/>
 														<ResponsiveMeasurementControls
@@ -1360,6 +1375,7 @@ export default function KadenceButtonEdit(props) {
 															previewDevice={previewDevice}
 															onDeviceChange={setPreviewDevice}
 															widthTokens={borderWidthTokens}
+															defaultValue={borderWidthPresetValue}
 															renderColor={renderBorderColor}
 														/>
 														<EditorBoxControl
@@ -1554,6 +1570,7 @@ export default function KadenceButtonEdit(props) {
 																previewDevice={previewDevice}
 																onDeviceChange={setPreviewDevice}
 																widthTokens={borderTransparentHoverWidthTokens}
+																defaultValue={borderWidthPresetValue}
 																renderColor={renderBorderColor}
 															/>
 															<ResponsiveMeasurementControls
@@ -1754,6 +1771,7 @@ export default function KadenceButtonEdit(props) {
 																previewDevice={previewDevice}
 																onDeviceChange={setPreviewDevice}
 																widthTokens={borderTransparentWidthTokens}
+																defaultValue={borderWidthPresetValue}
 																renderColor={renderBorderColor}
 															/>
 															<ResponsiveMeasurementControls
@@ -1966,6 +1984,7 @@ export default function KadenceButtonEdit(props) {
 																previewDevice={previewDevice}
 																onDeviceChange={setPreviewDevice}
 																widthTokens={borderStickyHoverWidthTokens}
+																defaultValue={borderWidthPresetValue}
 																renderColor={renderBorderColor}
 															/>
 															<ResponsiveMeasurementControls
@@ -2162,6 +2181,7 @@ export default function KadenceButtonEdit(props) {
 																previewDevice={previewDevice}
 																onDeviceChange={setPreviewDevice}
 																widthTokens={borderStickyWidthTokens}
+																defaultValue={borderWidthPresetValue}
 																renderColor={renderBorderColor}
 															/>
 															<ResponsiveMeasurementControls

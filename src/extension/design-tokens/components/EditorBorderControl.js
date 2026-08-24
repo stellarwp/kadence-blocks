@@ -186,6 +186,13 @@ function toNativeBorder(value, unit = 'px') {
  * @param {Function}     props.onDeviceChange Called with the next editor device name.
  * @param {string}       props.label          The control's label.
  * @param {Array}        [props.widthTokens]  Pickable border-width tokens.
+ * @param {*}            [props.defaultValue] What the width slot falls back to when unset — the
+ *                                            active preset's resolved border width, so a cleared
+ *                                            width field shows a muted "Default 2px" instead of
+ *                                            rendering empty (which collapses the field to zero
+ *                                            height, per its own `TokenSelector`'s summary/fallback
+ *                                            logic). One scalar for every side: presets set a single
+ *                                            border width, never a per-side default.
  * @param {?Function}    [props.renderColor]  The block's existing color field for `value.color`.
  * @param {?JSX.Element} [props.indicator]    The editor's `TokenIndicator`, passed straight through.
  *
@@ -204,6 +211,7 @@ export function EditorBorderControl({
 	onDeviceChange,
 	label,
 	widthTokens = [],
+	defaultValue,
 	renderColor,
 	indicator = null,
 }) {
@@ -229,6 +237,7 @@ export function EditorBorderControl({
 				value={fromNativeBorder(activeNative)}
 				onChange={(next) => activeSetter(toNativeBorder(next, activeUnit))}
 				widthTokens={widthTokens}
+				defaultValue={defaultValue}
 				indicator={indicator}
 				breakpoints={Object.values(BREAKPOINT_FOR_DEVICE)}
 				breakpoint={breakpoint}
