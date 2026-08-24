@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { useCallback, useEffect, useMemo, useState } from '@wordpress/element';
+import { useCallback, useEffect, useMemo, useRef, useState } from '@wordpress/element';
 import { useRegistry, useSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 
@@ -126,6 +126,33 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 		},
 		[registry, namespace, slug]
 	);
+
+	// Mirrors `isBusy` for `guardBusy` below to read without needing `isBusy` in every write
+	// function's own `useCallback` deps — every write flips `isBusy` at both its start and its end,
+	// so depending on it directly would give every OTHER write function a new identity on each of
+	// those flips too, even for a write it has nothing to do with. A ref stays current regardless of
+	// which render's closure reads it, so a write function created several renders ago still sees
+	// the latest busy state at call time.
+	const isBusyRef = useRef(isBusy);
+	isBusyRef.current = isBusy;
+
+	// Guards every write below against starting while a sibling instance's write (or this same
+	// instance's) is already in flight. The shared `isBusy` flag exists to serialize palette writes
+	// at the whole-library level (see the docblock above) — but until this guard, nothing actually
+	// READ it before starting; every write function only ever SET it, for something else to read.
+	// Not a substitute for a UI-level disabled control (several already exist, e.g.
+	// `ColorPaletteSettings.js`'s `onSave`/`onDelete`) — those stay, as the first line of defense a
+	// user actually sees; this is the one no UI surface can accidentally skip, and the one that
+	// still holds even when a click reaches a control before its disabled state has re-rendered.
+	function guardBusy() {
+		if (isBusyRef.current) {
+			return Promise.reject(
+				new Error(__('Another change to this library is already in progress.', 'kadence-blocks'))
+			);
+		}
+
+		return null;
+	}
 
 	const listing = useSelect(
 		(select) => (namespace && slug ? select(STORE_NAME).getPaletteListing(namespace, slug) : EMPTY_LISTING),
@@ -258,6 +285,11 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 
 	const activatePalette = useCallback(
 		(id) => {
+			const busy = guardBusy();
+			if (busy) {
+				return busy;
+			}
+
 			setActivateError(null);
 			return activatePaletteFlow({
 				namespace,
@@ -277,6 +309,11 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 
 	const addPalette = useCallback(
 		(label) => {
+			const busy = guardBusy();
+			if (busy) {
+				return busy;
+			}
+
 			setCreateError(null);
 			return createPaletteFlow({
 				namespace,
@@ -302,6 +339,11 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 
 	const renamePalette = useCallback(
 		(id, label) => {
+			const busy = guardBusy();
+			if (busy) {
+				return busy;
+			}
+
 			setRenameError(null);
 			return renamePaletteFlow({
 				namespace,
@@ -323,6 +365,11 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 
 	const removePalette = useCallback(
 		(id, successorId) => {
+			const busy = guardBusy();
+			if (busy) {
+				return busy;
+			}
+
 			setDeleteError(null);
 			return deletePaletteFlow({
 				namespace,
@@ -344,6 +391,11 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 
 	const saveSwatchEdits = useCallback(
 		(token, draft, initial) => {
+			const busy = guardBusy();
+			if (busy) {
+				return busy;
+			}
+
 			if (namespace && slug) {
 				const patch = {};
 				if (draft.label !== initial.label) {
@@ -389,6 +441,11 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 
 	const removeSwatch = useCallback(
 		(token) => {
+			const busy = guardBusy();
+			if (busy) {
+				return busy;
+			}
+
 			// Trust the feed's own `userCreated` flag when the token has a feed entry (defense in
 			// depth against a token id that merely looks custom-prefixed); fall back to the prefix
 			// check for a token minted since the last feed refresh, which has no feed entry yet.
@@ -450,6 +507,11 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 				return Promise.reject(new Error('A swatch of the default palette cannot be reverted.'));
 			}
 
+			const busy = guardBusy();
+			if (busy) {
+				return busy;
+			}
+
 			return revertSwatchFlow({
 				namespace,
 				slug,
@@ -466,6 +528,11 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 
 	const addColor = useCallback(
 		(groupId, onOptimistic) => {
+			const busy = guardBusy();
+			if (busy) {
+				return busy;
+			}
+
 			const colorSlug = nextCustomColorSlug(existingTokenIds);
 			const value = newSwatchValue(palette?.groups, groupId);
 			const label = __('New Color', 'kadence-blocks');
@@ -542,6 +609,11 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 				return Promise.reject(new Error(error));
 			}
 
+			const busy = guardBusy();
+			if (busy) {
+				return busy;
+			}
+
 			const colorSlug = nextCustomColorSlug(existingTokenIds);
 			const value = newSwatchValue(palette?.groups, groupId);
 			const swatchLabel = __('New Color', 'kadence-blocks');
@@ -605,6 +677,16 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 
 	const reorderSwatches = useCallback(
 		(groupId, orderedTokens) => {
+			// A drag gesture isn't gated by a disabled button the way every other write's own trigger
+			// is, so this guard is the one most likely to actually fire in practice — surfaced through
+			// `structureError` rather than `guardBusy()`'s silent rejection, so dropping mid-write
+			// still tells the user something, instead of the drop just silently reverting.
+			if (isBusyRef.current) {
+				const message = __('Another change to this library is already in progress.', 'kadence-blocks');
+				setStructureError({ message });
+				return Promise.reject(new Error(message));
+			}
+
 			setStructureError(null);
 
 			if (palette) {
@@ -637,6 +719,11 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 
 	const renameGroup = useCallback(
 		(groupId, label) => {
+			const busy = guardBusy();
+			if (busy) {
+				return busy;
+			}
+
 			setStructureError(null);
 			return renameGroupFlow({
 				namespace,
@@ -658,6 +745,11 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 
 	const removeGroup = useCallback(
 		(groupId) => {
+			const busy = guardBusy();
+			if (busy) {
+				return busy;
+			}
+
 			const group = (palette?.groups ?? []).find((row) => row.id === groupId);
 			const userCreatedTokens = (group?.swatches ?? [])
 				.map((swatch) => swatch.token)

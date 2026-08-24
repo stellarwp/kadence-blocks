@@ -1169,11 +1169,56 @@ describe('usePalettes', () => {
 		expect(probe.latest().structureError).toEqual({ message: 'Conflict' });
 	});
 
-	it('composes a pending optimistic reorder with a different pending optimistic action without reverting the reorder', async () => {
+	// The exact scenario a reviewer's finding described: save a swatch edit from the settings
+	// panel, then, before that write resolves, drag-reorder a DIFFERENT swatch in the same palette.
+	// Before this guard existed, the reorder would read the palette without the pending edit and
+	// its own write would then land on top of it, silently discarding the save. `reorderSwatches`
+	// surfaces this via `structureError` rather than a silent rejection (unlike every other guarded
+	// write) — a drag gesture is not gated by a disabled button the way a settings-panel Save is, so
+	// this is the one guard most likely to actually fire, and a drop that silently reverts with no
+	// explanation reads as broken rather than blocked.
+	it('blocks reorderSwatches while a settings-panel save is still pending, with a visible error rather than a silent revert', async () => {
+		client.fetchPalettes.mockResolvedValueOnce(listingRows());
+		client.saveSwatch.mockReturnValueOnce(new Promise(() => {}));
+
+		const probe = mountProbe();
+		await probe.render();
+
+		act(() => {
+			// Fire-and-forget: this save's own write never resolves in this test.
+			probe
+				.latest()
+				.saveSwatchEdits(
+					'primitive.color.brand.primary',
+					{ label: 'Main 1', value: '#abcabc' },
+					{ label: 'Main 1', value: '#999999' }
+				);
+		});
+
+		expect(probe.latest().isBusy).toBe(true);
+
+		const originalOrder = probe.latest().palette.groups[0].swatches.map((s) => s.token);
+		const newOrder = [...originalOrder].reverse();
+
+		let reorderPromise;
+		act(() => {
+			reorderPromise = probe.latest().reorderSwatches('accent', newOrder);
+		});
+
+		await expect(reorderPromise).rejects.toThrow('Another change to this library is already in progress.');
+		expect(client.fetchPalette).not.toHaveBeenCalled();
+		expect(probe.latest().structureError).toEqual({
+			message: 'Another change to this library is already in progress.',
+		});
+		// The order is untouched — the blocked reorder never applied its own optimistic override.
+		expect(probe.latest().palette.groups[0].swatches.map((s) => s.token)).toEqual(originalOrder);
+	});
+
+	it('blocks a second write on a DIFFERENT swatch while a reorder is still pending, leaving the reorder undisturbed', async () => {
 		client.fetchPalettes.mockResolvedValueOnce(listingRows());
 
-		// Neither write's own `fetchPalette`/`savePalette` call ever resolves in this test — the
-		// point is to observe the state WHILE both are still in flight, so nothing here needs a
+		// The reorder's own `fetchPalette`/`savePalette` call never resolves in this test — the
+		// point is to observe the state while it is still in flight, so nothing here needs a
 		// settled value.
 		client.fetchPalette.mockReturnValue(new Promise(() => {}));
 
@@ -1188,17 +1233,27 @@ describe('usePalettes', () => {
 			probe.latest().reorderSwatches('accent', newOrder);
 		});
 
-		// The reorder's optimistic order is applied immediately.
+		// The reorder's optimistic order is applied immediately, and the shared busy flag is now set.
 		expect(probe.latest().palette.groups[0].swatches.map((s) => s.token)).toEqual(newOrder);
+		expect(probe.latest().isBusy).toBe(true);
 
+		// A write on a DIFFERENT swatch the reorder does not touch, attempted while the reorder's
+		// own write is still pending — this used to be allowed to start concurrently (the exact gap
+		// a reviewer found: the shared `isBusy` flag was only ever SET, never read before a write
+		// began), racing an independent fetch→edit→save round trip against the reorder's own and
+		// risking whichever response landed last silently clobbering the other's change. It must now
+		// be rejected outright, before touching the store at all.
+		let removePromise;
 		act(() => {
-			// A DIFFERENT optimistic action, on a swatch the reorder does not touch, while the
-			// reorder's own write is still pending. This must not clear the reorder's local override.
-			probe.latest().removeSwatch('primitive.color.brand.secondary');
+			removePromise = probe.latest().removeSwatch('primitive.color.brand.secondary');
 		});
 
-		// The reorder's order is still visible — the unrelated delete's optimistic overlay must not
-		// have reset the pending reorder override.
+		await expect(removePromise).rejects.toThrow('Another change to this library is already in progress.');
+		// Only the reorder's own fetch ran — the blocked remove never reached the network at all.
+		expect(client.fetchPalette).toHaveBeenCalledTimes(1);
+
+		// The reorder's order is still visible — the blocked delete attempt never touched the
+		// optimistic-deletion overlay, so it cannot have reset the pending reorder override.
 		expect(probe.latest().palette.groups[0].swatches.map((s) => s.token)).toEqual(newOrder);
 	});
 
