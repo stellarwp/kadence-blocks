@@ -42,12 +42,16 @@ import { hasValue, isTokenAlias } from '../helpers/token-summary';
  * @param {Function} props.onPick       Called with an entry's `alias` when a token is chosen.
  * @param {Function} props.onClear      Called when `Reset` is chosen; clears the slot's override.
  * @param {Function} props.onClose      Closes the popover after a choice.
+ * @param {boolean}  [props.showValue]  Whether each row shows its resolved value beside its label.
+ *                                      Defaults to `true`; a shadow's resolved value is a long CSS
+ *                                      shorthand that reads awkwardly next to its label the way a
+ *                                      short dimension value does, so `BoxShadowControl` opts out.
  *
  * @since TBD
  *
  * @return {Object} The rendered token list.
  */
-function StyleLibraryTab({ value, tokens, defaultValue, inherited, onPick, onClear, onClose }) {
+function StyleLibraryTab({ value, tokens, defaultValue, inherited, onPick, onClear, onClose, showValue = true }) {
 	// Reset clears the slot's override back to the inherited default; it is inert when nothing is set.
 	const hasOverride = isTokenAlias(value) || (value !== '' && value !== undefined && value !== null);
 	// While unset, the size matching the inherited default reads as the active row.
@@ -84,7 +88,7 @@ function StyleLibraryTab({ value, tokens, defaultValue, inherited, onPick, onCle
 								{inherited ? __('Inherited', 'kadence-blocks') : __('Default', 'kadence-blocks')}
 							</span>
 						)}
-						<span className="kadence-token-field__item-value">{entry.value}</span>
+						{showValue && <span className="kadence-token-field__item-value">{entry.value}</span>}
 					</Button>
 				);
 			})}
@@ -166,6 +170,9 @@ export function CustomTab({ number, unit, units, onUnit, min, max, step, onNumbe
  * @param {Function} props.onPick           Writes a picked token's alias.
  * @param {Function} props.onClear          Clears the slot's override.
  * @param {Function} props.onClose          Closes the popover after a choice.
+ * @param {boolean}  [props.showValue]      Whether each Style Library row shows its resolved value
+ *                                          beside its label. Defaults to `true`; additive only, so
+ *                                          every existing consumer keeps showing values.
  *
  * @since TBD
  *
@@ -182,6 +189,7 @@ export function TokenPopover({
 	onPick,
 	onClear,
 	onClose,
+	showValue = true,
 }) {
 	return (
 		<TabPanel
@@ -218,6 +226,7 @@ export function TokenPopover({
 						onPick={onPick}
 						onClear={onClear}
 						onClose={onClose}
+						showValue={showValue}
 					/>
 				) : renderCustom ? (
 					renderCustom(custom)

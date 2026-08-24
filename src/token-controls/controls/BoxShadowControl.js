@@ -10,6 +10,11 @@
  *
  * Color is out of scope here (see `renderColor`) exactly as in `BorderControl` — this control does
  * not import or build a color picker.
+ *
+ * The token rows also hide their resolved value (`TokenPopover`'s `showValue={false}`) — a shadow's
+ * value is a long CSS shorthand that crowds the row the way a short dimension value does not. Other
+ * `TokenPopover` consumers (Radius, Spacing, Border Width) keep the default `showValue={true}` and
+ * are unaffected.
  */
 
 /**
@@ -159,6 +164,7 @@ export function BoxShadowControl({ value, onChange, label, tokens = [], renderCo
 						onPick={(alias) => !disabled && onChange(alias)}
 						onClear={() => !disabled && onChange('')}
 						onClose={onClose}
+						showValue={false}
 					/>
 				)}
 			/>

@@ -15,7 +15,10 @@ import { TokenPopover } from '../molecules/TokenPopover';
 // than the top-level `react-dom/client` this test renders with, which trips React's "Invalid hook
 // call" guard. Stand-ins sidestep that; this test only needs the tab panel structure.
 jest.mock('@wordpress/components', () => ({
-	Button: ({ children, ...props }) => <button {...props}>{children}</button>,
+	// `isPressed` is dropped rather than spread: it is a `Button`-only prop, and passing it straight
+	// through to a DOM `<button>` trips React's "unrecognized DOM attribute" warning under
+	// `@wordpress/jest-console`'s strict console assertions.
+	Button: ({ children, isPressed, ...props }) => <button {...props}>{children}</button>,
 	Icon: ({ icon, ...props }) => <span {...props}>{icon}</span>,
 	RangeControl: ({ label }) => <div>{label}</div>,
 	SelectControl: ({ label }) => <div>{label}</div>,
@@ -125,5 +128,37 @@ describe('TokenPopover renderCustom prop', () => {
 		});
 
 		expect(renderCustom).not.toHaveBeenCalled();
+	});
+});
+
+describe('TokenPopover showValue prop', () => {
+	/**
+	 * When `showValue` is omitted — every consumer besides `BoxShadowControl` today — each token row
+	 * still shows its resolved value beside its label. This is the regression check that the additive
+	 * prop leaves existing consumers unchanged.
+	 *
+	 * @return {void}
+	 */
+	it("shows each row's value by default", () => {
+		const tokens = [{ id: 'md', label: 'Medium', value: '8px', alias: '{primitive.radius.md}' }];
+
+		render({ initialTab: 'style-library', tokens });
+
+		expect(container.querySelector('.kadence-token-field__item-value').textContent).toBe('8px');
+	});
+
+	/**
+	 * With `showValue={false}` — `BoxShadowControl`'s own usage — no row renders its resolved value,
+	 * only its label.
+	 *
+	 * @return {void}
+	 */
+	it("hides every row's value when showValue is false", () => {
+		const tokens = [{ id: 'md', label: 'Medium', value: '0px 2px 8px #000', alias: '{primitive.shadow.md}' }];
+
+		render({ initialTab: 'style-library', tokens, showValue: false });
+
+		expect(container.querySelector('.kadence-token-field__item-value')).toBeNull();
+		expect(container.querySelector('.kadence-token-field__item-label').textContent).toBe('Medium');
 	});
 });

@@ -238,6 +238,19 @@ describe('BoxShadowControl Style Library tab', () => {
 
 		expect(onChange).toHaveBeenCalledWith('');
 	});
+
+	/**
+	 * Each token row shows its label but not its resolved `box-shadow` value — a shadow's value is a
+	 * long CSS shorthand that would crowd the row.
+	 *
+	 * @return {void}
+	 */
+	it("shows each row's label but not its resolved value", () => {
+		renderControl({ value: '{primitive.shadow.md}' });
+
+		expect(tokenItem('Large')).not.toBeUndefined();
+		expect(container.querySelector('.kadence-token-field__item-value')).toBeNull();
+	});
 });
 
 describe('BoxShadowControl Custom tab', () => {
