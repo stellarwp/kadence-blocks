@@ -116,6 +116,33 @@ describe('usePresets', () => {
 		expect(probe.latest().initialValuesFor('primary')).not.toBeNull();
 	});
 
+	it('isLoading is already true on the very first render, before the resolver dispatch has fired', async () => {
+		fetchBlockPresets.mockResolvedValueOnce(PAYLOAD_A);
+
+		let latest = null;
+
+		function Probe({ library }) {
+			latest = usePresets(library, BUTTON_PRESET);
+			return null;
+		}
+
+		// `@wordpress/data`'s resolver dispatch is scheduled via `setTimeout(fn, 0)`, so this render
+		// happens strictly before that dispatch fires — `isResolving` would still read `false` here,
+		// which is exactly the one-frame "not loading" flash `hasFinishedResolution` must avoid.
+		await act(() =>
+			root.render(
+				<RegistryProvider value={registry}>
+					<Probe library={LIBRARY_A} />
+				</RegistryProvider>
+			)
+		);
+
+		expect(latest.isLoading).toBe(true);
+		expect(latest.payload).toBeNull();
+
+		await act(() => jest.runOnlyPendingTimersAsync());
+	});
+
 	it('switching to a not-yet-resolved library shows loading with no stale data', async () => {
 		fetchBlockPresets.mockResolvedValueOnce(PAYLOAD_A);
 

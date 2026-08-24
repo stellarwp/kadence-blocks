@@ -43,22 +43,38 @@ export function usePresets(library, preset) {
 	const slug = library?.slug;
 
 	const { payload, isLoading, loadError } = useSelect(
-		(select) => ({
-			payload: namespace && block && slug ? select(STORE_NAME).getBlockPresets(namespace, block, slug) : null,
-			// Gated on `!payload`, not raw `isResolving` alone: a write's wrapped `refreshFeed`
-			// (`use-preset-screen.js`) invalidates and re-resolves this same selector, which raises
-			// `isResolving` for the duration of that background re-fetch too. Once the presets list has
-			// loaded once, the store keeps serving that payload while it revalidates, so there is data to
-			// keep rendering — a loading state should only ever show up before the first payload lands.
-			isLoading:
-				Boolean(namespace && block && slug) &&
-				select(STORE_NAME).isResolving('getBlockPresets', [namespace, block, slug]) &&
-				!select(STORE_NAME).getBlockPresets(namespace, block, slug),
-			loadError:
-				namespace && block && slug
-					? select(STORE_NAME).getResolutionError('getBlockPresets', [namespace, block, slug])
-					: null,
-		}),
+		(select) => {
+			const currentPayload =
+				namespace && block && slug ? select(STORE_NAME).getBlockPresets(namespace, block, slug) : null;
+
+			// `hasFinishedResolution`, not `isResolving`: `@wordpress/data` schedules a resolver's
+			// dispatch via a `setTimeout(fn, 0)`, so on the very first render for a given
+			// `(namespace, block, slug)` tuple `isResolving` can still be `false` — the resolver hasn't
+			// been kicked off yet — even though nothing has loaded. `isLoading` below would then read
+			// `false` for that one frame, with `payload` still `null`; a caller that self-heals a
+			// `?kb-item=` deep link off "not loading and no matching preset" (see `use-preset-screen.js`)
+			// would read that frame as "this preset was deleted" and rewrite the route away from a
+			// perfectly valid link before its fetch even started. `hasFinishedResolution` stays `false`
+			// for that same render, so `isLoading` correctly starts `true` instead.
+			const hasFinishedPresets =
+				!(namespace && block && slug) ||
+				select(STORE_NAME).hasFinishedResolution('getBlockPresets', [namespace, block, slug]);
+
+			return {
+				payload: currentPayload,
+				// Gated on `!currentPayload`, not `hasFinishedPresets` alone: a write's wrapped
+				// `refreshFeed` (`use-preset-screen.js`) invalidates and re-resolves this same selector,
+				// which flips `hasFinishedPresets` back to `false` for the duration of that background
+				// re-fetch too. Once the presets list has loaded once, the store keeps serving that
+				// payload while it revalidates, so there is data to keep rendering — a loading state
+				// should only ever show up before the first payload lands.
+				isLoading: !hasFinishedPresets && !currentPayload,
+				loadError:
+					namespace && block && slug
+						? select(STORE_NAME).getResolutionError('getBlockPresets', [namespace, block, slug])
+						: null,
+			};
+		},
 		[namespace, block, slug]
 	);
 

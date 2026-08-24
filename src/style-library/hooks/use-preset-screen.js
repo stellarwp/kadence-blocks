@@ -78,7 +78,11 @@ export function usePresetScreen(library, preset) {
 
 			return Promise.all([feedRefresh, storeRefresh]);
 		},
-		[library, registry, namespace, block, slug]
+		// `library.refreshFeed`, not `library` — this only ever calls that one function off it, and
+		// `library` is a fresh object literal every render (`useDesignTokensFeed()`'s own return
+		// value), so depending on the whole object would rebuild this callback (and everything that
+		// depends on its identity) on every render instead of only when the function itself changes.
+		[library?.refreshFeed, registry, namespace, block, slug]
 	);
 
 	// `feedVersionSnapshotRef` mirrors `library.version` for reads inside the queued continuations
