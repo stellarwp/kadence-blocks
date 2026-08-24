@@ -1,13 +1,5 @@
 /* eslint-env jest */
-import {
-	isSlotList,
-	isTokenId,
-	isUniformSlotList,
-	readSlot,
-	toShorthand,
-	toSlotList,
-	writeSlot,
-} from '../helpers/value-shapes';
+import { isSlotList, isTokenId, readSlot, toShorthand, toSlotList, writeSlot } from '../helpers/value-shapes';
 
 describe('isSlotList', () => {
 	it('is true only for a four-element array', () => {
@@ -130,32 +122,5 @@ describe('slot index validation', () => {
 			expect(() => readSlot(['a', 'b', 'c', 'd'], index)).not.toThrow();
 			expect(() => writeSlot(['a', 'b', 'c', 'd'], index, 'x')).not.toThrow();
 		});
-	});
-});
-
-describe('isUniformSlotList', () => {
-	it('returns true when all four scalar slots are identical', () => {
-		expect(isUniformSlotList(['8px', '8px', '8px', '8px'])).toBe(true);
-	});
-
-	it('returns false when any scalar slot differs', () => {
-		expect(isUniformSlotList(['8px', '8px', '4px', '8px'])).toBe(false);
-	});
-
-	it('returns true when all four composite slots have equal shallow contents', () => {
-		const side = { width: '2px', style: 'solid', color: '' };
-		expect(isUniformSlotList([{ ...side }, { ...side }, { ...side }, { ...side }])).toBe(true);
-	});
-
-	it('returns false when a composite slot differs by one key', () => {
-		const side = { width: '2px', style: 'solid', color: '' };
-		const different = { ...side, style: 'dashed' };
-		expect(isUniformSlotList([side, side, side, different])).toBe(false);
-	});
-
-	it('returns false when a composite slot has a different key set', () => {
-		const a = { width: '2px', style: 'solid' };
-		const b = { width: '2px', style: 'solid', color: '' };
-		expect(isUniformSlotList([a, a, a, b])).toBe(false);
 	});
 });

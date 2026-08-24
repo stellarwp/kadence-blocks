@@ -133,53 +133,6 @@ export function writeSlot(value, index, next, collapse = false) {
 }
 
 /**
- * Whether every slot in a list is shallow-equal to the first — same top-level keys, same primitive
- * values. Used to collapse a composite per-side value (e.g. `{width, style, color}`) back to a
- * scalar the way `writeSlot`'s `===` check already does for plain string/number slots. `writeSlot`
- * itself is not touched: radius and spacing rely on its exact current behavior, and a composite
- * slot shape is unique to `BorderControl`.
- *
- * @param {Array} slots A four-element slot list.
- *
- * @since TBD
- *
- * @return {boolean} True when every slot has the same shape and values as the first.
- */
-export function isUniformSlotList(slots) {
-	const [first, ...rest] = slots;
-
-	return rest.every((slot) => shallowEqual(slot, first));
-}
-
-/**
- * Shallow-equality for the plain objects a composite slot holds — one level of key/value
- * comparison, no recursion. Sufficient for `{width, style, color}`, where every value is itself a
- * scalar (a token id string, a CSS literal, or an empty string).
- *
- * @param {*} a The first value.
- * @param {*} b The second value.
- *
- * @since TBD
- *
- * @return {boolean} True when `a` and `b` are `===`-equal, or are plain objects with the same keys
- *                    and `===`-equal values.
- */
-function shallowEqual(a, b) {
-	if (a === b) {
-		return true;
-	}
-
-	if (typeof a !== 'object' || typeof b !== 'object' || a === null || b === null) {
-		return false;
-	}
-
-	const aKeys = Object.keys(a);
-	const bKeys = Object.keys(b);
-
-	return aKeys.length === bKeys.length && aKeys.every((key) => a[key] === b[key]);
-}
-
-/**
  * Whether a raw value names a design token rather than being a CSS literal.
  *
  * Every registered token id lives under one of the document's two roots, which a literal never
