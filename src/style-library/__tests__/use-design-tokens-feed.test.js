@@ -117,9 +117,10 @@ describe('useDesignTokensFeed', () => {
 		let refreshPromise;
 		await act(async () => {
 			refreshPromise = probe.latest().refreshFeed('brand');
-			// The resolver's own fetch call is scheduled via `setTimeout(0)` internally by
-			// `@wordpress/data`, so a real timer tick is needed before `fetchDesignTokensFeed`
-			// has actually been called and `resolveFetch` is assigned.
+			// `refreshFeed` calls `fetchDesignTokensFeed` synchronously (it no longer routes through
+			// the store's resolver framework, whose own dispatch is scheduled via `setTimeout(0)`
+			// internally by `@wordpress/data`) — this tick just lets the surrounding `act()` settle
+			// before the assertions below read state.
 			await new Promise((resolve) => setTimeout(resolve, 0));
 		});
 
@@ -172,9 +173,8 @@ describe('useDesignTokensFeed', () => {
 		let refreshPromise;
 		await act(async () => {
 			refreshPromise = probe.latest().refreshFeed('default');
-			// See the previous test: the resolver's fetch call is scheduled via `setTimeout(0)`
-			// internally, so a real timer tick is needed before `fetchDesignTokensFeed` has
-			// actually run and `resolveFetch` is assigned.
+			// See the previous test: `fetchDesignTokensFeed` runs synchronously inside `refreshFeed`
+			// now; this tick just lets the surrounding `act()` settle.
 			await new Promise((resolve) => setTimeout(resolve, 0));
 		});
 
@@ -240,5 +240,69 @@ describe('useDesignTokensFeed', () => {
 
 		expect(probe.latest().slug).toBe('third');
 		expect(probe.latest().feed).toEqual(THIRD_FEED);
+	});
+
+	// Two overlapping refreshes of the SAME slug (unlike the previous test's different-slug race —
+	// this is the shape every write flow's own `refreshFeed(slug)` produces when a sibling instance,
+	// e.g. a screen and its settings panel, both write close together). Before this was fixed, an
+	// older call's promise resolved the moment ANY call for the same tuple finished — including a
+	// newer sibling's — so it could settle with stale data before its own fetch had even landed, and
+	// code chaining logic off it (every write flow does) would act on that stale read.
+	it('an older refreshFeed() call for the SAME slug settles on its own fetch, not a newer sibling call finishing first', async () => {
+		let resolveOlder;
+		let resolveNewer;
+		fetchDesignTokensFeed
+			.mockImplementationOnce(
+				() =>
+					new Promise((resolve) => {
+						resolveOlder = resolve;
+					})
+			)
+			.mockImplementationOnce(
+				() =>
+					new Promise((resolve) => {
+						resolveNewer = resolve;
+					})
+			);
+
+		const probe = mountProbe();
+		await probe.render();
+
+		let olderCall;
+		let newerCall;
+		let olderSettled = false;
+		let olderResolvedWith = null;
+		await act(async () => {
+			olderCall = probe.latest().refreshFeed('brand');
+			olderCall.then((resolvedFeed) => {
+				olderSettled = true;
+				olderResolvedWith = resolvedFeed;
+			});
+			await new Promise((resolve) => setTimeout(resolve, 0));
+			newerCall = probe.latest().refreshFeed('brand');
+			await new Promise((resolve) => setTimeout(resolve, 0));
+		});
+
+		// The newer call resolves first — it must win, and the older call must still be pending,
+		// not resolved early by the newer call finishing the same (slug-only) tuple.
+		await act(async () => {
+			resolveNewer({ ...BRAND_FEED, version: 'newer' });
+			await newerCall;
+		});
+
+		expect(probe.latest().feed).toEqual({ ...BRAND_FEED, version: 'newer' });
+		expect(olderSettled).toBe(false);
+
+		// The older call's own fetch finally lands, with stale data — its promise settles now (not
+		// before, on the newer call's own resolution), with its OWN fetch's payload, and its stale
+		// response must not overwrite the newer feed already in the store.
+		await act(async () => {
+			resolveOlder({ ...BRAND_FEED, version: 'older' });
+			await olderCall;
+		});
+
+		expect(olderSettled).toBe(true);
+		expect(olderResolvedWith).toEqual({ ...BRAND_FEED, version: 'older' });
+		expect(probe.latest().feed).toEqual({ ...BRAND_FEED, version: 'newer' });
 	});
 });

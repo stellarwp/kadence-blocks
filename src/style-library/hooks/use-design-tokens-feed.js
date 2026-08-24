@@ -7,10 +7,11 @@ import { dispatch as defaultDispatch, useSelect, useRegistry } from '@wordpress/
 /**
  * Internal dependencies
  */
-import { configureRestClient } from '../api/client';
+import { configureRestClient, fetchDesignTokensFeed } from '../api/client';
 import { flattenSchemaTokens, getDesignTokensFeed as readLocalizedFeed } from '../helpers/tokens';
 import { DEFAULT_LIBRARY_SLUG } from '../constants';
 import { STORE_NAME } from '../store';
+import { bumpFeedRevision, isFeedRevisionCurrent } from '../store/resolvers';
 
 /**
  * Seed the store with the localized design-token feed. Call this BEFORE React starts rendering —
@@ -104,6 +105,31 @@ export function useDesignTokensFeed() {
 	 * tags each call with an ever-increasing id at the moment it starts, and only the call still
 	 * holding the latest id when its read resolves is allowed to advance `slug`.
 	 *
+	 * Fetches and dispatches directly, deliberately NOT through `registry.resolveSelect(STORE_NAME)`:
+	 * that promise settles once the store's resolver framework marks the ARGS TUPLE
+	 * (`['getDesignTokensFeed', [targetSlug]]`) finished — a flag shared by every caller of that
+	 * same tuple, not one scoped to this specific call's own fetch. Two overlapping refreshes of the
+	 * SAME slug (the expected case — sibling instances, e.g. a screen and its settings panel, writing
+	 * close together) would let an OLDER, slower call's "this response is stale, skip it" early
+	 * return still finish the shared tuple — resolving BOTH callers' promises with whatever the store
+	 * already held, before the newer call's real data has landed; a caller chaining logic off the
+	 * older promise (as every write flow does) would read stale data. The same sharing means one
+	 * call's fetch REJECTING could reject a sibling call that was about to succeed on its own. Calling
+	 * `fetchDesignTokensFeed` here directly, and dispatching conditionally on `isFeedRevisionCurrent`
+	 * (shared with the `getDesignTokensFeed` resolver in `store/resolvers.js`, which still fetches and
+	 * dispatches through the normal resolver path for any consumer that reaches this tuple without
+	 * going through `refreshFeed` first), ties this call's promise to its OWN fetch alone.
+	 *
+	 * Deliberately does NOT call `invalidateResolution` first, unlike this function's own earlier
+	 * version — this dispatches `receiveDesignTokensFeed` and `finishResolution` itself once its
+	 * fetch lands, so the tuple's resolution status ends up correct without ever needing to mark it
+	 * invalid first. Invalidating would re-arm this same hook's own passive `useSelect` read of this
+	 * tuple (see `feed` above) to auto-trigger the resolver on its very next evaluation — which
+	 * fires within the same tick, racing this function's own direct fetch with a second, unwanted
+	 * one, and reintroducing the exact shared-tuple problem this rewrite exists to remove. Nothing in
+	 * this app reads `isResolving`/`getResolutionError` for this tuple, so there is no consumer that
+	 * needs the "invalid" state to exist even transiently.
+	 *
 	 * @param {string} targetSlug The token library slug to read the feed for.
 	 *
 	 * @since TBD
@@ -113,18 +139,20 @@ export function useDesignTokensFeed() {
 	const refreshFeed = useCallback(
 		(targetSlug) => {
 			const requestId = ++latestRequestRef.current;
+			const revision = bumpFeedRevision(targetSlug);
 
-			registry.dispatch(STORE_NAME).invalidateResolution('getDesignTokensFeed', [targetSlug]);
+			return fetchDesignTokensFeed(targetSlug).then((nextFeed) => {
+				if (isFeedRevisionCurrent(targetSlug, revision)) {
+					registry.dispatch(STORE_NAME).receiveDesignTokensFeed(targetSlug, nextFeed);
+					registry.dispatch(STORE_NAME).finishResolution('getDesignTokensFeed', [targetSlug]);
+				}
 
-			return registry
-				.resolveSelect(STORE_NAME)
-				.getDesignTokensFeed(targetSlug)
-				.then((nextFeed) => {
-					if (requestId === latestRequestRef.current) {
-						setSlug(targetSlug);
-					}
-					return nextFeed;
-				});
+				if (requestId === latestRequestRef.current) {
+					setSlug(targetSlug);
+				}
+
+				return nextFeed;
+			});
 		},
 		[registry]
 	);

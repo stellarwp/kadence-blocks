@@ -59,11 +59,12 @@ describe('resolvers', () => {
 	});
 
 	/**
-	 * Two sibling instances (e.g. a scale screen and its settings panel) can each write and call
-	 * `refreshFeed` for the SAME slug close together — `refreshFeed` always invalidates before
-	 * re-resolving, even for the slug already showing, so both trigger their own resolver run. If
-	 * the FIRST call's network response lands AFTER the second's, only the second's (newer) response
-	 * may reach the store; the first's must be discarded as stale.
+	 * This resolver's own `bumpFeedRevision`/`isFeedRevisionCurrent` guard is shared with
+	 * `use-design-tokens-feed.js`'s `refreshFeed`, which now fetches and dispatches directly rather
+	 * than routing through this resolver — see that hook's own docblock. Two organic resolver runs
+	 * for the SAME slug close together (this test's scenario) still need to coordinate through the
+	 * same counter: if the FIRST call's network response lands AFTER the second's, only the second's
+	 * (newer) response may reach the store; the first's must be discarded as stale.
 	 *
 	 * @return {void}
 	 */
