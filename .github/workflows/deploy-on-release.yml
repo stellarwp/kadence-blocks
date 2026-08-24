@@ -27,6 +27,12 @@ jobs:
     # The proper name for the job being run.
     name: Deploy to WP.org
 
+    # Attaching the zip to the release writes to the repository. A job with no permissions block
+    # inherits the default from the Actions settings, which live outside this file and are
+    # currently read, so the upload step below has to ask for write access explicitly.
+    permissions:
+      contents: write
+
     # The environment this job should run on. In the context of WordPress, ubuntu-latest is
     # pretty typical. Since we are only interacting with git and subversion, Ubuntu is perfect
     # for this.

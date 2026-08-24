@@ -5,10 +5,6 @@ on:
   push:
   # pull_request:
 
-# permissions:
-#   contents: write
-#   pull-requests: write
-
 jobs:
   run-linters:
     name: Run linters
@@ -44,5 +40,8 @@ jobs:
       - name: Run linters
         uses: wearerequired/lint-action@v2
         with:
+          # The bot's token rather than the default one, so auto-fix commits are attributed to it
+          # and still trigger the workflows that a commit pushed by the default token would not.
+          github_token: ${{ secrets.GH_BOT_TOKEN }}
           auto_fix: true
           eslint: true
