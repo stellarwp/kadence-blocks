@@ -155,9 +155,11 @@ describe('EditorBorderControl native <-> control value bridging', () => {
 	});
 
 	/**
-	 * `BorderControl` never manages color; a width/style edit must read each side's EXISTING color
-	 * out of the previous native value and write it back unchanged, or the very next edit would
-	 * silently erase every side's color.
+	 * A width/style-only edit carries `value.color` forward unchanged, because `BorderControl`'s own
+	 * `patch()` merges `{ ...value, ...next }` — the width/style write never touches `color`, so the
+	 * `next` it hands to `onChange` still has the real colors `fromNativeBorder` derived. This is the
+	 * realistic shape of that call (not blanked-out colors — see the clear-color test below for why
+	 * that used to matter).
 	 *
 	 * @return {void}
 	 */
@@ -167,7 +169,7 @@ describe('EditorBorderControl native <-> control value bridging', () => {
 		borderControl.props.onChange({
 			width: ['2px', '3px', '4px', '5px'],
 			style: ['none', 'dashed', 'dotted', 'double'],
-			color: ['', '', '', ''], // BorderControl never populates color itself.
+			color: ['#111111', '#222222', '#333333', '#444444'], // Carried forward by BorderControl's merge.
 		});
 
 		const written = onChange.mock.calls[0][0][0];
@@ -175,6 +177,28 @@ describe('EditorBorderControl native <-> control value bridging', () => {
 		expect(written.right[0]).toBe('#222222');
 		expect(written.bottom[0]).toBe('#333333');
 		expect(written.left[0]).toBe('#444444');
+	});
+
+	/**
+	 * Clearing a side's color (a real `renderColor` implementation calling its `onChange` with `''`)
+	 * must write `''` to the native attribute, not silently keep the stale color — `value.color` is
+	 * always authoritative, so `toNativeBorder` must not fall back to `previousNative`'s color on a
+	 * falsy value the way an earlier version of this function did.
+	 *
+	 * @return {void}
+	 */
+	it('writes an empty string when a side color is cleared, rather than keeping the stale color', () => {
+		const { borderControl, onChange } = renderEditorBorderControl();
+
+		borderControl.props.onChange({
+			width: ['2px', '3px', '4px', '5px'],
+			style: ['solid', 'dashed', 'dotted', 'double'],
+			color: ['', '#222222', '#333333', '#444444'], // Top color cleared.
+		});
+
+		const written = onChange.mock.calls[0][0][0];
+		expect(written.top[0]).toBe('');
+		expect(written.right[0]).toBe('#222222');
 	});
 
 	/**

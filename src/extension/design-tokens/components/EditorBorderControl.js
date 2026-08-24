@@ -142,34 +142,27 @@ function toNativeSize(slot, unit) {
  * Convert `BorderControl`'s `{ width, style, color }` shape back to the native
  * `[{top,right,bottom,left,unit}]` attribute shape.
  *
- * **Color: use the caller's edit, fall back to the existing value, never blank it out.** `value.color`
- * is whatever `BorderControl` currently holds for color — either untouched (in which case it is
- * exactly what `fromNativeBorder` derived from `previousNative`, since a width/style-only edit merges
+ * **Color always comes straight from `value.color`, with no fallback.** `value.color` is whatever
+ * `BorderControl` currently holds for color — either untouched (in which case it is exactly what
+ * `fromNativeBorder` derived from `previousNative`, since a width/style-only edit merges
  * `{ ...value, ...next }` and leaves `color` alone) or freshly written by the caller's `renderColor`
- * (via `BorderControl`'s own `patch({ color: next })`). Reading `value.color` first means a genuine
- * color edit reaches the native attribute; falling back to `previousNative`'s stored color only when
- * a slot is blank/undefined guards the one case where `value.color` itself has nothing to say (e.g. a
- * caller that renders no `renderColor` at all) — writing `''` unconditionally in that case would
- * silently erase every side's color on the very next width/style edit.
+ * (via `BorderControl`'s own `patch({ color: next })`). Either way `value.color` already carries the
+ * correct value to write — a stale `nextColor || existingColor`-style fallback would treat an
+ * explicit clear (`''`) the same as "nothing changed" and silently write the old color back,
+ * making the border color impossible to clear.
  *
- * @param {Object} value          `{ width, style, color }` from `BorderControl`.
- * @param {?Array} previousNative The attribute's current `[{top,right,bottom,left,unit}]` value, read
- *                                as the per-side color fallback when `value.color` has nothing set.
- * @param {string} [unit]         The border's shared unit (defaults to `'px'`, matching the native
- *                                default in `ResponsiveBorderControl`'s `deskDefault`).
+ * @param {Object} value  `{ width, style, color }` from `BorderControl`.
+ * @param {string} [unit] The border's shared unit (defaults to `'px'`, matching the native default
+ *                        in `ResponsiveBorderControl`'s `deskDefault`).
  *
  * @since TBD
  *
  * @return {Array} `[{top,right,bottom,left,unit}]`.
  */
-function toNativeBorder(value, previousNative, unit = 'px') {
-	const previousSides = previousNative?.[0] || {};
-
+function toNativeBorder(value, unit = 'px') {
 	const sides = SIDES.reduce((acc, side, index) => {
-		const existingColor = previousSides[side]?.[0] || '';
-		const nextColor = readSlot(value.color, index);
 		acc[side] = [
-			nextColor || existingColor,
+			readSlot(value.color, index),
 			readSlot(value.style, index) || 'none',
 			toNativeSize(readSlot(value.width, index), unit),
 		];
@@ -234,7 +227,7 @@ export function EditorBorderControl({
 			<BorderControl
 				label={label}
 				value={fromNativeBorder(activeNative)}
-				onChange={(next) => activeSetter(toNativeBorder(next, activeNative, activeUnit))}
+				onChange={(next) => activeSetter(toNativeBorder(next, activeUnit))}
 				widthTokens={widthTokens}
 				indicator={indicator}
 				breakpoints={Object.values(BREAKPOINT_FOR_DEVICE)}
