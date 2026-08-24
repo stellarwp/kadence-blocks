@@ -37,6 +37,12 @@ use WP_REST_Server;
  * and `label` must be a string. Because a palette's values live under `$extensions`, the resolver dry-run
  * never sees them, so alias targets are guarded here explicitly.
  *
+ * One further guard is specific to the DEFAULT palette: it is the structure template every other palette is
+ * projected from, so a write against it may not drop a swatch the shipped baseline defines
+ * ({@see guard_baseline_swatches()}). Those rows are permanent — reverted, never removed, which is what
+ * {@see delete_swatch()} does with them: restore the shipped color on the default palette, drop the delta
+ * (back to inherited) on any other. Only a user-added swatch's row is actually removable.
+ *
  * @since TBD
  */
 final class Palettes_Controller extends Controller {
@@ -345,6 +351,9 @@ final class Palettes_Controller extends Controller {
 	 * the shape and swatch guards, replace the palette node in the library's stored overrides, and validate-and-save.
 	 * A single palette node write is create-or-replace either way, so POST and PUT share this handler.
 	 *
+	 * A write against the default palette must additionally keep every baseline swatch: dropping one there
+	 * removes it from every palette, so it is a 403 rather than a structure edit.
+	 *
 	 * @since TBD
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
@@ -370,6 +379,11 @@ final class Palettes_Controller extends Controller {
 			return $swatches;
 		}
 
+		$locked = $this->guard_baseline_swatches( $node, $id, $slug );
+		if ( $locked !== null ) {
+			return $locked;
+		}
+
 		// The default palette stores every swatch (it is the base). A non-default palette stores only its
 		// DELTAS: a swatch equal to the default palette's value is inherited, not persisted, so the palette
 		// resolves against the default for everything it does not change.
@@ -383,8 +397,17 @@ final class Palettes_Controller extends Controller {
 	}
 
 	/**
-	 * Delete a palette (DELETE /palettes/{id}). The library's `$default` palette cannot be deleted, and a
-	 * request for a palette the library does not define is a 404.
+	 * Drop a palette's stored node (DELETE /palettes/{id}). What that leaves behind depends on whether the
+	 * shipped baseline also defines the palette: a user-created one is gone from the listing, while a baseline
+	 * palette — the `default` among them — RESETS to its shipped definition and stays. Either way the request
+	 * removes only overrides, which is why the two cases share one handler. This matches the DELETE semantics
+	 * of the sibling library and preset controllers, where dropping the default resets it to baseline.
+	 *
+	 * Deleting the palette `$current` names hands that pointer to the default palette, so the stored document
+	 * never keeps an id that resolves to nothing.
+	 *
+	 * Idempotent for a baseline palette (a reset with nothing stored changes nothing); a palette the library
+	 * does not define at all is a 404.
 	 *
 	 * @since TBD
 	 *
@@ -400,18 +423,20 @@ final class Palettes_Controller extends Controller {
 			return $this->not_found( $id );
 		}
 
-		if ( $id === $this->palettes->default_palette( $slug ) ) {
-			return new WP_Error(
-				'rest_design_tokens_forbidden',
-				__( 'The default palette cannot be deleted.', 'kadence-blocks' ),
-				[
-					'status'       => WP_Http::BAD_REQUEST,
-					self::ID_PARAM => $id,
-				]
+		$document = $this->mutator->remove_by_keys( $this->stored_document( $slug ), $this->palette_keys( $id ) );
+
+		// Removing the palette `$current` points at leaves that pointer naming an id that is no longer there.
+		// Nothing renders wrong — every reader fail-softs to `$default` — but the stale id stays in storage,
+		// and it springs back the moment the id exists again: a palette later created under the same id would
+		// go live without anyone activating it. Hand the pointer to the default palette instead. Only for a
+		// palette that actually goes away; deleting a baseline one reverts it and leaves it in the listing,
+		// so a pointer at it stays valid.
+		if ( $this->palettes->current( $slug ) === $id && in_array( $id, $this->palettes->user_created( $slug ), true ) ) {
+			$document = $this->mutator->merge(
+				$document,
+				$this->pointer_partial( Extensions::get_current_key(), $this->palettes->default_palette( $slug ) )
 			);
 		}
-
-		$document = $this->mutator->remove_by_keys( $this->stored_document( $slug ), $this->palette_keys( $id ) );
 
 		return $this->validate_and_save( $document, $id, $slug );
 	}
@@ -465,10 +490,17 @@ final class Palettes_Controller extends Controller {
 	}
 
 	/**
-	 * Revert a single palette swatch to inherited (DELETE /palettes/{id}/swatches/{token}): drop the palette's
-	 * own value for this token so it falls back to the default palette. A token the palette never set is already
-	 * inherited, so the delete is idempotent. The default palette is the base and has nothing to inherit from,
-	 * so reverting one of its swatches is a 400; an unknown palette is a 404.
+	 * Undo a palette's own value for one swatch (DELETE /palettes/{id}/swatches/{token}). What "undo" means
+	 * depends on where the swatch came from, because only one of the two is a row a palette may lose:
+	 *
+	 *   - A swatch the shipped baseline defines is permanent, so this REVERTS its value and keeps the row. On
+	 *     the default palette that means restoring the shipped color; on any other palette it means dropping
+	 *     the delta so the swatch inherits the default palette again.
+	 *   - A user-added swatch has no shipped value to fall back to, so its row is REMOVED. Done on the default
+	 *     palette — which owns the structure every palette is projected from — that retires the color entirely.
+	 *
+	 * Idempotent either way: a token a palette never set is already inherited, and a row already gone stays
+	 * gone. An unknown palette is a 404.
 	 *
 	 * @since TBD
 	 *
@@ -487,18 +519,16 @@ final class Palettes_Controller extends Controller {
 			return $this->not_found( $id );
 		}
 
-		if ( $id === $this->palettes->default_palette( $slug ) ) {
-			return new WP_Error(
-				'rest_design_tokens_forbidden',
-				__( 'A swatch of the default palette cannot be reverted.', 'kadence-blocks' ),
-				[
-					'status'       => WP_Http::BAD_REQUEST,
-					self::ID_PARAM => $id,
-				]
-			);
-		}
+		$baseline = $this->palettes->baseline_swatch_values();
 
-		return $this->write_palette_node( $slug, $id, $this->remove_swatch_from_node( $node, $token ) );
+		// The default palette is the base — it has nothing to inherit from — so a baseline swatch there is
+		// restored to its shipped value rather than dropped. Every other case drops the palette's own entry:
+		// a non-default palette's delta (leaving it inherited) or a user-added row (retiring it).
+		$node = ( $id === $this->palettes->default_palette( $slug ) && array_key_exists( $token, $baseline ) )
+			? $this->set_swatch_in_node( $node, $token, $baseline[ $token ], $slug )
+			: $this->remove_swatch_from_node( $node, $token );
+
+		return $this->write_palette_node( $slug, $id, $node );
 	}
 
 	/**
@@ -592,9 +622,18 @@ final class Palettes_Controller extends Controller {
 	/**
 	 * The effective, editable view of a palette: the DEFAULT palette's full group/swatch structure (the field
 	 * template) with each swatch's value taken from the palette's own delta when it defines one, otherwise the
-	 * inherited default value. Each swatch carries an `overridden` flag so the UI can show which are deltas
-	 * versus inherited. This is what the palette editor renders so every field is present even when the palette
-	 * stores only a few deltas.
+	 * inherited default value. This is what the palette editor renders so every field is present even when the
+	 * palette stores only a few deltas.
+	 *
+	 * Two flags per swatch drive the editor's undo affordance, and they answer different questions:
+	 *
+	 *   - `baseline` — whether the shipped palette defines this swatch. A baseline swatch's row is permanent
+	 *     (see {@see guard_baseline_swatches()}), so the editor offers Reset for it and Delete only for the
+	 *     rest.
+	 *   - `overridden` — whether there is anything to undo. On the DEFAULT palette that means the value
+	 *     differs from the shipped one; on any other palette it means the palette stores its own delta rather
+	 *     than inheriting. Measuring the default palette against its own deltas would mark every swatch
+	 *     overridden, since the default stores them all.
 	 *
 	 * @since TBD
 	 *
@@ -607,7 +646,9 @@ final class Palettes_Controller extends Controller {
 		$template = $this->palettes->palette( $this->palettes->default_palette( $slug ), $slug ) ?? [];
 		$deltas   = $this->palettes->swatch_values( $id, $slug );
 		$own      = $this->palettes->palette( $id, $slug ) ?? [];
+		$baseline = $this->palettes->baseline_swatch_values();
 
+		$is_default   = $id === $this->palettes->default_palette( $slug );
 		$token_key    = Extensions::get_swatch_token_key();
 		$label_key    = Extensions::get_label_key();
 		$value_key    = Sentinels::get_value_key();
@@ -632,13 +673,21 @@ final class Palettes_Controller extends Controller {
 					continue;
 				}
 
-				$token      = $swatch[ $token_key ];
-				$overridden = array_key_exists( $token, $deltas );
+				$token   = $swatch[ $token_key ];
+				$has_own = array_key_exists( $token, $deltas );
+				$value   = $has_own ? $deltas[ $token ] : ( $swatch[ $value_key ] ?? '' );
+
+				// The default palette stores every swatch, so "has its own value" is always true there and says
+				// nothing; what can be undone on it is a value that no longer matches the shipped one.
+				$overridden = $is_default
+					? ( array_key_exists( $token, $baseline ) && $baseline[ $token ] !== $value )
+					: $has_own;
 
 				$swatches[] = [
 					$token_key   => $token,
 					$label_key   => $swatch[ $label_key ] ?? $token,
-					$value_key   => $overridden ? $deltas[ $token ] : ( $swatch[ $value_key ] ?? '' ),
+					$value_key   => $value,
+					'baseline'   => array_key_exists( $token, $baseline ),
 					'overridden' => $overridden,
 				];
 			}
@@ -658,7 +707,7 @@ final class Palettes_Controller extends Controller {
 	}
 
 	/**
-	 * Prepare a palette node for storage: drop the presentational-only `overridden` flag the effective view
+	 * Prepare a palette node for storage: drop the presentational-only `overridden` / `baseline` flags the effective view
 	 * adds to every swatch, and — for a non-default palette — reduce it to its deltas by dropping every swatch
 	 * whose `$value` equals the library's default palette value for that token (and any group left empty). So a
 	 * palette persists only the colors it actually changes; the rest are inherited from the default.
@@ -696,7 +745,7 @@ final class Palettes_Controller extends Controller {
 					continue;
 				}
 
-				unset( $swatch['overridden'] );
+				unset( $swatch['overridden'], $swatch['baseline'] );
 
 				$token = $swatch[ $token_key ];
 				$value = $swatch[ $value_key ] ?? null;
@@ -933,6 +982,87 @@ final class Palettes_Controller extends Controller {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Reject a DEFAULT-palette write that drops a swatch the shipped baseline defines. Those swatches are the
+	 * permanent set: the default palette is the structure template every other palette is projected from, so a
+	 * row removed there disappears from every palette at once and can never be recovered. A baseline swatch is
+	 * reverted (DELETE /palettes/{id}/swatches/{token}), never removed; only a user-added swatch is deletable.
+	 *
+	 * Scoped to the default palette on purpose: a non-default palette is stored as DELTAS, so it legitimately
+	 * omits most baseline tokens, and applying this guard there would reject every ordinary palette write.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $node The palette node being written.
+	 * @param string               $id   The palette id, for error context.
+	 * @param string               $slug The token library slug.
+	 *
+	 * @return WP_Error|null A WP_Error when a baseline swatch is missing, null otherwise.
+	 */
+	private function guard_baseline_swatches( array $node, string $id, string $slug ): ?WP_Error {
+		if ( $id !== $this->palettes->default_palette( $slug ) ) {
+			return null;
+		}
+
+		$present = array_flip( $this->swatch_tokens_of_node( $node ) );
+
+		foreach ( array_keys( $this->palettes->baseline_swatch_values() ) as $token ) {
+			if ( isset( $present[ $token ] ) ) {
+				continue;
+			}
+
+			return new WP_Error(
+				'rest_design_tokens_locked',
+				sprintf(
+					/* translators: %s: the token dot-path. */
+					__( 'Swatch "%s" is part of the shipped palette and cannot be removed.', 'kadence-blocks' ),
+					$token
+				),
+				[
+					'status'          => WP_Http::FORBIDDEN,
+					self::ID_PARAM    => $id,
+					self::TOKEN_PARAM => $token,
+				]
+			);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Every swatch token a palette node carries, across all of its groups, in order.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $node The palette node.
+	 *
+	 * @return string[] The swatch token dot-paths.
+	 */
+	private function swatch_tokens_of_node( array $node ): array {
+		$swatches_key = Extensions::get_swatches_key();
+		$token_key    = Extensions::get_swatch_token_key();
+		$groups       = $node[ Extensions::get_groups_key() ] ?? [];
+		$tokens       = [];
+
+		if ( ! is_array( $groups ) ) {
+			return $tokens;
+		}
+
+		foreach ( $groups as $group ) {
+			if ( ! is_array( $group ) || ! isset( $group[ $swatches_key ] ) || ! is_array( $group[ $swatches_key ] ) ) {
+				continue;
+			}
+
+			foreach ( $group[ $swatches_key ] as $swatch ) {
+				if ( is_array( $swatch ) && isset( $swatch[ $token_key ] ) && is_string( $swatch[ $token_key ] ) ) {
+					$tokens[] = $swatch[ $token_key ];
+				}
+			}
+		}
+
+		return $tokens;
 	}
 
 	/**
