@@ -22,6 +22,10 @@ on:
                 description: 'Slack thread to post to'
                 required: false
 
+# No token access by default. The zip job below grants itself what it needs; set_vars only writes
+# to $GITHUB_OUTPUT and never touches the API, so it gets nothing.
+permissions: {}
+
 jobs:
     set_vars:
         runs-on: ubuntu-latest
@@ -55,6 +59,12 @@ jobs:
 
     zip:
         uses: ./.github/workflows/stellar-zip.yml
+        # The PR status comment needs write access. A job with no permissions block inherits the
+        # default from the Actions settings, which live outside this file and are currently read.
+        permissions:
+            contents: read
+            issues: write
+            pull-requests: write
         needs:
             - set_vars
         with:
