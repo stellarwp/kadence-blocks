@@ -55,6 +55,12 @@ jobs:
 
     zip:
         uses: ./.github/workflows/stellar-zip.yml
+        # The PR status comment needs write access. Declared here rather than relying on the
+        # organization's default workflow permissions, which can be changed outside this repo.
+        permissions:
+            contents: read
+            issues: write
+            pull-requests: write
         needs:
             - set_vars
         with:

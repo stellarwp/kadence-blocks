@@ -73,6 +73,12 @@ on:
 jobs:
   generate-zip:
     runs-on: ubuntu-latest
+    # The PR status comment needs write access. A caller may only narrow these further, so any
+    # workflow calling this one has to grant at least as much.
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
     steps:
       # ------------------------------------------------------------------------------
       # Checkout the repo.
