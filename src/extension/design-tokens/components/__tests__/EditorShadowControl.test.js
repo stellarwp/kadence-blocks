@@ -260,6 +260,31 @@ describe('EditorShadowControl enable toggle', () => {
 
 		expect(shadowControl).toBeNull();
 	});
+
+	/**
+	 * The toggle has no visible text of its own (the field's label sits in a separate, unassociated
+	 * sibling `<span>`), so it needs its own accessible name rather than relying on that span.
+	 *
+	 * @return {void}
+	 */
+	it('gives the toggle an accessible name derived from the field label, hidden visually', () => {
+		const { toggle } = renderEditorShadowControl({ label: 'Box Shadow' });
+
+		expect(toggle.props.label).toBe('Enable Box Shadow');
+		expect(toggle.props.hideLabelFromVision).toBe(true);
+	});
+
+	/**
+	 * A caller that omits `label` entirely still gets a usable, generic accessible name rather than an
+	 * empty or undefined one.
+	 *
+	 * @return {void}
+	 */
+	it('falls back to a generic accessible name when no label is given', () => {
+		const { toggle } = renderEditorShadowControl({ label: undefined });
+
+		expect(toggle.props.label).toBe('Enable shadow');
+	});
 });
 
 describe('EditorShadowControl renderColor wiring', () => {
@@ -329,10 +354,23 @@ describe('combineColorOpacity / splitColorOpacity', () => {
 	 *
 	 * @return {void}
 	 */
-	it('leaves a non-hex color unconverted rather than corrupting it to black', () => {
+	it('leaves a color it cannot decode into channels unconverted rather than corrupting it to black', () => {
 		expect(combineColorOpacity('var(--palette-color)', 0.5)).toBe('var(--palette-color)');
 		expect(combineColorOpacity('transparent', 0.5)).toBe('transparent');
-		expect(combineColorOpacity('rgb(10, 20, 30)', 0.5)).toBe('rgb(10, 20, 30)');
+	});
+
+	/**
+	 * Unlike `var(...)`/named colors, `rgb(...)` already carries decodable channels, so its opacity
+	 * is not lost the way a genuinely opaque-reference color's is — it round-trips through combine and
+	 * split exactly like a hex color does.
+	 *
+	 * @return {void}
+	 */
+	it('folds opacity into an rgb(...) color and round-trips it losslessly', () => {
+		const combined = combineColorOpacity('rgb(10, 20, 30)', 0.5);
+
+		expect(combined).toBe('rgba(10, 20, 30, 0.5)');
+		expect(splitColorOpacity(combined)).toEqual({ color: '#0a141e', opacity: 0.5 });
 	});
 
 	/**

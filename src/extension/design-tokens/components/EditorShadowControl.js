@@ -45,6 +45,7 @@
  * WordPress dependencies
  */
 import { ToggleControl } from '@wordpress/components';
+import { __, sprintf } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -127,14 +128,19 @@ function hexToRgba(hex, alpha) {
  * `rgba(...)` wrapping — so the common case round-trips as the same hex string a plain `PopColorControl`
  * without opacity support would also produce.
  *
- * @param {string}  color   The native hex color (or any CSS color literal).
+ * @param {string}  color   The native hex color, an `rgb(...)`/`rgba(...)` literal, or any other CSS
+ *                          color literal.
  * @param {?number} opacity The native opacity (0-1), or undefined for fully opaque.
  *
  * @since TBD
  *
  * @return {string} The combined color, `rgba(...)` when partially transparent and `color` is a hex
- * literal `hexToRgba` can parse; any other CSS color literal (`var(...)`, `transparent`, an existing
- * `rgba(...)`) passes through unchanged rather than being corrupted into black.
+ * or `rgb(...)`/`rgba(...)` literal (both channel-decodable, so the opacity can be folded in
+ * losslessly). A CSS color this module cannot decode into channels — `var(...)`, a named color like
+ * `transparent`, `currentColor` — passes through unchanged rather than being corrupted into black;
+ * the separate opacity is lost in that one case, a known, accepted limitation (there is no lossless
+ * single-string encoding for "an opaque reference plus a multiplier" without `color-mix()`, which
+ * `PopColorControl`/`splitColorOpacity` do not parse) — see `splitColorOpacity`'s matching fallback.
  */
 export function combineColorOpacity(color, opacity) {
 	if (!color) {
@@ -145,11 +151,19 @@ export function combineColorOpacity(color, opacity) {
 		return color;
 	}
 
-	if (!HEX_PATTERN.test(color)) {
-		return color;
+	if (HEX_PATTERN.test(color)) {
+		return hexToRgba(color, Number(opacity));
 	}
 
-	return hexToRgba(color, Number(opacity));
+	const rgbMatch = color.match(RGBA_PATTERN);
+
+	if (rgbMatch) {
+		const [, r, g, b] = rgbMatch;
+
+		return `rgba(${r}, ${g}, ${b}, ${Number(opacity)})`;
+	}
+
+	return color;
 }
 
 /**
@@ -374,7 +388,23 @@ export function EditorShadowControl({
 		<div className="kb-editor-shadow-control">
 			<div className="kb-editor-shadow-control__header">
 				{label && <span className="kb-editor-shadow-control__label">{label}</span>}
-				<ToggleControl checked={!!enable} onChange={onEnableChange} disabled={disabled} />
+				<ToggleControl
+					label={
+						label
+							? sprintf(
+									/* translators: %s: the field's own label, e.g. "Shadow". */ __(
+										'Enable %s',
+										'kadence-blocks'
+									),
+									label
+								)
+							: __('Enable shadow', 'kadence-blocks')
+					}
+					hideLabelFromVision
+					checked={!!enable}
+					onChange={onEnableChange}
+					disabled={disabled}
+				/>
 			</div>
 			{enable && (
 				<BoxShadowControl
