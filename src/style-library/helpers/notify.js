@@ -7,12 +7,23 @@
  * on the SAME default `@wordpress/data` registry (confirmed: no `RegistryProvider`/custom registry
  * anywhere in this app's production code), so this needs no extra store wiring — it is a drop-in,
  * the same pattern `src/dashboard/notices.js` already uses for a different admin page.
+ *
+ * The side-effect `@wordpress/notices` import below is required, not decorative: dispatching or
+ * selecting `core/notices` by its string name works whether or not that package has ever actually
+ * run, but the STORE only exists once `@wordpress/notices` itself has been loaded and executed
+ * somewhere — nothing else in this bundle imports it, so `@wordpress/dependency-extraction-webpack-plugin`
+ * has no literal `import` to detect and therefore never adds `wp-notices` to this bundle's own
+ * generated dependency array (`dist/admin-kadence-style-library.asset.php`), and nothing enqueues
+ * it manually either. Without this import, whether `core/notices` is registered by the time this
+ * script runs depends entirely on some OTHER, unrelated script on the same admin page happening to
+ * have already loaded it first — a real white-screen risk the moment that coincidence stops holding.
  */
 
 /**
  * WordPress dependencies
  */
 import { dispatch } from '@wordpress/data';
+import '@wordpress/notices';
 
 /**
  * Show a transient success confirmation.

@@ -14,6 +14,12 @@ jest.mock('@wordpress/data', () => ({
 	dispatch: jest.fn(() => ({ createNotice: jest.fn() })),
 }));
 
+// `helpers/notify.js`'s side-effect `import '@wordpress/notices'` registers the real `core/notices`
+// store — which itself imports `@wordpress/data` internally, and would resolve to the mock above
+// (missing everything the real store's reducer needs) if left unmocked here. This test only
+// exercises `dispatch()` being called correctly, never the real store, so an empty mock is enough.
+jest.mock('@wordpress/notices', () => ({}));
+
 describe('notifySuccess', () => {
 	it('dispatches a dismissible success snackbar notice keyed by the message', () => {
 		const createNotice = jest.fn();
