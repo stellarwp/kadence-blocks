@@ -589,10 +589,13 @@ export function applyOptimisticOverlay(palette, overlay) {
 
 /**
  * Validate a typed color-group label and resolve its slug: empty after slugifying, or a slug the
- * palette already has a group for, is invalid. Shared by `helpers/palette-flows.js`'s
- * `addGroupFlow` (defensive re-check for any caller that skips the hook) and
- * `hooks/use-palettes.js`'s `addGroup` (to decide, synchronously and before firing anything, whether
- * the optimistic addition and the modal's immediate close should even happen).
+ * palette already has a group for, is invalid. Called by `hooks/use-palettes.js`'s `addGroup`, to
+ * decide — synchronously and before firing anything — whether the optimistic addition and the
+ * modal's immediate close should even happen. `helpers/palette-flows.js`'s `addGroupFlow` re-checks
+ * the same two cases on its own, inline, for a caller that reaches it without going through that
+ * hook — it can't call this function directly, since by the time it validates it already has a
+ * resolved `groupId` and a freshly-fetched `groups` array rather than the raw typed `label` and a
+ * (possibly stale) client-cached `palette` this function expects.
  *
  * @param {string}  label   The typed group label.
  * @param {?Object} palette The palette being edited's effective view, for the duplicate check.

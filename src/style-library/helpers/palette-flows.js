@@ -680,10 +680,12 @@ export function addColorFlow({
  * drops a group with zero swatches even on the default palette, so the group and its first color
  * are written together in one request.
  *
- * `groupId`/`colorSlug`/`value`/`swatchLabel` are computed and validated by the caller, not here —
- * see `hooks/use-palettes.js`'s `addGroup`, which validates via `helpers/palettes.js`'s
+ * `groupId`/`colorSlug`/`value`/`swatchLabel` are computed by the caller, not here — see
+ * `hooks/use-palettes.js`'s `addGroup`, which validates via `helpers/palettes.js`'s
  * `validateNewGroupLabel` and needs the same identity to apply an optimistic addition to the
- * overlay store before this flow's write resolves.
+ * overlay store before this flow's write resolves. This flow re-checks both the empty and the
+ * duplicate case anyway (against its own fresh palette read, for a caller that reaches this flow
+ * without going through that hook) — see the guards inline below for why.
  *
  * @param {Object}   args
  * @param {string}   args.namespace   The REST namespace.
@@ -722,6 +724,16 @@ export function addGroupFlow({
 	onBusy,
 	onError,
 }) {
+	// A cheap re-check, not a replacement for `validateNewGroupLabel()` — the hook already rejects
+	// an empty label before this flow is ever called, but this flow is exported and callable
+	// directly, and an empty `groupId` reaching `addGroupToGroups` below would post a group with no
+	// id.
+	if (!groupId) {
+		const message = __('Enter a color group name.', 'kadence-blocks');
+		onError({ message });
+		return Promise.reject(new Error(message));
+	}
+
 	const token = customColorTokenId(colorSlug);
 
 	onBusy(true);
@@ -743,12 +755,23 @@ export function addGroupFlow({
 				namespace,
 				slug,
 				defaultId,
-				edit: (groups) =>
-					addGroupToGroups(groups, {
+				edit: (groups) => {
+					// Re-checked here, against the palette this flow itself just fetched, rather than
+					// trusting the caller's — possibly stale by now — pre-check: the server's own
+					// `guard_palette_shape()` validates group shape but does not reject a duplicate
+					// group id, so two groups sharing an id would otherwise write successfully and
+					// leave every id-keyed lookup (`renameGroupInGroups`, `removeGroupFromGroups`, …)
+					// ambiguous about which one it means.
+					if (groups.some((group) => group.id === groupId)) {
+						throw new Error(__('A color group with that name already exists.', 'kadence-blocks'));
+					}
+
+					return addGroupToGroups(groups, {
 						id: groupId,
 						label,
 						swatches: [{ token, label: swatchLabel, $value: value }],
-					}),
+					});
+				},
 				onReceive,
 				refreshFeed,
 				onBusy,

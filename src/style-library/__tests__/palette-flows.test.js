@@ -992,6 +992,62 @@ describe('addGroupFlow', () => {
 		expect(newGroup.swatches).toHaveLength(1);
 		expect(token).toBe('primitive.color.custom.custom-1');
 	});
+
+	it('rejects synchronously for an empty groupId, without minting a primitive or writing anything', async () => {
+		const onError = jest.fn();
+
+		await expect(
+			addGroupFlow({
+				namespace: NAMESPACE,
+				slug: SLUG,
+				defaultId: DEFAULT_ID,
+				groupId: '',
+				label: '',
+				colorSlug: 'custom-1',
+				value: '#222222',
+				swatchLabel: 'New Color',
+				feedVersion: 'v1',
+				onReceive: jest.fn(),
+				refreshFeed: jest.fn(),
+				onBusy: jest.fn(),
+				onError,
+			})
+		).rejects.toThrow('Enter a color group name.');
+
+		expect(client.createUserPrimitive).not.toHaveBeenCalled();
+		expect(client.savePalette).not.toHaveBeenCalled();
+		expect(onError).toHaveBeenCalledWith({ message: 'Enter a color group name.' });
+	});
+
+	// The server's own `guard_palette_shape()` validates group shape but does not reject a
+	// duplicate group id, so this flow's own re-check (against its own fresh palette read) is the
+	// only thing standing between a stale client-side pre-check and two groups sharing an id.
+	it('rejects a duplicate groupId against the palette this flow itself fetched, after the primitive is already minted', async () => {
+		client.createUserPrimitive.mockResolvedValue({ id: 'primitive.color.custom.custom-1', version: 'v2' });
+		client.fetchPalette.mockResolvedValue(defaultView());
+		const onError = jest.fn();
+
+		await expect(
+			addGroupFlow({
+				namespace: NAMESPACE,
+				slug: SLUG,
+				defaultId: DEFAULT_ID,
+				groupId: 'accent',
+				label: 'Accent',
+				colorSlug: 'custom-1',
+				value: '#222222',
+				swatchLabel: 'New Color',
+				feedVersion: 'v1',
+				onReceive: jest.fn(),
+				refreshFeed: jest.fn(),
+				onBusy: jest.fn(),
+				onError,
+			})
+		).rejects.toThrow('A color group with that name already exists.');
+
+		expect(client.savePalette).not.toHaveBeenCalled();
+		expect(onError).toHaveBeenCalledWith({ message: 'A color group with that name already exists.' });
+	});
 });
 
 describe('reorderSwatchesFlow', () => {
