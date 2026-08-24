@@ -94,9 +94,9 @@ function applyToAxis(axis, index, next) {
  * @param {?Function} [props.onBreakpointChange]  Breakpoint-change handler.
  * @param {?boolean}  [props.isLinked]            Linked state, when the host controls it.
  * @param {?Function} [props.onToggleLink]        Link-toggle handler; omit to let this own the state.
- * @param {?Function} [props.renderColor]         `({ value, onChange }) => Element` — the caller's
- *                                                existing color field for `value.color`. Renders
- *                                                nothing when omitted.
+ * @param {?Function} [props.renderColor]         `({ value, onChange, disabled }) => Element` — the
+ *                                                caller's existing color field for `value.color`.
+ *                                                Renders nothing when omitted.
  * @param {boolean}   [props.stacked]             Header above a full-width body instead of beside it.
  * @param {boolean}   [props.disabled]            Whether the control is read-only.
  *
@@ -207,7 +207,8 @@ export function BorderControl({
 					);
 				}}
 			/>
-			{renderColor && renderColor({ value: color, onChange: (next) => !disabled && patch({ color: next }) })}
+			{renderColor &&
+				renderColor({ value: color, onChange: (next) => !disabled && patch({ color: next }), disabled })}
 		</ControlShell>
 	);
 }

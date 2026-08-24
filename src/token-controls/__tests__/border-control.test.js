@@ -412,6 +412,27 @@ describe('BorderControl disabled', () => {
 
 		expect(onChange).not.toHaveBeenCalled();
 	});
+
+	/**
+	 * `renderColor` receives the control's own `disabled` state, so a caller's color field can
+	 * disable itself the same way the width/style fields do rather than staying interactive while
+	 * every write it makes is silently discarded.
+	 *
+	 * @return {void}
+	 */
+	it('passes disabled through to renderColor', () => {
+		let received;
+		renderControl({
+			value: { width: '', style: 'none', color: 'semantic.color.border' },
+			disabled: true,
+			renderColor: (props) => {
+				received = props;
+				return null;
+			},
+		});
+
+		expect(received.disabled).toBe(true);
+	});
 });
 
 describe('BorderControl style select accessible labels', () => {
