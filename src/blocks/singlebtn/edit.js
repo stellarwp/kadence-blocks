@@ -99,69 +99,41 @@ import {
 	splitColorOpacity,
 } from '../../extension/design-tokens/components/EditorShadowControl';
 import { pickableTokensForControl } from '../../extension/token-picker';
-import { isSlotList, readSlot, writeSlot } from '../../token-controls';
-
-const BORDER_COLOR_SIDE_LABELS = ['Top', 'Right', 'Bottom', 'Left'];
 
 /**
  * `EditorBorderControl`'s `renderColor` render-prop: reuses the block's existing `PopColorControl`
- * unchanged, one per side once width/style have been unlinked (color always tracks the same
- * linked/unlinked shape `EditorBorderControl` gives width and style — see `fromNativeBorder`), or a
- * single one while still linked. Color is out of this plan's scope entirely; this only wires the
- * existing color-picking mechanism back in, the way `SingleBorderControl` in `@kadence/components`
- * rendered it per side before this block moved to `EditorBorderControl`.
+ * unchanged. `BorderControl`'s row anatomy always calls this once per row with that row's own
+ * resolved color scalar (via `readSlot()`), never the whole four-element axis, so this only ever
+ * renders one swatch per call — the same way it already reads `width`/`style` per row. Color is out
+ * of this plan's scope entirely; this only wires the existing color-picking mechanism back in.
  *
  * @param {Object}   props          The render-prop's argument.
- * @param {*}        props.value    The current color scalar or four-element slot list.
- * @param {Function} props.onChange Called with the next color scalar or slot list.
+ * @param {*}        props.value    The row's own resolved color scalar.
+ * @param {Function} props.onChange Called with the next color scalar.
  * @param {?string}  [props.label]  The row's own bare side name (e.g. "top"), or `null` while
- *                                  linked, from `BorderControl`'s per-row `renderColor` call. Built
- *                                  into the same "%s Border Color" wording the old array branch
- *                                  below used, so unlinked mode's four swatches — one per row now
- *                                  instead of stacked in one cluster — keep distinct names.
+ *                                  linked, from `BorderControl`'s per-row `renderColor` call.
  *
  * @since TBD
  *
- * @return {JSX.Element} The rendered color field(s).
+ * @return {JSX.Element} The rendered color field.
  */
 function renderBorderColor({ value, onChange, label }) {
-	if (!isSlotList(value)) {
-		return (
-			<PopColorControl
-				swatchLabel={
-					label
-						? sprintf(
-								/* translators: %s: border side (Top, Right, Bottom, Left) */
-								__('%s Border Color', 'kadence-blocks'),
-								upperFirst(label)
-							)
-						: undefined
-				}
-				value={value || ''}
-				default={''}
-				hideClear={true}
-				onChange={onChange}
-			/>
-		);
-	}
-
 	return (
-		<div className="kb-border-control__colors">
-			{BORDER_COLOR_SIDE_LABELS.map((sideLabel, index) => (
-				<PopColorControl
-					key={sideLabel}
-					swatchLabel={sprintf(
-						/* translators: %s: border side (Top, Right, Bottom, Left) */
-						__('%s Border Color', 'kadence-blocks'),
-						sideLabel
-					)}
-					value={readSlot(value, index) || ''}
-					default={''}
-					hideClear={true}
-					onChange={(next) => onChange(writeSlot(value, index, next, false))}
-				/>
-			))}
-		</div>
+		<PopColorControl
+			swatchLabel={
+				label
+					? sprintf(
+							/* translators: %s: border side (Top, Right, Bottom, Left) */
+							__('%s Border Color', 'kadence-blocks'),
+							upperFirst(label)
+						)
+					: undefined
+			}
+			value={value || ''}
+			default={''}
+			hideClear={true}
+			onChange={onChange}
+		/>
 	);
 }
 
