@@ -10,14 +10,14 @@
 	background: transparent;
 }
 
-// The shadowed square itself: fixed 48px inside the 80px slot, centered by the slot's own flex
-// layout, giving 16px of clearance on every side for the cast shadow to read — matching the board's
-// light square sitting proud of the row.
+// The shadowed square itself: 80px, filling the 80px slot (`--kb-sl-size-row-preview`) exactly, so no
+// clearance remains inside the row for the cast shadow to read — it is only visible where it extends
+// past the row into the surrounding page background.
 .kadence-blocks-style-library__shadow-preview {
 	box-sizing: border-box;
 	display: block;
-	width: 3rem;
-	height: 3rem;
+	width: 5rem;
+	height: 5rem;
 	border: var(--kb-sl-border-width-input) solid var(--kb-sl-color-gray-200);
 	border-radius: var(--kb-sl-radius-s);
 	background: var(--kb-sl-color-white);
