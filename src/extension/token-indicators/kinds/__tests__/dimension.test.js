@@ -4,63 +4,10 @@ import {
 	deriveMeasureMode,
 	inheritedMeasureSlots,
 	measureAttrsForDevice,
-	isEmptyValue,
-	matchesPreset,
-	normalizeColor,
 	normalizeDimension,
 	presetValueForDevice,
-} from '../normalize';
-
-describe('normalizeColor', () => {
-	beforeEach(() => {
-		window.kadence_blocks_params = {
-			global_colors: {
-				'--global-palette1': '#3182CE',
-				'--global-palette3': '#1A202C',
-			},
-		};
-	});
-
-	afterEach(() => {
-		delete window.kadence_blocks_params;
-	});
-
-	it('resolves a paletteN slug to its mapped literal, lower-cased', () => {
-		expect(normalizeColor('palette1')).toBe('#3182ce');
-	});
-
-	it('passes a literal through, lower-cased', () => {
-		expect(normalizeColor('#3182CE')).toBe('#3182ce');
-	});
-
-	it('passes an unresolved slug through as itself (degrade safe)', () => {
-		expect(normalizeColor('palette9')).toBe('palette9');
-	});
-
-	it('returns an empty string for an empty value', () => {
-		expect(normalizeColor('')).toBe('');
-	});
-});
-
-describe('matchesPreset color', () => {
-	beforeEach(() => {
-		window.kadence_blocks_params = {
-			global_colors: { '--global-palette3': '#3182CE' },
-		};
-	});
-
-	afterEach(() => {
-		delete window.kadence_blocks_params;
-	});
-
-	it('matches when a stored palette slug resolves to the preset literal', () => {
-		expect(matchesPreset('color', 'palette3', '', '#3182ce')).toBe(true);
-	});
-
-	it('does not match when the stored literal differs from the preset literal', () => {
-		expect(matchesPreset('color', '#ffffff', '', '#3182ce')).toBe(false);
-	});
-});
+} from '../dimension';
+import { isEmptyValue, matchesPreset } from '../../normalize';
 
 describe('matchesPreset dimension', () => {
 	it('matches a uniform 4-side array against the preset value + unit', () => {
@@ -268,113 +215,13 @@ describe('matchesPreset dimension against a per-corner preset value', () => {
 	});
 });
 
-describe('matchesPreset text', () => {
-	it('matches trimmed equal strings', () => {
-		expect(matchesPreset('text', ' bold ', '', 'bold')).toBe(true);
-	});
-
-	it('does not match differing strings', () => {
-		expect(matchesPreset('text', 'bold', '', 'normal')).toBe(false);
-	});
-});
-
-describe('isEmptyValue', () => {
-	it('treats an empty color string as empty', () => {
-		expect(isEmptyValue('color', '')).toBe(true);
-	});
-
+describe('isEmptyValue dimension', () => {
 	it('treats an all-empty 4-side dimension array as empty', () => {
 		expect(isEmptyValue('dimension', ['', '', '', ''])).toBe(true);
 	});
 
 	it('treats a populated dimension side as not empty', () => {
 		expect(isEmptyValue('dimension', ['8', '', '', ''])).toBe(false);
-	});
-
-	it('treats a populated color as not empty', () => {
-		expect(isEmptyValue('color', 'palette3')).toBe(false);
-	});
-
-	it('treats an undefined native border value as empty for every axis', () => {
-		expect(isEmptyValue('border-width', undefined)).toBe(true);
-		expect(isEmptyValue('border-style', undefined)).toBe(true);
-		expect(isEmptyValue('border-color', undefined)).toBe(true);
-	});
-
-	it('treats an empty-array native border value as empty for every axis', () => {
-		expect(isEmptyValue('border-width', [])).toBe(true);
-		expect(isEmptyValue('border-style', [])).toBe(true);
-		expect(isEmptyValue('border-color', [])).toBe(true);
-	});
-
-	it('treats a written native border value as not empty for every axis, even with all-blank sides', () => {
-		const value = [
-			{
-				top: ['', '', ''],
-				right: ['', '', ''],
-				bottom: ['', '', ''],
-				left: ['', '', ''],
-				unit: 'px',
-			},
-		];
-
-		expect(isEmptyValue('border-width', value)).toBe(false);
-		expect(isEmptyValue('border-style', value)).toBe(false);
-		expect(isEmptyValue('border-color', value)).toBe(false);
-	});
-});
-
-describe('matchesPreset border', () => {
-	const UNIFORM = [
-		{
-			top: ['#3182ce', 'solid', '2'],
-			right: ['#3182ce', 'solid', '2'],
-			bottom: ['#3182ce', 'solid', '2'],
-			left: ['#3182ce', 'solid', '2'],
-			unit: 'px',
-		},
-	];
-
-	const DIVERGENT = [
-		{
-			top: ['#3182ce', 'solid', '2'],
-			right: ['#3182ce', 'solid', '2'],
-			bottom: ['#3182ce', 'solid', '2'],
-			left: ['#ffffff', 'dashed', '4'],
-			unit: 'px',
-		},
-	];
-
-	it('does not match an unset native border value for any axis', () => {
-		expect(matchesPreset('border-width', undefined, '', '2px')).toBe(false);
-		expect(matchesPreset('border-style', undefined, '', 'solid')).toBe(false);
-		expect(matchesPreset('border-color', undefined, '', '#3182ce')).toBe(false);
-	});
-
-	it('matches a native border value equal on every side, per axis', () => {
-		expect(matchesPreset('border-width', UNIFORM, '', '2px')).toBe(true);
-		expect(matchesPreset('border-style', UNIFORM, '', 'solid')).toBe(true);
-		expect(matchesPreset('border-color', UNIFORM, '', '#3182ce')).toBe(true);
-	});
-
-	it('does not match a native border value diverging on one side, per axis', () => {
-		expect(matchesPreset('border-width', DIVERGENT, '', '2px')).toBe(false);
-		expect(matchesPreset('border-style', DIVERGENT, '', 'solid')).toBe(false);
-		expect(matchesPreset('border-color', DIVERGENT, '', '#3182ce')).toBe(false);
-	});
-
-	it('matches a border-width side written as a token alias against the same alias literal', () => {
-		const value = [
-			{
-				top: ['#3182ce', 'solid', '{primitive.dimension.border-width.md}'],
-				right: ['#3182ce', 'solid', '{primitive.dimension.border-width.md}'],
-				bottom: ['#3182ce', 'solid', '{primitive.dimension.border-width.md}'],
-				left: ['#3182ce', 'solid', '{primitive.dimension.border-width.md}'],
-				unit: 'px',
-			},
-		];
-
-		expect(matchesPreset('border-width', value, '', '{primitive.dimension.border-width.md}')).toBe(true);
 	});
 });
 
