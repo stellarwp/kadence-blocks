@@ -13,8 +13,14 @@
  * - **once a side has ever been written, it stays a four-element array**, never collapsed back to a
  *   scalar — `fromNativeBorder` only answers the empty scalar (`''`/`'none'`) for a breakpoint that
  *   has never been saved at all; the moment any side is written, `toNativeBorder` always fills in
- *   all four, so every later read comes back as four-element width/style/color arrays and the
- *   control renders unlinked from then on. There is no separate "link" flag to keep in sync.
+ *   all four. So the linked/unlinked view cannot be read off storage the way `BorderControl`'s own
+ *   uncontrolled fallback tries to (it only checks "is this an array", not "do the four elements
+ *   agree") — this component owns that view as UI state instead, seeded from whether the stored
+ *   sides currently agree (`isUniformBorder`) and overridden per breakpoint once the user explicitly
+ *   links or unlinks. This mirrors `singlebtn/edit.js`'s own `borderRadiusModeOverride` for radius,
+ *   just owned locally: border's `defaultValue` is always one scalar for every side (see its own
+ *   docblock below), so there is no per-side preset difference an early "uniform" read could hide
+ *   the way an empty radius corner could.
  * - **the unit lives inside the native value itself** (`source.unit`), not a sibling attribute the
  *   way `BoxControl`'s radius keeps `borderRadiusUnit` — so, unlike `EditorBoxControl`, this
  *   component takes no separate `unit`/`units`/`onUnit` props at all.
@@ -25,6 +31,11 @@
  * still has to fall back to the native value's stored color when `renderColor` writes nothing for a
  * side — see its docblock for why.
  */
+
+/**
+ * WordPress dependencies
+ */
+import { useState } from '@wordpress/element';
 
 /**
  * Internal dependencies
@@ -64,6 +75,35 @@ const BREAKPOINT_FOR_DEVICE = {
  */
 function deviceForBreakpoint(breakpoint) {
 	return Object.keys(BREAKPOINT_FOR_DEVICE).find((name) => BREAKPOINT_FOR_DEVICE[name] === breakpoint) ?? 'Desktop';
+}
+
+/**
+ * Whether a native border value shows the same color, style, and width on every side — the state a
+ * linked view can honestly represent. A breakpoint that has never been written reads as uniform too:
+ * there is nothing stored to differ side to side, and (unlike radius corners) a border preset only
+ * ever sets one width for every side, so there is no per-side preset difference an early "uniform"
+ * read could hide.
+ *
+ * @param {?Array} native `[{top,right,bottom,left,unit}]` or undefined.
+ *
+ * @since TBD
+ *
+ * @return {boolean} Whether every side currently matches.
+ */
+function isUniformBorder(native) {
+	const source = native?.[0];
+
+	if (!source) {
+		return true;
+	}
+
+	const uniform = (values) => values.every((entry) => entry === values[0]);
+
+	return (
+		uniform(SIDES.map((side) => source[side]?.[0] || '')) &&
+		uniform(SIDES.map((side) => source[side]?.[1] || 'none')) &&
+		uniform(SIDES.map((side) => source[side]?.[2]))
+	);
 }
 
 /**
@@ -230,6 +270,36 @@ export function EditorBorderControl({
 	// `ResponsiveBorderControl`'s own `mobileUnit`/`tabletUnit` fallback), and finally 'px'.
 	const activeUnit = activeNative?.[0]?.unit || value?.[0]?.unit || 'px';
 
+	// Per-breakpoint UI override for the linked view — see this file's own docblock for why storage
+	// cannot answer it alone. Keyed by breakpoint so switching devices does not carry one device's
+	// explicit choice onto another; resets on remount, matching `singlebtn/edit.js`'s
+	// `borderRadiusModeOverride` for radius.
+	const [linkOverride, setLinkOverride] = useState({});
+	const linked = linkOverride[breakpoint] ?? isUniformBorder(activeNative);
+
+	const toggleLink = () => {
+		if (linked) {
+			setLinkOverride((current) => ({ ...current, [breakpoint]: false }));
+			return;
+		}
+
+		// Relinking collapses every side to slot 0's value — "the first side wins" is predictable,
+		// matching `BorderControl`'s own uncontrolled relink rule and `BoxControl`'s relink comment.
+		const current = fromNativeBorder(activeNative);
+
+		activeSetter(
+			toNativeBorder(
+				{
+					width: readSlot(current.width, 0),
+					style: readSlot(current.style, 0),
+					color: readSlot(current.color, 0),
+				},
+				activeUnit
+			)
+		);
+		setLinkOverride((next) => ({ ...next, [breakpoint]: true }));
+	};
+
 	return (
 		<BreakpointProvider value={breakpoint} onChange={changeBreakpoint}>
 			<BorderControl
@@ -245,6 +315,8 @@ export function EditorBorderControl({
 				// the `BreakpointProvider` context above, so both must map back to a device the same way.
 				onBreakpointChange={changeBreakpoint}
 				renderColor={renderColor}
+				isLinked={linked}
+				onToggleLink={toggleLink}
 				stacked
 			/>
 		</BreakpointProvider>
