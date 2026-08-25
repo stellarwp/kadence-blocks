@@ -79,11 +79,15 @@ function unitAttrFor(kind, attr) {
  * `[{ top: [color, style, size], ... }]` shape as a flat scalar/4-side value and never match. This map
  * overrides the kind used for the compare ONLY, by property key, so each axis reads its own slot.
  *
+ * Exported so a caller outside this module that also needs to tell a border-axis property apart from
+ * a plain one (e.g. `capture.js`'s "save as a new preset" flow, which cannot read this nested shape
+ * through its own flat control_attr model) can key off the same map instead of re-deriving it.
+ *
  * @since TBD
  *
  * @type {Object<string, string>}
  */
-const BORDER_AXIS_KIND = {
+export const BORDER_AXIS_KIND = {
 	'button-border-width': 'border-width',
 	'button-border-style': 'border-style',
 	'button-border-color': 'border-color',
@@ -188,16 +192,17 @@ export function usePresetBinding(blockName, attributes, library, previewDevice) 
 			mobile: get(presetBreakpoints, ['mobile', property.key]),
 		};
 
-		// `overridden` compares like against like: a responsive control (a dimension, or a border axis —
-		// each border axis has its own tabletBorderStyle/mobileBorderStyle-shaped attribute) reads its
-		// OWN device's stored attribute (`tabletBorderRadius` on Tablet), against the preset value in
-		// effect at that same device (its tablet override where the preset declares one, else the base).
-		// Comparing a Tablet-stored value to the desktop preset value — or reporting the desktop
+		// `overridden` compares like against like: a dimension OR border control reads its OWN device's
+		// stored attribute (`tabletBorderRadius`/`tabletBorderStyle` on Tablet), against the preset value
+		// in effect at that same device (its tablet override where the preset declares one, else the
+		// base). Comparing a Tablet-stored value to the desktop preset value — or reporting the desktop
 		// attribute's state while Tablet is open — would show the wrong mark for the device actually
-		// being edited.
-		const isResponsive = kind === 'dimension' || Boolean(axis);
-		const deviceAttr = isResponsive ? deviceAttrFor(attr, previewDevice) : attr;
-		const devicePresetValue = isResponsive
+		// being edited. Border shares this device-awareness with dimension (not just the axis kinds'
+		// nested-shape read) because `resetAttrPatch`'s own `'border'` case already clears the tablet/
+		// mobile companions — the compare and the reset must agree on which attribute is "the" one.
+		const isDeviceAware = kind === 'dimension' || !!axis;
+		const deviceAttr = isDeviceAware ? deviceAttrFor(attr, previewDevice) : attr;
+		const devicePresetValue = isDeviceAware
 			? presetValueForDevice(presetValue, propertyBreakpoints, previewDevice)
 			: presetValue;
 		const value = get(attributes, deviceAttr, '');
@@ -346,4 +351,70 @@ export function resetAttrPatch(attr, kind) {
  */
 export function resetAttr(attr, setAttributes, kind) {
 	setAttributes(resetAttrPatch(attr, kind));
+}
+
+/**
+ * The design-token binding state for a NON-Normal state's own attribute (Hover, Sticky, and so on),
+ * derived from the SHARED `usePresetBinding` entry Normal's own control already carries plus this
+ * state's own current value at the active device.
+ *
+ * There is only one border-radius/border preset property per block, so every state shares Normal's
+ * `tokenBinding.borderRadius`/`tokenBinding.borderStyle` for `bound`, `presetValue`, and `responsive`
+ * — but `overridden` cannot be shared: Normal's entry only ever compares Normal's own attribute, so
+ * reusing it on e.g. Sticky would report Normal's divergence on Sticky's field, and its `onReset`
+ * would clear Normal's attributes instead of Sticky's. This computes `overridden` fresh from the
+ * state's own value, using the exact `isEmptyValue`/`matchesPreset` calls `usePresetBinding`'s own
+ * loop already runs internally — just invoked here directly instead of through that loop's
+ * `control_attr`-driven dispatch, since a per-state attribute is never itself a `control_attr`.
+ *
+ * @param {Object} shared            The shared binding entry from `usePresetBinding` this state's
+ *                                    property maps to (`tokenBinding.borderRadius` or
+ *                                    `tokenBinding.borderStyle`), carrying the combined `presetValue`/
+ *                                    `responsive` this function reuses rather than re-deriving.
+ * @param {string} kind              'dimension' (radius) or 'border' (the combined width/style/color
+ *                                    entry), matching `resetAttrPatch`'s own kind vocabulary.
+ * @param {*}      value             This state's own resolved value at the active device (e.g.
+ *                                    `borderStickyRadiusForDevice.value`, or the border attribute read
+ *                                    at the active device for `kind: 'border'`).
+ * @param {string}   [unit]          This state's own unit at the active device ('dimension' only;
+ *                                    unused for 'border', whose unit lives on the value itself).
+ * @param {*}        [devicePresetValue] For 'dimension': the shared preset value already resolved at
+ *                                    the active device (e.g. `borderRadiusPresetValue`, computed once
+ *                                    and shared across every state). Unused for 'border', which
+ *                                    resolves each axis's own device preset value from `shared`
+ *                                    directly (mirroring `usePresetBinding`'s own per-axis loop).
+ * @param {string}   [previewDevice] The active preview device ('Desktop' | 'Tablet' | 'Mobile') — only
+ *                                    needed for 'border', to resolve each axis's device preset value.
+ *
+ * @since TBD
+ *
+ * @return {{ bound: boolean, overridden: boolean }} This state's own binding state, the shape
+ *                                    `EditorBoxControl`/`EditorBorderControl`'s `state` prop expects.
+ */
+export function deriveStateBinding({ shared, kind, value, unit = '', devicePresetValue, previewDevice }) {
+	if (!shared?.bound) {
+		return { bound: false, overridden: false };
+	}
+
+	if (kind === 'border') {
+		const empty = isEmptyValue('border-width', value);
+		const overridden =
+			!empty &&
+			['width', 'style', 'color'].some((axis) => {
+				const axisPresetValue = presetValueForDevice(
+					shared.presetValue?.[axis],
+					shared.responsive?.[axis],
+					previewDevice
+				);
+
+				return !matchesPreset(`border-${axis}`, value, '', axisPresetValue);
+			});
+
+		return { bound: true, overridden };
+	}
+
+	const empty = isEmptyValue(kind, value);
+	const overridden = !empty && !matchesPreset(kind, value, unit, devicePresetValue);
+
+	return { bound: true, overridden };
 }

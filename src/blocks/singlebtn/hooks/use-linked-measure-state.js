@@ -54,9 +54,9 @@ function aliasForValue(tokens, value) {
  *
  * @since TBD
  *
- * @return {{isLinked: boolean, toggleLink: Function, inheritedValues: string[], inheritedFirstValue: string}}
- *  Whether the active device reads as linked, the toggle handler, the slots the active device inherits,
- *  and the alias/literal the first of those slots resolves to.
+ * @return {{isLinked: boolean, toggleLink: Function}} Whether the active device reads as linked, and
+ *  the toggle handler. `inheritedValues`/`inheritedFirstValue` are computed internally (the toggle
+ *  handler needs them) but not returned — no call site has needed them outside the hook so far.
  */
 export function useLinkedMeasureState({
 	forDevice,
@@ -134,5 +134,5 @@ export function useLinkedMeasureState({
 		setModeOverride((current) => ({ ...current, [previewDevice]: 'individual' }));
 	};
 
-	return { isLinked, toggleLink, inheritedValues, inheritedFirstValue };
+	return { isLinked, toggleLink };
 }

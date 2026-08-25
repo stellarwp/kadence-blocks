@@ -294,6 +294,106 @@ describe('capturedTokens', () => {
 	});
 });
 
+describe('capturedTokens border axis properties', () => {
+	/**
+	 * Seed the localized catalog with the three border-axis properties, all sharing the
+	 * `control_attr: 'borderStyle'` binding `declarations.php` declares — the shape whose nested
+	 * per-side native value corrupted the capture loop before this fix.
+	 *
+	 * @return {void}
+	 */
+	function seedBorderCatalog() {
+		window.kadenceDesignTokensPresets = {
+			active: 'default',
+			libraries: {
+				default: {
+					[BLOCK]: {
+						default: 'primary',
+						presets: [{ slug: 'primary', label: 'Primary' }],
+						properties: [
+							{
+								key: 'button-border-width',
+								kind: 'dimension',
+								token: 'semantic.border-width.default',
+								control_attr: 'borderStyle',
+							},
+							{
+								key: 'button-border-style',
+								kind: 'color',
+								token: 'semantic.border-style.default',
+								control_attr: 'borderStyle',
+							},
+							{
+								key: 'button-border-color',
+								kind: 'color',
+								token: 'semantic.color.border',
+								control_attr: 'borderStyle',
+							},
+						],
+						values: {
+							primary: {
+								'button-border-width': '2px',
+								'button-border-style': 'solid',
+								'button-border-color': '#3182ce',
+							},
+						},
+					},
+				},
+			},
+		};
+	}
+
+	beforeEach(() => {
+		seedBorderCatalog();
+	});
+
+	afterEach(() => {
+		delete window.kadenceDesignTokensPresets;
+	});
+
+	/**
+	 * A block with a border set (a populated nested per-side native `borderStyle` attribute) captures
+	 * the three border-axis properties as their unchanged preset values — not the "[object Object]"
+	 * garbage the flat dimension/color read produced before this fix.
+	 *
+	 * @return {void}
+	 */
+	it('captures the three border-axis properties unchanged, not corrupted, when a border is set', () => {
+		const attributes = {
+			kbPreset: 'primary',
+			borderStyle: [
+				{
+					top: ['#ffffff', 'dashed', '4'],
+					right: ['#ffffff', 'dashed', '4'],
+					bottom: ['#ffffff', 'dashed', '4'],
+					left: ['#ffffff', 'dashed', '4'],
+					unit: 'px',
+				},
+			],
+		};
+
+		const tokens = capturedTokens(BLOCK, SET, attributes);
+
+		expect(tokens['button-border-width']).toBe('2px');
+		expect(tokens['button-border-style']).toBe('solid');
+		expect(tokens['button-border-color']).toBe('#3182ce');
+	});
+
+	/**
+	 * A block with no border set at all also captures the three border-axis properties as their
+	 * unchanged preset values, matching the "not edited" fallback every other unmapped property takes.
+	 *
+	 * @return {void}
+	 */
+	it('captures the three border-axis properties unchanged when no border is set', () => {
+		const tokens = capturedTokens(BLOCK, SET, { kbPreset: 'primary' });
+
+		expect(tokens['button-border-width']).toBe('2px');
+		expect(tokens['button-border-style']).toBe('solid');
+		expect(tokens['button-border-color']).toBe('#3182ce');
+	});
+});
+
 describe('capturedCatalogValues', () => {
 	beforeEach(() => {
 		seedCatalog();
