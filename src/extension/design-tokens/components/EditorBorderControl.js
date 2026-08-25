@@ -49,6 +49,7 @@ import { BorderControl } from '../../../token-controls/controls/BorderControl';
 import { readSlot } from '../../../token-controls/helpers/value-shapes';
 import { isTokenAlias } from '../../../token-controls/helpers/token-summary';
 import { TokenControlRow } from '../../token-indicators/components/TokenControlRow';
+import { TokenIndicator } from '../../token-indicators/components/TokenIndicator';
 
 const SIDES = ['top', 'right', 'bottom', 'left'];
 
@@ -220,26 +221,27 @@ function toNativeBorder(value, unit = 'px') {
 /**
  * Render the editor-canvas border control.
  *
- * @param {Object}       props                The component props.
- * @param {?Array}       props.value          Desktop border attribute value.
- * @param {?Array}       props.tabletValue    Tablet border attribute value.
- * @param {?Array}       props.mobileValue    Mobile border attribute value.
- * @param {Function}     props.onChange       Desktop attribute setter.
- * @param {Function}     props.onChangeTablet Tablet attribute setter.
- * @param {Function}     props.onChangeMobile Mobile attribute setter.
- * @param {string}       props.previewDevice  The editor's active device (`Desktop`/`Tablet`/`Mobile`).
- * @param {Function}     props.onDeviceChange Called with the next editor device name.
- * @param {string}       props.label          The control's label.
- * @param {Array}        [props.widthTokens]  Pickable border-width tokens.
- * @param {*}            [props.defaultValue] What the width slot falls back to when unset — the
- *                                            active preset's resolved border width, so a cleared
- *                                            width field shows a muted "Default 2px" instead of
- *                                            rendering empty (which collapses the field to zero
- *                                            height, per its own `TokenSelector`'s summary/fallback
- *                                            logic). One scalar for every side: presets set a single
- *                                            border width, never a per-side default.
- * @param {?Function}    [props.renderColor]  The block's existing color field for `value.color`.
- * @param {?JSX.Element} [props.indicator]    The editor's `TokenIndicator`, passed straight through.
+ * @param {Object}    props                The component props.
+ * @param {?Array}    props.value          Desktop border attribute value.
+ * @param {?Array}    props.tabletValue    Tablet border attribute value.
+ * @param {?Array}    props.mobileValue    Mobile border attribute value.
+ * @param {Function}  props.onChange       Desktop attribute setter.
+ * @param {Function}  props.onChangeTablet Tablet attribute setter.
+ * @param {Function}  props.onChangeMobile Mobile attribute setter.
+ * @param {string}    props.previewDevice  The editor's active device (`Desktop`/`Tablet`/`Mobile`).
+ * @param {Function}  props.onDeviceChange Called with the next editor device name.
+ * @param {string}    props.label          The control's label.
+ * @param {Array}     [props.widthTokens]  Pickable border-width tokens.
+ * @param {*}         [props.defaultValue] What the width slot falls back to when unset — the
+ *                                         active preset's resolved border width, so a cleared
+ *                                         width field shows a muted "Default 2px" instead of
+ *                                         rendering empty (which collapses the field to zero
+ *                                         height, per its own `TokenSelector`'s summary/fallback
+ *                                         logic). One scalar for every side: presets set a single
+ *                                         border width, never a per-side default.
+ * @param {?Function} [props.renderColor]  The block's existing color field for `value.color`.
+ * @param {?Object}   [props.state]        The block's own binding state (`{ bound, overridden }`).
+ * @param {?Function} [props.onReset]      Reset handler for the indicator.
  *
  * @since TBD
  *
@@ -258,7 +260,8 @@ export function EditorBorderControl({
 	widthTokens = [],
 	defaultValue,
 	renderColor,
-	indicator = null,
+	state = null,
+	onReset = null,
 }) {
 	const breakpoint = BREAKPOINT_FOR_DEVICE[previewDevice] ?? 'desktop';
 	// Named once and passed to both `BreakpointProvider` and the switcher below, so the two staying
@@ -319,7 +322,9 @@ export function EditorBorderControl({
 					onChange={(next) => activeSetter(toNativeBorder(next, activeUnit))}
 					widthTokens={widthTokens}
 					defaultValue={defaultValue}
-					indicator={indicator}
+					// The editor's own mark, not this library's: it is the same indicator the block's other
+					// controls show, and two marks meaning the same thing should not look different.
+					indicator={<TokenIndicator state={state} onReset={onReset} />}
 					breakpoints={Object.values(BREAKPOINT_FOR_DEVICE)}
 					breakpoint={breakpoint}
 					// The switcher lives in `ControlShell`, driven by this prop directly — it does not read
