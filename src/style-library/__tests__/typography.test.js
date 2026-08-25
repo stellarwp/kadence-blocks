@@ -119,8 +119,8 @@ describe('getFontCatalog', () => {
 
 describe('findFontByFamily', () => {
 	const fonts = [
-		{ id: 'primitive.font-family.sans', label: 'Inter' },
-		{ id: 'primitive.font-family.serif', label: 'Georgia' },
+		{ id: 'Inter', label: 'Inter' },
+		{ id: 'Georgia', label: 'Georgia' },
 	];
 
 	it('matches a favorite case-insensitively', () => {

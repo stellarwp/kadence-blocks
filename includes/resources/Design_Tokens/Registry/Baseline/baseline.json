@@ -301,32 +301,6 @@
 				}
 			}
 		},
-		"font-family": {
-			"sans": {
-				"$type": "fontFamily",
-				"$value": [
-					"Inter",
-					"system-ui",
-					"sans-serif"
-				]
-			},
-			"serif": {
-				"$type": "fontFamily",
-				"$value": [
-					"Georgia",
-					"Cambria",
-					"serif"
-				]
-			},
-			"mono": {
-				"$type": "fontFamily",
-				"$value": [
-					"Menlo",
-					"Consolas",
-					"monospace"
-				]
-			}
-		},
 		"fontSize": {
 			"xs": {
 				"$type": "dimension",
@@ -561,17 +535,6 @@
 			"default": {
 				"$type": "dimension",
 				"$value": "{primitive.dimension.icon-size.md}"
-			}
-		},
-		"font-family": {
-			"control": {
-				"$type": "fontFamily",
-				"$value": "{primitive.font-family.sans}"
-			},
-			"heading": {
-				"$type": "fontFamily",
-				"$value": ["inherit"],
-				"$description": "Inherits the theme's font by default; a site sets a real family here to impose a heading font."
 			}
 		},
 		"font-size": {
@@ -861,7 +824,6 @@
 						"tokens": {
 							"color": "{semantic.color.text}",
 							"background": "{semantic.color.heading-bg}",
-							"typography": "{semantic.font-family.heading}",
 							"fontSize": "{semantic.font-size.heading}",
 							"fontHeight": "{semantic.line-height.heading}",
 							"fontWeight": "{semantic.font-weight.heading}",
