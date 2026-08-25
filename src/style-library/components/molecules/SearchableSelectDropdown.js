@@ -31,7 +31,7 @@ import classnames from 'classnames';
 /**
  * Internal dependencies
  */
-import { filterCatalogOptions } from '../../helpers/catalog-filter';
+import { filterCatalogOptions } from '../../../token-controls';
 import './SearchableSelectDropdown.scss';
 
 /**

@@ -1,8 +1,10 @@
 /**
- * The font catalog dropdown's matching + render-cap logic, pulled out of
- * `SearchableSelectDropdown.js` as its own pure module (no React/JSX/REST) so it is directly
- * jest-covered without importing the component's JSX/`.scss` chain — this app's tests are
- * pure-helpers-only for exactly that reason.
+ * A large flat catalog's matching + render-cap logic — a pure module (no React/JSX/REST) so it is
+ * directly jest-covered without importing any component's JSX/`.scss` chain.
+ *
+ * Shared rather than app-local: the Style Library's font dropdown and the block editor's font-family
+ * picker search the same ~1,900-name catalog, and a cap or a match rule that drifted between them
+ * would make the same query return different lists on the two screens.
  */
 
 /**

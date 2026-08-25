@@ -24,6 +24,7 @@ export { BoxControl } from './controls/BoxControl';
 
 export { BreakpointProvider, useBreakpoint } from './context/breakpoint';
 
+export { CATALOG_RENDER_CAP, filterCatalogOptions } from './helpers/catalog-filter';
 export { parseCssLength } from './helpers/parse-css-length';
 export {
 	KADENCE_TOKEN_NAMESPACE,
