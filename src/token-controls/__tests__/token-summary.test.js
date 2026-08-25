@@ -14,6 +14,11 @@ const TOKENS = [
 	{ id: 'lg', label: 'Large', value: '0.5rem', alias: '{primitive.dimension.radius-lg}' },
 ];
 
+// A `fixed` entry (e.g. Margin's `Auto`) has no DTCG registration behind it, so its `alias` is a bare
+// slug rather than a bracket-wrapped dot path — the shape `kadence/singlebtn`'s `edit.js` appends for
+// `ss-auto`.
+const TOKENS_WITH_FIXED = [...TOKENS, { id: 'ss-auto', label: 'Auto', value: 'auto', alias: 'ss-auto', fixed: true }];
+
 describe('isTokenAlias', () => {
 	it('accepts a brace-wrapped dot path', () => {
 		expect(isTokenAlias('{primitive.dimension.radius-sm}')).toBe(true);
@@ -44,6 +49,14 @@ describe('findTokenEntry', () => {
 	it('tolerates an absent list', () => {
 		expect(findTokenEntry(undefined, '{x}')).toBeNull();
 	});
+
+	it('matches a fixed entry on its bare alias, since it has no bracket form', () => {
+		expect(findTokenEntry(TOKENS_WITH_FIXED, 'ss-auto').label).toBe('Auto');
+	});
+
+	it('never matches a non-fixed entry on a bare literal, even one equal to its alias text', () => {
+		expect(findTokenEntry(TOKENS, 'primitive.dimension.radius-sm')).toBeNull();
+	});
 });
 
 describe('resolveDefaultValue', () => {
@@ -70,6 +83,10 @@ describe('resolveDefaultValue', () => {
 	it('is empty for an unset default', () => {
 		expect(resolveDefaultValue('', TOKENS, 'px')).toBe('');
 		expect(resolveDefaultValue(null, TOKENS, 'px')).toBe('');
+	});
+
+	it("resolves a fixed entry (Margin's Auto) through the pickable list, same as a bracketed alias", () => {
+		expect(resolveDefaultValue('ss-auto', TOKENS_WITH_FIXED, 'px', true)).toBe('auto');
 	});
 });
 
@@ -108,6 +125,18 @@ describe('fieldSummary', () => {
 
 	it('summarizes an unset slot to nothing, so the caller can show the default instead', () => {
 		expect(fieldSummary('', TOKENS, 'px', 'Custom')).toEqual({ label: '', value: '' });
+	});
+
+	it("names a fixed entry (Margin's Auto) by its label and resolved value, not as a Custom literal", () => {
+		expect(fieldSummary('ss-auto', TOKENS_WITH_FIXED, 'px', 'Custom')).toEqual({
+			label: 'Auto',
+			value: 'auto',
+		});
+	});
+
+	it("never reads a hand-typed literal equal to a fixed entry's alias as that entry", () => {
+		// cspell:disable-next-line
+		expect(fieldSummary('ss-auto', TOKENS, 'px', 'Custom')).toEqual({ label: 'Custom', value: 'ss-autopx' });
 	});
 });
 

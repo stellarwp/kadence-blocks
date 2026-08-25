@@ -50,6 +50,15 @@ export function hasValue(value) {
 /**
  * The pickable entry whose `alias` matches a value.
  *
+ * A regular entry only matches while `value` is alias-shaped (`{dot.path}`) — a plain literal that
+ * happens to equal an entry's `alias` string must never resolve to that entry. A `fixed` entry (a
+ * sentinel choice with no DTCG registration behind it, e.g. Margin's `Auto`) is the one exception:
+ * its `alias` IS the bare value written to the attribute, since it has no bracket form to write
+ * instead, so it matches on equality regardless of `isTokenAlias`. This is scoped strictly to
+ * entries explicitly marked `fixed: true` — never a general literal-value fallback — so a hand-typed
+ * Custom literal that happens to equal a real token's resolved value is never misidentified as that
+ * token.
+ *
  * @param {Array}  tokens The pickable-token list.
  * @param {string} value  The alias to match.
  *
@@ -58,7 +67,7 @@ export function hasValue(value) {
  * @return {?Object} The matching entry, or null.
  */
 export function findTokenEntry(tokens, value) {
-	return (tokens || []).find((entry) => entry.alias === value) || null;
+	return (tokens || []).find((entry) => entry.alias === value && (entry.fixed || isTokenAlias(value))) || null;
 }
 
 /**
@@ -78,10 +87,14 @@ export function resolveDefaultValue(defaultValue, tokens, unit, inherited) {
 		return '';
 	}
 
-	if (isTokenAlias(defaultValue)) {
-		const entry = findTokenEntry(tokens, defaultValue);
+	const entry = findTokenEntry(tokens, defaultValue);
 
-		return entry ? entry.value : '';
+	if (entry) {
+		return entry.value;
+	}
+
+	if (isTokenAlias(defaultValue)) {
+		return '';
 	}
 
 	if (inherited && /^-?\d*\.?\d+$/.test(String(defaultValue))) {
@@ -130,13 +143,14 @@ export function defaultSummary(resolvedDefault, tokens, literalLabel = '') {
  * @return {{label: string, value: string}} The trigger label and secondary text, both '' when unset.
  */
 export function fieldSummary(value, tokens, unit, customName) {
-	if (isTokenAlias(value)) {
-		const entry = findTokenEntry(tokens, value);
+	const entry = findTokenEntry(tokens, value);
 
-		return {
-			label: entry ? entry.label : String(value).slice(1, -1),
-			value: entry ? entry.value : '',
-		};
+	if (entry) {
+		return { label: entry.label, value: entry.value };
+	}
+
+	if (isTokenAlias(value)) {
+		return { label: String(value).slice(1, -1), value: '' };
 	}
 
 	if (hasValue(value)) {
