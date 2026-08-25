@@ -1,4 +1,5 @@
 /* eslint-env jest */
+// cspell:ignore Abril Fatface .
 
 // `@wordpress/components` is not resolvable in the jest env; the token UI only references it at render
 // time, and these tests inspect the returned element types/props (never render), so light stubs are
@@ -31,7 +32,12 @@ import { pickableTokensForControl } from '../../token-picker';
 import { registerComponentTokenFilters } from '../register-component-filters';
 // Through the barrel, the same path the production file uses: importing the implementation files
 // directly would let this pass while a missing or renamed barrel export broke the real import.
-import { TokenChip, TokenPickerButton, TokenSelector as TokenFieldControl } from '../../../token-controls';
+import {
+	FontFamilySelector,
+	TokenChip,
+	TokenPickerButton,
+	TokenSelector as TokenFieldControl,
+} from '../../../token-controls';
 
 const EDITOR_HOOK = 'kadence.components.control.editor';
 const ACTIONS_HOOK = 'kadence.components.control.actions';
@@ -327,5 +333,101 @@ describe('box-shadow whole-shadow seam', () => {
 		expect(actions[0].type).toBe(TokenChip);
 		actions[0].props.onUnlink();
 		expect(onChange).toHaveBeenCalledWith('');
+	});
+});
+
+describe('font-family seam', () => {
+	const FONTS = { favorites: ['Georgia'], custom: [] };
+
+	beforeEach(() => {
+		window.kadenceDesignTokensFonts = FONTS;
+		window.kadence_blocks_params = { g_font_names: ['Abel'] };
+	});
+
+	afterEach(() => {
+		delete window.kadenceDesignTokensFonts;
+		delete window.kadence_blocks_params;
+	});
+
+	/**
+	 * A block that opted in gets the favorites-aware picker in place of the shared control's font
+	 * select, carrying the current family and the site's favorites.
+	 *
+	 * @return {void}
+	 */
+	it('replaces the font select with the font-family field, carrying the favorites', () => {
+		const editor = applyFilters(EDITOR_HOOK, 'DEFAULT', {
+			control: 'fontFamily',
+			index: null,
+			value: 'Inter',
+			onChange: jest.fn(),
+			context: { blockName: 'kadence/singlebtn' },
+		});
+
+		expect(editor.type).toBe(FontFamilySelector);
+		expect(editor.props.value).toBe('Inter');
+		expect(editor.props.favorites).toEqual(['Georgia']);
+	});
+
+	/**
+	 * Both of the picker's tabs write a plain family string — never an alias, since a favorite is not
+	 * a token — and Reset clears back to the theme's font.
+	 *
+	 * @return {void}
+	 */
+	it('writes a plain family string on pick, and empty on clear', () => {
+		const onChange = jest.fn();
+		const editor = applyFilters(EDITOR_HOOK, 'DEFAULT', {
+			control: 'fontFamily',
+			index: null,
+			value: '',
+			onChange,
+			context: { blockName: 'kadence/singlebtn' },
+		});
+
+		editor.props.onPick('Abril Fatface');
+		expect(onChange).toHaveBeenCalledWith('Abril Fatface');
+
+		editor.props.onClear();
+		expect(onChange).toHaveBeenCalledWith('');
+	});
+
+	/**
+	 * A block that passes no context keeps the react-select it has always had — that is how a block
+	 * which has not opted in is left untouched.
+	 *
+	 * @return {void}
+	 */
+	it('falls back to the control default when the block passes no context', () => {
+		const editor = applyFilters(EDITOR_HOOK, 'DEFAULT', {
+			control: 'fontFamily',
+			index: null,
+			value: 'Inter',
+			onChange: jest.fn(),
+		});
+
+		expect(editor).toBe('DEFAULT');
+	});
+
+	/**
+	 * The font-family case never consults the pickable-token pool: a family is not a token, so the
+	 * picker must render even with an empty pool.
+	 *
+	 * @return {void}
+	 */
+	it('renders without consulting the pickable-token pool', () => {
+		pickableTokensForControl.mockReturnValue([]);
+		pickableTokensForControl.mockClear();
+
+		const editor = applyFilters(EDITOR_HOOK, 'DEFAULT', {
+			control: 'fontFamily',
+			index: null,
+			value: 'Inter',
+			onChange: jest.fn(),
+			context: { blockName: 'kadence/singlebtn' },
+		});
+
+		expect(editor.type).toBe(FontFamilySelector);
+		expect(pickableTokensForControl).not.toHaveBeenCalled();
 	});
 });

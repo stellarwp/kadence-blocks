@@ -14,6 +14,12 @@
  * in. The pickable-token list is resolved per control from `pickableTokensForControl`; per-slot picks
  * write through the adapter's `writeLeaf`, so a linked slot writes every side and an individual slot
  * writes only its own — per-corner tokens fall out for free.
+ *
+ * The `fontFamily` seam is the one case that is NOT about tokens. Font family stopped being a token
+ * family, so its picker offers the site's FAVORITES over the full font catalog and writes a plain
+ * family string either way — no alias, no pickable pool, no adapter. It rides this same seam because
+ * the shared typography control gates font weight / style / subset behind the same `onFontFamily`
+ * prop as the family select, so a block cannot substitute a picker by dropping the prop.
  */
 
 /**
@@ -21,7 +27,8 @@
  */
 import { addFilter, removeFilter } from '@wordpress/hooks';
 import { pickableTokensForControl } from '../token-picker';
-import { TokenChip, TokenPickerButton, TokenSelector, isTokenAlias } from '../../token-controls';
+import { favoriteFonts, fontCatalogOptions } from '../font-picker';
+import { FontFamilySelector, TokenChip, TokenPickerButton, TokenSelector, isTokenAlias } from '../../token-controls';
 
 const NAMESPACE = 'kadence-blocks/component-token';
 const EDITOR_HOOK = 'kadence.components.control.editor';
@@ -135,6 +142,10 @@ function defaultValueForSlot(defaultValue, index) {
  * @return {*} The token field when the control is token-mapped, otherwise `defaultEditor`.
  */
 function editorFilter(defaultEditor, ctx) {
+	if (ctx.control === 'fontFamily') {
+		return fontFamilyEditor(defaultEditor, ctx);
+	}
+
 	const adapter = ADAPTERS[ctx.control];
 	if (!adapter || !adapter.leaf) {
 		return defaultEditor;
@@ -164,6 +175,40 @@ function editorFilter(defaultEditor, ctx) {
 			onPick={(alias) => write(adapter.writeLeaf(ctx.value, ctx.index, alias))}
 			onClear={() => write(adapter.writeLeaf(ctx.value, ctx.index, ''))}
 			onCustom={(next) => write(adapter.writeLeaf(ctx.value, ctx.index, next))}
+		/>
+	);
+}
+
+/**
+ * Editor seam, font-family case: replace the shared typography control's font select with the
+ * favorites-aware picker. No adapter and no token pool — the value is a plain family string, and
+ * both of the picker's tabs write one.
+ *
+ * Falls back to the control's own select when the block passes no `context`, which is how a block
+ * that has not opted in keeps the react-select it has always had.
+ *
+ * @param {*}      defaultEditor The control's own select node.
+ * @param {Object} ctx           Neutral seam context: { control, index, value, onChange, context }.
+ *
+ * @since TBD
+ *
+ * @return {*} The font-family field when the block opted in, otherwise `defaultEditor`.
+ */
+function fontFamilyEditor(defaultEditor, ctx) {
+	const write = writerFor(ctx);
+
+	if (!ctx.context?.blockName || !write) {
+		return defaultEditor;
+	}
+
+	return (
+		<FontFamilySelector
+			value={ctx.value}
+			favorites={favoriteFonts()}
+			catalogOptions={fontCatalogOptions()}
+			inheritedLabel={ctx.context?.inheritedDefault}
+			onPick={(family) => write(family)}
+			onClear={() => write('')}
 		/>
 	);
 }
