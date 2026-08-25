@@ -215,6 +215,42 @@
 	font-size: 13px;
 }
 
+// The font-family field's Custom tab: a search box above the capped catalog. Its own block rather
+// than reuse of `__list`, which scrolls a short curated list — this one scrolls ~1,900 rows under a
+// fixed search input that must not scroll away with them.
+.kadence-token-field__catalog {
+	display: flex;
+	flex-direction: column;
+	padding: 4px;
+}
+
+.kadence-token-field__search {
+	flex: 0 0 auto;
+	margin-bottom: 4px;
+}
+
+.kadence-token-field__catalog-options {
+	max-height: 280px;
+	overflow-y: auto;
+	border: 0;
+}
+
+// The muted tag a catalog row carries (a site-registered custom font), matching `__item-tag`.
+.kadence-token-field__badge {
+	color: #949494;
+	font-size: 12px;
+}
+
+// The empty state and the keep-typing footer: muted, centered, and never mistaken for a row.
+.kadence-token-field__empty,
+.kadence-token-field__footer {
+	margin: 0;
+	padding: 8px;
+	color: #949494;
+	font-size: 12px;
+	text-align: center;
+}
+
 // The Custom tab: the value input, unit switcher, and slider on a single centered row.
 .kadence-token-field__custom {
 	display: flex;
