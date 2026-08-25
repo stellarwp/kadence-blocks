@@ -24,6 +24,10 @@
  * - **the unit lives inside the native value itself** (`source.unit`), not a sibling attribute the
  *   way `BoxControl`'s radius keeps `borderRadiusUnit` — so, unlike `EditorBoxControl`, this
  *   component takes no separate `unit`/`units`/`onUnit` props at all.
+ * - **wraps itself in `TokenControlRow`** (no `heading`, purely for its `.kb-token-control-row`
+ *   spacing) — this component only ever renders inside `singlebtn/edit.js`'s sidebar, so it owns that
+ *   wrapper rather than asking every call site to remember it, matching
+ *   `EditorBoxControl`/`EditorShadowControl`.
  *
  * Color editing itself is untouched — this component neither builds nor redesigns a color field, it
  * only wires the caller's EXISTING one back in via `renderColor` (matching `BorderControl`'s own
@@ -44,6 +48,7 @@ import { BreakpointProvider } from '../../../token-controls';
 import { BorderControl } from '../../../token-controls/controls/BorderControl';
 import { readSlot } from '../../../token-controls/helpers/value-shapes';
 import { isTokenAlias } from '../../../token-controls/helpers/token-summary';
+import { TokenControlRow } from '../../token-indicators/components/TokenControlRow';
 
 const SIDES = ['top', 'right', 'bottom', 'left'];
 
@@ -306,24 +311,26 @@ export function EditorBorderControl({
 	};
 
 	return (
-		<BreakpointProvider value={breakpoint} onChange={changeBreakpoint}>
-			<BorderControl
-				label={label}
-				value={fromNativeBorder(activeNative)}
-				onChange={(next) => activeSetter(toNativeBorder(next, activeUnit))}
-				widthTokens={widthTokens}
-				defaultValue={defaultValue}
-				indicator={indicator}
-				breakpoints={Object.values(BREAKPOINT_FOR_DEVICE)}
-				breakpoint={breakpoint}
-				// The switcher lives in `ControlShell`, driven by this prop directly — it does not read
-				// the `BreakpointProvider` context above, so both must map back to a device the same way.
-				onBreakpointChange={changeBreakpoint}
-				renderColor={renderColor}
-				isLinked={linked}
-				onToggleLink={toggleLink}
-				stacked
-			/>
-		</BreakpointProvider>
+		<TokenControlRow stacked>
+			<BreakpointProvider value={breakpoint} onChange={changeBreakpoint}>
+				<BorderControl
+					label={label}
+					value={fromNativeBorder(activeNative)}
+					onChange={(next) => activeSetter(toNativeBorder(next, activeUnit))}
+					widthTokens={widthTokens}
+					defaultValue={defaultValue}
+					indicator={indicator}
+					breakpoints={Object.values(BREAKPOINT_FOR_DEVICE)}
+					breakpoint={breakpoint}
+					// The switcher lives in `ControlShell`, driven by this prop directly — it does not read
+					// the `BreakpointProvider` context above, so both must map back to a device the same way.
+					onBreakpointChange={changeBreakpoint}
+					renderColor={renderColor}
+					isLinked={linked}
+					onToggleLink={toggleLink}
+					stacked
+				/>
+			</BreakpointProvider>
+		</TokenControlRow>
 	);
 }

@@ -7,6 +7,10 @@
  * header row is skipped entirely — the wrapper then only contributes the highlight tint, for a control
  * that already carries its indicator inline (via `TokenLabel`). When "highlight edits" is on and this
  * control overrides its preset, the whole row is tinted a warning color so the edit stands out.
+ *
+ * `attr`/`binding` can be omitted entirely (`highlight` then never fires) for a control with no bound
+ * attribute to track at all — used this way purely for the `.kb-token-control-row` spacing/`stacked`
+ * layout, e.g. by the `Editor*` design-token controls that already carry their own indicator internally.
  */
 
 import { useSelect } from '@wordpress/data';
@@ -20,8 +24,9 @@ import { TokenIndicator } from './TokenIndicator';
  * @param {string}   [props.heading] Heading text shown next to the indicator, above the control; with no
  *                                   heading the header row (and its indicator) is skipped and the wrapper
  *                                   only contributes the highlight tint.
- * @param {string}   props.attr      The attribute the wrapped control writes (the indicator's key).
- * @param {Object}   props.binding   The block's binding map from usePresetBinding.
+ * @param {?string}  [props.attr]    The attribute the wrapped control writes (the indicator's key); omit
+ *                                   alongside `binding` for a control with nothing to highlight.
+ * @param {?Object}  [props.binding] The block's binding map from usePresetBinding; omit alongside `attr`.
  * @param {Function} [props.onReset] Called with `attr` to reset that control's override (headed rows only).
  * @param {boolean}  [props.stacked] Stack the header above a full-width control (for block-level controls
  *                                   like the responsive measurement inputs) instead of the side-by-side row.
