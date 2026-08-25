@@ -5,12 +5,12 @@ import {
 	addGroupFlow,
 	createPaletteFlow,
 	deletePaletteFlow,
-	openPaletteFlow,
 	removeGroupFlow,
 	removeSwatchFlow,
 	renameGroupFlow,
 	renamePaletteFlow,
 	reorderSwatchesFlow,
+	revertSwatchFlow,
 	saveSwatchEditsFlow,
 	writeDefaultPaletteFlow,
 } from '../helpers/palette-flows';
@@ -24,6 +24,7 @@ import * as client from '../api/client';
 jest.mock('../api/client', () => ({
 	createUserPrimitive: jest.fn(),
 	deletePalette: jest.fn(),
+	deleteSwatch: jest.fn(),
 	deleteUserPrimitive: jest.fn(),
 	fetchPalette: jest.fn(),
 	savePalette: jest.fn(),
@@ -65,15 +66,40 @@ const selectedView = () => ({
 	],
 });
 
+// The shape every write response now carries: a flat, fully embedded palette listing — the same
+// RAW wire shape `helpers/palettes.js`'s `reshapePaletteRows` reshapes on read. Used both as the
+// resolved value for every mocked write call in this file, standing in for what the REST endpoints
+// actually return, AND as the exact value `onReceive` is asserted to have been called with — a
+// flow no longer reshapes its own response before handing it to `onReceive`, it passes it straight
+// through, so the assertion below is byte-for-byte the mocked resolved value.
+const listingRows = (overrides = {}) => [
+	{
+		id: DEFAULT_ID,
+		label: 'Default',
+		is_default: true,
+		is_current: overrides.currentId ? overrides.currentId === DEFAULT_ID : true,
+		user_created: false,
+		_embedded: { self: [defaultView()] },
+	},
+	{
+		id: 'sunset',
+		label: 'Sunset',
+		is_default: false,
+		is_current: overrides.currentId === 'sunset',
+		user_created: false,
+		_embedded: { self: [selectedView()] },
+	},
+];
+
 beforeEach(() => {
 	jest.resetAllMocks();
 });
 
 describe('writeDefaultPaletteFlow', () => {
-	it('reads the DEFAULT view, saves the edited default payload, reloads, refreshes the feed, then clears busy', async () => {
+	it('reads the DEFAULT view, saves the edited default payload, dispatches the response, refreshes the feed, then clears busy', async () => {
 		client.fetchPalette.mockResolvedValue(defaultView());
-		client.savePalette.mockResolvedValue({ $default: DEFAULT_ID, $current: DEFAULT_ID, palettes: [] });
-		const reload = jest.fn().mockResolvedValue(undefined);
+		client.savePalette.mockResolvedValue(listingRows());
+		const onReceive = jest.fn();
 		const refreshFeed = jest.fn().mockResolvedValue({ version: 'v2' });
 		const onBusy = jest.fn();
 		const onError = jest.fn();
@@ -84,7 +110,7 @@ describe('writeDefaultPaletteFlow', () => {
 			slug: SLUG,
 			defaultId: DEFAULT_ID,
 			edit,
-			reload,
+			onReceive,
 			refreshFeed,
 			onBusy,
 			onError,
@@ -101,7 +127,7 @@ describe('writeDefaultPaletteFlow', () => {
 		);
 		const [, , payload] = client.savePalette.mock.calls[0];
 		expect(payload.groups[0].swatches[0].$value).toBe('#111111');
-		expect(reload).toHaveBeenCalled();
+		expect(onReceive).toHaveBeenCalledWith(listingRows());
 		expect(refreshFeed).toHaveBeenCalledWith(SLUG);
 		expect(onBusy.mock.calls).toEqual([[true], [false]]);
 		expect(onError).not.toHaveBeenCalled();
@@ -119,7 +145,7 @@ describe('writeDefaultPaletteFlow', () => {
 				slug: SLUG,
 				defaultId: DEFAULT_ID,
 				edit: (groups) => groups,
-				reload: jest.fn(),
+				onReceive: jest.fn(),
 				refreshFeed: jest.fn(),
 				onBusy,
 				onError,
@@ -130,57 +156,10 @@ describe('writeDefaultPaletteFlow', () => {
 		expect(onBusy.mock.calls).toEqual([[true], [false]]);
 	});
 
-	it('re-reads on failure, so an optimistically applied edit is put back to the server order', async () => {
-		const failure = new Error('Save failed.');
-		client.fetchPalette.mockResolvedValue(defaultView());
-		client.savePalette.mockRejectedValue(failure);
-		const reload = jest.fn().mockResolvedValue(undefined);
-
-		await expect(
-			writeDefaultPaletteFlow({
-				namespace: NAMESPACE,
-				slug: SLUG,
-				defaultId: DEFAULT_ID,
-				edit: (groups) => groups,
-				reload,
-				refreshFeed: jest.fn(),
-				onBusy: jest.fn(),
-				onError: jest.fn(),
-			})
-		).rejects.toBe(failure);
-
-		// The whole point: reload() is in the success path too, so a version of this flow that only
-		// reloaded there would leave the caller's optimistic edit on screen after a failed write.
-		expect(reload).toHaveBeenCalledTimes(1);
-	});
-
-	it('keeps reporting the write error when the rollback re-read also fails, and still clears busy', async () => {
-		const failure = new Error('Save failed.');
-		client.fetchPalette.mockResolvedValue(defaultView());
-		client.savePalette.mockRejectedValue(failure);
-		const onBusy = jest.fn();
-		const onError = jest.fn();
-
-		await expect(
-			writeDefaultPaletteFlow({
-				namespace: NAMESPACE,
-				slug: SLUG,
-				defaultId: DEFAULT_ID,
-				edit: (groups) => groups,
-				reload: jest.fn().mockRejectedValue(new Error('Re-read failed.')),
-				refreshFeed: jest.fn(),
-				onBusy,
-				onError,
-			})
-		).rejects.toBe(failure);
-
-		expect(onError).toHaveBeenCalledWith({ message: failure.message });
-		expect(onBusy.mock.calls).toEqual([[true], [false]]);
-	});
-
-	it('does not refresh the feed when the write failed', async () => {
+	it('does not call onReceive or refresh the feed when the write failed', async () => {
 		client.fetchPalette.mockResolvedValue(defaultView());
 		client.savePalette.mockRejectedValue(new Error('Save failed.'));
+		const onReceive = jest.fn();
 		const refreshFeed = jest.fn();
 
 		await expect(
@@ -189,13 +168,14 @@ describe('writeDefaultPaletteFlow', () => {
 				slug: SLUG,
 				defaultId: DEFAULT_ID,
 				edit: (groups) => groups,
-				reload: jest.fn().mockResolvedValue(undefined),
+				onReceive,
 				refreshFeed,
 				onBusy: jest.fn(),
 				onError: jest.fn(),
 			})
 		).rejects.toThrow();
 
+		expect(onReceive).not.toHaveBeenCalled();
 		expect(refreshFeed).not.toHaveBeenCalled();
 	});
 });
@@ -207,7 +187,7 @@ describe('saveSwatchEditsFlow', () => {
 		defaultId: DEFAULT_ID,
 		editingId: 'sunset',
 		token: 'primitive.color.brand.primary',
-		reload: jest.fn().mockResolvedValue(undefined),
+		onReceive: jest.fn(),
 		refreshFeed: jest.fn().mockResolvedValue(undefined),
 		onBusy: jest.fn(),
 		onError: jest.fn(),
@@ -222,14 +202,13 @@ describe('saveSwatchEditsFlow', () => {
 
 		await saveSwatchEditsFlow(flowArgs);
 
-		expect(client.fetchPalette).not.toHaveBeenCalled();
 		expect(client.saveSwatch).not.toHaveBeenCalled();
 		expect(flowArgs.onBusy).not.toHaveBeenCalled();
-		expect(flowArgs.reload).not.toHaveBeenCalled();
+		expect(flowArgs.onReceive).not.toHaveBeenCalled();
 	});
 
 	it('writes only the granular swatch (edited palette) for a color-only edit', async () => {
-		client.saveSwatch.mockResolvedValue({});
+		client.saveSwatch.mockResolvedValue(listingRows());
 		const flowArgs = args({
 			draft: { label: 'Main 1', value: '#abcdef' },
 			initial: { label: 'Main 1', value: '#111111' },
@@ -241,18 +220,15 @@ describe('saveSwatchEditsFlow', () => {
 			NAMESPACE,
 			'sunset',
 			'primitive.color.brand.primary',
-			'#abcdef',
+			{ value: '#abcdef' },
 			SLUG
 		);
-		expect(client.fetchPalette).not.toHaveBeenCalled();
-		expect(client.savePalette).not.toHaveBeenCalled();
-		expect(flowArgs.reload).toHaveBeenCalledTimes(1);
+		expect(flowArgs.onReceive).toHaveBeenCalledWith(listingRows());
 		expect(flowArgs.refreshFeed).toHaveBeenCalledTimes(1);
 	});
 
-	it('writes only the default node for a label-only edit', async () => {
-		client.fetchPalette.mockResolvedValue(defaultView());
-		client.savePalette.mockResolvedValue({});
+	it('writes the label through the targeted swatch endpoint against the default palette for a label-only edit', async () => {
+		client.saveSwatch.mockResolvedValue(listingRows());
 		const flowArgs = args({
 			draft: { label: 'Renamed', value: '#111111' },
 			initial: { label: 'Main 1', value: '#111111' },
@@ -260,28 +236,22 @@ describe('saveSwatchEditsFlow', () => {
 
 		await saveSwatchEditsFlow(flowArgs);
 
-		expect(client.fetchPalette).toHaveBeenCalledWith(NAMESPACE, DEFAULT_ID, SLUG);
-		expect(client.savePalette).toHaveBeenCalledWith(
+		expect(client.saveSwatch).toHaveBeenCalledWith(
 			NAMESPACE,
 			DEFAULT_ID,
-			expect.objectContaining({ label: 'Default' }),
+			'primitive.color.brand.primary',
+			{ label: 'Renamed' },
 			SLUG
 		);
-		expect(client.saveSwatch).not.toHaveBeenCalled();
+		expect(client.fetchPalette).not.toHaveBeenCalled();
+		expect(client.savePalette).not.toHaveBeenCalled();
 	});
 
-	it('runs rename before the color write when both changed, with one reload and one feed refresh', async () => {
-		client.fetchPalette.mockResolvedValue(defaultView());
-		client.savePalette.mockResolvedValue({});
-		client.saveSwatch.mockResolvedValue({});
+	it('runs the label write before the value write when both changed, with one onReceive and one feed refresh', async () => {
 		const order = [];
-		client.savePalette.mockImplementation(async () => {
-			order.push('savePalette');
-			return {};
-		});
-		client.saveSwatch.mockImplementation(async () => {
-			order.push('saveSwatch');
-			return {};
+		client.saveSwatch.mockImplementation(async (namespace, id) => {
+			order.push(id === DEFAULT_ID ? 'label' : 'value');
+			return listingRows();
 		});
 		const flowArgs = args({
 			draft: { label: 'Renamed', value: '#abcdef' },
@@ -290,8 +260,9 @@ describe('saveSwatchEditsFlow', () => {
 
 		await saveSwatchEditsFlow(flowArgs);
 
-		expect(order).toEqual(['savePalette', 'saveSwatch']);
-		expect(flowArgs.reload).toHaveBeenCalledTimes(1);
+		expect(order).toEqual(['label', 'value']);
+		expect(client.saveSwatch).toHaveBeenCalledTimes(2);
+		expect(flowArgs.onReceive).toHaveBeenCalledTimes(1);
 		expect(flowArgs.refreshFeed).toHaveBeenCalledTimes(1);
 	});
 
@@ -310,73 +281,25 @@ describe('saveSwatchEditsFlow', () => {
 	});
 });
 
-describe('openPaletteFlow', () => {
-	it('fetches the effective view and calls onOpened — no write of any kind', async () => {
-		const view = selectedView();
-		client.fetchPalette.mockResolvedValue(view);
-		const onOpened = jest.fn();
-		const onBusy = jest.fn();
-
-		await openPaletteFlow({
-			namespace: NAMESPACE,
-			slug: SLUG,
-			id: 'sunset',
-			onOpened,
-			onBusy,
-			onError: jest.fn(),
-		});
-
-		expect(client.fetchPalette).toHaveBeenCalledWith(NAMESPACE, 'sunset', SLUG);
-		expect(onOpened).toHaveBeenCalledWith(view);
-		expect(client.setCurrentPalette).not.toHaveBeenCalled();
-		expect(client.savePalette).not.toHaveBeenCalled();
-		expect(onBusy.mock.calls).toEqual([[true], [false]]);
-	});
-
-	it('reports through onError and re-throws on failure', async () => {
-		const failure = new Error('That palette does not exist.');
-		client.fetchPalette.mockRejectedValue(failure);
-		const onBusy = jest.fn();
-		const onError = jest.fn();
-
-		await expect(
-			openPaletteFlow({
-				namespace: NAMESPACE,
-				slug: SLUG,
-				id: 'ghost',
-				onOpened: jest.fn(),
-				onBusy,
-				onError,
-			})
-		).rejects.toBe(failure);
-
-		expect(onError).toHaveBeenCalledWith({ message: failure.message });
-		expect(onBusy.mock.calls).toEqual([[true], [false]]);
-	});
-});
-
 describe('activatePaletteFlow', () => {
-	it('sets $current, reloads, refreshes the feed pessimistically', async () => {
-		client.setCurrentPalette.mockResolvedValue({ current: 'sunset' });
-		const reload = jest.fn().mockResolvedValue(undefined);
+	it('sets $current and dispatches its own response, then refreshes the feed pessimistically', async () => {
+		client.setCurrentPalette.mockResolvedValue(listingRows({ currentId: 'sunset' }));
+		const onReceive = jest.fn();
 		const refreshFeed = jest.fn().mockResolvedValue(undefined);
 		const onBusy = jest.fn();
-		const onActivated = jest.fn();
 
 		await activatePaletteFlow({
 			namespace: NAMESPACE,
 			slug: SLUG,
 			id: 'sunset',
-			reload,
+			onReceive,
 			refreshFeed,
 			onBusy,
 			onError: jest.fn(),
-			onActivated,
 		});
 
 		expect(client.setCurrentPalette).toHaveBeenCalledWith(NAMESPACE, 'sunset', SLUG);
-		expect(onActivated).toHaveBeenCalledWith('sunset');
-		expect(reload).toHaveBeenCalled();
+		expect(onReceive).toHaveBeenCalledWith(listingRows({ currentId: 'sunset' }));
 		expect(refreshFeed).toHaveBeenCalledWith(SLUG);
 		expect(onBusy.mock.calls).toEqual([[true], [false]]);
 	});
@@ -392,11 +315,10 @@ describe('activatePaletteFlow', () => {
 				namespace: NAMESPACE,
 				slug: SLUG,
 				id: 'ghost',
-				reload: jest.fn(),
+				onReceive: jest.fn(),
 				refreshFeed: jest.fn(),
 				onBusy,
 				onError,
-				onActivated: jest.fn(),
 			})
 		).rejects.toBe(failure);
 
@@ -447,7 +369,7 @@ describe('createPaletteFlow', () => {
 
 	it('settles the busy flag on success so the screen leaves its loading state', async () => {
 		client.fetchPalette.mockResolvedValue(defaultView());
-		client.savePalette.mockResolvedValue({});
+		client.savePalette.mockResolvedValue(listingRows());
 		const onBusy = jest.fn();
 
 		await createPaletteFlow({
@@ -455,7 +377,7 @@ describe('createPaletteFlow', () => {
 			slug: SLUG,
 			label: 'Forest',
 			listing: { defaultId: DEFAULT_ID, palettes: [] },
-			reload: jest.fn().mockResolvedValue(undefined),
+			onReceive: jest.fn(),
 			refreshFeed: jest.fn().mockResolvedValue(undefined),
 			openPalette: jest.fn().mockResolvedValue(undefined),
 			onBusy,
@@ -467,9 +389,8 @@ describe('createPaletteFlow', () => {
 
 	it('seeds the new node from the default view, opens it, and never activates it', async () => {
 		client.fetchPalette.mockResolvedValue(defaultView());
-		client.savePalette.mockResolvedValue({});
+		client.savePalette.mockResolvedValue(listingRows());
 		const openPalette = jest.fn().mockResolvedValue(undefined);
-		const reload = jest.fn().mockResolvedValue(undefined);
 		const listing = { defaultId: DEFAULT_ID, palettes: [] };
 
 		await createPaletteFlow({
@@ -477,7 +398,7 @@ describe('createPaletteFlow', () => {
 			slug: SLUG,
 			label: 'Forest',
 			listing,
-			reload,
+			onReceive: jest.fn(),
 			refreshFeed: jest.fn().mockResolvedValue(undefined),
 			openPalette,
 			onBusy: jest.fn(),
@@ -495,12 +416,12 @@ describe('createPaletteFlow', () => {
 		expect(client.setCurrentPalette).not.toHaveBeenCalled();
 	});
 
-	it('reloads the listing before opening the new palette, so the fresh row exists first', async () => {
+	it('dispatches the fresh listing before opening the new palette, so the fresh row exists first', async () => {
 		client.fetchPalette.mockResolvedValue(defaultView());
-		client.savePalette.mockResolvedValue({});
+		client.savePalette.mockResolvedValue(listingRows());
 		const order = [];
-		const reload = jest.fn(async () => {
-			order.push('reload');
+		const onReceive = jest.fn(() => {
+			order.push('onReceive');
 		});
 		const openPalette = jest.fn(async () => {
 			order.push('openPalette');
@@ -512,23 +433,22 @@ describe('createPaletteFlow', () => {
 			slug: SLUG,
 			label: 'Forest',
 			listing,
-			reload,
+			onReceive,
 			refreshFeed: jest.fn().mockResolvedValue(undefined),
 			openPalette,
 			onBusy: jest.fn(),
 			onError: jest.fn(),
 		});
 
-		// `reload()` must land BEFORE `openPalette()`: `hooks/use-palettes.js`'s `reload()` keeps
-		// `editingId` unchanged (it still points at the previously-edited palette, which still
-		// exists), so this ordering means the listing already carries the new row by the time
-		// `editingId` moves onto it — otherwise the dropdown would render the raw id for one tick.
-		expect(order).toEqual(['reload', 'openPalette']);
+		// `onReceive` must land BEFORE `openPalette()`: the fresh listing already carries the new
+		// row by the time `editingId` moves onto it — otherwise the dropdown would render the raw id
+		// for one tick.
+		expect(order).toEqual(['onReceive', 'openPalette']);
 	});
 
 	it('refreshes the feed, so the version token a later write is checked against is not left stale', async () => {
 		client.fetchPalette.mockResolvedValue(defaultView());
-		client.savePalette.mockResolvedValue({});
+		client.savePalette.mockResolvedValue(listingRows());
 		const refreshFeed = jest.fn().mockResolvedValue(undefined);
 
 		await createPaletteFlow({
@@ -536,7 +456,7 @@ describe('createPaletteFlow', () => {
 			slug: SLUG,
 			label: 'Forest',
 			listing: { defaultId: DEFAULT_ID, palettes: [] },
-			reload: jest.fn().mockResolvedValue(undefined),
+			onReceive: jest.fn(),
 			openPalette: jest.fn().mockResolvedValue(undefined),
 			refreshFeed,
 			onBusy: jest.fn(),
@@ -553,7 +473,7 @@ describe('createPaletteFlow', () => {
 		client.fetchPalette.mockRejectedValue(failure);
 		const onBusy = jest.fn();
 		const onError = jest.fn();
-		const reload = jest.fn().mockResolvedValue(undefined);
+		const onReceive = jest.fn();
 		const listing = { defaultId: DEFAULT_ID, palettes: [] };
 
 		await expect(
@@ -562,7 +482,7 @@ describe('createPaletteFlow', () => {
 				slug: SLUG,
 				label: 'Forest',
 				listing,
-				reload,
+				onReceive,
 				openPalette: jest.fn(),
 				onBusy,
 				onError,
@@ -571,14 +491,14 @@ describe('createPaletteFlow', () => {
 
 		expect(onError).toHaveBeenCalledWith({ message: failure.message });
 		expect(onBusy).toHaveBeenLastCalledWith(false);
-		expect(reload).not.toHaveBeenCalled();
+		expect(onReceive).not.toHaveBeenCalled();
 	});
 });
 
 describe('deletePaletteFlow', () => {
 	it('deletes a palette that is not the live one without activating a successor', async () => {
-		client.deletePalette.mockResolvedValue({ $default: DEFAULT_ID, $current: DEFAULT_ID, palettes: [] });
-		const reload = jest.fn().mockResolvedValue(undefined);
+		client.deletePalette.mockResolvedValue(listingRows());
+		const onReceive = jest.fn();
 		const refreshFeed = jest.fn().mockResolvedValue(undefined);
 		const onBusy = jest.fn();
 
@@ -587,16 +507,14 @@ describe('deletePaletteFlow', () => {
 			slug: SLUG,
 			id: 'sunset',
 			currentId: DEFAULT_ID,
-			reload,
+			onReceive,
 			refreshFeed,
 			onBusy,
 			onError: jest.fn(),
 		});
 
 		expect(client.deletePalette).toHaveBeenCalledWith(NAMESPACE, 'sunset', SLUG);
-		// The flow never assumes a fallback id itself — it defers to `reload`, which re-reads the
-		// listing from the server and so always reflects the server's own fallback decision.
-		expect(reload).toHaveBeenCalled();
+		expect(onReceive).toHaveBeenCalledWith(listingRows());
 		expect(refreshFeed).toHaveBeenCalledWith(SLUG);
 		expect(onBusy.mock.calls).toEqual([[true], [false]]);
 		expect(client.setCurrentPalette).not.toHaveBeenCalled();
@@ -611,7 +529,7 @@ describe('deletePaletteFlow', () => {
 				slug: SLUG,
 				id: 'sunset',
 				currentId: 'sunset',
-				reload: jest.fn(),
+				onReceive: jest.fn(),
 				refreshFeed: jest.fn(),
 				onBusy: jest.fn(),
 				onError,
@@ -623,17 +541,27 @@ describe('deletePaletteFlow', () => {
 		expect(onError).toHaveBeenCalledWith({ message: expect.stringMatching(/choose which palette/i) });
 	});
 
-	it('activates the chosen successor before deleting the live palette', async () => {
+	it('activates the chosen successor before deleting the live palette, and dispatches the DELETE response, not the activation response', async () => {
 		const order = [];
 		client.setCurrentPalette.mockImplementation(() => {
 			order.push('activate');
-			return Promise.resolve({ current: 'forest' });
+			return Promise.resolve(listingRows({ currentId: 'forest' }));
 		});
+		const deleteResponse = [
+			{
+				id: DEFAULT_ID,
+				label: 'Default',
+				is_default: true,
+				is_current: false,
+				user_created: false,
+				_embedded: { self: [defaultView()] },
+			},
+		];
 		client.deletePalette.mockImplementation(() => {
 			order.push('delete');
-			return Promise.resolve({});
+			return Promise.resolve(deleteResponse);
 		});
-		const onActivated = jest.fn();
+		const onReceive = jest.fn();
 
 		await deletePaletteFlow({
 			namespace: NAMESPACE,
@@ -641,16 +569,18 @@ describe('deletePaletteFlow', () => {
 			id: 'sunset',
 			currentId: 'sunset',
 			successorId: 'forest',
-			reload: jest.fn().mockResolvedValue(undefined),
+			onReceive,
 			refreshFeed: jest.fn().mockResolvedValue(undefined),
 			onBusy: jest.fn(),
 			onError: jest.fn(),
-			onActivated,
 		});
 
 		expect(order).toEqual(['activate', 'delete']);
 		expect(client.setCurrentPalette).toHaveBeenCalledWith(NAMESPACE, 'forest', SLUG);
-		expect(onActivated).toHaveBeenCalledWith('forest');
+		// The intermediate activation response is discarded — only the FINAL write's (delete's) raw
+		// response is dispatched, since it is the truly fresh post-delete state.
+		expect(onReceive).toHaveBeenCalledTimes(1);
+		expect(onReceive).toHaveBeenCalledWith(deleteResponse);
 	});
 
 	it('surfaces the default-palette 400 message', async () => {
@@ -663,7 +593,7 @@ describe('deletePaletteFlow', () => {
 				namespace: NAMESPACE,
 				slug: SLUG,
 				id: DEFAULT_ID,
-				reload: jest.fn(),
+				onReceive: jest.fn(),
 				refreshFeed: jest.fn(),
 				onBusy: jest.fn(),
 				onError,
@@ -685,7 +615,7 @@ describe('renamePaletteFlow', () => {
 				id: 'sunset',
 				label: '   ',
 				listing: { defaultId: DEFAULT_ID, palettes: [{ id: 'sunset', label: 'Sunset' }] },
-				reload: jest.fn(),
+				onReceive: jest.fn(),
 				refreshFeed: jest.fn().mockResolvedValue(undefined),
 				onBusy: jest.fn(),
 				onError,
@@ -713,7 +643,7 @@ describe('renamePaletteFlow', () => {
 				id: 'sunset',
 				label: 'Forest',
 				listing,
-				reload: jest.fn(),
+				onReceive: jest.fn(),
 				onBusy: jest.fn(),
 				onError,
 			})
@@ -725,8 +655,7 @@ describe('renamePaletteFlow', () => {
 
 	it('allows renaming a palette to its own current label', async () => {
 		client.fetchPalette.mockResolvedValue(selectedView());
-		client.savePalette.mockResolvedValue({});
-		const reload = jest.fn().mockResolvedValue(undefined);
+		client.savePalette.mockResolvedValue(listingRows());
 		const listing = { defaultId: DEFAULT_ID, palettes: [{ id: 'sunset', label: 'Sunset' }] };
 
 		await renamePaletteFlow({
@@ -735,7 +664,7 @@ describe('renamePaletteFlow', () => {
 			id: 'sunset',
 			label: 'Sunset',
 			listing,
-			reload,
+			onReceive: jest.fn(),
 			refreshFeed: jest.fn().mockResolvedValue(undefined),
 			onBusy: jest.fn(),
 			onError: jest.fn(),
@@ -751,7 +680,7 @@ describe('renamePaletteFlow', () => {
 
 	it('refreshes the feed, so a rename does not leave the version token stale', async () => {
 		client.fetchPalette.mockResolvedValue(selectedView());
-		client.savePalette.mockResolvedValue({});
+		client.savePalette.mockResolvedValue(listingRows());
 		const refreshFeed = jest.fn().mockResolvedValue(undefined);
 
 		await renamePaletteFlow({
@@ -760,7 +689,7 @@ describe('renamePaletteFlow', () => {
 			id: 'sunset',
 			label: 'Dusk',
 			listing: { defaultId: DEFAULT_ID, palettes: [{ id: 'sunset', label: 'Sunset' }] },
-			reload: jest.fn().mockResolvedValue(undefined),
+			onReceive: jest.fn(),
 			refreshFeed,
 			onBusy: jest.fn(),
 			onError: jest.fn(),
@@ -770,10 +699,10 @@ describe('renamePaletteFlow', () => {
 		expect(refreshFeed).toHaveBeenCalledWith(SLUG);
 	});
 
-	it('preserves the id, re-sends the palette’s own groups under the new label, and reloads the listing', async () => {
+	it('preserves the id, re-sends the palette’s own groups under the new label, and dispatches the fresh listing', async () => {
 		client.fetchPalette.mockResolvedValue(selectedView());
-		client.savePalette.mockResolvedValue({});
-		const reload = jest.fn().mockResolvedValue(undefined);
+		client.savePalette.mockResolvedValue(listingRows());
+		const onReceive = jest.fn();
 		const onBusy = jest.fn();
 		const listing = { defaultId: DEFAULT_ID, palettes: [{ id: 'sunset', label: 'Sunset' }] };
 
@@ -783,7 +712,7 @@ describe('renamePaletteFlow', () => {
 			id: 'sunset',
 			label: 'Sunset Dusk',
 			listing,
-			reload,
+			onReceive,
 			refreshFeed: jest.fn().mockResolvedValue(undefined),
 			onBusy,
 			onError: jest.fn(),
@@ -799,9 +728,7 @@ describe('renamePaletteFlow', () => {
 		expect(slugArg).toBe(SLUG);
 		expect(payload.label).toBe('Sunset Dusk');
 		expect(payload.groups).toEqual(stripEffectiveFlags(selectedView().groups));
-		expect(reload).toHaveBeenCalled();
-		// No feed refresh: a palette's label never reaches a resolved token value (see the flow's
-		// own docblock), so there is nothing for a refresh to correct.
+		expect(onReceive).toHaveBeenCalledWith(listingRows());
 		expect(onBusy.mock.calls).toEqual([[true], [false]]);
 	});
 
@@ -819,7 +746,7 @@ describe('renamePaletteFlow', () => {
 				id: 'sunset',
 				label: 'Sunset Dusk',
 				listing,
-				reload: jest.fn(),
+				onReceive: jest.fn(),
 				onBusy,
 				onError,
 			})
@@ -830,13 +757,70 @@ describe('renamePaletteFlow', () => {
 	});
 });
 
+describe('revertSwatchFlow', () => {
+	const baseArgs = (overrides) => ({
+		namespace: NAMESPACE,
+		slug: SLUG,
+		id: 'secondary',
+		token: 'primitive.color.brand.primary',
+		onReceive: jest.fn(),
+		refreshFeed: jest.fn().mockResolvedValue({ version: 'v3' }),
+		onBusy: jest.fn(),
+		onError: jest.fn(),
+		...overrides,
+	});
+
+	it('calls deleteSwatch against the palette being edited, not the default palette', async () => {
+		client.deleteSwatch.mockResolvedValue(listingRows());
+		const flowArgs = baseArgs();
+
+		await revertSwatchFlow(flowArgs);
+
+		expect(client.deleteSwatch).toHaveBeenCalledWith(NAMESPACE, 'secondary', 'primitive.color.brand.primary', SLUG);
+		expect(client.fetchPalette).not.toHaveBeenCalled();
+		expect(client.savePalette).not.toHaveBeenCalled();
+	});
+
+	it('dispatches the write response via onReceive and refreshes the feed', async () => {
+		client.deleteSwatch.mockResolvedValue(listingRows());
+		const flowArgs = baseArgs();
+
+		await revertSwatchFlow(flowArgs);
+
+		expect(flowArgs.onReceive).toHaveBeenCalledWith(listingRows());
+		expect(flowArgs.refreshFeed).toHaveBeenCalledWith(SLUG);
+	});
+
+	it('toggles onBusy around the write', async () => {
+		client.deleteSwatch.mockResolvedValue(listingRows());
+		const flowArgs = baseArgs();
+
+		await revertSwatchFlow(flowArgs);
+
+		expect(flowArgs.onBusy).toHaveBeenNthCalledWith(1, true);
+		expect(flowArgs.onBusy).toHaveBeenNthCalledWith(2, false);
+	});
+
+	it('surfaces the error and rejects when the backend refuses the revert (e.g. targeting the default palette)', async () => {
+		const failure = new Error('A swatch of the default palette cannot be reverted.');
+		client.deleteSwatch.mockRejectedValue(failure);
+		const flowArgs = baseArgs();
+
+		await expect(revertSwatchFlow(flowArgs)).rejects.toBe(failure);
+
+		expect(flowArgs.onError).toHaveBeenCalledWith({ message: failure.message });
+		expect(flowArgs.onReceive).not.toHaveBeenCalled();
+		expect(flowArgs.refreshFeed).not.toHaveBeenCalled();
+	});
+});
+
 describe('removeSwatchFlow', () => {
 	const baseArgs = (overrides) => ({
 		namespace: NAMESPACE,
 		slug: SLUG,
 		defaultId: DEFAULT_ID,
 		token: 'primitive.color.custom.custom-1',
-		reload: jest.fn().mockResolvedValue(undefined),
+		onReceive: jest.fn(),
 		refreshFeed: jest.fn().mockResolvedValue({ version: 'v3' }),
 		onBusy: jest.fn(),
 		onError: jest.fn(),
@@ -845,7 +829,7 @@ describe('removeSwatchFlow', () => {
 
 	beforeEach(() => {
 		client.fetchPalette.mockResolvedValue(defaultView());
-		client.savePalette.mockResolvedValue({});
+		client.savePalette.mockResolvedValue(listingRows());
 	});
 
 	it('deletes the user primitive only for a user-created token, after the palette write', async () => {
@@ -856,6 +840,7 @@ describe('removeSwatchFlow', () => {
 
 		expect(client.savePalette).toHaveBeenCalled();
 		expect(client.deleteUserPrimitive).toHaveBeenCalledWith(SLUG, 'primitive.color.custom.custom-1', 'v3');
+		expect(flowArgs.onReceive).toHaveBeenCalledWith(listingRows());
 	});
 
 	it('never calls deleteUserPrimitive for a baseline token', async () => {
@@ -871,7 +856,7 @@ describe('removeSwatchFlow', () => {
 		const order = [];
 		client.savePalette.mockImplementation(async () => {
 			order.push('savePalette');
-			return {};
+			return listingRows();
 		});
 		client.deleteUserPrimitive.mockImplementation(async () => {
 			order.push('deleteUserPrimitive');
@@ -879,8 +864,8 @@ describe('removeSwatchFlow', () => {
 		});
 		const flowArgs = baseArgs({
 			isUserCreated: true,
-			reload: jest.fn(async () => {
-				order.push('reload');
+			onReceive: jest.fn(() => {
+				order.push('onReceive');
 			}),
 			refreshFeed: jest.fn(async () => {
 				order.push('refreshFeed');
@@ -890,7 +875,7 @@ describe('removeSwatchFlow', () => {
 
 		await removeSwatchFlow(flowArgs);
 
-		expect(order).toEqual(['savePalette', 'reload', 'refreshFeed', 'deleteUserPrimitive', 'refreshFeed']);
+		expect(order).toEqual(['savePalette', 'onReceive', 'refreshFeed', 'deleteUserPrimitive', 'refreshFeed']);
 	});
 
 	it('resolves — does not reject — when deleteUserPrimitive fails after the row removal already succeeded, and still calls refreshFeed once more', async () => {
@@ -913,6 +898,7 @@ describe('removeSwatchFlow', () => {
 
 		expect(flowArgs.onError).toHaveBeenCalledWith({ message: failure.message });
 		expect(client.deleteUserPrimitive).not.toHaveBeenCalled();
+		expect(flowArgs.onReceive).not.toHaveBeenCalled();
 	});
 });
 
@@ -920,8 +906,8 @@ describe('addColorFlow', () => {
 	it('creates the primitive first, then appends the swatch to the default node, and resolves with the new token id', async () => {
 		client.createUserPrimitive.mockResolvedValue({ id: 'primitive.color.custom.custom-1', version: 'v2' });
 		client.fetchPalette.mockResolvedValue(defaultView());
-		client.savePalette.mockResolvedValue({});
-		const reload = jest.fn().mockResolvedValue(undefined);
+		client.savePalette.mockResolvedValue(listingRows());
+		const onReceive = jest.fn();
 		const refreshFeed = jest.fn().mockResolvedValue(undefined);
 
 		const token = await addColorFlow({
@@ -929,10 +915,11 @@ describe('addColorFlow', () => {
 			slug: SLUG,
 			defaultId: DEFAULT_ID,
 			groupId: 'accent',
-			tokens: [],
-			palette: selectedView(),
+			colorSlug: 'custom-1',
+			value: '#222222',
+			label: 'New Color',
 			feedVersion: 'v1',
-			reload,
+			onReceive,
 			refreshFeed,
 			onBusy: jest.fn(),
 			onError: jest.fn(),
@@ -946,6 +933,7 @@ describe('addColorFlow', () => {
 		expect(payload.groups.find((group) => group.id === 'accent').swatches).toContainEqual(
 			expect.objectContaining({ token: 'primitive.color.custom.custom-1' })
 		);
+		expect(onReceive).toHaveBeenCalledWith(listingRows());
 		expect(token).toBe('primitive.color.custom.custom-1');
 	});
 
@@ -960,10 +948,11 @@ describe('addColorFlow', () => {
 				slug: SLUG,
 				defaultId: DEFAULT_ID,
 				groupId: 'accent',
-				tokens: [],
-				palette: selectedView(),
+				colorSlug: 'custom-1',
+				value: '#222222',
+				label: 'New Color',
 				feedVersion: 'v1',
-				reload: jest.fn(),
+				onReceive: jest.fn(),
 				refreshFeed: jest.fn(),
 				onBusy: jest.fn(),
 				onError,
@@ -979,17 +968,19 @@ describe('addGroupFlow', () => {
 	it('creates the group with its first swatch in a single default write', async () => {
 		client.createUserPrimitive.mockResolvedValue({ id: 'primitive.color.custom.custom-1', version: 'v2' });
 		client.fetchPalette.mockResolvedValue(defaultView());
-		client.savePalette.mockResolvedValue({});
+		client.savePalette.mockResolvedValue(listingRows());
 
 		const token = await addGroupFlow({
 			namespace: NAMESPACE,
 			slug: SLUG,
 			defaultId: DEFAULT_ID,
+			groupId: 'background',
 			label: 'Background',
-			palette: selectedView(),
-			tokens: [],
+			colorSlug: 'custom-1',
+			value: '#222222',
+			swatchLabel: 'New Color',
 			feedVersion: 'v1',
-			reload: jest.fn().mockResolvedValue(undefined),
+			onReceive: jest.fn(),
 			refreshFeed: jest.fn().mockResolvedValue(undefined),
 			onBusy: jest.fn(),
 			onError: jest.fn(),
@@ -1002,7 +993,7 @@ describe('addGroupFlow', () => {
 		expect(token).toBe('primitive.color.custom.custom-1');
 	});
 
-	it('rejects an empty or duplicate group label without requests', async () => {
+	it('rejects synchronously for an empty groupId, without minting a primitive or writing anything', async () => {
 		const onError = jest.fn();
 
 		await expect(
@@ -1010,41 +1001,59 @@ describe('addGroupFlow', () => {
 				namespace: NAMESPACE,
 				slug: SLUG,
 				defaultId: DEFAULT_ID,
-				label: '   ',
-				palette: selectedView(),
-				tokens: [],
+				groupId: '',
+				label: '',
+				colorSlug: 'custom-1',
+				value: '#222222',
+				swatchLabel: 'New Color',
 				feedVersion: 'v1',
-				reload: jest.fn(),
+				onReceive: jest.fn(),
 				refreshFeed: jest.fn(),
 				onBusy: jest.fn(),
 				onError,
 			})
-		).rejects.toThrow();
+		).rejects.toThrow('Enter a color group name.');
+
+		expect(client.createUserPrimitive).not.toHaveBeenCalled();
+		expect(client.savePalette).not.toHaveBeenCalled();
+		expect(onError).toHaveBeenCalledWith({ message: 'Enter a color group name.' });
+	});
+
+	// The server's own `guard_palette_shape()` validates group shape but does not reject a
+	// duplicate group id, so this flow's own re-check (against its own fresh palette read) is the
+	// only thing standing between a stale client-side pre-check and two groups sharing an id.
+	it('rejects a duplicate groupId against the palette this flow itself fetched, after the primitive is already minted', async () => {
+		client.createUserPrimitive.mockResolvedValue({ id: 'primitive.color.custom.custom-1', version: 'v2' });
+		client.fetchPalette.mockResolvedValue(defaultView());
+		const onError = jest.fn();
 
 		await expect(
 			addGroupFlow({
 				namespace: NAMESPACE,
 				slug: SLUG,
 				defaultId: DEFAULT_ID,
+				groupId: 'accent',
 				label: 'Accent',
-				palette: selectedView(),
-				tokens: [],
+				colorSlug: 'custom-1',
+				value: '#222222',
+				swatchLabel: 'New Color',
 				feedVersion: 'v1',
-				reload: jest.fn(),
+				onReceive: jest.fn(),
 				refreshFeed: jest.fn(),
 				onBusy: jest.fn(),
 				onError,
 			})
-		).rejects.toThrow();
+		).rejects.toThrow('A color group with that name already exists.');
 
-		expect(client.createUserPrimitive).not.toHaveBeenCalled();
+		expect(client.savePalette).not.toHaveBeenCalled();
+		expect(onError).toHaveBeenCalledWith({ message: 'A color group with that name already exists.' });
 	});
 });
 
 describe('reorderSwatchesFlow', () => {
 	it('writes the reordered DEFAULT node regardless of the selected palette', async () => {
 		client.fetchPalette.mockResolvedValue(defaultView());
-		client.savePalette.mockResolvedValue({});
+		client.savePalette.mockResolvedValue(listingRows());
 
 		await reorderSwatchesFlow({
 			namespace: NAMESPACE,
@@ -1052,7 +1061,7 @@ describe('reorderSwatchesFlow', () => {
 			defaultId: DEFAULT_ID,
 			groupId: 'accent',
 			orderedTokens: ['primitive.color.brand.secondary', 'primitive.color.brand.primary'],
-			reload: jest.fn().mockResolvedValue(undefined),
+			onReceive: jest.fn(),
 			refreshFeed: jest.fn().mockResolvedValue(undefined),
 			onBusy: jest.fn(),
 			onError: jest.fn(),
@@ -1070,8 +1079,8 @@ describe('reorderSwatchesFlow', () => {
 describe('renameGroupFlow', () => {
 	it('fetches and saves the DEFAULT palette with the relabeled group, keeping its id', async () => {
 		client.fetchPalette.mockResolvedValue(defaultView());
-		client.savePalette.mockResolvedValue({});
-		const reload = jest.fn().mockResolvedValue(undefined);
+		client.savePalette.mockResolvedValue(listingRows());
+		const onReceive = jest.fn();
 		const refreshFeed = jest.fn().mockResolvedValue(undefined);
 
 		await renameGroupFlow({
@@ -1080,7 +1089,7 @@ describe('renameGroupFlow', () => {
 			defaultId: DEFAULT_ID,
 			groupId: 'accent',
 			label: 'Renamed Accent',
-			reload,
+			onReceive,
 			refreshFeed,
 			onBusy: jest.fn(),
 			onError: jest.fn(),
@@ -1092,7 +1101,7 @@ describe('renameGroupFlow', () => {
 		// The id-stability assertion: the saved group still carries its original id under the new
 		// label — the regression test for the `template_slot_for()` misfiling hazard.
 		expect(payload.groups.find((group) => group.label === 'Renamed Accent').id).toBe('accent');
-		expect(reload).toHaveBeenCalled();
+		expect(onReceive).toHaveBeenCalledWith(listingRows());
 		expect(refreshFeed).toHaveBeenCalledWith(SLUG);
 	});
 
@@ -1109,7 +1118,7 @@ describe('renameGroupFlow', () => {
 				defaultId: DEFAULT_ID,
 				groupId: 'accent',
 				label: 'Renamed Accent',
-				reload: jest.fn(),
+				onReceive: jest.fn(),
 				refreshFeed: jest.fn(),
 				onBusy,
 				onError,
@@ -1128,7 +1137,7 @@ describe('removeGroupFlow', () => {
 		defaultId: DEFAULT_ID,
 		groupId: 'accent',
 		userCreatedTokens: [],
-		reload: jest.fn().mockResolvedValue(undefined),
+		onReceive: jest.fn(),
 		refreshFeed: jest.fn().mockResolvedValue({ version: 'v3' }),
 		onBusy: jest.fn(),
 		onError: jest.fn(),
@@ -1137,7 +1146,7 @@ describe('removeGroupFlow', () => {
 
 	beforeEach(() => {
 		client.fetchPalette.mockResolvedValue(defaultView());
-		client.savePalette.mockResolvedValue({});
+		client.savePalette.mockResolvedValue(listingRows());
 	});
 
 	it('writes the group removal to the default node from a fresh read before any cleanup delete', async () => {
@@ -1145,7 +1154,7 @@ describe('removeGroupFlow', () => {
 		const order = [];
 		client.savePalette.mockImplementation(async () => {
 			order.push('savePalette');
-			return {};
+			return listingRows();
 		});
 		client.deleteUserPrimitive.mockImplementation(async () => {
 			order.push('deleteUserPrimitive');
@@ -1153,8 +1162,8 @@ describe('removeGroupFlow', () => {
 		});
 		const flowArgs = baseArgs({
 			userCreatedTokens: ['primitive.color.custom.custom-1'],
-			reload: jest.fn(async () => {
-				order.push('reload');
+			onReceive: jest.fn(() => {
+				order.push('onReceive');
 			}),
 			refreshFeed: jest.fn(async () => {
 				order.push('refreshFeed');
@@ -1164,7 +1173,7 @@ describe('removeGroupFlow', () => {
 
 		await removeGroupFlow(flowArgs);
 
-		expect(order).toEqual(['savePalette', 'reload', 'refreshFeed', 'deleteUserPrimitive', 'refreshFeed']);
+		expect(order).toEqual(['savePalette', 'onReceive', 'refreshFeed', 'deleteUserPrimitive', 'refreshFeed']);
 		expect(client.fetchPalette).toHaveBeenCalledWith(NAMESPACE, DEFAULT_ID, SLUG);
 	});
 

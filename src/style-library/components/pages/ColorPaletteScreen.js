@@ -10,7 +10,7 @@
  * WordPress dependencies
  */
 import { useMemo, useState } from '@wordpress/element';
-import { Button, DropdownMenu, MenuGroup, MenuItem, Notice, Spinner } from '@wordpress/components';
+import { Button, DropdownMenu, MenuGroup, MenuItem, Notice } from '@wordpress/components';
 import { __, sprintf } from '@wordpress/i18n';
 import { moreVertical, plus } from '@wordpress/icons';
 
@@ -22,6 +22,7 @@ import { ScreenHeader } from '../organisms/ScreenHeader';
 import { SwatchGrid } from '../organisms/SwatchGrid';
 import { SelectDropdown } from '../molecules/SelectDropdown';
 import { EmptyState } from '../molecules/EmptyState';
+import { Skeleton } from '../atoms/Skeleton';
 import { ActivatePaletteButton } from '../organisms/ActivatePaletteButton';
 import { CreatePaletteModal } from '../organisms/CreatePaletteModal';
 import { RenamePaletteModal } from '../organisms/RenamePaletteModal';
@@ -30,6 +31,7 @@ import { AddColorGroupModal } from '../organisms/AddColorGroupModal';
 import { RenameColorGroupModal } from '../organisms/RenameColorGroupModal';
 import { DeleteColorGroupModal } from '../organisms/DeleteColorGroupModal';
 import { usePalettes } from '../../hooks/use-palettes';
+import { useLoadingAnnouncement } from '../../hooks/use-loading-announcement';
 import {
 	isUserCreatedPalette,
 	mapPaletteToSwatchGroups,
@@ -38,6 +40,63 @@ import {
 } from '../../helpers/palettes';
 import { ColorPaletteSettings } from './ColorPaletteSettings';
 import './ColorPaletteScreen.scss';
+
+// A fixed count, not derived from anything — there is no "expected swatch count" to read before
+// the real palette arrives, so this just needs to fill a group row plausibly.
+const SKELETON_SWATCH_IDS = [0, 1, 2, 3, 4, 5];
+
+/**
+ * The palette loading placeholder: one group heading and a row of swatch-card-shaped skeletons in
+ * the real `SwatchGrid` markup (`.swatch-grid` / `.swatch-group` / `.swatch-card`), so the loading
+ * shape matches the grid it is about to be replaced by instead of collapsing the screen to a
+ * single centered spinner.
+ *
+ * @param {Object} props       The component props.
+ * @param {string} props.label The screen's nav label, used to build the busy-region's accessible name.
+ *
+ * @since TBD
+ *
+ * @return {JSX.Element} The swatch-grid-shaped skeleton.
+ */
+function SwatchGridSkeleton({ label }) {
+	return (
+		<div
+			className="kadence-blocks-style-library__swatch-grid"
+			role="status"
+			aria-live="polite"
+			aria-busy="true"
+			aria-label={sprintf(
+				// translators: %s: the palette screen's label (e.g. "Color Palette").
+				__('Loading %s…', 'kadence-blocks'),
+				label
+			)}
+		>
+			<div className="kadence-blocks-style-library__swatch-group">
+				{/* No real heading class carries a width of its own — `SectionHeading`'s width is
+				 * whatever its text measures — so this bar's width is a plain literal, not a reused
+				 * layout value. */}
+				<Skeleton className="kadence-blocks-style-library__skeleton--bar" style={{ width: '8rem' }} />
+				<div className="kadence-blocks-style-library__swatch-group-row">
+					{SKELETON_SWATCH_IDS.map((id) => (
+						<div key={id} className="kadence-blocks-style-library__swatch-card">
+							<div className="kadence-blocks-style-library__swatch-card-main">
+								<Skeleton className="kadence-blocks-style-library__swatch-card-preview" />
+								{/* `.swatch-card-name` only declares `max-width: 100%`, never a `width` — a real
+								 * swatch name gets its width from its own text, but this shape has none, and its
+								 * `align-items: flex-start` parent collapses an unsized block to 0 width without
+								 * one. Same fix as the group heading bar above: pin a plausible literal width. */}
+								<Skeleton
+									className="kadence-blocks-style-library__swatch-card-name kadence-blocks-style-library__skeleton--bar"
+									style={{ width: '70%' }}
+								/>
+							</div>
+						</div>
+					))}
+				</div>
+			</div>
+		</div>
+	);
+}
 
 /**
  * The fill for a swatch's preview slot: the swatch's raw `$value`, or a neutral gray-100 fallback
@@ -75,6 +134,15 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 	// own separate instance below.
 	const palettes = usePalettes(library.feed, library.refreshFeed, route, navigate);
 
+	// The skeleton below lives inside its own `role="status"` region, which only announces "Loading
+	// X…" while it is actually mounted — the moment it is replaced by the real grid, that region is
+	// gone too, and nothing is left to tell a screen reader the load finished.
+	useLoadingAnnouncement(
+		palettes.isLoading,
+		// translators: %s: the palette screen's label (e.g. "Color Palette").
+		sprintf(__('%s loaded.', 'kadence-blocks'), label)
+	);
+
 	// Plain UI state, not route state — a half-typed modal must not enter browser history.
 	const [isCreateOpen, setIsCreateOpen] = useState(false);
 	const [isDeleteOpen, setIsDeleteOpen] = useState(false);
@@ -94,7 +162,8 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 				value: row.id,
 				label: paletteDisplayLabel(row),
 				// The Active badge tracks `$current` independently of which row is being edited —
-				// opening a palette never moves it (see `openPaletteFlow`).
+				// opening a palette never moves it (`usePalettes().openPalette` is a pure
+				// navigation that only writes the route's `scope`).
 				badges:
 					row.id === palettes.activeId ? [{ text: __('Active', 'kadence-blocks'), variant: 'state' }] : [],
 			})),
@@ -109,8 +178,10 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 					...item,
 					previewStyle: swatchPreviewStyle(item.value),
 					// The default-palette structure write this needed now exists (`reorderSwatchesFlow`),
-					// so the selected card's drag handle renders.
-					isDraggable: true,
+					// so the selected card's drag handle renders — except while the swatch is pending
+					// delete, where reordering something about to vanish is not meaningful.
+					isDraggable: !item.pendingDelete,
+					isPendingDelete: item.pendingDelete,
 				})),
 			})),
 		[palettes.palette]
@@ -127,9 +198,11 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 							options={options}
 							// Opens the palette for viewing only — never writes `$current`. A future reader who
 							// "fixes" this to also activate would silently re-tint the live site every time
-							// someone merely looks at a different palette; see `openPaletteFlow`'s own docblock.
+							// someone merely looks at a different palette; see `usePalettes().openPalette`'s
+							// own comment in `hooks/use-palettes.js`.
 							onChange={(id) => palettes.openPalette(id).catch(() => {})}
 							isBusy={palettes.isBusy}
+							isLoading={palettes.isLoading}
 							error={palettes.openError}
 							onClearError={palettes.clearOpenError}
 							trailingAction={{
@@ -188,7 +261,7 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 				}
 			/>
 			{palettes.isLoading ? (
-				<Spinner />
+				<SwatchGridSkeleton label={label} />
 			) : palettes.palette ? (
 				<>
 					{/* Suppressed while the add-group, rename-group, or delete-group modal is open —
@@ -204,15 +277,23 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 						groups={gridGroups}
 						selectedId={route.item}
 						onSelect={(token) => navigate({ item: token })}
-						onReorder={(groupId, orderedTokens) => palettes.reorderSwatches(groupId, orderedTokens)}
-						onAdd={(groupId) =>
+						onReorder={(groupId, orderedTokens) =>
 							palettes
-								.addColor(groupId)
-								.then((newToken) => navigate({ item: newToken }))
+								.reorderSwatches(groupId, orderedTokens)
 								// Swallowed: a failure already lands in `structureError`, rendered above.
 								.catch(() => {})
 						}
+						onAdd={(groupId) =>
+							palettes
+								// Opens the new swatch's settings panel the moment it exists in the store as an
+								// optimistic addition, not after the write confirms — see `addColor`'s own
+								// `onOptimistic` docs.
+								.addColor(groupId, (newToken) => navigate({ item: newToken }))
+								// Swallowed: a failure already surfaces as a toast via `notifyError`.
+								.catch(() => {})
+						}
 						addLabel={__('Add color', 'kadence-blocks')}
+						addingGroupIds={palettes.addingGroupIds}
 						groupActions={(group) => (
 							<DropdownMenu
 								icon={moreVertical}
@@ -310,7 +391,6 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 			{isAddGroupOpen && (
 				<AddColorGroupModal
 					palette={palettes.palette}
-					isBusy={palettes.isBusy}
 					error={palettes.structureError}
 					onClose={() => {
 						setIsAddGroupOpen(false);
@@ -318,19 +398,14 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 					}}
 					onAdd={(groupLabel) =>
 						palettes
-							.addGroup(groupLabel)
-							.then((newToken) => {
-								setIsAddGroupOpen(false);
-								palettes.clearStructureError();
-
-								// Selects the group's new swatch so the panel opens on it, mirroring the
-								// grid's own `AddTile` binding above (`addColor(...).then((newToken) =>
-								// navigate({ item: newToken }))`) — `addGroupFlow` resolves with the new
-								// swatch's token the same way `addColorFlow` does.
-								navigate({ item: newToken });
-							})
-							// Swallowed: an invalid/duplicate label or a request failure already lands in
-							// `structureError`, rendered inline — the modal stays open on it.
+							// Opens the new group's settings panel the moment the optimistic group and its
+							// first swatch exist in the store, not after the write confirms — see `addGroup`'s
+							// own `onOptimistic` docs.
+							.addGroup(groupLabel, (newToken) => navigate({ item: newToken }))
+							// A validation rejection (empty/duplicate name) never reaches here —
+							// `AddColorGroupModal` disables its own Add button for both cases before `onAdd`
+							// can fire. A real write failure is already surfaced via Snackbar inside
+							// `addGroup`.
 							.catch(() => {})
 					}
 				/>

@@ -7,6 +7,11 @@
  */
 
 /**
+ * WordPress dependencies
+ */
+import { __ } from '@wordpress/i18n';
+
+/**
  * Internal dependencies
  */
 import { slugifyLibraryTitle } from './libraries';
@@ -27,6 +32,45 @@ const CUSTOM_COLOR_PREFIX = 'primitive.color.custom.';
 const FALLBACK_SWATCH_VALUE = '#000000';
 
 /**
+ * Reshape the flat embedded-array wire response into the shape every consumer already expects. The
+ * wire shape is a flat array of rows (WP core's `_embed` only resolves top-level collection items,
+ * never something nested inside a wrapper key — see the REST controller's own docblock for why)
+ * with `is_default`/`is_current`/`user_created` flags per row instead of collection-level pointers;
+ * this reshapes those flags back into the pointer-based shape this app's own code was already built
+ * around.
+ *
+ * Used internally by `store/selectors.js`'s `getPaletteListing` only — reshaping the raw wire-format
+ * rows, exactly as the reducer stores them, into the shape the frontend consumes. Nothing else
+ * should call this directly, and specifically not code that writes into the store:
+ * `helpers/palette-flows.js` dispatches every write's response RAW, via `onReceive`, with no
+ * reshaping before dispatch — reshaping a write's response before it reaches the store would
+ * double-reshape it on the next read, since `getPaletteListing` is the one canonical place
+ * reshaping happens. Deliberately kept out of `store/selectors.js` itself, even though it is only
+ * ever called from there: that module is imported wholesale (`import * as selectors`) as the
+ * store's registered selector map, so a plain helper living there would also become a callable
+ * `select(STORE_NAME).reshapePaletteRows()` — which `@wordpress/data` would invoke with `state` as
+ * the first argument instead of `rows`, throwing the moment anything called it that way.
+ *
+ * @param {Array<Object>} rows The flat embedded-array rows.
+ *
+ * @since TBD
+ *
+ * @return {{defaultId: string, currentId: string, palettes: Array<Object>, userCreated: Array<string>}}
+ */
+export function reshapePaletteRows(rows) {
+	return {
+		defaultId: rows.find((row) => row.is_default)?.id ?? '',
+		currentId: rows.find((row) => row.is_current)?.id ?? '',
+		palettes: rows.map((row) => ({
+			id: row.id,
+			label: row.label,
+			groups: row._embedded?.self?.[0]?.groups ?? [],
+		})),
+		userCreated: rows.filter((row) => row.user_created).map((row) => row.id),
+	};
+}
+
+/**
  * Map a palette effective view to the data half of `SwatchGrid`'s `groups` prop. Pure data only —
  * no JSX: the screen supplies each card's `preview` node and drag flags itself, because a React
  * element in a helper would make this untestable under the pure-function policy.
@@ -35,9 +79,9 @@ const FALLBACK_SWATCH_VALUE = '#000000';
  *
  * @since TBD
  *
- * @return {Array<Object>} `[{ id, label, items: [{ id, name, subLine, value, overridden }] }]` —
- *         `id` is the swatch token dot-path (stable, unique per palette, and what `?kb-item=`
- *         carries), `subLine` the raw `$value`.
+ * @return {Array<Object>} `[{ id, label, pendingDelete, items: [{ id, name, subLine, value,
+ *         overridden, pendingDelete }] }]` — `id` is the swatch token dot-path (stable, unique per
+ *         palette, and what `?kb-item=` carries), `subLine` the raw `$value`.
  */
 export function mapPaletteToSwatchGroups(palette) {
 	if (!palette || !Array.isArray(palette.groups)) {
@@ -47,12 +91,14 @@ export function mapPaletteToSwatchGroups(palette) {
 	return palette.groups.map((group) => ({
 		id: group.id,
 		label: group.label,
+		pendingDelete: Boolean(group.pendingDelete),
 		items: (Array.isArray(group.swatches) ? group.swatches : []).map((swatch) => ({
 			id: swatch.token,
 			name: swatch.label,
 			subLine: swatch.$value,
 			value: swatch.$value,
 			overridden: Boolean(swatch.overridden),
+			pendingDelete: Boolean(swatch.pendingDelete),
 		})),
 	}));
 }
@@ -123,15 +169,14 @@ export function isDefaultPalette(listing, id) {
 
 /**
  * Resolve which palette is being edited from the route's generic `scope` arg: `scope` itself when
- * it names a palette in the listing, otherwise the listing's `$current` palette. This is the one
- * fallback rule `hooks/use-palettes.js` needs in two places — once while re-deriving the id to
- * fetch a fresh view for inside `reload()`, and once for the value it hands back to its callers —
- * so it lives here as a single pure rule instead of two copies that could drift apart.
+ * it names a palette in the listing, otherwise the listing's `$current` palette. `hooks/use-palettes.js`
+ * derives `editingId` from this on every render, straight from the already-loaded listing — there is
+ * no separate fetch to re-derive an id for, so this lives here as the one pure rule instead of being
+ * duplicated inline.
  *
  * Also the self-heal for a stale or hand-edited `scope`: a palette id that no longer exists (e.g.
  * the one just deleted, or a copied-and-pasted deep link) falls back to `$current` rather than
- * resolving to nothing, mirroring the fallback `reload()` already applied to its own `editingId`
- * state before that state was replaced by this derivation.
+ * resolving to nothing.
  *
  * @param {string} scope   The route's `scope` value (a palette id, or '').
  * @param {Object} listing The palette listing (`{ currentId, palettes }`).
@@ -474,4 +519,102 @@ export function removeGroupFromGroups(groups, groupId) {
 	}
 
 	return rows.filter((group) => group.id !== groupId);
+}
+
+/**
+ * Overlay pending optimistic edits onto a palette's effective view: a patched swatch label/value
+ * merged in, a swatch or group marked for deletion flagged `pendingDelete: true` (never filtered
+ * out — the caller renders it dimmed until the real response confirms it is gone), and a
+ * not-yet-confirmed swatch/group addition appended. Pure — `hooks/use-palettes.js` calls this to
+ * compute the palette actually rendered, layered on top of whatever the store's real listing
+ * currently holds.
+ *
+ * @param {?Object} palette The palette's effective view (`{ id, label, groups }`), or null.
+ * @param {Object}  overlay The optimistic overlay for this palette's listing key — see
+ *                          `store/constants.js`'s `EMPTY_OPTIMISTIC_SWATCH_EDIT`.
+ *
+ * @since TBD
+ *
+ * @return {?Object} The palette with every pending optimistic edit applied, or the original
+ *                    `palette` unchanged when nothing is pending.
+ */
+export function applyOptimisticOverlay(palette, overlay) {
+	if (!palette) {
+		return palette;
+	}
+
+	const hasNothingPending =
+		Object.keys(overlay.patches).length === 0 &&
+		overlay.deletedTokens.length === 0 &&
+		overlay.deletedGroups.length === 0 &&
+		overlay.addedSwatches.length === 0 &&
+		overlay.addedGroups.length === 0;
+
+	if (hasNothingPending) {
+		return palette;
+	}
+
+	// A swatch/group the real listing already carries (the write's `onReceive` landed) must not
+	// also be appended from the overlay — the overlay is only cleared in the caller's `.finally()`,
+	// well after `onReceive`, so without this de-dupe the row renders twice for that window.
+	const realSwatchTokens = new Set(palette.groups.flatMap((group) => group.swatches.map((swatch) => swatch.token)));
+	const realGroupIds = new Set(palette.groups.map((group) => group.id));
+
+	const groups = palette.groups.map((group) => {
+		const pendingGroupDelete = overlay.deletedGroups.includes(group.id);
+
+		const swatches = group.swatches.map((swatch) => ({
+			...swatch,
+			...(overlay.patches[swatch.token] ?? {}),
+			pendingDelete: pendingGroupDelete || overlay.deletedTokens.includes(swatch.token),
+		}));
+
+		const additions = overlay.addedSwatches
+			.filter((added) => added.groupId === group.id && !realSwatchTokens.has(added.token))
+			.map(({ groupId, ...swatch }) => ({ ...swatch, pendingDelete: false }));
+
+		return { ...group, pendingDelete: pendingGroupDelete, swatches: [...swatches, ...additions] };
+	});
+
+	const addedGroups = overlay.addedGroups
+		.filter((group) => !realGroupIds.has(group.id))
+		.map((group) => ({
+			...group,
+			pendingDelete: false,
+			swatches: group.swatches.map((swatch) => ({ ...swatch, pendingDelete: false })),
+		}));
+
+	return { ...palette, groups: [...groups, ...addedGroups] };
+}
+
+/**
+ * Validate a typed color-group label and resolve its slug: empty after slugifying, or a slug the
+ * palette already has a group for, is invalid. Called by `hooks/use-palettes.js`'s `addGroup`, to
+ * decide — synchronously and before firing anything — whether the optimistic addition and the
+ * modal's immediate close should even happen. `helpers/palette-flows.js`'s `addGroupFlow` re-checks
+ * the same two cases on its own, inline, for a caller that reaches it without going through that
+ * hook — it can't call this function directly, since by the time it validates it already has a
+ * resolved `groupId` and a freshly-fetched `groups` array rather than the raw typed `label` and a
+ * (possibly stale) client-cached `palette` this function expects.
+ *
+ * @param {string}  label   The typed group label.
+ * @param {?Object} palette The palette being edited's effective view, for the duplicate check.
+ *
+ * @since TBD
+ *
+ * @return {{groupId: string, error: null}|{groupId: null, error: string}} The slugified id on
+ *          success, or a user-facing error message on failure.
+ */
+export function validateNewGroupLabel(label, palette) {
+	const groupId = slugifyPaletteLabel(label);
+
+	if (!groupId) {
+		return { groupId: null, error: __('Enter a color group name.', 'kadence-blocks') };
+	}
+
+	if ((palette?.groups ?? []).some((group) => group.id === groupId)) {
+		return { groupId: null, error: __('A color group with that name already exists.', 'kadence-blocks') };
+	}
+
+	return { groupId, error: null };
 }

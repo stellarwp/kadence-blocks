@@ -294,7 +294,16 @@ export function deleteLibraryFlow({
 	return activation
 		.then(() => deleteLibrary(slug))
 		.then(() => refreshFeed(nextSlug))
-		.then(() => loadLibraries())
+		.then(() =>
+			// A failed refetch here must not undo a delete that already succeeded — by this point
+			// `deleteLibrary(slug)` has already resolved. A stale list is already surfaced
+			// separately, via `getResolutionError('getLibraries', [])` feeding `openError` in
+			// `use-libraries.js`, which the header's own library dropdown renders. Letting this
+			// rejection propagate into the `.catch()` below would report "delete failed" for a
+			// delete that worked, leaving the modal open and a retry 404ing against the row that is
+			// already gone.
+			loadLibraries().catch(() => {})
+		)
 		.then(() => onBusy(false))
 		.catch((err) => {
 			onError({ message: errorMessage(err) });

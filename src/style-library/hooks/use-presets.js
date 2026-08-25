@@ -1,8 +1,7 @@
 /**
- * Fetch-and-bind hook for a block's preset collection — the `use-libraries.js` shape (a state slot
- * plus an effect that re-fetches), not `useScaleScreen`'s live-feed-in-hand shape, because presets
- * have no counterpart in the localized feed: there is no group to map, so the payload has to be
- * fetched on its own.
+ * Fetch-and-bind hook for a block's preset collection — reads it from the Style Library store, so a
+ * screen and its settings panel calling this hook for the same block/library share one underlying
+ * fetch instead of each running its own.
  *
  * Takes the block name as an argument (default the Button block) so a later preset screen built on
  * the same contract can reuse this hook unchanged.
@@ -11,24 +10,25 @@
 /**
  * WordPress dependencies
  */
-import { useEffect, useMemo, useRef, useState } from '@wordpress/element';
+import { useMemo } from '@wordpress/element';
+import { useSelect } from '@wordpress/data';
 
 /**
  * Internal dependencies
  */
-import { fetchBlockPresets } from '../api/client';
 import { presetInitialValues, presetRows } from '../helpers/presets';
 import { useBreakpoint } from '../../token-controls/context/breakpoint';
+import { STORE_NAME } from '../store';
 
 /**
- * Fetch a block's preset collection and bind it to row view models.
+ * Read a block's preset collection from the store and bind it to row view models.
  *
- * Re-fetches whenever the library slug or version changes — the version bumps on every preset
- * write's `refreshFeed`, which is the cross-slot invalidation signal a sibling settings panel's
- * save relies on to make this hook's rows current again.
+ * A screen and its settings panel are separate mounts of this hook (see `usePresetScreen` and
+ * `PresetSidebar`), and both read the same selector call when they share a `namespace`/`block`/
+ * `slug`, so only one of them ever triggers the resolver.
  *
  * @param {Object} library The design-tokens feed hook's return value (`useDesignTokensFeed()`).
- * @param {string} block   The block name whose presets are fetched.
+ * @param {Object} preset  The block's preset config.
  *
  * @since TBD
  *
@@ -38,61 +38,45 @@ export function usePresets(library, preset) {
 	// See `use-preset-screen.js`: `properties` is a throwing getter on the preset configs, so it is
 	// read where it is used rather than destructured at render scope.
 	const { block, preview } = preset;
-	const [payload, setPayload] = useState(null);
-	const [isLoading, setIsLoading] = useState(true);
-	const [loadError, setLoadError] = useState(null);
 
 	const namespace = library?.rest?.namespace;
 	const slug = library?.slug;
-	const version = library?.version;
 
-	// Dropped the moment the library changes, not when its replacement arrives: the refetch below
-	// keeps the previous payload on purpose (a version bump after a write must not blank the list),
-	// but across libraries that same payload is another library's data. Callers key their panels on
-	// the preset id alone, so leaving it in place lets a panel opened on the old library keep
-	// editing its draft under the new one. Assigning during render rather than in an effect avoids
-	// a commit that would show the stale rows first.
-	const slugRef = useRef(slug);
+	const { payload, isLoading, loadError } = useSelect(
+		(select) => {
+			const currentPayload =
+				namespace && block && slug ? select(STORE_NAME).getBlockPresets(namespace, block, slug) : null;
 
-	if (slugRef.current !== slug) {
-		slugRef.current = slug;
-		setPayload(null);
-		setIsLoading(true);
-		setLoadError(null);
-	}
+			// `hasFinishedResolution`, not `isResolving`: `@wordpress/data` schedules a resolver's
+			// dispatch via a `setTimeout(fn, 0)`, so on the very first render for a given
+			// `(namespace, block, slug)` tuple `isResolving` can still be `false` — the resolver hasn't
+			// been kicked off yet — even though nothing has loaded. `isLoading` below would then read
+			// `false` for that one frame, with `payload` still `null`; a caller that self-heals a
+			// `?kb-item=` deep link off "not loading and no matching preset" (see `use-preset-screen.js`)
+			// would read that frame as "this preset was deleted" and rewrite the route away from a
+			// perfectly valid link before its fetch even started. `hasFinishedResolution` stays `false`
+			// for that same render, so `isLoading` correctly starts `true` instead.
+			const hasFinishedPresets =
+				!(namespace && block && slug) ||
+				select(STORE_NAME).hasFinishedResolution('getBlockPresets', [namespace, block, slug]);
 
-	useEffect(() => {
-		if (!namespace || !slug) {
-			return;
-		}
-
-		let cancelled = false;
-
-		setIsLoading(true);
-		setLoadError(null);
-
-		fetchBlockPresets(namespace, block, slug)
-			.then((result) => {
-				if (!cancelled) {
-					setPayload(result);
-				}
-			})
-			.catch((err) => {
-				if (!cancelled) {
-					setLoadError(err);
-				}
-			})
-			.finally(() => {
-				if (!cancelled) {
-					setIsLoading(false);
-				}
-			});
-
-		return () => {
-			cancelled = true;
-		};
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [namespace, block, slug, version]);
+			return {
+				payload: currentPayload,
+				// Gated on `!currentPayload`, not `hasFinishedPresets` alone: a write's wrapped
+				// `refreshFeed` (`use-preset-screen.js`) invalidates and re-resolves this same selector,
+				// which flips `hasFinishedPresets` back to `false` for the duration of that background
+				// re-fetch too. Once the presets list has loaded once, the store keeps serving that
+				// payload while it revalidates, so there is data to keep rendering — a loading state
+				// should only ever show up before the first payload lands.
+				isLoading: !hasFinishedPresets && !currentPayload,
+				loadError:
+					namespace && block && slug
+						? select(STORE_NAME).getResolutionError('getBlockPresets', [namespace, block, slug])
+						: null,
+			};
+		},
+		[namespace, block, slug]
+	);
 
 	// The row previews resolve at the active breakpoint, so switching the panel to Tablet re-renders
 	// every chip with its tablet value rather than leaving them all showing desktop.

@@ -1,6 +1,7 @@
 /* eslint-env jest */
 import {
 	applyRowOrder,
+	applyOptimisticScaleOverlay,
 	customScaleTokenId,
 	nextScaleSlug,
 	overlayDraft,
@@ -211,5 +212,155 @@ describe('overlayDraft', () => {
 
 		expect(next[0].label).toBe('A edited');
 		expect(next[0].value).toBe('1px');
+	});
+});
+
+describe('applyOptimisticScaleOverlay', () => {
+	const rows = [
+		{ id: 'primitive.dimension.radius.sm', label: 'Small', value: '0.125rem', userCreated: false },
+		{ id: 'primitive.dimension.radius.md', label: 'Medium', value: '0.25rem', userCreated: false },
+		{ id: 'primitive.dimension.custom.radius-2', label: 'Custom', value: '0.5rem', userCreated: true },
+	];
+
+	it('returns the same reference for an empty overlay', () => {
+		const overlay = { patches: {}, deletedTokens: [], addedTokens: [] };
+
+		expect(applyOptimisticScaleOverlay(rows, overlay)).toBe(rows);
+	});
+
+	it('applies patches to their matching rows', () => {
+		const overlay = {
+			patches: {
+				'primitive.dimension.radius.sm': { label: 'Small Updated', value: '0.15rem' },
+				'primitive.dimension.radius.md': { value: '0.3rem' },
+			},
+			deletedTokens: [],
+			addedTokens: [],
+		};
+
+		const next = applyOptimisticScaleOverlay(rows, overlay);
+
+		expect(next[0]).toEqual({
+			id: 'primitive.dimension.radius.sm',
+			label: 'Small Updated',
+			value: '0.15rem',
+			userCreated: false,
+			pendingDelete: false,
+		});
+		expect(next[1]).toEqual({
+			id: 'primitive.dimension.radius.md',
+			label: 'Medium',
+			value: '0.3rem',
+			userCreated: false,
+			pendingDelete: false,
+		});
+		expect(next[2]).toEqual({ ...rows[2], pendingDelete: false });
+	});
+
+	it('marks deleted tokens with pendingDelete: true', () => {
+		const overlay = {
+			patches: {},
+			deletedTokens: ['primitive.dimension.custom.radius-2', 'primitive.dimension.radius.sm'],
+			addedTokens: [],
+		};
+
+		const next = applyOptimisticScaleOverlay(rows, overlay);
+
+		expect(next[0].pendingDelete).toBe(true);
+		expect(next[1].pendingDelete).toBe(false);
+		expect(next[2].pendingDelete).toBe(true);
+	});
+
+	it('applies both patches and deletions together', () => {
+		const overlay = {
+			patches: {
+				'primitive.dimension.radius.sm': { label: 'Patched', value: '0.2rem' },
+			},
+			deletedTokens: ['primitive.dimension.radius.md'],
+			addedTokens: [],
+		};
+
+		const next = applyOptimisticScaleOverlay(rows, overlay);
+
+		expect(next[0]).toEqual({
+			id: 'primitive.dimension.radius.sm',
+			label: 'Patched',
+			value: '0.2rem',
+			userCreated: false,
+			pendingDelete: false,
+		});
+		expect(next[1]).toEqual({
+			id: 'primitive.dimension.radius.md',
+			label: 'Medium',
+			value: '0.25rem',
+			userCreated: false,
+			pendingDelete: true,
+		});
+		expect(next[2]).toEqual({
+			id: 'primitive.dimension.custom.radius-2',
+			label: 'Custom',
+			value: '0.5rem',
+			userCreated: true,
+			pendingDelete: false,
+		});
+	});
+
+	it('only patches rows that are in the patches object', () => {
+		const overlay = {
+			patches: {
+				'primitive.dimension.radius.sm': { label: 'Updated' },
+			},
+			deletedTokens: [],
+			addedTokens: [],
+		};
+
+		const next = applyOptimisticScaleOverlay(rows, overlay);
+
+		expect(next[0]).toEqual({
+			id: 'primitive.dimension.radius.sm',
+			label: 'Updated',
+			value: '0.125rem',
+			userCreated: false,
+			pendingDelete: false,
+		});
+		expect(next[1]).toEqual({ ...rows[1], pendingDelete: false });
+		expect(next[2]).toEqual({ ...rows[2], pendingDelete: false });
+	});
+
+	it('appends a pending addition, already in row shape, with pendingDelete: false', () => {
+		const overlay = {
+			patches: {},
+			deletedTokens: [],
+			addedTokens: [
+				{ id: 'primitive.dimension.custom.radius-3', label: 'New Radius', value: '0.5rem', userCreated: true },
+			],
+		};
+
+		const next = applyOptimisticScaleOverlay(rows, overlay);
+
+		expect(next).toHaveLength(4);
+		expect(next[3]).toEqual({
+			id: 'primitive.dimension.custom.radius-3',
+			label: 'New Radius',
+			value: '0.5rem',
+			userCreated: true,
+			pendingDelete: false,
+		});
+	});
+
+	it('does not append a pending addition the real rows already carry', () => {
+		// The write's `refreshFeed` landed before the caller's `.finally()` cleared the overlay —
+		// without this de-dupe the row would render twice for that window.
+		const overlay = {
+			patches: {},
+			deletedTokens: [],
+			addedTokens: [
+				{ id: 'primitive.dimension.custom.radius-2', label: 'Custom', value: '0.5rem', userCreated: true },
+			],
+		};
+
+		const next = applyOptimisticScaleOverlay(rows, overlay);
+
+		expect(next).toHaveLength(3);
 	});
 });

@@ -30,7 +30,8 @@ import './SettingsPanel.scss';
  *                                              fields that belong to the item rather than to one tab
  *                                              (a preset's name is the same on Normal and Hover).
  * @param {JSX.Element}    props.children       The field area content (typically a `SettingsForm`).
- * @param {?Function}      [props.onDelete]     Footer Delete handler; null hides the button (a non-deletable item).
+ * @param {?Function}      [props.onDelete]     Footer destructive-action handler; null hides the button (a
+ *                                                non-deletable item).
  * @param {?Function}      [props.onSave]       Footer Save handler; null hides the button.
  * @param {boolean}        [props.isDirty]      Enables Save when true.
  * @param {boolean}        [props.isBusy]       Disables both footer buttons while a write is in flight. Optional,
@@ -38,8 +39,15 @@ import './SettingsPanel.scss';
  * @param {boolean}        [props.isSaving]     Shows the Save button's busy animation and a "Saving…" label.
  *                                                Optional, defaults to false; distinct from `isBusy` so a delete in
  *                                                flight does not make Save look like it is saving.
- * @param {boolean}        [props.isDeleting]   Shows the Delete button's busy animation and a "Deleting…" label.
+ * @param {boolean}        [props.isDeleting]   Shows the destructive button's busy animation and its busy label.
  *                                                Optional, defaults to false, for the same reason as `isSaving`.
+ * @param {string}         [props.deleteLabel]      Footer destructive button's idle label. Optional, defaults to
+ *                                                "Delete" — a caller whose destructive action is a revert rather
+ *                                                than a removal (e.g. resetting a palette swatch's override) passes
+ *                                                "Reset" here instead; the button itself and its `onDelete`/`isBusy`
+ *                                                wiring are unchanged either way.
+ * @param {string}         [props.deleteBusyLabel]  Footer destructive button's busy label. Optional, defaults to
+ *                                                "Deleting…"; pairs with `deleteLabel`.
  *
  * @since TBD
  *
@@ -58,6 +66,8 @@ export function SettingsPanel({
 	isBusy = false,
 	isSaving = false,
 	isDeleting = false,
+	deleteLabel = __('Delete', 'kadence-blocks'),
+	deleteBusyLabel = __('Deleting…', 'kadence-blocks'),
 }) {
 	const fieldArea = <div className="kadence-blocks-style-library__settings-panel-fields">{children}</div>;
 
@@ -92,7 +102,7 @@ export function SettingsPanel({
 			<div className="kadence-blocks-style-library__settings-panel-footer">
 				{onDelete && (
 					<Button variant="secondary" isDestructive isBusy={isDeleting} disabled={isBusy} onClick={onDelete}>
-						{isDeleting ? __('Deleting…', 'kadence-blocks') : __('Delete', 'kadence-blocks')}
+						{isDeleting ? deleteBusyLabel : deleteLabel}
 					</Button>
 				)}
 				{onSave && (

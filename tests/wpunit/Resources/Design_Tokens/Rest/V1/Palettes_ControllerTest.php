@@ -4,6 +4,7 @@
 namespace Tests\wpunit\Resources\Design_Tokens\Rest\V1;
 
 use Generator;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Palettes;
 use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Palettes_Controller;
 use Tests\Support\Classes\TestCase;
@@ -30,6 +31,11 @@ final class Palettes_ControllerTest extends TestCase {
 	private Palettes_Controller $controller;
 
 	/**
+	 * @var Token_Store
+	 */
+	private Token_Store $store;
+
+	/**
 	 * @return void
 	 */
 	protected function setUp(): void {
@@ -37,6 +43,7 @@ final class Palettes_ControllerTest extends TestCase {
 
 		$this->palettes   = $this->container->get( Effective_Palettes::class );
 		$this->controller = $this->container->get( Palettes_Controller::class );
+		$this->store      = $this->container->get( Token_Store::class );
 
 		wp_set_current_user( $this->factory()->user->create( [ 'role' => 'administrator' ] ) );
 	}
@@ -51,8 +58,9 @@ final class Palettes_ControllerTest extends TestCase {
 	}
 
 	/**
-	 * The listing returns the library's $default / $current pointers and each palette's id + label — the shipped
-	 * `default` plus a stored non-default palette.
+	 * The listing returns a flat row per palette carrying its id, label, and `is_default` / `is_current` /
+	 * `user_created` flags, each with an embeddable `self` link — the shipped `default` plus a stored
+	 * non-default palette.
 	 *
 	 * @return void
 	 */
@@ -61,12 +69,69 @@ final class Palettes_ControllerTest extends TestCase {
 
 		$data = $this->controller->get_items( new WP_REST_Request( WP_REST_Server::READABLE ) )->get_data();
 
-		$this->assertSame( 'default', $data['$default'] );
-		$this->assertSame( 'default', $data['$current'] );
-
-		$ids = array_column( $data['palettes'], 'id' );
+		$ids = array_column( $data, 'id' );
 		$this->assertContains( 'default', $ids );
 		$this->assertContains( 'custom', $ids );
+
+		$default_row = $data[ array_search( 'default', $ids, true ) ];
+		$custom_row  = $data[ array_search( 'custom', $ids, true ) ];
+
+		$this->assertTrue( $default_row['is_default'] );
+		$this->assertTrue( $default_row['is_current'] );
+		$this->assertFalse( $default_row['user_created'] );
+
+		$this->assertFalse( $custom_row['is_default'] );
+		$this->assertFalse( $custom_row['is_current'] );
+		$this->assertTrue( $custom_row['user_created'] );
+		$this->assertSame( 'Custom', $custom_row['label'] );
+
+		$this->assertArrayHasKey( 'self', $default_row['_links'] );
+		$this->assertTrue( $default_row['_links']['self'][0]['embeddable'] );
+	}
+
+	/**
+	 * `_embed` resolves each row's `self` link into its full `effective_view()` — the whole point of
+	 * flattening the listing in the first place.
+	 *
+	 * @return void
+	 */
+	public function testGetItemsEmbedsEffectiveViewPerRow(): void {
+		$this->create_custom_palette();
+
+		$request = new WP_REST_Request( WP_REST_Server::READABLE, '/kb-design-tokens/v1/palettes' );
+		$request->set_param( 'library', 'default' );
+
+		$response = rest_get_server()->dispatch( $request );
+		$resolved = rest_get_server()->response_to_data( $response, true );
+
+		self::assertArrayHasKey( '_embedded', $resolved[0] );
+		self::assertArrayHasKey( 'groups', $resolved[0]['_embedded']['self'][0] );
+	}
+
+	/**
+	 * A listing requested for a library other than the active one carries that same library on each
+	 * row's `self` link, and `_embed` resolves against it — not the active library. Without the
+	 * `library` query arg on the link, `_embed`'s internal sub-request would silently fall back to the
+	 * active library and return the wrong palette's data.
+	 *
+	 * @return void
+	 */
+	public function testGetItemsSelfLinkTargetsTheRequestedLibraryNotTheActiveOne(): void {
+		$this->store->save_document( '{}', 'brand-b' );
+		$this->controller->update_item( $this->write_request( 'custom', 'Brand B Custom', '#00FF00', 'brand-b' ) );
+
+		$request = new WP_REST_Request( WP_REST_Server::READABLE, '/kb-design-tokens/v1/palettes' );
+		$request->set_param( 'library', 'brand-b' );
+		$request->set_param( '_embed', true );
+
+		$response = rest_get_server()->dispatch( $request );
+		$resolved = rest_get_server()->response_to_data( $response, true );
+
+		$ids        = array_column( $resolved, 'id' );
+		$custom_row = $resolved[ array_search( 'custom', $ids, true ) ];
+
+		$this->assertStringContainsString( 'library=brand-b', $custom_row['_links']['self'][0]['href'] );
+		$this->assertSame( 'Brand B Custom', $custom_row['_embedded']['self'][0]['label'] );
 	}
 
 	/**
@@ -110,7 +175,30 @@ final class Palettes_ControllerTest extends TestCase {
 	}
 
 	/**
-	 * Creating a well-formed palette persists it so a later read and the effective reader both see it.
+	 * Activating a palette returns the full embedded listing, not just the confirmed id — this is what
+	 * lets the frontend skip a follow-up fetch after activation.
+	 *
+	 * @return void
+	 */
+	public function testSetCurrentReturnsTheFullEmbeddedListing(): void {
+		$this->create_custom_palette();
+
+		$request = new WP_REST_Request( 'PUT' );
+		$request->set_param( 'current', 'custom' );
+
+		$data = $this->controller->set_current( $request )->get_data();
+
+		$custom_row = current( array_filter( $data, static fn( array $row ) => $row['id'] === 'custom' ) );
+
+		$this->assertNotFalse( $custom_row, 'The activated palette is present in the response.' );
+		$this->assertTrue( $custom_row['is_current'], 'The activated palette is flagged current in the same response.' );
+		$this->assertArrayHasKey( 'groups', $custom_row['_embedded']['self'][0], 'The response carries full palette detail, not just the pointer.' );
+	}
+
+	/**
+	 * Creating a well-formed palette persists it so a later read and the effective reader both see it, and
+	 * the write response body itself carries the fresh, fully-embedded listing — the same shape
+	 * `GET /palettes?_embed` produces — so the caller never needs a follow-up GET.
 	 *
 	 * @return void
 	 */
@@ -122,6 +210,29 @@ final class Palettes_ControllerTest extends TestCase {
 
 		$this->assertContains( 'ocean', $this->palettes->palette_ids() );
 		$this->assertSame( '#0000ff', $this->palettes->swatch_values( 'ocean' )['primitive.color.brand.primary'] );
+
+		$this->assertEmbeddedListingShape( $response->get_data() );
+
+		$ids = array_column( $response->get_data(), 'id' );
+		$this->assertContains( 'ocean', $ids );
+	}
+
+	/**
+	 * Renaming a palette (an `update_item` write against its existing id with a new label) responds with the
+	 * fresh embedded listing, so the caller sees the renamed label without a follow-up GET.
+	 *
+	 * @return void
+	 */
+	public function testUpdateItemRenameResponseCarriesTheEmbeddedListing(): void {
+		$this->controller->update_item( $this->write_request( 'ocean', 'Ocean', '#0000ff' ) );
+
+		$response = $this->controller->update_item( $this->write_request( 'ocean', 'Sea', '#0000ff' ) );
+
+		$this->assertEmbeddedListingShape( $response->get_data() );
+
+		$ids       = array_column( $response->get_data(), 'id' );
+		$ocean_row = $response->get_data()[ array_search( 'ocean', $ids, true ) ];
+		$this->assertSame( 'Sea', $ocean_row['label'] );
 	}
 
 	/**
@@ -432,7 +543,8 @@ final class Palettes_ControllerTest extends TestCase {
 	}
 
 	/**
-	 * Deleting a user-created palette removes it from the listing, since the baseline has no definition to
+	 * Deleting a user-created palette removes it from the listing and responds with the fresh embedded
+	 * listing (the deleted palette no longer among its rows), since the baseline has no definition to
 	 * fall back to.
 	 *
 	 * @return void
@@ -443,9 +555,11 @@ final class Palettes_ControllerTest extends TestCase {
 
 		$delete = new WP_REST_Request( 'DELETE' );
 		$delete->set_param( 'id', 'ocean' );
-		$this->controller->delete_item( $delete );
-
+		$response = $this->controller->delete_item( $delete );
 		$this->assertNotContains( 'ocean', $this->palettes->palette_ids() );
+
+		$this->assertEmbeddedListingShape( $response->get_data() );
+		$this->assertNotContains( 'ocean', array_column( $response->get_data(), 'id' ) );
 	}
 
 	/**
@@ -560,7 +674,8 @@ final class Palettes_ControllerTest extends TestCase {
 
 	/**
 	 * Setting one swatch through the sub-route stores just that token and leaves the palette's other swatches
-	 * intact — the caller never sends the full palette, and an untouched token is unaffected.
+	 * intact — the caller never sends the full palette, and an untouched token is unaffected. The write response
+	 * body carries the fresh embedded listing.
 	 *
 	 * @return void
 	 */
@@ -576,6 +691,8 @@ final class Palettes_ControllerTest extends TestCase {
 		$stored = $this->palettes->swatch_values( 'ocean' );
 		$this->assertSame( '#00ff00', $stored['primitive.color.brand.secondary'], 'The set swatch is stored.' );
 		$this->assertSame( '#0000ff', $stored['primitive.color.brand.primary'], 'The untouched swatch is intact.' );
+
+		$this->assertEmbeddedListingShape( $response->get_data() );
 	}
 
 	/**
@@ -624,6 +741,131 @@ final class Palettes_ControllerTest extends TestCase {
 				$this->controller->update_swatch(
 					$this->swatch_request( 'PUT', 'nope', 'primitive.color.brand.primary', '#0000ff' )
 				) 
+			)
+		);
+	}
+
+	/**
+	 * A label-only write updates the swatch's structural label on the default palette, leaving its value
+	 * untouched, and the write response body carries the fresh embedded listing.
+	 *
+	 * @return void
+	 */
+	public function testUpdateSwatchAcceptsALabelOnlyWrite(): void {
+		$before = $this->palettes->swatch_values( 'default' )['primitive.color.brand.primary'];
+
+		$response = $this->controller->update_swatch(
+			$this->swatch_request( 'PUT', 'default', 'primitive.color.brand.primary', null, 'Brand One' )
+		);
+
+		$this->assertSame( $before, $this->palettes->swatch_values( 'default' )['primitive.color.brand.primary'] );
+		$this->assertSame( 'Brand One', $this->swatch_label( 'default', 'primitive.color.brand.primary' ) );
+
+		$this->assertEmbeddedListingShape( $response->get_data() );
+	}
+
+	/**
+	 * A label-only write against a stored swatch whose token is not a registered color is rejected —
+	 * the label-only path must run the same registry guard a value write runs, using the token's current
+	 * stored value, so a stale or non-color token cannot be renamed without ever being validated.
+	 *
+	 * @return void
+	 */
+	public function testUpdateSwatchRejectsALabelOnlyWriteForANonColorToken(): void {
+		// Seeded directly through the store, bypassing the normal write path's own guard, since no
+		// legitimate write can ever get a non-color token into a palette node in the first place.
+		$this->store->save_document(
+			wp_json_encode(
+				[
+					'$extensions' => [
+						'com.kadence.designTokens' => [
+							'colorPalettes' => [
+								'default' => [
+									'groups' => [
+										[
+											'id'       => 'swatch',
+											'label'    => 'swatch',
+											'swatches' => [
+												[
+													'token'  => 'primitive.dimension.spacing.md',
+													'label'  => 'Spacing Md',
+													'$value' => '8px',
+												],
+											],
+										],
+									],
+								],
+							],
+						],
+					],
+				]
+			),
+			'default'
+		);
+
+		$this->assertSame(
+			WP_Http::UNPROCESSABLE_ENTITY,
+			$this->status_of(
+				$this->controller->update_swatch(
+					$this->swatch_request( 'PUT', 'default', 'primitive.dimension.spacing.md', null, 'Renamed' )
+				)
+			)
+		);
+
+		$this->assertSame( 'Spacing Md', $this->swatch_label( 'default', 'primitive.dimension.spacing.md' ), 'The label is left untouched.' );
+	}
+
+	/**
+	 * An empty-string label is rejected — a swatch's label is structural and shared library-wide, so an
+	 * empty write would silently wipe its display name for every palette that inherits it.
+	 *
+	 * @return void
+	 */
+	public function testUpdateSwatchRejectsAnEmptyLabel(): void {
+		$before = $this->swatch_label( 'default', 'primitive.color.brand.primary' );
+
+		$this->assertSame(
+			WP_Http::UNPROCESSABLE_ENTITY,
+			$this->status_of(
+				$this->controller->update_swatch(
+					$this->swatch_request( 'PUT', 'default', 'primitive.color.brand.primary', null, '' )
+				)
+			)
+		);
+
+		$this->assertSame( $before, $this->swatch_label( 'default', 'primitive.color.brand.primary' ), 'The label is left untouched.' );
+	}
+
+	/**
+	 * A label write against a non-default palette id is rejected — labels are structural, not per-palette.
+	 *
+	 * @return void
+	 */
+	public function testUpdateSwatchRejectsALabelOnANonDefaultPalette(): void {
+		$this->create_custom_palette();
+
+		$this->assertSame(
+			WP_Http::UNPROCESSABLE_ENTITY,
+			$this->status_of(
+				$this->controller->update_swatch(
+					$this->swatch_request( 'PUT', 'custom', 'primitive.color.brand.primary', null, 'Brand One' )
+				)
+			)
+		);
+	}
+
+	/**
+	 * A request with neither value nor label is rejected.
+	 *
+	 * @return void
+	 */
+	public function testUpdateSwatchRequiresAtLeastOneField(): void {
+		$this->assertSame(
+			WP_Http::UNPROCESSABLE_ENTITY,
+			$this->status_of(
+				$this->controller->update_swatch(
+					$this->swatch_request( 'PUT', 'default', 'primitive.color.brand.primary' )
+				)
 			)
 		);
 	}
@@ -938,16 +1180,18 @@ final class Palettes_ControllerTest extends TestCase {
 	}
 
 	/**
-	 * A single-swatch request for the sub-route: the palette id, the token dot-path, and (for a write) the value.
+	 * A single-swatch request for the sub-route: the palette id, the token dot-path, and (for a write) the value
+	 * and/or the structural label.
 	 *
 	 * @param string      $method The HTTP method.
 	 * @param string      $id     The palette id.
 	 * @param string      $token  The swatch token dot-path.
 	 * @param string|null $value  The swatch value, for a write.
+	 * @param string|null $label  The swatch's structural label, for a write.
 	 *
 	 * @return WP_REST_Request
 	 */
-	private function swatch_request( string $method, string $id, string $token, ?string $value = null ): WP_REST_Request {
+	private function swatch_request( string $method, string $id, string $token, ?string $value = null, ?string $label = null ): WP_REST_Request {
 		$request = new WP_REST_Request( $method );
 		$request->set_param( 'id', $id );
 		$request->set_param( 'token', $token );
@@ -956,19 +1200,24 @@ final class Palettes_ControllerTest extends TestCase {
 			$request->set_param( '$value', $value );
 		}
 
+		if ( $label !== null ) {
+			$request->set_param( 'label', $label );
+		}
+
 		return $request;
 	}
 
 	/**
 	 * A palette write request with a single one-swatch Accent group.
 	 *
-	 * @param string $id    The palette id.
-	 * @param string $label The palette label.
-	 * @param string $value The single swatch's $value.
+	 * @param string      $id      The palette id.
+	 * @param string      $label   The palette label.
+	 * @param string      $value   The single swatch's $value.
+	 * @param string|null $library The library to target, when the write is not for the active library.
 	 *
 	 * @return WP_REST_Request
 	 */
-	private function write_request( string $id, string $label, string $value ): WP_REST_Request {
+	private function write_request( string $id, string $label, string $value, ?string $library = null ): WP_REST_Request {
 		$request = new WP_REST_Request( 'PUT' );
 		$request->set_param( 'id', $id );
 		$request->set_param( 'label', $label );
@@ -989,7 +1238,35 @@ final class Palettes_ControllerTest extends TestCase {
 			]
 		);
 
+		if ( $library !== null ) {
+			$request->set_param( 'library', $library );
+		}
+
 		return $request;
+	}
+
+	/**
+	 * Assert a write response body is the same fully-embedded shape `GET /palettes?_embed` produces: a flat
+	 * array of listing rows, each carrying its `is_default` / `is_current` / `user_created` flags and an
+	 * `_embedded.self` entry holding the row's full `effective_view()` (id, label, groups).
+	 *
+	 * @param array<int, array<string, mixed>> $data The write response body.
+	 *
+	 * @return void
+	 */
+	private function assertEmbeddedListingShape( array $data ): void {
+		$this->assertNotEmpty( $data, 'The embedded listing must carry at least one row.' );
+
+		foreach ( $data as $row ) {
+			$this->assertArrayHasKey( 'id', $row );
+			$this->assertArrayHasKey( 'label', $row );
+			$this->assertArrayHasKey( 'is_default', $row );
+			$this->assertArrayHasKey( 'is_current', $row );
+			$this->assertArrayHasKey( 'user_created', $row );
+			$this->assertArrayHasKey( '_embedded', $row );
+			$this->assertArrayHasKey( 'self', $row['_embedded'] );
+			$this->assertArrayHasKey( 'groups', $row['_embedded']['self'][0] );
+		}
 	}
 
 	/**
@@ -1005,5 +1282,30 @@ final class Palettes_ControllerTest extends TestCase {
 		}
 
 		return $result->get_status();
+	}
+
+	/**
+	 * Read a swatch's current effective label back through `get_item()`, the same read path the frontend uses.
+	 *
+	 * @param string $id    The palette id.
+	 * @param string $token The swatch token dot-path.
+	 *
+	 * @return string|null
+	 */
+	private function swatch_label( string $id, string $token ): ?string {
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+		$request->set_param( 'id', $id );
+
+		$groups = $this->controller->get_item( $request )->get_data()['groups'] ?? [];
+
+		foreach ( $groups as $group ) {
+			foreach ( $group['swatches'] ?? [] as $swatch ) {
+				if ( ( $swatch['token'] ?? null ) === $token ) {
+					return $swatch['label'] ?? null;
+				}
+			}
+		}
+
+		return null;
 	}
 }

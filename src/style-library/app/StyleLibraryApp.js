@@ -6,12 +6,14 @@
  * WordPress dependencies
  */
 import { useEffect, useMemo } from '@wordpress/element';
-import { Spinner } from '@wordpress/components';
+import { SnackbarList } from '@wordpress/components';
+import { useSelect, useDispatch } from '@wordpress/data';
 
 /**
  * Internal dependencies
  */
 import { AppShell } from '../components/templates/AppShell';
+import { AppShellSkeleton } from '../components/organisms/AppShellSkeleton';
 import { AppHeader } from '../components/organisms/AppHeader';
 import { AppSidebar } from '../components/organisms/AppSidebar';
 import { LibrarySelector } from '../components/organisms/LibrarySelector';
@@ -71,6 +73,15 @@ export function StyleLibraryApp() {
 	const { route, navigate, replace } = useStyleLibraryRoute();
 	const libraries = useLibraries(feed.feed, feed.refreshFeed);
 
+	const snackbarNotices = useSelect(
+		(select) =>
+			select('core/notices')
+				.getNotices()
+				.filter((notice) => notice.type === 'snackbar'),
+		[]
+	);
+	const { removeNotice } = useDispatch('core/notices');
+
 	// The draft channel (see `hooks/use-draft-channel.js`): built here because this is the one
 	// component that already renders both the screen and its settings-panel slot, so it is the only
 	// place a provider for the two of them can live.
@@ -106,11 +117,7 @@ export function StyleLibraryApp() {
 	}, [resolution, replace]);
 
 	if (!feed.isReady) {
-		return (
-			<div className="kadence-blocks-style-library__loading">
-				<Spinner />
-			</div>
-		);
+		return <AppShellSkeleton />;
 	}
 
 	if (!resolution) {
@@ -173,6 +180,7 @@ export function StyleLibraryApp() {
 									editingSlug={libraries.editingSlug}
 									editingTitle={editingTitle}
 									isBusy={libraries.isBusy}
+									isLoading={libraries.isLoading}
 									isSwapping={libraries.isSwappingLibrary}
 									openError={libraries.openError}
 									createError={libraries.createError}
@@ -240,6 +248,11 @@ export function StyleLibraryApp() {
 					onSave={channel.confirmSave}
 					onDiscard={channel.confirmDiscard}
 					onCancel={channel.cancelGuard}
+				/>
+				<SnackbarList
+					notices={snackbarNotices}
+					onRemove={removeNotice}
+					className="kadence-blocks-style-library__snackbars"
 				/>
 			</BreakpointProvider>
 		</DraftChannelContext.Provider>

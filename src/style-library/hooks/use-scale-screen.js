@@ -17,17 +17,29 @@
  * WordPress dependencies
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from '@wordpress/element';
+import { useRegistry, useSelect } from '@wordpress/data';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
-import { applyRowOrder, scaleInitialValues, scaleRows } from '../helpers/scale';
+import {
+	applyOptimisticScaleOverlay,
+	applyRowOrder,
+	customScaleTokenId,
+	nextScaleSlug,
+	scaleInitialValues,
+	scaleRows,
+} from '../helpers/scale';
 import {
 	addScaleTokenFlow,
 	deleteScaleTokenFlow,
 	reorderScaleTokensFlow,
 	saveScaleTokenFlow,
 } from '../helpers/scale-flows';
+import { isEqual } from '../helpers/settings-schema';
+import { notifyError, notifySuccess } from '../helpers/notify';
+import { STORE_NAME } from '../store';
 
 /**
  * Bind a scale screen's config to live feed state and the four write flows.
@@ -39,18 +51,29 @@ import {
  *
  * @since TBD
  *
- * @return {{rows: Array<Object>, selectedId: string, selectToken: Function, isBusy: boolean, addError: ?Object, saveError: ?Object, deleteError: ?Object, orderError: ?Object, clearAddError: Function, clearSaveError: Function, clearDeleteError: Function, clearOrderError: Function, addToken: Function, saveToken: Function, deleteToken: Function, reorderTokens: Function, tokenById: Function, initialValuesFor: Function}}
+ * @return {{rows: Array<Object>, selectedId: string, selectToken: Function, isBusy: boolean, addError: ?Object, orderError: ?Object, clearAddError: Function, clearOrderError: Function, addToken: Function, saveToken: Function, deleteToken: Function, reorderTokens: Function, tokenById: Function, initialValuesFor: Function}}
  */
 export function useScaleScreen(config, library, route, navigate) {
-	const [isBusy, setIsBusy] = useState(false);
+	const registry = useRegistry();
 	const [addError, setAddError] = useState(null);
-	const [saveError, setSaveError] = useState(null);
-	const [deleteError, setDeleteError] = useState(null);
 	const [orderError, setOrderError] = useState(null);
 	const [pendingOrder, setPendingOrder] = useState(null);
 
 	const feed = library.feed;
 	const feedVersion = feed?.version;
+
+	// Shared across every sibling instance of this hook (the screen body and its settings panel),
+	// keyed by `slug` — mirroring `optimisticScaleEdits`'s own keying — so a write started in one
+	// instance disables controls in the other too, instead of two writes racing the same document.
+	// Kept under the local variable name `setIsBusy` so every existing `onBusy: setIsBusy` call site
+	// below keeps working unchanged.
+	const isBusy = useSelect((select) => select(STORE_NAME).getScaleBusy(library.slug), [library.slug]);
+	const setIsBusy = useCallback(
+		(value) => registry.dispatch(STORE_NAME).setScaleBusy(library.slug, value),
+		[registry, library.slug]
+	);
+
+	const overlay = useSelect((select) => select(STORE_NAME).getOptimisticScaleEdit(library.slug), [library.slug]);
 
 	// Mirrors the feed so the queued reorder continuation below always dereferences the live
 	// version at execution time, never a value captured when the drop was enqueued — no re-render
@@ -80,46 +103,97 @@ export function useScaleScreen(config, library, route, navigate) {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [feedVersion]);
 
-	const rows = useMemo(
-		() => (pendingOrder ? applyRowOrder(baseRows, pendingOrder) : baseRows),
-		[baseRows, pendingOrder]
-	);
+	const rows = useMemo(() => {
+		const overlaid = applyOptimisticScaleOverlay(baseRows, overlay);
+		return pendingOrder ? applyRowOrder(overlaid, pendingOrder) : overlaid;
+	}, [baseRows, overlay, pendingOrder]);
 
 	const selectToken = useCallback((id) => navigate({ item: id }), [navigate]);
 
 	const clearAddError = useCallback(() => setAddError(null), []);
-	const clearSaveError = useCallback(() => setSaveError(null), []);
-	const clearDeleteError = useCallback(() => setDeleteError(null), []);
 	const clearOrderError = useCallback(() => setOrderError(null), []);
 
-	const tokenById = useCallback((id) => baseRows.find((row) => row.id === id) ?? null, [baseRows]);
+	// Reads `rows` (overlay-applied), not `baseRows` — a settings panel opened for a not-yet-
+	// confirmed optimistic addition must find it here, or `ScaleSettings`'s stale-item self-heal
+	// (`if (id && !token) navigate({ item: '' })`) would immediately close the panel that
+	// `addToken`'s `onOptimistic` just opened.
+	const tokenById = useCallback((id) => rows.find((row) => row.id === id) ?? null, [rows]);
 
 	const initialValuesFor = useCallback(
-		(id) => scaleInitialValues(tokenById(id), feed?.values, config.parseValue),
-		[tokenById, feed, config.parseValue]
+		(id) => {
+			// A pending optimistic addition's value lives only on the overlay entry — `feed.values`
+			// has nothing under its id until the write confirms — so it is merged in here rather than
+			// changing `scaleInitialValues`'s own contract (a plain resolved-values map).
+			const pending = overlay.addedTokens.find((entry) => entry.id === id);
+			const values = pending ? { ...feed?.values, [id]: pending.value } : feed?.values;
+
+			return scaleInitialValues(tokenById(id), values, config.parseValue);
+		},
+		[tokenById, feed, overlay.addedTokens, config.parseValue]
 	);
 
-	const addToken = useCallback(() => {
-		setAddError(null);
+	const addToken = useCallback(
+		(onOptimistic) => {
+			setAddError(null);
 
-		return addScaleTokenFlow({
-			groupKey: config.groupKey,
-			tokenType: config.tokenType,
-			slugBase: config.slugBase,
-			label: config.newTokenLabel,
-			value: config.newTokenValue,
-			existingIds: library.tokens.map((token) => token.id),
-			slug: library.slug,
-			feedVersion,
-			refreshFeed: library.refreshFeed,
-			onBusy: setIsBusy,
-			onError: setAddError,
-		});
-	}, [config, library, feedVersion]);
+			const terminalSlug = nextScaleSlug(
+				library.tokens.map((token) => token.id),
+				config.slugBase
+			);
+			const id = customScaleTokenId(config.tokenType, terminalSlug);
+
+			registry.dispatch(STORE_NAME).setOptimisticScaleAddition(library.slug, {
+				id,
+				label: config.newTokenLabel,
+				value: config.newTokenValue,
+				userCreated: true,
+			});
+
+			// Fired synchronously, once the optimistic token is already in the store — the id is
+			// known up front (client-generated, not server-assigned), so the caller can open the new
+			// token's settings panel immediately instead of waiting on the write. `scale.isBusy` is
+			// already true for the whole write below, so the panel opens already showing its buttons
+			// disabled. See `usePalettes`'s `addColor` for the identical pattern.
+			onOptimistic?.(id);
+
+			return addScaleTokenFlow({
+				groupKey: config.groupKey,
+				tokenType: config.tokenType,
+				terminalSlug,
+				label: config.newTokenLabel,
+				value: config.newTokenValue,
+				slug: library.slug,
+				feedVersion,
+				refreshFeed: library.refreshFeed,
+				onBusy: setIsBusy,
+				onError: setAddError,
+			})
+				.then((result) => {
+					notifySuccess(__('Token created.', 'kadence-blocks'));
+					return result;
+				})
+				.finally(() => {
+					registry.dispatch(STORE_NAME).clearOptimisticScaleAddition(library.slug, id);
+				});
+		},
+		[config, library, feedVersion, registry]
+	);
 
 	const saveToken = useCallback(
 		(id, draft, initial) => {
-			setSaveError(null);
+			const patch = {};
+			if (draft.label !== initial.label) {
+				patch.label = draft.label;
+			}
+			if (!isEqual(draft.value, initial.value)) {
+				patch.value = draft.value;
+			}
+
+			if (Object.keys(patch).length === 0) {
+				return Promise.resolve();
+			}
+
+			registry.dispatch(STORE_NAME).setOptimisticScalePatch(library.slug, id, patch);
 
 			return saveScaleTokenFlow({
 				slug: library.slug,
@@ -131,16 +205,18 @@ export function useScaleScreen(config, library, route, navigate) {
 				feedVersion,
 				refreshFeed: library.refreshFeed,
 				onBusy: setIsBusy,
-				onError: setSaveError,
+				onError: (err) => notifyError(err.message),
 				buildLeaf: config.buildLeaf,
-			});
+			})
+				.then(() => notifySuccess(__('Token saved.', 'kadence-blocks')))
+				.finally(() => registry.dispatch(STORE_NAME).clearOptimisticScalePatch(library.slug, id));
 		},
-		[library, feed, config, feedVersion]
+		[library, feed, config, feedVersion, registry]
 	);
 
 	const deleteToken = useCallback(
 		(id) => {
-			setDeleteError(null);
+			registry.dispatch(STORE_NAME).setOptimisticScaleDeletion(library.slug, id);
 
 			return deleteScaleTokenFlow({
 				slug: library.slug,
@@ -148,10 +224,12 @@ export function useScaleScreen(config, library, route, navigate) {
 				feedVersion,
 				refreshFeed: library.refreshFeed,
 				onBusy: setIsBusy,
-				onError: setDeleteError,
-			});
+				onError: (err) => notifyError(err.message),
+			})
+				.then(() => notifySuccess(__('Token deleted.', 'kadence-blocks')))
+				.finally(() => registry.dispatch(STORE_NAME).clearOptimisticScaleDeletion(library.slug, id));
 		},
-		[library, feedVersion]
+		[library, feedVersion, registry]
 	);
 
 	const reorderTokens = useCallback(
@@ -176,6 +254,9 @@ export function useScaleScreen(config, library, route, navigate) {
 					onBusy: setIsBusy,
 					onError: setOrderError,
 				})
+					.then(() => {
+						notifySuccess(__('Token order saved.', 'kadence-blocks'));
+					})
 					.catch(() => {
 						// Caught here, not re-thrown: every link in the chain must settle (resolve) so
 						// `reorderChainRef` is never left permanently rejected — an uncaught rejection would
@@ -202,12 +283,8 @@ export function useScaleScreen(config, library, route, navigate) {
 		selectToken,
 		isBusy,
 		addError,
-		saveError,
-		deleteError,
 		orderError,
 		clearAddError,
-		clearSaveError,
-		clearDeleteError,
 		clearOrderError,
 		addToken,
 		saveToken,

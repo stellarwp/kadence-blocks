@@ -5,16 +5,21 @@
  *
  * Create/save/delete carry no version parameter (`helpers/preset-flows.js`'s module docblock), so
  * only reorder needs the serialized-chain machinery — copied from `use-scale-screen.js`'s
- * `reorderTokens`. This screen's data source is `usePresets`, not the feed in hand, and that
- * payload's `version` only refreshes on a later re-read, so the chain carries the version each
- * write returns until the payload catches up. Two rapid drags therefore cannot race the re-read
- * into a spurious 409 against themselves.
+ * `reorderTokens`. Reorder's version tracking is sourced from the shared feed (`library.version`),
+ * not from `usePresets`'s own payload: every write anywhere in the library — scale, typography,
+ * palettes, and presets itself — ends in `library.refreshFeed`, which always bumps `library.version`
+ * to the server's current value, while the store's cached preset payload only catches up when this
+ * screen's own wrapped `refreshFeed` (below) explicitly invalidates it. A reorder here that trusted
+ * the payload's version instead would 409 the moment a write on any OTHER screen moved the server
+ * past it. The chain carries the version each write returns until `library.version` catches up, so
+ * two rapid drags cannot race the re-read into a spurious 409 against themselves.
  */
 
 /**
  * WordPress dependencies
  */
-import { useCallback, useEffect, useMemo, useRef, useState } from '@wordpress/element';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from '@wordpress/element';
+import { useRegistry } from '@wordpress/data';
 
 /**
  * Internal dependencies
@@ -23,6 +28,7 @@ import { applyRowOrder } from '../helpers/scale';
 import { createPresetFlow, deletePresetFlow, reorderPresetsFlow, savePresetFlow } from '../helpers/preset-flows';
 import { presetInitialValues, presetStoredTokens } from '../helpers/presets';
 import { usePresets } from './use-presets';
+import { STORE_NAME } from '../store';
 
 /**
  * Bind a preset screen to its block's fetched preset collection and the four write flows.
@@ -52,37 +58,67 @@ export function usePresetScreen(library, preset) {
 
 	const namespace = library?.rest?.namespace;
 	const slug = library?.slug;
-	const refreshFeed = library?.refreshFeed;
 	const payloadVersion = presets.payload?.version;
+	const feedVersion = library?.version;
 
-	// Read inside the queued continuations below, which are created once per `useCallback` identity
-	// and would otherwise close over the version from the render that made them.
-	const payloadVersionRef = useRef(payloadVersion);
-	payloadVersionRef.current = payloadVersion;
+	const registry = useRegistry();
 
-	// Holds the version the last reorder write returned, until the preset payload catches up.
-	// Unlike `use-scale-screen.js`, whose version comes from the feed the awaited refresh replaces,
-	// this screen reads its version from a payload that `usePresets` re-fetches in a later
-	// effect. A second drop queued behind the first would otherwise dereference the pre-write
-	// version and 409 against itself.
+	// Every write flow below still calls `refreshFeed(slug)` — this wraps that same call so a preset
+	// write also re-resolves the store's `getBlockPresets` selector, instead of relying on a `version`
+	// bump (no longer part of `usePresets`'s own logic) to trigger a re-read.
+	const refreshFeed = useCallback(
+		(targetSlug) => {
+			const feedRefresh = library?.refreshFeed?.(targetSlug) ?? Promise.resolve();
+
+			let storeRefresh = Promise.resolve();
+			if (namespace && block && slug) {
+				registry.dispatch(STORE_NAME).invalidateResolution('getBlockPresets', [namespace, block, slug]);
+				storeRefresh = registry.resolveSelect(STORE_NAME).getBlockPresets(namespace, block, slug);
+			}
+
+			return Promise.all([feedRefresh, storeRefresh]);
+		},
+		// `library.refreshFeed`, not `library` — this only ever calls that one function off it, and
+		// `library` is a fresh object literal every render (`useDesignTokensFeed()`'s own return
+		// value), so depending on the whole object would rebuild this callback (and everything that
+		// depends on its identity) on every render instead of only when the function itself changes.
+		[library?.refreshFeed, registry, namespace, block, slug]
+	);
+
+	// `feedVersionSnapshotRef` mirrors `library.version` for reads inside the queued continuations
+	// below, which are created once per `useCallback` identity and would otherwise close over the
+	// version from the render that made them. `writtenVersionRef` holds the version the last reorder
+	// write returned, until the feed's own version — bumped by every write everywhere in the
+	// library, not just this screen's — catches up; a second drop queued behind the first would
+	// otherwise dereference the pre-write version and 409 against itself. `feedVersionAtWriteRef` is
+	// the feed version at the moment that override was recorded, so the retirement check below can
+	// tell whether the feed has moved since. `feedVersionRef` mirrors the version the queued reorder
+	// continuation below must send — see `use-scale-screen.js`'s identical comment for why, and the
+	// module docblock for why this is sourced from `library.version`, not the store's cached preset
+	// payload.
+	const feedVersionSnapshotRef = useRef(feedVersion);
 	const writtenVersionRef = useRef(null);
+	const feedVersionAtWriteRef = useRef(feedVersion);
+	const feedVersionRef = useRef(feedVersion);
 
-	// The payload version at the moment the override was recorded. The override is retired as soon
-	// as the payload moves off it at all, rather than only on an exact match with what the write
-	// returned: a re-read that carries a newer version — someone else's write, or a response this
-	// screen never saw — supersedes the override, and holding on to it would keep sending a version
-	// the server has already replaced.
-	const payloadAtWriteRef = useRef(payloadVersion);
+	// Synchronized from a layout effect, not the render body: React can replay or discard a render
+	// before it commits, and a ref write inside the render body itself would leak a value from a
+	// render that never actually happened. A layout effect still runs before the browser paints and
+	// before any user-triggered event handler (e.g. a drop that calls `reorderPresets`), so nothing
+	// that reads these refs can ever observe a value from a discarded render.
+	useLayoutEffect(() => {
+		feedVersionSnapshotRef.current = feedVersion;
 
-	if (writtenVersionRef.current !== null && payloadVersion !== payloadAtWriteRef.current) {
-		writtenVersionRef.current = null;
-	}
+		// The override is retired as soon as the feed version moves off it at all, rather than only
+		// on an exact match with what the write returned: a refresh that carries a newer version —
+		// someone else's write, or a response this screen never saw — supersedes the override, and
+		// holding on to it would keep sending a version the server has already replaced.
+		if (writtenVersionRef.current !== null && feedVersion !== feedVersionAtWriteRef.current) {
+			writtenVersionRef.current = null;
+		}
 
-	// Mirrors the version the queued reorder continuation below must send, so it always
-	// dereferences the live value at execution time, never one captured when the drop was enqueued
-	// — see `use-scale-screen.js`'s identical comment for why.
-	const feedVersionRef = useRef(payloadVersion);
-	feedVersionRef.current = writtenVersionRef.current ?? payloadVersion;
+		feedVersionRef.current = writtenVersionRef.current ?? feedVersion;
+	}, [feedVersion]);
 
 	// One in-flight reorder promise, the `use-scale-screen.js` shape: each call chains onto the
 	// previous reorder's settled promise so a second drop's write waits for the first drop's flow
@@ -198,7 +234,7 @@ export function usePresetScreen(library, preset) {
 					// commits one, and it reads `feedVersionRef` directly.
 					onVersion: (version) => {
 						writtenVersionRef.current = version;
-						payloadAtWriteRef.current = payloadVersionRef.current;
+						feedVersionAtWriteRef.current = feedVersionSnapshotRef.current;
 						feedVersionRef.current = version;
 					},
 				})
@@ -209,10 +245,10 @@ export function usePresetScreen(library, preset) {
 
 						// A failed write returned no version, so the override is meaningless now, and a
 						// drop already queued behind this one would otherwise resend it and fail the same
-						// way. Fall back to the payload and re-read it, so the next link in the chain
-						// carries whatever the server actually holds.
+						// way. Fall back to the feed's own version and re-read it, so the next link in the
+						// chain carries whatever the server actually holds.
 						writtenVersionRef.current = null;
-						feedVersionRef.current = payloadVersionRef.current;
+						feedVersionRef.current = feedVersionSnapshotRef.current;
 
 						return refreshFeed ? refreshFeed(slug).catch(() => {}) : undefined;
 					})

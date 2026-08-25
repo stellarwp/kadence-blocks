@@ -18,7 +18,7 @@ import { __ } from '@wordpress/i18n';
 import { createUserPrimitive, deleteUserPrimitive, saveTokenLeaf, setGroupOrder, setTokenLabel } from '../api/client';
 import { isEqual } from './settings-schema';
 import { buildTokenLeaf } from './tokens';
-import { customScaleTokenId, nextScaleSlug } from './scale';
+import { customScaleTokenId } from './scale';
 
 /**
  * Read the message off a REST error, falling back to a generic string when the error carries none
@@ -37,17 +37,21 @@ function errorMessage(error) {
 }
 
 /**
- * Mint a new custom scale token: pick the first free slug, create it with the stable group key
- * (decision 3 — the translated group label never enters a write payload), refresh the feed, and
- * resolve the new token's canonical id so the caller can open its settings panel.
+ * Mint a new custom scale token: create it with the stable group key (decision 3 — the translated
+ * group label never enters a write payload), refresh the feed, and resolve the new token's
+ * canonical id so the caller can open its settings panel.
+ *
+ * `terminalSlug` is precomputed by the caller (`nextScaleSlug`), not derived here — the caller
+ * needs the token's canonical id before this flow's write even starts, to show it immediately as
+ * an optimistic addition and open its settings panel ahead of the response. See `addColorFlow`'s
+ * identical `colorSlug` param for the same reasoning.
  *
  * @param {Object}   args
  * @param {string}   args.groupKey     The stable machine group key (e.g. `'border-radius'`).
  * @param {string}   args.tokenType    The DTCG `$type` for the minted primitive.
- * @param {string}   args.slugBase     The slug stem for the minted token.
+ * @param {string}   args.terminalSlug The minted token's slug, already resolved free of collision.
  * @param {string}   args.label        The minted token's starting label.
  * @param {string}   args.value        The minted token's starting `$value`.
- * @param {string[]} args.existingIds  Every canonical id already registered, for slug collision.
  * @param {string}   args.slug         Token library slug.
  * @param {string}   args.feedVersion  The version token the client last read.
  * @param {Function} args.refreshFeed  Replaces the feed with a fresh REST read for a slug.
@@ -62,10 +66,9 @@ function errorMessage(error) {
 export function addScaleTokenFlow({
 	groupKey,
 	tokenType,
-	slugBase,
+	terminalSlug,
 	label,
 	value,
-	existingIds,
 	slug,
 	feedVersion,
 	refreshFeed,
@@ -74,7 +77,6 @@ export function addScaleTokenFlow({
 }) {
 	onBusy(true);
 
-	const terminalSlug = nextScaleSlug(existingIds, slugBase);
 	const id = customScaleTokenId(tokenType, terminalSlug);
 
 	return createUserPrimitive(slug, {

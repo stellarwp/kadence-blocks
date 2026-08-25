@@ -58,7 +58,9 @@ export function ScaleScreen({ config, route, navigate, library }) {
 
 	// A null channel (no `DraftChannelContext.Provider` mounted) degrades to today's direct calls —
 	// keeps this screen usable in isolation, e.g. the dev gallery.
-	const mintToken = () => scale.addToken().then((id) => navigate({ item: id }));
+	// Opens the new token's settings panel the moment it exists in the store as an optimistic
+	// addition, not after the write confirms — see `addToken`'s own `onOptimistic` docs.
+	const mintToken = () => scale.addToken((id) => navigate({ item: id }));
 	const addAction = (
 		<Button
 			icon={plus}
@@ -81,7 +83,8 @@ export function ScaleScreen({ config, route, navigate, library }) {
 		label: row.label,
 		value: config.formatValue ? config.formatValue(row) : row.value,
 		preview: config.renderPreview(row),
-		isDraggable: true,
+		isDraggable: !row.pendingDelete,
+		isPendingDelete: Boolean(row.pendingDelete),
 	}));
 
 	// Selecting the already-open token is a no-op (the draft survives — `useSettingsPanel` only

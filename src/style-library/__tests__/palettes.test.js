@@ -2,6 +2,7 @@
 import {
 	addGroupToGroups,
 	addSwatchToGroups,
+	applyOptimisticOverlay,
 	customColorTokenId,
 	findSwatch,
 	isCustomColorToken,
@@ -18,10 +19,12 @@ import {
 	renameGroupInGroups,
 	renameSwatchInGroups,
 	reorderGroupSwatches,
+	reshapePaletteRows,
 	resolveEditingPaletteId,
 	slugifyPaletteLabel,
 	stripEffectiveFlags,
 	swatchInitialValues,
+	validateNewGroupLabel,
 } from '../helpers/palettes';
 
 const effectivePalette = () => ({
@@ -46,6 +49,50 @@ const effectivePalette = () => ({
 	],
 });
 
+describe('reshapePaletteRows', () => {
+	it('reshapes flat is_default/is_current/user_created flags into defaultId/currentId/userCreated pointers', () => {
+		const rows = [
+			{
+				id: 'default',
+				label: 'Default',
+				is_default: true,
+				is_current: false,
+				user_created: false,
+				_embedded: { self: [{ groups: [{ id: 'accent', label: 'Accent', swatches: [] }] }] },
+			},
+			{
+				id: 'brand-b',
+				label: 'Brand B',
+				is_default: false,
+				is_current: true,
+				user_created: true,
+				_embedded: { self: [{ groups: [] }] },
+			},
+		];
+
+		expect(reshapePaletteRows(rows)).toEqual({
+			defaultId: 'default',
+			currentId: 'brand-b',
+			palettes: [
+				{ id: 'default', label: 'Default', groups: [{ id: 'accent', label: 'Accent', swatches: [] }] },
+				{ id: 'brand-b', label: 'Brand B', groups: [] },
+			],
+			userCreated: ['brand-b'],
+		});
+	});
+
+	it('defaults defaultId/currentId to an empty string and groups to [] when a row carries neither flag nor an embedded view', () => {
+		const rows = [{ id: 'default', label: 'Default', is_default: false, is_current: false, user_created: false }];
+
+		expect(reshapePaletteRows(rows)).toEqual({
+			defaultId: '',
+			currentId: '',
+			palettes: [{ id: 'default', label: 'Default', groups: [] }],
+			userCreated: [],
+		});
+	});
+});
+
 describe('mapPaletteToSwatchGroups', () => {
 	it('maps groups and swatches to grid ids/names/subLines', () => {
 		const groups = mapPaletteToSwatchGroups(effectivePalette());
@@ -54,6 +101,7 @@ describe('mapPaletteToSwatchGroups', () => {
 			{
 				id: 'accent',
 				label: 'Accent',
+				pendingDelete: false,
 				items: [
 					{
 						id: 'primitive.color.brand.primary',
@@ -61,6 +109,7 @@ describe('mapPaletteToSwatchGroups', () => {
 						subLine: '#112233',
 						value: '#112233',
 						overridden: false,
+						pendingDelete: false,
 					},
 					{
 						id: 'primitive.color.brand.secondary',
@@ -68,12 +117,14 @@ describe('mapPaletteToSwatchGroups', () => {
 						subLine: '#445566',
 						value: '#445566',
 						overridden: true,
+						pendingDelete: false,
 					},
 				],
 			},
 			{
 				id: 'contrast',
 				label: 'Contrast',
+				pendingDelete: false,
 				items: [
 					{
 						id: 'primitive.color.neutral.100',
@@ -81,6 +132,7 @@ describe('mapPaletteToSwatchGroups', () => {
 						subLine: '#ffffff',
 						value: '#ffffff',
 						overridden: false,
+						pendingDelete: false,
 					},
 				],
 			},
@@ -92,6 +144,18 @@ describe('mapPaletteToSwatchGroups', () => {
 
 		expect(accent.items[0].id).toBe('primitive.color.brand.primary');
 		expect(accent.items[1].overridden).toBe(true);
+	});
+
+	it('threads pendingDelete through for both a group-level and a swatch-level flag', () => {
+		const palette = effectivePalette();
+		palette.groups[0].pendingDelete = true;
+		palette.groups[1].swatches[0].pendingDelete = true;
+
+		const groups = mapPaletteToSwatchGroups(palette);
+
+		expect(groups[0].pendingDelete).toBe(true);
+		expect(groups[1].pendingDelete).toBe(false);
+		expect(groups[1].items[0].pendingDelete).toBe(true);
 	});
 
 	it('returns [] for a null/empty palette', () => {
@@ -491,5 +555,256 @@ describe('isUserCreatedPalette', () => {
 		expect(isUserCreatedPalette({}, 'ocean')).toBe(false);
 		expect(isUserCreatedPalette(undefined, 'ocean')).toBe(false);
 		expect(isUserCreatedPalette(listing, '')).toBe(false);
+	});
+});
+
+describe('applyOptimisticOverlay', () => {
+	it('returns the same palette reference when nothing is pending', () => {
+		const palette = effectivePalette();
+		const emptyOverlay = {
+			patches: {},
+			deletedTokens: [],
+			deletedGroups: [],
+			addedSwatches: [],
+			addedGroups: [],
+		};
+
+		const result = applyOptimisticOverlay(palette, emptyOverlay);
+
+		expect(result).toBe(palette);
+	});
+
+	it('returns the original palette unchanged when palette is null', () => {
+		const overlay = {
+			patches: { token: { label: 'New' } },
+			deletedTokens: [],
+			deletedGroups: [],
+			addedSwatches: [],
+			addedGroups: [],
+		};
+
+		expect(applyOptimisticOverlay(null, overlay)).toBeNull();
+	});
+
+	it('merges patches into matching swatches', () => {
+		const palette = effectivePalette();
+		const overlay = {
+			patches: {
+				'primitive.color.brand.primary': { label: 'Updated Primary', $value: '#ff0000' },
+			},
+			deletedTokens: [],
+			deletedGroups: [],
+			addedSwatches: [],
+			addedGroups: [],
+		};
+
+		const result = applyOptimisticOverlay(palette, overlay);
+
+		const primary = result.groups[0].swatches[0];
+		expect(primary.label).toBe('Updated Primary');
+		expect(primary.$value).toBe('#ff0000');
+		expect(result.groups[0].swatches[1].label).toBe('Main 2');
+	});
+
+	it('marks a deleted token with pendingDelete: true without removing it', () => {
+		const palette = effectivePalette();
+		const overlay = {
+			patches: {},
+			deletedTokens: ['primitive.color.brand.primary'],
+			deletedGroups: [],
+			addedSwatches: [],
+			addedGroups: [],
+		};
+
+		const result = applyOptimisticOverlay(palette, overlay);
+
+		const primary = result.groups[0].swatches[0];
+		expect(primary.pendingDelete).toBe(true);
+		expect(result.groups[0].swatches).toHaveLength(2);
+	});
+
+	it('marks a deleted group and cascades pendingDelete onto all its swatches', () => {
+		const palette = effectivePalette();
+		const overlay = {
+			patches: {},
+			deletedTokens: [],
+			deletedGroups: ['accent'],
+			addedSwatches: [],
+			addedGroups: [],
+		};
+
+		const result = applyOptimisticOverlay(palette, overlay);
+
+		const accentGroup = result.groups[0];
+		expect(accentGroup.pendingDelete).toBe(true);
+		expect(accentGroup.swatches[0].pendingDelete).toBe(true);
+		expect(accentGroup.swatches[1].pendingDelete).toBe(true);
+	});
+
+	it('appends an added swatch to its target group with pendingDelete: false', () => {
+		const palette = effectivePalette();
+		const overlay = {
+			patches: {},
+			deletedTokens: [],
+			deletedGroups: [],
+			addedSwatches: [
+				{
+					groupId: 'accent',
+					token: 'primitive.color.custom.custom-1',
+					label: 'New Color',
+					$value: '#123456',
+				},
+			],
+			addedGroups: [],
+		};
+
+		const result = applyOptimisticOverlay(palette, overlay);
+
+		const accentGroup = result.groups[0];
+		expect(accentGroup.swatches).toHaveLength(3);
+		const newSwatch = accentGroup.swatches[2];
+		expect(newSwatch.token).toBe('primitive.color.custom.custom-1');
+		expect(newSwatch.label).toBe('New Color');
+		expect(newSwatch.pendingDelete).toBe(false);
+	});
+
+	it('appends an added group as a new top-level group', () => {
+		const palette = effectivePalette();
+		const overlay = {
+			patches: {},
+			deletedTokens: [],
+			deletedGroups: [],
+			addedSwatches: [],
+			addedGroups: [
+				{
+					id: 'background',
+					label: 'Background',
+					swatches: [
+						{
+							token: 'primitive.color.custom.custom-1',
+							label: 'BG Color',
+							$value: '#999999',
+						},
+					],
+				},
+			],
+		};
+
+		const result = applyOptimisticOverlay(palette, overlay);
+
+		expect(result.groups).toHaveLength(3);
+		const newGroup = result.groups[2];
+		expect(newGroup.id).toBe('background');
+		expect(newGroup.pendingDelete).toBe(false);
+		expect(newGroup.swatches[0].pendingDelete).toBe(false);
+	});
+
+	it('does not duplicate an added swatch the real data already carries', () => {
+		// Simulates the window after `onReceive` has landed the write's confirmed row but before the
+		// caller's `.finally()` has cleared the overlay — the real group already has the swatch.
+		const palette = effectivePalette();
+		palette.groups[0].swatches.push({
+			token: 'primitive.color.custom.custom-1',
+			label: 'New Color',
+			$value: '#123456',
+			overridden: false,
+		});
+
+		const overlay = {
+			patches: {},
+			deletedTokens: [],
+			deletedGroups: [],
+			addedSwatches: [
+				{
+					groupId: 'accent',
+					token: 'primitive.color.custom.custom-1',
+					label: 'New Color',
+					$value: '#123456',
+				},
+			],
+			addedGroups: [],
+		};
+
+		const result = applyOptimisticOverlay(palette, overlay);
+
+		const accentGroup = result.groups[0];
+		expect(
+			accentGroup.swatches.filter((swatch) => swatch.token === 'primitive.color.custom.custom-1')
+		).toHaveLength(1);
+	});
+
+	it('does not duplicate an added group the real data already carries', () => {
+		// Same window as above, for a group addition: `onReceive` already landed the confirmed group.
+		const palette = effectivePalette();
+		palette.groups.push({
+			id: 'background',
+			label: 'Background',
+			swatches: [{ token: 'primitive.color.custom.custom-1', label: 'BG Color', $value: '#999999' }],
+		});
+
+		const overlay = {
+			patches: {},
+			deletedTokens: [],
+			deletedGroups: [],
+			addedSwatches: [],
+			addedGroups: [
+				{
+					id: 'background',
+					label: 'Background',
+					swatches: [
+						{
+							token: 'primitive.color.custom.custom-1',
+							label: 'BG Color',
+							$value: '#999999',
+						},
+					],
+				},
+			],
+		};
+
+		const result = applyOptimisticOverlay(palette, overlay);
+
+		expect(result.groups.filter((group) => group.id === 'background')).toHaveLength(1);
+	});
+});
+
+describe('validateNewGroupLabel', () => {
+	it('rejects an empty label with an error message', () => {
+		const palette = effectivePalette();
+		const result = validateNewGroupLabel('', palette);
+
+		expect(result.groupId).toBeNull();
+		expect(result.error).toBeTruthy();
+	});
+
+	it('rejects a label that slugifies to empty', () => {
+		const palette = effectivePalette();
+		const result = validateNewGroupLabel('   ', palette);
+
+		expect(result.groupId).toBeNull();
+		expect(result.error).toBeTruthy();
+	});
+
+	it('rejects a label whose slug matches an existing group', () => {
+		const palette = effectivePalette();
+		const result = validateNewGroupLabel('Accent', palette);
+
+		expect(result.groupId).toBeNull();
+		expect(result.error).toBeTruthy();
+	});
+
+	it('accepts a valid label and returns the slugified id', () => {
+		const palette = effectivePalette();
+		const result = validateNewGroupLabel('New Group', palette);
+
+		expect(result.groupId).toBe('new-group');
+		expect(result.error).toBeNull();
+	});
+
+	it('handles a null palette gracefully', () => {
+		const result = validateNewGroupLabel('New Group', null);
+
+		expect(result.groupId).toBe('new-group');
+		expect(result.error).toBeNull();
 	});
 });

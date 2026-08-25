@@ -74,6 +74,49 @@ export function applyRowOrder(rows, orderedIds) {
 }
 
 /**
+ * Overlay pending optimistic edits onto a scale screen's rows: a deleted token stays present,
+ * flagged `pendingDelete: true` (never filtered out, so the caller can render it dimmed), a
+ * patched token has its `label`/`value` merged in, and a not-yet-confirmed added token is appended
+ * — already in the real `rows` shape (`{ id, label, value, userCreated }`), so it needs no
+ * remapping. Pure — mirrors `helpers/palettes.js`'s `applyOptimisticOverlay`.
+ *
+ * @param {Array<Object>} rows    The screen's rows (`scaleRows()`'s output).
+ * @param {Object}        overlay The optimistic overlay for this slug — see `store/constants.js`'s
+ *                                `EMPTY_OPTIMISTIC_SCALE_EDIT`.
+ *
+ * @since TBD
+ *
+ * @return {Array<Object>} The rows with every pending optimistic edit applied, or the original
+ *                          `rows` reference unchanged when nothing is pending.
+ */
+export function applyOptimisticScaleOverlay(rows, overlay) {
+	if (
+		Object.keys(overlay.patches).length === 0 &&
+		overlay.deletedTokens.length === 0 &&
+		overlay.addedTokens.length === 0
+	) {
+		return rows;
+	}
+
+	// A token the real feed already carries (the write's `refreshFeed` landed) must not also be
+	// appended from the overlay — the overlay is only cleared in the caller's `.finally()`, well
+	// after the refresh, so without this de-dupe the row renders twice for that window.
+	const realIds = new Set(rows.map((row) => row.id));
+
+	const patched = rows.map((row) => ({
+		...row,
+		...(overlay.patches[row.id] ?? {}),
+		pendingDelete: overlay.deletedTokens.includes(row.id),
+	}));
+
+	const additions = overlay.addedTokens
+		.filter((entry) => !realIds.has(entry.id))
+		.map((entry) => ({ ...entry, pendingDelete: false }));
+
+	return [...patched, ...additions];
+}
+
+/**
  * The first free terminal slug for a minted custom token: the bare base first, then the base with a
  * numeric suffix (`radius`, `radius-2`, `radius-3`, ...).
  *

@@ -37,6 +37,9 @@ import './ListRow.scss';
  *                                               dragged — renders as an empty drop-target placeholder in
  *                                               place; the floating copy under the pointer/keyboard focus
  *                                               is a `RowList`-rendered `DragOverlay`, not this element.
+ * @param {boolean}       [props.isPendingDelete] Whether this row's token is optimistically deleted
+ *                                                but not yet confirmed — renders dimmed and disabled
+ *                                                instead of vanishing, until the write settles.
  * @param {Object}        [props.dragHandleProps] The dnd-kit listeners/attributes for the drag handle,
  *                                                supplied by the sortable wrapper; ignored when
  *                                                `isDraggable` is false.
@@ -58,6 +61,7 @@ export function ListRow({
 	onSelect,
 	isDraggable = false,
 	isDragging = false,
+	isPendingDelete = false,
 	dragHandleProps,
 	innerRef,
 	wrapperStyle,
@@ -69,14 +73,21 @@ export function ListRow({
 			className={classnames('kadence-blocks-style-library__list-row', {
 				'kadence-blocks-style-library__list-row--selected': isSelected,
 				'kadence-blocks-style-library__list-row--placeholder': isDragging,
+				'kadence-blocks-style-library__list-row--pending-delete': isPendingDelete,
 			})}
 		>
-			<button type="button" className="kadence-blocks-style-library__list-row-main" onClick={() => onSelect(id)}>
+			<button
+				type="button"
+				className="kadence-blocks-style-library__list-row-main"
+				onClick={() => onSelect(id)}
+				disabled={isPendingDelete}
+				aria-disabled={isPendingDelete}
+			>
 				<span className="kadence-blocks-style-library__list-row-label">{label}</span>
 				{value && <span className="kadence-blocks-style-library__list-row-value">{value}</span>}
 				{preview && <span className="kadence-blocks-style-library__list-row-preview">{preview}</span>}
 			</button>
-			{isDraggable && <DragHandle handleProps={dragHandleProps} />}
+			{isDraggable && !isPendingDelete && <DragHandle handleProps={dragHandleProps} />}
 		</li>
 	);
 }

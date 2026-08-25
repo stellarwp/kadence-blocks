@@ -14,7 +14,9 @@
 /**
  * WordPress dependencies
  */
-import { Button, Notice, Spinner } from '@wordpress/components';
+import { Button, Notice } from '@wordpress/components';
+import { useState } from '@wordpress/element';
+import { __, sprintf } from '@wordpress/i18n';
 import { plus } from '@wordpress/icons';
 
 /**
@@ -23,10 +25,54 @@ import { plus } from '@wordpress/icons';
 import { ScreenHeader } from '../organisms/ScreenHeader';
 import { RowList } from '../templates/RowList';
 import { EmptyState } from '../molecules/EmptyState';
+import { Skeleton } from '../atoms/Skeleton';
 import { usePresetScreen } from '../../hooks/use-preset-screen';
 import { useDraftChannel } from '../../hooks/use-draft-channel';
+import { useLoadingAnnouncement } from '../../hooks/use-loading-announcement';
 import { overlayPresetRows } from '../../helpers/presets';
 import { useBreakpoint } from '../../../token-controls/context/breakpoint';
+
+// A fixed count, not derived from anything — there is no "expected row count" to read before the
+// real rows arrive, so this just needs to fill the screen plausibly.
+const SKELETON_ROW_IDS = [0, 1, 2, 3];
+
+/**
+ * The preset-list loading placeholder: a few row-shaped skeletons in the real `RowList` markup
+ * (`.row-list` / `.list-row` / `.list-row-main`), so the loading shape matches the rows it is about
+ * to be replaced by instead of collapsing the screen to a single centered spinner.
+ *
+ * @param {Object} props       The component props.
+ * @param {string} props.label The screen's nav label, used to build the busy-region's accessible name.
+ *
+ * @since TBD
+ *
+ * @return {JSX.Element} The row-shaped skeleton list.
+ */
+function PresetRowsSkeleton({ label }) {
+	return (
+		<ul
+			className="kadence-blocks-style-library__row-list"
+			role="status"
+			aria-live="polite"
+			aria-busy="true"
+			aria-label={sprintf(
+				// translators: %s: the preset screen's label (e.g. "Button").
+				__('Loading %s…', 'kadence-blocks'),
+				label
+			)}
+		>
+			{SKELETON_ROW_IDS.map((id) => (
+				<li key={id} className="kadence-blocks-style-library__list-row">
+					<div className="kadence-blocks-style-library__list-row-main">
+						<Skeleton className="kadence-blocks-style-library__list-row-label kadence-blocks-style-library__skeleton--bar" />
+						<Skeleton className="kadence-blocks-style-library__list-row-value kadence-blocks-style-library__skeleton--bar" />
+						<Skeleton className="kadence-blocks-style-library__list-row-preview" />
+					</div>
+				</li>
+			))}
+		</ul>
+	);
+}
 
 /**
  * Render a preset list screen for whichever block the config names.
@@ -48,23 +94,45 @@ export function PresetScreen({ label, route, navigate, library, preset }) {
 	const screen = usePresetScreen(library, preset);
 	const channel = useDraftChannel();
 
+	// The skeleton below lives inside its own `role="status"` region, which only announces "Loading
+	// X…" while it is actually mounted — the moment it is replaced by the real list, that region is
+	// gone too, and nothing is left to tell a screen reader the load finished.
+	useLoadingAnnouncement(
+		screen.isLoading,
+		// translators: %s: the preset screen's label (e.g. "Button").
+		sprintf(__('%s loaded.', 'kadence-blocks'), label)
+	);
+
+	const [isAdding, setIsAdding] = useState(false);
+
 	// `createPresetFlow` (`helpers/preset-flows.js`) records the failure via `screen.addError` (the
 	// Notice rendered below) and re-throws pessimistically for callers that need the rejection; this
 	// `.catch()` only stops that rethrow from surfacing as an unhandled promise rejection, it does
-	// not report the error a second time.
-	const mintPreset = () =>
-		screen
+	// not report the error a second time. Disabling the button is a UI guard, not a real one — a
+	// stale click (e.g. a keyboard Enter racing the disabled-attribute repaint) could otherwise
+	// still start a second create.
+	const mintPreset = () => {
+		if (screen.isBusy) {
+			return Promise.resolve();
+		}
+
+		setIsAdding(true);
+
+		return screen
 			.addPreset()
 			.then((id) => navigate({ item: id }))
-			.catch(() => {});
+			.catch(() => {})
+			.finally(() => setIsAdding(false));
+	};
 	const addAction = (
 		<Button
 			icon={plus}
 			variant="secondary"
+			isBusy={isAdding}
 			disabled={screen.isBusy}
 			onClick={() => (channel ? channel.guard(mintPreset) : mintPreset())}
 		>
-			{preset.addLabel}
+			{isAdding ? __('Adding…', 'kadence-blocks') : preset.addLabel}
 		</Button>
 	);
 
@@ -112,7 +180,7 @@ export function PresetScreen({ label, route, navigate, library, preset }) {
 				</Notice>
 			)}
 			{screen.isLoading ? (
-				<Spinner />
+				<PresetRowsSkeleton label={label} />
 			) : (
 				<RowList
 					items={items}

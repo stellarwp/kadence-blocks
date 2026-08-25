@@ -1,15 +1,20 @@
 /**
  * The Color Palette screen's settings panel: edits one swatch — its display name (a structure edit
  * written to the default palette) and its color (a granular value write on the palette being
- * edited) — and deletes it (also a structure edit, with a best-effort token cleanup after). Mounted
- * by the app when a swatch token is the open route item; see `ColorPaletteScreen.SettingsPanel`.
+ * edited) — and offers ONE destructive action in the footer, chosen by what kind of swatch is
+ * open: a custom, user-created swatch gets Delete (a structure edit, with a best-effort primitive
+ * cleanup after); a built-in swatch showing this (non-default) palette's own override gets Reset
+ * (reverts that one palette's delta back to inherited, leaving the swatch's definition and every
+ * other palette untouched). A built-in swatch that has no action available here (editing the
+ * default palette itself, or a non-default palette where it is not currently overridden) shows
+ * neither button. Mounted by the app when a swatch token is the open route item; see
+ * `ColorPaletteScreen.SettingsPanel`.
  */
 
 /**
  * WordPress dependencies
  */
-import { useEffect } from '@wordpress/element';
-import { Notice } from '@wordpress/components';
+import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
 /**
@@ -19,7 +24,9 @@ import { SettingsPanel } from '../templates/SettingsPanel';
 import { SettingsForm } from '../organisms/SettingsForm';
 import { usePalettes } from '../../hooks/use-palettes';
 import { useSettingsPanel } from '../../hooks/use-settings-panel';
+import { useLoadingAnnouncement } from '../../hooks/use-loading-announcement';
 import { findSwatch, swatchInitialValues } from '../../helpers/palettes';
+import { Skeleton } from '../atoms/Skeleton';
 
 /**
  * The swatch panel's schema: a NAME text field and a color-only picker. `colorOnly: true` keeps the
@@ -61,6 +68,15 @@ export function ColorPaletteSettings({ route, navigate, library }) {
 	// seeding empty at mount and never re-seeding. See that hook's own docblock for the contract.
 	const initialValues = palettes.palette ? swatchInitialValues(palettes.palette, token) : null;
 	const panel = useSettingsPanel({ route, navigate, initialValues });
+	// `palettes.isBusy` covers all the write flows with a single flag, but the footer needs to show
+	// the busy animation on only the button the user actually clicked — the `PresetSidebar.js` idiom,
+	// tracked locally for the same reason: only this panel's footer needs the distinction.
+	const [pendingAction, setPendingAction] = useState(null);
+
+	// The skeleton below lives inside its own `role="status"` region, which only announces "Loading…"
+	// while it is actually mounted — the moment it is replaced by the real panel, that region is
+	// gone too, and nothing is left to tell a screen reader the load finished.
+	useLoadingAnnouncement(Boolean(token && palettes.isLoading), __('Settings loaded.', 'kadence-blocks'));
 
 	// Self-heal a stale item the same way the app's unknown-screen route does: a token that does not
 	// resolve in the current palette's view (a leftover from another palette, or a hand-edited URL)
@@ -72,6 +88,15 @@ export function ColorPaletteSettings({ route, navigate, library }) {
 		}
 	}, [palettes.isLoading, palettes.palette, swatch, navigate]);
 
+	if (token && palettes.isLoading) {
+		return (
+			<div className="kadence-blocks-style-library__settings-panel" role="status" aria-busy="true">
+				<Skeleton className="kadence-blocks-style-library__settings-panel-field" />
+				<Skeleton className="kadence-blocks-style-library__settings-panel-field" />
+			</div>
+		);
+	}
+
 	if (!swatch) {
 		return null;
 	}
@@ -81,33 +106,73 @@ export function ColorPaletteSettings({ route, navigate, library }) {
 	// closure is the PRE-save values, so calling it would silently revert the panel to what the
 	// user just replaced (confirmed: the write itself lands correctly; only the UI would regress).
 	// Leaving the draft alone is enough: it already holds exactly what was saved, so the picker
-	// keeps showing it, and once `saveSwatchEdits`'s `reload()` refreshes `palettes.palette`, the
-	// next render's `initialValues` recomputes to the same values, `computeIsDirty` sees them as
-	// equal, and the Save button disables itself — no reset step required. On failure the draft
-	// (and the Save button) simply survive, which is what we want anyway.
-	const onSave = () => palettes.saveSwatchEdits(token, panel.draft, initialValues).catch(() => {});
+	// keeps showing it, and once `saveSwatchEdits`'s write dispatches its own response into the
+	// store (`onReceive`, no follow-up fetch), `palettes.palette` recomputes from the fresh
+	// listing, the next render's `initialValues` recomputes to the same values, `computeIsDirty`
+	// sees them as equal, and the Save button disables itself — no reset step required. On failure
+	// the draft (and the Save button) simply survive, which is what we want anyway.
+	const onSave = () => {
+		if (palettes.isBusy) {
+			return;
+		}
+
+		setPendingAction('save');
+		palettes
+			.saveSwatchEdits(token, panel.draft, initialValues)
+			.catch(() => {})
+			.finally(() => setPendingAction(null));
+	};
+
+	// A custom swatch is removed entirely (a structure edit, with a best-effort primitive cleanup
+	// after — `removeSwatch` decides that internally). A built-in swatch showing THIS palette's own
+	// override is reverted to inherited instead (`resetSwatch`) — never removed, since its
+	// definition belongs to the default palette, not to the one currently open. A built-in swatch
+	// with nothing to revert here (the default palette itself, or a non-default palette where it
+	// isn't overridden) gets neither action.
+	const isCustom = palettes.isSwatchCustom(token);
+	const canReset = !isCustom && palettes.editingId !== palettes.listing.defaultId && swatch.overridden;
+
+	const onDelete = () => {
+		if (palettes.isBusy) {
+			return;
+		}
+
+		setPendingAction('delete');
+		palettes
+			.removeSwatch(token)
+			.then(() => navigate({ item: '' }))
+			// Swallowed: a row-removal write failure already surfaces via `notifyError` inside
+			// `removeSwatch`, and the swatch itself reverts out of its pending-delete state.
+			.catch(() => {})
+			.finally(() => setPendingAction(null));
+	};
+
+	const onReset = () => {
+		if (palettes.isBusy) {
+			return;
+		}
+
+		setPendingAction('delete');
+		palettes
+			.resetSwatch(token)
+			// Swallowed: a failure already surfaces via `notifyError` inside `resetSwatch`, and the
+			// panel simply stays open showing the (unchanged) override.
+			.catch(() => {})
+			.finally(() => setPendingAction(null));
+	};
 
 	return (
 		<SettingsPanel
 			onClose={panel.close}
 			onSave={onSave}
-			// Renders for every swatch: what Delete removes is a palette row (user-editable document
-			// data), not the token — `removeSwatch` decides internally whether the underlying token
-			// is user-created and only then best-effort cleans it up (settled decision 8).
-			onDelete={() =>
-				palettes
-					.removeSwatch(token)
-					.then(() => navigate({ item: '' }))
-					// Swallowed: a row-removal write failure already lands in `saveError`, rendered above.
-					.catch(() => {})
-			}
+			onDelete={isCustom ? onDelete : canReset ? onReset : null}
+			deleteLabel={canReset ? __('Reset', 'kadence-blocks') : __('Delete', 'kadence-blocks')}
+			deleteBusyLabel={canReset ? __('Resetting…', 'kadence-blocks') : __('Deleting…', 'kadence-blocks')}
 			isDirty={panel.isDirty}
+			isBusy={palettes.isBusy}
+			isSaving={pendingAction === 'save'}
+			isDeleting={pendingAction === 'delete'}
 		>
-			{palettes.saveError && (
-				<Notice status="error" onRemove={palettes.clearSaveError}>
-					{palettes.saveError.message}
-				</Notice>
-			)}
 			<SettingsForm schema={SWATCH_SETTINGS_SCHEMA} values={panel.draft} onChange={panel.setFieldValue} />
 		</SettingsPanel>
 	);
