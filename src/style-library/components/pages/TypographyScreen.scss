@@ -62,26 +62,6 @@
 	margin: var(--kb-sl-space-20) 0;
 }
 
-.kadence-blocks-style-library__typography-font-tabs {
-	@include flex-row(var(--kb-sl-space-10));
-}
-
-.kadence-blocks-style-library__typography-font-tab {
-	padding: var(--kb-sl-space-10) var(--kb-sl-space-15);
-	border: 0;
-	border-radius: var(--kb-sl-radius-s);
-	background: transparent;
-	color: var(--kb-sl-color-text-secondary);
-	font-size: var(--kb-sl-font-size-s);
-	cursor: pointer;
-
-	&--active {
-		background: var(--kb-sl-color-gray-100);
-		color: var(--kb-sl-color-text-primary);
-		font-weight: var(--kb-sl-font-weight-semibold);
-	}
-}
-
 .kadence-blocks-style-library__typography-toolbar-row {
 	display: flex;
 	align-items: flex-end;
@@ -97,7 +77,7 @@
 	@include small-uppercase-label;
 }
 
-// The catalog dropdown and its contextual Add/Delete Font button sit side by side, beneath the
+// The catalog dropdown and its contextual Add/Remove Favorite button sit side by side, beneath the
 // FONT label — the board's slot for both.
 .kadence-blocks-style-library__typography-font-picker {
 	@include flex-row(var(--kb-sl-space-10));
