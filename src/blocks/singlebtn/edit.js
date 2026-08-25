@@ -80,11 +80,11 @@ import {
 } from '@wordpress/components';
 import { addFilter, applyFilters, doAction } from '@wordpress/hooks';
 import BackendStyles from './components/backend-styles';
+import { useLinkedMeasureState } from './hooks/use-linked-measure-state';
 import { PresetButton } from '../../extension/preset-picker/PresetButton';
 import { usePresetBinding, resetAttr, presetPropertyValueForDevice } from '../../extension/token-indicators';
 import {
 	anyCornerInherited,
-	deriveMeasureMode,
 	inheritedMeasureSlots,
 	measureAttrsForDevice,
 	presetValueForDevice,
@@ -421,16 +421,6 @@ export default function KadenceButtonEdit(props) {
 
 	const [activeTab, setActiveTab] = useState('general');
 	const [isEditingURL, setIsEditingURL] = useState(false);
-	// The border-radius linked/individual mode is derived from the stored corners (all equal reads as
-	// linked), so no new attribute is needed and old buttons open in the right mode. This ephemeral
-	// override only records an explicit "unlink" of already-equal corners for the current session — it
-	// resets on remount, matching how the control's mode has always been session-local.
-	// Keyed by device: the responsive control keeps ONE mode but writes three attributes, so a choice
-	// made on Tablet must not flip Desktop's corners (and vice versa).
-	const [borderRadiusModeOverride, setBorderRadiusModeOverride] = useState({});
-	// Padding's linked/individual mode is tracked the same way as Border Radius's, above — its own
-	// override state because the two controls' sides are independent stored values.
-	const [paddingModeOverride, setPaddingModeOverride] = useState({});
 
 	// Everything the new box control needs that the block already knows, gathered in one place rather
 	// than inlined into the JSX.
@@ -448,145 +438,42 @@ export default function KadenceButtonEdit(props) {
 	const shadowPickableTokens = pickableTokensForKey('kadence/singlebtn', 'button-shadow');
 	const paddingPickableTokens = pickableTokensForKey('kadence/singlebtn', 'button-padding');
 
-	// The mode describes what THIS device stores, not what it inherits. A breakpoint that stores nothing
-	// has nothing that differs, so it reads as linked — deriving from the inherited corners instead would
-	// split an all-empty Tablet into four identical blank fields, showing a difference the user cannot
-	// see. Where the value comes from is surfaced by the field's popover, not by the link toggle.
-	const borderRadiusIsLinked =
-		'linked' ===
-		(borderRadiusModeOverride[previewDevice] ??
-			deriveMeasureMode(borderRadiusForDevice.value, borderRadiusPresetValue));
+	// The border-radius/padding linked/individual mode is derived from the stored slots (all equal reads
+	// as linked), so no new attribute is needed and old buttons open in the right mode. The hook's own
+	// override only records an explicit "unlink" of already-equal slots for the current session — it
+	// resets on remount, matching how the control's mode has always been session-local. It is keyed by
+	// device internally: the responsive control keeps ONE mode but writes three attributes, so a choice
+	// made on Tablet must not flip Desktop's slots (and vice versa). It also resets whenever the active
+	// preset changes (via `resetOn`), since an override records a choice about the PREVIOUS preset's
+	// slots — otherwise an explicit "link" would stick and hide a new preset's per-slot value.
+	const { isLinked: borderRadiusIsLinked, toggleLink: toggleBorderRadiusLink } = useLinkedMeasureState({
+		forDevice: borderRadiusForDevice,
+		inherited: inheritedBorderRadius,
+		previewDevice,
+		presetValue: borderRadiusPresetValue,
+		tokens: borderRadiusTokens,
+		setAttributes,
+		resetOn: attributes.kbPreset,
+	});
 
-	// What the corners inherit, and whether that inheritance is uniform. A per-corner inheritance is the
-	// case where linking is a real change rather than a no-op. Always `inheritedBorderRadius.values`,
-	// never the raw preset value directly: `inheritedMeasureSlots()` already falls through to the
-	// preset's own per-corner slots (`presetSlotAt`) once the device's stored corners run out, so
-	// reading the preset array straight through here would drop any corner this device DOES store —
-	// silently discarding the desktop/tablet cascade for a preset that happens to be per-corner.
-	const inheritedCorners = inheritedBorderRadius.values;
-	const inheritedCornersDiffer =
-		Array.isArray(inheritedCorners) && inheritedCorners.some((corner) => corner !== inheritedCorners[0]);
-	// The preset surface carries resolved literals, not aliases (`blockPresetValues` flattens them so the
-	// overridden-check can be a plain compare), so the literal is matched back to the token that produced
-	// it. Writing the alias keeps the collapsed corner bound to `None` rather than landing as a custom
-	// `0px` that merely happens to look the same.
-	const aliasForValue = (value) => borderRadiusTokens.find((token) => token.value === value)?.alias ?? value ?? '';
-	const inheritedFirstCorner = Array.isArray(inheritedCorners) ? aliasForValue(inheritedCorners[0]) : '';
-
-	const toggleBorderRadiusLink = () => {
-		if (!borderRadiusIsLinked) {
-			const corners = borderRadiusForDevice.value ?? [];
-			const corner = corners[0] ?? '';
-			const isEmpty = corners.every((value) => '' === value || undefined === value);
-
-			if (isEmpty) {
-				// Nothing stored on this device, so ordinarily there is nothing to collapse — the corners
-				// are empty because they inherit, and writing the inherited value would silently pin
-				// Tablet/Mobile to Desktop's current radius. Remember the choice instead.
-				//
-				// Unless what is inherited differs corner to corner: then "link" genuinely changes the
-				// result, and storing nothing would leave the control showing one value while the button
-				// still renders four, with the indicator insisting it matches the preset. Collapsing to
-				// the first corner is the write that makes the three agree.
-				if (!inheritedCornersDiffer) {
-					setBorderRadiusModeOverride((current) => ({ ...current, [previewDevice]: 'linked' }));
-
-					return;
-				}
-
-				setAttributes({
-					[borderRadiusForDevice.attr]: [
-						inheritedFirstCorner,
-						inheritedFirstCorner,
-						inheritedFirstCorner,
-						inheritedFirstCorner,
-					],
-				});
-				setBorderRadiusModeOverride((current) => ({ ...current, [previewDevice]: undefined }));
-
-				return;
-			}
-
-			// Every corner matches the top-left, blank included, and only on the ACTIVE device.
-			setAttributes({ [borderRadiusForDevice.attr]: [corner, corner, corner, corner] });
-			// Equal corners derive linked on their own — except blank ones under a per-corner preset.
-			setBorderRadiusModeOverride((current) => ({
-				...current,
-				[previewDevice]: '' === corner ? 'linked' : undefined,
-			}));
-
-			return;
-		}
-
-		// Unlinking equal corners leaves the values untouched, so remember the choice for this session
-		// AND this device; a differing corner would derive individual on its own.
-		setBorderRadiusModeOverride((current) => ({ ...current, [previewDevice]: 'individual' }));
-	};
-
-	// Padding's linked/individual mode and its toggle, mirroring Border Radius's own block above with
-	// "corner" swapped for "side" — same shape, run over `paddingForDevice`/`paddingPresetValue`/
-	// `inheritedPadding` instead.
-	const paddingIsLinked =
-		'linked' ===
-		(paddingModeOverride[previewDevice] ?? deriveMeasureMode(paddingForDevice.value, paddingPresetValue));
-
-	const inheritedPaddingSides = inheritedPadding.values;
-	const inheritedPaddingSidesDiffer =
-		Array.isArray(inheritedPaddingSides) && inheritedPaddingSides.some((side) => side !== inheritedPaddingSides[0]);
-	const aliasForPaddingValue = (value) =>
-		paddingPickableTokens.find((token) => token.value === value)?.alias ?? value ?? '';
-	const inheritedFirstPaddingSide = Array.isArray(inheritedPaddingSides)
-		? aliasForPaddingValue(inheritedPaddingSides[0])
-		: '';
-
-	const togglePaddingLink = () => {
-		if (!paddingIsLinked) {
-			const sides = paddingForDevice.value ?? [];
-			const side = sides[0] ?? '';
-			const isEmpty = sides.every((value) => '' === value || undefined === value);
-
-			if (isEmpty) {
-				if (!inheritedPaddingSidesDiffer) {
-					setPaddingModeOverride((current) => ({ ...current, [previewDevice]: 'linked' }));
-
-					return;
-				}
-
-				setAttributes({
-					[paddingForDevice.attr]: [
-						inheritedFirstPaddingSide,
-						inheritedFirstPaddingSide,
-						inheritedFirstPaddingSide,
-						inheritedFirstPaddingSide,
-					],
-				});
-				setPaddingModeOverride((current) => ({ ...current, [previewDevice]: undefined }));
-
-				return;
-			}
-
-			// Every side matches the first, blank included, and only on the ACTIVE device.
-			setAttributes({ [paddingForDevice.attr]: [side, side, side, side] });
-			// Equal sides derive linked on their own — except blank ones under a per-side preset.
-			setPaddingModeOverride((current) => ({
-				...current,
-				[previewDevice]: '' === side ? 'linked' : undefined,
-			}));
-
-			return;
-		}
-
-		// Unlinking equal sides leaves the values untouched, so remember the choice for this session AND
-		// this device; a differing side would derive individual on its own.
-		setPaddingModeOverride((current) => ({ ...current, [previewDevice]: 'individual' }));
-	};
+	// Padding's linked/individual mode, mirroring Border Radius's own hook call above with "corner"
+	// swapped for "side" — same shape, run over `paddingForDevice`/`paddingPresetValue`/
+	// `inheritedPadding`/`paddingPickableTokens` instead. Padding has no `resetOn`: unlike Border
+	// Radius's 6 states, its override has never been cleared on a preset change.
+	const { isLinked: paddingIsLinked, toggleLink: togglePaddingLink } = useLinkedMeasureState({
+		forDevice: paddingForDevice,
+		inherited: inheritedPadding,
+		previewDevice,
+		presetValue: paddingPresetValue,
+		tokens: paddingPickableTokens,
+		setAttributes,
+	});
 
 	// Hover/Transparent/Transparent Hover/Sticky/Sticky Hover each store their own 4 corners, so each
-	// gets its own copy of the linked-state machinery above — sharing Normal's `borderRadiusModeOverride`
-	// would couple these states' link/unlink UI together even though the underlying attributes are
-	// independent. All 6 states still read/write the same `tokenBinding.borderRadius` preset binding and
-	// `borderRadiusTokens` pool, since there is only one border-radius preset property.
-	const [borderHoverRadiusModeOverride, setBorderHoverRadiusModeOverride] = useState({});
+	// gets its own call to the hook above — sharing Normal's linked state would couple these states'
+	// link/unlink UI together even though the underlying attributes are independent. All 6 states still
+	// read/write the same `tokenBinding.borderRadius` preset binding and `borderRadiusTokens` pool, since
+	// there is only one border-radius preset property.
 	const borderHoverRadiusForDevice = measureAttrsForDevice(
 		attributes,
 		'borderHoverRadius',
@@ -598,56 +485,16 @@ export default function KadenceButtonEdit(props) {
 		{ desktop: borderHoverRadius, tablet: tabletBorderHoverRadius },
 		borderRadiusPresetValue
 	);
-	const borderHoverRadiusIsLinked =
-		'linked' ===
-		(borderHoverRadiusModeOverride[previewDevice] ??
-			deriveMeasureMode(borderHoverRadiusForDevice.value, borderRadiusPresetValue));
-	const borderHoverInheritedCorners = inheritedBorderHoverRadius.values;
-	const borderHoverInheritedCornersDiffer =
-		Array.isArray(borderHoverInheritedCorners) &&
-		borderHoverInheritedCorners.some((corner) => corner !== borderHoverInheritedCorners[0]);
-	const borderHoverInheritedFirstCorner = Array.isArray(borderHoverInheritedCorners)
-		? aliasForValue(borderHoverInheritedCorners[0])
-		: '';
-	const toggleBorderHoverRadiusLink = () => {
-		if (!borderHoverRadiusIsLinked) {
-			const corners = borderHoverRadiusForDevice.value ?? [];
-			const corner = corners[0] ?? '';
-			const isEmpty = corners.every((value) => '' === value || undefined === value);
+	const { isLinked: borderHoverRadiusIsLinked, toggleLink: toggleBorderHoverRadiusLink } = useLinkedMeasureState({
+		forDevice: borderHoverRadiusForDevice,
+		inherited: inheritedBorderHoverRadius,
+		previewDevice,
+		presetValue: borderRadiusPresetValue,
+		tokens: borderRadiusTokens,
+		setAttributes,
+		resetOn: attributes.kbPreset,
+	});
 
-			if (isEmpty) {
-				if (!borderHoverInheritedCornersDiffer) {
-					setBorderHoverRadiusModeOverride((current) => ({ ...current, [previewDevice]: 'linked' }));
-
-					return;
-				}
-
-				setAttributes({
-					[borderHoverRadiusForDevice.attr]: [
-						borderHoverInheritedFirstCorner,
-						borderHoverInheritedFirstCorner,
-						borderHoverInheritedFirstCorner,
-						borderHoverInheritedFirstCorner,
-					],
-				});
-				setBorderHoverRadiusModeOverride((current) => ({ ...current, [previewDevice]: undefined }));
-
-				return;
-			}
-
-			setAttributes({ [borderHoverRadiusForDevice.attr]: [corner, corner, corner, corner] });
-			setBorderHoverRadiusModeOverride((current) => ({
-				...current,
-				[previewDevice]: '' === corner ? 'linked' : undefined,
-			}));
-
-			return;
-		}
-
-		setBorderHoverRadiusModeOverride((current) => ({ ...current, [previewDevice]: 'individual' }));
-	};
-
-	const [borderTransparentRadiusModeOverride, setBorderTransparentRadiusModeOverride] = useState({});
 	const borderTransparentRadiusForDevice = measureAttrsForDevice(
 		attributes,
 		'borderTransparentRadius',
@@ -659,56 +506,17 @@ export default function KadenceButtonEdit(props) {
 		{ desktop: borderTransparentRadius, tablet: tabletBorderTransparentRadius },
 		borderRadiusPresetValue
 	);
-	const borderTransparentRadiusIsLinked =
-		'linked' ===
-		(borderTransparentRadiusModeOverride[previewDevice] ??
-			deriveMeasureMode(borderTransparentRadiusForDevice.value, borderRadiusPresetValue));
-	const borderTransparentInheritedCorners = inheritedBorderTransparentRadius.values;
-	const borderTransparentInheritedCornersDiffer =
-		Array.isArray(borderTransparentInheritedCorners) &&
-		borderTransparentInheritedCorners.some((corner) => corner !== borderTransparentInheritedCorners[0]);
-	const borderTransparentInheritedFirstCorner = Array.isArray(borderTransparentInheritedCorners)
-		? aliasForValue(borderTransparentInheritedCorners[0])
-		: '';
-	const toggleBorderTransparentRadiusLink = () => {
-		if (!borderTransparentRadiusIsLinked) {
-			const corners = borderTransparentRadiusForDevice.value ?? [];
-			const corner = corners[0] ?? '';
-			const isEmpty = corners.every((value) => '' === value || undefined === value);
+	const { isLinked: borderTransparentRadiusIsLinked, toggleLink: toggleBorderTransparentRadiusLink } =
+		useLinkedMeasureState({
+			forDevice: borderTransparentRadiusForDevice,
+			inherited: inheritedBorderTransparentRadius,
+			previewDevice,
+			presetValue: borderRadiusPresetValue,
+			tokens: borderRadiusTokens,
+			setAttributes,
+			resetOn: attributes.kbPreset,
+		});
 
-			if (isEmpty) {
-				if (!borderTransparentInheritedCornersDiffer) {
-					setBorderTransparentRadiusModeOverride((current) => ({ ...current, [previewDevice]: 'linked' }));
-
-					return;
-				}
-
-				setAttributes({
-					[borderTransparentRadiusForDevice.attr]: [
-						borderTransparentInheritedFirstCorner,
-						borderTransparentInheritedFirstCorner,
-						borderTransparentInheritedFirstCorner,
-						borderTransparentInheritedFirstCorner,
-					],
-				});
-				setBorderTransparentRadiusModeOverride((current) => ({ ...current, [previewDevice]: undefined }));
-
-				return;
-			}
-
-			setAttributes({ [borderTransparentRadiusForDevice.attr]: [corner, corner, corner, corner] });
-			setBorderTransparentRadiusModeOverride((current) => ({
-				...current,
-				[previewDevice]: '' === corner ? 'linked' : undefined,
-			}));
-
-			return;
-		}
-
-		setBorderTransparentRadiusModeOverride((current) => ({ ...current, [previewDevice]: 'individual' }));
-	};
-
-	const [borderTransparentHoverRadiusModeOverride, setBorderTransparentHoverRadiusModeOverride] = useState({});
 	const borderTransparentHoverRadiusForDevice = measureAttrsForDevice(
 		attributes,
 		'borderTransparentHoverRadius',
@@ -720,62 +528,17 @@ export default function KadenceButtonEdit(props) {
 		{ desktop: borderTransparentHoverRadius, tablet: tabletBorderTransparentHoverRadius },
 		borderRadiusPresetValue
 	);
-	const borderTransparentHoverRadiusIsLinked =
-		'linked' ===
-		(borderTransparentHoverRadiusModeOverride[previewDevice] ??
-			deriveMeasureMode(borderTransparentHoverRadiusForDevice.value, borderRadiusPresetValue));
-	const borderTransparentHoverInheritedCorners = inheritedBorderTransparentHoverRadius.values;
-	const borderTransparentHoverInheritedCornersDiffer =
-		Array.isArray(borderTransparentHoverInheritedCorners) &&
-		borderTransparentHoverInheritedCorners.some((corner) => corner !== borderTransparentHoverInheritedCorners[0]);
-	const borderTransparentHoverInheritedFirstCorner = Array.isArray(borderTransparentHoverInheritedCorners)
-		? aliasForValue(borderTransparentHoverInheritedCorners[0])
-		: '';
-	const toggleBorderTransparentHoverRadiusLink = () => {
-		if (!borderTransparentHoverRadiusIsLinked) {
-			const corners = borderTransparentHoverRadiusForDevice.value ?? [];
-			const corner = corners[0] ?? '';
-			const isEmpty = corners.every((value) => '' === value || undefined === value);
+	const { isLinked: borderTransparentHoverRadiusIsLinked, toggleLink: toggleBorderTransparentHoverRadiusLink } =
+		useLinkedMeasureState({
+			forDevice: borderTransparentHoverRadiusForDevice,
+			inherited: inheritedBorderTransparentHoverRadius,
+			previewDevice,
+			presetValue: borderRadiusPresetValue,
+			tokens: borderRadiusTokens,
+			setAttributes,
+			resetOn: attributes.kbPreset,
+		});
 
-			if (isEmpty) {
-				if (!borderTransparentHoverInheritedCornersDiffer) {
-					setBorderTransparentHoverRadiusModeOverride((current) => ({
-						...current,
-						[previewDevice]: 'linked',
-					}));
-
-					return;
-				}
-
-				setAttributes({
-					[borderTransparentHoverRadiusForDevice.attr]: [
-						borderTransparentHoverInheritedFirstCorner,
-						borderTransparentHoverInheritedFirstCorner,
-						borderTransparentHoverInheritedFirstCorner,
-						borderTransparentHoverInheritedFirstCorner,
-					],
-				});
-				setBorderTransparentHoverRadiusModeOverride((current) => ({
-					...current,
-					[previewDevice]: undefined,
-				}));
-
-				return;
-			}
-
-			setAttributes({ [borderTransparentHoverRadiusForDevice.attr]: [corner, corner, corner, corner] });
-			setBorderTransparentHoverRadiusModeOverride((current) => ({
-				...current,
-				[previewDevice]: '' === corner ? 'linked' : undefined,
-			}));
-
-			return;
-		}
-
-		setBorderTransparentHoverRadiusModeOverride((current) => ({ ...current, [previewDevice]: 'individual' }));
-	};
-
-	const [borderStickyRadiusModeOverride, setBorderStickyRadiusModeOverride] = useState({});
 	const borderStickyRadiusForDevice = measureAttrsForDevice(
 		attributes,
 		'borderStickyRadius',
@@ -787,56 +550,16 @@ export default function KadenceButtonEdit(props) {
 		{ desktop: borderStickyRadius, tablet: tabletBorderStickyRadius },
 		borderRadiusPresetValue
 	);
-	const borderStickyRadiusIsLinked =
-		'linked' ===
-		(borderStickyRadiusModeOverride[previewDevice] ??
-			deriveMeasureMode(borderStickyRadiusForDevice.value, borderRadiusPresetValue));
-	const borderStickyInheritedCorners = inheritedBorderStickyRadius.values;
-	const borderStickyInheritedCornersDiffer =
-		Array.isArray(borderStickyInheritedCorners) &&
-		borderStickyInheritedCorners.some((corner) => corner !== borderStickyInheritedCorners[0]);
-	const borderStickyInheritedFirstCorner = Array.isArray(borderStickyInheritedCorners)
-		? aliasForValue(borderStickyInheritedCorners[0])
-		: '';
-	const toggleBorderStickyRadiusLink = () => {
-		if (!borderStickyRadiusIsLinked) {
-			const corners = borderStickyRadiusForDevice.value ?? [];
-			const corner = corners[0] ?? '';
-			const isEmpty = corners.every((value) => '' === value || undefined === value);
+	const { isLinked: borderStickyRadiusIsLinked, toggleLink: toggleBorderStickyRadiusLink } = useLinkedMeasureState({
+		forDevice: borderStickyRadiusForDevice,
+		inherited: inheritedBorderStickyRadius,
+		previewDevice,
+		presetValue: borderRadiusPresetValue,
+		tokens: borderRadiusTokens,
+		setAttributes,
+		resetOn: attributes.kbPreset,
+	});
 
-			if (isEmpty) {
-				if (!borderStickyInheritedCornersDiffer) {
-					setBorderStickyRadiusModeOverride((current) => ({ ...current, [previewDevice]: 'linked' }));
-
-					return;
-				}
-
-				setAttributes({
-					[borderStickyRadiusForDevice.attr]: [
-						borderStickyInheritedFirstCorner,
-						borderStickyInheritedFirstCorner,
-						borderStickyInheritedFirstCorner,
-						borderStickyInheritedFirstCorner,
-					],
-				});
-				setBorderStickyRadiusModeOverride((current) => ({ ...current, [previewDevice]: undefined }));
-
-				return;
-			}
-
-			setAttributes({ [borderStickyRadiusForDevice.attr]: [corner, corner, corner, corner] });
-			setBorderStickyRadiusModeOverride((current) => ({
-				...current,
-				[previewDevice]: '' === corner ? 'linked' : undefined,
-			}));
-
-			return;
-		}
-
-		setBorderStickyRadiusModeOverride((current) => ({ ...current, [previewDevice]: 'individual' }));
-	};
-
-	const [borderStickyHoverRadiusModeOverride, setBorderStickyHoverRadiusModeOverride] = useState({});
 	const borderStickyHoverRadiusForDevice = measureAttrsForDevice(
 		attributes,
 		'borderStickyHoverRadius',
@@ -848,67 +571,17 @@ export default function KadenceButtonEdit(props) {
 		{ desktop: borderStickyHoverRadius, tablet: tabletBorderStickyHoverRadius },
 		borderRadiusPresetValue
 	);
-	const borderStickyHoverRadiusIsLinked =
-		'linked' ===
-		(borderStickyHoverRadiusModeOverride[previewDevice] ??
-			deriveMeasureMode(borderStickyHoverRadiusForDevice.value, borderRadiusPresetValue));
-	const borderStickyHoverInheritedCorners = inheritedBorderStickyHoverRadius.values;
-	const borderStickyHoverInheritedCornersDiffer =
-		Array.isArray(borderStickyHoverInheritedCorners) &&
-		borderStickyHoverInheritedCorners.some((corner) => corner !== borderStickyHoverInheritedCorners[0]);
-	const borderStickyHoverInheritedFirstCorner = Array.isArray(borderStickyHoverInheritedCorners)
-		? aliasForValue(borderStickyHoverInheritedCorners[0])
-		: '';
-	const toggleBorderStickyHoverRadiusLink = () => {
-		if (!borderStickyHoverRadiusIsLinked) {
-			const corners = borderStickyHoverRadiusForDevice.value ?? [];
-			const corner = corners[0] ?? '';
-			const isEmpty = corners.every((value) => '' === value || undefined === value);
+	const { isLinked: borderStickyHoverRadiusIsLinked, toggleLink: toggleBorderStickyHoverRadiusLink } =
+		useLinkedMeasureState({
+			forDevice: borderStickyHoverRadiusForDevice,
+			inherited: inheritedBorderStickyHoverRadius,
+			previewDevice,
+			presetValue: borderRadiusPresetValue,
+			tokens: borderRadiusTokens,
+			setAttributes,
+			resetOn: attributes.kbPreset,
+		});
 
-			if (isEmpty) {
-				if (!borderStickyHoverInheritedCornersDiffer) {
-					setBorderStickyHoverRadiusModeOverride((current) => ({ ...current, [previewDevice]: 'linked' }));
-
-					return;
-				}
-
-				setAttributes({
-					[borderStickyHoverRadiusForDevice.attr]: [
-						borderStickyHoverInheritedFirstCorner,
-						borderStickyHoverInheritedFirstCorner,
-						borderStickyHoverInheritedFirstCorner,
-						borderStickyHoverInheritedFirstCorner,
-					],
-				});
-				setBorderStickyHoverRadiusModeOverride((current) => ({ ...current, [previewDevice]: undefined }));
-
-				return;
-			}
-
-			setAttributes({ [borderStickyHoverRadiusForDevice.attr]: [corner, corner, corner, corner] });
-			setBorderStickyHoverRadiusModeOverride((current) => ({
-				...current,
-				[previewDevice]: '' === corner ? 'linked' : undefined,
-			}));
-
-			return;
-		}
-
-		setBorderStickyHoverRadiusModeOverride((current) => ({ ...current, [previewDevice]: 'individual' }));
-	};
-
-	// The override records a choice made about the PREVIOUS preset's corners, so selecting another preset
-	// drops it — otherwise an explicit "link" would stick and hide a new preset's per-corner radius (or,
-	// for padding, per-side padding).
-	useEffect(() => {
-		setBorderRadiusModeOverride({});
-		setBorderHoverRadiusModeOverride({});
-		setBorderTransparentRadiusModeOverride({});
-		setBorderTransparentHoverRadiusModeOverride({});
-		setBorderStickyRadiusModeOverride({});
-		setBorderStickyHoverRadiusModeOverride({});
-		setPaddingModeOverride({});
-	}, [attributes.kbPreset]);
 	useEffect(() => {
 		if (!isSelected) {
 			setIsEditingURL(false);
