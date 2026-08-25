@@ -211,6 +211,7 @@ class Kadence_Blocks_CSS {
 	 */
 	protected $spacing_sizes = array(
 		'ss-auto' => 'var(--global-kb-spacing-auto, auto)',
+		'none' => 'var(--global-kb-spacing-none, 0rem)',
 		'xxs' => 'var(--global-kb-spacing-xxs, 0.5rem)',
 		'xs' => 'var(--global-kb-spacing-xs, 1rem)',
 		'sm' => 'var(--global-kb-spacing-sm, 1.5rem)',

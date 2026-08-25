@@ -354,7 +354,7 @@ final class Css_BuilderTest extends TestCase {
 
 		$css = ( new Css_Builder( $registry ) )->css( $resolved );
 
-		foreach ( [ 'xxs', 'xs', 'sm', 'md', 'lg', 'xl', 'xxl', '3xl', '4xl', '5xl' ] as $slug ) {
+		foreach ( [ 'none', 'xxs', 'xs', 'sm', 'md', 'lg', 'xl', 'xxl', '3xl', '4xl', '5xl' ] as $slug ) {
 			$this->assertStringContainsString( '--global-kb-spacing-' . $slug . ':var(', $css );
 		}
 

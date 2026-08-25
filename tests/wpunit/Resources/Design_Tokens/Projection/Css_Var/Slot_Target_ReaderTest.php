@@ -83,16 +83,17 @@ final class Slot_Target_ReaderTest extends TestCase {
 	public function testItReadsTheSpacingScaleAsTheShippedLengths(): void {
 		$this->assertEquals(
 			[
-				'xxs' => '0.5rem',
-				'xs'  => '1rem',
-				'sm'  => '1.5rem',
-				'md'  => '2rem',
-				'lg'  => '3rem',
-				'xl'  => '4rem',
-				'xxl' => '5rem',
-				'3xl' => '6.5rem',
-				'4xl' => '8rem',
-				'5xl' => '10rem',
+				'xxs'  => '0.5rem',
+				'xs'   => '1rem',
+				'sm'   => '1.5rem',
+				'md'   => '2rem',
+				'lg'   => '3rem',
+				'xl'   => '4rem',
+				'xxl'  => '5rem',
+				'3xl'  => '6.5rem',
+				'4xl'  => '8rem',
+				'5xl'  => '10rem',
+				'none' => '0',
 			],
 			$this->reader->read( Spacing_Target::class )
 		);

@@ -409,6 +409,27 @@ export default function KadenceButtonEdit(props) {
 		paddingPresetValue
 	);
 
+	// Margin keeps the same one-mode-per-device shape as Padding above.
+	const marginForDevice = measureAttrsForDevice(
+		attributes,
+		'margin',
+		{ tablet: 'tabletMargin', mobile: 'mobileMargin' },
+		previewDevice
+	);
+
+	const marginPresetValue = presetValueForDevice(
+		tokenBinding.margin?.presetValue,
+		tokenBinding.margin?.responsive,
+		previewDevice
+	);
+
+	// What an unset Margin side falls back to on the active device — same cascade as Padding above.
+	const inheritedMargin = inheritedMeasureSlots(
+		previewDevice,
+		{ desktop: margin, tablet: tabletMargin },
+		marginPresetValue
+	);
+
 	useEffect(() => {
 		setAttributes({ inQueryBlock: getInQueryBlock(context, inQueryBlock) });
 
@@ -437,6 +458,14 @@ export default function KadenceButtonEdit(props) {
 	const borderWidthPickableTokens = pickableTokensForKey('kadence/singlebtn', 'button-border-width');
 	const shadowPickableTokens = pickableTokensForKey('kadence/singlebtn', 'button-shadow');
 	const paddingPickableTokens = pickableTokensForKey('kadence/singlebtn', 'button-padding');
+	// Margin's legacy control also offers "Auto" (`allowAuto`), which Padding's never did.
+	// `ss-auto` is already a fully working spacing slot at the PHP/CSS layer (Spacing_Target's SLOTS,
+	// class-kadence-blocks-css.php's $spacing_sizes) — the editor's pickable list is the only gap, so
+	// it is appended here as a fixed entry rather than added to the token registry itself.
+	const marginPickableTokens = [
+		...pickableTokensForKey('kadence/singlebtn', 'button-margin'),
+		{ id: 'ss-auto', label: __('Auto', 'kadence-blocks'), value: 'ss-auto', alias: 'ss-auto' },
+	];
 
 	// The border-radius/padding linked/individual mode is derived from the stored slots (all equal reads
 	// as linked), so no new attribute is needed and old buttons open in the right mode. The hook's own
@@ -469,6 +498,18 @@ export default function KadenceButtonEdit(props) {
 		tokens: paddingPickableTokens,
 		setAttributes,
 		resetOn: attributes.kbPreset,
+	});
+
+	// Margin's linked/individual mode, mirroring Padding's own hook call above — same shape, run over
+	// `marginForDevice`/`marginPresetValue`/`inheritedMargin`/`marginPickableTokens` instead. Margin
+	// also has no `resetOn`, matching Padding.
+	const { isLinked: marginIsLinked, toggleLink: toggleMarginLink } = useLinkedMeasureState({
+		forDevice: marginForDevice,
+		inherited: inheritedMargin,
+		previewDevice,
+		presetValue: marginPresetValue,
+		tokens: marginPickableTokens,
+		setAttributes,
 	});
 
 	// Hover/Transparent/Transparent Hover/Sticky/Sticky Hover each store their own 4 corners, so each
@@ -2286,23 +2327,26 @@ export default function KadenceButtonEdit(props) {
 												max={paddingUnit === 'em' || paddingUnit === 'rem' ? 25 : 999}
 												step={paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1}
 											/>
-											<ResponsiveMeasureRangeControl
+											<EditorBoxControl
 												label={__('Margin', 'kadence-blocks')}
-												value={margin}
-												onChange={(value) => setAttributes({ margin: value })}
-												tabletValue={tabletMargin}
-												onChangeTablet={(value) => setAttributes({ tabletMargin: value })}
-												mobileValue={mobileMargin}
-												onChangeMobile={(value) => setAttributes({ mobileMargin: value })}
-												min={marginUnit === 'em' || marginUnit === 'rem' ? -25 : -999}
-												max={marginUnit === 'em' || marginUnit === 'rem' ? 25 : 999}
-												step={marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1}
+												value={marginForDevice.value}
+												onChange={(next) => setAttributes({ [marginForDevice.attr]: next })}
+												previewDevice={previewDevice}
+												onDeviceChange={setPreviewDevice}
+												tokens={marginPickableTokens}
+												defaultValue={inheritedMargin.values}
+												inherited={anyCornerInherited(inheritedMargin.inherited)}
+												state={tokenBinding.margin}
+												onReset={() => resetToken('margin')}
+												isLinked={marginIsLinked}
+												onToggleLink={toggleMarginLink}
+												role="sides"
 												unit={marginUnit}
 												units={['px', 'em', 'rem']}
 												onUnit={(value) => setAttributes({ marginUnit: value })}
-												onMouseOver={marginMouseOver.onMouseOver}
-												onMouseOut={marginMouseOver.onMouseOut}
-												allowAuto={true}
+												min={marginUnit === 'em' || marginUnit === 'rem' ? -25 : -999}
+												max={marginUnit === 'em' || marginUnit === 'rem' ? 25 : 999}
+												step={marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1}
 											/>
 											<TextControl
 												label={__('Add Aria Label', 'kadence-blocks')}

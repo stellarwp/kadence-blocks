@@ -17,7 +17,7 @@
 // omitted: it resolves to "auto", not a length. group_key mirrors the radius/border-width scales' mechanism:
 // it is the stable machine id the Style Library's Spacing screen's "+ Add Spacing" mints custom tokens into,
 // resolved back to the group label at read time by Token_Registry::group_label_for().
-$spacing_slugs = [ 'xxs', 'xs', 'sm', 'md', 'lg', 'xl', 'xxl', '3xl', '4xl', '5xl' ];
+$spacing_slugs = [ 'none', 'xxs', 'xs', 'sm', 'md', 'lg', 'xl', 'xxl', '3xl', '4xl', '5xl' ];
 $gap_slugs     = [ 'none', 'xs', 'sm', 'md', 'lg' ];
 
 $spacing_tokens = array_map(
@@ -25,7 +25,7 @@ $spacing_tokens = array_map(
 		return [
 			'id'          => 'primitive.dimension.spacing.' . $slug,
 			'type'        => 'dimension',
-			'label'       => strtoupper( $slug ),
+			'label'       => 'none' === $slug ? __( 'None', 'kadence-blocks' ) : strtoupper( $slug ),
 			'group'       => __( 'Spacing', 'kadence-blocks' ),
 			'group_key'   => 'spacing',
 			'projections' => [ 'kb_spacing_slot' => $slug ],
