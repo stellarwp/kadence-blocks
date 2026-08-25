@@ -2,6 +2,7 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Rest\V1;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Feed_Assembler;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Font_Catalog;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Favorite_Font_Index;
@@ -92,11 +93,11 @@ final class DocumentsControllerFavoriteFontsTest extends TestCase {
 	}
 
 	/**
-	 * A PUT stores the family in the document.
+	 * A PUT stores the family, and the feed carries it under favoriteFonts.
 	 *
 	 * @return void
 	 */
-	public function testPutStoresTheFamily(): void {
+	public function testPutStoresTheFamilyAndTheFeedReflectsIt(): void {
 		$slug = Token_Store::default_slug();
 
 		$response = $this->controller->set_favorite_font(
@@ -106,6 +107,7 @@ final class DocumentsControllerFavoriteFontsTest extends TestCase {
 		$this->assertInstanceOf( WP_REST_Response::class, $response );
 		$this->assertSame( WP_Http::CREATED, $response->get_status() );
 		$this->assertSame( [ $this->families[0] ], $this->stored_favorites( $slug ) );
+		$this->assertSame( [ $this->families[0] ], $this->feed_favorites( $slug ) );
 	}
 
 	/**
@@ -369,6 +371,17 @@ final class DocumentsControllerFavoriteFontsTest extends TestCase {
 	 */
 	private function stored_favorites( string $slug ): array {
 		return $this->index->all( $this->store->get_decoded_document( $slug ) );
+	}
+
+	/**
+	 * The favorites the assembled feed carries for a library.
+	 *
+	 * @param string $slug The token library slug.
+	 *
+	 * @return list<string>
+	 */
+	private function feed_favorites( string $slug ): array {
+		return $this->container->get( Feed_Assembler::class )->for_slug( $slug )['favoriteFonts'];
 	}
 
 	/**

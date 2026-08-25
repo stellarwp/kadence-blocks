@@ -3,6 +3,7 @@
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Favorite_Font_Index;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Token_Label_Index;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Token_Order_Index;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Alias_Cycle_Exception;
@@ -26,10 +27,10 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Contracts\Controller;
  * than a fatal, so the caller still gets structure. The fail-closed case (registry deactivated) is
  * handled inside the builder.
  *
- * The per-token label-override and per-group sort-order reads also live here rather than in either
- * emitter: they are applied inside Builder::build(), so both {@see Localizer} and
- * {@see \KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Feed_Controller} get the overridden labels
- * and stored order automatically instead of one of them silently missing them.
+ * The per-token label-override, per-group sort-order and favorite-font reads also live here rather
+ * than in either emitter: they are applied inside Builder::build(), so both {@see Localizer} and
+ * {@see \KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Feed_Controller} get the overridden labels,
+ * stored order and favorites automatically instead of one of them silently missing them.
  *
  * @since TBD
  */
@@ -99,15 +100,25 @@ final class Feed_Assembler {
 	private Token_Order_Index $order_index;
 
 	/**
+	 * Reads the favoriteFonts ordered family list out of the stored document.
+	 *
 	 * @since TBD
 	 *
-	 * @param Token_Resolver    $resolver        The token resolver.
-	 * @param Token_Store       $store           The token store.
-	 * @param Presets           $preset_feed     The presets section builder.
-	 * @param Builder           $builder         The pure payload assembler.
-	 * @param Responsive_Feed   $responsive_feed The responsive / clamp shape extractor.
-	 * @param Token_Label_Index $label_index     Reads the tokenLabels override map.
-	 * @param Token_Order_Index $order_index     Reads the tokenOrder flat ordered id list.
+	 * @var Favorite_Font_Index
+	 */
+	private Favorite_Font_Index $favorite_font_index;
+
+	/**
+	 * @since TBD
+	 *
+	 * @param Token_Resolver      $resolver            The token resolver.
+	 * @param Token_Store         $store               The token store.
+	 * @param Presets             $preset_feed         The presets section builder.
+	 * @param Builder             $builder             The pure payload assembler.
+	 * @param Responsive_Feed     $responsive_feed     The responsive / clamp shape extractor.
+	 * @param Token_Label_Index   $label_index         Reads the tokenLabels override map.
+	 * @param Token_Order_Index   $order_index         Reads the tokenOrder flat ordered id list.
+	 * @param Favorite_Font_Index $favorite_font_index Reads the favoriteFonts ordered family list.
 	 */
 	public function __construct(
 		Token_Resolver $resolver,
@@ -116,15 +127,17 @@ final class Feed_Assembler {
 		Builder $builder,
 		Responsive_Feed $responsive_feed,
 		Token_Label_Index $label_index,
-		Token_Order_Index $order_index
+		Token_Order_Index $order_index,
+		Favorite_Font_Index $favorite_font_index
 	) {
-		$this->resolver        = $resolver;
-		$this->store           = $store;
-		$this->preset_feed     = $preset_feed;
-		$this->builder         = $builder;
-		$this->responsive_feed = $responsive_feed;
-		$this->label_index     = $label_index;
-		$this->order_index     = $order_index;
+		$this->resolver            = $resolver;
+		$this->store               = $store;
+		$this->preset_feed         = $preset_feed;
+		$this->builder             = $builder;
+		$this->responsive_feed     = $responsive_feed;
+		$this->label_index         = $label_index;
+		$this->order_index         = $order_index;
+		$this->favorite_font_index = $favorite_font_index;
 	}
 
 	/**
@@ -164,7 +177,8 @@ final class Feed_Assembler {
 			$this->title( $slug ),
 			$responsive,
 			$this->label_index->all( $document ),
-			$this->order_index->all( $document )
+			$this->order_index->all( $document ),
+			$this->favorite_font_index->all( $document )
 		);
 	}
 

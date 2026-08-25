@@ -130,6 +130,55 @@ final class BuilderTest extends TestCase {
 	}
 
 	/**
+	 * Favorite fonts surface as their own top-level feed section, in the order they were given —
+	 * never folded into the schema, since a favorite is not a token and has no UI-schema row.
+	 *
+	 * @return void
+	 */
+	public function testFavoriteFontsSurfaceAsTheirOwnSectionInOrder(): void {
+		$feed = $this->builder()->build(
+			[],
+			true,
+			[],
+			$this->rest(),
+			'v7',
+			'default',
+			'',
+			[],
+			[],
+			[],
+			[ 'Inter', 'Abril Fatface' ]
+		);
+
+		$this->assertSame( [ 'Inter', 'Abril Fatface' ], $feed['favoriteFonts'] );
+	}
+
+	/**
+	 * A build with no favorites still carries the section, as an empty list, so the client never
+	 * has to probe for its presence.
+	 *
+	 * @return void
+	 */
+	public function testFavoriteFontsDefaultToAnEmptyList(): void {
+		$feed = $this->builder()->build( [], true, [], $this->rest(), 'v7', 'default' );
+
+		$this->assertSame( [], $feed['favoriteFonts'] );
+	}
+
+	/**
+	 * A deactivated registry clears the favorites alongside every other content section.
+	 *
+	 * @return void
+	 */
+	public function testDeactivatedRegistryClearsFavoriteFonts(): void {
+		$this->registry->deactivate();
+
+		$feed = $this->builder()->build( [], true, [], $this->rest(), 'v7', 'default', '', [], [], [], [ 'Inter' ] );
+
+		$this->assertSame( [], $feed['favoriteFonts'] );
+	}
+
+	/**
 	 * The slug passes through the feed unchanged regardless of whether the registry is active.
 	 *
 	 * @return void
