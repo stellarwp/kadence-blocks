@@ -85,3 +85,25 @@ describe('TokenSelector disabled state', () => {
 		expect(renderSelector().disabled).toBe(false);
 	});
 });
+
+describe('TokenSelector fixed-entry round trip', () => {
+	// Margin's `Auto` choice (`kadence/singlebtn`'s `edit.js`) is a real spacing slot at the PHP/CSS
+	// layer that was never registered as a DTCG token, so it has no bracket-form alias. Its pickable
+	// entry is marked `fixed: true` instead, and this proves the trigger reads that entry back as the
+	// picked token rather than falling through to a `Custom` literal with the unit concatenated on.
+	const AUTO_TOKENS = [{ id: 'ss-auto', label: 'Auto', value: 'auto', alias: 'ss-auto', fixed: true }];
+
+	/**
+	 * Selecting Auto stores the bare `ss-auto` slug; the trigger must show it as the picked `Auto`
+	 * token, never as `Custom` with the unit concatenated onto it.
+	 *
+	 * @return {void}
+	 */
+	it('shows a fixed entry as its label, not as a Custom literal with the unit appended', () => {
+		const trigger = renderSelector({ value: 'ss-auto', tokens: AUTO_TOKENS, unit: 'px' });
+
+		expect(trigger.textContent).toBe('Autoauto');
+		expect(trigger.textContent).not.toContain('ss-auto');
+		expect(trigger.textContent).not.toContain('Custom');
+	});
+});
