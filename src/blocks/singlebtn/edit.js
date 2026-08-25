@@ -350,6 +350,14 @@ export default function KadenceButtonEdit(props) {
 		{ tablet: 'tabletBorderRadius', mobile: 'mobileBorderRadius' },
 		previewDevice
 	);
+	// Padding keeps the same one-mode-per-device shape as Border Radius above — one linked/individual
+	// mode, but a different stored attribute per breakpoint.
+	const paddingForDevice = measureAttrsForDevice(
+		attributes,
+		'padding',
+		{ tablet: 'tabletPadding', mobile: 'mobilePadding' },
+		previewDevice
+	);
 	const marginMouseOver = mouseOverVisualizer();
 	const paddingMouseOver = mouseOverVisualizer();
 
@@ -387,6 +395,20 @@ export default function KadenceButtonEdit(props) {
 		borderRadiusPresetValue
 	);
 
+	const paddingPresetValue = presetValueForDevice(
+		tokenBinding.padding?.presetValue,
+		tokenBinding.padding?.responsive,
+		previewDevice
+	);
+
+	// What an unset Padding side falls back to on the active device — same cascade as Border Radius
+	// above, run over sides rather than corners.
+	const inheritedPadding = inheritedMeasureSlots(
+		previewDevice,
+		{ desktop: padding, tablet: tabletPadding },
+		paddingPresetValue
+	);
+
 	useEffect(() => {
 		setAttributes({ inQueryBlock: getInQueryBlock(context, inQueryBlock) });
 
@@ -406,6 +428,9 @@ export default function KadenceButtonEdit(props) {
 	// Keyed by device: the responsive control keeps ONE mode but writes three attributes, so a choice
 	// made on Tablet must not flip Desktop's corners (and vice versa).
 	const [borderRadiusModeOverride, setBorderRadiusModeOverride] = useState({});
+	// Padding's linked/individual mode is tracked the same way as Border Radius's, above — its own
+	// override state because the two controls' sides are independent stored values.
+	const [paddingModeOverride, setPaddingModeOverride] = useState({});
 
 	// Everything the new box control needs that the block already knows, gathered in one place rather
 	// than inlined into the JSX.
@@ -433,6 +458,7 @@ export default function KadenceButtonEdit(props) {
 	const shadowTransparentHoverTokens = shadowPickableTokens;
 	const shadowStickyTokens = shadowPickableTokens;
 	const shadowStickyHoverTokens = shadowPickableTokens;
+	const paddingPickableTokens = pickableTokensForKey('kadence/singlebtn', 'button-padding');
 
 	// The mode describes what THIS device stores, not what it inherits. A breakpoint that stores nothing
 	// has nothing that differs, so it reads as linked — deriving from the inherited corners instead would
@@ -507,6 +533,64 @@ export default function KadenceButtonEdit(props) {
 		// Unlinking equal corners leaves the values untouched, so remember the choice for this session
 		// AND this device; a differing corner would derive individual on its own.
 		setBorderRadiusModeOverride((current) => ({ ...current, [previewDevice]: 'individual' }));
+	};
+
+	// Padding's linked/individual mode and its toggle, mirroring Border Radius's own block above with
+	// "corner" swapped for "side" — same shape, run over `paddingForDevice`/`paddingPresetValue`/
+	// `inheritedPadding` instead.
+	const paddingIsLinked =
+		'linked' ===
+		(paddingModeOverride[previewDevice] ?? deriveMeasureMode(paddingForDevice.value, paddingPresetValue));
+
+	const inheritedPaddingSides = inheritedPadding.values;
+	const inheritedPaddingSidesDiffer =
+		Array.isArray(inheritedPaddingSides) && inheritedPaddingSides.some((side) => side !== inheritedPaddingSides[0]);
+	const aliasForPaddingValue = (value) =>
+		paddingPickableTokens.find((token) => token.value === value)?.alias ?? value ?? '';
+	const inheritedFirstPaddingSide = Array.isArray(inheritedPaddingSides)
+		? aliasForPaddingValue(inheritedPaddingSides[0])
+		: '';
+
+	const togglePaddingLink = () => {
+		if (!paddingIsLinked) {
+			const sides = paddingForDevice.value ?? [];
+			const side = sides[0] ?? '';
+			const isEmpty = sides.every((value) => '' === value || undefined === value);
+
+			if (isEmpty) {
+				if (!inheritedPaddingSidesDiffer) {
+					setPaddingModeOverride((current) => ({ ...current, [previewDevice]: 'linked' }));
+
+					return;
+				}
+
+				setAttributes({
+					[paddingForDevice.attr]: [
+						inheritedFirstPaddingSide,
+						inheritedFirstPaddingSide,
+						inheritedFirstPaddingSide,
+						inheritedFirstPaddingSide,
+					],
+				});
+				setPaddingModeOverride((current) => ({ ...current, [previewDevice]: undefined }));
+
+				return;
+			}
+
+			// Every side matches the first, blank included, and only on the ACTIVE device.
+			setAttributes({ [paddingForDevice.attr]: [side, side, side, side] });
+			// Equal sides derive linked on their own — except blank ones under a per-side preset.
+			setPaddingModeOverride((current) => ({
+				...current,
+				[previewDevice]: '' === side ? 'linked' : undefined,
+			}));
+
+			return;
+		}
+
+		// Unlinking equal sides leaves the values untouched, so remember the choice for this session AND
+		// this device; a differing side would derive individual on its own.
+		setPaddingModeOverride((current) => ({ ...current, [previewDevice]: 'individual' }));
 	};
 
 	// Hover/Transparent/Transparent Hover/Sticky/Sticky Hover each store their own 4 corners, so each
@@ -2515,22 +2599,26 @@ export default function KadenceButtonEdit(props) {
 								{showSettings('marginSettings', 'kadence/advancedbtn') && (
 									<>
 										<KadencePanelBody panelName={'kb-single-button-margin-settings'}>
-											<ResponsiveMeasureRangeControl
+											<EditorBoxControl
 												label={__('Padding', 'kadence-blocks')}
-												value={padding}
-												onChange={(value) => setAttributes({ padding: value })}
-												tabletValue={tabletPadding}
-												onChangeTablet={(value) => setAttributes({ tabletPadding: value })}
-												mobileValue={mobilePadding}
-												onChangeMobile={(value) => setAttributes({ mobilePadding: value })}
-												min={paddingUnit === 'em' || paddingUnit === 'rem' ? -25 : -999}
-												max={paddingUnit === 'em' || paddingUnit === 'rem' ? 25 : 999}
-												step={paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1}
+												value={paddingForDevice.value}
+												onChange={(next) => setAttributes({ [paddingForDevice.attr]: next })}
+												previewDevice={previewDevice}
+												onDeviceChange={setPreviewDevice}
+												tokens={paddingPickableTokens}
+												defaultValue={inheritedPadding.values}
+												inherited={anyCornerInherited(inheritedPadding.inherited)}
+												state={tokenBinding.padding}
+												onReset={() => resetToken('padding')}
+												isLinked={paddingIsLinked}
+												onToggleLink={togglePaddingLink}
+												role="sides"
 												unit={paddingUnit}
 												units={['px', 'em', 'rem']}
 												onUnit={(value) => setAttributes({ paddingUnit: value })}
-												onMouseOver={paddingMouseOver.onMouseOver}
-												onMouseOut={paddingMouseOver.onMouseOut}
+												min={paddingUnit === 'em' || paddingUnit === 'rem' ? -25 : -999}
+												max={paddingUnit === 'em' || paddingUnit === 'rem' ? 25 : 999}
+												step={paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1}
 											/>
 											<ResponsiveMeasureRangeControl
 												label={__('Margin', 'kadence-blocks')}
