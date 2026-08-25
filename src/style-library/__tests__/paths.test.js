@@ -14,6 +14,7 @@ import {
 	feedPath,
 	tokenLabelPath,
 	groupOrderPath,
+	favoriteFontPath,
 	blockPresetsPath,
 	blockPresetPath,
 } from '../api/paths';
@@ -128,6 +129,22 @@ describe('tokenLabelPath', () => {
 	it('escapes the slug and the id', () => {
 		expect(tokenLabelPath('my set', 'primitive.dimension.custom.radius 2')).toBe(
 			'/kb-design-tokens/v1/documents/my%20set/labels/primitive.dimension.custom.radius%202'
+		);
+	});
+});
+
+describe('favoriteFontPath', () => {
+	it('builds the favorite path for a family', () => {
+		expect(favoriteFontPath('default', 'Inter')).toBe(
+			'/kb-design-tokens/v1/documents/default/favorite-fonts/Inter'
+		);
+	});
+
+	// Most catalog families are multi-word, so the encoded form is the common case rather than an
+	// edge case — the route matches the percent-encoded segment and decodes it server-side.
+	it('escapes the slug and a multi-word family', () => {
+		expect(favoriteFontPath('my set', 'Abril Fatface')).toBe(
+			'/kb-design-tokens/v1/documents/my%20set/favorite-fonts/Abril%20Fatface'
 		);
 	});
 });
