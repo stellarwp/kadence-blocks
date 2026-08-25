@@ -171,6 +171,47 @@ final class Dtcg_ValidatorTest extends TestCase {
 	}
 
 	/**
+	 * A well-formed favoriteFonts section validates: a sequential list of non-empty family names.
+	 *
+	 * @return void
+	 */
+	public function testAWellFormedFavoriteFontsSectionValidates(): void {
+		$document = [
+			'$extensions' => [
+				'com.kadence.designTokens' => [
+					'favoriteFonts' => [ 'Inter', 'Abril Fatface' ],
+				],
+			],
+		];
+
+		$result = $this->validator->validate( $document, Dtcg_Validator::get_context_overrides() );
+
+		$this->assertTrue( $result->is_valid(), $this->describe( $result->errors() ) );
+	}
+
+	/**
+	 * A stored favorite naming a family the site's catalog does not carry does not fail validation:
+	 * a theme switch stranding a favorite is data drift, enforced by the REST write guard, not
+	 * full-document grammar — and the removal path deliberately accepts such a family so it can be
+	 * cleared.
+	 *
+	 * @return void
+	 */
+	public function testAFavoriteFontNamingAnUncataloguedFamilyStillValidates(): void {
+		$document = [
+			'$extensions' => [
+				'com.kadence.designTokens' => [
+					'favoriteFonts' => [ 'A Font No Catalog Carries' ],
+				],
+			],
+		];
+
+		$result = $this->validator->validate( $document, Dtcg_Validator::get_context_overrides() );
+
+		$this->assertTrue( $result->is_valid(), $this->describe( $result->errors() ) );
+	}
+
+	/**
 	 * A document without a tokenOrder section produces no new errors, and a non-Kadence extension
 	 * namespace alongside it is passed through untouched.
 	 *
@@ -502,6 +543,44 @@ final class Dtcg_ValidatorTest extends TestCase {
 			'context'  => Dtcg_Validator::get_context_overrides(),
 			'code'     => Validation_Error::get_code_value_invalid(),
 			'path'     => '$extensions.com.kadence.designTokens.tokenOrder.0',
+		];
+		// favoriteFonts is an ordered list of family names, so a map-shaped value is rejected
+		// wholesale and a non-string or blank family is rejected per entry.
+		yield 'map-shaped (non-sequential) favoriteFonts value' => [
+			'document' => [
+				'$extensions' => [
+					'com.kadence.designTokens' => [
+						'favoriteFonts' => [ 'a' => 'Inter' ],
+					],
+				],
+			],
+			'context'  => Dtcg_Validator::get_context_overrides(),
+			'code'     => Validation_Error::get_code_value_invalid(),
+			'path'     => '$extensions.com.kadence.designTokens.favoriteFonts',
+		];
+		yield 'non-string favoriteFonts family' => [
+			'document' => [
+				'$extensions' => [
+					'com.kadence.designTokens' => [
+						'favoriteFonts' => [ 'Inter', 42 ],
+					],
+				],
+			],
+			'context'  => Dtcg_Validator::get_context_overrides(),
+			'code'     => Validation_Error::get_code_value_invalid(),
+			'path'     => '$extensions.com.kadence.designTokens.favoriteFonts.1',
+		];
+		yield 'whitespace-only favoriteFonts family' => [
+			'document' => [
+				'$extensions' => [
+					'com.kadence.designTokens' => [
+						'favoriteFonts' => [ '   ' ],
+					],
+				],
+			],
+			'context'  => Dtcg_Validator::get_context_overrides(),
+			'code'     => Validation_Error::get_code_value_invalid(),
+			'path'     => '$extensions.com.kadence.designTokens.favoriteFonts.0',
 		];
 		yield 'responsive on non-capable type' => [
 			'document' => [
