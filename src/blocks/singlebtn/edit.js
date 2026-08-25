@@ -445,19 +445,7 @@ export default function KadenceButtonEdit(props) {
 	// state — so every hover/sticky/transparent variant below reuses the same resolved list rather than
 	// re-filtering the pool per state.
 	const borderWidthPickableTokens = pickableTokensForKey('kadence/singlebtn', 'button-border-width');
-	const borderWidthTokens = borderWidthPickableTokens;
-	const borderHoverWidthTokens = borderWidthPickableTokens;
-	const borderTransparentWidthTokens = borderWidthPickableTokens;
-	const borderTransparentHoverWidthTokens = borderWidthPickableTokens;
-	const borderStickyWidthTokens = borderWidthPickableTokens;
-	const borderStickyHoverWidthTokens = borderWidthPickableTokens;
 	const shadowPickableTokens = pickableTokensForKey('kadence/singlebtn', 'button-shadow');
-	const shadowTokens = shadowPickableTokens;
-	const shadowHoverTokens = shadowPickableTokens;
-	const shadowTransparentTokens = shadowPickableTokens;
-	const shadowTransparentHoverTokens = shadowPickableTokens;
-	const shadowStickyTokens = shadowPickableTokens;
-	const shadowStickyHoverTokens = shadowPickableTokens;
 	const paddingPickableTokens = pickableTokensForKey('kadence/singlebtn', 'button-padding');
 
 	// The mode describes what THIS device stores, not what it inherits. A breakpoint that stores nothing
@@ -1538,7 +1526,7 @@ export default function KadenceButtonEdit(props) {
 															}
 															previewDevice={previewDevice}
 															onDeviceChange={setPreviewDevice}
-															widthTokens={borderHoverWidthTokens}
+															widthTokens={borderWidthPickableTokens}
 															defaultValue={borderWidthPresetValue}
 															renderColor={renderBorderColor}
 														/>
@@ -1590,7 +1578,7 @@ export default function KadenceButtonEdit(props) {
 															onEnableChange={(value) =>
 																setAttributes({ displayHoverShadow: value })
 															}
-															tokens={shadowHoverTokens}
+															tokens={shadowPickableTokens}
 															renderColor={renderShadowColor}
 														/>
 													</>
@@ -1684,7 +1672,7 @@ export default function KadenceButtonEdit(props) {
 															}
 															previewDevice={previewDevice}
 															onDeviceChange={setPreviewDevice}
-															widthTokens={borderWidthTokens}
+															widthTokens={borderWidthPickableTokens}
 															defaultValue={borderWidthPresetValue}
 															renderColor={renderBorderColor}
 															state={tokenBinding.borderStyle}
@@ -1724,7 +1712,7 @@ export default function KadenceButtonEdit(props) {
 															onEnableChange={(value) =>
 																setAttributes({ displayShadow: value })
 															}
-															tokens={shadowTokens}
+															tokens={shadowPickableTokens}
 															renderColor={renderShadowColor}
 														/>
 													</>
@@ -1809,7 +1797,7 @@ export default function KadenceButtonEdit(props) {
 																}
 																previewDevice={previewDevice}
 																onDeviceChange={setPreviewDevice}
-																widthTokens={borderTransparentHoverWidthTokens}
+																widthTokens={borderWidthPickableTokens}
 																defaultValue={borderWidthPresetValue}
 																renderColor={renderBorderColor}
 															/>
@@ -1870,7 +1858,7 @@ export default function KadenceButtonEdit(props) {
 																		displayHoverShadowTransparent: value,
 																	})
 																}
-																tokens={shadowTransparentHoverTokens}
+																tokens={shadowPickableTokens}
 																renderColor={renderShadowColor}
 															/>
 														</>
@@ -1940,7 +1928,7 @@ export default function KadenceButtonEdit(props) {
 																}
 																previewDevice={previewDevice}
 																onDeviceChange={setPreviewDevice}
-																widthTokens={borderTransparentWidthTokens}
+																widthTokens={borderWidthPickableTokens}
 																defaultValue={borderWidthPresetValue}
 																renderColor={renderBorderColor}
 															/>
@@ -1996,7 +1984,7 @@ export default function KadenceButtonEdit(props) {
 																onEnableChange={(value) =>
 																	setAttributes({ displayShadowTransparent: value })
 																}
-																tokens={shadowTransparentTokens}
+																tokens={shadowPickableTokens}
 																renderColor={renderShadowColor}
 															/>
 														</>
@@ -2080,7 +2068,7 @@ export default function KadenceButtonEdit(props) {
 																}
 																previewDevice={previewDevice}
 																onDeviceChange={setPreviewDevice}
-																widthTokens={borderStickyHoverWidthTokens}
+																widthTokens={borderWidthPickableTokens}
 																defaultValue={borderWidthPresetValue}
 																renderColor={renderBorderColor}
 															/>
@@ -2136,7 +2124,7 @@ export default function KadenceButtonEdit(props) {
 																onEnableChange={(value) =>
 																	setAttributes({ displayHoverShadowSticky: value })
 																}
-																tokens={shadowStickyHoverTokens}
+																tokens={shadowPickableTokens}
 																renderColor={renderShadowColor}
 															/>
 														</>
@@ -2202,7 +2190,7 @@ export default function KadenceButtonEdit(props) {
 																}
 																previewDevice={previewDevice}
 																onDeviceChange={setPreviewDevice}
-																widthTokens={borderStickyWidthTokens}
+																widthTokens={borderWidthPickableTokens}
 																defaultValue={borderWidthPresetValue}
 																renderColor={renderBorderColor}
 															/>
@@ -2258,7 +2246,7 @@ export default function KadenceButtonEdit(props) {
 																onEnableChange={(value) =>
 																	setAttributes({ displayShadowSticky: value })
 																}
-																tokens={shadowStickyTokens}
+																tokens={shadowPickableTokens}
 																renderColor={renderShadowColor}
 															/>
 														</>
