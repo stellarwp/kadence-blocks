@@ -10,6 +10,7 @@ import { createRoot } from 'react-dom/client';
  * Internal dependencies
  */
 import { EditorBorderControl } from '../EditorBorderControl';
+import { TokenIndicator } from '../../../token-indicators/components/TokenIndicator';
 
 // `BorderControl` now gains its `isLinked`/`onToggleLink` props from state this component owns, so
 // it can no longer be exercised by calling `EditorBorderControl` as a plain function the way this file
@@ -609,5 +610,38 @@ describe('EditorBorderControl linked view', () => {
 			tabletValue: UNIFORM_NATIVE_VALUE,
 		});
 		expect(latestBorderControlProps.isLinked).toBe(true);
+	});
+});
+
+describe('EditorBorderControl token indicator', () => {
+	/**
+	 * `state`/`onReset` are threaded into a `TokenIndicator`, passed to `BorderControl` as its
+	 * `indicator` prop — the same wiring `EditorBoxControl` uses for Border Radius — so the block's
+	 * own binding state reaches the indicator rather than being dropped on the floor.
+	 *
+	 * @return {void}
+	 */
+	it('passes state and onReset through to a TokenIndicator handed to BorderControl as indicator', () => {
+		const onReset = jest.fn();
+		const state = { bound: true, overridden: true };
+
+		const { borderControl } = renderEditorBorderControl({ state, onReset });
+
+		expect(borderControl.props.indicator.type).toBe(TokenIndicator);
+		expect(borderControl.props.indicator.props.state).toBe(state);
+		expect(borderControl.props.indicator.props.onReset).toBe(onReset);
+	});
+
+	/**
+	 * With no `state`/`onReset` passed, the indicator still renders (as `TokenIndicator` renders
+	 * nothing for an unbound control), rather than `EditorBorderControl` omitting it altogether.
+	 *
+	 * @return {void}
+	 */
+	it('still hands BorderControl a TokenIndicator when state and onReset are omitted', () => {
+		const { borderControl } = renderEditorBorderControl();
+
+		expect(borderControl.props.indicator.type).toBe(TokenIndicator);
+		expect(borderControl.props.indicator.props.state).toBeNull();
 	});
 });
