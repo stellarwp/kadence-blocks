@@ -147,6 +147,20 @@ function roleForId(id) {
  * matches `radius`; `iconSize` matches `icon-size`). Empty unless exactly one role matches, so an
  * ambiguous or unrecognized attribute falls back to the coarse list rather than guessing.
  *
+ * A handful of control attributes name their role by a different word than the role itself uses
+ * (`padding`/`margin` imply the `spacing` role, but neither string contains "spacing") — those get a
+ * fixed alias here rather than a substring guess.
+ *
+ * @since TBD
+ *
+ * @type {Object<string, string>}
+ */
+const ROLE_ALIASES = {
+	padding: 'spacing',
+	margin: 'spacing',
+};
+
+/**
  * @param {string} controlAttr The attribute the control writes (e.g. 'borderRadius').
  * @param {Array}  tokens      The type-filtered token list whose roles are the candidates.
  *
@@ -158,6 +172,10 @@ function inferRoleFromControl(controlAttr, tokens) {
 	const attr = String(controlAttr || '').toLowerCase();
 	if (!attr) {
 		return '';
+	}
+
+	if (ROLE_ALIASES[attr] && tokens.some((token) => token.role === ROLE_ALIASES[attr])) {
+		return ROLE_ALIASES[attr];
 	}
 
 	const roles = [...new Set(tokens.map((token) => token.role).filter(Boolean))];
@@ -218,9 +236,11 @@ function pickableTokensForProperty(property, controlAttr, library) {
  * an unmapped control offers no tokens, which is the "selectable only where it makes sense" guarantee
  * at the per-control call site.
  *
- * Only reaches properties that DO carry a `control_attr` — a property bound to a nested/composite
- * native attribute (border, shadow) is declared with no `control_attr` at all and is invisible to this
- * lookup by design; use `pickableTokensForKey` for those.
+ * Only reaches a property whose `control_attr` this lookup can resolve UNAMBIGUOUSLY by a find-the-
+ * first-match on `controlAttr` — a property bound to a nested/composite native attribute (shadow) is
+ * declared with no `control_attr` at all, and the three border-axis properties share one
+ * (`borderStyle`) among themselves, so none of the four are safely reachable here; use
+ * `pickableTokensForKey` for those instead.
  *
  * @param {string} blockName   The block name (e.g. 'kadence/singlebtn').
  * @param {string} controlAttr The attribute the control writes (e.g. 'borderRadius').
@@ -238,11 +258,14 @@ export function pickableTokensForControl(blockName, controlAttr, library) {
 
 /**
  * The pickable tokens for one bound property, keyed by the property's stable `key` (the PHP bindings
- * array key, e.g. 'button-shadow') rather than its `control_attr`. Exists for properties whose native
- * block attribute is a nested/composite shape (border, shadow) and so is declared with no
- * `control_attr` at all — `pickableTokensForControl` can never find them, since it has no other way to
- * locate a property. Otherwise identical to `pickableTokensForControl`: defers to the same shared
- * narrowing helper once the property is found.
+ * array key, e.g. 'button-shadow') rather than its `control_attr`. Exists for a property whose
+ * `control_attr` cannot resolve a control-based reverse lookup either because it has none at all (a
+ * native attribute that is a nested/composite shape, e.g. border/shadow) or because it shares one
+ * `control_attr` with two other properties (the three border axes all share `borderStyle`, so
+ * `pickableTokensForControl`'s find-the-first-match lookup would be ambiguous among them). Otherwise
+ * identical to `pickableTokensForControl`: defers to the same shared narrowing helper once the
+ * property is found, passing its OWN `control_attr` through (when it has one) as the role-inference
+ * hint — a property with no `control_attr` passes `''`, same as before.
  *
  * @param {string} blockName The block name (e.g. 'kadence/singlebtn').
  * @param {string} key       The property's bindings key (e.g. 'button-shadow').
@@ -255,5 +278,5 @@ export function pickableTokensForControl(blockName, controlAttr, library) {
 export function pickableTokensForKey(blockName, key, library) {
 	const property = blockProperties(blockName, library).find((entry) => entry.key === key);
 
-	return pickableTokensForProperty(property, '', library);
+	return pickableTokensForProperty(property, property?.control_attr || '', library);
 }

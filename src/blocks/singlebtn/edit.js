@@ -8,7 +8,6 @@ import {
 	getPreviewSize,
 	showSettings,
 	getSpacingOptionOutput,
-	mouseOverVisualizer,
 	getFontSizeOptionOutput,
 	typographyStyle,
 	getBorderStyle,
@@ -82,7 +81,12 @@ import { addFilter, applyFilters, doAction } from '@wordpress/hooks';
 import BackendStyles from './components/backend-styles';
 import { useLinkedMeasureState } from './hooks/use-linked-measure-state';
 import { PresetButton } from '../../extension/preset-picker/PresetButton';
-import { usePresetBinding, resetAttr, presetPropertyValueForDevice } from '../../extension/token-indicators';
+import {
+	usePresetBinding,
+	resetAttr,
+	presetPropertyValueForDevice,
+	deriveStateBinding,
+} from '../../extension/token-indicators';
 import {
 	anyCornerInherited,
 	inheritedMeasureSlots,
@@ -358,9 +362,6 @@ export default function KadenceButtonEdit(props) {
 		{ tablet: 'tabletPadding', mobile: 'mobilePadding' },
 		previewDevice
 	);
-	const marginMouseOver = mouseOverVisualizer();
-	const paddingMouseOver = mouseOverVisualizer();
-
 	// Design-token indicators: the per-attribute bound/overridden state for the selected preset, plus a
 	// reset that clears the mapped attribute back to the preset value (served by the existing scoped CSS).
 	const tokenBinding = usePresetBinding('kadence/singlebtn', attributes, undefined, previewDevice);
@@ -373,11 +374,12 @@ export default function KadenceButtonEdit(props) {
 	);
 
 	// What an unset Border Width field falls back to: the active preset's own resolved width.
-	// `button-border-width` has no `control_attr` (its native attribute is a nested per-side shape
-	// `usePresetBinding` has nothing to key it by — see `declarations.php`'s comment on that binding),
-	// so `tokenBinding` never carries it; read it directly instead. Shown as `EditorBorderControl`'s
-	// `defaultValue` — without it, a cleared width field renders empty and collapses to zero height
-	// (its `TokenSelector`'s trigger has nothing to show), which reads as broken rather than reset.
+	// `button-border-width` shares `borderStyle`'s `control_attr` with style/color, and
+	// `tokenBinding.borderStyle` combines all three axes into one entry keyed by that shared attribute
+	// — there is no per-axis width-only entry to pull a value out of, so this reads the width axis
+	// directly by its own property key instead. Shown as `EditorBorderControl`'s `defaultValue` —
+	// without it, a cleared width field renders empty and collapses to zero height (its
+	// `TokenSelector`'s trigger has nothing to show), which reads as broken rather than reset.
 	const borderWidthPresetValue = presetPropertyValueForDevice(
 		'kadence/singlebtn',
 		'button-border-width',
@@ -448,13 +450,15 @@ export default function KadenceButtonEdit(props) {
 	const { setPreviewDeviceType: setPreviewDevice } = useDispatch('kadenceblocks/data');
 	const borderRadiusTokens = pickableTokensForControl('kadence/singlebtn', 'borderRadius') || [];
 	const borderRadiusIsRelative = borderRadiusUnit === 'em' || borderRadiusUnit === 'rem';
-	// Border width and shadow bind through their bindings KEY, not a `control_attr` — the native border
-	// and shadow attributes are nested per-side/composite shapes, not a single scalar a `control_attr`
-	// lookup can target, so their PHP bindings declare no `control_attr` at all (see declarations.php's
-	// `kadence/singlebtn` block). One PHP binding exists per property (`button-border-width`,
-	// `button-shadow`) — there is one border-width scale and one shadow scale, not a separate one per
-	// state — so every hover/sticky/transparent variant below reuses the same resolved list rather than
-	// re-filtering the pool per state.
+	// Border width and shadow bind through their bindings KEY, not `pickableTokensForControl`'s
+	// `control_attr` reverse lookup: `button-shadow`'s PHP binding declares no `control_attr` at all
+	// (its native attribute is a composite shape a `control_attr` lookup can't target), and
+	// `button-border-width` shares its `control_attr` ('borderStyle') with style/color, which would make
+	// a control_attr-keyed lookup ambiguous among the three (see declarations.php's `kadence/singlebtn`
+	// block). One PHP binding exists per property (`button-border-width`, `button-shadow`) — there is
+	// one border-width scale and one shadow scale, not a separate one per state — so every
+	// hover/sticky/transparent variant below reuses the same resolved list rather than re-filtering the
+	// pool per state.
 	const borderWidthPickableTokens = pickableTokensForKey('kadence/singlebtn', 'button-border-width');
 	const shadowPickableTokens = pickableTokensForKey('kadence/singlebtn', 'button-shadow');
 	const paddingPickableTokens = pickableTokensForKey('kadence/singlebtn', 'button-padding');
@@ -635,6 +639,131 @@ export default function KadenceButtonEdit(props) {
 			setAttributes,
 			resetOn: attributes.kbPreset,
 		});
+
+	// Each of the 5 non-Normal states' OWN Border Radius/Border indicator and reset — derived from the
+	// shared preset entry above (`tokenBinding.borderRadius`/`tokenBinding.borderStyle`, the same one
+	// Normal's own fields read) plus this state's own resolved value at the active device. Reusing
+	// Normal's `tokenBinding` entries directly here (as every call site once did) would report Normal's
+	// divergence on a field the user never opened, and its `onReset` would silently clear NORMAL's
+	// attributes while leaving this state's own untouched — see `deriveStateBinding`'s own docblock.
+	const borderHoverBorderForDevice = measureAttrsForDevice(
+		attributes,
+		'borderHoverStyle',
+		{ tablet: 'tabletBorderHoverStyle', mobile: 'mobileBorderHoverStyle' },
+		previewDevice
+	);
+	const borderHoverRadiusIsRelative = borderHoverRadiusUnit === 'em' || borderHoverRadiusUnit === 'rem';
+	const borderHoverRadiusBinding = deriveStateBinding({
+		shared: tokenBinding.borderRadius,
+		kind: 'dimension',
+		value: borderHoverRadiusForDevice.value,
+		unit: borderHoverRadiusUnit,
+		devicePresetValue: borderRadiusPresetValue,
+	});
+	const borderHoverBorderBinding = deriveStateBinding({
+		shared: tokenBinding.borderStyle,
+		kind: 'border',
+		value: borderHoverBorderForDevice.value,
+		previewDevice,
+	});
+	const resetBorderHoverRadius = () => resetAttr('borderHoverRadius', setAttributes, 'dimension');
+	const resetBorderHoverBorder = () => resetAttr('borderHoverStyle', setAttributes, 'border');
+
+	const borderTransparentBorderForDevice = measureAttrsForDevice(
+		attributes,
+		'borderTransparentStyle',
+		{ tablet: 'tabletBorderTransparentStyle', mobile: 'mobileBorderTransparentStyle' },
+		previewDevice
+	);
+	const borderTransparentRadiusIsRelative =
+		borderTransparentRadiusUnit === 'em' || borderTransparentRadiusUnit === 'rem';
+	const borderTransparentRadiusBinding = deriveStateBinding({
+		shared: tokenBinding.borderRadius,
+		kind: 'dimension',
+		value: borderTransparentRadiusForDevice.value,
+		unit: borderTransparentRadiusUnit,
+		devicePresetValue: borderRadiusPresetValue,
+	});
+	const borderTransparentBorderBinding = deriveStateBinding({
+		shared: tokenBinding.borderStyle,
+		kind: 'border',
+		value: borderTransparentBorderForDevice.value,
+		previewDevice,
+	});
+	const resetBorderTransparentRadius = () => resetAttr('borderTransparentRadius', setAttributes, 'dimension');
+	const resetBorderTransparentBorder = () => resetAttr('borderTransparentStyle', setAttributes, 'border');
+
+	const borderTransparentHoverBorderForDevice = measureAttrsForDevice(
+		attributes,
+		'borderTransparentHoverStyle',
+		{ tablet: 'tabletBorderTransparentHoverStyle', mobile: 'mobileBorderTransparentHoverStyle' },
+		previewDevice
+	);
+	const borderTransparentHoverRadiusIsRelative =
+		borderTransparentHoverRadiusUnit === 'em' || borderTransparentHoverRadiusUnit === 'rem';
+	const borderTransparentHoverRadiusBinding = deriveStateBinding({
+		shared: tokenBinding.borderRadius,
+		kind: 'dimension',
+		value: borderTransparentHoverRadiusForDevice.value,
+		unit: borderTransparentHoverRadiusUnit,
+		devicePresetValue: borderRadiusPresetValue,
+	});
+	const borderTransparentHoverBorderBinding = deriveStateBinding({
+		shared: tokenBinding.borderStyle,
+		kind: 'border',
+		value: borderTransparentHoverBorderForDevice.value,
+		previewDevice,
+	});
+	const resetBorderTransparentHoverRadius = () =>
+		resetAttr('borderTransparentHoverRadius', setAttributes, 'dimension');
+	const resetBorderTransparentHoverBorder = () => resetAttr('borderTransparentHoverStyle', setAttributes, 'border');
+
+	const borderStickyBorderForDevice = measureAttrsForDevice(
+		attributes,
+		'borderStickyStyle',
+		{ tablet: 'tabletBorderStickyStyle', mobile: 'mobileBorderStickyStyle' },
+		previewDevice
+	);
+	const borderStickyRadiusIsRelative = borderStickyRadiusUnit === 'em' || borderStickyRadiusUnit === 'rem';
+	const borderStickyRadiusBinding = deriveStateBinding({
+		shared: tokenBinding.borderRadius,
+		kind: 'dimension',
+		value: borderStickyRadiusForDevice.value,
+		unit: borderStickyRadiusUnit,
+		devicePresetValue: borderRadiusPresetValue,
+	});
+	const borderStickyBorderBinding = deriveStateBinding({
+		shared: tokenBinding.borderStyle,
+		kind: 'border',
+		value: borderStickyBorderForDevice.value,
+		previewDevice,
+	});
+	const resetBorderStickyRadius = () => resetAttr('borderStickyRadius', setAttributes, 'dimension');
+	const resetBorderStickyBorder = () => resetAttr('borderStickyStyle', setAttributes, 'border');
+
+	const borderStickyHoverBorderForDevice = measureAttrsForDevice(
+		attributes,
+		'borderStickyHoverStyle',
+		{ tablet: 'tabletBorderStickyHoverStyle', mobile: 'mobileBorderStickyHoverStyle' },
+		previewDevice
+	);
+	const borderStickyHoverRadiusIsRelative =
+		borderStickyHoverRadiusUnit === 'em' || borderStickyHoverRadiusUnit === 'rem';
+	const borderStickyHoverRadiusBinding = deriveStateBinding({
+		shared: tokenBinding.borderRadius,
+		kind: 'dimension',
+		value: borderStickyHoverRadiusForDevice.value,
+		unit: borderStickyHoverRadiusUnit,
+		devicePresetValue: borderRadiusPresetValue,
+	});
+	const borderStickyHoverBorderBinding = deriveStateBinding({
+		shared: tokenBinding.borderStyle,
+		kind: 'border',
+		value: borderStickyHoverBorderForDevice.value,
+		previewDevice,
+	});
+	const resetBorderStickyHoverRadius = () => resetAttr('borderStickyHoverRadius', setAttributes, 'dimension');
+	const resetBorderStickyHoverBorder = () => resetAttr('borderStickyHoverStyle', setAttributes, 'border');
 
 	useEffect(() => {
 		if (!isSelected) {
@@ -1256,6 +1385,8 @@ export default function KadenceButtonEdit(props) {
 															widthTokens={borderWidthPickableTokens}
 															defaultValue={borderWidthPresetValue}
 															renderColor={renderBorderColor}
+															state={borderHoverBorderBinding}
+															onReset={resetBorderHoverBorder}
 														/>
 														<EditorBoxControl
 															label={__('Border Radius', 'kadence-blocks')}
@@ -1272,6 +1403,8 @@ export default function KadenceButtonEdit(props) {
 															inherited={anyCornerInherited(
 																inheritedBorderHoverRadius.inherited
 															)}
+															state={borderHoverRadiusBinding}
+															onReset={resetBorderHoverRadius}
 															isLinked={borderHoverRadiusIsLinked}
 															onToggleLink={toggleBorderHoverRadiusLink}
 															unit={borderHoverRadiusUnit}
@@ -1279,18 +1412,8 @@ export default function KadenceButtonEdit(props) {
 															onUnit={(value) =>
 																setAttributes({ borderHoverRadiusUnit: value })
 															}
-															max={
-																borderHoverRadiusUnit === 'em' ||
-																borderHoverRadiusUnit === 'rem'
-																	? 24
-																	: 500
-															}
-															step={
-																borderHoverRadiusUnit === 'em' ||
-																borderHoverRadiusUnit === 'rem'
-																	? 0.1
-																	: 1
-															}
+															max={borderHoverRadiusIsRelative ? 24 : 500}
+															step={borderHoverRadiusIsRelative ? 0.1 : 1}
 															min={0}
 														/>
 														<EditorShadowControl
@@ -1527,6 +1650,8 @@ export default function KadenceButtonEdit(props) {
 																widthTokens={borderWidthPickableTokens}
 																defaultValue={borderWidthPresetValue}
 																renderColor={renderBorderColor}
+																state={borderTransparentHoverBorderBinding}
+																onReset={resetBorderTransparentHoverBorder}
 															/>
 															<EditorBoxControl
 																label={__('Border Radius', 'kadence-blocks')}
@@ -1546,6 +1671,8 @@ export default function KadenceButtonEdit(props) {
 																inherited={anyCornerInherited(
 																	inheritedBorderTransparentHoverRadius.inherited
 																)}
+																state={borderTransparentHoverRadiusBinding}
+																onReset={resetBorderTransparentHoverRadius}
 																isLinked={borderTransparentHoverRadiusIsLinked}
 																onToggleLink={toggleBorderTransparentHoverRadiusLink}
 																unit={borderTransparentHoverRadiusUnit}
@@ -1555,18 +1682,8 @@ export default function KadenceButtonEdit(props) {
 																		borderTransparentHoverRadiusUnit: value,
 																	})
 																}
-																max={
-																	borderTransparentHoverRadiusUnit === 'em' ||
-																	borderTransparentHoverRadiusUnit === 'rem'
-																		? 24
-																		: 500
-																}
-																step={
-																	borderTransparentHoverRadiusUnit === 'em' ||
-																	borderTransparentHoverRadiusUnit === 'rem'
-																		? 0.1
-																		: 1
-																}
+																max={borderTransparentHoverRadiusIsRelative ? 24 : 500}
+																step={borderTransparentHoverRadiusIsRelative ? 0.1 : 1}
 																min={0}
 															/>
 															<EditorShadowControl
@@ -1658,6 +1775,8 @@ export default function KadenceButtonEdit(props) {
 																widthTokens={borderWidthPickableTokens}
 																defaultValue={borderWidthPresetValue}
 																renderColor={renderBorderColor}
+																state={borderTransparentBorderBinding}
+																onReset={resetBorderTransparentBorder}
 															/>
 															<EditorBoxControl
 																label={__('Border Radius', 'kadence-blocks')}
@@ -1674,6 +1793,8 @@ export default function KadenceButtonEdit(props) {
 																inherited={anyCornerInherited(
 																	inheritedBorderTransparentRadius.inherited
 																)}
+																state={borderTransparentRadiusBinding}
+																onReset={resetBorderTransparentRadius}
 																isLinked={borderTransparentRadiusIsLinked}
 																onToggleLink={toggleBorderTransparentRadiusLink}
 																unit={borderTransparentRadiusUnit}
@@ -1683,18 +1804,8 @@ export default function KadenceButtonEdit(props) {
 																		borderTransparentRadiusUnit: value,
 																	})
 																}
-																max={
-																	borderTransparentRadiusUnit === 'em' ||
-																	borderTransparentRadiusUnit === 'rem'
-																		? 24
-																		: 500
-																}
-																step={
-																	borderTransparentRadiusUnit === 'em' ||
-																	borderTransparentRadiusUnit === 'rem'
-																		? 0.1
-																		: 1
-																}
+																max={borderTransparentRadiusIsRelative ? 24 : 500}
+																step={borderTransparentRadiusIsRelative ? 0.1 : 1}
 																min={0}
 															/>
 															<EditorShadowControl
@@ -1798,6 +1909,8 @@ export default function KadenceButtonEdit(props) {
 																widthTokens={borderWidthPickableTokens}
 																defaultValue={borderWidthPresetValue}
 																renderColor={renderBorderColor}
+																state={borderStickyHoverBorderBinding}
+																onReset={resetBorderStickyHoverBorder}
 															/>
 															<EditorBoxControl
 																label={__('Border Radius', 'kadence-blocks')}
@@ -1814,6 +1927,8 @@ export default function KadenceButtonEdit(props) {
 																inherited={anyCornerInherited(
 																	inheritedBorderStickyHoverRadius.inherited
 																)}
+																state={borderStickyHoverRadiusBinding}
+																onReset={resetBorderStickyHoverRadius}
 																isLinked={borderStickyHoverRadiusIsLinked}
 																onToggleLink={toggleBorderStickyHoverRadiusLink}
 																unit={borderStickyHoverRadiusUnit}
@@ -1823,18 +1938,8 @@ export default function KadenceButtonEdit(props) {
 																		borderStickyHoverRadiusUnit: value,
 																	})
 																}
-																max={
-																	borderStickyHoverRadiusUnit === 'em' ||
-																	borderStickyHoverRadiusUnit === 'rem'
-																		? 24
-																		: 500
-																}
-																step={
-																	borderStickyHoverRadiusUnit === 'em' ||
-																	borderStickyHoverRadiusUnit === 'rem'
-																		? 0.1
-																		: 1
-																}
+																max={borderStickyHoverRadiusIsRelative ? 24 : 500}
+																step={borderStickyHoverRadiusIsRelative ? 0.1 : 1}
 																min={0}
 															/>
 															<EditorShadowControl
@@ -1920,6 +2025,8 @@ export default function KadenceButtonEdit(props) {
 																widthTokens={borderWidthPickableTokens}
 																defaultValue={borderWidthPresetValue}
 																renderColor={renderBorderColor}
+																state={borderStickyBorderBinding}
+																onReset={resetBorderStickyBorder}
 															/>
 															<EditorBoxControl
 																label={__('Border Radius', 'kadence-blocks')}
@@ -1936,6 +2043,8 @@ export default function KadenceButtonEdit(props) {
 																inherited={anyCornerInherited(
 																	inheritedBorderStickyRadius.inherited
 																)}
+																state={borderStickyRadiusBinding}
+																onReset={resetBorderStickyRadius}
 																isLinked={borderStickyRadiusIsLinked}
 																onToggleLink={toggleBorderStickyRadiusLink}
 																unit={borderStickyRadiusUnit}
@@ -1945,18 +2054,8 @@ export default function KadenceButtonEdit(props) {
 																		borderStickyRadiusUnit: value,
 																	})
 																}
-																max={
-																	borderStickyRadiusUnit === 'em' ||
-																	borderStickyRadiusUnit === 'rem'
-																		? 24
-																		: 500
-																}
-																step={
-																	borderStickyRadiusUnit === 'em' ||
-																	borderStickyRadiusUnit === 'rem'
-																		? 0.1
-																		: 1
-																}
+																max={borderStickyRadiusIsRelative ? 24 : 500}
+																step={borderStickyRadiusIsRelative ? 0.1 : 1}
 																min={0}
 															/>
 															<EditorShadowControl
@@ -2338,34 +2437,27 @@ export default function KadenceButtonEdit(props) {
 												max={paddingUnit === 'em' || paddingUnit === 'rem' ? 25 : 999}
 												step={paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1}
 											/>
-											<div
-												onMouseOver={marginMouseOver.onMouseOver}
-												onMouseOut={marginMouseOver.onMouseOut}
-												onFocus={marginMouseOver.onMouseOver}
-												onBlur={marginMouseOver.onMouseOut}
-											>
-												<EditorBoxControl
-													label={__('Margin', 'kadence-blocks')}
-													value={marginForDevice.value}
-													onChange={(next) => setAttributes({ [marginForDevice.attr]: next })}
-													previewDevice={previewDevice}
-													onDeviceChange={setPreviewDevice}
-													tokens={marginPickableTokens}
-													defaultValue={inheritedMargin.values}
-													inherited={anyCornerInherited(inheritedMargin.inherited)}
-													state={tokenBinding.margin}
-													onReset={() => resetToken('margin')}
-													isLinked={marginIsLinked}
-													onToggleLink={toggleMarginLink}
-													role="sides"
-													unit={marginUnit}
-													units={['px', 'em', 'rem']}
-													onUnit={(value) => setAttributes({ marginUnit: value })}
-													min={marginUnit === 'em' || marginUnit === 'rem' ? -25 : -999}
-													max={marginUnit === 'em' || marginUnit === 'rem' ? 25 : 999}
-													step={marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1}
-												/>
-											</div>
+											<EditorBoxControl
+												label={__('Margin', 'kadence-blocks')}
+												value={marginForDevice.value}
+												onChange={(next) => setAttributes({ [marginForDevice.attr]: next })}
+												previewDevice={previewDevice}
+												onDeviceChange={setPreviewDevice}
+												tokens={marginPickableTokens}
+												defaultValue={inheritedMargin.values}
+												inherited={anyCornerInherited(inheritedMargin.inherited)}
+												state={tokenBinding.margin}
+												onReset={() => resetToken('margin')}
+												isLinked={marginIsLinked}
+												onToggleLink={toggleMarginLink}
+												role="sides"
+												unit={marginUnit}
+												units={['px', 'em', 'rem']}
+												onUnit={(value) => setAttributes({ marginUnit: value })}
+												min={marginUnit === 'em' || marginUnit === 'rem' ? -25 : -999}
+												max={marginUnit === 'em' || marginUnit === 'rem' ? 25 : 999}
+												step={marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1}
+											/>
 											<TextControl
 												label={__('Add Aria Label', 'kadence-blocks')}
 												value={label ? label : ''}
@@ -2494,7 +2586,6 @@ export default function KadenceButtonEdit(props) {
 						)}
 						<SpacingVisualizer
 							type="inside"
-							forceShow={paddingMouseOver.isMouseOver}
 							spacing={[
 								getSpacingOptionOutput(previewPaddingTop, previewPaddingUnit),
 								getSpacingOptionOutput(previewPaddingRight, previewPaddingUnit),
@@ -2506,7 +2597,6 @@ export default function KadenceButtonEdit(props) {
 				</Tooltip>
 				<SpacingVisualizer
 					type="inside"
-					forceShow={marginMouseOver.isMouseOver}
 					spacing={[
 						getSpacingOptionOutput(previewMarginTop, previewMarginUnit),
 						getSpacingOptionOutput(previewMarginRight, previewMarginUnit),

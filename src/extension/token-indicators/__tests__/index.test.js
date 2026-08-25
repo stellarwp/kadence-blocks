@@ -10,7 +10,13 @@ jest.mock('../components/TokenIndicator', () => ({ TokenIndicator: () => null })
 jest.mock('../components/TokenLabel', () => ({ TokenLabel: () => null }));
 jest.mock('../components/TokenControlRow', () => ({ TokenControlRow: () => null }));
 
-import { usePresetBinding, resetAttrPatch, presetPropertyValueForDevice, mappedAttrsFor } from '../index';
+import {
+	usePresetBinding,
+	resetAttrPatch,
+	presetPropertyValueForDevice,
+	mappedAttrsFor,
+	deriveStateBinding,
+} from '../index';
 
 const BLOCK = 'kadence/singlebtn';
 const SET = 'default';
@@ -440,6 +446,45 @@ describe('usePresetBinding border width/style/color combining', () => {
 
 		expect(state.borderStyle.overridden).toBe(true);
 	});
+
+	/**
+	 * On Tablet, the compare uses the tablet border attribute against the preset value in effect at
+	 * Tablet, not the (empty) desktop attribute — mirroring the dimension kind's own device-awareness
+	 * (see the `usePresetBinding device-aware overridden` suite above). Before this fix, border kinds
+	 * always read the desktop attribute regardless of `previewDevice`.
+	 *
+	 * @return {void}
+	 */
+	it('reads the tablet border attribute, not the desktop one, when previewDevice is Tablet', () => {
+		const attributes = {
+			kbPreset: 'primary',
+			// Desktop stores a color that would NOT match the preset if read by mistake.
+			borderStyle: [
+				{
+					top: ['#ffffff', 'solid', '2'],
+					right: ['#ffffff', 'solid', '2'],
+					bottom: ['#ffffff', 'solid', '2'],
+					left: ['#ffffff', 'solid', '2'],
+					unit: 'px',
+				},
+			],
+			// Tablet stores exactly the preset's tablet-effective values — color from its tablet
+			// override, width/style falling back to their (device-less) desktop value.
+			tabletBorderStyle: [
+				{
+					top: ['#000000', 'solid', '2'],
+					right: ['#000000', 'solid', '2'],
+					bottom: ['#000000', 'solid', '2'],
+					left: ['#000000', 'solid', '2'],
+					unit: 'px',
+				},
+			],
+		};
+
+		const state = usePresetBinding(BLOCK, attributes, SET, 'Tablet');
+
+		expect(state.borderStyle.overridden).toBe(false);
+	});
 });
 
 describe('mappedAttrsFor border dedupe', () => {
@@ -533,5 +578,162 @@ describe('resetAttrPatch', () => {
 			tabletBorderStyle: [],
 			mobileBorderStyle: [],
 		});
+	});
+});
+
+describe('deriveStateBinding', () => {
+	/**
+	 * When the shared binding is not bound at all (no preset governs the property), the derived state
+	 * is not bound either — there is nothing to compare a per-state value against.
+	 *
+	 * @return {void}
+	 */
+	it('reports not bound when the shared binding is not bound', () => {
+		expect(deriveStateBinding({ shared: undefined, kind: 'dimension', value: ['4', '4', '4', '4'] })).toEqual({
+			bound: false,
+			overridden: false,
+		});
+	});
+
+	/**
+	 * A dimension state (e.g. Sticky's own Border Radius) whose own value matches the shared preset at
+	 * the active device reads as bound and not overridden.
+	 *
+	 * @return {void}
+	 */
+	it('reports a dimension state as bound and not overridden when its own value matches the shared preset', () => {
+		const shared = { bound: true };
+
+		const state = deriveStateBinding({
+			shared,
+			kind: 'dimension',
+			value: ['4', '4', '4', '4'],
+			unit: 'px',
+			devicePresetValue: '4px',
+		});
+
+		expect(state).toEqual({ bound: true, overridden: false });
+	});
+
+	/**
+	 * A dimension state whose own value diverges from the shared preset reads as overridden — even
+	 * though the shared binding itself (Normal's) might still match.
+	 *
+	 * @return {void}
+	 */
+	it('reports a dimension state as overridden when its own value diverges from the shared preset', () => {
+		const shared = { bound: true };
+
+		const state = deriveStateBinding({
+			shared,
+			kind: 'dimension',
+			value: ['8', '8', '8', '8'],
+			unit: 'px',
+			devicePresetValue: '4px',
+		});
+
+		expect(state).toEqual({ bound: true, overridden: true });
+	});
+
+	/**
+	 * A never-written dimension state reads as bound and not overridden, matching the empty => bound
+	 * signal `usePresetBinding` itself uses.
+	 *
+	 * @return {void}
+	 */
+	it('reports a never-written dimension state as bound and not overridden', () => {
+		const shared = { bound: true };
+
+		const state = deriveStateBinding({
+			shared,
+			kind: 'dimension',
+			value: ['', '', '', ''],
+			unit: 'px',
+			devicePresetValue: '4px',
+		});
+
+		expect(state).toEqual({ bound: true, overridden: false });
+	});
+
+	/**
+	 * A border state whose own value matches every axis of the shared border binding's preset values
+	 * reads as bound and not overridden.
+	 *
+	 * @return {void}
+	 */
+	it('reports a border state as bound and not overridden when every axis matches', () => {
+		const shared = {
+			bound: true,
+			presetValue: { width: '2px', style: 'solid', color: '#3182ce' },
+			responsive: { width: {}, style: {}, color: {} },
+		};
+		const value = [
+			{
+				top: ['#3182ce', 'solid', '2'],
+				right: ['#3182ce', 'solid', '2'],
+				bottom: ['#3182ce', 'solid', '2'],
+				left: ['#3182ce', 'solid', '2'],
+				unit: 'px',
+			},
+		];
+
+		const state = deriveStateBinding({ shared, kind: 'border', value, previewDevice: 'Desktop' });
+
+		expect(state).toEqual({ bound: true, overridden: false });
+	});
+
+	/**
+	 * A border state diverging on only one axis (color) still reports the combined entry as
+	 * overridden, matching `usePresetBinding`'s own "any axis diverges" rule.
+	 *
+	 * @return {void}
+	 */
+	it('reports a border state as overridden when only one axis diverges', () => {
+		const shared = {
+			bound: true,
+			presetValue: { width: '2px', style: 'solid', color: '#3182ce' },
+			responsive: { width: {}, style: {}, color: {} },
+		};
+		const value = [
+			{
+				top: ['#ffffff', 'solid', '2'],
+				right: ['#ffffff', 'solid', '2'],
+				bottom: ['#ffffff', 'solid', '2'],
+				left: ['#ffffff', 'solid', '2'],
+				unit: 'px',
+			},
+		];
+
+		const state = deriveStateBinding({ shared, kind: 'border', value, previewDevice: 'Desktop' });
+
+		expect(state).toEqual({ bound: true, overridden: true });
+	});
+
+	/**
+	 * A border state's own device preset value resolves per axis at the active device, mirroring
+	 * `usePresetBinding`'s own device-awareness — a value matching the DESKTOP preset but not the
+	 * TABLET override reads as overridden on Tablet.
+	 *
+	 * @return {void}
+	 */
+	it('resolves each border axis preset value at the active device', () => {
+		const shared = {
+			bound: true,
+			presetValue: { width: '2px', style: 'solid', color: '#3182ce' },
+			responsive: { width: {}, style: {}, color: { tablet: '#ffffff' } },
+		};
+		const value = [
+			{
+				top: ['#3182ce', 'solid', '2'],
+				right: ['#3182ce', 'solid', '2'],
+				bottom: ['#3182ce', 'solid', '2'],
+				left: ['#3182ce', 'solid', '2'],
+				unit: 'px',
+			},
+		];
+
+		const state = deriveStateBinding({ shared, kind: 'border', value, previewDevice: 'Tablet' });
+
+		expect(state).toEqual({ bound: true, overridden: true });
 	});
 });

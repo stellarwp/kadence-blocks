@@ -107,6 +107,11 @@ function handlerFor(kind) {
  *                       'border-style' | 'border-color').
  * @param {*}      value The stored primary attribute value.
  *
+ * An unrecognized `kind` falls back to the `text` kind's handler rather than throwing — PHP's
+ * `Preset_Bindings::kind()` can return a kind this module has no `KINDS` entry for yet (e.g.
+ * `'shadow'`, before its own dispatch entry lands), and a `TypeError` here would crash the editor
+ * render rather than merely mis-marking the indicator.
+ *
  * @since TBD
  *
  * @return {boolean} True when the value is unset/empty.
@@ -122,6 +127,9 @@ export function isEmptyValue(kind, value) {
  * @param {*}      value       The stored primary attribute value.
  * @param {string} unit        The companion unit (dimension only; '' otherwise).
  * @param {string} presetValue The preset's resolved literal for this property.
+ *
+ * An unrecognized `kind` falls back to the `text` kind's handler, matching `isEmptyValue`'s own
+ * fallback — see its docblock for why.
  *
  * @since TBD
  *
