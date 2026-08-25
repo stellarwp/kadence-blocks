@@ -10,7 +10,7 @@ jest.mock('../components/TokenIndicator', () => ({ TokenIndicator: () => null })
 jest.mock('../components/TokenLabel', () => ({ TokenLabel: () => null }));
 jest.mock('../components/TokenControlRow', () => ({ TokenControlRow: () => null }));
 
-import { usePresetBinding, resetAttrPatch, presetPropertyValueForDevice } from '../index';
+import { usePresetBinding, resetAttrPatch, presetPropertyValueForDevice, mappedAttrsFor } from '../index';
 
 const BLOCK = 'kadence/singlebtn';
 const SET = 'default';
@@ -266,6 +266,182 @@ describe('presetPropertyValueForDevice', () => {
 	});
 });
 
+describe('usePresetBinding border width/style/color combining', () => {
+	/**
+	 * Seed the localized catalog with the three border-axis properties, all sharing the
+	 * `control_attr: 'borderStyle'` binding `declarations.php` now declares.
+	 *
+	 * @return {void}
+	 */
+	function seedBorderCatalog() {
+		window.kadenceDesignTokensPresets = {
+			active: SET,
+			libraries: {
+				[SET]: {
+					[BLOCK]: {
+						default: 'primary',
+						presets: [{ slug: 'primary', label: 'Primary' }],
+						properties: [
+							{
+								key: 'button-border-width',
+								kind: 'dimension',
+								token: 'semantic.border-width.default',
+								control_attr: 'borderStyle',
+							},
+							{
+								key: 'button-border-style',
+								kind: 'color',
+								token: 'semantic.border-style.default',
+								control_attr: 'borderStyle',
+							},
+							{
+								key: 'button-border-color',
+								kind: 'color',
+								token: 'semantic.color.border',
+								control_attr: 'borderStyle',
+							},
+						],
+						values: {
+							primary: {
+								'button-border-width': '2px',
+								'button-border-style': 'solid',
+								'button-border-color': '#3182ce',
+							},
+						},
+						responsive: {},
+					},
+				},
+			},
+		};
+	}
+
+	beforeEach(() => {
+		seedBorderCatalog();
+	});
+
+	afterEach(() => {
+		delete window.kadenceDesignTokensPresets;
+	});
+
+	/**
+	 * A never-written native border value reads as bound and not overridden, combining all three axes
+	 * into the single `borderStyle` state entry.
+	 *
+	 * @return {void}
+	 */
+	it('combines the three axes into one borderStyle entry, reading bound when never written', () => {
+		const state = usePresetBinding(BLOCK, { kbPreset: 'primary' }, SET, 'Desktop');
+
+		expect(Object.keys(state)).toEqual(['borderStyle']);
+		expect(state.borderStyle.kind).toBe('border');
+		expect(state.borderStyle.bound).toBe(true);
+		expect(state.borderStyle.overridden).toBe(false);
+		expect(state.borderStyle.presetValue).toEqual({ width: '2px', style: 'solid', color: '#3182ce' });
+	});
+
+	/**
+	 * A native border value equal to the preset on every axis and every side is bound, not overridden.
+	 *
+	 * @return {void}
+	 */
+	it('reads a native value matching the preset on every axis as not overridden', () => {
+		const attributes = {
+			kbPreset: 'primary',
+			borderStyle: [
+				{
+					top: ['#3182ce', 'solid', '2'],
+					right: ['#3182ce', 'solid', '2'],
+					bottom: ['#3182ce', 'solid', '2'],
+					left: ['#3182ce', 'solid', '2'],
+					unit: 'px',
+				},
+			],
+		};
+
+		const state = usePresetBinding(BLOCK, attributes, SET, 'Desktop');
+
+		expect(state.borderStyle.overridden).toBe(false);
+	});
+
+	/**
+	 * A native border value diverging on only ONE axis (color) still reports the combined entry as
+	 * overridden — "overridden" means any axis diverges, not every axis.
+	 *
+	 * @return {void}
+	 */
+	it('reports overridden when only one axis diverges from its own preset value', () => {
+		const attributes = {
+			kbPreset: 'primary',
+			borderStyle: [
+				{
+					top: ['#ffffff', 'solid', '2'],
+					right: ['#ffffff', 'solid', '2'],
+					bottom: ['#ffffff', 'solid', '2'],
+					left: ['#ffffff', 'solid', '2'],
+					unit: 'px',
+				},
+			],
+		};
+
+		const state = usePresetBinding(BLOCK, attributes, SET, 'Desktop');
+
+		expect(state.borderStyle.overridden).toBe(true);
+	});
+});
+
+describe('mappedAttrsFor border dedupe', () => {
+	/**
+	 * The three border-axis properties, sharing one `control_attr`, collapse to a single mapped
+	 * attribute reporting the combined `'border'` kind — not three entries with three different
+	 * (individually wrong) kinds for `resetAttrPatch` to act on.
+	 *
+	 * @return {void}
+	 */
+	it('collapses the three border-axis properties into one border-kind entry', () => {
+		window.kadenceDesignTokensPresets = {
+			active: SET,
+			libraries: {
+				[SET]: {
+					[BLOCK]: {
+						default: 'primary',
+						presets: [{ slug: 'primary', label: 'Primary' }],
+						properties: [
+							{
+								key: 'button-border-width',
+								kind: 'dimension',
+								token: 'semantic.border-width.default',
+								control_attr: 'borderStyle',
+							},
+							{
+								key: 'button-border-style',
+								kind: 'color',
+								token: 'semantic.border-style.default',
+								control_attr: 'borderStyle',
+							},
+							{
+								key: 'button-border-color',
+								kind: 'color',
+								token: 'semantic.color.border',
+								control_attr: 'borderStyle',
+							},
+							{ key: 'button-radius', kind: 'dimension', token: null, control_attr: 'borderRadius' },
+						],
+						values: {},
+						responsive: {},
+					},
+				},
+			},
+		};
+
+		expect(mappedAttrsFor(BLOCK, SET)).toEqual([
+			{ attr: 'borderStyle', kind: 'border' },
+			{ attr: 'borderRadius', kind: 'dimension' },
+		]);
+
+		delete window.kadenceDesignTokensPresets;
+	});
+});
+
 describe('resetAttrPatch', () => {
 	/**
 	 * A dimension reset clears the primary, unit, and both responsive companion attributes to their
@@ -289,5 +465,20 @@ describe('resetAttrPatch', () => {
 	 */
 	it('clears only the primary attribute for a non-dimension kind', () => {
 		expect(resetAttrPatch('background', 'color')).toEqual({ background: '' });
+	});
+
+	/**
+	 * A border reset clears the primary attribute and both responsive companions to an empty ARRAY
+	 * (`[]`), not `['', '', '', '']` — the shape `EditorBorderControl`'s `fromNativeBorder` reads as
+	 * "never written" via its `!native?.[0]` short-circuit.
+	 *
+	 * @return {void}
+	 */
+	it('clears the primary and responsive companions to an empty array for a border', () => {
+		expect(resetAttrPatch('borderStyle', 'border')).toEqual({
+			borderStyle: [],
+			tabletBorderStyle: [],
+			mobileBorderStyle: [],
+		});
 	});
 });
