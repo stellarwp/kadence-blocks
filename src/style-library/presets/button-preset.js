@@ -155,10 +155,10 @@ function renderPreview(row) {
 }
 
 /**
- * The per-tab settings schema: the Normal tab adds a Radius section and the Hover tab never does —
- * `button-radius` has no hover counterpart, so rendering one there would write a property
- * `guard_surface` rejects. The preset name is not here; it is tab-independent and comes from
- * `presetNameSchema()`.
+ * The per-tab settings schema: the Normal tab adds a Border and Shadow section and the Hover tab
+ * never does — `button-radius`/`button-border`/`button-shadow` have no hover counterpart, so
+ * rendering them there would write a property `guard_surface` rejects. The preset name is not here;
+ * it is tab-independent and comes from `presetNameSchema()`.
  *
  * @param {string} tab The active tab name (`'normal'` or `'hover'`).
  *
@@ -184,7 +184,7 @@ function schemaFor(tab) {
 		return { panels: [colorPanel] };
 	}
 
-	const radiusPanel = {
+	const borderAndShadowPanel = {
 		id: 'border-and-shadow',
 		title: __('Border and Shadow', 'kadence-blocks'),
 		fields: [
@@ -199,6 +199,27 @@ function schemaFor(tab) {
 				// same value `semantic.radius.control` holds. Shown muted when the preset sets nothing, so a
 				// reset field reports the radius the button really has rather than reading as empty.
 				defaultValue: ['0.1875rem', '0.1875rem', '0.1875rem', '0.1875rem'],
+			},
+			{
+				type: 'border',
+				responsive: true,
+				// A base path, not a stored key: PHP declares `button-border-width`/`-style`/`-color` as
+				// three separate bound properties, so `BorderField` derives and reads/writes the three
+				// sibling keys `${path}-width` / `-style` / `-color` itself rather than one composite value
+				// living at this path.
+				path: 'tokens.button-border',
+				label: __('Border', 'kadence-blocks'),
+				// No `defaultValue` here, unlike the radius field above: `BorderField`'s adapter doesn't
+				// read one, because `BorderControl` accepts no `defaultValue`/inherited-value prop the way
+				// `BoxControl` does. Setting one would be a dead key. Add it once `BorderControl` grows that
+				// support, not before.
+			},
+			{
+				type: 'box-shadow',
+				path: 'tokens.button-shadow',
+				label: __('Shadow', 'kadence-blocks'),
+				// Same reason as `border` above: `BoxShadowControl` accepts no `defaultValue` prop, so a
+				// `defaultValue` key here would go unread.
 			},
 		],
 	};
@@ -237,7 +258,7 @@ function schemaFor(tab) {
 		],
 	};
 
-	return { panels: [colorPanel, radiusPanel, spacingPanel] };
+	return { panels: [colorPanel, borderAndShadowPanel, spacingPanel] };
 }
 
 /**

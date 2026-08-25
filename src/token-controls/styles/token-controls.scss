@@ -118,6 +118,42 @@
 	overflow-y: auto;
 }
 
+/*
+ * The Style Library tab's optional preview slot (`TokenPopover`'s `renderPreview`), sitting above
+ * `Reset` inside the same list container. Centers whatever square the caller renders; only
+ * `BoxShadowControl` opts in today.
+ */
+.kadence-token-field__preview {
+	display: flex;
+	justify-content: center;
+	padding: 8px 4px 4px;
+}
+
+/*
+ * `BoxShadowControl`'s preview square: a plain gray-100 box with the active shadow's CSS applied, so
+ * a shadow reads at a glance before it is picked. Reuses this file's own established gray-100
+ * selection background and 2px control radius rather than new values.
+ */
+.kb-box-shadow-control__preview {
+	flex: 0 0 auto;
+	width: 48px;
+	height: 48px;
+	border-radius: 2px;
+	background: #f0f0f0;
+}
+
+/*
+ * `BoxShadowControl`'s own trigger shows a leading glyph and its label only, never a value — unlike
+ * every other field's trigger, which the shared `.kadence-token-field__trigger` rule's
+ * `justify-content: space-between` pushes a label and a value to opposite ends of. With no value to
+ * balance against, that would strand the icon and label at opposite ends instead, so this scopes an
+ * override to the extra `kb-box-shadow-control__trigger` class this control alone adds — every other
+ * consumer of the shared trigger class is untouched.
+ */
+.kadence-token-field__trigger.kb-box-shadow-control__trigger {
+	justify-content: flex-start;
+}
+
 // Each row: label left, value (and optional Default tag) right, on a 40px line with a 2px-radius hover.
 .kadence-token-field__item.components-button,
 .kadence-token-field__reset.components-button {
@@ -200,6 +236,45 @@
 		flex: 1 1 auto;
 		min-width: 0;
 		margin-bottom: 0;
+	}
+}
+
+/*
+ * `BoxShadowControl`'s Custom tab: unlike the single-row layout above (one scalar plus its unit and
+ * slider), a shadow composite stacks three sections — the color row, the four axes, the Inset toggle
+ * — so this overrides the base rule's row direction rather than adding a second unrelated class.
+ * Reuses the base rule's own `8px`/`12px` spacing instead of introducing new values.
+ */
+.kadence-token-field__custom.kb-box-shadow-control__custom {
+	flex-direction: column;
+	align-items: stretch;
+}
+
+/*
+ * The color row: a plain full-width wrapper around whatever `renderColor` renders (see the render
+ * function's own comment on why this does not rebuild that markup). Margin only, no border/padding
+ * of its own — the Style Library's `TokenColorSelectField` and the block editor's `PopColorControl`
+ * already draw their own bordered, clickable swatch-plus-label toggle, and adding a second border
+ * around it would double up the chrome the reference `ShadowField` only draws once.
+ */
+.kb-box-shadow-control__color-row {
+	width: 100%;
+	margin-bottom: 4px;
+}
+
+/*
+ * The four axis fields (X/Y/Blur/Spread), side by side rather than stacked — each field's own label
+ * already renders above its input via `NumberControl`'s built-in `label` prop (the same field-level
+ * markup `TokenSelector`'s Custom tab number input already uses elsewhere in this file), so this rule
+ * only has to arrange the four fields, not draw a second label.
+ */
+.kb-box-shadow-control__axes {
+	display: flex;
+	gap: 8px;
+
+	> * {
+		flex: 1 1 auto;
+		min-width: 0;
 	}
 }
 
@@ -451,146 +526,118 @@
 	gap: 4px;
 }
 
-/* The unlinked slot grid: two columns, in the display order the control's role decided. */
+/* The unlinked rows: one column, stacked, in the display order the control's role decided. */
 .kb-token-control__grid {
-	display: grid;
-	grid-template-columns: repeat(2, minmax(0, 1fr));
-	gap: 4px;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
 }
 
 /*
- * A slot in the unlinked grid: a titled cell, the title and the field reading as one box.
- *
- * Half the control's width has to carry a token name and its value, and inline they do not fit — at
- * the panel's width the name alone is about as wide as the whole slot, so side by side the name is
- * what gets truncated. Stacking gives the name the full width and keeps the value visible under it.
+ * One row: the glyph, then the control box (the field renderSlot() supplies). Shared by the single
+ * linked row and every unlinked row, so linked mode gets the same anatomy — glyph included — instead
+ * of a bare field.
  */
-.kb-token-control__slot {
-	/* Local to this library on purpose: shared CSS cannot reach for a host's own spacing scale. */
-	--kb-token-control-slot-padding-y: 0.25rem;
-	--kb-token-control-slot-padding-x: 0.5rem;
-	/* Clears the field's 1px border, so the mark reads as inside the box rather than drawn over it. */
-	--kb-token-control-mark-inset: 1px;
-	/* Floored at zero so a field flatter than the inset cannot ask for a negative radius. */
-	--kb-token-control-mark-radius: max(
-		0px,
-		calc(var(--kb-token-control-field-radius, 2px) - var(--kb-token-control-mark-inset))
-	);
+.kb-token-control__row {
+	display: flex;
+	align-items: center;
+	gap: 10px;
 
-	position: relative;
-
-	.kadence-token-field__trigger.components-button {
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		gap: 0;
+	/*
+	 * The row's own control-box chrome. Unlinked rows previously centered/stacked the trigger's text
+	 * at a smaller size here; that override is gone. Border-color and border-radius are left as the
+	 * base trigger rule's own values (`#949494`, 2px) rather than the reference's control-box values
+	 * — the row's arrangement changes (glyph, stacked layout), but the trigger itself keeps its
+	 * established appearance; font-size, weight and color are also left alone, inherited from the
+	 * base trigger rule.
+	 *
+	 * `:where()` wraps the row scoping so this rule's specificity comes only from
+	 * `.kadence-token-field__trigger.components-button` itself (two classes) — level with that base
+	 * rule's own resting border-color, but still below its `:hover`/`[aria-expanded="true"]` states
+	 * (two classes plus a pseudo-class/attribute selector). Written as a plain descendant selector,
+	 * this override's extra class would tie those interactive states on specificity and — being
+	 * declared later in the file — win over them, so hovering or opening a row's popover would stop
+	 * changing its border color.
+	 */
+	:where(&) .kadence-token-field__trigger.components-button {
+		flex: 1 1 auto;
 		height: auto;
-		padding: var(--kb-token-control-slot-padding-y) var(--kb-token-control-slot-padding-x);
-		border-radius: var(--kb-token-control-field-radius, 2px);
-		font-size: 12px;
-		text-align: center;
+		padding: 7px 10px;
 	}
+}
 
-	.kadence-token-field__label {
-		max-width: 100%;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-	}
+/*
+ * The row's leading glyph: a small standalone box marking which edge(s) the row names, rather than a
+ * `::before` overlay on the field's own border. Base state is a plain 1px square; the modifiers below
+ * thicken and re-color one or more of its own edges (and, for a corner, round it) to point at the
+ * position the row is for. Border color reuses the same `--kb-border-dark-color` custom property the
+ * previous `::before` mark used, so the highlighted edge keeps its established color.
+ */
+.kb-token-control__glyph {
+	box-sizing: border-box;
+	flex: none;
+	width: 15px;
+	height: 15px;
+	border: 1px solid #949494;
+	border-radius: 2px;
+}
 
-	/* Set explicitly on the base rule, so it has to be pulled back to the slot's own size here. */
-	.kadence-token-field__value {
-		font-size: inherit;
-	}
+.kb-token-control__glyph--top,
+.kb-token-control__glyph--top-left,
+.kb-token-control__glyph--top-right,
+.kb-token-control__glyph--all {
+	border-top-width: 2px;
+	border-top-color: var(--kb-border-dark-color, #6f8094);
+}
 
-	/*
-	 * The position mark hangs off the field itself rather than the cell, so it can sit on the very
-	 * corner (or edge) it names. It is inset by its own border width so it reads as sitting just inside
-	 * the field rather than smudging the field's own border.
-	 */
-	.kadence-token-field {
-		position: relative;
-	}
+.kb-token-control__glyph--right,
+.kb-token-control__glyph--top-right,
+.kb-token-control__glyph--bottom-right,
+.kb-token-control__glyph--all {
+	border-right-width: 2px;
+	border-right-color: var(--kb-border-dark-color, #6f8094);
+}
 
-	.kadence-token-field::before {
-		position: absolute;
-		z-index: 1;
-		box-sizing: border-box;
-		width: 1rem;
-		height: 1rem;
-		border: 0 solid var(--kb-border-dark-color, #6f8094);
-		content: "";
-		pointer-events: none;
-	}
+.kb-token-control__glyph--bottom,
+.kb-token-control__glyph--bottom-right,
+.kb-token-control__glyph--bottom-left,
+.kb-token-control__glyph--all {
+	border-bottom-width: 2px;
+	border-bottom-color: var(--kb-border-dark-color, #6f8094);
+}
 
-	/*
-	 * One rule set for both geometries, because they are the same idea at different arity: a corner
-	 * sets two adjacent borders, a side sets one. Radius uses the corner classes; border, margin and
-	 * padding use the side ones. Each edge is addressed with its own offset, so a corner simply gets
-	 * two of them and needs no transform to reach the far side.
-	 */
-	&--top-left .kadence-token-field::before,
-	&--top-right .kadence-token-field::before,
-	&--top .kadence-token-field::before {
-		top: var(--kb-token-control-mark-inset);
-		border-top-width: 3px;
-	}
+.kb-token-control__glyph--left,
+.kb-token-control__glyph--top-left,
+.kb-token-control__glyph--bottom-left,
+.kb-token-control__glyph--all {
+	border-left-width: 2px;
+	border-left-color: var(--kb-border-dark-color, #6f8094);
+}
 
-	&--bottom-left .kadence-token-field::before,
-	&--bottom-right .kadence-token-field::before,
-	&--bottom .kadence-token-field::before {
-		bottom: var(--kb-token-control-mark-inset);
-		border-bottom-width: 3px;
-	}
+/*
+ * A corner glyph also rounds the one corner it names, matching the four-corner rounding the previous
+ * `::before` mark drew via `--kb-token-control-mark-radius`, reapplied here to a real element instead.
+ */
+.kb-token-control__glyph--top-left {
+	border-top-left-radius: 5px;
+}
 
-	&--top-left .kadence-token-field::before,
-	&--bottom-left .kadence-token-field::before,
-	&--left .kadence-token-field::before {
-		left: var(--kb-token-control-mark-inset);
-		border-left-width: 3px;
-	}
+.kb-token-control__glyph--top-right {
+	border-top-right-radius: 5px;
+}
 
-	&--top-right .kadence-token-field::before,
-	&--bottom-right .kadence-token-field::before,
-	&--right .kadence-token-field::before {
-		right: var(--kb-token-control-mark-inset);
-		border-right-width: 3px;
-	}
+.kb-token-control__glyph--bottom-right {
+	border-bottom-right-radius: 5px;
+}
 
-	/*
-	 * A corner mark traces the field's own corner, so it follows the same curve — left square, it would
-	 * cut across the rounded edge it is tracing. Inset by the mark's own offset, though: a curve sitting
-	 * 1px inside a 2px one is a 1px curve, so the radius is the field's less the inset rather than the
-	 * field's outright. A side mark is mid-edge and stays straight.
-	 */
-	&--top-left .kadence-token-field::before {
-		border-top-left-radius: var(--kb-token-control-mark-radius);
-	}
+.kb-token-control__glyph--bottom-left {
+	border-bottom-left-radius: 5px;
+}
 
-	&--top-right .kadence-token-field::before {
-		border-top-right-radius: var(--kb-token-control-mark-radius);
-	}
-
-	&--bottom-right .kadence-token-field::before {
-		border-bottom-right-radius: var(--kb-token-control-mark-radius);
-	}
-
-	&--bottom-left .kadence-token-field::before {
-		border-bottom-left-radius: var(--kb-token-control-mark-radius);
-	}
-
-	/* A side names one edge, so it is centered along that edge rather than pinned to a corner. */
-	&--top .kadence-token-field::before,
-	&--bottom .kadence-token-field::before {
-		left: 50%;
-		transform: translateX(-50%);
-	}
-
-	&--left .kadence-token-field::before,
-	&--right .kadence-token-field::before {
-		top: 50%;
-		transform: translateY(-50%);
-	}
+/* Linked mode's "all corners" glyph rounds every corner, standing in for "every corner is this one
+   value" the way the unlinked grid otherwise shows one corner at a time. */
+.kb-token-control__glyph--corners.kb-token-control__glyph--all {
+	border-radius: 5px;
 }
 
 .kb-token-control__indicator {
@@ -679,4 +726,207 @@
 			fill: currentColor;
 		}
 	}
+}
+
+/**
+ * `BorderControl`'s row anatomy: a color swatch, a style-preview box, then the width field's
+ * label/value, all sharing one control box — the two pickers Padding/Margin/Radius's row doesn't
+ * carry.
+ *
+ * The box's own border/radius/padding lives here rather than on `TokenSelector`'s trigger (which
+ * `.kb-token-control__row`'s shared rule styles for every other box field): Border's box wraps
+ * three siblings, not one, so the width trigger's own border is stripped down to nothing and only
+ * the outer box's edge shows.
+ */
+.kb-border-control__box {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	width: 100%;
+
+	// Tighter on the left than the `7px 10px` other box fields use — the reference seats the
+	// swatch and style preview flush against that edge. Border-color and radius match the base
+	// trigger's original values, not the reference's control-box values.
+	padding: 5px 10px 5px 6px;
+	border: 1px solid #949494;
+	border-radius: 2px;
+
+	.kadence-token-field {
+		flex: 1 1 auto;
+		min-width: 0;
+	}
+}
+
+/*
+ * Strips the width trigger's own border/radius/padding when it sits inside Border's box — the box
+ * itself now draws that chrome. Scoped through `:has()` off the box's own class (rather than a
+ * class on `.kb-token-control__row` itself, which `SlotGrid` renders and this control does not
+ * touch) so Radius/Spacing's rows, which have no `.kb-border-control__box`, are untouched. Higher
+ * specificity than the shared row rule's `:where()`-wrapped selector wins regardless of source
+ * order.
+ */
+.kb-token-control__row:has(.kb-border-control__box) .kadence-token-field__trigger.components-button {
+	padding: 0;
+	border: 0;
+	border-radius: 0;
+
+	&[aria-expanded="true"] {
+		box-shadow: none;
+	}
+}
+
+/*
+ * The color swatch: sized and rounded to a 20px circle around whatever `renderColor` returns.
+ * `renderColor`'s own chrome (padding, border, a visible name label) is stripped back here — the
+ * row already carries the box border, and the reference row shows only the swatch, not a labeled
+ * field. This only reaches for the swatch's already-established markup (the block editor's
+ * `@kadence/components` `PopColorControl`/`SinglePopColorControl` and the Style Library's
+ * `TokenColorSelectField`); it does not add any new color-picking UI.
+ */
+.kb-border-control__swatch {
+	display: inline-flex;
+	flex: 0 0 auto;
+	align-items: center;
+	justify-content: center;
+	width: 20px;
+	height: 20px;
+
+	// The Style Library's `TokenColorSelectField`: drop its bordered/padded toggle chrome and its
+	// visible name label, leaving just the round swatch it already draws at 20px.
+	.kadence-blocks-style-library__field-token-color-select-toggle {
+		width: 20px;
+		height: 20px;
+		padding: 0;
+		border: 0;
+		gap: 0;
+	}
+
+	.kadence-blocks-style-library__field-token-color-select-label {
+		display: none;
+	}
+
+	// The block editor's `PopColorControl`: drop the base-control wrapper's own margin/padding so
+	// the swatch button it renders (`SinglePopColorControl`, via `.single-pop-color`) is the only
+	// thing that takes up space.
+	.components-base-control.kadence-pop-color-control {
+		margin: 0;
+	}
+
+	.kadence-pop-color-container {
+		gap: 0;
+	}
+
+	.kadence-pop-color-label {
+		display: none;
+	}
+}
+
+/*
+ * `@kadence/components`' `SinglePopColorControl` draws its own swatch (`.kadence-pop-color-indicate`,
+ * inside `.kadence-pop-color-icon-indicate`, inside `.kadence-pop-color-control` — see
+ * `single-pop-color-control/index.js:305-312` and `pop-color-control/index.js:55`) at a fixed 28x28,
+ * via `pop-color-control/editor.scss`'s own
+ * `.kadence-pop-color-control .kadence-pop-color-icon-indicate .kadence-pop-color-indicate` rule —
+ * three classes, (0,3,0). Nesting the override inside `.kb-border-control__swatch` alone only adds
+ * one class on top of that same three-class chain's tail, tying rather than beating it — a tie a
+ * later-loaded CSS file could still lose depending on enqueue order. Written here as a standalone
+ * rule qualified by both `.kb-border-control__box` and `.kb-border-control__swatch` (both real
+ * ancestors — see `BorderControl.js`'s row markup) reaches four classes, (0,4,0), which wins outright
+ * regardless of load order.
+ */
+.kb-border-control__box .kb-border-control__swatch .kadence-pop-color-icon-indicate .kadence-pop-color-indicate {
+	width: 20px;
+	height: 20px;
+}
+
+/*
+ * The style preview: a 26x20px box with a 16px horizontal rule styled to match the side's current
+ * `border-style` value. `Dropdown` (from `BorderStyleSelect`) renders this as its own wrapping
+ * `<div>` via its `className` prop, with the real trigger `<button>` inside — see
+ * `.kb-border-control__style-trigger` below.
+ */
+.kb-border-control__style-preview {
+	display: flex;
+	flex: 0 0 auto;
+	align-items: center;
+	justify-content: center;
+	width: 26px;
+	height: 20px;
+	border: 1px solid #dddddd;
+	border-radius: 3px;
+	background: #fff;
+}
+
+/*
+ * The trigger itself: a real, focusable `<button>` filling the preview box — unlike the earlier
+ * native-`<select>`-underneath approach, `BorderStyleSelect` is custom UI top to bottom, so its own
+ * focus state has to be drawn explicitly rather than relying on a hidden native control's outline.
+ */
+.kb-border-control__style-trigger {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	height: 100%;
+	padding: 0;
+	border: 0;
+	border-radius: inherit;
+	background: transparent;
+	cursor: pointer;
+
+	&:focus-visible {
+		outline: 2px solid #3858e9;
+		outline-offset: 1px;
+	}
+
+	&:disabled {
+		cursor: default;
+		opacity: 0.5;
+	}
+}
+
+.kb-border-control__style-preview-rule {
+	width: 16px;
+	height: 0;
+	border-top: 2px solid #1e1e1e;
+}
+
+.kb-border-control__style-preview-rule--dashed {
+	border-top-style: dashed;
+}
+
+.kb-border-control__style-preview-rule--dotted {
+	border-top-style: dotted;
+}
+
+.kb-border-control__style-preview-rule--double {
+	border-top-style: double;
+	border-top-width: 3px;
+}
+
+// `none` shows no rule at all, rather than a muted line — there is nothing to preview.
+.kb-border-control__style-preview-rule--none {
+	visibility: hidden;
+}
+
+// The popover's menu: a 4px-radius white sheet, matching the token field's own popover.
+.kb-border-control__style-menu {
+
+	.components-popover__content {
+		min-width: 180px;
+		border-radius: 4px;
+	}
+}
+
+// Each option's own rule sits in a fixed-width swatch column so every label starts at the same
+// indent regardless of which style (and therefore how wide a `--double` rule's border gets) it draws.
+.kb-border-control__style-menu-swatch {
+	display: inline-flex;
+	flex: 0 0 24px;
+	align-items: center;
+	justify-content: center;
+}
+
+.kb-border-control__style-menu-label {
+	flex: 1 1 auto;
 }

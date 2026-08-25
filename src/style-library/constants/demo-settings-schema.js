@@ -165,7 +165,20 @@ export const DEMO_SETTINGS_SCHEMA = {
 			id: 'shadow',
 			title: __('Shadow', 'kadence-blocks'),
 			initialOpen: true,
-			fields: [{ type: 'shadow', path: 'shadow', label: __('Shadow', 'kadence-blocks') }],
+			fields: [
+				{ type: 'shadow', path: 'shadow', label: __('Shadow', 'kadence-blocks') },
+				{
+					// The token-aware Button-panel counterpart to `box-sides`/`shadow` above.
+					type: 'border',
+					path: 'border',
+					label: __('Border (token control)', 'kadence-blocks'),
+				},
+				{
+					type: 'box-shadow',
+					path: 'boxShadow',
+					label: __('Shadow (token control)', 'kadence-blocks'),
+				},
+			],
 		},
 	],
 };
@@ -193,4 +206,6 @@ export const DEMO_SETTINGS_VALUES = {
 	spacing: '',
 	enabled: true,
 	shadow: { color: '#000000', offsetX: 0, offsetY: 4, blur: 8, spread: 0, inset: false },
+	border: { width: '2px', style: 'solid', color: '#2271b1' },
+	boxShadow: '',
 };

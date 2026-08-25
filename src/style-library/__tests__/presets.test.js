@@ -646,6 +646,8 @@ describe('BUTTON_PRESET.schemaFor', () => {
 			'tokens.button-text',
 			'tokens.button-bg',
 			'tokens.button-radius',
+			'tokens.button-border',
+			'tokens.button-shadow',
 			'tokens.button-padding',
 			'tokens.button-margin',
 		]);
@@ -655,6 +657,17 @@ describe('BUTTON_PRESET.schemaFor', () => {
 			.find((field) => field.path === 'tokens.button-radius');
 
 		expect(radiusField).toMatchObject({ type: 'radius', tokenType: 'dimension', role: 'radius' });
+	});
+
+	it('lists exactly one border field and one box-shadow field in the Border and Shadow panel, alongside radius', () => {
+		const schema = BUTTON_PRESET.schemaFor('normal');
+		const panel = schema.panels.find((candidate) => candidate.id === 'border-and-shadow');
+
+		expect(panel.fields.map((field) => ({ type: field.type, path: field.path }))).toEqual([
+			{ type: 'radius', path: 'tokens.button-radius' },
+			{ type: 'border', path: 'tokens.button-border' },
+			{ type: 'box-shadow', path: 'tokens.button-shadow' },
+		]);
 	});
 
 	it('lists the hover color fields, with no radius field, on the Hover tab', () => {

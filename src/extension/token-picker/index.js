@@ -143,27 +143,23 @@ function inferRoleFromControl(controlAttr, tokens) {
 }
 
 /**
- * The pickable tokens for one block control, keyed by the attribute the control writes: resolves
- * the control's kind from the preset catalog's { key, kind, token, control_attr } surface, then
- * filters and ranks the pool for that kind. When the control binds a role token, the list is further
- * narrowed to that token's sub-kind (a radius control's `dimension` to only radius tokens, never
- * spacing) and the bound token is pinned to the top. Without a bound token the sub-kind is inferred
- * from the control attribute (`borderRadius` -> radius), narrowing all the same; only when no single
- * role can be inferred does it stay the coarse kind list (type filter + semantic-first). Empty when the
- * block maps no such control in the library — an unmapped control offers no tokens, which is the
- * "selectable only where it makes sense" guarantee at the per-control call site.
+ * The pickable tokens for an already-resolved bound property: filters and ranks the pool for the
+ * property's kind, narrows to the bound (or inferred) role's sub-kind with that role's primitive scale
+ * steps preferred, and pins the bound token first. Shared by every lookup path
+ * (`pickableTokensForControl`'s `control_attr` match, `pickableTokensForKey`'s `key` match) once each
+ * has found its own `property` entry, so the narrowing logic exists once.
  *
- * @param {string} blockName   The block name (e.g. 'kadence/singlebtn').
- * @param {string} controlAttr The attribute the control writes (e.g. 'borderRadius').
+ * @param {Object} property    The resolved bound property ({ key, kind, token, control_attr }).
+ * @param {string} controlAttr The attribute to infer a role from when the property binds no token
+ *                              (e.g. 'borderRadius'); pass '' when the caller has no such attribute
+ *                              (e.g. a key-based lookup for a property with no `control_attr`).
  * @param {string} [library]   The token library slug; defaults to the active library.
  *
  * @since TBD
  *
  * @return {Array} The pickable list ([{ id, alias, label, value, type, role }]), empty when unmapped.
  */
-export function pickableTokensForControl(blockName, controlAttr, library) {
-	const property = blockProperties(blockName, library).find((entry) => entry.control_attr === controlAttr);
-
+function pickableTokensForProperty(property, controlAttr, library) {
 	if (!property || !property.kind) {
 		return [];
 	}
@@ -189,4 +185,51 @@ export function pickableTokensForControl(blockName, controlAttr, library) {
 		...scoped.filter((token) => token.id === property.token),
 		...scoped.filter((token) => token.id !== property.token),
 	];
+}
+
+/**
+ * The pickable tokens for one block control, keyed by the attribute the control writes: resolves
+ * the control's kind from the preset catalog's { key, kind, token, control_attr } surface, then
+ * defers to the shared narrowing helper. Empty when the block maps no such control in the library —
+ * an unmapped control offers no tokens, which is the "selectable only where it makes sense" guarantee
+ * at the per-control call site.
+ *
+ * Only reaches properties that DO carry a `control_attr` — a property bound to a nested/composite
+ * native attribute (border, shadow) is declared with no `control_attr` at all and is invisible to this
+ * lookup by design; use `pickableTokensForKey` for those.
+ *
+ * @param {string} blockName   The block name (e.g. 'kadence/singlebtn').
+ * @param {string} controlAttr The attribute the control writes (e.g. 'borderRadius').
+ * @param {string} [library]   The token library slug; defaults to the active library.
+ *
+ * @since TBD
+ *
+ * @return {Array} The pickable list ([{ id, alias, label, value, type, role }]), empty when unmapped.
+ */
+export function pickableTokensForControl(blockName, controlAttr, library) {
+	const property = blockProperties(blockName, library).find((entry) => entry.control_attr === controlAttr);
+
+	return pickableTokensForProperty(property, controlAttr, library);
+}
+
+/**
+ * The pickable tokens for one bound property, keyed by the property's stable `key` (the PHP bindings
+ * array key, e.g. 'button-shadow') rather than its `control_attr`. Exists for properties whose native
+ * block attribute is a nested/composite shape (border, shadow) and so is declared with no
+ * `control_attr` at all — `pickableTokensForControl` can never find them, since it has no other way to
+ * locate a property. Otherwise identical to `pickableTokensForControl`: defers to the same shared
+ * narrowing helper once the property is found.
+ *
+ * @param {string} blockName The block name (e.g. 'kadence/singlebtn').
+ * @param {string} key       The property's bindings key (e.g. 'button-shadow').
+ * @param {string} [library] The token library slug; defaults to the active library.
+ *
+ * @since TBD
+ *
+ * @return {Array} The pickable list ([{ id, alias, label, value, type, role }]), empty when unmapped.
+ */
+export function pickableTokensForKey(blockName, key, library) {
+	const property = blockProperties(blockName, library).find((entry) => entry.key === key);
+
+	return pickableTokensForProperty(property, '', library);
 }

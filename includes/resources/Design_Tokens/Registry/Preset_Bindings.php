@@ -68,6 +68,15 @@ final class Preset_Bindings {
 	private const KIND_TEXT = 'text';
 
 	/**
+	 * The coarse input kind for a shadow-valued property.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const KIND_SHADOW = 'shadow';
+
+	/**
 	 * The block name, e.g. "kadence/advancedbtn".
 	 *
 	 * @since TBD
@@ -246,16 +255,29 @@ final class Preset_Bindings {
 	}
 
 	/**
-	 * A coarse input kind for a bound property — "color", "dimension" or "text" — so the editor's preset
-	 * form can render the right control per property. Read from the referenced token's group segment when the
-	 * binding is a token reference (e.g. `semantic.radius.media` => "dimension"), otherwise inferred from the
-	 * property name (e.g. `button-bg` => "color", `button-radius` => "dimension"). Falls back to "text".
+	 * The coarse input kind for a shadow-valued property. Read by the editor's token-picker lookup,
+	 * which cannot compare against the constant directly.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_kind_shadow(): string {
+		return self::KIND_SHADOW;
+	}
+
+	/**
+	 * A coarse input kind for a bound property — "color", "dimension", "shadow" or "text" — so the editor's
+	 * preset form can render the right control per property. Read from the referenced token's group segment
+	 * when the binding is a token reference (e.g. `semantic.radius.media` => "dimension",
+	 * `semantic.shadow.button` => "shadow"), otherwise inferred from the property name (e.g. `button-bg` =>
+	 * "color", `button-radius` => "dimension"). Falls back to "text".
 	 *
 	 * @since TBD
 	 *
 	 * @param string $property The bound property, e.g. "button-bg".
 	 *
-	 * @return string One of "color", "dimension" or "text".
+	 * @return string One of "color", "dimension", "shadow" or "text".
 	 */
 	public function kind( string $property ): string {
 		$binding = $this->binding( $property );
@@ -352,17 +374,22 @@ final class Preset_Bindings {
 
 	/**
 	 * Classify a term (a token group segment or a property name) into a coarse input kind, or "" when it
-	 * matches neither a dimension nor a color. Dimension terms are checked first so "borderRadius" resolves to
-	 * "dimension" rather than matching the "border" color term.
+	 * matches none of shadow, dimension or color. Shadow is checked first since it collides with neither of
+	 * the other lists; dimension is checked before color so "borderRadius" resolves to "dimension" rather
+	 * than matching the "border" color term.
 	 *
 	 * @since TBD
 	 *
 	 * @param string $term The term to classify.
 	 *
-	 * @return string "color", "dimension" or "".
+	 * @return string "shadow", "dimension", "color" or "".
 	 */
 	private static function classify( string $term ): string {
 		$term = strtolower( $term );
+
+		if ( strpos( $term, 'shadow' ) !== false ) {
+			return self::KIND_SHADOW;
+		}
 
 		foreach ( [ 'radius', 'width', 'gap', 'spacing', 'space', 'padding', 'margin', 'size', 'height', 'dimension' ] as $needle ) {
 			if ( strpos( $term, $needle ) !== false ) {

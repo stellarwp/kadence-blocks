@@ -124,6 +124,16 @@ describe('fieldComponentFor', () => {
 	it('returns null for an unknown type', () => {
 		expect(fieldComponentFor('nonsense')).toBeNull();
 	});
+
+	it('resolves "border" and "box-shadow" to distinct, non-null components', () => {
+		expect(fieldComponentFor('border')).not.toBeNull();
+		expect(fieldComponentFor('box-shadow')).not.toBeNull();
+		expect(fieldComponentFor('border')).not.toBe(fieldComponentFor('box-shadow'));
+	});
+
+	it('keeps "shadow" bound to the raw ShadowField the Shadow token-library screen uses, unaffected by "box-shadow"', () => {
+		expect(fieldComponentFor('shadow')).not.toBe(fieldComponentFor('box-shadow'));
+	});
 });
 
 describe('getValueAtPath', () => {

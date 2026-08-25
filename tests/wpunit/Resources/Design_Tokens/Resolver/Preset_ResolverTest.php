@@ -122,7 +122,16 @@ final class Preset_ResolverTest extends TestCase {
 
 		sort( $properties );
 		$this->assertSame(
-			[ 'button-bg', 'button-bg-hover', 'button-radius', 'button-text', 'button-text-hover' ],
+			[
+				'button-bg',
+				'button-bg-hover',
+				'button-border-color',
+				'button-border-style',
+				'button-border-width',
+				'button-radius',
+				'button-text',
+				'button-text-hover',
+			],
 			$properties
 		);
 	}

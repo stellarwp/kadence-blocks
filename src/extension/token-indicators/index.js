@@ -166,6 +166,41 @@ export function usePresetBinding(blockName, attributes, library, previewDevice) 
 }
 
 /**
+ * The active preset's resolved value for one property key, at the given device — for a property with
+ * no `control_attr` (a `css_var`-only binding like `button-border-width`, whose native attribute is a
+ * nested per-side shape `usePresetBinding` has nothing to key it by; see `declarations.php`'s comment
+ * on that binding). `usePresetBinding` skips these properties entirely, so a caller that only needs
+ * "what does the active preset resolve this to" — e.g. a dimension control's `defaultValue`, shown
+ * muted once the control's own override is cleared — reads it directly here instead.
+ *
+ * @param {string} blockName     The block name (e.g. 'kadence/singlebtn').
+ * @param {string} propertyKey   The binding's property key (e.g. 'button-border-width').
+ * @param {Object} attributes    The block's current attributes — read for `kbPreset`, so a
+ *                                user-selected preset (not just the block's default) resolves.
+ * @param {string} [library]     The token library slug; defaults to the active library.
+ * @param {string} [previewDevice] The active preview device ('Desktop' | 'Tablet' | 'Mobile').
+ *
+ * @since TBD
+ *
+ * @return {*} The resolved literal value, or `undefined` when the active preset does not set it.
+ */
+export function presetPropertyValueForDevice(blockName, propertyKey, attributes, library, previewDevice) {
+	const resolvedLibrary = library || activeLibrary();
+	const activePreset = activePresetFor(blockName, attributes, resolvedLibrary);
+	const presetValues = get(blockPresetValues(blockName, resolvedLibrary), activePreset, {});
+	const presetBreakpoints = get(blockPresetResponsive(blockName, resolvedLibrary), activePreset, {});
+
+	return presetValueForDevice(
+		presetValues[propertyKey],
+		{
+			tablet: get(presetBreakpoints, ['tablet', propertyKey]),
+			mobile: get(presetBreakpoints, ['mobile', propertyKey]),
+		},
+		previewDevice
+	);
+}
+
+/**
  * The `setAttributes` patch that clears a mapped control's attribute(s) back to their block.json default
  * shape, so the block falls back to the existing preset-scoped CSS (the `.wp-block-*.kb-preset--<preset>`
  * retarget) or the preset default — no new render path. A `color`/`text` control clears its single

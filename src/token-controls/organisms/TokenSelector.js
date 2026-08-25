@@ -57,6 +57,7 @@ import '../styles/token-controls.scss';
  * @param {Function} props.onPick     Writes a picked token's `alias` to the slot.
  * @param {Function} props.onClear    Clears the slot's override (the `Reset` choice).
  * @param {Function} props.onCustom   Writes a literal number to the slot (used when leaving a token).
+ * @param {Function} [props.renderCustom] Overrides the Custom tab body; passed through to `TokenPopover`.
  * @param {boolean}  [props.disabled] Disable the trigger, which is the only control outside the
  *                                      popover — with it inert the popover cannot open, so nothing
  *                                      below it is reachable either. Callers that only guard their
@@ -82,6 +83,7 @@ export function TokenSelector({
 	onPick,
 	onClear,
 	onCustom,
+	renderCustom,
 	disabled = false,
 }) {
 	const summary = fieldSummary(value, tokens, unit, __('Custom', 'kadence-blocks'));
@@ -167,6 +169,7 @@ export function TokenSelector({
 						inherited={inherited}
 						initialTab={initialTab}
 						custom={{ number, unit, units, onUnit, min, max, step, onNumber: writeNumber }}
+						renderCustom={renderCustom}
 						onPick={onPick}
 						onClear={onClear}
 						onClose={onClose}

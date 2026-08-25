@@ -4,7 +4,7 @@
 // ESM module) for its `PresetPicker` component. This module never renders it, so stub it out.
 jest.mock('@kadence/components', () => ({}));
 
-import { pickableTokenPool, pickableTokensFor, pickableTokensForControl } from '../index';
+import { pickableTokenPool, pickableTokensFor, pickableTokensForControl, pickableTokensForKey } from '../index';
 
 /**
  * The fixture pickable-token pool: layers are interleaved on purpose to prove the semantic-first
@@ -68,6 +68,22 @@ const POOL = {
 			layer: 'primitive',
 			role: 'font-weight',
 		},
+		{
+			id: 'primitive.shadow.sm',
+			alias: '{primitive.shadow.sm}',
+			label: 'Shadow SM',
+			type: 'shadow',
+			layer: 'primitive',
+			role: 'shadow',
+		},
+		{
+			id: 'semantic.shadow.button',
+			alias: '{semantic.shadow.button}',
+			label: 'Button Shadow',
+			type: 'shadow',
+			layer: 'semantic',
+			role: 'shadow',
+		},
 	],
 	values: {
 		default: {
@@ -78,6 +94,8 @@ const POOL = {
 			'primitive.dimension.spacing.md': '16px',
 			'semantic.spacing.block': '1.5rem',
 			'primitive.font-weight.bold': '700',
+			'primitive.shadow.sm': '0 1px 2px rgba(0,0,0,0.1)',
+			'semantic.shadow.button': '0 2px 4px rgba(0,0,0,0.2)',
 		},
 		brand: { 'semantic.color.button-primary-bg': '#000000' },
 	},
@@ -85,7 +103,10 @@ const POOL = {
 
 /**
  * The fixture preset catalog: enough for `activeLibrary()` and `blockProperties()` to resolve a single
- * mapped control (`borderRadius` -> `dimension`) for `kadence/singlebtn`.
+ * mapped control (`borderRadius` -> `dimension`) for `kadence/singlebtn`. `button-shadow` mirrors the
+ * real PHP binding: it has a `key` and a bound `token`, but no `control_attr` at all — the native shadow
+ * attribute is a composite shape, not a scalar a `control_attr` lookup can target — which is exactly the
+ * case `pickableTokensForKey` exists to reach.
  */
 const PRESETS = {
 	active: 'default',
@@ -95,6 +116,7 @@ const PRESETS = {
 				properties: [
 					{ key: 'button-radius', kind: 'dimension', token: null, control_attr: 'borderRadius' },
 					{ key: 'button-gap', kind: 'dimension', token: null, control_attr: 'gap' },
+					{ key: 'button-shadow', kind: 'shadow', token: 'semantic.shadow.button', control_attr: null },
 				],
 			},
 		},
@@ -283,5 +305,44 @@ describe('pickableTokensForControl', () => {
 
 		// A bound primitive is itself a size, so it survives the primitives-only scoping and is pinned first.
 		expect(result.map((token) => token.id)).toEqual(['primitive.dimension.radius.sm']);
+	});
+});
+
+describe('pickableTokensForKey', () => {
+	beforeEach(() => {
+		window.kadenceDesignTokensPickable = POOL;
+		window.kadenceDesignTokensPresets = PRESETS;
+	});
+
+	afterEach(() => {
+		delete window.kadenceDesignTokensPickable;
+		delete window.kadenceDesignTokensPresets;
+	});
+
+	it('finds a property with no control_attr by its key and narrows to the bound token sub-kind', () => {
+		const result = pickableTokensForKey('kadence/singlebtn', 'button-shadow');
+
+		// The bound token fixes the shadow role; with a primitive shadow present the picker offers only
+		// the size scale (mirroring the radius narrowing above), so even the bound semantic drops out.
+		expect(result.map((token) => token.id)).toEqual(['primitive.shadow.sm']);
+		expect(result.every((token) => token.role === 'shadow')).toBe(true);
+	});
+
+	it('succeeds by key on the exact same property that pickableTokensForControl cannot reach by any control_attr guess, proving the two lookup paths are genuinely independent', () => {
+		// Not a vacuous "no control_attr matches, so both return []" comparison: pickableTokensForKey
+		// resolves real tokens for this property (asserted above), while pickableTokensForControl fails to
+		// find it under its own key used AS a controlAttr, or under the attribute the real control writes
+		// ('shadow') — because the property carries no control_attr at all, not because the guess is wrong.
+		expect(pickableTokensForControl('kadence/singlebtn', 'button-shadow')).toEqual([]);
+		expect(pickableTokensForControl('kadence/singlebtn', 'shadow')).toEqual([]);
+		expect(pickableTokensForKey('kadence/singlebtn', 'button-shadow').length).toBeGreaterThan(0);
+	});
+
+	it('returns an empty array for an unmapped key', () => {
+		expect(pickableTokensForKey('kadence/singlebtn', 'button-does-not-exist')).toEqual([]);
+	});
+
+	it('returns an empty array for an unknown block', () => {
+		expect(pickableTokensForKey('kadence/does-not-exist', 'button-shadow')).toEqual([]);
 	});
 });

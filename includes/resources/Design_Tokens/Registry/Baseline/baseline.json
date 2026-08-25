@@ -658,6 +658,16 @@
 					"blur": "0px",
 					"spread": "0px"
 				}
+			},
+			"button": {
+				"$type": "shadow",
+				"$value": {
+					"color": "{primitive.color.transparent}",
+					"offsetX": "0px",
+					"offsetY": "0px",
+					"blur": "0px",
+					"spread": "0px"
+				}
 			}
 		}
 	},
@@ -814,7 +824,10 @@
 							"button-text": "{semantic.color.button-primary-text}",
 							"button-bg-hover": "{semantic.color.button-primary-bg-hover}",
 							"button-text-hover": "{semantic.color.button-primary-text-hover}",
-							"button-radius": "{semantic.radius.control}"
+							"button-radius": "{semantic.radius.control}",
+							"button-border-width": "{semantic.border-width.default}",
+							"button-border-style": "{semantic.border-style.default}",
+							"button-border-color": "{semantic.color.border}"
 						}
 					},
 					"secondary": {
@@ -824,7 +837,10 @@
 							"button-text": "{semantic.color.button-secondary-text}",
 							"button-bg-hover": "{semantic.color.button-secondary-bg-hover}",
 							"button-text-hover": "{semantic.color.button-secondary-text-hover}",
-							"button-radius": "{semantic.radius.control}"
+							"button-radius": "{semantic.radius.control}",
+							"button-border-width": "{semantic.border-width.default}",
+							"button-border-style": "{semantic.border-style.default}",
+							"button-border-color": "{semantic.color.border}"
 						}
 					}
 				},

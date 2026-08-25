@@ -493,6 +493,16 @@ return [
 				'label' => __( 'Button Margin Left', 'kadence-blocks' ),
 				'group' => __( 'Brand', 'kadence-blocks' ),
 			],
+			[
+				// Button shadow default for the block-default CSS projector, mirroring semantic.shadow.media.
+				// Registered so Css_Var emits --kb-token--semantic--shadow--button; the projector points
+				// kadence/singlebtn's box-shadow at it. Resolves to an invisible (transparent, zero) shadow,
+				// matching KB's default (a button carries no shadow until a preset or the user sets one).
+				'id'    => 'semantic.shadow.button',
+				'type'  => 'shadow',
+				'label' => __( 'Button Shadow', 'kadence-blocks' ),
+				'group' => __( 'Brand', 'kadence-blocks' ),
+			],
 		],
 		$button_color_tokens,
 		$notice_color_tokens,
@@ -536,23 +546,23 @@ return [
 				'label' => __( 'Button', 'kadence-blocks' ),
 			],
 			'bindings'      => [
-				'button-bg'         => [
+				'button-bg'           => [
 					'kadence_slot' => 'palette-btn-bg',
 					'control_attr' => 'background',
 				],
-				'button-text'       => [
+				'button-text'         => [
 					'kadence_slot' => 'palette-btn',
 					'control_attr' => 'color',
 				],
-				'button-bg-hover'   => [
+				'button-bg-hover'     => [
 					'kadence_slot' => 'palette-btn-bg-hover',
 					'control_attr' => 'backgroundHover',
 				],
-				'button-text-hover' => [
+				'button-text-hover'   => [
 					'kadence_slot' => 'palette-btn-hover',
 					'control_attr' => 'colorHover',
 				],
-				'button-radius'     => [
+				'button-radius'       => [
 					'css_var'          => 'kb-btn-radius', // drives --kb-btn-radius so a preset can vary the radius.
 					'control_attr'     => 'borderRadius',
 					// The block names its per-device radius attributes by a prefix convention, which is a naming
@@ -568,7 +578,7 @@ return [
 				// every existing button and take padding away from the Button Size control. The binding
 				// exists so a preset CAN set them; until one does, the property resolves to nothing and no
 				// declaration is emitted.
-				'button-padding'    => [
+				'button-padding'      => [
 					'css_var'          => 'kb-btn-padding',
 					'control_attr'     => 'padding',
 					'responsive_attrs' => [
@@ -576,13 +586,43 @@ return [
 						'mobile' => 'mobilePadding',
 					],
 				],
-				'button-margin'     => [
+				'button-margin'       => [
 					'css_var'          => 'kb-btn-margin',
 					'control_attr'     => 'margin',
 					'responsive_attrs' => [
 						'tablet' => 'tabletMargin',
 						'mobile' => 'mobileMargin',
 					],
+				],
+				// Border and shadow reuse the brand-wide tokens (and, for shadow, a button-scoped one),
+				// mirroring button-padding/button-margin/button-radius's css_var shape above rather than a
+				// css_prop shape: a css_prop binding only ever reaches Block_Default_Css\Css_Builder, which
+				// resolves exclusively the block's $default preset and can never reflect a *selected*
+				// preset's value. css_var is what lets Preset\Css_Builder (the named-preset projector) emit a
+				// scoped variable a selected preset can actually vary. No control_attr — unlike padding/
+				// margin/radius, the native block attributes for border ([{top:[color,style,size],...},unit])
+				// and shadow ([{color,opacity,hOffset,vOffset,blur,spread,inset}]) are nested per-side/
+				// composite shapes, not a single scalar value, so there is no attribute for a picker/capture
+				// consumer of control_attr (token-picker, preset-picker/capture.js, token-indicators) to
+				// target here.
+				'button-border-width' => [
+					'token'   => 'semantic.border-width.default',
+					'css_var' => 'kb-btn-border-width',
+				],
+				'button-border-style' => [
+					'token'   => 'semantic.border-style.default',
+					'css_var' => 'kb-btn-border-style',
+				],
+				'button-border-color' => [
+					'token'   => 'semantic.color.border',
+					'css_var' => 'kb-btn-border-color',
+				],
+				// No baseline default: an unstyled button carries no shadow, so the preset's $default omits
+				// this property entirely and the projector emits no box-shadow rule until a preset (or the
+				// user) sets one.
+				'button-shadow'       => [
+					'token'   => 'semantic.shadow.button',
+					'css_var' => 'kb-btn-shadow',
 				],
 			],
 		],
