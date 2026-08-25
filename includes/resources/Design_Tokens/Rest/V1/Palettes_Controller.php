@@ -578,7 +578,7 @@ final class Palettes_Controller extends Controller {
 		// restored to its shipped value rather than dropped. Every other case drops the palette's own entry:
 		// a non-default palette's delta (leaving it inherited) or a user-added row (retiring it).
 		$node = ( $id === $this->palettes->default_palette( $slug ) && array_key_exists( $token, $baseline ) )
-			? $this->set_swatch_in_node( $node, $token, $baseline[ $token ], $slug )
+			? $this->set_swatch_fields_in_node( $node, $token, [ 'value' => $baseline[ $token ] ], $slug )
 			: $this->remove_swatch_from_node( $node, $token );
 
 		return $this->write_palette_node( $slug, $id, $node );
