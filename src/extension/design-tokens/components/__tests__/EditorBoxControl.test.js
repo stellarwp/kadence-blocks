@@ -7,16 +7,18 @@ import { EditorBoxControl } from '../EditorBoxControl';
 
 /**
  * Call `EditorBoxControl` as a plain function and return the `BoxControl`/`BreakpointProvider`
- * elements it produced. The component holds no hooks of its own, so the returned element tree can
- * be inspected directly instead of mounting it — matching this file's sibling tests, which inspect
- * returned element types/props rather than rendering.
+ * elements it produced. The component holds no hooks of its own — `TokenControlRow` is referenced in
+ * the returned JSX but never invoked by this plain call, since JSX only builds element descriptors —
+ * so the returned element tree can be inspected directly instead of mounting it, matching this file's
+ * sibling tests, which inspect returned element types/props rather than rendering.
  *
  * @param {Object} overrides Props to override on top of the defaults.
  *
  * @since TBD
  *
- * @return {{provider: Object, boxControl: Object, onDeviceChange: Function}} The provider element,
- *   the `BoxControl` element nested inside it, and the `onDeviceChange` spy passed in.
+ * @return {{provider: Object, boxControl: Object, onDeviceChange: Function}} The `BreakpointProvider`
+ *   element (one level inside the root `TokenControlRow`), the `BoxControl` element nested inside it,
+ *   and the `onDeviceChange` spy passed in.
  */
 function renderEditorBoxControl(overrides = {}) {
 	const onDeviceChange = jest.fn();
@@ -33,7 +35,7 @@ function renderEditorBoxControl(overrides = {}) {
 		...overrides,
 	};
 
-	const provider = EditorBoxControl(props);
+	const provider = EditorBoxControl(props).props.children;
 
 	return { provider, boxControl: provider.props.children, onDeviceChange };
 }

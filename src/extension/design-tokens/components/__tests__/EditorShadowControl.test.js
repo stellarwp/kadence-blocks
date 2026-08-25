@@ -27,16 +27,19 @@ const NATIVE_VALUE = [
 
 /**
  * Call `EditorShadowControl` as a plain function and return the `BoxShadowControl`/`ToggleControl`
- * elements it produced. The component holds no hooks of its own, so the returned element tree can be
- * inspected directly instead of mounting it — matching `EditorBorderControl.test.js`'s own harness.
+ * elements it produced. The component holds no hooks of its own — `TokenControlRow` is referenced in
+ * the returned JSX but never invoked by this plain call, since JSX only builds element descriptors — so
+ * the returned element tree can be inspected directly instead of mounting it, matching
+ * `EditorBorderControl.test.js`'s own harness (before it gained state and needed a real render).
  *
  * @param {Object} overrides Props to override on top of the defaults.
  *
  * @since TBD
  *
  * @return {{root: Object, header: Object, toggle: Object, shadowControl: ?Object, onChange: Function,
- *   onEnableChange: Function}} The root element, the header row, the enable toggle, the
- *   `BoxShadowControl` element (or `null` when `enable` is false), and the setter spies passed in.
+ *   onEnableChange: Function}} The root element (`TokenControlRow`), the header row, the enable
+ *   toggle, the `BoxShadowControl` element (or `null` when `enable` is false), and the setter spies
+ *   passed in.
  */
 function renderEditorShadowControl(overrides = {}) {
 	const onChange = jest.fn();
@@ -53,7 +56,7 @@ function renderEditorShadowControl(overrides = {}) {
 	};
 
 	const root = EditorShadowControl(props);
-	const [header, shadowControl] = root.props.children;
+	const [header, shadowControl] = root.props.children.props.children;
 
 	return {
 		root,
