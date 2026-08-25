@@ -3,14 +3,44 @@
  *
  * A control's stored attribute value and the selected preset's resolved value are compared after being
  * reduced to a canonical form per `kind`:
- *   - `color`      — a Kadence palette slug (`palette3`) is resolved to its literal via the global
- *                    palette map, then lower-cased; a literal (`#3182CE`, `rgb(...)`) is lower-cased.
- *   - `dimension`  — the numeric value is paired with its unit (`{ value, unit }`), tolerant of the
- *                    4-side array shape a measurement control writes.
- *   - `text`       — trimmed string compare.
+ *   - `color`        — a Kadence palette slug (`palette3`) is resolved to its literal via the global
+ *                      palette map, then lower-cased; a literal (`#3182CE`, `rgb(...)`) is lower-cased.
+ *   - `dimension`    — the numeric value is paired with its unit (`{ value, unit }`), tolerant of the
+ *                      4-side array shape a measurement control writes.
+ *   - `text`         — trimmed string compare.
+ *   - `border-width` \
+ *   - `border-style`  | — read ONE axis (width, style or color) out of `EditorBorderControl`'s nested
+ *   - `border-color` / per-side native shape (`[{ top: [color, style, size], right: [...], ... }]`),
+ *                      compared uniformly across all four sides. The three axes share one native
+ *                      attribute (`borderStyle`), so `usePresetBinding` calls each of these once per
+ *                      axis and combines the results — see its own docblock.
  */
 
 import { get } from 'lodash';
+import { isTokenAlias } from '../../token-controls/helpers/token-summary';
+
+/**
+ * The order `EditorBorderControl`'s native shape stores per-side tuples in, and the index each axis
+ * occupies within a side's `[color, style, size]` tuple.
+ *
+ * @since TBD
+ *
+ * @type {string[]}
+ */
+const BORDER_SIDES = ['top', 'right', 'bottom', 'left'];
+
+/**
+ * The index within a side's `[color, style, size]` tuple for each border axis kind.
+ *
+ * @since TBD
+ *
+ * @type {Object<string, number>}
+ */
+const BORDER_AXIS_INDEX = {
+	'border-color': 0,
+	'border-style': 1,
+	'border-width': 2,
+};
 
 /**
  * The editor's global color palette map (`paletteN -> literal color`). Kadence localizes the theme
@@ -301,10 +331,26 @@ export function normalizeText(value) {
 }
 
 /**
+ * `EditorBorderControl`'s native per-side source object (`native[0]`), or `null` for the never-written
+ * shape (`undefined`, `[]`, or an array with no first element) — matching `fromNativeBorder`'s own
+ * `!source` short-circuit, which is this module's "empty/bound" reading for every border axis.
+ *
+ * @param {*} value The stored `borderStyle`-shaped attribute value.
+ *
+ * @since TBD
+ *
+ * @return {Object|null} The native source object, or null when never written.
+ */
+function borderSource(value) {
+	return (Array.isArray(value) ? value[0] : undefined) || null;
+}
+
+/**
  * Whether a stored attribute value is "empty" (untouched) for its kind — the signal a retarget-bound
  * control uses for `empty => bound`.
  *
- * @param {string} kind  The property kind ('color' | 'dimension' | 'text').
+ * @param {string} kind  The property kind ('color' | 'dimension' | 'text' | 'border-width' |
+ *                       'border-style' | 'border-color').
  * @param {*}      value The stored primary attribute value.
  *
  * @since TBD
@@ -314,6 +360,12 @@ export function normalizeText(value) {
 export function isEmptyValue(kind, value) {
 	if (kind === 'dimension') {
 		return normalizeDimension(value, '').value === '';
+	}
+
+	if (kind in BORDER_AXIS_INDEX) {
+		// All three axes share one native shape, and the moment any side is written `toNativeBorder`
+		// always fills in all four — so "empty" is a single source-level check, not per-axis.
+		return borderSource(value) === null;
 	}
 
 	return normalizeColor(value) === '' && normalizeText(value) === '';
@@ -373,6 +425,76 @@ function matchesPresetSlots(sides, storedUnit, presetSlots) {
 }
 
 /**
+ * A side's width slot (`source[side][2]`) as a literal comparable to a resolved dimension token value:
+ * a token alias passes through whole, otherwise the numeric size is paired with the border's own
+ * shared unit (`source.unit`) — matching `fromNativeBorder`'s own width mapping so this reads the exact
+ * literal the control itself would show.
+ *
+ * @param {*}      size The side's stored width slot.
+ * @param {string} unit The border's shared unit (`source.unit`, defaulting to 'px').
+ *
+ * @since TBD
+ *
+ * @return {string} The width literal, or '' when the slot is unset.
+ */
+function borderWidthLiteral(size, unit) {
+	if (size === '' || size === undefined || size === null) {
+		return '';
+	}
+
+	return isTokenAlias(size) ? String(size) : `${size}${unit}`;
+}
+
+/**
+ * Whether every side of a stored `borderStyle`-shaped value matches the preset's resolved literal for
+ * ONE axis (width, style or color) — the per-axis compare `matchesPreset` delegates to for a
+ * `border-width`/`border-style`/`border-color` kind.
+ *
+ * @param {string} kind        One of 'border-width' | 'border-style' | 'border-color'.
+ * @param {Object} source      The native border source object (`value[0]`), already confirmed non-null.
+ * @param {string} presetValue The preset's resolved literal for this axis.
+ *
+ * @since TBD
+ *
+ * @return {boolean} True when every side's axis value equals the preset value.
+ */
+function matchesBorderAxis(kind, source, presetValue) {
+	const index = BORDER_AXIS_INDEX[kind];
+	const unit = source.unit || 'px';
+
+	if (kind === 'border-width') {
+		const preset = parseDimensionLiteral(presetValue);
+
+		return BORDER_SIDES.every((side) => {
+			const literal = borderWidthLiteral((source[side] || [])[index], unit);
+
+			if (literal === '') {
+				return false;
+			}
+
+			if (isTokenAlias(literal)) {
+				return literal === presetValue;
+			}
+
+			const stored = parseDimensionLiteral(literal);
+			const unitMatches = preset.unit === '' || stored.unit === preset.unit;
+
+			return unitMatches && stored.value === preset.value;
+		});
+	}
+
+	if (kind === 'border-color') {
+		return BORDER_SIDES.every(
+			(side) => normalizeColor((source[side] || [])[index]) === normalizeColor(presetValue)
+		);
+	}
+
+	return BORDER_SIDES.every(
+		(side) => normalizeText((source[side] || [])[index] || 'none') === normalizeText(presetValue)
+	);
+}
+
+/**
  * Whether a stored value equals the selected preset's resolved value, normalized per kind.
  *
  * @param {string} kind        The property kind.
@@ -385,6 +507,12 @@ function matchesPresetSlots(sides, storedUnit, presetSlots) {
  * @return {boolean} True when the stored value matches the preset value.
  */
 export function matchesPreset(kind, value, unit, presetValue) {
+	if (kind in BORDER_AXIS_INDEX) {
+		const source = borderSource(value);
+
+		return source !== null && matchesBorderAxis(kind, source, presetValue);
+	}
+
 	if (kind === 'dimension') {
 		const sides = dimensionSides(value);
 		const storedUnit = String(unit || '').trim();
