@@ -2,9 +2,11 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Font_Catalog;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Responsive_Feed;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Document_Path;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Favorite_Font_Index;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Mutator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Reserved_Namespace;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Token_Label_Index;
@@ -219,6 +221,41 @@ final class Documents_Controller extends Controller {
 	private const ORDER_PARAM = 'order';
 
 	/**
+	 * The sub-route, relative to a single library, that collects the favorite-font endpoints.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const FAVORITE_FONTS_ROUTE = 'favorite-fonts';
+
+	/**
+	 * The request parameter that carries a single font family name, on the favorite-fonts sub-route.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const FAMILY_PARAM = 'family';
+
+	/**
+	 * The family path segment for the favorite-fonts sub-route.
+	 *
+	 * Like GROUP_ROUTE, and unlike the token dot-path routes, this segment carries a display name
+	 * rather than a slug — a font family is whatever the catalog registered it as ("Abril Fatface",
+	 * "Press Start 2P"), so it cannot be restricted to `\w`/`-`. The REST server matches route
+	 * regexes against the raw, still percent-encoded request path, so a multi-word family arrives
+	 * here as e.g. `Abril%20Fatface`. The pattern only needs to exclude the path separator, since
+	 * the family is a single URL path segment; the percent-encoding is undone by the
+	 * `sanitize_callback` on the family arg (see `get_favorite_font_params()`).
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const FAMILY_ROUTE = '(?P<' . self::FAMILY_PARAM . '>[^/]+)';
+
+	/**
 	 * The dot-path path segment for the single-token routes. The character class matches the alias
 	 * grammar (a dot-path) minus the braces, so a token is addressable as a sub-resource of its library.
 	 *
@@ -338,6 +375,24 @@ final class Documents_Controller extends Controller {
 	private Token_Order_Index $order_index;
 
 	/**
+	 * Reads and writes the favoriteFonts ordered family list.
+	 *
+	 * @since TBD
+	 *
+	 * @var Favorite_Font_Index
+	 */
+	private Favorite_Font_Index $favorite_font_index;
+
+	/**
+	 * The site's font catalog, used only to 404 a favorite write against a family the site cannot render.
+	 *
+	 * @since TBD
+	 *
+	 * @var Font_Catalog
+	 */
+	private Font_Catalog $font_catalog;
+
+	/**
 	 * Memoized item schema for this request. Null until first built.
 	 *
 	 * @since TBD
@@ -370,6 +425,8 @@ final class Documents_Controller extends Controller {
 	 * @param Token_Registry                    $registry              The token registry, for the labels sub-route's unregistered-id 404.
 	 * @param Token_Label_Index                 $label_index           Reads and writes the tokenLabels override map.
 	 * @param Token_Order_Index                 $order_index           Reads and writes the tokenOrder flat ordered id list.
+	 * @param Favorite_Font_Index               $favorite_font_index   Reads and writes the favoriteFonts ordered family list.
+	 * @param Font_Catalog                      $font_catalog          The site's font catalog, for the favorite-fonts sub-route's unknown-family 404.
 	 */
 	public function __construct(
 		Token_Store $store,
@@ -383,7 +440,9 @@ final class Documents_Controller extends Controller {
 		Responsive_Feed $responsive_feed,
 		Token_Registry $registry,
 		Token_Label_Index $label_index,
-		Token_Order_Index $order_index
+		Token_Order_Index $order_index,
+		Favorite_Font_Index $favorite_font_index,
+		Font_Catalog $font_catalog
 	) {
 		$this->store                    = $store;
 		$this->resolver                 = $resolver;
@@ -397,6 +456,8 @@ final class Documents_Controller extends Controller {
 		$this->registry                 = $registry;
 		$this->label_index              = $label_index;
 		$this->order_index              = $order_index;
+		$this->favorite_font_index      = $favorite_font_index;
+		$this->font_catalog             = $font_catalog;
 		$this->rest_base                = 'documents';
 	}
 
@@ -594,6 +655,31 @@ final class Documents_Controller extends Controller {
 					'callback'            => [ $this, 'delete_order' ],
 					'permission_callback' => [ $this, 'update_item_permissions_check' ],
 					'args'                => $this->get_order_delete_params(),
+				],
+				'schema' => [ $this, 'get_item_schema' ],
+			]
+		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/' . self::SLUG_ROUTE . '/' . self::FAVORITE_FONTS_ROUTE . '/' . self::FAMILY_ROUTE,
+			[
+				[
+					// PUT only, mirroring the labels and order sub-routes: adding a favorite is idempotent
+					// set-membership, so there is no partial-update verb to distinguish from PUT.
+					'methods'             => 'PUT',
+					'callback'            => [ $this, 'set_favorite_font' ],
+					'permission_callback' => [ $this, 'update_item_permissions_check' ],
+					'args'                => $this->get_favorite_font_params(),
+				],
+				[
+					// DELETE uses the same capability as PUT — dropping a favorite is an update to
+					// the document, not a resource removal, so the two verbs of one operation cannot
+					// diverge on permission.
+					'methods'             => WP_REST_Server::DELETABLE,
+					'callback'            => [ $this, 'delete_favorite_font' ],
+					'permission_callback' => [ $this, 'update_item_permissions_check' ],
+					'args'                => $this->get_favorite_font_params(),
 				],
 				'schema' => [ $this, 'get_item_schema' ],
 			]
@@ -1227,6 +1313,105 @@ final class Documents_Controller extends Controller {
 	}
 
 	/**
+	 * Favorite a font family (PUT /documents/{slug}/favorite-fonts/{family}).
+	 *
+	 * The family must be one the site can actually render — a Google family or a name registered
+	 * through the custom-fonts filter — so a typo cannot accumulate as a favorite that every picker
+	 * lists and no browser resolves. Idempotent: adding a family already in the list returns the
+	 * current item without a write, and keeps its existing position rather than moving it to the
+	 * end, so a replayed write cannot shuffle a picker's display order.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 *
+	 * @return WP_REST_Response|WP_Error
+	 */
+	public function set_favorite_font( $request ) {
+		$slug   = Cast::to_string( $request->get_param( self::SLUG_PARAM ) );
+		$family = Cast::to_string( $request->get_param( self::FAMILY_PARAM ) );
+
+		if ( ! $this->is_known_library( $slug ) ) {
+			return $this->not_found( $slug );
+		}
+
+		if ( ! $this->is_catalog_family( $family ) ) {
+			return $this->unknown_font_family( $family );
+		}
+
+		$error = $this->guard_client_version( $slug, Cast::to_string( $request->get_param( self::VERSION_PARAM ) ) );
+
+		if ( $error instanceof WP_Error ) {
+			return $error;
+		}
+
+		$stored    = $this->store->get_decoded_document( $slug );
+		$candidate = $this->favorite_font_index->add( $stored, $family );
+
+		if ( $candidate === $stored ) {
+			return new WP_REST_Response( $this->prepare_item( $slug ), WP_Http::OK );
+		}
+
+		return $this->persist_metadata_candidate( $candidate, $slug );
+	}
+
+	/**
+	 * Un-favorite a font family (DELETE /documents/{slug}/favorite-fonts/{family}).
+	 *
+	 * Deliberately does NOT check the family against the catalog, unlike the PUT half. A theme
+	 * switch or a deactivated plugin can stop registering a family the site chose earlier, and
+	 * that stale favorite is exactly the one a user most needs to clear — gating removal on the
+	 * catalog would strand it in the document with no way to remove it from the UI. Idempotent:
+	 * removing a family that is not in the list returns the current item without a write.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 *
+	 * @return WP_REST_Response|WP_Error
+	 */
+	public function delete_favorite_font( $request ) {
+		$slug   = Cast::to_string( $request->get_param( self::SLUG_PARAM ) );
+		$family = Cast::to_string( $request->get_param( self::FAMILY_PARAM ) );
+
+		if ( ! $this->is_known_library( $slug ) ) {
+			return $this->not_found( $slug );
+		}
+
+		$error = $this->guard_client_version( $slug, Cast::to_string( $request->get_param( self::VERSION_PARAM ) ) );
+
+		if ( $error instanceof WP_Error ) {
+			return $error;
+		}
+
+		$stored    = $this->store->get_decoded_document( $slug );
+		$candidate = $this->favorite_font_index->remove( $stored, $family );
+
+		if ( $candidate === $stored ) {
+			return new WP_REST_Response( $this->prepare_item( $slug ), WP_Http::OK );
+		}
+
+		return $this->persist_metadata_candidate( $candidate, $slug );
+	}
+
+	/**
+	 * Undo the percent-encoding a font family reaches the favorite-fonts route with.
+	 *
+	 * Public because it is a `sanitize_callback`. Mirrors {@see self::decode_group()}: the REST
+	 * server matches routes against the raw request path, so a multi-word family arrives as e.g.
+	 * `Abril%20Fatface`.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $value The raw, still percent-encoded family segment.
+	 *
+	 * @return string The decoded family name.
+	 */
+	public function decode_font_family( $value ): string {
+		return rawurldecode( Cast::to_string( $value ) );
+	}
+
+	/**
 	 * Validate that the token dot-path begins with a real token layer and names a token below it.
 	 *
 	 * Used as the path argument's validate_callback so a path into "$extensions" (any non-layer root), a
@@ -1562,8 +1747,8 @@ final class Documents_Controller extends Controller {
 	}
 
 	/**
-	 * Persist a candidate whose only change is inside an id-keyed authoring-metadata $extensions
-	 * section (token labels or token order). Deliberately skips the full DTCG validator and the
+	 * Persist a candidate whose only change is inside an authoring-metadata $extensions section
+	 * (token labels, token order, or favorite fonts). Deliberately skips the full DTCG validator and the
 	 * resolver dry-run: the index helpers' edits are mechanically confined to a section the
 	 * effective-document builder strips, so they cannot introduce grammar or alias problems — and
 	 * running the full pipeline would make a rename or reorder impossible in any library whose
@@ -1707,6 +1892,26 @@ final class Documents_Controller extends Controller {
 			[
 				'status' => WP_Http::NOT_FOUND,
 				'group'  => $group,
+			]
+		);
+	}
+
+	/**
+	 * The error returned when a favorite-fonts family is not in the site's font catalog.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $family The unknown family name.
+	 *
+	 * @return WP_Error
+	 */
+	private function unknown_font_family( string $family ): WP_Error {
+		return new WP_Error(
+			'rest_design_tokens_unknown_font_family',
+			__( 'Sorry, that font family is not available on this site.', 'kadence-blocks' ),
+			[
+				'status' => WP_Http::NOT_FOUND,
+				'family' => $family,
 			]
 		);
 	}
@@ -2067,6 +2272,72 @@ final class Documents_Controller extends Controller {
 				],
 			]
 		);
+	}
+
+	/**
+	 * The arguments accepted by both favorite-fonts verbs: the slug, the font family and the
+	 * version-conditional guard. One builder for both, unlike the labels and order routes, because
+	 * a favorite carries no payload beyond the family already named in the path — PUT and DELETE
+	 * take exactly the same arguments.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string, mixed>
+	 */
+	private function get_favorite_font_params(): array {
+		return array_merge(
+			$this->get_slug_params(),
+			[
+				self::FAMILY_PARAM  => [
+					'description'       => __( 'The font family name to add as a favorite, e.g. Abril Fatface.', 'kadence-blocks' ),
+					'type'              => 'string',
+					'required'          => true,
+					// Matches self::FAMILY_ROUTE: a catalog display name, not a slug — only the path
+					// separator is excluded. See the FAMILY_ROUTE docblock for why.
+					'pattern'           => '^[^/]+$',
+					// The value on the wire is still percent-encoded (e.g. "Abril%20Fatface"); decode
+					// it once here so both handlers see the real family. See decode_font_family().
+					'sanitize_callback' => [ $this, 'decode_font_family' ],
+				],
+				self::VERSION_PARAM => [
+					'description'       => __( 'The version the client last read; empty for a first write. A mismatch is rejected with HTTP 409.', 'kadence-blocks' ),
+					'type'              => 'string',
+					'required'          => true,
+					'sanitize_callback' => 'sanitize_text_field',
+				],
+			]
+		);
+	}
+
+	/**
+	 * Whether a family name is one the site can render: a Google family, or a name registered
+	 * through the custom-fonts filter. Compared case-insensitively, since the catalog's casing is
+	 * whatever the generator or the registering theme chose and a client should not have to match
+	 * it byte for byte.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $family The submitted family name.
+	 *
+	 * @return bool
+	 */
+	private function is_catalog_family( string $family ): bool {
+		$family = trim( $family );
+
+		if ( $family === '' ) {
+			return false;
+		}
+
+		$catalog = $this->font_catalog->all();
+		$names   = array_merge( $catalog['google'], $catalog['custom'] );
+
+		foreach ( $names as $name ) {
+			if ( strcasecmp( $name, $family ) === 0 ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
