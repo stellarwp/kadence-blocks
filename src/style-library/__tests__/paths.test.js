@@ -1,4 +1,5 @@
 /* eslint-env jest */
+// cspell:ignore Abril Fatface .
 import {
 	userPrimitivesPath,
 	userPrimitiveReferencesPath,
