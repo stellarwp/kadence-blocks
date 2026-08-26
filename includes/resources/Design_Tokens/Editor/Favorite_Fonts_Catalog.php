@@ -3,6 +3,7 @@
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Editor;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Font_Catalog;
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Style_Library\Menu;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Favorite_Font_Index;
@@ -22,9 +23,22 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Document\Favorite_Font_Index;
  * Favorites are read from the active library because that is the library the editor renders by
  * default — the same pointer {@see Pickable_Tokens_Catalog} honors for its sort order.
  *
+ * `manageUrl` deep-links the picker's footer at the screen that edits the list, so a user who wants
+ * to add to that list can get to where it is done rather than being told it exists somewhere. Built here rather than in the shared control, which knows nothing about admin URLs or
+ * about which host mounted it.
+ *
  * @since TBD
  */
 final class Favorite_Fonts_Catalog {
+
+	/**
+	 * The Style Library screen that edits the favorites list.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const MANAGE_SCREEN = 'typography';
 
 	/**
 	 * The sole gateway to the stored token libraries.
@@ -88,12 +102,13 @@ final class Favorite_Fonts_Catalog {
 	 *
 	 * @since TBD
 	 *
-	 * @return array{favorites: list<string>, custom: string[]}
+	 * @return array{favorites: list<string>, custom: string[], manageUrl: string}
 	 */
 	public function all(): array {
 		return [
 			'favorites' => $this->favorites->all( $this->store->get_decoded_document( $this->active->get() ) ),
 			'custom'    => $this->catalog->all()['custom'],
+			'manageUrl' => Menu::get_screen_url( self::MANAGE_SCREEN ),
 		];
 	}
 }

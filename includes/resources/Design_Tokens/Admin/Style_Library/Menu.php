@@ -30,6 +30,20 @@ final class Menu {
 	private const MENU_SLUG = 'kadence-blocks-style-library';
 
 	/**
+	 * The query arg naming which screen of the Style Library app to open on.
+	 *
+	 * The app owns its own routing, so this is the PHP counterpart of `SCREEN_QUERY_ARG` in
+	 * src/style-library/helpers/route.js — the two must agree for a deep link built here to land
+	 * anywhere but the default screen. Declared beside the menu slug because a link needs both, and
+	 * a caller that had to know one string and guess the other would be the drift waiting to happen.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const SCREEN_QUERY_ARG = 'kb-screen';
+
+	/**
 	 * The submenu position after Home (0) and Settings (1).
 	 *
 	 * Must stay an integer so Home remains the first submenu item and the default Kadence parent link.
@@ -103,6 +117,25 @@ final class Menu {
 	 */
 	public static function get_menu_slug(): string {
 		return self::MENU_SLUG;
+	}
+
+	/**
+	 * An admin URL that opens the Style Library on one of its screens.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $screen The screen id, e.g. "typography". Empty opens the default screen.
+	 *
+	 * @return string The admin URL.
+	 */
+	public static function get_screen_url( string $screen = '' ): string {
+		$args = [ 'page' => self::MENU_SLUG ];
+
+		if ( $screen !== '' ) {
+			$args[ self::SCREEN_QUERY_ARG ] = $screen;
+		}
+
+		return add_query_arg( $args, admin_url( 'admin.php' ) );
 	}
 
 	/**

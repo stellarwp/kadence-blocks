@@ -133,7 +133,21 @@ final class Favorite_Fonts_CatalogTest extends TestCase {
 	 * @return void
 	 */
 	public function testItDoesNotShipTheGoogleNames(): void {
-		$this->assertSame( [ 'favorites', 'custom' ], array_keys( $this->catalog->all() ) );
+		$this->assertSame( [ 'favorites', 'custom', 'manageUrl' ], array_keys( $this->catalog->all() ) );
+	}
+
+	/**
+	 * The manage URL deep-links the Typography screen, not the Style Library's default screen: the
+	 * picker's footer exists to get a user to where favorites are edited, and landing them on the
+	 * first screen instead would leave them to find it.
+	 *
+	 * @return void
+	 */
+	public function testItDeepLinksTheTypographyScreen(): void {
+		$url = $this->catalog->all()['manageUrl'];
+
+		$this->assertStringContainsString( 'page=kadence-blocks-style-library', $url );
+		$this->assertStringContainsString( 'kb-screen=typography', $url );
 	}
 
 	/**

@@ -9,9 +9,10 @@
  *
  * Two page-load globals feed this, and neither is fetched:
  *
- * - `window.kadenceDesignTokensFonts` — `{ favorites, custom }`, printed by the design-tokens
- *   editor Localizer. `custom` arrives already normalized to family names, because the raw
- *   `c_fonts` shape keys entries by a name OR by a whole font-stack expression.
+ * - `window.kadenceDesignTokensFonts` — `{ favorites, custom, manageUrl }`, printed by the
+ *   design-tokens editor Localizer. `custom` arrives already normalized to family names, because
+ *   the raw `c_fonts` shape keys entries by a name OR by a whole font-stack expression, and
+ *   `manageUrl` deep-links the Style Library screen that edits the favorites.
  * - `window.kadence_blocks_params.g_font_names` — the ~1,900 Google names the editor already
  *   carries on every screen. Read from there rather than shipped a second time.
  *
@@ -46,7 +47,7 @@ const FAVORITE_BADGE = __('Favorite', 'kadence-blocks');
  *
  * @since TBD
  *
- * @return {{favorites: string[], custom: string[]}} The favorites and custom names, or two empty lists.
+ * @return {{favorites: string[], custom: string[], manageUrl: string}} The pool, or empty values.
  */
 function fontPool() {
 	const pool = window.kadenceDesignTokensFonts;
@@ -54,6 +55,7 @@ function fontPool() {
 	return {
 		favorites: Array.isArray(pool?.favorites) ? pool.favorites : [],
 		custom: Array.isArray(pool?.custom) ? pool.custom : [],
+		manageUrl: typeof pool?.manageUrl === 'string' ? pool.manageUrl : '',
 	};
 }
 
@@ -111,4 +113,16 @@ export function fontCatalogOptions() {
 			.filter(unpinned)
 			.map((name) => ({ value: name, label: name, badge: CUSTOM_BADGE })),
 	];
+}
+
+/**
+ * The admin URL of the screen that edits the favorites list, for the picker's footer link. Empty
+ * when the global carries none, which the control renders as plain text rather than a dead link.
+ *
+ * @since TBD
+ *
+ * @return {string} The deep link, or an empty string.
+ */
+export function favoriteFontsManageUrl() {
+	return fontPool().manageUrl;
 }

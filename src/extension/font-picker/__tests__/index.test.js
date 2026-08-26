@@ -1,6 +1,6 @@
 /* eslint-env jest */
 // cspell:ignore Abril Fatface .
-import { favoriteFonts, fontCatalogOptions } from '../index';
+import { favoriteFonts, favoriteFontsManageUrl, fontCatalogOptions } from '../index';
 
 const originalFonts = window.kadenceDesignTokensFonts;
 const originalParams = window.kadence_blocks_params;
@@ -64,5 +64,23 @@ describe('fontCatalogOptions', () => {
 		window.kadence_blocks_params = { g_font_names: ['Abril Fatface'] };
 
 		expect(fontCatalogOptions()).toEqual([{ value: 'abril fatface', label: 'abril fatface', badge: 'Favorite' }]);
+	});
+});
+
+describe('favoriteFontsManageUrl', () => {
+	it('reads the deep link from the global', () => {
+		window.kadenceDesignTokensFonts = { manageUrl: 'https://example.test/wp-admin/admin.php?page=x' };
+
+		expect(favoriteFontsManageUrl()).toBe('https://example.test/wp-admin/admin.php?page=x');
+	});
+
+	// An empty string is what the control renders as plain text; a missing global must not become the
+	// string "undefined" in an href.
+	it('falls back to an empty string when the global carries none', () => {
+		delete window.kadenceDesignTokensFonts;
+		expect(favoriteFontsManageUrl()).toBe('');
+
+		window.kadenceDesignTokensFonts = { manageUrl: 42 };
+		expect(favoriteFontsManageUrl()).toBe('');
 	});
 });
