@@ -63,6 +63,42 @@ export function presetSlotAt(presetValue, index) {
 }
 
 /**
+ * The corner a device's own breakpoint chain resolves to at ONE corner index, walking closest
+ * breakpoint first — the per-corner counterpart to the whole-property fallback `presetValueForDevice`
+ * runs for a non-corner value.
+ *
+ * A chain entry can itself be a per-corner list (with `''` gaps left by `resolve_responsive_literal()`
+ * for a corner that breakpoint didn't touch) or a scalar (a breakpoint override captured as one
+ * uniform value broadcasts to every corner). A gap at one breakpoint is skipped, not treated as
+ * "found" — that is exactly what lets the NEXT breakpoint up (and ultimately the base) answer for
+ * that corner instead.
+ *
+ * @param {Array} chain       The device's breakpoint values, closest first (e.g. Mobile's
+ *                            `[responsive.mobile, responsive.tablet]`).
+ * @param {*}     presetValue The preset's base value for the property, the last fallback.
+ * @param {number} index      The corner index.
+ *
+ * @since TBD
+ *
+ * @return {string} The corner's resolved value at this device.
+ */
+function cornerValueForDevice(chain, presetValue, index) {
+	for (const value of chain) {
+		if (value === undefined || value === null) {
+			continue;
+		}
+
+		const slot = Array.isArray(value) ? value[index] : value;
+
+		if (slot !== undefined && slot !== null && slot !== '') {
+			return String(slot);
+		}
+	}
+
+	return presetSlotAt(presetValue, index);
+}
+
+/**
  * The selected preset's value for a property AT THE ACTIVE DEVICE: its breakpoint override where the
  * preset declares one, otherwise the value it inherits through the cascade.
  *
@@ -71,6 +107,15 @@ export function presetSlotAt(presetValue, index) {
  * that breakpoint. The fallback order mirrors the projected CSS: Mobile takes the mobile override,
  * then the tablet one, then the base; Tablet takes the tablet override, then the base.
  *
+ * A per-corner (dimension) property's breakpoint override can be SPARSE — `resolve_responsive_literal()`
+ * keeps a `''` gap at any corner a breakpoint didn't touch, meaning "not overridden here, keep
+ * inheriting live" (see that method's own docblock). Each corner has to walk this cascade
+ * independently rather than the property being resolved as one all-or-nothing unit, or a gap corner
+ * would incorrectly inherit the WHOLE touched breakpoint's override instead of falling through to the
+ * next breakpoint/base for just that corner. Whether this property is corner-shaped at all is read
+ * from the data, not from a passed-in kind: a per-corner list shows up in the base value or in either
+ * breakpoint's override, a plain scalar property never does.
+ *
  * @param {*}      presetValue  The preset's base value for the property.
  * @param {Object} [responsive] The preset's breakpoint values ({ tablet, mobile }), each undefined
  *                              when the preset declares no override there.
@@ -78,15 +123,24 @@ export function presetSlotAt(presetValue, index) {
  *
  * @since TBD
  *
- * @return {*} The preset's value in effect at that device.
+ * @return {*} The preset's value in effect at that device — a per-corner array when the property is
+ *             corner-shaped, otherwise a scalar.
  */
 export function presetValueForDevice(presetValue, responsive = {}, device = 'Desktop') {
-	const chain =
-		'Mobile' === device ? [responsive.mobile, responsive.tablet] : 'Tablet' === device ? [responsive.tablet] : [];
+	if ('Tablet' !== device && 'Mobile' !== device) {
+		return presetValue;
+	}
 
-	const override = chain.find((value) => value !== undefined && value !== null && value !== '');
+	const chain = 'Mobile' === device ? [responsive.mobile, responsive.tablet] : [responsive.tablet];
+	const isCornerShaped = Array.isArray(presetValue) || chain.some((value) => Array.isArray(value));
 
-	return override === undefined ? presetValue : override;
+	if (!isCornerShaped) {
+		const override = chain.find((value) => value !== undefined && value !== null && value !== '');
+
+		return override === undefined ? presetValue : override;
+	}
+
+	return [0, 1, 2, 3].map((index) => cornerValueForDevice(chain, presetValue, index));
 }
 
 /**

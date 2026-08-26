@@ -146,6 +146,77 @@ describe('usePresetBinding device-aware overridden', () => {
 	});
 });
 
+describe('usePresetBinding per-corner breakpoint gaps', () => {
+	// The preset's tablet override touches only the top corner (index 0); the other three corners
+	// carry a `''` gap, meaning "keep inheriting the base value live" — see
+	// `resolve_responsive_literal()`'s docblock. The indicator must read each corner's own state
+	// rather than treating the whole property as one overridden/matching unit.
+	beforeEach(() => {
+		window.kadenceDesignTokensPresets = {
+			active: SET,
+			libraries: {
+				[SET]: {
+					[BLOCK]: {
+						default: 'primary',
+						presets: [{ slug: 'primary', label: 'Primary' }],
+						properties: [
+							{ key: 'button-radius', kind: 'dimension', token: null, control_attr: 'borderRadius' },
+						],
+						values: {
+							primary: { 'button-radius': '4px' },
+						},
+						responsive: {
+							primary: { tablet: { 'button-radius': ['8px', '', '', ''] } },
+						},
+					},
+				},
+			},
+		};
+	});
+
+	afterEach(() => {
+		delete window.kadenceDesignTokensPresets;
+	});
+
+	/**
+	 * A stored tablet value matching the overridden top corner AND the base value the other three
+	 * corners keep inheriting reads as bound, not overridden — a gap corner is compared against the
+	 * base, not against the (nonexistent) tablet override.
+	 *
+	 * @return {void}
+	 */
+	it('reports not overridden when every corner matches its own per-corner cascade value', () => {
+		const attributes = {
+			kbPreset: 'primary',
+			tabletBorderRadius: ['8', '4', '4', '4'],
+			borderRadiusUnit: 'px',
+		};
+
+		const state = usePresetBinding(BLOCK, attributes, SET, 'Tablet');
+
+		expect(state.borderRadius.overridden).toBe(false);
+	});
+
+	/**
+	 * A stored value on a GAP corner (right, index 1) that diverges from the base value it should be
+	 * inheriting is caught as overridden, even though the touched corner (top) still matches its own
+	 * tablet override.
+	 *
+	 * @return {void}
+	 */
+	it('reports overridden when a gap corner diverges from the base value it inherits', () => {
+		const attributes = {
+			kbPreset: 'primary',
+			tabletBorderRadius: ['8', '5', '4', '4'],
+			borderRadiusUnit: 'px',
+		};
+
+		const state = usePresetBinding(BLOCK, attributes, SET, 'Tablet');
+
+		expect(state.borderRadius.overridden).toBe(true);
+	});
+});
+
 describe('presetPropertyValueForDevice', () => {
 	/**
 	 * Seed a property with no `control_attr` — `usePresetBinding` cannot key it by an attribute name,
