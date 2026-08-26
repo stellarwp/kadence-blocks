@@ -398,9 +398,13 @@ export function deriveStateBinding({ shared, kind, value, unit = '', devicePrese
 
 	if (kind === 'border') {
 		const empty = isEmptyValue('border-width', value);
+		// Only an axis the active preset actually binds is compared: `shared.presetValue` is keyed by
+		// exactly the axes `usePresetBinding` combined (see its own docblock), so an axis this preset
+		// never sets has no key here — checking it anyway would compare against `undefined` and read a
+		// matching border as overridden.
 		const overridden =
 			!empty &&
-			['width', 'style', 'color'].some((axis) => {
+			Object.keys(shared.presetValue || {}).some((axis) => {
 				const axisPresetValue = presetValueForDevice(
 					shared.presetValue?.[axis],
 					shared.responsive?.[axis],
