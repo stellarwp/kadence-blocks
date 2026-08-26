@@ -33,6 +33,19 @@ describe('fontOptions', () => {
 		expect(fontOptions({ favoriteFonts: ['"Inter"'] })).toEqual([{ id: 'Inter', label: 'Inter', stack: 'Inter' }]);
 	});
 
+	// The store deduplicates before unquoting, so these are two entries there and one font here.
+	it('drops a duplicate that differs only by quoting or case', () => {
+		expect(fontOptions({ favoriteFonts: ['Inter', '"Inter"', 'INTER'] })).toEqual([
+			{ id: 'Inter', label: 'Inter', stack: 'Inter' },
+		]);
+	});
+
+	it('drops an entry that unquotes to nothing', () => {
+		expect(fontOptions({ favoriteFonts: ['""', 'Inter'] })).toEqual([
+			{ id: 'Inter', label: 'Inter', stack: 'Inter' },
+		]);
+	});
+
 	it('drops non-string and blank entries rather than rendering a nameless option', () => {
 		expect(fontOptions({ favoriteFonts: ['Inter', 42, '', '   ', null] })).toEqual([
 			{ id: 'Inter', label: 'Inter', stack: 'Inter' },

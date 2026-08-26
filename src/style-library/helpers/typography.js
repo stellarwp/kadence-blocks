@@ -41,6 +41,10 @@ function unquoteFamily(family) {
  *
  * @since TBD
  *
+ * Blank and duplicate entries are dropped. The store already trims and deduplicates on exact
+ * strings, but it compares before unquoting: `Inter` and `\"Inter\"` are two entries there and one
+ * font here, and both would otherwise render as separate pinned rows.
+ *
  * @return {Array<{id: string, label: string, stack: string}>} The font options, or `[]` when the
  *         library has no favorites.
  */
@@ -51,13 +55,27 @@ export function fontOptions(feed) {
 		return [];
 	}
 
-	return favorites
-		.filter((family) => typeof family === 'string' && family.trim() !== '')
-		.map((family) => {
-			const label = unquoteFamily(family.trim());
+	const seen = new Set();
 
-			return { id: label, label, stack: familyStack(label) };
-		});
+	return favorites.reduce((options, family) => {
+		if (typeof family !== 'string') {
+			return options;
+		}
+
+		const label = unquoteFamily(family.trim()).trim();
+		// Matched the way `findFontByFamily` matches, so a name that would select an existing option
+		// never renders as a second one.
+		const key = label.toLowerCase();
+
+		if (label === '' || seen.has(key)) {
+			return options;
+		}
+
+		seen.add(key);
+		options.push({ id: label, label, stack: familyStack(label) });
+
+		return options;
+	}, []);
 }
 
 /**
