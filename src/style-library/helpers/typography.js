@@ -56,12 +56,33 @@ export function fontOptions(feed) {
 		.map((family) => {
 			const label = unquoteFamily(family.trim());
 
-			return {
-				id: label,
-				label,
-				stack: /[\s"']/.test(label) ? `"${label.replace(/"/g, '\\"')}"` : label,
-			};
+			return { id: label, label, stack: familyStack(label) };
 		});
+}
+
+/**
+ * The `font-family` CSS value for a single family: quoted when the name carries whitespace or a
+ * quote, bare otherwise. No generic fallback is appended — the shipped font arrays carry no category
+ * data, so guessing one would put the wrong face behind a failed load.
+ *
+ * Shared because the preview has to render a family the site has NOT kept just as faithfully as
+ * one it has; deriving the stack only inside `fontOptions()` is what left every non-favorite pick
+ * with no preview at all.
+ *
+ * @param {string} family A single family name, already unquoted and trimmed.
+ *
+ * @since TBD
+ *
+ * @return {string} The `font-family` value.
+ */
+export function familyStack(family) {
+	const name = unquoteFamily(String(family ?? '').trim());
+
+	if (name === '') {
+		return '';
+	}
+
+	return /[\s"']/.test(name) ? `"${name.replace(/"/g, '\\"')}"` : name;
 }
 
 /**

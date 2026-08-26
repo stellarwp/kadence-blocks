@@ -32,7 +32,7 @@ import { SearchableSelectDropdown } from '../molecules/SearchableSelectDropdown'
 import { addFavoriteFontFlow, removeFavoriteFontFlow } from '../../helpers/font-flows';
 import { useGoogleFontLoader } from '../../hooks/use-google-font-loader';
 import {
-	findFontByFamily,
+	familyStack,
 	fontActionFor,
 	fontOptions,
 	fontSizeDisplayValue,
@@ -228,12 +228,14 @@ export const TYPOGRAPHY_CONFIG = {
 
 /**
  * The Typography screen body: the base config extended per render with the font-dependent
- * `renderPreview`/`renderToolbar` keys, and the selected-font state (plus the catalog dropdown's
- * pending pick and the favorite-write flow state) they close over. The font SELECTION is view-only,
- * session-scoped React state (never persisted) — only the favorites list itself is stored. It
- * self-heals to the first favorite whenever the selected family leaves the list, the same
- * stale-item idiom the rest of the app uses, so a family dropped from the list out from under an open
- * selection never leaves the toolbar pointing at nothing.
+ * `renderPreview`/`renderToolbar` keys, and the selected-family and favorite-write state they close
+ * over. The font SELECTION is view-only, session-scoped React state (never persisted) — only the
+ * favorites list itself is stored.
+ *
+ * The selection is a plain family name, not a favorite's id, so the sample previews any pick from the
+ * catalog rather than only the handful a site keeps. Previewing IS what this screen's font
+ * selector is for: gating it on favorite status left the sample stuck on the previous font for every
+ * other pick, which reads as the control being broken.
  *
  * @param {Object} props The props `ScaleScreen` accepts (`{ label, route, navigate, library }`).
  *
@@ -249,49 +251,25 @@ export function TypographyScreen(props) {
 	// Rebuilt whenever the favorites change, since they are pinned to the top of the same list.
 	const catalogOptions = useMemo(() => buildCatalogOptions(fonts), [fonts]);
 
-	const [selectedFontId, setSelectedFontId] = useState(() => fonts[0]?.id ?? '');
-	// The catalog dropdown's pending pick: null while it mirrors the previewed font, or a catalog
-	// family name once a pick matches no favorite (armed for "Add Favorite" but not yet previewed:
-	// previewing a family the library has not kept would fetch a webfont for a face that may
-	// never be kept).
-	const [pendingFontName, setPendingFontName] = useState(null);
+	// The previewed family, as a plain catalog name. One piece of state, not a favorite id plus a
+	// pending pick: the sample previews whatever the dropdown holds, favorite or not. Splitting the
+	// two is what left every non-favorite pick showing the previous font, since only a favorite had
+	// an id to select by.
+	const [selectedFamily, setSelectedFamily] = useState(() => fonts[0]?.label ?? '');
 	const [fontBusy, setFontBusy] = useState(false);
 	const [fontError, setFontError] = useState(null);
 
+	// Seed the preview from the first favorite once the feed arrives, and only then: a family the
+	// user picked is left alone even when it is not a favorite, which is the whole point.
 	useEffect(() => {
-		if (fonts.length > 0 && !fonts.some((font) => font.id === selectedFontId)) {
-			setSelectedFontId(fonts[0].id);
-			setPendingFontName(null);
+		if (selectedFamily === '' && fonts.length > 0) {
+			setSelectedFamily(fonts[0].label);
 		}
-	}, [fonts, selectedFontId]);
+	}, [fonts, selectedFamily]);
 
-	const selectedFont = fonts.find((font) => font.id === selectedFontId) ?? null;
+	useGoogleFontLoader(selectedFamily);
 
-	useGoogleFontLoader(selectedFont?.label ?? '');
-
-	// A catalog pick that matches a favorite always clears a pending pick, so the dropdown goes back
-	// to mirroring the preview.
-	const selectPreviewFont = useCallback((id) => {
-		setPendingFontName(null);
-		setSelectedFontId(id);
-	}, []);
-
-	const dropdownValue = pendingFontName ?? selectedFont?.label ?? '';
-
-	const pickCatalogFont = useCallback(
-		(name) => {
-			const matched = findFontByFamily(fonts, name);
-
-			if (matched) {
-				selectPreviewFont(matched.id);
-			} else {
-				setPendingFontName(name);
-			}
-		},
-		[fonts, selectPreviewFont]
-	);
-
-	const fontAction = fontActionFor(fonts, dropdownValue);
+	const fontAction = fontActionFor(fonts, selectedFamily);
 
 	// Adding or removing a favorite is deliberately never guarded (unlike selecting a row or
 	// navigating away with a dirty draft): neither touches the size-panel draft, and the post-write
@@ -300,7 +278,7 @@ export function TypographyScreen(props) {
 		setFontError(null);
 
 		const flowArgs = {
-			name: fontAction.font?.label ?? dropdownValue,
+			name: fontAction.font?.label ?? selectedFamily,
 			slug: library.slug,
 			feedVersion: library.version,
 			refreshFeed: library.refreshFeed,
@@ -308,20 +286,12 @@ export function TypographyScreen(props) {
 			onError: setFontError,
 		};
 
-		if (fontAction.type === 'remove') {
-			removeFavoriteFontFlow(flowArgs)
-				.then(() => setPendingFontName(null))
-				.catch(() => {});
+		// Neither flow touches the preview: the family stays selected whether it was just added to the
+		// favorites or just taken out of them, so the sample does not jump under the user's cursor.
+		const flow = fontAction.type === 'remove' ? removeFavoriteFontFlow : addFavoriteFontFlow;
 
-			return;
-		}
-
-		// The picked family becomes the previewed one: it is a favorite now, so the self-heal effect
-		// would otherwise leave the preview on whichever family happened to sit first.
-		addFavoriteFontFlow(flowArgs)
-			.then((name) => selectPreviewFont(name))
-			.catch(() => {});
-	}, [fontAction, dropdownValue, library, selectPreviewFont]);
+		flow(flowArgs).catch(() => {});
+	}, [fontAction, selectedFamily, library]);
 
 	// `useScaleScreen`'s addToken/saveToken/reorderTokens list the whole config in their deps, so an
 	// inline object would rebuild all three every render. The catalog toolbar widens what the config
@@ -330,11 +300,11 @@ export function TypographyScreen(props) {
 	const config = useMemo(
 		() => ({
 			...TYPOGRAPHY_CONFIG,
-			renderPreview: samplePreviewRenderer(selectedFont?.stack ?? ''),
+			renderPreview: samplePreviewRenderer(familyStack(selectedFamily)),
 			renderToolbar: typographyToolbarRenderer({
 				catalogOptions,
-				dropdownValue,
-				onPickCatalog: pickCatalogFont,
+				dropdownValue: selectedFamily,
+				onPickCatalog: setSelectedFamily,
 				fontAction,
 				onFontAction: handleFontAction,
 				fontBusy,
@@ -342,16 +312,7 @@ export function TypographyScreen(props) {
 				onClearFontError: () => setFontError(null),
 			}),
 		}),
-		[
-			selectedFont?.stack,
-			catalogOptions,
-			dropdownValue,
-			pickCatalogFont,
-			fontAction,
-			handleFontAction,
-			fontBusy,
-			fontError,
-		]
+		[selectedFamily, catalogOptions, fontAction, handleFontAction, fontBusy, fontError]
 	);
 
 	return <ScaleScreen config={config} {...props} />;

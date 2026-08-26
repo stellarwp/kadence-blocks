@@ -1,6 +1,7 @@
 /* eslint-env jest */
 // cspell:ignore Abril Fatface .
 import {
+	familyStack,
 	findFontByFamily,
 	fontActionFor,
 	fontOptions,
@@ -36,6 +37,26 @@ describe('fontOptions', () => {
 		expect(fontOptions({ favoriteFonts: ['Inter', 42, '', '   ', null] })).toEqual([
 			{ id: 'Inter', label: 'Inter', stack: 'Inter' },
 		]);
+	});
+});
+
+describe('familyStack', () => {
+	it('leaves a single-word family bare', () => {
+		expect(familyStack('Inter')).toBe('Inter');
+	});
+
+	it('quotes a family carrying whitespace so it reads as one family', () => {
+		expect(familyStack('Abril Fatface')).toBe('"Abril Fatface"');
+	});
+
+	it('unquotes and trims before deciding, so a quoted name is not double-quoted', () => {
+		expect(familyStack('  "Inter"  ')).toBe('Inter');
+	});
+
+	it('returns an empty string for a blank or missing family', () => {
+		expect(familyStack('')).toBe('');
+		expect(familyStack('   ')).toBe('');
+		expect(familyStack(undefined)).toBe('');
 	});
 });
 
