@@ -308,7 +308,9 @@ describe('usePresetBinding border width/style/color combining', () => {
 								'button-border-color': '#3182ce',
 							},
 						},
-						responsive: {},
+						responsive: {
+							primary: { tablet: { 'button-border-color': '#000000' } },
+						},
 					},
 				},
 			},
@@ -384,6 +386,57 @@ describe('usePresetBinding border width/style/color combining', () => {
 		};
 
 		const state = usePresetBinding(BLOCK, attributes, SET, 'Desktop');
+
+		expect(state.borderStyle.overridden).toBe(true);
+	});
+
+	/**
+	 * On Tablet, a border axis reads its OWN device's stored attribute against the preset's tablet
+	 * override — not the desktop attribute against the desktop preset value, which is what the border
+	 * axes did before treating them as responsive like a dimension.
+	 *
+	 * @return {void}
+	 */
+	it('reports not overridden when the tablet border value matches the preset tablet override', () => {
+		const attributes = {
+			kbPreset: 'primary',
+			tabletBorderStyle: [
+				{
+					top: ['#000000', 'solid', '2'],
+					right: ['#000000', 'solid', '2'],
+					bottom: ['#000000', 'solid', '2'],
+					left: ['#000000', 'solid', '2'],
+					unit: 'px',
+				},
+			],
+		};
+
+		const state = usePresetBinding(BLOCK, attributes, SET, 'Tablet');
+
+		expect(state.borderStyle.overridden).toBe(false);
+	});
+
+	/**
+	 * On Tablet, a border axis diverging from the preset's tablet override reads as overridden even
+	 * though it would match the preset's desktop value.
+	 *
+	 * @return {void}
+	 */
+	it('reports overridden when the tablet border value differs from the preset tablet override', () => {
+		const attributes = {
+			kbPreset: 'primary',
+			tabletBorderStyle: [
+				{
+					top: ['#3182ce', 'solid', '2'],
+					right: ['#3182ce', 'solid', '2'],
+					bottom: ['#3182ce', 'solid', '2'],
+					left: ['#3182ce', 'solid', '2'],
+					unit: 'px',
+				},
+			],
+		};
+
+		const state = usePresetBinding(BLOCK, attributes, SET, 'Tablet');
 
 		expect(state.borderStyle.overridden).toBe(true);
 	});
