@@ -509,8 +509,10 @@ export default function KadenceButtonEdit(props) {
 	});
 
 	// Margin's linked/individual mode, mirroring Padding's own hook call above — same shape, run over
-	// `marginForDevice`/`marginPresetValue`/`inheritedMargin`/`marginPickableTokens` instead. Margin
-	// also has no `resetOn`, matching Padding.
+	// `marginForDevice`/`marginPresetValue`/`inheritedMargin`/`marginPickableTokens` instead. Unlike
+	// Padding, Margin does clear its override on a preset change (`resetOn`): an explicit "link" made
+	// under one preset would otherwise stick after switching to a preset with distinct per-side margins,
+	// hiding them behind a stale linked view.
 	const { isLinked: marginIsLinked, toggleLink: toggleMarginLink } = useLinkedMeasureState({
 		forDevice: marginForDevice,
 		inherited: inheritedMargin,
@@ -518,6 +520,7 @@ export default function KadenceButtonEdit(props) {
 		presetValue: marginPresetValue,
 		tokens: marginPickableTokens,
 		setAttributes,
+		resetOn: attributes.kbPreset,
 	});
 
 	// Hover/Transparent/Transparent Hover/Sticky/Sticky Hover each store their own 4 corners, so each
@@ -2334,27 +2337,34 @@ export default function KadenceButtonEdit(props) {
 												max={paddingUnit === 'em' || paddingUnit === 'rem' ? 25 : 999}
 												step={paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1}
 											/>
-											<EditorBoxControl
-												label={__('Margin', 'kadence-blocks')}
-												value={marginForDevice.value}
-												onChange={(next) => setAttributes({ [marginForDevice.attr]: next })}
-												previewDevice={previewDevice}
-												onDeviceChange={setPreviewDevice}
-												tokens={marginPickableTokens}
-												defaultValue={inheritedMargin.values}
-												inherited={anyCornerInherited(inheritedMargin.inherited)}
-												state={tokenBinding.margin}
-												onReset={() => resetToken('margin')}
-												isLinked={marginIsLinked}
-												onToggleLink={toggleMarginLink}
-												role="sides"
-												unit={marginUnit}
-												units={['px', 'em', 'rem']}
-												onUnit={(value) => setAttributes({ marginUnit: value })}
-												min={marginUnit === 'em' || marginUnit === 'rem' ? -25 : -999}
-												max={marginUnit === 'em' || marginUnit === 'rem' ? 25 : 999}
-												step={marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1}
-											/>
+											<div
+												onMouseOver={marginMouseOver.onMouseOver}
+												onMouseOut={marginMouseOver.onMouseOut}
+												onFocus={marginMouseOver.onMouseOver}
+												onBlur={marginMouseOver.onMouseOut}
+											>
+												<EditorBoxControl
+													label={__('Margin', 'kadence-blocks')}
+													value={marginForDevice.value}
+													onChange={(next) => setAttributes({ [marginForDevice.attr]: next })}
+													previewDevice={previewDevice}
+													onDeviceChange={setPreviewDevice}
+													tokens={marginPickableTokens}
+													defaultValue={inheritedMargin.values}
+													inherited={anyCornerInherited(inheritedMargin.inherited)}
+													state={tokenBinding.margin}
+													onReset={() => resetToken('margin')}
+													isLinked={marginIsLinked}
+													onToggleLink={toggleMarginLink}
+													role="sides"
+													unit={marginUnit}
+													units={['px', 'em', 'rem']}
+													onUnit={(value) => setAttributes({ marginUnit: value })}
+													min={marginUnit === 'em' || marginUnit === 'rem' ? -25 : -999}
+													max={marginUnit === 'em' || marginUnit === 'rem' ? 25 : 999}
+													step={marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1}
+												/>
+											</div>
 											<TextControl
 												label={__('Add Aria Label', 'kadence-blocks')}
 												value={label ? label : ''}
