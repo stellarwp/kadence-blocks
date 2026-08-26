@@ -487,7 +487,9 @@ final class Preset_Resolver {
 			}
 
 			// Nested lists are rejected at validation; guard anyway so a hand-edited document fails closed.
-			$value = is_array( $slot ) ? null : $this->flatten( $slot, $resolved, $keep_gaps );
+			// $slot is therefore always a scalar here, so flatten() never reaches its array branch — the only
+			// branch $keep_gaps affects — and is left at its default.
+			$value = is_array( $slot ) ? null : $this->flatten( $slot, $resolved );
 
 			if ( ! is_string( $value ) ) {
 				return null;
