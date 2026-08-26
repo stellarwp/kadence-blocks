@@ -1078,7 +1078,8 @@ final class Documents_Controller extends Controller {
 			return $this->unknown_token( $id );
 		}
 
-		$error = $this->guard_client_version( $slug, Cast::to_string( $request->get_param( self::VERSION_PARAM ) ) );
+		$client_version = Cast::to_string( $request->get_param( self::VERSION_PARAM ) );
+		$error          = $this->guard_client_version( $slug, $client_version );
 
 		if ( $error instanceof WP_Error ) {
 			return $error;
@@ -1087,7 +1088,7 @@ final class Documents_Controller extends Controller {
 		$stored = $this->store->get_decoded_document( $slug );
 
 		if ( $label === '' ) {
-			return $this->persist_label_clear( $stored, $slug, $id );
+			return $this->persist_label_clear( $stored, $slug, $id, $client_version );
 		}
 
 		if ( $this->user_primitive_index->has( $stored, $id ) ) {
@@ -1097,7 +1098,7 @@ final class Documents_Controller extends Controller {
 			$candidate = $this->label_index->set( $stored, $id, $label );
 		}
 
-		return $this->persist_metadata_candidate( $candidate, $slug );
+		return $this->persist_metadata_candidate( $candidate, $slug, $client_version );
 	}
 
 	/**
@@ -1123,13 +1124,14 @@ final class Documents_Controller extends Controller {
 			return $this->unknown_token( $id );
 		}
 
-		$error = $this->guard_client_version( $slug, Cast::to_string( $request->get_param( self::VERSION_PARAM ) ) );
+		$client_version = Cast::to_string( $request->get_param( self::VERSION_PARAM ) );
+		$error          = $this->guard_client_version( $slug, $client_version );
 
 		if ( $error instanceof WP_Error ) {
 			return $error;
 		}
 
-		return $this->persist_label_clear( $this->store->get_decoded_document( $slug ), $slug, $id );
+		return $this->persist_label_clear( $this->store->get_decoded_document( $slug ), $slug, $id, $client_version );
 	}
 
 	/**
@@ -1162,7 +1164,8 @@ final class Documents_Controller extends Controller {
 			return $this->unknown_group( $group );
 		}
 
-		$error = $this->guard_client_version( $slug, Cast::to_string( $request->get_param( self::VERSION_PARAM ) ) );
+		$client_version = Cast::to_string( $request->get_param( self::VERSION_PARAM ) );
+		$error          = $this->guard_client_version( $slug, $client_version );
 
 		if ( $error instanceof WP_Error ) {
 			return $error;
@@ -1177,7 +1180,7 @@ final class Documents_Controller extends Controller {
 			? $this->order_index->remove_group( $stored, $group_ids )
 			: $this->order_index->set_group( $stored, $group_ids, $ids );
 
-		return $this->persist_metadata_candidate( $candidate, $slug );
+		return $this->persist_metadata_candidate( $candidate, $slug, $client_version );
 	}
 
 	/**
@@ -1205,7 +1208,8 @@ final class Documents_Controller extends Controller {
 			return $this->unknown_group( $group );
 		}
 
-		$error = $this->guard_client_version( $slug, Cast::to_string( $request->get_param( self::VERSION_PARAM ) ) );
+		$client_version = Cast::to_string( $request->get_param( self::VERSION_PARAM ) );
+		$error          = $this->guard_client_version( $slug, $client_version );
 
 		if ( $error instanceof WP_Error ) {
 			return $error;
@@ -1219,7 +1223,7 @@ final class Documents_Controller extends Controller {
 			return new WP_REST_Response( $this->prepare_item( $slug ), WP_Http::OK );
 		}
 
-		return $this->persist_metadata_candidate( $candidate, $slug );
+		return $this->persist_metadata_candidate( $candidate, $slug, $client_version );
 	}
 
 	/**
@@ -1568,15 +1572,24 @@ final class Documents_Controller extends Controller {
 	 * either). The section is still validated whenever the full document is (bulk POST/PATCH/PUT),
 	 * via its validator branch.
 	 *
+	 * The conditional save compares against the version the CLIENT was accepted on, never a freshly
+	 * read one. Re-reading here would reopen the window the version guard exists to close: another
+	 * write landing between the guard and this call would move the stored version, the compare would
+	 * match that new value, and this write would overwrite the other one and report success. Passing
+	 * the guarded version through means such a write loses the compare and returns 409 instead.
+	 * Required rather than defaulted, so a caller that has not been updated fails loudly rather than
+	 * silently keeping the old behavior.
+	 *
 	 * @since TBD
 	 *
-	 * @param array<string, mixed> $candidate The candidate document with the metadata edit applied.
-	 * @param string               $slug      The token library slug.
+	 * @param array<string, mixed> $candidate      The candidate document with the metadata edit applied.
+	 * @param string               $slug           The token library slug.
+	 * @param string               $client_version The version {@see guard_client_version()} accepted.
 	 *
 	 * @return WP_REST_Response|WP_Error
 	 */
-	private function persist_metadata_candidate( array $candidate, string $slug ) {
-		$expected_version = $this->store->get_version( $slug );
+	private function persist_metadata_candidate( array $candidate, string $slug, string $client_version ) {
+		$expected_version = $client_version;
 		$status           = $expected_version !== '' ? WP_Http::OK : WP_Http::CREATED;
 
 		if ( $candidate === [] ) {
@@ -1609,13 +1622,14 @@ final class Documents_Controller extends Controller {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, mixed> $stored The stored document to clear the override from.
-	 * @param string               $slug   The token library slug.
-	 * @param string               $id     The token id.
+	 * @param array<string, mixed> $stored         The stored document to clear the override from.
+	 * @param string               $slug           The token library slug.
+	 * @param string               $id             The token id.
+	 * @param string               $client_version The version {@see guard_client_version()} accepted.
 	 *
 	 * @return WP_REST_Response|WP_Error
 	 */
-	private function persist_label_clear( array $stored, string $slug, string $id ) {
+	private function persist_label_clear( array $stored, string $slug, string $id, string $client_version ) {
 		if ( $this->user_primitive_index->has( $stored, $id ) ) {
 			$candidate = $this->user_primitive_index->add( $stored, $id, '' );
 		} else {
@@ -1626,7 +1640,7 @@ final class Documents_Controller extends Controller {
 			return new WP_REST_Response( $this->prepare_item( $slug ), WP_Http::OK );
 		}
 
-		return $this->persist_metadata_candidate( $candidate, $slug );
+		return $this->persist_metadata_candidate( $candidate, $slug, $client_version );
 	}
 
 	/**

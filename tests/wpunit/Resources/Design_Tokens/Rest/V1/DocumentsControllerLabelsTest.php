@@ -10,6 +10,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\User_Primitive_Registrar;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Document;
 use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Documents_Controller;
+use ReflectionMethod;
 use Tests\Support\Classes\TestCase;
 use WP_Error;
 use WP_Http;
@@ -475,5 +476,75 @@ final class DocumentsControllerLabelsTest extends TestCase {
 		}
 
 		return $request;
+	}
+
+	/**
+	 * A write that lands after the version guard has passed must lose the conditional save, not win
+	 * it. The guard and the save are two separate reads of the store, so anything committed between
+	 * them moves the stored version; comparing against a freshly read value would match that new
+	 * version and overwrite the other write while reporting success. Comparing against the version
+	 * the client was accepted on refuses instead.
+	 *
+	 * Driven through the shared helper directly because there is no hook between the guard and the
+	 * save to commit an interleaved write from — passing a version the store has since moved past is
+	 * exactly the state that interleaving produces.
+	 *
+	 * @return void
+	 */
+	public function testAWriteLandingAfterTheGuardLosesTheConditionalSave(): void {
+		$slug = Token_Store::default_slug();
+
+		$this->store->save_document( '{}', $slug );
+		$superseded_version = $this->store->get_version( $slug );
+
+		// Whatever the interleaved write was, it moved the stored version on.
+		$this->store->save_document( (string) wp_json_encode( [ 'primitive' => [] ] ), $slug );
+
+		$this->assertNotSame( $superseded_version, $this->store->get_version( $slug ) );
+
+		$candidate = $this->label_index->set( [], self::BASELINE_ID, 'Renamed' );
+		$result    = $this->persist_metadata( $candidate, $slug, $superseded_version );
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'rest_design_tokens_conflict', $result->get_error_code() );
+		$this->assertSame( WP_Http::CONFLICT, $result->get_error_data()['status'] );
+	}
+
+	/**
+	 * The same path succeeds on the version the client actually holds, so the assertion above cannot
+	 * pass by refusing every write.
+	 *
+	 * @return void
+	 */
+	public function testTheSamePathSucceedsOnTheHeldVersion(): void {
+		$slug = Token_Store::default_slug();
+
+		$this->store->save_document( '{}', $slug );
+
+		$candidate = $this->label_index->set( [], self::BASELINE_ID, 'Renamed' );
+		$result    = $this->persist_metadata( $candidate, $slug, $this->store->get_version( $slug ) );
+
+		$this->assertInstanceOf( WP_REST_Response::class, $result );
+		$this->assertSame(
+			'Renamed',
+			$this->label_index->label_for( $this->store->get_decoded_document( $slug ), self::BASELINE_ID )
+		);
+	}
+
+	/**
+	 * Invoke the shared metadata-persist helper, which is private because every route reaches it
+	 * through a handler that has already run the guard.
+	 *
+	 * @param array<string, mixed> $candidate      The candidate document.
+	 * @param string               $slug           The token library slug.
+	 * @param string               $client_version The version to compare against.
+	 *
+	 * @return mixed The helper's response or error.
+	 */
+	private function persist_metadata( array $candidate, string $slug, string $client_version ) {
+		$method = new ReflectionMethod( Documents_Controller::class, 'persist_metadata_candidate' );
+		$method->setAccessible( true );
+
+		return $method->invoke( $this->controller, $candidate, $slug, $client_version );
 	}
 }
