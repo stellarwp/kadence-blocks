@@ -4,7 +4,7 @@
  * actions (Part D) and read by the token indicators (Part C). Editor-session state only — never persisted.
  */
 
-import { createReduxStore, register } from '@wordpress/data';
+import { createReduxStore, register, select } from '@wordpress/data';
 
 const STORE_NAME = 'kadence/token-indicators';
 
@@ -60,6 +60,14 @@ function reducer(state = DEFAULT_STATE, action) {
 
 const store = createReduxStore(STORE_NAME, { reducer, actions, selectors });
 
-register(store);
+// `early-filters.js` and `blocks-singlebtn.js` are separate webpack entries that both import this
+// module, so its top-level code runs once per bundle — webpack doesn't dedupe modules across
+// entries. `@wordpress/data`'s registry is a page-wide singleton though, so `select()` here (safe
+// to call for an unregistered store; it returns `undefined` rather than warning) checks the same
+// `stores` map `register()` writes to, and prevents the second bundle's copy of this module from
+// re-registering and logging "Store already registered."
+if (!select(STORE_NAME)) {
+	register(store);
+}
 
 export const TOKEN_INDICATORS_STORE = STORE_NAME;
