@@ -611,7 +611,7 @@ final class Dtcg_Validator {
 		// each swatch `$value` with the same alias-or-literal grammar here.
 		$palettes_section = Extensions::get_section_color_palettes();
 
-		if ( isset( $namespace[ $palettes_section ] ) && is_array( $namespace[ $palettes_section ] ) ) {
+		if ( array_key_exists( $palettes_section, $namespace ) ) {
 			$errors = array_merge(
 				$errors,
 				$this->validate_color_palettes( $namespace[ $palettes_section ], $base . '.' . $palettes_section )
@@ -623,7 +623,7 @@ final class Dtcg_Validator {
 		// never covers it. Without this branch it would pass through with no validation at all.
 		$labels_section = Extensions::get_section_token_labels();
 
-		if ( isset( $namespace[ $labels_section ] ) && is_array( $namespace[ $labels_section ] ) ) {
+		if ( array_key_exists( $labels_section, $namespace ) ) {
 			$errors = array_merge(
 				$errors,
 				$this->validate_token_labels( $namespace[ $labels_section ], $base . '.' . $labels_section )
@@ -635,7 +635,7 @@ final class Dtcg_Validator {
 		// it) never covers it. Without this branch it would pass through with no validation at all.
 		$order_section = Extensions::get_section_token_order();
 
-		if ( isset( $namespace[ $order_section ] ) && is_array( $namespace[ $order_section ] ) ) {
+		if ( array_key_exists( $order_section, $namespace ) ) {
 			$errors = array_merge(
 				$errors,
 				$this->validate_token_order( $namespace[ $order_section ], $base . '.' . $order_section )
@@ -647,7 +647,7 @@ final class Dtcg_Validator {
 		// it) never covers it. Without this branch it would pass through with no validation at all.
 		$favorites_section = Extensions::get_section_favorite_fonts();
 
-		if ( isset( $namespace[ $favorites_section ] ) && is_array( $namespace[ $favorites_section ] ) ) {
+		if ( array_key_exists( $favorites_section, $namespace ) ) {
 			$errors = array_merge(
 				$errors,
 				$this->validate_favorite_fonts( $namespace[ $favorites_section ], $base . '.' . $favorites_section )
@@ -664,14 +664,28 @@ final class Dtcg_Validator {
 	 * leaf, no duplicate `token` within a palette, `$default` / `$current` naming a real palette) is enforced
 	 * by the palette controller's write guards, not here — this branch is the value-grammar gate only.
 	 *
+	 * Takes the section unshaped, because a section that is not an array at all is exactly what this has
+	 * to report. The caller only checks that the key is present; anything else here would let a scalar
+	 * stored under it skip validation and pass as a valid document.
+	 *
 	 * @since TBD
 	 *
-	 * @param array<int|string, mixed> $palettes The decoded colorPalettes section.
-	 * @param string                   $prefix   Dot-path to the section, for error messages.
+	 * @param mixed  $palettes The decoded colorPalettes section, before its shape is known.
+	 * @param string $prefix   Dot-path to the section, for error messages.
 	 *
 	 * @return Validation_Error[]
 	 */
-	private function validate_color_palettes( array $palettes, string $prefix ): array {
+	private function validate_color_palettes( $palettes, string $prefix ): array {
+		if ( ! is_array( $palettes ) ) {
+			return [
+				new Validation_Error(
+					$prefix,
+					Validation_Error::get_code_value_invalid(),
+					'colorPalettes must be a map of palette ids to palette definitions.'
+				),
+			];
+		}
+
 		$groups_key   = Extensions::get_groups_key();
 		$swatches_key = Extensions::get_swatches_key();
 		$value_key    = Sentinels::get_value_key();
@@ -720,14 +734,26 @@ final class Dtcg_Validator {
 	 * write guard, not here — a label for a since-unregistered token is stale data, not a
 	 * grammar error, and read-side consumers already ignore it.
 	 *
+	 * Takes the section unshaped, for the reason {@see validate_color_palettes()} gives.
+	 *
 	 * @since TBD
 	 *
-	 * @param array<int|string, mixed> $labels The decoded tokenLabels section.
-	 * @param string                   $prefix Dot-path to the section, for error messages.
+	 * @param mixed  $labels The decoded tokenLabels section, before its shape is known.
+	 * @param string $prefix Dot-path to the section, for error messages.
 	 *
 	 * @return Validation_Error[]
 	 */
-	private function validate_token_labels( array $labels, string $prefix ): array {
+	private function validate_token_labels( $labels, string $prefix ): array {
+		if ( ! is_array( $labels ) ) {
+			return [
+				new Validation_Error(
+					$prefix,
+					Validation_Error::get_code_value_invalid(),
+					'tokenLabels must be a map of token ids to non-empty string labels.'
+				),
+			];
+		}
+
 		$errors = [];
 
 		foreach ( $labels as $id => $label ) {
@@ -751,14 +777,26 @@ final class Dtcg_Validator {
 	 * the feed merge's concern (which ignores on read) — a stale id is data drift, not a grammar
 	 * error, so it does not fail full-document validation.
 	 *
+	 * Takes the section unshaped, for the reason {@see validate_color_palettes()} gives.
+	 *
 	 * @since TBD
 	 *
-	 * @param array<int|string, mixed> $order  The decoded tokenOrder section.
-	 * @param string                   $prefix Dot-path to the section, for error messages.
+	 * @param mixed  $order  The decoded tokenOrder section, before its shape is known.
+	 * @param string $prefix Dot-path to the section, for error messages.
 	 *
 	 * @return Validation_Error[]
 	 */
-	private function validate_token_order( array $order, string $prefix ): array {
+	private function validate_token_order( $order, string $prefix ): array {
+		if ( ! is_array( $order ) ) {
+			return [
+				new Validation_Error(
+					$prefix,
+					Validation_Error::get_code_value_invalid(),
+					'tokenOrder must be a sequential list of non-empty string token ids.'
+				),
+			];
+		}
+
 		// The `$order === []` check is required, not redundant: `range( 0, -1 )` returns
 		// `[ 0, -1 ]` in PHP, not `[]`, so without this short-circuit an empty order list would be
 		// misclassified as malformed rather than as a valid empty list.
@@ -795,14 +833,26 @@ final class Dtcg_Validator {
 	 * concern — a family that a theme or plugin has since stopped registering is data drift, not a
 	 * grammar error, and read-side consumers already ignore what they cannot render.
 	 *
+	 * Takes the section unshaped, for the reason {@see validate_color_palettes()} gives.
+	 *
 	 * @since TBD
 	 *
-	 * @param array<int|string, mixed> $favorites The decoded favoriteFonts section.
-	 * @param string                   $prefix    Dot-path to the section, for error messages.
+	 * @param mixed  $favorites The decoded favoriteFonts section, before its shape is known.
+	 * @param string $prefix    Dot-path to the section, for error messages.
 	 *
 	 * @return Validation_Error[]
 	 */
-	private function validate_favorite_fonts( array $favorites, string $prefix ): array {
+	private function validate_favorite_fonts( $favorites, string $prefix ): array {
+		if ( ! is_array( $favorites ) ) {
+			return [
+				new Validation_Error(
+					$prefix,
+					Validation_Error::get_code_value_invalid(),
+					'favoriteFonts must be a sequential list of non-empty font family names.'
+				),
+			];
+		}
+
 		// The `$favorites === []` check is required, not redundant: `range( 0, -1 )` returns
 		// `[ 0, -1 ]` in PHP, not `[]`, so without this short-circuit an empty favorites list would
 		// be misclassified as malformed rather than as a valid empty list.

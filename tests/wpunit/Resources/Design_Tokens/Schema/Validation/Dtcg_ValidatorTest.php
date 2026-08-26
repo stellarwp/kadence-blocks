@@ -212,6 +212,134 @@ final class Dtcg_ValidatorTest extends TestCase {
 	}
 
 	/**
+	 * Every one of the four metadata sections contracts for an array, so a scalar or a null stored
+	 * under any of their keys is a malformed document and has to be reported as one. Each section
+	 * used to be reached through a guard that required an array before it would run its validator,
+	 * which meant exactly the values that are wrong were the values that skipped the check.
+	 *
+	 * @dataProvider nonArrayExtensionSectionProvider
+	 *
+	 * @param string $section The `$extensions.com.kadence.designTokens` section key.
+	 * @param mixed  $value   The malformed value stored under it.
+	 *
+	 * @return void
+	 */
+	public function testANonArrayExtensionSectionIsRejected( string $section, $value ): void {
+		$document = [
+			'$extensions' => [
+				'com.kadence.designTokens' => [
+					$section => $value,
+				],
+			],
+		];
+
+		$errors = $this->validator->validate( $document, Dtcg_Validator::get_context_overrides() )->errors();
+
+		$this->assertCount( 1, $errors, $this->describe( $errors ) );
+		$this->assertSame( Validation_Error::get_code_value_invalid(), $errors[0]->code );
+		$this->assertSame( '$extensions.com.kadence.designTokens.' . $section, $errors[0]->path );
+	}
+
+	/**
+	 * Each of the four sections against each way a stored value can fail to be an array. Written as a
+	 * cross-product so tightening one section can never quietly leave a sibling behind.
+	 *
+	 * @return Generator
+	 */
+	public function nonArrayExtensionSectionProvider(): Generator {
+		$sections = [ 'colorPalettes', 'tokenLabels', 'tokenOrder', 'favoriteFonts' ];
+		$values   = [
+			'string'  => 'Inter',
+			'empty string' => '',
+			'int'     => 42,
+			'float'   => 1.5,
+			'true'    => true,
+			'false'   => false,
+			'null'    => null,
+		];
+
+		foreach ( $sections as $section ) {
+			foreach ( $values as $label => $value ) {
+				yield $section . ' as a ' . $label => [
+					'section' => $section,
+					'value'   => $value,
+				];
+			}
+		}
+	}
+
+	/**
+	 * The array control for the case above: each section's own well-formed shape still validates, so
+	 * the rejection cannot be passing by refusing every value stored under these keys.
+	 *
+	 * @dataProvider wellFormedExtensionSectionProvider
+	 *
+	 * @param string               $section The `$extensions.com.kadence.designTokens` section key.
+	 * @param array<int|string, mixed> $value The section's well-formed value.
+	 *
+	 * @return void
+	 */
+	public function testAWellFormedExtensionSectionStillValidates( string $section, array $value ): void {
+		$document = [
+			'$extensions' => [
+				'com.kadence.designTokens' => [
+					$section => $value,
+				],
+			],
+		];
+
+		$result = $this->validator->validate( $document, Dtcg_Validator::get_context_overrides() );
+
+		$this->assertTrue( $result->is_valid(), $this->describe( $result->errors() ) );
+	}
+
+	/**
+	 * One well-formed value per section, plus the empty array each of them accepts.
+	 *
+	 * @return Generator
+	 */
+	public function wellFormedExtensionSectionProvider(): Generator {
+		yield 'colorPalettes' => [
+			'section' => 'colorPalettes',
+			'value'   => [
+				'default' => [
+					'groups' => [
+						[ 'swatches' => [ [ '$value' => '#3182CE' ] ] ],
+					],
+				],
+			],
+		];
+		yield 'tokenLabels' => [
+			'section' => 'tokenLabels',
+			'value'   => [ 'semantic.color.button-bg' => 'Button Background' ],
+		];
+		yield 'tokenOrder' => [
+			'section' => 'tokenOrder',
+			'value'   => [ 'semantic.color.button-bg', 'semantic.color.button-text' ],
+		];
+		yield 'favoriteFonts' => [
+			'section' => 'favoriteFonts',
+			'value'   => [ 'Inter', 'Abril Fatface' ],
+		];
+		yield 'colorPalettes empty' => [
+			'section' => 'colorPalettes',
+			'value'   => [],
+		];
+		yield 'tokenLabels empty' => [
+			'section' => 'tokenLabels',
+			'value'   => [],
+		];
+		yield 'tokenOrder empty' => [
+			'section' => 'tokenOrder',
+			'value'   => [],
+		];
+		yield 'favoriteFonts empty' => [
+			'section' => 'favoriteFonts',
+			'value'   => [],
+		];
+	}
+
+	/**
 	 * A document without a tokenOrder section produces no new errors, and a non-Kadence extension
 	 * namespace alongside it is passed through untouched.
 	 *
