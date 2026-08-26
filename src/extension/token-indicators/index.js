@@ -188,14 +188,18 @@ export function usePresetBinding(blockName, attributes, library, previewDevice) 
 			mobile: get(presetBreakpoints, ['mobile', property.key]),
 		};
 
-		// `overridden` compares like against like: a dimension control reads its OWN device's stored
-		// attribute (`tabletBorderRadius` on Tablet), against the preset value in effect at that same
-		// device (its tablet override where the preset declares one, else the base). Comparing a
-		// Tablet-stored value to the desktop preset value — or reporting the desktop attribute's state
-		// while Tablet is open — would show the wrong mark for the device actually being edited.
-		const deviceAttr = kind === 'dimension' ? deviceAttrFor(attr, previewDevice) : attr;
-		const devicePresetValue =
-			kind === 'dimension' ? presetValueForDevice(presetValue, propertyBreakpoints, previewDevice) : presetValue;
+		// `overridden` compares like against like: a responsive control (a dimension, or a border axis —
+		// each border axis has its own tabletBorderStyle/mobileBorderStyle-shaped attribute) reads its
+		// OWN device's stored attribute (`tabletBorderRadius` on Tablet), against the preset value in
+		// effect at that same device (its tablet override where the preset declares one, else the base).
+		// Comparing a Tablet-stored value to the desktop preset value — or reporting the desktop
+		// attribute's state while Tablet is open — would show the wrong mark for the device actually
+		// being edited.
+		const isResponsive = kind === 'dimension' || Boolean(axis);
+		const deviceAttr = isResponsive ? deviceAttrFor(attr, previewDevice) : attr;
+		const devicePresetValue = isResponsive
+			? presetValueForDevice(presetValue, propertyBreakpoints, previewDevice)
+			: presetValue;
 		const value = get(attributes, deviceAttr, '');
 		const unit = unitAttrFor(kind, attr) ? get(attributes, unitAttrFor(kind, attr), '') : '';
 
