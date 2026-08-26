@@ -1033,7 +1033,9 @@ final class Dtcg_Validator {
 	 * each an alias or a non-empty literal scalar. "Every corner" is already expressed by a bare scalar, so
 	 * a shorter list would be a second spelling of the same thing. A slot is validated by the
 	 * same alias-or-literal rule as a scalar value, so "alias anywhere" stays one rule applied once; a
-	 * nested list is rejected because that rule accepts no array.
+	 * nested list is rejected because that rule accepts no array. A slot literal must additionally be
+	 * free of spaces — the projection round-trips a slot list through a space-separated shorthand, so a
+	 * compound literal such as `calc(1px + 1px)` would break the split and is rejected here at write time.
 	 *
 	 * @since TBD
 	 *
@@ -1066,6 +1068,16 @@ final class Dtcg_Validator {
 					$path . '.' . $index,
 					Validation_Error::get_code_value_invalid(),
 					'A preset token slot must be an alias or a non-empty literal, not a nested list.'
+				);
+			}
+
+			// The projection joins a slot list into a space-separated shorthand and splits it back apart by
+			// space, so a slot carrying its own space would silently shift every slot after it.
+			if ( is_string( $slot ) && strpos( $slot, ' ' ) !== false ) {
+				return new Validation_Error(
+					$path . '.' . $index,
+					Validation_Error::get_code_value_invalid(),
+					'A preset token slot must not contain a space; a compound literal (e.g. calc(), clamp()) is not supported in a slot.'
 				);
 			}
 

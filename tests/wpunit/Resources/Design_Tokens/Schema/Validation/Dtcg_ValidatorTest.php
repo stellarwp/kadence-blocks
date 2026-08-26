@@ -916,7 +916,8 @@ final class Dtcg_ValidatorTest extends TestCase {
 
 	/**
 	 * A preset token slot list is rejected when its length is not 1 or 4, when a slot nests another list,
-	 * when a slot is empty, or when a slot carries braces without being a whole-string alias.
+	 * when a slot is empty, when a slot carries a space (a compound literal), or when a slot carries braces
+	 * without being a whole-string alias.
 	 *
 	 * @dataProvider invalidSlotListProvider
 	 *
@@ -989,6 +990,18 @@ final class Dtcg_ValidatorTest extends TestCase {
 			'value' => [ '8px', '{primitive.dimension.radius.sm}px', '8px', '4px' ],
 			'code'  => Validation_Error::get_code_alias_malformed(),
 			'path'  => $base . '.1',
+		];
+
+		yield 'compound literal slot carrying a space' => [
+			'value' => [ '8px', 'calc(1px + 1px)', '8px', '4px' ],
+			'code'  => Validation_Error::get_code_value_invalid(),
+			'path'  => $base . '.1',
+		];
+
+		yield 'clamp literal slot carrying a space' => [
+			'value' => [ 'clamp(1px, 2vw, 3px)', '4px', '8px', '4px' ],
+			'code'  => Validation_Error::get_code_value_invalid(),
+			'path'  => $base . '.0',
 		];
 	}
 
