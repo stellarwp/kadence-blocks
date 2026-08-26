@@ -57,15 +57,31 @@ final class Favorite_Fonts_CatalogTest extends TestCase {
 	}
 
 	/**
-	 * Reset the active-library pointer and drop the custom-fonts filter each test may have added, so
-	 * neither follows the suite into a later case.
+	 * The custom-fonts callback a test registered, so tearDown can remove exactly that one.
+	 *
+	 * @since TBD
+	 *
+	 * @var callable|null
+	 */
+	private $custom_fonts_filter = null;
+
+	/**
+	 * Reset the active-library pointer and drop only the callback this test registered, so neither
+	 * follows the suite into a later case.
+	 *
+	 * Deliberately not remove_all_filters(): the plugin registers its own callback on this hook at
+	 * includes/init.php, and clearing the hook wholesale would strip that for every later test in
+	 * the run rather than only undoing what this one did.
 	 *
 	 * @return void
 	 */
 	protected function tearDown(): void {
 		$this->active->set( Token_Store::default_slug() );
 
-		remove_all_filters( 'kadence_blocks_custom_fonts' );
+		if ( $this->custom_fonts_filter !== null ) {
+			remove_filter( 'kadence_blocks_custom_fonts', $this->custom_fonts_filter );
+			$this->custom_fonts_filter = null;
+		}
 
 		parent::tearDown();
 	}
@@ -115,12 +131,11 @@ final class Favorite_Fonts_CatalogTest extends TestCase {
 	 * @return void
 	 */
 	public function testItReportsCustomFamilyNamesNormalizedFromAStackExpression(): void {
-		add_filter(
-			'kadence_blocks_custom_fonts',
-			static function (): array {
-				return [ '"My Font", sans-serif' => [] ];
-			}
-		);
+		$this->custom_fonts_filter = static function (): array {
+			return [ '"My Font", sans-serif' => [] ];
+		};
+
+		add_filter( 'kadence_blocks_custom_fonts', $this->custom_fonts_filter );
 
 		$this->assertSame( [ 'My Font' ], $this->catalog->all()['custom'] );
 	}
