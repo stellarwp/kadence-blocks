@@ -769,6 +769,93 @@ final class PresetsControllerTest extends TestCase {
 	}
 
 	/**
+	 * A per-corner responsive override sitting under a SCALAR base is rejected: the base's canonical var
+	 * is never composed of corner-var references, so a media rule redeclaring only the corner vars would
+	 * have no visible effect — the projection layer relies on this write-time guarantee.
+	 *
+	 * @return void
+	 */
+	public function testADimensionResponsiveOverrideRequiresAPerCornerBase(): void {
+		$entry = $this->responsive_entry(
+			'8px',
+			[ 'mobile' => [ '8px', '4px', '8px', '4px' ] ]
+		);
+
+		$result = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'preset' => 'hero',
+					'tokens' => $this->button_tokens( [ 'button-radius' => $entry ] ),
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'rest_design_tokens_invalid', $result->get_error_code() );
+		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $result->get_error_data()['status'] );
+		$this->assertSame( 'button-radius', $result->get_error_data()['property'] );
+		$this->assertSame( '', $this->store->get_document( Token_Store::default_slug() ) );
+	}
+
+	/**
+	 * A dimension base value containing a space is rejected: `Css_Builder::slots_of()` tells a per-corner
+	 * slot list apart from a scalar literal purely by counting `explode( ' ', $value )`'s parts, so a
+	 * scalar like "8px 4px 8px 4px" would be misread as a genuine four-corner list.
+	 *
+	 * @return void
+	 */
+	public function testADimensionScalarBaseValueWithASpaceIsRejected(): void {
+		$result = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'preset' => 'broken',
+					'tokens' => $this->button_tokens( [ 'button-radius' => '8px 4px 8px 4px' ] ),
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'rest_design_tokens_invalid', $result->get_error_code() );
+		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $result->get_error_data()['status'] );
+		$this->assertSame( 'button-radius', $result->get_error_data()['property'] );
+		$this->assertSame( '', $this->store->get_document( Token_Store::default_slug() ) );
+	}
+
+	/**
+	 * A dimension responsive-override value containing a space is rejected for the same reason a base
+	 * value is — the ambiguity with a genuine per-corner slot list exists at every level.
+	 *
+	 * @return void
+	 */
+	public function testADimensionResponsiveOverrideScalarValueWithASpaceIsRejected(): void {
+		$entry = $this->responsive_entry(
+			[ '{primitive.dimension.radius.md}', '8px', '{primitive.dimension.radius.md}', '8px' ],
+			[ 'mobile' => '8px 4px' ]
+		);
+
+		$result = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'preset' => 'hero',
+					'tokens' => $this->button_tokens( [ 'button-radius' => $entry ] ),
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'rest_design_tokens_invalid', $result->get_error_code() );
+		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $result->get_error_data()['status'] );
+		$this->assertSame( 'button-radius', $result->get_error_data()['property'] );
+		$this->assertSame( '', $this->store->get_document( Token_Store::default_slug() ) );
+	}
+
+	/**
 	 * A well-formed responsive entry is stored intact, base and overrides together.
 	 *
 	 * @return void

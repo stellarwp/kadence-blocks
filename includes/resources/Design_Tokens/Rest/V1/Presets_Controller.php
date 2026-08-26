@@ -1289,6 +1289,12 @@ final class Presets_Controller extends Controller {
 						return $error;
 					}
 
+					$error = $this->guard_dimension_value_shape( $entry, $block, (string) $preset_slug, (string) $property );
+
+					if ( $error instanceof WP_Error ) {
+						return $error;
+					}
+
 					continue;
 				}
 
@@ -1351,6 +1357,66 @@ final class Presets_Controller extends Controller {
 				'property' => $property,
 			]
 		);
+	}
+
+	/**
+	 * Reject a dimension property whose scalar-vs-per-corner shape is ambiguous or inconsistent.
+	 *
+	 * Two write-time invariants the projection layer relies on but nothing else enforces:
+	 *
+	 * - **A per-corner breakpoint override requires a per-corner base.** `Css_Builder` only composes the
+	 *   canonical preset var out of `var()` references to four corner-specific vars when the BASE value is
+	 *   itself a four-slot array; a scalar base emits the canonical var directly, with no corner vars for a
+	 *   later `@media` block to hook into. A per-corner override sitting under a scalar base would redeclare
+	 *   corner vars nothing reads — the media rule would have no visible effect.
+	 * - **No scalar dimension literal may contain a space.** `Preset_Resolver::project()` joins a per-corner
+	 *   slot list with a bare space, and `Css_Builder::slots_of()` tells a slot list apart from a scalar
+	 *   literal purely by counting `explode( ' ', $value )`'s parts. A scalar literal like `"8px 4px 8px
+	 *   4px"` would count as four parts and be misread as a genuine four-corner list, corrupting a value
+	 *   that was only ever meant to be one opaque literal.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed  $entry    The preset token entry.
+	 * @param string $block    The block name, for error context.
+	 * @param string $preset   The preset slug, for error context.
+	 * @param string $property The property name, for error context.
+	 *
+	 * @return WP_Error|null A WP_Error when either invariant is violated, null otherwise.
+	 */
+	private function guard_dimension_value_shape( $entry, string $block, string $preset, string $property ): ?WP_Error {
+		$base          = Extensions::preset_value_of( $entry );
+		$base_is_slots = is_array( $base );
+
+		foreach ( $this->preset_entry_values( $entry ) as $value ) {
+			if ( is_string( $value ) && strpos( $value, ' ' ) !== false ) {
+				return new WP_Error(
+					'rest_design_tokens_invalid',
+					__( 'A dimension value must not contain a space; compound literals (e.g. calc(), clamp()) are not supported.', 'kadence-blocks' ),
+					[
+						'status'   => WP_Http::UNPROCESSABLE_ENTITY,
+						'block'    => $block,
+						'preset'   => $preset,
+						'property' => $property,
+					]
+				);
+			}
+
+			if ( is_array( $value ) && ! $base_is_slots ) {
+				return new WP_Error(
+					'rest_design_tokens_invalid',
+					__( 'A per-corner responsive override requires a per-corner base value for the same property.', 'kadence-blocks' ),
+					[
+						'status'   => WP_Http::UNPROCESSABLE_ENTITY,
+						'block'    => $block,
+						'preset'   => $preset,
+						'property' => $property,
+					]
+				);
+			}
+		}
+
+		return null;
 	}
 
 	/**
