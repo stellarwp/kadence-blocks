@@ -266,7 +266,8 @@ describe('presetValueForDevice', () => {
 
 describe('presetValueForDevice per-corner cascade', () => {
 	// Corner order is top, right, bottom, left (index 0-3), matching CSS shorthand order — confirmed
-	// against `dimensionSlots()`/`presetSlotAt()`'s own convention and re-confirmed by Tasks 1 and 4.
+	// against `dimensionSlots()`/`presetSlotAt()`'s own convention and re-confirmed against the
+	// resolver's flattened slot order and the CSS projection's corner-var naming.
 	const CORNERS = ['top', 'right', 'bottom', 'left'];
 
 	CORNERS.forEach((corner, index) => {
