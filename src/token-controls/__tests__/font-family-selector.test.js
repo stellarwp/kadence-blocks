@@ -161,7 +161,19 @@ describe('FontFamilySelector initial tab', () => {
 	});
 
 	/**
-	 * A family the site favorited opens on the short list that contains it.
+	 * With no favorites the popover renders the catalog alone, so naming the Favorites tab would
+	 * point at a tab that is not there.
+	 *
+	 * @return {void}
+	 */
+	it('opens on Custom when the site has no favorites', () => {
+		renderSelector({ value: '', favorites: [] });
+
+		expect(popoverProps.initialTab).toBe('custom');
+	});
+
+	/**
+	 * A family already in the favorites opens on the short list that contains it.
 	 *
 	 * @return {void}
 	 */
@@ -181,5 +193,19 @@ describe('FontFamilySelector initial tab', () => {
 		renderSelector({ value: 'Abril Fatface', favorites: ['Inter'] });
 
 		expect(popoverProps.initialTab).toBe('custom');
+	});
+});
+
+describe('FontFamilySelector manage link', () => {
+	/**
+	 * The deep link to wherever favorites are managed is passed straight through, so the shared
+	 * control never has to know which host mounted it or how that host builds admin URLs.
+	 *
+	 * @return {void}
+	 */
+	it('passes the manage URL through to the popover', () => {
+		renderSelector({ manageUrl: 'https://example.test/wp-admin/admin.php?page=x' });
+
+		expect(popoverProps.manageUrl).toBe('https://example.test/wp-admin/admin.php?page=x');
 	});
 });

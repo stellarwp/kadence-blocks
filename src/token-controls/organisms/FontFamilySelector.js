@@ -33,6 +33,7 @@ import '../styles/token-controls.scss';
  * @param {Array}    [props.favorites]      The site's favorite families, in display order.
  * @param {Array}    [props.catalogOptions] The full catalog option list (`{ value, label, badge? }`).
  * @param {string}   [props.inheritedLabel] What an unset family falls back to, for the muted trigger.
+ * @param {string}   [props.manageUrl]      Deep link to the screen that manages favorites.
  * @param {Function} props.onPick           Writes a chosen family.
  * @param {Function} props.onClear          Clears the family back to the theme's.
  * @param {boolean}  [props.disabled]       Disable the trigger. It is the only control outside the
@@ -49,6 +50,7 @@ export function FontFamilySelector({
 	favorites = [],
 	catalogOptions = [],
 	inheritedLabel = '',
+	manageUrl = '',
 	onPick,
 	onClear,
 	disabled = false,
@@ -57,10 +59,12 @@ export function FontFamilySelector({
 	const unset = family === '';
 	const isFavorite = favorites.some((entry) => entry === family);
 
-	// A family already in the favorites opens on the short list; anything else opens on the catalog, which
-	// is where it was picked from and the only tab that can show it in context. An unset field opens
-	// on Favorites, the same nudge `TokenSelector` makes toward the curated list over hand-picking.
-	const initialTab = unset || isFavorite ? 'favorites' : 'custom';
+	// A family already in the favorites opens on the short list; anything else opens on the catalog,
+	// which is where it was picked from and the only tab that can show it in context. An unset field
+	// opens on Favorites, the same nudge `TokenSelector` makes toward the curated list over
+	// hand-picking — unless there are none, in which case the popover renders the catalog alone and
+	// naming a tab that is not there would leave it opening on nothing.
+	const initialTab = favorites.length > 0 && (unset || isFavorite) ? 'favorites' : 'custom';
 
 	const fallback = inheritedLabel || __('Theme default', 'kadence-blocks');
 	const triggerName = unset
@@ -102,6 +106,7 @@ export function FontFamilySelector({
 						favorites={favorites}
 						catalogOptions={catalogOptions}
 						initialTab={initialTab}
+						manageUrl={manageUrl}
 						onPick={onPick}
 						onClear={onClear}
 						onClose={onClose}

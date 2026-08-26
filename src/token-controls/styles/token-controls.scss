@@ -154,6 +154,13 @@
 	justify-content: flex-start;
 }
 
+// The catalog body scrolls its own option region, so the body around it must not scroll too —
+// two nested scroll regions would let the search input drift out of view.
+.kadence-token-field__list:has(.kadence-token-field__catalog-options) {
+	max-height: none;
+	overflow-y: visible;
+}
+
 // Each row: label left, value (and optional Default tag) right, on a 40px line with a 2px-radius hover.
 .kadence-token-field__item.components-button,
 .kadence-token-field__reset.components-button {
@@ -215,13 +222,10 @@
 	font-size: 13px;
 }
 
-// The font-family field's Custom tab: a search box above the capped catalog. Its own block rather
-// than reuse of `__list`, which scrolls a short curated list — this one scrolls ~1,900 rows under a
-// fixed search input that must not scroll away with them.
-.kadence-token-field__catalog {
-	display: flex;
-	flex-direction: column;
-	padding: 4px;
+// The single-tab case renders the catalog body with no tab strip above it, so it supplies the top
+// padding the strip would otherwise have provided.
+.kadence-token-field__tabs--single {
+	padding-top: 4px;
 }
 
 .kadence-token-field__search {
@@ -229,10 +233,19 @@
 	margin-bottom: 4px;
 }
 
-.kadence-token-field__catalog-options {
+// Both tab bodies are `__list`, so they already share its 4px inset — the catalog only adds the
+// scroll region. `MenuGroup` ships its own vertical padding and a separator border, which is what
+// made the Custom rows sit lower and further left than the Favorites rows; neither is wanted inside
+// a body that is already padded.
+.kadence-token-field__catalog-options.components-menu-group {
 	max-height: 280px;
 	overflow-y: auto;
+	padding: 0;
 	border: 0;
+
+	> div {
+		padding: 0;
+	}
 }
 
 // The muted tag a catalog row carries (a site-registered custom font), matching `__item-tag`.
