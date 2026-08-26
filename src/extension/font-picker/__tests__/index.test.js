@@ -59,6 +59,15 @@ describe('fontCatalogOptions', () => {
 		]);
 	});
 
+	// The server diffs custom against Google by exact string, so a case difference reaches here as
+	// two names for one font.
+	it('lists a custom font that duplicates a Google one only once', () => {
+		window.kadenceDesignTokensFonts = { favorites: [], custom: ['inter'] };
+		window.kadence_blocks_params = { g_font_names: ['Inter'] };
+
+		expect(fontCatalogOptions()).toEqual([{ value: 'Inter', label: 'Inter' }]);
+	});
+
 	it('matches a favorite against the catalog case-insensitively when deduplicating', () => {
 		window.kadenceDesignTokensFonts = { favorites: ['abril fatface'], custom: [] };
 		window.kadence_blocks_params = { g_font_names: ['Abril Fatface'] };

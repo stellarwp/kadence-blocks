@@ -89,28 +89,43 @@ export function favoriteFonts() {
  * The font-family picker's full option list: favorites first, then every Google family, then every
  * site-registered custom family.
  *
- * A favorite is filtered out of the two catalog runs below it so it appears exactly once, in
- * its pinned position — the same rule the Style Library's Typography dropdown applies, so the two
- * screens list the same names in the same order.
+ * Every name appears exactly once, matched case-insensitively across all three sources: a favorite
+ * keeps its pinned position rather than repeating mid-list, and a custom font that duplicates a
+ * Google one renders once — the same rule the Style Library's Typography dropdown applies, so the
+ * two screens list the same names in the same order.
  *
  * @since TBD
  *
  * @return {Array<{value: string, label: string, badge?: string}>} The option list.
  */
 export function fontCatalogOptions() {
-	const favorites = favoriteFonts();
+	// One set across all three sources, not just the favorites. The custom list is diffed against the
+	// Google list server-side by exact string, so a theme registering `inter` alongside Google's
+	// `Inter` reaches here as two names for one font.
+	const seen = new Set();
+	const unique = (name) => {
+		const key = name.toLowerCase();
+
+		if (seen.has(key)) {
+			return false;
+		}
+
+		seen.add(key);
+
+		return true;
+	};
+
+	const favorites = favoriteFonts().filter(unique);
 	const { custom } = fontPool();
-	const pinned = new Set(favorites.map((name) => name.toLowerCase()));
-	const unpinned = (name) => !pinned.has(name.toLowerCase());
 
 	return [
 		...favorites.map((name) => ({ value: name, label: name, badge: FAVORITE_BADGE })),
 		...googleNames()
-			.filter(unpinned)
+			.filter(unique)
 			.map((name) => ({ value: name, label: name })),
 		...custom
-			.filter((name) => typeof name === 'string' && name !== '')
-			.filter(unpinned)
+			.filter((name) => typeof name === 'string' && name.trim() !== '')
+			.filter(unique)
 			.map((name) => ({ value: name, label: name, badge: CUSTOM_BADGE })),
 	];
 }
