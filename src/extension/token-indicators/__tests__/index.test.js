@@ -736,4 +736,32 @@ describe('deriveStateBinding', () => {
 
 		expect(state).toEqual({ bound: true, overridden: true });
 	});
+
+	/**
+	 * A preset that binds only ONE border axis (width) is compared on that axis alone — the style and
+	 * color axes, which the preset never sets, are not checked against an undefined preset value, so a
+	 * value matching the bound width axis reads as bound, not overridden.
+	 *
+	 * @return {void}
+	 */
+	it('compares only the border axes the preset actually binds', () => {
+		const shared = {
+			bound: true,
+			presetValue: { width: '2px' },
+			responsive: { width: {} },
+		};
+		const value = [
+			{
+				top: ['#ffffff', 'dashed', '2'],
+				right: ['#ffffff', 'dashed', '2'],
+				bottom: ['#ffffff', 'dashed', '2'],
+				left: ['#ffffff', 'dashed', '2'],
+				unit: 'px',
+			},
+		];
+
+		const state = deriveStateBinding({ shared, kind: 'border', value, previewDevice: 'Desktop' });
+
+		expect(state).toEqual({ bound: true, overridden: false });
+	});
 });
