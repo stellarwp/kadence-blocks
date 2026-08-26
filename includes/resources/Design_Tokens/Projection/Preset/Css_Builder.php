@@ -437,10 +437,25 @@ final class Css_Builder {
 	 * meaningful for — see {@see Preset_Bindings::kind()}) AND the value actually splitting into exactly
 	 * {@see self::CORNERS}'s four parts. {@see \KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver::project()}
 	 * is the only place that ever joins a value with a bare space (`implode(' ', $projected)`, one call per
-	 * per-corner slot list, always exactly four slots per the write-time validator) — every literal or
-	 * `var()` segment it joins is itself space-free, so `explode(' ', $value)` losslessly reconstructs the
-	 * original four segments whenever this really was a per-corner value. A gap slot (the responsive-only
-	 * `''` sentinel) round-trips the same way: an empty segment between two single spaces.
+	 * per-corner slot list, always exactly four slots per the write-time validator), so `explode(' ', $value)`
+	 * reconstructs the original four segments losslessly FOR EVERY VALUE SHAPE THAT IS ITSELF SPACE-FREE — an
+	 * alias reference (`var(--x)`) or a plain length/keyword literal, which is everything the write-time
+	 * validator (`Dtcg_Validator`) currently accepts into a per-corner slot. It is NOT a general guarantee: a
+	 * compound-literal value with an internal space (e.g. a `calc(1px + 1px)` or `clamp(...)` literal) is not
+	 * rejected by `Dtcg_Validator` today, so it is writable into a per-corner slot through the REST endpoint
+	 * even though no shipped preset or editor control produces one. Such a value's own space(s) would corrupt
+	 * the part count this method keys off, so `count($parts) === count(self::CORNERS)` no longer identifies
+	 * "four real corners" reliably. The failure this degrades to is contained, not silent corruption: for a
+	 * BASE value it just falls through to null (this property renders as the single old-style declaration,
+	 * matching pre-this-task behavior — no regression). For a RESPONSIVE override it also falls through to
+	 * null, which makes {@see self::responsive_declarations()} redeclare the WHOLE composed var inside
+	 * `@media` instead of the one touched corner — the exact "gap gets frozen/dropped" failure this task
+	 * exists to prevent, just for a value shape outside what write-time validation lets through as of this
+	 * writing. Fixing this properly means rejecting (or otherwise disambiguating) a compound-literal
+	 * per-corner slot in `Dtcg_Validator`/`Preset_Resolver`, both outside this class's scope.
+	 *
+	 * A gap slot (the responsive-only `''` sentinel) round-trips the same way as any other space-free
+	 * segment: an empty segment between two single spaces.
 	 *
 	 * @since TBD
 	 *
