@@ -337,7 +337,7 @@ describe('box-shadow whole-shadow seam', () => {
 });
 
 describe('font-family seam', () => {
-	const FONTS = { favorites: ['Georgia'], custom: [] };
+	const FONTS = { favorites: ['Georgia'], custom: [], manageUrl: 'https://example.test/manage' };
 
 	beforeEach(() => {
 		window.kadenceDesignTokensFonts = FONTS;
@@ -367,6 +367,7 @@ describe('font-family seam', () => {
 		expect(editor.type).toBe(FontFamilySelector);
 		expect(editor.props.value).toBe('Inter');
 		expect(editor.props.favorites).toEqual(['Georgia']);
+		expect(editor.props.manageUrl).toBe('https://example.test/manage');
 	});
 
 	/**

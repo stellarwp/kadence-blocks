@@ -27,7 +27,7 @@
  */
 import { addFilter, removeFilter } from '@wordpress/hooks';
 import { pickableTokensForControl } from '../token-picker';
-import { favoriteFonts, fontCatalogOptions } from '../font-picker';
+import { favoriteFonts, favoriteFontsManageUrl, fontCatalogOptions } from '../font-picker';
 import { FontFamilySelector, TokenChip, TokenPickerButton, TokenSelector, isTokenAlias } from '../../token-controls';
 
 const NAMESPACE = 'kadence-blocks/component-token';
@@ -206,6 +206,7 @@ function fontFamilyEditor(defaultEditor, ctx) {
 			value={ctx.value}
 			favorites={favoriteFonts()}
 			catalogOptions={fontCatalogOptions()}
+			manageUrl={favoriteFontsManageUrl()}
 			inheritedLabel={ctx.context?.inheritedDefault}
 			onPick={(family) => write(family)}
 			onClear={() => write('')}
