@@ -480,6 +480,105 @@ final class Preset_ResolverTest extends TestCase {
 	}
 
 	/**
+	 * A responsive override's per-corner slot list may leave some corners as a `''` gap — this
+	 * breakpoint does not override that corner, so it keeps inheriting live from the cascade. The
+	 * responsive-literal form (which feeds the editor's localized catalog) must keep the gap in the
+	 * array rather than resolving or dropping it, so the editor can tell "overridden here" apart
+	 * from "not overridden here" per corner.
+	 *
+	 * @return void
+	 */
+	public function testResolveResponsiveLiteralPreservesGapsInASparseOverride(): void {
+		$this->seedPreset(
+			Token_Store::default_slug(),
+			'hero',
+			'Hero',
+			[
+				'button-radius' => $this->responsiveEntry(
+					'8px',
+					[ 'tablet' => [ '{semantic.radius.control}', '', '', '' ] ]
+				),
+			]
+		);
+
+		$this->assertSame(
+			[ 'tablet' => [ 'button-radius' => [ '0.1875rem', '', '', '' ] ] ],
+			$this->resolver->resolve_responsive_literal( self::BUTTON, 'hero' )
+		);
+	}
+
+	/**
+	 * The var()-preserving responsive form also keeps a sparse override's property instead of
+	 * dropping it — a gap is not an unresolvable slot, so it does not trigger the fail-closed path a
+	 * genuinely unresolvable alias does.
+	 *
+	 * @return void
+	 */
+	public function testResolveResponsivePreservesGapsInASparseOverride(): void {
+		$this->seedPreset(
+			Token_Store::default_slug(),
+			'hero',
+			'Hero',
+			[
+				'button-radius' => $this->responsiveEntry(
+					'8px',
+					[ 'tablet' => [ '{semantic.radius.control}', '', '8px', '' ] ]
+				),
+			]
+		);
+
+		$responsive = $this->resolver->resolve_responsive( self::BUTTON, 'hero' );
+
+		$this->assertArrayHasKey( 'tablet', $responsive );
+		$this->assertArrayHasKey( 'button-radius', $responsive['tablet'] );
+	}
+
+	/**
+	 * The base path (resolve()/resolve_literal(), and resolve_default() which delegates to it) is
+	 * untouched by the responsive path's keep-the-gap mode: a fully-set per-corner base value still
+	 * resolves exactly as before, projected and literal alike.
+	 *
+	 * @return void
+	 */
+	public function testBasePathStillResolvesAFullySetSlotListUnchanged(): void {
+		$this->seedPreset(
+			Token_Store::default_slug(),
+			'corners',
+			'Corners',
+			[ 'button-radius' => [ '{semantic.radius.control}', '8px', '{semantic.radius.control}', '8px' ] ]
+		);
+
+		$this->assertSame(
+			[ '0.1875rem', '8px', '0.1875rem', '8px' ],
+			$this->resolver->resolve_literal( self::BUTTON, 'corners' )['button-radius']
+		);
+		$this->assertSame(
+			'var(--kb-token--semantic--radius--control) 8px var(--kb-token--semantic--radius--control) 8px',
+			$this->resolver->resolve( self::BUTTON, 'corners' )['button-radius']
+		);
+	}
+
+	/**
+	 * A base value's per-corner slot list is rejected with a `''` gap at write time (Presets_Controller
+	 * and Dtcg_Validator), but the resolver does not trust that validation ran — a gap reaching the
+	 * base path here still fails the whole property closed, exactly like an unresolvable alias, rather
+	 * than silently passing the empty string through as a literal.
+	 *
+	 * @return void
+	 */
+	public function testBasePathFailsClosedOnAGapAsADefenseInDepthSafetyNet(): void {
+		$this->seedPreset(
+			Token_Store::default_slug(),
+			'corners',
+			'Corners',
+			[ 'button-radius' => [ '{semantic.radius.control}', '', '8px', '8px' ] ]
+		);
+
+		$this->assertArrayNotHasKey( 'button-radius', $this->resolver->resolve_literal( self::BUTTON, 'corners' ) );
+		$this->assertArrayNotHasKey( 'button-radius', $this->resolver->resolve( self::BUTTON, 'corners' ) );
+	}
+
+	/**
 	 * A preset token entry carrying per-breakpoint overrides, in the same envelope a responsive token leaf
 	 * uses.
 	 *
