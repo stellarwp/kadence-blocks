@@ -74,6 +74,7 @@
     },
     "presetNav": [],
     "responsive": [],
+    "favoriteFonts": [],
     "rest": {
         "root": "https:\/\/example.test\/wp-json\/",
         "namespace": "kb-design-tokens\/v1",
