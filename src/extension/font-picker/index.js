@@ -42,6 +42,49 @@ const CUSTOM_BADGE = __('Custom', 'kadence-blocks');
 const FAVORITE_BADGE = __('Favorite', 'kadence-blocks');
 
 /**
+ * The muted badge the Kadence theme's two global font entries carry, so a row whose value is a CSS
+ * variable rather than a family name reads as one.
+ *
+ * @since TBD
+ */
+const THEME_BADGE = __('Theme', 'kadence-blocks');
+
+/**
+ * The Kadence theme's two global font entries, as the shared `TypographyControls` select has always
+ * offered them.
+ *
+ * These are not families. Each writes a `var()` reference at the theme's Customizer typography
+ * settings, so a block set to one tracks whatever the site's Heading or Body font is rather than
+ * naming a face — which is why they can never be favorites (a favorite is a catalog family) and why
+ * they belong in the catalog tab beside the families a block can also be set to.
+ *
+ * Offered only when the Kadence theme is active. On any other theme the custom properties are never
+ * emitted, and an option resolving to `inherit` everywhere would be a row that does nothing.
+ *
+ * @since TBD
+ *
+ * @return {Array<{value: string, label: string, badge: string}>} The theme options, or none.
+ */
+function themeFontOptions() {
+	if (!window.kadence_blocks_params?.isKadenceT) {
+		return [];
+	}
+
+	return [
+		{
+			value: 'var( --global-heading-font-family, inherit )',
+			label: __('Inherit Heading Font Family', 'kadence-blocks'),
+			badge: THEME_BADGE,
+		},
+		{
+			value: 'var( --global-body-font-family, inherit )',
+			label: __('Inherit Body Font Family', 'kadence-blocks'),
+			badge: THEME_BADGE,
+		},
+	];
+}
+
+/**
  * Read the design-tokens font global. Fail-safe on a missing or malformed global, mirroring the
  * token pool's posture — a caller never has to null-check before using either list.
  *
@@ -86,13 +129,18 @@ export function favoriteFonts() {
 }
 
 /**
- * The font-family picker's full option list: favorites first, then every Google family, then every
- * site-registered custom family.
+ * The font-family picker's full option list: the Kadence theme's global font entries first, then
+ * favorites, then every Google family, then every site-registered custom family.
  *
- * Every name appears exactly once, matched case-insensitively across all three sources: a favorite
- * keeps its pinned position rather than repeating mid-list, and a custom font that duplicates a
- * Google one renders once — the same rule the Style Library's Typography dropdown applies, so the
- * two screens list the same names in the same order.
+ * The theme entries lead for the same reason the shared select put them first — they are the two
+ * rows that follow the site's own typography settings, so they are what most blocks want. They are
+ * exempt from the dedupe below: their values are `var()` references, not family names, so they
+ * cannot collide with one.
+ *
+ * Every name appears exactly once, matched case-insensitively across all three name sources: a
+ * favorite keeps its pinned position rather than repeating mid-list, and a custom font that
+ * duplicates a Google one renders once — the same rule the Style Library's Typography dropdown
+ * applies, so the two screens list the same names in the same order.
  *
  * @since TBD
  *
@@ -119,6 +167,7 @@ export function fontCatalogOptions() {
 	const { custom } = fontPool();
 
 	return [
+		...themeFontOptions(),
 		...favorites.map((name) => ({ value: name, label: name, badge: FAVORITE_BADGE })),
 		...googleNames()
 			.filter(unique)

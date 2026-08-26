@@ -34,6 +34,9 @@ import '../styles/token-controls.scss';
  * @param {string}   props.value            The current family, or `''` when unset.
  * @param {Array}    [props.favorites]      The site's favorite families, in display order.
  * @param {Array}    [props.catalogOptions] The full catalog option list (`{ value, label, badge? }`).
+ *                                          Also what the trigger reads to name the stored value, so
+ *                                          an option whose value is not its own label reads as the
+ *                                          label rather than as the raw stored string.
  * @param {string}   [props.inheritedLabel] What an unset family falls back to, for the muted trigger.
  * @param {string}   [props.manageUrl]      Deep link to the screen that manages favorites.
  * @param {Function} props.onPick           Writes a chosen family. May return a promise, in which
@@ -79,6 +82,13 @@ export function FontFamilySelector({
 	const unset = family === '';
 	const isFavorite = favorites.some((entry) => sameFamily(entry, family));
 
+	// What to call a stored value. For a family these are the same string, and this costs nothing. An
+	// option can store something that is not a family name, though — the Kadence theme's global font
+	// entries store a `var()` reference at the site's typography settings — and printing that raw is
+	// a control showing the user CSS instead of the choice they made. A value no option claims (a
+	// family the catalog has since dropped, say) still prints as itself rather than disappearing.
+	const labelFor = (stored) => catalogOptions.find((option) => option.value === stored)?.label ?? stored;
+
 	// A family already in the favorites opens on the short list; anything else opens on the catalog,
 	// which is where it was picked from and the only tab that can show it in context. An unset field
 	// opens on Favorites, the same nudge `TokenSelector` makes toward the curated list over
@@ -92,7 +102,7 @@ export function FontFamilySelector({
 				/* translators: %s: the inherited font family, e.g. "Inter". */ __('Default (%s)', 'kadence-blocks'),
 				fallback
 			)
-		: family;
+		: labelFor(family);
 
 	return (
 		<div className="kadence-token-field kadence-token-field--font-family">
@@ -106,13 +116,13 @@ export function FontFamilySelector({
 						onClick={onToggle}
 						disabled={disabled || pending !== ''}
 						aria-expanded={isOpen}
-						label={pending || triggerName}
+						label={pending ? labelFor(pending) : triggerName}
 						showTooltip
 					>
 						{pending ? (
 							<span className="kadence-token-field__value kadence-token-field__value--pending">
 								<Spinner />
-								{pending}
+								{labelFor(pending)}
 							</span>
 						) : unset ? (
 							<span className="kadence-token-field__value kadence-token-field__label--default">
@@ -120,7 +130,7 @@ export function FontFamilySelector({
 							</span>
 						) : (
 							<span className="kadence-token-field__value" style={{ fontFamily: family }}>
-								{family}
+								{labelFor(family)}
 							</span>
 						)}
 					</Button>

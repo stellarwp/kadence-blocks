@@ -148,6 +148,38 @@ describe('FontFamilySelector trigger', () => {
 	});
 });
 
+describe('FontFamilySelector stored-value label', () => {
+	/**
+	 * An option may store something that is not a family name — the Kadence theme's global font
+	 * entries store a `var()` reference at the site's typography settings — and printing that raw
+	 * would show the user CSS instead of the choice they made.
+	 *
+	 * @return {void}
+	 */
+	it('names the stored value by its option label', () => {
+		const trigger = renderSelector({
+			value: 'var( --global-heading-font-family, inherit )',
+			catalogOptions: [
+				{ value: 'var( --global-heading-font-family, inherit )', label: 'Inherit Heading Font Family' },
+			],
+		});
+
+		expect(trigger.querySelector('.kadence-token-field__value').textContent).toBe('Inherit Heading Font Family');
+	});
+
+	/**
+	 * A value no option claims — a family the catalog has since dropped, say — still prints as itself
+	 * rather than disappearing from the field.
+	 *
+	 * @return {void}
+	 */
+	it('falls back to the stored value when no option claims it', () => {
+		const trigger = renderSelector({ value: 'Abril Fatface', catalogOptions: [] });
+
+		expect(trigger.querySelector('.kadence-token-field__value').textContent).toBe('Abril Fatface');
+	});
+});
+
 describe('FontFamilySelector initial tab', () => {
 	/**
 	 * An unset field opens on the curated list — the same nudge `TokenSelector` makes toward picking

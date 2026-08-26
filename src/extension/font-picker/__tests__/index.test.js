@@ -68,6 +68,34 @@ describe('fontCatalogOptions', () => {
 		expect(fontCatalogOptions()).toEqual([{ value: 'Inter', label: 'Inter' }]);
 	});
 
+	// The two entries the shared TypographyControls select has always offered on a Kadence-theme
+	// site. They store a `var()` at the theme's typography settings rather than naming a face, so a
+	// block set to one follows the site's Heading/Body font.
+	it('leads with the theme global fonts when the Kadence theme is active', () => {
+		window.kadenceDesignTokensFonts = { favorites: ['Georgia'], custom: [] };
+		window.kadence_blocks_params = { g_font_names: ['Abel'], isKadenceT: true };
+
+		expect(fontCatalogOptions()).toEqual([
+			{
+				value: 'var( --global-heading-font-family, inherit )',
+				label: 'Inherit Heading Font Family',
+				badge: 'Theme',
+			},
+			{ value: 'var( --global-body-font-family, inherit )', label: 'Inherit Body Font Family', badge: 'Theme' },
+			{ value: 'Georgia', label: 'Georgia', badge: 'Favorite' },
+			{ value: 'Abel', label: 'Abel' },
+		]);
+	});
+
+	// On any other theme the custom properties are never emitted, so both rows would resolve to
+	// `inherit` and do nothing.
+	it('omits the theme global fonts on a non-Kadence theme', () => {
+		window.kadenceDesignTokensFonts = { favorites: [], custom: [] };
+		window.kadence_blocks_params = { g_font_names: ['Abel'] };
+
+		expect(fontCatalogOptions()).toEqual([{ value: 'Abel', label: 'Abel' }]);
+	});
+
 	it('matches a favorite against the catalog case-insensitively when deduplicating', () => {
 		window.kadenceDesignTokensFonts = { favorites: ['abril fatface'], custom: [] };
 		window.kadence_blocks_params = { g_font_names: ['Abril Fatface'] };
