@@ -161,8 +161,8 @@ describe('FontFamilySelector initial tab', () => {
 	});
 
 	/**
-	 * With no favorites the popover renders the catalog alone, so naming the Favorites tab would
-	 * point at a tab that is not there.
+	 * With no favorites the Favorites tab still renders — it is where the picker says favorites come
+	 * from — but landing on it would open the picker onto an empty list, so the catalog opens first.
 	 *
 	 * @return {void}
 	 */

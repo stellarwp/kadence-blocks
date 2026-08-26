@@ -10,16 +10,17 @@
  * token picker to sometimes not pick tokens, which is exactly the confusion dropping the font-family
  * token layer was meant to end.
  *
- * A site with no favorites gets the `Custom` tab alone rather than a two-tab panel whose first tab
- * is empty. That is why `Reset` lives in BOTH tab bodies: with the tabs conditional, neither one can
- * be the place that clears the field.
+ * Both tabs always render; a site with no favorites simply opens on `Custom`. Hiding the tab instead
+ * would make the picker's own chrome change shape between sites, and would take away the one place
+ * that says where favorites come from — which is exactly what someone with none needs to read.
+ * `Reset` lives in BOTH bodies so the tab a site happens to land on is never the one without it.
  */
 
 /**
  * WordPress dependencies
  */
 import { useMemo, useState } from '@wordpress/element';
-import { Button, Icon, MenuGroup, MenuItem, TabPanel, TextControl } from '@wordpress/components';
+import { Button, Icon, TabPanel, TextControl } from '@wordpress/components';
 import { settings, starFilled, undo } from '@wordpress/icons';
 import { __ } from '@wordpress/i18n';
 
@@ -62,7 +63,8 @@ function ResetRow({ value, onClear, onClose }) {
  * pointing at where favorites are managed. Every choice closes the popover.
  *
  * The footer shows whenever the tab does, not only when the list is empty — "where do I add another
- * one" is the question a user has once they have favorites, not before.
+ * one" is a question a user has once they have favorites too. An empty list says so above it, so the
+ * tab reads as "nothing chosen yet" rather than as a panel that failed to load.
  *
  * @param {Object}   props
  * @param {string}   props.value       The current family, so the active row renders pressed.
@@ -95,6 +97,9 @@ function FavoritesTab({ value, favorites, manageUrl, onPick, onClear, onClose })
 					</span>
 				</Button>
 			))}
+			{favorites.length === 0 && (
+				<p className="kadence-token-field__empty">{__('No favorite fonts yet.', 'kadence-blocks')}</p>
+			)}
 			<p className="kadence-token-field__footer">
 				{manageUrl ? (
 					<a href={manageUrl} target="_blank" rel="noreferrer">
@@ -114,6 +119,11 @@ function FavoritesTab({ value, favorites, manageUrl, onPick, onClear, onClose })
  * rendering all ~1,900 families; a query that matches nothing says so instead of leaving the panel
  * blank.
  *
+ * The rows are the same `__item` buttons the `Favorites` tab renders, not `MenuItem`s. `MenuItem`
+ * brings its own padding and its `MenuGroup` wrapper brings more, which is what made the two tabs
+ * sit differently; overriding that from outside is a fight with a third party's internals that only
+ * has to be lost once. Identical markup cannot drift.
+ *
  * @param {Object}   props
  * @param {string}   props.value   The current family, so the active row renders checked.
  * @param {Array}    props.options The full catalog option list, in display order.
@@ -130,7 +140,7 @@ export function FontCatalogTab({ value, options, onPick, onClear, onClose }) {
 	const { visible, truncated } = useMemo(() => filterCatalogOptions(options, query), [options, query]);
 
 	return (
-		<div className="kadence-token-field__list">
+		<div className="kadence-token-field__list kadence-token-field__list--catalog">
 			<ResetRow value={value} onClear={onClear} onClose={onClose} />
 			<TextControl
 				__nextHasNoMarginBottom
@@ -140,22 +150,22 @@ export function FontCatalogTab({ value, options, onPick, onClear, onClose }) {
 				value={query}
 				onChange={setQuery}
 			/>
-			<MenuGroup className="kadence-token-field__catalog-options">
+			<div className="kadence-token-field__catalog-options">
 				{visible.map((option) => (
-					<MenuItem
+					<Button
 						key={option.value}
-						role="menuitemradio"
-						aria-checked={option.value === value}
-						suffix={option.badge && <span className="kadence-token-field__badge">{option.badge}</span>}
+						className="kadence-token-field__item"
+						isPressed={option.value === value}
 						onClick={() => {
 							onPick(option.value);
 							onClose();
 						}}
 					>
-						{option.label}
-					</MenuItem>
+						<span className="kadence-token-field__item-label">{option.label}</span>
+						{option.badge && <span className="kadence-token-field__item-tag">{option.badge}</span>}
+					</Button>
 				))}
-			</MenuGroup>
+			</div>
 			{visible.length === 0 && (
 				<p className="kadence-token-field__empty">{__('No fonts found', 'kadence-blocks')}</p>
 			)}
@@ -167,8 +177,8 @@ export function FontCatalogTab({ value, options, onPick, onClear, onClose }) {
 }
 
 /**
- * Render the font-family picker: both tabs when the site has favorites, the catalog alone when it
- * does not.
+ * Render the font-family picker. Which tab opens first is the caller's call — see
+ * `FontFamilySelector`, which lands on `Custom` when the site has no favorites to show.
  *
  * @param {Object}   props
  * @param {string}   props.value          The current family.
@@ -194,17 +204,6 @@ export function FontFamilyPopover({
 	onClear,
 	onClose,
 }) {
-	const catalog = (
-		<FontCatalogTab value={value} options={catalogOptions} onPick={onPick} onClear={onClear} onClose={onClose} />
-	);
-
-	// One tab is not a tab strip. A site with no favorites gets the catalog directly rather than a
-	// `Favorites` tab that opens onto nothing, which reads as the picker being broken rather than as
-	// the site not having chosen any yet.
-	if (favorites.length === 0) {
-		return <div className="kadence-token-field__tabs kadence-token-field__tabs--single">{catalog}</div>;
-	}
-
 	return (
 		<TabPanel
 			className="kadence-token-field__tabs"
@@ -241,7 +240,13 @@ export function FontFamilyPopover({
 						onClose={onClose}
 					/>
 				) : (
-					catalog
+					<FontCatalogTab
+						value={value}
+						options={catalogOptions}
+						onPick={onPick}
+						onClear={onClear}
+						onClose={onClose}
+					/>
 				)
 			}
 		</TabPanel>

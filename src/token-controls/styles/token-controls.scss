@@ -154,9 +154,9 @@
 	justify-content: flex-start;
 }
 
-// The catalog body scrolls its own option region, so the body around it must not scroll too —
-// two nested scroll regions would let the search input drift out of view.
-.kadence-token-field__list:has(.kadence-token-field__catalog-options) {
+// The catalog body scrolls its own option region instead, so the search input above it stays put
+// rather than drifting off with the rows.
+.kadence-token-field__list--catalog {
 	max-height: none;
 	overflow-y: visible;
 }
@@ -222,36 +222,19 @@
 	font-size: 13px;
 }
 
-// The single-tab case renders the catalog body with no tab strip above it, so it supplies the top
-// padding the strip would otherwise have provided.
-.kadence-token-field__tabs--single {
-	padding-top: 4px;
-}
-
 .kadence-token-field__search {
 	flex: 0 0 auto;
 	margin-bottom: 4px;
 }
 
-// Both tab bodies are `__list`, so they already share its 4px inset — the catalog only adds the
-// scroll region. `MenuGroup` ships its own vertical padding and a separator border, which is what
-// made the Custom rows sit lower and further left than the Favorites rows; neither is wanted inside
-// a body that is already padded.
-.kadence-token-field__catalog-options.components-menu-group {
+// The scrolling row region. Both tabs render `__item` buttons, so the rows themselves need no rule
+// here — that is the point of using the same markup on both rather than styling a `MenuItem` back
+// into alignment from outside.
+.kadence-token-field__catalog-options {
+	display: flex;
+	flex-direction: column;
 	max-height: 280px;
 	overflow-y: auto;
-	padding: 0;
-	border: 0;
-
-	> div {
-		padding: 0;
-	}
-}
-
-// The muted tag a catalog row carries (a site-registered custom font), matching `__item-tag`.
-.kadence-token-field__badge {
-	color: #949494;
-	font-size: 12px;
 }
 
 // The empty state and the keep-typing footer: muted, centered, and never mistaken for a row.
