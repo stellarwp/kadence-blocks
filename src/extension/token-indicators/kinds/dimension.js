@@ -307,33 +307,38 @@ export function parseDimensionLiteral(literal) {
 }
 
 /**
- * Whether a stored dimension matches a PER-CORNER preset value, compared slot by slot.
+ * Whether a stored dimension matches a PER-CORNER preset value, compared corner by corner at the SAME
+ * index into `presetSlots`.
  *
- * Comparing by position means a rotated set of the same corners (e.g. `4,8,4,8` against `8,4,8,4`) reads
- * as overridden, and a stored value with a different number of populated sides than the preset has slots
- * cannot match at all.
+ * The stored slots keep their position (a gap is `''`, not dropped), so the two lists line up index for
+ * index and must be the same length. A gap slot counts as matching: an unset corner inherits the preset's
+ * own value for that corner, so there is nothing there to disagree with. Because the compare is
+ * positional, a rotated set of the same values (e.g. `4,8,4,8` against `8,4,8,4`) reads as overridden.
  *
- * @param {string[]} sides       The stored sides, empties already dropped.
+ * @param {string[]} slots       The stored slots with position preserved, a gap kept as ''.
  * @param {string}   storedUnit  The stored companion unit.
  * @param {Array}    presetSlots The preset's per-corner literals.
  *
  * @since TBD
  *
- * @return {boolean} True when every corner equals its preset slot.
+ * @return {boolean} True when every populated corner equals its preset slot.
  */
-function matchesPresetSlots(sides, storedUnit, presetSlots) {
-	const stored = sides;
+function matchesPresetSlots(slots, storedUnit, presetSlots) {
 	const presets = presetSlots.map(parseDimensionLiteral);
 
-	if (stored.length !== presets.length) {
+	if (slots.length !== presets.length) {
 		return false;
 	}
 
-	return stored.every((side, index) => {
+	return slots.every((slot, index) => {
+		if (slot === '') {
+			return true;
+		}
+
 		const preset = presets[index];
 		const unitMatches = preset.unit === '' || storedUnit === preset.unit;
 
-		return unitMatches && side === preset.value;
+		return unitMatches && slot === preset.value;
 	});
 }
 
@@ -354,6 +359,12 @@ export function isEmpty(value) {
 /**
  * Whether a stored dimension value equals the selected preset's resolved value.
  *
+ * A PER-CORNER preset is compared positionally against the stored slots, with a gap slot always counted
+ * as matching because that corner inherits the preset's own value for that corner. So a partial override
+ * — e.g. only the top corner set at Tablet — still reads as bound when the corner(s) the user did touch
+ * agree with the preset. A scalar preset keeps the side-aware compare below: every POPULATED side must
+ * equal the one preset value.
+ *
  * @param {*}      value       The stored primary attribute value.
  * @param {string} unit        The companion unit.
  * @param {string} presetValue The preset's resolved literal for this property.
@@ -363,6 +374,19 @@ export function isEmpty(value) {
  * @return {boolean} True when the stored value matches the preset value.
  */
 export function matches(value, unit, presetValue) {
+	// `parseDimensionLiteral` reads one length, so a slot list handed to it whole would never match and
+	// the control would read as overridden even when it exactly matches its preset.
+	if (Array.isArray(presetValue)) {
+		const slots = dimensionSlots(value);
+
+		// A fully untouched value has nothing to agree with the preset about; keep it reading as unmatched.
+		if (!slots.some((slot) => slot !== '')) {
+			return false;
+		}
+
+		return matchesPresetSlots(slots, String(unit || '').trim(), presetValue);
+	}
+
 	const sides = dimensionSides(value);
 
 	if (!sides.length) {
@@ -370,14 +394,6 @@ export function matches(value, unit, presetValue) {
 	}
 
 	const storedUnit = String(unit || '').trim();
-
-	// A per-corner preset value is compared corner by corner. `parseDimensionLiteral` reads one length,
-	// so a slot list handed to it whole would never match and the control would read as overridden even
-	// when it exactly matches its preset.
-	if (Array.isArray(presetValue)) {
-		return matchesPresetSlots(sides, storedUnit, presetValue);
-	}
-
 	const preset = parseDimensionLiteral(presetValue);
 	const unitMatches = preset.unit === '' || storedUnit === preset.unit;
 

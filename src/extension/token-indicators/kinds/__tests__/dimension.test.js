@@ -213,6 +213,26 @@ describe('matchesPreset dimension against a per-corner preset value', () => {
 	it('does not match a scalar stored value against a mixed per-corner preset value', () => {
 		expect(matchesPreset('dimension', '8', 'px', ['8px', '4px', '8px', '4px'])).toBe(false);
 	});
+
+	it('matches when the one touched corner equals its preset slot and the rest are gaps', () => {
+		expect(matchesPreset('dimension', ['8', '', '', ''], 'px', ['8px', '4px', '8px', '4px'])).toBe(true);
+	});
+
+	it('does not match when the one touched corner differs from its preset slot', () => {
+		expect(matchesPreset('dimension', ['2', '', '', ''], 'px', ['8px', '4px', '8px', '4px'])).toBe(false);
+	});
+
+	it('matches when two touched corners equal their preset slots and the other two are gaps', () => {
+		expect(matchesPreset('dimension', ['8', '', '', '4'], 'px', ['8px', '4px', '8px', '4px'])).toBe(true);
+	});
+
+	it('compares a touched corner against the preset slot at ITS OWN index, not the first slot', () => {
+		expect(matchesPreset('dimension', ['', '8', '', ''], 'px', ['8px', '4px', '8px', '4px'])).toBe(false);
+	});
+
+	it('does not match an all-gap per-corner value', () => {
+		expect(matchesPreset('dimension', ['', '', '', ''], 'px', ['8px', '4px', '8px', '4px'])).toBe(false);
+	});
 });
 
 describe('isEmptyValue dimension', () => {
