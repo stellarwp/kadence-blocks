@@ -374,6 +374,24 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
+	 * A responsive override whose every slot is a gap declares nothing, so its breakpoint contributes no
+	 * `@media` block at all rather than an empty one.
+	 *
+	 * @return void
+	 */
+	public function testAnAllGapResponsiveOverrideEmitsNoMediaBlock(): void {
+		$this->seedPerCornerPreset(
+			[
+				'tablet' => [ '', '', '', '' ],
+			]
+		);
+
+		$css = $this->builder( $this->registry )->css( 'default', $this->breakpoints() );
+
+		$this->assertStringNotContainsString( '@media all and (max-width: 1024px)', $css );
+	}
+
+	/**
 	 * The breakpoint => media-query map a projector passes at emit time.
 	 *
 	 * @return array<string, string>

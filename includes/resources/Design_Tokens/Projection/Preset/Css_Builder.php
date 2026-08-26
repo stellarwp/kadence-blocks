@@ -63,16 +63,18 @@ final class Css_Builder {
 	private const PRESET_SEGMENT = 'preset--';
 
 	/**
-	 * The four corner-var name suffixes a per-corner dimension property's base declaration splits
-	 * into, in the same positional order every layer of the per-corner model agrees on — CSS
-	 * shorthand order (top, right, bottom, left), matching the resolver's slot list and the editor's
-	 * SLOT_LABELS.sides. Index N here is corner index N everywhere else in the pipeline.
+	 * The four positional slot labels a per-slot dimension property's base declaration splits into,
+	 * in CSS shorthand order (top, right, bottom, left). They are positional labels, not a claim
+	 * about geometry: for a side-shaped property (padding, margin, border width) the label matches
+	 * the CSS side it names, while for a corner-shaped property such as `button-radius` index
+	 * 0/`'top'` is really the top-left corner. Index N here is slot index N everywhere else in the
+	 * pipeline — the resolver's slot list and the editor's `dimensionSlots()`.
 	 *
 	 * @since TBD
 	 *
 	 * @var string[]
 	 */
-	private const CORNERS = [ 'top', 'right', 'bottom', 'left' ];
+	private const SLOTS = [ 'top', 'right', 'bottom', 'left' ];
 
 	/**
 	 * Kadence theme global custom-property slots a preset may retarget beyond the numbered palette
@@ -309,8 +311,8 @@ final class Css_Builder {
 					$properties[ $property ] = [
 						'target'    => $target,
 						'value'     => $value,
-						// Only a "dimension" kind binding ever carries a per-corner slot list (the write-time
-						// guard rejects one on any other kind); gating the corner split on this, rather than
+						// Only a "dimension" kind binding ever carries a per-slot list (the write-time
+						// guard rejects one on any other kind); gating the slot split on this, rather than
 						// on the value's own shape, avoids a false-positive split of an unrelated value that
 						// happens to contain spaces (e.g. a shadow literal).
 						'dimension' => $bindings->kind( $property ) === Preset_Bindings::get_kind_dimension(),
@@ -362,8 +364,8 @@ final class Css_Builder {
 	 * The raw `--kb-token--preset--*:<value>;` declaration list for the collected presets, shared by the
 	 * `:root` canonical block and the palette switch layer's re-emission.
 	 *
-	 * A per-corner dimension property (border radius, padding, margin, border width) emits four extra
-	 * corner-specific vars alongside its usual canonical var — see {@see self::property_declarations()}.
+	 * A per-slot dimension property (border radius, padding, margin, border width) emits four extra
+	 * slot-specific vars alongside its usual canonical var — see {@see self::property_declarations()}.
 	 * Every other property emits exactly the single declaration it always has.
 	 *
 	 * @since TBD
@@ -393,13 +395,13 @@ final class Css_Builder {
 	 * four-slot shorthand) emits the single canonical declaration it always has:
 	 * `--kb-token--preset--<block>--<preset>--<property>:<value>;`.
 	 *
-	 * A per-corner dimension value instead emits four corner-specific vars — one per {@see self::CORNERS}
+	 * A per-slot dimension value instead emits four slot-specific vars — one per {@see self::SLOTS}
 	 * suffix — plus the canonical var, now composed purely from `var()` references to those four:
 	 * `--...--<property>:var(--...--top) var(--...--right) var(--...--bottom) var(--...--left);`. The
-	 * corner vars are new plumbing underneath an unchanged public contract: the composed var's name and
+	 * slot vars are new plumbing underneath an unchanged public contract: the composed var's name and
 	 * resolved value are exactly what they always were, so every bridge (`--global-*`, `--kb-btn-radius`)
 	 * that already points at it keeps working unchanged, and {@see self::responsive_blocks()} can redeclare
-	 * a single touched corner without ever redeclaring the composed var itself.
+	 * a single touched slot without ever redeclaring the composed var itself.
 	 *
 	 * @since TBD
 	 *
@@ -411,93 +413,79 @@ final class Css_Builder {
 	 * @return string
 	 */
 	private function property_declarations( string $block, string $preset, string $property, array $info ): string {
-		$corners = $this->corners_of( $info['value'], $info['dimension'] );
+		$slots = $this->slots_of( $info['value'], $info['dimension'] );
 
-		if ( $corners === null ) {
+		if ( $slots === null ) {
 			return $this->preset_var( $block, $preset, $property ) . ':' . $this->sanitize_value( $info['value'] ) . ';';
 		}
 
 		$declarations = '';
 		$refs         = [];
 
-		foreach ( self::CORNERS as $index => $corner ) {
-			$corner_var    = $this->corner_var( $block, $preset, $property, $corner );
-			$declarations .= $corner_var . ':' . $this->sanitize_value( $corners[ $index ] ) . ';';
-			$refs[]        = 'var(' . $corner_var . ')';
+		foreach ( self::SLOTS as $index => $slot_suffix ) {
+			$slot_var      = $this->slot_var( $block, $preset, $property, $slot_suffix );
+			$declarations .= $slot_var . ':' . $this->sanitize_value( $slots[ $index ] ) . ';';
+			$refs[]        = 'var(' . $slot_var . ')';
 		}
 
 		return $declarations . $this->preset_var( $block, $preset, $property ) . ':' . implode( ' ', $refs ) . ';';
 	}
 
 	/**
-	 * Split a property's projected value into its four corner values, or null when it isn't a per-corner
+	 * Split a property's projected value into its four slot values, or null when it isn't a per-slot
 	 * dimension value.
 	 *
-	 * Gated on the property being a "dimension" kind binding (the only kind a per-corner slot list is
-	 * meaningful for — see {@see Preset_Bindings::kind()}) AND the value actually splitting into exactly
-	 * {@see self::CORNERS}'s four parts. {@see \KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver::project()}
-	 * is the only place that ever joins a value with a bare space (`implode(' ', $projected)`, one call per
-	 * per-corner slot list, always exactly four slots per the write-time validator), so `explode(' ', $value)`
-	 * reconstructs the original four segments losslessly FOR EVERY VALUE SHAPE THAT IS ITSELF SPACE-FREE — an
-	 * alias reference (`var(--x)`) or a plain length/keyword literal, which is everything the write-time
-	 * validator (`Dtcg_Validator`) currently accepts into a per-corner slot. It is NOT a general guarantee: a
-	 * compound-literal value with an internal space (e.g. a `calc(1px + 1px)` or `clamp(...)` literal) is not
-	 * rejected by `Dtcg_Validator` today, so it is writable into a per-corner slot through the REST endpoint
-	 * even though no shipped preset or editor control produces one. Such a value's own space(s) would corrupt
-	 * the part count this method keys off, so `count($parts) === count(self::CORNERS)` no longer identifies
-	 * "four real corners" reliably. The failure this degrades to is contained, not silent corruption: for a
-	 * BASE value it just falls through to null (this property renders as the single old-style declaration,
-	 * matching pre-this-task behavior — no regression). For a RESPONSIVE override it also falls through to
-	 * null, which makes {@see self::responsive_declarations()} redeclare the WHOLE composed var inside
-	 * `@media` instead of the one touched corner — the exact "gap gets frozen/dropped" failure this task
-	 * exists to prevent, just for a value shape outside what write-time validation lets through as of this
-	 * writing. Fixing this properly means rejecting (or otherwise disambiguating) a compound-literal
-	 * per-corner slot in `Dtcg_Validator`/`Preset_Resolver`, both outside this class's scope.
+	 * The split is lossless because {@see \KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver::project()}
+	 * is the only place that joins a slot list with a bare space (`implode(' ', $projected)`), and
+	 * `Dtcg_Validator` rejects any slot literal containing a space, so every segment `explode(' ', $value)`
+	 * produces is exactly one slot — including the responsive-only `''` gap sentinel, which round-trips as
+	 * an empty segment. The split is additionally gated on the property being a "dimension" kind binding
+	 * (the only kind a slot list is meaningful for — see {@see Preset_Bindings::kind()}).
 	 *
-	 * A gap slot (the responsive-only `''` sentinel) round-trips the same way as any other space-free
-	 * segment: an empty segment between two single spaces.
+	 * @todo A slot list handed over as an array, rather than pre-joined into a string by the resolver,
+	 *       would remove the need to split it back apart here at all.
 	 *
 	 * @since TBD
 	 *
 	 * @param string $value     The property's projected value.
 	 * @param bool   $dimension Whether the property is a "dimension" kind binding.
 	 *
-	 * @return string[]|null The four corner values (index 0-3 = top, right, bottom, left; a gap is `''`),
-	 *                       or null when the value is not a four-part per-corner shorthand.
+	 * @return string[]|null The four slot values (index 0-3 = top, right, bottom, left; a gap is `''`),
+	 *                       or null when the value is not a four-part per-slot shorthand.
 	 */
-	private function corners_of( string $value, bool $dimension ): ?array {
+	private function slots_of( string $value, bool $dimension ): ?array {
 		if ( ! $dimension ) {
 			return null;
 		}
 
 		$parts = explode( ' ', $value );
 
-		return count( $parts ) === count( self::CORNERS ) ? $parts : null;
+		return count( $parts ) === count( self::SLOTS ) ? $parts : null;
 	}
 
 	/**
-	 * The per-corner var name for a (block, preset, property, corner): the canonical preset var with a
-	 * "--<corner>" suffix, e.g. --kb-token--preset--kadence-singlebtn--hero--button-radius--top.
+	 * The per-slot var name for a (block, preset, property, slot): the canonical preset var with a
+	 * "--<slot>" suffix, e.g. --kb-token--preset--kadence-singlebtn--hero--button-radius--top.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $block    The block name.
-	 * @param string $preset   The preset slug.
-	 * @param string $property The block property.
-	 * @param string $corner   The corner suffix (one of {@see self::CORNERS}).
+	 * @param string $block       The block name.
+	 * @param string $preset      The preset slug.
+	 * @param string $property    The block property.
+	 * @param string $slot_suffix The slot suffix (one of {@see self::SLOTS}).
 	 *
 	 * @return string
 	 */
-	private function corner_var( string $block, string $preset, string $property, string $corner ): string {
-		return $this->preset_var( $block, $preset, $property ) . '--' . $corner;
+	private function slot_var( string $block, string $preset, string $property, string $slot_suffix ): string {
+		return $this->preset_var( $block, $preset, $property ) . '--' . $slot_suffix;
 	}
 
 	/**
 	 * The `@media`-block declaration(s) for one breakpoint's override of one property.
 	 *
 	 * A scalar override (a non-dimension property, or a dimension property overridden with one uniform
-	 * value) redeclares the canonical var itself, exactly like the pre-per-corner behavior. A per-corner
-	 * override instead redeclares only the touched corner vars — a `''` gap slot is skipped so that corner
+	 * value) redeclares the canonical var itself, exactly like the pre-per-slot behavior. A per-slot
+	 * override instead redeclares only the touched slot vars — a `''` gap slot is skipped so that slot
 	 * keeps inheriting live — and never redeclares the composed var (see {@see self::responsive_blocks()}).
 	 *
 	 * @since TBD
@@ -511,20 +499,20 @@ final class Css_Builder {
 	 * @return string
 	 */
 	private function responsive_declarations( string $block, string $preset, string $property, string $value, bool $dimension ): string {
-		$corners = $this->corners_of( $value, $dimension );
+		$slots = $this->slots_of( $value, $dimension );
 
-		if ( $corners === null ) {
+		if ( $slots === null ) {
 			return $this->preset_var( $block, $preset, $property ) . ':' . $this->sanitize_value( $value ) . ';';
 		}
 
 		$declarations = '';
 
-		foreach ( self::CORNERS as $index => $corner ) {
-			if ( $corners[ $index ] === '' ) {
+		foreach ( self::SLOTS as $index => $slot_suffix ) {
+			if ( $slots[ $index ] === '' ) {
 				continue; // A gap: not overridden at this breakpoint, keep inheriting live.
 			}
 
-			$declarations .= $this->corner_var( $block, $preset, $property, $corner ) . ':' . $this->sanitize_value( $corners[ $index ] ) . ';';
+			$declarations .= $this->slot_var( $block, $preset, $property, $slot_suffix ) . ':' . $this->sanitize_value( $slots[ $index ] ) . ';';
 		}
 
 		return $declarations;
@@ -695,12 +683,12 @@ final class Css_Builder {
 	 * {@see \KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Css_Builder} responsive layer: same
 	 * media wrapper, same :root scope, same "redeclare the same custom property" approach.
 	 *
-	 * For a per-corner dimension property, ONLY the touched corner vars are redeclared — never the
-	 * composed var. A gap slot (the responsive-only `''` sentinel Task 3's resolver keeps in place) is
-	 * skipped entirely, so that corner keeps inheriting live from whatever the composed var's `var()` chain
+	 * For a per-slot dimension property, ONLY the touched slot vars are redeclared — never the
+	 * composed var. A gap slot (the responsive-only `''` sentinel {@see Preset_Resolver} keeps in place) is
+	 * skipped entirely, so that slot keeps inheriting live from whatever the composed var's `var()` chain
 	 * currently resolves to outside this media query, rather than freezing it. The composed var itself picks
-	 * up a touched corner's new value automatically: browsers re-evaluate a `var()` reference live, so
-	 * redeclaring one corner var here changes what the (untouched, never-redeclared) composed var resolves
+	 * up a touched slot's new value automatically: browsers re-evaluate a `var()` reference live, so
+	 * redeclaring one slot var here changes what the (untouched, never-redeclared) composed var resolves
 	 * to for elements matching this breakpoint.
 	 *
 	 * @since TBD
@@ -734,13 +722,20 @@ final class Css_Builder {
 							continue;
 						}
 
-						$by_breakpoint[ $breakpoint ][] = $this->responsive_declarations(
+						$declaration = $this->responsive_declarations(
 							$block,
 							(string) $preset,
 							(string) $property,
 							$value,
 							$properties[ $property ]['dimension']
 						);
+
+						// An all-gap per-slot override declares nothing; keeping it out avoids an empty @media block.
+						if ( $declaration === '' ) {
+							continue;
+						}
+
+						$by_breakpoint[ $breakpoint ][] = $declaration;
 					}
 				}
 			}
