@@ -27,6 +27,10 @@ const baseConfig = require('@wordpress/scripts/config/jest-unit.config.js');
 
 module.exports = {
 	...baseConfig,
+	// `.worktrees/` holds sibling checkouts of this same repo (see `using-git-worktrees`); without
+	// this, jest walks into them too and runs every test a second time against a possibly different
+	// branch's source.
+	testPathIgnorePatterns: [...(baseConfig.testPathIgnorePatterns || []), '/\\.worktrees/'],
 	moduleNameMapper: {
 		...(baseConfig.moduleNameMapper || {}),
 		'^@wordpress/hooks$': path.join(
