@@ -222,6 +222,19 @@
 	font-size: 13px;
 }
 
+// A pick that is still fetching its web font: the family it will become, beside a spinner, so the
+// wait reads as loading rather than as the click having missed.
+.kadence-token-field__value--pending {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	color: #949494;
+
+	.components-spinner {
+		margin: 0;
+	}
+}
+
 .kadence-token-field__search {
 	flex: 0 0 auto;
 	margin-bottom: 4px;

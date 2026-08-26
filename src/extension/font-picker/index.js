@@ -141,3 +141,21 @@ export function fontCatalogOptions() {
 export function favoriteFontsManageUrl() {
 	return fontPool().manageUrl;
 }
+
+/**
+ * Whether a family is one Google serves, and so one a stylesheet has to be fetched for.
+ *
+ * A system face and a site-registered custom font are both already present in the document — asking
+ * Google for either returns a 400 for a font the browser could have painted all along.
+ *
+ * @param {string} family The family name.
+ *
+ * @since TBD
+ *
+ * @return {boolean} Whether to fetch it from Google.
+ */
+export function isGoogleFamily(family) {
+	const name = String(family ?? '').trim();
+
+	return name !== '' && googleNames().some((candidate) => candidate.toLowerCase() === name.toLowerCase());
+}

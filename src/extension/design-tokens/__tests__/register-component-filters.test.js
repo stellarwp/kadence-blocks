@@ -376,7 +376,7 @@ describe('font-family seam', () => {
 	 *
 	 * @return {void}
 	 */
-	it('writes a plain family string on pick, and empty on clear', () => {
+	it('writes a plain family string on pick, and empty on clear', async () => {
 		const onChange = jest.fn();
 		const editor = applyFilters(EDITOR_HOOK, 'DEFAULT', {
 			control: 'fontFamily',
@@ -386,11 +386,36 @@ describe('font-family seam', () => {
 			context: { blockName: 'kadence/singlebtn' },
 		});
 
-		editor.props.onPick('Abril Fatface');
+		await editor.props.onPick('Abril Fatface');
 		expect(onChange).toHaveBeenCalledWith('Abril Fatface');
 
 		editor.props.onClear();
 		expect(onChange).toHaveBeenCalledWith('');
+	});
+
+	/**
+	 * The write waits on the font, which is the whole point: writing first would put the new family
+	 * on the canvas before the face existed, which is the flash this removes.
+	 *
+	 * @return {void}
+	 */
+	it('does not write until the font is ready', async () => {
+		const onChange = jest.fn();
+		const editor = applyFilters(EDITOR_HOOK, 'DEFAULT', {
+			control: 'fontFamily',
+			index: null,
+			value: '',
+			onChange,
+			context: { blockName: 'kadence/singlebtn' },
+		});
+
+		const pick = editor.props.onPick('Abril Fatface');
+
+		expect(onChange).not.toHaveBeenCalled();
+
+		await pick;
+
+		expect(onChange).toHaveBeenCalledWith('Abril Fatface');
 	});
 
 	/**

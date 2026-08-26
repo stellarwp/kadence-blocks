@@ -27,8 +27,16 @@
  */
 import { addFilter, removeFilter } from '@wordpress/hooks';
 import { pickableTokensForControl } from '../token-picker';
-import { favoriteFonts, favoriteFontsManageUrl, fontCatalogOptions } from '../font-picker';
-import { FontFamilySelector, TokenChip, TokenPickerButton, TokenSelector, isTokenAlias } from '../../token-controls';
+import { favoriteFonts, favoriteFontsManageUrl, fontCatalogOptions, isGoogleFamily } from '../font-picker';
+import {
+	FontFamilySelector,
+	TokenChip,
+	TokenPickerButton,
+	TokenSelector,
+	googleFontHref,
+	isTokenAlias,
+	loadFontFamily,
+} from '../../token-controls';
 
 const NAMESPACE = 'kadence-blocks/component-token';
 const EDITOR_HOOK = 'kadence.components.control.editor';
@@ -187,6 +195,10 @@ function editorFilter(defaultEditor, ctx) {
  * Falls back to the control's own select when the block passes no `context`, which is how a block
  * that has not opted in keeps the react-select it has always had.
  *
+ * A pick waits for its web font before writing, so the canvas switches straight from the old face to
+ * the new one instead of flashing a fallback in between. The field shows the pending family with a
+ * spinner while that happens; the wait is bounded, so a font that never arrives still writes.
+ *
  * @param {*}      defaultEditor The control's own select node.
  * @param {Object} ctx           Neutral seam context: { control, index, value, onChange, context }.
  *
@@ -208,10 +220,29 @@ function fontFamilyEditor(defaultEditor, ctx) {
 			catalogOptions={fontCatalogOptions()}
 			manageUrl={favoriteFontsManageUrl()}
 			inheritedLabel={ctx.context?.inheritedDefault}
-			onPick={(family) => write(family)}
+			onPick={async (family) => {
+				await loadFontFamily(family, {
+					doc: canvasDocument(),
+					href: isGoogleFamily(family) ? googleFontHref(family) : null,
+				});
+
+				write(family);
+			}}
 			onClear={() => write('')}
 		/>
 	);
+}
+
+/**
+ * The document the block canvas renders into: its own once the editor is iframed, the page's
+ * otherwise. A font loaded into the wrong one is a font the user never sees.
+ *
+ * @since TBD
+ *
+ * @return {Document} The canvas document.
+ */
+function canvasDocument() {
+	return window.frames?.['editor-canvas']?.document || document;
 }
 
 /**

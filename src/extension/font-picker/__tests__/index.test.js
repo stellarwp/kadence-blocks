@@ -1,6 +1,6 @@
 /* eslint-env jest */
 // cspell:ignore Abril Fatface .
-import { favoriteFonts, favoriteFontsManageUrl, fontCatalogOptions } from '../index';
+import { favoriteFonts, favoriteFontsManageUrl, fontCatalogOptions, isGoogleFamily } from '../index';
 
 const originalFonts = window.kadenceDesignTokensFonts;
 const originalParams = window.kadence_blocks_params;
@@ -91,5 +91,30 @@ describe('favoriteFontsManageUrl', () => {
 
 		window.kadenceDesignTokensFonts = { manageUrl: 42 };
 		expect(favoriteFontsManageUrl()).toBe('');
+	});
+});
+
+describe('isGoogleFamily', () => {
+	beforeEach(() => {
+		window.kadence_blocks_params = { g_font_names: ['Abril Fatface', 'Inter'] };
+	});
+
+	it('recognizes a catalog family, case-insensitively', () => {
+		expect(isGoogleFamily('Abril Fatface')).toBe(true);
+		expect(isGoogleFamily('abril fatface')).toBe(true);
+	});
+
+	// A system face and a site custom font are already in the document; asking Google for either
+	// returns a 400 for a font the browser could have painted anyway.
+	it('rejects a family Google does not serve', () => {
+		expect(isGoogleFamily('Georgia')).toBe(false);
+		expect(isGoogleFamily('')).toBe(false);
+		expect(isGoogleFamily(undefined)).toBe(false);
+	});
+
+	it('rejects everything when the editor global is missing', () => {
+		delete window.kadence_blocks_params;
+
+		expect(isGoogleFamily('Inter')).toBe(false);
 	});
 });

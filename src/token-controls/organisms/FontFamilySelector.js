@@ -11,7 +11,8 @@
 /**
  * WordPress dependencies
  */
-import { Button, Dropdown } from '@wordpress/components';
+import { Button, Dropdown, Spinner } from '@wordpress/components';
+import { useState } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 
 /**
@@ -35,7 +36,8 @@ import '../styles/token-controls.scss';
  * @param {Array}    [props.catalogOptions] The full catalog option list (`{ value, label, badge? }`).
  * @param {string}   [props.inheritedLabel] What an unset family falls back to, for the muted trigger.
  * @param {string}   [props.manageUrl]      Deep link to the screen that manages favorites.
- * @param {Function} props.onPick           Writes a chosen family.
+ * @param {Function} props.onPick           Writes a chosen family. May return a promise, in which
+ *                                          case the field reads as loading until it settles.
  * @param {Function} props.onClear          Clears the family back to the theme's.
  * @param {boolean}  [props.disabled]       Disable the trigger. It is the only control outside the
  *                                          popover, so with it inert nothing below is reachable —
@@ -56,6 +58,21 @@ export function FontFamilySelector({
 	onClear,
 	disabled = false,
 }) {
+	// The family a pick is still waiting on. A host that fetches the web font before writing keeps
+	// the current font on screen meanwhile, so without this the field would look like the click did
+	// nothing for as long as the download takes.
+	const [pending, setPending] = useState('');
+
+	const handlePick = async (picked) => {
+		setPending(picked);
+
+		try {
+			await onPick(picked);
+		} finally {
+			setPending('');
+		}
+	};
+
 	const family = typeof value === 'string' ? value : '';
 	const unset = family === '';
 	const isFavorite = favorites.some((entry) => sameFamily(entry, family));
@@ -87,10 +104,15 @@ export function FontFamilySelector({
 						onClick={onToggle}
 						disabled={disabled}
 						aria-expanded={isOpen}
-						label={triggerName}
+						label={pending || triggerName}
 						showTooltip
 					>
-						{unset ? (
+						{pending ? (
+							<span className="kadence-token-field__value kadence-token-field__value--pending">
+								<Spinner />
+								{pending}
+							</span>
+						) : unset ? (
 							<span className="kadence-token-field__value kadence-token-field__label--default">
 								{fallback}
 							</span>
@@ -108,7 +130,7 @@ export function FontFamilySelector({
 						catalogOptions={catalogOptions}
 						initialTab={initialTab}
 						manageUrl={manageUrl}
-						onPick={onPick}
+						onPick={handlePick}
 						onClear={onClear}
 						onClose={onClose}
 					/>
