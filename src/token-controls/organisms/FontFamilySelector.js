@@ -60,7 +60,9 @@ export function FontFamilySelector({
 }) {
 	// The family a pick is still waiting on. A host that fetches the web font before writing keeps
 	// the current font on screen meanwhile, so without this the field would look like the click did
-	// nothing for as long as the download takes.
+	// nothing for as long as the download takes. It also holds the trigger shut until the pick
+	// settles: picking a second family while the first is in flight would let the slower of the two
+	// write last and leave the field on the family the user moved off.
 	const [pending, setPending] = useState('');
 
 	const handlePick = async (picked) => {
@@ -102,7 +104,7 @@ export function FontFamilySelector({
 					<Button
 						className="kadence-token-field__trigger"
 						onClick={onToggle}
-						disabled={disabled}
+						disabled={disabled || pending !== ''}
 						aria-expanded={isOpen}
 						label={pending || triggerName}
 						showTooltip

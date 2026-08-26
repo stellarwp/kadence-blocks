@@ -26,6 +26,7 @@ jest.mock('@wordpress/components', () => ({
 			{renderContent({ onClose: () => {} })}
 		</>
 	),
+	Spinner: () => <span className="components-spinner" />,
 	Tooltip: ({ children }) => children,
 }));
 
@@ -206,6 +207,73 @@ describe('FontFamilySelector initial tab', () => {
 		renderSelector({ value: 'Abril Fatface', favorites: ['Inter'] });
 
 		expect(popoverProps.initialTab).toBe('custom');
+	});
+});
+
+describe('FontFamilySelector pending pick', () => {
+	/**
+	 * A host that fetches the web font before writing leaves the old family on screen meanwhile, so
+	 * the field names the family it is fetching instead of looking like the click did nothing.
+	 *
+	 * @return {void}
+	 */
+	it('names the family it is waiting on', async () => {
+		let settle;
+		const onPick = jest.fn(() => new Promise((resolve) => (settle = resolve)));
+
+		renderSelector({ value: 'Inter', onPick });
+
+		await act(async () => {
+			popoverProps.onPick('Abril Fatface');
+		});
+
+		const trigger = container.querySelector('.kadence-token-field__trigger');
+
+		expect(trigger.querySelector('.kadence-token-field__value--pending').textContent).toContain('Abril Fatface');
+
+		await act(async () => settle());
+	});
+
+	/**
+	 * Picking again while a pick is in flight would let the slower of the two settle last and write
+	 * the family the user moved off. The trigger is the only way back into the popover, so holding it
+	 * shut for the length of the wait is what keeps the picks ordered.
+	 *
+	 * @return {void}
+	 */
+	it('holds the trigger shut until the pick settles', async () => {
+		let settle;
+		const onPick = jest.fn(() => new Promise((resolve) => (settle = resolve)));
+
+		renderSelector({ value: 'Inter', onPick });
+
+		await act(async () => {
+			popoverProps.onPick('Abril Fatface');
+		});
+
+		expect(container.querySelector('.kadence-token-field__trigger').disabled).toBe(true);
+
+		await act(async () => settle());
+
+		expect(container.querySelector('.kadence-token-field__trigger').disabled).toBe(false);
+	});
+
+	/**
+	 * A pick whose host rejects still has to give the field back, or one failed fetch would leave the
+	 * control unusable for the rest of the session.
+	 *
+	 * @return {void}
+	 */
+	it('re-opens the trigger when the pick rejects', async () => {
+		const onPick = jest.fn(() => Promise.reject(new Error('offline')));
+
+		renderSelector({ value: 'Inter', onPick });
+
+		await act(async () => {
+			await popoverProps.onPick('Abril Fatface').catch(() => {});
+		});
+
+		expect(container.querySelector('.kadence-token-field__trigger').disabled).toBe(false);
 	});
 });
 
