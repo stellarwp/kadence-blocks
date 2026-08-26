@@ -20,7 +20,7 @@
  */
 import { useCallback, useEffect, useMemo, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { Button, Notice } from '@wordpress/components';
+import { Button, Notice, Spinner } from '@wordpress/components';
 import { starEmpty, starFilled } from '@wordpress/icons';
 
 /**
@@ -134,6 +134,7 @@ function buildCatalogOptions(fonts) {
  * @param {{type: ('add'|'remove'), disabled: boolean, font: ?Object}} args.fontAction The contextual button's state ({@see fontActionFor}).
  * @param {Function}                                             args.onFontAction    Invokes the add- or remove-favorite flow for the current `fontAction`.
  * @param {boolean}                                              args.fontBusy        Whether a favorite request is in flight.
+ * @param {boolean}                                              args.fontLoading     Whether the selected font is still being fetched.
  * @param {?{message: string}}                                   args.fontError       The current favorite-write error, if any.
  * @param {Function}                                             args.onClearFontError Dismisses `fontError`.
  *
@@ -148,6 +149,7 @@ function typographyToolbarRenderer({
 	fontAction,
 	onFontAction,
 	fontBusy,
+	fontLoading,
 	fontError,
 	onClearFontError,
 }) {
@@ -165,6 +167,7 @@ function typographyToolbarRenderer({
 					<div className="kadence-blocks-style-library__typography-font-selector">
 						<span className="kadence-blocks-style-library__typography-font-label">
 							{__('Font', 'kadence-blocks')}
+							{fontLoading && <Spinner />}
 						</span>
 						<div className="kadence-blocks-style-library__typography-font-picker">
 							<SearchableSelectDropdown
@@ -267,7 +270,9 @@ export function TypographyScreen(props) {
 		}
 	}, [fonts, selectedFamily]);
 
-	useGoogleFontLoader(selectedFamily);
+	// The sample renders from the family that is READY, not the one selected: switching fonts holds
+	// the previous face until the new one can be painted instead of flashing the fallback.
+	const { readyFamily, isLoading: fontLoading } = useGoogleFontLoader(selectedFamily);
 
 	const fontAction = fontActionFor(fonts, selectedFamily);
 
@@ -300,7 +305,7 @@ export function TypographyScreen(props) {
 	const config = useMemo(
 		() => ({
 			...TYPOGRAPHY_CONFIG,
-			renderPreview: samplePreviewRenderer(familyStack(selectedFamily)),
+			renderPreview: samplePreviewRenderer(familyStack(readyFamily)),
 			renderToolbar: typographyToolbarRenderer({
 				catalogOptions,
 				dropdownValue: selectedFamily,
@@ -308,11 +313,12 @@ export function TypographyScreen(props) {
 				fontAction,
 				onFontAction: handleFontAction,
 				fontBusy,
+				fontLoading,
 				fontError,
 				onClearFontError: () => setFontError(null),
 			}),
 		}),
-		[selectedFamily, catalogOptions, fontAction, handleFontAction, fontBusy, fontError]
+		[selectedFamily, readyFamily, catalogOptions, fontAction, handleFontAction, fontBusy, fontLoading, fontError]
 	);
 
 	return <ScaleScreen config={config} {...props} />;

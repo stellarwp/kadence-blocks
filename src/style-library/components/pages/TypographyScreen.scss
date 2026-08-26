@@ -75,6 +75,16 @@
 
 .kadence-blocks-style-library__typography-font-label {
 	@include small-uppercase-label;
+
+	// The spinner sits beside the label while the selected face is being fetched, so the sample
+	// holding its previous font reads as loading rather than as the pick not having registered.
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+
+	.components-spinner {
+		margin: 0;
+	}
 }
 
 // The catalog dropdown and its contextual Add/Remove Favorite button sit side by side, beneath the
