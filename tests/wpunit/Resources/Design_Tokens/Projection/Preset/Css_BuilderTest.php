@@ -97,7 +97,9 @@ final class Css_BuilderTest extends TestCase {
 				. '--kb-btn-radius:var(--kb-token--preset--kadence-singlebtn--secondary--button-radius);'
 				. '--kb-btn-border-width:var(--kb-token--preset--kadence-singlebtn--secondary--button-border-width);'
 				. '--kb-btn-border-style:var(--kb-token--preset--kadence-singlebtn--secondary--button-border-style);'
-				. '--kb-btn-border-color:var(--kb-token--preset--kadence-singlebtn--secondary--button-border-color);}',
+				. '--kb-btn-border-color:var(--kb-token--preset--kadence-singlebtn--secondary--button-border-color);'
+				. '--kb-btn-padding:var(--kb-token--preset--kadence-singlebtn--secondary--button-padding);'
+				. '--kb-btn-margin:var(--kb-token--preset--kadence-singlebtn--secondary--button-margin);}',
 			$css
 		);
 	}
@@ -120,7 +122,9 @@ final class Css_BuilderTest extends TestCase {
 				. '--kb-btn-radius:var(--kb-token--preset--kadence-singlebtn--primary--button-radius);'
 				. '--kb-btn-border-width:var(--kb-token--preset--kadence-singlebtn--primary--button-border-width);'
 				. '--kb-btn-border-style:var(--kb-token--preset--kadence-singlebtn--primary--button-border-style);'
-				. '--kb-btn-border-color:var(--kb-token--preset--kadence-singlebtn--primary--button-border-color);}',
+				. '--kb-btn-border-color:var(--kb-token--preset--kadence-singlebtn--primary--button-border-color);'
+				. '--kb-btn-padding:var(--kb-token--preset--kadence-singlebtn--primary--button-padding);'
+				. '--kb-btn-margin:var(--kb-token--preset--kadence-singlebtn--primary--button-margin);}',
 			$css
 		);
 	}
