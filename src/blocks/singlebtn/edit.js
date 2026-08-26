@@ -910,7 +910,8 @@ export default function KadenceButtonEdit(props) {
 	};
 
 	// The override records a choice made about the PREVIOUS preset's corners, so selecting another preset
-	// drops it — otherwise an explicit "link" would stick and hide a new preset's per-corner radius.
+	// drops it — otherwise an explicit "link" would stick and hide a new preset's per-corner radius (or,
+	// for padding, per-side padding).
 	useEffect(() => {
 		setBorderRadiusModeOverride({});
 		setBorderHoverRadiusModeOverride({});
@@ -918,6 +919,7 @@ export default function KadenceButtonEdit(props) {
 		setBorderTransparentHoverRadiusModeOverride({});
 		setBorderStickyRadiusModeOverride({});
 		setBorderStickyHoverRadiusModeOverride({});
+		setPaddingModeOverride({});
 	}, [attributes.kbPreset]);
 	useEffect(() => {
 		if (!isSelected) {
