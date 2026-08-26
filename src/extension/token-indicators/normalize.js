@@ -84,6 +84,22 @@ const KINDS = {
 };
 
 /**
+ * The `{ isEmpty, matches }` handler for a kind, falling back to `text` for a kind the localized
+ * catalog carries that this dispatch table has no entry for — the catalog's `kind` values come from
+ * PHP's registry and are not narrowed to this table's keys at write time, so an unrecognized value must
+ * degrade to a safe comparison rather than throw.
+ *
+ * @param {string} kind The property kind.
+ *
+ * @since TBD
+ *
+ * @return {{ isEmpty: Function, matches: Function }} The handler to dispatch through.
+ */
+function handlerFor(kind) {
+	return KINDS[kind] || text;
+}
+
+/**
  * Whether a stored attribute value is "empty" (untouched) for its kind — the signal a retarget-bound
  * control uses for `empty => bound`.
  *
@@ -96,7 +112,7 @@ const KINDS = {
  * @return {boolean} True when the value is unset/empty.
  */
 export function isEmptyValue(kind, value) {
-	return KINDS[kind].isEmpty(value);
+	return handlerFor(kind).isEmpty(value);
 }
 
 /**
@@ -116,5 +132,5 @@ export function matchesPreset(kind, value, unit, presetValue) {
 		return border.matches(kind, value, unit, presetValue);
 	}
 
-	return KINDS[kind].matches(value, unit, presetValue);
+	return handlerFor(kind).matches(value, unit, presetValue);
 }
