@@ -1471,8 +1471,6 @@ export default function KadenceButtonEdit(props) {
 															inherited={anyCornerInherited(
 																inheritedBorderHoverRadius.inherited
 															)}
-															state={tokenBinding.borderRadius}
-															onReset={() => resetToken('borderRadius')}
 															isLinked={borderHoverRadiusIsLinked}
 															onToggleLink={toggleBorderHoverRadiusLink}
 															unit={borderHoverRadiusUnit}
@@ -1747,8 +1745,6 @@ export default function KadenceButtonEdit(props) {
 																inherited={anyCornerInherited(
 																	inheritedBorderTransparentHoverRadius.inherited
 																)}
-																state={tokenBinding.borderRadius}
-																onReset={() => resetToken('borderRadius')}
 																isLinked={borderTransparentHoverRadiusIsLinked}
 																onToggleLink={toggleBorderTransparentHoverRadiusLink}
 																unit={borderTransparentHoverRadiusUnit}
@@ -1877,8 +1873,6 @@ export default function KadenceButtonEdit(props) {
 																inherited={anyCornerInherited(
 																	inheritedBorderTransparentRadius.inherited
 																)}
-																state={tokenBinding.borderRadius}
-																onReset={() => resetToken('borderRadius')}
 																isLinked={borderTransparentRadiusIsLinked}
 																onToggleLink={toggleBorderTransparentRadiusLink}
 																unit={borderTransparentRadiusUnit}
@@ -2019,8 +2013,6 @@ export default function KadenceButtonEdit(props) {
 																inherited={anyCornerInherited(
 																	inheritedBorderStickyHoverRadius.inherited
 																)}
-																state={tokenBinding.borderRadius}
-																onReset={() => resetToken('borderRadius')}
 																isLinked={borderStickyHoverRadiusIsLinked}
 																onToggleLink={toggleBorderStickyHoverRadiusLink}
 																unit={borderStickyHoverRadiusUnit}
@@ -2143,8 +2135,6 @@ export default function KadenceButtonEdit(props) {
 																inherited={anyCornerInherited(
 																	inheritedBorderStickyRadius.inherited
 																)}
-																state={tokenBinding.borderRadius}
-																onReset={() => resetToken('borderRadius')}
 																isLinked={borderStickyRadiusIsLinked}
 																onToggleLink={toggleBorderStickyRadiusLink}
 																unit={borderStickyRadiusUnit}
