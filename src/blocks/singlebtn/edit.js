@@ -1134,8 +1134,6 @@ export default function KadenceButtonEdit(props) {
 															widthTokens={borderHoverWidthTokens}
 															defaultValue={borderWidthPresetValue}
 															renderColor={renderBorderColor}
-															state={tokenBinding.borderStyle}
-															onReset={() => resetToken('borderStyle')}
 														/>
 														<ResponsiveMeasurementControls
 															label={__('Border Radius', 'kadence-blocks')}
@@ -1406,8 +1404,6 @@ export default function KadenceButtonEdit(props) {
 																widthTokens={borderTransparentHoverWidthTokens}
 																defaultValue={borderWidthPresetValue}
 																renderColor={renderBorderColor}
-																state={tokenBinding.borderStyle}
-																onReset={() => resetToken('borderStyle')}
 															/>
 															<ResponsiveMeasurementControls
 																label={__('Border Radius', 'kadence-blocks')}
@@ -1541,8 +1537,6 @@ export default function KadenceButtonEdit(props) {
 																widthTokens={borderTransparentWidthTokens}
 																defaultValue={borderWidthPresetValue}
 																renderColor={renderBorderColor}
-																state={tokenBinding.borderStyle}
-																onReset={() => resetToken('borderStyle')}
 															/>
 															<ResponsiveMeasurementControls
 																label={__('Border Radius', 'kadence-blocks')}
@@ -1686,8 +1680,6 @@ export default function KadenceButtonEdit(props) {
 																widthTokens={borderStickyHoverWidthTokens}
 																defaultValue={borderWidthPresetValue}
 																renderColor={renderBorderColor}
-																state={tokenBinding.borderStyle}
-																onReset={() => resetToken('borderStyle')}
 															/>
 															<ResponsiveMeasurementControls
 																label={__('Border Radius', 'kadence-blocks')}
@@ -1815,8 +1807,6 @@ export default function KadenceButtonEdit(props) {
 																widthTokens={borderStickyWidthTokens}
 																defaultValue={borderWidthPresetValue}
 																renderColor={renderBorderColor}
-																state={tokenBinding.borderStyle}
-																onReset={() => resetToken('borderStyle')}
 															/>
 															<ResponsiveMeasurementControls
 																label={__('Border Radius', 'kadence-blocks')}
