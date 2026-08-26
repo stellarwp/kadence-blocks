@@ -31,8 +31,7 @@ import { tokenLiteral } from '../design-tokens/token-literals';
 const VENDOR_EXTENSION = KADENCE_TOKEN_NAMESPACE;
 
 /**
- * The breakpoints a responsive property can override, narrowest last — the order the device cascade runs
- * in, so each breakpoint's unset corners fall back to the one above it.
+ * The breakpoints a responsive property can override, checked in this order.
  *
  * @since TBD
  */
@@ -65,28 +64,43 @@ function slotToLiteral(slot, unit) {
  * stored exactly as before), and corners that differ are stored as a slot list so a per-corner radius
  * survives the round trip instead of narrowing to its first side.
  *
- * @param {string} kind        The property kind ('color' | 'dimension' | 'text').
- * @param {*}      value       The stored attribute value.
- * @param {string} unit        The companion unit (dimension only; '' otherwise).
- * @param {*}      presetValue The selected preset's value, used to fill an unset corner.
+ * The base (desktop) capture and a responsive-override capture disagree on what an unset corner means. The
+ * base can never have a gap — the whole per-corner value has to render something on its own — so an unset
+ * corner there is filled from `presetValue`, and if the preset has nothing either the whole property is
+ * dropped (there is nothing left to express as a shorthand). A responsive override CAN have a gap: an
+ * unset corner there means "not overridden at this breakpoint, keep inheriting", so `keepGaps` skips both
+ * the fill and the fail-closed check — the corner is captured as `''` and stays that way.
+ *
+ * @param {string}  kind        The property kind ('color' | 'dimension' | 'text').
+ * @param {*}       value       The stored attribute value.
+ * @param {string}  unit        The companion unit (dimension only; '' otherwise).
+ * @param {*}       presetValue The selected preset's value, used to fill an unset corner. Ignored when
+ *                              `keepGaps` is true.
+ * @param {boolean} [keepGaps]  Whether an unset corner captures as a gap (`''`) instead of being filled —
+ *                              true for a responsive-override capture, false for the base.
  *
  * @since TBD
  *
  * @return {string|string[]} The token literal, or the per-corner slot list.
  */
-function attrToLiteral(kind, value, unit, presetValue) {
+function attrToLiteral(kind, value, unit, presetValue, keepGaps = false) {
 	if (kind === 'dimension') {
 		if (normalizeDimension(value, unit).value === '') {
 			return '';
 		}
 
-		const slots = dimensionSlots(value).map((slot, index) =>
-			slot === '' ? presetSlotAt(presetValue, index) : slotToLiteral(slot, unit)
-		);
+		const slots = dimensionSlots(value).map((slot, index) => {
+			if (slot !== '') {
+				return slotToLiteral(slot, unit);
+			}
+
+			return keepGaps ? '' : presetSlotAt(presetValue, index);
+		});
 
 		// A corner the user left unset whose preset has no value either cannot be expressed in a shorthand,
-		// so the whole property is omitted and inherited through the cascade instead.
-		if (slots.some((slot) => slot === '')) {
+		// so the whole property is omitted and inherited through the cascade instead. That fail-closed rule
+		// is base-only: a responsive override's gap is legal on its own, so `keepGaps` skips this check.
+		if (!keepGaps && slots.some((slot) => slot === '')) {
 			return '';
 		}
 
@@ -110,10 +124,10 @@ function attrToLiteral(kind, value, unit, presetValue) {
  * inheriting; a property with no breakpoint values stays a bare value, leaving every existing preset
  * byte-identical.
  *
- * A corner the breakpoint leaves unset inherits the way the editor renders it — through the device
- * cascade, not from the preset: Tablet falls back to the captured base, Mobile to the captured Tablet
- * value and then to the base. Filling from the preset instead would freeze the preset's default into the
- * corners the user never touched, pinning them against the Desktop value they are rendering at.
+ * A corner the breakpoint leaves unset captures as a gap (`''`), not a filled-in value: `attrToLiteral`'s
+ * `keepGaps` mode skips the lookup against the base/cascade entirely, so the gap survives into the stored
+ * preset and the corner keeps inheriting live through the device cascade at render time, instead of being
+ * frozen against whatever the cascade happened to render at capture time.
  *
  * @param {*}      base        The captured base (desktop) value.
  * @param {Object} property    The bound property, carrying `responsive_attrs`.
@@ -128,8 +142,7 @@ function attrToLiteral(kind, value, unit, presetValue) {
 function withResponsive(base, property, attributes, unit) {
 	const responsive = {};
 
-	// Cascade order, so a Mobile corner can inherit the Tablet value captured a step earlier.
-	CASCADE.forEach((breakpoint, index) => {
+	CASCADE.forEach((breakpoint) => {
 		const attr = get(property.responsive_attrs, breakpoint, '');
 		const raw = attr ? get(attributes, attr, '') : '';
 
@@ -137,12 +150,7 @@ function withResponsive(base, property, attributes, unit) {
 			return;
 		}
 
-		const above = CASCADE.slice(0, index)
-			.reverse()
-			.map((breakpointAbove) => responsive[breakpointAbove])
-			.find((captured) => captured !== undefined);
-
-		const value = attrToLiteral(property.kind, raw, unit, above === undefined ? base : above);
+		const value = attrToLiteral(property.kind, raw, unit, undefined, true);
 
 		if (value !== '') {
 			responsive[breakpoint] = value;

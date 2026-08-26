@@ -225,7 +225,7 @@ describe('capturedTokens', () => {
 		).toEqual({ mobile: '2px' });
 	});
 
-	it('fills an unset corner at a breakpoint from the captured base, not from the preset', () => {
+	it('leaves an unset corner at a breakpoint as a gap, not filled from the base or the preset', () => {
 		const full = '{primitive.dimension.radius.full}';
 		const xl = '{primitive.dimension.radius.xl}';
 		const attributes = {
@@ -235,14 +235,14 @@ describe('capturedTokens', () => {
 			tabletBorderRadius: [full, '', '', ''],
 		};
 
-		// The three untouched Tablet corners keep rendering Desktop's radius, so they capture it — filling
-		// them from the preset's '4px' would pin Tablet against what the button actually shows.
+		// The three untouched Tablet corners stay a gap ('') instead of being frozen against Desktop's
+		// radius at capture time, so they keep inheriting live through the cascade at render time.
 		expect(
 			capturedTokens(BLOCK, SET, attributes)['button-radius'].$extensions['com.kadence.designTokens'].responsive
-		).toEqual({ tablet: [full, xl, xl, xl] });
+		).toEqual({ tablet: [full, '', '', ''] });
 	});
 
-	it('fills an unset Mobile corner from the captured Tablet value', () => {
+	it('leaves an unset Mobile corner as a gap even when Tablet has a captured value for it', () => {
 		const attributes = {
 			kbPreset: 'primary',
 			borderRadius: ['8', '8', '8', '8'],
@@ -253,10 +253,10 @@ describe('capturedTokens', () => {
 
 		expect(
 			capturedTokens(BLOCK, SET, attributes)['button-radius'].$extensions['com.kadence.designTokens'].responsive
-		).toEqual({ tablet: '4px', mobile: ['2px', '4px', '4px', '4px'] });
+		).toEqual({ tablet: '4px', mobile: ['2px', '', '', ''] });
 	});
 
-	it('fills an unset Mobile corner from the base when Tablet stores nothing', () => {
+	it('leaves an unset Mobile corner as a gap when Tablet stores nothing either', () => {
 		const attributes = {
 			kbPreset: 'primary',
 			borderRadius: ['8', '8', '8', '8'],
@@ -267,7 +267,7 @@ describe('capturedTokens', () => {
 
 		expect(
 			capturedTokens(BLOCK, SET, attributes)['button-radius'].$extensions['com.kadence.designTokens'].responsive
-		).toEqual({ mobile: ['2px', '8px', '8px', '8px'] });
+		).toEqual({ mobile: ['2px', '', '', ''] });
 	});
 
 	it('stays a bare value when no breakpoint is set', () => {
