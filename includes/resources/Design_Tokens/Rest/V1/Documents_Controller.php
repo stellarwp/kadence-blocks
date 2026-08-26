@@ -1339,7 +1339,8 @@ final class Documents_Controller extends Controller {
 			return $this->unknown_font_family( $family );
 		}
 
-		$error = $this->guard_client_version( $slug, Cast::to_string( $request->get_param( self::VERSION_PARAM ) ) );
+		$client_version = Cast::to_string( $request->get_param( self::VERSION_PARAM ) );
+		$error          = $this->guard_client_version( $slug, $client_version );
 
 		if ( $error instanceof WP_Error ) {
 			return $error;
@@ -1352,7 +1353,7 @@ final class Documents_Controller extends Controller {
 			return new WP_REST_Response( $this->prepare_item( $slug ), WP_Http::OK );
 		}
 
-		return $this->persist_metadata_candidate( $candidate, $slug );
+		return $this->persist_metadata_candidate( $candidate, $slug, $client_version );
 	}
 
 	/**
@@ -1378,7 +1379,8 @@ final class Documents_Controller extends Controller {
 			return $this->not_found( $slug );
 		}
 
-		$error = $this->guard_client_version( $slug, Cast::to_string( $request->get_param( self::VERSION_PARAM ) ) );
+		$client_version = Cast::to_string( $request->get_param( self::VERSION_PARAM ) );
+		$error          = $this->guard_client_version( $slug, $client_version );
 
 		if ( $error instanceof WP_Error ) {
 			return $error;
@@ -1391,7 +1393,7 @@ final class Documents_Controller extends Controller {
 			return new WP_REST_Response( $this->prepare_item( $slug ), WP_Http::OK );
 		}
 
-		return $this->persist_metadata_candidate( $candidate, $slug );
+		return $this->persist_metadata_candidate( $candidate, $slug, $client_version );
 	}
 
 	/**
