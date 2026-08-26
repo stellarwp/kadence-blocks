@@ -1283,6 +1283,12 @@ final class Presets_Controller extends Controller {
 
 			foreach ( $tokens as $property => $entry ) {
 				if ( $bindings->kind( (string) $property ) === Preset_Bindings::get_kind_dimension() ) {
+					$error = $this->guard_base_slot_gap( $entry, $block, (string) $preset_slug, (string) $property );
+
+					if ( $error instanceof WP_Error ) {
+						return $error;
+					}
+
 					continue;
 				}
 
@@ -1309,6 +1315,42 @@ final class Presets_Controller extends Controller {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Reject a base per-corner value that leaves any corner unset.
+	 *
+	 * A base (desktop) value has no cascade above it to inherit from, so every corner must be fully set.
+	 * The same empty-slot sentinel is legal inside a responsive-override breakpoint, where it means "this
+	 * corner is not overridden here, keep inheriting" — this guard only inspects the base, read through
+	 * {@see Extensions::preset_value_of()} so a responsive envelope's overrides are never mistaken for it.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed  $entry    The preset token entry.
+	 * @param string $block    The block name, for error context.
+	 * @param string $preset   The preset slug, for error context.
+	 * @param string $property The property name, for error context.
+	 *
+	 * @return WP_Error|null A WP_Error when the base slot list carries a gap, null otherwise.
+	 */
+	private function guard_base_slot_gap( $entry, string $block, string $preset, string $property ): ?WP_Error {
+		$base = Extensions::preset_value_of( $entry );
+
+		if ( ! is_array( $base ) || ! in_array( '', $base, true ) ) {
+			return null;
+		}
+
+		return new WP_Error(
+			'rest_design_tokens_invalid',
+			__( 'A per-corner base value must set every corner; a gap is only valid inside a responsive override.', 'kadence-blocks' ),
+			[
+				'status'   => WP_Http::UNPROCESSABLE_ENTITY,
+				'block'    => $block,
+				'preset'   => $preset,
+				'property' => $property,
+			]
+		);
 	}
 
 	/**

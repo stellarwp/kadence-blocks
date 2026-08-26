@@ -1039,6 +1039,13 @@ final class Dtcg_ValidatorTest extends TestCase {
 			),
 		];
 
+		yield 'slot-list base, slot-list override with a gap' => [
+			'entry' => $this->responsive_entry(
+				[ '8px', '4px', '8px', '4px' ],
+				[ 'tablet' => [ '2px', '', '', '' ] ]
+			),
+		];
+
 		yield 'alias base, alias override' => [
 			'entry' => $this->responsive_entry(
 				'{semantic.radius.control}',
@@ -1114,6 +1121,15 @@ final class Dtcg_ValidatorTest extends TestCase {
 			'entry' => $this->responsive_entry( '', [ 'tablet' => '4px' ] ),
 			'code'  => Validation_Error::get_code_value_invalid(),
 			'path'  => $base,
+		];
+
+		yield 'gap in the slot-list base under a valid responsive map' => [
+			'entry' => $this->responsive_entry(
+				[ '8px', '', '8px', '4px' ],
+				[ 'tablet' => [ '4px', '2px', '4px', '2px' ] ]
+			),
+			'code'  => Validation_Error::get_code_value_invalid(),
+			'path'  => $base . '.1',
 		];
 	}
 

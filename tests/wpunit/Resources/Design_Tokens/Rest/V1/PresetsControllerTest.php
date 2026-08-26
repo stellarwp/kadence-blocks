@@ -706,6 +706,69 @@ final class PresetsControllerTest extends TestCase {
 	}
 
 	/**
+	 * A base per-corner value has no cascade above it to inherit from, so every corner must be fully
+	 * set. An empty slot in the base array is rejected, even though the same slot list shape is legal
+	 * elsewhere.
+	 *
+	 * @return void
+	 */
+	public function testASlotListWithAGapInTheBaseValueIsRejected(): void {
+		$result = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'preset' => 'corners',
+					'tokens' => $this->button_tokens(
+						[ 'button-radius' => [ '{primitive.dimension.radius.md}', '', '8px', '8px' ] ]
+					),
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'rest_design_tokens_invalid', $result->get_error_code() );
+		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $result->get_error_data()['status'] );
+		$this->assertSame( 'button-radius', $result->get_error_data()['property'] );
+		// The write was rejected before commit.
+		$this->assertSame( '', $this->store->get_document( Token_Store::default_slug() ) );
+	}
+
+	/**
+	 * A gap in a per-corner value inside a responsive-override breakpoint means "this corner is not
+	 * overridden here, keep inheriting" — the same shape that is illegal on the base is accepted here.
+	 *
+	 * @return void
+	 */
+	public function testASlotListWithAGapInAResponsiveOverrideIsAccepted(): void {
+		$entry = $this->responsive_entry(
+			[ '{primitive.dimension.radius.md}', '8px', '{primitive.dimension.radius.md}', '8px' ],
+			[ 'mobile' => [ '{primitive.dimension.radius.full}', '', '', '' ] ]
+		);
+
+		$response = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'preset' => 'hero',
+					'tokens' => $this->button_tokens( [ 'button-radius' => $entry ] ),
+				]
+			)
+		);
+
+		$this->assertNotInstanceOf( WP_Error::class, $response );
+
+		$stored = json_decode( $this->store->get_document( Token_Store::default_slug() ), true );
+		$tokens = $stored['$extensions']['com.kadence.designTokens']['presets'][ self::BUTTON ]['hero']['tokens'];
+
+		$this->assertSame(
+			[ '{primitive.dimension.radius.full}', '', '', '' ],
+			$tokens['button-radius']['$extensions']['com.kadence.designTokens']['responsive']['mobile']
+		);
+	}
+
+	/**
 	 * A well-formed responsive entry is stored intact, base and overrides together.
 	 *
 	 * @return void

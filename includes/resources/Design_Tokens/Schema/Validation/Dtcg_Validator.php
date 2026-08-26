@@ -929,12 +929,15 @@ final class Dtcg_Validator {
 	 *
 	 * @since TBD
 	 *
-	 * @param mixed  $value The decoded value.
-	 * @param string $path  Dot-path to the value.
+	 * @param mixed  $value     The decoded value.
+	 * @param string $path      Dot-path to the value.
+	 * @param bool   $allow_gap Whether an empty-string slot inside a per-corner list is legal here — true
+	 *                          only while validating a responsive-override breakpoint, where the gap means
+	 *                          "not overridden, keep inheriting"; a base value never allows it.
 	 *
 	 * @return Validation_Error|null Null when valid.
 	 */
-	private function validate_extension_value( $value, string $path ): ?Validation_Error {
+	private function validate_extension_value( $value, string $path, bool $allow_gap = false ): ?Validation_Error {
 		if ( Alias::is_alias( $value ) ) {
 			return null;
 		}
@@ -952,7 +955,7 @@ final class Dtcg_Validator {
 		}
 
 		if ( is_array( $value ) && $this->is_list( $value ) ) {
-			return $this->validate_extension_slots( $value, $path );
+			return $this->validate_extension_slots( $value, $path, $allow_gap );
 		}
 
 		if ( is_array( $value ) && array_key_exists( Sentinels::get_value_key(), $value ) ) {
@@ -1015,7 +1018,7 @@ final class Dtcg_Validator {
 				);
 			}
 
-			$error = $this->validate_extension_value( $override, $path . '.' . $breakpoint );
+			$error = $this->validate_extension_value( $override, $path . '.' . $breakpoint, true );
 
 			if ( $error !== null ) {
 				return $error;
@@ -1034,12 +1037,15 @@ final class Dtcg_Validator {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<int, mixed> $slots The slot list.
-	 * @param string            $path  Dot-path to the list.
+	 * @param array<int, mixed> $slots     The slot list.
+	 * @param string            $path      Dot-path to the list.
+	 * @param bool              $allow_gap Whether an empty-string slot is legal here — true only while
+	 *                                     validating a responsive-override breakpoint; see
+	 *                                     {@see self::validate_extension_value()}.
 	 *
 	 * @return Validation_Error|null Null when valid.
 	 */
-	private function validate_extension_slots( array $slots, string $path ): ?Validation_Error {
+	private function validate_extension_slots( array $slots, string $path, bool $allow_gap = false ): ?Validation_Error {
 		$count = count( $slots );
 
 		if ( $count !== self::SLOT_LIST_SIDES ) {
@@ -1051,6 +1057,10 @@ final class Dtcg_Validator {
 		}
 
 		foreach ( $slots as $index => $slot ) {
+			if ( $allow_gap && $slot === '' ) {
+				continue;
+			}
+
 			if ( is_array( $slot ) ) {
 				return new Validation_Error(
 					$path . '.' . $index,
