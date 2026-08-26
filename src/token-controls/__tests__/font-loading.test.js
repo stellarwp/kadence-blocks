@@ -65,17 +65,20 @@ describe('googleFontHref', () => {
 });
 
 describe('ensureStylesheet', () => {
-	it('injects the stylesheet once per document and shares the wait', async () => {
+	// One injection, both waits satisfied by it. The promises are deliberately NOT the same object:
+	// each caller bounds the shared injection on its own clock.
+	it('injects the stylesheet once per document and satisfies every waiter', async () => {
 		const { doc, links, loadStylesheet } = fakeDoc();
 
 		const first = ensureStylesheet('https://example.test/a.css', doc);
 		const second = ensureStylesheet('https://example.test/a.css', doc);
 
 		expect(links).toHaveLength(1);
-		expect(first).toBe(second);
 
 		loadStylesheet();
+
 		await expect(first).resolves.toBeUndefined();
+		await expect(second).resolves.toBeUndefined();
 	});
 
 	it('injects separately into a second document, since each has its own font set', async () => {
@@ -97,6 +100,29 @@ describe('ensureStylesheet', () => {
 		failStylesheet();
 
 		await expect(ready).resolves.toBeUndefined();
+	});
+
+	// The regression that made the whole module pointless on a slow connection: one caller giving up
+	// must not tell every later caller the stylesheet has parsed.
+	it('makes a later caller keep waiting after an earlier one timed out', async () => {
+		const { doc, loadStylesheet } = fakeDoc();
+		const href = 'https://example.test/slow.css';
+
+		await ensureStylesheet(href, doc, 10);
+
+		let settled = false;
+		const second = ensureStylesheet(href, doc, 1000);
+		second.then(() => {
+			settled = true;
+		});
+
+		await flush();
+		expect(settled).toBe(false);
+
+		loadStylesheet();
+		await second;
+
+		expect(settled).toBe(true);
 	});
 
 	it('resolves for a document with no head to inject into', async () => {

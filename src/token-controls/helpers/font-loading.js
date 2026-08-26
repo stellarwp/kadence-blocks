@@ -80,8 +80,9 @@ function bounded(promise, timeout) {
 /**
  * Inject a stylesheet into a document once, and resolve when it has been parsed.
  *
- * Repeat calls for the same href in the same document share the first call's promise, so two
- * controls asking for the same family neither inject twice nor wait independently.
+ * Repeat calls for the same URL in the same document share the first call's injection, so two
+ * controls asking for the same family never inject twice. Each still bounds the wait itself, so one
+ * caller giving up says nothing about whether the stylesheet has parsed.
  *
  * @param {string}   href      The stylesheet URL.
  * @param {Document} doc       The document to inject into.
@@ -102,25 +103,27 @@ export function ensureStylesheet(href, doc = document, timeout = FONT_LOAD_TIMEO
 
 	const sheets = injected.get(doc);
 
+	// What is cached is the link's own completion, never a bounded wait on it. Caching the bounded
+	// one would let a single caller's timeout stand in for the stylesheet having parsed: every later
+	// caller would get an already-resolved promise and go straight to `fonts.load()` against faces
+	// that still do not exist — the flash this module exists to prevent, on exactly the slow
+	// connection where it is most likely. Each caller bounds the shared promise for itself.
 	if (sheets.has(href)) {
-		return sheets.get(href);
+		return bounded(sheets.get(href), timeout);
 	}
 
-	const ready = bounded(
-		new Promise((resolve) => {
-			const link = doc.createElement('link');
-			link.rel = 'stylesheet';
-			link.href = href;
-			link.onload = resolve;
-			link.onerror = resolve;
-			doc.head.appendChild(link);
-		}),
-		timeout
-	);
+	const loaded = new Promise((resolve) => {
+		const link = doc.createElement('link');
+		link.rel = 'stylesheet';
+		link.href = href;
+		link.onload = resolve;
+		link.onerror = resolve;
+		doc.head.appendChild(link);
+	});
 
-	sheets.set(href, ready);
+	sheets.set(href, loaded);
 
-	return ready;
+	return bounded(loaded, timeout);
 }
 
 /**
