@@ -1,6 +1,37 @@
 import { getPreviewSize, KadenceColorOutput, getSpacingOptionOutput } from '@kadence/helpers';
 import { useRef } from '@wordpress/element';
 import { IconRender, Tooltip } from '@kadence/components';
+import { tokenPx } from '../../extension/design-tokens/token-px';
+import { boundTokenAliasForControl } from '../../extension/token-picker';
+import { parseCssLength } from '../../token-controls';
+import metadata from './block.json';
+
+/**
+ * The raw pixel number a size attribute holds, or null when it holds no usable number.
+ *
+ * The attribute takes a number or a token alias, and the token picker's Reset writes an empty string,
+ * so "has a value" is neither a truthiness check nor a `Number()` coercion: `0` is a real size, while
+ * `''`, an alias the library no longer defines, and the odd non-number that reaches an attribute
+ * (`true`, `[]`, a whitespace string) all coerce to something finite and would land in the SVG's
+ * `width` attribute as garbage.
+ *
+ * `parseCssLength()` draws that line already, so this reuses it rather than inventing a second
+ * grammar — the same reason the pixel conversion is pinned to one shared fixture. A parsed value with
+ * a unit is not this attribute's shape (it stores a bare number, always px), so it is declined and
+ * left to the token fallback.
+ *
+ * @param {*} value The stored size.
+ *
+ * @since TBD
+ *
+ * @return {?number} The unitless number, or null when there is none.
+ */
+function iconSizeNumber(value) {
+	const parsed = parseCssLength(value);
+
+	return parsed && parsed.unit === '' ? parsed.size : null;
+}
+
 export function PreviewIcon({ attributes, previewDevice }) {
 	const ref = useRef();
 	const {
@@ -50,6 +81,21 @@ export function PreviewIcon({ attributes, previewDevice }) {
 		undefined !== tabletSize || tabletSize === 0 ? tabletSize : undefined,
 		undefined !== mobileSize || mobileSize === 0 ? mobileSize : undefined
 	);
+	// `IconRender` writes the size into the SVG's `width`/`height` presentation attributes, and a geometry
+	// attribute takes a number — not a `var()`, and not an empty string, which produces `width=""` and an
+	// icon with no rendered size at all. The front end has neither problem: it renders the same attribute
+	// as a `font-size` declaration, resolving an alias to the token's var() and a cleared size to the
+	// icon-size token's fallback rule. Both of those become a number here instead, on the same 16px root
+	// assumption PHP uses, so the two render paths agree.
+	//
+	// A cleared size therefore falls back to the very token the block-default CSS names for it, read from
+	// the binding rather than restated. Anything still unresolved after that is left `undefined` so
+	// `GenIcon` applies its own default, which is the one shape that renders rather than breaking.
+	const previewSizePx =
+		tokenPx(previewSize) ??
+		iconSizeNumber(previewSize) ??
+		tokenPx(boundTokenAliasForControl(metadata.name, 'size')) ??
+		undefined;
 	const previewMarginTop = getPreviewSize(
 		previewDevice,
 		margin && undefined !== margin[0] ? margin[0] : undefined,
@@ -114,7 +160,7 @@ export function PreviewIcon({ attributes, previewDevice }) {
 						<IconRender
 							className={`kt-svg-icon kt-svg-icon-${icon}`}
 							name={icon}
-							size={previewSize}
+							size={previewSizePx}
 							strokeWidth={'fe' === icon.substring(0, 2) ? width : undefined}
 							title={title ? title : ''}
 							style={{

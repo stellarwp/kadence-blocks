@@ -19,6 +19,8 @@ final class Preset_CatalogTest extends TestCase {
 
 	private const BUTTON = 'kadence/singlebtn';
 
+	private const ICON = 'kadence/single-icon';
+
 	/**
 	 * @var Preset_Catalog
 	 */
@@ -158,6 +160,64 @@ final class Preset_CatalogTest extends TestCase {
 		$this->assertArrayHasKey( 'secondary', $button['values'] );
 		$this->assertArrayHasKey( 'button-bg', $button['values']['primary'] );
 		$this->assertNotSame( '', $button['values']['primary']['button-bg'] );
+	}
+
+	/**
+	 * A block whose bindings declare no picker label is still surfaced — its controllable surface is what the
+	 * per-control token picker reads — but it is given no preset OPTIONS, so nothing can render a preset
+	 * dropdown for it. The two are separate concerns, and conflating them is what previously left every
+	 * non-picker block's controls unable to offer tokens at all.
+	 *
+	 * @return void
+	 */
+	public function testABlockWithoutAPickerLabelCarriesPropertiesButNoPresetOptions(): void {
+		$library = $this->catalog->all()['libraries'][ Token_Store::default_slug() ];
+
+		$this->assertArrayHasKey( self::ICON, $library );
+		$this->assertNull( $library[ self::ICON ]['label'] );
+		$this->assertSame( [], $library[ self::ICON ]['presets'] );
+
+		// The surface the token picker keys off is present regardless, as is the default the controls compare
+		// against.
+		$this->assertNotEmpty( $library[ self::ICON ]['properties'] );
+		$this->assertSame( 'default', $library[ self::ICON ]['default'] );
+
+		// The picker-driven Button is unaffected: it declares a label, so it still carries its options.
+		$this->assertNotEmpty( $library[ self::BUTTON ]['presets'] );
+	}
+
+	/**
+	 * The Single Icon catalog surfaces `size` as a dimension-kind control bound to the icon-size token, with
+	 * its per-device attribute names, so the editor's Icon Size control resolves a pickable token list. The
+	 * property carries no css_prop, so this surface is the only thing the binding contributes.
+	 *
+	 * @return void
+	 */
+	public function testItSurfacesTheIconSizeControlSurface(): void {
+		$icon = $this->catalog->all()['libraries'][ Token_Store::default_slug() ][ self::ICON ];
+
+		$by_key = [];
+		foreach ( $icon['properties'] as $property ) {
+			$by_key[ $property['key'] ] = $property;
+		}
+
+		$this->assertSame( 'size', $by_key['size']['control_attr'] );
+		$this->assertSame( 'dimension', $by_key['size']['kind'] );
+		$this->assertSame( 'semantic.icon-size.default', $by_key['size']['token'] );
+		$this->assertSame(
+			[
+				'tablet' => 'tabletSize',
+				'mobile' => 'mobileSize',
+			],
+			$by_key['size']['responsive_attrs']
+		);
+
+		// The color binding is untouched by the size addition and stays a color-kind control.
+		$this->assertSame( 'color', $by_key['color']['kind'] );
+
+		// The default preset resolves the size to the icon-size token's literal, which is what a control
+		// compares against to decide bound-vs-overridden.
+		$this->assertSame( '1.5rem', $icon['values']['default']['size'] );
 	}
 
 	/**

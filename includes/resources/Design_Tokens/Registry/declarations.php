@@ -735,15 +735,37 @@ return [
 			// contributes no specificity, so this is identical in effect to a hand-written
 			// `.wp-block-kadence-single-icon .kb-svg-icon-wrap` descendant rule.
 			//
-			// `size` is deliberately NOT bound here: it is rendered two incompatible ways (an SVG prop in
-			// the editor, a `font-size` CSS rule on the front end) and is never empty, so it cannot use this
-			// low-specificity-CSS-default mechanism at all.
+			// `size` takes the same low-specificity treatment on the SAME selector, for the same reason: the
+			// token picker lets a user CLEAR the size, and a cleared size renders no font-size of its own, so
+			// something has to name the fallback. This rule does, and a per-instance size still wins by later
+			// source order exactly as a per-instance color does.
+			//
+			// `size` differs from `color` in one way that lives outside this declaration: the editor renders it
+			// as a raw SVG width/height prop rather than a CSS declaration, and an SVG geometry attribute cannot
+			// consume a var(). The editor therefore resolves this same token to a pixel NUMBER for its preview
+			// (see the icon's preview component), which is what keeps the two render paths agreeing on a
+			// cleared size. The per-block Adapter and the editor attribute-default catalog are unaffected: they
+			// seed the registration default so a never-customized icon carries a concrete size, and this rule
+			// answers only for an explicitly cleared one.
 			'block'    => 'kadence/single-icon',
 			'bindings' => [
 				'color' => [
 					'token'        => 'semantic.color.icon',
 					'css_prop'     => 'color',
 					'css_selector' => '*.kb-svg-icon-wrap',
+				],
+				'size'  => [
+					'token'            => 'semantic.icon-size.default',
+					'css_prop'         => 'font-size',
+					'css_selector'     => '*.kb-svg-icon-wrap',
+					'control_attr'     => 'size',
+					// The block names its per-device size attributes by a prefix convention, which is a naming
+					// rule rather than something safely derivable, so the editor is told them rather than
+					// guessing — the same reason the Button's radius binding declares its own.
+					'responsive_attrs' => [
+						'tablet' => 'tabletSize',
+						'mobile' => 'mobileSize',
+					],
 				],
 			],
 		],

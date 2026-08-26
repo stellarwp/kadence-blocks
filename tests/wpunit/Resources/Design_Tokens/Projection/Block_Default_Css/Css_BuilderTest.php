@@ -104,6 +104,27 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
+	 * The icon `size` binding emits its font-size fallback onto the same low-specificity descendant rule the
+	 * color binding uses, so an icon whose size has been cleared through the token picker still renders at the
+	 * icon-size token rather than inheriting whatever font-size surrounds it. A per-instance size renders at
+	 * equal specificity but later source order, so it still wins.
+	 *
+	 * @return void
+	 */
+	public function testTheShippedDeclarationsEmitTheSingleIconSizeFallback(): void {
+		$registry = $this->container->get( Token_Registry::class );
+
+		$css = $this->builder( $registry )->css();
+
+		// Grouped into the same `.kb-svg-icon-wrap` rule as color, with the resolved length as the fallback.
+		$this->assertStringContainsString(
+			'font-size:var(' . Css_Var::from_id( 'semantic.icon-size.default' ) . ',1.5rem);',
+			$css
+		);
+		$this->assertStringContainsString( '.wp-block-kadence-single-icon *.kb-svg-icon-wrap{', $css );
+	}
+
+	/**
 	 * The legacy `kadence/icon` container (the pre-3.0 `icons[]` array shape) has no top-level
 	 * `color`/`size` attribute to bind, so none of the preset-binding wiring — all of which keys off the
 	 * `kadence/single-icon` child block — ever registers preset bindings for `kadence/icon` and the builder
