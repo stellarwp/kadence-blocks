@@ -62,3 +62,4 @@ export {
 } from './helpers/value-shapes';
 export { tokenCssVar } from './helpers/token-css-var';
 export { mapPaletteToColorControlGroups } from './helpers/palette-groups';
+export { DEFAULT_COMPOSITE, parseResolvedShadow } from './helpers/shadow-shorthand';

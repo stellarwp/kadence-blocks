@@ -57,20 +57,7 @@ import { __, sprintf } from '@wordpress/i18n';
  */
 import { BoxShadowControl } from '../../../token-controls/controls/BoxShadowControl';
 import { TokenControlRow } from '../../token-indicators/components/TokenControlRow';
-
-/**
- * The composite's default shape, matching `BoxShadowControl`'s own `DEFAULT_SHADOW` fallback.
- *
- * @since TBD
- */
-const DEFAULT_COMPOSITE = {
-	color: '#000000',
-	offsetX: '0px',
-	offsetY: '0px',
-	blur: '0px',
-	spread: '0px',
-	inset: false,
-};
+import { DEFAULT_COMPOSITE, parseResolvedShadow } from '../../../token-controls';
 
 /**
  * A CSS `rgba(r, g, b, a)` string, matching `hexToRGBA`'s own output format exactly (comma-space
@@ -238,48 +225,6 @@ function axisToComposite(axis) {
  */
 function axisToNative(slot) {
 	return parseFloat(slot) || 0;
-}
-
-/**
- * The feed's resolved `box-shadow` shorthand grammar, matching what `Css_Renderer::shadow()`
- * produces: an optional leading `inset `, four space-separated dimension tokens (offsetX, offsetY,
- * blur, spread), then the color as the remainder of the string. Capturing the color as "everything
- * after the fourth dimension" (rather than a fifth token) keeps a color with internal spaces —
- * `rgba(23, 23, 23, 0.12)` — intact.
- *
- * @since TBD
- */
-const SHADOW_SHORTHAND_PATTERN = /^(inset\s+)?(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(.+)$/;
-
-/**
- * Parse a resolved `box-shadow` shorthand string into the composite `{ color, offsetX, offsetY, blur,
- * spread, inset }` shape `BoxShadowControl` edits.
- *
- * @param {*} css The resolved shorthand (e.g. `"0px 2px 8px 0px #1717171f"`, with an optional
- *                `inset ` prefix), or anything that fails to parse as one.
- *
- * @since TBD
- *
- * @return {Object} The parsed composite, or the field's default shape when `css` is empty or does
- *                   not match the shorthand grammar.
- */
-function parseResolvedShadow(css) {
-	const match = typeof css === 'string' ? css.trim().match(SHADOW_SHORTHAND_PATTERN) : null;
-
-	if (!match) {
-		return { ...DEFAULT_COMPOSITE };
-	}
-
-	const [, insetPrefix, offsetX, offsetY, blur, spread, color] = match;
-
-	return {
-		color,
-		offsetX,
-		offsetY,
-		blur,
-		spread,
-		inset: Boolean(insetPrefix),
-	};
 }
 
 /**
