@@ -31,6 +31,7 @@ import { IconSizesScreen } from '../components/pages/IconSizesScreen';
 import { ShadowScreen } from '../components/pages/ShadowScreen';
 import '../components/pages/ButtonScreen';
 import '../components/pages/SingleIconScreen';
+import '../components/pages/RowLayoutScreen';
 import { useDesignTokensFeed } from '../hooks/use-design-tokens-feed';
 import { useStyleLibraryRoute } from '../hooks/use-style-library-route';
 import { useLibraries } from '../hooks/use-libraries';

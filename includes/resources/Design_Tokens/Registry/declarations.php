@@ -708,8 +708,14 @@ return [
 			// tokens through the slug bridge, which a token-backed padding control also rides — that control
 			// stores its token in the attribute (render_measure_output already resolves a variable value
 			// there) and needs no binding here.
-			'block'    => 'kadence/rowlayout',
-			'bindings' => [
+			'block'         => 'kadence/rowlayout',
+			'label'         => __( 'Style', 'kadence-blocks' ), // a picker-driven set; this is the editor control's label.
+			'style_library' => [
+				// The Style Library BLOCK PRESETS nav label — distinct from "label" above, which names the
+				// inspector's picker control, not the block.
+				'label' => __( 'Row Layout', 'kadence-blocks' ),
+			],
+			'bindings'      => [
 				// The row names its background attribute `bgColor`, not `background` — the binding key is the
 				// preset property id and need not match the attribute, which is what control_attr is for.
 				'background'   => [

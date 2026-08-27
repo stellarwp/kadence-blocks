@@ -129,8 +129,6 @@ final class Preset_CatalogTest extends TestCase {
 	public function wiredWithoutAScreenProvider(): Generator {
 		yield 'image' => [ 'block' => 'kadence/image' ];
 
-		yield 'rowlayout' => [ 'block' => 'kadence/rowlayout' ];
-
 		yield 'column' => [ 'block' => 'kadence/column' ];
 
 		yield 'advanced heading' => [ 'block' => 'kadence/advancedheading' ];

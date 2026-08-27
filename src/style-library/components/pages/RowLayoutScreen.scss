@@ -1,0 +1,54 @@
+// The slab is its own shape (wide and short, standing in for a section band) rather than the shared
+// framed square, so this screen relaxes `ListRow`'s default 80px preview slot — the Button, Spacing,
+// Icon Sizes and Shadow slot-override precedent.
+.kadence-blocks-style-library__rowlayout-screen .kadence-blocks-style-library__list-row-preview {
+	width: auto;
+	height: auto;
+	border: 0;
+	background: transparent;
+	overflow: visible;
+}
+
+// Preset names are full words ("Muted Band"), not the short numeric labels the shared 4rem column
+// was sized for.
+.kadence-blocks-style-library__rowlayout-screen .kadence-blocks-style-library__list-row-label {
+	width: 15rem;
+}
+
+// The live slab's frame and checker. Proportions matter here rather than being decorative: a Row
+// Layout is always full-width and short relative to its width, and a corner radius reads very
+// differently at those proportions than on a square swatch, so the preview keeps a band's aspect.
+//
+// The checker is this element's own background because the row's shipped background really is
+// transparent, and against the list's white surface a transparent background and a white one are
+// indistinguishable — every unstyled preset would look like it had set white. The preset's own
+// background is painted by the nested fill below, which is a separate element for the one reason
+// that a single element cannot layer them in this order: a background image always paints above its
+// own background color.
+.kadence-blocks-style-library__rowlayout-preset-preview {
+	position: relative;
+	display: block;
+	box-sizing: border-box;
+	width: 7.5rem;
+	height: 2.75rem;
+	border: var(--kb-sl-border-width-input) solid var(--kb-sl-color-gray-200);
+	background-color: #fff;
+	background-image: repeating-conic-gradient(var(--kb-sl-color-gray-200) 0% 25%, transparent 0% 50%);
+	background-size: 0.75rem 0.75rem;
+	transition:
+		border-color 300ms ease,
+		border-radius 300ms ease;
+}
+
+// The preset's resolved background, laid over the checker. Inset by the frame's own border rather
+// than by a guessed value, and inheriting the radius so a rounded preset does not show square
+// corners of fill poking past its frame.
+.kadence-blocks-style-library__rowlayout-preset-preview-fill {
+	position: absolute;
+	inset: 0;
+	display: block;
+	border-radius: inherit;
+	transition:
+		background-color 300ms ease,
+		border-radius 300ms ease;
+}
