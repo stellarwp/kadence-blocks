@@ -9,7 +9,7 @@ import {
 	presetSaveTokens,
 	presetStoredTokens,
 	nextPresetSlug,
-	getButtonPresetProperties,
+	getPresetProperties,
 	overlayPresetRows,
 	resolveSwatchColor,
 	presetNameSchema,
@@ -500,11 +500,16 @@ describe('presetStoredTokens', () => {
 	});
 });
 
-describe('getButtonPresetProperties', () => {
+describe('getPresetProperties', () => {
 	afterEach(() => {
 		delete window.kadenceDesignTokens;
 	});
 
+	/**
+	 * The surface comes from the feed, so the app reads exactly the properties the server accepts.
+	 *
+	 * @return {void}
+	 */
 	it('derives the property list from the feed when present', () => {
 		window.kadenceDesignTokens = {
 			presets: {
@@ -514,25 +519,57 @@ describe('getButtonPresetProperties', () => {
 			},
 		};
 
-		expect(getButtonPresetProperties()).toEqual(['button-bg', 'button-text', 'button-radius']);
+		expect(getPresetProperties('kadence/singlebtn')).toEqual(['button-bg', 'button-text', 'button-radius']);
 	});
 
+	/**
+	 * The block is a parameter, not a constant, so a second preset screen reads its own surface through
+	 * the same helper.
+	 *
+	 * @return {void}
+	 */
+	it('reads the surface of whichever block it is asked for', () => {
+		window.kadenceDesignTokens = {
+			presets: {
+				'kadence/singlebtn': { properties: ['button-bg'] },
+				'kadence/image': { properties: ['background', 'borderRadius'] },
+			},
+		};
+
+		expect(getPresetProperties('kadence/image')).toEqual(['background', 'borderRadius']);
+	});
+
+	/**
+	 * A missing feed is a genuine bug on this screen, so it throws rather than silently doing nothing.
+	 *
+	 * @return {void}
+	 */
 	it('throws when the feed is absent', () => {
 		delete window.kadenceDesignTokens;
 
-		expect(() => getButtonPresetProperties()).toThrow(/properties is missing or empty/);
+		expect(() => getPresetProperties('kadence/singlebtn')).toThrow(/properties is missing or empty/);
 	});
 
-	it('throws when the button block is missing from the feed', () => {
+	/**
+	 * A feed that carries other blocks but not the requested one throws for the same reason.
+	 *
+	 * @return {void}
+	 */
+	it('throws when the requested block is missing from the feed', () => {
 		window.kadenceDesignTokens = { presets: { 'kadence/other-block': { properties: ['x'] } } };
 
-		expect(() => getButtonPresetProperties()).toThrow(/properties is missing or empty/);
+		expect(() => getPresetProperties('kadence/singlebtn')).toThrow(/properties is missing or empty/);
 	});
 
+	/**
+	 * An empty surface would let every seed and save no-op, so it is treated as missing.
+	 *
+	 * @return {void}
+	 */
 	it('throws when the feed has an empty properties array', () => {
 		window.kadenceDesignTokens = { presets: { 'kadence/singlebtn': { properties: [] } } };
 
-		expect(() => getButtonPresetProperties()).toThrow(/properties is missing or empty/);
+		expect(() => getPresetProperties('kadence/singlebtn')).toThrow(/properties is missing or empty/);
 	});
 });
 

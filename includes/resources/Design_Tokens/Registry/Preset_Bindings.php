@@ -77,7 +77,7 @@ final class Preset_Bindings {
 	private const KIND_SHADOW = 'shadow';
 
 	/**
-	 * The block name, e.g. "kadence/advancedbtn".
+	 * The block name, e.g. "kadence/singlebtn".
 	 *
 	 * @since TBD
 	 *

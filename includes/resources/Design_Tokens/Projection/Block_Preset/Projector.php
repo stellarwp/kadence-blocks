@@ -68,7 +68,7 @@ final class Projector {
 	 * @since TBD
 	 *
 	 * @param array<string, mixed> $defaults The registration (block.json) attribute defaults.
-	 * @param string               $block    The block name, e.g. "kadence/advancedbtn".
+	 * @param string               $block    The block name, e.g. "kadence/singlebtn".
 	 *
 	 * @return array<string, mixed> The defaults with the preset overlaid; unchanged when the block has none.
 	 */

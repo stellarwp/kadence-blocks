@@ -42,7 +42,7 @@ use WP_REST_Server;
  * onto the stored presets, then run the shared pipeline: DTCG grammar validation (HTTP 422), a dry-run Resolver
  * pass that rejects alias cycles / dangling aliases in the token layers (HTTP 422), then a single
  * Token_Store::save_document() that bumps the version and fires the change action. The block name carries a
- * slash ("kadence/advancedbtn"), so it is routed as two path segments and reassembled.
+ * slash ("kadence/singlebtn"), so it is routed as two path segments and reassembled.
  *
  * Every route operates on a single token library: the one named by the optional `library` request parameter
  * when it is a known library, otherwise the active library ({@see Active_Token_Library_Store::get()}, which
@@ -63,7 +63,7 @@ final class Presets_Controller extends Controller {
 	private const VENDOR_PARAM = 'vendor';
 
 	/**
-	 * The request parameter that carries the block's name segment, e.g. "advancedbtn".
+	 * The request parameter that carries the block's name segment, e.g. "singlebtn".
 	 *
 	 * @since TBD
 	 *
@@ -1902,7 +1902,7 @@ final class Presets_Controller extends Controller {
 				'sanitize_callback' => 'sanitize_key',
 			],
 			self::BLOCK_NAME_PARAM => [
-				'description'       => __( 'The block name segment, e.g. advancedbtn.', 'kadence-blocks' ),
+				'description'       => __( 'The block name segment, e.g. singlebtn.', 'kadence-blocks' ),
 				'type'              => 'string',
 				'required'          => true,
 				'pattern'           => '^[a-z0-9][a-z0-9-]*$',

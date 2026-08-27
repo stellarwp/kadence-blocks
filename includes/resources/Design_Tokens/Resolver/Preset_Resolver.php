@@ -96,7 +96,7 @@ final class Preset_Resolver {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $block  The block name, e.g. "kadence/advancedbtn".
+	 * @param string $block  The block name, e.g. "kadence/singlebtn".
 	 * @param string $preset The preset slug, e.g. "ghost".
 	 * @param string $slug   The token library whose effective presets and resolved values are read.
 	 *
@@ -144,7 +144,7 @@ final class Preset_Resolver {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $block   The block name, e.g. "kadence/advancedbtn".
+	 * @param string $block   The block name, e.g. "kadence/singlebtn".
 	 * @param string $preset The preset slug, e.g. "ghost".
 	 * @param string $slug    The token library whose effective presets and resolved values are read.
 	 *

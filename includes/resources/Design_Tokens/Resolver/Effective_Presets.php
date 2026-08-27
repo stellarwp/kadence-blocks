@@ -78,7 +78,7 @@ final class Effective_Presets {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $block The block name, e.g. "kadence/advancedbtn".
+	 * @param string $block The block name, e.g. "kadence/singlebtn".
 	 * @param string $slug  The token library slug.
 	 *
 	 * @return array<string, mixed>|null
@@ -111,7 +111,7 @@ final class Effective_Presets {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $block The block name, e.g. "kadence/advancedbtn".
+	 * @param string $block The block name, e.g. "kadence/singlebtn".
 	 * @param string $slug  The token library slug.
 	 *
 	 * @return string[]
