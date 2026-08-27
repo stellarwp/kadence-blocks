@@ -70,6 +70,31 @@ describe('registerTokenAliasFilters', () => {
 	});
 
 	/**
+	 * A localized pool whose active library resolved to no tokens is an answer, not a gap: every alias
+	 * reads as unbacked, matching the PHP renderer (which fails open only when resolution itself fails).
+	 */
+	it('treats every alias as unbacked when the active library resolved to an empty map', () => {
+		window.kadenceDesignTokensPresets = { active: 'default' };
+		window.kadenceDesignTokensPickable = { tokens: [], values: { default: {} } };
+
+		expect(applyFilters(HOOK, BACKED_ALIAS)).toBe(BACKED_ALIAS);
+	});
+
+	/**
+	 * A library the pool omits entirely (its stored document could not be resolved, so the catalog skipped
+	 * it) leaves backing undeterminable, so the listener fails open and resolves the alias.
+	 */
+	it('fails open when the active library is absent from the localized pool', () => {
+		window.kadenceDesignTokensPresets = { active: 'brand' };
+		window.kadenceDesignTokensPickable = {
+			tokens: [],
+			values: { default: { 'semantic.color.border': '#E2E8F0' } },
+		};
+
+		expect(applyFilters(HOOK, BACKED_ALIAS)).toBe(BACKED_VAR);
+	});
+
+	/**
 	 * The dimension hook is wired the same way as the color hook: a backed alias resolves to its var and a
 	 * stale alias is left untouched, proving the listener validates backing on both registered hooks (not
 	 * just passing raw values through).
