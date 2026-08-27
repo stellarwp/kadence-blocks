@@ -181,7 +181,6 @@ final class Preset_ResolverTest extends TestCase {
 			[
 				'color'         => '#1A202C',
 				'background'    => 'transparent',
-				'typography'    => 'inherit',
 				'fontSize'      => '2rem',
 				'fontHeight'    => '1.125',
 				'fontWeight'    => '400',

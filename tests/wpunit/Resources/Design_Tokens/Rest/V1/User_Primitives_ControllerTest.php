@@ -493,15 +493,15 @@ final class User_Primitives_ControllerTest extends TestCase {
 	}
 
 	/**
-	 * A `fontFamily` create — unblocked by the $type -> id-segment mapping — mirrors the color and
-	 * dimension cases: 201, the leaf lands under the MAPPED kebab id segment
-	 * (primitive.font-family.custom.<slug>, never the camelCase primitive.fontFamily.custom.<slug>),
-	 * and the single-family `$value` (no invented generic fallback — the shipped font arrays carry
-	 * no category data) is stored verbatim.
+	 * A `fontFamily` create into the `font-family` group is refused: font family stopped being a
+	 * token family, so nothing declares that group any more and there is nothing for a minted
+	 * primitive to join. The refusal is the generic unknown-group 400 every undeclared group gets —
+	 * no font-specific branch was added to say so. Adding a family to the favorites list is the
+	 * supported path now (see the favorite-fonts sub-route).
 	 *
 	 * @return void
 	 */
-	public function testItCreatesANewFontFamilyPrimitive(): void {
+	public function testItRefusesAFontFamilyPrimitiveBecauseNoFontGroupIsDeclared(): void {
 		$slug = Token_Store::default_slug();
 
 		$this->store->save_document( '{}' );
@@ -510,17 +510,8 @@ final class User_Primitives_ControllerTest extends TestCase {
 		$request = $this->make_create_request( $slug, 'abel', 'fontFamily', [ 'Abel' ], $version, 'Abel', 'font-family' );
 		$result  = $this->controller->create_item( $request );
 
-		$this->assertInstanceOf( WP_REST_Response::class, $result );
-		$this->assertSame( WP_Http::CREATED, $result->get_status() );
-
-		$doc  = $result->get_data()['document'];
-		$leaf = $doc['primitive']['font-family']['custom']['abel'];
-		$this->assertSame( 'fontFamily', $leaf['$type'] );
-		$this->assertSame( [ 'Abel' ], $leaf['$value'] );
-
-		$ext = $doc[ Extensions::get_extensions_key() ][ Extensions::get_namespace() ][ Extensions::get_section_user_primitives() ];
-		$this->assertArrayHasKey( 'primitive.font-family.custom.abel', $ext );
-		$this->assertSame( 'font-family', $ext['primitive.font-family.custom.abel']['group'] );
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'rest_kb_unknown_group', $result->get_error_code() );
 	}
 
 	/**

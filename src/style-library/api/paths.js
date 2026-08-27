@@ -108,6 +108,21 @@ export function groupOrderPath(slug, group) {
 }
 
 /**
+ * Build a REST path for a single favorite font family. `family` is a catalog display name, not a
+ * slug — encoded because it usually contains a space.
+ *
+ * @param {string} slug   Token library slug.
+ * @param {string} family The font family name.
+ *
+ * @since TBD
+ *
+ * @return {string} REST path relative to wp-json root.
+ */
+export function favoriteFontPath(slug, family) {
+	return `/kb-design-tokens/v1/documents/${encodeURIComponent(slug)}/favorite-fonts/${encodeURIComponent(family)}`;
+}
+
+/**
  * Build a REST path for the resolved token map.
  *
  * @since TBD

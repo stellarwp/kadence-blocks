@@ -17,6 +17,7 @@ import {
 	tokenPath,
 	tokenLabelPath,
 	groupOrderPath,
+	favoriteFontPath,
 	userPrimitiveReferencesPath,
 	userPrimitivesPath,
 	userPrimitivePath,
@@ -123,6 +124,44 @@ export function setGroupOrder(slug, group, payload) {
 	return apiFetch({
 		path: groupOrderPath(slug, group),
 		method: 'PUT',
+		data: payload,
+	});
+}
+
+/**
+ * Add a font family to the library's favorites.
+ *
+ * @param {string}                  slug    Token library slug.
+ * @param {string}                  family  The font family name.
+ * @param {{ version: string }}     payload Request body.
+ *
+ * @since TBD
+ *
+ * @return {Promise<object>} Updated document item.
+ */
+export function addFavoriteFont(slug, family, payload) {
+	return apiFetch({
+		path: favoriteFontPath(slug, family),
+		method: 'PUT',
+		data: payload,
+	});
+}
+
+/**
+ * Remove a font family from the library's favorites.
+ *
+ * @param {string}              slug    Token library slug.
+ * @param {string}              family  The font family name.
+ * @param {{ version: string }} payload Request body.
+ *
+ * @since TBD
+ *
+ * @return {Promise<object>} Updated document item.
+ */
+export function removeFavoriteFont(slug, family, payload) {
+	return apiFetch({
+		path: favoriteFontPath(slug, family),
+		method: 'DELETE',
 		data: payload,
 	});
 }

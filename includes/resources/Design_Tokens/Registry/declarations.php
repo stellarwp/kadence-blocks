@@ -165,37 +165,6 @@ $font_size_primitive_tokens = array_map(
 	$font_size_slugs
 );
 
-// The three preview fonts are primitives the Style Library's Typography screen lists as FONT
-// options; the font-family semantics (semantic.font-family.control / .heading) keep their own
-// values and already carry whatever projections deliver a family into a block, so these primitives
-// declare none of their own. group_key lets "+ Add Font" mint a user fontFamily primitive into
-// this same group: Token_Type maps the camelCase $type to the kebab id segment "font-family" (the
-// id feeds Css_Var::from_id(), which cannot take a camelCase segment), so the stored $type and the
-// registered id can differ while staying self-consistent.
-//
-// The id segment is kebab-case ("font-family", not "fontFamily") because Token_Definition::from_array()
-// validates every declared id against the kebab charset and throws on a camelCase segment — these
-// tokens (and the baseline.json tree backing them) could never have registered under the old spelling.
-$font_family_slugs = [
-	'sans'  => __( 'Sans', 'kadence-blocks' ),
-	'serif' => __( 'Serif', 'kadence-blocks' ),
-	'mono'  => __( 'Mono', 'kadence-blocks' ),
-];
-
-$font_family_tokens = array_map(
-	static function ( string $slug, string $label ): array {
-		return [
-			'id'        => 'primitive.font-family.' . $slug,
-			'type'      => 'fontFamily',
-			'label'     => $label,
-			'group'     => __( 'Font Family', 'kadence-blocks' ),
-			'group_key' => 'font-family',
-		];
-	},
-	array_keys( $font_family_slugs ),
-	array_values( $font_family_slugs )
-);
-
 /**
  * The brand + neutral primitives ARE the site's global color palette: each claims a Kadence palette slot
  * (palette1..9), so --global-paletteN follows the primitive and the legacy kadence_blocks_colors palette
@@ -511,7 +480,6 @@ return [
 		$spacing_tokens,
 		$gap_tokens,
 		$font_size_primitive_tokens,
-		$font_family_tokens,
 		$radius_tokens,
 		$border_width_tokens,
 		$icon_size_tokens,
@@ -773,11 +741,13 @@ return [
 			// Advanced Text (heading) core design properties + typography set: low-specificity
 			// block-default-CSS rules on the block root (`.wp-block-kadence-advancedheading`), where every
 			// bound attribute is empty by default in block.json — build_css() emits nothing for any of them
-			// until a value is set, so the whole 12-property set fits this mechanism directly with no
-			// per-block adapter and no build_css()/SCSS/editor-JS change. Typography (font-family,
-			// letter-spacing, text-transform) uses the heading's own tokens, kept separate from the
-			// form-control family the Button uses; font-size/line-height/font-weight are the heading's
-			// own re-skin seeds. The rule also overrides a theme's per-tag element styles (h1/h2/p,
+			// until a value is set, so the whole set fits this mechanism directly with no per-block
+			// adapter and no build_css()/SCSS/editor-JS change. Typography (letter-spacing,
+			// text-transform) uses the heading's own tokens, kept separate from the form-control family
+			// the Button uses; font-size/line-height/font-weight are the heading's own re-skin seeds.
+			// Font FAMILY is deliberately absent: a family is a favorite, not a token, so a heading
+			// inherits the theme's font until someone picks one on the block itself.
+			// The rule also overrides a theme's per-tag element styles (h1/h2/p,
 			// specificity 0,0,1), which is what lets the design-system defaults "re-skin" an unset
 			// heading. A per-instance value renders at higher specificity (the `.kt-adv-heading<uid>`
 			// instance selector) and still wins.
@@ -799,10 +769,6 @@ return [
 				'background'    => [
 					'token'    => 'semantic.color.heading-bg',
 					'css_prop' => 'background-color',
-				],
-				'typography'    => [
-					'token'    => 'semantic.font-family.heading',
-					'css_prop' => 'font-family',
 				],
 				'fontSize'      => [
 					'token'    => 'semantic.font-size.heading',

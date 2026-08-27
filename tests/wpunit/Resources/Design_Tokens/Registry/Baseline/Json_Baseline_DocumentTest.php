@@ -48,8 +48,6 @@ final class Json_Baseline_DocumentTest extends TestCase {
 		$this->assertTrue( $baseline->has( 'primitive.color.brand.primary' ) );
 		// Numeric-keyed leaf (json_decode turns "0" into an int key).
 		$this->assertTrue( $baseline->has( 'primitive.color.neutral.0' ) );
-		// fontFamily leaf whose $value is an array.
-		$this->assertTrue( $baseline->has( 'primitive.font-family.sans' ) );
 		// A composite leaf (object $value) is still a single token, not a group.
 		$this->assertTrue( $baseline->has( 'semantic.shadow.card' ) );
 	}

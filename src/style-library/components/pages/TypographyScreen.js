@@ -3,11 +3,16 @@
  * renderer, and the two thin wrappers that plug into the shared `ScaleScreen`/`ScaleSettings`
  * contract (see `ScaleScreen.js`'s module docblock). Two things make this screen genuinely
  * different from its siblings: a toolbar between the header and the list (the FONT catalog
- * dropdown, the contextual Add/Delete Font button, font tabs, and the "+ Add Size" action) built
- * on `ScaleScreen`'s optional `renderToolbar` seam, and screen-level preview state (the currently
- * previewed font, plus the font catalog's Add/Delete flow) that `renderPreview` and the toolbar
- * close over — absorbed entirely at this screen's own boundary, with no change to the shared hook
- * or flows.
+ * dropdown, the contextual Add/Remove Favorite button, and the "+ Add Size" action) built on
+ * `ScaleScreen`'s optional `renderToolbar` seam, and screen-level preview state (the currently
+ * previewed font, plus the favorite-font flows) that `renderPreview` and the toolbar close over —
+ * absorbed entirely at this screen's own boundary, with no change to the shared hook or flows.
+ *
+ * The screen's fonts are the library's FAVORITES, not tokens. A favorite carries no indirection and
+ * emits no CSS variable; it exists so a family a site uses often sits at the top of this dropdown
+ * and of every block's font picker, instead of being searched for in a ~1,900-name catalog each
+ * time. Font family is therefore the one thing on this screen that is not a design token — the
+ * font-size steps below it still are.
  */
 
 /**
@@ -15,13 +20,8 @@
  */
 import { useCallback, useEffect, useMemo, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { Button, Notice } from '@wordpress/components';
-import { plus } from '@wordpress/icons';
-
-/**
- * External dependencies
- */
-import classnames from 'classnames';
+import { Button, Notice, Spinner } from '@wordpress/components';
+import { starEmpty, starFilled } from '@wordpress/icons';
 
 /**
  * Internal dependencies
@@ -29,11 +29,10 @@ import classnames from 'classnames';
 import { ScaleScreen } from './ScaleScreen';
 import { ScaleSettings } from './ScaleSettings';
 import { SearchableSelectDropdown } from '../molecules/SearchableSelectDropdown';
-import { deleteScaleTokenFlow } from '../../helpers/scale-flows';
-import { addFontFlow } from '../../helpers/font-flows';
+import { addFavoriteFontFlow, removeFavoriteFontFlow } from '../../helpers/font-flows';
 import { useGoogleFontLoader } from '../../hooks/use-google-font-loader';
 import {
-	findFontByFamily,
+	familyStack,
 	fontActionFor,
 	fontOptions,
 	fontSizeDisplayValue,
@@ -50,20 +49,19 @@ import './TypographyScreen.scss';
 const SAMPLE_TEXT = __('Visualize your font', 'kadence-blocks');
 
 /**
- * The translated `Font Family` feed group label — display and request addressing only, mirroring
- * `config.group`'s role for the `Font Size` group this screen edits.
- *
- * @since TBD
- */
-const FONT_FAMILY_GROUP = __('Font Family', 'kadence-blocks');
-
-/**
  * The muted badge a catalog custom font carries in the dropdown menu, matching the `SelectDropdown`
  * badge treatment used elsewhere in the app.
  *
  * @since TBD
  */
 const CUSTOM_BADGE = __('Custom', 'kadence-blocks');
+
+/**
+ * The muted badge a favorite carries where it sits pinned above the catalog.
+ *
+ * @since TBD
+ */
+const FAVORITE_BADGE = __('Favorite', 'kadence-blocks');
 
 /**
  * Build a `renderPreview` closing over the currently selected font's resolved stack. `row.value` is
@@ -93,58 +91,65 @@ function samplePreviewRenderer(fontStack) {
 }
 
 /**
- * Build the catalog dropdown's option list: every Google family name, then every custom family
- * name, each carrying its catalog family name as `value` (never a token id — see
- * `SearchableSelectDropdown`'s module docblock) and custom names tagged with the muted `Custom`
- * badge.
+ * Build the catalog dropdown's option list: the library's favorites first, then every Google family
+ * name, then every custom family name — each carrying its catalog family name as `value` (never a
+ * token id — see `SearchableSelectDropdown`'s module docblock), favorites tagged with the muted
+ * `Favorite` badge and custom names with `Custom`.
+ *
+ * Pinning favorites to the top IS the feature: it is what replaces the font tabs this screen used
+ * to carry, and it matches how the block editor's font picker surfaces the same list. A favorite
+ * family is filtered out of the catalog runs below so it appears exactly once, keeping its pinned
+ * position rather than showing again mid-list.
+ *
+ * @param {Array<{label: string}>} fonts The library's favorites (`fontOptions()`).
  *
  * @since TBD
  *
  * @return {Array<{value: string, label: string, badge?: string}>} The dropdown's option list.
  */
-function buildCatalogOptions() {
+function buildCatalogOptions(fonts) {
 	const { google, custom } = getFontCatalog();
+	const favorites = fonts.map((font) => font.label);
+	const pinned = new Set(favorites.map((name) => name.toLowerCase()));
+	const unpinned = (name) => !pinned.has(name.toLowerCase());
 
 	return [
-		...google.map((name) => ({ value: name, label: name })),
-		...custom.map((name) => ({ value: name, label: name, badge: CUSTOM_BADGE })),
+		...favorites.map((name) => ({ value: name, label: name, badge: FAVORITE_BADGE })),
+		...google.filter(unpinned).map((name) => ({ value: name, label: name })),
+		...custom.filter(unpinned).map((name) => ({ value: name, label: name, badge: CUSTOM_BADGE })),
 	];
 }
 
 /**
- * Build the `renderToolbar( { addAction, isBusy } )` implementation: font tabs (only when more than
- * one family exists), the FONT label, the searchable catalog dropdown with its contextual
- * Add/Delete Font button, and the passed-in add-size action positioned at the row's right edge —
- * the toolbar positions `addAction`, it never re-implements it, so the shared guard/busy discipline
- * cannot fork between this screen and its siblings.
+ * Build the `renderToolbar( { addAction, isBusy } )` implementation: the FONT label, the searchable
+ * catalog dropdown (favorites pinned at its top) with its contextual Add/Remove Favorite button,
+ * and the passed-in add-size action positioned at the row's right edge — the toolbar positions
+ * `addAction`, it never re-implements it, so the shared guard/busy discipline cannot fork between
+ * this screen and its siblings.
  *
- * @param {Object}                                              args
- * @param {Array<{id: string, label: string, stack: string}>}   args.fonts           The FONT options, in feed order.
- * @param {string}                                              args.selectedFontId  The currently previewed font's id.
- * @param {Function}                                             args.onSelectFont    Called with a font id when the tabs or a matching catalog pick change the preview.
- * @param {Array<{value: string, label: string, badge?: string}>} args.catalogOptions The catalog dropdown's option list.
+ * @param {Array<{value: string, label: string, badge?: string}>} args                 The toolbar's inputs.
+ * @param {Array<{value: string, label: string, badge?: string}>} args.catalogOptions  The catalog dropdown's option list.
  * @param {string}                                               args.dropdownValue   The catalog dropdown's current value (a catalog family name).
- * @param {Function}                                              args.onPickCatalog   Called with a catalog family name when a dropdown option is chosen.
- * @param {{type: ('add'|'delete'), disabled: boolean, font: ?Object}} args.fontAction The contextual button's state ({@see fontActionFor}).
- * @param {Function}                                              args.onFontAction    Invokes the Add Font or Delete Font flow for the current `fontAction`.
- * @param {boolean}                                               args.fontBusy        Whether an Add/Delete Font request is in flight.
- * @param {?{message: string}}                                    args.fontError       The current Add/Delete Font error, if any.
- * @param {Function}                                              args.onClearFontError Dismisses `fontError`.
+ * @param {Function}                                             args.onPickCatalog   Called with a catalog family name when a dropdown option is chosen.
+ * @param {{type: ('add'|'remove'), disabled: boolean, font: ?Object}} args.fontAction The contextual button's state ({@see fontActionFor}).
+ * @param {Function}                                             args.onFontAction    Invokes the add- or remove-favorite flow for the current `fontAction`.
+ * @param {boolean}                                              args.fontBusy        Whether a favorite request is in flight.
+ * @param {boolean}                                              args.fontLoading     Whether the selected font is still being fetched.
+ * @param {?{message: string}}                                   args.fontError       The current favorite-write error, if any.
+ * @param {Function}                                             args.onClearFontError Dismisses `fontError`.
  *
  * @since TBD
  *
  * @return {Function} The `config.renderToolbar` implementation.
  */
 function typographyToolbarRenderer({
-	fonts,
-	selectedFontId,
-	onSelectFont,
 	catalogOptions,
 	dropdownValue,
 	onPickCatalog,
 	fontAction,
 	onFontAction,
 	fontBusy,
+	fontLoading,
 	fontError,
 	onClearFontError,
 }) {
@@ -153,26 +158,6 @@ function typographyToolbarRenderer({
 
 		return (
 			<div className="kadence-blocks-style-library__typography-toolbar">
-				{fonts.length > 1 && (
-					<div className="kadence-blocks-style-library__typography-font-tabs" role="tablist">
-						{fonts.map((font) => (
-							<button
-								key={font.id}
-								type="button"
-								role="tab"
-								aria-selected={font.id === selectedFontId}
-								disabled={controlsBusy}
-								className={classnames('kadence-blocks-style-library__typography-font-tab', {
-									'kadence-blocks-style-library__typography-font-tab--active':
-										font.id === selectedFontId,
-								})}
-								onClick={() => onSelectFont(font.id)}
-							>
-								{font.label}
-							</button>
-						))}
-					</div>
-				)}
 				{fontError && (
 					<Notice status="error" isDismissible onRemove={onClearFontError}>
 						{fontError.message}
@@ -182,6 +167,7 @@ function typographyToolbarRenderer({
 					<div className="kadence-blocks-style-library__typography-font-selector">
 						<span className="kadence-blocks-style-library__typography-font-label">
 							{__('Font', 'kadence-blocks')}
+							{fontLoading && <Spinner />}
 						</span>
 						<div className="kadence-blocks-style-library__typography-font-picker">
 							<SearchableSelectDropdown
@@ -193,15 +179,14 @@ function typographyToolbarRenderer({
 							/>
 							<Button
 								className="kadence-blocks-style-library__typography-font-action"
-								variant={fontAction.type === 'delete' ? 'tertiary' : 'secondary'}
-								icon={fontAction.type === 'delete' ? undefined : plus}
-								isDestructive={fontAction.type === 'delete'}
+								variant={fontAction.type === 'remove' ? 'tertiary' : 'secondary'}
+								icon={fontAction.type === 'remove' ? starFilled : starEmpty}
 								disabled={controlsBusy || fontAction.disabled}
 								onClick={onFontAction}
 							>
-								{fontAction.type === 'delete'
-									? __('Delete', 'kadence-blocks')
-									: __('Add Font', 'kadence-blocks')}
+								{fontAction.type === 'remove'
+									? __('Remove Favorite', 'kadence-blocks')
+									: __('Add Favorite', 'kadence-blocks')}
 							</Button>
 						</div>
 					</div>
@@ -246,12 +231,14 @@ export const TYPOGRAPHY_CONFIG = {
 
 /**
  * The Typography screen body: the base config extended per render with the font-dependent
- * `renderPreview`/`renderToolbar` keys, and the selected-font state (plus the catalog dropdown's
- * pending pick and the Add/Delete Font flow state) they close over. The font selection is
- * view-only, session-scoped React state (never persisted) — it self-heals to the group's first
- * font whenever the selected id leaves the feed, the same stale-item idiom the rest of the app
- * uses, so a font deleted or renamed out from under an open selection never leaves the toolbar
- * pointing at nothing.
+ * `renderPreview`/`renderToolbar` keys, and the selected-family and favorite-write state they close
+ * over. The font SELECTION is view-only, session-scoped React state (never persisted) — only the
+ * favorites list itself is stored.
+ *
+ * The selection is a plain family name, not a favorite's id, so the sample previews any pick from the
+ * catalog rather than only the handful a site keeps. Previewing IS what this screen's font
+ * selector is for: gating it on favorite status left the sample stuck on the previous font for every
+ * other pick, which reads as the control being broken.
  *
  * @param {Object} props The props `ScaleScreen` accepts (`{ label, route, navigate, library }`).
  *
@@ -262,90 +249,54 @@ export const TYPOGRAPHY_CONFIG = {
 export function TypographyScreen(props) {
 	const { library } = props;
 
-	const fonts = useMemo(
-		() => fontOptions(library.feed?.schema, library.feed?.values, FONT_FAMILY_GROUP),
-		[library.feed]
-	);
+	const fonts = useMemo(() => fontOptions(library.feed), [library.feed]);
 
-	const catalogOptions = useMemo(buildCatalogOptions, []);
+	// Rebuilt whenever the favorites change, since they are pinned to the top of the same list.
+	const catalogOptions = useMemo(() => buildCatalogOptions(fonts), [fonts]);
 
-	const [selectedFontId, setSelectedFontId] = useState(() => fonts[0]?.id ?? '');
-	// The catalog dropdown's pending pick: null while it mirrors the previewed font, or a catalog
-	// family name once a pick matches no design-system font (armed for "+ Add Font" but not yet
-	// previewed: previewing a font the library does not own would need a webfont load for a token
-	// that may never be created).
-	const [pendingFontName, setPendingFontName] = useState(null);
+	// The previewed family, as a plain catalog name. One piece of state, not a favorite id plus a
+	// pending pick: the sample previews whatever the dropdown holds, favorite or not. Splitting the
+	// two is what left every non-favorite pick showing the previous font, since only a favorite had
+	// an id to select by.
+	const [selectedFamily, setSelectedFamily] = useState(() => fonts[0]?.label ?? '');
 	const [fontBusy, setFontBusy] = useState(false);
 	const [fontError, setFontError] = useState(null);
 
+	// Seed the preview from the first favorite once the feed arrives, and only then: a family the
+	// user picked is left alone even when it is not a favorite, which is the whole point.
 	useEffect(() => {
-		if (fonts.length > 0 && !fonts.some((font) => font.id === selectedFontId)) {
-			setSelectedFontId(fonts[0].id);
-			setPendingFontName(null);
+		if (selectedFamily === '' && fonts.length > 0) {
+			setSelectedFamily(fonts[0].label);
 		}
-	}, [fonts, selectedFontId]);
+	}, [fonts, selectedFamily]);
 
-	const selectedFont = fonts.find((font) => font.id === selectedFontId) ?? null;
+	// The sample renders from the family that is READY, not the one selected: switching fonts holds
+	// the previous face until the new one can be painted instead of flashing the fallback.
+	const { readyFamily, isLoading: fontLoading } = useGoogleFontLoader(selectedFamily);
 
-	useGoogleFontLoader(selectedFont?.label ?? '');
+	const fontAction = fontActionFor(fonts, selectedFamily);
 
-	// Switching tabs (or a catalog pick that matches a design-system font) always clears a pending
-	// catalog pick, so the dropdown goes back to mirroring the preview.
-	const selectPreviewFont = useCallback((id) => {
-		setPendingFontName(null);
-		setSelectedFontId(id);
-	}, []);
-
-	const dropdownValue = pendingFontName ?? selectedFont?.label ?? '';
-
-	const pickCatalogFont = useCallback(
-		(name) => {
-			const matched = findFontByFamily(fonts, name);
-
-			if (matched) {
-				selectPreviewFont(matched.id);
-			} else {
-				setPendingFontName(name);
-			}
-		},
-		[fonts, selectPreviewFont]
-	);
-
-	const fontAction = fontActionFor(fonts, dropdownValue);
-
-	// Add/Delete Font is deliberately never guarded (unlike selecting a row or navigating away with
-	// a dirty draft): neither touches the size-panel draft, and the post-write `refreshFeed`
-	// re-overlays it exactly as every sibling write does.
+	// Adding or removing a favorite is deliberately never guarded (unlike selecting a row or
+	// navigating away with a dirty draft): neither touches the size-panel draft, and the post-write
+	// `refreshFeed` re-overlays it exactly as every sibling write does.
 	const handleFontAction = useCallback(() => {
 		setFontError(null);
 
-		if (fontAction.type === 'delete') {
-			deleteScaleTokenFlow({
-				slug: library.slug,
-				tokenId: fontAction.font.id,
-				feedVersion: library.version,
-				refreshFeed: library.refreshFeed,
-				onBusy: setFontBusy,
-				onError: setFontError,
-			})
-				.then(() => setPendingFontName(null))
-				.catch(() => {});
-
-			return;
-		}
-
-		addFontFlow({
-			name: dropdownValue,
-			existingIds: library.tokens.map((token) => token.id),
+		const flowArgs = {
+			name: fontAction.font?.label ?? selectedFamily,
 			slug: library.slug,
 			feedVersion: library.version,
 			refreshFeed: library.refreshFeed,
 			onBusy: setFontBusy,
 			onError: setFontError,
-		})
-			.then((id) => selectPreviewFont(id))
-			.catch(() => {});
-	}, [fontAction, dropdownValue, library, selectPreviewFont]);
+		};
+
+		// Neither flow touches the preview: the family stays selected whether it was just added to the
+		// favorites or just taken out of them, so the sample does not jump under the user's cursor.
+		const flow = fontAction.type === 'remove' ? removeFavoriteFontFlow : addFavoriteFontFlow;
+
+		flow(flowArgs).catch(() => {});
+	}, [fontAction, selectedFamily, library]);
 
 	// `useScaleScreen`'s addToken/saveToken/reorderTokens list the whole config in their deps, so an
 	// inline object would rebuild all three every render. The catalog toolbar widens what the config
@@ -354,34 +305,20 @@ export function TypographyScreen(props) {
 	const config = useMemo(
 		() => ({
 			...TYPOGRAPHY_CONFIG,
-			renderPreview: samplePreviewRenderer(selectedFont?.stack ?? ''),
+			renderPreview: samplePreviewRenderer(familyStack(readyFamily)),
 			renderToolbar: typographyToolbarRenderer({
-				fonts,
-				selectedFontId,
-				onSelectFont: selectPreviewFont,
 				catalogOptions,
-				dropdownValue,
-				onPickCatalog: pickCatalogFont,
+				dropdownValue: selectedFamily,
+				onPickCatalog: setSelectedFamily,
 				fontAction,
 				onFontAction: handleFontAction,
 				fontBusy,
+				fontLoading,
 				fontError,
 				onClearFontError: () => setFontError(null),
 			}),
 		}),
-		[
-			selectedFont?.stack,
-			fonts,
-			selectedFontId,
-			selectPreviewFont,
-			catalogOptions,
-			dropdownValue,
-			pickCatalogFont,
-			fontAction,
-			handleFontAction,
-			fontBusy,
-			fontError,
-		]
+		[selectedFamily, readyFamily, catalogOptions, fontAction, handleFontAction, fontBusy, fontLoading, fontError]
 	);
 
 	return <ScaleScreen config={config} {...props} />;

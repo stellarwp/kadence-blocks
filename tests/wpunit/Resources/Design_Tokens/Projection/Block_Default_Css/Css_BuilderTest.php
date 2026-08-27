@@ -187,10 +187,10 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
-	 * The shipped Advanced Text (heading) declarations emit all 13 bound core-design and typography
+	 * The shipped Advanced Text (heading) declarations emit all 12 bound core-design and typography
 	 * properties as one grouped, low-specificity rule on the block root, each pointing its css_prop at the
-	 * matching token var with the resolved default as the fallback — including the font-family fallback
-	 * resolved to the theme's inherited font.
+	 * matching token var with the resolved default as the fallback. Font FAMILY is deliberately not among
+	 * them — a family is a favorite, not a token, so an unset heading inherits the theme's font.
 	 *
 	 * @return void
 	 */
@@ -207,10 +207,6 @@ final class Css_BuilderTest extends TestCase {
 			'background-color:var(' . Css_Var::from_id( 'semantic.color.heading-bg' ) . ',transparent);',
 			$css
 		);
-		$this->assertStringContainsString(
-			'font-family:var(' . Css_Var::from_id( 'semantic.font-family.heading' ) . ',inherit);',
-			$css
-		);
 		$this->assertStringContainsString( 'font-size:var(' . Css_Var::from_id( 'semantic.font-size.heading' ) . ',2rem);', $css );
 		$this->assertStringContainsString( 'line-height:var(' . Css_Var::from_id( 'semantic.line-height.heading' ) . ',1.125);', $css );
 		$this->assertStringContainsString( 'font-weight:var(' . Css_Var::from_id( 'semantic.font-weight.heading' ) . ',400);', $css );
@@ -221,6 +217,7 @@ final class Css_BuilderTest extends TestCase {
 		$this->assertStringContainsString( 'border-width:var(' . Css_Var::from_id( 'semantic.border-width.default' ) . ',1px);', $css );
 		$this->assertStringContainsString( 'border-radius:var(' . Css_Var::from_id( 'semantic.radius.heading' ) . ',0);', $css );
 		$this->assertStringContainsString( 'border-style:var(' . Css_Var::from_id( 'semantic.border-style.default' ) . ',none);}', $css );
+		$this->assertStringNotContainsString( 'font-family:', $css, 'A heading inherits the theme font; no font-family default is emitted.' );
 	}
 
 	/**
@@ -228,7 +225,7 @@ final class Css_BuilderTest extends TestCase {
 	 * heading element the bindings style — the real heading carries the stable `kadence-advancedheading-text`
 	 * class instead. The declared `editor_selector` re-targets the editor build of the rule at that
 	 * descendant, scoped under `.editor-styles-wrapper` so it still outranks the theme's own per-tag element
-	 * styles there, while still carrying every one of the block's 13 bound declarations.
+	 * styles there, while still carrying every one of the block's 12 bound declarations.
 	 *
 	 * @return void
 	 */
@@ -245,10 +242,6 @@ final class Css_BuilderTest extends TestCase {
 			'background-color:var(' . Css_Var::from_id( 'semantic.color.heading-bg' ) . ',transparent);',
 			$css
 		);
-		$this->assertStringContainsString(
-			'font-family:var(' . Css_Var::from_id( 'semantic.font-family.heading' ) . ',inherit);',
-			$css
-		);
 		$this->assertStringContainsString( 'font-size:var(' . Css_Var::from_id( 'semantic.font-size.heading' ) . ',2rem);', $css );
 		$this->assertStringContainsString( 'line-height:var(' . Css_Var::from_id( 'semantic.line-height.heading' ) . ',1.125);', $css );
 		$this->assertStringContainsString( 'font-weight:var(' . Css_Var::from_id( 'semantic.font-weight.heading' ) . ',400);', $css );
@@ -259,6 +252,7 @@ final class Css_BuilderTest extends TestCase {
 		$this->assertStringContainsString( 'border-width:var(' . Css_Var::from_id( 'semantic.border-width.default' ) . ',1px);', $css );
 		$this->assertStringContainsString( 'border-radius:var(' . Css_Var::from_id( 'semantic.radius.heading' ) . ',0);', $css );
 		$this->assertStringContainsString( 'border-style:var(' . Css_Var::from_id( 'semantic.border-style.default' ) . ',none);}', $css );
+		$this->assertStringNotContainsString( 'font-family:', $css, 'A heading inherits the theme font; no font-family default is emitted.' );
 
 		// The front-end rule for the SAME block must stay on the block root, with no editor-only prefix.
 		$this->assertStringNotContainsString( '.editor-styles-wrapper', $this->builder( $registry )->css() );

@@ -642,6 +642,18 @@ final class Dtcg_Validator {
 			);
 		}
 
+		// favoriteFonts is a flat ordered list of font family names — not preset-shaped and not a
+		// { key => value } map, so the tokens-map walk (driven by get_sections(), which excludes
+		// it) never covers it. Without this branch it would pass through with no validation at all.
+		$favorites_section = Extensions::get_section_favorite_fonts();
+
+		if ( isset( $namespace[ $favorites_section ] ) && is_array( $namespace[ $favorites_section ] ) ) {
+			$errors = array_merge(
+				$errors,
+				$this->validate_favorite_fonts( $namespace[ $favorites_section ], $base . '.' . $favorites_section )
+			);
+		}
+
 		return $errors;
 	}
 
@@ -770,6 +782,50 @@ final class Dtcg_Validator {
 					$prefix . '.' . Cast::to_string( $index ),
 					Validation_Error::get_code_value_invalid(),
 					'tokenOrder must be a sequential list of non-empty string token ids.'
+				);
+			}
+		}
+
+		return $errors;
+	}
+
+	/**
+	 * Validate a favoriteFonts section: it must be a sequential list of non-empty string font
+	 * family names. Whether a name is present in the site's font catalog is the REST write guard's
+	 * concern — a family that a theme or plugin has since stopped registering is data drift, not a
+	 * grammar error, and read-side consumers already ignore what they cannot render.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<int|string, mixed> $favorites The decoded favoriteFonts section.
+	 * @param string                   $prefix    Dot-path to the section, for error messages.
+	 *
+	 * @return Validation_Error[]
+	 */
+	private function validate_favorite_fonts( array $favorites, string $prefix ): array {
+		// The `$favorites === []` check is required, not redundant: `range( 0, -1 )` returns
+		// `[ 0, -1 ]` in PHP, not `[]`, so without this short-circuit an empty favorites list would
+		// be misclassified as malformed rather than as a valid empty list.
+		$is_list = $favorites === [] || array_keys( $favorites ) === range( 0, count( $favorites ) - 1 );
+
+		if ( ! $is_list ) {
+			return [
+				new Validation_Error(
+					$prefix,
+					Validation_Error::get_code_value_invalid(),
+					'favoriteFonts must be a sequential list of non-empty font family names.'
+				),
+			];
+		}
+
+		$errors = [];
+
+		foreach ( $favorites as $index => $family ) {
+			if ( ! is_string( $family ) || trim( $family ) === '' ) {
+				$errors[] = new Validation_Error(
+					$prefix . '.' . Cast::to_string( $index ),
+					Validation_Error::get_code_value_invalid(),
+					'favoriteFonts must be a sequential list of non-empty font family names.'
 				);
 			}
 		}

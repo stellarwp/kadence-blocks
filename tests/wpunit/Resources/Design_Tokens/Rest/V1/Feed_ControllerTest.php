@@ -9,6 +9,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\User_Primitive_Registrar;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Feed_Controller;
+use KadenceWP\KadenceBlocks\Utils\Cast;
 use ReflectionClass;
 use ReflectionProperty;
 use Tests\Support\Classes\TestCase;
@@ -721,52 +722,23 @@ final class Feed_ControllerTest extends TestCase {
 	}
 
 	/**
-	 * The renamed, newly declared font-family primitives surface as their own feed group, in
-	 * declaration order, each resolved to the comma-joined stack the Typography screen's FONT
-	 * selector lists — the id rename from `primitive.fontFamily.*` to `primitive.font-family.*`
-	 * reaching all the way through registration and resolution.
+	 * Font family is no longer a token family: the feed carries no `Font Family` group and no
+	 * font-family token at any layer. A family is a favorite, which rides the feed's own
+	 * `favoriteFonts` section instead and resolves through nothing.
 	 *
 	 * @return void
 	 */
-	public function testGetItemReturnsTheFontFamilyGroup(): void {
+	public function testTheFeedCarriesNoFontFamilyTokens(): void {
 		$request = new WP_REST_Request( WP_REST_Server::READABLE );
 		$request->set_param( 'slug', Token_Store::default_slug() );
 
 		$data = $this->controller->get_item( $request )->get_data();
 
-		$this->assertArrayHasKey( 'Font Family', $data['schema']['groups'] );
+		$this->assertArrayNotHasKey( 'Font Family', $data['schema']['groups'] );
 
-		$ids = array_column( $data['schema']['groups']['Font Family'], 'id' );
-		$this->assertSame(
-			[
-				'primitive.font-family.sans',
-				'primitive.font-family.serif',
-				'primitive.font-family.mono',
-			],
-			$ids
-		);
-
-		$this->assertSame( 'Inter, system-ui, sans-serif', $data['values']['primitive.font-family.sans'] );
-		$this->assertSame( 'Georgia, Cambria, serif', $data['values']['primitive.font-family.serif'] );
-		$this->assertSame( 'Menlo, Consolas, monospace', $data['values']['primitive.font-family.mono'] );
-	}
-
-	/**
-	 * `semantic.font-family.control`'s alias followed the primitive rename in the same edit, so it
-	 * still resolves to the renamed primitive's value instead of dangling.
-	 *
-	 * @return void
-	 */
-	public function testSemanticFontFamilyControlResolvesThroughTheRenamedPrimitive(): void {
-		$request = new WP_REST_Request( WP_REST_Server::READABLE );
-		$request->set_param( 'slug', Token_Store::default_slug() );
-
-		$data = $this->controller->get_item( $request )->get_data();
-
-		$this->assertSame(
-			$data['values']['primitive.font-family.sans'],
-			$data['values']['semantic.font-family.control']
-		);
+		foreach ( array_keys( $data['values'] ) as $id ) {
+			$this->assertStringNotContainsString( 'font-family', Cast::to_string( $id ) );
+		}
 	}
 
 	/**
@@ -899,15 +871,18 @@ final class Feed_ControllerTest extends TestCase {
 	}
 
 	/**
-	 * A user-created `fontFamily` primitive minted into the `font-family` group (the $type ->
-	 * id-segment mapping's headline unlock) surfaces inside the declared "Font Family" UI-schema
-	 * group as `userCreated`, and its single-family stack resolves with the spaced name quoted —
-	 * `Css_Renderer::font_family()`'s existing quoting rule, exercised end to end through a minted
-	 * token rather than only a baseline one.
+	 * A `fontFamily` user primitive left in a stored document from before font family stopped being
+	 * a token family still registers and still resolves — `fontFamily` remains a valid DTCG $type,
+	 * so an existing document keeps validating rather than failing on its next write. What it no longer
+	 * does is surface on a screen: with no declared "Font Family" group left to resolve its group key
+	 * against, the registrar's fail-soft files it UNGROUPED — the same path a downgrade or a removed
+	 * group already took — so it keeps its value but has no home screen, and nothing can mint another
+	 * (the create route 404s the group). Its single-family stack still resolves with the spaced name
+	 * quoted, exercising `Css_Renderer::font_family()` end to end through a stored token.
 	 *
 	 * @return void
 	 */
-	public function testUserPrimitiveGroupedIntoFontFamilySurfacesInItsFeedGroupWithQuotedValue(): void {
+	public function testAStoredFontFamilyUserPrimitiveStillResolvesButSurfacesInNoGroup(): void {
 		$slug = Token_Store::default_slug();
 		$id   = 'primitive.font-family.custom.abril-fatface';
 
@@ -946,19 +921,17 @@ final class Feed_ControllerTest extends TestCase {
 		$registry = $this->container->get( Token_Registry::class );
 		$schema   = $registry->to_ui_schema();
 
-		$this->assertArrayHasKey( 'Font Family', $schema['groups'] );
+		$this->assertArrayNotHasKey( 'Font Family', $schema['groups'] );
 
-		$found = null;
-
-		foreach ( $schema['groups']['Font Family'] as $entry ) {
-			if ( $id === $entry['id'] ) {
-				$found = $entry;
-				break;
+		foreach ( $schema['groups'] as $group => $rows ) {
+			if ( '' === $group ) {
+				continue;
 			}
+
+			$this->assertNotContains( $id, array_column( $rows, 'id' ), 'A stored font primitive must not join another screen\'s group.' );
 		}
 
-		$this->assertNotNull( $found, 'The grouped custom font must appear in the declared "Font Family" UI-schema group.' );
-		$this->assertTrue( $found['userCreated'] );
+		$this->assertContains( $id, array_column( $schema['groups'][''] ?? [], 'id' ), 'It lands in the ungrouped bucket no screen renders.' );
 
 		/** @var Token_Resolver $resolver */
 		$resolver = $this->container->get( Token_Resolver::class );

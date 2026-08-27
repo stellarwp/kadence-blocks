@@ -40,7 +40,8 @@
 	// Typography follows the semantic.*.control design tokens, one custom property per property, so a
 	// button follows the design system in the editor and on the front end. Each is a low-specificity
 	// default: a per-button typography value renders at the higher `.kb-btn<uid>` specificity and wins.
-	font-family: var(--kb-token--semantic--font-family--control, inherit);
+	// Font FAMILY is deliberately absent, matching the shipped rule: a family is a favorite, not a
+	// token, so a button inherits whatever the theme gives it until someone picks a font on the block.
 	font-size: var(--kb-token--semantic--font-size--control, 1.125rem);
 	font-weight: var(--kb-token--semantic--font-weight--control);
 	font-style: var(--kb-token--semantic--font-style--control);
