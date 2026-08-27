@@ -80,10 +80,12 @@ describe('BorderField', () => {
 			root.render(createElement(BorderField, { field, values: {}, onValueChange: jest.fn() }));
 		});
 
+		// The role's fixed "None" entry is prepended ahead of the role's own matched tokens.
 		expect(latestBorderControlProps.widthTokens.map((token) => token.id)).toEqual([
+			'ss-none-border-width',
 			'primitive.dimension.border-width.sm',
 		]);
-		expect(latestBorderControlProps.widthTokens[0].alias).toBe('{primitive.dimension.border-width.sm}');
+		expect(latestBorderControlProps.widthTokens[1].alias).toBe('{primitive.dimension.border-width.sm}');
 	});
 
 	it('shows a semantic-bound width as unset rather than listing the semantic', () => {
@@ -99,9 +101,11 @@ describe('BorderField', () => {
 			);
 		});
 
-		// The pool stays the role's primitive scale: a semantic is the block's role-based default, not
-		// something a site owner picked, so it is never offered as a peer of the steps.
+		// The pool stays the role's primitive scale (behind the shared fixed "None" sentinel): a semantic
+		// is the block's role-based default, not something a site owner picked, so it is never offered as
+		// a peer of the steps.
 		expect(latestBorderControlProps.widthTokens.map((token) => token.id)).toEqual([
+			'ss-none-border-width',
 			'primitive.dimension.border-width.sm',
 		]);
 

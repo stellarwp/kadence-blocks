@@ -181,6 +181,32 @@ export function toStoredStyleAxis(next) {
 }
 
 /**
+ * The pickable-token list a border-width field offers: the `border-width` role's narrowed pool
+ * (plus the shared fixed "None" entry, prepended by `pickableTokensForType()` itself). Pulled out
+ * as its own function, mirroring `BoxTokenField`'s `tokensForField`, so it can be unit tested
+ * without rendering the component — `BorderField` uses hooks, so it cannot be called directly as a
+ * plain function the way a hook-free component can.
+ *
+ * A `fixed` entry (the shared "None" sentinel `pickableTokensForType()` already prepended) is
+ * excluded from the re-bracketing below for the same reason `tokensForField` excludes it: its
+ * `alias` is the bare number `0`, and wrapping it in `{${token.id}}` would silently turn it into
+ * the string `"{ss-none-border-width}"`, which `toStoredWidth` then unwraps to the garbage id
+ * `"ss-none-border-width"` instead of the bare `0` the write path expects.
+ *
+ * @param {*} atBreakpoint The resolved width value at the active breakpoint, used to exempt any
+ *                          already-bound token from the primitive narrowing.
+ *
+ * @since TBD
+ *
+ * @return {Array} The pickable-token list.
+ */
+export function widthTokensForField(atBreakpoint) {
+	return pickableTokensForType('dimension', 'border-width', boundTokenIds(atBreakpoint)).map((token) =>
+		token.fixed ? token : { ...token, alias: `{${token.id}}` }
+	);
+}
+
+/**
  * Render a border field from a settings schema entry.
  *
  * @param {Object}   props                    The component props.
@@ -233,11 +259,10 @@ export function BorderField({ field, values, onValueChange }) {
 	// exempts a box control's bound corners: unlinking gives each side its own slot, so pointing one
 	// at a different primitive from its neighbors is ordinary, and exempting only the first would
 	// leave the others rendering their raw dot-path. Width is per-slot (a scalar or a four-slot
-	// list), which is exactly the shape `boundTokenIds` already handles.
-	const widthTokens = pickableTokensForType('dimension', 'border-width', boundTokenIds(shownWidth)).map((token) => ({
-		...token,
-		alias: `{${token.id}}`,
-	}));
+	// list), which is exactly the shape `boundTokenIds` already handles. See `widthTokensForField`'s
+	// own docblock for why its fixed "None" entry is exempt from the re-bracketing every other entry
+	// gets.
+	const widthTokens = widthTokensForField(shownWidth);
 
 	// Which breakpoints the user has opened up into per-side editing. Held here rather than inferred
 	// from the stored shape — see the module docblock — and per breakpoint for the same reason

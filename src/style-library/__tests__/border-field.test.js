@@ -9,6 +9,7 @@ import {
 	toStoredStyleAxis,
 	toStoredWidth,
 	toStoredWidthAxis,
+	widthTokensForField,
 } from '../components/molecules/fields/BorderField';
 
 describe('toControlWidth', () => {
@@ -43,6 +44,15 @@ describe('toStoredWidth', () => {
 	it('writes an unset width as empty', () => {
 		expect(toStoredWidth('')).toBe('');
 		expect(toStoredWidth(null)).toBe('');
+	});
+});
+
+describe('widthTokensForField', () => {
+	it('resolves a None pick to the literal "0", not a bracket string or the garbage sentinel id', () => {
+		const widthTokens = widthTokensForField('');
+		const none = widthTokens.find((token) => token.id === 'ss-none-border-width');
+
+		expect(toStoredWidth(none.alias)).toBe('0');
 	});
 });
 

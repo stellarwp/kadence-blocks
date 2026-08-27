@@ -12,6 +12,7 @@ import {
 	BoxTokenField,
 	semanticDefaultOf,
 	toControlValue,
+	tokensForField,
 	toStoredValue,
 	withoutSemanticSlots,
 } from '../components/molecules/fields/BoxTokenField';
@@ -70,6 +71,16 @@ describe('toStoredValue', () => {
 	it('writes an unset slot as empty', () => {
 		expect(toStoredValue('', 'px')).toBe('');
 		expect(toStoredValue(null, 'px')).toBe('');
+	});
+
+	/**
+	 * A fixed sentinel's keyword is stored verbatim — it is not a token id to unwrap, nor a number to
+	 * suffix with a unit.
+	 *
+	 * @return {void}
+	 */
+	it('round-trips a fixed sentinel keyword unchanged', () => {
+		expect(toStoredValue('ss-auto', 'px')).toBe('ss-auto');
 	});
 });
 
@@ -265,5 +276,43 @@ describe('the pending unit', () => {
 			latestBoxControlProps.onBreakpointChange('desktop');
 		});
 		expect(latestBoxControlProps.unit).toBe('em');
+	});
+});
+
+describe('tokensForField', () => {
+	/**
+	 * Only a margin field offers the fixed "Auto" sentinel — padding has no auto behavior to express,
+	 * so offering it there would be a pick the block cannot honor.
+	 *
+	 * @return {void}
+	 */
+	it('offers Auto only for a margin field, not padding', () => {
+		const marginTokens = tokensForField(
+			{ path: 'tokens.button-margin', tokenType: 'dimension', role: 'spacing' },
+			''
+		);
+		const paddingTokens = tokensForField(
+			{ path: 'tokens.button-padding', tokenType: 'dimension', role: 'spacing' },
+			''
+		);
+
+		expect(marginTokens.some((token) => token.id === 'ss-auto')).toBe(true);
+		expect(paddingTokens.some((token) => token.id === 'ss-auto')).toBe(false);
+	});
+
+	/**
+	 * The None sentinel's alias is the bare number 0, not a `{...}` id string: it has no registered
+	 * token behind it, so bracket-wrapping it would store a dot-path that resolves to nothing.
+	 *
+	 * @return {void}
+	 */
+	it('resolves a None pick to the bare number 0, not a bracket string', () => {
+		const marginTokens = tokensForField(
+			{ path: 'tokens.button-margin', tokenType: 'dimension', role: 'spacing' },
+			''
+		);
+		const none = marginTokens.find((token) => token.id === 'ss-none-spacing');
+
+		expect(none.alias).toBe(0);
 	});
 });

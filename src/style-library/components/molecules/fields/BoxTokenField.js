@@ -40,6 +40,7 @@ import { BoxControl } from '../../../../token-controls/controls/BoxControl';
 import { useBreakpoint } from '../../../../token-controls/context/breakpoint';
 import { parseCssLength } from '../../../../token-controls/helpers/parse-css-length';
 import { isSlotList, readSlot } from '../../../../token-controls/helpers/value-shapes';
+import { autoEntry } from '../../../../token-controls';
 import './BoxTokenField.scss';
 
 /**
@@ -195,6 +196,11 @@ export function toStoredValue(next, unit) {
 		return '0';
 	}
 
+	// A sentinel keyword carries its own meaning; appending a unit would corrupt it.
+	if (typeof next === 'string' && Number.isNaN(Number(next)) && !parseCssLength(next)) {
+		return next;
+	}
+
 	return `${next}${unit || ''}`;
 }
 
@@ -262,10 +268,44 @@ function mapSlots(value, convert) {
 }
 
 /**
+ * The pickable-token list a box-token field offers: its role's narrowed, primitive-preferred pool
+ * (plus the shared fixed "None" entry, prepended by `pickableTokensForType()` itself), with Margin's
+ * "Auto" appended when this is a margin field. Pulled out as its own function so it can be unit
+ * tested without rendering the component — `BoxTokenField` uses hooks, so it cannot be called
+ * directly as a plain function the way a hook-free component can.
+ *
+ * Auto is Margin-only; nothing in `field` besides its own path distinguishes a margin field from a
+ * padding field (both declare identical `tokenType`/`role`), so the decision is made here rather
+ * than inside the shared `pickableTokensForType()` narrowing, which both fields call identically.
+ *
+ * A `fixed` entry (the shared "None" sentinel `pickableTokensForType()` already prepended) is
+ * excluded from the re-bracketing below: its `alias` is the bare number `0`, and wrapping it in
+ * `{${token.id}}` would silently turn it into the string `"{ss-none-spacing}"` — a bracket-wrapped
+ * id, not the bare `0` the box-control write path expects for a fixed sentinel.
+ *
+ * @param {Object} field        The field definition (see `BoxTokenField`'s own JSDoc).
+ * @param {*}      atBreakpoint The resolved value at the active breakpoint, used to exempt any
+ *                               already-bound token from the primitive narrowing.
+ *
+ * @since TBD
+ *
+ * @return {Array} The pickable-token list.
+ */
+export function tokensForField(field, atBreakpoint) {
+	const scoped = pickableTokensForType(field.tokenType, field.role, boundTokenIds(atBreakpoint)).map((token) =>
+		token.fixed ? token : { ...token, alias: `{${token.id}}` }
+	);
+
+	return field.path?.endsWith('margin') ? [...scoped, autoEntry()] : scoped;
+}
+
+/**
  * Render a box-shaped token field from a settings schema entry.
  *
  * @param {Object}   props                  The component props.
  * @param {Object}   props.field            The field definition.
+ * @param {string}   props.field.path       The field's dot path; a path ending in `margin` gets an
+ *                                          "Auto" entry in its token list.
  * @param {string}   props.field.tokenType  The DTCG `$type` the pickable pool is filtered to.
  * @param {?string}  [props.field.role]     Narrows the pool further to one token role.
  * @param {?string}  [props.field.label]    The control's label.
@@ -324,12 +364,8 @@ export function BoxTokenField({ field, value, onChange, slots = 'sides' }) {
 	const asLiteral = (slot) =>
 		typeof slot === 'string' ? (everyToken.find((token) => token.id === slot)?.value ?? slot) : slot;
 
-	// A semantic-bound slot is the block's role-based default, not a selection, so it is blanked for
-	// display and its resolved value becomes what this field falls back to. That is the whole of the
-	// "a semantic's name never shows; its value is the Default" rule — see `withoutSemanticSlots`.
-	// It outranks the field's own declared default, which describes the same thing less precisely:
-	// the declared default is a literal written into the screen config, while this is what the
-	// preset actually resolves in the active library.
+	// A semantic's name never shows; its resolved value becomes the field's Default. It outranks
+	// `field.defaultValue`, which is a config literal rather than what the active library resolves.
 	const shown = withoutSemanticSlots(atBreakpoint);
 	const semanticDefault = semanticDefaultOf(atBreakpoint, everyToken, fieldDefault);
 
@@ -378,10 +414,7 @@ export function BoxTokenField({ field, value, onChange, slots = 'sides' }) {
 			// breakpoint's own. A breakpoint that inherits binds nothing itself, so without this the
 			// semantic it falls back to is filtered out of the pool and the field, finding no entry for
 			// it, shows nothing at all instead of the value actually in effect.
-			tokens={pickableTokensForType(field.tokenType, field.role, boundTokenIds(shown)).map((token) => ({
-				...token,
-				alias: `{${token.id}}`,
-			}))}
+			tokens={tokensForField(field, shown)}
 			// The two kinds of default are still shaped differently, which is why `shownDefault` resolves
 			// them separately above instead of passing either straight through: a value inherited from
 			// another breakpoint is stored the way this app stores values, so it is read through `asLiteral`

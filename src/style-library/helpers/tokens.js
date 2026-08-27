@@ -7,6 +7,7 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { PICKABLE_TOKENS_GLOBAL } from '../constants';
+import { noneEntryForRole } from '../../token-controls';
 
 /**
  * Read the localized design-token feed from the window global.
@@ -139,7 +140,15 @@ export function pickableTokensForType(type, role, selected) {
 		return matched;
 	}
 
-	return preferPrimitiveTokens(matched, selected);
+	const preferred = preferPrimitiveTokens(matched, selected);
+
+	// Shadow is deliberately excluded here even though `noneEntryForRole()` itself knows a "None"
+	// value for it: `BoxShadowField` calls this function directly with `role: 'shadow'` and has not
+	// been migrated onto the shared fixed-sentinel token list yet, so prepending "None" to its pool
+	// would change its picker out from under it. That migration is its own, later piece of work.
+	const none = role === 'shadow' ? null : noneEntryForRole(role);
+
+	return none ? [none, ...preferred] : preferred;
 }
 
 /**
