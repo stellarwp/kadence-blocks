@@ -34,6 +34,39 @@ import { isTokenAlias } from '../../../../token-controls/helpers/token-summary';
 import { TokenColorSelectField } from './TokenColorSelectField';
 
 /**
+ * The button's own "no shadow" semantic token, already an invisible transparent zero-shadow — see
+ * `declarations.php`'s own comment on `semantic.shadow.button`. Deliberately excluded from the
+ * pickable pool's normal listing as a `Brand`-group semantic (`pickableTokensForType`'s primitive
+ * narrowing); `shadowNoneEntry` below is the one deliberate exception, re-admitting it under a
+ * "None" label instead of its registered "Button Shadow" one.
+ *
+ * @since TBD
+ */
+const BUTTON_SHADOW_NONE_TOKEN_ID = 'semantic.shadow.button';
+
+/**
+ * The "None" entry for the Button preset's Shadow field: `BUTTON_SHADOW_NONE_TOKEN_ID` relabeled
+ * "None". A real registered token, not a synthetic sentinel — see this module's own note on why a
+ * composite-valued control can't use a `fixed` entry the way a scalar dimension field's "None"/Auto
+ * can (`===` never matches a freshly-built composite object).
+ *
+ * @since TBD
+ *
+ * @return {{id: string, alias: string, label: string, value: string, role: string}} The entry.
+ */
+function shadowNoneEntry() {
+	const resolved = pickableTokensForType('shadow').find((token) => token.id === BUTTON_SHADOW_NONE_TOKEN_ID);
+
+	return {
+		id: BUTTON_SHADOW_NONE_TOKEN_ID,
+		alias: `{${BUTTON_SHADOW_NONE_TOKEN_ID}}`,
+		label: __('None', 'kadence-blocks'),
+		value: resolved?.value ?? '',
+		role: 'shadow',
+	};
+}
+
+/**
  * The bound token id, unwrapped from its brace-wrapped alias, or unset when `value` holds a
  * composite shadow object instead. `boundTokenIds` (shared with `BorderField`) expects the bare
  * `primitive.`/`semantic.`-prefixed id a preset's own `tokens` map stores; this field's `value`
@@ -73,10 +106,22 @@ export function BoxShadowField({ field, value, onChange }) {
 	// shadow token's derived role — engages the primitive narrowing, matching the three-entry list the
 	// Shadow screen itself offers. `boundShadowTokenIds` exempts the currently-bound token from that
 	// narrowing so a bound semantic still renders as its own label rather than a raw id.
-	const tokens = pickableTokensForType('shadow', 'shadow', boundShadowTokenIds(value)).map((token) => ({
-		...token,
-		alias: `{${token.id}}`,
-	}));
+	//
+	// `shadowNoneEntry()` leads the list — the one deliberate re-admission of a Brand-group semantic,
+	// under its own "None" label rather than its registered one (see the function's own docblock).
+	const tokens = [
+		shadowNoneEntry(),
+		// `BUTTON_SHADOW_NONE_TOKEN_ID` is dropped here even when it is the bound value the primitive
+		// narrowing would otherwise exempt — `shadowNoneEntry()` above already stands for it, under its
+		// "None" label; keeping the narrowing's own copy too would list the same id twice, once under
+		// each label.
+		...pickableTokensForType('shadow', 'shadow', boundShadowTokenIds(value))
+			.filter((token) => token.id !== BUTTON_SHADOW_NONE_TOKEN_ID)
+			.map((token) => ({
+				...token,
+				alias: `{${token.id}}`,
+			})),
+	];
 
 	return (
 		<BoxShadowControl

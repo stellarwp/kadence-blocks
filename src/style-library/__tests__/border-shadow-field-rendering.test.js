@@ -338,17 +338,22 @@ describe('BoxShadowField', () => {
 		window[PICKABLE_TOKENS_GLOBAL] = originalPool;
 	});
 
-	it("sources tokens via pickableTokensForType('shadow', 'shadow', ...), excluding the Brand-group semantics", () => {
+	it("sources tokens via pickableTokensForType('shadow', 'shadow', ...), excluding the Brand-group semantics except the fixed None entry", () => {
 		act(() => {
 			root.render(createElement(BoxShadowField, { field: { label: 'Shadow' }, value: '', onChange: jest.fn() }));
 		});
 
+		// `shadowNoneEntry()` leads the list — the one deliberate re-admission of a Brand-group semantic
+		// (`semantic.shadow.button`, relabeled "None"); every other Brand-group semantic stays excluded.
 		expect(latestBoxShadowControlProps.tokens.map((token) => token.id)).toEqual([
+			'semantic.shadow.button',
 			'primitive.shadow.xs',
 			'primitive.shadow.sm',
 			'primitive.shadow.md',
 		]);
-		expect(latestBoxShadowControlProps.tokens[0].alias).toBe('{primitive.shadow.xs}');
+		expect(latestBoxShadowControlProps.tokens[0].label).toBe('None');
+		expect(latestBoxShadowControlProps.tokens[0].alias).toBe('{semantic.shadow.button}');
+		expect(latestBoxShadowControlProps.tokens[1].alias).toBe('{primitive.shadow.xs}');
 	});
 
 	it('exempts the bound token from the primitive narrowing when it is a Brand-group semantic', () => {
@@ -382,6 +387,7 @@ describe('BoxShadowField', () => {
 		});
 
 		expect(latestBoxShadowControlProps.tokens.map((token) => token.id)).toEqual([
+			'semantic.shadow.button',
 			'primitive.shadow.xs',
 			'primitive.shadow.sm',
 			'primitive.shadow.md',

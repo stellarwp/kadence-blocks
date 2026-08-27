@@ -97,6 +97,7 @@ import { TokenControlRow } from '../../extension/token-indicators/components/Tok
 import { EditorBoxControl } from '../../extension/design-tokens/components/EditorBoxControl';
 import { EditorBorderControl } from '../../extension/design-tokens/components/EditorBorderControl';
 import {
+	BUTTON_SHADOW_NONE_TOKEN_ID,
 	EditorShadowControl,
 	combineColorOpacity,
 	splitColorOpacity,
@@ -141,6 +142,30 @@ const BUTTON_PADDING_FALLBACK = ['0.4em', '1em', '0.4em', '1em'];
  * @since TBD
  */
 const BUTTON_MARGIN_FALLBACK = ['0', '0', '0', '0'];
+
+/**
+ * The "None" entry for the Shadow field: the button's own `semantic.shadow.button` token (already an
+ * invisible, transparent zero-shadow — see the imported `BUTTON_SHADOW_NONE_TOKEN_ID`'s own docblock
+ * in `EditorShadowControl.js`), relabeled
+ * "None" and re-admitted into the pickable list. A real registered token, not a synthetic sentinel
+ * like Margin's `ss-auto`: Shadow's value can be a composite object, and a `fixed` entry's `alias`
+ * only ever matches by `===`, which a freshly-built composite object can never satisfy — reusing a
+ * real, already-resolvable token id sidesteps that entirely.
+ *
+ * @since TBD
+ *
+ * @return {{id: string, alias: string, label: string, value: string, type: string, role: string}} The entry.
+ */
+function shadowNoneEntry() {
+	return {
+		id: BUTTON_SHADOW_NONE_TOKEN_ID,
+		alias: `{${BUTTON_SHADOW_NONE_TOKEN_ID}}`,
+		label: __('None', 'kadence-blocks'),
+		value: resolvedTokenValue(BUTTON_SHADOW_NONE_TOKEN_ID),
+		type: 'shadow',
+		role: 'shadow',
+	};
+}
 
 /**
  * Resolve a per-side box default (padding/margin) from the resolved design-token pool, one value per
@@ -518,7 +543,7 @@ export default function KadenceButtonEdit(props) {
 	// hover/sticky/transparent variant below reuses the same resolved list rather than re-filtering the
 	// pool per state.
 	const borderWidthPickableTokens = pickableTokensForKey('kadence/singlebtn', 'button-border-width');
-	const shadowPickableTokens = pickableTokensForKey('kadence/singlebtn', 'button-shadow');
+	const shadowPickableTokens = [shadowNoneEntry(), ...pickableTokensForKey('kadence/singlebtn', 'button-shadow')];
 	const paddingPickableTokens = pickableTokensForKey('kadence/singlebtn', 'button-padding');
 	// Margin's legacy control also offers "Auto" (`allowAuto`), which Padding's never did.
 	// `ss-auto` is already a fully working spacing slot at the PHP/CSS layer (Spacing_Target's SLOTS,
