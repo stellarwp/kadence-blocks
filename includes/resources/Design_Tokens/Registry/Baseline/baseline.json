@@ -746,7 +746,6 @@
 						"label": "Default",
 						"tokens": {
 							"background": "{semantic.color.rowlayout-bg}",
-							"border": "{semantic.color.border}",
 							"borderRadius": "{semantic.radius.rowlayout}"
 						}
 					}

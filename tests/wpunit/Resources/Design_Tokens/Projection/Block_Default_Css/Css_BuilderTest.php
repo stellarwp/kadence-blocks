@@ -179,7 +179,7 @@ final class Css_BuilderTest extends TestCase {
 		// Row Layout / Column follow the tokens through a low-specificity block-default rule: the row on the
 		// block root, the column on its inner `.kt-inside-inner-col` child. Background follows each block's own
 		// background token (which aliases the transparent primitive, so an uncustomized block stays transparent
-		// — KB's own default); border color follows the brand border token.
+		// — KB's own default).
 		$registry = $this->container->get( Token_Registry::class );
 
 		$css = $this->builder( $registry )->css();
@@ -188,7 +188,6 @@ final class Css_BuilderTest extends TestCase {
 			'.wp-block-kadence-rowlayout{' . $this->declaration( 'background-color', 'kb-row-bg', 'semantic.color.rowlayout-bg', 'transparent' ),
 			$css
 		);
-		$this->assertStringContainsString( $this->declaration( 'border-color', 'kb-row-border-color', 'semantic.color.border', '#E2E8F0' ), $css );
 		$this->assertStringContainsString( $this->declaration( 'border-radius', 'kb-row-radius', 'semantic.radius.rowlayout', '0' ), $css );
 		$this->assertStringContainsString(
 			'.wp-block-kadence-column> .kt-inside-inner-col{' . $this->declaration( 'background-color', 'kb-col-bg', 'semantic.color.column-bg', 'transparent' ),

@@ -726,20 +726,18 @@ return [
 					'css_var'      => 'kb-row-bg',
 					'control_attr' => 'bgColor',
 				],
-				// The row migrates its legacy flat `border`/`borderWidth` attributes into the nested
-				// `borderStyle` composite the current control edits, so the color axis of that composite is
-				// what this property owns — see the image's border bindings for the same shape.
-				'border'       => [
-					'token'            => 'semantic.color.border',
-					'css_prop'         => 'border-color',
-					'css_var'          => 'kb-row-border-color',
-					'control_attr'     => 'borderStyle',
-					'axis'             => 'border-color',
-					'responsive_attrs' => [
-						'tablet' => 'tabletBorderStyle',
-						'mobile' => 'mobileBorderStyle',
-					],
-				],
+				// Border color is NOT a preset property here, and a color-only binding could never become one.
+				// The row calls Kadence_Blocks_CSS::render_border_styles() WITHOUT $single_styles, which takes
+				// the shorthand path: with a border width set it emits `border-top: <width> <style> <color>`,
+				// defaulting an unset color to `transparent` (see that method's $value_defaults). That shorthand
+				// beats a block-default `border-color` rule on both surfaces — inline in the editor, later
+				// source order at equal specificity on the front end — so a preset's color has no path to the
+				// page; with NO width set no border renders at all and a color is invisible by definition. The
+				// Button and the Image pass $single_styles = true, which is exactly why their color bindings do
+				// work. Presetting a row border needs the Button's full width/style/color trio plus a render
+				// bridge that SUPPRESSES the shorthand rather than preceding it.
+				//
+				// @todo SOFT-4234: give the row a preset-able border trio.
 				'borderRadius' => [
 					'token'            => 'semantic.radius.rowlayout',
 					'css_prop'         => 'border-radius',
