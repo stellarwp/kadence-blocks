@@ -165,6 +165,40 @@ final class Preset_ResolverTest extends TestCase {
 	}
 
 	/**
+	 * Every block that declares preset bindings values only properties it binds.
+	 *
+	 * A baseline preset may name a property the block does not bind, which is silently inert in the
+	 * projectors (they iterate bindings) but is NOT inert at the REST write boundary: guard_surface()
+	 * checks the EFFECTIVE preset — the stored override merged over the baseline — so the stray property
+	 * comes back with every save and rejects it as unbound. The block's shipped preset would be
+	 * permanently uneditable, and only against a running site. This asserts the surfaces agree for every
+	 * wired block rather than the Button alone.
+	 *
+	 * @return void
+	 */
+	public function testEveryShippedPresetBindingSurfaceIsConsistent(): void {
+		/** @var Token_Registry $registry */
+		$registry = $this->container->get( Token_Registry::class );
+		$blocks   = $registry->preset_binding_blocks();
+
+		$this->assertNotEmpty( $blocks, 'Preset bindings should be registered at boot.' );
+
+		foreach ( $blocks as $block ) {
+			$bindings = $registry->for_block( $block );
+
+			$this->assertNotNull( $bindings, sprintf( '%s should have registered bindings.', $block ) );
+
+			$report = $bindings->consistency( $this->resolver->value_properties( $block ) );
+
+			$this->assertSame(
+				[],
+				$report['unbound'],
+				sprintf( '%s: baseline presets value properties the block does not bind.', $block )
+			);
+		}
+	}
+
+	/**
 	 * The Advanced Text (heading) preset bindings are registered at boot and their $default resolves the full
 	 * 13-property core-design and typography surface to the shipped baseline's literal values.
 	 *

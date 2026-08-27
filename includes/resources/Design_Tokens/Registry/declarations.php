@@ -694,7 +694,20 @@ return [
 			// primitive — so an uncustomized row stays transparent (KB's own default) unless a site owner brands
 			// that token. Border color follows the brand border token (invisible until a border is added). A
 			// value the user sets is a per-instance rule of equal specificity but later source order, so it still
-			// wins. Padding follows the spacing tokens through the slug bridge, not a binding here.
+			// wins.
+			//
+			// Padding is not a preset property here. It could be one, but not in the css_prop shape the three
+			// bindings below use: the row's `padding` attribute ships a non-empty default of Kadence spacing
+			// slugs ([ 'sm', '', 'sm', '' ]), so every row emits its own per-instance padding rule and a
+			// low-specificity block-default rule would lose to it on every row ever published. Presetting it
+			// needs the button's css_var bridge shape instead (see render_preset_spacing() on the Single
+			// Button block class), plus a gate the button does not need: the row's default padding IS an
+			// attribute value, so an untouched row and a row deliberately set to "sm" are indistinguishable
+			// server-side, and the bridge would have to compare against the shipped default to know whether a
+			// preset may supply padding at all. Until that exists the row's padding follows the spacing
+			// tokens through the slug bridge, which a token-backed padding control also rides — that control
+			// stores its token in the attribute (render_measure_output already resolves a variable value
+			// there) and needs no binding here.
 			'block'    => 'kadence/rowlayout',
 			'bindings' => [
 				// The row names its background attribute `bgColor`, not `background` — the binding key is the
@@ -735,6 +748,13 @@ return [
 			// Column (Section): same as Row Layout, but KB renders the background and border on the inner
 			// `.kt-inside-inner-col` child, so the rules target that descendant. column-bg is the
 			// column's own transparent-by-default override seam, distinct from the row's.
+			//
+			// Unlike the row, the column CAN take a padding binding in the css_prop shape below: its `padding`
+			// attribute defaults to empty, so a low-specificity block-default rule reaches an untouched column
+			// and any value the user sets still wins. It needs its own zero-seeded semantic to do that safely
+			// (the way semantic.spacing.media-padding seeds the image's at 0) — a column renders no padding
+			// today, so seeding it from a non-zero spacing step would indent every column on the site at
+			// upgrade. That belongs with the Section preset screen.
 			'block'    => 'kadence/column',
 			'bindings' => [
 				'background'   => [

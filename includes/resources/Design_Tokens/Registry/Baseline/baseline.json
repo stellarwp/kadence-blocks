@@ -747,8 +747,7 @@
 						"tokens": {
 							"background": "{semantic.color.rowlayout-bg}",
 							"border": "{semantic.color.border}",
-							"borderRadius": "{semantic.radius.rowlayout}",
-							"padding": "{semantic.spacing.section}"
+							"borderRadius": "{semantic.radius.rowlayout}"
 						}
 					}
 				},
@@ -759,8 +758,7 @@
 						"tokens": {
 							"background": "{semantic.color.column-bg}",
 							"border": "{semantic.color.border}",
-							"borderRadius": "{semantic.radius.column}",
-							"padding": "{semantic.spacing.block}"
+							"borderRadius": "{semantic.radius.column}"
 						}
 					}
 				},
