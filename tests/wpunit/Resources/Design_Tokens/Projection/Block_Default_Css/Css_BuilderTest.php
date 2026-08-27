@@ -346,6 +346,40 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
+	 * A binding that declares a css_var alongside its css_prop wraps the declaration in that variable, so a
+	 * selected preset (which sets `--<css_var>` on the block root) can vary a property delivered as a
+	 * block-default rule. The token variable stays the fallback, so nothing changes until a preset sets it.
+	 *
+	 * @return void
+	 */
+	public function testACssVarBindingWrapsTheDeclarationInThePresetVariable(): void {
+		$var = Css_Var::from_id( 'semantic.radius.media' );
+
+		$css = $this->builder( $this->image_registry( 'kb-img-radius' ) )->css();
+
+		$this->assertStringContainsString(
+			'.wp-block-kadence-image img{border-radius:var(--kb-img-radius,var(' . $var . ',0));}',
+			$css
+		);
+	}
+
+	/**
+	 * The wrapper is opt-in: a binding that declares no css_var emits the bare token variable exactly as it
+	 * did before the wrapper existed. This is what keeps an un-migrated block's output byte-identical.
+	 *
+	 * @return void
+	 */
+	public function testABindingWithoutACssVarEmitsTheUnwrappedTokenVariable(): void {
+		$var = Css_Var::from_id( 'semantic.radius.media' );
+
+		$css = $this->builder( $this->image_registry() )->css();
+
+		// Asserted whole rather than by substring: the point is that NOTHING wraps the token variable, which a
+		// containment check on the inner value could not tell apart from the wrapped form.
+		$this->assertSame( '.wp-block-kadence-image img{border-radius:var(' . $var . ',0);}', $css );
+	}
+
+	/**
 	 * Build the builder with a given registry and the real (baseline-backed) preset resolver.
 	 *
 	 * @param Token_Registry       $registry The registry whose preset bindings the builder reads.
@@ -362,9 +396,22 @@ final class Css_BuilderTest extends TestCase {
 	 * A registry holding the media-radius token and the Image preset bindings binding borderRadius to it via a
 	 * css_prop target, so the builder emits the block-default radius rule.
 	 *
+	 * @param string|null $css_var The KB-owned custom property the binding drives (without its leading `--`),
+	 *                             or null to declare none.
+	 *
 	 * @return Token_Registry
 	 */
-	private function image_registry(): Token_Registry {
+	private function image_registry( ?string $css_var = null ): Token_Registry {
+		$binding = [
+			'token'        => 'semantic.radius.media',
+			'css_prop'     => 'border-radius',
+			'css_selector' => 'img',
+		];
+
+		if ( $css_var !== null ) {
+			$binding['css_var'] = $css_var;
+		}
+
 		$registry = new Token_Registry();
 		$registry->register(
 			[
@@ -377,11 +424,7 @@ final class Css_BuilderTest extends TestCase {
 			[
 				'block'    => 'kadence/image',
 				'bindings' => [
-					'borderRadius' => [
-						'token'        => 'semantic.radius.media',
-						'css_prop'     => 'border-radius',
-						'css_selector' => 'img',
-					],
+					'borderRadius' => $binding,
 				],
 			]
 		);
