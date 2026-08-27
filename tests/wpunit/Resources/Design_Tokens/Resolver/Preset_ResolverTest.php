@@ -128,8 +128,6 @@ final class Preset_ResolverTest extends TestCase {
 				'button-border-color',
 				'button-border-style',
 				'button-border-width',
-				'button-margin',
-				'button-padding',
 				'button-radius',
 				'button-text',
 				'button-text-hover',

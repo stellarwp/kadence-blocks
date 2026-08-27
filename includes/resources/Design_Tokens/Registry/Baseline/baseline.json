@@ -827,19 +827,7 @@
 							"button-radius": "{semantic.radius.control}",
 							"button-border-width": "{semantic.border-width.default}",
 							"button-border-style": "{semantic.border-style.default}",
-							"button-border-color": "{semantic.color.border}",
-							"button-padding": [
-								"{semantic.spacing.button-padding-top}",
-								"{semantic.spacing.button-padding-right}",
-								"{semantic.spacing.button-padding-bottom}",
-								"{semantic.spacing.button-padding-left}"
-							],
-							"button-margin": [
-								"{semantic.spacing.button-margin-top}",
-								"{semantic.spacing.button-margin-right}",
-								"{semantic.spacing.button-margin-bottom}",
-								"{semantic.spacing.button-margin-left}"
-							]
+							"button-border-color": "{semantic.color.border}"
 						}
 					},
 					"secondary": {
@@ -852,19 +840,7 @@
 							"button-radius": "{semantic.radius.control}",
 							"button-border-width": "{semantic.border-width.default}",
 							"button-border-style": "{semantic.border-style.default}",
-							"button-border-color": "{semantic.color.border}",
-							"button-padding": [
-								"{semantic.spacing.button-padding-top}",
-								"{semantic.spacing.button-padding-right}",
-								"{semantic.spacing.button-padding-bottom}",
-								"{semantic.spacing.button-padding-left}"
-							],
-							"button-margin": [
-								"{semantic.spacing.button-margin-top}",
-								"{semantic.spacing.button-margin-right}",
-								"{semantic.spacing.button-margin-bottom}",
-								"{semantic.spacing.button-margin-left}"
-							]
+							"button-border-color": "{semantic.color.border}"
 						}
 					}
 				},
