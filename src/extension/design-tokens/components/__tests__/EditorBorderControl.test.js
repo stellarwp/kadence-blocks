@@ -501,7 +501,9 @@ describe('EditorBorderControl linked view', () => {
 
 	/**
 	 * Toggling link while unlinked collapses every side to the top side's value — matching
-	 * `BorderControl`'s own uncontrolled relink rule — and the control reports linked afterward.
+	 * `BorderControl`'s own uncontrolled relink rule — and once that collapsed value comes back
+	 * through `value` (as it would from a real `setAttributes` round trip), the control derives
+	 * linked from the now-uniform sides on its own, with no override forcing it.
 	 *
 	 * @return {void}
 	 */
@@ -514,7 +516,7 @@ describe('EditorBorderControl linked view', () => {
 			borderControl.props.onToggleLink();
 		});
 
-		expect(onChange).toHaveBeenCalledWith([
+		const collapsed = [
 			{
 				top: ['#111111', 'solid', 2],
 				right: ['#111111', 'solid', 2],
@@ -522,8 +524,29 @@ describe('EditorBorderControl linked view', () => {
 				left: ['#111111', 'solid', 2],
 				unit: 'px',
 			},
-		]);
-		expect(latestBorderControlProps.isLinked).toBe(true);
+		];
+		expect(onChange).toHaveBeenCalledWith(collapsed);
+
+		const { borderControl: rerendered } = renderEditorBorderControl({ value: collapsed });
+		expect(rerendered.props.isLinked).toBe(true);
+	});
+
+	/**
+	 * A relink's optimistic override does not survive a value that arrives back still diverging (e.g.
+	 * an undo restoring the four original sides right after the relink) — the control must fall back
+	 * to deriving from the real value rather than keep insisting the border is linked.
+	 *
+	 * @return {void}
+	 */
+	it('stops reporting linked once a relink is followed by a still-diverging value', () => {
+		const { borderControl } = renderEditorBorderControl({ value: NATIVE_VALUE });
+
+		act(() => {
+			borderControl.props.onToggleLink();
+		});
+
+		const { borderControl: rerendered } = renderEditorBorderControl({ value: NATIVE_VALUE, label: 'Border' });
+		expect(rerendered.props.isLinked).toBe(false);
 	});
 
 	/**
