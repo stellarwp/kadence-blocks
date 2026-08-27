@@ -3,7 +3,7 @@
 /**
  * Internal dependencies
  */
-import { EditorShadowControl, combineColorOpacity, splitColorOpacity } from '../EditorShadowControl';
+import { EditorShadowControl, combineColorOpacity, splitColorOpacity, toNativeShadow } from '../EditorShadowControl';
 
 /**
  * A representative native shadow value — every field a different, distinguishable number/string, so a
@@ -209,6 +209,29 @@ describe('EditorShadowControl native <-> BoxShadowControl value bridging', () =>
 			},
 		]);
 		expect(onChange.mock.calls[0][0][0]).not.toHaveProperty('alias');
+	});
+
+	/**
+	 * Picking the shared fixed "None" sentinel resolves it to the zero native shadow item, the same
+	 * way any other `fixed` tokens-list entry resolves generically by `alias` match — no special-casing
+	 * needed in `toNativeShadow` itself.
+	 *
+	 * @return {void}
+	 */
+	it('resolves a fixed None pick to the zero native shadow item', () => {
+		const noneToken = {
+			id: 'ss-none-shadow',
+			label: 'None',
+			value: '0px 0px 0px 0px transparent',
+			alias: '0px 0px 0px 0px transparent',
+			fixed: true,
+			type: 'shadow',
+			role: 'shadow',
+		};
+
+		expect(toNativeShadow(noneToken.alias, [noneToken])).toEqual([
+			{ color: 'transparent', opacity: 1, hOffset: 0, vOffset: 0, blur: 0, spread: 0, inset: false },
+		]);
 	});
 
 	/**

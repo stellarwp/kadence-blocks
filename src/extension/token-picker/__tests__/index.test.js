@@ -454,6 +454,14 @@ describe('pickableTokensForKey', () => {
 		expect(result.every((token) => token.role === 'shadow')).toBe(true);
 	});
 
+	it('carries exactly one fixed "None" entry for shadow, so a host must not prepend its own', () => {
+		// `src/blocks/singlebtn/edit.js` builds its shadow picker list straight from this call. A second
+		// prepend at that call site would duplicate the row and collide on the React key.
+		const result = pickableTokensForKey('kadence/singlebtn', 'button-shadow');
+
+		expect(result.filter((token) => token.id === 'ss-none-shadow')).toHaveLength(1);
+	});
+
 	it('succeeds by key on the exact same property that pickableTokensForControl cannot reach by any control_attr guess, proving the two lookup paths are genuinely independent', () => {
 		// Not a vacuous "no control_attr matches, so both return []" comparison: pickableTokensForKey
 		// resolves real tokens for this property (asserted above), while pickableTokensForControl fails to

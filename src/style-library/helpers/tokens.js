@@ -143,9 +143,12 @@ export function pickableTokensForType(type, role, selected) {
 	const preferred = preferPrimitiveTokens(matched, selected);
 
 	// Shadow is deliberately excluded here even though `noneEntryForRole()` itself knows a "None"
-	// value for it: `BoxShadowField` calls this function directly with `role: 'shadow'` and has not
-	// been migrated onto the shared fixed-sentinel token list yet, so prepending "None" to its pool
-	// would change its picker out from under it. That migration is its own, later piece of work.
+	// value for it. Shadow's "None" is added by each host at its own call site instead — `BoxShadowField`
+	// here and `src/blocks/singlebtn/edit.js` in the editor — because the shadow role's registered
+	// tokens need per-alias resolution (`parseResolvedShadow`/`resolveShadowPick`) that this generic
+	// dimension-role prepend has no notion of. So the shared narrowing stays out of shadow's way rather
+	// than duplicating that logic; prepending here as well would only give every shadow picker two
+	// "None" rows with the same id.
 	const none = role === 'shadow' ? null : noneEntryForRole(role);
 
 	return none ? [none, ...preferred] : preferred;

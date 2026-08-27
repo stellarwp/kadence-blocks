@@ -470,6 +470,8 @@ export default function KadenceButtonEdit(props) {
 	// hover/sticky/transparent variant below reuses the same resolved list rather than re-filtering the
 	// pool per state.
 	const borderWidthPickableTokens = pickableTokensForKey('kadence/singlebtn', 'button-border-width');
+	// The shared narrowing in `pickableTokensForKey` already prepends the fixed "None" sentinel for the
+	// shadow role, so this list must NOT prepend a second one.
 	const shadowPickableTokens = pickableTokensForKey('kadence/singlebtn', 'button-shadow');
 	const paddingPickableTokens = pickableTokensForKey('kadence/singlebtn', 'button-padding');
 	const marginPickableTokens = pickableTokensForKey('kadence/singlebtn', 'button-margin');

@@ -32,6 +32,7 @@ import { BoxShadowControl } from '../../../../token-controls/controls/BoxShadowC
 import { boundTokenIds } from './BoxTokenField';
 import { isTokenAlias } from '../../../../token-controls/helpers/token-summary';
 import { TokenColorSelectField } from './TokenColorSelectField';
+import { noneEntryForRole, parseResolvedShadow } from '../../../../token-controls';
 
 /**
  * The bare token id a stored shadow holds, or the value unchanged when it holds a composite shadow
@@ -115,6 +116,26 @@ export function toStoredShadow(next) {
 }
 
 /**
+ * Resolve a `BoxShadowControl` pick to what this field stores: a `fixed` entry (the shared "None"
+ * sentinel; it has no registered token PHP could otherwise resolve later) resolves to its literal
+ * composite immediately, the same way a Custom-tab edit already does. A real token's alias, or an
+ * already-composite Custom-tab value, passes through unchanged — a real token stays a live alias so
+ * a later scale edit still cascades into this preset, matching every other Style Library field.
+ *
+ * @param {string|Object} picked What `BoxShadowControl.onChange` reported.
+ * @param {Array}         tokens The pickable-token list `picked` was chosen from.
+ *
+ * @since TBD
+ *
+ * @return {string|Object} What this field writes.
+ */
+export function resolveShadowPick(picked, tokens) {
+	const entry = tokens.find((token) => token.alias === picked);
+
+	return entry?.fixed ? parseResolvedShadow(entry.value) : picked;
+}
+
+/**
  * Render a box-shadow field from a settings schema entry.
  *
  * @param {Object}  props                  The component props.
@@ -137,16 +158,20 @@ export function BoxShadowField({ field, value, onChange }) {
 	// semantics (`semantic.shadow.media`, `semantic.shadow.button`) that back other blocks' own
 	// default CSS and were never meant to be end-user-pickable here. Passing `role: 'shadow'` — every
 	// shadow token's derived role — engages the primitive narrowing, matching the three-entry list the
-	// Shadow screen itself offers.
-	const tokens = pickableTokensForType('shadow', 'shadow', boundShadowTokenIds(shown)).map((token) => ({
-		...token,
-		alias: `{${token.id}}`,
-	}));
+	// Shadow screen itself offers. `boundShadowTokenIds` exempts the currently-bound token from that
+	// narrowing so a bound semantic still renders as its own label rather than a raw id.
+	const tokens = [
+		noneEntryForRole('shadow'),
+		...pickableTokensForType('shadow', 'shadow', boundShadowTokenIds(shown)).map((token) => ({
+			...token,
+			alias: `{${token.id}}`,
+		})),
+	];
 
 	return (
 		<BoxShadowControl
 			value={shown}
-			onChange={(next) => !field.readOnly && onChange(toStoredShadow(next))}
+			onChange={(next) => !field.readOnly && onChange(toStoredShadow(resolveShadowPick(next, tokens)))}
 			label={field.label}
 			tokens={tokens}
 			renderColor={({ value: color, onChange: onColorChange }) => (

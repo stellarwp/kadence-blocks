@@ -35,7 +35,7 @@ jest.mock('../../token-controls/controls/BoxShadowControl', () => ({
 // eslint-disable-next-line import/first -- must follow the jest.mock calls above.
 import { BorderField } from '../components/molecules/fields/BorderField';
 // eslint-disable-next-line import/first -- must follow the jest.mock calls above.
-import { BoxShadowField } from '../components/molecules/fields/BoxShadowField';
+import { BoxShadowField, resolveShadowPick } from '../components/molecules/fields/BoxShadowField';
 
 describe('BorderField', () => {
 	let container;
@@ -320,11 +320,12 @@ describe('BoxShadowField', () => {
 		});
 
 		expect(latestBoxShadowControlProps.tokens.map((token) => token.id)).toEqual([
+			'ss-none-shadow',
 			'primitive.shadow.xs',
 			'primitive.shadow.sm',
 			'primitive.shadow.md',
 		]);
-		expect(latestBoxShadowControlProps.tokens[0].alias).toBe('{primitive.shadow.xs}');
+		expect(latestBoxShadowControlProps.tokens[1].alias).toBe('{primitive.shadow.xs}');
 	});
 
 	it('shows a semantic-bound shadow as unset rather than listing the semantic', () => {
@@ -340,8 +341,10 @@ describe('BoxShadowField', () => {
 			);
 		});
 
-		// The list stays the Shadow screen's own three steps — no Brand-group semantic among them.
+		// The list stays the Shadow screen's own three steps (behind the shared fixed "None" sentinel) —
+		// no Brand-group semantic among them.
 		expect(latestBoxShadowControlProps.tokens.map((token) => token.id)).toEqual([
+			'ss-none-shadow',
 			'primitive.shadow.xs',
 			'primitive.shadow.sm',
 			'primitive.shadow.md',
@@ -364,6 +367,7 @@ describe('BoxShadowField', () => {
 		});
 
 		expect(latestBoxShadowControlProps.tokens.map((token) => token.id)).toEqual([
+			'ss-none-shadow',
 			'primitive.shadow.xs',
 			'primitive.shadow.sm',
 			'primitive.shadow.md',
@@ -435,5 +439,70 @@ describe('BoxShadowField', () => {
 
 		expect(onChange).not.toHaveBeenCalled();
 		expect(latestBoxShadowControlProps.disabled).toBe(true);
+	});
+});
+
+describe('resolveShadowPick', () => {
+	const NONE_TOKEN = {
+		id: 'ss-none-shadow',
+		label: 'None',
+		value: '0px 0px 0px 0px transparent',
+		alias: '0px 0px 0px 0px transparent',
+		fixed: true,
+		type: 'shadow',
+		role: 'shadow',
+	};
+
+	const REAL_TOKEN = {
+		id: 'primitive.shadow.sm',
+		label: 'Small',
+		value: '0px 2px 8px 0px #1717171f',
+		alias: '{primitive.shadow.sm}',
+		type: 'shadow',
+		role: 'shadow',
+	};
+
+	/**
+	 * A fixed sentinel has no registered token behind it for PHP to resolve later, so it is stored as
+	 * its literal composite at pick time rather than kept as a live alias.
+	 *
+	 * @return {void}
+	 */
+	it('resolves a fixed None pick to the literal zero composite', () => {
+		expect(resolveShadowPick(NONE_TOKEN.alias, [NONE_TOKEN, REAL_TOKEN])).toEqual({
+			color: 'transparent',
+			offsetX: '0px',
+			offsetY: '0px',
+			blur: '0px',
+			spread: '0px',
+			inset: false,
+		});
+	});
+
+	/**
+	 * A real token stays a live alias, so a later edit to its scale still cascades into this preset.
+	 *
+	 * @return {void}
+	 */
+	it('keeps a real token pick as its live alias', () => {
+		expect(resolveShadowPick(REAL_TOKEN.alias, [NONE_TOKEN, REAL_TOKEN])).toBe(REAL_TOKEN.alias);
+	});
+
+	/**
+	 * A hand-composed shadow is already literal and passes through untouched.
+	 *
+	 * @return {void}
+	 */
+	it('passes a Custom-tab composite through unchanged', () => {
+		const composite = {
+			color: '#ff0000',
+			offsetX: '1px',
+			offsetY: '1px',
+			blur: '2px',
+			spread: '0px',
+			inset: false,
+		};
+
+		expect(resolveShadowPick(composite, [NONE_TOKEN, REAL_TOKEN])).toBe(composite);
 	});
 });
