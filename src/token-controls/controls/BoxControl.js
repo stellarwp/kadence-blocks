@@ -28,6 +28,41 @@ import { TokenSelector } from '../organisms/TokenSelector';
 import { isSlotList, readSlot, toShorthand, toSlotList } from '../helpers/value-shapes';
 
 /**
+ * The token pool one slot's picker should offer: the shared pool, minus any token another slot
+ * currently holds. A caller building `tokens` for the whole control (e.g. the Style Library's
+ * `BoxTokenField`) exempts every currently-bound token from its primitives-only narrowing so no
+ * slot's own binding silently disappears from the pool — but that exemption is computed once for
+ * all four slots together, so the shared list still carries slot B's token when slot A is what's
+ * open. Filtering it back out here, per slot, is what keeps a sibling's specific token from showing
+ * up as a pickable option in a slot it was never bound to. A token equal to THIS slot's own current
+ * value is never dropped, so the field never loses track of its own selection, and the linked
+ * slot (`index === null`) needs no filtering at all — there is only one value to compare against.
+ *
+ * @param {Array}   tokens The shared token pool passed to the whole control.
+ * @param {*}       value  The whole box value (a scalar or a four-slot list).
+ * @param {?number} index  This slot's index, or `null` for the linked slot.
+ * @param {*}       slot   This slot's own current value.
+ *
+ * @since TBD
+ *
+ * @return {Array} The token pool this slot's picker should offer.
+ */
+export function tokensForSlot(tokens, value, index, slot) {
+	if (index === null) {
+		return tokens;
+	}
+
+	const siblingValues = new Set(
+		[0, 1, 2, 3]
+			.filter((slotIndex) => slotIndex !== index)
+			.map((slotIndex) => readSlot(value, slotIndex))
+			.filter((siblingValue) => siblingValue && siblingValue !== slot)
+	);
+
+	return siblingValues.size ? tokens.filter((token) => !siblingValues.has(token.alias)) : tokens;
+}
+
+/**
  * Render a box-shaped token control.
  *
  * @param {Object}    props                      The component props.
@@ -136,7 +171,7 @@ export function BoxControl({
 						defaultValue={index === null ? toShorthand(defaultValue) : readSlot(defaultValue, index)}
 						inherited={inherited}
 						icon={slotIcons?.[index ?? 0]}
-						tokens={tokens}
+						tokens={tokensForSlot(tokens, value, index, slot)}
 						min={min}
 						max={max}
 						step={step}
