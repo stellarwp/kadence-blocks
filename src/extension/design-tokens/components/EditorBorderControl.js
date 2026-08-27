@@ -297,7 +297,12 @@ export function EditorBorderControl({
 				activeUnit
 			)
 		);
-		setLinkOverride((next) => ({ ...next, [breakpoint]: true }));
+		// Equal sides derive linked on their own once the collapsed value comes back through `value`
+		// (`isUniformBorder` above), so no override is needed to show the linked view — pinning `true`
+		// unconditionally here was the bug: nothing ever cleared it back, so a later divergence (e.g.
+		// an undo restoring the four original sides) kept rendering as linked regardless of what the
+		// stored value actually was.
+		setLinkOverride((next) => ({ ...next, [breakpoint]: undefined }));
 	};
 
 	return (
