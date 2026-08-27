@@ -3,6 +3,7 @@
  */
 
 import metadata from './block.json';
+import deprecated from './deprecated';
 
 /**
  * Import Icon stuff
@@ -37,6 +38,7 @@ registerBlockType('kadence/singlebtn', {
 	save() {
 		return null;
 	},
+	deprecated,
 	example: {
 		attributes: {
 			text: __('Click Me!', 'kadence-blocks'),
