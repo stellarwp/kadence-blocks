@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9dc31cbf2f71ab015a82f3cfd0a5215c",
+    "content-hash": "7c0e3de24ea95985be2f78bdde0bb84a",
     "packages": [
         {
             "name": "adbario/php-dot-notation",
@@ -1023,16 +1023,16 @@
         },
         {
             "name": "stellarwp/harbor",
-            "version": "v1.6.0",
+            "version": "dev-smtnc-1844-harbor-expose-a-reusable-activation-url-api-for-php-and-js",
             "source": {
                 "type": "git",
                 "url": "https://github.com/stellarwp/harbor.git",
-                "reference": "e0253fa5512522a50dd73abe990d3591017494fb"
+                "reference": "96ade8485da7eb5c802d30b752b9d25c96c36846"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stellarwp/harbor/zipball/e0253fa5512522a50dd73abe990d3591017494fb",
-                "reference": "e0253fa5512522a50dd73abe990d3591017494fb",
+                "url": "https://api.github.com/repos/stellarwp/harbor/zipball/96ade8485da7eb5c802d30b752b9d25c96c36846",
+                "reference": "96ade8485da7eb5c802d30b752b9d25c96c36846",
                 "shasum": ""
             },
             "require": {
@@ -1087,9 +1087,9 @@
             "description": "A library that integrates a WordPress product with the Liquid Web licensing system.",
             "support": {
                 "issues": "https://github.com/stellarwp/harbor/issues",
-                "source": "https://github.com/stellarwp/harbor/tree/v1.6.0"
+                "source": "https://github.com/stellarwp/harbor/tree/smtnc-1844-harbor-expose-a-reusable-activation-url-api-for-php-and-js"
             },
-            "time": "2026-07-27T14:52:06+00:00"
+            "time": "2026-08-14T18:12:08+00:00"
         },
         {
             "name": "stellarwp/licensing-api-client",
@@ -12984,6 +12984,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
+        "stellarwp/harbor": 20,
         "stellarwp/uplink": 20
     },
     "prefer-stable": false,
@@ -12995,5 +12996,5 @@
     "platform-overrides": {
         "php": "7.4"
     },
-    "plugin-api-version": "2.9.0"
+    "plugin-api-version": "2.6.0"
 }

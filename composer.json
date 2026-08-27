@@ -43,7 +43,7 @@
 		"psr/container": "^1.0",
 		"stellarwp/container-contract": "^1.1",
 		"stellarwp/db": "^1.1",
-		"stellarwp/harbor": "^1.6",
+		"stellarwp/harbor": "dev-smtnc-1844-harbor-expose-a-reusable-activation-url-api-for-php-and-js",
 		"stellarwp/prophecy-image-downloader": "^3.0",
 		"stellarwp/prophecy-storage": "^3.0",
 		"stellarwp/schema": "^2.0",
