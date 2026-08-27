@@ -28,9 +28,9 @@ final class PresetNavTest extends TestCase {
 	}
 
 	/**
-	 * The shipped registry surfaces exactly one nav entry today — the singlebtn block — carrying
-	 * its declared Style Library section label ("Button"), never the picker control's own label
-	 * ("Style").
+	 * Every shipped nav entry carries its declared Style Library section label ("Button", "Icon"),
+	 * never the picker control's own label — both blocks declare that as "Style". Order is
+	 * registration order, which is declaration order in `declarations.php`.
 	 *
 	 * @return void
 	 */
@@ -42,6 +42,10 @@ final class PresetNavTest extends TestCase {
 				[
 					'block' => 'kadence/singlebtn',
 					'label' => 'Button',
+				],
+				[
+					'block' => 'kadence/single-icon',
+					'label' => 'Icon',
 				],
 			],
 			$entries
@@ -239,8 +243,6 @@ final class PresetNavTest extends TestCase {
 		yield 'rowlayout' => [ 'block' => 'kadence/rowlayout' ];
 
 		yield 'column' => [ 'block' => 'kadence/column' ];
-
-		yield 'single icon' => [ 'block' => 'kadence/single-icon' ];
 
 		yield 'advanced heading' => [ 'block' => 'kadence/advancedheading' ];
 	}

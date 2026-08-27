@@ -802,8 +802,13 @@ return [
 			// cleared size. The per-block Adapter and the editor attribute-default catalog are unaffected: they
 			// seed the registration default so a never-customized icon carries a concrete size, and this rule
 			// answers only for an explicitly cleared one.
-			'block'    => 'kadence/single-icon',
-			'bindings' => [
+			'block'         => 'kadence/single-icon',
+			'label'         => __( 'Style', 'kadence-blocks' ), // the editor picker control's label.
+			'style_library' => [
+				// The Style Library BLOCK PRESETS nav label — names the block, not the picker control.
+				'label' => __( 'Icon', 'kadence-blocks' ),
+			],
+			'bindings'      => [
 				'color' => [
 					'token'        => 'semantic.color.icon',
 					'css_prop'     => 'color',

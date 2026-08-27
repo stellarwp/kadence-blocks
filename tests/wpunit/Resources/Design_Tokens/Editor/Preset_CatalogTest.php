@@ -22,6 +22,8 @@ final class Preset_CatalogTest extends TestCase {
 
 	private const ICON = 'kadence/single-icon';
 
+	private const IMAGE = 'kadence/image';
+
 	/**
 	 * @var Preset_Catalog
 	 */
@@ -131,8 +133,6 @@ final class Preset_CatalogTest extends TestCase {
 
 		yield 'column' => [ 'block' => 'kadence/column' ];
 
-		yield 'single icon' => [ 'block' => 'kadence/single-icon' ];
-
 		yield 'advanced heading' => [ 'block' => 'kadence/advancedheading' ];
 	}
 
@@ -240,14 +240,14 @@ final class Preset_CatalogTest extends TestCase {
 	public function testABlockWithoutAPickerLabelCarriesPropertiesButNoPresetOptions(): void {
 		$library = $this->catalog->all()['libraries'][ Token_Store::default_slug() ];
 
-		$this->assertArrayHasKey( self::ICON, $library );
-		$this->assertNull( $library[ self::ICON ]['label'] );
-		$this->assertSame( [], $library[ self::ICON ]['presets'] );
+		$this->assertArrayHasKey( self::IMAGE, $library );
+		$this->assertNull( $library[ self::IMAGE ]['label'] );
+		$this->assertSame( [], $library[ self::IMAGE ]['presets'] );
 
 		// The surface the token picker keys off is present regardless, as is the default the controls compare
 		// against.
-		$this->assertNotEmpty( $library[ self::ICON ]['properties'] );
-		$this->assertSame( 'default', $library[ self::ICON ]['default'] );
+		$this->assertNotEmpty( $library[ self::IMAGE ]['properties'] );
+		$this->assertSame( 'default', $library[ self::IMAGE ]['default'] );
 
 		// The picker-driven Button is unaffected: it declares a label, so it still carries its options.
 		$this->assertNotEmpty( $library[ self::BUTTON ]['presets'] );
