@@ -9,7 +9,7 @@
 import { get } from 'lodash';
 import { KADENCE_TOKEN_NAMESPACE } from '../../token-controls/helpers/preset-envelope';
 import { activeLibrary, activePresetFor, blockProperties, blockPresetValues } from './index';
-import { BORDER_AXIS_KIND } from '../token-indicators';
+import { propertyAxis } from '../token-indicators';
 import {
 	normalizeColor,
 	normalizeDimension,
@@ -238,15 +238,15 @@ export function capturedTokens(blockName, library, attributes) {
 	return blockProperties(blockName, resolvedLibrary).reduce((tokens, property) => {
 		const presetValue = get(presetValues, property.key, '');
 
-		// The three border-axis properties (`BORDER_AXIS_KIND`) share ONE `control_attr` pointing at a
-		// nested per-side native shape (`[{ top: [color, style, size], ... }]`) this loop's flat
-		// dimension/color model cannot read — `isEmptyValue`/`attrToLiteral` would stringify the object
-		// and write "[object Object]"-shaped garbage into the captured preset. Reading one axis out of
-		// that shape correctly is real, non-trivial logic (the same axis-aware read
+		// A property that declares an axis (`propertyAxis`) shares ONE `control_attr` with its siblings,
+		// pointing at a nested per-side native shape (`[{ top: [color, style, size], ... }]`) this loop's
+		// flat dimension/color model cannot read — `isEmptyValue`/`attrToLiteral` would stringify the
+		// object and write "[object Object]"-shaped garbage into the captured preset. Reading one axis out
+		// of that shape correctly is real, non-trivial logic (the same axis-aware read
 		// `token-indicators/index.js`'s `usePresetBinding` already does) that this capture flow was never
-		// asked to support — so these three are skipped and pass the preset's existing value through
+		// asked to support — so such a property is skipped and passes the preset's existing value through
 		// unchanged, the same "not edited" fallback every other unmapped property already takes.
-		if (BORDER_AXIS_KIND[property.key]) {
+		if (propertyAxis(property)) {
 			tokens[property.key] = presetValue;
 
 			return tokens;

@@ -364,18 +364,21 @@ describe('usePresetBinding border width/style/color combining', () => {
 								kind: 'dimension',
 								token: 'semantic.border-width.default',
 								control_attr: 'borderStyle',
+								axis: 'border-width',
 							},
 							{
 								key: 'button-border-style',
 								kind: 'color',
 								token: 'semantic.border-style.default',
 								control_attr: 'borderStyle',
+								axis: 'border-style',
 							},
 							{
 								key: 'button-border-color',
 								kind: 'color',
 								token: 'semantic.color.border',
 								control_attr: 'borderStyle',
+								axis: 'border-color',
 							},
 						],
 						values: {
@@ -580,18 +583,21 @@ describe('mappedAttrsFor border dedupe', () => {
 								kind: 'dimension',
 								token: 'semantic.border-width.default',
 								control_attr: 'borderStyle',
+								axis: 'border-width',
 							},
 							{
 								key: 'button-border-style',
 								kind: 'color',
 								token: 'semantic.border-style.default',
 								control_attr: 'borderStyle',
+								axis: 'border-style',
 							},
 							{
 								key: 'button-border-color',
 								kind: 'color',
 								token: 'semantic.color.border',
 								control_attr: 'borderStyle',
+								axis: 'border-color',
 							},
 							{ key: 'button-radius', kind: 'dimension', token: null, control_attr: 'borderRadius' },
 						],
@@ -604,6 +610,89 @@ describe('mappedAttrsFor border dedupe', () => {
 
 		expect(mappedAttrsFor(BLOCK, SET)).toEqual([
 			{ attr: 'borderStyle', kind: 'border' },
+			{ attr: 'borderRadius', kind: 'dimension' },
+		]);
+
+		delete window.kadenceDesignTokensPresets;
+	});
+
+	/**
+	 * The axis is read from the declaration, not matched against a list of property names, so a block
+	 * naming its border properties differently (Advanced Text's `borderWidth`/`borderStyle`/`borderColor`
+	 * against the Button's `button-border-*`) collapses to one border-kind entry just the same.
+	 *
+	 * @return {void}
+	 */
+	it('collapses a differently-named border trio declared by another block', () => {
+		window.kadenceDesignTokensPresets = {
+			active: SET,
+			libraries: {
+				[SET]: {
+					'kadence/advancedheading': {
+						default: 'default',
+						presets: [{ slug: 'default', label: 'Default' }],
+						properties: [
+							{
+								key: 'borderWidth',
+								kind: 'dimension',
+								token: 'semantic.border-width.default',
+								control_attr: 'borderStyle',
+								axis: 'border-width',
+							},
+							{
+								key: 'borderStyle',
+								kind: 'color',
+								token: 'semantic.border-style.default',
+								control_attr: 'borderStyle',
+								axis: 'border-style',
+							},
+							{
+								key: 'borderColor',
+								kind: 'color',
+								token: 'semantic.color.border',
+								control_attr: 'borderStyle',
+								axis: 'border-color',
+							},
+						],
+						values: {},
+						responsive: {},
+					},
+				},
+			},
+		};
+
+		expect(mappedAttrsFor('kadence/advancedheading', SET)).toEqual([{ attr: 'borderStyle', kind: 'border' }]);
+
+		delete window.kadenceDesignTokensPresets;
+	});
+
+	/**
+	 * A property that declares no axis keeps its own generic kind, so the ordinary one-property-per-
+	 * attribute case is untouched by the axis lookup.
+	 *
+	 * @return {void}
+	 */
+	it('leaves a property that declares no axis on its own kind', () => {
+		window.kadenceDesignTokensPresets = {
+			active: SET,
+			libraries: {
+				[SET]: {
+					[BLOCK]: {
+						default: 'primary',
+						presets: [{ slug: 'primary', label: 'Primary' }],
+						properties: [
+							{ key: 'button-bg', kind: 'color', token: null, control_attr: 'background' },
+							{ key: 'button-radius', kind: 'dimension', token: null, control_attr: 'borderRadius' },
+						],
+						values: {},
+						responsive: {},
+					},
+				},
+			},
+		};
+
+		expect(mappedAttrsFor(BLOCK, SET)).toEqual([
+			{ attr: 'background', kind: 'color' },
 			{ attr: 'borderRadius', kind: 'dimension' },
 		]);
 

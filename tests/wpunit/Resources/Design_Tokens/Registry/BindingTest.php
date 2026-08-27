@@ -293,4 +293,54 @@ final class BindingTest extends TestCase {
 			]
 		);
 	}
+
+	/**
+	 * A binding parses the composite-control axis into its own field, exposed via axis(), separate from
+	 * the projection targets.
+	 *
+	 * @return void
+	 */
+	public function testItParsesTheAxisField(): void {
+		$binding = Binding::from_array(
+			'button-border-width',
+			[
+				'token'        => 'semantic.border-width.default',
+				'control_attr' => 'borderStyle',
+				'axis'         => 'border-width',
+			]
+		);
+
+		$this->assertSame( 'border-width', $binding->axis() );
+		// Editor-only metadata, like control_attr: it must not leak into the projection targets.
+		$this->assertArrayNotHasKey( 'axis', $binding->projections );
+	}
+
+	/**
+	 * A binding with no axis declaration exposes null — the ordinary case, where the control attribute
+	 * holds the property's own value rather than one slot of a composite.
+	 *
+	 * @return void
+	 */
+	public function testAxisIsNullWhenAbsent(): void {
+		$binding = Binding::from_array( 'button-bg', [ 'kadence_slot' => 'palette-btn-bg' ] );
+
+		$this->assertNull( $binding->axis() );
+	}
+
+	/**
+	 * An empty-string axis is rejected, matching the control_attr validation.
+	 *
+	 * @return void
+	 */
+	public function testItRejectsAnEmptyAxis(): void {
+		$this->expectException( InvalidArgumentException::class );
+
+		Binding::from_array(
+			'button-border-width',
+			[
+				'token' => 'semantic.border-width.default',
+				'axis'  => '',
+			]
+		);
+	}
 }

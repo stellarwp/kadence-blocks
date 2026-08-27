@@ -67,38 +67,43 @@ function unitAttrFor(kind, attr) {
 }
 
 /**
- * The `button-border-width`/`button-border-style`/`button-border-color` properties, keyed by their
- * property key, to the axis kind `normalize.js`'s `isEmptyValue`/`matchesPreset` read for them.
+ * The axis a property owns within a composite control attribute (`'border-width'`, `'border-style'`,
+ * `'border-color'`), or `''` for the ordinary case where the control attribute holds the property's own
+ * value directly. This is the kind `normalize.js`'s `isEmptyValue`/`matchesPreset` read for it.
  *
- * Declaring these as a single shared `control_attr: 'borderStyle'` (see `declarations.php`) is correct —
- * `EditorBorderControl` edits all three axes as one control with no per-axis reset — but it means PHP's
- * generic `Preset_Bindings::kind()` (name/token-group classification with no notion of this nested
- * per-side shape) cannot tell the three apart: `button-border-width` reads as its generic 'dimension' and
- * both `button-border-style`/`button-border-color` read as generic 'color'. Passed straight through,
- * `isEmptyValue`/`matchesPreset`'s existing 'dimension'/'color' branches would try to read the nested
- * `[{ top: [color, style, size], ... }]` shape as a flat scalar/4-side value and never match. This map
- * overrides the kind used for the compare ONLY, by property key, so each axis reads its own slot.
+ * Several properties sharing a single `control_attr` is correct where the block's native attribute is one
+ * nested per-side/per-axis shape that one control edits with no per-axis reset — the border trio and its
+ * `[{ top: [color, style, size], ... }]` attribute. But it means PHP's generic `Preset_Bindings::kind()`
+ * (name/token-group classification, with no notion of that nested shape) cannot tell such properties
+ * apart: a width property reads as a plain 'dimension' and both style and color read as a plain 'color'.
+ * Passed straight through, the existing 'dimension'/'color' branches would read the nested shape as a flat
+ * scalar/4-side value and never match.
  *
- * Exported so a caller outside this module that also needs to tell a border-axis property apart from
- * a plain one (e.g. `capture.js`'s "save as a new preset" flow, which cannot read this nested shape
- * through its own flat control_attr model) can key off the same map instead of re-deriving it.
+ * So the axis is DECLARED, per binding, in `declarations.php`, and travels through the preset catalog to
+ * here. Reading it rather than matching property names means a second block declaring the same composite
+ * under its own property keys (Advanced Text's `borderWidth`/`borderStyle`/`borderColor`, against the
+ * Button's `button-border-*`) works with no change in this file.
+ *
+ * Exported so a caller outside this module that also needs to tell a composite-axis property apart from a
+ * plain one (e.g. `capture.js`'s "save as a new preset" flow, which cannot read the nested shape through
+ * its own flat control_attr model) resolves it the same way instead of re-deriving it.
+ *
+ * @param {Object} property The catalog property entry.
  *
  * @since TBD
  *
- * @type {Object<string, string>}
+ * @return {string} The declared axis, or '' when the property owns its control attribute outright.
  */
-export const BORDER_AXIS_KIND = {
-	'button-border-width': 'border-width',
-	'button-border-style': 'border-style',
-	'button-border-color': 'border-color',
-};
+export function propertyAxis(property) {
+	return typeof property?.axis === 'string' ? property.axis : '';
+}
 
 /**
  * The mapped control attributes for a block's set, as `[{ attr, kind }]` — the surface reset-all clears.
  * Skips properties with no control attribute. Independent of the selected preset (reset-all clears every
  * mapped override regardless of which preset is active).
  *
- * The three border-axis properties share one `control_attr` (see `BORDER_AXIS_KIND`), so they would
+ * The three border-axis properties share one `control_attr` (see `propertyAxis`), so they would
  * otherwise produce three entries for the same attribute, each with a different (and individually wrong)
  * kind for `resetAttrPatch`. Deduping by attribute and reporting the combined `'border'` kind for any of
  * them keeps reset-all's one patch-per-attribute clearing every axis at once, matching `resetAttrPatch`'s
@@ -125,7 +130,7 @@ export function mappedAttrsFor(blockName, library) {
 			}
 
 			seen.add(attr);
-			attrs.push({ attr, kind: BORDER_AXIS_KIND[property.key] ? 'border' : property.kind });
+			attrs.push({ attr, kind: propertyAxis(property) ? 'border' : property.kind });
 		});
 
 	return attrs;
@@ -153,7 +158,7 @@ export function mappedAttrsFor(blockName, library) {
  *                   `borderStyle` entry is the one exception: `kind` is `'border'` and `property`/
  *                   `token`/`presetValue`/`responsive` are each `{ width, style, color }` objects,
  *                   one slot per axis, combining the three properties that share that attribute (see
- *                   `BORDER_AXIS_KIND`); `overridden` is true when any axis diverges from its own
+ *                   `propertyAxis`); `overridden` is true when any axis diverges from its own
  *                   preset value.
  */
 export function usePresetBinding(blockName, attributes, library, previewDevice) {
@@ -182,9 +187,9 @@ export function usePresetBinding(blockName, attributes, library, previewDevice) 
 			return;
 		}
 
-		// The border width/style/color properties all key their compare off `BORDER_AXIS_KIND` rather
-		// than PHP's generic `property.kind` — see that map's own docblock for why.
-		const axis = BORDER_AXIS_KIND[property.key];
+		// A property that owns one axis of a composite control attribute keys its compare off that declared
+		// axis rather than PHP's generic `property.kind` — see `propertyAxis`'s docblock for why.
+		const axis = propertyAxis(property);
 		const kind = axis || property.kind;
 		const presetValue = presetValues[property.key];
 		const propertyBreakpoints = {

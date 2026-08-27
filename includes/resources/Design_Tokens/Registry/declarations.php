@@ -573,23 +573,28 @@ return [
 				// margin/radius's one-property-per-attribute shape: the native block attribute
 				// ([{top:[color,style,size],...},unit]) is a single nested per-side/per-axis shape that
 				// EditorBorderControl edits as one control with no per-axis reset, so width/style/color all
-				// point at the same attribute rather than three that don't exist. token-indicators reads
-				// each property's own axis out of the shared nested value and combines the three into one
-				// bound/overridden state entry — see token-indicators/index.js's BORDER_AXIS_KIND.
+				// point at the same attribute rather than three that don't exist. Each declares the 'axis' it
+				// owns within that nested value, because the generic kind classification cannot tell them
+				// apart — width reads as a plain dimension and both style and color read as a plain color, so
+				// the editor would compare the nested shape as a flat one and never match. token-indicators
+				// reads the declared axis and combines the three into one bound/overridden state entry.
 				'button-border-width' => [
 					'token'        => 'semantic.border-width.default',
 					'css_var'      => 'kb-btn-border-width',
 					'control_attr' => 'borderStyle',
+					'axis'         => 'border-width',
 				],
 				'button-border-style' => [
 					'token'        => 'semantic.border-style.default',
 					'css_var'      => 'kb-btn-border-style',
 					'control_attr' => 'borderStyle',
+					'axis'         => 'border-style',
 				],
 				'button-border-color' => [
 					'token'        => 'semantic.color.border',
 					'css_var'      => 'kb-btn-border-color',
 					'control_attr' => 'borderStyle',
+					'axis'         => 'border-color',
 				],
 				// No baseline default: an unstyled button carries no shadow, so the preset's $default omits
 				// this property entirely and the projector emits no box-shadow rule until a preset (or the

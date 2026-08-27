@@ -26,8 +26,9 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Responsive;
  * one tokens use, with three additions — `block_attr`, `css_prop`, and `css_selector`, which tokens
  * never carry.
  *
- * A binding may also declare `control_attr`, editor-only metadata kept out of the projected bindings — see
- * {@see Binding::control_attr()}.
+ * A binding may also declare `control_attr`, `responsive_attrs` and `axis` — editor-only metadata kept out
+ * of the projected bindings. See {@see Binding::control_attr()}, {@see Binding::responsive_attrs()} and
+ * {@see Binding::axis()}.
  *
  * @since TBD
  */
@@ -122,6 +123,24 @@ final class Binding {
 	private const RESPONSIVE_ATTRS = 'responsive_attrs';
 
 	/**
+	 * Editor-only metadata naming the axis of a composite control this property edits, for the case where
+	 * several properties share ONE `control_attr` whose stored value is a nested per-side/per-axis shape
+	 * rather than a flat scalar (the border controls: width, style and color all live inside a single
+	 * `[{top: [color, style, size], ...}, unit]` attribute).
+	 *
+	 * The generic kind classification cannot tell those apart — a width property reads as "dimension" and
+	 * both style and color read as "color" — so the editor would compare the nested value as if it were
+	 * flat and never match. Declaring the axis tells the indicator layer which slot of the composite this
+	 * property owns. Omitted for the overwhelming majority of bindings, whose `control_attr` holds the
+	 * property's own value directly.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const AXIS = 'axis';
+
+	/**
 	 * The inline string targets and their validation: each, when present, must be a non-empty string.
 	 *
 	 * @since TBD
@@ -179,6 +198,17 @@ final class Binding {
 	public array $responsive_attrs;
 
 	/**
+	 * The axis of a composite control this property edits ("border-width", "border-style",
+	 * "border-color"), or null when the binding's control attribute holds this property's value directly.
+	 * Editor-only metadata; kept out of $projections like control_attr.
+	 *
+	 * @since TBD
+	 *
+	 * @var string|null
+	 */
+	public ?string $axis;
+
+	/**
 	 * @since TBD
 	 *
 	 * @param string                $property     The block property this binding drives.
@@ -186,13 +216,15 @@ final class Binding {
 	 * @param array<string, mixed>  $projections  Inline projection targets, empty when a token reference.
 	 * @param string|null           $control_attr     The editor control attribute, or null when none declared.
 	 * @param array<string, string> $responsive_attrs Breakpoint => attribute, empty when none declared.
+	 * @param string|null           $axis             The composite-control axis, or null when none declared.
 	 */
-	private function __construct( string $property, ?string $token, array $projections, ?string $control_attr, array $responsive_attrs = [] ) {
+	private function __construct( string $property, ?string $token, array $projections, ?string $control_attr, array $responsive_attrs = [], ?string $axis = null ) {
 		$this->property         = $property;
 		$this->token            = $token;
 		$this->projections      = $projections;
 		$this->control_attr     = $control_attr;
 		$this->responsive_attrs = $responsive_attrs;
+		$this->axis             = $axis;
 	}
 
 	/**
@@ -231,7 +263,14 @@ final class Binding {
 			);
 		}
 
-		return new self( $property, $token, $inline, self::control_attr_of( $property, $spec ), self::responsive_attrs_of( $property, $spec ) );
+		return new self(
+			$property,
+			$token,
+			$inline,
+			self::control_attr_of( $property, $spec ),
+			self::responsive_attrs_of( $property, $spec ),
+			self::axis_of( $property, $spec )
+		);
 	}
 
 	/**
@@ -299,6 +338,22 @@ final class Binding {
 	 */
 	public function responsive_attrs(): array {
 		return $this->responsive_attrs;
+	}
+
+	/**
+	 * The axis of the composite control this property edits, or null when the binding's control attribute
+	 * holds this property's value directly.
+	 *
+	 * Read by the preset catalog so the editor's indicator layer knows which slot of a nested per-axis
+	 * attribute to compare, instead of keying that off a hardcoded list of property names. Editor-only,
+	 * like control_attr(): never a projection target.
+	 *
+	 * @since TBD
+	 *
+	 * @return string|null
+	 */
+	public function axis(): ?string {
+		return $this->axis;
 	}
 
 	/**
@@ -457,6 +512,34 @@ final class Binding {
 		if ( ! is_string( $value ) || $value === '' ) {
 			throw new InvalidArgumentException(
 				sprintf( 'Binding "%s" target "%s" must be a non-empty string.', $property, self::CONTROL_ATTR )
+			);
+		}
+
+		return $value;
+	}
+
+	/**
+	 * Read and validate the optional composite-control axis, which must be a non-empty string when present.
+	 *
+	 * @since TBD
+	 *
+	 * @param string               $property The block property (for the error message).
+	 * @param array<string, mixed> $spec     The binding declaration.
+	 *
+	 * @throws InvalidArgumentException When the declared axis is not a non-empty string.
+	 *
+	 * @return string|null The axis, or null when the binding declares none.
+	 */
+	private static function axis_of( string $property, array $spec ): ?string {
+		if ( ! array_key_exists( self::AXIS, $spec ) ) {
+			return null;
+		}
+
+		$value = $spec[ self::AXIS ];
+
+		if ( ! is_string( $value ) || $value === '' ) {
+			throw new InvalidArgumentException(
+				sprintf( 'Binding "%s" target "%s" must be a non-empty string.', $property, self::AXIS )
 			);
 		}
 

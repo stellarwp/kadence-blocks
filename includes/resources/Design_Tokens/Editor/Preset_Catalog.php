@@ -195,15 +195,21 @@ final class Preset_Catalog {
 	}
 
 	/**
-	 * The controllable surface for a block's preset bindings: one { key, kind, token, control_attr } entry per bound
-	 * property, in binding order, so the editor form renders an input per property and the indicator layer
-	 * can key an override signal to the control attribute. Structure read from the preset bindings.
+	 * The controllable surface for a block's preset bindings: one { key, kind, token, control_attr, axis }
+	 * entry per bound property, in binding order, so the editor form renders an input per property and the
+	 * indicator layer can key an override signal to the control attribute. Structure read from the preset
+	 * bindings.
+	 *
+	 * `axis` is non-null only for a property sharing one composite `control_attr` with its siblings (the
+	 * border trio), and names which slot of that nested value this property owns. It is what lets the editor
+	 * recognize the shape from the declaration instead of from a hardcoded list of property names, so a
+	 * second block declaring the same composite under different property keys works with no editor change.
 	 *
 	 * @since TBD
 	 *
 	 * @param Preset_Bindings $bindings The block's preset bindings.
 	 *
-	 * @return array<int, array{key: string, kind: string, token: string|null, control_attr: string|null, responsive_attrs: array<string, string>}>
+	 * @return array<int, array{key: string, kind: string, token: string|null, control_attr: string|null, responsive_attrs: array<string, string>, axis: string|null}>
 	 */
 	private function properties_for( Preset_Bindings $bindings ): array {
 		$properties = [];
@@ -215,6 +221,7 @@ final class Preset_Catalog {
 				'token'            => $binding->token,
 				'control_attr'     => $binding->control_attr(),
 				'responsive_attrs' => $binding->responsive_attrs(),
+				'axis'             => $binding->axis(),
 			];
 		}
 

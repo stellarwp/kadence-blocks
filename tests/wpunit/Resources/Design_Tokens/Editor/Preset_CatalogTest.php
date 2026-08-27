@@ -91,6 +91,27 @@ final class Preset_CatalogTest extends TestCase {
 	}
 
 	/**
+	 * The surface carries each property's declared composite-control axis, so the editor can tell which
+	 * slot of a shared nested attribute a property owns without matching against property names. The three
+	 * border properties declare one; every other property declares none.
+	 *
+	 * @return void
+	 */
+	public function testItSurfacesTheDeclaredCompositeControlAxis(): void {
+		$properties = $this->catalog->all()['libraries'][ Token_Store::default_slug() ][ self::BUTTON ]['properties'];
+
+		$axes = wp_list_pluck( $properties, 'axis', 'key' );
+
+		$this->assertSame( 'border-width', $axes['button-border-width'] );
+		$this->assertSame( 'border-style', $axes['button-border-style'] );
+		$this->assertSame( 'border-color', $axes['button-border-color'] );
+
+		// A property whose control attribute holds its own value declares no axis.
+		$this->assertNull( $axes['button-bg'] );
+		$this->assertNull( $axes['button-radius'] );
+	}
+
+	/**
 	 * A preset authored into a library is flagged userCreated, while the baseline presets are not.
 	 *
 	 * @return void
