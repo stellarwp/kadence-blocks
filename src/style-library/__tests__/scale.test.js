@@ -26,18 +26,18 @@ describe('scaleRows', () => {
 		const schema = {
 			groups: {
 				'Border Radius': [
-					{ id: 'primitive.dimension.radius.none', label: 'None', userCreated: false },
+					{ id: 'primitive.dimension.radius.xs', label: 'XS', userCreated: false },
 					{ id: 'primitive.dimension.custom.radius-2', label: 'Custom', userCreated: true },
 				],
 			},
 		};
 		const values = {
-			'primitive.dimension.radius.none': '0',
+			'primitive.dimension.radius.xs': '0.125rem',
 			'primitive.dimension.custom.radius-2': '0.75rem',
 		};
 
 		expect(scaleRows(schema, values, 'Border Radius')).toEqual([
-			{ id: 'primitive.dimension.radius.none', label: 'None', value: '0', userCreated: false },
+			{ id: 'primitive.dimension.radius.xs', label: 'XS', value: '0.125rem', userCreated: false },
 			{ id: 'primitive.dimension.custom.radius-2', label: 'Custom', value: '0.75rem', userCreated: true },
 		]);
 	});

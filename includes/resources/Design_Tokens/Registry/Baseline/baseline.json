@@ -126,10 +126,6 @@
 				"5xl": {
 					"$type": "dimension",
 					"$value": "10rem"
-				},
-				"none": {
-					"$type": "dimension",
-					"$value": "0"
 				}
 			},
 			"gap": {
@@ -235,10 +231,6 @@
 				}
 			},
 			"radius": {
-				"none": {
-					"$type": "dimension",
-					"$value": "0"
-				},
 				"xs": {
 					"$type": "dimension",
 					"$value": "0.125rem"
@@ -458,11 +450,11 @@
 			},
 			"media-padding": {
 				"$type": "dimension",
-				"$value": "{primitive.dimension.spacing.none}"
+				"$value": "0"
 			},
 			"heading-padding": {
 				"$type": "dimension",
-				"$value": "{primitive.dimension.spacing.none}"
+				"$value": "0"
 			},
 			"button-padding-top": {
 				"$type": "dimension",
@@ -504,19 +496,19 @@
 			},
 			"media": {
 				"$type": "dimension",
-				"$value": "{primitive.dimension.radius.none}"
+				"$value": "0"
 			},
 			"rowlayout": {
 				"$type": "dimension",
-				"$value": "{primitive.dimension.radius.none}"
+				"$value": "0"
 			},
 			"column": {
 				"$type": "dimension",
-				"$value": "{primitive.dimension.radius.none}"
+				"$value": "0"
 			},
 			"heading": {
 				"$type": "dimension",
-				"$value": "{primitive.dimension.radius.none}"
+				"$value": "0"
 			}
 		},
 		"border-width": {

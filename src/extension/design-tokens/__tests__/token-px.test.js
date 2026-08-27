@@ -22,8 +22,8 @@ import { tokenPx } from '../token-px';
 import conformance from './fixtures/length-to-px-conformance.json';
 
 /**
- * The pickable pool the editor localizer prints, trimmed to the icon-size family plus one token whose
- * value is a bare `0` — the unitless case both languages decline.
+ * The pickable pool the editor localizer prints, trimmed to the icon-size family plus one entry keyed
+ * on an unregistered id whose value is a bare `0` — the unitless case both languages decline.
  */
 const POOL = {
 	tokens: [],
@@ -107,8 +107,9 @@ describe('tokenPx alias resolution', () => {
 	});
 
 	/**
-	 * A token whose resolved value is a unitless `0` is declined, matching the PHP trait. Pinning the
-	 * gap rather than papering over it on one side is what keeps the two conversions identical.
+	 * A pool entry whose resolved value is a unitless `0` is declined, matching the PHP trait. Pinning
+	 * the gap rather than papering over it on one side is what keeps the two conversions identical. The
+	 * alias itself is an unregistered id — `tokenPx()` never validates registration, only shape.
 	 */
 	it('declines an alias resolving to a unitless value', () => {
 		expect(tokenPx('{primitive.dimension.radius.none}')).toBeNull();

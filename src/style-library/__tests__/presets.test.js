@@ -82,8 +82,8 @@ describe('resolveTokenValue', () => {
 	});
 
 	it('resolves a per-corner slot list to a space-joined CSS value', () => {
-		const dimensionValues = { 'radius.lg': '1rem', 'radius.none': '0' };
-		const slots = ['{radius.lg}', '{radius.none}', '{radius.lg}', '{radius.none}'];
+		const dimensionValues = { 'radius.lg': '1rem', 'radius.xs': '0' };
+		const slots = ['{radius.lg}', '{radius.xs}', '{radius.lg}', '{radius.xs}'];
 
 		expect(resolveTokenValue(dimensionValues, slots)).toBe('1rem 0 1rem 0');
 	});
@@ -112,8 +112,8 @@ describe('resolveTokenValue', () => {
 	});
 
 	it('keeps a zero-valued slot, which resolves to a real value rather than nothing', () => {
-		const dimensionValues = { 'radius.none': '0' };
-		const slots = ['{radius.none}', '{radius.none}', '{radius.none}', '{radius.none}'];
+		const dimensionValues = { 'radius.xs': '0' };
+		const slots = ['{radius.xs}', '{radius.xs}', '{radius.xs}', '{radius.xs}'];
 
 		expect(resolveTokenValue(dimensionValues, slots)).toBe('0 0 0 0');
 	});
@@ -913,7 +913,7 @@ describe('seed/save round trip', () => {
 
 describe('resolveTokenValue at a breakpoint', () => {
 	const NS = 'com.kadence.designTokens';
-	const values = { 'radius.sm': '0.1875rem', 'radius.lg': '0.5rem', 'radius.none': '0' };
+	const values = { 'radius.sm': '0.1875rem', 'radius.lg': '0.5rem', 'radius.xs': '0' };
 
 	const envelope = {
 		$value: '{radius.sm}',
@@ -941,7 +941,7 @@ describe('resolveTokenValue at a breakpoint', () => {
 	it('resolves a slot list held at a breakpoint into the shorthand', () => {
 		const perCorner = {
 			$value: '{radius.sm}',
-			$extensions: { [NS]: { responsive: { tablet: ['{radius.lg}', '{radius.none}', '{radius.lg}', '0'] } } },
+			$extensions: { [NS]: { responsive: { tablet: ['{radius.lg}', '{radius.xs}', '{radius.lg}', '0'] } } },
 		};
 
 		expect(resolveTokenValue(values, perCorner, 'tablet')).toBe('0.5rem 0 0.5rem 0');

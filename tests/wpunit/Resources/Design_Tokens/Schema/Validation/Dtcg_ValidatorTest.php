@@ -249,13 +249,13 @@ final class Dtcg_ValidatorTest extends TestCase {
 	public function nonArrayExtensionSectionProvider(): Generator {
 		$sections = [ 'colorPalettes', 'tokenLabels', 'tokenOrder', 'favoriteFonts' ];
 		$values   = [
-			'string'  => 'Inter',
+			'string'       => 'Inter',
 			'empty string' => '',
-			'int'     => 42,
-			'float'   => 1.5,
-			'true'    => true,
-			'false'   => false,
-			'null'    => null,
+			'int'          => 42,
+			'float'        => 1.5,
+			'true'         => true,
+			'false'        => false,
+			'null'         => null,
 		];
 
 		foreach ( $sections as $section ) {
@@ -1062,7 +1062,7 @@ final class Dtcg_ValidatorTest extends TestCase {
 		yield 'alias base, alias override' => [
 			'entry' => $this->responsive_entry(
 				'{semantic.radius.control}',
-				[ 'mobile' => '{primitive.dimension.radius.none}' ]
+				[ 'mobile' => '{primitive.dimension.radius.xs}' ]
 			),
 		];
 
