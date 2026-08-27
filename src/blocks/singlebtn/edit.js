@@ -101,7 +101,65 @@ import {
 	combineColorOpacity,
 	splitColorOpacity,
 } from '../../extension/design-tokens/components/EditorShadowControl';
-import { pickableTokensForControl, pickableTokensForKey } from '../../extension/token-picker';
+import { pickableTokensForControl, pickableTokensForKey, resolvedTokenValue } from '../../extension/token-picker';
+
+/**
+ * The button's per-side padding/margin semantic token ids, top/right/bottom/left order — mirrors the
+ * CSS `padding`/`margin` shorthand and `src/blocks/advancedbtn/style.scss`'s default rule. Read only
+ * for their resolved literal (`resolveBoxFallback` below); nothing here binds a preset to them — see
+ * `declarations.php`'s own comment on why they carry no baseline preset binding.
+ *
+ * @since TBD
+ */
+const BUTTON_PADDING_TOKEN_IDS = [
+	'semantic.spacing.button-padding-top',
+	'semantic.spacing.button-padding-right',
+	'semantic.spacing.button-padding-bottom',
+	'semantic.spacing.button-padding-left',
+];
+const BUTTON_MARGIN_TOKEN_IDS = [
+	'semantic.spacing.button-margin-top',
+	'semantic.spacing.button-margin-right',
+	'semantic.spacing.button-margin-bottom',
+	'semantic.spacing.button-margin-left',
+];
+
+/**
+ * The literal each padding token resolves to when the baseline is never overridden — also what
+ * `src/blocks/advancedbtn/style.scss`'s default rule falls back to when the token itself is absent
+ * from the feed. Mirrors the Style Library's own `BUTTON_PADDING_FALLBACK` (`button-preset.js`); kept
+ * as a separate constant rather than shared, since the two apps read a different pool and stay
+ * uncoupled (see `src/style-library/README.md`).
+ *
+ * @since TBD
+ */
+const BUTTON_PADDING_FALLBACK = ['0.4em', '1em', '0.4em', '1em'];
+
+/**
+ * The literal each margin token resolves to when the baseline is never overridden.
+ *
+ * @since TBD
+ */
+const BUTTON_MARGIN_FALLBACK = ['0', '0', '0', '0'];
+
+/**
+ * Resolve a per-side box default (padding/margin) from the resolved design-token pool, one value per
+ * CSS side, falling back to the button's own literal default for any side whose token is missing from
+ * the pool. Neither `button-padding` nor `button-margin` carries a preset binding (see
+ * `BUTTON_PADDING_TOKEN_IDS`'s own docblock), so `tokenBinding.padding.presetValue` is always empty —
+ * this is what an unset field actually falls back to, mirroring the CSS var chain
+ * `advancedbtn/style.scss` itself falls through when no preset targets `--kb-btn-padding`.
+ *
+ * @param {[string, string, string, string]} tokenIds The four semantic token ids, top/right/bottom/left order.
+ * @param {[string, string, string, string]} fallback The literal fallback for each side, same order.
+ *
+ * @since TBD
+ *
+ * @return {[string, string, string, string]} The resolved per-side default.
+ */
+function resolveBoxFallback(tokenIds, fallback) {
+	return tokenIds.map((tokenId, index) => resolvedTokenValue(tokenId) || fallback[index]);
+}
 
 /**
  * `EditorBorderControl`'s `renderColor` render-prop: reuses the block's existing `PopColorControl`
@@ -397,11 +455,12 @@ export default function KadenceButtonEdit(props) {
 		borderRadiusPresetValue
 	);
 
-	const paddingPresetValue = presetValueForDevice(
-		tokenBinding.padding?.presetValue,
-		tokenBinding.padding?.responsive,
-		previewDevice
-	);
+	// Neither preset carries a `button-padding` binding (see `BUTTON_PADDING_TOKEN_IDS`'s own
+	// docblock), so `tokenBinding.padding.presetValue` is always empty — `resolveBoxFallback` is what
+	// an unset field actually falls back to on every device, not just desktop.
+	const paddingPresetValue =
+		presetValueForDevice(tokenBinding.padding?.presetValue, tokenBinding.padding?.responsive, previewDevice) ??
+		resolveBoxFallback(BUTTON_PADDING_TOKEN_IDS, BUTTON_PADDING_FALLBACK);
 
 	// What an unset Padding side falls back to on the active device — same cascade as Border Radius
 	// above, run over sides rather than corners.
@@ -419,11 +478,10 @@ export default function KadenceButtonEdit(props) {
 		previewDevice
 	);
 
-	const marginPresetValue = presetValueForDevice(
-		tokenBinding.margin?.presetValue,
-		tokenBinding.margin?.responsive,
-		previewDevice
-	);
+	// Same reasoning as `paddingPresetValue` above — `button-margin` carries no preset binding either.
+	const marginPresetValue =
+		presetValueForDevice(tokenBinding.margin?.presetValue, tokenBinding.margin?.responsive, previewDevice) ??
+		resolveBoxFallback(BUTTON_MARGIN_TOKEN_IDS, BUTTON_MARGIN_FALLBACK);
 
 	// What an unset Margin side falls back to on the active device — same cascade as Padding above.
 	const inheritedMargin = inheritedMeasureSlots(
