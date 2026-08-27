@@ -75,7 +75,6 @@ export function getPresetProperties(block) {
 }
 
 /**
-/**
  * Convert a stored alias to its bare dot-path id. A value that is not brace-wrapped (a literal) is
  * returned verbatim.
  *
