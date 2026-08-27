@@ -708,6 +708,8 @@ return [
 			// tokens through the slug bridge, which a token-backed padding control also rides — that control
 			// stores its token in the attribute (render_measure_output already resolves a variable value
 			// there) and needs no binding here.
+			//
+			// @todo SOFT-4233: give the row's padding the css_var bridge so a preset can set it.
 			'block'         => 'kadence/rowlayout',
 			'label'         => __( 'Style', 'kadence-blocks' ), // a picker-driven set; this is the editor control's label.
 			'style_library' => [
