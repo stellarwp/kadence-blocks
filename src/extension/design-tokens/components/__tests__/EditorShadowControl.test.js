@@ -3,7 +3,12 @@
 /**
  * Internal dependencies
  */
-import { EditorShadowControl, combineColorOpacity, splitColorOpacity } from '../EditorShadowControl';
+import {
+	BUTTON_SHADOW_NONE_TOKEN_ID,
+	EditorShadowControl,
+	combineColorOpacity,
+	splitColorOpacity,
+} from '../EditorShadowControl';
 
 /**
  * A representative native shadow value — every field a different, distinguishable number/string, so a
@@ -26,9 +31,9 @@ const NATIVE_VALUE = [
 ];
 
 /**
- * Call `EditorShadowControl` as a plain function and return the `BoxShadowControl`/`ToggleControl`
- * elements it produced. The component holds no hooks of its own — `TokenControlRow` is referenced in
- * the returned JSX but never invoked by this plain call, since JSX only builds element descriptors — so
+ * Call `EditorShadowControl` as a plain function and return the `BoxShadowControl` element it
+ * produced. The component holds no hooks of its own — `TokenControlRow` is referenced in the
+ * returned JSX but never invoked by this plain call, since JSX only builds element descriptors — so
  * the returned element tree can be inspected directly instead of mounting it, matching
  * `EditorBorderControl.test.js`'s own harness (before it gained state and needed a real render).
  *
@@ -36,10 +41,9 @@ const NATIVE_VALUE = [
  *
  * @since TBD
  *
- * @return {{root: Object, header: Object, toggle: Object, shadowControl: ?Object, onChange: Function,
- *   onEnableChange: Function}} The root element (`TokenControlRow`), the header row, the enable
- *   toggle, the `BoxShadowControl` element (or `null` when `enable` is false), and the setter spies
- *   passed in.
+ * @return {{root: Object, shadowControl: Object, onChange: Function, onEnableChange: Function}} The
+ *   root element (`TokenControlRow`), the `BoxShadowControl` element it wraps (always rendered — no
+ *   more enable-gated conditional), and the setter spies passed in.
  */
 function renderEditorShadowControl(overrides = {}) {
 	const onChange = jest.fn();
@@ -56,13 +60,11 @@ function renderEditorShadowControl(overrides = {}) {
 	};
 
 	const root = EditorShadowControl(props);
-	const [header, shadowControl] = root.props.children.props.children;
+	const shadowControl = root.props.children;
 
 	return {
 		root,
-		header,
-		toggle: header.props.children[1],
-		shadowControl: shadowControl || null,
+		shadowControl,
 		onChange,
 		onEnableChange,
 	};
@@ -236,57 +238,118 @@ describe('EditorShadowControl native <-> BoxShadowControl value bridging', () =>
 	});
 });
 
-describe('EditorShadowControl enable toggle', () => {
+describe('EditorShadowControl legacy enable/disable, without a toggle', () => {
 	/**
-	 * The enable toggle reads and writes the sibling boolean attribute independently of the shadow
-	 * value's shape — it stays functional whether the value is a token or a composite literal.
+	 * `BoxShadowControl` always renders now — there is no more `enable`-gated conditional hiding it.
+	 * "No shadow" is a value a user picks (the "None" entry), not a separate switch that hides the
+	 * control entirely.
 	 *
 	 * @return {void}
 	 */
-	it('reflects the enable prop and writes through onEnableChange, independent of the value shape', () => {
-		const { toggle, onEnableChange } = renderEditorShadowControl({ enable: false });
+	it('always renders BoxShadowControl, even while the sibling attribute reads disabled', () => {
+		const { shadowControl } = renderEditorShadowControl({ enable: false });
 
-		expect(toggle.props.checked).toBe(false);
+		expect(shadowControl).not.toBeNull();
+		expect(shadowControl.type.name).toBe('BoxShadowControl');
+	});
 
-		toggle.props.onChange(true);
+	/**
+	 * A legacy toggle-off value (`enable: false`) reads as the "None" alias regardless of whatever is
+	 * still sitting in the native item's own fields — leftover from before the field was toggled off
+	 * under the old UI. This is what makes existing content correctly show "None" without any data
+	 * rewrite: the button's own `semantic.shadow.button` token, not the stale native composite.
+	 *
+	 * @return {void}
+	 */
+	it('reads a legacy toggle-off value as "None", discarding whatever composite is still stored', () => {
+		const { shadowControl } = renderEditorShadowControl({ enable: false, value: NATIVE_VALUE });
+
+		expect(shadowControl.props.value).toBe(`{${BUTTON_SHADOW_NONE_TOKEN_ID}}`);
+	});
+
+	/**
+	 * While enabled, the value reads normally — this legacy fallback only kicks in for a disabled
+	 * field, matching the sibling attribute's own historical meaning.
+	 *
+	 * @return {void}
+	 */
+	it('reads the real composite while the sibling attribute reads enabled', () => {
+		const { shadowControl } = renderEditorShadowControl({ enable: true, value: NATIVE_VALUE });
+
+		expect(shadowControl.props.value).not.toBe(`{${BUTTON_SHADOW_NONE_TOKEN_ID}}`);
+		expect(shadowControl.props.value).toEqual(
+			expect.objectContaining({ offsetX: '2px', offsetY: '3px', blur: '4px', spread: '5px' })
+		);
+	});
+});
+
+describe('EditorShadowControl auto-derives the sibling enable attribute', () => {
+	/**
+	 * Editing to a value with a real visible footprint (any non-zero axis) writes the sibling
+	 * attribute to enabled — the replacement for the old manual toggle, now driven by the value
+	 * itself rather than a separate switch.
+	 *
+	 * @return {void}
+	 */
+	it('writes the sibling attribute enabled when the edited value has a visible footprint', () => {
+		const { shadowControl, onEnableChange } = renderEditorShadowControl();
+
+		shadowControl.props.onChange({
+			color: '#111111',
+			offsetX: '2px',
+			offsetY: '3px',
+			blur: '4px',
+			spread: '5px',
+			inset: false,
+		});
+
 		expect(onEnableChange).toHaveBeenCalledWith(true);
 	});
 
 	/**
-	 * `BoxShadowControl` renders only while enabled, matching the native control's own layout — a
-	 * caller should not be able to edit a shadow value that is currently switched off.
+	 * Editing to a value with no visible footprint (every axis zero — matching the "None" pick's own
+	 * resolved composite) writes the sibling attribute to disabled.
 	 *
 	 * @return {void}
 	 */
-	it('hides BoxShadowControl while disabled', () => {
-		const { shadowControl } = renderEditorShadowControl({ enable: false });
+	it('writes the sibling attribute disabled when the edited value has no visible footprint', () => {
+		const { shadowControl, onEnableChange } = renderEditorShadowControl();
 
-		expect(shadowControl).toBeNull();
+		shadowControl.props.onChange({
+			color: 'transparent',
+			offsetX: '0px',
+			offsetY: '0px',
+			blur: '0px',
+			spread: '0px',
+			inset: false,
+		});
+
+		expect(onEnableChange).toHaveBeenCalledWith(false);
 	});
 
 	/**
-	 * The toggle has no visible text of its own (the field's label sits in a separate, unassociated
-	 * sibling `<span>`), so it needs its own accessible name rather than relying on that span.
+	 * Picking a token whose resolved shadow is zero-sized (e.g. the "None" entry itself) also derives
+	 * disabled — the same path a Custom-tab zero edit takes, since both go through `onChange` with the
+	 * same resolved-then-native value.
 	 *
 	 * @return {void}
 	 */
-	it('gives the toggle an accessible name derived from the field label, hidden visually', () => {
-		const { toggle } = renderEditorShadowControl({ label: 'Box Shadow' });
+	it('writes the sibling attribute disabled when a picked token resolves to a zero-sized shadow', () => {
+		const { shadowControl, onEnableChange } = renderEditorShadowControl({
+			tokens: [
+				{
+					id: BUTTON_SHADOW_NONE_TOKEN_ID,
+					alias: `{${BUTTON_SHADOW_NONE_TOKEN_ID}}`,
+					label: 'None',
+					value: '0px 0px 0px 0px transparent',
+					type: 'shadow',
+				},
+			],
+		});
 
-		expect(toggle.props.label).toBe('Enable Box Shadow');
-		expect(toggle.props.hideLabelFromVision).toBe(true);
-	});
+		shadowControl.props.onChange(`{${BUTTON_SHADOW_NONE_TOKEN_ID}}`);
 
-	/**
-	 * A caller that omits `label` entirely still gets a usable, generic accessible name rather than an
-	 * empty or undefined one.
-	 *
-	 * @return {void}
-	 */
-	it('falls back to a generic accessible name when no label is given', () => {
-		const { toggle } = renderEditorShadowControl({ label: undefined });
-
-		expect(toggle.props.label).toBe('Enable shadow');
+		expect(onEnableChange).toHaveBeenCalledWith(false);
 	});
 });
 

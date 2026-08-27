@@ -22,10 +22,13 @@
  *   the exact same rules this component uses to read/write the native attribute, keeping both
  *   directions symmetric.
  * - **`enable` lives outside the value entirely** — it is a separate sibling boolean attribute
- *   (`displayShadow`, `displayHoverShadow`, …), not a key inside the shadow array's item. This wrapper
- *   keeps it a plain `ToggleControl` rendered beside `BoxShadowControl`, matching how the native
- *   control also renders its enable toggle as an independent affordance next to the label, hiding the
- *   rest of the control's body while off.
+ *   (`displayShadow`, `displayHoverShadow`, …), not a key inside the shadow array's item. There is no
+ *   toggle for it anymore: `EditorShadowControl` derives it automatically from whether the value has
+ *   any visible footprint (`isVisibleNativeShadow`), on every edit, and reads it back only to decide
+ *   whether a legacy toggle-off value shows as "None" (`fromNativeShadow`) — "no shadow" is a value a
+ *   user picks now (the button's own `semantic.shadow.button` token, relabeled "None" — see
+ *   `singlebtn/edit.js`'s `shadowNoneEntry()`), matching every other token-picked field in this plan,
+ *   not a separate switch next to one.
  *
  * A whole-shadow token pick (the Style Library tab) has no home in the native item's existing keys —
  * unlike border, where an alias replaces a single side's width slot, a shadow alias would replace the
@@ -47,16 +50,20 @@
  */
 
 /**
- * WordPress dependencies
- */
-import { ToggleControl } from '@wordpress/components';
-import { __, sprintf } from '@wordpress/i18n';
-
-/**
  * Internal dependencies
  */
 import { BoxShadowControl } from '../../../token-controls/controls/BoxShadowControl';
 import { TokenControlRow } from '../../token-indicators/components/TokenControlRow';
+
+/**
+ * The button's own "no shadow" semantic token — already an invisible, transparent zero-shadow (see
+ * `declarations.php`'s own comment on `semantic.shadow.button`). `singlebtn/edit.js` builds its
+ * pickable-tokens "None" entry from this same id (`shadowNoneEntry()`), imported from here rather
+ * than redeclared, so the two never drift apart.
+ *
+ * @since TBD
+ */
+export const BUTTON_SHADOW_NONE_TOKEN_ID = 'semantic.shadow.button';
 
 /**
  * The composite's default shape, matching `BoxShadowControl`'s own `DEFAULT_SHADOW` fallback.
@@ -300,16 +307,47 @@ function resolveShadowAlias(alias, tokens) {
 }
 
 /**
- * Convert the native `[{ color, opacity, hOffset, vOffset, blur, spread, inset }]` attribute value to
- * the composite `BoxShadowControl` edits.
+ * Whether a native shadow item has any visible footprint — any of its four length axes non-zero.
+ * `displayShadow`/`displayHoverShadow`/… no longer gate rendering through a separate control (see
+ * this module's own docblock); this is what `EditorShadowControl` derives that sibling boolean
+ * attribute FROM now, on every edit, so it stays in sync with the value automatically.
  *
  * @param {?Array} native The native shadow attribute value.
  *
  * @since TBD
  *
- * @return {Object} The composite `{ color, offsetX, offsetY, blur, spread, inset }` shape.
+ * @return {boolean} Whether the shadow has a visible footprint.
  */
-export function fromNativeShadow(native) {
+export function isVisibleNativeShadow(native) {
+	const source = native?.[0];
+
+	if (!source) {
+		return false;
+	}
+
+	return [source.hOffset, source.vOffset, source.blur, source.spread].some((axis) => Number(axis) !== 0);
+}
+
+/**
+ * Convert the native `[{ color, opacity, hOffset, vOffset, blur, spread, inset }]` attribute value to
+ * the composite `BoxShadowControl` edits, or the "None" alias while the sibling `enable` boolean
+ * reads false — a legacy toggle-off reads as "None" regardless of whatever is still sitting in the
+ * native item's own fields (leftover from before the field was toggled off, under the old UI this
+ * replaces), matching what the button actually renders: nothing.
+ *
+ * @param {?Array}  native The native shadow attribute value.
+ * @param {boolean} enable The sibling `displayShadow`/… attribute.
+ *
+ * @since TBD
+ *
+ * @return {string|Object} The "None" alias, or the composite `{ color, offsetX, offsetY, blur,
+ * spread, inset }` shape.
+ */
+export function fromNativeShadow(native, enable) {
+	if (!enable) {
+		return `{${BUTTON_SHADOW_NONE_TOKEN_ID}}`;
+	}
+
 	const source = native?.[0];
 
 	if (!source) {
@@ -362,16 +400,23 @@ export function toNativeShadow(value, tokens = []) {
 }
 
 /**
- * Render the editor-canvas box-shadow control: an `enable` toggle (the native attribute's own
- * sibling boolean, kept independent of the shadow value) beside `BoxShadowControl`, shown only while
- * enabled — matching the native `@kadence/components` `BoxShadowControl`'s own layout.
+ * Render the editor-canvas box-shadow control: `BoxShadowControl` alone, no separate enable toggle.
+ * A "None" pick — the button's own `semantic.shadow.button` token, relabeled (see the caller's
+ * `shadowNoneEntry()`) — is how "no shadow" is chosen now, matching every other token-picked
+ * field in this plan; the sibling `displayShadow`/… boolean this replaces is still written, just
+ * derived automatically from the value's own footprint (`isVisibleNativeShadow`) rather than a
+ * manual toggle, so PHP's existing render gate on that attribute needs no change of its own.
  *
  * @param {Object}    props                The component props.
  * @param {string}    props.label          The control's label.
  * @param {?Array}    props.value          The native shadow attribute value.
  * @param {Function}  props.onChange       Called with the next native shadow attribute value.
- * @param {boolean}   props.enable         Whether the shadow is enabled (the sibling boolean attribute).
- * @param {Function}  props.onEnableChange Called with the next enabled state.
+ * @param {boolean}   props.enable         The sibling `displayShadow`/… attribute — read only to
+ *                                         decide whether a legacy toggle-off value shows as "None"
+ *                                         (see `fromNativeShadow`); never toggled by this control.
+ * @param {Function}  props.onEnableChange Called with the value's own next enabled state, every time
+ *                                         `onChange` fires — keeps the sibling attribute in sync
+ *                                         automatically.
  * @param {Array}     [props.tokens]       Pickable `shadow`-type tokens, `[{id, label, value, alias}]`.
  * @param {?Function} [props.renderColor]  The block's existing color field for the composite's `color`.
  * @param {boolean}   [props.disabled]     Whether the control is read-only.
@@ -392,38 +437,19 @@ export function EditorShadowControl({
 }) {
 	return (
 		<TokenControlRow stacked>
-			<div className="kb-editor-shadow-control">
-				<div className="kb-editor-shadow-control__header">
-					{label && <span className="kb-editor-shadow-control__label">{label}</span>}
-					<ToggleControl
-						label={
-							label
-								? sprintf(
-										/* translators: %s: the field's own label, e.g. "Shadow". */ __(
-											'Enable %s',
-											'kadence-blocks'
-										),
-										label
-									)
-								: __('Enable shadow', 'kadence-blocks')
-						}
-						hideLabelFromVision
-						checked={!!enable}
-						onChange={onEnableChange}
-						disabled={disabled}
-					/>
-				</div>
-				{enable && (
-					<BoxShadowControl
-						label={undefined}
-						value={fromNativeShadow(value)}
-						onChange={(next) => onChange(toNativeShadow(next, tokens))}
-						tokens={tokens}
-						renderColor={renderColor}
-						disabled={disabled}
-					/>
-				)}
-			</div>
+			<BoxShadowControl
+				label={label}
+				value={fromNativeShadow(value, enable)}
+				onChange={(next) => {
+					const nextNative = toNativeShadow(next, tokens);
+
+					onChange(nextNative);
+					onEnableChange(isVisibleNativeShadow(nextNative));
+				}}
+				tokens={tokens}
+				renderColor={renderColor}
+				disabled={disabled}
+			/>
 		</TokenControlRow>
 	);
 }
