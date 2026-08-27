@@ -266,7 +266,6 @@ final class Feed_ControllerTest extends TestCase {
 		$ids = array_column( $data['schema']['groups']['Border Radius'], 'id' );
 		$this->assertSame(
 			[
-				'primitive.dimension.radius.none',
 				'primitive.dimension.radius.xs',
 				'primitive.dimension.radius.sm',
 				'primitive.dimension.radius.md',
@@ -279,7 +278,6 @@ final class Feed_ControllerTest extends TestCase {
 			$ids
 		);
 
-		$this->assertSame( '0', $data['values']['primitive.dimension.radius.none'] );
 		$this->assertSame( '0.125rem', $data['values']['primitive.dimension.radius.xs'] );
 		$this->assertSame( '0.25rem', $data['values']['primitive.dimension.radius.sm'] );
 		$this->assertSame( '0.375rem', $data['values']['primitive.dimension.radius.md'] );

@@ -93,7 +93,6 @@ final class Slot_Target_ReaderTest extends TestCase {
 				'3xl'  => '6.5rem',
 				'4xl'  => '8rem',
 				'5xl'  => '10rem',
-				'none' => '0',
 			],
 			$this->reader->read( Spacing_Target::class )
 		);

@@ -13,11 +13,16 @@
 // --global-kb-gap-<slug> as the primitive token, so a block already storing that slug follows it and a site
 // owner can retune each step. Usage-specific intent (semantic.spacing.section/.block/.inline) aliases the
 // scale and is where intent-based delivery points — mirroring how semantic.radius.media aliases the radius
-// scale. Defaults match KB's own values, so registering them changes nothing until overridden. ss-auto is
-// omitted: it resolves to "auto", not a length. group_key mirrors the radius/border-width scales' mechanism:
-// it is the stable machine id the Style Library's Spacing screen's "+ Add Spacing" mints custom tokens into,
-// resolved back to the group label at read time by Token_Registry::group_label_for().
-$spacing_slugs = [ 'none', 'xxs', 'xs', 'sm', 'md', 'lg', 'xl', 'xxl', '3xl', '4xl', '5xl' ];
+// scale. Defaults match KB's own values, so registering them changes nothing until overridden. ss-auto and
+// ss-none are both omitted: neither is a real length a site owner would retune — ss-auto resolves to the
+// CSS keyword "auto", and ss-none is just the literal 0, which every control already writes directly
+// without a token in the way. Both are spliced into the editor's/Style Library's pickable lists as `fixed`
+// sentinels instead (see `token-picker/index.js` and `style-library/helpers/tokens.js`), keeping "None" off
+// the Spacing/Border Radius screens where it would otherwise read as an editable, deletable scale step.
+// group_key mirrors the radius/border-width scales' mechanism: it is the stable machine id the Style
+// Library's Spacing screen's "+ Add Spacing" mints custom tokens into, resolved back to the group label at
+// read time by Token_Registry::group_label_for().
+$spacing_slugs = [ 'xxs', 'xs', 'sm', 'md', 'lg', 'xl', 'xxl', '3xl', '4xl', '5xl' ];
 $gap_slugs     = [ 'none', 'xs', 'sm', 'md', 'lg' ];
 
 $spacing_tokens = array_map(
@@ -25,7 +30,7 @@ $spacing_tokens = array_map(
 		return [
 			'id'          => 'primitive.dimension.spacing.' . $slug,
 			'type'        => 'dimension',
-			'label'       => 'none' === $slug ? __( 'None', 'kadence-blocks' ) : strtoupper( $slug ),
+			'label'       => strtoupper( $slug ),
 			'group'       => __( 'Spacing', 'kadence-blocks' ),
 			'group_key'   => 'spacing',
 			'projections' => [ 'kb_spacing_slot' => $slug ],
@@ -55,9 +60,10 @@ $gap_tokens = array_map(
 // drifting into its own bucket (see User_Primitive_Registrar::register_entry()).
 // The step list mirrors the shipped baseline exactly: the screen renders whatever this group holds, and
 // a step declared without a baseline entry would trip Baseline_Guard. Labels are the scale's own, so the
-// Style Library and the editor's token picker name each step identically.
+// Style Library and the editor's token picker name each step identically. "None" carries no entry here,
+// same reasoning as `$spacing_slugs`'s own comment above — it is spliced in as a `fixed` sentinel by the
+// pickable-pool consumers instead, keeping it off the Border Radius screen's editable/deletable list.
 $radius_labels = [
-	'none' => __( 'None', 'kadence-blocks' ),
 	'xs'   => __( 'Extra Small', 'kadence-blocks' ),
 	'sm'   => __( 'Small', 'kadence-blocks' ),
 	'md'   => __( 'Medium', 'kadence-blocks' ),
