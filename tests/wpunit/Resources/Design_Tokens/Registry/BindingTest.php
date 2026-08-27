@@ -95,6 +95,56 @@ final class BindingTest extends TestCase {
 
 		$this->assertNull( $binding->css_prop() );
 		$this->assertNull( $binding->css_selector() );
+		$this->assertNull( $binding->editor_css_selector() );
+	}
+
+	/**
+	 * A declared editor_css_selector replaces css_selector for the editor build alone, for a block whose
+	 * editor markup renders the bound property on a different descendant than its saved markup does.
+	 *
+	 * @return void
+	 */
+	public function testEditorCssSelectorOverridesTheFrontEndSelector(): void {
+		$binding = Binding::from_array(
+			'background',
+			[
+				'token'               => 'semantic.color.column-bg',
+				'css_prop'            => 'background-color',
+				'css_selector'        => '> .kt-inside-inner-col',
+				'editor_css_selector' => '> .kadence-inner-column-inner',
+			]
+		);
+
+		$this->assertSame( '> .kt-inside-inner-col', $binding->css_selector() );
+		$this->assertSame( '> .kadence-inner-column-inner', $binding->editor_css_selector() );
+	}
+
+	/**
+	 * With no editor_css_selector declared, the editor reuses the front-end selector — the right answer
+	 * for every block whose two render paths agree, and what keeps the override opt-in.
+	 *
+	 * @return void
+	 */
+	public function testEditorCssSelectorFallsBackToTheFrontEndSelector(): void {
+		$binding = Binding::from_array(
+			'borderRadius',
+			[
+				'token'        => 'semantic.radius.media',
+				'css_prop'     => 'border-radius',
+				'css_selector' => ' img',
+			]
+		);
+
+		$this->assertSame( ' img', $binding->editor_css_selector() );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testItThrowsWhenEditorCssSelectorIsNotAString(): void {
+		$this->expectException( InvalidArgumentException::class );
+
+		Binding::from_array( 'background', [ 'editor_css_selector' => [] ] );
 	}
 
 	/**

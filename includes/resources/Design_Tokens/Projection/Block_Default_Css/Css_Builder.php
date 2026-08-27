@@ -148,10 +148,13 @@ final class Css_Builder {
 
 	/**
 	 * Build the EDITOR-scoped version of the block-default CSS for a token library. Identical to {@see self::css()}
-	 * for every block that declares no `editor_selector` (e.g. Image, Single Icon, Row Layout, Column) — the
-	 * front-end `.wp-block-*` selector is reused verbatim. For a block that declares one (currently Advanced
-	 * Heading), the rule targets `.editor-styles-wrapper <editor_selector>` instead, so the default lands on
-	 * the element the editor actually renders the bindings against rather than the `useBlockProps()` wrapper.
+	 * for every block whose editor markup matches its saved markup (e.g. Image, Single Icon, Row Layout) — the
+	 * front-end selector is reused verbatim. Two independent declarations move it where they differ. A block
+	 * declaring a set-level `editor_selector` (currently Advanced Heading) has its rule target
+	 * `.editor-styles-wrapper <editor_selector>` instead, so the default lands on the element the editor
+	 * actually renders the bindings against rather than the `useBlockProps()` wrapper. A binding declaring
+	 * `editor_css_selector` (currently the Section's, whose editor renders `.kadence-inner-column-inner` where
+	 * `save.js` renders `.kt-inside-inner-col`) swaps the DESCENDANT suffix for that property alone.
 	 *
 	 * @since TBD
 	 *
@@ -182,8 +185,8 @@ final class Css_Builder {
 	/**
 	 * Cached version of editor_css(): same memo/object-cache mechanics as {@see self::css_for_version()}, but
 	 * keyed under a distinct `editor:` context so the editor-scoped string (which differs from the front-end
-	 * one for any block declaring an `editor_selector`) never collides with, or gets served in place of, the
-	 * front-end cache entry.
+	 * one for any block declaring an `editor_selector`, or any binding declaring an `editor_css_selector`)
+	 * never collides with, or gets served in place of, the front-end cache entry.
 	 *
 	 * @since TBD
 	 *
@@ -197,8 +200,9 @@ final class Css_Builder {
 	}
 
 	/**
-	 * Shared build for both {@see self::css()} and {@see self::editor_css()}; only the selector base differs
-	 * per block, per the presence of an `editor_selector` declaration.
+	 * Shared build for both {@see self::css()} and {@see self::editor_css()}; only the selector differs, per
+	 * block from a set-level `editor_selector` declaration and per property from a binding's
+	 * `editor_css_selector`.
 	 *
 	 * @since TBD
 	 *
@@ -278,8 +282,10 @@ final class Css_Builder {
 					continue;
 				}
 
-				$var      = $this->registry->css_var_for( $token );
-				$suffix   = $this->selector_suffix( $binding->css_selector() );
+				$var    = $this->registry->css_var_for( $token );
+				$suffix = $this->selector_suffix(
+					$editor ? $binding->editor_css_selector() : $binding->css_selector()
+				);
 
 				$by_suffix[ $suffix ][] = $prop . ':' . $this->declaration_value( $binding, $var, $literal );
 			}

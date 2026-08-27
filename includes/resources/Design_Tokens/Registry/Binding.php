@@ -100,6 +100,26 @@ final class Binding {
 	private const CSS_SELECTOR = 'css_selector';
 
 	/**
+	 * Inline target: the selector suffix to use instead of `css_selector` when the block-default-CSS
+	 * projector is building for the editor canvas, for a block whose editor markup renders the bound
+	 * property on a DIFFERENT descendant than its saved markup does (the Section renders
+	 * `.kadence-inner-column-inner` while `save.js` renders `.kt-inside-inner-col`). Without it the
+	 * front-end suffix is reused in the editor, where it matches nothing, and the property silently keeps
+	 * its editor look while the front end follows the token.
+	 *
+	 * This is the per-property counterpart to {@see Preset_Bindings::$editor_selector}, which swaps the
+	 * block ROOT rather than the descendant suffix. The two compose, and neither substitutes for the
+	 * other: a block whose editor root differs declares that one, a block whose editor descendant differs
+	 * declares this one. Optional; `css_selector` is reused in the editor when omitted, which is the
+	 * right answer for every block whose two render paths agree.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const EDITOR_CSS_SELECTOR = 'editor_css_selector';
+
+	/**
 	 * Editor-only target: the block attribute the editor control for this property writes, so the
 	 * indicator layer can tell whether a control is bound to the active preset or has been overridden.
 	 * Deliberately NOT a projection target — it is excluded from STRING_TARGETS / inline_targets(), so it
@@ -147,7 +167,7 @@ final class Binding {
 	 *
 	 * @var string[]
 	 */
-	private const STRING_TARGETS = [ self::KADENCE_SLOT, self::BLOCK_ATTR, self::CSS_PROP, self::CSS_SELECTOR, self::CSS_VAR ];
+	private const STRING_TARGETS = [ self::KADENCE_SLOT, self::BLOCK_ATTR, self::CSS_PROP, self::CSS_SELECTOR, self::EDITOR_CSS_SELECTOR, self::CSS_VAR ];
 
 	/**
 	 * The block property this binding drives, e.g. "button-bg". Carried for error messages and so a
@@ -384,6 +404,22 @@ final class Binding {
 		$selector = $this->projections[ self::CSS_SELECTOR ] ?? null;
 
 		return is_string( $selector ) ? $selector : null;
+	}
+
+	/**
+	 * The selector suffix for this binding's `css_prop` rule in the EDITOR canvas: the declared
+	 * `editor_css_selector` when the block's editor markup renders the property on a different descendant
+	 * than its saved markup, and otherwise {@see self::css_selector()}, which is the right answer whenever
+	 * the two render paths agree. Inline only.
+	 *
+	 * @since TBD
+	 *
+	 * @return string|null
+	 */
+	public function editor_css_selector(): ?string {
+		$selector = $this->projections[ self::EDITOR_CSS_SELECTOR ] ?? null;
+
+		return is_string( $selector ) ? $selector : $this->css_selector();
 	}
 
 	/**

@@ -761,36 +761,46 @@ return [
 			// (the way semantic.spacing.media-padding seeds the image's at 0) — a column renders no padding
 			// today, so seeding it from a non-zero spacing step would indent every column on the site at
 			// upgrade. That belongs with the Section preset screen.
+			// Every binding below declares an `editor_css_selector` as well, because the column is the one
+			// wired block whose two render paths disagree about the element: `save.js` renders
+			// `.kt-inside-inner-col` and the editor renders `.kadence-inner-column-inner`. The front-end class
+			// does not exist in the canvas at all, so without the override each rule would match nothing there
+			// and a column's default look (and any selected preset) would reach the front end while the editor
+			// showed the block's own unstyled markup. The editor paints its own value inline on that element,
+			// which beats any stylesheet rule, so a column the user has styled by hand is unaffected either way.
 			'block'    => 'kadence/column',
 			'bindings' => [
 				'background'   => [
-					'token'        => 'semantic.color.column-bg',
-					'css_prop'     => 'background-color',
-					'css_selector' => '> .kt-inside-inner-col',
-					'css_var'      => 'kb-col-bg',
-					'control_attr' => 'background',
+					'token'               => 'semantic.color.column-bg',
+					'css_prop'            => 'background-color',
+					'css_selector'        => '> .kt-inside-inner-col',
+					'editor_css_selector' => '> .kadence-inner-column-inner',
+					'css_var'             => 'kb-col-bg',
+					'control_attr'        => 'background',
 				],
 				// The column migrates its legacy flat `border`/`borderWidth` into the nested `borderStyle`
 				// composite, exactly as the row does; this property owns that composite's color axis.
 				'border'       => [
-					'token'            => 'semantic.color.border',
-					'css_prop'         => 'border-color',
-					'css_selector'     => '> .kt-inside-inner-col',
-					'css_var'          => 'kb-col-border-color',
-					'control_attr'     => 'borderStyle',
-					'axis'             => 'border-color',
-					'responsive_attrs' => [
+					'token'               => 'semantic.color.border',
+					'css_prop'            => 'border-color',
+					'css_selector'        => '> .kt-inside-inner-col',
+					'editor_css_selector' => '> .kadence-inner-column-inner',
+					'css_var'             => 'kb-col-border-color',
+					'control_attr'        => 'borderStyle',
+					'axis'                => 'border-color',
+					'responsive_attrs'    => [
 						'tablet' => 'tabletBorderStyle',
 						'mobile' => 'mobileBorderStyle',
 					],
 				],
 				'borderRadius' => [
-					'token'            => 'semantic.radius.column',
-					'css_prop'         => 'border-radius',
-					'css_selector'     => '> .kt-inside-inner-col',
-					'css_var'          => 'kb-col-radius',
-					'control_attr'     => 'borderRadius',
-					'responsive_attrs' => [
+					'token'               => 'semantic.radius.column',
+					'css_prop'            => 'border-radius',
+					'css_selector'        => '> .kt-inside-inner-col',
+					'editor_css_selector' => '> .kadence-inner-column-inner',
+					'css_var'             => 'kb-col-radius',
+					'control_attr'        => 'borderRadius',
+					'responsive_attrs'    => [
 						'tablet' => 'tabletBorderRadius',
 						'mobile' => 'mobileBorderRadius',
 					],

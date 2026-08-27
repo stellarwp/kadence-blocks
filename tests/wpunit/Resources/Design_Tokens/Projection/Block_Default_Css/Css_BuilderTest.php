@@ -269,6 +269,51 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
+	 * The Section renders its background, border and radius on `.kt-inside-inner-col` when saved but on
+	 * `.kadence-inner-column-inner` in the editor canvas, so its bindings declare an `editor_css_selector`
+	 * and the two builds target different descendants of the same block root. Without the override the
+	 * editor build would carry the saved-markup class, which does not exist in the canvas, and a column's
+	 * default look would reach the front end while the editor showed the block's own unstyled markup.
+	 *
+	 * @return void
+	 */
+	public function testTheEditorBuildRetargetsTheColumnRuleAtTheEditorsOwnInnerElement(): void {
+		$registry = $this->container->get( Token_Registry::class );
+
+		$editor = $this->builder( $registry )->editor_css();
+		$front  = $this->builder( $registry )->css();
+
+		$this->assertStringContainsString(
+			'.wp-block-kadence-column> .kadence-inner-column-inner{' . $this->declaration( 'background-color', 'kb-col-bg', 'semantic.color.column-bg', 'transparent' ),
+			$editor
+		);
+		$this->assertStringContainsString( $this->declaration( 'border-radius', 'kb-col-radius', 'semantic.radius.column', '0' ), $editor );
+
+		// Each build carries only its own surface's class — neither leaks the other's.
+		$this->assertStringNotContainsString( '.wp-block-kadence-column> .kt-inside-inner-col', $editor );
+		$this->assertStringNotContainsString( '.wp-block-kadence-column> .kadence-inner-column-inner', $front );
+	}
+
+	/**
+	 * A binding declaring no `editor_css_selector` reuses its front-end `css_selector` in the editor, which
+	 * is the right answer for every block whose two render paths agree — the Row Layout sits on the block
+	 * root in both, and the Image's `img` descendant exists in both.
+	 *
+	 * @return void
+	 */
+	public function testABindingWithNoEditorCssSelectorReusesItsFrontEndSelector(): void {
+		$registry = $this->container->get( Token_Registry::class );
+
+		$editor = $this->builder( $registry )->editor_css();
+
+		$this->assertStringContainsString(
+			'.wp-block-kadence-rowlayout{' . $this->declaration( 'background-color', 'kb-row-bg', 'semantic.color.rowlayout-bg', 'transparent' ),
+			$editor
+		);
+		$this->assertStringContainsString( '.wp-block-kadence-image img{', $editor );
+	}
+
+	/**
 	 * A block whose Preset_Bindings declares no `editor_selector` (e.g. Image) must emit an editor build
 	 * byte-for-byte identical to its front-end build — no `.editor-styles-wrapper` prefix and no
 	 * re-targeting — so blocks without the wrapper-div problem see zero regression from this mechanism. Uses
