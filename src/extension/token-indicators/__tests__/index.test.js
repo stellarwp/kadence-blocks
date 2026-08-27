@@ -726,6 +726,72 @@ describe('resetAttrPatch', () => {
 	});
 
 	/**
+	 * A dimension whose block stores it as a SCALAR clears to '', not to a 4-side array. Writing the
+	 * array shape into `kadence/single-icon`'s `size` — a single number written into the SVG's geometry
+	 * attributes — leaves the control reading an array back as a custom value.
+	 *
+	 * @return {void}
+	 */
+	it('clears a scalar dimension to an empty string, not a 4-side array', () => {
+		const declared = {
+			size: { type: ['number', 'string'], default: 50 },
+			tabletSize: { type: ['number', 'string'], default: '' },
+			mobileSize: { type: ['number', 'string'], default: '' },
+		};
+
+		expect(resetAttrPatch('size', 'dimension', declared)).toEqual({
+			size: '',
+			tabletSize: '',
+			mobileSize: '',
+		});
+	});
+
+	/**
+	 * The unit companion is written only when the block declares one — `size` has no `sizeUnit`, and
+	 * inventing it would store an attribute the block never reads.
+	 *
+	 * @return {void}
+	 */
+	it('does not invent a unit attribute the block does not declare', () => {
+		const declared = { size: { default: 50 } };
+
+		expect(resetAttrPatch('size', 'dimension', declared)).not.toHaveProperty('sizeUnit');
+	});
+
+	/**
+	 * A 4-side dimension still clears to the array shape and its unit when the schema says so, so the
+	 * shape is read from the block rather than guessed either way.
+	 *
+	 * @return {void}
+	 */
+	it('still clears a declared 4-side dimension to the array shape', () => {
+		const declared = {
+			borderRadius: { type: 'array', default: ['', '', '', ''] },
+			borderRadiusUnit: { type: 'string', default: 'px' },
+			tabletBorderRadius: { type: 'array', default: ['', '', '', ''] },
+			mobileBorderRadius: { type: 'array', default: ['', '', '', ''] },
+		};
+
+		expect(resetAttrPatch('borderRadius', 'dimension', declared)).toEqual({
+			borderRadius: ['', '', '', ''],
+			borderRadiusUnit: 'px',
+			tabletBorderRadius: ['', '', '', ''],
+			mobileBorderRadius: ['', '', '', ''],
+		});
+	});
+
+	/**
+	 * A block that declares no responsive companions gets none written.
+	 *
+	 * @return {void}
+	 */
+	it('omits responsive companions the block does not declare', () => {
+		const declared = { iconSize: { type: 'string', default: '' } };
+
+		expect(resetAttrPatch('iconSize', 'dimension', declared)).toEqual({ iconSize: '' });
+	});
+
+	/**
 	 * A border reset clears the primary attribute and both responsive companions to an empty ARRAY
 	 * (`[]`), not `['', '', '', '']` — the shape `EditorBorderControl`'s `fromNativeBorder` reads as
 	 * "never written" via its `!native?.[0]` short-circuit.

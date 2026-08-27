@@ -2,6 +2,8 @@ import { getPreviewSize, KadenceColorOutput, getSpacingOptionOutput } from '@kad
 import { useRef } from '@wordpress/element';
 import { IconRender, Tooltip } from '@kadence/components';
 import { tokenPx } from '../../extension/design-tokens/token-px';
+import { tokenLiteral } from '../../extension/design-tokens/token-literals';
+import { presetPropertyValueForDevice } from '../../extension/token-indicators';
 import { boundTokenAliasForControl } from '../../extension/token-picker';
 import { parseCssLength } from '../../token-controls';
 import metadata from './block.json';
@@ -88,14 +90,30 @@ export function PreviewIcon({ attributes, previewDevice }) {
 	// icon-size token's fallback rule. Both of those become a number here instead, on the same 16px root
 	// assumption PHP uses, so the two render paths agree.
 	//
-	// A cleared size therefore falls back to the very token the block-default CSS names for it, read from
-	// the binding rather than restated. Anything still unresolved after that is left `undefined` so
-	// `GenIcon` applies its own default, which is the one shape that renders rather than breaking.
+	// A cleared size falls back to the SELECTED PRESET's size, then to the token the block-default CSS
+	// names for it, read from the binding rather than restated. The preset comes first because that is what
+	// the front end renders: the preset's scoped rule sets `--kb-icon-size` on the block root, and the
+	// block-default rule reads it ahead of the token. Falling straight to the token here would show every
+	// preset at the same size in the editor while the front end showed each preset's own.
+	//
+	// Anything still unresolved is left `undefined` so `GenIcon` applies its own default, which is the one
+	// shape that renders rather than breaking.
+	const presetSize = presetPropertyValueForDevice(metadata.name, 'size', attributes, undefined, previewDevice);
 	const previewSizePx =
 		tokenPx(previewSize) ??
 		iconSizeNumber(previewSize) ??
+		tokenPx(presetSize) ??
+		iconSizeNumber(presetSize) ??
 		tokenPx(boundTokenAliasForControl(metadata.name, 'size')) ??
 		undefined;
+	// The same story for color, by a different mechanism. The front end renders a cleared color through the
+	// block-default rule's `var(--kb-icon-color, ...)` chain on the `.kb-svg-icon-wrap` span PHP hydrates;
+	// the editor has no such element (it renders `GenIcon`'s own div) and paints the color inline, so the
+	// preset's value is resolved here instead. Without this a preset's color simply never reaches the
+	// canvas — the rule that would carry it matches nothing in the editor's markup.
+	const previewColor =
+		color ||
+		tokenLiteral(presetPropertyValueForDevice(metadata.name, 'color', attributes, undefined, previewDevice));
 	const previewMarginTop = getPreviewSize(
 		previewDevice,
 		margin && undefined !== margin[0] ? margin[0] : undefined,
@@ -164,7 +182,7 @@ export function PreviewIcon({ attributes, previewDevice }) {
 							strokeWidth={'fe' === icon.substring(0, 2) ? width : undefined}
 							title={title ? title : ''}
 							style={{
-								color: color ? KadenceColorOutput(color) : undefined,
+								color: previewColor ? KadenceColorOutput(previewColor) : undefined,
 								backgroundColor:
 									background && style !== 'default' ? KadenceColorOutput(background) : undefined,
 								paddingTop:

@@ -296,11 +296,16 @@ export function presetPropertyValueForDevice(blockName, propertyKey, attributes,
  * The `setAttributes` patch that clears a mapped control's attribute(s) back to their block.json default
  * shape, so the block falls back to the existing preset-scoped CSS (the `.wp-block-*.kb-preset--<preset>`
  * retarget) or the preset default — no new render path. A `color`/`text` control clears its single
- * attribute to `''`. A `dimension` control (e.g. `borderRadius`) also clears its unit companion and its
- * `tablet*`/`mobile*` companions by convention; the primary and companion array attributes reset to the
- * block's declared default shape — a 4-side `['', '', '', '']` array, per `block.json` (e.g. `borderRadius`,
- * `tabletBorderRadius`, `mobileBorderRadius`) — not a bare `''`, and the unit resets to `'px'`
- * (`borderRadiusUnit`'s declared default), not `''`.
+ * attribute to `''`. A `dimension` control also clears its `tablet*`/`mobile*` companions by convention,
+ * and its unit companion where the block has one.
+ *
+ * What a dimension clears TO depends on the shape the block declares for it, which is why the block's
+ * attribute schema is passed in. A measure control's attribute is a 4-side array and resets to
+ * `['', '', '', '']` with its unit back to `'px'` (`borderRadiusUnit`'s own declared default), not to a
+ * bare `''`. A scalar dimension — `kadence/single-icon`'s `size`, one number written into the SVG's
+ * geometry attributes — resets to `''`; giving it the array shape stores an array in a scalar attribute,
+ * which the control reads back as a custom value. With no schema passed, the 4-side shape stands, which is
+ * what every caller that omits it wants.
  *
  * A `border` control (the combined `borderStyle` width/style/color entry) clears its `tablet*`/`mobile*`
  * companions the same way, but to an empty ARRAY (`[]`), not `['', '', '', '']` — `EditorBorderControl`'s
@@ -313,14 +318,17 @@ export function presetPropertyValueForDevice(blockName, propertyKey, attributes,
  * Shared by the per-control reset (`resetAttr`) and the picker's reset-all, so their clearing convention
  * cannot drift.
  *
- * @param {string} attr The primary attribute name.
- * @param {string} kind The property kind, so a dimension/border also clears its companions.
+ * @param {string}  attr       The primary attribute name.
+ * @param {string}  kind       The property kind, so a dimension/border also clears its companions.
+ * @param {?Object} [declared] The block's declared attributes (`getBlockType(name).attributes`), read for
+ *                             the shape a dimension clears to and which companions exist. Omit when the
+ *                             caller has no block to read it from.
  *
  * @since TBD
  *
  * @return {Object} The attribute patch to pass to `setAttributes`.
  */
-export function resetAttrPatch(attr, kind) {
+export function resetAttrPatch(attr, kind, declared) {
 	if (kind === 'border') {
 		return {
 			[attr]: [],
@@ -333,14 +341,56 @@ export function resetAttrPatch(attr, kind) {
 		return { [attr]: '' };
 	}
 
-	const emptySides = ['', '', '', ''];
+	// A dimension is not always a measure control's 4-side array. `kadence/single-icon`'s `size` is a
+	// single number written into the SVG's geometry attributes, and clearing it to `['', '', '', '']`
+	// stores an array in a scalar attribute — which the control then reads back as a custom value.
+	// The block's own schema already says which shape it is, so it is passed in rather than assumed;
+	// with no schema (a caller that has none) the historical 4-side shape stands.
+	const isSides = !declared || Array.isArray(declared[attr]?.default);
 
-	return {
-		[attr]: emptySides,
-		[`${attr}Unit`]: 'px',
-		[deviceAttrFor(attr, 'Tablet')]: emptySides,
-		[deviceAttrFor(attr, 'Mobile')]: emptySides,
-	};
+	if (!isSides) {
+		return withDeviceCompanions({ [attr]: '' }, attr, declared, '');
+	}
+
+	const emptySides = ['', '', '', ''];
+	const patch = withDeviceCompanions({ [attr]: emptySides }, attr, declared, emptySides);
+
+	// Only when the block declares the companion: `borderRadius` has `borderRadiusUnit`, `size` has no
+	// `sizeUnit`, and writing one would leave an attribute the block never reads.
+	if (!declared || declared[`${attr}Unit`]) {
+		patch[`${attr}Unit`] = 'px';
+	}
+
+	return patch;
+}
+
+/**
+ * Add a dimension's per-device companion attributes to a reset patch, cleared to the same shape as the
+ * primary.
+ *
+ * The companions are named by the `tablet`/`mobile` prefix convention. A block that declares them under
+ * that convention gets them cleared; one that does not is left alone rather than gaining attributes it
+ * never declared.
+ *
+ * @param {Object}  patch    The patch so far.
+ * @param {string}  attr     The primary attribute name.
+ * @param {?Object} declared The block's declared attributes, or undefined when unknown.
+ * @param {*}       empty    The cleared value to write.
+ *
+ * @since TBD
+ *
+ * @return {Object} The patch, with any companions added.
+ */
+function withDeviceCompanions(patch, attr, declared, empty) {
+	['Tablet', 'Mobile'].forEach((device) => {
+		const companion = deviceAttrFor(attr, device);
+
+		if (!declared || declared[companion]) {
+			patch[companion] = empty;
+		}
+	});
+
+	return patch;
 }
 
 /**
@@ -354,8 +404,8 @@ export function resetAttrPatch(attr, kind) {
  *
  * @return {void}
  */
-export function resetAttr(attr, setAttributes, kind) {
-	setAttributes(resetAttrPatch(attr, kind));
+export function resetAttr(attr, setAttributes, kind, declared) {
+	setAttributes(resetAttrPatch(attr, kind, declared));
 }
 
 /**
