@@ -543,7 +543,20 @@ export default function KadenceButtonEdit(props) {
 	// hover/sticky/transparent variant below reuses the same resolved list rather than re-filtering the
 	// pool per state.
 	const borderWidthPickableTokens = pickableTokensForKey('kadence/singlebtn', 'button-border-width');
-	const shadowPickableTokens = [shadowNoneEntry(), ...pickableTokensForKey('kadence/singlebtn', 'button-shadow')];
+	// Filtering the real token back out before prepending the relabeled entry (matching the Style
+	// Library's own `BoxShadowField.js`) isn't a no-op today — shadow's primitive scale always has at
+	// least one step, so the "prefer primitives" narrowing already drops `semantic.shadow.button`
+	// before the bound-token pin step runs — but that's an accident of the current scale, not a
+	// structural guarantee. Filtering explicitly keeps this call site correct even if a site's shadow
+	// primitive scale were ever emptied out, which would otherwise let `button-shadow`'s own preset
+	// binding (`semantic.shadow.button`) get pinned back in under its real "Button Shadow" label,
+	// producing the same duplicate row this function exists to prevent.
+	const shadowPickableTokens = [
+		shadowNoneEntry(),
+		...pickableTokensForKey('kadence/singlebtn', 'button-shadow').filter(
+			(token) => token.id !== BUTTON_SHADOW_NONE_TOKEN_ID
+		),
+	];
 	const paddingPickableTokens = pickableTokensForKey('kadence/singlebtn', 'button-padding');
 	// Margin's legacy control also offers "Auto" (`allowAuto`), which Padding's never did.
 	// `ss-auto` is already a fully working spacing slot at the PHP/CSS layer (Spacing_Target's SLOTS,
