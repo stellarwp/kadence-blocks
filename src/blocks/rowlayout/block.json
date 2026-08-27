@@ -795,6 +795,7 @@
 		"kbcss": true,
 		"html": false,
 		"kbMetadata": true,
+		"kbPreset": true,
 		"kbPalette": true
 	}
 }
