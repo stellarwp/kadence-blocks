@@ -27,10 +27,18 @@ const baseConfig = require('@wordpress/scripts/config/jest-unit.config.js');
 
 module.exports = {
 	...baseConfig,
-	// `.worktrees/` holds sibling checkouts of this same repo (see `using-git-worktrees`); without
-	// this, jest walks into them too and runs every test a second time against a possibly different
-	// branch's source.
-	testPathIgnorePatterns: [...(baseConfig.testPathIgnorePatterns || []), '/\\.worktrees/'],
+	// `@wordpress/scripts/config/jest-unit.config.js` exports only `{ preset, reporters, transform }`,
+	// so `baseConfig.testPathIgnorePatterns` is always undefined and a spread of it contributes
+	// nothing — `testPathIgnorePatterns` is not one of the keys jest merges across preset and project
+	// (jest-config's normalize.js special-cases `setupFilesAfterEnv`, `modulePathIgnorePatterns`,
+	// `moduleNameMapper`, `transform`, and `globals`; everything else falls through to
+	// `{...preset, ...options}`, so the project value replaces the preset's outright). Written out
+	// literally so the list says what it actually is: the preset's own ignores
+	// (`@wordpress/jest-preset-default`'s `['/node_modules/', '<rootDir>/vendor/']`) plus this repo's
+	// own `.worktrees/` — `.worktrees/` holds sibling checkouts of this same repo (see
+	// `using-git-worktrees`); without it, jest walks into them too and runs every test a second time
+	// against a possibly different branch's source.
+	testPathIgnorePatterns: ['/node_modules/', '<rootDir>/vendor/', '/\\.worktrees/'],
 	moduleNameMapper: {
 		...(baseConfig.moduleNameMapper || {}),
 		'^@wordpress/hooks$': path.join(
