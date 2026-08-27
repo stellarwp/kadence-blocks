@@ -50,6 +50,7 @@ export {
 	isTokenAlias,
 	resolveDefaultValue,
 } from './helpers/token-summary';
+export { autoEntry, noneEntryForRole } from './helpers/fixed-tokens';
 export {
 	SLOT_COUNT,
 	SLOT_LABELS,
