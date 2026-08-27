@@ -19,6 +19,14 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Extensions;
  * order is the display order every picker renders — the family a site added first sits first.
  * add() is therefore idempotent on an existing entry and never reorders it.
  *
+ * Membership is decided case-insensitively, because a family name is a proper noun rather than an
+ * identifier: `Inter` and `INTER` name one face, and the catalog gate the REST routes run in front of
+ * this already accepts either spelling. Matching case-sensitively here would let those two spellings
+ * both pass that gate and store two entries for one font — and neither picker would show the second,
+ * since both collapse the list case-insensitively before rendering, leaving an entry no one can see
+ * or remove. Only the comparison folds case; the stored name keeps whatever casing it arrived with,
+ * which is what a picker displays.
+ *
  * @since TBD
  */
 final class Favorite_Font_Index {
@@ -27,8 +35,9 @@ final class Favorite_Font_Index {
 	 * Every stored favorite family, in display order. Read-side fail-soft: a section that is not a
 	 * sequential list is dropped wholesale (degrades to "no favorites"), and non-string or empty
 	 * entries inside an otherwise-valid list are filtered out, so a hand-corrupted section degrades
-	 * to an empty list instead of a type error downstream. Duplicates are collapsed, keeping first
-	 * occurrence, so a hand-written repeat cannot render the same family twice.
+	 * to an empty list instead of a type error downstream. Duplicates are collapsed case-insensitively,
+	 * keeping first occurrence, so neither a hand-written repeat nor a pair of spellings can render the
+	 * same family twice.
 	 *
 	 * @since TBD
 	 *
@@ -54,10 +63,26 @@ final class Favorite_Font_Index {
 
 		$valid = array_filter( $families, fn( $family ) => is_string( $family ) && trim( $family ) !== '' );
 
-		return array_values( array_unique( array_map( 'trim', $valid ) ) );
+		$seen   = [];
+		$unique = [];
+
+		foreach ( array_map( 'trim', $valid ) as $family ) {
+			$key = $this->fold( $family );
+
+			if ( isset( $seen[ $key ] ) ) {
+				continue;
+			}
+
+			$seen[ $key ] = true;
+			$unique[]     = $family;
+		}
+
+		return $unique;
 	}
 
 	/**
+	 * Whether a family is already a favorite, matched case-insensitively.
+	 *
 	 * @since TBD
 	 *
 	 * @param array<string, mixed> $document
@@ -66,7 +91,15 @@ final class Favorite_Font_Index {
 	 * @return bool
 	 */
 	public function has( array $document, string $family ): bool {
-		return in_array( trim( $family ), $this->all( $document ), true );
+		$key = $this->fold( trim( $family ) );
+
+		foreach ( $this->all( $document ) as $stored ) {
+			if ( $this->fold( $stored ) === $key ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
@@ -95,8 +128,10 @@ final class Favorite_Font_Index {
 	}
 
 	/**
-	 * Remove a family from the list, leaving every other favorite's relative order untouched.
-	 * No-op (the same document is returned) when the family is not in the list.
+	 * Remove a family from the list, leaving every other favorite's relative order untouched. Matched
+	 * case-insensitively, so a family can be cleared through the spelling a client has rather than only
+	 * through the one that happens to be stored. No-op (the same document is returned) when the family
+	 * is not in the list.
 	 *
 	 * @since TBD
 	 *
@@ -106,16 +141,33 @@ final class Favorite_Font_Index {
 	 * @return array<string, mixed>
 	 */
 	public function remove( array $document, string $family ): array {
-		$family  = trim( $family );
+		$key     = $this->fold( trim( $family ) );
 		$current = $this->all( $document );
 
-		$remaining = array_values( array_filter( $current, fn( string $stored ) => $stored !== $family ) );
+		$remaining = array_values(
+			array_filter( $current, fn( string $stored ) => $this->fold( $stored ) !== $key )
+		);
 
 		if ( $remaining === $current ) {
 			return $document;
 		}
 
 		return $this->write_list( $document, $remaining );
+	}
+
+	/**
+	 * The comparison key for a family name. ASCII lowercasing, matching both the `strcasecmp()` the
+	 * REST catalog gate uses and the `toLowerCase()` both pickers collapse their lists with, so the
+	 * three agree on what counts as the same font.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $family The family name.
+	 *
+	 * @return string The comparison key.
+	 */
+	private function fold( string $family ): string {
+		return strtolower( $family );
 	}
 
 	/**
