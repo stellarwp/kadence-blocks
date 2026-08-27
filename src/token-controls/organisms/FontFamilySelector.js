@@ -18,6 +18,7 @@ import { __, sprintf } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { FontFamilyPopover } from '../molecules/FontFamilyPopover';
+import { sameFamily } from '../helpers/font-family';
 import '../styles/token-controls.scss';
 
 /**
@@ -57,7 +58,7 @@ export function FontFamilySelector({
 }) {
 	const family = typeof value === 'string' ? value : '';
 	const unset = family === '';
-	const isFavorite = favorites.some((entry) => entry === family);
+	const isFavorite = favorites.some((entry) => sameFamily(entry, family));
 
 	// A family already in the favorites opens on the short list; anything else opens on the catalog,
 	// which is where it was picked from and the only tab that can show it in context. An unset field

@@ -28,6 +28,7 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { filterCatalogOptions } from '../helpers/catalog-filter';
+import { sameFamily } from '../helpers/font-family';
 
 /**
  * The `Reset` affordance both tab bodies open with: clears the field back to whatever it inherits.
@@ -86,7 +87,7 @@ function FavoritesTab({ value, favorites, manageUrl, onPick, onClear, onClose })
 				<Button
 					key={family}
 					className="kadence-token-field__item"
-					isPressed={family === value}
+					isPressed={sameFamily(family, value)}
 					onClick={() => {
 						onPick(family);
 						onClose();
@@ -155,7 +156,7 @@ export function FontCatalogTab({ value, options, onPick, onClear, onClose }) {
 					<Button
 						key={option.value}
 						className="kadence-token-field__item"
-						isPressed={option.value === value}
+						isPressed={sameFamily(option.value, value)}
 						onClick={() => {
 							onPick(option.value);
 							onClose();

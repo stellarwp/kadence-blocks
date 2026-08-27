@@ -184,6 +184,19 @@ describe('FontFamilySelector initial tab', () => {
 	});
 
 	/**
+	 * A favorite stored with different casing than the value on the block is still that favorite —
+	 * every other layer folds case, so a comparison here that did not would open the picker on the
+	 * wrong tab with no row marked, which reads as the field having lost its value.
+	 *
+	 * @return {void}
+	 */
+	it('opens on Favorites when the family differs only in case', () => {
+		renderSelector({ value: 'INTER', favorites: ['Inter'] });
+
+		expect(popoverProps.initialTab).toBe('favorites');
+	});
+
+	/**
 	 * Anything else opens on the catalog — the tab it was picked from, and the only one that can show
 	 * it in context.
 	 *
