@@ -78,6 +78,40 @@ export function preferPrimitiveTokens(tokens, selected) {
 }
 
 /**
+ * The roles that offer a fixed "None" entry — mirrors the editor's own `FIXED_NONE_ROLES` in
+ * `extension/token-picker/index.js`. Both hosts read the same pool and must offer the same choices.
+ *
+ * @since TBD
+ *
+ * @type {string[]}
+ */
+const FIXED_NONE_ROLES = ['spacing', 'radius'];
+
+/**
+ * The fixed "None" entry for one of `FIXED_NONE_ROLES` — the Style Library's copy of the editor's
+ * `fixedNoneEntry()` (`extension/token-picker/index.js`), same reasoning: "None" carries no DTCG
+ * registration, so it is spliced into the pickable list here instead of surviving the primitive
+ * narrowing as a registered token would. `alias` is the JS number `0`, matching what
+ * `BoxTokenField.js`'s `toControlValue()` already produces for a stored literal `'0'`.
+ *
+ * @param {string} role The role to build the entry for ('spacing' | 'radius').
+ *
+ * @since TBD
+ *
+ * @return {{id: string, alias: number, label: string, value: string, role: string, fixed: boolean}} The fixed entry.
+ */
+function fixedNoneEntry(role) {
+	return {
+		id: `ss-none-${role}`,
+		alias: 0,
+		label: __('None', 'kadence-blocks'),
+		value: '0',
+		role,
+		fixed: true,
+	};
+}
+
+/**
  * The pickable tokens of one DTCG `$type` (e.g. `dimension`, `color`), each with its resolved
  * literal value from the active library. An optional `role` narrows the pool further (e.g. the
  * Radius picker wants only `role: 'radius'` dimensions, not every dimension token) — omitted, this
@@ -116,7 +150,11 @@ export function pickableTokensForType(type, role, selected) {
 		return matched;
 	}
 
-	return preferPrimitiveTokens(matched, selected);
+	const narrowed = preferPrimitiveTokens(matched, selected);
+
+	// Spliced in after the primitive narrowing, not before — its id carries no `primitive.` prefix, so
+	// the narrowing above would otherwise strip it exactly as it strips any other non-primitive entry.
+	return FIXED_NONE_ROLES.includes(role) ? [fixedNoneEntry(role), ...narrowed] : narrowed;
 }
 
 /**

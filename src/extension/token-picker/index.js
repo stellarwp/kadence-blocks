@@ -16,6 +16,7 @@
  * That is cosmetic (the alias never goes stale) and live refresh is the picker UI's concern.
  */
 import { get } from 'lodash';
+import { __ } from '@wordpress/i18n';
 import { activeLibrary, blockProperties } from '../preset-picker';
 
 /**
@@ -60,6 +61,23 @@ function valuesFor(library) {
 	const slug = library || activeLibrary();
 
 	return get(values, [slug], null) || get(values, [activeLibrary()], {}) || {};
+}
+
+/**
+ * The resolved literal for a single token id, or `''` when the pool carries no value for it (e.g. the
+ * feed has not loaded yet). For a caller that needs a block's own hardcoded literal to show when even
+ * this comes back empty — e.g. a `defaultValue` a control falls back to when nothing binds it — see
+ * that caller's own fallback constant; this function only ever reads the pool, never invents one.
+ *
+ * @param {string} id        The token id (e.g. 'semantic.spacing.button-padding-top').
+ * @param {string} [library] The token library slug; defaults to the active library.
+ *
+ * @since TBD
+ *
+ * @return {string} The resolved literal, or ''.
+ */
+export function resolvedTokenValue(id, library) {
+	return valuesFor(library)[id] ?? '';
 }
 
 /**
@@ -161,6 +179,49 @@ const ROLE_ALIASES = {
 };
 
 /**
+ * The roles that offer a fixed "None" entry — every role whose scale used to register a `.none`
+ * primitive worth `0` (see `declarations.php`'s own comment on why it no longer does). Sized this
+ * way rather than "every dimension role" because it is a deliberate design choice per role, not a
+ * property every scale has — border-width and icon-size, for instance, have never offered one.
+ *
+ * @since TBD
+ *
+ * @type {string[]}
+ */
+const FIXED_NONE_ROLES = ['spacing', 'radius'];
+
+/**
+ * The fixed "None" entry for one of `FIXED_NONE_ROLES`, matching Margin's own `ss-auto` sentinel in
+ * spirit: a real, working value with no DTCG registration behind it, spliced into the pickable list
+ * at read time instead. Unlike `ss-auto` (the CSS keyword `auto`, meaningless as a length), "None" IS
+ * a length — the plain literal `0` — so no bare, non-bracketed alias convention is needed to reach a
+ * PHP/CSS layer that already special-cases it; `alias` is the JS number `0` itself, exactly what
+ * `toControlValue()`/a hand-typed Custom `0` already produce, so `findTokenEntry()` recognizes either
+ * one as this same fixed entry (see its own docblock on the `fixed` exception).
+ *
+ * Kept off the registry (and therefore off the Spacing/Border Radius screens) on purpose: a "None"
+ * primitive read exactly like the shipped XS/SM/MD/… steps had nothing distinguishing it from a real,
+ * user-owned scale value, so the screen let it be renamed or deleted like any other row.
+ *
+ * @param {string} role The role to build the entry for ('spacing' | 'radius').
+ *
+ * @since TBD
+ *
+ * @return {{id: string, alias: number, label: string, value: string, type: string, role: string, fixed: boolean}} The fixed entry.
+ */
+function fixedNoneEntry(role) {
+	return {
+		id: `ss-none-${role}`,
+		alias: 0,
+		label: __('None', 'kadence-blocks'),
+		value: '0',
+		type: 'dimension',
+		role,
+		fixed: true,
+	};
+}
+
+/**
  * @param {string} controlAttr The attribute the control writes (e.g. 'borderRadius').
  * @param {Array}  tokens      The type-filtered token list whose roles are the candidates.
  *
@@ -200,6 +261,8 @@ function inferRoleFromControl(controlAttr, tokens) {
  * @since TBD
  *
  * @return {Array} The pickable list ([{ id, alias, label, value, type, role }]), empty when unmapped.
+ *                  A 'spacing'/'radius' role list also carries a fixed "None" entry (see
+ *                  `fixedNoneEntry`).
  */
 function pickableTokensForProperty(property, controlAttr, library) {
 	if (!property || !property.kind) {
@@ -221,11 +284,16 @@ function pickableTokensForProperty(property, controlAttr, library) {
 	const primitives = narrowed.filter((token) => token.id.startsWith('primitive.'));
 	const scoped = primitives.length ? primitives : narrowed;
 
+	// "None" is spliced in here, after the primitive-preferring narrow above, rather than into the
+	// registered pool it would otherwise have to survive that narrowing as — see `fixedNoneEntry`'s
+	// own docblock for why it carries no registration at all.
+	const withFixedNone = FIXED_NONE_ROLES.includes(role) ? [fixedNoneEntry(role), ...scoped] : scoped;
+
 	// Pin the exact bound token first when it survived the scoping (order carries through for the rest).
 	// An unresolved or scoped-out bound token drops the pin to a no-op.
 	return [
-		...scoped.filter((token) => token.id === property.token),
-		...scoped.filter((token) => token.id !== property.token),
+		...withFixedNone.filter((token) => token.id === property.token),
+		...withFixedNone.filter((token) => token.id !== property.token),
 	];
 }
 
@@ -249,6 +317,8 @@ function pickableTokensForProperty(property, controlAttr, library) {
  * @since TBD
  *
  * @return {Array} The pickable list ([{ id, alias, label, value, type, role }]), empty when unmapped.
+ *                  A 'spacing'/'radius' role list also carries a fixed "None" entry (see
+ *                  `fixedNoneEntry`).
  */
 export function pickableTokensForControl(blockName, controlAttr, library) {
 	const property = blockProperties(blockName, library).find((entry) => entry.control_attr === controlAttr);
@@ -274,6 +344,8 @@ export function pickableTokensForControl(blockName, controlAttr, library) {
  * @since TBD
  *
  * @return {Array} The pickable list ([{ id, alias, label, value, type, role }]), empty when unmapped.
+ *                  A 'spacing'/'radius' role list also carries a fixed "None" entry (see
+ *                  `fixedNoneEntry`).
  */
 export function pickableTokensForKey(blockName, key, library) {
 	const property = blockProperties(blockName, library).find((entry) => entry.key === key);

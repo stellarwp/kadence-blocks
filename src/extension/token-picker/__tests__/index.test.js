@@ -329,8 +329,9 @@ describe('pickableTokensForControl', () => {
 		const result = pickableTokensForControl('kadence/singlebtn', 'borderRadius');
 
 		// `borderRadius` implies the radius role (spacing drops out); with a primitive radius present the
-		// picker offers only the size scale, so the semantic radius token is dropped too.
-		expect(result.map((token) => token.id)).toEqual(['primitive.dimension.radius.sm']);
+		// picker offers only the size scale, so the semantic radius token is dropped too. The fixed "None"
+		// entry every radius/spacing role carries (see `fixedNoneEntry`) leads the list.
+		expect(result.map((token) => token.id)).toEqual(['ss-none-radius', 'primitive.dimension.radius.sm']);
 		expect(result.every((token) => token.role === 'radius')).toBe(true);
 	});
 
@@ -352,8 +353,8 @@ describe('pickableTokensForControl', () => {
 		const result = pickableTokensForControl('kadence/singlebtn', 'borderRadius');
 
 		// The bound token fixes the radius sub-kind (spacing drops out); the primitive size scale still wins,
-		// so even the bound semantic radius is dropped.
-		expect(result.map((token) => token.id)).toEqual(['primitive.dimension.radius.sm']);
+		// so even the bound semantic radius is dropped. The fixed "None" entry leads, same as the unbound case.
+		expect(result.map((token) => token.id)).toEqual(['ss-none-radius', 'primitive.dimension.radius.sm']);
 		expect(result.every((token) => token.role === 'radius')).toBe(true);
 	});
 
@@ -388,8 +389,9 @@ describe('pickableTokensForControl', () => {
 
 		const result = pickableTokensForControl('kadence/singlebtn', 'borderRadius');
 
-		// A bound primitive is itself a size, so it survives the primitives-only scoping and is pinned first.
-		expect(result.map((token) => token.id)).toEqual(['primitive.dimension.radius.sm']);
+		// A bound primitive is itself a size, so it survives the primitives-only scoping and is pinned
+		// first, ahead of even the fixed "None" entry.
+		expect(result.map((token) => token.id)).toEqual(['primitive.dimension.radius.sm', 'ss-none-radius']);
 	});
 });
 
@@ -434,8 +436,9 @@ describe('pickableTokensForKey', () => {
 		const result = pickableTokensForKey('kadence/singlebtn', 'button-padding');
 
 		// A primitive spacing size exists, so (mirroring the radius narrowing above) the picker offers
-		// only the size scale, dropping even the bound-role semantic spacing token.
-		expect(result.map((token) => token.id)).toEqual(['primitive.dimension.spacing.md']);
+		// only the size scale, dropping even the bound-role semantic spacing token. The fixed "None"
+		// entry leads the list, same as radius.
+		expect(result.map((token) => token.id)).toEqual(['ss-none-spacing', 'primitive.dimension.spacing.md']);
 		expect(result.every((token) => token.role === 'spacing')).toBe(true);
 	});
 

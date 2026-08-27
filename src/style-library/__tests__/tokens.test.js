@@ -194,8 +194,10 @@ describe('pickableTokensForType', () => {
 	it('narrows to matching entries when a role is given', () => {
 		const tokens = pickableTokensForType('dimension', 'radius');
 
-		expect(tokens).toHaveLength(1);
-		expect(tokens[0]).toMatchObject({ id: 'primitive.dimension.radius.sm', value: '4px', role: 'radius' });
+		// The fixed "None" entry every radius/spacing role carries (see `fixedNoneEntry`) leads the list.
+		expect(tokens).toHaveLength(2);
+		expect(tokens[0]).toMatchObject({ id: 'ss-none-radius', value: '0', role: 'radius', fixed: true });
+		expect(tokens[1]).toMatchObject({ id: 'primitive.dimension.radius.sm', value: '4px', role: 'radius' });
 	});
 
 	it('keeps the token the field is already bound to, even when it loses the primitive narrowing', () => {

@@ -285,10 +285,13 @@ export function BoxTokenField({ field, value, onChange, slots = 'sides' }) {
 			// breakpoint's own. A breakpoint that inherits binds nothing itself, so without this the
 			// semantic it falls back to is filtered out of the pool and the field, finding no entry for
 			// it, shows nothing at all instead of the value actually in effect.
-			tokens={pickableTokensForType(field.tokenType, field.role, boundTokenIds(atBreakpoint)).map((token) => ({
-				...token,
-				alias: `{${token.id}}`,
-			}))}
+			//
+			// A `fixed` entry (e.g. "None") keeps its own alias untouched — it already carries the exact
+			// value the control writes (the bare number `0`), not a `{dot.path}` a real registered token's
+			// id would bracket-wrap into.
+			tokens={pickableTokensForType(field.tokenType, field.role, boundTokenIds(atBreakpoint)).map((token) =>
+				token.fixed ? token : { ...token, alias: `{${token.id}}` }
+			)}
 			// The two kinds of default are still shaped differently, which is why `shownDefault` resolves
 			// them separately above instead of passing either straight through: a value inherited from
 			// another breakpoint is stored the way this app stores values, so it is read through `asLiteral`
