@@ -9,6 +9,10 @@
  * - **a slot is always a four-element array**, never collapsed to a scalar, so the link state cannot
  *   be read off the value's shape and is caller-owned UI state instead;
  * - **the unit lives in its own attribute** beside the value.
+ * - **wraps itself in `TokenControlRow`** (no `heading`, purely for its `.kb-token-control-row`
+ *   spacing) — this component only ever renders inside `singlebtn/edit.js`'s sidebar, so it owns that
+ *   wrapper rather than asking every call site to remember it, matching
+ *   `EditorBorderControl`/`EditorShadowControl`.
  *
  * Everything the control needs beyond that — the token pool, the inherited preset default, the
  * binding indicator — the block already computes for its existing control, so this takes them as
@@ -21,6 +25,7 @@
 import { BoxControl, BreakpointProvider } from '../../../token-controls';
 import { TokenIndicator } from '../../token-indicators/components/TokenIndicator';
 import { BREAKPOINT_FOR_DEVICE, deviceForBreakpoint } from './breakpoints';
+import { TokenControlRow } from '../../token-indicators/components/TokenControlRow';
 
 /**
  * Render a box-shaped token control over the editor's per-device attributes.
@@ -80,36 +85,38 @@ export function EditorBoxControl({
 	// The provider is handed the editor's device rather than holding one of its own: the device
 	// preview is global here, so a switcher that tracked its own would disagree with the canvas.
 	return (
-		<BreakpointProvider value={breakpoint} onChange={changeBreakpoint}>
-			<BoxControl
-				label={label}
-				value={value}
-				onChange={onChange}
-				tokens={tokens}
-				defaultValue={defaultValue}
-				inherited={inherited}
-				// The editor's own mark, not this library's: it is the same indicator the block's other
-				// controls show, and two marks meaning the same thing should not look different.
-				indicator={<TokenIndicator state={state} onReset={onReset} />}
-				isLinked={isLinked}
-				onToggleLink={onToggleLink}
-				// Never collapse: the attribute is always a four-element array, so folding a uniform
-				// value down to a scalar would write a shape the block cannot read back.
-				collapse={false}
-				role={role}
-				breakpoints={Object.values(BREAKPOINT_FOR_DEVICE)}
-				breakpoint={breakpoint}
-				// The switcher lives in `ControlShell`, driven by this prop directly — it does not read
-				// the `BreakpointProvider` context above, so both must map back to a device the same way.
-				onBreakpointChange={changeBreakpoint}
-				unit={unit}
-				units={units}
-				onUnit={onUnit}
-				min={min}
-				max={max}
-				step={step}
-				stacked
-			/>
-		</BreakpointProvider>
+		<TokenControlRow stacked>
+			<BreakpointProvider value={breakpoint} onChange={changeBreakpoint}>
+				<BoxControl
+					label={label}
+					value={value}
+					onChange={onChange}
+					tokens={tokens}
+					defaultValue={defaultValue}
+					inherited={inherited}
+					// The editor's own mark, not this library's: it is the same indicator the block's other
+					// controls show, and two marks meaning the same thing should not look different.
+					indicator={<TokenIndicator state={state} onReset={onReset} />}
+					isLinked={isLinked}
+					onToggleLink={onToggleLink}
+					// Never collapse: the attribute is always a four-element array, so folding a uniform
+					// value down to a scalar would write a shape the block cannot read back.
+					collapse={false}
+					role={role}
+					breakpoints={Object.values(BREAKPOINT_FOR_DEVICE)}
+					breakpoint={breakpoint}
+					// The switcher lives in `ControlShell`, driven by this prop directly — it does not read
+					// the `BreakpointProvider` context above, so both must map back to a device the same way.
+					onBreakpointChange={changeBreakpoint}
+					unit={unit}
+					units={units}
+					onUnit={onUnit}
+					min={min}
+					max={max}
+					step={step}
+					stacked
+				/>
+			</BreakpointProvider>
+		</TokenControlRow>
 	);
 }

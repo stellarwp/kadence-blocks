@@ -39,6 +39,11 @@
  * Color is out of scope for redesign here, exactly as in `EditorBorderControl` — this component
  * neither builds nor intercepts a color field, it only wires the caller's EXISTING one back in via
  * `renderColor`.
+ *
+ * This component also wraps itself in `TokenControlRow` (no `heading`, purely for its
+ * `.kb-token-control-row` spacing) — it only ever renders inside `singlebtn/edit.js`'s sidebar, so it
+ * owns that wrapper rather than asking every call site to remember it, matching
+ * `EditorBorderControl`/`EditorBoxControl`.
  */
 
 /**
@@ -51,6 +56,7 @@ import { __, sprintf } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { BoxShadowControl } from '../../../token-controls/controls/BoxShadowControl';
+import { TokenControlRow } from '../../token-indicators/components/TokenControlRow';
 
 /**
  * The composite's default shape, matching `BoxShadowControl`'s own `DEFAULT_SHADOW` fallback.
@@ -385,37 +391,39 @@ export function EditorShadowControl({
 	disabled = false,
 }) {
 	return (
-		<div className="kb-editor-shadow-control">
-			<div className="kb-editor-shadow-control__header">
-				{label && <span className="kb-editor-shadow-control__label">{label}</span>}
-				<ToggleControl
-					label={
-						label
-							? sprintf(
-									/* translators: %s: the field's own label, e.g. "Shadow". */ __(
-										'Enable %s',
-										'kadence-blocks'
-									),
-									label
-								)
-							: __('Enable shadow', 'kadence-blocks')
-					}
-					hideLabelFromVision
-					checked={!!enable}
-					onChange={onEnableChange}
-					disabled={disabled}
-				/>
+		<TokenControlRow stacked>
+			<div className="kb-editor-shadow-control">
+				<div className="kb-editor-shadow-control__header">
+					{label && <span className="kb-editor-shadow-control__label">{label}</span>}
+					<ToggleControl
+						label={
+							label
+								? sprintf(
+										/* translators: %s: the field's own label, e.g. "Shadow". */ __(
+											'Enable %s',
+											'kadence-blocks'
+										),
+										label
+									)
+								: __('Enable shadow', 'kadence-blocks')
+						}
+						hideLabelFromVision
+						checked={!!enable}
+						onChange={onEnableChange}
+						disabled={disabled}
+					/>
+				</div>
+				{enable && (
+					<BoxShadowControl
+						label={undefined}
+						value={fromNativeShadow(value)}
+						onChange={(next) => onChange(toNativeShadow(next, tokens))}
+						tokens={tokens}
+						renderColor={renderColor}
+						disabled={disabled}
+					/>
+				)}
 			</div>
-			{enable && (
-				<BoxShadowControl
-					label={undefined}
-					value={fromNativeShadow(value)}
-					onChange={(next) => onChange(toNativeShadow(next, tokens))}
-					tokens={tokens}
-					renderColor={renderColor}
-					disabled={disabled}
-				/>
-			)}
-		</div>
+		</TokenControlRow>
 	);
 }

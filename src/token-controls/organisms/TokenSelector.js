@@ -110,8 +110,11 @@ export function TokenSelector({
 		: resolvedDefault
 			? inheritedName
 			: __('Default', 'kadence-blocks');
-	const aliased = isTokenAlias(value);
-	const entry = aliased ? findTokenEntry(tokens, value) : null;
+	// A `fixed` entry (a sentinel choice with no DTCG registration, e.g. Margin's `Auto`) matches on its
+	// bare `alias` rather than the bracket form `isTokenAlias` checks for, so the entry lookup runs
+	// first and `aliased` widens to cover that match too.
+	const entry = findTokenEntry(tokens, value);
+	const aliased = isTokenAlias(value) || Boolean(entry);
 	const seed = entry ? parseCssLength(entry.value) : null;
 	// An unset slot seeds the Custom tab from whatever it falls back to, so opening the editor starts
 	// from the value on screen instead of an empty box the user has to guess at.

@@ -13,11 +13,21 @@
  * - **once a side has ever been written, it stays a four-element array**, never collapsed back to a
  *   scalar — `fromNativeBorder` only answers the empty scalar (`''`/`'none'`) for a breakpoint that
  *   has never been saved at all; the moment any side is written, `toNativeBorder` always fills in
- *   all four, so every later read comes back as four-element width/style/color arrays and the
- *   control renders unlinked from then on. There is no separate "link" flag to keep in sync.
+ *   all four. So the linked/unlinked view cannot be read off storage the way `BorderControl`'s own
+ *   uncontrolled fallback tries to (it only checks "is this an array", not "do the four elements
+ *   agree") — this component owns that view as UI state instead, seeded from whether the stored
+ *   sides currently agree (`isUniformBorder`) and overridden per breakpoint once the user explicitly
+ *   links or unlinks. This mirrors `singlebtn/edit.js`'s own `borderRadiusModeOverride` for radius,
+ *   just owned locally: border's `defaultValue` is always one scalar for every side (see its own
+ *   docblock below), so there is no per-side preset difference an early "uniform" read could hide
+ *   the way an empty radius corner could.
  * - **the unit lives inside the native value itself** (`source.unit`), not a sibling attribute the
  *   way `BoxControl`'s radius keeps `borderRadiusUnit` — so, unlike `EditorBoxControl`, this
  *   component takes no separate `unit`/`units`/`onUnit` props at all.
+ * - **wraps itself in `TokenControlRow`** (no `heading`, purely for its `.kb-token-control-row`
+ *   spacing) — this component only ever renders inside `singlebtn/edit.js`'s sidebar, so it owns that
+ *   wrapper rather than asking every call site to remember it, matching
+ *   `EditorBoxControl`/`EditorShadowControl`.
  *
  * Color editing itself is untouched — this component neither builds nor redesigns a color field, it
  * only wires the caller's EXISTING one back in via `renderColor` (matching `BorderControl`'s own
@@ -27,12 +37,19 @@
  */
 
 /**
+ * WordPress dependencies
+ */
+import { useState } from '@wordpress/element';
+
+/**
  * Internal dependencies
  */
 import { BreakpointProvider } from '../../../token-controls';
 import { BorderControl } from '../../../token-controls/controls/BorderControl';
 import { readSlot } from '../../../token-controls/helpers/value-shapes';
 import { isTokenAlias } from '../../../token-controls/helpers/token-summary';
+import { TokenControlRow } from '../../token-indicators/components/TokenControlRow';
+import { TokenIndicator } from '../../token-indicators/components/TokenIndicator';
 
 const SIDES = ['top', 'right', 'bottom', 'left'];
 
@@ -64,6 +81,35 @@ const BREAKPOINT_FOR_DEVICE = {
  */
 function deviceForBreakpoint(breakpoint) {
 	return Object.keys(BREAKPOINT_FOR_DEVICE).find((name) => BREAKPOINT_FOR_DEVICE[name] === breakpoint) ?? 'Desktop';
+}
+
+/**
+ * Whether a native border value shows the same color, style, and width on every side — the state a
+ * linked view can honestly represent. A breakpoint that has never been written reads as uniform too:
+ * there is nothing stored to differ side to side, and (unlike radius corners) a border preset only
+ * ever sets one width for every side, so there is no per-side preset difference an early "uniform"
+ * read could hide.
+ *
+ * @param {?Array} native `[{top,right,bottom,left,unit}]` or undefined.
+ *
+ * @since TBD
+ *
+ * @return {boolean} Whether every side currently matches.
+ */
+function isUniformBorder(native) {
+	const source = native?.[0];
+
+	if (!source) {
+		return true;
+	}
+
+	const uniform = (values) => values.every((entry) => entry === values[0]);
+
+	return (
+		uniform(SIDES.map((side) => source[side]?.[0] || '')) &&
+		uniform(SIDES.map((side) => source[side]?.[1] || 'none')) &&
+		uniform(SIDES.map((side) => source[side]?.[2]))
+	);
 }
 
 /**
@@ -175,26 +221,27 @@ function toNativeBorder(value, unit = 'px') {
 /**
  * Render the editor-canvas border control.
  *
- * @param {Object}       props                The component props.
- * @param {?Array}       props.value          Desktop border attribute value.
- * @param {?Array}       props.tabletValue    Tablet border attribute value.
- * @param {?Array}       props.mobileValue    Mobile border attribute value.
- * @param {Function}     props.onChange       Desktop attribute setter.
- * @param {Function}     props.onChangeTablet Tablet attribute setter.
- * @param {Function}     props.onChangeMobile Mobile attribute setter.
- * @param {string}       props.previewDevice  The editor's active device (`Desktop`/`Tablet`/`Mobile`).
- * @param {Function}     props.onDeviceChange Called with the next editor device name.
- * @param {string}       props.label          The control's label.
- * @param {Array}        [props.widthTokens]  Pickable border-width tokens.
- * @param {*}            [props.defaultValue] What the width slot falls back to when unset — the
- *                                            active preset's resolved border width, so a cleared
- *                                            width field shows a muted "Default 2px" instead of
- *                                            rendering empty (which collapses the field to zero
- *                                            height, per its own `TokenSelector`'s summary/fallback
- *                                            logic). One scalar for every side: presets set a single
- *                                            border width, never a per-side default.
- * @param {?Function}    [props.renderColor]  The block's existing color field for `value.color`.
- * @param {?JSX.Element} [props.indicator]    The editor's `TokenIndicator`, passed straight through.
+ * @param {Object}    props                The component props.
+ * @param {?Array}    props.value          Desktop border attribute value.
+ * @param {?Array}    props.tabletValue    Tablet border attribute value.
+ * @param {?Array}    props.mobileValue    Mobile border attribute value.
+ * @param {Function}  props.onChange       Desktop attribute setter.
+ * @param {Function}  props.onChangeTablet Tablet attribute setter.
+ * @param {Function}  props.onChangeMobile Mobile attribute setter.
+ * @param {string}    props.previewDevice  The editor's active device (`Desktop`/`Tablet`/`Mobile`).
+ * @param {Function}  props.onDeviceChange Called with the next editor device name.
+ * @param {string}    props.label          The control's label.
+ * @param {Array}     [props.widthTokens]  Pickable border-width tokens.
+ * @param {*}         [props.defaultValue] What the width slot falls back to when unset — the
+ *                                         active preset's resolved border width, so a cleared
+ *                                         width field shows a muted "Default 2px" instead of
+ *                                         rendering empty (which collapses the field to zero
+ *                                         height, per its own `TokenSelector`'s summary/fallback
+ *                                         logic). One scalar for every side: presets set a single
+ *                                         border width, never a per-side default.
+ * @param {?Function} [props.renderColor]  The block's existing color field for `value.color`.
+ * @param {?Object}   [props.state]        The block's own binding state (`{ bound, overridden }`).
+ * @param {?Function} [props.onReset]      Reset handler for the indicator.
  *
  * @since TBD
  *
@@ -213,7 +260,8 @@ export function EditorBorderControl({
 	widthTokens = [],
 	defaultValue,
 	renderColor,
-	indicator = null,
+	state = null,
+	onReset = null,
 }) {
 	const breakpoint = BREAKPOINT_FOR_DEVICE[previewDevice] ?? 'desktop';
 	// Named once and passed to both `BreakpointProvider` and the switcher below, so the two staying
@@ -230,23 +278,64 @@ export function EditorBorderControl({
 	// `ResponsiveBorderControl`'s own `mobileUnit`/`tabletUnit` fallback), and finally 'px'.
 	const activeUnit = activeNative?.[0]?.unit || value?.[0]?.unit || 'px';
 
+	// Per-breakpoint UI override for the linked view — see this file's own docblock for why storage
+	// cannot answer it alone. Keyed by breakpoint so switching devices does not carry one device's
+	// explicit choice onto another; resets on remount, matching `singlebtn/edit.js`'s
+	// `borderRadiusModeOverride` for radius.
+	const [linkOverride, setLinkOverride] = useState({});
+	const linked = linkOverride[breakpoint] ?? isUniformBorder(activeNative);
+
+	const toggleLink = () => {
+		if (linked) {
+			setLinkOverride((current) => ({ ...current, [breakpoint]: false }));
+			return;
+		}
+
+		// Relinking collapses every side to slot 0's value — "the first side wins" is predictable,
+		// matching `BorderControl`'s own uncontrolled relink rule and `BoxControl`'s relink comment.
+		const current = fromNativeBorder(activeNative);
+
+		activeSetter(
+			toNativeBorder(
+				{
+					width: readSlot(current.width, 0),
+					style: readSlot(current.style, 0),
+					color: readSlot(current.color, 0),
+				},
+				activeUnit
+			)
+		);
+		// Equal sides derive linked on their own once the collapsed value comes back through `value`
+		// (`isUniformBorder` above), so no override is needed to show the linked view — pinning `true`
+		// unconditionally here was the bug: nothing ever cleared it back, so a later divergence (e.g.
+		// an undo restoring the four original sides) kept rendering as linked regardless of what the
+		// stored value actually was.
+		setLinkOverride((next) => ({ ...next, [breakpoint]: undefined }));
+	};
+
 	return (
-		<BreakpointProvider value={breakpoint} onChange={changeBreakpoint}>
-			<BorderControl
-				label={label}
-				value={fromNativeBorder(activeNative)}
-				onChange={(next) => activeSetter(toNativeBorder(next, activeUnit))}
-				widthTokens={widthTokens}
-				defaultValue={defaultValue}
-				indicator={indicator}
-				breakpoints={Object.values(BREAKPOINT_FOR_DEVICE)}
-				breakpoint={breakpoint}
-				// The switcher lives in `ControlShell`, driven by this prop directly — it does not read
-				// the `BreakpointProvider` context above, so both must map back to a device the same way.
-				onBreakpointChange={changeBreakpoint}
-				renderColor={renderColor}
-				stacked
-			/>
-		</BreakpointProvider>
+		<TokenControlRow stacked>
+			<BreakpointProvider value={breakpoint} onChange={changeBreakpoint}>
+				<BorderControl
+					label={label}
+					value={fromNativeBorder(activeNative)}
+					onChange={(next) => activeSetter(toNativeBorder(next, activeUnit))}
+					widthTokens={widthTokens}
+					defaultValue={defaultValue}
+					// The editor's own mark, not this library's: it is the same indicator the block's other
+					// controls show, and two marks meaning the same thing should not look different.
+					indicator={<TokenIndicator state={state} onReset={onReset} />}
+					breakpoints={Object.values(BREAKPOINT_FOR_DEVICE)}
+					breakpoint={breakpoint}
+					// The switcher lives in `ControlShell`, driven by this prop directly — it does not read
+					// the `BreakpointProvider` context above, so both must map back to a device the same way.
+					onBreakpointChange={changeBreakpoint}
+					renderColor={renderColor}
+					isLinked={linked}
+					onToggleLink={toggleLink}
+					stacked
+				/>
+			</BreakpointProvider>
+		</TokenControlRow>
 	);
 }

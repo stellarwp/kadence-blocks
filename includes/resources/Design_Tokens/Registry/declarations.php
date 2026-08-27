@@ -17,7 +17,7 @@
 // omitted: it resolves to "auto", not a length. group_key mirrors the radius/border-width scales' mechanism:
 // it is the stable machine id the Style Library's Spacing screen's "+ Add Spacing" mints custom tokens into,
 // resolved back to the group label at read time by Token_Registry::group_label_for().
-$spacing_slugs = [ 'xxs', 'xs', 'sm', 'md', 'lg', 'xl', 'xxl', '3xl', '4xl', '5xl' ];
+$spacing_slugs = [ 'none', 'xxs', 'xs', 'sm', 'md', 'lg', 'xl', 'xxl', '3xl', '4xl', '5xl' ];
 $gap_slugs     = [ 'none', 'xs', 'sm', 'md', 'lg' ];
 
 $spacing_tokens = array_map(
@@ -25,7 +25,7 @@ $spacing_tokens = array_map(
 		return [
 			'id'          => 'primitive.dimension.spacing.' . $slug,
 			'type'        => 'dimension',
-			'label'       => strtoupper( $slug ),
+			'label'       => 'none' === $slug ? __( 'None', 'kadence-blocks' ) : strtoupper( $slug ),
 			'group'       => __( 'Spacing', 'kadence-blocks' ),
 			'group_key'   => 'spacing',
 			'projections' => [ 'kb_spacing_slot' => $slug ],
@@ -567,23 +567,29 @@ return [
 				// css_prop shape: a css_prop binding only ever reaches Block_Default_Css\Css_Builder, which
 				// resolves exclusively the block's $default preset and can never reflect a *selected*
 				// preset's value. css_var is what lets Preset\Css_Builder (the named-preset projector) emit a
-				// scoped variable a selected preset can actually vary. No control_attr — unlike padding/
-				// margin/radius, the native block attributes for border ([{top:[color,style,size],...},unit])
-				// and shadow ([{color,opacity,hOffset,vOffset,blur,spread,inset}]) are nested per-side/
-				// composite shapes, not a single scalar value, so there is no attribute for a picker/capture
-				// consumer of control_attr (token-picker, preset-picker/capture.js, token-indicators) to
-				// target here.
+				// scoped variable a selected preset can actually vary.
+				//
+				// The three border properties below share ONE control_attr ('borderStyle'), unlike padding/
+				// margin/radius's one-property-per-attribute shape: the native block attribute
+				// ([{top:[color,style,size],...},unit]) is a single nested per-side/per-axis shape that
+				// EditorBorderControl edits as one control with no per-axis reset, so width/style/color all
+				// point at the same attribute rather than three that don't exist. token-indicators reads
+				// each property's own axis out of the shared nested value and combines the three into one
+				// bound/overridden state entry — see token-indicators/index.js's BORDER_AXIS_KIND.
 				'button-border-width' => [
-					'token'   => 'semantic.border-width.default',
-					'css_var' => 'kb-btn-border-width',
+					'token'        => 'semantic.border-width.default',
+					'css_var'      => 'kb-btn-border-width',
+					'control_attr' => 'borderStyle',
 				],
 				'button-border-style' => [
-					'token'   => 'semantic.border-style.default',
-					'css_var' => 'kb-btn-border-style',
+					'token'        => 'semantic.border-style.default',
+					'css_var'      => 'kb-btn-border-style',
+					'control_attr' => 'borderStyle',
 				],
 				'button-border-color' => [
-					'token'   => 'semantic.color.border',
-					'css_var' => 'kb-btn-border-color',
+					'token'        => 'semantic.color.border',
+					'css_var'      => 'kb-btn-border-color',
+					'control_attr' => 'borderStyle',
 				],
 				// No baseline default: an unstyled button carries no shadow, so the preset's $default omits
 				// this property entirely and the projector emits no box-shadow rule until a preset (or the

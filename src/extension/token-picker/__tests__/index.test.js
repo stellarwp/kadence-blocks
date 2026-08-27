@@ -153,6 +153,7 @@ const PRESETS = {
 					{ key: 'button-radius', kind: 'dimension', token: null, control_attr: 'borderRadius' },
 					{ key: 'button-gap', kind: 'dimension', token: null, control_attr: 'gap' },
 					{ key: 'button-shadow', kind: 'shadow', token: 'semantic.shadow.button', control_attr: null },
+					{ key: 'button-padding', kind: 'dimension', token: null, control_attr: 'padding' },
 				],
 			},
 			'kadence/single-icon': {
@@ -338,7 +339,7 @@ describe('pickableTokensForControl', () => {
 	});
 
 	it('returns an empty array for an unmapped attribute', () => {
-		expect(pickableTokensForControl('kadence/singlebtn', 'padding')).toEqual([]);
+		expect(pickableTokensForControl('kadence/singlebtn', 'margin')).toEqual([]);
 	});
 
 	it('returns an empty array for an unknown block', () => {
@@ -424,6 +425,18 @@ describe('pickableTokensForKey', () => {
 
 	it('returns an empty array for an unmapped key', () => {
 		expect(pickableTokensForKey('kadence/singlebtn', 'button-does-not-exist')).toEqual([]);
+	});
+
+	it('narrows padding to the spacing role, dropping radius/shadow/font-weight tokens', () => {
+		// `button-padding` binds no `token`, and its `control_attr` ('padding') does not literally
+		// contain the word 'spacing' — the fixed padding/margin -> spacing role alias is what narrows it,
+		// not the generic substring match `borderRadius` relies on.
+		const result = pickableTokensForKey('kadence/singlebtn', 'button-padding');
+
+		// A primitive spacing size exists, so (mirroring the radius narrowing above) the picker offers
+		// only the size scale, dropping even the bound-role semantic spacing token.
+		expect(result.map((token) => token.id)).toEqual(['primitive.dimension.spacing.md']);
+		expect(result.every((token) => token.role === 'spacing')).toBe(true);
 	});
 
 	it('returns an empty array for an unknown block', () => {

@@ -45,7 +45,7 @@ final class Spacing_Target extends Abstract_Target {
 	 *
 	 * @var string[]
 	 */
-	protected const SLOTS = [ 'ss-auto', 'xxs', 'xs', 'sm', 'md', 'lg', 'xl', 'xxl', '3xl', '4xl', '5xl' ];
+	protected const SLOTS = [ 'ss-auto', 'none', 'xxs', 'xs', 'sm', 'md', 'lg', 'xl', 'xxl', '3xl', '4xl', '5xl' ];
 
 	/**
 	 * The primitive dimension tokens that back the spacing slugs; the slug is claimed on the primitive

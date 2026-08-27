@@ -67,9 +67,42 @@ function unitAttrFor(kind, attr) {
 }
 
 /**
+ * The `button-border-width`/`button-border-style`/`button-border-color` properties, keyed by their
+ * property key, to the axis kind `normalize.js`'s `isEmptyValue`/`matchesPreset` read for them.
+ *
+ * Declaring these as a single shared `control_attr: 'borderStyle'` (see `declarations.php`) is correct —
+ * `EditorBorderControl` edits all three axes as one control with no per-axis reset — but it means PHP's
+ * generic `Preset_Bindings::kind()` (name/token-group classification with no notion of this nested
+ * per-side shape) cannot tell the three apart: `button-border-width` reads as its generic 'dimension' and
+ * both `button-border-style`/`button-border-color` read as generic 'color'. Passed straight through,
+ * `isEmptyValue`/`matchesPreset`'s existing 'dimension'/'color' branches would try to read the nested
+ * `[{ top: [color, style, size], ... }]` shape as a flat scalar/4-side value and never match. This map
+ * overrides the kind used for the compare ONLY, by property key, so each axis reads its own slot.
+ *
+ * Exported so a caller outside this module that also needs to tell a border-axis property apart from
+ * a plain one (e.g. `capture.js`'s "save as a new preset" flow, which cannot read this nested shape
+ * through its own flat control_attr model) can key off the same map instead of re-deriving it.
+ *
+ * @since TBD
+ *
+ * @type {Object<string, string>}
+ */
+export const BORDER_AXIS_KIND = {
+	'button-border-width': 'border-width',
+	'button-border-style': 'border-style',
+	'button-border-color': 'border-color',
+};
+
+/**
  * The mapped control attributes for a block's set, as `[{ attr, kind }]` — the surface reset-all clears.
  * Skips properties with no control attribute. Independent of the selected preset (reset-all clears every
  * mapped override regardless of which preset is active).
+ *
+ * The three border-axis properties share one `control_attr` (see `BORDER_AXIS_KIND`), so they would
+ * otherwise produce three entries for the same attribute, each with a different (and individually wrong)
+ * kind for `resetAttrPatch`. Deduping by attribute and reporting the combined `'border'` kind for any of
+ * them keeps reset-all's one patch-per-attribute clearing every axis at once, matching `resetAttrPatch`'s
+ * own `'border'` case.
  *
  * @param {string} blockName The block name.
  * @param {string} [library] The token library slug; defaults to the active library.
@@ -79,9 +112,23 @@ function unitAttrFor(kind, attr) {
  * @return {Array} The mapped attributes ([{ attr, kind }]).
  */
 export function mappedAttrsFor(blockName, library) {
-	return blockProperties(blockName, library || activeLibrary())
+	const seen = new Set();
+	const attrs = [];
+
+	blockProperties(blockName, library || activeLibrary())
 		.filter((property) => !!property.control_attr)
-		.map((property) => ({ attr: property.control_attr, kind: property.kind }));
+		.forEach((property) => {
+			const attr = property.control_attr;
+
+			if (seen.has(attr)) {
+				return;
+			}
+
+			seen.add(attr);
+			attrs.push({ attr, kind: BORDER_AXIS_KIND[property.key] ? 'border' : property.kind });
+		});
+
+	return attrs;
 }
 
 /**
@@ -102,7 +149,12 @@ export function mappedAttrsFor(blockName, library) {
  *
  * @return {Object} attrName => { property, token, kind, presetValue, responsive, bound, overridden }.
  *                   Keyed by the DESKTOP attribute name even when `overridden` reflects another
- *                   device, so a caller can still look a control up by its one stable key.
+ *                   device, so a caller can still look a control up by its one stable key. The
+ *                   `borderStyle` entry is the one exception: `kind` is `'border'` and `property`/
+ *                   `token`/`presetValue`/`responsive` are each `{ width, style, color }` objects,
+ *                   one slot per axis, combining the three properties that share that attribute (see
+ *                   `BORDER_AXIS_KIND`); `overridden` is true when any axis diverges from its own
+ *                   preset value.
  */
 export function usePresetBinding(blockName, attributes, library, previewDevice) {
 	const resolvedLibrary = library || activeLibrary();
@@ -130,26 +182,62 @@ export function usePresetBinding(blockName, attributes, library, previewDevice) 
 			return;
 		}
 
-		const kind = property.kind;
+		// The border width/style/color properties all key their compare off `BORDER_AXIS_KIND` rather
+		// than PHP's generic `property.kind` — see that map's own docblock for why.
+		const axis = BORDER_AXIS_KIND[property.key];
+		const kind = axis || property.kind;
 		const presetValue = presetValues[property.key];
 		const propertyBreakpoints = {
 			tablet: get(presetBreakpoints, ['tablet', property.key]),
 			mobile: get(presetBreakpoints, ['mobile', property.key]),
 		};
 
-		// `overridden` compares like against like: a dimension control reads its OWN device's stored
-		// attribute (`tabletBorderRadius` on Tablet), against the preset value in effect at that same
-		// device (its tablet override where the preset declares one, else the base). Comparing a
-		// Tablet-stored value to the desktop preset value — or reporting the desktop attribute's state
-		// while Tablet is open — would show the wrong mark for the device actually being edited.
-		const deviceAttr = kind === 'dimension' ? deviceAttrFor(attr, previewDevice) : attr;
-		const devicePresetValue =
-			kind === 'dimension' ? presetValueForDevice(presetValue, propertyBreakpoints, previewDevice) : presetValue;
+		// `overridden` compares like against like: a dimension OR border control reads its OWN device's
+		// stored attribute (`tabletBorderRadius`/`tabletBorderStyle` on Tablet), against the preset value
+		// in effect at that same device (its tablet override where the preset declares one, else the
+		// base). Comparing a Tablet-stored value to the desktop preset value — or reporting the desktop
+		// attribute's state while Tablet is open — would show the wrong mark for the device actually
+		// being edited. Border shares this device-awareness with dimension (not just the axis kinds'
+		// nested-shape read) because `resetAttrPatch`'s own `'border'` case already clears the tablet/
+		// mobile companions — the compare and the reset must agree on which attribute is "the" one.
+		const isDeviceAware = kind === 'dimension' || !!axis;
+		const deviceAttr = isDeviceAware ? deviceAttrFor(attr, previewDevice) : attr;
+		const devicePresetValue = isDeviceAware
+			? presetValueForDevice(presetValue, propertyBreakpoints, previewDevice)
+			: presetValue;
 		const value = get(attributes, deviceAttr, '');
 		const unit = unitAttrFor(kind, attr) ? get(attributes, unitAttrFor(kind, attr), '') : '';
 
 		const empty = isEmptyValue(kind, value);
 		const overridden = !empty && !matchesPreset(kind, value, unit, devicePresetValue);
+
+		// Width, style and color share the `borderStyle` attribute (one `EditorBorderControl`, no
+		// per-axis reset), so their three iterations combine into ONE entry rather than overwrite each
+		// other: `property`/`token`/`presetValue`/`responsive` become axis-keyed ('width'/'style'/
+		// 'color') objects, and `overridden` is true when ANY axis diverges from ITS OWN preset value —
+		// a stored border only reads as "matches the preset" once every axis does.
+		if (axis) {
+			const axisKey = axis.replace('border-', '');
+			const combined = state[attr] || {
+				property: {},
+				token: {},
+				kind: 'border',
+				presetValue: {},
+				responsive: {},
+				bound: true,
+				overridden: false,
+			};
+
+			combined.property[axisKey] = property.key;
+			combined.token[axisKey] = property.token;
+			combined.presetValue[axisKey] = presetValue;
+			combined.responsive[axisKey] = propertyBreakpoints;
+			combined.overridden = combined.overridden || overridden;
+
+			state[attr] = combined;
+
+			return;
+		}
 
 		state[attr] = {
 			property: property.key,
@@ -167,14 +255,13 @@ export function usePresetBinding(blockName, attributes, library, previewDevice) 
 
 /**
  * The active preset's resolved value for one property key, at the given device — for a property with
- * no `control_attr` (a `css_var`-only binding like `button-border-width`, whose native attribute is a
- * nested per-side shape `usePresetBinding` has nothing to key it by; see `declarations.php`'s comment
- * on that binding). `usePresetBinding` skips these properties entirely, so a caller that only needs
- * "what does the active preset resolve this to" — e.g. a dimension control's `defaultValue`, shown
- * muted once the control's own override is cleared — reads it directly here instead.
+ * no `control_attr` at all, whose native attribute `usePresetBinding` has nothing to key it by (a
+ * `css_var`-only binding). `usePresetBinding` skips these properties entirely, so a caller that only
+ * needs "what does the active preset resolve this to" — e.g. a dimension control's `defaultValue`,
+ * shown muted once the control's own override is cleared — reads it directly here instead.
  *
  * @param {string} blockName     The block name (e.g. 'kadence/singlebtn').
- * @param {string} propertyKey   The binding's property key (e.g. 'button-border-width').
+ * @param {string} propertyKey   The binding's property key (e.g. 'button-radius').
  * @param {Object} attributes    The block's current attributes — read for `kbPreset`, so a
  *                                user-selected preset (not just the block's default) resolves.
  * @param {string} [library]     The token library slug; defaults to the active library.
@@ -210,17 +297,33 @@ export function presetPropertyValueForDevice(blockName, propertyKey, attributes,
  * `tabletBorderRadius`, `mobileBorderRadius`) — not a bare `''`, and the unit resets to `'px'`
  * (`borderRadiusUnit`'s declared default), not `''`.
  *
+ * A `border` control (the combined `borderStyle` width/style/color entry) clears its `tablet*`/`mobile*`
+ * companions the same way, but to an empty ARRAY (`[]`), not `['', '', '', '']` — `EditorBorderControl`'s
+ * `fromNativeBorder` reads `[]` (or `undefined`) as "never written" via its `!native?.[0]` short-circuit,
+ * which is what makes the control read as bound again. `block.json`'s own declared default is a
+ * fully-populated-but-blank per-side object (`[{ top: ['', '', ''], ... }]`); that shape is NOT empty by
+ * `fromNativeBorder`'s own test (its `source` is truthy), so resetting to it would leave the control
+ * reading as overridden instead of bound.
+ *
  * Shared by the per-control reset (`resetAttr`) and the picker's reset-all, so their clearing convention
  * cannot drift.
  *
  * @param {string} attr The primary attribute name.
- * @param {string} kind The property kind, so a dimension also clears its companions.
+ * @param {string} kind The property kind, so a dimension/border also clears its companions.
  *
  * @since TBD
  *
  * @return {Object} The attribute patch to pass to `setAttributes`.
  */
 export function resetAttrPatch(attr, kind) {
+	if (kind === 'border') {
+		return {
+			[attr]: [],
+			[deviceAttrFor(attr, 'Tablet')]: [],
+			[deviceAttrFor(attr, 'Mobile')]: [],
+		};
+	}
+
 	if (kind !== 'dimension') {
 		return { [attr]: '' };
 	}
@@ -248,4 +351,74 @@ export function resetAttrPatch(attr, kind) {
  */
 export function resetAttr(attr, setAttributes, kind) {
 	setAttributes(resetAttrPatch(attr, kind));
+}
+
+/**
+ * The design-token binding state for a NON-Normal state's own attribute (Hover, Sticky, and so on),
+ * derived from the SHARED `usePresetBinding` entry Normal's own control already carries plus this
+ * state's own current value at the active device.
+ *
+ * There is only one border-radius/border preset property per block, so every state shares Normal's
+ * `tokenBinding.borderRadius`/`tokenBinding.borderStyle` for `bound`, `presetValue`, and `responsive`
+ * — but `overridden` cannot be shared: Normal's entry only ever compares Normal's own attribute, so
+ * reusing it on e.g. Sticky would report Normal's divergence on Sticky's field, and its `onReset`
+ * would clear Normal's attributes instead of Sticky's. This computes `overridden` fresh from the
+ * state's own value, using the exact `isEmptyValue`/`matchesPreset` calls `usePresetBinding`'s own
+ * loop already runs internally — just invoked here directly instead of through that loop's
+ * `control_attr`-driven dispatch, since a per-state attribute is never itself a `control_attr`.
+ *
+ * @param {Object} shared            The shared binding entry from `usePresetBinding` this state's
+ *                                    property maps to (`tokenBinding.borderRadius` or
+ *                                    `tokenBinding.borderStyle`), carrying the combined `presetValue`/
+ *                                    `responsive` this function reuses rather than re-deriving.
+ * @param {string} kind              'dimension' (radius) or 'border' (the combined width/style/color
+ *                                    entry), matching `resetAttrPatch`'s own kind vocabulary.
+ * @param {*}      value             This state's own resolved value at the active device (e.g.
+ *                                    `borderStickyRadiusForDevice.value`, or the border attribute read
+ *                                    at the active device for `kind: 'border'`).
+ * @param {string}   [unit]          This state's own unit at the active device ('dimension' only;
+ *                                    unused for 'border', whose unit lives on the value itself).
+ * @param {*}        [devicePresetValue] For 'dimension': the shared preset value already resolved at
+ *                                    the active device (e.g. `borderRadiusPresetValue`, computed once
+ *                                    and shared across every state). Unused for 'border', which
+ *                                    resolves each axis's own device preset value from `shared`
+ *                                    directly (mirroring `usePresetBinding`'s own per-axis loop).
+ * @param {string}   [previewDevice] The active preview device ('Desktop' | 'Tablet' | 'Mobile') — only
+ *                                    needed for 'border', to resolve each axis's device preset value.
+ *
+ * @since TBD
+ *
+ * @return {{ bound: boolean, overridden: boolean }} This state's own binding state, the shape
+ *                                    `EditorBoxControl`/`EditorBorderControl`'s `state` prop expects.
+ */
+export function deriveStateBinding({ shared, kind, value, unit = '', devicePresetValue, previewDevice }) {
+	if (!shared?.bound) {
+		return { bound: false, overridden: false };
+	}
+
+	if (kind === 'border') {
+		const empty = isEmptyValue('border-width', value);
+		// Only an axis the active preset actually binds is compared: `shared.presetValue` is keyed by
+		// exactly the axes `usePresetBinding` combined (see its own docblock), so an axis this preset
+		// never sets has no key here — checking it anyway would compare against `undefined` and read a
+		// matching border as overridden.
+		const overridden =
+			!empty &&
+			Object.keys(shared.presetValue || {}).some((axis) => {
+				const axisPresetValue = presetValueForDevice(
+					shared.presetValue?.[axis],
+					shared.responsive?.[axis],
+					previewDevice
+				);
+
+				return !matchesPreset(`border-${axis}`, value, '', axisPresetValue);
+			});
+
+		return { bound: true, overridden };
+	}
+
+	const empty = isEmptyValue(kind, value);
+	const overridden = !empty && !matchesPreset(kind, value, unit, devicePresetValue);
+
+	return { bound: true, overridden };
 }
