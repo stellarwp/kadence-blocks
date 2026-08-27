@@ -1500,6 +1500,7 @@ export default function Image({
 										onTextTransform={(value) => saveCaptionFont({ textTransform: value })}
 										fontFamily={captionStyles[0].family}
 										onFontFamily={(value) => saveCaptionFont({ family: value })}
+										context={{ blockName: 'kadence/image' }}
 										onFontChange={(select) => {
 											saveCaptionFont({
 												family: select.value,
@@ -2029,7 +2030,7 @@ export default function Image({
 		// explicit pixel value for the max-width. In absence of being able to
 		// set the content-width, this max-width is currently dictated by the
 		// vanilla editor style. The following variable adds a buffer to this
-		// vanilla style, so 3rd party themes have some wiggleroom. This does,
+		// vanilla style, so 3rd party themes have some wiggle room. This does,
 		// in most cases, allow you to scale the image beyond the width of the
 		// main column, though not infinitely.
 		// @todo It would be good to revisit this once a content-width variable

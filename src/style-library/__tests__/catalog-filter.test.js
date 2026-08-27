@@ -1,6 +1,6 @@
 /* eslint-env jest */
 // cspell:ignore Abril Fatface .
-import { CATALOG_RENDER_CAP, filterCatalogOptions } from '../helpers/catalog-filter';
+import { CATALOG_RENDER_CAP, filterCatalogOptions } from '../../token-controls/helpers/catalog-filter';
 
 describe('filterCatalogOptions', () => {
 	const options = [

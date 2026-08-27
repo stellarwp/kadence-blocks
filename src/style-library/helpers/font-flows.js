@@ -1,10 +1,12 @@
 /**
- * Pure orchestration for the Typography screen's font-catalog write flow: adding a picked catalog
- * family as a user primitive. Font deletion needs no font-specific flow — it reuses
- * `deleteScaleTokenFlow` verbatim, since deletion is token-generic. Same `scale-flows.js`
- * discipline: the REST call is imported here (so a test mocks `api/client`), the caller supplies
- * busy/error callbacks and a feed refresh, and the flow settles pessimistically and re-throws on
- * failure.
+ * Pure orchestration for the Typography screen's favorite-font write flows: adding a picked catalog
+ * family to the library's favorites, and removing one. Same `scale-flows.js` discipline: the REST
+ * call is imported here (so a test mocks `api/client`), the caller supplies busy/error callbacks and
+ * a feed refresh, and each flow settles pessimistically and re-throws on failure.
+ *
+ * A favorite is not a token, so neither flow mints or deletes anything in the registry — the family
+ * name is stored verbatim in the document's `favoriteFonts` section and read back by every font
+ * picker. That is the whole model: no alias, no CSS variable, no indirection to re-point.
  */
 
 /**
@@ -15,24 +17,7 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { createUserPrimitive } from '../api/client';
-import { customScaleTokenId, nextScaleSlug } from './scale';
-import { fontFamilySlug } from './typography';
-
-/**
- * The DTCG `$type` every minted font uses.
- *
- * @since TBD
- */
-const FONT_FAMILY_TYPE = 'fontFamily';
-
-/**
- * The stable group key every minted font is filed under (mirrors `declarations.php`'s
- * `group_key: 'font-family'`).
- *
- * @since TBD
- */
-const FONT_FAMILY_GROUP_KEY = 'font-family';
+import { addFavoriteFont, removeFavoriteFont } from '../api/client';
 
 /**
  * Read the message off a REST error, falling back to a generic string when the error carries none.
@@ -50,16 +35,11 @@ function errorMessage(error) {
 }
 
 /**
- * Mint a picked catalog family as a user `fontFamily` primitive: derive a kebab slug from the
- * family name (suffixing on collision, the `nextScaleSlug` idiom applied to the derived stem),
- * create it as a single-family stack with no invented generic fallback (the shipped font arrays
- * carry no category data, so appending one would be a guess), refresh the feed, and resolve the
- * new token's canonical id via the segment-aware `customScaleTokenId` so the caller can preview it
- * immediately.
+ * Add a picked catalog family to the library's favorites, then refresh the feed so every reader of
+ * `feed.favoriteFonts` sees it.
  *
  * @param {Object}   args
- * @param {string}   args.name        The picked catalog family name, verbatim (becomes the label).
- * @param {string[]} args.existingIds Every canonical id already registered, for slug collision.
+ * @param {string}   args.name        The picked catalog family name, verbatim.
  * @param {string}   args.slug        Token library slug.
  * @param {string}   args.feedVersion The version token the client last read.
  * @param {Function} args.refreshFeed Replaces the feed with a fresh REST read for a slug.
@@ -68,28 +48,50 @@ function errorMessage(error) {
  *
  * @since TBD
  *
- * @return {Promise<string>} Resolves with the new font's canonical id; rejects on failure, after
+ * @return {Promise<string>} Resolves with the added family name; rejects on failure, after
  *                            `onError`/`onBusy` have already run.
  */
-export function addFontFlow({ name, existingIds, slug, feedVersion, refreshFeed, onBusy, onError }) {
+export function addFavoriteFontFlow({ name, slug, feedVersion, refreshFeed, onBusy, onError }) {
 	onBusy(true);
 
-	const stem = fontFamilySlug(name);
-	const terminalSlug = nextScaleSlug(existingIds, stem);
-	const id = customScaleTokenId(FONT_FAMILY_TYPE, terminalSlug);
-
-	return createUserPrimitive(slug, {
-		id: terminalSlug,
-		$type: FONT_FAMILY_TYPE,
-		$value: [name],
-		label: name,
-		group: FONT_FAMILY_GROUP_KEY,
-		version: feedVersion,
-	})
+	return addFavoriteFont(slug, name, { version: feedVersion })
 		.then(() => refreshFeed(slug))
 		.then(() => {
 			onBusy(false);
-			return id;
+			return name;
+		})
+		.catch((err) => {
+			onError({ message: errorMessage(err) });
+			onBusy(false);
+
+			throw err;
+		});
+}
+
+/**
+ * Remove a family from the library's favorites, then refresh the feed.
+ *
+ * @param {Object}   args
+ * @param {string}   args.name        The family name to un-star, verbatim.
+ * @param {string}   args.slug        Token library slug.
+ * @param {string}   args.feedVersion The version token the client last read.
+ * @param {Function} args.refreshFeed Replaces the feed with a fresh REST read for a slug.
+ * @param {Function} args.onBusy      Called with a boolean as the request starts and settles.
+ * @param {Function} args.onError     Called with `{ message }` on failure.
+ *
+ * @since TBD
+ *
+ * @return {Promise<string>} Resolves with the removed family name; rejects on failure, after
+ *                            `onError`/`onBusy` have already run.
+ */
+export function removeFavoriteFontFlow({ name, slug, feedVersion, refreshFeed, onBusy, onError }) {
+	onBusy(true);
+
+	return removeFavoriteFont(slug, name, { version: feedVersion })
+		.then(() => refreshFeed(slug))
+		.then(() => {
+			onBusy(false);
+			return name;
 		})
 		.catch((err) => {
 			onError({ message: errorMessage(err) });

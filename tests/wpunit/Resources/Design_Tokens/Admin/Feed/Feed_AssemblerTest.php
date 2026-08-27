@@ -7,6 +7,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Feed_Assembler;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Presets;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Responsive_Feed;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Favorite_Font_Index;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Mutator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Token_Label_Index;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Token_Order_Index;
@@ -182,7 +183,8 @@ final class Feed_AssemblerTest extends TestCase {
 			$this->container->get( Builder::class ),
 			$this->container->get( Responsive_Feed::class ),
 			$this->container->get( Token_Label_Index::class ),
-			$this->container->get( Token_Order_Index::class )
+			$this->container->get( Token_Order_Index::class ),
+			$this->container->get( Favorite_Font_Index::class )
 		);
 
 		$feed = $assembler->for_slug( Token_Store::default_slug() );

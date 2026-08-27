@@ -19,6 +19,9 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary;
  *                           metadata only. Flat rather than group-keyed so the stored order stays
  *                           locale-independent — a UI-schema group name is a translated display
  *                           label, not a stable identifier (see Token_Order_Index).
+ *   - "favoriteFonts"     → the library's favorite font families: an ordered list of catalog family
+ *                           names. Not a token layer — a favorite carries no indirection and no CSS
+ *                           variable; it only pins a family to the top of a font picker.
  *
  * The preset sections hold named groups; each group is a map of preset-slug =>
  * { "label": …, "tokens": … } alongside a "$default" key naming the group's default preset. A color palette
@@ -129,6 +132,25 @@ final class Extensions {
 	 * @var string
 	 */
 	private const SECTION_PRESET_ORDER = 'presetOrder';
+
+	/**
+	 * The library's favorite font families: an ordered list of catalog family names, the fonts a
+	 * site reaches for often pinned to the top of every font picker. NOT returned by
+	 * get_sections() — it is neither preset-shaped nor a tokens map, so the tokens-map walk (and
+	 * the reference scanner that follows get_sections()) must not descend into it; it holds
+	 * family-name strings only, never {alias} values. The validator covers it with its own
+	 * explicit branch instead.
+	 *
+	 * Deliberately not a token layer. A favorite carries no indirection: it never resolves through
+	 * an alias, never emits a CSS variable, and re-pointing one site-wide is not a capability that
+	 * exists. Storing families as tokens would imply all three, and would offer a narrower set than
+	 * the font catalog a block's own picker already lists.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const SECTION_FAVORITE_FONTS = 'favoriteFonts';
 
 	/**
 	 * The key naming a group's default preset slug.
@@ -303,6 +325,18 @@ final class Extensions {
 	 */
 	public static function get_section_preset_order(): string {
 		return self::SECTION_PRESET_ORDER;
+	}
+
+	/**
+	 * The favorite-font-families section name.
+	 * NOT returned by get_sections() — it is a flat name list, not preset-shaped.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_section_favorite_fonts(): string {
+		return self::SECTION_FAVORITE_FONTS;
 	}
 
 	/**

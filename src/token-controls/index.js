@@ -17,13 +17,18 @@ export { BindingIndicator } from './atoms/BindingIndicator';
 export { TokenChip } from './atoms/TokenChip';
 export { TokenPickerButton } from './molecules/TokenPickerButton';
 export { TokenPopover } from './molecules/TokenPopover';
+export { FontFamilyPopover } from './molecules/FontFamilyPopover';
 export { TokenSelector } from './organisms/TokenSelector';
+export { FontFamilySelector } from './organisms/FontFamilySelector';
 export { ControlShell } from './templates/ControlShell';
 export { SlotGrid } from './templates/SlotGrid';
 export { BoxControl } from './controls/BoxControl';
 
 export { BreakpointProvider, useBreakpoint } from './context/breakpoint';
 
+export { CATALOG_RENDER_CAP, filterCatalogOptions } from './helpers/catalog-filter';
+export { sameFamily } from './helpers/font-family';
+export { FONT_LOAD_TIMEOUT, ensureStylesheet, googleFontHref, loadFontFamily } from './helpers/font-loading';
 export { parseCssLength } from './helpers/parse-css-length';
 export {
 	KADENCE_TOKEN_NAMESPACE,

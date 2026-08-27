@@ -2164,6 +2164,7 @@ export default function KadenceButtonEdit(props) {
 											onTextTransform={(value) => saveTypography({ textTransform: value })}
 											fontFamily={typography[0].family}
 											onFontFamily={(value) => saveTypography({ family: value })}
+											context={{ blockName: 'kadence/singlebtn' }}
 											onFontChange={(select) => {
 												saveTypography({
 													family: select.value,

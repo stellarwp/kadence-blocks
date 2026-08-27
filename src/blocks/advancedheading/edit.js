@@ -1461,6 +1461,7 @@ function KadenceAdvancedHeading(props) {
 							onLetterSpacing={(value) => setAttributes({ letterSpacing: value })}
 							fontFamily={typography}
 							onFontFamily={(value) => setAttributes({ typography: value })}
+							context={{ blockName: 'kadence/advancedheading' }}
 							onFontChange={(select) => {
 								setAttributes({
 									typography: select.value,
@@ -1884,6 +1885,7 @@ function KadenceAdvancedHeading(props) {
 										onLetterSpacingType={(value) => setAttributes({ letterSpacingType: value })}
 										fontFamily={typography}
 										onFontFamily={(value) => setAttributes({ typography: value })}
+										context={{ blockName: 'kadence/advancedheading' }}
 										onFontChange={(select) => {
 											setAttributes({
 												typography: select.value,
@@ -2391,6 +2393,7 @@ function KadenceAdvancedHeading(props) {
 										onLetterSpacingType={(value) => setAttributes({ markLetterSpacingType: value })}
 										fontFamily={markTypography}
 										onFontFamily={(value) => setAttributes({ markTypography: value })}
+										context={{ blockName: 'kadence/advancedheading' }}
 										onFontChange={(select) => {
 											setAttributes({
 												markTypography: select.value,

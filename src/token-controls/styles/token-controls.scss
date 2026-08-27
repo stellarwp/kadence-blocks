@@ -154,6 +154,13 @@
 	justify-content: flex-start;
 }
 
+// The catalog body scrolls its own option region instead, so the search input above it stays put
+// rather than drifting off with the rows.
+.kadence-token-field__list--catalog {
+	max-height: none;
+	overflow-y: visible;
+}
+
 // Each row: label left, value (and optional Default tag) right, on a 40px line with a 2px-radius hover.
 .kadence-token-field__item.components-button,
 .kadence-token-field__reset.components-button {
@@ -213,6 +220,44 @@
 	flex: 0 0 auto;
 	color: #949494;
 	font-size: 13px;
+}
+
+// A pick that is still fetching its web font: the family it will become, beside a spinner, so the
+// wait reads as loading rather than as the click having missed.
+.kadence-token-field__value--pending {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	color: #949494;
+
+	.components-spinner {
+		margin: 0;
+	}
+}
+
+.kadence-token-field__search {
+	flex: 0 0 auto;
+	margin-bottom: 4px;
+}
+
+// The scrolling row region. Both tabs render `__item` buttons, so the rows themselves need no rule
+// here — that is the point of using the same markup on both rather than styling a `MenuItem` back
+// into alignment from outside.
+.kadence-token-field__catalog-options {
+	display: flex;
+	flex-direction: column;
+	max-height: 280px;
+	overflow-y: auto;
+}
+
+// The empty state and the keep-typing footer: muted, centered, and never mistaken for a row.
+.kadence-token-field__empty,
+.kadence-token-field__footer {
+	margin: 0;
+	padding: 8px;
+	color: #949494;
+	font-size: 12px;
+	text-align: center;
 }
 
 // The Custom tab: the value input, unit switcher, and slider on a single centered row.

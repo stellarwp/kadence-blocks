@@ -1,17 +1,15 @@
 /**
- * The Typography screen's pure helpers: mapping the `Font Family` feed group into the FONT
+ * The Typography screen's pure helpers: mapping the library's favorite families into the FONT
  * selector's options, reading a fluid font-size step's authored scalar out of its resolved
- * `clamp(...)` CSS, and the font-catalog capability (reading the page-load catalog global,
- * matching a catalog pick against a design-system font, deriving a slug that can be minted, and deciding the
- * contextual Add/Delete button's state). No React, no JSX, no REST — see
- * `components/pages/TypographyScreen.js` for where these plug into the scale-screen contract and
- * `helpers/font-flows.js` for the Add Font write flow.
+ * `clamp(...)` CSS, and the font-catalog capability (reading the page-load catalog global, matching
+ * a catalog pick against a favorite, and deciding the contextual Add/Remove button's state). No
+ * React, no JSX, no REST — see `components/pages/TypographyScreen.js` for where these plug into the
+ * scale-screen contract and `helpers/font-flows.js` for the favorite write flows.
+ *
+ * A favorite is a plain catalog family name, not a token: nothing resolves through it and no CSS
+ * variable is emitted for it. It only pins a family to the top of a font picker, here and in the
+ * block editor, so a site is not searching a ~1,900-name catalog for the same face every time.
  */
-
-/**
- * Internal dependencies
- */
-import { isDeletable } from './token-capabilities';
 
 /**
  * Strip a pair of wrapping quotes (single or double) from a font-family name, the same trimming a
@@ -31,37 +29,78 @@ function unquoteFamily(family) {
 }
 
 /**
- * Map the feed's `Font Family` UI-schema group to the FONT selector's options, in feed order.
+ * Map the feed's stored favorite families to the FONT selector's options, in stored order.
  *
- * @param {{ groups?: Record<string, Array<Object>> }} schema The feed's UI schema.
- * @param {Record<string, string>}                      values The feed's resolved value map.
- * @param {string}                                       group  The UI-schema group label to list
- *                                                                (the translated `Font Family` group).
+ * `id` is the family name itself. A favorite has no token id to key on — there is nothing in the
+ * registry to point at — and the family name is already unique within the list, so it doubles as
+ * the option's identity. `stack` is the family quoted when it needs to be, which is what a preview
+ * assigns to `font-family`; no generic fallback is invented, since the shipped font arrays carry no
+ * category data and guessing one would put the wrong face behind a failed load.
+ *
+ * @param {{ favoriteFonts?: string[] }} feed The design-tokens feed.
  *
  * @since TBD
  *
- * @return {Array<{id: string, label: string, stack: string, userCreated: boolean}>} The font
- *         options, or `[]` for a missing schema or an unknown group. `userCreated` passes through
- *         the feed entry verbatim so `fontActionFor` can gate on it without re-reading the schema.
+ * Blank and duplicate entries are dropped. The store already trims and deduplicates on exact
+ * strings, but it compares before unquoting: `Inter` and `\"Inter\"` are two entries there and one
+ * font here, and both would otherwise render as separate pinned rows.
+ *
+ * @return {Array<{id: string, label: string, stack: string}>} The font options, or `[]` when the
+ *         library has no favorites.
  */
-export function fontOptions(schema, values, group) {
-	const entries = schema?.groups?.[group];
+export function fontOptions(feed) {
+	const favorites = feed?.favoriteFonts;
 
-	if (!Array.isArray(entries)) {
+	if (!Array.isArray(favorites)) {
 		return [];
 	}
 
-	return entries.map((entry) => {
-		const stack = values?.[entry.id] ?? '';
-		const firstFamily = stack.split(',')[0]?.trim() ?? '';
+	const seen = new Set();
 
-		return {
-			id: entry.id,
-			label: unquoteFamily(firstFamily),
-			stack,
-			userCreated: entry.userCreated === true,
-		};
-	});
+	return favorites.reduce((options, family) => {
+		if (typeof family !== 'string') {
+			return options;
+		}
+
+		const label = unquoteFamily(family.trim()).trim();
+		// Matched the way `findFontByFamily` matches, so a name that would select an existing option
+		// never renders as a second one.
+		const key = label.toLowerCase();
+
+		if (label === '' || seen.has(key)) {
+			return options;
+		}
+
+		seen.add(key);
+		options.push({ id: label, label, stack: familyStack(label) });
+
+		return options;
+	}, []);
+}
+
+/**
+ * The `font-family` CSS value for a single family: quoted when the name carries whitespace or a
+ * quote, bare otherwise. No generic fallback is appended — the shipped font arrays carry no category
+ * data, so guessing one would put the wrong face behind a failed load.
+ *
+ * Shared because the preview has to render a family the site has NOT kept just as faithfully as
+ * one it has; deriving the stack only inside `fontOptions()` is what left every non-favorite pick
+ * with no preview at all.
+ *
+ * @param {string} family A single family name, already unquoted and trimmed.
+ *
+ * @since TBD
+ *
+ * @return {string} The `font-family` value.
+ */
+export function familyStack(family) {
+	const name = unquoteFamily(String(family ?? '').trim());
+
+	if (name === '') {
+		return '';
+	}
+
+	return /[\s"']/.test(name) ? `"${name.replace(/"/g, '\\"')}"` : name;
 }
 
 /**
@@ -123,15 +162,15 @@ export function getFontCatalog() {
 }
 
 /**
- * Find the design-system font (a `fontOptions()` entry) whose first family matches a catalog
- * family name, case-insensitively and ignoring wrapping quotes on either side.
+ * Find the favorite (a `fontOptions()` entry) whose family matches a catalog family name,
+ * case-insensitively and ignoring wrapping quotes on either side.
  *
- * @param {Array<{id: string, label: string}>} fonts The design-system fonts (`fontOptions()`).
+ * @param {Array<{id: string, label: string}>} fonts The library's favorites (`fontOptions()`).
  * @param {string}                              name  The catalog family name to match.
  *
  * @since TBD
  *
- * @return {?{id: string, label: string}} The matching font, or `null` when none matches.
+ * @return {?{id: string, label: string}} The matching favorite, or `null` when none matches.
  */
 export function findFontByFamily(fonts, name) {
 	const needle = unquoteFamily(String(name ?? '').trim()).toLowerCase();
@@ -140,56 +179,28 @@ export function findFontByFamily(fonts, name) {
 }
 
 /**
- * Derive a slug stem — a kebab-case id a new token can be minted with — from a catalog family name: lowercase, diacritics
- * stripped (NFD-normalize, then drop the combining marks), any run outside `[a-z0-9]` collapsed to
- * a single hyphen, edge hyphens trimmed. A name that yields nothing (fully non-Latin) falls back to
- * `'font'` rather than an empty slug. Collision suffixing is `nextScaleSlug`'s job, not this
- * helper's — this only derives the stem.
+ * Decide the FONT dropdown's contextual button state for a catalog pick: `'add'` when the pick is
+ * not yet a favorite, `'remove'` when it already is.
  *
- * @param {string} name The catalog family name.
+ * Neither is ever disabled for a real pick. Unlike the token model this replaces, there is no
+ * shipped-and-therefore-undeletable entry: every favorite was put there by a person, so every
+ * favorite can be taken back out. Only an empty dropdown disables the button, since there is
+ * nothing to add.
  *
- * @since TBD
- *
- * @return {string} The derived slug stem, never empty.
- */
-export function fontFamilySlug(name) {
-	const stripped = String(name ?? '')
-		.toLowerCase()
-		.normalize('NFD')
-		.replace(/[\u0300-\u036f]/g, '');
-
-	const slug = stripped.replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-
-	return slug || 'font';
-}
-
-/**
- * Decide the FONT dropdown's contextual button state for a catalog pick: `'add'` (enabled) when
- * the pick matches no design-system font, `'delete'` when it matches a user-created one, or
- * `'add'` (disabled) when it matches a baseline font — a baseline font can never be re-added and
- * must never be offered for deletion (the server independently refuses baseline deletion with 403
- * `rest_design_tokens_locked`; this is defense-in-depth, not the authority).
- *
- * @param {Array<{id: string, label: string, userCreated: boolean}>} fonts The design-system fonts
- *                                                                          (`fontOptions()`).
- * @param {string}                                                    name  The catalog family name
- *                                                                          currently shown in the
- *                                                                          dropdown.
+ * @param {Array<{id: string, label: string}>} fonts The library's favorites (`fontOptions()`).
+ * @param {string}                              name  The catalog family name currently shown in the
+ *                                                    dropdown.
  *
  * @since TBD
  *
- * @return {{type: ('add'|'delete'), disabled: boolean, font: ?Object}} The button state.
+ * @return {{type: ('add'|'remove'), disabled: boolean, font: ?Object}} The button state.
  */
 export function fontActionFor(fonts, name) {
 	const match = findFontByFamily(fonts, name);
 
 	if (!match) {
-		return { type: 'add', disabled: false, font: null };
+		return { type: 'add', disabled: String(name ?? '').trim() === '', font: null };
 	}
 
-	if (isDeletable(match)) {
-		return { type: 'delete', disabled: false, font: match };
-	}
-
-	return { type: 'add', disabled: true, font: match };
+	return { type: 'remove', disabled: false, font: match };
 }

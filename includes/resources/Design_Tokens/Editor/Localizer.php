@@ -78,6 +78,16 @@ final class Localizer {
 	private const PICKABLE_OBJECT = 'kadenceDesignTokensPickable';
 
 	/**
+	 * The JS global the editor's font-family picker reads (the active library's favorite families and
+	 * the site's custom family names).
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const FONTS_OBJECT = 'kadenceDesignTokensFonts';
+
+	/**
 	 * The token registry, for the fail-closed gate.
 	 *
 	 * @since TBD
@@ -123,6 +133,15 @@ final class Localizer {
 	private Palette_Catalog $palette_catalog;
 
 	/**
+	 * The favorite-fonts catalog builder.
+	 *
+	 * @since TBD
+	 *
+	 * @var Favorite_Fonts_Catalog
+	 */
+	private Favorite_Fonts_Catalog $favorite_fonts;
+
+	/**
 	 * @since TBD
 	 *
 	 * @param Token_Registry            $registry           The token registry.
@@ -130,24 +149,27 @@ final class Localizer {
 	 * @param Attribute_Default_Catalog $attribute_defaults The per-block attribute-default catalog builder.
 	 * @param Pickable_Tokens_Catalog   $pickable           The pickable-token pool builder.
 	 * @param Palette_Catalog           $palette_catalog    The color-palette catalog builder.
+	 * @param Favorite_Fonts_Catalog    $favorite_fonts     The favorite-fonts catalog builder.
 	 */
 	public function __construct(
 		Token_Registry $registry,
 		Preset_Catalog $preset_catalog,
 		Attribute_Default_Catalog $attribute_defaults,
 		Pickable_Tokens_Catalog $pickable,
-		Palette_Catalog $palette_catalog
+		Palette_Catalog $palette_catalog,
+		Favorite_Fonts_Catalog $favorite_fonts
 	) {
 		$this->registry           = $registry;
 		$this->preset_catalog     = $preset_catalog;
 		$this->attribute_defaults = $attribute_defaults;
 		$this->pickable           = $pickable;
 		$this->palette_catalog    = $palette_catalog;
+		$this->favorite_fonts     = $favorite_fonts;
 	}
 
 	/**
-	 * Attach the four editor-only catalogs to the editor bundle, when that bundle is on the page and
-	 * the registry is active.
+	 * Attach the editor-only catalogs to the editor bundle, when that bundle is on the page and the
+	 * registry is active.
 	 *
 	 * @since TBD
 	 *
@@ -166,6 +188,7 @@ final class Localizer {
 		$this->attach( self::HANDLE, self::PALETTES_OBJECT, $this->palette_catalog->all() );
 		$this->attach( self::HANDLE, self::ATTRIBUTE_DEFAULTS_OBJECT, $this->attribute_defaults->all() );
 		$this->attach( self::HANDLE, self::REST_OBJECT, $this->rest() );
+		$this->attach( self::HANDLE, self::FONTS_OBJECT, $this->favorite_fonts->all() );
 	}
 
 	/**

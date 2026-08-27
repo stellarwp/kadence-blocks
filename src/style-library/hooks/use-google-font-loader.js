@@ -1,66 +1,67 @@
 /**
- * Loads the currently previewed Google font's stylesheet into the page, so the Typography
- * screen's sample text renders in the real face instead of the `system-ui` fallback. Nothing loads
- * font files on the Style Library page otherwise — verified: zero `fonts.googleapis` references
- * under `src/` outside a vendored player — so even the shipped baseline "Inter" preview would
- * silently fall back without this.
+ * Resolves the currently previewed font, so the Typography screen's sample text renders in the real
+ * face instead of the `system-ui` fallback. Nothing else on the Style Library page loads font files.
  *
- * System families (e.g. Georgia, Menlo) are not in the Google catalog and are skipped by
- * construction (the catalog-membership check below). Custom fonts are also skipped: the
- * names-only custom-fonts filter carries no file URLs, so loading them is the custom-font
- * provider's job, not this hook's — a custom preview renders correctly only when the site already
- * loads those files in wp-admin.
+ * Returns the family only once it is actually usable. The sample renders from that, not from the
+ * selection, so switching fonts holds the previous face until the new one can be painted rather than
+ * flashing the fallback in between — the same wait the block editor's picker makes, through the same
+ * shared helper.
+ *
+ * System families (e.g. Georgia, Menlo) are not in the Google catalog and are never fetched: they are
+ * already present, so they resolve as ready immediately. Custom fonts are not fetched either — the
+ * names-only custom-fonts filter carries no file URLs, so loading them is the custom-font provider's
+ * job, and a custom preview renders correctly only when the site already loads those files in
+ * wp-admin.
  */
 
 /**
  * WordPress dependencies
  */
-import { useEffect } from '@wordpress/element';
+import { useEffect, useState } from '@wordpress/element';
 
 /**
  * Internal dependencies
  */
+import { googleFontHref, loadFontFamily } from '../../token-controls';
 import { getFontCatalog } from '../helpers/typography';
 
 /**
- * Every family name a `<link>` has already been injected for, across the whole page's lifetime —
- * module-scoped (not component state) so switching the preview font back and forth never injects a
- * duplicate stylesheet, and a link is never removed once added (browser-cached, cheap to keep).
+ * Wait for a family to become usable, and report which one the page may render in.
+ *
+ * @param {string} familyName The selected font's family (`fontOptions()`'s `label`), or an empty
+ *                             string when nothing is selected yet.
  *
  * @since TBD
  *
- * @type {Set<string>}
- */
-const loadedFamilies = new Set();
-
-/**
- * Inject a Google Fonts stylesheet `<link>` for `familyName`, once, when that family is in the
- * Google catalog.
- *
- * @param {string} familyName The currently previewed font's first family (`fontOptions()`'s
- *                             `label`), or an empty string when nothing is selected yet.
- *
- * @since TBD
- *
- * @return {void}
+ * @return {{readyFamily: string, isLoading: boolean}} The family safe to render in, and whether a
+ *         different one is still being fetched.
  */
 export function useGoogleFontLoader(familyName) {
+	const [readyFamily, setReadyFamily] = useState('');
+
 	useEffect(() => {
-		if (!familyName || loadedFamilies.has(familyName)) {
+		if (!familyName) {
+			setReadyFamily('');
+
 			return;
 		}
 
+		let current = true;
 		const { google } = getFontCatalog();
+		const href = google.includes(familyName) ? googleFontHref(familyName) : null;
 
-		if (!google.includes(familyName)) {
-			return;
-		}
+		loadFontFamily(familyName, { href }).then(() => {
+			// A faster switch while this one was in flight already owns the preview; resolving late
+			// must not drag it back to the font the user has since moved off.
+			if (current) {
+				setReadyFamily(familyName);
+			}
+		});
 
-		loadedFamilies.add(familyName);
-
-		const link = document.createElement('link');
-		link.rel = 'stylesheet';
-		link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(familyName)}&display=swap`;
-		document.head.appendChild(link);
+		return () => {
+			current = false;
+		};
 	}, [familyName]);
+
+	return { readyFamily, isLoading: Boolean(familyName) && readyFamily !== familyName };
 }
