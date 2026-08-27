@@ -103,6 +103,7 @@ import {
 import { pickableTokensForControl, pickableTokensForKey } from '../../extension/token-picker';
 import { ColorControl } from '../../token-controls/controls/ColorControl';
 import { ColorControlGroup } from '../../token-controls/controls/ColorControlGroup';
+import { BUTTON_MARGIN_FALLBACK, BUTTON_PADDING_FALLBACK } from '../../token-controls/helpers/button-box-defaults';
 import { useColorGroups } from '../../extension/design-tokens/hooks/use-color-groups';
 import { resolveColorLiteral } from './color-control-adapter';
 
@@ -403,11 +404,12 @@ export default function KadenceButtonEdit(props) {
 		borderRadiusPresetValue
 	);
 
-	const paddingPresetValue = presetValueForDevice(
-		tokenBinding.padding?.presetValue,
-		tokenBinding.padding?.responsive,
-		previewDevice
-	);
+	// `button-padding` carries no baseline preset value, so `presetValueForDevice` above always resolves
+	// to nothing for it — OR in the button's own literal default so an unset Padding side shows what the
+	// button actually renders instead of reading as blank.
+	const paddingPresetValue =
+		presetValueForDevice(tokenBinding.padding?.presetValue, tokenBinding.padding?.responsive, previewDevice) ||
+		BUTTON_PADDING_FALLBACK;
 
 	// What an unset Padding side falls back to on the active device — same cascade as Border Radius
 	// above, run over sides rather than corners.
@@ -425,11 +427,10 @@ export default function KadenceButtonEdit(props) {
 		previewDevice
 	);
 
-	const marginPresetValue = presetValueForDevice(
-		tokenBinding.margin?.presetValue,
-		tokenBinding.margin?.responsive,
-		previewDevice
-	);
+	// Same reasoning as `paddingPresetValue` above, for `button-margin`.
+	const marginPresetValue =
+		presetValueForDevice(tokenBinding.margin?.presetValue, tokenBinding.margin?.responsive, previewDevice) ||
+		BUTTON_MARGIN_FALLBACK;
 
 	// What an unset Margin side falls back to on the active device — same cascade as Padding above.
 	const inheritedMargin = inheritedMeasureSlots(

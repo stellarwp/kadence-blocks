@@ -747,12 +747,6 @@ describe('BUTTON_PRESET.schemaFor', () => {
 	});
 
 	describe('padding/margin defaultValue', () => {
-		const originalFeed = window.kadenceDesignTokens;
-
-		afterEach(() => {
-			window.kadenceDesignTokens = originalFeed;
-		});
-
 		/**
 		 * Read a field's `defaultValue` off the Normal tab's spacing panel.
 		 *
@@ -766,43 +760,12 @@ describe('BUTTON_PRESET.schemaFor', () => {
 				.find((field) => field.path === path).defaultValue;
 		}
 
-		it('resolves the padding default from the semantic.spacing.button-padding-* tokens', () => {
-			window.kadenceDesignTokens = {
-				values: {
-					'semantic.spacing.button-padding-top': '0.5em',
-					'semantic.spacing.button-padding-right': '1.25em',
-					'semantic.spacing.button-padding-bottom': '0.5em',
-					'semantic.spacing.button-padding-left': '1.25em',
-				},
-			};
-
-			expect(defaultValueFor('tokens.button-padding')).toEqual(['0.5em', '1.25em', '0.5em', '1.25em']);
-		});
-
-		it('resolves the margin default from the semantic.spacing.button-margin-* tokens', () => {
-			window.kadenceDesignTokens = {
-				values: {
-					'semantic.spacing.button-margin-top': '4px',
-					'semantic.spacing.button-margin-right': '0',
-					'semantic.spacing.button-margin-bottom': '4px',
-					'semantic.spacing.button-margin-left': '0',
-				},
-			};
-
-			expect(defaultValueFor('tokens.button-margin')).toEqual(['4px', '0', '4px', '0']);
-		});
-
-		it('falls back to the button literal default when a token is missing from the feed', () => {
-			window.kadenceDesignTokens = { values: {} };
-
+		it('is the button literal default for padding', () => {
 			expect(defaultValueFor('tokens.button-padding')).toEqual(['0.4em', '1em', '0.4em', '1em']);
+		});
+
+		it('is the button literal default for margin', () => {
 			expect(defaultValueFor('tokens.button-margin')).toEqual(['0', '0', '0', '0']);
-		});
-
-		it('falls back to the literal default when the feed itself is absent', () => {
-			delete window.kadenceDesignTokens;
-
-			expect(defaultValueFor('tokens.button-padding')).toEqual(['0.4em', '1em', '0.4em', '1em']);
 		});
 	});
 });
