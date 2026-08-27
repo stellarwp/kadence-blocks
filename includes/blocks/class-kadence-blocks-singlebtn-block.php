@@ -133,12 +133,8 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		$css->render_measure_output( $attributes, 'padding', 'padding', [ 'unit_key' => 'paddingUnit' ] );
 		$css->render_measure_output( $attributes, 'margin', 'margin', [ 'unit_key' => 'marginUnit' ] );
 		$this->render_preset_shadow( $css, $attributes );
-		if ( isset( $attributes['displayShadow'] ) && true === $attributes['displayShadow'] ) {
-			if ( isset( $attributes['shadow'] ) && is_array( $attributes['shadow'] ) && isset( $attributes['shadow'][0] ) && is_array( $attributes['shadow'][0] ) ) {
-				$css->add_property( 'box-shadow', $this->render_button_shadow( $css, $attributes['shadow'][0] ) );
-			} else {
-				$css->add_property( 'box-shadow', '1px 1px 2px 0px rgba(0, 0, 0, 0.2)' );
-			}
+		if ( isset( $attributes['shadow'][0] ) && is_array( $attributes['shadow'][0] ) && $this->has_visible_shadow( $attributes['shadow'][0] ) ) {
+			$css->add_property( 'box-shadow', $this->render_button_shadow( $css, $attributes['shadow'][0] ) );
 		}
 		if ( ! empty( $attributes['textUnderline'] ) ) {
 			$css->set_selector( '.wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button:not(.specificity):not(.extra-specificity)' );
@@ -174,16 +170,12 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		$css->render_measure_output( $attributes, 'borderHoverRadius', 'border-radius' );
 		$css->render_border_styles( $attributes, 'borderHoverStyle', true );
-		if ( isset( $attributes['displayHoverShadow'] ) && true === $attributes['displayHoverShadow'] ) {
-			if ( ( 'gradient' === $bg_type || 'gradient' === $bg_hover_type ) && isset( $attributes['shadowHover'][0]['inset'] ) && true === $attributes['shadowHover'][0]['inset'] ) {
-				$css->add_property( 'box-shadow', '0px 0px 0px 0px rgba(0, 0, 0, 0)' );
-				$css->set_selector( '.kb-btn' . $unique_id . '.kb-button:hover::before' );
-			}
-			if ( isset( $attributes['shadowHover'] ) && is_array( $attributes['shadowHover'] ) && isset( $attributes['shadowHover'][0] ) && is_array( $attributes['shadowHover'][0] ) ) {
-				$css->add_property( 'box-shadow', $this->render_button_shadow( $css, $attributes['shadowHover'][0] ) );
-			} else {
-				$css->add_property( 'box-shadow', '2px 2px 3px 0px rgba(0, 0, 0, 0.4)' );
-			}
+		if ( ( 'gradient' === $bg_type || 'gradient' === $bg_hover_type ) && isset( $attributes['shadowHover'][0]['inset'] ) && true === $attributes['shadowHover'][0]['inset'] ) {
+			$css->add_property( 'box-shadow', '0px 0px 0px 0px rgba(0, 0, 0, 0)' );
+			$css->set_selector( '.kb-btn' . $unique_id . '.kb-button:hover::before' );
+		}
+		if ( isset( $attributes['shadowHover'][0] ) && is_array( $attributes['shadowHover'][0] ) && $this->has_visible_shadow( $attributes['shadowHover'][0] ) ) {
+			$css->add_property( 'box-shadow', $this->render_button_shadow( $css, $attributes['shadowHover'][0] ) );
 		}
 		// Hover before.
 		if ( 'gradient' === $bg_type && 'normal' === $bg_hover_type && ! empty( $attributes['backgroundHover'] ) ) {
@@ -269,12 +261,8 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		$css->render_measure_output( $attributes, 'borderTransparentRadius', 'border-radius', [ 'unit_key' => 'borderTransparentRadiusUnit' ] );
 		$css->render_border_styles( $attributes, 'borderTransparentStyle', true );
-		if ( isset( $attributes['displayShadowTransparent'] ) && true === $attributes['displayShadowTransparent'] ) {
-			if ( isset( $attributes['shadowTransparent'] ) && is_array( $attributes['shadowTransparent'] ) && isset( $attributes['shadowTransparent'][0] ) && is_array( $attributes['shadowTransparent'][0] ) ) {
-				$css->add_property( 'box-shadow', $this->render_button_shadow( $css, $attributes['shadowTransparent'][0] ) );
-			} else {
-				$css->add_property( 'box-shadow', '1px 1px 2px 0px rgba(0, 0, 0, 0.2)' );
-			}
+		if ( isset( $attributes['shadowTransparent'] ) && is_array( $attributes['shadowTransparent'] ) && isset( $attributes['shadowTransparent'][0] ) && is_array( $attributes['shadowTransparent'][0] ) && $this->has_visible_shadow( $attributes['shadowTransparent'][0] ) ) {
+			$css->add_property( 'box-shadow', $this->render_button_shadow( $css, $attributes['shadowTransparent'][0] ) );
 		}
 
 		// Hover transparent styles.
@@ -287,16 +275,12 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		$css->render_measure_output( $attributes, 'borderTransparentHoverRadius', 'border-radius' );
 		$css->render_border_styles( $attributes, 'borderTransparentHoverStyle', true );
-		if ( isset( $attributes['displayHoverShadowTransparent'] ) && true === $attributes['displayHoverShadowTransparent'] ) {
-			if ( ( 'gradient' === $bg_type_transparent || 'gradient' === $bg_hover_type_transparent ) && isset( $attributes['shadowTransparentHover'] ) && is_array( $attributes['shadowTransparentHover'] ) && isset( $attributes['shadowTransparentHover'][0] ) && is_array( $attributes['shadowTransparentHover'][0] ) && isset( $attributes['shadowTransparentHover'][0]['inset'] ) && true === $attributes['shadowTransparentHover'][0]['inset'] ) {
-				$css->add_property( 'box-shadow', '0px 0px 0px 0px rgba(0, 0, 0, 0)' );
-				$css->set_selector( '.kb-btn' . $unique_id . '.kb-button:hover::before' );
-			}
-			if ( isset( $attributes['shadowTransparentHover'] ) && is_array( $attributes['shadowTransparentHover'] ) && isset( $attributes['shadowTransparentHover'][0] ) && is_array( $attributes['shadowTransparentHover'][0] ) ) {
-				$css->add_property( 'box-shadow', $this->render_button_shadow( $css, $attributes['shadowTransparentHover'][0] ) );
-			} else {
-				$css->add_property( 'box-shadow', '2px 2px 3px 0px rgba(0, 0, 0, 0.4)' );
-			}
+		if ( ( 'gradient' === $bg_type_transparent || 'gradient' === $bg_hover_type_transparent ) && isset( $attributes['shadowTransparentHover'] ) && is_array( $attributes['shadowTransparentHover'] ) && isset( $attributes['shadowTransparentHover'][0] ) && is_array( $attributes['shadowTransparentHover'][0] ) && isset( $attributes['shadowTransparentHover'][0]['inset'] ) && true === $attributes['shadowTransparentHover'][0]['inset'] ) {
+			$css->add_property( 'box-shadow', '0px 0px 0px 0px rgba(0, 0, 0, 0)' );
+			$css->set_selector( '.kb-btn' . $unique_id . '.kb-button:hover::before' );
+		}
+		if ( isset( $attributes['shadowTransparentHover'] ) && is_array( $attributes['shadowTransparentHover'] ) && isset( $attributes['shadowTransparentHover'][0] ) && is_array( $attributes['shadowTransparentHover'][0] ) && $this->has_visible_shadow( $attributes['shadowTransparentHover'][0] ) ) {
+			$css->add_property( 'box-shadow', $this->render_button_shadow( $css, $attributes['shadowTransparentHover'][0] ) );
 		}
 
 		// Standard sticky styles.
@@ -314,12 +298,8 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		$css->render_measure_output( $attributes, 'borderStickyRadius', 'border-radius', [ 'unit_key' => 'borderStickyRadiusUnit' ] );
 		$css->render_border_styles( $attributes, 'borderStickyStyle', true );
-		if ( isset( $attributes['displayShadowSticky'] ) && true === $attributes['displayShadowSticky'] ) {
-			if ( isset( $attributes['shadowSticky'] ) && is_array( $attributes['shadowSticky'] ) && isset( $attributes['shadowSticky'][0] ) && is_array( $attributes['shadowSticky'][0] ) ) {
-				$css->add_property( 'box-shadow', $this->render_button_shadow( $css, $attributes['shadowSticky'][0] ) );
-			} else {
-				$css->add_property( 'box-shadow', '1px 1px 2px 0px rgba(0, 0, 0, 0.2)' );
-			}
+		if ( isset( $attributes['shadowSticky'] ) && is_array( $attributes['shadowSticky'] ) && isset( $attributes['shadowSticky'][0] ) && is_array( $attributes['shadowSticky'][0] ) && $this->has_visible_shadow( $attributes['shadowSticky'][0] ) ) {
+			$css->add_property( 'box-shadow', $this->render_button_shadow( $css, $attributes['shadowSticky'][0] ) );
 		}
 
 		// Hover sticky styles.
@@ -332,16 +312,12 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		$css->render_measure_output( $attributes, 'borderStickyHoverRadius', 'border-radius' );
 		$css->render_border_styles( $attributes, 'borderStickyHoverStyle', true );
-		if ( isset( $attributes['displayHoverShadowSticky'] ) && true === $attributes['displayHoverShadowSticky'] ) {
-			if ( ( 'gradient' === $bg_type_sticky || 'gradient' === $bg_hover_type_sticky ) && isset( $attributes['shadowStickyHover'] ) && is_array( $attributes['shadowStickyHover'] ) && isset( $attributes['shadowStickyHover'][0] ) && is_array( $attributes['shadowStickyHover'][0] ) && isset( $attributes['shadowStickyHover'][0]['inset'] ) && true === $attributes['shadowStickyHover'][0]['inset'] ) {
-				$css->add_property( 'box-shadow', '0px 0px 0px 0px rgba(0, 0, 0, 0)' );
-				$css->set_selector( '.kb-btn' . $unique_id . '.kb-button:hover::before' );
-			}
-			if ( isset( $attributes['shadowStickyHover'] ) && is_array( $attributes['shadowStickyHover'] ) && isset( $attributes['shadowStickyHover'][0] ) && is_array( $attributes['shadowStickyHover'][0] ) ) {
-				$css->add_property( 'box-shadow', $this->render_button_shadow( $css, $attributes['shadowStickyHover'][0] ) );
-			} else {
-				$css->add_property( 'box-shadow', '2px 2px 3px 0px rgba(0, 0, 0, 0.4)' );
-			}
+		if ( ( 'gradient' === $bg_type_sticky || 'gradient' === $bg_hover_type_sticky ) && isset( $attributes['shadowStickyHover'] ) && is_array( $attributes['shadowStickyHover'] ) && isset( $attributes['shadowStickyHover'][0] ) && is_array( $attributes['shadowStickyHover'][0] ) && isset( $attributes['shadowStickyHover'][0]['inset'] ) && true === $attributes['shadowStickyHover'][0]['inset'] ) {
+			$css->add_property( 'box-shadow', '0px 0px 0px 0px rgba(0, 0, 0, 0)' );
+			$css->set_selector( '.kb-btn' . $unique_id . '.kb-button:hover::before' );
+		}
+		if ( isset( $attributes['shadowStickyHover'] ) && is_array( $attributes['shadowStickyHover'] ) && isset( $attributes['shadowStickyHover'][0] ) && is_array( $attributes['shadowStickyHover'][0] ) && $this->has_visible_shadow( $attributes['shadowStickyHover'][0] ) ) {
+			$css->add_property( 'box-shadow', $this->render_button_shadow( $css, $attributes['shadowStickyHover'][0] ) );
 		}
 	}
 
@@ -612,7 +588,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 	 * undefined custom property is invalid at computed-value time, so emitting unconditionally would
 	 * blank out the shadow on a button whose preset sets none.
 	 *
-	 * Emitted before the explicit `displayShadow` output below so an explicit per-block shadow, which
+	 * Emitted before the explicit `shadow` output below so an explicit per-block shadow, which
 	 * lands later in the same rule, still wins.
 	 *
 	 * @since TBD
@@ -654,6 +630,28 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		if ( isset( $values['button-shadow'] ) ) {
 			$css->add_property( 'box-shadow', 'var(--kb-btn-shadow)' );
 		}
+	}
+
+	/**
+	 * Whether a native shadow item paints anything visible — all-zero offsets, blur, and spread
+	 * render nothing regardless of color, matching the value the "None" pick now writes.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $shadow_item One `shadow[0]`-shaped item.
+	 *
+	 * @return bool
+	 */
+	private function has_visible_shadow( array $shadow_item ): bool {
+		foreach ( [ 'hOffset', 'vOffset', 'blur', 'spread' ] as $axis ) {
+			$value = $shadow_item[ $axis ] ?? 0;
+
+			if ( is_numeric( $value ) && 0.0 !== (float) $value ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**

@@ -21,11 +21,10 @@
  *   `splitColorOpacity` below are exported so a caller's `renderColor` can do that combine/split with
  *   the exact same rules this component uses to read/write the native attribute, keeping both
  *   directions symmetric.
- * - **`enable` lives outside the value entirely** — it is a separate sibling boolean attribute
- *   (`displayShadow`, `displayHoverShadow`, …), not a key inside the shadow array's item. This wrapper
- *   keeps it a plain `ToggleControl` rendered beside `BoxShadowControl`, matching how the native
- *   control also renders its enable toggle as an independent affordance next to the label, hiding the
- *   rest of the control's body while off.
+ * This control always renders `BoxShadowControl` — there is no separate enable toggle or sibling
+ * boolean attribute gating it. Whether a `box-shadow` declaration is emitted is decided purely by
+ * inspecting the shadow value's own axes (an all-zero value, including the fixed "None" pick, emits
+ * nothing), both on the front end and in the editor-canvas live preview.
  *
  * A whole-shadow token pick (the Style Library tab) has no home in the native item's existing keys —
  * unlike border, where an alias replaces a single side's width slot, a shadow alias would replace the
@@ -45,12 +44,6 @@
  * owns that wrapper rather than asking every call site to remember it, matching
  * `EditorBorderControl`/`EditorBoxControl`.
  */
-
-/**
- * WordPress dependencies
- */
-import { ToggleControl } from '@wordpress/components';
-import { __, sprintf } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -307,68 +300,33 @@ export function toNativeShadow(value, tokens = []) {
 }
 
 /**
- * Render the editor-canvas box-shadow control: an `enable` toggle (the native attribute's own
- * sibling boolean, kept independent of the shadow value) beside `BoxShadowControl`, shown only while
- * enabled — matching the native `@kadence/components` `BoxShadowControl`'s own layout.
+ * Render the editor-canvas box-shadow control: `BoxShadowControl` always renders, with no separate
+ * enable toggle — whether a `box-shadow` is emitted is decided elsewhere, purely from the value's own
+ * axes.
  *
- * @param {Object}    props                The component props.
- * @param {string}    props.label          The control's label.
- * @param {?Array}    props.value          The native shadow attribute value.
- * @param {Function}  props.onChange       Called with the next native shadow attribute value.
- * @param {boolean}   props.enable         Whether the shadow is enabled (the sibling boolean attribute).
- * @param {Function}  props.onEnableChange Called with the next enabled state.
- * @param {Array}     [props.tokens]       Pickable `shadow`-type tokens, `[{id, label, value, alias}]`.
- * @param {?Function} [props.renderColor]  The block's existing color field for the composite's `color`.
- * @param {boolean}   [props.disabled]     Whether the control is read-only.
+ * @param {Object}    props               The component props.
+ * @param {string}    props.label         The control's label.
+ * @param {?Array}    props.value         The native shadow attribute value.
+ * @param {Function}  props.onChange      Called with the next native shadow attribute value.
+ * @param {Array}     [props.tokens]      Pickable `shadow`-type tokens, `[{id, label, value, alias}]`.
+ * @param {?Function} [props.renderColor] The block's existing color field for the composite's `color`.
+ * @param {boolean}   [props.disabled]    Whether the control is read-only.
  *
  * @since TBD
  *
  * @return {JSX.Element} The rendered control.
  */
-export function EditorShadowControl({
-	label,
-	value,
-	onChange,
-	enable,
-	onEnableChange,
-	tokens = [],
-	renderColor,
-	disabled = false,
-}) {
+export function EditorShadowControl({ label, value, onChange, tokens = [], renderColor, disabled = false }) {
 	return (
 		<TokenControlRow stacked>
-			<div className="kb-editor-shadow-control">
-				<div className="kb-editor-shadow-control__header">
-					{label && <span className="kb-editor-shadow-control__label">{label}</span>}
-					<ToggleControl
-						label={
-							label
-								? sprintf(
-										/* translators: %s: the field's own label, e.g. "Shadow". */ __(
-											'Enable %s',
-											'kadence-blocks'
-										),
-										label
-									)
-								: __('Enable shadow', 'kadence-blocks')
-						}
-						hideLabelFromVision
-						checked={!!enable}
-						onChange={onEnableChange}
-						disabled={disabled}
-					/>
-				</div>
-				{enable && (
-					<BoxShadowControl
-						label={undefined}
-						value={fromNativeShadow(value)}
-						onChange={(next) => onChange(toNativeShadow(next, tokens))}
-						tokens={tokens}
-						renderColor={renderColor}
-						disabled={disabled}
-					/>
-				)}
-			</div>
+			<BoxShadowControl
+				label={label}
+				value={fromNativeShadow(value)}
+				onChange={(next) => onChange(toNativeShadow(next, tokens))}
+				tokens={tokens}
+				renderColor={renderColor}
+				disabled={disabled}
+			/>
 		</TokenControlRow>
 	);
 }

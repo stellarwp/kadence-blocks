@@ -226,9 +226,7 @@ export default function KadenceButtonEdit(props) {
 		width,
 		widthUnit,
 		widthType,
-		displayShadow,
 		shadow,
-		displayHoverShadow,
 		shadowHover,
 		inheritStyles,
 		iconSize,
@@ -276,9 +274,7 @@ export default function KadenceButtonEdit(props) {
 		tabletBorderTransparentHoverRadius,
 		mobileBorderTransparentHoverRadius,
 		borderTransparentHoverRadiusUnit,
-		displayShadowTransparent,
 		shadowTransparent,
-		displayHoverShadowTransparent,
 		shadowTransparentHover,
 		colorSticky,
 		colorStickyHover,
@@ -302,9 +298,7 @@ export default function KadenceButtonEdit(props) {
 		tabletBorderStickyHoverRadius,
 		mobileBorderStickyHoverRadius,
 		borderStickyHoverRadiusUnit,
-		displayShadowSticky,
 		shadowSticky,
-		displayHoverShadowSticky,
 		shadowStickyHover,
 		tooltip,
 		tooltipPlacement,
@@ -1392,14 +1386,6 @@ export default function KadenceButtonEdit(props) {
 															label={__('Box Shadow', 'kadence-blocks')}
 															value={shadowHover}
 															onChange={(value) => setAttributes({ shadowHover: value })}
-															enable={
-																undefined !== displayHoverShadow
-																	? displayHoverShadow
-																	: false
-															}
-															onEnableChange={(value) =>
-																setAttributes({ displayHoverShadow: value })
-															}
 															tokens={shadowPickableTokens}
 															renderColor={renderShadowColor}
 														/>
@@ -1525,10 +1511,6 @@ export default function KadenceButtonEdit(props) {
 															label={__('Box Shadow', 'kadence-blocks')}
 															value={shadow}
 															onChange={(value) => setAttributes({ shadow: value })}
-															enable={undefined !== displayShadow ? displayShadow : false}
-															onEnableChange={(value) =>
-																setAttributes({ displayShadow: value })
-															}
 															tokens={shadowPickableTokens}
 															renderColor={renderShadowColor}
 														/>
@@ -1679,16 +1661,6 @@ export default function KadenceButtonEdit(props) {
 																onChange={(value) =>
 																	setAttributes({ shadowTransparentHover: value })
 																}
-																enable={
-																	undefined !== displayHoverShadowTransparent
-																		? displayHoverShadowTransparent
-																		: false
-																}
-																onEnableChange={(value) =>
-																	setAttributes({
-																		displayHoverShadowTransparent: value,
-																	})
-																}
 																tokens={shadowPickableTokens}
 																renderColor={renderShadowColor}
 															/>
@@ -1814,14 +1786,6 @@ export default function KadenceButtonEdit(props) {
 																value={shadowTransparent}
 																onChange={(value) =>
 																	setAttributes({ shadowTransparent: value })
-																}
-																enable={
-																	undefined !== displayShadowTransparent
-																		? displayShadowTransparent
-																		: false
-																}
-																onEnableChange={(value) =>
-																	setAttributes({ displayShadowTransparent: value })
 																}
 																tokens={shadowPickableTokens}
 																renderColor={renderShadowColor}
@@ -1965,14 +1929,6 @@ export default function KadenceButtonEdit(props) {
 																onChange={(value) =>
 																	setAttributes({ shadowStickyHover: value })
 																}
-																enable={
-																	undefined !== displayHoverShadowSticky
-																		? displayHoverShadowSticky
-																		: false
-																}
-																onEnableChange={(value) =>
-																	setAttributes({ displayHoverShadowSticky: value })
-																}
 																tokens={shadowPickableTokens}
 																renderColor={renderShadowColor}
 															/>
@@ -2092,14 +2048,6 @@ export default function KadenceButtonEdit(props) {
 																value={shadowSticky}
 																onChange={(value) =>
 																	setAttributes({ shadowSticky: value })
-																}
-																enable={
-																	undefined !== displayShadowSticky
-																		? displayShadowSticky
-																		: false
-																}
-																onEnableChange={(value) =>
-																	setAttributes({ displayShadowSticky: value })
 																}
 																tokens={shadowPickableTokens}
 																renderColor={renderShadowColor}

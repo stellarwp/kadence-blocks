@@ -178,9 +178,8 @@ class SinglebtnTest extends KadenceBlocksUnit {
 
 		$output = $this->render_button(
 			[
-				'kbPreset'      => 'accent',
-				'displayShadow' => true,
-				'shadow'        => [
+				'kbPreset' => 'accent',
+				'shadow'   => [
 					[
 						'color'   => '#00ff00',
 						'opacity' => 1,
@@ -213,6 +212,129 @@ class SinglebtnTest extends KadenceBlocksUnit {
 		// not the preset's, is what the button actually renders. Sabberworm's CSS parser canonicalizes
 		// a 6-digit hex that can shorten to its 3-digit form when re-serializing, so the shorthand is
 		// what assertCSSPropertiesEqual sees even though the block itself renders the literal '#00ff00'.
+		$css_helper->assertCSSPropertiesEqual( $selector, [ 'box-shadow' => '1px 1px 2px 0px #0f0' ] );
+	}
+
+	/**
+	 * A shadow item's own axes decide whether `box-shadow` is emitted, with no separate toggle or
+	 * sibling boolean attribute gating it.
+	 *
+	 * @dataProvider shadowVisibilityProvider
+	 *
+	 * @param array<string, mixed> $shadow_item      The `shadow[0]`-shaped item.
+	 * @param bool                 $expected_visible Whether the item should be treated as visible.
+	 *
+	 * @return void
+	 */
+	public function testHasVisibleShadow( array $shadow_item, bool $expected_visible ): void {
+		$method = new \ReflectionMethod( $this->block, 'has_visible_shadow' );
+		$method->setAccessible( true );
+
+		$this->assertSame( $expected_visible, $method->invoke( $this->block, $shadow_item ) );
+	}
+
+	/**
+	 * @return \Generator
+	 */
+	public function shadowVisibilityProvider(): \Generator {
+		yield 'all-zero axes' => [
+			'shadow_item'      => [
+				'hOffset' => 0,
+				'vOffset' => 0,
+				'blur'    => 0,
+				'spread'  => 0,
+				'color'   => 'transparent',
+			],
+			'expected_visible' => false,
+		];
+		yield 'missing axis keys' => [
+			'shadow_item'      => [ 'color' => '#000000' ],
+			'expected_visible' => false,
+		];
+		yield 'non-zero blur' => [
+			'shadow_item'      => [
+				'hOffset' => 0,
+				'vOffset' => 0,
+				'blur'    => 2,
+				'spread'  => 0,
+				'color'   => '#000000',
+			],
+			'expected_visible' => true,
+		];
+		yield 'non-zero offset' => [
+			'shadow_item'      => [
+				'hOffset' => 1,
+				'vOffset' => 1,
+				'blur'    => 0,
+				'spread'  => 0,
+				'color'   => '#000000',
+			],
+			'expected_visible' => true,
+		];
+	}
+
+	/**
+	 * An all-zero shadow value — the shape the fixed "None" pick writes — emits no explicit
+	 * `box-shadow` declaration, now that there is no separate toggle to suppress it.
+	 *
+	 * @return void
+	 */
+	public function testNoneShadowEmitsNoExplicitBoxShadow(): void {
+		$this->seedPreset( 'bare', 'Bare', [ 'button-bg' => '#ff0000' ] );
+
+		$output = $this->render_button(
+			[
+				'kbPreset' => 'bare',
+				'shadow'   => [
+					[
+						'color'   => 'transparent',
+						'opacity' => 1,
+						'hOffset' => 0,
+						'vOffset' => 0,
+						'blur'    => 0,
+						'spread'  => 0,
+						'inset'   => false,
+					],
+				],
+			]
+		);
+
+		$css_helper       = new CSSTestHelper( $output );
+		$selector         = '.wp-block-kadence-advancedbtn .kb-btn123.kb-button';
+		$shadow_positions = array_keys( $css_helper->getPropertyOrder( $selector ), 'box-shadow', true );
+
+		$this->assertCount( 0, $shadow_positions, 'An all-zero shadow value should emit no explicit box-shadow declaration.' );
+	}
+
+	/**
+	 * A shadow value with a non-zero axis emits an explicit `box-shadow` declaration, with no toggle
+	 * needed to opt in.
+	 *
+	 * @return void
+	 */
+	public function testVisibleShadowEmitsExplicitBoxShadow(): void {
+		$this->seedPreset( 'bare', 'Bare', [ 'button-bg' => '#ff0000' ] );
+
+		$output = $this->render_button(
+			[
+				'kbPreset' => 'bare',
+				'shadow'   => [
+					[
+						'color'   => '#00ff00',
+						'opacity' => 1,
+						'hOffset' => 1,
+						'vOffset' => 1,
+						'blur'    => 2,
+						'spread'  => 0,
+						'inset'   => false,
+					],
+				],
+			]
+		);
+
+		$css_helper = new CSSTestHelper( $output );
+		$selector   = '.wp-block-kadence-advancedbtn .kb-btn123.kb-button';
+
 		$css_helper->assertCSSPropertiesEqual( $selector, [ 'box-shadow' => '1px 1px 2px 0px #0f0' ] );
 	}
 

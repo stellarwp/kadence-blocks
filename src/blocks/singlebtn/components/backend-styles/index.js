@@ -79,6 +79,32 @@ export function presetShadowProperties(attributes) {
 	return 'button-shadow' in tokens;
 }
 
+/**
+ * Whether a native shadow item paints anything visible — all-zero offsets, blur, and spread
+ * render nothing regardless of color, matching the value the "None" pick now writes and mirroring
+ * the PHP renderer's `has_visible_shadow()`.
+ *
+ * @param {?Object} shadowItem One `shadow[0]`-shaped item.
+ *
+ * @since TBD
+ *
+ * @return {boolean} Whether the item has any non-zero offset, blur, or spread.
+ */
+export function hasVisibleShadow(shadowItem) {
+	if (!shadowItem) {
+		return false;
+	}
+
+	return ['hOffset', 'vOffset', 'blur', 'spread'].some((axis) => {
+		const value = Number(shadowItem[axis]);
+
+		// A missing or non-numeric axis is not a visible one. `Number(undefined)` is `NaN`, which fails a
+		// bare `!== 0` check as "visible" — the PHP renderer's `has_visible_shadow()` does not, and the
+		// canvas must not disagree with the front end.
+		return Number.isFinite(value) && value !== 0;
+	});
+}
+
 export default function BackendStyles(props) {
 	const { attributes, isSelected, previewDevice, currentRef, context } = props;
 
@@ -129,9 +155,7 @@ export default function BackendStyles(props) {
 		width,
 		widthUnit,
 		widthType,
-		displayShadow,
 		shadow,
-		displayHoverShadow,
 		shadowHover,
 		iconColor,
 		iconColorHover,
@@ -157,9 +181,7 @@ export default function BackendStyles(props) {
 		tabletBorderTransparentHoverRadius,
 		mobileBorderTransparentHoverRadius,
 		borderTransparentHoverRadiusUnit,
-		displayShadowTransparent,
 		shadowTransparent,
-		displayHoverShadowTransparent,
 		shadowTransparentHover,
 		colorSticky,
 		colorStickyHover,
@@ -183,9 +205,7 @@ export default function BackendStyles(props) {
 		tabletBorderStickyHoverRadius,
 		mobileBorderStickyHoverRadius,
 		borderStickyHoverRadiusUnit,
-		displayShadowSticky,
 		shadowSticky,
-		displayHoverShadowSticky,
 		shadowStickyHover,
 	} = attributes;
 
@@ -661,9 +681,7 @@ export default function BackendStyles(props) {
 	let btnBox2 = '';
 	const btnbgHover = 'gradient' === backgroundHoverType ? gradientHover : KadenceColorOutput(backgroundHover);
 	if (
-		undefined !== displayHoverShadow &&
-		displayHoverShadow &&
-		undefined !== shadowHover?.[0] &&
+		hasVisibleShadow(shadowHover?.[0]) &&
 		undefined !== shadowHover?.[0].inset &&
 		false === shadowHover?.[0].inset
 	) {
@@ -685,13 +703,7 @@ export default function BackendStyles(props) {
 		btnBox2 = 'none';
 		btnRad = '0';
 	}
-	if (
-		undefined !== displayHoverShadow &&
-		displayHoverShadow &&
-		undefined !== shadowHover?.[0] &&
-		undefined !== shadowHover?.[0].inset &&
-		true === shadowHover?.[0].inset
-	) {
+	if (hasVisibleShadow(shadowHover?.[0]) && undefined !== shadowHover?.[0].inset && true === shadowHover?.[0].inset) {
 		btnBox2 = `${
 			(undefined !== shadowHover?.[0].inset && shadowHover[0].inset ? 'inset ' : '') +
 			(undefined !== shadowHover?.[0].hOffset ? shadowHover[0].hOffset : 0) +
@@ -719,9 +731,7 @@ export default function BackendStyles(props) {
 			? gradientTransparentHover
 			: KadenceColorOutput(backgroundTransparentHover);
 	if (
-		undefined !== displayHoverShadowTransparent &&
-		displayHoverShadowTransparent &&
-		undefined !== shadowTransparentHover?.[0] &&
+		hasVisibleShadow(shadowTransparentHover?.[0]) &&
 		undefined !== shadowTransparentHover?.[0].inset &&
 		false === shadowTransparentHover?.[0].inset
 	) {
@@ -744,9 +754,7 @@ export default function BackendStyles(props) {
 		btnRadTransparent = '0';
 	}
 	if (
-		undefined !== displayHoverShadowTransparent &&
-		displayHoverShadowTransparent &&
-		undefined !== shadowTransparentHover?.[0] &&
+		hasVisibleShadow(shadowTransparentHover?.[0]) &&
 		undefined !== shadowTransparentHover?.[0].inset &&
 		true === shadowTransparentHover?.[0].inset
 	) {
@@ -775,9 +783,7 @@ export default function BackendStyles(props) {
 	const btnbgStickyHover =
 		'gradient' === backgroundStickyHoverType ? gradientStickyHover : KadenceColorOutput(backgroundStickyHover);
 	if (
-		undefined !== displayHoverShadowSticky &&
-		displayHoverShadowSticky &&
-		undefined !== shadowStickyHover?.[0] &&
+		hasVisibleShadow(shadowStickyHover?.[0]) &&
 		undefined !== shadowStickyHover?.[0].inset &&
 		false === shadowStickyHover?.[0].inset
 	) {
@@ -800,9 +806,7 @@ export default function BackendStyles(props) {
 		btnRadSticky = '0';
 	}
 	if (
-		undefined !== displayHoverShadowSticky &&
-		displayHoverShadowSticky &&
-		undefined !== shadowStickyHover?.[0] &&
+		hasVisibleShadow(shadowStickyHover?.[0]) &&
 		undefined !== shadowStickyHover?.[0].inset &&
 		true === shadowStickyHover?.[0].inset
 	) {
@@ -957,8 +961,7 @@ export default function BackendStyles(props) {
 
 	css.add_property(
 		'box-shadow',
-		undefined !== displayShadow &&
-			displayShadow &&
+		hasVisibleShadow(shadow?.[0]) &&
 			undefined !== shadow &&
 			undefined !== shadow[0] &&
 			undefined !== shadow[0].color
@@ -1092,8 +1095,7 @@ export default function BackendStyles(props) {
 		}
 		css.add_property(
 			'box-shadow',
-			undefined !== displayShadowTransparent &&
-				displayShadowTransparent &&
+			hasVisibleShadow(shadowTransparent?.[0]) &&
 				undefined !== shadowTransparent &&
 				undefined !== shadowTransparent[0] &&
 				undefined !== shadowTransparent[0].color
@@ -1203,8 +1205,7 @@ export default function BackendStyles(props) {
 		}
 		css.add_property(
 			'box-shadow',
-			undefined !== displayShadowSticky &&
-				displayShadowSticky &&
+			hasVisibleShadow(shadowSticky?.[0]) &&
 				undefined !== shadowSticky &&
 				undefined !== shadowSticky[0] &&
 				undefined !== shadowSticky[0].color
