@@ -76,6 +76,23 @@ const BUTTON_PADDING_FALLBACK = ['0.4em', '1em', '0.4em', '1em'];
 const BUTTON_MARGIN_FALLBACK = ['0', '0', '0', '0'];
 
 /**
+ * The general-purpose semantic token the Primary/Secondary presets bind `button-border-width` to —
+ * unlike the per-side padding/margin tokens, this one is a real, reusable scale value (see
+ * `declarations.php`), so the field's own resolved default only needs its literal, not an unbind.
+ *
+ * @since TBD
+ */
+const BUTTON_BORDER_WIDTH_TOKEN_ID = 'semantic.border-width.default';
+
+/**
+ * What `semantic.border-width.default` resolves to when the baseline is never overridden — mirrors
+ * that token's own registered default (see `declarations.php`).
+ *
+ * @since TBD
+ */
+const BUTTON_BORDER_WIDTH_FALLBACK = '1px';
+
+/**
  * Resolve a per-side box default (padding/margin) from the resolved design-token feed, one value per
  * CSS side, falling back to the button's own literal default for any side whose token is missing from
  * the feed (e.g. the feed has not loaded yet).
@@ -95,6 +112,22 @@ function resolveBoxDefault(tokenIds, fallback) {
 	const values = getDesignTokensFeed()?.values ?? {};
 
 	return tokenIds.map((tokenId, index) => values[tokenId] || fallback[index]);
+}
+
+/**
+ * Resolve one scalar default from the resolved design-token feed, falling back to the button's own
+ * literal default when the token is missing from the feed. The single-value sibling of
+ * `resolveBoxDefault`, for a property (border width) that has one value rather than four sides.
+ *
+ * @param {string} tokenId The semantic token id.
+ * @param {string} fallback The literal fallback.
+ *
+ * @since TBD
+ *
+ * @return {string} The resolved default.
+ */
+function resolveScalarDefault(tokenId, fallback) {
+	return getDesignTokensFeed()?.values?.[tokenId] || fallback;
 }
 
 /**
@@ -209,10 +242,11 @@ function schemaFor(tab) {
 				// living at this path.
 				path: 'tokens.button-border',
 				label: __('Border', 'kadence-blocks'),
-				// No `defaultValue` here, unlike the radius field above: `BorderField`'s adapter doesn't
-				// read one, because `BorderControl` accepts no `defaultValue`/inherited-value prop the way
-				// `BoxControl` does. Setting one would be a dead key. Add it once `BorderControl` grows that
-				// support, not before.
+				// The width field's own default, resolved from `semantic.border-width.default` the same
+				// way radius resolves its own above — shown muted when the preset sets nothing, so an unset
+				// width reads as the size actually in effect (and Reset lands back on it) rather than
+				// collapsing the row to nothing.
+				defaultValue: resolveScalarDefault(BUTTON_BORDER_WIDTH_TOKEN_ID, BUTTON_BORDER_WIDTH_FALLBACK),
 			},
 			{
 				type: 'box-shadow',

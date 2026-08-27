@@ -188,6 +188,8 @@ export function toStoredStyleAxis(next) {
  * @param {string}   props.field.path         The base dot path; the width/style/color axes are
  *                                             stored at `${path}-width` / `-style` / `-color`.
  * @param {?string}  [props.field.label]      The control's label.
+ * @param {?string}  [props.field.defaultValue] What the width field falls back to when unset,
+ *                                             already a resolved literal (e.g. `'1px'`).
  * @param {boolean}  [props.field.readOnly]   Whether the control is non-interactive.
  * @param {boolean}  [props.field.responsive] Whether the field offers a breakpoint switcher.
  * @param {Object}   props.values             The full draft values, read by dot path.
@@ -278,6 +280,7 @@ export function BorderField({ field, values, onValueChange }) {
 			}}
 			label={field.label}
 			widthTokens={widthTokens}
+			defaultValue={field.defaultValue ?? undefined}
 			renderColor={({ value: color, onChange: onColorChange, label: sideLabel }) => (
 				<TokenColorSelectField
 					// `sideLabel` is the row's bare side name ("top", "right", …), or `null` while linked.

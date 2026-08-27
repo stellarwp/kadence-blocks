@@ -134,6 +134,34 @@ describe('BorderField', () => {
 		expect(latestBorderControlProps.breakpoints).toBeNull();
 	});
 
+	it("passes the field's defaultValue through to BorderControl, so an unset width falls back to it instead of collapsing to nothing", () => {
+		act(() => {
+			root.render(
+				createElement(BorderField, {
+					field: { label: 'Border', path: 'tokens.button-border', defaultValue: '1px' },
+					values: {},
+					onValueChange: jest.fn(),
+				})
+			);
+		});
+
+		expect(latestBorderControlProps.defaultValue).toBe('1px');
+	});
+
+	it('passes no defaultValue when the field declares none, matching every existing caller', () => {
+		act(() => {
+			root.render(
+				createElement(BorderField, {
+					field: { label: 'Border', path: 'tokens.button-border' },
+					values: {},
+					onValueChange: jest.fn(),
+				})
+			);
+		});
+
+		expect(latestBorderControlProps.defaultValue).toBeUndefined();
+	});
+
 	it('writes each axis to its own sibling path, in the stored (not control) shape', () => {
 		const onValueChange = jest.fn();
 
