@@ -8,6 +8,7 @@
 import { applyFilters } from '@wordpress/hooks';
 import { SINGLE_ICON_PRESET, SINGLE_ICON_BLOCK } from '../presets/single-icon-preset';
 import { PRESET_SCREENS_FILTER } from '../constants/screens';
+import { FIELD_TYPES, RESPONSIVE_CAPABLE_FIELD_TYPES } from '../constants/field-types';
 
 // The screen module is imported only to trigger its module-scope `addFilter`. Its two children pull in
 // the REST client (and so `@wordpress/api-fetch`, absent from this environment), which the registration
@@ -104,12 +105,29 @@ describe('SINGLE_ICON_PRESET', () => {
 		const types = panels[0].fields.map((field) => field.type);
 
 		expect(paths).toEqual(['tokens.color', 'tokens.size']);
-		expect(types).toEqual(['token-color-select', 'token-select']);
+		expect(types).toEqual(['token-color-select', 'token-scalar']);
+
+		// Every type the schema names must be one the registry can render.
+		types.forEach((type) => expect(FIELD_TYPES).toHaveProperty(type));
 
 		const size = panels[0].fields[1];
 
 		expect(size.tokenType).toBe('dimension');
 		expect(size.role).toBe('icon-size');
+	});
+
+	/**
+	 * The block's own size control is per-device (`size`/`tabletSize`/`mobileSize`, all three declared on
+	 * the binding), so the preset field has to be too — otherwise a preset could not reproduce a look a
+	 * site owner had already built with that control.
+	 *
+	 * @return {void}
+	 */
+	it('makes the size field responsive, and of a type that can be', () => {
+		const size = SINGLE_ICON_PRESET.schemaFor().panels[0].fields[1];
+
+		expect(size.responsive).toBe(true);
+		expect(RESPONSIVE_CAPABLE_FIELD_TYPES).toContain(size.type);
 	});
 });
 

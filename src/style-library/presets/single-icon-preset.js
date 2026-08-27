@@ -97,12 +97,11 @@ function renderPreview(row) {
  * The settings schema. The icon declares no tabs: it binds no hover property, so there is no second
  * state to switch to and `PresetSidebar` renders the field area bare.
  *
- * Size uses `token-select` rather than a numeric field so a preset stores a token id and keeps
- * following the Icon Sizes scale, the same way the block's own size control does. That also means it
- * carries no breakpoint switcher — `token-select` is deliberately outside
- * `RESPONSIVE_CAPABLE_FIELD_TYPES` — so an icon preset sets one size for every device. The binding
- * declares `responsive_attrs` regardless, so a per-breakpoint override remains expressible once a
- * responsive token picker exists.
+ * Size uses `token-scalar` so a preset stores a token id and keeps following the Icon Sizes scale, the
+ * same way the block's own size control does — and, like that control, can say something different per
+ * breakpoint. The block stores its size in `size`/`tabletSize`/`mobileSize` and the binding declares all
+ * three, so a preset that could only set one value for every device would be unable to reproduce a look
+ * a site owner had already built with the block's own control.
  *
  * @since TBD
  *
@@ -117,11 +116,15 @@ function schemaFor() {
 				fields: [
 					{ type: 'token-color-select', path: 'tokens.color', label: __('Color', 'kadence-blocks') },
 					{
-						type: 'token-select',
+						type: 'token-scalar',
 						tokenType: 'dimension',
 						role: 'icon-size',
+						responsive: true,
 						path: 'tokens.size',
 						label: __('Size', 'kadence-blocks'),
+						// What an un-preset icon renders at, shown muted so an unset field reports the size the
+						// block really has rather than reading as empty.
+						defaultValue: ICON_SIZE_FALLBACK,
 					},
 				],
 			},

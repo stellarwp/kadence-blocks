@@ -158,6 +158,15 @@ export const DEMO_SETTINGS_SCHEMA = {
 					label: __('Spacing', 'kadence-blocks'),
 					tokenType: 'dimension',
 				},
+				{
+					// The responsive counterpart to `token-select` above: one token-backed length, with a
+					// breakpoint switcher. Left non-responsive here so the responsive-field count below stays
+					// the two the schema is asserted on — the type's own capability is covered by its field.
+					type: 'token-scalar',
+					path: 'iconSize',
+					label: __('Icon Size', 'kadence-blocks'),
+					tokenType: 'dimension',
+				},
 				{ type: 'toggle', path: 'enabled', label: __('Enabled', 'kadence-blocks') },
 			],
 		},
