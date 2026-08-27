@@ -612,8 +612,25 @@ return [
 			// below). Each token is seeded to KB's existing default (transparent background, invisible border
 			// until a style is set, no shadow, square corners), so a fresh image is unchanged; any value the
 			// user sets renders at higher specificity (the `.kb-image<uid>` instance selector) and still wins.
-			'block'    => 'kadence/image',
-			'bindings' => [
+			//
+			// The `border` and `borderWidth` bindings below stay declared -- they feed the block-default rules
+			// that seed an image's border color and width from the tokens -- but the Style Library screen
+			// deliberately offers neither as a preset field. The image binds no border STYLE, so a preset
+			// cannot turn a border on: with the block's style unset render_border_styles() emits nothing and
+			// `border-style` stays `none`. Once a site owner sets one, the block emits a `border-<side>`
+			// shorthand that overrides the color, and the single shape that would leave the width to a preset
+			// (style and color set, width blank) renders no border in the EDITOR at all, because
+			// getBorderStyle() returns an empty string without a width.
+			//
+			// @todo SOFT-4234: give the image a preset-able border trio.
+			'block'         => 'kadence/image',
+			'label'         => __( 'Style', 'kadence-blocks' ), // a picker-driven set; this is the editor control's label.
+			'style_library' => [
+				// The Style Library BLOCK PRESETS nav label — distinct from "label" above, which names the
+				// inspector's picker control, not the block.
+				'label' => __( 'Advanced Image', 'kadence-blocks' ),
+			],
+			'bindings'      => [
 				'background'   => [
 					'token'        => 'semantic.color.image-bg',
 					'css_prop'     => 'background-color',

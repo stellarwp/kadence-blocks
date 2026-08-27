@@ -1,0 +1,49 @@
+@use "../../styles/mixins" as *;
+
+// The tile carries a shadow, which is cast OUTSIDE the element casting it, so this screen relaxes
+// `ListRow`'s default framed preview slot rather than letting `overflow: hidden` clip it — the same
+// override the Shadow screen makes for the same reason.
+.kadence-blocks-style-library__image-screen .kadence-blocks-style-library__list-row-preview {
+	width: auto;
+	height: auto;
+	border: 0;
+	background: transparent;
+	overflow: visible;
+}
+
+// Preset names are full words ("Framed Soft"), not the short numeric labels the shared 4rem column
+// was sized for.
+.kadence-blocks-style-library__image-screen .kadence-blocks-style-library__list-row-label {
+	width: 15rem;
+}
+
+// Landscape, the aspect a photo most often takes. The shared surface mixin supplies the frame and the
+// transparency checker; the shadow is applied inline from the preset, so it must not be clipped —
+// hence no `overflow` here either.
+.kadence-blocks-style-library__image-preset-preview {
+	@include preset-surface-preview(5rem, 3.75rem);
+}
+
+// Carries the background AND the preset's padding, so the padding renders as real space between the
+// frame and the photo below rather than as a number. `box-sizing: border-box` keeps a large padding
+// shrinking the photo instead of growing the tile past its row.
+.kadence-blocks-style-library__image-preset-preview-fill {
+	@include preset-surface-fill;
+
+	box-sizing: border-box;
+	transition:
+		background-color 300ms ease,
+		border-radius 300ms ease,
+		padding 300ms ease;
+}
+
+// The stand-in photo: a neutral block filling whatever the padding leaves. Deliberately not a real
+// image — a preset skins whichever image a block holds, so previewing a specific picture would imply
+// the preset selects one.
+.kadence-blocks-style-library__image-preset-preview-photo {
+	display: block;
+	width: 100%;
+	height: 100%;
+	border-radius: inherit;
+	background: var(--kb-sl-color-gray-700);
+}

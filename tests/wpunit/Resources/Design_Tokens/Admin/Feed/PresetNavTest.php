@@ -28,11 +28,11 @@ final class PresetNavTest extends TestCase {
 	}
 
 	/**
-	 * Every shipped nav entry carries its declared Style Library section label ("Button", "Row Layout",
-	 * "Section", "Icon"), never the picker control's own label — every one of those blocks declares that
-	 * as "Style". The Section's entry is the case that proves the point: the block is `kadence/column` in
-	 * code and the nav must still read "Section", which is what it is called in the UI. Order is
-	 * registration order, which is declaration order in `declarations.php`.
+	 * Every shipped nav entry carries its declared Style Library section label ("Button", "Advanced
+	 * Image", "Row Layout", "Section", "Icon"), never the picker control's own label — every one of those
+	 * blocks declares that as "Style". The Section's entry is the case that proves the point: the block is
+	 * `kadence/column` in code and the nav must still read "Section", which is what it is called in the
+	 * UI. Order is registration order, which is declaration order in `declarations.php`.
 	 *
 	 * @return void
 	 */
@@ -44,6 +44,10 @@ final class PresetNavTest extends TestCase {
 				[
 					'block' => 'kadence/singlebtn',
 					'label' => 'Button',
+				],
+				[
+					'block' => 'kadence/image',
+					'label' => 'Advanced Image',
 				],
 				[
 					'block' => 'kadence/rowlayout',
@@ -248,8 +252,6 @@ final class PresetNavTest extends TestCase {
 	 * @return Generator
 	 */
 	public function defaultLookOnlyBlockProvider(): Generator {
-		yield 'image' => [ 'block' => 'kadence/image' ];
-
 		yield 'advanced heading' => [ 'block' => 'kadence/advancedheading' ];
 	}
 }
