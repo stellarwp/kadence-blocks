@@ -5,16 +5,16 @@
 import { addFilter } from '@wordpress/hooks';
 import { hasBlockSupport, getBlockSupport, createBlock } from '@wordpress/blocks';
 import { assign, get } from 'lodash';
-import { Button, Modal, PanelBody } from '@wordpress/components';
+import { Button, Modal } from '@wordpress/components';
 import { InspectorControls } from '@wordpress/block-editor';
 import { blockExists } from '@kadence/helpers';
-import { SubsectionWrap } from '@kadence/components';
 import { createHigherOrderComponent } from '@wordpress/compose';
 import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
 import { useDispatch, select } from '@wordpress/data';
-import { PresetPicker, blockPresets, activeLibrary } from './extension/preset-picker';
-import { PresetActions } from './extension/preset-picker/PresetActions';
+import { blockPresets, activeLibrary } from './extension/preset-picker';
+import { PresetButton } from './extension/preset-picker/PresetButton';
+import { designTokenInspectorControl } from './extension/preset-picker/inspector-control';
 import { PalettePicker, selectablePalettes } from './extension/palette-picker';
 import { registerTokenAliasFilters } from './extension/design-tokens/register-filters';
 import { registerColorControlFilters } from './extension/design-tokens/register-color-control-filters';
@@ -312,17 +312,26 @@ addFilter('editor.BlockListBlock', 'kadence/kb-palette-attr', withBlockPaletteAt
 
 /**
  * Add the design-token preset picker and the per-block Color Palette override to the inspector of any block
- * that opts into `kbPreset` or `kbPalette` support, under a "Design Tokens" panel. Selecting a preset writes
- * the kbPreset attribute, which the save/preview filters turn into the kb-preset--<slug> class the projector's
- * scoped CSS hooks; an empty preset selects the block's $default preset look. Selecting a palette writes the
- * kbPalette attribute, which the save/preview filters turn into the data-kb-palette switch the projector's
- * `[data-kb-palette]` layer re-skins. The two controls gate independently on their own block support: the
- * preset subsection needs `kbPreset` support and presets for the active library; the palette subsection needs
- * `kbPalette` support and at least two palettes in the set.
+ * that opts into `kbPreset` or `kbPalette` support. Selecting a preset writes the kbPreset attribute, which
+ * the save/preview filters turn into the kb-preset--<slug> class the projector's scoped CSS hooks; an empty
+ * preset means the block follows its `$default` preset. Selecting a palette writes the kbPalette attribute,
+ * which the save/preview filters turn into the data-kb-palette switch the projector's `[data-kb-palette]`
+ * layer re-skins.
  *
- * A block whose `kbPreset` support requests `inlinePicker` renders the preset picker itself (via PresetButton),
- * and that inline picker also renders the palette dropdown right below the Preset selector, so this generic
- * sidebar panel skips both the preset and the palette subsection for that block.
+ * EVERY preset-capable block gets the same control — `PresetButton`, the dropdown the Button has always
+ * used, rendered at the top of the inspector. One preset UI across all blocks was the point: a block's
+ * presets are the same concept whichever block it is, so a second presentation would be a second thing for a
+ * site owner to learn. `PresetButton` also carries the affordances the picker it replaced did not — the
+ * current preset's name with its edited state, per-control edit highlighting, reset-to-preset, and "Save As a
+ * New Preset" — and it renders the palette dropdown itself, directly below the preset row, which is why the
+ * palette is surfaced here only for a block that gets no preset control.
+ *
+ * The controls still gate independently on their own block support: the preset row needs `kbPreset` support
+ * and at least one preset in the active library, the palette dropdown needs `kbPalette` support and at least
+ * two palettes.
+ *
+ * A block whose `kbPreset` support requests `inlinePicker` renders `PresetButton` itself, from inside its own
+ * inspector layout, so this filter renders neither control for it.
  *
  * @since TBD
  */
@@ -338,59 +347,44 @@ const withPresetPicker = createHigherOrderComponent((BlockEdit) => {
 		}
 
 		const library = activeLibrary();
-		const presetCount = blockPresets(name, library).length;
-		const support = hasPreset ? getBlockSupport(name, 'kbPreset') : null;
-		// A block whose kbPreset support requests `inlinePicker` renders the PRESET picker (and, beside it, the
-		// palette) itself. But PresetButton returns null when the block has no presets, so only treat it as an
-		// inline picker when it actually has presets to render — otherwise this generic panel must surface the
-		// palette for it, so a palette-only inline block still shows its Color Palette control.
-		const inlinePicker = Boolean(support && typeof support === 'object' && support.inlinePicker) && presetCount > 0;
+		const control = designTokenInspectorControl({
+			hasPreset,
+			hasPalette,
+			inlinePicker: hasPreset && Boolean(getBlockSupport(name, 'kbPreset')?.inlinePicker),
+			presetCount: blockPresets(name, library).length,
+			paletteCount: selectablePalettes().length,
+		});
 
-		const showPresets = hasPreset && !inlinePicker && presetCount > 0;
-		// Inline-picker blocks render the palette dropdown themselves (via PresetButton, just below the Preset
-		// selector), so this generic panel only surfaces it for blocks without an inline picker.
-		const showPalettes = hasPalette && !inlinePicker && selectablePalettes().length >= 2;
-
-		if (!showPresets && !showPalettes) {
+		if (control === null) {
 			return <BlockEdit {...props} />;
 		}
-
-		const selected = get(attributes, 'kbPreset', '');
-		const selectPreset = (value) => setAttributes({ kbPreset: value });
-		const selectPalette = (value) => setAttributes({ kbPalette: value });
 
 		return (
 			<>
 				{/*
-				 * For blocks without an inline preset picker, the per-block Color Palette dropdown surfaces at the
-				 * top level of the inspector — a bare InspectorControls fill, so it sits above the block's own
-				 * panels rather than buried in a lower panel. Rendered before BlockEdit so its fill registers ahead
-				 * of the block's own inspector fills. Inline-picker blocks render the palette via PresetButton, just
-				 * below the Preset selector, so the two controls stay adjacent.
+				 * Both controls surface at the top level of the inspector — a bare InspectorControls fill, so they
+				 * sit above the block's own panels rather than buried in a lower one, matching where the Button
+				 * has always shown its preset row. Rendered before BlockEdit so the fill registers ahead of the
+				 * block's own inspector fills.
 				 */}
-				{isSelected && showPalettes && (
+				{isSelected && (
 					<InspectorControls>
-						<PalettePicker value={get(attributes, 'kbPalette', '')} onChange={selectPalette} />
+						{control === 'preset' ? (
+							<PresetButton
+								blockName={name}
+								library={library}
+								attributes={attributes}
+								setAttributes={setAttributes}
+							/>
+						) : (
+							<PalettePicker
+								value={get(attributes, 'kbPalette', '')}
+								onChange={(value) => setAttributes({ kbPalette: value })}
+							/>
+						)}
 					</InspectorControls>
 				)}
 				<BlockEdit {...props} />
-				{isSelected && showPresets && (
-					<InspectorControls group="styles">
-						<PanelBody title={__('Design Tokens', 'kadence-blocks')} initialOpen={false}>
-							<SubsectionWrap label={__('Design Presets', 'kadence-blocks')}>
-								<PresetPicker name={name} library={library} value={selected} onChange={selectPreset} />
-								<PresetActions
-									blockName={name}
-									library={library}
-									selected={selected}
-									onSelect={selectPreset}
-									attributes={attributes}
-									setAttributes={setAttributes}
-								/>
-							</SubsectionWrap>
-						</PanelBody>
-					</InspectorControls>
-				)}
 			</>
 		);
 	};
