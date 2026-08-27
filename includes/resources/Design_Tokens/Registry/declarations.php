@@ -768,8 +768,15 @@ return [
 			// and a column's default look (and any selected preset) would reach the front end while the editor
 			// showed the block's own unstyled markup. The editor paints its own value inline on that element,
 			// which beats any stylesheet rule, so a column the user has styled by hand is unaffected either way.
-			'block'    => 'kadence/column',
-			'bindings' => [
+			'block'         => 'kadence/column',
+			'label'         => __( 'Style', 'kadence-blocks' ), // a picker-driven set; this is the editor control's label.
+			'style_library' => [
+				// The Style Library BLOCK PRESETS nav label — distinct from "label" above, which names the
+				// inspector's picker control, not the block. "Section" is what the block is called in the UI;
+				// "column" is only its code name.
+				'label' => __( 'Section', 'kadence-blocks' ),
+			],
+			'bindings'      => [
 				'background'   => [
 					'token'               => 'semantic.color.column-bg',
 					'css_prop'            => 'background-color',

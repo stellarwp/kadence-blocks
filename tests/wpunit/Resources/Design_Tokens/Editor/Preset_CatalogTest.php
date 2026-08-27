@@ -94,7 +94,7 @@ final class Preset_CatalogTest extends TestCase {
 	}
 
 	/**
-	 * The five blocks wired for presets but not yet given a Style Library screen expose a full controllable
+	 * The blocks wired for presets but not yet given a Style Library screen expose a full controllable
 	 * surface — every bound property with its control attribute — while offering NO preset options, because
 	 * their bindings declare no picker label. That combination is what keeps the editor's Design Tokens
 	 * panel hidden for them (it renders only when a block has at least one preset option), so declaring the
@@ -128,8 +128,6 @@ final class Preset_CatalogTest extends TestCase {
 	 */
 	public function wiredWithoutAScreenProvider(): Generator {
 		yield 'image' => [ 'block' => 'kadence/image' ];
-
-		yield 'column' => [ 'block' => 'kadence/column' ];
 
 		yield 'advanced heading' => [ 'block' => 'kadence/advancedheading' ];
 	}

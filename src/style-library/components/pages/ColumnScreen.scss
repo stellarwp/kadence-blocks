@@ -1,0 +1,28 @@
+@use "../../styles/mixins" as *;
+
+// The slab is its own shape (tall and narrow, standing in for a column of content) rather than the
+// shared framed square, so this screen relaxes `ListRow`'s default 80px preview slot — the Button,
+// Spacing, Icon Sizes and Shadow slot-override precedent.
+.kadence-blocks-style-library__column-screen .kadence-blocks-style-library__list-row-preview {
+	width: auto;
+	height: auto;
+	border: 0;
+	background: transparent;
+	overflow: visible;
+}
+
+// Preset names are full words ("Muted Card"), not the short numeric labels the shared 4rem column
+// was sized for.
+.kadence-blocks-style-library__column-screen .kadence-blocks-style-library__list-row-label {
+	width: 15rem;
+}
+
+// Portrait where the Row Layout's band is landscape, because that is the shape each block actually
+// takes on a page, and a corner radius reads differently at each aspect.
+.kadence-blocks-style-library__column-preset-preview {
+	@include preset-surface-preview(3.5rem, 4.5rem);
+}
+
+.kadence-blocks-style-library__column-preset-preview-fill {
+	@include preset-surface-fill;
+}
