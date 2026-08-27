@@ -362,8 +362,8 @@ return [
 				'group' => __( 'Brand', 'kadence-blocks' ),
 			],
 			[
-				// Block-specific radius defaults, mirroring semantic.radius.media for the image. Each aliases
-				// radius.none (resolves to 0), so a fresh Row Layout / Column stays square — KB's own default —
+				// Block-specific radius defaults, mirroring semantic.radius.media for the image. Each is the
+				// literal "0" in baseline.json, so a fresh Row Layout / Column stays square — KB's own default —
 				// while a site owner can round one block type by overriding its token.
 				'id'    => 'semantic.radius.rowlayout',
 				'type'  => 'dimension',
