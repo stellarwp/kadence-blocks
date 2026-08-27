@@ -18,6 +18,7 @@ import {
 	activePresetFor,
 	blockProperties,
 	blockPresetValues,
+	blockPresetReferences,
 	blockPresetResponsive,
 } from '../preset-picker';
 import { isEmptyValue, matchesPreset, presetValueForDevice } from './normalize';
@@ -290,6 +291,36 @@ export function presetPropertyValueForDevice(blockName, propertyKey, attributes,
 		},
 		previewDevice
 	);
+}
+
+/**
+ * The active preset's CSS REFERENCE for one property — the `var()` chain the projected CSS uses, rather
+ * than the flattened literal `presetPropertyValueForDevice` returns.
+ *
+ * For an editor render path that has to apply a preset value itself instead of letting a stylesheet do
+ * it. Painting the reference rather than the literal is what keeps such a path following a per-block
+ * color palette: the projector's `[data-kb-palette]` layer redefines the token variables, and the editor
+ * mirrors the block's selected palette onto its wrapper, so the chain resolves through whichever palette
+ * the block is on. A literal was flattened against the default palette upstream and cannot follow.
+ *
+ * Not device-aware, deliberately: a breakpoint override is carried as a literal in the responsive map,
+ * and there is no per-breakpoint reference to hand back. A caller that needs the value AT a device wants
+ * `presetPropertyValueForDevice`; this answers "what does the preset point this property at".
+ *
+ * @param {string} blockName   The block name.
+ * @param {string} propertyKey The binding's property key.
+ * @param {Object} attributes  The block's current attributes — read for `kbPreset`.
+ * @param {string} [library]   The token library slug; defaults to the active library.
+ *
+ * @since TBD
+ *
+ * @return {*} The `var()` chain, or `undefined` when the active preset does not set the property.
+ */
+export function presetPropertyReference(blockName, propertyKey, attributes, library) {
+	const resolvedLibrary = library || activeLibrary();
+	const activePreset = activePresetFor(blockName, attributes, resolvedLibrary);
+
+	return get(blockPresetReferences(blockName, resolvedLibrary), [activePreset, propertyKey]);
 }
 
 /**

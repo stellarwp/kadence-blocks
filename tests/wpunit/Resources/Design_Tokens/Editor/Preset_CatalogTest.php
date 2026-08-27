@@ -137,6 +137,28 @@ final class Preset_CatalogTest extends TestCase {
 	}
 
 	/**
+	 * Alongside the flattened literals, the catalog carries each preset's CSS REFERENCES — the same
+	 * `var()` chains the projected CSS uses. The editor needs both: a literal to compare a control against,
+	 * and a reference to paint with when it applies a preset value itself, because only the reference
+	 * resolves through the projector's per-block color-palette layer.
+	 *
+	 * @return void
+	 */
+	public function testItSurfacesPerPresetCssReferencesAlongsideLiterals(): void {
+		$button = $this->catalog->all()['libraries'][ Token_Store::default_slug() ][ self::BUTTON ];
+
+		$this->assertArrayHasKey( 'primary', $button['references'] );
+
+		$reference = $button['references']['primary']['button-bg'];
+		$literal   = $button['values']['primary']['button-bg'];
+
+		// The reference is a var() chain; the literal is the flattened value. Both describe the same
+		// property, and the difference between them is the whole point of carrying both.
+		$this->assertStringStartsWith( 'var(--kb-token--', $reference );
+		$this->assertStringNotContainsString( 'var(', $literal );
+	}
+
+	/**
 	 * The surface carries each property's declared composite-control axis, so the editor can tell which
 	 * slot of a shared nested attribute a property owns without matching against property names. The three
 	 * border properties declare one; every other property declares none.

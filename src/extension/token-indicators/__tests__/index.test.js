@@ -13,6 +13,7 @@ jest.mock('../components/TokenControlRow', () => ({ TokenControlRow: () => null 
 import {
 	usePresetBinding,
 	resetAttrPatch,
+	presetPropertyReference,
 	presetPropertyValueForDevice,
 	mappedAttrsFor,
 	deriveStateBinding,
@@ -989,5 +990,88 @@ describe('deriveStateBinding', () => {
 		const state = deriveStateBinding({ shared, kind: 'border', value, previewDevice: 'Desktop' });
 
 		expect(state).toEqual({ bound: true, overridden: false });
+	});
+});
+
+describe('presetPropertyReference', () => {
+	afterEach(() => {
+		delete window.kadenceDesignTokensPresets;
+	});
+
+	/**
+	 * Seed a catalog carrying BOTH the flattened literal and the CSS reference for one property, which is
+	 * the shape the editor localizer prints.
+	 *
+	 * @return {void}
+	 */
+	function seedReferences() {
+		window.kadenceDesignTokensPresets = {
+			active: SET,
+			libraries: {
+				[SET]: {
+					[BLOCK]: {
+						default: 'primary',
+						presets: [{ slug: 'primary', label: 'Primary' }],
+						properties: [{ key: 'button-bg', kind: 'color', token: null, control_attr: 'background' }],
+						values: { primary: { 'button-bg': '#3182CE' } },
+						references: { primary: { 'button-bg': 'var(--kb-token--semantic--color--button-bg)' } },
+						responsive: {},
+					},
+				},
+			},
+		};
+	}
+
+	/**
+	 * The reference is returned, not the literal. Only the `var()` chain resolves through the projector's
+	 * per-block palette layer, so an editor path that paints a preset value itself must use it.
+	 *
+	 * @return {void}
+	 */
+	it("returns the active preset's var() chain rather than its flattened literal", () => {
+		seedReferences();
+
+		expect(presetPropertyReference(BLOCK, 'button-bg', { kbPreset: 'primary' }, SET)).toBe(
+			'var(--kb-token--semantic--color--button-bg)'
+		);
+	});
+
+	/**
+	 * With nothing selected the block follows its `$default`, exactly as the value reader does.
+	 *
+	 * @return {void}
+	 */
+	it('falls back to the block default preset when nothing is selected', () => {
+		seedReferences();
+
+		expect(presetPropertyReference(BLOCK, 'button-bg', {}, SET)).toBe(
+			'var(--kb-token--semantic--color--button-bg)'
+		);
+	});
+
+	/**
+	 * A property the active preset does not set has no reference, so a caller can fall through to its own
+	 * default rather than painting something invented.
+	 *
+	 * @return {void}
+	 */
+	it('returns undefined for a property the preset does not set', () => {
+		seedReferences();
+
+		expect(presetPropertyReference(BLOCK, 'button-text', { kbPreset: 'primary' }, SET)).toBeUndefined();
+	});
+
+	/**
+	 * A catalog with no references section at all degrades to undefined rather than throwing.
+	 *
+	 * @return {void}
+	 */
+	it('returns undefined when the catalog carries no references', () => {
+		window.kadenceDesignTokensPresets = {
+			active: SET,
+			libraries: { [SET]: { [BLOCK]: { default: 'primary', presets: [], properties: [], values: {} } } },
+		};
+
+		expect(presetPropertyReference(BLOCK, 'button-bg', {}, SET)).toBeUndefined();
 	});
 });

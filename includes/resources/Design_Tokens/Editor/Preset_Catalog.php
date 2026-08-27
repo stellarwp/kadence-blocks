@@ -132,7 +132,7 @@ final class Preset_Catalog {
 	 *
 	 * @param string $slug The token library slug.
 	 *
-	 * @return array<string, array<string, mixed>> block => { default, presets, properties, values, label }.
+	 * @return array<string, array<string, mixed>> block => { default, presets, properties, values, references, label }.
 	 */
 	private function for_library( string $slug ): array {
 		$out = [];
@@ -159,6 +159,7 @@ final class Preset_Catalog {
 				'presets'    => $bindings->label === null ? [] : $this->preset_options( $block, $slug, $names ),
 				'properties' => $this->properties_for( $bindings ),
 				'values'     => $this->values_for( $block, $slug, $names ),
+				'references' => $this->references_for( $block, $slug, $names ),
 				'responsive' => $this->responsive_for( $block, $slug, $names ),
 				'label'      => $bindings->label,
 			];
@@ -260,6 +261,43 @@ final class Preset_Catalog {
 		}
 
 		return $values;
+	}
+
+	/**
+	 * The per-preset CSS REFERENCES for a block's library: `preset slug => ( property => var() chain )`,
+	 * the same strings the projected CSS uses.
+	 *
+	 * The sibling of `values_for()`, and deliberately not a replacement for it — the two answer different
+	 * questions. A literal is what a control compares against to decide bound-vs-overridden, because a
+	 * `var()` chain cannot be compared to a stored hex. A reference is what the editor PAINTS with when it
+	 * has to resolve a preset value itself rather than let a stylesheet do it.
+	 *
+	 * The difference matters wherever a token's value depends on something the flattening has already
+	 * discarded. A per-block color palette is exactly that: the projector emits a `[data-kb-palette]` layer
+	 * that redefines the token variables, and the editor mirrors the block's selected palette onto the block
+	 * wrapper, so a `var()` reference resolves through whichever palette the block is on. A literal was
+	 * resolved against the default palette before it ever reached the editor and cannot follow the block.
+	 *
+	 * @since TBD
+	 *
+	 * @param string   $block The block name.
+	 * @param string   $slug  The token library slug.
+	 * @param string[] $names The preset slugs to resolve, in catalog order.
+	 *
+	 * @return array<string, array<string, string>> preset slug => ( property => `var()` chain ).
+	 */
+	private function references_for( string $block, string $slug, array $names ): array {
+		$references = [];
+
+		foreach ( $names as $name ) {
+			try {
+				$references[ $name ] = $this->presets->resolve( $block, $name, $slug );
+			} catch ( Unknown_Preset_Exception $e ) {
+				continue; // Preset undefined in this library — skip, fail soft.
+			}
+		}
+
+		return $references;
 	}
 
 	/**

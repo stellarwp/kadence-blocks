@@ -106,6 +106,28 @@ export function blockPresetValues(name, library) {
 }
 
 /**
+ * The per-preset CSS REFERENCES for a block's library: `{ <presetSlug>: { <property>: 'var(...)' } }` —
+ * the same strings the projected CSS uses. Empty object when the block offers none.
+ *
+ * The sibling of `blockPresetValues`, for a different job. A literal is what a control compares against
+ * to decide bound-vs-overridden; a reference is what the editor paints with when it has to apply a preset
+ * value itself instead of letting a stylesheet do it. Only the reference follows a per-block color
+ * palette: the projector's `[data-kb-palette]` layer redefines the token variables and the editor mirrors
+ * the block's palette onto its wrapper, so a `var()` chain resolves through whichever palette the block
+ * is on, while a literal was flattened against the default palette before it ever reached the editor.
+ *
+ * @param {string} name      The block name.
+ * @param {string} [library] The token library slug; defaults to the active library.
+ *
+ * @since TBD
+ *
+ * @return {Object} The per-preset reference map.
+ */
+export function blockPresetReferences(name, library) {
+	return get(blockEntry(name, library), 'references', {}) || {};
+}
+
+/**
  * The per-preset, per-breakpoint resolved values for a block's library:
  * `{ <presetSlug>: { <breakpoint>: { <property>: literalValue } } }`. Empty object when the block
  * offers none, and a preset that declares no breakpoint overrides carries an empty map rather than

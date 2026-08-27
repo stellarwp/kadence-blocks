@@ -2,8 +2,7 @@ import { getPreviewSize, KadenceColorOutput, getSpacingOptionOutput } from '@kad
 import { useRef } from '@wordpress/element';
 import { IconRender, Tooltip } from '@kadence/components';
 import { tokenPx } from '../../extension/design-tokens/token-px';
-import { tokenLiteral } from '../../extension/design-tokens/token-literals';
-import { presetPropertyValueForDevice } from '../../extension/token-indicators';
+import { presetPropertyReference, presetPropertyValueForDevice } from '../../extension/token-indicators';
 import { boundTokenAliasForControl } from '../../extension/token-picker';
 import { parseCssLength } from '../../token-controls';
 import metadata from './block.json';
@@ -109,11 +108,14 @@ export function PreviewIcon({ attributes, previewDevice }) {
 	// The same story for color, by a different mechanism. The front end renders a cleared color through the
 	// block-default rule's `var(--kb-icon-color, ...)` chain on the `.kb-svg-icon-wrap` span PHP hydrates;
 	// the editor has no such element (it renders `GenIcon`'s own div) and paints the color inline, so the
-	// preset's value is resolved here instead. Without this a preset's color simply never reaches the
-	// canvas — the rule that would carry it matches nothing in the editor's markup.
-	const previewColor =
-		color ||
-		tokenLiteral(presetPropertyValueForDevice(metadata.name, 'color', attributes, undefined, previewDevice));
+	// preset's value is applied here instead. Without this a preset's color never reaches the canvas — the
+	// rule that would carry it matches nothing in the editor's markup.
+	//
+	// The preset's CSS REFERENCE, not its flattened literal: a `var()` chain resolves through the
+	// projector's `[data-kb-palette]` layer, and the editor mirrors the block's selected palette onto its
+	// wrapper, so the icon follows whichever palette the block is on. The literal was flattened against the
+	// default palette upstream and would pin the icon to that palette's color whatever the block is set to.
+	const previewColor = color || presetPropertyReference(metadata.name, 'color', attributes);
 	const previewMarginTop = getPreviewSize(
 		previewDevice,
 		margin && undefined !== margin[0] ? margin[0] : undefined,
