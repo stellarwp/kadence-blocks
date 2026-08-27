@@ -202,8 +202,8 @@ final class Favorite_Font_IndexTest extends TestCase {
 	// -------------------------------------------------------------------------
 
 	/**
-	 * The consequence of the rule above on the write path: a second spelling of a family already
-	 * favorited is the same idempotent no-op an exact repeat is, rather than a second entry that
+	 * The consequence of the rule above on the write path: a second spelling of a family already in
+	 * the list is the same idempotent no-op an exact repeat is, rather than a second entry that
 	 * neither picker would render — both collapse the list case-insensitively before display, so such
 	 * an entry could not be seen or cleared through the UI.
 	 *
