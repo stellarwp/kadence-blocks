@@ -458,8 +458,9 @@ export default function KadenceButtonEdit(props) {
 
 	// Padding's linked/individual mode, mirroring Border Radius's own hook call above with "corner"
 	// swapped for "side" — same shape, run over `paddingForDevice`/`paddingPresetValue`/
-	// `inheritedPadding`/`paddingPickableTokens` instead. Padding has no `resetOn`: unlike Border
-	// Radius's 6 states, its override has never been cleared on a preset change.
+	// `inheritedPadding`/`paddingPickableTokens` instead, `resetOn` included: an override records a
+	// choice about the PREVIOUS preset's sides, so it has to clear on a preset change here too, or an
+	// explicit "link" sticks and hides the new preset's own per-side padding.
 	const { isLinked: paddingIsLinked, toggleLink: togglePaddingLink } = useLinkedMeasureState({
 		forDevice: paddingForDevice,
 		inherited: inheritedPadding,
@@ -467,6 +468,7 @@ export default function KadenceButtonEdit(props) {
 		presetValue: paddingPresetValue,
 		tokens: paddingPickableTokens,
 		setAttributes,
+		resetOn: attributes.kbPreset,
 	});
 
 	// Hover/Transparent/Transparent Hover/Sticky/Sticky Hover each store their own 4 corners, so each
