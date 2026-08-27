@@ -213,6 +213,26 @@ describe('matchesPreset dimension against a per-corner preset value', () => {
 	it('does not match a scalar stored value against a mixed per-corner preset value', () => {
 		expect(matchesPreset('dimension', '8', 'px', ['8px', '4px', '8px', '4px'])).toBe(false);
 	});
+
+	it('matches when the one touched corner equals its preset slot and the rest are gaps', () => {
+		expect(matchesPreset('dimension', ['8', '', '', ''], 'px', ['8px', '4px', '8px', '4px'])).toBe(true);
+	});
+
+	it('does not match when the one touched corner differs from its preset slot', () => {
+		expect(matchesPreset('dimension', ['2', '', '', ''], 'px', ['8px', '4px', '8px', '4px'])).toBe(false);
+	});
+
+	it('matches when two touched corners equal their preset slots and the other two are gaps', () => {
+		expect(matchesPreset('dimension', ['8', '', '', '4'], 'px', ['8px', '4px', '8px', '4px'])).toBe(true);
+	});
+
+	it('compares a touched corner against the preset slot at ITS OWN index, not the first slot', () => {
+		expect(matchesPreset('dimension', ['', '8', '', ''], 'px', ['8px', '4px', '8px', '4px'])).toBe(false);
+	});
+
+	it('does not match an all-gap per-corner value', () => {
+		expect(matchesPreset('dimension', ['', '', '', ''], 'px', ['8px', '4px', '8px', '4px'])).toBe(false);
+	});
 });
 
 describe('isEmptyValue dimension', () => {
@@ -261,5 +281,55 @@ describe('presetValueForDevice', () => {
 
 	it('degrades to the base value with no responsive map at all', () => {
 		expect(presetValueForDevice('0.5rem', undefined, 'Mobile')).toBe('0.5rem');
+	});
+});
+
+describe('presetValueForDevice per-corner cascade', () => {
+	// Corner order is top, right, bottom, left (index 0-3), matching CSS shorthand order — confirmed
+	// against `dimensionSlots()`/`presetSlotAt()`'s own convention and re-confirmed against the
+	// resolver's flattened slot order and the CSS projection's corner-var naming.
+	const CORNERS = ['top', 'right', 'bottom', 'left'];
+
+	CORNERS.forEach((corner, index) => {
+		it(`walks the ${corner} corner's own cascade independently on Tablet, leaving the other three on the base value`, () => {
+			const tabletOverride = ['', '', '', ''];
+
+			tabletOverride[index] = '8px';
+
+			const result = presetValueForDevice('4px', { tablet: tabletOverride }, 'Tablet');
+			const expected = ['4px', '4px', '4px', '4px'];
+
+			expected[index] = '8px';
+
+			expect(result).toEqual(expected);
+		});
+	});
+
+	it('falls each corner without a mobile override through tablet before reaching the base', () => {
+		// Corner 0 (top): overridden at Tablet only, no Mobile override -> inherits the Tablet value.
+		// Corner 1 (right): overridden at Mobile directly.
+		// Corners 2-3 (bottom/left): a gap at both breakpoints -> fall all the way to the base.
+		const result = presetValueForDevice(
+			'4px',
+			{ tablet: ['8px', '', '', ''], mobile: ['', '2px', '', ''] },
+			'Mobile'
+		);
+
+		expect(result).toEqual(['8px', '2px', '4px', '4px']);
+	});
+
+	it('takes a fully scalar tablet override at every corner when the breakpoint sets no gaps', () => {
+		const corners = ['9999px', '1rem', '1rem', '1rem'];
+
+		expect(presetValueForDevice('0.5rem', { tablet: corners }, 'Tablet')).toEqual(corners);
+	});
+
+	it('broadcasts a scalar base value to every corner a gapped override leaves untouched', () => {
+		expect(presetValueForDevice('4px', { tablet: ['', '8px', '', ''] }, 'Tablet')).toEqual([
+			'4px',
+			'8px',
+			'4px',
+			'4px',
+		]);
 	});
 });

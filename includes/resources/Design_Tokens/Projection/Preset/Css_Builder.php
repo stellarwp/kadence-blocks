@@ -9,6 +9,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Value;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Scope;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Binding;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Css_Var;
+use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Preset_Bindings;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
 use RuntimeException;
@@ -60,6 +61,20 @@ final class Css_Builder {
 	 * @var string
 	 */
 	private const PRESET_SEGMENT = 'preset--';
+
+	/**
+	 * The four positional slot labels a per-slot dimension property's base declaration splits into,
+	 * in CSS shorthand order (top, right, bottom, left). They are positional labels, not a claim
+	 * about geometry: for a side-shaped property (padding, margin, border width) the label matches
+	 * the CSS side it names, while for a corner-shaped property such as `button-radius` index
+	 * 0/`'top'` is really the top-left corner. Index N here is slot index N everywhere else in the
+	 * pipeline — the resolver's slot list and the editor's `dimensionSlots()`.
+	 *
+	 * @since TBD
+	 *
+	 * @var string[]
+	 */
+	private const SLOTS = [ 'top', 'right', 'bottom', 'left' ];
 
 	/**
 	 * Kadence theme global custom-property slots a preset may retarget beyond the numbered palette
@@ -125,7 +140,7 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @var array<string, array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:string, value:string}>>}>>
+	 * @var array<string, array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:string, value:string, dimension:bool}>>}>>
 	 */
 	private array $collected = [];
 
@@ -243,7 +258,7 @@ final class Css_Builder {
 	 *
 	 * @param string $slug The library slug to resolve against.
 	 *
-	 * @return array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:string, value:string}>>}>
+	 * @return array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:string, value:string, dimension:bool}>>}>
 	 */
 	private function collect( string $slug ): array {
 		$key = $slug . '_' . $this->store->get_version( $slug );
@@ -294,8 +309,13 @@ final class Css_Builder {
 					}
 
 					$properties[ $property ] = [
-						'target' => $target,
-						'value'  => $value,
+						'target'    => $target,
+						'value'     => $value,
+						// Only a "dimension" kind binding ever carries a per-slot list (the write-time
+						// guard rejects one on any other kind); gating the slot split on this, rather than
+						// on the value's own shape, avoids a false-positive split of an unrelated value that
+						// happens to contain spaces (e.g. a shadow literal).
+						'dimension' => $bindings->kind( $property ) === Preset_Bindings::get_kind_dimension(),
 					];
 				}
 
@@ -330,7 +350,7 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:string, value:string}>>}> $collected The active library's collected presets.
+	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:string, value:string, dimension:bool}>>}> $collected The active library's collected presets.
 	 *
 	 * @return string
 	 */
@@ -344,9 +364,13 @@ final class Css_Builder {
 	 * The raw `--kb-token--preset--*:<value>;` declaration list for the collected presets, shared by the
 	 * `:root` canonical block and the palette switch layer's re-emission.
 	 *
+	 * A per-slot dimension property (border radius, padding, margin, border width) emits four extra
+	 * slot-specific vars alongside its usual canonical var — see {@see self::property_declarations()}.
+	 * Every other property emits exactly the single declaration it always has.
+	 *
 	 * @since TBD
 	 *
-	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:string, value:string}>>}> $collected The active library's collected presets.
+	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:string, value:string, dimension:bool}>>}> $collected The active library's collected presets.
 	 *
 	 * @return string
 	 */
@@ -356,9 +380,139 @@ final class Css_Builder {
 		foreach ( $collected as $block => $data ) {
 			foreach ( $data['presets'] as $preset => $properties ) {
 				foreach ( $properties as $property => $info ) {
-					$declarations .= $this->preset_var( $block, $preset, $property ) . ':' . $this->sanitize_value( $info['value'] ) . ';';
+					$declarations .= $this->property_declarations( $block, (string) $preset, (string) $property, $info );
 				}
 			}
+		}
+
+		return $declarations;
+	}
+
+	/**
+	 * The base declaration(s) for one preset property.
+	 *
+	 * A scalar value (any non-dimension property, or a dimension property whose value was not a
+	 * four-slot shorthand) emits the single canonical declaration it always has:
+	 * `--kb-token--preset--<block>--<preset>--<property>:<value>;`.
+	 *
+	 * A per-slot dimension value instead emits four slot-specific vars — one per {@see self::SLOTS}
+	 * suffix — plus the canonical var, now composed purely from `var()` references to those four:
+	 * `--...--<property>:var(--...--top) var(--...--right) var(--...--bottom) var(--...--left);`. The
+	 * slot vars are new plumbing underneath an unchanged public contract: the composed var's name and
+	 * resolved value are exactly what they always were, so every bridge (`--global-*`, `--kb-btn-radius`)
+	 * that already points at it keeps working unchanged, and {@see self::responsive_blocks()} can redeclare
+	 * a single touched slot without ever redeclaring the composed var itself.
+	 *
+	 * @since TBD
+	 *
+	 * @param string                                  $block    The block name.
+	 * @param string                                  $preset   The preset slug.
+	 * @param string                                  $property The block property.
+	 * @param array{target:string, value:string, dimension:bool} $info The property's collected target/value/kind.
+	 *
+	 * @return string
+	 */
+	private function property_declarations( string $block, string $preset, string $property, array $info ): string {
+		$slots = $this->slots_of( $info['value'], $info['dimension'] );
+
+		if ( $slots === null ) {
+			return $this->preset_var( $block, $preset, $property ) . ':' . $this->sanitize_value( $info['value'] ) . ';';
+		}
+
+		$declarations = '';
+		$refs         = [];
+
+		foreach ( self::SLOTS as $index => $slot_suffix ) {
+			$slot_var      = $this->slot_var( $block, $preset, $property, $slot_suffix );
+			$declarations .= $slot_var . ':' . $this->sanitize_value( $slots[ $index ] ) . ';';
+			$refs[]        = 'var(' . $slot_var . ')';
+		}
+
+		return $declarations . $this->preset_var( $block, $preset, $property ) . ':' . implode( ' ', $refs ) . ';';
+	}
+
+	/**
+	 * Split a property's projected value into its four slot values, or null when it isn't a per-slot
+	 * dimension value.
+	 *
+	 * The split is lossless because {@see \KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver::project()}
+	 * is the only place that joins a slot list with a bare space (`implode(' ', $projected)`), and
+	 * `Dtcg_Validator` rejects any slot literal containing a space, so every segment `explode(' ', $value)`
+	 * produces is exactly one slot — including the responsive-only `''` gap sentinel, which round-trips as
+	 * an empty segment. The split is additionally gated on the property being a "dimension" kind binding
+	 * (the only kind a slot list is meaningful for — see {@see Preset_Bindings::kind()}).
+	 *
+	 * @todo A slot list handed over as an array, rather than pre-joined into a string by the resolver,
+	 *       would remove the need to split it back apart here at all.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $value     The property's projected value.
+	 * @param bool   $dimension Whether the property is a "dimension" kind binding.
+	 *
+	 * @return string[]|null The four slot values (index 0-3 = top, right, bottom, left; a gap is `''`),
+	 *                       or null when the value is not a four-part per-slot shorthand.
+	 */
+	private function slots_of( string $value, bool $dimension ): ?array {
+		if ( ! $dimension ) {
+			return null;
+		}
+
+		$parts = explode( ' ', $value );
+
+		return count( $parts ) === count( self::SLOTS ) ? $parts : null;
+	}
+
+	/**
+	 * The per-slot var name for a (block, preset, property, slot): the canonical preset var with a
+	 * "--<slot>" suffix, e.g. --kb-token--preset--kadence-singlebtn--hero--button-radius--top.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $block       The block name.
+	 * @param string $preset      The preset slug.
+	 * @param string $property    The block property.
+	 * @param string $slot_suffix The slot suffix (one of {@see self::SLOTS}).
+	 *
+	 * @return string
+	 */
+	private function slot_var( string $block, string $preset, string $property, string $slot_suffix ): string {
+		return $this->preset_var( $block, $preset, $property ) . '--' . $slot_suffix;
+	}
+
+	/**
+	 * The `@media`-block declaration(s) for one breakpoint's override of one property.
+	 *
+	 * A scalar override (a non-dimension property, or a dimension property overridden with one uniform
+	 * value) redeclares the canonical var itself, exactly like the pre-per-slot behavior. A per-slot
+	 * override instead redeclares only the touched slot vars — a `''` gap slot is skipped so that slot
+	 * keeps inheriting live — and never redeclares the composed var (see {@see self::responsive_blocks()}).
+	 *
+	 * @since TBD
+	 *
+	 * @param string $block     The block name.
+	 * @param string $preset    The preset slug.
+	 * @param string $property  The block property.
+	 * @param string $value     The breakpoint's projected override value for the property.
+	 * @param bool   $dimension Whether the property is a "dimension" kind binding.
+	 *
+	 * @return string
+	 */
+	private function responsive_declarations( string $block, string $preset, string $property, string $value, bool $dimension ): string {
+		$slots = $this->slots_of( $value, $dimension );
+
+		if ( $slots === null ) {
+			return $this->preset_var( $block, $preset, $property ) . ':' . $this->sanitize_value( $value ) . ';';
+		}
+
+		$declarations = '';
+
+		foreach ( self::SLOTS as $index => $slot_suffix ) {
+			if ( $slots[ $index ] === '' ) {
+				continue; // A gap: not overridden at this breakpoint, keep inheriting live.
+			}
+
+			$declarations .= $this->slot_var( $block, $preset, $property, $slot_suffix ) . ':' . $this->sanitize_value( $slots[ $index ] ) . ';';
 		}
 
 		return $declarations;
@@ -371,7 +525,7 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:string, value:string}>>}> $collected The active library's collected presets.
+	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:string, value:string, dimension:bool}>>}> $collected The active library's collected presets.
 	 *
 	 * @return string
 	 */
@@ -399,7 +553,7 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:string, value:string}>>}> $collected The active library's collected presets.
+	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:string, value:string, dimension:bool}>>}> $collected The active library's collected presets.
 	 *
 	 * @return string
 	 */
@@ -430,7 +584,7 @@ final class Css_Builder {
 	 *
 	 * @param string                                            $block      The block name.
 	 * @param string                                            $preset     The preset slug.
-	 * @param array<string, array{target:string, value:string}> $properties The preset's collected properties.
+	 * @param array<string, array{target:string, value:string, dimension:bool}> $properties The preset's collected properties.
 	 *
 	 * @return string
 	 */
@@ -522,16 +676,25 @@ final class Css_Builder {
 	/**
 	 * Redeclare each preset var that varies by breakpoint inside that breakpoint's `@media` block.
 	 *
-	 * Only the canonical var is redeclared — the scoped `--global-*` / `--kb-*` bridges are untouched,
-	 * because they already point at the preset var, so overriding it inside the media query is enough for
-	 * every consumer (including each corner of a per-corner shorthand) to follow. Mirrors the token
-	 * projection's {@see \KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Css_Builder} responsive
-	 * layer: same media wrapper, same :root scope, same "redeclare the same custom property" approach.
+	 * For a scalar property (any non-dimension property, or a dimension property overridden uniformly),
+	 * the canonical var itself is redeclared, exactly as before — the scoped `--global-*` / `--kb-*`
+	 * bridges are untouched, because they already point at the preset var, so overriding it inside the
+	 * media query is enough for every consumer to follow. Mirrors the token projection's
+	 * {@see \KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Css_Builder} responsive layer: same
+	 * media wrapper, same :root scope, same "redeclare the same custom property" approach.
+	 *
+	 * For a per-slot dimension property, ONLY the touched slot vars are redeclared — never the
+	 * composed var. A gap slot (the responsive-only `''` sentinel {@see Preset_Resolver} keeps in place) is
+	 * skipped entirely, so that slot keeps inheriting live from whatever the composed var's `var()` chain
+	 * currently resolves to outside this media query, rather than freezing it. The composed var itself picks
+	 * up a touched slot's new value automatically: browsers re-evaluate a `var()` reference live, so
+	 * redeclaring one slot var here changes what the (untouched, never-redeclared) composed var resolves
+	 * to for elements matching this breakpoint.
 	 *
 	 * @since TBD
 	 *
 	 * @param string                $active_slug The active library's slug.
-	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:string, value:string}>>}> $collected The collected preset structure, for the block/preset list.
+	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:string, value:string, dimension:bool}>>}> $collected The collected preset structure, for the block/preset list.
 	 * @param array<string, string> $breakpoints Breakpoint => media-query string.
 	 *
 	 * @return string
@@ -544,23 +707,35 @@ final class Css_Builder {
 		$by_breakpoint = [];
 
 		foreach ( $collected as $block => $data ) {
-			foreach ( array_keys( $data['presets'] ) as $preset ) {
+			foreach ( $data['presets'] as $preset => $properties ) {
 				try {
 					$responsive = $this->presets->resolve_responsive( $block, (string) $preset, $active_slug );
 				} catch ( RuntimeException $e ) {
 					continue; // A preset that stopped resolving contributes no overrides, like the flat layer.
 				}
 
-				foreach ( $responsive as $breakpoint => $properties ) {
-					foreach ( $properties as $property => $value ) {
+				foreach ( $responsive as $breakpoint => $overrides ) {
+					foreach ( $overrides as $property => $value ) {
 						// Only a property the flat layer emitted has a var to override; skip anything else so a
 						// media block can never introduce a var the base projection never defined.
-						if ( ! isset( $data['presets'][ $preset ][ $property ] ) ) {
+						if ( ! isset( $properties[ $property ] ) ) {
 							continue;
 						}
 
-						$by_breakpoint[ $breakpoint ][] = $this->preset_var( $block, (string) $preset, (string) $property )
-							. ':' . $this->sanitize_value( $value ) . ';';
+						$declaration = $this->responsive_declarations(
+							$block,
+							(string) $preset,
+							(string) $property,
+							$value,
+							$properties[ $property ]['dimension']
+						);
+
+						// An all-gap per-slot override declares nothing; keeping it out avoids an empty @media block.
+						if ( $declaration === '' ) {
+							continue;
+						}
+
+						$by_breakpoint[ $breakpoint ][] = $declaration;
 					}
 				}
 			}

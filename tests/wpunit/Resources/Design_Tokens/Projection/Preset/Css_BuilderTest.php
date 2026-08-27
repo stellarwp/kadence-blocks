@@ -253,6 +253,145 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
+	 * A per-corner dimension property's base declaration emits four corner-specific vars (top, right,
+	 * bottom, left) plus the canonical var, now composed purely from var() references to those four —
+	 * the technique the whole projection change hinges on.
+	 *
+	 * @return void
+	 */
+	public function testItEmitsFourCornerVarsPlusAComposedVarForAPerCornerDimensionProperty(): void {
+		$this->seedPerCornerPreset();
+
+		$css = $this->builder( $this->registry )->css( 'default' );
+
+		$this->assertStringContainsString( '--kb-token--preset--kadence-singlebtn--corners--button-radius--top:var(--kb-token--semantic--radius--control);', $css );
+		$this->assertStringContainsString( '--kb-token--preset--kadence-singlebtn--corners--button-radius--right:4px;', $css );
+		$this->assertStringContainsString( '--kb-token--preset--kadence-singlebtn--corners--button-radius--bottom:var(--kb-token--semantic--radius--media);', $css );
+		$this->assertStringContainsString( '--kb-token--preset--kadence-singlebtn--corners--button-radius--left:2px;', $css );
+		$this->assertStringContainsString(
+			'--kb-token--preset--kadence-singlebtn--corners--button-radius:'
+				. 'var(--kb-token--preset--kadence-singlebtn--corners--button-radius--top) '
+				. 'var(--kb-token--preset--kadence-singlebtn--corners--button-radius--right) '
+				. 'var(--kb-token--preset--kadence-singlebtn--corners--button-radius--bottom) '
+				. 'var(--kb-token--preset--kadence-singlebtn--corners--button-radius--left);',
+			$css
+		);
+	}
+
+	/**
+	 * The bridge (--kb-btn-radius) keeps pointing at the composed var by its unchanged name — the public
+	 * contract every block's own CSS/SCSS already consumes is untouched by the corner-var plumbing
+	 * underneath it.
+	 *
+	 * @return void
+	 */
+	public function testTheBridgeStillPointsAtTheComposedVarForAPerCornerProperty(): void {
+		$this->seedPerCornerPreset();
+
+		$css = $this->builder( $this->registry )->css( 'default' );
+
+		$this->assertStringContainsString(
+			'--kb-btn-radius:var(--kb-token--preset--kadence-singlebtn--corners--button-radius);',
+			$css
+		);
+	}
+
+	/**
+	 * A sparse responsive override (only the top corner touched, the other three left as `''` gaps by the
+	 * resolver) redeclares ONLY the touched corner var inside its @media block — never the untouched
+	 * corners, and never the composed var, so the untouched corners keep inheriting live.
+	 *
+	 * @return void
+	 */
+	public function testResponsiveBlocksRedeclareOnlyTheTouchedCornerForASparseOverride(): void {
+		$this->seedPerCornerPreset(
+			[
+				'tablet' => [ '{semantic.radius.media}', '', '', '' ],
+			]
+		);
+
+		$css = $this->builder( $this->registry )->css( 'default', $this->breakpoints() );
+
+		$this->assertStringContainsString(
+			'@media all and (max-width: 1024px){:root,:root:where(.kb-tokens){'
+				. '--kb-token--preset--kadence-singlebtn--corners--button-radius--top:var(--kb-token--semantic--radius--media);'
+				. '}}',
+			$css
+		);
+
+		// Extract the tablet media block and confirm the other three corners, and the composed var, are
+		// never redeclared inside it.
+		$tablet_block = $this->extractMediaBlock( $css, '(max-width: 1024px)' );
+
+		$this->assertStringNotContainsString( '--button-radius--right:', $tablet_block );
+		$this->assertStringNotContainsString( '--button-radius--bottom:', $tablet_block );
+		$this->assertStringNotContainsString( '--button-radius--left:', $tablet_block );
+		$this->assertStringNotContainsString( '--kb-token--preset--kadence-singlebtn--corners--button-radius:', $tablet_block );
+	}
+
+	/**
+	 * Regression guard: a property that is NOT a per-corner dimension (button-bg, a color-kind property)
+	 * emits exactly the single declaration it always has — no corner vars, no composed-var restructuring —
+	 * proving the corner-var technique is scoped strictly to per-corner dimension properties.
+	 *
+	 * @return void
+	 */
+	public function testNonPerCornerPropertiesAreUnaffectedByTheCornerVarChange(): void {
+		$css = $this->builder( $this->registry )->css( 'default' );
+
+		$this->assertStringContainsString( '--kb-token--preset--kadence-singlebtn--primary--button-bg:var(--kb-token--semantic--color--button-primary-bg);', $css );
+		$this->assertStringNotContainsString( '--kb-token--preset--kadence-singlebtn--primary--button-bg--top', $css );
+		$this->assertStringNotContainsString( '--kb-token--preset--kadence-singlebtn--primary--button-bg--right', $css );
+	}
+
+	/**
+	 * Regression guard: a fully-set per-corner property with no gaps at any breakpoint resolves to the
+	 * SAME four values it always did — the composed var's value is built purely from var() references to
+	 * the four corner vars, and those corner vars, read back together in order, reproduce exactly the
+	 * original joined shorthand the pre-corner-var projection would have emitted as a single declaration.
+	 *
+	 * @return void
+	 */
+	public function testAFullySetPerCornerResponsiveOverrideResolvesToTheSameFourValues(): void {
+		$this->seedPerCornerPreset(
+			[
+				'tablet' => [ '2px', '4px', '6px', '8px' ],
+			]
+		);
+
+		$css = $this->builder( $this->registry )->css( 'default', $this->breakpoints() );
+
+		$tablet_block = $this->extractMediaBlock( $css, '(max-width: 1024px)' );
+
+		// All four corners are redeclared (a fully-set override touches every corner)...
+		$this->assertStringContainsString( '--button-radius--top:2px;', $tablet_block );
+		$this->assertStringContainsString( '--button-radius--right:4px;', $tablet_block );
+		$this->assertStringContainsString( '--button-radius--bottom:6px;', $tablet_block );
+		$this->assertStringContainsString( '--button-radius--left:8px;', $tablet_block );
+		// ...but the composed var is never redeclared: it keeps resolving through the same var() chain the
+		// base declaration already set up, which now points at these freshly-redeclared corner values.
+		$this->assertStringNotContainsString( '--kb-token--preset--kadence-singlebtn--corners--button-radius:', $tablet_block );
+	}
+
+	/**
+	 * A responsive override whose every slot is a gap declares nothing, so its breakpoint contributes no
+	 * `@media` block at all rather than an empty one.
+	 *
+	 * @return void
+	 */
+	public function testAnAllGapResponsiveOverrideEmitsNoMediaBlock(): void {
+		$this->seedPerCornerPreset(
+			[
+				'tablet' => [ '', '', '', '' ],
+			]
+		);
+
+		$css = $this->builder( $this->registry )->css( 'default', $this->breakpoints() );
+
+		$this->assertStringNotContainsString( '@media all and (max-width: 1024px)', $css );
+	}
+
+	/**
 	 * The breakpoint => media-query map a projector passes at emit time.
 	 *
 	 * @return array<string, string>
@@ -331,5 +470,71 @@ final class Css_BuilderTest extends TestCase {
 		];
 
 		$store->save_document( (string) wp_json_encode( $document ), 'dark' );
+	}
+
+	/**
+	 * Persist a "corners" button preset whose radius is a per-corner slot list, optionally with a
+	 * responsive override at one or more breakpoints (also slot lists, possibly with `''` gap corners).
+	 *
+	 * @param array<string, array<int, string>> $responsive Breakpoint => four-slot override.
+	 *
+	 * @return void
+	 */
+	private function seedPerCornerPreset( array $responsive = [] ): void {
+		$tokens = [
+			'$value' => [ '{semantic.radius.control}', '4px', '{semantic.radius.media}', '2px' ],
+		];
+
+		if ( $responsive !== [] ) {
+			$tokens['$extensions'] = [
+				'com.kadence.designTokens' => [
+					'responsive' => $responsive,
+				],
+			];
+		}
+
+		$document = [
+			'$extensions' => [
+				'com.kadence.designTokens' => [
+					'presets' => [
+						'kadence/singlebtn' => [
+							'corners' => [
+								'label'  => 'Corners',
+								'tokens' => [
+									'button-radius' => $tokens,
+								],
+							],
+						],
+					],
+				],
+			],
+		];
+
+		$this->store->save_document( (string) wp_json_encode( $document ), Token_Store::default_slug() );
+	}
+
+	/**
+	 * Extract the `@media all and <query>{...}` block for one query from a built CSS string, or an empty
+	 * string when no such block is present — a small parsing helper so a test can assert what is, and is
+	 * not, redeclared inside ONE specific breakpoint's block without the assertion being confused by a
+	 * sibling breakpoint's block.
+	 *
+	 * @param string $css   The full generated CSS.
+	 * @param string $query The media-query string the block was opened with (e.g. "(max-width: 1024px)").
+	 *
+	 * @return string
+	 */
+	private function extractMediaBlock( string $css, string $query ): string {
+		$needle = '@media all and ' . $query . '{';
+		$start  = strpos( $css, $needle );
+
+		if ( $start === false ) {
+			return '';
+		}
+
+		$start += strlen( $needle );
+		$end    = strpos( $css, '}}', $start );
+
+		return $end === false ? '' : substr( $css, $start, $end - $start );
 	}
 }

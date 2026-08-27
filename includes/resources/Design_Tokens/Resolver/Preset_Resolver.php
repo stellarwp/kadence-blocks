@@ -200,7 +200,9 @@ final class Preset_Resolver {
 			foreach ( Extensions::preset_responsive_of( $value ) as $breakpoint => $override ) {
 				// Gate on the literal first, exactly as resolve() does, so an override that resolves to
 				// nothing never emits a var() pointing at a token the base projection did not define.
-				if ( $this->flatten( $override, $resolved ) === null ) {
+				// keep_gaps: true — a per-corner override may legally leave a corner as a `''` gap
+				// (see flatten_slots()); that must not fail the whole property here either.
+				if ( $this->flatten( $override, $resolved, true ) === null ) {
 					continue;
 				}
 
@@ -215,6 +217,12 @@ final class Preset_Resolver {
 	 * Resolve a preset's PER-BREAKPOINT overrides to flattened LITERALS, for the editor surfaces that
 	 * cannot consume a var() chain. The literal counterpart of resolve_responsive(), covering exactly the
 	 * same overrides.
+	 *
+	 * A per-corner override may leave some corners as a `''` gap — "not overridden at this breakpoint,
+	 * keep inheriting live from the cascade." Unlike every other value this resolver flattens, a gap is
+	 * kept in the returned slot list rather than resolved or dropped, so a caller can tell "overridden
+	 * here" apart from "not overridden here" per corner. This is the one place this resolver's output is
+	 * deliberately sparse; every other property/value it returns is fully resolved.
 	 *
 	 * @since TBD
 	 *
@@ -232,7 +240,10 @@ final class Preset_Resolver {
 
 		foreach ( $this->preset_tokens( $block, $preset, $slug ) as $property => $value ) {
 			foreach ( Extensions::preset_responsive_of( $value ) as $breakpoint => $override ) {
-				$flat = $this->flatten( $override, $resolved );
+				// keep_gaps: true — the returned slot list must keep a `''` gap in place rather than
+				// resolve or drop it, so the editor's per-corner breakpoint cascade can tell "overridden
+				// at this breakpoint" apart from "not overridden" per corner.
+				$flat = $this->flatten( $override, $resolved, true );
 
 				if ( $flat === null ) {
 					continue;
@@ -411,12 +422,16 @@ final class Preset_Resolver {
 	 *
 	 * @since TBD
 	 *
-	 * @param mixed           $value    The raw binding value (alias string, literal, or slot list).
-	 * @param Resolved_Tokens $resolved The resolved token maps.
+	 * @param mixed           $value     The raw binding value (alias string, literal, or slot list).
+	 * @param Resolved_Tokens $resolved  The resolved token maps.
+	 * @param bool            $keep_gaps Whether a per-corner `''` gap slot should be kept in the
+	 *                                   output instead of failing the whole value closed. Only the
+	 *                                   responsive path (resolve_responsive()/resolve_responsive_literal())
+	 *                                   passes true — see flatten_slots().
 	 *
 	 * @return string|string[]|null
 	 */
-	private function flatten( $value, Resolved_Tokens $resolved ) {
+	private function flatten( $value, Resolved_Tokens $resolved, bool $keep_gaps = false ) {
 		if ( is_string( $value ) ) {
 			return Alias::is_alias( $value ) ? $resolved->value( Alias::path_of( $value ) ) : $value;
 		}
@@ -426,7 +441,7 @@ final class Preset_Resolver {
 		}
 
 		if ( is_array( $value ) ) {
-			return $this->flatten_slots( $value, $resolved );
+			return $this->flatten_slots( $value, $resolved, $keep_gaps );
 		}
 
 		return null;
@@ -439,18 +454,41 @@ final class Preset_Resolver {
 	 * border-radius missing one corner is not a usable value, so failing the property is the same
 	 * fail-closed choice a scalar binding makes when its alias resolves to nothing.
 	 *
+	 * A `''` slot is the "gap" sentinel — "this corner isn't set here, keep inheriting live from the
+	 * cascade." It is legal ONLY inside a responsive-override slot list (enforced at write time by
+	 * Presets_Controller/Dtcg_Validator); a base value's slot list must never contain one. This method
+	 * does not trust that the write-time validation actually ran, so $keep_gaps gates the behavior
+	 * itself: resolve_responsive()/resolve_responsive_literal() pass true and get the gap back in
+	 * place (their whole point — the editor's per-corner breakpoint cascade needs to see which corners
+	 * are, and are not, overridden at a breakpoint); resolve()/resolve_literal() (the base path, via flatten()'s default
+	 * false) fail the property closed exactly like any other unresolvable slot, so a gap that somehow
+	 * reaches the base path here is caught rather than silently emitted as an empty literal.
+	 *
 	 * @since TBD
 	 *
-	 * @param array<int|string, mixed> $slots    The raw slot list.
-	 * @param Resolved_Tokens          $resolved The resolved token maps.
+	 * @param array<int|string, mixed> $slots     The raw slot list.
+	 * @param Resolved_Tokens          $resolved  The resolved token maps.
+	 * @param bool                     $keep_gaps Whether a `''` gap slot is kept as-is (responsive path)
+	 *                                             instead of failing the whole slot list closed (base path).
 	 *
 	 * @return string[]|null
 	 */
-	private function flatten_slots( array $slots, Resolved_Tokens $resolved ): ?array {
+	private function flatten_slots( array $slots, Resolved_Tokens $resolved, bool $keep_gaps = false ): ?array {
 		$flat = [];
 
 		foreach ( $slots as $slot ) {
+			if ( $slot === '' ) {
+				if ( ! $keep_gaps ) {
+					return null;
+				}
+
+				$flat[] = '';
+				continue;
+			}
+
 			// Nested lists are rejected at validation; guard anyway so a hand-edited document fails closed.
+			// $slot is therefore always a scalar here, so flatten() never reaches its array branch — the only
+			// branch $keep_gaps affects — and is left at its default.
 			$value = is_array( $slot ) ? null : $this->flatten( $slot, $resolved );
 
 			if ( ! is_string( $value ) ) {

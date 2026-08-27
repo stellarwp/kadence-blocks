@@ -929,12 +929,15 @@ final class Dtcg_Validator {
 	 *
 	 * @since TBD
 	 *
-	 * @param mixed  $value The decoded value.
-	 * @param string $path  Dot-path to the value.
+	 * @param mixed  $value     The decoded value.
+	 * @param string $path      Dot-path to the value.
+	 * @param bool   $allow_gap Whether an empty-string slot inside a per-corner list is legal here — true
+	 *                          only while validating a responsive-override breakpoint, where the gap means
+	 *                          "not overridden, keep inheriting"; a base value never allows it.
 	 *
 	 * @return Validation_Error|null Null when valid.
 	 */
-	private function validate_extension_value( $value, string $path ): ?Validation_Error {
+	private function validate_extension_value( $value, string $path, bool $allow_gap = false ): ?Validation_Error {
 		if ( Alias::is_alias( $value ) ) {
 			return null;
 		}
@@ -952,7 +955,7 @@ final class Dtcg_Validator {
 		}
 
 		if ( is_array( $value ) && $this->is_list( $value ) ) {
-			return $this->validate_extension_slots( $value, $path );
+			return $this->validate_extension_slots( $value, $path, $allow_gap );
 		}
 
 		if ( is_array( $value ) && array_key_exists( Sentinels::get_value_key(), $value ) ) {
@@ -1015,7 +1018,7 @@ final class Dtcg_Validator {
 				);
 			}
 
-			$error = $this->validate_extension_value( $override, $path . '.' . $breakpoint );
+			$error = $this->validate_extension_value( $override, $path . '.' . $breakpoint, true );
 
 			if ( $error !== null ) {
 				return $error;
@@ -1030,16 +1033,21 @@ final class Dtcg_Validator {
 	 * each an alias or a non-empty literal scalar. "Every corner" is already expressed by a bare scalar, so
 	 * a shorter list would be a second spelling of the same thing. A slot is validated by the
 	 * same alias-or-literal rule as a scalar value, so "alias anywhere" stays one rule applied once; a
-	 * nested list is rejected because that rule accepts no array.
+	 * nested list is rejected because that rule accepts no array. A slot literal must additionally be
+	 * free of spaces — the projection round-trips a slot list through a space-separated shorthand, so a
+	 * compound literal such as `calc(1px + 1px)` would break the split and is rejected here at write time.
 	 *
 	 * @since TBD
 	 *
-	 * @param array<int, mixed> $slots The slot list.
-	 * @param string            $path  Dot-path to the list.
+	 * @param array<int, mixed> $slots     The slot list.
+	 * @param string            $path      Dot-path to the list.
+	 * @param bool              $allow_gap Whether an empty-string slot is legal here — true only while
+	 *                                     validating a responsive-override breakpoint; see
+	 *                                     {@see self::validate_extension_value()}.
 	 *
 	 * @return Validation_Error|null Null when valid.
 	 */
-	private function validate_extension_slots( array $slots, string $path ): ?Validation_Error {
+	private function validate_extension_slots( array $slots, string $path, bool $allow_gap = false ): ?Validation_Error {
 		$count = count( $slots );
 
 		if ( $count !== self::SLOT_LIST_SIDES ) {
@@ -1051,11 +1059,25 @@ final class Dtcg_Validator {
 		}
 
 		foreach ( $slots as $index => $slot ) {
+			if ( $allow_gap && $slot === '' ) {
+				continue;
+			}
+
 			if ( is_array( $slot ) ) {
 				return new Validation_Error(
 					$path . '.' . $index,
 					Validation_Error::get_code_value_invalid(),
 					'A preset token slot must be an alias or a non-empty literal, not a nested list.'
+				);
+			}
+
+			// The projection joins a slot list into a space-separated shorthand and splits it back apart by
+			// space, so a slot carrying its own space would silently shift every slot after it.
+			if ( is_string( $slot ) && strpos( $slot, ' ' ) !== false ) {
+				return new Validation_Error(
+					$path . '.' . $index,
+					Validation_Error::get_code_value_invalid(),
+					'A preset token slot must not contain a space; a compound literal (e.g. calc(), clamp()) is not supported in a slot.'
 				);
 			}
 
