@@ -6,6 +6,11 @@
 import { get } from 'lodash';
 
 /**
+ * Internal dependencies
+ */
+import { pxFromLength } from '../../../token-controls/helpers/px-from-length';
+
+/**
  * The populated sides of a stored dimension value, each trimmed to a string. A measurement control writes
  * a 4-side array (`[top, right, bottom, left]`) where an untouched side is `''`; a scalar value is a
  * single side. Empty/undefined sides are dropped, so an all-empty value yields `[]` and a per-corner
@@ -324,22 +329,55 @@ export function parseDimensionLiteral(literal) {
  * @return {boolean} True when every populated corner equals its preset slot.
  */
 function matchesPresetSlots(slots, storedUnit, presetSlots) {
-	const presets = presetSlots.map(parseDimensionLiteral);
-
-	if (slots.length !== presets.length) {
+	if (slots.length !== presetSlots.length) {
 		return false;
 	}
 
-	return slots.every((slot, index) => {
-		if (slot === '') {
-			return true;
-		}
+	return slots.every((slot, index) => slot === '' || lengthMatches(slot, storedUnit, presetSlots[index]));
+}
 
-		const preset = presets[index];
-		const unitMatches = preset.unit === '' || storedUnit === preset.unit;
+/**
+ * Whether one stored length equals one resolved preset literal.
+ *
+ * Two comparisons, in order:
+ *
+ * 1. **Same-unit string compare**, the ordinary case: a control stores its number in one attribute and
+ *    its unit in a companion (`borderRadius` + `borderRadiusUnit`), so `8` + `px` equals `8px`. A
+ *    preset literal carrying no unit of its own (a bare `0`) matches any stored unit.
+ * 2. **Pixel compare**, for a control that stores a RAW NUMBER with no companion unit attribute at all
+ *    — `kadence/single-icon`'s `size`, written straight into the SVG's geometry attributes. Its
+ *    attribute default is seeded from the token by PHP's `Converts_Number_To_Px`, so a never-touched
+ *    icon holds `24` while its preset resolves to `1.5rem`. Compared as strings those disagree and an
+ *    untouched control reports as overridden. Converting through `pxFromLength` — the JS mirror of that
+ *    same PHP trait, pinned to it by a shared conformance fixture — makes the two agree exactly when
+ *    the seeding says they should.
+ *
+ * The pixel path is reached only when the stored value has NO unit and the preset literal HAS one, so a
+ * control that does carry a unit attribute is unaffected: an `em` value against a `px` preset still
+ * reads as overridden rather than being silently converted into agreement.
+ *
+ * @param {string} side          The stored length, without its unit.
+ * @param {string} storedUnit    The stored companion unit, '' when the control has none.
+ * @param {*}      presetLiteral The preset's resolved literal for this slot.
+ *
+ * @since TBD
+ *
+ * @return {boolean} True when the two describe the same length.
+ */
+function lengthMatches(side, storedUnit, presetLiteral) {
+	const preset = parseDimensionLiteral(presetLiteral);
 
-		return unitMatches && slot === preset.value;
-	});
+	if (preset.unit === '' || storedUnit === preset.unit) {
+		return side === preset.value;
+	}
+
+	if (storedUnit !== '') {
+		return false;
+	}
+
+	const presetPx = pxFromLength(presetLiteral);
+
+	return presetPx !== null && side !== '' && Number(side) === presetPx;
 }
 
 /**
@@ -394,11 +432,9 @@ export function matches(value, unit, presetValue) {
 	}
 
 	const storedUnit = String(unit || '').trim();
-	const preset = parseDimensionLiteral(presetValue);
-	const unitMatches = preset.unit === '' || storedUnit === preset.unit;
 
 	// Side-aware: a stored dimension matches only when EVERY populated side equals the preset value.
 	// A per-corner override (e.g. `['8','8','8','4']` vs `8px`) leaves one side differing and so reads
 	// as overridden, not still-bound.
-	return unitMatches && sides.every((side) => side === preset.value);
+	return sides.every((side) => lengthMatches(side, storedUnit, presetValue));
 }
