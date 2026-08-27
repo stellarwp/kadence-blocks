@@ -11,8 +11,8 @@ describe('sameFamily', () => {
 	});
 
 	// A family name is a proper noun, not an identifier, and every other layer already folds case:
-	// the REST catalog gate compares with strcasecmp(), the favorites index folds on membership, and
-	// both option lists collapse duplicates on a lowercased key.
+	// the REST catalog gate accepts either spelling, the favorites index folds on membership, and both
+	// option lists collapse duplicates on a lowercased key.
 	it.each([
 		['Inter', 'INTER'],
 		['Inter', 'inter'],
