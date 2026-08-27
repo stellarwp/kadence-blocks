@@ -785,21 +785,12 @@ return [
 					'css_var'             => 'kb-col-bg',
 					'control_attr'        => 'background',
 				],
-				// The column migrates its legacy flat `border`/`borderWidth` into the nested `borderStyle`
-				// composite, exactly as the row does; this property owns that composite's color axis.
-				'border'       => [
-					'token'               => 'semantic.color.border',
-					'css_prop'            => 'border-color',
-					'css_selector'        => '> .kt-inside-inner-col',
-					'editor_css_selector' => '> .kadence-inner-column-inner',
-					'css_var'             => 'kb-col-border-color',
-					'control_attr'        => 'borderStyle',
-					'axis'                => 'border-color',
-					'responsive_attrs'    => [
-						'tablet' => 'tabletBorderStyle',
-						'mobile' => 'mobileBorderStyle',
-					],
-				],
+				// Border color is NOT a preset property, for exactly the reason it is not one on the row: the
+				// column calls Kadence_Blocks_CSS::render_border_styles() without $single_styles, so its border
+				// output is a shorthand that defaults an unset color to `transparent` and beats a block-default
+				// `border-color` rule on both surfaces. See the row's declaration above for the full account.
+				//
+				// @todo SOFT-4234: give the column a preset-able border trio.
 				'borderRadius' => [
 					'token'               => 'semantic.radius.column',
 					'css_prop'            => 'border-radius',

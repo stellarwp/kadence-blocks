@@ -756,7 +756,6 @@
 						"label": "Default",
 						"tokens": {
 							"background": "{semantic.color.column-bg}",
-							"border": "{semantic.color.border}",
 							"borderRadius": "{semantic.radius.column}"
 						}
 					}

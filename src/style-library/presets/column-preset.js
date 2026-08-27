@@ -26,14 +26,6 @@ import { getPresetProperties, resolveTokenValue } from '../helpers/presets';
 export const COLUMN_BLOCK = 'kadence/column';
 
 /**
- * The section's built-in border color, used to draw the preview's edge when the preset's border does
- * not resolve — `semantic.color.border`'s own shipped value.
- *
- * @since TBD
- */
-const COLUMN_BORDER_FALLBACK = '#E2E8F0';
-
-/**
  * The section's built-in corner radius, matching `semantic.radius.column` (square corners).
  *
  * @since TBD
@@ -43,9 +35,10 @@ const COLUMN_RADIUS_FALLBACK = ['0', '0', '0', '0'];
 /**
  * Build a row's preview from its stored tokens.
  *
- * The section's whole bound surface is a background, a border color and a radius, so all three are
- * previewed. Border is a COLOR only: the binding owns the `borderStyle` composite's color axis and
- * nothing else, because the section's border width and style stay with the block's own control.
+ * The section's whole bound surface is a background and a radius, so both are previewed. Border color
+ * is deliberately not part of that surface — see the section's `preset_bindings` declaration for why a
+ * color-only border binding can never reach the page — so the preview's edge is a neutral frame from
+ * the stylesheet rather than anything the preset holds.
  *
  * @param {Record<string, *>}      tokens       The preset's stored token map.
  * @param {Record<string, string>} values       The feed's resolved value map.
@@ -53,19 +46,18 @@ const COLUMN_RADIUS_FALLBACK = ['0', '0', '0', '0'];
  *
  * @since TBD
  *
- * @return {{background: string, border: string, borderRadius: string}} The preview.
+ * @return {{background: string, borderRadius: string}} The preview.
  */
 function preview(tokens, values, breakpoint) {
 	return {
 		background: resolveTokenValue(values, tokens.background, breakpoint),
-		border: resolveTokenValue(values, tokens.border, breakpoint),
 		borderRadius: resolveTokenValue(values, tokens.borderRadius, breakpoint),
 	};
 }
 
 /**
- * The section's live preview: a tall, narrow slab drawn at the section's resolved background, border
- * color and radius.
+ * The section's live preview: a tall, narrow slab drawn at the section's resolved background and
+ * radius.
  *
  * Portrait where the Row Layout's band is landscape, because that is the shape each block actually
  * takes on a page — a section is a column of content — and a corner radius reads differently at each
@@ -75,7 +67,7 @@ function preview(tokens, values, breakpoint) {
  * color. The section ships a transparent background, so without the checker every unstyled preset
  * would look like it had set white.
  *
- * @param {{id: string, label: string, preview: {background: string, border: string, borderRadius: string}}} row The row descriptor.
+ * @param {{id: string, label: string, preview: {background: string, borderRadius: string}}} row The row descriptor.
  *
  * @since TBD
  *
@@ -85,10 +77,7 @@ function renderPreview(row) {
 	return (
 		<span
 			className="kadence-blocks-style-library__column-preset-preview"
-			style={{
-				borderColor: row.preview.border || COLUMN_BORDER_FALLBACK,
-				borderRadius: row.preview.borderRadius || undefined,
-			}}
+			style={{ borderRadius: row.preview.borderRadius || undefined }}
 		>
 			<span
 				className="kadence-blocks-style-library__column-preset-preview-fill"
@@ -104,10 +93,14 @@ function renderPreview(row) {
  *
  * Radius uses the responsive `radius` field because the block declares `tabletBorderRadius`/
  * `mobileBorderRadius` and its own control is per-device — a preset that could only say one radius
- * for every breakpoint could not reproduce a look a site owner had already built by hand. Background
- * and border are single non-responsive pickers: the section's background attribute has no per-device
- * counterpart, and the border binding owns one axis of a composite whose width and style are not the
- * preset's to set.
+ * for every breakpoint could not reproduce a look a site owner had already built by hand. Background is
+ * a single non-responsive picker: the section's background attribute has no per-device counterpart, and
+ * `token-color-select` carries no breakpoint switcher to drive one.
+ *
+ * There is no border-color field, and its absence is deliberate rather than an omission: the section's
+ * border output takes `render_border_styles()`'s shorthand path, which no block-default `border-color`
+ * rule can reach. Offering the field would save a value that changes nothing on the page. See the
+ * section's `preset_bindings` declaration.
  *
  * @since TBD
  *
@@ -124,11 +117,6 @@ function schemaFor() {
 						type: 'token-color-select',
 						path: 'tokens.background',
 						label: __('Background', 'kadence-blocks'),
-					},
-					{
-						type: 'token-color-select',
-						path: 'tokens.border',
-						label: __('Border Color', 'kadence-blocks'),
 					},
 				],
 			},

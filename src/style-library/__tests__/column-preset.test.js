@@ -41,32 +41,29 @@ describe('COLUMN_PRESET', () => {
 	 */
 	it('reads its bound surface live from the feed', () => {
 		window.kadenceDesignTokens = {
-			presets: { 'kadence/column': { properties: ['background', 'border', 'borderRadius'] } },
+			presets: { 'kadence/column': { properties: ['background', 'borderRadius'] } },
 		};
 
-		expect(COLUMN_PRESET.properties).toEqual(['background', 'border', 'borderRadius']);
+		expect(COLUMN_PRESET.properties).toEqual(['background', 'borderRadius']);
 	});
 
 	/**
-	 * The preview resolves all three bound properties through the feed's value map, aliases included.
+	 * The preview resolves both bound properties through the feed's value map, aliases included.
 	 *
 	 * @return {void}
 	 */
-	it('resolves the preview background, border and radius from stored aliases', () => {
+	it('resolves the preview background and radius from stored aliases', () => {
 		const values = {
 			'semantic.color.column-bg': 'transparent',
-			'semantic.color.border': '#E2E8F0',
 			'semantic.radius.column': '0',
 		};
 		const tokens = {
 			background: '{semantic.color.column-bg}',
-			border: '{semantic.color.border}',
 			borderRadius: '{semantic.radius.column}',
 		};
 
 		expect(COLUMN_PRESET.preview(tokens, values)).toEqual({
 			background: 'transparent',
-			border: '#E2E8F0',
 			borderRadius: '0',
 		});
 	});
@@ -78,19 +75,16 @@ describe('COLUMN_PRESET', () => {
 	 * @return {void}
 	 */
 	it('previews a dangling alias as empty', () => {
-		expect(
-			COLUMN_PRESET.preview({ background: '{semantic.color.gone}', border: '', borderRadius: '' }, {})
-		).toEqual({
+		expect(COLUMN_PRESET.preview({ background: '{semantic.color.gone}', borderRadius: '' }, {})).toEqual({
 			background: '',
-			border: '',
 			borderRadius: '',
 		});
 	});
 
 	/**
 	 * The slab is two nested elements so the preset's background can sit above the transparency checker
-	 * — a single element cannot layer them in that order. The frame carries the border color and radius,
-	 * the fill carries the background.
+	 * — a single element cannot layer them in that order. The frame carries the radius, the fill carries
+	 * the background.
 	 *
 	 * @return {void}
 	 */
@@ -98,13 +92,14 @@ describe('COLUMN_PRESET', () => {
 		const frame = COLUMN_PRESET.renderPreview({
 			id: 'card',
 			label: 'Card',
-			preview: { background: '#F7FAFC', border: '#E2E8F0', borderRadius: '0.5rem' },
+			preview: { background: '#F7FAFC', borderRadius: '0.5rem' },
 		});
 		const fill = frame.props.children;
 
 		expect(frame.props.className).toBe('kadence-blocks-style-library__column-preset-preview');
-		expect(frame.props.style.borderColor).toBe('#E2E8F0');
 		expect(frame.props.style.borderRadius).toBe('0.5rem');
+		// The frame's edge is the stylesheet's neutral hairline; a preset holds no border color.
+		expect(frame.props.style.borderColor).toBeUndefined();
 		// The frame must not paint the background itself, or it would cover its own checker.
 		expect(frame.props.style.background).toBeUndefined();
 
@@ -113,21 +108,18 @@ describe('COLUMN_PRESET', () => {
 	});
 
 	/**
-	 * An unresolved border still draws a visible edge — the section's own shipped border color — so a
-	 * preset whose background matches the page does not read as a blank gap in the list.
+	 * An unresolved value is left absent rather than invented, so the stylesheet's own square-cornered,
+	 * checkered slab shows through and the row still reads as a discrete shape in the list.
 	 *
 	 * @return {void}
 	 */
-	it('falls back to the section border color when the preset resolves none', () => {
+	it('leaves unresolved values absent rather than inventing them', () => {
 		const frame = COLUMN_PRESET.renderPreview({
 			id: 'bare',
 			label: 'Bare',
-			preview: { background: '', border: '', borderRadius: '' },
+			preview: { background: '', borderRadius: '' },
 		});
 
-		expect(frame.props.style.borderColor).toBe('#E2E8F0');
-		// An unresolved radius/background is left absent rather than invented, so the stylesheet's own
-		// square-cornered, checkered slab shows through.
 		expect(frame.props.style.borderRadius).toBeUndefined();
 		expect(frame.props.children.props.style.background).toBeUndefined();
 	});
@@ -143,19 +135,22 @@ describe('COLUMN_PRESET', () => {
 	});
 
 	/**
-	 * The schema edits exactly the bound surface: two token-color fields and a radius picker narrowed to
-	 * the radius scale, all writing token ids rather than literals.
+	 * The schema edits exactly the bound surface and nothing beyond it: a token-color field for the
+	 * background and a radius picker narrowed to the radius scale, both writing token ids rather than
+	 * literals. No border-color field — the section's border output takes `render_border_styles()`'s
+	 * shorthand path, which no block-default `border-color` rule can reach, so the field would save a
+	 * value that changes nothing on the page.
 	 *
 	 * @return {void}
 	 */
-	it('builds panels covering every bound property', () => {
+	it('builds panels covering every bound property and nothing more', () => {
 		const { panels } = COLUMN_PRESET.schemaFor();
 
 		const paths = panels.flatMap((panel) => panel.fields.map((field) => field.path));
 		const types = panels.flatMap((panel) => panel.fields.map((field) => field.type));
 
-		expect(paths).toEqual(['tokens.background', 'tokens.border', 'tokens.borderRadius']);
-		expect(types).toEqual(['token-color-select', 'token-color-select', 'radius']);
+		expect(paths).toEqual(['tokens.background', 'tokens.borderRadius']);
+		expect(types).toEqual(['token-color-select', 'radius']);
 
 		// Every type the schema names must be one the registry can render.
 		types.forEach((type) => expect(FIELD_TYPES).toHaveProperty(type));
@@ -181,13 +176,13 @@ describe('COLUMN_PRESET', () => {
 	});
 
 	/**
-	 * Background and border are single non-responsive pickers: the section's background attribute has no
-	 * per-device counterpart, and `token-color-select` carries no breakpoint switcher to drive one, so
-	 * marking either responsive would write an override its own UI could never read back.
+	 * Background is a single non-responsive picker: the section's background attribute has no per-device
+	 * counterpart, and `token-color-select` carries no breakpoint switcher to drive one, so marking it
+	 * responsive would write an override its own UI could never read back.
 	 *
 	 * @return {void}
 	 */
-	it('leaves the color fields non-responsive', () => {
+	it('leaves the color field non-responsive', () => {
 		COLUMN_PRESET.schemaFor().panels[0].fields.forEach((field) => {
 			expect(field.responsive).toBeUndefined();
 			expect(RESPONSIVE_CAPABLE_FIELD_TYPES).not.toContain(field.type);
