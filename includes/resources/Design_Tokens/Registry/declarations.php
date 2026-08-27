@@ -618,34 +618,73 @@ return [
 					'token'        => 'semantic.color.image-bg',
 					'css_prop'     => 'background-color',
 					'css_selector' => 'img',
+					'css_var'      => 'kb-img-bg',
+					'control_attr' => 'backgroundColor',
 				],
+				// Border color and width are two axes of ONE control: the image migrates its legacy
+				// `borderColor`/`borderWidthDesktop` attributes into the nested `borderStyle` composite
+				// ([{top:[color,style,size],...},unit]) that EditorBorderControl edits, so both point at that
+				// attribute and each names the axis it owns. Same shape as the Button's border trio; the
+				// image binds no border STYLE, so only two of the three axes are present.
 				'border'       => [
-					'token'        => 'semantic.color.border',
-					'css_prop'     => 'border-color',
-					'css_selector' => 'img',
+					'token'            => 'semantic.color.border',
+					'css_prop'         => 'border-color',
+					'css_selector'     => 'img',
+					'css_var'          => 'kb-img-border-color',
+					'control_attr'     => 'borderStyle',
+					'axis'             => 'border-color',
+					'responsive_attrs' => [
+						'tablet' => 'tabletBorderStyle',
+						'mobile' => 'mobileBorderStyle',
+					],
 				],
 				'borderWidth'  => [
-					'token'        => 'semantic.border-width.default',
-					'css_prop'     => 'border-width',
-					'css_selector' => 'img',
+					'token'            => 'semantic.border-width.default',
+					'css_prop'         => 'border-width',
+					'css_selector'     => 'img',
+					'css_var'          => 'kb-img-border-width',
+					'control_attr'     => 'borderStyle',
+					'axis'             => 'border-width',
+					'responsive_attrs' => [
+						'tablet' => 'tabletBorderStyle',
+						'mobile' => 'mobileBorderStyle',
+					],
 				],
 				'borderRadius' => [
-					'token'        => 'semantic.radius.media',
-					'css_prop'     => 'border-radius',
-					'css_selector' => 'img',
+					'token'            => 'semantic.radius.media',
+					'css_prop'         => 'border-radius',
+					'css_selector'     => 'img',
+					'css_var'          => 'kb-img-radius',
+					'control_attr'     => 'borderRadius',
+					'responsive_attrs' => [
+						'tablet' => 'tabletBorderRadius',
+						'mobile' => 'mobileBorderRadius',
+					],
 				],
 				'shadow'       => [
 					'token'        => 'semantic.shadow.media',
 					'css_prop'     => 'box-shadow',
 					'css_selector' => 'img',
+					'css_var'      => 'kb-img-shadow',
+					'control_attr' => 'boxShadow',
 				],
 				// Padding is rendered on the `.kb-img` wrapper, a descendant of the block root. The leading `*`
 				// forces Css_Builder::selector_suffix() to treat `.kb-img` as a descendant (a bare `.kb-img`
 				// would compound onto the root and never match) — see the icon color binding for the rationale.
+				//
+				// The image spells its per-device padding attributes `paddingDesktop`/`paddingTablet`/
+				// `paddingMobile` rather than the bare-plus-prefix convention the Button and the radius binding
+				// above use, which is exactly why responsive_attrs is declared rather than derived.
 				'padding'      => [
-					'token'        => 'semantic.spacing.media-padding',
-					'css_prop'     => 'padding',
-					'css_selector' => '*.kb-img',
+					'token'            => 'semantic.spacing.media-padding',
+					'css_prop'         => 'padding',
+					'css_selector'     => '*.kb-img',
+					'css_var'          => 'kb-img-padding',
+					'control_attr'     => 'paddingDesktop',
+					'responsive_attrs' => [
+						'tablet' => 'paddingTablet',
+						'mobile' => 'paddingMobile',
+					],
 				],
 			],
 		],
@@ -658,17 +697,37 @@ return [
 			// wins. Padding follows the spacing tokens through the slug bridge, not a binding here.
 			'block'    => 'kadence/rowlayout',
 			'bindings' => [
+				// The row names its background attribute `bgColor`, not `background` — the binding key is the
+				// preset property id and need not match the attribute, which is what control_attr is for.
 				'background'   => [
-					'token'    => 'semantic.color.rowlayout-bg',
-					'css_prop' => 'background-color',
+					'token'        => 'semantic.color.rowlayout-bg',
+					'css_prop'     => 'background-color',
+					'css_var'      => 'kb-row-bg',
+					'control_attr' => 'bgColor',
 				],
+				// The row migrates its legacy flat `border`/`borderWidth` attributes into the nested
+				// `borderStyle` composite the current control edits, so the color axis of that composite is
+				// what this property owns — see the image's border bindings for the same shape.
 				'border'       => [
-					'token'    => 'semantic.color.border',
-					'css_prop' => 'border-color',
+					'token'            => 'semantic.color.border',
+					'css_prop'         => 'border-color',
+					'css_var'          => 'kb-row-border-color',
+					'control_attr'     => 'borderStyle',
+					'axis'             => 'border-color',
+					'responsive_attrs' => [
+						'tablet' => 'tabletBorderStyle',
+						'mobile' => 'mobileBorderStyle',
+					],
 				],
 				'borderRadius' => [
-					'token'    => 'semantic.radius.rowlayout',
-					'css_prop' => 'border-radius',
+					'token'            => 'semantic.radius.rowlayout',
+					'css_prop'         => 'border-radius',
+					'css_var'          => 'kb-row-radius',
+					'control_attr'     => 'borderRadius',
+					'responsive_attrs' => [
+						'tablet' => 'tabletBorderRadius',
+						'mobile' => 'mobileBorderRadius',
+					],
 				],
 			],
 		],
@@ -682,16 +741,33 @@ return [
 					'token'        => 'semantic.color.column-bg',
 					'css_prop'     => 'background-color',
 					'css_selector' => '> .kt-inside-inner-col',
+					'css_var'      => 'kb-col-bg',
+					'control_attr' => 'background',
 				],
+				// The column migrates its legacy flat `border`/`borderWidth` into the nested `borderStyle`
+				// composite, exactly as the row does; this property owns that composite's color axis.
 				'border'       => [
-					'token'        => 'semantic.color.border',
-					'css_prop'     => 'border-color',
-					'css_selector' => '> .kt-inside-inner-col',
+					'token'            => 'semantic.color.border',
+					'css_prop'         => 'border-color',
+					'css_selector'     => '> .kt-inside-inner-col',
+					'css_var'          => 'kb-col-border-color',
+					'control_attr'     => 'borderStyle',
+					'axis'             => 'border-color',
+					'responsive_attrs' => [
+						'tablet' => 'tabletBorderStyle',
+						'mobile' => 'mobileBorderStyle',
+					],
 				],
 				'borderRadius' => [
-					'token'        => 'semantic.radius.column',
-					'css_prop'     => 'border-radius',
-					'css_selector' => '> .kt-inside-inner-col',
+					'token'            => 'semantic.radius.column',
+					'css_prop'         => 'border-radius',
+					'css_selector'     => '> .kt-inside-inner-col',
+					'css_var'          => 'kb-col-radius',
+					'control_attr'     => 'borderRadius',
+					'responsive_attrs' => [
+						'tablet' => 'tabletBorderRadius',
+						'mobile' => 'mobileBorderRadius',
+					],
 				],
 			],
 		],
@@ -732,11 +808,14 @@ return [
 					'token'        => 'semantic.color.icon',
 					'css_prop'     => 'color',
 					'css_selector' => '*.kb-svg-icon-wrap',
+					'css_var'      => 'kb-icon-color',
+					'control_attr' => 'color',
 				],
 				'size'  => [
 					'token'            => 'semantic.icon-size.default',
 					'css_prop'         => 'font-size',
 					'css_selector'     => '*.kb-svg-icon-wrap',
+					'css_var'          => 'kb-icon-size',
 					'control_attr'     => 'size',
 					// The block names its per-device size attributes by a prefix convention, which is a naming
 					// rule rather than something safely derivable, so the editor is told them rather than
@@ -774,52 +853,118 @@ return [
 			'editor_selector' => '.wp-block-kadence-advancedheading .kadence-advancedheading-text',
 			'bindings'        => [
 				'color'         => [
-					'token'    => 'semantic.color.text',
-					'css_prop' => 'color',
+					'token'        => 'semantic.color.text',
+					'css_prop'     => 'color',
+					'css_var'      => 'kb-heading-color',
+					'control_attr' => 'color',
 				],
 				'background'    => [
-					'token'    => 'semantic.color.heading-bg',
-					'css_prop' => 'background-color',
+					'token'        => 'semantic.color.heading-bg',
+					'css_prop'     => 'background-color',
+					'css_var'      => 'kb-heading-bg',
+					'control_attr' => 'background',
 				],
+				// No font-family binding: a heading inherits the theme's font, and the block-default CSS
+				// deliberately emits no font-family default for it (see Css_BuilderTest). Font family is
+				// delivered by the font system rather than a token rule, and a preset stores the family the
+				// typography control picked as a literal rather than a token reference.
+				//
+				// fontSize and fontHeight declare NO responsive_attrs, unlike every other responsive property
+				// here: the heading packs all three devices into ONE array attribute (`fontSize[0..2]` is
+				// desktop/tablet/mobile), rather than naming a separate attribute per device. responsive_attrs
+				// maps a breakpoint to an attribute NAME and cannot address an index within one, so a
+				// per-breakpoint preset override has nothing to write through for these two. A preset can still
+				// set their base value. Teaching the editor to address a packed device slot belongs with the
+				// Advanced Text preset screen, where there is a control to verify it against.
 				'fontSize'      => [
-					'token'    => 'semantic.font-size.heading',
-					'css_prop' => 'font-size',
+					'token'        => 'semantic.font-size.heading',
+					'css_prop'     => 'font-size',
+					'css_var'      => 'kb-heading-font-size',
+					'control_attr' => 'fontSize',
 				],
 				'fontHeight'    => [
-					'token'    => 'semantic.line-height.heading',
-					'css_prop' => 'line-height',
+					'token'        => 'semantic.line-height.heading',
+					'css_prop'     => 'line-height',
+					'css_var'      => 'kb-heading-line-height',
+					'control_attr' => 'fontHeight',
 				],
 				'fontWeight'    => [
-					'token'    => 'semantic.font-weight.heading',
-					'css_prop' => 'font-weight',
+					'token'        => 'semantic.font-weight.heading',
+					'css_prop'     => 'font-weight',
+					'css_var'      => 'kb-heading-font-weight',
+					'control_attr' => 'fontWeight',
 				],
 				'letterSpacing' => [
-					'token'    => 'semantic.letter-spacing.heading',
-					'css_prop' => 'letter-spacing',
+					'token'            => 'semantic.letter-spacing.heading',
+					'css_prop'         => 'letter-spacing',
+					'css_var'          => 'kb-heading-letter-spacing',
+					'control_attr'     => 'letterSpacing',
+					'responsive_attrs' => [
+						'tablet' => 'tabletLetterSpacing',
+						'mobile' => 'mobileLetterSpacing',
+					],
 				],
 				'textTransform' => [
-					'token'    => 'semantic.text-transform.heading',
-					'css_prop' => 'text-transform',
+					'token'        => 'semantic.text-transform.heading',
+					'css_prop'     => 'text-transform',
+					'css_var'      => 'kb-heading-text-transform',
+					'control_attr' => 'textTransform',
 				],
 				'padding'       => [
-					'token'    => 'semantic.spacing.heading-padding',
-					'css_prop' => 'padding',
+					'token'            => 'semantic.spacing.heading-padding',
+					'css_prop'         => 'padding',
+					'css_var'          => 'kb-heading-padding',
+					'control_attr'     => 'padding',
+					'responsive_attrs' => [
+						'tablet' => 'tabletPadding',
+						'mobile' => 'mobilePadding',
+					],
 				],
+				// The heading's border trio is the same shape as the Button's — three properties sharing the
+				// nested `borderStyle` composite, each naming its own axis — under the block's own property
+				// keys. Nothing in the editor matches on those keys; it reads the declared axis.
 				'borderColor'   => [
-					'token'    => 'semantic.color.border',
-					'css_prop' => 'border-color',
+					'token'            => 'semantic.color.border',
+					'css_prop'         => 'border-color',
+					'css_var'          => 'kb-heading-border-color',
+					'control_attr'     => 'borderStyle',
+					'axis'             => 'border-color',
+					'responsive_attrs' => [
+						'tablet' => 'tabletBorderStyle',
+						'mobile' => 'mobileBorderStyle',
+					],
 				],
 				'borderWidth'   => [
-					'token'    => 'semantic.border-width.default',
-					'css_prop' => 'border-width',
+					'token'            => 'semantic.border-width.default',
+					'css_prop'         => 'border-width',
+					'css_var'          => 'kb-heading-border-width',
+					'control_attr'     => 'borderStyle',
+					'axis'             => 'border-width',
+					'responsive_attrs' => [
+						'tablet' => 'tabletBorderStyle',
+						'mobile' => 'mobileBorderStyle',
+					],
 				],
 				'borderRadius'  => [
-					'token'    => 'semantic.radius.heading',
-					'css_prop' => 'border-radius',
+					'token'            => 'semantic.radius.heading',
+					'css_prop'         => 'border-radius',
+					'css_var'          => 'kb-heading-radius',
+					'control_attr'     => 'borderRadius',
+					'responsive_attrs' => [
+						'tablet' => 'tabletBorderRadius',
+						'mobile' => 'mobileBorderRadius',
+					],
 				],
 				'borderStyle'   => [
-					'token'    => 'semantic.border-style.default',
-					'css_prop' => 'border-style',
+					'token'            => 'semantic.border-style.default',
+					'css_prop'         => 'border-style',
+					'css_var'          => 'kb-heading-border-style',
+					'control_attr'     => 'borderStyle',
+					'axis'             => 'border-style',
+					'responsive_attrs' => [
+						'tablet' => 'tabletBorderStyle',
+						'mobile' => 'mobileBorderStyle',
+					],
 				],
 			],
 		],

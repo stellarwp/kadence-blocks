@@ -75,16 +75,16 @@ final class Css_BuilderTest extends TestCase {
 
 		// The <img> surfaces group into one rule, opening with the first bound property (background-color).
 		$this->assertStringContainsString(
-			'.wp-block-kadence-image img{background-color:var(' . Css_Var::from_id( 'semantic.color.image-bg' ) . ',transparent);',
+			'.wp-block-kadence-image img{' . $this->declaration( 'background-color', 'kb-img-bg', 'semantic.color.image-bg', 'transparent' ),
 			$css
 		);
-		$this->assertStringContainsString( 'border-color:var(' . Css_Var::from_id( 'semantic.color.border' ) . ',#E2E8F0);', $css );
-		$this->assertStringContainsString( 'border-width:var(' . Css_Var::from_id( 'semantic.border-width.default' ) . ',1px);', $css );
-		$this->assertStringContainsString( 'border-radius:var(' . Css_Var::from_id( 'semantic.radius.media' ) . ',0);', $css );
+		$this->assertStringContainsString( $this->declaration( 'border-color', 'kb-img-border-color', 'semantic.color.border', '#E2E8F0' ), $css );
+		$this->assertStringContainsString( $this->declaration( 'border-width', 'kb-img-border-width', 'semantic.border-width.default', '1px' ), $css );
+		$this->assertStringContainsString( $this->declaration( 'border-radius', 'kb-img-radius', 'semantic.radius.media', '0' ), $css );
 
 		// Padding is rendered on the `.kb-img` descendant, so it gets its own rule.
 		$this->assertStringContainsString(
-			'.wp-block-kadence-image *.kb-img{padding:var(' . Css_Var::from_id( 'semantic.spacing.media-padding' ) . ',0);}',
+			'.wp-block-kadence-image *.kb-img{' . $this->declaration( 'padding', 'kb-img-padding', 'semantic.spacing.media-padding', '0' ) . '}',
 			$css
 		);
 
@@ -108,7 +108,7 @@ final class Css_BuilderTest extends TestCase {
 		$css = $this->builder( $registry )->css();
 
 		$this->assertStringContainsString(
-			'.wp-block-kadence-single-icon *.kb-svg-icon-wrap{color:var(' . Css_Var::from_id( 'semantic.color.icon' ),
+			'.wp-block-kadence-single-icon *.kb-svg-icon-wrap{' . $this->declaration( 'color', 'kb-icon-color', 'semantic.color.icon', '#3182CE' ),
 			$css
 		);
 		$this->assertStringNotContainsString( '.wp-block-kadence-icon ', $css );
@@ -129,7 +129,7 @@ final class Css_BuilderTest extends TestCase {
 
 		// Grouped into the same `.kb-svg-icon-wrap` rule as color, with the resolved length as the fallback.
 		$this->assertStringContainsString(
-			'font-size:var(' . Css_Var::from_id( 'semantic.icon-size.default' ) . ',1.5rem);',
+			$this->declaration( 'font-size', 'kb-icon-size', 'semantic.icon-size.default', '1.5rem' ),
 			$css
 		);
 		$this->assertStringContainsString( '.wp-block-kadence-single-icon *.kb-svg-icon-wrap{', $css );
@@ -167,7 +167,7 @@ final class Css_BuilderTest extends TestCase {
 		$css = $this->builder( $registry )->css();
 
 		$this->assertStringContainsString(
-			'box-shadow:var(' . Css_Var::from_id( 'semantic.shadow.media' ) . ',0px 0px 0px 0px transparent);',
+			$this->declaration( 'box-shadow', 'kb-img-shadow', 'semantic.shadow.media', '0px 0px 0px 0px transparent' ),
 			$css
 		);
 	}
@@ -185,16 +185,16 @@ final class Css_BuilderTest extends TestCase {
 		$css = $this->builder( $registry )->css();
 
 		$this->assertStringContainsString(
-			'.wp-block-kadence-rowlayout{background-color:var(' . Css_Var::from_id( 'semantic.color.rowlayout-bg' ),
+			'.wp-block-kadence-rowlayout{' . $this->declaration( 'background-color', 'kb-row-bg', 'semantic.color.rowlayout-bg', 'transparent' ),
 			$css
 		);
-		$this->assertStringContainsString( 'border-color:var(' . Css_Var::from_id( 'semantic.color.border' ), $css );
-		$this->assertStringContainsString( 'border-radius:var(' . Css_Var::from_id( 'semantic.radius.rowlayout' ), $css );
+		$this->assertStringContainsString( $this->declaration( 'border-color', 'kb-row-border-color', 'semantic.color.border', '#E2E8F0' ), $css );
+		$this->assertStringContainsString( $this->declaration( 'border-radius', 'kb-row-radius', 'semantic.radius.rowlayout', '0' ), $css );
 		$this->assertStringContainsString(
-			'.wp-block-kadence-column> .kt-inside-inner-col{background-color:var(' . Css_Var::from_id( 'semantic.color.column-bg' ),
+			'.wp-block-kadence-column> .kt-inside-inner-col{' . $this->declaration( 'background-color', 'kb-col-bg', 'semantic.color.column-bg', 'transparent' ),
 			$css
 		);
-		$this->assertStringContainsString( 'border-radius:var(' . Css_Var::from_id( 'semantic.radius.column' ), $css );
+		$this->assertStringContainsString( $this->declaration( 'border-radius', 'kb-col-radius', 'semantic.radius.column', '0' ), $css );
 	}
 
 	/**
@@ -211,23 +211,23 @@ final class Css_BuilderTest extends TestCase {
 		$css = $this->builder( $registry )->css();
 
 		$this->assertStringContainsString(
-			'.wp-block-kadence-advancedheading{color:var(' . Css_Var::from_id( 'semantic.color.text' ) . ',#1A202C);',
+			'.wp-block-kadence-advancedheading{' . $this->declaration( 'color', 'kb-heading-color', 'semantic.color.text', '#1A202C' ),
 			$css
 		);
 		$this->assertStringContainsString(
-			'background-color:var(' . Css_Var::from_id( 'semantic.color.heading-bg' ) . ',transparent);',
+			$this->declaration( 'background-color', 'kb-heading-bg', 'semantic.color.heading-bg', 'transparent' ),
 			$css
 		);
-		$this->assertStringContainsString( 'font-size:var(' . Css_Var::from_id( 'semantic.font-size.heading' ) . ',2rem);', $css );
-		$this->assertStringContainsString( 'line-height:var(' . Css_Var::from_id( 'semantic.line-height.heading' ) . ',1.125);', $css );
-		$this->assertStringContainsString( 'font-weight:var(' . Css_Var::from_id( 'semantic.font-weight.heading' ) . ',400);', $css );
-		$this->assertStringContainsString( 'letter-spacing:var(' . Css_Var::from_id( 'semantic.letter-spacing.heading' ) . ',0);', $css );
-		$this->assertStringContainsString( 'text-transform:var(' . Css_Var::from_id( 'semantic.text-transform.heading' ) . ',none);', $css );
-		$this->assertStringContainsString( 'padding:var(' . Css_Var::from_id( 'semantic.spacing.heading-padding' ) . ',0);', $css );
-		$this->assertStringContainsString( 'border-color:var(' . Css_Var::from_id( 'semantic.color.border' ) . ',#E2E8F0);', $css );
-		$this->assertStringContainsString( 'border-width:var(' . Css_Var::from_id( 'semantic.border-width.default' ) . ',1px);', $css );
-		$this->assertStringContainsString( 'border-radius:var(' . Css_Var::from_id( 'semantic.radius.heading' ) . ',0);', $css );
-		$this->assertStringContainsString( 'border-style:var(' . Css_Var::from_id( 'semantic.border-style.default' ) . ',none);}', $css );
+		$this->assertStringContainsString( $this->declaration( 'font-size', 'kb-heading-font-size', 'semantic.font-size.heading', '2rem' ), $css );
+		$this->assertStringContainsString( $this->declaration( 'line-height', 'kb-heading-line-height', 'semantic.line-height.heading', '1.125' ), $css );
+		$this->assertStringContainsString( $this->declaration( 'font-weight', 'kb-heading-font-weight', 'semantic.font-weight.heading', '400' ), $css );
+		$this->assertStringContainsString( $this->declaration( 'letter-spacing', 'kb-heading-letter-spacing', 'semantic.letter-spacing.heading', '0' ), $css );
+		$this->assertStringContainsString( $this->declaration( 'text-transform', 'kb-heading-text-transform', 'semantic.text-transform.heading', 'none' ), $css );
+		$this->assertStringContainsString( $this->declaration( 'padding', 'kb-heading-padding', 'semantic.spacing.heading-padding', '0' ), $css );
+		$this->assertStringContainsString( $this->declaration( 'border-color', 'kb-heading-border-color', 'semantic.color.border', '#E2E8F0' ), $css );
+		$this->assertStringContainsString( $this->declaration( 'border-width', 'kb-heading-border-width', 'semantic.border-width.default', '1px' ), $css );
+		$this->assertStringContainsString( $this->declaration( 'border-radius', 'kb-heading-radius', 'semantic.radius.heading', '0' ), $css );
+		$this->assertStringContainsString( $this->declaration( 'border-style', 'kb-heading-border-style', 'semantic.border-style.default', 'none' ) . '}', $css );
 		$this->assertStringNotContainsString( 'font-family:', $css, 'A heading inherits the theme font; no font-family default is emitted.' );
 	}
 
@@ -246,23 +246,23 @@ final class Css_BuilderTest extends TestCase {
 		$css = $this->builder( $registry )->editor_css();
 
 		$this->assertStringContainsString(
-			'.editor-styles-wrapper .wp-block-kadence-advancedheading .kadence-advancedheading-text{color:var(' . Css_Var::from_id( 'semantic.color.text' ) . ',#1A202C);',
+			'.editor-styles-wrapper .wp-block-kadence-advancedheading .kadence-advancedheading-text{' . $this->declaration( 'color', 'kb-heading-color', 'semantic.color.text', '#1A202C' ),
 			$css
 		);
 		$this->assertStringContainsString(
-			'background-color:var(' . Css_Var::from_id( 'semantic.color.heading-bg' ) . ',transparent);',
+			$this->declaration( 'background-color', 'kb-heading-bg', 'semantic.color.heading-bg', 'transparent' ),
 			$css
 		);
-		$this->assertStringContainsString( 'font-size:var(' . Css_Var::from_id( 'semantic.font-size.heading' ) . ',2rem);', $css );
-		$this->assertStringContainsString( 'line-height:var(' . Css_Var::from_id( 'semantic.line-height.heading' ) . ',1.125);', $css );
-		$this->assertStringContainsString( 'font-weight:var(' . Css_Var::from_id( 'semantic.font-weight.heading' ) . ',400);', $css );
-		$this->assertStringContainsString( 'letter-spacing:var(' . Css_Var::from_id( 'semantic.letter-spacing.heading' ) . ',0);', $css );
-		$this->assertStringContainsString( 'text-transform:var(' . Css_Var::from_id( 'semantic.text-transform.heading' ) . ',none);', $css );
-		$this->assertStringContainsString( 'padding:var(' . Css_Var::from_id( 'semantic.spacing.heading-padding' ) . ',0);', $css );
-		$this->assertStringContainsString( 'border-color:var(' . Css_Var::from_id( 'semantic.color.border' ) . ',#E2E8F0);', $css );
-		$this->assertStringContainsString( 'border-width:var(' . Css_Var::from_id( 'semantic.border-width.default' ) . ',1px);', $css );
-		$this->assertStringContainsString( 'border-radius:var(' . Css_Var::from_id( 'semantic.radius.heading' ) . ',0);', $css );
-		$this->assertStringContainsString( 'border-style:var(' . Css_Var::from_id( 'semantic.border-style.default' ) . ',none);}', $css );
+		$this->assertStringContainsString( $this->declaration( 'font-size', 'kb-heading-font-size', 'semantic.font-size.heading', '2rem' ), $css );
+		$this->assertStringContainsString( $this->declaration( 'line-height', 'kb-heading-line-height', 'semantic.line-height.heading', '1.125' ), $css );
+		$this->assertStringContainsString( $this->declaration( 'font-weight', 'kb-heading-font-weight', 'semantic.font-weight.heading', '400' ), $css );
+		$this->assertStringContainsString( $this->declaration( 'letter-spacing', 'kb-heading-letter-spacing', 'semantic.letter-spacing.heading', '0' ), $css );
+		$this->assertStringContainsString( $this->declaration( 'text-transform', 'kb-heading-text-transform', 'semantic.text-transform.heading', 'none' ), $css );
+		$this->assertStringContainsString( $this->declaration( 'padding', 'kb-heading-padding', 'semantic.spacing.heading-padding', '0' ), $css );
+		$this->assertStringContainsString( $this->declaration( 'border-color', 'kb-heading-border-color', 'semantic.color.border', '#E2E8F0' ), $css );
+		$this->assertStringContainsString( $this->declaration( 'border-width', 'kb-heading-border-width', 'semantic.border-width.default', '1px' ), $css );
+		$this->assertStringContainsString( $this->declaration( 'border-radius', 'kb-heading-radius', 'semantic.radius.heading', '0' ), $css );
+		$this->assertStringContainsString( $this->declaration( 'border-style', 'kb-heading-border-style', 'semantic.border-style.default', 'none' ) . '}', $css );
 		$this->assertStringNotContainsString( 'font-family:', $css, 'A heading inherits the theme font; no font-family default is emitted.' );
 
 		// The front-end rule for the SAME block must stay on the block root, with no editor-only prefix.
@@ -377,6 +377,22 @@ final class Css_BuilderTest extends TestCase {
 		// Asserted whole rather than by substring: the point is that NOTHING wraps the token variable, which a
 		// containment check on the inner value could not tell apart from the wrapped form.
 		$this->assertSame( '.wp-block-kadence-image img{border-radius:var(' . $var . ',0);}', $css );
+	}
+
+	/**
+	 * The declaration a shipped binding emits: the token variable with its resolved literal as the
+	 * fallback, wrapped in the KB-owned custom property the binding declares so a selected preset can vary
+	 * it. Every shipped `css_prop` binding declares a `css_var`, so this is the shape they all take.
+	 *
+	 * @param string $prop     The CSS property.
+	 * @param string $css_var  The binding's KB-owned custom property, without its leading `--`.
+	 * @param string $token_id The referenced token id.
+	 * @param string $literal  The resolved literal that backs the token variable.
+	 *
+	 * @return string The declaration, with its trailing semicolon.
+	 */
+	private function declaration( string $prop, string $css_var, string $token_id, string $literal ): string {
+		return $prop . ':var(--' . $css_var . ',var(' . Css_Var::from_id( $token_id ) . ',' . $literal . '));';
 	}
 
 	/**

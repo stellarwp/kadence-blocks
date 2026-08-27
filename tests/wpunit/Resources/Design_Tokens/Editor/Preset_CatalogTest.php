@@ -3,6 +3,7 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Editor;
 
+use Generator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Editor\Preset_Catalog;
@@ -88,6 +89,51 @@ final class Preset_CatalogTest extends TestCase {
 
 		$this->assertSame( 'color', $kinds['button-bg'] );
 		$this->assertSame( 'dimension', $kinds['button-radius'] );
+	}
+
+	/**
+	 * The five blocks wired for presets but not yet given a Style Library screen expose a full controllable
+	 * surface — every bound property with its control attribute — while offering NO preset options, because
+	 * their bindings declare no picker label. That combination is what keeps the editor's Design Tokens
+	 * panel hidden for them (it renders only when a block has at least one preset option), so declaring the
+	 * wiring ahead of the screen surfaces nothing to a site owner.
+	 *
+	 * @dataProvider wiredWithoutAScreenProvider
+	 *
+	 * @param string $block The block name.
+	 *
+	 * @return void
+	 */
+	public function testAWiredBlockWithNoLabelExposesASurfaceButNoPresetOptions( string $block ): void {
+		$entry = $this->catalog->all()['libraries'][ Token_Store::default_slug() ][ $block ];
+
+		$this->assertSame( [], $entry['presets'], 'A block with no picker label must offer no preset options.' );
+		$this->assertNull( $entry['label'] );
+		$this->assertNotEmpty( $entry['properties'], 'The controllable surface is declared regardless of the label.' );
+
+		foreach ( $entry['properties'] as $property ) {
+			$this->assertNotNull(
+				$property['control_attr'],
+				sprintf( '%s: every bound property must name the control attribute it maps to.', $property['key'] )
+			);
+		}
+	}
+
+	/**
+	 * The blocks whose bindings are wired for presets but whose Style Library screen has not landed yet.
+	 *
+	 * @return Generator
+	 */
+	public function wiredWithoutAScreenProvider(): Generator {
+		yield 'image' => [ 'block' => 'kadence/image' ];
+
+		yield 'rowlayout' => [ 'block' => 'kadence/rowlayout' ];
+
+		yield 'column' => [ 'block' => 'kadence/column' ];
+
+		yield 'single icon' => [ 'block' => 'kadence/single-icon' ];
+
+		yield 'advanced heading' => [ 'block' => 'kadence/advancedheading' ];
 	}
 
 	/**
