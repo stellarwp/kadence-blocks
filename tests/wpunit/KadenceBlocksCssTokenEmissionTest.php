@@ -179,7 +179,7 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 			'typography' => [
 				'lineType'      => 'px',
 				'lineHeight'    => [ '{semantic.radius.media}', '', '' ],
-				'letterSpacing' => [ '{primitive.spacing.md}', '', '' ],
+				'letterSpacing' => [ '{semantic.radius.control}', '', '' ],
 			],
 		] );
 		$output = $this->css->css_output();
@@ -190,7 +190,7 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 			'render_typography must emit the bare var() for an aliased desktop line-height'
 		);
 		$this->assertStringContainsString(
-			'letter-spacing:var(--kb-token--primitive--spacing--md)',
+			'letter-spacing:var(--kb-token--semantic--radius--control)',
 			$output,
 			'render_typography must emit the bare var() for an aliased desktop letter-spacing'
 		);
@@ -257,16 +257,141 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 	public function testRenderBorderResolvesAliasedWidthAndColorTogether(): void {
 		$border = [
 			[
-				'top'  => [ '{semantic.color.brand}', 'solid', '{semantic.border.width.thin}' ],
+				'top'  => [ '{semantic.color.border}', 'solid', '{semantic.border-width.default}' ],
 				'unit' => 'px',
 			],
 		];
 
 		$this->assertSame(
-			'var(--kb-token--semantic--border--width--thin) solid var(--kb-token--semantic--color--brand)',
+			'var(--kb-token--semantic--border-width--default) solid var(--kb-token--semantic--color--border)',
 			$this->css->render_border( $border, 'top' ),
 			'render_border must resolve both the aliased width and the aliased color'
 		);
+	}
+
+	/**
+	 * A syntactically-valid alias whose token is not backed by the active library resolves to no var()
+	 * in render_color; the method emits its empty sentinel so the property falls back to the global CSS
+	 * rather than minting a dead var().
+	 *
+	 * @return void
+	 */
+	public function testRenderColorEmitsNothingForUnresolvedAlias(): void {
+		$this->assertSame(
+			false,
+			$this->css->render_color( '{semantic.does.not.exist}' ),
+			'render_color must emit nothing for a well-formed but unresolved alias'
+		);
+	}
+
+	/**
+	 * sanitize_color emits nothing for a well-formed but unresolved alias, so the property falls back to
+	 * the global CSS rather than minting a dead var().
+	 *
+	 * @return void
+	 */
+	public function testSanitizeColorEmitsNothingForUnresolvedAlias(): void {
+		$this->assertSame(
+			false,
+			$this->css->sanitize_color( '{semantic.does.not.exist}' ),
+			'sanitize_color must emit nothing for a well-formed but unresolved alias'
+		);
+	}
+
+	/**
+	 * render_border drops the whole shorthand when the width is a well-formed but unresolved alias, so
+	 * the border falls back to the global CSS instead of a broken shorthand.
+	 *
+	 * @return void
+	 */
+	public function testRenderBorderDropsShorthandForUnresolvedAliasWidth(): void {
+		$border = [
+			[
+				'top'  => [ '#000000', 'solid', '{semantic.does.not.exist}' ],
+				'unit' => 'px',
+			],
+		];
+
+		$this->assertSame(
+			false,
+			$this->css->render_border( $border, 'top' ),
+			'render_border must drop the whole shorthand for an unresolved alias width'
+		);
+	}
+
+	/**
+	 * render_border drops the whole shorthand when the color is a well-formed but unresolved alias, even
+	 * with a valid numeric width.
+	 *
+	 * @return void
+	 */
+	public function testRenderBorderDropsShorthandForUnresolvedAliasColor(): void {
+		$border = [
+			[
+				'top'  => [ '{semantic.does.not.exist}', 'solid', '2' ],
+				'unit' => 'px',
+			],
+		];
+
+		$this->assertSame(
+			false,
+			$this->css->render_border( $border, 'top' ),
+			'render_border must drop the whole shorthand for an unresolved alias color'
+		);
+	}
+
+	/**
+	 * render_shadow drops the whole box-shadow shorthand when any part is a well-formed but unresolved
+	 * alias, so it falls back to the global CSS instead of a broken shorthand.
+	 *
+	 * @return void
+	 */
+	public function testRenderShadowDropsShorthandForUnresolvedAliasPart(): void {
+		$this->assertSame(
+			false,
+			$this->css->render_shadow( [
+				'color'   => '#000000',
+				'opacity' => 1,
+				'spread'  => 2,
+				'blur'    => 4,
+				'hOffset' => '{semantic.does.not.exist}',
+				'vOffset' => 1,
+				'inset'   => false,
+			] ),
+			'render_shadow must drop the whole shorthand for an unresolved alias part'
+		);
+	}
+
+	/**
+	 * render_measure drops the whole value when any side is a well-formed but unresolved alias, so the
+	 * property falls back to the global CSS instead of a partially-zeroed value.
+	 *
+	 * @return void
+	 */
+	public function testRenderMeasureDropsValueForUnresolvedAliasSide(): void {
+		$this->assertSame(
+			false,
+			$this->css->render_measure( [ '{semantic.does.not.exist}', 20, 30, 40 ] ),
+			'render_measure must drop the whole value for an unresolved alias side'
+		);
+	}
+
+	/**
+	 * A well-formed but unbacked alias in a numeric lineHeight slot emits no line-height declaration (and
+	 * never the raw alias text), so the property falls back to the global CSS. Covers the numeric-array
+	 * shape the typography paths use, not just the keyed one.
+	 *
+	 * @return void
+	 */
+	public function testRenderTypographyDropsUnresolvedNumericLineHeight(): void {
+		$this->css->render_typography( [
+			'typography' => [
+				'lineType'   => 'px',
+				'lineHeight' => [ '{semantic.does.not.exist}', '', '' ],
+			],
+		] );
+
+		$this->assertStringNotContainsString( 'line-height:', $this->css->css_output() );
 	}
 
 	/**

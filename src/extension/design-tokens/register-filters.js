@@ -9,18 +9,34 @@
  */
 import { addFilter, removeFilter } from '@wordpress/hooks';
 import { isTokenAlias, resolveTokenAlias } from './alias';
+import { isBackedToken } from './backed-tokens';
 
 const NAMESPACE = 'kadence-blocks/token-alias';
 const HOOKS = ['kadence.helpers.colorValue', 'kadence.helpers.dimensionValue'];
 
 /**
- * Resolve a helper value: a design-token alias becomes its CSS var, anything else is unchanged.
+ * Resolve a helper value: a design-token alias backed by the active library becomes its CSS var, and
+ * anything else is unchanged. A syntactically-valid but unbacked alias — a token deleted after it was
+ * saved into a post — is left as the raw value, so the editor emits no dead `var(--kb-token--<id>)` and
+ * the property falls back to whatever global CSS exists (matching the front-end renderer).
  *
  * @param {*} value The raw value the helper received.
+ *
+ * @since TBD
+ *
  * @return {*} The resolved value.
  */
 function resolveAlias(value) {
-	return isTokenAlias(value) ? resolveTokenAlias(value) : value;
+	if (!isTokenAlias(value)) {
+		return value;
+	}
+
+	// Strip the { } braces to the dotted token id (the same slice resolveTokenAlias() does).
+	if (!isBackedToken(value.slice(1, -1))) {
+		return value;
+	}
+
+	return resolveTokenAlias(value);
 }
 
 /**

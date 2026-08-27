@@ -5,6 +5,8 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Block_Default_Css;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Value;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
+use KadenceWP\KadenceBlocks\Psr\Log\LoggerInterface;
 use RuntimeException;
 
 /**
@@ -79,6 +81,28 @@ final class Css_Builder {
 	private Preset_Resolver $presets;
 
 	/**
+	 * Resolves a library to its canonical id map — the authoritative set of tokens the Css_Var projector
+	 * emits a `--kb-token--<id>` variable for. A binding whose token id is absent from it points at a
+	 * variable no projector defines, so this is what "backed" is tested against (not the registry's declared
+	 * subset, which omits baseline-only semantic tokens such as `semantic.color.text`).
+	 *
+	 * @since TBD
+	 *
+	 * @var Token_Resolver
+	 */
+	private Token_Resolver $resolver;
+
+	/**
+	 * Logger for the unresolved-token diagnostics; the bound instance writes to the PHP error log under
+	 * WP_DEBUG and is a NullLogger otherwise (see {@see \KadenceWP\KadenceBlocks\Log\Log_Provider}).
+	 *
+	 * @since TBD
+	 *
+	 * @var LoggerInterface
+	 */
+	private LoggerInterface $logger;
+
+	/**
 	 * Per-request memo keyed on context (front end / editor) + store version + slug, so repeated builds
 	 * within a request are free and a write (which bumps the version) invalidates it without an explicit
 	 * purge. The context is part of the key because the editor build can differ from the front-end one.
@@ -92,12 +116,16 @@ final class Css_Builder {
 	/**
 	 * @since TBD
 	 *
-	 * @param Token_Registry   $registry The token registry.
-	 * @param Preset_Resolver $presets The preset resolver.
+	 * @param Token_Registry  $registry The token registry.
+	 * @param Preset_Resolver $presets  The preset resolver.
+	 * @param Token_Resolver  $resolver Resolves a library to its canonical id map, for the backed-token check.
+	 * @param LoggerInterface $logger   Logger for the unresolved-token diagnostics.
 	 */
-	public function __construct( Token_Registry $registry, Preset_Resolver $presets ) {
+	public function __construct( Token_Registry $registry, Preset_Resolver $presets, Token_Resolver $resolver, LoggerInterface $logger ) {
 		$this->registry = $registry;
-		$this->presets = $presets;
+		$this->presets  = $presets;
+		$this->resolver = $resolver;
+		$this->logger   = $logger;
 	}
 
 	/**
@@ -193,6 +221,11 @@ final class Css_Builder {
 				continue;
 			}
 
+			// The canonical id map of the library — the exact set the Css_Var projector emits a
+			// `--kb-token--<id>` variable for. resolve_default() above already warmed this memoized
+			// resolution, so it is a free lookup here (and cannot throw when resolve_default() did not).
+			$resolved = $this->resolver->resolve( $slug );
+
 			$selector = $editor && $bindings->editor_selector !== null
 				? '.editor-styles-wrapper ' . $bindings->editor_selector
 				: '.wp-block-' . str_replace( '/', '-', $block );
@@ -221,7 +254,27 @@ final class Css_Builder {
 					continue;
 				}
 
-				$var      = $this->registry->css_var_for( (string) $binding->token );
+				$token = (string) $binding->token;
+
+				// A binding may reference a token id the resolved library does not back (e.g. a stale alias
+				// left after a token was removed). css_var_for() would compute a `--kb-token--…` custom
+				// property nothing defines, and the declaration's literal fallback would keep rendering the
+				// default — a silent, invisible dead indirection. Skip the declaration entirely so the block
+				// falls back to its own native default CSS, and log the mismatch (under WP_DEBUG, via the
+				// injected logger).
+				if ( $resolved->value( $token ) === null ) {
+					$this->logger->error(
+						sprintf(
+							'Block-default CSS: block "%s" binds unresolved token id "%s"; skipping declaration.',
+							$block,
+							$token
+						)
+					);
+
+					continue;
+				}
+
+				$var      = $this->registry->css_var_for( $token );
 				$suffix   = $this->selector_suffix( $binding->css_selector() );
 
 				$by_suffix[ $suffix ][] = $prop . ':var(' . $var . ',' . $this->sanitize_value( $literal ) . ')';
