@@ -17,6 +17,7 @@
  */
 import { get } from 'lodash';
 import { activeLibrary, blockProperties } from '../preset-picker';
+import { autoEntry, noneEntryForRole } from '../../token-controls';
 
 /**
  * Token $types compatible with each control kind. Keys are the preset catalog's coarse control
@@ -221,12 +222,24 @@ function pickableTokensForProperty(property, controlAttr, library) {
 	const primitives = narrowed.filter((token) => token.id.startsWith('primitive.'));
 	const scoped = primitives.length ? primitives : narrowed;
 
+	// "None" is a fixed sentinel for every role that has one — never a registered token, so it can
+	// never be renamed or deleted from a Style Library screen. "Auto" is Margin-only, and `role`
+	// alone can't identify Margin: Padding and Margin both narrow to `role === 'spacing'`, so this
+	// reads `controlAttr` (the property's own bound attribute, 'margin' vs 'padding') instead. Auto is
+	// appended after the scale rather than prepended alongside None — None, scale, Auto — to match
+	// the Style Library's `BoxTokenField.tokensForField()`, which orders its own margin field the
+	// same way.
+	const none = noneEntryForRole(role);
+	const withFixed = none ? [none, ...scoped] : scoped;
+
 	// Pin the exact bound token first when it survived the scoping (order carries through for the rest).
 	// An unresolved or scoped-out bound token drops the pin to a no-op.
-	return [
-		...scoped.filter((token) => token.id === property.token),
-		...scoped.filter((token) => token.id !== property.token),
+	const pinned = [
+		...withFixed.filter((token) => token.id === property.token),
+		...withFixed.filter((token) => token.id !== property.token),
 	];
+
+	return controlAttr === 'margin' ? [...pinned, autoEntry()] : pinned;
 }
 
 /**

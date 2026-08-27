@@ -117,6 +117,22 @@ const POOL = {
 			layer: 'semantic',
 			role: 'shadow',
 		},
+		{
+			id: 'primitive.dimension.border-width.sm',
+			alias: '{primitive.dimension.border-width.sm}',
+			label: 'Border Width SM',
+			type: 'dimension',
+			layer: 'primitive',
+			role: 'border-width',
+		},
+		{
+			id: 'semantic.border-width.default',
+			alias: '{semantic.border-width.default}',
+			label: 'Default Border Width',
+			type: 'dimension',
+			layer: 'semantic',
+			role: 'border-width',
+		},
 	],
 	values: {
 		default: {
@@ -132,6 +148,8 @@ const POOL = {
 			'primitive.font-weight.bold': '700',
 			'primitive.shadow.sm': '0 1px 2px rgba(0,0,0,0.1)',
 			'semantic.shadow.button': '0 2px 4px rgba(0,0,0,0.2)',
+			'primitive.dimension.border-width.sm': '1px',
+			'semantic.border-width.default': '2px',
 		},
 		brand: { 'semantic.color.button-primary-bg': '#000000' },
 	},
@@ -154,6 +172,13 @@ const PRESETS = {
 					{ key: 'button-gap', kind: 'dimension', token: null, control_attr: 'gap' },
 					{ key: 'button-shadow', kind: 'shadow', token: 'semantic.shadow.button', control_attr: null },
 					{ key: 'button-padding', kind: 'dimension', token: null, control_attr: 'padding' },
+					{ key: 'button-margin', kind: 'dimension', token: null, control_attr: 'margin' },
+					{
+						key: 'button-border-width',
+						kind: 'dimension',
+						token: 'semantic.border-width.default',
+						control_attr: 'borderStyle',
+					},
 				],
 			},
 			'kadence/single-icon': {
@@ -249,19 +274,23 @@ describe('pickableTokensFor', () => {
 			'semantic.radius.button',
 			'semantic.spacing.block',
 			'semantic.icon-size.default',
+			'semantic.border-width.default',
 			'primitive.dimension.radius.sm',
 			'primitive.dimension.spacing.md',
 			'primitive.dimension.icon-size.md',
 			'primitive.dimension.custom.brand-icon',
+			'primitive.dimension.border-width.sm',
 		]);
 		expect(result.map((token) => token.value)).toEqual([
 			'0.5rem',
 			'1.5rem',
 			'1.5rem',
+			'2px',
 			'4px',
 			'16px',
 			'1.5rem',
 			'2rem',
+			'1px',
 		]);
 	});
 
@@ -329,8 +358,9 @@ describe('pickableTokensForControl', () => {
 		const result = pickableTokensForControl('kadence/singlebtn', 'borderRadius');
 
 		// `borderRadius` implies the radius role (spacing drops out); with a primitive radius present the
-		// picker offers only the size scale, so the semantic radius token is dropped too.
-		expect(result.map((token) => token.id)).toEqual(['primitive.dimension.radius.sm']);
+		// picker offers only the size scale, so the semantic radius token is dropped too. A fixed "None"
+		// entry is prepended for every radius-role control, ahead of the size scale.
+		expect(result.map((token) => token.id)).toEqual(['ss-none-radius', 'primitive.dimension.radius.sm']);
 		expect(result.every((token) => token.role === 'radius')).toBe(true);
 	});
 
@@ -339,7 +369,7 @@ describe('pickableTokensForControl', () => {
 	});
 
 	it('returns an empty array for an unmapped attribute', () => {
-		expect(pickableTokensForControl('kadence/singlebtn', 'margin')).toEqual([]);
+		expect(pickableTokensForControl('kadence/singlebtn', 'backgroundColor')).toEqual([]);
 	});
 
 	it('returns an empty array for an unknown block', () => {
@@ -352,8 +382,9 @@ describe('pickableTokensForControl', () => {
 		const result = pickableTokensForControl('kadence/singlebtn', 'borderRadius');
 
 		// The bound token fixes the radius sub-kind (spacing drops out); the primitive size scale still wins,
-		// so even the bound semantic radius is dropped.
-		expect(result.map((token) => token.id)).toEqual(['primitive.dimension.radius.sm']);
+		// so even the bound semantic radius is dropped. The bound token itself did not survive the scoping,
+		// so the pin is a no-op and the fixed "None" entry leads.
+		expect(result.map((token) => token.id)).toEqual(['ss-none-radius', 'primitive.dimension.radius.sm']);
 		expect(result.every((token) => token.role === 'radius')).toBe(true);
 	});
 
@@ -388,8 +419,17 @@ describe('pickableTokensForControl', () => {
 
 		const result = pickableTokensForControl('kadence/singlebtn', 'borderRadius');
 
-		// A bound primitive is itself a size, so it survives the primitives-only scoping and is pinned first.
-		expect(result.map((token) => token.id)).toEqual(['primitive.dimension.radius.sm']);
+		// A bound primitive is itself a size, so it survives the primitives-only scoping and is pinned
+		// first — ahead of even the fixed "None" entry, since the pin always wins.
+		expect(result.map((token) => token.id)).toEqual(['primitive.dimension.radius.sm', 'ss-none-radius']);
+	});
+
+	it('prepends a fixed None entry for a radius-role control', () => {
+		// The existing setup above stubs `window.kadenceDesignTokensPickable` with a radius-role token pool
+		// and `blockProperties()` (via `PRESETS`) returning a `borderRadius` control_attr property.
+		const tokens = pickableTokensForControl('kadence/singlebtn', 'borderRadius');
+
+		expect(tokens[0]).toMatchObject({ id: 'ss-none-radius', alias: 0, fixed: true });
 	});
 });
 
@@ -408,8 +448,9 @@ describe('pickableTokensForKey', () => {
 		const result = pickableTokensForKey('kadence/singlebtn', 'button-shadow');
 
 		// The bound token fixes the shadow role; with a primitive shadow present the picker offers only
-		// the size scale (mirroring the radius narrowing above), so even the bound semantic drops out.
-		expect(result.map((token) => token.id)).toEqual(['primitive.shadow.sm']);
+		// the size scale (mirroring the radius narrowing above), so even the bound semantic drops out. The
+		// bound token did not survive the scoping, so the fixed "None" entry leads.
+		expect(result.map((token) => token.id)).toEqual(['ss-none-shadow', 'primitive.shadow.sm']);
 		expect(result.every((token) => token.role === 'shadow')).toBe(true);
 	});
 
@@ -434,13 +475,34 @@ describe('pickableTokensForKey', () => {
 		const result = pickableTokensForKey('kadence/singlebtn', 'button-padding');
 
 		// A primitive spacing size exists, so (mirroring the radius narrowing above) the picker offers
-		// only the size scale, dropping even the bound-role semantic spacing token.
-		expect(result.map((token) => token.id)).toEqual(['primitive.dimension.spacing.md']);
+		// only the size scale, dropping even the bound-role semantic spacing token. Padding's fixed
+		// "None" entry leads (Padding never offers "Auto"; only Margin does).
+		expect(result.map((token) => token.id)).toEqual(['ss-none-spacing', 'primitive.dimension.spacing.md']);
 		expect(result.every((token) => token.role === 'spacing')).toBe(true);
 	});
 
 	it('returns an empty array for an unknown block', () => {
 		expect(pickableTokensForKey('kadence/does-not-exist', 'button-shadow')).toEqual([]);
+	});
+
+	it('prepends a fixed None entry, and no Auto, for the padding property', () => {
+		const tokens = pickableTokensForKey('kadence/singlebtn', 'button-padding');
+
+		expect(tokens[0]).toMatchObject({ id: 'ss-none-spacing', alias: 0, fixed: true });
+		expect(tokens.some((token) => token.id === 'ss-auto')).toBe(false);
+	});
+
+	it('prepends None and appends Auto for the margin property, matching the Style Library order', () => {
+		const tokens = pickableTokensForKey('kadence/singlebtn', 'button-margin');
+
+		expect(tokens[0]).toMatchObject({ id: 'ss-none-spacing', alias: 0, fixed: true });
+		expect(tokens[tokens.length - 1]).toMatchObject({ id: 'ss-auto', alias: 'ss-auto', fixed: true });
+	});
+
+	it('prepends a fixed None entry for the border-width property', () => {
+		const tokens = pickableTokensForKey('kadence/singlebtn', 'button-border-width');
+
+		expect(tokens[0]).toMatchObject({ id: 'ss-none-border-width', alias: 0, fixed: true });
 	});
 });
 

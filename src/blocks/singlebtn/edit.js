@@ -468,22 +468,7 @@ export default function KadenceButtonEdit(props) {
 	const borderWidthPickableTokens = pickableTokensForKey('kadence/singlebtn', 'button-border-width');
 	const shadowPickableTokens = pickableTokensForKey('kadence/singlebtn', 'button-shadow');
 	const paddingPickableTokens = pickableTokensForKey('kadence/singlebtn', 'button-padding');
-	// Margin's legacy control also offers "Auto" (`allowAuto`), which Padding's never did.
-	// `ss-auto` is already a fully working spacing slot at the PHP/CSS layer (Spacing_Target's SLOTS,
-	// class-kadence-blocks-css.php's $spacing_sizes) — the editor's pickable list is the only gap, so
-	// it is appended here as a fixed entry rather than added to the token registry itself.
-	//
-	// It is deliberately NOT registered as a DTCG token (it resolves to the CSS keyword `auto`, not a
-	// length — see declarations.php's comment on `$spacing_slugs`), so its `alias` is the bare slug the
-	// PHP/CSS layer already reads (`class-kadence-blocks-css.php`'s `$spacing_sizes['ss-auto']`), not the
-	// bracket-wrapped `{dot.path}` form a real token's alias takes. `fixed: true` tells
-	// `token-summary.js`'s `findTokenEntry()` to match this entry on that bare alias — the only sentinel
-	// in the pool allowed to bypass the bracket check, so a hand-typed Custom literal can never be
-	// misread as a token pick.
-	const marginPickableTokens = [
-		...pickableTokensForKey('kadence/singlebtn', 'button-margin'),
-		{ id: 'ss-auto', label: __('Auto', 'kadence-blocks'), value: 'auto', alias: 'ss-auto', fixed: true },
-	];
+	const marginPickableTokens = pickableTokensForKey('kadence/singlebtn', 'button-margin');
 
 	// The border-radius/padding linked/individual mode is derived from the stored slots (all equal reads
 	// as linked), so no new attribute is needed and old buttons open in the right mode. The hook's own
