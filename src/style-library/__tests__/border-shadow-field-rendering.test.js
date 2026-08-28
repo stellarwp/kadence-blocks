@@ -88,6 +88,16 @@ describe('BorderField', () => {
 		expect(latestBorderControlProps.widthTokens[1].alias).toBe('{primitive.dimension.border-width.sm}');
 	});
 
+	it('forwards the field\'s defaultValue to BorderControl, so a reset width shows muted "Default" instead of blank', () => {
+		const field = { label: 'Border', path: 'tokens.button-border', defaultValue: '1px' };
+
+		act(() => {
+			root.render(createElement(BorderField, { field, values: {}, onValueChange: jest.fn() }));
+		});
+
+		expect(latestBorderControlProps.defaultValue).toBe('1px');
+	});
+
 	it('shows a semantic-bound width as unset rather than listing the semantic', () => {
 		const field = { label: 'Border', path: 'tokens.button-border' };
 

@@ -142,10 +142,11 @@ function schemaFor(tab) {
 				// living at this path.
 				path: 'tokens.button-border',
 				label: __('Border', 'kadence-blocks'),
-				// No `defaultValue` here, unlike the radius field above: `BorderField`'s adapter doesn't
-				// read one, because `BorderControl` accepts no `defaultValue`/inherited-value prop the way
-				// `BoxControl` does. Setting one would be a dead key. Add it once `BorderControl` grows that
-				// support, not before.
+				// `BorderControl` only takes one `defaultValue` for its width axis (color/style have no
+				// equivalent fallback prop) — `semantic.border-width.default`'s shipped resolution, the
+				// value `var(--kb-btn-border-width)` computes to today. Shown muted when the field is
+				// unset, the same way Radius/Padding/Margin's `defaultValue` above are.
+				defaultValue: '1px',
 			},
 			{
 				type: 'box-shadow',

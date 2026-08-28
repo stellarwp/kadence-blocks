@@ -216,6 +216,9 @@ export function widthTokensForField(atBreakpoint) {
  * @param {?string}  [props.field.label]      The control's label.
  * @param {boolean}  [props.field.readOnly]   Whether the control is non-interactive.
  * @param {boolean}  [props.field.responsive] Whether the field offers a breakpoint switcher.
+ * @param {*}        [props.field.defaultValue] What the width axis falls back to when unset —
+ *                                             shown as a muted "Default" — passed straight through
+ *                                             to `BorderControl`.
  * @param {Object}   props.values             The full draft values, read by dot path.
  * @param {Function} props.onValueChange      Called with `(path, next)` for any of the three axes.
  *
@@ -308,6 +311,7 @@ export function BorderField({ field, values, onValueChange }) {
 			}}
 			label={field.label}
 			widthTokens={widthTokens}
+			defaultValue={field.defaultValue}
 			renderColor={({ value: color, onChange: onColorChange, label: sideLabel }) => (
 				<TokenColorSelectField
 					// `sideLabel` is the row's bare side name ("top", "right", …), or `null` while linked.
