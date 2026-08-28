@@ -147,12 +147,6 @@ describe('HEADING_PRESET', () => {
 	});
 
 	/**
-	 * With no font size to measure against, padding and border width pass through at true size rather
-	 * than being dropped or guessed at.
-	 *
-	 * @return {void}
-	 */
-	/**
 	 * A fluid font-size step resolves to a whole `clamp()`, which sizes against the VIEWPORT -- drawing it
 	 * would size the chip by how wide the browser happens to be. The step's authored scalar is drawn
 	 * instead, the same value the SIZE field states.
@@ -169,6 +163,12 @@ describe('HEADING_PRESET', () => {
 		expect(chip.props.style.fontSize).toBe('6rem');
 	});
 
+	/**
+	 * With no font size to measure against, padding and border width pass through at true size rather
+	 * than being dropped or guessed at.
+	 *
+	 * @return {void}
+	 */
 	it('leaves the chip unsized when the preset sets no font size', () => {
 		const chip = HEADING_PRESET.renderPreview({
 			id: 'plain',

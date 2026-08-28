@@ -186,11 +186,8 @@ function preview(tokens, values, breakpoint) {
  *
  * The one substitution is the font size itself: a fluid step resolves to a `clamp()`, which sizes
  * against the VIEWPORT, so the chip would be sized by how wide the browser happens to be. The step's
- * authored scalar is drawn instead -- the same value the SIZE field states. The size is deliberately
- * NOT applied at true size — the scale reaches 4rem and a row cannot grow that far without dwarfing its
- * neighbors — so the chip states the family, weight, transform, color and frame faithfully and leaves
- * size to the sidebar. The Advanced Image tile can afford to grow because its padding is the only
- * property that drives its geometry; a heading's font size drives everything at once.
+ * authored scalar is drawn instead -- the same value the SIZE field states, and a fixed length the row
+ * can actually be measured against.
  *
  * @param {{id: string, label: string, preview: Record<string, string>}} row The row descriptor.
  *
