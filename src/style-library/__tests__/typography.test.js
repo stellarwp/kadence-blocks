@@ -9,6 +9,7 @@ import {
 	fontCatalogOptions,
 	fontWeightsFor,
 	getFontCatalog,
+	shipsFontWeight,
 } from '../helpers/typography';
 
 describe('fontOptions', () => {
@@ -212,6 +213,42 @@ describe('fontWeightsFor', () => {
 		expect(fontWeightsFor('Some Custom Face')).toBeNull();
 		expect(fontWeightsFor('')).toBeNull();
 		expect(fontWeightsFor(undefined)).toBeNull();
+	});
+});
+
+describe('shipsFontWeight', () => {
+	const originalCatalog = window.kadenceDesignTokensFontCatalog;
+
+	beforeEach(() => {
+		window.kadenceDesignTokensFontCatalog = { weights: { 'Abril Fatface': ['400'], Inter: ['300', '400'] } };
+	});
+
+	afterEach(() => {
+		window.kadenceDesignTokensFontCatalog = originalCatalog;
+	});
+
+	it('answers for the weights a known family does and does not ship', () => {
+		expect(shipsFontWeight('Inter', '300')).toBe(true);
+		expect(shipsFontWeight('Abril Fatface', '300')).toBe(false);
+		expect(shipsFontWeight('Abril Fatface', '400')).toBe(true);
+	});
+
+	it("compares a numeric weight against the catalog's strings", () => {
+		expect(shipsFontWeight('Inter', 300)).toBe(true);
+		expect(shipsFontWeight('Abril Fatface', 300)).toBe(false);
+	});
+
+	/**
+	 * A family the catalog cannot narrow keeps every weight, and the empty value is the Default option
+	 * rather than a weight, so neither is ever cleared.
+	 *
+	 * @return {void}
+	 */
+	it('keeps every weight for an unknown family, and always keeps the empty one', () => {
+		expect(shipsFontWeight('Some Custom Face', '300')).toBe(true);
+		expect(shipsFontWeight('', '300')).toBe(true);
+		expect(shipsFontWeight('Abril Fatface', '')).toBe(true);
+		expect(shipsFontWeight('Abril Fatface', undefined)).toBe(true);
 	});
 });
 

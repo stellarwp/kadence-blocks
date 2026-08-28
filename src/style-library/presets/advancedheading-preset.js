@@ -277,6 +277,9 @@ function schemaFor(tab, values, feed) {
 						// What a heading with no family of its own renders in. Named on the muted trigger so
 						// an unset field reports the face actually in use rather than reading as empty.
 						inherited: __('Theme Font', 'kadence-blocks'),
+						// Pairs the Weight field below with this one, so a family switch clears a weight
+						// the new family has no face for instead of leaving it to be synthesized.
+						weightPath: 'tokens.fontWeight',
 					},
 					{
 						type: 'token-scalar',

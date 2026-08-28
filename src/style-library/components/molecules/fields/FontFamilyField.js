@@ -23,7 +23,8 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { FontFamilySelector, googleFontHref, loadFontFamily } from '../../../../token-controls';
-import { fontCatalogOptions, fontOptions, getFontCatalog } from '../../../helpers/typography';
+import { fontCatalogOptions, fontOptions, getFontCatalog, shipsFontWeight } from '../../../helpers/typography';
+import { getValueAtPath } from '../../../helpers/settings-schema';
 import { getDesignTokensFeed } from '../../../helpers/tokens';
 import { useGoogleFontLoader } from '../../../hooks/use-google-font-loader';
 import { FieldLabel } from './FieldLabel';
@@ -57,6 +58,13 @@ function loadPickedFamily(family) {
  * `onPick` for exactly this. `loadFontFamily` bounds its own wait, so a font that never arrives still
  * writes rather than leaving the field stuck.
  *
+ * A pick also clears a sibling weight the new family has no face for. Narrowing the Weight field's
+ * option list is only half the job — the list is rebuilt from the family, but the stored value is
+ * not, so a weight picked under the old family would survive the switch and render as a
+ * browser-synthesized approximation, which is the exact outcome the narrowing exists to prevent.
+ * Reaching a sibling stored key means reading `values` and writing through `onValueChange`, the two
+ * props `SettingsForm` hands every field for this case — see `BorderField` for the same posture.
+ *
  * @param {Object}   props                   The component props.
  * @param {Object}   props.field                The field definition.
  * @param {?string}  [props.field.label]        The control's label.
@@ -66,15 +74,19 @@ function loadPickedFamily(family) {
  *                                              back to the page-load global when absent.
  * @param {?Array}   [props.field.catalogOptions] The full option list, on the same terms.
  * @param {?string}  [props.field.inherited] What an unset family falls back to, named on the muted trigger.
+ * @param {?string}  [props.field.weightPath] The sibling weight's dot path, when the schema pairs one
+ *                                            with this family. Omitted by a screen with no weight field.
  * @param {boolean}  [props.field.readOnly]  Whether the control is non-interactive.
  * @param {string}   props.value             The stored family, or `''` when unset.
  * @param {Function} props.onChange          Called with the chosen family; never called when read-only.
+ * @param {Object}   [props.values]          The full draft, for reading the sibling weight.
+ * @param {Function} [props.onValueChange]   The raw path-taking writer, for clearing that weight.
  *
  * @since TBD
  *
  * @return {JSX.Element} The field.
  */
-export function FontFamilyField({ field, value, onChange }) {
+export function FontFamilyField({ field, value, onChange, values = {}, onValueChange = () => {} }) {
 	// Loads whatever is currently stored, so the row preview and the trigger render in the real face
 	// rather than a fallback. A family already present in the document (a system or custom face) is a
 	// no-op for the hook.
@@ -98,6 +110,13 @@ export function FontFamilyField({ field, value, onChange }) {
 					await loadPickedFamily(family);
 
 					onChange(family);
+
+					// Back to Default rather than to the nearest shipped weight: no other weight is
+					// a better guess than the family's own, and silently retyping the text to a
+					// weight the user never chose is the more surprising of the two answers.
+					if (field.weightPath && !shipsFontWeight(family, getValueAtPath(values, field.weightPath))) {
+						onValueChange(field.weightPath, '');
+					}
 				}}
 				onClear={() => !field.readOnly && onChange('')}
 				disabled={field.readOnly}

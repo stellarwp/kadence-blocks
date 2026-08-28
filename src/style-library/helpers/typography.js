@@ -247,6 +247,31 @@ export function fontWeightsFor(family) {
 }
 
 /**
+ * Whether a family still offers a weight, which is what decides if an already-stored weight survives
+ * a change of family.
+ *
+ * A family the catalog does not know narrows nothing -- the theme's own font and a site-registered
+ * custom face both keep the full 100-900 range -- so every weight stands. So does the empty value,
+ * which is the Default option rather than a weight.
+ *
+ * @param {string} family The family to check against.
+ * @param {*}      weight The stored weight.
+ *
+ * @since TBD
+ *
+ * @return {boolean} True when `family` can still render `weight`.
+ */
+export function shipsFontWeight(family, weight) {
+	const weights = fontWeightsFor(family);
+
+	if (weights === null || weight === '' || weight === null || weight === undefined) {
+		return true;
+	}
+
+	return weights.some((shipped) => String(shipped) === String(weight));
+}
+
+/**
  * Find the favorite (a `fontOptions()` entry) whose family matches a catalog family name,
  * case-insensitively and ignoring wrapping quotes on either side.
  *

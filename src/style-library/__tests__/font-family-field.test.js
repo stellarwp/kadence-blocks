@@ -70,21 +70,25 @@ describe('FontFamilyField', () => {
 	/**
 	 * Render the field with a given stored value.
 	 *
-	 * @param {string}   value    The stored family.
-	 * @param {Function} onChange The write callback.
-	 * @param {Object}   [field]  Extra field-definition keys.
+	 * @param {string}   value           The stored family.
+	 * @param {Function} onChange        The write callback.
+	 * @param {Object}   [field]         Extra field-definition keys.
+	 * @param {Object}   [values]        The surrounding draft, for the sibling-weight rule.
+	 * @param {Function} [onValueChange] The raw path-taking writer.
 	 *
 	 * @since TBD
 	 *
 	 * @return {void}
 	 */
-	function renderField(value, onChange, field = {}) {
+	function renderField(value, onChange, field = {}, values = {}, onValueChange = jest.fn()) {
 		act(() => {
 			root.render(
 				createElement(FontFamilyField, {
 					field: { label: 'Font Family', ...field },
 					value,
 					onChange,
+					values,
+					onValueChange,
 				})
 			);
 		});
@@ -194,5 +198,82 @@ describe('FontFamilyField', () => {
 		expect(loadFontFamily).not.toHaveBeenCalled();
 		expect(onChange).not.toHaveBeenCalled();
 		expect(latestSelectorProps.disabled).toBe(true);
+	});
+
+	/**
+	 * Narrowing the Weight list does not touch what is already stored, so a weight the new family has
+	 * no face for is cleared back to Default rather than left to be synthesized by the browser.
+	 *
+	 * @return {void}
+	 */
+	it('clears a stored weight the newly picked family does not ship', async () => {
+		window.kadenceDesignTokensFontCatalog.weights = { Abel: ['400'], Inter: ['300', '400'] };
+
+		const onValueChange = jest.fn();
+
+		renderField(
+			'Inter',
+			jest.fn(),
+			{ weightPath: 'tokens.fontWeight' },
+			{ tokens: { fontWeight: '300' } },
+			onValueChange
+		);
+
+		await act(async () => {
+			await latestSelectorProps.onPick('Abel');
+		});
+
+		expect(onValueChange).toHaveBeenCalledWith('tokens.fontWeight', '');
+	});
+
+	/**
+	 * A weight the new family does ship is the user's own choice and survives the switch untouched.
+	 *
+	 * @return {void}
+	 */
+	it('keeps a stored weight the newly picked family does ship', async () => {
+		window.kadenceDesignTokensFontCatalog.weights = { Abel: ['400'], Inter: ['300', '400'] };
+
+		const onValueChange = jest.fn();
+
+		renderField(
+			'Inter',
+			jest.fn(),
+			{ weightPath: 'tokens.fontWeight' },
+			{ tokens: { fontWeight: '400' } },
+			onValueChange
+		);
+
+		await act(async () => {
+			await latestSelectorProps.onPick('Abel');
+		});
+
+		expect(onValueChange).not.toHaveBeenCalled();
+	});
+
+	/**
+	 * A family the catalog knows nothing about narrows nothing, so a custom face leaves every stored
+	 * weight standing rather than clearing one it has no data to judge.
+	 *
+	 * @return {void}
+	 */
+	it('leaves the weight alone for a family the catalog carries no weights for', async () => {
+		window.kadenceDesignTokensFontCatalog.weights = { Abel: ['400'] };
+
+		const onValueChange = jest.fn();
+
+		renderField(
+			'Abel',
+			jest.fn(),
+			{ weightPath: 'tokens.fontWeight' },
+			{ tokens: { fontWeight: '300' } },
+			onValueChange
+		);
+
+		await act(async () => {
+			await latestSelectorProps.onPick('My Font');
+		});
+
+		expect(onValueChange).not.toHaveBeenCalled();
 	});
 });
