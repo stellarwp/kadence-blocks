@@ -1573,7 +1573,7 @@ function KadenceAdvancedHeading(props) {
 							label={__('Color', 'kadence-blocks')}
 							value={color ? color : ''}
 							default={''}
-							onChange={(value) => setAttributes({ color: value })}
+							onChange={(value) => setAttributes({ color: value, colorClass: '' })}
 							onClassChange={(value) => setAttributes({ colorClass: value })}
 						/>
 					)}
@@ -1736,14 +1736,18 @@ function KadenceAdvancedHeading(props) {
 													label={__('Color', 'kadence-blocks')}
 													value={color ? color : ''}
 													default={''}
-													onChange={(value) => setAttributes({ color: value })}
+													onChange={(value) =>
+														setAttributes({ color: value, colorClass: '' })
+													}
 													onClassChange={(value) => setAttributes({ colorClass: value })}
 												/>
 												<PopColorControl
 													label={__('Background Color', 'kadence-blocks')}
 													value={background ? background : ''}
 													default={''}
-													onChange={(value) => setAttributes({ background: value })}
+													onChange={(value) =>
+														setAttributes({ background: value, backgroundColorClass: '' })
+													}
 													onClassChange={(value) =>
 														setAttributes({ backgroundColorClass: value })
 													}

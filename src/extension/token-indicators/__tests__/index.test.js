@@ -718,12 +718,57 @@ describe('resetAttrPatch', () => {
 	});
 
 	/**
-	 * A non-dimension kind clears only its single attribute.
+	 * A non-dimension kind clears only its single attribute when the block declares no companion.
 	 *
 	 * @return {void}
 	 */
 	it('clears only the primary attribute for a non-dimension kind', () => {
 		expect(resetAttrPatch('background', 'color')).toEqual({ background: '' });
+	});
+
+	/**
+	 * A color also clears its palette-CLASS companion, in whichever spelling the block declares.
+	 *
+	 * WordPress emits its palette utility classes with `!important` -- over a hundred of them -- so a
+	 * stale `has-<slug>-color` beats every rule a preset can produce, at any specificity. Clearing the
+	 * color attribute alone leaves the class on the element still winning, and the preset reads as
+	 * broken rather than overridden.
+	 *
+	 * @return {void}
+	 */
+	it('clears a color attribute palette-class companion', () => {
+		// `color` -> `colorClass`, the Advanced Text spelling.
+		expect(resetAttrPatch('color', 'color', { color: {}, colorClass: {} })).toEqual({
+			color: '',
+			colorClass: '',
+		});
+
+		// `background` -> `backgroundColorClass`, the same block's other spelling.
+		expect(resetAttrPatch('background', 'color', { background: {}, backgroundColorClass: {} })).toEqual({
+			background: '',
+			backgroundColorClass: '',
+		});
+
+		// `bgColor` -> `bgColorClass`, the Row Layout spelling.
+		expect(resetAttrPatch('bgColor', 'color', { bgColor: {}, bgColorClass: {} })).toEqual({
+			bgColor: '',
+			bgColorClass: '',
+		});
+	});
+
+	/**
+	 * A block declaring no such companion gains no attribute it never declared, and a non-color kind is
+	 * never given one at all.
+	 *
+	 * @return {void}
+	 */
+	it('writes no palette-class companion the block does not declare', () => {
+		expect(resetAttrPatch('color', 'color', { color: {} })).toEqual({ color: '' });
+
+		// Not a color: a `textTransform` has no palette class even if something similarly named exists.
+		expect(resetAttrPatch('textTransform', 'text', { textTransform: {}, textTransformClass: {} })).toEqual({
+			textTransform: '',
+		});
 	});
 
 	/**

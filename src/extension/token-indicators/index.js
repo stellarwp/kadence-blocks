@@ -369,7 +369,7 @@ export function resetAttrPatch(attr, kind, declared) {
 	}
 
 	if (kind !== 'dimension') {
-		return { [attr]: '' };
+		return withPaletteClassCompanions({ [attr]: '' }, attr, kind, declared);
 	}
 
 	// A dimension is not always a measure control's 4-side array. `kadence/single-icon`'s `size` is a
@@ -391,6 +391,43 @@ export function resetAttrPatch(attr, kind, declared) {
 	if (!declared || declared[`${attr}Unit`]) {
 		patch[`${attr}Unit`] = 'px';
 	}
+
+	return patch;
+}
+
+/**
+ * Add a color attribute's palette-CLASS companion to a reset patch.
+ *
+ * A block that stores a WordPress palette color keeps the slug in a companion attribute
+ * (`color`/`colorClass`, `background`/`backgroundColorClass`, `bgColor`/`bgColorClass`), which renders
+ * as a `has-<slug>-color` class. WordPress emits those utility classes with `!important` — over a
+ * hundred of them — so a stale one beats every rule a preset can produce, at any specificity. Clearing
+ * the color attribute alone therefore does nothing visible: the class is still on the element and still
+ * wins, and the preset looks broken rather than overridden.
+ *
+ * Both spellings are checked against the block's own schema and only a declared one is written, so a
+ * block using neither is left alone rather than gaining an attribute it never declared.
+ *
+ * @param {Object}  patch      The patch so far.
+ * @param {string}  attr       The primary attribute name.
+ * @param {string}  kind       The property kind; only a color carries a palette class.
+ * @param {?Object} [declared] The block's declared attributes, read for which companion exists.
+ *
+ * @since TBD
+ *
+ * @return {Object} The patch, with any declared palette-class companion cleared.
+ */
+function withPaletteClassCompanions(patch, attr, kind, declared) {
+	if (kind !== 'color' || !declared) {
+		return patch;
+	}
+
+	// `color` -> `colorClass`; `background` -> `backgroundColorClass`; `bgColor` -> `bgColorClass`.
+	[`${attr}Class`, `${attr}ColorClass`].forEach((companion) => {
+		if (declared[companion]) {
+			patch[companion] = '';
+		}
+	});
 
 	return patch;
 }
