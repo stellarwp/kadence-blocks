@@ -126,6 +126,7 @@ describe('HEADING_PRESET', () => {
 				borderWidth: '1px',
 				borderStyle: 'solid',
 				borderRadius: '0.5rem',
+				padding: '3rem',
 			},
 		});
 
@@ -139,6 +140,8 @@ describe('HEADING_PRESET', () => {
 			borderWidth: '1px',
 			borderStyle: 'solid',
 			borderRadius: '0.5rem',
+			// Applied at true size: a heading's padding is bounded by the scale the field offers.
+			padding: '3rem',
 		});
 		expect(chip.props.style.fontSize).toBeUndefined();
 	});

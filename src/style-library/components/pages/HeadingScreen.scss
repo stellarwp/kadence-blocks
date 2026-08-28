@@ -26,6 +26,8 @@
 	display: inline-flex;
 	align-items: center;
 	box-sizing: border-box;
+	// A floor, not a fixed inset: the preset's own padding is applied inline and overrides this, while a
+	// preset that sets none still reads as a chip rather than as bare text.
 	padding: var(--kb-sl-space-10) var(--kb-sl-space-20);
 	border-width: 0;
 	border-style: none;
@@ -36,5 +38,6 @@
 		background-color 300ms ease,
 		border-color 300ms ease,
 		border-radius 300ms ease,
+		padding 300ms ease,
 		color 300ms ease;
 }

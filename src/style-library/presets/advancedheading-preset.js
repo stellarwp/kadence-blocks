@@ -175,7 +175,9 @@ function preview(tokens, values, breakpoint) {
  * its own frame.
  *
  * Real text rather than a swatch, because every property this screen edits except the box ones is a
- * type property, and a color chip cannot show a family, a weight or a transform. The size is deliberately
+ * type property, and a color chip cannot show a family, a weight or a transform. Padding is applied at
+ * true size: a heading's padding is bounded by the scale the field offers, unlike the image tile's,
+ * which had to be capped. The size is deliberately
  * NOT applied at true size — the scale reaches 4rem and a row cannot grow that far without dwarfing its
  * neighbors — so the chip states the family, weight, transform, color and frame faithfully and leaves
  * size to the sidebar. The Advanced Image tile can afford to grow because its padding is the only
@@ -203,6 +205,9 @@ function renderPreview(row) {
 				// frame appears at all. Left absent, the stylesheet's own `none` leaves the chip without a frame.
 				borderStyle: row.preview.borderStyle || undefined,
 				borderRadius: row.preview.borderRadius || undefined,
+				// The preset's own padding, not the stylesheet's. Without this the chip showed a fixed
+				// inset and a padding preset read as doing nothing at all.
+				padding: row.preview.padding || undefined,
 			}}
 		>
 			{__('Heading', 'kadence-blocks')}
