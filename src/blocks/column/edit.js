@@ -1060,7 +1060,7 @@ function SectionEdit(props) {
 		maxWidth && maxWidth[2] ? maxWidth[2] : ''
 	);
 
-	// Check for falsey to support how units worked before
+	// Check for falsy to support how units worked before
 	const previewMaxWidthUnit = getPreviewSize(
 		previewDevice,
 		maxWidthUnit ? maxWidthUnit : 'px',

@@ -1,3 +1,4 @@
+// cspell:ignore blackonlight outlineblack outlinewhite arrowstyle playsinline
 /**
  * BLOCK Section: Kadence Row / Layout Background
  */
