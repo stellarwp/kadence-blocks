@@ -223,7 +223,7 @@ $link-color-property: var(
 		}
 	}
 	// Handle Reveal Animation for horizontal navs, hover and triggered via arrow.
-	.menu-item:not(.kb-nav-link-sub-click):hover > .sub-menu,
+	.menu-item:not(.kb-nav-link-sub-click):not(.kb-nav-esc-close):hover > .sub-menu,
 	.menu-item.menu-item--toggled-on > .sub-menu {
 		@include show-sub-menu();
 	}
