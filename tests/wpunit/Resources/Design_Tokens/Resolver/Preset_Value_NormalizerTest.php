@@ -2,6 +2,8 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Resolver;
 
+use Generator;
+use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Value_Normalizer;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Alias;
@@ -27,6 +29,11 @@ final class Preset_Value_NormalizerTest extends TestCase {
 	private Token_Resolver $resolver;
 
 	/**
+	 * @var Token_Registry
+	 */
+	private Token_Registry $registry;
+
+	/**
 	 * @return void
 	 */
 	protected function setUp(): void {
@@ -34,6 +41,7 @@ final class Preset_Value_NormalizerTest extends TestCase {
 
 		$this->normalizer = $this->container->get( Preset_Value_Normalizer::class );
 		$this->resolver   = $this->container->get( Token_Resolver::class );
+		$this->registry   = $this->container->get( Token_Registry::class );
 	}
 
 	/**
@@ -173,6 +181,128 @@ final class Preset_Value_NormalizerTest extends TestCase {
 			'hover',
 			Alias::path_of( $result['button-text-hover'] ),
 			'The hover property should prefer a hover-role semantic.'
+		);
+	}
+
+	/**
+	 * A property whose binding declares a semantic aliases to that one, even when several unrelated
+	 * semantics resolve to the same literal and would otherwise win on document order.
+	 *
+	 * @dataProvider declaredSemanticProvider
+	 *
+	 * @param string $block    The block whose bindings declare the property.
+	 * @param string $property The preset property being written.
+	 * @param string $value    The captured literal.
+	 * @param string $expected The semantic id the binding declares.
+	 *
+	 * @return void
+	 */
+	public function testItPrefersTheSemanticTheBindingDeclares( string $block, string $property, string $value, string $expected ): void {
+		$result = $this->normalizer->normalize( [ $property => $value ], self::SET, $this->registry->for_block( $block ) );
+
+		$this->assertSame( $expected, Alias::path_of( $result[ $property ] ) );
+		$this->assertSame(
+			$value,
+			$this->resolver->resolve( self::SET )->value( $expected ),
+			'The declared semantic must resolve back to the captured value.'
+		);
+	}
+
+	/**
+	 * The bindings that collide with an unrelated semantic on a shared literal.
+	 *
+	 * @return Generator
+	 */
+	public function declaredSemanticProvider(): Generator {
+		yield 'heading radius' => [
+			'block'    => 'kadence/advancedheading',
+			'property' => 'borderRadius',
+			'value'    => '0',
+			'expected' => 'semantic.radius.heading',
+		];
+
+		yield 'heading padding' => [
+			'block'    => 'kadence/advancedheading',
+			'property' => 'padding',
+			'value'    => '0',
+			'expected' => 'semantic.spacing.heading-padding',
+		];
+
+		yield 'heading letter spacing' => [
+			'block'    => 'kadence/advancedheading',
+			'property' => 'letterSpacing',
+			'value'    => '0',
+			'expected' => 'semantic.letter-spacing.heading',
+		];
+
+		yield 'heading text transform' => [
+			'block'    => 'kadence/advancedheading',
+			'property' => 'textTransform',
+			'value'    => 'none',
+			'expected' => 'semantic.text-transform.heading',
+		];
+
+		yield 'column background' => [
+			'block'    => 'kadence/column',
+			'property' => 'background',
+			'value'    => 'transparent',
+			'expected' => 'semantic.color.column-bg',
+		];
+
+		yield 'image radius' => [
+			'block'    => 'kadence/image',
+			'property' => 'borderRadius',
+			'value'    => '0',
+			'expected' => 'semantic.radius.media',
+		];
+	}
+
+	/**
+	 * A per-corner value takes the declared semantic in every slot, so an unlinked radius is aliased the
+	 * same way a linked one is rather than falling back to document order corner by corner.
+	 *
+	 * @return void
+	 */
+	public function testItPrefersTheDeclaredSemanticForEachSlotOfAPerCornerValue(): void {
+		$bindings = $this->registry->for_block( 'kadence/advancedheading' );
+		$result   = $this->normalizer->normalize( [ 'borderRadius' => [ '0', '0', '0', '0' ] ], self::SET, $bindings );
+
+		foreach ( $result['borderRadius'] as $slot ) {
+			$this->assertSame( 'semantic.radius.heading', Alias::path_of( $slot ) );
+		}
+	}
+
+	/**
+	 * A property whose binding declares no token still aliases by role scoring, so the seven Button
+	 * bindings that name only a slot or a CSS variable keep the behavior they have always had.
+	 *
+	 * @return void
+	 */
+	public function testItFallsBackToRoleScoringForAPropertyWithNoDeclaredToken(): void {
+		$bindings = $this->registry->for_block( 'kadence/singlebtn' );
+		$result   = $this->normalizer->normalize( [ 'button-bg' => '#3633e1' ], self::SET, $bindings );
+
+		$this->assertTrue( Alias::is_alias( $result['button-bg'] ) );
+		$this->assertSame(
+			'#3633e1',
+			$this->resolver->resolve( self::SET )->value( Alias::path_of( $result['button-bg'] ) )
+		);
+	}
+
+	/**
+	 * Role scoring splits a camelCase property into words, so a property named the way a preset names one
+	 * can score against a kebab-case token id at all. Called with no bindings, which is the only way to
+	 * exercise scoring for a property whose binding would otherwise short-circuit it.
+	 *
+	 * @return void
+	 */
+	public function testItSplitsACamelCasePropertyIntoRoleParts(): void {
+		$result = $this->normalizer->normalize( [ 'fontSize' => '2rem' ], self::SET );
+
+		$this->assertStringContainsString(
+			'font-size',
+			Alias::path_of( $result['fontSize'] ),
+			'A camelCase property should score against the matching kebab-case role.'
 		);
 	}
 }

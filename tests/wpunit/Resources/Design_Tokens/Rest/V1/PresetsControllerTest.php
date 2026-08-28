@@ -24,6 +24,8 @@ final class PresetsControllerTest extends TestCase {
 
 	private const BUTTON = 'kadence/singlebtn';
 
+	private const HEADING = 'kadence/advancedheading';
+
 	/**
 	 * @var Token_Store
 	 */
@@ -1082,6 +1084,64 @@ final class PresetsControllerTest extends TestCase {
 
 		$this->assertTrue( Alias::is_alias( $tokens['button-bg'] ) );
 		$this->assertSame( 'rgba(1,2,3,0.42)', $tokens['button-text'] );
+	}
+
+	/**
+	 * A captured literal aliases to the semantic the property's own binding declares, not merely to some
+	 * semantic that happens to resolve to the same literal. Four shipped semantics resolve to "0", so a
+	 * heading radius written as 0 would otherwise be stored as an unrelated spacing token.
+	 *
+	 * @return void
+	 */
+	public function testCreateAliasesToTheSemanticTheBindingDeclares(): void {
+		$response = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::HEADING,
+				[
+					'preset' => 'accent',
+					'tokens' => [ 'borderRadius' => '0' ],
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+
+		$this->assertSame(
+			'semantic.radius.heading',
+			Alias::path_of( $response->get_data()['presets']['accent']['tokens']['borderRadius'] )
+		);
+	}
+
+	/**
+	 * The write response carries the same normalized token map a later read returns. The Style Library
+	 * seeds its draft from this payload after a save, so a divergence here would leave the panel
+	 * permanently dirty.
+	 *
+	 * @return void
+	 */
+	public function testCreateResponseCarriesTheNormalizedTokens(): void {
+		$written = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::HEADING,
+				[
+					'preset' => 'accent',
+					'tokens' => [ 'borderRadius' => '0' ],
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_REST_Response::class, $written );
+
+		$read = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, self::HEADING ) );
+
+		$this->assertInstanceOf( WP_REST_Response::class, $read );
+		$this->assertSame(
+			$written->get_data()['presets']['accent']['tokens'],
+			$read->get_data()['presets']['accent']['tokens'],
+			'A write response must match what a later read returns.'
+		);
 	}
 
 	/**

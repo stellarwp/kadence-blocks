@@ -553,7 +553,7 @@ final class Presets_Controller extends Controller {
 			return $error;
 		}
 
-		$block_node = $this->normalize_block_node( $block_node, $slug );
+		$block_node = $this->normalize_block_node( $block_node, $block, $slug );
 		$stored     = $this->stored_document( $slug );
 
 		// The token map replaces wholesale rather than merging property by property: the client
@@ -637,7 +637,7 @@ final class Presets_Controller extends Controller {
 			return $error;
 		}
 
-		$block_node = $this->normalize_block_node( $block_node, $slug );
+		$block_node = $this->normalize_block_node( $block_node, $block, $slug );
 
 		// Replace, not merge: drop the stored block node first so a preset the body omits does not survive.
 		$stored    = $this->unset_block( $this->stored_document( $slug ), $block );
@@ -1554,15 +1554,21 @@ final class Presets_Controller extends Controller {
 	 * library, so a value captured off a block instance re-joins the theming cascade rather than freezing
 	 * as a literal.
 	 *
+	 * The block's bindings are handed over so a property can prefer the semantic it already declares over
+	 * any other that happens to resolve to the same literal. Several unrelated semantics collide whenever
+	 * they resolve alike, and without the declaration the tie-break has only the property's name to go on.
+	 *
 	 * @since TBD
 	 *
 	 * @param array<string, mixed> $block_node The block's preset node from the request.
+	 * @param string               $block      The block name, for reading its declared bindings.
 	 * @param string               $slug       The token library the values are matched against.
 	 *
 	 * @return array<string, mixed> The preset node with literals aliased where a semantic matches.
 	 */
-	private function normalize_block_node( array $block_node, string $slug ): array {
+	private function normalize_block_node( array $block_node, string $block, string $slug ): array {
 		$tokens_key = Extensions::get_tokens_key();
+		$bindings   = $this->registry->for_block( $block );
 
 		foreach ( $block_node as $preset_slug => $preset ) {
 			// $default and any other "$"-prefixed metadata key carries no token map to normalize.
@@ -1574,7 +1580,7 @@ final class Presets_Controller extends Controller {
 				continue;
 			}
 
-			$preset[ $tokens_key ]      = $this->normalizer->normalize( $preset[ $tokens_key ], $slug );
+			$preset[ $tokens_key ]      = $this->normalizer->normalize( $preset[ $tokens_key ], $slug, $bindings );
 			$block_node[ $preset_slug ] = $preset;
 		}
 
