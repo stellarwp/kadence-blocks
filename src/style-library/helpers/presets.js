@@ -359,10 +359,19 @@ function isUnsetPresetValue(value) {
 		return value.every((slot) => slot === '' || slot === null || slot === undefined);
 	}
 
-	// A composite whose every sub-field is empty carries nothing to write either, and sending it would
-	// be rejected the same way an empty literal is.
-	if (typeof value === 'object' && value !== null) {
-		return Object.values(value).every((sub) => sub === '' || sub === null || sub === undefined);
+	// A composite whose every REQUIRED sub-field is empty carries nothing to write, and sending it would
+	// be rejected the same way an empty literal is. `inset` is judged on its own: it is optional, and
+	// only `true` says anything — a cleared shadow keeps `inset: false`, which draws no inset shadow and
+	// must not be what makes the composite look worth saving.
+	//
+	// Gated on the shape rather than on "is an object", because a responsive envelope is an object too
+	// and carries none of these fields — testing it here would read every envelope as empty and drop it.
+	if (isCompositeShadow(value)) {
+		const emptyFields = SHADOW_FIELDS.every(
+			(field) => value[field] === '' || value[field] === null || value[field] === undefined
+		);
+
+		return emptyFields && value.inset !== true;
 	}
 
 	return false;

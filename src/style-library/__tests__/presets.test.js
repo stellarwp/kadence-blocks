@@ -369,6 +369,27 @@ describe('presetSaveTokens', () => {
 		expect(presetSaveTokens({ 'button-radius': ['', '', '', ''] })).toEqual({});
 	});
 
+	/**
+	 * The shadow control keeps `inset: false` on a cleared value, and `false` draws no inset shadow. It
+	 * must not be what makes an otherwise-empty composite look worth saving — the server rejects an
+	 * empty composite the same way it rejects an empty literal.
+	 */
+	it('omits a composite shadow cleared down to inset:false', () => {
+		expect(
+			presetSaveTokens({
+				shadow: { color: '', offsetX: '', offsetY: '', blur: '', spread: '', inset: false },
+			})
+		).toEqual({});
+	});
+
+	it('keeps a composite shadow that still carries a sub-field', () => {
+		const result = presetSaveTokens({
+			shadow: { color: '#17171f', offsetX: '0px', offsetY: '2px', blur: '8px', spread: '0px' },
+		});
+
+		expect(result).toHaveProperty('shadow');
+	});
+
 	it('keeps a per-corner property when any slot carries a value', () => {
 		// Asserts only that the property survives the unset guard: how the slots themselves are
 		// wrapped is the aliasing helper's business, and it changes in a later slice.
