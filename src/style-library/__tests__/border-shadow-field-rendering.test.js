@@ -328,7 +328,9 @@ describe('BoxShadowField', () => {
 			root.render(
 				createElement(BoxShadowField, {
 					field: { label: 'Shadow' },
-					value: '{semantic.shadow.button}',
+					// A BARE id, which is what a draft holds: `presetInitialValues` runs every seeded
+					// value through `aliasToIdDeep`. The braced form is accepted too, but never arrives.
+					value: 'semantic.shadow.button',
 					onChange: jest.fn(),
 				})
 			);
@@ -364,19 +366,54 @@ describe('BoxShadowField', () => {
 		]);
 	});
 
-	it('passes a primitive-bound value straight through with no envelope/breakpoint handling', () => {
+	it('wraps a primitive-bound bare id into the alias the control matches its list against', () => {
 		act(() => {
 			root.render(
 				createElement(BoxShadowField, {
 					field: { label: 'Shadow' },
-					value: '{primitive.shadow.sm}',
+					value: 'primitive.shadow.sm',
 					onChange: jest.fn(),
 				})
 			);
 		});
 
+		// Without the wrap the control finds no entry for the bare id and labels the trigger `Custom`,
+		// which claims a shadow was composed by hand.
 		expect(latestBoxShadowControlProps.value).toBe('{primitive.shadow.sm}');
 		expect(latestBoxShadowControlProps.breakpoints).toBeUndefined();
+	});
+
+	it('writes a pick back as a bare id, so the panel can tell a saved preset is no longer dirty', () => {
+		const onChange = jest.fn();
+
+		act(() => {
+			root.render(createElement(BoxShadowField, { field: { label: 'Shadow' }, value: '', onChange }));
+		});
+
+		act(() => {
+			latestBoxShadowControlProps.onChange('{primitive.shadow.md}');
+		});
+
+		// Bare, matching every other field and the shape `presetInitialValues` seeds. Storing the braced
+		// form would leave the draft permanently unequal to its seeded value and Save enabled forever.
+		expect(onChange).toHaveBeenCalledWith('primitive.shadow.md');
+	});
+
+	it('passes a composite shadow object through untouched', () => {
+		const onChange = jest.fn();
+		const composite = { color: '#000', hOffset: 0, vOffset: 4, blur: 8, spread: 0 };
+
+		act(() => {
+			root.render(createElement(BoxShadowField, { field: { label: 'Shadow' }, value: composite, onChange }));
+		});
+
+		expect(latestBoxShadowControlProps.value).toBe(composite);
+
+		act(() => {
+			latestBoxShadowControlProps.onChange(composite);
+		});
+
+		expect(onChange).toHaveBeenCalledWith(composite);
 	});
 
 	it('never calls onChange when the field is read-only', () => {

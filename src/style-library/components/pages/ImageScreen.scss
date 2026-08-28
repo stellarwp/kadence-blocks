@@ -50,14 +50,13 @@
 	height: 100%;
 	border-radius: inherit;
 	background: var(--kb-sl-color-gray-700);
-	// Sized in `em` off a font-size floor rather than a fixed px, so the glyph shrinks with the photo
-	// when a large padding squeezes it instead of overflowing the tile.
-	font-size: min(1.5rem, 45%);
 	color: var(--kb-sl-color-gray-200);
 	overflow: hidden;
 
 	svg {
-		width: 1em;
-		height: 1em;
+		// Sized against the photo box rather than a font-size, so the glyph fills a useful share of the
+		// tile and shrinks with it when a large padding squeezes the photo, instead of overflowing.
+		width: 62%;
+		height: 62%;
 	}
 }

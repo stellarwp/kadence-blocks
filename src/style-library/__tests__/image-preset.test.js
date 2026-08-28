@@ -149,9 +149,44 @@ describe('IMAGE_PRESET', () => {
 
 		expect(fill.props.className).toBe('kadence-blocks-style-library__image-preset-preview-fill');
 		expect(fill.props.style.background).toBe('#F7FAFC');
-		expect(fill.props.style.padding).toBe('0.5rem');
+		expect(fill.props.style.padding).toBe('min(0.5rem, 22%)');
 
 		expect(photo.props.className).toBe('kadence-blocks-style-library__image-preset-preview-photo');
+	});
+
+	/**
+	 * Preview padding is capped per side. The tile is a few rem across and the spacing scale runs to
+	 * 10rem, so a real value applied at true size swallows the photo: `MD` alone (2rem a side) leaves
+	 * the tile's content box with negative height and the row shows only a colored rectangle.
+	 *
+	 * @return {void}
+	 */
+	it('caps each side of the preview padding so the photo never collapses', () => {
+		const frame = IMAGE_PRESET.renderPreview({
+			id: 'roomy',
+			label: 'Roomy',
+			preview: { background: '', borderRadius: '', shadow: '', padding: '2rem' },
+		});
+
+		expect(frame.props.children.props.style.padding).toBe('min(2rem, 22%)');
+	});
+
+	/**
+	 * A per-corner preset resolves to a shorthand, and CSS `min()` takes one length rather than a
+	 * shorthand, so each side is wrapped on its own.
+	 *
+	 * @return {void}
+	 */
+	it('caps every side of a per-corner padding shorthand independently', () => {
+		const frame = IMAGE_PRESET.renderPreview({
+			id: 'corners',
+			label: 'Corners',
+			preview: { background: '', borderRadius: '', shadow: '', padding: '1rem 2rem 1rem 2rem' },
+		});
+
+		expect(frame.props.children.props.style.padding).toBe(
+			'min(1rem, 22%) min(2rem, 22%) min(1rem, 22%) min(2rem, 22%)'
+		);
 	});
 
 	/**

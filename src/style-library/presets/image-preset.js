@@ -39,6 +39,48 @@ const IMAGE_RADIUS_FALLBACK = ['0', '0', '0', '0'];
 const IMAGE_PADDING_FALLBACK = ['0', '0', '0', '0'];
 
 /**
+ * The share of the tile's width any one side's preview padding may take.
+ *
+ * @since TBD
+ */
+const PADDING_PREVIEW_CAP = '22%';
+
+/**
+ * Cap each side of a resolved padding value so the preview stays legible at every step of the scale.
+ *
+ * The tile is a few rem across and the spacing scale runs to 10rem, so a real value applied at true
+ * size swallows the photo whole: `MD` alone (2rem a side) leaves the tile's content box with negative
+ * height, collapsing the photo to nothing and leaving a row that shows only a colored rectangle. The
+ * cap keeps every step visibly different from `None` while making sure something always reads as the
+ * image inside the frame.
+ *
+ * The preview is indicative rather than to scale — the sidebar names the actual value while a preset is
+ * being edited — and a capped inset communicates "there is padding here, and the background shows
+ * through it" far better than a blank tile does.
+ *
+ * Each side is wrapped separately because a per-corner preset stores four, and CSS `min()` takes a
+ * single length rather than a shorthand. A component carrying a function call is left alone: nothing
+ * the feed resolves looks like that, and wrapping one blindly would produce invalid CSS.
+ *
+ * @param {string} padding The resolved padding: one length, or a space-separated shorthand.
+ *
+ * @since TBD
+ *
+ * @return {?string} The capped padding, or undefined when there is nothing to apply.
+ */
+function cappedPadding(padding) {
+	if (!padding) {
+		return undefined;
+	}
+
+	return String(padding)
+		.trim()
+		.split(/\s+/)
+		.map((side) => (side.includes('(') ? side : `min(${side}, ${PADDING_PREVIEW_CAP})`))
+		.join(' ');
+}
+
+/**
  * Build a row's preview from its stored tokens.
  *
  * Four of the image's six bound properties, which is its whole editable surface here — border color
@@ -69,11 +111,13 @@ function preview(tokens, values, breakpoint) {
  * neutral photo block.
  *
  * Three nested elements, each earning its place. The outer carries the radius and the shadow, which
- * has to be cast from outside anything that clips. The middle carries the background AND the padding,
- * so padding renders as what it actually is — space between the frame and the image — rather than as a
- * number in a corner. The inner is the stand-in photo: a neutral block, not a real image, because a
- * preset skins whatever image a block happens to hold and previewing a specific picture would imply it
- * selects one.
+ * has to be cast from outside anything that clips. The middle carries the background AND the padding
+ * (capped — see `cappedPadding`), so padding renders as what it actually is: space between the frame
+ * and the image. The inner is the stand-in photo, a neutral block carrying a generic picture glyph
+ * rather than a real image, because a preset skins whatever image a block happens to hold and
+ * previewing a specific picture would imply it selects one. The glyph is what makes the padding
+ * legible — without something that reads as "the image", an inset frame is just a smaller rectangle,
+ * and it is not obvious that the band around it is the preset's background showing through.
  *
  * The transparency checker sits on the outer element for the same reason it does on the Row Layout and
  * Section previews: the image's shipped background is transparent, and against the list's white
@@ -98,7 +142,7 @@ function renderPreview(row) {
 				style={{
 					background: row.preview.background || undefined,
 					borderRadius: radius,
-					padding: row.preview.padding || undefined,
+					padding: cappedPadding(row.preview.padding),
 				}}
 			>
 				<span className="kadence-blocks-style-library__image-preset-preview-photo">

@@ -34,39 +34,84 @@ import { isTokenAlias } from '../../../../token-controls/helpers/token-summary';
 import { TokenColorSelectField } from './TokenColorSelectField';
 
 /**
- * The bound token id, unwrapped from its brace-wrapped alias, or unset when `value` holds a
- * composite shadow object instead. `boundTokenIds` (shared with `BorderField`) expects the bare
- * `primitive.`/`semantic.`-prefixed id a preset's own `tokens` map stores; this field's `value`
- * carries the brace-wrapped alias `BoxShadowControl` matches against instead (see this file's own
- * docblock — no envelope, no per-slot conversion), so the brace has to come off first. A composite
- * object is not an alias at all and passes through unwrapped, matching `boundTokenIds`'
- * non-string, non-list values with an empty exemption set.
+ * The bare token id a stored shadow holds, or the value unchanged when it holds a composite shadow
+ * object instead.
  *
- * @param {*} value The stored value: a token alias, or a composite shadow object.
+ * A draft carries BARE ids — `presetInitialValues()` runs every seeded value through
+ * `aliasToIdDeep()` — while `BoxShadowControl` matches against the brace-wrapped form. Both shapes
+ * are accepted here so the helper describes the same token either way.
+ *
+ * @param {*} value The stored value: a bare token id, an alias, or a composite shadow object.
  *
  * @since TBD
  *
- * @return {Array<string>} The bound token ids, empty when nothing is bound.
+ * @return {*} The bare id, or the value unchanged.
  */
-function boundShadowTokenIds(value) {
-	return boundTokenIds(isTokenAlias(value) ? value.slice(1, -1) : value);
+function bareShadowId(value) {
+	return isTokenAlias(value) ? value.slice(1, -1) : value;
 }
 
 /**
- * Whether a stored shadow is bound to a SEMANTIC token, which this field shows as unset rather than
- * as a selection — see the reasoning in `BoxShadowField` below and in `withoutSemanticSlots`.
+ * The bound token id `pickableTokensForType` must not narrow away, or none when the value holds a
+ * composite shadow object. `boundTokenIds` (shared with `BorderField`) expects the bare id a
+ * preset's `tokens` map stores, and returns only PRIMITIVES — a semantic is shown as the default
+ * rather than offered, so it is never exempted.
  *
- * Takes the brace-wrapped alias this field's value carries, unlike `withoutSemanticSlots`, which
- * works on the bare ids a box field's slots hold.
- *
- * @param {*} value The stored value: a token alias, or a composite shadow object.
+ * @param {*} value The stored value: a bare token id, an alias, or a composite shadow object.
  *
  * @since TBD
  *
- * @return {boolean} True when the value is a semantic alias.
+ * @return {Array<string>} The bound primitive token ids, empty when nothing is bound.
  */
-function isSemanticShadow(value) {
-	return isTokenAlias(value) && value.slice(1, -1).startsWith('semantic.');
+function boundShadowTokenIds(value) {
+	return boundTokenIds(bareShadowId(value));
+}
+
+/**
+ * Convert a stored shadow into what `BoxShadowControl` expects.
+ *
+ * Three cases, and the first is the one this field exists to get right. A SEMANTIC-bound shadow is
+ * the block's role-based default rather than a selection — the pool offers primitives only — so it
+ * reads as unset. A primitive-bound one is wrapped into the alias the control matches its list
+ * against, the same conversion `toControlValue` performs for a box field's slots; without it the
+ * control finds no entry for the bare id and labels the trigger `Custom`, which claims someone
+ * composed a shadow by hand when nothing of the sort happened. Anything else — a composite object,
+ * or nothing at all — passes through.
+ *
+ * @param {*} value The stored value: a bare token id, an alias, or a composite shadow object.
+ *
+ * @since TBD
+ *
+ * @return {*} The control-shaped value.
+ */
+export function toControlShadow(value) {
+	const id = bareShadowId(value);
+
+	if (typeof id !== 'string' || id === '') {
+		return value;
+	}
+
+	if (id.startsWith('semantic.')) {
+		return undefined;
+	}
+
+	return id.startsWith('primitive.') ? `{${id}}` : value;
+}
+
+/**
+ * Convert what the control writes back into what a preset draft stores: a bare id, matching every
+ * other field. A draft holding the brace-wrapped form would never compare equal to the bare id
+ * `presetInitialValues` seeds, so the panel's dirty bit could never clear and Save would stay
+ * enabled after a successful write — the mismatch `aliasToIdDeep`'s docblock describes.
+ *
+ * @param {*} next The control-shaped value: an alias, or a composite shadow object.
+ *
+ * @since TBD
+ *
+ * @return {*} The value a preset draft stores.
+ */
+export function toStoredShadow(next) {
+	return isTokenAlias(next) ? next.slice(1, -1) : next;
 }
 
 /**
@@ -84,13 +129,9 @@ function isSemanticShadow(value) {
  * @return {JSX.Element} The field.
  */
 export function BoxShadowField({ field, value, onChange }) {
-	// A semantic-bound shadow is the block's role-based default rather than a selection — the pool
-	// offers primitives only — so it is blanked and the field reads as unset. Without this the control
-	// found no pool entry for it and labelled the trigger `Custom`, which reads as "someone composed a
-	// shadow by hand" when nothing of the sort happened. `BoxShadowControl` takes no `defaultValue`,
-	// so the semantic's VALUE cannot be shown the way the box fields show it; unset is the honest
-	// reading until that prop exists.
-	const shown = isSemanticShadow(value) ? undefined : value;
+	// `BoxShadowControl` takes no `defaultValue`, so a semantic's VALUE cannot be shown here the way
+	// the box fields show it; unset is the honest reading until that prop exists.
+	const shown = toControlShadow(value);
 
 	// A bare `type` filter alone returns every `shadow` token, including the two `Brand`-group
 	// semantics (`semantic.shadow.media`, `semantic.shadow.button`) that back other blocks' own
@@ -105,7 +146,7 @@ export function BoxShadowField({ field, value, onChange }) {
 	return (
 		<BoxShadowControl
 			value={shown}
-			onChange={(next) => !field.readOnly && onChange(next)}
+			onChange={(next) => !field.readOnly && onChange(toStoredShadow(next))}
 			label={field.label}
 			tokens={tokens}
 			renderColor={({ value: color, onChange: onColorChange }) => (
