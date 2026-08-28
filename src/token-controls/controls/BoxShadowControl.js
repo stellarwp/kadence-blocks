@@ -59,6 +59,7 @@ import { __ } from '@wordpress/i18n';
 import { ControlShell } from '../templates/ControlShell';
 import { TokenPopover } from '../molecules/TokenPopover';
 import { fieldSummary, hasValue, isTokenAlias } from '../helpers/token-summary';
+import { DEFAULT_COMPOSITE } from '../helpers/shadow-shorthand';
 import '../styles/token-controls.scss';
 
 /**
@@ -72,13 +73,6 @@ const AXES = [
 	{ key: 'blur', label: __('Blur', 'kadence-blocks') },
 	{ key: 'spread', label: __('Spread', 'kadence-blocks') },
 ];
-
-/**
- * The shadow composite's default shape, matching `ShadowField`'s own fallback.
- *
- * @since TBD
- */
-const DEFAULT_SHADOW = { color: '#000000', offsetX: '0px', offsetY: '0px', blur: '0px', spread: '0px', inset: false };
 
 /**
  * Apply a patch to the current shadow composite, writing the result through `onChange` with `inset`
@@ -97,6 +91,25 @@ function commitShadow(shadow, patch) {
 	const { inset, ...rest } = { ...shadow, ...patch };
 
 	return inset === true ? { ...rest, inset: true } : rest;
+}
+
+/**
+ * Whether a composite shadow value matches a fixed sentinel entry's own resolved shorthand. A fixed
+ * pick (e.g. "None") resolves to a literal composite immediately, at pick time — there is no live
+ * alias to compare against the way a real token pick keeps — so this is how the control recognizes
+ * "the user picked the sentinel" after the fact, purely from the value's shape.
+ *
+ * @param {Object} shadow The composite value with defaults already filled.
+ * @param {Array}  tokens The pickable-token list.
+ *
+ * @since TBD
+ *
+ * @return {?Object} The matching fixed entry, or null.
+ */
+function matchFixedEntry(shadow, tokens) {
+	const shorthand = `${shadow.inset === true ? 'inset ' : ''}${shadow.offsetX} ${shadow.offsetY} ${shadow.blur} ${shadow.spread} ${shadow.color}`;
+
+	return (tokens || []).find((entry) => entry.fixed && entry.value === shorthand) || null;
 }
 
 /**
@@ -224,21 +237,23 @@ export function BoxShadowControl({ value, onChange, label, tokens = [], renderCo
 	// tab would then write back as a shadow whose sub-fields are `0`, `p`, `x`. Degrading to the default
 	// shape reads as unset, which is wrong but harmless where the alternative cannot be saved at all.
 	const custom = typeof value === 'object' && value !== null && !Array.isArray(value) ? value : {};
-	const shadow = { ...DEFAULT_SHADOW, ...(aliased ? {} : custom) };
-	// The trigger shows a label only, never a value — for either shape. Aliased still reads
-	// `fieldSummary()`'s bound-token label (dropping the `value` half it also returns, which does not
-	// fit this control's icon-plus-label trigger); a genuine composite reads bare "Custom"; unset
-	// reads as empty text (the leading glyph below still gives it a visible, accessible identity).
-	const summary = aliased
-		? { ...fieldSummary(value, tokens, '', __('Custom', 'kadence-blocks')), value: '' }
-		: !hasValue(value)
-			? { label: '', value: '' }
-			: { label: __('Custom', 'kadence-blocks'), value: '' };
-	// An unset trigger has no visible label text, which would otherwise leave the Button with no
-	// accessible name at all: `ControlShell` renders `label` as a separate header span, not as this
-	// button's name. An `aria-label` fills that gap only while unset; a bound token or a composite
-	// already names itself through its visible label text, so adding one there would be redundant.
-	const emptyTriggerLabel = !summary.label ? __('Choose shadow', 'kadence-blocks') : undefined;
+	const shadow = { ...DEFAULT_COMPOSITE, ...(aliased ? {} : custom) };
+	// A fixed pick keeps no live alias, so a sentinel is recognized after the fact by its shorthand.
+	const fixedMatch = !aliased && hasValue(value) ? matchFixedEntry(shadow, tokens) : null;
+	// Display only — `onChange` still sees the real underlying value.
+	const displayValue = fixedMatch ? fixedMatch.alias : value;
+	// The trigger shows a label, never a value — it has no room for the `value` half `fieldSummary()`
+	// also returns. Unset reads a muted "Default".
+	//
+	// Host asymmetry: only a host that can store "never touched" as something other than the None shape
+	// reaches that branch. The Style Library stores `''`; the block editor is handed `block.json`'s
+	// registered None composite on a fresh block, which matches `fixedMatch` first and reads "None".
+	const summary =
+		aliased || fixedMatch
+			? { ...fieldSummary(displayValue, tokens, '', __('Custom', 'kadence-blocks')), value: '' }
+			: !hasValue(value)
+				? { label: __('Default', 'kadence-blocks'), value: '', muted: true }
+				: { label: __('Custom', 'kadence-blocks'), value: '' };
 
 	return (
 		<ControlShell label={label} disabled={disabled}>
@@ -253,20 +268,25 @@ export function BoxShadowControl({ value, onChange, label, tokens = [], renderCo
 								onClick={onToggle}
 								disabled={disabled}
 								aria-expanded={isOpen}
-								aria-label={emptyTriggerLabel}
 							>
 								<span className="kadence-token-field__icon" aria-hidden="true">
 									{shadowGlyph}
 								</span>
-								{summary.label && <span className="kadence-token-field__label">{summary.label}</span>}
+								{summary.label && (
+									<span
+										className={`kadence-token-field__label${summary.muted ? ' kadence-token-field__label--default' : ''}`}
+									>
+										{summary.label}
+									</span>
+								)}
 							</Button>
 						)}
 						renderContent={({ onClose }) => (
 							<TokenPopover
-								value={value}
+								value={displayValue}
 								tokens={tokens}
 								resolvedDefault=""
-								initialTab={aliased || !value ? 'style-library' : 'custom'}
+								initialTab={aliased || fixedMatch || !value ? 'style-library' : 'custom'}
 								custom={{ shadow, renderColor, disabled }}
 								renderCustom={(custom) => (
 									<ShadowCustomTab

@@ -17,7 +17,13 @@ import { BoxShadowControl } from '../controls/BoxShadowControl';
 // the popover's tabs are reachable without simulating a real popover open, and `TabPanel` keeps its
 // own active-tab state so a test can click between `Style Library` and `Custom`.
 jest.mock('@wordpress/components', () => ({
-	Button: ({ children, isPressed, showTooltip, ...props }) => <button {...props}>{children}</button>,
+	// `isPressed` is surfaced as `aria-pressed` (rather than dropped) so a test can confirm which row
+	// the popover treats as active.
+	Button: ({ children, isPressed, showTooltip, ...props }) => (
+		<button aria-pressed={isPressed} {...props}>
+			{children}
+		</button>
+	),
 	Icon: ({ icon, ...props }) => <span {...props}>{icon}</span>,
 	Dropdown: ({ renderToggle, renderContent }) => (
 		<>
@@ -95,6 +101,19 @@ const TOKENS = [
 	{ id: 'md', label: 'Medium', value: '0px 2px 8px 0px #1717171f', alias: '{primitive.shadow.md}' },
 	{ id: 'lg', label: 'Large', value: '0px 4px 16px 0px #1717172f', alias: '{primitive.shadow.lg}' },
 ];
+
+// The fixed "None" sentinel, matching `fixed-tokens.js`'s `noneEntryForRole('shadow')` shape: a
+// literal resolved shorthand as its `value`/`alias` rather than a bracket-wrapped token path, since
+// it has no DTCG registration behind it.
+const NONE_TOKEN = {
+	id: 'ss-none-shadow',
+	label: 'None',
+	value: '0px 0px 0px 0px transparent',
+	alias: '0px 0px 0px 0px transparent',
+	fixed: true,
+};
+
+const TOKENS_WITH_NONE = [...TOKENS, NONE_TOKEN];
 
 /**
  * Render `BoxShadowControl` with the props it needs, plus overrides.
@@ -222,31 +241,34 @@ describe('BoxShadowControl trigger', () => {
 
 	/**
 	 * An unset value (the field's actual starting state before a token or a custom shadow is chosen)
-	 * renders no label text — no fabricated all-zero shorthand, matching every other control's
-	 * unset-slot behavior and `fieldSummary()`'s own unset branch — though the leading glyph still
-	 * renders, giving the trigger a visible identity even while empty.
+	 * shows a muted "Default" label — matching every other control in this library (`TokenSelector`'s
+	 * own unset behavior), rather than a blank trigger. Shadow's conceptual default when unset is a
+	 * constant ("no shadow"), not a per-instance literal, so no value/token name is attached — only the
+	 * muted label itself.
 	 *
 	 * @return {void}
 	 */
-	it('renders no label text when the value is unset', () => {
+	it('shows a muted "Default" label when the value is unset', () => {
 		renderControl({ value: '' });
 
-		expect(trigger().querySelector('.kadence-token-field__label')).toBeNull();
+		const label = trigger().querySelector('.kadence-token-field__label');
+
+		expect(label).not.toBeNull();
+		expect(label.textContent).toBe('Default');
+		expect(label.classList.contains('kadence-token-field__label--default')).toBe(true);
 		expect(trigger().querySelector('.kadence-token-field__icon')).not.toBeNull();
 	});
 
 	/**
-	 * An unset trigger has no visible label text, so it needs an `aria-label` naming it — otherwise a
-	 * screen reader announces the button with nothing but a decorative, `aria-hidden` glyph to go on.
-	 * `ControlShell` renders the field's `label` prop in a separate header span, not as this button's
-	 * name, so the trigger has to carry its own.
+	 * The unset trigger now carries visible label text ("Default"), so it names itself without needing
+	 * an `aria-label` on top — the same rule this library applies to a bound token or a composite value.
 	 *
 	 * @return {void}
 	 */
-	it('has an aria-label when the value is unset', () => {
+	it('has no aria-label when the value is unset', () => {
 		renderControl({ value: '' });
 
-		expect(trigger().getAttribute('aria-label')).toBe('Choose shadow');
+		expect(trigger().hasAttribute('aria-label')).toBe(false);
 	});
 
 	/**
@@ -270,6 +292,38 @@ describe('BoxShadowControl trigger', () => {
 		renderControl({ value: { color: '#000000', offsetX: '2px', offsetY: '2px', blur: '4px', spread: '0px' } });
 
 		expect(trigger().hasAttribute('aria-label')).toBe(false);
+	});
+
+	/**
+	 * A composite value that matches a `fixed` entry's own resolved shorthand (e.g. picking "None"
+	 * resolves to a literal composite immediately, at pick time — there is no live alias kept the way a
+	 * real token pick keeps one) shows that entry's label on the trigger, not the generic "Custom" every
+	 * other composite gets.
+	 *
+	 * @return {void}
+	 */
+	it('shows the fixed entry’s label when the composite value matches its resolved shorthand', () => {
+		renderControl({
+			value: { color: 'transparent', offsetX: '0px', offsetY: '0px', blur: '0px', spread: '0px' },
+			tokens: TOKENS_WITH_NONE,
+		});
+
+		expect(trigger().querySelector('.kadence-token-field__label').textContent).toBe('None');
+	});
+
+	/**
+	 * A composite value that does NOT match any fixed entry's shorthand still reads as "Custom" — the
+	 * fixed-entry recognition is scoped to an exact shape match, not any all-zero-looking shadow.
+	 *
+	 * @return {void}
+	 */
+	it('still shows "Custom" for a composite value that does not match any fixed entry', () => {
+		renderControl({
+			value: { color: '#111111', offsetX: '2px', offsetY: '2px', blur: '4px', spread: '0px' },
+			tokens: TOKENS_WITH_NONE,
+		});
+
+		expect(trigger().querySelector('.kadence-token-field__label').textContent).toBe('Custom');
 	});
 });
 
@@ -338,6 +392,21 @@ describe('BoxShadowControl initial tab', () => {
 
 		expect(numberInput('X')).not.toBeNull();
 	});
+
+	/**
+	 * A composite value matching a fixed entry's resolved shorthand is effectively a token pick, so it
+	 * opens on the Style Library tab — where "None" itself lives — not the Custom tab.
+	 *
+	 * @return {void}
+	 */
+	it('opens on the Style Library tab for a composite value matching a fixed entry', () => {
+		renderControl({
+			value: { color: 'transparent', offsetX: '0px', offsetY: '0px', blur: '0px', spread: '0px' },
+			tokens: TOKENS_WITH_NONE,
+		});
+
+		expect(tokenItem('None')).not.toBeUndefined();
+	});
 });
 
 describe('BoxShadowControl Style Library tab', () => {
@@ -353,6 +422,23 @@ describe('BoxShadowControl Style Library tab', () => {
 		click(tokenItem('Large'));
 
 		expect(onChange).toHaveBeenCalledWith('{primitive.shadow.lg}');
+	});
+
+	/**
+	 * A composite value matching a fixed entry's resolved shorthand is recognized as that entry for
+	 * display purposes: reopening the popover highlights the "None" row as pressed/active, the same
+	 * way a real bound token's row does — rather than leaving every row unpressed the way an ordinary
+	 * (non-matching) Custom composite does.
+	 *
+	 * @return {void}
+	 */
+	it('highlights the fixed entry’s row as pressed when the composite value matches it', () => {
+		renderControl({
+			value: { color: 'transparent', offsetX: '0px', offsetY: '0px', blur: '0px', spread: '0px' },
+			tokens: TOKENS_WITH_NONE,
+		});
+
+		expect(tokenItem('None').getAttribute('aria-pressed')).toBe('true');
 	});
 
 	/**
