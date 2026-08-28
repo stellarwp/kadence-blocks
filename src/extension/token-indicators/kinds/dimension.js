@@ -149,6 +149,24 @@ export function presetValueForDevice(presetValue, responsive = {}, device = 'Des
 }
 
 /**
+ * A preset's resolved value, or `fallback` when the preset sets nothing for the property.
+ *
+ * `0` is a real spacing value — it is what the fixed "None" pick resolves to — so a plain `||` would
+ * discard it and show the block's own default instead, silently turning a deliberate "no spacing"
+ * into the block's built-in spacing.
+ *
+ * @param {*} value    The preset's resolved value for the property.
+ * @param {*} fallback What to use when the preset sets nothing.
+ *
+ * @since TBD
+ *
+ * @return {*} The value to display.
+ */
+export function presetValueOr(value, fallback) {
+	return value === undefined || value === null || value === '' ? fallback : value;
+}
+
+/**
  * The attribute a responsive measure control is editing at the given device, and its current value.
  *
  * A responsive measure control keeps ONE linked/individual mode but writes three separate attributes

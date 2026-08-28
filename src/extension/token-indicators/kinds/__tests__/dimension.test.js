@@ -2,6 +2,7 @@
 import {
 	anyCornerInherited,
 	deriveMeasureMode,
+	presetValueOr,
 	inheritedMeasureSlots,
 	measureAttrsForDevice,
 	normalizeDimension,
@@ -384,5 +385,23 @@ describe('presetValueForDevice per-corner cascade', () => {
 			'4px',
 			'4px',
 		]);
+	});
+});
+
+describe('presetValueOr', () => {
+	it('keeps a numeric zero, which is what the fixed None pick resolves to', () => {
+		expect(presetValueOr(0, ['0.4em', '1em', '0.4em', '1em'])).toBe(0);
+		expect(presetValueOr('0', ['0.4em'])).toBe('0');
+		expect(presetValueOr(['0', '0', '0', '0'], ['0.4em'])).toEqual(['0', '0', '0', '0']);
+	});
+
+	it('falls back only when the preset sets nothing at all', () => {
+		expect(presetValueOr(undefined, 'fallback')).toBe('fallback');
+		expect(presetValueOr(null, 'fallback')).toBe('fallback');
+		expect(presetValueOr('', 'fallback')).toBe('fallback');
+	});
+
+	it('keeps a real value untouched', () => {
+		expect(presetValueOr('1em', 'fallback')).toBe('1em');
 	});
 });

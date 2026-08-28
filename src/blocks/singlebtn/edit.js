@@ -92,6 +92,7 @@ import {
 	inheritedMeasureSlots,
 	measureAttrsForDevice,
 	presetValueForDevice,
+	presetValueOr,
 } from '../../extension/token-indicators/normalize';
 import { EditorBoxControl } from '../../extension/design-tokens/components/EditorBoxControl';
 import { EditorBorderControl } from '../../extension/design-tokens/components/EditorBorderControl';
@@ -407,9 +408,10 @@ export default function KadenceButtonEdit(props) {
 	// `button-padding` carries no baseline preset value, so `presetValueForDevice` above always resolves
 	// to nothing for it — OR in the button's own literal default so an unset Padding side shows what the
 	// button actually renders instead of reading as blank.
-	const paddingPresetValue =
-		presetValueForDevice(tokenBinding.padding?.presetValue, tokenBinding.padding?.responsive, previewDevice) ||
-		BUTTON_PADDING_FALLBACK;
+	const paddingPresetValue = presetValueOr(
+		presetValueForDevice(tokenBinding.padding?.presetValue, tokenBinding.padding?.responsive, previewDevice),
+		BUTTON_PADDING_FALLBACK
+	);
 
 	// What an unset Padding side falls back to on the active device — same cascade as Border Radius
 	// above, run over sides rather than corners.
@@ -428,9 +430,10 @@ export default function KadenceButtonEdit(props) {
 	);
 
 	// Same reasoning as `paddingPresetValue` above, for `button-margin`.
-	const marginPresetValue =
-		presetValueForDevice(tokenBinding.margin?.presetValue, tokenBinding.margin?.responsive, previewDevice) ||
-		BUTTON_MARGIN_FALLBACK;
+	const marginPresetValue = presetValueOr(
+		presetValueForDevice(tokenBinding.margin?.presetValue, tokenBinding.margin?.responsive, previewDevice),
+		BUTTON_MARGIN_FALLBACK
+	);
 
 	// What an unset Margin side falls back to on the active device — same cascade as Padding above.
 	const inheritedMargin = inheritedMeasureSlots(

@@ -31,6 +31,7 @@ export {
 	dimensionSlots,
 	presetSlotAt,
 	presetValueForDevice,
+	presetValueOr,
 	measureAttrsForDevice,
 	inheritedMeasureSlots,
 	anyCornerInherited,
