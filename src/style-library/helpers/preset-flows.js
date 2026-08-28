@@ -115,15 +115,13 @@ export function createPresetFlow({
  * @param {Function} args.refreshFeed Replaces the feed with a fresh REST read for a slug.
  * @param {Function} args.onBusy      Called with a boolean as the request starts and settles.
  * @param {Function} args.onError     Called with `{ message }` on failure.
- * @param {Function} args.onVersion   Called with the version the write returned, before the feed
- *                                      refresh, so a caller serializing drops can hand the next
- *                                      one a current version without waiting for a re-read.
  *
  * @since TBD
  *
- * @return {Promise<void>} Resolves once an unchanged draft is skipped, or the write and feed
- *                          refresh complete; rejects on failure, after `onError`/`onBusy` have
- *                          already run.
+ * @return {Promise<?Object>} Resolves with the preset payload the write returned — the same shape a
+ *                             read returns, carrying the server's normalized tokens — or null when an
+ *                             unchanged draft was skipped. Rejects on failure, after `onError`/`onBusy`
+ *                             have already run.
  */
 export function savePresetFlow({
 	namespace,
@@ -138,25 +136,33 @@ export function savePresetFlow({
 	onError,
 }) {
 	if (isEqual(draft, initialValues)) {
-		return Promise.resolve();
+		return Promise.resolve(null);
 	}
 
 	onBusy(true);
 
-	return saveBlockPreset(
-		namespace,
-		block,
-		{ preset, label: draft.label, tokens: presetSaveTokens(draft.tokens, initialValues?.tokens, storedTokens) },
-		slug
-	)
-		.then(() => refreshFeed(slug))
-		.then(() => onBusy(false))
-		.catch((err) => {
-			onError({ message: errorMessage(err) });
-			onBusy(false);
+	return (
+		saveBlockPreset(
+			namespace,
+			block,
+			{ preset, label: draft.label, tokens: presetSaveTokens(draft.tokens, initialValues?.tokens, storedTokens) },
+			slug
+		)
+			// The write already answers with what it stored, normalized. Carrying it past the refresh is what
+			// lets the panel seed from the truth instead of guessing at the server's rewrites.
+			.then((response) => refreshFeed(slug).then(() => response))
+			.then((response) => {
+				onBusy(false);
 
-			throw err;
-		});
+				return response;
+			})
+			.catch((err) => {
+				onError({ message: errorMessage(err) });
+				onBusy(false);
+
+				throw err;
+			})
+	);
 }
 
 /**

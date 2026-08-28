@@ -145,6 +145,57 @@ describe('savePresetFlow', () => {
 		expect(refreshFeed).not.toHaveBeenCalled();
 	});
 
+	/**
+	 * The write already answers with what it stored, normalized. Carrying that back is what lets the
+	 * panel seed from the truth rather than guess at the server's rewrites, so it must survive the
+	 * feed refresh and the busy flag rather than being swallowed by either.
+	 */
+	it('resolves with the write response, after the feed refresh', async () => {
+		const response = { presets: { primary: { tokens: { 'button-bg': '{semantic.color.action-primary}' } } } };
+		const order = [];
+
+		client.saveBlockPreset.mockImplementation(() => {
+			order.push('write');
+
+			return Promise.resolve(response);
+		});
+
+		const refreshFeed = jest.fn().mockImplementation(() => {
+			order.push('refresh');
+
+			return Promise.resolve({});
+		});
+
+		const onBusy = jest.fn().mockImplementation((busy) => order.push(`busy:${busy}`));
+
+		const result = await savePresetFlow({
+			...baseArgs,
+			draft: { label: 'Accent', tokens: { 'button-bg': '#3633e1' } },
+			initialValues: { label: 'Primary', tokens: { 'button-bg': 'semantic.color.action-primary' } },
+			refreshFeed,
+			onBusy,
+			onError: jest.fn(),
+		});
+
+		expect(result).toBe(response);
+		expect(order).toEqual(['busy:true', 'write', 'refresh', 'busy:false']);
+	});
+
+	it('resolves with null when the unchanged draft skipped the write', async () => {
+		const draft = { label: 'Primary', tokens: { 'button-bg': 'semantic.color.action-primary' } };
+
+		const result = await savePresetFlow({
+			...baseArgs,
+			draft,
+			initialValues: { ...draft },
+			refreshFeed: jest.fn(),
+			onBusy: jest.fn(),
+			onError: jest.fn(),
+		});
+
+		expect(result).toBeNull();
+	});
+
 	it('posts the label and all five wrapped tokens when the draft is dirty, and refreshes the feed', async () => {
 		client.saveBlockPreset.mockResolvedValue({});
 		const refreshFeed = jest.fn().mockResolvedValue({});

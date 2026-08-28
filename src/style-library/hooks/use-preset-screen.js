@@ -40,6 +40,9 @@ import { STORE_NAME } from '../store';
  *
  * @since TBD
  *
+ * `savePreset` resolves with the saved preset in the panel's own seed shape — what the server actually
+ * stored, not what was sent — or null when an unchanged draft was skipped.
+ *
  * @return {{feed: ?object, payload: ?object, isLoading: boolean, loadError: ?Error, rows: Array<Object>, initialValuesFor: Function, isBusy: boolean, addError: ?Object, saveError: ?Object, deleteError: ?Object, orderError: ?Object, clearAddError: Function, clearSaveError: Function, clearDeleteError: Function, clearOrderError: Function, addPreset: Function, savePreset: Function, deletePreset: Function, reorderPresets: Function, isDeletable: Function}}
  */
 export function usePresetScreen(library, preset) {
@@ -183,9 +186,12 @@ export function usePresetScreen(library, preset) {
 				refreshFeed,
 				onBusy: setIsBusy,
 				onError: setSaveError,
-			});
+				// Shaped into the panel's seed here rather than in the sidebar, which knows nothing about
+				// any one block. Read inside the callback because `preset.properties` is a live getter
+				// that throws when the feed has not arrived.
+			}).then((response) => (response ? presetInitialValues(response, id, preset.properties) : null));
 		},
-		[namespace, block, presets.payload, slug, refreshFeed]
+		[namespace, block, preset, presets.payload, slug, refreshFeed]
 	);
 
 	const deletePreset = useCallback(

@@ -1,5 +1,5 @@
 /* eslint-env jest */
-import { computeIsDirty, resolveDraftSeed } from '../hooks/use-settings-panel';
+import { computeIsDirty, resolveDraftSeed, resolveSavedSeed } from '../hooks/use-settings-panel';
 
 describe('resolveDraftSeed', () => {
 	it('does not seed while the caller has no values yet (initialValues null)', () => {
@@ -98,5 +98,36 @@ describe('computeIsDirty', () => {
 	it('treats a missing initialValues as an empty object, matching an empty draft', () => {
 		expect(computeIsDirty({}, null)).toBe(false);
 		expect(computeIsDirty({ label: 'Main 1' }, null)).toBe(true);
+	});
+});
+
+describe('resolveSavedSeed', () => {
+	/**
+	 * The whole point: a write is not a round trip, so the panel has to be told what was actually
+	 * stored before its dirty check can ever come out clean.
+	 */
+	it('takes what the server stored when the draft has not moved since the write', () => {
+		const submitted = { label: 'Title', tokens: { fontWeight: '400' } };
+		const saved = { label: 'Title', tokens: { fontWeight: 'semantic.font-weight.heading' } };
+
+		expect(resolveSavedSeed({ ...submitted }, submitted, saved)).toBe(saved);
+	});
+
+	/**
+	 * An edit made while the write was in flight is the user's, and keeping it means the panel stays
+	 * honestly dirty. Returned by reference so React bails out of the re-render.
+	 */
+	it('keeps the current draft, by reference, when it moved during the write', () => {
+		const submitted = { label: 'Title', tokens: { fontWeight: '400' } };
+		const current = { label: 'Title', tokens: { fontWeight: '700' } };
+		const saved = { label: 'Title', tokens: { fontWeight: 'semantic.font-weight.heading' } };
+
+		expect(resolveSavedSeed(current, submitted, saved)).toBe(current);
+	});
+
+	it('keeps the current draft when there was nothing to save', () => {
+		const current = { label: 'Title', tokens: {} };
+
+		expect(resolveSavedSeed(current, current, null)).toBe(current);
 	});
 });
