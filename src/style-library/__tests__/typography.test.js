@@ -6,6 +6,7 @@ import {
 	fontActionFor,
 	fontOptions,
 	fontSizeDisplayValue,
+	fontWeightsFor,
 	getFontCatalog,
 } from '../helpers/typography';
 
@@ -98,22 +99,67 @@ describe('getFontCatalog', () => {
 		window.kadenceDesignTokensFontCatalog = originalCatalog;
 	});
 
-	it('fails safe to two empty lists when the global is missing', () => {
+	it('fails safe to two empty lists and an empty weight map when the global is missing', () => {
 		delete window.kadenceDesignTokensFontCatalog;
 
-		expect(getFontCatalog()).toEqual({ google: [], custom: [] });
+		expect(getFontCatalog()).toEqual({ google: [], custom: [], weights: {} });
 	});
 
-	it('fails safe to two empty lists when the global is malformed', () => {
-		window.kadenceDesignTokensFontCatalog = { google: 'not-an-array' };
+	it('fails safe to two empty lists and an empty weight map when the global is malformed', () => {
+		window.kadenceDesignTokensFontCatalog = { google: 'not-an-array', weights: 'not-an-object' };
 
-		expect(getFontCatalog()).toEqual({ google: [], custom: [] });
+		expect(getFontCatalog()).toEqual({ google: [], custom: [], weights: {} });
 	});
 
-	it('reads the google and custom lists verbatim when present', () => {
-		window.kadenceDesignTokensFontCatalog = { google: ['Abel', 'Abril Fatface'], custom: ['My Font'] };
+	it('reads the google and custom lists and the weight map verbatim when present', () => {
+		window.kadenceDesignTokensFontCatalog = {
+			google: ['Abel', 'Abril Fatface'],
+			custom: ['My Font'],
+			weights: { 'Abril Fatface': ['400'] },
+		};
 
-		expect(getFontCatalog()).toEqual({ google: ['Abel', 'Abril Fatface'], custom: ['My Font'] });
+		expect(getFontCatalog()).toEqual({
+			google: ['Abel', 'Abril Fatface'],
+			custom: ['My Font'],
+			weights: { 'Abril Fatface': ['400'] },
+		});
+	});
+});
+
+describe('fontWeightsFor', () => {
+	const originalCatalog = window.kadenceDesignTokensFontCatalog;
+
+	afterEach(() => {
+		window.kadenceDesignTokensFontCatalog = originalCatalog;
+	});
+
+	it('returns the weights a known family ships', () => {
+		window.kadenceDesignTokensFontCatalog = { weights: { 'Abril Fatface': ['400'], Inter: ['100', '900'] } };
+
+		expect(fontWeightsFor('Abril Fatface')).toEqual(['400']);
+		expect(fontWeightsFor('Inter')).toEqual(['100', '900']);
+	});
+
+	it('matches a family case-insensitively and through wrapping quotes', () => {
+		window.kadenceDesignTokensFontCatalog = { weights: { 'Abril Fatface': ['400'] } };
+
+		expect(fontWeightsFor('abril fatface')).toEqual(['400']);
+		expect(fontWeightsFor('"Abril Fatface"')).toEqual(['400']);
+	});
+
+	/**
+	 * `null` rather than `[]`, because the two mean different things to a caller: a custom font carries
+	 * no weight data at all, while a family the catalog knows always lists at least one weight. Only
+	 * the first should widen a control back to the full set.
+	 *
+	 * @return {void}
+	 */
+	it('returns null for a family the catalog does not know, and for none', () => {
+		window.kadenceDesignTokensFontCatalog = { weights: { Inter: ['400'] } };
+
+		expect(fontWeightsFor('Some Custom Face')).toBeNull();
+		expect(fontWeightsFor('')).toBeNull();
+		expect(fontWeightsFor(undefined)).toBeNull();
 	});
 });
 

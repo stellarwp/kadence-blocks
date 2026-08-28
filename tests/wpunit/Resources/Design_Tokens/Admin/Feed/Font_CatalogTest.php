@@ -49,6 +49,54 @@ final class Font_CatalogTest extends TestCase {
 	}
 
 	/**
+	 * The weight map is read from the generated detail file, keyed by family. "Abril Fatface" ships only
+	 * a regular face and pins both halves of the point: the file is genuinely being read, and a family's
+	 * real weight list can be a single entry -- which is exactly why a flat 100-900 control would promise
+	 * eight faces it does not have.
+	 *
+	 * @return void
+	 */
+	public function testAllReturnsThePerFamilyWeightsFromTheGeneratedFile(): void {
+		$result = $this->catalog->all();
+
+		$this->assertArrayHasKey( 'weights', $result );
+		$this->assertNotEmpty( $result['weights'] );
+		$this->assertSame( [ '400' ], $result['weights']['Abril Fatface'] ?? null );
+	}
+
+	/**
+	 * The generated file spells the default weight "regular", which is 400 everywhere a CSS font-weight
+	 * is written. Both spellings surviving would make a consumer match two things for one weight.
+	 *
+	 * @return void
+	 */
+	public function testWeightsNormalizeRegularToItsNumericSpelling(): void {
+		$weights = $this->catalog->all()['weights'];
+
+		foreach ( $weights as $family => $family_weights ) {
+			$this->assertNotContains( 'regular', $family_weights, sprintf( '%s carries an unnormalized weight.', $family ) );
+		}
+	}
+
+	/**
+	 * A family shipping several weights lists them in weight order, so a picker reads low-to-high rather
+	 * than in the generated file's own order.
+	 *
+	 * @return void
+	 */
+	public function testWeightsAreSortedNumerically(): void {
+		$weights = $this->catalog->all()['weights']['Inter'] ?? [];
+
+		$this->assertNotEmpty( $weights, 'Inter should be present in the generated file.' );
+
+		$sorted = $weights;
+		sort( $sorted, SORT_NUMERIC );
+
+		$this->assertSame( $sorted, $weights );
+		$this->assertGreaterThan( 1, count( $weights ), 'Inter ships several weights.' );
+	}
+
+	/**
 	 * A custom-fonts filter returning the shape kadence_blocks_convert_custom_fonts() (init.php)
 	 * produces — string-keyed by the font-stack expression, each value an array with its own
 	 * "name" — normalizes to that string key as the catalog name.

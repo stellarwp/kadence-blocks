@@ -5,6 +5,11 @@
  * @package Kadence Blocks
  */
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
+use KadenceWP\KadenceBlocks\Utils\Cast;
+
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -59,10 +64,10 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 	/**
 	 * Builds CSS for block.
 	 *
-	 * @param array $attributes the blocks attributes.
-	 * @param Kadence_Blocks_CSS $css the css class for blocks.
-	 * @param string $unique_id the blocks attr ID.
-	 * @param string $unique_style_id the blocks alternate ID for queries.
+	 * @param array              $attributes      the blocks attributes.
+	 * @param Kadence_Blocks_CSS $css             the css class for blocks.
+	 * @param string             $unique_id       the blocks attr ID.
+	 * @param string             $unique_style_id the blocks alternate ID for queries.
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
 
@@ -130,6 +135,8 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 			$google = $google && ( isset( $attributes['loadGoogleFont'] ) && $attributes['loadGoogleFont'] || ! isset( $attributes['loadGoogleFont'] ) ) ? true : false;
 			$variant = ! empty( $attributes['fontVariant'] ) ? $attributes['fontVariant'] : null;
 			$css->add_property( 'font-family', $css->render_font_family( $attributes['typography'], $google, $variant ) );
+		} else {
+			$this->render_preset_typography( $css, $attributes );
 		}
 		if ( ! empty( $attributes['textTransform'] ) ) {
 			$css->add_property( 'text-transform', $attributes['textTransform'] );
@@ -925,6 +932,76 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 			return $default;
 		}
 		return $fallback;
+	}
+	/**
+	 * Point font-family at its preset variable, but only when the active preset actually resolves one.
+	 *
+	 * Called only where the block's own `typography` attribute is empty, so a family a site owner picked
+	 * per-instance always wins — this supplies the family a preset carries for a heading that has none of
+	 * its own.
+	 *
+	 * The gate matters for the same reason it does on the Single Button's spacing bridge:
+	 * `font-family: var(--kb-heading-font-family)` is not inert when the variable is undefined, it is
+	 * invalid at computed-value time, which resets the property to its initial value rather than letting
+	 * the heading inherit the theme's font. Emitting only when the preset resolves a family is what keeps
+	 * a heading whose preset sets none looking exactly as it does today.
+	 *
+	 * The variable, not the literal: the preset projector sets `--kb-heading-font-family` per preset
+	 * scope, so one rule follows whichever preset the heading is on. The binding deliberately declares no
+	 * `css_prop`, which is what keeps font-family out of the block-default rule that every heading gets
+	 * (see the declaration for why that would break theme inheritance).
+	 *
+	 * @since TBD
+	 *
+	 * @param Kadence_Blocks_CSS   $css        The css object.
+	 * @param array<string, mixed> $attributes The block attributes.
+	 *
+	 * @return void
+	 */
+	private function render_preset_typography( Kadence_Blocks_CSS $css, array $attributes ): void {
+		try {
+			$registry = kadence_blocks()->get( Token_Registry::class );
+			$library  = kadence_blocks()->get( Active_Token_Library_Store::class );
+			$resolver = kadence_blocks()->get( Preset_Resolver::class );
+
+			// The container is typed `mixed`, and this runs on every heading render, so the services are
+			// checked rather than assumed — a misconfigured container degrades to today's font.
+			if (
+				! $registry instanceof Token_Registry
+				|| ! $library instanceof Active_Token_Library_Store
+				|| ! $resolver instanceof Preset_Resolver
+				|| ! $registry->is_active()
+			) {
+				return;
+			}
+
+			$slug     = $library->get();
+			$selected = Cast::to_string( $attributes['kbPreset'] ?? '' );
+			$preset   = $selected !== '' && $resolver->has_preset( 'kadence/advancedheading', $selected, $slug )
+				? $selected
+				: $resolver->default_preset( 'kadence/advancedheading', $slug );
+			$values   = $resolver->resolve( 'kadence/advancedheading', $preset, $slug );
+		} catch ( Throwable $e ) {
+			// This runs in the render path, so a broken token graph must not take the page down with it —
+			// the heading simply keeps the font it has today.
+			return;
+		}
+
+		if ( ! isset( $values['typography'] ) ) {
+			return;
+		}
+
+		$css->add_property( 'font-family', 'var(--kb-heading-font-family)' );
+
+		// Enqueue the family as well as name it. The block's own loading is driven by the `typography`
+		// attribute, which is empty in exactly the case this bridge fires, so without this a heading that
+		// takes its family from a preset would render in a fallback face while the CSS asked for the real
+		// one. The preset stores the family as a literal, which is the shape this expects.
+		$family = Cast::to_string( $values['typography'] );
+
+		if ( $family !== '' && 'inherit' !== $family ) {
+			$css->maybe_add_google_font( $family, ! empty( $attributes['fontVariant'] ) ? $attributes['fontVariant'] : null );
+		}
 	}
 }
 

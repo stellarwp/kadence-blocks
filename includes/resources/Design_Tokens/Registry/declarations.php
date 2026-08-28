@@ -927,10 +927,19 @@ return [
 					'css_var'      => 'kb-heading-bg',
 					'control_attr' => 'background',
 				],
-				// No font-family binding: a heading inherits the theme's font, and the block-default CSS
-				// deliberately emits no font-family default for it (see Css_BuilderTest). Font family is
-				// delivered by the font system rather than a token rule, and a preset stores the family the
-				// typography control picked as a literal rather than a token reference.
+				// Font family carries NO css_prop, and that omission is the whole design rather than an
+				// oversight. A css_prop would put font-family into the block-default rule, which emits for
+				// every heading on the site: `font-family: inherit` on the block root overrides the theme's
+				// own h1/h2 element styles, so a heading would stop inheriting the theme font (see
+				// Css_BuilderTest, which asserts no font-family default is emitted). Declaring only the
+				// css_var keeps the block-default rule out of it while still giving Preset\Css_Builder a
+				// variable to set for a SELECTED preset, which the block's own render path reads through
+				// render_preset_typography(). A preset stores the family the typography control picked as a
+				// literal, not a token reference — the font catalog is not a token scale.
+				'typography'    => [
+					'css_var'      => 'kb-heading-font-family',
+					'control_attr' => 'typography',
+				],
 				//
 				// fontHeight and letterSpacing are bound but NOT offered on the Style Library screen: neither
 				// has a primitive scale to pick from (their semantic groups hold one entry per usage, which is

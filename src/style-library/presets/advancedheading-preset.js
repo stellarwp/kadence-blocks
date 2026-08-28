@@ -1,3 +1,4 @@
+// cspell:ignore Abril Fatface -- a Google font family named as a concrete example.
 /**
  * Everything specific to the `kadence/advancedheading` (Advanced Text) preset screen, in one place:
  * the block name, the bound property surface, the row preview, and the settings schema.
@@ -15,6 +16,8 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { getPresetProperties, resolveTokenValue } from '../helpers/presets';
+import { fontOptions, fontWeightsFor } from '../helpers/typography';
+import { getDesignTokensFeed } from '../helpers/tokens';
 
 /**
  * The block name this screen edits. The block is called Advanced Text in the UI but
@@ -85,31 +88,82 @@ const TEXT_TRANSFORM_OPTIONS = [
 ];
 
 /**
- * The weights the preset offers. A closed set, for the same reason as {@see BORDER_STYLE_OPTIONS} —
- * `semantic.font-weight` holds one entry per usage, not a scale.
+ * The human name for each CSS weight, so a list narrowed to one family still reads as words.
  *
  * @since TBD
  */
-const FONT_WEIGHT_OPTIONS = [
-	{ value: '', label: __('Default', 'kadence-blocks') },
-	{ value: '100', label: __('100 Thin', 'kadence-blocks') },
-	{ value: '200', label: __('200 Extra Light', 'kadence-blocks') },
-	{ value: '300', label: __('300 Light', 'kadence-blocks') },
-	{ value: '400', label: __('400 Regular', 'kadence-blocks') },
-	{ value: '500', label: __('500 Medium', 'kadence-blocks') },
-	{ value: '600', label: __('600 Semi Bold', 'kadence-blocks') },
-	{ value: '700', label: __('700 Bold', 'kadence-blocks') },
-	{ value: '800', label: __('800 Extra Bold', 'kadence-blocks') },
-	{ value: '900', label: __('900 Black', 'kadence-blocks') },
-];
+const FONT_WEIGHT_LABELS = {
+	100: __('100 Thin', 'kadence-blocks'),
+	200: __('200 Extra Light', 'kadence-blocks'),
+	300: __('300 Light', 'kadence-blocks'),
+	400: __('400 Regular', 'kadence-blocks'),
+	500: __('500 Medium', 'kadence-blocks'),
+	600: __('600 Semi Bold', 'kadence-blocks'),
+	700: __('700 Bold', 'kadence-blocks'),
+	800: __('800 Extra Bold', 'kadence-blocks'),
+	900: __('900 Black', 'kadence-blocks'),
+};
+
+/**
+ * Every CSS weight, offered when nothing narrower is known.
+ *
+ * @since TBD
+ */
+const ALL_FONT_WEIGHTS = Object.keys(FONT_WEIGHT_LABELS);
+
+/**
+ * The font families a preset may pick from: the library's favorites, plus an entry for leaving the
+ * family alone.
+ *
+ * Favorites rather than a token pool, because a font family is not a token: the catalog is a list of
+ * real faces a site has kept, and a preset stores the family it picked as a LITERAL. The empty option
+ * is what a heading does with no family of its own — inherit the theme's — which is the block's own
+ * behavior rather than an invented default.
+ *
+ * @since TBD
+ *
+ * @return {Array<{value: string, label: string}>} The family options.
+ */
+function fontFamilyOptions() {
+	return [
+		{ value: '', label: __('Theme Font', 'kadence-blocks') },
+		...fontOptions(getDesignTokensFeed()).map((font) => ({ value: font.label, label: font.label })),
+	];
+}
+
+/**
+ * The weights a family actually ships, as select options.
+ *
+ * A family the catalog knows is narrowed to its own weights, which is the point of the exercise: a
+ * flat 100-900 list offers faces most families do not have — Abril Fatface ships only 400 — and the
+ * browser answers a missing one with a synthesized approximation rather than the real face. With no
+ * family chosen the heading inherits the theme's font, which could be anything, and a custom font
+ * carries no weight data at all; both cases offer the full set rather than guessing.
+ *
+ * @param {string} family The family the preset has chosen, or '' for the theme's font.
+ *
+ * @since TBD
+ *
+ * @return {Array<{value: string, label: string}>} The weight options.
+ */
+function fontWeightOptions(family) {
+	const weights = family ? fontWeightsFor(family) : null;
+
+	return [
+		{ value: '', label: __('Default', 'kadence-blocks') },
+		...(weights ?? ALL_FONT_WEIGHTS).map((weight) => ({
+			value: String(weight),
+			label: FONT_WEIGHT_LABELS[weight] ?? String(weight),
+		})),
+	];
+}
 
 /**
  * Build a row's preview from its stored tokens.
  *
  * Everything the screen edits that a chip of text can honestly show. `borderWidth` and `borderStyle`
  * are previewed alongside `borderColor` because all three are needed for a border to render at all —
- * a color on its own is invisible, which is the trap the Row Layout and Section screens hit. Font
- * family is absent because it is not a bound property; see `schemaFor()`.
+ * a color on its own is invisible, which is the trap the Row Layout and Section screens hit.
  *
  * @param {Record<string, *>}      tokens       The preset's stored token map.
  * @param {Record<string, string>} values       The feed's resolved value map.
@@ -125,6 +179,7 @@ function preview(tokens, values, breakpoint) {
 	return {
 		color: resolve('color'),
 		background: resolve('background'),
+		typography: resolve('typography'),
 		fontSize: resolve('fontSize'),
 		fontWeight: resolve('fontWeight'),
 		textTransform: resolve('textTransform'),
@@ -141,7 +196,7 @@ function preview(tokens, values, breakpoint) {
  * its own frame.
  *
  * Real text rather than a swatch, because every property this screen edits except the box ones is a
- * type property, and a color chip cannot show a weight or a transform. The size is deliberately
+ * type property, and a color chip cannot show a family, a weight or a transform. The size is deliberately
  * NOT applied at true size — the scale reaches 4rem and a row cannot grow that far without dwarfing its
  * neighbors — so the chip states the family, weight, transform, color and frame faithfully and leaves
  * size to the sidebar. The Advanced Image tile can afford to grow because its padding is the only
@@ -161,6 +216,7 @@ function renderPreview(row) {
 				color: row.preview.color || undefined,
 				background: row.preview.background || undefined,
 				fontWeight: row.preview.fontWeight || undefined,
+				fontFamily: row.preview.typography || undefined,
 				textTransform: row.preview.textTransform || undefined,
 				borderColor: row.preview.borderColor || undefined,
 				borderWidth: row.preview.borderWidth || undefined,
@@ -179,13 +235,14 @@ function renderPreview(row) {
  * The settings schema. The heading declares no tabs: it binds no hover property, so there is no second
  * state to switch to and `PresetSidebar` renders the field area bare.
  *
- * Ten of the block's twelve bound properties are offered, grouped by what a site owner is doing rather
- * than by how each value is stored.
+ * Eleven of the block's thirteen bound properties are offered, grouped by what a site owner is doing
+ * rather than by how each value is stored.
  *
- * Font family is not among them, and is not a bound property at all: a heading inherits the theme's
- * font, the block-default CSS emits no font-family default for it, and the family a site owner picks
- * comes from the typography control's own font catalog and is stored as a literal. See the block's
- * `preset_bindings` declaration.
+ * Font family is a select over the library's FAVORITES, storing the family as a literal: the font
+ * catalog is a list of real faces, not a token scale, so there is nothing to alias to. Weight then
+ * narrows to the weights that family actually ships, which is why this takes the draft — the two
+ * fields are linked, and offering a weight a family does not have would render a synthesized face
+ * rather than the one the design system promised.
  *
  * The split between a token picker and a keyword select is not arbitrary: a property is offered as a
  * picker when the design system actually has a scale for it, and as a select when it does not.
@@ -200,11 +257,16 @@ function renderPreview(row) {
  * would fit is a bare number — which invites exactly the unsystematic values a design token library
  * exists to prevent. They want a line-height and letter-spacing scale first; SOFT-4235 covers that.
  *
+ * @param {string} tab    The active tab name; the heading declares no tabs, so this is unused.
+ * @param {Object} values The current draft, read for the chosen font family.
+ *
  * @since TBD
  *
  * @return {{panels: Array<Object>}} The settings-form schema.
  */
-function schemaFor() {
+function schemaFor(tab, values) {
+	const family = values?.tokens?.typography ?? '';
+
 	return {
 		panels: [
 			{
@@ -224,6 +286,12 @@ function schemaFor() {
 				title: __('Typography', 'kadence-blocks'),
 				fields: [
 					{
+						type: 'select',
+						path: 'tokens.typography',
+						label: __('Font Family', 'kadence-blocks'),
+						options: fontFamilyOptions(),
+					},
+					{
 						type: 'token-scalar',
 						tokenType: 'dimension',
 						role: 'font-size',
@@ -240,7 +308,7 @@ function schemaFor() {
 						type: 'select',
 						path: 'tokens.fontWeight',
 						label: __('Weight', 'kadence-blocks'),
-						options: FONT_WEIGHT_OPTIONS,
+						options: fontWeightOptions(family),
 					},
 					{
 						type: 'select',

@@ -1,4 +1,5 @@
 /* eslint-env jest */
+// cspell:ignore Abril Fatface -- a Google font family named as a concrete example.
 /**
  * The Advanced Text preset config — the one per-block file a preset screen needs. Everything else the
  * screen uses (`PresetScreen`, `PresetSidebar`, `usePresetScreen`, `helpers/presets`) is generic and
@@ -169,11 +170,9 @@ describe('HEADING_PRESET', () => {
 	});
 
 	/**
-	 * Ten of the block's twelve bound properties are offered. `fontHeight` and `letterSpacing` are bound
-	 * but withheld: neither has a token scale, and unlike the keyword properties they are open numeric
-	 * ranges, so the only control that would fit is a bare number. Font family is absent for a different
-	 * reason -- it is not a bound property at all, the family being stored as a literal from the
-	 * typography control's own catalog.
+	 * Eleven of the block's thirteen bound properties are offered. `fontHeight` and `letterSpacing` are
+	 * bound but withheld: neither has a token scale, and unlike the keyword properties they are open
+	 * numeric ranges, so the only control that would fit is a bare number.
 	 *
 	 * @return {void}
 	 */
@@ -181,6 +180,7 @@ describe('HEADING_PRESET', () => {
 		expect(fields().map((field) => field.path)).toEqual([
 			'tokens.color',
 			'tokens.background',
+			'tokens.typography',
 			'tokens.fontSize',
 			'tokens.fontWeight',
 			'tokens.textTransform',
@@ -216,6 +216,11 @@ describe('HEADING_PRESET', () => {
 			expect(byPath[path].type).toBe('select');
 			expect(byPath[path].options.length).toBeGreaterThan(1);
 		});
+
+		// Font family is a select too, but over the library's favorites rather than a keyword set, so its
+		// length depends on what the site has kept. With none kept it still offers the theme font.
+		expect(byPath['tokens.typography'].type).toBe('select');
+		expect(byPath['tokens.typography'].options.map((option) => option.value)).toEqual(['']);
 
 		expect(byPath['tokens.fontSize'].type).toBe('token-scalar');
 		expect(byPath['tokens.borderWidth'].type).toBe('token-scalar');
@@ -254,6 +259,104 @@ describe('HEADING_PRESET', () => {
 			'tokens.padding',
 		]);
 		responsive.forEach((field) => expect(RESPONSIVE_CAPABLE_FIELD_TYPES).toContain(field.type));
+	});
+});
+
+describe('HEADING_PRESET font family and weight', () => {
+	afterEach(() => {
+		delete window.kadenceDesignTokens;
+		delete window.kadenceDesignTokensFontCatalog;
+	});
+
+	/**
+	 * Stub the library's favorites and the font catalog the weights come from.
+	 *
+	 * @param {string[]}                 favorites The library's favorite families.
+	 * @param {Record<string, string[]>} weights   The catalog's per-family weights.
+	 *
+	 * @since TBD
+	 *
+	 * @return {void}
+	 */
+	function stubFonts(favorites, weights) {
+		window.kadenceDesignTokens = { favoriteFonts: favorites };
+		window.kadenceDesignTokensFontCatalog = { google: Object.keys(weights), custom: [], weights };
+	}
+
+	/**
+	 * The family select lists the library's favorites, storing each as a literal family name rather than
+	 * a token id -- the font catalog is a list of real faces, not a token scale.
+	 *
+	 * @return {void}
+	 */
+	it('offers the library favorites as literal family names', () => {
+		stubFonts(['Inter', 'Abril Fatface'], {});
+
+		const family = fields().find((field) => field.path === 'tokens.typography');
+
+		expect(family.options.map((option) => option.value)).toEqual(['', 'Inter', 'Abril Fatface']);
+	});
+
+	/**
+	 * Weight narrows to the weights the chosen family actually ships. Abril Fatface ships only 400, and a
+	 * flat 100-900 list would offer eight faces it does not have -- the browser answers a missing one
+	 * with a synthesized approximation rather than the real face.
+	 *
+	 * @return {void}
+	 */
+	it('narrows the weight list to the weights the chosen family ships', () => {
+		stubFonts(['Abril Fatface'], { 'Abril Fatface': ['400'] });
+
+		const weight = HEADING_PRESET.schemaFor(undefined, { tokens: { typography: 'Abril Fatface' } })
+			.panels.flatMap((panel) => panel.fields)
+			.find((field) => field.path === 'tokens.fontWeight');
+
+		expect(weight.options.map((option) => option.value)).toEqual(['', '400']);
+	});
+
+	/**
+	 * A family the catalog does know is narrowed to exactly its own weights, in weight order.
+	 *
+	 * @return {void}
+	 */
+	it('offers every weight a rich family ships', () => {
+		stubFonts(['Inter'], { Inter: ['100', '400', '700', '900'] });
+
+		const weight = HEADING_PRESET.schemaFor(undefined, { tokens: { typography: 'Inter' } })
+			.panels.flatMap((panel) => panel.fields)
+			.find((field) => field.path === 'tokens.fontWeight');
+
+		expect(weight.options.map((option) => option.value)).toEqual(['', '100', '400', '700', '900']);
+	});
+
+	/**
+	 * With no family chosen the heading inherits the theme's font, which could be anything, and a custom
+	 * font carries no weight data at all. Both offer the full set rather than guessing at a narrower one.
+	 *
+	 * @return {void}
+	 */
+	it('offers every weight when the family is unknown or unset', () => {
+		stubFonts(['Inter'], { Inter: ['400'] });
+
+		const weightsFor = (typography) =>
+			HEADING_PRESET.schemaFor(undefined, { tokens: { typography } })
+				.panels.flatMap((panel) => panel.fields)
+				.find((field) => field.path === 'tokens.fontWeight')
+				.options.map((option) => option.value);
+
+		expect(weightsFor('')).toEqual(['', '100', '200', '300', '400', '500', '600', '700', '800', '900']);
+		expect(weightsFor('Some Custom Face')).toEqual([
+			'',
+			'100',
+			'200',
+			'300',
+			'400',
+			'500',
+			'600',
+			'700',
+			'800',
+			'900',
+		]);
 	});
 });
 

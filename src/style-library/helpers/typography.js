@@ -1,3 +1,4 @@
+// cspell:ignore Abril Fatface -- a Google font family named as a concrete example.
 /**
  * The Typography screen's pure helpers: mapping the library's favorite families into the FONT
  * selector's options, reading a fluid font-size step's authored scalar out of its resolved
@@ -150,7 +151,8 @@ export function fontSizeDisplayValue(value) {
  *
  * @since TBD
  *
- * @return {{google: string[], custom: string[]}} The catalog, or two empty lists when unavailable.
+ * @return {{google: string[], custom: string[], weights: Record<string, string[]>}} The catalog, or
+ *         two empty lists and an empty weight map when unavailable.
  */
 export function getFontCatalog() {
 	const catalog = window.kadenceDesignTokensFontCatalog;
@@ -158,7 +160,39 @@ export function getFontCatalog() {
 	return {
 		google: Array.isArray(catalog?.google) ? catalog.google : [],
 		custom: Array.isArray(catalog?.custom) ? catalog.custom : [],
+		weights: catalog?.weights && typeof catalog.weights === 'object' ? catalog.weights : {},
 	};
+}
+
+/**
+ * The weights a family actually ships, or `null` when the catalog knows nothing about it.
+ *
+ * `null` and `[]` mean different things and the caller needs both: a custom font contributes no weight
+ * data at all (the custom-fonts filter carries none), while a Google family the catalog does know is
+ * always listed with at least one weight. A control offering 100-900 for every family promises faces
+ * most families do not ship -- Abril Fatface ships only 400 -- and the browser answers with a
+ * synthesized approximation rather than the design system's own type.
+ *
+ * Matched case-insensitively and ignoring wrapping quotes, the way `findFontByFamily` matches, so a
+ * stored `"Abril Fatface"` finds the catalog's `Abril Fatface`.
+ *
+ * @param {string} family The family name.
+ *
+ * @since TBD
+ *
+ * @return {?string[]} The family's weights, or null when the catalog does not know it.
+ */
+export function fontWeightsFor(family) {
+	const name = unquoteFamily(String(family ?? '').trim()).toLowerCase();
+
+	if (name === '') {
+		return null;
+	}
+
+	const { weights } = getFontCatalog();
+	const match = Object.keys(weights).find((key) => unquoteFamily(key.trim()).toLowerCase() === name);
+
+	return match ? weights[match] : null;
 }
 
 /**
