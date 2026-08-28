@@ -24,6 +24,7 @@ export { ControlShell } from './templates/ControlShell';
 export { SlotGrid } from './templates/SlotGrid';
 export { BoxControl } from './controls/BoxControl';
 export { ScalarControl } from './controls/ScalarControl';
+export { ColorPicker } from './molecules/ColorPicker';
 
 export { BreakpointProvider, useBreakpoint } from './context/breakpoint';
 

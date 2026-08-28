@@ -1,7 +1,9 @@
-@use '../../../styles/mixins' as *;
-
+// This component was moved verbatim from the Style Library, which defines these `--kb-sl-*`
+// custom properties on its own app body class. The block editor has no such scope, so every
+// reference here carries a literal fallback (the same value the Style Library's own
+// `_primitives.scss`/`_semantic.scss` defines) to render correctly with or without that scope.
 .kadence-blocks-style-library__color-picker {
-	padding: var(--kb-sl-space-10);
+	padding: var(--kb-sl-space-10, 0.5rem);
 }
 
 // react-color's Saturation/Hue/Alpha primitives position their internals with `absolute` insets and
@@ -12,18 +14,20 @@
 	width: 100%;
 	padding-bottom: 64.66%;
 	overflow: hidden;
-	border-radius: var(--kb-sl-radius-m) var(--kb-sl-radius-m) 0 0;
+	border-radius: var(--kb-sl-radius-m, 0.25rem) var(--kb-sl-radius-m, 0.25rem) 0 0;
 }
 
 .kadence-blocks-style-library__color-picker-controls {
 	display: flex;
 	align-items: center;
-	gap: var(--kb-sl-space-10);
-	padding: var(--kb-sl-space-10) 0;
+	gap: var(--kb-sl-space-10, 0.5rem);
+	padding: var(--kb-sl-space-10, 0.5rem) 0;
 }
 
 .kadence-blocks-style-library__color-picker-sliders {
-	@include flex-column(var(--kb-sl-space-05));
+	display: flex;
+	flex-direction: column;
+	gap: var(--kb-sl-space-05, 0.25rem);
 	flex: 1;
 }
 
@@ -31,7 +35,7 @@
 .kadence-blocks-style-library__color-picker-alpha {
 	position: relative;
 	height: 10px;
-	border-radius: var(--kb-sl-radius-s);
+	border-radius: var(--kb-sl-radius-s, 0.125rem);
 }
 
 .kadence-blocks-style-library__color-picker-swatch {
@@ -40,7 +44,7 @@
 	width: 30px;
 	height: 30px;
 	overflow: hidden;
-	border-radius: var(--kb-sl-radius-full);
+	border-radius: var(--kb-sl-radius-full, 999px);
 	box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
 }
 
@@ -52,7 +56,7 @@
 .kadence-blocks-style-library__color-picker-fields {
 	display: flex;
 	align-items: flex-start;
-	gap: var(--kb-sl-space-05);
+	gap: var(--kb-sl-space-05, 0.25rem);
 }
 
 .kadence-blocks-style-library__color-picker-field {
@@ -65,27 +69,27 @@
 		width: 100%;
 		height: 1.25rem;
 		box-sizing: border-box;
-		padding: var(--kb-sl-space-05);
-		border: var(--kb-sl-border-width-input) solid #dadada;
-		border-radius: var(--kb-sl-radius-s);
+		padding: var(--kb-sl-space-05, 0.25rem);
+		border: var(--kb-sl-border-width-input, 1px) solid #dadada;
+		border-radius: var(--kb-sl-radius-s, 0.125rem);
 		color: #000000;
-		font-size: var(--kb-sl-font-size-xs);
+		font-size: var(--kb-sl-font-size-xs, 0.6875rem);
 		line-height: 1;
 		text-align: center;
 
 		&:focus {
-			border-color: var(--kb-sl-color-control-border-focus);
+			border-color: var(--kb-sl-color-control-border-focus, #2271b1);
 			outline: none;
 		}
 	}
 
 	label {
 		display: block;
-		margin-top: var(--kb-sl-space-05);
+		margin-top: var(--kb-sl-space-05, 0.25rem);
 		text-align: center;
 		text-transform: capitalize;
-		color: var(--kb-sl-color-text-primary);
-		font-size: var(--kb-sl-font-size-xs);
+		color: var(--kb-sl-color-text-primary, #1e1e1e);
+		font-size: var(--kb-sl-font-size-xs, 0.6875rem);
 	}
 }
 
@@ -94,10 +98,11 @@
 }
 
 .kadence-blocks-style-library__color-picker-view-cycle {
-	@include flex-column(0);
+	display: flex;
+	flex-direction: column;
 	flex: 0 0 auto;
 	width: 1.875rem;
-	padding-left: var(--kb-sl-space-05);
+	padding-left: var(--kb-sl-space-05, 0.25rem);
 }
 
 .kadence-blocks-style-library__color-picker-view-cycle-button {
@@ -112,7 +117,7 @@
 	padding: 0;
 	border: none;
 	background: none;
-	color: var(--kb-sl-color-text-muted);
+	color: var(--kb-sl-color-text-muted, #757575);
 	cursor: pointer;
 
 	svg {
@@ -121,6 +126,6 @@
 	}
 
 	&:hover {
-		color: var(--kb-sl-color-text-primary);
+		color: var(--kb-sl-color-text-primary, #1e1e1e);
 	}
 }
