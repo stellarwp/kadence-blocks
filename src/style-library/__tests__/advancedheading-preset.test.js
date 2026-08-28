@@ -66,7 +66,6 @@ describe('HEADING_PRESET', () => {
 		const values = {
 			'semantic.color.text': '#1A202C',
 			'semantic.color.heading-bg': 'transparent',
-			'semantic.font-family.heading': 'inherit',
 			'semantic.font-size.heading': '2rem',
 			'semantic.color.border': '#E2E8F0',
 			'semantic.border-width.default': '1px',
@@ -76,7 +75,6 @@ describe('HEADING_PRESET', () => {
 		const tokens = {
 			color: '{semantic.color.text}',
 			background: '{semantic.color.heading-bg}',
-			typography: '{semantic.font-family.heading}',
 			fontSize: '{semantic.font-size.heading}',
 			borderColor: '{semantic.color.border}',
 			borderWidth: '{semantic.border-width.default}',
@@ -87,7 +85,6 @@ describe('HEADING_PRESET', () => {
 		expect(HEADING_PRESET.preview(tokens, values)).toMatchObject({
 			color: '#1A202C',
 			background: 'transparent',
-			typography: 'inherit',
 			fontSize: '2rem',
 			borderColor: '#E2E8F0',
 			borderWidth: '1px',
@@ -121,7 +118,6 @@ describe('HEADING_PRESET', () => {
 			preview: {
 				color: '#1A202C',
 				background: '#F7FAFC',
-				typography: 'Georgia',
 				fontSize: '4rem',
 				fontWeight: '700',
 				textTransform: 'uppercase',
@@ -136,7 +132,6 @@ describe('HEADING_PRESET', () => {
 		expect(chip.props.style).toMatchObject({
 			color: '#1A202C',
 			background: '#F7FAFC',
-			fontFamily: 'Georgia',
 			fontWeight: '700',
 			textTransform: 'uppercase',
 			borderColor: '#E2E8F0',
@@ -174,9 +169,11 @@ describe('HEADING_PRESET', () => {
 	});
 
 	/**
-	 * Eleven of the block's thirteen bound properties are offered. `fontHeight` and `letterSpacing` are
-	 * bound but withheld: neither has a token scale, and unlike the keyword properties they are open
-	 * numeric ranges, so the only control that would fit is a bare number.
+	 * Ten of the block's twelve bound properties are offered. `fontHeight` and `letterSpacing` are bound
+	 * but withheld: neither has a token scale, and unlike the keyword properties they are open numeric
+	 * ranges, so the only control that would fit is a bare number. Font family is absent for a different
+	 * reason -- it is not a bound property at all, the family being stored as a literal from the
+	 * typography control's own catalog.
 	 *
 	 * @return {void}
 	 */
@@ -184,7 +181,6 @@ describe('HEADING_PRESET', () => {
 		expect(fields().map((field) => field.path)).toEqual([
 			'tokens.color',
 			'tokens.background',
-			'tokens.typography',
 			'tokens.fontSize',
 			'tokens.fontWeight',
 			'tokens.textTransform',
@@ -221,7 +217,6 @@ describe('HEADING_PRESET', () => {
 			expect(byPath[path].options.length).toBeGreaterThan(1);
 		});
 
-		expect(byPath['tokens.typography'].type).toBe('token-select');
 		expect(byPath['tokens.fontSize'].type).toBe('token-scalar');
 		expect(byPath['tokens.borderWidth'].type).toBe('token-scalar');
 	});

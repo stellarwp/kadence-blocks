@@ -3,7 +3,6 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Editor;
 
-use Generator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Editor\Preset_Catalog;

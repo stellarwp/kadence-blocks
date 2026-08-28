@@ -108,7 +108,8 @@ const FONT_WEIGHT_OPTIONS = [
  *
  * Everything the screen edits that a chip of text can honestly show. `borderWidth` and `borderStyle`
  * are previewed alongside `borderColor` because all three are needed for a border to render at all —
- * a color on its own is invisible, which is the trap the Row Layout and Section screens hit.
+ * a color on its own is invisible, which is the trap the Row Layout and Section screens hit. Font
+ * family is absent because it is not a bound property; see `schemaFor()`.
  *
  * @param {Record<string, *>}      tokens       The preset's stored token map.
  * @param {Record<string, string>} values       The feed's resolved value map.
@@ -124,7 +125,6 @@ function preview(tokens, values, breakpoint) {
 	return {
 		color: resolve('color'),
 		background: resolve('background'),
-		typography: resolve('typography'),
 		fontSize: resolve('fontSize'),
 		fontWeight: resolve('fontWeight'),
 		textTransform: resolve('textTransform'),
@@ -141,7 +141,7 @@ function preview(tokens, values, breakpoint) {
  * its own frame.
  *
  * Real text rather than a swatch, because every property this screen edits except the box ones is a
- * type property, and a color chip cannot show a weight, a family or a transform. The size is deliberately
+ * type property, and a color chip cannot show a weight or a transform. The size is deliberately
  * NOT applied at true size — the scale reaches 4rem and a row cannot grow that far without dwarfing its
  * neighbors — so the chip states the family, weight, transform, color and frame faithfully and leaves
  * size to the sidebar. The Advanced Image tile can afford to grow because its padding is the only
@@ -160,7 +160,6 @@ function renderPreview(row) {
 			style={{
 				color: row.preview.color || undefined,
 				background: row.preview.background || undefined,
-				fontFamily: row.preview.typography || undefined,
 				fontWeight: row.preview.fontWeight || undefined,
 				textTransform: row.preview.textTransform || undefined,
 				borderColor: row.preview.borderColor || undefined,
@@ -180,8 +179,13 @@ function renderPreview(row) {
  * The settings schema. The heading declares no tabs: it binds no hover property, so there is no second
  * state to switch to and `PresetSidebar` renders the field area bare.
  *
- * Eleven of the block's thirteen bound properties are offered, grouped by what a site owner is doing
- * rather than by how each value is stored.
+ * Ten of the block's twelve bound properties are offered, grouped by what a site owner is doing rather
+ * than by how each value is stored.
+ *
+ * Font family is not among them, and is not a bound property at all: a heading inherits the theme's
+ * font, the block-default CSS emits no font-family default for it, and the family a site owner picks
+ * comes from the typography control's own font catalog and is stored as a literal. See the block's
+ * `preset_bindings` declaration.
  *
  * The split between a token picker and a keyword select is not arbitrary: a property is offered as a
  * picker when the design system actually has a scale for it, and as a select when it does not.
@@ -219,13 +223,6 @@ function schemaFor() {
 				id: 'typography',
 				title: __('Typography', 'kadence-blocks'),
 				fields: [
-					{
-						type: 'token-select',
-						tokenType: 'fontFamily',
-						role: 'font-family',
-						path: 'tokens.typography',
-						label: __('Font Family', 'kadence-blocks'),
-					},
 					{
 						type: 'token-scalar',
 						tokenType: 'dimension',
