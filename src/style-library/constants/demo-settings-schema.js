@@ -106,6 +106,7 @@ export const DEMO_SETTINGS_SCHEMA = {
 			fields: [
 				{ type: 'color', path: 'background', label: __('Background', 'kadence-blocks') },
 				{ type: 'token-color-select', path: 'tokenColor', label: __('Token Color', 'kadence-blocks') },
+				{ type: 'color-select', path: 'paletteColor', label: __('Palette Color', 'kadence-blocks') },
 				{
 					type: 'color-list',
 					path: 'stateColors',

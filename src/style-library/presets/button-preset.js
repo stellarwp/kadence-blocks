@@ -175,8 +175,8 @@ function schemaFor(tab) {
 		id: 'color',
 		title: __('Color', 'kadence-blocks'),
 		fields: [
-			{ type: 'token-color-select', path: textPath, label: __('Text', 'kadence-blocks') },
-			{ type: 'token-color-select', path: bgPath, label: __('Background', 'kadence-blocks') },
+			{ type: 'color-select', path: textPath, label: __('Text', 'kadence-blocks') },
+			{ type: 'color-select', path: bgPath, label: __('Background', 'kadence-blocks') },
 		],
 	};
 
