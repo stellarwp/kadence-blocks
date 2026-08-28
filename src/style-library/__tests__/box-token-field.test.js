@@ -123,7 +123,24 @@ describe('semanticDefaultOf', () => {
 		expect(semanticDefaultOf('', pool)).toBeNull();
 	});
 
-	it('resolves only the semantic corners of a mixed list, leaving the rest to the field default', () => {
+	it('resolves the semantic corners of a mixed list and reads the rest from the field default', () => {
+		expect(
+			semanticDefaultOf(['semantic.radius.media', 'primitive.dimension.radius.sm', '4px', ''], pool, '2px')
+		).toEqual(['0.5rem', '2px', '2px', '2px']);
+	});
+
+	it("takes each corner's own field default when the declared default is itself a slot list", () => {
+		expect(
+			semanticDefaultOf(['semantic.radius.media', 'primitive.dimension.radius.sm', '4px', ''], pool, [
+				'1px',
+				'2px',
+				'3px',
+				'4px',
+			])
+		).toEqual(['0.5rem', '2px', '3px', '4px']);
+	});
+
+	it('leaves the non-semantic corners empty when the field declares no default', () => {
 		expect(semanticDefaultOf(['semantic.radius.media', 'primitive.dimension.radius.sm', '4px', ''], pool)).toEqual([
 			'0.5rem',
 			'',

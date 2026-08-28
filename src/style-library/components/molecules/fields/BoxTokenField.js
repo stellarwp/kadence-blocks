@@ -109,28 +109,33 @@ export function withoutSemanticSlots(value) {
  * The resolved literal a value's semantic slots fall back to, in the value's own shape, or null when
  * it binds no semantic at all.
  *
- * A partially-semantic slot list resolves only its semantic corners and leaves the rest empty, so the
- * default describes exactly the corners that have one — the others fall back to the field's own
- * declared default the way they always did.
+ * A partially-semantic slot list resolves only its semantic corners; the rest read from the field's
+ * own declared default, so the default describes every corner the way it did before any of them
+ * bound a semantic. Resolving the whole list here rather than returning only the semantic corners is
+ * what keeps that promise: the caller takes this in place of the declared default, not alongside it,
+ * so a corner left empty here would show as blank rather than as the value actually in effect.
  *
- * @param {*}     value      The stored scalar or slot list.
- * @param {Array} everyToken The full token pool, before any role narrowing, used to resolve an id.
+ * @param {*}     value        The stored scalar or slot list.
+ * @param {Array} everyToken   The full token pool, before any role narrowing, used to resolve an id.
+ * @param {*}     fieldDefault The field's own declared default, for the corners that bind no semantic.
  *
  * @since TBD
  *
  * @return {*} The resolved default, in the value's shape, or null when no slot binds a semantic.
  */
-export function semanticDefaultOf(value, everyToken) {
+export function semanticDefaultOf(value, everyToken, fieldDefault = null) {
 	const slots = isSlotList(value) ? value : [value];
 
 	if (!slots.some(isSemanticSlot)) {
 		return null;
 	}
 
-	const resolve = (slot) =>
-		isSemanticSlot(slot) ? (everyToken.find((token) => token.id === slot)?.value ?? '') : '';
+	const resolve = (slot, index) =>
+		isSemanticSlot(slot)
+			? (everyToken.find((token) => token.id === slot)?.value ?? '')
+			: (readSlot(fieldDefault, index) ?? '');
 
-	return isSlotList(value) ? value.map(resolve) : resolve(value);
+	return isSlotList(value) ? value.map(resolve) : resolve(value, 0);
 }
 
 /**
@@ -319,7 +324,7 @@ export function BoxTokenField({ field, value, onChange, slots = 'sides' }) {
 	// the declared default is a literal written into the screen config, while this is what the
 	// preset actually resolves in the active library.
 	const shown = withoutSemanticSlots(atBreakpoint);
-	const semanticDefault = semanticDefaultOf(atBreakpoint, everyToken);
+	const semanticDefault = semanticDefaultOf(atBreakpoint, everyToken, fieldDefault);
 
 	const shownDefault = inheritsFromBreakpoint
 		? mapSlots(inheritedAbove, asLiteral)
