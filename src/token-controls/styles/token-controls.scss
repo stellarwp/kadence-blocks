@@ -984,10 +984,11 @@
 	width: 100%;
 }
 
-// `Dropdown`'s own wrapping element has no intrinsic width; without this the trigger's `width: 100%`
-// below has nothing to fill and the control reads narrower than every other field beside it.
+// `Dropdown`'s own wrapping element has no intrinsic width; without this it has nothing to fill
+// within `.kb-color-control__trigger`'s row and the toggle button reads narrower than its share.
 .kb-color-control__dropdown {
-	width: 100%;
+	flex: 1 1 auto;
+	min-width: 0;
 }
 
 // Matches `.kadence-token-field__popover`'s own sheet size — without it the popover falls back to
@@ -1001,6 +1002,12 @@
  * `ColorControl`'s own trigger row: a swatch, the control's static attribute label, the currently
  * selected token's label right-aligned, and the `BindingIndicator` mark — no `.kb-token-control`
  * header above it, since the label lives inside this row instead.
+ *
+ * The bordered box and the clickable toggle are two elements, not one: `BindingIndicator` renders
+ * its own `<button>` for Reset once modified, and nesting that inside the toggle `<button>` would
+ * let a Reset click bubble up and reopen the popover it just closed. This div carries the row's
+ * border/background/hover/disabled chrome; `.kb-color-control__trigger-button` below is the actual
+ * (borderless) toggle sitting inside it, with `BindingIndicator` as its sibling.
  */
 .kb-color-control__trigger {
 	display: flex;
@@ -1015,15 +1022,37 @@
 	color: #1e1e1e;
 	font-size: 13px;
 	line-height: 1.4;
-	cursor: pointer;
 
 	&:hover {
 		border-color: #1e1e1e;
 	}
 
+	&:has(.kb-color-control__trigger-button[aria-expanded="true"]) {
+		border-color: #3858e9;
+		box-shadow: 0 0 0 1px #3858e9;
+	}
+
+	&:has(.kb-color-control__trigger-button:disabled) {
+		opacity: 0.5;
+	}
+}
+
+// The dropdown's actual toggle: unstyled but for layout, so only `.kb-color-control__trigger`'s
+// border/background reads as the control's own box.
+.kb-color-control__trigger-button {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	width: 100%;
+	padding: 0;
+	border: 0;
+	background: none;
+	color: inherit;
+	font: inherit;
+	cursor: pointer;
+
 	&:disabled {
 		cursor: default;
-		opacity: 0.5;
 	}
 }
 

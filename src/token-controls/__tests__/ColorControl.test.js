@@ -10,26 +10,44 @@ import { createRoot } from 'react-dom/client';
  */
 import { ColorControl } from '../controls/ColorControl';
 
+// A module-level spy so a test can assert `onToggle` was (or was not) called without the
+// `Dropdown` mock needing to accept one through props — e.g. confirming a `BindingIndicator`
+// Reset click, which sits as `onToggle`'s DOM sibling now rather than nested inside it, never
+// bubbles up and reopens the popover it just closed.
+const mockOnToggle = jest.fn();
+
 // Matches `token-popover.test.js`'s stand-in: `@wordpress/components` resolves its own nested
 // `react` copy, a different module instance than the top-level `react-dom/client` this test renders
 // with, which trips React's "Invalid hook call" guard. `Dropdown` renders both its toggle and its
 // content at once (rather than gating on `isOpen`) so a test can reach the popover's rows without
 // simulating a real open click.
 jest.mock('@wordpress/components', () => ({
-	Button: ({ children, isPressed, ...props }) => <button {...props}>{children}</button>,
+	// `showTooltip` (like `isPressed`) is a `Button`-only prop — spreading it onto a DOM `<button>`
+	// trips React's "unrecognized DOM attribute" warning, which `@wordpress/jest-console` treats as
+	// a test failure.
+	Button: ({ children, isPressed, showTooltip, ...props }) => <button {...props}>{children}</button>,
 	Dropdown: ({ renderToggle, renderContent }) => (
 		<>
-			{renderToggle({ isOpen: false, onToggle: () => {} })}
+			{renderToggle({ isOpen: false, onToggle: mockOnToggle })}
 			{renderContent({ onClose: () => {} })}
 		</>
 	),
 	Icon: ({ icon, ...props }) => <span {...props}>{icon}</span>,
 	RangeControl: ({ label }) => <div>{label}</div>,
 	SelectControl: ({ label }) => <div>{label}</div>,
-	TabPanel: ({ children, tabs, initialTabName }) => {
-		const initialTab = tabs.find((tab) => tab.name === initialTabName) || tabs[0];
-		return <div data-testid="tab-panel">{children(initialTab)}</div>;
-	},
+	// Renders every tab's content unconditionally, not just `initialTabName`'s — `ColorControl`
+	// computes its own initial tab internally (never `'custom'` while a value is bound to an entry,
+	// since a bound value is always alias-shaped), so a test asserting on the Custom tab's output
+	// needs it mounted regardless of which tab a real `TabPanel` would show as active.
+	TabPanel: ({ children, tabs }) => (
+		<div data-testid="tab-panel">
+			{tabs.map((tab) => (
+				<div key={tab.name} data-tab={tab.name}>
+					{children(tab)}
+				</div>
+			))}
+		</div>
+	),
 	Tooltip: ({ children }) => children,
 	__experimentalNumberControl: ({ label }) => <div>{label}</div>,
 }));
@@ -47,9 +65,13 @@ jest.mock('@wordpress/i18n', () => ({
 	sprintf: (format, ...args) => format.replace(/%s/g, () => args.shift()),
 }));
 
-// `ColorPicker` pulls in `react-color`, which the token-popover-style tests never need to exercise —
-// `ColorControl`'s own behavior under test never opens the Custom tab.
-jest.mock('../molecules/ColorPicker', () => ({ ColorPicker: () => null }));
+// `ColorPicker` pulls in `react-color`, which these tests never need to exercise — this stand-in
+// exposes the `color` prop it was called with (`data-testid="color-picker"`'s own `data-color`
+// attribute) so a test can assert what `ColorControl` resolves for the Custom tab without
+// rendering the real saturation/hue UI.
+jest.mock('../molecules/ColorPicker', () => ({
+	ColorPicker: ({ color }) => <div data-testid="color-picker" data-color={color ?? ''} />,
+}));
 
 jest.mock('../styles/token-controls.scss', () => ({}), { virtual: true });
 
@@ -82,6 +104,7 @@ beforeEach(() => {
 	container = document.createElement('div');
 	document.body.appendChild(container);
 	root = createRoot(container);
+	mockOnToggle.mockClear();
 });
 
 afterEach(() => {
@@ -200,5 +223,54 @@ describe('ColorControl', () => {
 		act(() => items[1].dispatchEvent(new MouseEvent('click', { bubbles: true })));
 
 		expect(onPick).toHaveBeenCalledWith('{semantic.color.accent.soft}');
+	});
+
+	/**
+	 * `BindingIndicator`'s Reset button is a DOM sibling of the dropdown's toggle button, not
+	 * nested inside it — a Reset click must never bubble up and reopen the popover it just closed.
+	 *
+	 * @return {void}
+	 */
+	it('does not toggle the popover when the binding indicator is reset', () => {
+		const onReset = jest.fn();
+
+		render({
+			value: '{semantic.color.accent.soft}',
+			status: { bound: true, modified: true },
+			onReset,
+		});
+
+		const reset = container.querySelector('.kb-token-control__indicator-reset');
+		expect(reset).not.toBeNull();
+		expect(container.querySelector('.kb-color-control__trigger-button').contains(reset)).toBe(false);
+
+		act(() => reset.dispatchEvent(new MouseEvent('click', { bubbles: true })));
+
+		expect(onReset).toHaveBeenCalled();
+		expect(mockOnToggle).not.toHaveBeenCalled();
+	});
+
+	/**
+	 * When the value is bound to a group entry and the host supplies no `resolveLiteral`, the
+	 * Custom tab must never receive the raw bracket alias as a literal CSS color — `ColorPicker`
+	 * requires a parseable value, and an alias string like `{semantic.color.accent.soft}` isn't one.
+	 *
+	 * @return {void}
+	 */
+	it('does not pass a raw token alias to the Custom tab when resolveLiteral is omitted', () => {
+		render({ value: '{semantic.color.accent.soft}', resolveLiteral: undefined });
+
+		expect(container.querySelector('[data-testid="color-picker"]').dataset.color).toBe('');
+	});
+
+	/**
+	 * The Custom tab still seeds from the host's resolved literal when one is available.
+	 *
+	 * @return {void}
+	 */
+	it('passes the resolved literal to the Custom tab when resolveLiteral is provided', () => {
+		render({ value: '{semantic.color.accent.soft}', resolveLiteral: () => '#3182ce' });
+
+		expect(container.querySelector('[data-testid="color-picker"]').dataset.color).toBe('#3182ce');
 	});
 });

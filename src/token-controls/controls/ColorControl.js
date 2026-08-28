@@ -76,43 +76,48 @@ export function ColorControl({
 
 	return (
 		<div className="kb-color-control">
-			<Dropdown
-				className="kb-color-control__dropdown"
-				contentClassName="kb-color-control__popover"
-				popoverProps={{ placement: 'left-start' }}
-				renderToggle={({ isOpen, onToggle }) => (
-					<button
-						type="button"
-						className="kb-color-control__trigger"
-						aria-expanded={isOpen}
-						disabled={disabled}
-						onClick={onToggle}
-					>
-						<ColorSwatch entry={entry} value={!entry && !isTokenAlias(value) ? value : null} />
-						<span className="kb-color-control__label">{label}</span>
-						{selectedLabel && <span className="kb-color-control__value">{selectedLabel}</span>}
-						<BindingIndicator status={status} onReset={onReset} showReset disabled={disabled} />
-					</button>
-				)}
-				renderContent={({ onClose }) => (
-					<TokenPopover
-						value={value}
-						tokens={allSwatches}
-						initialTab={initialTab}
-						renderList={({ onPick: pick, onClose: close }) => (
-							<ColorGroupList groups={groups} value={value} onPick={pick} onClose={close} />
-						)}
-						renderCustom={() => (
-							<ColorPicker
-								color={entry && resolveLiteral ? resolveLiteral(entry) : value}
-								onChange={onCustom}
-							/>
-						)}
-						onPick={onPick}
-						onClose={onClose}
-					/>
-				)}
-			/>
+			<div className="kb-color-control__trigger">
+				<Dropdown
+					className="kb-color-control__dropdown"
+					contentClassName="kb-color-control__popover"
+					popoverProps={{ placement: 'left-start' }}
+					renderToggle={({ isOpen, onToggle }) => (
+						<button
+							type="button"
+							className="kb-color-control__trigger-button"
+							aria-expanded={isOpen}
+							disabled={disabled}
+							onClick={onToggle}
+						>
+							<ColorSwatch entry={entry} value={!entry && !isTokenAlias(value) ? value : null} />
+							<span className="kb-color-control__label">{label}</span>
+							{selectedLabel && <span className="kb-color-control__value">{selectedLabel}</span>}
+						</button>
+					)}
+					renderContent={({ onClose }) => (
+						<TokenPopover
+							value={value}
+							tokens={allSwatches}
+							initialTab={initialTab}
+							renderList={({ onPick: pick, onClose: close }) => (
+								<ColorGroupList groups={groups} value={value} onPick={pick} onClose={close} />
+							)}
+							renderCustom={() => (
+								<ColorPicker
+									color={entry && resolveLiteral ? resolveLiteral(entry) : entry ? '' : value}
+									onChange={onCustom}
+								/>
+							)}
+							onPick={onPick}
+							onClose={onClose}
+						/>
+					)}
+				/>
+				{/* A sibling of the toggle button, never nested inside it — `BindingIndicator` renders its
+				    own `<button>` for Reset once modified, and nesting two buttons would let a Reset
+				    click bubble to the toggle's `onClick` and reopen the popover it just closed. */}
+				<BindingIndicator status={status} onReset={onReset} showReset disabled={disabled} />
+			</div>
 		</div>
 	);
 }
