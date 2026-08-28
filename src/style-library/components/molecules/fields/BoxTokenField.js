@@ -344,7 +344,9 @@ export function BoxTokenField({ field, value, originalValue, onChange, slots = '
 	// holds one whole value per breakpoint — scalar or slot list — so a breakpoint is resolved first
 	// and the four slots are read out of whatever that breakpoint holds.
 	const atBreakpoint = responsive ? readPresetBreakpoint(value, breakpoint) : value;
-	const originalAtBreakpoint = responsive ? readPresetBreakpoint(originalValue, breakpoint) : originalValue;
+	// Resolved, not read: a preset that stores only a desktop value still resolves to it at Tablet and
+	// Mobile, so those breakpoints must fall back the same way a reset actually would.
+	const originalAtBreakpoint = responsive ? resolvePresetBreakpoint(originalValue, breakpoint) : originalValue;
 	const write = (next) => (responsive ? writePresetBreakpoint(value, breakpoint, next) : next);
 
 	// A semantic's name never shows; its resolved value becomes the field's Default. It outranks
@@ -454,7 +456,7 @@ export function BoxTokenField({ field, value, originalValue, onChange, slots = '
 				// once rather than leaving a mix behind the single shared switcher.
 				onChange(
 					write(
-						mapSlots(atBreakpoint, (slot) => {
+						mapSlots(effectiveAtBreakpoint, (slot) => {
 							const parsed = parseCssLength(slot);
 
 							return parsed ? `${parsed.size}${next}` : slot;

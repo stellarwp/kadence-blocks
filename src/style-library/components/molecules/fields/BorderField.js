@@ -58,6 +58,7 @@ import { isUnsetPresetValue } from '../../../helpers/presets';
 import {
 	PRESET_BREAKPOINTS,
 	readPresetBreakpoint,
+	resolvePresetBreakpoint,
 	writePresetBreakpoint,
 } from '../../../../token-controls/helpers/preset-envelope';
 import { BorderControl } from '../../../../token-controls/controls/BorderControl';
@@ -252,8 +253,9 @@ export function BorderField({ field, values, originalValues, onValueChange }) {
 
 	const widthAtBreakpoint = responsive ? readPresetBreakpoint(rawWidth, breakpoint) : rawWidth;
 	const styleAtBreakpoint = responsive ? readPresetBreakpoint(rawStyle, breakpoint) : rawStyle;
-	const originalWidthAtBreakpoint = responsive ? readPresetBreakpoint(originalWidth, breakpoint) : originalWidth;
-	const originalStyleAtBreakpoint = responsive ? readPresetBreakpoint(originalStyle, breakpoint) : originalStyle;
+	// Resolved, not read — see `BoxTokenField`: a desktop-only stored value still resolves at Tablet.
+	const originalWidthAtBreakpoint = responsive ? resolvePresetBreakpoint(originalWidth, breakpoint) : originalWidth;
+	const originalStyleAtBreakpoint = responsive ? resolvePresetBreakpoint(originalStyle, breakpoint) : originalStyle;
 
 	// A semantic is the block's own default, not a selection, and the pool offers primitives only —
 	// left in place it renders as a raw dot-path. Blanked before the effective read below.
