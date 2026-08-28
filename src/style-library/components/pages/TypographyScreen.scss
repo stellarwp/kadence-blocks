@@ -102,7 +102,7 @@
 // while Remove Favorite sits perfectly still, which is the state this control most needs to show.
 // Only the background is clobbered; the animation itself survives, so re-declaring the gradient at a
 // weight the disabled rule cannot beat is the whole fix.
-//
+
 // The two literals are `wp-components`' own busy-stripe values, copied exactly so this face animates
 // identically to the Add face beside it and to every other busy button in the app (`SettingsPanel`'s
 // Save and Delete, `PresetScreen`'s Add). They are deliberately NOT routed through `--kb-sl-*`

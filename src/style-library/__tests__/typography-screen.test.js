@@ -245,6 +245,15 @@ describe('TypographyScreen favorite button', () => {
 		// drop focus to the document the moment a keyboard user activated it.
 		expect(button.getAttribute('aria-disabled')).toBe('true');
 		expect(button.disabled).toBe(false);
+
+		// "Stays focusable" asserted as behavior rather than as markup: jsdom refuses `focus()` on a
+		// button carrying the `disabled` attribute and honors it on an `aria-disabled` one, so this
+		// fails the moment `accessibleWhenDisabled` comes off. Focus RETENTION is the thing a real
+		// keyboard user loses, but it cannot be asserted here — jsdom does not implement the
+		// blur-on-disable that causes it, so such a check would pass either way.
+		button.focus();
+
+		expect(document.activeElement).toBe(button);
 	});
 
 	it('keeps naming the in-flight action after the feed refreshes beneath it', () => {
