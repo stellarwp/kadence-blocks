@@ -151,6 +151,10 @@ export function ScalarTokenField({ field, value, onChange }) {
 				alias: `{${token.id}}`,
 			}))}
 			defaultValue={shownDefault ?? undefined}
+			// A field whose tokens resolve to something too long to read in a row opts out of showing
+			// values beside their labels. A fluid font size resolves to a whole `clamp()` expression,
+			// which overran the row and pushed the label out of view.
+			showValue={field.showValue !== false}
 			inherited={inheritsFromBreakpoint}
 			unit={unit}
 			units={units}
