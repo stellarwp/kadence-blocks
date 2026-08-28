@@ -19,9 +19,10 @@
 // width draws no frame — matching the block, where all three are needed before a border renders, and
 // keeping an unstyled preset from sprouting an edge the page would not have.
 //
-// The font size is deliberately not the preset's: the scale reaches 4rem and a row set at true size
-// would dwarf its neighbors. The chip states family, weight, transform, color and frame faithfully and
-// leaves size to the sidebar, which names the actual value while a preset is being edited.
+// `font-size`, `padding` and `border-width` are all set inline from the preset at the size it actually
+// sets, and the row grows to fit. The values here are the floor for a preset that sets none.
+// `line-height` is unitless so it follows whatever size the chip lands on, rather than pinning a
+// body-text leading onto 6rem type.
 .kadence-blocks-style-library__heading-preset-preview {
 	display: inline-flex;
 	align-items: center;
@@ -29,15 +30,18 @@
 	// A floor, not a fixed inset: the preset's own padding is applied inline and overrides this, while a
 	// preset that sets none still reads as a chip rather than as bare text.
 	padding: var(--kb-sl-space-10) var(--kb-sl-space-20);
+	// A long word at 6rem would otherwise force the row wider than the panel.
+	max-width: 100%;
+	overflow-wrap: anywhere;
 	border-width: 0;
 	border-style: none;
 	font-size: var(--kb-sl-font-size-body);
-	line-height: var(--kb-sl-line-height-s);
-	white-space: nowrap;
+	line-height: 1.2;
 	transition:
 		background-color 300ms ease,
 		border-color 300ms ease,
 		border-radius 300ms ease,
 		padding 300ms ease,
+		font-size 300ms ease,
 		color 300ms ease;
 }

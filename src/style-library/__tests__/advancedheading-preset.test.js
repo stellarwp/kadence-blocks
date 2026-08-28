@@ -107,12 +107,13 @@ describe('HEADING_PRESET', () => {
 	});
 
 	/**
-	 * The chip states the preset's type and frame. Font SIZE is deliberately not applied: the scale
-	 * reaches 4rem and a row set at true size would dwarf its neighbors, so the sidebar names it instead.
+	 * The chip states the preset's type and frame at the size the preset actually sets, and the row grows
+	 * to fit. Anything else misrepresents it: at body size, 3rem of padding read as a circle where the
+	 * page rendered a pill.
 	 *
 	 * @return {void}
 	 */
-	it('renders a chip carrying the type and frame but not the font size', () => {
+	it('renders a chip carrying the type and frame at the size the preset sets', () => {
 		const chip = HEADING_PRESET.renderPreview({
 			id: 'title',
 			label: 'Title',
@@ -140,12 +141,9 @@ describe('HEADING_PRESET', () => {
 			borderStyle: 'solid',
 			borderRadius: '0.5rem',
 		});
-		expect(chip.props.style.fontSize).toBeUndefined();
-
-		// Padding and border width are re-expressed against the preset's own font size, so the chip keeps
-		// the preset's proportions at whatever size the row can afford. 3rem against a 6rem size is 0.5em.
-		expect(chip.props.style.padding).toBe('0.5em');
-		expect(chip.props.style.borderWidth).toBe('0.0104em');
+		expect(chip.props.style.fontSize).toBe('6rem');
+		expect(chip.props.style.padding).toBe('3rem');
+		expect(chip.props.style.borderWidth).toBe('1px');
 	});
 
 	/**
@@ -154,7 +152,24 @@ describe('HEADING_PRESET', () => {
 	 *
 	 * @return {void}
 	 */
-	it('leaves padding at true size when the preset sets no font size', () => {
+	/**
+	 * A fluid font-size step resolves to a whole `clamp()`, which sizes against the VIEWPORT -- drawing it
+	 * would size the chip by how wide the browser happens to be. The step's authored scalar is drawn
+	 * instead, the same value the SIZE field states.
+	 *
+	 * @return {void}
+	 */
+	it('draws a fluid step at its authored scalar rather than its clamp', () => {
+		const chip = HEADING_PRESET.renderPreview({
+			id: 'fluid',
+			label: 'Fluid',
+			preview: { fontSize: 'clamp(2.75rem, 0.489rem + 7.065vw, 6rem)' },
+		});
+
+		expect(chip.props.style.fontSize).toBe('6rem');
+	});
+
+	it('leaves the chip unsized when the preset sets no font size', () => {
 		const chip = HEADING_PRESET.renderPreview({
 			id: 'plain',
 			label: 'Plain',
@@ -163,21 +178,7 @@ describe('HEADING_PRESET', () => {
 
 		expect(chip.props.style.padding).toBe('3rem');
 		expect(chip.props.style.borderWidth).toBe('1px');
-	});
-
-	/**
-	 * A per-corner padding shorthand scales each side on its own, since each is its own length.
-	 *
-	 * @return {void}
-	 */
-	it('scales every side of a padding shorthand against the font size', () => {
-		const chip = HEADING_PRESET.renderPreview({
-			id: 'corners',
-			label: 'Corners',
-			preview: { padding: '1rem 2rem 1rem 2rem', fontSize: '2rem' },
-		});
-
-		expect(chip.props.style.padding).toBe('0.5em 1em 0.5em 1em');
+		expect(chip.props.style.fontSize).toBeUndefined();
 	});
 
 	/**
