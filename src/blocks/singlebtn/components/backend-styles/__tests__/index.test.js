@@ -10,7 +10,7 @@
 /**
  * Internal dependencies
  */
-import { hasVisibleShadow } from '../index';
+import { hasVisibleShadow, shadowAxisPx } from '../index';
 
 // `backend-styles/index.js` imports the `@kadence/helpers` barrel, which eagerly pulls in a
 // REST-fetch helper that has no `@wordpress/api-fetch` module to resolve under Jest (the same
@@ -30,6 +30,10 @@ jest.mock('@kadence/helpers', () => ({
 jest.mock('../../../../../extension/preset-picker', () => ({
 	activePresetFor: jest.fn(),
 	blockPresetValues: jest.fn(),
+}));
+
+jest.mock('../../../../../extension/design-tokens/token-px', () => ({
+	tokenPx: jest.fn((value) => (value === '{primitive.shadow.md}' ? 8 : null)),
 }));
 
 describe('hasVisibleShadow', () => {
@@ -90,5 +94,40 @@ describe('hasVisibleShadow', () => {
 	 */
 	it('is true for a token alias reference on any leg', () => {
 		expect(hasVisibleShadow({ hOffset: 0, vOffset: 0, blur: '{primitive.shadow.md}', spread: 0 })).toBe(true);
+	});
+});
+
+describe('shadowAxisPx', () => {
+	/**
+	 * A {dot.alias} leg resolves through the token pool. Concatenated raw it would emit `{alias}px`,
+	 * which is not valid CSS — and `hasVisibleShadow()` counts such a leg as visible, so it does reach
+	 * the serializer.
+	 *
+	 * @return {void}
+	 */
+	it('resolves a token alias leg to its pixel value', () => {
+		expect(shadowAxisPx('{primitive.shadow.md}', 0)).toBe(8);
+	});
+
+	/**
+	 * An alias the pool cannot resolve falls back to the axis default rather than emitting the raw
+	 * alias, which would serialize as invalid CSS.
+	 *
+	 * @return {void}
+	 */
+	it('falls back to the axis default when the alias does not resolve', () => {
+		expect(shadowAxisPx('{primitive.shadow.unknown}', 14)).toBe(14);
+	});
+
+	/**
+	 * A plain numeric axis passes through untouched, and an unset one takes its default.
+	 *
+	 * @return {void}
+	 */
+	it('passes a numeric axis through and defaults an unset one', () => {
+		expect(shadowAxisPx(4, 0)).toBe(4);
+		expect(shadowAxisPx(0, 14)).toBe(0);
+		expect(shadowAxisPx(undefined, 14)).toBe(14);
+		expect(shadowAxisPx(null, 14)).toBe(14);
 	});
 });

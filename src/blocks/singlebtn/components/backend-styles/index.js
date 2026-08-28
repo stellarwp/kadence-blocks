@@ -8,6 +8,7 @@ import {
 	getSpacingOptionOutput,
 } from '@kadence/helpers';
 import { activePresetFor, blockPresetValues } from '../../../../extension/preset-picker';
+import { tokenPx } from '../../../../extension/design-tokens/token-px';
 
 /**
  * Whether the button's active preset resolves a padding and/or a margin.
@@ -77,6 +78,30 @@ export function presetShadowProperties(attributes) {
 	const tokens = blockPresetValues('kadence/singlebtn')?.[preset] ?? {};
 
 	return 'button-shadow' in tokens;
+}
+
+/**
+ * One shadow axis as a bare pixel number.
+ *
+ * A {dot.alias} leg is resolved through the token pool the way the PHP renderer's `render_shadow()`
+ * does. Concatenated raw it would emit `{alias}px`, which is not valid CSS — and `hasVisibleShadow()`
+ * deliberately counts such a leg as visible, so it does reach here.
+ *
+ * @param {*} raw      The stored axis value.
+ * @param {*} fallback What this axis defaults to when unset.
+ *
+ * @since TBD
+ *
+ * @return {*} The axis value to serialize.
+ */
+export function shadowAxisPx(raw, fallback) {
+	if (typeof raw === 'string' && raw.trim() !== '' && !Number.isFinite(Number(raw))) {
+		const resolved = tokenPx(raw);
+
+		return resolved === null || resolved === undefined ? fallback : resolved;
+	}
+
+	return undefined !== raw && null !== raw ? raw : fallback;
 }
 
 /**
@@ -976,20 +1001,18 @@ export default function BackendStyles(props) {
 	// visible shadow as invisible, disagreeing with the PHP gate.
 	const hasExplicitShadow = hasVisibleShadow(shadow?.[0]);
 
-	// Known gap: an alias leg counts as visible but is concatenated with `'px'` below, producing invalid
-	// CSS. Latent — `toNativeShadow` resolves every pick to a literal before storage.
 	if (hasExplicitShadow || !hasPresetShadow) {
 		css.add_property(
 			'box-shadow',
 			hasExplicitShadow
 				? (undefined !== shadow[0].inset && shadow[0].inset ? 'inset ' : '') +
-						(undefined !== shadow[0].hOffset ? shadow[0].hOffset : 0) +
+						shadowAxisPx(shadow[0].hOffset, 0) +
 						'px ' +
-						(undefined !== shadow[0].vOffset ? shadow[0].vOffset : 0) +
+						shadowAxisPx(shadow[0].vOffset, 0) +
 						'px ' +
-						(undefined !== shadow[0].blur ? shadow[0].blur : 14) +
+						shadowAxisPx(shadow[0].blur, 14) +
 						'px ' +
-						(undefined !== shadow[0].spread ? shadow[0].spread : 0) +
+						shadowAxisPx(shadow[0].spread, 0) +
 						'px ' +
 						KadenceColorOutput(
 							undefined !== shadow[0].color ? shadow[0].color : '#000000',
@@ -1116,13 +1139,13 @@ export default function BackendStyles(props) {
 			css.add_property(
 				'box-shadow',
 				(undefined !== shadowTransparent[0].inset && shadowTransparent[0].inset ? 'inset ' : '') +
-					(undefined !== shadowTransparent[0].hOffset ? shadowTransparent[0].hOffset : 0) +
+					shadowAxisPx(shadowTransparent[0].hOffset, 0) +
 					'px ' +
-					(undefined !== shadowTransparent[0].vOffset ? shadowTransparent[0].vOffset : 0) +
+					shadowAxisPx(shadowTransparent[0].vOffset, 0) +
 					'px ' +
-					(undefined !== shadowTransparent[0].blur ? shadowTransparent[0].blur : 14) +
+					shadowAxisPx(shadowTransparent[0].blur, 14) +
 					'px ' +
-					(undefined !== shadowTransparent[0].spread ? shadowTransparent[0].spread : 0) +
+					shadowAxisPx(shadowTransparent[0].spread, 0) +
 					'px ' +
 					KadenceColorOutput(
 						undefined !== shadowTransparent[0].color ? shadowTransparent[0].color : '#000000',
@@ -1224,13 +1247,13 @@ export default function BackendStyles(props) {
 			css.add_property(
 				'box-shadow',
 				(undefined !== shadowSticky[0].inset && shadowSticky[0].inset ? 'inset ' : '') +
-					(undefined !== shadowSticky[0].hOffset ? shadowSticky[0].hOffset : 0) +
+					shadowAxisPx(shadowSticky[0].hOffset, 0) +
 					'px ' +
-					(undefined !== shadowSticky[0].vOffset ? shadowSticky[0].vOffset : 0) +
+					shadowAxisPx(shadowSticky[0].vOffset, 0) +
 					'px ' +
-					(undefined !== shadowSticky[0].blur ? shadowSticky[0].blur : 14) +
+					shadowAxisPx(shadowSticky[0].blur, 14) +
 					'px ' +
-					(undefined !== shadowSticky[0].spread ? shadowSticky[0].spread : 0) +
+					shadowAxisPx(shadowSticky[0].spread, 0) +
 					'px ' +
 					KadenceColorOutput(
 						undefined !== shadowSticky[0].color ? shadowSticky[0].color : '#000000',
