@@ -164,12 +164,13 @@ describe('HEADING_PRESET', () => {
 	});
 
 	/**
-	 * With no font size to measure against, padding and border width pass through at true size rather
-	 * than being dropped or guessed at.
+	 * With no font size of its own the chip writes no inline size, leaving the stylesheet's body-size
+	 * fallback in charge rather than guessing one. Padding and border width still pass through at true
+	 * size.
 	 *
 	 * @return {void}
 	 */
-	it('leaves the chip unsized when the preset sets no font size', () => {
+	it('writes no inline font size when the preset sets none', () => {
 		const chip = HEADING_PRESET.renderPreview({
 			id: 'plain',
 			label: 'Plain',
