@@ -56,3 +56,5 @@ export {
 	toSlotList,
 	writeSlot,
 } from './helpers/value-shapes';
+export { tokenCssVar } from './helpers/token-css-var';
+export { mapPaletteToColorControlGroups } from './helpers/palette-groups';
