@@ -152,8 +152,10 @@ function schemaFor(tab) {
 				type: 'box-shadow',
 				path: 'tokens.button-shadow',
 				label: __('Shadow', 'kadence-blocks'),
-				// Same reason as `border` above: `BoxShadowControl` accepts no `defaultValue` prop, so a
-				// `defaultValue` key here would go unread.
+				// No `defaultValue`: a button renders no shadow of its own when the preset sets none, so
+				// there is no literal to name — the control's own bare muted "Default" already says that.
+				// (`BoxShadowControl` does now read a `defaultValue`, so one can be added here the day a
+				// button grows a built-in shadow.)
 			},
 		],
 	};

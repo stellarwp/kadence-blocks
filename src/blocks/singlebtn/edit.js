@@ -390,6 +390,15 @@ export default function KadenceButtonEdit(props) {
 		previewDevice
 	);
 
+	// Read directly: `button-shadow` declares no `control_attr`, so `usePresetBinding` skips it.
+	const shadowPresetValue = presetPropertyValueForDevice(
+		'kadence/singlebtn',
+		'button-shadow',
+		attributes,
+		undefined,
+		previewDevice
+	);
+
 	// What an unset Border Radius corner falls back to on the active device: another breakpoint's corner
 	// before the preset's, matching the cascade the button actually renders through. The corners stay
 	// stored-empty — this only tells the field's popover which size is in effect and where it came from.
@@ -399,8 +408,7 @@ export default function KadenceButtonEdit(props) {
 		borderRadiusPresetValue
 	);
 
-	// The shipped presets (default/secondary) both declare `button-padding`, so `presetValueForDevice`
-	// above resolves it for those; the fallback only matters for a custom preset that omits the key.
+	// The fallback only catches a custom preset that omits the key, which would otherwise read as blank.
 	const paddingPresetValue = presetValueOr(
 		presetValueForDevice(tokenBinding.padding?.presetValue, tokenBinding.padding?.responsive, previewDevice),
 		BUTTON_PADDING_FALLBACK
@@ -485,9 +493,7 @@ export default function KadenceButtonEdit(props) {
 	});
 
 	// Padding's linked/individual mode, mirroring Border Radius's own hook call above with "corner"
-	// swapped for "side" — same shape, run over `paddingForDevice` instead. `resetOn` is included for
-	// the same reason: an override records a choice about the PREVIOUS preset's sides, so it has to
-	// clear on a preset change or an explicit "link" sticks and hides the new preset's own padding.
+	// swapped for "side". `resetOn` clears the remembered choice, which belonged to the old preset.
 	const { isLinked: paddingIsLinked, toggleLink: togglePaddingLink } = useLinkedMeasureState({
 		forDevice: paddingForDevice,
 		previewDevice,
@@ -1354,6 +1360,7 @@ export default function KadenceButtonEdit(props) {
 															min={0}
 														/>
 														<EditorShadowControl
+															defaultValue={shadowPresetValue}
 															label={__('Box Shadow', 'kadence-blocks')}
 															value={shadowHover}
 															onChange={(value) => setAttributes({ shadowHover: value })}
@@ -1479,6 +1486,7 @@ export default function KadenceButtonEdit(props) {
 															step={borderRadiusIsRelative ? 0.1 : 1}
 														/>
 														<EditorShadowControl
+															defaultValue={shadowPresetValue}
 															label={__('Box Shadow', 'kadence-blocks')}
 															value={shadow}
 															onChange={(value) => setAttributes({ shadow: value })}
@@ -1627,6 +1635,7 @@ export default function KadenceButtonEdit(props) {
 																min={0}
 															/>
 															<EditorShadowControl
+																defaultValue={shadowPresetValue}
 																label={__('Box Shadow', 'kadence-blocks')}
 																value={shadowTransparentHover}
 																onChange={(value) =>
@@ -1753,6 +1762,7 @@ export default function KadenceButtonEdit(props) {
 																min={0}
 															/>
 															<EditorShadowControl
+																defaultValue={shadowPresetValue}
 																label={__('Box Shadow', 'kadence-blocks')}
 																value={shadowTransparent}
 																onChange={(value) =>
@@ -1895,6 +1905,7 @@ export default function KadenceButtonEdit(props) {
 																min={0}
 															/>
 															<EditorShadowControl
+																defaultValue={shadowPresetValue}
 																label={__('Box Shadow', 'kadence-blocks')}
 																value={shadowStickyHover}
 																onChange={(value) =>
@@ -2015,6 +2026,7 @@ export default function KadenceButtonEdit(props) {
 																min={0}
 															/>
 															<EditorShadowControl
+																defaultValue={shadowPresetValue}
 																label={__('Box Shadow', 'kadence-blocks')}
 																value={shadowSticky}
 																onChange={(value) =>

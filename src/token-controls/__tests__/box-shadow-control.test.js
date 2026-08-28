@@ -243,7 +243,7 @@ describe('BoxShadowControl trigger', () => {
 	 * An unset value (the field's actual starting state before a token or a custom shadow is chosen)
 	 * shows a muted "Default" label — matching every other control in this library (`TokenSelector`'s
 	 * own unset behavior), rather than a blank trigger. Shadow's conceptual default when unset is a
-	 * constant ("no shadow"), not a per-instance literal, so no value/token name is attached — only the
+	 * constant ("no shadow"), or, when the host supplies one, the fallback it actually resolves to — only the
 	 * muted label itself.
 	 *
 	 * @return {void}

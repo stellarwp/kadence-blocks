@@ -142,6 +142,8 @@ export function resolveShadowPick(picked, tokens) {
  * @param {Object}  props.field            The field definition.
  * @param {?string} [props.field.label]    The control's label.
  * @param {boolean} [props.field.readOnly] Whether the control is non-interactive.
+ * @param {*}       [props.field.defaultValue] What an unset control falls back to, shown muted — now
+ *                                         read, since `BoxShadowControl` takes a `defaultValue`.
  * @param {*}       props.value            The stored value: a token alias, or a composite shadow object.
  * @param {Function} props.onChange        Called with the next alias or composite object.
  *
@@ -174,6 +176,7 @@ export function BoxShadowField({ field, value, onChange }) {
 			onChange={(next) => !field.readOnly && onChange(toStoredShadow(resolveShadowPick(next, tokens)))}
 			label={field.label}
 			tokens={tokens}
+			defaultValue={field.defaultValue}
 			renderColor={({ value: color, onChange: onColorChange }) => (
 				<TokenColorSelectField
 					field={{ label: __('Color', 'kadence-blocks'), readOnly: field.readOnly }}

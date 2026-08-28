@@ -9,6 +9,7 @@ import {
 	splitColorOpacity,
 	toNativeShadow,
 	fromNativeShadow,
+	isUnsetShadow,
 } from '../EditorShadowControl';
 import { BoxShadowControl } from '../../../../token-controls/controls/BoxShadowControl';
 
@@ -104,15 +105,18 @@ describe('EditorShadowControl native <-> BoxShadowControl value bridging', () =>
 	});
 
 	/**
-	 * A missing native value reads as the composite's default shape rather than crashing on
-	 * `undefined[0]`.
+	 * A missing native value reads as UNSET (an empty value), so the control shows its muted "Default"
+	 * rather than the all-transparent composite that renders a bold "None". `fromNativeShadow` still
+	 * answers the composite default for that input — the unset decision belongs to `isUnsetShadow`,
+	 * which runs first.
 	 *
 	 * @return {void}
 	 */
-	it('reads an unset native value as the composite default', () => {
+	it('reads an unset native value as unset, not as the composite default', () => {
 		const { shadowControl } = renderEditorShadowControl({ value: undefined });
 
-		expect(shadowControl.props.value).toEqual({
+		expect(shadowControl.props.value).toBe('');
+		expect(fromNativeShadow(undefined)).toEqual({
 			color: 'transparent',
 			offsetX: '0px',
 			offsetY: '0px',
@@ -405,5 +409,99 @@ describe('combineColorOpacity / splitColorOpacity', () => {
 	 */
 	it('decodes an 8-digit hex color into its base color and embedded alpha', () => {
 		expect(splitColorOpacity('#1717171f')).toEqual({ color: '#171717', opacity: 0x1f / 255 });
+	});
+});
+
+describe('isUnsetShadow', () => {
+	const INVISIBLE = [{ color: 'transparent', opacity: 1, spread: 0, blur: 0, hOffset: 0, vOffset: 0, inset: false }];
+
+	/**
+	 * An absent attribute is unset, whether or not the preset carries a shadow.
+	 *
+	 * @return {void}
+	 */
+	it('reads an absent attribute as unset', () => {
+		expect(isUnsetShadow(undefined, undefined)).toBe(true);
+		expect(isUnsetShadow([], undefined)).toBe(true);
+		expect(isUnsetShadow(undefined, '{semantic.shadow.button}')).toBe(true);
+	});
+
+	/**
+	 * `block.json`'s registered default — an all-zero, fully transparent shadow — reads as unset when
+	 * the preset declares no shadow, so a freshly inserted block shows a muted "Default" rather than
+	 * claiming the bold "None" nobody picked.
+	 *
+	 * @return {void}
+	 */
+	it("reads block.json's invisible default as unset when the preset has no shadow", () => {
+		expect(isUnsetShadow(INVISIBLE, undefined)).toBe(true);
+		expect(isUnsetShadow(INVISIBLE, '')).toBe(true);
+	});
+
+	/**
+	 * That same invisible value is a REAL override once there is a preset shadow for it to suppress —
+	 * it must keep reading as an explicit "None", or the control would muted-show a preset shadow the
+	 * block is deliberately hiding.
+	 *
+	 * @return {void}
+	 */
+	it('reads an invisible shadow as set when a preset shadow is being suppressed', () => {
+		expect(isUnsetShadow(INVISIBLE, '{semantic.shadow.button}')).toBe(false);
+	});
+
+	/**
+	 * A shadow with real geometry is always set, preset shadow or not.
+	 *
+	 * @return {void}
+	 */
+	it('reads a visible shadow as set', () => {
+		expect(isUnsetShadow(NATIVE_VALUE, undefined)).toBe(false);
+		expect(isUnsetShadow([{ ...INVISIBLE[0], blur: 4, color: '#000000' }], undefined)).toBe(false);
+	});
+});
+
+describe('EditorShadowControl unset rendering', () => {
+	const INVISIBLE = [{ color: 'transparent', opacity: 1, spread: 0, blur: 0, hOffset: 0, vOffset: 0, inset: false }];
+
+	/**
+	 * An unset shadow hands `BoxShadowControl` an empty value, which is the state that renders the
+	 * muted "Default" — not the composite that renders a bold "None".
+	 *
+	 * @return {void}
+	 */
+	it('passes an empty value down when the shadow is unset', () => {
+		const { shadowControl } = renderEditorShadowControl({ value: INVISIBLE, defaultValue: undefined });
+
+		expect(shadowControl.props.value).toBe('');
+	});
+
+	/**
+	 * The preset's own shadow is forwarded as `defaultValue`, so an unset control can name what it
+	 * actually falls back to.
+	 *
+	 * @return {void}
+	 */
+	it('forwards the preset shadow as defaultValue', () => {
+		const { shadowControl } = renderEditorShadowControl({
+			value: undefined,
+			defaultValue: '{semantic.shadow.button}',
+		});
+
+		expect(shadowControl.props.value).toBe('');
+		expect(shadowControl.props.defaultValue).toBe('{semantic.shadow.button}');
+	});
+
+	/**
+	 * A suppressing "None" still renders as a real composite value, so it reads as the override it is.
+	 *
+	 * @return {void}
+	 */
+	it('keeps a suppressing None as a composite value', () => {
+		const { shadowControl } = renderEditorShadowControl({
+			value: INVISIBLE,
+			defaultValue: '{semantic.shadow.button}',
+		});
+
+		expect(shadowControl.props.value).not.toBe('');
 	});
 });

@@ -300,6 +300,39 @@ export function toNativeShadow(value, tokens = []) {
 }
 
 /**
+ * Whether a stored native shadow should be treated as "the block sets no shadow of its own".
+ *
+ * `block.json` registers an all-zero transparent shadow as `shadow`'s own default, so a fresh block
+ * arrives byte-identical to an explicit "None" pick. They are separated by consequence, not shape: an
+ * invisible shadow is a real override only when there is a preset shadow for it to suppress. With
+ * nothing behind it, it suppresses nothing and reads as unset.
+ *
+ * @param {?Array} native       The stored native shadow attribute value.
+ * @param {*}      defaultValue The active preset's own resolved shadow, or nothing when it has none.
+ *
+ * @since TBD
+ *
+ * @return {boolean} True when the control should render as unset.
+ */
+export function isUnsetShadow(native, defaultValue) {
+	const source = native?.[0];
+
+	if (!source) {
+		return true;
+	}
+
+	// A preset shadow behind it makes an invisible shadow a deliberate suppression, not an absence.
+	if (defaultValue !== undefined && defaultValue !== null && defaultValue !== '') {
+		return false;
+	}
+
+	const isTransparent = !source.color || source.color === 'transparent' || Number(source.opacity) === 0;
+	const hasNoGeometry = ['hOffset', 'vOffset', 'blur', 'spread'].every((axis) => !parseFloat(source[axis]));
+
+	return isTransparent && hasNoGeometry;
+}
+
+/**
  * Render the editor-canvas box-shadow control: `BoxShadowControl` always renders, with no separate
  * enable toggle — whether a `box-shadow` is emitted is decided elsewhere, purely from the value's own
  * axes.
@@ -309,6 +342,10 @@ export function toNativeShadow(value, tokens = []) {
  * @param {?Array}    props.value         The native shadow attribute value.
  * @param {Function}  props.onChange      Called with the next native shadow attribute value.
  * @param {Array}     [props.tokens]      Pickable `shadow`-type tokens, `[{id, label, value, alias}]`.
+ * @param {*}         [props.defaultValue] The active preset's own resolved shadow, or nothing when it
+ *                                        declares none — shown MUTED while the block stores no shadow
+ *                                        of its own, and what decides whether an invisible stored
+ *                                        shadow is a real override (see `isUnsetShadow()`).
  * @param {?Function} [props.renderColor] The block's existing color field for the composite's `color`.
  * @param {boolean}   [props.disabled]    Whether the control is read-only.
  *
@@ -316,14 +353,23 @@ export function toNativeShadow(value, tokens = []) {
  *
  * @return {JSX.Element} The rendered control.
  */
-export function EditorShadowControl({ label, value, onChange, tokens = [], renderColor, disabled = false }) {
+export function EditorShadowControl({
+	label,
+	value,
+	onChange,
+	tokens = [],
+	defaultValue,
+	renderColor,
+	disabled = false,
+}) {
 	return (
 		<TokenControlRow stacked>
 			<BoxShadowControl
 				label={label}
-				value={fromNativeShadow(value)}
+				value={isUnsetShadow(value, defaultValue) ? '' : fromNativeShadow(value)}
 				onChange={(next) => onChange(toNativeShadow(next, tokens))}
 				tokens={tokens}
+				defaultValue={defaultValue}
 				renderColor={renderColor}
 				disabled={disabled}
 			/>

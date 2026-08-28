@@ -223,6 +223,12 @@ function ShadowCustomTab({ shadow, onChange, renderColor, disabled = false }) {
  * @param {Function}  props.onChange      Called with the next alias or composite object.
  * @param {string}    props.label         The control's label.
  * @param {Array}     [props.tokens]      Pickable `shadow`-type tokens, `[{id, label, value, alias}]`.
+ * @param {*}         [props.defaultValue] What an UNSET control falls back to — a token alias or a
+ *                                        composite. Shown muted on the trigger and offered as the
+ *                                        popover's Reset target, exactly as `TokenSelector` treats its
+ *                                        own `defaultValue`. Without one, an unset control reads the
+ *                                        bare muted "Default" it always did, so a host with no preset
+ *                                        shadow to name is unchanged.
  * @param {Function}  [props.renderColor] `({ value, onChange }) => Element` for the color sub-field.
  * @param {boolean}   [props.disabled]    Whether the control is read-only.
  *
@@ -230,7 +236,7 @@ function ShadowCustomTab({ shadow, onChange, renderColor, disabled = false }) {
  *
  * @return {JSX.Element} The rendered control.
  */
-export function BoxShadowControl({ value, onChange, label, tokens = [], renderColor, disabled = false }) {
+export function BoxShadowControl({ value, onChange, label, tokens = [], defaultValue, renderColor, disabled = false }) {
 	const aliased = isTokenAlias(value);
 	// Only a real object is spread. A shadow can also arrive as a rendered STRING — the editor's capture
 	// flow writes one — and spreading a string splays it into indexed character keys, which the Custom
@@ -243,16 +249,22 @@ export function BoxShadowControl({ value, onChange, label, tokens = [], renderCo
 	// Display only — `onChange` still sees the real underlying value.
 	const displayValue = fixedMatch ? fixedMatch.alias : value;
 	// The trigger shows a label, never a value — it has no room for the `value` half `fieldSummary()`
-	// also returns. Unset reads a muted "Default".
+	// also returns. Unset names the shadow it falls back to, or a muted "Default" when there is none.
 	//
-	// Host asymmetry: only a host that can store "never touched" as something other than the None shape
-	// reaches that branch. The Style Library stores `''`; the block editor is handed `block.json`'s
-	// registered None composite on a fresh block, which matches `fixedMatch` first and reads "None".
+	// Whether an unset shadow can reach that branch is the host's problem: the button's registered
+	// `shadow` default IS the None composite (see `EditorShadowControl`'s `isUnsetShadow()`).
+	const defaultSummary = hasValue(defaultValue)
+		? fieldSummary(defaultValue, tokens, '', __('Custom', 'kadence-blocks'))
+		: null;
 	const summary =
 		aliased || fixedMatch
 			? { ...fieldSummary(displayValue, tokens, '', __('Custom', 'kadence-blocks')), value: '' }
 			: !hasValue(value)
-				? { label: __('Default', 'kadence-blocks'), value: '', muted: true }
+				? {
+						label: defaultSummary?.label || __('Default', 'kadence-blocks'),
+						value: '',
+						muted: true,
+					}
 				: { label: __('Custom', 'kadence-blocks'), value: '' };
 
 	return (
@@ -285,7 +297,10 @@ export function BoxShadowControl({ value, onChange, label, tokens = [], renderCo
 							<TokenPopover
 								value={displayValue}
 								tokens={tokens}
-								resolvedDefault=""
+								resolvedDefault={resolvePreviewCss(defaultValue, tokens, {
+									...DEFAULT_COMPOSITE,
+									...(isTokenAlias(defaultValue) || !defaultValue ? {} : defaultValue),
+								})}
 								initialTab={aliased || fixedMatch || !value ? 'style-library' : 'custom'}
 								custom={{ shadow, renderColor, disabled }}
 								renderCustom={(custom) => (
