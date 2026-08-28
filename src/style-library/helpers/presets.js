@@ -25,6 +25,7 @@ import {
 	writePresetBreakpoint,
 } from '../../token-controls/helpers/preset-envelope';
 import { nextScaleSlug } from './scale';
+import { shadowCss } from './shadow';
 import { getDesignTokensFeed } from './tokens';
 
 /**
@@ -34,6 +35,16 @@ import { getDesignTokensFeed } from './tokens';
  * @since TBD
  */
 const SLOT_LIST_SIDES = 4;
+
+/**
+ * The sub-fields every composite shadow carries, mirroring `Token_Type::COMPOSITE_FIELDS`. `inset` is
+ * optional and deliberately absent: a shadow that predates it is still a shadow.
+ *
+ * @since TBD
+ *
+ * @type {string[]}
+ */
+const SHADOW_FIELDS = ['color', 'offsetX', 'offsetY', 'blur', 'spread'];
 
 /**
  * The block name the Button preset screen edits — the single JS spelling, so the preset-screens
@@ -141,6 +152,29 @@ function isSlotList(value) {
 }
 
 /**
+ * Whether a stored token entry is a composite shadow — the map the Custom tab composes, rather than an
+ * alias or a rendered literal.
+ *
+ * Required fields decide it, matching `Token_Type::is_composite_shape()` on the server so both sides
+ * agree on which values are composites. An array is excluded outright: a per-corner list is the other
+ * array-shaped entry, and the two must never be confused.
+ *
+ * @param {*} value The stored token entry.
+ *
+ * @since TBD
+ *
+ * @return {boolean} True when `value` is a composite shadow.
+ */
+function isCompositeShadow(value) {
+	return (
+		typeof value === 'object' &&
+		value !== null &&
+		!Array.isArray(value) &&
+		SHADOW_FIELDS.every((field) => field in value)
+	);
+}
+
+/**
  * Whether a stored preset token entry is one of the shapes the single-value token picker cannot
  * represent — a responsive envelope or a per-corner slot list. Both carry more than the picker's
  * one alias-or-literal slot, so editing them through it would silently flatten the value on save;
@@ -195,6 +229,20 @@ export function resolveTokenValue(values, value, breakpoint = PRESET_BREAKPOINTS
 		// than in `isSlotList`, which also decides whether the single-value picker may edit the
 		// entry — narrowing that would make a malformed slot list look editable.
 		return slots.some((slot) => slot === '') ? '' : slots.join(' ');
+	}
+
+	if (isCompositeShadow(value)) {
+		// Each sub-field resolves on its own, so an aliased color still follows a token edit, then the
+		// parts are composed into the one string a `box-shadow` takes. All or nothing for the same reason
+		// a slot list is: a shorthand with a hole in it renders something the preset never said.
+		const fields = Object.fromEntries(
+			Object.entries(value).map(([field, sub]) => [
+				field,
+				field === 'inset' ? sub : resolveTokenValue(values, sub, breakpoint),
+			])
+		);
+
+		return Object.entries(fields).some(([field, sub]) => field !== 'inset' && sub === '') ? '' : shadowCss(fields);
 	}
 
 	if (typeof value !== 'string') {
@@ -309,6 +357,12 @@ function isUnsetPresetValue(value) {
 
 	if (Array.isArray(value)) {
 		return value.every((slot) => slot === '' || slot === null || slot === undefined);
+	}
+
+	// A composite whose every sub-field is empty carries nothing to write either, and sending it would
+	// be rejected the same way an empty literal is.
+	if (typeof value === 'object' && value !== null) {
+		return Object.values(value).every((sub) => sub === '' || sub === null || sub === undefined);
 	}
 
 	return false;

@@ -926,3 +926,52 @@ describe('resolveTokenValue at a breakpoint', () => {
 		expect(resolveTokenValue(values, perCorner, 'tablet')).toBe('0.5rem 0 0.5rem 0');
 	});
 });
+
+describe('resolveTokenValue with a composite shadow', () => {
+	const values = { 'primitive.color.brand.primary': '#3633e1' };
+
+	/**
+	 * The Custom tab stores a composite, and the row preview needs one string. Each sub-field resolves
+	 * on its own so an aliased color still follows a token edit.
+	 */
+	it('composes the sub-fields into one shadow string', () => {
+		const shadow = {
+			color: '{primitive.color.brand.primary}',
+			offsetX: '0px',
+			offsetY: '2px',
+			blur: '8px',
+			spread: '0px',
+		};
+
+		expect(resolveTokenValue(values, shadow)).toBe('0px 2px 8px 0px #3633e1');
+	});
+
+	it('carries inset through as a prefix rather than resolving it', () => {
+		const shadow = {
+			color: '#000000',
+			offsetX: '0px',
+			offsetY: '2px',
+			blur: '8px',
+			spread: '0px',
+			inset: true,
+		};
+
+		expect(resolveTokenValue(values, shadow)).toBe('inset 0px 2px 8px 0px #000000');
+	});
+
+	/**
+	 * All or nothing, for the same reason a slot list is: a shorthand with a hole renders something the
+	 * preset never said.
+	 */
+	it('yields an empty string when a sub-field does not resolve', () => {
+		const shadow = {
+			color: '{primitive.color.gone}',
+			offsetX: '0px',
+			offsetY: '2px',
+			blur: '8px',
+			spread: '0px',
+		};
+
+		expect(resolveTokenValue(values, shadow)).toBe('');
+	});
+});

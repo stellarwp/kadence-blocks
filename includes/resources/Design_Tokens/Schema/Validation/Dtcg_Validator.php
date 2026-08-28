@@ -922,10 +922,15 @@ final class Dtcg_Validator {
 	}
 
 	/**
-	 * A foundation-preset / block-preset token value must be an alias, a non-empty literal scalar, or a
-	 * per-corner slot list. The target token's $type is not resolved here, so the literal is checked only
-	 * for shape, not per-type grammar; whether a slot list is meaningful for the bound property's kind is
-	 * a registry-aware question answered by the REST write guard, not by the schema.
+	 * A foundation-preset / block-preset token value must be an alias, a non-empty literal scalar, a
+	 * per-corner slot list, a responsive envelope, or a composite shadow object. The target token's $type
+	 * is not resolved here, so the literal is checked only for shape, not per-type grammar; whether a slot
+	 * list is meaningful for the bound property's kind is a registry-aware question answered by the REST
+	 * write guard, not by the schema.
+	 *
+	 * The composite needs no $type resolution either: shadow is v1's only composite, so the shape alone
+	 * identifies it. The envelope is claimed first because a composite validator tolerates `$`-prefixed
+	 * keys, and an envelope carrying `$value` would otherwise be mistaken for one.
 	 *
 	 * @since TBD
 	 *
@@ -962,10 +967,17 @@ final class Dtcg_Validator {
 			return $this->validate_extension_envelope( $value, $path );
 		}
 
+		if ( Token_Type::is_composite_shape( Token_Type::get_type_shadow(), $value ) ) {
+			// The shadow validator already covers every sub-field: an alias or a literal of the right kind
+			// for each, a strict literal boolean for `inset`, and a named error for an unknown sub-field.
+			// It answers with a list; this contract is one error, so the first is the one to report.
+			return $this->validators[ Token_Type::get_type_shadow() ]->validate( $value, $path )[0] ?? null;
+		}
+
 		return new Validation_Error(
 			$path,
 			Validation_Error::get_code_value_invalid(),
-			'A foundation-preset/block-preset token value must be an alias, a non-empty literal, a slot list, or a responsive entry.'
+			'A foundation-preset/block-preset token value must be an alias, a non-empty literal, a slot list, a responsive entry, or a composite shadow.'
 		);
 	}
 

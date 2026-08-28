@@ -270,6 +270,48 @@ final class Token_Type {
 	}
 
 	/**
+	 * Whether a value is shaped like the given composite $type's object form.
+	 *
+	 * A shape test, not a validity test: it answers "which KIND of value is this" so a caller can route
+	 * to the right validator, and the validator then says whether it is well formed. The two array
+	 * shapes a preset property may carry have to be told apart before either can be checked — a
+	 * per-corner value is a four-element LIST, a composite is a MAP of named sub-fields, and a list can
+	 * never carry a `color` key.
+	 *
+	 * Required fields decide it, and unknown extra keys do not disqualify. A map carrying all five
+	 * shadow fields plus a misspelled sixth is a composite with a typo, and saying so is more use than
+	 * refusing to recognize it at all; the composite validator names the offending sub-field. A map
+	 * missing a required field is not claimed here, so it keeps the generic "not a valid value" answer
+	 * rather than being reported as a broken shadow.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $type  The composite $type to test against.
+	 * @param mixed  $value The value to test.
+	 *
+	 * @phpstan-assert-if-true array<string, mixed> $value
+	 *
+	 * @return bool
+	 */
+	public static function is_composite_shape( string $type, $value ): bool {
+		if ( ! is_array( $value ) || $value === [] || ! isset( self::COMPOSITE_FIELDS[ $type ] ) ) {
+			return false;
+		}
+
+		if ( array_keys( $value ) === range( 0, count( $value ) - 1 ) ) {
+			return false;
+		}
+
+		foreach ( array_keys( self::COMPOSITE_FIELDS[ $type ] ) as $field ) {
+			if ( ! array_key_exists( $field, $value ) ) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
 	 * The sub-field => $type map for a composite $type, or an empty array for a non-composite type.
 	 *
 	 * @since TBD

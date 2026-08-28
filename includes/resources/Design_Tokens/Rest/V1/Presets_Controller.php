@@ -17,6 +17,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Contracts\Controller;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Dtcg_Validator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Alias;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Extensions;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Token_Type;
 use KadenceWP\KadenceBlocks\Utils\Cast;
 use KadenceWP\KadenceBlocks\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
 use WP_Error;
@@ -1342,6 +1343,16 @@ final class Presets_Controller extends Controller {
 					continue;
 				}
 
+				if ( $bindings->kind( (string) $property ) === Preset_Bindings::get_kind_shadow() ) {
+					$error = $this->guard_shadow_value_shape( $entry, $block, (string) $preset_slug, (string) $property );
+
+					if ( $error instanceof WP_Error ) {
+						return $error;
+					}
+
+					continue;
+				}
+
 				// Check the base and every breakpoint override. Each is unwrapped first, so what remains is
 				// a scalar, an alias or a slot list — an array here is therefore a slot list, never the
 				// responsive envelope (which is legal on any kind).
@@ -1458,6 +1469,49 @@ final class Presets_Controller extends Controller {
 					]
 				);
 			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Reject a shadow value that is an array without being a composite shadow.
+	 *
+	 * A shadow is one of the two kinds whose value may legitimately be an object: the Style Library's
+	 * Custom tab composes `color`, the four offsets and an optional `inset` and stores that map, so the
+	 * parts stay separately editable instead of collapsing into a shorthand nothing can take apart again.
+	 * What a shadow may NOT be is a per-corner list — corners are a dimension idea, and a four-slot array
+	 * on a shadow reaches projection as something no renderer can compose.
+	 *
+	 * The generic branch this replaces rejected every array alike, so the composite the Custom tab had
+	 * just produced came back as "a per-corner value is only valid for a dimension property" — an error
+	 * about corners, for a value that never mentioned one.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed  $entry    The preset token entry.
+	 * @param string $block    The block name, for error context.
+	 * @param string $preset   The preset slug, for error context.
+	 * @param string $property The property name, for error context.
+	 *
+	 * @return WP_Error|null A WP_Error when an array value is not a composite shadow, null otherwise.
+	 */
+	private function guard_shadow_value_shape( $entry, string $block, string $preset, string $property ): ?WP_Error {
+		foreach ( $this->preset_entry_values( $entry ) as $value ) {
+			if ( ! is_array( $value ) || Token_Type::is_composite_shape( Token_Type::get_type_shadow(), $value ) ) {
+				continue;
+			}
+
+			return new WP_Error(
+				'rest_design_tokens_invalid',
+				__( 'A shadow value must be an alias, a literal, or a composite carrying color, offsetX, offsetY, blur and spread.', 'kadence-blocks' ),
+				[
+					'status'   => WP_Http::UNPROCESSABLE_ENTITY,
+					'block'    => $block,
+					'preset'   => $preset,
+					'property' => $property,
+				]
+			);
 		}
 
 		return null;

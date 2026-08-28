@@ -26,6 +26,8 @@ final class PresetsControllerTest extends TestCase {
 
 	private const HEADING = 'kadence/advancedheading';
 
+	private const IMAGE = 'kadence/image';
+
 	/**
 	 * @var Token_Store
 	 */
@@ -1084,6 +1086,118 @@ final class PresetsControllerTest extends TestCase {
 
 		$this->assertTrue( Alias::is_alias( $tokens['button-bg'] ) );
 		$this->assertSame( 'rgba(1,2,3,0.42)', $tokens['button-text'] );
+	}
+
+	/**
+	 * The Style Library's Custom shadow tab composes a map of sub-fields rather than a shorthand string,
+	 * so the parts stay separately editable. That map has to survive the write intact.
+	 *
+	 * @return void
+	 */
+	public function testACompositeShadowOnAShadowPropertyIsAccepted(): void {
+		$shadow = [
+			'color'   => '#17171f',
+			'offsetX' => '0px',
+			'offsetY' => '2px',
+			'blur'    => '8px',
+			'spread'  => '0px',
+		];
+
+		$response = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::IMAGE,
+				[
+					'preset' => 'accent',
+					'tokens' => [ 'shadow' => $shadow ],
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+		$this->assertSame( $shadow, $response->get_data()['presets']['accent']['tokens']['shadow'] );
+	}
+
+	/**
+	 * `inset` is optional and boolean, and a shadow carrying it must round-trip as readily as one
+	 * without — it is the sub-field most easily dropped by a value pipeline built for strings.
+	 *
+	 * @return void
+	 */
+	public function testACompositeShadowWithInsetIsAccepted(): void {
+		$shadow = [
+			'color'   => '#17171f',
+			'offsetX' => '0px',
+			'offsetY' => '2px',
+			'blur'    => '8px',
+			'spread'  => '0px',
+			'inset'   => true,
+		];
+
+		$response = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::IMAGE,
+				[
+					'preset' => 'accent',
+					'tokens' => [ 'shadow' => $shadow ],
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+		$this->assertTrue( $response->get_data()['presets']['accent']['tokens']['shadow']['inset'] );
+	}
+
+	/**
+	 * Corners are a dimension idea. A four-slot list on a shadow reaches projection as something no
+	 * renderer can compose, so it stays rejected even though an object now passes.
+	 *
+	 * @return void
+	 */
+	public function testASlotListOnAShadowPropertyIsRejected(): void {
+		$response = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::IMAGE,
+				[
+					'preset' => 'accent',
+					'tokens' => [ 'shadow' => [ '1px', '1px', '1px', '1px' ] ],
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $response );
+		$this->assertSame( 'rest_design_tokens_invalid', $response->get_error_code() );
+		$this->assertSame( 'shadow', $response->get_error_data()['property'] );
+	}
+
+	/**
+	 * A map missing a required sub-field is not a composite, so it is refused rather than stored as a
+	 * shadow the renderer would later fail to compose.
+	 *
+	 * @return void
+	 */
+	public function testACompositeShadowMissingASubFieldIsRejected(): void {
+		$response = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::IMAGE,
+				[
+					'preset' => 'accent',
+					'tokens' => [
+						'shadow' => [
+							'color'   => '#17171f',
+							'offsetX' => '0px',
+							'offsetY' => '2px',
+							'blur'    => '8px',
+						],
+					],
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $response );
 	}
 
 	/**
