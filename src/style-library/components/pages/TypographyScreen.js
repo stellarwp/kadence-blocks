@@ -19,7 +19,7 @@
  * WordPress dependencies
  */
 import { useCallback, useEffect, useMemo, useState } from '@wordpress/element';
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { Button, Notice, Spinner } from '@wordpress/components';
 import { starEmpty, starFilled } from '@wordpress/icons';
 
@@ -62,6 +62,44 @@ const CUSTOM_BADGE = __('Custom', 'kadence-blocks');
  * @since TBD
  */
 const FAVORITE_BADGE = __('Favorite', 'kadence-blocks');
+
+/**
+ * The contextual favorite button's labels, keyed by the action it is offering and by whether that
+ * action's write is in flight. A favorite write is a REST call plus a full feed refresh, so the
+ * button carries the same busy label the app's every other write control does — without one, the
+ * only feedback for the whole round trip is the control going flat, which reads as the click not
+ * having registered.
+ *
+ * @since TBD
+ */
+const FONT_ACTION_LABELS = {
+	add: {
+		idle: __('Add Favorite', 'kadence-blocks'),
+		busy: __('Adding Favorite…', 'kadence-blocks'),
+	},
+	remove: {
+		idle: __('Remove Favorite', 'kadence-blocks'),
+		busy: __('Removing Favorite…', 'kadence-blocks'),
+	},
+};
+
+/**
+ * The sentence announced to screen readers once a favorite write succeeds. The button's own label
+ * and icon flip on success, but a label change on an already-focused control is not something a
+ * screen reader reliably re-reads, so the outcome gets said out loud in its own live region.
+ *
+ * @param {('add'|'remove')} type The action that just settled.
+ * @param {string}           name The family name it was applied to.
+ *
+ * @since TBD
+ *
+ * @return {string} The announcement text.
+ */
+function favoriteAnnouncement(type, name) {
+	return type === 'remove'
+		? sprintf(/* translators: %s: the font family name. */ __('%s removed from favorites.', 'kadence-blocks'), name)
+		: sprintf(/* translators: %s: the font family name. */ __('%s added to favorites.', 'kadence-blocks'), name);
+}
 
 /**
  * Build a `renderPreview` closing over the currently selected font's resolved stack. `row.value` is
@@ -133,7 +171,8 @@ function buildCatalogOptions(fonts) {
  * @param {Function}                                             args.onPickCatalog   Called with a catalog family name when a dropdown option is chosen.
  * @param {{type: ('add'|'remove'), disabled: boolean, font: ?Object}} args.fontAction The contextual button's state ({@see fontActionFor}).
  * @param {Function}                                             args.onFontAction    Invokes the add- or remove-favorite flow for the current `fontAction`.
- * @param {boolean}                                              args.fontBusy        Whether a favorite request is in flight.
+ * @param {?{type: ('add'|'remove'), name: string}}              args.fontPending     The favorite write in flight, or null when none is.
+ * @param {string}                                               args.fontAnnouncement The live-region sentence for the last favorite write that succeeded.
  * @param {boolean}                                              args.fontLoading     Whether the selected font is still being fetched.
  * @param {?{message: string}}                                   args.fontError       The current favorite-write error, if any.
  * @param {Function}                                             args.onClearFontError Dismisses `fontError`.
@@ -148,13 +187,23 @@ function typographyToolbarRenderer({
 	onPickCatalog,
 	fontAction,
 	onFontAction,
-	fontBusy,
+	fontPending,
+	fontAnnouncement,
 	fontLoading,
 	fontError,
 	onClearFontError,
 }) {
 	return function renderToolbar({ addAction, isBusy }) {
+		const fontBusy = fontPending !== null;
 		const controlsBusy = isBusy || fontBusy;
+
+		// While a write is in flight the button describes the action that is in flight, taken from
+		// the descriptor captured at click time. `fontAction` cannot serve here: each flow refreshes
+		// the feed before it settles `onBusy`, so it has already flipped to the opposite action for
+		// the busy state's last frame — reading it would flash "Removing Favorite…" the instant an
+		// add succeeded. Label, icon, and variant all resolve from this one value so the three never
+		// disagree mid-write.
+		const actionType = fontPending ? fontPending.type : fontAction.type;
 
 		return (
 			<div className="kadence-blocks-style-library__typography-toolbar">
@@ -179,19 +228,36 @@ function typographyToolbarRenderer({
 							/>
 							<Button
 								className="kadence-blocks-style-library__typography-font-action"
-								variant={fontAction.type === 'remove' ? 'tertiary' : 'secondary'}
-								icon={fontAction.type === 'remove' ? starFilled : starEmpty}
+								variant={actionType === 'remove' ? 'tertiary' : 'secondary'}
+								icon={actionType === 'remove' ? starFilled : starEmpty}
+								// Only this button's OWN write animates it. A scale write still
+								// disables it (through `controlsBusy`) without making it look like
+								// it is the one saving — the same split `SettingsPanel` draws
+								// between its `isBusy` and `isSaving`/`isDeleting` props.
+								isBusy={fontBusy}
 								disabled={controlsBusy || fontAction.disabled}
+								// Renders `aria-disabled` rather than the `disabled` attribute, so a
+								// keyboard user who just pressed the button keeps focus on it for
+								// the length of the write instead of being dropped to the document.
+								// `Button` installs its own no-op handlers in this mode, so the
+								// click is swallowed without guarding `onClick` here.
+								accessibleWhenDisabled
 								onClick={onFontAction}
 							>
-								{fontAction.type === 'remove'
-									? __('Remove Favorite', 'kadence-blocks')
-									: __('Add Favorite', 'kadence-blocks')}
+								{FONT_ACTION_LABELS[actionType][fontBusy ? 'busy' : 'idle']}
 							</Button>
 						</div>
 					</div>
 					<span className="kadence-blocks-style-library__typography-toolbar-add">{addAction}</span>
 				</div>
+				{/*
+				 * Mounted unconditionally, empty text and all: a live region only announces text
+				 * that changes inside a node the screen reader was already watching, so one that
+				 * appears alongside its own message has nothing to announce.
+				 */}
+				<span className="screen-reader-text" role="status" aria-live="polite">
+					{fontAnnouncement}
+				</span>
 			</div>
 		);
 	};
@@ -259,7 +325,13 @@ export function TypographyScreen(props) {
 	// two is what left every non-favorite pick showing the previous font, since only a favorite had
 	// an id to select by.
 	const [selectedFamily, setSelectedFamily] = useState(() => fonts[0]?.label ?? '');
-	const [fontBusy, setFontBusy] = useState(false);
+
+	// The favorite write in flight, as the action and family captured when the click happened —
+	// not a bare boolean. The toolbar's busy label has to name the action being performed, and by
+	// the time the busy state renders its last frame the feed has already refreshed, so anything
+	// derived from the feed names the opposite one. Null means no write is in flight.
+	const [fontPending, setFontPending] = useState(null);
+	const [fontAnnouncement, setFontAnnouncement] = useState('');
 	const [fontError, setFontError] = useState(null);
 
 	// Seed the preview from the first favorite once the feed arrives, and only then: a family the
@@ -282,20 +354,34 @@ export function TypographyScreen(props) {
 	const handleFontAction = useCallback(() => {
 		setFontError(null);
 
+		// Cleared on every click so repeating an action re-announces it, rather than the live region
+		// sitting on text it already read out.
+		setFontAnnouncement('');
+
+		const { type } = fontAction;
+		const name = fontAction.font?.label ?? selectedFamily;
+
 		const flowArgs = {
-			name: fontAction.font?.label ?? selectedFamily,
+			name,
 			slug: library.slug,
 			feedVersion: library.version,
 			refreshFeed: library.refreshFeed,
-			onBusy: setFontBusy,
+			// Adapts the flows' boolean callback into the descriptor the toolbar reads. The flows
+			// stay unchanged and unaware of it — which action is in flight is a fact this screen
+			// already holds at the moment of the click.
+			onBusy: (busy) => setFontPending(busy ? { type, name } : null),
 			onError: setFontError,
 		};
 
 		// Neither flow touches the preview: the family stays selected whether it was just added to the
 		// favorites or just taken out of them, so the sample does not jump under the user's cursor.
-		const flow = fontAction.type === 'remove' ? removeFavoriteFontFlow : addFavoriteFontFlow;
+		const flow = type === 'remove' ? removeFavoriteFontFlow : addFavoriteFontFlow;
 
-		flow(flowArgs).catch(() => {});
+		// Both flows re-throw on failure, so `then` is the success path alone — a failed write must
+		// never announce that it worked. The visible error `Notice` is the feedback for that case.
+		flow(flowArgs)
+			.then(() => setFontAnnouncement(favoriteAnnouncement(type, name)))
+			.catch(() => {});
 	}, [fontAction, selectedFamily, library]);
 
 	// `useScaleScreen`'s addToken/saveToken/reorderTokens list the whole config in their deps, so an
@@ -312,13 +398,24 @@ export function TypographyScreen(props) {
 				onPickCatalog: setSelectedFamily,
 				fontAction,
 				onFontAction: handleFontAction,
-				fontBusy,
+				fontPending,
+				fontAnnouncement,
 				fontLoading,
 				fontError,
 				onClearFontError: () => setFontError(null),
 			}),
 		}),
-		[selectedFamily, readyFamily, catalogOptions, fontAction, handleFontAction, fontBusy, fontLoading, fontError]
+		[
+			selectedFamily,
+			readyFamily,
+			catalogOptions,
+			fontAction,
+			handleFontAction,
+			fontPending,
+			fontAnnouncement,
+			fontLoading,
+			fontError,
+		]
 	);
 
 	return <ScaleScreen config={config} {...props} />;
