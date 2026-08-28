@@ -165,6 +165,50 @@ final class Effective_Presets {
 	}
 
 	/**
+	 * One preset's OWN raw stored token map, before any baseline merge — the property keys THIS preset
+	 * genuinely has an override for, as opposed to {@see Preset_Resolver::resolve_literal()}'s merged
+	 * view, which cannot be told apart from a value the preset only inherits from the baseline's own
+	 * definition of the same preset slug. A property present here is a real, human-set (or previously
+	 * captured) value; a property absent here is falling through to whatever the effective/merged read
+	 * resolves it to, with nothing of this preset's own behind it.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $block  The block name, e.g. "kadence/singlebtn".
+	 * @param string $preset The preset slug.
+	 * @param string $slug   The token library slug.
+	 *
+	 * @return array<string, mixed> property => stored value (alias string, literal, or slot list),
+	 *                              exactly as stored — empty when the preset has no overrides row at
+	 *                              all, or none of its own for this preset slug.
+	 */
+	public function stored_tokens( string $block, string $preset, string $slug = 'default' ): array {
+		$presets = $this->presets_of( $this->raw( $slug ) );
+		$node    = $this->block_node( $presets, $block );
+		$entry   = isset( $node[ $preset ] ) && is_array( $node[ $preset ] ) ? $node[ $preset ] : [];
+		$tokens  = $entry[ Extensions::get_tokens_key() ] ?? [];
+
+		return is_array( $tokens ) ? $tokens : [];
+	}
+
+	/**
+	 * Which properties a preset genuinely OWNS, as a `property => true` lookup — {@see stored_tokens()}
+	 * reduced to the shape a client reads. Both the editor catalog and the REST payload surface exactly
+	 * this map, so the reduction lives here rather than being written out at each of them.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $block  The block name, e.g. "kadence/singlebtn".
+	 * @param string $preset The preset slug.
+	 * @param string $slug   The token library slug.
+	 *
+	 * @return array<string, bool> property => true, only for the properties this preset stores itself.
+	 */
+	public function owned_properties( string $block, string $preset, string $slug = 'default' ): array {
+		return array_fill_keys( array_keys( $this->stored_tokens( $block, $preset, $slug ) ), true );
+	}
+
+	/**
 	 * Decode a library's stored overrides document, tolerating an absent/empty/malformed row as "no overrides".
 	 *
 	 * The single decode seam for the stored overrides: callers that need the raw decoded document, rather than

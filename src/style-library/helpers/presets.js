@@ -293,13 +293,17 @@ export function presetRows(payload, values, preview, breakpoint = PRESET_BREAKPO
  * (ready for a token picker), or `null` for an unknown slug — the `scaleInitialValues` null
  * contract a stale-open-item self-heal relies on.
  *
- * @param {{presets?: Record<string, {label?: string, tokens?: Record<string, string>}>}} payload    The preset GET payload.
+ * @param {{presets?: Record<string, {label?: string, tokens?: Record<string, string>, overridden?: Record<string, boolean>}>}} payload The preset GET payload.
  * @param {string}                                                                        slug       The preset slug to seed.
  * @param {string[]}                                                                      properties The block's bound property surface.
  *
  * @since TBD
  *
- * @return {?{label: string, tokens: Record<string, string>}} The seeded draft, or null.
+ * @return {?{label: string, tokens: Record<string, string>, overridden: Record<string, boolean>}} The
+ *   seeded draft, or null. `overridden` carries the property keys THIS preset genuinely has its own
+ *   stored value for, straight from the payload — `tokens` itself is already baseline-merged and
+ *   cannot tell a real override apart from a value only inherited from the baseline's own definition
+ *   of this same preset slug.
  */
 export function presetInitialValues(payload, slug, properties) {
 	const preset = payload?.presets?.[slug];
@@ -309,11 +313,23 @@ export function presetInitialValues(payload, slug, properties) {
 	}
 
 	const tokens = preset.tokens ?? {};
+	const overridden = preset.overridden ?? {};
 
 	return {
 		label: preset.label ?? slug,
+		// Only a property THIS preset genuinely has its own stored value for seeds a value. `tokens` is
+		// already baseline-merged, so seeding from it verbatim would hand a field the value the preset
+		// merely inherits from the baseline's own definition of this same preset slug — and a non-empty
+		// draft reads as bound, which is exactly the muted "Default" a fresh reload must show instead.
+		// Seeding empty is also what makes reload agree with the state right after a reset: both then
+		// carry nothing, and `presetSaveTokens` omits an unset property, leaving the stored document
+		// untouched rather than writing the inherited literal back as a new override.
 		tokens: properties.reduce((acc, property) => {
-			acc[property] = aliasToIdDeep(tokens[property] ?? '');
+			acc[property] = overridden[property] === true ? aliasToIdDeep(tokens[property] ?? '') : '';
+			return acc;
+		}, {}),
+		overridden: properties.reduce((acc, property) => {
+			acc[property] = overridden[property] === true;
 			return acc;
 		}, {}),
 	};

@@ -17,9 +17,11 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
  * Keyed by token library so the picker can show the presets for the active library, then by block:
  * `{ active: <slug>, libraries: { <slug>: { <block>: {…} } } }`. Per block it carries the `$default` slug, the
  * named presets as { slug, label, userCreated }, the picker control label, the controllable surface as
- * { key, kind, token, control_attr } per bound property so the form can render one input per property, and
- * a per-preset resolved-value map ({ preset slug => { property => literal } }) so a control can compare
- * its current value against the selected preset's value.
+ * { key, kind, token, control_attr } per bound property so the form can render one input per property, a
+ * per-preset resolved-value map ({ preset slug => { property => literal } }) so a control can compare
+ * its current value against the selected preset's value, and a per-preset "own override" map
+ * ({ preset slug => { property => true } }) distinguishing a preset's genuine stored value from one it
+ * only inherits from the baseline's own definition of that preset slug.
  *
  * Every block with preset bindings appears, but only a PICKER set (one that declares a `label`) is given
  * preset OPTIONS; a block's preset / default-preset bindings (no label) carry an empty `presets` list, which
@@ -132,7 +134,8 @@ final class Preset_Catalog {
 	 *
 	 * @param string $slug The token library slug.
 	 *
-	 * @return array<string, array<string, mixed>> block => { default, presets, properties, values, references, label }.
+	 * @return array<string, array<string, mixed>> block => { default, presets, properties, values,
+	 *         references, responsive, overridden, label }.
 	 */
 	private function for_library( string $slug ): array {
 		$out = [];
@@ -161,6 +164,7 @@ final class Preset_Catalog {
 				'values'     => $this->values_for( $block, $slug, $names ),
 				'references' => $this->references_for( $block, $slug, $names ),
 				'responsive' => $this->responsive_for( $block, $slug, $names ),
+				'overridden' => $this->overridden_for( $block, $slug, $names ),
 				'label'      => $bindings->label,
 			];
 		}
@@ -330,6 +334,34 @@ final class Preset_Catalog {
 		}
 
 		return $responsive;
+	}
+
+	/**
+	 * Which properties EACH preset genuinely has its own stored override for, as opposed to
+	 * `values_for()`'s merged/effective read, which cannot tell a preset's own override apart from a
+	 * value it only inherits from the baseline's own definition of that same preset slug (a NAMED
+	 * preset the baseline itself ships — `$default`/other shipped slugs — can have real baseline values
+	 * for properties nobody has ever explicitly set). A control reads this to decide whether an unset
+	 * field should show as bound to the merged value (this preset has its own override) or as a muted
+	 * generic default (nothing here is this preset's own).
+	 *
+	 * @since TBD
+	 *
+	 * @param string   $block The block name.
+	 * @param string   $slug  The token library slug.
+	 * @param string[] $names The preset slugs to inspect, in catalog order.
+	 *
+	 * @return array<string, array<string, bool>> preset slug => ( property => true ), only for
+	 *                                            properties the preset's OWN stored tokens carry.
+	 */
+	private function overridden_for( string $block, string $slug, array $names ): array {
+		$overridden = [];
+
+		foreach ( $names as $name ) {
+			$overridden[ $name ] = $this->effective->owned_properties( $block, $name, $slug );
+		}
+
+		return $overridden;
 	}
 
 	/**

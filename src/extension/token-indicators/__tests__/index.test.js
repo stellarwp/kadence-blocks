@@ -45,6 +45,9 @@ function seedCatalog() {
 					responsive: {
 						primary: { tablet: { 'button-radius': '8px' } },
 					},
+					overridden: {
+						primary: { 'button-radius': true },
+					},
 				},
 			},
 		},
@@ -169,6 +172,9 @@ describe('usePresetBinding per-corner breakpoint gaps', () => {
 						responsive: {
 							primary: { tablet: { 'button-radius': ['8px', '', '', ''] } },
 						},
+						overridden: {
+							primary: { 'button-radius': true },
+						},
 					},
 				},
 			},
@@ -239,6 +245,9 @@ describe('presetPropertyValueForDevice', () => {
 						},
 						responsive: {
 							primary: { tablet: { 'button-border-width': '4px' } },
+						},
+						overridden: {
+							primary: { 'button-border-width': true },
 						},
 					},
 				},
@@ -319,6 +328,7 @@ describe('presetPropertyValueForDevice', () => {
 	it('resolves the user-selected preset, not just the block default', () => {
 		window.kadenceDesignTokensPresets.libraries[SET][BLOCK].presets.push({ slug: 'secondary', label: 'Secondary' });
 		window.kadenceDesignTokensPresets.libraries[SET][BLOCK].values.secondary = { 'button-border-width': '6px' };
+		window.kadenceDesignTokensPresets.libraries[SET][BLOCK].overridden.secondary = { 'button-border-width': true };
 
 		const value = presetPropertyValueForDevice(
 			BLOCK,
@@ -391,6 +401,13 @@ describe('usePresetBinding border width/style/color combining', () => {
 						},
 						responsive: {
 							primary: { tablet: { 'button-border-color': '#000000' } },
+						},
+						overridden: {
+							primary: {
+								'button-border-width': true,
+								'button-border-style': true,
+								'button-border-color': true,
+							},
 						},
 					},
 				},

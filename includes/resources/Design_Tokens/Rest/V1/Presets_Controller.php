@@ -1722,8 +1722,39 @@ final class Presets_Controller extends Controller {
 			'version'     => $this->store->get_version( $slug ),
 			'default'     => $this->default_of( $node ),
 			'userCreated' => $this->presets->user_created( $block, $slug ),
-			'presets'     => $this->ordered_presets( $this->named_presets( $node ), $ordered ),
+			'presets'     => $this->with_overridden( $this->ordered_presets( $this->named_presets( $node ), $ordered ), $block, $slug ),
 		];
+	}
+
+	/**
+	 * Add each preset's own "overridden" property map alongside its (baseline-merged) `tokens` — the
+	 * property keys THIS preset genuinely has a stored value for, as opposed to `tokens`, which cannot
+	 * be told apart from a value only inherited from the baseline's own definition of that same preset
+	 * slug. A client reads this to decide whether an unset field should show as bound to the merged
+	 * value (this preset has its own override) or as a muted generic default (nothing here is this
+	 * preset's own) — see {@see Effective_Presets::stored_tokens()}.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $presets The ordered `{ slug => { label, tokens } }` map.
+	 * @param string               $block   The block name.
+	 * @param string               $slug    The token library slug.
+	 *
+	 * @return array<string, mixed> The same map, each preset gaining an `overridden` key
+	 *                              (`{ property => true }`, only for properties it owns).
+	 */
+	private function with_overridden( array $presets, string $block, string $slug ): array {
+		foreach ( $presets as $preset_slug => $preset ) {
+			if ( ! is_array( $preset ) ) {
+				continue;
+			}
+
+			$preset['overridden'] = $this->presets->owned_properties( $block, (string) $preset_slug, $slug );
+
+			$presets[ $preset_slug ] = $preset;
+		}
+
+		return $presets;
 	}
 
 	/**

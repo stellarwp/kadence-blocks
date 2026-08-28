@@ -340,19 +340,24 @@ describe('the effective value shown when the draft is reset', () => {
 	/**
 	 * Render `BoxTokenField` with the given draft/original values.
 	 *
-	 * @param {Object} props The field's `value`/`originalValue` to render with.
+	 * @param {Object}  props              The field's `value`/`originalValue` to render with.
+	 * @param {boolean} [props.overridden] Whether the preset genuinely has its own stored value for
+	 *                                     this property — gates whether `originalValue` is shown as
+	 *                                     bound. Defaults to true so existing "preset has its own
+	 *                                     value" cases don't need updating individually.
 	 *
 	 * @since TBD
 	 *
 	 * @return {void}
 	 */
-	function renderField({ value, originalValue }) {
+	function renderField({ value, originalValue, overridden = true }) {
 		act(() => {
 			root.render(
 				createElement(BoxTokenField, {
-					field: { tokenType: 'dimension', role: 'radius', defaultValue: '0.1875rem' },
+					field: { path: 'tokens.radius', tokenType: 'dimension', role: 'radius', defaultValue: '0.1875rem' },
 					value,
 					originalValue,
+					originalValues: { overridden: { radius: overridden } },
 					onChange: jest.fn(),
 					slots: 'corners',
 				})
@@ -377,6 +382,12 @@ describe('the effective value shown when the draft is reset', () => {
 		renderField({ value: '0.5rem', originalValue: 'semantic.radius.control' });
 
 		expect(latestBoxControlProps.value).toEqual(toControlValue('0.5rem'));
+	});
+
+	it("falls back to the generic literal fallback when the preset's stored value is only inherited from the baseline, not its own", () => {
+		renderField({ value: '', originalValue: 'semantic.radius.control', overridden: false });
+
+		expect(latestBoxControlProps.value).toEqual(toControlValue(''));
 	});
 });
 
@@ -414,6 +425,7 @@ describe('a reset responsive field', () => {
 					field: { path: 'tokens.radius', tokenType: 'dimension', role: 'radius', responsive: true },
 					value,
 					originalValue,
+					originalValues: { overridden: { radius: true } },
 					onChange: jest.fn(),
 					slots: 'corners',
 				})
@@ -485,6 +497,7 @@ describe('switching unit on a reset field', () => {
 					field: { path: 'tokens.radius', tokenType: 'dimension', role: 'radius' },
 					value: '',
 					originalValue: '1rem',
+					originalValues: { overridden: { radius: true } },
 					onChange,
 					slots: 'corners',
 				})

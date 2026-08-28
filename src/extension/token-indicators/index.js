@@ -20,6 +20,7 @@ import {
 	blockPresetValues,
 	blockPresetReferences,
 	blockPresetResponsive,
+	blockPresetOverridden,
 } from '../preset-picker';
 import { isEmptyValue, matchesPreset, presetValueForDevice } from './normalize';
 import './token-indicators.scss';
@@ -167,6 +168,7 @@ export function usePresetBinding(blockName, attributes, library, previewDevice) 
 	const properties = blockProperties(blockName, resolvedLibrary);
 	const values = blockPresetValues(blockName, resolvedLibrary);
 	const responsive = blockPresetResponsive(blockName, resolvedLibrary);
+	const ownedProperties = blockPresetOverridden(blockName, resolvedLibrary);
 
 	// The preset whose surface drives the indicators: the explicit selection, or the set's authoritative
 	// default preset when none is chosen or the selection no longer exists (kbPreset is '' on every
@@ -175,16 +177,20 @@ export function usePresetBinding(blockName, attributes, library, previewDevice) 
 	const activePreset = activePresetFor(blockName, attributes, resolvedLibrary);
 	const presetValues = get(values, activePreset, {});
 	const presetBreakpoints = get(responsive, activePreset, {});
+	const presetOwnKeys = get(ownedProperties, activePreset, {});
 
 	const state = {};
 
 	properties.forEach((property) => {
 		const attr = property.control_attr;
 
-		// A property with no mapped control attribute, or one the active preset does not define, is not
-		// surfaced — only a property the selected preset sets is "bound" (the binding-set collapse
-		// interlock: the per-preset surface, not just the block's full property list, gates binding).
-		if (!attr || !(property.key in presetValues)) {
+		// A property with no mapped control attribute is not surfaced. Nor is one the active preset only
+		// falls through to the baseline's own definition of this same preset slug for — `presetOwnKeys`
+		// carries only the properties the preset genuinely has ITS OWN stored value for; a baseline
+		// fallback reads as unbound here, the same way the Style Library shows it as a muted "Default"
+		// rather than as if it were the preset's own binding (the binding-set collapse interlock: the
+		// per-preset surface, not just the block's full property list, gates binding).
+		if (!attr || !presetOwnKeys[property.key]) {
 			return;
 		}
 
@@ -275,11 +281,20 @@ export function usePresetBinding(blockName, attributes, library, previewDevice) 
  *
  * @since TBD
  *
- * @return {*} The resolved literal value, or `undefined` when the active preset does not set it.
+ * @return {*} The resolved literal value, or `undefined` when the active preset does not set it, OR
+ *             only falls through to the baseline's own definition of this same preset slug rather than
+ *             carrying a genuine override of its own — see `usePresetBinding`'s identical
+ *             `presetOwnKeys` gate for the full reasoning.
  */
 export function presetPropertyValueForDevice(blockName, propertyKey, attributes, library, previewDevice) {
 	const resolvedLibrary = library || activeLibrary();
 	const activePreset = activePresetFor(blockName, attributes, resolvedLibrary);
+	const presetOwnKeys = get(blockPresetOverridden(blockName, resolvedLibrary), activePreset, {});
+
+	if (!presetOwnKeys[propertyKey]) {
+		return undefined;
+	}
+
 	const presetValues = get(blockPresetValues(blockName, resolvedLibrary), activePreset, {});
 	const presetBreakpoints = get(blockPresetResponsive(blockName, resolvedLibrary), activePreset, {});
 

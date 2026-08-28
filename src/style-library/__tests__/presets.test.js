@@ -291,6 +291,13 @@ describe('presetInitialValues', () => {
 						'button-text-hover': '{semantic.color.on-primary}',
 						'button-radius': '0.5rem',
 					},
+					overridden: {
+						'button-bg': true,
+						'button-text': true,
+						'button-bg-hover': true,
+						'button-text-hover': true,
+						'button-radius': true,
+					},
 				},
 			},
 		};
@@ -308,7 +315,42 @@ describe('presetInitialValues', () => {
 				'button-padding': '',
 				'button-margin': '',
 			},
+			overridden: {
+				'button-bg': true,
+				'button-text': true,
+				'button-bg-hover': true,
+				'button-text-hover': true,
+				'button-radius': true,
+				// Absent from the payload's own `overridden` map, so these fall through to `false` —
+				// genuinely unbound, not merely unvalued.
+				'button-padding': false,
+				'button-margin': false,
+			},
 		});
+	});
+
+	it('seeds a property the preset only inherits from the baseline as empty, not as its merged value', () => {
+		// `tokens` is already baseline-merged, so a property the preset has no override of its own for
+		// still carries a value here. Seeding it would make a fresh page load render the field as bound
+		// to a value nobody set — the reload-vs-reset disagreement this guards against.
+		const payload = {
+			presets: {
+				secondary: {
+					label: 'Secondary',
+					tokens: {
+						'button-bg': '{semantic.color.button-secondary-bg}',
+						'button-radius': '{semantic.radius.control}',
+					},
+					overridden: { 'button-bg': true },
+				},
+			},
+		};
+
+		const seeded = presetInitialValues(payload, 'secondary', ['button-bg', 'button-radius']);
+
+		expect(seeded.tokens['button-bg']).toBe('semantic.color.button-secondary-bg');
+		expect(seeded.tokens['button-radius']).toBe('');
+		expect(seeded.overridden['button-radius']).toBe(false);
 	});
 
 	it('returns null for an unknown slug', () => {
@@ -826,7 +868,15 @@ describe('seed/save round trip', () => {
 		};
 
 		const seeded = presetInitialValues(
-			{ presets: { primary: { label: 'Primary', tokens: { 'button-radius': stored } } } },
+			{
+				presets: {
+					primary: {
+						label: 'Primary',
+						tokens: { 'button-radius': stored },
+						overridden: { 'button-radius': true },
+					},
+				},
+			},
 			'primary',
 			['button-radius']
 		);
@@ -858,6 +908,7 @@ describe('seed/save round trip', () => {
 								'{semantic.dimension.control-radius}',
 							],
 						},
+						overridden: { 'button-radius': true },
 					},
 				},
 			},

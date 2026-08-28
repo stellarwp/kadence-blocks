@@ -106,13 +106,37 @@ describe('BorderField', () => {
 				createElement(BorderField, {
 					field,
 					values: {},
-					originalValues: { tokens: { 'button-border-width': 'semantic.border-width.default' } },
+					originalValues: {
+						tokens: { 'button-border-width': 'semantic.border-width.default' },
+						overridden: { 'button-border-width': true },
+					},
 					onValueChange: jest.fn(),
 				})
 			);
 		});
 
 		expect(latestBorderControlProps.value.width).toBe('{semantic.border-width.default}');
+	});
+
+	it("falls back to the generic literal fallback when the preset's stored width is only inherited from the baseline, not its own", () => {
+		const field = { label: 'Border', path: 'tokens.button-border', defaultValue: '1px' };
+
+		act(() => {
+			root.render(
+				createElement(BorderField, {
+					field,
+					values: {},
+					originalValues: {
+						tokens: { 'button-border-width': 'semantic.border-width.default' },
+						overridden: {},
+					},
+					onValueChange: jest.fn(),
+				})
+			);
+		});
+
+		expect(latestBorderControlProps.value.width).toBe('');
+		expect(latestBorderControlProps.defaultValue).toBe('1px');
 	});
 
 	it('falls back to the generic literal defaultValue when the preset has no stored width either', () => {

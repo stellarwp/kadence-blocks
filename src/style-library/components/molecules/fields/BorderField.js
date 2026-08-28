@@ -227,6 +227,10 @@ export function widthTokensForField(atBreakpoint) {
  *                                             draft — read by the same dot paths as `values`, so a
  *                                             reset axis reads as what saving the reset actually
  *                                             resolves to instead of a generic literal fallback.
+ *                                             Its `overridden` map gates the substitution to axes the
+ *                                             CURRENT preset genuinely has its own stored value for —
+ *                                             an axis only inherited from the baseline's own definition
+ *                                             of the same preset slug reads as muted "Default" instead.
  * @param {Function} props.onValueChange      Called with `(path, next)` for any of the three axes.
  *
  * @since TBD
@@ -261,20 +265,24 @@ export function BorderField({ field, values, originalValues, onValueChange }) {
 	// left in place it renders as a raw dot-path. Blanked before the effective read below.
 	const shownWidth = withoutSemanticSlots(widthAtBreakpoint);
 
+	const isWidthOverridden = originalValues?.overridden?.[widthPath.replace(/^tokens\./, '')] === true;
+	const isStyleOverridden = originalValues?.overridden?.[stylePath.replace(/^tokens\./, '')] === true;
+	const isColorOverridden = originalValues?.overridden?.[colorPath.replace(/^tokens\./, '')] === true;
+
 	// Display only — every `write*` below targets the raw draft, so a reset stays reset.
 	const effectiveWidth = !isUnsetPresetValue(shownWidth)
 		? shownWidth
-		: !isUnsetPresetValue(originalWidthAtBreakpoint)
+		: isWidthOverridden && !isUnsetPresetValue(originalWidthAtBreakpoint)
 			? originalWidthAtBreakpoint
 			: shownWidth;
 	const effectiveStyle = !isUnsetPresetValue(styleAtBreakpoint)
 		? styleAtBreakpoint
-		: !isUnsetPresetValue(originalStyleAtBreakpoint)
+		: isStyleOverridden && !isUnsetPresetValue(originalStyleAtBreakpoint)
 			? originalStyleAtBreakpoint
 			: styleAtBreakpoint;
 	const effectiveColor = !isUnsetPresetValue(rawColor)
 		? rawColor
-		: !isUnsetPresetValue(originalColor)
+		: isColorOverridden && !isUnsetPresetValue(originalColor)
 			? originalColor
 			: rawColor;
 

@@ -442,7 +442,11 @@ describe('PresetSidebar reset field display', () => {
 				},
 				isLoading: false,
 				loadError: null,
-				initialValuesFor: () => ({ label: 'Primary', tokens: { 'button-radius': 'semantic.radius.control' } }),
+				initialValuesFor: () => ({
+					label: 'Primary',
+					tokens: { 'button-radius': 'semantic.radius.control' },
+					overridden: { 'button-radius': true },
+				}),
 				savePreset: jest.fn(),
 				deletePreset: jest.fn(),
 				isDeletable: () => true,

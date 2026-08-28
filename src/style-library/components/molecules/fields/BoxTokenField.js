@@ -325,6 +325,11 @@ export function tokensForField(field, atBreakpoint) {
  *                                          property, unaffected by the draft — shown, as if bound,
  *                                          whenever `value` is reset/unset but this is not, so the
  *                                          field reads as what saving the reset actually resolves to.
+ * @param {Object}   [props.originalValues] The preset's full seeded draft, carrying `overridden` — the
+ *                                          property keys the CURRENT preset genuinely has its own stored
+ *                                          value for. A property absent here only inherits from the
+ *                                          baseline's own definition of the same preset slug, and must
+ *                                          read as muted "Default", not as bound to that inherited value.
  * @param {Function} props.onChange         Called with the next stored value.
  * @param {string}   [props.slots]          'corners' or 'sides' — the control's geometry.
  *
@@ -332,7 +337,7 @@ export function tokensForField(field, atBreakpoint) {
  *
  * @return {JSX.Element} The field.
  */
-export function BoxTokenField({ field, value, originalValue, onChange, slots = 'sides' }) {
+export function BoxTokenField({ field, value, originalValue, originalValues, onChange, slots = 'sides' }) {
 	const units = field.units ?? ['px', 'em', 'rem', '%'];
 	const responsive = field.responsive === true;
 
@@ -353,16 +358,21 @@ export function BoxTokenField({ field, value, originalValue, onChange, slots = '
 	// `field.defaultValue`, which is a config literal rather than what the active library resolves.
 	const shown = withoutSemanticSlots(atBreakpoint);
 
+	// The preset's own genuine override, not a value only inherited from the baseline's definition of
+	// this same preset slug — a property absent here reads as muted "Default", never as bound.
+	const property = (field.path ?? '').replace(/^tokens\./, '');
+	const isOverridden = originalValues?.overridden?.[property] === true;
+
 	// What the field actually shows: the draft when it carries a real edit, else the preset's own
-	// currently-stored value (unaffected by this draft) when THAT is real, else genuinely empty. A
-	// reset field must not read as a blank, generic "Default" when the preset it belongs to already
-	// has its own bound value for this property — that value is exactly what saving the reset (an
-	// omitted property) resolves back to, so showing it immediately is showing the truth, not a
-	// preview. Read-path only: `write()` above still always targets the true draft `value`, so a
-	// reset that is never followed by another edit stays reset.
+	// currently-stored value (unaffected by this draft) when THAT is real AND genuinely this preset's
+	// own, else genuinely empty. A reset field must not read as a blank, generic "Default" when the
+	// preset it belongs to already has its own bound value for this property — that value is exactly
+	// what saving the reset (an omitted property) resolves back to, so showing it immediately is
+	// showing the truth, not a preview. Read-path only: `write()` above still always targets the true
+	// draft `value`, so a reset that is never followed by another edit stays reset.
 	const effectiveAtBreakpoint = !isUnsetPresetValue(shown)
 		? shown
-		: !isUnsetPresetValue(originalAtBreakpoint)
+		: isOverridden && !isUnsetPresetValue(originalAtBreakpoint)
 			? originalAtBreakpoint
 			: shown;
 
