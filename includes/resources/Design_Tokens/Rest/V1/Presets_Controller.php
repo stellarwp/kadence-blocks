@@ -924,6 +924,12 @@ final class Presets_Controller extends Controller {
 					// schema that says otherwise misleads anything generated from it.
 					'additionalProperties' => [ 'type' => [ 'string', 'number', 'array', 'object' ] ],
 				],
+				'overridden'                 => [
+					'description'          => __( 'Which properties this preset genuinely stores itself, as property => true. A bound property absent here is only inherited from the baseline\'s own definition of the same preset slug, and a control shows it as a muted default rather than as bound.', 'kadence-blocks' ),
+					'type'                 => 'object',
+					'additionalProperties' => [ 'type' => 'boolean' ],
+					'readonly'             => true,
+				],
 			],
 		];
 

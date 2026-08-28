@@ -106,6 +106,22 @@ final class PresetsControllerTest extends TestCase {
 	}
 
 	/**
+	 * The item schema describes the `overridden` map each preset carries, so a schema-driven consumer
+	 * can discover it rather than having to read the response to learn it exists.
+	 *
+	 * @return void
+	 */
+	public function testItemSchemaDescribesOverridden(): void {
+		$schema = $this->controller->get_item_schema();
+		$preset = $schema['properties']['presets']['additionalProperties'];
+
+		$this->assertArrayHasKey( 'overridden', $preset['properties'] );
+		$this->assertSame( 'object', $preset['properties']['overridden']['type'] );
+		$this->assertSame( 'boolean', $preset['properties']['overridden']['additionalProperties']['type'] );
+		$this->assertTrue( $preset['properties']['overridden']['readonly'] );
+	}
+
+	/**
 	 * The item schema documents the `userCreated` property added to the GET item response.
 	 *
 	 * @return void
