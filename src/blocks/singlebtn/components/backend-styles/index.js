@@ -96,11 +96,17 @@ export function hasVisibleShadow(shadowItem) {
 	}
 
 	return ['hOffset', 'vOffset', 'blur', 'spread'].some((axis) => {
-		const value = Number(shadowItem[axis]);
+		const raw = shadowItem[axis];
 
-		// A missing or non-numeric axis is not a visible one. `Number(undefined)` is `NaN`, which fails a
-		// bare `!== 0` check as "visible" — the PHP renderer's `has_visible_shadow()` does not, and the
-		// canvas must not disagree with the front end.
+		// A {dot.alias} leg resolves to a var() unknown here, so it counts as visible — read as zero, the
+		// caller's `box-shadow: none` would erase a shadow the token does paint. Mirrors the PHP gate.
+		if (typeof raw === 'string' && raw.trim() !== '' && !Number.isFinite(Number(raw))) {
+			return true;
+		}
+
+		const value = Number(raw);
+
+		// `Number(undefined)` is `NaN`, which a bare `!== 0` would read as visible; the PHP gate does not.
 		return Number.isFinite(value) && value !== 0;
 	});
 }

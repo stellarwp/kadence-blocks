@@ -646,7 +646,17 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		foreach ( [ 'hOffset', 'vOffset', 'blur', 'spread' ] as $axis ) {
 			$value = $shadow_item[ $axis ] ?? 0;
 
-			if ( is_numeric( $value ) && 0.0 !== (float) $value ) {
+			if ( is_numeric( $value ) ) {
+				if ( 0.0 !== (float) $value ) {
+					return true;
+				}
+
+				continue;
+			}
+
+			// A {dot.alias} leg resolves to a var() unknown here, so it counts as visible — read as zero,
+			// the caller's `box-shadow: none` would erase a shadow the token does paint.
+			if ( is_string( $value ) && '' !== trim( $value ) ) {
 				return true;
 			}
 		}

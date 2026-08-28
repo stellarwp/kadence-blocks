@@ -261,6 +261,26 @@ class SinglebtnTest extends KadenceBlocksUnit {
 			],
 			'expected_visible' => true,
 		];
+
+		yield 'token alias on a leg' => [
+			'item'     => [
+				'hOffset' => 0,
+				'vOffset' => 0,
+				'blur'    => '{primitive.shadow.md}',
+				'spread'  => 0,
+			],
+			'expected' => true,
+		];
+
+		yield 'empty string legs' => [
+			'item'     => [
+				'hOffset' => '',
+				'vOffset' => '',
+				'blur'    => '',
+				'spread'  => '',
+			],
+			'expected' => false,
+		];
 		yield 'non-zero offset' => [
 			'shadow_item'      => [
 				'hOffset' => 1,

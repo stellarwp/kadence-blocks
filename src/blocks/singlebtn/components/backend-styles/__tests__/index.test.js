@@ -65,12 +65,12 @@ describe('hasVisibleShadow', () => {
 	});
 
 	/**
-	 * A non-numeric axis value is not a visible one either, for the same reason as a missing key.
+	 * An empty or nullish axis value is not a visible one, for the same reason as a missing key.
 	 *
 	 * @return {void}
 	 */
-	it('is false for a non-numeric axis value', () => {
-		expect(hasVisibleShadow({ hOffset: '', vOffset: null, blur: 'none', spread: undefined })).toBe(false);
+	it('is false for an empty or nullish axis value', () => {
+		expect(hasVisibleShadow({ hOffset: '', vOffset: null, blur: '   ', spread: undefined })).toBe(false);
 	});
 
 	/**
@@ -80,5 +80,15 @@ describe('hasVisibleShadow', () => {
 	 */
 	it('is true when any one axis is non-zero', () => {
 		expect(hasVisibleShadow({ hOffset: 0, vOffset: 0, blur: 2, spread: 0 })).toBe(true);
+	});
+	/**
+	 * A {dot.alias} token reference on any leg resolves to a var() whose value is unknown here, so it
+	 * counts as visible. Read as zero, the caller's `box-shadow: none` would erase a shadow the token
+	 * does paint. Mirrors the PHP renderer's own gate.
+	 *
+	 * @return {void}
+	 */
+	it('is true for a token alias reference on any leg', () => {
+		expect(hasVisibleShadow({ hOffset: 0, vOffset: 0, blur: '{primitive.shadow.md}', spread: 0 })).toBe(true);
 	});
 });
