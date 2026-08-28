@@ -479,40 +479,27 @@ export default function KadenceButtonEdit(props) {
 	// slots — otherwise an explicit "link" would stick and hide a new preset's per-slot value.
 	const { isLinked: borderRadiusIsLinked, toggleLink: toggleBorderRadiusLink } = useLinkedMeasureState({
 		forDevice: borderRadiusForDevice,
-		inherited: inheritedBorderRadius,
 		previewDevice,
-		presetValue: borderRadiusPresetValue,
-		tokens: borderRadiusTokens,
 		setAttributes,
 		resetOn: attributes.kbPreset,
 	});
 
 	// Padding's linked/individual mode, mirroring Border Radius's own hook call above with "corner"
-	// swapped for "side" — same shape, run over `paddingForDevice`/`paddingPresetValue`/
-	// `inheritedPadding`/`paddingPickableTokens` instead, `resetOn` included: an override records a
-	// choice about the PREVIOUS preset's sides, so it has to clear on a preset change here too, or an
-	// explicit "link" sticks and hides the new preset's own per-side padding.
+	// swapped for "side" — same shape, run over `paddingForDevice` instead. `resetOn` is included for
+	// the same reason: an override records a choice about the PREVIOUS preset's sides, so it has to
+	// clear on a preset change or an explicit "link" sticks and hides the new preset's own padding.
 	const { isLinked: paddingIsLinked, toggleLink: togglePaddingLink } = useLinkedMeasureState({
 		forDevice: paddingForDevice,
-		inherited: inheritedPadding,
 		previewDevice,
-		presetValue: paddingPresetValue,
-		tokens: paddingPickableTokens,
 		setAttributes,
 		resetOn: attributes.kbPreset,
 	});
 
 	// Margin's linked/individual mode, mirroring Padding's own hook call above — same shape, run over
-	// `marginForDevice`/`marginPresetValue`/`inheritedMargin`/`marginPickableTokens` instead. Unlike
-	// Padding, Margin does clear its override on a preset change (`resetOn`): an explicit "link" made
-	// under one preset would otherwise stick after switching to a preset with distinct per-side margins,
-	// hiding them behind a stale linked view.
+	// `marginForDevice` instead, `resetOn` included for the same reason.
 	const { isLinked: marginIsLinked, toggleLink: toggleMarginLink } = useLinkedMeasureState({
 		forDevice: marginForDevice,
-		inherited: inheritedMargin,
 		previewDevice,
-		presetValue: marginPresetValue,
-		tokens: marginPickableTokens,
 		setAttributes,
 		resetOn: attributes.kbPreset,
 	});
@@ -535,10 +522,7 @@ export default function KadenceButtonEdit(props) {
 	);
 	const { isLinked: borderHoverRadiusIsLinked, toggleLink: toggleBorderHoverRadiusLink } = useLinkedMeasureState({
 		forDevice: borderHoverRadiusForDevice,
-		inherited: inheritedBorderHoverRadius,
 		previewDevice,
-		presetValue: borderRadiusPresetValue,
-		tokens: borderRadiusTokens,
 		setAttributes,
 		resetOn: attributes.kbPreset,
 	});
@@ -557,10 +541,7 @@ export default function KadenceButtonEdit(props) {
 	const { isLinked: borderTransparentRadiusIsLinked, toggleLink: toggleBorderTransparentRadiusLink } =
 		useLinkedMeasureState({
 			forDevice: borderTransparentRadiusForDevice,
-			inherited: inheritedBorderTransparentRadius,
 			previewDevice,
-			presetValue: borderRadiusPresetValue,
-			tokens: borderRadiusTokens,
 			setAttributes,
 			resetOn: attributes.kbPreset,
 		});
@@ -579,10 +560,7 @@ export default function KadenceButtonEdit(props) {
 	const { isLinked: borderTransparentHoverRadiusIsLinked, toggleLink: toggleBorderTransparentHoverRadiusLink } =
 		useLinkedMeasureState({
 			forDevice: borderTransparentHoverRadiusForDevice,
-			inherited: inheritedBorderTransparentHoverRadius,
 			previewDevice,
-			presetValue: borderRadiusPresetValue,
-			tokens: borderRadiusTokens,
 			setAttributes,
 			resetOn: attributes.kbPreset,
 		});
@@ -600,10 +578,7 @@ export default function KadenceButtonEdit(props) {
 	);
 	const { isLinked: borderStickyRadiusIsLinked, toggleLink: toggleBorderStickyRadiusLink } = useLinkedMeasureState({
 		forDevice: borderStickyRadiusForDevice,
-		inherited: inheritedBorderStickyRadius,
 		previewDevice,
-		presetValue: borderRadiusPresetValue,
-		tokens: borderRadiusTokens,
 		setAttributes,
 		resetOn: attributes.kbPreset,
 	});
@@ -622,10 +597,7 @@ export default function KadenceButtonEdit(props) {
 	const { isLinked: borderStickyHoverRadiusIsLinked, toggleLink: toggleBorderStickyHoverRadiusLink } =
 		useLinkedMeasureState({
 			forDevice: borderStickyHoverRadiusForDevice,
-			inherited: inheritedBorderStickyHoverRadius,
 			previewDevice,
-			presetValue: borderRadiusPresetValue,
-			tokens: borderRadiusTokens,
 			setAttributes,
 			resetOn: attributes.kbPreset,
 		});

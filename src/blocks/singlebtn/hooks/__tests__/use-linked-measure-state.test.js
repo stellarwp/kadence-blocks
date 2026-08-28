@@ -10,12 +10,6 @@ import { createRoot } from 'react-dom/client';
  */
 import { useLinkedMeasureState } from '../use-linked-measure-state';
 
-const TOKENS = [
-	{ value: '4px', alias: 'sm' },
-	{ value: '6px', alias: 'md' },
-	{ value: '8px', alias: 'lg' },
-];
-
 let container;
 let root;
 
@@ -66,18 +60,15 @@ afterEach(() => {
 
 describe('useLinkedMeasureState', () => {
 	/**
-	 * An unset device value reads as linked — every effective slot falls through to the same scalar
-	 * preset value, so there is nothing to show as different.
+	 * An unset device value reads as linked: nothing is stored, so no slot differs from another. What
+	 * those empty slots inherit is shown as one muted fallback, not split across four rows.
 	 *
 	 * @return {void}
 	 */
-	it('reads as linked when the device stores nothing and the preset is a single scalar', () => {
+	it('reads as linked when the device stores nothing', () => {
 		const { box } = renderHook({
 			forDevice: { attr: 'radius', value: ['', '', '', ''] },
-			inherited: { values: ['4px', '4px', '4px', '4px'], inherited: [false, false, false, false] },
 			previewDevice: 'Desktop',
-			presetValue: '4px',
-			tokens: TOKENS,
 			setAttributes: jest.fn(),
 		});
 
@@ -85,17 +76,14 @@ describe('useLinkedMeasureState', () => {
 	});
 
 	/**
-	 * A uniform stored value reads as linked, regardless of the preset.
+	 * A uniform stored value reads as linked, from the stored value alone.
 	 *
 	 * @return {void}
 	 */
 	it('reads as linked when every stored slot matches', () => {
 		const { box } = renderHook({
 			forDevice: { attr: 'radius', value: ['4px', '4px', '4px', '4px'] },
-			inherited: { values: ['4px', '4px', '4px', '4px'], inherited: [false, false, false, false] },
 			previewDevice: 'Desktop',
-			presetValue: '8px',
-			tokens: TOKENS,
 			setAttributes: jest.fn(),
 		});
 
@@ -110,10 +98,7 @@ describe('useLinkedMeasureState', () => {
 	it('reads as individual when a stored slot differs', () => {
 		const { box } = renderHook({
 			forDevice: { attr: 'radius', value: ['4px', '8px', '4px', '4px'] },
-			inherited: { values: ['4px', '4px', '4px', '4px'], inherited: [false, false, false, false] },
 			previewDevice: 'Desktop',
-			presetValue: '4px',
-			tokens: TOKENS,
 			setAttributes: jest.fn(),
 		});
 
@@ -121,53 +106,46 @@ describe('useLinkedMeasureState', () => {
 	});
 
 	/**
-	 * Linking an empty device whose inherited slots are uniform remembers the override without writing
-	 * any attribute — writing would pin the device to another breakpoint's current value.
+	 * A device that stores nothing opens LINKED regardless of what it inherits: its slots are empty
+	 * because they inherit, and the inherited value is shown as one muted fallback rather than split
+	 * across four blank rows.
 	 *
 	 * @return {void}
 	 */
-	it('remembers a link toggle without writing an attribute when the inherited slots are uniform', () => {
-		const setAttributes = jest.fn();
+	it('reads an empty device as linked even when the inherited slots differ', () => {
 		const { box } = renderHook({
 			forDevice: { attr: 'tabletRadius', value: ['', '', '', ''] },
-			inherited: { values: ['6px', '6px', '6px', '6px'], inherited: [true, true, true, true] },
 			previewDevice: 'Tablet',
-			presetValue: ['4px', '8px', '4px', '4px'],
-			tokens: TOKENS,
+			setAttributes: jest.fn(),
+		});
+
+		expect(box.current.isLinked).toBe(true);
+	});
+
+	/**
+	 * Toggling link on an empty device never writes an attribute, whatever it inherits. The inherited
+	 * value is only ever DISPLAYED (muted); writing it would turn that display fallback into a real
+	 * stored override off a single link click — and, for a value carrying its own unit (`0.4em`) into
+	 * an attribute whose unit lives beside it, would render with a doubled unit.
+	 *
+	 * @return {void}
+	 */
+	it('never writes an attribute when toggling link on an empty device', () => {
+		const setAttributes = jest.fn();
+		const { box } = renderHook({
+			forDevice: { attr: 'tabletPadding', value: ['', '', '', ''] },
+			previewDevice: 'Tablet',
 			setAttributes,
 		});
 
+		// Unlink first, since an empty device now starts linked.
+		act(() => box.current.toggleLink());
 		expect(box.current.isLinked).toBe(false);
 
 		act(() => box.current.toggleLink());
 
 		expect(setAttributes).not.toHaveBeenCalled();
 		expect(box.current.isLinked).toBe(true);
-	});
-
-	/**
-	 * Linking an empty device whose inherited slots differ collapses them by writing the first
-	 * inherited slot (resolved to its token alias) into every slot, so the control and the preset
-	 * agree.
-	 *
-	 * @return {void}
-	 */
-	it('collapses to the first inherited slot when linking an empty device with differing inherited slots', () => {
-		const setAttributes = jest.fn();
-		const { box } = renderHook({
-			forDevice: { attr: 'tabletRadius', value: ['', '', '', ''] },
-			inherited: { values: ['6px', '8px', '6px', '6px'], inherited: [true, true, true, true] },
-			previewDevice: 'Tablet',
-			presetValue: ['4px', '8px', '4px', '4px'],
-			tokens: TOKENS,
-			setAttributes,
-		});
-
-		expect(box.current.isLinked).toBe(false);
-
-		act(() => box.current.toggleLink());
-
-		expect(setAttributes).toHaveBeenCalledWith({ tabletRadius: ['md', 'md', 'md', 'md'] });
 	});
 
 	/**
@@ -180,10 +158,7 @@ describe('useLinkedMeasureState', () => {
 		const setAttributes = jest.fn();
 		const { box } = renderHook({
 			forDevice: { attr: 'radius', value: ['4px', '4px', '4px', '4px'] },
-			inherited: { values: ['4px', '4px', '4px', '4px'], inherited: [false, false, false, false] },
 			previewDevice: 'Desktop',
-			presetValue: '4px',
-			tokens: TOKENS,
 			setAttributes,
 		});
 
@@ -205,10 +180,7 @@ describe('useLinkedMeasureState', () => {
 		const setAttributes = jest.fn();
 		const { box, update } = renderHook({
 			forDevice: { attr: 'tabletRadius', value: ['4px', '4px', '4px', '4px'] },
-			inherited: { values: ['4px', '4px', '4px', '4px'], inherited: [false, false, false, false] },
 			previewDevice: 'Tablet',
-			presetValue: '4px',
-			tokens: TOKENS,
 			setAttributes,
 		});
 
@@ -220,10 +192,7 @@ describe('useLinkedMeasureState', () => {
 
 		update({
 			forDevice: { attr: 'radius', value: ['4px', '4px', '4px', '4px'] },
-			inherited: { values: ['4px', '4px', '4px', '4px'], inherited: [false, false, false, false] },
 			previewDevice: 'Desktop',
-			presetValue: '4px',
-			tokens: TOKENS,
 			setAttributes,
 		});
 
@@ -232,7 +201,7 @@ describe('useLinkedMeasureState', () => {
 
 	/**
 	 * A change to `resetOn` (e.g. a new preset selected) clears any remembered override, so the mode
-	 * re-derives from the stored value and preset alone.
+	 * re-derives from the stored value alone.
 	 *
 	 * @return {void}
 	 */
@@ -240,10 +209,7 @@ describe('useLinkedMeasureState', () => {
 		const setAttributes = jest.fn();
 		const { box, update } = renderHook({
 			forDevice: { attr: 'radius', value: ['4px', '4px', '4px', '4px'] },
-			inherited: { values: ['4px', '4px', '4px', '4px'], inherited: [false, false, false, false] },
 			previewDevice: 'Desktop',
-			presetValue: '4px',
-			tokens: TOKENS,
 			setAttributes,
 			resetOn: 'preset-a',
 		});
@@ -254,10 +220,7 @@ describe('useLinkedMeasureState', () => {
 
 		update({
 			forDevice: { attr: 'radius', value: ['4px', '4px', '4px', '4px'] },
-			inherited: { values: ['4px', '4px', '4px', '4px'], inherited: [false, false, false, false] },
 			previewDevice: 'Desktop',
-			presetValue: '4px',
-			tokens: TOKENS,
 			setAttributes,
 			resetOn: 'preset-b',
 		});

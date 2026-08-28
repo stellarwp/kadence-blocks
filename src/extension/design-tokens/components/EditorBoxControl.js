@@ -37,8 +37,15 @@ import { TokenControlRow } from '../../token-indicators/components/TokenControlR
  * @param {string}    props.previewDevice  The editor's active device (`Desktop`/`Tablet`/`Mobile`).
  * @param {Function}  props.onDeviceChange Called with the next editor device name.
  * @param {Array}     props.tokens         The pickable-token list, already resolved by the block.
- * @param {*}         [props.defaultValue] The inherited preset default for this device.
- * @param {boolean}   [props.inherited]    Whether that default comes from another breakpoint.
+ * @param {*}         [props.defaultValue] What an empty corner falls back to on this device, shown
+ *                                        MUTED rather than substituted into the value — an unset
+ *                                        corner is not the same as one bound to that value, and
+ *                                        collapsing the two is what makes a field claim an override
+ *                                        nobody made. `inherited` names which kind of fallback it is.
+ * @param {boolean}   [props.inherited]    Whether that default comes from another breakpoint (labels
+ *                                        it "Inherited") rather than from the preset/baseline
+ *                                        ("Default") — see `inheritedMeasureSlots()`, which computes
+ *                                        the per-corner flag this reduces.
  * @param {?Object}   [props.state]        The block's own binding state (`{ bound, overridden }`).
  * @param {?Function} [props.onReset]      Reset handler for the indicator.
  * @param {boolean}   props.isLinked       Whether the slots are edited together.
