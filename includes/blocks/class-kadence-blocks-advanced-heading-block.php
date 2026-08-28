@@ -1000,8 +1000,61 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		$family = Cast::to_string( $values['typography'] );
 
 		if ( $family !== '' && 'inherit' !== $family ) {
-			$css->maybe_add_google_font( $family, ! empty( $attributes['fontVariant'] ) ? $attributes['fontVariant'] : null );
+			$variant = $this->preset_font_variant( $attributes, $values );
+
+			$css->maybe_add_google_font( $family, $variant !== '' ? $variant : null );
 		}
+	}
+
+	/**
+	 * The Google variant to request alongside a preset's family, so the weight the page asks for is a
+	 * face the browser actually has.
+	 *
+	 * A preset carries its family and its weight as two independent properties: the family arrives here,
+	 * while the weight reaches the page as a `font-weight` declaration through its own binding. Asking
+	 * for the family without its weight loads the upright default and leaves the browser to synthesize
+	 * everything else — a heading set to 700 renders as a faked bold rather than the real face, which is
+	 * the outcome narrowing the weight picker to a family's shipped weights exists to prevent.
+	 *
+	 * Precedence follows what actually renders. An explicit `fontVariant` on the block is a direct
+	 * statement about the face and wins outright; a `fontWeight` the block sets itself comes next, since
+	 * that is the weight the CSS above emits for it; the preset's own weight applies only when the block
+	 * states neither.
+	 *
+	 * `presetFontVariant()` in `src/blocks/advancedheading/preset-font-variant.js` holds the JS twin of
+	 * this mapping, so the editor's loader and this enqueue ask Google for the same face. Keep the two in
+	 * step. A weight neither recognizes yields `''`, which asks for no variant and so leaves the family
+	 * loading exactly as it did before this bridge existed.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $attributes The block attributes.
+	 * @param array<string, mixed> $values     The active preset's resolved values.
+	 *
+	 * @return string The Google variant, or '' when nothing names a face to ask for.
+	 */
+	private function preset_font_variant( array $attributes, array $values ): string {
+		if ( ! empty( $attributes['fontVariant'] ) ) {
+			return Cast::to_string( $attributes['fontVariant'] );
+		}
+
+		$weight = ! empty( $attributes['fontWeight'] )
+			? Cast::to_string( $attributes['fontWeight'] )
+			: Cast::to_string( $values['fontWeight'] ?? '' );
+
+		$weight = strtolower( trim( $weight ) );
+
+		// `regular` rather than `400`: it is the v1 spelling the rest of this plugin already uses for the
+		// upright default (see `render_font_weight()`), and the editor's `parseVariant` reads it as 400.
+		if ( 'normal' === $weight || 'regular' === $weight || '400' === $weight ) {
+			return 'regular';
+		}
+
+		if ( 'bold' === $weight ) {
+			return '700';
+		}
+
+		return preg_match( '/^[1-9]00$/', $weight ) === 1 ? $weight : '';
 	}
 }
 

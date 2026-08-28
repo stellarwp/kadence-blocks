@@ -79,6 +79,7 @@ import Typed from 'typed.js';
  */
 import './editor.scss';
 import { presetPropertyValueForDevice } from '../../extension/token-indicators';
+import { presetFontVariant } from './preset-font-variant';
 import metadata from './block.json';
 /**
  * Internal block libraries
@@ -523,6 +524,12 @@ function KadenceAdvancedHeading(props) {
 	// The front end does the same through `render_preset_typography()`, which points font-family at the
 	// preset variable only when the block's own `typography` is empty — the two agree by construction.
 	const presetTypography = presetPropertyValueForDevice(metadata.name, 'typography', attributes);
+	// The weight to ASK GOOGLE FOR alongside that family. The preset's weight already reaches the page
+	// as a `font-weight` declaration through its own binding, but the face it names has to be requested
+	// too — a family loaded at 400 with `font-weight: 700` over it renders as a synthesized bold. An
+	// explicit variant on the block still wins, then a weight the block sets itself, then the preset's.
+	const presetFontWeight = presetPropertyValueForDevice(metadata.name, 'fontWeight', attributes);
+	const presetVariant = fontVariant || presetFontVariant(fontWeight || presetFontWeight);
 	const effectiveTypography = typography || presetTypography || '';
 	const renderTypography =
 		effectiveTypography && !effectiveTypography.includes(',')
@@ -2748,7 +2755,7 @@ function KadenceAdvancedHeading(props) {
 			 */}
 			{!typography && presetTypography && (
 				<KadenceWebfontLoader
-					typography={[{ family: presetTypography, variant: fontVariant ? fontVariant : '' }]}
+					typography={[{ family: presetTypography, variant: presetVariant }]}
 					clientId={clientId}
 					id={'adv-heading-preset'}
 				/>
