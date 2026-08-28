@@ -21,3 +21,6 @@ package-lock.json
 /diff.txt
 /diffcs.txt
 /phpcs.json
+
+# Scratch workspace for subagent-driven-development runs.
+.superpowers/
