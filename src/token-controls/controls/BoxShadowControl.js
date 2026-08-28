@@ -58,7 +58,7 @@ import { __ } from '@wordpress/i18n';
  */
 import { ControlShell } from '../templates/ControlShell';
 import { TokenPopover } from '../molecules/TokenPopover';
-import { fieldSummary, hasValue, isTokenAlias } from '../helpers/token-summary';
+import { defaultSummary, fieldSummary, hasValue, isTokenAlias, resolveDefaultValue } from '../helpers/token-summary';
 import { DEFAULT_COMPOSITE } from '../helpers/shadow-shorthand';
 import '../styles/token-controls.scss';
 
@@ -253,15 +253,16 @@ export function BoxShadowControl({ value, onChange, label, tokens = [], defaultV
 	//
 	// Whether an unset shadow can reach that branch is the host's problem: the button's registered
 	// `shadow` default IS the None composite (see `EditorShadowControl`'s `isUnsetShadow()`).
-	const defaultSummary = hasValue(defaultValue)
-		? fieldSummary(defaultValue, tokens, '', __('Custom', 'kadence-blocks'))
-		: null;
+	// `defaultSummary()`, not `fieldSummary()`: a fixed sentinel is not a named design choice, so its
+	// label must not be borrowed for a field nobody touched — an all-zero fallback would otherwise read
+	// as an explicit "None" pick. See that helper's own docblock.
+	const fallback = defaultSummary(resolveDefaultValue(defaultValue, tokens, '', false), tokens);
 	const summary =
 		aliased || fixedMatch
 			? { ...fieldSummary(displayValue, tokens, '', __('Custom', 'kadence-blocks')), value: '' }
 			: !hasValue(value)
 				? {
-						label: defaultSummary?.label || __('Default', 'kadence-blocks'),
+						label: fallback.label || __('Default', 'kadence-blocks'),
 						value: '',
 						muted: true,
 					}

@@ -827,3 +827,32 @@ describe('BoxShadowControl disabled state', () => {
 		expect(received.disabled).toBe(true);
 	});
 });
+
+describe('BoxShadowControl fallback labelling', () => {
+	/**
+	 * A fallback equal to the fixed sentinel's own resolved value must not borrow its label: an
+	 * untouched control would then read as an explicit "None" pick rather than as a default.
+	 *
+	 * @return {void}
+	 */
+	it('reads "Default", not "None", when the fallback equals the sentinel value', () => {
+		renderControl({ value: '', tokens: TOKENS_WITH_NONE, defaultValue: NONE_TOKEN.value });
+
+		const label = trigger().querySelector('.kadence-token-field__label');
+
+		expect(label.textContent).toBe('Default');
+		expect(label.classList.contains('kadence-token-field__label--default')).toBe(true);
+	});
+
+	/**
+	 * A fallback naming a real token still shows that token's label, so the muted text says what the
+	 * field actually falls back to.
+	 *
+	 * @return {void}
+	 */
+	it('names a real token fallback by its own label', () => {
+		renderControl({ value: '', tokens: TOKENS_WITH_NONE, defaultValue: TOKENS[0].value });
+
+		expect(trigger().querySelector('.kadence-token-field__label').textContent).toBe('Medium');
+	});
+});
