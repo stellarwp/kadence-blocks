@@ -30,6 +30,7 @@ import { useState } from '@wordpress/element';
  * Internal dependencies
  */
 import { pickableTokensForType, resolvedTokenValue } from '../../../helpers/tokens';
+import { isUnsetPresetValue } from '../../../helpers/presets';
 import {
 	PRESET_BREAKPOINTS,
 	readPresetBreakpoint,
@@ -311,13 +312,19 @@ export function tokensForField(field, atBreakpoint) {
  * @param {?string}  [props.field.label]    The control's label.
  * @param {boolean}  [props.field.readOnly] Whether the control is non-interactive.
  * @param {boolean}  [props.field.responsive] Whether the field offers a breakpoint switcher.
- * @param {*}        [props.field.defaultValue] What the block renders when the preset sets nothing,
- *                                              shown muted so an unset field is not blank.
+ * @param {*}        [props.field.defaultValue] What the block itself renders when nothing at all is
+ *                                              set, shown muted as a last-resort fallback — only
+ *                                              reached when the preset has no value of its own for
+ *                                              this property either (see `originalValue` below).
  * @param {?Array}   [props.field.units]    Units the Custom tab offers.
  * @param {?number}  [props.field.min]      Lowest allowed number on the Custom tab.
  * @param {?number}  [props.field.max]      Highest allowed number; the slider needs one.
  * @param {?number}  [props.field.step]     Custom tab increment.
  * @param {*}        props.value            The stored value: a scalar or a four-slot list.
+ * @param {*}        [props.originalValue]  The preset's own currently-stored value for this
+ *                                          property, unaffected by the draft — shown, as if bound,
+ *                                          whenever `value` is reset/unset but this is not, so the
+ *                                          field reads as what saving the reset actually resolves to.
  * @param {Function} props.onChange         Called with the next stored value.
  * @param {string}   [props.slots]          'corners' or 'sides' — the control's geometry.
  *
@@ -325,7 +332,7 @@ export function tokensForField(field, atBreakpoint) {
  *
  * @return {JSX.Element} The field.
  */
-export function BoxTokenField({ field, value, onChange, slots = 'sides' }) {
+export function BoxTokenField({ field, value, originalValue, onChange, slots = 'sides' }) {
 	const units = field.units ?? ['px', 'em', 'rem', '%'];
 	const responsive = field.responsive === true;
 
@@ -337,7 +344,25 @@ export function BoxTokenField({ field, value, onChange, slots = 'sides' }) {
 	// holds one whole value per breakpoint — scalar or slot list — so a breakpoint is resolved first
 	// and the four slots are read out of whatever that breakpoint holds.
 	const atBreakpoint = responsive ? readPresetBreakpoint(value, breakpoint) : value;
+	const originalAtBreakpoint = responsive ? readPresetBreakpoint(originalValue, breakpoint) : originalValue;
 	const write = (next) => (responsive ? writePresetBreakpoint(value, breakpoint, next) : next);
+
+	// A semantic's name never shows; its resolved value becomes the field's Default. It outranks
+	// `field.defaultValue`, which is a config literal rather than what the active library resolves.
+	const shown = withoutSemanticSlots(atBreakpoint);
+
+	// What the field actually shows: the draft when it carries a real edit, else the preset's own
+	// currently-stored value (unaffected by this draft) when THAT is real, else genuinely empty. A
+	// reset field must not read as a blank, generic "Default" when the preset it belongs to already
+	// has its own bound value for this property — that value is exactly what saving the reset (an
+	// omitted property) resolves back to, so showing it immediately is showing the truth, not a
+	// preview. Read-path only: `write()` above still always targets the true draft `value`, so a
+	// reset that is never followed by another edit stays reset.
+	const effectiveAtBreakpoint = !isUnsetPresetValue(shown)
+		? shown
+		: !isUnsetPresetValue(originalAtBreakpoint)
+			? originalAtBreakpoint
+			: shown;
 
 	// An unset breakpoint shows what is actually in effect rather than reading as empty, and it inherits
 	// from the next breakpoint up, not straight from desktop: mobile shows the tablet value whenever
@@ -364,9 +389,6 @@ export function BoxTokenField({ field, value, onChange, slots = 'sides' }) {
 	const asLiteral = (slot) =>
 		typeof slot === 'string' ? (everyToken.find((token) => token.id === slot)?.value ?? slot) : slot;
 
-	// A semantic's name never shows; its resolved value becomes the field's Default. It outranks
-	// `field.defaultValue`, which is a config literal rather than what the active library resolves.
-	const shown = withoutSemanticSlots(atBreakpoint);
 	const semanticDefault = semanticDefaultOf(atBreakpoint, everyToken, fieldDefault);
 
 	const shownDefault = inheritsFromBreakpoint
@@ -376,7 +398,7 @@ export function BoxTokenField({ field, value, onChange, slots = 'sides' }) {
 	// The unit falls back the same way the value does. With nothing stored there is no unit to read, and
 	// defaulting to `units[0]` made the Custom tab open on `px` while the field beside it displayed the
 	// default's own `em` — one value described two different ways.
-	const stored = unitInPlay(shown, unitInPlay(shownDefault, units[0]));
+	const stored = unitInPlay(effectiveAtBreakpoint, unitInPlay(shownDefault, units[0]));
 
 	// A unit the user picked before typing a number has nowhere to persist — no slot carries it yet
 	// — so it is held here until a value exists to attach it to. Keyed per breakpoint for the same
@@ -392,29 +414,30 @@ export function BoxTokenField({ field, value, onChange, slots = 'sides' }) {
 	// choice per breakpoint is also what keeps the breakpoints independent — tablet can be edited as
 	// four corners while mobile is still a single value.
 	const [unlinked, setUnlinked] = useState({});
-	const storedIsList = isSlotList(shown);
+	const storedIsList = isSlotList(effectiveAtBreakpoint);
 	const linked = storedIsList ? false : !unlinked[breakpoint];
 
 	const toggleLink = () => {
 		setUnlinked((current) => ({ ...current, [breakpoint]: linked }));
 
 		// Relinking keeps the first slot, matching the control's own rule; there is nothing to fold
-		// when the breakpoint never held a list.
+		// when the breakpoint never held a list. Reads from the effective (draft-or-preset) value, so
+		// relinking a field that is showing the preset's own value seeds from what is actually shown.
 		if (!linked && storedIsList) {
-			onChange(write(readSlot(atBreakpoint, 0)));
+			onChange(write(readSlot(effectiveAtBreakpoint, 0)));
 		}
 	};
 
 	return (
 		<BoxControl
-			value={mapSlots(shown, toControlValue)}
+			value={mapSlots(effectiveAtBreakpoint, toControlValue)}
 			onChange={(next) => !field.readOnly && onChange(write(mapSlots(next, (slot) => toStoredValue(slot, unit))))}
 			label={field.label}
 			// The inherited value's token has to be exempt from the narrowing too, not just this
 			// breakpoint's own. A breakpoint that inherits binds nothing itself, so without this the
 			// semantic it falls back to is filtered out of the pool and the field, finding no entry for
 			// it, shows nothing at all instead of the value actually in effect.
-			tokens={tokensForField(field, shown)}
+			tokens={tokensForField(field, effectiveAtBreakpoint)}
 			// The two kinds of default are still shaped differently, which is why `shownDefault` resolves
 			// them separately above instead of passing either straight through: a value inherited from
 			// another breakpoint is stored the way this app stores values, so it is read through `asLiteral`

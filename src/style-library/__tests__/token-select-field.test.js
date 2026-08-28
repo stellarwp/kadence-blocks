@@ -12,9 +12,12 @@ import { TokenSelectField } from '../components/molecules/fields/TokenSelectFiel
 import { pickableTokensForType } from '../helpers/tokens';
 
 // A factory, not automock: `helpers/tokens.js` reaches the localized feed, and this test only cares
-// about the arguments the field hands it.
+// about the arguments the field hands it. `RESPONSIVE_BREAKPOINTS` is not used by this test, but the
+// factory has to carry it: the field pulls in `helpers/presets.js`, which reaches `settings-schema.js`,
+// which spreads this export at module scope — a factory missing it fails the whole suite at load.
 jest.mock('../helpers/tokens', () => ({
 	pickableTokensForType: jest.fn(() => []),
+	RESPONSIVE_BREAKPOINTS: ['tablet', 'mobile'],
 }));
 
 jest.mock('../components/molecules/SelectDropdown', () => ({ SelectDropdown: () => null }));

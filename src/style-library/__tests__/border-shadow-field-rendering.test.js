@@ -98,6 +98,41 @@ describe('BorderField', () => {
 		expect(latestBorderControlProps.defaultValue).toBe('1px');
 	});
 
+	it("shows the preset's own stored width as bound, not the generic literal fallback, once the draft is reset", () => {
+		const field = { label: 'Border', path: 'tokens.button-border', defaultValue: '1px' };
+
+		act(() => {
+			root.render(
+				createElement(BorderField, {
+					field,
+					values: {},
+					originalValues: { tokens: { 'button-border-width': 'semantic.border-width.default' } },
+					onValueChange: jest.fn(),
+				})
+			);
+		});
+
+		expect(latestBorderControlProps.value.width).toBe('{semantic.border-width.default}');
+	});
+
+	it('falls back to the generic literal defaultValue when the preset has no stored width either', () => {
+		const field = { label: 'Border', path: 'tokens.button-border', defaultValue: '1px' };
+
+		act(() => {
+			root.render(
+				createElement(BorderField, {
+					field,
+					values: {},
+					originalValues: { tokens: {} },
+					onValueChange: jest.fn(),
+				})
+			);
+		});
+
+		expect(latestBorderControlProps.value.width).toBe('');
+		expect(latestBorderControlProps.defaultValue).toBe('1px');
+	});
+
 	it('shows a semantic-bound width as unset rather than listing the semantic', () => {
 		const field = { label: 'Border', path: 'tokens.button-border' };
 

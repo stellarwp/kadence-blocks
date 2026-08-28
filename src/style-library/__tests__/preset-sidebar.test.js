@@ -13,6 +13,23 @@ import * as notify from '../helpers/notify';
 
 jest.mock('../helpers/notify');
 
+// Stands in for the real `BoxControl` the same way `border-shadow-field-rendering.test.js` stands in
+// for `BorderControl`/`BoxShadowControl`: capturing exactly the props `PresetSidebar`'s real
+// `SettingsForm` -> `BoxTokenField` wiring computes, without mounting `BoxControl`'s own deep
+// picker/popover tree. Declared here (rather than per-describe) so the "reset shows the preset's own
+// value" test below exercises the REAL prop-threading path end to end — the bug that motivated it
+// was a shape mismatch between `PresetSidebar` and `BoxTokenField` that a field-level test alone,
+// constructing `originalValue` by hand, could not have caught.
+let latestBoxControlProps;
+
+jest.mock('../../token-controls/controls/BoxControl', () => ({
+	BoxControl: (props) => {
+		latestBoxControlProps = props;
+
+		return null;
+	},
+}));
+
 // `PresetSidebar` takes the preset-screen binding as a prop rather than calling a hook itself, so
 // both cases below can stub `screen` directly with a plain object — no module mock is needed.
 // Both resolve to no initial values, so `PresetSidebar` returns null before mounting its body; the
@@ -50,6 +67,36 @@ function renderPresetSidebar(screen, item) {
 	return navigate;
 }
 
+/**
+ * `renderPresetSidebar`, with the `preset` config also overridable — the module-level `PRESET`
+ * stub's empty `schemaFor` renders no fields at all, which is fine for the write-flow/self-heal
+ * tests above but useless for anything that needs a real field on screen.
+ *
+ * @param {Object} screen The preset-screen binding to stub.
+ * @param {string} item   The route's `item` (`kb-item`) value.
+ * @param {Object} preset The preset config (`{ tabs, schemaFor }`) to render with.
+ *
+ * @since TBD
+ *
+ * @return {Function} The `navigate` jest spy.
+ */
+function renderPresetSidebarWithPreset(screen, item, preset) {
+	const navigate = jest.fn();
+
+	act(() => {
+		root.render(
+			createElement(PresetSidebar, {
+				route: { screen: 'blocks/kadence/singlebtn', item },
+				navigate,
+				screen,
+				preset,
+			})
+		);
+	});
+
+	return navigate;
+}
+
 beforeEach(() => {
 	jest.clearAllMocks();
 	global.IS_REACT_ACT_ENVIRONMENT = true;
@@ -63,6 +110,7 @@ afterEach(() => {
 		root.unmount();
 	});
 	container.remove();
+	latestBoxControlProps = undefined;
 });
 
 // React overrides a controlled input's `value` setter on the DOM node itself to track whether a
@@ -343,5 +391,79 @@ describe('PresetSidebar self-heal guard', () => {
 		);
 
 		expect(navigate).toHaveBeenCalledWith({ item: '' });
+	});
+});
+
+describe('PresetSidebar reset field display', () => {
+	/**
+	 * A single-panel, single-field radius schema, real enough to exercise `SettingsForm` ->
+	 * `BoxTokenField`'s actual prop computation rather than a schema-shaped stub.
+	 *
+	 * @since TBD
+	 *
+	 * @type {Object}
+	 */
+	const RADIUS_PRESET = {
+		tabs: null,
+		schemaFor: () => ({
+			panels: [
+				{
+					id: 'p',
+					fields: [
+						{
+							type: 'radius',
+							tokenType: 'dimension',
+							role: 'radius',
+							path: 'tokens.button-radius',
+							label: 'Radius',
+							defaultValue: '0.1875rem',
+						},
+					],
+				},
+			],
+		}),
+	};
+
+	/**
+	 * A field the user resets shows as bound to the preset's own currently-stored value, not the
+	 * generic literal `defaultValue` — end to end through `PresetSidebar` -> `SettingsForm` ->
+	 * `BoxTokenField`, not a field mounted with `originalValue` handed in directly. A mismatch
+	 * between how `PresetSidebar` shapes `originalValues` and how `BoxTokenField` reads it (the two
+	 * disagreeing on whether the `tokens.` path prefix is already stripped) would read as "always
+	 * empty" and only a test exercising the real wiring between them can catch it.
+	 *
+	 * @return {void}
+	 */
+	it("shows the preset's own bound value once the field is reset, not a blank Default", () => {
+		renderPresetSidebarWithPreset(
+			{
+				payload: {
+					presets: { primary: { label: 'Primary', tokens: { 'button-radius': 'semantic.radius.control' } } },
+				},
+				isLoading: false,
+				loadError: null,
+				initialValuesFor: () => ({ label: 'Primary', tokens: { 'button-radius': 'semantic.radius.control' } }),
+				savePreset: jest.fn(),
+				deletePreset: jest.fn(),
+				isDeletable: () => true,
+				isBusy: false,
+				saveError: null,
+				deleteError: null,
+				clearSaveError: jest.fn(),
+				clearDeleteError: jest.fn(),
+			},
+			'primary',
+			RADIUS_PRESET
+		);
+
+		expect(latestBoxControlProps.value).toBe('{semantic.radius.control}');
+
+		// Reset: the user's edit writes the field back to empty.
+		act(() => {
+			latestBoxControlProps.onChange('');
+		});
+
+		// Still bound to the preset's own value, not a blank field falling back to the generic literal.
+		expect(latestBoxControlProps.value).toBe('{semantic.radius.control}');
 	});
 });

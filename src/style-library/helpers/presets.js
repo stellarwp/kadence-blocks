@@ -350,7 +350,7 @@ export function presetStoredTokens(payload, slug) {
  *
  * @return {boolean} True when the value carries nothing to save.
  */
-function isUnsetPresetValue(value) {
+export function isUnsetPresetValue(value) {
 	if (value === '' || value === null || value === undefined) {
 		return true;
 	}

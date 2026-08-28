@@ -316,3 +316,66 @@ describe('tokensForField', () => {
 		expect(none.alias).toBe(0);
 	});
 });
+
+describe('the effective value shown when the draft is reset', () => {
+	let container;
+	let root;
+
+	beforeEach(() => {
+		global.IS_REACT_ACT_ENVIRONMENT = true;
+
+		container = document.createElement('div');
+		document.body.appendChild(container);
+		root = createRoot(container);
+	});
+
+	afterEach(() => {
+		act(() => {
+			root.unmount();
+		});
+		container.remove();
+		latestBoxControlProps = undefined;
+	});
+
+	/**
+	 * Render `BoxTokenField` with the given draft/original values.
+	 *
+	 * @param {Object} props The field's `value`/`originalValue` to render with.
+	 *
+	 * @since TBD
+	 *
+	 * @return {void}
+	 */
+	function renderField({ value, originalValue }) {
+		act(() => {
+			root.render(
+				createElement(BoxTokenField, {
+					field: { tokenType: 'dimension', role: 'radius', defaultValue: '0.1875rem' },
+					value,
+					originalValue,
+					onChange: jest.fn(),
+					slots: 'corners',
+				})
+			);
+		});
+	}
+
+	it("shows the preset's own stored value, not the generic literal fallback, once the draft is reset", () => {
+		renderField({ value: '', originalValue: 'semantic.radius.control' });
+
+		expect(latestBoxControlProps.value).toEqual(toControlValue('semantic.radius.control'));
+		expect(latestBoxControlProps.defaultValue).toBe('0.1875rem');
+	});
+
+	it('falls back to the generic literal fallback when the preset has no stored value either', () => {
+		renderField({ value: '', originalValue: '' });
+
+		expect(latestBoxControlProps.value).toEqual(toControlValue(''));
+	});
+
+	it('shows the draft value untouched when the field actually carries an edit', () => {
+		renderField({ value: '0.5rem', originalValue: 'semantic.radius.control' });
+
+		expect(latestBoxControlProps.value).toEqual(toControlValue('0.5rem'));
+	});
+});
