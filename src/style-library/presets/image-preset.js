@@ -39,24 +39,24 @@ const IMAGE_RADIUS_FALLBACK = ['0', '0', '0', '0'];
 const IMAGE_PADDING_FALLBACK = ['0', '0', '0', '0'];
 
 /**
- * The share of the tile's width any one side's preview padding may take.
+ * The most preview padding any one side may show.
+ *
+ * A LENGTH, not a percentage: the tile sizes itself from the photo plus the padding, so a percentage
+ * would resolve against a width the padding itself determines.
  *
  * @since TBD
  */
-const PADDING_PREVIEW_CAP = '22%';
+const PADDING_PREVIEW_CAP = '4rem';
 
 /**
- * Cap each side of a resolved padding value so the preview stays legible at every step of the scale.
+ * Cap each side of a resolved padding value, so one extreme preset cannot make a list row enormous.
  *
- * The tile is a few rem across and the spacing scale runs to 10rem, so a real value applied at true
- * size swallows the photo whole: `MD` alone (2rem a side) leaves the tile's content box with negative
- * height, collapsing the photo to nothing and leaving a row that shows only a colored rectangle. The
- * cap keeps every step visibly different from `None` while making sure something always reads as the
- * image inside the frame.
- *
- * The preview is indicative rather than to scale — the sidebar names the actual value while a preset is
- * being edited — and a capped inset communicates "there is padding here, and the background shows
- * through it" far better than a blank tile does.
+ * The tile GROWS to fit its padding rather than insetting into a fixed frame (see `ImageScreen.scss`),
+ * which is what keeps each step of the scale visibly different and always leaves a photo to see. That
+ * alone is unbounded, though, and the spacing scale runs to 10rem — a preset using the top step would
+ * produce a tile over 20rem on a side and a row taller than the screen. The cap bounds that end while
+ * leaving every step up to `XL` exact, so the values a preset realistically uses are shown true to
+ * size.
  *
  * Each side is wrapped separately because a per-corner preset stores four, and CSS `min()` takes a
  * single length rather than a shorthand. A component carrying a function call is left alone: nothing
@@ -112,8 +112,8 @@ function preview(tokens, values, breakpoint) {
  *
  * Three nested elements, each earning its place. The outer carries the radius and the shadow, which
  * has to be cast from outside anything that clips. The middle carries the background AND the padding
- * (capped — see `cappedPadding`), so padding renders as what it actually is: space between the frame
- * and the image. The inner is the stand-in photo, a neutral block carrying a generic picture glyph
+ * (capped only at the very top of the scale — see `cappedPadding`), so padding renders as what it
+ * actually is: space between the frame and the image, at true size, with the tile growing to fit it. The inner is the stand-in photo, a neutral block carrying a generic picture glyph
  * rather than a real image, because a preset skins whatever image a block happens to hold and
  * previewing a specific picture would imply it selects one. The glyph is what makes the padding
  * legible — without something that reads as "the image", an inset frame is just a smaller rectangle,

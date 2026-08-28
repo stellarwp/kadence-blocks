@@ -17,20 +17,26 @@
 	width: 15rem;
 }
 
-// Landscape, the aspect a photo most often takes. The shared surface mixin supplies the frame and the
-// transparency checker; the shadow is applied inline from the preset, so it must not be clipped —
-// hence no `overflow` here either.
+// Unlike the Row Layout band and the Section slab, this tile has no fixed size: it GROWS to fit the
+// preset's padding, so a bigger step reads as a bigger inset instead of eating the photo. The frame
+// mixin supplies the border and the transparency checker and leaves the geometry to the fill inside.
+// The shadow is applied inline from the preset and is drawn outside whatever casts it, so nothing
+// here may clip.
 .kadence-blocks-style-library__image-preset-preview {
-	@include preset-surface-preview(5rem, 3.75rem);
+	@include preset-surface-frame;
+
+	display: inline-block;
+	vertical-align: middle;
 }
 
-// Carries the background AND the preset's padding, so the padding renders as real space between the
-// frame and the photo below rather than as a number. `box-sizing: border-box` keeps a large padding
-// shrinking the photo instead of growing the tile past its row.
+// Carries the background AND the preset's padding. `content-box` is what makes the tile grow: the box
+// is the photo's fixed size PLUS the padding, so the padding is real space between the frame and the
+// photo at every step rather than an inset that eventually has nowhere left to go. Static, not
+// absolutely positioned — an out-of-flow fill could not size its parent.
 .kadence-blocks-style-library__image-preset-preview-fill {
-	@include preset-surface-fill;
-
-	box-sizing: border-box;
+	display: block;
+	box-sizing: content-box;
+	border-radius: inherit;
 	transition:
 		background-color 300ms ease,
 		border-radius 300ms ease,
@@ -46,16 +52,18 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 100%;
-	height: 100%;
+	// Fixed, and the reason the tile can grow: with the photo a known size and the fill sized
+	// `content-box`, the frame's dimensions are simply this plus the padding.
+	width: 3rem;
+	height: 2.25rem;
 	border-radius: inherit;
 	background: var(--kb-sl-color-gray-700);
 	color: var(--kb-sl-color-gray-200);
 	overflow: hidden;
 
 	svg {
-		// Sized against the photo box rather than a font-size, so the glyph fills a useful share of the
-		// tile and shrinks with it when a large padding squeezes the photo, instead of overflowing.
+		// Sized against the photo box rather than a font-size — a percentage font-size would resolve
+		// against the inherited size, not the box, and collapse the glyph to a dot.
 		width: 62%;
 		height: 62%;
 	}

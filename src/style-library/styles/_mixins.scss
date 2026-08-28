@@ -74,12 +74,9 @@
 // cannot layer them in this order, because a background image always paints above its own background
 // color. Geometry is the caller's, since the proportions are the point -- a Row Layout is wide and
 // short, a Section is tall and narrow, and a corner radius reads very differently at each.
-@mixin preset-surface-preview($width, $height) {
+@mixin preset-surface-frame {
 	position: relative;
-	display: block;
 	box-sizing: border-box;
-	width: $width;
-	height: $height;
 	border: var(--kb-sl-border-width-input) solid var(--kb-sl-color-gray-200);
 	background-color: #fff;
 	background-image: repeating-conic-gradient(var(--kb-sl-color-gray-200) 0% 25%, transparent 0% 50%);
@@ -87,6 +84,17 @@
 	transition:
 		border-color 300ms ease,
 		border-radius 300ms ease;
+}
+
+// The fixed-geometry form, for a preview whose size says something about the block (a Row Layout band
+// is wide and short, a Section slab tall and narrow). A preview that has to GROW with one of its own
+// values instead -- the image's padding -- takes `preset-surface-frame` and sizes itself.
+@mixin preset-surface-preview($width, $height) {
+	@include preset-surface-frame;
+
+	display: block;
+	width: $width;
+	height: $height;
 }
 
 // The fill half: the preset's resolved background, laid over the checker `preset-surface-preview`
