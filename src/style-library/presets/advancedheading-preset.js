@@ -16,7 +16,8 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { getPresetProperties, resolveTokenValue } from '../helpers/presets';
-import { fontCatalogOptions, fontOptions, fontWeightsFor } from '../helpers/typography';
+import { fontCatalogOptions, fontOptions, fontSizeDisplayValue, fontWeightsFor } from '../helpers/typography';
+import { pxFromLength } from '../../token-controls/helpers/px-from-length';
 
 /**
  * The block name this screen edits. The block is called Advanced Text in the UI but
@@ -138,6 +139,44 @@ function fontWeightOptions(family) {
 }
 
 /**
+ * Re-express a length as a multiple of the preset's own font size, so the chip keeps the preset's
+ * PROPORTIONS at whatever size the row can afford.
+ *
+ * The chip deliberately does not render at the preset's font size -- the scale reaches 6rem and a row
+ * set there would dwarf its neighbors -- but padding and border width were being applied at true size
+ * regardless. The mismatch is not subtle: 3rem of padding around 6rem text is a pill, and the same 3rem
+ * around the chip's own body text is a circle, so the preview contradicted the page it was previewing.
+ *
+ * Returned in `em`, which resolves against the chip's own font size, so the relationship holds no matter
+ * what that size is. A value that cannot be measured against a font size -- either side unparsable, or a
+ * preset that sets no size -- passes through at true size, which is the honest fallback and what every
+ * other screen does.
+ *
+ * @param {string} length   The resolved length.
+ * @param {number} fontSize The preset's font size in pixels, or null when it has none.
+ *
+ * @since TBD
+ *
+ * @return {string} The length in `em`, or unchanged.
+ */
+function scaledToFontSize(length, fontSize) {
+	if (!length || !fontSize) {
+		return length;
+	}
+
+	// A shorthand carries one value per side, each scaled on its own.
+	return String(length)
+		.trim()
+		.split(/\s+/)
+		.map((side) => {
+			const px = pxFromLength(side);
+
+			return px === null ? side : `${Number((px / fontSize).toFixed(4))}em`;
+		})
+		.join(' ');
+}
+
+/**
  * Build a row's preview from its stored tokens.
  *
  * Everything the screen edits that a chip of text can honestly show. `borderWidth` and `borderStyle`
@@ -175,9 +214,13 @@ function preview(tokens, values, breakpoint) {
  * its own frame.
  *
  * Real text rather than a swatch, because every property this screen edits except the box ones is a
- * type property, and a color chip cannot show a family, a weight or a transform. Padding is applied at
- * true size: a heading's padding is bounded by the scale the field offers, unlike the image tile's,
- * which had to be capped. The size is deliberately
+ * type property, and a color chip cannot show a family, a weight or a transform.
+ *
+ * Font SIZE is deliberately not applied -- the scale reaches 6rem and a row set there would dwarf its
+ * neighbors -- so padding and border width are re-expressed as multiples of it instead (see
+ * `scaledToFontSize`). Applying those two at true size while the text stayed small was worse than not
+ * showing them: 3rem of padding reads as a pill around 6rem text and as a circle around the chip's own,
+ * so the preview contradicted the page. The size is deliberately
  * NOT applied at true size — the scale reaches 4rem and a row cannot grow that far without dwarfing its
  * neighbors — so the chip states the family, weight, transform, color and frame faithfully and leaves
  * size to the sidebar. The Advanced Image tile can afford to grow because its padding is the only
@@ -190,6 +233,10 @@ function preview(tokens, values, breakpoint) {
  * @return {JSX.Element} The preview element.
  */
 function renderPreview(row) {
+	// Every shipped font-size step is fluid, so the resolved value is a `clamp()`; its authored scalar is
+	// what the proportions are relative to.
+	const fontSize = pxFromLength(fontSizeDisplayValue(row.preview.fontSize));
+
 	return (
 		<span
 			className="kadence-blocks-style-library__heading-preset-preview"
@@ -200,14 +247,14 @@ function renderPreview(row) {
 				fontFamily: row.preview.typography || undefined,
 				textTransform: row.preview.textTransform || undefined,
 				borderColor: row.preview.borderColor || undefined,
-				borderWidth: row.preview.borderWidth || undefined,
+				borderWidth: scaledToFontSize(row.preview.borderWidth, fontSize) || undefined,
 				// A border renders only when all three are set, so the style is what decides whether the
 				// frame appears at all. Left absent, the stylesheet's own `none` leaves the chip without a frame.
 				borderStyle: row.preview.borderStyle || undefined,
 				borderRadius: row.preview.borderRadius || undefined,
 				// The preset's own padding, not the stylesheet's. Without this the chip showed a fixed
 				// inset and a padding preset read as doing nothing at all.
-				padding: row.preview.padding || undefined,
+				padding: scaledToFontSize(row.preview.padding, fontSize) || undefined,
 			}}
 		>
 			{__('Heading', 'kadence-blocks')}

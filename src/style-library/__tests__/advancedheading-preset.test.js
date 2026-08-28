@@ -119,14 +119,14 @@ describe('HEADING_PRESET', () => {
 			preview: {
 				color: '#1A202C',
 				background: '#F7FAFC',
-				fontSize: '4rem',
+				fontSize: '6rem',
 				fontWeight: '700',
 				textTransform: 'uppercase',
 				borderColor: '#E2E8F0',
-				borderWidth: '1px',
 				borderStyle: 'solid',
 				borderRadius: '0.5rem',
 				padding: '3rem',
+				borderWidth: '1px',
 			},
 		});
 
@@ -137,13 +137,47 @@ describe('HEADING_PRESET', () => {
 			fontWeight: '700',
 			textTransform: 'uppercase',
 			borderColor: '#E2E8F0',
-			borderWidth: '1px',
 			borderStyle: 'solid',
 			borderRadius: '0.5rem',
-			// Applied at true size: a heading's padding is bounded by the scale the field offers.
-			padding: '3rem',
 		});
 		expect(chip.props.style.fontSize).toBeUndefined();
+
+		// Padding and border width are re-expressed against the preset's own font size, so the chip keeps
+		// the preset's proportions at whatever size the row can afford. 3rem against a 6rem size is 0.5em.
+		expect(chip.props.style.padding).toBe('0.5em');
+		expect(chip.props.style.borderWidth).toBe('0.0104em');
+	});
+
+	/**
+	 * With no font size to measure against, padding and border width pass through at true size rather
+	 * than being dropped or guessed at.
+	 *
+	 * @return {void}
+	 */
+	it('leaves padding at true size when the preset sets no font size', () => {
+		const chip = HEADING_PRESET.renderPreview({
+			id: 'plain',
+			label: 'Plain',
+			preview: { padding: '3rem', borderWidth: '1px', fontSize: '' },
+		});
+
+		expect(chip.props.style.padding).toBe('3rem');
+		expect(chip.props.style.borderWidth).toBe('1px');
+	});
+
+	/**
+	 * A per-corner padding shorthand scales each side on its own, since each is its own length.
+	 *
+	 * @return {void}
+	 */
+	it('scales every side of a padding shorthand against the font size', () => {
+		const chip = HEADING_PRESET.renderPreview({
+			id: 'corners',
+			label: 'Corners',
+			preview: { padding: '1rem 2rem 1rem 2rem', fontSize: '2rem' },
+		});
+
+		expect(chip.props.style.padding).toBe('0.5em 1em 0.5em 1em');
 	});
 
 	/**
