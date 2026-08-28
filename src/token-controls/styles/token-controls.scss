@@ -978,3 +978,160 @@
 .kb-border-control__style-menu-label {
 	flex: 1 1 auto;
 }
+
+// Fills its container the way every other field does (`.kadence-token-field`'s own `width: 100%`).
+.kb-color-control {
+	width: 100%;
+}
+
+// `Dropdown`'s own wrapping element has no intrinsic width; without this the trigger's `width: 100%`
+// below has nothing to fill and the control reads narrower than every other field beside it.
+.kb-color-control__dropdown {
+	width: 100%;
+}
+
+// Matches `.kadence-token-field__popover`'s own sheet size — without it the popover falls back to
+// `@wordpress/components`' default width, narrower than every other control's popover.
+.kb-color-control__popover .components-popover__content {
+	min-width: 260px;
+	border-radius: 4px;
+}
+
+/*
+ * `ColorControl`'s own trigger row: a swatch, the control's static attribute label, the currently
+ * selected token's label right-aligned, and the `BindingIndicator` mark — no `.kb-token-control`
+ * header above it, since the label lives inside this row instead.
+ */
+.kb-color-control__trigger {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	width: 100%;
+	height: 32px;
+	padding: 0 8px;
+	border: 1px solid #949494;
+	border-radius: 2px;
+	background: #fff;
+	color: #1e1e1e;
+	font-size: 13px;
+	line-height: 1.4;
+	cursor: pointer;
+
+	&:hover {
+		border-color: #1e1e1e;
+	}
+
+	&:disabled {
+		cursor: default;
+		opacity: 0.5;
+	}
+}
+
+// Bold, matching `.kb-token-control__label`'s own weight for every other control's field label —
+// this control just carries its label inside the trigger row instead of in a header above it.
+.kb-color-control__label {
+	flex: 0 0 auto;
+	font-weight: 500;
+}
+
+// Pushes the selected-token label and the binding indicator to the trigger's right edge.
+.kb-color-control__value {
+	flex: 1 1 auto;
+	overflow: hidden;
+	color: #949494;
+	text-align: right;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+// The round swatch `ColorControl`'s trigger and `ColorGroupList`'s rows both render.
+.kb-color-swatch {
+	display: inline-flex;
+	flex: 0 0 auto;
+	width: 20px;
+	height: 20px;
+	border: 1px solid rgba(0, 0, 0, 0.1);
+	border-radius: 50%;
+}
+
+// The popover's Style Library tab: the active palette's groups, each swatch showing a check mark on
+// the current pick.
+.kb-color-control__list {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	padding: 8px;
+}
+
+.kb-color-control__group-label {
+	padding: 4px 8px;
+	color: #949494;
+	font-size: 11px;
+	text-transform: uppercase;
+}
+
+.kb-color-control__item.components-button {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	width: 100%;
+	height: 32px;
+	padding: 0 8px;
+	border: 0;
+	border-radius: 2px;
+	background: transparent;
+	color: #1e1e1e;
+	font-size: 13px;
+	font-weight: normal;
+	text-align: left;
+
+	&:hover {
+		background: #f0f0f0;
+	}
+}
+
+// Not bold — matches `.kadence-token-field__item-label`'s own weight, every other control's popover
+// rows.
+.kb-color-control__item-label {
+	flex: 1 1 auto;
+	overflow: hidden;
+	font-weight: normal;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+// The row's swatch sits at its right edge, playing the role a trailing value normally would; the
+// check mark on the current pick overlays it rather than following as a separate glyph.
+.kb-color-control__item-swatch {
+	position: relative;
+	display: inline-flex;
+	flex: 0 0 auto;
+}
+
+.kb-color-control__item-check {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+/*
+ * No-gap stacking for two or more `ColorControl`s: the shared edge between adjacent rows collapses
+ * to one line, and only the group's outer corners round — the same pattern
+ * `.kb-border-control__box` uses for its own composite row, applied here across siblings instead of
+ * within one row.
+ */
+.kb-color-control-group {
+	.kb-color-control:not(:first-child) .kb-color-control__trigger {
+		border-top: 0;
+	}
+
+	.kb-color-control:first-child .kb-color-control__trigger {
+		border-radius: 2px 2px 0 0;
+	}
+
+	.kb-color-control:last-child .kb-color-control__trigger {
+		border-radius: 0 0 2px 2px;
+	}
+}
