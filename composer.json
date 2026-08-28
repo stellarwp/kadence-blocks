@@ -13,7 +13,8 @@
 		},
 		"allow-plugins": {
 			"composer/installers": true,
-			"dealerdirect/phpcodesniffer-composer-installer": true
+			"dealerdirect/phpcodesniffer-composer-installer": true,
+			"phpstan/extension-installer": true
 		}
 	},
 	"repositories": [
@@ -42,6 +43,7 @@
 		"psr/container": "^1.0",
 		"stellarwp/container-contract": "^1.1",
 		"stellarwp/db": "^1.1",
+		"stellarwp/harbor": "^1.6",
 		"stellarwp/prophecy-image-downloader": "^3.0",
 		"stellarwp/prophecy-storage": "^3.0",
 		"stellarwp/schema": "^2.0",
@@ -60,10 +62,13 @@
 		"codeception/module-phpbrowser": "^1.0.3",
 		"codeception/module-webdriver": "^1.4.1",
 		"codeception/util-universalframework": "^1.0",
+		"exussum12/coverage-checker": "^1.0",
 		"lucatume/wp-browser": "<3.5",
 		"phpcompatibility/phpcompatibility-wp": "^2.1",
+		"phpstan/extension-installer": "^1.4",
 		"sabberworm/php-css-parser": "^8.4",
-		"stellarwp/coding-standards": "^2.0"
+		"stellarwp/coding-standards": "^2.0",
+		"szepeviktor/phpstan-wordpress": "^1.3"
 	},
 	"autoload": {
 		"psr-4": {
@@ -83,25 +88,30 @@
 			"vendor/bin/stellar-uplink domain=kadence-blocks"
 		],
 		"strauss-install": [
-			"test -f ./bin/strauss.phar || curl -o bin/strauss.phar -L -C - https://github.com/BrianHenryIE/strauss/releases/download/0.19.1/strauss.phar"
+			"test -f ./bin/strauss.phar || curl -o bin/strauss.phar -L -C - https://github.com/BrianHenryIE/strauss/releases/download/0.27.0/strauss.phar"
 		],
 		"strauss": [
 			"@strauss-install",
 			"@php bin/strauss.phar",
+			"@php vendor/stellarwp/harbor/bin/stellar-harbor domain=kadence-blocks",
 			"@composer dump-autoload"
 		],
 		"strauss-release": [
 			"@strauss-install",
 			"@php bin/strauss.phar --deleteVendorPackages=true",
+			"@php vendor/vendor-prefixed/stellarwp/harbor/bin/stellar-harbor domain=kadence-blocks",
 			"@composer dump-autoload"
 		],
 		"strauss-clean": [
 			"rm -f ./bin/strauss.phar"
 		],
 		"pup": [
-			"test -f ./bin/pup.phar || curl -o bin/pup.phar -L -C - https://github.com/stellarwp/pup/releases/download/1.2.2/pup.phar",
+			"test -f ./bin/pup.phar || curl -o bin/pup.phar -L -C - https://github.com/stellarwp/pup/releases/download/2.0.0/pup.phar",
 			"@php bin/pup.phar"
 		],
+		"release:prep": "dev_scripts/release-prep.sh",
+		"changelog:add": "dev_scripts/changelogger.sh add --significance patch --auto-filename",
+		"changelog:write": "dev_scripts/write-changelog.sh",
 		"wp-cli": [
 			"test -f ./bin/wp-cli.phar || curl -o bin/wp-cli.phar -L -C - https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar",
 			"@php -d memory_limit=4G bin/wp-cli.phar"
@@ -126,7 +136,11 @@
 			"@compatibility:php-8.3",
 			"@compatibility:php-8.4"
 		],
-		"phpcs": "phpcs --standard=phpcs.xml"
+		"phpcs": "phpcs --standard=phpcs.xml",
+		"phpcs-autofix": "phpcbf --standard=phpcs.xml",
+		"phpcs-ci": "dev_scripts/partial-phpcs.sh diff",
+		"phpstan": "./vendor/bin/phpstan analyse --memory-limit=4096M",
+		"phpstan-baseline": "./vendor/bin/phpstan analyse --memory-limit=4096M --level max --configuration phpstan.neon --generate-baseline"
 	},
 	"extra": {
 		"strauss": {

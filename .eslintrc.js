@@ -62,6 +62,7 @@ const eslintConfig = {
 		Image: 'readable',
 		Masonry: 'readable',
 		IntersectionObserver: 'readable',
+		ResizeObserver: 'readonly',
 		requestAnimationFrame: 'readable',
 		requestIdleCallback: 'readable',
 		getComputedStyle: 'readable',

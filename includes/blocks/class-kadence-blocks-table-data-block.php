@@ -93,26 +93,58 @@ class Kadence_Blocks_Table_Data_Block extends Kadence_Blocks_Abstract_Block {
 	 * @return mixed
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
-		$tag = $this->is_this_block_header( $attributes, $block_instance->context ) ? 'th' : 'td';
+		$scope = $this->get_block_header_scope( $attributes, $block_instance->context );
+		$tag   = $scope ? 'th' : 'td';
+
+		$scope_attr = $scope ? sprintf( ' scope="%s"', esc_attr( $scope ) ) : '';
 
 		return sprintf(
-			'<%s class="kb-table-data kb-table-data%2$s">%3$s</%4$s>',
+			'<%1$s %2$s class="kb-table-data kb-table-data%3$s">%4$s</%1$s>',
 			$tag,
+			$scope_attr,
 			esc_attr( $unique_id ),
-			$content,
-			$tag
+			$content
 		);
 	}
 
-	private function is_this_block_header( $attributes, $context ) {
-		$isFirstRowHeader = ! empty( $context['kadence/table/isFirstRowHeader'] );
-		$isFirstColumnHeader = ! empty( $context['kadence/table/isFirstColumnHeader'] );
+	/**
+	 * Get the header scope for a table data cell.
+	 *
+	 * @param array $attributes Block attributes.
+	 * @param array $context    Block context.
+	 *
+	 * @since 3.7.3
+	 *
+	 * @return string|false 'col', 'row', or false when the cell is not a header.
+	 */
+	private function get_block_header_scope( $attributes, $context ) {
+		$is_first_row_header    = ! empty( $context['kadence/table/isFirstRowHeader'] );
+		$is_first_column_header = ! empty( $context['kadence/table/isFirstColumnHeader'] );
 
 		$column = $attributes['column'] ?? -1;
-		$row = $context['kadence/table/parentRow'] ?? -1;
+		$row    = $context['kadence/table/parentRow'] ?? -1;
 
-		return ( $column === 0 && $isFirstColumnHeader ) || ( $row === 0 && $isFirstRowHeader );
+		if ( 0 === $row && $is_first_row_header ) {
+			/**
+			 * Filter the scope for the table data cell.
+			 * Scope is 'row', 'col', or false when the cell is not a header.
+			 * https://www.w3schools.com/tags/att_th_scope.asp
+			 *
+			 * @param string $scope The scope.
+			 * @param array $attributes The block attributes.
+			 * @param array $context The block context.
+			 * @return string The scope.
+			 * 
+			 * @since 3.7.3
+			 */
+			return apply_filters( 'kadence_blocks_table_data_scope_attributes', 'col', $attributes, $context );
+		}
 
+		if ( 0 === $column && $is_first_column_header ) {
+			return apply_filters( 'kadence_blocks_table_data_scope_attributes', 'row', $attributes, $context );
+		}
+
+		return apply_filters( 'kadence_blocks_table_data_scope_attributes', false, $attributes, $context );
 	}
 
 }

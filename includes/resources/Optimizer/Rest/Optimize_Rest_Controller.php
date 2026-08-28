@@ -114,6 +114,8 @@ final class Optimize_Rest_Controller extends WP_REST_Controller {
 	/**
 	 * Save optimizer data for a post.
 	 *
+	 * @since 3.7.8 Derive the stored path from the post ID.
+	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
@@ -148,7 +150,18 @@ final class Optimize_Rest_Controller extends WP_REST_Controller {
 			);
 		}
 
-		$path = new Path( $post_path, $post_id );
+		$path = $this->get_path_for_post( $post_id );
+
+		if ( ! $path instanceof Path ) {
+			return new WP_Error(
+				'rest_kb_optimizer_invalid_path',
+				__( 'Unable to resolve the post path.', 'kadence-blocks' ),
+				[
+					'status'  => WP_Http::BAD_REQUEST,
+					'post_id' => $post_id,
+				]
+			);
+		}
 
 		if ( $this->store->set( $path, $analysis ) ) {
 			$ref = wp_get_referer();
@@ -184,6 +197,8 @@ final class Optimize_Rest_Controller extends WP_REST_Controller {
 	/**
 	 * Get optimizer data for a post.
 	 *
+	 * @since 3.7.8 Derive the stored path from the post ID.
+	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
@@ -192,7 +207,18 @@ final class Optimize_Rest_Controller extends WP_REST_Controller {
 		$post_path = $request->get_param( self::POST_PATH );
 		$post_id   = $request->get_param( self::POST_ID );
 
-		$path = new Path( $post_path, $post_id );
+		$path = $this->get_path_for_post( $post_id );
+
+		if ( ! $path instanceof Path ) {
+			return new WP_Error(
+				'rest_kb_optimizer_read_not_found',
+				__( 'Sorry, we couldn\'t find optimizer data.', 'kadence-blocks' ),
+				[
+					'status'    => WP_Http::NOT_FOUND,
+					'post_path' => $post_path,
+				]
+			);
+		}
 
 		$analysis = $this->store->get( $path );
 
@@ -218,6 +244,8 @@ final class Optimize_Rest_Controller extends WP_REST_Controller {
 	/**
 	 * Delete optimizer data for a post.
 	 *
+	 * @since 3.7.8 Derive the stored path from the post ID.
+	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
@@ -226,8 +254,20 @@ final class Optimize_Rest_Controller extends WP_REST_Controller {
 		$post_id   = $request->get_param( self::POST_ID );
 		$post_path = $request->get_param( self::POST_PATH );
 
-		// Include post_id in Path for reliable status synchronization.
-		$path = new Path( $post_path, $post_id );
+		// Derive the path from the authorized post ID; never trust the client path.
+		$path = $this->get_path_for_post( $post_id );
+
+		if ( ! $path instanceof Path ) {
+			return new WP_Error(
+				'rest_kb_optimizer_delete_failed',
+				__( 'Failed to delete optimizer data.', 'kadence-blocks' ),
+				[
+					'status'    => WP_Http::INTERNAL_SERVER_ERROR,
+					'post_id'   => $post_id,
+					'post_path' => $post_path,
+				]
+			);
+		}
 
 		if ( $this->store->delete( $path ) ) {
 			// Run wp_update post to signal to caching plugins to update their cache.
@@ -311,23 +351,25 @@ final class Optimize_Rest_Controller extends WP_REST_Controller {
 	/**
 	 * Delete optimizer data for multiple posts at once.
 	 *
+	 * @since 3.7.8 Derive each stored path from its post ID.
+	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
 	 * @return WP_REST_Response
 	 */
 	public function bulk_delete_items( WP_REST_Request $request ): WP_REST_Response {
-		$post_ids   = $request->get_param( self::POST_IDS );
-		$post_paths = $request->get_param( self::POST_PATHS );
+		$post_ids = $request->get_param( self::POST_IDS );
 
 		$results = [
 			'successful' => [],
 			'failed'     => [],
 		];
 
-		foreach ( $post_ids as $index => $post_id ) {
-			$post_path = $post_paths[ $index ] ?? null;
+		foreach ( $post_ids as $post_id ) {
+			// Derive the path from the authorized post ID; never trust the client path.
+			$path = $this->get_path_for_post( $post_id );
 
-			if ( ! $post_path ) {
+			if ( ! $path instanceof Path ) {
 				$results['failed'][] = [
 					'post_id' => $post_id,
 					'message' => __( 'Missing post path.', 'kadence-blocks' ),
@@ -335,8 +377,6 @@ final class Optimize_Rest_Controller extends WP_REST_Controller {
 
 				continue;
 			}
-
-			$path = new Path( $post_path, $post_id );
 
 			// Check if optimization data exists.
 			if ( ! $this->store->has( $path ) ) {
@@ -683,5 +723,29 @@ final class Optimize_Rest_Controller extends WP_REST_Controller {
 		}
 
 		return wp_update_post( $post );
+	}
+
+	/**
+	 * Build the storage path for a post from its ID.
+	 *
+	 * The path is always derived server-side from the post ID that passed the
+	 * capability check, so the object authorized and the object accessed are the
+	 * same. Client-supplied paths are never used to key stored data.
+	 *
+	 * @since 3.7.8
+	 *
+	 * @param mixed $post_id The authorized post ID, as received from the request.
+	 *
+	 * @return Path|null The derived path, or null when one cannot be built.
+	 */
+	private function get_path_for_post( $post_id ): ?Path {
+		$post_id   = is_numeric( $post_id ) ? (int) $post_id : 0;
+		$post_path = $this->get_post_path( $post_id );
+
+		if ( $post_path === '' || str_contains( $post_path, '?' ) ) {
+			return null;
+		}
+
+		return new Path( $post_path, $post_id );
 	}
 }

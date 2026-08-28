@@ -16,6 +16,7 @@ use KadenceWP\KadenceBlocks\Shutdown\Shutdown_Provider;
 use KadenceWP\KadenceBlocks\StellarWP\ContainerContract\ContainerInterface;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Container;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Providable;
+use KadenceWP\KadenceBlocks\Harbor\Harbor_Provider;
 use KadenceWP\KadenceBlocks\Uplink\Uplink_Provider;
 use RuntimeException;
 
@@ -43,6 +44,7 @@ final class App {
 		Database_Provider::class,
 		Asset_Provider::class,
 		Uplink_Provider::class,
+		Harbor_Provider::class,
 		Health_Provider::class,
 		Admin_Provider::class,
 		Image_Downloader_Provider::class,

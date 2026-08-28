@@ -194,7 +194,7 @@ class Kadence_Blocks_Posts_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		// Add custom CSS classes to class string.
 		if ( isset( $attributes['className'] ) ) {
-			$classes[] .= ' ' . $attributes['className'];
+			$classes[] = $attributes['className'];
 		}
 		$classes = apply_filters( 'kadence_blocks_posts_container_classes', $classes );
 		do_action( 'kadence_blocks_posts_before_query', $attributes );

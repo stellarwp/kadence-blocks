@@ -3,6 +3,8 @@
  * Class to Build the Advanced Form Block.
  *
  * @package Kadence Blocks
+ *
+ * cSpell:ignore unslash
  */
 
 // Exit if accessed directly.
@@ -154,23 +156,27 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 	/**
 	 * Add the field name to the HTML response.
 	 *
-	 * @param $attributes array
+	 * @param array<string, mixed> $attributes The block attributes.
 	 *
-	 * @return void
+	 * @return string
 	 */
 	public function field_name( $attributes ) {
-		return ! empty( $attributes['inputName'] ) ? $attributes['inputName'] : 'field' . $attributes['uniqueID'];
+		$name = ! empty( $attributes['inputName'] ) ? $attributes['inputName'] : 'field' . $attributes['uniqueID'];
+
+		return is_scalar( $name ) ? strval( $name ) : '';
 	}
 	/**
 	 * Add the field name to the HTML response.
 	 *
-	 * @param $attributes array
+	 * @param array<string, mixed> $attributes The block attributes.
 	 *
-	 * @return void
+	 * @return string
 	 */
 	public function field_id( $attributes ) {
 		$form_id = ! empty( $attributes['formID'] ) ? $attributes['formID'] : '';
-		return ! empty( $attributes['anchor'] ) ? $attributes['anchor'] : 'field' . $form_id . $attributes['uniqueID'];
+		$id      = ! empty( $attributes['anchor'] ) ? $attributes['anchor'] : 'field' . $form_id . $attributes['uniqueID'];
+
+		return is_scalar( $id ) ? strval( $id ) : '';
 	}
 	/**
 	 * Add the field wrapper class ID.

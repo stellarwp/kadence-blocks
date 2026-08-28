@@ -199,7 +199,7 @@ class Kadence_Blocks_Testimonial_Block extends Kadence_Blocks_Abstract_Block {
 
 		$svg = Kadence_Blocks_Svg_Render::render( $iconStyles[0]['icon'], $fill, $stroke_width, $title );
 
-		$icon .= "<div class='kt-svg-testimonial-global-icon kt-svg-testimonial-global-icon-icon-" . $iconStyles[0]['icon'] . "'>";
+		$icon .= "<div class='kt-svg-testimonial-global-icon kt-svg-testimonial-global-icon-icon-" . esc_attr( $iconStyles[0]['icon'] ) . "'>";
 		$icon .= $svg;
 		$icon .= '</div>';
 
@@ -223,7 +223,7 @@ class Kadence_Blocks_Testimonial_Block extends Kadence_Blocks_Abstract_Block {
 		$media .= '<div class="kadence-testimonial-image-intrisic">';
 
 		if ( $attributes['media'] === 'icon' && $attributes['icon'] ) {
-			$extras = ' height="' . esc_attr( $attributes['isize'] ) . '" width="' . esc_attr( $attributes['isize'] ) . '" style="color: ' . ( isset( $attributes['color'] ) ? $css_class->render_color( $attributes['color'] ) : 'undefined' ) . '"';
+			$extras = ' height="' . esc_attr( $attributes['isize'] ) . '" width="' . esc_attr( $attributes['isize'] ) . '" style="color: ' . ( isset( $attributes['color'] ) ? esc_attr( $css_class->render_color( $attributes['color'] ) ) : 'undefined' ) . '"';
 			$svg    = Kadence_Blocks_Svg_Render::render( $attributes['icon'], $fill, $stroke_width, $attributes['ititle'], false, $extras );
 
 			$media .= '<div class="kt-svg-testimonial-icon kt-svg-testimonial-icon-' . esc_attr( $attributes['icon'] ) . '">';
@@ -287,7 +287,7 @@ class Kadence_Blocks_Testimonial_Block extends Kadence_Blocks_Abstract_Block {
 			return wp_get_attachment_image( $attributes['id'], $size, false, $args );
 		}
 		$image_url = $this->get_media_url( $attributes, $media_styles, $style, $container_max_width );
-		return '<img src="' . $image_url . '" class="kt-testimonial-image"' . ( ! empty( $css_style ) ? ' style="' . $css_style . '"' : '' ) . ' />';
+		return '<img src="' . esc_url( $image_url ) . '" class="kt-testimonial-image"' . ( ! empty( $css_style ) ? ' style="' . esc_attr( $css_style ) . '"' : '' ) . ' />';
 	}
 	/**
 	 * Get the media URL

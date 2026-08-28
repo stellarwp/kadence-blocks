@@ -197,11 +197,16 @@ class Kadence_Blocks_Abstract_Block {
 	/**
 	 * Render Block CSS in Page Head.
 	 *
+	 * @since 3.7.8.1 Normalize the unique id before use.
+	 *
 	 * @param array $block the block data.
 	 */
 	public function output_head_data( $block ) {
 		if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
 			$attributes = $block['attrs'];
+			if ( ! empty( $attributes['uniqueID'] ) ) {
+				$attributes['uniqueID'] = $this->sanitize_unique_id( $attributes['uniqueID'] );
+			}
 			if ( in_array( $this->block_name, $this->is_cpt_block ) ) {
 				$unique_id = ! empty( $attributes['id'] ) ? strval( $attributes['id'] ) . '-cpt-id' : '';
 				if ( empty( $unique_id ) ) {
@@ -211,7 +216,7 @@ class Kadence_Blocks_Abstract_Block {
 				$unique_id = ! empty( $attributes['uniqueID'] ) ? $attributes['uniqueID'] : '';
 			}
 			if ( ! empty( $unique_id ) ) {
-				$unique_id = str_replace( '/', '-', $unique_id );
+				$unique_id = $this->sanitize_unique_id( $unique_id );
 				if ( in_array( $this->block_name, $this->supports_merged_defaults ) ) {
 					$attributes = $this->get_attributes_with_defaults( $unique_id, $attributes );
 				}
@@ -251,12 +256,17 @@ class Kadence_Blocks_Abstract_Block {
 	/**
 	 * Render Block CSS
 	 *
-	 * @param array    $attributes the blocks attribtues.
+	 * @since 3.7.8.1 Normalize the unique id before use.
+	 *
+	 * @param array    $attributes The blocks attributes.
 	 * @param string   $content the blocks content.
 	 * @param WP_Block $block_instance The instance of the WP_Block class that represents the block being rendered.
 	 */
 	public function render_css( $attributes, $content, $block_instance ) {
 		$this->render_scripts( $attributes, true );
+		if ( ! empty( $attributes['uniqueID'] ) ) {
+			$attributes['uniqueID'] = $this->sanitize_unique_id( $attributes['uniqueID'] );
+		}
 		if ( in_array( $this->block_name, $this->is_cpt_block ) ) {
 			$unique_id = ! empty( $attributes['id'] ) ? strval( $attributes['id'] ) . '-cpt-id' : '';
 			if ( empty( $unique_id ) ) {
@@ -266,7 +276,7 @@ class Kadence_Blocks_Abstract_Block {
 			$unique_id = ! empty( $attributes['uniqueID'] ) ? $attributes['uniqueID'] : '';
 		}
 		if ( ! empty( $unique_id ) ) {
-			$unique_id       = str_replace( '/', '-', $unique_id );
+			$unique_id       = $this->sanitize_unique_id( $unique_id );
 			$unique_style_id = apply_filters( 'kadence_blocks_build_render_unique_id', $unique_id, $this->block_name, $attributes );
 			$css_class       = Kadence_Blocks_CSS::get_instance();
 
@@ -284,7 +294,7 @@ class Kadence_Blocks_Abstract_Block {
 					$this->do_inline_styles( $content, $unique_style_id, $css );
 				}
 			} elseif ( ! wp_is_block_theme() && ! $css_class->has_header_styles( 'kb-' . $this->block_name . $unique_style_id ) && ! is_feed() && apply_filters( 'kadence_blocks_render_inline_css', true, $this->block_name, $unique_id ) ) {
-				// Some plugins run render block without outputing the content, this makes it so css can be rebuilt.
+				// Some plugins run render block without outputting the content, this makes it so css can be rebuilt.
 				$css = $this->build_css( $attributes, $css_class, $unique_id, $unique_style_id );
 				if ( ! empty( $css ) ) {
 					$this->do_inline_styles( $content, $unique_style_id, $css );
@@ -376,8 +386,8 @@ class Kadence_Blocks_Abstract_Block {
 	 * If the tag provided isn't allowed, return the default value.
 	 *
 	 * @param array  $attributes Array of the blocks attributes.
-	 * @param string $tag_key Offest on $attributes where the tag is set.
-	 * @param string $default Default tag to use if $tag_key attribue is undefined or invalid.
+	 * @param string $tag_key Offset on $attributes where the tag is set.
+	 * @param string $default Default tag to use if $tag_key attribute is undefined or invalid.
 	 * @param array  $allowed_tags Array of allowed tags.
 	 * @param string $level_key If defined, we'll assume heading tags are allowed.
 	 *
@@ -530,7 +540,7 @@ class Kadence_Blocks_Abstract_Block {
 	}
 
 	/**
-	 * Retuurn if this block should register itself. (can override for things like blocks in two plugins)
+	 * Return if this block should register itself. (can override for things like blocks in two plugins)
 	 *
 	 * @return boolean
 	 */
@@ -545,6 +555,19 @@ class Kadence_Blocks_Abstract_Block {
 	 */
 	protected function get_pro_version() {
 		return defined( 'KBP_VERSION' ) ? KBP_VERSION : null;
+	}
+
+	/**
+	 * Normalize a blocks unique id so it is safe to use in markup and style rules.
+	 *
+	 * @since 3.7.8.1
+	 *
+	 * @param string $unique_id The blocks unique id.
+	 *
+	 * @return string
+	 */
+	protected function sanitize_unique_id( $unique_id ) {
+		return (string) preg_replace( '/[^A-Za-z0-9_-]/', '', str_replace( '/', '-', (string) $unique_id ) );
 	}
 
 	/**

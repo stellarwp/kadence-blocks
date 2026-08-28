@@ -1,7 +1,9 @@
 name: ESLint
 run-name: '[ESLint] ${{ github.event.head_commit.message }}'
 
-on: push
+on:
+  push:
+  # pull_request:
 
 jobs:
   run-linters:
@@ -21,18 +23,25 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.bun/install/cache
-          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
           restore-keys: |
             ${{ runner.os }}-bun-
 
-      # ESLint and Prettier must be in `package.json`
+      # ESLint and Prettier must be in `package.json`.
+      # `bun install` runs the root postinstall, which builds the @kadence/* source
+      # packages so ESLint can resolve their imports (bun blocks their own prepare
+      # scripts; npm does not).
       - name: Install dependencies
         run: bun install --frozen-lockfile
         env:
           BUN_AUTH_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
 
       - name: Run linters
         uses: wearerequired/lint-action@v2
         with:
+          # The bot's token rather than the default one, so auto-fix commits are attributed to it
+          # and still trigger the workflows that a commit pushed by the default token would not.
+          github_token: ${{ secrets.GH_BOT_TOKEN }}
           auto_fix: true
           eslint: true

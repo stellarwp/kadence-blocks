@@ -17,7 +17,7 @@ jobs:
         runs-on: ubuntu-latest
 
         env:
-            COMPOSER_AUTH: '{"github-oauth": {"github.com": "${{ secrets.COMPOSER_TOKEN }}"}}'
+            COMPOSER_AUTH: '{"github-oauth": {"github.com": "${{ secrets.GH_BOT_TOKEN }}"}}'
 
         strategy:
             matrix:
@@ -49,9 +49,12 @@ jobs:
               with:
                   bun-version: latest
 
+            # `bun install` runs the root postinstall, which builds the @kadence/*
+            # source packages (bun blocks their own prepare scripts; npm does not).
             - run: bun install --frozen-lockfile
               env:
                   BUN_AUTH_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
+                  GITHUB_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
                   PUPPETEER_SKIP_DOWNLOAD: true
 
             - name: Build packages

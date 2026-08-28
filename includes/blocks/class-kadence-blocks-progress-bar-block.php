@@ -66,6 +66,8 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 	/**
 	 * Builds CSS for block.
 	 *
+	 * @since 3.7.8.1 Escape the mask url output.
+	 *
 	 * @param array              $attributes the blocks attributes.
 	 * @param Kadence_Blocks_CSS $css        the css class for blocks.
 	 * @param string             $unique_id  the blocks attr ID.
@@ -175,7 +177,7 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 				}
 			}
 
-			$mask_image_string    = trim( str_repeat( 'url(' . $mask_url . '),', $iterations ), ',' );
+			$mask_image_string    = trim( str_repeat( 'url(' . esc_url_raw( $mask_url ) . '),', $iterations ), ',' );
 			$mask_repeat_string   = trim( str_repeat( 'no-repeat,', $iterations ), ',' );
 			$mask_position_array  = $iterations > 1 ? range( 0, 100, 100 / ( $iterations - 1 ) ) : [ 0 ];
 			$mask_position_string = trim( implode( '%,', $mask_position_array ) . '%', ',' );
@@ -234,6 +236,8 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 	}
 	/**
 	 * Builds HTML for block.
+	 *
+	 * @since 3.7.8.1 Escape the container class output.
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
 
@@ -257,7 +261,7 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 			! empty( $attributes['progressWidthMobile'] ) ? $attributes['progressWidthMobile'] : ( ! empty( $attributes['progressWidthTablet'] ) ? $attributes['progressWidthTablet'] : ( ! empty( $attributes['progressWidth'] ) ? $attributes['progressWidth'] : 2 ) ),
 		];
 
-		$content = '<div class="kb-progress-bar-container kb-progress-bar-container' . $unique_id . ' kb-progress-bar-init kb-progress-bar-type-' . $attributes['barType'] . ' ' . ( ! empty( $attributes['align'] ) ? 'align' . $attributes['align'] : '' ) . '">';
+		$content = '<div class="' . esc_attr( 'kb-progress-bar-container kb-progress-bar-container' . $unique_id . ' kb-progress-bar-init kb-progress-bar-type-' . $attributes['barType'] . ' ' . ( ! empty( $attributes['align'] ) ? 'align' . $attributes['align'] : '' ) ) . '">';
 
 		$content .= $this->get_label( $attributes, 'above' );
 
@@ -400,6 +404,8 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 	/**
 	 * Get HTML for displaying the percent complete.
 	 *
+	 * @since 3.7.8.1 Escape the rendered output.
+	 *
 	 * @param $attributes
 	 *
 	 * @return string
@@ -419,7 +425,7 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 
 		$position = $attributes['labelPosition'] ?? 'above';
 
-		return '<span id="current-progress-' . $position . $attributes['uniqueID'] . '" class="kb-current-progress-' . $position . ' kt-progress-percent">' . $prefix . $starting . $suffix . '</span>';
+		return '<span id="' . esc_attr( 'current-progress-' . $position . $attributes['uniqueID'] ) . '" class="' . esc_attr( 'kb-current-progress-' . $position ) . ' kt-progress-percent">' . esc_html( $prefix . $starting . $suffix ) . '</span>';
 	}
 
 	/**

@@ -45,7 +45,7 @@ export function LargeBanner({
 	siteName = '',
 }) {
 	const hasPro = window?.kadenceHomeParams?.pro && kadenceHomeParams.pro === 'true' ? true : false;
-	const data_key = window?.kadence_blocks_params?.proData?.api_key ? kadence_blocks_params.proData.api_key : '';
+	const data_key = !!window?.kadence_blocks_params?.proData?.hasApiKey;
 	const [isVisible, setIsVisible] = useState(false);
 	const [availableCredits, setAvailableCredits] = useState(false);
 	const toggleVisible = () => {
@@ -150,7 +150,7 @@ export function LargeBanner({
 							>
 								{availableCredits === false ? <Spinner /> : ''}
 								{availableCredits === false
-									? __('Fetching Available Credits')
+									? __('Fetching Available Credits', 'kadence-blocks')
 									: availableCredits + ' ' + __('Credits Available', 'kadence-blocks')}
 							</Popover>
 						)}

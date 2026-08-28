@@ -1,6 +1,8 @@
 <?php
 /**
  * REST API for Kadence prebuilt library.
+ *
+ * CSpell:ignore ploaceholder postid numberxnumber inbetween
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -13,6 +15,7 @@ use KadenceWP\KadenceBlocks\Image_Downloader\Image_Downloader;
 use KadenceWP\KadenceBlocks\Image_Downloader\Cache_Primer;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\ImageDownloader\Exceptions\ImageDownloadException;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Storage\Exceptions\NotFoundException;
+use KadenceWP\KadenceBlocks\Traits\API_Url_Trait;
 use KadenceWP\KadenceBlocks\Traits\Rest\Image_Trait;
 
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_domain;
@@ -27,6 +30,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller {
 
+	use API_Url_Trait;
 	use Image_Trait;
 
 	/**
@@ -99,6 +103,10 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * Handle image Industry.
 	 */
 	const PROP_META = 'meta';
+	/**
+	 * Maximum size for REST array parameters.
+	 */
+	const MAX_REST_ARRAY_SIZE = 50;
 	/**
 	 * The library folder.
 	 *
@@ -192,7 +200,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @access protected
 	 * @var string
 	 */
-	protected $remote_url = 'https://patterns.startertemplatecloud.com/wp-json/kadence-cloud/v1/get/';
+	protected $remote_url;
 
 	/**
 	 * The remote URL.
@@ -200,7 +208,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @access protected
 	 * @var string
 	 */
-	protected $remote_cat_url = 'https://patterns.startertemplatecloud.com/wp-json/kadence-cloud/v1/categories/';
+	protected $remote_cat_url;
 
 	/**
 	 * The remote URL.
@@ -208,7 +216,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @access protected
 	 * @var string
 	 */
-	protected $remote_pages_url = 'https://patterns.startertemplatecloud.com/wp-json/kadence-cloud/v1/pages/';
+	protected $remote_pages_url;
 
 	/**
 	 * The remote URL.
@@ -216,7 +224,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @access protected
 	 * @var string
 	 */
-	protected $remote_pages_cat_url = 'https://patterns.startertemplatecloud.com/wp-json/kadence-cloud/v1/pages-categories/';
+	protected $remote_pages_cat_url;
 
 	/**
 	 * The remote URL.
@@ -224,7 +232,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @access protected
 	 * @var string
 	 */
-	protected $remote_templates_url = 'https://api.startertemplatecloud.com/wp-json/kadence-starter/v1/get/';
+	protected $remote_templates_url;
 
 	/**
 	 * The library folder.
@@ -335,9 +343,24 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	protected $cache_primer;
 
 	/**
+	 * The route namespace.
+	 *
+	 * @var non-falsy-string
+	 */
+	protected $namespace = 'kb-design-library/v1';
+
+	/**
 	 * Constructor.
+	 *
+	 * @since 3.7.5 add dynamic base URLs for patterns and starter templates
 	 */
 	public function __construct() {
+		$this->remote_url           = $this->get_patterns_get_url();
+		$this->remote_cat_url       = $this->get_patterns_categories_url();
+		$this->remote_pages_url     = $this->get_patterns_pages_url();
+		$this->remote_pages_cat_url = $this->get_patterns_pages_categories_url();
+		$this->remote_templates_url = $this->get_starter_get_url();
+
 		$this->namespace           = 'kb-design-library/v1';
 		$this->rest_base           = 'get';
 		$this->reset               = 'reset';
@@ -570,6 +593,42 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		);
 		register_rest_route(
 			$this->namespace,
+			'/ai/generate-content',
+			[
+				[
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => [ $this, 'ai_generate_content' ],
+					'permission_callback' => [ $this, 'get_items_permission_check' ],
+					'args'                => $this->get_collection_params(),
+				],
+			]
+		);
+		register_rest_route(
+			$this->namespace,
+			'/ai/transform/(?P<type>[a-z-]+)',
+			[
+				[
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => [ $this, 'ai_transform' ],
+					'permission_callback' => [ $this, 'get_items_permission_check' ],
+					'args'                => $this->get_collection_params(),
+				],
+			]
+		);
+		register_rest_route(
+			$this->namespace,
+			'/ai/mission-statement',
+			[
+				[
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => [ $this, 'ai_mission_statement' ],
+					'permission_callback' => [ $this, 'get_items_permission_check' ],
+					'args'                => $this->get_collection_params(),
+				],
+			]
+		);
+		register_rest_route(
+			$this->namespace,
 			'/' . $this->reset,
 			[
 				[
@@ -589,6 +648,19 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 */
 	public function get_items_permission_check( $request ) {
 		return current_user_can( 'edit_posts' );
+	}
+
+	/**
+	 * Validates an array REST parameter.
+	 *
+	 * @param mixed $value Array to validate.
+	 * @return bool True if valid, false if oversized.
+	 */
+	public function validate_array( $value ) {
+		if ( ! is_array( $value ) ) {
+			return false;
+		}
+		return count( $value ) <= self::MAX_REST_ARRAY_SIZE;
 	}
 
 	/**
@@ -932,7 +1004,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			[
 				'post_type' => $cpt_data['post_type'],
 				'title'     => $title,
-			] 
+			]
 		);
 		if ( $post_exists ) {
 			return $post_exists[0]->ID;
@@ -1041,7 +1113,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		$content = str_replace( 'logo-placeholder-8.png', 'logo-placeholder-8-white.png', $content );
 		$content = str_replace( 'logo-placeholder-9.png', 'logo-placeholder-9-white.png', $content );
 		$content = str_replace( 'logo-placeholder-10.png', 'logo-placeholder-10-white.png', $content );
-		
+
 		if ( $style === 'highlight' ) {
 			$form_content = $this->get_string_inbetween( $content, '"submit":[{', ']}', 'wp:kadence/form' );
 			if ( $form_content ) {
@@ -1333,6 +1405,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	/**
 	 * Retrieves a collection of objects.
 	 *
+	 * @since 3.7.8.1 Restrict requests to known library locations.
+	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
@@ -1349,13 +1423,17 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 
 		if ( ! empty( $library_url ) ) {
 			if ( 'page' === $pattern_type ) {
-				$library_url = rtrim( $library_url, '/' ) . '/wp-json/kadence-cloud/v1/page/';
-				$extra       = 'page-item';
+				$extra    = 'page-item';
+				$endpoint = '/wp-json/kadence-cloud/v1/page/';
 			} else {
-				$library_url = rtrim( $library_url, '/' ) . '/wp-json/kadence-cloud/v1/single/';
+				$endpoint = '/wp-json/kadence-cloud/v1/single/';
+			}
+			$library_url = $this->resolve_library_url( is_string( $library_url ) ? $library_url : '', $endpoint );
+			if ( empty( $library_url ) ) {
+				return rest_ensure_response( new WP_Error( 'invalid_request', __( 'Invalid Request, Unknown Library', 'kadence-blocks' ), [ 'status' => 400 ] ) );
 			}
 		} else {
-			$library_url = 'https://patterns.startertemplatecloud.com/wp-json/kadence-cloud/v1/single/';
+			$library_url = $this->get_patterns_single_url();
 		}
 
 		if ( ! empty( $library ) ) {
@@ -1375,7 +1453,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			if ( 'templates' !== $library && 'pages' !== $library && 'template' !== $library ) {
 				$args['data'] = 'true';
 			}
-			if ( 'templates' === $library || 'section' === $library || 'pages' === $library || 'template' === $library ) {
+			// License credentials are only ever sent to the Kadence library hosts.
+			if ( $this->is_kadence_api_url( $library_url ) && ( 'templates' === $library || 'section' === $library || 'pages' === $library || 'template' === $library ) ) {
 				$args['api_key'] = $this->api_key;
 				if ( ! empty( $this->api_email ) ) {
 					// Send in case we need to verify with old api.
@@ -1428,8 +1507,10 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	/**
 	 * Retrieves a collection of objects.
 	 *
+	 * @since 3.7.8.1 Restrict requests to known library locations.
+	 *
 	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_REST_Response Response object on success, or WP_Error object on failure.
+	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function get_connection( WP_REST_Request $request ) {
 		$library     = $request->get_param( self::PROP_LIBRARY );
@@ -1438,7 +1519,10 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		if ( empty( $library_url ) || empty( $key ) ) {
 			return rest_ensure_response( new WP_Error( 'invalid_request', __( 'Invalid Request, Incorrect Access Key', 'kadence-blocks' ), [ 'status' => 401 ] ) );
 		}
-		$url = empty( $library_url ) ? '' : rtrim( sanitize_text_field( $library_url ), '/' ) . '/wp-json/kadence-cloud/v1/info/';
+		$url = $this->resolve_connection_url( sanitize_text_field( $library_url ), '/wp-json/kadence-cloud/v1/info/' );
+		if ( empty( $url ) ) {
+			return rest_ensure_response( new WP_Error( 'invalid_request', __( 'Invalid Request, Unknown Library', 'kadence-blocks' ), [ 'status' => 400 ] ) );
+		}
 		// Do you have the data?
 		$site_url = get_original_domain();
 		$args     = [
@@ -1484,8 +1568,10 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	/**
 	 * Retrieves a collection of objects.
 	 *
+	 * @since 3.7.8.1 Restrict requests to known library locations.
+	 *
 	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_REST_Response Response object on success, or WP_Error object on failure.
+	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function get_library_categories( WP_REST_Request $request ) {
 		$this->get_license_keys();
@@ -1496,10 +1582,10 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		$meta        = $request->get_param( self::PROP_META );
 
 		if ( ! empty( $library_url ) ) {
-			if ( ! empty( $meta ) && 'pages' === $meta ) {
-				$library_url = rtrim( $library_url, '/' ) . '/wp-json/kadence-cloud/v1/page-categories/';
-			} else {
-				$library_url = rtrim( $library_url, '/' ) . '/wp-json/kadence-cloud/v1/categories/';
+			$endpoint    = ! empty( $meta ) && 'pages' === $meta ? '/wp-json/kadence-cloud/v1/page-categories/' : '/wp-json/kadence-cloud/v1/categories/';
+			$library_url = $this->resolve_library_url( is_string( $library_url ) ? $library_url : '', $endpoint );
+			if ( empty( $library_url ) ) {
+				return rest_ensure_response( new WP_Error( 'invalid_request', __( 'Invalid Request, Unknown Library', 'kadence-blocks' ), [ 'status' => 400 ] ) );
 			}
 		} elseif ( ! empty( $library ) && 'pages' === $library ) {
 			$library_url = $this->remote_pages_cat_url;
@@ -1593,8 +1679,10 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	/**
 	 * Retrieves a collection of objects.
 	 *
+	 * @since 3.7.8.1 Restrict requests to known library locations.
+	 *
 	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_REST_Response Response object on success, or WP_Error object on failure.
+	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function get_library( WP_REST_Request $request ) {
 		$this->get_license_keys();
@@ -1605,10 +1693,10 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		$meta        = $request->get_param( self::PROP_META );
 
 		if ( ! empty( $library_url ) ) {
-			if ( ! empty( $meta ) && 'pages' === $meta ) {
-				$library_url = rtrim( $library_url, '/' ) . '/wp-json/kadence-cloud/v1/pages/';
-			} else {
-				$library_url = rtrim( $library_url, '/' ) . '/wp-json/kadence-cloud/v1/get/';
+			$endpoint    = ! empty( $meta ) && 'pages' === $meta ? '/wp-json/kadence-cloud/v1/pages/' : '/wp-json/kadence-cloud/v1/get/';
+			$library_url = $this->resolve_library_url( is_string( $library_url ) ? $library_url : '', $endpoint );
+			if ( empty( $library_url ) ) {
+				return rest_ensure_response( new WP_Error( 'invalid_request', __( 'Invalid Request, Unknown Library', 'kadence-blocks' ), [ 'status' => 400 ] ) );
 			}
 		} elseif ( ! empty( $library ) && 'pages' === $library ) {
 			$library_url = $this->remote_pages_url;
@@ -1764,7 +1852,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				[
 					'context_name'    => $context,
 					'is_regeneration' => true,
-				] 
+				]
 			);
 
 			// Check if we have a remote file.
@@ -1784,7 +1872,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 						'context_name'    => $context,
 						'is_regeneration' => true,
 						'errors'          => $response->get_error_messages(),
-					] 
+					]
 				);
 
 				return rest_ensure_response( 'error' );
@@ -1825,7 +1913,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 					'context_name'    => $context,
 					'credits_after'   => $this->get_remote_remaining_credits(),
 					'is_regeneration' => true,
-				] 
+				]
 			);
 
 			return rest_ensure_response( $body );
@@ -1951,7 +2039,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				[
 					'context' => $contexts_available,
 					'error'   => true,
-				] 
+				]
 			);
 		} else {
 			return rest_ensure_response( 'failed' );
@@ -2294,6 +2382,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	/**
 	 * Get remote file contents.
 	 *
+	 * @since 3.7.8.1 Only attach credentials for known library locations.
+	 *
 	 * @access public
 	 * @return string Returns the remote URL contents.
 	 */
@@ -2303,7 +2393,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			'key'  => $key,
 			'site' => $site_url,
 		];
-		if ( 'templates' === $library || 'section' === $library || 'pages' === $library || 'template' === $library ) {
+		// License credentials are only ever sent to the Kadence library hosts.
+		if ( $this->is_kadence_api_url( $library_url ) && ( 'templates' === $library || 'section' === $library || 'pages' === $library || 'template' === $library ) ) {
 			$args['api_email']  = $this->api_email;
 			$args['api_key']    = $this->api_key;
 			$args['product_id'] = $this->product_id;
@@ -2350,6 +2441,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	/**
 	 * Get remote file contents.
 	 *
+	 * @since 3.7.8.1 Only attach credentials for known library locations.
+	 *
 	 * @access public
 	 * @return string Returns the remote URL contents.
 	 */
@@ -2359,7 +2452,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			'key'  => $key,
 			'site' => $site_url,
 		];
-		if ( 'templates' === $library || 'section' === $library || 'pages' === $library || 'template' === $library ) {
+		// License credentials are only ever sent to the Kadence library hosts.
+		if ( $this->is_kadence_api_url( $library_url ) && ( 'templates' === $library || 'section' === $library || 'pages' === $library || 'template' === $library ) ) {
 			$args['api_email']  = $this->api_email;
 			$args['api_key']    = $this->api_key;
 			$args['product_id'] = $this->product_id;
@@ -2766,11 +2860,13 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		$query_params[ self::PROP_INDUSTRIES ]    = [
 			'description'       => __( 'The industries to return', 'kadence-blocks' ),
 			'type'              => 'array',
+			'validate_callback' => [ $this, 'validate_array' ],
 			'sanitize_callback' => [ $this, 'sanitize_industries_array' ],
 		];
 		$query_params[ self::PROP_IMAGE_SIZES ]   = [
 			'description'       => __( 'The Image type to return', 'kadence-blocks' ),
 			'type'              => 'array',
+			'validate_callback' => [ $this, 'validate_array' ],
 			'sanitize_callback' => [ $this, 'sanitize_image_sizes_array' ],
 		];
 		$query_params[ self::PROP_META ]          = [
@@ -2789,14 +2885,15 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @return array|WP_Error List of valid subtypes, or WP_Error object on failure.
 	 */
 	public function sanitize_industries_array( $industries, $request ) {
-		if ( ! empty( $industries ) && is_array( $industries ) ) {
-			$new_industries = [];
-			foreach ( $industries as $key => $value ) {
-				$new_industries[] = sanitize_text_field( $value );
-			}
-			return $new_industries;
+		if ( ! is_array( $industries ) ) {
+			return [];
 		}
-		return [];
+		$industries = array_slice( $industries, 0, self::MAX_REST_ARRAY_SIZE );
+		$new_industries = [];
+		foreach ( $industries as $key => $value ) {
+			$new_industries[] = sanitize_text_field( $value );
+		}
+		return $new_industries;
 	}
 
 	/**
@@ -2826,9 +2923,14 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	/**
 	 * Import an image for the design library/patterns.
 	 *
+	 * @since 3.7.8 Require the upload_files capability.
+	 *
 	 * @param array $image_data the image data to import.
 	 */
 	public function import_image( $image_data ) {
+		if ( ! current_user_can( 'upload_files' ) ) {
+			return $image_data;
+		}
 		$local_image = $this->check_for_local_image( $image_data );
 		if ( $local_image['status'] ) {
 			return $local_image['image'];
@@ -3034,6 +3136,237 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		$parsed_args = wp_parse_args( $args, $defaults );
 
 		return base64_encode( json_encode( $parsed_args ) );
+	}
+
+	/**
+	 * Proxy a streaming "generate content" AI request (inline AI).
+	 *
+	 * The request token is attached server-side via {@see get_token_header()};
+	 * the streaming response is passed straight through to preserve the editor's
+	 * live typing UX.
+	 *
+	 * @since 3.7.6
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 *
+	 * @return WP_REST_Response|void Streams and exits on success; response on bad input.
+	 */
+	public function ai_generate_content( WP_REST_Request $request ) {
+		$parameters = $request->get_json_params();
+		if ( empty( $parameters['prompt'] ) ) {
+			return new WP_REST_Response( [ 'error' => 'Missing parameters' ], 400 );
+		}
+		$proxy = $this->build_ai_proxy_request(
+			'proxy/generate/content',
+			[
+				'prompt' => $parameters['prompt'],
+				'lang'   => ! empty( $parameters['lang'] ) ? $parameters['lang'] : 'en-US',
+				'stream' => true,
+			]
+		);
+
+		$this->stream_ai_proxy( $proxy['url'], $proxy['body'] );
+	}
+
+	/**
+	 * Proxy a streaming "transform" AI request (inline AI improve/simplify/tone/edit/...).
+	 *
+	 * @since 3.7.6
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 *
+	 * @return WP_REST_Response|void Streams and exits on success; response on bad input.
+	 */
+	public function ai_transform( WP_REST_Request $request ) {
+		$parameters = $request->get_json_params();
+		$type       = $request->get_param( 'type' );
+		$type       = is_string( $type ) ? $type : '';
+		$allowed    = [ 'improve', 'simplify', 'lengthen', 'spelling', 'shorten', 'tone', 'edit' ];
+		if ( ! in_array( $type, $allowed, true ) ) {
+			return new WP_REST_Response( [ 'error' => 'Invalid transform type' ], 400 );
+		}
+		if ( empty( $parameters['text'] ) ) {
+			return new WP_REST_Response( [ 'error' => 'Missing parameters' ], 400 );
+		}
+		$body = [
+			'text'   => $parameters['text'],
+			'stream' => true,
+		];
+		foreach ( [ 'lang', 'tone', 'prompt' ] as $key ) {
+			if ( isset( $parameters[ $key ] ) && '' !== $parameters[ $key ] ) {
+				$body[ $key ] = $parameters[ $key ];
+			}
+		}
+		$proxy = $this->build_ai_proxy_request( 'proxy/transform/' . $type, $body );
+
+		$this->stream_ai_proxy( $proxy['url'], $proxy['body'] );
+	}
+
+	/**
+	 * Proxy a streaming "improve mission statement" AI request (AI Wizard).
+	 *
+	 * @since 3.7.6
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 *
+	 * @return WP_REST_Response|void Streams and exits on success; response on bad input.
+	 */
+	public function ai_mission_statement( WP_REST_Request $request ) {
+		$parameters = $request->get_json_params();
+		if ( empty( $parameters['text'] ) ) {
+			return new WP_REST_Response( [ 'error' => 'Missing parameters' ], 400 );
+		}
+		$proxy = $this->build_ai_proxy_request(
+			'proxy/intake/improve-mission-statement',
+			[
+				'text'   => $parameters['text'],
+				'lang'   => ! empty( $parameters['lang'] ) ? $parameters['lang'] : 'en-US',
+				'stream' => true,
+			]
+		);
+
+		$this->stream_ai_proxy( $proxy['url'], $proxy['body'] );
+	}
+
+	/**
+	 * Build the upstream URL + body for an AI proxy request.
+	 *
+	 * Kept separate so the URL/body composition is unit-testable without
+	 * performing the actual (streaming) network call.
+	 *
+	 * @since 3.7.6
+	 *
+	 * @param string               $path Upstream path relative to the prophecy AI base URL.
+	 * @param array<string, mixed> $body Request body to forward.
+	 *
+	 * @return array{url: string, body: array<string, mixed>}
+	 */
+	public function build_ai_proxy_request( $path, array $body ) {
+		return [
+			'url'  => $this->remote_ai_url . ltrim( $path, '/' ),
+			'body' => $body,
+		];
+	}
+
+	/**
+	 * Stream an AI proxy request to the browser, attaching the request token server-side.
+	 *
+	 * Uses a cURL passthrough so chunks reach the editor as they arrive (live typing).
+	 * Falls back to a buffered request on hosts without cURL.
+	 *
+	 * @since 3.7.6
+	 *
+	 * @param string               $url  Upstream URL.
+	 * @param array<string, mixed> $body Request body to forward.
+	 *
+	 * @return void Always echoes the response and exits.
+	 */
+	public function stream_ai_proxy( $url, array $body ) {
+		$token = $this->get_token_header();
+
+		if ( function_exists( 'curl_init' ) ) {
+			$this->stream_ai_proxy_curl( $url, $body, $token );
+		}
+
+		$this->buffered_ai_proxy( $url, $body, $token );
+	}
+
+	/**
+	 * Stream the upstream response chunk-by-chunk via cURL.
+	 *
+	 * @since 3.7.6
+	 *
+	 * @param string               $url   Upstream URL.
+	 * @param array<string, mixed> $body  Request body to forward.
+	 * @param string               $token The X-Prophecy-Token header value.
+	 *
+	 * @return void Echoes the streamed response and exits.
+	 */
+	private function stream_ai_proxy_curl( $url, array $body, $token ) {
+		// Stop PHP/WordPress from buffering so chunks reach the browser as they arrive.
+		@ini_set( 'zlib.output_compression', '0' );
+		@ini_set( 'output_buffering', 'off' );
+		@ini_set( 'implicit_flush', '1' );
+		while ( ob_get_level() > 0 ) {
+			ob_end_flush();
+		}
+
+		$headers_sent = false;
+
+		$ch = curl_init();
+		curl_setopt_array(
+			$ch,
+			[
+				CURLOPT_URL            => $url,
+				CURLOPT_POST           => true,
+				CURLOPT_POSTFIELDS     => wp_json_encode( $body ),
+				CURLOPT_HTTPHEADER     => [
+					'Content-Type: application/json',
+					'X-Prophecy-Token: ' . $token,
+				],
+				CURLOPT_RETURNTRANSFER => false,
+				CURLOPT_TIMEOUT        => 60,
+				// Forward the upstream status (e.g. 423 credits / 424 license) and content type.
+				CURLOPT_HEADERFUNCTION => function ( $curl, $header ) use ( &$headers_sent ) {
+					if ( ! $headers_sent && preg_match( '#^HTTP/\S+\s+(\d{3})#', $header, $matches ) ) {
+						status_header( (int) $matches[1] );
+						nocache_headers();
+						header( 'Content-Type: text/event-stream' );
+						header( 'X-Accel-Buffering: no' );
+						$headers_sent = true;
+					} elseif ( $headers_sent && stripos( $header, 'Content-Type:' ) === 0 ) {
+						header( trim( $header ) );
+					}
+					return strlen( $header );
+				},
+				// Echo each chunk straight to the browser.
+				CURLOPT_WRITEFUNCTION  => function ( $curl, $data ) {
+					echo $data; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					flush();
+					return strlen( $data );
+				},
+			]
+		);
+		curl_exec( $ch );
+		curl_close( $ch );
+		exit;
+	}
+
+	/**
+	 * Buffered fallback for hosts without cURL: fetch and echo the response in one shot.
+	 *
+	 * @since 3.7.6
+	 *
+	 * @param string               $url   Upstream URL.
+	 * @param array<string, mixed> $body  Request body to forward.
+	 * @param string               $token The X-Prophecy-Token header value.
+	 *
+	 * @return void Echoes the response and exits.
+	 */
+	private function buffered_ai_proxy( $url, array $body, $token ) {
+		$response = wp_remote_post(
+			$url,
+			[
+				'timeout' => 60, // phpcs:ignore WordPressVIPMinimum.Performance.RemoteRequestTimeout.timeout_timeout -- AI responses can take longer than the default to generate.
+				'headers' => [
+					'Content-Type'     => 'application/json',
+					'X-Prophecy-Token' => $token,
+				],
+				'body'    => (string) wp_json_encode( $body ),
+			]
+		);
+		if ( is_wp_error( $response ) ) {
+			status_header( 500 );
+			exit;
+		}
+		$code         = wp_remote_retrieve_response_code( $response );
+		$content_type = wp_remote_retrieve_header( $response, 'content-type' );
+		$content_type = is_array( $content_type ) ? (string) reset( $content_type ) : (string) $content_type;
+		status_header( $code ? (int) $code : 200 );
+		nocache_headers();
+		header( 'Content-Type: ' . ( $content_type ? $content_type : 'text/event-stream' ) );
+		echo wp_remote_retrieve_body( $response ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		exit;
 	}
 
 	/**

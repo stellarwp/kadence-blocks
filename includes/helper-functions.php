@@ -11,7 +11,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_authorization_token;
+use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_domain;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_key;
+use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_resource;
+use function KadenceWP\KadenceBlocks\StellarWP\Uplink\is_authorized;
+use function KadenceWP\KadenceBlocks\StellarWP\Uplink\validate_license;
 
 /**
  * Check if we are in AMP Mode.
@@ -160,7 +165,134 @@ function kadence_blocks_get_current_license_key() {
 	if ( ! empty( $creative_kit_key ) ) {
 		return $creative_kit_key;
 	}
-	return get_license_key( 'kadence-blocks' );
+	$legacy_key = get_license_key( 'kadence-blocks' );
+	if ( ! empty( $legacy_key ) ) {
+		return $legacy_key;
+	}
+	if ( function_exists( 'lw_harbor_get_unified_license_key' ) ) {
+		$unified_key = lw_harbor_get_unified_license_key();
+		if ( ! empty( $unified_key ) ) {
+			return $unified_key;
+		}
+	}
+	return '';
+}
+
+/**
+ * Get a license key that is currently authorized for Kadence access.
+ *
+ * Unlike {@see kadence_blocks_get_current_license_key()} which returns whatever
+ * is stored, this filters to a key that has actually been validated and is
+ * known to grant access. Use this when shipping the key to a remote server
+ * (editor assets, pattern-library REST controller, AI prophecy token), so
+ * stale/superseded legacy keys don't take precedence over an active unified
+ * key, and unified keys without the 'kadence' entitlement don't surface as
+ * "invalid license" errors downstream.
+ *
+ * Returns an empty string if no slot is currently authorized.
+ *
+ * @since 3.7.5
+ */
+function kadence_blocks_get_authorized_license_key(): string {
+	$candidates = [];
+	if ( class_exists( 'Kadence_Blocks_Pro' ) ) {
+		$key = get_license_key( 'kadence-blocks-pro' );
+		if ( ! empty( $key ) ) {
+			$candidates[] = [ 'key' => $key, 'slug' => 'kadence-blocks-pro' ];
+		}
+	}
+	if ( class_exists( 'KadenceWP\\CreativeKit\\Core' ) ) {
+		$key = get_license_key( 'kadence-creative-kit' );
+		if ( ! empty( $key ) ) {
+			$candidates[] = [ 'key' => $key, 'slug' => 'kadence-creative-kit' ];
+		}
+	}
+	$blocks_key = get_license_key( 'kadence-blocks' );
+	if ( ! empty( $blocks_key ) ) {
+		$candidates[] = [ 'key' => $blocks_key, 'slug' => 'kadence-blocks' ];
+	}
+
+	foreach ( $candidates as $candidate ) {
+		$token = get_authorization_token( $candidate['slug'] );
+		if ( is_authorized( $candidate['key'], $candidate['slug'], $token ?? '', get_license_domain() ) ) {
+			return $candidate['key'];
+		}
+		// Legacy keys (e.g. "ktw...") are activated by direct license-key
+		// validation and never obtain a V3 authorization token, so is_authorized()
+		// above returns false for them. Fall back to the legacy validation flow so
+		// a valid legacy key still ships to the pattern/AI servers. A revoked or
+		// expired legacy key still fails here, preserving the original intent of
+		// not handing a stale key to remotes.
+		if ( kadence_blocks_is_legacy_key_valid( $candidate['slug'], $candidate['key'] ) ) {
+			return $candidate['key'];
+		}
+	}
+
+	if (
+		function_exists( 'lw_harbor_get_unified_license_key' )
+		&& function_exists( 'lw_harbor_is_product_license_active' )
+		&& lw_harbor_is_product_license_active( 'kadence' )
+	) {
+		$unified_key = lw_harbor_get_unified_license_key();
+		if ( ! empty( $unified_key ) ) {
+			return $unified_key;
+		}
+	}
+
+	return '';
+}
+
+/**
+ * Whether a license key is valid via the legacy (Uplink V2) validation flow.
+ *
+ * Legacy keys (e.g. "ktw...") are validated by checking the key directly against
+ * the licensing server rather than via the V3 token-authorization handshake, so
+ * {@see is_authorized()} returns false for them even when the key is good. This
+ * mirrors how kadence-blocks-pro validates its own legacy license. Uplink's own
+ * persisted license status is the source of truth for a positive result (it
+ * revalidates on its own schedule, so a revoked key is not kept "valid"); only
+ * the negative result is short-cached in a transient to avoid re-hitting the
+ * licensing server on every editor/REST load.
+ *
+ * @since 3.7.6
+ *
+ * @param string $slug The Uplink resource slug.
+ * @param string $key  The license key to validate.
+ *
+ * @return bool
+ */
+function kadence_blocks_is_legacy_key_valid( string $slug, string $key ): bool {
+	if ( empty( $slug ) || empty( $key ) ) {
+		return false;
+	}
+
+	$resource = get_resource( $slug );
+
+	// Authoritative positive signal: trust Uplink's persisted, self-maintained
+	// status when it already says the key is valid. Uplink revalidates and
+	// updates this status on its own schedule, so we avoid the false positives
+	// that a week-long positive transient could ship for a revoked key.
+	if ( $resource && $resource->get_license_object()->is_valid() ) {
+		return true;
+	}
+
+	// No stored "valid" status yet (never validated, invalid, or revoked).
+	// Short-cache the negative so we don't re-POST on every load, then validate;
+	// a successful validate_license() persists the status, so the fast path
+	// above answers subsequent requests without another network call.
+	$transient = 'kadence_blocks_legacy_key_invalid_' . md5( $slug . '_' . $key );
+	if ( 'invalid' === get_transient( $transient ) ) {
+		return false;
+	}
+
+	$validation = validate_license( $slug, $key );
+	$is_valid   = $validation && method_exists( $validation, 'is_valid' ) && $validation->is_valid();
+
+	if ( ! $is_valid ) {
+		set_transient( $transient, 'invalid', HOUR_IN_SECONDS );
+	}
+
+	return $is_valid;
 }
 
 /**
@@ -204,7 +336,7 @@ function kadence_blocks_get_current_env() {
 				return 'dev';
 			case 'https://licensing-staging.stellarwp.com':
 				return 'staging';
-				
+
 		}
 	}
 	return '';
@@ -223,7 +355,7 @@ function kadence_blocks_get_current_license_data(): array {
 	}
 
 	$license_data = [
-		'key'     => kadence_blocks_get_current_license_key(),
+		'key'     => kadence_blocks_get_authorized_license_key(),
 		'email'   => kadence_blocks_get_current_license_email(),
 		'product' => kadence_blocks_get_current_product_slug(),
 		'env'     => kadence_blocks_get_current_env(),
@@ -233,13 +365,97 @@ function kadence_blocks_get_current_license_data(): array {
 }
 
 /**
+ * Whether the current site has an authorized Kadence license.
+ *
+ * Checks the legacy StellarWP Uplink license first, then falls back to
+ * Harbor's unified license as the final check.
+ *
+ * @since 3.7.0
+ *
+ * @return bool
+ */
+function kadence_blocks_is_license_authorized(): bool {
+	if ( kadence_blocks_is_legacy_license_authorized() ) {
+		return true;
+	}
+
+	return lw_harbor_is_product_license_active( 'kadence' );
+}
+
+/**
+ * Check if a legacy (Uplink) Kadence license is authorized.
+ *
+ * AI features are not currently supported under Harbor licensing, so this
+ * function gates AI-specific UI and functionality. Harbor-only customers and
+ * customers with no license will return false.
+ *
+ * @since 3.7.0
+ *
+ * @return bool
+ */
+function kadence_blocks_is_legacy_license_authorized(): bool {
+	static $cache = null;
+
+	if ( $cache !== null ) {
+		return $cache;
+	}
+
+	$license_key = kadence_blocks_get_current_license_key();
+
+	if ( empty( $license_key ) ) {
+		$cache = false;
+		return $cache;
+	}
+
+	$slug  = kadence_blocks_get_current_product_slug();
+	$token = get_authorization_token( $slug );
+	$cache = is_authorized( $license_key, $slug, $token ?? '', get_license_domain() );
+
+	return $cache;
+}
+
+/**
  * Check if ai is enabled.
+ *
+ * @since 3.7.0 Added the {@see 'kadence_blocks_ai_disabled'} filter.
  */
 function kadence_blocks_is_ai_disabled() {
 	if ( defined( 'KADENCE_BLOCKS_AI_DISABLED' ) && KADENCE_BLOCKS_AI_DISABLED ) {
 		return true;
 	}
-	return false;
+
+	/**
+	 * Filters whether Kadence AI is disabled.
+	 *
+	 * @since 3.7.0
+	 *
+	 * @param bool $disabled Whether AI is disabled.
+	 */
+	return (bool) apply_filters( 'kadence_blocks_ai_disabled', false );
+}
+
+/**
+ * Get the message shown when Kadence AI is disabled.
+ *
+ * Applies the `kadence_blocks_ai_disabled_message` filter so hosting
+ * environments (e.g. Harbor) can surface a context-specific reason.
+ *
+ * @since 3.7.0
+ *
+ * @return string
+ */
+function kadence_blocks_get_ai_disabled_message(): string {
+	/**
+	 * Filters the message shown when Kadence AI is disabled.
+	 *
+	 * @since 3.7.0
+	 *
+	 * @param string $message The default disabled message.
+	 */
+	return apply_filters(
+		'kadence_blocks_ai_disabled_message',
+		__( 'Kadence AI is disabled by site admin.', 'kadence-blocks' )
+	);
 }
 
 /**

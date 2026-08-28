@@ -1,0 +1,28 @@
+name: Guard against @since TBD on master
+
+# Uses pup's built-in TBD check to fail CI if unresolved markers reach master. Runs on:
+#   - PRs targeting master (blocks the merge button until clean)
+#   - Pushes to master (catches direct commits / merges that bypassed PR review)
+#
+# Companion to .github/workflows/replace-since-tbd.yml — the replacement
+# workflow is what fixes TBD markers; this workflow enforces that it ran.
+
+on:
+  pull_request:
+    branches: [master]
+  push:
+    branches: [master]
+
+jobs:
+  guard:
+    name: Run pup TBD check
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pup
+        run: composer run pup
+
+      - name: Check for unresolved TBD markers
+        run: php bin/pup.phar check:tbd

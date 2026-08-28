@@ -3,17 +3,25 @@
 		"rm -rf vendor",
 		"@composer install --no-dev --no-scripts",
 		"@composer run strauss-release",
-		"npm install --legacy-peer-deps",
-		"npm run build"
+		"bun install --frozen-lockfile",
+		"bun run build"
 	],
 	"build_dev": [
 		"rm -rf vendor",
 		"@composer install --no-dev --no-scripts",
 		"@composer run strauss-release",
-		"npm install --legacy-peer-deps",
-		"npm run build"
+		"bun install --frozen-lockfile",
+		"bun run build"
 	],
 	"checks": {
+		"tbd": {
+			"fail_method": "error",
+			"fail_method_dev": "error",
+			"dirs": [
+				"."
+			],
+			"skip_directories": "vendor|vendor-prefixed|node_modules|dist|build|bin|dev_scripts|.git|.github"
+		},
 		"version-conflict": {
 			"fail_method": "error",
 			"fail_method_dev": "warn"

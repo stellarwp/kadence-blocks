@@ -8,6 +8,12 @@ jobs:
   update-fonts:
     runs-on: ubuntu-latest
 
+    # Opening the update PR writes to the repository. A job with no permissions block inherits the
+    # default from the Actions settings, which live outside this file and are currently read.
+    permissions:
+      contents: write
+      pull-requests: write
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
