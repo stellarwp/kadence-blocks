@@ -6,6 +6,7 @@ import {
 	fontActionFor,
 	fontOptions,
 	fontSizeDisplayValue,
+	fontCatalogOptions,
 	fontWeightsFor,
 	getFontCatalog,
 } from '../helpers/typography';
@@ -123,6 +124,57 @@ describe('getFontCatalog', () => {
 			custom: ['My Font'],
 			weights: { 'Abril Fatface': ['400'] },
 		});
+	});
+});
+
+describe('fontCatalogOptions', () => {
+	const originalCatalog = window.kadenceDesignTokensFontCatalog;
+
+	afterEach(() => {
+		window.kadenceDesignTokensFontCatalog = originalCatalog;
+	});
+
+	/**
+	 * Favorites lead and carry a badge, so the faces a site has kept sit at the top of a list otherwise
+	 * nearly two thousand names long; Google follows, then site-registered custom families.
+	 *
+	 * @return {void}
+	 */
+	it('lists favorites first, then google, then custom', () => {
+		window.kadenceDesignTokensFontCatalog = { google: ['Abel', 'Inter'], custom: ['My Font'], weights: {} };
+
+		expect(fontCatalogOptions({ favoriteFonts: ['Inter'] })).toEqual([
+			{ value: 'Inter', label: 'Inter', badge: 'Favorite' },
+			{ value: 'Abel', label: 'Abel' },
+			{ value: 'My Font', label: 'My Font', badge: 'Custom' },
+		]);
+	});
+
+	/**
+	 * A favorite keeps its pinned position rather than repeating mid-list, and a custom font duplicating
+	 * a Google one renders once. The custom list is diffed against the Google one server-side by exact
+	 * string, so a theme registering `inter` alongside Google's `Inter` reaches here as two names for
+	 * one font.
+	 *
+	 * @return {void}
+	 */
+	it('lists every name once, matched case-insensitively across all three sources', () => {
+		window.kadenceDesignTokensFontCatalog = { google: ['Inter'], custom: ['inter'], weights: {} };
+
+		expect(fontCatalogOptions({ favoriteFonts: ['Inter'] })).toEqual([
+			{ value: 'Inter', label: 'Inter', badge: 'Favorite' },
+		]);
+	});
+
+	/**
+	 * With no catalog global and no favorites there is nothing to offer, rather than a list of blanks.
+	 *
+	 * @return {void}
+	 */
+	it('fails safe to an empty list', () => {
+		delete window.kadenceDesignTokensFontCatalog;
+
+		expect(fontCatalogOptions(undefined)).toEqual([]);
 	});
 });
 

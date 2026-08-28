@@ -22,6 +22,7 @@ import { StepperField } from '../components/molecules/fields/StepperField';
 import { TextField } from '../components/molecules/fields/TextField';
 import { ToggleField } from '../components/molecules/fields/ToggleField';
 import { TokenColorSelectField } from '../components/molecules/fields/TokenColorSelectField';
+import { FontFamilyField } from '../components/molecules/fields/FontFamilyField';
 import { TokenSelectField } from '../components/molecules/fields/TokenSelectField';
 import { UnitField } from '../components/molecules/fields/UnitField';
 
@@ -101,6 +102,7 @@ export const FIELD_TYPES = Object.freeze({
 	'token-select': TokenSelectField,
 	'token-scalar': ScalarTokenField,
 	'token-color-select': TokenColorSelectField,
+	'font-family': FontFamilyField,
 	'box-sides': BoxSidesField,
 	radius: RadiusField,
 	spacing: SpacingField,

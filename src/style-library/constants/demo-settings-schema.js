@@ -167,6 +167,13 @@ export const DEMO_SETTINGS_SCHEMA = {
 					label: __('Icon Size', 'kadence-blocks'),
 					tokenType: 'dimension',
 				},
+				{
+					// The tabbed font picker, the one field whose value is a plain family string rather than
+					// anything token-shaped — the font catalog is a list of real faces, not a scale.
+					type: 'font-family',
+					path: 'fontFamily',
+					label: __('Font Family', 'kadence-blocks'),
+				},
 				{ type: 'toggle', path: 'enabled', label: __('Enabled', 'kadence-blocks') },
 			],
 		},

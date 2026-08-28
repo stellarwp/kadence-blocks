@@ -217,10 +217,10 @@ describe('HEADING_PRESET', () => {
 			expect(byPath[path].options.length).toBeGreaterThan(1);
 		});
 
-		// Font family is a select too, but over the library's favorites rather than a keyword set, so its
-		// length depends on what the site has kept. With none kept it still offers the theme font.
-		expect(byPath['tokens.typography'].type).toBe('select');
-		expect(byPath['tokens.typography'].options.map((option) => option.value)).toEqual(['']);
+		// Font family is not a keyword set at all: it uses the same tabbed picker the block editor
+		// mounts, which builds its own list from the library's favorites and the font catalog.
+		expect(byPath['tokens.typography'].type).toBe('font-family');
+		expect(byPath['tokens.typography'].options).toBeUndefined();
 
 		expect(byPath['tokens.fontSize'].type).toBe('token-scalar');
 		expect(byPath['tokens.borderWidth'].type).toBe('token-scalar');
@@ -284,17 +284,18 @@ describe('HEADING_PRESET font family and weight', () => {
 	}
 
 	/**
-	 * The family select lists the library's favorites, storing each as a literal family name rather than
-	 * a token id -- the font catalog is a list of real faces, not a token scale.
+	 * The family field is the tabbed picker, and it names what an unset family falls back to rather than
+	 * reading as empty -- a heading with no family of its own still renders in the theme's face.
 	 *
 	 * @return {void}
 	 */
-	it('offers the library favorites as literal family names', () => {
+	it('uses the tabbed font picker and names the fallback face', () => {
 		stubFonts(['Inter', 'Abril Fatface'], {});
 
 		const family = fields().find((field) => field.path === 'tokens.typography');
 
-		expect(family.options.map((option) => option.value)).toEqual(['', 'Inter', 'Abril Fatface']);
+		expect(family.type).toBe('font-family');
+		expect(family.inherited).toBe('Theme Font');
 	});
 
 	/**

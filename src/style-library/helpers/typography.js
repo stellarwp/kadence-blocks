@@ -13,6 +13,11 @@
  */
 
 /**
+ * WordPress dependencies
+ */
+import { __ } from '@wordpress/i18n';
+
+/**
  * Strip a pair of wrapping quotes (single or double) from a font-family name, the same trimming a
  * browser applies when it renders a quoted family in a `font-family` list.
  *
@@ -162,6 +167,52 @@ export function getFontCatalog() {
 		custom: Array.isArray(catalog?.custom) ? catalog.custom : [],
 		weights: catalog?.weights && typeof catalog.weights === 'object' ? catalog.weights : {},
 	};
+}
+
+/**
+ * The font-family picker's full option list: the library's favorites first, then every Google family,
+ * then every site-registered custom family.
+ *
+ * Favorites lead and carry a badge, so the faces a site has kept sit at the top of a list otherwise
+ * nearly two thousand names long. Every name appears exactly once, matched case-insensitively across
+ * all three sources — the custom list is diffed against the Google one server-side by exact string, so
+ * a theme registering `inter` alongside Google's `Inter` reaches here as two names for one font.
+ *
+ * This mirrors the editor's own `fontCatalogOptions()`, which builds the same list from editor globals
+ * that do not exist on this page. The theme's "inherit heading/body font" rows are deliberately absent:
+ * they resolve through custom properties the block editor's canvas carries, and a preset storing one
+ * would name a variable rather than a face.
+ *
+ * @param {{ favoriteFonts?: string[] }} feed The design-tokens feed.
+ *
+ * @since TBD
+ *
+ * @return {Array<{value: string, label: string, badge?: string}>} The option list.
+ */
+export function fontCatalogOptions(feed) {
+	const seen = new Set();
+	const unique = (name) => {
+		const key = unquoteFamily(String(name ?? '').trim()).toLowerCase();
+
+		if (key === '' || seen.has(key)) {
+			return false;
+		}
+
+		seen.add(key);
+
+		return true;
+	};
+
+	const { google, custom } = getFontCatalog();
+
+	return [
+		...fontOptions(feed)
+			.map((font) => font.label)
+			.filter(unique)
+			.map((name) => ({ value: name, label: name, badge: __('Favorite', 'kadence-blocks') })),
+		...google.filter(unique).map((name) => ({ value: name, label: name })),
+		...custom.filter(unique).map((name) => ({ value: name, label: name, badge: __('Custom', 'kadence-blocks') })),
+	];
 }
 
 /**

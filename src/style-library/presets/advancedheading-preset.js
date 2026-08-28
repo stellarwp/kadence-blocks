@@ -16,8 +16,7 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { getPresetProperties, resolveTokenValue } from '../helpers/presets';
-import { fontOptions, fontWeightsFor } from '../helpers/typography';
-import { getDesignTokensFeed } from '../helpers/tokens';
+import { fontWeightsFor } from '../helpers/typography';
 
 /**
  * The block name this screen edits. The block is called Advanced Text in the UI but
@@ -110,26 +109,6 @@ const FONT_WEIGHT_LABELS = {
  * @since TBD
  */
 const ALL_FONT_WEIGHTS = Object.keys(FONT_WEIGHT_LABELS);
-
-/**
- * The font families a preset may pick from: the library's favorites, plus an entry for leaving the
- * family alone.
- *
- * Favorites rather than a token pool, because a font family is not a token: the catalog is a list of
- * real faces a site has kept, and a preset stores the family it picked as a LITERAL. The empty option
- * is what a heading does with no family of its own — inherit the theme's — which is the block's own
- * behavior rather than an invented default.
- *
- * @since TBD
- *
- * @return {Array<{value: string, label: string}>} The family options.
- */
-function fontFamilyOptions() {
-	return [
-		{ value: '', label: __('Theme Font', 'kadence-blocks') },
-		...fontOptions(getDesignTokensFeed()).map((font) => ({ value: font.label, label: font.label })),
-	];
-}
 
 /**
  * The weights a family actually ships, as select options.
@@ -238,11 +217,11 @@ function renderPreview(row) {
  * Eleven of the block's thirteen bound properties are offered, grouped by what a site owner is doing
  * rather than by how each value is stored.
  *
- * Font family is a select over the library's FAVORITES, storing the family as a literal: the font
- * catalog is a list of real faces, not a token scale, so there is nothing to alias to. Weight then
- * narrows to the weights that family actually ships, which is why this takes the draft — the two
- * fields are linked, and offering a weight a family does not have would render a synthesized face
- * rather than the one the design system promised.
+ * Font family uses the same tabbed picker the block editor mounts — favorites pinned above the full
+ * catalog — and stores the family as a literal: the font catalog is a list of real faces, not a token
+ * scale, so there is nothing to alias to. Weight then narrows to the weights that family actually
+ * ships, which is why this takes the draft — the two fields are linked, and offering a weight a family
+ * does not have would render a synthesized face rather than the one the design system promised.
  *
  * The split between a token picker and a keyword select is not arbitrary: a property is offered as a
  * picker when the design system actually has a scale for it, and as a select when it does not.
@@ -286,10 +265,12 @@ function schemaFor(tab, values) {
 				title: __('Typography', 'kadence-blocks'),
 				fields: [
 					{
-						type: 'select',
+						type: 'font-family',
 						path: 'tokens.typography',
 						label: __('Font Family', 'kadence-blocks'),
-						options: fontFamilyOptions(),
+						// What a heading with no family of its own renders in. Named on the muted trigger so
+						// an unset field reports the face actually in use rather than reading as empty.
+						inherited: __('Theme Font', 'kadence-blocks'),
 					},
 					{
 						type: 'token-scalar',
