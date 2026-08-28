@@ -34,6 +34,7 @@ import '../components/pages/SingleIconScreen';
 import '../components/pages/RowLayoutScreen';
 import '../components/pages/ColumnScreen';
 import '../components/pages/ImageScreen';
+import '../components/pages/HeadingScreen';
 import { useDesignTokensFeed } from '../hooks/use-design-tokens-feed';
 import { useStyleLibraryRoute } from '../hooks/use-style-library-route';
 import { useLibraries } from '../hooks/use-libraries';

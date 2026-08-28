@@ -93,42 +93,7 @@ final class Preset_CatalogTest extends TestCase {
 		$this->assertSame( 'dimension', $kinds['button-radius'] );
 	}
 
-	/**
-	 * The blocks wired for presets but not yet given a Style Library screen expose a full controllable
-	 * surface — every bound property with its control attribute — while offering NO preset options, because
-	 * their bindings declare no picker label. That combination is what keeps the editor's Design Tokens
-	 * panel hidden for them (it renders only when a block has at least one preset option), so declaring the
-	 * wiring ahead of the screen surfaces nothing to a site owner.
-	 *
-	 * @dataProvider wiredWithoutAScreenProvider
-	 *
-	 * @param string $block The block name.
-	 *
-	 * @return void
-	 */
-	public function testAWiredBlockWithNoLabelExposesASurfaceButNoPresetOptions( string $block ): void {
-		$entry = $this->catalog->all()['libraries'][ Token_Store::default_slug() ][ $block ];
 
-		$this->assertSame( [], $entry['presets'], 'A block with no picker label must offer no preset options.' );
-		$this->assertNull( $entry['label'] );
-		$this->assertNotEmpty( $entry['properties'], 'The controllable surface is declared regardless of the label.' );
-
-		foreach ( $entry['properties'] as $property ) {
-			$this->assertNotNull(
-				$property['control_attr'],
-				sprintf( '%s: every bound property must name the control attribute it maps to.', $property['key'] )
-			);
-		}
-	}
-
-	/**
-	 * The blocks whose bindings are wired for presets but whose Style Library screen has not landed yet.
-	 *
-	 * @return Generator
-	 */
-	public function wiredWithoutAScreenProvider(): Generator {
-		yield 'advanced heading' => [ 'block' => 'kadence/advancedheading' ];
-	}
 
 	/**
 	 * Alongside the flattened literals, the catalog carries each preset's CSS REFERENCES — the same
@@ -254,19 +219,58 @@ final class Preset_CatalogTest extends TestCase {
 	 * @return void
 	 */
 	public function testABlockWithoutAPickerLabelCarriesPropertiesButNoPresetOptions(): void {
-		$library = $this->catalog->all()['libraries'][ Token_Store::default_slug() ];
+		// Two blocks registered here rather than shipped ones: every shipped block now declares a label,
+		// and the separation this asserts is the contract a third-party block wiring tokens without a
+		// preset UI depends on. Both are given a preset in the document, so neither is skipped for having
+		// none and the only difference between them is the label.
+		$bindings = [
+			'background' => [
+				'token'        => 'semantic.color.text',
+				'css_prop'     => 'background-color',
+				'control_attr' => 'background',
+			],
+		];
 
-		$this->assertArrayHasKey( self::HEADING, $library );
-		$this->assertNull( $library[ self::HEADING ]['label'] );
-		$this->assertSame( [], $library[ self::HEADING ]['presets'] );
+		$registry = new Token_Registry();
+		$registry->register_preset_bindings(
+			[
+				'block'    => 'my-vendor/default-look-only',
+				'bindings' => $bindings,
+			]
+		);
+		$registry->register_preset_bindings(
+			[
+				'block'    => 'my-vendor/picker-driven',
+				'label'    => 'Style',
+				'bindings' => $bindings,
+			]
+		);
 
-		// The surface the token picker keys off is present regardless, as is the default the controls compare
-		// against.
-		$this->assertNotEmpty( $library[ self::HEADING ]['properties'] );
-		$this->assertSame( 'default', $library[ self::HEADING ]['default'] );
+		$this->store->save_document(
+			'{"$extensions":{"com.kadence.designTokens":{"presets":{'
+			. '"my-vendor/default-look-only":{"$default":"only","only":{"label":"Only","tokens":{"background":"#ff0000"}}},'
+			. '"my-vendor/picker-driven":{"$default":"only","only":{"label":"Only","tokens":{"background":"#ff0000"}}}'
+			. '}}}}'
+		);
 
-		// The picker-driven Button is unaffected: it declares a label, so it still carries its options.
-		$this->assertNotEmpty( $library[ self::BUTTON ]['presets'] );
+		$library = ( new Preset_Catalog(
+			$registry,
+			$this->container->get( Preset_Resolver::class ),
+			$this->store,
+			$this->container->get( Active_Token_Library_Store::class ),
+			$this->container->get( Effective_Presets::class )
+		) )->all()['libraries'][ Token_Store::default_slug() ];
+
+		$unlabeled = $library['my-vendor/default-look-only'];
+
+		$this->assertNull( $unlabeled['label'] );
+		$this->assertSame( [], $unlabeled['presets'], 'A block with no picker label must offer no preset options.' );
+
+		// The surface the token picker keys off is present regardless of the label.
+		$this->assertNotEmpty( $unlabeled['properties'] );
+
+		// The labeled sibling, identical but for the label, does carry its options.
+		$this->assertNotEmpty( $library['my-vendor/picker-driven']['presets'] );
 	}
 
 	/**

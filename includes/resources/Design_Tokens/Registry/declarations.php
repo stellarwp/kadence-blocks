@@ -906,6 +906,13 @@ return [
 			// INLINE styles on that same element (and font-weight inline on its child), so they keep winning
 			// regardless of this rule's specificity.
 			'block'           => 'kadence/advancedheading',
+			'label'           => __( 'Style', 'kadence-blocks' ), // a picker-driven set; this is the editor control's label.
+			'style_library'   => [
+				// The Style Library BLOCK PRESETS nav label — distinct from "label" above, which names the
+				// inspector's picker control, not the block. "Advanced Text" is the block's UI name;
+				// "advancedheading" is only its code name.
+				'label' => __( 'Advanced Text', 'kadence-blocks' ),
+			],
 			'editor_selector' => '.wp-block-kadence-advancedheading .kadence-advancedheading-text',
 			'bindings'        => [
 				'color'         => [
@@ -924,6 +931,13 @@ return [
 				// deliberately emits no font-family default for it (see Css_BuilderTest). Font family is
 				// delivered by the font system rather than a token rule, and a preset stores the family the
 				// typography control picked as a literal rather than a token reference.
+				//
+				// fontHeight and letterSpacing are bound but NOT offered on the Style Library screen: neither
+				// has a primitive scale to pick from (their semantic groups hold one entry per usage, which is
+				// a delivery point rather than a set of choices), and unlike the keyword properties below they
+				// are open numeric ranges, so the only control that would fit is a bare number.
+				//
+				// @todo SOFT-4235: give line-height and letter-spacing a primitive scale.
 				//
 				// fontSize and fontHeight declare NO responsive_attrs, unlike every other responsive property
 				// here: the heading packs all three devices into ONE array attribute (`fontSize[0..2]` is
