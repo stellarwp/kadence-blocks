@@ -250,12 +250,9 @@ export function BorderField({ field, values, onValueChange }) {
 		onValueChange(stylePath, responsive ? writePresetBreakpoint(rawStyle, breakpoint, next) : next);
 	const writeColor = (next) => onValueChange(colorPath, next);
 
-	// A semantic-bound width is the block's role-based default rather than a selection — the pool
-	// offers primitives only — so it is blanked and the field reads as unset. Blanking is what keeps
-	// it from rendering the raw dot-path: `boundTokenIds` exempts only primitives from the narrowing,
-	// so a semantic left in place would find no matching entry. Unlike `BoxControl`, `BorderControl`
-	// takes no `defaultValue`, so the semantic's VALUE cannot be shown here the way the box fields
-	// show it; an unset field is the honest reading until that prop exists.
+	// A semantic is the block's own default, not a selection, and the pool offers primitives only —
+	// left in place it renders as a raw dot-path. Blanked here; the field's declared `defaultValue`
+	// is what the control shows muted in its place.
 	const shownWidth = withoutSemanticSlots(widthAtBreakpoint);
 
 	// The bound width token(s) are exempt from the primitive narrowing, the same way `BoxTokenField`
