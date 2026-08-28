@@ -299,6 +299,24 @@ describe('HEADING_PRESET font family and weight', () => {
 	});
 
 	/**
+	 * The favorites come from the LIVE feed the caller passes, not from the page-load global. Adding a
+	 * favorite on the Typography screen refreshes the feed and leaves the global untouched, so reading
+	 * the global would leave the new face unselectable here until a reload.
+	 *
+	 * @return {void}
+	 */
+	it('builds its favorites from the feed it is given, not the page-load global', () => {
+		// The global carries the pre-refresh list; the live feed carries the face just added.
+		stubFonts(['Inter'], {});
+
+		const family = HEADING_PRESET.schemaFor(undefined, {}, { favoriteFonts: ['Inter', 'Abril Fatface'] })
+			.panels.flatMap((panel) => panel.fields)
+			.find((field) => field.path === 'tokens.typography');
+
+		expect(family.favorites).toEqual(['Inter', 'Abril Fatface']);
+	});
+
+	/**
 	 * Weight narrows to the weights the chosen family actually ships. Abril Fatface ships only 400, and a
 	 * flat 100-900 list would offer eight faces it does not have -- the browser answers a missing one
 	 * with a synthesized approximation rather than the real face.

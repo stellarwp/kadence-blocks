@@ -58,8 +58,13 @@ function loadPickedFamily(family) {
  * writes rather than leaving the field stuck.
  *
  * @param {Object}   props                   The component props.
- * @param {Object}   props.field             The field definition.
- * @param {?string}  [props.field.label]     The control's label.
+ * @param {Object}   props.field                The field definition.
+ * @param {?string}  [props.field.label]        The control's label.
+ * @param {?Array}   [props.field.favorites]    The library's favorite families. Supplied by a schema
+ *                                              with the live feed in hand, so a favorite added on
+ *                                              another screen is selectable without a reload; falls
+ *                                              back to the page-load global when absent.
+ * @param {?Array}   [props.field.catalogOptions] The full option list, on the same terms.
  * @param {?string}  [props.field.inherited] What an unset family falls back to, named on the muted trigger.
  * @param {boolean}  [props.field.readOnly]  Whether the control is non-interactive.
  * @param {string}   props.value             The stored family, or `''` when unset.
@@ -82,8 +87,8 @@ export function FontFamilyField({ field, value, onChange }) {
 			{field.label && <FieldLabel>{field.label}</FieldLabel>}
 			<FontFamilySelector
 				value={value ?? ''}
-				favorites={fontOptions(feed).map((font) => font.label)}
-				catalogOptions={fontCatalogOptions(feed)}
+				favorites={field.favorites ?? fontOptions(feed).map((font) => font.label)}
+				catalogOptions={field.catalogOptions ?? fontCatalogOptions(feed)}
 				inheritedLabel={field.inherited ?? __('Theme Font', 'kadence-blocks')}
 				onPick={async (family) => {
 					if (field.readOnly) {

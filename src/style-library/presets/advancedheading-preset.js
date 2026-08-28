@@ -16,7 +16,7 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { getPresetProperties, resolveTokenValue } from '../helpers/presets';
-import { fontWeightsFor } from '../helpers/typography';
+import { fontCatalogOptions, fontOptions, fontWeightsFor } from '../helpers/typography';
 
 /**
  * The block name this screen edits. The block is called Advanced Text in the UI but
@@ -238,12 +238,13 @@ function renderPreview(row) {
  *
  * @param {string} tab    The active tab name; the heading declares no tabs, so this is unused.
  * @param {Object} values The current draft, read for the chosen font family.
+ * @param {Object} feed   The live design-tokens feed, read for the library's font favorites.
  *
  * @since TBD
  *
  * @return {{panels: Array<Object>}} The settings-form schema.
  */
-function schemaFor(tab, values) {
+function schemaFor(tab, values, feed) {
 	const family = values?.tokens?.typography ?? '';
 
 	return {
@@ -268,6 +269,11 @@ function schemaFor(tab, values) {
 						type: 'font-family',
 						path: 'tokens.typography',
 						label: __('Font Family', 'kadence-blocks'),
+						// Built from the LIVE feed rather than left to the field's own page-load global: a
+						// favorite added on the Typography screen refreshes the feed, so passing it through
+						// is what makes the new face selectable here without a reload.
+						favorites: fontOptions(feed).map((font) => font.label),
+						catalogOptions: fontCatalogOptions(feed),
 						// What a heading with no family of its own renders in. Named on the muted trigger so
 						// an unset field reports the face actually in use rather than reading as empty.
 						inherited: __('Theme Font', 'kadence-blocks'),
