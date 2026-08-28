@@ -15,6 +15,7 @@ import {
 	toStoredValue,
 	withoutSemanticSlots,
 } from '../components/molecules/fields/BoxTokenField';
+import { PICKABLE_TOKENS_GLOBAL } from '../constants';
 
 // A stub, not the real control: `BoxControl` renders a deep tree of pickers and popovers that have
 // nothing to do with what this suite is after. Standing in for it exposes exactly the props
@@ -151,6 +152,43 @@ describe('semanticDefaultOf', () => {
 
 	it('resolves an unknown semantic to empty rather than to its raw dot-path', () => {
 		expect(semanticDefaultOf('semantic.spacing.gone', pool)).toBe('');
+	});
+
+	/**
+	 * A binding may point at a semantic that was never declared as a pickable token — eleven of the
+	 * shipped bindings do — so a value the picker cannot offer still has to resolve. Searching only the
+	 * pickable list blanked those fields instead of showing the value in effect.
+	 */
+	describe('a semantic the pickable list does not carry', () => {
+		const originalPool = window[PICKABLE_TOKENS_GLOBAL];
+		const originalFeed = window.kadenceDesignTokens;
+
+		beforeEach(() => {
+			window.kadenceDesignTokens = { slug: 'brand' };
+			window[PICKABLE_TOKENS_GLOBAL] = {
+				tokens: [],
+				values: { brand: { 'semantic.spacing.heading-padding': '0' } },
+			};
+		});
+
+		afterEach(() => {
+			window[PICKABLE_TOKENS_GLOBAL] = originalPool;
+			window.kadenceDesignTokens = originalFeed;
+		});
+
+		it('resolves it through the library rather than blanking the field', () => {
+			expect(semanticDefaultOf('semantic.spacing.heading-padding', pool)).toBe('0');
+		});
+
+		it('resolves it in every corner of a slot list', () => {
+			const slots = Array(4).fill('semantic.spacing.heading-padding');
+
+			expect(semanticDefaultOf(slots, pool)).toEqual(['0', '0', '0', '0']);
+		});
+
+		it("falls back to the field's declared default when it resolves nowhere at all", () => {
+			expect(semanticDefaultOf('semantic.spacing.gone', pool, '2px')).toBe('2px');
+		});
 	});
 });
 

@@ -4,6 +4,7 @@ import {
 	flattenSchemaTokens,
 	isResponsiveType,
 	pickableTokensForType,
+	resolvedTokenValue,
 	tokenTypeIdSegment,
 } from '../helpers/tokens';
 import { PICKABLE_TOKENS_GLOBAL } from '../constants';
@@ -221,5 +222,50 @@ describe('pickableTokensForType', () => {
 		expect(tokens).toEqual([
 			{ id: 'semantic.color.action-primary', label: 'Action Primary', value: '#3633e1', role: null },
 		]);
+	});
+});
+
+describe('resolvedTokenValue', () => {
+	const originalPool = window[PICKABLE_TOKENS_GLOBAL];
+	const originalFeed = window.kadenceDesignTokens;
+
+	beforeEach(() => {
+		window.kadenceDesignTokens = { slug: 'brand' };
+		window[PICKABLE_TOKENS_GLOBAL] = {
+			// Deliberately narrower than `values`: the declared registry is the subset a picker may
+			// offer, and a binding is free to point at a semantic that was never declared.
+			tokens: [{ id: 'primitive.dimension.radius.sm', label: 'Radius Small', type: 'dimension' }],
+			values: {
+				brand: {
+					'primitive.dimension.radius.sm': '4px',
+					'semantic.spacing.heading-padding': '0',
+				},
+			},
+		};
+	});
+
+	afterEach(() => {
+		window[PICKABLE_TOKENS_GLOBAL] = originalPool;
+		window.kadenceDesignTokens = originalFeed;
+	});
+
+	it('resolves a token the declared registry never offered', () => {
+		expect(resolvedTokenValue('semantic.spacing.heading-padding')).toBe('0');
+	});
+
+	it('resolves a declared token the same way', () => {
+		expect(resolvedTokenValue('primitive.dimension.radius.sm')).toBe('4px');
+	});
+
+	it('yields an empty string for an id the library does not resolve', () => {
+		expect(resolvedTokenValue('semantic.spacing.gone')).toBe('');
+	});
+
+	it('yields an empty string when no feed or pool is on the page', () => {
+		delete window.kadenceDesignTokens;
+		expect(resolvedTokenValue('primitive.dimension.radius.sm')).toBe('');
+
+		delete window[PICKABLE_TOKENS_GLOBAL];
+		expect(resolvedTokenValue('primitive.dimension.radius.sm')).toBe('');
 	});
 });

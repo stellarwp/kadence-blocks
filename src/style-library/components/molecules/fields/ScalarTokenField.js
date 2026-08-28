@@ -130,7 +130,9 @@ export function ScalarTokenField({ field, value, onChange }) {
 	const displayValue = (value) => (field.role === 'font-size' ? fontSizeDisplayValue(value) : value);
 
 	const shown = withoutSemanticSlots(atBreakpoint);
-	const semanticDefault = semanticDefaultOf(atBreakpoint, everyToken);
+	// The declared default is handed over so a semantic that resolves nowhere falls back to it rather
+	// than to empty, exactly as the box field does — this field is scalar, so there is one slot to fill.
+	const semanticDefault = semanticDefaultOf(atBreakpoint, everyToken, field.defaultValue ?? null);
 
 	const shownDefault = displayValue(
 		inheritsFromBreakpoint ? asLiteral(inheritedAbove) : (semanticDefault ?? field.defaultValue ?? null)
