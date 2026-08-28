@@ -60,7 +60,7 @@ import {
 	writePresetBreakpoint,
 } from '../../../../token-controls/helpers/preset-envelope';
 import { BorderControl } from '../../../../token-controls/controls/BorderControl';
-import { boundTokenIds } from './BoxTokenField';
+import { boundTokenIds, withoutSemanticSlots } from './BoxTokenField';
 import { useBreakpoint } from '../../../../token-controls/context/breakpoint';
 import { parseCssLength } from '../../../../token-controls/helpers/parse-css-length';
 import { isSlotList, readSlot } from '../../../../token-controls/helpers/value-shapes';
@@ -221,18 +221,23 @@ export function BorderField({ field, values, onValueChange }) {
 		onValueChange(stylePath, responsive ? writePresetBreakpoint(rawStyle, breakpoint, next) : next);
 	const writeColor = (next) => onValueChange(colorPath, next);
 
+	// A semantic-bound width is the block's role-based default rather than a selection — the pool
+	// offers primitives only — so it is blanked and the field reads as unset. Blanking is what keeps
+	// it from rendering the raw dot-path: `boundTokenIds` exempts only primitives from the narrowing,
+	// so a semantic left in place would find no matching entry. Unlike `BoxControl`, `BorderControl`
+	// takes no `defaultValue`, so the semantic's VALUE cannot be shown here the way the box fields
+	// show it; an unset field is the honest reading until that prop exists.
+	const shownWidth = withoutSemanticSlots(widthAtBreakpoint);
+
 	// The bound width token(s) are exempt from the primitive narrowing, the same way `BoxTokenField`
-	// exempts a box control's bound corners: without this, the semantic `border-width` token this
-	// role's primitives coexist with is filtered out of the pool whenever it is the one actually
-	// bound, and the field — finding no matching entry — renders the raw id instead of the token's
-	// label. Width is per-slot (a scalar or a four-slot list), which is exactly the shape
-	// `boundTokenIds` already handles.
-	const widthTokens = pickableTokensForType('dimension', 'border-width', boundTokenIds(widthAtBreakpoint)).map(
-		(token) => ({
-			...token,
-			alias: `{${token.id}}`,
-		})
-	);
+	// exempts a box control's bound corners: unlinking gives each side its own slot, so pointing one
+	// at a different primitive from its neighbors is ordinary, and exempting only the first would
+	// leave the others rendering their raw dot-path. Width is per-slot (a scalar or a four-slot
+	// list), which is exactly the shape `boundTokenIds` already handles.
+	const widthTokens = pickableTokensForType('dimension', 'border-width', boundTokenIds(shownWidth)).map((token) => ({
+		...token,
+		alias: `{${token.id}}`,
+	}));
 
 	// Which breakpoints the user has opened up into per-side editing. Held here rather than inferred
 	// from the stored shape — see the module docblock — and per breakpoint for the same reason
@@ -243,7 +248,7 @@ export function BorderField({ field, values, onValueChange }) {
 	// width/style already use), so a list-shaped color has to force the unlinked view exactly like a
 	// list-shaped width/style does — otherwise the panel would show one linked swatch while the
 	// stored value still carries four different colors.
-	const storedIsList = isSlotList(widthAtBreakpoint) || isSlotList(styleAtBreakpoint) || isSlotList(rawColor);
+	const storedIsList = isSlotList(shownWidth) || isSlotList(styleAtBreakpoint) || isSlotList(rawColor);
 	const linked = storedIsList ? false : !unlinked[breakpoint];
 
 	const toggleLink = () => {
@@ -263,7 +268,7 @@ export function BorderField({ field, values, onValueChange }) {
 	return (
 		<BorderControl
 			value={{
-				width: toControlWidthAxis(widthAtBreakpoint),
+				width: toControlWidthAxis(shownWidth),
 				style: toControlStyleAxis(styleAtBreakpoint),
 				color: rawColor ?? '',
 			}}

@@ -37,13 +37,27 @@
 		padding 300ms ease;
 }
 
-// The stand-in photo: a neutral block filling whatever the padding leaves. Deliberately not a real
-// image — a preset skins whichever image a block holds, so previewing a specific picture would imply
-// the preset selects one.
+// The stand-in photo: a neutral block filling whatever the padding leaves, carrying a generic picture
+// glyph. Deliberately not a real image — a preset skins whichever image a block holds, so previewing a
+// specific picture would imply the preset selects one. The glyph is what makes padding legible: without
+// something that reads as "the image", an inset frame is just a smaller rectangle and the band around
+// it does not obviously belong to the background.
 .kadence-blocks-style-library__image-preset-preview-photo {
-	display: block;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 	width: 100%;
 	height: 100%;
 	border-radius: inherit;
 	background: var(--kb-sl-color-gray-700);
+	// Sized in `em` off a font-size floor rather than a fixed px, so the glyph shrinks with the photo
+	// when a large padding squeezes it instead of overflowing the tile.
+	font-size: min(1.5rem, 45%);
+	color: var(--kb-sl-color-gray-200);
+	overflow: hidden;
+
+	svg {
+		width: 1em;
+		height: 1em;
+	}
 }

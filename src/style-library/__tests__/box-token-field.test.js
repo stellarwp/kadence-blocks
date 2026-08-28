@@ -8,7 +8,13 @@ import { createRoot } from 'react-dom/client';
 /**
  * Internal dependencies
  */
-import { BoxTokenField, toControlValue, toStoredValue } from '../components/molecules/fields/BoxTokenField';
+import {
+	BoxTokenField,
+	semanticDefaultOf,
+	toControlValue,
+	toStoredValue,
+	withoutSemanticSlots,
+} from '../components/molecules/fields/BoxTokenField';
 
 // A stub, not the real control: `BoxControl` renders a deep tree of pickers and popovers that have
 // nothing to do with what this suite is after. Standing in for it exposes exactly the props
@@ -77,6 +83,57 @@ describe('the conversion pair', () => {
 		]) {
 			expect(toStoredValue(toControlValue(stored), unit)).toBe(stored);
 		}
+	});
+});
+
+describe('withoutSemanticSlots', () => {
+	it('blanks a semantic-bound scalar, so the field reads as unset rather than as a selection', () => {
+		expect(withoutSemanticSlots('semantic.spacing.media-padding')).toBe('');
+	});
+
+	it('leaves a primitive and a literal alone', () => {
+		expect(withoutSemanticSlots('primitive.dimension.spacing.sm')).toBe('primitive.dimension.spacing.sm');
+		expect(withoutSemanticSlots('1.5rem')).toBe('1.5rem');
+	});
+
+	it('blanks only the semantic corners of a mixed slot list', () => {
+		expect(withoutSemanticSlots(['semantic.radius.media', 'primitive.dimension.radius.sm', '4px', ''])).toEqual([
+			'',
+			'primitive.dimension.radius.sm',
+			'4px',
+			'',
+		]);
+	});
+});
+
+describe('semanticDefaultOf', () => {
+	const pool = [
+		{ id: 'semantic.spacing.media-padding', value: '0' },
+		{ id: 'semantic.radius.media', value: '0.5rem' },
+		{ id: 'primitive.dimension.radius.sm', value: '0.25rem' },
+	];
+
+	it("resolves a semantic scalar to the literal that becomes the field's default", () => {
+		expect(semanticDefaultOf('semantic.spacing.media-padding', pool)).toBe('0');
+	});
+
+	it('returns null when nothing binds a semantic, leaving the field default in charge', () => {
+		expect(semanticDefaultOf('primitive.dimension.radius.sm', pool)).toBeNull();
+		expect(semanticDefaultOf('1.5rem', pool)).toBeNull();
+		expect(semanticDefaultOf('', pool)).toBeNull();
+	});
+
+	it('resolves only the semantic corners of a mixed list, leaving the rest to the field default', () => {
+		expect(semanticDefaultOf(['semantic.radius.media', 'primitive.dimension.radius.sm', '4px', ''], pool)).toEqual([
+			'0.5rem',
+			'',
+			'',
+			'',
+		]);
+	});
+
+	it('resolves an unknown semantic to empty rather than to its raw dot-path', () => {
+		expect(semanticDefaultOf('semantic.spacing.gone', pool)).toBe('');
 	});
 });
 

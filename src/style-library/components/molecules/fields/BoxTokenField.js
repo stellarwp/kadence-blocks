@@ -67,6 +67,73 @@ function unitInPlay(value, fallback) {
 }
 
 /**
+ * Whether a stored slot holds a semantic token id.
+ *
+ * @param {*} slot The stored slot value.
+ *
+ * @since TBD
+ *
+ * @return {boolean} True when the slot is bound to a semantic.
+ */
+export function isSemanticSlot(slot) {
+	return typeof slot === 'string' && slot.startsWith('semantic.');
+}
+
+/**
+ * Blank out every semantic-bound slot, leaving primitives and literals untouched.
+ *
+ * A semantic is not a value a site owner picked — it cannot be, because the pickers offer only
+ * primitives. It is the role-based default the block already renders, so a slot holding one reads as
+ * UNSET, and {@see semanticDefaultOf} supplies its resolved value as what the field falls back to. The
+ * effect is the one the design asks for: a semantic's name never appears, and its value is what
+ * `Default` means.
+ *
+ * Blanking rather than resolving to the literal is what makes the field read `Default (0)` instead of
+ * a custom `0`: a control given a literal treats it as a value the user typed.
+ *
+ * @param {*} value The stored scalar or slot list.
+ *
+ * @since TBD
+ *
+ * @return {*} The value with semantic slots blanked, in the same shape.
+ */
+export function withoutSemanticSlots(value) {
+	if (isSlotList(value)) {
+		return value.map((slot) => (isSemanticSlot(slot) ? '' : slot));
+	}
+
+	return isSemanticSlot(value) ? '' : value;
+}
+
+/**
+ * The resolved literal a value's semantic slots fall back to, in the value's own shape, or null when
+ * it binds no semantic at all.
+ *
+ * A partially-semantic slot list resolves only its semantic corners and leaves the rest empty, so the
+ * default describes exactly the corners that have one — the others fall back to the field's own
+ * declared default the way they always did.
+ *
+ * @param {*}     value      The stored scalar or slot list.
+ * @param {Array} everyToken The full token pool, before any role narrowing, used to resolve an id.
+ *
+ * @since TBD
+ *
+ * @return {*} The resolved default, in the value's shape, or null when no slot binds a semantic.
+ */
+export function semanticDefaultOf(value, everyToken) {
+	const slots = isSlotList(value) ? value : [value];
+
+	if (!slots.some(isSemanticSlot)) {
+		return null;
+	}
+
+	const resolve = (slot) =>
+		isSemanticSlot(slot) ? (everyToken.find((token) => token.id === slot)?.value ?? '') : '';
+
+	return isSlotList(value) ? value.map(resolve) : resolve(value);
+}
+
+/**
  * Convert one stored slot into what the control expects: an alias, a bare number, or ''.
  *
  * @param {*} stored The stored slot value.
@@ -144,25 +211,28 @@ function boundsForUnit(unit, field) {
 }
 
 /**
- * Every token id a value has bound, so the pool narrowing knows what it must not drop.
+ * Every PRIMITIVE token id a value has bound, so the pool narrowing knows what it must not drop.
  *
  * All of them, not just the first: unlinking gives each corner its own slot, so pointing one at a
- * primitive while the rest still hold a semantic is an ordinary thing to do. Exempting only the first
- * would drop the semantic from the pool, and the corners still holding it would render their raw
- * dot-path instead of the token's name.
+ * different primitive from its neighbors is an ordinary thing to do, and exempting only the first
+ * would drop the others from the pool and leave those corners rendering their raw dot-path.
+ *
+ * Semantics are deliberately NOT exempted, which is what keeps their names out of the pickers. A
+ * semantic is never something a site owner picked — the pool offers primitives only — so a slot
+ * holding one is the block's role-based default rather than a selection. {@see withoutSemanticSlots}
+ * blanks it for display and {@see semanticDefaultOf} surfaces its value as the field's default, so
+ * nothing renders a raw dot-path for want of a pool entry.
  *
  * @param {*} value The stored scalar or slot list.
  *
  * @since TBD
  *
- * @return {Array<string>} The bound token ids, empty when nothing is bound.
+ * @return {Array<string>} The bound primitive token ids, empty when nothing is bound.
  */
 export function boundTokenIds(value) {
 	const slots = isSlotList(value) ? value : [value];
 
-	return slots.filter(
-		(slot) => typeof slot === 'string' && (slot.startsWith('primitive.') || slot.startsWith('semantic.'))
-	);
+	return slots.filter((slot) => typeof slot === 'string' && slot.startsWith('primitive.'));
 }
 
 /**
@@ -242,12 +312,23 @@ export function BoxTokenField({ field, value, onChange, slots = 'sides' }) {
 	const asLiteral = (slot) =>
 		typeof slot === 'string' ? (everyToken.find((token) => token.id === slot)?.value ?? slot) : slot;
 
-	const shownDefault = inheritsFromBreakpoint ? mapSlots(inheritedAbove, asLiteral) : fieldDefault;
+	// A semantic-bound slot is the block's role-based default, not a selection, so it is blanked for
+	// display and its resolved value becomes what this field falls back to. That is the whole of the
+	// "a semantic's name never shows; its value is the Default" rule — see `withoutSemanticSlots`.
+	// It outranks the field's own declared default, which describes the same thing less precisely:
+	// the declared default is a literal written into the screen config, while this is what the
+	// preset actually resolves in the active library.
+	const shown = withoutSemanticSlots(atBreakpoint);
+	const semanticDefault = semanticDefaultOf(atBreakpoint, everyToken);
+
+	const shownDefault = inheritsFromBreakpoint
+		? mapSlots(inheritedAbove, asLiteral)
+		: (semanticDefault ?? fieldDefault);
 
 	// The unit falls back the same way the value does. With nothing stored there is no unit to read, and
 	// defaulting to `units[0]` made the Custom tab open on `px` while the field beside it displayed the
 	// default's own `em` — one value described two different ways.
-	const stored = unitInPlay(atBreakpoint, unitInPlay(shownDefault, units[0]));
+	const stored = unitInPlay(shown, unitInPlay(shownDefault, units[0]));
 
 	// A unit the user picked before typing a number has nowhere to persist — no slot carries it yet
 	// — so it is held here until a value exists to attach it to. Keyed per breakpoint for the same
@@ -263,7 +344,7 @@ export function BoxTokenField({ field, value, onChange, slots = 'sides' }) {
 	// choice per breakpoint is also what keeps the breakpoints independent — tablet can be edited as
 	// four corners while mobile is still a single value.
 	const [unlinked, setUnlinked] = useState({});
-	const storedIsList = isSlotList(atBreakpoint);
+	const storedIsList = isSlotList(shown);
 	const linked = storedIsList ? false : !unlinked[breakpoint];
 
 	const toggleLink = () => {
@@ -278,14 +359,14 @@ export function BoxTokenField({ field, value, onChange, slots = 'sides' }) {
 
 	return (
 		<BoxControl
-			value={mapSlots(atBreakpoint, toControlValue)}
+			value={mapSlots(shown, toControlValue)}
 			onChange={(next) => !field.readOnly && onChange(write(mapSlots(next, (slot) => toStoredValue(slot, unit))))}
 			label={field.label}
 			// The inherited value's token has to be exempt from the narrowing too, not just this
 			// breakpoint's own. A breakpoint that inherits binds nothing itself, so without this the
 			// semantic it falls back to is filtered out of the pool and the field, finding no entry for
 			// it, shows nothing at all instead of the value actually in effect.
-			tokens={pickableTokensForType(field.tokenType, field.role, boundTokenIds(atBreakpoint)).map((token) => ({
+			tokens={pickableTokensForType(field.tokenType, field.role, boundTokenIds(shown)).map((token) => ({
 				...token,
 				alias: `{${token.id}}`,
 			}))}

@@ -53,6 +53,23 @@ function boundShadowTokenIds(value) {
 }
 
 /**
+ * Whether a stored shadow is bound to a SEMANTIC token, which this field shows as unset rather than
+ * as a selection — see the reasoning in `BoxShadowField` below and in `withoutSemanticSlots`.
+ *
+ * Takes the brace-wrapped alias this field's value carries, unlike `withoutSemanticSlots`, which
+ * works on the bare ids a box field's slots hold.
+ *
+ * @param {*} value The stored value: a token alias, or a composite shadow object.
+ *
+ * @since TBD
+ *
+ * @return {boolean} True when the value is a semantic alias.
+ */
+function isSemanticShadow(value) {
+	return isTokenAlias(value) && value.slice(1, -1).startsWith('semantic.');
+}
+
+/**
  * Render a box-shadow field from a settings schema entry.
  *
  * @param {Object}  props                  The component props.
@@ -67,20 +84,27 @@ function boundShadowTokenIds(value) {
  * @return {JSX.Element} The field.
  */
 export function BoxShadowField({ field, value, onChange }) {
+	// A semantic-bound shadow is the block's role-based default rather than a selection — the pool
+	// offers primitives only — so it is blanked and the field reads as unset. Without this the control
+	// found no pool entry for it and labelled the trigger `Custom`, which reads as "someone composed a
+	// shadow by hand" when nothing of the sort happened. `BoxShadowControl` takes no `defaultValue`,
+	// so the semantic's VALUE cannot be shown the way the box fields show it; unset is the honest
+	// reading until that prop exists.
+	const shown = isSemanticShadow(value) ? undefined : value;
+
 	// A bare `type` filter alone returns every `shadow` token, including the two `Brand`-group
 	// semantics (`semantic.shadow.media`, `semantic.shadow.button`) that back other blocks' own
 	// default CSS and were never meant to be end-user-pickable here. Passing `role: 'shadow'` — every
 	// shadow token's derived role — engages the primitive narrowing, matching the three-entry list the
-	// Shadow screen itself offers. `boundShadowTokenIds` exempts the currently-bound token from that
-	// narrowing so a bound semantic still renders as its own label rather than a raw id.
-	const tokens = pickableTokensForType('shadow', 'shadow', boundShadowTokenIds(value)).map((token) => ({
+	// Shadow screen itself offers.
+	const tokens = pickableTokensForType('shadow', 'shadow', boundShadowTokenIds(shown)).map((token) => ({
 		...token,
 		alias: `{${token.id}}`,
 	}));
 
 	return (
 		<BoxShadowControl
-			value={value}
+			value={shown}
 			onChange={(next) => !field.readOnly && onChange(next)}
 			label={field.label}
 			tokens={tokens}

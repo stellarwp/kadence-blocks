@@ -31,7 +31,7 @@ import {
 import { ScalarControl } from '../../../../token-controls/controls/ScalarControl';
 import { useBreakpoint } from '../../../../token-controls/context/breakpoint';
 import { parseCssLength } from '../../../../token-controls/helpers/parse-css-length';
-import { boundTokenIds, toControlValue, toStoredValue } from './BoxTokenField';
+import { boundTokenIds, semanticDefaultOf, toControlValue, toStoredValue, withoutSemanticSlots } from './BoxTokenField';
 
 /**
  * The unit a stored scalar already carries, so a write does not silently retype it.
@@ -119,11 +119,18 @@ export function ScalarTokenField({ field, value, onChange }) {
 	const asLiteral = (stored) =>
 		typeof stored === 'string' ? (everyToken.find((token) => token.id === stored)?.value ?? stored) : stored;
 
-	const shownDefault = inheritsFromBreakpoint ? asLiteral(inheritedAbove) : (field.defaultValue ?? null);
+	// A semantic-bound value is the block's role-based default, not a selection, so it is blanked for
+	// display and its resolved value becomes what this field falls back to — see `withoutSemanticSlots`.
+	const shown = withoutSemanticSlots(atBreakpoint);
+	const semanticDefault = semanticDefaultOf(atBreakpoint, everyToken);
+
+	const shownDefault = inheritsFromBreakpoint
+		? asLiteral(inheritedAbove)
+		: (semanticDefault ?? field.defaultValue ?? null);
 
 	// The unit falls back the same way the value does, so the Custom tab never opens on `px` while the
 	// field beside it displays the default's own `em`.
-	const stored = unitInPlay(atBreakpoint, unitInPlay(shownDefault, units[0]));
+	const stored = unitInPlay(shown, unitInPlay(shownDefault, units[0]));
 
 	// A unit picked before a number has nowhere to persist yet, so it is held here until a value exists to
 	// attach it to — keyed per breakpoint, so a pending unit picked on one does not leak into another.
@@ -133,13 +140,13 @@ export function ScalarTokenField({ field, value, onChange }) {
 
 	return (
 		<ScalarControl
-			value={toControlValue(atBreakpoint)}
+			value={toControlValue(shown)}
 			onChange={(next) => !field.readOnly && onChange(write(toStoredValue(next, unit)))}
 			label={field.label}
-			// The inherited value's token is exempt from the narrowing too, not just this breakpoint's own:
-			// a breakpoint that inherits binds nothing itself, so without this the semantic it falls back to
-			// is filtered out of the pool and the field shows nothing instead of the value in effect.
-			tokens={pickableTokensForType(field.tokenType, field.role, boundTokenIds(atBreakpoint)).map((token) => ({
+			// Only this breakpoint's own PRIMITIVE bindings are exempt from the narrowing. A semantic is
+			// never exempted — it is shown as the default rather than offered as a choice — and an
+			// inherited value is resolved to its literal above rather than added to the pool.
+			tokens={pickableTokensForType(field.tokenType, field.role, boundTokenIds(shown)).map((token) => ({
 				...token,
 				alias: `{${token.id}}`,
 			}))}

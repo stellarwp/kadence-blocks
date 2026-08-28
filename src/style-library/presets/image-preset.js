@@ -101,7 +101,14 @@ function renderPreview(row) {
 					padding: row.preview.padding || undefined,
 				}}
 			>
-				<span className="kadence-blocks-style-library__image-preset-preview-photo" />
+				<span className="kadence-blocks-style-library__image-preset-preview-photo">
+					<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+						<path
+							fill="currentColor"
+							d="M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zm1 12.2 4.6-4.6 3 3L15.4 13l3.6 3.6V7H5v10.2zM8.5 11a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"
+						/>
+					</svg>
+				</span>
 			</span>
 		</span>
 	);
