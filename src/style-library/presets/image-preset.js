@@ -59,8 +59,12 @@ const PADDING_PREVIEW_CAP = '4rem';
  * size.
  *
  * Each side is wrapped separately because a per-corner preset stores four, and CSS `min()` takes a
- * single length rather than a shorthand. A component carrying a function call is left alone: nothing
- * the feed resolves looks like that, and wrapping one blindly would produce invalid CSS.
+ * single length rather than a shorthand. Only a component that is a NUMBER WITH A UNIT is wrapped,
+ * and that restriction is load-bearing rather than defensive: `min()` requires its arguments to be of
+ * one type, so `min(0, 4rem)` — mixing a number with a length — is invalid and the browser drops the
+ * whole declaration. The `None` step resolves to a unitless `0` (kept unitless on purpose, so a stored
+ * zero still equals the token), which made picking it silently leave the previous padding on screen,
+ * the property having never been assigned. Nothing without a unit needs capping anyway.
  *
  * @param {string} padding The resolved padding: one length, or a space-separated shorthand.
  *
@@ -76,7 +80,7 @@ function cappedPadding(padding) {
 	return String(padding)
 		.trim()
 		.split(/\s+/)
-		.map((side) => (side.includes('(') ? side : `min(${side}, ${PADDING_PREVIEW_CAP})`))
+		.map((side) => (/^-?\d*\.?\d+[a-z%]+$/i.test(side) ? `min(${side}, ${PADDING_PREVIEW_CAP})` : side))
 		.join(' ');
 }
 

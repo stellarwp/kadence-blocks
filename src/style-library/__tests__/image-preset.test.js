@@ -173,6 +173,39 @@ describe('IMAGE_PRESET', () => {
 	});
 
 	/**
+	 * A unitless zero is never wrapped. `min()` requires one type throughout, so `min(0, 4rem)` mixes a
+	 * number with a length, is invalid, and is dropped by the browser -- leaving the property at its
+	 * previous value, which made picking the `None` step appear to do nothing at all.
+	 *
+	 * @return {void}
+	 */
+	it('leaves a unitless zero uncapped, which min() could not legally take', () => {
+		const frame = IMAGE_PRESET.renderPreview({
+			id: 'none',
+			label: 'None',
+			preview: { background: '', borderRadius: '', shadow: '', padding: '0' },
+		});
+
+		expect(frame.props.children.props.style.padding).toBe('0');
+	});
+
+	/**
+	 * The same rule per side: a shorthand mixing zero with real lengths caps only the lengths, because
+	 * one invalid component would take the whole declaration down with it.
+	 *
+	 * @return {void}
+	 */
+	it('caps only the sides carrying a unit in a mixed shorthand', () => {
+		const frame = IMAGE_PRESET.renderPreview({
+			id: 'mixed',
+			label: 'Mixed',
+			preview: { background: '', borderRadius: '', shadow: '', padding: '0 2rem 0 2rem' },
+		});
+
+		expect(frame.props.children.props.style.padding).toBe('0 min(2rem, 4rem) 0 min(2rem, 4rem)');
+	});
+
+	/**
 	 * A per-corner preset resolves to a shorthand, and CSS `min()` takes one length rather than a
 	 * shorthand, so each side is wrapped on its own.
 	 *
