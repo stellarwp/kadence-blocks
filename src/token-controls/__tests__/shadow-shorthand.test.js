@@ -30,7 +30,7 @@ describe('parseResolvedShadow', () => {
 
 	it('returns the default composite for an unparsable value', () => {
 		expect(parseResolvedShadow('not-a-shadow')).toEqual({
-			color: '#000000',
+			color: 'transparent',
 			offsetX: '0px',
 			offsetY: '0px',
 			blur: '0px',
@@ -38,7 +38,7 @@ describe('parseResolvedShadow', () => {
 			inset: false,
 		});
 		expect(parseResolvedShadow(undefined)).toEqual({
-			color: '#000000',
+			color: 'transparent',
 			offsetX: '0px',
 			offsetY: '0px',
 			blur: '0px',

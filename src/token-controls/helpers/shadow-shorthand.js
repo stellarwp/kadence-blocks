@@ -6,12 +6,15 @@
  */
 
 /**
- * The composite's default shape, matching `ShadowField`'s own fallback.
+ * The composite's default shape: the canonical "no shadow" composite, matching both
+ * `noneEntryForRole('shadow')`'s resolved value (`fixed-tokens.js`) and `NONE_SHADOW_ITEM`
+ * (`src/blocks/singlebtn/deprecated.js`) in their own coordinate systems — transparent and
+ * all-zero, not the old visible black composite.
  *
  * @since TBD
  */
 export const DEFAULT_COMPOSITE = {
-	color: '#000000',
+	color: 'transparent',
 	offsetX: '0px',
 	offsetY: '0px',
 	blur: '0px',

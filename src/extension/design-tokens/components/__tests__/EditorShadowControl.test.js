@@ -3,7 +3,13 @@
 /**
  * Internal dependencies
  */
-import { EditorShadowControl, combineColorOpacity, splitColorOpacity, toNativeShadow } from '../EditorShadowControl';
+import {
+	EditorShadowControl,
+	combineColorOpacity,
+	splitColorOpacity,
+	toNativeShadow,
+	fromNativeShadow,
+} from '../EditorShadowControl';
 import { BoxShadowControl } from '../../../../token-controls/controls/BoxShadowControl';
 
 /**
@@ -107,7 +113,7 @@ describe('EditorShadowControl native <-> BoxShadowControl value bridging', () =>
 		const { shadowControl } = renderEditorShadowControl({ value: undefined });
 
 		expect(shadowControl.props.value).toEqual({
-			color: '#000000',
+			color: 'transparent',
 			offsetX: '0px',
 			offsetY: '0px',
 			blur: '0px',
@@ -241,7 +247,7 @@ describe('EditorShadowControl native <-> BoxShadowControl value bridging', () =>
 
 		expect(onChange).toHaveBeenCalledWith([
 			{
-				color: '#000000',
+				color: 'transparent',
 				opacity: 1,
 				hOffset: 0,
 				vOffset: 0,
@@ -250,6 +256,30 @@ describe('EditorShadowControl native <-> BoxShadowControl value bridging', () =>
 				inset: false,
 			},
 		]);
+	});
+
+	/**
+	 * Clicking "Reset" round-trips an empty native value through `toNativeShadow` and back through
+	 * `fromNativeShadow` — the write path a native "Reset" button drives, since it clears the block
+	 * attribute to nothing and lets the control re-derive its display value from that empty state. The
+	 * resulting composite must match the shared fixed "None" entry's canonical shape exactly, so the
+	 * preceding phase's `matchFixedEntry`-style lookup in `BoxShadowControl` recognizes a reset shadow
+	 * as "None"/"Default" instead of falling through to generic "Custom".
+	 *
+	 * @return {void}
+	 */
+	it('resolves a Reset round-trip to the same composite shape as the fixed None entry', () => {
+		const nativeAfterReset = toNativeShadow('', []);
+		const composite = fromNativeShadow(nativeAfterReset);
+
+		expect(composite).toEqual({
+			color: 'transparent',
+			offsetX: '0px',
+			offsetY: '0px',
+			blur: '0px',
+			spread: '0px',
+			inset: false,
+		});
 	});
 });
 
