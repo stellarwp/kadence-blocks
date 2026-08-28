@@ -234,7 +234,9 @@ class SinglebtnTest extends KadenceBlocksUnit {
 	}
 
 	/**
-	 * @return \Generator
+	 * Shadow items covering every visible/invisible axis shape `has_visible_shadow()` must tell apart.
+	 *
+	 * @return Generator
 	 */
 	public function shadowVisibilityProvider(): \Generator {
 		yield 'all-zero axes' => [
@@ -294,12 +296,13 @@ class SinglebtnTest extends KadenceBlocksUnit {
 	}
 
 	/**
-	 * An all-zero shadow value — the shape the fixed "None" pick writes — emits no explicit
-	 * `box-shadow` declaration, now that there is no separate toggle to suppress it.
+	 * An all-zero shadow value — the shape the fixed "None" pick writes — emits an explicit
+	 * `box-shadow: none` declaration, actively overriding any competing shadow rule from elsewhere
+	 * (e.g. a theme selector) rather than silently omitting the property.
 	 *
 	 * @return void
 	 */
-	public function testNoneShadowEmitsNoExplicitBoxShadow(): void {
+	public function testNoneShadowEmitsExplicitBoxShadowNone(): void {
 		$this->seedPreset( 'bare', 'Bare', [ 'button-bg' => '#ff0000' ] );
 
 		$output = $this->render_button(
@@ -319,11 +322,306 @@ class SinglebtnTest extends KadenceBlocksUnit {
 			]
 		);
 
-		$css_helper       = new CSSTestHelper( $output );
-		$selector         = '.wp-block-kadence-advancedbtn .kb-btn123.kb-button';
+		$css_helper = new CSSTestHelper( $output );
+		$selector   = '.wp-block-kadence-advancedbtn .kb-btn123.kb-button';
+
+		$css_helper->assertCSSPropertiesEqual( $selector, [ 'box-shadow' => 'none' ] );
+	}
+
+	/**
+	 * A button with a visible base shadow and an invisible hover shadow writes no `box-shadow` into
+	 * the hover rule, so the base shadow keeps painting on hover through the normal cascade instead
+	 * of being cancelled by a `none` reset.
+	 *
+	 * @return void
+	 */
+	public function testInvisibleHoverShadowEmitsNoBoxShadowOnHover(): void {
+		$this->seedPreset( 'bare', 'Bare', [ 'button-bg' => '#ff0000' ] );
+
+		$output = $this->render_button(
+			[
+				'kbPreset'    => 'bare',
+				'colorHover'  => '#0000ff',
+				'shadow'      => [
+					[
+						'color'   => '#00ff00',
+						'opacity' => 1,
+						'hOffset' => 1,
+						'vOffset' => 1,
+						'blur'    => 2,
+						'spread'  => 0,
+						'inset'   => false,
+					],
+				],
+				'shadowHover' => [
+					[
+						'color'   => 'transparent',
+						'opacity' => 1,
+						'hOffset' => 0,
+						'vOffset' => 0,
+						'blur'    => 0,
+						'spread'  => 0,
+						'inset'   => false,
+					],
+				],
+			]
+		);
+
+		$css_helper     = new CSSTestHelper( $output );
+		$base_selector  = '.wp-block-kadence-advancedbtn .kb-btn123.kb-button';
+		$hover_selector = '.wp-block-kadence-advancedbtn .kb-btn123.kb-button:hover, .wp-block-kadence-advancedbtn .kb-btn123.kb-button:focus';
+
+		$css_helper->assertCSSPropertiesEqual( $base_selector, [ 'box-shadow' => '1px 1px 2px 0px #0f0' ] );
+
+		$hover_properties = $css_helper->getPropertyOrder( $hover_selector );
+
+		$this->assertContains( 'color', $hover_properties, 'The hover rule should exist and carry the hover color.' );
+		$this->assertNotContains(
+			'box-shadow',
+			$hover_properties,
+			'An invisible hover shadow must leave the hover rule free of box-shadow so the base shadow persists.'
+		);
+	}
+
+	/**
+	 * A gradient-background button with an invisible (all-zero) hover shadow whose `inset` flag is
+	 * `true` writes no `box-shadow` at all into the hover rule — the gradient-specific inset reset
+	 * lost its `displayHoverShadow` toggle gate along with every other hover site, and must not fire
+	 * on an invisible shadow just because `inset` happens to be `true`.
+	 *
+	 * @return void
+	 */
+	public function testInvisibleInsetHoverShadowEmitsNoBoxShadowOnGradientHover(): void {
+		$this->seedPreset( 'bare', 'Bare', [ 'button-bg' => '#ff0000' ] );
+
+		$output = $this->render_button(
+			[
+				'kbPreset'            => 'bare',
+				'backgroundHoverType' => 'gradient',
+				'gradientHover'       => 'linear-gradient(90deg, #ff0000, #0000ff)',
+				'colorHover'          => '#0000ff',
+				'shadow'              => [
+					[
+						'color'   => '#00ff00',
+						'opacity' => 1,
+						'hOffset' => 1,
+						'vOffset' => 1,
+						'blur'    => 2,
+						'spread'  => 0,
+						'inset'   => false,
+					],
+				],
+				'shadowHover'         => [
+					[
+						'color'   => 'transparent',
+						'opacity' => 1,
+						'hOffset' => 0,
+						'vOffset' => 0,
+						'blur'    => 0,
+						'spread'  => 0,
+						'inset'   => true,
+					],
+				],
+			]
+		);
+
+		$css_helper     = new CSSTestHelper( $output );
+		$hover_selector = '.wp-block-kadence-advancedbtn .kb-btn123.kb-button:hover, .wp-block-kadence-advancedbtn .kb-btn123.kb-button:focus';
+
+		$hover_properties = $css_helper->getPropertyOrder( $hover_selector );
+
+		$this->assertContains( 'color', $hover_properties, 'The hover rule should exist and carry the hover color.' );
+		$this->assertNotContains(
+			'box-shadow',
+			$hover_properties,
+			'An invisible hover shadow must not trigger the inset reset just because inset is true.'
+		);
+	}
+
+	/**
+	 * A button with a visible base shadow and an invisible transparent-header shadow writes no
+	 * `box-shadow` into the more specific `.header-*-transparent` rule, so the base shadow keeps
+	 * painting under a transparent header through the normal cascade instead of being cancelled by a
+	 * `none` reset.
+	 *
+	 * @return void
+	 */
+	public function testInvisibleTransparentShadowEmitsNoBoxShadow(): void {
+		$this->seedPreset( 'bare', 'Bare', [ 'button-bg' => '#ff0000' ] );
+
+		$output = $this->render_button(
+			[
+				'kbPreset'          => 'bare',
+				'colorTransparent'  => '#0000ff',
+				'shadow'            => [
+					[
+						'color'   => '#00ff00',
+						'opacity' => 1,
+						'hOffset' => 1,
+						'vOffset' => 1,
+						'blur'    => 2,
+						'spread'  => 0,
+						'inset'   => false,
+					],
+				],
+				'shadowTransparent' => [
+					[
+						'color'   => 'transparent',
+						'opacity' => 1,
+						'hOffset' => 0,
+						'vOffset' => 0,
+						'blur'    => 0,
+						'spread'  => 0,
+						'inset'   => false,
+					],
+				],
+			]
+		);
+
+		$css_helper           = new CSSTestHelper( $output );
+		$base_selector        = '.wp-block-kadence-advancedbtn .kb-btn123.kb-button';
+		$transparent_selector = '.header-desktop-transparent .wp-block-kadence-advancedbtn .kb-btn123.kb-button';
+
+		$css_helper->assertCSSPropertiesEqual( $base_selector, [ 'box-shadow' => '1px 1px 2px 0px #0f0' ] );
+
+		$transparent_properties = $css_helper->getPropertyOrder( $transparent_selector );
+
+		$this->assertContains( 'color', $transparent_properties, 'The transparent-header rule should exist and carry its color.' );
+		$this->assertNotContains(
+			'box-shadow',
+			$transparent_properties,
+			'An invisible transparent-header shadow must leave that rule free of box-shadow so the base shadow persists.'
+		);
+	}
+
+	/**
+	 * A button with a visible base shadow and an invisible sticky shadow writes no `box-shadow` into
+	 * the more specific `.item-is-stuck` rule, so the base shadow keeps painting while stuck through
+	 * the normal cascade instead of being cancelled by a `none` reset.
+	 *
+	 * @return void
+	 */
+	public function testInvisibleStickyShadowEmitsNoBoxShadow(): void {
+		$this->seedPreset( 'bare', 'Bare', [ 'button-bg' => '#ff0000' ] );
+
+		$output = $this->render_button(
+			[
+				'kbPreset'     => 'bare',
+				'colorSticky'  => '#0000ff',
+				'shadow'       => [
+					[
+						'color'   => '#00ff00',
+						'opacity' => 1,
+						'hOffset' => 1,
+						'vOffset' => 1,
+						'blur'    => 2,
+						'spread'  => 0,
+						'inset'   => false,
+					],
+				],
+				'shadowSticky' => [
+					[
+						'color'   => 'transparent',
+						'opacity' => 1,
+						'hOffset' => 0,
+						'vOffset' => 0,
+						'blur'    => 0,
+						'spread'  => 0,
+						'inset'   => false,
+					],
+				],
+			]
+		);
+
+		$css_helper      = new CSSTestHelper( $output );
+		$base_selector   = '.wp-block-kadence-advancedbtn .kb-btn123.kb-button';
+		$sticky_selector = '.item-is-stuck .wp-block-kadence-advancedbtn .kb-btn123.kb-button';
+
+		$css_helper->assertCSSPropertiesEqual( $base_selector, [ 'box-shadow' => '1px 1px 2px 0px #0f0' ] );
+
+		$sticky_properties = $css_helper->getPropertyOrder( $sticky_selector );
+
+		$this->assertContains( 'color', $sticky_properties, 'The sticky rule should exist and carry its color.' );
+		$this->assertNotContains(
+			'box-shadow',
+			$sticky_properties,
+			'An invisible sticky shadow must leave that rule free of box-shadow so the base shadow persists.'
+		);
+	}
+
+	/**
+	 * A button whose preset resolves a shadow, and whose own shadow value is the invisible all-zero
+	 * "None" shape, keeps the preset's `var(--kb-btn-shadow)` as the rule's only box-shadow — the
+	 * `none` reset must not be appended behind it, or the preset shadow would be silenced.
+	 *
+	 * @return void
+	 */
+	public function testPresetShadowIsNotErasedByTheNoneFallback(): void {
+		$this->seedPreset(
+			'accent',
+			'Accent',
+			[ 'button-shadow' => '0px 2px 8px 0px #1717171f' ]
+		);
+
+		$output = $this->render_button(
+			[
+				'kbPreset' => 'accent',
+				'shadow'   => [
+					[
+						'color'   => 'transparent',
+						'opacity' => 1,
+						'hOffset' => 0,
+						'vOffset' => 0,
+						'blur'    => 0,
+						'spread'  => 0,
+						'inset'   => false,
+					],
+				],
+			]
+		);
+
+		$css_helper = new CSSTestHelper( $output );
+		$selector   = '.wp-block-kadence-advancedbtn .kb-btn123.kb-button';
+
 		$shadow_positions = array_keys( $css_helper->getPropertyOrder( $selector ), 'box-shadow', true );
 
-		$this->assertCount( 0, $shadow_positions, 'An all-zero shadow value should emit no explicit box-shadow declaration.' );
+		$this->assertCount( 1, $shadow_positions, 'Only the preset box-shadow should be emitted.' );
+		$css_helper->assertCSSPropertiesEqual( $selector, [ 'box-shadow' => 'var(--kb-btn-shadow)' ] );
+	}
+
+	/**
+	 * A shadow whose leg holds a {dot.alias} token reference is not treated as invisible: the rule
+	 * carries the resolved shadow rather than the `none` reset that would erase it.
+	 *
+	 * @return void
+	 */
+	public function testAliasLeggedShadowIsNotErasedByTheNoneFallback(): void {
+		$this->seedPreset( 'bare', 'Bare', [ 'button-bg' => '#ff0000' ] );
+
+		$output = $this->render_button(
+			[
+				'kbPreset' => 'bare',
+				'shadow'   => [
+					[
+						'color'   => '#00ff00',
+						'opacity' => 1,
+						'hOffset' => 0,
+						'vOffset' => 0,
+						'blur'    => '{semantic.radius.media}',
+						'spread'  => 0,
+						'inset'   => false,
+					],
+				],
+			]
+		);
+
+		$css_helper = new CSSTestHelper( $output );
+		$selector   = '.wp-block-kadence-advancedbtn .kb-btn123.kb-button';
+
+		$css_helper->assertCSSPropertiesEqual(
+			$selector,
+			[ 'box-shadow' => '0px 0px var(--kb-token--semantic--radius--media) 0px #0f0' ]
+		);
 	}
 
 	/**

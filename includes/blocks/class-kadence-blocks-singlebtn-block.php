@@ -132,9 +132,13 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		$this->render_preset_spacing( $css, $attributes );
 		$css->render_measure_output( $attributes, 'padding', 'padding', [ 'unit_key' => 'paddingUnit' ] );
 		$css->render_measure_output( $attributes, 'margin', 'margin', [ 'unit_key' => 'marginUnit' ] );
-		$this->render_preset_shadow( $css, $attributes );
+		$has_preset_shadow = $this->render_preset_shadow( $css, $attributes );
 		if ( isset( $attributes['shadow'][0] ) && is_array( $attributes['shadow'][0] ) && $this->has_visible_shadow( $attributes['shadow'][0] ) ) {
 			$css->add_property( 'box-shadow', $this->render_button_shadow( $css, $attributes['shadow'][0] ) );
+		} elseif ( ! $has_preset_shadow ) {
+			// Only reset to `none` when nothing else claims this rule's box-shadow — a preset's
+			// `var(--kb-btn-shadow)` above would otherwise be silenced by a trailing `none`.
+			$css->add_property( 'box-shadow', 'none' );
 		}
 		if ( ! empty( $attributes['textUnderline'] ) ) {
 			$css->set_selector( '.wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button:not(.specificity):not(.extra-specificity)' );
@@ -170,10 +174,14 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		$css->render_measure_output( $attributes, 'borderHoverRadius', 'border-radius' );
 		$css->render_border_styles( $attributes, 'borderHoverStyle', true );
-		if ( ( 'gradient' === $bg_type || 'gradient' === $bg_hover_type ) && isset( $attributes['shadowHover'][0]['inset'] ) && true === $attributes['shadowHover'][0]['inset'] ) {
+		// Visibility-gated: without it this fires on any inset-true item, including the invisible
+		// all-zero default the block ships with.
+		if ( ( 'gradient' === $bg_type || 'gradient' === $bg_hover_type ) && isset( $attributes['shadowHover'][0] ) && is_array( $attributes['shadowHover'][0] ) && $this->has_visible_shadow( $attributes['shadowHover'][0] ) && isset( $attributes['shadowHover'][0]['inset'] ) && true === $attributes['shadowHover'][0]['inset'] ) {
 			$css->add_property( 'box-shadow', '0px 0px 0px 0px rgba(0, 0, 0, 0)' );
 			$css->set_selector( '.kb-btn' . $unique_id . '.kb-button:hover::before' );
 		}
+		// No `none` fallback on hover: an unset hover shadow must let the base state's shadow
+		// carry through the `:hover` rule via the normal cascade.
 		if ( isset( $attributes['shadowHover'][0] ) && is_array( $attributes['shadowHover'][0] ) && $this->has_visible_shadow( $attributes['shadowHover'][0] ) ) {
 			$css->add_property( 'box-shadow', $this->render_button_shadow( $css, $attributes['shadowHover'][0] ) );
 		}
@@ -261,6 +269,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		$css->render_measure_output( $attributes, 'borderTransparentRadius', 'border-radius', [ 'unit_key' => 'borderTransparentRadiusUnit' ] );
 		$css->render_border_styles( $attributes, 'borderTransparentStyle', true );
+		// No `none` fallback: this selector outranks the base rule, which must carry through instead.
 		if ( isset( $attributes['shadowTransparent'] ) && is_array( $attributes['shadowTransparent'] ) && isset( $attributes['shadowTransparent'][0] ) && is_array( $attributes['shadowTransparent'][0] ) && $this->has_visible_shadow( $attributes['shadowTransparent'][0] ) ) {
 			$css->add_property( 'box-shadow', $this->render_button_shadow( $css, $attributes['shadowTransparent'][0] ) );
 		}
@@ -275,10 +284,13 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		$css->render_measure_output( $attributes, 'borderTransparentHoverRadius', 'border-radius' );
 		$css->render_border_styles( $attributes, 'borderTransparentHoverStyle', true );
-		if ( ( 'gradient' === $bg_type_transparent || 'gradient' === $bg_hover_type_transparent ) && isset( $attributes['shadowTransparentHover'] ) && is_array( $attributes['shadowTransparentHover'] ) && isset( $attributes['shadowTransparentHover'][0] ) && is_array( $attributes['shadowTransparentHover'][0] ) && isset( $attributes['shadowTransparentHover'][0]['inset'] ) && true === $attributes['shadowTransparentHover'][0]['inset'] ) {
+		// See the base hover state above: this reset needs the same visibility gate.
+		if ( ( 'gradient' === $bg_type_transparent || 'gradient' === $bg_hover_type_transparent ) && isset( $attributes['shadowTransparentHover'] ) && is_array( $attributes['shadowTransparentHover'] ) && isset( $attributes['shadowTransparentHover'][0] ) && is_array( $attributes['shadowTransparentHover'][0] ) && $this->has_visible_shadow( $attributes['shadowTransparentHover'][0] ) && isset( $attributes['shadowTransparentHover'][0]['inset'] ) && true === $attributes['shadowTransparentHover'][0]['inset'] ) {
 			$css->add_property( 'box-shadow', '0px 0px 0px 0px rgba(0, 0, 0, 0)' );
 			$css->set_selector( '.kb-btn' . $unique_id . '.kb-button:hover::before' );
 		}
+		// No `none` fallback on hover: an unset hover shadow must let the base state's shadow
+		// carry through the `:hover` rule via the normal cascade.
 		if ( isset( $attributes['shadowTransparentHover'] ) && is_array( $attributes['shadowTransparentHover'] ) && isset( $attributes['shadowTransparentHover'][0] ) && is_array( $attributes['shadowTransparentHover'][0] ) && $this->has_visible_shadow( $attributes['shadowTransparentHover'][0] ) ) {
 			$css->add_property( 'box-shadow', $this->render_button_shadow( $css, $attributes['shadowTransparentHover'][0] ) );
 		}
@@ -298,6 +310,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		$css->render_measure_output( $attributes, 'borderStickyRadius', 'border-radius', [ 'unit_key' => 'borderStickyRadiusUnit' ] );
 		$css->render_border_styles( $attributes, 'borderStickyStyle', true );
+		// No `none` fallback: this selector outranks the base rule, which must carry through instead.
 		if ( isset( $attributes['shadowSticky'] ) && is_array( $attributes['shadowSticky'] ) && isset( $attributes['shadowSticky'][0] ) && is_array( $attributes['shadowSticky'][0] ) && $this->has_visible_shadow( $attributes['shadowSticky'][0] ) ) {
 			$css->add_property( 'box-shadow', $this->render_button_shadow( $css, $attributes['shadowSticky'][0] ) );
 		}
@@ -312,10 +325,13 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		$css->render_measure_output( $attributes, 'borderStickyHoverRadius', 'border-radius' );
 		$css->render_border_styles( $attributes, 'borderStickyHoverStyle', true );
-		if ( ( 'gradient' === $bg_type_sticky || 'gradient' === $bg_hover_type_sticky ) && isset( $attributes['shadowStickyHover'] ) && is_array( $attributes['shadowStickyHover'] ) && isset( $attributes['shadowStickyHover'][0] ) && is_array( $attributes['shadowStickyHover'][0] ) && isset( $attributes['shadowStickyHover'][0]['inset'] ) && true === $attributes['shadowStickyHover'][0]['inset'] ) {
+		// See the base hover state above: this reset needs the same visibility gate.
+		if ( ( 'gradient' === $bg_type_sticky || 'gradient' === $bg_hover_type_sticky ) && isset( $attributes['shadowStickyHover'] ) && is_array( $attributes['shadowStickyHover'] ) && isset( $attributes['shadowStickyHover'][0] ) && is_array( $attributes['shadowStickyHover'][0] ) && $this->has_visible_shadow( $attributes['shadowStickyHover'][0] ) && isset( $attributes['shadowStickyHover'][0]['inset'] ) && true === $attributes['shadowStickyHover'][0]['inset'] ) {
 			$css->add_property( 'box-shadow', '0px 0px 0px 0px rgba(0, 0, 0, 0)' );
 			$css->set_selector( '.kb-btn' . $unique_id . '.kb-button:hover::before' );
 		}
+		// No `none` fallback on hover: an unset hover shadow must let the base state's shadow
+		// carry through the `:hover` rule via the normal cascade.
 		if ( isset( $attributes['shadowStickyHover'] ) && is_array( $attributes['shadowStickyHover'] ) && isset( $attributes['shadowStickyHover'][0] ) && is_array( $attributes['shadowStickyHover'][0] ) && $this->has_visible_shadow( $attributes['shadowStickyHover'][0] ) ) {
 			$css->add_property( 'box-shadow', $this->render_button_shadow( $css, $attributes['shadowStickyHover'][0] ) );
 		}
@@ -588,17 +604,28 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 	 * undefined custom property is invalid at computed-value time, so emitting unconditionally would
 	 * blank out the shadow on a button whose preset sets none.
 	 *
-	 * Emitted before the explicit `shadow` output below so an explicit per-block shadow, which
-	 * lands later in the same rule, still wins.
+	 * Emitted before the explicit `shadow` output below, and the builder appends declarations, so a
+	 * visible per-block shadow lands later in the same rule and wins. The caller uses the returned
+	 * flag for the other half of that contract: when the block's own shadow is invisible it must
+	 * skip its `box-shadow: none` reset, or the trailing `none` would silence the preset's
+	 * `var(--kb-btn-shadow)` here.
+	 *
+	 * Known, accepted limitation: the shadow control's "None" pick and an untouched shadow attribute
+	 * serialize to the exact same value (both resolve to the invisible all-zero composite), by design
+	 * — that is what lets "Default" and "None" read identically in the control. One consequence is
+	 * that a button whose preset resolves a shadow cannot have that shadow turned off from this block's
+	 * own shadow control: "None" is indistinguishable from "never set", so this method's gate always
+	 * wins. Distinguishing them would need a real "explicitly none" marker outside the shadow value
+	 * itself, which is a design change, not a bug fix.
 	 *
 	 * @since TBD
 	 *
 	 * @param Kadence_Blocks_CSS   $css        The css object.
 	 * @param array<string, mixed> $attributes The block attributes.
 	 *
-	 * @return void
+	 * @return bool Whether a preset box-shadow declaration was emitted.
 	 */
-	private function render_preset_shadow( Kadence_Blocks_CSS $css, array $attributes ): void {
+	private function render_preset_shadow( Kadence_Blocks_CSS $css, array $attributes ): bool {
 		try {
 			$registry = kadence_blocks()->get( Token_Registry::class );
 			$library  = kadence_blocks()->get( Active_Token_Library_Store::class );
@@ -612,7 +639,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 				|| ! $resolver instanceof Preset_Resolver
 				|| ! $registry->is_active()
 			) {
-				return;
+				return false;
 			}
 
 			$slug     = $library->get();
@@ -624,17 +651,25 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		} catch ( Throwable $e ) {
 			// This runs in the render path, so a broken token graph must not take the page down with it —
 			// the button simply keeps the shadow it has today.
-			return;
+			return false;
 		}
 
-		if ( isset( $values['button-shadow'] ) ) {
-			$css->add_property( 'box-shadow', 'var(--kb-btn-shadow)' );
+		if ( ! isset( $values['button-shadow'] ) ) {
+			return false;
 		}
+
+		$css->add_property( 'box-shadow', 'var(--kb-btn-shadow)' );
+
+		return true;
 	}
 
 	/**
 	 * Whether a native shadow item paints anything visible — all-zero offsets, blur, and spread
 	 * render nothing regardless of color, matching the value the "None" pick now writes.
+	 *
+	 * A non-numeric, non-empty leg is a {dot.alias} token reference, which resolves to a var() whose
+	 * value is unknown here — it counts as visible, since treating it as a zero would let the
+	 * caller's `box-shadow: none` reset erase a shadow the token does paint.
 	 *
 	 * @since TBD
 	 *

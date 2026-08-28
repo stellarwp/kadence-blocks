@@ -399,9 +399,8 @@ export default function KadenceButtonEdit(props) {
 		borderRadiusPresetValue
 	);
 
-	// `button-padding` carries no baseline preset value, so `presetValueForDevice` above always resolves
-	// to nothing for it — OR in the button's own literal default so an unset Padding side shows what the
-	// button actually renders instead of reading as blank.
+	// The shipped presets (default/secondary) both declare `button-padding`, so `presetValueForDevice`
+	// above resolves it for those; the fallback only matters for a custom preset that omits the key.
 	const paddingPresetValue = presetValueOr(
 		presetValueForDevice(tokenBinding.padding?.presetValue, tokenBinding.padding?.responsive, previewDevice),
 		BUTTON_PADDING_FALLBACK
