@@ -201,6 +201,12 @@ export function CustomTab({ number, unit, units, onUnit, min, max, step, onNumbe
  * @param {Object}   props.custom           Props forwarded to the `Custom` tab.
  * @param {Function} [props.renderCustom]   Overrides the Custom tab body; called with `props.custom`.
  *                                          Omit to render the default numeric `CustomTab`.
+ * @param {?Function} [props.renderList]    Overrides the Style Library tab body entirely; called
+ *                                          with `{ value, tokens, onPick, onClose }`. Omit to render
+ *                                          the default `StyleLibraryTab` — `ColorControl` is the
+ *                                          only consumer that passes this, for its grouped
+ *                                          `ColorGroupList` in place of the flat token list every
+ *                                          other control shows.
  * @param {Function} props.onPick           Writes a picked token's alias.
  * @param {Function} props.onClear          Clears the slot's override.
  * @param {Function} props.onClose          Closes the popover after a choice.
@@ -228,6 +234,7 @@ export function TokenPopover({
 	initialTab,
 	custom,
 	renderCustom,
+	renderList,
 	onPick,
 	onClear,
 	onClose,
@@ -261,17 +268,21 @@ export function TokenPopover({
 		>
 			{(tab) =>
 				tab.name === 'style-library' ? (
-					<StyleLibraryTab
-						value={value}
-						tokens={tokens}
-						defaultValue={resolvedDefault}
-						inherited={inherited}
-						onPick={onPick}
-						onClear={onClear}
-						onClose={onClose}
-						showValue={showValue}
-						renderPreview={renderPreview}
-					/>
+					renderList ? (
+						renderList({ value, tokens, onPick, onClose })
+					) : (
+						<StyleLibraryTab
+							value={value}
+							tokens={tokens}
+							defaultValue={resolvedDefault}
+							inherited={inherited}
+							onPick={onPick}
+							onClear={onClear}
+							onClose={onClose}
+							showValue={showValue}
+							renderPreview={renderPreview}
+						/>
+					)
 				) : renderCustom ? (
 					renderCustom(custom)
 				) : (
