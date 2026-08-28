@@ -280,10 +280,6 @@ function schemaFor(tab, values) {
 						path: 'tokens.fontSize',
 						label: __('Size', 'kadence-blocks'),
 						defaultValue: HEADING_FONT_SIZE_FALLBACK,
-						// The font-size scale is fluid: every step resolves to a whole `clamp()`
-						// expression, which overran its row and pushed the step's own name out of view.
-						// The names (SM, MD, LG…) are what a site owner picks by, so the value goes.
-						showValue: false,
 					},
 					{
 						type: 'select',

@@ -22,6 +22,7 @@ import { useState } from '@wordpress/element';
  * Internal dependencies
  */
 import { pickableTokensForType } from '../../../helpers/tokens';
+import { fontSizeDisplayValue } from '../../../helpers/typography';
 import {
 	PRESET_BREAKPOINTS,
 	readPresetBreakpoint,
@@ -121,12 +122,19 @@ export function ScalarTokenField({ field, value, onChange }) {
 
 	// A semantic-bound value is the block's role-based default, not a selection, so it is blanked for
 	// display and its resolved value becomes what this field falls back to — see `withoutSemanticSlots`.
+	// The font-size scale is fluid: every step resolves to a whole `clamp(min, preferred, max)` string,
+	// which overran its row and made the trigger unreadable. `fontSizeDisplayValue` reads the authored
+	// scalar back out — every shipped step authors its `$value` as the clamp's own max — so a step reads
+	// as the size it is rather than as the expression that computes it. Every other role resolves to a
+	// plain length already and passes through untouched.
+	const displayValue = (value) => (field.role === 'font-size' ? fontSizeDisplayValue(value) : value);
+
 	const shown = withoutSemanticSlots(atBreakpoint);
 	const semanticDefault = semanticDefaultOf(atBreakpoint, everyToken);
 
-	const shownDefault = inheritsFromBreakpoint
-		? asLiteral(inheritedAbove)
-		: (semanticDefault ?? field.defaultValue ?? null);
+	const shownDefault = displayValue(
+		inheritsFromBreakpoint ? asLiteral(inheritedAbove) : (semanticDefault ?? field.defaultValue ?? null)
+	);
 
 	// The unit falls back the same way the value does, so the Custom tab never opens on `px` while the
 	// field beside it displays the default's own `em`.
@@ -148,13 +156,10 @@ export function ScalarTokenField({ field, value, onChange }) {
 			// inherited value is resolved to its literal above rather than added to the pool.
 			tokens={pickableTokensForType(field.tokenType, field.role, boundTokenIds(shown)).map((token) => ({
 				...token,
+				value: displayValue(token.value),
 				alias: `{${token.id}}`,
 			}))}
 			defaultValue={shownDefault ?? undefined}
-			// A field whose tokens resolve to something too long to read in a row opts out of showing
-			// values beside their labels. A fluid font size resolves to a whole `clamp()` expression,
-			// which overran the row and pushed the label out of view.
-			showValue={field.showValue !== false}
 			inherited={inheritsFromBreakpoint}
 			unit={unit}
 			units={units}

@@ -58,11 +58,6 @@ import '../styles/token-controls.scss';
  * @param {Function} props.onClear    Clears the slot's override (the `Reset` choice).
  * @param {Function} props.onCustom   Writes a literal number to the slot (used when leaving a token).
  * @param {Function} [props.renderCustom] Overrides the Custom tab body; passed through to `TokenPopover`.
- * @param {boolean}  [props.showValue] Whether each token row states its resolved value beside its
- *                                      label. Defaults to `true`; a field whose values are too long to
- *                                      read in a row (a fluid font size resolves to a whole `clamp()`
- *                                      expression) opts out, exactly as `BoxShadowControl` does for a
- *                                      shadow's shorthand.
  * @param {boolean}  [props.disabled] Disable the trigger, which is the only control outside the
  *                                      popover — with it inert the popover cannot open, so nothing
  *                                      below it is reachable either. Callers that only guard their
@@ -89,7 +84,6 @@ export function TokenSelector({
 	onClear,
 	onCustom,
 	renderCustom,
-	showValue = true,
 	disabled = false,
 }) {
 	const summary = fieldSummary(value, tokens, unit, __('Custom', 'kadence-blocks'));
@@ -177,7 +171,6 @@ export function TokenSelector({
 						resolvedDefault={resolvedDefault}
 						inherited={inherited}
 						initialTab={initialTab}
-						showValue={showValue}
 						custom={{ number, unit, units, onUnit, min, max, step, onNumber: writeNumber }}
 						renderCustom={renderCustom}
 						onPick={onPick}

@@ -80,7 +80,6 @@ export function ScalarControl({
 	min,
 	max,
 	step,
-	showValue = true,
 }) {
 	return (
 		<ControlShell
@@ -107,7 +106,6 @@ export function ScalarControl({
 				min={min}
 				max={max}
 				step={step}
-				showValue={showValue}
 				disabled={disabled}
 				// The field speaks three intents; a scalar stores one value, so they collapse here rather
 				// than in every host. `onCustom` writes a bare number — the unit is the control's, exactly
