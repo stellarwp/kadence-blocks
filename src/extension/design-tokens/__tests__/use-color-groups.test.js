@@ -227,4 +227,79 @@ describe('useColorGroups', () => {
 		act(() => otherRoot.unmount());
 		otherContainer.remove();
 	});
+
+	/**
+	 * A `kbPalette` change on the SAME selected block — no `clientId` change — must still re-fetch;
+	 * the effect depends on the resolved palette id itself, not only on `clientId`.
+	 *
+	 * @return {Promise<void>}
+	 */
+	it('re-fetches when the resolved palette id changes without a clientId change', async () => {
+		mockEffectivePalette.mockReturnValue('brand-first');
+		mockApiFetch.mockResolvedValueOnce({ ...PALETTE_NODE, id: 'brand-first' });
+
+		const { box, update } = renderHook('block-1');
+		await act(async () => {
+			await Promise.resolve();
+		});
+
+		expect(box.current).toEqual(MAPPED_GROUPS);
+
+		mockEffectivePalette.mockReturnValue('brand-second');
+		mockApiFetch.mockResolvedValueOnce({ ...PALETTE_NODE, id: 'brand-second', groups: [] });
+
+		update('block-1');
+		await act(async () => {
+			await Promise.resolve();
+		});
+
+		expect(mockApiFetch).toHaveBeenCalledTimes(2);
+		expect(mockApiFetch).toHaveBeenLastCalledWith({
+			path: '/kb-design-tokens/v1/palettes/brand-second?library=default',
+		});
+		expect(box.current).toEqual([]);
+	});
+
+	/**
+	 * The same palette id can exist in more than one library, and the REST response depends on
+	 * both — caching on the id alone could return one library's groups for another's request.
+	 *
+	 * @return {Promise<void>}
+	 */
+	it('fetches separately for the same palette id in a different library, not the cached one', async () => {
+		mockEffectivePalette.mockReturnValue('shared-id');
+		mockApiFetch.mockResolvedValueOnce(PALETTE_NODE);
+
+		renderHook('block-1');
+		await act(async () => {
+			await Promise.resolve();
+		});
+
+		window.kadenceDesignTokensPalettes.active = 'other-library';
+		mockApiFetch.mockResolvedValueOnce({ ...PALETTE_NODE, groups: [] });
+
+		const otherContainer = document.createElement('div');
+		document.body.appendChild(otherContainer);
+		const otherRoot = createRoot(otherContainer);
+
+		function OtherLibraryProbe() {
+			useColorGroups('block-2');
+			return null;
+		}
+
+		act(() => {
+			otherRoot.render(createElement(OtherLibraryProbe));
+		});
+		await act(async () => {
+			await Promise.resolve();
+		});
+
+		expect(mockApiFetch).toHaveBeenCalledTimes(2);
+		expect(mockApiFetch).toHaveBeenLastCalledWith({
+			path: '/kb-design-tokens/v1/palettes/shared-id?library=other-library',
+		});
+
+		act(() => otherRoot.unmount());
+		otherContainer.remove();
+	});
 });

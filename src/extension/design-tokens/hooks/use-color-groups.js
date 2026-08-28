@@ -78,26 +78,31 @@ function resolveEffectivePaletteId() {
 
 /**
  * Fetch one palette's node and shape it into `ColorControl`'s `groups` prop, reusing an in-flight or
- * already-resolved request for the same palette id.
+ * already-resolved request for the same palette id AND library — the REST route's response depends on
+ * both (the same palette id can exist in more than one library), so caching on the id alone could
+ * return one library's groups for another.
  *
  * @param {string} paletteId The palette id to fetch.
+ * @param {string} library   The library slug the palette id is resolved against.
  *
  * @since TBD
  *
  * @return {Promise<Array>} The mapped groups, or an empty array when the registry is inactive or the
  *         fetch fails.
  */
-function fetchColorGroups(paletteId) {
+function fetchColorGroups(paletteId, library) {
 	if (!hasDesignTokensRest() || !paletteId) {
 		return Promise.resolve([]);
 	}
 
-	if (groupsCache.has(paletteId)) {
-		return groupsCache.get(paletteId);
+	const cacheKey = `${library}:${paletteId}`;
+
+	if (groupsCache.has(cacheKey)) {
+		return groupsCache.get(cacheKey);
 	}
 
 	const path = `/${designTokensNamespace()}/palettes/${encodeURIComponent(paletteId)}?library=${encodeURIComponent(
-		librarySlug()
+		library
 	)}`;
 
 	const request = apiFetch({ path })
@@ -105,12 +110,12 @@ function fetchColorGroups(paletteId) {
 		.catch(() => {
 			// Do not cache a failure — a transient error (e.g. a slow first-load auth race) should not
 			// permanently strand every future ColorControl instance on an empty list.
-			groupsCache.delete(paletteId);
+			groupsCache.delete(cacheKey);
 
 			return [];
 		});
 
-	groupsCache.set(paletteId, request);
+	groupsCache.set(cacheKey, request);
 
 	return request;
 }
@@ -123,7 +128,8 @@ function fetchColorGroups(paletteId) {
  *                           against the currently selected block, which is always the block this
  *                           control belongs to, since an inspector control only renders while its own
  *                           block is selected), but kept as an effect dependency so a selection change
- *                           re-resolves the palette.
+ *                           re-resolves the palette even when the newly selected block's own palette
+ *                           id happens to match the previous one.
  *
  * @since TBD
  *
@@ -131,11 +137,20 @@ function fetchColorGroups(paletteId) {
  */
 export function useColorGroups(clientId) {
 	const [groups, setGroups] = useState([]);
+	// Read fresh on every render, not just inside the effect: a `kbPalette` change on the SAME
+	// selected block (no `clientId` change) still needs to re-trigger the fetch, which only the
+	// effect's own dependency list can do.
+	const paletteId = resolveEffectivePaletteId();
+	const library = librarySlug();
 
 	useEffect(() => {
 		let cancelled = false;
 
-		fetchColorGroups(resolveEffectivePaletteId()).then((resolved) => {
+		// Clear immediately rather than waiting for the new fetch to resolve, so a palette/library
+		// change never briefly shows the PREVIOUS identity's groups as if they still applied.
+		setGroups([]);
+
+		fetchColorGroups(paletteId, library).then((resolved) => {
 			if (!cancelled) {
 				setGroups(resolved);
 			}
@@ -144,7 +159,7 @@ export function useColorGroups(clientId) {
 		return () => {
 			cancelled = true;
 		};
-	}, [clientId]);
+	}, [clientId, paletteId, library]);
 
 	return groups;
 }
