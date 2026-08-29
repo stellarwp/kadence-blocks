@@ -15,6 +15,7 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { pickableTokensForType } from '../../../helpers/tokens';
+import { isSemanticSlot } from './BoxTokenField';
 import { SelectDropdown } from '../SelectDropdown';
 import { FieldLabel } from './FieldLabel';
 import './TokenSelectField.scss';
@@ -37,9 +38,15 @@ import './TokenSelectField.scss';
  * @return {JSX.Element} The field.
  */
 export function TokenSelectField({ field, value, onChange }) {
-	// `value` is passed as `selected` so the token this field is already bound to survives the
-	// primitive narrowing — without it a bound semantic token is filtered out of its own picker.
-	const tokens = pickableTokensForType(field.tokenType, field.role, value);
+	// A semantic-bound value is the block's role-based default rather than a selection — the pool
+	// offers primitives only — so it reads as unset and its name never reaches the list. Unlike the box
+	// fields, this control has no Default row to show the value behind it; an empty selection is the
+	// closest honest reading. See `withoutSemanticSlots`.
+	const shown = isSemanticSlot(value) ? '' : value;
+
+	// The bound PRIMITIVE is passed as `selected` so it survives the narrowing even if it sits outside
+	// the role's own scale.
+	const tokens = pickableTokensForType(field.tokenType, field.role, shown);
 	const options = tokens.map((token) => ({
 		value: token.id,
 		label: (
@@ -59,10 +66,10 @@ export function TokenSelectField({ field, value, onChange }) {
 		>
 			{field.label && <FieldLabel>{field.label}</FieldLabel>}
 			<SelectDropdown
-				value={value}
+				value={shown}
 				options={options}
 				leadingIcon={field.leadingIcon}
-				valueLabel={value ? __('Custom', 'kadence-blocks') : ''}
+				valueLabel={shown ? __('Custom', 'kadence-blocks') : ''}
 				onChange={(next) => !field.readOnly && onChange(next)}
 			/>
 		</div>

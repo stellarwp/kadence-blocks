@@ -1,0 +1,28 @@
+@use "../../styles/mixins" as *;
+
+// The slab is its own shape (wide and short, standing in for a section band) rather than the shared
+// framed square, so this screen relaxes `ListRow`'s default 80px preview slot — the Button, Spacing,
+// Icon Sizes and Shadow slot-override precedent.
+.kadence-blocks-style-library__rowlayout-screen .kadence-blocks-style-library__list-row-preview {
+	width: auto;
+	height: auto;
+	border: 0;
+	background: transparent;
+	overflow: visible;
+}
+
+// Preset names are full words ("Muted Band"), not the short numeric labels the shared 4rem column
+// was sized for.
+.kadence-blocks-style-library__rowlayout-screen .kadence-blocks-style-library__list-row-label {
+	width: 15rem;
+}
+
+// A Row Layout is always full-width and short relative to its width, and a corner radius reads very
+// differently at those proportions than on a square swatch, so the band keeps that aspect.
+.kadence-blocks-style-library__rowlayout-preset-preview {
+	@include preset-surface-preview(7.5rem, 2.75rem);
+}
+
+.kadence-blocks-style-library__rowlayout-preset-preview-fill {
+	@include preset-surface-fill;
+}

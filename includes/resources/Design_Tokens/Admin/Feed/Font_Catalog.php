@@ -8,9 +8,12 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed;
  *
  * The Google names come from includes/gfonts-names-array.php, the same generated, flat name
  * list the block editor already localizes (class-kadence-blocks-editor-assets.php's g_font_names).
- * The larger includes/gfonts-array.php (variants/subsets/weights/italics per family) is not read
- * here: it carries no category field, so it cannot contribute anything a generic-fallback stack
- * would need, and shipping its 338KB to this catalog would be pure waste.
+ *
+ * Per-family WEIGHTS come from the larger includes/gfonts-array.php, but only the weights: that file
+ * also carries variants, subsets and italics per family, and shipping all 338KB of it would be waste
+ * when the one thing a consumer needs from it is which weights a family actually has. A weight
+ * control that offers 100-900 for every family promises faces most families do not ship, and the
+ * browser answers with a synthesized approximation rather than the design system's own type.
  *
  * Custom names come from the kadence_blocks_custom_fonts filter, the same one the block editor
  * localizes as c_fonts — its shape is an associative array keyed by font name (a string key may
@@ -31,6 +34,15 @@ final class Font_Catalog {
 	private const NAMES_FILE = 'includes/gfonts-names-array.php';
 
 	/**
+	 * The generated Google font detail file, read for its per-family weight lists alone.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const DETAILS_FILE = 'includes/gfonts-array.php';
+
+	/**
 	 * The filter the block editor already reads for site-registered custom fonts.
 	 *
 	 * @since TBD
@@ -40,20 +52,94 @@ final class Font_Catalog {
 	private const CUSTOM_FONTS_FILTER = 'kadence_blocks_custom_fonts';
 
 	/**
-	 * The catalog: every Google family name, and every custom family name not already among them.
+	 * The catalog: every Google family name, every custom family name not already among them, and the
+	 * weights each Google family ships.
+	 *
+	 * A custom family contributes no weights — the custom-fonts filter carries none — so it is absent
+	 * from the map rather than present with an empty list, which lets a consumer tell "this family
+	 * ships only regular" apart from "nothing is known about this family".
 	 *
 	 * @since TBD
 	 *
-	 * @return array{google: string[], custom: string[]}
+	 * @return array{google: string[], custom: string[], weights: array<string, string[]>}
 	 */
 	public function all(): array {
 		$google = $this->google_names();
 		$custom = array_values( array_diff( $this->custom_names(), $google ) );
 
 		return [
-			'google' => $google,
-			'custom' => $custom,
+			'google'  => $google,
+			'custom'  => $custom,
+			'weights' => $this->google_weights(),
 		];
+	}
+
+	/**
+	 * The weights each Google family ships, keyed by family name.
+	 *
+	 * Normalized to numeric strings: the generated file spells the default weight `regular`, which is
+	 * `400` everywhere a CSS `font-weight` is written, and leaving both spellings in would make a
+	 * consumer match two things for one weight. Sorted numerically so a picker lists them in weight
+	 * order rather than the file's own.
+	 *
+	 * Fail-soft to an empty map when the generated file is absent, the same posture google_names()
+	 * takes for its own file.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string, string[]>
+	 */
+	private function google_weights(): array {
+		$path = KADENCE_BLOCKS_PATH . self::DETAILS_FILE;
+
+		if ( ! file_exists( $path ) ) {
+			return [];
+		}
+
+		$fonts = include $path;
+
+		if ( ! is_array( $fonts ) ) {
+			return [];
+		}
+
+		$weights = [];
+
+		foreach ( $fonts as $family => $details ) {
+			if ( ! is_string( $family ) || ! is_array( $details ) || ! isset( $details['w'] ) || ! is_array( $details['w'] ) ) {
+				continue;
+			}
+
+			$family_weights = [];
+
+			foreach ( $details['w'] as $weight ) {
+				if ( ! is_string( $weight ) && ! is_int( $weight ) ) {
+					continue;
+				}
+
+				$weight = 'regular' === $weight ? '400' : (string) $weight;
+
+				// An italic-only entry ("700italic") names a weight already listed in its own right, so
+				// it would duplicate rather than add one.
+				if ( ! preg_match( '/^\d+$/', $weight ) ) {
+					continue;
+				}
+
+				$family_weights[] = $weight;
+			}
+
+			if ( $family_weights === [] ) {
+				continue;
+			}
+
+			// Deduplicated by VALUE, not by key: PHP converts a numeric-string array key to an integer, so
+			// keying on the weight would hand back `400` where every consumer compares against `'400'`.
+			$family_weights = array_values( array_unique( $family_weights ) );
+			sort( $family_weights, SORT_NUMERIC );
+
+			$weights[ $family ] = $family_weights;
+		}
+
+		return $weights;
 	}
 
 	/**

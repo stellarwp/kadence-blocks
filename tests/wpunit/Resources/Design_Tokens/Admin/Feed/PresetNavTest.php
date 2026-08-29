@@ -2,7 +2,6 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Admin\Feed;
 
-use Generator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Builder;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Preset_Nav;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
@@ -28,9 +27,11 @@ final class PresetNavTest extends TestCase {
 	}
 
 	/**
-	 * The shipped registry surfaces exactly one nav entry today — the singlebtn block — carrying
-	 * its declared Style Library section label ("Button"), never the picker control's own label
-	 * ("Style").
+	 * Every shipped nav entry carries its declared Style Library section label, never the picker
+	 * control's own label — every one of these blocks declares that as "Style". The Section and Advanced
+	 * Text entries are the cases that prove the point: they are `kadence/column` and
+	 * `kadence/advancedheading` in code, and the nav must read the names the UI calls them. Order is
+	 * registration order, which is declaration order in `declarations.php`.
 	 *
 	 * @return void
 	 */
@@ -43,26 +44,54 @@ final class PresetNavTest extends TestCase {
 					'block' => 'kadence/singlebtn',
 					'label' => 'Button',
 				],
+				[
+					'block' => 'kadence/image',
+					'label' => 'Advanced Image',
+				],
+				[
+					'block' => 'kadence/rowlayout',
+					'label' => 'Row Layout',
+				],
+				[
+					'block' => 'kadence/column',
+					'label' => 'Section',
+				],
+				[
+					'block' => 'kadence/single-icon',
+					'label' => 'Icon',
+				],
+				[
+					'block' => 'kadence/advancedheading',
+					'label' => 'Advanced Text',
+				],
 			],
 			$entries
 		);
 	}
 
 	/**
-	 * A default-look-only binding set — one with no declared label — is excluded from the nav,
-	 * across every shipped block that registers bindings with no picker.
+	 * A default-look-only binding set — one with no declared label — is excluded from the nav.
 	 *
-	 * @dataProvider defaultLookOnlyBlockProvider
-	 *
-	 * @param string $block The default-look-only block name.
+	 * Exercised against a registry built here rather than a shipped block: every shipped block now
+	 * declares a label, so there is no longer one to point at, but the exclusion is still the contract a
+	 * third-party block relies on to wire tokens without surfacing a preset UI.
 	 *
 	 * @return void
 	 */
-	public function testAllExcludesBindingSetsWithNoLabel( string $block ): void {
-		$entries = ( new Preset_Nav( $this->registry ) )->all();
-		$blocks  = array_column( $entries, 'block' );
+	public function testAllExcludesABindingSetWithNoLabel(): void {
+		$registry = new Token_Registry();
+		$registry->register_preset_bindings( [ 'block' => 'my-vendor/default-look-only' ] );
+		$registry->register_preset_bindings(
+			[
+				'block'         => 'my-vendor/picker-driven',
+				'label'         => 'Style',
+				'style_library' => [ 'label' => 'Picker Driven' ],
+			]
+		);
 
-		$this->assertNotContains( $block, $blocks );
+		$entries = ( new Preset_Nav( $registry ) )->all();
+
+		$this->assertSame( [ 'my-vendor/picker-driven' ], array_column( $entries, 'block' ) );
 	}
 
 	/**
@@ -227,21 +256,4 @@ final class PresetNavTest extends TestCase {
 		$this->assertSame( ( new Preset_Nav( $this->registry ) )->all(), $feed['presetNav'] );
 	}
 
-	/**
-	 * The shipped blocks whose preset bindings declare no label — default-look-only sets with no
-	 * user-facing preset concept.
-	 *
-	 * @return Generator
-	 */
-	public function defaultLookOnlyBlockProvider(): Generator {
-		yield 'image' => [ 'block' => 'kadence/image' ];
-
-		yield 'rowlayout' => [ 'block' => 'kadence/rowlayout' ];
-
-		yield 'column' => [ 'block' => 'kadence/column' ];
-
-		yield 'single icon' => [ 'block' => 'kadence/single-icon' ];
-
-		yield 'advanced heading' => [ 'block' => 'kadence/advancedheading' ];
-	}
 }

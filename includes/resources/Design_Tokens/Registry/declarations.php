@@ -573,23 +573,28 @@ return [
 				// margin/radius's one-property-per-attribute shape: the native block attribute
 				// ([{top:[color,style,size],...},unit]) is a single nested per-side/per-axis shape that
 				// EditorBorderControl edits as one control with no per-axis reset, so width/style/color all
-				// point at the same attribute rather than three that don't exist. token-indicators reads
-				// each property's own axis out of the shared nested value and combines the three into one
-				// bound/overridden state entry — see token-indicators/index.js's BORDER_AXIS_KIND.
+				// point at the same attribute rather than three that don't exist. Each declares the 'axis' it
+				// owns within that nested value, because the generic kind classification cannot tell them
+				// apart — width reads as a plain dimension and both style and color read as a plain color, so
+				// the editor would compare the nested shape as a flat one and never match. token-indicators
+				// reads the declared axis and combines the three into one bound/overridden state entry.
 				'button-border-width' => [
 					'token'        => 'semantic.border-width.default',
 					'css_var'      => 'kb-btn-border-width',
 					'control_attr' => 'borderStyle',
+					'axis'         => 'border-width',
 				],
 				'button-border-style' => [
 					'token'        => 'semantic.border-style.default',
 					'css_var'      => 'kb-btn-border-style',
 					'control_attr' => 'borderStyle',
+					'axis'         => 'border-style',
 				],
 				'button-border-color' => [
 					'token'        => 'semantic.color.border',
 					'css_var'      => 'kb-btn-border-color',
 					'control_attr' => 'borderStyle',
+					'axis'         => 'border-color',
 				],
 				// No baseline default: an unstyled button carries no shadow, so the preset's $default omits
 				// this property entirely and the projector emits no box-shadow rule until a preset (or the
@@ -607,40 +612,96 @@ return [
 			// below). Each token is seeded to KB's existing default (transparent background, invisible border
 			// until a style is set, no shadow, square corners), so a fresh image is unchanged; any value the
 			// user sets renders at higher specificity (the `.kb-image<uid>` instance selector) and still wins.
-			'block'    => 'kadence/image',
-			'bindings' => [
+			//
+			// The `border` and `borderWidth` bindings below stay declared -- they feed the block-default rules
+			// that seed an image's border color and width from the tokens -- but the Style Library screen
+			// deliberately offers neither as a preset field. The image binds no border STYLE, so a preset
+			// cannot turn a border on: with the block's style unset render_border_styles() emits nothing and
+			// `border-style` stays `none`. Once a site owner sets one, the block emits a `border-<side>`
+			// shorthand that overrides the color, and the single shape that would leave the width to a preset
+			// (style and color set, width blank) renders no border in the EDITOR at all, because
+			// getBorderStyle() returns an empty string without a width.
+			//
+			// @todo SOFT-4234: give the image a preset-able border trio.
+			'block'         => 'kadence/image',
+			'label'         => __( 'Style', 'kadence-blocks' ), // a picker-driven set; this is the editor control's label.
+			'style_library' => [
+				// The Style Library BLOCK PRESETS nav label — distinct from "label" above, which names the
+				// inspector's picker control, not the block.
+				'label' => __( 'Advanced Image', 'kadence-blocks' ),
+			],
+			'bindings'      => [
 				'background'   => [
 					'token'        => 'semantic.color.image-bg',
 					'css_prop'     => 'background-color',
 					'css_selector' => 'img',
+					'css_var'      => 'kb-img-bg',
+					'control_attr' => 'backgroundColor',
 				],
+				// Border color and width are two axes of ONE control: the image migrates its legacy
+				// `borderColor`/`borderWidthDesktop` attributes into the nested `borderStyle` composite
+				// ([{top:[color,style,size],...},unit]) that EditorBorderControl edits, so both point at that
+				// attribute and each names the axis it owns. Same shape as the Button's border trio; the
+				// image binds no border STYLE, so only two of the three axes are present.
 				'border'       => [
-					'token'        => 'semantic.color.border',
-					'css_prop'     => 'border-color',
-					'css_selector' => 'img',
+					'token'            => 'semantic.color.border',
+					'css_prop'         => 'border-color',
+					'css_selector'     => 'img',
+					'css_var'          => 'kb-img-border-color',
+					'control_attr'     => 'borderStyle',
+					'axis'             => 'border-color',
+					'responsive_attrs' => [
+						'tablet' => 'tabletBorderStyle',
+						'mobile' => 'mobileBorderStyle',
+					],
 				],
 				'borderWidth'  => [
-					'token'        => 'semantic.border-width.default',
-					'css_prop'     => 'border-width',
-					'css_selector' => 'img',
+					'token'            => 'semantic.border-width.default',
+					'css_prop'         => 'border-width',
+					'css_selector'     => 'img',
+					'css_var'          => 'kb-img-border-width',
+					'control_attr'     => 'borderStyle',
+					'axis'             => 'border-width',
+					'responsive_attrs' => [
+						'tablet' => 'tabletBorderStyle',
+						'mobile' => 'mobileBorderStyle',
+					],
 				],
 				'borderRadius' => [
-					'token'        => 'semantic.radius.media',
-					'css_prop'     => 'border-radius',
-					'css_selector' => 'img',
+					'token'            => 'semantic.radius.media',
+					'css_prop'         => 'border-radius',
+					'css_selector'     => 'img',
+					'css_var'          => 'kb-img-radius',
+					'control_attr'     => 'borderRadius',
+					'responsive_attrs' => [
+						'tablet' => 'tabletBorderRadius',
+						'mobile' => 'mobileBorderRadius',
+					],
 				],
 				'shadow'       => [
 					'token'        => 'semantic.shadow.media',
 					'css_prop'     => 'box-shadow',
 					'css_selector' => 'img',
+					'css_var'      => 'kb-img-shadow',
+					'control_attr' => 'boxShadow',
 				],
 				// Padding is rendered on the `.kb-img` wrapper, a descendant of the block root. The leading `*`
 				// forces Css_Builder::selector_suffix() to treat `.kb-img` as a descendant (a bare `.kb-img`
 				// would compound onto the root and never match) — see the icon color binding for the rationale.
+				//
+				// The image spells its per-device padding attributes `paddingDesktop`/`paddingTablet`/
+				// `paddingMobile` rather than the bare-plus-prefix convention the Button and the radius binding
+				// above use, which is exactly why responsive_attrs is declared rather than derived.
 				'padding'      => [
-					'token'        => 'semantic.spacing.media-padding',
-					'css_prop'     => 'padding',
-					'css_selector' => '*.kb-img',
+					'token'            => 'semantic.spacing.media-padding',
+					'css_prop'         => 'padding',
+					'css_selector'     => '*.kb-img',
+					'css_var'          => 'kb-img-padding',
+					'control_attr'     => 'paddingDesktop',
+					'responsive_attrs' => [
+						'tablet' => 'paddingTablet',
+						'mobile' => 'paddingMobile',
+					],
 				],
 			],
 		],
@@ -650,20 +711,59 @@ return [
 			// primitive — so an uncustomized row stays transparent (KB's own default) unless a site owner brands
 			// that token. Border color follows the brand border token (invisible until a border is added). A
 			// value the user sets is a per-instance rule of equal specificity but later source order, so it still
-			// wins. Padding follows the spacing tokens through the slug bridge, not a binding here.
-			'block'    => 'kadence/rowlayout',
-			'bindings' => [
+			// wins.
+			//
+			// Padding is not a preset property here. It could be one, but not in the css_prop shape the three
+			// bindings below use: the row's `padding` attribute ships a non-empty default of Kadence spacing
+			// slugs ([ 'sm', '', 'sm', '' ]), so every row emits its own per-instance padding rule and a
+			// low-specificity block-default rule would lose to it on every row ever published. Presetting it
+			// needs the button's css_var bridge shape instead (see render_preset_spacing() on the Single
+			// Button block class), plus a gate the button does not need: the row's default padding IS an
+			// attribute value, so an untouched row and a row deliberately set to "sm" are indistinguishable
+			// server-side, and the bridge would have to compare against the shipped default to know whether a
+			// preset may supply padding at all. Until that exists the row's padding follows the spacing
+			// tokens through the slug bridge, which a token-backed padding control also rides — that control
+			// stores its token in the attribute (render_measure_output already resolves a variable value
+			// there) and needs no binding here.
+			//
+			// @todo SOFT-4233: give the row's padding the css_var bridge so a preset can set it.
+			'block'         => 'kadence/rowlayout',
+			'label'         => __( 'Style', 'kadence-blocks' ), // a picker-driven set; this is the editor control's label.
+			'style_library' => [
+				// The Style Library BLOCK PRESETS nav label — distinct from "label" above, which names the
+				// inspector's picker control, not the block.
+				'label' => __( 'Row Layout', 'kadence-blocks' ),
+			],
+			'bindings'      => [
+				// The row names its background attribute `bgColor`, not `background` — the binding key is the
+				// preset property id and need not match the attribute, which is what control_attr is for.
 				'background'   => [
-					'token'    => 'semantic.color.rowlayout-bg',
-					'css_prop' => 'background-color',
+					'token'        => 'semantic.color.rowlayout-bg',
+					'css_prop'     => 'background-color',
+					'css_var'      => 'kb-row-bg',
+					'control_attr' => 'bgColor',
 				],
-				'border'       => [
-					'token'    => 'semantic.color.border',
-					'css_prop' => 'border-color',
-				],
+				// Border color is NOT a preset property here, and a color-only binding could never become one.
+				// The row calls Kadence_Blocks_CSS::render_border_styles() WITHOUT $single_styles, which takes
+				// the shorthand path: with a border width set it emits `border-top: <width> <style> <color>`,
+				// defaulting an unset color to `transparent` (see that method's $value_defaults). That shorthand
+				// beats a block-default `border-color` rule on both surfaces — inline in the editor, later
+				// source order at equal specificity on the front end — so a preset's color has no path to the
+				// page; with NO width set no border renders at all and a color is invisible by definition. The
+				// Button and the Image pass $single_styles = true, which is exactly why their color bindings do
+				// work. Presetting a row border needs the Button's full width/style/color trio plus a render
+				// bridge that SUPPRESSES the shorthand rather than preceding it.
+				//
+				// @todo SOFT-4234: give the row a preset-able border trio.
 				'borderRadius' => [
-					'token'    => 'semantic.radius.rowlayout',
-					'css_prop' => 'border-radius',
+					'token'            => 'semantic.radius.rowlayout',
+					'css_prop'         => 'border-radius',
+					'css_var'          => 'kb-row-radius',
+					'control_attr'     => 'borderRadius',
+					'responsive_attrs' => [
+						'tablet' => 'tabletBorderRadius',
+						'mobile' => 'mobileBorderRadius',
+					],
 				],
 			],
 		],
@@ -671,22 +771,54 @@ return [
 			// Column (Section): same as Row Layout, but KB renders the background and border on the inner
 			// `.kt-inside-inner-col` child, so the rules target that descendant. column-bg is the
 			// column's own transparent-by-default override seam, distinct from the row's.
-			'block'    => 'kadence/column',
-			'bindings' => [
+			//
+			// Unlike the row, the column CAN take a padding binding in the css_prop shape below: its `padding`
+			// attribute defaults to empty, so a low-specificity block-default rule reaches an untouched column
+			// and any value the user sets still wins. It needs its own zero-seeded semantic to do that safely
+			// (the way semantic.spacing.media-padding seeds the image's at 0) — a column renders no padding
+			// today, so seeding it from a non-zero spacing step would indent every column on the site at
+			// upgrade. That belongs with the Section preset screen.
+			// Every binding below declares an `editor_css_selector` as well, because the column is the one
+			// wired block whose two render paths disagree about the element: `save.js` renders
+			// `.kt-inside-inner-col` and the editor renders `.kadence-inner-column-inner`. The front-end class
+			// does not exist in the canvas at all, so without the override each rule would match nothing there
+			// and a column's default look (and any selected preset) would reach the front end while the editor
+			// showed the block's own unstyled markup. The editor paints its own value inline on that element,
+			// which beats any stylesheet rule, so a column the user has styled by hand is unaffected either way.
+			'block'         => 'kadence/column',
+			'label'         => __( 'Style', 'kadence-blocks' ), // a picker-driven set; this is the editor control's label.
+			'style_library' => [
+				// The Style Library BLOCK PRESETS nav label — distinct from "label" above, which names the
+				// inspector's picker control, not the block. "Section" is what the block is called in the UI;
+				// "column" is only its code name.
+				'label' => __( 'Section', 'kadence-blocks' ),
+			],
+			'bindings'      => [
 				'background'   => [
-					'token'        => 'semantic.color.column-bg',
-					'css_prop'     => 'background-color',
-					'css_selector' => '> .kt-inside-inner-col',
+					'token'               => 'semantic.color.column-bg',
+					'css_prop'            => 'background-color',
+					'css_selector'        => '> .kt-inside-inner-col',
+					'editor_css_selector' => '> .kadence-inner-column-inner',
+					'css_var'             => 'kb-col-bg',
+					'control_attr'        => 'background',
 				],
-				'border'       => [
-					'token'        => 'semantic.color.border',
-					'css_prop'     => 'border-color',
-					'css_selector' => '> .kt-inside-inner-col',
-				],
+				// Border color is NOT a preset property, for exactly the reason it is not one on the row: the
+				// column calls Kadence_Blocks_CSS::render_border_styles() without $single_styles, so its border
+				// output is a shorthand that defaults an unset color to `transparent` and beats a block-default
+				// `border-color` rule on both surfaces. See the row's declaration above for the full account.
+				//
+				// @todo SOFT-4234: give the column a preset-able border trio.
 				'borderRadius' => [
-					'token'        => 'semantic.radius.column',
-					'css_prop'     => 'border-radius',
-					'css_selector' => '> .kt-inside-inner-col',
+					'token'               => 'semantic.radius.column',
+					'css_prop'            => 'border-radius',
+					'css_selector'        => '> .kt-inside-inner-col',
+					'editor_css_selector' => '> .kadence-inner-column-inner',
+					'css_var'             => 'kb-col-radius',
+					'control_attr'        => 'borderRadius',
+					'responsive_attrs'    => [
+						'tablet' => 'tabletBorderRadius',
+						'mobile' => 'mobileBorderRadius',
+					],
 				],
 			],
 		],
@@ -721,17 +853,25 @@ return [
 			// cleared size. The per-block Adapter and the editor attribute-default catalog are unaffected: they
 			// seed the registration default so a never-customized icon carries a concrete size, and this rule
 			// answers only for an explicitly cleared one.
-			'block'    => 'kadence/single-icon',
-			'bindings' => [
+			'block'         => 'kadence/single-icon',
+			'label'         => __( 'Style', 'kadence-blocks' ), // the editor picker control's label.
+			'style_library' => [
+				// The Style Library BLOCK PRESETS nav label — names the block, not the picker control.
+				'label' => __( 'Icon', 'kadence-blocks' ),
+			],
+			'bindings'      => [
 				'color' => [
 					'token'        => 'semantic.color.icon',
 					'css_prop'     => 'color',
 					'css_selector' => '*.kb-svg-icon-wrap',
+					'css_var'      => 'kb-icon-color',
+					'control_attr' => 'color',
 				],
 				'size'  => [
 					'token'            => 'semantic.icon-size.default',
 					'css_prop'         => 'font-size',
 					'css_selector'     => '*.kb-svg-icon-wrap',
+					'css_var'          => 'kb-icon-size',
 					'control_attr'     => 'size',
 					// The block names its per-device size attributes by a prefix convention, which is a naming
 					// rule rather than something safely derivable, so the editor is told them rather than
@@ -766,55 +906,144 @@ return [
 			// INLINE styles on that same element (and font-weight inline on its child), so they keep winning
 			// regardless of this rule's specificity.
 			'block'           => 'kadence/advancedheading',
+			'label'           => __( 'Style', 'kadence-blocks' ), // a picker-driven set; this is the editor control's label.
+			'style_library'   => [
+				// The Style Library BLOCK PRESETS nav label — distinct from "label" above, which names the
+				// inspector's picker control, not the block. "Advanced Text" is the block's UI name;
+				// "advancedheading" is only its code name.
+				'label' => __( 'Advanced Text', 'kadence-blocks' ),
+			],
 			'editor_selector' => '.wp-block-kadence-advancedheading .kadence-advancedheading-text',
 			'bindings'        => [
 				'color'         => [
-					'token'    => 'semantic.color.text',
-					'css_prop' => 'color',
+					'token'        => 'semantic.color.text',
+					'css_prop'     => 'color',
+					'css_var'      => 'kb-heading-color',
+					'control_attr' => 'color',
 				],
 				'background'    => [
-					'token'    => 'semantic.color.heading-bg',
-					'css_prop' => 'background-color',
+					'token'        => 'semantic.color.heading-bg',
+					'css_prop'     => 'background-color',
+					'css_var'      => 'kb-heading-bg',
+					'control_attr' => 'background',
 				],
+				// Font family carries NO css_prop, and that omission is the whole design rather than an
+				// oversight. A css_prop would put font-family into the block-default rule, which emits for
+				// every heading on the site: `font-family: inherit` on the block root overrides the theme's
+				// own h1/h2 element styles, so a heading would stop inheriting the theme font (see
+				// Css_BuilderTest, which asserts no font-family default is emitted). Declaring only the
+				// css_var keeps the block-default rule out of it while still giving Preset\Css_Builder a
+				// variable to set for a SELECTED preset, which the block's own render path reads through
+				// render_preset_typography(). A preset stores the family the typography control picked as a
+				// literal, not a token reference — the font catalog is not a token scale.
+				'typography'    => [
+					'css_var'      => 'kb-heading-font-family',
+					'control_attr' => 'typography',
+				],
+				//
+				// fontHeight and letterSpacing are bound but NOT offered on the Style Library screen: neither
+				// has a primitive scale to pick from (their semantic groups hold one entry per usage, which is
+				// a delivery point rather than a set of choices), and unlike the keyword properties below they
+				// are open numeric ranges, so the only control that would fit is a bare number.
+				//
+				// @todo SOFT-4235: give line-height and letter-spacing a primitive scale.
+				//
+				// fontSize and fontHeight declare NO responsive_attrs, unlike every other responsive property
+				// here: the heading packs all three devices into ONE array attribute (`fontSize[0..2]` is
+				// desktop/tablet/mobile), rather than naming a separate attribute per device. responsive_attrs
+				// maps a breakpoint to an attribute NAME and cannot address an index within one, so a
+				// per-breakpoint preset override has nothing to write through for these two. A preset can still
+				// set their base value. Teaching the editor to address a packed device slot belongs with the
+				// Advanced Text preset screen, where there is a control to verify it against.
 				'fontSize'      => [
-					'token'    => 'semantic.font-size.heading',
-					'css_prop' => 'font-size',
+					'token'        => 'semantic.font-size.heading',
+					'css_prop'     => 'font-size',
+					'css_var'      => 'kb-heading-font-size',
+					'control_attr' => 'fontSize',
 				],
 				'fontHeight'    => [
-					'token'    => 'semantic.line-height.heading',
-					'css_prop' => 'line-height',
+					'token'        => 'semantic.line-height.heading',
+					'css_prop'     => 'line-height',
+					'css_var'      => 'kb-heading-line-height',
+					'control_attr' => 'fontHeight',
 				],
 				'fontWeight'    => [
-					'token'    => 'semantic.font-weight.heading',
-					'css_prop' => 'font-weight',
+					'token'        => 'semantic.font-weight.heading',
+					'css_prop'     => 'font-weight',
+					'css_var'      => 'kb-heading-font-weight',
+					'control_attr' => 'fontWeight',
 				],
 				'letterSpacing' => [
-					'token'    => 'semantic.letter-spacing.heading',
-					'css_prop' => 'letter-spacing',
+					'token'            => 'semantic.letter-spacing.heading',
+					'css_prop'         => 'letter-spacing',
+					'css_var'          => 'kb-heading-letter-spacing',
+					'control_attr'     => 'letterSpacing',
+					'responsive_attrs' => [
+						'tablet' => 'tabletLetterSpacing',
+						'mobile' => 'mobileLetterSpacing',
+					],
 				],
 				'textTransform' => [
-					'token'    => 'semantic.text-transform.heading',
-					'css_prop' => 'text-transform',
+					'token'        => 'semantic.text-transform.heading',
+					'css_prop'     => 'text-transform',
+					'css_var'      => 'kb-heading-text-transform',
+					'control_attr' => 'textTransform',
 				],
 				'padding'       => [
-					'token'    => 'semantic.spacing.heading-padding',
-					'css_prop' => 'padding',
+					'token'            => 'semantic.spacing.heading-padding',
+					'css_prop'         => 'padding',
+					'css_var'          => 'kb-heading-padding',
+					'control_attr'     => 'padding',
+					'responsive_attrs' => [
+						'tablet' => 'tabletPadding',
+						'mobile' => 'mobilePadding',
+					],
 				],
+				// The heading's border trio is the same shape as the Button's — three properties sharing the
+				// nested `borderStyle` composite, each naming its own axis — under the block's own property
+				// keys. Nothing in the editor matches on those keys; it reads the declared axis.
 				'borderColor'   => [
-					'token'    => 'semantic.color.border',
-					'css_prop' => 'border-color',
+					'token'            => 'semantic.color.border',
+					'css_prop'         => 'border-color',
+					'css_var'          => 'kb-heading-border-color',
+					'control_attr'     => 'borderStyle',
+					'axis'             => 'border-color',
+					'responsive_attrs' => [
+						'tablet' => 'tabletBorderStyle',
+						'mobile' => 'mobileBorderStyle',
+					],
 				],
 				'borderWidth'   => [
-					'token'    => 'semantic.border-width.default',
-					'css_prop' => 'border-width',
+					'token'            => 'semantic.border-width.default',
+					'css_prop'         => 'border-width',
+					'css_var'          => 'kb-heading-border-width',
+					'control_attr'     => 'borderStyle',
+					'axis'             => 'border-width',
+					'responsive_attrs' => [
+						'tablet' => 'tabletBorderStyle',
+						'mobile' => 'mobileBorderStyle',
+					],
 				],
 				'borderRadius'  => [
-					'token'    => 'semantic.radius.heading',
-					'css_prop' => 'border-radius',
+					'token'            => 'semantic.radius.heading',
+					'css_prop'         => 'border-radius',
+					'css_var'          => 'kb-heading-radius',
+					'control_attr'     => 'borderRadius',
+					'responsive_attrs' => [
+						'tablet' => 'tabletBorderRadius',
+						'mobile' => 'mobileBorderRadius',
+					],
 				],
 				'borderStyle'   => [
-					'token'    => 'semantic.border-style.default',
-					'css_prop' => 'border-style',
+					'token'            => 'semantic.border-style.default',
+					'css_prop'         => 'border-style',
+					'css_var'          => 'kb-heading-border-style',
+					'control_attr'     => 'borderStyle',
+					'axis'             => 'border-style',
+					'responsive_attrs' => [
+						'tablet' => 'tabletBorderStyle',
+						'mobile' => 'mobileBorderStyle',
+					],
 				],
 			],
 		],

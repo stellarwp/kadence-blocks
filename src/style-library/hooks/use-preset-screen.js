@@ -40,7 +40,7 @@ import { STORE_NAME } from '../store';
  *
  * @since TBD
  *
- * @return {{payload: ?object, isLoading: boolean, loadError: ?Error, rows: Array<Object>, initialValuesFor: Function, isBusy: boolean, addError: ?Object, saveError: ?Object, deleteError: ?Object, orderError: ?Object, clearAddError: Function, clearSaveError: Function, clearDeleteError: Function, clearOrderError: Function, addPreset: Function, savePreset: Function, deletePreset: Function, reorderPresets: Function, isDeletable: Function}}
+ * @return {{feed: ?object, payload: ?object, isLoading: boolean, loadError: ?Error, rows: Array<Object>, initialValuesFor: Function, isBusy: boolean, addError: ?Object, saveError: ?Object, deleteError: ?Object, orderError: ?Object, clearAddError: Function, clearSaveError: Function, clearDeleteError: Function, clearOrderError: Function, addPreset: Function, savePreset: Function, deletePreset: Function, reorderPresets: Function, isDeletable: Function}}
  */
 export function usePresetScreen(library, preset) {
 	// `properties` is deliberately not destructured here: on the preset configs it is a getter that
@@ -265,6 +265,10 @@ export function usePresetScreen(library, preset) {
 	);
 
 	return {
+		// The LIVE feed, not the page-load global: adding a font favorite refreshes this and leaves the
+		// global untouched, so a field building options from the global would not see the new face until
+		// the page reloaded.
+		feed: library?.feed ?? null,
 		payload: presets.payload,
 		isLoading: presets.isLoading,
 		loadError: presets.loadError,

@@ -18,6 +18,7 @@
 import { Button, Dropdown, MenuGroup, MenuItem } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
 import { useDispatch, useSelect } from '@wordpress/data';
+import { getBlockType } from '@wordpress/blocks';
 import { Icon, check } from '@wordpress/icons';
 import { __ } from '@wordpress/i18n';
 import { get } from 'lodash';
@@ -98,9 +99,11 @@ export function PresetButton({ blockName, attributes, setAttributes, library }) 
 	 *
 	 * @return {Object} The reset patch.
 	 */
+	const declaredAttributes = getBlockType(blockName)?.attributes;
+
 	const resetPatch = () =>
 		mappedAttrsFor(blockName, resolvedLibrary).reduce(
-			(acc, { attr, kind }) => Object.assign(acc, resetAttrPatch(attr, kind)),
+			(acc, { attr, kind }) => Object.assign(acc, resetAttrPatch(attr, kind, declaredAttributes)),
 			{}
 		);
 

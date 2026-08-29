@@ -1,17 +1,18 @@
 /**
- * Shared design-token preset picker.
+ * The design-token preset catalog: the accessors every preset surface reads.
  *
  * The catalog is printed by the server-side editor localizer to `window.kadenceDesignTokensPresets`,
  * keyed by token library then by block:
  * `{ active, libraries: { <slug>: { <block>: { default, presets, properties, label } } } }`.
  * Reads take the active token library. A picker-driven block declares one binding set; its selection lives
- * in the block's `kbPreset` string attribute. Both
- * the generic inspector picker (src/early-filters.js) and a block that renders the picker inline in its own
- * Style tab (e.g. kadence/singlebtn) use this so the control stays identical wherever it surfaces.
+ * in the block's `kbPreset` string attribute.
+ *
+ * The control itself is `PresetButton`, rendered either by the generic inspector filter
+ * (src/early-filters.js) or, for a block that places it inside its own inspector layout, by that block
+ * (e.g. kadence/singlebtn). Both read the catalog through this module, so the control stays identical
+ * wherever it surfaces.
  */
 import { get } from 'lodash';
-import { KadenceRadioButtons } from '@kadence/components';
-import { __ } from '@wordpress/i18n';
 
 /**
  * The whole design-token preset catalog the editor localizer prints, or an empty object when the token
@@ -102,6 +103,28 @@ export function blockProperties(name, library) {
  */
 export function blockPresetValues(name, library) {
 	return get(blockEntry(name, library), 'values', {}) || {};
+}
+
+/**
+ * The per-preset CSS REFERENCES for a block's library: `{ <presetSlug>: { <property>: 'var(...)' } }` —
+ * the same strings the projected CSS uses. Empty object when the block offers none.
+ *
+ * The sibling of `blockPresetValues`, for a different job. A literal is what a control compares against
+ * to decide bound-vs-overridden; a reference is what the editor paints with when it has to apply a preset
+ * value itself instead of letting a stylesheet do it. Only the reference follows a per-block color
+ * palette: the projector's `[data-kb-palette]` layer redefines the token variables and the editor mirrors
+ * the block's palette onto its wrapper, so a `var()` chain resolves through whichever palette the block
+ * is on, while a literal was flattened against the default palette before it ever reached the editor.
+ *
+ * @param {string} name      The block name.
+ * @param {string} [library] The token library slug; defaults to the active library.
+ *
+ * @since TBD
+ *
+ * @return {Object} The per-preset reference map.
+ */
+export function blockPresetReferences(name, library) {
+	return get(blockEntry(name, library), 'references', {}) || {};
 }
 
 /**
@@ -241,44 +264,4 @@ export function removePreset(name, library, slug) {
 
 	delete (entry.values || {})[slug];
 	delete (entry.responsive || {})[slug];
-}
-
-/**
- * The preset picker for a block. Renders nothing when the block has no presets in the library.
- * Selecting an option calls onChange with the chosen preset slug (the caller writes it into the block's
- * kbPreset attribute); an empty value selects the block's $default look.
- *
- * @param {Object}   props             The component props.
- * @param {string}   props.name        The block name, used to read its presets from the catalog.
- * @param {string}   props.value       The currently selected preset slug.
- * @param {Function} props.onChange    Called with the selected slug.
- * @param {string}   [props.library]   The token library the block is on; defaults to the active library.
- * @param {string}   [props.label]     The control label; defaults to the block's declared label, then a generic fallback.
- * @param {string}   [props.className] The control class.
- *
- * @return {Object|null} The picker element, or null when the block has no presets.
- */
-export function PresetPicker({ name, value, onChange, library, label, className }) {
-	const presets = blockPresets(name, library);
-
-	if (!presets.length) {
-		return null;
-	}
-
-	const options = [
-		{ label: __('Default', 'kadence-blocks'), value: '' },
-		...presets.map((preset) => ({ label: preset.label, value: preset.slug })),
-	];
-
-	return (
-		<KadenceRadioButtons
-			label={label || blockPresetLabel(name, library) || __('Preset', 'kadence-blocks')}
-			className={className || 'kb-preset-picker'}
-			value={value || ''}
-			options={options}
-			hideLabel={false}
-			wrap={true}
-			onChange={onChange}
-		/>
-	);
 }

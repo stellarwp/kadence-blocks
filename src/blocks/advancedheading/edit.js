@@ -78,6 +78,8 @@ import Typed from 'typed.js';
  * Import Css
  */
 import './editor.scss';
+import { presetPropertyValueForDevice } from '../../extension/token-indicators';
+import { presetFontVariant } from './preset-font-variant';
 import metadata from './block.json';
 /**
  * Internal block libraries
@@ -516,7 +518,23 @@ function KadenceAdvancedHeading(props) {
 		richTextFormats = richTextFormatsBase;
 	}
 
-	const renderTypography = typography && !typography.includes(',') ? "'" + typography + "'" : typography;
+	// The family a heading with none of its own falls back to: whatever the SELECTED preset carries.
+	// A preset stores the family as a literal (the font catalog is not a token scale), so this is the
+	// name itself rather than a token reference, and it is quoted for CSS exactly like the block's own.
+	// The front end does the same through `render_preset_typography()`, which points font-family at the
+	// preset variable only when the block's own `typography` is empty — the two agree by construction.
+	const presetTypography = presetPropertyValueForDevice(metadata.name, 'typography', attributes);
+	// The weight to ASK GOOGLE FOR alongside that family. The preset's weight already reaches the page
+	// as a `font-weight` declaration through its own binding, but the face it names has to be requested
+	// too — a family loaded at 400 with `font-weight: 700` over it renders as a synthesized bold. An
+	// explicit variant on the block still wins, then a weight the block sets itself, then the preset's.
+	const presetFontWeight = presetPropertyValueForDevice(metadata.name, 'fontWeight', attributes);
+	const presetVariant = fontVariant || presetFontVariant(fontWeight || presetFontWeight);
+	const effectiveTypography = typography || presetTypography || '';
+	const renderTypography =
+		effectiveTypography && !effectiveTypography.includes(',')
+			? "'" + effectiveTypography + "'"
+			: effectiveTypography;
 	const markBGString = markBG ? KadenceColorOutput(markBG, markBGOpacity) : '';
 	const markBorderString = markBorder ? KadenceColorOutput(markBorder, markBorderOpacity) : '';
 	const textColorClass = getColorClassName('color', colorClass);
@@ -1176,7 +1194,7 @@ function KadenceAdvancedHeading(props) {
 							? previewLetterSpacing + (letterSpacingType ? letterSpacingType : 'px')
 							: undefined,
 						textTransform: textTransform ? textTransform : undefined,
-						fontFamily: typography ? renderTypography : '',
+						fontFamily: effectiveTypography ? renderTypography : '',
 						textShadow: enableTextShadow
 							? `${previewHOffset}px ${previewVOffset}px ${previewBlur}px ${
 									isRGBA(previewColorTextShadow)
@@ -1555,7 +1573,7 @@ function KadenceAdvancedHeading(props) {
 							label={__('Color', 'kadence-blocks')}
 							value={color ? color : ''}
 							default={''}
-							onChange={(value) => setAttributes({ color: value })}
+							onChange={(value) => setAttributes({ color: value, colorClass: '' })}
 							onClassChange={(value) => setAttributes({ colorClass: value })}
 						/>
 					)}
@@ -1718,14 +1736,18 @@ function KadenceAdvancedHeading(props) {
 													label={__('Color', 'kadence-blocks')}
 													value={color ? color : ''}
 													default={''}
-													onChange={(value) => setAttributes({ color: value })}
+													onChange={(value) =>
+														setAttributes({ color: value, colorClass: '' })
+													}
 													onClassChange={(value) => setAttributes({ colorClass: value })}
 												/>
 												<PopColorControl
 													label={__('Background Color', 'kadence-blocks')}
 													value={background ? background : ''}
 													default={''}
-													onChange={(value) => setAttributes({ background: value })}
+													onChange={(value) =>
+														setAttributes({ background: value, backgroundColorClass: '' })
+													}
 													onClassChange={(value) =>
 														setAttributes({ backgroundColorClass: value })
 													}
@@ -2730,6 +2752,18 @@ function KadenceAdvancedHeading(props) {
 				</div>
 			)}
 			{!kadenceAnimation && (link ? headingLinkContent : headingContent)}
+			{/*
+			 * The preset's family is loaded on the same terms as the block's own. Without this a heading
+			 * that takes its family from a preset renders in a fallback face: the loader is driven by the
+			 * `typography` attribute, which is empty in exactly the case the preset supplies one.
+			 */}
+			{!typography && presetTypography && (
+				<KadenceWebfontLoader
+					typography={[{ family: presetTypography, variant: presetVariant }]}
+					clientId={clientId}
+					id={'adv-heading-preset'}
+				/>
+			)}
 			{googleFont && typography && (
 				<KadenceWebfontLoader
 					typography={[{ family: typography, variant: fontVariant ? fontVariant : '' }]}

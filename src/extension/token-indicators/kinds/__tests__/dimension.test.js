@@ -31,6 +31,59 @@ describe('matchesPreset dimension', () => {
 	});
 });
 
+describe('matchesPreset dimension for a control that stores a raw number', () => {
+	/**
+	 * `kadence/single-icon`'s `size` is written straight into the SVG's geometry attributes, so it
+	 * stores a raw number with no companion unit attribute, and its default is seeded from the token by
+	 * PHP's rem-to-px conversion. A never-touched icon therefore holds 24 while its preset resolves to
+	 * `1.5rem`; compared as strings those disagree and the control would report as overridden.
+	 *
+	 * @return {void}
+	 */
+	it('matches a seeded pixel number against a rem preset value', () => {
+		expect(matchesPreset('dimension', 24, '', '1.5rem')).toBe(true);
+	});
+
+	/**
+	 * The same conversion applies to a value the user typed, not just the seeded default.
+	 *
+	 * @return {void}
+	 */
+	it('matches a unitless number against an equivalent px preset value', () => {
+		expect(matchesPreset('dimension', '36', '', '36px')).toBe(true);
+	});
+
+	/**
+	 * The pixel path must not turn a genuine override into a match.
+	 *
+	 * @return {void}
+	 */
+	it('does not match a unitless number that differs from the converted preset value', () => {
+		expect(matchesPreset('dimension', 32, '', '1.5rem')).toBe(false);
+	});
+
+	/**
+	 * A control that DOES carry a unit attribute keeps the strict same-unit compare — a rem value
+	 * against a px preset stays overridden rather than being silently converted into agreement.
+	 *
+	 * @return {void}
+	 */
+	it('leaves a unit-bearing control on the strict same-unit compare', () => {
+		expect(matchesPreset('dimension', '1.5', 'rem', '24px')).toBe(false);
+	});
+
+	/**
+	 * A preset literal the shared conversion declines — a percentage, a keyword, a calc() — has no
+	 * pixel equivalent, so there is nothing to agree with and the control reads as overridden.
+	 *
+	 * @return {void}
+	 */
+	it('does not match when the preset literal has no pixel equivalent', () => {
+		expect(matchesPreset('dimension', 24, '', '50%')).toBe(false);
+		expect(matchesPreset('dimension', 24, '', 'auto')).toBe(false);
+	});
+});
+
 describe('deriveMeasureMode', () => {
 	it('reads all-empty corners on a scalar preset as linked', () => {
 		expect(deriveMeasureMode(['', '', '', ''], '0.5rem')).toBe('linked');

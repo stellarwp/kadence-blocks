@@ -23,6 +23,7 @@ import { EditorScalarControl } from '../../extension/design-tokens/components/Ed
 import { tokenLiteral } from '../../extension/design-tokens/token-literals';
 import { activeLibrary } from '../../extension/preset-picker';
 import { measureAttrsForDevice } from '../../extension/token-indicators/normalize';
+import { presetPropertyValueForDevice } from '../../extension/token-indicators';
 import { boundTokenAliasForControl, pickableTokensForControl } from '../../extension/token-picker';
 import { PreviewIcon } from './preview-icon';
 import { AdvancedSettings } from './advanced-settings';
@@ -108,10 +109,14 @@ function KadenceSingleIcon(props) {
 	// fallback rather than leaving the block with no size control at all.
 	const iconSizeTokens = pickableTokensForControl(name, 'size') || [];
 	// What the active device falls back to when it stores nothing: the breakpoints ABOVE it, in cascade
-	// order, and then the icon-size token the binding names. The device's own value is deliberately left
-	// out — this is what the field reports when it is unset, so including it would just echo the value
-	// already on screen. Tablet and Mobile inherit; Desktop has nothing above it and lands on the token,
-	// which is the value the front end's block-default rule resolves for a cleared size.
+	// order, then the SELECTED PRESET's size, then the icon-size token the binding names. The device's own
+	// value is deliberately left out — this is what the field reports when it is unset, so including it
+	// would just echo the value already on screen. Tablet and Mobile inherit; Desktop has nothing above it.
+	//
+	// The preset sits ahead of the token because that is the order the rendered CSS resolves in: the
+	// preset's scoped rule sets `--kb-icon-size`, which the block-default rule reads before falling through
+	// to the token. Reporting the token here would tell a site owner their unset field inherits one size
+	// while the block renders another.
 	const inheritedSizeChain = {
 		Tablet: [size],
 		Mobile: [tabletSize, size],
@@ -119,7 +124,11 @@ function KadenceSingleIcon(props) {
 	const inheritedSize = (inheritedSizeChain[previewDevice] || []).find(
 		(value) => value !== undefined && value !== null && value !== ''
 	);
-	const iconSizeDefault = inheritedSize ?? tokenLiteral(boundTokenAliasForControl(name, 'size'), activeLibrary());
+	const presetSize = presetPropertyValueForDevice(name, 'size', attributes, undefined, previewDevice);
+	const iconSizeDefault =
+		inheritedSize ??
+		(presetSize ? tokenLiteral(presetSize, activeLibrary()) : undefined) ??
+		tokenLiteral(boundTokenAliasForControl(name, 'size'), activeLibrary());
 
 	useEffect(() => {
 		setAttributes({ inQueryBlock: getInQueryBlock(context, inQueryBlock) });

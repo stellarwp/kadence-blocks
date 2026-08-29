@@ -316,18 +316,21 @@ describe('capturedTokens border axis properties', () => {
 								kind: 'dimension',
 								token: 'semantic.border-width.default',
 								control_attr: 'borderStyle',
+								axis: 'border-width',
 							},
 							{
 								key: 'button-border-style',
 								kind: 'color',
 								token: 'semantic.border-style.default',
 								control_attr: 'borderStyle',
+								axis: 'border-style',
 							},
 							{
 								key: 'button-border-color',
 								kind: 'color',
 								token: 'semantic.color.border',
 								control_attr: 'borderStyle',
+								axis: 'border-color',
 							},
 						],
 						values: {

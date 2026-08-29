@@ -95,6 +95,56 @@ final class BindingTest extends TestCase {
 
 		$this->assertNull( $binding->css_prop() );
 		$this->assertNull( $binding->css_selector() );
+		$this->assertNull( $binding->editor_css_selector() );
+	}
+
+	/**
+	 * A declared editor_css_selector replaces css_selector for the editor build alone, for a block whose
+	 * editor markup renders the bound property on a different descendant than its saved markup does.
+	 *
+	 * @return void
+	 */
+	public function testEditorCssSelectorOverridesTheFrontEndSelector(): void {
+		$binding = Binding::from_array(
+			'background',
+			[
+				'token'               => 'semantic.color.column-bg',
+				'css_prop'            => 'background-color',
+				'css_selector'        => '> .kt-inside-inner-col',
+				'editor_css_selector' => '> .kadence-inner-column-inner',
+			]
+		);
+
+		$this->assertSame( '> .kt-inside-inner-col', $binding->css_selector() );
+		$this->assertSame( '> .kadence-inner-column-inner', $binding->editor_css_selector() );
+	}
+
+	/**
+	 * With no editor_css_selector declared, the editor reuses the front-end selector — the right answer
+	 * for every block whose two render paths agree, and what keeps the override opt-in.
+	 *
+	 * @return void
+	 */
+	public function testEditorCssSelectorFallsBackToTheFrontEndSelector(): void {
+		$binding = Binding::from_array(
+			'borderRadius',
+			[
+				'token'        => 'semantic.radius.media',
+				'css_prop'     => 'border-radius',
+				'css_selector' => ' img',
+			]
+		);
+
+		$this->assertSame( ' img', $binding->editor_css_selector() );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testItThrowsWhenEditorCssSelectorIsNotAString(): void {
+		$this->expectException( InvalidArgumentException::class );
+
+		Binding::from_array( 'background', [ 'editor_css_selector' => [] ] );
 	}
 
 	/**
@@ -290,6 +340,56 @@ final class BindingTest extends TestCase {
 			[
 				'kadence_slot' => 'palette-btn-bg',
 				'control_attr' => '',
+			]
+		);
+	}
+
+	/**
+	 * A binding parses the composite-control axis into its own field, exposed via axis(), separate from
+	 * the projection targets.
+	 *
+	 * @return void
+	 */
+	public function testItParsesTheAxisField(): void {
+		$binding = Binding::from_array(
+			'button-border-width',
+			[
+				'token'        => 'semantic.border-width.default',
+				'control_attr' => 'borderStyle',
+				'axis'         => 'border-width',
+			]
+		);
+
+		$this->assertSame( 'border-width', $binding->axis() );
+		// Editor-only metadata, like control_attr: it must not leak into the projection targets.
+		$this->assertArrayNotHasKey( 'axis', $binding->projections );
+	}
+
+	/**
+	 * A binding with no axis declaration exposes null — the ordinary case, where the control attribute
+	 * holds the property's own value rather than one slot of a composite.
+	 *
+	 * @return void
+	 */
+	public function testAxisIsNullWhenAbsent(): void {
+		$binding = Binding::from_array( 'button-bg', [ 'kadence_slot' => 'palette-btn-bg' ] );
+
+		$this->assertNull( $binding->axis() );
+	}
+
+	/**
+	 * An empty-string axis is rejected, matching the control_attr validation.
+	 *
+	 * @return void
+	 */
+	public function testItRejectsAnEmptyAxis(): void {
+		$this->expectException( InvalidArgumentException::class );
+
+		Binding::from_array(
+			'button-border-width',
+			[
+				'token' => 'semantic.border-width.default',
+				'axis'  => '',
 			]
 		);
 	}

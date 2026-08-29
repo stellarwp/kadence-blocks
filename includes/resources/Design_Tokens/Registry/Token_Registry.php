@@ -1,5 +1,4 @@
 <?php declare( strict_types=1 );
-// cspell:ignore advancedbtn .
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Registry;
 
@@ -234,7 +233,7 @@ final class Token_Registry {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $block The block name, e.g. "kadence/advancedbtn".
+	 * @param string $block The block name, e.g. "kadence/singlebtn".
 	 *
 	 * @return Preset_Bindings|null
 	 */

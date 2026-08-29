@@ -21,6 +21,8 @@ final class Preset_CatalogTest extends TestCase {
 
 	private const ICON = 'kadence/single-icon';
 
+	private const HEADING = 'kadence/advancedheading';
+
 	/**
 	 * @var Preset_Catalog
 	 */
@@ -88,6 +90,51 @@ final class Preset_CatalogTest extends TestCase {
 
 		$this->assertSame( 'color', $kinds['button-bg'] );
 		$this->assertSame( 'dimension', $kinds['button-radius'] );
+	}
+
+
+
+	/**
+	 * Alongside the flattened literals, the catalog carries each preset's CSS REFERENCES — the same
+	 * `var()` chains the projected CSS uses. The editor needs both: a literal to compare a control against,
+	 * and a reference to paint with when it applies a preset value itself, because only the reference
+	 * resolves through the projector's per-block color-palette layer.
+	 *
+	 * @return void
+	 */
+	public function testItSurfacesPerPresetCssReferencesAlongsideLiterals(): void {
+		$button = $this->catalog->all()['libraries'][ Token_Store::default_slug() ][ self::BUTTON ];
+
+		$this->assertArrayHasKey( 'primary', $button['references'] );
+
+		$reference = $button['references']['primary']['button-bg'];
+		$literal   = $button['values']['primary']['button-bg'];
+
+		// The reference is a var() chain; the literal is the flattened value. Both describe the same
+		// property, and the difference between them is the whole point of carrying both.
+		$this->assertStringStartsWith( 'var(--kb-token--', $reference );
+		$this->assertStringNotContainsString( 'var(', $literal );
+	}
+
+	/**
+	 * The surface carries each property's declared composite-control axis, so the editor can tell which
+	 * slot of a shared nested attribute a property owns without matching against property names. The three
+	 * border properties declare one; every other property declares none.
+	 *
+	 * @return void
+	 */
+	public function testItSurfacesTheDeclaredCompositeControlAxis(): void {
+		$properties = $this->catalog->all()['libraries'][ Token_Store::default_slug() ][ self::BUTTON ]['properties'];
+
+		$axes = wp_list_pluck( $properties, 'axis', 'key' );
+
+		$this->assertSame( 'border-width', $axes['button-border-width'] );
+		$this->assertSame( 'border-style', $axes['button-border-style'] );
+		$this->assertSame( 'border-color', $axes['button-border-color'] );
+
+		// A property whose control attribute holds its own value declares no axis.
+		$this->assertNull( $axes['button-bg'] );
+		$this->assertNull( $axes['button-radius'] );
 	}
 
 	/**
@@ -171,19 +218,58 @@ final class Preset_CatalogTest extends TestCase {
 	 * @return void
 	 */
 	public function testABlockWithoutAPickerLabelCarriesPropertiesButNoPresetOptions(): void {
-		$library = $this->catalog->all()['libraries'][ Token_Store::default_slug() ];
+		// Two blocks registered here rather than shipped ones: every shipped block now declares a label,
+		// and the separation this asserts is the contract a third-party block wiring tokens without a
+		// preset UI depends on. Both are given a preset in the document, so neither is skipped for having
+		// none and the only difference between them is the label.
+		$bindings = [
+			'background' => [
+				'token'        => 'semantic.color.text',
+				'css_prop'     => 'background-color',
+				'control_attr' => 'background',
+			],
+		];
 
-		$this->assertArrayHasKey( self::ICON, $library );
-		$this->assertNull( $library[ self::ICON ]['label'] );
-		$this->assertSame( [], $library[ self::ICON ]['presets'] );
+		$registry = new Token_Registry();
+		$registry->register_preset_bindings(
+			[
+				'block'    => 'my-vendor/default-look-only',
+				'bindings' => $bindings,
+			]
+		);
+		$registry->register_preset_bindings(
+			[
+				'block'    => 'my-vendor/picker-driven',
+				'label'    => 'Style',
+				'bindings' => $bindings,
+			]
+		);
 
-		// The surface the token picker keys off is present regardless, as is the default the controls compare
-		// against.
-		$this->assertNotEmpty( $library[ self::ICON ]['properties'] );
-		$this->assertSame( 'default', $library[ self::ICON ]['default'] );
+		$this->store->save_document(
+			'{"$extensions":{"com.kadence.designTokens":{"presets":{'
+			. '"my-vendor/default-look-only":{"$default":"only","only":{"label":"Only","tokens":{"background":"#ff0000"}}},'
+			. '"my-vendor/picker-driven":{"$default":"only","only":{"label":"Only","tokens":{"background":"#ff0000"}}}'
+			. '}}}}'
+		);
 
-		// The picker-driven Button is unaffected: it declares a label, so it still carries its options.
-		$this->assertNotEmpty( $library[ self::BUTTON ]['presets'] );
+		$library = ( new Preset_Catalog(
+			$registry,
+			$this->container->get( Preset_Resolver::class ),
+			$this->store,
+			$this->container->get( Active_Token_Library_Store::class ),
+			$this->container->get( Effective_Presets::class )
+		) )->all()['libraries'][ Token_Store::default_slug() ];
+
+		$unlabeled = $library['my-vendor/default-look-only'];
+
+		$this->assertNull( $unlabeled['label'] );
+		$this->assertSame( [], $unlabeled['presets'], 'A block with no picker label must offer no preset options.' );
+
+		// The surface the token picker keys off is present regardless of the label.
+		$this->assertNotEmpty( $unlabeled['properties'] );
+
+		// The labeled sibling, identical but for the label, does carry its options.
+		$this->assertNotEmpty( $library['my-vendor/picker-driven']['presets'] );
 	}
 
 	/**

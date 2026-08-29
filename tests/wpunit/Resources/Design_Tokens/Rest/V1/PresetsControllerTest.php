@@ -185,6 +185,80 @@ final class PresetsControllerTest extends TestCase {
 	}
 
 	/**
+	 * A block's shipped "default" preset is editable, even though "default" is the literal the block's
+	 * `/default` sub-route uses. Every block but the Button ships its baseline look under exactly that slug,
+	 * so a site owner editing it is the ordinary case — refusing it would leave the one preset those blocks
+	 * have permanently read-only.
+	 *
+	 * @return void
+	 */
+	public function testTheShippedDefaultPresetIsEditable(): void {
+		$response = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				'kadence/single-icon',
+				[
+					'preset' => 'default',
+					'label'  => 'Default',
+					'tokens' => [ 'color' => '#ff0000' ],
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+
+		$data = $response->get_data();
+
+		$this->assertArrayHasKey( 'default', $data['presets'] );
+		$this->assertSame( '#ff0000', $data['presets']['default']['tokens']['color'] );
+	}
+
+	/**
+	 * Minting a NEW preset under a reserved slug is still refused: the per-preset item route could never
+	 * address it, so it would be undeletable. The Button ships no "default", so this is a creation.
+	 *
+	 * @return void
+	 */
+	public function testCreatingANewPresetUnderAReservedSlugIsRefused(): void {
+		$response = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'preset' => 'default',
+					'label'  => 'Default',
+					'tokens' => $this->button_tokens(),
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $response );
+		$this->assertSame( 'rest_design_tokens_reserved_slug', $response->get_error_code() );
+	}
+
+	/**
+	 * "order" is reserved for every block: nothing ships a preset under it, so any write is a creation.
+	 *
+	 * @return void
+	 */
+	public function testCreatingAPresetNamedOrderIsRefused(): void {
+		$response = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'preset' => 'order',
+					'label'  => 'Order',
+					'tokens' => $this->button_tokens(),
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $response );
+		$this->assertSame( 'rest_design_tokens_reserved_slug', $response->get_error_code() );
+	}
+
+	/**
 	 * A create deep-merges a single preset into the block's presets, leaving the baseline siblings and the default in
 	 * place.
 	 *

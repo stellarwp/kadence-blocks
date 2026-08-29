@@ -2,7 +2,9 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Block_Default_Css;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Preset\Css_Builder as Preset_Css_Builder;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Value;
+use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Binding;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
@@ -44,7 +46,9 @@ use RuntimeException;
  * approach for these families. Nothing here is `!important`.
  *
  * Only a binding that declares a `css_prop` and references a token contributes, and only the block's
- * `$default` preset is read (named presets are the selectable-preset projector's job). Pure: no
+ * `$default` preset is read. A binding that ALSO declares a `css_var` has its declaration wrapped in that
+ * variable — `var(--<css_var>, var(<token-var>, <literal>))` — which is the seam through which a block's
+ * *selected* preset reaches a property delivered this way; see {@see self::declaration_value()}. Pure: no
  * WordPress calls; the wiring lives in {@see Projector}.
  *
  * @since TBD
@@ -144,10 +148,13 @@ final class Css_Builder {
 
 	/**
 	 * Build the EDITOR-scoped version of the block-default CSS for a token library. Identical to {@see self::css()}
-	 * for every block that declares no `editor_selector` (e.g. Image, Single Icon, Row Layout, Column) — the
-	 * front-end `.wp-block-*` selector is reused verbatim. For a block that declares one (currently Advanced
-	 * Heading), the rule targets `.editor-styles-wrapper <editor_selector>` instead, so the default lands on
-	 * the element the editor actually renders the bindings against rather than the `useBlockProps()` wrapper.
+	 * for every block whose editor markup matches its saved markup (e.g. Image, Single Icon, Row Layout) — the
+	 * front-end selector is reused verbatim. Two independent declarations move it where they differ. A block
+	 * declaring a set-level `editor_selector` (currently Advanced Heading) has its rule target
+	 * `.editor-styles-wrapper <editor_selector>` instead, so the default lands on the element the editor
+	 * actually renders the bindings against rather than the `useBlockProps()` wrapper. A binding declaring
+	 * `editor_css_selector` (currently the Section's, whose editor renders `.kadence-inner-column-inner` where
+	 * `save.js` renders `.kt-inside-inner-col`) swaps the DESCENDANT suffix for that property alone.
 	 *
 	 * @since TBD
 	 *
@@ -178,8 +185,8 @@ final class Css_Builder {
 	/**
 	 * Cached version of editor_css(): same memo/object-cache mechanics as {@see self::css_for_version()}, but
 	 * keyed under a distinct `editor:` context so the editor-scoped string (which differs from the front-end
-	 * one for any block declaring an `editor_selector`) never collides with, or gets served in place of, the
-	 * front-end cache entry.
+	 * one for any block declaring an `editor_selector`, or any binding declaring an `editor_css_selector`)
+	 * never collides with, or gets served in place of, the front-end cache entry.
 	 *
 	 * @since TBD
 	 *
@@ -193,8 +200,9 @@ final class Css_Builder {
 	}
 
 	/**
-	 * Shared build for both {@see self::css()} and {@see self::editor_css()}; only the selector base differs
-	 * per block, per the presence of an `editor_selector` declaration.
+	 * Shared build for both {@see self::css()} and {@see self::editor_css()}; only the selector differs, per
+	 * block from a set-level `editor_selector` declaration and per property from a binding's
+	 * `editor_css_selector`.
 	 *
 	 * @since TBD
 	 *
@@ -274,10 +282,12 @@ final class Css_Builder {
 					continue;
 				}
 
-				$var      = $this->registry->css_var_for( $token );
-				$suffix   = $this->selector_suffix( $binding->css_selector() );
+				$var    = $this->registry->css_var_for( $token );
+				$suffix = $this->selector_suffix(
+					$editor ? $binding->editor_css_selector() : $binding->css_selector()
+				);
 
-				$by_suffix[ $suffix ][] = $prop . ':var(' . $var . ',' . $this->sanitize_value( $literal ) . ')';
+				$by_suffix[ $suffix ][] = $prop . ':' . $this->declaration_value( $binding, $var, $literal );
 			}
 
 			foreach ( $by_suffix as $suffix => $declarations ) {
@@ -286,6 +296,42 @@ final class Css_Builder {
 		}
 
 		return $css;
+	}
+
+	/**
+	 * The declaration value for one bound property: the token variable with the block's own literal as its
+	 * fallback, wrapped in the binding's `css_var` when it declares one.
+	 *
+	 * A binding that names no `css_var` yields `var(<token-var>, <literal>)` — the block's default follows the
+	 * token and nothing else can vary it. A binding that names one yields
+	 * `var(--<css_var>, var(<token-var>, <literal>))`, which is what lets a SELECTED preset reach a property
+	 * delivered this way: {@see Preset_Css_Builder} emits `.wp-block-<block>.kb-preset--<preset>` rules setting
+	 * `--<css_var>` on the block root, and custom properties inherit, so the value reaches this rule even when
+	 * it targets a descendant (`img`, `> .kt-inside-inner-col`, `*.kb-svg-icon-wrap`). Without the wrapper the
+	 * selectable-preset projector has no way in: a `css_prop` binding never reaches it, so picking a preset
+	 * would change nothing on the page.
+	 *
+	 * The fallback ORDER is what keeps this upgrade-safe. With no preset selected `--<css_var>` is undefined,
+	 * the browser falls through to the token variable, and the declaration resolves to exactly the value it
+	 * resolved to before the wrapper existed.
+	 *
+	 * @since TBD
+	 *
+	 * @param Binding $binding The binding being rendered.
+	 * @param string  $var     The referenced token's CSS variable, including its leading `--`.
+	 * @param string  $literal The resolved literal, used as the token variable's fallback.
+	 *
+	 * @return string The declaration value.
+	 */
+	private function declaration_value( Binding $binding, string $var, string $literal ): string {
+		$value   = 'var(' . $var . ',' . $this->sanitize_value( $literal ) . ')';
+		$css_var = $binding->css_var();
+
+		if ( $css_var === null ) {
+			return $value;
+		}
+
+		return 'var(--' . $css_var . ',' . $value . ')';
 	}
 
 	/**

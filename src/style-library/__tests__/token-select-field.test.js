@@ -40,23 +40,42 @@ afterEach(() => {
 
 describe('TokenSelectField token pool', () => {
 	/**
-	 * The field's current value is handed to the pool as `selected`, which exempts it from the
-	 * primitive narrowing. Without it a bound semantic token is filtered out of its own picker, so
-	 * the field renders with its current value absent from the list.
+	 * A bound PRIMITIVE is handed to the pool as `selected`, which exempts it from the narrowing so it
+	 * survives even when it sits outside the role's own scale.
 	 *
 	 * @return {void}
 	 */
-	it('passes the bound value through as the selected token', () => {
+	it('passes a bound primitive through as the selected token', () => {
 		act(() =>
 			root.render(
 				createElement(TokenSelectField, {
 					field: { tokenType: 'dimension', role: 'radius', label: 'Radius' },
-					value: 'semantic.dimension.radius-control',
+					value: 'primitive.dimension.radius.sm',
 					onChange: jest.fn(),
 				})
 			)
 		);
 
-		expect(pickableTokensForType).toHaveBeenCalledWith('dimension', 'radius', 'semantic.dimension.radius-control');
+		expect(pickableTokensForType).toHaveBeenCalledWith('dimension', 'radius', 'primitive.dimension.radius.sm');
+	});
+
+	/**
+	 * A bound SEMANTIC is not a selection — the pool offers primitives only — so it is neither exempted
+	 * into the list nor shown as the field's value. Its name never reaches the picker.
+	 *
+	 * @return {void}
+	 */
+	it('treats a bound semantic as unset rather than exempting it into the list', () => {
+		act(() =>
+			root.render(
+				createElement(TokenSelectField, {
+					field: { tokenType: 'dimension', role: 'radius', label: 'Radius' },
+					value: 'semantic.radius.control',
+					onChange: jest.fn(),
+				})
+			)
+		);
+
+		expect(pickableTokensForType).toHaveBeenCalledWith('dimension', 'radius', '');
 	});
 });

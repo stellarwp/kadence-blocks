@@ -1,3 +1,4 @@
+// cspell:ignore Abril Fatface -- a Google font family named as a concrete example.
 /**
  * The Typography screen's pure helpers: mapping the library's favorite families into the FONT
  * selector's options, reading a fluid font-size step's authored scalar out of its resolved
@@ -10,6 +11,11 @@
  * variable is emitted for it. It only pins a family to the top of a font picker, here and in the
  * block editor, so a site is not searching a ~1,900-name catalog for the same face every time.
  */
+
+/**
+ * WordPress dependencies
+ */
+import { __ } from '@wordpress/i18n';
 
 /**
  * Strip a pair of wrapping quotes (single or double) from a font-family name, the same trimming a
@@ -150,7 +156,8 @@ export function fontSizeDisplayValue(value) {
  *
  * @since TBD
  *
- * @return {{google: string[], custom: string[]}} The catalog, or two empty lists when unavailable.
+ * @return {{google: string[], custom: string[], weights: Record<string, string[]>}} The catalog, or
+ *         two empty lists and an empty weight map when unavailable.
  */
 export function getFontCatalog() {
 	const catalog = window.kadenceDesignTokensFontCatalog;
@@ -158,7 +165,110 @@ export function getFontCatalog() {
 	return {
 		google: Array.isArray(catalog?.google) ? catalog.google : [],
 		custom: Array.isArray(catalog?.custom) ? catalog.custom : [],
+		weights: catalog?.weights && typeof catalog.weights === 'object' ? catalog.weights : {},
 	};
+}
+
+/**
+ * The font-family picker's full option list: the library's favorites first, then every Google family,
+ * then every site-registered custom family.
+ *
+ * Favorites lead and carry a badge, so the faces a site has kept sit at the top of a list otherwise
+ * nearly two thousand names long. Every name appears exactly once, matched case-insensitively across
+ * all three sources — the custom list is diffed against the Google one server-side by exact string, so
+ * a theme registering `inter` alongside Google's `Inter` reaches here as two names for one font.
+ *
+ * This mirrors the editor's own `fontCatalogOptions()`, which builds the same list from editor globals
+ * that do not exist on this page. The theme's "inherit heading/body font" rows are deliberately absent:
+ * they resolve through custom properties the block editor's canvas carries, and a preset storing one
+ * would name a variable rather than a face.
+ *
+ * @param {{ favoriteFonts?: string[] }} feed The design-tokens feed.
+ *
+ * @since TBD
+ *
+ * @return {Array<{value: string, label: string, badge?: string}>} The option list.
+ */
+export function fontCatalogOptions(feed) {
+	const seen = new Set();
+	const unique = (name) => {
+		const key = unquoteFamily(String(name ?? '').trim()).toLowerCase();
+
+		if (key === '' || seen.has(key)) {
+			return false;
+		}
+
+		seen.add(key);
+
+		return true;
+	};
+
+	const { google, custom } = getFontCatalog();
+
+	return [
+		...fontOptions(feed)
+			.map((font) => font.label)
+			.filter(unique)
+			.map((name) => ({ value: name, label: name, badge: __('Favorite', 'kadence-blocks') })),
+		...google.filter(unique).map((name) => ({ value: name, label: name })),
+		...custom.filter(unique).map((name) => ({ value: name, label: name, badge: __('Custom', 'kadence-blocks') })),
+	];
+}
+
+/**
+ * The weights a family actually ships, or `null` when the catalog knows nothing about it.
+ *
+ * `null` and `[]` mean different things and the caller needs both: a custom font contributes no weight
+ * data at all (the custom-fonts filter carries none), while a Google family the catalog does know is
+ * always listed with at least one weight. A control offering 100-900 for every family promises faces
+ * most families do not ship -- Abril Fatface ships only 400 -- and the browser answers with a
+ * synthesized approximation rather than the design system's own type.
+ *
+ * Matched case-insensitively and ignoring wrapping quotes, the way `findFontByFamily` matches, so a
+ * stored `"Abril Fatface"` finds the catalog's `Abril Fatface`.
+ *
+ * @param {string} family The family name.
+ *
+ * @since TBD
+ *
+ * @return {?string[]} The family's weights, or null when the catalog does not know it.
+ */
+export function fontWeightsFor(family) {
+	const name = unquoteFamily(String(family ?? '').trim()).toLowerCase();
+
+	if (name === '') {
+		return null;
+	}
+
+	const { weights } = getFontCatalog();
+	const match = Object.keys(weights).find((key) => unquoteFamily(key.trim()).toLowerCase() === name);
+
+	return match ? weights[match] : null;
+}
+
+/**
+ * Whether a family still offers a weight, which is what decides if an already-stored weight survives
+ * a change of family.
+ *
+ * A family the catalog does not know narrows nothing -- the theme's own font and a site-registered
+ * custom face both keep the full 100-900 range -- so every weight stands. So does the empty value,
+ * which is the Default option rather than a weight.
+ *
+ * @param {string} family The family to check against.
+ * @param {*}      weight The stored weight.
+ *
+ * @since TBD
+ *
+ * @return {boolean} True when `family` can still render `weight`.
+ */
+export function shipsFontWeight(family, weight) {
+	const weights = fontWeightsFor(family);
+
+	if (weights === null || weight === '' || weight === null || weight === undefined) {
+		return true;
+	}
+
+	return weights.some((shipped) => String(shipped) === String(weight));
 }
 
 /**

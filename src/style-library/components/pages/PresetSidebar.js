@@ -46,7 +46,14 @@ import { notifySuccess } from '../../helpers/notify';
  * @param {?Array}   [props.tabs]        `[{ name, title }]` state tabs, or null/empty for a block
  *                                       whose presets have no states — `schemaFor` is then called
  *                                       with null and should ignore its argument.
- * @param {Function} props.schemaFor     Maps the active tab name to that tab's settings schema.
+ * @param {Function} props.schemaFor     Maps the active tab name, and the current draft, to that tab's
+ *                                       settings schema, given the LIVE feed. The draft is what lets one
+ *                                       field's options depend on another's value — Advanced Text
+ *                                       narrows its weight list to the weights the chosen font family
+ *                                       actually ships — and the feed is what keeps a list that comes
+ *                                       from the library current, a font favorite added on another
+ *                                       screen refreshing the feed rather than the page-load global. A
+ *                                       config that needs neither ignores both arguments.
  *
  * @since TBD
  *
@@ -171,7 +178,11 @@ function PresetSidebarBody({ navigate, route, screen, initialValues, presetLabel
 					{screen.deleteError.message}
 				</Notice>
 			)}
-			<SettingsForm schema={schemaFor(activeTab)} values={panel.draft} onChange={panel.setFieldValue} />
+			<SettingsForm
+				schema={schemaFor(activeTab, panel.draft, screen.feed)}
+				values={panel.draft}
+				onChange={panel.setFieldValue}
+			/>
 		</SettingsPanel>
 	);
 }

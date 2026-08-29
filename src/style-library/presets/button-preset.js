@@ -15,7 +15,7 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { BUTTON_BLOCK, getButtonPresetProperties, resolveTokenValue } from '../helpers/presets';
+import { BUTTON_BLOCK, getPresetProperties, resolveTokenValue } from '../helpers/presets';
 import { getDesignTokensFeed } from '../helpers/tokens';
 
 export { BUTTON_BLOCK };
@@ -264,7 +264,7 @@ function schemaFor(tab) {
 /**
  * The Button preset screen's whole configuration, passed to the generic preset machinery.
  *
- * `properties` is a getter rather than a snapshot: it re-reads `getButtonPresetProperties()` (and
+ * `properties` is a getter rather than a snapshot: it re-reads `getPresetProperties()` (and
  * therefore the localized feed) on every access, the same live-window-global posture every other
  * feed read in this app takes (see `getDesignTokensFeed()`). Snapshotting it at module-evaluation
  * time would throw for any test that imports this module before stubbing the feed, even one that
@@ -275,7 +275,7 @@ function schemaFor(tab) {
 export const BUTTON_PRESET = Object.freeze({
 	block: BUTTON_BLOCK,
 	get properties() {
-		return getButtonPresetProperties();
+		return getPresetProperties(BUTTON_BLOCK);
 	},
 	slugBase: 'button',
 	addLabel: __('Add Button', 'kadence-blocks'),

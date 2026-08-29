@@ -13,6 +13,7 @@ jest.mock('../components/TokenControlRow', () => ({ TokenControlRow: () => null 
 import {
 	usePresetBinding,
 	resetAttrPatch,
+	presetPropertyReference,
 	presetPropertyValueForDevice,
 	mappedAttrsFor,
 	deriveStateBinding,
@@ -364,18 +365,21 @@ describe('usePresetBinding border width/style/color combining', () => {
 								kind: 'dimension',
 								token: 'semantic.border-width.default',
 								control_attr: 'borderStyle',
+								axis: 'border-width',
 							},
 							{
 								key: 'button-border-style',
 								kind: 'color',
 								token: 'semantic.border-style.default',
 								control_attr: 'borderStyle',
+								axis: 'border-style',
 							},
 							{
 								key: 'button-border-color',
 								kind: 'color',
 								token: 'semantic.color.border',
 								control_attr: 'borderStyle',
+								axis: 'border-color',
 							},
 						],
 						values: {
@@ -580,18 +584,21 @@ describe('mappedAttrsFor border dedupe', () => {
 								kind: 'dimension',
 								token: 'semantic.border-width.default',
 								control_attr: 'borderStyle',
+								axis: 'border-width',
 							},
 							{
 								key: 'button-border-style',
 								kind: 'color',
 								token: 'semantic.border-style.default',
 								control_attr: 'borderStyle',
+								axis: 'border-style',
 							},
 							{
 								key: 'button-border-color',
 								kind: 'color',
 								token: 'semantic.color.border',
 								control_attr: 'borderStyle',
+								axis: 'border-color',
 							},
 							{ key: 'button-radius', kind: 'dimension', token: null, control_attr: 'borderRadius' },
 						],
@@ -604,6 +611,89 @@ describe('mappedAttrsFor border dedupe', () => {
 
 		expect(mappedAttrsFor(BLOCK, SET)).toEqual([
 			{ attr: 'borderStyle', kind: 'border' },
+			{ attr: 'borderRadius', kind: 'dimension' },
+		]);
+
+		delete window.kadenceDesignTokensPresets;
+	});
+
+	/**
+	 * The axis is read from the declaration, not matched against a list of property names, so a block
+	 * naming its border properties differently (Advanced Text's `borderWidth`/`borderStyle`/`borderColor`
+	 * against the Button's `button-border-*`) collapses to one border-kind entry just the same.
+	 *
+	 * @return {void}
+	 */
+	it('collapses a differently-named border trio declared by another block', () => {
+		window.kadenceDesignTokensPresets = {
+			active: SET,
+			libraries: {
+				[SET]: {
+					'kadence/advancedheading': {
+						default: 'default',
+						presets: [{ slug: 'default', label: 'Default' }],
+						properties: [
+							{
+								key: 'borderWidth',
+								kind: 'dimension',
+								token: 'semantic.border-width.default',
+								control_attr: 'borderStyle',
+								axis: 'border-width',
+							},
+							{
+								key: 'borderStyle',
+								kind: 'color',
+								token: 'semantic.border-style.default',
+								control_attr: 'borderStyle',
+								axis: 'border-style',
+							},
+							{
+								key: 'borderColor',
+								kind: 'color',
+								token: 'semantic.color.border',
+								control_attr: 'borderStyle',
+								axis: 'border-color',
+							},
+						],
+						values: {},
+						responsive: {},
+					},
+				},
+			},
+		};
+
+		expect(mappedAttrsFor('kadence/advancedheading', SET)).toEqual([{ attr: 'borderStyle', kind: 'border' }]);
+
+		delete window.kadenceDesignTokensPresets;
+	});
+
+	/**
+	 * A property that declares no axis keeps its own generic kind, so the ordinary one-property-per-
+	 * attribute case is untouched by the axis lookup.
+	 *
+	 * @return {void}
+	 */
+	it('leaves a property that declares no axis on its own kind', () => {
+		window.kadenceDesignTokensPresets = {
+			active: SET,
+			libraries: {
+				[SET]: {
+					[BLOCK]: {
+						default: 'primary',
+						presets: [{ slug: 'primary', label: 'Primary' }],
+						properties: [
+							{ key: 'button-bg', kind: 'color', token: null, control_attr: 'background' },
+							{ key: 'button-radius', kind: 'dimension', token: null, control_attr: 'borderRadius' },
+						],
+						values: {},
+						responsive: {},
+					},
+				},
+			},
+		};
+
+		expect(mappedAttrsFor(BLOCK, SET)).toEqual([
+			{ attr: 'background', kind: 'color' },
 			{ attr: 'borderRadius', kind: 'dimension' },
 		]);
 
@@ -628,12 +718,123 @@ describe('resetAttrPatch', () => {
 	});
 
 	/**
-	 * A non-dimension kind clears only its single attribute.
+	 * A non-dimension kind clears only its single attribute when the block declares no companion.
 	 *
 	 * @return {void}
 	 */
 	it('clears only the primary attribute for a non-dimension kind', () => {
 		expect(resetAttrPatch('background', 'color')).toEqual({ background: '' });
+	});
+
+	/**
+	 * A color also clears its palette-CLASS companion, in whichever spelling the block declares.
+	 *
+	 * WordPress emits its palette utility classes with `!important` -- over a hundred of them -- so a
+	 * stale `has-<slug>-color` beats every rule a preset can produce, at any specificity. Clearing the
+	 * color attribute alone leaves the class on the element still winning, and the preset reads as
+	 * broken rather than overridden.
+	 *
+	 * @return {void}
+	 */
+	it('clears a color attribute palette-class companion', () => {
+		// `color` -> `colorClass`, the Advanced Text spelling.
+		expect(resetAttrPatch('color', 'color', { color: {}, colorClass: {} })).toEqual({
+			color: '',
+			colorClass: '',
+		});
+
+		// `background` -> `backgroundColorClass`, the same block's other spelling.
+		expect(resetAttrPatch('background', 'color', { background: {}, backgroundColorClass: {} })).toEqual({
+			background: '',
+			backgroundColorClass: '',
+		});
+
+		// `bgColor` -> `bgColorClass`, the Row Layout spelling.
+		expect(resetAttrPatch('bgColor', 'color', { bgColor: {}, bgColorClass: {} })).toEqual({
+			bgColor: '',
+			bgColorClass: '',
+		});
+	});
+
+	/**
+	 * A block declaring no such companion gains no attribute it never declared, and a non-color kind is
+	 * never given one at all.
+	 *
+	 * @return {void}
+	 */
+	it('writes no palette-class companion the block does not declare', () => {
+		expect(resetAttrPatch('color', 'color', { color: {} })).toEqual({ color: '' });
+
+		// Not a color: a `textTransform` has no palette class even if something similarly named exists.
+		expect(resetAttrPatch('textTransform', 'text', { textTransform: {}, textTransformClass: {} })).toEqual({
+			textTransform: '',
+		});
+	});
+
+	/**
+	 * A dimension whose block stores it as a SCALAR clears to '', not to a 4-side array. Writing the
+	 * array shape into `kadence/single-icon`'s `size` — a single number written into the SVG's geometry
+	 * attributes — leaves the control reading an array back as a custom value.
+	 *
+	 * @return {void}
+	 */
+	it('clears a scalar dimension to an empty string, not a 4-side array', () => {
+		const declared = {
+			size: { type: ['number', 'string'], default: 50 },
+			tabletSize: { type: ['number', 'string'], default: '' },
+			mobileSize: { type: ['number', 'string'], default: '' },
+		};
+
+		expect(resetAttrPatch('size', 'dimension', declared)).toEqual({
+			size: '',
+			tabletSize: '',
+			mobileSize: '',
+		});
+	});
+
+	/**
+	 * The unit companion is written only when the block declares one — `size` has no `sizeUnit`, and
+	 * inventing it would store an attribute the block never reads.
+	 *
+	 * @return {void}
+	 */
+	it('does not invent a unit attribute the block does not declare', () => {
+		const declared = { size: { default: 50 } };
+
+		expect(resetAttrPatch('size', 'dimension', declared)).not.toHaveProperty('sizeUnit');
+	});
+
+	/**
+	 * A 4-side dimension still clears to the array shape and its unit when the schema says so, so the
+	 * shape is read from the block rather than guessed either way.
+	 *
+	 * @return {void}
+	 */
+	it('still clears a declared 4-side dimension to the array shape', () => {
+		const declared = {
+			borderRadius: { type: 'array', default: ['', '', '', ''] },
+			borderRadiusUnit: { type: 'string', default: 'px' },
+			tabletBorderRadius: { type: 'array', default: ['', '', '', ''] },
+			mobileBorderRadius: { type: 'array', default: ['', '', '', ''] },
+		};
+
+		expect(resetAttrPatch('borderRadius', 'dimension', declared)).toEqual({
+			borderRadius: ['', '', '', ''],
+			borderRadiusUnit: 'px',
+			tabletBorderRadius: ['', '', '', ''],
+			mobileBorderRadius: ['', '', '', ''],
+		});
+	});
+
+	/**
+	 * A block that declares no responsive companions gets none written.
+	 *
+	 * @return {void}
+	 */
+	it('omits responsive companions the block does not declare', () => {
+		const declared = { iconSize: { type: 'string', default: '' } };
+
+		expect(resetAttrPatch('iconSize', 'dimension', declared)).toEqual({ iconSize: '' });
 	});
 
 	/**
@@ -834,5 +1035,88 @@ describe('deriveStateBinding', () => {
 		const state = deriveStateBinding({ shared, kind: 'border', value, previewDevice: 'Desktop' });
 
 		expect(state).toEqual({ bound: true, overridden: false });
+	});
+});
+
+describe('presetPropertyReference', () => {
+	afterEach(() => {
+		delete window.kadenceDesignTokensPresets;
+	});
+
+	/**
+	 * Seed a catalog carrying BOTH the flattened literal and the CSS reference for one property, which is
+	 * the shape the editor localizer prints.
+	 *
+	 * @return {void}
+	 */
+	function seedReferences() {
+		window.kadenceDesignTokensPresets = {
+			active: SET,
+			libraries: {
+				[SET]: {
+					[BLOCK]: {
+						default: 'primary',
+						presets: [{ slug: 'primary', label: 'Primary' }],
+						properties: [{ key: 'button-bg', kind: 'color', token: null, control_attr: 'background' }],
+						values: { primary: { 'button-bg': '#3182CE' } },
+						references: { primary: { 'button-bg': 'var(--kb-token--semantic--color--button-bg)' } },
+						responsive: {},
+					},
+				},
+			},
+		};
+	}
+
+	/**
+	 * The reference is returned, not the literal. Only the `var()` chain resolves through the projector's
+	 * per-block palette layer, so an editor path that paints a preset value itself must use it.
+	 *
+	 * @return {void}
+	 */
+	it("returns the active preset's var() chain rather than its flattened literal", () => {
+		seedReferences();
+
+		expect(presetPropertyReference(BLOCK, 'button-bg', { kbPreset: 'primary' }, SET)).toBe(
+			'var(--kb-token--semantic--color--button-bg)'
+		);
+	});
+
+	/**
+	 * With nothing selected the block follows its `$default`, exactly as the value reader does.
+	 *
+	 * @return {void}
+	 */
+	it('falls back to the block default preset when nothing is selected', () => {
+		seedReferences();
+
+		expect(presetPropertyReference(BLOCK, 'button-bg', {}, SET)).toBe(
+			'var(--kb-token--semantic--color--button-bg)'
+		);
+	});
+
+	/**
+	 * A property the active preset does not set has no reference, so a caller can fall through to its own
+	 * default rather than painting something invented.
+	 *
+	 * @return {void}
+	 */
+	it('returns undefined for a property the preset does not set', () => {
+		seedReferences();
+
+		expect(presetPropertyReference(BLOCK, 'button-text', { kbPreset: 'primary' }, SET)).toBeUndefined();
+	});
+
+	/**
+	 * A catalog with no references section at all degrades to undefined rather than throwing.
+	 *
+	 * @return {void}
+	 */
+	it('returns undefined when the catalog carries no references', () => {
+		window.kadenceDesignTokensPresets = {
+			active: SET,
+			libraries: { [SET]: { [BLOCK]: { default: 'primary', presets: [], properties: [], values: {} } } },
+		};
+
+		expect(presetPropertyReference(BLOCK, 'button-bg', {}, SET)).toBeUndefined();
 	});
 });

@@ -641,6 +641,7 @@
 		"ktdynamic": true,
 		"kbcss": true,
 		"kbMetadata": true,
+		"kbPreset": true,
 		"kbPalette": true
 	},
 	"editorStyle": "kadence-blocks-column",

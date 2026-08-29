@@ -63,3 +63,49 @@
 	text-transform: uppercase;
 	color: var(--kb-sl-color-text-primary);
 }
+
+// The frame half of a block-preset row preview that stands in for a colored surface (the Row Layout
+// band, the Section slab). Draws the border the preset's color is applied to, and a checker BEHIND
+// where the preset's background will be painted -- both blocks ship a transparent background, and
+// against the list's white surface a transparent background and a white one are indistinguishable, so
+// without the checker every unstyled preset would look like it had set white.
+//
+// The background belongs to the companion `preset-surface-fill` element, not here: a single element
+// cannot layer them in this order, because a background image always paints above its own background
+// color. Geometry is the caller's, since the proportions are the point -- a Row Layout is wide and
+// short, a Section is tall and narrow, and a corner radius reads very differently at each.
+@mixin preset-surface-frame {
+	position: relative;
+	box-sizing: border-box;
+	border: var(--kb-sl-border-width-input) solid var(--kb-sl-color-gray-200);
+	background-color: #fff;
+	background-image: repeating-conic-gradient(var(--kb-sl-color-gray-200) 0% 25%, transparent 0% 50%);
+	background-size: 0.75rem 0.75rem;
+	transition:
+		border-color 300ms ease,
+		border-radius 300ms ease;
+}
+
+// The fixed-geometry form, for a preview whose size says something about the block (a Row Layout band
+// is wide and short, a Section slab tall and narrow). A preview that has to GROW with one of its own
+// values instead -- the image's padding -- takes `preset-surface-frame` and sizes itself.
+@mixin preset-surface-preview($width, $height) {
+	@include preset-surface-frame;
+
+	display: block;
+	width: $width;
+	height: $height;
+}
+
+// The fill half: the preset's resolved background, laid over the checker `preset-surface-preview`
+// draws. Inherits the radius so a rounded preset does not show square corners of fill poking past its
+// frame.
+@mixin preset-surface-fill {
+	position: absolute;
+	inset: 0;
+	display: block;
+	border-radius: inherit;
+	transition:
+		background-color 300ms ease,
+		border-radius 300ms ease;
+}

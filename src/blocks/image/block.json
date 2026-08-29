@@ -404,6 +404,7 @@
 		"ktanimatepreview": true,
 		"ktdynamic": true,
 		"kbMetadata": true,
+		"kbPreset": true,
 		"kbPalette": true
 	}
 }

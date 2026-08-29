@@ -261,6 +261,11 @@ export function paletteCurrentPath(namespace, slug = DEFAULT_LIBRARY_SLUG) {
  * two segments are encoded separately — the "/" between vendor and block is a real path separator
  * on the route (`Presets_Controller::BLOCK_ROUTE`).
  *
+ * The editor builds the same routes in `src/extension/presets/api/paths.js`, deliberately as its own
+ * file (this app and the editor share `src/token-controls/*` and nothing else — see this app's README).
+ * The two must agree on the path shape; the builders here additionally append the `?library=<slug>`
+ * query the Style Library always scopes its writes by.
+ *
  * @since TBD
  *
  * @param {string} namespace REST namespace (e.g. kb-design-tokens/v1).

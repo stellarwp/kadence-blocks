@@ -97,10 +97,15 @@ final class Projected_Css_ControllerTest extends TestCase {
 			$css,
 			'The editor-scoped, re-targeted Advanced Heading rule should be present.'
 		);
+		// Matched on the DECLARATION, not the selector alone: `.wp-block-kadence-advancedheading{` on its own
+		// legitimately appears in this aggregate, emitted by the selectable-preset projector's class-less
+		// `$default` rule, which sets the block's `--kb-heading-*` custom properties on the wrapper. That rule
+		// is a variable definition and paints nothing; the front-end BLOCK-DEFAULT rule is the one that would
+		// wrongly style the wrapper, and it opens with the first bound property, `color`.
 		$this->assertStringNotContainsString(
-			'.wp-block-kadence-advancedheading{',
+			'.wp-block-kadence-advancedheading{color:',
 			$css,
-			'The bare front-end Advanced Heading rule (on the wrapper div) should not be present.'
+			'The bare front-end Advanced Heading block-default rule (on the wrapper div) should not be present.'
 		);
 	}
 

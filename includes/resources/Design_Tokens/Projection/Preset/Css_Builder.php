@@ -1,5 +1,5 @@
 <?php declare( strict_types=1 );
-// cspell:ignore advancedbtn palette .
+// cspell:ignore palette .
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Preset;
 

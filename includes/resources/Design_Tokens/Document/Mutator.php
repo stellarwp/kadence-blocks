@@ -122,7 +122,7 @@ final class Mutator {
 	 * Recursively remove the node addressed by a literal key chain, pruning emptied groups on the way out.
 	 *
 	 * Addresses the document by discrete array keys rather than a dot-path, so a caller whose keys themselves
-	 * carry dots ("com.kadence.designTokens") or slashes ("kadence/advancedbtn") can remove a node the
+	 * carry dots ("com.kadence.designTokens") or slashes ("kadence/singlebtn") can remove a node the
 	 * dot-path form could not express.
 	 *
 	 * @since TBD

@@ -45,35 +45,35 @@ const SLOT_LIST_SIDES = 4;
 export const BUTTON_BLOCK = 'kadence/singlebtn';
 
 /**
- * The button's bound property surface, in the order the panel and previews read it. Derived from
- * the localized feed (`feed.presets['kadence/singlebtn'].properties`, itself
- * `array_keys( $bindings->bindings )` off `declarations.php` — see
- * `Design_Tokens\Admin\Feed\Presets::all()`), so this app can never drift from the properties the
- * server's `guard_surface` accepts as bound. On the Style Library screen the feed is always
- * present — it is inline-scripted onto the page before this bundle runs (see
- * `Design_Tokens\Admin\Feed\Localizer`) — so a missing or empty surface here is a genuine bug, not
- * a normal condition. Throwing surfaces that bug immediately instead of letting every preset seed
- * and save silently no-op, which would be data loss with no error.
+ * A block's bound property surface, in the order its panel and previews read it. Derived from the
+ * localized feed (`feed.presets[<block>].properties`, itself `array_keys( $bindings->bindings )` off
+ * `declarations.php` — see `Design_Tokens\Admin\Feed\Presets::all()`), so this app can never drift from
+ * the properties the server's `guard_surface` accepts as bound. On the Style Library screen the feed is
+ * always present — it is inline-scripted onto the page before this bundle runs (see
+ * `Design_Tokens\Admin\Feed\Localizer`) — so a missing or empty surface here is a genuine bug, not a
+ * normal condition. Throwing surfaces that bug immediately instead of letting every preset seed and save
+ * silently no-op, which would be data loss with no error.
+ *
+ * @param {string} block The block name whose surface to read.
  *
  * @since TBD
  *
- * @throws {Error} When the feed has no non-empty `properties` array for the button block.
+ * @throws {Error} When the feed has no non-empty `properties` array for that block.
  *
- * @return {string[]} The button's bound property ids, in read order.
+ * @return {string[]} The block's bound property ids, in read order.
  */
-export function getButtonPresetProperties() {
-	const properties = getDesignTokensFeed()?.presets?.[BUTTON_BLOCK]?.properties;
+export function getPresetProperties(block) {
+	const properties = getDesignTokensFeed()?.presets?.[block]?.properties;
 
 	if (!Array.isArray(properties) || properties.length === 0) {
 		throw new Error(
-			`getButtonPresetProperties: feed.presets['${BUTTON_BLOCK}'].properties is missing or empty. Check the Design_Tokens\\Admin\\Feed\\Localizer output for this screen.`
+			`getPresetProperties: feed.presets['${block}'].properties is missing or empty. Check the Design_Tokens\\Admin\\Feed\\Localizer output for this screen.`
 		);
 	}
 
 	return properties;
 }
 
-/**
 /**
  * Convert a stored alias to its bare dot-path id. A value that is not brace-wrapped (a literal) is
  * returned verbatim.

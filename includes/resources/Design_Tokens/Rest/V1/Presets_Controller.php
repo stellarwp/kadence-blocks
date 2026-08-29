@@ -42,7 +42,7 @@ use WP_REST_Server;
  * onto the stored presets, then run the shared pipeline: DTCG grammar validation (HTTP 422), a dry-run Resolver
  * pass that rejects alias cycles / dangling aliases in the token layers (HTTP 422), then a single
  * Token_Store::save_document() that bumps the version and fires the change action. The block name carries a
- * slash ("kadence/advancedbtn"), so it is routed as two path segments and reassembled.
+ * slash ("kadence/singlebtn"), so it is routed as two path segments and reassembled.
  *
  * Every route operates on a single token library: the one named by the optional `library` request parameter
  * when it is a known library, otherwise the active library ({@see Active_Token_Library_Store::get()}, which
@@ -63,7 +63,7 @@ final class Presets_Controller extends Controller {
 	private const VENDOR_PARAM = 'vendor';
 
 	/**
-	 * The request parameter that carries the block's name segment, e.g. "advancedbtn".
+	 * The request parameter that carries the block's name segment, e.g. "singlebtn".
 	 *
 	 * @since TBD
 	 *
@@ -533,6 +533,7 @@ final class Presets_Controller extends Controller {
 		}
 
 		$block_node = [ $preset => $this->preset_definition( $request ) ];
+		$slug       = $this->slug( $request );
 
 		$error = $this->guard_preset_shape( $block_node, $block );
 
@@ -540,7 +541,7 @@ final class Presets_Controller extends Controller {
 			return $error;
 		}
 
-		$error = $this->guard_reserved_slugs( $block_node, $block );
+		$error = $this->guard_reserved_slugs( $block_node, $block, $slug );
 
 		if ( $error instanceof WP_Error ) {
 			return $error;
@@ -552,7 +553,6 @@ final class Presets_Controller extends Controller {
 			return $error;
 		}
 
-		$slug       = $this->slug( $request );
 		$block_node = $this->normalize_block_node( $block_node, $slug );
 		$stored     = $this->stored_document( $slug );
 
@@ -617,13 +617,15 @@ final class Presets_Controller extends Controller {
 			$block_node[ Extensions::get_default_key() ] = $default;
 		}
 
+		$slug = $this->slug( $request );
+
 		$error = $this->guard_preset_shape( $block_node, $block );
 
 		if ( $error instanceof WP_Error ) {
 			return $error;
 		}
 
-		$error = $this->guard_reserved_slugs( $block_node, $block );
+		$error = $this->guard_reserved_slugs( $block_node, $block, $slug );
 
 		if ( $error instanceof WP_Error ) {
 			return $error;
@@ -635,7 +637,6 @@ final class Presets_Controller extends Controller {
 			return $error;
 		}
 
-		$slug       = $this->slug( $request );
 		$block_node = $this->normalize_block_node( $block_node, $slug );
 
 		// Replace, not merge: drop the stored block node first so a preset the body omits does not survive.
@@ -1191,19 +1192,29 @@ final class Presets_Controller extends Controller {
 	}
 
 	/**
-	 * Reject a preset whose slug is reserved. "default" is the literal used by the block's `/default`
-	 * sub-route and by `delete_preset`, and "order" is the literal used by the block's `/order` sub-route, so
-	 * a preset named either could never be deleted or set through its dedicated route; refuse to create one.
+	 * Reject the CREATION of a preset whose slug is reserved. "default" is the literal used by the block's
+	 * `/default` sub-route and "order" by its `/order` sub-route, so a preset named either can never be
+	 * addressed through the per-preset item route — it would be undeletable.
+	 *
+	 * Scoped to creation, because "default" is not a hypothetical: every block but the Button ships its
+	 * baseline look as a preset slugged exactly that, and a site owner editing it is the ordinary case. A
+	 * slug already present in the block's effective presets is therefore writable — the collision it would
+	 * cause is one the shipped data already made, and the only route it forecloses is DELETE, which that
+	 * preset should refuse anyway: it is the block's built-in look, and the editor offers deletion only for
+	 * user-created presets. Minting a NEW preset under a reserved slug is still refused, so nobody can
+	 * strand one that cannot be removed.
 	 *
 	 * @since TBD
 	 *
 	 * @param array<string, mixed> $block_node The block's preset node being written.
 	 * @param string               $block      The block name, for error context.
+	 * @param string               $library    The token library the write targets.
 	 *
-	 * @return WP_Error|null A WP_Error when a reserved slug is used, null otherwise.
+	 * @return WP_Error|null A WP_Error when a reserved slug is newly created, null otherwise.
 	 */
-	private function guard_reserved_slugs( array $block_node, string $block ): ?WP_Error {
+	private function guard_reserved_slugs( array $block_node, string $block, string $library ): ?WP_Error {
 		$reserved = [ self::DEFAULT_ROUTE, self::ORDER_ROUTE ];
+		$existing = $this->existing_preset_slugs( $block, $library );
 
 		foreach ( array_keys( $block_node ) as $slug ) {
 			// $default and any other "$"-prefixed metadata key is not a named preset.
@@ -1211,20 +1222,53 @@ final class Presets_Controller extends Controller {
 				continue;
 			}
 
-			if ( in_array( (string) $slug, $reserved, true ) ) {
-				return new WP_Error(
-					'rest_design_tokens_reserved_slug',
-					__( 'That preset slug is reserved.', 'kadence-blocks' ),
-					[
-						'status' => WP_Http::UNPROCESSABLE_ENTITY,
-						'block'  => $block,
-						'preset' => (string) $slug,
-					]
-				);
+			if ( ! in_array( (string) $slug, $reserved, true ) ) {
+				continue;
 			}
+
+			if ( in_array( (string) $slug, $existing, true ) ) {
+				continue;
+			}
+
+			return new WP_Error(
+				'rest_design_tokens_reserved_slug',
+				__( 'That preset slug is reserved.', 'kadence-blocks' ),
+				[
+					'status' => WP_Http::UNPROCESSABLE_ENTITY,
+					'block'  => $block,
+					'preset' => (string) $slug,
+				]
+			);
 		}
 
 		return null;
+	}
+
+	/**
+	 * The named preset slugs a block already has in a library, baseline and stored overrides merged.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $block   The block name.
+	 * @param string $library The token library slug.
+	 *
+	 * @return string[] The existing preset slugs.
+	 */
+	private function existing_preset_slugs( string $block, string $library ): array {
+		$node = $this->presets->block( $block, $library );
+
+		if ( ! is_array( $node ) ) {
+			return [];
+		}
+
+		return array_values(
+			array_filter(
+				array_map( 'strval', array_keys( $node ) ),
+				static function ( string $slug ): bool {
+					return strpos( $slug, '$' ) !== 0;
+				}
+			)
+		);
 	}
 
 	/**
@@ -1902,7 +1946,7 @@ final class Presets_Controller extends Controller {
 				'sanitize_callback' => 'sanitize_key',
 			],
 			self::BLOCK_NAME_PARAM => [
-				'description'       => __( 'The block name segment, e.g. advancedbtn.', 'kadence-blocks' ),
+				'description'       => __( 'The block name segment, e.g. singlebtn.', 'kadence-blocks' ),
 				'type'              => 'string',
 				'required'          => true,
 				'pattern'           => '^[a-z0-9][a-z0-9-]*$',

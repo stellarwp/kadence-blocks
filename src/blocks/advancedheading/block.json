@@ -667,6 +667,7 @@
 		"ktdynamic": true,
 		"kbMetadata": true,
 		"kbContentLabel": "content",
+		"kbPreset": true,
 		"kbPalette": true
 	}
 }

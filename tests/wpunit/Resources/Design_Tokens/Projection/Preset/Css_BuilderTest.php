@@ -404,6 +404,63 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
+	 * An icon preset whose size varies by breakpoint projects the same way a button's radius does: a
+	 * scoped rule pointing `--kb-icon-size` at the canonical preset var, and a media block redeclaring
+	 * that var per breakpoint. Proves a SCALAR dimension on a block other than the Button reaches the
+	 * responsive layer, which is what lets an icon preset say what the block's own per-device size
+	 * control says.
+	 *
+	 * @return void
+	 */
+	public function testAnIconPresetsSizeVariesByBreakpoint(): void {
+		$this->store->save_document(
+			(string) wp_json_encode(
+				[
+					'$extensions' => [
+						'com.kadence.designTokens' => [
+							'presets' => [
+								'kadence/single-icon' => [
+									'compact' => [
+										'label'  => 'Compact',
+										'tokens' => [
+											'size' => [
+												'$value'      => '2rem',
+												'$extensions' => [
+													'com.kadence.designTokens' => [
+														'responsive' => [ 'mobile' => '1rem' ],
+													],
+												],
+											],
+										],
+									],
+								],
+							],
+						],
+					],
+				]
+			),
+			Token_Store::default_slug()
+		);
+
+		$css = $this->builder( $this->registry )->css( 'default', $this->breakpoints() );
+
+		// The base value, and the scoped rule that points the block's own variable at it.
+		$this->assertStringContainsString( '--kb-token--preset--kadence-single-icon--compact--size:2rem;', $css );
+		$this->assertStringContainsString(
+			'.wp-block-kadence-single-icon.kb-preset--compact{--kb-icon-size:var(--kb-token--preset--kadence-single-icon--compact--size);}',
+			$css
+		);
+
+		// The mobile override redeclares the canonical var INSIDE the breakpoint's media block — asserted
+		// with the enclosing braces so a bare declaration sitting outside one could not satisfy it.
+		$this->assertStringContainsString(
+			'){:root,:root:where(.kb-tokens){--kb-token--preset--kadence-single-icon--compact--size:1rem;}}',
+			$css
+		);
+		$this->assertStringContainsString( '@media', $css );
+	}
+
+	/**
 	 * Persist a "hero" button preset whose radius varies by breakpoint into the active library.
 	 *
 	 * @param array<string, mixed> $responsive Breakpoint => override value.

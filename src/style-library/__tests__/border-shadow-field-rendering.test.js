@@ -86,7 +86,7 @@ describe('BorderField', () => {
 		expect(latestBorderControlProps.widthTokens[0].alias).toBe('{primitive.dimension.border-width.sm}');
 	});
 
-	it('exempts the bound width token from the primitive narrowing, so a bound semantic stays pickable', () => {
+	it('shows a semantic-bound width as unset rather than listing the semantic', () => {
 		const field = { label: 'Border', path: 'tokens.button-border' };
 
 		act(() => {
@@ -99,15 +99,15 @@ describe('BorderField', () => {
 			);
 		});
 
-		expect(latestBorderControlProps.widthTokens.map((token) => token.id)).toEqual(
-			expect.arrayContaining(['semantic.border-width.default'])
-		);
+		// The pool stays the role's primitive scale: a semantic is the block's role-based default, not
+		// something a site owner picked, so it is never offered as a peer of the steps.
+		expect(latestBorderControlProps.widthTokens.map((token) => token.id)).toEqual([
+			'primitive.dimension.border-width.sm',
+		]);
 
-		const boundToken = latestBorderControlProps.widthTokens.find(
-			(token) => token.id === 'semantic.border-width.default'
-		);
-
-		expect(boundToken.label).toBe('Border Width');
+		// And the width reads as unset rather than as the raw dot-path it would otherwise render,
+		// having no pool entry to name it.
+		expect(latestBorderControlProps.value.width).toBe('');
 	});
 
 	it('threads breakpoints only when the field is responsive', () => {
@@ -323,23 +323,29 @@ describe('BoxShadowField', () => {
 		expect(latestBoxShadowControlProps.tokens[0].alias).toBe('{primitive.shadow.xs}');
 	});
 
-	it('exempts the bound token from the primitive narrowing when it is a Brand-group semantic', () => {
+	it('shows a semantic-bound shadow as unset rather than listing the semantic', () => {
 		act(() => {
 			root.render(
 				createElement(BoxShadowField, {
 					field: { label: 'Shadow' },
-					value: '{semantic.shadow.button}',
+					// A BARE id, which is what a draft holds: `presetInitialValues` runs every seeded
+					// value through `aliasToIdDeep`. The braced form is accepted too, but never arrives.
+					value: 'semantic.shadow.button',
 					onChange: jest.fn(),
 				})
 			);
 		});
 
-		expect(latestBoxShadowControlProps.tokens.map((token) => token.id)).toEqual(
-			expect.arrayContaining(['semantic.shadow.button'])
-		);
-		expect(latestBoxShadowControlProps.tokens).not.toEqual(
-			expect.arrayContaining([expect.objectContaining({ id: 'semantic.shadow.media' })])
-		);
+		// The list stays the Shadow screen's own three steps — no Brand-group semantic among them.
+		expect(latestBoxShadowControlProps.tokens.map((token) => token.id)).toEqual([
+			'primitive.shadow.xs',
+			'primitive.shadow.sm',
+			'primitive.shadow.md',
+		]);
+
+		// Unset, not the composite-shadow reading. Passing the semantic through left the control with no
+		// matching entry and it labelled the trigger `Custom`, which claims a shadow was composed by hand.
+		expect(latestBoxShadowControlProps.value).toBeUndefined();
 	});
 
 	it('does not error and exempts nothing when the value is a composite shadow object, not a token reference', () => {
@@ -360,19 +366,54 @@ describe('BoxShadowField', () => {
 		]);
 	});
 
-	it('passes the value straight through with no envelope/breakpoint handling', () => {
+	it('wraps a primitive-bound bare id into the alias the control matches its list against', () => {
 		act(() => {
 			root.render(
 				createElement(BoxShadowField, {
 					field: { label: 'Shadow' },
-					value: '{semantic.shadow.card}',
+					value: 'primitive.shadow.sm',
 					onChange: jest.fn(),
 				})
 			);
 		});
 
-		expect(latestBoxShadowControlProps.value).toBe('{semantic.shadow.card}');
+		// Without the wrap the control finds no entry for the bare id and labels the trigger `Custom`,
+		// which claims a shadow was composed by hand.
+		expect(latestBoxShadowControlProps.value).toBe('{primitive.shadow.sm}');
 		expect(latestBoxShadowControlProps.breakpoints).toBeUndefined();
+	});
+
+	it('writes a pick back as a bare id, so the panel can tell a saved preset is no longer dirty', () => {
+		const onChange = jest.fn();
+
+		act(() => {
+			root.render(createElement(BoxShadowField, { field: { label: 'Shadow' }, value: '', onChange }));
+		});
+
+		act(() => {
+			latestBoxShadowControlProps.onChange('{primitive.shadow.md}');
+		});
+
+		// Bare, matching every other field and the shape `presetInitialValues` seeds. Storing the braced
+		// form would leave the draft permanently unequal to its seeded value and Save enabled forever.
+		expect(onChange).toHaveBeenCalledWith('primitive.shadow.md');
+	});
+
+	it('passes a composite shadow object through untouched', () => {
+		const onChange = jest.fn();
+		const composite = { color: '#000', hOffset: 0, vOffset: 4, blur: 8, spread: 0 };
+
+		act(() => {
+			root.render(createElement(BoxShadowField, { field: { label: 'Shadow' }, value: composite, onChange }));
+		});
+
+		expect(latestBoxShadowControlProps.value).toBe(composite);
+
+		act(() => {
+			latestBoxShadowControlProps.onChange(composite);
+		});
+
+		expect(onChange).toHaveBeenCalledWith(composite);
 	});
 
 	it('never calls onChange when the field is read-only', () => {
