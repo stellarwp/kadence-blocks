@@ -29,6 +29,7 @@ export { TOKEN_INDICATORS_STORE } from './store';
 export { TokenIndicator } from './components/TokenIndicator';
 export { TokenLabel } from './components/TokenLabel';
 export { TokenControlRow } from './components/TokenControlRow';
+export { useLinkedMeasureState } from './use-linked-measure-state';
 
 /**
  * The device-specific attribute name for a dimension control, by the same `tablet${Capitalized}` /

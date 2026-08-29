@@ -6,7 +6,7 @@ import { useEffect, useState } from '@wordpress/element';
 /**
  * Internal dependencies
  */
-import { deriveMeasureMode } from '../../../extension/token-indicators/normalize';
+import { deriveMeasureMode } from './normalize';
 
 /**
  * The linked/individual state — and its toggle — for a responsive 4-slot measure control (Border

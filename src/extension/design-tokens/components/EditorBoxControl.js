@@ -10,9 +10,8 @@
  *   be read off the value's shape and is caller-owned UI state instead;
  * - **the unit lives in its own attribute** beside the value.
  * - **wraps itself in `TokenControlRow`** (no `heading`, purely for its `.kb-token-control-row`
- *   spacing) — this component only ever renders inside `singlebtn/edit.js`'s sidebar, so it owns that
- *   wrapper rather than asking every call site to remember it, matching
- *   `EditorBorderControl`/`EditorShadowControl`.
+ *   spacing) — every call site is a block inspector sidebar, so it owns that wrapper rather than
+ *   asking each one to remember it, matching `EditorBorderControl`/`EditorShadowControl`.
  *
  * Everything the control needs beyond that — the token pool, the inherited preset default, the
  * binding indicator — the block already computes for its existing control, so this takes them as

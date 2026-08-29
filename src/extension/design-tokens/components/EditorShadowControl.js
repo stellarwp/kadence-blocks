@@ -1,13 +1,13 @@
 /**
  * The block editor's adapter for `src/token-controls`' `BoxShadowControl`.
  *
- * `kadence/singlebtn`'s native shadow attribute (`shadow`, `shadowHover`, `shadowTransparent`, …) is
- * a one-element array — `[{ color, opacity, hOffset, vOffset, blur, spread, inset }]` — confirmed
- * against `src/blocks/singlebtn/block.json` and the six existing `BoxShadowControl` call sites in
- * `src/blocks/singlebtn/edit.js` rather than assumed. `BoxShadowControl`'s (phase 19) own contract is
- * a *single* value that is either a token alias string or the composite shape `{ color, offsetX,
- * offsetY, blur, spread, inset }` `helpers/shadow.js`/`ShadowField` already use on the Shadow
- * token-library screen. Three shape differences this bridges:
+ * A block's native shadow attribute (`kadence/singlebtn`'s `shadow`/`shadowHover`/`shadowTransparent`,
+ * `kadence/image`'s `boxShadow`, …) is a one-element array —
+ * `[{ color, opacity, hOffset, vOffset, blur, spread, inset }]`. That shape is shared across every
+ * shadow-carrying block, confirmed against their `block.json` files rather than assumed.
+ * `BoxShadowControl`'s own contract is a *single* value that is either a token alias string or the
+ * composite shape `{ color, offsetX, offsetY, blur, spread, inset }` `helpers/shadow.js`/`ShadowField`
+ * already use on the Shadow token-library screen. Three shape differences this bridges:
  *
  * - **field names**: native `hOffset`/`vOffset` become the composite's `offsetX`/`offsetY`; native's
  *   unitless numbers become the composite's `"Npx"` strings, matching `ShadowField`'s own convention.
@@ -40,17 +40,16 @@
  * `renderColor`.
  *
  * This component also wraps itself in `TokenControlRow` (no `heading`, purely for its
- * `.kb-token-control-row` spacing) — it only ever renders inside `singlebtn/edit.js`'s sidebar, so it
- * owns that wrapper rather than asking every call site to remember it, matching
+ * `.kb-token-control-row` spacing) — every call site is a block inspector sidebar, so it owns that
+ * wrapper rather than asking each one to remember it, matching
  * `EditorBorderControl`/`EditorBoxControl`.
  */
 
 /**
  * Internal dependencies
  */
-import { BoxShadowControl } from '../../../token-controls/controls/BoxShadowControl';
+import { BoxShadowControl, DEFAULT_COMPOSITE, parseResolvedShadow } from '../../../token-controls';
 import { TokenControlRow } from '../../token-indicators/components/TokenControlRow';
-import { DEFAULT_COMPOSITE, parseResolvedShadow } from '../../../token-controls';
 
 /**
  * A CSS `rgba(r, g, b, a)` string, matching `hexToRGBA`'s own output format exactly (comma-space

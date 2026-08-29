@@ -25,9 +25,8 @@
  *   way `BoxControl`'s radius keeps `borderRadiusUnit` — so, unlike `EditorBoxControl`, this
  *   component takes no separate `unit`/`units`/`onUnit` props at all.
  * - **wraps itself in `TokenControlRow`** (no `heading`, purely for its `.kb-token-control-row`
- *   spacing) — this component only ever renders inside `singlebtn/edit.js`'s sidebar, so it owns that
- *   wrapper rather than asking every call site to remember it, matching
- *   `EditorBoxControl`/`EditorShadowControl`.
+ *   spacing) — every call site is a block inspector sidebar, so it owns that wrapper rather than
+ *   asking each one to remember it, matching `EditorBoxControl`/`EditorShadowControl`.
  *
  * Color editing itself is untouched — this component neither builds nor redesigns a color field, it
  * only wires the caller's EXISTING one back in via `renderColor` (matching `BorderControl`'s own
@@ -44,8 +43,7 @@ import { useState } from '@wordpress/element';
 /**
  * Internal dependencies
  */
-import { BreakpointProvider } from '../../../token-controls';
-import { BorderControl } from '../../../token-controls/controls/BorderControl';
+import { BorderControl, BreakpointProvider } from '../../../token-controls';
 import { readSlot } from '../../../token-controls/helpers/value-shapes';
 import { isTokenAlias } from '../../../token-controls/helpers/token-summary';
 import { TokenControlRow } from '../../token-indicators/components/TokenControlRow';

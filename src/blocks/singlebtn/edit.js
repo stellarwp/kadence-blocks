@@ -79,13 +79,13 @@ import {
 } from '@wordpress/components';
 import { addFilter, applyFilters, doAction } from '@wordpress/hooks';
 import BackendStyles from './components/backend-styles';
-import { useLinkedMeasureState } from './hooks/use-linked-measure-state';
 import { PresetButton } from '../../extension/preset-picker/PresetButton';
 import {
 	usePresetBinding,
 	resetAttr,
 	presetPropertyValueForDevice,
 	deriveStateBinding,
+	useLinkedMeasureState,
 } from '../../extension/token-indicators';
 import {
 	anyCornerInherited,
@@ -102,11 +102,10 @@ import {
 	splitColorOpacity,
 } from '../../extension/design-tokens/components/EditorShadowControl';
 import { pickableTokensForControl, pickableTokensForKey } from '../../extension/token-picker';
-import { ColorControl } from '../../token-controls/controls/ColorControl';
-import { ColorControlGroup } from '../../token-controls/controls/ColorControlGroup';
+import { ColorControl, ColorControlGroup } from '../../token-controls';
 import { BUTTON_MARGIN_FALLBACK, BUTTON_PADDING_FALLBACK } from '../../token-controls/helpers/button-box-defaults';
 import { useColorGroups } from '../../extension/design-tokens/hooks/use-color-groups';
-import { resolveColorLiteral } from './color-control-adapter';
+import { resolveColorLiteral } from '../../extension/design-tokens/color-literal';
 
 /**
  * `EditorBorderControl`'s `renderColor` render-prop: reuses the block's existing `PopColorControl`
