@@ -23,7 +23,10 @@ export { FontFamilySelector } from './organisms/FontFamilySelector';
 export { ControlShell } from './templates/ControlShell';
 export { SlotGrid } from './templates/SlotGrid';
 export { BoxControl } from './controls/BoxControl';
+export { ColorControl } from './controls/ColorControl';
+export { ColorControlGroup } from './controls/ColorControlGroup';
 export { ScalarControl } from './controls/ScalarControl';
+export { ColorPicker } from './molecules/ColorPicker';
 
 export { BreakpointProvider, useBreakpoint } from './context/breakpoint';
 
@@ -56,3 +59,5 @@ export {
 	toSlotList,
 	writeSlot,
 } from './helpers/value-shapes';
+export { tokenCssVar } from './helpers/token-css-var';
+export { mapPaletteToColorControlGroups } from './helpers/palette-groups';

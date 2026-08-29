@@ -131,6 +131,61 @@ describe('TokenPopover renderCustom prop', () => {
 	});
 });
 
+describe('TokenPopover renderList prop', () => {
+	/**
+	 * When `renderList` is absent — every consumer besides `ColorControl` today — the default
+	 * `StyleLibraryTab` renders exactly as before. This is the regression check that the additive
+	 * prop leaves existing consumers unchanged.
+	 *
+	 * @return {void}
+	 */
+	it('renders the default StyleLibraryTab when renderList is absent', () => {
+		const tokens = [{ id: 'md', label: 'Medium', value: '8px', alias: '{primitive.radius.md}' }];
+
+		render({ initialTab: 'style-library', tokens, renderList: undefined });
+
+		expect(container.querySelector('.kadence-token-field__list')).not.toBeNull();
+		expect(container.querySelector('.kadence-token-field__item-label').textContent).toBe('Medium');
+	});
+
+	/**
+	 * When `renderList` is provided, it is called with `{ value, tokens, onPick, onClose }` and its
+	 * output renders instead of the default `StyleLibraryTab` — `ColorControl`'s grouped
+	 * `ColorGroupList` is the intended consumer.
+	 *
+	 * @return {void}
+	 */
+	it('renders renderList output instead of StyleLibraryTab when provided, called with value/tokens/onPick/onClose', () => {
+		const onPick = jest.fn();
+		const onClose = jest.fn();
+		const tokens = [{ id: 'md', label: 'Medium', value: '8px', alias: '{primitive.radius.md}' }];
+		const renderList = jest.fn(({ onPick: pick, onClose: close }) =>
+			createElement(
+				'button',
+				{ 'data-testid': 'grouped-list', onClick: () => (pick('{primitive.radius.md}'), close()) },
+				'grouped'
+			)
+		);
+
+		render({ initialTab: 'style-library', value: '{primitive.radius.md}', tokens, onPick, onClose, renderList });
+
+		expect(renderList).toHaveBeenCalledWith({
+			value: '{primitive.radius.md}',
+			tokens,
+			onPick: expect.any(Function),
+			onClose: expect.any(Function),
+		});
+		expect(container.querySelector('.kadence-token-field__list')).toBeNull();
+
+		const button = container.querySelector('[data-testid="grouped-list"]');
+		expect(button).not.toBeNull();
+
+		act(() => button.dispatchEvent(new MouseEvent('click', { bubbles: true })));
+		expect(onPick).toHaveBeenCalledWith('{primitive.radius.md}');
+		expect(onClose).toHaveBeenCalled();
+	});
+});
+
 describe('TokenPopover showValue prop', () => {
 	/**
 	 * When `showValue` is omitted — every consumer besides `BoxShadowControl` today — each token row

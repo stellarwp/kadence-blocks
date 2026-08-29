@@ -1,7 +1,7 @@
 /**
  * The settings-field type vocabulary: the single source of truth mapping a schema field's `type`
- * string to the component that renders it. Every per-screen settings schema authors against these
- * seventeen strings; `helpers/settings-schema.js`'s `fieldComponentFor` is the only reader.
+ * string to the component that renders it. Every per-screen settings schema authors against the
+ * strings below; `helpers/settings-schema.js`'s `fieldComponentFor` is the only reader.
  */
 
 /**
@@ -13,6 +13,7 @@ import { BoxSidesField } from '../components/molecules/fields/BoxSidesField';
 import { BoxTokenField } from '../components/molecules/fields/BoxTokenField';
 import { ColorField } from '../components/molecules/fields/ColorField';
 import { ColorListField } from '../components/molecules/fields/ColorListField';
+import { ColorSelectField } from '../components/molecules/fields/ColorSelectField';
 import { NumberUnitField } from '../components/molecules/fields/NumberUnitField';
 import { ScalarTokenField } from '../components/molecules/fields/ScalarTokenField';
 import { RangeNumberField } from '../components/molecules/fields/RangeNumberField';
@@ -102,6 +103,7 @@ export const FIELD_TYPES = Object.freeze({
 	'token-select': TokenSelectField,
 	'token-scalar': ScalarTokenField,
 	'token-color-select': TokenColorSelectField,
+	'color-select': ColorSelectField,
 	'font-family': FontFamilyField,
 	'box-sides': BoxSidesField,
 	radius: RadiusField,

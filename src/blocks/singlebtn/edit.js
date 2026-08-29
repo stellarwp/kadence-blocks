@@ -54,7 +54,7 @@ import { useDispatch, useSelect } from '@wordpress/data';
 import { tooltip as tooltipIcon } from '@kadence/icons';
 import { link as linkIcon } from '@wordpress/icons';
 import { displayShortcut, isKeyboardEvent } from '@wordpress/keycodes';
-import { useEffect, useRef, useState } from '@wordpress/element';
+import { useEffect, useState } from '@wordpress/element';
 import {
 	RichText,
 	InspectorControls,
@@ -93,7 +93,6 @@ import {
 	measureAttrsForDevice,
 	presetValueForDevice,
 } from '../../extension/token-indicators/normalize';
-import { TokenControlRow } from '../../extension/token-indicators/components/TokenControlRow';
 import { EditorBoxControl } from '../../extension/design-tokens/components/EditorBoxControl';
 import { EditorBorderControl } from '../../extension/design-tokens/components/EditorBorderControl';
 import {
@@ -102,6 +101,10 @@ import {
 	splitColorOpacity,
 } from '../../extension/design-tokens/components/EditorShadowControl';
 import { pickableTokensForControl, pickableTokensForKey } from '../../extension/token-picker';
+import { ColorControl } from '../../token-controls/controls/ColorControl';
+import { ColorControlGroup } from '../../token-controls/controls/ColorControlGroup';
+import { useColorGroups } from '../../extension/design-tokens/hooks/use-color-groups';
+import { resolveColorLiteral } from './color-control-adapter';
 
 /**
  * `EditorBorderControl`'s `renderColor` render-prop: reuses the block's existing `PopColorControl`
@@ -366,6 +369,9 @@ export default function KadenceButtonEdit(props) {
 	// reset that clears the mapped attribute back to the preset value (served by the existing scoped CSS).
 	const tokenBinding = usePresetBinding('kadence/singlebtn', attributes, undefined, previewDevice);
 	const resetToken = (attr) => resetAttr(attr, setAttributes, tokenBinding[attr]?.kind);
+	// One fetch of the block's effective palette groups, shared by every `ColorControl` instance on
+	// this block — the palette data is identical for all fourteen of them.
+	const colorGroups = useColorGroups(clientId);
 
 	const borderRadiusPresetValue = presetValueForDevice(
 		tokenBinding.borderRadius?.presetValue,
@@ -770,29 +776,6 @@ export default function KadenceButtonEdit(props) {
 			setIsEditingURL(false);
 		}
 	}, [isSelected]);
-
-	// A remount key for the token-mapped color pickers. PopColorControl keeps the picked color in its own
-	// internal state, so clearing the attribute (a per-control revert or the preset Reset-all) updates the
-	// block but not the swatch. Bumping this key when a mapped color attribute goes from set -> empty
-	// remounts the picker, which re-reads the now-empty attribute — the missing wire for token reset.
-	// TODO: remove this stopgap once `@kadence/components` teaches PopColorControl to re-read an externally
-	// cleared value itself (planned alongside that upstream `@kadence/components` update).
-	const [colorResetNonce, setColorResetNonce] = useState(0);
-	const prevTokenColors = useRef({ color, background, colorHover, backgroundHover });
-	useEffect(() => {
-		const prev = prevTokenColors.current;
-		const cleared =
-			(prev.color && !color) ||
-			(prev.background && !background) ||
-			(prev.colorHover && !colorHover) ||
-			(prev.backgroundHover && !backgroundHover);
-
-		if (cleared) {
-			setColorResetNonce((nonce) => nonce + 1);
-		}
-
-		prevTokenColors.current = { color, background, colorHover, backgroundHover };
-	}, [color, background, colorHover, backgroundHover]);
 
 	const themeVersion = window?.kadence_blocks_params?.tVersion ? window.kadence_blocks_params.tVersion : '1.0.0';
 	const supportsSecondaryButton = compareVersions(themeVersion, '1.4.0') >= 0;
@@ -1309,23 +1292,22 @@ export default function KadenceButtonEdit(props) {
 															/>
 														)}
 														{'normal' === textBackgroundHoverType && (
-															<TokenControlRow
-																heading={__('Color Hover', 'kadence-blocks')}
-																attr="colorHover"
-																binding={tokenBinding}
-																onReset={resetToken}
-															>
-																<PopColorControl
-																	key={`btncolorhover-${colorResetNonce}`}
-																	hideClear={!!tokenBinding.colorHover?.bound}
-																	swatchLabel={__('Color Hover', 'kadence-blocks')}
-																	value={colorHover ? colorHover : ''}
-																	default={''}
-																	onChange={(value) =>
-																		setAttributes({ colorHover: value })
-																	}
-																/>
-															</TokenControlRow>
+															<ColorControl
+																label={__('Color Hover', 'kadence-blocks')}
+																value={colorHover ? colorHover : ''}
+																groups={colorGroups}
+																status={{
+																	bound: !!tokenBinding.colorHover?.bound,
+																	modified: !!tokenBinding.colorHover?.overridden,
+																}}
+																onReset={() => resetToken('colorHover')}
+																onPick={(alias) => setAttributes({ colorHover: alias })}
+																onCustom={(literal) =>
+																	setAttributes({ colorHover: literal })
+																}
+																onClear={() => setAttributes({ colorHover: '' })}
+																resolveLiteral={resolveColorLiteral}
+															/>
 														)}
 														<BackgroundTypeControl
 															label={__('Background Hover Type', 'kadence-blocks')}
@@ -1345,26 +1327,25 @@ export default function KadenceButtonEdit(props) {
 															/>
 														)}
 														{'normal' === backgroundHoverType && (
-															<TokenControlRow
-																heading={__('Background Color', 'kadence-blocks')}
-																attr="backgroundHover"
-																binding={tokenBinding}
-																onReset={resetToken}
-															>
-																<PopColorControl
-																	key={`btnbghover-${colorResetNonce}`}
-																	hideClear={!!tokenBinding.backgroundHover?.bound}
-																	swatchLabel={__(
-																		'Background Color',
-																		'kadence-blocks'
-																	)}
-																	value={backgroundHover ? backgroundHover : ''}
-																	default={''}
-																	onChange={(value) =>
-																		setAttributes({ backgroundHover: value })
-																	}
-																/>
-															</TokenControlRow>
+															<ColorControl
+																label={__('Background Color', 'kadence-blocks')}
+																value={backgroundHover ? backgroundHover : ''}
+																groups={colorGroups}
+																status={{
+																	bound: !!tokenBinding.backgroundHover?.bound,
+																	modified:
+																		!!tokenBinding.backgroundHover?.overridden,
+																}}
+																onReset={() => resetToken('backgroundHover')}
+																onPick={(alias) =>
+																	setAttributes({ backgroundHover: alias })
+																}
+																onCustom={(literal) =>
+																	setAttributes({ backgroundHover: literal })
+																}
+																onClear={() => setAttributes({ backgroundHover: '' })}
+																resolveLiteral={resolveColorLiteral}
+															/>
 														)}
 														<EditorBorderControl
 															label={__('Border', 'kadence-blocks')}
@@ -1453,23 +1434,22 @@ export default function KadenceButtonEdit(props) {
 															/>
 														)}
 														{'normal' === textBackgroundType && (
-															<TokenControlRow
-																heading={__('Color', 'kadence-blocks')}
-																attr="color"
-																binding={tokenBinding}
-																onReset={resetToken}
-															>
-																<PopColorControl
-																	key={`btncolor-${colorResetNonce}`}
-																	hideClear={!!tokenBinding.color?.bound}
-																	swatchLabel={__('Color', 'kadence-blocks')}
-																	value={color ? color : ''}
-																	default={''}
-																	onChange={(value) =>
-																		setAttributes({ color: value })
-																	}
-																/>
-															</TokenControlRow>
+															<ColorControl
+																label={__('Color', 'kadence-blocks')}
+																value={color ? color : ''}
+																groups={colorGroups}
+																status={{
+																	bound: !!tokenBinding.color?.bound,
+																	modified: !!tokenBinding.color?.overridden,
+																}}
+																onReset={() => resetToken('color')}
+																onPick={(alias) => setAttributes({ color: alias })}
+																onCustom={(literal) =>
+																	setAttributes({ color: literal })
+																}
+																onClear={() => setAttributes({ color: '' })}
+																resolveLiteral={resolveColorLiteral}
+															/>
 														)}
 														<BackgroundTypeControl
 															label={__('Background Type', 'kadence-blocks')}
@@ -1487,26 +1467,22 @@ export default function KadenceButtonEdit(props) {
 															/>
 														)}
 														{'normal' === backgroundType && (
-															<TokenControlRow
-																heading={__('Background Color', 'kadence-blocks')}
-																attr="background"
-																binding={tokenBinding}
-																onReset={resetToken}
-															>
-																<PopColorControl
-																	key={`btnbg-${colorResetNonce}`}
-																	hideClear={!!tokenBinding.background?.bound}
-																	swatchLabel={__(
-																		'Background Color',
-																		'kadence-blocks'
-																	)}
-																	value={background ? background : ''}
-																	default={''}
-																	onChange={(value) =>
-																		setAttributes({ background: value })
-																	}
-																/>
-															</TokenControlRow>
+															<ColorControl
+																label={__('Background Color', 'kadence-blocks')}
+																value={background ? background : ''}
+																groups={colorGroups}
+																status={{
+																	bound: !!tokenBinding.background?.bound,
+																	modified: !!tokenBinding.background?.overridden,
+																}}
+																onReset={() => resetToken('background')}
+																onPick={(alias) => setAttributes({ background: alias })}
+																onCustom={(literal) =>
+																	setAttributes({ background: literal })
+																}
+																onClear={() => setAttributes({ background: '' })}
+																resolveLiteral={resolveColorLiteral}
+															/>
 														)}
 														<EditorBorderControl
 															label={__('Border', 'kadence-blocks')}
@@ -1578,15 +1554,22 @@ export default function KadenceButtonEdit(props) {
 												<HoverToggleControl
 													hover={
 														<>
-															<PopColorControl
+															<ColorControl
 																label={__('Color Hover', 'kadence-blocks')}
 																value={
 																	colorTransparentHover ? colorTransparentHover : ''
 																}
-																default={''}
-																onChange={(value) =>
-																	setAttributes({ colorTransparentHover: value })
+																groups={colorGroups}
+																onPick={(alias) =>
+																	setAttributes({ colorTransparentHover: alias })
 																}
+																onCustom={(literal) =>
+																	setAttributes({ colorTransparentHover: literal })
+																}
+																onClear={() =>
+																	setAttributes({ colorTransparentHover: '' })
+																}
+																resolveLiteral={resolveColorLiteral}
 															/>
 															<BackgroundTypeControl
 																label={__('Hover Type', 'kadence-blocks')}
@@ -1612,17 +1595,30 @@ export default function KadenceButtonEdit(props) {
 																/>
 															)}
 															{'normal' === backgroundTransparentHoverType && (
-																<PopColorControl
+																<ColorControl
 																	label={__('Background Color', 'kadence-blocks')}
 																	value={
 																		backgroundTransparentHover
 																			? backgroundTransparentHover
 																			: ''
 																	}
-																	default={''}
-																	onChange={(value) =>
-																		setAttributes({ backgroundHover: value })
+																	groups={colorGroups}
+																	onPick={(alias) =>
+																		setAttributes({
+																			backgroundTransparentHover: alias,
+																		})
 																	}
+																	onCustom={(literal) =>
+																		setAttributes({
+																			backgroundTransparentHover: literal,
+																		})
+																	}
+																	onClear={() =>
+																		setAttributes({
+																			backgroundTransparentHover: '',
+																		})
+																	}
+																	resolveLiteral={resolveColorLiteral}
 																/>
 															)}
 															<EditorBorderControl
@@ -1709,13 +1705,18 @@ export default function KadenceButtonEdit(props) {
 													}
 													normal={
 														<>
-															<PopColorControl
+															<ColorControl
 																label={__('Color', 'kadence-blocks')}
 																value={colorTransparent ? colorTransparent : ''}
-																default={''}
-																onChange={(value) =>
-																	setAttributes({ colorTransparent: value })
+																groups={colorGroups}
+																onPick={(alias) =>
+																	setAttributes({ colorTransparent: alias })
 																}
+																onCustom={(literal) =>
+																	setAttributes({ colorTransparent: literal })
+																}
+																onClear={() => setAttributes({ colorTransparent: '' })}
+																resolveLiteral={resolveColorLiteral}
 															/>
 															<BackgroundTypeControl
 																label={__('Type', 'kadence-blocks')}
@@ -1739,17 +1740,26 @@ export default function KadenceButtonEdit(props) {
 																/>
 															)}
 															{'normal' === backgroundTransparentType && (
-																<PopColorControl
+																<ColorControl
 																	label={__('Background Color', 'kadence-blocks')}
 																	value={
 																		backgroundTransparent
 																			? backgroundTransparent
 																			: ''
 																	}
-																	default={''}
-																	onChange={(value) =>
-																		setAttributes({ backgroundTransparent: value })
+																	groups={colorGroups}
+																	onPick={(alias) =>
+																		setAttributes({ backgroundTransparent: alias })
 																	}
+																	onCustom={(literal) =>
+																		setAttributes({
+																			backgroundTransparent: literal,
+																		})
+																	}
+																	onClear={() =>
+																		setAttributes({ backgroundTransparent: '' })
+																	}
+																	resolveLiteral={resolveColorLiteral}
 																/>
 															)}
 															<EditorBorderControl
@@ -1839,13 +1849,18 @@ export default function KadenceButtonEdit(props) {
 												<HoverToggleControl
 													hover={
 														<>
-															<PopColorControl
+															<ColorControl
 																label={__('Color Hover', 'kadence-blocks')}
 																value={colorStickyHover ? colorStickyHover : ''}
-																default={''}
-																onChange={(value) =>
-																	setAttributes({ colorStickyHover: value })
+																groups={colorGroups}
+																onPick={(alias) =>
+																	setAttributes({ colorStickyHover: alias })
 																}
+																onCustom={(literal) =>
+																	setAttributes({ colorStickyHover: literal })
+																}
+																onClear={() => setAttributes({ colorStickyHover: '' })}
+																resolveLiteral={resolveColorLiteral}
 															/>
 															<BackgroundTypeControl
 																label={__('Hover Type', 'kadence-blocks')}
@@ -1871,17 +1886,28 @@ export default function KadenceButtonEdit(props) {
 																/>
 															)}
 															{'normal' === backgroundStickyHoverType && (
-																<PopColorControl
+																<ColorControl
 																	label={__('Background Color', 'kadence-blocks')}
 																	value={
 																		backgroundStickyHover
 																			? backgroundStickyHover
 																			: ''
 																	}
-																	default={''}
-																	onChange={(value) =>
-																		setAttributes({ backgroundHover: value })
+																	groups={colorGroups}
+																	onPick={(alias) =>
+																		setAttributes({
+																			backgroundStickyHover: alias,
+																		})
 																	}
+																	onCustom={(literal) =>
+																		setAttributes({
+																			backgroundStickyHover: literal,
+																		})
+																	}
+																	onClear={() =>
+																		setAttributes({ backgroundStickyHover: '' })
+																	}
+																	resolveLiteral={resolveColorLiteral}
 																/>
 															)}
 															<EditorBorderControl
@@ -1963,13 +1989,18 @@ export default function KadenceButtonEdit(props) {
 													}
 													normal={
 														<>
-															<PopColorControl
+															<ColorControl
 																label={__('Color', 'kadence-blocks')}
 																value={colorSticky ? colorSticky : ''}
-																default={''}
-																onChange={(value) =>
-																	setAttributes({ colorSticky: value })
+																groups={colorGroups}
+																onPick={(alias) =>
+																	setAttributes({ colorSticky: alias })
 																}
+																onCustom={(literal) =>
+																	setAttributes({ colorSticky: literal })
+																}
+																onClear={() => setAttributes({ colorSticky: '' })}
+																resolveLiteral={resolveColorLiteral}
 															/>
 															<BackgroundTypeControl
 																label={__('Type', 'kadence-blocks')}
@@ -1993,13 +2024,20 @@ export default function KadenceButtonEdit(props) {
 																/>
 															)}
 															{'normal' === backgroundStickyType && (
-																<PopColorControl
+																<ColorControl
 																	label={__('Background Color', 'kadence-blocks')}
 																	value={backgroundSticky ? backgroundSticky : ''}
-																	default={''}
-																	onChange={(value) =>
-																		setAttributes({ backgroundSticky: value })
+																	groups={colorGroups}
+																	onPick={(alias) =>
+																		setAttributes({ backgroundSticky: alias })
 																	}
+																	onCustom={(literal) =>
+																		setAttributes({ backgroundSticky: literal })
+																	}
+																	onClear={() =>
+																		setAttributes({ backgroundSticky: '' })
+																	}
+																	resolveLiteral={resolveColorLiteral}
 																/>
 															)}
 															<EditorBorderControl
@@ -2300,20 +2338,26 @@ export default function KadenceButtonEdit(props) {
 											}}
 											units={['px', 'em', 'rem']}
 										/>
-										<PopColorControl
-											label={__('Icon Color', 'kadence-blocks')}
-											value={iconColor ? iconColor : ''}
-											default={''}
-											onChange={(value) => {
-												setAttributes({ iconColor: value });
-											}}
-											swatchLabel2={__('Hover Color', 'kadence-blocks')}
-											value2={iconColorHover ? iconColorHover : ''}
-											default2={''}
-											onChange2={(value) => {
-												setAttributes({ iconColorHover: value });
-											}}
-										/>
+										<ColorControlGroup>
+											<ColorControl
+												label={__('Icon Color', 'kadence-blocks')}
+												value={iconColor ? iconColor : ''}
+												groups={colorGroups}
+												onPick={(alias) => setAttributes({ iconColor: alias })}
+												onCustom={(literal) => setAttributes({ iconColor: literal })}
+												onClear={() => setAttributes({ iconColor: '' })}
+												resolveLiteral={resolveColorLiteral}
+											/>
+											<ColorControl
+												label={__('Hover Color', 'kadence-blocks')}
+												value={iconColorHover ? iconColorHover : ''}
+												groups={colorGroups}
+												onPick={(alias) => setAttributes({ iconColorHover: alias })}
+												onCustom={(literal) => setAttributes({ iconColorHover: literal })}
+												onClear={() => setAttributes({ iconColorHover: '' })}
+												resolveLiteral={resolveColorLiteral}
+											/>
+										</ColorControlGroup>
 										<ResponsiveMeasureRangeControl
 											label={__('Icon Padding', 'kadence-blocks')}
 											value={undefined !== iconPadding ? iconPadding : ['', '', '', '']}
