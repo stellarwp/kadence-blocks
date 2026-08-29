@@ -33,6 +33,7 @@ import { plus } from '@wordpress/icons';
  */
 import { ScreenHeader } from '../organisms/ScreenHeader';
 import { RowList } from '../templates/RowList';
+import { ScreenDescription } from '../molecules/ScreenDescription';
 import { EmptyState } from '../molecules/EmptyState';
 import { useScaleScreen } from '../../hooks/use-scale-screen';
 import { useDraftChannel } from '../../hooks/use-draft-channel';
@@ -104,7 +105,11 @@ export function ScaleScreen({ config, route, navigate, library }) {
 		<div
 			className={`kadence-blocks-style-library__scale-screen kadence-blocks-style-library__scale-screen--${config.id}`}
 		>
-			<ScreenHeader title={config.title} primaryAction={config.renderToolbar ? null : addAction} />
+			<ScreenHeader
+				title={config.title}
+				description={<ScreenDescription screenId={route.screen} />}
+				primaryAction={config.renderToolbar ? null : addAction}
+			/>
 			{config.renderToolbar && config.renderToolbar({ addAction, isBusy: scale.isBusy })}
 			{scale.addError && (
 				<Notice status="error" isDismissible onRemove={scale.clearAddError}>

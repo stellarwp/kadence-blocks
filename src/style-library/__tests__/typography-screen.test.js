@@ -52,6 +52,7 @@ jest.mock('../components/templates/RowList', () => ({
 // `accessibleWhenDisabled` renders `aria-disabled` INSTEAD of the `disabled` attribute, which is
 // what keeps the button focusable while its write runs.
 jest.mock('@wordpress/components', () => ({
+	ExternalLink: ({ children, ...props }) => <a {...props}>{children}</a>,
 	Button: ({ children, icon, isBusy, accessibleWhenDisabled, variant, disabled, ...props }) => (
 		<button
 			{...props}

@@ -24,6 +24,7 @@ import { plus } from '@wordpress/icons';
  */
 import { ScreenHeader } from '../organisms/ScreenHeader';
 import { RowList } from '../templates/RowList';
+import { ScreenDescription } from '../molecules/ScreenDescription';
 import { EmptyState } from '../molecules/EmptyState';
 import { Skeleton } from '../atoms/Skeleton';
 import { usePresetScreen } from '../../hooks/use-preset-screen';
@@ -163,7 +164,11 @@ export function PresetScreen({ label, route, navigate, library, preset }) {
 
 	return (
 		<div className={`kadence-blocks-style-library__preset-screen ${className}`.trim()}>
-			<ScreenHeader title={label} primaryAction={addAction} />
+			<ScreenHeader
+				title={label}
+				description={<ScreenDescription screenId={route.screen} />}
+				primaryAction={addAction}
+			/>
 			{screen.loadError && (
 				<Notice status="error" isDismissible={false}>
 					{screen.loadError.message}

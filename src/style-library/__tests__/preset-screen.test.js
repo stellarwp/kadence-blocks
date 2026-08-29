@@ -38,6 +38,7 @@ jest.mock('@wordpress/components', () => ({
 	// `isBusy` is a `Button` prop, not a DOM attribute — drop it so React does not warn about it.
 	Button: ({ children, isBusy, ...props }) => <button {...props}>{children}</button>,
 	Notice: ({ children, isDismissible, ...props }) => <div {...props}>{children}</div>,
+	ExternalLink: ({ children, ...props }) => <a {...props}>{children}</a>,
 }));
 
 // `@wordpress/primitives` (which `@wordpress/icons`'s `Icon`/`SVG` build on) nests its own `react`
@@ -65,19 +66,20 @@ let root;
  * @param {Object}   [options]          Overrides for the props the selection and overlay paths read.
  * @param {string}   [options.item]     The route's open `kb-item`.
  * @param {Function} [options.navigate] The navigate spy.
+ * @param {string}   [options.screenId] The route's screen id — varies which helper copy applies.
  *
  * @since TBD
  *
  * @return {HTMLElement} The container the screen was rendered into.
  */
-function renderPresetScreen(screen, { item = '', navigate = () => {} } = {}) {
+function renderPresetScreen(screen, { item = '', navigate = () => {}, screenId = 'blocks/kadence/singlebtn' } = {}) {
 	usePresetScreen.mockReturnValue(screen);
 
 	act(() => {
 		root.render(
 			createElement(PresetScreen, {
 				label: 'Button',
-				route: { screen: 'blocks/kadence/singlebtn', item },
+				route: { screen: screenId, item },
 				navigate,
 				library: LIBRARY,
 				preset: BUTTON_PRESET,
@@ -292,5 +294,37 @@ describe('PresetScreen selection', () => {
 
 		expect(guard).not.toHaveBeenCalled();
 		expect(navigate).not.toHaveBeenCalled();
+	});
+});
+
+describe('PresetScreen helper copy', () => {
+	const LOADED = { payload: {}, isLoading: false, loadError: null, rows: [], initialValuesFor: () => ({}) };
+
+	/**
+	 * The button preset screen has helper copy in the catalog, so its sentence and documentation
+	 * link render under the header row.
+	 *
+	 * @return {void}
+	 */
+	it('renders the button screen helper copy under the header row', () => {
+		renderPresetScreen(LOADED);
+
+		const description = container.querySelector('.kadence-blocks-style-library__screen-description');
+
+		expect(description).not.toBeNull();
+		expect(description.textContent).toContain('Save button styles as presets');
+		expect(description.querySelector('a').getAttribute('href')).toBe('https://evnt.is/kadence-button');
+	});
+
+	/**
+	 * A third-party preset screen has no catalog entry, so it renders no description at all — not
+	 * an empty paragraph — and its spacing is unchanged from before helper copy existed.
+	 *
+	 * @return {void}
+	 */
+	it('renders no description on a preset screen the copy catalog does not cover', () => {
+		renderPresetScreen(LOADED, { screenId: 'blocks/acme/widget' });
+
+		expect(container.querySelector('.kadence-blocks-style-library__screen-description')).toBeNull();
 	});
 });

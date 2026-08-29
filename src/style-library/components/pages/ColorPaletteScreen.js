@@ -21,6 +21,7 @@ import { colord } from '../../helpers/colord';
 import { ScreenHeader } from '../organisms/ScreenHeader';
 import { SwatchGrid } from '../organisms/SwatchGrid';
 import { SelectDropdown } from '../molecules/SelectDropdown';
+import { ScreenDescription } from '../molecules/ScreenDescription';
 import { EmptyState } from '../molecules/EmptyState';
 import { Skeleton } from '../atoms/Skeleton';
 import { ActivatePaletteButton } from '../organisms/ActivatePaletteButton';
@@ -191,6 +192,7 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 		<div className="kadence-blocks-style-library__color-palette-screen">
 			<ScreenHeader
 				title={label}
+				description={<ScreenDescription screenId={route.screen} />}
 				inlineControl={
 					<>
 						<SelectDropdown
