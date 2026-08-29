@@ -1013,6 +1013,11 @@
 	display: flex;
 	align-items: center;
 	gap: 8px;
+	// The padding and border are part of the 100% width, not added to it. Unlike the token field's
+	// own trigger, this is a plain `<div>` rather than a `.components-button`, so it inherits no
+	// border-box from `@wordpress/components` — and the Style Library, where this also renders, has
+	// no global reset of its own.
+	box-sizing: border-box;
 	width: 100%;
 	height: 32px;
 	padding: 0 8px;
