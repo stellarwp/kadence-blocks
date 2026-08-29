@@ -1,11 +1,14 @@
 @use "../../styles/mixins" as *;
 
 .kadence-blocks-style-library__screen-header {
+	margin-bottom: var(--kb-sl-space-30);
+}
+
+.kadence-blocks-style-library__screen-header-row {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 	gap: var(--kb-sl-space-15);
-	margin-bottom: var(--kb-sl-space-30);
 }
 
 .kadence-blocks-style-library__screen-header-lead {
