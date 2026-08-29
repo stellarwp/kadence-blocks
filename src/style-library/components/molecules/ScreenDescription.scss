@@ -1,0 +1,23 @@
+// 13px/20px muted, 4px under the title, and nothing below it — the header block already owns the
+// gap to the screen's content, so the spacing is identical whether or not this renders.
+.kadence-blocks-style-library-root .kadence-blocks-style-library__screen-description {
+	margin: var(--kb-sl-space-05) 0 0;
+	// A comfortable measure for a single sentence. The description is the one part of the header
+	// allowed to wrap; only the title truncates.
+	max-width: var(--kb-sl-size-content-max-width);
+	color: var(--kb-sl-color-text-muted);
+	font-size: var(--kb-sl-font-size-small);
+	line-height: var(--kb-sl-line-height-s);
+	text-wrap: pretty;
+}
+
+// `ExternalLink` already ships the theme color, the underlined label, and the "opens in a new
+// tab" arrow with its own accessible label — this sets only what core does not: the medium weight
+// the header's other text links (Rename, Reset) use, plus an explicit color and margin, because
+// another core rule paints `.components-external-link` white and pushes it 32px right inside its
+// own context.
+.kadence-blocks-style-library-root .kadence-blocks-style-library__screen-description .components-external-link {
+	margin-left: 0;
+	color: var(--kb-sl-color-theme);
+	font-weight: var(--kb-sl-font-weight-medium);
+}
