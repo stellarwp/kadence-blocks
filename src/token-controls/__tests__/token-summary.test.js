@@ -59,6 +59,51 @@ describe('findTokenEntry', () => {
 	});
 });
 
+// The real shape of a dimension primitive: the projection slug the block used to store IS the id's
+// last segment, which is what lets a legacy value select its token without a second lookup table.
+const SCALE_TOKENS = [
+	{
+		id: 'primitive.dimension.font-size.sm',
+		label: 'SM',
+		value: '0.9rem',
+		alias: '{primitive.dimension.font-size.sm}',
+	},
+	{
+		id: 'primitive.dimension.font-size.md',
+		label: 'MD',
+		value: '1.25rem',
+		alias: '{primitive.dimension.font-size.md}',
+	},
+];
+
+describe('findTokenEntry legacy size slugs', () => {
+	it('selects the primitive a legacy Kadence slug names', () => {
+		// What a block saved before tokens existed. It already RENDERS as this token — the primitive
+		// projects into the `kb_font_size_slot` the slug names — so the field showing it as a custom
+		// literal was the only thing disagreeing.
+		expect(findTokenEntry(SCALE_TOKENS, 'md').label).toBe('MD');
+	});
+
+	it('reports the token through fieldSummary, so the trigger names it rather than the raw slug', () => {
+		expect(fieldSummary('sm', SCALE_TOKENS, 'px', 'Custom')).toEqual({ label: 'SM', value: '0.9rem' });
+	});
+
+	it('never matches a CSS literal, which no slug can look like', () => {
+		expect(findTokenEntry(SCALE_TOKENS, '1.25rem')).toBeNull();
+		expect(findTokenEntry(SCALE_TOKENS, '16')).toBeNull();
+	});
+
+	it('leaves a non-primitive entry alone, so only scale steps answer to a slug', () => {
+		const semantic = [{ id: 'semantic.font-size.heading', label: 'Heading', value: '2rem', alias: '{x}' }];
+
+		expect(findTokenEntry(semantic, 'heading')).toBeNull();
+	});
+
+	it('ignores a non-string value', () => {
+		expect(findTokenEntry(SCALE_TOKENS, 16)).toBeNull();
+	});
+});
+
 describe('resolveDefaultValue', () => {
 	it('resolves an alias through the pickable list', () => {
 		expect(resolveDefaultValue('{primitive.dimension.radius-lg}', TOKENS, 'px')).toBe('0.5rem');
