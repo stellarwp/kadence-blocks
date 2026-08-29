@@ -20,7 +20,7 @@
  */
 import { useCallback, useEffect, useMemo, useState } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
-import { Button, Notice, Spinner } from '@wordpress/components';
+import { Button, Notice, Spinner, Tooltip } from '@wordpress/components';
 import { starEmpty, starFilled } from '@wordpress/icons';
 
 /**
@@ -81,6 +81,24 @@ const FONT_ACTION_LABELS = {
 		idle: __('Remove Favorite', 'kadence-blocks'),
 		busy: __('Removing Favorite…', 'kadence-blocks'),
 	},
+};
+
+/**
+ * What each favorite action does, shown before the click. Keyed the same way `FONT_ACTION_LABELS`
+ * is, so a label and its explanation cannot drift apart. A favorite is a pin, not a style, so both
+ * sentences say plainly that no text on the site moves.
+ *
+ * @since TBD
+ */
+const FONT_ACTION_HINTS = {
+	add: __(
+		'Pins this font to the top of your font pickers, here and in the editor. It does not change any text on your site.',
+		'kadence-blocks'
+	),
+	remove: __(
+		'Unpins this font from the top of your font pickers. Text already using it stays as it is.',
+		'kadence-blocks'
+	),
 };
 
 /**
@@ -226,26 +244,29 @@ function typographyToolbarRenderer({
 								onChange={onPickCatalog}
 								isBusy={controlsBusy}
 							/>
-							<Button
-								className="kadence-blocks-style-library__typography-font-action"
-								variant={actionType === 'remove' ? 'tertiary' : 'secondary'}
-								icon={actionType === 'remove' ? starFilled : starEmpty}
-								// Only this button's OWN write animates it. A scale write still
-								// disables it (through `controlsBusy`) without making it look like
-								// it is the one saving — the same split `SettingsPanel` draws
-								// between its `isBusy` and `isSaving`/`isDeleting` props.
-								isBusy={fontBusy}
-								disabled={controlsBusy || fontAction.disabled}
-								// Renders `aria-disabled` rather than the `disabled` attribute, so a
-								// keyboard user who just pressed the button keeps focus on it for
-								// the length of the write instead of being dropped to the document.
-								// `Button` installs its own no-op handlers in this mode, so the
-								// click is swallowed without guarding `onClick` here.
-								accessibleWhenDisabled
-								onClick={onFontAction}
-							>
-								{FONT_ACTION_LABELS[actionType][fontBusy ? 'busy' : 'idle']}
-							</Button>
+							<Tooltip text={FONT_ACTION_HINTS[actionType]}>
+								<Button
+									className="kadence-blocks-style-library__typography-font-action"
+									variant={actionType === 'remove' ? 'tertiary' : 'secondary'}
+									icon={actionType === 'remove' ? starFilled : starEmpty}
+									// Only this button's OWN write animates it. A scale write still
+									// disables it (through `controlsBusy`) without making it look
+									// like it is the one saving — the same split `SettingsPanel`
+									// draws between its `isBusy` and `isSaving`/`isDeleting` props.
+									isBusy={fontBusy}
+									disabled={controlsBusy || fontAction.disabled}
+									// Renders `aria-disabled` rather than the `disabled` attribute,
+									// so a keyboard user who just pressed the button keeps focus on
+									// it for the length of the write instead of being dropped to
+									// the document. `Button` installs its own no-op handlers in
+									// this mode, so the click is swallowed without guarding
+									// `onClick` here.
+									accessibleWhenDisabled
+									onClick={onFontAction}
+								>
+									{FONT_ACTION_LABELS[actionType][fontBusy ? 'busy' : 'idle']}
+								</Button>
+							</Tooltip>
 						</div>
 					</div>
 					<span className="kadence-blocks-style-library__typography-toolbar-add">{addAction}</span>

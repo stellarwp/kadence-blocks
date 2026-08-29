@@ -52,6 +52,7 @@ jest.mock('../components/templates/RowList', () => ({
 // `accessibleWhenDisabled` renders `aria-disabled` INSTEAD of the `disabled` attribute, which is
 // what keeps the button focusable while its write runs.
 jest.mock('@wordpress/components', () => ({
+	Tooltip: ({ children, text }) => <span data-tooltip={text}>{children}</span>,
 	ExternalLink: ({ children, ...props }) => <a {...props}>{children}</a>,
 	Button: ({ children, icon, isBusy, accessibleWhenDisabled, variant, disabled, ...props }) => (
 		<button
@@ -352,5 +353,35 @@ describe('TypographyScreen favorite button', () => {
 		expect(liveRegion().textContent).toBe('');
 		// Back to the label it carried before the click, not stuck on the busy one.
 		expect(favoriteButton().textContent).toBe('Remove Favorite');
+	});
+});
+
+describe('the favorite action tooltip', () => {
+	/**
+	 * Before the click, the add action says what adding a font to favorites does and, just as
+	 * important, what it does not do — no text on the site changes.
+	 *
+	 * @return {void}
+	 */
+	it('explains what adding a favorite does', () => {
+		renderScreen([]);
+
+		expect(favoriteButton().closest('[data-tooltip]').getAttribute('data-tooltip')).toBe(
+			'Pins this font to the top of your font pickers, here and in the editor. It does not change any text on your site.'
+		);
+	});
+
+	/**
+	 * The remove action gets its own sentence — the reassurance needed there is about text already
+	 * using the font, which is a different worry from the add case.
+	 *
+	 * @return {void}
+	 */
+	it('explains what removing a favorite does', () => {
+		renderScreen(['Inter']);
+
+		expect(favoriteButton().closest('[data-tooltip]').getAttribute('data-tooltip')).toBe(
+			'Unpins this font from the top of your font pickers. Text already using it stays as it is.'
+		);
 	});
 });

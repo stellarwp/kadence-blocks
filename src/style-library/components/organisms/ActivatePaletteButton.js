@@ -8,7 +8,7 @@
 /**
  * WordPress dependencies
  */
-import { Button } from '@wordpress/components';
+import { Button, Tooltip } from '@wordpress/components';
 import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
@@ -17,6 +17,18 @@ import { __ } from '@wordpress/i18n';
  */
 import { ActivatePaletteModal } from './ActivatePaletteModal';
 import './ActivatePaletteButton.scss';
+
+/**
+ * What activating a palette does, shown before the click. The documentation link that belongs with
+ * this sentence lives in the screen's description row instead: a tooltip is neither hoverable nor
+ * focusable, so a link inside one is unreachable by mouse and keyboard alike.
+ *
+ * @since TBD
+ */
+const ACTIVATE_HINT = __(
+	'Makes this palette the one your site uses. Individual blocks can still be switched to another palette.',
+	'kadence-blocks'
+);
 
 /**
  * Render the activate action and, when open, its confirmation modal.
@@ -71,14 +83,16 @@ export function ActivatePaletteButton({
 
 	return (
 		<>
-			<Button
-				variant="secondary"
-				disabled={isBusy}
-				onClick={() => setIsOpen(true)}
-				className="kadence-blocks-style-library__activate-palette-action"
-			>
-				{__('Set as active', 'kadence-blocks')}
-			</Button>
+			<Tooltip text={ACTIVATE_HINT}>
+				<Button
+					variant="secondary"
+					disabled={isBusy}
+					onClick={() => setIsOpen(true)}
+					className="kadence-blocks-style-library__activate-palette-action"
+				>
+					{__('Set as active', 'kadence-blocks')}
+				</Button>
+			</Tooltip>
 			{isOpen && (
 				<ActivatePaletteModal
 					currentLabel={activeLabel}

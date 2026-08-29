@@ -10,7 +10,7 @@
 /**
  * WordPress dependencies
  */
-import { Button } from '@wordpress/components';
+import { Button, Tooltip } from '@wordpress/components';
 import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
@@ -19,6 +19,17 @@ import { __ } from '@wordpress/i18n';
  */
 import { ActivateLibraryModal } from './ActivateLibraryModal';
 import './ActivateLibraryButton.scss';
+
+/**
+ * What activating a library does, shown before the click. The confirmation modal says the same
+ * thing after it, naming both libraries; this is the version that reads with no names in it.
+ *
+ * @since TBD
+ */
+const ACTIVATE_HINT = __(
+	'Makes this library the one your site uses. Your site switches to its colors, sizes and styles.',
+	'kadence-blocks'
+);
 
 /**
  * Render the activate action and, when open, its confirmation modal.
@@ -73,14 +84,16 @@ export function ActivateLibraryButton({
 
 	return (
 		<>
-			<Button
-				variant="secondary"
-				disabled={isBusy}
-				onClick={() => setIsOpen(true)}
-				className="kadence-blocks-style-library__activate-library-action"
-			>
-				{__('Set as active', 'kadence-blocks')}
-			</Button>
+			<Tooltip text={ACTIVATE_HINT}>
+				<Button
+					variant="secondary"
+					disabled={isBusy}
+					onClick={() => setIsOpen(true)}
+					className="kadence-blocks-style-library__activate-library-action"
+				>
+					{__('Set as active', 'kadence-blocks')}
+				</Button>
+			</Tooltip>
 			{isOpen && (
 				<ActivateLibraryModal
 					currentTitle={activeTitle}
