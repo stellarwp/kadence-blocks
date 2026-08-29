@@ -30,7 +30,10 @@ final class Scale_Step_LabelsTest extends TestCase {
 	 * No declared token is labeled with the uppercase form of its own final id segment.
 	 *
 	 * Guards the whole registry rather than a fixed list, so a scale added later cannot quietly
-	 * reintroduce a strtoupper() label.
+	 * reintroduce a strtoupper() label. The declarations resolver still falls back to the uppercase
+	 * slug for a step with no entry in its label map, which keeps such a step visible at render time;
+	 * this test is what makes that fallback a bug to fix rather than a state to ship, so a new step
+	 * failing here means its label is missing, not that the test is wrong.
 	 *
 	 * @return void
 	 */

@@ -9,8 +9,12 @@
 // _load_textdomain_just_in_time notice — translations must not load before init.
 
 // Every scale below names its steps from this one map. Radius and the spacing/font-size scales spell the
-// same step differently ("2xl" vs "xxl"), so both spellings resolve to one label. An unlisted slug falls
-// back to its uppercase form, so a step added without a label here still renders.
+// same step differently ("2xl" vs "xxl"), so both spellings resolve to one label.
+//
+// An unlisted slug falls back to its uppercase form. That is a render-time safety net, not a supported
+// end state: it keeps a step that someone added without a label visible instead of blank, and
+// Scale_Step_LabelsTest fails until the label is added here. Shipping an uppercase label is what this
+// map exists to prevent.
 //
 // group_key, which every scale also declares, is the stable machine id the Style Library's "+ Add …"
 // buttons mint custom tokens into — Token_Registry::group_label_for() resolves it back to the translated
@@ -40,7 +44,8 @@ $scale_step_labels = [
  *
  * @param string $slug The scale-step slug (e.g. "sm").
  *
- * @return string The step's label, or the uppercase slug when the step is unlisted.
+ * @return string The step's label, or the uppercase slug when the step is unlisted — see the note above
+ *                on why that fallback is a safety net rather than a supported end state.
  */
 $scale_step_label = static function ( string $slug ) use ( $scale_step_labels ): string {
 	return $scale_step_labels[ $slug ] ?? strtoupper( $slug );
