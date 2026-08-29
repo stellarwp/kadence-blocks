@@ -66,6 +66,16 @@ export function RenamePaletteModal({ id, currentLabel, listing, isBusy, error, o
 			.catch(() => {});
 	};
 
+	const canSave = !isBusy && trimmed !== '' && !isDuplicate && !isUnchanged;
+
+	const handleSubmit = (event) => {
+		event.preventDefault();
+
+		if (canSave) {
+			handleConfirm();
+		}
+	};
+
 	return (
 		<>
 			<Button
@@ -86,40 +96,42 @@ export function RenamePaletteModal({ id, currentLabel, listing, isBusy, error, o
 					shouldCloseOnEsc={!isBusy}
 					shouldCloseOnClickOutside={!isBusy}
 				>
-					{error && (
-						<Notice status="error" isDismissible={false}>
-							{error.message}
-						</Notice>
-					)}
-					<TextControl
-						label={__('Palette name', 'kadence-blocks')}
-						value={label}
-						onChange={setLabel}
-						disabled={isBusy}
-						help={
-							isDuplicate
-								? sprintf(
-										// translators: %s: the palette name the user typed.
-										__('A palette named "%s" already exists.', 'kadence-blocks'),
-										trimmed
-									)
-								: undefined
-						}
-					/>
-					<div className="kadence-blocks-style-library__rename-palette-modal-actions">
-						<Button variant="tertiary" onClick={handleClose} disabled={isBusy}>
-							{__('Cancel', 'kadence-blocks')}
-						</Button>
-						<Button
-							variant="primary"
-							// Unchanged is disabled alongside empty and duplicate: a rename to the same label
-							// would spend a request to change nothing.
-							disabled={isBusy || trimmed === '' || isDuplicate || isUnchanged}
-							onClick={handleConfirm}
-						>
-							{isBusy ? __('Saving…', 'kadence-blocks') : __('Save', 'kadence-blocks')}
-						</Button>
-					</div>
+					<form onSubmit={handleSubmit}>
+						{error && (
+							<Notice status="error" isDismissible={false}>
+								{error.message}
+							</Notice>
+						)}
+						<TextControl
+							label={__('Palette name', 'kadence-blocks')}
+							value={label}
+							onChange={setLabel}
+							disabled={isBusy}
+							help={
+								isDuplicate
+									? sprintf(
+											// translators: %s: the palette name the user typed.
+											__('A palette named "%s" already exists.', 'kadence-blocks'),
+											trimmed
+										)
+									: undefined
+							}
+						/>
+						<div className="kadence-blocks-style-library__rename-palette-modal-actions">
+							<Button type="button" variant="tertiary" onClick={handleClose} disabled={isBusy}>
+								{__('Cancel', 'kadence-blocks')}
+							</Button>
+							<Button
+								type="submit"
+								variant="primary"
+								// Unchanged is disabled alongside empty and duplicate: a rename to the same label
+								// would spend a request to change nothing.
+								disabled={!canSave}
+							>
+								{isBusy ? __('Saving…', 'kadence-blocks') : __('Save', 'kadence-blocks')}
+							</Button>
+						</div>
+					</form>
 				</Modal>
 			)}
 		</>

@@ -39,6 +39,16 @@ export function RenameColorGroupModal({ group, isBusy, error, onClose, onRename 
 	const trimmed = label.trim();
 	const isUnchanged = trimmed === group.label.trim();
 
+	const canSave = !isBusy && trimmed !== '' && !isUnchanged;
+
+	const handleSubmit = (event) => {
+		event.preventDefault();
+
+		if (canSave) {
+			onRename(trimmed);
+		}
+	};
+
 	return (
 		<Modal
 			title={__('Rename Color Group', 'kadence-blocks')}
@@ -49,32 +59,34 @@ export function RenameColorGroupModal({ group, isBusy, error, onClose, onRename 
 			shouldCloseOnEsc={!isBusy}
 			shouldCloseOnClickOutside={!isBusy}
 		>
-			{error && (
-				<Notice status="error" isDismissible={false}>
-					{error.message}
-				</Notice>
-			)}
-			<TextControl
-				label={__('Group name', 'kadence-blocks')}
-				value={label}
-				onChange={setLabel}
-				disabled={isBusy}
-			/>
-			<p>{__('This changes the group’s display name on every palette.', 'kadence-blocks')}</p>
-			<div className="kadence-blocks-style-library__rename-color-group-modal-actions">
-				<Button variant="tertiary" onClick={onClose} disabled={isBusy}>
-					{__('Cancel', 'kadence-blocks')}
-				</Button>
-				<Button
-					variant="primary"
-					// Unchanged is disabled alongside empty: a rename to the same label would spend a
-					// request to change nothing.
-					disabled={isBusy || trimmed === '' || isUnchanged}
-					onClick={() => onRename(trimmed)}
-				>
-					{isBusy ? __('Saving…', 'kadence-blocks') : __('Save', 'kadence-blocks')}
-				</Button>
-			</div>
+			<form onSubmit={handleSubmit}>
+				{error && (
+					<Notice status="error" isDismissible={false}>
+						{error.message}
+					</Notice>
+				)}
+				<TextControl
+					label={__('Group name', 'kadence-blocks')}
+					value={label}
+					onChange={setLabel}
+					disabled={isBusy}
+				/>
+				<p>{__('This changes the group’s display name on every palette.', 'kadence-blocks')}</p>
+				<div className="kadence-blocks-style-library__rename-color-group-modal-actions">
+					<Button type="button" variant="tertiary" onClick={onClose} disabled={isBusy}>
+						{__('Cancel', 'kadence-blocks')}
+					</Button>
+					<Button
+						type="submit"
+						variant="primary"
+						// Unchanged is disabled alongside empty: a rename to the same label would spend a
+						// request to change nothing.
+						disabled={!canSave}
+					>
+						{isBusy ? __('Saving…', 'kadence-blocks') : __('Save', 'kadence-blocks')}
+					</Button>
+				</div>
+			</form>
 		</Modal>
 	);
 }
