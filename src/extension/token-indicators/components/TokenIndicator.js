@@ -17,6 +17,10 @@ import { resetIcon, presetIcon } from '../../preset-picker/icons';
  * renders where a reset would (`showReset`), so the dot-only label path is left unchanged. A control whose
  * own header already carries the reset passes `showReset={false}` so the dot alone marks the edit.
  *
+ * The two marks read `state` differently, and deliberately: the override dot needs only a divergence from
+ * whatever value the preset resolves, while the matching glyph additionally needs the preset to OWN the
+ * property (`bound`) — see the gate below.
+ *
  * @param {Object}   props             The component props.
  * @param {Object}   [props.state]     The attribute's binding state from usePresetBinding, or undefined when
  *                                     the control is not mapped for the selected preset.
@@ -28,7 +32,22 @@ import { resetIcon, presetIcon } from '../../preset-picker/icons';
  * @return {Object|null} The indicator element, or null when the control is unmapped.
  */
 export function TokenIndicator({ state, onReset, showReset = true }) {
-	if (!state || !state.bound) {
+	if (!state) {
+		return null;
+	}
+
+	// `bound` is narrower than "the preset resolves a value here": it means the preset has its own STORED
+	// override for the property, which a preset shipped in `baseline.json` never does. Every block's
+	// `$default` preset is shipped that way, so gating the whole indicator on it hid the override mark on
+	// a fresh site — on every block, the Button included — until someone re-saved the preset in the Style
+	// Library. A divergence is worth marking wherever the preset resolves a value to diverge FROM, and the
+	// reset is meaningful there too: clearing the attribute drops the control back onto the projected CSS
+	// that carries exactly that value.
+	//
+	// The "matches" glyph keeps the stricter gate. It asserts the field is linked to this preset, which is
+	// a claim only a preset that genuinely owns the property can make — an inherited baseline value shows
+	// as a muted default instead, which is what that display was separated out to do.
+	if (!state.overridden && !state.bound) {
 		return null;
 	}
 
