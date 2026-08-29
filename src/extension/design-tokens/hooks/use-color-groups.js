@@ -57,6 +57,23 @@ const MAX_ATTEMPTS = 3;
 const RETRY_DELAY_MS = 250;
 
 /**
+ * The REST error code the palette routes return for an id the library does not define.
+ *
+ * @type {string}
+ */
+const NOT_FOUND_CODE = 'rest_design_tokens_not_found';
+
+/**
+ * Marks a palette id the library no longer defines, as distinct from a fetch that merely could not be
+ * read. A block keeps whatever `kbPalette` it was given, so deleting a palette leaves every block that
+ * pinned it holding a dangling id — retrying that id can only 404 again, but the site's own palette
+ * still resolves.
+ *
+ * @type {Object}
+ */
+const PALETTE_NOT_FOUND = {};
+
+/**
  * The active library slug the palette REST route resolves against, from the localized palette catalog.
  *
  * @since TBD
@@ -137,12 +154,16 @@ function resolveEffectivePaletteId(select, clientId) {
  * a response that maps to nothing. The caller retries on `null`, so a first load that lands before the
  * REST descriptor is ready no longer presents itself as a palette with an empty list.
  *
+ * A 404 resolves to `PALETTE_NOT_FOUND` instead, which the caller answers by falling back to the
+ * site's own palette rather than retrying — the id is not late, it is gone.
+ *
  * @param {string} paletteId The palette id to fetch.
  * @param {string} library   The library slug the palette id is resolved against.
  *
  * @since TBD
  *
- * @return {Promise<?Array>} The mapped groups, or `null` when the palette could not be read.
+ * @return {Promise<?Array|Object>} The mapped groups, `null` when the palette could not be read, or
+ *         `PALETTE_NOT_FOUND` when the library defines no palette with that id.
  */
 function fetchColorGroups(paletteId, library) {
 	if (!hasDesignTokensRest() || !paletteId) {
@@ -173,10 +194,14 @@ function fetchColorGroups(paletteId, library) {
 
 			return mapped;
 		})
-		.catch(() => {
+		.catch((error) => {
 			// Do not cache a failure — a transient error (e.g. a slow first-load auth race) should not
 			// permanently strand every future ColorControl instance on an empty list.
 			groupsCache.delete(cacheKey);
+
+			if (error?.code === NOT_FOUND_CODE || error?.data?.status === 404) {
+				return PALETTE_NOT_FOUND;
+			}
 
 			return null;
 		});
@@ -190,10 +215,11 @@ function fetchColorGroups(paletteId, library) {
  * The effective palette's groups for a `ColorControl` instance in the block editor, empty until the
  * fetch resolves.
  *
- * A first attempt that cannot read the palette is retried rather than settled as an empty list. The
- * palette id is the only thing that re-triggers the fetch, and the block's palette picker is hidden
- * when the library has a single palette — so without the retry a bad first load leaves a control that
- * the user has no way to refresh for the rest of the session.
+ * A first attempt that cannot read the palette is retried rather than settled as an empty list, and a
+ * palette id the library no longer defines falls back to the site's own palette. The palette id is the
+ * only thing that re-triggers the fetch, and the block's palette picker is hidden when the library has
+ * a single palette — so without both, a block left pinned to a deleted palette shows an empty color
+ * list that the user has no way to refresh for the rest of the session.
  *
  * @param {string} clientId The block's own client id, resolved reactively through `useSelect` so the
  *                           groups follow this block's `kbPalette` (or its nearest pinned ancestor's)
@@ -217,15 +243,31 @@ export function useColorGroups(clientId) {
 		// change never briefly shows the PREVIOUS identity's groups as if they still applied.
 		setGroups([]);
 
-		const run = () => {
-			fetchColorGroups(paletteId, library).then((resolved) => {
+		const run = (id, fellBack) => {
+			fetchColorGroups(id, library).then((resolved) => {
 				if (cancelled) {
+					return;
+				}
+
+				if (resolved === PALETTE_NOT_FOUND) {
+					const fallback = sitePaletteId();
+
+					// Retrying a deleted id can only 404 again, so swap to the site's own palette once.
+					// Guarded against a fallback that is itself missing, which would otherwise recurse.
+					if (!fellBack && fallback && fallback !== id) {
+						run(fallback, true);
+
+						return;
+					}
+
+					setGroups([]);
+
 					return;
 				}
 
 				if (resolved === null && attempts < MAX_ATTEMPTS) {
 					attempts += 1;
-					timer = setTimeout(run, RETRY_DELAY_MS);
+					timer = setTimeout(() => run(id, fellBack), RETRY_DELAY_MS);
 
 					return;
 				}
@@ -234,7 +276,7 @@ export function useColorGroups(clientId) {
 			});
 		};
 
-		run();
+		run(paletteId, false);
 
 		return () => {
 			cancelled = true;

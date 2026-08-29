@@ -438,6 +438,74 @@ describe('useColorGroups', () => {
 	});
 
 	/**
+	 * The regression a stale `kbPalette` causes: deleting a palette leaves every block that pinned it
+	 * holding an id the library no longer defines, which can only ever 404. The site's own palette is
+	 * used instead, rather than retrying the dead id until the control settles empty.
+	 *
+	 * @return {Promise<void>}
+	 */
+	it('falls back to the site palette when the block pins one the library no longer defines', async () => {
+		setOwnPalette('deleted-palette');
+		window.kadenceDesignTokensPalettes.current = 'default';
+		mockApiFetch
+			.mockRejectedValueOnce({
+				code: 'rest_design_tokens_not_found',
+				data: { status: 404 },
+			})
+			.mockResolvedValueOnce(PALETTE_NODE);
+
+		const { box } = renderHook('block-1');
+		await act(async () => {
+			await Promise.resolve();
+			await Promise.resolve();
+			await Promise.resolve();
+		});
+
+		expect(mockApiFetch).toHaveBeenCalledTimes(2);
+		expect(mockApiFetch).toHaveBeenLastCalledWith({
+			path: '/kb-design-tokens/v1/palettes/default?library=default',
+		});
+		expect(box.current).toEqual(MAPPED_GROUPS);
+	});
+
+	/**
+	 * A 404 is answered by one fallback, never by a retry of the dead id — and when the fallback is
+	 * itself missing the hook settles empty instead of recursing.
+	 *
+	 * @return {Promise<void>}
+	 */
+	it('does not retry a missing palette, and stops when the fallback is missing too', async () => {
+		jest.useFakeTimers();
+		setOwnPalette('deleted-palette');
+		window.kadenceDesignTokensPalettes.current = 'also-deleted';
+		mockApiFetch.mockRejectedValue({
+			code: 'rest_design_tokens_not_found',
+			data: { status: 404 },
+		});
+
+		const { box } = renderHook('block-1');
+		await act(async () => {
+			await Promise.resolve();
+			await Promise.resolve();
+			await Promise.resolve();
+		});
+
+		for (let i = 0; i <= MAX_ATTEMPTS; i++) {
+			await act(async () => {
+				jest.advanceTimersByTime(RETRY_DELAY_MS);
+				await Promise.resolve();
+				await Promise.resolve();
+			});
+		}
+
+		// The pinned id, then the fallback — and nothing further.
+		expect(mockApiFetch).toHaveBeenCalledTimes(2);
+		expect(box.current).toEqual([]);
+
+		jest.useRealTimers();
+	});
+
+	/**
 	 * The palette is resolved against the hook's own `clientId`, not against whichever block happens to
 	 * be selected. The hook is called from the block's `edit`, which renders for every instance on the
 	 * canvas — including at first paint, when nothing is selected at all.
