@@ -8,24 +8,65 @@
 // Loaded on `init` (see Registry\Provider) so the __() label/group calls don't trigger the
 // _load_textdomain_just_in_time notice — translations must not load before init.
 
+// Every scale below names its steps from this one map. Radius and the spacing/font-size scales spell the
+// same step differently ("2xl" vs "xxl"), so both spellings resolve to one label.
+//
+// An unlisted slug falls back to its uppercase form. That is a render-time safety net, not a supported
+// end state: it keeps a step that someone added without a label visible instead of blank, and
+// Scale_Step_LabelsTest fails until the label is added here. Shipping an uppercase label is what this
+// map exists to prevent.
+//
+// group_key, which every scale also declares, is the stable machine id the Style Library's "+ Add …"
+// buttons mint custom tokens into — Token_Registry::group_label_for() resolves it back to the translated
+// group label at read time, so a custom token's group survives a site language change instead of drifting
+// into its own bucket (see User_Primitive_Registrar::register_entry()).
+$scale_step_labels = [
+	'none' => __( 'None', 'kadence-blocks' ),
+	'xxs'  => __( '2X Small', 'kadence-blocks' ),
+	'xs'   => __( 'Extra Small', 'kadence-blocks' ),
+	'sm'   => __( 'Small', 'kadence-blocks' ),
+	'md'   => __( 'Medium', 'kadence-blocks' ),
+	'lg'   => __( 'Large', 'kadence-blocks' ),
+	'xl'   => __( 'Extra Large', 'kadence-blocks' ),
+	'xxl'  => __( '2X Large', 'kadence-blocks' ),
+	'2xl'  => __( '2X Large', 'kadence-blocks' ),
+	'xxxl' => __( '3X Large', 'kadence-blocks' ),
+	'3xl'  => __( '3X Large', 'kadence-blocks' ),
+	'4xl'  => __( '4X Large', 'kadence-blocks' ),
+	'5xl'  => __( '5X Large', 'kadence-blocks' ),
+	'full' => __( 'Full', 'kadence-blocks' ),
+];
+
+/**
+ * Resolves a scale-step slug to its display label.
+ *
+ * @since TBD
+ *
+ * @param string $slug The scale-step slug (e.g. "sm").
+ *
+ * @return string The step's label, or the uppercase slug when the step is unlisted — see the note above
+ *                on why that fallback is a safety net rather than a supported end state.
+ */
+$scale_step_label = static function ( string $slug ) use ( $scale_step_labels ): string {
+	return $scale_step_labels[ $slug ] ?? strtoupper( $slug );
+};
+
 // The spacing/gap scale steps are primitives (the slug IS a scale step), each claiming the Kadence Blocks
 // slug it backs (class-kadence-blocks-css.php): the Css_Var builder redefines --global-kb-spacing-<slug> /
 // --global-kb-gap-<slug> as the primitive token, so a block already storing that slug follows it and a site
 // owner can retune each step. Usage-specific intent (semantic.spacing.section/.block/.inline) aliases the
 // scale and is where intent-based delivery points — mirroring how semantic.radius.media aliases the radius
 // scale. Defaults match KB's own values, so registering them changes nothing until overridden. ss-auto is
-// omitted: it resolves to "auto", not a length. group_key mirrors the radius/border-width scales' mechanism:
-// it is the stable machine id the Style Library's Spacing screen's "+ Add Spacing" mints custom tokens into,
-// resolved back to the group label at read time by Token_Registry::group_label_for().
+// omitted: it resolves to "auto", not a length.
 $spacing_slugs = [ 'xxs', 'xs', 'sm', 'md', 'lg', 'xl', 'xxl', '3xl', '4xl', '5xl' ];
 $gap_slugs     = [ 'none', 'xs', 'sm', 'md', 'lg' ];
 
 $spacing_tokens = array_map(
-	static function ( string $slug ): array {
+	static function ( string $slug ) use ( $scale_step_label ): array {
 		return [
 			'id'          => 'primitive.dimension.spacing.' . $slug,
 			'type'        => 'dimension',
-			'label'       => strtoupper( $slug ),
+			'label'       => $scale_step_label( $slug ),
 			'group'       => __( 'Spacing', 'kadence-blocks' ),
 			'group_key'   => 'spacing',
 			'projections' => [ 'kb_spacing_slot' => $slug ],
@@ -35,11 +76,11 @@ $spacing_tokens = array_map(
 );
 
 $gap_tokens = array_map(
-	static function ( string $slug ): array {
+	static function ( string $slug ) use ( $scale_step_label ): array {
 		return [
 			'id'          => 'primitive.dimension.gap.' . $slug,
 			'type'        => 'dimension',
-			'label'       => 'none' === $slug ? __( 'None', 'kadence-blocks' ) : strtoupper( $slug ),
+			'label'       => $scale_step_label( $slug ),
 			'group'       => __( 'Gap', 'kadence-blocks' ),
 			'projections' => [ 'kb_gap_slot' => $slug ],
 		];
@@ -49,49 +90,35 @@ $gap_tokens = array_map(
 
 // The border-radius scale steps are primitives the Style Library's Border Radius screen lists and
 // edits directly (semantic.radius.* already carries the projections that deliver these into blocks,
-// so the scale declares none of its own). group_key is the stable machine id "+ Add Border Radius"
-// mints custom tokens into — Token_Registry::group_label_for() resolves it back to the group label
-// below at read time, so a custom radius token's group survives a site language change instead of
-// drifting into its own bucket (see User_Primitive_Registrar::register_entry()).
+// so the scale declares none of its own).
 // The step list mirrors the shipped baseline exactly: the screen renders whatever this group holds, and
-// a step declared without a baseline entry would trip Baseline_Guard. Labels are the scale's own, so the
-// Style Library and the editor's token picker name each step identically.
-$radius_labels = [
-	'xs'   => __( 'Extra Small', 'kadence-blocks' ),
-	'sm'   => __( 'Small', 'kadence-blocks' ),
-	'md'   => __( 'Medium', 'kadence-blocks' ),
-	'lg'   => __( 'Large', 'kadence-blocks' ),
-	'xl'   => __( 'Extra Large', 'kadence-blocks' ),
-	'2xl'  => __( '2X Large', 'kadence-blocks' ),
-	'3xl'  => __( '3X Large', 'kadence-blocks' ),
-	'full' => __( 'Full', 'kadence-blocks' ),
-];
+// a step declared without a baseline entry would trip Baseline_Guard.
+$radius_slugs = [ 'xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', 'full' ];
 
-$radius_tokens = [];
-
-foreach ( $radius_labels as $slug => $label ) {
-	$radius_tokens[] = [
-		'id'        => 'primitive.dimension.radius.' . $slug,
-		'type'      => 'dimension',
-		'label'     => $label,
-		'group'     => __( 'Border Radius', 'kadence-blocks' ),
-		'group_key' => 'radius',
-	];
-}
+$radius_tokens = array_map(
+	static function ( string $slug ) use ( $scale_step_label ): array {
+		return [
+			'id'        => 'primitive.dimension.radius.' . $slug,
+			'type'      => 'dimension',
+			'label'     => $scale_step_label( $slug ),
+			'group'     => __( 'Border Radius', 'kadence-blocks' ),
+			'group_key' => 'radius',
+		];
+	},
+	$radius_slugs
+);
 
 // The border-width scale steps are primitives the Style Library's Border Width screen lists and
 // edits directly (semantic.border-width.default already carries the projection that delivers the
-// "sm" step into the image block, so the scale declares none of its own). group_key mirrors the
-// radius scale's mechanism above: it is the stable machine id "+ Add Border Width" mints custom
-// tokens into, resolved back to the group label at read time by Token_Registry::group_label_for().
+// "sm" step into the image block, so the scale declares none of its own).
 $border_width_slugs = [ 'sm', 'md', 'lg' ];
 
 $border_width_tokens = array_map(
-	static function ( string $slug ): array {
+	static function ( string $slug ) use ( $scale_step_label ): array {
 		return [
 			'id'        => 'primitive.dimension.border-width.' . $slug,
 			'type'      => 'dimension',
-			'label'     => strtoupper( $slug ),
+			'label'     => $scale_step_label( $slug ),
 			'group'     => __( 'Border Width', 'kadence-blocks' ),
 			'group_key' => 'border-width',
 		];
@@ -101,18 +128,15 @@ $border_width_tokens = array_map(
 
 // The icon-size scale steps are primitives the Style Library's Icon Sizes screen lists and edits
 // directly (semantic.icon-size.default already carries the projection that delivers the "md" step
-// into the icon block and the button's icon size, so the scale declares none of its own). group_key
-// mirrors the radius/border-width scales' mechanism above: it is the stable machine id "+ Add Icon
-// Size" mints custom tokens into, resolved back to the group label at read time by
-// Token_Registry::group_label_for().
+// into the icon block and the button's icon size, so the scale declares none of its own).
 $icon_size_slugs = [ 'sm', 'md', 'lg' ];
 
 $icon_size_tokens = array_map(
-	static function ( string $slug ): array {
+	static function ( string $slug ) use ( $scale_step_label ): array {
 		return [
 			'id'        => 'primitive.dimension.icon-size.' . $slug,
 			'type'      => 'dimension',
-			'label'     => strtoupper( $slug ),
+			'label'     => $scale_step_label( $slug ),
 			'group'     => __( 'Icon Sizes', 'kadence-blocks' ),
 			'group_key' => 'icon-size',
 		];
@@ -124,17 +148,15 @@ $icon_size_tokens = array_map(
 // directly; the shadow semantics (semantic.shadow.card / .media) keep their own curated values and
 // declare no projections onto this scale, so re-pointing a semantic at one of these primitives is
 // deliberately not done here — semantic.shadow.card's color is aliased to a palette primitive, and
-// re-pointing would detach it. group_key mirrors the radius/border-width/icon-size scales'
-// mechanism above: it is the stable machine id "+ Add Shadow" mints custom tokens into, resolved
-// back to the group label at read time by Token_Registry::group_label_for().
+// re-pointing would detach it.
 $shadow_slugs = [ 'xs', 'sm', 'md' ];
 
 $shadow_tokens = array_map(
-	static function ( string $slug ): array {
+	static function ( string $slug ) use ( $scale_step_label ): array {
 		return [
 			'id'        => 'primitive.shadow.' . $slug,
 			'type'      => 'shadow',
-			'label'     => strtoupper( $slug ),
+			'label'     => $scale_step_label( $slug ),
 			'group'     => __( 'Shadow', 'kadence-blocks' ),
 			'group_key' => 'shadow',
 		];
@@ -151,11 +173,11 @@ $shadow_tokens = array_map(
 $font_size_slugs = [ 'sm', 'md', 'lg', 'xl', 'xxl', 'xxxl' ];
 
 $font_size_primitive_tokens = array_map(
-	static function ( string $slug ): array {
+	static function ( string $slug ) use ( $scale_step_label ): array {
 		return [
 			'id'          => 'primitive.dimension.font-size.' . $slug,
 			'type'        => 'dimension',
-			'label'       => strtoupper( $slug ),
+			'label'       => $scale_step_label( $slug ),
 			'group'       => __( 'Font Size', 'kadence-blocks' ),
 			'group_key'   => 'font-size',
 			'projections' => [ 'kb_font_size_slot' => $slug ],
