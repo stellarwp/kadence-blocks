@@ -43,39 +43,51 @@ export function AddColorGroupModal({ palette, error, onClose, onAdd }) {
 		onClose();
 	};
 
+	const canAdd = groupId !== '' && !isDuplicate;
+
+	const handleSubmit = (event) => {
+		event.preventDefault();
+
+		if (canAdd) {
+			handleAdd();
+		}
+	};
+
 	return (
 		<Modal
 			title={__('Add Color Group', 'kadence-blocks')}
 			className="kadence-blocks-style-library__add-color-group-modal"
 			onRequestClose={onClose}
 		>
-			{error && (
-				<Notice status="error" isDismissible={false}>
-					{error.message}
-				</Notice>
-			)}
-			<TextControl
-				label={__('Group name', 'kadence-blocks')}
-				value={label}
-				onChange={setLabel}
-				help={
-					isDuplicate
-						? sprintf(
-								// translators: %s: the group name the user typed.
-								__('A color group named "%s" already exists.', 'kadence-blocks'),
-								label
-							)
-						: undefined
-				}
-			/>
-			<div className="kadence-blocks-style-library__add-color-group-modal-actions">
-				<Button variant="tertiary" onClick={onClose}>
-					{__('Cancel', 'kadence-blocks')}
-				</Button>
-				<Button variant="primary" disabled={groupId === '' || isDuplicate} onClick={handleAdd}>
-					{__('Add', 'kadence-blocks')}
-				</Button>
-			</div>
+			<form onSubmit={handleSubmit}>
+				{error && (
+					<Notice status="error" isDismissible={false}>
+						{error.message}
+					</Notice>
+				)}
+				<TextControl
+					label={__('Group name', 'kadence-blocks')}
+					value={label}
+					onChange={setLabel}
+					help={
+						isDuplicate
+							? sprintf(
+									// translators: %s: the group name the user typed.
+									__('A color group named "%s" already exists.', 'kadence-blocks'),
+									label
+								)
+							: undefined
+					}
+				/>
+				<div className="kadence-blocks-style-library__add-color-group-modal-actions">
+					<Button type="button" variant="tertiary" onClick={onClose}>
+						{__('Cancel', 'kadence-blocks')}
+					</Button>
+					<Button type="submit" variant="primary" disabled={!canAdd}>
+						{__('Add', 'kadence-blocks')}
+					</Button>
+				</div>
+			</form>
 		</Modal>
 	);
 }

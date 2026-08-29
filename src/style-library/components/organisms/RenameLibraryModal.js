@@ -66,6 +66,16 @@ export function RenameLibraryModal({ slug, currentTitle, libraries, isBusy, erro
 			.catch(() => {});
 	};
 
+	const canSave = !isBusy && trimmed !== '' && !isDuplicate && !isUnchanged;
+
+	const handleSubmit = (event) => {
+		event.preventDefault();
+
+		if (canSave) {
+			handleConfirm();
+		}
+	};
+
 	return (
 		<>
 			<Button
@@ -86,43 +96,45 @@ export function RenameLibraryModal({ slug, currentTitle, libraries, isBusy, erro
 					shouldCloseOnEsc={!isBusy}
 					shouldCloseOnClickOutside={!isBusy}
 				>
-					{error && (
-						<Notice status="error" isDismissible={false}>
-							{error.message}
-						</Notice>
-					)}
-					<TextControl
-						label={__('Library title', 'kadence-blocks')}
-						value={title}
-						onChange={setTitle}
-						disabled={isBusy}
-						// Unlike creation, this compares against what libraries are actually *called*, not
-						// against derived slugs: a slug is minted once at creation and never follows a
-						// rename, so a slug-based check would refuse names nothing on screen is using.
-						help={
-							isDuplicate
-								? sprintf(
-										// translators: %s: the library name the user typed.
-										__('A library named "%s" already exists.', 'kadence-blocks'),
-										trimmed
-									)
-								: undefined
-						}
-					/>
-					<div className="kadence-blocks-style-library__rename-library-modal-actions">
-						<Button variant="tertiary" onClick={handleClose} disabled={isBusy}>
-							{__('Cancel', 'kadence-blocks')}
-						</Button>
-						<Button
-							variant="primary"
-							// Unchanged is disabled alongside empty and duplicate: a rename to the same name
-							// would spend a request and bump the library's version to change nothing.
-							disabled={isBusy || trimmed === '' || isDuplicate || isUnchanged}
-							onClick={handleConfirm}
-						>
-							{isBusy ? __('Saving…', 'kadence-blocks') : __('Save', 'kadence-blocks')}
-						</Button>
-					</div>
+					<form onSubmit={handleSubmit}>
+						{error && (
+							<Notice status="error" isDismissible={false}>
+								{error.message}
+							</Notice>
+						)}
+						<TextControl
+							label={__('Library title', 'kadence-blocks')}
+							value={title}
+							onChange={setTitle}
+							disabled={isBusy}
+							// Unlike creation, this compares against what libraries are actually *called*, not
+							// against derived slugs: a slug is minted once at creation and never follows a
+							// rename, so a slug-based check would refuse names nothing on screen is using.
+							help={
+								isDuplicate
+									? sprintf(
+											// translators: %s: the library name the user typed.
+											__('A library named "%s" already exists.', 'kadence-blocks'),
+											trimmed
+										)
+									: undefined
+							}
+						/>
+						<div className="kadence-blocks-style-library__rename-library-modal-actions">
+							<Button type="button" variant="tertiary" onClick={handleClose} disabled={isBusy}>
+								{__('Cancel', 'kadence-blocks')}
+							</Button>
+							<Button
+								type="submit"
+								variant="primary"
+								// Unchanged is disabled alongside empty and duplicate: a rename to the same name
+								// would spend a request and bump the library's version to change nothing.
+								disabled={!canSave}
+							>
+								{isBusy ? __('Saving…', 'kadence-blocks') : __('Save', 'kadence-blocks')}
+							</Button>
+						</div>
+					</form>
 				</Modal>
 			)}
 		</>

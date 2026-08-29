@@ -40,6 +40,16 @@ export function CreatePaletteModal({ listing, isBusy, error, onClose, onCreate }
 	const slug = slugifyPaletteLabel(label);
 	const isDuplicate = !isBusy && isDuplicatePaletteLabel(label, listing);
 
+	const canCreate = !isBusy && slug !== '' && !isDuplicate;
+
+	const handleSubmit = (event) => {
+		event.preventDefault();
+
+		if (canCreate) {
+			onCreate(label);
+		}
+	};
+
 	return (
 		<Modal
 			title={__('Create Color Palette', 'kadence-blocks')}
@@ -51,39 +61,37 @@ export function CreatePaletteModal({ listing, isBusy, error, onClose, onCreate }
 			shouldCloseOnEsc={!isBusy}
 			shouldCloseOnClickOutside={!isBusy}
 		>
-			{error && (
-				<Notice status="error" isDismissible={false}>
-					{error.message}
-				</Notice>
-			)}
-			<TextControl
-				label={__('Palette name', 'kadence-blocks')}
-				value={label}
-				onChange={setLabel}
-				disabled={isBusy}
-				help={
-					isDuplicate
-						? sprintf(
-								// translators: %s: the palette name the user typed.
-								__('A palette named "%s" already exists.', 'kadence-blocks'),
-								label
-							)
-						: undefined
-				}
-			/>
-			<div className="kadence-blocks-style-library__create-palette-modal-actions">
-				<Button variant="tertiary" onClick={onClose} disabled={isBusy}>
-					{__('Cancel', 'kadence-blocks')}
-				</Button>
-				<Button
-					variant="primary"
-					disabled={isBusy || slug === '' || isDuplicate}
-					onClick={() => onCreate(label)}
-				>
-					{/* The progressive label is the only progress indication — no spinner alongside it. */}
-					{isBusy ? __('Creating…', 'kadence-blocks') : __('Create', 'kadence-blocks')}
-				</Button>
-			</div>
+			<form onSubmit={handleSubmit}>
+				{error && (
+					<Notice status="error" isDismissible={false}>
+						{error.message}
+					</Notice>
+				)}
+				<TextControl
+					label={__('Palette name', 'kadence-blocks')}
+					value={label}
+					onChange={setLabel}
+					disabled={isBusy}
+					help={
+						isDuplicate
+							? sprintf(
+									// translators: %s: the palette name the user typed.
+									__('A palette named "%s" already exists.', 'kadence-blocks'),
+									label
+								)
+							: undefined
+					}
+				/>
+				<div className="kadence-blocks-style-library__create-palette-modal-actions">
+					<Button type="button" variant="tertiary" onClick={onClose} disabled={isBusy}>
+						{__('Cancel', 'kadence-blocks')}
+					</Button>
+					<Button type="submit" variant="primary" disabled={!canCreate}>
+						{/* The progressive label is the only progress indication — no spinner alongside it. */}
+						{isBusy ? __('Creating…', 'kadence-blocks') : __('Create', 'kadence-blocks')}
+					</Button>
+				</div>
+			</form>
 		</Modal>
 	);
 }
