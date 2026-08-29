@@ -19,13 +19,19 @@ import { createRoot } from 'react-dom/client';
 jest.mock('@wordpress/api-fetch', () => jest.fn(), { virtual: true });
 const mockApiFetch = require('@wordpress/api-fetch');
 
-// `effectivePalette()` reads the selected block via `@wordpress/data`'s `core/block-editor` store, which
-// is not registered in this test environment — mocking the module directly is simpler than standing up a
-// real store registration just to drive its return value.
-jest.mock('../palette-swatch-preview', () => ({
-	effectivePalette: jest.fn(),
-}));
-const mockEffectivePalette = require('../palette-swatch-preview').effectivePalette;
+// The hook resolves its palette id through `@wordpress/data`'s `core/block-editor` store, which is not
+// registered in this test environment — mocking `useSelect` to run its callback against a stub store is
+// simpler than standing up a real registration. `mockBlockStore` is only dereferenced when the callback
+// runs (during render), so the factory may close over it despite jest hoisting this above the `let`.
+let mockBlockStore;
+
+jest.mock(
+	'@wordpress/data',
+	() => ({
+		useSelect: (mapSelect) => mapSelect(() => mockBlockStore),
+	}),
+	{ virtual: true }
+);
 
 import { useColorGroups } from '../hooks/use-color-groups';
 
@@ -56,8 +62,58 @@ const MAPPED_GROUPS = [
 	},
 ];
 
+// A second, distinguishable palette node, for the cases that need one identity's response told apart
+// from another's. It has to carry real groups: an empty response is treated as "could not read the
+// palette" and retried, so it can no longer stand in as a distinct answer.
+const OTHER_PALETTE_NODE = {
+	id: 'other',
+	label: 'Other',
+	groups: [
+		{
+			id: 'contrast',
+			label: 'Contrast',
+			swatches: [{ token: 'semantic.color.contrast.main', label: 'Main', $value: '#1A202C' }],
+		},
+	],
+};
+
+const OTHER_MAPPED_GROUPS = [
+	{
+		id: 'contrast',
+		label: 'Contrast',
+		swatches: [
+			{
+				id: 'semantic.color.contrast.main',
+				label: 'Main',
+				value: '#1A202C',
+				alias: '{semantic.color.contrast.main}',
+			},
+		],
+	},
+];
+
+// Mirrors the hook's own retry budget and spacing, so the timer-driven cases advance far enough to
+// reach its settled state.
+const MAX_ATTEMPTS = 3;
+const RETRY_DELAY_MS = 250;
+
 let container;
 let root;
+
+/**
+ * Pin every block's own `kbPalette` to a palette id, or clear it so the hook falls back to the site's
+ * current palette. Cases that need one block told apart from another override
+ * `mockBlockStore.getBlockAttributes` directly instead.
+ *
+ * @param {string} palette The palette id to pin, or '' for no pinned override.
+ *
+ * @since TBD
+ *
+ * @return {void}
+ */
+function setOwnPalette(palette) {
+	mockBlockStore.getBlockAttributes = () => (palette ? { kbPalette: palette } : {});
+}
 
 /**
  * Render `useColorGroups` and expose its latest return value, plus a way to re-render with a new
@@ -97,7 +153,10 @@ describe('useColorGroups', () => {
 		root = createRoot(container);
 
 		mockApiFetch.mockReset();
-		mockEffectivePalette.mockReset();
+		mockBlockStore = {
+			getBlockAttributes: () => ({}),
+			getBlockParents: () => [],
+		};
 		window.kadenceDesignTokensRest = {
 			root: 'https://example.test/wp-json/',
 			namespace: 'kb-design-tokens/v1',
@@ -123,7 +182,7 @@ describe('useColorGroups', () => {
 	 * @return {Promise<void>}
 	 */
 	it("resolves the effective palette id from the block's own override", async () => {
-		mockEffectivePalette.mockReturnValue('brand-own');
+		setOwnPalette('brand-own');
 		mockApiFetch.mockResolvedValueOnce(PALETTE_NODE);
 
 		const { box } = renderHook('block-1');
@@ -143,7 +202,7 @@ describe('useColorGroups', () => {
 	 * @return {Promise<void>}
 	 */
 	it('falls back to the site current palette when the block has no override', async () => {
-		mockEffectivePalette.mockReturnValue('');
+		setOwnPalette('');
 		window.kadenceDesignTokensPalettes.current = 'seasonal-current';
 		mockApiFetch.mockResolvedValueOnce({ ...PALETTE_NODE, id: 'seasonal-current' });
 
@@ -164,7 +223,7 @@ describe('useColorGroups', () => {
 	 * @return {void}
 	 */
 	it('returns an empty array while the fetch has not resolved yet', () => {
-		mockEffectivePalette.mockReturnValue('brand-pending');
+		setOwnPalette('brand-pending');
 		mockApiFetch.mockReturnValue(new Promise(() => {}));
 
 		const { box } = renderHook('block-1');
@@ -173,14 +232,49 @@ describe('useColorGroups', () => {
 	});
 
 	/**
-	 * A failed fetch degrades to an empty array instead of throwing or leaving the hook in a broken
-	 * state, matching every other design-token editor mechanism's fail-open tolerance.
+	 * A fetch that keeps failing degrades to an empty array once its retries are exhausted, instead of
+	 * throwing or leaving the hook in a broken state, matching every other design-token editor
+	 * mechanism's fail-open tolerance.
 	 *
 	 * @return {Promise<void>}
 	 */
-	it('degrades to an empty array when the fetch rejects', async () => {
-		mockEffectivePalette.mockReturnValue('brand-error');
-		mockApiFetch.mockRejectedValueOnce(new Error('network error'));
+	it('degrades to an empty array when the fetch rejects on every attempt', async () => {
+		jest.useFakeTimers();
+		setOwnPalette('brand-error');
+		mockApiFetch.mockRejectedValue(new Error('network error'));
+
+		const { box } = renderHook('block-1');
+		await act(async () => {
+			await Promise.resolve();
+			await Promise.resolve();
+		});
+
+		// Drive every retry, so the assertion lands on the settled state and not merely on the initial
+		// one the hook starts out in.
+		for (let i = 0; i <= MAX_ATTEMPTS; i++) {
+			await act(async () => {
+				jest.advanceTimersByTime(RETRY_DELAY_MS);
+				await Promise.resolve();
+				await Promise.resolve();
+			});
+		}
+
+		expect(box.current).toEqual([]);
+
+		jest.useRealTimers();
+	});
+
+	/**
+	 * The regression this hook's retry exists for: a first attempt that cannot read the palette must not
+	 * settle as "this palette has no colors". The block's palette picker is hidden when the library has
+	 * a single palette, so nothing else would ever re-trigger the fetch.
+	 *
+	 * @return {Promise<void>}
+	 */
+	it('retries an attempt that could not read the palette and populates once one succeeds', async () => {
+		jest.useFakeTimers();
+		setOwnPalette('brand-retry');
+		mockApiFetch.mockRejectedValueOnce(new Error('not ready yet')).mockResolvedValueOnce(PALETTE_NODE);
 
 		const { box } = renderHook('block-1');
 		await act(async () => {
@@ -189,6 +283,46 @@ describe('useColorGroups', () => {
 		});
 
 		expect(box.current).toEqual([]);
+
+		await act(async () => {
+			jest.advanceTimersByTime(RETRY_DELAY_MS);
+			await Promise.resolve();
+			await Promise.resolve();
+		});
+
+		expect(mockApiFetch).toHaveBeenCalledTimes(2);
+		expect(box.current).toEqual(MAPPED_GROUPS);
+
+		jest.useRealTimers();
+	});
+
+	/**
+	 * A response that maps to no groups is not cached, so the next attempt re-requests it rather than
+	 * every later reader being served the same empty answer from cache.
+	 *
+	 * @return {Promise<void>}
+	 */
+	it('does not cache a response that maps to no groups', async () => {
+		jest.useFakeTimers();
+		setOwnPalette('brand-empty');
+		mockApiFetch.mockResolvedValueOnce({ ...PALETTE_NODE, groups: [] }).mockResolvedValueOnce(PALETTE_NODE);
+
+		const { box } = renderHook('block-1');
+		await act(async () => {
+			await Promise.resolve();
+			await Promise.resolve();
+		});
+
+		await act(async () => {
+			jest.advanceTimersByTime(RETRY_DELAY_MS);
+			await Promise.resolve();
+			await Promise.resolve();
+		});
+
+		expect(mockApiFetch).toHaveBeenCalledTimes(2);
+		expect(box.current).toEqual(MAPPED_GROUPS);
+
+		jest.useRealTimers();
 	});
 
 	/**
@@ -198,7 +332,7 @@ describe('useColorGroups', () => {
 	 * @return {Promise<void>}
 	 */
 	it('fetches a given palette id only once across multiple hook instances', async () => {
-		mockEffectivePalette.mockReturnValue('brand-shared');
+		setOwnPalette('brand-shared');
 		mockApiFetch.mockResolvedValue(PALETTE_NODE);
 
 		renderHook('block-1');
@@ -235,7 +369,7 @@ describe('useColorGroups', () => {
 	 * @return {Promise<void>}
 	 */
 	it('re-fetches when the resolved palette id changes without a clientId change', async () => {
-		mockEffectivePalette.mockReturnValue('brand-first');
+		setOwnPalette('brand-first');
 		mockApiFetch.mockResolvedValueOnce({ ...PALETTE_NODE, id: 'brand-first' });
 
 		const { box, update } = renderHook('block-1');
@@ -245,8 +379,8 @@ describe('useColorGroups', () => {
 
 		expect(box.current).toEqual(MAPPED_GROUPS);
 
-		mockEffectivePalette.mockReturnValue('brand-second');
-		mockApiFetch.mockResolvedValueOnce({ ...PALETTE_NODE, id: 'brand-second', groups: [] });
+		setOwnPalette('brand-second');
+		mockApiFetch.mockResolvedValueOnce({ ...OTHER_PALETTE_NODE, id: 'brand-second' });
 
 		update('block-1');
 		await act(async () => {
@@ -257,7 +391,7 @@ describe('useColorGroups', () => {
 		expect(mockApiFetch).toHaveBeenLastCalledWith({
 			path: '/kb-design-tokens/v1/palettes/brand-second?library=default',
 		});
-		expect(box.current).toEqual([]);
+		expect(box.current).toEqual(OTHER_MAPPED_GROUPS);
 	});
 
 	/**
@@ -267,7 +401,7 @@ describe('useColorGroups', () => {
 	 * @return {Promise<void>}
 	 */
 	it('fetches separately for the same palette id in a different library, not the cached one', async () => {
-		mockEffectivePalette.mockReturnValue('shared-id');
+		setOwnPalette('shared-id');
 		mockApiFetch.mockResolvedValueOnce(PALETTE_NODE);
 
 		renderHook('block-1');
@@ -276,7 +410,7 @@ describe('useColorGroups', () => {
 		});
 
 		window.kadenceDesignTokensPalettes.active = 'other-library';
-		mockApiFetch.mockResolvedValueOnce({ ...PALETTE_NODE, groups: [] });
+		mockApiFetch.mockResolvedValueOnce(OTHER_PALETTE_NODE);
 
 		const otherContainer = document.createElement('div');
 		document.body.appendChild(otherContainer);
@@ -301,5 +435,49 @@ describe('useColorGroups', () => {
 
 		act(() => otherRoot.unmount());
 		otherContainer.remove();
+	});
+
+	/**
+	 * The palette is resolved against the hook's own `clientId`, not against whichever block happens to
+	 * be selected. The hook is called from the block's `edit`, which renders for every instance on the
+	 * canvas — including at first paint, when nothing is selected at all.
+	 *
+	 * @return {Promise<void>}
+	 */
+	it("resolves against the hook's own clientId rather than the selected block", async () => {
+		mockBlockStore.getBlockAttributes = (id) => (id === 'block-2' ? { kbPalette: 'block-2-palette' } : {});
+		mockApiFetch.mockResolvedValue(PALETTE_NODE);
+
+		renderHook('block-2');
+		await act(async () => {
+			await Promise.resolve();
+		});
+
+		expect(mockApiFetch).toHaveBeenCalledWith({
+			path: '/kb-design-tokens/v1/palettes/block-2-palette?library=default',
+		});
+	});
+
+	/**
+	 * A block with no pinned palette of its own follows its nearest pinned ancestor, walking outward so
+	 * the closest one wins over a further ancestor that also pins one.
+	 *
+	 * @return {Promise<void>}
+	 */
+	it('follows the nearest pinned ancestor when the block pins nothing itself', async () => {
+		const pinned = { outer: 'outer-palette', inner: 'inner-palette' };
+
+		mockBlockStore.getBlockAttributes = (id) => (pinned[id] ? { kbPalette: pinned[id] } : {});
+		mockBlockStore.getBlockParents = () => ['outer', 'inner'];
+		mockApiFetch.mockResolvedValue(PALETTE_NODE);
+
+		renderHook('block-1');
+		await act(async () => {
+			await Promise.resolve();
+		});
+
+		expect(mockApiFetch).toHaveBeenCalledWith({
+			path: '/kb-design-tokens/v1/palettes/inner-palette?library=default',
+		});
 	});
 });
