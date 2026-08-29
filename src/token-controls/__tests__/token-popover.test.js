@@ -203,6 +203,44 @@ describe('TokenPopover showValue prop', () => {
 	});
 
 	/**
+	 * A fluid step resolves to a whole clamp, which overran the row and read as an expression rather
+	 * than as the size it computes. The row shows the scalar the step authors instead, matching what
+	 * the trigger already showed.
+	 *
+	 * @return {void}
+	 */
+	it('shows a fluid step as the scalar it authors, not its clamp', () => {
+		const tokens = [
+			{
+				id: 'primitive.dimension.font-size.md',
+				label: 'MD',
+				value: 'clamp(1.1rem, 0.995rem + 0.326vw, 1.25rem)',
+				alias: '{primitive.dimension.font-size.md}',
+			},
+		];
+
+		render({ initialTab: 'style-library', tokens });
+
+		expect(container.querySelector('.kadence-token-field__item-value').textContent).toBe('1.25rem');
+		expect(container.querySelector('.kadence-token-field__item-label').textContent).toBe('MD');
+	});
+
+	/**
+	 * The Default tag still finds its row: the caller's default is the raw resolved value, so the
+	 * comparison stays on the clamp even though the row displays its scalar.
+	 *
+	 * @return {void}
+	 */
+	it('still tags the default row when the default is a raw clamp', () => {
+		const value = 'clamp(1.1rem, 0.995rem + 0.326vw, 1.25rem)';
+		const tokens = [{ id: 'md', label: 'MD', value, alias: '{primitive.dimension.font-size.md}' }];
+
+		render({ initialTab: 'style-library', tokens, resolvedDefault: value });
+
+		expect(container.querySelector('.kadence-token-field__item-tag')).not.toBeNull();
+	});
+
+	/**
 	 * With `showValue={false}` — `BoxShadowControl`'s own usage — no row renders its resolved value,
 	 * only its label.
 	 *

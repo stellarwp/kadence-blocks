@@ -26,7 +26,7 @@ import { useState } from '@wordpress/element';
 /**
  * Internal dependencies
  */
-import { hasValue, isTokenAlias } from '../helpers/token-summary';
+import { displayDimension, hasValue, isTokenAlias } from '../helpers/token-summary';
 
 /**
  * The `Style Library` tab body: a `Reset` affordance that clears the slot back to its inherited default,
@@ -122,7 +122,11 @@ function StyleLibraryTab({
 								{inherited ? __('Inherited', 'kadence-blocks') : __('Default', 'kadence-blocks')}
 							</span>
 						)}
-						{showValue && <span className="kadence-token-field__item-value">{entry.value}</span>}
+						{/* Reduced for display only. `isDefault` above still compares the raw resolved value,
+						    which is what the caller's default is expressed in — a fluid step's whole clamp. */}
+						{showValue && (
+							<span className="kadence-token-field__item-value">{displayDimension(entry.value)}</span>
+						)}
 					</Button>
 				);
 			})}

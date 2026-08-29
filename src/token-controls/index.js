@@ -47,6 +47,7 @@ export {
 } from './helpers/preset-envelope';
 export {
 	defaultSummary,
+	displayDimension,
 	fieldSummary,
 	findTokenEntry,
 	isTokenAlias,

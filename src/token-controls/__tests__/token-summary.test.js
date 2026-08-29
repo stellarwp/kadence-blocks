@@ -1,6 +1,7 @@
 /* eslint-env jest */
 import {
 	defaultSummary,
+	displayDimension,
 	fieldSummary,
 	findTokenEntry,
 	hasValue,
@@ -101,6 +102,52 @@ describe('findTokenEntry legacy size slugs', () => {
 
 	it('ignores a non-string value', () => {
 		expect(findTokenEntry(SCALE_TOKENS, 16)).toBeNull();
+	});
+});
+
+describe('displayDimension', () => {
+	it('reduces a fluid step to the scalar it authors, so the field shows a size not an expression', () => {
+		expect(displayDimension('clamp(1.1rem, 0.995rem + 0.326vw, 1.25rem)')).toBe('1.25rem');
+	});
+
+	it('passes a plain length through', () => {
+		expect(displayDimension('1.5rem')).toBe('1.5rem');
+	});
+
+	it('leaves a clamp it cannot read as three arguments alone, rather than guessing', () => {
+		expect(displayDimension('clamp(1rem, 2rem)')).toBe('clamp(1rem, 2rem)');
+	});
+
+	it('passes a non-string through untouched', () => {
+		expect(displayDimension(16)).toBe(16);
+		expect(displayDimension('')).toBe('');
+	});
+});
+
+describe('fluid values in the summaries', () => {
+	const FLUID = [
+		{
+			id: 'primitive.dimension.font-size.md',
+			label: 'MD',
+			value: 'clamp(1.1rem, 0.995rem + 0.326vw, 1.25rem)',
+			alias: '{primitive.dimension.font-size.md}',
+		},
+	];
+
+	it('names a selected fluid step and shows its scalar, never the clamp', () => {
+		expect(fieldSummary('{primitive.dimension.font-size.md}', FLUID, 'px', 'Custom')).toEqual({
+			label: 'MD',
+			value: '1.25rem',
+		});
+	});
+
+	it('still matches the default on the raw clamp, then shows the scalar', () => {
+		// Matching has to stay on the resolved value the pool holds — reducing first would stop a fluid
+		// step ever finding its own entry, which is what left the field showing a bare clamp.
+		expect(defaultSummary('clamp(1.1rem, 0.995rem + 0.326vw, 1.25rem)', FLUID, 'Default')).toEqual({
+			label: 'MD',
+			value: '1.25rem',
+		});
 	});
 });
 

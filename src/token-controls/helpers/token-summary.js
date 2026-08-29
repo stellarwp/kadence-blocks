@@ -112,6 +112,47 @@ function isLegacySlugFor(entry, value) {
 }
 
 /**
+ * The shipped clamp bodies (`baseline.json`'s Font Size primitives) contain no nested parentheses, so
+ * splitting `clamp(...)`'s inner argument list on top-level commas is safe without a full CSS parser.
+ *
+ * @since TBD
+ */
+const CLAMP_PATTERN = /^clamp\((.*)\)$/;
+
+/**
+ * The authored scalar behind a fluid dimension's resolved value.
+ *
+ * A fluid step resolves to a whole `clamp(min, preferred, max)` string. That is correct CSS and the
+ * right thing to render with, but wrong to SHOW in a field: it overruns the row and reads as an
+ * expression rather than as the size it computes. Every shipped step authors its scalar `$value` as
+ * the clamp's own `max`, so the max is the number the field means.
+ *
+ * Applied only when producing display text, never when matching a value to a token — the pool holds
+ * the whole clamp, so reducing it first would stop a fluid step ever finding its own entry.
+ *
+ * @param {*} value A resolved dimension: a plain length, or a `clamp(min, preferred, max)` string.
+ *
+ * @since TBD
+ *
+ * @return {*} The clamp's `max`, or the value verbatim when it is not a three-argument clamp.
+ */
+export function displayDimension(value) {
+	if (typeof value !== 'string') {
+		return value;
+	}
+
+	const match = value.trim().match(CLAMP_PATTERN);
+
+	if (!match) {
+		return value;
+	}
+
+	const args = match[1].split(',').map((arg) => arg.trim());
+
+	return args.length === 3 ? args[2] : value;
+}
+
+/**
  * Normalize an inherited default into a comparable, displayable literal.
  *
  * @param {*}       defaultValue The default: a resolved literal, an alias, or a bare number.
@@ -172,7 +213,7 @@ export function defaultSummary(resolvedDefault, tokens, literalLabel = '') {
 	// never touched.
 	const entry = (tokens || []).find((candidate) => !candidate.fixed && candidate.value === resolvedDefault) || null;
 
-	return { label: entry ? entry.label : literalLabel, value: resolvedDefault };
+	return { label: entry ? entry.label : literalLabel, value: displayDimension(resolvedDefault) };
 }
 
 /**
@@ -192,7 +233,7 @@ export function fieldSummary(value, tokens, unit, customName) {
 	const entry = findTokenEntry(tokens, value);
 
 	if (entry) {
-		return { label: entry.label, value: entry.value };
+		return { label: entry.label, value: displayDimension(entry.value) };
 	}
 
 	if (isTokenAlias(value)) {
