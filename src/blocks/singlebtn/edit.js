@@ -1305,6 +1305,7 @@ export default function KadenceButtonEdit(props) {
 																onCustom={(literal) =>
 																	setAttributes({ colorHover: literal })
 																}
+																onClear={() => setAttributes({ colorHover: '' })}
 																resolveLiteral={resolveColorLiteral}
 															/>
 														)}
@@ -1342,6 +1343,7 @@ export default function KadenceButtonEdit(props) {
 																onCustom={(literal) =>
 																	setAttributes({ backgroundHover: literal })
 																}
+																onClear={() => setAttributes({ backgroundHover: '' })}
 																resolveLiteral={resolveColorLiteral}
 															/>
 														)}
@@ -1445,6 +1447,7 @@ export default function KadenceButtonEdit(props) {
 																onCustom={(literal) =>
 																	setAttributes({ color: literal })
 																}
+																onClear={() => setAttributes({ color: '' })}
 																resolveLiteral={resolveColorLiteral}
 															/>
 														)}
@@ -1477,6 +1480,7 @@ export default function KadenceButtonEdit(props) {
 																onCustom={(literal) =>
 																	setAttributes({ background: literal })
 																}
+																onClear={() => setAttributes({ background: '' })}
 																resolveLiteral={resolveColorLiteral}
 															/>
 														)}
@@ -1562,6 +1566,9 @@ export default function KadenceButtonEdit(props) {
 																onCustom={(literal) =>
 																	setAttributes({ colorTransparentHover: literal })
 																}
+																onClear={() =>
+																	setAttributes({ colorTransparentHover: '' })
+																}
 																resolveLiteral={resolveColorLiteral}
 															/>
 															<BackgroundTypeControl
@@ -1604,6 +1611,11 @@ export default function KadenceButtonEdit(props) {
 																	onCustom={(literal) =>
 																		setAttributes({
 																			backgroundTransparentHover: literal,
+																		})
+																	}
+																	onClear={() =>
+																		setAttributes({
+																			backgroundTransparentHover: '',
 																		})
 																	}
 																	resolveLiteral={resolveColorLiteral}
@@ -1703,6 +1715,7 @@ export default function KadenceButtonEdit(props) {
 																onCustom={(literal) =>
 																	setAttributes({ colorTransparent: literal })
 																}
+																onClear={() => setAttributes({ colorTransparent: '' })}
 																resolveLiteral={resolveColorLiteral}
 															/>
 															<BackgroundTypeControl
@@ -1742,6 +1755,9 @@ export default function KadenceButtonEdit(props) {
 																		setAttributes({
 																			backgroundTransparent: literal,
 																		})
+																	}
+																	onClear={() =>
+																		setAttributes({ backgroundTransparent: '' })
 																	}
 																	resolveLiteral={resolveColorLiteral}
 																/>
@@ -1843,6 +1859,7 @@ export default function KadenceButtonEdit(props) {
 																onCustom={(literal) =>
 																	setAttributes({ colorStickyHover: literal })
 																}
+																onClear={() => setAttributes({ colorStickyHover: '' })}
 																resolveLiteral={resolveColorLiteral}
 															/>
 															<BackgroundTypeControl
@@ -1886,6 +1903,9 @@ export default function KadenceButtonEdit(props) {
 																		setAttributes({
 																			backgroundStickyHover: literal,
 																		})
+																	}
+																	onClear={() =>
+																		setAttributes({ backgroundStickyHover: '' })
 																	}
 																	resolveLiteral={resolveColorLiteral}
 																/>
@@ -1979,6 +1999,7 @@ export default function KadenceButtonEdit(props) {
 																onCustom={(literal) =>
 																	setAttributes({ colorSticky: literal })
 																}
+																onClear={() => setAttributes({ colorSticky: '' })}
 																resolveLiteral={resolveColorLiteral}
 															/>
 															<BackgroundTypeControl
@@ -2012,6 +2033,9 @@ export default function KadenceButtonEdit(props) {
 																	}
 																	onCustom={(literal) =>
 																		setAttributes({ backgroundSticky: literal })
+																	}
+																	onClear={() =>
+																		setAttributes({ backgroundSticky: '' })
 																	}
 																	resolveLiteral={resolveColorLiteral}
 																/>
@@ -2321,6 +2345,7 @@ export default function KadenceButtonEdit(props) {
 												groups={colorGroups}
 												onPick={(alias) => setAttributes({ iconColor: alias })}
 												onCustom={(literal) => setAttributes({ iconColor: literal })}
+												onClear={() => setAttributes({ iconColor: '' })}
 												resolveLiteral={resolveColorLiteral}
 											/>
 											<ColorControl
@@ -2329,6 +2354,7 @@ export default function KadenceButtonEdit(props) {
 												groups={colorGroups}
 												onPick={(alias) => setAttributes({ iconColorHover: alias })}
 												onCustom={(literal) => setAttributes({ iconColorHover: literal })}
+												onClear={() => setAttributes({ iconColorHover: '' })}
 												resolveLiteral={resolveColorLiteral}
 											/>
 										</ColorControlGroup>

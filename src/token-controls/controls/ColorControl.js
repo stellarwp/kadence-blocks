@@ -14,7 +14,8 @@
 /**
  * WordPress dependencies
  */
-import { Dropdown } from '@wordpress/components';
+import { Button, Dropdown } from '@wordpress/components';
+import { Icon, undo } from '@wordpress/icons';
 import { __ } from '@wordpress/i18n';
 
 /**
@@ -41,6 +42,10 @@ import '../styles/token-controls.scss';
  *                                           — the active palette's groups, host-resolved.
  * @param {?Object}   [props.status]        `{ bound, modified }`; omit for no indicator.
  * @param {?Function} [props.onReset]       Reset handler, paired with `status`.
+ * @param {?Function} [props.onClear]       Clears the slot back to unset. Independent of `status`:
+ *                                           `BindingIndicator`'s own Reset renders only for a
+ *                                           preset-bound slot, so an attribute that no preset binds
+ *                                           has no other way back to empty. Omit for no Clear row.
  * @param {Function}  props.onPick          Called with a token entry's `alias` when one is chosen.
  * @param {Function}  props.onCustom        Called with a literal color from the Custom tab.
  * @param {?Function} [props.resolveLiteral] `(entry) => string` — the host's hook for seeding the
@@ -59,6 +64,7 @@ export function ColorControl({
 	groups,
 	status = null,
 	onReset = null,
+	onClear = null,
 	onPick,
 	onCustom,
 	resolveLiteral,
@@ -100,7 +106,24 @@ export function ColorControl({
 							tokens={allSwatches}
 							initialTab={initialTab}
 							renderList={({ onPick: pick, onClose: close }) => (
-								<ColorGroupList groups={groups} value={value} onPick={pick} onClose={close} />
+								<>
+									{onClear && (
+										<Button
+											className="kadence-token-field__reset kb-color-control__clear"
+											disabled={!value}
+											onClick={() => {
+												onClear();
+												close();
+											}}
+										>
+											<span className="kadence-token-field__reset-label">
+												{__('Clear', 'kadence-blocks')}
+											</span>
+											<Icon className="kadence-token-field__reset-icon" icon={undo} size={20} />
+										</Button>
+									)}
+									<ColorGroupList groups={groups} value={value} onPick={pick} onClose={close} />
+								</>
 							)}
 							renderCustom={() => (
 								<ColorPicker

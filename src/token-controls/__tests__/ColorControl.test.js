@@ -273,4 +273,47 @@ describe('ColorControl', () => {
 
 		expect(container.querySelector('[data-testid="color-picker"]').dataset.color).toBe('#3182ce');
 	});
+
+	/**
+	 * Clear is opt-in: a host that passes no `onClear` gets no Clear row, keeping the control
+	 * unchanged for callers that have their own way back to unset.
+	 *
+	 * @return {void}
+	 */
+	it('renders no Clear row when onClear is omitted', () => {
+		render({ value: '{semantic.color.accent.soft}' });
+
+		expect(container.querySelector('.kb-color-control__clear')).toBeNull();
+	});
+
+	/**
+	 * The Clear row is the only path back to unset for an attribute no preset binds, so it clears the
+	 * value and closes the popover.
+	 *
+	 * @return {void}
+	 */
+	it('calls onClear and closes the popover when the Clear row is clicked', () => {
+		const onClear = jest.fn();
+
+		render({ value: '{semantic.color.accent.soft}', onClear });
+
+		const clear = container.querySelector('.kb-color-control__clear');
+
+		act(() => clear.dispatchEvent(new MouseEvent('click', { bubbles: true })));
+
+		expect(onClear).toHaveBeenCalled();
+		expect(mockOnToggle).not.toHaveBeenCalled();
+	});
+
+	/**
+	 * With nothing set there is nothing to clear, so the row is present but inert rather than
+	 * offering an action that would be a no-op.
+	 *
+	 * @return {void}
+	 */
+	it('disables the Clear row when the value is already unset', () => {
+		render({ value: '', onClear: jest.fn() });
+
+		expect(container.querySelector('.kb-color-control__clear').disabled).toBe(true);
+	});
 });

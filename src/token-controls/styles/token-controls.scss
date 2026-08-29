@@ -959,7 +959,6 @@
 
 // The popover's menu: a 4px-radius white sheet, matching the token field's own popover.
 .kb-border-control__style-menu {
-
 	.components-popover__content {
 		min-width: 180px;
 		border-radius: 4px;
@@ -1086,6 +1085,13 @@
 	height: 20px;
 	border: 1px solid rgba(0, 0, 0, 0.1);
 	border-radius: 50%;
+}
+
+// Clear sits above the groups, inset to the same 8px the list itself uses so the two read as one
+// column rather than the button running to the popover's edge.
+.kb-color-control__clear.components-button {
+	width: calc(100% - 16px);
+	margin: 8px 8px 0;
 }
 
 // The popover's Style Library tab: the active palette's groups, each swatch showing a check mark on
