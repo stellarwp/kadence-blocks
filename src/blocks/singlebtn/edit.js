@@ -101,6 +101,7 @@ import {
 	combineColorOpacity,
 	splitColorOpacity,
 } from '../../extension/design-tokens/components/EditorShadowControl';
+import { renderShadowColor } from '../../extension/design-tokens/components/shadow-color';
 import { pickableTokensForControl, pickableTokensForKey } from '../../extension/token-picker';
 import { ColorControl, ColorControlGroup } from '../../token-controls';
 import { BUTTON_MARGIN_FALLBACK, BUTTON_PADDING_FALLBACK } from '../../token-controls/helpers/button-box-defaults';
@@ -140,39 +141,6 @@ function renderBorderColor({ value, onChange, label }) {
 			default={''}
 			hideClear={true}
 			onChange={onChange}
-		/>
-	);
-}
-
-/**
- * `EditorShadowControl`'s `renderColor` render-prop: reuses the block's existing `PopColorControl`
- * unchanged, wired through its own two-channel `opacityValue`/`onArrayChange` props so the swatch's
- * opacity slider keeps working exactly as it did on the native `@kadence/components` `BoxShadowControl`
- * (see `node_modules/@kadence/components/src/box-shadow-control/index.js`). The composite's `color`
- * slot arrives combined (`combineColorOpacity`); this is the one place that has to split it apart for
- * `PopColorControl` and recombine on every write, using the exact same rules `EditorShadowControl`
- * itself uses to read/write the native attribute, so both directions agree.
- *
- * @param {Object}   props          The render-prop's argument.
- * @param {string}   props.value    The composite's combined color slot (a plain hex, or `rgba(...)`).
- * @param {Function} props.onChange Called with the next combined color slot.
- *
- * @since TBD
- *
- * @return {JSX.Element} The rendered color field.
- */
-function renderShadowColor({ value, onChange }) {
-	const { color, opacity } = splitColorOpacity(value);
-
-	return (
-		<PopColorControl
-			value={color || ''}
-			default={'#000000'}
-			hideClear={true}
-			opacityValue={opacity}
-			onChange={(next) => onChange(combineColorOpacity(next, opacity))}
-			onOpacityChange={(next) => onChange(combineColorOpacity(color, next))}
-			onArrayChange={(next, nextOpacity) => onChange(combineColorOpacity(next, nextOpacity))}
 		/>
 	);
 }
