@@ -263,9 +263,13 @@ function StyleControls(props) {
 
 	// The row offers the same Background Color field in two mutually exclusive branches — the video
 	// background tab and the normal one — so it is built once here rather than written out at both.
-	// Empty groups mean the token registry is inactive, which is what keeps the plain color control as
-	// the fallback rather than leaving the row with no background color control at all.
-	const backgroundColorField = colorGroups.length ? (
+	//
+	// Rendered unconditionally, NOT behind a `colorGroups.length` guard the way the measure controls sit
+	// behind their token pool. The pool is read synchronously from a localized global, so it is either
+	// there on the first render or not at all; `useColorGroups` fetches over REST and returns an empty
+	// list until it resolves, so gating on it would mount the old control and visibly swap it a moment
+	// later. An empty list costs only an empty Style Library tab — the Custom tab still picks any color.
+	const backgroundColorField = (
 		<ColorControl
 			label={__('Background Color', 'kadence-blocks')}
 			value={bgColor ? bgColor : ''}
@@ -279,14 +283,6 @@ function StyleControls(props) {
 			onCustom={(literal) => writeBackgroundColor(literal)}
 			onClear={() => writeBackgroundColor('')}
 			resolveLiteral={resolveColorLiteral}
-		/>
-	) : (
-		<PopColorControl
-			label={__('Background Color', 'kadence-blocks')}
-			value={bgColor ? bgColor : ''}
-			default={''}
-			onChange={(value) => setAttributes({ bgColor: value })}
-			onClassChange={(value) => setAttributes({ bgColorClass: value })}
 		/>
 	);
 
