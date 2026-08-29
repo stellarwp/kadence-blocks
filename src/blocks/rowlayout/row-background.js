@@ -10,6 +10,7 @@ import { useBlockProps } from '@wordpress/block-editor';
 import { __ } from '@wordpress/i18n';
 
 import { getSpacingOptionOutput } from './utils';
+import { tokenDimension } from '../../extension/design-tokens/token-dimension';
 
 /**
  * Build the row edit
@@ -491,17 +492,21 @@ function RowBackground({ attributes, previewDevice, backgroundClasses, children,
 			// left the row's block-default rule -- which carries the selected preset's radius -- as the
 			// only `border-radius` on the element.
 			borderTopLeftRadius:
-				'' !== previewRadiusTop ? previewRadiusTop + (borderRadiusUnit ? borderRadiusUnit : 'px') : undefined,
+				'' !== previewRadiusTop
+					? tokenDimension(previewRadiusTop, borderRadiusUnit ? borderRadiusUnit : 'px')
+					: undefined,
 			borderTopRightRadius:
 				'' !== previewRadiusRight
-					? previewRadiusRight + (borderRadiusUnit ? borderRadiusUnit : 'px')
+					? tokenDimension(previewRadiusRight, borderRadiusUnit ? borderRadiusUnit : 'px')
 					: undefined,
 			borderBottomRightRadius:
 				'' !== previewRadiusBottom
-					? previewRadiusBottom + (borderRadiusUnit ? borderRadiusUnit : 'px')
+					? tokenDimension(previewRadiusBottom, borderRadiusUnit ? borderRadiusUnit : 'px')
 					: undefined,
 			borderBottomLeftRadius:
-				'' !== previewRadiusLeft ? previewRadiusLeft + (borderRadiusUnit ? borderRadiusUnit : 'px') : undefined,
+				'' !== previewRadiusLeft
+					? tokenDimension(previewRadiusLeft, borderRadiusUnit ? borderRadiusUnit : 'px')
+					: undefined,
 			minHeight: previewMinHeight ? previewMinHeight + minHeightUnit : undefined,
 			zIndex: zIndex ? zIndex : undefined,
 			boxShadow:
@@ -549,19 +554,19 @@ function RowBackground({ attributes, previewDevice, backgroundClasses, children,
 								previewBackgroundAttachment === 'parallax' ? 'fixed' : previewBackgroundAttachment,
 							borderTopLeftRadius:
 								!borderRadiusOverflow && previewRadiusTop
-									? previewRadiusTop + (borderRadiusUnit ? borderRadiusUnit : 'px')
+									? tokenDimension(previewRadiusTop, borderRadiusUnit ? borderRadiusUnit : 'px')
 									: undefined,
 							borderTopRightRadius:
 								!borderRadiusOverflow && previewRadiusRight
-									? previewRadiusRight + (borderRadiusUnit ? borderRadiusUnit : 'px')
+									? tokenDimension(previewRadiusRight, borderRadiusUnit ? borderRadiusUnit : 'px')
 									: undefined,
 							borderBottomRightRadius:
 								!borderRadiusOverflow && previewRadiusBottom
-									? previewRadiusBottom + (borderRadiusUnit ? borderRadiusUnit : 'px')
+									? tokenDimension(previewRadiusBottom, borderRadiusUnit ? borderRadiusUnit : 'px')
 									: undefined,
 							borderBottomLeftRadius:
 								!borderRadiusOverflow && previewRadiusLeft
-									? previewRadiusLeft + (borderRadiusUnit ? borderRadiusUnit : 'px')
+									? tokenDimension(previewRadiusLeft, borderRadiusUnit ? borderRadiusUnit : 'px')
 									: undefined,
 						}}
 					></div>
