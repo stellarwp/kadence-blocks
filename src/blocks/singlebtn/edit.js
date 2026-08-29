@@ -92,6 +92,7 @@ import {
 	inheritedMeasureSlots,
 	measureAttrsForDevice,
 	presetValueForDevice,
+	presetValueOr,
 } from '../../extension/token-indicators/normalize';
 import { EditorBoxControl } from '../../extension/design-tokens/components/EditorBoxControl';
 import { EditorBorderControl } from '../../extension/design-tokens/components/EditorBorderControl';
@@ -103,6 +104,7 @@ import {
 import { pickableTokensForControl, pickableTokensForKey } from '../../extension/token-picker';
 import { ColorControl } from '../../token-controls/controls/ColorControl';
 import { ColorControlGroup } from '../../token-controls/controls/ColorControlGroup';
+import { BUTTON_MARGIN_FALLBACK, BUTTON_PADDING_FALLBACK } from '../../token-controls/helpers/button-box-defaults';
 import { useColorGroups } from '../../extension/design-tokens/hooks/use-color-groups';
 import { resolveColorLiteral } from './color-control-adapter';
 
@@ -224,9 +226,7 @@ export default function KadenceButtonEdit(props) {
 		width,
 		widthUnit,
 		widthType,
-		displayShadow,
 		shadow,
-		displayHoverShadow,
 		shadowHover,
 		inheritStyles,
 		iconSize,
@@ -274,9 +274,7 @@ export default function KadenceButtonEdit(props) {
 		tabletBorderTransparentHoverRadius,
 		mobileBorderTransparentHoverRadius,
 		borderTransparentHoverRadiusUnit,
-		displayShadowTransparent,
 		shadowTransparent,
-		displayHoverShadowTransparent,
 		shadowTransparentHover,
 		colorSticky,
 		colorStickyHover,
@@ -300,9 +298,7 @@ export default function KadenceButtonEdit(props) {
 		tabletBorderStickyHoverRadius,
 		mobileBorderStickyHoverRadius,
 		borderStickyHoverRadiusUnit,
-		displayShadowSticky,
 		shadowSticky,
-		displayHoverShadowSticky,
 		shadowStickyHover,
 		tooltip,
 		tooltipPlacement,
@@ -394,6 +390,15 @@ export default function KadenceButtonEdit(props) {
 		previewDevice
 	);
 
+	// Read directly: `button-shadow` declares no `control_attr`, so `usePresetBinding` skips it.
+	const shadowPresetValue = presetPropertyValueForDevice(
+		'kadence/singlebtn',
+		'button-shadow',
+		attributes,
+		undefined,
+		previewDevice
+	);
+
 	// What an unset Border Radius corner falls back to on the active device: another breakpoint's corner
 	// before the preset's, matching the cascade the button actually renders through. The corners stay
 	// stored-empty — this only tells the field's popover which size is in effect and where it came from.
@@ -403,10 +408,10 @@ export default function KadenceButtonEdit(props) {
 		borderRadiusPresetValue
 	);
 
-	const paddingPresetValue = presetValueForDevice(
-		tokenBinding.padding?.presetValue,
-		tokenBinding.padding?.responsive,
-		previewDevice
+	// The fallback only catches a custom preset that omits the key, which would otherwise read as blank.
+	const paddingPresetValue = presetValueOr(
+		presetValueForDevice(tokenBinding.padding?.presetValue, tokenBinding.padding?.responsive, previewDevice),
+		BUTTON_PADDING_FALLBACK
 	);
 
 	// What an unset Padding side falls back to on the active device — same cascade as Border Radius
@@ -425,10 +430,10 @@ export default function KadenceButtonEdit(props) {
 		previewDevice
 	);
 
-	const marginPresetValue = presetValueForDevice(
-		tokenBinding.margin?.presetValue,
-		tokenBinding.margin?.responsive,
-		previewDevice
+	// Same reasoning as `paddingPresetValue` above, for `button-margin`.
+	const marginPresetValue = presetValueOr(
+		presetValueForDevice(tokenBinding.margin?.presetValue, tokenBinding.margin?.responsive, previewDevice),
+		BUTTON_MARGIN_FALLBACK
 	);
 
 	// What an unset Margin side falls back to on the active device — same cascade as Padding above.
@@ -466,24 +471,11 @@ export default function KadenceButtonEdit(props) {
 	// hover/sticky/transparent variant below reuses the same resolved list rather than re-filtering the
 	// pool per state.
 	const borderWidthPickableTokens = pickableTokensForKey('kadence/singlebtn', 'button-border-width');
+	// The shared narrowing in `pickableTokensForKey` already prepends the fixed "None" sentinel for the
+	// shadow role, so this list must NOT prepend a second one.
 	const shadowPickableTokens = pickableTokensForKey('kadence/singlebtn', 'button-shadow');
 	const paddingPickableTokens = pickableTokensForKey('kadence/singlebtn', 'button-padding');
-	// Margin's legacy control also offers "Auto" (`allowAuto`), which Padding's never did.
-	// `ss-auto` is already a fully working spacing slot at the PHP/CSS layer (Spacing_Target's SLOTS,
-	// class-kadence-blocks-css.php's $spacing_sizes) — the editor's pickable list is the only gap, so
-	// it is appended here as a fixed entry rather than added to the token registry itself.
-	//
-	// It is deliberately NOT registered as a DTCG token (it resolves to the CSS keyword `auto`, not a
-	// length — see declarations.php's comment on `$spacing_slugs`), so its `alias` is the bare slug the
-	// PHP/CSS layer already reads (`class-kadence-blocks-css.php`'s `$spacing_sizes['ss-auto']`), not the
-	// bracket-wrapped `{dot.path}` form a real token's alias takes. `fixed: true` tells
-	// `token-summary.js`'s `findTokenEntry()` to match this entry on that bare alias — the only sentinel
-	// in the pool allowed to bypass the bracket check, so a hand-typed Custom literal can never be
-	// misread as a token pick.
-	const marginPickableTokens = [
-		...pickableTokensForKey('kadence/singlebtn', 'button-margin'),
-		{ id: 'ss-auto', label: __('Auto', 'kadence-blocks'), value: 'auto', alias: 'ss-auto', fixed: true },
-	];
+	const marginPickableTokens = pickableTokensForKey('kadence/singlebtn', 'button-margin');
 
 	// The border-radius/padding linked/individual mode is derived from the stored slots (all equal reads
 	// as linked), so no new attribute is needed and old buttons open in the right mode. The hook's own
@@ -495,40 +487,25 @@ export default function KadenceButtonEdit(props) {
 	// slots — otherwise an explicit "link" would stick and hide a new preset's per-slot value.
 	const { isLinked: borderRadiusIsLinked, toggleLink: toggleBorderRadiusLink } = useLinkedMeasureState({
 		forDevice: borderRadiusForDevice,
-		inherited: inheritedBorderRadius,
 		previewDevice,
-		presetValue: borderRadiusPresetValue,
-		tokens: borderRadiusTokens,
 		setAttributes,
 		resetOn: attributes.kbPreset,
 	});
 
 	// Padding's linked/individual mode, mirroring Border Radius's own hook call above with "corner"
-	// swapped for "side" — same shape, run over `paddingForDevice`/`paddingPresetValue`/
-	// `inheritedPadding`/`paddingPickableTokens` instead, `resetOn` included: an override records a
-	// choice about the PREVIOUS preset's sides, so it has to clear on a preset change here too, or an
-	// explicit "link" sticks and hides the new preset's own per-side padding.
+	// swapped for "side". `resetOn` clears the remembered choice, which belonged to the old preset.
 	const { isLinked: paddingIsLinked, toggleLink: togglePaddingLink } = useLinkedMeasureState({
 		forDevice: paddingForDevice,
-		inherited: inheritedPadding,
 		previewDevice,
-		presetValue: paddingPresetValue,
-		tokens: paddingPickableTokens,
 		setAttributes,
 		resetOn: attributes.kbPreset,
 	});
 
 	// Margin's linked/individual mode, mirroring Padding's own hook call above — same shape, run over
-	// `marginForDevice`/`marginPresetValue`/`inheritedMargin`/`marginPickableTokens` instead. Unlike
-	// Padding, Margin does clear its override on a preset change (`resetOn`): an explicit "link" made
-	// under one preset would otherwise stick after switching to a preset with distinct per-side margins,
-	// hiding them behind a stale linked view.
+	// `marginForDevice` instead, `resetOn` included for the same reason.
 	const { isLinked: marginIsLinked, toggleLink: toggleMarginLink } = useLinkedMeasureState({
 		forDevice: marginForDevice,
-		inherited: inheritedMargin,
 		previewDevice,
-		presetValue: marginPresetValue,
-		tokens: marginPickableTokens,
 		setAttributes,
 		resetOn: attributes.kbPreset,
 	});
@@ -551,10 +528,7 @@ export default function KadenceButtonEdit(props) {
 	);
 	const { isLinked: borderHoverRadiusIsLinked, toggleLink: toggleBorderHoverRadiusLink } = useLinkedMeasureState({
 		forDevice: borderHoverRadiusForDevice,
-		inherited: inheritedBorderHoverRadius,
 		previewDevice,
-		presetValue: borderRadiusPresetValue,
-		tokens: borderRadiusTokens,
 		setAttributes,
 		resetOn: attributes.kbPreset,
 	});
@@ -573,10 +547,7 @@ export default function KadenceButtonEdit(props) {
 	const { isLinked: borderTransparentRadiusIsLinked, toggleLink: toggleBorderTransparentRadiusLink } =
 		useLinkedMeasureState({
 			forDevice: borderTransparentRadiusForDevice,
-			inherited: inheritedBorderTransparentRadius,
 			previewDevice,
-			presetValue: borderRadiusPresetValue,
-			tokens: borderRadiusTokens,
 			setAttributes,
 			resetOn: attributes.kbPreset,
 		});
@@ -595,10 +566,7 @@ export default function KadenceButtonEdit(props) {
 	const { isLinked: borderTransparentHoverRadiusIsLinked, toggleLink: toggleBorderTransparentHoverRadiusLink } =
 		useLinkedMeasureState({
 			forDevice: borderTransparentHoverRadiusForDevice,
-			inherited: inheritedBorderTransparentHoverRadius,
 			previewDevice,
-			presetValue: borderRadiusPresetValue,
-			tokens: borderRadiusTokens,
 			setAttributes,
 			resetOn: attributes.kbPreset,
 		});
@@ -616,10 +584,7 @@ export default function KadenceButtonEdit(props) {
 	);
 	const { isLinked: borderStickyRadiusIsLinked, toggleLink: toggleBorderStickyRadiusLink } = useLinkedMeasureState({
 		forDevice: borderStickyRadiusForDevice,
-		inherited: inheritedBorderStickyRadius,
 		previewDevice,
-		presetValue: borderRadiusPresetValue,
-		tokens: borderRadiusTokens,
 		setAttributes,
 		resetOn: attributes.kbPreset,
 	});
@@ -638,10 +603,7 @@ export default function KadenceButtonEdit(props) {
 	const { isLinked: borderStickyHoverRadiusIsLinked, toggleLink: toggleBorderStickyHoverRadiusLink } =
 		useLinkedMeasureState({
 			forDevice: borderStickyHoverRadiusForDevice,
-			inherited: inheritedBorderStickyHoverRadius,
 			previewDevice,
-			presetValue: borderRadiusPresetValue,
-			tokens: borderRadiusTokens,
 			setAttributes,
 			resetOn: attributes.kbPreset,
 		});
@@ -1398,17 +1360,10 @@ export default function KadenceButtonEdit(props) {
 															min={0}
 														/>
 														<EditorShadowControl
+															defaultValue={shadowPresetValue}
 															label={__('Box Shadow', 'kadence-blocks')}
 															value={shadowHover}
 															onChange={(value) => setAttributes({ shadowHover: value })}
-															enable={
-																undefined !== displayHoverShadow
-																	? displayHoverShadow
-																	: false
-															}
-															onEnableChange={(value) =>
-																setAttributes({ displayHoverShadow: value })
-															}
 															tokens={shadowPickableTokens}
 															renderColor={renderShadowColor}
 														/>
@@ -1531,13 +1486,10 @@ export default function KadenceButtonEdit(props) {
 															step={borderRadiusIsRelative ? 0.1 : 1}
 														/>
 														<EditorShadowControl
+															defaultValue={shadowPresetValue}
 															label={__('Box Shadow', 'kadence-blocks')}
 															value={shadow}
 															onChange={(value) => setAttributes({ shadow: value })}
-															enable={undefined !== displayShadow ? displayShadow : false}
-															onEnableChange={(value) =>
-																setAttributes({ displayShadow: value })
-															}
 															tokens={shadowPickableTokens}
 															renderColor={renderShadowColor}
 														/>
@@ -1683,20 +1635,11 @@ export default function KadenceButtonEdit(props) {
 																min={0}
 															/>
 															<EditorShadowControl
+																defaultValue={shadowPresetValue}
 																label={__('Box Shadow', 'kadence-blocks')}
 																value={shadowTransparentHover}
 																onChange={(value) =>
 																	setAttributes({ shadowTransparentHover: value })
-																}
-																enable={
-																	undefined !== displayHoverShadowTransparent
-																		? displayHoverShadowTransparent
-																		: false
-																}
-																onEnableChange={(value) =>
-																	setAttributes({
-																		displayHoverShadowTransparent: value,
-																	})
 																}
 																tokens={shadowPickableTokens}
 																renderColor={renderShadowColor}
@@ -1819,18 +1762,11 @@ export default function KadenceButtonEdit(props) {
 																min={0}
 															/>
 															<EditorShadowControl
+																defaultValue={shadowPresetValue}
 																label={__('Box Shadow', 'kadence-blocks')}
 																value={shadowTransparent}
 																onChange={(value) =>
 																	setAttributes({ shadowTransparent: value })
-																}
-																enable={
-																	undefined !== displayShadowTransparent
-																		? displayShadowTransparent
-																		: false
-																}
-																onEnableChange={(value) =>
-																	setAttributes({ displayShadowTransparent: value })
 																}
 																tokens={shadowPickableTokens}
 																renderColor={renderShadowColor}
@@ -1969,18 +1905,11 @@ export default function KadenceButtonEdit(props) {
 																min={0}
 															/>
 															<EditorShadowControl
+																defaultValue={shadowPresetValue}
 																label={__('Box Shadow', 'kadence-blocks')}
 																value={shadowStickyHover}
 																onChange={(value) =>
 																	setAttributes({ shadowStickyHover: value })
-																}
-																enable={
-																	undefined !== displayHoverShadowSticky
-																		? displayHoverShadowSticky
-																		: false
-																}
-																onEnableChange={(value) =>
-																	setAttributes({ displayHoverShadowSticky: value })
 																}
 																tokens={shadowPickableTokens}
 																renderColor={renderShadowColor}
@@ -2097,18 +2026,11 @@ export default function KadenceButtonEdit(props) {
 																min={0}
 															/>
 															<EditorShadowControl
+																defaultValue={shadowPresetValue}
 																label={__('Box Shadow', 'kadence-blocks')}
 																value={shadowSticky}
 																onChange={(value) =>
 																	setAttributes({ shadowSticky: value })
-																}
-																enable={
-																	undefined !== displayShadowSticky
-																		? displayShadowSticky
-																		: false
-																}
-																onEnableChange={(value) =>
-																	setAttributes({ displayShadowSticky: value })
 																}
 																tokens={shadowPickableTokens}
 																renderColor={renderShadowColor}

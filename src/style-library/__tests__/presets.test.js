@@ -82,8 +82,8 @@ describe('resolveTokenValue', () => {
 	});
 
 	it('resolves a per-corner slot list to a space-joined CSS value', () => {
-		const dimensionValues = { 'radius.lg': '1rem', 'radius.none': '0' };
-		const slots = ['{radius.lg}', '{radius.none}', '{radius.lg}', '{radius.none}'];
+		const dimensionValues = { 'radius.lg': '1rem', 'radius.xs': '0' };
+		const slots = ['{radius.lg}', '{radius.xs}', '{radius.lg}', '{radius.xs}'];
 
 		expect(resolveTokenValue(dimensionValues, slots)).toBe('1rem 0 1rem 0');
 	});
@@ -112,8 +112,8 @@ describe('resolveTokenValue', () => {
 	});
 
 	it('keeps a zero-valued slot, which resolves to a real value rather than nothing', () => {
-		const dimensionValues = { 'radius.none': '0' };
-		const slots = ['{radius.none}', '{radius.none}', '{radius.none}', '{radius.none}'];
+		const dimensionValues = { 'radius.xs': '0' };
+		const slots = ['{radius.xs}', '{radius.xs}', '{radius.xs}', '{radius.xs}'];
 
 		expect(resolveTokenValue(dimensionValues, slots)).toBe('0 0 0 0');
 	});
@@ -291,6 +291,13 @@ describe('presetInitialValues', () => {
 						'button-text-hover': '{semantic.color.on-primary}',
 						'button-radius': '0.5rem',
 					},
+					overridden: {
+						'button-bg': true,
+						'button-text': true,
+						'button-bg-hover': true,
+						'button-text-hover': true,
+						'button-radius': true,
+					},
 				},
 			},
 		};
@@ -308,7 +315,42 @@ describe('presetInitialValues', () => {
 				'button-padding': '',
 				'button-margin': '',
 			},
+			overridden: {
+				'button-bg': true,
+				'button-text': true,
+				'button-bg-hover': true,
+				'button-text-hover': true,
+				'button-radius': true,
+				// Absent from the payload's own `overridden` map, so these fall through to `false` —
+				// genuinely unbound, not merely unvalued.
+				'button-padding': false,
+				'button-margin': false,
+			},
 		});
+	});
+
+	it('seeds a property the preset only inherits from the baseline as empty, not as its merged value', () => {
+		// `tokens` is already baseline-merged, so a property the preset has no override of its own for
+		// still carries a value here. Seeding it would make a fresh page load render the field as bound
+		// to a value nobody set — the reload-vs-reset disagreement this guards against.
+		const payload = {
+			presets: {
+				secondary: {
+					label: 'Secondary',
+					tokens: {
+						'button-bg': '{semantic.color.button-secondary-bg}',
+						'button-radius': '{semantic.radius.control}',
+					},
+					overridden: { 'button-bg': true },
+				},
+			},
+		};
+
+		const seeded = presetInitialValues(payload, 'secondary', ['button-bg', 'button-radius']);
+
+		expect(seeded.tokens['button-bg']).toBe('semantic.color.button-secondary-bg');
+		expect(seeded.tokens['button-radius']).toBe('');
+		expect(seeded.overridden['button-radius']).toBe(false);
 	});
 
 	it('returns null for an unknown slug', () => {
@@ -747,12 +789,6 @@ describe('BUTTON_PRESET.schemaFor', () => {
 	});
 
 	describe('padding/margin defaultValue', () => {
-		const originalFeed = window.kadenceDesignTokens;
-
-		afterEach(() => {
-			window.kadenceDesignTokens = originalFeed;
-		});
-
 		/**
 		 * Read a field's `defaultValue` off the Normal tab's spacing panel.
 		 *
@@ -766,43 +802,12 @@ describe('BUTTON_PRESET.schemaFor', () => {
 				.find((field) => field.path === path).defaultValue;
 		}
 
-		it('resolves the padding default from the semantic.spacing.button-padding-* tokens', () => {
-			window.kadenceDesignTokens = {
-				values: {
-					'semantic.spacing.button-padding-top': '0.5em',
-					'semantic.spacing.button-padding-right': '1.25em',
-					'semantic.spacing.button-padding-bottom': '0.5em',
-					'semantic.spacing.button-padding-left': '1.25em',
-				},
-			};
-
-			expect(defaultValueFor('tokens.button-padding')).toEqual(['0.5em', '1.25em', '0.5em', '1.25em']);
-		});
-
-		it('resolves the margin default from the semantic.spacing.button-margin-* tokens', () => {
-			window.kadenceDesignTokens = {
-				values: {
-					'semantic.spacing.button-margin-top': '4px',
-					'semantic.spacing.button-margin-right': '0',
-					'semantic.spacing.button-margin-bottom': '4px',
-					'semantic.spacing.button-margin-left': '0',
-				},
-			};
-
-			expect(defaultValueFor('tokens.button-margin')).toEqual(['4px', '0', '4px', '0']);
-		});
-
-		it('falls back to the button literal default when a token is missing from the feed', () => {
-			window.kadenceDesignTokens = { values: {} };
-
+		it('is the button literal default for padding', () => {
 			expect(defaultValueFor('tokens.button-padding')).toEqual(['0.4em', '1em', '0.4em', '1em']);
+		});
+
+		it('is the button literal default for margin', () => {
 			expect(defaultValueFor('tokens.button-margin')).toEqual(['0', '0', '0', '0']);
-		});
-
-		it('falls back to the literal default when the feed itself is absent', () => {
-			delete window.kadenceDesignTokens;
-
-			expect(defaultValueFor('tokens.button-padding')).toEqual(['0.4em', '1em', '0.4em', '1em']);
 		});
 	});
 });
@@ -863,7 +868,15 @@ describe('seed/save round trip', () => {
 		};
 
 		const seeded = presetInitialValues(
-			{ presets: { primary: { label: 'Primary', tokens: { 'button-radius': stored } } } },
+			{
+				presets: {
+					primary: {
+						label: 'Primary',
+						tokens: { 'button-radius': stored },
+						overridden: { 'button-radius': true },
+					},
+				},
+			},
 			'primary',
 			['button-radius']
 		);
@@ -895,6 +908,7 @@ describe('seed/save round trip', () => {
 								'{semantic.dimension.control-radius}',
 							],
 						},
+						overridden: { 'button-radius': true },
 					},
 				},
 			},
@@ -913,7 +927,7 @@ describe('seed/save round trip', () => {
 
 describe('resolveTokenValue at a breakpoint', () => {
 	const NS = 'com.kadence.designTokens';
-	const values = { 'radius.sm': '0.1875rem', 'radius.lg': '0.5rem', 'radius.none': '0' };
+	const values = { 'radius.sm': '0.1875rem', 'radius.lg': '0.5rem', 'radius.xs': '0' };
 
 	const envelope = {
 		$value: '{radius.sm}',
@@ -941,7 +955,7 @@ describe('resolveTokenValue at a breakpoint', () => {
 	it('resolves a slot list held at a breakpoint into the shorthand', () => {
 		const perCorner = {
 			$value: '{radius.sm}',
-			$extensions: { [NS]: { responsive: { tablet: ['{radius.lg}', '{radius.none}', '{radius.lg}', '0'] } } },
+			$extensions: { [NS]: { responsive: { tablet: ['{radius.lg}', '{radius.xs}', '{radius.lg}', '0'] } } },
 		};
 
 		expect(resolveTokenValue(values, perCorner, 'tablet')).toBe('0.5rem 0 0.5rem 0');

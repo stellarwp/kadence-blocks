@@ -102,6 +102,21 @@ describe('defaultSummary', () => {
 	it('is blank when there is no default', () => {
 		expect(defaultSummary('', TOKENS)).toEqual({ label: '', value: '' });
 	});
+
+	it('never borrows a fixed sentinel entry’s label, even when its value coincidentally matches the resolved default', () => {
+		// Margin's resolved literal default is the bare string '0', and the fixed "None" entry's own
+		// `value` is also '0' — a coincidental match that must not make the trigger show "None" for a
+		// field the user never touched. This list carries only the fixed sentinel (no real token also
+		// resolving to '0'), isolating the bug: without the `!candidate.fixed` guard, the fixed entry
+		// would be the only match found and its label would leak through.
+		const fixedOnly = [{ id: 'ss-none-spacing', label: 'None', value: '0', alias: 0, fixed: true }];
+
+		expect(defaultSummary('0', fixedOnly, 'Default')).toEqual({ label: 'Default', value: '0' });
+	});
+
+	it('still borrows a real (non-fixed) token’s label when its value matches the resolved default', () => {
+		expect(defaultSummary('0', TOKENS, 'Default')).toEqual({ label: 'None', value: '0' });
+	});
 });
 
 describe('fieldSummary', () => {

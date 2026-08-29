@@ -21,11 +21,10 @@
  *   `splitColorOpacity` below are exported so a caller's `renderColor` can do that combine/split with
  *   the exact same rules this component uses to read/write the native attribute, keeping both
  *   directions symmetric.
- * - **`enable` lives outside the value entirely** — it is a separate sibling boolean attribute
- *   (`displayShadow`, `displayHoverShadow`, …), not a key inside the shadow array's item. This wrapper
- *   keeps it a plain `ToggleControl` rendered beside `BoxShadowControl`, matching how the native
- *   control also renders its enable toggle as an independent affordance next to the label, hiding the
- *   rest of the control's body while off.
+ * This control always renders `BoxShadowControl` — there is no separate enable toggle or sibling
+ * boolean attribute gating it. Whether a `box-shadow` declaration is emitted is decided purely by
+ * inspecting the shadow value's own axes (an all-zero value, including the fixed "None" pick, emits
+ * nothing), both on the front end and in the editor-canvas live preview.
  *
  * A whole-shadow token pick (the Style Library tab) has no home in the native item's existing keys —
  * unlike border, where an alias replaces a single side's width slot, a shadow alias would replace the
@@ -47,30 +46,11 @@
  */
 
 /**
- * WordPress dependencies
- */
-import { ToggleControl } from '@wordpress/components';
-import { __, sprintf } from '@wordpress/i18n';
-
-/**
  * Internal dependencies
  */
 import { BoxShadowControl } from '../../../token-controls/controls/BoxShadowControl';
 import { TokenControlRow } from '../../token-indicators/components/TokenControlRow';
-
-/**
- * The composite's default shape, matching `BoxShadowControl`'s own `DEFAULT_SHADOW` fallback.
- *
- * @since TBD
- */
-const DEFAULT_COMPOSITE = {
-	color: '#000000',
-	offsetX: '0px',
-	offsetY: '0px',
-	blur: '0px',
-	spread: '0px',
-	inset: false,
-};
+import { DEFAULT_COMPOSITE, parseResolvedShadow } from '../../../token-controls';
 
 /**
  * A CSS `rgba(r, g, b, a)` string, matching `hexToRGBA`'s own output format exactly (comma-space
@@ -241,48 +221,6 @@ function axisToNative(slot) {
 }
 
 /**
- * The feed's resolved `box-shadow` shorthand grammar, matching what `Css_Renderer::shadow()`
- * produces: an optional leading `inset `, four space-separated dimension tokens (offsetX, offsetY,
- * blur, spread), then the color as the remainder of the string. Capturing the color as "everything
- * after the fourth dimension" (rather than a fifth token) keeps a color with internal spaces —
- * `rgba(23, 23, 23, 0.12)` — intact.
- *
- * @since TBD
- */
-const SHADOW_SHORTHAND_PATTERN = /^(inset\s+)?(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(.+)$/;
-
-/**
- * Parse a resolved `box-shadow` shorthand string into the composite `{ color, offsetX, offsetY, blur,
- * spread, inset }` shape `BoxShadowControl` edits.
- *
- * @param {*} css The resolved shorthand (e.g. `"0px 2px 8px 0px #1717171f"`, with an optional
- *                `inset ` prefix), or anything that fails to parse as one.
- *
- * @since TBD
- *
- * @return {Object} The parsed composite, or the field's default shape when `css` is empty or does
- *                   not match the shorthand grammar.
- */
-function parseResolvedShadow(css) {
-	const match = typeof css === 'string' ? css.trim().match(SHADOW_SHORTHAND_PATTERN) : null;
-
-	if (!match) {
-		return { ...DEFAULT_COMPOSITE };
-	}
-
-	const [, insetPrefix, offsetX, offsetY, blur, spread, color] = match;
-
-	return {
-		color,
-		offsetX,
-		offsetY,
-		blur,
-		spread,
-		inset: Boolean(insetPrefix),
-	};
-}
-
-/**
  * Resolve a picked token alias to its literal composite value, via the same `tokens` list
  * `BoxShadowControl` already offers for its trigger label.
  *
@@ -362,19 +300,54 @@ export function toNativeShadow(value, tokens = []) {
 }
 
 /**
- * Render the editor-canvas box-shadow control: an `enable` toggle (the native attribute's own
- * sibling boolean, kept independent of the shadow value) beside `BoxShadowControl`, shown only while
- * enabled — matching the native `@kadence/components` `BoxShadowControl`'s own layout.
+ * Whether a stored native shadow should be treated as "the block sets no shadow of its own".
  *
- * @param {Object}    props                The component props.
- * @param {string}    props.label          The control's label.
- * @param {?Array}    props.value          The native shadow attribute value.
- * @param {Function}  props.onChange       Called with the next native shadow attribute value.
- * @param {boolean}   props.enable         Whether the shadow is enabled (the sibling boolean attribute).
- * @param {Function}  props.onEnableChange Called with the next enabled state.
- * @param {Array}     [props.tokens]       Pickable `shadow`-type tokens, `[{id, label, value, alias}]`.
- * @param {?Function} [props.renderColor]  The block's existing color field for the composite's `color`.
- * @param {boolean}   [props.disabled]     Whether the control is read-only.
+ * `block.json` registers an all-zero transparent shadow as `shadow`'s own default, so a fresh block
+ * arrives byte-identical to an explicit "None" pick. They are separated by consequence, not shape: an
+ * invisible shadow is a real override only when there is a preset shadow for it to suppress. With
+ * nothing behind it, it suppresses nothing and reads as unset.
+ *
+ * @param {?Array} native       The stored native shadow attribute value.
+ * @param {*}      defaultValue The active preset's own resolved shadow, or nothing when it has none.
+ *
+ * @since TBD
+ *
+ * @return {boolean} True when the control should render as unset.
+ */
+export function isUnsetShadow(native, defaultValue) {
+	const source = native?.[0];
+
+	if (!source) {
+		return true;
+	}
+
+	// A preset shadow behind it makes an invisible shadow a deliberate suppression, not an absence.
+	if (defaultValue !== undefined && defaultValue !== null && defaultValue !== '') {
+		return false;
+	}
+
+	const isTransparent = !source.color || source.color === 'transparent' || Number(source.opacity) === 0;
+	const hasNoGeometry = ['hOffset', 'vOffset', 'blur', 'spread'].every((axis) => !parseFloat(source[axis]));
+
+	return isTransparent && hasNoGeometry;
+}
+
+/**
+ * Render the editor-canvas box-shadow control: `BoxShadowControl` always renders, with no separate
+ * enable toggle — whether a `box-shadow` is emitted is decided elsewhere, purely from the value's own
+ * axes.
+ *
+ * @param {Object}    props               The component props.
+ * @param {string}    props.label         The control's label.
+ * @param {?Array}    props.value         The native shadow attribute value.
+ * @param {Function}  props.onChange      Called with the next native shadow attribute value.
+ * @param {Array}     [props.tokens]      Pickable `shadow`-type tokens, `[{id, label, value, alias}]`.
+ * @param {*}         [props.defaultValue] The active preset's own resolved shadow, or nothing when it
+ *                                        declares none — shown MUTED while the block stores no shadow
+ *                                        of its own, and what decides whether an invisible stored
+ *                                        shadow is a real override (see `isUnsetShadow()`).
+ * @param {?Function} [props.renderColor] The block's existing color field for the composite's `color`.
+ * @param {boolean}   [props.disabled]    Whether the control is read-only.
  *
  * @since TBD
  *
@@ -384,46 +357,22 @@ export function EditorShadowControl({
 	label,
 	value,
 	onChange,
-	enable,
-	onEnableChange,
 	tokens = [],
+	defaultValue,
 	renderColor,
 	disabled = false,
 }) {
 	return (
 		<TokenControlRow stacked>
-			<div className="kb-editor-shadow-control">
-				<div className="kb-editor-shadow-control__header">
-					{label && <span className="kb-editor-shadow-control__label">{label}</span>}
-					<ToggleControl
-						label={
-							label
-								? sprintf(
-										/* translators: %s: the field's own label, e.g. "Shadow". */ __(
-											'Enable %s',
-											'kadence-blocks'
-										),
-										label
-									)
-								: __('Enable shadow', 'kadence-blocks')
-						}
-						hideLabelFromVision
-						checked={!!enable}
-						onChange={onEnableChange}
-						disabled={disabled}
-					/>
-				</div>
-				{enable && (
-					<BoxShadowControl
-						label={undefined}
-						value={fromNativeShadow(value)}
-						onChange={(next) => onChange(toNativeShadow(next, tokens))}
-						tokens={tokens}
-						renderColor={renderColor}
-						disabled={disabled}
-					/>
-				)}
-			</div>
+			<BoxShadowControl
+				label={label}
+				value={isUnsetShadow(value, defaultValue) ? '' : fromNativeShadow(value)}
+				onChange={(next) => onChange(toNativeShadow(next, tokens))}
+				tokens={tokens}
+				defaultValue={defaultValue}
+				renderColor={renderColor}
+				disabled={disabled}
+			/>
 		</TokenControlRow>
 	);
 }

@@ -12,6 +12,7 @@ import {
 	BoxTokenField,
 	semanticDefaultOf,
 	toControlValue,
+	tokensForField,
 	toStoredValue,
 	withoutSemanticSlots,
 } from '../components/molecules/fields/BoxTokenField';
@@ -70,6 +71,16 @@ describe('toStoredValue', () => {
 	it('writes an unset slot as empty', () => {
 		expect(toStoredValue('', 'px')).toBe('');
 		expect(toStoredValue(null, 'px')).toBe('');
+	});
+
+	/**
+	 * A fixed sentinel's keyword is stored verbatim — it is not a token id to unwrap, nor a number to
+	 * suffix with a unit.
+	 *
+	 * @return {void}
+	 */
+	it('round-trips a fixed sentinel keyword unchanged', () => {
+		expect(toStoredValue('ss-auto', 'px')).toBe('ss-auto');
 	});
 });
 
@@ -265,5 +276,236 @@ describe('the pending unit', () => {
 			latestBoxControlProps.onBreakpointChange('desktop');
 		});
 		expect(latestBoxControlProps.unit).toBe('em');
+	});
+});
+
+describe('tokensForField', () => {
+	/**
+	 * Only a margin field offers the fixed "Auto" sentinel — padding has no auto behavior to express,
+	 * so offering it there would be a pick the block cannot honor.
+	 *
+	 * @return {void}
+	 */
+	it('offers Auto only for a margin field, not padding', () => {
+		const marginTokens = tokensForField(
+			{ path: 'tokens.button-margin', tokenType: 'dimension', role: 'spacing' },
+			''
+		);
+		const paddingTokens = tokensForField(
+			{ path: 'tokens.button-padding', tokenType: 'dimension', role: 'spacing' },
+			''
+		);
+
+		expect(marginTokens.some((token) => token.id === 'ss-auto')).toBe(true);
+		expect(paddingTokens.some((token) => token.id === 'ss-auto')).toBe(false);
+	});
+
+	/**
+	 * The None sentinel's alias is the bare number 0, not a `{...}` id string: it has no registered
+	 * token behind it, so bracket-wrapping it would store a dot-path that resolves to nothing.
+	 *
+	 * @return {void}
+	 */
+	it('resolves a None pick to the bare number 0, not a bracket string', () => {
+		const marginTokens = tokensForField(
+			{ path: 'tokens.button-margin', tokenType: 'dimension', role: 'spacing' },
+			''
+		);
+		const none = marginTokens.find((token) => token.id === 'ss-none-spacing');
+
+		expect(none.alias).toBe(0);
+	});
+});
+
+describe('the effective value shown when the draft is reset', () => {
+	let container;
+	let root;
+
+	beforeEach(() => {
+		global.IS_REACT_ACT_ENVIRONMENT = true;
+
+		container = document.createElement('div');
+		document.body.appendChild(container);
+		root = createRoot(container);
+	});
+
+	afterEach(() => {
+		act(() => {
+			root.unmount();
+		});
+		container.remove();
+		latestBoxControlProps = undefined;
+	});
+
+	/**
+	 * Render `BoxTokenField` with the given draft/original values.
+	 *
+	 * @param {Object}  props              The field's `value`/`originalValue` to render with.
+	 * @param {boolean} [props.overridden] Whether the preset genuinely has its own stored value for
+	 *                                     this property — gates whether `originalValue` is shown as
+	 *                                     bound. Defaults to true so existing "preset has its own
+	 *                                     value" cases don't need updating individually.
+	 *
+	 * @since TBD
+	 *
+	 * @return {void}
+	 */
+	function renderField({ value, originalValue, overridden = true }) {
+		act(() => {
+			root.render(
+				createElement(BoxTokenField, {
+					field: { path: 'tokens.radius', tokenType: 'dimension', role: 'radius', defaultValue: '0.1875rem' },
+					value,
+					originalValue,
+					originalValues: { overridden: { radius: overridden } },
+					onChange: jest.fn(),
+					slots: 'corners',
+				})
+			);
+		});
+	}
+
+	it("shows the preset's own stored value, not the generic literal fallback, once the draft is reset", () => {
+		renderField({ value: '', originalValue: 'semantic.radius.control' });
+
+		expect(latestBoxControlProps.value).toEqual(toControlValue('semantic.radius.control'));
+		expect(latestBoxControlProps.defaultValue).toBe('0.1875rem');
+	});
+
+	it('falls back to the generic literal fallback when the preset has no stored value either', () => {
+		renderField({ value: '', originalValue: '' });
+
+		expect(latestBoxControlProps.value).toEqual(toControlValue(''));
+	});
+
+	it('shows the draft value untouched when the field actually carries an edit', () => {
+		renderField({ value: '0.5rem', originalValue: 'semantic.radius.control' });
+
+		expect(latestBoxControlProps.value).toEqual(toControlValue('0.5rem'));
+	});
+
+	it("falls back to the generic literal fallback when the preset's stored value is only inherited from the baseline, not its own", () => {
+		renderField({ value: '', originalValue: 'semantic.radius.control', overridden: false });
+
+		expect(latestBoxControlProps.value).toEqual(toControlValue(''));
+	});
+});
+
+describe('a reset responsive field', () => {
+	let container;
+	let root;
+
+	beforeEach(() => {
+		global.IS_REACT_ACT_ENVIRONMENT = true;
+		container = document.createElement('div');
+		document.body.appendChild(container);
+		root = createRoot(container);
+	});
+
+	afterEach(() => {
+		act(() => root.unmount());
+		container.remove();
+		latestBoxControlProps = undefined;
+	});
+
+	/**
+	 * Render a responsive `BoxTokenField` and switch it to `breakpoint`.
+	 *
+	 * @param {Object} props        The field's `value`/`originalValue`.
+	 * @param {string} breakpoint   The breakpoint to switch to.
+	 *
+	 * @since TBD
+	 *
+	 * @return {void}
+	 */
+	function renderAt({ value, originalValue }, breakpoint) {
+		act(() => {
+			root.render(
+				createElement(BoxTokenField, {
+					field: { path: 'tokens.radius', tokenType: 'dimension', role: 'radius', responsive: true },
+					value,
+					originalValue,
+					originalValues: { overridden: { radius: true } },
+					onChange: jest.fn(),
+					slots: 'corners',
+				})
+			);
+		});
+		act(() => latestBoxControlProps.onBreakpointChange(breakpoint));
+	}
+
+	/**
+	 * A preset that stores only a desktop value still resolves to it at Tablet, because that is what a
+	 * reset there actually renders. Reading only the tablet slot would show the generic fallback for a
+	 * value the preset genuinely supplies.
+	 *
+	 * @return {void}
+	 */
+	it("shows the preset's desktop value at Tablet when it stores no tablet override", () => {
+		renderAt({ value: '', originalValue: 'semantic.radius.control' }, 'tablet');
+
+		expect(latestBoxControlProps.value).toEqual(toControlValue('semantic.radius.control'));
+	});
+
+	/**
+	 * Mobile steps through tablet first, so a tablet override wins over the desktop value.
+	 *
+	 * @return {void}
+	 */
+	it('prefers a tablet override over the desktop value at Mobile', () => {
+		const envelope = {
+			$value: 'semantic.radius.control',
+			$extensions: { 'com.kadence.designTokens': { responsive: { tablet: '0.5rem' } } },
+		};
+
+		renderAt({ value: '', originalValue: envelope }, 'mobile');
+
+		expect(latestBoxControlProps.value).toEqual(toControlValue('0.5rem'));
+	});
+});
+
+describe('switching unit on a reset field', () => {
+	let container;
+	let root;
+
+	beforeEach(() => {
+		global.IS_REACT_ACT_ENVIRONMENT = true;
+		container = document.createElement('div');
+		document.body.appendChild(container);
+		root = createRoot(container);
+	});
+
+	afterEach(() => {
+		act(() => root.unmount());
+		container.remove();
+		latestBoxControlProps = undefined;
+	});
+
+	/**
+	 * The unit switcher retypes what the field is SHOWING. With the draft reset the field shows the
+	 * preset's own value, so switching unit has to materialize that value into the draft — otherwise
+	 * the trigger would read `1px` while nothing was written, and a reload would show `1rem` again.
+	 *
+	 * @return {void}
+	 */
+	it("retypes the preset's own value rather than the empty draft", () => {
+		const onChange = jest.fn();
+
+		act(() => {
+			root.render(
+				createElement(BoxTokenField, {
+					field: { path: 'tokens.radius', tokenType: 'dimension', role: 'radius' },
+					value: '',
+					originalValue: '1rem',
+					originalValues: { overridden: { radius: true } },
+					onChange,
+					slots: 'corners',
+				})
+			);
+		});
+
+		act(() => latestBoxControlProps.onUnit('px'));
+
+		expect(onChange).toHaveBeenCalledWith('1px');
 	});
 });

@@ -191,6 +191,7 @@ function PresetSidebarBody({ navigate, route, screen, initialValues, presetLabel
 			<SettingsForm
 				schema={schemaFor(activeTab, panel.draft, screen.feed)}
 				values={panel.draft}
+				originalValues={initialValues}
 				onChange={panel.setFieldValue}
 			/>
 		</SettingsPanel>

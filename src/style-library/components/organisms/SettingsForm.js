@@ -11,7 +11,10 @@
  * sibling `tokens.*` keys, not one composite — see its own docblock) cannot be served by the single
  * dot-path `value`/`onChange` pair alone, so every field also receives the full draft `values` and
  * the raw, path-taking `onValueChange(path, next)` this component itself was given — additive, and
- * ignored by every field that only needs its own `field.path`.
+ * ignored by every field that only needs its own `field.path`. `originalValue`/`originalValues`
+ * mirror `value`/`values` the same way, but read the preset's own STORED tokens rather than the
+ * draft — a field a user has reset shows as bound to what it will actually resolve to once saved
+ * (the preset's own value, when it has one) instead of a generic literal fallback.
  */
 
 /**
@@ -28,10 +31,16 @@ import './SettingsForm.scss';
 /**
  * Render a settings schema.
  *
- * @param {Object}   props          The component props.
- * @param {Object}   props.schema   The authored schema (normalized internally).
- * @param {Object}   props.values   The current draft values.
- * @param {Function} props.onChange Called with (path, value) on any field edit.
+ * @param {Object}   props                 The component props.
+ * @param {Object}   props.schema          The authored schema (normalized internally).
+ * @param {Object}   props.values          The current draft values.
+ * @param {?Object}  [props.originalValues] The preset's own stored values, unaffected by the draft
+ *                                         — a field whose type reads it uses it to show a reset
+ *                                         property as bound to what it will actually resolve to
+ *                                         once saved (the preset's own value), rather than a
+ *                                         generic literal fallback. Omit for a schema with no such
+ *                                         field (`presetNameSchema()`'s label field ignores it).
+ * @param {Function} props.onChange        Called with (path, value) on any field edit.
  *
  * @since TBD
  *
@@ -55,7 +64,7 @@ function UntitledPanelBody({ children }) {
 	return <div className="kadence-blocks-style-library__settings-form-untitled-panel">{children}</div>;
 }
 
-export function SettingsForm({ schema, values, onChange }) {
+export function SettingsForm({ schema, values, originalValues, onChange }) {
 	const normalized = normalizeSchema(schema);
 
 	return (
@@ -71,8 +80,10 @@ export function SettingsForm({ schema, values, onChange }) {
 									key={field.path}
 									field={field}
 									value={getValueAtPath(values, field.path)}
+									originalValue={getValueAtPath(originalValues, field.path)}
 									onChange={(next) => onChange(field.path, next)}
 									values={values}
+									originalValues={originalValues}
 									onValueChange={onChange}
 								/>
 							);

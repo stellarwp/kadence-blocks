@@ -7,6 +7,7 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { PICKABLE_TOKENS_GLOBAL } from '../constants';
+import { noneEntryForRole } from '../../token-controls';
 
 /**
  * Read the localized design-token feed from the window global.
@@ -139,7 +140,15 @@ export function pickableTokensForType(type, role, selected) {
 		return matched;
 	}
 
-	return preferPrimitiveTokens(matched, selected);
+	const preferred = preferPrimitiveTokens(matched, selected);
+
+	// Shadow is excluded here even though `noneEntryForRole()` knows a "None" for it: `BoxShadowField`
+	// prepends its own so the entry sits in the same list `resolveShadowPick()` matches a pick against,
+	// which is what resolves a fixed pick to its literal composite at write time. The block editor's
+	// `pickableTokensForKey()` does prepend for shadow, so nothing there adds a second one.
+	const none = role === 'shadow' ? null : noneEntryForRole(role);
+
+	return none ? [none, ...preferred] : preferred;
 }
 
 /**

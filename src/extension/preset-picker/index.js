@@ -146,6 +146,24 @@ export function blockPresetResponsive(name, library) {
 }
 
 /**
+ * The per-preset "own override" map for a block's library: `{ <presetSlug>: { <property>: true } }`,
+ * carrying only the property keys THAT preset genuinely has its own stored value for — as opposed to
+ * `blockPresetValues()`'s merged/effective read, which cannot tell a preset's own override apart from
+ * a value it only inherits from the baseline's own definition of the same preset slug. Empty object
+ * when the block offers none.
+ *
+ * @param {string} name     The block name.
+ * @param {string} [library] The token library slug; defaults to the active library.
+ *
+ * @since TBD
+ *
+ * @return {Object} The per-preset "own override" map.
+ */
+export function blockPresetOverridden(name, library) {
+	return get(blockEntry(name, library), 'overridden', {}) || {};
+}
+
+/**
  * The block library's default preset slug in a token library.
  *
  * @param {string} name     The block name.

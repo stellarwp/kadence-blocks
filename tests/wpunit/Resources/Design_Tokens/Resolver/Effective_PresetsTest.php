@@ -136,4 +136,65 @@ final class Effective_PresetsTest extends TestCase {
 		// "secondary" shadows a baseline preset, so it is not user-created.
 		$this->assertNotContains( 'secondary', $user_created );
 	}
+
+	/**
+	 * A baseline-only preset (nothing stored for it at all) has no OWN stored tokens, even though
+	 * `block()`'s merged view resolves every one of its properties from the baseline.
+	 *
+	 * @return void
+	 */
+	public function testStoredTokensIsEmptyForABaselinePresetWithNoStoredOverridesRow(): void {
+		$this->assertSame( [], $this->presets->stored_tokens( self::BUTTON, 'secondary' ) );
+	}
+
+	/**
+	 * A stored override of just one property surfaces ONLY that property's key — not the other
+	 * properties the merged view resolves from the baseline for the same preset slug.
+	 *
+	 * @return void
+	 */
+	public function testStoredTokensSurfacesOnlyTheOverriddenPropertyOfAPartiallyOverriddenPreset(): void {
+		$this->store->save_document(
+			'{"$extensions":{"com.kadence.designTokens":{"presets":{"kadence/singlebtn":{'
+			. '"secondary":{"tokens":{"button-bg":"#000000"}}}}}}}'
+		);
+
+		$stored = $this->presets->stored_tokens( self::BUTTON, 'secondary' );
+
+		$this->assertSame( [ 'button-bg' => '#000000' ], $stored );
+		$this->assertArrayNotHasKey( 'button-text', $stored );
+	}
+
+	/**
+	 * An override-only preset's stored tokens are its full authored map, exactly as saved.
+	 *
+	 * @return void
+	 */
+	public function testStoredTokensReturnsTheFullMapForAnOverrideOnlyPreset(): void {
+		$this->store->save_document(
+			'{"$extensions":{"com.kadence.designTokens":{"presets":{"kadence/singlebtn":{'
+			. '"outline":{"label":"Outline","tokens":{"button-bg":"transparent","button-text":"#000000"}}'
+			. '}}}}}'
+		);
+
+		$stored = $this->presets->stored_tokens( self::BUTTON, 'outline' );
+
+		$this->assertSame(
+			[
+				'button-bg'   => 'transparent',
+				'button-text' => '#000000',
+			],
+			$stored
+		);
+	}
+
+	/**
+	 * A preset slug that does not exist at all, in either the baseline or the overrides, has no stored
+	 * tokens.
+	 *
+	 * @return void
+	 */
+	public function testStoredTokensIsEmptyForAnUnknownPresetSlug(): void {
+		$this->assertSame( [], $this->presets->stored_tokens( self::BUTTON, 'not-a-preset' ) );
+	}
 }

@@ -20,6 +20,7 @@ import {
 	blockPresetValues,
 	blockPresetReferences,
 	blockPresetResponsive,
+	blockPresetOverridden,
 } from '../preset-picker';
 import { isEmptyValue, matchesPreset, presetValueForDevice } from './normalize';
 import './token-indicators.scss';
@@ -167,6 +168,7 @@ export function usePresetBinding(blockName, attributes, library, previewDevice) 
 	const properties = blockProperties(blockName, resolvedLibrary);
 	const values = blockPresetValues(blockName, resolvedLibrary);
 	const responsive = blockPresetResponsive(blockName, resolvedLibrary);
+	const ownedProperties = blockPresetOverridden(blockName, resolvedLibrary);
 
 	// The preset whose surface drives the indicators: the explicit selection, or the set's authoritative
 	// default preset when none is chosen or the selection no longer exists (kbPreset is '' on every
@@ -175,18 +177,21 @@ export function usePresetBinding(blockName, attributes, library, previewDevice) 
 	const activePreset = activePresetFor(blockName, attributes, resolvedLibrary);
 	const presetValues = get(values, activePreset, {});
 	const presetBreakpoints = get(responsive, activePreset, {});
+	const presetOwnKeys = get(ownedProperties, activePreset, {});
 
 	const state = {};
 
 	properties.forEach((property) => {
 		const attr = property.control_attr;
 
-		// A property with no mapped control attribute, or one the active preset does not define, is not
-		// surfaced — only a property the selected preset sets is "bound" (the binding-set collapse
-		// interlock: the per-preset surface, not just the block's full property list, gates binding).
+		// The per-preset surface gates binding, not just the block's full property list.
 		if (!attr || !(property.key in presetValues)) {
 			return;
 		}
+
+		// Gates `bound` but deliberately not `presetValue`: an unbound property still shows a muted
+		// default naming the value the block really renders.
+		const owned = presetOwnKeys[property.key] === true;
 
 		// A property that owns one axis of a composite control attribute keys its compare off that declared
 		// axis rather than PHP's generic `property.kind` — see `propertyAxis`'s docblock for why.
@@ -230,7 +235,7 @@ export function usePresetBinding(blockName, attributes, library, previewDevice) 
 				kind: 'border',
 				presetValue: {},
 				responsive: {},
-				bound: true,
+				bound: false,
 				overridden: false,
 			};
 
@@ -238,6 +243,8 @@ export function usePresetBinding(blockName, attributes, library, previewDevice) 
 			combined.token[axisKey] = property.token;
 			combined.presetValue[axisKey] = presetValue;
 			combined.responsive[axisKey] = propertyBreakpoints;
+			// One control, three axes: bound once ANY axis is genuinely the preset's own.
+			combined.bound = combined.bound || owned;
 			combined.overridden = combined.overridden || overridden;
 
 			state[attr] = combined;
@@ -251,7 +258,7 @@ export function usePresetBinding(blockName, attributes, library, previewDevice) 
 			kind,
 			presetValue,
 			responsive: propertyBreakpoints,
-			bound: true,
+			bound: owned,
 			overridden,
 		};
 	});
@@ -276,6 +283,8 @@ export function usePresetBinding(blockName, attributes, library, previewDevice) 
  * @since TBD
  *
  * @return {*} The resolved literal value, or `undefined` when the active preset does not set it.
+ *             Not gated on ownership: this feeds a control's muted default, which must name what the
+ *             block really renders. `usePresetBinding`'s `bound` carries that distinction.
  */
 export function presetPropertyValueForDevice(blockName, propertyKey, attributes, library, previewDevice) {
 	const resolvedLibrary = library || activeLibrary();

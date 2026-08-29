@@ -2,6 +2,7 @@
 import {
 	anyCornerInherited,
 	deriveMeasureMode,
+	presetValueOr,
 	inheritedMeasureSlots,
 	measureAttrsForDevice,
 	normalizeDimension,
@@ -85,33 +86,27 @@ describe('matchesPreset dimension for a control that stores a raw number', () =>
 });
 
 describe('deriveMeasureMode', () => {
-	it('reads all-empty corners on a scalar preset as linked', () => {
-		expect(deriveMeasureMode(['', '', '', ''], '0.5rem')).toBe('linked');
+	it('reads all-empty corners as linked', () => {
+		// An unset control shows ONE muted fallback row rather than four blank ones, matching what the
+		// Style Library renders for the same state.
+		expect(deriveMeasureMode(['', '', '', ''])).toBe('linked');
 	});
 
-	it('reads all-empty corners on a per-corner preset as individual', () => {
-		expect(deriveMeasureMode(['', '', '', ''], ['0', '0.125rem', '9999px', '1rem'])).toBe('individual');
-	});
-
-	it('reads all-empty corners on a uniform per-corner preset as linked', () => {
-		expect(deriveMeasureMode(['', '', '', ''], ['8px', '8px', '8px', '8px'])).toBe('linked');
-	});
-
-	it('reads equal stored corners as linked whatever the preset holds', () => {
-		expect(deriveMeasureMode(['8', '8', '8', '8'], ['0', '0.125rem', '9999px', '1rem'])).toBe('linked');
+	it('reads equal stored corners as linked', () => {
+		expect(deriveMeasureMode(['8', '8', '8', '8'])).toBe('linked');
 	});
 
 	it('reads a differing stored corner as individual', () => {
-		expect(deriveMeasureMode(['8', '8', '8', '4'], '0.5rem')).toBe('individual');
+		expect(deriveMeasureMode(['8', '8', '8', '4'])).toBe('individual');
 	});
 
-	it('reads one overridden corner against an inherited scalar as individual', () => {
-		expect(deriveMeasureMode(['{primitive.dimension.radius.lg}', '', '', ''], '0.5rem')).toBe('individual');
+	it('reads one stored corner beside three empty ones as individual', () => {
+		expect(deriveMeasureMode(['{primitive.dimension.radius.lg}', '', '', ''])).toBe('individual');
 	});
 
-	it('reads an unset value with no preset as linked', () => {
-		expect(deriveMeasureMode(undefined, undefined)).toBe('linked');
-		expect(deriveMeasureMode(['', '', '', ''], '')).toBe('linked');
+	it('reads an unset value as linked', () => {
+		expect(deriveMeasureMode(undefined)).toBe('linked');
+		expect(deriveMeasureMode(['', '', '', ''])).toBe('linked');
 	});
 });
 
@@ -150,10 +145,10 @@ describe('measureAttrsForDevice', () => {
 
 	it('derives the mode per device, so breakpoints can differ', () => {
 		// Desktop corners are equal (linked) while tablet corners differ (individual).
-		expect(deriveMeasureMode(measureAttrsForDevice(ATTRS, 'borderRadius', RESPONSIVE, 'Desktop').value, '')).toBe(
+		expect(deriveMeasureMode(measureAttrsForDevice(ATTRS, 'borderRadius', RESPONSIVE, 'Desktop').value)).toBe(
 			'linked'
 		);
-		expect(deriveMeasureMode(measureAttrsForDevice(ATTRS, 'borderRadius', RESPONSIVE, 'Tablet').value, '')).toBe(
+		expect(deriveMeasureMode(measureAttrsForDevice(ATTRS, 'borderRadius', RESPONSIVE, 'Tablet').value)).toBe(
 			'individual'
 		);
 	});
@@ -384,5 +379,23 @@ describe('presetValueForDevice per-corner cascade', () => {
 			'4px',
 			'4px',
 		]);
+	});
+});
+
+describe('presetValueOr', () => {
+	it('keeps a numeric zero, which is what the fixed None pick resolves to', () => {
+		expect(presetValueOr(0, ['0.4em', '1em', '0.4em', '1em'])).toBe(0);
+		expect(presetValueOr('0', ['0.4em'])).toBe('0');
+		expect(presetValueOr(['0', '0', '0', '0'], ['0.4em'])).toEqual(['0', '0', '0', '0']);
+	});
+
+	it('falls back only when the preset sets nothing at all', () => {
+		expect(presetValueOr(undefined, 'fallback')).toBe('fallback');
+		expect(presetValueOr(null, 'fallback')).toBe('fallback');
+		expect(presetValueOr('', 'fallback')).toBe('fallback');
+	});
+
+	it('keeps a real value untouched', () => {
+		expect(presetValueOr('1em', 'fallback')).toBe('1em');
 	});
 });

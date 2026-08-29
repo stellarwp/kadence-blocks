@@ -124,7 +124,12 @@ export function defaultSummary(resolvedDefault, tokens, literalLabel = '') {
 		return { label: '', value: '' };
 	}
 
-	const entry = (tokens || []).find((candidate) => candidate.value === resolvedDefault) || null;
+	// A `fixed` sentinel (e.g. Margin's "None") is not a real named design choice, so it is excluded
+	// here — without this, its label would be borrowed for any field whose literal default
+	// coincidentally equals the sentinel's own resolved value (Margin's unset default is the bare
+	// string '0', which is also "None"'s resolved value), showing e.g. "None" for a field the user
+	// never touched.
+	const entry = (tokens || []).find((candidate) => !candidate.fixed && candidate.value === resolvedDefault) || null;
 
 	return { label: entry ? entry.label : literalLabel, value: resolvedDefault };
 }

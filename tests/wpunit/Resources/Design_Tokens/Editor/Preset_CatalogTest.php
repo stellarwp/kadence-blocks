@@ -337,6 +337,41 @@ final class Preset_CatalogTest extends TestCase {
 	}
 
 	/**
+	 * A shipped preset's `overridden` map carries only the properties it genuinely has of its own — not
+	 * every property `values` resolves for it, since most of those are inherited from the baseline's own
+	 * definition of that same preset slug rather than a stored override.
+	 *
+	 * @return void
+	 */
+	public function testOverriddenCarriesOnlyAPresetsOwnStoredPropertiesNotEveryResolvedOne(): void {
+		$button = $this->catalog->all()['libraries'][ Token_Store::default_slug() ][ self::BUTTON ];
+
+		// "secondary" is baseline-only (never partially overridden by this test), so it has NOTHING of
+		// its own — even though `values['secondary']` resolves every bound property via the baseline.
+		$this->assertSame( [], $button['overridden']['secondary'] );
+		$this->assertNotEmpty( $button['values']['secondary'] );
+	}
+
+	/**
+	 * Storing a partial override of a baseline preset surfaces ONLY that property in `overridden`, while
+	 * `values` keeps resolving the rest from the baseline.
+	 *
+	 * @return void
+	 */
+	public function testOverriddenReflectsAPartialStoredOverrideOfABaselinePreset(): void {
+		$this->store->save_document(
+			'{"$extensions":{"com.kadence.designTokens":{"presets":{"kadence/singlebtn":{'
+			. '"secondary":{"tokens":{"button-bg":"#000000"}}}}}}}'
+		);
+
+		$button = $this->catalog->all()['libraries'][ Token_Store::default_slug() ][ self::BUTTON ];
+
+		$this->assertSame( [ 'button-bg' => true ], $button['overridden']['secondary'] );
+		// The merged/resolved value still surfaces for the un-overridden properties.
+		$this->assertNotSame( '', $button['values']['secondary']['button-text'] );
+	}
+
+	/**
 	 * Persist a "hero" button preset whose radius takes an aliased override on mobile.
 	 *
 	 * @return void

@@ -15,8 +15,8 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
+import { BUTTON_MARGIN_FALLBACK, BUTTON_PADDING_FALLBACK } from '../../token-controls/helpers/button-box-defaults';
 import { BUTTON_BLOCK, getPresetProperties, resolveTokenValue } from '../helpers/presets';
-import { getDesignTokensFeed } from '../helpers/tokens';
 
 export { BUTTON_BLOCK };
 
@@ -29,73 +29,6 @@ const TABS = [
 	{ name: 'normal', title: __('Normal', 'kadence-blocks') },
 	{ name: 'hover', title: __('Hover', 'kadence-blocks') },
 ];
-
-/**
- * The button's per-side padding semantic token ids, top/right/bottom/left order — mirrors the CSS
- * `padding` shorthand and `src/blocks/advancedbtn/style.scss`'s default rule.
- *
- * @since TBD
- */
-const BUTTON_PADDING_TOKEN_IDS = [
-	'semantic.spacing.button-padding-top',
-	'semantic.spacing.button-padding-right',
-	'semantic.spacing.button-padding-bottom',
-	'semantic.spacing.button-padding-left',
-];
-
-/**
- * The button's per-side margin semantic token ids, mirroring `BUTTON_PADDING_TOKEN_IDS`. Every side
- * resolves to the same literal in the shipped baseline, but the box control's own `toShorthand()`
- * already collapses four equal values to one when it renders the default (and expands them the
- * moment a site owner sets sides apart), so registering them per-side costs nothing today and leaves
- * room for that without a token-registry change later.
- *
- * @since TBD
- */
-const BUTTON_MARGIN_TOKEN_IDS = [
-	'semantic.spacing.button-margin-top',
-	'semantic.spacing.button-margin-right',
-	'semantic.spacing.button-margin-bottom',
-	'semantic.spacing.button-margin-left',
-];
-
-/**
- * The literal each padding token resolves to when the baseline is never overridden — also what
- * `src/blocks/advancedbtn/style.scss`'s default rule falls back to when the token itself is absent
- * from the feed.
- *
- * @since TBD
- */
-const BUTTON_PADDING_FALLBACK = ['0.4em', '1em', '0.4em', '1em'];
-
-/**
- * The literal each margin token resolves to when the baseline is never overridden.
- *
- * @since TBD
- */
-const BUTTON_MARGIN_FALLBACK = ['0', '0', '0', '0'];
-
-/**
- * Resolve a per-side box default (padding/margin) from the resolved design-token feed, one value per
- * CSS side, falling back to the button's own literal default for any side whose token is missing from
- * the feed (e.g. the feed has not loaded yet).
- *
- * Reads the feed live on every call rather than once at import time: `BUTTON_PRESET` is
- * `Object.freeze()`d at module evaluation, before the localized feed is guaranteed to exist, so a
- * getter that captured this at that point could throw or go stale.
- *
- * @param {[string, string, string, string]} tokenIds The four semantic token ids, top/right/bottom/left order.
- * @param {[string, string, string, string]} fallback The literal fallback for each side, same order.
- *
- * @since TBD
- *
- * @return {[string, string, string, string]} The resolved per-side default.
- */
-function resolveBoxDefault(tokenIds, fallback) {
-	const values = getDesignTokensFeed()?.values ?? {};
-
-	return tokenIds.map((tokenId, index) => values[tokenId] || fallback[index]);
-}
 
 /**
  * Build a row's preview from its stored tokens.
@@ -209,17 +142,20 @@ function schemaFor(tab) {
 				// living at this path.
 				path: 'tokens.button-border',
 				label: __('Border', 'kadence-blocks'),
-				// No `defaultValue` here, unlike the radius field above: `BorderField`'s adapter doesn't
-				// read one, because `BorderControl` accepts no `defaultValue`/inherited-value prop the way
-				// `BoxControl` does. Setting one would be a dead key. Add it once `BorderControl` grows that
-				// support, not before.
+				// `BorderControl` only takes one `defaultValue` for its width axis (color/style have no
+				// equivalent fallback prop) — `semantic.border-width.default`'s shipped resolution, the
+				// value `var(--kb-btn-border-width)` computes to today. Shown muted when the field is
+				// unset, the same way Radius/Padding/Margin's `defaultValue` above are.
+				defaultValue: '1px',
 			},
 			{
 				type: 'box-shadow',
 				path: 'tokens.button-shadow',
 				label: __('Shadow', 'kadence-blocks'),
-				// Same reason as `border` above: `BoxShadowControl` accepts no `defaultValue` prop, so a
-				// `defaultValue` key here would go unread.
+				// No `defaultValue`: a button renders no shadow of its own when the preset sets none, so
+				// there is no literal to name — the control's own bare muted "Default" already says that.
+				// (`BoxShadowControl` does now read a `defaultValue`, so one can be added here the day a
+				// button grows a built-in shadow.)
 			},
 		],
 	};
@@ -237,12 +173,10 @@ function schemaFor(tab) {
 				responsive: true,
 				path: 'tokens.button-padding',
 				label: __('Padding', 'kadence-blocks'),
-				// What `advancedbtn`'s style.scss gives a standard fill button, resolved from the
-				// semantic.spacing.button-padding-* tokens so an unset field shows the padding the button
-				// actually renders (a site owner's override included). Only the base case is named: the size
-				// and outline variants compute their own, and the preset deliberately stores nothing until a
-				// user sets it.
-				defaultValue: resolveBoxDefault(BUTTON_PADDING_TOKEN_IDS, BUTTON_PADDING_FALLBACK),
+				// What `advancedbtn`'s style.scss gives a standard fill button, so an unset field shows the
+				// padding the button actually renders. Only the base case is named: the size and outline
+				// variants compute their own, and the preset deliberately stores nothing until a user sets it.
+				defaultValue: BUTTON_PADDING_FALLBACK,
 			},
 			{
 				type: 'spacing',
@@ -251,9 +185,8 @@ function schemaFor(tab) {
 				responsive: true,
 				path: 'tokens.button-margin',
 				label: __('Margin', 'kadence-blocks'),
-				// The button carries no margin of its own, which is a real answer rather than an absent one,
-				// resolved from the semantic.spacing.button-margin-* tokens the same way as padding above.
-				defaultValue: resolveBoxDefault(BUTTON_MARGIN_TOKEN_IDS, BUTTON_MARGIN_FALLBACK),
+				// The button carries no margin of its own, which is a real answer rather than an absent one.
+				defaultValue: BUTTON_MARGIN_FALLBACK,
 			},
 		],
 	};

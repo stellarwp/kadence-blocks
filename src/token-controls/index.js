@@ -50,6 +50,7 @@ export {
 	isTokenAlias,
 	resolveDefaultValue,
 } from './helpers/token-summary';
+export { autoEntry, noneEntryForRole } from './helpers/fixed-tokens';
 export {
 	SLOT_COUNT,
 	SLOT_LABELS,
@@ -61,3 +62,4 @@ export {
 } from './helpers/value-shapes';
 export { tokenCssVar } from './helpers/token-css-var';
 export { mapPaletteToColorControlGroups } from './helpers/palette-groups';
+export { DEFAULT_COMPOSITE, parseResolvedShadow } from './helpers/shadow-shorthand';

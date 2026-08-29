@@ -430,9 +430,9 @@ describe('capturedCatalogValues', () => {
 	});
 
 	it('keeps an alias the library does not define, rather than emptying it', () => {
-		const captured = capturedCatalogValues({ 'button-radius': '{primitive.dimension.radius.none}' }, SET);
+		const captured = capturedCatalogValues({ 'button-radius': '{primitive.dimension.radius.unknown}' }, SET);
 
-		expect(captured.values['button-radius']).toBe('{primitive.dimension.radius.none}');
+		expect(captured.values['button-radius']).toBe('{primitive.dimension.radius.unknown}');
 	});
 
 	it('resolves a per-corner list slot by slot', () => {

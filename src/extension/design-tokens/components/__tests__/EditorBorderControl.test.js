@@ -645,3 +645,41 @@ describe('EditorBorderControl token indicator', () => {
 		expect(borderControl.props.indicator.props.state).toBeNull();
 	});
 });
+
+describe('EditorBorderControl unset width', () => {
+	/**
+	 * A completely untouched border stays unset rather than being filled in with the fallback: the
+	 * control shows that fallback MUTED (via `defaultValue`) instead, so an unset width reads as
+	 * "Default"/"Inherited" rather than claiming an override nobody made.
+	 *
+	 * @return {void}
+	 */
+	it('leaves the width unset and passes the fallback through as the muted default', () => {
+		const { borderControl } = renderEditorBorderControl({ value: undefined, defaultValue: '1px' });
+
+		expect(borderControl.props.value.width).toBe('');
+		expect(borderControl.props.defaultValue).toBe('1px');
+	});
+
+	/**
+	 * A stored width is never overridden by the fallback, even when the two disagree.
+	 *
+	 * @return {void}
+	 */
+	it('keeps a genuinely stored width, ignoring the fallback', () => {
+		const { borderControl } = renderEditorBorderControl({ value: NATIVE_VALUE, defaultValue: '1px' });
+
+		expect(borderControl.props.value.width).toEqual(['2px', '3px', '4px', '5px']);
+	});
+
+	/**
+	 * With no fallback at all, an unset width stays unset.
+	 *
+	 * @return {void}
+	 */
+	it('leaves an unset width unset when there is no fallback either', () => {
+		const { borderControl } = renderEditorBorderControl({ value: undefined, defaultValue: undefined });
+
+		expect(borderControl.props.value.width).toBe('');
+	});
+});

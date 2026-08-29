@@ -149,6 +149,24 @@ export function presetValueForDevice(presetValue, responsive = {}, device = 'Des
 }
 
 /**
+ * A preset's resolved value, or `fallback` when the preset sets nothing for the property.
+ *
+ * `0` is a real spacing value — it is what the fixed "None" pick resolves to — so a plain `||` would
+ * discard it and show the block's own default instead, silently turning a deliberate "no spacing"
+ * into the block's built-in spacing.
+ *
+ * @param {*} value    The preset's resolved value for the property.
+ * @param {*} fallback What to use when the preset sets nothing.
+ *
+ * @since TBD
+ *
+ * @return {*} The value to display.
+ */
+export function presetValueOr(value, fallback) {
+	return value === undefined || value === null || value === '' ? fallback : value;
+}
+
+/**
  * The attribute a responsive measure control is editing at the given device, and its current value.
  *
  * A responsive measure control keeps ONE linked/individual mode but writes three separate attributes
@@ -241,26 +259,27 @@ export function anyCornerInherited(inherited) {
 }
 
 /**
- * The linked/individual mode a measure control should open in, derived from the corners the user would
- * actually see: each stored corner where one is set, otherwise the value that corner inherits from the
- * selected preset.
+ * The linked/individual mode a measure control should open in, derived from what THIS device actually
+ * stores — nothing else.
  *
- * Deriving from the stored attribute alone is not enough. A block on a preset stores NOTHING — every
- * corner is empty, which trivially reads as "all equal" — so a preset carrying four different corners
- * would open the control in linked mode and hide the difference it is displaying.
+ * A device that stores nothing has nothing that differs, so it opens linked: its corners are empty
+ * because they inherit, and what they inherit is shown MUTED as a single "Default"/"Inherited"
+ * fallback rather than substituted into the four corners. Splitting an all-empty control into four
+ * blank rows shows the user a difference none of their own values carry, and disagrees with the Style
+ * Library, which renders exactly this case as one linked row.
  *
- * @param {*} value       The stored dimension value (4-side array or scalar).
- * @param {*} presetValue The selected preset's value for the property.
+ * This deliberately does NOT consult the preset value. It used to, back when an unset corner was
+ * DISPLAYED as bound to the preset's own per-corner value; with that substitution gone from the
+ * control's display, deriving the mode from it would describe a shape the control no longer shows.
+ *
+ * @param {*} value The stored dimension value (4-side array or scalar).
  *
  * @since TBD
  *
- * @return {string} 'linked' when every effective corner matches, otherwise 'individual'.
+ * @return {string} 'linked' when every stored corner matches, otherwise 'individual'.
  */
-export function deriveMeasureMode(value, presetValue) {
-	const stored = dimensionSlots(value);
-	const corners = [0, 1, 2, 3].map((index) =>
-		stored[index] !== undefined && stored[index] !== '' ? stored[index] : presetSlotAt(presetValue, index)
-	);
+export function deriveMeasureMode(value) {
+	const corners = dimensionSlots(value);
 
 	return corners.every((corner) => corner === corners[0]) ? 'linked' : 'individual';
 }

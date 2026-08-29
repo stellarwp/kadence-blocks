@@ -48,7 +48,8 @@ final class Css_BuilderTest extends TestCase {
 	public function testItEmitsALowSpecificityRulePointingTheCssPropAtTheTokenVar(): void {
 		$var = Css_Var::from_id( 'semantic.radius.media' );
 
-		// Image's $default binds borderRadius to semantic.radius.media (resolves to 0 via radius.none).
+		// Image's $default binds borderRadius to semantic.radius.media, which holds a literal 0 in the
+		// baseline (it aliases no other token), so the projected fallback is that 0.
 		$css = $this->builder( $this->image_registry() )->css();
 
 		// One rule on a single .wp-block-* class plus the " img" descendant, the resolved length as the

@@ -195,8 +195,10 @@ describe('pickableTokensForType', () => {
 	it('narrows to matching entries when a role is given', () => {
 		const tokens = pickableTokensForType('dimension', 'radius');
 
-		expect(tokens).toHaveLength(1);
-		expect(tokens[0]).toMatchObject({ id: 'primitive.dimension.radius.sm', value: '4px', role: 'radius' });
+		// The role's fixed "None" entry is prepended ahead of the role's own matched tokens.
+		expect(tokens).toHaveLength(2);
+		expect(tokens[0]).toMatchObject({ id: 'ss-none-radius', fixed: true });
+		expect(tokens[1]).toMatchObject({ id: 'primitive.dimension.radius.sm', value: '4px', role: 'radius' });
 	});
 
 	it('keeps the token the field is already bound to, even when it loses the primitive narrowing', () => {
@@ -222,6 +224,18 @@ describe('pickableTokensForType', () => {
 		expect(tokens).toEqual([
 			{ id: 'semantic.color.action-primary', label: 'Action Primary', value: '#3633e1', role: null },
 		]);
+	});
+
+	it('prepends a fixed None entry when a role is given', () => {
+		const tokens = pickableTokensForType('dimension', 'spacing');
+
+		expect(tokens[0]).toMatchObject({ id: 'ss-none-spacing', alias: 0, fixed: true });
+	});
+
+	it('adds no fixed entry when role is omitted', () => {
+		const tokens = pickableTokensForType('dimension');
+
+		expect(tokens.some((token) => token.fixed)).toBe(false);
 	});
 });
 

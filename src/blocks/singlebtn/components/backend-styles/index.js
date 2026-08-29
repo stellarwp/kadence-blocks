@@ -8,6 +8,7 @@ import {
 	getSpacingOptionOutput,
 } from '@kadence/helpers';
 import { activePresetFor, blockPresetValues } from '../../../../extension/preset-picker';
+import { tokenPx } from '../../../../extension/design-tokens/token-px';
 
 /**
  * Whether the button's active preset resolves a padding and/or a margin.
@@ -79,6 +80,62 @@ export function presetShadowProperties(attributes) {
 	return 'button-shadow' in tokens;
 }
 
+/**
+ * One shadow axis as a bare pixel number.
+ *
+ * A {dot.alias} leg is resolved through the token pool the way the PHP renderer's `render_shadow()`
+ * does. Concatenated raw it would emit `{alias}px`, which is not valid CSS — and `hasVisibleShadow()`
+ * deliberately counts such a leg as visible, so it does reach here.
+ *
+ * @param {*} raw      The stored axis value.
+ * @param {*} fallback What this axis defaults to when unset.
+ *
+ * @since TBD
+ *
+ * @return {*} The axis value to serialize.
+ */
+export function shadowAxisPx(raw, fallback) {
+	if (typeof raw === 'string' && raw.trim() !== '' && !Number.isFinite(Number(raw))) {
+		const resolved = tokenPx(raw);
+
+		return resolved === null || resolved === undefined ? fallback : resolved;
+	}
+
+	return undefined !== raw && null !== raw ? raw : fallback;
+}
+
+/**
+ * Whether a native shadow item paints anything visible — all-zero offsets, blur, and spread
+ * render nothing regardless of color, matching the value the "None" pick now writes and mirroring
+ * the PHP renderer's `has_visible_shadow()`.
+ *
+ * @param {?Object} shadowItem One `shadow[0]`-shaped item.
+ *
+ * @since TBD
+ *
+ * @return {boolean} Whether the item has any non-zero offset, blur, or spread.
+ */
+export function hasVisibleShadow(shadowItem) {
+	if (!shadowItem) {
+		return false;
+	}
+
+	return ['hOffset', 'vOffset', 'blur', 'spread'].some((axis) => {
+		const raw = shadowItem[axis];
+
+		// A {dot.alias} leg resolves to a var() unknown here, so it counts as visible — read as zero, the
+		// caller's `box-shadow: none` would erase a shadow the token does paint. Mirrors the PHP gate.
+		if (typeof raw === 'string' && raw.trim() !== '' && !Number.isFinite(Number(raw))) {
+			return true;
+		}
+
+		const value = Number(raw);
+
+		// `Number(undefined)` is `NaN`, which a bare `!== 0` would read as visible; the PHP gate does not.
+		return Number.isFinite(value) && value !== 0;
+	});
+}
+
 export default function BackendStyles(props) {
 	const { attributes, isSelected, previewDevice, currentRef, context } = props;
 
@@ -129,9 +186,7 @@ export default function BackendStyles(props) {
 		width,
 		widthUnit,
 		widthType,
-		displayShadow,
 		shadow,
-		displayHoverShadow,
 		shadowHover,
 		iconColor,
 		iconColorHover,
@@ -157,9 +212,7 @@ export default function BackendStyles(props) {
 		tabletBorderTransparentHoverRadius,
 		mobileBorderTransparentHoverRadius,
 		borderTransparentHoverRadiusUnit,
-		displayShadowTransparent,
 		shadowTransparent,
-		displayHoverShadowTransparent,
 		shadowTransparentHover,
 		colorSticky,
 		colorStickyHover,
@@ -183,9 +236,7 @@ export default function BackendStyles(props) {
 		tabletBorderStickyHoverRadius,
 		mobileBorderStickyHoverRadius,
 		borderStickyHoverRadiusUnit,
-		displayShadowSticky,
 		shadowSticky,
-		displayHoverShadowSticky,
 		shadowStickyHover,
 	} = attributes;
 
@@ -657,13 +708,12 @@ export default function BackendStyles(props) {
 	}
 
 	let btnRad = '0';
+	// No `none` reset: an unset hover shadow must let the base state's carry through the cascade.
 	let btnBox = '';
 	let btnBox2 = '';
 	const btnbgHover = 'gradient' === backgroundHoverType ? gradientHover : KadenceColorOutput(backgroundHover);
 	if (
-		undefined !== displayHoverShadow &&
-		displayHoverShadow &&
-		undefined !== shadowHover?.[0] &&
+		hasVisibleShadow(shadowHover?.[0]) &&
 		undefined !== shadowHover?.[0].inset &&
 		false === shadowHover?.[0].inset
 	) {
@@ -685,13 +735,7 @@ export default function BackendStyles(props) {
 		btnBox2 = 'none';
 		btnRad = '0';
 	}
-	if (
-		undefined !== displayHoverShadow &&
-		displayHoverShadow &&
-		undefined !== shadowHover?.[0] &&
-		undefined !== shadowHover?.[0].inset &&
-		true === shadowHover?.[0].inset
-	) {
+	if (hasVisibleShadow(shadowHover?.[0]) && undefined !== shadowHover?.[0].inset && true === shadowHover?.[0].inset) {
 		btnBox2 = `${
 			(undefined !== shadowHover?.[0].inset && shadowHover[0].inset ? 'inset ' : '') +
 			(undefined !== shadowHover?.[0].hOffset ? shadowHover[0].hOffset : 0) +
@@ -712,6 +756,7 @@ export default function BackendStyles(props) {
 	}
 
 	let btnRadTransparent = '0';
+	// See btnBox above: hover states skip the declaration when there is no visible shadow.
 	let btnBoxTransparent = '';
 	let btnBox2Transparent = '';
 	const btnbgTransparentHover =
@@ -719,9 +764,7 @@ export default function BackendStyles(props) {
 			? gradientTransparentHover
 			: KadenceColorOutput(backgroundTransparentHover);
 	if (
-		undefined !== displayHoverShadowTransparent &&
-		displayHoverShadowTransparent &&
-		undefined !== shadowTransparentHover?.[0] &&
+		hasVisibleShadow(shadowTransparentHover?.[0]) &&
 		undefined !== shadowTransparentHover?.[0].inset &&
 		false === shadowTransparentHover?.[0].inset
 	) {
@@ -744,9 +787,7 @@ export default function BackendStyles(props) {
 		btnRadTransparent = '0';
 	}
 	if (
-		undefined !== displayHoverShadowTransparent &&
-		displayHoverShadowTransparent &&
-		undefined !== shadowTransparentHover?.[0] &&
+		hasVisibleShadow(shadowTransparentHover?.[0]) &&
 		undefined !== shadowTransparentHover?.[0].inset &&
 		true === shadowTransparentHover?.[0].inset
 	) {
@@ -770,14 +811,13 @@ export default function BackendStyles(props) {
 	}
 
 	let btnRadSticky = '0';
+	// See btnBox above: hover states skip the declaration when there is no visible shadow.
 	let btnBoxSticky = '';
 	let btnBox2Sticky = '';
 	const btnbgStickyHover =
 		'gradient' === backgroundStickyHoverType ? gradientStickyHover : KadenceColorOutput(backgroundStickyHover);
 	if (
-		undefined !== displayHoverShadowSticky &&
-		displayHoverShadowSticky &&
-		undefined !== shadowStickyHover?.[0] &&
+		hasVisibleShadow(shadowStickyHover?.[0]) &&
 		undefined !== shadowStickyHover?.[0].inset &&
 		false === shadowStickyHover?.[0].inset
 	) {
@@ -800,9 +840,7 @@ export default function BackendStyles(props) {
 		btnRadSticky = '0';
 	}
 	if (
-		undefined !== displayHoverShadowSticky &&
-		displayHoverShadowSticky &&
-		undefined !== shadowStickyHover?.[0] &&
+		hasVisibleShadow(shadowStickyHover?.[0]) &&
 		undefined !== shadowStickyHover?.[0].inset &&
 		true === shadowStickyHover?.[0].inset
 	) {
@@ -949,34 +987,40 @@ export default function BackendStyles(props) {
 	/*
 	 * Mirrors the front end's gate (`render_preset_shadow` in the block's PHP): point box-shadow at
 	 * the preset variable, but only when the active preset actually resolves one. Written before the
-	 * explicit shadow output below, so an explicit per-block shadow still wins.
+	 * explicit shadow output below, and the builder appends declarations, so a visible per-block
+	 * shadow lands later in the same rule and wins. The flag carries the other half of that
+	 * contract: when the block's own shadow is invisible the `box-shadow: none` reset below is
+	 * skipped, or the trailing `none` would silence this `var(--kb-btn-shadow)`.
 	 */
-	if (presetShadowProperties(attributes)) {
+	const hasPresetShadow = presetShadowProperties(attributes);
+	if (hasPresetShadow) {
 		css.add_property('box-shadow', 'var(--kb-btn-shadow)');
 	}
 
-	css.add_property(
-		'box-shadow',
-		undefined !== displayShadow &&
-			displayShadow &&
-			undefined !== shadow &&
-			undefined !== shadow[0] &&
-			undefined !== shadow[0].color
-			? (undefined !== shadow[0].inset && shadow[0].inset ? 'inset ' : '') +
-					(undefined !== shadow[0].hOffset ? shadow[0].hOffset : 0) +
-					'px ' +
-					(undefined !== shadow[0].vOffset ? shadow[0].vOffset : 0) +
-					'px ' +
-					(undefined !== shadow[0].blur ? shadow[0].blur : 14) +
-					'px ' +
-					(undefined !== shadow[0].spread ? shadow[0].spread : 0) +
-					'px ' +
-					KadenceColorOutput(
-						undefined !== shadow[0].color ? shadow[0].color : '#000000',
-						undefined !== shadow[0].opacity ? shadow[0].opacity : 1
-					)
-			: undefined
-	);
+	// No `color` check: it falls back to '#000000' below, so requiring it would read a colorless but
+	// visible shadow as invisible, disagreeing with the PHP gate.
+	const hasExplicitShadow = hasVisibleShadow(shadow?.[0]);
+
+	if (hasExplicitShadow || !hasPresetShadow) {
+		css.add_property(
+			'box-shadow',
+			hasExplicitShadow
+				? (undefined !== shadow[0].inset && shadow[0].inset ? 'inset ' : '') +
+						shadowAxisPx(shadow[0].hOffset, 0) +
+						'px ' +
+						shadowAxisPx(shadow[0].vOffset, 0) +
+						'px ' +
+						shadowAxisPx(shadow[0].blur, 14) +
+						'px ' +
+						shadowAxisPx(shadow[0].spread, 0) +
+						'px ' +
+						KadenceColorOutput(
+							undefined !== shadow[0].color ? shadow[0].color : '#000000',
+							undefined !== shadow[0].opacity ? shadow[0].opacity : 1
+						)
+				: 'none'
+		);
+	}
 
 	css.set_selector(`.kb-single-btn-${uniqueID} .kt-button-${uniqueID} .kt-button-text`);
 	if (textBackgroundType === 'gradient') {
@@ -1090,28 +1134,25 @@ export default function BackendStyles(props) {
 				previewRadiusTransparentBottom + (borderTransparentRadiusUnit ? borderTransparentRadiusUnit : 'px')
 			);
 		}
-		css.add_property(
-			'box-shadow',
-			undefined !== displayShadowTransparent &&
-				displayShadowTransparent &&
-				undefined !== shadowTransparent &&
-				undefined !== shadowTransparent[0] &&
-				undefined !== shadowTransparent[0].color
-				? (undefined !== shadowTransparent[0].inset && shadowTransparent[0].inset ? 'inset ' : '') +
-						(undefined !== shadowTransparent[0].hOffset ? shadowTransparent[0].hOffset : 0) +
-						'px ' +
-						(undefined !== shadowTransparent[0].vOffset ? shadowTransparent[0].vOffset : 0) +
-						'px ' +
-						(undefined !== shadowTransparent[0].blur ? shadowTransparent[0].blur : 14) +
-						'px ' +
-						(undefined !== shadowTransparent[0].spread ? shadowTransparent[0].spread : 0) +
-						'px ' +
-						KadenceColorOutput(
-							undefined !== shadowTransparent[0].color ? shadowTransparent[0].color : '#000000',
-							undefined !== shadowTransparent[0].opacity ? shadowTransparent[0].opacity : 1
-						)
-				: undefined
-		);
+		// No `none` fallback: this selector outranks the base rule, which must carry through instead.
+		if (hasVisibleShadow(shadowTransparent?.[0])) {
+			css.add_property(
+				'box-shadow',
+				(undefined !== shadowTransparent[0].inset && shadowTransparent[0].inset ? 'inset ' : '') +
+					shadowAxisPx(shadowTransparent[0].hOffset, 0) +
+					'px ' +
+					shadowAxisPx(shadowTransparent[0].vOffset, 0) +
+					'px ' +
+					shadowAxisPx(shadowTransparent[0].blur, 14) +
+					'px ' +
+					shadowAxisPx(shadowTransparent[0].spread, 0) +
+					'px ' +
+					KadenceColorOutput(
+						undefined !== shadowTransparent[0].color ? shadowTransparent[0].color : '#000000',
+						undefined !== shadowTransparent[0].opacity ? shadowTransparent[0].opacity : 1
+					)
+			);
+		}
 		css.add_property('color', css.render_color(colorTransparent));
 		css.add_property('background', btnbgTransparent);
 
@@ -1201,28 +1242,25 @@ export default function BackendStyles(props) {
 				previewRadiusStickyBottom + (borderStickyRadiusUnit ? borderStickyRadiusUnit : 'px')
 			);
 		}
-		css.add_property(
-			'box-shadow',
-			undefined !== displayShadowSticky &&
-				displayShadowSticky &&
-				undefined !== shadowSticky &&
-				undefined !== shadowSticky[0] &&
-				undefined !== shadowSticky[0].color
-				? (undefined !== shadowSticky[0].inset && shadowSticky[0].inset ? 'inset ' : '') +
-						(undefined !== shadowSticky[0].hOffset ? shadowSticky[0].hOffset : 0) +
-						'px ' +
-						(undefined !== shadowSticky[0].vOffset ? shadowSticky[0].vOffset : 0) +
-						'px ' +
-						(undefined !== shadowSticky[0].blur ? shadowSticky[0].blur : 14) +
-						'px ' +
-						(undefined !== shadowSticky[0].spread ? shadowSticky[0].spread : 0) +
-						'px ' +
-						KadenceColorOutput(
-							undefined !== shadowSticky[0].color ? shadowSticky[0].color : '#000000',
-							undefined !== shadowSticky[0].opacity ? shadowSticky[0].opacity : 1
-						)
-				: undefined
-		);
+		// No `none` fallback: this selector outranks the base rule, which must carry through instead.
+		if (hasVisibleShadow(shadowSticky?.[0])) {
+			css.add_property(
+				'box-shadow',
+				(undefined !== shadowSticky[0].inset && shadowSticky[0].inset ? 'inset ' : '') +
+					shadowAxisPx(shadowSticky[0].hOffset, 0) +
+					'px ' +
+					shadowAxisPx(shadowSticky[0].vOffset, 0) +
+					'px ' +
+					shadowAxisPx(shadowSticky[0].blur, 14) +
+					'px ' +
+					shadowAxisPx(shadowSticky[0].spread, 0) +
+					'px ' +
+					KadenceColorOutput(
+						undefined !== shadowSticky[0].color ? shadowSticky[0].color : '#000000',
+						undefined !== shadowSticky[0].opacity ? shadowSticky[0].opacity : 1
+					)
+			);
+		}
 		css.add_property('color', css.render_color(colorSticky));
 		css.add_property('background', btnbgSticky);
 

@@ -106,6 +106,22 @@ final class PresetsControllerTest extends TestCase {
 	}
 
 	/**
+	 * The item schema describes the `overridden` map each preset carries, so a schema-driven consumer
+	 * can discover it rather than having to read the response to learn it exists.
+	 *
+	 * @return void
+	 */
+	public function testItemSchemaDescribesOverridden(): void {
+		$schema = $this->controller->get_item_schema();
+		$preset = $schema['properties']['presets']['additionalProperties'];
+
+		$this->assertArrayHasKey( 'overridden', $preset['properties'] );
+		$this->assertSame( 'object', $preset['properties']['overridden']['type'] );
+		$this->assertSame( 'boolean', $preset['properties']['overridden']['additionalProperties']['type'] );
+		$this->assertTrue( $preset['properties']['overridden']['readonly'] );
+	}
+
+	/**
 	 * The item schema documents the `userCreated` property added to the GET item response.
 	 *
 	 * @return void
@@ -174,6 +190,38 @@ final class PresetsControllerTest extends TestCase {
 		$data = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, self::BUTTON ) )->get_data();
 
 		$this->assertSame( [], $data['userCreated'] );
+	}
+
+	/**
+	 * A baseline preset with nothing stored for it has no OWN overridden properties, even though its
+	 * `tokens` resolves every bound property via the baseline merge — the client reads `overridden` to
+	 * tell those two apart (bound to a genuine override vs. only inheriting the baseline's own value).
+	 *
+	 * @return void
+	 */
+	public function testGetItemReportsNoOverriddenPropertiesForAFreshBaselinePreset(): void {
+		$data = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, self::BUTTON ) )->get_data();
+
+		$this->assertSame( [], $data['presets']['secondary']['overridden'] );
+		$this->assertNotEmpty( $data['presets']['secondary']['tokens'] );
+	}
+
+	/**
+	 * Storing a partial override of a baseline preset surfaces ONLY that property in `overridden`,
+	 * while `tokens` keeps resolving the rest from the baseline.
+	 *
+	 * @return void
+	 */
+	public function testGetItemReflectsAPartialStoredOverrideInOverridden(): void {
+		$this->store->save_document(
+			'{"$extensions":{"com.kadence.designTokens":{"presets":{"kadence/singlebtn":{'
+			. '"secondary":{"tokens":{"button-bg":"#000000"}}}}}}}'
+		);
+
+		$data = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, self::BUTTON ) )->get_data();
+
+		$this->assertSame( [ 'button-bg' => true ], $data['presets']['secondary']['overridden'] );
+		$this->assertNotSame( '', $data['presets']['secondary']['tokens']['button-text'] );
 	}
 
 	/**

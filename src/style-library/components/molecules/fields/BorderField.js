@@ -54,9 +54,11 @@ import { __ } from '@wordpress/i18n';
  */
 import { getValueAtPath } from '../../../helpers/settings-schema';
 import { pickableTokensForType } from '../../../helpers/tokens';
+import { isUnsetPresetValue } from '../../../helpers/presets';
 import {
 	PRESET_BREAKPOINTS,
 	readPresetBreakpoint,
+	resolvePresetBreakpoint,
 	writePresetBreakpoint,
 } from '../../../../token-controls/helpers/preset-envelope';
 import { BorderControl } from '../../../../token-controls/controls/BorderControl';
@@ -115,9 +117,7 @@ export function toStoredWidth(next) {
 		return next.slice(1, -1);
 	}
 
-	// Zero stays unitless for the same reason `BoxTokenField`'s `toStoredValue` keeps it unitless: the
-	// `None` token resolves to a bare `'0'`, so appending `px` here would rewrite a clean value on a
-	// no-op round trip.
+	// The `None` token resolves to a bare `'0'`; appending `px` would rewrite it on a no-op round trip.
 	if (Number(next) === 0) {
 		return '0';
 	}
@@ -181,6 +181,32 @@ export function toStoredStyleAxis(next) {
 }
 
 /**
+ * The pickable-token list a border-width field offers: the `border-width` role's narrowed pool
+ * (plus the shared fixed "None" entry, prepended by `pickableTokensForType()` itself). Pulled out
+ * as its own function, mirroring `BoxTokenField`'s `tokensForField`, so it can be unit tested
+ * without rendering the component — `BorderField` uses hooks, so it cannot be called directly as a
+ * plain function the way a hook-free component can.
+ *
+ * A `fixed` entry (the shared "None" sentinel `pickableTokensForType()` already prepended) is
+ * excluded from the re-bracketing below for the same reason `tokensForField` excludes it: its
+ * `alias` is the bare number `0`, and wrapping it in `{${token.id}}` would silently turn it into
+ * the string `"{ss-none-border-width}"`, which `toStoredWidth` then unwraps to the garbage id
+ * `"ss-none-border-width"` instead of the bare `0` the write path expects.
+ *
+ * @param {*} atBreakpoint The resolved width value at the active breakpoint, used to exempt any
+ *                          already-bound token from the primitive narrowing.
+ *
+ * @since TBD
+ *
+ * @return {Array} The pickable-token list.
+ */
+export function widthTokensForField(atBreakpoint) {
+	return pickableTokensForType('dimension', 'border-width', boundTokenIds(atBreakpoint)).map((token) =>
+		token.fixed ? token : { ...token, alias: `{${token.id}}` }
+	);
+}
+
+/**
  * Render a border field from a settings schema entry.
  *
  * @param {Object}   props                    The component props.
@@ -190,18 +216,31 @@ export function toStoredStyleAxis(next) {
  * @param {?string}  [props.field.label]      The control's label.
  * @param {boolean}  [props.field.readOnly]   Whether the control is non-interactive.
  * @param {boolean}  [props.field.responsive] Whether the field offers a breakpoint switcher.
+ * @param {*}        [props.field.defaultValue] What the width axis falls back to, shown as a muted
+ *                                             "Default", when NEITHER the draft nor the preset's own
+ *                                             stored value carries anything — passed straight through
+ *                                             to `BorderControl`. A reset width whose preset already
+ *                                             has its own value shows that instead, as if bound; see
+ *                                             `originalValues` below.
  * @param {Object}   props.values             The full draft values, read by dot path.
+ * @param {?Object}  [props.originalValues]   The preset's own stored values, unaffected by the
+ *                                             draft — read by the same dot paths as `values`, so a
+ *                                             reset axis reads as what saving the reset actually
+ *                                             resolves to instead of a generic literal fallback.
+ *                                             Its `overridden` map gates the substitution to axes the
+ *                                             CURRENT preset genuinely has its own stored value for —
+ *                                             an axis only inherited from the baseline's own definition
+ *                                             of the same preset slug reads as muted "Default" instead.
  * @param {Function} props.onValueChange      Called with `(path, next)` for any of the three axes.
  *
  * @since TBD
  *
  * @return {JSX.Element} The field.
  */
-export function BorderField({ field, values, onValueChange }) {
+export function BorderField({ field, values, originalValues, onValueChange }) {
 	const responsive = field.responsive === true;
 
-	// Shared, not local: switching to Tablet here switches every other responsive control in the panel
-	// with it, matching `BoxTokenField`.
+	// Shared, not local: this switches every responsive control in the panel at once.
 	const [breakpoint, setBreakpoint] = useBreakpoint(PRESET_BREAKPOINTS[0]);
 
 	const widthPath = `${field.path}-width`;
@@ -212,8 +251,40 @@ export function BorderField({ field, values, onValueChange }) {
 	const rawStyle = getValueAtPath(values, stylePath);
 	const rawColor = getValueAtPath(values, colorPath);
 
+	const originalWidth = getValueAtPath(originalValues, widthPath);
+	const originalStyle = getValueAtPath(originalValues, stylePath);
+	const originalColor = getValueAtPath(originalValues, colorPath);
+
 	const widthAtBreakpoint = responsive ? readPresetBreakpoint(rawWidth, breakpoint) : rawWidth;
 	const styleAtBreakpoint = responsive ? readPresetBreakpoint(rawStyle, breakpoint) : rawStyle;
+	// Resolved, not read — see `BoxTokenField`: a desktop-only stored value still resolves at Tablet.
+	const originalWidthAtBreakpoint = responsive ? resolvePresetBreakpoint(originalWidth, breakpoint) : originalWidth;
+	const originalStyleAtBreakpoint = responsive ? resolvePresetBreakpoint(originalStyle, breakpoint) : originalStyle;
+
+	// A semantic is the block's own default, not a selection, and the pool offers primitives only —
+	// left in place it renders as a raw dot-path. Blanked before the effective read below.
+	const shownWidth = withoutSemanticSlots(widthAtBreakpoint);
+
+	const isWidthOverridden = originalValues?.overridden?.[widthPath.replace(/^tokens\./, '')] === true;
+	const isStyleOverridden = originalValues?.overridden?.[stylePath.replace(/^tokens\./, '')] === true;
+	const isColorOverridden = originalValues?.overridden?.[colorPath.replace(/^tokens\./, '')] === true;
+
+	// Display only — every `write*` below targets the raw draft, so a reset stays reset.
+	const effectiveWidth = !isUnsetPresetValue(shownWidth)
+		? shownWidth
+		: isWidthOverridden && !isUnsetPresetValue(originalWidthAtBreakpoint)
+			? originalWidthAtBreakpoint
+			: shownWidth;
+	const effectiveStyle = !isUnsetPresetValue(styleAtBreakpoint)
+		? styleAtBreakpoint
+		: isStyleOverridden && !isUnsetPresetValue(originalStyleAtBreakpoint)
+			? originalStyleAtBreakpoint
+			: styleAtBreakpoint;
+	const effectiveColor = !isUnsetPresetValue(rawColor)
+		? rawColor
+		: isColorOverridden && !isUnsetPresetValue(originalColor)
+			? originalColor
+			: rawColor;
 
 	const writeWidth = (next) =>
 		onValueChange(widthPath, responsive ? writePresetBreakpoint(rawWidth, breakpoint, next) : next);
@@ -221,56 +292,32 @@ export function BorderField({ field, values, onValueChange }) {
 		onValueChange(stylePath, responsive ? writePresetBreakpoint(rawStyle, breakpoint, next) : next);
 	const writeColor = (next) => onValueChange(colorPath, next);
 
-	// A semantic-bound width is the block's role-based default rather than a selection — the pool
-	// offers primitives only — so it is blanked and the field reads as unset. Blanking is what keeps
-	// it from rendering the raw dot-path: `boundTokenIds` exempts only primitives from the narrowing,
-	// so a semantic left in place would find no matching entry. Unlike `BoxControl`, `BorderControl`
-	// takes no `defaultValue`, so the semantic's VALUE cannot be shown here the way the box fields
-	// show it; an unset field is the honest reading until that prop exists.
-	const shownWidth = withoutSemanticSlots(widthAtBreakpoint);
+	// The bound token is exempt from the narrowing, or the field renders its raw id, not its label.
+	const widthTokens = widthTokensForField(effectiveWidth);
 
-	// The bound width token(s) are exempt from the primitive narrowing, the same way `BoxTokenField`
-	// exempts a box control's bound corners: unlinking gives each side its own slot, so pointing one
-	// at a different primitive from its neighbors is ordinary, and exempting only the first would
-	// leave the others rendering their raw dot-path. Width is per-slot (a scalar or a four-slot
-	// list), which is exactly the shape `boundTokenIds` already handles.
-	const widthTokens = pickableTokensForType('dimension', 'border-width', boundTokenIds(shownWidth)).map((token) => ({
-		...token,
-		alias: `{${token.id}}`,
-	}));
-
-	// Which breakpoints the user has opened up into per-side editing. Held here rather than inferred
-	// from the stored shape — see the module docblock — and per breakpoint for the same reason
-	// `BoxTokenField`'s `unlinked` is: a choice made on one breakpoint must not leak into another that
-	// never made it, keeping the breakpoints independent.
+	// Held rather than inferred from the stored shape — see the module docblock.
 	const [unlinked, setUnlinked] = useState({});
-	// `color` can now diverge per side too (`BorderControl` writes it through the same per-slot axis
-	// width/style already use), so a list-shaped color has to force the unlinked view exactly like a
-	// list-shaped width/style does — otherwise the panel would show one linked swatch while the
-	// stored value still carries four different colors.
-	const storedIsList = isSlotList(shownWidth) || isSlotList(styleAtBreakpoint) || isSlotList(rawColor);
+	// A list-shaped color forces the unlinked view too, or one swatch would hide four stored colors.
+	const storedIsList = isSlotList(effectiveWidth) || isSlotList(effectiveStyle) || isSlotList(effectiveColor);
 	const linked = storedIsList ? false : !unlinked[breakpoint];
 
 	const toggleLink = () => {
 		setUnlinked((current) => ({ ...current, [breakpoint]: linked }));
 
-		// Relinking keeps each axis's first side, matching `BoxTokenField`'s own relink rule; there is
-		// nothing to fold when a breakpoint never actually diverged into a list. `color` folds
-		// alongside width/style — `readSlot` on an already-scalar color is a no-op, so this is safe to
-		// call unconditionally once any axis diverged.
+		// Seeds from the effective axes, so relinking keeps what the user can actually see.
 		if (!linked && storedIsList) {
-			writeWidth(readSlot(widthAtBreakpoint, 0));
-			writeStyle(readSlot(styleAtBreakpoint, 0));
-			writeColor(readSlot(rawColor, 0));
+			writeWidth(readSlot(effectiveWidth, 0));
+			writeStyle(readSlot(effectiveStyle, 0));
+			writeColor(readSlot(effectiveColor, 0));
 		}
 	};
 
 	return (
 		<BorderControl
 			value={{
-				width: toControlWidthAxis(shownWidth),
-				style: toControlStyleAxis(styleAtBreakpoint),
-				color: rawColor ?? '',
+				width: toControlWidthAxis(effectiveWidth),
+				style: toControlStyleAxis(effectiveStyle),
+				color: effectiveColor ?? '',
 			}}
 			onChange={(next) => {
 				if (field.readOnly) {
@@ -283,6 +330,7 @@ export function BorderField({ field, values, onValueChange }) {
 			}}
 			label={field.label}
 			widthTokens={widthTokens}
+			defaultValue={field.defaultValue}
 			renderColor={({ value: color, onChange: onColorChange, label: sideLabel }) => (
 				<TokenColorSelectField
 					// `sideLabel` is the row's bare side name ("top", "right", …), or `null` while linked.

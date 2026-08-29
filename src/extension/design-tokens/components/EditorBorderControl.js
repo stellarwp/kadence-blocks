@@ -293,6 +293,8 @@ export function EditorBorderControl({
 
 		// Relinking collapses every side to slot 0's value — "the first side wins" is predictable,
 		// matching `BorderControl`'s own uncontrolled relink rule and `BoxControl`'s relink comment.
+		// Reads the stored border only: an unset width stays unset through a relink rather than being
+		// written out as an override of the muted default it was merely displaying.
 		const current = fromNativeBorder(activeNative);
 
 		activeSetter(

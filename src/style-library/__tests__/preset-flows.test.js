@@ -305,7 +305,7 @@ describe('savePresetFlow', () => {
 	// contract against data this screen cannot itself author yet.
 	describe('non-scalar button-radius (per-corner / responsive shapes)', () => {
 		const nonScalarRadius = {
-			$value: ['{radius.lg}', '{radius.none}', '{radius.lg}', '{radius.none}'],
+			$value: ['{radius.lg}', '{radius.xs}', '{radius.lg}', '{radius.xs}'],
 			$extensions: {
 				'com.kadence.designTokens': {
 					responsive: { tablet: ['{radius.sm}', '0', '{radius.sm}', '0'] },
