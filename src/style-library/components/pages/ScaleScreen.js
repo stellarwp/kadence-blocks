@@ -107,8 +107,6 @@ export function ScaleScreen({ config, route, navigate, library }) {
 		>
 			<ScreenHeader
 				title={config.title}
-				// `route.screen`, not `config.id`: the route's screen id is the one key every screen
-				// container has, base-styles and preset alike, so all three read the catalog the same way.
 				description={<ScreenDescription screenId={route.screen} />}
 				primaryAction={config.renderToolbar ? null : addAction}
 			/>

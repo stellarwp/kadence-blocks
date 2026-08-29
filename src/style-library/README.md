@@ -83,6 +83,21 @@ in haste; the open question is whether the right boundary is a `usePresetDraftCh
 something wider, and two examples that already differ in their readiness guard is thin evidence.
 Worth revisiting when a third screen needs it, or when either copy has to change.
 
+## Screen helper copy
+
+Each screen shows one sentence under its heading with a documentation link. The copy and the short
+URLs live in `constants/screen-docs.js`, keyed by screen id (`'color-palette'`,
+`'blocks/kadence/singlebtn'`), and `helpers/screen-docs.js` is the only reader — it applies the
+`kadence_blocks.style_library.screen_docs` filter, so a build can add, change, or remove an entry
+without touching a screen.
+
+Every screen this plugin ships has an entry. A screen with no entry — a third-party preset screen —
+renders no description at all, which is the supported state, not a gap.
+
+Rendering is one slot: `<ScreenHeader description={<ScreenDescription screenId={route.screen} />} …>`.
+`ScreenHeader` stays pure layout and never reads the catalog itself; `ScreenDescription` is the
+piece that knows about copy.
+
 ## Fields and the settings schema
 
 A settings panel renders from a schema, not from hand-placed components: `{ panels: [{ id, title,
