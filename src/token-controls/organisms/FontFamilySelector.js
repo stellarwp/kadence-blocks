@@ -46,6 +46,14 @@ import '../styles/token-controls.scss';
  *                                          popover, so with it inert nothing below is reachable —
  *                                          guarding only the write callbacks would leave the field
  *                                          looking editable while silently dropping writes.
+ * @param {?Element} [props.indicator]      A host-supplied binding mark, rendered beside the trigger.
+ *                                          Same opt-in prop `BoxControl` and `ScalarControl` take, for
+ *                                          the same reason: a family is not a token, but a preset can
+ *                                          still set one, so the field has a preset value to match or
+ *                                          diverge from and the mark says which. It sits inline rather
+ *                                          than in a header because the label above this field belongs
+ *                                          to the shared typography control, which this only replaces
+ *                                          the editor of.
  *
  * @since TBD
  *
@@ -60,6 +68,7 @@ export function FontFamilySelector({
 	onPick,
 	onClear,
 	disabled = false,
+	indicator = null,
 }) {
 	// The family a pick is still waiting on. A host that fetches the web font before writing keeps
 	// the current font on screen meanwhile, so without this the field would look like the click did
@@ -148,6 +157,7 @@ export function FontFamilySelector({
 					/>
 				)}
 			/>
+			{indicator}
 		</div>
 	);
 }
