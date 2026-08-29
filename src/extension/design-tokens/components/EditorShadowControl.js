@@ -299,6 +299,39 @@ export function toNativeShadow(value, tokens = []) {
 }
 
 /**
+ * Whether a native shadow item paints anything visible — the JS counterpart of the block classes'
+ * `has_visible_shadow()`, kept in step with it so the editor preview and the rendered page agree on
+ * which shadows exist at all.
+ *
+ * Geometry alone decides it: all-zero offsets, blur, and spread paint nothing whatever the color is,
+ * which is exactly what makes an all-zero value usable as the "no shadow" state now that no separate
+ * enable boolean carries that meaning. A non-numeric, non-empty leg is a `{dot.alias}` reference
+ * resolving to a var() whose value is unknown here, so it counts as visible — read as a zero, a
+ * caller would drop a shadow the token does paint.
+ *
+ * @param {?Object} item One `shadow[0]`-shaped item.
+ *
+ * @since TBD
+ *
+ * @return {boolean} Whether the item paints a visible shadow.
+ */
+export function hasVisibleShadow(item) {
+	if (!item) {
+		return false;
+	}
+
+	return ['hOffset', 'vOffset', 'blur', 'spread'].some((axis) => {
+		const value = item[axis] ?? 0;
+
+		if (typeof value === 'number' || (typeof value === 'string' && value.trim() !== '' && !isNaN(Number(value)))) {
+			return Number(value) !== 0;
+		}
+
+		return typeof value === 'string' && value.trim() !== '';
+	});
+}
+
+/**
  * Whether a stored native shadow should be treated as "the block sets no shadow of its own".
  *
  * `block.json` registers an all-zero transparent shadow as `shadow`'s own default, so a fresh block

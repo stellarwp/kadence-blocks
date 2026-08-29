@@ -237,7 +237,6 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		return $css->css_output();
 	}
 
-
 	/**
 	 * Build up the dynamic styles for a size.
 	 *
@@ -661,42 +660,6 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		$css->add_property( 'box-shadow', 'var(--kb-btn-shadow)' );
 
 		return true;
-	}
-
-	/**
-	 * Whether a native shadow item paints anything visible — all-zero offsets, blur, and spread
-	 * render nothing regardless of color, matching the value the "None" pick now writes.
-	 *
-	 * A non-numeric, non-empty leg is a {dot.alias} token reference, which resolves to a var() whose
-	 * value is unknown here — it counts as visible, since treating it as a zero would let the
-	 * caller's `box-shadow: none` reset erase a shadow the token does paint.
-	 *
-	 * @since TBD
-	 *
-	 * @param array<string, mixed> $shadow_item One `shadow[0]`-shaped item.
-	 *
-	 * @return bool
-	 */
-	private function has_visible_shadow( array $shadow_item ): bool {
-		foreach ( [ 'hOffset', 'vOffset', 'blur', 'spread' ] as $axis ) {
-			$value = $shadow_item[ $axis ] ?? 0;
-
-			if ( is_numeric( $value ) ) {
-				if ( 0.0 !== (float) $value ) {
-					return true;
-				}
-
-				continue;
-			}
-
-			// A {dot.alias} leg resolves to a var() unknown here, so it counts as visible — read as zero,
-			// the caller's `box-shadow: none` would erase a shadow the token does paint.
-			if ( is_string( $value ) && '' !== trim( $value ) ) {
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 	/**

@@ -66,7 +66,7 @@ import {
 	presetValueForDevice,
 } from '../../extension/token-indicators/normalize';
 import { EditorBoxControl } from '../../extension/design-tokens/components/EditorBoxControl';
-import { EditorShadowControl } from '../../extension/design-tokens/components/EditorShadowControl';
+import { EditorShadowControl, hasVisibleShadow } from '../../extension/design-tokens/components/EditorShadowControl';
 import { renderShadowColor } from '../../extension/design-tokens/components/shadow-color';
 import { useColorGroups } from '../../extension/design-tokens/hooks/use-color-groups';
 import { resolveColorLiteral } from '../../extension/design-tokens/color-literal';
@@ -168,7 +168,6 @@ export default function Image({
 		borderWidthDesktop,
 		borderWidthTablet,
 		borderWidthMobile,
-		displayBoxShadow,
 		boxShadow,
 		displayDropShadow,
 		dropShadow,
@@ -468,18 +467,6 @@ export default function Image({
 
 		setAttributes({
 			dropShadow: newItems,
-		});
-	}
-	function saveBoxShadow(value) {
-		const newItems = boxShadow.map((item, thisIndex) => {
-			if (0 === thisIndex) {
-				item = { ...item, ...value };
-			}
-			return item;
-		});
-
-		setAttributes({
-			boxShadow: newItems,
 		});
 	}
 	const saveCaptionFont = (value) => {
@@ -1322,29 +1309,14 @@ export default function Image({
 									allowEmpty={true}
 								/>
 							)}
-							<ToggleControl
-								label={__('Enable Box Shadow', 'kadence-blocks')}
-								checked={undefined !== displayBoxShadow ? displayBoxShadow : false}
-								onChange={(value) => setAttributes({ displayBoxShadow: value })}
+							<EditorShadowControl
+								label={__('Box Shadow', 'kadence-blocks')}
+								value={boxShadow}
+								onChange={(value) => setAttributes({ boxShadow: value })}
+								tokens={shadowTokens}
+								defaultValue={shadowPresetValue}
+								renderColor={renderShadowColor}
 							/>
-							{/* Kept as its own toggle, unlike the Button, which dropped its equivalent when it
-							    moved to this control. `EditorShadowControl` decides emission purely from the
-							    value's own axes, but the image's render path still gates on
-							    `displayBoxShadow` (see its block class), so removing the toggle here would
-							    take away a real capability: hiding a shadow without discarding the values
-							    that define it. The editor stays hidden while off for the same reason the
-							    previous control hid its body -- an editor that cannot reach the page is the
-							    same kind of dead affordance as an opacity slider on a token pick. */}
-							{displayBoxShadow && (
-								<EditorShadowControl
-									label={__('Box Shadow', 'kadence-blocks')}
-									value={boxShadow}
-									onChange={(value) => setAttributes({ boxShadow: value })}
-									tokens={shadowTokens}
-									defaultValue={shadowPresetValue}
-									renderColor={renderShadowColor}
-								/>
-							)}
 							<DropShadowControl
 								label={__('Drop Shadow', 'kadence-blocks')}
 								enable={undefined !== displayDropShadow ? displayDropShadow : false}
@@ -1959,26 +1931,24 @@ export default function Image({
 
 					backgroundColor: '' !== backgroundColor ? KadenceColorOutput(backgroundColor) : undefined,
 
-					boxShadow:
-						undefined !== displayBoxShadow &&
-						displayBoxShadow &&
-						undefined !== boxShadow &&
-						undefined !== boxShadow[0] &&
-						undefined !== boxShadow[0].color
-							? (undefined !== boxShadow[0].inset && boxShadow[0].inset ? 'inset ' : '') +
-								(undefined !== boxShadow[0].hOffset ? boxShadow[0].hOffset : 0) +
-								'px ' +
-								(undefined !== boxShadow[0].vOffset ? boxShadow[0].vOffset : 0) +
-								'px ' +
-								(undefined !== boxShadow[0].blur ? boxShadow[0].blur : 14) +
-								'px ' +
-								(undefined !== boxShadow[0].spread ? boxShadow[0].spread : 0) +
-								'px ' +
-								KadenceColorOutput(
-									undefined !== boxShadow[0].color ? boxShadow[0].color : '#000000',
-									undefined !== boxShadow[0].opacity ? boxShadow[0].opacity : 0.2
-								)
-							: undefined,
+					// Gated on the value's own axes, matching the block class's `has_visible_shadow()` — an
+					// all-zero shadow paints nothing and IS the off state now that no enable boolean
+					// carries that meaning.
+					boxShadow: hasVisibleShadow(boxShadow?.[0])
+						? (undefined !== boxShadow[0].inset && boxShadow[0].inset ? 'inset ' : '') +
+							(undefined !== boxShadow[0].hOffset ? boxShadow[0].hOffset : 0) +
+							'px ' +
+							(undefined !== boxShadow[0].vOffset ? boxShadow[0].vOffset : 0) +
+							'px ' +
+							(undefined !== boxShadow[0].blur ? boxShadow[0].blur : 14) +
+							'px ' +
+							(undefined !== boxShadow[0].spread ? boxShadow[0].spread : 0) +
+							'px ' +
+							KadenceColorOutput(
+								undefined !== boxShadow[0].color ? boxShadow[0].color : '#000000',
+								undefined !== boxShadow[0].opacity ? boxShadow[0].opacity : 0.2
+							)
+						: undefined,
 					filter:
 						undefined !== displayDropShadow && displayDropShadow
 							? 'drop-shadow(' +

@@ -230,26 +230,24 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 			}
 		}
 
-		// Box shadow
-		if ( isset( $attributes['displayBoxShadow'] ) && true == $attributes['displayBoxShadow'] ) {
-			if ( isset( $attributes['boxShadow'] ) && is_array( $attributes['boxShadow'] ) && isset( $attributes['boxShadow'][0] ) && is_array( $attributes['boxShadow'][0] ) ) {
-				$css->add_property(
-					'box-shadow',
-					$css->render_shadow(
-						$attributes['boxShadow'][0],
-						[
-							'hOffset' => '0',
-							'vOffset' => '0',
-							'blur'    => '14',
-							'spread'  => '0',
-							'color'   => '#000000',
-							'opacity' => 0.2,
-						]
-					)
-				);
-			} else {
-				$css->add_property( 'box-shadow', 'rgba(0, 0, 0, 0.2) 0px 0px 14px 0px' );
-			}
+		// Box shadow. Gated on the value's own axes rather than a separate "enable" boolean: an
+		// all-zero shadow paints nothing, so it IS the off state, and a second flag saying so could
+		// only ever disagree with it.
+		if ( isset( $attributes['boxShadow'][0] ) && is_array( $attributes['boxShadow'][0] ) && $this->has_visible_shadow( $attributes['boxShadow'][0] ) ) {
+			$css->add_property(
+				'box-shadow',
+				$css->render_shadow(
+					$attributes['boxShadow'][0],
+					[
+						'hOffset' => '0',
+						'vOffset' => '0',
+						'blur'    => '14',
+						'spread'  => '0',
+						'color'   => '#000000',
+						'opacity' => 0.2,
+					]
+				)
+			);
 		}
 
 		// Drop Shadow
