@@ -17,6 +17,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Contracts\Controller;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Dtcg_Validator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Alias;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Extensions;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Token_Type;
 use KadenceWP\KadenceBlocks\Utils\Cast;
 use KadenceWP\KadenceBlocks\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
 use WP_Error;
@@ -553,7 +554,7 @@ final class Presets_Controller extends Controller {
 			return $error;
 		}
 
-		$block_node = $this->normalize_block_node( $block_node, $slug );
+		$block_node = $this->normalize_block_node( $block_node, $block, $slug );
 		$stored     = $this->stored_document( $slug );
 
 		// The token map replaces wholesale rather than merging property by property: the client
@@ -637,7 +638,7 @@ final class Presets_Controller extends Controller {
 			return $error;
 		}
 
-		$block_node = $this->normalize_block_node( $block_node, $slug );
+		$block_node = $this->normalize_block_node( $block_node, $block, $slug );
 
 		// Replace, not merge: drop the stored block node first so a preset the body omits does not survive.
 		$stored    = $this->unset_block( $this->stored_document( $slug ), $block );
@@ -1342,6 +1343,16 @@ final class Presets_Controller extends Controller {
 					continue;
 				}
 
+				if ( $bindings->kind( (string) $property ) === Preset_Bindings::get_kind_shadow() ) {
+					$error = $this->guard_shadow_value_shape( $entry, $block, (string) $preset_slug, (string) $property );
+
+					if ( $error instanceof WP_Error ) {
+						return $error;
+					}
+
+					continue;
+				}
+
 				// Check the base and every breakpoint override. Each is unwrapped first, so what remains is
 				// a scalar, an alias or a slot list — an array here is therefore a slot list, never the
 				// responsive envelope (which is legal on any kind).
@@ -1464,6 +1475,49 @@ final class Presets_Controller extends Controller {
 	}
 
 	/**
+	 * Reject a shadow value that is an array without being a composite shadow.
+	 *
+	 * A shadow is one of the two kinds whose value may legitimately be an object: the Style Library's
+	 * Custom tab composes `color`, the four offsets and an optional `inset` and stores that map, so the
+	 * parts stay separately editable instead of collapsing into a shorthand nothing can take apart again.
+	 * What a shadow may NOT be is a per-corner list — corners are a dimension idea, and a four-slot array
+	 * on a shadow reaches projection as something no renderer can compose.
+	 *
+	 * The generic branch this replaces rejected every array alike, so the composite the Custom tab had
+	 * just produced came back as "a per-corner value is only valid for a dimension property" — an error
+	 * about corners, for a value that never mentioned one.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed  $entry    The preset token entry.
+	 * @param string $block    The block name, for error context.
+	 * @param string $preset   The preset slug, for error context.
+	 * @param string $property The property name, for error context.
+	 *
+	 * @return WP_Error|null A WP_Error when an array value is not a composite shadow, null otherwise.
+	 */
+	private function guard_shadow_value_shape( $entry, string $block, string $preset, string $property ): ?WP_Error {
+		foreach ( $this->preset_entry_values( $entry ) as $value ) {
+			if ( ! is_array( $value ) || Token_Type::is_composite_shape( Token_Type::get_type_shadow(), $value ) ) {
+				continue;
+			}
+
+			return new WP_Error(
+				'rest_design_tokens_invalid',
+				__( 'A shadow value must be an alias, a literal, or a composite carrying color, offsetX, offsetY, blur and spread.', 'kadence-blocks' ),
+				[
+					'status'   => WP_Http::UNPROCESSABLE_ENTITY,
+					'block'    => $block,
+					'preset'   => $preset,
+					'property' => $property,
+				]
+			);
+		}
+
+		return null;
+	}
+
+	/**
 	 * Reject a candidate whose effective `$default` does not name a present preset.
 	 *
 	 * Evaluated against the post-merge effective library (baseline merged with the candidate), so a default that
@@ -1554,15 +1608,21 @@ final class Presets_Controller extends Controller {
 	 * library, so a value captured off a block instance re-joins the theming cascade rather than freezing
 	 * as a literal.
 	 *
+	 * The block's bindings are handed over so a property can prefer the semantic it already declares over
+	 * any other that happens to resolve to the same literal. Several unrelated semantics collide whenever
+	 * they resolve alike, and without the declaration the tie-break has only the property's name to go on.
+	 *
 	 * @since TBD
 	 *
 	 * @param array<string, mixed> $block_node The block's preset node from the request.
+	 * @param string               $block      The block name, for reading its declared bindings.
 	 * @param string               $slug       The token library the values are matched against.
 	 *
 	 * @return array<string, mixed> The preset node with literals aliased where a semantic matches.
 	 */
-	private function normalize_block_node( array $block_node, string $slug ): array {
+	private function normalize_block_node( array $block_node, string $block, string $slug ): array {
 		$tokens_key = Extensions::get_tokens_key();
+		$bindings   = $this->registry->for_block( $block );
 
 		foreach ( $block_node as $preset_slug => $preset ) {
 			// $default and any other "$"-prefixed metadata key carries no token map to normalize.
@@ -1574,7 +1634,7 @@ final class Presets_Controller extends Controller {
 				continue;
 			}
 
-			$preset[ $tokens_key ]      = $this->normalizer->normalize( $preset[ $tokens_key ], $slug );
+			$preset[ $tokens_key ]      = $this->normalizer->normalize( $preset[ $tokens_key ], $slug, $bindings );
 			$block_node[ $preset_slug ] = $preset;
 		}
 

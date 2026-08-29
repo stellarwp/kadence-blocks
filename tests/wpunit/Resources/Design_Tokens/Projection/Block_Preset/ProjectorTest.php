@@ -11,6 +11,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Block_Preset\Projector;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Presets;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Css_Renderer;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
 use Tests\Support\Classes\Fake_Baseline_Document;
 use Tests\Support\Classes\TestCase;
@@ -57,7 +58,7 @@ final class ProjectorTest extends TestCase {
 			$this->container->get( Mutator::class )
 		);
 
-		$this->resolver = new Preset_Resolver( $presets, $this->container->get( Token_Resolver::class ), new Preset_Order_Index() );
+		$this->resolver = new Preset_Resolver( $presets, $this->container->get( Token_Resolver::class ), new Preset_Order_Index(), $this->container->get( Css_Renderer::class ) );
 	}
 
 	public function testItMapsThePresetValuesOntoTheBoundBlockAttributes(): void {

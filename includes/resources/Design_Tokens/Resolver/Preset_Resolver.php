@@ -7,6 +7,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Css_Var;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Unknown_Preset_Exception;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Alias;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Extensions;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Token_Type;
 use KadenceWP\KadenceBlocks\Utils\Cast;
 
 /**
@@ -68,16 +69,26 @@ final class Preset_Resolver {
 	private Preset_Order_Index $order_index;
 
 	/**
+	 * @var Css_Renderer Renders a composite value into the one CSS string its property takes, so a stored
+	 *                    composite and an aliased one reach output in the same form.
+	 *
+	 * @since TBD
+	 */
+	private Css_Renderer $renderer;
+
+	/**
 	 * @since TBD
 	 *
 	 * @param Effective_Presets  $presets     The per-library effective preset definitions.
 	 * @param Token_Resolver     $resolver    The token resolver.
 	 * @param Preset_Order_Index $order_index Applies the stored per-block display order to names().
+	 * @param Css_Renderer       $renderer    Renders a composite value into its CSS string.
 	 */
-	public function __construct( Effective_Presets $presets, Token_Resolver $resolver, Preset_Order_Index $order_index ) {
+	public function __construct( Effective_Presets $presets, Token_Resolver $resolver, Preset_Order_Index $order_index, Css_Renderer $renderer ) {
 		$this->presets     = $presets;
 		$this->resolver    = $resolver;
 		$this->order_index = $order_index;
+		$this->renderer    = $renderer;
 	}
 
 	/**
@@ -440,11 +451,59 @@ final class Preset_Resolver {
 			return (string) $value;
 		}
 
+		if ( Token_Type::is_composite_shape( Token_Type::get_type_shadow(), $value ) ) {
+			return $this->flatten_composite( $value, $resolved );
+		}
+
 		if ( is_array( $value ) ) {
 			return $this->flatten_slots( $value, $resolved, $keep_gaps );
 		}
 
 		return null;
+	}
+
+	/**
+	 * Flatten a composite value into the single CSS string its property takes, or null when any required
+	 * sub-field fails to flatten.
+	 *
+	 * Rendered here rather than left as a map because the aliased form of the same property already
+	 * arrives rendered — an alias resolves through Resolved_Tokens, which ran the composite through this
+	 * same renderer. A stored composite that stayed a map would make one property answer in two different
+	 * shapes depending on how it happened to be written.
+	 *
+	 * `inset` is carried across rather than flattened: it is a boolean, and flatten() answers null for a
+	 * boolean, which would drop the whole property. A shadow that saved cleanly and then rendered nothing
+	 * is the worst way for this to fail, so the flag skips the step that cannot handle it.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $value    The composite's sub-field map.
+	 * @param Resolved_Tokens      $resolved The resolved token maps.
+	 *
+	 * @return string|null The rendered CSS string, or null when the composite cannot be rendered.
+	 */
+	private function flatten_composite( array $value, Resolved_Tokens $resolved ): ?string {
+		$fields = [];
+
+		foreach ( $value as $field => $sub ) {
+			if ( $field === 'inset' ) {
+				$fields[ $field ] = $sub;
+
+				continue;
+			}
+
+			$flat = $this->flatten( $sub, $resolved );
+
+			if ( ! is_string( $flat ) || $flat === '' ) {
+				return null;
+			}
+
+			$fields[ $field ] = $flat;
+		}
+
+		$rendered = $this->renderer->render( Token_Type::get_type_shadow(), $fields );
+
+		return $rendered === '' ? null : $rendered;
 	}
 
 	/**
@@ -520,6 +579,18 @@ final class Preset_Resolver {
 	private function project( $value ): string {
 		if ( is_string( $value ) && Alias::is_alias( $value ) ) {
 			return 'var(' . Css_Var::from_id( Alias::path_of( $value ) ) . ')';
+		}
+
+		// Before the slot-list branch: that one joins VALUES in insertion order, which for a composite
+		// would emit its color first and produce a valid-looking, wrong shorthand.
+		if ( Token_Type::is_composite_shape( Token_Type::get_type_shadow(), $value ) ) {
+			$fields = [];
+
+			foreach ( $value as $field => $sub ) {
+				$fields[ $field ] = $field === 'inset' ? $sub : $this->project( $sub );
+			}
+
+			return $this->renderer->render( Token_Type::get_type_shadow(), $fields );
 		}
 
 		if ( is_array( $value ) ) {

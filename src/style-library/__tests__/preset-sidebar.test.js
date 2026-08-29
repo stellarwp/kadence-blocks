@@ -144,6 +144,59 @@ describe('PresetSidebar write flows notify success', () => {
 	});
 
 	/**
+	 * A save is not a round trip: the server rewrites a captured literal into the semantic alias that
+	 * carries it, so what comes back is equivalent without being equal. Seeding the draft from that
+	 * response is the only thing that lets the panel go clean — before it, Save stayed enabled and
+	 * navigating away raised the unsaved-changes guard over a preset with nothing left to save.
+	 *
+	 * @return {void}
+	 */
+	it('goes clean after a save whose response normalized what was sent', async () => {
+		const stored = { label: 'Renamed', tokens: { fontWeight: 'semantic.font-weight.heading' } };
+		// The feed refresh is awaited inside the save flow, so by the time `savePreset` resolves, the
+		// values the panel compares against are already the stored ones. Modelled here so the draft and
+		// `initialValues` meet on the SERVER's shape rather than on what was typed.
+		let persisted = { label: 'Primary' };
+		const savePreset = jest.fn().mockImplementation(() => {
+			persisted = stored;
+
+			return Promise.resolve(stored);
+		});
+
+		const screen = {
+			payload: { presets: { primary: { label: 'Primary' } } },
+			isLoading: false,
+			loadError: null,
+			initialValuesFor: () => persisted,
+			savePreset,
+			deletePreset: jest.fn(),
+			isDeletable: () => true,
+			isBusy: false,
+			saveError: null,
+			deleteError: null,
+			clearSaveError: jest.fn(),
+			clearDeleteError: jest.fn(),
+		};
+
+		renderPresetSidebar(screen, 'primary');
+
+		makeDirty();
+
+		expect(findButton('Save').disabled).toBe(false);
+
+		await act(async () => {
+			findButton('Save').click();
+		});
+
+		// Re-rendered rather than remounted, which is what the store update does in the app: the panel
+		// keeps its draft and receives the refreshed values as a prop.
+		renderPresetSidebar(screen, 'primary');
+
+		// The draft now holds what the server stored, so the panel has nothing left to save.
+		expect(findButton('Save').disabled).toBe(true);
+	});
+
+	/**
 	 * A failed save must not fire the success Snackbar — the existing `saveError` handling still
 	 * owns error feedback for this flow.
 	 *

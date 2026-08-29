@@ -369,6 +369,27 @@ describe('presetSaveTokens', () => {
 		expect(presetSaveTokens({ 'button-radius': ['', '', '', ''] })).toEqual({});
 	});
 
+	/**
+	 * The shadow control keeps `inset: false` on a cleared value, and `false` draws no inset shadow. It
+	 * must not be what makes an otherwise-empty composite look worth saving — the server rejects an
+	 * empty composite the same way it rejects an empty literal.
+	 */
+	it('omits a composite shadow cleared down to inset:false', () => {
+		expect(
+			presetSaveTokens({
+				shadow: { color: '', offsetX: '', offsetY: '', blur: '', spread: '', inset: false },
+			})
+		).toEqual({});
+	});
+
+	it('keeps a composite shadow that still carries a sub-field', () => {
+		const result = presetSaveTokens({
+			shadow: { color: '#17171f', offsetX: '0px', offsetY: '2px', blur: '8px', spread: '0px' },
+		});
+
+		expect(result).toHaveProperty('shadow');
+	});
+
 	it('keeps a per-corner property when any slot carries a value', () => {
 		// Asserts only that the property survives the unset guard: how the slots themselves are
 		// wrapped is the aliasing helper's business, and it changes in a later slice.
@@ -924,5 +945,54 @@ describe('resolveTokenValue at a breakpoint', () => {
 		};
 
 		expect(resolveTokenValue(values, perCorner, 'tablet')).toBe('0.5rem 0 0.5rem 0');
+	});
+});
+
+describe('resolveTokenValue with a composite shadow', () => {
+	const values = { 'primitive.color.brand.primary': '#3633e1' };
+
+	/**
+	 * The Custom tab stores a composite, and the row preview needs one string. Each sub-field resolves
+	 * on its own so an aliased color still follows a token edit.
+	 */
+	it('composes the sub-fields into one shadow string', () => {
+		const shadow = {
+			color: '{primitive.color.brand.primary}',
+			offsetX: '0px',
+			offsetY: '2px',
+			blur: '8px',
+			spread: '0px',
+		};
+
+		expect(resolveTokenValue(values, shadow)).toBe('0px 2px 8px 0px #3633e1');
+	});
+
+	it('carries inset through as a prefix rather than resolving it', () => {
+		const shadow = {
+			color: '#000000',
+			offsetX: '0px',
+			offsetY: '2px',
+			blur: '8px',
+			spread: '0px',
+			inset: true,
+		};
+
+		expect(resolveTokenValue(values, shadow)).toBe('inset 0px 2px 8px 0px #000000');
+	});
+
+	/**
+	 * All or nothing, for the same reason a slot list is: a shorthand with a hole renders something the
+	 * preset never said.
+	 */
+	it('yields an empty string when a sub-field does not resolve', () => {
+		const shadow = {
+			color: '{primitive.color.gone}',
+			offsetX: '0px',
+			offsetY: '2px',
+			blur: '8px',
+			spread: '0px',
+		};
+
+		expect(resolveTokenValue(values, shadow)).toBe('');
 	});
 });

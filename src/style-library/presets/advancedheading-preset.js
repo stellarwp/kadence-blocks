@@ -312,12 +312,18 @@ function schemaFor(tab, values, feed) {
 						path: 'tokens.fontWeight',
 						label: __('Weight', 'kadence-blocks'),
 						options: fontWeightOptions(family),
+						// The library's resolved map, so a value storage aliased to a token id still
+						// displays as the keyword it resolves to rather than blanking the select.
+						values: feed?.values,
 					},
 					{
 						type: 'select',
 						path: 'tokens.textTransform',
 						label: __('Transform', 'kadence-blocks'),
 						options: TEXT_TRANSFORM_OPTIONS,
+						// The library's resolved map, so a value storage aliased to a token id still
+						// displays as the keyword it resolves to rather than blanking the select.
+						values: feed?.values,
 					},
 				],
 			},
@@ -330,6 +336,9 @@ function schemaFor(tab, values, feed) {
 						path: 'tokens.borderStyle',
 						label: __('Style', 'kadence-blocks'),
 						options: BORDER_STYLE_OPTIONS,
+						// The library's resolved map, so a value storage aliased to a token id still
+						// displays as the keyword it resolves to rather than blanking the select.
+						values: feed?.values,
 					},
 					{
 						type: 'token-scalar',

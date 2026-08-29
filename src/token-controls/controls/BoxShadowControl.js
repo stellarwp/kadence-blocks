@@ -219,7 +219,12 @@ function ShadowCustomTab({ shadow, onChange, renderColor, disabled = false }) {
  */
 export function BoxShadowControl({ value, onChange, label, tokens = [], renderColor, disabled = false }) {
 	const aliased = isTokenAlias(value);
-	const shadow = { ...DEFAULT_SHADOW, ...(aliased || !value ? {} : value) };
+	// Only a real object is spread. A shadow can also arrive as a rendered STRING — the editor's capture
+	// flow writes one — and spreading a string splays it into indexed character keys, which the Custom
+	// tab would then write back as a shadow whose sub-fields are `0`, `p`, `x`. Degrading to the default
+	// shape reads as unset, which is wrong but harmless where the alternative cannot be saved at all.
+	const custom = typeof value === 'object' && value !== null && !Array.isArray(value) ? value : {};
+	const shadow = { ...DEFAULT_SHADOW, ...(aliased ? {} : custom) };
 	// The trigger shows a label only, never a value — for either shape. Aliased still reads
 	// `fieldSummary()`'s bound-token label (dropping the `value` half it also returns, which does not
 	// fit this control's icon-plus-label trigger); a genuine composite reads bare "Custom"; unset

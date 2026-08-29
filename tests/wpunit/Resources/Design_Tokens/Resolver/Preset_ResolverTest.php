@@ -633,6 +633,122 @@ final class Preset_ResolverTest extends TestCase {
 	}
 
 	/**
+	 * A composite shadow flattens to the one string its property takes. The aliased form of the same
+	 * property already arrives rendered, so a stored composite has to match rather than answering in a
+	 * second shape.
+	 *
+	 * @return void
+	 */
+	public function testItRendersAStoredCompositeShadowToItsCssString(): void {
+		$this->seedPreset(
+			Token_Store::default_slug(),
+			'shadowed',
+			'Shadowed',
+			[
+				'button-shadow' => [
+					'color'   => '#17171f',
+					'offsetX' => '0px',
+					'offsetY' => '2px',
+					'blur'    => '8px',
+					'spread'  => '0px',
+				],
+			]
+		);
+
+		$values = $this->resolver->resolve_literal( self::BUTTON, 'shadowed' );
+
+		$this->assertSame( '0px 2px 8px 0px #17171f', $values['button-shadow'] );
+	}
+
+	/**
+	 * `inset` is a boolean, and the value flattener answers null for a boolean. Carried around that step
+	 * rather than through it, since dropping it would take the whole property with it and leave a preset
+	 * that saved cleanly rendering nothing at all.
+	 *
+	 * @return void
+	 */
+	public function testAnInsetCompositeShadowKeepsItsPrefixRatherThanBeingDropped(): void {
+		$this->seedPreset(
+			Token_Store::default_slug(),
+			'inset-shadow',
+			'Inset',
+			[
+				'button-shadow' => [
+					'color'   => '#17171f',
+					'offsetX' => '0px',
+					'offsetY' => '2px',
+					'blur'    => '8px',
+					'spread'  => '0px',
+					'inset'   => true,
+				],
+			]
+		);
+
+		$values = $this->resolver->resolve_literal( self::BUTTON, 'inset-shadow' );
+
+		$this->assertArrayHasKey( 'button-shadow', $values, 'An inset shadow must not drop the property.' );
+		$this->assertSame( 'inset 0px 2px 8px 0px #17171f', $values['button-shadow'] );
+	}
+
+	/**
+	 * An aliased sub-field projects to its token variable inside the shorthand, so a color edit still
+	 * reaches the shadow live rather than being baked in at write time.
+	 *
+	 * @return void
+	 */
+	public function testItProjectsAnAliasedShadowSubFieldAsAVariable(): void {
+		$this->seedPreset(
+			Token_Store::default_slug(),
+			'aliased-shadow',
+			'Aliased',
+			[
+				'button-shadow' => [
+					'color'   => '{semantic.color.button-primary-bg}',
+					'offsetX' => '0px',
+					'offsetY' => '2px',
+					'blur'    => '8px',
+					'spread'  => '0px',
+				],
+			]
+		);
+
+		$values = $this->resolver->resolve( self::BUTTON, 'aliased-shadow' );
+
+		$this->assertSame(
+			'0px 2px 8px 0px var(--kb-token--semantic--color--button-primary-bg)',
+			$values['button-shadow']
+		);
+	}
+
+	/**
+	 * A sub-field that resolves to nothing drops the whole property, the same fail-closed choice a
+	 * per-corner value makes: half a shadow is not a usable shadow.
+	 *
+	 * @return void
+	 */
+	public function testACompositeShadowWithAnUnresolvableSubFieldDropsTheProperty(): void {
+		$this->seedPreset(
+			Token_Store::default_slug(),
+			'broken-shadow',
+			'Broken',
+			[
+				'button-shadow' => [
+					'color'   => '{semantic.color.does-not-exist}',
+					'offsetX' => '0px',
+					'offsetY' => '2px',
+					'blur'    => '8px',
+					'spread'  => '0px',
+				],
+			]
+		);
+
+		$this->assertArrayNotHasKey(
+			'button-shadow',
+			$this->resolver->resolve_literal( self::BUTTON, 'broken-shadow' )
+		);
+	}
+
+	/**
 	 * Persist a single button preset into a token library's overrides document.
 	 *
 	 * @param string               $slug   The token library slug to write into.

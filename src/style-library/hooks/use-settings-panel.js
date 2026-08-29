@@ -32,6 +32,10 @@ import { isEqual, setValueAtPath } from '../helpers/settings-schema';
  * ends in `refreshFeed`, which changes that identity while the user may be mid-edit on a sibling
  * instance of this hook.
  *
+ * That rule governs seeding driven by `initialValues` ARRIVING. It is not the only way the draft can be
+ * replaced: `reseedDraft` seeds from a settled write, on a caller that knows one just happened, and
+ * leaves the tracking value alone precisely so this guarantee still holds for a sibling panel.
+ *
  * Pure so the seeding rule is testable without rendering a component — `useSettingsPanel` is a thin
  * `useEffect` wrapper around this.
  *
@@ -74,6 +78,35 @@ export function computeIsDirty(draft, initialValues) {
 }
 
 /**
+ * The draft to hold after a write settles: what the server actually stored, unless the user has edited
+ * since the request went out.
+ *
+ * A write is not a round trip. The server rewrites a captured literal into the semantic alias that
+ * carries it, so what comes back is equivalent to what was sent without being equal to it — and the
+ * panel's dirty flag is a deep equality test. Seeding from the response is what lets a saved panel go
+ * clean; nothing else can, because the two values never converge on their own.
+ *
+ * A draft that moved while the request was in flight is kept untouched, and kept BY REFERENCE so React
+ * bails out of the re-render. Merging the two would produce a draft matching neither the save nor the
+ * user, and "the user typed during the save, so the panel is still dirty" is already the honest answer.
+ *
+ * @param {Object}  current   The draft as it stands now.
+ * @param {Object}  submitted The draft the write was given.
+ * @param {?Object} saved     What the server stored, or null when there was nothing to write.
+ *
+ * @since TBD
+ *
+ * @return {Object} The draft to hold.
+ */
+export function resolveSavedSeed(current, submitted, saved) {
+	if (!saved || !isEqual(current, submitted)) {
+		return current;
+	}
+
+	return saved;
+}
+
+/**
  * Read and drive the settings-panel state.
  *
  * @param {Object}   options               The options.
@@ -85,8 +118,9 @@ export function computeIsDirty(draft, initialValues) {
  *
  * @since TBD
  *
- * @return {{itemId: string, isOpen: boolean, close: Function, draft: Object, setFieldValue: Function, isDirty: boolean, resetDraft: Function}}
- *         The panel state and controls.
+ * @return {{itemId: string, isOpen: boolean, close: Function, draft: Object, setFieldValue: Function, isDirty: boolean, resetDraft: Function, reseedDraft: Function}}
+ *         The panel state and controls. `reseedDraft(submitted, saved)` re-seeds from a settled write —
+ *         see `resolveSavedSeed`.
  */
 export function useSettingsPanel({ route, navigate, initialValues }) {
 	const itemId = route.item;
@@ -110,7 +144,12 @@ export function useSettingsPanel({ route, navigate, initialValues }) {
 	const close = () => navigate({ item: '' });
 	const setFieldValue = (path, value) => setDraft((current) => setValueAtPath(current, path, value));
 	const resetDraft = () => setDraft(initialValues || {});
+	// Functional, so the equality check reads the live draft rather than the one this render closed
+	// over — the whole point is to detect an edit made while the write was in flight. Deliberately does
+	// not touch `seededForRef`: the one-shot seeding rule protects a SIBLING panel from a feed refresh,
+	// and this reseed is a different thing, driven by a caller that knows a write just settled.
+	const reseedDraft = (submitted, saved) => setDraft((current) => resolveSavedSeed(current, submitted, saved));
 	const isDirty = computeIsDirty(draft, initialValues);
 
-	return { itemId, isOpen: Boolean(itemId), close, draft, setFieldValue, isDirty, resetDraft };
+	return { itemId, isOpen: Boolean(itemId), close, draft, setFieldValue, isDirty, resetDraft, reseedDraft };
 }

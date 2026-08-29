@@ -31,6 +31,29 @@ export function getPickableTokensPool() {
 }
 
 /**
+ * The active library's resolved literal for a token id, whether or not that token is pickable.
+ *
+ * The pool carries two different sets, and the difference matters here. `tokens` is the DECLARED
+ * registry — the subset a picker may offer — while `values` is the RESOLVED library, every id the
+ * document resolves. A binding is free to point at a semantic that was never declared, and eleven of
+ * the shipped bindings do, so a lookup that searches `tokens` finds nothing for them even though the
+ * value is right there in `values`. Resolving a bound token is a `values` question; only offering one
+ * to pick is a `tokens` question.
+ *
+ * @param {string} id The token id.
+ *
+ * @since TBD
+ *
+ * @return {string} The resolved literal, or '' when the library does not resolve that id.
+ */
+export function resolvedTokenValue(id) {
+	const pool = getPickableTokensPool();
+	const feed = getDesignTokensFeed();
+
+	return pool.values?.[feed?.slug]?.[id] ?? '';
+}
+
+/**
  * Narrow a role-scoped token list to its primitive-layer entries, when it has any. A role's
  * primitives are its scale steps (e.g. the radius sizes); its semantic tokens merely alias them, so
  * a picker that already knows the role offers only the steps rather than duplicating them with the

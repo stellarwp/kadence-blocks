@@ -108,9 +108,20 @@ function PresetSidebarBody({ navigate, route, screen, initialValues, presetLabel
 	// over the current `panel.draft`, so storing them in state would either loop the publish effect
 	// above or hand the guard modal a stale draft. `save` is the raw promise, rejection intact — the
 	// modal's own Save button is the one place that needs to see a failure.
+	// Seeds the draft from what the write actually stored. A save is not a round trip — the server
+	// rewrites a captured literal into the semantic alias carrying it — so without this the draft never
+	// equals the values it is compared against and the panel stays dirty forever, guarding a navigation
+	// that has nothing left to lose. Reassigned every render for the same reason the actions below are:
+	// memoizing would capture a stale draft, and `submitted` has to be the draft the write was given.
+	const runSave = () => {
+		const submitted = panel.draft;
+
+		return screen.savePreset(id, submitted, initialValues).then((saved) => panel.reseedDraft(submitted, saved));
+	};
+
 	if (channel) {
 		channel.actionsRef.current = {
-			save: () => screen.savePreset(id, panel.draft, initialValues),
+			save: runSave,
 			discard: panel.resetDraft,
 		};
 	}
@@ -125,8 +136,7 @@ function PresetSidebarBody({ navigate, route, screen, initialValues, presetLabel
 		}
 
 		setPendingAction('save');
-		screen
-			.savePreset(id, panel.draft, initialValues)
+		runSave()
 			.then(() => notifySuccess(__('Preset saved.', 'kadence-blocks')))
 			.catch(() => {})
 			.finally(() => setPendingAction(null));

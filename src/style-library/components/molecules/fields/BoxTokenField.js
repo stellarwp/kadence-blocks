@@ -29,7 +29,7 @@ import { useState } from '@wordpress/element';
 /**
  * Internal dependencies
  */
-import { pickableTokensForType } from '../../../helpers/tokens';
+import { pickableTokensForType, resolvedTokenValue } from '../../../helpers/tokens';
 import {
 	PRESET_BREAKPOINTS,
 	readPresetBreakpoint,
@@ -115,6 +115,12 @@ export function withoutSemanticSlots(value) {
  * what keeps that promise: the caller takes this in place of the declared default, not alongside it,
  * so a corner left empty here would show as blank rather than as the value actually in effect.
  *
+ * A semantic is resolved against the RESOLVED library rather than the pickable pool. A binding may
+ * point at a semantic that was never declared as a pickable token — eleven of the shipped bindings
+ * do — and searching the pickable list for one of those found nothing, blanking the field instead of
+ * showing the value in effect. A semantic that resolves nowhere at all falls back to the field's own
+ * declared default, so a gap in the data degrades to the documented default rather than to empty.
+ *
  * @param {*}     value        The stored scalar or slot list.
  * @param {Array} everyToken   The full token pool, before any role narrowing, used to resolve an id.
  * @param {*}     fieldDefault The field's own declared default, for the corners that bind no semantic.
@@ -130,10 +136,11 @@ export function semanticDefaultOf(value, everyToken, fieldDefault = null) {
 		return null;
 	}
 
+	const ownDefault = (index) => readSlot(fieldDefault, index) ?? '';
 	const resolve = (slot, index) =>
 		isSemanticSlot(slot)
-			? (everyToken.find((token) => token.id === slot)?.value ?? '')
-			: (readSlot(fieldDefault, index) ?? '');
+			? everyToken.find((token) => token.id === slot)?.value || resolvedTokenValue(slot) || ownDefault(index)
+			: ownDefault(index);
 
 	return isSlotList(value) ? value.map(resolve) : resolve(value, 0);
 }

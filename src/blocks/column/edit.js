@@ -1060,7 +1060,7 @@ function SectionEdit(props) {
 		maxWidth && maxWidth[2] ? maxWidth[2] : ''
 	);
 
-	// Check for falsey to support how units worked before
+	// Check for falsy to support how units worked before
 	const previewMaxWidthUnit = getPreviewSize(
 		previewDevice,
 		maxWidthUnit ? maxWidthUnit : 'px',
@@ -1217,22 +1217,24 @@ function SectionEdit(props) {
 					? `.kadence-column-${uniqueID} > .kadence-inner-column-inner:before { background-attachment:${overlayImg[0].bgImgAttachment}; }`
 					: ''}
 
-				{previewRadiusTop
+				{/* Tested against '' for the same reason the inner element's inline radius is: a corner
+				    set to 0 is a real value that truthiness throws away. */}
+				{'' !== previewRadiusTop
 					? `.kadence-column-${uniqueID} > .kadence-inner-column-inner:before { border-top-left-radius:${
 							previewRadiusTop + (borderRadiusUnit ? borderRadiusUnit : 'px')
 						}; }`
 					: ''}
-				{previewRadiusRight
+				{'' !== previewRadiusRight
 					? `.kadence-column-${uniqueID} > .kadence-inner-column-inner:before { border-top-right-radius:${
 							previewRadiusRight + (borderRadiusUnit ? borderRadiusUnit : 'px')
 						}; }`
 					: ''}
-				{previewRadiusBottom
+				{'' !== previewRadiusBottom
 					? `.kadence-column-${uniqueID} > .kadence-inner-column-inner:before { border-bottom-right-radius:${
 							previewRadiusBottom + (borderRadiusUnit ? borderRadiusUnit : 'px')
 						}; }`
 					: ''}
-				{previewRadiusLeft
+				{'' !== previewRadiusLeft
 					? `.kadence-column-${uniqueID} > .kadence-inner-column-inner:before { border-bottom-left-radius:${
 							previewRadiusLeft + (borderRadiusUnit ? borderRadiusUnit : 'px')
 						}; }`
@@ -3657,18 +3659,27 @@ function SectionEdit(props) {
 					borderRight: previewBorderRightStyle ? previewBorderRightStyle : undefined,
 					borderBottom: previewBorderBottomStyle ? previewBorderBottomStyle : undefined,
 					borderLeft: previewBorderLeftStyle ? previewBorderLeftStyle : undefined,
-					borderTopLeftRadius: previewRadiusTop
-						? previewRadiusTop + (borderRadiusUnit ? borderRadiusUnit : 'px')
-						: undefined,
-					borderTopRightRadius: previewRadiusRight
-						? previewRadiusRight + (borderRadiusUnit ? borderRadiusUnit : 'px')
-						: undefined,
-					borderBottomRightRadius: previewRadiusBottom
-						? previewRadiusBottom + (borderRadiusUnit ? borderRadiusUnit : 'px')
-						: undefined,
-					borderBottomLeftRadius: previewRadiusLeft
-						? previewRadiusLeft + (borderRadiusUnit ? borderRadiusUnit : 'px')
-						: undefined,
+					// Tested against '' rather than truthiness, the way the Advanced Image does it: a corner
+					// set to 0 is a real value, and both `0` and `'0'` are falsy. Skipping the declaration
+					// for them left the block-default rule -- which carries the selected preset's radius --
+					// as the only `border-radius` on the element, so a block squared off at 0 still drew
+					// the preset's corners.
+					borderTopLeftRadius:
+						'' !== previewRadiusTop
+							? previewRadiusTop + (borderRadiusUnit ? borderRadiusUnit : 'px')
+							: undefined,
+					borderTopRightRadius:
+						'' !== previewRadiusRight
+							? previewRadiusRight + (borderRadiusUnit ? borderRadiusUnit : 'px')
+							: undefined,
+					borderBottomRightRadius:
+						'' !== previewRadiusBottom
+							? previewRadiusBottom + (borderRadiusUnit ? borderRadiusUnit : 'px')
+							: undefined,
+					borderBottomLeftRadius:
+						'' !== previewRadiusLeft
+							? previewRadiusLeft + (borderRadiusUnit ? borderRadiusUnit : 'px')
+							: undefined,
 					boxShadow:
 						undefined !== displayShadow &&
 						displayShadow &&

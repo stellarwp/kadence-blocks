@@ -108,7 +108,7 @@
 		},
 		"borderRadius": {
 			"type": "array",
-			"default": [0, 0, 0, 0]
+			"default": ["", "", "", ""]
 		},
 		"uniqueID": {
 			"type": "string",

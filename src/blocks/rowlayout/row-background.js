@@ -1,3 +1,4 @@
+// cspell:ignore blackonlight outlineblack outlinewhite arrowstyle playsinline
 /**
  * BLOCK Section: Kadence Row / Layout Background
  */
@@ -485,18 +486,22 @@ function RowBackground({ attributes, previewDevice, backgroundClasses, children,
 			borderRight: previewBorderRightStyle ? previewBorderRightStyle : undefined,
 			borderBottom: previewBorderBottomStyle ? previewBorderBottomStyle : undefined,
 			borderLeft: previewBorderLeftStyle ? previewBorderLeftStyle : undefined,
-			borderTopLeftRadius: previewRadiusTop
-				? previewRadiusTop + (borderRadiusUnit ? borderRadiusUnit : 'px')
-				: undefined,
-			borderTopRightRadius: previewRadiusRight
-				? previewRadiusRight + (borderRadiusUnit ? borderRadiusUnit : 'px')
-				: undefined,
-			borderBottomRightRadius: previewRadiusBottom
-				? previewRadiusBottom + (borderRadiusUnit ? borderRadiusUnit : 'px')
-				: undefined,
-			borderBottomLeftRadius: previewRadiusLeft
-				? previewRadiusLeft + (borderRadiusUnit ? borderRadiusUnit : 'px')
-				: undefined,
+			// Tested against '' rather than truthiness, the way the Advanced Image does it: a corner set
+			// to 0 is a real value, and both `0` and `'0'` are falsy. Skipping the declaration for them
+			// left the row's block-default rule -- which carries the selected preset's radius -- as the
+			// only `border-radius` on the element.
+			borderTopLeftRadius:
+				'' !== previewRadiusTop ? previewRadiusTop + (borderRadiusUnit ? borderRadiusUnit : 'px') : undefined,
+			borderTopRightRadius:
+				'' !== previewRadiusRight
+					? previewRadiusRight + (borderRadiusUnit ? borderRadiusUnit : 'px')
+					: undefined,
+			borderBottomRightRadius:
+				'' !== previewRadiusBottom
+					? previewRadiusBottom + (borderRadiusUnit ? borderRadiusUnit : 'px')
+					: undefined,
+			borderBottomLeftRadius:
+				'' !== previewRadiusLeft ? previewRadiusLeft + (borderRadiusUnit ? borderRadiusUnit : 'px') : undefined,
 			minHeight: previewMinHeight ? previewMinHeight + minHeightUnit : undefined,
 			zIndex: zIndex ? zIndex : undefined,
 			boxShadow:
