@@ -98,48 +98,12 @@ import { EditorBoxControl } from '../../extension/design-tokens/components/Edito
 import { EditorBorderControl } from '../../extension/design-tokens/components/EditorBorderControl';
 import { EditorShadowControl, hasVisibleShadow } from '../../extension/design-tokens/components/EditorShadowControl';
 import { renderShadowColor } from '../../extension/design-tokens/components/shadow-color';
+import { renderBorderColor } from '../../extension/design-tokens/components/border-color';
 import { pickableTokensForControl, pickableTokensForKey } from '../../extension/token-picker';
 import { ColorControl, ColorControlGroup } from '../../token-controls';
 import { BUTTON_MARGIN_FALLBACK, BUTTON_PADDING_FALLBACK } from '../../token-controls/helpers/button-box-defaults';
 import { useColorGroups } from '../../extension/design-tokens/hooks/use-color-groups';
 import { resolveColorLiteral } from '../../extension/design-tokens/color-literal';
-
-/**
- * `EditorBorderControl`'s `renderColor` render-prop: reuses the block's existing `PopColorControl`
- * unchanged. `BorderControl`'s row anatomy always calls this once per row with that row's own
- * resolved color scalar (via `readSlot()`), never the whole four-element axis, so this only ever
- * renders one swatch per call — the same way it already reads `width`/`style` per row. Color is out
- * of this plan's scope entirely; this only wires the existing color-picking mechanism back in.
- *
- * @param {Object}   props          The render-prop's argument.
- * @param {*}        props.value    The row's own resolved color scalar.
- * @param {Function} props.onChange Called with the next color scalar.
- * @param {?string}  [props.label]  The row's own bare side name (e.g. "top"), or `null` while
- *                                  linked, from `BorderControl`'s per-row `renderColor` call.
- *
- * @since TBD
- *
- * @return {JSX.Element} The rendered color field.
- */
-function renderBorderColor({ value, onChange, label }) {
-	return (
-		<PopColorControl
-			swatchLabel={
-				label
-					? sprintf(
-							/* translators: %s: border side (Top, Right, Bottom, Left) */
-							__('%s Border Color', 'kadence-blocks'),
-							upperFirst(label)
-						)
-					: undefined
-			}
-			value={value || ''}
-			default={''}
-			hideClear={true}
-			onChange={onChange}
-		/>
-	);
-}
 
 export default function KadenceButtonEdit(props) {
 	const { attributes, setAttributes, isSelected, context, clientId, name } = props;
