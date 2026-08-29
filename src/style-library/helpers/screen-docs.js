@@ -25,7 +25,17 @@ import { SCREEN_DOCS, SCREEN_DOCS_FILTER } from '../constants/screen-docs';
  * @return {boolean} True for an http(s) URL.
  */
 function isLinkableUrl(value) {
-	return typeof value === 'string' && /^https?:\/\//.test(value);
+	if (typeof value !== 'string') {
+		return false;
+	}
+
+	try {
+		const { protocol } = new URL(value);
+
+		return protocol === 'http:' || protocol === 'https:';
+	} catch {
+		return false;
+	}
 }
 
 /**

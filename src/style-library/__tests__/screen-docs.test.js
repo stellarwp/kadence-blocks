@@ -147,6 +147,35 @@ describe('the screen docs filter', () => {
 	});
 
 	/**
+	 * A scheme is case-insensitive per the URL spec, so an upper-case one is a real link.
+	 *
+	 * @return {void}
+	 */
+	it('accepts a URL whose scheme is upper case', () => {
+		addFilter(SCREEN_DOCS_FILTER, 'test/screen-docs', (docs) => ({
+			...docs,
+			'blocks/acme/widget': { description: 'Style the widget.', docUrl: 'HTTPS://example.com/widget' },
+		}));
+
+		expect(screenDoc('blocks/acme/widget').docUrl).toBe('HTTPS://example.com/widget');
+	});
+
+	/**
+	 * A scheme with nothing after it is not a destination, so it is dropped like any other
+	 * unusable value rather than rendered as a link to nowhere.
+	 *
+	 * @return {void}
+	 */
+	it('drops a URL that carries a scheme but no host', () => {
+		addFilter(SCREEN_DOCS_FILTER, 'test/screen-docs', (docs) => ({
+			...docs,
+			'blocks/acme/widget': { description: 'Style the widget.', docUrl: 'https://' },
+		}));
+
+		expect(screenDoc('blocks/acme/widget')).toEqual({ description: 'Style the widget.', docUrl: '' });
+	});
+
+	/**
 	 * An entry with no sentence has nothing to render, link or not.
 	 *
 	 * @return {void}
