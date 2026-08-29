@@ -4,11 +4,15 @@
 	margin-bottom: var(--kb-sl-space-30);
 }
 
+// The floor matches the tallest control the row can hold — the palette `SelectDropdown`, which
+// sets the same `var(--kb-sl-space-50)` height — so the row does not change height from screen to
+// screen. A floor rather than a fixed height: a crowded lead still grows instead of overflowing.
 .kadence-blocks-style-library__screen-header-row {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 	gap: var(--kb-sl-space-15);
+	min-height: var(--kb-sl-space-50);
 }
 
 .kadence-blocks-style-library__screen-header-lead {
