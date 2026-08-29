@@ -26,6 +26,7 @@ import { MetaChip } from '../atoms/MetaChip';
 import { SectionHeading } from '../atoms/SectionHeading';
 import { AddTile } from '../atoms/AddTile';
 import { SelectDropdown } from '../molecules/SelectDropdown';
+import { ScreenDescription } from '../molecules/ScreenDescription';
 import { useSettingsPanel } from '../../hooks/use-settings-panel';
 import { DEMO_ITEM_ID, DEMO_SETTINGS_SCHEMA, DEMO_SETTINGS_VALUES } from '../../constants/demo-settings-schema';
 import { isEqual, setValueAtPath } from '../../helpers/settings-schema';
@@ -291,10 +292,11 @@ function PrimitivesGallery() {
 			<GallerySection
 				name="ScreenHeader"
 				layer="organism"
-				note="The common shape — title + primary action only. Eight of the nine Base Styles / Block Presets screens render exactly this; no inline control, no destructive action."
+				note="The common shape — title + primary action, with the screen's helper copy under the row. Eight of the nine Base Styles / Block Presets screens render exactly this; no inline control, no destructive action."
 			>
 				<ScreenHeader
 					title="Sample screen"
+					description={<ScreenDescription screenId="border-radius" />}
 					primaryAction={
 						<Button variant="secondary" icon={plus}>
 							Add row
