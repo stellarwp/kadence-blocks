@@ -18,7 +18,6 @@ import {
 } from '@kadence/helpers';
 
 import {
-	PopColorControl,
 	TypographyControls,
 	SmallResponsiveControl,
 	ResponsiveRangeControls,
@@ -43,13 +42,13 @@ import {
 	Tooltip,
 } from '@kadence/components';
 import classnames from 'classnames';
-import { times, filter, map, uniqueId, get, upperFirst } from 'lodash';
+import { times, filter, map, uniqueId, get } from 'lodash';
 
 import metadata from './block.json';
 /**
  * Internal block libraries
  */
-import { __, sprintf } from '@wordpress/i18n';
+import { __ } from '@wordpress/i18n';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { tooltip as tooltipIcon } from '@kadence/icons';
 import { link as linkIcon } from '@wordpress/icons';
