@@ -9,7 +9,6 @@ import metadata from './block.json';
  */
 import { advancedBtnIcon } from '@kadence/icons';
 import edit from './edit';
-import deprecated from './deprecated';
 
 /**
  * Internal block libraries
@@ -43,5 +42,4 @@ registerBlockType('kadence/singlebtn', {
 			text: __('Click Me!', 'kadence-blocks'),
 		},
 	},
-	deprecated,
 });
