@@ -23,7 +23,6 @@
 	flex-direction: column;
 	gap: var(--kb-sl-space-05);
 	width: var(--kb-sl-size-swatch-card-width);
-	padding: var(--kb-sl-space-10);
 	// gray-300, not the structural --kb-sl-color-border (gray-200) semantic — a card outline is a
 	// distinct role from structural chrome edges.
 	border: var(--kb-sl-border-width-input) solid var(--kb-sl-color-gray-300);
@@ -31,16 +30,23 @@
 	background: var(--kb-sl-color-surface);
 }
 
-// The selecting click target. Carries no box of its own — the border, radius, background, and
-// padding stay on `.main` above, so every existing hover/selected/placeholder rule keeps
-// describing the same box it always did.
+// The selecting click target. The border, radius and background stay on `.main` above, so every
+// existing hover/selected/placeholder rule keeps describing the same box it always did — but the
+// card's padding lives HERE, not there. A padded parent would leave an inert ring around the
+// button, and clicking a card near its edge would do nothing.
 .kadence-blocks-style-library__swatch-card-select {
+	// `border-box`, so `width: 100%` still measures the parent's full content width once the
+	// padding below is added to it.
+	box-sizing: border-box;
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
 	gap: var(--kb-sl-space-05);
 	width: 100%;
-	padding: 0;
+	// No bottom padding: the pill slot below is a sibling and carries the card's lower inset, so
+	// splitting them this way keeps the gap between the value line and the pill the one `.main`
+	// declares rather than stacking two paddings on top of it.
+	padding: var(--kb-sl-space-10) var(--kb-sl-space-10) 0;
 	border: 0;
 	background: none;
 	text-align: left;
@@ -165,7 +171,12 @@ button.kadence-blocks-style-library__swatch-card-select {
 // let a card with nothing to say sit shorter than its neighbors, which is the one thing the single
 // slot exists to prevent.
 .kadence-blocks-style-library__swatch-card-pill-slot {
+	box-sizing: border-box;
 	display: flex;
 	align-items: center;
-	min-height: var(--kb-sl-space-30);
+	width: 100%;
+	// The card's lower inset — see `.swatch-card-select`'s own padding comment for why the two
+	// halves carry it between them instead of the parent.
+	padding: 0 var(--kb-sl-space-10) var(--kb-sl-space-10);
+	min-height: calc(var(--kb-sl-space-30) + var(--kb-sl-space-10));
 }
