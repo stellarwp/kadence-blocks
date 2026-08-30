@@ -5,7 +5,7 @@
 /**
  * WordPress dependencies
  */
-import { useEffect, useMemo } from '@wordpress/element';
+import { useCallback, useEffect, useMemo } from '@wordpress/element';
 import { SnackbarList } from '@wordpress/components';
 import { useSelect, useDispatch } from '@wordpress/data';
 
@@ -43,6 +43,7 @@ import { BreakpointProvider } from '../../token-controls/context/breakpoint';
 import { DEFAULT_SCREEN_ID } from '../constants/screens';
 import { buildBaseStylesNav, buildBlockPresetsNav, resolveScreen } from '../helpers/screens';
 import { libraryDisplayTitle } from '../helpers/libraries';
+import { resetWorkspace } from '../helpers/workspace';
 
 /**
  * The Base Styles ids with a real screen component, extended by each subsequent per-screen
@@ -76,7 +77,20 @@ const SCREEN_COMPONENTS = {
 export function StyleLibraryApp() {
 	const feed = useDesignTokensFeed();
 	const { route, navigate, replace } = useStyleLibraryRoute();
-	const libraries = useLibraries(feed.feed, feed.refreshFeed);
+
+	// The draft channel (see `hooks/use-draft-channel.js`): built here because this is the one
+	// component that already renders both the screen and its settings-panel slot, so it is the only
+	// place a provider for the two of them can live. Built before `useLibraries` below because the
+	// library flows need to clear it when they replace the feed under an open panel.
+	const channel = useDraftChannelState();
+
+	// Pulled out of `channel` rather than depending on `channel` itself: `useDraftChannelState()`
+	// returns a fresh object literal on every render, while `clearPublication` is individually
+	// stable — the same reasoning `ScaleSettings.js` documents for its own publish effect.
+	const clearPublication = channel.clearPublication;
+	const libraryReset = useCallback(() => resetWorkspace({ clearPublication, replace }), [clearPublication, replace]);
+
+	const libraries = useLibraries(feed.feed, feed.refreshFeed, libraryReset);
 
 	const snackbarNotices = useSelect(
 		(select) =>
@@ -86,11 +100,6 @@ export function StyleLibraryApp() {
 		[]
 	);
 	const { removeNotice } = useDispatch('core/notices');
-
-	// The draft channel (see `hooks/use-draft-channel.js`): built here because this is the one
-	// component that already renders both the screen and its settings-panel slot, so it is the only
-	// place a provider for the two of them can live.
-	const channel = useDraftChannelState();
 
 	const baseStylesNav = useMemo(() => buildBaseStylesNav(), []);
 	const blockPresetsNav = useMemo(() => buildBlockPresetsNav(feed.feed), [feed.feed]);

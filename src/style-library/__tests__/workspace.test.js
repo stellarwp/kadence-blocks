@@ -1,5 +1,8 @@
 /* eslint-env jest */
 import { resetWorkspace } from '../helpers/workspace';
+import { act } from 'react';
+import { createRoot } from 'react-dom/client';
+import { useDraftChannelState } from '../hooks/use-draft-channel';
 
 describe('resetWorkspace', () => {
 	it('clears the draft channel and empties the route scope and item', () => {
@@ -53,5 +56,62 @@ describe('resetWorkspace', () => {
 
 		expect(() => resetWorkspace({ clearPublication: null, replace })).not.toThrow();
 		expect(replace).toHaveBeenCalledWith({ scope: '', item: '' });
+	});
+});
+
+describe('resetWorkspace against the live draft channel', () => {
+	let container;
+	let root;
+
+	beforeEach(() => {
+		global.IS_REACT_ACT_ENVIRONMENT = true;
+		container = document.createElement('div');
+		document.body.appendChild(container);
+		root = createRoot(container);
+	});
+
+	afterEach(() => {
+		act(() => root.unmount());
+		container.remove();
+		delete global.IS_REACT_ACT_ENVIRONMENT;
+	});
+
+	/**
+	 * Mount the real draft channel and expose its latest value, so the guard can be exercised
+	 * against the actual hook rather than a stand-in.
+	 *
+	 * @return {Function} Reads the channel value from the most recent render.
+	 */
+	function mountChannel() {
+		let latest = null;
+
+		function Probe() {
+			latest = useDraftChannelState();
+			return null;
+		}
+
+		act(() => root.render(<Probe />));
+
+		return () => latest;
+	}
+
+	it('lets a guarded navigation run immediately after a dirty draft is cleared', () => {
+		const channel = mountChannel();
+		const navigation = jest.fn();
+
+		act(() => channel().publish({ itemId: 'size.md', label: 'Medium', draft: { value: '2rem' }, isDirty: true }));
+		act(() => channel().guard(navigation));
+
+		// The reported symptom: a dirty draft parks the navigation behind the modal.
+		expect(channel().isGuardOpen).toBe(true);
+		expect(navigation).not.toHaveBeenCalled();
+
+		act(() => resetWorkspace({ clearPublication: channel().clearPublication, replace: jest.fn() }));
+
+		expect(channel().isGuardOpen).toBe(false);
+
+		act(() => channel().guard(navigation));
+
+		expect(navigation).toHaveBeenCalledTimes(1);
 	});
 });

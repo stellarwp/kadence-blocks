@@ -44,17 +44,19 @@ import { STORE_NAME } from '../store';
  * Each slot is cleared the instant its own flow starts again, so a stale error from a previous
  * attempt never lingers past a fresh try at the same action.
  *
- * @param {Object}   feed        The design-tokens admin feed (provides the library being edited).
- * @param {Function} refreshFeed Replaces the feed with a fresh REST read for a slug (from
- *                               `use-design-tokens-feed`), so opening a library re-renders every
- *                               consumer without a page reload.
+ * @param {Object}   feed           The design-tokens admin feed (provides the library being edited).
+ * @param {Function} refreshFeed    Replaces the feed with a fresh REST read for a slug (from
+ *                                  `use-design-tokens-feed`), so opening a library re-renders every
+ *                                  consumer without a page reload.
+ * @param {Function} resetWorkspace Clears the draft channel and the open route item, so a replaced
+ *                                  feed never strands an open settings panel's draft.
  *
  * @since TBD
  *
  * @return {Object} The library list, the two slugs, the busy flag, the per-flow error slots and
  *                  the functions that clear them, and the five operations.
  */
-export function useLibraries(feed, refreshFeed) {
+export function useLibraries(feed, refreshFeed, resetWorkspace) {
 	const [isBusy, setIsBusy] = useState(false);
 	const [openError, setOpenError] = useState(null);
 	const [activateError, setActivateError] = useState(null);
@@ -112,6 +114,32 @@ export function useLibraries(feed, refreshFeed) {
 		return registry.resolveSelect(STORE_NAME).getLibraries();
 	}, [registry]);
 
+	/**
+	 * Drop the store's cached state for a library and re-arm the resolvers that fill it.
+	 *
+	 * The action empties the cached values; the invalidations are what make them refetch —
+	 * `@wordpress/data` still has each tuple marked resolved, and would otherwise keep serving the
+	 * now-empty slice forever. Invalidating per selector rather than per tuple avoids having to
+	 * enumerate `(namespace, block, slug)` for every preset-bound block here, and costs nothing:
+	 * only one library is open at a time, so no other slug's tuples are mounted to re-resolve.
+	 *
+	 * @param {string} slug Token library slug.
+	 *
+	 * @since TBD
+	 *
+	 * @return {void}
+	 */
+	const forgetLibrary = useCallback(
+		(slug) => {
+			const store = registry.dispatch(STORE_NAME);
+
+			store.forgetLibrary(slug);
+			store.invalidateResolutionForStoreSelector('getPaletteListing');
+			store.invalidateResolutionForStoreSelector('getBlockPresets');
+		},
+		[registry]
+	);
+
 	const clearOpenError = useCallback(() => setOpenError(null), []);
 	const clearActivateError = useCallback(() => setActivateError(null), []);
 	const clearCreateError = useCallback(() => setCreateError(null), []);
@@ -132,8 +160,8 @@ export function useLibraries(feed, refreshFeed) {
 	// `createError`, never through `openError`, and its own `onBusy` so only the user-initiated
 	// open blocks the app. Creation runs behind its own modal, which reports progress itself.
 	const runOpen = useCallback(
-		({ slug, onError, onBusy }) => openLibraryFlow({ slug, refreshFeed, onBusy, onError }),
-		[refreshFeed]
+		({ slug, onError, onBusy }) => openLibraryFlow({ slug, refreshFeed, resetWorkspace, onBusy, onError }),
+		[refreshFeed, resetWorkspace]
 	);
 
 	const openLibrary = useCallback(
@@ -193,12 +221,14 @@ export function useLibraries(feed, refreshFeed) {
 				successorSlug,
 				refreshFeed,
 				loadLibraries,
+				forgetLibrary,
+				resetWorkspace,
 				onBusy: setSwapBusy,
 				onError: setDeleteError,
 				onActiveChanged: setActiveSlug,
 			});
 		},
-		[activeSlug, loadLibraries, refreshFeed, setSwapBusy]
+		[activeSlug, loadLibraries, refreshFeed, forgetLibrary, resetWorkspace, setSwapBusy]
 	);
 
 	return {
