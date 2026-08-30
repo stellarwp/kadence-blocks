@@ -36,6 +36,7 @@ import { showSettings } from '@kadence/helpers';
  * Import Block Specific Components
  */
 import { BLEND_OPTIONS } from './constants';
+import metadata from './block.json';
 /**
  * Import WordPress Internals
  */
@@ -216,7 +217,11 @@ function StyleControls(props) {
 	// Design-token indicators: the per-attribute bound/overridden state for the selected preset, plus a
 	// reset that clears the mapped attribute back to the preset value (served by the existing scoped CSS).
 	const tokenBinding = usePresetBinding('kadence/rowlayout', attributes, undefined, previewDevice);
-	const resetToken = (attr) => resetAttr(attr, setAttributes, tokenBinding[attr]?.kind);
+	// The block's own attribute schema is passed through so a reset can clear a color's legacy
+	// palette-CLASS companion (`bgColor` -> `bgColorClass`) as well as the color itself. WordPress emits
+	// those utility classes with `!important`, so a stale one outranks anything the reset restores and
+	// the row would keep the old color while the field claimed otherwise.
+	const resetToken = (attr) => resetAttr(attr, setAttributes, tokenBinding[attr]?.kind, metadata.attributes);
 	// One fetch of the block's effective palette groups, shared by both `ColorControl` instances below.
 	const colorGroups = useColorGroups(clientId);
 
