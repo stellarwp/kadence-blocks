@@ -12,6 +12,7 @@
  */
 import { KadenceBlocksCSS } from '@kadence/helpers';
 import BackendStyles, { hasVisibleShadow, shadowAxisPx, shadowCss } from '../index';
+import metadata from '../../../block.json';
 
 // `backend-styles/index.js` imports the `@kadence/helpers` barrel, which eagerly pulls in a
 // REST-fetch helper that has no `@wordpress/api-fetch` module to resolve under Jest (the same
@@ -343,6 +344,50 @@ describe('BackendStyles shadow flag gating', () => {
 		});
 
 		expect(boxShadowFor(fakeCss.rules, HOVER_SELECTOR)).toBe(shadowCss(VISIBLE_SHADOW, 14));
+	});
+
+	/**
+	 * An untouched button carries the shipped schema defaults — a VISIBLE shadow value paired with a
+	 * lowered flag — and must still paint nothing on the canvas. The visible value only exists so a
+	 * legacy button that saved no value key of its own keeps its shadow; the flag is what keeps a new
+	 * button clean.
+	 *
+	 * @return {void}
+	 */
+	it('emits no box-shadow for an untouched button carrying the shipped visible defaults', () => {
+		BackendStyles({
+			attributes: {
+				uniqueID: 'abc123',
+				displayShadow: metadata.attributes.displayShadow.default,
+				shadow: metadata.attributes.shadow.default,
+				displayHoverShadow: metadata.attributes.displayHoverShadow.default,
+				shadowHover: metadata.attributes.shadowHover.default,
+			},
+			previewDevice: 'Desktop',
+		});
+
+		expect(boxShadowFor(fakeCss.rules, BASE_SELECTOR)).toBe('none');
+		expect(boxShadowFor(fakeCss.rules, HOVER_SELECTOR)).toBe('');
+	});
+
+	/**
+	 * The regression this pairing exists for: a legacy button switched on before the shadow value was
+	 * ever customized saved its flag and NO value key, so it arrives with the schema default filled
+	 * in. It must render the historical shadow, not nothing.
+	 *
+	 * @return {void}
+	 */
+	it('emits the shipped default shadow for a legacy button with its flag raised and no stored value', () => {
+		BackendStyles({
+			attributes: {
+				uniqueID: 'abc123',
+				displayShadow: true,
+				shadow: metadata.attributes.shadow.default,
+			},
+			previewDevice: 'Desktop',
+		});
+
+		expect(boxShadowFor(fakeCss.rules, BASE_SELECTOR)).toBe(shadowCss(metadata.attributes.shadow.default[0], 14));
 	});
 });
 

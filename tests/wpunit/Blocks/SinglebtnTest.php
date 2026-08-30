@@ -178,9 +178,9 @@ class SinglebtnTest extends KadenceBlocksUnit {
 
 		$output = $this->render_button(
 			[
-				'kbPreset' => 'accent',
+				'kbPreset'      => 'accent',
 				'displayShadow' => true,
-				'shadow'   => [
+				'shadow'        => [
 					[
 						'color'   => '#00ff00',
 						'opacity' => 1,
@@ -382,9 +382,9 @@ class SinglebtnTest extends KadenceBlocksUnit {
 
 		$output = $this->render_button(
 			[
-				'kbPreset' => 'bare',
+				'kbPreset'      => 'bare',
 				'displayShadow' => true,
-				'shadow'   => [
+				'shadow'        => [
 					[
 						'color'   => 'transparent',
 						'opacity' => 1,
@@ -452,10 +452,10 @@ class SinglebtnTest extends KadenceBlocksUnit {
 
 		$output = $this->render_button(
 			[
-				'kbPreset'    => 'bare',
-				'colorHover'  => '#0000ff',
-				'displayShadow' => true,
-				'shadow'      => [
+				'kbPreset'           => 'bare',
+				'colorHover'         => '#0000ff',
+				'displayShadow'      => true,
+				'shadow'             => [
 					[
 						'color'   => '#00ff00',
 						'opacity' => 1,
@@ -467,7 +467,7 @@ class SinglebtnTest extends KadenceBlocksUnit {
 					],
 				],
 				'displayHoverShadow' => true,
-				'shadowHover' => [
+				'shadowHover'        => [
 					[
 						'color'   => 'transparent',
 						'opacity' => 1,
@@ -567,10 +567,10 @@ class SinglebtnTest extends KadenceBlocksUnit {
 
 		$output = $this->render_button(
 			[
-				'kbPreset'          => 'bare',
-				'colorTransparent'  => '#0000ff',
-				'displayShadow'     => true,
-				'shadow'            => [
+				'kbPreset'                 => 'bare',
+				'colorTransparent'         => '#0000ff',
+				'displayShadow'            => true,
+				'shadow'                   => [
 					[
 						'color'   => '#00ff00',
 						'opacity' => 1,
@@ -582,7 +582,7 @@ class SinglebtnTest extends KadenceBlocksUnit {
 					],
 				],
 				'displayShadowTransparent' => true,
-				'shadowTransparent' => [
+				'shadowTransparent'        => [
 					[
 						'color'   => 'transparent',
 						'opacity' => 1,
@@ -624,10 +624,10 @@ class SinglebtnTest extends KadenceBlocksUnit {
 
 		$output = $this->render_button(
 			[
-				'kbPreset'     => 'bare',
-				'colorSticky'  => '#0000ff',
-				'displayShadow' => true,
-				'shadow'       => [
+				'kbPreset'            => 'bare',
+				'colorSticky'         => '#0000ff',
+				'displayShadow'       => true,
+				'shadow'              => [
 					[
 						'color'   => '#00ff00',
 						'opacity' => 1,
@@ -639,7 +639,7 @@ class SinglebtnTest extends KadenceBlocksUnit {
 					],
 				],
 				'displayShadowSticky' => true,
-				'shadowSticky' => [
+				'shadowSticky'        => [
 					[
 						'color'   => 'transparent',
 						'opacity' => 1,
@@ -685,9 +685,9 @@ class SinglebtnTest extends KadenceBlocksUnit {
 
 		$output = $this->render_button(
 			[
-				'kbPreset' => 'accent',
+				'kbPreset'      => 'accent',
 				'displayShadow' => true,
-				'shadow'   => [
+				'shadow'        => [
 					[
 						'color'   => 'transparent',
 						'opacity' => 1,
@@ -721,9 +721,9 @@ class SinglebtnTest extends KadenceBlocksUnit {
 
 		$output = $this->render_button(
 			[
-				'kbPreset' => 'bare',
+				'kbPreset'      => 'bare',
 				'displayShadow' => true,
-				'shadow'   => [
+				'shadow'        => [
 					[
 						'color'   => '#00ff00',
 						'opacity' => 1,
@@ -757,9 +757,9 @@ class SinglebtnTest extends KadenceBlocksUnit {
 
 		$output = $this->render_button(
 			[
-				'kbPreset' => 'bare',
+				'kbPreset'      => 'bare',
 				'displayShadow' => true,
-				'shadow'   => [
+				'shadow'        => [
 					[
 						'color'   => '#00ff00',
 						'opacity' => 1,
@@ -777,6 +777,74 @@ class SinglebtnTest extends KadenceBlocksUnit {
 		$selector   = '.wp-block-kadence-advancedbtn .kb-btn123.kb-button';
 
 		$css_helper->assertCSSPropertiesEqual( $selector, [ 'box-shadow' => '1px 1px 2px 0px #0f0' ] );
+	}
+
+	/**
+	 * An untouched button arrives with the shipped schema defaults — a VISIBLE `shadow` value paired
+	 * with a lowered `displayShadow` — and must still paint nothing. The visible value exists only so
+	 * a legacy button that saved no value key of its own keeps its shadow; the lowered flag is what
+	 * keeps a brand-new button clean.
+	 *
+	 * @return void
+	 */
+	public function testUntouchedButtonEmitsNoBoxShadowDespiteTheShippedVisibleDefault(): void {
+		$this->seedPreset( 'bare', 'Bare', [ 'button-bg' => '#ff0000' ] );
+
+		$output = $this->render_button(
+			[
+				'kbPreset'      => 'bare',
+				'displayShadow' => false,
+				'shadow'        => [ $this->shipped_shadow_default() ],
+			]
+		);
+
+		$css_helper = new CSSTestHelper( $output );
+		$selector   = '.wp-block-kadence-advancedbtn .kb-btn123.kb-button';
+
+		$css_helper->assertCSSPropertiesEqual( $selector, [ 'box-shadow' => 'none' ] );
+	}
+
+	/**
+	 * A button switched on before its shadow was ever customized saved the flag and NO `shadow` key,
+	 * because the value matched the registered default. It arrives with that default filled back in
+	 * and must render the shadow it has always rendered.
+	 *
+	 * @return void
+	 */
+	public function testLegacyButtonWithNoStoredShadowValueStillRendersItsShippedShadow(): void {
+		$this->seedPreset( 'bare', 'Bare', [ 'button-bg' => '#ff0000' ] );
+
+		$output = $this->render_button(
+			[
+				'kbPreset'      => 'bare',
+				'displayShadow' => true,
+				'shadow'        => [ $this->shipped_shadow_default() ],
+			]
+		);
+
+		$this->assertStringContainsString(
+			'box-shadow:1px 1px 2px 0px rgba(0, 0, 0, 0.2)',
+			$output,
+			'A raised flag with no stored shadow value must render the shipped default shadow.'
+		);
+	}
+
+	/**
+	 * The `shadow` attribute default `block.json` has always registered, spelled out here so a change
+	 * to that schema fails these tests loudly instead of silently weakening them.
+	 *
+	 * @return array<string, mixed> The shipped default shadow item.
+	 */
+	private function shipped_shadow_default(): array {
+		return [
+			'color'   => '#000000',
+			'opacity' => 0.2,
+			'spread'  => 0,
+			'blur'    => 2,
+			'hOffset' => 1,
+			'vOffset' => 1,
+			'inset'   => false,
+		];
 	}
 
 	/**

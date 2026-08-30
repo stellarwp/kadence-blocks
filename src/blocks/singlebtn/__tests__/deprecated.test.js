@@ -46,10 +46,13 @@ describe('kadence/singlebtn deprecated migration', () => {
 		TOGGLE_ATTRIBUTES.forEach((key) => expect(attributes[key]).toEqual({ type: 'boolean', default: false }));
 	});
 
-	it('rolls the six shadow attribute defaults back to their pre-removal values', () => {
+	// The current schema ships these same historical defaults again, so this no longer distinguishes
+	// the deprecation's schema from the block's — it pins the values themselves, and the equality
+	// below is the drift detector: if either side moves, this fails.
+	it('declares the six shadow attribute defaults the current schema also ships', () => {
 		Object.entries(LEGACY_SHADOW_DEFAULTS).forEach(([key, legacyDefault]) => {
 			expect(attributes[key]).toEqual({ type: 'array', default: legacyDefault });
-			expect(attributes[key].default).not.toEqual(metadata.attributes[key].default);
+			expect(attributes[key].default).toEqual(metadata.attributes[key].default);
 		});
 	});
 
