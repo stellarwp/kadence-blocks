@@ -286,6 +286,38 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
+	 * A `css_state` naming several states, comma separated, scopes EACH part by the block and preset. Left
+	 * undistributed, a selector list would apply its leading compound to the first part only, so every part
+	 * after it would match the whole document.
+	 *
+	 * @return void
+	 */
+	public function testItScopesEveryPartOfAMultiStateSelector(): void {
+		$this->seedStatePresets();
+
+		$registry = new Token_Registry();
+		$registry->register_preset_bindings(
+			[
+				'block'    => 'kadence/state-fixture',
+				'bindings' => [
+					'color-hover' => [
+						'token'     => 'semantic.color.icon',
+						'css_prop'  => 'color',
+						'css_state' => '*.kb-button:hover,*.kb-button:focus',
+					],
+				],
+			]
+		);
+
+		$this->assertStringContainsString(
+			'.wp-block-kadence-state-fixture.kb-preset--flare *.kb-button:hover,'
+				. '.wp-block-kadence-state-fixture.kb-preset--flare *.kb-button:focus'
+				. '{color:var(--kb-token--preset--kadence-state-fixture--flare--color-hover);}',
+			$this->builder( $registry )->css( 'default' )
+		);
+	}
+
+	/**
 	 * A state binding that names no `css_prop` has no declaration to emit — the state rule IS that
 	 * declaration — so it contributes nothing rather than an empty rule.
 	 *

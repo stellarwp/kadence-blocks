@@ -717,6 +717,12 @@ final class Css_Builder {
 	 * Grouped by suffix so a block with several state properties on the same element emits one rule, matching
 	 * how the block-default-CSS layer groups its own descendant rules.
 	 *
+	 * A `css_state` may name several states at once, comma separated (`*.kb-button:hover,*.kb-button:focus`),
+	 * for the many blocks whose own CSS treats hover and keyboard focus as one look. Each part is scoped
+	 * independently — the scope is repeated per part rather than distributed over the group — because a
+	 * selector list only applies its leading compound to its FIRST part, so a naive concatenation would leave
+	 * every part after the first matching the whole document.
+	 *
 	 * @since TBD
 	 *
 	 * @param string                                                                                          $block      The block name.
@@ -735,25 +741,56 @@ final class Css_Builder {
 				continue;
 			}
 
-			$suffix = $this->selector_suffix( $editor ? $info['editor'] : $info['state'] );
+			$suffixes = $this->state_suffixes( $editor ? $info['editor'] : $info['state'] );
 
-			// An empty suffix would put the declaration on the block root with no state at all, which is the
-			// block-default layer's job and would repaint every instance. A state binding whose suffix
+			// An empty suffix list would put the declaration on the block root with no state at all, which is
+			// the block-default layer's job and would repaint every instance. A state binding whose suffix
 			// sanitizes away contributes nothing rather than silently becoming a resting-state rule.
-			if ( $suffix === '' ) {
+			if ( $suffixes === [] ) {
 				continue;
 			}
 
-			$by_suffix[ $suffix ][] = $info['prop'] . ':var(' . $this->preset_var( $block, $preset, (string) $property ) . ')';
+			$by_suffix[ implode( ',', $suffixes ) ][] = $info['prop'] . ':var(' . $this->preset_var( $block, $preset, (string) $property ) . ')';
 		}
 
 		$css = '';
 
 		foreach ( $by_suffix as $suffix => $declarations ) {
-			$css .= $scope . $suffix . '{' . implode( ';', $declarations ) . ';}';
+			$parts = array_map(
+				static function ( string $part ) use ( $scope ): string {
+					return $scope . $part;
+				},
+				explode( ',', (string) $suffix )
+			);
+
+			$css .= implode( ',', $parts ) . '{' . implode( ';', $declarations ) . ';}';
 		}
 
 		return $css;
+	}
+
+	/**
+	 * Split a binding's raw state selector into its individual, composed suffixes, dropping any part that
+	 * sanitizes away to nothing.
+	 *
+	 * @since TBD
+	 *
+	 * @param string|null $state The binding's raw `css_state` / `editor_css_state`.
+	 *
+	 * @return string[] The composed suffixes, empty when the binding names no usable state.
+	 */
+	private function state_suffixes( ?string $state ): array {
+		$suffixes = [];
+
+		foreach ( explode( ',', (string) $state ) as $part ) {
+			$suffix = $this->selector_suffix( $part );
+
+			if ( $suffix !== '' ) {
+				$suffixes[] = $suffix;
+			}
+		}
+
+		return $suffixes;
 	}
 
 	/**

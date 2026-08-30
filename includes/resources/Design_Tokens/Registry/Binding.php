@@ -140,6 +140,10 @@ final class Binding {
 	 * the combinator space, one opening with a combinator or attachment character is used verbatim, and a
 	 * leading `*` is how a descendant whose own selector starts with `.` asks for the space.
 	 *
+	 * Several states may be named at once, comma separated (`*.kb-button:hover,*.kb-button:focus`), for a
+	 * block whose own CSS treats hover and keyboard focus as one look. The projector scopes each part on its
+	 * own, so every part is qualified by the block and preset rather than only the first.
+	 *
 	 * @since TBD
 	 *
 	 * @var string
