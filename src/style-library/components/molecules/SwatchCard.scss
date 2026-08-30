@@ -21,7 +21,6 @@
 	box-sizing: border-box;
 	display: flex;
 	flex-direction: column;
-	align-items: flex-start;
 	gap: var(--kb-sl-space-05);
 	width: var(--kb-sl-size-swatch-card-width);
 	padding: var(--kb-sl-space-10);
@@ -30,6 +29,20 @@
 	border: var(--kb-sl-border-width-input) solid var(--kb-sl-color-gray-300);
 	border-radius: var(--kb-sl-radius-m);
 	background: var(--kb-sl-color-surface);
+}
+
+// The selecting click target. Carries no box of its own — the border, radius, background, and
+// padding stay on `.main` above, so every existing hover/selected/placeholder rule keeps
+// describing the same box it always did.
+.kadence-blocks-style-library__swatch-card-select {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: var(--kb-sl-space-05);
+	width: 100%;
+	padding: 0;
+	border: 0;
+	background: none;
 	text-align: left;
 	cursor: pointer;
 }
@@ -140,4 +153,13 @@
 	min-width: var(--kb-sl-space-30);
 	min-height: var(--kb-sl-space-30);
 	opacity: 0;
+}
+
+// Reserved whether or not a pill is in it — an empty slot with no sized child would collapse and
+// let a card with nothing to say sit shorter than its neighbors, which is the one thing the single
+// slot exists to prevent.
+.kadence-blocks-style-library__swatch-card-pill-slot {
+	display: flex;
+	align-items: center;
+	min-height: var(--kb-sl-space-30);
 }

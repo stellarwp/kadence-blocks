@@ -81,15 +81,21 @@ function SwatchGridSkeleton({ label }) {
 					{SKELETON_SWATCH_IDS.map((id) => (
 						<div key={id} className="kadence-blocks-style-library__swatch-card">
 							<div className="kadence-blocks-style-library__swatch-card-main">
-								<Skeleton className="kadence-blocks-style-library__swatch-card-preview" />
-								{/* `.swatch-card-name` only declares `max-width: 100%`, never a `width` — a real
-								 * swatch name gets its width from its own text, but this shape has none, and its
-								 * `align-items: flex-start` parent collapses an unsized block to 0 width without
-								 * one. Same fix as the group heading bar above: pin a plausible literal width. */}
-								<Skeleton
-									className="kadence-blocks-style-library__swatch-card-name kadence-blocks-style-library__skeleton--bar"
-									style={{ width: '70%' }}
-								/>
+								<div className="kadence-blocks-style-library__swatch-card-select">
+									<Skeleton className="kadence-blocks-style-library__swatch-card-preview" />
+									{/* `.swatch-card-name` only declares `max-width: 100%`, never a `width` — a real
+									 * swatch name gets its width from its own text, but this shape has none, and its
+									 * `align-items: flex-start` parent (`.swatch-card-select`) collapses an unsized
+									 * block to 0 width without one. Same fix as the group heading bar above: pin a
+									 * plausible literal width. */}
+									<Skeleton
+										className="kadence-blocks-style-library__swatch-card-name kadence-blocks-style-library__skeleton--bar"
+										style={{ width: '70%' }}
+									/>
+								</div>
+								{/* Empty on purpose: the placeholder needs the real card's reserved pill slot,
+								 * or the grid visibly shortens the moment the real cards arrive. */}
+								<div className="kadence-blocks-style-library__swatch-card-pill-slot" />
 							</div>
 						</div>
 					))}

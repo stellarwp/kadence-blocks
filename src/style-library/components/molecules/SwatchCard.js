@@ -40,6 +40,10 @@ import './SwatchCard.scss';
  *                                              this is never derived from `subLine`.
  * @param {string}       props.name             The card's name.
  * @param {string}       [props.subLine]        The sub-line under the name (e.g. a hex value).
+ * @param {?JSX.Element} [props.pill]    The node for the slot under the sub-line — the caller's
+ *                                       inheritance pill, or null. Caller-supplied for the same
+ *                                       reason `preview` is: this card is used by screens that
+ *                                       have no notion of palette inheritance at all.
  * @param {boolean}      [props.isSelected]     Whether the card shows the selected treatment.
  * @param {Function}     props.onSelect         Called with the card id on click.
  * @param {boolean}      [props.isDraggable]    Whether the drag handle renders.
@@ -68,6 +72,7 @@ export function SwatchCard({
 	previewStyle,
 	name,
 	subLine,
+	pill = null,
 	isSelected = false,
 	onSelect,
 	isDraggable = false,
@@ -87,19 +92,27 @@ export function SwatchCard({
 				'kadence-blocks-style-library__swatch-card--pending-delete': isPendingDelete,
 			})}
 		>
-			<button
-				type="button"
-				className="kadence-blocks-style-library__swatch-card-main"
-				onClick={() => onSelect(id)}
-				disabled={isPendingDelete}
-				aria-disabled={isPendingDelete}
-			>
-				<span className="kadence-blocks-style-library__swatch-card-preview" style={previewStyle}>
-					{preview}
-				</span>
-				<span className="kadence-blocks-style-library__swatch-card-name">{name}</span>
-				{subLine && <span className="kadence-blocks-style-library__swatch-card-sub-line">{subLine}</span>}
-			</button>
+			{/* The bordered box is a plain element, not the click target it used to be: the pill slot
+			 * below can hold a button, and a button inside a button is invalid markup. Selecting the
+			 * card moved to the inner button, which covers exactly what it covered before. */}
+			<div className="kadence-blocks-style-library__swatch-card-main">
+				<button
+					type="button"
+					className="kadence-blocks-style-library__swatch-card-select"
+					onClick={() => onSelect(id)}
+					disabled={isPendingDelete}
+					aria-disabled={isPendingDelete}
+				>
+					<span className="kadence-blocks-style-library__swatch-card-preview" style={previewStyle}>
+						{preview}
+					</span>
+					<span className="kadence-blocks-style-library__swatch-card-name">{name}</span>
+					{subLine && <span className="kadence-blocks-style-library__swatch-card-sub-line">{subLine}</span>}
+				</button>
+				{/* Rendered whether or not there is a pill: the slot's reserved height is what keeps a
+				 * row of mixed cards on one baseline. */}
+				<span className="kadence-blocks-style-library__swatch-card-pill-slot">{pill}</span>
+			</div>
 			<span className="kadence-blocks-style-library__swatch-card-handle-slot">
 				{isDraggable && !isPendingDelete && <DragHandle handleProps={dragHandleProps} />}
 			</span>

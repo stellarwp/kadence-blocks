@@ -141,7 +141,16 @@ function SwatchGridGroup({ group, selectedId, onSelect, onReorder, onAdd, addLab
 				 * participate in the sortable group itself. */}
 				<DragOverlay>
 					{activeItem && (
-						<SwatchCard {...activeItem} isSelected={activeItem.id === selectedId} onSelect={() => {}} />
+						// `pill={null}` after the spread: the floating copy must not carry a second
+						// focusable Reset button duplicating the original card's accessible name. The
+						// slot itself still renders (see `SwatchCard`), so the overlay keeps the
+						// original's height.
+						<SwatchCard
+							{...activeItem}
+							isSelected={activeItem.id === selectedId}
+							onSelect={() => {}}
+							pill={null}
+						/>
 					)}
 				</DragOverlay>
 			</DndContext>
