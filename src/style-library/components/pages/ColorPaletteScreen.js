@@ -24,6 +24,7 @@ import { SwatchGrid } from '../organisms/SwatchGrid';
 import { SelectDropdown } from '../molecules/SelectDropdown';
 import { ScreenDescription } from '../molecules/ScreenDescription';
 import { EmptyState } from '../molecules/EmptyState';
+import { PaletteInheritanceNotice } from '../molecules/PaletteInheritanceNotice';
 import { Skeleton } from '../atoms/Skeleton';
 import { ActivatePaletteButton } from '../organisms/ActivatePaletteButton';
 import { CreatePaletteModal } from '../organisms/CreatePaletteModal';
@@ -35,6 +36,7 @@ import { DeleteColorGroupModal } from '../organisms/DeleteColorGroupModal';
 import { usePalettes } from '../../hooks/use-palettes';
 import { useLoadingAnnouncement } from '../../hooks/use-loading-announcement';
 import {
+	inheritedSwatchCount,
 	isUserCreatedPalette,
 	mapPaletteToSwatchGroups,
 	paletteDisplayLabel,
@@ -334,6 +336,9 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 						<Notice status="error" onRemove={palettes.clearStructureError}>
 							{palettes.structureError.message}
 						</Notice>
+					)}
+					{showsInheritance && (
+						<PaletteInheritanceNotice count={inheritedSwatchCount(gridGroups)} sourceLabel={defaultLabel} />
 					)}
 					<SwatchGrid
 						groups={gridGroups}

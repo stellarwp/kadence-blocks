@@ -249,13 +249,13 @@ describe('Color Palette inheritance pills', () => {
 	});
 
 	/**
-	 * On a successful reset the card's pill flips from the Reset button to the static "From" pill —
-	 * driven here by re-rendering with the store's own post-reset shape, the way the real
-	 * `usePalettes` would after the write resolves.
+	 * On a successful reset the card's pill flips from the Reset button to the static "From" pill,
+	 * and the inheritance notice's count goes up by one — driven here by re-rendering with the
+	 * store's own post-reset shape, the way the real `usePalettes` would after the write resolves.
 	 *
 	 * @return void
 	 */
-	it('flips the pill to the static state after a successful reset', async () => {
+	it('flips the pill to the static state and grows the notice count after a successful reset', async () => {
 		const palettes = makePalettes();
 		let resolveReset;
 		palettes.resetSwatch = jest.fn(
@@ -291,6 +291,9 @@ describe('Color Palette inheritance pills', () => {
 
 		expect(pills).toHaveLength(2);
 		expect(pills.every((pill) => pill.tagName === 'SPAN')).toBe(true);
+		expect(container.querySelector('.kadence-blocks-style-library__palette-inheritance-notice').textContent).toBe(
+			'2 colors in this palette still follow Base. Editing them in Base updates them here too, until you customize them.'
+		);
 	});
 
 	/**
@@ -310,5 +313,48 @@ describe('Color Palette inheritance pills', () => {
 
 		expect(resetButton).not.toBeNull();
 		expect(resetButton.disabled).toBe(false);
+	});
+});
+
+describe('Color Palette inheritance notice', () => {
+	const NOTICE_CLASS = 'kadence-blocks-style-library__palette-inheritance-notice';
+
+	/**
+	 * The notice counts the colors that still follow the default palette and names that palette.
+	 *
+	 * @return void
+	 */
+	it('counts the colors that still follow the default palette', () => {
+		renderScreen(makePalettes());
+
+		expect(container.querySelector(`.${NOTICE_CLASS}`).textContent).toBe(
+			'1 color in this palette still follows Base. Editing it in Base updates it here too, until you customize it.'
+		);
+	});
+
+	/**
+	 * With every color customized there is nothing left to explain, so the notice is absent rather
+	 * than stating zero.
+	 *
+	 * @return void
+	 */
+	it('renders nothing when every color is customized', () => {
+		const palettes = makePalettes();
+		palettes.palette.groups[0].swatches[0].overridden = true;
+
+		renderScreen(palettes);
+
+		expect(container.querySelector(`.${NOTICE_CLASS}`)).toBeNull();
+	});
+
+	/**
+	 * The default palette has no source to follow, so the notice never appears on it.
+	 *
+	 * @return void
+	 */
+	it('renders nothing while the default palette is being edited', () => {
+		renderScreen(makePalettes({ editingId: 'default' }));
+
+		expect(container.querySelector(`.${NOTICE_CLASS}`)).toBeNull();
 	});
 });
