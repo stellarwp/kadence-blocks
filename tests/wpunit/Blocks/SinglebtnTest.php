@@ -225,7 +225,8 @@ class SinglebtnTest extends KadenceBlocksUnit {
 	public function testBoundShadowEmitsTokenVar(): void {
 		$output = $this->render_button(
 			[
-				'shadow' => [
+				'displayShadow' => true,
+				'shadow'        => [
 					[
 						'shadowToken' => '{semantic.shadow.card}',
 						'color'       => '#0f0',
