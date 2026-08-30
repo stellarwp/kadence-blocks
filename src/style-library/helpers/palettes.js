@@ -112,6 +112,47 @@ export function isDefaultPalette(listing, id) {
 }
 
 /**
+ * Whether the palette being edited shows inheritance affordances on its swatch cards at all. Only
+ * a non-default palette does: the default palette is where a swatch's value is defined, so it has
+ * no source to name and no delta of its own to drop.
+ *
+ * Fails closed through `isDefaultPalette` — a listing with no `$default` pointer reports every id
+ * as the default, so a malformed listing shows no pills instead of naming a source it cannot
+ * verify.
+ *
+ * @param {Object} listing   The palette listing (`{ defaultId, currentId, palettes }`).
+ * @param {string} editingId The id of the palette being edited.
+ *
+ * @since TBD
+ *
+ * @return {boolean} True when this palette's cards show the inheritance pill.
+ */
+export function paletteShowsInheritance(listing, editingId) {
+	return Boolean(editingId) && !isDefaultPalette(listing, editingId);
+}
+
+/**
+ * How many swatches in a mapped grid still take their value from the default palette. Groups and
+ * swatches that are optimistically deleted are skipped: they are on their way out of the grid, and
+ * counting them would state a number the grid is about to contradict.
+ *
+ * @param {Array<Object>} groups The mapped grid groups from `mapPaletteToSwatchGroups()`.
+ *
+ * @since TBD
+ *
+ * @return {number} The number of swatches with no value of their own in this palette.
+ */
+export function inheritedSwatchCount(groups) {
+	return (Array.isArray(groups) ? groups : [])
+		.filter((group) => !group.pendingDelete)
+		.reduce(
+			(total, group) =>
+				total + (group.items ?? []).filter((item) => !item.overridden && !item.pendingDelete).length,
+			0
+		);
+}
+
+/**
  * Resolve which palette is being edited from the route's generic `scope` arg: `scope` itself when
  * it names a palette in the listing, otherwise the listing's `$current` palette. `hooks/use-palettes.js`
  * derives `editingId` from this on every render, straight from the already-loaded listing — there is
