@@ -316,6 +316,21 @@ export default function KadenceButtonEdit(props) {
 		previewDevice
 	);
 
+	// The same value for the HOVER width field, read from the hover property rather than the resting one.
+	// Falling straight through to `borderWidthPresetValue` would report the resting width on a preset that
+	// sets a different hover width -- the field would read 1px while the page rendered 2px. The resting
+	// value stays as the second step, because that is what the button really paints on hover when the
+	// preset carries no hover width: the state rule is only emitted for a property the preset resolves, so
+	// with none the button keeps its resting border through `:hover`.
+	const borderHoverWidthPresetValue =
+		presetPropertyValueForDevice(
+			'kadence/singlebtn',
+			'button-border-hover-width',
+			attributes,
+			undefined,
+			previewDevice
+		) ?? borderWidthPresetValue;
+
 	// Read directly: `button-shadow` declares no `control_attr`, so `usePresetBinding` skips it.
 	const shadowPresetValue = presetPropertyValueForDevice(
 		'kadence/singlebtn',
@@ -447,10 +462,20 @@ export default function KadenceButtonEdit(props) {
 		{ tablet: 'tabletBorderHoverRadius', mobile: 'mobileBorderHoverRadius' },
 		previewDevice
 	);
+	// The hover corners cascade among themselves, then fall to the preset's HOVER radius, and only then to
+	// its resting one. The hover step has to come first or a preset setting both would report the resting
+	// corners on a field the page renders the hover ones for; the resting step has to stay because a preset
+	// that sets no hover radius really does keep its resting corners through `:hover` -- the state rule is
+	// emitted only for a property the preset resolves.
+	const borderHoverRadiusPresetValue = presetValueForDevice(
+		tokenBinding.borderHoverRadius?.presetValue,
+		tokenBinding.borderHoverRadius?.responsive,
+		previewDevice
+	);
 	const inheritedBorderHoverRadius = inheritedMeasureSlots(
 		previewDevice,
 		{ desktop: borderHoverRadius, tablet: tabletBorderHoverRadius },
-		borderRadiusPresetValue
+		borderHoverRadiusPresetValue ?? borderRadiusPresetValue
 	);
 	const { isLinked: borderHoverRadiusIsLinked, toggleLink: toggleBorderHoverRadiusLink } = useLinkedMeasureState({
 		forDevice: borderHoverRadiusForDevice,
@@ -1265,7 +1290,7 @@ export default function KadenceButtonEdit(props) {
 															previewDevice={previewDevice}
 															onDeviceChange={setPreviewDevice}
 															widthTokens={borderWidthPickableTokens}
-															defaultValue={borderWidthPresetValue}
+															defaultValue={borderHoverWidthPresetValue}
 															renderColor={renderBorderColor}
 															state={
 																tokenBinding.borderHoverStyle ??
