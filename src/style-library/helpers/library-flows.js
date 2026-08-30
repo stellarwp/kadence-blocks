@@ -320,8 +320,16 @@ export function deleteLibraryFlow({
 			// reason the `loadLibraries()` step below swallows its own failure: by this point
 			// `deleteLibrary(slug)` has already resolved, so a throw from either callback (e.g.
 			// `resetWorkspace()`'s `history.replaceState`) must not be reported as a failed delete.
+			// Caught separately rather than as one block: the workspace reset is what stops a deleted
+			// library's draft from claiming unsaved changes, so it has to run even if forgetting that
+			// library's cached state failed first.
 			try {
 				forgetLibrary(slug);
+			} catch {
+				// Intentionally swallowed — see above.
+			}
+
+			try {
 				resetWorkspace();
 			} catch {
 				// Intentionally swallowed — see above.

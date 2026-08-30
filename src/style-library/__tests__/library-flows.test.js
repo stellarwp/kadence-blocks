@@ -637,6 +637,31 @@ describe('deleteLibraryFlow', () => {
 		expect(onError).not.toHaveBeenCalled();
 	});
 
+	it('still resets the workspace when forgetting the cached state throws first', async () => {
+		client.deleteLibrary.mockResolvedValue({ deleted: true });
+		const resetWorkspace = jest.fn();
+
+		await expect(
+			deleteLibraryFlow({
+				slug: 'brand-b',
+				activeSlug: 'default',
+				refreshFeed: jest.fn().mockResolvedValue({ slug: 'default' }),
+				loadLibraries: jest.fn().mockResolvedValue(undefined),
+				forgetLibrary: jest.fn(() => {
+					throw new Error('forgetLibrary boom');
+				}),
+				resetWorkspace,
+				onBusy: jest.fn(),
+				onError: jest.fn(),
+				onActiveChanged: jest.fn(),
+			})
+		).resolves.toBeUndefined();
+
+		// The reset is what stops the deleted library's draft from claiming unsaved changes, so a
+		// failure in the cache cleanup that runs before it must not take it down too.
+		expect(resetWorkspace).toHaveBeenCalledTimes(1);
+	});
+
 	it('forgets the library that was deleted, not the one the app lands on', async () => {
 		const forgetLibrary = jest.fn();
 

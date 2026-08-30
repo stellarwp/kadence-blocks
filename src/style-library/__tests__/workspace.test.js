@@ -80,6 +80,8 @@ describe('resetWorkspace against the live draft channel', () => {
 	 * Mount the real draft channel and expose its latest value, so the guard can be exercised
 	 * against the actual hook rather than a stand-in.
 	 *
+	 * @since TBD
+	 *
 	 * @return {Function} Reads the channel value from the most recent render.
 	 */
 	function mountChannel() {
