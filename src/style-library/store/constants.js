@@ -12,6 +12,14 @@
 export const STORE_NAME = 'kadence-blocks/style-library';
 
 /**
+ * The separator every key builder below joins its segments with. Named rather than inlined
+ * because the predicates further down split keys back apart on it — the two must never drift.
+ *
+ * @since TBD
+ */
+const KEY_SEPARATOR = '::';
+
+/**
  * Build the state key for a block's preset collection.
  *
  * @param {string} namespace REST namespace.
@@ -23,7 +31,7 @@ export const STORE_NAME = 'kadence-blocks/style-library';
  * @return {string} The state key.
  */
 export function presetsKey(namespace, block, slug) {
-	return `${namespace}::${block}::${slug}`;
+	return [namespace, block, slug].join(KEY_SEPARATOR);
 }
 
 /**
@@ -37,7 +45,7 @@ export function presetsKey(namespace, block, slug) {
  * @return {string} The state key.
  */
 export function paletteListingKey(namespace, slug) {
-	return `${namespace}::${slug}`;
+	return [namespace, slug].join(KEY_SEPARATOR);
 }
 
 /**
@@ -55,7 +63,43 @@ export function paletteListingKey(namespace, slug) {
  * @return {string} The state key.
  */
 export function paletteEditKey(namespace, slug, paletteId) {
-	return `${paletteListingKey(namespace, slug)}::${paletteId}`;
+	return [paletteListingKey(namespace, slug), paletteId].join(KEY_SEPARATOR);
+}
+
+/**
+ * Whether a key built by `paletteListingKey()` or `paletteEditKey()` addresses the given library.
+ * One predicate serves both (and the palette-busy slice, which is keyed by `paletteListingKey()`)
+ * because all three put the slug in the second segment.
+ *
+ * Compares one segment rather than testing a prefix or suffix: a slug is a slugified title and a
+ * namespace is a REST path, so a naive `startsWith`/`endsWith` would match a library whose slug is
+ * merely a prefix of another's.
+ *
+ * @param {string} key  A key built by `paletteListingKey()` or `paletteEditKey()`.
+ * @param {string} slug Token library slug.
+ *
+ * @since TBD
+ *
+ * @return {boolean} True when the key addresses that library.
+ */
+export function isLibraryScopedKey(key, slug) {
+	return key.split(KEY_SEPARATOR)[1] === slug;
+}
+
+/**
+ * Whether a key built by `presetsKey()` addresses the given library. Its own predicate because a
+ * presets key carries the block name in the second segment, so the slug sits one place later than
+ * in every other key this module builds.
+ *
+ * @param {string} key  A key built by `presetsKey()`.
+ * @param {string} slug Token library slug.
+ *
+ * @since TBD
+ *
+ * @return {boolean} True when the key addresses that library.
+ */
+export function isPresetsKeyForLibrary(key, slug) {
+	return key.split(KEY_SEPARATOR)[2] === slug;
 }
 
 /**
