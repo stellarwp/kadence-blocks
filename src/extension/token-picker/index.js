@@ -208,11 +208,20 @@ function pickableTokensForProperty(property, controlAttr, library) {
 	}
 
 	const tokens = pickableTokensFor(property.kind, library);
-	const role = property.token ? roleForId(property.token) : inferRoleFromControl(controlAttr, tokens);
+	// The bound token names the role when the pool knows it, and the control attribute answers when it
+	// does not. Both paths are needed, not one or the other: a binding can name a token the REGISTRY
+	// never declared — several semantics live only in `baseline.json`, so they resolve and paint but
+	// carry no label, group, or role — and reading that as "no role" left the control offering the whole
+	// coarse kind bucket, every semantic in it, rather than its own scale.
+	const role = roleForId(property.token) || inferRoleFromControl(controlAttr, tokens);
 
-	// No bound token and no inferable role -> the coarse kind list (type filter + semantic-first).
+	// Nothing identified the role, so the sub-kind is unknown. Still prefer the primitives: the picker
+	// surfaces scale steps, and a semantic is a delivery point for one rather than a choice to make
+	// here. Falling all the way back to the unfiltered list is the last resort.
 	if (!role) {
-		return tokens;
+		const primitives = tokens.filter((token) => token.id.startsWith('primitive.'));
+
+		return primitives.length ? primitives : tokens;
 	}
 
 	// Narrow to the control's sub-kind. When that sub-kind has primitive scale steps (e.g. the radius
