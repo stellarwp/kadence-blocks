@@ -206,7 +206,7 @@ final class Css_BuilderTest extends TestCase {
 		$css = $this->builder( $this->stateRegistry() )->css( 'default' );
 
 		$this->assertStringContainsString(
-			':where(.wp-block-kadence-state-fixture).kb-preset--flare:hover *.kb-svg-icon-wrap'
+			':where(.wp-block-kadence-state-fixture.kb-preset--flare):hover *.kb-svg-icon-wrap'
 				. '{color:var(--kb-token--preset--kadence-state-fixture--flare--color-hover);}',
 			$css
 		);
@@ -243,7 +243,7 @@ final class Css_BuilderTest extends TestCase {
 		$css = $this->builder( $this->stateRegistry() )->css( 'default' );
 
 		$this->assertStringContainsString(
-			':where(.wp-block-kadence-state-fixture):hover *.kb-svg-icon-wrap'
+			':where(.wp-block-kadence-state-fixture:not([class*="kb-preset--"])):hover *.kb-svg-icon-wrap'
 				. '{color:var(--kb-token--preset--kadence-state-fixture--glow--color-hover);}',
 			$css
 		);
@@ -261,7 +261,7 @@ final class Css_BuilderTest extends TestCase {
 		$css = $this->builder( $this->stateRegistry() )->editor_css( 'default' );
 
 		$this->assertStringContainsString(
-			':where(.wp-block-kadence-state-fixture).kb-preset--flare:hover *.kt-svg-icon'
+			':where(.wp-block-kadence-state-fixture.kb-preset--flare):hover *.kt-svg-icon'
 				. '{color:var(--kb-token--preset--kadence-state-fixture--flare--color-hover);}',
 			$css
 		);
@@ -310,8 +310,8 @@ final class Css_BuilderTest extends TestCase {
 		);
 
 		$this->assertStringContainsString(
-			':where(.wp-block-kadence-state-fixture).kb-preset--flare *.kb-button:hover,'
-				. ':where(.wp-block-kadence-state-fixture).kb-preset--flare *.kb-button:focus'
+			':where(.wp-block-kadence-state-fixture.kb-preset--flare) *.kb-button:hover,'
+				. ':where(.wp-block-kadence-state-fixture.kb-preset--flare) *.kb-button:focus'
 				. '{color:var(--kb-token--preset--kadence-state-fixture--flare--color-hover);}',
 			$this->builder( $registry )->css( 'default' )
 		);

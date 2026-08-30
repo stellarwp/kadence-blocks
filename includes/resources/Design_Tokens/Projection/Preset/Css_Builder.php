@@ -37,10 +37,11 @@ use RuntimeException;
  *   2. Per (block, preset) scoped rules — ".wp-block-<block>.kb-preset--<preset>" — pointing each
  *      --global-<slot> at the canonical preset var, plus a class-less ".wp-block-<block>" rule for the
  *      $default preset so a block with no preset selected still shows its preset.
- *   3. Per (block, preset) STATE rules for any binding declaring a `css_state` — the same two scopes with the
- *      block class neutralized by `:where()` and the state suffix appended
- *      (":where(.wp-block-<block>).kb-preset--<preset>:hover > .kt-inside-inner-col") — carrying a real
- *      declaration, "<css_prop>: var(<canonical preset var>)", rather than a var retarget.
+ *   3. Per (block, preset) STATE rules for any binding declaring a `css_state` — the block-and-preset
+ *      qualification wrapped in `:where()` so it costs no specificity, with the state suffix appended
+ *      (":where(.wp-block-<block>.kb-preset--<preset>):hover > .kt-inside-inner-col") — carrying a real
+ *      declaration, "<css_prop>: var(<canonical preset var>)", rather than a var retarget. The $default's
+ *      counterpart is qualified by "this block carries no preset class" so the two can never both match.
  *      A state has no variable of the block's own to point at: the block renders its resting appearance
  *      from an attribute or a token default, and its state appearance only when the block itself sets one,
  *      so there is nothing for a preset to redirect. This layer supplies the state rule outright. It is
@@ -640,7 +641,7 @@ final class Css_Builder {
 				$css .= $this->state_rules(
 					$block,
 					(string) $preset,
-					$this->state_scope( $data['selector'] ) . $preset_class,
+					$this->state_scope( $data['selector'], $preset_class ),
 					$properties,
 					$editor
 				);
@@ -679,36 +680,43 @@ final class Css_Builder {
 				$css .= $data['selector'] . '{' . $declarations . '}';
 			}
 
-			$css .= $this->state_rules( $block, $default, $this->state_scope( $data['selector'] ), $properties, $editor );
+			$css .= $this->state_rules( $block, $default, $this->state_scope( $data['selector'], null ), $properties, $editor );
 		}
 
 		return $css;
 	}
 
 	/**
-	 * The block half of a state rule's scope: the block selector wrapped in `:where()`, which matches exactly
-	 * as it did but contributes no specificity.
+	 * The scope a state rule is emitted under: the whole block-and-preset qualification wrapped in `:where()`,
+	 * so it matches exactly as it would unwrapped while contributing no specificity of its own.
 	 *
 	 * Every other layer of this projection writes custom properties, whose specificity never competes with a
 	 * block's own declarations. A state rule writes a real declaration, so it does — and the layering rule the
 	 * whole projection rests on is that a preset yields to the block's own CSS. Left un-neutralized, the block
-	 * class plus the preset class would put a state rule at two classes before the state's own weight, which is
+	 * class plus the preset class would put a state rule two classes above the state's own weight, which is
 	 * more than most blocks spend on their per-instance rules; a preset's hover would then beat a hover the
 	 * user set on the block itself.
 	 *
-	 * Neutralizing the block class rather than the preset class is what keeps a selected preset's state ahead
-	 * of the `$default`'s: the named rule carries exactly one class more, so it wins without depending on the
-	 * order the two are emitted in. What remains is the binding's own `css_state`, which is where a block's
-	 * author states the weight that block needs — the only place that knows what the block's own rules cost.
+	 * With the qualification weightless, a state rule weighs exactly what the binding's `css_state` names —
+	 * which is where a block's author states the weight that block needs, the only place that knows what the
+	 * block's own rules cost. That also leaves a named preset's rule and the `$default`'s at the SAME weight,
+	 * which is why the `$default`'s is qualified by "this block has no preset class" rather than by nothing:
+	 * the two must never both match, since neither could then outrank the other.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $selector The block's `.wp-block-*` selector.
+	 * @param string      $selector The block's `.wp-block-*` selector.
+	 * @param string|null $preset   The preset class selector (leading dot included) for a named preset, or
+	 *                              null for the `$default`'s rule.
 	 *
 	 * @return string
 	 */
-	private function state_scope( string $selector ): string {
-		return ':where(' . $selector . ')';
+	private function state_scope( string $selector, ?string $preset ): string {
+		$qualifier = $preset !== null
+			? $selector . $preset
+			: $selector . ':not([class*="' . Style::get_class_prefix() . '"])';
+
+		return ':where(' . $qualifier . ')';
 	}
 
 	/**
