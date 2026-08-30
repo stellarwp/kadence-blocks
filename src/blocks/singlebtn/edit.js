@@ -290,7 +290,7 @@ export default function KadenceButtonEdit(props) {
 	// Design-token indicators: the per-attribute bound/overridden state for the selected preset, plus a
 	// reset that clears the mapped attribute back to the preset value (served by the existing scoped CSS).
 	const tokenBinding = usePresetBinding('kadence/singlebtn', attributes, undefined, previewDevice);
-	const resetToken = (attr) => resetAttr(attr, setAttributes, tokenBinding[attr]?.kind);
+	const resetToken = (attr) => resetAttr(attr, setAttributes, tokenBinding[attr]?.kind, metadata.attributes);
 	// One fetch of the block's effective palette groups, shared by every `ColorControl` instance on
 	// this block — the palette data is identical for all fourteen of them.
 	const colorGroups = useColorGroups(clientId);
@@ -560,8 +560,9 @@ export default function KadenceButtonEdit(props) {
 		value: borderHoverBorderForDevice.value,
 		previewDevice,
 	});
-	const resetBorderHoverRadius = () => resetAttr('borderHoverRadius', setAttributes, 'dimension');
-	const resetBorderHoverBorder = () => resetAttr('borderHoverStyle', setAttributes, 'border');
+	const resetBorderHoverRadius = () =>
+		resetAttr('borderHoverRadius', setAttributes, 'dimension', metadata.attributes);
+	const resetBorderHoverBorder = () => resetAttr('borderHoverStyle', setAttributes, 'border', metadata.attributes);
 
 	const borderTransparentBorderForDevice = measureAttrsForDevice(
 		attributes,
@@ -584,8 +585,10 @@ export default function KadenceButtonEdit(props) {
 		value: borderTransparentBorderForDevice.value,
 		previewDevice,
 	});
-	const resetBorderTransparentRadius = () => resetAttr('borderTransparentRadius', setAttributes, 'dimension');
-	const resetBorderTransparentBorder = () => resetAttr('borderTransparentStyle', setAttributes, 'border');
+	const resetBorderTransparentRadius = () =>
+		resetAttr('borderTransparentRadius', setAttributes, 'dimension', metadata.attributes);
+	const resetBorderTransparentBorder = () =>
+		resetAttr('borderTransparentStyle', setAttributes, 'border', metadata.attributes);
 
 	const borderTransparentHoverBorderForDevice = measureAttrsForDevice(
 		attributes,
@@ -609,8 +612,9 @@ export default function KadenceButtonEdit(props) {
 		previewDevice,
 	});
 	const resetBorderTransparentHoverRadius = () =>
-		resetAttr('borderTransparentHoverRadius', setAttributes, 'dimension');
-	const resetBorderTransparentHoverBorder = () => resetAttr('borderTransparentHoverStyle', setAttributes, 'border');
+		resetAttr('borderTransparentHoverRadius', setAttributes, 'dimension', metadata.attributes);
+	const resetBorderTransparentHoverBorder = () =>
+		resetAttr('borderTransparentHoverStyle', setAttributes, 'border', metadata.attributes);
 
 	const borderStickyBorderForDevice = measureAttrsForDevice(
 		attributes,
@@ -632,8 +636,9 @@ export default function KadenceButtonEdit(props) {
 		value: borderStickyBorderForDevice.value,
 		previewDevice,
 	});
-	const resetBorderStickyRadius = () => resetAttr('borderStickyRadius', setAttributes, 'dimension');
-	const resetBorderStickyBorder = () => resetAttr('borderStickyStyle', setAttributes, 'border');
+	const resetBorderStickyRadius = () =>
+		resetAttr('borderStickyRadius', setAttributes, 'dimension', metadata.attributes);
+	const resetBorderStickyBorder = () => resetAttr('borderStickyStyle', setAttributes, 'border', metadata.attributes);
 
 	const borderStickyHoverBorderForDevice = measureAttrsForDevice(
 		attributes,
@@ -656,8 +661,10 @@ export default function KadenceButtonEdit(props) {
 		value: borderStickyHoverBorderForDevice.value,
 		previewDevice,
 	});
-	const resetBorderStickyHoverRadius = () => resetAttr('borderStickyHoverRadius', setAttributes, 'dimension');
-	const resetBorderStickyHoverBorder = () => resetAttr('borderStickyHoverStyle', setAttributes, 'border');
+	const resetBorderStickyHoverRadius = () =>
+		resetAttr('borderStickyHoverRadius', setAttributes, 'dimension', metadata.attributes);
+	const resetBorderStickyHoverBorder = () =>
+		resetAttr('borderStickyHoverStyle', setAttributes, 'border', metadata.attributes);
 
 	useEffect(() => {
 		if (!isSelected) {

@@ -279,7 +279,7 @@ function SectionEdit(props) {
 	// Design-token indicators: the per-attribute bound/overridden state for the selected preset, plus a
 	// reset that clears the mapped attribute back to the preset value (served by the existing scoped CSS).
 	const tokenBinding = usePresetBinding('kadence/column', attributes, undefined, previewDevice);
-	const resetToken = (attr) => resetAttr(attr, setAttributes, tokenBinding[attr]?.kind);
+	const resetToken = (attr) => resetAttr(attr, setAttributes, tokenBinding[attr]?.kind, metadata.attributes);
 	// One fetch of the block's effective palette groups, shared by every `ColorControl` on this block.
 	const colorGroups = useColorGroups(clientId);
 

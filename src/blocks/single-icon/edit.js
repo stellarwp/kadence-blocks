@@ -104,7 +104,11 @@ function KadenceSingleIcon(props) {
 	// no binding state, so nothing on it reported whether a value still matched the selected preset.
 	// Adding it here serves the color control below and backfills Size at the same time.
 	const tokenBinding = usePresetBinding(name, attributes, undefined, previewDevice);
-	const resetToken = (attr) => resetAttr(attr, setAttributes, tokenBinding[attr]?.kind);
+	// The schema matters most on this block: `size` is a SCALAR (a bare number, with no companion unit
+	// attribute), and without it `resetAttrPatch` falls back to the four-slot shape every other measure
+	// control uses -- writing `['', '', '', '']` into a scalar, which the field then reads straight back
+	// as a custom value, plus a `sizeUnit` the block never declares.
+	const resetToken = (attr) => resetAttr(attr, setAttributes, tokenBinding[attr]?.kind, metadata.attributes);
 	// One fetch of the block's effective palette groups, shared by both `ColorControl` instances below.
 	const colorGroups = useColorGroups(clientId);
 	// The Icon Size control writes three sibling attributes but edits one at a time, so it resolves the

@@ -735,6 +735,44 @@ describe('resetAttrPatch', () => {
 	});
 
 	/**
+	 * A SCALAR dimension clears to a bare value, not to the four-slot shape, and gains no unit
+	 * companion. `kadence/single-icon`'s `size` is a plain number with no `sizeUnit`, so the four-slot
+	 * default would store an array in a scalar -- which the field reads straight back as a custom
+	 * value -- alongside an attribute the block never declares. Only the block's own schema can say
+	 * which shape an attribute is, which is why every reset call site passes it.
+	 *
+	 * @return {void}
+	 */
+	it('clears a scalar dimension to a bare value, with no unit companion', () => {
+		const declared = {
+			size: { type: ['number', 'string'], default: 50 },
+			tabletSize: { type: ['number', 'string'], default: '' },
+			mobileSize: { type: ['number', 'string'], default: '' },
+		};
+
+		expect(resetAttrPatch('size', 'dimension', declared)).toEqual({
+			size: '',
+			tabletSize: '',
+			mobileSize: '',
+		});
+	});
+
+	/**
+	 * Without a schema the four-slot shape stands. That is the historical fallback, and the reason a
+	 * block whose attribute is a scalar must not be left relying on it.
+	 *
+	 * @return {void}
+	 */
+	it('falls back to the four-slot shape when no schema is given', () => {
+		expect(resetAttrPatch('size', 'dimension')).toEqual({
+			size: ['', '', '', ''],
+			sizeUnit: 'px',
+			tabletSize: ['', '', '', ''],
+			mobileSize: ['', '', '', ''],
+		});
+	});
+
+	/**
 	 * A non-dimension kind clears only its single attribute when the block declares no companion.
 	 *
 	 * @return {void}
