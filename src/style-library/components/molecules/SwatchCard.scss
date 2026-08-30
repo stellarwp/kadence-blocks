@@ -44,6 +44,12 @@
 	border: 0;
 	background: none;
 	text-align: left;
+}
+
+// The pointer belongs to the real control, not to the layout: the loading placeholder reuses the
+// class above on an inert `div` to inherit the same alignment, and a pointer cursor there would
+// promise an action nothing can perform.
+button.kadence-blocks-style-library__swatch-card-select {
 	cursor: pointer;
 }
 
