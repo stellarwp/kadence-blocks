@@ -25,6 +25,18 @@ use KadenceWP\KadenceBlocks\Psr\Log\LoggerInterface;
 class Kadence_Blocks_CSS {
 
 	/**
+	 * The shadow item's optional binding key: the {dot.alias} of the shadow token the value follows.
+	 * Kept alongside the numeric legs rather than replacing them, so an item stays a valid literal
+	 * shadow for readers that do not know this key and has something to fall back to when the bound
+	 * token is no longer in the active library.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const SHADOW_TOKEN_KEY = 'shadowToken';
+
+	/**
 	 * CSS to enqueue
 	 *
 	 * @var array
@@ -253,6 +265,17 @@ class Kadence_Blocks_CSS {
 		'md' => 'var(--global-kb-gap-md, 2rem)',
 		'lg' => 'var(--global-kb-gap-lg, 4rem)',
 	);
+
+	/**
+	 * The shadow item key that carries a whole-shadow token binding.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The binding key.
+	 */
+	public static function get_shadow_token_key(): string {
+		return self::SHADOW_TOKEN_KEY;
+	}
 
 	/**
 	 * Instance Control
@@ -1646,6 +1669,10 @@ class Kadence_Blocks_CSS {
 	/**
 	 * Generates the shadow output.
 	 *
+	 * A `shadowToken` key holding a {dot.alias} binds the WHOLE shadow to a token: when that token is
+	 * backed by the active library the method returns its bare var() and reads no other key. Everything
+	 * else — including an unbacked binding — renders from the numeric legs as before.
+	 *
 	 * @param array                     $shadow   an array of shadow settings.
 	 * @param array<string, string|float> $defaults optional per-caller fallback literals used to fill
 	 *                                            any empty/missing leg before rendering. When omitted
@@ -1662,6 +1689,14 @@ class Kadence_Blocks_CSS {
 		}
 		if ( ! is_array( $shadow ) ) {
 			return false;
+		}
+		// A backed whole-shadow binding replaces the entire shorthand, so the legs below are never read.
+		// An unbacked one (a token deleted after the post was saved) falls through to them instead: unlike
+		// a per-leg alias, which displaced its number and leaves nothing to fall back to, the legs here
+		// still hold the value the token resolved to when it was picked.
+		$shadow_token_reference = $this->get_backed_token_reference( $shadow[ self::SHADOW_TOKEN_KEY ] ?? null );
+		if ( null !== $shadow_token_reference ) {
+			return $shadow_token_reference;
 		}
 		if ( ! isset( $shadow['color'] ) ) {
 			return false;

@@ -12,6 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Palette\Renders_Palette_Attribute;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Preset\Renders_Preset_Classes;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Alias;
 
 /**
  * Abstract class to register blocks, build CSS, and enqueue scripts.
@@ -717,7 +718,8 @@ class Kadence_Blocks_Abstract_Block {
 	 *
 	 * A non-numeric, non-empty leg is a {dot.alias} token reference, which resolves to a var() whose
 	 * value is unknown here — it counts as visible, since treating it as a zero would let the
-	 * caller's `box-shadow: none` reset erase a shadow the token does paint.
+	 * caller's `box-shadow: none` reset erase a shadow the token does paint. A `shadowToken` binding
+	 * on the item follows the same reasoning for the whole shadow.
 	 *
 	 * Lives here rather than on any one block because it answers a question about the shared shadow
 	 * value shape, which every shadow-carrying block stores identically. It is what a block gates its
@@ -730,6 +732,13 @@ class Kadence_Blocks_Abstract_Block {
 	 * @return bool Whether the item paints a visible shadow.
 	 */
 	protected function has_visible_shadow( array $shadow_item ): bool {
+		// A bound item's real value lives in the token, unknown here. Counting it as visible keeps the
+		// caller's `box-shadow: none` reset from erasing a shadow the token does paint — the same
+		// reasoning the aliased-leg branch below uses.
+		if ( Alias::is_alias( $shadow_item[ Kadence_Blocks_CSS::get_shadow_token_key() ] ?? null ) ) {
+			return true;
+		}
+
 		foreach ( [ 'hOffset', 'vOffset', 'blur', 'spread' ] as $axis ) {
 			$value = $shadow_item[ $axis ] ?? 0;
 

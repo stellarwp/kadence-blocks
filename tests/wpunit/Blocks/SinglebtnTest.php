@@ -217,6 +217,33 @@ class SinglebtnTest extends KadenceBlocksUnit {
 	}
 
 	/**
+	 * A button whose shadow is bound to a token emits that token's custom property as its box-shadow,
+	 * so editing the token in the Style Library moves every button that follows it.
+	 *
+	 * @return void
+	 */
+	public function testBoundShadowEmitsTokenVar(): void {
+		$output = $this->render_button(
+			[
+				'shadow' => [
+					[
+						'shadowToken' => '{semantic.shadow.card}',
+						'color'       => '#0f0',
+						'opacity'     => 1,
+						'hOffset'     => 0,
+						'vOffset'     => 2,
+						'blur'        => 8,
+						'spread'      => 0,
+						'inset'       => false,
+					],
+				],
+			]
+		);
+
+		$this->assertStringContainsString( 'box-shadow:var(--kb-token--semantic--shadow--card)', $output );
+	}
+
+	/**
 	 * A shadow item's own axes decide whether `box-shadow` is emitted, with no separate toggle or
 	 * sibling boolean attribute gating it.
 	 *
@@ -291,6 +318,20 @@ class SinglebtnTest extends KadenceBlocksUnit {
 				'blur'    => 0,
 				'spread'  => 0,
 				'color'   => '#000000',
+			],
+			'expected_visible' => true,
+		];
+
+		yield 'bound token with zero legs' => [
+			'shadow_item'      => [
+				'shadowToken' => '{semantic.shadow.card}',
+				'color'       => 'transparent',
+				'opacity'     => 1,
+				'hOffset'     => 0,
+				'vOffset'     => 0,
+				'blur'        => 0,
+				'spread'      => 0,
+				'inset'       => false,
 			],
 			'expected_visible' => true,
 		];

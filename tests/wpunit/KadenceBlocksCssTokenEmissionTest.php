@@ -169,6 +169,52 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 	}
 
 	/**
+	 * A whole-shadow binding renders as the token's bare var(), replacing the entire shorthand rather
+	 * than one leg of it.
+	 *
+	 * @return void
+	 */
+	public function testRenderShadowEmitsBareVarForWholeShadowBinding(): void {
+		$this->assertSame(
+			'var(--kb-token--semantic--shadow--card)',
+			$this->css->render_shadow( [
+				'shadowToken' => '{semantic.shadow.card}',
+				'color'       => '#0f0',
+				'opacity'     => 1,
+				'hOffset'     => 0,
+				'vOffset'     => 2,
+				'blur'        => 8,
+				'spread'      => 0,
+				'inset'       => false,
+			] ),
+			'render_shadow must emit the bare var() for a whole-shadow binding'
+		);
+	}
+
+	/**
+	 * A whole-shadow binding the active library no longer backs falls back to the stored legs, which
+	 * still hold the value the token resolved to when it was picked.
+	 *
+	 * @return void
+	 */
+	public function testRenderShadowFallsBackToLegsForUnbackedWholeShadowBinding(): void {
+		$this->assertSame(
+			'0px 2px 8px 0px #0f0',
+			$this->css->render_shadow( [
+				'shadowToken' => '{semantic.shadow.does-not-exist}',
+				'color'       => '#0f0',
+				'opacity'     => 1,
+				'hOffset'     => 0,
+				'vOffset'     => 2,
+				'blur'        => 8,
+				'spread'      => 0,
+				'inset'       => false,
+			] ),
+			'render_shadow must fall back to the stored legs when the bound token is not backed'
+		);
+	}
+
+	/**
 	 * render_typography emits the bare var() reference for an aliased desktop line-height and
 	 * letter-spacing.
 	 *
