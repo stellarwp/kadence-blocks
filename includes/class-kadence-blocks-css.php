@@ -1681,7 +1681,7 @@ class Kadence_Blocks_CSS {
 	 * @return string|false
 	 */
 	public function render_shadow( $shadow, array $defaults = [] ) {
-		if ( ! is_array( $shadow ) || empty( $shadow ) ) {
+		if ( ! is_array( $shadow ) ) {
 			return false;
 		}
 
@@ -1696,6 +1696,10 @@ class Kadence_Blocks_CSS {
 
 		if ( ! empty( $defaults ) ) {
 			$shadow = $this->normalize_shadow_defaults( $shadow, $defaults );
+		}
+
+		if ( empty( $shadow ) ) {
+			return false;
 		}
 
 		if ( ! isset( $shadow['color'] ) ) {

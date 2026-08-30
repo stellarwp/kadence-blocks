@@ -287,6 +287,34 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 	}
 
 	/**
+	 * An empty shadow item with a non-empty $defaults array still renders those defaults as a
+	 * complete shorthand instead of returning false. normalize_shadow_defaults() must run before
+	 * the emptiness check, not after: the two guards must stay separate rather than being
+	 * collapsed into one leading `! is_array( $shadow ) || empty( $shadow )` check.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function testRenderShadowRendersDefaultsForEmptyShadowWithDefaults(): void {
+		$this->assertSame(
+			'0px 0px 14px 0px rgba(0, 0, 0, 0.2)',
+			$this->css->render_shadow(
+				[],
+				[
+					'hOffset' => '0',
+					'vOffset' => '0',
+					'blur'    => '14',
+					'spread'  => '0',
+					'color'   => '#000000',
+					'opacity' => 0.2,
+				]
+			),
+			'render_shadow must render the caller defaults as a full shorthand when the shadow item is empty'
+		);
+	}
+
+	/**
 	 * render_typography emits the bare var() reference for an aliased desktop line-height and
 	 * letter-spacing.
 	 *
