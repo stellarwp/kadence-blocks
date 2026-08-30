@@ -96,12 +96,7 @@ import {
 } from '../../extension/token-indicators/normalize';
 import { EditorBoxControl } from '../../extension/design-tokens/components/EditorBoxControl';
 import { EditorBorderControl } from '../../extension/design-tokens/components/EditorBorderControl';
-import {
-	EditorShadowControl,
-	combineColorOpacity,
-	hasVisibleShadow,
-	splitColorOpacity,
-} from '../../extension/design-tokens/components/EditorShadowControl';
+import { EditorShadowControl, hasVisibleShadow } from '../../extension/design-tokens/components/EditorShadowControl';
 import { renderShadowColor } from '../../extension/design-tokens/components/shadow-color';
 import { pickableTokensForControl, pickableTokensForKey } from '../../extension/token-picker';
 import { ColorControl, ColorControlGroup } from '../../token-controls';
