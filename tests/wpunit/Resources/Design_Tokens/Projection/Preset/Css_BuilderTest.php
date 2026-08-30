@@ -318,6 +318,39 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
+	 * A `css_state` written the SCSS way, `&:hover`, attaches to the block selector. Passed through as
+	 * written it would emit `.wp-block-…&:hover`, which is not a selector at all — the browser would drop
+	 * the rule and the binding would silently do nothing.
+	 *
+	 * @return void
+	 */
+	public function testItExpandsALeadingAmpersandOntoTheBlockSelector(): void {
+		$this->seedStatePresets();
+
+		$this->assertStringContainsString(
+			':where(.wp-block-kadence-state-fixture.kb-preset--flare):hover'
+				. '{color:var(--kb-token--preset--kadence-state-fixture--flare--color-hover);}',
+			$this->builder( $this->stateRegistry( '&:hover' ) )->css( 'default' )
+		);
+	}
+
+	/**
+	 * The space after a leading `&` carries the same meaning it does in SCSS: `& .child` descends rather
+	 * than attaching, so the combinator survives the expansion.
+	 *
+	 * @return void
+	 */
+	public function testALeadingAmpersandKeepsItsDescendantCombinator(): void {
+		$this->seedStatePresets();
+
+		$this->assertStringContainsString(
+			':where(.wp-block-kadence-state-fixture.kb-preset--flare) .kb-svg-icon-wrap:hover'
+				. '{color:var(--kb-token--preset--kadence-state-fixture--flare--color-hover);}',
+			$this->builder( $this->stateRegistry( '& .kb-svg-icon-wrap:hover' ) )->css( 'default' )
+		);
+	}
+
+	/**
 	 * A state binding that names no `css_prop` has no declaration to emit — the state rule IS that
 	 * declaration — so it contributes nothing rather than an empty rule.
 	 *
@@ -750,9 +783,11 @@ final class Css_BuilderTest extends TestCase {
 	 * The state binding declares a different `editor_css_state` than its `css_state` on purpose: that is the
 	 * only thing separating the front-end build from the editor one, so it is what the editor test needs.
 	 *
+	 * @param string $state The `css_state` to declare, defaulting to the icon's own hover selector.
+	 *
 	 * @return Token_Registry
 	 */
-	private function stateRegistry(): Token_Registry {
+	private function stateRegistry( string $state = ':hover *.kb-svg-icon-wrap' ): Token_Registry {
 		$registry = new Token_Registry();
 		$registry->register_preset_bindings(
 			[
@@ -767,7 +802,7 @@ final class Css_BuilderTest extends TestCase {
 					'color-hover' => [
 						'token'            => 'semantic.color.icon',
 						'css_prop'         => 'color',
-						'css_state'        => ':hover *.kb-svg-icon-wrap',
+						'css_state'        => $state,
 						'editor_css_state' => ':hover *.kt-svg-icon',
 					],
 				],

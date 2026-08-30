@@ -20,6 +20,12 @@ trait Composes_Selector_Suffix {
 	 * one of those characters asks for the space with a leading `*`, which adds no specificity of its own.
 	 * Empty when the binding names none — the rule targets the block root.
 	 *
+	 * A leading `&` is expanded rather than passed through. It reads naturally to anyone used to SCSS, but
+	 * this emits flat CSS, where `.wp-block-example&:hover` is not a selector at all and the browser drops
+	 * the whole rule — a binding written that way would silently do nothing. The SCSS meaning is honored:
+	 * `&:hover` attaches and `& .child` descends, which is exactly the distinction the whitespace after the
+	 * `&` already carries.
+	 *
 	 * @since TBD
 	 *
 	 * @param string|null $selector The binding's raw `css_selector` / `css_state`, or null when it names none.
@@ -33,6 +39,21 @@ trait Composes_Selector_Suffix {
 			return '';
 		}
 
-		return strpbrk( $selector[0], '>+~.:#[&' ) === false ? ' ' . $selector : $selector;
+		if ( $selector[0] === '&' ) {
+			$rest = substr( $selector, 1 );
+
+			// A space after the `&` is the whole signal: `& .child` descends, `&:hover` attaches. Tested
+			// before trimming, so the combinator this inserts is the only whitespace that survives.
+			$descends = $rest !== ltrim( $rest );
+			$rest     = trim( $rest );
+
+			if ( $rest === '' ) {
+				return '';
+			}
+
+			return $descends ? ' ' . $rest : $rest;
+		}
+
+		return strpbrk( $selector[0], '>+~.:#[' ) === false ? ' ' . $selector : $selector;
 	}
 }
