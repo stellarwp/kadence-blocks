@@ -344,6 +344,13 @@ export function hasVisibleShadow(item) {
 		return false;
 	}
 
+	// A bound item's real value lives in the token, unknown to this gate. Counting it as visible keeps
+	// the derived enable flag from being lowered under a shadow the token does paint — the same
+	// reasoning the other two copies of this predicate already apply.
+	if (boundShadowToken(item)) {
+		return true;
+	}
+
 	return ['hOffset', 'vOffset', 'blur', 'spread'].some((axis) => {
 		const value = item[axis] ?? 0;
 

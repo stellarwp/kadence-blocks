@@ -10,7 +10,8 @@
 /**
  * Internal dependencies
  */
-import { hasVisibleShadow, shadowAxisPx, shadowCss } from '../index';
+import { KadenceBlocksCSS } from '@kadence/helpers';
+import BackendStyles, { hasVisibleShadow, shadowAxisPx, shadowCss } from '../index';
 
 // `backend-styles/index.js` imports the `@kadence/helpers` barrel, which eagerly pulls in a
 // REST-fetch helper that has no `@wordpress/api-fetch` module to resolve under Jest (the same
@@ -217,6 +218,131 @@ describe('shadowCss', () => {
 	 */
 	it('returns an empty string for a missing item', () => {
 		expect(shadowCss(undefined, 14)).toBe('');
+	});
+});
+
+/**
+ * Builds a minimal fake `KadenceBlocksCSS` instance that records every selector/property pair the
+ * component adds, so a test can read back the final `box-shadow` value for a given selector without
+ * pulling in the real class or its rendering.
+ *
+ * @since TBD
+ *
+ * @return {{set_selector: Function, add_property: Function, add_raw_styles: Function, render_color:
+ *   Function, render_measure_output: Function, css_output: Function, rules: Array}} The fake CSS
+ *   builder, plus its recorded `rules` for assertions.
+ */
+function createFakeCss() {
+	const rules = [];
+	let current = null;
+
+	return {
+		set_selector: (selector) => {
+			current = { selector, props: {} };
+			rules.push(current);
+		},
+		add_property: (property, value) => {
+			if (!current) {
+				current = { selector: '', props: {} };
+				rules.push(current);
+			}
+			current.props[property] = value;
+		},
+		add_raw_styles: () => {},
+		render_color: (color) => color,
+		render_measure_output: () => {},
+		css_output: () => '',
+		rules,
+	};
+}
+
+/**
+ * Reads back the `box-shadow` value recorded for one selector out of a fake CSS builder's rules.
+ *
+ * @param {Array}  rules    The fake CSS builder's recorded rules.
+ * @param {string} selector The selector to look up.
+ *
+ * @since TBD
+ *
+ * @return {*} The recorded `box-shadow` value, or undefined when none was recorded.
+ */
+function boxShadowFor(rules, selector) {
+	return rules.find((entry) => entry.selector === selector && 'box-shadow' in entry.props)?.props['box-shadow'];
+}
+
+describe('BackendStyles shadow flag gating', () => {
+	const BASE_SELECTOR = '.kb-single-btn-abc123 .kt-button-abc123';
+	const HOVER_SELECTOR = '.kb-single-btn-abc123 .kt-button-abc123:hover';
+	const VISIBLE_SHADOW = { hOffset: 2, vOffset: 2, blur: 4, spread: 0, color: '#000000', opacity: 1, inset: false };
+
+	let fakeCss;
+
+	beforeEach(() => {
+		fakeCss = createFakeCss();
+		KadenceBlocksCSS.mockImplementation(() => fakeCss);
+	});
+
+	afterEach(() => {
+		KadenceBlocksCSS.mockReset();
+	});
+
+	/**
+	 * A lowered `displayShadow` suppresses the base state's box-shadow even though the stored shadow
+	 * itself is visible, matching the PHP renderer's own gate for this state.
+	 *
+	 * @return {void}
+	 */
+	it('emits no box-shadow for the base state when displayShadow is lowered but the shadow is visible', () => {
+		BackendStyles({
+			attributes: { uniqueID: 'abc123', displayShadow: false, shadow: [VISIBLE_SHADOW] },
+			previewDevice: 'Desktop',
+		});
+
+		expect(boxShadowFor(fakeCss.rules, BASE_SELECTOR)).toBe('none');
+	});
+
+	/**
+	 * A raised `displayShadow` still emits the base state's box-shadow for the same visible value.
+	 *
+	 * @return {void}
+	 */
+	it('emits box-shadow for the base state when displayShadow is raised and the shadow is visible', () => {
+		BackendStyles({
+			attributes: { uniqueID: 'abc123', displayShadow: true, shadow: [VISIBLE_SHADOW] },
+			previewDevice: 'Desktop',
+		});
+
+		expect(boxShadowFor(fakeCss.rules, BASE_SELECTOR)).toBe(shadowCss(VISIBLE_SHADOW, 14));
+	});
+
+	/**
+	 * A lowered `displayHoverShadow` suppresses the hover state's box-shadow even though the stored
+	 * shadow itself is visible, matching the PHP renderer's own gate for this state.
+	 *
+	 * @return {void}
+	 */
+	it('emits no box-shadow for the hover state when displayHoverShadow is lowered but the shadow is visible', () => {
+		BackendStyles({
+			attributes: { uniqueID: 'abc123', displayHoverShadow: false, shadowHover: [VISIBLE_SHADOW] },
+			previewDevice: 'Desktop',
+		});
+
+		expect(boxShadowFor(fakeCss.rules, HOVER_SELECTOR)).toBe('');
+	});
+
+	/**
+	 * A raised `displayHoverShadow` still emits the hover state's box-shadow for the same visible
+	 * value.
+	 *
+	 * @return {void}
+	 */
+	it('emits box-shadow for the hover state when displayHoverShadow is raised and the shadow is visible', () => {
+		BackendStyles({
+			attributes: { uniqueID: 'abc123', displayHoverShadow: true, shadowHover: [VISIBLE_SHADOW] },
+			previewDevice: 'Desktop',
+		});
+
+		expect(boxShadowFor(fakeCss.rules, HOVER_SELECTOR)).toBe(shadowCss(VISIBLE_SHADOW, 14));
 	});
 });
 

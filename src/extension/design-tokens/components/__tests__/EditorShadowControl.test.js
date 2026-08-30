@@ -675,6 +675,11 @@ describe('hasVisibleShadow', () => {
 		['a spread only', { hOffset: 0, vOffset: 0, blur: 0, spread: 3 }, true],
 		['a token alias leg', { hOffset: 0, vOffset: '{semantic.shadow.media}', blur: 0, spread: 0 }, true],
 		['an empty-string leg', { hOffset: '', vOffset: '', blur: '', spread: '' }, false],
+		[
+			'a bound item with all-zero legs',
+			{ hOffset: 0, vOffset: 0, blur: 0, spread: 0, [SHADOW_TOKEN_KEY]: '{semantic.shadow.media}' },
+			true,
+		],
 	])('reads %s correctly', (_label, item, expected) => {
 		expect(hasVisibleShadow(item)).toBe(expected);
 	});

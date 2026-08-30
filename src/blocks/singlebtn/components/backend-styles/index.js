@@ -252,6 +252,8 @@ export default function BackendStyles(props) {
 		widthType,
 		shadow,
 		shadowHover,
+		displayShadow,
+		displayHoverShadow,
 		iconColor,
 		iconColorHover,
 		colorTransparent,
@@ -278,6 +280,8 @@ export default function BackendStyles(props) {
 		borderTransparentHoverRadiusUnit,
 		shadowTransparent,
 		shadowTransparentHover,
+		displayShadowTransparent,
+		displayHoverShadowTransparent,
 		colorSticky,
 		colorStickyHover,
 		backgroundSticky,
@@ -302,6 +306,8 @@ export default function BackendStyles(props) {
 		borderStickyHoverRadiusUnit,
 		shadowSticky,
 		shadowStickyHover,
+		displayShadowSticky,
+		displayHoverShadowSticky,
 	} = attributes;
 
 	const css = new KadenceBlocksCSS();
@@ -777,6 +783,7 @@ export default function BackendStyles(props) {
 	let btnBox2 = '';
 	const btnbgHover = 'gradient' === backgroundHoverType ? gradientHover : KadenceColorOutput(backgroundHover);
 	if (
+		displayHoverShadow &&
 		hasVisibleShadow(shadowHover?.[0]) &&
 		undefined !== shadowHover?.[0].inset &&
 		false === shadowHover?.[0].inset
@@ -785,7 +792,12 @@ export default function BackendStyles(props) {
 		btnBox2 = 'none';
 		btnRad = '0';
 	}
-	if (hasVisibleShadow(shadowHover?.[0]) && undefined !== shadowHover?.[0].inset && true === shadowHover?.[0].inset) {
+	if (
+		displayHoverShadow &&
+		hasVisibleShadow(shadowHover?.[0]) &&
+		undefined !== shadowHover?.[0].inset &&
+		true === shadowHover?.[0].inset
+	) {
 		btnBox2 = shadowCss(shadowHover[0], 14);
 		btnRad = undefined !== borderRadius ? borderRadius : '3';
 		btnBox = 'none';
@@ -800,6 +812,7 @@ export default function BackendStyles(props) {
 			? gradientTransparentHover
 			: KadenceColorOutput(backgroundTransparentHover);
 	if (
+		displayHoverShadowTransparent &&
 		hasVisibleShadow(shadowTransparentHover?.[0]) &&
 		undefined !== shadowTransparentHover?.[0].inset &&
 		false === shadowTransparentHover?.[0].inset
@@ -809,6 +822,7 @@ export default function BackendStyles(props) {
 		btnRadTransparent = '0';
 	}
 	if (
+		displayHoverShadowTransparent &&
 		hasVisibleShadow(shadowTransparentHover?.[0]) &&
 		undefined !== shadowTransparentHover?.[0].inset &&
 		true === shadowTransparentHover?.[0].inset
@@ -825,6 +839,7 @@ export default function BackendStyles(props) {
 	const btnbgStickyHover =
 		'gradient' === backgroundStickyHoverType ? gradientStickyHover : KadenceColorOutput(backgroundStickyHover);
 	if (
+		displayHoverShadowSticky &&
 		hasVisibleShadow(shadowStickyHover?.[0]) &&
 		undefined !== shadowStickyHover?.[0].inset &&
 		false === shadowStickyHover?.[0].inset
@@ -834,6 +849,7 @@ export default function BackendStyles(props) {
 		btnRadSticky = '0';
 	}
 	if (
+		displayHoverShadowSticky &&
 		hasVisibleShadow(shadowStickyHover?.[0]) &&
 		undefined !== shadowStickyHover?.[0].inset &&
 		true === shadowStickyHover?.[0].inset
@@ -978,8 +994,9 @@ export default function BackendStyles(props) {
 	}
 
 	// No `color` check: it falls back to '#000000' below, so requiring it would read a colorless but
-	// visible shadow as invisible, disagreeing with the PHP gate.
-	const hasExplicitShadow = hasVisibleShadow(shadow?.[0]);
+	// visible shadow as invisible, disagreeing with the PHP gate. `displayShadow` gates it too, matching
+	// the PHP renderer's `box-shadow` sites so a lowered flag falls through the same as an invisible shadow.
+	const hasExplicitShadow = displayShadow && hasVisibleShadow(shadow?.[0]);
 
 	if (hasExplicitShadow || !hasPresetShadow) {
 		css.add_property('box-shadow', hasExplicitShadow ? shadowCss(shadow[0], 14) : 'none');
@@ -1098,7 +1115,7 @@ export default function BackendStyles(props) {
 			);
 		}
 		// No `none` fallback: this selector outranks the base rule, which must carry through instead.
-		if (hasVisibleShadow(shadowTransparent?.[0])) {
+		if (displayShadowTransparent && hasVisibleShadow(shadowTransparent?.[0])) {
 			css.add_property('box-shadow', shadowCss(shadowTransparent[0], 14));
 		}
 		css.add_property('color', css.render_color(colorTransparent));
@@ -1191,7 +1208,7 @@ export default function BackendStyles(props) {
 			);
 		}
 		// No `none` fallback: this selector outranks the base rule, which must carry through instead.
-		if (hasVisibleShadow(shadowSticky?.[0])) {
+		if (displayShadowSticky && hasVisibleShadow(shadowSticky?.[0])) {
 			css.add_property('box-shadow', shadowCss(shadowSticky[0], 14));
 		}
 		css.add_property('color', css.render_color(colorSticky));
