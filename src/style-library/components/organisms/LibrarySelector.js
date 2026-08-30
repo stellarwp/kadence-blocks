@@ -25,6 +25,7 @@ import { __ } from '@wordpress/i18n';
 import { SelectDropdown } from '../molecules/SelectDropdown';
 import { isDefaultLibrary, libraryDisplayTitle } from '../../helpers/libraries';
 import { CreateLibraryModal } from './CreateLibraryModal';
+import { useDraftChannel } from '../../hooks/use-draft-channel';
 
 /**
  * Render the library selector.
@@ -64,6 +65,7 @@ export function LibrarySelector({
 	onClearCreateError,
 }) {
 	const [isCreateOpen, setIsCreateOpen] = useState(false);
+	const channel = useDraftChannel();
 
 	const options = libraries.map((library) => {
 		const badges = [];
@@ -91,8 +93,15 @@ export function LibrarySelector({
 	// `openError` state above already surfaces a failure, so the rejection `onOpen`'s promise
 	// carries (there for a caller that chains off it, e.g. the create flow) is swallowed here
 	// rather than left unhandled.
+	//
+	// Guarded because opening another library replaces the feed under any open settings panel, and
+	// that panel's draft cannot survive the swap. Unlike deleting a library — where the draft's
+	// target is destroyed and prompting would be nonsense — the token being edited still exists, so
+	// the edit is worth offering to save.
 	const handleOpen = (slug) => {
-		onOpen(slug).catch(() => {});
+		const open = () => onOpen(slug).catch(() => {});
+
+		channel ? channel.guard(open) : open();
 	};
 
 	return (
@@ -119,7 +128,14 @@ export function LibrarySelector({
 				onChange={handleOpen}
 				trailingAction={{
 					label: __('Create Library', 'kadence-blocks'),
-					onClick: () => setIsCreateOpen(true),
+					// Guarded at the point the modal opens rather than around `onCreate`: creating a
+					// library ends by opening it, so it swaps the feed like any other switch, and
+					// asking here keeps the prompt from appearing on top of the create modal.
+					onClick: () => {
+						const openModal = () => setIsCreateOpen(true);
+
+						channel ? channel.guard(openModal) : openModal();
+					},
 				}}
 			/>
 			{isCreateOpen && (
