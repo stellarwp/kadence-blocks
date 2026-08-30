@@ -309,6 +309,48 @@ $palette_delivery_color_tokens = [
 	],
 ];
 
+/**
+ * The state selector every Button hover binding is scoped by, on the FRONT END.
+ *
+ * `:focus` rides along with `:hover` because the button's own CSS treats the two as one look — every rule it
+ * writes for hover it writes for focus in the same breath — so a preset that reached only `:hover` would leave
+ * a keyboard user on a button that never picks up the preset's border, radius or shadow.
+ *
+ * The repeated class is the weight, and it is load-bearing rather than a flourish. Preset\Css_Builder wraps a
+ * state rule's block-and-preset qualification in `:where()`, so this selector is the rule's ENTIRE specificity,
+ * and it has to land between two rules the button already writes:
+ *
+ *   - above `.kb-button:not(.kb-btn-global-inherit):hover` (three classes), the SCSS default that resets
+ *     box-shadow on hover and would otherwise silence a preset's shadow;
+ *   - below `.wp-block-kadence-advancedbtn .kb-btn<uid>.kb-button:hover` (four classes), the button's own
+ *     per-instance hover, so a hover the user set on the block still wins.
+ *
+ * Four classes ties that second one, and the tie breaks on source order: the preset CSS rides an enqueued
+ * handle and the per-instance CSS is printed after it, so the button's own value wins. Four also clears the
+ * per-instance RESTING rule (three classes), which is the point — a preset that says what hover looks like
+ * should say it even for a button carrying its own resting radius.
+ *
+ * On the front end `.wp-block-kadence-singlebtn` and `.kb-button` are the SAME element (the block renders
+ * through get_block_wrapper_attributes()), so the classes compound rather than descend.
+ *
+ * @var string
+ */
+$button_hover_state = '.kb-button.kb-button.kb-button:hover,.kb-button.kb-button.kb-button:focus';
+
+/**
+ * The same selector for the EDITOR canvas, where the button is a DESCENDANT: useBlockProps() puts
+ * `.wp-block-kadence-singlebtn` on a wrapper div and the button itself carries `.kt-button`. The leading `*`
+ * is how a suffix that would otherwise read as a compound asks for the descendant combinator.
+ *
+ * It spends one class less than its front-end twin because the editor spends one less on the rules it has to
+ * sit between: BackendStyles writes `.kb-single-btn-<uid> .kt-button-<uid>:hover` (three classes) where the
+ * front end writes four, and the editor SCSS has no hover reset to clear. Matching the front end's four would
+ * put a preset's hover ABOVE the block's own, so the canvas would disagree with the page it previews.
+ *
+ * @var string
+ */
+$button_hover_state_editor = '*.kt-button.kt-button:hover,*.kt-button.kt-button:focus';
+
 return [
 	'tokens'          => array_merge(
 		[
@@ -361,6 +403,15 @@ return [
 				'group' => __( 'Layout', 'kadence-blocks' ),
 			],
 			[
+				// The hover twin of the token above. A state binding needs a semantic of its own or a preset
+				// that set the resting radius would move the hover one with it; both ship resolving to the same
+				// value, so a column that never asked for a hover radius keeps the one it has.
+				'id'    => 'semantic.radius.column-hover',
+				'type'  => 'dimension',
+				'label' => __( 'Column Radius (Hover)', 'kadence-blocks' ),
+				'group' => __( 'Layout', 'kadence-blocks' ),
+			],
+			[
 				// Block-specific background defaults for the block-default CSS projector. Each aliases the
 				// transparent primitive (see baseline), so a fresh Row Layout / Column stays transparent — KB's
 				// own default — while a site owner can brand one block type's background by overriding its token,
@@ -378,9 +429,23 @@ return [
 				'group' => __( 'Layout', 'kadence-blocks' ),
 			],
 			[
+				// The hover twin of the token above; see semantic.radius.column-hover for why a state gets its
+				// own semantic rather than sharing the resting one.
+				'id'    => 'semantic.color.column-bg-hover',
+				'type'  => 'color',
+				'label' => __( 'Column Background (Hover)', 'kadence-blocks' ),
+				'group' => __( 'Layout', 'kadence-blocks' ),
+			],
+			[
 				'id'    => 'semantic.color.border',
 				'type'  => 'color',
 				'label' => __( 'Border', 'kadence-blocks' ),
+				'group' => __( 'Brand', 'kadence-blocks' ),
+			],
+			[
+				'id'    => 'semantic.color.border-hover',
+				'type'  => 'color',
+				'label' => __( 'Border (Hover)', 'kadence-blocks' ),
 				'group' => __( 'Brand', 'kadence-blocks' ),
 			],
 			[
@@ -400,6 +465,12 @@ return [
 				'id'    => 'semantic.border-width.default',
 				'type'  => 'dimension',
 				'label' => __( 'Border Width', 'kadence-blocks' ),
+				'group' => __( 'Brand', 'kadence-blocks' ),
+			],
+			[
+				'id'    => 'semantic.border-width.default-hover',
+				'type'  => 'dimension',
+				'label' => __( 'Border Width (Hover)', 'kadence-blocks' ),
 				'group' => __( 'Brand', 'kadence-blocks' ),
 			],
 			[
@@ -429,6 +500,12 @@ return [
 				'id'    => 'semantic.shadow.button',
 				'type'  => 'shadow',
 				'label' => __( 'Button Shadow', 'kadence-blocks' ),
+				'group' => __( 'Brand', 'kadence-blocks' ),
+			],
+			[
+				'id'    => 'semantic.shadow.button-hover',
+				'type'  => 'shadow',
+				'label' => __( 'Button Shadow (Hover)', 'kadence-blocks' ),
 				'group' => __( 'Brand', 'kadence-blocks' ),
 			],
 		],
@@ -561,6 +638,66 @@ return [
 				'button-shadow'       => [
 					'token'   => 'semantic.shadow.button',
 					'css_var' => 'kb-btn-shadow',
+				],
+
+				// The hover half of the same four properties. These take the css_state shape rather than the
+				// css_var shape their resting counterparts use, because a state has no variable of the block's
+				// own to point at: the button reads --kb-btn-radius and friends in its resting rules only and
+				// paints its hover look straight from its own attributes, so there is nothing for a preset to
+				// redirect. Preset\Css_Builder supplies the whole rule instead, and only for a preset that
+				// actually sets the property, so a button whose preset carries no hover keeps the hover it has.
+				//
+				// $button_hover_state / $button_hover_state_editor carry the selectors; the weight they spend is
+				// load-bearing, and the note above them says what it buys.
+				'button-radius-hover'       => [
+					'css_prop'         => 'border-radius',
+					'css_state'        => $button_hover_state,
+					'editor_css_state' => $button_hover_state_editor,
+					'control_attr'     => 'borderHoverRadius',
+					'responsive_attrs' => [
+						'tablet' => 'tabletBorderHoverRadius',
+						'mobile' => 'mobileBorderHoverRadius',
+					],
+				],
+
+				// The hover border trio mirrors the resting one: three properties sharing ONE control_attr
+				// ('borderHoverStyle'), each declaring the axis it owns within that nested value. The KEY shape
+				// is what the Style Library's Border field derives its three paths from — it appends
+				// `-width`/`-style`/`-color` to its own path — so these read `button-border-hover-*` rather than
+				// the `button-border-*-hover` the resting trio's names would suggest.
+				'button-border-hover-width' => [
+					'token'            => 'semantic.border-width.default-hover',
+					'css_prop'         => 'border-width',
+					'css_state'        => $button_hover_state,
+					'editor_css_state' => $button_hover_state_editor,
+					'control_attr'     => 'borderHoverStyle',
+					'axis'             => 'border-width',
+				],
+				'button-border-hover-style' => [
+					'token'            => 'semantic.border-style.default-hover',
+					'css_prop'         => 'border-style',
+					'css_state'        => $button_hover_state,
+					'editor_css_state' => $button_hover_state_editor,
+					'control_attr'     => 'borderHoverStyle',
+					'axis'             => 'border-style',
+				],
+				'button-border-hover-color' => [
+					'token'            => 'semantic.color.border-hover',
+					'css_prop'         => 'border-color',
+					'css_state'        => $button_hover_state,
+					'editor_css_state' => $button_hover_state_editor,
+					'control_attr'     => 'borderHoverStyle',
+					'axis'             => 'border-color',
+				],
+
+				// No control_attr, matching button-shadow: the block's shadow control carries no indicator, and
+				// giving the hover one an attribute its resting twin does not have would make the pair read
+				// inconsistently in the inspector.
+				'button-shadow-hover'       => [
+					'token'            => 'semantic.shadow.button-hover',
+					'css_prop'         => 'box-shadow',
+					'css_state'        => $button_hover_state,
+					'editor_css_state' => $button_hover_state_editor,
 				],
 			],
 		],
@@ -779,6 +916,35 @@ return [
 						'mobile' => 'mobileBorderRadius',
 					],
 				],
+
+				// The hover half of the two properties above, in the css_state shape: the column paints its
+				// hover look from its own attributes and reads no variable there, so a preset has nothing to
+				// retarget and Preset\Css_Builder supplies the whole rule instead.
+				//
+				// The doubled class is the weight. A state rule's block-and-preset qualification is wrapped in
+				// `:where()`, so this selector is its ENTIRE specificity, and it has to clear the resting
+				// block-default rule above (two classes: `.wp-block-kadence-column > .kt-inside-inner-col`)
+				// without clearing the column's own per-instance hover (three classes:
+				// `.kadence-column<uid>:hover > .kt-inside-inner-col`). Three ties that second one, and the tie
+				// breaks on source order in the block's favor.
+				'backgroundHover'     => [
+					'token'            => 'semantic.color.column-bg-hover',
+					'css_prop'         => 'background-color',
+					'css_state'        => ':hover > .kt-inside-inner-col.kt-inside-inner-col',
+					'editor_css_state' => ':hover > .kadence-inner-column-inner.kadence-inner-column-inner',
+					'control_attr'     => 'backgroundHover',
+				],
+				'borderHoverRadius'   => [
+					'token'            => 'semantic.radius.column-hover',
+					'css_prop'         => 'border-radius',
+					'css_state'        => ':hover > .kt-inside-inner-col.kt-inside-inner-col',
+					'editor_css_state' => ':hover > .kadence-inner-column-inner.kadence-inner-column-inner',
+					'control_attr'     => 'borderHoverRadius',
+					'responsive_attrs' => [
+						'tablet' => 'tabletBorderHoverRadius',
+						'mobile' => 'mobileBorderHoverRadius',
+					],
+				],
 			],
 		],
 		[
@@ -819,14 +985,36 @@ return [
 				'label' => __( 'Icon', 'kadence-blocks' ),
 			],
 			'bindings'      => [
-				'color' => [
+				'color'       => [
 					'token'        => 'semantic.color.icon',
 					'css_prop'     => 'color',
 					'css_selector' => '*.kb-svg-icon-wrap',
 					'css_var'      => 'kb-icon-color',
 					'control_attr' => 'color',
 				],
-				'size'  => [
+				// The hover half of `color`, in the css_state shape: the icon paints its hover color from
+				// `hColor` alone and reads no variable there, so a preset has nothing to retarget and
+				// Preset\Css_Builder supplies the whole rule.
+				//
+				// The doubled class is the weight. A state rule's block-and-preset qualification is wrapped in
+				// `:where()`, so this selector is its ENTIRE specificity, and it has to clear the resting rule
+				// above (two classes) without clearing the icon's own per-instance hover (three classes:
+				// `.kt-svg-item-<uid>:hover .kb-svg-icon-wrap`). Three ties that second one, and the tie breaks
+				// on source order in the block's favor.
+				//
+				// The editor names a different element for the same reason `size` resolves to a pixel number
+				// there: the canvas renders GenIcon's own markup and has no `.kb-svg-icon-wrap` at all, so the
+				// front-end suffix would match nothing. `.kt-svg-icon` is the element the icon's own editor
+				// hover rule paints, and that rule carries `!important`, so an `hColor` set on the block still
+				// wins in the canvas exactly as it does on the page.
+				'color-hover' => [
+					'token'            => 'semantic.color.icon-hover',
+					'css_prop'         => 'color',
+					'css_state'        => ':hover *.kb-svg-icon-wrap.kb-svg-icon-wrap',
+					'editor_css_state' => ':hover *.kt-svg-icon.kt-svg-icon',
+					'control_attr'     => 'hColor',
+				],
+				'size'        => [
 					'token'            => 'semantic.icon-size.default',
 					'css_prop'         => 'font-size',
 					'css_selector'     => '*.kb-svg-icon-wrap',

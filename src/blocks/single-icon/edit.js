@@ -331,9 +331,10 @@ function KadenceSingleIcon(props) {
 								onChange={(value) => setAttributes({ style: value })}
 							/>
 							{/* One two-swatch control becomes two single-value ones, matching the Button's own
-							    icon pair. Only the base color is bound -- a preset can set the icon's color but
-							    not its hover -- so only it carries binding state; the hover swatch is an
-							    ordinary color field that still resolves palette picks to the design system. */}
+							    icon pair. Both are bound now that the icon's hover color is a preset property,
+							    so each carries its own binding state and its own reset -- the hover swatch's
+							    entry only appears once a preset actually resolves a hover color, which is what
+							    keeps its indicator silent until there is something to diverge from. */}
 							<ColorControlGroup>
 								<ColorControl
 									label={__('Icon Color', 'kadence-blocks')}
@@ -353,6 +354,11 @@ function KadenceSingleIcon(props) {
 									label={__('Hover Color', 'kadence-blocks')}
 									value={hColor ? hColor : ''}
 									groups={colorGroups}
+									status={{
+										bound: !!tokenBinding.hColor?.bound,
+										modified: !!tokenBinding.hColor?.overridden,
+									}}
+									onReset={() => resetToken('hColor')}
 									onPick={(alias) => setAttributes({ hColor: alias })}
 									onCustom={(literal) => setAttributes({ hColor: literal })}
 									onClear={() => setAttributes({ hColor: '' })}

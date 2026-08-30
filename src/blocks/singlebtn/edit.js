@@ -540,6 +540,12 @@ export default function KadenceButtonEdit(props) {
 	// Normal's `tokenBinding` entries directly here (as every call site once did) would report Normal's
 	// divergence on a field the user never opened, and its `onReset` would silently clear NORMAL's
 	// attributes while leaving this state's own untouched — see `deriveStateBinding`'s own docblock.
+	//
+	// Hover is the one state with preset properties of its own, so its two controls prefer their real
+	// binding entry and keep the derived one only as the fallback: `usePresetBinding` makes no entry for a
+	// property the ACTIVE preset does not resolve, and until a preset carries a hover value the derived
+	// answer is still the only preset-relative statement available. Transparent and Sticky have no bound
+	// counterparts at all and stay derived.
 	const borderHoverBorderForDevice = measureAttrsForDevice(
 		attributes,
 		'borderHoverStyle',
@@ -1261,7 +1267,10 @@ export default function KadenceButtonEdit(props) {
 															widthTokens={borderWidthPickableTokens}
 															defaultValue={borderWidthPresetValue}
 															renderColor={renderBorderColor}
-															state={borderHoverBorderBinding}
+															state={
+																tokenBinding.borderHoverStyle ??
+																borderHoverBorderBinding
+															}
 															onReset={resetBorderHoverBorder}
 														/>
 														<EditorBoxControl
@@ -1279,7 +1288,10 @@ export default function KadenceButtonEdit(props) {
 															inherited={anyCornerInherited(
 																inheritedBorderHoverRadius.inherited
 															)}
-															state={borderHoverRadiusBinding}
+															state={
+																tokenBinding.borderHoverRadius ??
+																borderHoverRadiusBinding
+															}
 															onReset={resetBorderHoverRadius}
 															isLinked={borderHoverRadiusIsLinked}
 															onToggleLink={toggleBorderHoverRadiusLink}
