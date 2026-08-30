@@ -49,7 +49,7 @@
 import { BoxShadowControl, DEFAULT_COMPOSITE, parseResolvedShadow } from '../../../token-controls';
 import { TokenControlRow } from '../../token-indicators/components/TokenControlRow';
 import { isTokenAlias } from '../alias';
-import { SHADOW_TOKEN_KEY } from '../shadow-token';
+import { SHADOW_TOKEN_KEY, boundShadowToken } from '../shadow-token';
 
 /**
  * A CSS `rgba(r, g, b, a)` string, matching `hexToRGBA`'s own output format exactly (comma-space
@@ -237,6 +237,19 @@ function resolveShadowAlias(alias, tokens) {
 }
 
 /**
+ * The shadow token a stored native value is bound to.
+ *
+ * @param {?Array} native The stored native shadow attribute value.
+ *
+ * @since TBD
+ *
+ * @return {?string} The bound `{dot.alias}`, or null when the value carries no binding.
+ */
+export function shadowTokenOf(native) {
+	return boundShadowToken(native?.[0]);
+}
+
+/**
  * Convert the native `[{ color, opacity, hOffset, vOffset, blur, spread, inset }]` attribute value to
  * the composite `BoxShadowControl` edits.
  *
@@ -357,6 +370,12 @@ export function isUnsetShadow(native, defaultValue) {
 		return true;
 	}
 
+	// A binding, not the geometry, decides here: a token that resolves to a subtle or zero-offset
+	// shadow is still a deliberate pick, and reading it as unset would drop its name from the trigger.
+	if (shadowTokenOf(native)) {
+		return false;
+	}
+
 	// A preset shadow behind it makes an invisible shadow a deliberate suppression, not an absence.
 	if (defaultValue !== undefined && defaultValue !== null && defaultValue !== '') {
 		return false;
@@ -375,7 +394,8 @@ export function isUnsetShadow(native, defaultValue) {
  *
  * @param {Object}    props               The component props.
  * @param {string}    props.label         The control's label.
- * @param {?Array}    props.value         The native shadow attribute value.
+ * @param {?Array}    props.value         The native shadow attribute value, optionally carrying a
+ *                                        `shadowToken` binding.
  * @param {Function}  props.onChange      Called with the next native shadow attribute value.
  * @param {Array}     [props.tokens]      Pickable `shadow`-type tokens, `[{id, label, value, alias}]`.
  * @param {*}         [props.defaultValue] The active preset's own resolved shadow, or nothing when it
@@ -398,11 +418,16 @@ export function EditorShadowControl({
 	renderColor,
 	disabled = false,
 }) {
+	// A bound value goes down as the bare alias string, which is the shape `BoxShadowControl` already
+	// recognizes as a token: it names the token on the trigger, opens on the Style Library tab, and
+	// previews the token's own shadow. The stored legs stay untouched behind it.
+	const bound = shadowTokenOf(value);
+
 	return (
 		<TokenControlRow stacked>
 			<BoxShadowControl
 				label={label}
-				value={isUnsetShadow(value, defaultValue) ? '' : fromNativeShadow(value)}
+				value={isUnsetShadow(value, defaultValue) ? '' : bound || fromNativeShadow(value)}
 				onChange={(next) => onChange(toNativeShadow(next, tokens))}
 				tokens={tokens}
 				defaultValue={defaultValue}

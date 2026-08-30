@@ -525,6 +525,58 @@ describe('isUnsetShadow', () => {
 	});
 });
 
+describe('EditorShadowControl token binding read-back', () => {
+	/**
+	 * A bound item hands `BoxShadowControl` the alias string, which is what makes its trigger name the
+	 * token, open on the Style Library tab, and preview the token's own shadow.
+	 *
+	 * @return {void}
+	 */
+	it('passes the bound alias down instead of the composite', () => {
+		const { shadowControl } = renderEditorShadowControl({
+			value: toNativeShadow(SHADOW_TOKEN.alias, [SHADOW_TOKEN]),
+			tokens: [SHADOW_TOKEN],
+		});
+
+		expect(shadowControl.props.value).toBe('{semantic.shadow.card}');
+	});
+
+	/**
+	 * A bound item whose legs are all zero is still bound, not unset — the binding, not the geometry,
+	 * decides. Without this guard a token that resolves to a subtle or zero-offset shadow would read as
+	 * an untouched field and lose its name on the trigger.
+	 *
+	 * @return {void}
+	 */
+	it('reads a bound item with zero legs as set', () => {
+		const zeroBound = [
+			{
+				color: 'transparent',
+				opacity: 1,
+				hOffset: 0,
+				vOffset: 0,
+				blur: 0,
+				spread: 0,
+				inset: false,
+				[SHADOW_TOKEN_KEY]: '{semantic.shadow.card}',
+			},
+		];
+
+		expect(isUnsetShadow(zeroBound, undefined)).toBe(false);
+	});
+
+	/**
+	 * An unbound item is unaffected: it still bridges to the composite shape.
+	 *
+	 * @return {void}
+	 */
+	it('still passes a composite down for an unbound item', () => {
+		const { shadowControl } = renderEditorShadowControl();
+
+		expect(shadowControl.props.value).toMatchObject({ offsetX: '2px', offsetY: '3px' });
+	});
+});
+
 describe('EditorShadowControl unset rendering', () => {
 	const INVISIBLE = [{ color: 'transparent', opacity: 1, spread: 0, blur: 0, hOffset: 0, vOffset: 0, inset: false }];
 
