@@ -59,7 +59,7 @@ import { __ } from '@wordpress/i18n';
 import { ControlShell } from '../templates/ControlShell';
 import { TokenPopover } from '../molecules/TokenPopover';
 import { defaultSummary, fieldSummary, hasValue, isTokenAlias, resolveDefaultValue } from '../helpers/token-summary';
-import { DEFAULT_COMPOSITE } from '../helpers/shadow-shorthand';
+import { DEFAULT_COMPOSITE, parseResolvedShadow } from '../helpers/shadow-shorthand';
 import '../styles/token-controls.scss';
 
 /**
@@ -243,7 +243,13 @@ export function BoxShadowControl({ value, onChange, label, tokens = [], defaultV
 	// tab would then write back as a shadow whose sub-fields are `0`, `p`, `x`. Degrading to the default
 	// shape reads as unset, which is wrong but harmless where the alternative cannot be saved at all.
 	const custom = typeof value === 'object' && value !== null && !Array.isArray(value) ? value : {};
-	const shadow = { ...DEFAULT_COMPOSITE, ...(aliased ? {} : custom) };
+	// An alias carries no legs of its own, so the Custom tab has nothing to seed from unless it borrows
+	// the bound token's own resolved shorthand here — without this, switching to Custom tab reads as
+	// an all-zero, transparent shadow and editing one leg discards the token's real value.
+	const aliasedEntry = aliased ? (tokens || []).find((entry) => entry.alias === value) : null;
+	const shadow = aliased
+		? { ...DEFAULT_COMPOSITE, ...(aliasedEntry ? parseResolvedShadow(aliasedEntry.value) : {}) }
+		: { ...DEFAULT_COMPOSITE, ...custom };
 	// A fixed pick keeps no live alias, so a sentinel is recognized after the fact by its shorthand.
 	const fixedMatch = !aliased && hasValue(value) ? matchFixedEntry(shadow, tokens) : null;
 	// Display only — `onChange` still sees the real underlying value.

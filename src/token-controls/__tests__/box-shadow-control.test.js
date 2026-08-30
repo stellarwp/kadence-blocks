@@ -570,6 +570,24 @@ describe('BoxShadowControl Style Library tab', () => {
 
 describe('BoxShadowControl Custom tab', () => {
 	/**
+	 * An aliased value seeds the Custom tab from the bound token's own resolved shorthand, not the
+	 * all-zero default composite — switching to Custom must show the token's real legs so editing one
+	 * of them does not silently discard the rest.
+	 *
+	 * @return {void}
+	 */
+	it('seeds the Custom tab’s fields from the bound token’s resolved value for an aliased value', () => {
+		renderControl({ value: '{primitive.shadow.md}' });
+
+		click(container.querySelector('[data-testid="tab-custom"]'));
+
+		expect(numberInput('X').value).toBe('0');
+		expect(numberInput('Y').value).toBe('2');
+		expect(numberInput('Blur').value).toBe('8');
+		expect(numberInput('Spread').value).toBe('0');
+	});
+
+	/**
 	 * Editing an axis writes the full composite object with only that axis changed, serialized as a
 	 * px dimension string, and the rest of the value preserved.
 	 *
