@@ -101,6 +101,83 @@ describe('SwatchGrid group pendingDelete', () => {
 	});
 });
 
+describe('SwatchGrid pill slot reservation', () => {
+	let container;
+	let root;
+
+	beforeEach(() => {
+		global.IS_REACT_ACT_ENVIRONMENT = true;
+		container = document.createElement('div');
+		document.body.appendChild(container);
+		root = createRoot(container);
+	});
+
+	afterEach(() => {
+		act(() => root.unmount());
+		container.remove();
+		delete global.IS_REACT_ACT_ENVIRONMENT;
+	});
+
+	/**
+	 * Render `SwatchGrid` with one group.
+	 *
+	 * @param {Object} group The group to render.
+	 *
+	 * @since TBD
+	 *
+	 * @return {void}
+	 */
+	function renderGrid(group) {
+		act(() => {
+			root.render(
+				<SwatchGrid groups={[group]} selectedId="" onSelect={() => {}} onAdd={() => {}} addLabel="Add color" />
+			);
+		});
+	}
+
+	/**
+	 * When no item in the group carries a pill, the row has nothing to align, so no card renders
+	 * the slot at all — this is the dead-space fix.
+	 *
+	 * @return void
+	 */
+	it('renders no pill slot when no item in the group has a pill', () => {
+		renderGrid(makeGroup());
+
+		expect(container.querySelector('.kadence-blocks-style-library__swatch-card-pill-slot')).toBeNull();
+	});
+
+	/**
+	 * When at least one item in the group has a pill, every card in that group reserves the slot,
+	 * including the ones without a pill of their own — this is the alignment guarantee the
+	 * per-row reservation exists for.
+	 *
+	 * @return void
+	 */
+	it('reserves the pill slot on every card in the group when at least one item has a pill', () => {
+		renderGrid(
+			makeGroup({
+				items: [
+					{
+						id: 'primitive.color.brand.primary',
+						name: 'Main 1',
+						subLine: '#111111',
+						pill: <button type="button" data-testid="pill" />,
+					},
+					{ id: 'primitive.color.brand.secondary', name: 'Main 2', subLine: '#222222' },
+				],
+			})
+		);
+
+		const cards = container.querySelectorAll('.kadence-blocks-style-library__swatch-card');
+		expect(cards).toHaveLength(2);
+
+		cards.forEach((card) => {
+			expect(card.querySelector('.kadence-blocks-style-library__swatch-card-pill-slot')).not.toBeNull();
+		});
+	});
+});
+
 describe('SwatchCard pill slot', () => {
 	let cardContainer;
 	let cardRoot;
@@ -161,13 +238,36 @@ describe('SwatchCard pill slot', () => {
 	});
 
 	/**
-	 * The slot is present with no pill in it, so a card with nothing to say keeps the same height
-	 * as its neighbors.
+	 * With no pill and no reservation, the card has nothing under its sub-line to say, so the
+	 * slot is skipped rather than leaving an empty strip.
 	 *
 	 * @return void
 	 */
-	it('reserves the pill slot even when no pill is supplied', () => {
+	it('does not render the pill slot when there is no pill and the slot is not reserved', () => {
 		renderCard();
+
+		expect(cardContainer.querySelector('.kadence-blocks-style-library__swatch-card-pill-slot')).toBeNull();
+	});
+
+	/**
+	 * A card with a pill always renders the slot, regardless of `reservePillSlot`.
+	 *
+	 * @return void
+	 */
+	it('renders the pill slot when a pill is supplied', () => {
+		renderCard({ pill: <button type="button" data-testid="pill" /> });
+
+		expect(cardContainer.querySelector('.kadence-blocks-style-library__swatch-card-pill-slot')).not.toBeNull();
+	});
+
+	/**
+	 * `reservePillSlot` keeps the slot present even without a pill of its own — this is how the
+	 * grid keeps a mixed row on one baseline.
+	 *
+	 * @return void
+	 */
+	it('renders the pill slot when reservePillSlot is set even without a pill', () => {
+		renderCard({ reservePillSlot: true });
 
 		expect(cardContainer.querySelector('.kadence-blocks-style-library__swatch-card-pill-slot')).not.toBeNull();
 	});

@@ -93,9 +93,6 @@ function SwatchGridSkeleton({ label }) {
 										style={{ width: '70%' }}
 									/>
 								</div>
-								{/* Empty on purpose: the placeholder needs the real card's reserved pill slot,
-								 * or the grid visibly shortens the moment the real cards arrive. */}
-								<div className="kadence-blocks-style-library__swatch-card-pill-slot" />
 							</div>
 						</div>
 					))}

@@ -44,6 +44,10 @@ import './SwatchCard.scss';
  *                                       inheritance pill, or null. Caller-supplied for the same
  *                                       reason `preview` is: this card is used by screens that
  *                                       have no notion of palette inheritance at all.
+ * @param {boolean}      [props.reservePillSlot] Whether to render the pill slot even though this
+ *                                       card itself has no pill — set by the grid when another
+ *                                       card in the same row has one, so every card in the row
+ *                                       keeps the same height.
  * @param {boolean}      [props.isSelected]     Whether the card shows the selected treatment.
  * @param {Function}     props.onSelect         Called with the card id on click.
  * @param {boolean}      [props.isDraggable]    Whether the drag handle renders.
@@ -73,6 +77,7 @@ export function SwatchCard({
 	name,
 	subLine,
 	pill = null,
+	reservePillSlot = false,
 	isSelected = false,
 	onSelect,
 	isDraggable = false,
@@ -109,9 +114,12 @@ export function SwatchCard({
 					<span className="kadence-blocks-style-library__swatch-card-name">{name}</span>
 					{subLine && <span className="kadence-blocks-style-library__swatch-card-sub-line">{subLine}</span>}
 				</button>
-				{/* Rendered whether or not there is a pill: the slot's reserved height is what keeps a
-				 * row of mixed cards on one baseline. */}
-				<span className="kadence-blocks-style-library__swatch-card-pill-slot">{pill}</span>
+				{/* Renders when this card has a pill, or when the grid asked every card in the row to
+				 * reserve the slot because at least one of its siblings has one — that keeps the row
+				 * on one baseline without leaving dead space under a row where nothing has a pill. */}
+				{(pill || reservePillSlot) && (
+					<span className="kadence-blocks-style-library__swatch-card-pill-slot">{pill}</span>
+				)}
 			</div>
 			<span className="kadence-blocks-style-library__swatch-card-handle-slot">
 				{isDraggable && !isPendingDelete && <DragHandle handleProps={dragHandleProps} />}
