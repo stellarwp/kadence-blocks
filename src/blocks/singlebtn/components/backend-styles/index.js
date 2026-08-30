@@ -773,40 +773,12 @@ export default function BackendStyles(props) {
 		undefined !== shadowHover?.[0].inset &&
 		false === shadowHover?.[0].inset
 	) {
-		btnBox = `${
-			(undefined !== shadowHover?.[0].inset && shadowHover[0].inset ? 'inset ' : '') +
-			(undefined !== shadowHover?.[0].hOffset ? shadowHover[0].hOffset : 0) +
-			'px ' +
-			(undefined !== shadowHover?.[0].vOffset ? shadowHover[0].vOffset : 0) +
-			'px ' +
-			(undefined !== shadowHover?.[0].blur ? shadowHover[0].blur : 14) +
-			'px ' +
-			(undefined !== shadowHover?.[0].spread ? shadowHover[0].spread : 0) +
-			'px ' +
-			KadenceColorOutput(
-				undefined !== shadowHover?.[0].color ? shadowHover[0].color : '#000000',
-				undefined !== shadowHover?.[0].opacity ? shadowHover[0].opacity : 1
-			)
-		}`;
+		btnBox = shadowCss(shadowHover[0], 14);
 		btnBox2 = 'none';
 		btnRad = '0';
 	}
 	if (hasVisibleShadow(shadowHover?.[0]) && undefined !== shadowHover?.[0].inset && true === shadowHover?.[0].inset) {
-		btnBox2 = `${
-			(undefined !== shadowHover?.[0].inset && shadowHover[0].inset ? 'inset ' : '') +
-			(undefined !== shadowHover?.[0].hOffset ? shadowHover[0].hOffset : 0) +
-			'px ' +
-			(undefined !== shadowHover?.[0].vOffset ? shadowHover[0].vOffset : 0) +
-			'px ' +
-			(undefined !== shadowHover?.[0].blur ? shadowHover[0].blur : 14) +
-			'px ' +
-			(undefined !== shadowHover?.[0].spread ? shadowHover[0].spread : 0) +
-			'px ' +
-			KadenceColorOutput(
-				undefined !== shadowHover?.[0].color ? shadowHover[0].color : '#000000',
-				undefined !== shadowHover?.[0].opacity ? shadowHover[0].opacity : 1
-			)
-		}`;
+		btnBox2 = shadowCss(shadowHover[0], 14);
 		btnRad = undefined !== borderRadius ? borderRadius : '3';
 		btnBox = 'none';
 	}
@@ -824,21 +796,7 @@ export default function BackendStyles(props) {
 		undefined !== shadowTransparentHover?.[0].inset &&
 		false === shadowTransparentHover?.[0].inset
 	) {
-		btnBoxTransparent = `${
-			(undefined !== shadowTransparentHover?.[0].inset && shadowTransparentHover[0].inset ? 'inset ' : '') +
-			(undefined !== shadowTransparentHover?.[0].hOffset ? shadowTransparentHover[0].hOffset : 0) +
-			'px ' +
-			(undefined !== shadowTransparentHover?.[0].vOffset ? shadowTransparentHover[0].vOffset : 0) +
-			'px ' +
-			(undefined !== shadowTransparentHover?.[0].blur ? shadowTransparentHover[0].blur : 14) +
-			'px ' +
-			(undefined !== shadowTransparentHover?.[0].spread ? shadowTransparentHover[0].spread : 0) +
-			'px ' +
-			KadenceColorOutput(
-				undefined !== shadowTransparentHover?.[0].color ? shadowTransparentHover[0].color : '#000000',
-				undefined !== shadowTransparentHover?.[0].opacity ? shadowTransparentHover[0].opacity : 1
-			)
-		}`;
+		btnBoxTransparent = shadowCss(shadowTransparentHover[0], 14);
 		btnBox2Transparent = 'none';
 		btnRadTransparent = '0';
 	}
@@ -847,21 +805,7 @@ export default function BackendStyles(props) {
 		undefined !== shadowTransparentHover?.[0].inset &&
 		true === shadowTransparentHover?.[0].inset
 	) {
-		btnBox2Transparent = `${
-			(undefined !== shadowTransparentHover?.[0].inset && shadowTransparentHover[0].inset ? 'inset ' : '') +
-			(undefined !== shadowTransparentHover?.[0].hOffset ? shadowTransparentHover[0].hOffset : 0) +
-			'px ' +
-			(undefined !== shadowTransparentHover?.[0].vOffset ? shadowTransparentHover[0].vOffset : 0) +
-			'px ' +
-			(undefined !== shadowTransparentHover?.[0].blur ? shadowTransparentHover[0].blur : 14) +
-			'px ' +
-			(undefined !== shadowTransparentHover?.[0].spread ? shadowTransparentHover[0].spread : 0) +
-			'px ' +
-			KadenceColorOutput(
-				undefined !== shadowTransparentHover?.[0].color ? shadowTransparentHover[0].color : '#000000',
-				undefined !== shadowTransparentHover?.[0].opacity ? shadowTransparentHover[0].opacity : 1
-			)
-		}`;
+		btnBox2Transparent = shadowCss(shadowTransparentHover[0], 14);
 		btnRadTransparent = undefined !== borderTransparentRadius ? borderTransparentRadius : '3';
 		btnBoxTransparent = 'none';
 	}
@@ -877,21 +821,7 @@ export default function BackendStyles(props) {
 		undefined !== shadowStickyHover?.[0].inset &&
 		false === shadowStickyHover?.[0].inset
 	) {
-		btnBoxSticky = `${
-			(undefined !== shadowStickyHover?.[0].inset && shadowStickyHover[0].inset ? 'inset ' : '') +
-			(undefined !== shadowStickyHover?.[0].hOffset ? shadowStickyHover[0].hOffset : 0) +
-			'px ' +
-			(undefined !== shadowStickyHover?.[0].vOffset ? shadowStickyHover[0].vOffset : 0) +
-			'px ' +
-			(undefined !== shadowStickyHover?.[0].blur ? shadowStickyHover[0].blur : 14) +
-			'px ' +
-			(undefined !== shadowStickyHover?.[0].spread ? shadowStickyHover[0].spread : 0) +
-			'px ' +
-			KadenceColorOutput(
-				undefined !== shadowStickyHover?.[0].color ? shadowStickyHover[0].color : '#000000',
-				undefined !== shadowStickyHover?.[0].opacity ? shadowStickyHover[0].opacity : 1
-			)
-		}`;
+		btnBoxSticky = shadowCss(shadowStickyHover[0], 14);
 		btnBox2Sticky = 'none';
 		btnRadSticky = '0';
 	}
@@ -900,21 +830,7 @@ export default function BackendStyles(props) {
 		undefined !== shadowStickyHover?.[0].inset &&
 		true === shadowStickyHover?.[0].inset
 	) {
-		btnBox2Sticky = `${
-			(undefined !== shadowStickyHover?.[0].inset && shadowStickyHover[0].inset ? 'inset ' : '') +
-			(undefined !== shadowStickyHover?.[0].hOffset ? shadowStickyHover[0].hOffset : 0) +
-			'px ' +
-			(undefined !== shadowStickyHover?.[0].vOffset ? shadowStickyHover[0].vOffset : 0) +
-			'px ' +
-			(undefined !== shadowStickyHover?.[0].blur ? shadowStickyHover[0].blur : 14) +
-			'px ' +
-			(undefined !== shadowStickyHover?.[0].spread ? shadowStickyHover[0].spread : 0) +
-			'px ' +
-			KadenceColorOutput(
-				undefined !== shadowStickyHover?.[0].color ? shadowStickyHover[0].color : '#000000',
-				undefined !== shadowStickyHover?.[0].opacity ? shadowStickyHover[0].opacity : 1
-			)
-		}`;
+		btnBox2Sticky = shadowCss(shadowStickyHover[0], 14);
 		btnRadSticky = undefined !== borderStickyRadius ? borderStickyRadius : '3';
 		btnBoxSticky = 'none';
 	}
@@ -1058,24 +974,7 @@ export default function BackendStyles(props) {
 	const hasExplicitShadow = hasVisibleShadow(shadow?.[0]);
 
 	if (hasExplicitShadow || !hasPresetShadow) {
-		css.add_property(
-			'box-shadow',
-			hasExplicitShadow
-				? (undefined !== shadow[0].inset && shadow[0].inset ? 'inset ' : '') +
-						shadowAxisPx(shadow[0].hOffset, 0) +
-						'px ' +
-						shadowAxisPx(shadow[0].vOffset, 0) +
-						'px ' +
-						shadowAxisPx(shadow[0].blur, 14) +
-						'px ' +
-						shadowAxisPx(shadow[0].spread, 0) +
-						'px ' +
-						KadenceColorOutput(
-							undefined !== shadow[0].color ? shadow[0].color : '#000000',
-							undefined !== shadow[0].opacity ? shadow[0].opacity : 1
-						)
-				: 'none'
-		);
+		css.add_property('box-shadow', hasExplicitShadow ? shadowCss(shadow[0], 14) : 'none');
 	}
 
 	css.set_selector(`.kb-single-btn-${uniqueID} .kt-button-${uniqueID} .kt-button-text`);
@@ -1192,22 +1091,7 @@ export default function BackendStyles(props) {
 		}
 		// No `none` fallback: this selector outranks the base rule, which must carry through instead.
 		if (hasVisibleShadow(shadowTransparent?.[0])) {
-			css.add_property(
-				'box-shadow',
-				(undefined !== shadowTransparent[0].inset && shadowTransparent[0].inset ? 'inset ' : '') +
-					shadowAxisPx(shadowTransparent[0].hOffset, 0) +
-					'px ' +
-					shadowAxisPx(shadowTransparent[0].vOffset, 0) +
-					'px ' +
-					shadowAxisPx(shadowTransparent[0].blur, 14) +
-					'px ' +
-					shadowAxisPx(shadowTransparent[0].spread, 0) +
-					'px ' +
-					KadenceColorOutput(
-						undefined !== shadowTransparent[0].color ? shadowTransparent[0].color : '#000000',
-						undefined !== shadowTransparent[0].opacity ? shadowTransparent[0].opacity : 1
-					)
-			);
+			css.add_property('box-shadow', shadowCss(shadowTransparent[0], 14));
 		}
 		css.add_property('color', css.render_color(colorTransparent));
 		css.add_property('background', btnbgTransparent);
@@ -1300,22 +1184,7 @@ export default function BackendStyles(props) {
 		}
 		// No `none` fallback: this selector outranks the base rule, which must carry through instead.
 		if (hasVisibleShadow(shadowSticky?.[0])) {
-			css.add_property(
-				'box-shadow',
-				(undefined !== shadowSticky[0].inset && shadowSticky[0].inset ? 'inset ' : '') +
-					shadowAxisPx(shadowSticky[0].hOffset, 0) +
-					'px ' +
-					shadowAxisPx(shadowSticky[0].vOffset, 0) +
-					'px ' +
-					shadowAxisPx(shadowSticky[0].blur, 14) +
-					'px ' +
-					shadowAxisPx(shadowSticky[0].spread, 0) +
-					'px ' +
-					KadenceColorOutput(
-						undefined !== shadowSticky[0].color ? shadowSticky[0].color : '#000000',
-						undefined !== shadowSticky[0].opacity ? shadowSticky[0].opacity : 1
-					)
-			);
+			css.add_property('box-shadow', shadowCss(shadowSticky[0], 14));
 		}
 		css.add_property('color', css.render_color(colorSticky));
 		css.add_property('background', btnbgSticky);
