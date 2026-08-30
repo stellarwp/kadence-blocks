@@ -9,6 +9,7 @@ import {
 	splitColorOpacity,
 	toNativeShadow,
 	fromNativeShadow,
+	hasVisibleShadow,
 	isUnsetShadow,
 } from '../EditorShadowControl';
 import { BoxShadowControl } from '../../../../token-controls/controls/BoxShadowControl';
@@ -503,5 +504,35 @@ describe('EditorShadowControl unset rendering', () => {
 		});
 
 		expect(shadowControl.props.value).not.toBe('');
+	});
+});
+
+describe('hasVisibleShadow', () => {
+	/**
+	 * Geometry alone decides visibility, matching the block classes' `has_visible_shadow()`. The two
+	 * must agree or the editor preview and the rendered page disagree about which shadows exist.
+	 *
+	 * @param {string}  _label   The case name, used only for the test title.
+	 * @param {?Object} item     The `shadow[0]`-shaped item.
+	 * @param {boolean} expected Whether the item should read as visible.
+	 *
+	 * @return {void}
+	 */
+	it.each([
+		['a missing item', undefined, false],
+		['all-zero axes', { hOffset: 0, vOffset: 0, blur: 0, spread: 0 }, false],
+		['all-zero axes as strings', { hOffset: '0', vOffset: '0', blur: '0', spread: '0' }, false],
+		[
+			'a color with no geometry',
+			{ color: '#ff0000', opacity: 1, hOffset: 0, vOffset: 0, blur: 0, spread: 0 },
+			false,
+		],
+		['a blur', { hOffset: 0, vOffset: 0, blur: 14, spread: 0 }, true],
+		['a negative offset', { hOffset: -2, vOffset: 0, blur: 0, spread: 0 }, true],
+		['a spread only', { hOffset: 0, vOffset: 0, blur: 0, spread: 3 }, true],
+		['a token alias leg', { hOffset: 0, vOffset: '{semantic.shadow.media}', blur: 0, spread: 0 }, true],
+		['an empty-string leg', { hOffset: '', vOffset: '', blur: '', spread: '' }, false],
+	])('reads %s correctly', (_label, item, expected) => {
+		expect(hasVisibleShadow(item)).toBe(expected);
 	});
 });

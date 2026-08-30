@@ -20,6 +20,12 @@
  * family string either way — no alias, no pickable pool, no adapter. It rides this same seam because
  * the shared typography control gates font weight / style / subset behind the same `onFontFamily`
  * prop as the family select, so a block cannot substitute a picker by dropping the prop.
+ *
+ * It DOES take a binding indicator, though, and that is not a contradiction: token-backed and
+ * preset-settable are different properties. A preset can store a font family, so the field has a
+ * value to match or diverge from, and the mark reports which — the same question every other mapped
+ * control answers. The block supplies its own binding state through `context`, so a block whose
+ * preset surface has no family entry simply passes none and the field renders as it always did.
  */
 
 /**
@@ -37,6 +43,7 @@ import {
 	isTokenAlias,
 	loadFontFamily,
 } from '../../token-controls';
+import { TokenIndicator } from '../token-indicators/components/TokenIndicator';
 
 const NAMESPACE = 'kadence-blocks/component-token';
 const EDITOR_HOOK = 'kadence.components.control.editor';
@@ -220,6 +227,12 @@ function fontFamilyEditor(defaultEditor, ctx) {
 			catalogOptions={fontCatalogOptions()}
 			manageUrl={favoriteFontsManageUrl()}
 			inheritedLabel={ctx.context?.inheritedDefault}
+			// A family is not a token, but a preset can still set one, so the field has a preset value to
+			// match or diverge from. The block passes its own binding state the same way it does for every
+			// other mapped control; a block that passes none gets no mark, exactly as before.
+			indicator={
+				ctx.context?.state ? <TokenIndicator state={ctx.context.state} onReset={ctx.context.onReset} /> : null
+			}
 			onPick={async (family) => {
 				await loadFontFamily(family, {
 					doc: canvasDocument(),

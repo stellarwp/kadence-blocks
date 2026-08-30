@@ -18,6 +18,11 @@
 import { __ } from '@wordpress/i18n';
 
 /**
+ * Internal dependencies
+ */
+import { displayDimension } from '../../token-controls';
+
+/**
  * Strip a pair of wrapping quotes (single or double) from a font-family name, the same trimming a
  * browser applies when it renders a quoted family in a `font-family` list.
  *
@@ -110,43 +115,22 @@ export function familyStack(family) {
 }
 
 /**
- * The shipped clamp bodies (`baseline.json`'s `Font Size` primitives) contain no nested
- * parentheses, so splitting `clamp(...)`'s inner argument list on top-level commas is safe without
- * a full CSS parser.
+ * The authored scalar behind a fluid font-size step's resolved value — the Style Library's name for
+ * `token-controls`' `displayDimension()`.
  *
- * @since TBD
- */
-const CLAMP_PATTERN = /^clamp\((.*)\)$/;
-
-/**
- * Read the authored scalar out of a fluid font-size step's resolved value. Every shipped `Font
- * Size` baseline entry authors its scalar `$value` as the clamp's own `max` argument, so the max IS
- * the value a size chip or a SIZE field should show — the resolved `clamp(...)` string is correct
- * CSS for the sample text but wrong for either of those.
+ * Re-exported rather than reimplemented: the block editor's fields need the same reduction, and the
+ * rule (every shipped step authors its `$value` as the clamp's own max) belongs to the token data
+ * rather than to either host. This name is kept because the screens that call it are font-size
+ * screens and read better for it.
  *
- * @param {string} value The feed's resolved value for a font-size token, a plain dimension or a
- *                        `clamp(min, preferred, max)` string.
+ * @param {string} value The feed's resolved value for a font-size token.
  *
  * @since TBD
  *
- * @return {string} The clamp's `max` argument for a `clamp(...)` string, or the value verbatim for
- *         a plain dimension, an empty string, or a `clamp(...)` string this parses no further than
- *         three top-level arguments (the honest fallback).
+ * @return {string} The clamp's `max`, or the value verbatim when it is not a three-argument clamp.
  */
 export function fontSizeDisplayValue(value) {
-	if (typeof value !== 'string') {
-		return value;
-	}
-
-	const match = value.trim().match(CLAMP_PATTERN);
-
-	if (!match) {
-		return value;
-	}
-
-	const args = match[1].split(',').map((arg) => arg.trim());
-
-	return args.length === 3 ? args[2] : value;
+	return displayDimension(value);
 }
 
 /**

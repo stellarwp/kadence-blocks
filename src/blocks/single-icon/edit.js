@@ -23,7 +23,10 @@ import { EditorScalarControl } from '../../extension/design-tokens/components/Ed
 import { tokenLiteral } from '../../extension/design-tokens/token-literals';
 import { activeLibrary } from '../../extension/preset-picker';
 import { measureAttrsForDevice } from '../../extension/token-indicators/normalize';
-import { presetPropertyValueForDevice } from '../../extension/token-indicators';
+import { presetPropertyValueForDevice, resetAttr, usePresetBinding } from '../../extension/token-indicators';
+import { useColorGroups } from '../../extension/design-tokens/hooks/use-color-groups';
+import { resolveColorLiteral } from '../../extension/design-tokens/color-literal';
+import { ColorControl, ColorControlGroup } from '../../token-controls';
 import { boundTokenAliasForControl, pickableTokensForControl } from '../../extension/token-picker';
 import { PreviewIcon } from './preview-icon';
 import { AdvancedSettings } from './advanced-settings';
@@ -96,6 +99,18 @@ function KadenceSingleIcon(props) {
 	);
 
 	const { setPreviewDeviceType } = useDispatch('kadenceblocks/data');
+
+	// Design-token indicators. This block previously wired its Size control with pools and defaults but
+	// no binding state, so nothing on it reported whether a value still matched the selected preset.
+	// Adding it here serves the color control below and backfills Size at the same time.
+	const tokenBinding = usePresetBinding(name, attributes, undefined, previewDevice);
+	// The schema matters most on this block: `size` is a SCALAR (a bare number, with no companion unit
+	// attribute), and without it `resetAttrPatch` falls back to the four-slot shape every other measure
+	// control uses -- writing `['', '', '', '']` into a scalar, which the field then reads straight back
+	// as a custom value, plus a `sizeUnit` the block never declares.
+	const resetToken = (attr) => resetAttr(attr, setAttributes, tokenBinding[attr]?.kind, metadata.attributes);
+	// One fetch of the block's effective palette groups, shared by both `ColorControl` instances below.
+	const colorGroups = useColorGroups(clientId);
 	// The Icon Size control writes three sibling attributes but edits one at a time, so it resolves the
 	// active device's attribute up front — reading or writing `size` while the editor is on Tablet would
 	// hit the wrong breakpoint.
@@ -259,6 +274,8 @@ function KadenceSingleIcon(props) {
 									// token — instead of reading blank after a Reset.
 									defaultValue={iconSizeDefault}
 									inherited={inheritedSize !== undefined}
+									state={tokenBinding.size}
+									onReset={() => resetToken('size')}
 									// The size attributes store a bare number and the block declares no unit
 									// attribute of its own, so the front end always renders them as px. Pinning the
 									// Custom tab to px keeps a hand-typed value in the one unit the attribute can
@@ -313,20 +330,35 @@ function KadenceSingleIcon(props) {
 								]}
 								onChange={(value) => setAttributes({ style: value })}
 							/>
-							<PopColorControl
-								label={__('Icon Color', 'kadence-blocks')}
-								value={color ? color : ''}
-								default={''}
-								onChange={(value) => {
-									setAttributes({ color: value });
-								}}
-								swatchLabel2={__('Hover Color', 'kadence-blocks')}
-								value2={hColor ? hColor : ''}
-								default2={''}
-								onChange2={(value) => {
-									setAttributes({ hColor: value });
-								}}
-							/>
+							{/* One two-swatch control becomes two single-value ones, matching the Button's own
+							    icon pair. Only the base color is bound -- a preset can set the icon's color but
+							    not its hover -- so only it carries binding state; the hover swatch is an
+							    ordinary color field that still resolves palette picks to the design system. */}
+							<ColorControlGroup>
+								<ColorControl
+									label={__('Icon Color', 'kadence-blocks')}
+									value={color ? color : ''}
+									groups={colorGroups}
+									status={{
+										bound: !!tokenBinding.color?.bound,
+										modified: !!tokenBinding.color?.overridden,
+									}}
+									onReset={() => resetToken('color')}
+									onPick={(alias) => setAttributes({ color: alias })}
+									onCustom={(literal) => setAttributes({ color: literal })}
+									onClear={() => setAttributes({ color: '' })}
+									resolveLiteral={resolveColorLiteral}
+								/>
+								<ColorControl
+									label={__('Hover Color', 'kadence-blocks')}
+									value={hColor ? hColor : ''}
+									groups={colorGroups}
+									onPick={(alias) => setAttributes({ hColor: alias })}
+									onCustom={(literal) => setAttributes({ hColor: literal })}
+									onClear={() => setAttributes({ hColor: '' })}
+									resolveLiteral={resolveColorLiteral}
+								/>
+							</ColorControlGroup>
 							{style !== 'default' && (
 								<>
 									<PopColorControl

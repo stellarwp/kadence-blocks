@@ -1,6 +1,7 @@
 /* eslint-env jest */
 import {
 	defaultSummary,
+	displayDimension,
 	fieldSummary,
 	findTokenEntry,
 	hasValue,
@@ -56,6 +57,97 @@ describe('findTokenEntry', () => {
 
 	it('never matches a non-fixed entry on a bare literal, even one equal to its alias text', () => {
 		expect(findTokenEntry(TOKENS, 'primitive.dimension.radius-sm')).toBeNull();
+	});
+});
+
+// The real shape of a dimension primitive: the projection slug the block used to store IS the id's
+// last segment, which is what lets a legacy value select its token without a second lookup table.
+const SCALE_TOKENS = [
+	{
+		id: 'primitive.dimension.font-size.sm',
+		label: 'SM',
+		value: '0.9rem',
+		alias: '{primitive.dimension.font-size.sm}',
+	},
+	{
+		id: 'primitive.dimension.font-size.md',
+		label: 'MD',
+		value: '1.25rem',
+		alias: '{primitive.dimension.font-size.md}',
+	},
+];
+
+describe('findTokenEntry legacy size slugs', () => {
+	it('selects the primitive a legacy Kadence slug names', () => {
+		// What a block saved before tokens existed. It already RENDERS as this token — the primitive
+		// projects into the `kb_font_size_slot` the slug names — so the field showing it as a custom
+		// literal was the only thing disagreeing.
+		expect(findTokenEntry(SCALE_TOKENS, 'md').label).toBe('MD');
+	});
+
+	it('reports the token through fieldSummary, so the trigger names it rather than the raw slug', () => {
+		expect(fieldSummary('sm', SCALE_TOKENS, 'px', 'Custom')).toEqual({ label: 'SM', value: '0.9rem' });
+	});
+
+	it('never matches a CSS literal, which no slug can look like', () => {
+		expect(findTokenEntry(SCALE_TOKENS, '1.25rem')).toBeNull();
+		expect(findTokenEntry(SCALE_TOKENS, '16')).toBeNull();
+	});
+
+	it('leaves a non-primitive entry alone, so only scale steps answer to a slug', () => {
+		const semantic = [{ id: 'semantic.font-size.heading', label: 'Heading', value: '2rem', alias: '{x}' }];
+
+		expect(findTokenEntry(semantic, 'heading')).toBeNull();
+	});
+
+	it('ignores a non-string value', () => {
+		expect(findTokenEntry(SCALE_TOKENS, 16)).toBeNull();
+	});
+});
+
+describe('displayDimension', () => {
+	it('reduces a fluid step to the scalar it authors, so the field shows a size not an expression', () => {
+		expect(displayDimension('clamp(1.1rem, 0.995rem + 0.326vw, 1.25rem)')).toBe('1.25rem');
+	});
+
+	it('passes a plain length through', () => {
+		expect(displayDimension('1.5rem')).toBe('1.5rem');
+	});
+
+	it('leaves a clamp it cannot read as three arguments alone, rather than guessing', () => {
+		expect(displayDimension('clamp(1rem, 2rem)')).toBe('clamp(1rem, 2rem)');
+	});
+
+	it('passes a non-string through untouched', () => {
+		expect(displayDimension(16)).toBe(16);
+		expect(displayDimension('')).toBe('');
+	});
+});
+
+describe('fluid values in the summaries', () => {
+	const FLUID = [
+		{
+			id: 'primitive.dimension.font-size.md',
+			label: 'MD',
+			value: 'clamp(1.1rem, 0.995rem + 0.326vw, 1.25rem)',
+			alias: '{primitive.dimension.font-size.md}',
+		},
+	];
+
+	it('names a selected fluid step and shows its scalar, never the clamp', () => {
+		expect(fieldSummary('{primitive.dimension.font-size.md}', FLUID, 'px', 'Custom')).toEqual({
+			label: 'MD',
+			value: '1.25rem',
+		});
+	});
+
+	it('still matches the default on the raw clamp, then shows the scalar', () => {
+		// Matching has to stay on the resolved value the pool holds — reducing first would stop a fluid
+		// step ever finding its own entry, which is what left the field showing a bare clamp.
+		expect(defaultSummary('clamp(1.1rem, 0.995rem + 0.326vw, 1.25rem)', FLUID, 'Default')).toEqual({
+			label: 'MD',
+			value: '1.25rem',
+		});
 	});
 });
 

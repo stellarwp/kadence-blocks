@@ -1,9 +1,13 @@
 /**
- * `kadence/singlebtn`'s host-specific `resolveLiteral` for `ColorControl`'s Custom tab.
+ * The block editor's `resolveLiteral` for `ColorControl`'s Custom tab.
  *
- * Kept as its own file (rather than a `token-controls` export) because the design scoped
- * host-adapter logic as per-block, not shared — `token-controls` never imports from a host
- * block, only the reverse.
+ * Lives in the editor extension rather than in `token-controls` because it reads the DOM: the
+ * control library stays host-agnostic and takes this as a prop, so the direction of the dependency
+ * is host -> library and never the reverse. It sits beside `useColorGroups`, which supplies the
+ * other half of a `ColorControl`'s data, so a block wiring one reaches for both from the same place.
+ *
+ * Nothing here is block-specific — every editor host resolves a token the same way, off the same
+ * document — so this is shared by every block that mounts a `ColorControl`.
  */
 
 /**

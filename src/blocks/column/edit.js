@@ -58,6 +58,24 @@ import {
 import './editor.scss';
 import metadata from './block.json';
 import { getPreviewGutterSize } from './utils';
+import {
+	deriveStateBinding,
+	resetAttr,
+	useLinkedMeasureState,
+	usePresetBinding,
+} from '../../extension/token-indicators';
+import {
+	anyCornerInherited,
+	inheritedMeasureSlots,
+	measureAttrsForDevice,
+	presetValueForDevice,
+} from '../../extension/token-indicators/normalize';
+import { EditorBoxControl } from '../../extension/design-tokens/components/EditorBoxControl';
+import { useColorGroups } from '../../extension/design-tokens/hooks/use-color-groups';
+import { resolveColorLiteral } from '../../extension/design-tokens/color-literal';
+import { tokenDimension } from '../../extension/design-tokens/token-dimension';
+import { pickableTokensForControl } from '../../extension/token-picker';
+import { ColorControl, isTokenAlias } from '../../token-controls';
 //import ResizeGridSection from './resize-grid-section';
 /**
  * Import WordPress
@@ -256,6 +274,82 @@ function SectionEdit(props) {
 		},
 		[clientId]
 	);
+	const { setPreviewDeviceType: setPreviewDevice } = useDispatch('kadenceblocks/data');
+
+	// Design-token indicators: the per-attribute bound/overridden state for the selected preset, plus a
+	// reset that clears the mapped attribute back to the preset value (served by the existing scoped CSS).
+	const tokenBinding = usePresetBinding('kadence/column', attributes, undefined, previewDevice);
+	const resetToken = (attr) => resetAttr(attr, setAttributes, tokenBinding[attr]?.kind, metadata.attributes);
+	// One fetch of the block's effective palette groups, shared by every `ColorControl` on this block.
+	const colorGroups = useColorGroups(clientId);
+
+	// Empty when the token registry is inactive, which is what keeps the plain measurement controls below
+	// as the fallback rather than leaving the column with no radius control at all. Both the normal and
+	// the hover radius pick from this one pool — the column binds only the normal corner, and the hover
+	// corner is the same kind of value.
+	const borderRadiusTokens = pickableTokensForControl('kadence/column', 'borderRadius') || [];
+	// A radius control keeps ONE linked/individual mode but writes a different attribute per breakpoint,
+	// so the mode must be read from — and "link" must collapse — whichever device is active.
+	const borderRadiusForDevice = measureAttrsForDevice(
+		attributes,
+		'borderRadius',
+		{ tablet: 'tabletBorderRadius', mobile: 'mobileBorderRadius' },
+		previewDevice
+	);
+	const borderHoverRadiusForDevice = measureAttrsForDevice(
+		attributes,
+		'borderHoverRadius',
+		{ tablet: 'tabletBorderHoverRadius', mobile: 'mobileBorderHoverRadius' },
+		previewDevice
+	);
+	const borderRadiusPresetValue = presetValueForDevice(
+		tokenBinding.borderRadius?.presetValue,
+		tokenBinding.borderRadius?.responsive,
+		previewDevice
+	);
+	// What an unset corner falls back to on the active device: another breakpoint's corner before the
+	// preset's, matching the cascade the column actually renders through. The corners stay stored-empty —
+	// this only tells the field's popover which size is in effect and where it came from.
+	const inheritedBorderRadius = inheritedMeasureSlots(
+		previewDevice,
+		{ desktop: borderRadius, tablet: tabletBorderRadius },
+		borderRadiusPresetValue
+	);
+	// The hover corners cascade among themselves only. No preset value takes part: no preset can set a
+	// hover radius on any block, so naming the NORMAL state's preset here would report a size the hover
+	// state does not actually render.
+	const inheritedBorderHoverRadius = inheritedMeasureSlots(previewDevice, {
+		desktop: borderHoverRadius,
+		tablet: tabletBorderHoverRadius,
+	});
+	// The hover radius has no binding of its own, so its indicator is derived from the normal corner's:
+	// it reports "overridden" once the hover value diverges from what the preset set for normal, which is
+	// the only preset-relative statement that can be made about it.
+	const borderHoverRadiusBinding = deriveStateBinding({
+		shared: tokenBinding.borderRadius,
+		kind: tokenBinding.borderRadius?.kind,
+		value: borderHoverRadiusForDevice.value,
+		unit: borderHoverRadiusUnit,
+		devicePresetValue: borderRadiusPresetValue,
+		previewDevice,
+	});
+	const borderRadiusIsRelative = borderRadiusUnit === 'em' || borderRadiusUnit === 'rem';
+	const borderHoverRadiusIsRelative = borderHoverRadiusUnit === 'em' || borderHoverRadiusUnit === 'rem';
+	// `resetOn` clears the remembered link choice on a preset change, since an override records a choice
+	// about the PREVIOUS preset's corners — otherwise an explicit "link" would stick and hide a new
+	// preset's per-corner radius.
+	const { isLinked: borderRadiusIsLinked, toggleLink: toggleBorderRadiusLink } = useLinkedMeasureState({
+		forDevice: borderRadiusForDevice,
+		previewDevice,
+		setAttributes,
+		resetOn: attributes.kbPreset,
+	});
+	const { isLinked: borderHoverRadiusIsLinked, toggleLink: toggleBorderHoverRadiusLink } = useLinkedMeasureState({
+		forDevice: borderHoverRadiusForDevice,
+		previewDevice,
+		setAttributes,
+		resetOn: attributes.kbPreset,
+	});
 
 	useEffect(() => {
 		const isInQueryBlock = getInQueryBlock(context, inQueryBlock);
@@ -1220,24 +1314,28 @@ function SectionEdit(props) {
 				{/* Tested against '' for the same reason the inner element's inline radius is: a corner
 				    set to 0 is a real value that truthiness throws away. */}
 				{'' !== previewRadiusTop
-					? `.kadence-column-${uniqueID} > .kadence-inner-column-inner:before { border-top-left-radius:${
-							previewRadiusTop + (borderRadiusUnit ? borderRadiusUnit : 'px')
-						}; }`
+					? `.kadence-column-${uniqueID} > .kadence-inner-column-inner:before { border-top-left-radius:${tokenDimension(
+							previewRadiusTop,
+							borderRadiusUnit ? borderRadiusUnit : 'px'
+						)}; }`
 					: ''}
 				{'' !== previewRadiusRight
-					? `.kadence-column-${uniqueID} > .kadence-inner-column-inner:before { border-top-right-radius:${
-							previewRadiusRight + (borderRadiusUnit ? borderRadiusUnit : 'px')
-						}; }`
+					? `.kadence-column-${uniqueID} > .kadence-inner-column-inner:before { border-top-right-radius:${tokenDimension(
+							previewRadiusRight,
+							borderRadiusUnit ? borderRadiusUnit : 'px'
+						)}; }`
 					: ''}
 				{'' !== previewRadiusBottom
-					? `.kadence-column-${uniqueID} > .kadence-inner-column-inner:before { border-bottom-right-radius:${
-							previewRadiusBottom + (borderRadiusUnit ? borderRadiusUnit : 'px')
-						}; }`
+					? `.kadence-column-${uniqueID} > .kadence-inner-column-inner:before { border-bottom-right-radius:${tokenDimension(
+							previewRadiusBottom,
+							borderRadiusUnit ? borderRadiusUnit : 'px'
+						)}; }`
 					: ''}
 				{'' !== previewRadiusLeft
-					? `.kadence-column-${uniqueID} > .kadence-inner-column-inner:before { border-bottom-left-radius:${
-							previewRadiusLeft + (borderRadiusUnit ? borderRadiusUnit : 'px')
-						}; }`
+					? `.kadence-column-${uniqueID} > .kadence-inner-column-inner:before { border-bottom-left-radius:${tokenDimension(
+							previewRadiusLeft,
+							borderRadiusUnit ? borderRadiusUnit : 'px'
+						)}; }`
 					: ''}
 
 				{overlayHoverOpacity !== undefined && overlayHoverOpacity !== ''
@@ -1271,24 +1369,28 @@ function SectionEdit(props) {
 					: ''}
 
 				{previewHoverRadiusTop
-					? `.kadence-column-${uniqueID}:hover > .kadence-inner-column-inner:before { border-top-left-radius:${
-							previewHoverRadiusTop + (borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px')
-						} !important; }`
+					? `.kadence-column-${uniqueID}:hover > .kadence-inner-column-inner:before { border-top-left-radius:${tokenDimension(
+							previewHoverRadiusTop,
+							borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px'
+						)} !important; }`
 					: ''}
 				{previewHoverRadiusRight
-					? `.kadence-column-${uniqueID}:hover > .kadence-inner-column-inner:before { border-top-right-radius:${
-							previewHoverRadiusRight + (borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px')
-						} !important; }`
+					? `.kadence-column-${uniqueID}:hover > .kadence-inner-column-inner:before { border-top-right-radius:${tokenDimension(
+							previewHoverRadiusRight,
+							borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px'
+						)} !important; }`
 					: ''}
 				{previewHoverRadiusBottom
-					? `.kadence-column-${uniqueID}:hover > .kadence-inner-column-inner:before { border-bottom-right-radius:${
-							previewHoverRadiusBottom + (borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px')
-						} !important; }`
+					? `.kadence-column-${uniqueID}:hover > .kadence-inner-column-inner:before { border-bottom-right-radius:${tokenDimension(
+							previewHoverRadiusBottom,
+							borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px'
+						)} !important; }`
 					: ''}
 				{previewHoverRadiusLeft
-					? `.kadence-column-${uniqueID}:hover > .kadence-inner-column-inner:before { border-bottom-left-radius:${
-							previewHoverRadiusLeft + (borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px')
-						} !important; }`
+					? `.kadence-column-${uniqueID}:hover > .kadence-inner-column-inner:before { border-bottom-left-radius:${tokenDimension(
+							previewHoverRadiusLeft,
+							borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px'
+						)} !important; }`
 					: ''}
 
 				{previewMaxWidth
@@ -1412,24 +1514,28 @@ function SectionEdit(props) {
 					: ''}
 
 				{previewHoverRadiusTop
-					? `.kadence-column-${uniqueID} > .kadence-inner-column-inner:hover { border-top-left-radius:${
-							previewHoverRadiusTop + (borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px')
-						} !important; }`
+					? `.kadence-column-${uniqueID} > .kadence-inner-column-inner:hover { border-top-left-radius:${tokenDimension(
+							previewHoverRadiusTop,
+							borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px'
+						)} !important; }`
 					: ''}
 				{previewHoverRadiusRight
-					? `.kadence-column-${uniqueID} > .kadence-inner-column-inner:hover { border-top-right-radius:${
-							previewHoverRadiusRight + (borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px')
-						} !important; }`
+					? `.kadence-column-${uniqueID} > .kadence-inner-column-inner:hover { border-top-right-radius:${tokenDimension(
+							previewHoverRadiusRight,
+							borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px'
+						)} !important; }`
 					: ''}
 				{previewHoverRadiusBottom
-					? `.kadence-column-${uniqueID} > .kadence-inner-column-inner:hover { border-bottom-right-radius:${
-							previewHoverRadiusBottom + (borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px')
-						} !important; }`
+					? `.kadence-column-${uniqueID} > .kadence-inner-column-inner:hover { border-bottom-right-radius:${tokenDimension(
+							previewHoverRadiusBottom,
+							borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px'
+						)} !important; }`
 					: ''}
 				{previewHoverRadiusLeft
-					? `.kadence-column-${uniqueID} > .kadence-inner-column-inner:hover { border-bottom-left-radius:${
-							previewHoverRadiusLeft + (borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px')
-						} !important; }`
+					? `.kadence-column-${uniqueID} > .kadence-inner-column-inner:hover { border-bottom-left-radius:${tokenDimension(
+							previewHoverRadiusLeft,
+							borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px'
+						)} !important; }`
 					: ''}
 				{collapseOrder && previewDevice === 'Tablet'
 					? `.kt-row-layout-row > .innerblocks-wrap > .kadence-column-${uniqueID} { order:${collapseOrder}; }`
@@ -2841,16 +2947,44 @@ function SectionEdit(props) {
 												)}
 												{'gradient' !== backgroundType && (
 													<>
-														<PopColorControl
+														<ColorControl
 															label={__('Background Color', 'kadence-blocks')}
 															value={background ? background : ''}
-															default={''}
-															opacityValue={backgroundOpacity}
-															onChange={(value) => setAttributes({ background: value })}
-															onOpacityChange={(value) =>
-																setAttributes({ backgroundOpacity: value })
+															groups={colorGroups}
+															status={{
+																bound: !!tokenBinding.background?.bound,
+																modified: !!tokenBinding.background?.overridden,
+															}}
+															onReset={() => resetToken('background')}
+															onPick={(alias) => setAttributes({ background: alias })}
+															onCustom={(literal) =>
+																setAttributes({ background: literal })
 															}
+															onClear={() => setAttributes({ background: '' })}
+															resolveLiteral={resolveColorLiteral}
 														/>
+														{/* Opacity applies to a literal color only, and that is
+														    the render path's own rule rather than this control's:
+														    `KadenceColorOutput` runs the token filter FIRST and
+														    returns the resolved `var()` without ever reaching the
+														    `hexToRGBA` branch, so a token's own alpha is the only
+														    one that can apply to it. Showing the slider for a
+														    token pick would offer a setting that silently does
+														    nothing. `PopColorControl` carried this as a second
+														    channel inside itself; `ColorControl` is single-value,
+														    so it stands beside it. */}
+														{!isTokenAlias(background) && (
+															<RangeControl
+																label={__('Background Opacity', 'kadence-blocks')}
+																value={backgroundOpacity}
+																onChange={(value) =>
+																	setAttributes({ backgroundOpacity: value })
+																}
+																min={0}
+																max={1}
+																step={0.01}
+															/>
+														)}
 														<KadenceBackgroundControl
 															label={__('Background Image', 'kadence-blocks')}
 															hasImage={hasBackgroundImage}
@@ -3278,37 +3412,62 @@ function SectionEdit(props) {
 														setAttributes({ mobileBorderHoverStyle: value })
 													}
 												/>
-												<ResponsiveMeasurementControls
-													label={__('Border Radius', 'kadence-blocks')}
-													value={borderHoverRadius}
-													tabletValue={tabletBorderHoverRadius}
-													mobileValue={mobileBorderHoverRadius}
-													onChange={(value) => setAttributes({ borderHoverRadius: value })}
-													onChangeTablet={(value) =>
-														setAttributes({ tabletBorderHoverRadius: value })
-													}
-													onChangeMobile={(value) =>
-														setAttributes({ mobileBorderHoverRadius: value })
-													}
-													unit={borderHoverRadiusUnit}
-													units={['px', 'em', 'rem', '%']}
-													onUnit={(value) => setAttributes({ borderHoverRadiusUnit: value })}
-													max={
-														borderHoverRadiusUnit === 'em' ||
-														borderHoverRadiusUnit === 'rem'
-															? 24
-															: 500
-													}
-													step={
-														borderHoverRadiusUnit === 'em' ||
-														borderHoverRadiusUnit === 'rem'
-															? 0.1
-															: 1
-													}
-													min={0}
-													isBorderRadius={true}
-													allowEmpty={true}
-												/>
+												{borderRadiusTokens.length ? (
+													<EditorBoxControl
+														label={__('Border Radius', 'kadence-blocks')}
+														value={borderHoverRadiusForDevice.value}
+														onChange={(next) =>
+															setAttributes({
+																[borderHoverRadiusForDevice.attr]: next,
+															})
+														}
+														previewDevice={previewDevice}
+														onDeviceChange={setPreviewDevice}
+														tokens={borderRadiusTokens}
+														defaultValue={inheritedBorderHoverRadius.values}
+														inherited={anyCornerInherited(
+															inheritedBorderHoverRadius.inherited
+														)}
+														state={borderHoverRadiusBinding}
+														onReset={() => resetToken('borderHoverRadius')}
+														isLinked={borderHoverRadiusIsLinked}
+														onToggleLink={toggleBorderHoverRadiusLink}
+														unit={borderHoverRadiusUnit}
+														units={['px', 'em', 'rem', '%']}
+														onUnit={(value) =>
+															setAttributes({ borderHoverRadiusUnit: value })
+														}
+														min={0}
+														max={borderHoverRadiusIsRelative ? 24 : 500}
+														step={borderHoverRadiusIsRelative ? 0.1 : 1}
+													/>
+												) : (
+													<ResponsiveMeasurementControls
+														label={__('Border Radius', 'kadence-blocks')}
+														value={borderHoverRadius}
+														tabletValue={tabletBorderHoverRadius}
+														mobileValue={mobileBorderHoverRadius}
+														onChange={(value) =>
+															setAttributes({ borderHoverRadius: value })
+														}
+														onChangeTablet={(value) =>
+															setAttributes({ tabletBorderHoverRadius: value })
+														}
+														onChangeMobile={(value) =>
+															setAttributes({ mobileBorderHoverRadius: value })
+														}
+														unit={borderHoverRadiusUnit}
+														units={['px', 'em', 'rem', '%']}
+														onUnit={(value) =>
+															setAttributes({ borderHoverRadiusUnit: value })
+														}
+														max={borderHoverRadiusIsRelative ? 24 : 500}
+														step={borderHoverRadiusIsRelative ? 0.1 : 1}
+														min={0}
+														isBorderRadius={true}
+														allowEmpty={true}
+													/>
+												)}
 												<BoxShadowControl
 													label={__('Box Shadow', 'kadence-blocks')}
 													enable={
@@ -3411,35 +3570,52 @@ function SectionEdit(props) {
 														setAttributes({ mobileBorderStyle: value })
 													}
 												/>
-												<ResponsiveMeasurementControls
-													label={__('Border Radius', 'kadence-blocks')}
-													value={borderRadius}
-													tabletValue={tabletBorderRadius}
-													mobileValue={mobileBorderRadius}
-													onChange={(value) => setAttributes({ borderRadius: value })}
-													onChangeTablet={(value) =>
-														setAttributes({ tabletBorderRadius: value })
-													}
-													onChangeMobile={(value) =>
-														setAttributes({ mobileBorderRadius: value })
-													}
-													unit={borderRadiusUnit}
-													units={['px', 'em', 'rem', '%']}
-													onUnit={(value) => setAttributes({ borderRadiusUnit: value })}
-													max={
-														borderRadiusUnit === 'em' || borderRadiusUnit === 'rem'
-															? 24
-															: 500
-													}
-													step={
-														borderRadiusUnit === 'em' || borderRadiusUnit === 'rem'
-															? 0.1
-															: 1
-													}
-													min={0}
-													isBorderRadius={true}
-													allowEmpty={true}
-												/>
+												{borderRadiusTokens.length ? (
+													<EditorBoxControl
+														label={__('Border Radius', 'kadence-blocks')}
+														value={borderRadiusForDevice.value}
+														onChange={(next) =>
+															setAttributes({ [borderRadiusForDevice.attr]: next })
+														}
+														previewDevice={previewDevice}
+														onDeviceChange={setPreviewDevice}
+														tokens={borderRadiusTokens}
+														defaultValue={inheritedBorderRadius.values}
+														inherited={anyCornerInherited(inheritedBorderRadius.inherited)}
+														state={tokenBinding.borderRadius}
+														onReset={() => resetToken('borderRadius')}
+														isLinked={borderRadiusIsLinked}
+														onToggleLink={toggleBorderRadiusLink}
+														unit={borderRadiusUnit}
+														units={['px', 'em', 'rem', '%']}
+														onUnit={(value) => setAttributes({ borderRadiusUnit: value })}
+														min={0}
+														max={borderRadiusIsRelative ? 24 : 500}
+														step={borderRadiusIsRelative ? 0.1 : 1}
+													/>
+												) : (
+													<ResponsiveMeasurementControls
+														label={__('Border Radius', 'kadence-blocks')}
+														value={borderRadius}
+														tabletValue={tabletBorderRadius}
+														mobileValue={mobileBorderRadius}
+														onChange={(value) => setAttributes({ borderRadius: value })}
+														onChangeTablet={(value) =>
+															setAttributes({ tabletBorderRadius: value })
+														}
+														onChangeMobile={(value) =>
+															setAttributes({ mobileBorderRadius: value })
+														}
+														unit={borderRadiusUnit}
+														units={['px', 'em', 'rem', '%']}
+														onUnit={(value) => setAttributes({ borderRadiusUnit: value })}
+														max={borderRadiusIsRelative ? 24 : 500}
+														step={borderRadiusIsRelative ? 0.1 : 1}
+														min={0}
+														isBorderRadius={true}
+														allowEmpty={true}
+													/>
+												)}
 												<BoxShadowControl
 													label={__('Box Shadow', 'kadence-blocks')}
 													enable={undefined !== displayShadow ? displayShadow : false}
@@ -3666,19 +3842,19 @@ function SectionEdit(props) {
 					// the preset's corners.
 					borderTopLeftRadius:
 						'' !== previewRadiusTop
-							? previewRadiusTop + (borderRadiusUnit ? borderRadiusUnit : 'px')
+							? tokenDimension(previewRadiusTop, borderRadiusUnit ? borderRadiusUnit : 'px')
 							: undefined,
 					borderTopRightRadius:
 						'' !== previewRadiusRight
-							? previewRadiusRight + (borderRadiusUnit ? borderRadiusUnit : 'px')
+							? tokenDimension(previewRadiusRight, borderRadiusUnit ? borderRadiusUnit : 'px')
 							: undefined,
 					borderBottomRightRadius:
 						'' !== previewRadiusBottom
-							? previewRadiusBottom + (borderRadiusUnit ? borderRadiusUnit : 'px')
+							? tokenDimension(previewRadiusBottom, borderRadiusUnit ? borderRadiusUnit : 'px')
 							: undefined,
 					borderBottomLeftRadius:
 						'' !== previewRadiusLeft
-							? previewRadiusLeft + (borderRadiusUnit ? borderRadiusUnit : 'px')
+							? tokenDimension(previewRadiusLeft, borderRadiusUnit ? borderRadiusUnit : 'px')
 							: undefined,
 					boxShadow:
 						undefined !== displayShadow &&

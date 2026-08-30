@@ -22,7 +22,9 @@ export { TokenSelector } from './organisms/TokenSelector';
 export { FontFamilySelector } from './organisms/FontFamilySelector';
 export { ControlShell } from './templates/ControlShell';
 export { SlotGrid } from './templates/SlotGrid';
+export { BorderControl } from './controls/BorderControl';
 export { BoxControl } from './controls/BoxControl';
+export { BoxShadowControl } from './controls/BoxShadowControl';
 export { ColorControl } from './controls/ColorControl';
 export { ColorControlGroup } from './controls/ColorControlGroup';
 export { ScalarControl } from './controls/ScalarControl';
@@ -45,6 +47,7 @@ export {
 } from './helpers/preset-envelope';
 export {
 	defaultSummary,
+	displayDimension,
 	fieldSummary,
 	findTokenEntry,
 	isTokenAlias,

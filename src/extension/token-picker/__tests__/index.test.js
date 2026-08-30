@@ -364,8 +364,26 @@ describe('pickableTokensForControl', () => {
 		expect(result.every((token) => token.role === 'radius')).toBe(true);
 	});
 
-	it('falls back to the coarse kind list when the attribute implies no single role', () => {
-		expect(pickableTokensForControl('kadence/singlebtn', 'gap')).toEqual(pickableTokensFor('dimension'));
+	it('still offers only primitives when the attribute implies no single role', () => {
+		// No role narrows the sub-kind, but the picker's job does not change: it surfaces scale steps, and
+		// a semantic is a delivery point for one rather than a choice to make on a block. Offering the
+		// whole kind bucket here is what put every unrelated semantic in front of a control whose bound
+		// token the registry never declared.
+		const result = pickableTokensForControl('kadence/singlebtn', 'gap');
+
+		expect(result.length).toBeGreaterThan(0);
+		expect(result.every((token) => token.id.startsWith('primitive.'))).toBe(true);
+	});
+
+	it('infers the role from the attribute when the bound token is absent from the registry', () => {
+		// Several bound semantics live only in `baseline.json` — they resolve and paint, but carry no
+		// label, group, or role, so the pool cannot answer for them. Reading that as "no role" is what
+		// put the whole dimension bucket, every unrelated semantic in it, in front of a radius control.
+		window.kadenceDesignTokensPresets = boundPresets('semantic.radius.never-registered');
+
+		const result = pickableTokensForControl('kadence/singlebtn', 'borderRadius');
+
+		expect(result.map((token) => token.id)).toEqual(['ss-none-radius', 'primitive.dimension.radius.sm']);
 	});
 
 	it('returns an empty array for an unmapped attribute', () => {

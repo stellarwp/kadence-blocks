@@ -710,4 +710,44 @@ class Kadence_Blocks_Abstract_Block {
 
 		return $html;
 	}
+
+	/**
+	 * Whether a native shadow item paints anything visible — all-zero offsets, blur, and spread
+	 * render nothing regardless of color, matching the value the "None" pick writes.
+	 *
+	 * A non-numeric, non-empty leg is a {dot.alias} token reference, which resolves to a var() whose
+	 * value is unknown here — it counts as visible, since treating it as a zero would let the
+	 * caller's `box-shadow: none` reset erase a shadow the token does paint.
+	 *
+	 * Lives here rather than on any one block because it answers a question about the shared shadow
+	 * value shape, which every shadow-carrying block stores identically. It is what a block gates its
+	 * `box-shadow` output on once it has no separate "enable" boolean to read.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $shadow_item One `shadow[0]`-shaped item.
+	 *
+	 * @return bool Whether the item paints a visible shadow.
+	 */
+	protected function has_visible_shadow( array $shadow_item ): bool {
+		foreach ( [ 'hOffset', 'vOffset', 'blur', 'spread' ] as $axis ) {
+			$value = $shadow_item[ $axis ] ?? 0;
+
+			if ( is_numeric( $value ) ) {
+				if ( 0.0 !== (float) $value ) {
+					return true;
+				}
+
+				continue;
+			}
+
+			// A {dot.alias} leg resolves to a var() unknown here, so it counts as visible — read as zero,
+			// the caller's `box-shadow: none` would erase a shadow the token does paint.
+			if ( is_string( $value ) && '' !== trim( $value ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
 }

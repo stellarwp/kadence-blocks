@@ -59,15 +59,97 @@ export function hasValue(value) {
  * Custom literal that happens to equal a real token's resolved value is never misidentified as that
  * token.
  *
+ * A bare Kadence size slug (`sm`, `md`, `lg`, …) is the third case, and it is a match rather than a
+ * literal. Those are what blocks stored before tokens existed, and the dimension primitives are
+ * PROJECTED into the very slots they name — `primitive.dimension.font-size.md` declares
+ * `kb_font_size_slot => md`, so a stored `md` already renders as that token's value. Only the field
+ * disagreed, reading it as a hand-typed custom value and leaving the matching option unchecked. The
+ * slug is the id's last segment by construction (each primitive is built as
+ * `'primitive.dimension.<role>.' . $slug` with that same `$slug` as its projection), so the two are
+ * matched on that segment rather than through a second table that could drift from the declarations.
+ *
+ * Scoped to `primitive.dimension.*` entries, and safe there: every slug is a word (`none`, `xxs`,
+ * `sm`, `3xl`), never a valid CSS length, so a Custom literal cannot collide with one. The caller's
+ * list is already narrowed to the control's own role, so a stored `md` cannot match a font size on a
+ * spacing control.
+ *
  * @param {Array}  tokens The pickable-token list.
- * @param {string} value  The alias to match.
+ * @param {*}      value  The alias, fixed sentinel, or legacy size slug to match.
  *
  * @since TBD
  *
  * @return {?Object} The matching entry, or null.
  */
 export function findTokenEntry(tokens, value) {
-	return (tokens || []).find((entry) => entry.alias === value && (entry.fixed || isTokenAlias(value))) || null;
+	const entries = tokens || [];
+	const match = entries.find((entry) => entry.alias === value && (entry.fixed || isTokenAlias(value)));
+
+	if (match) {
+		return match;
+	}
+
+	return entries.find((entry) => isLegacySlugFor(entry, value)) || null;
+}
+
+/**
+ * Whether a stored value is the Kadence size slug a dimension primitive projects into.
+ *
+ * @param {Object} entry The pickable entry.
+ * @param {*}      value The stored slot value.
+ *
+ * @since TBD
+ *
+ * @return {boolean} True when the entry is the primitive that slug names.
+ */
+function isLegacySlugFor(entry, value) {
+	if (typeof value !== 'string' || value === '' || !entry?.id?.startsWith('primitive.dimension.')) {
+		return false;
+	}
+
+	const segments = entry.id.split('.');
+
+	return segments[segments.length - 1] === value;
+}
+
+/**
+ * The shipped clamp bodies (`baseline.json`'s Font Size primitives) contain no nested parentheses, so
+ * splitting `clamp(...)`'s inner argument list on top-level commas is safe without a full CSS parser.
+ *
+ * @since TBD
+ */
+const CLAMP_PATTERN = /^clamp\((.*)\)$/;
+
+/**
+ * The authored scalar behind a fluid dimension's resolved value.
+ *
+ * A fluid step resolves to a whole `clamp(min, preferred, max)` string. That is correct CSS and the
+ * right thing to render with, but wrong to SHOW in a field: it overruns the row and reads as an
+ * expression rather than as the size it computes. Every shipped step authors its scalar `$value` as
+ * the clamp's own `max`, so the max is the number the field means.
+ *
+ * Applied only when producing display text, never when matching a value to a token — the pool holds
+ * the whole clamp, so reducing it first would stop a fluid step ever finding its own entry.
+ *
+ * @param {*} value A resolved dimension: a plain length, or a `clamp(min, preferred, max)` string.
+ *
+ * @since TBD
+ *
+ * @return {*} The clamp's `max`, or the value verbatim when it is not a three-argument clamp.
+ */
+export function displayDimension(value) {
+	if (typeof value !== 'string') {
+		return value;
+	}
+
+	const match = value.trim().match(CLAMP_PATTERN);
+
+	if (!match) {
+		return value;
+	}
+
+	const args = match[1].split(',').map((arg) => arg.trim());
+
+	return args.length === 3 ? args[2] : value;
 }
 
 /**
@@ -131,7 +213,7 @@ export function defaultSummary(resolvedDefault, tokens, literalLabel = '') {
 	// never touched.
 	const entry = (tokens || []).find((candidate) => !candidate.fixed && candidate.value === resolvedDefault) || null;
 
-	return { label: entry ? entry.label : literalLabel, value: resolvedDefault };
+	return { label: entry ? entry.label : literalLabel, value: displayDimension(resolvedDefault) };
 }
 
 /**
@@ -151,7 +233,7 @@ export function fieldSummary(value, tokens, unit, customName) {
 	const entry = findTokenEntry(tokens, value);
 
 	if (entry) {
-		return { label: entry.label, value: entry.value };
+		return { label: entry.label, value: displayDimension(entry.value) };
 	}
 
 	if (isTokenAlias(value)) {

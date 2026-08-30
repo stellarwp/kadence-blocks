@@ -230,26 +230,33 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 			}
 		}
 
-		// Box shadow
-		if ( isset( $attributes['displayBoxShadow'] ) && true == $attributes['displayBoxShadow'] ) {
-			if ( isset( $attributes['boxShadow'] ) && is_array( $attributes['boxShadow'] ) && isset( $attributes['boxShadow'][0] ) && is_array( $attributes['boxShadow'][0] ) ) {
-				$css->add_property(
-					'box-shadow',
-					$css->render_shadow(
-						$attributes['boxShadow'][0],
-						[
-							'hOffset' => '0',
-							'vOffset' => '0',
-							'blur'    => '14',
-							'spread'  => '0',
-							'color'   => '#000000',
-							'opacity' => 0.2,
-						]
-					)
-				);
-			} else {
-				$css->add_property( 'box-shadow', 'rgba(0, 0, 0, 0.2) 0px 0px 14px 0px' );
-			}
+		// Box shadow, gated on BOTH the stored flag and the value's own axes.
+		//
+		// The flag is no longer a control -- the editor derives it from the value on every write -- but it
+		// still has to be read. Gutenberg omits an attribute equal to its default, and the old toggle
+		// defaulted to false, so a block saved with the shadow switched OFF stored no flag at all while
+		// keeping whatever values the user had entered. Judging by geometry alone would start rendering
+		// those, which is exactly the upgrade-time restyling the design-token work is meant to avoid.
+		if (
+			! empty( $attributes['displayBoxShadow'] )
+			&& isset( $attributes['boxShadow'][0] )
+			&& is_array( $attributes['boxShadow'][0] )
+			&& $this->has_visible_shadow( $attributes['boxShadow'][0] )
+		) {
+			$css->add_property(
+				'box-shadow',
+				$css->render_shadow(
+					$attributes['boxShadow'][0],
+					[
+						'hOffset' => '0',
+						'vOffset' => '0',
+						'blur'    => '14',
+						'spread'  => '0',
+						'color'   => '#000000',
+						'opacity' => 0.2,
+					]
+				)
+			);
 		}
 
 		// Drop Shadow

@@ -53,6 +53,26 @@ import {
 } from '@kadence/helpers';
 import { isExternalImage } from './edit';
 import metadata from './block.json';
+import {
+	presetPropertyValueForDevice,
+	resetAttr,
+	useLinkedMeasureState,
+	usePresetBinding,
+} from '../../extension/token-indicators';
+import {
+	anyCornerInherited,
+	inheritedMeasureSlots,
+	measureAttrsForDevice,
+	presetValueForDevice,
+} from '../../extension/token-indicators/normalize';
+import { EditorBoxControl } from '../../extension/design-tokens/components/EditorBoxControl';
+import { EditorShadowControl, hasVisibleShadow } from '../../extension/design-tokens/components/EditorShadowControl';
+import { renderShadowColor } from '../../extension/design-tokens/components/shadow-color';
+import { useColorGroups } from '../../extension/design-tokens/hooks/use-color-groups';
+import { resolveColorLiteral } from '../../extension/design-tokens/color-literal';
+import { tokenDimension } from '../../extension/design-tokens/token-dimension';
+import { pickableTokensForControl, pickableTokensForKey } from '../../extension/token-picker';
+import { ColorControl } from '../../token-controls';
 /**
  * Module constants
  */
@@ -198,6 +218,98 @@ export default function Image({
 		tooltipPlacement,
 		tooltipDash,
 	} = attributes;
+
+	const { setPreviewDeviceType: setPreviewDevice } = useDispatch('kadenceblocks/data');
+
+	// Design-token indicators: the per-attribute bound/overridden state for the selected preset, plus a
+	// reset that clears the mapped attribute back to the preset value (served by the existing scoped CSS).
+	const tokenBinding = usePresetBinding('kadence/image', attributes, undefined, previewDevice);
+	// The schema and the binding's own per-device attribute names are both passed through. The image
+	// spells its padding companions `paddingTablet`/`paddingMobile` rather than the `tablet<Attr>`
+	// convention, so without the declared names a reset writes an attribute the block does not have and
+	// leaves the real Tablet and Mobile values untouched.
+	const resetToken = (attr) =>
+		resetAttr(
+			attr,
+			setAttributes,
+			tokenBinding[attr]?.kind,
+			metadata.attributes,
+			tokenBinding[attr]?.responsiveAttrs
+		);
+	// One fetch of the block's effective palette groups, shared by every `ColorControl` on this block.
+	const colorGroups = useColorGroups(clientId);
+
+	// Empty when the token registry is inactive, which is what keeps the plain controls below as the
+	// fallback rather than leaving the image with no radius/padding control at all.
+	const borderRadiusTokens = pickableTokensForControl('kadence/image', 'borderRadius') || [];
+	const paddingTokens = pickableTokensForControl('kadence/image', 'paddingDesktop') || [];
+	// The shadow binds a nested attribute with no `control_attr` of its own, so its pool is looked up by
+	// the binding's key rather than by a control attribute.
+	const shadowTokens = pickableTokensForKey('kadence/image', 'shadow');
+
+	// A measure control keeps ONE linked/individual mode but writes a different attribute per breakpoint,
+	// so the mode must be read from — and "link" must collapse — whichever device is active. The image
+	// spells its padding attributes `paddingDesktop`/`paddingTablet`/`paddingMobile` rather than the
+	// bare-plus-prefix convention, which is why both siblings are named explicitly.
+	const borderRadiusForDevice = measureAttrsForDevice(
+		attributes,
+		'borderRadius',
+		{ tablet: 'tabletBorderRadius', mobile: 'mobileBorderRadius' },
+		previewDevice
+	);
+	const paddingForDevice = measureAttrsForDevice(
+		attributes,
+		'paddingDesktop',
+		{ tablet: 'paddingTablet', mobile: 'paddingMobile' },
+		previewDevice
+	);
+	const borderRadiusPresetValue = presetValueForDevice(
+		tokenBinding.borderRadius?.presetValue,
+		tokenBinding.borderRadius?.responsive,
+		previewDevice
+	);
+	const paddingPresetValue = presetValueForDevice(
+		tokenBinding.paddingDesktop?.presetValue,
+		tokenBinding.paddingDesktop?.responsive,
+		previewDevice
+	);
+	// What an unset slot falls back to on the active device: another breakpoint's slot before the
+	// preset's, matching the cascade the image actually renders through. The slots stay stored-empty —
+	// this only tells the field's popover which size is in effect and where it came from.
+	const inheritedBorderRadius = inheritedMeasureSlots(
+		previewDevice,
+		{ desktop: borderRadius, tablet: tabletBorderRadius },
+		borderRadiusPresetValue
+	);
+	const inheritedPadding = inheritedMeasureSlots(
+		previewDevice,
+		{ desktop: paddingDesktop, tablet: paddingTablet },
+		paddingPresetValue
+	);
+	const shadowPresetValue = presetPropertyValueForDevice(
+		'kadence/image',
+		'shadow',
+		attributes,
+		undefined,
+		previewDevice
+	);
+	const borderRadiusIsRelative = borderRadiusUnit === 'em' || borderRadiusUnit === 'rem';
+	const paddingIsRelative = paddingUnit === 'em' || paddingUnit === 'rem';
+	// `resetOn` clears the remembered link choice on a preset change, since an override records a choice
+	// about the PREVIOUS preset's slots — otherwise an explicit "link" would stick and hide a new preset's
+	// per-slot value.
+	const { isLinked: borderRadiusIsLinked, toggleLink: toggleBorderRadiusLink } = useLinkedMeasureState({
+		forDevice: borderRadiusForDevice,
+		previewDevice,
+		setAttributes,
+		resetOn: attributes.kbPreset,
+	});
+	const { isLinked: paddingIsLinked, toggleLink: togglePaddingLink } = useLinkedMeasureState({
+		forDevice: paddingForDevice,
+		previewDevice,
+		setAttributes,
+		resetOn: attributes.kbPreset,
+	});
 
 	const previewURL = dynamicURL ? dynamicURL : url;
 	const [updateImageStore, setImageStore] = useState(false);
@@ -367,18 +479,6 @@ export default function Image({
 
 		setAttributes({
 			dropShadow: newItems,
-		});
-	}
-	function saveBoxShadow(value) {
-		const newItems = boxShadow.map((item, thisIndex) => {
-			if (0 === thisIndex) {
-				item = { ...item, ...value };
-			}
-			return item;
-		});
-
-		setAttributes({
-			boxShadow: newItems,
 		});
 	}
 	const saveCaptionFont = (value) => {
@@ -1158,13 +1258,19 @@ export default function Image({
 				{activeTab === 'style' && (
 					<>
 						<KadencePanelBody panelName={'kb-image-border-settings'}>
-							<PopColorControl
+							<ColorControl
 								label={__('Background Color', 'kadence-blocks')}
 								value={backgroundColor ? backgroundColor : ''}
-								default={''}
-								onChange={(value) => {
-									setAttributes({ backgroundColor: value });
+								groups={colorGroups}
+								status={{
+									bound: !!tokenBinding.backgroundColor?.bound,
+									modified: !!tokenBinding.backgroundColor?.overridden,
 								}}
+								onReset={() => resetToken('backgroundColor')}
+								onPick={(alias) => setAttributes({ backgroundColor: alias })}
+								onCustom={(literal) => setAttributes({ backgroundColor: literal })}
+								onClear={() => setAttributes({ backgroundColor: '' })}
+								resolveLiteral={resolveColorLiteral}
 							/>
 							<ResponsiveBorderControl
 								label={__('Border', 'kadence-blocks')}
@@ -1175,103 +1281,64 @@ export default function Image({
 								onChangeTablet={(value) => setAttributes({ tabletBorderStyle: value })}
 								onChangeMobile={(value) => setAttributes({ mobileBorderStyle: value })}
 							/>
-							<ResponsiveMeasurementControls
-								label={__('Border Radius', 'kadence-blocks')}
-								value={borderRadius}
-								tabletValue={tabletBorderRadius}
-								mobileValue={mobileBorderRadius}
-								onChange={(value) => setAttributes({ borderRadius: value })}
-								onChangeTablet={(value) => setAttributes({ tabletBorderRadius: value })}
-								onChangeMobile={(value) => setAttributes({ mobileBorderRadius: value })}
-								min={0}
-								max={borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 24 : 200}
-								step={borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 0.1 : 1}
-								unit={borderRadiusUnit}
-								units={['px', 'em', 'rem', '%']}
-								onUnit={(value) => setAttributes({ borderRadiusUnit: value })}
-								isBorderRadius={true}
-								allowEmpty={true}
-							/>
-							<BoxShadowControl
+							{borderRadiusTokens.length ? (
+								<EditorBoxControl
+									label={__('Border Radius', 'kadence-blocks')}
+									value={borderRadiusForDevice.value}
+									onChange={(next) => setAttributes({ [borderRadiusForDevice.attr]: next })}
+									previewDevice={previewDevice}
+									onDeviceChange={setPreviewDevice}
+									tokens={borderRadiusTokens}
+									defaultValue={inheritedBorderRadius.values}
+									inherited={anyCornerInherited(inheritedBorderRadius.inherited)}
+									state={tokenBinding.borderRadius}
+									onReset={() => resetToken('borderRadius')}
+									isLinked={borderRadiusIsLinked}
+									onToggleLink={toggleBorderRadiusLink}
+									unit={borderRadiusUnit}
+									units={['px', 'em', 'rem', '%']}
+									onUnit={(value) => setAttributes({ borderRadiusUnit: value })}
+									min={0}
+									max={borderRadiusIsRelative ? 24 : 200}
+									step={borderRadiusIsRelative ? 0.1 : 1}
+								/>
+							) : (
+								<ResponsiveMeasurementControls
+									label={__('Border Radius', 'kadence-blocks')}
+									value={borderRadius}
+									tabletValue={tabletBorderRadius}
+									mobileValue={mobileBorderRadius}
+									onChange={(value) => setAttributes({ borderRadius: value })}
+									onChangeTablet={(value) => setAttributes({ tabletBorderRadius: value })}
+									onChangeMobile={(value) => setAttributes({ mobileBorderRadius: value })}
+									min={0}
+									max={borderRadiusIsRelative ? 24 : 200}
+									step={borderRadiusIsRelative ? 0.1 : 1}
+									unit={borderRadiusUnit}
+									units={['px', 'em', 'rem', '%']}
+									onUnit={(value) => setAttributes({ borderRadiusUnit: value })}
+									isBorderRadius={true}
+									allowEmpty={true}
+								/>
+							)}
+							{/* `displayBoxShadow` is no longer a control -- it is derived from the value on every
+							    write. It has to keep existing because Gutenberg omits an attribute equal to its
+							    default, so a block saved with the old toggle OFF stored no flag at all and is
+							    indistinguishable from one saved with it on. Deriving it forward means legacy
+							    content keeps whatever the flag said, while anything edited from here on has a
+							    flag that simply agrees with its own geometry. */}
+							<EditorShadowControl
 								label={__('Box Shadow', 'kadence-blocks')}
-								enable={undefined !== displayBoxShadow ? displayBoxShadow : false}
-								color={
-									undefined !== boxShadow &&
-									undefined !== boxShadow[0] &&
-									undefined !== boxShadow[0].color
-										? boxShadow[0].color
-										: '#000000'
-								}
-								colorDefault={'#000000'}
-								onArrayChange={(color, opacity) => saveBoxShadow({ color, opacity })}
-								opacity={
-									undefined !== boxShadow &&
-									undefined !== boxShadow[0] &&
-									undefined !== boxShadow[0].opacity
-										? boxShadow[0].opacity
-										: 0.2
-								}
-								hOffset={
-									undefined !== boxShadow &&
-									undefined !== boxShadow[0] &&
-									undefined !== boxShadow[0].hOffset
-										? boxShadow[0].hOffset
-										: 0
-								}
-								vOffset={
-									undefined !== boxShadow &&
-									undefined !== boxShadow[0] &&
-									undefined !== boxShadow[0].vOffset
-										? boxShadow[0].vOffset
-										: 0
-								}
-								blur={
-									undefined !== boxShadow &&
-									undefined !== boxShadow[0] &&
-									undefined !== boxShadow[0].blur
-										? boxShadow[0].blur
-										: 14
-								}
-								spread={
-									undefined !== boxShadow &&
-									undefined !== boxShadow[0] &&
-									undefined !== boxShadow[0].spread
-										? boxShadow[0].spread
-										: 0
-								}
-								inset={
-									undefined !== boxShadow &&
-									undefined !== boxShadow[0] &&
-									undefined !== boxShadow[0].inset
-										? boxShadow[0].inset
-										: false
-								}
-								onEnableChange={(value) => {
+								value={boxShadow}
+								onChange={(value) =>
 									setAttributes({
-										displayBoxShadow: value,
-									});
-								}}
-								onColorChange={(value) => {
-									saveBoxShadow({ color: value });
-								}}
-								onOpacityChange={(value) => {
-									saveBoxShadow({ opacity: value });
-								}}
-								onHOffsetChange={(value) => {
-									saveBoxShadow({ hOffset: value });
-								}}
-								onVOffsetChange={(value) => {
-									saveBoxShadow({ vOffset: value });
-								}}
-								onBlurChange={(value) => {
-									saveBoxShadow({ blur: value });
-								}}
-								onSpreadChange={(value) => {
-									saveBoxShadow({ spread: value });
-								}}
-								onInsetChange={(value) => {
-									saveBoxShadow({ inset: value });
-								}}
+										boxShadow: value,
+										displayBoxShadow: hasVisibleShadow(value?.[0]),
+									})
+								}
+								tokens={shadowTokens}
+								defaultValue={shadowPresetValue}
+								renderColor={renderShadowColor}
 							/>
 							<DropShadowControl
 								label={__('Drop Shadow', 'kadence-blocks')}
@@ -1627,23 +1694,47 @@ export default function Image({
 				{activeTab === 'advanced' && (
 					<>
 						<KadencePanelBody>
-							<ResponsiveMeasureRangeControl
-								label={__('Padding', 'kadence-blocks')}
-								value={paddingDesktop}
-								tabletValue={paddingTablet}
-								mobileValue={paddingMobile}
-								onChange={(value) => setAttributes({ paddingDesktop: value })}
-								onChangeTablet={(value) => setAttributes({ paddingTablet: value })}
-								onChangeMobile={(value) => setAttributes({ paddingMobile: value })}
-								min={0}
-								max={paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 999}
-								step={paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1}
-								unit={paddingUnit}
-								units={['px', 'em', 'rem', '%']}
-								onUnit={(value) => setAttributes({ paddingUnit: value })}
-								onMouseOver={paddingMouseOver.onMouseOver}
-								onMouseOut={paddingMouseOver.onMouseOut}
-							/>
+							{paddingTokens.length ? (
+								<EditorBoxControl
+									label={__('Padding', 'kadence-blocks')}
+									value={paddingForDevice.value}
+									onChange={(next) => setAttributes({ [paddingForDevice.attr]: next })}
+									previewDevice={previewDevice}
+									onDeviceChange={setPreviewDevice}
+									tokens={paddingTokens}
+									defaultValue={inheritedPadding.values}
+									inherited={anyCornerInherited(inheritedPadding.inherited)}
+									state={tokenBinding.paddingDesktop}
+									onReset={() => resetToken('paddingDesktop')}
+									isLinked={paddingIsLinked}
+									onToggleLink={togglePaddingLink}
+									role="sides"
+									unit={paddingUnit}
+									units={['px', 'em', 'rem', '%']}
+									onUnit={(value) => setAttributes({ paddingUnit: value })}
+									min={0}
+									max={paddingIsRelative ? 24 : 999}
+									step={paddingIsRelative ? 0.1 : 1}
+								/>
+							) : (
+								<ResponsiveMeasureRangeControl
+									label={__('Padding', 'kadence-blocks')}
+									value={paddingDesktop}
+									tabletValue={paddingTablet}
+									mobileValue={paddingMobile}
+									onChange={(value) => setAttributes({ paddingDesktop: value })}
+									onChangeTablet={(value) => setAttributes({ paddingTablet: value })}
+									onChangeMobile={(value) => setAttributes({ paddingMobile: value })}
+									min={0}
+									max={paddingIsRelative ? 24 : 999}
+									step={paddingIsRelative ? 0.1 : 1}
+									unit={paddingUnit}
+									units={['px', 'em', 'rem', '%']}
+									onUnit={(value) => setAttributes({ paddingUnit: value })}
+									onMouseOver={paddingMouseOver.onMouseOver}
+									onMouseOut={paddingMouseOver.onMouseOut}
+								/>
+							)}
 							<ResponsiveMeasureRangeControl
 								label={__('Margin', 'kadence-blocks')}
 								value={marginDesktop}
@@ -1846,29 +1937,27 @@ export default function Image({
 					borderLeft: previewBorderLeftStyle ? previewBorderLeftStyle : undefined,
 					borderTopLeftRadius:
 						'' !== previewRadiusTop
-							? previewRadiusTop + (borderRadiusUnit ? borderRadiusUnit : 'px')
+							? tokenDimension(previewRadiusTop, borderRadiusUnit ? borderRadiusUnit : 'px')
 							: undefined,
 					borderTopRightRadius:
 						'' !== previewRadiusRight
-							? previewRadiusRight + (borderRadiusUnit ? borderRadiusUnit : 'px')
+							? tokenDimension(previewRadiusRight, borderRadiusUnit ? borderRadiusUnit : 'px')
 							: undefined,
 					borderBottomRightRadius:
 						'' !== previewRadiusBottom
-							? previewRadiusBottom + (borderRadiusUnit ? borderRadiusUnit : 'px')
+							? tokenDimension(previewRadiusBottom, borderRadiusUnit ? borderRadiusUnit : 'px')
 							: undefined,
 					borderBottomLeftRadius:
 						'' !== previewRadiusLeft
-							? previewRadiusLeft + (borderRadiusUnit ? borderRadiusUnit : 'px')
+							? tokenDimension(previewRadiusLeft, borderRadiusUnit ? borderRadiusUnit : 'px')
 							: undefined,
 
 					backgroundColor: '' !== backgroundColor ? KadenceColorOutput(backgroundColor) : undefined,
 
+					// Both halves have to agree: the stored flag, which legacy content may have left false
+					// with real values still behind it, and the value's own axes.
 					boxShadow:
-						undefined !== displayBoxShadow &&
-						displayBoxShadow &&
-						undefined !== boxShadow &&
-						undefined !== boxShadow[0] &&
-						undefined !== boxShadow[0].color
+						displayBoxShadow && hasVisibleShadow(boxShadow?.[0])
 							? (undefined !== boxShadow[0].inset && boxShadow[0].inset ? 'inset ' : '') +
 								(undefined !== boxShadow[0].hOffset ? boxShadow[0].hOffset : 0) +
 								'px ' +

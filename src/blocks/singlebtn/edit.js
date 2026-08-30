@@ -18,7 +18,6 @@ import {
 } from '@kadence/helpers';
 
 import {
-	PopColorControl,
 	TypographyControls,
 	SmallResponsiveControl,
 	ResponsiveRangeControls,
@@ -43,13 +42,13 @@ import {
 	Tooltip,
 } from '@kadence/components';
 import classnames from 'classnames';
-import { times, filter, map, uniqueId, get, upperFirst } from 'lodash';
+import { times, filter, map, uniqueId, get } from 'lodash';
 
 import metadata from './block.json';
 /**
  * Internal block libraries
  */
-import { __, sprintf } from '@wordpress/i18n';
+import { __ } from '@wordpress/i18n';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { tooltip as tooltipIcon } from '@kadence/icons';
 import { link as linkIcon } from '@wordpress/icons';
@@ -79,13 +78,13 @@ import {
 } from '@wordpress/components';
 import { addFilter, applyFilters, doAction } from '@wordpress/hooks';
 import BackendStyles from './components/backend-styles';
-import { useLinkedMeasureState } from './hooks/use-linked-measure-state';
 import { PresetButton } from '../../extension/preset-picker/PresetButton';
 import {
 	usePresetBinding,
 	resetAttr,
 	presetPropertyValueForDevice,
 	deriveStateBinding,
+	useLinkedMeasureState,
 } from '../../extension/token-indicators';
 import {
 	anyCornerInherited,
@@ -96,87 +95,14 @@ import {
 } from '../../extension/token-indicators/normalize';
 import { EditorBoxControl } from '../../extension/design-tokens/components/EditorBoxControl';
 import { EditorBorderControl } from '../../extension/design-tokens/components/EditorBorderControl';
-import {
-	EditorShadowControl,
-	combineColorOpacity,
-	splitColorOpacity,
-} from '../../extension/design-tokens/components/EditorShadowControl';
+import { EditorShadowControl, hasVisibleShadow } from '../../extension/design-tokens/components/EditorShadowControl';
+import { renderShadowColor } from '../../extension/design-tokens/components/shadow-color';
+import { renderBorderColor } from '../../extension/design-tokens/components/border-color';
 import { pickableTokensForControl, pickableTokensForKey } from '../../extension/token-picker';
-import { ColorControl } from '../../token-controls/controls/ColorControl';
-import { ColorControlGroup } from '../../token-controls/controls/ColorControlGroup';
+import { ColorControl, ColorControlGroup } from '../../token-controls';
 import { BUTTON_MARGIN_FALLBACK, BUTTON_PADDING_FALLBACK } from '../../token-controls/helpers/button-box-defaults';
 import { useColorGroups } from '../../extension/design-tokens/hooks/use-color-groups';
-import { resolveColorLiteral } from './color-control-adapter';
-
-/**
- * `EditorBorderControl`'s `renderColor` render-prop: reuses the block's existing `PopColorControl`
- * unchanged. `BorderControl`'s row anatomy always calls this once per row with that row's own
- * resolved color scalar (via `readSlot()`), never the whole four-element axis, so this only ever
- * renders one swatch per call — the same way it already reads `width`/`style` per row. Color is out
- * of this plan's scope entirely; this only wires the existing color-picking mechanism back in.
- *
- * @param {Object}   props          The render-prop's argument.
- * @param {*}        props.value    The row's own resolved color scalar.
- * @param {Function} props.onChange Called with the next color scalar.
- * @param {?string}  [props.label]  The row's own bare side name (e.g. "top"), or `null` while
- *                                  linked, from `BorderControl`'s per-row `renderColor` call.
- *
- * @since TBD
- *
- * @return {JSX.Element} The rendered color field.
- */
-function renderBorderColor({ value, onChange, label }) {
-	return (
-		<PopColorControl
-			swatchLabel={
-				label
-					? sprintf(
-							/* translators: %s: border side (Top, Right, Bottom, Left) */
-							__('%s Border Color', 'kadence-blocks'),
-							upperFirst(label)
-						)
-					: undefined
-			}
-			value={value || ''}
-			default={''}
-			hideClear={true}
-			onChange={onChange}
-		/>
-	);
-}
-
-/**
- * `EditorShadowControl`'s `renderColor` render-prop: reuses the block's existing `PopColorControl`
- * unchanged, wired through its own two-channel `opacityValue`/`onArrayChange` props so the swatch's
- * opacity slider keeps working exactly as it did on the native `@kadence/components` `BoxShadowControl`
- * (see `node_modules/@kadence/components/src/box-shadow-control/index.js`). The composite's `color`
- * slot arrives combined (`combineColorOpacity`); this is the one place that has to split it apart for
- * `PopColorControl` and recombine on every write, using the exact same rules `EditorShadowControl`
- * itself uses to read/write the native attribute, so both directions agree.
- *
- * @param {Object}   props          The render-prop's argument.
- * @param {string}   props.value    The composite's combined color slot (a plain hex, or `rgba(...)`).
- * @param {Function} props.onChange Called with the next combined color slot.
- *
- * @since TBD
- *
- * @return {JSX.Element} The rendered color field.
- */
-function renderShadowColor({ value, onChange }) {
-	const { color, opacity } = splitColorOpacity(value);
-
-	return (
-		<PopColorControl
-			value={color || ''}
-			default={'#000000'}
-			hideClear={true}
-			opacityValue={opacity}
-			onChange={(next) => onChange(combineColorOpacity(next, opacity))}
-			onOpacityChange={(next) => onChange(combineColorOpacity(color, next))}
-			onArrayChange={(next, nextOpacity) => onChange(combineColorOpacity(next, nextOpacity))}
-		/>
-	);
-}
+import { resolveColorLiteral } from '../../extension/design-tokens/color-literal';
 
 export default function KadenceButtonEdit(props) {
 	const { attributes, setAttributes, isSelected, context, clientId, name } = props;
@@ -364,7 +290,7 @@ export default function KadenceButtonEdit(props) {
 	// Design-token indicators: the per-attribute bound/overridden state for the selected preset, plus a
 	// reset that clears the mapped attribute back to the preset value (served by the existing scoped CSS).
 	const tokenBinding = usePresetBinding('kadence/singlebtn', attributes, undefined, previewDevice);
-	const resetToken = (attr) => resetAttr(attr, setAttributes, tokenBinding[attr]?.kind);
+	const resetToken = (attr) => resetAttr(attr, setAttributes, tokenBinding[attr]?.kind, metadata.attributes);
 	// One fetch of the block's effective palette groups, shared by every `ColorControl` instance on
 	// this block — the palette data is identical for all fourteen of them.
 	const colorGroups = useColorGroups(clientId);
@@ -634,8 +560,9 @@ export default function KadenceButtonEdit(props) {
 		value: borderHoverBorderForDevice.value,
 		previewDevice,
 	});
-	const resetBorderHoverRadius = () => resetAttr('borderHoverRadius', setAttributes, 'dimension');
-	const resetBorderHoverBorder = () => resetAttr('borderHoverStyle', setAttributes, 'border');
+	const resetBorderHoverRadius = () =>
+		resetAttr('borderHoverRadius', setAttributes, 'dimension', metadata.attributes);
+	const resetBorderHoverBorder = () => resetAttr('borderHoverStyle', setAttributes, 'border', metadata.attributes);
 
 	const borderTransparentBorderForDevice = measureAttrsForDevice(
 		attributes,
@@ -658,8 +585,10 @@ export default function KadenceButtonEdit(props) {
 		value: borderTransparentBorderForDevice.value,
 		previewDevice,
 	});
-	const resetBorderTransparentRadius = () => resetAttr('borderTransparentRadius', setAttributes, 'dimension');
-	const resetBorderTransparentBorder = () => resetAttr('borderTransparentStyle', setAttributes, 'border');
+	const resetBorderTransparentRadius = () =>
+		resetAttr('borderTransparentRadius', setAttributes, 'dimension', metadata.attributes);
+	const resetBorderTransparentBorder = () =>
+		resetAttr('borderTransparentStyle', setAttributes, 'border', metadata.attributes);
 
 	const borderTransparentHoverBorderForDevice = measureAttrsForDevice(
 		attributes,
@@ -683,8 +612,9 @@ export default function KadenceButtonEdit(props) {
 		previewDevice,
 	});
 	const resetBorderTransparentHoverRadius = () =>
-		resetAttr('borderTransparentHoverRadius', setAttributes, 'dimension');
-	const resetBorderTransparentHoverBorder = () => resetAttr('borderTransparentHoverStyle', setAttributes, 'border');
+		resetAttr('borderTransparentHoverRadius', setAttributes, 'dimension', metadata.attributes);
+	const resetBorderTransparentHoverBorder = () =>
+		resetAttr('borderTransparentHoverStyle', setAttributes, 'border', metadata.attributes);
 
 	const borderStickyBorderForDevice = measureAttrsForDevice(
 		attributes,
@@ -706,8 +636,9 @@ export default function KadenceButtonEdit(props) {
 		value: borderStickyBorderForDevice.value,
 		previewDevice,
 	});
-	const resetBorderStickyRadius = () => resetAttr('borderStickyRadius', setAttributes, 'dimension');
-	const resetBorderStickyBorder = () => resetAttr('borderStickyStyle', setAttributes, 'border');
+	const resetBorderStickyRadius = () =>
+		resetAttr('borderStickyRadius', setAttributes, 'dimension', metadata.attributes);
+	const resetBorderStickyBorder = () => resetAttr('borderStickyStyle', setAttributes, 'border', metadata.attributes);
 
 	const borderStickyHoverBorderForDevice = measureAttrsForDevice(
 		attributes,
@@ -730,8 +661,10 @@ export default function KadenceButtonEdit(props) {
 		value: borderStickyHoverBorderForDevice.value,
 		previewDevice,
 	});
-	const resetBorderStickyHoverRadius = () => resetAttr('borderStickyHoverRadius', setAttributes, 'dimension');
-	const resetBorderStickyHoverBorder = () => resetAttr('borderStickyHoverStyle', setAttributes, 'border');
+	const resetBorderStickyHoverRadius = () =>
+		resetAttr('borderStickyHoverRadius', setAttributes, 'dimension', metadata.attributes);
+	const resetBorderStickyHoverBorder = () =>
+		resetAttr('borderStickyHoverStyle', setAttributes, 'border', metadata.attributes);
 
 	useEffect(() => {
 		if (!isSelected) {
@@ -1363,7 +1296,12 @@ export default function KadenceButtonEdit(props) {
 															defaultValue={shadowPresetValue}
 															label={__('Box Shadow', 'kadence-blocks')}
 															value={shadowHover}
-															onChange={(value) => setAttributes({ shadowHover: value })}
+															onChange={(value) =>
+																setAttributes({
+																	shadowHover: value,
+																	displayHoverShadow: hasVisibleShadow(value?.[0]),
+																})
+															}
 															tokens={shadowPickableTokens}
 															renderColor={renderShadowColor}
 														/>
@@ -1485,11 +1423,24 @@ export default function KadenceButtonEdit(props) {
 															max={borderRadiusIsRelative ? 24 : 500}
 															step={borderRadiusIsRelative ? 0.1 : 1}
 														/>
+														{/* The `display*Shadow` flags are no longer controls — the editor derives each
+														    from its own value on every write. They still have to EXIST, because
+														    Gutenberg omits an attribute equal to its default: a button saved with
+														    the old toggle OFF stored no flag at all while keeping the values behind
+														    it, so geometry alone cannot tell it from one saved with the toggle on.
+														    Deriving them forward leaves legacy content exactly as it renders today
+														    and gives anything edited from here on a flag that agrees with its own
+														    geometry. */}
 														<EditorShadowControl
 															defaultValue={shadowPresetValue}
 															label={__('Box Shadow', 'kadence-blocks')}
 															value={shadow}
-															onChange={(value) => setAttributes({ shadow: value })}
+															onChange={(value) =>
+																setAttributes({
+																	shadow: value,
+																	displayShadow: hasVisibleShadow(value?.[0]),
+																})
+															}
 															tokens={shadowPickableTokens}
 															renderColor={renderShadowColor}
 														/>
@@ -1639,7 +1590,12 @@ export default function KadenceButtonEdit(props) {
 																label={__('Box Shadow', 'kadence-blocks')}
 																value={shadowTransparentHover}
 																onChange={(value) =>
-																	setAttributes({ shadowTransparentHover: value })
+																	setAttributes({
+																		shadowTransparentHover: value,
+																		displayHoverShadowTransparent: hasVisibleShadow(
+																			value?.[0]
+																		),
+																	})
 																}
 																tokens={shadowPickableTokens}
 																renderColor={renderShadowColor}
@@ -1766,7 +1722,12 @@ export default function KadenceButtonEdit(props) {
 																label={__('Box Shadow', 'kadence-blocks')}
 																value={shadowTransparent}
 																onChange={(value) =>
-																	setAttributes({ shadowTransparent: value })
+																	setAttributes({
+																		shadowTransparent: value,
+																		displayShadowTransparent: hasVisibleShadow(
+																			value?.[0]
+																		),
+																	})
 																}
 																tokens={shadowPickableTokens}
 																renderColor={renderShadowColor}
@@ -1909,7 +1870,12 @@ export default function KadenceButtonEdit(props) {
 																label={__('Box Shadow', 'kadence-blocks')}
 																value={shadowStickyHover}
 																onChange={(value) =>
-																	setAttributes({ shadowStickyHover: value })
+																	setAttributes({
+																		shadowStickyHover: value,
+																		displayHoverShadowSticky: hasVisibleShadow(
+																			value?.[0]
+																		),
+																	})
 																}
 																tokens={shadowPickableTokens}
 																renderColor={renderShadowColor}
@@ -2030,7 +1996,12 @@ export default function KadenceButtonEdit(props) {
 																label={__('Box Shadow', 'kadence-blocks')}
 																value={shadowSticky}
 																onChange={(value) =>
-																	setAttributes({ shadowSticky: value })
+																	setAttributes({
+																		shadowSticky: value,
+																		displayShadowSticky: hasVisibleShadow(
+																			value?.[0]
+																		),
+																	})
 																}
 																tokens={shadowPickableTokens}
 																renderColor={renderShadowColor}
