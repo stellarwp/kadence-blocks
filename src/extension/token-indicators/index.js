@@ -32,21 +32,35 @@ export { TokenControlRow } from './components/TokenControlRow';
 export { useLinkedMeasureState } from './use-linked-measure-state';
 
 /**
- * The device-specific attribute name for a dimension control, by the same `tablet${Capitalized}` /
- * `mobile${Capitalized}` convention `resetAttrPatch` clears — the single spelling, so a reader that
+ * The device-specific attribute name for a dimension control — the single spelling, so a reader that
  * only checks the desktop attribute cannot silently disagree with the one that resets all three.
  *
- * @param {string} attr   The desktop attribute name.
- * @param {string} device The active preview device ('Desktop' | 'Tablet' | 'Mobile'); defaults to
- *                          desktop for a caller with no device context.
+ * The binding's own `responsive_attrs` wins when it declares one. Most blocks name their companions
+ * `tablet${Capitalized}` / `mobile${Capitalized}` and the convention answers, but that is a naming
+ * habit rather than a rule: `kadence/image` stores padding as `paddingDesktop` / `paddingTablet` /
+ * `paddingMobile`, where the convention would ask for `tabletPaddingDesktop` — an attribute that does
+ * not exist. Reading it returns nothing, so Tablet and Mobile always looked unset, and a reset wrote
+ * the invented name instead of clearing the real one. The declaration is why `responsive_attrs` is in
+ * the bindings at all; this is the reader honoring it.
+ *
+ * @param {string}  attr             The desktop attribute name.
+ * @param {string}  device           The active preview device ('Desktop' | 'Tablet' | 'Mobile');
+ *                                    defaults to desktop for a caller with no device context.
+ * @param {?Object} [responsiveAttrs] The binding's declared `{ tablet, mobile }` attribute names.
  *
  * @since TBD
  *
  * @return {string} The attribute the given device stores its value in.
  */
-function deviceAttrFor(attr, device) {
+function deviceAttrFor(attr, device, responsiveAttrs) {
 	if ('Tablet' !== device && 'Mobile' !== device) {
 		return attr;
+	}
+
+	const declaredName = get(responsiveAttrs, [device.toLowerCase()], '');
+
+	if (declaredName) {
+		return declaredName;
 	}
 
 	const capitalized = attr.charAt(0).toUpperCase() + attr.slice(1);
@@ -213,7 +227,7 @@ export function usePresetBinding(blockName, attributes, library, previewDevice) 
 		// nested-shape read) because `resetAttrPatch`'s own `'border'` case already clears the tablet/
 		// mobile companions — the compare and the reset must agree on which attribute is "the" one.
 		const isDeviceAware = kind === 'dimension' || !!axis;
-		const deviceAttr = isDeviceAware ? deviceAttrFor(attr, previewDevice) : attr;
+		const deviceAttr = isDeviceAware ? deviceAttrFor(attr, previewDevice, property.responsive_attrs) : attr;
 		const devicePresetValue = isDeviceAware
 			? presetValueForDevice(presetValue, propertyBreakpoints, previewDevice)
 			: presetValue;
@@ -259,6 +273,9 @@ export function usePresetBinding(blockName, attributes, library, previewDevice) 
 			kind,
 			presetValue,
 			responsive: propertyBreakpoints,
+			// Carried through so a reset clears the same attributes this entry was read from, rather than
+			// re-deriving names by a convention the block may not follow.
+			responsiveAttrs: property.responsive_attrs,
 			bound: owned,
 			overridden,
 		};
@@ -369,12 +386,12 @@ export function presetPropertyReference(blockName, propertyKey, attributes, libr
  *
  * @return {Object} The attribute patch to pass to `setAttributes`.
  */
-export function resetAttrPatch(attr, kind, declared) {
+export function resetAttrPatch(attr, kind, declared, responsiveAttrs) {
 	if (kind === 'border') {
 		return {
 			[attr]: [],
-			[deviceAttrFor(attr, 'Tablet')]: [],
-			[deviceAttrFor(attr, 'Mobile')]: [],
+			[deviceAttrFor(attr, 'Tablet', responsiveAttrs)]: [],
+			[deviceAttrFor(attr, 'Mobile', responsiveAttrs)]: [],
 		};
 	}
 
@@ -390,11 +407,11 @@ export function resetAttrPatch(attr, kind, declared) {
 	const isSides = !declared || Array.isArray(declared[attr]?.default);
 
 	if (!isSides) {
-		return withDeviceCompanions({ [attr]: '' }, attr, declared, '');
+		return withDeviceCompanions({ [attr]: '' }, attr, declared, '', responsiveAttrs);
 	}
 
 	const emptySides = ['', '', '', ''];
-	const patch = withDeviceCompanions({ [attr]: emptySides }, attr, declared, emptySides);
+	const patch = withDeviceCompanions({ [attr]: emptySides }, attr, declared, emptySides, responsiveAttrs);
 
 	// Only when the block declares the companion: `borderRadius` has `borderRadiusUnit`, `size` has no
 	// `sizeUnit`, and writing one would leave an attribute the block never reads.
@@ -451,17 +468,19 @@ function withPaletteClassCompanions(patch, attr, kind, declared) {
  * never declared.
  *
  * @param {Object}  patch    The patch so far.
- * @param {string}  attr     The primary attribute name.
- * @param {?Object} declared The block's declared attributes, or undefined when unknown.
- * @param {*}       empty    The cleared value to write.
+ * @param {string}  attr             The primary attribute name.
+ * @param {?Object} declared         The block's declared attributes, or undefined when unknown.
+ * @param {*}       empty            The cleared value to write.
+ * @param {?Object} [responsiveAttrs] The binding's declared `{ tablet, mobile }` names, when it
+ *                                    spells its companions something other than the convention.
  *
  * @since TBD
  *
  * @return {Object} The patch, with any companions added.
  */
-function withDeviceCompanions(patch, attr, declared, empty) {
+function withDeviceCompanions(patch, attr, declared, empty, responsiveAttrs) {
 	['Tablet', 'Mobile'].forEach((device) => {
-		const companion = deviceAttrFor(attr, device);
+		const companion = deviceAttrFor(attr, device, responsiveAttrs);
 
 		if (!declared || declared[companion]) {
 			patch[companion] = empty;
@@ -474,16 +493,19 @@ function withDeviceCompanions(patch, attr, declared, empty) {
 /**
  * Clear a mapped control's attribute(s) back to their block.json default shape (see `resetAttrPatch`).
  *
- * @param {string}   attr          The primary attribute name.
- * @param {Function} setAttributes The block's setAttributes.
- * @param {string}   kind          The property kind, so a dimension also clears its companions.
+ * @param {string}   attr             The primary attribute name.
+ * @param {Function} setAttributes    The block's setAttributes.
+ * @param {string}   kind             The property kind, so a dimension also clears its companions.
+ * @param {?Object}  [declared]       The block's declared attributes, so only companions it really
+ *                                     has are written.
+ * @param {?Object}  [responsiveAttrs] The binding's declared `{ tablet, mobile }` attribute names.
  *
  * @since TBD
  *
  * @return {void}
  */
-export function resetAttr(attr, setAttributes, kind, declared) {
-	setAttributes(resetAttrPatch(attr, kind, declared));
+export function resetAttr(attr, setAttributes, kind, declared, responsiveAttrs) {
+	setAttributes(resetAttrPatch(attr, kind, declared, responsiveAttrs));
 }
 
 /**

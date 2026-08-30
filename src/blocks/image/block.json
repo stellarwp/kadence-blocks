@@ -183,6 +183,10 @@
 			"type": "array",
 			"default": ["", "", "", ""]
 		},
+		"displayBoxShadow": {
+			"type": "boolean",
+			"default": false
+		},
 		"boxShadow": {
 			"type": "array",
 			"default": [

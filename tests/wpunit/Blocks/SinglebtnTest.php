@@ -179,6 +179,7 @@ class SinglebtnTest extends KadenceBlocksUnit {
 		$output = $this->render_button(
 			[
 				'kbPreset' => 'accent',
+				'displayShadow' => true,
 				'shadow'   => [
 					[
 						'color'   => '#00ff00',
@@ -308,6 +309,7 @@ class SinglebtnTest extends KadenceBlocksUnit {
 		$output = $this->render_button(
 			[
 				'kbPreset' => 'bare',
+				'displayShadow' => true,
 				'shadow'   => [
 					[
 						'color'   => 'transparent',
@@ -342,6 +344,7 @@ class SinglebtnTest extends KadenceBlocksUnit {
 			[
 				'kbPreset'    => 'bare',
 				'colorHover'  => '#0000ff',
+				'displayShadow' => true,
 				'shadow'      => [
 					[
 						'color'   => '#00ff00',
@@ -353,6 +356,7 @@ class SinglebtnTest extends KadenceBlocksUnit {
 						'inset'   => false,
 					],
 				],
+				'displayHoverShadow' => true,
 				'shadowHover' => [
 					[
 						'color'   => 'transparent',
@@ -400,6 +404,7 @@ class SinglebtnTest extends KadenceBlocksUnit {
 				'backgroundHoverType' => 'gradient',
 				'gradientHover'       => 'linear-gradient(90deg, #ff0000, #0000ff)',
 				'colorHover'          => '#0000ff',
+				'displayShadow'       => true,
 				'shadow'              => [
 					[
 						'color'   => '#00ff00',
@@ -411,6 +416,7 @@ class SinglebtnTest extends KadenceBlocksUnit {
 						'inset'   => false,
 					],
 				],
+				'displayHoverShadow'  => true,
 				'shadowHover'         => [
 					[
 						'color'   => 'transparent',
@@ -453,6 +459,7 @@ class SinglebtnTest extends KadenceBlocksUnit {
 			[
 				'kbPreset'          => 'bare',
 				'colorTransparent'  => '#0000ff',
+				'displayShadow'     => true,
 				'shadow'            => [
 					[
 						'color'   => '#00ff00',
@@ -464,6 +471,7 @@ class SinglebtnTest extends KadenceBlocksUnit {
 						'inset'   => false,
 					],
 				],
+				'displayShadowTransparent' => true,
 				'shadowTransparent' => [
 					[
 						'color'   => 'transparent',
@@ -508,6 +516,7 @@ class SinglebtnTest extends KadenceBlocksUnit {
 			[
 				'kbPreset'     => 'bare',
 				'colorSticky'  => '#0000ff',
+				'displayShadow' => true,
 				'shadow'       => [
 					[
 						'color'   => '#00ff00',
@@ -519,6 +528,7 @@ class SinglebtnTest extends KadenceBlocksUnit {
 						'inset'   => false,
 					],
 				],
+				'displayShadowSticky' => true,
 				'shadowSticky' => [
 					[
 						'color'   => 'transparent',
@@ -566,6 +576,7 @@ class SinglebtnTest extends KadenceBlocksUnit {
 		$output = $this->render_button(
 			[
 				'kbPreset' => 'accent',
+				'displayShadow' => true,
 				'shadow'   => [
 					[
 						'color'   => 'transparent',
@@ -601,6 +612,7 @@ class SinglebtnTest extends KadenceBlocksUnit {
 		$output = $this->render_button(
 			[
 				'kbPreset' => 'bare',
+				'displayShadow' => true,
 				'shadow'   => [
 					[
 						'color'   => '#00ff00',
@@ -636,6 +648,7 @@ class SinglebtnTest extends KadenceBlocksUnit {
 		$output = $this->render_button(
 			[
 				'kbPreset' => 'bare',
+				'displayShadow' => true,
 				'shadow'   => [
 					[
 						'color'   => '#00ff00',

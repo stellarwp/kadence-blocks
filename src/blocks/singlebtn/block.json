@@ -335,11 +335,19 @@
 				}
 			]
 		},
+		"displayShadow": {
+			"type": "boolean",
+			"default": false
+		},
 		"shadow": {
 			"type": "array",
 			"default": [
 				{ "color": "transparent", "opacity": 1, "spread": 0, "blur": 0, "hOffset": 0, "vOffset": 0, "inset": false }
 			]
+		},
+		"displayHoverShadow": {
+			"type": "boolean",
+			"default": false
 		},
 		"shadowHover": {
 			"type": "array",
@@ -505,11 +513,19 @@
 			"type": "string",
 			"default": "px"
 		},
+		"displayShadowTransparent": {
+			"type": "boolean",
+			"default": false
+		},
 		"shadowTransparent": {
 			"type": "array",
 			"default": [
 				{ "color": "transparent", "opacity": 1, "spread": 0, "blur": 0, "hOffset": 0, "vOffset": 0, "inset": false }
 			]
+		},
+		"displayHoverShadowTransparent": {
+			"type": "boolean",
+			"default": false
 		},
 		"shadowTransparentHover": {
 			"type": "array",
@@ -653,11 +669,19 @@
 			"type": "string",
 			"default": "px"
 		},
+		"displayShadowSticky": {
+			"type": "boolean",
+			"default": false
+		},
 		"shadowSticky": {
 			"type": "array",
 			"default": [
 				{ "color": "transparent", "opacity": 1, "spread": 0, "blur": 0, "hOffset": 0, "vOffset": 0, "inset": false }
 			]
+		},
+		"displayHoverShadowSticky": {
+			"type": "boolean",
+			"default": false
 		},
 		"shadowStickyHover": {
 			"type": "array",

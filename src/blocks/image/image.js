@@ -168,6 +168,7 @@ export default function Image({
 		borderWidthDesktop,
 		borderWidthTablet,
 		borderWidthMobile,
+		displayBoxShadow,
 		boxShadow,
 		displayDropShadow,
 		dropShadow,
@@ -223,7 +224,18 @@ export default function Image({
 	// Design-token indicators: the per-attribute bound/overridden state for the selected preset, plus a
 	// reset that clears the mapped attribute back to the preset value (served by the existing scoped CSS).
 	const tokenBinding = usePresetBinding('kadence/image', attributes, undefined, previewDevice);
-	const resetToken = (attr) => resetAttr(attr, setAttributes, tokenBinding[attr]?.kind);
+	// The schema and the binding's own per-device attribute names are both passed through. The image
+	// spells its padding companions `paddingTablet`/`paddingMobile` rather than the `tablet<Attr>`
+	// convention, so without the declared names a reset writes an attribute the block does not have and
+	// leaves the real Tablet and Mobile values untouched.
+	const resetToken = (attr) =>
+		resetAttr(
+			attr,
+			setAttributes,
+			tokenBinding[attr]?.kind,
+			metadata.attributes,
+			tokenBinding[attr]?.responsiveAttrs
+		);
 	// One fetch of the block's effective palette groups, shared by every `ColorControl` on this block.
 	const colorGroups = useColorGroups(clientId);
 
@@ -1309,10 +1321,21 @@ export default function Image({
 									allowEmpty={true}
 								/>
 							)}
+							{/* `displayBoxShadow` is no longer a control -- it is derived from the value on every
+							    write. It has to keep existing because Gutenberg omits an attribute equal to its
+							    default, so a block saved with the old toggle OFF stored no flag at all and is
+							    indistinguishable from one saved with it on. Deriving it forward means legacy
+							    content keeps whatever the flag said, while anything edited from here on has a
+							    flag that simply agrees with its own geometry. */}
 							<EditorShadowControl
 								label={__('Box Shadow', 'kadence-blocks')}
 								value={boxShadow}
-								onChange={(value) => setAttributes({ boxShadow: value })}
+								onChange={(value) =>
+									setAttributes({
+										boxShadow: value,
+										displayBoxShadow: hasVisibleShadow(value?.[0]),
+									})
+								}
 								tokens={shadowTokens}
 								defaultValue={shadowPresetValue}
 								renderColor={renderShadowColor}
@@ -1931,24 +1954,24 @@ export default function Image({
 
 					backgroundColor: '' !== backgroundColor ? KadenceColorOutput(backgroundColor) : undefined,
 
-					// Gated on the value's own axes, matching the block class's `has_visible_shadow()` — an
-					// all-zero shadow paints nothing and IS the off state now that no enable boolean
-					// carries that meaning.
-					boxShadow: hasVisibleShadow(boxShadow?.[0])
-						? (undefined !== boxShadow[0].inset && boxShadow[0].inset ? 'inset ' : '') +
-							(undefined !== boxShadow[0].hOffset ? boxShadow[0].hOffset : 0) +
-							'px ' +
-							(undefined !== boxShadow[0].vOffset ? boxShadow[0].vOffset : 0) +
-							'px ' +
-							(undefined !== boxShadow[0].blur ? boxShadow[0].blur : 14) +
-							'px ' +
-							(undefined !== boxShadow[0].spread ? boxShadow[0].spread : 0) +
-							'px ' +
-							KadenceColorOutput(
-								undefined !== boxShadow[0].color ? boxShadow[0].color : '#000000',
-								undefined !== boxShadow[0].opacity ? boxShadow[0].opacity : 0.2
-							)
-						: undefined,
+					// Both halves have to agree: the stored flag, which legacy content may have left false
+					// with real values still behind it, and the value's own axes.
+					boxShadow:
+						displayBoxShadow && hasVisibleShadow(boxShadow?.[0])
+							? (undefined !== boxShadow[0].inset && boxShadow[0].inset ? 'inset ' : '') +
+								(undefined !== boxShadow[0].hOffset ? boxShadow[0].hOffset : 0) +
+								'px ' +
+								(undefined !== boxShadow[0].vOffset ? boxShadow[0].vOffset : 0) +
+								'px ' +
+								(undefined !== boxShadow[0].blur ? boxShadow[0].blur : 14) +
+								'px ' +
+								(undefined !== boxShadow[0].spread ? boxShadow[0].spread : 0) +
+								'px ' +
+								KadenceColorOutput(
+									undefined !== boxShadow[0].color ? boxShadow[0].color : '#000000',
+									undefined !== boxShadow[0].opacity ? boxShadow[0].opacity : 0.2
+								)
+							: undefined,
 					filter:
 						undefined !== displayDropShadow && displayDropShadow
 							? 'drop-shadow(' +

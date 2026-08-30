@@ -99,6 +99,7 @@ import { EditorBorderControl } from '../../extension/design-tokens/components/Ed
 import {
 	EditorShadowControl,
 	combineColorOpacity,
+	hasVisibleShadow,
 	splitColorOpacity,
 } from '../../extension/design-tokens/components/EditorShadowControl';
 import { renderShadowColor } from '../../extension/design-tokens/components/shadow-color';
@@ -1330,7 +1331,12 @@ export default function KadenceButtonEdit(props) {
 															defaultValue={shadowPresetValue}
 															label={__('Box Shadow', 'kadence-blocks')}
 															value={shadowHover}
-															onChange={(value) => setAttributes({ shadowHover: value })}
+															onChange={(value) =>
+																setAttributes({
+																	shadowHover: value,
+																	displayHoverShadow: hasVisibleShadow(value?.[0]),
+																})
+															}
 															tokens={shadowPickableTokens}
 															renderColor={renderShadowColor}
 														/>
@@ -1452,11 +1458,24 @@ export default function KadenceButtonEdit(props) {
 															max={borderRadiusIsRelative ? 24 : 500}
 															step={borderRadiusIsRelative ? 0.1 : 1}
 														/>
+														{/* The `display*Shadow` flags are no longer controls — the editor derives each
+														    from its own value on every write. They still have to EXIST, because
+														    Gutenberg omits an attribute equal to its default: a button saved with
+														    the old toggle OFF stored no flag at all while keeping the values behind
+														    it, so geometry alone cannot tell it from one saved with the toggle on.
+														    Deriving them forward leaves legacy content exactly as it renders today
+														    and gives anything edited from here on a flag that agrees with its own
+														    geometry. */}
 														<EditorShadowControl
 															defaultValue={shadowPresetValue}
 															label={__('Box Shadow', 'kadence-blocks')}
 															value={shadow}
-															onChange={(value) => setAttributes({ shadow: value })}
+															onChange={(value) =>
+																setAttributes({
+																	shadow: value,
+																	displayShadow: hasVisibleShadow(value?.[0]),
+																})
+															}
 															tokens={shadowPickableTokens}
 															renderColor={renderShadowColor}
 														/>
@@ -1606,7 +1625,12 @@ export default function KadenceButtonEdit(props) {
 																label={__('Box Shadow', 'kadence-blocks')}
 																value={shadowTransparentHover}
 																onChange={(value) =>
-																	setAttributes({ shadowTransparentHover: value })
+																	setAttributes({
+																		shadowTransparentHover: value,
+																		displayHoverShadowTransparent: hasVisibleShadow(
+																			value?.[0]
+																		),
+																	})
 																}
 																tokens={shadowPickableTokens}
 																renderColor={renderShadowColor}
@@ -1733,7 +1757,12 @@ export default function KadenceButtonEdit(props) {
 																label={__('Box Shadow', 'kadence-blocks')}
 																value={shadowTransparent}
 																onChange={(value) =>
-																	setAttributes({ shadowTransparent: value })
+																	setAttributes({
+																		shadowTransparent: value,
+																		displayShadowTransparent: hasVisibleShadow(
+																			value?.[0]
+																		),
+																	})
 																}
 																tokens={shadowPickableTokens}
 																renderColor={renderShadowColor}
@@ -1876,7 +1905,12 @@ export default function KadenceButtonEdit(props) {
 																label={__('Box Shadow', 'kadence-blocks')}
 																value={shadowStickyHover}
 																onChange={(value) =>
-																	setAttributes({ shadowStickyHover: value })
+																	setAttributes({
+																		shadowStickyHover: value,
+																		displayHoverShadowSticky: hasVisibleShadow(
+																			value?.[0]
+																		),
+																	})
 																}
 																tokens={shadowPickableTokens}
 																renderColor={renderShadowColor}
@@ -1997,7 +2031,12 @@ export default function KadenceButtonEdit(props) {
 																label={__('Box Shadow', 'kadence-blocks')}
 																value={shadowSticky}
 																onChange={(value) =>
-																	setAttributes({ shadowSticky: value })
+																	setAttributes({
+																		shadowSticky: value,
+																		displayShadowSticky: hasVisibleShadow(
+																			value?.[0]
+																		),
+																	})
 																}
 																tokens={shadowPickableTokens}
 																renderColor={renderShadowColor}

@@ -28,7 +28,7 @@ class ImageTest extends KadenceBlocksUnit {
 	 *
 	 * @var Kadence_Blocks_CSS
 	 */
-	protected $css;
+	protected Kadence_Blocks_CSS $css;
 
 	protected function setUp(): void {
 		parent::setUp();
@@ -38,15 +38,16 @@ class ImageTest extends KadenceBlocksUnit {
 	}
 
 	/**
-	 * A shadow with real geometry emits `box-shadow` even though no `displayBoxShadow` attribute is
-	 * supplied — the value's own axes are the only gate now that the enable boolean is gone.
+	 * A shadow with real geometry and its flag set emits `box-shadow`. This is the shape the editor
+	 * writes now: the flag is no longer a control, but it is still stored, derived from the value.
 	 *
 	 * @return void
 	 */
-	public function testVisibleShadowEmitsWithoutAnEnableFlag(): void {
+	public function testVisibleShadowEmits(): void {
 		$output = $this->render_image(
 			[
-				'boxShadow' => [
+				'displayBoxShadow' => true,
+				'boxShadow'        => [
 					[
 						'color'   => '#000000',
 						'opacity' => 0.2,
@@ -61,6 +62,35 @@ class ImageTest extends KadenceBlocksUnit {
 		);
 
 		$this->assertStringContainsString( 'box-shadow', $output );
+	}
+
+	/**
+	 * The case this flag exists to protect: a block saved before the enable toggle was removed, with
+	 * real shadow values behind a toggle that was switched OFF. Gutenberg omits an attribute equal to
+	 * its default, and that toggle defaulted to false, so such a block stores its values and NO flag —
+	 * geometry alone would start rendering a shadow the page has never shown.
+	 *
+	 * @return void
+	 */
+	public function testLegacyShadowLeftOffStaysOff(): void {
+		$output = $this->render_image(
+			[
+				// No `displayBoxShadow` key at all, exactly as that content serializes.
+				'boxShadow' => [
+					[
+						'color'   => '#04ff00',
+						'opacity' => 1,
+						'hOffset' => 10,
+						'vOffset' => 10,
+						'blur'    => 0,
+						'spread'  => 0,
+						'inset'   => false,
+					],
+				],
+			]
+		);
+
+		$this->assertStringNotContainsString( 'box-shadow', $output );
 	}
 
 	/**
@@ -124,7 +154,8 @@ class ImageTest extends KadenceBlocksUnit {
 	public function testTokenAliasGeometryCountsAsVisible(): void {
 		$output = $this->render_image(
 			[
-				'boxShadow' => [
+				'displayBoxShadow' => true,
+				'boxShadow'        => [
 					[
 						'color'   => '#000000',
 						'opacity' => 0.2,
