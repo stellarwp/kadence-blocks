@@ -21,10 +21,11 @@
  *   `splitColorOpacity` below are exported so a caller's `renderColor` can do that combine/split with
  *   the exact same rules this component uses to read/write the native attribute, keeping both
  *   directions symmetric.
- * This control always renders `BoxShadowControl` — there is no separate enable toggle or sibling
- * boolean attribute gating it. Whether a `box-shadow` declaration is emitted is decided purely by
- * inspecting the shadow value's own axes (an all-zero value, including the fixed "None" pick, emits
- * nothing), both on the front end and in the editor-canvas live preview.
+ * This control renders no enable toggle of its own — whether a `box-shadow` declaration is emitted is
+ * decided by inspecting the shadow value's own axes (an all-zero value, including the fixed "None"
+ * pick, emits nothing), both on the front end and in the editor-canvas live preview. A host that
+ * still keeps a paired boolean attribute for saved content passes it as `enabled`, which only tells
+ * the control whether the stored value counts as a pick at all (see `isUnsetShadow()`).
  *
  * A whole-shadow token pick (the Style Library tab) is carried on the item's own optional
  * `shadowToken` key. Unlike border, where an alias replaces a single side's width slot, a shadow alias
@@ -370,22 +371,30 @@ export function hasVisibleShadow(item) {
 /**
  * Whether a stored native shadow should be treated as "the block sets no shadow of its own".
  *
- * `block.json` registers an all-zero transparent shadow as `shadow`'s own default, so a fresh block
- * arrives byte-identical to an explicit "None" pick. They are separated by consequence, not shape: an
- * invisible shadow is a real override only when there is a preset shadow for it to suppress. With
- * nothing behind it, it suppresses nothing and reads as unset.
+ * A host that pairs the value with its own enable flag (`kadence/singlebtn`) settles it first: the
+ * shipped schema defaults that value to a visible shadow, so geometry alone would read a brand-new
+ * button as customized. A lowered flag is the block saying it sets no shadow here, whatever the
+ * value's default geometry happens to be.
  *
- * @param {?Array} native       The stored native shadow attribute value.
- * @param {*}      defaultValue The active preset's own resolved shadow, or nothing when it has none.
+ * Without such a flag, an invisible shadow is a real override only when there is a preset shadow for
+ * it to suppress. With nothing behind it, it suppresses nothing and reads as unset.
+ *
+ * @param {?Array}  native       The stored native shadow attribute value.
+ * @param {*}       defaultValue The active preset's own resolved shadow, or nothing when it has none.
+ * @param {boolean} [enabled]    The host's own enable flag for this shadow, when it keeps one.
  *
  * @since TBD
  *
  * @return {boolean} True when the control should render as unset.
  */
-export function isUnsetShadow(native, defaultValue) {
+export function isUnsetShadow(native, defaultValue, enabled = true) {
 	const source = native?.[0];
 
 	if (!source) {
+		return true;
+	}
+
+	if (!enabled) {
 		return true;
 	}
 
@@ -423,6 +432,10 @@ export function isUnsetShadow(native, defaultValue) {
  *                                        shadow is a real override (see `isUnsetShadow()`).
  * @param {?Function} [props.renderColor] The block's existing color field for the composite's `color`.
  * @param {boolean}   [props.disabled]    Whether the control is read-only.
+ * @param {boolean}   [props.enabled]     The host block's own enable flag for this shadow, when it
+ *                                        keeps one — a lowered flag reads as "no shadow set here"
+ *                                        (see `isUnsetShadow()`). Defaults to `true` for a host with
+ *                                        no such flag.
  *
  * @since TBD
  *
@@ -436,6 +449,7 @@ export function EditorShadowControl({
 	defaultValue,
 	renderColor,
 	disabled = false,
+	enabled = true,
 }) {
 	// A bound value goes down as the bare alias string, which is the shape `BoxShadowControl` already
 	// recognizes as a token: it names the token on the trigger, opens on the Style Library tab, and
@@ -446,7 +460,7 @@ export function EditorShadowControl({
 		<TokenControlRow stacked>
 			<BoxShadowControl
 				label={label}
-				value={isUnsetShadow(value, defaultValue) ? '' : bound || fromNativeShadow(value)}
+				value={isUnsetShadow(value, defaultValue, enabled) ? '' : bound || fromNativeShadow(value)}
 				onChange={(next) => onChange(toNativeShadow(next, tokens))}
 				tokens={tokens}
 				defaultValue={defaultValue}

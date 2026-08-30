@@ -506,6 +506,9 @@ describe('combineColorOpacity / splitColorOpacity', () => {
 
 describe('isUnsetShadow', () => {
 	const INVISIBLE = [{ color: 'transparent', opacity: 1, spread: 0, blur: 0, hOffset: 0, vOffset: 0, inset: false }];
+	const SHIPPED_DEFAULT = [
+		{ color: '#000000', opacity: 0.2, spread: 0, blur: 2, hOffset: 1, vOffset: 1, inset: false },
+	];
 
 	/**
 	 * An absent attribute is unset, whether or not the preset carries a shadow.
@@ -549,6 +552,65 @@ describe('isUnsetShadow', () => {
 	it('reads a visible shadow as set', () => {
 		expect(isUnsetShadow(NATIVE_VALUE, undefined)).toBe(false);
 		expect(isUnsetShadow([{ ...INVISIBLE[0], blur: 4, color: '#000000' }], undefined)).toBe(false);
+	});
+
+	/**
+	 * A host that keeps its own enable flag settles it before geometry: `kadence/singlebtn` ships a
+	 * VISIBLE shadow as its registered default, so an untouched button would otherwise read as a
+	 * deliberate pick and the inspector would claim a shadow the button does not paint.
+	 *
+	 * @return {void}
+	 */
+	it('reads a lowered enable flag as unset even for a visible shadow', () => {
+		expect(isUnsetShadow(SHIPPED_DEFAULT, undefined, false)).toBe(true);
+		expect(isUnsetShadow(SHIPPED_DEFAULT, '{semantic.shadow.button}', false)).toBe(true);
+		expect(isUnsetShadow(NATIVE_VALUE, undefined, false)).toBe(true);
+	});
+
+	/**
+	 * The flag outranks a binding: a lowered flag means the block paints nothing here, so a leftover
+	 * `shadowToken` on the stored item must not resurrect it as a pick.
+	 *
+	 * @return {void}
+	 */
+	it('reads a bound shadow as unset when the enable flag is lowered', () => {
+		expect(isUnsetShadow([{ ...INVISIBLE[0], [SHADOW_TOKEN_KEY]: SHADOW_TOKEN.alias }], undefined, false)).toBe(
+			true
+		);
+	});
+
+	/**
+	 * With the flag raised, a binding still wins over the geometry — a token resolving to a subtle or
+	 * zero-offset shadow is a deliberate pick and has to keep naming itself on the trigger.
+	 *
+	 * @return {void}
+	 */
+	it('reads a bound shadow as set when the enable flag is raised', () => {
+		expect(isUnsetShadow([{ ...INVISIBLE[0], [SHADOW_TOKEN_KEY]: SHADOW_TOKEN.alias }], undefined, true)).toBe(
+			false
+		);
+	});
+
+	/**
+	 * An absent item is unset before the flag is even consulted, so a raised flag over nothing does not
+	 * make the control claim a pick.
+	 *
+	 * @return {void}
+	 */
+	it('reads an absent attribute as unset whatever the enable flag says', () => {
+		expect(isUnsetShadow(undefined, undefined, true)).toBe(true);
+		expect(isUnsetShadow([], undefined, false)).toBe(true);
+	});
+
+	/**
+	 * A host with no enable flag of its own (`kadence/image`) omits the argument and keeps the
+	 * preset/geometry behavior unchanged.
+	 *
+	 * @return {void}
+	 */
+	it('treats an omitted enable flag as enabled', () => {
+		expect(isUnsetShadow(SHIPPED_DEFAULT, undefined)).toBe(false);
+		expect(isUnsetShadow(INVISIBLE, undefined)).toBe(true);
 	});
 });
 
