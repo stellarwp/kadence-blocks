@@ -608,6 +608,35 @@ describe('deleteLibraryFlow', () => {
 		expect(order).toEqual(['forget:default', 'reset', 'refresh:default']);
 	});
 
+	it('does not report the delete as failed when forgetLibrary or resetWorkspace throws', async () => {
+		client.deleteLibrary.mockResolvedValue({ deleted: true });
+		const refreshFeed = jest.fn().mockResolvedValue({ slug: 'default' });
+		const onError = jest.fn();
+
+		await expect(
+			deleteLibraryFlow({
+				slug: 'brand-b',
+				activeSlug: 'default',
+				refreshFeed,
+				loadLibraries: jest.fn().mockResolvedValue(undefined),
+				forgetLibrary: jest.fn(() => {
+					throw new Error('forgetLibrary boom');
+				}),
+				resetWorkspace: jest.fn(() => {
+					throw new Error('resetWorkspace boom');
+				}),
+				onBusy: jest.fn(),
+				onError,
+				onActiveChanged: jest.fn(),
+			})
+		).resolves.toBeUndefined();
+
+		// The delete already succeeded by the time either callback ran, so neither throwing may
+		// surface as a failure — the app still lands on the feed it is supposed to.
+		expect(refreshFeed).toHaveBeenCalledWith('default');
+		expect(onError).not.toHaveBeenCalled();
+	});
+
 	it('forgets the library that was deleted, not the one the app lands on', async () => {
 		const forgetLibrary = jest.fn();
 

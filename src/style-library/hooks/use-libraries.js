@@ -123,6 +123,15 @@ export function useLibraries(feed, refreshFeed, resetWorkspace) {
 	 * enumerate `(namespace, block, slug)` for every preset-bound block here, and costs nothing:
 	 * only one library is open at a time, so no other slug's tuples are mounted to re-resolve.
 	 *
+	 * Called while the app is still pointed at the library being deleted, so a hard delete
+	 * re-arms these resolvers against a slug the server no longer has, and the browser fires one
+	 * guaranteed-404 request as a result. That is expected, not a bug: its error lands on a
+	 * `getPaletteListing`/`getBlockPresets` tuple keyed to the deleted slug, which nothing reads
+	 * again once the feed moves to the next library moments later. Moving this call to after the
+	 * feed re-read would avoid the request, but would let a screen render the fresh feed while
+	 * still serving the deleted library's cached presets and palettes until the invalidation
+	 * caught up — worse than a 404 nothing acts on.
+	 *
 	 * @param {string} slug Token library slug.
 	 *
 	 * @since TBD
