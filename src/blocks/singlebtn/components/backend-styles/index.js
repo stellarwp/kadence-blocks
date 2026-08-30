@@ -9,6 +9,9 @@ import {
 } from '@kadence/helpers';
 import { activePresetFor, blockPresetValues } from '../../../../extension/preset-picker';
 import { tokenPx } from '../../../../extension/design-tokens/token-px';
+import { resolveTokenAlias } from '../../../../extension/design-tokens/alias';
+import { isBackedToken } from '../../../../extension/design-tokens/backed-tokens';
+import { boundShadowToken } from '../../../../extension/design-tokens/shadow-token';
 
 /**
  * Whether the button's active preset resolves a padding and/or a margin.
@@ -120,6 +123,13 @@ export function hasVisibleShadow(shadowItem) {
 		return false;
 	}
 
+	// A bound item's real value lives in the token, which this gate cannot read. Counting it as visible
+	// keeps the base rule's `box-shadow: none` reset from erasing a shadow the token does paint —
+	// the same reasoning the per-leg alias branch below uses. Mirrors the PHP gate.
+	if (boundShadowToken(shadowItem)) {
+		return true;
+	}
+
 	return ['hOffset', 'vOffset', 'blur', 'spread'].some((axis) => {
 		const raw = shadowItem[axis];
 
@@ -134,6 +144,52 @@ export function hasVisibleShadow(shadowItem) {
 		// `Number(undefined)` is `NaN`, which a bare `!== 0` would read as visible; the PHP gate does not.
 		return Number.isFinite(value) && value !== 0;
 	});
+}
+
+/**
+ * One shadow item as a `box-shadow` declaration value.
+ *
+ * A `shadowToken` binding backed by the active library wins outright and the stored legs are never
+ * read — that is what keeps the value tracking the token. A binding the library no longer backs (a
+ * token deleted after the post was saved) falls back to those legs, which still hold the value the
+ * token resolved to when it was picked. That differs on purpose from an unbacked PER-LEG alias, which
+ * `shadowAxisPx()` cannot fall back for because the alias replaced the number outright.
+ *
+ * @param {?Object} shadowItem   One `shadow[0]`-shaped item.
+ * @param {number}  blurFallback What `blur` defaults to when unset — 14 on every current caller,
+ *                               taken as an argument rather than hard-coded so the historic per-state
+ *                               default stays with the call site that owns it.
+ *
+ * @since TBD
+ *
+ * @return {string} The `box-shadow` value, or '' when there is no item to render.
+ */
+export function shadowCss(shadowItem, blurFallback) {
+	if (!shadowItem) {
+		return '';
+	}
+
+	const bound = boundShadowToken(shadowItem);
+
+	if (bound && isBackedToken(bound.slice(1, -1))) {
+		return resolveTokenAlias(bound);
+	}
+
+	return (
+		(shadowItem.inset ? 'inset ' : '') +
+		shadowAxisPx(shadowItem.hOffset, 0) +
+		'px ' +
+		shadowAxisPx(shadowItem.vOffset, 0) +
+		'px ' +
+		shadowAxisPx(shadowItem.blur, blurFallback) +
+		'px ' +
+		shadowAxisPx(shadowItem.spread, 0) +
+		'px ' +
+		KadenceColorOutput(
+			undefined !== shadowItem.color ? shadowItem.color : '#000000',
+			undefined !== shadowItem.opacity ? shadowItem.opacity : 1
+		)
+	);
 }
 
 export default function BackendStyles(props) {

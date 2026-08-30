@@ -10,7 +10,7 @@
 /**
  * Internal dependencies
  */
-import { hasVisibleShadow, shadowAxisPx } from '../index';
+import { hasVisibleShadow, shadowAxisPx, shadowCss } from '../index';
 
 // `backend-styles/index.js` imports the `@kadence/helpers` barrel, which eagerly pulls in a
 // REST-fetch helper that has no `@wordpress/api-fetch` module to resolve under Jest (the same
@@ -20,7 +20,9 @@ import { hasVisibleShadow, shadowAxisPx } from '../index';
 jest.mock('@kadence/helpers', () => ({
 	KadenceBlocksCSS: jest.fn(),
 	getPreviewSize: jest.fn(),
-	KadenceColorOutput: jest.fn(),
+	KadenceColorOutput: jest.fn((color, opacity) =>
+		undefined === opacity || 1 === opacity ? color : `rgba(${color}, ${opacity})`
+	),
 	typographyStyle: jest.fn(),
 	getBorderStyle: jest.fn(),
 	getBorderColor: jest.fn(),
@@ -129,5 +131,113 @@ describe('shadowAxisPx', () => {
 		expect(shadowAxisPx(0, 14)).toBe(0);
 		expect(shadowAxisPx(undefined, 14)).toBe(14);
 		expect(shadowAxisPx(null, 14)).toBe(14);
+	});
+});
+
+/**
+ * A shadow item bound to a backed token, plus the localized pool that backs it.
+ *
+ * @since TBD
+ *
+ * @type {Object}
+ */
+const BOUND_ITEM = {
+	color: '#00ff00',
+	opacity: 1,
+	hOffset: 0,
+	vOffset: 2,
+	blur: 8,
+	spread: 0,
+	inset: false,
+	shadowToken: '{semantic.shadow.card}',
+};
+
+describe('shadowCss', () => {
+	beforeEach(() => {
+		window.kadenceDesignTokensPresets = { active: 'default' };
+		window.kadenceDesignTokensPickable = {
+			values: { default: { 'semantic.shadow.card': '0px 2px 8px 0px rgba(23, 23, 23, 0.12)' } },
+		};
+	});
+
+	afterEach(() => {
+		delete window.kadenceDesignTokensPresets;
+		delete window.kadenceDesignTokensPickable;
+	});
+
+	/**
+	 * A backed binding resolves to the token's custom property, so editing the token moves the button
+	 * without the post being re-saved.
+	 *
+	 * @return {void}
+	 */
+	it('emits the token var for a backed binding', () => {
+		expect(shadowCss(BOUND_ITEM, 14)).toBe('var(--kb-token--semantic--shadow--card)');
+	});
+
+	/**
+	 * A binding the active library no longer backs falls back to the legs, which still hold the value
+	 * the token had when it was picked — a real value, unlike the per-leg case where the alias replaced
+	 * the number and there is nothing left to fall back to.
+	 *
+	 * @return {void}
+	 */
+	it('falls back to the stored legs for an unbacked binding', () => {
+		window.kadenceDesignTokensPickable = { values: { default: {} } };
+
+		expect(shadowCss(BOUND_ITEM, 14)).toBe('0px 2px 8px 0px #00ff00');
+	});
+
+	/**
+	 * An unbound item renders its legs exactly as the hand-rolled builders did, inset prefix included.
+	 *
+	 * @return {void}
+	 */
+	it('builds the literal shorthand for an unbound item', () => {
+		expect(shadowCss({ ...BOUND_ITEM, shadowToken: undefined, inset: true }, 14)).toBe(
+			'inset 0px 2px 8px 0px #00ff00'
+		);
+	});
+
+	/**
+	 * A missing axis falls back to the caller's own default, which is 14 for blur and 0 elsewhere —
+	 * the historic per-leg defaults this block has always applied.
+	 *
+	 * @return {void}
+	 */
+	it('applies the historic per-leg defaults for missing axes', () => {
+		expect(shadowCss({ color: '#000000', opacity: 1 }, 14)).toBe('0px 0px 14px 0px #000000');
+	});
+
+	/**
+	 * An absent item produces no declaration rather than a shorthand of defaults.
+	 *
+	 * @return {void}
+	 */
+	it('returns an empty string for a missing item', () => {
+		expect(shadowCss(undefined, 14)).toBe('');
+	});
+});
+
+describe('hasVisibleShadow with a binding', () => {
+	/**
+	 * A bound item counts as visible whatever its legs say — the token's own value is unknown to this
+	 * gate, and reading it as invisible would let the base rule's `box-shadow: none` erase it.
+	 *
+	 * @return {void}
+	 */
+	it('counts a bound item with zero legs as visible', () => {
+		expect(
+			hasVisibleShadow({
+				color: 'transparent',
+				opacity: 1,
+				hOffset: 0,
+				vOffset: 0,
+				blur: 0,
+				spread: 0,
+				inset: false,
+				shadowToken: '{semantic.shadow.card}',
+			})
+		).toBe(true);
 	});
 });
