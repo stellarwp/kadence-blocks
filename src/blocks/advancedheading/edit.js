@@ -309,7 +309,11 @@ function KadenceAdvancedHeading(props) {
 	// Design-token indicators: the per-attribute bound/overridden state for the selected preset, plus a
 	// reset that clears the mapped attribute back to the preset value (served by the existing scoped CSS).
 	const tokenBinding = usePresetBinding('kadence/advancedheading', attributes, undefined, previewDevice);
-	const resetToken = (attr) => resetAttr(attr, setAttributes, tokenBinding[attr]?.kind);
+	// The block's attribute schema goes through so a reset clears a color's legacy palette-CLASS
+	// companion (`color` -> `colorClass`, `background` -> `backgroundColorClass`) alongside the color.
+	// WordPress emits those utility classes with `!important`, so a stale one outranks whatever the
+	// reset restores and the heading would keep the old color while the field claimed otherwise.
+	const resetToken = (attr) => resetAttr(attr, setAttributes, tokenBinding[attr]?.kind, metadata.attributes);
 	// One fetch of the block's effective palette groups, shared by every `ColorControl` on this block.
 	const colorGroups = useColorGroups(clientId);
 
