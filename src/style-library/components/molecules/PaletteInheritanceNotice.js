@@ -38,8 +38,8 @@ export function PaletteInheritanceNotice({ count, sourceLabel }) {
 			{sprintf(
 				/* translators: 1: number of colors, 2: the source palette's name. */
 				_n(
-					'%1$d color in this palette still follows %2$s. Editing it in %2$s updates it here too, until you customize it.',
-					'%1$d colors in this palette still follow %2$s. Editing them in %2$s updates them here too, until you customize them.',
+					'%1$d color in this palette still follows %2$s. Until you customize it in this palette, editing it in %2$s will also update it here.',
+					'%1$d colors in this palette still follow %2$s. Until you customize them in this palette, editing them in %2$s will also update them here.',
 					count,
 					'kadence-blocks'
 				),

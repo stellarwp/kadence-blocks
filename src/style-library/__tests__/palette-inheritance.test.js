@@ -292,7 +292,7 @@ describe('Color Palette inheritance pills', () => {
 		expect(pills).toHaveLength(2);
 		expect(pills.every((pill) => pill.tagName === 'SPAN')).toBe(true);
 		expect(container.querySelector('.kadence-blocks-style-library__palette-inheritance-notice').textContent).toBe(
-			'2 colors in this palette still follow Base. Editing them in Base updates them here too, until you customize them.'
+			'2 colors in this palette still follow Base. Until you customize them in this palette, editing them in Base will also update them here.'
 		);
 	});
 
@@ -328,7 +328,7 @@ describe('Color Palette inheritance notice', () => {
 		renderScreen(makePalettes());
 
 		expect(container.querySelector(`.${NOTICE_CLASS}`).textContent).toBe(
-			'1 color in this palette still follows Base. Editing it in Base updates it here too, until you customize it.'
+			'1 color in this palette still follows Base. Until you customize it in this palette, editing it in Base will also update it here.'
 		);
 	});
 
