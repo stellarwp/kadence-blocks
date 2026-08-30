@@ -376,11 +376,13 @@ export function presetPropertyReference(blockName, propertyKey, attributes, libr
  * Shared by the per-control reset (`resetAttr`) and the picker's reset-all, so their clearing convention
  * cannot drift.
  *
- * @param {string}  attr       The primary attribute name.
- * @param {string}  kind       The property kind, so a dimension/border also clears its companions.
- * @param {?Object} [declared] The block's declared attributes (`getBlockType(name).attributes`), read for
- *                             the shape a dimension clears to and which companions exist. Omit when the
- *                             caller has no block to read it from.
+ * @param {string}  attr              The primary attribute name.
+ * @param {string}  kind              The property kind, so a dimension/border also clears its companions.
+ * @param {?Object} [declared]        The block's declared attributes (`getBlockType(name).attributes`), read
+ *                                    for the shape a dimension clears to and which companions exist. Omit
+ *                                    when the caller has no block to read it from.
+ * @param {?Object} [responsiveAttrs] The binding's declared `{ tablet, mobile }` attribute names, for a block
+ *                                    that names its per-device attributes outside the prefix convention.
  *
  * @since TBD
  *

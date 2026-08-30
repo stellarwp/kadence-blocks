@@ -3429,7 +3429,20 @@ function SectionEdit(props) {
 															inheritedBorderHoverRadius.inherited
 														)}
 														state={borderHoverRadiusBinding}
-														onReset={() => resetToken('borderHoverRadius')}
+														// The kind is stated rather than looked up: no preset
+														// property binds `borderHoverRadius`, so `resetToken`
+														// would resolve `undefined` and clear the desktop
+														// attribute to a bare `''` -- leaving the tablet/mobile
+														// companions and the unit untouched, and storing a string
+														// where the block declares a four-side array.
+														onReset={() =>
+															resetAttr(
+																'borderHoverRadius',
+																setAttributes,
+																'dimension',
+																metadata.attributes
+															)
+														}
 														isLinked={borderHoverRadiusIsLinked}
 														onToggleLink={toggleBorderHoverRadiusLink}
 														unit={borderHoverRadiusUnit}
