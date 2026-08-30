@@ -1681,15 +1681,10 @@ class Kadence_Blocks_CSS {
 	 * @return string|false
 	 */
 	public function render_shadow( $shadow, array $defaults = [] ) {
-		if ( ! empty( $defaults ) && is_array( $shadow ) ) {
-			$shadow = $this->normalize_shadow_defaults( $shadow, $defaults );
-		}
-		if ( empty( $shadow ) ) {
+		if ( ! is_array( $shadow ) || empty( $shadow ) ) {
 			return false;
 		}
-		if ( ! is_array( $shadow ) ) {
-			return false;
-		}
+
 		// A backed whole-shadow binding replaces the entire shorthand, so the legs below are never read.
 		// An unbacked one (a token deleted after the post was saved) falls through to them instead: unlike
 		// a per-leg alias, which displaced its number and leaves nothing to fall back to, the legs here
@@ -1698,6 +1693,11 @@ class Kadence_Blocks_CSS {
 		if ( null !== $shadow_token_reference ) {
 			return $shadow_token_reference;
 		}
+
+		if ( ! empty( $defaults ) ) {
+			$shadow = $this->normalize_shadow_defaults( $shadow, $defaults );
+		}
+
 		if ( ! isset( $shadow['color'] ) ) {
 			return false;
 		}
