@@ -13,6 +13,23 @@ import {
 	isUnsetShadow,
 } from '../EditorShadowControl';
 import { BoxShadowControl } from '../../../../token-controls/controls/BoxShadowControl';
+import { SHADOW_TOKEN_KEY } from '../../shadow-token';
+
+/**
+ * A pickable shadow token, shaped like one entry of `pickableTokensForKey()`'s output.
+ *
+ * @since TBD
+ *
+ * @type {Object}
+ */
+const SHADOW_TOKEN = {
+	id: 'semantic.shadow.card',
+	alias: '{semantic.shadow.card}',
+	label: 'Medium',
+	value: '0px 2px 8px 0px rgba(23, 23, 23, 0.12)',
+	type: 'shadow',
+	role: 'shadow',
+};
 
 /**
  * A representative native shadow value — every field a different, distinguishable number/string, so a
@@ -181,39 +198,86 @@ describe('EditorShadowControl native <-> BoxShadowControl value bridging', () =>
 	});
 
 	/**
-	 * Picking a token alias in the Style Library tab resolves it to its literal composite value
-	 * immediately, via the `tokens` list, and writes that literal into the native item — no `alias`
-	 * key, no live link back to the token.
+	 * A picked token alias is recorded on the item's own `shadowToken` key, so the value stays linked to
+	 * the token instead of freezing to whatever the token resolved to at pick time.
 	 *
 	 * @return {void}
 	 */
-	it('resolves a picked token alias to its literal composite value, not an alias marker', () => {
-		const { shadowControl, onChange } = renderEditorShadowControl({
-			tokens: [
-				{
-					id: 'primitive.shadow.md',
-					alias: 'primitive.shadow.md',
-					label: 'Medium',
-					value: '2px 3px 4px 5px #111111',
-					type: 'shadow',
-				},
-			],
+	it('records a picked token alias on shadowToken', () => {
+		const native = toNativeShadow(SHADOW_TOKEN.alias, [SHADOW_TOKEN]);
+
+		expect(native[0][SHADOW_TOKEN_KEY]).toBe('{semantic.shadow.card}');
+	});
+
+	/**
+	 * The token's resolved value is splayed across the legs alongside the alias, so a reader that has not
+	 * learned about `shadowToken` — and a render that finds the token deleted — still has a real shadow.
+	 *
+	 * @return {void}
+	 */
+	it('keeps the resolved literal on the legs alongside the alias', () => {
+		const native = toNativeShadow(SHADOW_TOKEN.alias, [SHADOW_TOKEN]);
+
+		expect(native[0]).toMatchObject({
+			hOffset: 0,
+			vOffset: 2,
+			blur: 8,
+			spread: 0,
+			color: '#171717',
+			opacity: 0.12,
+			inset: false,
 		});
+	});
 
-		shadowControl.props.onChange('primitive.shadow.md');
+	/**
+	 * A Custom-tab edit reports a composite object, which carries no alias — the rebuilt item must drop
+	 * `shadowToken` so touching a leg breaks the binding rather than leaving a stale one behind.
+	 *
+	 * @return {void}
+	 */
+	it('drops shadowToken when a composite edit replaces the pick', () => {
+		const bound = toNativeShadow(SHADOW_TOKEN.alias, [SHADOW_TOKEN]);
+		const edited = toNativeShadow({ ...fromNativeShadow(bound), blur: '9px' }, [SHADOW_TOKEN]);
 
-		expect(onChange).toHaveBeenCalledWith([
-			{
-				color: '#111111',
-				opacity: 1,
-				hOffset: 2,
-				vOffset: 3,
-				blur: 4,
-				spread: 5,
-				inset: false,
-			},
-		]);
-		expect(onChange.mock.calls[0][0][0]).not.toHaveProperty('alias');
+		expect(edited[0]).not.toHaveProperty(SHADOW_TOKEN_KEY);
+		expect(edited[0].blur).toBe(9);
+	});
+
+	/**
+	 * The fixed "None" sentinel's own value is a literal shorthand, not an alias, so it must resolve to
+	 * the zero composite with no binding — binding it would point at a token that does not exist.
+	 *
+	 * @return {void}
+	 */
+	it('does not bind the fixed None sentinel', () => {
+		const none = {
+			id: 'ss-none-shadow',
+			alias: '0px 0px 0px 0px transparent',
+			label: 'None',
+			value: '0px 0px 0px 0px transparent',
+			fixed: true,
+			type: 'shadow',
+			role: 'shadow',
+		};
+
+		const native = toNativeShadow(none.alias, [none]);
+
+		expect(native[0]).not.toHaveProperty(SHADOW_TOKEN_KEY);
+		expect(native[0]).toMatchObject({ hOffset: 0, vOffset: 0, blur: 0, spread: 0 });
+	});
+
+	/**
+	 * An alias that matches no pickable token — a token deleted between the pick and this write — still
+	 * records the binding, so a token that later comes back re-links, and falls the legs back to the
+	 * composite default rather than corrupting them.
+	 *
+	 * @return {void}
+	 */
+	it('records the binding even when the alias matches no pickable token', () => {
+		const native = toNativeShadow('{semantic.shadow.does-not-exist}', [SHADOW_TOKEN]);
+
+		expect(native[0][SHADOW_TOKEN_KEY]).toBe('{semantic.shadow.does-not-exist}');
+		expect(native[0]).toMatchObject({ hOffset: 0, vOffset: 0, blur: 0, spread: 0 });
 	});
 
 	/**

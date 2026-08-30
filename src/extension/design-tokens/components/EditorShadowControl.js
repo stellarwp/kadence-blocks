@@ -26,14 +26,12 @@
  * inspecting the shadow value's own axes (an all-zero value, including the fixed "None" pick, emits
  * nothing), both on the front end and in the editor-canvas live preview.
  *
- * A whole-shadow token pick (the Style Library tab) has no home in the native item's existing keys —
- * unlike border, where an alias replaces a single side's width slot, a shadow alias would replace the
- * *entire* value. Rather than invent a spot to carry a live alias, a pick resolves to its literal
- * composite value immediately, at pick time, using the same `tokens` list `BoxShadowControl` already
- * offers for its trigger label (`[{ id, alias, label, value, type, role }]`). `toNativeShadow` looks
- * up the picked alias's resolved `value` (the feed's `box-shadow` shorthand string) and writes the
- * parsed composite straight into the native item's plain fields — no alias key, no live link back to
- * the token, matching how a per-instance color pick is already handled everywhere else in this plan.
+ * A whole-shadow token pick (the Style Library tab) is carried on the item's own optional
+ * `shadowToken` key. Unlike border, where an alias replaces a single side's width slot, a shadow alias
+ * would replace the *entire* value, so it gets a key of its own rather than displacing a leg. The
+ * legs are still written with the token's resolved value at pick time: they keep the item a valid
+ * literal shadow for readers that do not know the binding key, and they are the fallback a render uses
+ * when the bound token is no longer in the active library.
  *
  * Color is out of scope for redesign here, exactly as in `EditorBorderControl` — this component
  * neither builds nor intercepts a color field, it only wires the caller's EXISTING one back in via
@@ -50,6 +48,8 @@
  */
 import { BoxShadowControl, DEFAULT_COMPOSITE, parseResolvedShadow } from '../../../token-controls';
 import { TokenControlRow } from '../../token-indicators/components/TokenControlRow';
+import { isTokenAlias } from '../alias';
+import { SHADOW_TOKEN_KEY } from '../shadow-token';
 
 /**
  * A CSS `rgba(r, g, b, a)` string, matching `hexToRGBA`'s own output format exactly (comma-space
@@ -267,10 +267,11 @@ export function fromNativeShadow(native) {
  * Convert `BoxShadowControl`'s value back to the native
  * `[{ color, opacity, hOffset, vOffset, blur, spread, inset }]` attribute shape.
  *
- * A token alias string (a pick from the Style Library tab) resolves to its literal composite value
- * immediately, through `tokens`, rather than being stored as a live link back to the token — an
- * alias that resolves to nothing (a stale or unmapped id) falls back to the composite default so the
- * write never corrupts the attribute.
+ * A token alias string (a pick from the Style Library tab) is recorded on the item's `shadowToken` key
+ * AND resolved through `tokens` onto the numeric legs, so the item carries both a live link to the
+ * token and the literal that link resolved to at pick time. An alias that resolves to nothing (a stale
+ * or unmapped id) still records the binding — the token may come back — and falls the legs back to the
+ * composite default so the write never corrupts the attribute.
  *
  * @param {string|Object} value    The value `BoxShadowControl` reports through `onChange`.
  * @param {Array}         [tokens] Pickable `shadow`-type tokens, `[{id, label, value, alias}]`, used
@@ -285,17 +286,20 @@ export function toNativeShadow(value, tokens = []) {
 
 	const { color, opacity } = splitColorOpacity(composite?.color);
 
-	return [
-		{
-			color: color || DEFAULT_COMPOSITE.color,
-			opacity,
-			hOffset: axisToNative(composite?.offsetX),
-			vOffset: axisToNative(composite?.offsetY),
-			blur: axisToNative(composite?.blur),
-			spread: axisToNative(composite?.spread),
-			inset: composite?.inset === true,
-		},
-	];
+	const item = {
+		color: color || DEFAULT_COMPOSITE.color,
+		opacity,
+		hOffset: axisToNative(composite?.offsetX),
+		vOffset: axisToNative(composite?.offsetY),
+		blur: axisToNative(composite?.blur),
+		spread: axisToNative(composite?.spread),
+		inset: composite?.inset === true,
+	};
+
+	// Only a real `{dot.alias}` binds. The Style Library tab's fixed "None" sentinel arrives here as a
+	// literal shorthand string, not an alias, and must stay a plain zero value — binding it would point
+	// the item at a token that was never registered.
+	return [isTokenAlias(value) ? { ...item, [SHADOW_TOKEN_KEY]: value } : item];
 }
 
 /**
