@@ -4,6 +4,7 @@
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Preset;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Composes_Selector_Suffix;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Identifier;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Value;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Scope;
@@ -36,6 +37,15 @@ use RuntimeException;
  *   2. Per (block, preset) scoped rules — ".wp-block-<block>.kb-preset--<preset>" — pointing each
  *      --global-<slot> at the canonical preset var, plus a class-less ".wp-block-<block>" rule for the
  *      $default preset so a block with no preset selected still shows its preset.
+ *   3. Per (block, preset) STATE rules for any binding declaring a `css_state` — the same two scopes with
+ *      the state suffix appended (".wp-block-<block>.kb-preset--<preset>:hover > .kt-inside-inner-col") —
+ *      carrying a real declaration, "<css_prop>: var(<canonical preset var>)", rather than a var retarget.
+ *      A state has no variable of the block's own to point at: the block renders its resting appearance
+ *      from an attribute or a token default, and its state appearance only when the block itself sets one,
+ *      so there is nothing for a preset to redirect. This layer supplies the state rule outright. It is
+ *      the ONLY layer that renders a state binding — the block-default-CSS projector skips them, because
+ *      that layer renders only the $default preset and so would put a state rule on every instance of the
+ *      block whether or not a preset asked for one. See {@see Binding::CSS_STATE}.
  *
  * Scoping is per (block, preset): the same preset name on two blocks ("ghost" on a Button and a Row) gets
  * its own qualified rule, so values never collide. Both named presets and the "$default" preset carry
@@ -50,6 +60,7 @@ use RuntimeException;
  */
 final class Css_Builder {
 
+	use Composes_Selector_Suffix;
 	use Sanitizes_Css_Identifier;
 	use Sanitizes_Css_Value;
 
@@ -140,7 +151,7 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @var array<string, array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:string, value:string, dimension:bool}>>}>>
+	 * @var array<string, array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:string, dimension:bool, prop:?string, state:?string, editor:?string}>>}>>
 	 */
 	private array $collected = [];
 
@@ -171,7 +182,26 @@ final class Css_Builder {
 	 * @return string The CSS, or an empty string when no block contributes a slot-targeted value.
 	 */
 	public function css( string $active_slug, array $breakpoints = [] ): string {
-		return $this->build( $active_slug, $breakpoints );
+		return $this->build( $active_slug, $breakpoints, false );
+	}
+
+	/**
+	 * Build the EDITOR-scoped version of the active library's preset CSS. Identical to {@see self::css()} for
+	 * every layer but the state rules: the canonical vars and the `--global-*` / `--kb-*` retargets carry no
+	 * dependency on the markup's shape, so they are reused verbatim. A state binding declaring an
+	 * `editor_css_state` has its rule re-scoped to the element the editor actually renders — the Section
+	 * paints `.kadence-inner-column-inner` in the canvas and `.kt-inside-inner-col` on the front end — so the
+	 * state lands in the preview too.
+	 *
+	 * @since TBD
+	 *
+	 * @param string                $active_slug The active library's slug.
+	 * @param array<string, string> $breakpoints Breakpoint => media-query string.
+	 *
+	 * @return string The CSS, or an empty string when no block contributes a slot-targeted value.
+	 */
+	public function editor_css( string $active_slug, array $breakpoints = [] ): string {
+		return $this->build( $active_slug, $breakpoints, true );
 	}
 
 	/**
@@ -192,23 +222,25 @@ final class Css_Builder {
 	 * @return string
 	 */
 	public function css_for_version( string $active_slug, string $version, array $breakpoints = [] ): string {
-		$cache_key = 'preset_css_root_' . KADENCE_BLOCKS_VERSION . '_' . $active_slug . '_' . $version . '_' . $this->breakpoint_signature( $breakpoints );
+		return $this->for_version( $active_slug, $version, $breakpoints, false );
+	}
 
-		if ( isset( $this->memo[ $cache_key ] ) ) {
-			return $this->memo[ $cache_key ];
-		}
-
-		$cached = wp_cache_get( $cache_key, self::CACHE_GROUP, false, $found );
-
-		if ( $found && is_string( $cached ) ) {
-			return $this->memo[ $cache_key ] = $cached;
-		}
-
-		$css = $this->build( $active_slug, $breakpoints );
-
-		wp_cache_set( $cache_key, $css, self::CACHE_GROUP, DAY_IN_SECONDS );
-
-		return $this->memo[ $cache_key ] = $css;
+	/**
+	 * Cached version of editor_css(): same memo/object-cache mechanics as {@see self::css_for_version()}, but
+	 * keyed under a distinct `editor` context so the editor-scoped string (which differs from the front-end
+	 * one for any state binding declaring an `editor_css_state`) never collides with, or gets served in place
+	 * of, the front-end cache entry.
+	 *
+	 * @since TBD
+	 *
+	 * @param string                $active_slug The active library's slug.
+	 * @param string                $version     The store version the active library was built from.
+	 * @param array<string, string> $breakpoints Breakpoint => media-query string.
+	 *
+	 * @return string
+	 */
+	public function editor_css_for_version( string $active_slug, string $version, array $breakpoints = [] ): string {
+		return $this->for_version( $active_slug, $version, $breakpoints, true );
 	}
 
 	/**
@@ -229,23 +261,59 @@ final class Css_Builder {
 	}
 
 	/**
+	 * Shared cache/memo plumbing for {@see self::css_for_version()} and {@see self::editor_css_for_version()}.
+	 * The context (front end vs editor) is folded into both the per-request memo key and the object-cache key
+	 * so the two builds never share a cache slot.
+	 *
+	 * @since TBD
+	 *
+	 * @param string                $active_slug The active library's slug.
+	 * @param string                $version     The store version the active library was built from.
+	 * @param array<string, string> $breakpoints Breakpoint => media-query string.
+	 * @param bool                  $editor      Whether to build the editor-scoped CSS.
+	 *
+	 * @return string
+	 */
+	private function for_version( string $active_slug, string $version, array $breakpoints, bool $editor ): string {
+		$context   = $editor ? 'editor' : 'front';
+		$cache_key = 'preset_css_root_' . $context . '_' . KADENCE_BLOCKS_VERSION . '_' . $active_slug . '_' . $version . '_' . $this->breakpoint_signature( $breakpoints );
+
+		if ( isset( $this->memo[ $cache_key ] ) ) {
+			return $this->memo[ $cache_key ];
+		}
+
+		$cached = wp_cache_get( $cache_key, self::CACHE_GROUP, false, $found );
+
+		if ( $found && is_string( $cached ) ) {
+			return $this->memo[ $cache_key ] = $cached;
+		}
+
+		$css = $this->build( $active_slug, $breakpoints, $editor );
+
+		wp_cache_set( $cache_key, $css, self::CACHE_GROUP, DAY_IN_SECONDS );
+
+		return $this->memo[ $cache_key ] = $css;
+	}
+
+	/**
 	 * Build (uncached) the active library's preset CSS: the canonical preset-var definitions followed by the
 	 * per-preset scoped rules and the class-less $default rules. The single assembly definition shared by
-	 * css() and the cached css_for_version().
+	 * css()/editor_css() and their cached counterparts.
 	 *
 	 * @since TBD
 	 *
 	 * @param string                $active_slug The active library slug.
 	 * @param array<string, string> $breakpoints Breakpoint => media-query string.
+	 * @param bool                  $editor      Whether to scope state rules to the editor's markup.
 	 *
 	 * @return string
 	 */
-	private function build( string $active_slug, array $breakpoints = [] ): string {
+	private function build( string $active_slug, array $breakpoints, bool $editor ): string {
 		$collected = $this->collect( $active_slug );
 
 		return $this->canonical_block( $collected )
-			. $this->scoped_presets( $collected )
-			. $this->scoped_default( $collected )
+			. $this->scoped_presets( $collected, $editor )
+			. $this->scoped_default( $collected, $editor )
 			. $this->responsive_blocks( $active_slug, $collected, $breakpoints );
 	}
 
@@ -258,7 +326,7 @@ final class Css_Builder {
 	 *
 	 * @param string $slug The library slug to resolve against.
 	 *
-	 * @return array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:string, value:string, dimension:bool}>>}>
+	 * @return array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:string, dimension:bool, prop:?string, state:?string, editor:?string}>>}>
 	 */
 	private function collect( string $slug ): array {
 		$key = $slug . '_' . $this->store->get_version( $slug );
@@ -302,6 +370,34 @@ final class Css_Builder {
 						continue;
 					}
 
+					// Only a "dimension" kind binding ever carries a per-slot list (the write-time
+					// guard rejects one on any other kind); gating the slot split on this, rather than
+					// on the value's own shape, avoids a false-positive split of an unrelated value that
+					// happens to contain spaces (e.g. a shadow literal).
+					$dimension = $bindings->kind( $property ) === Preset_Bindings::get_kind_dimension();
+
+					// A state binding carries a declaration rather than a var retarget, and both of its selectors
+					// are collected so the front-end and editor builds share one memoized walk. It contributes
+					// nothing without a property to set, since the state rule IS that declaration.
+					if ( $binding->is_state() ) {
+						$prop = $binding->css_prop();
+
+						if ( $prop === null ) {
+							continue;
+						}
+
+						$properties[ $property ] = [
+							'target'    => null,
+							'value'     => $value,
+							'dimension' => $dimension,
+							'prop'      => $prop,
+							'state'     => $binding->css_state(),
+							'editor'    => $binding->editor_css_state(),
+						];
+
+						continue;
+					}
+
 					$target = $this->target_var( $binding );
 
 					if ( $target === null ) {
@@ -311,11 +407,10 @@ final class Css_Builder {
 					$properties[ $property ] = [
 						'target'    => $target,
 						'value'     => $value,
-						// Only a "dimension" kind binding ever carries a per-slot list (the write-time
-						// guard rejects one on any other kind); gating the slot split on this, rather than
-						// on the value's own shape, avoids a false-positive split of an unrelated value that
-						// happens to contain spaces (e.g. a shadow literal).
-						'dimension' => $bindings->kind( $property ) === Preset_Bindings::get_kind_dimension(),
+						'dimension' => $dimension,
+						'prop'      => null,
+						'state'     => null,
+						'editor'    => null,
 					];
 				}
 
@@ -350,7 +445,7 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:string, value:string, dimension:bool}>>}> $collected The active library's collected presets.
+	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:string, dimension:bool, prop:?string, state:?string, editor:?string}>>}> $collected The active library's collected presets.
 	 *
 	 * @return string
 	 */
@@ -370,7 +465,7 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:string, value:string, dimension:bool}>>}> $collected The active library's collected presets.
+	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:string, dimension:bool, prop:?string, state:?string, editor:?string}>>}> $collected The active library's collected presets.
 	 *
 	 * @return string
 	 */
@@ -408,7 +503,7 @@ final class Css_Builder {
 	 * @param string                                  $block    The block name.
 	 * @param string                                  $preset   The preset slug.
 	 * @param string                                  $property The block property.
-	 * @param array{target:string, value:string, dimension:bool} $info The property's collected target/value/kind.
+	 * @param array{target:?string, value:string, dimension:bool, prop:?string, state:?string, editor:?string} $info The property's collected target/value/kind.
 	 *
 	 * @return string
 	 */
@@ -525,20 +620,23 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:string, value:string, dimension:bool}>>}> $collected The active library's collected presets.
+	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:string, dimension:bool, prop:?string, state:?string, editor:?string}>>}> $collected The active library's collected presets.
 	 *
 	 * @return string
 	 */
-	private function scoped_presets( array $collected ): string {
+	private function scoped_presets( array $collected, bool $editor ): string {
 		$css = '';
 
 		foreach ( $collected as $block => $data ) {
 			foreach ( $data['presets'] as $preset => $properties ) {
-				$declarations = $this->slot_declarations( $block, $preset, $properties );
+				$scope        = $data['selector'] . '.' . Style::preset_class( (string) $preset );
+				$declarations = $this->slot_declarations( $block, (string) $preset, $properties );
 
 				if ( $declarations !== '' ) {
-					$css .= $data['selector'] . '.' . Style::preset_class( $preset ) . '{' . $declarations . '}';
+					$css .= $scope . '{' . $declarations . '}';
 				}
+
+				$css .= $this->state_rules( $block, (string) $preset, $scope, $properties, $editor );
 			}
 		}
 
@@ -553,11 +651,11 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:string, value:string, dimension:bool}>>}> $collected The active library's collected presets.
+	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:string, dimension:bool, prop:?string, state:?string, editor:?string}>>}> $collected The active library's collected presets.
 	 *
 	 * @return string
 	 */
-	private function scoped_default( array $collected ): string {
+	private function scoped_default( array $collected, bool $editor ): string {
 		$css = '';
 
 		foreach ( $collected as $block => $data ) {
@@ -567,11 +665,14 @@ final class Css_Builder {
 				continue;
 			}
 
-			$declarations = $this->slot_declarations( $block, $default, $data['presets'][ $default ] );
+			$properties   = $data['presets'][ $default ];
+			$declarations = $this->slot_declarations( $block, $default, $properties );
 
 			if ( $declarations !== '' ) {
 				$css .= $data['selector'] . '{' . $declarations . '}';
 			}
+
+			$css .= $this->state_rules( $block, $default, $data['selector'], $properties, $editor );
 		}
 
 		return $css;
@@ -584,7 +685,7 @@ final class Css_Builder {
 	 *
 	 * @param string                                            $block      The block name.
 	 * @param string                                            $preset     The preset slug.
-	 * @param array<string, array{target:string, value:string, dimension:bool}> $properties The preset's collected properties.
+	 * @param array<string, array{target:?string, value:string, dimension:bool, prop:?string, state:?string, editor:?string}> $properties The preset's collected properties.
 	 *
 	 * @return string
 	 */
@@ -592,10 +693,67 @@ final class Css_Builder {
 		$declarations = '';
 
 		foreach ( $properties as $property => $info ) {
-			$declarations .= $info['target'] . ':var(' . $this->preset_var( $block, $preset, $property ) . ');';
+			// A state property has no variable of the block's own to retarget; it is emitted as its own rule
+			// by state_rules() instead.
+			if ( $info['target'] === null ) {
+				continue;
+			}
+
+			$declarations .= $info['target'] . ':var(' . $this->preset_var( $block, $preset, (string) $property ) . ');';
 		}
 
 		return $declarations;
+	}
+
+	/**
+	 * Emit one preset's state rules for a block: per distinct state suffix, a
+	 * "<scope><suffix>{<css_prop>:var(<canonical preset var>);}" rule.
+	 *
+	 * The scope is the caller's — the preset-classed selector for a named preset, the bare block selector for
+	 * the $default one — so the same specificity relationship the var-retarget layers have is preserved: a
+	 * selected preset's state outranks the $default's, and the block's own per-instance state rule outranks
+	 * both.
+	 *
+	 * Grouped by suffix so a block with several state properties on the same element emits one rule, matching
+	 * how the block-default-CSS layer groups its own descendant rules.
+	 *
+	 * @since TBD
+	 *
+	 * @param string                                                                                          $block      The block name.
+	 * @param string                                                                                          $preset     The preset slug, for the canonical var name.
+	 * @param string                                                                                          $scope      The selector the state suffix is appended to.
+	 * @param array<string, array{target:?string, value:string, dimension:bool, prop:?string, state:?string, editor:?string}> $properties The preset's collected properties.
+	 * @param bool                                                                                            $editor     Whether to use each binding's editor state suffix.
+	 *
+	 * @return string
+	 */
+	private function state_rules( string $block, string $preset, string $scope, array $properties, bool $editor ): string {
+		$by_suffix = [];
+
+		foreach ( $properties as $property => $info ) {
+			if ( $info['prop'] === null ) {
+				continue;
+			}
+
+			$suffix = $this->selector_suffix( $editor ? $info['editor'] : $info['state'] );
+
+			// An empty suffix would put the declaration on the block root with no state at all, which is the
+			// block-default layer's job and would repaint every instance. A state binding whose suffix
+			// sanitizes away contributes nothing rather than silently becoming a resting-state rule.
+			if ( $suffix === '' ) {
+				continue;
+			}
+
+			$by_suffix[ $suffix ][] = $info['prop'] . ':var(' . $this->preset_var( $block, $preset, (string) $property ) . ')';
+		}
+
+		$css = '';
+
+		foreach ( $by_suffix as $suffix => $declarations ) {
+			$css .= $scope . $suffix . '{' . implode( ';', $declarations ) . ';}';
+		}
+
+		return $css;
 	}
 
 	/**
@@ -694,7 +852,7 @@ final class Css_Builder {
 	 * @since TBD
 	 *
 	 * @param string                $active_slug The active library's slug.
-	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:string, value:string, dimension:bool}>>}> $collected The collected preset structure, for the block/preset list.
+	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:string, dimension:bool, prop:?string, state:?string, editor:?string}>>}> $collected The collected preset structure, for the block/preset list.
 	 * @param array<string, string> $breakpoints Breakpoint => media-query string.
 	 *
 	 * @return string

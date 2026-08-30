@@ -106,7 +106,7 @@ final class Projector extends Abstract_Css_Projector {
 			return;
 		}
 
-		$css = $this->css();
+		$css = $this->editor_css();
 
 		if ( $css !== '' ) {
 			wp_add_inline_style( 'kadence-blocks-global-editor-styles', $css );
@@ -131,6 +131,32 @@ final class Projector extends Abstract_Css_Projector {
 			$version = $this->store->get_version( $active );
 
 			return $this->css_builder->css_for_version( $active, $version, $this->breakpoints() );
+		} catch ( Throwable $e ) {
+			return '';
+		}
+	}
+
+	/**
+	 * Build the EDITOR-scoped preset CSS for the single active token library.
+	 *
+	 * Overrides the base's "editor output equals front-end output" default because one layer is markup-aware:
+	 * a state rule (a binding declaring a `css_state`) carries a selector suffix, and a block whose editor renders the
+	 * bound element under a different class declares an `editor_css_state` for it. Every other layer — the
+	 * canonical `:root` vars and the block-root var retargets — is reused verbatim.
+	 *
+	 * Degrades the same way {@see self::css()} does: an unreadable store version or an unresolvable preset
+	 * yields an empty string rather than an exception, so the editor loads without the inline style.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function editor_css(): string {
+		try {
+			$active  = $this->active->get();
+			$version = $this->store->get_version( $active );
+
+			return $this->css_builder->editor_css_for_version( $active, $version, $this->breakpoints() );
 		} catch ( Throwable $e ) {
 			return '';
 		}

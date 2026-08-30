@@ -195,6 +195,122 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
+	 * A binding declaring a `css_state` is emitted as a real declaration scoped to the preset class plus the
+	 * state suffix, rather than as a custom-property retarget on the block root.
+	 *
+	 * @return void
+	 */
+	public function testItEmitsAStateRuleForAStateBinding(): void {
+		$this->seedStatePresets();
+
+		$css = $this->builder( $this->stateRegistry() )->css( 'default' );
+
+		$this->assertStringContainsString(
+			'.wp-block-kadence-state-fixture.kb-preset--flare:hover *.kb-svg-icon-wrap'
+				. '{color:var(--kb-token--preset--kadence-state-fixture--flare--color-hover);}',
+			$css
+		);
+	}
+
+	/**
+	 * A state binding never reaches the block-root retarget layer: it has no variable of the block's own to
+	 * point at, so nothing about it appears inside the `.kb-preset--<preset>` rule itself.
+	 *
+	 * @return void
+	 */
+	public function testAStateBindingIsNotEmittedAsAVarRetarget(): void {
+		$this->seedStatePresets();
+
+		$css = $this->builder( $this->stateRegistry() )->css( 'default' );
+
+		$this->assertStringContainsString(
+			'.wp-block-kadence-state-fixture.kb-preset--flare{'
+				. '--kb-icon-color:var(--kb-token--preset--kadence-state-fixture--flare--color);}',
+			$css
+		);
+		$this->assertStringNotContainsString( '--kb-icon-color-hover', $css );
+	}
+
+	/**
+	 * The `$default` preset's state rule carries no preset class, so a block with no preset selected still
+	 * shows its default preset's state — the same treatment the retarget layer gives the `$default`.
+	 *
+	 * @return void
+	 */
+	public function testTheDefaultPresetsStateRuleIsClassLess(): void {
+		$this->seedStatePresets();
+
+		$css = $this->builder( $this->stateRegistry() )->css( 'default' );
+
+		$this->assertStringContainsString(
+			'.wp-block-kadence-state-fixture:hover *.kb-svg-icon-wrap'
+				. '{color:var(--kb-token--preset--kadence-state-fixture--glow--color-hover);}',
+			$css
+		);
+	}
+
+	/**
+	 * The editor build re-scopes a state rule to the binding's `editor_css_state`, so a block whose canvas
+	 * markup paints a different element than its saved markup still previews the state.
+	 *
+	 * @return void
+	 */
+	public function testTheEditorBuildUsesTheEditorStateSelector(): void {
+		$this->seedStatePresets();
+
+		$css = $this->builder( $this->stateRegistry() )->editor_css( 'default' );
+
+		$this->assertStringContainsString(
+			'.wp-block-kadence-state-fixture.kb-preset--flare:hover *.kt-svg-icon'
+				. '{color:var(--kb-token--preset--kadence-state-fixture--flare--color-hover);}',
+			$css
+		);
+		$this->assertStringNotContainsString( ':hover *.kb-svg-icon-wrap', $css );
+	}
+
+	/**
+	 * A state property's value still lives in the canonical `:root` preset var the state rule references, so
+	 * it keeps its alias indirection and follows the active library exactly as every other property does.
+	 *
+	 * @return void
+	 */
+	public function testAStateBindingStillDefinesItsCanonicalPresetVar(): void {
+		$this->seedStatePresets();
+
+		$css = $this->builder( $this->stateRegistry() )->css( 'default' );
+
+		$this->assertStringContainsString(
+			'--kb-token--preset--kadence-state-fixture--flare--color-hover:var(--kb-token--semantic--color--link);',
+			$css
+		);
+	}
+
+	/**
+	 * A state binding that names no `css_prop` has no declaration to emit — the state rule IS that
+	 * declaration — so it contributes nothing rather than an empty rule.
+	 *
+	 * @return void
+	 */
+	public function testAStateBindingWithoutACssPropContributesNothing(): void {
+		$this->seedStatePresets();
+
+		$registry = new Token_Registry();
+		$registry->register_preset_bindings(
+			[
+				'block'    => 'kadence/state-fixture',
+				'bindings' => [
+					'color-hover' => [
+						'token'     => 'semantic.color.icon',
+						'css_state' => ':hover *.kb-svg-icon-wrap',
+					],
+				],
+			]
+		);
+
+		$this->assertSame( '', $this->builder( $registry )->css( 'default' ) );
+	}
+
+	/**
 	 * Build the CSS builder with a given registry and the real (baseline-backed) preset resolver.
 	 *
 	 * @param Token_Registry $registry The registry to build from.
@@ -593,5 +709,76 @@ final class Css_BuilderTest extends TestCase {
 		$end    = strpos( $css, '}}', $start );
 
 		return $end === false ? '' : substr( $css, $start, $end - $start );
+	}
+
+	/**
+	 * A registry binding one resting property and one state property on a block the baseline knows nothing
+	 * about, so the state assertions read only what {@see self::seedStatePresets()} put there.
+	 *
+	 * The state binding declares a different `editor_css_state` than its `css_state` on purpose: that is the
+	 * only thing separating the front-end build from the editor one, so it is what the editor test needs.
+	 *
+	 * @return Token_Registry
+	 */
+	private function stateRegistry(): Token_Registry {
+		$registry = new Token_Registry();
+		$registry->register_preset_bindings(
+			[
+				'block'    => 'kadence/state-fixture',
+				'bindings' => [
+					'color'       => [
+						'token'        => 'semantic.color.icon',
+						'css_prop'     => 'color',
+						'css_selector' => '*.kb-svg-icon-wrap',
+						'css_var'      => 'kb-icon-color',
+					],
+					'color-hover' => [
+						'token'            => 'semantic.color.icon',
+						'css_prop'         => 'color',
+						'css_state'        => ':hover *.kb-svg-icon-wrap',
+						'editor_css_state' => ':hover *.kt-svg-icon',
+					],
+				],
+			]
+		);
+
+		return $registry;
+	}
+
+	/**
+	 * Store two presets for the state fixture block — a `$default` ("glow") and a named one ("flare") — each
+	 * setting both the resting color and the state color, so one build exercises the class-less rule and the
+	 * preset-classed one together.
+	 *
+	 * @return void
+	 */
+	private function seedStatePresets(): void {
+		$document = [
+			'$extensions' => [
+				'com.kadence.designTokens' => [
+					'presets' => [
+						'kadence/state-fixture' => [
+							'$default' => 'glow',
+							'glow'     => [
+								'label'  => 'Glow',
+								'tokens' => [
+									'color'       => '{semantic.color.icon}',
+									'color-hover' => '{semantic.color.text}',
+								],
+							],
+							'flare'    => [
+								'label'  => 'Flare',
+								'tokens' => [
+									'color'       => '{semantic.color.icon}',
+									'color-hover' => '{semantic.color.link}',
+								],
+							],
+						],
+					],
+				],
+			],
+		];
+
+		$this->store->save_document( (string) wp_json_encode( $document ), Token_Store::default_slug() );
 	}
 }

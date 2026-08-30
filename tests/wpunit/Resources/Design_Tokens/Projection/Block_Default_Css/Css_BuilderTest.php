@@ -353,6 +353,40 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
+	 * A state binding contributes no rule here even though it names a `css_prop`. This layer renders only the
+	 * `$default` preset, so its rule carries no preset class and matches every instance of the block — and a
+	 * state rule outranks the block's own resting per-instance rule, so emitting one would repaint content
+	 * that never opted into a state. The selected-preset projector owns state rules instead.
+	 *
+	 * @return void
+	 */
+	public function testItContributesNothingForAStateBinding(): void {
+		$registry = new Token_Registry();
+		$registry->register(
+			[
+				'id'    => 'semantic.radius.media',
+				'type'  => 'dimension',
+				'label' => 'Media Radius',
+			]
+		);
+		$registry->register_preset_bindings(
+			[
+				'block'    => 'kadence/image',
+				'bindings' => [
+					'borderRadius' => [
+						'token'     => 'semantic.radius.media',
+						'css_prop'  => 'border-radius',
+						'css_state' => ':hover img',
+					],
+				],
+			]
+		);
+
+		$this->assertSame( '', $this->builder( $registry )->css() );
+		$this->assertSame( '', $this->builder( $registry )->editor_css() );
+	}
+
+	/**
 	 * @return void
 	 */
 	public function testItInsertsTheDescendantCombinatorForABareCssSelector(): void {
