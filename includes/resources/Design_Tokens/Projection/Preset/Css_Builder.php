@@ -37,9 +37,10 @@ use RuntimeException;
  *   2. Per (block, preset) scoped rules — ".wp-block-<block>.kb-preset--<preset>" — pointing each
  *      --global-<slot> at the canonical preset var, plus a class-less ".wp-block-<block>" rule for the
  *      $default preset so a block with no preset selected still shows its preset.
- *   3. Per (block, preset) STATE rules for any binding declaring a `css_state` — the same two scopes with
- *      the state suffix appended (".wp-block-<block>.kb-preset--<preset>:hover > .kt-inside-inner-col") —
- *      carrying a real declaration, "<css_prop>: var(<canonical preset var>)", rather than a var retarget.
+ *   3. Per (block, preset) STATE rules for any binding declaring a `css_state` — the same two scopes with the
+ *      block class neutralized by `:where()` and the state suffix appended
+ *      (":where(.wp-block-<block>).kb-preset--<preset>:hover > .kt-inside-inner-col") — carrying a real
+ *      declaration, "<css_prop>: var(<canonical preset var>)", rather than a var retarget.
  *      A state has no variable of the block's own to point at: the block renders its resting appearance
  *      from an attribute or a token default, and its state appearance only when the block itself sets one,
  *      so there is nothing for a preset to redirect. This layer supplies the state rule outright. It is
@@ -629,14 +630,20 @@ final class Css_Builder {
 
 		foreach ( $collected as $block => $data ) {
 			foreach ( $data['presets'] as $preset => $properties ) {
-				$scope        = $data['selector'] . '.' . Style::preset_class( (string) $preset );
+				$preset_class = '.' . Style::preset_class( (string) $preset );
 				$declarations = $this->slot_declarations( $block, (string) $preset, $properties );
 
 				if ( $declarations !== '' ) {
-					$css .= $scope . '{' . $declarations . '}';
+					$css .= $data['selector'] . $preset_class . '{' . $declarations . '}';
 				}
 
-				$css .= $this->state_rules( $block, (string) $preset, $scope, $properties, $editor );
+				$css .= $this->state_rules(
+					$block,
+					(string) $preset,
+					$this->state_scope( $data['selector'] ) . $preset_class,
+					$properties,
+					$editor
+				);
 			}
 		}
 
@@ -672,10 +679,36 @@ final class Css_Builder {
 				$css .= $data['selector'] . '{' . $declarations . '}';
 			}
 
-			$css .= $this->state_rules( $block, $default, $data['selector'], $properties, $editor );
+			$css .= $this->state_rules( $block, $default, $this->state_scope( $data['selector'] ), $properties, $editor );
 		}
 
 		return $css;
+	}
+
+	/**
+	 * The block half of a state rule's scope: the block selector wrapped in `:where()`, which matches exactly
+	 * as it did but contributes no specificity.
+	 *
+	 * Every other layer of this projection writes custom properties, whose specificity never competes with a
+	 * block's own declarations. A state rule writes a real declaration, so it does — and the layering rule the
+	 * whole projection rests on is that a preset yields to the block's own CSS. Left un-neutralized, the block
+	 * class plus the preset class would put a state rule at two classes before the state's own weight, which is
+	 * more than most blocks spend on their per-instance rules; a preset's hover would then beat a hover the
+	 * user set on the block itself.
+	 *
+	 * Neutralizing the block class rather than the preset class is what keeps a selected preset's state ahead
+	 * of the `$default`'s: the named rule carries exactly one class more, so it wins without depending on the
+	 * order the two are emitted in. What remains is the binding's own `css_state`, which is where a block's
+	 * author states the weight that block needs — the only place that knows what the block's own rules cost.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $selector The block's `.wp-block-*` selector.
+	 *
+	 * @return string
+	 */
+	private function state_scope( string $selector ): string {
+		return ':where(' . $selector . ')';
 	}
 
 	/**
