@@ -9,7 +9,7 @@
 /**
  * WordPress dependencies
  */
-import { useMemo, useState } from '@wordpress/element';
+import { useCallback, useMemo, useState } from '@wordpress/element';
 import { Button, DropdownMenu, MenuGroup, MenuItem, Notice } from '@wordpress/components';
 import { __, sprintf } from '@wordpress/i18n';
 import { moreVertical, plus } from '@wordpress/icons';
@@ -18,6 +18,7 @@ import { moreVertical, plus } from '@wordpress/icons';
  * Internal dependencies
  */
 import { colord } from '../../helpers/colord';
+import { InheritancePill } from '../atoms/InheritancePill';
 import { ScreenHeader } from '../organisms/ScreenHeader';
 import { SwatchGrid } from '../organisms/SwatchGrid';
 import { SelectDropdown } from '../molecules/SelectDropdown';
@@ -37,6 +38,7 @@ import {
 	isUserCreatedPalette,
 	mapPaletteToSwatchGroups,
 	paletteDisplayLabel,
+	paletteShowsInheritance,
 	paletteSuccessorOptions,
 } from '../../helpers/palettes';
 import { ColorPaletteSettings } from './ColorPaletteSettings';
@@ -160,6 +162,49 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 	const isEditingUserCreated = isUserCreatedPalette(palettes.listing, palettes.editingId);
 	const activeRow = palettes.listing.palettes.find((row) => row.id === palettes.activeId);
 
+	// The pills only exist on a palette that has something to inherit FROM, and both the pill and
+	// the notice name that palette by its current label — the default palette can be renamed, so
+	// the word on the card has to come from the listing rather than from a literal.
+	const showsInheritance = paletteShowsInheritance(palettes.listing, palettes.editingId);
+	const defaultLabel = paletteDisplayLabel(
+		palettes.listing.palettes.find((row) => row.id === palettes.listing.defaultId)
+	);
+
+	/**
+	 * Reset one swatch's override, then, on success, move focus to that card's own select button —
+	 * the pill that was just clicked is about to unmount (the card flips back to the static "From"
+	 * pill), and React would otherwise drop focus to `<body>`. The card and its select button are
+	 * resolved from the click event up front rather than through a ref, since `card` is only needed
+	 * once the promise settles and may be gone from the document by then; a failed reset leaves the
+	 * Reset button in place, so focus is left alone on failure.
+	 *
+	 * @param {Event}  event The click event from the pill's own button.
+	 * @param {string} token The swatch token to reset.
+	 *
+	 * @since TBD
+	 *
+	 * @return {void}
+	 */
+	const handleResetSwatch = useCallback(
+		(event, token) => {
+			if (palettes.isBusy) {
+				return;
+			}
+
+			const card = event.currentTarget?.closest('.kadence-blocks-style-library__swatch-card');
+
+			palettes
+				.resetSwatch(token)
+				.then(() => {
+					card?.querySelector('.kadence-blocks-style-library__swatch-card-select')?.focus();
+				})
+				// Swallowed: a failure already surfaces as a toast from inside `resetSwatch`, and the
+				// card simply keeps showing its override.
+				.catch(() => {});
+		},
+		[palettes.isBusy, palettes.resetSwatch]
+	);
+
 	const options = useMemo(
 		() =>
 			palettes.listing.palettes.map((row) => ({
@@ -186,9 +231,21 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 					// delete, where reordering something about to vanish is not meaningful.
 					isDraggable: !item.pendingDelete,
 					isPendingDelete: item.pendingDelete,
+					pill:
+						!showsInheritance || !defaultLabel ? null : item.overridden ? (
+							<InheritancePill
+								variant="reset"
+								sourceLabel={defaultLabel}
+								swatchName={item.name}
+								isDisabled={palettes.isBusy || item.pendingDelete}
+								onReset={(event) => handleResetSwatch(event, item.id)}
+							/>
+						) : (
+							<InheritancePill variant="inherited" sourceLabel={defaultLabel} />
+						),
 				})),
 			})),
-		[palettes.palette]
+		[palettes.palette, palettes.isBusy, showsInheritance, defaultLabel, handleResetSwatch]
 	);
 
 	return (
