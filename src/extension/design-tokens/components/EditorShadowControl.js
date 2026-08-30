@@ -433,6 +433,9 @@ export function EditorShadowControl({
 				defaultValue={defaultValue}
 				renderColor={renderColor}
 				disabled={disabled}
+				// The stored legs are the fallback for a binding whose token has since been deleted — the
+				// same snapshot the renderers already fall back to when a binding no longer resolves.
+				fallbackShadow={bound ? fromNativeShadow(value) : undefined}
 			/>
 		</TokenControlRow>
 	);

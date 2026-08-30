@@ -588,6 +588,66 @@ describe('BoxShadowControl Custom tab', () => {
 	});
 
 	/**
+	 * A stale alias — no entry in `tokens` resolves it, because the token was deleted after the binding
+	 * was saved — seeds the Custom tab from the host's `fallbackShadow` prop instead of the all-zero
+	 * default, so switching to Custom does not silently discard the stored legs.
+	 *
+	 * @return {void}
+	 */
+	it('seeds the Custom tab’s fields from fallbackShadow for a stale alias', () => {
+		renderControl({
+			value: '{primitive.shadow.deleted}',
+			fallbackShadow: { color: '#222222', offsetX: '3px', offsetY: '5px', blur: '10px', spread: '1px' },
+		});
+
+		click(container.querySelector('[data-testid="tab-custom"]'));
+
+		expect(numberInput('X').value).toBe('3');
+		expect(numberInput('Y').value).toBe('5');
+		expect(numberInput('Blur').value).toBe('10');
+		expect(numberInput('Spread').value).toBe('1');
+	});
+
+	/**
+	 * A stale alias with no `fallbackShadow` supplied still seeds the Custom tab from the plain default
+	 * composite (all-zero) — the Style Library host never passes this prop, so it must see unchanged
+	 * behavior.
+	 *
+	 * @return {void}
+	 */
+	it('seeds the Custom tab’s fields from the default composite for a stale alias with no fallbackShadow', () => {
+		renderControl({ value: '{primitive.shadow.deleted}' });
+
+		click(container.querySelector('[data-testid="tab-custom"]'));
+
+		expect(numberInput('X').value).toBe('0');
+		expect(numberInput('Y').value).toBe('0');
+		expect(numberInput('Blur').value).toBe('0');
+		expect(numberInput('Spread').value).toBe('0');
+	});
+
+	/**
+	 * An alias that DOES resolve against `tokens` still seeds from that token entry, even when a
+	 * `fallbackShadow` is also supplied — the fallback only applies to a stale alias, never overriding a
+	 * live resolution.
+	 *
+	 * @return {void}
+	 */
+	it('prefers the resolved token entry over fallbackShadow when the alias resolves', () => {
+		renderControl({
+			value: '{primitive.shadow.md}',
+			fallbackShadow: { color: '#222222', offsetX: '3px', offsetY: '5px', blur: '10px', spread: '1px' },
+		});
+
+		click(container.querySelector('[data-testid="tab-custom"]'));
+
+		expect(numberInput('X').value).toBe('0');
+		expect(numberInput('Y').value).toBe('2');
+		expect(numberInput('Blur').value).toBe('8');
+		expect(numberInput('Spread').value).toBe('0');
+	});
+
+	/**
 	 * Editing an axis writes the full composite object with only that axis changed, serialized as a
 	 * px dimension string, and the rest of the value preserved.
 	 *

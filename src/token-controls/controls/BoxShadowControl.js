@@ -231,12 +231,27 @@ function ShadowCustomTab({ shadow, onChange, renderColor, disabled = false }) {
  *                                        shadow to name is unchanged.
  * @param {Function}  [props.renderColor] `({ value, onChange }) => Element` for the color sub-field.
  * @param {boolean}   [props.disabled]    Whether the control is read-only.
+ * @param {Object}    [props.fallbackShadow] The host's stored composite legs, used to seed the Custom
+ *                                        tab only when `value` is a token alias that no longer resolves
+ *                                        against `tokens` (the token was deleted after the alias was
+ *                                        saved). Without one, a stale alias falls back to the plain
+ *                                        default composite, so a host that never binds a token (the
+ *                                        Style Library) is unaffected.
  *
  * @since TBD
  *
  * @return {JSX.Element} The rendered control.
  */
-export function BoxShadowControl({ value, onChange, label, tokens = [], defaultValue, renderColor, disabled = false }) {
+export function BoxShadowControl({
+	value,
+	onChange,
+	label,
+	tokens = [],
+	defaultValue,
+	renderColor,
+	disabled = false,
+	fallbackShadow,
+}) {
 	const aliased = isTokenAlias(value);
 	// Only a real object is spread. A shadow can also arrive as a rendered STRING — the editor's capture
 	// flow writes one — and spreading a string splays it into indexed character keys, which the Custom
@@ -247,8 +262,13 @@ export function BoxShadowControl({ value, onChange, label, tokens = [], defaultV
 	// the bound token's own resolved shorthand here — without this, switching to Custom tab reads as
 	// an all-zero, transparent shadow and editing one leg discards the token's real value.
 	const aliasedEntry = aliased ? (tokens || []).find((entry) => entry.alias === value) : null;
+	// A stale alias (the token was deleted after the binding was saved) has no entry to resolve, but the
+	// host still stores the legs it was resolved to at save time — that snapshot is what the other
+	// renderers already fall back to for a stale binding, so the Custom tab seeds from it here too,
+	// rather than from the all-zero default.
+	const resolvedAliasShadow = aliasedEntry ? parseResolvedShadow(aliasedEntry.value) : fallbackShadow;
 	const shadow = aliased
-		? { ...DEFAULT_COMPOSITE, ...(aliasedEntry ? parseResolvedShadow(aliasedEntry.value) : {}) }
+		? { ...DEFAULT_COMPOSITE, ...(resolvedAliasShadow || {}) }
 		: { ...DEFAULT_COMPOSITE, ...custom };
 	// A fixed pick keeps no live alias, so a sentinel is recognized after the fact by its shorthand.
 	const fixedMatch = !aliased && hasValue(value) ? matchFixedEntry(shadow, tokens) : null;

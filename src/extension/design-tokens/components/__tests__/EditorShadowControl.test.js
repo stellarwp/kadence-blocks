@@ -379,6 +379,33 @@ describe('EditorShadowControl always renders, with no enable toggle', () => {
 	});
 });
 
+describe('EditorShadowControl fallbackShadow wiring', () => {
+	/**
+	 * A bound value passes the stored legs down as `fallbackShadow`, so `BoxShadowControl`'s Custom tab
+	 * can seed from them if the bound token is later deleted and the alias stops resolving.
+	 *
+	 * @return {void}
+	 */
+	it('passes the stored legs as fallbackShadow for a value with a shadowToken binding', () => {
+		const bound = toNativeShadow(SHADOW_TOKEN.alias, [SHADOW_TOKEN]);
+		const { shadowControl } = renderEditorShadowControl({ value: bound, tokens: [SHADOW_TOKEN] });
+
+		expect(shadowControl.props.fallbackShadow).toEqual(fromNativeShadow(bound));
+	});
+
+	/**
+	 * An unbound (plain composite) value has no binding to fall back FROM, so `fallbackShadow` stays
+	 * undefined rather than shadowing `BoxShadowControl`'s own default-composite behavior.
+	 *
+	 * @return {void}
+	 */
+	it('leaves fallbackShadow undefined for a value with no shadowToken binding', () => {
+		const { shadowControl } = renderEditorShadowControl();
+
+		expect(shadowControl.props.fallbackShadow).toBeUndefined();
+	});
+});
+
 describe('EditorShadowControl renderColor wiring', () => {
 	/**
 	 * `renderColor` is passed straight through to `BoxShadowControl` untouched — this component neither
