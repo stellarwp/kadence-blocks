@@ -13,6 +13,7 @@ import {
 	applyOptimisticOverlay,
 	customColorTokenId,
 	isCustomColorToken,
+	isUserCreatedPalette,
 	newSwatchValue,
 	nextCustomColorSlug,
 	reorderGroupSwatches,
@@ -379,23 +380,30 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 				return busy;
 			}
 
+			// Decides both halves of what this call means: only a user-created palette is removed and
+			// can need a successor, while a baseline one is reset in place and stays in the listing.
+			const isUserCreated = isUserCreatedPalette(listing, id);
+
 			setDeleteError(null);
 			return deletePaletteFlow({
 				namespace,
 				slug,
 				id,
 				currentId: listing.currentId,
+				isUserCreated,
 				successorId,
 				onReceive,
 				refreshFeed,
 				onBusy: setIsBusy,
 				onError: setDeleteError,
 			}).then((result) => {
-				notifySuccess(__('Palette deleted.', 'kadence-blocks'));
+				notifySuccess(
+					isUserCreated ? __('Palette deleted.', 'kadence-blocks') : __('Palette reset.', 'kadence-blocks')
+				);
 				return result;
 			});
 		},
-		[namespace, slug, listing.currentId, onReceive, refreshFeed]
+		[namespace, slug, listing, onReceive, refreshFeed]
 	);
 
 	const saveSwatchEdits = useCallback(
