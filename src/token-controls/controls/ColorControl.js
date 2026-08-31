@@ -66,7 +66,8 @@ export function ColorControl({
 	resolveLiteral,
 	disabled = false,
 }) {
-	const { entry, selectedLabel } = colorSelection(groups, value);
+	const selection = colorSelection(groups, value);
+	const { entry, selectedLabel } = selection;
 
 	return (
 		<div className="kb-color-control">
@@ -92,6 +93,7 @@ export function ColorControl({
 						<ColorPopover
 							value={value}
 							groups={groups}
+							selection={selection}
 							onClear={onClear}
 							onPick={onPick}
 							onCustom={onCustom}

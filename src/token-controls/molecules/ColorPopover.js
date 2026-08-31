@@ -39,13 +39,28 @@ import { isCssVariableReference } from '../helpers/token-summary';
  * @param {?Function} [props.resolveLiteral] `(entry) => string` — the host's hook for seeding the
  *                                            Custom tab from a currently-bound token entry.
  * @param {Function}  props.onClose          Closes the popover after a choice.
+ * @param {?Object}   [props.selection]      The already-derived `colorSelection(groups, value)`.
+ *                                            A control's trigger derives it anyway to render its own
+ *                                            swatch, so passing it here keeps the palette from being
+ *                                            flattened a second time on every render, and keeps
+ *                                            `colorSelection` the single place the derivation
+ *                                            happens. Omit it and this derives its own.
  *
  * @since TBD
  *
  * @return {JSX.Element} The rendered popover body.
  */
-export function ColorPopover({ value, groups, onClear = null, onPick, onCustom, resolveLiteral, onClose }) {
-	const { allSwatches, entry, initialTab } = colorSelection(groups, value);
+export function ColorPopover({
+	value,
+	groups,
+	onClear = null,
+	onPick,
+	onCustom,
+	resolveLiteral,
+	onClose,
+	selection = null,
+}) {
+	const { allSwatches, entry, initialTab } = selection ?? colorSelection(groups, value);
 
 	return (
 		<TokenPopover
