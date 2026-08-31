@@ -148,6 +148,37 @@ describe('SwatchGrid pill slot reservation', () => {
 	});
 
 	/**
+	 * The card is marked with the pill-slot modifier only when the slot actually renders, because
+	 * the card's lower inset moves onto the slot when it is there and has to stay on the button
+	 * when it is not.
+	 *
+	 * @return void
+	 */
+	it('flags only the cards whose pill slot renders', () => {
+		renderGrid(makeGroup());
+
+		expect(container.querySelector('.kadence-blocks-style-library__swatch-card--with-pill-slot')).toBeNull();
+
+		renderGrid(
+			makeGroup({
+				items: [
+					{
+						id: 'primitive.color.brand.primary',
+						name: 'Main 1',
+						subLine: '#111111',
+						pill: <button type="button" data-testid="pill" />,
+					},
+					{ id: 'primitive.color.brand.secondary', name: 'Main 2', subLine: '#222222' },
+				],
+			})
+		);
+
+		expect(container.querySelectorAll('.kadence-blocks-style-library__swatch-card--with-pill-slot')).toHaveLength(
+			2
+		);
+	});
+
+	/**
 	 * When at least one item in the group has a pill, every card in that group reserves the slot,
 	 * including the ones without a pill of their own — this is the alignment guarantee the
 	 * per-row reservation exists for.

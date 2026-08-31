@@ -87,6 +87,12 @@ export function SwatchCard({
 	innerRef,
 	wrapperStyle,
 }) {
+	// The slot renders when this card has a pill, or when the grid asked every card in the row to
+	// reserve it because at least one sibling has one — that keeps the row on one baseline without
+	// leaving dead space under a row where nothing has a pill. The card is marked either way,
+	// because the slot carries the card's lower inset and the styling has to know who owns it.
+	const hasPillSlot = Boolean(pill) || reservePillSlot;
+
 	return (
 		<div
 			ref={innerRef}
@@ -95,6 +101,7 @@ export function SwatchCard({
 				'kadence-blocks-style-library__swatch-card--selected': isSelected,
 				'kadence-blocks-style-library__swatch-card--placeholder': isDragging,
 				'kadence-blocks-style-library__swatch-card--pending-delete': isPendingDelete,
+				'kadence-blocks-style-library__swatch-card--with-pill-slot': hasPillSlot,
 			})}
 		>
 			{/* The bordered box is a plain element, not the click target it used to be: the pill slot
@@ -114,12 +121,7 @@ export function SwatchCard({
 					<span className="kadence-blocks-style-library__swatch-card-name">{name}</span>
 					{subLine && <span className="kadence-blocks-style-library__swatch-card-sub-line">{subLine}</span>}
 				</button>
-				{/* Renders when this card has a pill, or when the grid asked every card in the row to
-				 * reserve the slot because at least one of its siblings has one — that keeps the row
-				 * on one baseline without leaving dead space under a row where nothing has a pill. */}
-				{(pill || reservePillSlot) && (
-					<span className="kadence-blocks-style-library__swatch-card-pill-slot">{pill}</span>
-				)}
+				{hasPillSlot && <span className="kadence-blocks-style-library__swatch-card-pill-slot">{pill}</span>}
 			</div>
 			<span className="kadence-blocks-style-library__swatch-card-handle-slot">
 				{isDraggable && !isPendingDelete && <DragHandle handleProps={dragHandleProps} />}

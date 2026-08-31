@@ -45,10 +45,10 @@
 	align-items: flex-start;
 	gap: var(--kb-sl-space-05);
 	width: 100%;
-	// No bottom padding: the pill slot below is a sibling and carries the card's lower inset, so
-	// splitting them this way keeps the gap between the value line and the pill the one `.main`
-	// declares rather than stacking two paddings on top of it.
-	padding: var(--kb-sl-space-10) var(--kb-sl-space-10) 0;
+	// The card's full inset by default. A card WITH a pill slot hands its bottom half over to that
+	// slot (see the `--with-pill-slot` rule below), because two elements each padding their own
+	// bottom would double the gap between the value line and the pill.
+	padding: var(--kb-sl-space-10);
 	border: 0;
 	background: none;
 	text-align: left;
@@ -69,6 +69,13 @@
 // promise an action nothing can perform.
 button.kadence-blocks-style-library__swatch-card-select {
 	cursor: pointer;
+}
+
+// A card whose pill slot renders hands the lower inset to that slot, so the button stops padding
+// its own bottom. Without this the two would stack and push the pill away from the value line;
+// without the default above, a card with no slot would have no bottom inset at all.
+.kadence-blocks-style-library__swatch-card--with-pill-slot .kadence-blocks-style-library__swatch-card-select {
+	padding-bottom: 0;
 }
 
 // Hover, mirroring `ListRow`'s own hover treatment — a sibling semantic alias
