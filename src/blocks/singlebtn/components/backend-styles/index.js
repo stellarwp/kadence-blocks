@@ -8,10 +8,8 @@ import {
 	getSpacingOptionOutput,
 } from '@kadence/helpers';
 import { activePresetFor, blockPresetValues } from '../../../../extension/preset-picker';
-import { tokenPx } from '../../../../extension/design-tokens/token-px';
-import { pathOfAlias, resolveTokenAlias } from '../../../../extension/design-tokens/alias';
-import { isBackedToken } from '../../../../extension/design-tokens/backed-tokens';
 import { boundShadowToken } from '../../../../extension/design-tokens/shadow-token';
+import { shadowCss } from '../../../../extension/design-tokens/shadow-css';
 
 /**
  * Whether the button's active preset resolves a padding and/or a margin.
@@ -84,30 +82,6 @@ export function presetShadowProperties(attributes) {
 }
 
 /**
- * One shadow axis as a bare pixel number.
- *
- * A {dot.alias} leg is resolved through the token pool the way the PHP renderer's `render_shadow()`
- * does. Concatenated raw it would emit `{alias}px`, which is not valid CSS — and `hasVisibleShadow()`
- * deliberately counts such a leg as visible, so it does reach here.
- *
- * @param {*} raw      The stored axis value.
- * @param {*} fallback What this axis defaults to when unset.
- *
- * @since TBD
- *
- * @return {*} The axis value to serialize.
- */
-export function shadowAxisPx(raw, fallback) {
-	if (typeof raw === 'string' && raw.trim() !== '' && !Number.isFinite(Number(raw))) {
-		const resolved = tokenPx(raw);
-
-		return resolved === null || resolved === undefined ? fallback : resolved;
-	}
-
-	return undefined !== raw && null !== raw ? raw : fallback;
-}
-
-/**
  * Whether a native shadow item paints anything visible — all-zero offsets, blur, and spread
  * render nothing regardless of color, matching the value the "None" pick now writes and mirroring
  * the PHP renderer's `has_visible_shadow()`.
@@ -149,55 +123,6 @@ export function hasVisibleShadow(shadowItem) {
 		// `Number(undefined)` is `NaN`, which a bare `!== 0` would read as visible; the PHP gate does not.
 		return Number.isFinite(value) && value !== 0;
 	});
-}
-
-/**
- * One shadow item as a `box-shadow` declaration value.
- *
- * A `shadowToken` binding backed by the active library wins outright and the stored legs are never
- * read — that is what keeps the value tracking the token. A binding the library no longer backs (a
- * token deleted after the post was saved) renders nothing: the block falls back to its default CSS
- * the same way every other block does when a token disappears, rather than the legs that still hold
- * the value the token resolved to when it was picked — those legs stay stored for readers that do
- * not know the binding key and to seed the Custom tab, but the renderer no longer reads them. An
- * unbound item still builds its literal shorthand from the legs below.
- *
- * @param {?Object} shadowItem   One `shadow[0]`-shaped item.
- * @param {number}  blurFallback What `blur` defaults to when unset — 14 on every current caller,
- *                               taken as an argument rather than hard-coded so the historic per-state
- *                               default stays with the call site that owns it.
- *
- * @since TBD
- *
- * @return {string} The `box-shadow` value, or '' when there is no item to render or the item's
- *                   binding is no longer backed by the active library.
- */
-export function shadowCss(shadowItem, blurFallback) {
-	if (!shadowItem) {
-		return '';
-	}
-
-	const bound = boundShadowToken(shadowItem);
-
-	if (bound) {
-		return isBackedToken(pathOfAlias(bound)) ? resolveTokenAlias(bound) : '';
-	}
-
-	return (
-		(shadowItem.inset ? 'inset ' : '') +
-		shadowAxisPx(shadowItem.hOffset, 0) +
-		'px ' +
-		shadowAxisPx(shadowItem.vOffset, 0) +
-		'px ' +
-		shadowAxisPx(shadowItem.blur, blurFallback) +
-		'px ' +
-		shadowAxisPx(shadowItem.spread, 0) +
-		'px ' +
-		KadenceColorOutput(
-			undefined !== shadowItem.color ? shadowItem.color : '#000000',
-			undefined !== shadowItem.opacity ? shadowItem.opacity : 1
-		)
-	);
 }
 
 export default function BackendStyles(props) {

@@ -11,7 +11,8 @@
  * Internal dependencies
  */
 import { KadenceBlocksCSS } from '@kadence/helpers';
-import BackendStyles, { hasVisibleShadow, shadowAxisPx, shadowCss } from '../index';
+import BackendStyles, { hasVisibleShadow } from '../index';
+import { shadowAxisPx, shadowCss } from '../../../../../extension/design-tokens/shadow-css';
 import metadata from '../../../block.json';
 
 // `backend-styles/index.js` imports the `@kadence/helpers` barrel, which eagerly pulls in a
