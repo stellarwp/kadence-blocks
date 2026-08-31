@@ -3,8 +3,9 @@
  *
  * Sits beside `color-literal.js` and `use-color-groups.js`, the two halves of a `ColorControl`'s
  * data in this host, because it is the editor's own adapter rather than part of the host-agnostic
- * control library: it knows how a border side is named in this editor and how a token resolves
- * against this document.
+ * control library: it knows how a token resolves against this document. The row's accessible name
+ * comes from `borderColorLabel()` in the library, shared with the Style Library so the two hosts
+ * cannot drift on how a border color names itself.
  *
  * Border color is bundled with width and style inside one nested attribute, so it has no
  * `ColorControl` row of its own; this renders the compact `ColorSwatchControl` into the slot
@@ -12,14 +13,9 @@
  */
 
 /**
- * WordPress dependencies
- */
-import { __, sprintf } from '@wordpress/i18n';
-
-/**
  * Internal dependencies
  */
-import { ColorSwatchControl, sideLabel } from '../../../token-controls';
+import { ColorSwatchControl, borderColorLabel } from '../../../token-controls';
 import { resolveColorLiteral } from '../color-literal';
 
 /**
@@ -44,15 +40,7 @@ import { resolveColorLiteral } from '../color-literal';
 export function BorderColorField({ value, onChange, label, disabled = false, groups }) {
 	return (
 		<ColorSwatchControl
-			label={
-				label
-					? sprintf(
-							/* translators: %s: the border side, already translated — Top, Right, Bottom or Left. */
-							__('%s Border Color', 'kadence-blocks'),
-							sideLabel(label)
-						)
-					: __('Border Color', 'kadence-blocks')
-			}
+			label={borderColorLabel(label)}
 			value={value || ''}
 			groups={groups}
 			onPick={onChange}
