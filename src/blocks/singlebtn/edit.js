@@ -99,7 +99,9 @@ import { EditorShadowControl, hasVisibleShadow } from '../../extension/design-to
 import { renderShadowColor } from '../../extension/design-tokens/components/shadow-color';
 import { BorderColorField } from '../../extension/design-tokens/components/border-color';
 import { pickableTokensForControl, pickableTokensForKey } from '../../extension/token-picker';
-import { ColorControl, ColorControlGroup } from '../../token-controls';
+import { EditorColorControl } from '../../extension/design-tokens/components/EditorColorControl';
+import { EditorColorControlGroup } from '../../extension/design-tokens/components/EditorColorControlGroup';
+import { ColorControl } from '../../token-controls';
 import { BUTTON_MARGIN_FALLBACK, BUTTON_PADDING_FALLBACK } from '../../token-controls/helpers/button-box-defaults';
 import { useColorGroups } from '../../extension/design-tokens/hooks/use-color-groups';
 import { resolveColorLiteral } from '../../extension/design-tokens/color-literal';
@@ -1227,7 +1229,7 @@ export default function KadenceButtonEdit(props) {
 															/>
 														)}
 														{'normal' === textBackgroundHoverType && (
-															<ColorControl
+															<EditorColorControl
 																label={__('Color Hover', 'kadence-blocks')}
 																value={colorHover ? colorHover : ''}
 																groups={colorGroups}
@@ -1262,7 +1264,7 @@ export default function KadenceButtonEdit(props) {
 															/>
 														)}
 														{'normal' === backgroundHoverType && (
-															<ColorControl
+															<EditorColorControl
 																label={__('Background Color', 'kadence-blocks')}
 																value={backgroundHover ? backgroundHover : ''}
 																groups={colorGroups}
@@ -1374,7 +1376,7 @@ export default function KadenceButtonEdit(props) {
 															/>
 														)}
 														{'normal' === textBackgroundType && (
-															<ColorControl
+															<EditorColorControl
 																label={__('Color', 'kadence-blocks')}
 																value={color ? color : ''}
 																groups={colorGroups}
@@ -1407,7 +1409,7 @@ export default function KadenceButtonEdit(props) {
 															/>
 														)}
 														{'normal' === backgroundType && (
-															<ColorControl
+															<EditorColorControl
 																label={__('Background Color', 'kadence-blocks')}
 																value={background ? background : ''}
 																groups={colorGroups}
@@ -1505,7 +1507,7 @@ export default function KadenceButtonEdit(props) {
 												<HoverToggleControl
 													hover={
 														<>
-															<ColorControl
+															<EditorColorControl
 																label={__('Color Hover', 'kadence-blocks')}
 																value={
 																	colorTransparentHover ? colorTransparentHover : ''
@@ -1546,7 +1548,7 @@ export default function KadenceButtonEdit(props) {
 																/>
 															)}
 															{'normal' === backgroundTransparentHoverType && (
-																<ColorControl
+																<EditorColorControl
 																	label={__('Background Color', 'kadence-blocks')}
 																	value={
 																		backgroundTransparentHover
@@ -1653,7 +1655,7 @@ export default function KadenceButtonEdit(props) {
 													}
 													normal={
 														<>
-															<ColorControl
+															<EditorColorControl
 																label={__('Color', 'kadence-blocks')}
 																value={colorTransparent ? colorTransparent : ''}
 																groups={colorGroups}
@@ -1688,7 +1690,7 @@ export default function KadenceButtonEdit(props) {
 																/>
 															)}
 															{'normal' === backgroundTransparentType && (
-																<ColorControl
+																<EditorColorControl
 																	label={__('Background Color', 'kadence-blocks')}
 																	value={
 																		backgroundTransparent
@@ -1796,7 +1798,7 @@ export default function KadenceButtonEdit(props) {
 												<HoverToggleControl
 													hover={
 														<>
-															<ColorControl
+															<EditorColorControl
 																label={__('Color Hover', 'kadence-blocks')}
 																value={colorStickyHover ? colorStickyHover : ''}
 																groups={colorGroups}
@@ -1833,7 +1835,7 @@ export default function KadenceButtonEdit(props) {
 																/>
 															)}
 															{'normal' === backgroundStickyHoverType && (
-																<ColorControl
+																<EditorColorControl
 																	label={__('Background Color', 'kadence-blocks')}
 																	value={
 																		backgroundStickyHover
@@ -1935,7 +1937,7 @@ export default function KadenceButtonEdit(props) {
 													}
 													normal={
 														<>
-															<ColorControl
+															<EditorColorControl
 																label={__('Color', 'kadence-blocks')}
 																value={colorSticky ? colorSticky : ''}
 																groups={colorGroups}
@@ -1970,7 +1972,7 @@ export default function KadenceButtonEdit(props) {
 																/>
 															)}
 															{'normal' === backgroundStickyType && (
-																<ColorControl
+																<EditorColorControl
 																	label={__('Background Color', 'kadence-blocks')}
 																	value={backgroundSticky ? backgroundSticky : ''}
 																	groups={colorGroups}
@@ -2283,7 +2285,7 @@ export default function KadenceButtonEdit(props) {
 											}}
 											units={['px', 'em', 'rem']}
 										/>
-										<ColorControlGroup>
+										<EditorColorControlGroup>
 											<ColorControl
 												label={__('Icon Color', 'kadence-blocks')}
 												value={iconColor ? iconColor : ''}
@@ -2302,7 +2304,7 @@ export default function KadenceButtonEdit(props) {
 												onClear={() => setAttributes({ iconColorHover: '' })}
 												resolveLiteral={resolveColorLiteral}
 											/>
-										</ColorControlGroup>
+										</EditorColorControlGroup>
 										<ResponsiveMeasureRangeControl
 											label={__('Icon Padding', 'kadence-blocks')}
 											value={undefined !== iconPadding ? iconPadding : ['', '', '', '']}

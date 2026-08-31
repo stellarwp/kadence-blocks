@@ -98,7 +98,8 @@ import { resolveColorLiteral } from '../../extension/design-tokens/color-literal
 import { BorderColorField } from '../../extension/design-tokens/components/border-color';
 import { tokenDimension } from '../../extension/design-tokens/token-dimension';
 import { pickableTokensForControl, pickableTokensForKey } from '../../extension/token-picker';
-import { ColorControl, ColorControlGroup } from '../../token-controls';
+import { ColorControl } from '../../token-controls';
+import { EditorColorControlGroup } from '../../extension/design-tokens/components/EditorColorControlGroup';
 import { presetFontVariant } from './preset-font-variant';
 import metadata from './block.json';
 /**
@@ -1874,7 +1875,7 @@ function KadenceAdvancedHeading(props) {
 								{showSettings('colorSettings', 'kadence/advancedheading') && (
 									<>
 										{!enableTextGradient && (
-											<ColorControlGroup>
+											<EditorColorControlGroup>
 												{/* Every write clears the matching `*Class` attribute. Those carry
 												    legacy global-palette CLASSES the heading emits on its own
 												    element, so they beat the color these controls write and a stale
@@ -1923,7 +1924,7 @@ function KadenceAdvancedHeading(props) {
 													}
 													resolveLiteral={resolveColorLiteral}
 												/>
-											</ColorControlGroup>
+											</EditorColorControlGroup>
 										)}
 										<ToggleControl
 											style={{ marginTop: '10px' }}
