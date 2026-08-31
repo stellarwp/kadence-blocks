@@ -1337,6 +1337,231 @@ final class PresetsControllerTest extends TestCase {
 	}
 
 	/**
+	 * @return void
+	 */
+	public function testAMalformedPresetShapeReturns422(): void {
+		$result = $this->controller->update_item(
+			$this->block_request( 'PUT', self::BUTTON, [ 'presets' => [ 'bad' => 'not-an-object' ] ] )
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'rest_design_tokens_invalid', $result->get_error_code() );
+		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $result->get_error_data()['status'] );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testAnEmptyPresetSlugIsRejected(): void {
+		// An empty key in the presets map would store a preset node keyed by "" — reject it, mirroring the
+		// documents controller's empty dot-path-segment guard.
+		$result = $this->controller->update_item(
+			$this->block_request( 'PUT', self::BUTTON, [ 'presets' => [ '' => [ 'tokens' => [ 'button-bg' => 'transparent' ] ] ] ] )
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'rest_design_tokens_invalid', $result->get_error_code() );
+		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $result->get_error_data()['status'] );
+		$this->assertSame( '', $this->store->get_document( Token_Store::default_slug() ) );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testWritesAreDeniedToUsersWithoutTheCapability(): void {
+		wp_set_current_user( $this->factory()->user->create( [ 'role' => 'subscriber' ] ) );
+
+		$request = new WP_REST_Request( WP_REST_Server::CREATABLE );
+
+		$this->assertInstanceOf( WP_Error::class, $this->controller->create_item_permissions_check( $request ) );
+		$this->assertInstanceOf( WP_Error::class, $this->controller->update_item_permissions_check( $request ) );
+		$this->assertInstanceOf( WP_Error::class, $this->controller->delete_item_permissions_check( $request ) );
+	}
+
+	/**
+	 * A committed write re-hashes the library version so downstream caches invalidate.
+	 *
+	 * @return void
+	 */
+	public function testAWriteBumpsTheVersion(): void {
+		$this->store->save_document(
+			'{"$extensions":{"com.kadence.designTokens":{"presets":{"kadence/singlebtn":{'
+			. '"outline":{"tokens":{"button-bg":"transparent"}}}}}}}'
+		);
+
+		$version_before = $this->store->get_version( Token_Store::default_slug() );
+
+		$this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'preset' => 'dashed',
+					'tokens' => $this->button_tokens(),
+				]
+			)
+		);
+
+		$this->assertNotSame( $version_before, $this->store->get_version( Token_Store::default_slug() ) );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testReadRoutesAreGatedByTheCapability(): void {
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+
+		// Both read callbacks gate the routes (get_items for the collection, get_item for a single block and
+		// its default), so both must deny a user without the capability and allow one that has it.
+		$checks = [ 'get_items_permissions_check', 'get_item_permissions_check' ];
+
+		// A logged-out user is denied.
+		wp_set_current_user( 0 );
+
+		foreach ( $checks as $check ) {
+			$result = $this->controller->$check( $request );
+
+			$this->assertInstanceOf( WP_Error::class, $result, "$check should deny a logged-out user." );
+			$this->assertSame( 'rest_forbidden', $result->get_error_code() );
+		}
+
+		// An authenticated user without edit_theme_options is denied.
+		wp_set_current_user( $this->factory()->user->create( [ 'role' => 'subscriber' ] ) );
+
+		foreach ( $checks as $check ) {
+			$result = $this->controller->$check( $request );
+
+			$this->assertInstanceOf( WP_Error::class, $result, "$check should deny a subscriber." );
+			$this->assertSame( 'rest_forbidden', $result->get_error_code() );
+		}
+
+		// An administrator (edit_theme_options) is allowed.
+		wp_set_current_user( $this->factory()->user->create( [ 'role' => 'administrator' ] ) );
+
+		foreach ( $checks as $check ) {
+			$this->assertTrue( $this->controller->$check( $request ), "$check should allow an administrator." );
+		}
+	}
+
+	// -------------------------------------------------------------------------
+	// preset display order
+	// -------------------------------------------------------------------------
+
+	/**
+	 * The order sub-route is registered with PUT and DELETE, alongside the rest of the block routes.
+	 *
+	 * @return void
+	 */
+	public function testTheOrderRouteIsRegistered(): void {
+		$namespace   = $this->controller_namespace();
+		$base        = $this->controller_rest_base();
+		$block_route = $this->controller_constant( 'BLOCK_ROUTE' );
+		$order_route = $this->controller_constant( 'ORDER_ROUTE' );
+
+		$route = "/$namespace/$base/$block_route/$order_route";
+
+		$this->assertArrayHasKey( $route, $this->rest_server->get_routes() );
+		$this->assertContains( 'PUT', $this->route_methods( $route ) );
+		$this->assertContains( 'DELETE', $this->route_methods( $route ) );
+	}
+
+	/**
+	 * A PUT to the order sub-route moves a BASELINE preset slug out of its baseline position — the case a
+	 * PUT-the-collection "reorder" cannot reach, since `Effective_Presets` always reads baseline-defined
+	 * slugs back in baseline order, ahead of stored ones, regardless of the order overrides were written in.
+	 *
+	 * @return void
+	 */
+	public function testSetOrderMovesBaselineSlugs(): void {
+		$this->createAccentPreset();
+
+		$response = $this->controller->set_order( $this->order_request( self::BUTTON, [ 'accent', 'default' ] ) );
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+		$this->assertSame( [ 'accent', 'default' ], array_keys( $response->get_data()['presets'] ) );
+
+		// The order survives a fresh read.
+		$data = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, self::BUTTON ) )->get_data();
+		$this->assertSame( [ 'accent', 'default' ], array_keys( $data['presets'] ) );
+	}
+
+	/**
+	 * A slug the block does not effectively define is pruned from the submitted order silently, rather
+	 * than rejected — the order write is advisory, mirroring the documents controller's token-order route.
+	 *
+	 * @return void
+	 */
+	public function testSetOrderSilentlyPrunesAnUnknownSlug(): void {
+		$this->createAccentPreset();
+
+		$response = $this->controller->set_order(
+			$this->order_request( self::BUTTON, [ 'accent', 'does-not-exist', 'default' ] )
+		);
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+		$this->assertSame( [ 'accent', 'default' ], array_keys( $response->get_data()['presets'] ) );
+	}
+
+	/**
+	 * A version that no longer matches the stored version is rejected with HTTP 409, so a client working
+	 * from a stale read cannot silently clobber a concurrent write.
+	 *
+	 * @return void
+	 */
+	public function testSetOrderRejectsAStaleVersionWith409(): void {
+		$result = $this->controller->set_order(
+			$this->order_request( self::BUTTON, [ 'default' ], 'a-stale-version' )
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'rest_design_tokens_conflict', $result->get_error_code() );
+		$this->assertSame( WP_Http::CONFLICT, $result->get_error_data()['status'] );
+	}
+
+	/**
+	 * A block with no registered preset bindings is a 404, mirroring every other block sub-route.
+	 *
+	 * @return void
+	 */
+	public function testSetOrderReturns404ForABlockThatAcceptsNoPresets(): void {
+		$result = $this->controller->set_order( $this->order_request( 'kadence/spacer', [ 'anything' ] ) );
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'rest_design_tokens_not_found', $result->get_error_code() );
+	}
+
+	/**
+	 * DELETE on the order sub-route reverts a stored order to merge (baseline) order.
+	 *
+	 * @return void
+	 */
+	public function testDeleteOrderRevertsToMergeOrder(): void {
+		$this->createAccentPreset();
+		$this->controller->set_order( $this->order_request( self::BUTTON, [ 'accent', 'default' ] ) );
+
+		$version  = $this->store->get_version( Token_Store::default_slug() );
+		$response = $this->controller->delete_order( $this->order_request( self::BUTTON, [], $version ) );
+
+		$this->assertSame( WP_Http::OK, $response->get_status() );
+		$this->assertSame( [ 'default', 'accent' ], array_keys( $response->get_data()['presets'] ) );
+	}
+
+	/**
+	 * DELETE on the order sub-route is idempotent: a no-op, unchanged-version response when nothing is
+	 * stored for the block.
+	 *
+	 * @return void
+	 */
+	public function testDeleteOrderIsAnIdempotentNoOpWhenAbsent(): void {
+		$version_before = $this->store->get_version( Token_Store::default_slug() );
+
+		$response = $this->controller->delete_order( $this->order_request( self::BUTTON, [], $version_before ) );
+
+		$this->assertSame( WP_Http::OK, $response->get_status() );
+		$this->assertSame( $version_before, $this->store->get_version( Token_Store::default_slug() ) );
+	}
+
+	/**
 	 * Creating a preset named "order" is rejected: the slug is reserved for the block's order sub-route and
 	 * could never be reordered or deleted through the dedicated route.
 	 *
