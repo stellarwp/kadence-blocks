@@ -5,6 +5,7 @@ import {
 	applyOptimisticOverlay,
 	customColorTokenId,
 	findSwatch,
+	inheritedSwatchCount,
 	isCustomColorToken,
 	isDefaultPalette,
 	isDuplicatePaletteLabel,
@@ -13,6 +14,7 @@ import {
 	newSwatchValue,
 	nextCustomColorSlug,
 	paletteDisplayLabel,
+	paletteShowsInheritance,
 	paletteSuccessorOptions,
 	removeGroupFromGroups,
 	removeSwatchFromGroups,
@@ -806,5 +808,106 @@ describe('validateNewGroupLabel', () => {
 
 		expect(result.groupId).toBe('new-group');
 		expect(result.error).toBeNull();
+	});
+});
+
+describe('paletteShowsInheritance', () => {
+	/**
+	 * A non-default palette inherits from the default one, so its cards carry the pill.
+	 *
+	 * @return void
+	 */
+	it('is true for a palette that is not the default', () => {
+		expect(paletteShowsInheritance({ defaultId: 'default' }, 'secondary')).toBe(true);
+	});
+
+	/**
+	 * The default palette defines the values, so it has no source to name and no delta to reset.
+	 *
+	 * @return void
+	 */
+	it('is false for the default palette itself', () => {
+		expect(paletteShowsInheritance({ defaultId: 'default' }, 'default')).toBe(false);
+	});
+
+	/**
+	 * A listing with no `$default` pointer cannot say what inherits from what, so no card claims
+	 * a source it has not verified.
+	 *
+	 * @return void
+	 */
+	it('is false when the listing has no default pointer', () => {
+		expect(paletteShowsInheritance({}, 'secondary')).toBe(false);
+	});
+
+	/**
+	 * No palette is open yet on a cold load, and an unnamed palette shows nothing.
+	 *
+	 * @return void
+	 */
+	it('is false when no palette is being edited', () => {
+		expect(paletteShowsInheritance({ defaultId: 'default' }, '')).toBe(false);
+	});
+});
+
+describe('inheritedSwatchCount', () => {
+	/**
+	 * Counts every swatch across every group that still has no value of its own.
+	 *
+	 * @return void
+	 */
+	it('counts the un-overridden swatches across all groups', () => {
+		const groups = [
+			{
+				id: 'accent',
+				pendingDelete: false,
+				items: [
+					{ id: 'a', overridden: false, pendingDelete: false },
+					{ id: 'b', overridden: true, pendingDelete: false },
+				],
+			},
+			{
+				id: 'neutral',
+				pendingDelete: false,
+				items: [{ id: 'c', overridden: false, pendingDelete: false }],
+			},
+		];
+
+		expect(inheritedSwatchCount(groups)).toBe(2);
+	});
+
+	/**
+	 * A swatch or a group that is mid-delete is on its way out, so counting it would state a
+	 * number the grid is about to contradict.
+	 *
+	 * @return void
+	 */
+	it('skips swatches and groups that are pending delete', () => {
+		const groups = [
+			{
+				id: 'accent',
+				pendingDelete: false,
+				items: [
+					{ id: 'a', overridden: false, pendingDelete: true },
+					{ id: 'b', overridden: false, pendingDelete: false },
+				],
+			},
+			{
+				id: 'going',
+				pendingDelete: true,
+				items: [{ id: 'c', overridden: false, pendingDelete: false }],
+			},
+		];
+
+		expect(inheritedSwatchCount(groups)).toBe(1);
+	});
+
+	/**
+	 * An empty or missing group list counts as nothing rather than throwing.
+	 *
+	 * @return void
+	 */
+	it('returns 0 for an empty list', () => {
+		expect(inheritedSwatchCount([])).toBe(0);
 	});
 });

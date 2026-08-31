@@ -9,7 +9,7 @@
 /**
  * WordPress dependencies
  */
-import { useMemo, useState } from '@wordpress/element';
+import { useCallback, useMemo, useState } from '@wordpress/element';
 import { Button, DropdownMenu, MenuGroup, MenuItem, Notice } from '@wordpress/components';
 import { __, sprintf } from '@wordpress/i18n';
 import { moreVertical, plus } from '@wordpress/icons';
@@ -18,11 +18,13 @@ import { moreVertical, plus } from '@wordpress/icons';
  * Internal dependencies
  */
 import { colord } from '../../helpers/colord';
+import { InheritancePill } from '../atoms/InheritancePill';
 import { ScreenHeader } from '../organisms/ScreenHeader';
 import { SwatchGrid } from '../organisms/SwatchGrid';
 import { SelectDropdown } from '../molecules/SelectDropdown';
 import { ScreenDescription } from '../molecules/ScreenDescription';
 import { EmptyState } from '../molecules/EmptyState';
+import { PaletteInheritanceNotice } from '../molecules/PaletteInheritanceNotice';
 import { Skeleton } from '../atoms/Skeleton';
 import { ActivatePaletteButton } from '../organisms/ActivatePaletteButton';
 import { CreatePaletteModal } from '../organisms/CreatePaletteModal';
@@ -34,9 +36,11 @@ import { DeleteColorGroupModal } from '../organisms/DeleteColorGroupModal';
 import { usePalettes } from '../../hooks/use-palettes';
 import { useLoadingAnnouncement } from '../../hooks/use-loading-announcement';
 import {
+	inheritedSwatchCount,
 	isUserCreatedPalette,
 	mapPaletteToSwatchGroups,
 	paletteDisplayLabel,
+	paletteShowsInheritance,
 	paletteSuccessorOptions,
 } from '../../helpers/palettes';
 import { ColorPaletteSettings } from './ColorPaletteSettings';
@@ -81,15 +85,18 @@ function SwatchGridSkeleton({ label }) {
 					{SKELETON_SWATCH_IDS.map((id) => (
 						<div key={id} className="kadence-blocks-style-library__swatch-card">
 							<div className="kadence-blocks-style-library__swatch-card-main">
-								<Skeleton className="kadence-blocks-style-library__swatch-card-preview" />
-								{/* `.swatch-card-name` only declares `max-width: 100%`, never a `width` — a real
-								 * swatch name gets its width from its own text, but this shape has none, and its
-								 * `align-items: flex-start` parent collapses an unsized block to 0 width without
-								 * one. Same fix as the group heading bar above: pin a plausible literal width. */}
-								<Skeleton
-									className="kadence-blocks-style-library__swatch-card-name kadence-blocks-style-library__skeleton--bar"
-									style={{ width: '70%' }}
-								/>
+								<div className="kadence-blocks-style-library__swatch-card-select">
+									<Skeleton className="kadence-blocks-style-library__swatch-card-preview" />
+									{/* `.swatch-card-name` only declares `max-width: 100%`, never a `width` — a real
+									 * swatch name gets its width from its own text, but this shape has none, and its
+									 * `align-items: flex-start` parent (`.swatch-card-select`) collapses an unsized
+									 * block to 0 width without one. Same fix as the group heading bar above: pin a
+									 * plausible literal width. */}
+									<Skeleton
+										className="kadence-blocks-style-library__swatch-card-name kadence-blocks-style-library__skeleton--bar"
+										style={{ width: '70%' }}
+									/>
+								</div>
 							</div>
 						</div>
 					))}
@@ -157,6 +164,49 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 	const isEditingUserCreated = isUserCreatedPalette(palettes.listing, palettes.editingId);
 	const activeRow = palettes.listing.palettes.find((row) => row.id === palettes.activeId);
 
+	// The pills only exist on a palette that has something to inherit FROM, and both the pill and
+	// the notice name that palette by its current label — the default palette can be renamed, so
+	// the word on the card has to come from the listing rather than from a literal.
+	const showsInheritance = paletteShowsInheritance(palettes.listing, palettes.editingId);
+	const defaultLabel = paletteDisplayLabel(
+		palettes.listing.palettes.find((row) => row.id === palettes.listing.defaultId)
+	);
+
+	/**
+	 * Reset one swatch's override, then, on success, move focus to that card's own select button —
+	 * the pill that was just clicked is about to unmount (the card flips back to the static "From"
+	 * pill), and React would otherwise drop focus to `<body>`. The card and its select button are
+	 * resolved from the click event up front rather than through a ref, since `card` is only needed
+	 * once the promise settles and may be gone from the document by then; a failed reset leaves the
+	 * Reset button in place, so focus is left alone on failure.
+	 *
+	 * @param {Event}  event The click event from the pill's own button.
+	 * @param {string} token The swatch token to reset.
+	 *
+	 * @since TBD
+	 *
+	 * @return {void}
+	 */
+	const handleResetSwatch = useCallback(
+		(event, token) => {
+			if (palettes.isBusy) {
+				return;
+			}
+
+			const card = event.currentTarget?.closest('.kadence-blocks-style-library__swatch-card');
+
+			palettes
+				.resetSwatch(token)
+				.then(() => {
+					card?.querySelector('.kadence-blocks-style-library__swatch-card-select')?.focus();
+				})
+				// Swallowed: a failure already surfaces as a toast from inside `resetSwatch`, and the
+				// card simply keeps showing its override.
+				.catch(() => {});
+		},
+		[palettes.isBusy, palettes.resetSwatch]
+	);
+
 	const options = useMemo(
 		() =>
 			palettes.listing.palettes.map((row) => ({
@@ -183,9 +233,21 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 					// delete, where reordering something about to vanish is not meaningful.
 					isDraggable: !item.pendingDelete,
 					isPendingDelete: item.pendingDelete,
+					pill:
+						!showsInheritance || !defaultLabel ? null : item.overridden ? (
+							<InheritancePill
+								variant="reset"
+								sourceLabel={defaultLabel}
+								swatchName={item.name}
+								isDisabled={palettes.isBusy || item.pendingDelete}
+								onReset={(event) => handleResetSwatch(event, item.id)}
+							/>
+						) : (
+							<InheritancePill variant="inherited" sourceLabel={defaultLabel} />
+						),
 				})),
 			})),
-		[palettes.palette]
+		[palettes.palette, palettes.isBusy, showsInheritance, defaultLabel, handleResetSwatch]
 	);
 
 	return (
@@ -274,6 +336,9 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 						<Notice status="error" onRemove={palettes.clearStructureError}>
 							{palettes.structureError.message}
 						</Notice>
+					)}
+					{showsInheritance && (
+						<PaletteInheritanceNotice count={inheritedSwatchCount(gridGroups)} sourceLabel={defaultLabel} />
 					)}
 					<SwatchGrid
 						groups={gridGroups}

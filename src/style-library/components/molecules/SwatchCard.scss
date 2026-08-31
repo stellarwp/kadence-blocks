@@ -19,19 +19,63 @@
 	// `border-box`, not the `<div>` default `content-box` — without it, the padding below renders
 	// 16px wider than the width intends.
 	box-sizing: border-box;
+	// The containing block for the selecting button's hit area — see its `::after`.
+	position: relative;
 	display: flex;
 	flex-direction: column;
-	align-items: flex-start;
 	gap: var(--kb-sl-space-05);
 	width: var(--kb-sl-size-swatch-card-width);
-	padding: var(--kb-sl-space-10);
 	// gray-300, not the structural --kb-sl-color-border (gray-200) semantic — a card outline is a
 	// distinct role from structural chrome edges.
 	border: var(--kb-sl-border-width-input) solid var(--kb-sl-color-gray-300);
 	border-radius: var(--kb-sl-radius-m);
 	background: var(--kb-sl-color-surface);
+}
+
+// The selecting click target. The border, radius and background stay on `.main` above, so every
+// existing hover/selected/placeholder rule keeps describing the same box it always did — but the
+// card's padding lives HERE, not there. A padded parent would leave an inert ring around the
+// button, and clicking a card near its edge would do nothing.
+.kadence-blocks-style-library__swatch-card-select {
+	// `border-box`, so `width: 100%` still measures the parent's full content width once the
+	// padding below is added to it.
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: var(--kb-sl-space-05);
+	width: 100%;
+	// The card's full inset by default. A card WITH a pill slot hands its bottom half over to that
+	// slot (see the `--with-pill-slot` rule below), because two elements each padding their own
+	// bottom would double the gap between the value line and the pill.
+	padding: var(--kb-sl-space-10);
+	border: 0;
+	background: none;
 	text-align: left;
+
+	// Selecting a card is a whole-card gesture, but the button can only ever be the top half of one
+	// — the pill slot has to stay its sibling so a pill can be a control of its own. This stretches
+	// the button's hit area over the entire card so the pill row and the padding around it select
+	// too, with no second click target and nothing extra in the accessibility tree.
+	&::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+	}
+}
+
+// The pointer belongs to the real control, not to the layout: the loading placeholder reuses the
+// class above on an inert `div` to inherit the same alignment, and a pointer cursor there would
+// promise an action nothing can perform.
+button.kadence-blocks-style-library__swatch-card-select {
 	cursor: pointer;
+}
+
+// A card whose pill slot renders hands the lower inset to that slot, so the button stops padding
+// its own bottom. Without this the two would stack and push the pill away from the value line;
+// without the default above, a card with no slot would have no bottom inset at all.
+.kadence-blocks-style-library__swatch-card--with-pill-slot .kadence-blocks-style-library__swatch-card-select {
+	padding-bottom: 0;
 }
 
 // Hover, mirroring `ListRow`'s own hover treatment — a sibling semantic alias
@@ -140,4 +184,25 @@
 	min-width: var(--kb-sl-space-30);
 	min-height: var(--kb-sl-space-30);
 	opacity: 0;
+}
+
+// Reserved whether or not a pill is in it — an empty slot with no sized child would collapse and
+// let a card with nothing to say sit shorter than its neighbors, which is the one thing the single
+// slot exists to prevent.
+.kadence-blocks-style-library__swatch-card-pill-slot {
+	box-sizing: border-box;
+	display: flex;
+	align-items: center;
+	width: 100%;
+	// The card's lower inset — see `.swatch-card-select`'s own padding comment for why the two
+	// halves carry it between them instead of the parent.
+	padding: 0 var(--kb-sl-space-10) var(--kb-sl-space-10);
+	min-height: calc(var(--kb-sl-space-30) + var(--kb-sl-space-10));
+
+	// A pill that is a CONTROL is lifted above the selecting button's stretched hit area so it
+	// receives its own clicks. Everything else in this slot is deliberately left under it — a pill
+	// that only states a fact should select the card like the rest of the surface around it.
+	> button {
+		position: relative;
+	}
 }

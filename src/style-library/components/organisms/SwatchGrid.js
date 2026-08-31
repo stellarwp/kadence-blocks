@@ -99,6 +99,9 @@ function SwatchGridGroup({ group, selectedId, onSelect, onReorder, onAdd, addLab
 		onReorder: (orderedIds) => onReorder(group.id, orderedIds),
 	});
 	const activeItem = group.items.find((item) => item.id === activeId);
+	// The slot is reserved for the whole row once ANY item in the group has a pill, so pill-less
+	// cards in that row still line up with the ones that have one.
+	const reservePillSlot = group.items.some((item) => Boolean(item.pill));
 	// Cascades from `applyOptimisticOverlay`'s group-deletion handling (see `helpers/palettes.js`'s
 	// `mapPaletteToSwatchGroups`): while the group itself is mid-delete, its heading (and the
 	// Rename/Delete menu and Add-color tile it hosts) must read as inert too, not just its swatches.
@@ -127,6 +130,7 @@ function SwatchGridGroup({ group, selectedId, onSelect, onReorder, onAdd, addLab
 								isSelected={item.id === selectedId}
 								onSelect={onSelect}
 								useSortableItem={useSortableItem}
+								reservePillSlot={reservePillSlot}
 							/>
 						))}
 						<AddTile
@@ -141,7 +145,17 @@ function SwatchGridGroup({ group, selectedId, onSelect, onReorder, onAdd, addLab
 				 * participate in the sortable group itself. */}
 				<DragOverlay>
 					{activeItem && (
-						<SwatchCard {...activeItem} isSelected={activeItem.id === selectedId} onSelect={() => {}} />
+						// `pill={null}` after the spread: the floating copy must not carry a second
+						// focusable Reset button duplicating the original card's accessible name.
+						// `reservePillSlot` still carries the row's decision, so the overlay keeps
+						// matching the height of the placeholder it stands in for.
+						<SwatchCard
+							{...activeItem}
+							isSelected={activeItem.id === selectedId}
+							onSelect={() => {}}
+							pill={null}
+							reservePillSlot={reservePillSlot}
+						/>
 					)}
 				</DragOverlay>
 			</DndContext>
@@ -154,17 +168,19 @@ function SwatchGridGroup({ group, selectedId, onSelect, onReorder, onAdd, addLab
  * style, and handle props to `SwatchCard`. Not exported — an implementation detail of
  * `SwatchGridGroup`.
  *
- * @param {Object}   props                 The component props.
- * @param {Object}   props.item            The card descriptor (`SwatchCard` props).
- * @param {boolean}  props.isSelected      Whether this card is selected.
- * @param {Function} props.onSelect        Card click handler.
- * @param {Function} props.useSortableItem The per-item sortable hook from `useReorderableList`.
+ * @param {Object}   props                  The component props.
+ * @param {Object}   props.item             The card descriptor (`SwatchCard` props).
+ * @param {boolean}  props.isSelected       Whether this card is selected.
+ * @param {Function} props.onSelect         Card click handler.
+ * @param {Function} props.useSortableItem  The per-item sortable hook from `useReorderableList`.
+ * @param {boolean}  props.reservePillSlot  Whether the group has at least one pill, forwarded to
+ *                                          `SwatchCard` so every card in the row reserves the slot.
  *
  * @since TBD
  *
  * @return {JSX.Element} The wired card.
  */
-function SortableSwatchCard({ item, isSelected, onSelect, useSortableItem }) {
+function SortableSwatchCard({ item, isSelected, onSelect, useSortableItem, reservePillSlot }) {
 	const { setNodeRef, style, handleProps, isDragging } = useSortableItem(item.id);
 
 	return (
@@ -176,6 +192,7 @@ function SortableSwatchCard({ item, isSelected, onSelect, useSortableItem }) {
 			innerRef={setNodeRef}
 			wrapperStyle={style}
 			dragHandleProps={handleProps}
+			reservePillSlot={reservePillSlot}
 		/>
 	);
 }
