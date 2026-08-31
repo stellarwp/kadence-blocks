@@ -59,6 +59,25 @@ export function receiveDesignTokensFeed(slug, feed) {
 }
 
 /**
+ * Forget every cached entry addressed to one library: its block presets, its palette listing, its
+ * pending optimistic overlays, and its busy flags.
+ *
+ * Dispatched after a library is deleted or reset, so the screens stop rendering values the server
+ * no longer holds. The feeds slice is deliberately untouched — the flow that dispatches this is
+ * about to replace the feed it lands on, and blanking it first would drop the whole app to its
+ * loading skeleton for a tick.
+ *
+ * @param {string} slug Token library slug.
+ *
+ * @since TBD
+ *
+ * @return {Object} The action object.
+ */
+export function forgetLibrary(slug) {
+	return { type: 'FORGET_LIBRARY', slug };
+}
+
+/**
  * Patch a swatch's label and/or value in the optimistic overlay, ahead of its write's response.
  *
  * @param {string} key   The palette listing key (`paletteListingKey(namespace, slug)`).

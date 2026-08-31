@@ -6,13 +6,57 @@ import { combineReducers } from '@wordpress/data';
 /**
  * Internal dependencies
  */
-import { EMPTY_OPTIMISTIC_SWATCH_EDIT, EMPTY_OPTIMISTIC_SCALE_EDIT } from './constants';
+import {
+	EMPTY_OPTIMISTIC_SWATCH_EDIT,
+	EMPTY_OPTIMISTIC_SCALE_EDIT,
+	isLibraryScopedKey,
+	isPresetsKeyForLibrary,
+} from './constants';
+
+/**
+ * Drop every entry of a keyed slice whose key addresses `slug`.
+ *
+ * Returns the original `state` by reference when nothing matched, so forgetting a library that
+ * has no entry in a given slice cannot make `useSelect` see a changed result and re-render every
+ * consumer of that slice for nothing.
+ *
+ * @param {Object}   state   The slice.
+ * @param {string}   slug    Token library slug.
+ * @param {Function} matches `(key, slug) => boolean`, the predicate for this slice's key shape.
+ *
+ * @since TBD
+ *
+ * @return {Object} The slice without the matching entries, or `state` itself when none matched.
+ */
+function omitLibraryEntries(state, slug, matches) {
+	const kept = Object.fromEntries(Object.entries(state).filter(([key]) => !matches(key, slug)));
+
+	return Object.keys(kept).length === Object.keys(state).length ? state : kept;
+}
+
+/**
+ * The predicate for the slices keyed by the slug alone (`optimisticScaleEdits`, `scaleBusy`).
+ *
+ * @param {string} key  The state key.
+ * @param {string} slug Token library slug.
+ *
+ * @since TBD
+ *
+ * @return {boolean} True when the key addresses that library.
+ */
+function isBareLibraryKey(key, slug) {
+	return key === slug;
+}
 
 function libraries(state = [], action) {
 	return action.type === 'RECEIVE_LIBRARIES' ? action.rows : state;
 }
 
 function presets(state = {}, action) {
+	if (action.type === 'FORGET_LIBRARY') {
+		return omitLibraryEntries(state, action.slug, isPresetsKeyForLibrary);
+	}
+
 	if (action.type !== 'RECEIVE_BLOCK_PRESETS') {
 		return state;
 	}
@@ -21,6 +65,10 @@ function presets(state = {}, action) {
 }
 
 function paletteListings(state = {}, action) {
+	if (action.type === 'FORGET_LIBRARY') {
+		return omitLibraryEntries(state, action.slug, isLibraryScopedKey);
+	}
+
 	if (action.type !== 'RECEIVE_PALETTE_LISTING') {
 		return state;
 	}
@@ -72,6 +120,8 @@ function optimisticSwatchEdits(state = {}, action) {
 				[action.key]: { ...current, [listKey]: current[listKey].filter((entry) => entry[idKey] !== action.id) },
 			};
 		}
+		case 'FORGET_LIBRARY':
+			return omitLibraryEntries(state, action.slug, isLibraryScopedKey);
 		default:
 			return state;
 	}
@@ -116,12 +166,18 @@ function optimisticScaleEdits(state = {}, action) {
 					addedTokens: current.addedTokens.filter((entry) => entry.id !== action.tokenId),
 				},
 			};
+		case 'FORGET_LIBRARY':
+			return omitLibraryEntries(state, action.slug, isBareLibraryKey);
 		default:
 			return state;
 	}
 }
 
 function paletteBusy(state = {}, action) {
+	if (action.type === 'FORGET_LIBRARY') {
+		return omitLibraryEntries(state, action.slug, isLibraryScopedKey);
+	}
+
 	if (action.type !== 'SET_PALETTE_BUSY') {
 		return state;
 	}
@@ -130,6 +186,10 @@ function paletteBusy(state = {}, action) {
 }
 
 function scaleBusy(state = {}, action) {
+	if (action.type === 'FORGET_LIBRARY') {
+		return omitLibraryEntries(state, action.slug, isBareLibraryKey);
+	}
+
 	if (action.type !== 'SET_SCALE_BUSY') {
 		return state;
 	}

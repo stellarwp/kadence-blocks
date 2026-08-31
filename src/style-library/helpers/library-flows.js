@@ -48,20 +48,33 @@ export function errorMessage(error) {
  * until someone explicitly activates a different one through `activateLibraryFlow`.
  *
  * @param {Object}   args
- * @param {string}   args.slug        The token library slug to open for editing.
- * @param {Function} args.refreshFeed Replaces the feed with a fresh REST read for a slug.
- * @param {Function} args.onBusy      Called with a boolean as the request starts and settles.
- * @param {Function} args.onError     Called with `{ message }` on failure.
+ * @param {string}   args.slug           The token library slug to open for editing.
+ * @param {Function} args.refreshFeed    Replaces the feed with a fresh REST read for a slug.
+ * @param {Function} args.resetWorkspace Clears the draft channel and the open route item, so the
+ *                                       library being left behind cannot strand a draft.
+ * @param {Function} args.onBusy         Called with a boolean as the request starts and settles.
+ * @param {Function} args.onError        Called with `{ message }` on failure.
  *
  * @since TBD
  *
  * @return {Promise<void>} Resolves once the feed refresh completes; rejects on failure, after
  *                          `onError`/`onBusy` have already run.
  */
-export function openLibraryFlow({ slug, refreshFeed, onBusy, onError }) {
+export function openLibraryFlow({ slug, refreshFeed, resetWorkspace, onBusy, onError }) {
 	onBusy(true);
 
-	return refreshFeed(slug)
+	return Promise.resolve()
+		.then(() => {
+			// Before the read, not after: the open panel's draft belongs to the library being left,
+			// and the panel cannot reseed itself when the values change underneath it. Unmounting it
+			// first is what stops it reporting unsaved changes about a draft with nowhere left to go.
+			// Running it inside the chain (rather than before it starts) keeps a throw here inside
+			// this flow's own `.catch()`, instead of escaping synchronously and leaving `onBusy(false)`
+			// never called.
+			resetWorkspace();
+
+			return refreshFeed(slug);
+		})
 		.then(() => onBusy(false))
 		.catch((err) => {
 			onError({ message: errorMessage(err) });
@@ -237,15 +250,19 @@ export function renameLibraryFlow({ slug, title, libraries, loadLibraries, onBus
  * so it remains and stays active, and there is no successor to name.
  *
  * @param {Object}   args
- * @param {string}   args.slug            The token library slug to delete or reset.
- * @param {string}   args.activeSlug      The slug the site currently renders with.
- * @param {string}   [args.successorSlug] The library to activate first, required when deleting the
- *                                        active non-default library.
- * @param {Function} args.refreshFeed     Replaces the feed with a fresh REST read for a slug.
- * @param {Function} args.loadLibraries   Refreshes the libraries list.
- * @param {Function} args.onBusy          Called with a boolean as the request starts and settles.
- * @param {Function} args.onError         Called with `{ message }` on failure.
- * @param {Function} args.onActiveChanged Called with the slug that ends up active, when it moves.
+ * @param {string}   args.slug                    The token library slug to delete or reset.
+ * @param {string}   args.activeSlug              The slug the site currently renders with.
+ * @param {string}   [args.successorSlug]         The library to activate first, required when
+ *                                                deleting the active non-default library.
+ * @param {Function} args.refreshFeed             Replaces the feed with a fresh REST read for a slug.
+ * @param {Function} args.loadLibraries           Refreshes the libraries list.
+ * @param {Function} args.forgetLibrary           Drops every cached entry addressed to a library slug.
+ * @param {Function} args.revalidateLibraryCaches Re-arms the resolvers `forgetLibrary` left empty,
+ *                                                once the feed has moved off the deleted library.
+ * @param {Function} args.resetWorkspace          Clears the draft channel and the open route item.
+ * @param {Function} args.onBusy                  Called with a boolean as the request starts and settles.
+ * @param {Function} args.onError                 Called with `{ message }` on failure.
+ * @param {Function} args.onActiveChanged         Called with the slug that ends up active, when it moves.
  *
  * @since TBD
  *
@@ -258,6 +275,9 @@ export function deleteLibraryFlow({
 	successorSlug,
 	refreshFeed,
 	loadLibraries,
+	forgetLibrary,
+	revalidateLibraryCaches,
+	resetWorkspace,
 	onBusy,
 	onError,
 	onActiveChanged,
@@ -293,7 +313,44 @@ export function deleteLibraryFlow({
 
 	return activation
 		.then(() => deleteLibrary(slug))
+		.then(() => {
+			// Both run only once the delete has actually landed, and both run before the feed is
+			// re-read. Resetting earlier would throw away an open draft for a request that might
+			// still fail; resetting later would let a screen render the fresh feed while still
+			// holding the deleted library's cached presets, palettes and pending overlays. That is
+			// about emptying those values, which must happen before the feed read. Re-arming the
+			// resolvers that fill them is a separate step below, and it deliberately runs later.
+			//
+			// Wrapped in its own try/catch, not folded into the flow's outer `.catch()`, for the same
+			// reason the `loadLibraries()` step below swallows its own failure: by this point
+			// `deleteLibrary(slug)` has already resolved, so a throw from either callback (e.g.
+			// `resetWorkspace()`'s `history.replaceState`) must not be reported as a failed delete.
+			// Caught separately rather than as one block: the workspace reset is what stops a deleted
+			// library's draft from claiming unsaved changes, so it has to run even if forgetting that
+			// library's cached state failed first.
+			try {
+				forgetLibrary(slug);
+			} catch {
+				// Intentionally swallowed — see above.
+			}
+
+			try {
+				resetWorkspace();
+			} catch {
+				// Intentionally swallowed — see above.
+			}
+		})
 		.then(() => refreshFeed(nextSlug))
+		.then(() => {
+			// After the feed swap, never before: re-arming these resolvers for a library the app is
+			// leaving is pointless work, and this is the right place to do it regardless. The
+			// stale-notice protection itself lives in the palette hook, not in this ordering.
+			try {
+				revalidateLibraryCaches();
+			} catch {
+				// Intentionally swallowed — see above.
+			}
+		})
 		.then(() =>
 			// A failed refetch here must not undo a delete that already succeeded — by this point
 			// `deleteLibrary(slug)` has already resolved. A stale list is already surfaced

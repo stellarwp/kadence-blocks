@@ -3,8 +3,9 @@ import { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { RegistryProvider } from '@wordpress/data';
 import { useLibraries } from '../hooks/use-libraries';
-import { fetchLibraries } from '../api/client';
+import { fetchLibraries, deleteLibrary, setActiveLibrary } from '../api/client';
 import { createTestRegistry } from '../store/test-utils';
+import { paletteListingKey, presetsKey } from '../store/constants';
 
 jest.mock('../api/client', () => ({
 	fetchLibraries: jest.fn(),
@@ -16,6 +17,8 @@ jest.mock('../api/client', () => ({
 
 const ROW_A = { slug: 'default', title: '', version: 'v1', document: {} };
 const ROW_B = { slug: 'brand', title: 'Brand', version: 'v1', document: {} };
+const NAMESPACE = 'kb-design-tokens/v1';
+const STORE = 'kadence-blocks/style-library';
 
 describe('useLibraries', () => {
 	let container;
@@ -111,17 +114,17 @@ describe('useLibraries', () => {
 	function mountProbe() {
 		let latest = null;
 
-		function Probe({ feed, refreshFeed }) {
-			latest = useLibraries(feed, refreshFeed);
+		function Probe({ feed, refreshFeed, resetWorkspace }) {
+			latest = useLibraries(feed, refreshFeed, resetWorkspace);
 			return null;
 		}
 
 		return {
-			render: async (feed, refreshFeed) => {
+			render: async (feed, refreshFeed, resetWorkspace = jest.fn()) => {
 				await act(() =>
 					root.render(
 						<RegistryProvider value={registry}>
-							<Probe feed={feed} refreshFeed={refreshFeed} />
+							<Probe feed={feed} refreshFeed={refreshFeed} resetWorkspace={resetWorkspace} />
 						</RegistryProvider>
 					)
 				);
@@ -230,5 +233,50 @@ describe('useLibraries', () => {
 		await act(() => settleWithTimers(registry.resolveSelect('kadence-blocks/style-library').getLibraries()));
 
 		expect(probe.latest().libraries).toHaveLength(2);
+	});
+
+	it('forgets the deleted library, so its cached presets and palettes stop being served', async () => {
+		fetchLibraries.mockResolvedValue([ROW_A, ROW_B]);
+		setActiveLibrary.mockResolvedValue({ slug: 'default' });
+		deleteLibrary.mockResolvedValue({ deleted: true });
+
+		const store = registry.dispatch(STORE);
+		store.receiveBlockPresets(presetsKey(NAMESPACE, 'kadence/singlebtn', 'brand'), { hero: {} });
+		store.receivePaletteListing(paletteListingKey(NAMESPACE, 'brand'), [{ id: 'p1' }]);
+
+		const probe = mountProbe();
+		await probe.render(
+			{ slug: 'brand' },
+			jest.fn(() => Promise.resolve())
+		);
+
+		await act(() => settleWithTimers(probe.latest().deleteLibrary('brand', 'default')));
+
+		const select = registry.select(STORE);
+
+		expect(select.getBlockPresets(NAMESPACE, 'kadence/singlebtn', 'brand')).toBeNull();
+		expect(select.getPaletteListing(NAMESPACE, 'brand').palettes).toEqual([]);
+	});
+
+	it('hands the workspace reset it was given to both the open and the delete flow', async () => {
+		fetchLibraries.mockResolvedValue([ROW_A, ROW_B]);
+		setActiveLibrary.mockResolvedValue({ slug: 'default' });
+		deleteLibrary.mockResolvedValue({ deleted: true });
+
+		const resetWorkspace = jest.fn();
+		const probe = mountProbe();
+		await probe.render(
+			{ slug: 'default' },
+			jest.fn(() => Promise.resolve()),
+			resetWorkspace
+		);
+
+		await act(() => settleWithTimers(probe.latest().openLibrary('brand')));
+		expect(resetWorkspace).toHaveBeenCalledTimes(1);
+
+		// `activeSlug` is still `default` here, so this deletes a library the site is not using and
+		// needs no successor — the branch that exercises the delete path with the fewest moving parts.
+		await act(() => settleWithTimers(probe.latest().deleteLibrary('brand')));
+		expect(resetWorkspace).toHaveBeenCalledTimes(2);
 	});
 });

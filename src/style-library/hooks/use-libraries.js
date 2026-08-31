@@ -44,17 +44,19 @@ import { STORE_NAME } from '../store';
  * Each slot is cleared the instant its own flow starts again, so a stale error from a previous
  * attempt never lingers past a fresh try at the same action.
  *
- * @param {Object}   feed        The design-tokens admin feed (provides the library being edited).
- * @param {Function} refreshFeed Replaces the feed with a fresh REST read for a slug (from
- *                               `use-design-tokens-feed`), so opening a library re-renders every
- *                               consumer without a page reload.
+ * @param {Object}   feed           The design-tokens admin feed (provides the library being edited).
+ * @param {Function} refreshFeed    Replaces the feed with a fresh REST read for a slug (from
+ *                                  `use-design-tokens-feed`), so opening a library re-renders every
+ *                                  consumer without a page reload.
+ * @param {Function} resetWorkspace Clears the draft channel and the open route item, so a replaced
+ *                                  feed never strands an open settings panel's draft.
  *
  * @since TBD
  *
  * @return {Object} The library list, the two slugs, the busy flag, the per-flow error slots and
  *                  the functions that clear them, and the five operations.
  */
-export function useLibraries(feed, refreshFeed) {
+export function useLibraries(feed, refreshFeed, resetWorkspace) {
 	const [isBusy, setIsBusy] = useState(false);
 	const [openError, setOpenError] = useState(null);
 	const [activateError, setActivateError] = useState(null);
@@ -112,6 +114,49 @@ export function useLibraries(feed, refreshFeed) {
 		return registry.resolveSelect(STORE_NAME).getLibraries();
 	}, [registry]);
 
+	/**
+	 * Drop the store's cached values for a library.
+	 *
+	 * Only empties the slices; it deliberately does not re-arm the resolvers that fill them. That
+	 * is `revalidateLibraryCaches` below, which runs later in the flow — re-arming while the app is
+	 * still pointed at the library being deleted would refetch a slug the server no longer has.
+	 *
+	 * @param {string} slug Token library slug.
+	 *
+	 * @since TBD
+	 *
+	 * @return {void}
+	 */
+	const forgetLibrary = useCallback((slug) => registry.dispatch(STORE_NAME).forgetLibrary(slug), [registry]);
+
+	/**
+	 * Re-arm the resolvers behind the per-library caches, so the library now on screen re-fetches
+	 * what `forgetLibrary` emptied.
+	 *
+	 * Emptying a slice is not enough on its own: `@wordpress/data` still has each tuple marked
+	 * resolved and would keep serving the empty slice forever. Invalidating per selector rather
+	 * than per tuple avoids enumerating `(namespace, block, slug)` for every preset-bound block,
+	 * and costs nothing — a resolver only refires for a tuple something actually reads, and one
+	 * screen is mounted at a time.
+	 *
+	 * Runs after the feed read rather than before it: re-arming the resolvers for a library the app
+	 * is on its way out of is wasted work, and any request it does provoke is answered for a slug
+	 * the server may no longer have. This is ordering hygiene, not a guarantee — the visible slug
+	 * advances on a React render that has not necessarily committed by the time this runs, so a
+	 * resolver can still briefly refire against the previous library. What keeps that from reaching
+	 * the user is that a palette listing error is cleared when the library changes.
+	 *
+	 * @since TBD
+	 *
+	 * @return {void}
+	 */
+	const revalidateLibraryCaches = useCallback(() => {
+		const store = registry.dispatch(STORE_NAME);
+
+		store.invalidateResolutionForStoreSelector('getPaletteListing');
+		store.invalidateResolutionForStoreSelector('getBlockPresets');
+	}, [registry]);
+
 	const clearOpenError = useCallback(() => setOpenError(null), []);
 	const clearActivateError = useCallback(() => setActivateError(null), []);
 	const clearCreateError = useCallback(() => setCreateError(null), []);
@@ -132,8 +177,8 @@ export function useLibraries(feed, refreshFeed) {
 	// `createError`, never through `openError`, and its own `onBusy` so only the user-initiated
 	// open blocks the app. Creation runs behind its own modal, which reports progress itself.
 	const runOpen = useCallback(
-		({ slug, onError, onBusy }) => openLibraryFlow({ slug, refreshFeed, onBusy, onError }),
-		[refreshFeed]
+		({ slug, onError, onBusy }) => openLibraryFlow({ slug, refreshFeed, resetWorkspace, onBusy, onError }),
+		[refreshFeed, resetWorkspace]
 	);
 
 	const openLibrary = useCallback(
@@ -193,12 +238,15 @@ export function useLibraries(feed, refreshFeed) {
 				successorSlug,
 				refreshFeed,
 				loadLibraries,
+				forgetLibrary,
+				revalidateLibraryCaches,
+				resetWorkspace,
 				onBusy: setSwapBusy,
 				onError: setDeleteError,
 				onActiveChanged: setActiveSlug,
 			});
 		},
-		[activeSlug, loadLibraries, refreshFeed, setSwapBusy]
+		[activeSlug, loadLibraries, refreshFeed, forgetLibrary, revalidateLibraryCaches, resetWorkspace, setSwapBusy]
 	);
 
 	return {

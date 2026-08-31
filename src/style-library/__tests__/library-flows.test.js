@@ -44,7 +44,7 @@ describe('openLibraryFlow', () => {
 		const onBusy = jest.fn();
 		const onError = jest.fn();
 
-		await openLibraryFlow({ slug: 'brand-b', refreshFeed, onBusy, onError });
+		await openLibraryFlow({ slug: 'brand-b', refreshFeed, resetWorkspace: jest.fn(), onBusy, onError });
 
 		expect(refreshFeed).toHaveBeenCalledWith('brand-b');
 		expect(client.setActiveLibrary).not.toHaveBeenCalled();
@@ -59,10 +59,31 @@ describe('openLibraryFlow', () => {
 		const onBusy = jest.fn();
 		const onError = jest.fn();
 
-		await expect(openLibraryFlow({ slug: 'ghost', refreshFeed, onBusy, onError })).rejects.toBe(failure);
+		await expect(
+			openLibraryFlow({ slug: 'ghost', refreshFeed, resetWorkspace: jest.fn(), onBusy, onError })
+		).rejects.toBe(failure);
 
 		expect(onError).toHaveBeenCalledWith({ message: failure.message });
 		expect(onBusy.mock.calls).toEqual([[true], [false]]);
+	});
+
+	it('resets the workspace before reading the new library, so no panel renders across the swap', async () => {
+		const order = [];
+		const resetWorkspace = jest.fn(() => order.push('reset'));
+		const refreshFeed = jest.fn(() => {
+			order.push('refresh');
+			return Promise.resolve();
+		});
+
+		await openLibraryFlow({
+			slug: 'brand',
+			refreshFeed,
+			resetWorkspace,
+			onBusy: jest.fn(),
+			onError: jest.fn(),
+		});
+
+		expect(order).toEqual(['reset', 'refresh']);
 	});
 });
 
@@ -351,6 +372,9 @@ describe('deleteLibraryFlow', () => {
 			activeSlug: 'default',
 			refreshFeed,
 			loadLibraries,
+			forgetLibrary: jest.fn(),
+			revalidateLibraryCaches: jest.fn(),
+			resetWorkspace: jest.fn(),
 			onBusy,
 			onError: jest.fn(),
 			onActiveChanged: jest.fn(),
@@ -385,6 +409,9 @@ describe('deleteLibraryFlow', () => {
 			successorSlug: 'brand-c',
 			refreshFeed,
 			loadLibraries: jest.fn().mockResolvedValue(undefined),
+			forgetLibrary: jest.fn(),
+			revalidateLibraryCaches: jest.fn(),
+			resetWorkspace: jest.fn(),
 			onBusy: jest.fn(),
 			onError: jest.fn(),
 			onActiveChanged,
@@ -408,6 +435,9 @@ describe('deleteLibraryFlow', () => {
 				activeSlug: 'brand-b',
 				refreshFeed: jest.fn(),
 				loadLibraries: jest.fn(),
+				forgetLibrary: jest.fn(),
+				revalidateLibraryCaches: jest.fn(),
+				resetWorkspace: jest.fn(),
 				onBusy,
 				onError,
 				onActiveChanged: jest.fn(),
@@ -432,6 +462,9 @@ describe('deleteLibraryFlow', () => {
 				successorSlug: 'ghost',
 				refreshFeed: jest.fn(),
 				loadLibraries: jest.fn(),
+				forgetLibrary: jest.fn(),
+				revalidateLibraryCaches: jest.fn(),
+				resetWorkspace: jest.fn(),
 				onBusy: jest.fn(),
 				onError,
 				onActiveChanged: jest.fn(),
@@ -460,6 +493,9 @@ describe('deleteLibraryFlow', () => {
 				successorSlug: 'brand-c',
 				refreshFeed: jest.fn(),
 				loadLibraries: jest.fn(),
+				forgetLibrary: jest.fn(),
+				revalidateLibraryCaches: jest.fn(),
+				resetWorkspace: jest.fn(),
 				onBusy: jest.fn(),
 				onError,
 				onActiveChanged,
@@ -480,6 +516,9 @@ describe('deleteLibraryFlow', () => {
 			activeSlug: 'default',
 			refreshFeed,
 			loadLibraries,
+			forgetLibrary: jest.fn(),
+			revalidateLibraryCaches: jest.fn(),
+			resetWorkspace: jest.fn(),
 			onBusy: jest.fn(),
 			onError: jest.fn(),
 			onActiveChanged: jest.fn(),
@@ -509,6 +548,9 @@ describe('deleteLibraryFlow', () => {
 				activeSlug: 'default',
 				refreshFeed,
 				loadLibraries,
+				forgetLibrary: jest.fn(),
+				revalidateLibraryCaches: jest.fn(),
+				resetWorkspace: jest.fn(),
 				onBusy,
 				onError,
 				onActiveChanged: jest.fn(),
@@ -535,6 +577,9 @@ describe('deleteLibraryFlow', () => {
 				activeSlug: 'default',
 				refreshFeed: jest.fn(),
 				loadLibraries: jest.fn(),
+				forgetLibrary: jest.fn(),
+				revalidateLibraryCaches: jest.fn(),
+				resetWorkspace: jest.fn(),
 				onBusy,
 				onError,
 				onActiveChanged: jest.fn(),
@@ -543,5 +588,237 @@ describe('deleteLibraryFlow', () => {
 
 		expect(onError).toHaveBeenCalledWith({ message: failure.message });
 		expect(onBusy).toHaveBeenLastCalledWith(false);
+	});
+
+	it('forgets the deleted library, resets the workspace, reads the feed it lands on, then re-arms the caches', async () => {
+		const order = [];
+		const forgetLibrary = jest.fn((slug) => order.push(`forget:${slug}`));
+		const resetWorkspace = jest.fn(() => order.push('reset'));
+		const refreshFeed = jest.fn((slug) => {
+			order.push(`refresh:${slug}`);
+			return Promise.resolve();
+		});
+		const revalidateLibraryCaches = jest.fn(() => order.push('revalidate'));
+
+		client.deleteLibrary.mockResolvedValue({ deleted: false });
+
+		await deleteLibraryFlow({
+			slug: 'default',
+			activeSlug: 'default',
+			refreshFeed,
+			loadLibraries: jest.fn(() => Promise.resolve()),
+			forgetLibrary,
+			revalidateLibraryCaches,
+			resetWorkspace,
+			onBusy: jest.fn(),
+			onError: jest.fn(),
+			onActiveChanged: jest.fn(),
+		});
+
+		expect(order).toEqual(['forget:default', 'reset', 'refresh:default', 'revalidate']);
+	});
+
+	it('waits for the feed read to settle before re-arming the caches', async () => {
+		client.deleteLibrary.mockResolvedValue({ deleted: true });
+
+		let resolveFeed;
+		const refreshFeed = jest.fn(
+			() =>
+				new Promise((resolve) => {
+					resolveFeed = resolve;
+				})
+		);
+		const revalidateLibraryCaches = jest.fn();
+
+		const settled = deleteLibraryFlow({
+			slug: 'brand-b',
+			activeSlug: 'default',
+			refreshFeed,
+			loadLibraries: jest.fn().mockResolvedValue(undefined),
+			forgetLibrary: jest.fn(),
+			resetWorkspace: jest.fn(),
+			revalidateLibraryCaches,
+			onBusy: jest.fn(),
+			onError: jest.fn(),
+			onActiveChanged: jest.fn(),
+		});
+
+		// Let every already-resolved link in the chain run. The feed read is still outstanding, so
+		// the re-arm must not have happened yet — a version that fired it alongside the call rather
+		// than after the read would already have run here.
+		await Promise.resolve();
+		await Promise.resolve();
+		await Promise.resolve();
+		await Promise.resolve();
+		await Promise.resolve();
+
+		expect(refreshFeed).toHaveBeenCalledWith('default');
+		expect(revalidateLibraryCaches).not.toHaveBeenCalled();
+
+		resolveFeed({ slug: 'default' });
+		await settled;
+
+		expect(revalidateLibraryCaches).toHaveBeenCalledTimes(1);
+	});
+
+	it('does not report the delete as failed when forgetLibrary or resetWorkspace throws', async () => {
+		client.deleteLibrary.mockResolvedValue({ deleted: true });
+		const refreshFeed = jest.fn().mockResolvedValue({ slug: 'default' });
+		const onError = jest.fn();
+
+		await expect(
+			deleteLibraryFlow({
+				slug: 'brand-b',
+				activeSlug: 'default',
+				refreshFeed,
+				loadLibraries: jest.fn().mockResolvedValue(undefined),
+				forgetLibrary: jest.fn(() => {
+					throw new Error('forgetLibrary boom');
+				}),
+				revalidateLibraryCaches: jest.fn(),
+				resetWorkspace: jest.fn(() => {
+					throw new Error('resetWorkspace boom');
+				}),
+				onBusy: jest.fn(),
+				onError,
+				onActiveChanged: jest.fn(),
+			})
+		).resolves.toBeUndefined();
+
+		// The delete already succeeded by the time either callback ran, so neither throwing may
+		// surface as a failure — the app still lands on the feed it is supposed to.
+		expect(refreshFeed).toHaveBeenCalledWith('default');
+		expect(onError).not.toHaveBeenCalled();
+	});
+
+	it('does not report the delete as failed when revalidateLibraryCaches throws', async () => {
+		client.deleteLibrary.mockResolvedValue({ deleted: true });
+		const refreshFeed = jest.fn().mockResolvedValue({ slug: 'default' });
+		const loadLibraries = jest.fn().mockResolvedValue(undefined);
+		const onError = jest.fn();
+		const revalidateLibraryCaches = jest.fn(() => {
+			throw new Error('revalidateLibraryCaches boom');
+		});
+
+		await expect(
+			deleteLibraryFlow({
+				slug: 'brand-b',
+				activeSlug: 'default',
+				refreshFeed,
+				loadLibraries,
+				forgetLibrary: jest.fn(),
+				revalidateLibraryCaches,
+				resetWorkspace: jest.fn(),
+				onBusy: jest.fn(),
+				onError,
+				onActiveChanged: jest.fn(),
+			})
+		).resolves.toBeUndefined();
+
+		// The delete and the feed swap have both already landed by the time this runs, so its
+		// failure must not be reported as a failed delete — the list refresh still runs after it.
+		expect(loadLibraries).toHaveBeenCalled();
+		expect(onError).not.toHaveBeenCalled();
+		expect(revalidateLibraryCaches).toHaveBeenCalledTimes(1);
+	});
+
+	it('still resets the workspace when forgetting the cached state throws first', async () => {
+		client.deleteLibrary.mockResolvedValue({ deleted: true });
+		const resetWorkspace = jest.fn();
+
+		await expect(
+			deleteLibraryFlow({
+				slug: 'brand-b',
+				activeSlug: 'default',
+				refreshFeed: jest.fn().mockResolvedValue({ slug: 'default' }),
+				loadLibraries: jest.fn().mockResolvedValue(undefined),
+				forgetLibrary: jest.fn(() => {
+					throw new Error('forgetLibrary boom');
+				}),
+				revalidateLibraryCaches: jest.fn(),
+				resetWorkspace,
+				onBusy: jest.fn(),
+				onError: jest.fn(),
+				onActiveChanged: jest.fn(),
+			})
+		).resolves.toBeUndefined();
+
+		// The reset is what stops the deleted library's draft from claiming unsaved changes, so a
+		// failure in the cache cleanup that runs before it must not take it down too.
+		expect(resetWorkspace).toHaveBeenCalledTimes(1);
+	});
+
+	it('forgets the library that was deleted, not the one the app lands on', async () => {
+		const forgetLibrary = jest.fn();
+
+		client.deleteLibrary.mockResolvedValue({ deleted: true });
+
+		await deleteLibraryFlow({
+			slug: 'retired',
+			activeSlug: 'default',
+			refreshFeed: jest.fn(() => Promise.resolve()),
+			loadLibraries: jest.fn(() => Promise.resolve()),
+			forgetLibrary,
+			revalidateLibraryCaches: jest.fn(),
+			resetWorkspace: jest.fn(),
+			onBusy: jest.fn(),
+			onError: jest.fn(),
+			onActiveChanged: jest.fn(),
+		});
+
+		expect(forgetLibrary).toHaveBeenCalledWith('retired');
+		expect(forgetLibrary).toHaveBeenCalledTimes(1);
+	});
+
+	it('resets nothing when the delete request itself fails', async () => {
+		const forgetLibrary = jest.fn();
+		const resetWorkspace = jest.fn();
+		const revalidateLibraryCaches = jest.fn();
+
+		client.deleteLibrary.mockRejectedValue(new Error('Nope'));
+
+		await expect(
+			deleteLibraryFlow({
+				slug: 'default',
+				activeSlug: 'default',
+				refreshFeed: jest.fn(() => Promise.resolve()),
+				loadLibraries: jest.fn(() => Promise.resolve()),
+				forgetLibrary,
+				revalidateLibraryCaches,
+				resetWorkspace,
+				onBusy: jest.fn(),
+				onError: jest.fn(),
+				onActiveChanged: jest.fn(),
+			})
+		).rejects.toThrow('Nope');
+
+		expect(forgetLibrary).not.toHaveBeenCalled();
+		expect(resetWorkspace).not.toHaveBeenCalled();
+		expect(revalidateLibraryCaches).not.toHaveBeenCalled();
+	});
+
+	it('resets before a missing successor can even be requested', async () => {
+		const resetWorkspace = jest.fn();
+		const revalidateLibraryCaches = jest.fn();
+
+		await expect(
+			deleteLibraryFlow({
+				slug: 'brand',
+				activeSlug: 'brand',
+				successorSlug: '',
+				refreshFeed: jest.fn(),
+				loadLibraries: jest.fn(),
+				forgetLibrary: jest.fn(),
+				revalidateLibraryCaches,
+				resetWorkspace,
+				onBusy: jest.fn(),
+				onError: jest.fn(),
+				onActiveChanged: jest.fn(),
+			})
+		).rejects.toThrow();
+
+		expect(resetWorkspace).not.toHaveBeenCalled();
+		expect(revalidateLibraryCaches).not.toHaveBeenCalled();
+		expect(client.deleteLibrary).not.toHaveBeenCalled();
 	});
 });

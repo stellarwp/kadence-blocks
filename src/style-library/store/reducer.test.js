@@ -17,6 +17,7 @@ import {
 	clearOptimisticScaleDeletion,
 	setPaletteBusy,
 	setScaleBusy,
+	forgetLibrary,
 } from './actions';
 import { EMPTY_OPTIMISTIC_SWATCH_EDIT, EMPTY_OPTIMISTIC_SCALE_EDIT } from './constants';
 
@@ -230,5 +231,75 @@ describe('reducer', () => {
 		state = reducer(state, setScaleBusy('default', false));
 
 		expect(state.scaleBusy).toEqual({ default: false });
+	});
+
+	describe('FORGET_LIBRARY', () => {
+		/**
+		 * Build a state with two libraries' worth of entries in every slug-keyed slice, so each
+		 * assertion can prove the sibling library survived rather than only that the target went.
+		 *
+		 * @return {Object} A populated store state.
+		 */
+		const populated = () => {
+			let state = reducer(
+				undefined,
+				receiveBlockPresets('kb-design-tokens/v1::kadence/singlebtn::default', { a: 1 })
+			);
+			state = reducer(state, receiveBlockPresets('kb-design-tokens/v1::kadence/singlebtn::brand', { b: 2 }));
+			state = reducer(state, receivePaletteListing('kb-design-tokens/v1::default', [{ id: 'p1' }]));
+			state = reducer(state, receivePaletteListing('kb-design-tokens/v1::brand', [{ id: 'p2' }]));
+			state = reducer(
+				state,
+				setOptimisticSwatchPatch('kb-design-tokens/v1::default::p1', 'color.brand', { value: '#000' })
+			);
+			state = reducer(
+				state,
+				setOptimisticSwatchPatch('kb-design-tokens/v1::brand::p2', 'color.brand', { value: '#fff' })
+			);
+			state = reducer(state, setOptimisticScalePatch('default', 'size.md', { value: '1rem' }));
+			state = reducer(state, setOptimisticScalePatch('brand', 'size.md', { value: '2rem' }));
+			state = reducer(state, setPaletteBusy('kb-design-tokens/v1::default', true));
+			state = reducer(state, setPaletteBusy('kb-design-tokens/v1::brand', true));
+			state = reducer(state, setScaleBusy('default', true));
+			state = reducer(state, setScaleBusy('brand', true));
+
+			return state;
+		};
+
+		it('drops every slug-keyed entry for the named library and leaves its siblings intact', () => {
+			const state = reducer(populated(), forgetLibrary('default'));
+
+			expect(state.presets).toEqual({ 'kb-design-tokens/v1::kadence/singlebtn::brand': { b: 2 } });
+			expect(state.paletteListings).toEqual({ 'kb-design-tokens/v1::brand': [{ id: 'p2' }] });
+			expect(Object.keys(state.optimisticSwatchEdits)).toEqual(['kb-design-tokens/v1::brand::p2']);
+			expect(Object.keys(state.optimisticScaleEdits)).toEqual(['brand']);
+			expect(state.paletteBusy).toEqual({ 'kb-design-tokens/v1::brand': true });
+			expect(state.scaleBusy).toEqual({ brand: true });
+		});
+
+		it('leaves the feeds slice alone, because the delete flow overwrites the feed it lands on', () => {
+			const before = reducer(populated(), receiveDesignTokensFeed('default', { slug: 'default' }));
+			const after = reducer(before, forgetLibrary('default'));
+
+			expect(after.feeds).toBe(before.feeds);
+		});
+
+		it('returns the identical slice objects when no key matches, so nothing re-renders', () => {
+			const before = populated();
+			const after = reducer(before, forgetLibrary('nonexistent'));
+
+			expect(after.presets).toBe(before.presets);
+			expect(after.paletteListings).toBe(before.paletteListings);
+			expect(after.optimisticSwatchEdits).toBe(before.optimisticSwatchEdits);
+			expect(after.optimisticScaleEdits).toBe(before.optimisticScaleEdits);
+			expect(after.paletteBusy).toBe(before.paletteBusy);
+			expect(after.scaleBusy).toBe(before.scaleBusy);
+		});
+
+		it('does not mistake a block name for a slug in a presets key', () => {
+			const state = reducer(populated(), forgetLibrary('kadence/singlebtn'));
+
+			expect(Object.keys(state.presets)).toHaveLength(2);
+		});
 	});
 });
