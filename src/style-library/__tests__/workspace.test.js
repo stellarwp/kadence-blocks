@@ -20,7 +20,7 @@ describe('resetWorkspace', () => {
 		expect(replace.mock.calls[0][0]).not.toHaveProperty('screen');
 	});
 
-	it('clears the channel before the route, so an unmounting panel cannot republish a dirty draft', () => {
+	it('rewrites the route before clearing the channel, so a failed rewrite leaves the guard armed', () => {
 		const order = [];
 
 		resetWorkspace({
@@ -28,7 +28,24 @@ describe('resetWorkspace', () => {
 			replace: () => order.push('replace'),
 		});
 
-		expect(order).toEqual(['clear', 'replace']);
+		expect(order).toEqual(['replace', 'clear']);
+	});
+
+	it('leaves the draft channel intact when the route rewrite throws', () => {
+		const clearPublication = jest.fn();
+
+		expect(() =>
+			resetWorkspace({
+				clearPublication,
+				replace: () => {
+					throw new Error('replaceState refused');
+				},
+			})
+		).toThrow('replaceState refused');
+
+		// The panel is still mounted with its draft, so the publication has to survive — clearing
+		// it would hide that draft from the navigation guard with nothing left to re-publish it.
+		expect(clearPublication).not.toHaveBeenCalled();
 	});
 
 	it('tolerates a missing channel, the way every other channel consumer does', () => {

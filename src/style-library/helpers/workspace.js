@@ -35,12 +35,16 @@
  * @return {void}
  */
 export function resetWorkspace({ clearPublication, replace }) {
-	// Before the route rewrite, not after: the unmounting panel's own effect cleanup also clears
-	// the channel, and doing it here first means the guard is already empty no matter which order
-	// React settles those effects in.
+	// The route rewrite goes first because it is the step that can fail. `replace()` reaches
+	// `history.replaceState`, which a browser may refuse (Safari rate-limits it), and the panel
+	// only unmounts if the route actually changed. Clearing the channel first would, on that
+	// failure, leave a mounted panel whose dirty draft is invisible to `guard()` — the next
+	// navigation would discard it silently, and the panel's own publish effect will not re-fire
+	// until its draft changes again. Failing before the channel is touched leaves the workspace
+	// exactly as it was.
+	replace({ scope: '', item: '' });
+
 	if (clearPublication) {
 		clearPublication();
 	}
-
-	replace({ scope: '', item: '' });
 }
