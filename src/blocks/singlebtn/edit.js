@@ -53,7 +53,7 @@ import { useDispatch, useSelect } from '@wordpress/data';
 import { tooltip as tooltipIcon } from '@kadence/icons';
 import { link as linkIcon } from '@wordpress/icons';
 import { displayShortcut, isKeyboardEvent } from '@wordpress/keycodes';
-import { useEffect, useState } from '@wordpress/element';
+import { useCallback, useEffect, useState } from '@wordpress/element';
 import {
 	RichText,
 	InspectorControls,
@@ -97,7 +97,7 @@ import { EditorBoxControl } from '../../extension/design-tokens/components/Edito
 import { EditorBorderControl } from '../../extension/design-tokens/components/EditorBorderControl';
 import { EditorShadowControl, hasVisibleShadow } from '../../extension/design-tokens/components/EditorShadowControl';
 import { renderShadowColor } from '../../extension/design-tokens/components/shadow-color';
-import { renderBorderColor } from '../../extension/design-tokens/components/border-color';
+import { BorderColorField } from '../../extension/design-tokens/components/border-color';
 import { pickableTokensForControl, pickableTokensForKey } from '../../extension/token-picker';
 import { ColorControl, ColorControlGroup } from '../../token-controls';
 import { BUTTON_MARGIN_FALLBACK, BUTTON_PADDING_FALLBACK } from '../../token-controls/helpers/button-box-defaults';
@@ -300,6 +300,9 @@ export default function KadenceButtonEdit(props) {
 	// One fetch of the block's effective palette groups, shared by every `ColorControl` instance on
 	// this block — the palette data is identical for all fourteen of them.
 	const colorGroups = useColorGroups(clientId);
+	// `BorderControl` forwards `renderColor` down through `SlotGrid`'s `renderSlot`, so this is
+	// defined once per render rather than inline at each of the border panels below.
+	const renderBorderColor = useCallback((row) => <BorderColorField {...row} groups={colorGroups} />, [colorGroups]);
 
 	const borderRadiusPresetValue = presetValueForDevice(
 		tokenBinding.borderRadius?.presetValue,
