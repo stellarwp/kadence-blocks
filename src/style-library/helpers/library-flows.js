@@ -250,17 +250,19 @@ export function renameLibraryFlow({ slug, title, libraries, loadLibraries, onBus
  * so it remains and stays active, and there is no successor to name.
  *
  * @param {Object}   args
- * @param {string}   args.slug            The token library slug to delete or reset.
- * @param {string}   args.activeSlug      The slug the site currently renders with.
- * @param {string}   [args.successorSlug] The library to activate first, required when deleting the
- *                                        active non-default library.
- * @param {Function} args.refreshFeed     Replaces the feed with a fresh REST read for a slug.
- * @param {Function} args.loadLibraries   Refreshes the libraries list.
- * @param {Function} args.forgetLibrary   Drops every cached entry addressed to a library slug.
- * @param {Function} args.resetWorkspace  Clears the draft channel and the open route item.
- * @param {Function} args.onBusy          Called with a boolean as the request starts and settles.
- * @param {Function} args.onError         Called with `{ message }` on failure.
- * @param {Function} args.onActiveChanged Called with the slug that ends up active, when it moves.
+ * @param {string}   args.slug                    The token library slug to delete or reset.
+ * @param {string}   args.activeSlug              The slug the site currently renders with.
+ * @param {string}   [args.successorSlug]         The library to activate first, required when
+ *                                                deleting the active non-default library.
+ * @param {Function} args.refreshFeed             Replaces the feed with a fresh REST read for a slug.
+ * @param {Function} args.loadLibraries           Refreshes the libraries list.
+ * @param {Function} args.forgetLibrary           Drops every cached entry addressed to a library slug.
+ * @param {Function} args.revalidateLibraryCaches Re-arms the resolvers `forgetLibrary` left empty,
+ *                                                once the feed has moved off the deleted library.
+ * @param {Function} args.resetWorkspace          Clears the draft channel and the open route item.
+ * @param {Function} args.onBusy                  Called with a boolean as the request starts and settles.
+ * @param {Function} args.onError                 Called with `{ message }` on failure.
+ * @param {Function} args.onActiveChanged         Called with the slug that ends up active, when it moves.
  *
  * @since TBD
  *
@@ -274,6 +276,7 @@ export function deleteLibraryFlow({
 	refreshFeed,
 	loadLibraries,
 	forgetLibrary,
+	revalidateLibraryCaches,
 	resetWorkspace,
 	onBusy,
 	onError,
@@ -336,6 +339,16 @@ export function deleteLibraryFlow({
 			}
 		})
 		.then(() => refreshFeed(nextSlug))
+		.then(() => {
+			// After the feed swap, never before: re-arming these resolvers while the app still
+			// points at the deleted library re-fetches a slug the server no longer has, and the
+			// failure surfaces as a stale error notice on the library the user lands on.
+			try {
+				revalidateLibraryCaches();
+			} catch {
+				// Intentionally swallowed — see above.
+			}
+		})
 		.then(() =>
 			// A failed refetch here must not undo a delete that already succeeded — by this point
 			// `deleteLibrary(slug)` has already resolved. A stale list is already surfaced

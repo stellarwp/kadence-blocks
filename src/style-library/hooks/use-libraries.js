@@ -115,22 +115,11 @@ export function useLibraries(feed, refreshFeed, resetWorkspace) {
 	}, [registry]);
 
 	/**
-	 * Drop the store's cached state for a library and re-arm the resolvers that fill it.
+	 * Drop the store's cached values for a library.
 	 *
-	 * The action empties the cached values; the invalidations are what make them refetch —
-	 * `@wordpress/data` still has each tuple marked resolved, and would otherwise keep serving the
-	 * now-empty slice forever. Invalidating per selector rather than per tuple avoids having to
-	 * enumerate `(namespace, block, slug)` for every preset-bound block here, and costs nothing:
-	 * only one library is open at a time, so no other slug's tuples are mounted to re-resolve.
-	 *
-	 * Called while the app is still pointed at the library being deleted, so a hard delete
-	 * re-arms these resolvers against a slug the server no longer has, and the browser fires one
-	 * guaranteed-404 request as a result. That is expected, not a bug: its error lands on a
-	 * `getPaletteListing`/`getBlockPresets` tuple keyed to the deleted slug, which nothing reads
-	 * again once the feed moves to the next library moments later. Moving this call to after the
-	 * feed re-read would avoid the request, but would let a screen render the fresh feed while
-	 * still serving the deleted library's cached presets and palettes until the invalidation
-	 * caught up — worse than a 404 nothing acts on.
+	 * Only empties the slices; it deliberately does not re-arm the resolvers that fill them. That
+	 * is `revalidateLibraryCaches` below, which runs later in the flow — re-arming while the app is
+	 * still pointed at the library being deleted would refetch a slug the server no longer has.
 	 *
 	 * @param {string} slug Token library slug.
 	 *
@@ -138,16 +127,33 @@ export function useLibraries(feed, refreshFeed, resetWorkspace) {
 	 *
 	 * @return {void}
 	 */
-	const forgetLibrary = useCallback(
-		(slug) => {
-			const store = registry.dispatch(STORE_NAME);
+	const forgetLibrary = useCallback((slug) => registry.dispatch(STORE_NAME).forgetLibrary(slug), [registry]);
 
-			store.forgetLibrary(slug);
-			store.invalidateResolutionForStoreSelector('getPaletteListing');
-			store.invalidateResolutionForStoreSelector('getBlockPresets');
-		},
-		[registry]
-	);
+	/**
+	 * Re-arm the resolvers behind the per-library caches, so the library now on screen re-fetches
+	 * what `forgetLibrary` emptied.
+	 *
+	 * Emptying a slice is not enough on its own: `@wordpress/data` still has each tuple marked
+	 * resolved and would keep serving the empty slice forever. Invalidating per selector rather
+	 * than per tuple avoids enumerating `(namespace, block, slug)` for every preset-bound block,
+	 * and costs nothing — a resolver only refires for a tuple something actually reads, and one
+	 * screen is mounted at a time.
+	 *
+	 * Runs after the feed has moved to the library being kept. Re-arming any earlier would refire
+	 * the mounted screen's resolver against the deleted slug, and that request's failure would be
+	 * copied into the palette screen's own error state, leaving a stale notice on the library the
+	 * user lands on.
+	 *
+	 * @since TBD
+	 *
+	 * @return {void}
+	 */
+	const revalidateLibraryCaches = useCallback(() => {
+		const store = registry.dispatch(STORE_NAME);
+
+		store.invalidateResolutionForStoreSelector('getPaletteListing');
+		store.invalidateResolutionForStoreSelector('getBlockPresets');
+	}, [registry]);
 
 	const clearOpenError = useCallback(() => setOpenError(null), []);
 	const clearActivateError = useCallback(() => setActivateError(null), []);
@@ -231,13 +237,14 @@ export function useLibraries(feed, refreshFeed, resetWorkspace) {
 				refreshFeed,
 				loadLibraries,
 				forgetLibrary,
+				revalidateLibraryCaches,
 				resetWorkspace,
 				onBusy: setSwapBusy,
 				onError: setDeleteError,
 				onActiveChanged: setActiveSlug,
 			});
 		},
-		[activeSlug, loadLibraries, refreshFeed, forgetLibrary, resetWorkspace, setSwapBusy]
+		[activeSlug, loadLibraries, refreshFeed, forgetLibrary, revalidateLibraryCaches, resetWorkspace, setSwapBusy]
 	);
 
 	return {
