@@ -566,6 +566,40 @@ describe('BoxShadowControl Style Library tab', () => {
 
 		expect(preview().style.boxShadow).toBe('none');
 	});
+
+	/**
+	 * A stale alias (deleted after the binding was saved) still previews the same shadow the Custom
+	 * tab's `fallbackShadow`-seeded fields show, instead of falling shadow-less while the tab above it
+	 * shows real legs.
+	 *
+	 * @return {void}
+	 */
+	it('previews the fallback shadow for a stale alias with a fallbackShadow', () => {
+		renderControl({
+			value: '{primitive.shadow.deleted}',
+			fallbackShadow: { color: '#222222', offsetX: '3px', offsetY: '5px', blur: '10px', spread: '1px' },
+		});
+
+		const preview = container.querySelector('.kadence-token-field__preview .kb-box-shadow-control__preview');
+
+		expect(preview).not.toBeNull();
+		expect(preview.style.boxShadow).toBe('3px 5px 10px 1px #222222');
+	});
+
+	/**
+	 * An alias that still resolves against `tokens` previews that token entry's own resolved value,
+	 * not the composite shorthand — a resolving alias is unaffected by the stale-alias fallback path.
+	 *
+	 * @return {void}
+	 */
+	it('previews the resolved token entry’s own value for a resolving alias', () => {
+		renderControl({ value: '{primitive.shadow.md}' });
+
+		const preview = container.querySelector('.kadence-token-field__preview .kb-box-shadow-control__preview');
+
+		expect(preview).not.toBeNull();
+		expect(preview.style.boxShadow).toBe('0px 2px 8px 0px #1717171f');
+	});
 });
 
 describe('BoxShadowControl Custom tab', () => {

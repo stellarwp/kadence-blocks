@@ -58,7 +58,14 @@ import { __ } from '@wordpress/i18n';
  */
 import { ControlShell } from '../templates/ControlShell';
 import { TokenPopover } from '../molecules/TokenPopover';
-import { defaultSummary, fieldSummary, hasValue, isTokenAlias, resolveDefaultValue } from '../helpers/token-summary';
+import {
+	defaultSummary,
+	fieldSummary,
+	findTokenEntry,
+	hasValue,
+	isTokenAlias,
+	resolveDefaultValue,
+} from '../helpers/token-summary';
 import { DEFAULT_COMPOSITE, parseResolvedShadow } from '../helpers/shadow-shorthand';
 import '../styles/token-controls.scss';
 
@@ -114,13 +121,16 @@ function matchFixedEntry(shadow, tokens) {
 
 /**
  * Resolve the current slot value into `box-shadow` CSS for the Style Library tab's preview square: a
- * bound token's own resolved value string when aliased, or the composite's own shorthand (matching
- * the dimension order and literal `inset` keyword `Css_Renderer`/`shadowCss()` emit) when a literal
- * composite is set. Empty when nothing is set yet, so the preview renders a plain, shadow-less box.
+ * bound token's own resolved value string when aliased and resolving, or the composite's own
+ * shorthand (matching the dimension order and literal `inset` keyword `Css_Renderer`/`shadowCss()`
+ * emit) otherwise — for a literal composite value, and also for an alias that no longer resolves
+ * against `tokens`, where `shadow` carries the caller's `fallbackShadow` legs. Empty when nothing is
+ * set yet, so the preview renders a plain, shadow-less box.
  *
  * @param {*}      value  The current slot value (alias string, composite object, or empty).
  * @param {Array}  tokens The pickable-token list, used to resolve an alias.
- * @param {Object} shadow The composite value with defaults already filled (ignored for an alias).
+ * @param {Object} shadow The composite value with defaults already filled — used both for a literal
+ *                        composite and as the stale-alias fallback.
  *
  * @since TBD
  *
@@ -128,9 +138,16 @@ function matchFixedEntry(shadow, tokens) {
  */
 function resolvePreviewCss(value, tokens, shadow) {
 	if (isTokenAlias(value)) {
-		const entry = tokens.find((candidate) => candidate.alias === value);
+		const entry = findTokenEntry(tokens || [], value);
 
-		return entry ? entry.value : '';
+		if (entry) {
+			return entry.value;
+		}
+
+		// Falls through rather than returning '': a stale binding (the token was deleted after the
+		// alias was saved) has no entry to resolve, but `shadow` was already seeded from the host's
+		// `fallbackShadow` legs by the caller, so the composite shorthand below still renders the same
+		// shadow the Custom tab shows, instead of leaving the preview shadow-less while the tab is not.
 	}
 
 	if (!hasValue(value)) {
@@ -261,7 +278,7 @@ export function BoxShadowControl({
 	// An alias carries no legs of its own, so the Custom tab has nothing to seed from unless it borrows
 	// the bound token's own resolved shorthand here — without this, switching to Custom tab reads as
 	// an all-zero, transparent shadow and editing one leg discards the token's real value.
-	const aliasedEntry = aliased ? (tokens || []).find((entry) => entry.alias === value) : null;
+	const aliasedEntry = aliased ? findTokenEntry(tokens || [], value) : null;
 	// A stale alias (the token was deleted after the binding was saved) has no entry to resolve, but the
 	// host still stores the legs it was resolved to at save time — that snapshot is what the other
 	// renderers already fall back to for a stale binding, so the Custom tab seeds from it here too,

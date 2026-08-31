@@ -46,7 +46,7 @@
 /**
  * Internal dependencies
  */
-import { BoxShadowControl, DEFAULT_COMPOSITE, parseResolvedShadow } from '../../../token-controls';
+import { BoxShadowControl, DEFAULT_COMPOSITE, findTokenEntry, parseResolvedShadow } from '../../../token-controls';
 import { TokenControlRow } from '../../token-indicators/components/TokenControlRow';
 import { isTokenAlias } from '../alias';
 import { SHADOW_TOKEN_KEY, boundShadowToken } from '../shadow-token';
@@ -223,6 +223,13 @@ function axisToNative(slot) {
  * Resolve a picked token alias to its literal composite value, via the same `tokens` list
  * `BoxShadowControl` already offers for its trigger label.
  *
+ * Uses `findTokenEntry()` rather than a plain `entry.alias === alias` scan. The only string this
+ * function ever receives that is not a real `{dot.alias}` is `toNativeShadow()`'s fixed "None"
+ * sentinel, `0px 0px 0px 0px transparent` — that matches a `fixed: true` entry on alias equality,
+ * which `findTokenEntry()`'s guard (`entry.fixed || isTokenAlias(value)`) also accepts. Its
+ * legacy-slug fallback is inert here: it only matches a `primitive.dimension.*` entry, and a
+ * shadow-role pool holds none.
+ *
  * @param {string} alias  The picked token alias.
  * @param {Array}  tokens Pickable `shadow`-type tokens, `[{id, label, value, alias}]`.
  *
@@ -231,7 +238,7 @@ function axisToNative(slot) {
  * @return {?Object} The resolved composite, or `null` when the alias matches no pickable token.
  */
 function resolveShadowAlias(alias, tokens) {
-	const entry = (tokens || []).find((token) => token.alias === alias);
+	const entry = findTokenEntry(tokens || [], alias);
 
 	return entry ? parseResolvedShadow(entry.value) : null;
 }
