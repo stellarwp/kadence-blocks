@@ -27,9 +27,9 @@ const POOL = {
 			role: 'color',
 		},
 		{
-			id: 'semantic.color.button-primary-bg',
-			alias: '{semantic.color.button-primary-bg}',
-			label: 'Button Primary Background',
+			id: 'semantic.color.button-bg',
+			alias: '{semantic.color.button-bg}',
+			label: 'Button Background',
 			type: 'color',
 			layer: 'semantic',
 			role: 'color',
@@ -137,7 +137,7 @@ const POOL = {
 	values: {
 		default: {
 			'primitive.color.blue-500': '#3182ce',
-			'semantic.color.button-primary-bg': '#2b6cb0',
+			'semantic.color.button-bg': '#2b6cb0',
 			'primitive.dimension.radius.sm': '4px',
 			'semantic.radius.button': '0.5rem',
 			'primitive.dimension.spacing.md': '16px',
@@ -151,7 +151,7 @@ const POOL = {
 			'primitive.dimension.border-width.sm': '1px',
 			'semantic.border-width.default': '2px',
 		},
-		brand: { 'semantic.color.button-primary-bg': '#000000' },
+		brand: { 'semantic.color.button-bg': '#000000' },
 	},
 };
 
@@ -249,9 +249,9 @@ describe('pickableTokensFor', () => {
 
 		expect(result).toEqual([
 			{
-				id: 'semantic.color.button-primary-bg',
-				alias: '{semantic.color.button-primary-bg}',
-				label: 'Button Primary Background',
+				id: 'semantic.color.button-bg',
+				alias: '{semantic.color.button-bg}',
+				label: 'Button Background',
 				value: '#2b6cb0',
 				type: 'color',
 				role: 'color',
@@ -310,9 +310,9 @@ describe('pickableTokensFor', () => {
 
 		expect(result).toEqual([
 			{
-				id: 'semantic.color.button-primary-bg',
-				alias: '{semantic.color.button-primary-bg}',
-				label: 'Button Primary Background',
+				id: 'semantic.color.button-bg',
+				alias: '{semantic.color.button-bg}',
+				label: 'Button Background',
 				value: '#000000',
 				type: 'color',
 				role: 'color',
@@ -331,7 +331,7 @@ describe('pickableTokensFor', () => {
 	it('falls back to the active library values for an unknown library slug', () => {
 		const result = pickableTokensFor('color', 'nonexistent-set');
 
-		expect(result.find((token) => token.id === 'semantic.color.button-primary-bg').value).toBe('#2b6cb0');
+		expect(result.find((token) => token.id === 'semantic.color.button-bg').value).toBe('#2b6cb0');
 	});
 
 	it('fails soft when the pool is missing, returning empty results without throwing', () => {

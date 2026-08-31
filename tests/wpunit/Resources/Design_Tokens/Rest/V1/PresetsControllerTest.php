@@ -146,7 +146,7 @@ final class PresetsControllerTest extends TestCase {
 		$blocks = wp_list_pluck( $response->get_data()['blocks'], 'default', 'block' );
 
 		$this->assertArrayHasKey( self::BUTTON, $blocks );
-		$this->assertSame( 'primary', $blocks[ self::BUTTON ] );
+		$this->assertSame( 'default', $blocks[ self::BUTTON ] );
 	}
 
 	/**
@@ -160,9 +160,8 @@ final class PresetsControllerTest extends TestCase {
 		$data = $response->get_data();
 
 		$this->assertSame( self::BUTTON, $data['block'] );
-		$this->assertSame( 'primary', $data['default'] );
-		$this->assertArrayHasKey( 'primary', $data['presets'] );
-		$this->assertArrayHasKey( 'secondary', $data['presets'] );
+		$this->assertSame( 'default', $data['default'] );
+		$this->assertArrayHasKey( 'default', $data['presets'] );
 	}
 
 	/**
@@ -202,8 +201,8 @@ final class PresetsControllerTest extends TestCase {
 	public function testGetItemReportsNoOverriddenPropertiesForAFreshBaselinePreset(): void {
 		$data = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, self::BUTTON ) )->get_data();
 
-		$this->assertSame( [], $data['presets']['secondary']['overridden'] );
-		$this->assertNotEmpty( $data['presets']['secondary']['tokens'] );
+		$this->assertSame( [], $data['presets']['default']['overridden'] );
+		$this->assertNotEmpty( $data['presets']['default']['tokens'] );
 	}
 
 	/**
@@ -215,13 +214,13 @@ final class PresetsControllerTest extends TestCase {
 	public function testGetItemReflectsAPartialStoredOverrideInOverridden(): void {
 		$this->store->save_document(
 			'{"$extensions":{"com.kadence.designTokens":{"presets":{"kadence/singlebtn":{'
-			. '"secondary":{"tokens":{"button-bg":"#000000"}}}}}}}'
+			. '"default":{"tokens":{"button-bg":"#000000"}}}}}}}'
 		);
 
 		$data = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, self::BUTTON ) )->get_data();
 
-		$this->assertSame( [ 'button-bg' => true ], $data['presets']['secondary']['overridden'] );
-		$this->assertNotSame( '', $data['presets']['secondary']['tokens']['button-text'] );
+		$this->assertSame( [ 'button-bg' => true ], $data['presets']['default']['overridden'] );
+		$this->assertNotSame( '', $data['presets']['default']['tokens']['button-text'] );
 	}
 
 	/**
@@ -266,12 +265,14 @@ final class PresetsControllerTest extends TestCase {
 	}
 
 	/**
-	 * Minting a NEW preset under a reserved slug is still refused: the per-preset item route could never
-	 * address it, so it would be undeletable. The Button ships no "default", so this is a creation.
+	 * Writing the reserved "default" slug is allowed when the block already ships a preset under it: the
+	 * write is a merge onto the shipped preset, not the creation of one the per-preset item route could
+	 * never address. Editing a block's built-in look is the ordinary case, so it must not hit the
+	 * reserved-slug guard.
 	 *
 	 * @return void
 	 */
-	public function testCreatingANewPresetUnderAReservedSlugIsRefused(): void {
+	public function testWritingTheShippedDefaultSlugIsAMergeNotARefusedCreation(): void {
 		$response = $this->controller->create_item(
 			$this->block_request(
 				WP_REST_Server::CREATABLE,
@@ -284,8 +285,13 @@ final class PresetsControllerTest extends TestCase {
 			)
 		);
 
-		$this->assertInstanceOf( WP_Error::class, $response );
-		$this->assertSame( 'rest_design_tokens_reserved_slug', $response->get_error_code() );
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+
+		$data = $response->get_data();
+
+		// It merged onto the shipped preset rather than minting a user-created one.
+		$this->assertArrayHasKey( 'default', $data['presets'] );
+		$this->assertNotContains( 'default', $data['userCreated'] );
 	}
 
 	/**
@@ -335,11 +341,10 @@ final class PresetsControllerTest extends TestCase {
 
 		$data = $response->get_data();
 
-		// The new preset lands while the baseline siblings and the default survive.
+		// The new preset lands while the baseline sibling and the default survive.
 		$this->assertArrayHasKey( 'outline', $data['presets'] );
-		$this->assertArrayHasKey( 'primary', $data['presets'] );
-		$this->assertArrayHasKey( 'secondary', $data['presets'] );
-		$this->assertSame( 'primary', $data['default'] );
+		$this->assertArrayHasKey( 'default', $data['presets'] );
+		$this->assertSame( 'default', $data['default'] );
 	}
 
 	/**
@@ -380,17 +385,17 @@ final class PresetsControllerTest extends TestCase {
 				WP_REST_Server::CREATABLE,
 				self::BUTTON,
 				[
-					'preset' => 'primary',
-					'label'  => 'Renamed Primary',
+					'preset' => 'default',
+					'label'  => 'Renamed Default',
 				]
 			)
 		);
 
 		$data = $response->get_data();
 
-		$this->assertNotContains( 'primary', $data['userCreated'] );
-		$this->assertSame( 'Renamed Primary', $data['presets']['primary']['label'] );
-		$this->assertNotEmpty( $data['presets']['primary']['tokens'] );
+		$this->assertNotContains( 'default', $data['userCreated'] );
+		$this->assertSame( 'Renamed Default', $data['presets']['default']['label'] );
+		$this->assertNotEmpty( $data['presets']['default']['tokens'] );
 	}
 
 	/**
@@ -531,7 +536,7 @@ final class PresetsControllerTest extends TestCase {
 		// The override "dashed" is dropped; "outline" survives. Baseline presets always remain visible.
 		$this->assertArrayNotHasKey( 'dashed', $data['presets'] );
 		$this->assertArrayHasKey( 'outline', $data['presets'] );
-		$this->assertArrayHasKey( 'primary', $data['presets'] );
+		$this->assertArrayHasKey( 'default', $data['presets'] );
 	}
 
 	/**
@@ -560,7 +565,7 @@ final class PresetsControllerTest extends TestCase {
 
 		// The override is gone; the block renders its baseline presets again.
 		$this->assertArrayNotHasKey( 'outline', $data['presets'] );
-		$this->assertArrayHasKey( 'primary', $data['presets'] );
+		$this->assertArrayHasKey( 'default', $data['presets'] );
 	}
 
 	/**
@@ -634,10 +639,12 @@ final class PresetsControllerTest extends TestCase {
 	 * @return void
 	 */
 	public function testSetDefaultToAnExistingPreset(): void {
-		$response = $this->controller->set_default( $this->default_request( self::BUTTON, 'secondary' ) );
+		$this->createAccentPreset();
+
+		$response = $this->controller->set_default( $this->default_request( self::BUTTON, 'accent' ) );
 
 		$this->assertInstanceOf( WP_REST_Response::class, $response );
-		$this->assertSame( 'secondary', $response->get_data()['default'] );
+		$this->assertSame( 'accent', $response->get_data()['default'] );
 	}
 
 	/**
@@ -658,7 +665,7 @@ final class PresetsControllerTest extends TestCase {
 		$data = $this->controller->get_default( $this->block_request( WP_REST_Server::READABLE, self::BUTTON ) )->get_data();
 
 		$this->assertSame( self::BUTTON, $data['block'] );
-		$this->assertSame( 'primary', $data['default'] );
+		$this->assertSame( 'default', $data['default'] );
 	}
 
 	/**
@@ -1117,7 +1124,7 @@ final class PresetsControllerTest extends TestCase {
 				self::BUTTON,
 				[
 					'preset' => 'accent',
-					// #3633e1 matches the primary button background semantic; the rgba value matches nothing.
+					// #3633e1 matches the button background semantic; the rgba value matches nothing.
 					'tokens' => $this->button_tokens(
 						[
 							'button-bg'   => '#3633e1',
@@ -1330,29 +1337,6 @@ final class PresetsControllerTest extends TestCase {
 	}
 
 	/**
-	 * Creating a preset named "default" is rejected: the slug is reserved for the block's default sub-route
-	 * and could never be deleted or set through the dedicated route.
-	 *
-	 * @return void
-	 */
-	public function testCreatingAPresetNamedDefaultIsRejected(): void {
-		$result = $this->controller->create_item(
-			$this->block_request(
-				WP_REST_Server::CREATABLE,
-				self::BUTTON,
-				[
-					'preset' => 'default',
-					'tokens' => $this->button_tokens(),
-				]
-			)
-		);
-
-		$this->assertInstanceOf( WP_Error::class, $result );
-		$this->assertSame( 'rest_design_tokens_reserved_slug', $result->get_error_code() );
-		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $result->get_error_data()['status'] );
-	}
-
-	/**
 	 * @return void
 	 */
 	public function testAMalformedPresetShapeReturns422(): void {
@@ -1482,22 +1466,23 @@ final class PresetsControllerTest extends TestCase {
 	}
 
 	/**
-	 * A PUT to the order sub-route persists a new order for two BASELINE preset slugs (primary and
-	 * secondary) — the case fact 5 of the plan overview proves impossible through a PUT-the-collection
-	 * "reorder", since `Effective_Presets` always reads baseline-defined slugs back in baseline order
-	 * regardless of the order overrides were written in.
+	 * A PUT to the order sub-route moves a BASELINE preset slug out of its baseline position — the case a
+	 * PUT-the-collection "reorder" cannot reach, since `Effective_Presets` always reads baseline-defined
+	 * slugs back in baseline order, ahead of stored ones, regardless of the order overrides were written in.
 	 *
 	 * @return void
 	 */
 	public function testSetOrderMovesBaselineSlugs(): void {
-		$response = $this->controller->set_order( $this->order_request( self::BUTTON, [ 'secondary', 'primary' ] ) );
+		$this->createAccentPreset();
+
+		$response = $this->controller->set_order( $this->order_request( self::BUTTON, [ 'accent', 'default' ] ) );
 
 		$this->assertInstanceOf( WP_REST_Response::class, $response );
-		$this->assertSame( [ 'secondary', 'primary' ], array_keys( $response->get_data()['presets'] ) );
+		$this->assertSame( [ 'accent', 'default' ], array_keys( $response->get_data()['presets'] ) );
 
 		// The order survives a fresh read.
 		$data = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, self::BUTTON ) )->get_data();
-		$this->assertSame( [ 'secondary', 'primary' ], array_keys( $data['presets'] ) );
+		$this->assertSame( [ 'accent', 'default' ], array_keys( $data['presets'] ) );
 	}
 
 	/**
@@ -1507,12 +1492,14 @@ final class PresetsControllerTest extends TestCase {
 	 * @return void
 	 */
 	public function testSetOrderSilentlyPrunesAnUnknownSlug(): void {
+		$this->createAccentPreset();
+
 		$response = $this->controller->set_order(
-			$this->order_request( self::BUTTON, [ 'secondary', 'does-not-exist', 'primary' ] )
+			$this->order_request( self::BUTTON, [ 'accent', 'does-not-exist', 'default' ] )
 		);
 
 		$this->assertInstanceOf( WP_REST_Response::class, $response );
-		$this->assertSame( [ 'secondary', 'primary' ], array_keys( $response->get_data()['presets'] ) );
+		$this->assertSame( [ 'accent', 'default' ], array_keys( $response->get_data()['presets'] ) );
 	}
 
 	/**
@@ -1523,7 +1510,7 @@ final class PresetsControllerTest extends TestCase {
 	 */
 	public function testSetOrderRejectsAStaleVersionWith409(): void {
 		$result = $this->controller->set_order(
-			$this->order_request( self::BUTTON, [ 'secondary', 'primary' ], 'a-stale-version' )
+			$this->order_request( self::BUTTON, [ 'default' ], 'a-stale-version' )
 		);
 
 		$this->assertInstanceOf( WP_Error::class, $result );
@@ -1549,13 +1536,14 @@ final class PresetsControllerTest extends TestCase {
 	 * @return void
 	 */
 	public function testDeleteOrderRevertsToMergeOrder(): void {
-		$this->controller->set_order( $this->order_request( self::BUTTON, [ 'secondary', 'primary' ] ) );
+		$this->createAccentPreset();
+		$this->controller->set_order( $this->order_request( self::BUTTON, [ 'accent', 'default' ] ) );
 
 		$version  = $this->store->get_version( Token_Store::default_slug() );
 		$response = $this->controller->delete_order( $this->order_request( self::BUTTON, [], $version ) );
 
 		$this->assertSame( WP_Http::OK, $response->get_status() );
-		$this->assertSame( [ 'primary', 'secondary' ], array_keys( $response->get_data()['presets'] ) );
+		$this->assertSame( [ 'default', 'accent' ], array_keys( $response->get_data()['presets'] ) );
 	}
 
 	/**
@@ -1604,13 +1592,34 @@ final class PresetsControllerTest extends TestCase {
 	 * @return void
 	 */
 	public function testOrderedNamesAgreeBetweenTheControllerAndThePresetResolver(): void {
-		$this->controller->set_order( $this->order_request( self::BUTTON, [ 'secondary', 'primary' ] ) );
+		$this->createAccentPreset();
+		$this->controller->set_order( $this->order_request( self::BUTTON, [ 'accent', 'default' ] ) );
 
 		$data     = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, self::BUTTON ) )->get_data();
 		$resolver = $this->container->get( Preset_Resolver::class );
 
-		$this->assertSame( [ 'secondary', 'primary' ], array_keys( $data['presets'] ) );
-		$this->assertSame( [ 'secondary', 'primary' ], $resolver->names( self::BUTTON ) );
+		$this->assertSame( [ 'accent', 'default' ], array_keys( $data['presets'] ) );
+		$this->assertSame( [ 'accent', 'default' ], $resolver->names( self::BUTTON ) );
+	}
+
+	/**
+	 * Create a user "accent" preset through the controller, giving the block a second slug to order against
+	 * the shipped default.
+	 *
+	 * @return void
+	 */
+	private function createAccentPreset(): void {
+		$this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'preset' => 'accent',
+					'label'  => 'Accent',
+					'tokens' => $this->button_tokens(),
+				]
+			)
+		);
 	}
 
 	/**

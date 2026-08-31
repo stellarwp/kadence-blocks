@@ -37,8 +37,8 @@ final class Json_Baseline_DocumentTest extends TestCase {
 		$baseline = new Json_Baseline_Document( self::BASELINE_PATH, 'test-registered' );
 
 		// Shipped semantic tokens declarations.php registers must resolve, or the guard fails.
-		$this->assertTrue( $baseline->has( 'semantic.color.button-primary-bg' ) );
-		$this->assertTrue( $baseline->has( 'semantic.color.button-primary-text' ) );
+		$this->assertTrue( $baseline->has( 'semantic.color.button-bg' ) );
+		$this->assertTrue( $baseline->has( 'semantic.color.button-text' ) );
 	}
 
 	public function testHasIsTrueForPrimitiveAndCompositeLeaves(): void {

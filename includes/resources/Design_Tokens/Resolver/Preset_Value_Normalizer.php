@@ -15,7 +15,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Sentinels;
  *
  * The editor captures concrete values (a hex, a length) from a block and sends them as literals. For each
  * value this normalizer looks for a semantic token whose resolved value matches it in the target library;
- * when one is found the literal is replaced with that token's alias (`{semantic.color.button-primary-bg}`),
+ * when one is found the literal is replaced with that token's alias (`{semantic.color.button-bg}`),
  * so a later edit to the semantic (or the primitive it points at) still cascades into the preset. A value
  * that is already an alias is left untouched, and a value with no matching semantic stays a literal.
  *

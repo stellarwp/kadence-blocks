@@ -219,20 +219,15 @@ foreach ( $palette_slots as $token_id => $slot_label ) {
 }
 
 /**
- * Per-preset button color semantics (primary/secondary, resting + hover). The Button preset maps
- * reference these by value and they carry no projections of their own — the Kadence button reads them
- * through the preset's retarget bindings below, so overriding a primary semantic recolors that preset
- * without touching the global palette.
+ * Button color semantics (resting + hover). The Button preset map references these by value and they
+ * carry no projections of their own — the Kadence button reads them through the preset's retarget
+ * bindings below, so overriding one recolors the preset without touching the global palette.
  */
 $button_color_labels = [
-	'button-primary-bg'           => __( 'Button Primary Background', 'kadence-blocks' ),
-	'button-primary-text'         => __( 'Button Primary Text', 'kadence-blocks' ),
-	'button-primary-bg-hover'     => __( 'Button Primary Background (Hover)', 'kadence-blocks' ),
-	'button-primary-text-hover'   => __( 'Button Primary Text (Hover)', 'kadence-blocks' ),
-	'button-secondary-bg'         => __( 'Button Secondary Background', 'kadence-blocks' ),
-	'button-secondary-text'       => __( 'Button Secondary Text', 'kadence-blocks' ),
-	'button-secondary-bg-hover'   => __( 'Button Secondary Background (Hover)', 'kadence-blocks' ),
-	'button-secondary-text-hover' => __( 'Button Secondary Text (Hover)', 'kadence-blocks' ),
+	'button-bg'         => __( 'Button Background', 'kadence-blocks' ),
+	'button-text'       => __( 'Button Text', 'kadence-blocks' ),
+	'button-bg-hover'   => __( 'Button Background (Hover)', 'kadence-blocks' ),
+	'button-text-hover' => __( 'Button Text (Hover)', 'kadence-blocks' ),
 ];
 
 $button_color_tokens = [];
@@ -538,8 +533,8 @@ return [
 			 * background + text, Outline reads --global-palette-btn-bg for border + text, and both read the
 			 * matching -hover slots on :hover/:focus, so one color preset skins every shape and state. Each
 			 * binding names only the slot it retargets; the per-preset VALUE comes from the preset's token
-			 * map (which references the per-preset button-color semantics), so primary and secondary are
-			 * symmetric and each is overridable on its own semantic. Picking a preset re-skins a button with
+			 * map (which references the button-color semantics), so every preset is shaped the same way and
+			 * each is overridable on its own semantic. Picking a preset re-skins a button with
 			 * zero changes to its render path; a fresh button follows the $default.
 			 */
 			'block'         => 'kadence/singlebtn',
@@ -550,23 +545,23 @@ return [
 				'label' => __( 'Button', 'kadence-blocks' ),
 			],
 			'bindings'      => [
-				'button-bg'           => [
+				'button-bg'                 => [
 					'kadence_slot' => 'palette-btn-bg',
 					'control_attr' => 'background',
 				],
-				'button-text'         => [
+				'button-text'               => [
 					'kadence_slot' => 'palette-btn',
 					'control_attr' => 'color',
 				],
-				'button-bg-hover'     => [
+				'button-bg-hover'           => [
 					'kadence_slot' => 'palette-btn-bg-hover',
 					'control_attr' => 'backgroundHover',
 				],
-				'button-text-hover'   => [
+				'button-text-hover'         => [
 					'kadence_slot' => 'palette-btn-hover',
 					'control_attr' => 'colorHover',
 				],
-				'button-radius'       => [
+				'button-radius'             => [
 					'css_var'          => 'kb-btn-radius', // drives --kb-btn-radius so a preset can vary the radius.
 					'control_attr'     => 'borderRadius',
 					// The block names its per-device radius attributes by a prefix convention, which is a naming
@@ -582,7 +577,7 @@ return [
 				// every existing button and take padding away from the Button Size control. The binding
 				// exists so a preset CAN set them; until one does, the property resolves to nothing and no
 				// declaration is emitted.
-				'button-padding'      => [
+				'button-padding'            => [
 					'css_var'          => 'kb-btn-padding',
 					'control_attr'     => 'padding',
 					'responsive_attrs' => [
@@ -590,7 +585,7 @@ return [
 						'mobile' => 'mobilePadding',
 					],
 				],
-				'button-margin'       => [
+				'button-margin'             => [
 					'css_var'          => 'kb-btn-margin',
 					'control_attr'     => 'margin',
 					'responsive_attrs' => [
@@ -614,19 +609,19 @@ return [
 				// apart — width reads as a plain dimension and both style and color read as a plain color, so
 				// the editor would compare the nested shape as a flat one and never match. token-indicators
 				// reads the declared axis and combines the three into one bound/overridden state entry.
-				'button-border-width' => [
+				'button-border-width'       => [
 					'token'        => 'semantic.border-width.default',
 					'css_var'      => 'kb-btn-border-width',
 					'control_attr' => 'borderStyle',
 					'axis'         => 'border-width',
 				],
-				'button-border-style' => [
+				'button-border-style'       => [
 					'token'        => 'semantic.border-style.default',
 					'css_var'      => 'kb-btn-border-style',
 					'control_attr' => 'borderStyle',
 					'axis'         => 'border-style',
 				],
-				'button-border-color' => [
+				'button-border-color'       => [
 					'token'        => 'semantic.color.border',
 					'css_var'      => 'kb-btn-border-color',
 					'control_attr' => 'borderStyle',
@@ -635,7 +630,7 @@ return [
 				// No baseline default: an unstyled button carries no shadow, so the preset's $default omits
 				// this property entirely and the projector emits no box-shadow rule until a preset (or the
 				// user) sets one.
-				'button-shadow'       => [
+				'button-shadow'             => [
 					'token'   => 'semantic.shadow.button',
 					'css_var' => 'kb-btn-shadow',
 				],
@@ -890,7 +885,7 @@ return [
 				'label' => __( 'Section', 'kadence-blocks' ),
 			],
 			'bindings'      => [
-				'background'   => [
+				'background'        => [
 					'token'               => 'semantic.color.column-bg',
 					'css_prop'            => 'background-color',
 					'css_selector'        => '> .kt-inside-inner-col',
@@ -904,7 +899,7 @@ return [
 				// `border-color` rule on both surfaces. See the row's declaration above for the full account.
 				//
 				// @todo SOFT-4234: give the column a preset-able border trio.
-				'borderRadius' => [
+				'borderRadius'      => [
 					'token'               => 'semantic.radius.column',
 					'css_prop'            => 'border-radius',
 					'css_selector'        => '> .kt-inside-inner-col',
@@ -927,14 +922,14 @@ return [
 				// without clearing the column's own per-instance hover (three classes:
 				// `.kadence-column<uid>:hover > .kt-inside-inner-col`). Three ties that second one, and the tie
 				// breaks on source order in the block's favor.
-				'backgroundHover'     => [
+				'backgroundHover'   => [
 					'token'            => 'semantic.color.column-bg-hover',
 					'css_prop'         => 'background-color',
 					'css_state'        => ':hover > .kt-inside-inner-col.kt-inside-inner-col',
 					'editor_css_state' => ':hover > .kadence-inner-column-inner.kadence-inner-column-inner',
 					'control_attr'     => 'backgroundHover',
 				],
-				'borderHoverRadius'   => [
+				'borderHoverRadius' => [
 					'token'            => 'semantic.radius.column-hover',
 					'css_prop'         => 'border-radius',
 					'css_state'        => ':hover > .kt-inside-inner-col.kt-inside-inner-col',

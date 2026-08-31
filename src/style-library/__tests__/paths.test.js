@@ -122,8 +122,8 @@ describe('feedPath', () => {
 
 describe('tokenLabelPath', () => {
 	it('builds the label path for a token id', () => {
-		expect(tokenLabelPath('default', 'semantic.color.button-primary-bg')).toBe(
-			'/kb-design-tokens/v1/documents/default/labels/semantic.color.button-primary-bg'
+		expect(tokenLabelPath('default', 'semantic.color.button-bg')).toBe(
+			'/kb-design-tokens/v1/documents/default/labels/semantic.color.button-bg'
 		);
 	});
 

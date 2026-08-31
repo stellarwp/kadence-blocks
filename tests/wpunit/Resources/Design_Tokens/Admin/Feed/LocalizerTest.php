@@ -131,15 +131,15 @@ final class LocalizerTest extends TestCase {
 		$this->assertTrue( $feed['resolved'] );
 		$this->assertSame( Token_Store::default_slug(), $feed['slug'] );
 
-		// Structure: the shipped button-primary-bg token reaches the schema.
+		// Structure: the shipped button-bg token reaches the schema.
 		$ids = [];
 		foreach ( $feed['schema']['groups'] as $entries ) {
 			$ids = array_merge( $ids, array_column( $entries, 'id' ) );
 		}
-		$this->assertContains( 'semantic.color.button-primary-bg', $ids );
+		$this->assertContains( 'semantic.color.button-bg', $ids );
 
 		// Values: keyed identically to the schema, the resolved hex.
-		$this->assertSame( '#3633e1', $feed['values']['semantic.color.button-primary-bg'] );
+		$this->assertSame( '#3633e1', $feed['values']['semantic.color.button-bg'] );
 
 		// REST descriptor.
 		$this->assertSame( 'kb-design-tokens/v1', $feed['rest']['namespace'] );
@@ -411,7 +411,7 @@ final class LocalizerTest extends TestCase {
 				'$extensions' => [
 					'com.kadence.designTokens' => [
 						'tokenLabels' => [
-							'semantic.color.button-primary-bg' => 'Cozy Button',
+							'semantic.color.button-bg' => 'Cozy Button',
 						],
 					],
 				],
@@ -430,7 +430,7 @@ final class LocalizerTest extends TestCase {
 
 		foreach ( $feed['schema']['groups'] as $entries ) {
 			foreach ( $entries as $entry ) {
-				if ( ( $entry['id'] ?? '' ) === 'semantic.color.button-primary-bg' ) {
+				if ( ( $entry['id'] ?? '' ) === 'semantic.color.button-bg' ) {
 					$found = $entry;
 					break 2;
 				}

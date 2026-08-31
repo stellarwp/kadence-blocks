@@ -46,11 +46,11 @@ final class Css_BuilderTest extends TestCase {
 	public function testItEmitsThePresetDeclarationsUnderTheSharedPresenceSelector(): void {
 		$css = $this->builder()->css(
 			[ 'dark' => [ '--kb-token--primitive--color--brand--primary' => '#0b1020' ] ],
-			'--kb-token--preset--kadence-singlebtn--primary--button-bg:var(--kb-token--semantic--color--button-primary-bg);'
+			'--kb-token--preset--kadence-singlebtn--default--button-bg:var(--kb-token--semantic--color--button-bg);'
 		);
 
 		$this->assertStringContainsString(
-			'[data-kb-palette]{--kb-token--preset--kadence-singlebtn--primary--button-bg:var(--kb-token--semantic--color--button-primary-bg);}',
+			'[data-kb-palette]{--kb-token--preset--kadence-singlebtn--default--button-bg:var(--kb-token--semantic--color--button-bg);}',
 			$css
 		);
 	}
