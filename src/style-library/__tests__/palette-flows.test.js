@@ -507,6 +507,7 @@ describe('deletePaletteFlow', () => {
 			slug: SLUG,
 			id: 'sunset',
 			currentId: DEFAULT_ID,
+			isUserCreated: true,
 			onReceive,
 			refreshFeed,
 			onBusy,
@@ -529,6 +530,7 @@ describe('deletePaletteFlow', () => {
 				slug: SLUG,
 				id: 'sunset',
 				currentId: 'sunset',
+				isUserCreated: true,
 				onReceive: jest.fn(),
 				refreshFeed: jest.fn(),
 				onBusy: jest.fn(),
@@ -568,6 +570,7 @@ describe('deletePaletteFlow', () => {
 			slug: SLUG,
 			id: 'sunset',
 			currentId: 'sunset',
+			isUserCreated: true,
 			successorId: 'forest',
 			onReceive,
 			refreshFeed: jest.fn().mockResolvedValue(undefined),
@@ -583,8 +586,47 @@ describe('deletePaletteFlow', () => {
 		expect(onReceive).toHaveBeenCalledWith(deleteResponse);
 	});
 
-	it('surfaces the default-palette 400 message', async () => {
-		const failure = new Error('The default palette cannot be deleted.');
+	/**
+	 * The shipped state: the baseline default palette is also the live one. Resetting it needs no
+	 * successor — it stays in the listing and stays current — so the request must go out even
+	 * though `id` and `currentId` match and no successor was chosen.
+	 *
+	 * @return void
+	 */
+	it('resets the live baseline palette without asking for a successor', async () => {
+		client.deletePalette.mockResolvedValue(listingRows());
+		const onReceive = jest.fn();
+		const refreshFeed = jest.fn().mockResolvedValue(undefined);
+		const onError = jest.fn();
+
+		await deletePaletteFlow({
+			namespace: NAMESPACE,
+			slug: SLUG,
+			id: DEFAULT_ID,
+			currentId: DEFAULT_ID,
+			isUserCreated: false,
+			successorId: '',
+			onReceive,
+			refreshFeed,
+			onBusy: jest.fn(),
+			onError,
+		});
+
+		expect(client.setCurrentPalette).not.toHaveBeenCalled();
+		expect(client.deletePalette).toHaveBeenCalledWith(NAMESPACE, DEFAULT_ID, SLUG);
+		expect(onReceive).toHaveBeenCalledWith(listingRows());
+		expect(refreshFeed).toHaveBeenCalledWith(SLUG);
+		expect(onError).not.toHaveBeenCalled();
+	});
+
+	/**
+	 * A failed request surfaces the server's own message inline and rejects with the original
+	 * error, so the modal can stay open on it.
+	 *
+	 * @return void
+	 */
+	it('surfaces the request failure message', async () => {
+		const failure = new Error('The palette could not be saved.');
 		client.deletePalette.mockRejectedValue(failure);
 		const onError = jest.fn();
 
@@ -593,6 +635,8 @@ describe('deletePaletteFlow', () => {
 				namespace: NAMESPACE,
 				slug: SLUG,
 				id: DEFAULT_ID,
+				currentId: DEFAULT_ID,
+				isUserCreated: false,
 				onReceive: jest.fn(),
 				refreshFeed: jest.fn(),
 				onBusy: jest.fn(),

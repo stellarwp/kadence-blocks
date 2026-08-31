@@ -316,6 +316,13 @@ export function createPaletteFlow({
  * Delete a palette, first handing the active pointer to a successor when the palette being deleted
  * is the live one. Mirrors `deleteLibraryFlow`.
  *
+ * Only a user-created palette is really removed. The same request against a palette the shipped
+ * baseline defines — the default among them — drops its overrides and leaves the palette in the
+ * listing, still `$current`, so it is a reset and has nothing to hand the active pointer to. That
+ * is the server's own reading of DELETE (`Palettes_Controller::delete_item()`), and the successor
+ * gate below has to match it: comparing ids alone would refuse to reset the live default palette,
+ * and the request would never be issued.
+ *
  * Activation runs before the delete: left alone the server resolves a dangling `$current` to
  * `$default`, so the site would briefly wear a palette nobody chose.
  *
@@ -325,6 +332,9 @@ export function createPaletteFlow({
  * @param {string}   args.id          The palette id to delete.
  * @param {string}   args.currentId   The listing's `$current` palette id, which decides whether a
  *                                    successor is required at all.
+ * @param {boolean}  args.isUserCreated Whether the palette is removable rather than resettable. A
+ *                                    baseline palette resets in place, so it needs no successor
+ *                                    even while it is the live one.
  * @param {string}   [args.successorId] The palette to make current first. Required only when
  *                                    deleting the current palette.
  * @param {Function} args.onReceive   Called with the FINAL write's own raw response (the delete's,
@@ -345,13 +355,16 @@ export function deletePaletteFlow({
 	slug,
 	id,
 	currentId,
+	isUserCreated,
 	successorId,
 	onReceive,
 	refreshFeed,
 	onBusy,
 	onError,
 }) {
-	const needsSuccessor = id === currentId;
+	// Same gate `DeletePaletteModal` renders its successor dropdown behind, so the modal and the
+	// request it triggers agree on when a successor is needed.
+	const needsSuccessor = id === currentId && isUserCreated;
 
 	if (needsSuccessor && !successorId) {
 		const message = __('Choose which palette your site should use instead.', 'kadence-blocks');
@@ -377,9 +390,9 @@ export function deletePaletteFlow({
 
 /**
  * Rename a palette: re-send its own effective view under the SAME id with a new label. Available
- * for any palette, including the default — the server only refuses DELETING the default palette,
- * not relabeling it (`Palettes_Controller::update_item()` carries no default-id guard, unlike
- * `delete_item()`).
+ * for any palette, including the default — `Palettes_Controller::update_item()` carries no
+ * default-id guard, and neither does any other palette write: the default palette is relabeled,
+ * edited, and reset like the rest, it just cannot be removed from the listing.
  *
  * `id` is never re-derived from `label` here — that is the one deliberate divergence from
  * `createPaletteFlow`, which mints an id from the typed label because it is minting a NEW palette.
