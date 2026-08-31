@@ -15,6 +15,7 @@
  * WordPress dependencies
  */
 import { Dropdown } from '@wordpress/components';
+import { __, sprintf } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -55,7 +56,8 @@ export function ColorSwatchControl({
 	resolveLiteral,
 	disabled = false,
 }) {
-	const { entry } = colorSelection(groups, value);
+	const selection = colorSelection(groups, value);
+	const { entry, selectedLabel } = selection;
 
 	return (
 		<Dropdown
@@ -68,7 +70,19 @@ export function ColorSwatchControl({
 				<button
 					type="button"
 					className="kb-color-swatch-control__button"
-					aria-label={label}
+					// The trigger renders no visible text, so the current selection has nowhere else to be
+					// announced — `ColorControl` shows it as its own `selectedLabel`. Composed into the
+					// accessible name so a screen reader hears what is set, not just which field this is.
+					aria-label={
+						selectedLabel
+							? sprintf(
+									/* translators: 1: the field's name. 2: the selected color's name. */
+									__('%1$s: %2$s', 'kadence-blocks'),
+									label,
+									selectedLabel
+								)
+							: label
+					}
 					aria-expanded={isOpen}
 					disabled={disabled}
 					onClick={onToggle}
@@ -80,6 +94,7 @@ export function ColorSwatchControl({
 				<ColorPopover
 					value={value}
 					groups={groups}
+					selection={selection}
 					onClear={onClear}
 					onPick={onPick}
 					onCustom={onCustom}

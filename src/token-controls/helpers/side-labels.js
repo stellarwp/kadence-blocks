@@ -16,7 +16,7 @@
 /**
  * WordPress dependencies
  */
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 
 /**
  * The translated name of one border side.
@@ -36,4 +36,29 @@ export function sideLabel(side) {
 	};
 
 	return names[side] ?? side;
+}
+
+/**
+ * The accessible name for one border row's color field.
+ *
+ * The composed phrase lives here rather than in each host for the reason this file exists at all: a
+ * translator sees one string instead of two identical ones, and the two hosts cannot drift on how a
+ * border color names itself. The linked row has no side of its own, so it takes the bare name.
+ *
+ * @param {?string} side The row's bare side key, or `null` while the sides are linked.
+ *
+ * @since TBD
+ *
+ * @return {string} The field's accessible name.
+ */
+export function borderColorLabel(side) {
+	if (!side) {
+		return __('Border Color', 'kadence-blocks');
+	}
+
+	return sprintf(
+		/* translators: %s: the border side, already translated — Top, Right, Bottom or Left. */
+		__('%s Border Color', 'kadence-blocks'),
+		sideLabel(side)
+	);
 }

@@ -48,7 +48,12 @@ jest.mock('@wordpress/icons', () => ({
 
 jest.mock('@wordpress/i18n', () => ({
 	__: (text) => text,
-	sprintf: (format, ...args) => format.replace(/%s/g, () => args.shift()),
+	sprintf: (format, ...args) => {
+		let next = 0;
+		return format.replace(/%(?:(\d+)\$)?s/g, (match, position) =>
+			position ? args[Number(position) - 1] : args[next++]
+		);
+	},
 }));
 
 jest.mock('../molecules/ColorPicker', () => ({
@@ -128,6 +133,20 @@ describe('ColorSwatchControl', () => {
 		expect(toggle.getAttribute('aria-label')).toBe('Top Border Color');
 		expect(toggle.textContent).toBe('');
 		expect(toggle.querySelector('.kb-color-swatch')).toBeTruthy();
+	});
+
+	/**
+	 * With a token bound, the accessible name carries the selected color's own name too — the trigger
+	 * shows no visible text, so this is the only place a screen reader can hear what is set.
+	 *
+	 * @return {void}
+	 */
+	it('names the selected color in the accessible name', () => {
+		render({ value: '{semantic.color.accent.main}' });
+
+		expect(container.querySelector('.kb-color-swatch-control__button').getAttribute('aria-label')).toBe(
+			'Top Border Color: Main'
+		);
 	});
 
 	/**

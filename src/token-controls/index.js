@@ -65,6 +65,6 @@ export {
 	writeSlot,
 } from './helpers/value-shapes';
 export { tokenCssVar } from './helpers/token-css-var';
-export { sideLabel } from './helpers/side-labels';
+export { borderColorLabel, sideLabel } from './helpers/side-labels';
 export { mapPaletteToColorControlGroups } from './helpers/palette-groups';
 export { DEFAULT_COMPOSITE, parseResolvedShadow } from './helpers/shadow-shorthand';
