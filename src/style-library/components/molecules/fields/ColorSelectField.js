@@ -3,9 +3,9 @@
  * screen's Text / Background rows): the same trigger-plus-popover control the block editor's
  * `singlebtn` inspector uses, bridged to this host's own palette data and stored-value shape.
  *
- * `TokenColorSelectField.js` stays in place unchanged — it is still `BorderField`/`BoxShadowField`'s
- * own color sub-field, out of this control's scope (see the color-control design's border/shadow
- * exclusion). This is a second, additive field type, not a replacement.
+ * `TokenColorSelectField.js` stays in place unchanged — it is now `BoxShadowField`'s own color
+ * sub-field alone, shadow being out of this control's scope (a shadow's color packs opacity into the
+ * same value). This is a second, additive field type, not a replacement.
  *
  * Value format bridge: a `token-color-select`-style field stores a BARE token id (e.g.
  * `semantic.color.accent.main`), never a bracket alias — the stored attribute shape does not

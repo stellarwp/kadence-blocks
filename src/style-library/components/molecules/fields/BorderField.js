@@ -45,7 +45,6 @@
  * WordPress dependencies
  */
 import { useState } from '@wordpress/element';
-import { __, sprintf } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -64,7 +63,7 @@ import { boundTokenIds, withoutSemanticSlots } from './BoxTokenField';
 import { useBreakpoint } from '../../../../token-controls/context/breakpoint';
 import { parseCssLength } from '../../../../token-controls/helpers/parse-css-length';
 import { isSlotList, readSlot } from '../../../../token-controls/helpers/value-shapes';
-import { ColorSwatchControl, sideLabel } from '../../../../token-controls';
+import { ColorSwatchControl, borderColorLabel } from '../../../../token-controls';
 import { resolveLiteral, toControlValue, toStoredValue } from '../../../helpers/color-values';
 import { useActivePaletteGroups } from '../../../hooks/use-active-palette-groups';
 
@@ -338,15 +337,7 @@ export function BorderField({ field, values, originalValues, onValueChange }) {
 					// `side` is the row's bare side name ("top", "right", …), or `null` while linked. Each
 					// row gets a distinct accessible name so unlinked mode's four swatches — which carry no
 					// visible text at all — do not read as four copies of the same field.
-					label={
-						side
-							? sprintf(
-									/* translators: %s: the border side, already translated — Top, Right, Bottom or Left. */
-									__('%s Border Color', 'kadence-blocks'),
-									sideLabel(side)
-								)
-							: __('Border Color', 'kadence-blocks')
-					}
+					label={borderColorLabel(side)}
 					// This host stores a BARE token id, never a bracket alias, so the value is bridged in
 					// both directions with the same pair `ColorSelectField` already uses.
 					value={toControlValue(color)}

@@ -15,8 +15,9 @@
  * shadow, so this adapter reads and writes `field.path`'s value directly, with no breakpoint
  * envelope — unlike `BorderField`/`BoxTokenField`.
  *
- * Color is out of this plan's scope, exactly as in `BorderField`: `renderColor` wraps the same
- * `TokenColorSelectField` the Button screen's Color panel already renders.
+ * Color stays out of scope here — a shadow's color packs opacity into the same value, which the
+ * shared color popover has no place for — so `renderColor` still wraps `TokenColorSelectField`.
+ * `BorderField` no longer does; this is now the only field that renders it.
  */
 
 /**

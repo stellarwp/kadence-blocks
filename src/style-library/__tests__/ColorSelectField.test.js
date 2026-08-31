@@ -224,7 +224,7 @@ describe('ColorSelectField', () => {
 	});
 
 	/**
-	 * `field.readOnly` disables the control the same way it disables `TokenColorSelectField`.
+	 * `field.readOnly` makes the control non-interactive, matching every other read-only field.
 	 *
 	 * @return {void}
 	 */
