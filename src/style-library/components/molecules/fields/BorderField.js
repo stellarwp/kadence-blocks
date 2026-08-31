@@ -22,10 +22,13 @@
  * `BoxControl` — so this adapter fixes the unit at `px` (the only unit the `border-width` scale's
  * tokens use) rather than tracking one the way `BoxTokenField` tracks radius/spacing's unit.
  *
- * Color is out of this plan's scope (see `BorderControl`'s own docblock): `renderColor` wraps the
- * same `TokenColorSelectField` the Button screen's Color panel already renders for text/background,
- * rather than building or importing anything new. Color's own path carries no breakpoint envelope —
- * a border color has never varied by breakpoint here, so its path always stores the plain value.
+ * Color's own sub-field is the shared `ColorSwatchControl` — `renderColor` wraps it here the same
+ * way the block editor's own `BorderControl` host does, so a border's color opens the same grouped
+ * Style Library / Custom popover `ColorSelectField` opens, bridged through the
+ * `toControlValue`/`toStoredValue`/`resolveLiteral` pair `helpers/color-values.js` shares with that
+ * field, since this host stores a bare token id, not a bracket alias. Color's own path carries no
+ * breakpoint envelope — a border color has never varied by breakpoint here, so its path always
+ * stores the plain value.
  *
  * Link state is owned here, controlled, exactly the way `BoxTokenField` owns it for radius/spacing
  * — not derived from whether the stored value happens to be a scalar or a four-slot list.
@@ -39,15 +42,9 @@
  */
 
 /**
- * External dependencies
- */
-import { upperFirst } from 'lodash';
-
-/**
  * WordPress dependencies
  */
 import { useState } from '@wordpress/element';
-import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -66,7 +63,9 @@ import { boundTokenIds, withoutSemanticSlots } from './BoxTokenField';
 import { useBreakpoint } from '../../../../token-controls/context/breakpoint';
 import { parseCssLength } from '../../../../token-controls/helpers/parse-css-length';
 import { isSlotList, readSlot } from '../../../../token-controls/helpers/value-shapes';
-import { TokenColorSelectField } from './TokenColorSelectField';
+import { ColorSwatchControl, borderColorLabel } from '../../../../token-controls';
+import { resolveLiteral, toControlValue, toStoredValue } from '../../../helpers/color-values';
+import { useActivePaletteGroups } from '../../../hooks/use-active-palette-groups';
 
 /**
  * The only unit border width is stored in — the `border-width` scale's tokens (`1px`, `2px`,
@@ -243,6 +242,8 @@ export function BorderField({ field, values, originalValues, onValueChange }) {
 	// Shared, not local: this switches every responsive control in the panel at once.
 	const [breakpoint, setBreakpoint] = useBreakpoint(PRESET_BREAKPOINTS[0]);
 
+	const groups = useActivePaletteGroups();
+
 	const widthPath = `${field.path}-width`;
 	const stylePath = `${field.path}-style`;
 	const colorPath = `${field.path}-color`;
@@ -331,19 +332,21 @@ export function BorderField({ field, values, originalValues, onValueChange }) {
 			label={field.label}
 			widthTokens={widthTokens}
 			defaultValue={field.defaultValue}
-			renderColor={({ value: color, onChange: onColorChange, label: sideLabel }) => (
-				<TokenColorSelectField
-					// `sideLabel` is the row's bare side name ("top", "right", …), or `null` while linked.
-					// Capitalized and used as the field's own name so unlinked mode's four swatches — one
-					// per row now instead of sharing the linked "Color" name — read as distinct fields to
-					// a screen reader, matching `styleLabel`'s per-side naming a few lines up in
-					// `BorderControl`.
-					field={{
-						label: sideLabel ? upperFirst(sideLabel) : __('Color', 'kadence-blocks'),
-						readOnly: field.readOnly,
-					}}
-					value={color}
-					onChange={onColorChange}
+			renderColor={({ value: color, onChange: onColorChange, label: side }) => (
+				<ColorSwatchControl
+					// `side` is the row's bare side name ("top", "right", …), or `null` while linked. Each
+					// row gets a distinct accessible name so unlinked mode's four swatches — which carry no
+					// visible text at all — do not read as four copies of the same field.
+					label={borderColorLabel(side)}
+					// This host stores a BARE token id, never a bracket alias, so the value is bridged in
+					// both directions with the same pair `ColorSelectField` already uses.
+					value={toControlValue(color)}
+					groups={groups}
+					onPick={(alias) => onColorChange(toStoredValue(alias))}
+					onCustom={(literal) => onColorChange(literal)}
+					onClear={() => onColorChange('')}
+					resolveLiteral={resolveLiteral}
+					disabled={field.readOnly}
 				/>
 			)}
 			breakpoints={responsive ? PRESET_BREAKPOINTS : null}

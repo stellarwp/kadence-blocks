@@ -27,6 +27,7 @@ export { BoxControl } from './controls/BoxControl';
 export { BoxShadowControl } from './controls/BoxShadowControl';
 export { ColorControl } from './controls/ColorControl';
 export { ColorControlGroup } from './controls/ColorControlGroup';
+export { ColorSwatchControl } from './controls/ColorSwatchControl';
 export { ScalarControl } from './controls/ScalarControl';
 export { ColorPicker } from './molecules/ColorPicker';
 
@@ -64,5 +65,6 @@ export {
 	writeSlot,
 } from './helpers/value-shapes';
 export { tokenCssVar } from './helpers/token-css-var';
+export { borderColorLabel, sideLabel } from './helpers/side-labels';
 export { mapPaletteToColorControlGroups } from './helpers/palette-groups';
 export { DEFAULT_COMPOSITE, parseResolvedShadow } from './helpers/shadow-shorthand';

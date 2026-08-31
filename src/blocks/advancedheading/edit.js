@@ -95,7 +95,7 @@ import { EditorBoxControl } from '../../extension/design-tokens/components/Edito
 import { EditorScalarControl } from '../../extension/design-tokens/components/EditorScalarControl';
 import { useColorGroups } from '../../extension/design-tokens/hooks/use-color-groups';
 import { resolveColorLiteral } from '../../extension/design-tokens/color-literal';
-import { renderBorderColor } from '../../extension/design-tokens/components/border-color';
+import { BorderColorField } from '../../extension/design-tokens/components/border-color';
 import { tokenDimension } from '../../extension/design-tokens/token-dimension';
 import { pickableTokensForControl, pickableTokensForKey } from '../../extension/token-picker';
 import { ColorControl, ColorControlGroup } from '../../token-controls';
@@ -116,7 +116,7 @@ import {
 	getColorClassName,
 	useBlockProps,
 } from '@wordpress/block-editor';
-import { useEffect, useState, useRef } from '@wordpress/element';
+import { useCallback, useEffect, useState, useRef } from '@wordpress/element';
 
 import {
 	ToolbarGroup,
@@ -316,6 +316,9 @@ function KadenceAdvancedHeading(props) {
 	const resetToken = (attr) => resetAttr(attr, setAttributes, tokenBinding[attr]?.kind, metadata.attributes);
 	// One fetch of the block's effective palette groups, shared by every `ColorControl` on this block.
 	const colorGroups = useColorGroups(clientId);
+	// `BorderControl` forwards `renderColor` down through `SlotGrid`'s `renderSlot`, so this is
+	// defined once per render rather than inline at each of the border panels below.
+	const renderBorderColor = useCallback((row) => <BorderColorField {...row} groups={colorGroups} />, [colorGroups]);
 
 	// Empty when the token registry is inactive, which is what keeps each plain control below as the
 	// fallback rather than leaving the heading without it.

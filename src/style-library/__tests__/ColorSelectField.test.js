@@ -8,12 +8,8 @@ import { createRoot } from 'react-dom/client';
 /**
  * Internal dependencies
  */
-import {
-	ColorSelectField,
-	resolveLiteral,
-	toControlValue,
-	toStoredValue,
-} from '../components/molecules/fields/ColorSelectField';
+import { ColorSelectField } from '../components/molecules/fields/ColorSelectField';
+import { resolveLiteral, toControlValue, toStoredValue } from '../helpers/color-values';
 import { getDesignTokensFeed } from '../helpers/tokens';
 
 const NAMESPACE = 'kb-design-tokens/v1';
@@ -228,7 +224,7 @@ describe('ColorSelectField', () => {
 	});
 
 	/**
-	 * `field.readOnly` disables the control the same way it disables `TokenColorSelectField`.
+	 * `field.readOnly` makes the control non-interactive, matching every other read-only field.
 	 *
 	 * @return {void}
 	 */

@@ -5,28 +5,24 @@
  *
  * No `ControlShell` — its header-above-body split does not fit a control whose label lives inside
  * the trigger row itself, the way `BorderControl`'s width `TokenSelector` does. Composes `Dropdown`
- * and `TokenPopover` directly, passing `ColorGroupList` through `TokenPopover`'s `renderList` prop
- * for a grouped Style Library tab (Accent/Contrast/Background/Notices) instead of the flat token
- * list every other control shows, and the relocated `ColorPicker` through `renderCustom` for the
- * Custom tab.
+ * with `ColorPopover`, the popover body that shows a grouped Style Library tab (Accent/Contrast/
+ * Background/Notices) and a Custom tab for raw colors. The popover lives in `ColorPopover` because
+ * `ColorSwatchControl` opens the same one behind a different, compact trigger.
  */
 
 /**
  * WordPress dependencies
  */
-import { Button, Dropdown } from '@wordpress/components';
-import { Icon, undo } from '@wordpress/icons';
-import { __ } from '@wordpress/i18n';
+import { Dropdown } from '@wordpress/components';
 
 /**
  * Internal dependencies
  */
 import { BindingIndicator } from '../atoms/BindingIndicator';
 import { ColorSwatch } from '../atoms/ColorSwatch';
-import { ColorGroupList } from '../molecules/ColorGroupList';
-import { ColorPicker } from '../molecules/ColorPicker';
-import { TokenPopover } from '../molecules/TokenPopover';
-import { findTokenEntry, isTokenAlias } from '../helpers/token-summary';
+import { ColorPopover } from '../molecules/ColorPopover';
+import { colorSelection } from '../helpers/color-selection';
+import { isTokenAlias } from '../helpers/token-summary';
 import '../styles/token-controls.scss';
 
 /**
@@ -70,15 +66,8 @@ export function ColorControl({
 	resolveLiteral,
 	disabled = false,
 }) {
-	const allSwatches = groups.flatMap((group) => group.swatches);
-	const entry = findTokenEntry(allSwatches, value);
-	// A bound alias that resolves to no entry in this control's own groups (e.g. a button preset's
-	// text/background default, a token from outside the Accent/Contrast/Background palette) is still
-	// a real, working color — just not one this control can name. Reading it back as raw dot-path
-	// text would overflow the trigger and read as broken; "Default" matches every other token
-	// control's muted fallback for "set, but not to one of my own pickable options."
-	const selectedLabel = entry ? entry.label : isTokenAlias(value) ? __('Default', 'kadence-blocks') : null;
-	const initialTab = isTokenAlias(value) || !value ? 'style-library' : 'custom';
+	const selection = colorSelection(groups, value);
+	const { entry, selectedLabel } = selection;
 
 	return (
 		<div className="kb-color-control">
@@ -101,37 +90,14 @@ export function ColorControl({
 						</button>
 					)}
 					renderContent={({ onClose }) => (
-						<TokenPopover
+						<ColorPopover
 							value={value}
-							tokens={allSwatches}
-							initialTab={initialTab}
-							renderList={({ onPick: pick, onClose: close }) => (
-								<>
-									{onClear && (
-										<Button
-											className="kadence-token-field__reset kb-color-control__clear"
-											disabled={!value}
-											onClick={() => {
-												onClear();
-												close();
-											}}
-										>
-											<span className="kadence-token-field__reset-label">
-												{__('Clear', 'kadence-blocks')}
-											</span>
-											<Icon className="kadence-token-field__reset-icon" icon={undo} size={20} />
-										</Button>
-									)}
-									<ColorGroupList groups={groups} value={value} onPick={pick} onClose={close} />
-								</>
-							)}
-							renderCustom={() => (
-								<ColorPicker
-									color={entry && resolveLiteral ? resolveLiteral(entry) : entry ? '' : value}
-									onChange={onCustom}
-								/>
-							)}
+							groups={groups}
+							selection={selection}
+							onClear={onClear}
 							onPick={onPick}
+							onCustom={onCustom}
+							resolveLiteral={resolveLiteral}
 							onClose={onClose}
 						/>
 					)}
