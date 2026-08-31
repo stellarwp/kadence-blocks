@@ -1,10 +1,13 @@
-// Unlike the real `AppShell`, this placeholder is never wrapped in
+// This placeholder reproduces the real `AppShell`'s inner wrappers — `__header`, `__sidebar`,
+// `__content` — so it inherits their surfaces, dividing rules and column widths rather than
+// restating them here. What it deliberately does NOT reuse is the outermost
 // `.kadence-blocks-style-library__shell` (which supplies the flex-column layout and the viewport
-// height) — it renders standalone at cold start (`StyleLibraryApp.js`, before `feed.isReady`) and,
-// reused as-is, inside `AppShell.js`'s `isBlocked` overlay (`.kadence-blocks-style-library__blocker`,
-// a `display: flex; align-items: center; justify-content: center` box with no width of its own).
-// Without sizing of its own, the skeleton shrink-wraps to its content and renders as a small,
-// centered box instead of filling the frame the way the spinner it replaced did.
+// height): the skeleton renders standalone at cold start (`StyleLibraryApp.js`, before
+// `feed.isReady`) and, reused as-is, inside `AppShell.js`'s `isBlocked` overlay
+// (`.kadence-blocks-style-library__blocker`, a `display: flex; align-items: center;
+// justify-content: center` box with no width of its own). Without sizing of its own, the skeleton
+// shrink-wraps to its content and renders as a small, centered box instead of filling the frame the
+// way the spinner it replaced did.
 .kadence-blocks-style-library__shell-skeleton {
 	display: flex;
 	flex-direction: column;
