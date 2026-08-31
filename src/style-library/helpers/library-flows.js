@@ -317,7 +317,9 @@ export function deleteLibraryFlow({
 			// Both run only once the delete has actually landed, and both run before the feed is
 			// re-read. Resetting earlier would throw away an open draft for a request that might
 			// still fail; resetting later would let a screen render the fresh feed while still
-			// holding the deleted library's cached presets, palettes and pending overlays.
+			// holding the deleted library's cached presets, palettes and pending overlays. That is
+			// about emptying those values, which must happen before the feed read. Re-arming the
+			// resolvers that fill them is a separate step below, and it deliberately runs later.
 			//
 			// Wrapped in its own try/catch, not folded into the flow's outer `.catch()`, for the same
 			// reason the `loadLibraries()` step below swallows its own failure: by this point
@@ -340,9 +342,9 @@ export function deleteLibraryFlow({
 		})
 		.then(() => refreshFeed(nextSlug))
 		.then(() => {
-			// After the feed swap, never before: re-arming these resolvers while the app still
-			// points at the deleted library re-fetches a slug the server no longer has, and the
-			// failure surfaces as a stale error notice on the library the user lands on.
+			// After the feed swap, never before: re-arming these resolvers for a library the app is
+			// leaving is pointless work, and this is the right place to do it regardless. The
+			// stale-notice protection itself lives in the palette hook, not in this ordering.
 			try {
 				revalidateLibraryCaches();
 			} catch {

@@ -139,10 +139,12 @@ export function useLibraries(feed, refreshFeed, resetWorkspace) {
 	 * and costs nothing — a resolver only refires for a tuple something actually reads, and one
 	 * screen is mounted at a time.
 	 *
-	 * Runs after the feed has moved to the library being kept. Re-arming any earlier would refire
-	 * the mounted screen's resolver against the deleted slug, and that request's failure would be
-	 * copied into the palette screen's own error state, leaving a stale notice on the library the
-	 * user lands on.
+	 * Runs after the feed read rather than before it: re-arming the resolvers for a library the app
+	 * is on its way out of is wasted work, and any request it does provoke is answered for a slug
+	 * the server may no longer have. This is ordering hygiene, not a guarantee — the visible slug
+	 * advances on a React render that has not necessarily committed by the time this runs, so a
+	 * resolver can still briefly refire against the previous library. What keeps that from reaching
+	 * the user is that a palette listing error is cleared when the library changes.
 	 *
 	 * @since TBD
 	 *

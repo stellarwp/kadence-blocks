@@ -184,6 +184,15 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 	);
 	const isLoading = !hasFinishedListing && !listing.palettes.length;
 
+	// An error belongs to the library it came from. `ColorPaletteScreen` is the same element in the
+	// same position across a library swap, so React reconciles rather than remounts it and this
+	// state would otherwise survive onto a library it says nothing about. Declared above the effect
+	// that sets it so that, on a swap that genuinely fails, the clear runs first and the new
+	// library's own failure still lands.
+	useEffect(() => {
+		setOpenError(null);
+	}, [namespace, slug]);
+
 	// Mirrors `hooks/use-libraries.js`'s identical effect: a resolution failure for
 	// `getPaletteListing` surfaces here the same way a failed write already does via its own
 	// `onError: setOpenError`.

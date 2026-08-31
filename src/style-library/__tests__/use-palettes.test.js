@@ -220,6 +220,23 @@ describe('usePalettes', () => {
 		expect(probe.latest().openError).toEqual({ message: 'Something broke' });
 	});
 
+	it('clears a stale listing error once the library it came from is no longer the one showing', async () => {
+		client.fetchPalettes.mockRejectedValueOnce(new Error('Something broke'));
+
+		const probe = mountProbe();
+		await probe.render();
+
+		expect(probe.latest().openError).toEqual({ message: 'Something broke' });
+
+		// Re-rendering the same probe with a different slug is the library swap: `ColorPaletteScreen`
+		// stays the same element in the same position, so this reconciles the mounted hook instead of
+		// remounting it — the same path a real library switch takes.
+		client.fetchPalettes.mockResolvedValueOnce(listingRows());
+		await probe.render({ feed: { ...FEED, slug: 'brand-b' } });
+
+		expect(probe.latest().openError).toBeNull();
+	});
+
 	it('activatePalette dispatches the write response via onReceive, moving activeId and palette together', async () => {
 		client.fetchPalettes.mockResolvedValueOnce(listingRows());
 		client.setCurrentPalette.mockResolvedValueOnce(listingRows({ currentId: SUNSET_ID }));
