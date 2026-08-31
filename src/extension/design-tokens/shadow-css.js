@@ -49,9 +49,11 @@ export function shadowAxisPx(raw, fallback) {
  *
  * A `shadowToken` binding backed by the active library wins outright and the stored legs are never
  * read — that is what keeps the value tracking the token. A binding the library no longer backs (a
- * token deleted after the post was saved) falls back to those legs, which still hold the value the
- * token resolved to when it was picked. That differs on purpose from an unbacked PER-LEG alias, which
- * `shadowAxisPx()` cannot fall back for because the alias replaced the number outright.
+ * token deleted after the post was saved) renders nothing: the block falls back to its default CSS
+ * the same way every other block does when a token disappears, rather than the legs that still hold
+ * the value the token resolved to when it was picked — those legs stay stored for readers that do
+ * not know the binding key and to seed the Custom tab, but the renderer no longer reads them. An
+ * unbound item still builds its literal shorthand from the legs below.
  *
  * @param {?Object} shadowItem      One `shadow[0]`-shaped item.
  * @param {number}  blurFallback    What `blur` defaults to when unset — 14 on every current caller,
@@ -63,7 +65,8 @@ export function shadowAxisPx(raw, fallback) {
  *
  * @since TBD
  *
- * @return {string} The `box-shadow` value, or '' when there is no item to render.
+ * @return {string} The `box-shadow` value, or '' when there is no item to render or the item's
+ *                   binding is no longer backed by the active library.
  */
 export function shadowCss(shadowItem, blurFallback, opacityFallback = 1) {
 	if (!shadowItem) {
