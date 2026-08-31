@@ -95,7 +95,7 @@ final class ProjectorTest extends TestCase {
 		// The semantic that aliases the re-tinted button primitive is resolved to the custom palette's color (not
 		// just the primitive) — this is what makes a block reading the semantic re-skin, and what the button's
 		// preset var chains to.
-		$this->assertStringContainsString( Css_Var::from_id( 'semantic.color.button-primary-bg' ) . ':#DD6B20;', $block );
+		$this->assertStringContainsString( Css_Var::from_id( 'semantic.color.button-bg' ) . ':#DD6B20;', $block );
 	}
 
 	/**
@@ -112,11 +112,11 @@ final class ProjectorTest extends TestCase {
 		$this->assertNotFalse( $start );
 		$block = substr( $css, (int) $start, (int) strpos( $css, '}', (int) $start ) - (int) $start + 1 );
 
-		// The Single Button's primary button-bg preset var chains to the button semantic, which the per-palette
+		// The Single Button's default button-bg preset var chains to the button semantic, which the per-palette
 		// selector re-declares — so on a palette subtree the preset follows the palette.
-		$this->assertStringContainsString( 'kadence-singlebtn--primary--button-bg', $block );
+		$this->assertStringContainsString( 'kadence-singlebtn--default--button-bg', $block );
 		$this->assertStringContainsString(
-			'var(' . Css_Var::from_id( 'semantic.color.button-primary-bg' ) . ')',
+			'var(' . Css_Var::from_id( 'semantic.color.button-bg' ) . ')',
 			$block
 		);
 	}

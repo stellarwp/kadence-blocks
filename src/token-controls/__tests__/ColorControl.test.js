@@ -181,7 +181,7 @@ describe('ColorControl', () => {
 	 * @return {void}
 	 */
 	it('shows the muted "Default" fallback when the value is bound but not one of the pickable groups', () => {
-		render({ value: '{semantic.color.button-primary-text}' });
+		render({ value: '{semantic.color.button-text}' });
 
 		expect(container.querySelector('.kb-color-control__value').textContent).toBe('Default');
 	});
@@ -193,7 +193,7 @@ describe('ColorControl', () => {
 	 * @return {void}
 	 */
 	it('renders a transparent swatch, not the raw alias, for an out-of-group value', () => {
-		render({ value: '{semantic.color.button-primary-text}' });
+		render({ value: '{semantic.color.button-text}' });
 
 		expect(container.querySelector('.kb-color-swatch').style.background).toBe('transparent');
 	});

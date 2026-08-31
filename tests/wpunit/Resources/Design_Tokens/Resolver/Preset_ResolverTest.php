@@ -27,27 +27,23 @@ final class Preset_ResolverTest extends TestCase {
 		$this->resolver = $this->container->get( Preset_Resolver::class );
 	}
 
-	public function testItResolvesAliasBindingsForSecondary(): void {
-		$values = $this->resolver->resolve_literal( self::BUTTON, 'secondary' );
+	/**
+	 * Every aliased binding on the shipped preset flattens through the token graph to its primitive leaf.
+	 *
+	 * @return void
+	 */
+	public function testItFlattensMultiHopAliasesForTheDefaultPreset(): void {
+		$values = $this->resolver->resolve_literal( self::BUTTON, 'default' );
 
-		// Aliases flatten through the token graph. Secondary is the dark/charcoal identity.
-		$this->assertSame( '#1A202C', $values['button-bg'] );           // {semantic.color.button-secondary-bg} -> neutral.900
-		$this->assertSame( '#ffffff', $values['button-text'] );         // {semantic.color.button-secondary-text} -> neutral.0
-		$this->assertSame( '#2D3748', $values['button-bg-hover'] );     // {semantic.color.button-secondary-bg-hover} -> neutral.700
-		$this->assertSame( '#ffffff', $values['button-text-hover'] );   // {semantic.color.button-secondary-text-hover} -> neutral.0
-		$this->assertSame( '0.1875rem', $values['button-radius'] );     // {semantic.radius.control} -> radius.sm (the button's long-standing 3px)
-	}
-
-	public function testItFlattensMultiHopAliasesForThePrimaryPreset(): void {
-		$values = $this->resolver->resolve_literal( self::BUTTON, 'primary' );
-
-		// button-bg -> {semantic.color.button-primary-bg} -> {primitive.color.brand.button} -> #3633e1
+		// button-bg -> {semantic.color.button-bg} -> {primitive.color.brand.button} -> #3633e1
 		$this->assertSame( '#3633e1', $values['button-bg'] );
-		// button-text -> {semantic.color.button-primary-text} -> {primitive.color.neutral.0} -> #ffffff
+		// button-text -> {semantic.color.button-text} -> {primitive.color.neutral.0} -> #ffffff
 		$this->assertSame( '#ffffff', $values['button-text'] );
-		// Hover -> {semantic.color.button-primary-bg-hover} -> {primitive.color.brand.button-hover} -> #2f2ffc
+		// Hover -> {semantic.color.button-bg-hover} -> {primitive.color.brand.button-hover} -> #2f2ffc
 		$this->assertSame( '#2f2ffc', $values['button-bg-hover'] );
 		$this->assertSame( '#ffffff', $values['button-text-hover'] );
+		// {semantic.radius.control} -> the button's long-standing 3px.
+		$this->assertSame( '0.1875rem', $values['button-radius'] );
 	}
 
 	/**
@@ -59,15 +55,15 @@ final class Preset_ResolverTest extends TestCase {
 	 * @return void
 	 */
 	public function testResolvePreservesAliasIndirection(): void {
-		$projected = $this->resolver->resolve( self::BUTTON, 'primary' );
+		$projected = $this->resolver->resolve( self::BUTTON, 'default' );
 
-		$this->assertSame( 'var(--kb-token--semantic--color--button-primary-bg)', $projected['button-bg'] );
-		$this->assertSame( 'var(--kb-token--semantic--color--button-primary-text)', $projected['button-text'] );
-		$this->assertSame( 'var(--kb-token--semantic--color--button-primary-bg-hover)', $projected['button-bg-hover'] );
+		$this->assertSame( 'var(--kb-token--semantic--color--button-bg)', $projected['button-bg'] );
+		$this->assertSame( 'var(--kb-token--semantic--color--button-text)', $projected['button-text'] );
+		$this->assertSame( 'var(--kb-token--semantic--color--button-bg-hover)', $projected['button-bg-hover'] );
 		$this->assertSame( 'var(--kb-token--semantic--radius--control)', $projected['button-radius'] );
 
 		// The literal form is still available for the concrete-value surfaces — both forms are exposed.
-		$this->assertSame( '#3633e1', $this->resolver->resolve_literal( self::BUTTON, 'primary' )['button-bg'] );
+		$this->assertSame( '#3633e1', $this->resolver->resolve_literal( self::BUTTON, 'default' )['button-bg'] );
 	}
 
 	/**
@@ -77,44 +73,43 @@ final class Preset_ResolverTest extends TestCase {
 	 */
 	public function testResolveAndResolveLiteralShareTheInclusionSet(): void {
 		$this->assertSame(
-			array_keys( $this->resolver->resolve_literal( self::BUTTON, 'secondary' ) ),
-			array_keys( $this->resolver->resolve( self::BUTTON, 'secondary' ) )
+			array_keys( $this->resolver->resolve_literal( self::BUTTON, 'default' ) ),
+			array_keys( $this->resolver->resolve( self::BUTTON, 'default' ) )
 		);
 	}
 
 	public function testResolveDefaultUsesTheDeclaredDefault(): void {
-		// The baseline's $default for the button is "primary"; resolve_default() returns literals.
+		// The baseline's $default for the button is "default"; resolve_default() returns literals.
 		$this->assertSame(
-			$this->resolver->resolve_literal( self::BUTTON, 'primary' ),
+			$this->resolver->resolve_literal( self::BUTTON, 'default' ),
 			$this->resolver->resolve_default( self::BUTTON )
 		);
 	}
 
 	public function testItListsTheDocumentsPresetNames(): void {
-		$this->assertSame( [ 'primary', 'secondary' ], $this->resolver->names( self::BUTTON ) );
+		$this->assertSame( [ 'default' ], $this->resolver->names( self::BUTTON ) );
 	}
 
 	public function testDefaultPresetReadsTheDollarDefault(): void {
-		$this->assertSame( 'primary', $this->resolver->default_preset( self::BUTTON ) );
+		$this->assertSame( 'default', $this->resolver->default_preset( self::BUTTON ) );
 	}
 
 	public function testHasPreset(): void {
-		$this->assertTrue( $this->resolver->has_preset( self::BUTTON, 'secondary' ) );
+		$this->assertTrue( $this->resolver->has_preset( self::BUTTON, 'default' ) );
 		// "ghost" is not a V1 Button preset (the native Outline style covers it).
 		$this->assertFalse( $this->resolver->has_preset( self::BUTTON, 'ghost' ) );
 		// Unknown block is false, not an error.
-		$this->assertFalse( $this->resolver->has_preset( 'kadence/nope', 'primary' ) );
+		$this->assertFalse( $this->resolver->has_preset( 'kadence/nope', 'default' ) );
 	}
 
 	public function testItReadsAPresetLabelFromTheDocument(): void {
-		$this->assertSame( 'Secondary', $this->resolver->label( self::BUTTON, 'secondary' ) );
-		$this->assertSame( 'Primary', $this->resolver->label( self::BUTTON, 'primary' ) );
+		$this->assertSame( 'Default', $this->resolver->label( self::BUTTON, 'default' ) );
 	}
 
 	public function testLabelIsNullForAnUnknownPresetOrBlock(): void {
 		// A non-throwing lookup, mirroring has_preset().
 		$this->assertNull( $this->resolver->label( self::BUTTON, 'ghost' ) );
-		$this->assertNull( $this->resolver->label( 'kadence/nope', 'primary' ) );
+		$this->assertNull( $this->resolver->label( 'kadence/nope', 'default' ) );
 	}
 
 	public function testValuePropertiesAreTheUnionAcrossPresets(): void {
@@ -235,7 +230,7 @@ final class Preset_ResolverTest extends TestCase {
 	public function testItThrowsForAnUnknownBlock(): void {
 		$this->expectException( Unknown_Preset_Exception::class );
 
-		$this->resolver->resolve( 'kadence/not-a-block', 'primary' );
+		$this->resolver->resolve( 'kadence/not-a-block', 'default' );
 	}
 
 	public function testItThrowsForAnUnknownPreset(): void {
@@ -265,7 +260,7 @@ final class Preset_ResolverTest extends TestCase {
 			]
 		);
 
-		$this->assertSame( [ 'primary', 'secondary', 'accent' ], $this->resolver->names( self::BUTTON ) );
+		$this->assertSame( [ 'default', 'accent' ], $this->resolver->names( self::BUTTON ) );
 		$this->assertTrue( $this->resolver->has_preset( self::BUTTON, 'accent' ) );
 		$this->assertSame( 'Accent', $this->resolver->label( self::BUTTON, 'accent' ) );
 
@@ -309,9 +304,9 @@ final class Preset_ResolverTest extends TestCase {
 	 * @return void
 	 */
 	public function testAStoredOverrideWinsOverTheBaselinePresetValue(): void {
-		$this->seedPreset( Token_Store::default_slug(), 'secondary', 'Secondary', [ 'button-bg' => '#000000' ] );
+		$this->seedPreset( Token_Store::default_slug(), 'default', 'Default', [ 'button-bg' => '#000000' ] );
 
-		$values = $this->resolver->resolve_literal( self::BUTTON, 'secondary' );
+		$values = $this->resolver->resolve_literal( self::BUTTON, 'default' );
 
 		// The overridden property takes the stored value.
 		$this->assertSame( '#000000', $values['button-bg'] );
@@ -344,7 +339,7 @@ final class Preset_ResolverTest extends TestCase {
 
 		// The default library never saw the write.
 		$this->assertFalse( $this->resolver->has_preset( self::BUTTON, 'accent', 'default' ) );
-		$this->assertSame( [ 'primary', 'secondary' ], $this->resolver->names( self::BUTTON, 'default' ) );
+		$this->assertSame( [ 'default' ], $this->resolver->names( self::BUTTON, 'default' ) );
 	}
 
 	/**
@@ -510,7 +505,7 @@ final class Preset_ResolverTest extends TestCase {
 	 * @return void
 	 */
 	public function testAPresetWithNoResponsiveEntriesResolvesEmpty(): void {
-		$this->assertSame( [], $this->resolver->resolve_responsive( self::BUTTON, 'primary' ) );
+		$this->assertSame( [], $this->resolver->resolve_responsive( self::BUTTON, 'default' ) );
 	}
 
 	/**
@@ -703,7 +698,7 @@ final class Preset_ResolverTest extends TestCase {
 			'Aliased',
 			[
 				'button-shadow' => [
-					'color'   => '{semantic.color.button-primary-bg}',
+					'color'   => '{semantic.color.button-bg}',
 					'offsetX' => '0px',
 					'offsetY' => '2px',
 					'blur'    => '8px',
@@ -715,7 +710,7 @@ final class Preset_ResolverTest extends TestCase {
 		$values = $this->resolver->resolve( self::BUTTON, 'aliased-shadow' );
 
 		$this->assertSame(
-			'0px 2px 8px 0px var(--kb-token--semantic--color--button-primary-bg)',
+			'0px 2px 8px 0px var(--kb-token--semantic--color--button-bg)',
 			$values['button-shadow']
 		);
 	}

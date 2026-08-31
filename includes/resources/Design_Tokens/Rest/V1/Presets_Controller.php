@@ -1203,8 +1203,8 @@ final class Presets_Controller extends Controller {
 	 * `/default` sub-route and "order" by its `/order` sub-route, so a preset named either can never be
 	 * addressed through the per-preset item route — it would be undeletable.
 	 *
-	 * Scoped to creation, because "default" is not a hypothetical: every block but the Button ships its
-	 * baseline look as a preset slugged exactly that, and a site owner editing it is the ordinary case. A
+	 * Scoped to creation, because "default" is not a hypothetical: every block ships its baseline look as a
+	 * preset slugged exactly that, and a site owner editing it is the ordinary case. A
 	 * slug already present in the block's effective presets is therefore writable — the collision it would
 	 * cause is one the shipped data already made, and the only route it forecloses is DELETE, which that
 	 * preset should refuse anyway: it is the block's built-in look, and the editor offers deletion only for

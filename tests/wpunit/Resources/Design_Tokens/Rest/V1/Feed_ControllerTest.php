@@ -135,7 +135,7 @@ final class Feed_ControllerTest extends TestCase {
 		$this->assertTrue( $data['active'] );
 		$this->assertTrue( $data['resolved'] );
 		$this->assertSame( Token_Store::default_slug(), $data['slug'] );
-		$this->assertSame( '#3633e1', $data['values']['semantic.color.button-primary-bg'] );
+		$this->assertSame( '#3633e1', $data['values']['semantic.color.button-bg'] );
 	}
 
 	/**
@@ -149,7 +149,7 @@ final class Feed_ControllerTest extends TestCase {
 			[
 				'semantic' => [
 					'color' => [
-						'button-primary-bg' => [
+						'button-bg' => [
 							'$type'  => 'color',
 							'$value' => '#0f7a3d',
 						],
@@ -170,7 +170,7 @@ final class Feed_ControllerTest extends TestCase {
 
 		$data = $response->get_data();
 		$this->assertSame( 'brand-b', $data['slug'] );
-		$this->assertSame( '#0f7a3d', $data['values']['semantic.color.button-primary-bg'] );
+		$this->assertSame( '#0f7a3d', $data['values']['semantic.color.button-bg'] );
 	}
 
 	/**
@@ -220,7 +220,7 @@ final class Feed_ControllerTest extends TestCase {
 				'$extensions' => [
 					'com.kadence.designTokens' => [
 						'tokenLabels' => [
-							'semantic.color.button-primary-bg' => 'Cozy Button',
+							'semantic.color.button-bg' => 'Cozy Button',
 						],
 					],
 				],
@@ -238,7 +238,7 @@ final class Feed_ControllerTest extends TestCase {
 
 		foreach ( $data['schema']['groups'] as $entries ) {
 			foreach ( $entries as $entry ) {
-				if ( ( $entry['id'] ?? '' ) === 'semantic.color.button-primary-bg' ) {
+				if ( ( $entry['id'] ?? '' ) === 'semantic.color.button-bg' ) {
 					$found = $entry;
 					break 2;
 				}
@@ -986,7 +986,7 @@ final class Feed_ControllerTest extends TestCase {
 			[
 				'semantic' => [
 					'color' => [
-						'button-primary-bg' => [
+						'button-bg' => [
 							'$type'  => 'color',
 							'$value' => '#0f7a3d',
 						],

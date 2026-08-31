@@ -92,9 +92,9 @@ final class Preset_Value_NormalizerTest extends TestCase {
 	 * @return void
 	 */
 	public function testItLeavesAnExistingAliasUnchanged(): void {
-		$result = $this->normalizer->normalize( [ 'button-bg' => '{semantic.color.button-primary-bg}' ], self::SET );
+		$result = $this->normalizer->normalize( [ 'button-bg' => '{semantic.color.button-bg}' ], self::SET );
 
-		$this->assertSame( '{semantic.color.button-primary-bg}', $result['button-bg'] );
+		$this->assertSame( '{semantic.color.button-bg}', $result['button-bg'] );
 	}
 
 	/**

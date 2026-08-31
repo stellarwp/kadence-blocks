@@ -3,7 +3,7 @@
 	"aliases": [
 		{ "alias": "{semantic.radius.media}", "cssVar": "var(--kb-token--semantic--radius--media)" },
 		{ "alias": "{primitive.color.brand.primary}", "cssVar": "var(--kb-token--primitive--color--brand--primary)" },
-		{ "alias": "{semantic.color.button-primary-bg}", "cssVar": "var(--kb-token--semantic--color--button-primary-bg)" },
+		{ "alias": "{semantic.color.button-bg}", "cssVar": "var(--kb-token--semantic--color--button-bg)" },
 		{ "alias": "{primitive.spacing.md}", "cssVar": "var(--kb-token--primitive--spacing--md)" },
 		{ "alias": "{a}", "cssVar": "var(--kb-token--a)" },
 		{ "alias": "{semantic.icon-size.default}", "cssVar": "var(--kb-token--semantic--icon-size--default)" }

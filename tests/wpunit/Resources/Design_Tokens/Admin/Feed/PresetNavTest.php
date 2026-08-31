@@ -255,5 +255,4 @@ final class PresetNavTest extends TestCase {
 
 		$this->assertSame( ( new Preset_Nav( $this->registry ) )->all(), $feed['presetNav'] );
 	}
-
 }

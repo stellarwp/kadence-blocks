@@ -36,8 +36,8 @@ final class PresetsTest extends TestCase {
 		$button = $presets[ self::BUTTON ];
 
 		$this->assertSame( 'Style', $button['label'] );
-		$this->assertSame( 'primary', $button['default'] );
-		$this->assertSame( [ 'primary', 'secondary' ], $button['names'] );
+		$this->assertSame( 'default', $button['default'] );
+		$this->assertSame( [ 'default' ], $button['names'] );
 		$this->assertContains( 'button-bg', $button['properties'] );
 
 		// Structure: bindings carry the token reference / inline targets.
@@ -45,8 +45,7 @@ final class PresetsTest extends TestCase {
 		$this->assertArrayHasKey( 'button-bg', $button['bindings'] );
 
 		// Resolved preview values per preset — aliases flattened to their primitive color.
-		$this->assertSame( '#3633e1', $button['values']['primary']['button-bg'] );
-		$this->assertSame( '#1A202C', $button['values']['secondary']['button-bg'] );
+		$this->assertSame( '#3633e1', $button['values']['default']['button-bg'] );
 	}
 
 	public function testABlockRegisteredButAbsentFromTheDocumentIsSkipped(): void {

@@ -14,7 +14,7 @@ describe('tokenCssVar', () => {
 	});
 
 	it('leaves a dash inside a segment untouched', () => {
-		expect(tokenCssVar('semantic.color.button-primary-bg')).toBe('--kb-token--semantic--color--button-primary-bg');
+		expect(tokenCssVar('semantic.color.button-bg')).toBe('--kb-token--semantic--color--button-bg');
 	});
 
 	it('matches the shared alias-conformance fixture for a dot-path id', () => {

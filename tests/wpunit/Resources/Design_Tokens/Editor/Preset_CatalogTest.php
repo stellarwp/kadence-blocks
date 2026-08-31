@@ -57,19 +57,14 @@ final class Preset_CatalogTest extends TestCase {
 
 		$button = $catalog['libraries'][ Token_Store::default_slug() ][ self::BUTTON ];
 
-		$this->assertSame( 'primary', $button['default'] );
+		$this->assertSame( 'default', $button['default'] );
 		// The picker's control label, declared on the preset bindings in declarations.php.
 		$this->assertSame( 'Style', $button['label'] );
 		$this->assertSame(
 			[
 				[
-					'slug'        => 'primary',
-					'label'       => 'Primary',
-					'userCreated' => false,
-				],
-				[
-					'slug'        => 'secondary',
-					'label'       => 'Secondary',
+					'slug'        => 'default',
+					'label'       => 'Default',
 					'userCreated' => false,
 				],
 			],
@@ -105,10 +100,10 @@ final class Preset_CatalogTest extends TestCase {
 	public function testItSurfacesPerPresetCssReferencesAlongsideLiterals(): void {
 		$button = $this->catalog->all()['libraries'][ Token_Store::default_slug() ][ self::BUTTON ];
 
-		$this->assertArrayHasKey( 'primary', $button['references'] );
+		$this->assertArrayHasKey( 'default', $button['references'] );
 
-		$reference = $button['references']['primary']['button-bg'];
-		$literal   = $button['values']['primary']['button-bg'];
+		$reference = $button['references']['default']['button-bg'];
+		$literal   = $button['values']['default']['button-bg'];
 
 		// The reference is a var() chain; the literal is the flattened value. Both describe the same
 		// property, and the difference between them is the whole point of carrying both.
@@ -152,7 +147,7 @@ final class Preset_CatalogTest extends TestCase {
 		$flags   = wp_list_pluck( $presets, 'userCreated', 'slug' );
 
 		$this->assertTrue( $flags['accent'] );
-		$this->assertFalse( $flags['primary'] );
+		$this->assertFalse( $flags['default'] );
 	}
 
 	/**
@@ -203,10 +198,9 @@ final class Preset_CatalogTest extends TestCase {
 		$this->assertSame( 'borderRadius', $by_key['button-radius']['control_attr'] );
 
 		// Per-preset resolved values, keyed by preset slug then property id.
-		$this->assertArrayHasKey( 'primary', $button['values'] );
-		$this->assertArrayHasKey( 'secondary', $button['values'] );
-		$this->assertArrayHasKey( 'button-bg', $button['values']['primary'] );
-		$this->assertNotSame( '', $button['values']['primary']['button-bg'] );
+		$this->assertArrayHasKey( 'default', $button['values'] );
+		$this->assertArrayHasKey( 'button-bg', $button['values']['default'] );
+		$this->assertNotSame( '', $button['values']['default']['button-bg'] );
 	}
 
 	/**
@@ -333,7 +327,7 @@ final class Preset_CatalogTest extends TestCase {
 	public function testAPresetWithoutBreakpointsCarriesAnEmptyResponsiveMap(): void {
 		$button = $this->catalog->all()['libraries'][ Token_Store::default_slug() ][ self::BUTTON ];
 
-		$this->assertSame( [], $button['responsive']['primary'] );
+		$this->assertSame( [], $button['responsive']['default'] );
 	}
 
 	/**
@@ -346,10 +340,10 @@ final class Preset_CatalogTest extends TestCase {
 	public function testOverriddenCarriesOnlyAPresetsOwnStoredPropertiesNotEveryResolvedOne(): void {
 		$button = $this->catalog->all()['libraries'][ Token_Store::default_slug() ][ self::BUTTON ];
 
-		// "secondary" is baseline-only (never partially overridden by this test), so it has NOTHING of
-		// its own — even though `values['secondary']` resolves every bound property via the baseline.
-		$this->assertSame( [], $button['overridden']['secondary'] );
-		$this->assertNotEmpty( $button['values']['secondary'] );
+		// "default" is baseline-only (never partially overridden by this test), so it has NOTHING of
+		// its own — even though `values['default']` resolves every bound property via the baseline.
+		$this->assertSame( [], $button['overridden']['default'] );
+		$this->assertNotEmpty( $button['values']['default'] );
 	}
 
 	/**
@@ -361,14 +355,14 @@ final class Preset_CatalogTest extends TestCase {
 	public function testOverriddenReflectsAPartialStoredOverrideOfABaselinePreset(): void {
 		$this->store->save_document(
 			'{"$extensions":{"com.kadence.designTokens":{"presets":{"kadence/singlebtn":{'
-			. '"secondary":{"tokens":{"button-bg":"#000000"}}}}}}}'
+			. '"default":{"tokens":{"button-bg":"#000000"}}}}}}}'
 		);
 
 		$button = $this->catalog->all()['libraries'][ Token_Store::default_slug() ][ self::BUTTON ];
 
-		$this->assertSame( [ 'button-bg' => true ], $button['overridden']['secondary'] );
+		$this->assertSame( [ 'button-bg' => true ], $button['overridden']['default'] );
 		// The merged/resolved value still surfaces for the un-overridden properties.
-		$this->assertNotSame( '', $button['values']['secondary']['button-text'] );
+		$this->assertNotSame( '', $button['values']['default']['button-text'] );
 	}
 
 	/**

@@ -60,10 +60,12 @@ final class Css_BuilderTest extends TestCase {
 	 * @return void
 	 */
 	public function testItDefinesThePresetVarsCanonically(): void {
+		$this->seedAccentPreset();
+
 		$css = $this->builder( $this->registry )->css( 'default' );
 
-		$this->assertStringContainsString( '--kb-token--preset--kadence-singlebtn--primary--button-bg:var(--kb-token--semantic--color--button-primary-bg);', $css );
-		$this->assertStringContainsString( '--kb-token--preset--kadence-singlebtn--secondary--button-bg:var(--kb-token--semantic--color--button-secondary-bg);', $css );
+		$this->assertStringContainsString( '--kb-token--preset--kadence-singlebtn--default--button-bg:var(--kb-token--semantic--color--button-bg);', $css );
+		$this->assertStringContainsString( '--kb-token--preset--kadence-singlebtn--accent--button-bg:var(--kb-token--semantic--color--button-bg-hover);', $css );
 	}
 
 	/**
@@ -86,26 +88,28 @@ final class Css_BuilderTest extends TestCase {
 	 * @return void
 	 */
 	public function testItRetargetsButtonSlotsForANamedPreset(): void {
+		$this->seedAccentPreset();
+
 		$css = $this->builder( $this->registry )->css( 'default' );
 
 		$this->assertStringContainsString(
-			'.wp-block-kadence-singlebtn.kb-preset--secondary{'
-				. '--global-palette-btn-bg:var(--kb-token--preset--kadence-singlebtn--secondary--button-bg);'
-				. '--global-palette-btn:var(--kb-token--preset--kadence-singlebtn--secondary--button-text);'
-				. '--global-palette-btn-bg-hover:var(--kb-token--preset--kadence-singlebtn--secondary--button-bg-hover);'
-				. '--global-palette-btn-hover:var(--kb-token--preset--kadence-singlebtn--secondary--button-text-hover);'
-				. '--kb-btn-radius:var(--kb-token--preset--kadence-singlebtn--secondary--button-radius);'
-				. '--kb-btn-border-width:var(--kb-token--preset--kadence-singlebtn--secondary--button-border-width);'
-				. '--kb-btn-border-style:var(--kb-token--preset--kadence-singlebtn--secondary--button-border-style);'
-				. '--kb-btn-border-color:var(--kb-token--preset--kadence-singlebtn--secondary--button-border-color);'
-				. '--kb-btn-padding:var(--kb-token--preset--kadence-singlebtn--secondary--button-padding);'
-				. '--kb-btn-margin:var(--kb-token--preset--kadence-singlebtn--secondary--button-margin);}',
+			'.wp-block-kadence-singlebtn.kb-preset--accent{'
+				. '--global-palette-btn-bg:var(--kb-token--preset--kadence-singlebtn--accent--button-bg);'
+				. '--global-palette-btn:var(--kb-token--preset--kadence-singlebtn--accent--button-text);'
+				. '--global-palette-btn-bg-hover:var(--kb-token--preset--kadence-singlebtn--accent--button-bg-hover);'
+				. '--global-palette-btn-hover:var(--kb-token--preset--kadence-singlebtn--accent--button-text-hover);'
+				. '--kb-btn-radius:var(--kb-token--preset--kadence-singlebtn--accent--button-radius);'
+				. '--kb-btn-border-width:var(--kb-token--preset--kadence-singlebtn--accent--button-border-width);'
+				. '--kb-btn-border-style:var(--kb-token--preset--kadence-singlebtn--accent--button-border-style);'
+				. '--kb-btn-border-color:var(--kb-token--preset--kadence-singlebtn--accent--button-border-color);'
+				. '--kb-btn-padding:var(--kb-token--preset--kadence-singlebtn--accent--button-padding);'
+				. '--kb-btn-margin:var(--kb-token--preset--kadence-singlebtn--accent--button-margin);}',
 			$css
 		);
 	}
 
 	/**
-	 * The $default (primary) is re-emitted on the class-less block selector, so a button with no preset
+	 * The $default preset is re-emitted on the class-less block selector, so a button with no preset
 	 * selected still shows its preset look.
 	 *
 	 * @return void
@@ -115,16 +119,16 @@ final class Css_BuilderTest extends TestCase {
 
 		$this->assertStringContainsString(
 			'.wp-block-kadence-singlebtn{'
-				. '--global-palette-btn-bg:var(--kb-token--preset--kadence-singlebtn--primary--button-bg);'
-				. '--global-palette-btn:var(--kb-token--preset--kadence-singlebtn--primary--button-text);'
-				. '--global-palette-btn-bg-hover:var(--kb-token--preset--kadence-singlebtn--primary--button-bg-hover);'
-				. '--global-palette-btn-hover:var(--kb-token--preset--kadence-singlebtn--primary--button-text-hover);'
-				. '--kb-btn-radius:var(--kb-token--preset--kadence-singlebtn--primary--button-radius);'
-				. '--kb-btn-border-width:var(--kb-token--preset--kadence-singlebtn--primary--button-border-width);'
-				. '--kb-btn-border-style:var(--kb-token--preset--kadence-singlebtn--primary--button-border-style);'
-				. '--kb-btn-border-color:var(--kb-token--preset--kadence-singlebtn--primary--button-border-color);'
-				. '--kb-btn-padding:var(--kb-token--preset--kadence-singlebtn--primary--button-padding);'
-				. '--kb-btn-margin:var(--kb-token--preset--kadence-singlebtn--primary--button-margin);}',
+				. '--global-palette-btn-bg:var(--kb-token--preset--kadence-singlebtn--default--button-bg);'
+				. '--global-palette-btn:var(--kb-token--preset--kadence-singlebtn--default--button-text);'
+				. '--global-palette-btn-bg-hover:var(--kb-token--preset--kadence-singlebtn--default--button-bg-hover);'
+				. '--global-palette-btn-hover:var(--kb-token--preset--kadence-singlebtn--default--button-text-hover);'
+				. '--kb-btn-radius:var(--kb-token--preset--kadence-singlebtn--default--button-radius);'
+				. '--kb-btn-border-width:var(--kb-token--preset--kadence-singlebtn--default--button-border-width);'
+				. '--kb-btn-border-style:var(--kb-token--preset--kadence-singlebtn--default--button-border-style);'
+				. '--kb-btn-border-color:var(--kb-token--preset--kadence-singlebtn--default--button-border-color);'
+				. '--kb-btn-padding:var(--kb-token--preset--kadence-singlebtn--default--button-padding);'
+				. '--kb-btn-margin:var(--kb-token--preset--kadence-singlebtn--default--button-margin);}',
 			$css
 		);
 	}
@@ -137,16 +141,18 @@ final class Css_BuilderTest extends TestCase {
 	 * @return void
 	 */
 	public function testItProjectsACssVarBindingToItsVariable(): void {
+		$this->seedAccentPreset();
+
 		$css = $this->builder( $this->registry )->css( 'default' );
 
 		// The scoped rule points --kb-btn-radius at the per-preset var.
 		$this->assertStringContainsString(
-			'--kb-btn-radius:var(--kb-token--preset--kadence-singlebtn--secondary--button-radius);',
+			'--kb-btn-radius:var(--kb-token--preset--kadence-singlebtn--accent--button-radius);',
 			$css
 		);
 		// The canonical block defines that per-preset var.
 		$this->assertStringContainsString(
-			'--kb-token--preset--kadence-singlebtn--secondary--button-radius:',
+			'--kb-token--preset--kadence-singlebtn--accent--button-radius:',
 			$css
 		);
 	}
@@ -520,9 +526,9 @@ final class Css_BuilderTest extends TestCase {
 	public function testNonPerCornerPropertiesAreUnaffectedByTheCornerVarChange(): void {
 		$css = $this->builder( $this->registry )->css( 'default' );
 
-		$this->assertStringContainsString( '--kb-token--preset--kadence-singlebtn--primary--button-bg:var(--kb-token--semantic--color--button-primary-bg);', $css );
-		$this->assertStringNotContainsString( '--kb-token--preset--kadence-singlebtn--primary--button-bg--top', $css );
-		$this->assertStringNotContainsString( '--kb-token--preset--kadence-singlebtn--primary--button-bg--right', $css );
+		$this->assertStringContainsString( '--kb-token--preset--kadence-singlebtn--default--button-bg:var(--kb-token--semantic--color--button-bg);', $css );
+		$this->assertStringNotContainsString( '--kb-token--preset--kadence-singlebtn--default--button-bg--top', $css );
+		$this->assertStringNotContainsString( '--kb-token--preset--kadence-singlebtn--default--button-bg--right', $css );
 	}
 
 	/**
@@ -674,6 +680,45 @@ final class Css_BuilderTest extends TestCase {
 		];
 
 		$this->store->save_document( (string) wp_json_encode( $document ), Token_Store::default_slug() );
+	}
+
+	/**
+	 * Persist a user-created "accent" button preset into the active library, covering every bound property,
+	 * so the builder has a preset other than the shipped default to scope a `.kb-preset--*` rule to.
+	 *
+	 * @return void
+	 */
+	private function seedAccentPreset(): void {
+		/** @var Token_Store $store */
+		$store = $this->container->get( Token_Store::class );
+
+		$document = [
+			'$extensions' => [
+				'com.kadence.designTokens' => [
+					'presets' => [
+						'kadence/singlebtn' => [
+							'accent' => [
+								'label'  => 'Accent',
+								'tokens' => [
+									'button-bg'           => '{semantic.color.button-bg-hover}',
+									'button-text'         => '{semantic.color.button-text}',
+									'button-bg-hover'     => '{semantic.color.button-bg}',
+									'button-text-hover'   => '{semantic.color.button-text-hover}',
+									'button-radius'       => '{semantic.radius.control}',
+									'button-border-width' => '{semantic.border-width.default}',
+									'button-border-style' => '{semantic.border-style.default}',
+									'button-border-color' => '{semantic.color.border}',
+									'button-padding'      => [ '0.4em', '1em', '0.4em', '1em' ],
+									'button-margin'       => [ '0', '0', '0', '0' ],
+								],
+							],
+						],
+					],
+				],
+			],
+		];
+
+		$store->save_document( (string) wp_json_encode( $document ) );
 	}
 
 	/**

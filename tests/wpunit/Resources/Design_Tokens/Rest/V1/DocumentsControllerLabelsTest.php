@@ -35,7 +35,7 @@ final class DocumentsControllerLabelsTest extends TestCase {
 	 *
 	 * @var string
 	 */
-	private const BASELINE_ID = 'semantic.color.button-primary-bg';
+	private const BASELINE_ID = 'semantic.color.button-bg';
 
 	/**
 	 * @since TBD

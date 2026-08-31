@@ -100,9 +100,9 @@ final class Alias {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $id A dot-path into the document, e.g. "semantic.color.button-primary-bg".
+	 * @param string $id A dot-path into the document, e.g. "semantic.color.button-bg".
 	 *
-	 * @return string The alias string, e.g. "{semantic.color.button-primary-bg}".
+	 * @return string The alias string, e.g. "{semantic.color.button-bg}".
 	 */
 	public static function wrap( string $id ): string {
 		return '{' . $id . '}';

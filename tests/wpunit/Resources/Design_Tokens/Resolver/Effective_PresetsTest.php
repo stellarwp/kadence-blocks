@@ -42,9 +42,8 @@ final class Effective_PresetsTest extends TestCase {
 		$node = $this->presets->block( self::BUTTON );
 
 		$this->assertIsArray( $node );
-		$this->assertSame( 'primary', $node['$default'] );
-		$this->assertArrayHasKey( 'primary', $node );
-		$this->assertArrayHasKey( 'secondary', $node );
+		$this->assertSame( 'default', $node['$default'] );
+		$this->assertArrayHasKey( 'default', $node );
 	}
 
 	/**
@@ -62,26 +61,25 @@ final class Effective_PresetsTest extends TestCase {
 		// The override-only preset appears next to the baseline ones.
 		$this->assertArrayHasKey( 'outline', $node );
 		$this->assertSame( 'Outline', $node['outline']['label'] );
-		$this->assertArrayHasKey( 'primary', $node );
-		$this->assertArrayHasKey( 'secondary', $node );
+		$this->assertArrayHasKey( 'default', $node );
 	}
 
 	/**
 	 * @return void
 	 */
 	public function testAStoredOverrideMergesIntoAPresetsTokensPerProperty(): void {
-		// Override just one property of the baseline "secondary" preset.
+		// Override just one property of the baseline "default" preset.
 		$this->store->save_document(
 			'{"$extensions":{"com.kadence.designTokens":{"presets":{"kadence/singlebtn":{'
-			. '"secondary":{"tokens":{"button-bg":"#000000"}}}}}}}'
+			. '"default":{"tokens":{"button-bg":"#000000"}}}}}}}'
 		);
 
-		$secondary = $this->presets->block( self::BUTTON )['secondary'];
+		$default = $this->presets->block( self::BUTTON )['default'];
 
 		// The overridden property wins; the preset's other baseline tokens and its label survive.
-		$this->assertSame( '#000000', $secondary['tokens']['button-bg'] );
-		$this->assertSame( '{semantic.color.button-secondary-text}', $secondary['tokens']['button-text'] );
-		$this->assertSame( 'Secondary', $secondary['label'] );
+		$this->assertSame( '#000000', $default['tokens']['button-bg'] );
+		$this->assertSame( '{semantic.color.button-text}', $default['tokens']['button-text'] );
+		$this->assertSame( 'Default', $default['label'] );
 	}
 
 	/**
@@ -103,7 +101,7 @@ final class Effective_PresetsTest extends TestCase {
 		$section = $this->presets->for_overrides( $candidate );
 
 		$this->assertArrayHasKey( 'outline', $section[ self::BUTTON ] );
-		$this->assertArrayHasKey( 'primary', $section[ self::BUTTON ] );
+		$this->assertArrayHasKey( 'default', $section[ self::BUTTON ] );
 		// The store was never written.
 		$this->assertSame( '', $this->store->get_document( Token_Store::default_slug() ) );
 	}
@@ -126,15 +124,14 @@ final class Effective_PresetsTest extends TestCase {
 		$this->store->save_document(
 			'{"$extensions":{"com.kadence.designTokens":{"presets":{"kadence/singlebtn":{'
 			. '"outline":{"label":"Outline","tokens":{"button-bg":"transparent"}},'
-			. '"secondary":{"tokens":{"button-bg":"#000000"}}}}}}}'
+			. '"default":{"tokens":{"button-bg":"#000000"}}}}}}}'
 		);
 
 		$user_created = $this->presets->user_created( self::BUTTON, 'default' );
 
 		$this->assertContains( 'outline', $user_created );
-		$this->assertNotContains( 'primary', $user_created );
-		// "secondary" shadows a baseline preset, so it is not user-created.
-		$this->assertNotContains( 'secondary', $user_created );
+		// "default" shadows the baseline preset, so it is not user-created.
+		$this->assertNotContains( 'default', $user_created );
 	}
 
 	/**
@@ -144,7 +141,7 @@ final class Effective_PresetsTest extends TestCase {
 	 * @return void
 	 */
 	public function testStoredTokensIsEmptyForABaselinePresetWithNoStoredOverridesRow(): void {
-		$this->assertSame( [], $this->presets->stored_tokens( self::BUTTON, 'secondary' ) );
+		$this->assertSame( [], $this->presets->stored_tokens( self::BUTTON, 'default' ) );
 	}
 
 	/**
@@ -156,10 +153,10 @@ final class Effective_PresetsTest extends TestCase {
 	public function testStoredTokensSurfacesOnlyTheOverriddenPropertyOfAPartiallyOverriddenPreset(): void {
 		$this->store->save_document(
 			'{"$extensions":{"com.kadence.designTokens":{"presets":{"kadence/singlebtn":{'
-			. '"secondary":{"tokens":{"button-bg":"#000000"}}}}}}}'
+			. '"default":{"tokens":{"button-bg":"#000000"}}}}}}}'
 		);
 
-		$stored = $this->presets->stored_tokens( self::BUTTON, 'secondary' );
+		$stored = $this->presets->stored_tokens( self::BUTTON, 'default' );
 
 		$this->assertSame( [ 'button-bg' => '#000000' ], $stored );
 		$this->assertArrayNotHasKey( 'button-text', $stored );

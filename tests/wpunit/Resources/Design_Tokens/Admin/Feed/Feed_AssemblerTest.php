@@ -106,7 +106,7 @@ final class Feed_AssemblerTest extends TestCase {
 		$this->assertSame( Token_Store::default_slug(), $feed['slug'] );
 		$this->assertIsString( $feed['version'] );
 		$this->assertArrayHasKey( 'groups', $feed['schema'] );
-		$this->assertSame( '#3633e1', $feed['values']['semantic.color.button-primary-bg'] );
+		$this->assertSame( '#3633e1', $feed['values']['semantic.color.button-bg'] );
 		$this->assertIsArray( $feed['presets'] );
 		$this->assertIsArray( $feed['presetNav'] );
 		$this->assertIsArray( $feed['responsive'] );
@@ -126,7 +126,7 @@ final class Feed_AssemblerTest extends TestCase {
 			[
 				'semantic' => [
 					'color' => [
-						'button-primary-bg' => [
+						'button-bg' => [
 							'$type'  => 'color',
 							'$value' => '#0f7a3d',
 						],
@@ -140,7 +140,7 @@ final class Feed_AssemblerTest extends TestCase {
 		$feed = $this->assembler->for_slug( 'brand-b' );
 
 		$this->assertSame( 'brand-b', $feed['slug'] );
-		$this->assertSame( '#0f7a3d', $feed['values']['semantic.color.button-primary-bg'] );
+		$this->assertSame( '#0f7a3d', $feed['values']['semantic.color.button-bg'] );
 	}
 
 	/**
@@ -211,7 +211,7 @@ final class Feed_AssemblerTest extends TestCase {
 				'$extensions' => [
 					'com.kadence.designTokens' => [
 						'tokenLabels' => [
-							'semantic.color.button-primary-bg' => 'Cozy Button',
+							'semantic.color.button-bg' => 'Cozy Button',
 						],
 					],
 				],
@@ -226,7 +226,7 @@ final class Feed_AssemblerTest extends TestCase {
 
 		foreach ( $feed['schema']['groups'] as $entries ) {
 			foreach ( $entries as $entry ) {
-				if ( ( $entry['id'] ?? '' ) === 'semantic.color.button-primary-bg' ) {
+				if ( ( $entry['id'] ?? '' ) === 'semantic.color.button-bg' ) {
 					$found = $entry;
 					break 2;
 				}
