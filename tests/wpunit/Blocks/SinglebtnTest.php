@@ -350,6 +350,24 @@ class SinglebtnTest extends KadenceBlocksUnit {
 			],
 			'expected_visible' => false,
 		];
+
+		// The legs a binding leaves behind are the value it resolved to at pick time, so a stale binding
+		// almost always has non-zero ones. Reading them here would report it visible and keep it in the
+		// shadow branch, where its empty render is dropped and the `none` reset never runs — the all-zero
+		// case above cannot tell that apart, because zero legs report invisible either way.
+		yield 'unbacked bound token with non-zero legs' => [
+			'shadow_item'      => [
+				'shadowToken' => '{semantic.shadow.does-not-exist}',
+				'color'       => '#0f0',
+				'opacity'     => 1,
+				'hOffset'     => 0,
+				'vOffset'     => 2,
+				'blur'        => 8,
+				'spread'      => 0,
+				'inset'       => false,
+			],
+			'expected_visible' => false,
+		];
 	}
 
 	/**

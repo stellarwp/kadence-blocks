@@ -12,6 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Palette\Renders_Palette_Attribute;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Preset\Renders_Preset_Classes;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Alias;
 
 /**
  * Abstract class to register blocks, build CSS, and enqueue scripts.
@@ -734,13 +735,15 @@ class Kadence_Blocks_Abstract_Block {
 	 * @return bool Whether the item paints a visible shadow.
 	 */
 	protected function has_visible_shadow( array $shadow_item ): bool {
-		// A backed bound item's real value lives in the token, unknown here. Counting it as visible keeps
-		// the caller's `box-shadow: none` reset from erasing a shadow the token does paint — the same
-		// reasoning the aliased-leg branch below uses. An unbacked binding renders nothing (see
-		// Kadence_Blocks_CSS::render_shadow()), so it must not count as visible either, or the reset it
-		// should fall through to would be skipped for no shadow at all.
-		if ( Kadence_Blocks_CSS::get_instance()->is_token_reference_backed( $shadow_item[ Kadence_Blocks_CSS::get_shadow_token_key() ] ?? null ) ) {
-			return true;
+		// A bound item's visibility is decided by its binding alone; the stored legs are never consulted
+		// for one. Backed, its real value lives in the token and is unknown here, so it counts as visible
+		// or the caller's `box-shadow: none` reset would erase a shadow the token does paint. Unbacked, it
+		// renders nothing (see Kadence_Blocks_CSS::render_shadow()), so it must count as INVISIBLE and let
+		// the caller fall through to that reset — reading its legs instead would keep a stale binding in
+		// the shadow branch, where the empty render is dropped and the reset never runs.
+		$shadow_token = $shadow_item[ Kadence_Blocks_CSS::get_shadow_token_key() ] ?? null;
+		if ( Alias::is_alias( $shadow_token ) ) {
+			return Kadence_Blocks_CSS::get_instance()->is_token_reference_backed( $shadow_token );
 		}
 
 		foreach ( [ 'hOffset', 'vOffset', 'blur', 'spread' ] as $axis ) {
