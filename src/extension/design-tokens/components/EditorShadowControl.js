@@ -48,7 +48,8 @@
  */
 import { BoxShadowControl, DEFAULT_COMPOSITE, findTokenEntry, parseResolvedShadow } from '../../../token-controls';
 import { TokenControlRow } from '../../token-indicators/components/TokenControlRow';
-import { isTokenAlias } from '../alias';
+import { isTokenAlias, pathOfAlias } from '../alias';
+import { isBackedToken } from '../backed-tokens';
 import { SHADOW_TOKEN_KEY, boundShadowToken } from '../shadow-token';
 
 /**
@@ -344,11 +345,15 @@ export function hasVisibleShadow(item) {
 		return false;
 	}
 
-	// A bound item's real value lives in the token, unknown to this gate. Counting it as visible keeps
-	// the derived enable flag from being lowered under a shadow the token does paint — the same
-	// reasoning the other two copies of this predicate already apply.
-	if (boundShadowToken(item)) {
-		return true;
+	// A bound item is decided by its binding alone, never by its stored legs — the same rule the
+	// renderers' two copies of this predicate apply. Backed, its real value lives in the token and is
+	// unknown here, so it counts as visible and the derived enable flag stays raised under a shadow the
+	// token does paint. Unbacked, the renderers paint nothing, so raising the flag would leave the
+	// inspector claiming a shadow the page does not show.
+	const bound = boundShadowToken(item);
+
+	if (bound) {
+		return isBackedToken(pathOfAlias(bound));
 	}
 
 	return ['hOffset', 'vOffset', 'blur', 'spread'].some((axis) => {

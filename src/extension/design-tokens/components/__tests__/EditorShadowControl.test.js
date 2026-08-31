@@ -684,3 +684,57 @@ describe('hasVisibleShadow', () => {
 		expect(hasVisibleShadow(item)).toBe(expected);
 	});
 });
+
+describe('hasVisibleShadow with a token binding', () => {
+	// `isBackedToken()` reads the localized pool and fails OPEN when there is none, so without these
+	// stubs every alias would read as backed and the unbacked case below could not be expressed.
+	beforeEach(() => {
+		window.kadenceDesignTokensPresets = { active: 'default' };
+		window.kadenceDesignTokensPickable = {
+			values: { default: { 'semantic.shadow.card': '0px 2px 8px 0px #1717171f' } },
+		};
+	});
+
+	afterEach(() => {
+		delete window.kadenceDesignTokensPresets;
+		delete window.kadenceDesignTokensPickable;
+	});
+
+	/**
+	 * A backed binding is visible whatever its legs say — its real value lives in the token, which this
+	 * gate cannot read, so the derived enable flag must stay raised under a shadow the token paints.
+	 *
+	 * @return {void}
+	 */
+	it('reads a backed binding as visible even with all-zero legs', () => {
+		expect(
+			hasVisibleShadow({
+				hOffset: 0,
+				vOffset: 0,
+				blur: 0,
+				spread: 0,
+				[SHADOW_TOKEN_KEY]: '{semantic.shadow.card}',
+			})
+		).toBe(true);
+	});
+
+	/**
+	 * An unbacked binding is invisible whatever its legs say. The legs are the value the token resolved
+	 * to at pick time and both renderers now ignore them, so raising the flag would leave the inspector
+	 * claiming a shadow the page does not paint. Non-zero legs on purpose: a stale binding almost always
+	 * has them, and zero legs read invisible either way, so they cannot tell this rule apart.
+	 *
+	 * @return {void}
+	 */
+	it('reads an unbacked binding as invisible even with non-zero legs', () => {
+		expect(
+			hasVisibleShadow({
+				hOffset: 0,
+				vOffset: 2,
+				blur: 8,
+				spread: 0,
+				[SHADOW_TOKEN_KEY]: '{semantic.shadow.deleted}',
+			})
+		).toBe(false);
+	});
+});
