@@ -35,6 +35,40 @@ export function isTokenAlias(value) {
 }
 
 /**
+ * A CSS custom-property reference, e.g. `var(--global-palette1)`.
+ *
+ * The old editor's per-row color widget commonly stored a Kadence global-palette color this way.
+ * It is a real, working color — the browser resolves it at paint time — but neither a bracket alias
+ * nor a hex/rgba literal `react-color` can parse, so it needs its own shape check wherever a value
+ * is routed by kind.
+ *
+ * Deliberately permissive, because the two ways of being wrong are not equally costly: failing to
+ * recognize a real reference routes a working color to the Custom tab, where it is shown as black
+ * and overwritten on the first interaction, while over-matching only opens the Style Library tab on
+ * something that was not a variable after all. So this accepts every spelling CSS itself allows —
+ * `var` is ASCII case-insensitive like every CSS function name, whitespace may surround the
+ * custom-property name, the name may contain non-ASCII or backslash-escaped characters, and a
+ * fallback may follow a comma and span lines.
+ *
+ * @since TBD
+ */
+const CSS_VAR_PATTERN = /^var\(\s*--(?:\\.|[^\s,()\\])+\s*(?:,[\s\S]*)?\)$/i;
+
+/**
+ * Whether a slot value is a CSS custom-property reference rather than a token alias or a plain
+ * literal.
+ *
+ * @param {*} value The slot value.
+ *
+ * @since TBD
+ *
+ * @return {boolean} True when the value is a `var(--...)` reference.
+ */
+export function isCssVariableReference(value) {
+	return typeof value === 'string' && CSS_VAR_PATTERN.test(value.trim());
+}
+
+/**
  * Whether a slot holds anything at all.
  *
  * @param {*} value The slot value.
