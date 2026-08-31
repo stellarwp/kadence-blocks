@@ -192,14 +192,13 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 	}
 
 	/**
-	 * A whole-shadow binding the active library no longer backs falls back to the stored legs, which
-	 * still hold the value the token resolved to when it was picked.
+	 * A whole-shadow binding the active library no longer backs renders nothing, letting the caller's
+	 * own default CSS take over instead of the legs frozen at pick time.
 	 *
 	 * @return void
 	 */
-	public function testRenderShadowFallsBackToLegsForUnbackedWholeShadowBinding(): void {
-		$this->assertSame(
-			'0px 2px 8px 0px #0f0',
+	public function testRenderShadowReturnsFalseForUnbackedWholeShadowBinding(): void {
+		$this->assertFalse(
 			$this->css->render_shadow( [
 				'shadowToken' => '{semantic.shadow.does-not-exist}',
 				'color'       => '#0f0',
@@ -210,7 +209,7 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 				'spread'      => 0,
 				'inset'       => false,
 			] ),
-			'render_shadow must fall back to the stored legs when the bound token is not backed'
+			'render_shadow must return false when the bound token is not backed'
 		);
 	}
 
@@ -252,16 +251,15 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 	}
 
 	/**
-	 * A whole-shadow binding the active library no longer backs still falls back to the normalized
-	 * legs when a non-empty $defaults array is passed.
+	 * A whole-shadow binding the active library no longer backs renders nothing even when a non-empty
+	 * $defaults array is passed.
 	 *
 	 * @since TBD
 	 *
 	 * @return void
 	 */
-	public function testRenderShadowFallsBackToLegsForUnbackedWholeShadowBindingWithDefaults(): void {
-		$this->assertSame(
-			'0px 2px 8px 0px #0f0',
+	public function testRenderShadowReturnsFalseForUnbackedWholeShadowBindingWithDefaults(): void {
+		$this->assertFalse(
 			$this->css->render_shadow(
 				[
 					'shadowToken' => '{semantic.shadow.does-not-exist}',
@@ -282,7 +280,7 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 					'opacity' => 0.2,
 				]
 			),
-			'render_shadow must fall back to the normalized legs when the bound token is not backed, even with $defaults'
+			'render_shadow must return false when the bound token is not backed, even with $defaults'
 		);
 	}
 

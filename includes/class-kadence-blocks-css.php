@@ -1105,6 +1105,22 @@ class Kadence_Blocks_CSS {
 	}
 
 	/**
+	 * Whether a value is a `{dot.alias}` reference backed by the active library — the same backing check
+	 * {@see self::get_backed_token_reference()} uses to decide whether a renderer emits a var() or falls
+	 * back to a default. Exposed for callers outside this class (e.g. the shadow-visibility gate on
+	 * {@see Kadence_Blocks_Abstract_Block}) that need to reuse the check rather than duplicate it.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $value The raw attribute value.
+	 *
+	 * @return bool True when the value is an alias reference backed by the active library.
+	 */
+	public function is_token_reference_backed( $value ): bool {
+		return null !== $this->get_backed_token_reference( $value );
+	}
+
+	/**
 	 * Whether a design-token id is backed by the active library — i.e. the Css_Var projector emits a
 	 * `--kb-token--<id>` custom property for it. A binding may reference a stale alias (a token removed
 	 * after it was stored); minting a var() for it would leave a dead custom property with no definition,
@@ -1670,8 +1686,11 @@ class Kadence_Blocks_CSS {
 	 * Generates the shadow output.
 	 *
 	 * A `shadowToken` key holding a {dot.alias} binds the WHOLE shadow to a token: when that token is
-	 * backed by the active library the method returns its bare var() and reads no other key. Everything
-	 * else — including an unbacked binding — renders from the numeric legs as before.
+	 * backed by the active library the method returns its bare var() and reads no other key. When the
+	 * binding is unbacked (the token was deleted after the item was saved), the method returns false
+	 * instead of falling back to the item's stored legs, so the caller's own default CSS takes over —
+	 * matching every other token binding in this class. An item that carries no `shadowToken` at all is
+	 * unaffected and renders from its legs as before.
 	 *
 	 * @param array                     $shadow   an array of shadow settings.
 	 * @param array<string, string|float> $defaults optional per-caller fallback literals used to fill
@@ -1686,12 +1705,19 @@ class Kadence_Blocks_CSS {
 		}
 
 		// A backed whole-shadow binding replaces the entire shorthand, so the legs below are never read.
-		// An unbacked one (a token deleted after the post was saved) falls through to them instead: unlike
-		// a per-leg alias, which displaced its number and leaves nothing to fall back to, the legs here
-		// still hold the value the token resolved to when it was picked.
-		$shadow_token_reference = $this->get_backed_token_reference( $shadow[ self::SHADOW_TOKEN_KEY ] ?? null );
+		$shadow_token           = $shadow[ self::SHADOW_TOKEN_KEY ] ?? null;
+		$shadow_token_reference = $this->get_backed_token_reference( $shadow_token );
 		if ( null !== $shadow_token_reference ) {
 			return $shadow_token_reference;
+		}
+
+		// An unbacked binding (a token deleted after the item was saved) emits nothing rather than
+		// falling back to the legs: they still hold the value the token resolved to when it was picked,
+		// not the current one, so reading them here would render a stale shadow instead of letting the
+		// caller's own default CSS take over. An item with no `shadowToken` at all is not a binding and
+		// falls through to the legs below as always.
+		if ( Alias::is_alias( $shadow_token ) ) {
+			return false;
 		}
 
 		if ( ! empty( $defaults ) ) {

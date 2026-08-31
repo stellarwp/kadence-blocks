@@ -336,6 +336,20 @@ class SinglebtnTest extends KadenceBlocksUnit {
 			],
 			'expected_visible' => true,
 		];
+
+		yield 'unbacked bound token with zero legs' => [
+			'shadow_item'      => [
+				'shadowToken' => '{semantic.shadow.does-not-exist}',
+				'color'       => 'transparent',
+				'opacity'     => 1,
+				'hOffset'     => 0,
+				'vOffset'     => 0,
+				'blur'        => 0,
+				'spread'      => 0,
+				'inset'       => false,
+			],
+			'expected_visible' => false,
+		];
 	}
 
 	/**
@@ -369,6 +383,42 @@ class SinglebtnTest extends KadenceBlocksUnit {
 		$css_helper = new CSSTestHelper( $output );
 		$selector   = '.wp-block-kadence-advancedbtn .kb-btn123.kb-button';
 
+		$css_helper->assertCSSPropertiesEqual( $selector, [ 'box-shadow' => 'none' ] );
+	}
+
+	/**
+	 * A whole-shadow binding whose token the active library no longer backs emits no `box-shadow` from
+	 * the binding and reaches the `box-shadow: none` reset, the same as a button with no shadow at all.
+	 * A stale binding must not skip the reset the way a backed one legitimately does.
+	 *
+	 * @return void
+	 */
+	public function testStaleShadowBindingReachesTheNoneFallback(): void {
+		$this->seedPreset( 'bare', 'Bare', [ 'button-bg' => '#ff0000' ] );
+
+		$output = $this->render_button(
+			[
+				'kbPreset'      => 'bare',
+				'displayShadow' => true,
+				'shadow'        => [
+					[
+						'shadowToken' => '{semantic.shadow.does-not-exist}',
+						'color'       => '#0f0',
+						'opacity'     => 1,
+						'hOffset'     => 0,
+						'vOffset'     => 2,
+						'blur'        => 8,
+						'spread'      => 0,
+						'inset'       => false,
+					],
+				],
+			]
+		);
+
+		$css_helper = new CSSTestHelper( $output );
+		$selector   = '.wp-block-kadence-advancedbtn .kb-btn123.kb-button';
+
+		$this->assertStringNotContainsString( 'var(--kb-token--semantic--shadow--does-not-exist)', $output );
 		$css_helper->assertCSSPropertiesEqual( $selector, [ 'box-shadow' => 'none' ] );
 	}
 
