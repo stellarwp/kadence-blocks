@@ -148,6 +148,104 @@ final class BindingTest extends TestCase {
 	}
 
 	/**
+	 * A declared css_state is exposed verbatim and marks the binding as a state binding, which is what tells
+	 * the projectors it carries a declaration scoped to a UI state rather than the block's resting look.
+	 *
+	 * @return void
+	 */
+	public function testCssStateMarksTheBindingAsAStateBinding(): void {
+		$binding = Binding::from_array(
+			'backgroundHover',
+			[
+				'token'     => 'semantic.color.column-bg',
+				'css_prop'  => 'background-color',
+				'css_state' => ':hover > .kt-inside-inner-col',
+			]
+		);
+
+		$this->assertSame( ':hover > .kt-inside-inner-col', $binding->css_state() );
+		$this->assertTrue( $binding->is_state() );
+	}
+
+	/**
+	 * A binding that declares no css_state is a resting-state binding, so both its state accessors read null
+	 * and it never reaches the preset projector's state layer.
+	 *
+	 * @return void
+	 */
+	public function testABindingWithoutACssStateIsNotAStateBinding(): void {
+		$binding = Binding::from_array(
+			'background',
+			[
+				'token'    => 'semantic.color.column-bg',
+				'css_prop' => 'background-color',
+			]
+		);
+
+		$this->assertNull( $binding->css_state() );
+		$this->assertNull( $binding->editor_css_state() );
+		$this->assertFalse( $binding->is_state() );
+	}
+
+	/**
+	 * A declared editor_css_state replaces css_state for the editor build alone, for a block whose editor
+	 * markup paints a different element than its saved markup does.
+	 *
+	 * @return void
+	 */
+	public function testEditorCssStateOverridesTheFrontEndState(): void {
+		$binding = Binding::from_array(
+			'backgroundHover',
+			[
+				'token'            => 'semantic.color.column-bg',
+				'css_prop'         => 'background-color',
+				'css_state'        => ':hover > .kt-inside-inner-col',
+				'editor_css_state' => ':hover > .kadence-inner-column-inner',
+			]
+		);
+
+		$this->assertSame( ':hover > .kt-inside-inner-col', $binding->css_state() );
+		$this->assertSame( ':hover > .kadence-inner-column-inner', $binding->editor_css_state() );
+	}
+
+	/**
+	 * With no editor_css_state declared, the editor reuses the front-end state selector — right for every
+	 * block whose two render paths agree on the element, and what keeps the override opt-in.
+	 *
+	 * @return void
+	 */
+	public function testEditorCssStateFallsBackToTheFrontEndState(): void {
+		$binding = Binding::from_array(
+			'hColor',
+			[
+				'token'     => 'semantic.color.icon',
+				'css_prop'  => 'color',
+				'css_state' => ':hover *.kb-svg-icon-wrap',
+			]
+		);
+
+		$this->assertSame( ':hover *.kb-svg-icon-wrap', $binding->editor_css_state() );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testItThrowsWhenCssStateIsNotAString(): void {
+		$this->expectException( InvalidArgumentException::class );
+
+		Binding::from_array( 'backgroundHover', [ 'css_state' => [] ] );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testItThrowsWhenEditorCssStateIsNotAString(): void {
+		$this->expectException( InvalidArgumentException::class );
+
+		Binding::from_array( 'backgroundHover', [ 'editor_css_state' => 42 ] );
+	}
+
+	/**
 	 * @return void
 	 */
 	public function testItThrowsWhenCssPropIsNotAString(): void {

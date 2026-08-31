@@ -378,6 +378,10 @@
 				"$type": "color",
 				"$value": "{primitive.color.neutral.200}"
 			},
+			"border-hover": {
+				"$type": "color",
+				"$value": "{primitive.color.neutral.200}"
+			},
 			"link": {
 				"$type": "color",
 				"$value": "{primitive.color.brand.primary}"
@@ -418,11 +422,19 @@
 				"$type": "color",
 				"$value": "{primitive.color.brand.primary}"
 			},
+			"icon-hover": {
+				"$type": "color",
+				"$value": "{primitive.color.brand.primary}"
+			},
 			"rowlayout-bg": {
 				"$type": "color",
 				"$value": "{primitive.color.transparent}"
 			},
 			"column-bg": {
+				"$type": "color",
+				"$value": "{primitive.color.transparent}"
+			},
+			"column-bg-hover": {
 				"$type": "color",
 				"$value": "{primitive.color.transparent}"
 			},
@@ -474,6 +486,10 @@
 				"$type": "dimension",
 				"$value": "0"
 			},
+			"column-hover": {
+				"$type": "dimension",
+				"$value": "0"
+			},
 			"heading": {
 				"$type": "dimension",
 				"$value": "0"
@@ -483,10 +499,18 @@
 			"default": {
 				"$type": "dimension",
 				"$value": "{primitive.dimension.border-width.sm}"
+			},
+			"default-hover": {
+				"$type": "dimension",
+				"$value": "{primitive.dimension.border-width.sm}"
 			}
 		},
 		"border-style": {
 			"default": {
+				"$type": "borderStyle",
+				"$value": "none"
+			},
+			"default-hover": {
 				"$type": "borderStyle",
 				"$value": "none"
 			}
@@ -583,6 +607,16 @@
 				}
 			},
 			"button": {
+				"$type": "shadow",
+				"$value": {
+					"color": "{primitive.color.transparent}",
+					"offsetX": "0px",
+					"offsetY": "0px",
+					"blur": "0px",
+					"spread": "0px"
+				}
+			},
+			"button-hover": {
 				"$type": "shadow",
 				"$value": {
 					"color": "{primitive.color.transparent}",

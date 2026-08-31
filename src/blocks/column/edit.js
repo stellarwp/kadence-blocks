@@ -315,16 +315,25 @@ function SectionEdit(props) {
 		{ desktop: borderRadius, tablet: tabletBorderRadius },
 		borderRadiusPresetValue
 	);
-	// The hover corners cascade among themselves only. No preset value takes part: no preset can set a
-	// hover radius on any block, so naming the NORMAL state's preset here would report a size the hover
-	// state does not actually render.
-	const inheritedBorderHoverRadius = inheritedMeasureSlots(previewDevice, {
-		desktop: borderHoverRadius,
-		tablet: tabletBorderHoverRadius,
-	});
-	// The hover radius has no binding of its own, so its indicator is derived from the normal corner's:
-	// it reports "overridden" once the hover value diverges from what the preset set for normal, which is
-	// the only preset-relative statement that can be made about it.
+	// The hover corners cascade among themselves, then fall to the hover radius the active preset resolves
+	// — its own property, never the normal state's, which would report a size the hover state does not
+	// render. Undefined until a preset actually carries one, which leaves the chain exactly as it was.
+	const borderHoverRadiusPresetValue = presetValueForDevice(
+		tokenBinding.borderHoverRadius?.presetValue,
+		tokenBinding.borderHoverRadius?.responsive,
+		previewDevice
+	);
+	const inheritedBorderHoverRadius = inheritedMeasureSlots(
+		previewDevice,
+		{
+			desktop: borderHoverRadius,
+			tablet: tabletBorderHoverRadius,
+		},
+		borderHoverRadiusPresetValue
+	);
+	// Falls back to a derived indicator while the active preset carries no hover radius of its own: without
+	// a resolved value `usePresetBinding` makes no entry, and the derived one at least reports divergence
+	// from what the preset set for NORMAL, which is the only preset-relative statement left to make.
 	const borderHoverRadiusBinding = deriveStateBinding({
 		shared: tokenBinding.borderRadius,
 		kind: tokenBinding.borderRadius?.kind,
@@ -2824,13 +2833,23 @@ function SectionEdit(props) {
 												)}
 												{'gradient' !== backgroundHoverType && (
 													<>
-														<PopColorControl
+														<ColorControl
 															label={__('Background Color', 'kadence-blocks')}
 															value={backgroundHover ? backgroundHover : ''}
-															default={''}
-															onChange={(value) =>
-																setAttributes({ backgroundHover: value })
+															groups={colorGroups}
+															status={{
+																bound: !!tokenBinding.backgroundHover?.bound,
+																modified: !!tokenBinding.backgroundHover?.overridden,
+															}}
+															onReset={() => resetToken('backgroundHover')}
+															onPick={(alias) =>
+																setAttributes({ backgroundHover: alias })
 															}
+															onCustom={(literal) =>
+																setAttributes({ backgroundHover: literal })
+															}
+															onClear={() => setAttributes({ backgroundHover: '' })}
+															resolveLiteral={resolveColorLiteral}
 														/>
 														<KadenceBackgroundControl
 															label={__('Background Image', 'kadence-blocks')}
@@ -3428,8 +3447,26 @@ function SectionEdit(props) {
 														inherited={anyCornerInherited(
 															inheritedBorderHoverRadius.inherited
 														)}
-														state={borderHoverRadiusBinding}
-														onReset={() => resetToken('borderHoverRadius')}
+														state={
+															tokenBinding.borderHoverRadius ?? borderHoverRadiusBinding
+														}
+														// The kind is stated rather than looked up.
+														// `usePresetBinding` only makes an entry for a property
+														// the ACTIVE preset resolves, so `resetToken` reads
+														// `undefined` on every preset that carries no hover
+														// radius -- and on any site with the registry inactive.
+														// That clears the desktop attribute to a bare `''`,
+														// leaving the tablet/mobile companions and the unit
+														// untouched and storing a string where the block declares
+														// a four-side array.
+														onReset={() =>
+															resetAttr(
+																'borderHoverRadius',
+																setAttributes,
+																'dimension',
+																metadata.attributes
+															)
+														}
 														isLinked={borderHoverRadiusIsLinked}
 														onToggleLink={toggleBorderHoverRadiusLink}
 														unit={borderHoverRadiusUnit}

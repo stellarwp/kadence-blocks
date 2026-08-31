@@ -120,6 +120,53 @@ final class Binding {
 	private const EDITOR_CSS_SELECTOR = 'editor_css_selector';
 
 	/**
+	 * Inline target: the selector suffix — pseudo-class included — that scopes this property to a UI state
+	 * rather than to the block's resting appearance, e.g. `:hover > .kt-inside-inner-col` for the Section's
+	 * hover background. Declaring it makes the binding a STATE binding, which changes which projector
+	 * renders it and how.
+	 *
+	 * A state binding is rendered only by the selected-preset projector, which emits a real declaration
+	 * (`<css_prop>: var(<preset var>)`) scoped to `.wp-block-<block>.kb-preset--<preset><css_state>` — and,
+	 * for the block's `$default` preset, to the class-less `.wp-block-<block><css_state>`. The
+	 * block-default-CSS projector skips it entirely: that layer renders only the `$default` preset, so its
+	 * rule would be present on every block whether or not a preset asked for a state, and any `:hover` rule
+	 * outranks the block's own resting per-instance rule — a shipped state default would repaint content
+	 * that never opted in.
+	 *
+	 * The whole suffix lives here, pseudo included, because which element carries the state differs per
+	 * block: the Section and the Icon are hovered on the block root and paint a descendant
+	 * (`:hover > .kt-inside-inner-col`), while the Button is hovered on the element it paints
+	 * (`*.kb-button:hover`). It is composed exactly like {@see self::CSS_SELECTOR} — a bare selector gains
+	 * the combinator space, one opening with a combinator or attachment character is used verbatim, and a
+	 * leading `*` is how a descendant whose own selector starts with `.` asks for the space.
+	 *
+	 * Several states may be named at once, comma separated (`*.kb-button:hover,*.kb-button:focus`), for a
+	 * block whose own CSS treats hover and keyboard focus as one look. The projector scopes each part on its
+	 * own, so every part is qualified by the block and preset rather than only the first.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const CSS_STATE = 'css_state';
+
+	/**
+	 * Inline target: the state selector suffix to use instead of `css_state` when the preset projector is
+	 * building for the editor canvas, for a block whose editor markup renders the bound property on a
+	 * different element than its saved markup does (the Section paints `.kadence-inner-column-inner` in the
+	 * editor and `.kt-inside-inner-col` on the front end).
+	 *
+	 * The per-state counterpart to {@see self::EDITOR_CSS_SELECTOR}, and it behaves the same way: optional,
+	 * with `css_state` reused in the editor when omitted, which is right for every block whose two render
+	 * paths agree on the element.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const EDITOR_CSS_STATE = 'editor_css_state';
+
+	/**
 	 * Editor-only target: the block attribute the editor control for this property writes, so the
 	 * indicator layer can tell whether a control is bound to the active preset or has been overridden.
 	 * Deliberately NOT a projection target — it is excluded from STRING_TARGETS / inline_targets(), so it
@@ -167,7 +214,7 @@ final class Binding {
 	 *
 	 * @var string[]
 	 */
-	private const STRING_TARGETS = [ self::KADENCE_SLOT, self::BLOCK_ATTR, self::CSS_PROP, self::CSS_SELECTOR, self::EDITOR_CSS_SELECTOR, self::CSS_VAR ];
+	private const STRING_TARGETS = [ self::KADENCE_SLOT, self::BLOCK_ATTR, self::CSS_PROP, self::CSS_SELECTOR, self::EDITOR_CSS_SELECTOR, self::CSS_STATE, self::EDITOR_CSS_STATE, self::CSS_VAR ];
 
 	/**
 	 * The block property this binding drives, e.g. "button-bg". Carried for error messages and so a
@@ -420,6 +467,48 @@ final class Binding {
 		$selector = $this->projections[ self::EDITOR_CSS_SELECTOR ] ?? null;
 
 		return is_string( $selector ) ? $selector : $this->css_selector();
+	}
+
+	/**
+	 * The state selector suffix this binding's declaration is scoped to (e.g. ":hover > .kt-inside-inner-col"),
+	 * or null when the binding drives the block's resting appearance. Its presence is what marks a binding as
+	 * a state binding — see {@see self::CSS_STATE} for what that changes. Inline only.
+	 *
+	 * @since TBD
+	 *
+	 * @return string|null
+	 */
+	public function css_state(): ?string {
+		$selector = $this->projections[ self::CSS_STATE ] ?? null;
+
+		return is_string( $selector ) ? $selector : null;
+	}
+
+	/**
+	 * The state selector suffix for the EDITOR canvas: the declared `editor_css_state` when the block's
+	 * editor markup paints a different element than its saved markup, and otherwise {@see self::css_state()},
+	 * which is right whenever the two render paths agree. Inline only.
+	 *
+	 * @since TBD
+	 *
+	 * @return string|null
+	 */
+	public function editor_css_state(): ?string {
+		$selector = $this->projections[ self::EDITOR_CSS_STATE ] ?? null;
+
+		return is_string( $selector ) ? $selector : $this->css_state();
+	}
+
+	/**
+	 * Whether this binding scopes its property to a UI state rather than to the block's resting appearance.
+	 * True exactly when it declares a `css_state`.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function is_state(): bool {
+		return $this->css_state() !== null;
 	}
 
 	/**

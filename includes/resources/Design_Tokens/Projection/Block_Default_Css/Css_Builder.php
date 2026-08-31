@@ -3,6 +3,7 @@
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Block_Default_Css;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Preset\Css_Builder as Preset_Css_Builder;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Composes_Selector_Suffix;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Value;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Binding;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
@@ -55,6 +56,7 @@ use RuntimeException;
  */
 final class Css_Builder {
 
+	use Composes_Selector_Suffix;
 	use Sanitizes_Css_Value;
 
 	/**
@@ -252,6 +254,15 @@ final class Css_Builder {
 					continue;
 				}
 
+				// A state binding (`:hover` and friends) belongs to the selected-preset projector alone. This
+				// layer renders only the `$default` preset, so its rule carries no preset class and matches
+				// every instance of the block — and a state rule outranks the block's own resting
+				// per-instance rule, so emitting one here would repaint content that never opted into a state.
+				// See Binding::CSS_STATE.
+				if ( $binding->is_state() ) {
+					continue;
+				}
+
 				$prop = $binding->css_prop();
 
 				// A per-corner slot list is a CSS shorthand here — this is a css-emitting surface, so the
@@ -370,27 +381,4 @@ final class Css_Builder {
 		return $this->memo[ $memo_key ] = $css;
 	}
 
-	/**
-	 * Compose a binding's optional `css_selector` into the suffix appended after the block's `.wp-block-*`
-	 * class. A bare selector (e.g. `img`) is treated as a descendant and gets the combinator space inserted
-	 * for it, so the declaration never has to carry a load-bearing leading space. A suffix that already
-	 * opens with a combinator or attachment character (`>`, `+`, `~`, `.`, `:`, `#`, `[`, `&`) is used
-	 * verbatim, so child combinators (`> img`) and compound/stateful selectors (`.is-style-rounded`) stay
-	 * expressible. Empty when the binding names no descendant — the rule targets the block root.
-	 *
-	 * @since TBD
-	 *
-	 * @param string|null $selector The binding's raw `css_selector`, or null when it names none.
-	 *
-	 * @return string The selector suffix, ready to concatenate after the block class.
-	 */
-	private function selector_suffix( ?string $selector ): string {
-		$selector = trim( (string) $selector );
-
-		if ( $selector === '' ) {
-			return '';
-		}
-
-		return strpbrk( $selector[0], '>+~.:#[&' ) === false ? ' ' . $selector : $selector;
-	}
 }

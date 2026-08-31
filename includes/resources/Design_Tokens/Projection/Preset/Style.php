@@ -40,4 +40,16 @@ final class Style {
 	public static function preset_class( string $preset ): string {
 		return self::CLASS_PREFIX . self::sanitize_identifier( $preset );
 	}
+
+	/**
+	 * The class prefix every selected preset shares, e.g. "kb-preset--". Read by the projector to build the
+	 * "no preset selected" test its `$default` state rule is scoped by.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_class_prefix(): string {
+		return self::CLASS_PREFIX;
+	}
 }
