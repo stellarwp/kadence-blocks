@@ -9,7 +9,7 @@ import {
 } from '@kadence/helpers';
 import { activePresetFor, blockPresetValues } from '../../../../extension/preset-picker';
 import { tokenPx } from '../../../../extension/design-tokens/token-px';
-import { resolveTokenAlias } from '../../../../extension/design-tokens/alias';
+import { pathOfAlias, resolveTokenAlias } from '../../../../extension/design-tokens/alias';
 import { isBackedToken } from '../../../../extension/design-tokens/backed-tokens';
 import { boundShadowToken } from '../../../../extension/design-tokens/shadow-token';
 
@@ -171,7 +171,7 @@ export function shadowCss(shadowItem, blurFallback) {
 
 	const bound = boundShadowToken(shadowItem);
 
-	if (bound && isBackedToken(bound.slice(1, -1))) {
+	if (bound && isBackedToken(pathOfAlias(bound))) {
 		return resolveTokenAlias(bound);
 	}
 

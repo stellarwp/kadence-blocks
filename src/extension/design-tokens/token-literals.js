@@ -7,7 +7,7 @@
  * the literal a resolved-values map stores, without going through the server.
  */
 import { get } from 'lodash';
-import { isTokenAlias } from './alias';
+import { isTokenAlias, pathOfAlias } from './alias';
 
 /**
  * The resolved literal map for a token library, or an empty map when the pool is absent.
@@ -41,7 +41,7 @@ export function tokenLiteral(value, library) {
 		return value;
 	}
 
-	const literal = get(libraryLiterals(library), [value.slice(1, -1)], '');
+	const literal = get(libraryLiterals(library), [pathOfAlias(value)], '');
 
 	return literal === '' ? value : literal;
 }

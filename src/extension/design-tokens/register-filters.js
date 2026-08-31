@@ -8,7 +8,7 @@
  * knowledge lives only in this plugin, and the change is strictly additive.
  */
 import { addFilter, removeFilter } from '@wordpress/hooks';
-import { isTokenAlias, resolveTokenAlias } from './alias';
+import { isTokenAlias, pathOfAlias, resolveTokenAlias } from './alias';
 import { isBackedToken } from './backed-tokens';
 
 const NAMESPACE = 'kadence-blocks/token-alias';
@@ -31,8 +31,7 @@ function resolveAlias(value) {
 		return value;
 	}
 
-	// Strip the { } braces to the dotted token id (the same slice resolveTokenAlias() does).
-	if (!isBackedToken(value.slice(1, -1))) {
+	if (!isBackedToken(pathOfAlias(value))) {
 		return value;
 	}
 
