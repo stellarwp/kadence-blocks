@@ -112,6 +112,12 @@ export function shadowAxisPx(raw, fallback) {
  * render nothing regardless of color, matching the value the "None" pick now writes and mirroring
  * the PHP renderer's `has_visible_shadow()`.
  *
+ * A `shadowToken` binding backed by the active library is visible outright — its real value lives
+ * in the token, which this gate cannot read, so reading it as invisible would let the base rule's
+ * `box-shadow: none` reset erase a shadow the token does paint. A binding the library no longer
+ * backs takes the same path as an item with no shadow at all: the stored legs are the value frozen
+ * at pick time, not the current one, so they are not consulted.
+ *
  * @param {?Object} shadowItem One `shadow[0]`-shaped item.
  *
  * @since TBD
@@ -123,11 +129,10 @@ export function hasVisibleShadow(shadowItem) {
 		return false;
 	}
 
-	// A bound item's real value lives in the token, which this gate cannot read. Counting it as visible
-	// keeps the base rule's `box-shadow: none` reset from erasing a shadow the token does paint —
-	// the same reasoning the per-leg alias branch below uses. Mirrors the PHP gate.
-	if (boundShadowToken(shadowItem)) {
-		return true;
+	const bound = boundShadowToken(shadowItem);
+
+	if (bound) {
+		return isBackedToken(pathOfAlias(bound));
 	}
 
 	return ['hOffset', 'vOffset', 'blur', 'spread'].some((axis) => {
@@ -151,9 +156,11 @@ export function hasVisibleShadow(shadowItem) {
  *
  * A `shadowToken` binding backed by the active library wins outright and the stored legs are never
  * read — that is what keeps the value tracking the token. A binding the library no longer backs (a
- * token deleted after the post was saved) falls back to those legs, which still hold the value the
- * token resolved to when it was picked. That differs on purpose from an unbacked PER-LEG alias, which
- * `shadowAxisPx()` cannot fall back for because the alias replaced the number outright.
+ * token deleted after the post was saved) renders nothing: the block falls back to its default CSS
+ * the same way every other block does when a token disappears, rather than the legs that still hold
+ * the value the token resolved to when it was picked — those legs stay stored for readers that do
+ * not know the binding key and to seed the Custom tab, but the renderer no longer reads them. An
+ * unbound item still builds its literal shorthand from the legs below.
  *
  * @param {?Object} shadowItem   One `shadow[0]`-shaped item.
  * @param {number}  blurFallback What `blur` defaults to when unset — 14 on every current caller,
@@ -162,7 +169,8 @@ export function hasVisibleShadow(shadowItem) {
  *
  * @since TBD
  *
- * @return {string} The `box-shadow` value, or '' when there is no item to render.
+ * @return {string} The `box-shadow` value, or '' when there is no item to render or the item's
+ *                   binding is no longer backed by the active library.
  */
 export function shadowCss(shadowItem, blurFallback) {
 	if (!shadowItem) {
@@ -171,8 +179,8 @@ export function shadowCss(shadowItem, blurFallback) {
 
 	const bound = boundShadowToken(shadowItem);
 
-	if (bound && isBackedToken(pathOfAlias(bound))) {
-		return resolveTokenAlias(bound);
+	if (bound) {
+		return isBackedToken(pathOfAlias(bound)) ? resolveTokenAlias(bound) : '';
 	}
 
 	return (

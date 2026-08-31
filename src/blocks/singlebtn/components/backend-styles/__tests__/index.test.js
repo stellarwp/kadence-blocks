@@ -176,16 +176,17 @@ describe('shadowCss', () => {
 	});
 
 	/**
-	 * A binding the active library no longer backs falls back to the legs, which still hold the value
-	 * the token had when it was picked — a real value, unlike the per-leg case where the alias replaced
-	 * the number and there is nothing left to fall back to.
+	 * A binding the active library no longer backs renders nothing, so the block falls back to its
+	 * default CSS the same way every other block does when a token is deleted — the stored legs hold
+	 * the value the token had when it was picked, but that value is stale and the renderer no longer
+	 * reads it.
 	 *
 	 * @return {void}
 	 */
-	it('falls back to the stored legs for an unbacked binding', () => {
+	it('returns an empty string for an unbacked binding', () => {
 		window.kadenceDesignTokensPickable = { values: { default: {} } };
 
-		expect(shadowCss(BOUND_ITEM, 14)).toBe('0px 2px 8px 0px #00ff00');
+		expect(shadowCss(BOUND_ITEM, 14)).toBe('');
 	});
 
 	/**
@@ -220,9 +221,14 @@ describe('shadowCss', () => {
 });
 
 describe('hasVisibleShadow with a binding', () => {
+	afterEach(() => {
+		delete window.kadenceDesignTokensPresets;
+		delete window.kadenceDesignTokensPickable;
+	});
+
 	/**
-	 * A bound item counts as visible whatever its legs say — the token's own value is unknown to this
-	 * gate, and reading it as invisible would let the base rule's `box-shadow: none` erase it.
+	 * A backed bound item counts as visible whatever its legs say — the token's own value is unknown to
+	 * this gate, and reading it as invisible would let the base rule's `box-shadow: none` erase it.
 	 *
 	 * @return {void}
 	 */
@@ -239,5 +245,29 @@ describe('hasVisibleShadow with a binding', () => {
 				shadowToken: '{semantic.shadow.card}',
 			})
 		).toBe(true);
+	});
+
+	/**
+	 * An unbacked binding is not visible — it takes exactly the path an item with no shadow already
+	 * takes, so the caller's `box-shadow: none` reset fires instead of holding the stale frozen legs.
+	 *
+	 * @return {void}
+	 */
+	it('is false for an unbacked binding', () => {
+		window.kadenceDesignTokensPresets = { active: 'default' };
+		window.kadenceDesignTokensPickable = { values: { default: {} } };
+
+		expect(
+			hasVisibleShadow({
+				color: '#00ff00',
+				opacity: 1,
+				hOffset: 0,
+				vOffset: 2,
+				blur: 8,
+				spread: 0,
+				inset: false,
+				shadowToken: '{semantic.shadow.card}',
+			})
+		).toBe(false);
 	});
 });
