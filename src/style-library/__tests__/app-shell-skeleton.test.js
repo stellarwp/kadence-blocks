@@ -79,4 +79,25 @@ describe('AppShellSkeleton', () => {
 		expect(nav).not.toBeNull();
 		expect(nav.querySelectorAll('.kadence-blocks-style-library__skeleton').length).toBeGreaterThan(0);
 	});
+
+	/**
+	 * The nav and header shapes sit inside the real `AppShell` wrappers, which are what carry the
+	 * frame's opaque surface and column widths — without them the library-switch overlay's
+	 * translucent scrim would leave the outgoing library's own header and nav showing through.
+	 *
+	 * @return {void}
+	 */
+	it('wraps its regions in the real shell frame elements', () => {
+		act(() => {
+			root.render(createElement(AppShellSkeleton));
+		});
+
+		const header = container.querySelector('.kadence-blocks-style-library__header');
+		const sidebar = container.querySelector('.kadence-blocks-style-library__sidebar');
+
+		expect(header).not.toBeNull();
+		expect(header.querySelector('.kadence-blocks-style-library__header-bar')).not.toBeNull();
+		expect(sidebar).not.toBeNull();
+		expect(sidebar.querySelector('.kadence-blocks-style-library__nav')).not.toBeNull();
+	});
 });
