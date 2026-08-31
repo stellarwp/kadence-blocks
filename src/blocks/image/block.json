@@ -190,7 +190,15 @@
 		"boxShadow": {
 			"type": "array",
 			"default": [
-				{ "color": "transparent", "opacity": 1, "spread": 0, "blur": 0, "hOffset": 0, "vOffset": 0, "inset": false }
+				{
+					"color": "#000000",
+					"opacity": 0.2,
+					"spread": 0,
+					"blur": 14,
+					"hOffset": 0,
+					"vOffset": 0,
+					"inset": false
+				}
 			]
 		},
 		"displayDropShadow": {

@@ -8,6 +8,8 @@ import {
 	getSpacingOptionOutput,
 } from '@kadence/helpers';
 import { activePresetFor, blockPresetValues } from '../../../../extension/preset-picker';
+import { pathOfAlias } from '../../../../extension/design-tokens/alias';
+import { isBackedToken } from '../../../../extension/design-tokens/backed-tokens';
 import { boundShadowToken } from '../../../../extension/design-tokens/shadow-token';
 import { shadowCss } from '../../../../extension/design-tokens/shadow-css';
 

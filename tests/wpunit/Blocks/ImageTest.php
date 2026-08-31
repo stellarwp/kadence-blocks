@@ -94,8 +94,8 @@ class ImageTest extends KadenceBlocksUnit {
 	}
 
 	/**
-	 * An all-zero shadow emits nothing. This is what makes the registered default safe: a fresh image
-	 * carries that value and must render exactly as it did when a `false` boolean suppressed it.
+	 * An all-zero shadow emits nothing — geometry alone decides, so the value the "None" pick writes
+	 * paints nothing whatever its color says.
 	 *
 	 * @return void
 	 */
@@ -188,6 +188,66 @@ class ImageTest extends KadenceBlocksUnit {
 		);
 
 		$this->assertStringContainsString( 'var(--kb-token--semantic--radius--media)', $output );
+	}
+
+	/**
+	 * A fresh image arrives with the shipped schema defaults — a VISIBLE `boxShadow` value paired with
+	 * a lowered `displayBoxShadow` — and must still paint nothing. The visible value exists only so a
+	 * legacy image that saved no value key of its own keeps its shadow; the lowered flag is what keeps
+	 * a brand-new image clean.
+	 *
+	 * @return void
+	 */
+	public function testFreshImageEmitsNoBoxShadowDespiteTheShippedVisibleDefault(): void {
+		$output = $this->render_image(
+			[
+				'displayBoxShadow' => false,
+				'boxShadow'        => [ $this->shipped_shadow_default() ],
+			]
+		);
+
+		$this->assertStringNotContainsString( 'box-shadow', $output );
+	}
+
+	/**
+	 * An image switched on before its shadow was ever customized saved the flag and NO `boxShadow`
+	 * key, because the value matched the registered default. It arrives with that default filled back
+	 * in and must render the shadow it has always rendered — the regression a lowered value default
+	 * causes, which nothing downstream repairs.
+	 *
+	 * @return void
+	 */
+	public function testLegacyImageWithNoStoredShadowValueStillRendersItsShippedShadow(): void {
+		$output = $this->render_image(
+			[
+				'displayBoxShadow' => true,
+				'boxShadow'        => [ $this->shipped_shadow_default() ],
+			]
+		);
+
+		$this->assertStringContainsString(
+			'box-shadow:0px 0px 14px 0px rgba(0, 0, 0, 0.2)',
+			$output,
+			'A raised flag with no stored shadow value must render the shipped default shadow.'
+		);
+	}
+
+	/**
+	 * The `boxShadow` attribute default `block.json` has always registered, spelled out here so a
+	 * change to that schema fails these tests loudly instead of silently weakening them.
+	 *
+	 * @return array<string, mixed> The shipped default shadow item.
+	 */
+	private function shipped_shadow_default(): array {
+		return [
+			'color'   => '#000000',
+			'opacity' => 0.2,
+			'spread'  => 0,
+			'blur'    => 14,
+			'hOffset' => 0,
+			'vOffset' => 0,
+			'inset'   => false,
+		];
 	}
 
 	/**
