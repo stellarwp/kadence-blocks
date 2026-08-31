@@ -169,6 +169,150 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 	}
 
 	/**
+	 * A whole-shadow binding renders as the token's bare var(), replacing the entire shorthand rather
+	 * than one leg of it.
+	 *
+	 * @return void
+	 */
+	public function testRenderShadowEmitsBareVarForWholeShadowBinding(): void {
+		$this->assertSame(
+			'var(--kb-token--semantic--shadow--card)',
+			$this->css->render_shadow( [
+				'shadowToken' => '{semantic.shadow.card}',
+				'color'       => '#0f0',
+				'opacity'     => 1,
+				'hOffset'     => 0,
+				'vOffset'     => 2,
+				'blur'        => 8,
+				'spread'      => 0,
+				'inset'       => false,
+			] ),
+			'render_shadow must emit the bare var() for a whole-shadow binding'
+		);
+	}
+
+	/**
+	 * A whole-shadow binding the active library no longer backs renders nothing, letting the caller's
+	 * own default CSS take over instead of the legs frozen at pick time.
+	 *
+	 * @return void
+	 */
+	public function testRenderShadowReturnsFalseForUnbackedWholeShadowBinding(): void {
+		$this->assertFalse(
+			$this->css->render_shadow( [
+				'shadowToken' => '{semantic.shadow.does-not-exist}',
+				'color'       => '#0f0',
+				'opacity'     => 1,
+				'hOffset'     => 0,
+				'vOffset'     => 2,
+				'blur'        => 8,
+				'spread'      => 0,
+				'inset'       => false,
+			] ),
+			'render_shadow must return false when the bound token is not backed'
+		);
+	}
+
+	/**
+	 * A whole-shadow binding renders as the token's bare var() even when a non-empty $defaults array
+	 * is passed, matching what render_button_shadow() always passes on the singlebtn front end. This
+	 * is the regression case: reading the binding after normalize_shadow_defaults() strips the
+	 * `shadowToken` key made the lookup always miss on that path.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function testRenderShadowEmitsBareVarForWholeShadowBindingWithDefaults(): void {
+		$this->assertSame(
+			'var(--kb-token--semantic--shadow--card)',
+			$this->css->render_shadow(
+				[
+					'shadowToken' => '{semantic.shadow.card}',
+					'color'       => '#0f0',
+					'opacity'     => 1,
+					'hOffset'     => 0,
+					'vOffset'     => 2,
+					'blur'        => 8,
+					'spread'      => 0,
+					'inset'       => false,
+				],
+				[
+					'hOffset' => '0',
+					'vOffset' => '0',
+					'blur'    => '14',
+					'spread'  => '0',
+					'color'   => '#000000',
+					'opacity' => 0.2,
+				]
+			),
+			'render_shadow must emit the bare var() for a whole-shadow binding even when $defaults is non-empty'
+		);
+	}
+
+	/**
+	 * A whole-shadow binding the active library no longer backs renders nothing even when a non-empty
+	 * $defaults array is passed.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function testRenderShadowReturnsFalseForUnbackedWholeShadowBindingWithDefaults(): void {
+		$this->assertFalse(
+			$this->css->render_shadow(
+				[
+					'shadowToken' => '{semantic.shadow.does-not-exist}',
+					'color'       => '#0f0',
+					'opacity'     => 1,
+					'hOffset'     => 0,
+					'vOffset'     => 2,
+					'blur'        => 8,
+					'spread'      => 0,
+					'inset'       => false,
+				],
+				[
+					'hOffset' => '0',
+					'vOffset' => '0',
+					'blur'    => '14',
+					'spread'  => '0',
+					'color'   => '#000000',
+					'opacity' => 0.2,
+				]
+			),
+			'render_shadow must return false when the bound token is not backed, even with $defaults'
+		);
+	}
+
+	/**
+	 * An empty shadow item with a non-empty $defaults array still renders those defaults as a
+	 * complete shorthand instead of returning false. normalize_shadow_defaults() must run before
+	 * the emptiness check, not after: the two guards must stay separate rather than being
+	 * collapsed into one leading `! is_array( $shadow ) || empty( $shadow )` check.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function testRenderShadowRendersDefaultsForEmptyShadowWithDefaults(): void {
+		$this->assertSame(
+			'0px 0px 14px 0px rgba(0, 0, 0, 0.2)',
+			$this->css->render_shadow(
+				[],
+				[
+					'hOffset' => '0',
+					'vOffset' => '0',
+					'blur'    => '14',
+					'spread'  => '0',
+					'color'   => '#000000',
+					'opacity' => 0.2,
+				]
+			),
+			'render_shadow must render the caller defaults as a full shorthand when the shadow item is empty'
+		);
+	}
+
+	/**
 	 * render_typography emits the bare var() reference for an aliased desktop line-height and
 	 * letter-spacing.
 	 *

@@ -178,9 +178,9 @@ class SinglebtnTest extends KadenceBlocksUnit {
 
 		$output = $this->render_button(
 			[
-				'kbPreset' => 'accent',
+				'kbPreset'      => 'accent',
 				'displayShadow' => true,
-				'shadow'   => [
+				'shadow'        => [
 					[
 						'color'   => '#00ff00',
 						'opacity' => 1,
@@ -214,6 +214,34 @@ class SinglebtnTest extends KadenceBlocksUnit {
 		// a 6-digit hex that can shorten to its 3-digit form when re-serializing, so the shorthand is
 		// what assertCSSPropertiesEqual sees even though the block itself renders the literal '#00ff00'.
 		$css_helper->assertCSSPropertiesEqual( $selector, [ 'box-shadow' => '1px 1px 2px 0px #0f0' ] );
+	}
+
+	/**
+	 * A button whose shadow is bound to a token emits that token's custom property as its box-shadow,
+	 * so editing the token in the Style Library moves every button that follows it.
+	 *
+	 * @return void
+	 */
+	public function testBoundShadowEmitsTokenVar(): void {
+		$output = $this->render_button(
+			[
+				'displayShadow' => true,
+				'shadow'        => [
+					[
+						'shadowToken' => '{semantic.shadow.card}',
+						'color'       => '#0f0',
+						'opacity'     => 1,
+						'hOffset'     => 0,
+						'vOffset'     => 2,
+						'blur'        => 8,
+						'spread'      => 0,
+						'inset'       => false,
+					],
+				],
+			]
+		);
+
+		$this->assertStringContainsString( 'box-shadow:var(--kb-token--semantic--shadow--card)', $output );
 	}
 
 	/**
@@ -294,6 +322,52 @@ class SinglebtnTest extends KadenceBlocksUnit {
 			],
 			'expected_visible' => true,
 		];
+
+		yield 'bound token with zero legs' => [
+			'shadow_item'      => [
+				'shadowToken' => '{semantic.shadow.card}',
+				'color'       => 'transparent',
+				'opacity'     => 1,
+				'hOffset'     => 0,
+				'vOffset'     => 0,
+				'blur'        => 0,
+				'spread'      => 0,
+				'inset'       => false,
+			],
+			'expected_visible' => true,
+		];
+
+		yield 'unbacked bound token with zero legs' => [
+			'shadow_item'      => [
+				'shadowToken' => '{semantic.shadow.does-not-exist}',
+				'color'       => 'transparent',
+				'opacity'     => 1,
+				'hOffset'     => 0,
+				'vOffset'     => 0,
+				'blur'        => 0,
+				'spread'      => 0,
+				'inset'       => false,
+			],
+			'expected_visible' => false,
+		];
+
+		// The legs a binding leaves behind are the value it resolved to at pick time, so a stale binding
+		// almost always has non-zero ones. Reading them here would report it visible and keep it in the
+		// shadow branch, where its empty render is dropped and the `none` reset never runs — the all-zero
+		// case above cannot tell that apart, because zero legs report invisible either way.
+		yield 'unbacked bound token with non-zero legs' => [
+			'shadow_item'      => [
+				'shadowToken' => '{semantic.shadow.does-not-exist}',
+				'color'       => '#0f0',
+				'opacity'     => 1,
+				'hOffset'     => 0,
+				'vOffset'     => 2,
+				'blur'        => 8,
+				'spread'      => 0,
+				'inset'       => false,
+			],
+			'expected_visible' => false,
+		];
 	}
 
 	/**
@@ -308,9 +382,9 @@ class SinglebtnTest extends KadenceBlocksUnit {
 
 		$output = $this->render_button(
 			[
-				'kbPreset' => 'bare',
+				'kbPreset'      => 'bare',
 				'displayShadow' => true,
-				'shadow'   => [
+				'shadow'        => [
 					[
 						'color'   => 'transparent',
 						'opacity' => 1,
@@ -331,6 +405,42 @@ class SinglebtnTest extends KadenceBlocksUnit {
 	}
 
 	/**
+	 * A whole-shadow binding whose token the active library no longer backs emits no `box-shadow` from
+	 * the binding and reaches the `box-shadow: none` reset, the same as a button with no shadow at all.
+	 * A stale binding must not skip the reset the way a backed one legitimately does.
+	 *
+	 * @return void
+	 */
+	public function testStaleShadowBindingReachesTheNoneFallback(): void {
+		$this->seedPreset( 'bare', 'Bare', [ 'button-bg' => '#ff0000' ] );
+
+		$output = $this->render_button(
+			[
+				'kbPreset'      => 'bare',
+				'displayShadow' => true,
+				'shadow'        => [
+					[
+						'shadowToken' => '{semantic.shadow.does-not-exist}',
+						'color'       => '#0f0',
+						'opacity'     => 1,
+						'hOffset'     => 0,
+						'vOffset'     => 2,
+						'blur'        => 8,
+						'spread'      => 0,
+						'inset'       => false,
+					],
+				],
+			]
+		);
+
+		$css_helper = new CSSTestHelper( $output );
+		$selector   = '.wp-block-kadence-advancedbtn .kb-btn123.kb-button';
+
+		$this->assertStringNotContainsString( 'var(--kb-token--semantic--shadow--does-not-exist)', $output );
+		$css_helper->assertCSSPropertiesEqual( $selector, [ 'box-shadow' => 'none' ] );
+	}
+
+	/**
 	 * A button with a visible base shadow and an invisible hover shadow writes no `box-shadow` into
 	 * the hover rule, so the base shadow keeps painting on hover through the normal cascade instead
 	 * of being cancelled by a `none` reset.
@@ -342,10 +452,10 @@ class SinglebtnTest extends KadenceBlocksUnit {
 
 		$output = $this->render_button(
 			[
-				'kbPreset'    => 'bare',
-				'colorHover'  => '#0000ff',
-				'displayShadow' => true,
-				'shadow'      => [
+				'kbPreset'           => 'bare',
+				'colorHover'         => '#0000ff',
+				'displayShadow'      => true,
+				'shadow'             => [
 					[
 						'color'   => '#00ff00',
 						'opacity' => 1,
@@ -357,7 +467,7 @@ class SinglebtnTest extends KadenceBlocksUnit {
 					],
 				],
 				'displayHoverShadow' => true,
-				'shadowHover' => [
+				'shadowHover'        => [
 					[
 						'color'   => 'transparent',
 						'opacity' => 1,
@@ -457,10 +567,10 @@ class SinglebtnTest extends KadenceBlocksUnit {
 
 		$output = $this->render_button(
 			[
-				'kbPreset'          => 'bare',
-				'colorTransparent'  => '#0000ff',
-				'displayShadow'     => true,
-				'shadow'            => [
+				'kbPreset'                 => 'bare',
+				'colorTransparent'         => '#0000ff',
+				'displayShadow'            => true,
+				'shadow'                   => [
 					[
 						'color'   => '#00ff00',
 						'opacity' => 1,
@@ -472,7 +582,7 @@ class SinglebtnTest extends KadenceBlocksUnit {
 					],
 				],
 				'displayShadowTransparent' => true,
-				'shadowTransparent' => [
+				'shadowTransparent'        => [
 					[
 						'color'   => 'transparent',
 						'opacity' => 1,
@@ -514,10 +624,10 @@ class SinglebtnTest extends KadenceBlocksUnit {
 
 		$output = $this->render_button(
 			[
-				'kbPreset'     => 'bare',
-				'colorSticky'  => '#0000ff',
-				'displayShadow' => true,
-				'shadow'       => [
+				'kbPreset'            => 'bare',
+				'colorSticky'         => '#0000ff',
+				'displayShadow'       => true,
+				'shadow'              => [
 					[
 						'color'   => '#00ff00',
 						'opacity' => 1,
@@ -529,7 +639,7 @@ class SinglebtnTest extends KadenceBlocksUnit {
 					],
 				],
 				'displayShadowSticky' => true,
-				'shadowSticky' => [
+				'shadowSticky'        => [
 					[
 						'color'   => 'transparent',
 						'opacity' => 1,
@@ -575,9 +685,9 @@ class SinglebtnTest extends KadenceBlocksUnit {
 
 		$output = $this->render_button(
 			[
-				'kbPreset' => 'accent',
+				'kbPreset'      => 'accent',
 				'displayShadow' => true,
-				'shadow'   => [
+				'shadow'        => [
 					[
 						'color'   => 'transparent',
 						'opacity' => 1,
@@ -611,9 +721,9 @@ class SinglebtnTest extends KadenceBlocksUnit {
 
 		$output = $this->render_button(
 			[
-				'kbPreset' => 'bare',
+				'kbPreset'      => 'bare',
 				'displayShadow' => true,
-				'shadow'   => [
+				'shadow'        => [
 					[
 						'color'   => '#00ff00',
 						'opacity' => 1,
@@ -647,9 +757,9 @@ class SinglebtnTest extends KadenceBlocksUnit {
 
 		$output = $this->render_button(
 			[
-				'kbPreset' => 'bare',
+				'kbPreset'      => 'bare',
 				'displayShadow' => true,
-				'shadow'   => [
+				'shadow'        => [
 					[
 						'color'   => '#00ff00',
 						'opacity' => 1,
@@ -667,6 +777,73 @@ class SinglebtnTest extends KadenceBlocksUnit {
 		$selector   = '.wp-block-kadence-advancedbtn .kb-btn123.kb-button';
 
 		$css_helper->assertCSSPropertiesEqual( $selector, [ 'box-shadow' => '1px 1px 2px 0px #0f0' ] );
+	}
+
+	/**
+	 * An untouched button arrives with the shipped schema defaults — a VISIBLE `shadow` value paired
+	 * with a lowered `displayShadow` — and must still paint nothing. The visible value exists only so
+	 * a legacy button that saved no value key of its own keeps its shadow; the lowered flag is what
+	 * keeps a brand-new button clean.
+	 *
+	 * @return void
+	 */
+	public function testUntouchedButtonEmitsNoBoxShadowDespiteTheShippedVisibleDefault(): void {
+		$this->seedPreset( 'bare', 'Bare', [ 'button-bg' => '#ff0000' ] );
+
+		$output = $this->render_button(
+			[
+				'kbPreset'      => 'bare',
+				'displayShadow' => false,
+				'shadow'        => [ $this->registered_shadow_default() ],
+			]
+		);
+
+		$css_helper = new CSSTestHelper( $output );
+		$selector   = '.wp-block-kadence-advancedbtn .kb-btn123.kb-button';
+
+		$css_helper->assertCSSPropertiesEqual( $selector, [ 'box-shadow' => 'none' ] );
+	}
+
+	/**
+	 * A button switched on before its shadow was ever customized saved the flag and NO `shadow` key,
+	 * because the value matched the registered default. It arrives with that default filled back in
+	 * and must render the shadow it has always rendered.
+	 *
+	 * @return void
+	 */
+	public function testLegacyButtonWithNoStoredShadowValueStillRendersItsShippedShadow(): void {
+		$this->seedPreset( 'bare', 'Bare', [ 'button-bg' => '#ff0000' ] );
+
+		$output = $this->render_button(
+			[
+				'kbPreset'      => 'bare',
+				'displayShadow' => true,
+				'shadow'        => [ $this->registered_shadow_default() ],
+			]
+		);
+
+		$this->assertStringContainsString(
+			'box-shadow:1px 1px 2px 0px rgba(0, 0, 0, 0.2)',
+			$output,
+			'A raised flag with no stored shadow value must render the shipped default shadow.'
+		);
+	}
+
+	/**
+	 * The `shadow` attribute default as `block.json` actually registers it.
+	 *
+	 * Read from the schema rather than spelled out here on purpose. These tests stand in for a saved
+	 * button that stored no `shadow` key of its own, so the value under test has to be the one the
+	 * parser would fill in; hard-coding it would let the schema drift to a lowered default while the
+	 * tests kept passing against a literal that no longer exists anywhere. Their expected CSS stays
+	 * spelled out, so a drifted schema fails them loudly.
+	 *
+	 * @return array<string, mixed> The registered default shadow item.
+	 */
+	private function registered_shadow_default(): array {
+		$schema = json_decode( (string) file_get_contents( KADENCE_BLOCKS_PATH . 'src/blocks/singlebtn/block.json' ), true );
+
+		return $schema['attributes']['shadow']['default'][0];
 	}
 
 	/**

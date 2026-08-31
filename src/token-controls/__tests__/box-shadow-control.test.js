@@ -566,9 +566,121 @@ describe('BoxShadowControl Style Library tab', () => {
 
 		expect(preview().style.boxShadow).toBe('none');
 	});
+
+	/**
+	 * A stale alias (deleted after the binding was saved) still previews the same shadow the Custom
+	 * tab's `fallbackShadow`-seeded fields show, instead of falling shadow-less while the tab above it
+	 * shows real legs.
+	 *
+	 * @return {void}
+	 */
+	it('previews the fallback shadow for a stale alias with a fallbackShadow', () => {
+		renderControl({
+			value: '{primitive.shadow.deleted}',
+			fallbackShadow: { color: '#222222', offsetX: '3px', offsetY: '5px', blur: '10px', spread: '1px' },
+		});
+
+		const preview = container.querySelector('.kadence-token-field__preview .kb-box-shadow-control__preview');
+
+		expect(preview).not.toBeNull();
+		expect(preview.style.boxShadow).toBe('3px 5px 10px 1px #222222');
+	});
+
+	/**
+	 * An alias that still resolves against `tokens` previews that token entry's own resolved value,
+	 * not the composite shorthand — a resolving alias is unaffected by the stale-alias fallback path.
+	 *
+	 * @return {void}
+	 */
+	it('previews the resolved token entry’s own value for a resolving alias', () => {
+		renderControl({ value: '{primitive.shadow.md}' });
+
+		const preview = container.querySelector('.kadence-token-field__preview .kb-box-shadow-control__preview');
+
+		expect(preview).not.toBeNull();
+		expect(preview.style.boxShadow).toBe('0px 2px 8px 0px #1717171f');
+	});
 });
 
 describe('BoxShadowControl Custom tab', () => {
+	/**
+	 * An aliased value seeds the Custom tab from the bound token's own resolved shorthand, not the
+	 * all-zero default composite — switching to Custom must show the token's real legs so editing one
+	 * of them does not silently discard the rest.
+	 *
+	 * @return {void}
+	 */
+	it('seeds the Custom tab’s fields from the bound token’s resolved value for an aliased value', () => {
+		renderControl({ value: '{primitive.shadow.md}' });
+
+		click(container.querySelector('[data-testid="tab-custom"]'));
+
+		expect(numberInput('X').value).toBe('0');
+		expect(numberInput('Y').value).toBe('2');
+		expect(numberInput('Blur').value).toBe('8');
+		expect(numberInput('Spread').value).toBe('0');
+	});
+
+	/**
+	 * A stale alias — no entry in `tokens` resolves it, because the token was deleted after the binding
+	 * was saved — seeds the Custom tab from the host's `fallbackShadow` prop instead of the all-zero
+	 * default, so switching to Custom does not silently discard the stored legs.
+	 *
+	 * @return {void}
+	 */
+	it('seeds the Custom tab’s fields from fallbackShadow for a stale alias', () => {
+		renderControl({
+			value: '{primitive.shadow.deleted}',
+			fallbackShadow: { color: '#222222', offsetX: '3px', offsetY: '5px', blur: '10px', spread: '1px' },
+		});
+
+		click(container.querySelector('[data-testid="tab-custom"]'));
+
+		expect(numberInput('X').value).toBe('3');
+		expect(numberInput('Y').value).toBe('5');
+		expect(numberInput('Blur').value).toBe('10');
+		expect(numberInput('Spread').value).toBe('1');
+	});
+
+	/**
+	 * A stale alias with no `fallbackShadow` supplied still seeds the Custom tab from the plain default
+	 * composite (all-zero) — the Style Library host never passes this prop, so it must see unchanged
+	 * behavior.
+	 *
+	 * @return {void}
+	 */
+	it('seeds the Custom tab’s fields from the default composite for a stale alias with no fallbackShadow', () => {
+		renderControl({ value: '{primitive.shadow.deleted}' });
+
+		click(container.querySelector('[data-testid="tab-custom"]'));
+
+		expect(numberInput('X').value).toBe('0');
+		expect(numberInput('Y').value).toBe('0');
+		expect(numberInput('Blur').value).toBe('0');
+		expect(numberInput('Spread').value).toBe('0');
+	});
+
+	/**
+	 * An alias that DOES resolve against `tokens` still seeds from that token entry, even when a
+	 * `fallbackShadow` is also supplied — the fallback only applies to a stale alias, never overriding a
+	 * live resolution.
+	 *
+	 * @return {void}
+	 */
+	it('prefers the resolved token entry over fallbackShadow when the alias resolves', () => {
+		renderControl({
+			value: '{primitive.shadow.md}',
+			fallbackShadow: { color: '#222222', offsetX: '3px', offsetY: '5px', blur: '10px', spread: '1px' },
+		});
+
+		click(container.querySelector('[data-testid="tab-custom"]'));
+
+		expect(numberInput('X').value).toBe('0');
+		expect(numberInput('Y').value).toBe('2');
+		expect(numberInput('Blur').value).toBe('8');
+		expect(numberInput('Spread').value).toBe('0');
+	});
+
 	/**
 	 * Editing an axis writes the full composite object with only that axis changed, serialized as a
 	 * px dimension string, and the rest of the value preserved.

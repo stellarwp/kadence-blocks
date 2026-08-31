@@ -6,10 +6,9 @@
  */
 
 /**
- * The composite's default shape: the canonical "no shadow" composite, matching both
- * `noneEntryForRole('shadow')`'s resolved value (`fixed-tokens.js`) and `NONE_SHADOW_ITEM`
- * (`src/blocks/singlebtn/deprecated.js`) in their own coordinate systems — transparent and
- * all-zero, not the old visible black composite.
+ * The composite's default shape: the canonical "no shadow" composite, matching
+ * `noneEntryForRole('shadow')`'s resolved value (`fixed-tokens.js`) in its own coordinate system —
+ * transparent and all-zero, not the old visible black composite.
  *
  * @since TBD
  */

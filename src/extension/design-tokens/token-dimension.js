@@ -18,7 +18,7 @@
 /**
  * Internal dependencies
  */
-import { isTokenAlias, resolveTokenAlias } from './alias';
+import { isTokenAlias, pathOfAlias, resolveTokenAlias } from './alias';
 import { isBackedToken } from './backed-tokens';
 
 /**
@@ -40,8 +40,7 @@ export function tokenDimension(value, unit) {
 		return `${value}${unit}`;
 	}
 
-	// Strip the braces to the dotted id, the same slice `resolveTokenAlias()` does.
-	if (!isBackedToken(value.slice(1, -1))) {
+	if (!isBackedToken(pathOfAlias(value))) {
 		return value;
 	}
 

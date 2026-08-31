@@ -154,6 +154,8 @@ export default function KadenceButtonEdit(props) {
 		widthType,
 		shadow,
 		shadowHover,
+		displayShadow,
+		displayHoverShadow,
 		inheritStyles,
 		iconSize,
 		iconPadding,
@@ -202,6 +204,8 @@ export default function KadenceButtonEdit(props) {
 		borderTransparentHoverRadiusUnit,
 		shadowTransparent,
 		shadowTransparentHover,
+		displayShadowTransparent,
+		displayHoverShadowTransparent,
 		colorSticky,
 		colorStickyHover,
 		backgroundSticky,
@@ -226,6 +230,8 @@ export default function KadenceButtonEdit(props) {
 		borderStickyHoverRadiusUnit,
 		shadowSticky,
 		shadowStickyHover,
+		displayShadowSticky,
+		displayHoverShadowSticky,
 		tooltip,
 		tooltipPlacement,
 		buttonRole,
@@ -1333,6 +1339,7 @@ export default function KadenceButtonEdit(props) {
 															defaultValue={shadowPresetValue}
 															label={__('Box Shadow', 'kadence-blocks')}
 															value={shadowHover}
+															enabled={displayHoverShadow}
 															onChange={(value) =>
 																setAttributes({
 																	shadowHover: value,
@@ -1472,6 +1479,7 @@ export default function KadenceButtonEdit(props) {
 															defaultValue={shadowPresetValue}
 															label={__('Box Shadow', 'kadence-blocks')}
 															value={shadow}
+															enabled={displayShadow}
 															onChange={(value) =>
 																setAttributes({
 																	shadow: value,
@@ -1626,6 +1634,7 @@ export default function KadenceButtonEdit(props) {
 																defaultValue={shadowPresetValue}
 																label={__('Box Shadow', 'kadence-blocks')}
 																value={shadowTransparentHover}
+																enabled={displayHoverShadowTransparent}
 																onChange={(value) =>
 																	setAttributes({
 																		shadowTransparentHover: value,
@@ -1758,6 +1767,7 @@ export default function KadenceButtonEdit(props) {
 																defaultValue={shadowPresetValue}
 																label={__('Box Shadow', 'kadence-blocks')}
 																value={shadowTransparent}
+																enabled={displayShadowTransparent}
 																onChange={(value) =>
 																	setAttributes({
 																		shadowTransparent: value,
@@ -1906,6 +1916,7 @@ export default function KadenceButtonEdit(props) {
 																defaultValue={shadowPresetValue}
 																label={__('Box Shadow', 'kadence-blocks')}
 																value={shadowStickyHover}
+																enabled={displayHoverShadowSticky}
 																onChange={(value) =>
 																	setAttributes({
 																		shadowStickyHover: value,
@@ -2032,6 +2043,7 @@ export default function KadenceButtonEdit(props) {
 																defaultValue={shadowPresetValue}
 																label={__('Box Shadow', 'kadence-blocks')}
 																value={shadowSticky}
+																enabled={displayShadowSticky}
 																onChange={(value) =>
 																	setAttributes({
 																		shadowSticky: value,

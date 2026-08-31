@@ -16,7 +16,7 @@
  * languages assert against one source of truth. The primitives live in this plugin (not
  * `@kadence/helpers`) so the shared library carries no design-token knowledge.
  */
-import { isTokenAlias, resolveTokenAlias, TOKEN_VAR_PREFIX } from '../alias';
+import { isTokenAlias, pathOfAlias, resolveTokenAlias, TOKEN_VAR_PREFIX } from '../alias';
 import conformance from './fixtures/token-alias-conformance.json';
 
 describe('isTokenAlias', () => {
@@ -54,5 +54,22 @@ describe('resolveTokenAlias', () => {
 
 	it.each([null, undefined, 5, ['{a.b}']])('passes the non-string %p through unchanged', (value) => {
 		expect(resolveTokenAlias(value)).toBe(value);
+	});
+});
+
+describe('pathOfAlias', () => {
+	it.each(conformance.aliases.map(({ alias }) => [alias, alias.slice(1, -1)]))(
+		'returns %s the dotted path %s',
+		(alias, path) => {
+			expect(pathOfAlias(alias)).toBe(path);
+		}
+	);
+
+	it.each(conformance.nonAliases)('returns an empty string for the non-alias %p', (value) => {
+		expect(pathOfAlias(value)).toBe('');
+	});
+
+	it.each([null, undefined, 5, ['{a.b}']])('returns an empty string for the non-string %p', (value) => {
+		expect(pathOfAlias(value)).toBe('');
 	});
 });

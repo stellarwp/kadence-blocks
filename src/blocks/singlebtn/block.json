@@ -342,7 +342,15 @@
 		"shadow": {
 			"type": "array",
 			"default": [
-				{ "color": "transparent", "opacity": 1, "spread": 0, "blur": 0, "hOffset": 0, "vOffset": 0, "inset": false }
+				{
+					"color": "#000000",
+					"opacity": 0.2,
+					"spread": 0,
+					"blur": 2,
+					"hOffset": 1,
+					"vOffset": 1,
+					"inset": false
+				}
 			]
 		},
 		"displayHoverShadow": {
@@ -352,7 +360,15 @@
 		"shadowHover": {
 			"type": "array",
 			"default": [
-				{ "color": "transparent", "opacity": 1, "spread": 0, "blur": 0, "hOffset": 0, "vOffset": 0, "inset": false }
+				{
+					"color": "#000000",
+					"opacity": 0.4,
+					"spread": 0,
+					"blur": 3,
+					"hOffset": 2,
+					"vOffset": 2,
+					"inset": false
+				}
 			]
 		},
 		"inQueryBlock": {
@@ -520,7 +536,15 @@
 		"shadowTransparent": {
 			"type": "array",
 			"default": [
-				{ "color": "transparent", "opacity": 1, "spread": 0, "blur": 0, "hOffset": 0, "vOffset": 0, "inset": false }
+				{
+					"color": "#000000",
+					"opacity": 0.2,
+					"spread": 0,
+					"blur": 2,
+					"hOffset": 1,
+					"vOffset": 1,
+					"inset": false
+				}
 			]
 		},
 		"displayHoverShadowTransparent": {
@@ -530,7 +554,15 @@
 		"shadowTransparentHover": {
 			"type": "array",
 			"default": [
-				{ "color": "transparent", "opacity": 1, "spread": 0, "blur": 0, "hOffset": 0, "vOffset": 0, "inset": false }
+				{
+					"color": "#000000",
+					"opacity": 0.4,
+					"spread": 0,
+					"blur": 3,
+					"hOffset": 2,
+					"vOffset": 2,
+					"inset": false
+				}
 			]
 		},
 		"colorSticky": {
@@ -676,7 +708,15 @@
 		"shadowSticky": {
 			"type": "array",
 			"default": [
-				{ "color": "transparent", "opacity": 1, "spread": 0, "blur": 0, "hOffset": 0, "vOffset": 0, "inset": false }
+				{
+					"color": "#000000",
+					"opacity": 0.2,
+					"spread": 0,
+					"blur": 2,
+					"hOffset": 1,
+					"vOffset": 1,
+					"inset": false
+				}
 			]
 		},
 		"displayHoverShadowSticky": {
@@ -686,7 +726,15 @@
 		"shadowStickyHover": {
 			"type": "array",
 			"default": [
-				{ "color": "transparent", "opacity": 1, "spread": 0, "blur": 0, "hOffset": 0, "vOffset": 0, "inset": false }
+				{
+					"color": "#000000",
+					"opacity": 0.4,
+					"spread": 0,
+					"blur": 3,
+					"hOffset": 2,
+					"vOffset": 2,
+					"inset": false
+				}
 			]
 		},
 		"tooltip": {

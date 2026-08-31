@@ -13,6 +13,23 @@ import {
 	isUnsetShadow,
 } from '../EditorShadowControl';
 import { BoxShadowControl } from '../../../../token-controls/controls/BoxShadowControl';
+import { SHADOW_TOKEN_KEY } from '../../shadow-token';
+
+/**
+ * A pickable shadow token, shaped like one entry of `pickableTokensForKey()`'s output.
+ *
+ * @since TBD
+ *
+ * @type {Object}
+ */
+const SHADOW_TOKEN = {
+	id: 'semantic.shadow.card',
+	alias: '{semantic.shadow.card}',
+	label: 'Medium',
+	value: '0px 2px 8px 0px rgba(23, 23, 23, 0.12)',
+	type: 'shadow',
+	role: 'shadow',
+};
 
 /**
  * A representative native shadow value — every field a different, distinguishable number/string, so a
@@ -181,39 +198,86 @@ describe('EditorShadowControl native <-> BoxShadowControl value bridging', () =>
 	});
 
 	/**
-	 * Picking a token alias in the Style Library tab resolves it to its literal composite value
-	 * immediately, via the `tokens` list, and writes that literal into the native item — no `alias`
-	 * key, no live link back to the token.
+	 * A picked token alias is recorded on the item's own `shadowToken` key, so the value stays linked to
+	 * the token instead of freezing to whatever the token resolved to at pick time.
 	 *
 	 * @return {void}
 	 */
-	it('resolves a picked token alias to its literal composite value, not an alias marker', () => {
-		const { shadowControl, onChange } = renderEditorShadowControl({
-			tokens: [
-				{
-					id: 'primitive.shadow.md',
-					alias: 'primitive.shadow.md',
-					label: 'Medium',
-					value: '2px 3px 4px 5px #111111',
-					type: 'shadow',
-				},
-			],
+	it('records a picked token alias on shadowToken', () => {
+		const native = toNativeShadow(SHADOW_TOKEN.alias, [SHADOW_TOKEN]);
+
+		expect(native[0][SHADOW_TOKEN_KEY]).toBe('{semantic.shadow.card}');
+	});
+
+	/**
+	 * The token's resolved value is splayed across the legs alongside the alias, so a reader that has not
+	 * learned about `shadowToken` — and a render that finds the token deleted — still has a real shadow.
+	 *
+	 * @return {void}
+	 */
+	it('keeps the resolved literal on the legs alongside the alias', () => {
+		const native = toNativeShadow(SHADOW_TOKEN.alias, [SHADOW_TOKEN]);
+
+		expect(native[0]).toMatchObject({
+			hOffset: 0,
+			vOffset: 2,
+			blur: 8,
+			spread: 0,
+			color: '#171717',
+			opacity: 0.12,
+			inset: false,
 		});
+	});
 
-		shadowControl.props.onChange('primitive.shadow.md');
+	/**
+	 * A Custom-tab edit reports a composite object, which carries no alias — the rebuilt item must drop
+	 * `shadowToken` so touching a leg breaks the binding rather than leaving a stale one behind.
+	 *
+	 * @return {void}
+	 */
+	it('drops shadowToken when a composite edit replaces the pick', () => {
+		const bound = toNativeShadow(SHADOW_TOKEN.alias, [SHADOW_TOKEN]);
+		const edited = toNativeShadow({ ...fromNativeShadow(bound), blur: '9px' }, [SHADOW_TOKEN]);
 
-		expect(onChange).toHaveBeenCalledWith([
-			{
-				color: '#111111',
-				opacity: 1,
-				hOffset: 2,
-				vOffset: 3,
-				blur: 4,
-				spread: 5,
-				inset: false,
-			},
-		]);
-		expect(onChange.mock.calls[0][0][0]).not.toHaveProperty('alias');
+		expect(edited[0]).not.toHaveProperty(SHADOW_TOKEN_KEY);
+		expect(edited[0].blur).toBe(9);
+	});
+
+	/**
+	 * The fixed "None" sentinel's own value is a literal shorthand, not an alias, so it must resolve to
+	 * the zero composite with no binding — binding it would point at a token that does not exist.
+	 *
+	 * @return {void}
+	 */
+	it('does not bind the fixed None sentinel', () => {
+		const none = {
+			id: 'ss-none-shadow',
+			alias: '0px 0px 0px 0px transparent',
+			label: 'None',
+			value: '0px 0px 0px 0px transparent',
+			fixed: true,
+			type: 'shadow',
+			role: 'shadow',
+		};
+
+		const native = toNativeShadow(none.alias, [none]);
+
+		expect(native[0]).not.toHaveProperty(SHADOW_TOKEN_KEY);
+		expect(native[0]).toMatchObject({ hOffset: 0, vOffset: 0, blur: 0, spread: 0 });
+	});
+
+	/**
+	 * An alias that matches no pickable token — a token deleted between the pick and this write — still
+	 * records the binding, so a token that later comes back re-links, and falls the legs back to the
+	 * composite default rather than corrupting them.
+	 *
+	 * @return {void}
+	 */
+	it('records the binding even when the alias matches no pickable token', () => {
+		const native = toNativeShadow('{semantic.shadow.does-not-exist}', [SHADOW_TOKEN]);
+
+		expect(native[0][SHADOW_TOKEN_KEY]).toBe('{semantic.shadow.does-not-exist}');
+		expect(native[0]).toMatchObject({ hOffset: 0, vOffset: 0, blur: 0, spread: 0 });
 	});
 
 	/**
@@ -312,6 +376,33 @@ describe('EditorShadowControl always renders, with no enable toggle', () => {
 		const { shadowControl } = renderEditorShadowControl({ label: 'Box Shadow' });
 
 		expect(shadowControl.props.label).toBe('Box Shadow');
+	});
+});
+
+describe('EditorShadowControl fallbackShadow wiring', () => {
+	/**
+	 * A bound value passes the stored legs down as `fallbackShadow`, so `BoxShadowControl`'s Custom tab
+	 * can seed from them if the bound token is later deleted and the alias stops resolving.
+	 *
+	 * @return {void}
+	 */
+	it('passes the stored legs as fallbackShadow for a value with a shadowToken binding', () => {
+		const bound = toNativeShadow(SHADOW_TOKEN.alias, [SHADOW_TOKEN]);
+		const { shadowControl } = renderEditorShadowControl({ value: bound, tokens: [SHADOW_TOKEN] });
+
+		expect(shadowControl.props.fallbackShadow).toEqual(fromNativeShadow(bound));
+	});
+
+	/**
+	 * An unbound (plain composite) value has no binding to fall back FROM, so `fallbackShadow` stays
+	 * undefined rather than shadowing `BoxShadowControl`'s own default-composite behavior.
+	 *
+	 * @return {void}
+	 */
+	it('leaves fallbackShadow undefined for a value with no shadowToken binding', () => {
+		const { shadowControl } = renderEditorShadowControl();
+
+		expect(shadowControl.props.fallbackShadow).toBeUndefined();
 	});
 });
 
@@ -415,6 +506,9 @@ describe('combineColorOpacity / splitColorOpacity', () => {
 
 describe('isUnsetShadow', () => {
 	const INVISIBLE = [{ color: 'transparent', opacity: 1, spread: 0, blur: 0, hOffset: 0, vOffset: 0, inset: false }];
+	const SHIPPED_DEFAULT = [
+		{ color: '#000000', opacity: 0.2, spread: 0, blur: 2, hOffset: 1, vOffset: 1, inset: false },
+	];
 
 	/**
 	 * An absent attribute is unset, whether or not the preset carries a shadow.
@@ -458,6 +552,117 @@ describe('isUnsetShadow', () => {
 	it('reads a visible shadow as set', () => {
 		expect(isUnsetShadow(NATIVE_VALUE, undefined)).toBe(false);
 		expect(isUnsetShadow([{ ...INVISIBLE[0], blur: 4, color: '#000000' }], undefined)).toBe(false);
+	});
+
+	/**
+	 * A host that keeps its own enable flag settles it before geometry: `kadence/singlebtn` ships a
+	 * VISIBLE shadow as its registered default, so an untouched button would otherwise read as a
+	 * deliberate pick and the inspector would claim a shadow the button does not paint.
+	 *
+	 * @return {void}
+	 */
+	it('reads a lowered enable flag as unset even for a visible shadow', () => {
+		expect(isUnsetShadow(SHIPPED_DEFAULT, undefined, false)).toBe(true);
+		expect(isUnsetShadow(SHIPPED_DEFAULT, '{semantic.shadow.button}', false)).toBe(true);
+		expect(isUnsetShadow(NATIVE_VALUE, undefined, false)).toBe(true);
+	});
+
+	/**
+	 * The flag outranks a binding: a lowered flag means the block paints nothing here, so a leftover
+	 * `shadowToken` on the stored item must not resurrect it as a pick.
+	 *
+	 * @return {void}
+	 */
+	it('reads a bound shadow as unset when the enable flag is lowered', () => {
+		expect(isUnsetShadow([{ ...INVISIBLE[0], [SHADOW_TOKEN_KEY]: SHADOW_TOKEN.alias }], undefined, false)).toBe(
+			true
+		);
+	});
+
+	/**
+	 * With the flag raised, a binding still wins over the geometry — a token resolving to a subtle or
+	 * zero-offset shadow is a deliberate pick and has to keep naming itself on the trigger.
+	 *
+	 * @return {void}
+	 */
+	it('reads a bound shadow as set when the enable flag is raised', () => {
+		expect(isUnsetShadow([{ ...INVISIBLE[0], [SHADOW_TOKEN_KEY]: SHADOW_TOKEN.alias }], undefined, true)).toBe(
+			false
+		);
+	});
+
+	/**
+	 * An absent item is unset before the flag is even consulted, so a raised flag over nothing does not
+	 * make the control claim a pick.
+	 *
+	 * @return {void}
+	 */
+	it('reads an absent attribute as unset whatever the enable flag says', () => {
+		expect(isUnsetShadow(undefined, undefined, true)).toBe(true);
+		expect(isUnsetShadow([], undefined, false)).toBe(true);
+	});
+
+	/**
+	 * A host with no enable flag of its own (`kadence/image`) omits the argument and keeps the
+	 * preset/geometry behavior unchanged.
+	 *
+	 * @return {void}
+	 */
+	it('treats an omitted enable flag as enabled', () => {
+		expect(isUnsetShadow(SHIPPED_DEFAULT, undefined)).toBe(false);
+		expect(isUnsetShadow(INVISIBLE, undefined)).toBe(true);
+	});
+});
+
+describe('EditorShadowControl token binding read-back', () => {
+	/**
+	 * A bound item hands `BoxShadowControl` the alias string, which is what makes its trigger name the
+	 * token, open on the Style Library tab, and preview the token's own shadow.
+	 *
+	 * @return {void}
+	 */
+	it('passes the bound alias down instead of the composite', () => {
+		const { shadowControl } = renderEditorShadowControl({
+			value: toNativeShadow(SHADOW_TOKEN.alias, [SHADOW_TOKEN]),
+			tokens: [SHADOW_TOKEN],
+		});
+
+		expect(shadowControl.props.value).toBe('{semantic.shadow.card}');
+	});
+
+	/**
+	 * A bound item whose legs are all zero is still bound, not unset — the binding, not the geometry,
+	 * decides. Without this guard a token that resolves to a subtle or zero-offset shadow would read as
+	 * an untouched field and lose its name on the trigger.
+	 *
+	 * @return {void}
+	 */
+	it('reads a bound item with zero legs as set', () => {
+		const zeroBound = [
+			{
+				color: 'transparent',
+				opacity: 1,
+				hOffset: 0,
+				vOffset: 0,
+				blur: 0,
+				spread: 0,
+				inset: false,
+				[SHADOW_TOKEN_KEY]: '{semantic.shadow.card}',
+			},
+		];
+
+		expect(isUnsetShadow(zeroBound, undefined)).toBe(false);
+	});
+
+	/**
+	 * An unbound item is unaffected: it still bridges to the composite shape.
+	 *
+	 * @return {void}
+	 */
+	it('still passes a composite down for an unbound item', () => {
+		const { shadowControl } = renderEditorShadowControl();
+
+		expect(shadowControl.props.value).toMatchObject({ offsetX: '2px', offsetY: '3px' });
 	});
 });
 
@@ -532,7 +737,66 @@ describe('hasVisibleShadow', () => {
 		['a spread only', { hOffset: 0, vOffset: 0, blur: 0, spread: 3 }, true],
 		['a token alias leg', { hOffset: 0, vOffset: '{semantic.shadow.media}', blur: 0, spread: 0 }, true],
 		['an empty-string leg', { hOffset: '', vOffset: '', blur: '', spread: '' }, false],
+		[
+			'a bound item with all-zero legs',
+			{ hOffset: 0, vOffset: 0, blur: 0, spread: 0, [SHADOW_TOKEN_KEY]: '{semantic.shadow.media}' },
+			true,
+		],
 	])('reads %s correctly', (_label, item, expected) => {
 		expect(hasVisibleShadow(item)).toBe(expected);
+	});
+});
+
+describe('hasVisibleShadow with a token binding', () => {
+	// `isBackedToken()` reads the localized pool and fails OPEN when there is none, so without these
+	// stubs every alias would read as backed and the unbacked case below could not be expressed.
+	beforeEach(() => {
+		window.kadenceDesignTokensPresets = { active: 'default' };
+		window.kadenceDesignTokensPickable = {
+			values: { default: { 'semantic.shadow.card': '0px 2px 8px 0px #1717171f' } },
+		};
+	});
+
+	afterEach(() => {
+		delete window.kadenceDesignTokensPresets;
+		delete window.kadenceDesignTokensPickable;
+	});
+
+	/**
+	 * A backed binding is visible whatever its legs say — its real value lives in the token, which this
+	 * gate cannot read, so the derived enable flag must stay raised under a shadow the token paints.
+	 *
+	 * @return {void}
+	 */
+	it('reads a backed binding as visible even with all-zero legs', () => {
+		expect(
+			hasVisibleShadow({
+				hOffset: 0,
+				vOffset: 0,
+				blur: 0,
+				spread: 0,
+				[SHADOW_TOKEN_KEY]: '{semantic.shadow.card}',
+			})
+		).toBe(true);
+	});
+
+	/**
+	 * An unbacked binding is invisible whatever its legs say. The legs are the value the token resolved
+	 * to at pick time and both renderers now ignore them, so raising the flag would leave the inspector
+	 * claiming a shadow the page does not paint. Non-zero legs on purpose: a stale binding almost always
+	 * has them, and zero legs read invisible either way, so they cannot tell this rule apart.
+	 *
+	 * @return {void}
+	 */
+	it('reads an unbacked binding as invisible even with non-zero legs', () => {
+		expect(
+			hasVisibleShadow({
+				hOffset: 0,
+				vOffset: 2,
+				blur: 8,
+				spread: 0,
+				[SHADOW_TOKEN_KEY]: '{semantic.shadow.deleted}',
+			})
+		).toBe(false);
 	});
 });

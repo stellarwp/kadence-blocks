@@ -67,6 +67,7 @@ import {
 } from '../../extension/token-indicators/normalize';
 import { EditorBoxControl } from '../../extension/design-tokens/components/EditorBoxControl';
 import { EditorShadowControl, hasVisibleShadow } from '../../extension/design-tokens/components/EditorShadowControl';
+import { imageBoxShadowCss } from './box-shadow';
 import { renderShadowColor } from '../../extension/design-tokens/components/shadow-color';
 import { useColorGroups } from '../../extension/design-tokens/hooks/use-color-groups';
 import { resolveColorLiteral } from '../../extension/design-tokens/color-literal';
@@ -1330,6 +1331,7 @@ export default function Image({
 							<EditorShadowControl
 								label={__('Box Shadow', 'kadence-blocks')}
 								value={boxShadow}
+								enabled={displayBoxShadow}
 								onChange={(value) =>
 									setAttributes({
 										boxShadow: value,
@@ -1954,24 +1956,8 @@ export default function Image({
 
 					backgroundColor: '' !== backgroundColor ? KadenceColorOutput(backgroundColor) : undefined,
 
-					// Both halves have to agree: the stored flag, which legacy content may have left false
-					// with real values still behind it, and the value's own axes.
-					boxShadow:
-						displayBoxShadow && hasVisibleShadow(boxShadow?.[0])
-							? (undefined !== boxShadow[0].inset && boxShadow[0].inset ? 'inset ' : '') +
-								(undefined !== boxShadow[0].hOffset ? boxShadow[0].hOffset : 0) +
-								'px ' +
-								(undefined !== boxShadow[0].vOffset ? boxShadow[0].vOffset : 0) +
-								'px ' +
-								(undefined !== boxShadow[0].blur ? boxShadow[0].blur : 14) +
-								'px ' +
-								(undefined !== boxShadow[0].spread ? boxShadow[0].spread : 0) +
-								'px ' +
-								KadenceColorOutput(
-									undefined !== boxShadow[0].color ? boxShadow[0].color : '#000000',
-									undefined !== boxShadow[0].opacity ? boxShadow[0].opacity : 0.2
-								)
-							: undefined,
+					boxShadow: imageBoxShadowCss(displayBoxShadow, boxShadow),
+
 					filter:
 						undefined !== displayDropShadow && displayDropShadow
 							? 'drop-shadow(' +

@@ -666,8 +666,9 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 	 * Route a stored button box-shadow object through the alias-aware render_shadow().
 	 *
 	 * Applies this block's historic per-leg defaults so a literal shadow renders byte-identically
-	 * to the former inline builder, while a {dot.alias} on any numeric leg resolves to its token
-	 * var() instead of freezing to a literal.
+	 * to the former inline builder. A `{dot.alias}` on any numeric leg resolves to its token var()
+	 * instead of freezing to a literal, and a `shadowToken` binding on the item resolves the whole
+	 * shorthand to its token var().
 	 *
 	 * @since TBD
 	 *

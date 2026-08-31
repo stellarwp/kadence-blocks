@@ -21,19 +21,18 @@
  *   `splitColorOpacity` below are exported so a caller's `renderColor` can do that combine/split with
  *   the exact same rules this component uses to read/write the native attribute, keeping both
  *   directions symmetric.
- * This control always renders `BoxShadowControl` — there is no separate enable toggle or sibling
- * boolean attribute gating it. Whether a `box-shadow` declaration is emitted is decided purely by
- * inspecting the shadow value's own axes (an all-zero value, including the fixed "None" pick, emits
- * nothing), both on the front end and in the editor-canvas live preview.
+ * This control renders no enable toggle of its own — whether a `box-shadow` declaration is emitted is
+ * decided by inspecting the shadow value's own axes (an all-zero value, including the fixed "None"
+ * pick, emits nothing), both on the front end and in the editor-canvas live preview. A host that
+ * still keeps a paired boolean attribute for saved content passes it as `enabled`, which only tells
+ * the control whether the stored value counts as a pick at all (see `isUnsetShadow()`).
  *
- * A whole-shadow token pick (the Style Library tab) has no home in the native item's existing keys —
- * unlike border, where an alias replaces a single side's width slot, a shadow alias would replace the
- * *entire* value. Rather than invent a spot to carry a live alias, a pick resolves to its literal
- * composite value immediately, at pick time, using the same `tokens` list `BoxShadowControl` already
- * offers for its trigger label (`[{ id, alias, label, value, type, role }]`). `toNativeShadow` looks
- * up the picked alias's resolved `value` (the feed's `box-shadow` shorthand string) and writes the
- * parsed composite straight into the native item's plain fields — no alias key, no live link back to
- * the token, matching how a per-instance color pick is already handled everywhere else in this plan.
+ * A whole-shadow token pick (the Style Library tab) is carried on the item's own optional
+ * `shadowToken` key. Unlike border, where an alias replaces a single side's width slot, a shadow alias
+ * would replace the *entire* value, so it gets a key of its own rather than displacing a leg. The
+ * legs are still written with the token's resolved value at pick time: they keep the item a valid
+ * literal shadow for readers that do not know the binding key, and they are the fallback a render uses
+ * when the bound token is no longer in the active library.
  *
  * Color is out of scope for redesign here, exactly as in `EditorBorderControl` — this component
  * neither builds nor intercepts a color field, it only wires the caller's EXISTING one back in via
@@ -48,8 +47,11 @@
 /**
  * Internal dependencies
  */
-import { BoxShadowControl, DEFAULT_COMPOSITE, parseResolvedShadow } from '../../../token-controls';
+import { BoxShadowControl, DEFAULT_COMPOSITE, findTokenEntry, parseResolvedShadow } from '../../../token-controls';
 import { TokenControlRow } from '../../token-indicators/components/TokenControlRow';
+import { isTokenAlias, pathOfAlias } from '../alias';
+import { isBackedToken } from '../backed-tokens';
+import { SHADOW_TOKEN_KEY, boundShadowToken } from '../shadow-token';
 
 /**
  * A CSS `rgba(r, g, b, a)` string, matching `hexToRGBA`'s own output format exactly (comma-space
@@ -223,6 +225,13 @@ function axisToNative(slot) {
  * Resolve a picked token alias to its literal composite value, via the same `tokens` list
  * `BoxShadowControl` already offers for its trigger label.
  *
+ * Uses `findTokenEntry()` rather than a plain `entry.alias === alias` scan. The only string this
+ * function ever receives that is not a real `{dot.alias}` is `toNativeShadow()`'s fixed "None"
+ * sentinel, `0px 0px 0px 0px transparent` — that matches a `fixed: true` entry on alias equality,
+ * which `findTokenEntry()`'s guard (`entry.fixed || isTokenAlias(value)`) also accepts. Its
+ * legacy-slug fallback is inert here: it only matches a `primitive.dimension.*` entry, and a
+ * shadow-role pool holds none.
+ *
  * @param {string} alias  The picked token alias.
  * @param {Array}  tokens Pickable `shadow`-type tokens, `[{id, label, value, alias}]`.
  *
@@ -231,9 +240,22 @@ function axisToNative(slot) {
  * @return {?Object} The resolved composite, or `null` when the alias matches no pickable token.
  */
 function resolveShadowAlias(alias, tokens) {
-	const entry = (tokens || []).find((token) => token.alias === alias);
+	const entry = findTokenEntry(tokens || [], alias);
 
 	return entry ? parseResolvedShadow(entry.value) : null;
+}
+
+/**
+ * The shadow token a stored native value is bound to.
+ *
+ * @param {?Array} native The stored native shadow attribute value.
+ *
+ * @since TBD
+ *
+ * @return {?string} The bound `{dot.alias}`, or null when the value carries no binding.
+ */
+export function shadowTokenOf(native) {
+	return boundShadowToken(native?.[0]);
 }
 
 /**
@@ -267,10 +289,11 @@ export function fromNativeShadow(native) {
  * Convert `BoxShadowControl`'s value back to the native
  * `[{ color, opacity, hOffset, vOffset, blur, spread, inset }]` attribute shape.
  *
- * A token alias string (a pick from the Style Library tab) resolves to its literal composite value
- * immediately, through `tokens`, rather than being stored as a live link back to the token — an
- * alias that resolves to nothing (a stale or unmapped id) falls back to the composite default so the
- * write never corrupts the attribute.
+ * A token alias string (a pick from the Style Library tab) is recorded on the item's `shadowToken` key
+ * AND resolved through `tokens` onto the numeric legs, so the item carries both a live link to the
+ * token and the literal that link resolved to at pick time. An alias that resolves to nothing (a stale
+ * or unmapped id) still records the binding — the token may come back — and falls the legs back to the
+ * composite default so the write never corrupts the attribute.
  *
  * @param {string|Object} value    The value `BoxShadowControl` reports through `onChange`.
  * @param {Array}         [tokens] Pickable `shadow`-type tokens, `[{id, label, value, alias}]`, used
@@ -285,17 +308,20 @@ export function toNativeShadow(value, tokens = []) {
 
 	const { color, opacity } = splitColorOpacity(composite?.color);
 
-	return [
-		{
-			color: color || DEFAULT_COMPOSITE.color,
-			opacity,
-			hOffset: axisToNative(composite?.offsetX),
-			vOffset: axisToNative(composite?.offsetY),
-			blur: axisToNative(composite?.blur),
-			spread: axisToNative(composite?.spread),
-			inset: composite?.inset === true,
-		},
-	];
+	const item = {
+		color: color || DEFAULT_COMPOSITE.color,
+		opacity,
+		hOffset: axisToNative(composite?.offsetX),
+		vOffset: axisToNative(composite?.offsetY),
+		blur: axisToNative(composite?.blur),
+		spread: axisToNative(composite?.spread),
+		inset: composite?.inset === true,
+	};
+
+	// Only a real `{dot.alias}` binds. The Style Library tab's fixed "None" sentinel arrives here as a
+	// literal shorthand string, not an alias, and must stay a plain zero value — binding it would point
+	// the item at a token that was never registered.
+	return [isTokenAlias(value) ? { ...item, [SHADOW_TOKEN_KEY]: value } : item];
 }
 
 /**
@@ -320,6 +346,17 @@ export function hasVisibleShadow(item) {
 		return false;
 	}
 
+	// A bound item is decided by its binding alone, never by its stored legs — the same rule the
+	// renderers' two copies of this predicate apply. Backed, its real value lives in the token and is
+	// unknown here, so it counts as visible and the derived enable flag stays raised under a shadow the
+	// token does paint. Unbacked, the renderers paint nothing, so raising the flag would leave the
+	// inspector claiming a shadow the page does not show.
+	const bound = boundShadowToken(item);
+
+	if (bound) {
+		return isBackedToken(pathOfAlias(bound));
+	}
+
 	return ['hOffset', 'vOffset', 'blur', 'spread'].some((axis) => {
 		const value = item[axis] ?? 0;
 
@@ -334,23 +371,37 @@ export function hasVisibleShadow(item) {
 /**
  * Whether a stored native shadow should be treated as "the block sets no shadow of its own".
  *
- * `block.json` registers an all-zero transparent shadow as `shadow`'s own default, so a fresh block
- * arrives byte-identical to an explicit "None" pick. They are separated by consequence, not shape: an
- * invisible shadow is a real override only when there is a preset shadow for it to suppress. With
- * nothing behind it, it suppresses nothing and reads as unset.
+ * A host that pairs the value with its own enable flag (`kadence/singlebtn`) settles it first: the
+ * shipped schema defaults that value to a visible shadow, so geometry alone would read a brand-new
+ * button as customized. A lowered flag is the block saying it sets no shadow here, whatever the
+ * value's default geometry happens to be.
  *
- * @param {?Array} native       The stored native shadow attribute value.
- * @param {*}      defaultValue The active preset's own resolved shadow, or nothing when it has none.
+ * Without such a flag, an invisible shadow is a real override only when there is a preset shadow for
+ * it to suppress. With nothing behind it, it suppresses nothing and reads as unset.
+ *
+ * @param {?Array}  native       The stored native shadow attribute value.
+ * @param {*}       defaultValue The active preset's own resolved shadow, or nothing when it has none.
+ * @param {boolean} [enabled]    The host's own enable flag for this shadow, when it keeps one.
  *
  * @since TBD
  *
  * @return {boolean} True when the control should render as unset.
  */
-export function isUnsetShadow(native, defaultValue) {
+export function isUnsetShadow(native, defaultValue, enabled = true) {
 	const source = native?.[0];
 
 	if (!source) {
 		return true;
+	}
+
+	if (!enabled) {
+		return true;
+	}
+
+	// A binding, not the geometry, decides here: a token that resolves to a subtle or zero-offset
+	// shadow is still a deliberate pick, and reading it as unset would drop its name from the trigger.
+	if (shadowTokenOf(native)) {
+		return false;
 	}
 
 	// A preset shadow behind it makes an invisible shadow a deliberate suppression, not an absence.
@@ -371,7 +422,8 @@ export function isUnsetShadow(native, defaultValue) {
  *
  * @param {Object}    props               The component props.
  * @param {string}    props.label         The control's label.
- * @param {?Array}    props.value         The native shadow attribute value.
+ * @param {?Array}    props.value         The native shadow attribute value, optionally carrying a
+ *                                        `shadowToken` binding.
  * @param {Function}  props.onChange      Called with the next native shadow attribute value.
  * @param {Array}     [props.tokens]      Pickable `shadow`-type tokens, `[{id, label, value, alias}]`.
  * @param {*}         [props.defaultValue] The active preset's own resolved shadow, or nothing when it
@@ -380,6 +432,10 @@ export function isUnsetShadow(native, defaultValue) {
  *                                        shadow is a real override (see `isUnsetShadow()`).
  * @param {?Function} [props.renderColor] The block's existing color field for the composite's `color`.
  * @param {boolean}   [props.disabled]    Whether the control is read-only.
+ * @param {boolean}   [props.enabled]     The host block's own enable flag for this shadow, when it
+ *                                        keeps one — a lowered flag reads as "no shadow set here"
+ *                                        (see `isUnsetShadow()`). Defaults to `true` for a host with
+ *                                        no such flag.
  *
  * @since TBD
  *
@@ -393,17 +449,26 @@ export function EditorShadowControl({
 	defaultValue,
 	renderColor,
 	disabled = false,
+	enabled = true,
 }) {
+	// A bound value goes down as the bare alias string, which is the shape `BoxShadowControl` already
+	// recognizes as a token: it names the token on the trigger, opens on the Style Library tab, and
+	// previews the token's own shadow. The stored legs stay untouched behind it.
+	const bound = shadowTokenOf(value);
+
 	return (
 		<TokenControlRow stacked>
 			<BoxShadowControl
 				label={label}
-				value={isUnsetShadow(value, defaultValue) ? '' : fromNativeShadow(value)}
+				value={isUnsetShadow(value, defaultValue, enabled) ? '' : bound || fromNativeShadow(value)}
 				onChange={(next) => onChange(toNativeShadow(next, tokens))}
 				tokens={tokens}
 				defaultValue={defaultValue}
 				renderColor={renderColor}
 				disabled={disabled}
+				// The stored legs are the fallback for a binding whose token has since been deleted — the
+				// same snapshot the renderers already fall back to when a binding no longer resolves.
+				fallbackShadow={bound ? fromNativeShadow(value) : undefined}
 			/>
 		</TokenControlRow>
 	);

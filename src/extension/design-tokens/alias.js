@@ -39,6 +39,25 @@ export function isTokenAlias(value) {
 }
 
 /**
+ * The dot-path referenced by an alias string, with the surrounding braces stripped. Mirrors PHP
+ * `Alias::path_of()` exactly, including its contract for a value that is not a well-formed alias.
+ *
+ * @param {*} value A value that may be an alias string, e.g. `{primitive.color.brand.primary}`.
+ *
+ * @since TBD
+ *
+ * @return {string} The inner dot-path, e.g. `primitive.color.brand.primary`. Empty string when the
+ *                   value is not a well-formed alias.
+ */
+export function pathOfAlias(value) {
+	if (!isTokenAlias(value)) {
+		return '';
+	}
+
+	return value.slice(1, -1);
+}
+
+/**
  * Resolve a design-token alias string to its CSS custom-property reference.
  *
  * Mirrors the PHP Resolver primitive (`'var(' . Css_Var::from_id( Alias::path_of( $value ) ) . ')'`)
@@ -54,7 +73,7 @@ export function resolveTokenAlias(value) {
 		return value;
 	}
 
-	const id = value.slice(1, -1).replace(/\./g, '--');
+	const id = pathOfAlias(value).replace(/\./g, '--');
 
 	return 'var(' + TOKEN_VAR_PREFIX + id + ')';
 }

@@ -12,6 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Palette\Renders_Palette_Attribute;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Preset\Renders_Preset_Classes;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Alias;
 
 /**
  * Abstract class to register blocks, build CSS, and enqueue scripts.
@@ -717,7 +718,11 @@ class Kadence_Blocks_Abstract_Block {
 	 *
 	 * A non-numeric, non-empty leg is a {dot.alias} token reference, which resolves to a var() whose
 	 * value is unknown here — it counts as visible, since treating it as a zero would let the
-	 * caller's `box-shadow: none` reset erase a shadow the token does paint.
+	 * caller's `box-shadow: none` reset erase a shadow the token does paint. A `shadowToken` binding on
+	 * the item follows the same reasoning for the whole shadow, but only while the binding is backed by
+	 * the active library: an unbacked one (a token deleted after the item was saved) no longer paints
+	 * anything the renderer will emit, so it must not block the `box-shadow: none` reset either — it is
+	 * treated as invisible, the same as an item with no binding and no geometry.
 	 *
 	 * Lives here rather than on any one block because it answers a question about the shared shadow
 	 * value shape, which every shadow-carrying block stores identically. It is what a block gates its
@@ -730,6 +735,17 @@ class Kadence_Blocks_Abstract_Block {
 	 * @return bool Whether the item paints a visible shadow.
 	 */
 	protected function has_visible_shadow( array $shadow_item ): bool {
+		// A bound item's visibility is decided by its binding alone; the stored legs are never consulted
+		// for one. Backed, its real value lives in the token and is unknown here, so it counts as visible
+		// or the caller's `box-shadow: none` reset would erase a shadow the token does paint. Unbacked, it
+		// renders nothing (see Kadence_Blocks_CSS::render_shadow()), so it must count as INVISIBLE and let
+		// the caller fall through to that reset — reading its legs instead would keep a stale binding in
+		// the shadow branch, where the empty render is dropped and the reset never runs.
+		$shadow_token = $shadow_item[ Kadence_Blocks_CSS::get_shadow_token_key() ] ?? null;
+		if ( Alias::is_alias( $shadow_token ) ) {
+			return Kadence_Blocks_CSS::get_instance()->is_token_reference_backed( $shadow_token );
+		}
+
 		foreach ( [ 'hOffset', 'vOffset', 'blur', 'spread' ] as $axis ) {
 			$value = $shadow_item[ $axis ] ?? 0;
 
