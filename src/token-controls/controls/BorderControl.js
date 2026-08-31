@@ -3,8 +3,8 @@
  * caller.
  *
  * Border is not a `BoxControl` the way radius and spacing are — it carries two properties per side
- * (width, style) instead of one, and a third (color) this control deliberately does not touch
- * (color is being reworked separately; see `renderColor`). `SlotGrid` still applies unmodified: its
+ * (width, style) instead of one, and a third (color) this control deliberately does not own — the
+ * caller supplies it via `renderColor`. `SlotGrid` still applies unmodified: its
  * `renderSlot` render-prop was already generic, so this control renders a one-box row per slot
  * instead of `BoxControl`'s single `TokenSelector`.
  *
@@ -32,10 +32,9 @@
  * contract; this control simply calls it once per row (once for the linked row, once per side
  * when unlinked)
  * with that row's own resolved color scalar instead of the whole axis, the same way it already
- * reads `width`/`style` per row. A caller's existing `renderColor` — whether it renders a bare
- * swatch or a small swatch-plus-label field like the Style Library's `TokenColorSelectField` —
- * already renders something compact enough to sit in that slot once it only ever receives a scalar
- * (never a four-element list), so no new render-prop was needed.
+ * reads `width`/`style` per row. Both hosts' `renderColor` render the same compact
+ * `ColorSwatchControl`, which already fits that slot once it only ever receives a scalar (never a
+ * four-element list), so no new render-prop was needed.
  */
 
 /**

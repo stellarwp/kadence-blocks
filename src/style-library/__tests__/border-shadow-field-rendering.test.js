@@ -250,7 +250,13 @@ describe('BorderField', () => {
 		expect(latestBorderControlProps.disabled).toBe(true);
 	});
 
-	it('renders the color sub-field through the existing TokenColorSelectField, not a new component', () => {
+	/**
+	 * The color sub-field is the shared compact swatch control, so a border's color opens the same
+	 * grouped Style Library / Custom popover every other color control opens.
+	 *
+	 * @return {void}
+	 */
+	it('renders the color sub-field through the shared ColorSwatchControl', () => {
 		act(() => {
 			root.render(
 				createElement(BorderField, {
@@ -261,9 +267,9 @@ describe('BorderField', () => {
 			);
 		});
 
-		const element = latestBorderControlProps.renderColor({ value: '', onChange: jest.fn() });
+		const element = latestBorderControlProps.renderColor({ value: '', onChange: jest.fn(), label: null });
 
-		expect(element.type.name).toBe('TokenColorSelectField');
+		expect(element.type.name).toBe('ColorSwatchControl');
 	});
 
 	it('a width pick writes only the width path, a style change writes only the style path, color stays where it was', () => {

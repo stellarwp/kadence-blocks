@@ -8,12 +8,8 @@ import { createRoot } from 'react-dom/client';
 /**
  * Internal dependencies
  */
-import {
-	ColorSelectField,
-	resolveLiteral,
-	toControlValue,
-	toStoredValue,
-} from '../components/molecules/fields/ColorSelectField';
+import { ColorSelectField } from '../components/molecules/fields/ColorSelectField';
+import { resolveLiteral, toControlValue, toStoredValue } from '../helpers/color-values';
 import { getDesignTokensFeed } from '../helpers/tokens';
 
 const NAMESPACE = 'kb-design-tokens/v1';

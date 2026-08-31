@@ -825,11 +825,9 @@
 
 /*
  * The color swatch: sized and rounded to a 20px circle around whatever `renderColor` returns.
- * `renderColor`'s own chrome (padding, border, a visible name label) is stripped back here — the
- * row already carries the box border, and the reference row shows only the swatch, not a labeled
- * field. This only reaches for the swatch's already-established markup (the block editor's
- * `@kadence/components` `PopColorControl`/`SinglePopColorControl` and the Style Library's
- * `TokenColorSelectField`); it does not add any new color-picking UI.
+ * Both hosts pass `ColorSwatchControl`, which already draws a bare 20px round swatch with no
+ * border, padding, or visible name label of its own, so this box only has to size and center it —
+ * no chrome-stripping rules are needed here the way a labeled field would require.
  */
 .kb-border-control__swatch {
 	display: inline-flex;
@@ -838,20 +836,6 @@
 	justify-content: center;
 	width: 20px;
 	height: 20px;
-
-	// The Style Library's `TokenColorSelectField`: drop its bordered/padded toggle chrome and its
-	// visible name label, leaving just the round swatch it already draws at 20px.
-	.kadence-blocks-style-library__field-token-color-select-toggle {
-		width: 20px;
-		height: 20px;
-		padding: 0;
-		border: 0;
-		gap: 0;
-	}
-
-	.kadence-blocks-style-library__field-token-color-select-label {
-		display: none;
-	}
 }
 
 /*
