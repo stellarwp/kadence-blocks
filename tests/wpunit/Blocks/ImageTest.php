@@ -202,7 +202,7 @@ class ImageTest extends KadenceBlocksUnit {
 		$output = $this->render_image(
 			[
 				'displayBoxShadow' => false,
-				'boxShadow'        => [ $this->shipped_shadow_default() ],
+				'boxShadow'        => [ $this->registered_shadow_default() ],
 			]
 		);
 
@@ -221,7 +221,7 @@ class ImageTest extends KadenceBlocksUnit {
 		$output = $this->render_image(
 			[
 				'displayBoxShadow' => true,
-				'boxShadow'        => [ $this->shipped_shadow_default() ],
+				'boxShadow'        => [ $this->registered_shadow_default() ],
 			]
 		);
 
@@ -233,21 +233,20 @@ class ImageTest extends KadenceBlocksUnit {
 	}
 
 	/**
-	 * The `boxShadow` attribute default `block.json` has always registered, spelled out here so a
-	 * change to that schema fails these tests loudly instead of silently weakening them.
+	 * The `boxShadow` attribute default as `block.json` actually registers it.
 	 *
-	 * @return array<string, mixed> The shipped default shadow item.
+	 * Read from the schema rather than spelled out here on purpose. These tests stand in for a saved
+	 * image that stored no `boxShadow` key of its own, so the value under test has to be the one the
+	 * parser would fill in; hard-coding it would let the schema drift back to a lowered default while
+	 * the tests kept passing against a literal that no longer exists anywhere. Their expected CSS stays
+	 * spelled out, so a drifted schema fails them loudly.
+	 *
+	 * @return array<string, mixed> The registered default shadow item.
 	 */
-	private function shipped_shadow_default(): array {
-		return [
-			'color'   => '#000000',
-			'opacity' => 0.2,
-			'spread'  => 0,
-			'blur'    => 14,
-			'hOffset' => 0,
-			'vOffset' => 0,
-			'inset'   => false,
-		];
+	private function registered_shadow_default(): array {
+		$schema = json_decode( (string) file_get_contents( KADENCE_BLOCKS_PATH . 'src/blocks/image/block.json' ), true );
+
+		return $schema['attributes']['boxShadow']['default'][0];
 	}
 
 	/**
