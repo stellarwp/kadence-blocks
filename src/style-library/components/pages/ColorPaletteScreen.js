@@ -287,10 +287,9 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 					</>
 				}
 				secondaryAction={
-					// Unlike Delete, available on the default palette too — the server only refuses
-					// DELETING it (`delete_item()`'s explicit default-id guard), not relabeling it
-					// (`update_item()` carries no such guard). Always targets the palette being edited,
-					// exactly like Delete, for the same open/activate-split reason.
+					// Available on the default palette too — no palette write carries a default-id guard.
+					// Always targets the palette being edited, exactly like Delete, for the same
+					// open/activate-split reason.
 					<RenamePaletteModal
 						id={palettes.editingId}
 						currentLabel={paletteDisplayLabel(editingRow)}
@@ -305,8 +304,8 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 					// Always targets the palette being edited, never `activeId`: under the open/activate
 					// split you can be editing a palette that isn't live, and acting on the live one instead
 					// would silently re-tint the site as a side effect of cleaning up an unrelated draft.
-					// The `$default` palette is offered too — as a Reset, since the server refuses to remove
-					// it but does drop its overrides.
+					// The `$default` palette is offered too — as a Reset, since the same request drops its
+					// overrides but leaves the palette itself in the listing.
 					<Button
 						isDestructive
 						variant="link"
