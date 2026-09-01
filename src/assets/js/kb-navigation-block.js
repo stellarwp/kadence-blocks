@@ -2,6 +2,8 @@
  * File kb-navigation-block.js.
  *
  * Handles accessibility and mobile toggles for navigation.
+ *
+ * cSpell:ignore contenteditable keymap navs
  */
 (function () {
 	const focusableElementsString =
@@ -229,7 +231,7 @@
 		}
 	};
 	/**
-	 * Determine what orientation the nav is at the currrent screen size.
+	 * Determine what orientation the nav is at the current screen size.
 	 */
 	const trackOrientation = function (navs) {
 		// No point if no submenus.
@@ -263,7 +265,7 @@
 		}
 	};
 	/**
-	 * Setup the Fullwith Menu.
+	 * Setup the Full-width Menu.
 	 */
 	const runSubMenuFullSize = function () {
 		var contentSubmenus = null;
@@ -312,7 +314,7 @@
 		}
 	};
 	/**
-	 * Initiate the script to handle fullwith mega menus.
+	 * Initiate the script to handle full-width mega menus.
 	 */
 	const initFullSubMenuSize = function () {
 		var megaMenus = document.querySelectorAll(
