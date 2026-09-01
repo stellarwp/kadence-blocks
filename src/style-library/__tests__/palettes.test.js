@@ -911,14 +911,25 @@ describe('swatchPillVariant', () => {
 	});
 
 	/**
-	 * A user-added color still inherits its value from the default palette when viewed anywhere
-	 * else, so the custom flag changes nothing off the default palette.
+	 * A user-added color viewed from another palette still takes its value from the default palette,
+	 * so it names that source like any other swatch.
 	 *
 	 * @return void
 	 */
-	it('treats a user-added color on another palette like any other swatch', () => {
+	it('marks an un-overridden user-added color on another palette as inherited', () => {
 		expect(swatchPillVariant({ isDefault: false, isCustom: true, overridden: false })).toBe('inherited');
-		expect(swatchPillVariant({ isDefault: false, isCustom: true, overridden: true })).toBe('reset');
+	});
+
+	/**
+	 * Override that same color and the card offers no pill: a user-created color is deleted, never
+	 * reset, because nothing shipped it and there is no baseline value to go back to. Delete is its
+	 * action, in the settings panel — which is where it has always been, so the card offering Reset
+	 * put the two surfaces at odds over the same swatch.
+	 *
+	 * @return void
+	 */
+	it('offers no reset for an overridden user-added color on another palette', () => {
+		expect(swatchPillVariant({ isDefault: false, isCustom: true, overridden: true })).toBeNull();
 	});
 });
 

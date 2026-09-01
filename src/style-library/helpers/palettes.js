@@ -141,10 +141,12 @@ export function paletteShowsInheritance(listing, editingId) {
  * already measures (`Palettes_Controller::effective_view()`), and what a reset there restores
  * (`delete_swatch()` puts the shipped color back rather than dropping the row).
  *
- * A user-added color is the one case with no pill: nothing shipped it, so it can neither claim to
- * be a default nor be reset to one. Its card offers Delete in the settings panel instead. That
- * only applies on the default palette, which owns the structure the color was added to; seen from
- * any other palette the color is inherited like every other swatch.
+ * A user-added color is never reset, on any palette: nothing shipped it, so there is no baseline
+ * value to go back to, and Delete is its action — the one the settings panel has always offered it.
+ * On the default palette, which owns the structure the color was added to, that leaves it with no
+ * pill at all. Seen from any other palette it still takes its value from the default one, so it
+ * names that source until it is overridden, and then falls silent rather than offering a reset the
+ * panel would refuse.
  *
  * @param {Object}  args
  * @param {boolean} args.isDefault  Whether the palette being edited is the default one.
@@ -156,8 +158,8 @@ export function paletteShowsInheritance(listing, editingId) {
  * @return {?string} `'default'`, `'reset'`, `'inherited'`, or null for no pill.
  */
 export function swatchPillVariant({ isDefault, isCustom, overridden }) {
-	if (isDefault && isCustom) {
-		return null;
+	if (isCustom) {
+		return isDefault || overridden ? null : 'inherited';
 	}
 
 	if (overridden) {
