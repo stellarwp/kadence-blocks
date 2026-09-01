@@ -845,8 +845,14 @@ describe('revertSwatchFlow', () => {
 		expect(flowArgs.onBusy).toHaveBeenNthCalledWith(2, false);
 	});
 
-	it('surfaces the error and rejects when the backend refuses the revert (e.g. targeting the default palette)', async () => {
-		const failure = new Error('A swatch of the default palette cannot be reverted.');
+	/**
+	 * A failed revert surfaces the server's message and leaves the store and feed untouched, so the
+	 * card keeps showing the value the write did not change.
+	 *
+	 * @return void
+	 */
+	it('surfaces the error and rejects when the revert fails', async () => {
+		const failure = new Error('The palette could not be saved.');
 		client.deleteSwatch.mockRejectedValue(failure);
 		const flowArgs = baseArgs();
 

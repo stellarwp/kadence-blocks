@@ -709,17 +709,26 @@ describe('usePalettes', () => {
 		expect(notify.notifySuccess).not.toHaveBeenCalled();
 	});
 
-	it('resetSwatch rejects synchronously, without calling deleteSwatch, when editing the default palette', async () => {
+	/**
+	 * Resetting a swatch on the default palette issues the same request as anywhere else. The
+	 * server decides what "undo" means there — it restores the shipped color and keeps the row
+	 * (`Palettes_Controller::delete_swatch()`) — so the hook has no reason to refuse it.
+	 *
+	 * @return void
+	 */
+	it('resetSwatch issues the request while editing the default palette', async () => {
 		client.fetchPalettes.mockResolvedValueOnce(listingRows());
+		client.deleteSwatch.mockResolvedValueOnce(listingRows());
 
 		const probe = mountProbe();
 		await probe.render();
 
 		expect(probe.latest().editingId).toBe(DEFAULT_ID);
 
-		await expect(probe.latest().resetSwatch('primitive.color.brand.primary')).rejects.toThrow();
+		await act(async () => probe.latest().resetSwatch('primitive.color.brand.primary'));
 
-		expect(client.deleteSwatch).not.toHaveBeenCalled();
+		expect(client.deleteSwatch).toHaveBeenCalledWith(NAMESPACE, DEFAULT_ID, 'primitive.color.brand.primary', SLUG);
+		expect(notify.notifySuccess).toHaveBeenCalledWith('Swatch reset.');
 	});
 
 	it('removeGroup flags every swatch in that group pendingDelete immediately, before the write resolves', async () => {
