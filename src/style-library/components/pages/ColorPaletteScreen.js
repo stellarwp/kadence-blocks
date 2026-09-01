@@ -9,7 +9,7 @@
 /**
  * WordPress dependencies
  */
-import { useCallback, useMemo, useRef, useState } from '@wordpress/element';
+import { useCallback, useEffect, useMemo, useRef, useState } from '@wordpress/element';
 import { Button, DropdownMenu, MenuGroup, MenuItem, Notice } from '@wordpress/components';
 import { __, sprintf } from '@wordpress/i18n';
 import { moreVertical, plus } from '@wordpress/icons';
@@ -181,8 +181,15 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 	// The swatch whose settings panel is open, readable at any later moment rather than as of the
 	// render a callback closed over — see `handleResetSwatch`, which decides whether to close the
 	// panel only once its write has settled.
+	//
+	// Synced in an effect, never during render: React can start a render and throw it away, and a
+	// ref written on the way through would then hold a route the user is not actually on. Only a
+	// committed render should move it.
 	const openItemRef = useRef(route.item);
-	openItemRef.current = route.item;
+
+	useEffect(() => {
+		openItemRef.current = route.item;
+	}, [route.item]);
 
 	/**
 	 * Reset one swatch's override, then, on success, move focus to that card's own select button —

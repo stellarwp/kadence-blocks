@@ -75,8 +75,14 @@ export function ColorPaletteSettings({ route, navigate, library }) {
 	// The open swatch as of right now, for `onReset` to read once its write settles — the grid's
 	// select buttons stay live during a write, so the panel can be showing a different swatch by
 	// then, and closing on the captured one would close that new selection instead.
+	//
+	// Synced in an effect, never during render: a render React starts and discards would otherwise
+	// move the ref to a swatch that was never committed.
 	const openItemRef = useRef(token);
-	openItemRef.current = token;
+
+	useEffect(() => {
+		openItemRef.current = token;
+	}, [token]);
 
 	// The skeleton below lives inside its own `role="status"` region, which only announces "Loading…"
 	// while it is actually mounted — the moment it is replaced by the real panel, that region is
