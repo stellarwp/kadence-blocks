@@ -505,6 +505,12 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 							.then(() => {
 								setDeleteTarget(null);
 								palettes.clearDeleteError();
+								// Whatever the settings panel had open is stale now: a reset replaced every
+								// swatch's value, and a delete took the whole palette away. Either way its
+								// draft still holds what was there before — `useSettingsPanel` seeds once
+								// per item and cannot follow an external write — so its Save would put that
+								// back. Same reasoning as a single swatch's reset, one level up.
+								navigate({ item: '' });
 							})
 							// Swallowed: a request failure already lands in `deleteError`, rendered inline —
 							// the modal stays open on it.

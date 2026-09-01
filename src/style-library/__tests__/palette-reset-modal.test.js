@@ -142,17 +142,21 @@ function makePalettes(overrides = {}) {
 /**
  * Render the screen against a `usePalettes` stub.
  *
- * @param {Object} palettes The stub returned by `makePalettes`.
+ * @param {Object}   palettes             The stub returned by `makePalettes`.
+ * @param {Object}   [overrides]          Render overrides.
+ * @param {Object}   [overrides.route]    The route to render with, for the tests that need an open
+ *                                        settings panel (`route.item`).
+ * @param {Function} [overrides.navigate] The route navigator spy.
  *
  * @since TBD
  *
  * @return {void}
  */
-function renderScreen(palettes) {
+function renderScreen(palettes, { route = ROUTE, navigate = () => {} } = {}) {
 	usePalettes.mockReturnValue(palettes);
 
 	act(() =>
-		root.render(<ColorPaletteScreen label="Color Palette" route={ROUTE} navigate={() => {}} library={LIBRARY} />)
+		root.render(<ColorPaletteScreen label="Color Palette" route={route} navigate={navigate} library={LIBRARY} />)
 	);
 }
 
@@ -201,6 +205,23 @@ describe('Color Palette reset modal', () => {
 		await act(async () => buttonByText(dialog(), 'Reset').click());
 
 		expect(palettes.deletePalette).toHaveBeenCalledWith('default', '');
+	});
+
+	/**
+	 * A palette reset rewrites every swatch, so a settings panel left open would be editing a value
+	 * the reset just replaced — and `useSettingsPanel` seeds once per item, so it cannot follow the
+	 * change. Closing it is the same reasoning as a single swatch's reset, one level up.
+	 *
+	 * @return void
+	 */
+	it('closes an open settings panel once the palette reset settles', async () => {
+		const navigate = jest.fn();
+
+		renderScreen(makePalettes(), { route: { ...ROUTE, item: 'accent.one' }, navigate });
+		act(() => buttonByText(container, 'Reset').click());
+		await act(async () => buttonByText(dialog(), 'Reset').click());
+
+		expect(navigate).toHaveBeenCalledWith({ item: '' });
 	});
 
 	/**
