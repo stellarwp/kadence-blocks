@@ -14,7 +14,7 @@
 /**
  * WordPress dependencies
  */
-import { useEffect, useState } from '@wordpress/element';
+import { useEffect, useRef, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
 /**
@@ -72,6 +72,11 @@ export function ColorPaletteSettings({ route, navigate, library }) {
 	// the busy animation on only the button the user actually clicked — the `PresetSidebar.js` idiom,
 	// tracked locally for the same reason: only this panel's footer needs the distinction.
 	const [pendingAction, setPendingAction] = useState(null);
+	// The open swatch as of right now, for `onReset` to read once its write settles — the grid's
+	// select buttons stay live during a write, so the panel can be showing a different swatch by
+	// then, and closing on the captured one would close that new selection instead.
+	const openItemRef = useRef(token);
+	openItemRef.current = token;
 
 	// The skeleton below lives inside its own `role="status"` region, which only announces "Loading…"
 	// while it is actually mounted — the moment it is replaced by the real panel, that region is
@@ -155,6 +160,8 @@ export function ColorPaletteSettings({ route, navigate, library }) {
 			return;
 		}
 
+		const resetting = token;
+
 		setPendingAction('delete');
 		palettes
 			.resetSwatch(token)
@@ -163,7 +170,15 @@ export function ColorPaletteSettings({ route, navigate, library }) {
 			// undid — `useSettingsPanel` seeds once per item and deliberately ignores later external
 			// writes, so it cannot follow this one — and a panel left open would offer a Save that
 			// writes that color straight back, silently undoing the reset.
-			.then(() => panel.close())
+			//
+			// Only when the panel is still showing the swatch that was reset — someone can select a
+			// different one while the write is in flight, and closing then would shut a panel that
+			// has nothing stale in it.
+			.then(() => {
+				if (openItemRef.current === resetting) {
+					panel.close();
+				}
+			})
 			// Swallowed: a failure already surfaces via `notifyError` inside `resetSwatch`, and the
 			// panel simply stays open showing the (unchanged) override.
 			.catch(() => {})

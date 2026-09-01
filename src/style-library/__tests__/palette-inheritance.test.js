@@ -277,6 +277,36 @@ describe('Color Palette inheritance pills', () => {
 	});
 
 	/**
+	 * The card's select button stays live during a write, so the open swatch can change while a
+	 * reset is still in flight. The decision to close reads the swatch that is open when the write
+	 * SETTLES, not the one captured when it started — otherwise the reset closes whatever the user
+	 * opened next.
+	 *
+	 * @return void
+	 */
+	it('leaves a panel opened on another swatch during the write alone', async () => {
+		let settle;
+		const write = new Promise((resolve) => {
+			settle = resolve;
+		});
+		const palettes = makePalettes({ resetSwatch: jest.fn(() => write) });
+		const navigate = jest.fn();
+
+		renderScreen(palettes, { route: { ...ROUTE, item: 'accent.two' }, navigate });
+		act(() => container.querySelector(`.${PILL_CLASS}--reset`).click());
+
+		// The user picks a different swatch before the reset comes back.
+		renderScreen(palettes, { route: { ...ROUTE, item: 'accent.one' }, navigate });
+
+		await act(async () => {
+			settle();
+			await write;
+		});
+
+		expect(navigate).not.toHaveBeenCalled();
+	});
+
+	/**
 	 * Clicking Reset reverts that one swatch through the hook, naming the swatch's own token.
 	 *
 	 * The click is awaited inside an async `act()`, not the plain synchronous form used elsewhere in

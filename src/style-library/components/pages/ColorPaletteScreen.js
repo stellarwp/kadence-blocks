@@ -9,7 +9,7 @@
 /**
  * WordPress dependencies
  */
-import { useCallback, useMemo, useState } from '@wordpress/element';
+import { useCallback, useMemo, useRef, useState } from '@wordpress/element';
 import { Button, DropdownMenu, MenuGroup, MenuItem, Notice } from '@wordpress/components';
 import { __, sprintf } from '@wordpress/i18n';
 import { moreVertical, plus } from '@wordpress/icons';
@@ -178,6 +178,12 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 		palettes.listing.palettes.find((row) => row.id === palettes.listing.defaultId)
 	);
 
+	// The swatch whose settings panel is open, readable at any later moment rather than as of the
+	// render a callback closed over — see `handleResetSwatch`, which decides whether to close the
+	// panel only once its write has settled.
+	const openItemRef = useRef(route.item);
+	openItemRef.current = route.item;
+
 	/**
 	 * Reset one swatch's override, then, on success, move focus to that card's own select button —
 	 * the pill that was just clicked is about to unmount (the card flips back to the static "From"
@@ -208,7 +214,13 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 					// exists: its draft still holds the color the reset undid (`useSettingsPanel`
 					// seeds once per item and cannot follow an external write), so its Save would
 					// write that color straight back. A panel on any other swatch is untouched.
-					if (route.item === token) {
+					//
+					// Read through the ref, not this callback's captured `route.item`: a card's
+					// select button stays live during a write (only `isPendingDelete` disables it),
+					// so the open swatch can change before the reset comes back. The captured value
+					// would close whatever the user opened next, and leave open the panel it was
+					// supposed to close.
+					if (openItemRef.current === token) {
 						navigate({ item: '' });
 					}
 
@@ -218,7 +230,7 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 				// card simply keeps showing its override.
 				.catch(() => {});
 		},
-		[palettes.isBusy, palettes.resetSwatch, route.item, navigate]
+		[palettes.isBusy, palettes.resetSwatch, navigate]
 	);
 
 	/**
