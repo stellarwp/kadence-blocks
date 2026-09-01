@@ -132,6 +132,42 @@ export function paletteShowsInheritance(listing, editingId) {
 }
 
 /**
+ * Which pill a swatch card carries, if any. Every palette states where its colors stand; what
+ * differs is what "the value it started from" means.
+ *
+ * On a non-default palette that is the default palette: a swatch either follows it, or overrides
+ * it and offers the way back. On the default palette there is no other palette to follow, so the
+ * comparison is against the SHIPPED value instead — which is exactly what its `overridden` flag
+ * already measures (`Palettes_Controller::effective_view()`), and what a reset there restores
+ * (`delete_swatch()` puts the shipped color back rather than dropping the row).
+ *
+ * A user-added color is the one case with no pill: nothing shipped it, so it can neither claim to
+ * be a default nor be reset to one. Its card offers Delete in the settings panel instead. That
+ * only applies on the default palette, which owns the structure the color was added to; seen from
+ * any other palette the color is inherited like every other swatch.
+ *
+ * @param {Object}  args
+ * @param {boolean} args.isDefault  Whether the palette being edited is the default one.
+ * @param {boolean} args.isCustom   Whether the swatch's token was created by a user rather than shipped.
+ * @param {boolean} args.overridden Whether the swatch has anything to undo.
+ *
+ * @since TBD
+ *
+ * @return {?string} `'default'`, `'reset'`, `'inherited'`, or null for no pill.
+ */
+export function swatchPillVariant({ isDefault, isCustom, overridden }) {
+	if (isDefault && isCustom) {
+		return null;
+	}
+
+	if (overridden) {
+		return 'reset';
+	}
+
+	return isDefault ? 'default' : 'inherited';
+}
+
+/**
  * How many swatches in a mapped grid still take their value from the default palette. Groups and
  * swatches that are optimistically deleted are skipped: they are on their way out of the grid, and
  * counting them would state a number the grid is about to contradict.
