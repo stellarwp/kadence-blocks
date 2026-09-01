@@ -375,13 +375,14 @@ describe('ColorPaletteSettings destructive action', () => {
 	});
 
 	/**
-	 * A built-in swatch shows neither Delete nor Reset while editing the DEFAULT palette itself —
-	 * there is nothing to revert to (the default palette has no inherited value to fall back on)
-	 * and it is not a custom swatch to delete.
+	 * A built-in swatch changed away from its shipped value offers Reset on the DEFAULT palette
+	 * too — the server restores the shipped color there rather than dropping the row. It is not a
+	 * custom swatch, so it still offers no Delete. This matches the pill the card itself shows,
+	 * so the panel and the card never disagree about the same swatch.
 	 *
 	 * @return {void}
 	 */
-	it('shows neither destructive button for a built-in swatch on the default palette', () => {
+	it('offers Reset but not Delete for a changed built-in swatch on the default palette', () => {
 		const write = deferred();
 		renderColorPaletteSettings(
 			makePalettes(write, {
@@ -393,7 +394,7 @@ describe('ColorPaletteSettings destructive action', () => {
 		);
 
 		expect(findButton('Delete')).toBeNull();
-		expect(findButton('Reset')).toBeNull();
+		expect(findButton('Reset')).not.toBeNull();
 	});
 
 	/**

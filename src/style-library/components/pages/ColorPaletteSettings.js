@@ -124,13 +124,16 @@ export function ColorPaletteSettings({ route, navigate, library }) {
 	};
 
 	// A custom swatch is removed entirely (a structure edit, with a best-effort primitive cleanup
-	// after — `removeSwatch` decides that internally). A built-in swatch showing THIS palette's own
-	// override is reverted to inherited instead (`resetSwatch`) — never removed, since its
-	// definition belongs to the default palette, not to the one currently open. A built-in swatch
-	// with nothing to revert here (the default palette itself, or a non-default palette where it
-	// isn't overridden) gets neither action.
+	// after — `removeSwatch` decides that internally). A built-in swatch with something to undo is
+	// reverted instead (`resetSwatch`) — never removed, since the row itself is shipped. What the
+	// revert lands on is the server's call: the palette's inherited value, or the shipped color
+	// when the default palette is the one open. A built-in swatch with nothing to undo gets
+	// neither action.
+	//
+	// Kept in step with the card's own pill (`ColorPaletteScreen`'s `renderPill`) — a card that
+	// offers Reset and a panel that hides it would disagree about the same swatch.
 	const isCustom = palettes.isSwatchCustom(token);
-	const canReset = !isCustom && palettes.editingId !== palettes.listing.defaultId && swatch.overridden;
+	const canReset = !isCustom && swatch.overridden;
 
 	const onDelete = () => {
 		if (palettes.isBusy) {

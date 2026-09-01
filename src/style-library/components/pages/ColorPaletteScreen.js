@@ -42,6 +42,7 @@ import {
 	paletteDisplayLabel,
 	paletteShowsInheritance,
 	paletteSuccessorOptions,
+	swatchPillVariant,
 } from '../../helpers/palettes';
 import { ColorPaletteSettings } from './ColorPaletteSettings';
 import './ColorPaletteScreen.scss';
@@ -212,6 +213,53 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 		[palettes.isBusy, palettes.resetSwatch]
 	);
 
+	/**
+	 * The pill for one mapped grid item, or null when the card carries none. The variant decision
+	 * itself lives in `swatchPillVariant`; this only turns it into the element.
+	 *
+	 * `sourceLabel` is the default palette's own label off the default palette (the pill names the
+	 * palette a value follows) and the fixed word "Default" on it (a reset there restores the
+	 * shipped color, so that is what the button's accessible name should say it resets to).
+	 *
+	 * @param {Object} item A mapped grid item from `mapPaletteToSwatchGroups()`.
+	 *
+	 * @since TBD
+	 *
+	 * @return {?JSX.Element} The pill, or null.
+	 */
+	const renderPill = useCallback(
+		(item) => {
+			const variant = swatchPillVariant({
+				isDefault: !showsInheritance,
+				isCustom: palettes.isSwatchCustom(item.id),
+				overridden: item.overridden,
+			});
+
+			// Off the default palette the pill names a palette, so a listing that cannot name one
+			// shows nothing rather than a blank source.
+			if (!variant || (showsInheritance && !defaultLabel)) {
+				return null;
+			}
+
+			const sourceLabel = showsInheritance ? defaultLabel : __('Default', 'kadence-blocks');
+
+			if ('reset' === variant) {
+				return (
+					<InheritancePill
+						variant="reset"
+						sourceLabel={sourceLabel}
+						swatchName={item.name}
+						isDisabled={palettes.isBusy || item.pendingDelete}
+						onReset={(event) => handleResetSwatch(event, item.id)}
+					/>
+				);
+			}
+
+			return <InheritancePill variant={variant} sourceLabel={sourceLabel} />;
+		},
+		[showsInheritance, defaultLabel, palettes.isBusy, palettes.isSwatchCustom, handleResetSwatch]
+	);
+
 	const options = useMemo(
 		() =>
 			palettes.listing.palettes.map((row) => ({
@@ -238,21 +286,10 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 					// delete, where reordering something about to vanish is not meaningful.
 					isDraggable: !item.pendingDelete,
 					isPendingDelete: item.pendingDelete,
-					pill:
-						!showsInheritance || !defaultLabel ? null : item.overridden ? (
-							<InheritancePill
-								variant="reset"
-								sourceLabel={defaultLabel}
-								swatchName={item.name}
-								isDisabled={palettes.isBusy || item.pendingDelete}
-								onReset={(event) => handleResetSwatch(event, item.id)}
-							/>
-						) : (
-							<InheritancePill variant="inherited" sourceLabel={defaultLabel} />
-						),
+					pill: renderPill(item),
 				})),
 			})),
-		[palettes.palette, palettes.isBusy, showsInheritance, defaultLabel, handleResetSwatch]
+		[palettes.palette, renderPill]
 	);
 
 	return (

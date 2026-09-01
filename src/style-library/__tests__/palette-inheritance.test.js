@@ -190,15 +190,57 @@ describe('Color Palette inheritance pills', () => {
 	});
 
 	/**
-	 * The default palette defines the values, so its cards have nothing to inherit and show no
-	 * pill at all.
+	 * The default palette has no other palette to follow, so its cards measure against the shipped
+	 * value instead: an untouched swatch says it is the default, a changed one offers the way back.
+	 * Neither says "From" — there is nothing to be from.
 	 *
 	 * @return void
 	 */
-	it('shows no pill while the default palette is being edited', () => {
+	it('states the default and offers Reset while the default palette is being edited', () => {
 		renderScreen(makePalettes({ editingId: 'default' }));
 
-		expect(container.querySelectorAll(`.${PILL_CLASS}`)).toHaveLength(0);
+		const pills = [...container.querySelectorAll(`.${PILL_CLASS}`)];
+
+		expect(pills).toHaveLength(2);
+		expect(pills[0].textContent).toBe('Default');
+		expect(pills[0].tagName).toBe('SPAN');
+		expect(pills[1].textContent).toBe('Reset');
+		expect(pills[1].tagName).toBe('BUTTON');
+	});
+
+	/**
+	 * A color someone added has no shipped value behind it, so it can neither claim to be a default
+	 * nor be reset to one, and its card carries no pill at all.
+	 *
+	 * @return void
+	 */
+	it('gives a user-added color on the default palette no pill', () => {
+		renderScreen(
+			makePalettes({
+				editingId: 'default',
+				isSwatchCustom: jest.fn((token) => 'accent.two' === token),
+			})
+		);
+
+		const pills = [...container.querySelectorAll(`.${PILL_CLASS}`)];
+
+		expect(pills).toHaveLength(1);
+		expect(pills[0].textContent).toBe('Default');
+	});
+
+	/**
+	 * Resetting on the default palette goes through the same hook call as anywhere else — the
+	 * server decides that "undo" there means restoring the shipped color.
+	 *
+	 * @return void
+	 */
+	it('resets a changed swatch on the default palette through the hook', async () => {
+		const palettes = makePalettes({ editingId: 'default' });
+
+		renderScreen(palettes);
+		await act(async () => container.querySelector(`.${PILL_CLASS}--reset`).click());
+
+		expect(palettes.resetSwatch).toHaveBeenCalledWith('accent.two');
 	});
 
 	/**
