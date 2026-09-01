@@ -158,6 +158,12 @@ export function ColorPaletteSettings({ route, navigate, library }) {
 		setPendingAction('delete');
 		palettes
 			.resetSwatch(token)
+			// Closed on success, the same as `onDelete` and for the same kind of reason: the panel is
+			// editing a value that no longer exists. Its draft still holds the color the reset just
+			// undid — `useSettingsPanel` seeds once per item and deliberately ignores later external
+			// writes, so it cannot follow this one — and a panel left open would offer a Save that
+			// writes that color straight back, silently undoing the reset.
+			.then(() => panel.close())
 			// Swallowed: a failure already surfaces via `notifyError` inside `resetSwatch`, and the
 			// panel simply stays open showing the (unchanged) override.
 			.catch(() => {})

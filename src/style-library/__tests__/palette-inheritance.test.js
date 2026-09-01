@@ -156,17 +156,21 @@ function makePalettes(overrides = {}) {
 /**
  * Render the screen against a `usePalettes` stub.
  *
- * @param {Object} palettes The stub returned by `makePalettes`.
+ * @param {Object}   palettes           The stub returned by `makePalettes`.
+ * @param {Object}   [overrides]        Render overrides.
+ * @param {Object}   [overrides.route]  The route to render with, for the tests that need an open
+ *                                      settings panel (`route.item`).
+ * @param {Function} [overrides.navigate] The route navigator spy.
  *
  * @since TBD
  *
  * @return {void}
  */
-function renderScreen(palettes) {
+function renderScreen(palettes, { route = ROUTE, navigate = () => {} } = {}) {
 	usePalettes.mockReturnValue(palettes);
 
 	act(() =>
-		root.render(<ColorPaletteScreen label="Color Palette" route={ROUTE} navigate={() => {}} library={LIBRARY} />)
+		root.render(<ColorPaletteScreen label="Color Palette" route={route} navigate={navigate} library={LIBRARY} />)
 	);
 }
 
@@ -241,6 +245,35 @@ describe('Color Palette inheritance pills', () => {
 		await act(async () => container.querySelector(`.${PILL_CLASS}--reset`).click());
 
 		expect(palettes.resetSwatch).toHaveBeenCalledWith('accent.two');
+	});
+
+	/**
+	 * With the settings panel open on the same swatch, a settled reset closes it — the panel's draft
+	 * still holds the value the reset just undid, and its Save would write that value back.
+	 *
+	 * @return void
+	 */
+	it('closes the settings panel when the card resets the swatch it has open', async () => {
+		const navigate = jest.fn();
+
+		renderScreen(makePalettes(), { route: { ...ROUTE, item: 'accent.two' }, navigate });
+		await act(async () => container.querySelector(`.${PILL_CLASS}--reset`).click());
+
+		expect(navigate).toHaveBeenCalledWith({ item: '' });
+	});
+
+	/**
+	 * A panel open on a DIFFERENT swatch is left alone — nothing about it went stale.
+	 *
+	 * @return void
+	 */
+	it('leaves a settings panel open on another swatch alone', async () => {
+		const navigate = jest.fn();
+
+		renderScreen(makePalettes(), { route: { ...ROUTE, item: 'accent.one' }, navigate });
+		await act(async () => container.querySelector(`.${PILL_CLASS}--reset`).click());
+
+		expect(navigate).not.toHaveBeenCalled();
 	});
 
 	/**

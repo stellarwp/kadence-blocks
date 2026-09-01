@@ -204,13 +204,21 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 			palettes
 				.resetSwatch(token)
 				.then(() => {
+					// A settings panel open on THIS swatch is now editing a value that no longer
+					// exists: its draft still holds the color the reset undid (`useSettingsPanel`
+					// seeds once per item and cannot follow an external write), so its Save would
+					// write that color straight back. A panel on any other swatch is untouched.
+					if (route.item === token) {
+						navigate({ item: '' });
+					}
+
 					card?.querySelector('.kadence-blocks-style-library__swatch-card-select')?.focus();
 				})
 				// Swallowed: a failure already surfaces as a toast from inside `resetSwatch`, and the
 				// card simply keeps showing its override.
 				.catch(() => {});
 		},
-		[palettes.isBusy, palettes.resetSwatch]
+		[palettes.isBusy, palettes.resetSwatch, route.item, navigate]
 	);
 
 	/**
