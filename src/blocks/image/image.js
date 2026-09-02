@@ -42,6 +42,7 @@ import { store as coreStore } from '@wordpress/core-data';
  * Internal dependencies
  */
 import { createUpgradedEmbedBlock } from './helpers';
+import { isSvgUrl } from './utils';
 import useClientWidth from './use-client-width';
 import {
 	KadenceColorOutput,
@@ -430,7 +431,7 @@ export default function Image({
 	const [activeTab, setActiveTab] = useState('general');
 	const [externalBlob, setExternalBlob] = useState();
 	const clientWidth = useClientWidth(containerRef, [align]);
-	const isSVG = previewURL && previewURL.endsWith('.svg') ? true : false;
+	const isSVG = isSvgUrl(previewURL);
 	const isResizable = allowResize && !(isWideAligned && isLargeViewport) && !(isSVG && !previewMaxWidth);
 	const showMaxWidth = allowResize && !isWideAligned;
 	const { imageEditing, imageSizes, maxWidth, mediaUpload } = useSelect(
