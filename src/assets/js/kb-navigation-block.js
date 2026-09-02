@@ -2,10 +2,13 @@
  * File kb-navigation-block.js.
  *
  * Handles accessibility and mobile toggles for navigation.
+ *
+ * cSpell:ignore contenteditable keymap navs
  */
 (function () {
 	const focusableElementsString =
 		'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, object, embed, [tabindex="0"], [contenteditable]';
+	const hoveredItems = new Set();
 	/**
 	 * Get element's offset.
 	 */
@@ -228,7 +231,7 @@
 		}
 	};
 	/**
-	 * Determine what orientation the nav is at the currrent screen size.
+	 * Determine what orientation the nav is at the current screen size.
 	 */
 	const trackOrientation = function (navs) {
 		// No point if no submenus.
@@ -262,7 +265,7 @@
 		}
 	};
 	/**
-	 * Setup the Fullwith Menu.
+	 * Setup the Full-width Menu.
 	 */
 	const runSubMenuFullSize = function () {
 		var contentSubmenus = null;
@@ -311,7 +314,7 @@
 		}
 	};
 	/**
-	 * Initiate the script to handle fullwith mega menus.
+	 * Initiate the script to handle full-width mega menus.
 	 */
 	const initFullSubMenuSize = function () {
 		var megaMenus = document.querySelectorAll(
@@ -402,6 +405,77 @@
 		});
 		runSubMenuContentSize();
 	};
+	/**
+	 * Allow Escape key to dismiss hover-opened submenus (WCAG 2.1 SC 1.4.13).
+	 *
+	 * CSS :hover cannot be removed programmatically, so a class-based override
+	 * is applied and cleaned up when the user re-engages with the menu item.
+	 */
+	const initHoverEscDismiss = function (nav) {
+		// Hover submenus only exist on horizontal orientation.
+		if (nav.classList.contains('is-vertical')) {
+			return;
+		}
+
+		var submenuParents = nav.querySelectorAll('.menu-item-has-children');
+
+		if (!submenuParents.length) {
+			return;
+		}
+
+		for (let i = 0; i < submenuParents.length; i++) {
+			submenuParents[i].addEventListener('mouseenter', function () {
+				hoveredItems.add(submenuParents[i]);
+			});
+			submenuParents[i].addEventListener('mouseleave', function () {
+				hoveredItems.delete(submenuParents[i]);
+			});
+		}
+	};
+	/**
+	 * Handle global Escape key for hover-opened submenus.
+	 */
+	const handleHoverEscDismiss = function () {
+		document.addEventListener('keydown', function (e) {
+			if (e.key !== 'Escape' || !hoveredItems.size) {
+				return;
+			}
+
+			// Skip if focus is already inside a submenu (handled by existing keydown listener).
+			var focused = document.activeElement;
+			if (focused && focused.closest('ul.sub-menu')) {
+				return;
+			}
+
+			// Find the deepest hovered menu item.
+			var deepest = null;
+			hoveredItems.forEach(function (li) {
+				if (!deepest || deepest.contains(li)) {
+					deepest = li;
+				}
+			});
+
+			if (!deepest) {
+				return;
+			}
+
+			e.preventDefault();
+
+			deepest.classList.add('kb-nav-esc-close');
+
+			// Restore on re-engagement.
+			var onMouseEnter = function () {
+				deepest.classList.remove('kb-nav-esc-close');
+			};
+			deepest.addEventListener('mouseenter', onMouseEnter, { once: true });
+
+			var onMouseLeave = function () {
+				deepest.classList.remove('kb-nav-esc-close');
+				deepest.removeEventListener('mouseenter', onMouseEnter);
+			};
+			deepest.addEventListener('mouseleave', onMouseLeave, { once: true });
+		});
+	};
 	const initNavigation = function () {
 		var navigationBlocks = document.querySelectorAll('.wp-block-kadence-navigation');
 		// No point if no navs.
@@ -411,6 +485,7 @@
 		for (let i = 0; i < navigationBlocks.length; i++) {
 			initNavBlockSubmenus(navigationBlocks[i]);
 			initEachNavToggleSubmenuInside(navigationBlocks[i]);
+			initHoverEscDismiss(navigationBlocks[i]);
 		}
 		let resizeTimeout;
 		window.addEventListener('resize', () => {
@@ -421,6 +496,7 @@
 		});
 		trackOrientation(navigationBlocks);
 		handleClickOutsideSubmenus();
+		handleHoverEscDismiss();
 	};
 
 	const updateActiveAnchors = function () {

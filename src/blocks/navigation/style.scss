@@ -1,6 +1,8 @@
 /**
  * Frontend only CSS.
  * Styles for both the navigation and nav link block
+ *
+ * cSpell:ignore fullheight modbile navs radiusp uncollapse
  */
 
 @use "../../assets/css/variables" as vars;
@@ -223,7 +225,7 @@ $link-color-property: var(
 		}
 	}
 	// Handle Reveal Animation for horizontal navs, hover and triggered via arrow.
-	.menu-item:not(.kb-nav-link-sub-click):hover > .sub-menu,
+	.menu-item:not(.kb-nav-link-sub-click):not(.kb-nav-esc-close):hover > .sub-menu,
 	.menu-item.menu-item--toggled-on > .sub-menu {
 		@include show-sub-menu();
 	}
@@ -268,7 +270,7 @@ $link-color-property: var(
 			@include parent-toggles-menus-styles();
 		}
 	}
-	//Mobiel parent toggle sub menus
+	//Mobile parent toggle sub menus
 	.navigation-mobile-parent-toggles-menus-true {
 		@media (max-width: vars.$phone-minus-query) {
 			@include parent-toggles-menus-styles();
@@ -910,7 +912,7 @@ $link-color-property: var(
 		position: var(--kb-nav-link-position);
 		border-bottom: var(--kb-nav-menu-item-border-bottom);
 
-		//active nav links (extra specificty to hack correct ordering against direct styling)
+		//active nav links (extra specificity to hack correct ordering against direct styling)
 		&.current-menu-item > .kb-link-wrap.kb-link-wrap.kb-link-wrap {
 			--kb-nav-link-color-active-lv: var(--kb-nav-link-color-active);
 			--kb-nav-link-background-active-lv: var(--kb-nav-link-background-active);
@@ -1056,7 +1058,7 @@ $link-color-property: var(
 		margin-right: var(--kb-nav-link-margin-right);
 		margin-bottom: var(--kb-nav-link-margin-bottom);
 		margin-left: var(--kb-nav-link-margin-left);
-		//color copied here for specifity reasons
+		//color copied here for specificity reasons
 		color: $link-color-property;
 		gap: var(--kb-nav-link-gap);
 		text-align: var(--kb-nav-link-align, left);
@@ -1070,7 +1072,7 @@ $link-color-property: var(
 		}
 		&:hover,
 		&:focus {
-			//color copied here for specifity reasons in non-iframe editors
+			//color copied here for specificity reasons in non-iframe editors
 			color: $link-color-property;
 			--kb-nav-link-highlight-color-hover-lv: var(--kb-nav-link-highlight-color-hover);
 			--kb-nav-link-highlight-background-hover-lv: var(--kb-nav-link-highlight-background-hover);
