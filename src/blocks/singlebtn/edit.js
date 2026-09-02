@@ -8,7 +8,6 @@ import {
 	getPreviewSize,
 	showSettings,
 	getSpacingOptionOutput,
-	mouseOverVisualizer,
 	getFontSizeOptionOutput,
 	typographyStyle,
 	getBorderStyle,
@@ -19,14 +18,11 @@ import {
 } from '@kadence/helpers';
 
 import {
-	PopColorControl,
 	TypographyControls,
-	ResponsiveMeasurementControls,
 	SmallResponsiveControl,
 	ResponsiveRangeControls,
 	IconRender,
 	HoverToggleControl,
-	ResponsiveBorderControl,
 	KadenceIconPicker,
 	KadencePanelBody,
 	URLInputControl,
@@ -36,7 +32,6 @@ import {
 	URLInputInline,
 	ResponsiveAlignControls,
 	GradientControl,
-	BoxShadowControl,
 	InspectorControlTabs,
 	KadenceBlockDefaults,
 	ResponsiveMeasureRangeControl,
@@ -47,7 +42,7 @@ import {
 	Tooltip,
 } from '@kadence/components';
 import classnames from 'classnames';
-import { times, filter, map, uniqueId } from 'lodash';
+import { times, filter, map, uniqueId, get } from 'lodash';
 
 import metadata from './block.json';
 /**
@@ -58,7 +53,7 @@ import { useDispatch, useSelect } from '@wordpress/data';
 import { tooltip as tooltipIcon } from '@kadence/icons';
 import { link as linkIcon } from '@wordpress/icons';
 import { displayShortcut, isKeyboardEvent } from '@wordpress/keycodes';
-import { useEffect, useState } from '@wordpress/element';
+import { useCallback, useEffect, useState } from '@wordpress/element';
 import {
 	RichText,
 	InspectorControls,
@@ -83,6 +78,33 @@ import {
 } from '@wordpress/components';
 import { addFilter, applyFilters, doAction } from '@wordpress/hooks';
 import BackendStyles from './components/backend-styles';
+import { PresetButton } from '../../extension/preset-picker/PresetButton';
+import {
+	usePresetBinding,
+	resetAttr,
+	presetPropertyValueForDevice,
+	deriveStateBinding,
+	useLinkedMeasureState,
+} from '../../extension/token-indicators';
+import {
+	anyCornerInherited,
+	inheritedMeasureSlots,
+	measureAttrsForDevice,
+	presetValueForDevice,
+	presetValueOr,
+} from '../../extension/token-indicators/normalize';
+import { EditorBoxControl } from '../../extension/design-tokens/components/EditorBoxControl';
+import { EditorBorderControl } from '../../extension/design-tokens/components/EditorBorderControl';
+import { EditorShadowControl, hasVisibleShadow } from '../../extension/design-tokens/components/EditorShadowControl';
+import { renderShadowColor } from '../../extension/design-tokens/components/shadow-color';
+import { BorderColorField } from '../../extension/design-tokens/components/border-color';
+import { pickableTokensForControl, pickableTokensForKey } from '../../extension/token-picker';
+import { EditorColorControl } from '../../extension/design-tokens/components/EditorColorControl';
+import { EditorColorControlGroup } from '../../extension/design-tokens/components/EditorColorControlGroup';
+import { ColorControl } from '../../token-controls';
+import { BUTTON_MARGIN_FALLBACK, BUTTON_PADDING_FALLBACK } from '../../token-controls/helpers/button-box-defaults';
+import { useColorGroups } from '../../extension/design-tokens/hooks/use-color-groups';
+import { resolveColorLiteral } from '../../extension/design-tokens/color-literal';
 
 export default function KadenceButtonEdit(props) {
 	const { attributes, setAttributes, isSelected, context, clientId, name } = props;
@@ -132,10 +154,10 @@ export default function KadenceButtonEdit(props) {
 		width,
 		widthUnit,
 		widthType,
-		displayShadow,
 		shadow,
-		displayHoverShadow,
 		shadowHover,
+		displayShadow,
+		displayHoverShadow,
 		inheritStyles,
 		iconSize,
 		iconPadding,
@@ -182,10 +204,10 @@ export default function KadenceButtonEdit(props) {
 		tabletBorderTransparentHoverRadius,
 		mobileBorderTransparentHoverRadius,
 		borderTransparentHoverRadiusUnit,
-		displayShadowTransparent,
 		shadowTransparent,
-		displayHoverShadowTransparent,
 		shadowTransparentHover,
+		displayShadowTransparent,
+		displayHoverShadowTransparent,
 		colorSticky,
 		colorStickyHover,
 		backgroundSticky,
@@ -208,10 +230,10 @@ export default function KadenceButtonEdit(props) {
 		tabletBorderStickyHoverRadius,
 		mobileBorderStickyHoverRadius,
 		borderStickyHoverRadiusUnit,
-		displayShadowSticky,
 		shadowSticky,
-		displayHoverShadowSticky,
 		shadowStickyHover,
+		displayShadowSticky,
+		displayHoverShadowSticky,
 		tooltip,
 		tooltipPlacement,
 		buttonRole,
@@ -257,8 +279,121 @@ export default function KadenceButtonEdit(props) {
 		},
 		[clientId]
 	);
-	const marginMouseOver = mouseOverVisualizer();
-	const paddingMouseOver = mouseOverVisualizer();
+	// The Border Radius control keeps ONE linked/individual mode but writes a different attribute per
+	// breakpoint, so the mode must be read from — and "link" must collapse — whichever device is active.
+	const borderRadiusForDevice = measureAttrsForDevice(
+		attributes,
+		'borderRadius',
+		{ tablet: 'tabletBorderRadius', mobile: 'mobileBorderRadius' },
+		previewDevice
+	);
+	// Padding keeps the same one-mode-per-device shape as Border Radius above — one linked/individual
+	// mode, but a different stored attribute per breakpoint.
+	const paddingForDevice = measureAttrsForDevice(
+		attributes,
+		'padding',
+		{ tablet: 'tabletPadding', mobile: 'mobilePadding' },
+		previewDevice
+	);
+	// Design-token indicators: the per-attribute bound/overridden state for the selected preset, plus a
+	// reset that clears the mapped attribute back to the preset value (served by the existing scoped CSS).
+	const tokenBinding = usePresetBinding('kadence/singlebtn', attributes, undefined, previewDevice);
+	const resetToken = (attr) => resetAttr(attr, setAttributes, tokenBinding[attr]?.kind, metadata.attributes);
+	// One fetch of the block's effective palette groups, shared by every `ColorControl` instance on
+	// this block — the palette data is identical for all fourteen of them.
+	const colorGroups = useColorGroups(clientId);
+	// `BorderControl` forwards `renderColor` down through `SlotGrid`'s `renderSlot`, so this is
+	// defined once per render rather than inline at each of the border panels below.
+	const renderBorderColor = useCallback((row) => <BorderColorField {...row} groups={colorGroups} />, [colorGroups]);
+
+	const borderRadiusPresetValue = presetValueForDevice(
+		tokenBinding.borderRadius?.presetValue,
+		tokenBinding.borderRadius?.responsive,
+		previewDevice
+	);
+
+	// What an unset Border Width field falls back to: the active preset's own resolved width.
+	// `button-border-width` shares `borderStyle`'s `control_attr` with style/color, and
+	// `tokenBinding.borderStyle` combines all three axes into one entry keyed by that shared attribute
+	// — there is no per-axis width-only entry to pull a value out of, so this reads the width axis
+	// directly by its own property key instead. Shown as `EditorBorderControl`'s `defaultValue` —
+	// without it, a cleared width field renders empty and collapses to zero height (its
+	// `TokenSelector`'s trigger has nothing to show), which reads as broken rather than reset.
+	const borderWidthPresetValue = presetPropertyValueForDevice(
+		'kadence/singlebtn',
+		'button-border-width',
+		attributes,
+		undefined,
+		previewDevice
+	);
+
+	// The same value for the HOVER width field, read from the hover property rather than the resting one.
+	// Falling straight through to `borderWidthPresetValue` would report the resting width on a preset that
+	// sets a different hover width -- the field would read 1px while the page rendered 2px. The resting
+	// value stays as the second step, because that is what the button really paints on hover when the
+	// preset carries no hover width: the state rule is only emitted for a property the preset resolves, so
+	// with none the button keeps its resting border through `:hover`.
+	const borderHoverWidthPresetValue =
+		presetPropertyValueForDevice(
+			'kadence/singlebtn',
+			'button-border-hover-width',
+			attributes,
+			undefined,
+			previewDevice
+		) ?? borderWidthPresetValue;
+
+	// Read directly: `button-shadow` declares no `control_attr`, so `usePresetBinding` skips it.
+	const shadowPresetValue = presetPropertyValueForDevice(
+		'kadence/singlebtn',
+		'button-shadow',
+		attributes,
+		undefined,
+		previewDevice
+	);
+
+	// What an unset Border Radius corner falls back to on the active device: another breakpoint's corner
+	// before the preset's, matching the cascade the button actually renders through. The corners stay
+	// stored-empty — this only tells the field's popover which size is in effect and where it came from.
+	const inheritedBorderRadius = inheritedMeasureSlots(
+		previewDevice,
+		{ desktop: borderRadius, tablet: tabletBorderRadius },
+		borderRadiusPresetValue
+	);
+
+	// The fallback only catches a custom preset that omits the key, which would otherwise read as blank.
+	const paddingPresetValue = presetValueOr(
+		presetValueForDevice(tokenBinding.padding?.presetValue, tokenBinding.padding?.responsive, previewDevice),
+		BUTTON_PADDING_FALLBACK
+	);
+
+	// What an unset Padding side falls back to on the active device — same cascade as Border Radius
+	// above, run over sides rather than corners.
+	const inheritedPadding = inheritedMeasureSlots(
+		previewDevice,
+		{ desktop: padding, tablet: tabletPadding },
+		paddingPresetValue
+	);
+
+	// Margin keeps the same one-mode-per-device shape as Padding above.
+	const marginForDevice = measureAttrsForDevice(
+		attributes,
+		'margin',
+		{ tablet: 'tabletMargin', mobile: 'mobileMargin' },
+		previewDevice
+	);
+
+	// Same reasoning as `paddingPresetValue` above, for `button-margin`.
+	const marginPresetValue = presetValueOr(
+		presetValueForDevice(tokenBinding.margin?.presetValue, tokenBinding.margin?.responsive, previewDevice),
+		BUTTON_MARGIN_FALLBACK
+	);
+
+	// What an unset Margin side falls back to on the active device — same cascade as Padding above.
+	const inheritedMargin = inheritedMeasureSlots(
+		previewDevice,
+		{ desktop: margin, tablet: tabletMargin },
+		marginPresetValue
+	);
 
 	useEffect(() => {
 		setAttributes({ inQueryBlock: getInQueryBlock(context, inQueryBlock) });
@@ -272,6 +407,307 @@ export default function KadenceButtonEdit(props) {
 
 	const [activeTab, setActiveTab] = useState('general');
 	const [isEditingURL, setIsEditingURL] = useState(false);
+
+	// Everything the new box control needs that the block already knows, gathered in one place rather
+	// than inlined into the JSX.
+	const { setPreviewDeviceType: setPreviewDevice } = useDispatch('kadenceblocks/data');
+	const borderRadiusTokens = pickableTokensForControl('kadence/singlebtn', 'borderRadius') || [];
+	const borderRadiusIsRelative = borderRadiusUnit === 'em' || borderRadiusUnit === 'rem';
+	// Border width and shadow bind through their bindings KEY, not `pickableTokensForControl`'s
+	// `control_attr` reverse lookup: `button-shadow`'s PHP binding declares no `control_attr` at all
+	// (its native attribute is a composite shape a `control_attr` lookup can't target), and
+	// `button-border-width` shares its `control_attr` ('borderStyle') with style/color, which would make
+	// a control_attr-keyed lookup ambiguous among the three (see declarations.php's `kadence/singlebtn`
+	// block). One PHP binding exists per property (`button-border-width`, `button-shadow`) — there is
+	// one border-width scale and one shadow scale, not a separate one per state — so every
+	// hover/sticky/transparent variant below reuses the same resolved list rather than re-filtering the
+	// pool per state.
+	const borderWidthPickableTokens = pickableTokensForKey('kadence/singlebtn', 'button-border-width');
+	// The shared narrowing in `pickableTokensForKey` already prepends the fixed "None" sentinel for the
+	// shadow role, so this list must NOT prepend a second one.
+	const shadowPickableTokens = pickableTokensForKey('kadence/singlebtn', 'button-shadow');
+	const paddingPickableTokens = pickableTokensForKey('kadence/singlebtn', 'button-padding');
+	const marginPickableTokens = pickableTokensForKey('kadence/singlebtn', 'button-margin');
+
+	// The border-radius/padding linked/individual mode is derived from the stored slots (all equal reads
+	// as linked), so no new attribute is needed and old buttons open in the right mode. The hook's own
+	// override only records an explicit "unlink" of already-equal slots for the current session — it
+	// resets on remount, matching how the control's mode has always been session-local. It is keyed by
+	// device internally: the responsive control keeps ONE mode but writes three attributes, so a choice
+	// made on Tablet must not flip Desktop's slots (and vice versa). It also resets whenever the active
+	// preset changes (via `resetOn`), since an override records a choice about the PREVIOUS preset's
+	// slots — otherwise an explicit "link" would stick and hide a new preset's per-slot value.
+	const { isLinked: borderRadiusIsLinked, toggleLink: toggleBorderRadiusLink } = useLinkedMeasureState({
+		forDevice: borderRadiusForDevice,
+		previewDevice,
+		setAttributes,
+		resetOn: attributes.kbPreset,
+	});
+
+	// Padding's linked/individual mode, mirroring Border Radius's own hook call above with "corner"
+	// swapped for "side". `resetOn` clears the remembered choice, which belonged to the old preset.
+	const { isLinked: paddingIsLinked, toggleLink: togglePaddingLink } = useLinkedMeasureState({
+		forDevice: paddingForDevice,
+		previewDevice,
+		setAttributes,
+		resetOn: attributes.kbPreset,
+	});
+
+	// Margin's linked/individual mode, mirroring Padding's own hook call above — same shape, run over
+	// `marginForDevice` instead, `resetOn` included for the same reason.
+	const { isLinked: marginIsLinked, toggleLink: toggleMarginLink } = useLinkedMeasureState({
+		forDevice: marginForDevice,
+		previewDevice,
+		setAttributes,
+		resetOn: attributes.kbPreset,
+	});
+
+	// Hover/Transparent/Transparent Hover/Sticky/Sticky Hover each store their own 4 corners, so each
+	// gets its own call to the hook above — sharing Normal's linked state would couple these states'
+	// link/unlink UI together even though the underlying attributes are independent. All 6 states still
+	// read/write the same `tokenBinding.borderRadius` preset binding and `borderRadiusTokens` pool, since
+	// there is only one border-radius preset property.
+	const borderHoverRadiusForDevice = measureAttrsForDevice(
+		attributes,
+		'borderHoverRadius',
+		{ tablet: 'tabletBorderHoverRadius', mobile: 'mobileBorderHoverRadius' },
+		previewDevice
+	);
+	// The hover corners cascade among themselves, then fall to the preset's HOVER radius, and only then to
+	// its resting one. The hover step has to come first or a preset setting both would report the resting
+	// corners on a field the page renders the hover ones for; the resting step has to stay because a preset
+	// that sets no hover radius really does keep its resting corners through `:hover` -- the state rule is
+	// emitted only for a property the preset resolves.
+	const borderHoverRadiusPresetValue = presetValueForDevice(
+		tokenBinding.borderHoverRadius?.presetValue,
+		tokenBinding.borderHoverRadius?.responsive,
+		previewDevice
+	);
+	const inheritedBorderHoverRadius = inheritedMeasureSlots(
+		previewDevice,
+		{ desktop: borderHoverRadius, tablet: tabletBorderHoverRadius },
+		borderHoverRadiusPresetValue ?? borderRadiusPresetValue
+	);
+	const { isLinked: borderHoverRadiusIsLinked, toggleLink: toggleBorderHoverRadiusLink } = useLinkedMeasureState({
+		forDevice: borderHoverRadiusForDevice,
+		previewDevice,
+		setAttributes,
+		resetOn: attributes.kbPreset,
+	});
+
+	const borderTransparentRadiusForDevice = measureAttrsForDevice(
+		attributes,
+		'borderTransparentRadius',
+		{ tablet: 'tabletBorderTransparentRadius', mobile: 'mobileBorderTransparentRadius' },
+		previewDevice
+	);
+	const inheritedBorderTransparentRadius = inheritedMeasureSlots(
+		previewDevice,
+		{ desktop: borderTransparentRadius, tablet: tabletBorderTransparentRadius },
+		borderRadiusPresetValue
+	);
+	const { isLinked: borderTransparentRadiusIsLinked, toggleLink: toggleBorderTransparentRadiusLink } =
+		useLinkedMeasureState({
+			forDevice: borderTransparentRadiusForDevice,
+			previewDevice,
+			setAttributes,
+			resetOn: attributes.kbPreset,
+		});
+
+	const borderTransparentHoverRadiusForDevice = measureAttrsForDevice(
+		attributes,
+		'borderTransparentHoverRadius',
+		{ tablet: 'tabletBorderTransparentHoverRadius', mobile: 'mobileBorderTransparentHoverRadius' },
+		previewDevice
+	);
+	const inheritedBorderTransparentHoverRadius = inheritedMeasureSlots(
+		previewDevice,
+		{ desktop: borderTransparentHoverRadius, tablet: tabletBorderTransparentHoverRadius },
+		borderRadiusPresetValue
+	);
+	const { isLinked: borderTransparentHoverRadiusIsLinked, toggleLink: toggleBorderTransparentHoverRadiusLink } =
+		useLinkedMeasureState({
+			forDevice: borderTransparentHoverRadiusForDevice,
+			previewDevice,
+			setAttributes,
+			resetOn: attributes.kbPreset,
+		});
+
+	const borderStickyRadiusForDevice = measureAttrsForDevice(
+		attributes,
+		'borderStickyRadius',
+		{ tablet: 'tabletBorderStickyRadius', mobile: 'mobileBorderStickyRadius' },
+		previewDevice
+	);
+	const inheritedBorderStickyRadius = inheritedMeasureSlots(
+		previewDevice,
+		{ desktop: borderStickyRadius, tablet: tabletBorderStickyRadius },
+		borderRadiusPresetValue
+	);
+	const { isLinked: borderStickyRadiusIsLinked, toggleLink: toggleBorderStickyRadiusLink } = useLinkedMeasureState({
+		forDevice: borderStickyRadiusForDevice,
+		previewDevice,
+		setAttributes,
+		resetOn: attributes.kbPreset,
+	});
+
+	const borderStickyHoverRadiusForDevice = measureAttrsForDevice(
+		attributes,
+		'borderStickyHoverRadius',
+		{ tablet: 'tabletBorderStickyHoverRadius', mobile: 'mobileBorderStickyHoverRadius' },
+		previewDevice
+	);
+	const inheritedBorderStickyHoverRadius = inheritedMeasureSlots(
+		previewDevice,
+		{ desktop: borderStickyHoverRadius, tablet: tabletBorderStickyHoverRadius },
+		borderRadiusPresetValue
+	);
+	const { isLinked: borderStickyHoverRadiusIsLinked, toggleLink: toggleBorderStickyHoverRadiusLink } =
+		useLinkedMeasureState({
+			forDevice: borderStickyHoverRadiusForDevice,
+			previewDevice,
+			setAttributes,
+			resetOn: attributes.kbPreset,
+		});
+
+	// Each of the 5 non-Normal states' OWN Border Radius/Border indicator and reset — derived from the
+	// shared preset entry above (`tokenBinding.borderRadius`/`tokenBinding.borderStyle`, the same one
+	// Normal's own fields read) plus this state's own resolved value at the active device. Reusing
+	// Normal's `tokenBinding` entries directly here (as every call site once did) would report Normal's
+	// divergence on a field the user never opened, and its `onReset` would silently clear NORMAL's
+	// attributes while leaving this state's own untouched — see `deriveStateBinding`'s own docblock.
+	//
+	// Hover is the one state with preset properties of its own, so its two controls prefer their real
+	// binding entry and keep the derived one only as the fallback: `usePresetBinding` makes no entry for a
+	// property the ACTIVE preset does not resolve, and until a preset carries a hover value the derived
+	// answer is still the only preset-relative statement available. Transparent and Sticky have no bound
+	// counterparts at all and stay derived.
+	const borderHoverBorderForDevice = measureAttrsForDevice(
+		attributes,
+		'borderHoverStyle',
+		{ tablet: 'tabletBorderHoverStyle', mobile: 'mobileBorderHoverStyle' },
+		previewDevice
+	);
+	const borderHoverRadiusIsRelative = borderHoverRadiusUnit === 'em' || borderHoverRadiusUnit === 'rem';
+	const borderHoverRadiusBinding = deriveStateBinding({
+		shared: tokenBinding.borderRadius,
+		kind: 'dimension',
+		value: borderHoverRadiusForDevice.value,
+		unit: borderHoverRadiusUnit,
+		devicePresetValue: borderRadiusPresetValue,
+	});
+	const borderHoverBorderBinding = deriveStateBinding({
+		shared: tokenBinding.borderStyle,
+		kind: 'border',
+		value: borderHoverBorderForDevice.value,
+		previewDevice,
+	});
+	const resetBorderHoverRadius = () =>
+		resetAttr('borderHoverRadius', setAttributes, 'dimension', metadata.attributes);
+	const resetBorderHoverBorder = () => resetAttr('borderHoverStyle', setAttributes, 'border', metadata.attributes);
+
+	const borderTransparentBorderForDevice = measureAttrsForDevice(
+		attributes,
+		'borderTransparentStyle',
+		{ tablet: 'tabletBorderTransparentStyle', mobile: 'mobileBorderTransparentStyle' },
+		previewDevice
+	);
+	const borderTransparentRadiusIsRelative =
+		borderTransparentRadiusUnit === 'em' || borderTransparentRadiusUnit === 'rem';
+	const borderTransparentRadiusBinding = deriveStateBinding({
+		shared: tokenBinding.borderRadius,
+		kind: 'dimension',
+		value: borderTransparentRadiusForDevice.value,
+		unit: borderTransparentRadiusUnit,
+		devicePresetValue: borderRadiusPresetValue,
+	});
+	const borderTransparentBorderBinding = deriveStateBinding({
+		shared: tokenBinding.borderStyle,
+		kind: 'border',
+		value: borderTransparentBorderForDevice.value,
+		previewDevice,
+	});
+	const resetBorderTransparentRadius = () =>
+		resetAttr('borderTransparentRadius', setAttributes, 'dimension', metadata.attributes);
+	const resetBorderTransparentBorder = () =>
+		resetAttr('borderTransparentStyle', setAttributes, 'border', metadata.attributes);
+
+	const borderTransparentHoverBorderForDevice = measureAttrsForDevice(
+		attributes,
+		'borderTransparentHoverStyle',
+		{ tablet: 'tabletBorderTransparentHoverStyle', mobile: 'mobileBorderTransparentHoverStyle' },
+		previewDevice
+	);
+	const borderTransparentHoverRadiusIsRelative =
+		borderTransparentHoverRadiusUnit === 'em' || borderTransparentHoverRadiusUnit === 'rem';
+	const borderTransparentHoverRadiusBinding = deriveStateBinding({
+		shared: tokenBinding.borderRadius,
+		kind: 'dimension',
+		value: borderTransparentHoverRadiusForDevice.value,
+		unit: borderTransparentHoverRadiusUnit,
+		devicePresetValue: borderRadiusPresetValue,
+	});
+	const borderTransparentHoverBorderBinding = deriveStateBinding({
+		shared: tokenBinding.borderStyle,
+		kind: 'border',
+		value: borderTransparentHoverBorderForDevice.value,
+		previewDevice,
+	});
+	const resetBorderTransparentHoverRadius = () =>
+		resetAttr('borderTransparentHoverRadius', setAttributes, 'dimension', metadata.attributes);
+	const resetBorderTransparentHoverBorder = () =>
+		resetAttr('borderTransparentHoverStyle', setAttributes, 'border', metadata.attributes);
+
+	const borderStickyBorderForDevice = measureAttrsForDevice(
+		attributes,
+		'borderStickyStyle',
+		{ tablet: 'tabletBorderStickyStyle', mobile: 'mobileBorderStickyStyle' },
+		previewDevice
+	);
+	const borderStickyRadiusIsRelative = borderStickyRadiusUnit === 'em' || borderStickyRadiusUnit === 'rem';
+	const borderStickyRadiusBinding = deriveStateBinding({
+		shared: tokenBinding.borderRadius,
+		kind: 'dimension',
+		value: borderStickyRadiusForDevice.value,
+		unit: borderStickyRadiusUnit,
+		devicePresetValue: borderRadiusPresetValue,
+	});
+	const borderStickyBorderBinding = deriveStateBinding({
+		shared: tokenBinding.borderStyle,
+		kind: 'border',
+		value: borderStickyBorderForDevice.value,
+		previewDevice,
+	});
+	const resetBorderStickyRadius = () =>
+		resetAttr('borderStickyRadius', setAttributes, 'dimension', metadata.attributes);
+	const resetBorderStickyBorder = () => resetAttr('borderStickyStyle', setAttributes, 'border', metadata.attributes);
+
+	const borderStickyHoverBorderForDevice = measureAttrsForDevice(
+		attributes,
+		'borderStickyHoverStyle',
+		{ tablet: 'tabletBorderStickyHoverStyle', mobile: 'mobileBorderStickyHoverStyle' },
+		previewDevice
+	);
+	const borderStickyHoverRadiusIsRelative =
+		borderStickyHoverRadiusUnit === 'em' || borderStickyHoverRadiusUnit === 'rem';
+	const borderStickyHoverRadiusBinding = deriveStateBinding({
+		shared: tokenBinding.borderRadius,
+		kind: 'dimension',
+		value: borderStickyHoverRadiusForDevice.value,
+		unit: borderStickyHoverRadiusUnit,
+		devicePresetValue: borderRadiusPresetValue,
+	});
+	const borderStickyHoverBorderBinding = deriveStateBinding({
+		shared: tokenBinding.borderStyle,
+		kind: 'border',
+		value: borderStickyHoverBorderForDevice.value,
+		previewDevice,
+	});
+	const resetBorderStickyHoverRadius = () =>
+		resetAttr('borderStickyHoverRadius', setAttributes, 'dimension', metadata.attributes);
+	const resetBorderStickyHoverBorder = () =>
+		resetAttr('borderStickyHoverStyle', setAttributes, 'border', metadata.attributes);
+
 	useEffect(() => {
 		if (!isSelected) {
 			setIsEditingURL(false);
@@ -296,73 +732,6 @@ export default function KadenceButtonEdit(props) {
 			typography: newUpdate,
 		});
 	};
-	const saveShadow = (value) => {
-		const newUpdate = shadow.map((item, index) => {
-			if (0 === index) {
-				item = { ...item, ...value };
-			}
-			return item;
-		});
-		setAttributes({
-			shadow: newUpdate,
-		});
-	};
-	const saveShadowHover = (value) => {
-		const newItems = shadowHover.map((item, thisIndex) => {
-			if (0 === thisIndex) {
-				item = { ...item, ...value };
-			}
-
-			return item;
-		});
-		setAttributes({
-			shadowHover: newItems,
-		});
-	};
-	const saveShadowTransparent = (value) => {
-		const newUpdate = shadowTransparent.map((item, index) => {
-			if (0 === index) {
-				item = { ...item, ...value };
-			}
-			return item;
-		});
-		setAttributes({
-			shadowTransparent: newUpdate,
-		});
-	};
-	const saveShadowTransparentHover = (value) => {
-		const newUpdate = shadowTransparentHover.map((item, index) => {
-			if (0 === index) {
-				item = { ...item, ...value };
-			}
-			return item;
-		});
-		setAttributes({
-			shadowTransparentHover: newUpdate,
-		});
-	};
-	const saveShadowSticky = (value) => {
-		const newUpdate = shadowSticky.map((item, index) => {
-			if (0 === index) {
-				item = { ...item, ...value };
-			}
-			return item;
-		});
-		setAttributes({
-			shadowSticky: newUpdate,
-		});
-	};
-	const saveShadowStickyHover = (value) => {
-		const newUpdate = shadowStickyHover.map((item, index) => {
-			if (0 === index) {
-				item = { ...item, ...value };
-			}
-			return item;
-		});
-		setAttributes({
-			shadowStickyHover: newUpdate,
-		});
-	};
 	const btnSizes = [
 		{ value: 'small', label: __('SM', 'kadence-blocks') },
 		{ value: 'standard', label: __('MD', 'kadence-blocks') },
@@ -375,13 +744,7 @@ export default function KadenceButtonEdit(props) {
 		{ value: 'full', label: __('Full', 'kadence-blocks') },
 	];
 	const defineWidthType = (type) => {
-		if ('full' === type) {
-			//updateParentBlock( 'forceFullwidth', true );
-			setAttributes({ widthType: type });
-		} else {
-			//updateParentBlock( 'forceFullwidth', false );
-			setAttributes({ widthType: type });
-		}
+		setAttributes({ widthType: type });
 	};
 	const buttonStyleOptions = supportsSecondaryButton
 		? [
@@ -695,6 +1058,8 @@ export default function KadenceButtonEdit(props) {
 			{showSettings('allSettings', 'kadence/advancedbtn') && (
 				<>
 					<InspectorControls>
+						<PresetButton blockName={name} attributes={attributes} setAttributes={setAttributes} />
+
 						<InspectorControlTabs
 							panelName={'singlebtn'}
 							setActiveTab={(value) => setActiveTab(value)}
@@ -864,14 +1229,21 @@ export default function KadenceButtonEdit(props) {
 															/>
 														)}
 														{'normal' === textBackgroundHoverType && (
-															<PopColorControl
-																key={'btncolorhover'}
+															<EditorColorControl
 																label={__('Color Hover', 'kadence-blocks')}
 																value={colorHover ? colorHover : ''}
-																default={''}
-																onChange={(value) =>
-																	setAttributes({ colorHover: value })
+																groups={colorGroups}
+																status={{
+																	bound: !!tokenBinding.colorHover?.bound,
+																	modified: !!tokenBinding.colorHover?.overridden,
+																}}
+																onReset={() => resetToken('colorHover')}
+																onPick={(alias) => setAttributes({ colorHover: alias })}
+																onCustom={(literal) =>
+																	setAttributes({ colorHover: literal })
 																}
+																onClear={() => setAttributes({ colorHover: '' })}
+																resolveLiteral={resolveColorLiteral}
 															/>
 														)}
 														<BackgroundTypeControl
@@ -892,17 +1264,27 @@ export default function KadenceButtonEdit(props) {
 															/>
 														)}
 														{'normal' === backgroundHoverType && (
-															<PopColorControl
-																key={'btnbghover'}
+															<EditorColorControl
 																label={__('Background Color', 'kadence-blocks')}
 																value={backgroundHover ? backgroundHover : ''}
-																default={''}
-																onChange={(value) =>
-																	setAttributes({ backgroundHover: value })
+																groups={colorGroups}
+																status={{
+																	bound: !!tokenBinding.backgroundHover?.bound,
+																	modified:
+																		!!tokenBinding.backgroundHover?.overridden,
+																}}
+																onReset={() => resetToken('backgroundHover')}
+																onPick={(alias) =>
+																	setAttributes({ backgroundHover: alias })
 																}
+																onCustom={(literal) =>
+																	setAttributes({ backgroundHover: literal })
+																}
+																onClear={() => setAttributes({ backgroundHover: '' })}
+																resolveLiteral={resolveColorLiteral}
 															/>
 														)}
-														<ResponsiveBorderControl
+														<EditorBorderControl
 															label={__('Border', 'kadence-blocks')}
 															value={borderHoverStyle}
 															tabletValue={tabletBorderHoverStyle}
@@ -916,128 +1298,61 @@ export default function KadenceButtonEdit(props) {
 															onChangeMobile={(value) =>
 																setAttributes({ mobileBorderHoverStyle: value })
 															}
+															previewDevice={previewDevice}
+															onDeviceChange={setPreviewDevice}
+															widthTokens={borderWidthPickableTokens}
+															defaultValue={borderHoverWidthPresetValue}
+															renderColor={renderBorderColor}
+															state={
+																tokenBinding.borderHoverStyle ??
+																borderHoverBorderBinding
+															}
+															onReset={resetBorderHoverBorder}
 														/>
-														<ResponsiveMeasurementControls
+														<EditorBoxControl
 															label={__('Border Radius', 'kadence-blocks')}
-															value={borderHoverRadius}
-															tabletValue={tabletBorderHoverRadius}
-															mobileValue={mobileBorderHoverRadius}
-															onChange={(value) =>
-																setAttributes({ borderHoverRadius: value })
+															value={borderHoverRadiusForDevice.value}
+															onChange={(next) =>
+																setAttributes({
+																	[borderHoverRadiusForDevice.attr]: next,
+																})
 															}
-															onChangeTablet={(value) =>
-																setAttributes({ tabletBorderHoverRadius: value })
+															previewDevice={previewDevice}
+															onDeviceChange={setPreviewDevice}
+															tokens={borderRadiusTokens}
+															defaultValue={inheritedBorderHoverRadius.values}
+															inherited={anyCornerInherited(
+																inheritedBorderHoverRadius.inherited
+															)}
+															state={
+																tokenBinding.borderHoverRadius ??
+																borderHoverRadiusBinding
 															}
-															onChangeMobile={(value) =>
-																setAttributes({ mobileBorderHoverRadius: value })
-															}
+															onReset={resetBorderHoverRadius}
+															isLinked={borderHoverRadiusIsLinked}
+															onToggleLink={toggleBorderHoverRadiusLink}
 															unit={borderHoverRadiusUnit}
 															units={['px', 'em', 'rem', '%']}
 															onUnit={(value) =>
 																setAttributes({ borderHoverRadiusUnit: value })
 															}
-															max={
-																borderHoverRadiusUnit === 'em' ||
-																borderHoverRadiusUnit === 'rem'
-																	? 24
-																	: 500
-															}
-															step={
-																borderHoverRadiusUnit === 'em' ||
-																borderHoverRadiusUnit === 'rem'
-																	? 0.1
-																	: 1
-															}
+															max={borderHoverRadiusIsRelative ? 24 : 500}
+															step={borderHoverRadiusIsRelative ? 0.1 : 1}
 															min={0}
-															isBorderRadius={true}
-															allowEmpty={true}
 														/>
-														<BoxShadowControl
+														<EditorShadowControl
+															defaultValue={shadowPresetValue}
 															label={__('Box Shadow', 'kadence-blocks')}
-															enable={
-																undefined !== displayHoverShadow
-																	? displayHoverShadow
-																	: false
-															}
-															color={
-																undefined !== shadowHover &&
-																undefined !== shadowHover[0] &&
-																undefined !== shadowHover[0].color
-																	? shadowHover[0].color
-																	: '#000000'
-															}
-															colorDefault={'#000000'}
-															onArrayChange={(color, opacity) => {
-																saveShadowHover({ color, opacity });
-															}}
-															opacity={
-																undefined !== shadowHover &&
-																undefined !== shadowHover[0] &&
-																undefined !== shadowHover[0].opacity
-																	? shadowHover[0].opacity
-																	: 0.2
-															}
-															hOffset={
-																undefined !== shadowHover &&
-																undefined !== shadowHover[0] &&
-																undefined !== shadowHover[0].hOffset
-																	? shadowHover[0].hOffset
-																	: 0
-															}
-															vOffset={
-																undefined !== shadowHover &&
-																undefined !== shadowHover[0] &&
-																undefined !== shadowHover[0].vOffset
-																	? shadowHover[0].vOffset
-																	: 0
-															}
-															blur={
-																undefined !== shadowHover &&
-																undefined !== shadowHover[0] &&
-																undefined !== shadowHover[0].blur
-																	? shadowHover[0].blur
-																	: 14
-															}
-															spread={
-																undefined !== shadowHover &&
-																undefined !== shadowHover[0] &&
-																undefined !== shadowHover[0].spread
-																	? shadowHover[0].spread
-																	: 0
-															}
-															inset={
-																undefined !== shadowHover &&
-																undefined !== shadowHover[0] &&
-																undefined !== shadowHover[0].inset
-																	? shadowHover[0].inset
-																	: false
-															}
-															onEnableChange={(value) => {
+															value={shadowHover}
+															enabled={displayHoverShadow}
+															onChange={(value) =>
 																setAttributes({
-																	displayHoverShadow: value,
-																});
-															}}
-															onColorChange={(value) => {
-																saveShadowHover({ color: value });
-															}}
-															onOpacityChange={(value) => {
-																saveShadowHover({ opacity: value });
-															}}
-															onHOffsetChange={(value) => {
-																saveShadowHover({ hOffset: value });
-															}}
-															onVOffsetChange={(value) => {
-																saveShadowHover({ vOffset: value });
-															}}
-															onBlurChange={(value) => {
-																saveShadowHover({ blur: value });
-															}}
-															onSpreadChange={(value) => {
-																saveShadowHover({ spread: value });
-															}}
-															onInsetChange={(value) => {
-																saveShadowHover({ inset: value });
-															}}
+																	shadowHover: value,
+																	displayHoverShadow: hasVisibleShadow(value?.[0]),
+																})
+															}
+															tokens={shadowPickableTokens}
+															renderColor={renderShadowColor}
 														/>
 													</>
 												}
@@ -1061,12 +1376,21 @@ export default function KadenceButtonEdit(props) {
 															/>
 														)}
 														{'normal' === textBackgroundType && (
-															<PopColorControl
-																key={'btncolor'}
+															<EditorColorControl
 																label={__('Color', 'kadence-blocks')}
 																value={color ? color : ''}
-																default={''}
-																onChange={(value) => setAttributes({ color: value })}
+																groups={colorGroups}
+																status={{
+																	bound: !!tokenBinding.color?.bound,
+																	modified: !!tokenBinding.color?.overridden,
+																}}
+																onReset={() => resetToken('color')}
+																onPick={(alias) => setAttributes({ color: alias })}
+																onCustom={(literal) =>
+																	setAttributes({ color: literal })
+																}
+																onClear={() => setAttributes({ color: '' })}
+																resolveLiteral={resolveColorLiteral}
 															/>
 														)}
 														<BackgroundTypeControl
@@ -1085,17 +1409,24 @@ export default function KadenceButtonEdit(props) {
 															/>
 														)}
 														{'normal' === backgroundType && (
-															<PopColorControl
-																key={'btnbg'}
+															<EditorColorControl
 																label={__('Background Color', 'kadence-blocks')}
 																value={background ? background : ''}
-																default={''}
-																onChange={(value) =>
-																	setAttributes({ background: value })
+																groups={colorGroups}
+																status={{
+																	bound: !!tokenBinding.background?.bound,
+																	modified: !!tokenBinding.background?.overridden,
+																}}
+																onReset={() => resetToken('background')}
+																onPick={(alias) => setAttributes({ background: alias })}
+																onCustom={(literal) =>
+																	setAttributes({ background: literal })
 																}
+																onClear={() => setAttributes({ background: '' })}
+																resolveLiteral={resolveColorLiteral}
 															/>
 														)}
-														<ResponsiveBorderControl
+														<EditorBorderControl
 															label={__('Border', 'kadence-blocks')}
 															value={borderStyle}
 															tabletValue={tabletBorderStyle}
@@ -1107,120 +1438,61 @@ export default function KadenceButtonEdit(props) {
 															onChangeMobile={(value) =>
 																setAttributes({ mobileBorderStyle: value })
 															}
+															previewDevice={previewDevice}
+															onDeviceChange={setPreviewDevice}
+															widthTokens={borderWidthPickableTokens}
+															defaultValue={borderWidthPresetValue}
+															renderColor={renderBorderColor}
+															state={tokenBinding.borderStyle}
+															onReset={() => resetToken('borderStyle')}
 														/>
-														<ResponsiveMeasurementControls
+														<EditorBoxControl
 															label={__('Border Radius', 'kadence-blocks')}
-															value={borderRadius}
-															tabletValue={tabletBorderRadius}
-															mobileValue={mobileBorderRadius}
-															onChange={(value) => setAttributes({ borderRadius: value })}
-															onChangeTablet={(value) =>
-																setAttributes({ tabletBorderRadius: value })
+															value={borderRadiusForDevice.value}
+															onChange={(next) =>
+																setAttributes({ [borderRadiusForDevice.attr]: next })
 															}
-															onChangeMobile={(value) =>
-																setAttributes({ mobileBorderRadius: value })
-															}
+															previewDevice={previewDevice}
+															onDeviceChange={setPreviewDevice}
+															tokens={borderRadiusTokens}
+															defaultValue={inheritedBorderRadius.values}
+															inherited={anyCornerInherited(
+																inheritedBorderRadius.inherited
+															)}
+															state={tokenBinding.borderRadius}
+															onReset={() => resetToken('borderRadius')}
+															isLinked={borderRadiusIsLinked}
+															onToggleLink={toggleBorderRadiusLink}
 															unit={borderRadiusUnit}
 															units={['px', 'em', 'rem', '%']}
 															onUnit={(value) =>
 																setAttributes({ borderRadiusUnit: value })
 															}
-															max={
-																borderRadiusUnit === 'em' || borderRadiusUnit === 'rem'
-																	? 24
-																	: 500
-															}
-															step={
-																borderRadiusUnit === 'em' || borderRadiusUnit === 'rem'
-																	? 0.1
-																	: 1
-															}
 															min={0}
-															isBorderRadius={true}
-															allowEmpty={true}
+															max={borderRadiusIsRelative ? 24 : 500}
+															step={borderRadiusIsRelative ? 0.1 : 1}
 														/>
-														<BoxShadowControl
+														{/* The `display*Shadow` flags are no longer controls — the editor derives each
+														    from its own value on every write. They still have to EXIST, because
+														    Gutenberg omits an attribute equal to its default: a button saved with
+														    the old toggle OFF stored no flag at all while keeping the values behind
+														    it, so geometry alone cannot tell it from one saved with the toggle on.
+														    Deriving them forward leaves legacy content exactly as it renders today
+														    and gives anything edited from here on a flag that agrees with its own
+														    geometry. */}
+														<EditorShadowControl
+															defaultValue={shadowPresetValue}
 															label={__('Box Shadow', 'kadence-blocks')}
-															enable={undefined !== displayShadow ? displayShadow : false}
-															color={
-																undefined !== shadow &&
-																undefined !== shadow[0] &&
-																undefined !== shadow[0].color
-																	? shadow[0].color
-																	: '#000000'
-															}
-															colorDefault={'#000000'}
-															onArrayChange={(color, opacity) => {
-																saveShadow({ color, opacity });
-															}}
-															opacity={
-																undefined !== shadow &&
-																undefined !== shadow[0] &&
-																undefined !== shadow[0].opacity
-																	? shadow[0].opacity
-																	: 0.2
-															}
-															hOffset={
-																undefined !== shadow &&
-																undefined !== shadow[0] &&
-																undefined !== shadow[0].hOffset
-																	? shadow[0].hOffset
-																	: 0
-															}
-															vOffset={
-																undefined !== shadow &&
-																undefined !== shadow[0] &&
-																undefined !== shadow[0].vOffset
-																	? shadow[0].vOffset
-																	: 0
-															}
-															blur={
-																undefined !== shadow &&
-																undefined !== shadow[0] &&
-																undefined !== shadow[0].blur
-																	? shadow[0].blur
-																	: 14
-															}
-															spread={
-																undefined !== shadow &&
-																undefined !== shadow[0] &&
-																undefined !== shadow[0].spread
-																	? shadow[0].spread
-																	: 0
-															}
-															inset={
-																undefined !== shadow &&
-																undefined !== shadow[0] &&
-																undefined !== shadow[0].inset
-																	? shadow[0].inset
-																	: false
-															}
-															onEnableChange={(value) => {
+															value={shadow}
+															enabled={displayShadow}
+															onChange={(value) =>
 																setAttributes({
-																	displayShadow: value,
-																});
-															}}
-															onColorChange={(value) => {
-																saveShadow({ color: value });
-															}}
-															onOpacityChange={(value) => {
-																saveShadow({ opacity: value });
-															}}
-															onHOffsetChange={(value) => {
-																saveShadow({ hOffset: value });
-															}}
-															onVOffsetChange={(value) => {
-																saveShadow({ vOffset: value });
-															}}
-															onBlurChange={(value) => {
-																saveShadow({ blur: value });
-															}}
-															onSpreadChange={(value) => {
-																saveShadow({ spread: value });
-															}}
-															onInsetChange={(value) => {
-																saveShadow({ inset: value });
-															}}
+																	shadow: value,
+																	displayShadow: hasVisibleShadow(value?.[0]),
+																})
+															}
+															tokens={shadowPickableTokens}
+															renderColor={renderShadowColor}
 														/>
 													</>
 												}
@@ -1235,15 +1507,22 @@ export default function KadenceButtonEdit(props) {
 												<HoverToggleControl
 													hover={
 														<>
-															<PopColorControl
+															<EditorColorControl
 																label={__('Color Hover', 'kadence-blocks')}
 																value={
 																	colorTransparentHover ? colorTransparentHover : ''
 																}
-																default={''}
-																onChange={(value) =>
-																	setAttributes({ colorTransparentHover: value })
+																groups={colorGroups}
+																onPick={(alias) =>
+																	setAttributes({ colorTransparentHover: alias })
 																}
+																onCustom={(literal) =>
+																	setAttributes({ colorTransparentHover: literal })
+																}
+																onClear={() =>
+																	setAttributes({ colorTransparentHover: '' })
+																}
+																resolveLiteral={resolveColorLiteral}
 															/>
 															<BackgroundTypeControl
 																label={__('Hover Type', 'kadence-blocks')}
@@ -1269,20 +1548,33 @@ export default function KadenceButtonEdit(props) {
 																/>
 															)}
 															{'normal' === backgroundTransparentHoverType && (
-																<PopColorControl
+																<EditorColorControl
 																	label={__('Background Color', 'kadence-blocks')}
 																	value={
 																		backgroundTransparentHover
 																			? backgroundTransparentHover
 																			: ''
 																	}
-																	default={''}
-																	onChange={(value) =>
-																		setAttributes({ backgroundHover: value })
+																	groups={colorGroups}
+																	onPick={(alias) =>
+																		setAttributes({
+																			backgroundTransparentHover: alias,
+																		})
 																	}
+																	onCustom={(literal) =>
+																		setAttributes({
+																			backgroundTransparentHover: literal,
+																		})
+																	}
+																	onClear={() =>
+																		setAttributes({
+																			backgroundTransparentHover: '',
+																		})
+																	}
+																	resolveLiteral={resolveColorLiteral}
 																/>
 															)}
-															<ResponsiveBorderControl
+															<EditorBorderControl
 																label={__('Border', 'kadence-blocks')}
 																value={borderTransparentHoverStyle}
 																tabletValue={tabletBorderTransparentHoverStyle}
@@ -1302,27 +1594,36 @@ export default function KadenceButtonEdit(props) {
 																		mobileBorderTransparentHoverStyle: value,
 																	})
 																}
+																previewDevice={previewDevice}
+																onDeviceChange={setPreviewDevice}
+																widthTokens={borderWidthPickableTokens}
+																defaultValue={borderWidthPresetValue}
+																renderColor={renderBorderColor}
+																state={borderTransparentHoverBorderBinding}
+																onReset={resetBorderTransparentHoverBorder}
 															/>
-															<ResponsiveMeasurementControls
+															<EditorBoxControl
 																label={__('Border Radius', 'kadence-blocks')}
-																value={borderTransparentHoverRadius}
-																tabletValue={tabletBorderTransparentHoverRadius}
-																mobileValue={mobileBorderTransparentHoverRadius}
-																onChange={(value) =>
+																value={borderTransparentHoverRadiusForDevice.value}
+																onChange={(next) =>
 																	setAttributes({
-																		borderTransparentHoverRadius: value,
+																		[borderTransparentHoverRadiusForDevice.attr]:
+																			next,
 																	})
 																}
-																onChangeTablet={(value) =>
-																	setAttributes({
-																		tabletBorderTransparentHoverRadius: value,
-																	})
+																previewDevice={previewDevice}
+																onDeviceChange={setPreviewDevice}
+																tokens={borderRadiusTokens}
+																defaultValue={
+																	inheritedBorderTransparentHoverRadius.values
 																}
-																onChangeMobile={(value) =>
-																	setAttributes({
-																		mobileBorderTransparentHoverRadius: value,
-																	})
-																}
+																inherited={anyCornerInherited(
+																	inheritedBorderTransparentHoverRadius.inherited
+																)}
+																state={borderTransparentHoverRadiusBinding}
+																onReset={resetBorderTransparentHoverRadius}
+																isLinked={borderTransparentHoverRadiusIsLinked}
+																onToggleLink={toggleBorderTransparentHoverRadiusLink}
 																unit={borderTransparentHoverRadiusUnit}
 																units={['px', 'em', 'rem', '%']}
 																onUnit={(value) =>
@@ -1330,120 +1631,42 @@ export default function KadenceButtonEdit(props) {
 																		borderTransparentHoverRadiusUnit: value,
 																	})
 																}
-																max={
-																	borderTransparentHoverRadiusUnit === 'em' ||
-																	borderTransparentHoverRadiusUnit === 'rem'
-																		? 24
-																		: 500
-																}
-																step={
-																	borderTransparentHoverRadiusUnit === 'em' ||
-																	borderTransparentHoverRadiusUnit === 'rem'
-																		? 0.1
-																		: 1
-																}
+																max={borderTransparentHoverRadiusIsRelative ? 24 : 500}
+																step={borderTransparentHoverRadiusIsRelative ? 0.1 : 1}
 																min={0}
-																isBorderRadius={true}
-																allowEmpty={true}
 															/>
-															<BoxShadowControl
+															<EditorShadowControl
+																defaultValue={shadowPresetValue}
 																label={__('Box Shadow', 'kadence-blocks')}
-																enable={
-																	undefined !== displayHoverShadowTransparent
-																		? displayHoverShadowTransparent
-																		: false
-																}
-																color={
-																	undefined !== shadowTransparentHover &&
-																	undefined !== shadowTransparentHover[0] &&
-																	undefined !== shadowTransparentHover[0].color
-																		? shadowTransparentHover[0].color
-																		: '#000000'
-																}
-																colorDefault={'#000000'}
-																onArrayChange={(color, opacity) => {
-																	saveShadowTransparentHover({ color, opacity });
-																}}
-																opacity={
-																	undefined !== shadowTransparentHover &&
-																	undefined !== shadowTransparentHover[0] &&
-																	undefined !== shadowTransparentHover[0].opacity
-																		? shadowTransparentHover[0].opacity
-																		: 0.2
-																}
-																hOffset={
-																	undefined !== shadowTransparentHover &&
-																	undefined !== shadowTransparentHover[0] &&
-																	undefined !== shadowTransparentHover[0].hOffset
-																		? shadowTransparentHover[0].hOffset
-																		: 0
-																}
-																vOffset={
-																	undefined !== shadowTransparentHover &&
-																	undefined !== shadowTransparentHover[0] &&
-																	undefined !== shadowTransparentHover[0].vOffset
-																		? shadowTransparentHover[0].vOffset
-																		: 0
-																}
-																blur={
-																	undefined !== shadowTransparentHover &&
-																	undefined !== shadowTransparentHover[0] &&
-																	undefined !== shadowTransparentHover[0].blur
-																		? shadowTransparentHover[0].blur
-																		: 14
-																}
-																spread={
-																	undefined !== shadowTransparentHover &&
-																	undefined !== shadowTransparentHover[0] &&
-																	undefined !== shadowTransparentHover[0].spread
-																		? shadowTransparentHover[0].spread
-																		: 0
-																}
-																inset={
-																	undefined !== shadowTransparentHover &&
-																	undefined !== shadowTransparentHover[0] &&
-																	undefined !== shadowTransparentHover[0].inset
-																		? shadowTransparentHover[0].inset
-																		: false
-																}
-																onEnableChange={(value) => {
+																value={shadowTransparentHover}
+																enabled={displayHoverShadowTransparent}
+																onChange={(value) =>
 																	setAttributes({
-																		displayHoverShadowTransparent: value,
-																	});
-																}}
-																onColorChange={(value) => {
-																	saveShadowTransparentHover({ color: value });
-																}}
-																onOpacityChange={(value) => {
-																	saveShadowTransparentHover({ opacity: value });
-																}}
-																onHOffsetChange={(value) => {
-																	saveShadowTransparentHover({ hOffset: value });
-																}}
-																onVOffsetChange={(value) => {
-																	saveShadowTransparentHover({ vOffset: value });
-																}}
-																onBlurChange={(value) => {
-																	saveShadowTransparentHover({ blur: value });
-																}}
-																onSpreadChange={(value) => {
-																	saveShadowTransparentHover({ spread: value });
-																}}
-																onInsetChange={(value) => {
-																	saveShadowTransparentHover({ inset: value });
-																}}
+																		shadowTransparentHover: value,
+																		displayHoverShadowTransparent: hasVisibleShadow(
+																			value?.[0]
+																		),
+																	})
+																}
+																tokens={shadowPickableTokens}
+																renderColor={renderShadowColor}
 															/>
 														</>
 													}
 													normal={
 														<>
-															<PopColorControl
+															<EditorColorControl
 																label={__('Color', 'kadence-blocks')}
 																value={colorTransparent ? colorTransparent : ''}
-																default={''}
-																onChange={(value) =>
-																	setAttributes({ colorTransparent: value })
+																groups={colorGroups}
+																onPick={(alias) =>
+																	setAttributes({ colorTransparent: alias })
 																}
+																onCustom={(literal) =>
+																	setAttributes({ colorTransparent: literal })
+																}
+																onClear={() => setAttributes({ colorTransparent: '' })}
+																resolveLiteral={resolveColorLiteral}
 															/>
 															<BackgroundTypeControl
 																label={__('Type', 'kadence-blocks')}
@@ -1467,20 +1690,29 @@ export default function KadenceButtonEdit(props) {
 																/>
 															)}
 															{'normal' === backgroundTransparentType && (
-																<PopColorControl
+																<EditorColorControl
 																	label={__('Background Color', 'kadence-blocks')}
 																	value={
 																		backgroundTransparent
 																			? backgroundTransparent
 																			: ''
 																	}
-																	default={''}
-																	onChange={(value) =>
-																		setAttributes({ backgroundTransparent: value })
+																	groups={colorGroups}
+																	onPick={(alias) =>
+																		setAttributes({ backgroundTransparent: alias })
 																	}
+																	onCustom={(literal) =>
+																		setAttributes({
+																			backgroundTransparent: literal,
+																		})
+																	}
+																	onClear={() =>
+																		setAttributes({ backgroundTransparent: '' })
+																	}
+																	resolveLiteral={resolveColorLiteral}
 																/>
 															)}
-															<ResponsiveBorderControl
+															<EditorBorderControl
 																label={__('Border', 'kadence-blocks')}
 																value={borderTransparentStyle}
 																tabletValue={tabletBorderTransparentStyle}
@@ -1498,25 +1730,33 @@ export default function KadenceButtonEdit(props) {
 																		mobileBorderTransparentStyle: value,
 																	})
 																}
+																previewDevice={previewDevice}
+																onDeviceChange={setPreviewDevice}
+																widthTokens={borderWidthPickableTokens}
+																defaultValue={borderWidthPresetValue}
+																renderColor={renderBorderColor}
+																state={borderTransparentBorderBinding}
+																onReset={resetBorderTransparentBorder}
 															/>
-															<ResponsiveMeasurementControls
+															<EditorBoxControl
 																label={__('Border Radius', 'kadence-blocks')}
-																value={borderTransparentRadius}
-																tabletValue={tabletBorderTransparentRadius}
-																mobileValue={mobileBorderTransparentRadius}
-																onChange={(value) =>
-																	setAttributes({ borderTransparentRadius: value })
-																}
-																onChangeTablet={(value) =>
+																value={borderTransparentRadiusForDevice.value}
+																onChange={(next) =>
 																	setAttributes({
-																		tabletBorderTransparentRadius: value,
+																		[borderTransparentRadiusForDevice.attr]: next,
 																	})
 																}
-																onChangeMobile={(value) =>
-																	setAttributes({
-																		mobileBorderTransparentRadius: value,
-																	})
-																}
+																previewDevice={previewDevice}
+																onDeviceChange={setPreviewDevice}
+																tokens={borderRadiusTokens}
+																defaultValue={inheritedBorderTransparentRadius.values}
+																inherited={anyCornerInherited(
+																	inheritedBorderTransparentRadius.inherited
+																)}
+																state={borderTransparentRadiusBinding}
+																onReset={resetBorderTransparentRadius}
+																isLinked={borderTransparentRadiusIsLinked}
+																onToggleLink={toggleBorderTransparentRadiusLink}
 																unit={borderTransparentRadiusUnit}
 																units={['px', 'em', 'rem', '%']}
 																onUnit={(value) =>
@@ -1524,108 +1764,25 @@ export default function KadenceButtonEdit(props) {
 																		borderTransparentRadiusUnit: value,
 																	})
 																}
-																max={
-																	borderTransparentRadiusUnit === 'em' ||
-																	borderTransparentRadiusUnit === 'rem'
-																		? 24
-																		: 500
-																}
-																step={
-																	borderTransparentRadiusUnit === 'em' ||
-																	borderTransparentRadiusUnit === 'rem'
-																		? 0.1
-																		: 1
-																}
+																max={borderTransparentRadiusIsRelative ? 24 : 500}
+																step={borderTransparentRadiusIsRelative ? 0.1 : 1}
 																min={0}
-																isBorderRadius={true}
-																allowEmpty={true}
 															/>
-															<BoxShadowControl
+															<EditorShadowControl
+																defaultValue={shadowPresetValue}
 																label={__('Box Shadow', 'kadence-blocks')}
-																enable={
-																	undefined !== displayShadowTransparent
-																		? displayShadowTransparent
-																		: false
-																}
-																color={
-																	undefined !== shadowTransparent &&
-																	undefined !== shadowTransparent[0] &&
-																	undefined !== shadowTransparent[0].color
-																		? shadowTransparent[0].color
-																		: '#000000'
-																}
-																colorDefault={'#000000'}
-																onArrayChange={(color, opacity) => {
-																	saveShadowTransparent({ color, opacity });
-																}}
-																opacity={
-																	undefined !== shadowTransparent &&
-																	undefined !== shadowTransparent[0] &&
-																	undefined !== shadowTransparent[0].opacity
-																		? shadowTransparent[0].opacity
-																		: 0.2
-																}
-																hOffset={
-																	undefined !== shadowTransparent &&
-																	undefined !== shadowTransparent[0] &&
-																	undefined !== shadowTransparent[0].hOffset
-																		? shadowTransparent[0].hOffset
-																		: 0
-																}
-																vOffset={
-																	undefined !== shadowTransparent &&
-																	undefined !== shadowTransparent[0] &&
-																	undefined !== shadowTransparent[0].vOffset
-																		? shadow[0].vOffset
-																		: 0
-																}
-																blur={
-																	undefined !== shadowTransparent &&
-																	undefined !== shadowTransparent[0] &&
-																	undefined !== shadowTransparent[0].blur
-																		? shadowTransparent[0].blur
-																		: 14
-																}
-																spread={
-																	undefined !== shadowTransparent &&
-																	undefined !== shadowTransparent[0] &&
-																	undefined !== shadowTransparent[0].spread
-																		? shadowTransparent[0].spread
-																		: 0
-																}
-																inset={
-																	undefined !== shadowTransparent &&
-																	undefined !== shadowTransparent[0] &&
-																	undefined !== shadowTransparent[0].inset
-																		? shadowTransparent[0].inset
-																		: false
-																}
-																onEnableChange={(value) => {
+																value={shadowTransparent}
+																enabled={displayShadowTransparent}
+																onChange={(value) =>
 																	setAttributes({
-																		displayShadowTransparent: value,
-																	});
-																}}
-																onColorChange={(value) => {
-																	saveShadowTransparent({ color: value });
-																}}
-																onOpacityChange={(value) => {
-																	saveShadowTransparent({ opacity: value });
-																}}
-																onHOffsetChange={(value) => {
-																	saveShadowTransparent({ hOffset: value });
-																}}
-																onVOffsetChange={(value) => {
-																	saveShadowTransparent({ vOffset: value });
-																}}
-																onBlurChange={(value) => {
-																	saveShadowTransparent({ blur: value });
-																}}
-																onSpreadChange={(value) => {
-																	saveShadowTransparent({ spread: value });
-																}}
-																onInsetChange={(value) => {
-																	saveShadowTransparent({ inset: value });
-																}}
+																		shadowTransparent: value,
+																		displayShadowTransparent: hasVisibleShadow(
+																			value?.[0]
+																		),
+																	})
+																}
+																tokens={shadowPickableTokens}
+																renderColor={renderShadowColor}
 															/>
 														</>
 													}
@@ -1641,13 +1798,18 @@ export default function KadenceButtonEdit(props) {
 												<HoverToggleControl
 													hover={
 														<>
-															<PopColorControl
+															<EditorColorControl
 																label={__('Color Hover', 'kadence-blocks')}
 																value={colorStickyHover ? colorStickyHover : ''}
-																default={''}
-																onChange={(value) =>
-																	setAttributes({ colorStickyHover: value })
+																groups={colorGroups}
+																onPick={(alias) =>
+																	setAttributes({ colorStickyHover: alias })
 																}
+																onCustom={(literal) =>
+																	setAttributes({ colorStickyHover: literal })
+																}
+																onClear={() => setAttributes({ colorStickyHover: '' })}
+																resolveLiteral={resolveColorLiteral}
 															/>
 															<BackgroundTypeControl
 																label={__('Hover Type', 'kadence-blocks')}
@@ -1673,20 +1835,31 @@ export default function KadenceButtonEdit(props) {
 																/>
 															)}
 															{'normal' === backgroundStickyHoverType && (
-																<PopColorControl
+																<EditorColorControl
 																	label={__('Background Color', 'kadence-blocks')}
 																	value={
 																		backgroundStickyHover
 																			? backgroundStickyHover
 																			: ''
 																	}
-																	default={''}
-																	onChange={(value) =>
-																		setAttributes({ backgroundHover: value })
+																	groups={colorGroups}
+																	onPick={(alias) =>
+																		setAttributes({
+																			backgroundStickyHover: alias,
+																		})
 																	}
+																	onCustom={(literal) =>
+																		setAttributes({
+																			backgroundStickyHover: literal,
+																		})
+																	}
+																	onClear={() =>
+																		setAttributes({ backgroundStickyHover: '' })
+																	}
+																	resolveLiteral={resolveColorLiteral}
 																/>
 															)}
-															<ResponsiveBorderControl
+															<EditorBorderControl
 																label={__('Border', 'kadence-blocks')}
 																value={borderStickyHoverStyle}
 																tabletValue={tabletBorderStickyHoverStyle}
@@ -1706,27 +1879,33 @@ export default function KadenceButtonEdit(props) {
 																		mobileBorderStickyHoverStyle: value,
 																	})
 																}
+																previewDevice={previewDevice}
+																onDeviceChange={setPreviewDevice}
+																widthTokens={borderWidthPickableTokens}
+																defaultValue={borderWidthPresetValue}
+																renderColor={renderBorderColor}
+																state={borderStickyHoverBorderBinding}
+																onReset={resetBorderStickyHoverBorder}
 															/>
-															<ResponsiveMeasurementControls
+															<EditorBoxControl
 																label={__('Border Radius', 'kadence-blocks')}
-																value={borderStickyHoverRadius}
-																tabletValue={tabletBorderStickyHoverRadius}
-																mobileValue={mobileBorderStickyHoverRadius}
-																onChange={(value) =>
+																value={borderStickyHoverRadiusForDevice.value}
+																onChange={(next) =>
 																	setAttributes({
-																		borderStickyHoverRadius: value,
+																		[borderStickyHoverRadiusForDevice.attr]: next,
 																	})
 																}
-																onChangeTablet={(value) =>
-																	setAttributes({
-																		tabletBorderStickyHoverRadius: value,
-																	})
-																}
-																onChangeMobile={(value) =>
-																	setAttributes({
-																		mobileBorderStickyHoverRadius: value,
-																	})
-																}
+																previewDevice={previewDevice}
+																onDeviceChange={setPreviewDevice}
+																tokens={borderRadiusTokens}
+																defaultValue={inheritedBorderStickyHoverRadius.values}
+																inherited={anyCornerInherited(
+																	inheritedBorderStickyHoverRadius.inherited
+																)}
+																state={borderStickyHoverRadiusBinding}
+																onReset={resetBorderStickyHoverRadius}
+																isLinked={borderStickyHoverRadiusIsLinked}
+																onToggleLink={toggleBorderStickyHoverRadiusLink}
 																unit={borderStickyHoverRadiusUnit}
 																units={['px', 'em', 'rem', '%']}
 																onUnit={(value) =>
@@ -1734,120 +1913,42 @@ export default function KadenceButtonEdit(props) {
 																		borderStickyHoverRadiusUnit: value,
 																	})
 																}
-																max={
-																	borderStickyHoverRadiusUnit === 'em' ||
-																	borderStickyHoverRadiusUnit === 'rem'
-																		? 24
-																		: 500
-																}
-																step={
-																	borderStickyHoverRadiusUnit === 'em' ||
-																	borderStickyHoverRadiusUnit === 'rem'
-																		? 0.1
-																		: 1
-																}
+																max={borderStickyHoverRadiusIsRelative ? 24 : 500}
+																step={borderStickyHoverRadiusIsRelative ? 0.1 : 1}
 																min={0}
-																isBorderRadius={true}
-																allowEmpty={true}
 															/>
-															<BoxShadowControl
+															<EditorShadowControl
+																defaultValue={shadowPresetValue}
 																label={__('Box Shadow', 'kadence-blocks')}
-																enable={
-																	undefined !== displayHoverShadowSticky
-																		? displayHoverShadowSticky
-																		: false
-																}
-																color={
-																	undefined !== shadowStickyHover &&
-																	undefined !== shadowStickyHover[0] &&
-																	undefined !== shadowStickyHover[0].color
-																		? shadowStickyHover[0].color
-																		: '#000000'
-																}
-																colorDefault={'#000000'}
-																onArrayChange={(color, opacity) => {
-																	saveShadowStickyHover({ color, opacity });
-																}}
-																opacity={
-																	undefined !== shadowStickyHover &&
-																	undefined !== shadowStickyHover[0] &&
-																	undefined !== shadowStickyHover[0].opacity
-																		? shadowStickyHover[0].opacity
-																		: 0.2
-																}
-																hOffset={
-																	undefined !== shadowStickyHover &&
-																	undefined !== shadowStickyHover[0] &&
-																	undefined !== shadowStickyHover[0].hOffset
-																		? shadowStickyHover[0].hOffset
-																		: 0
-																}
-																vOffset={
-																	undefined !== shadowStickyHover &&
-																	undefined !== shadowStickyHover[0] &&
-																	undefined !== shadowStickyHover[0].vOffset
-																		? shadowStickyHover[0].vOffset
-																		: 0
-																}
-																blur={
-																	undefined !== shadowStickyHover &&
-																	undefined !== shadowStickyHover[0] &&
-																	undefined !== shadowStickyHover[0].blur
-																		? shadowStickyHover[0].blur
-																		: 14
-																}
-																spread={
-																	undefined !== shadowStickyHover &&
-																	undefined !== shadowStickyHover[0] &&
-																	undefined !== shadowStickyHover[0].spread
-																		? shadowStickyHover[0].spread
-																		: 0
-																}
-																inset={
-																	undefined !== shadowStickyHover &&
-																	undefined !== shadowStickyHover[0] &&
-																	undefined !== shadowStickyHover[0].inset
-																		? shadowStickyHover[0].inset
-																		: false
-																}
-																onEnableChange={(value) => {
+																value={shadowStickyHover}
+																enabled={displayHoverShadowSticky}
+																onChange={(value) =>
 																	setAttributes({
-																		displayHoverShadowSticky: value,
-																	});
-																}}
-																onColorChange={(value) => {
-																	saveShadowStickyHover({ color: value });
-																}}
-																onOpacityChange={(value) => {
-																	saveShadowStickyHover({ opacity: value });
-																}}
-																onHOffsetChange={(value) => {
-																	saveShadowStickyHover({ hOffset: value });
-																}}
-																onVOffsetChange={(value) => {
-																	saveShadowStickyHover({ vOffset: value });
-																}}
-																onBlurChange={(value) => {
-																	saveShadowStickyHover({ blur: value });
-																}}
-																onSpreadChange={(value) => {
-																	saveShadowStickyHover({ spread: value });
-																}}
-																onInsetChange={(value) => {
-																	saveShadowStickyHover({ inset: value });
-																}}
+																		shadowStickyHover: value,
+																		displayHoverShadowSticky: hasVisibleShadow(
+																			value?.[0]
+																		),
+																	})
+																}
+																tokens={shadowPickableTokens}
+																renderColor={renderShadowColor}
 															/>
 														</>
 													}
 													normal={
 														<>
-															<PopColorControl
+															<EditorColorControl
 																label={__('Color', 'kadence-blocks')}
 																value={colorSticky ? colorSticky : ''}
-																default={''}
-																onChange={(value) =>
-																	setAttributes({ colorSticky: value })
+																groups={colorGroups}
+																onPick={(alias) =>
+																	setAttributes({ colorSticky: alias })
 																}
+																onCustom={(literal) =>
+																	setAttributes({ colorSticky: literal })
+																}
+																onClear={() => setAttributes({ colorSticky: '' })}
+																resolveLiteral={resolveColorLiteral}
 															/>
 															<BackgroundTypeControl
 																label={__('Type', 'kadence-blocks')}
@@ -1871,16 +1972,23 @@ export default function KadenceButtonEdit(props) {
 																/>
 															)}
 															{'normal' === backgroundStickyType && (
-																<PopColorControl
+																<EditorColorControl
 																	label={__('Background Color', 'kadence-blocks')}
 																	value={backgroundSticky ? backgroundSticky : ''}
-																	default={''}
-																	onChange={(value) =>
-																		setAttributes({ backgroundSticky: value })
+																	groups={colorGroups}
+																	onPick={(alias) =>
+																		setAttributes({ backgroundSticky: alias })
 																	}
+																	onCustom={(literal) =>
+																		setAttributes({ backgroundSticky: literal })
+																	}
+																	onClear={() =>
+																		setAttributes({ backgroundSticky: '' })
+																	}
+																	resolveLiteral={resolveColorLiteral}
 																/>
 															)}
-															<ResponsiveBorderControl
+															<EditorBorderControl
 																label={__('Border', 'kadence-blocks')}
 																value={borderStickyStyle}
 																tabletValue={tabletBorderStickyStyle}
@@ -1898,25 +2006,33 @@ export default function KadenceButtonEdit(props) {
 																		mobileBorderStickyStyle: value,
 																	})
 																}
+																previewDevice={previewDevice}
+																onDeviceChange={setPreviewDevice}
+																widthTokens={borderWidthPickableTokens}
+																defaultValue={borderWidthPresetValue}
+																renderColor={renderBorderColor}
+																state={borderStickyBorderBinding}
+																onReset={resetBorderStickyBorder}
 															/>
-															<ResponsiveMeasurementControls
+															<EditorBoxControl
 																label={__('Border Radius', 'kadence-blocks')}
-																value={borderStickyRadius}
-																tabletValue={tabletBorderStickyRadius}
-																mobileValue={mobileBorderStickyRadius}
-																onChange={(value) =>
-																	setAttributes({ borderStickyRadius: value })
-																}
-																onChangeTablet={(value) =>
+																value={borderStickyRadiusForDevice.value}
+																onChange={(next) =>
 																	setAttributes({
-																		tabletBorderStickyRadius: value,
+																		[borderStickyRadiusForDevice.attr]: next,
 																	})
 																}
-																onChangeMobile={(value) =>
-																	setAttributes({
-																		mobileBorderStickyRadius: value,
-																	})
-																}
+																previewDevice={previewDevice}
+																onDeviceChange={setPreviewDevice}
+																tokens={borderRadiusTokens}
+																defaultValue={inheritedBorderStickyRadius.values}
+																inherited={anyCornerInherited(
+																	inheritedBorderStickyRadius.inherited
+																)}
+																state={borderStickyRadiusBinding}
+																onReset={resetBorderStickyRadius}
+																isLinked={borderStickyRadiusIsLinked}
+																onToggleLink={toggleBorderStickyRadiusLink}
 																unit={borderStickyRadiusUnit}
 																units={['px', 'em', 'rem', '%']}
 																onUnit={(value) =>
@@ -1924,108 +2040,25 @@ export default function KadenceButtonEdit(props) {
 																		borderStickyRadiusUnit: value,
 																	})
 																}
-																max={
-																	borderStickyRadiusUnit === 'em' ||
-																	borderStickyRadiusUnit === 'rem'
-																		? 24
-																		: 500
-																}
-																step={
-																	borderStickyRadiusUnit === 'em' ||
-																	borderStickyRadiusUnit === 'rem'
-																		? 0.1
-																		: 1
-																}
+																max={borderStickyRadiusIsRelative ? 24 : 500}
+																step={borderStickyRadiusIsRelative ? 0.1 : 1}
 																min={0}
-																isBorderRadius={true}
-																allowEmpty={true}
 															/>
-															<BoxShadowControl
+															<EditorShadowControl
+																defaultValue={shadowPresetValue}
 																label={__('Box Shadow', 'kadence-blocks')}
-																enable={
-																	undefined !== displayShadowSticky
-																		? displayShadowSticky
-																		: false
-																}
-																color={
-																	undefined !== shadowSticky &&
-																	undefined !== shadowSticky[0] &&
-																	undefined !== shadowSticky[0].color
-																		? shadowSticky[0].color
-																		: '#000000'
-																}
-																colorDefault={'#000000'}
-																onArrayChange={(color, opacity) => {
-																	saveShadowSticky({ color, opacity });
-																}}
-																opacity={
-																	undefined !== shadowSticky &&
-																	undefined !== shadowSticky[0] &&
-																	undefined !== shadowSticky[0].opacity
-																		? shadowSticky[0].opacity
-																		: 0.2
-																}
-																hOffset={
-																	undefined !== shadowSticky &&
-																	undefined !== shadowSticky[0] &&
-																	undefined !== shadowSticky[0].hOffset
-																		? shadowSticky[0].hOffset
-																		: 0
-																}
-																vOffset={
-																	undefined !== shadowSticky &&
-																	undefined !== shadowSticky[0] &&
-																	undefined !== shadowSticky[0].vOffset
-																		? shadow[0].vOffset
-																		: 0
-																}
-																blur={
-																	undefined !== shadowSticky &&
-																	undefined !== shadowSticky[0] &&
-																	undefined !== shadowSticky[0].blur
-																		? shadowSticky[0].blur
-																		: 14
-																}
-																spread={
-																	undefined !== shadowSticky &&
-																	undefined !== shadowSticky[0] &&
-																	undefined !== shadowSticky[0].spread
-																		? shadowSticky[0].spread
-																		: 0
-																}
-																inset={
-																	undefined !== shadowSticky &&
-																	undefined !== shadowSticky[0] &&
-																	undefined !== shadowSticky[0].inset
-																		? shadowSticky[0].inset
-																		: false
-																}
-																onEnableChange={(value) => {
+																value={shadowSticky}
+																enabled={displayShadowSticky}
+																onChange={(value) =>
 																	setAttributes({
-																		displayShadowSticky: value,
-																	});
-																}}
-																onColorChange={(value) => {
-																	saveShadowSticky({ color: value });
-																}}
-																onOpacityChange={(value) => {
-																	saveShadowSticky({ opacity: value });
-																}}
-																onHOffsetChange={(value) => {
-																	saveShadowSticky({ hOffset: value });
-																}}
-																onVOffsetChange={(value) => {
-																	saveShadowSticky({ vOffset: value });
-																}}
-																onBlurChange={(value) => {
-																	saveShadowSticky({ blur: value });
-																}}
-																onSpreadChange={(value) => {
-																	saveShadowSticky({ spread: value });
-																}}
-																onInsetChange={(value) => {
-																	saveShadowSticky({ inset: value });
-																}}
+																		shadowSticky: value,
+																		displayShadowSticky: hasVisibleShadow(
+																			value?.[0]
+																		),
+																	})
+																}
+																tokens={shadowPickableTokens}
+																renderColor={renderShadowColor}
 															/>
 														</>
 													}
@@ -2252,20 +2285,26 @@ export default function KadenceButtonEdit(props) {
 											}}
 											units={['px', 'em', 'rem']}
 										/>
-										<PopColorControl
-											label={__('Icon Color', 'kadence-blocks')}
-											value={iconColor ? iconColor : ''}
-											default={''}
-											onChange={(value) => {
-												setAttributes({ iconColor: value });
-											}}
-											swatchLabel2={__('Hover Color', 'kadence-blocks')}
-											value2={iconColorHover ? iconColorHover : ''}
-											default2={''}
-											onChange2={(value) => {
-												setAttributes({ iconColorHover: value });
-											}}
-										/>
+										<EditorColorControlGroup>
+											<ColorControl
+												label={__('Icon Color', 'kadence-blocks')}
+												value={iconColor ? iconColor : ''}
+												groups={colorGroups}
+												onPick={(alias) => setAttributes({ iconColor: alias })}
+												onCustom={(literal) => setAttributes({ iconColor: literal })}
+												onClear={() => setAttributes({ iconColor: '' })}
+												resolveLiteral={resolveColorLiteral}
+											/>
+											<ColorControl
+												label={__('Hover Color', 'kadence-blocks')}
+												value={iconColorHover ? iconColorHover : ''}
+												groups={colorGroups}
+												onPick={(alias) => setAttributes({ iconColorHover: alias })}
+												onCustom={(literal) => setAttributes({ iconColorHover: literal })}
+												onClear={() => setAttributes({ iconColorHover: '' })}
+												resolveLiteral={resolveColorLiteral}
+											/>
+										</EditorColorControlGroup>
 										<ResponsiveMeasureRangeControl
 											label={__('Icon Padding', 'kadence-blocks')}
 											value={undefined !== iconPadding ? iconPadding : ['', '', '', '']}
@@ -2327,6 +2366,7 @@ export default function KadenceButtonEdit(props) {
 											onTextTransform={(value) => saveTypography({ textTransform: value })}
 											fontFamily={typography[0].family}
 											onFontFamily={(value) => saveTypography({ family: value })}
+											context={{ blockName: 'kadence/singlebtn' }}
 											onFontChange={(select) => {
 												saveTypography({
 													family: select.value,
@@ -2367,40 +2407,47 @@ export default function KadenceButtonEdit(props) {
 								{showSettings('marginSettings', 'kadence/advancedbtn') && (
 									<>
 										<KadencePanelBody panelName={'kb-single-button-margin-settings'}>
-											<ResponsiveMeasureRangeControl
+											<EditorBoxControl
 												label={__('Padding', 'kadence-blocks')}
-												value={padding}
-												onChange={(value) => setAttributes({ padding: value })}
-												tabletValue={tabletPadding}
-												onChangeTablet={(value) => setAttributes({ tabletPadding: value })}
-												mobileValue={mobilePadding}
-												onChangeMobile={(value) => setAttributes({ mobilePadding: value })}
-												min={paddingUnit === 'em' || paddingUnit === 'rem' ? -25 : -999}
-												max={paddingUnit === 'em' || paddingUnit === 'rem' ? 25 : 999}
-												step={paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1}
+												value={paddingForDevice.value}
+												onChange={(next) => setAttributes({ [paddingForDevice.attr]: next })}
+												previewDevice={previewDevice}
+												onDeviceChange={setPreviewDevice}
+												tokens={paddingPickableTokens}
+												defaultValue={inheritedPadding.values}
+												inherited={anyCornerInherited(inheritedPadding.inherited)}
+												state={tokenBinding.padding}
+												onReset={() => resetToken('padding')}
+												isLinked={paddingIsLinked}
+												onToggleLink={togglePaddingLink}
+												role="sides"
 												unit={paddingUnit}
 												units={['px', 'em', 'rem']}
 												onUnit={(value) => setAttributes({ paddingUnit: value })}
-												onMouseOver={paddingMouseOver.onMouseOver}
-												onMouseOut={paddingMouseOver.onMouseOut}
+												min={paddingUnit === 'em' || paddingUnit === 'rem' ? -25 : -999}
+												max={paddingUnit === 'em' || paddingUnit === 'rem' ? 25 : 999}
+												step={paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1}
 											/>
-											<ResponsiveMeasureRangeControl
+											<EditorBoxControl
 												label={__('Margin', 'kadence-blocks')}
-												value={margin}
-												onChange={(value) => setAttributes({ margin: value })}
-												tabletValue={tabletMargin}
-												onChangeTablet={(value) => setAttributes({ tabletMargin: value })}
-												mobileValue={mobileMargin}
-												onChangeMobile={(value) => setAttributes({ mobileMargin: value })}
-												min={marginUnit === 'em' || marginUnit === 'rem' ? -25 : -999}
-												max={marginUnit === 'em' || marginUnit === 'rem' ? 25 : 999}
-												step={marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1}
+												value={marginForDevice.value}
+												onChange={(next) => setAttributes({ [marginForDevice.attr]: next })}
+												previewDevice={previewDevice}
+												onDeviceChange={setPreviewDevice}
+												tokens={marginPickableTokens}
+												defaultValue={inheritedMargin.values}
+												inherited={anyCornerInherited(inheritedMargin.inherited)}
+												state={tokenBinding.margin}
+												onReset={() => resetToken('margin')}
+												isLinked={marginIsLinked}
+												onToggleLink={toggleMarginLink}
+												role="sides"
 												unit={marginUnit}
 												units={['px', 'em', 'rem']}
 												onUnit={(value) => setAttributes({ marginUnit: value })}
-												onMouseOver={marginMouseOver.onMouseOver}
-												onMouseOut={marginMouseOver.onMouseOut}
-												allowAuto={true}
+												min={marginUnit === 'em' || marginUnit === 'rem' ? -25 : -999}
+												max={marginUnit === 'em' || marginUnit === 'rem' ? 25 : 999}
+												step={marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1}
 											/>
 											<TextControl
 												label={__('Add Aria Label', 'kadence-blocks')}
@@ -2530,7 +2577,6 @@ export default function KadenceButtonEdit(props) {
 						)}
 						<SpacingVisualizer
 							type="inside"
-							forceShow={paddingMouseOver.isMouseOver}
 							spacing={[
 								getSpacingOptionOutput(previewPaddingTop, previewPaddingUnit),
 								getSpacingOptionOutput(previewPaddingRight, previewPaddingUnit),
@@ -2542,7 +2588,6 @@ export default function KadenceButtonEdit(props) {
 				</Tooltip>
 				<SpacingVisualizer
 					type="inside"
-					forceShow={marginMouseOver.isMouseOver}
 					spacing={[
 						getSpacingOptionOutput(previewMarginTop, previewMarginUnit),
 						getSpacingOptionOutput(previewMarginRight, previewMarginUnit),

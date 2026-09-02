@@ -1,0 +1,16 @@
+// No `max-width` on purpose: a capped measure wrapped the longest sentence on one screen and not
+// the others, which made the header a different height per screen.
+.kadence-blocks-style-library-root .kadence-blocks-style-library__screen-description {
+	margin: var(--kb-sl-space-10) 0 0;
+	color: var(--kb-sl-color-text-muted);
+	font-size: var(--kb-sl-font-size-small);
+	line-height: var(--kb-sl-line-height-s);
+	text-wrap: pretty;
+}
+
+// Only what core's own `.components-external-link` does not already set.
+.kadence-blocks-style-library-root .kadence-blocks-style-library__screen-description .components-external-link {
+	margin-left: 0;
+	color: var(--kb-sl-color-theme);
+	font-weight: var(--kb-sl-font-weight-medium);
+}

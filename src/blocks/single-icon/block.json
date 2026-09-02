@@ -24,7 +24,7 @@
 			"default": "_self"
 		},
 		"size": {
-			"type": "number",
+			"type": ["number", "string"],
 			"default": 50
 		},
 		"width": {
@@ -92,11 +92,11 @@
 			"default": ""
 		},
 		"tabletSize": {
-			"type": "number",
+			"type": ["number", "string"],
 			"default": ""
 		},
 		"mobileSize": {
-			"type": "number",
+			"type": ["number", "string"],
 			"default": ""
 		},
 		"tabletMargin": {
@@ -138,7 +138,9 @@
 		"ktdynamic": true,
 		"html": false,
 		"reusable": false,
-		"kbMetadata": true
+		"kbMetadata": true,
+		"kbPreset": true,
+		"kbPalette": true
 	},
 	"usesContext": ["postId", "queryId", "kadence/dynamicSource", "kadence/repeaterRowData", "kadence/repeaterRow"]
 }

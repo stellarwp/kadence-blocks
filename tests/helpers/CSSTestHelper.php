@@ -97,6 +97,25 @@ class CSSTestHelper {
 	}
 
 	/**
+	 * The declared property names for a selector, in the exact order they were written, excluding
+	 * media queries. A property declared twice (an override) appears twice, in encounter order — the
+	 * ordering `assertCSSPropertiesEqual`'s associative collapse cannot expose, but is exactly what a
+	 * cascade-order assertion (preset var before an explicit override) needs to check directly.
+	 *
+	 * @param string $selector The selector to read, matched exactly as it appears in the source.
+	 *
+	 * @return array<int, string> The property names, in declaration order.
+	 */
+	public function getPropertyOrder($selector): array {
+		return array_map(
+			function ($rule) {
+				return $rule->getRule();
+			},
+			$this->getRulesForSelector($selector)
+		);
+	}
+
+	/**
 	 * Get rules for a selector, excluding media queries
 	 */
 	private function getRulesForSelector($selector) {

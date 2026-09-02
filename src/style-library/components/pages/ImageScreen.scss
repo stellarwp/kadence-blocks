@@ -1,0 +1,70 @@
+@use "../../styles/mixins" as *;
+
+// The tile carries a shadow, which is cast OUTSIDE the element casting it, so this screen relaxes
+// `ListRow`'s default framed preview slot rather than letting `overflow: hidden` clip it — the same
+// override the Shadow screen makes for the same reason.
+.kadence-blocks-style-library__image-screen .kadence-blocks-style-library__list-row-preview {
+	width: auto;
+	height: auto;
+	border: 0;
+	background: transparent;
+	overflow: visible;
+}
+
+// Preset names are full words ("Framed Soft"), not the short numeric labels the shared 4rem column
+// was sized for.
+.kadence-blocks-style-library__image-screen .kadence-blocks-style-library__list-row-label {
+	width: 15rem;
+}
+
+// Unlike the Row Layout band and the Section slab, this tile has no fixed size: it GROWS to fit the
+// preset's padding, so a bigger step reads as a bigger inset instead of eating the photo. The frame
+// mixin supplies the border and the transparency checker and leaves the geometry to the fill inside.
+// The shadow is applied inline from the preset and is drawn outside whatever casts it, so nothing
+// here may clip.
+.kadence-blocks-style-library__image-preset-preview {
+	@include preset-surface-frame;
+
+	display: inline-block;
+	vertical-align: middle;
+}
+
+// Carries the background AND the preset's padding. `content-box` is what makes the tile grow: the box
+// is the photo's fixed size PLUS the padding, so the padding is real space between the frame and the
+// photo at every step rather than an inset that eventually has nowhere left to go. Static, not
+// absolutely positioned — an out-of-flow fill could not size its parent.
+.kadence-blocks-style-library__image-preset-preview-fill {
+	display: block;
+	box-sizing: content-box;
+	border-radius: inherit;
+	transition:
+		background-color 300ms ease,
+		border-radius 300ms ease,
+		padding 300ms ease;
+}
+
+// The stand-in photo: a neutral block filling whatever the padding leaves, carrying a generic picture
+// glyph. Deliberately not a real image — a preset skins whichever image a block holds, so previewing a
+// specific picture would imply the preset selects one. The glyph is what makes padding legible: without
+// something that reads as "the image", an inset frame is just a smaller rectangle and the band around
+// it does not obviously belong to the background.
+.kadence-blocks-style-library__image-preset-preview-photo {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	// Fixed, and the reason the tile can grow: with the photo a known size and the fill sized
+	// `content-box`, the frame's dimensions are simply this plus the padding.
+	width: 3rem;
+	height: 2.25rem;
+	border-radius: inherit;
+	background: var(--kb-sl-color-gray-700);
+	color: var(--kb-sl-color-gray-200);
+	overflow: hidden;
+
+	svg {
+		// Sized against the photo box rather than a font-size — a percentage font-size would resolve
+		// against the inherited size, not the box, and collapse the glyph to a dot.
+		width: 62%;
+		height: 62%;
+	}
+}

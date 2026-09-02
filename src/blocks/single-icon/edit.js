@@ -19,6 +19,15 @@ import {
 } from '@kadence/components';
 import { KadenceColorOutput, uniqueIdHelper, getInQueryBlock, getPreviewSize } from '@kadence/helpers';
 import { useSelect, useDispatch } from '@wordpress/data';
+import { EditorScalarControl } from '../../extension/design-tokens/components/EditorScalarControl';
+import { tokenLiteral } from '../../extension/design-tokens/token-literals';
+import { activeLibrary } from '../../extension/preset-picker';
+import { measureAttrsForDevice } from '../../extension/token-indicators/normalize';
+import { presetPropertyValueForDevice, resetAttr, usePresetBinding } from '../../extension/token-indicators';
+import { useColorGroups } from '../../extension/design-tokens/hooks/use-color-groups';
+import { resolveColorLiteral } from '../../extension/design-tokens/color-literal';
+import { ColorControl, ColorControlGroup } from '../../token-controls';
+import { boundTokenAliasForControl, pickableTokensForControl } from '../../extension/token-picker';
 import { PreviewIcon } from './preview-icon';
 import { AdvancedSettings } from './advanced-settings';
 import { tooltip as tooltipIcon } from '@kadence/icons';
@@ -88,6 +97,53 @@ function KadenceSingleIcon(props) {
 		undefined !== tabletSize ? tabletSize : undefined,
 		undefined !== mobileSize ? mobileSize : undefined
 	);
+
+	const { setPreviewDeviceType } = useDispatch('kadenceblocks/data');
+
+	// Design-token indicators. This block previously wired its Size control with pools and defaults but
+	// no binding state, so nothing on it reported whether a value still matched the selected preset.
+	// Adding it here serves the color control below and backfills Size at the same time.
+	const tokenBinding = usePresetBinding(name, attributes, undefined, previewDevice);
+	// The schema matters most on this block: `size` is a SCALAR (a bare number, with no companion unit
+	// attribute), and without it `resetAttrPatch` falls back to the four-slot shape every other measure
+	// control uses -- writing `['', '', '', '']` into a scalar, which the field then reads straight back
+	// as a custom value, plus a `sizeUnit` the block never declares.
+	const resetToken = (attr) => resetAttr(attr, setAttributes, tokenBinding[attr]?.kind, metadata.attributes);
+	// One fetch of the block's effective palette groups, shared by both `ColorControl` instances below.
+	const colorGroups = useColorGroups(clientId);
+	// The Icon Size control writes three sibling attributes but edits one at a time, so it resolves the
+	// active device's attribute up front — reading or writing `size` while the editor is on Tablet would
+	// hit the wrong breakpoint.
+	const sizeForDevice = measureAttrsForDevice(
+		attributes,
+		'size',
+		{ tablet: 'tabletSize', mobile: 'mobileSize' },
+		previewDevice
+	);
+	// Empty when the token registry is inactive, which is what keeps the plain range control below as the
+	// fallback rather than leaving the block with no size control at all.
+	const iconSizeTokens = pickableTokensForControl(name, 'size') || [];
+	// What the active device falls back to when it stores nothing: the breakpoints ABOVE it, in cascade
+	// order, then the SELECTED PRESET's size, then the icon-size token the binding names. The device's own
+	// value is deliberately left out — this is what the field reports when it is unset, so including it
+	// would just echo the value already on screen. Tablet and Mobile inherit; Desktop has nothing above it.
+	//
+	// The preset sits ahead of the token because that is the order the rendered CSS resolves in: the
+	// preset's scoped rule sets `--kb-icon-size`, which the block-default rule reads before falling through
+	// to the token. Reporting the token here would tell a site owner their unset field inherits one size
+	// while the block renders another.
+	const inheritedSizeChain = {
+		Tablet: [size],
+		Mobile: [tabletSize, size],
+	};
+	const inheritedSize = (inheritedSizeChain[previewDevice] || []).find(
+		(value) => value !== undefined && value !== null && value !== ''
+	);
+	const presetSize = presetPropertyValueForDevice(name, 'size', attributes, undefined, previewDevice);
+	const iconSizeDefault =
+		inheritedSize ??
+		(presetSize ? tokenLiteral(presetSize, activeLibrary()) : undefined) ??
+		tokenLiteral(boundTokenAliasForControl(name, 'size'), activeLibrary());
 
 	useEffect(() => {
 		setAttributes({ inQueryBlock: getInQueryBlock(context, inQueryBlock) });
@@ -203,25 +259,55 @@ function KadenceSingleIcon(props) {
 								}}
 							/>
 
-							<ResponsiveRangeControls
-								label={__('Icon Size', 'kadence-blocks')}
-								value={previewSize}
-								onChange={(value) => {
-									setAttributes({ size: value });
-								}}
-								tabletValue={undefined !== tabletSize ? tabletSize : ''}
-								onChangeTablet={(value) => {
-									setAttributes({ tabletSize: value });
-								}}
-								mobileValue={undefined !== mobileSize ? mobileSize : ''}
-								onChangeMobile={(value) => {
-									setAttributes({ mobileSize: value });
-								}}
-								min={0}
-								max={300}
-								step={1}
-								unit={'px'}
-							/>
+							{iconSizeTokens.length ? (
+								<EditorScalarControl
+									label={__('Icon Size', 'kadence-blocks')}
+									value={sizeForDevice.value}
+									onChange={(value) => {
+										setAttributes({ [sizeForDevice.attr]: value });
+									}}
+									previewDevice={previewDevice}
+									onDeviceChange={(device) => setPreviewDeviceType(device)}
+									tokens={iconSizeTokens}
+									// So an unset field names the size actually in effect — "Inherited (50px)" on a
+									// breakpoint taking Desktop's value, "Default (MD)" once the cascade reaches the
+									// token — instead of reading blank after a Reset.
+									defaultValue={iconSizeDefault}
+									inherited={inheritedSize !== undefined}
+									state={tokenBinding.size}
+									onReset={() => resetToken('size')}
+									// The size attributes store a bare number and the block declares no unit
+									// attribute of its own, so the front end always renders them as px. Pinning the
+									// Custom tab to px keeps a hand-typed value in the one unit the attribute can
+									// actually mean; an em/rem-valued TOKEN is unaffected, since its unit travels
+									// inside the token and reaches output as the var() reference.
+									unit={'px'}
+									units={['px']}
+									min={0}
+									max={300}
+									step={1}
+								/>
+							) : (
+								<ResponsiveRangeControls
+									label={__('Icon Size', 'kadence-blocks')}
+									value={previewSize}
+									onChange={(value) => {
+										setAttributes({ size: value });
+									}}
+									tabletValue={undefined !== tabletSize ? tabletSize : ''}
+									onChangeTablet={(value) => {
+										setAttributes({ tabletSize: value });
+									}}
+									mobileValue={undefined !== mobileSize ? mobileSize : ''}
+									onChangeMobile={(value) => {
+										setAttributes({ mobileSize: value });
+									}}
+									min={0}
+									max={300}
+									step={1}
+									unit={'px'}
+								/>
+							)}
 							{icon && 'fe' === icon.substring(0, 2) && (
 								<RangeControl
 									label={__('Line Width', 'kadence-blocks')}
@@ -244,20 +330,41 @@ function KadenceSingleIcon(props) {
 								]}
 								onChange={(value) => setAttributes({ style: value })}
 							/>
-							<PopColorControl
-								label={__('Icon Color', 'kadence-blocks')}
-								value={color ? color : ''}
-								default={''}
-								onChange={(value) => {
-									setAttributes({ color: value });
-								}}
-								swatchLabel2={__('Hover Color', 'kadence-blocks')}
-								value2={hColor ? hColor : ''}
-								default2={''}
-								onChange2={(value) => {
-									setAttributes({ hColor: value });
-								}}
-							/>
+							{/* One two-swatch control becomes two single-value ones, matching the Button's own
+							    icon pair. Both are bound now that the icon's hover color is a preset property,
+							    so each carries its own binding state and its own reset -- the hover swatch's
+							    entry only appears once a preset actually resolves a hover color, which is what
+							    keeps its indicator silent until there is something to diverge from. */}
+							<ColorControlGroup>
+								<ColorControl
+									label={__('Icon Color', 'kadence-blocks')}
+									value={color ? color : ''}
+									groups={colorGroups}
+									status={{
+										bound: !!tokenBinding.color?.bound,
+										modified: !!tokenBinding.color?.overridden,
+									}}
+									onReset={() => resetToken('color')}
+									onPick={(alias) => setAttributes({ color: alias })}
+									onCustom={(literal) => setAttributes({ color: literal })}
+									onClear={() => setAttributes({ color: '' })}
+									resolveLiteral={resolveColorLiteral}
+								/>
+								<ColorControl
+									label={__('Hover Color', 'kadence-blocks')}
+									value={hColor ? hColor : ''}
+									groups={colorGroups}
+									status={{
+										bound: !!tokenBinding.hColor?.bound,
+										modified: !!tokenBinding.hColor?.overridden,
+									}}
+									onReset={() => resetToken('hColor')}
+									onPick={(alias) => setAttributes({ hColor: alias })}
+									onCustom={(literal) => setAttributes({ hColor: literal })}
+									onClear={() => setAttributes({ hColor: '' })}
+									resolveLiteral={resolveColorLiteral}
+								/>
+							</ColorControlGroup>
 							{style !== 'default' && (
 								<>
 									<PopColorControl
