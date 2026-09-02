@@ -156,17 +156,21 @@ function makePalettes(overrides = {}) {
 /**
  * Render the screen against a `usePalettes` stub.
  *
- * @param {Object} palettes The stub returned by `makePalettes`.
+ * @param {Object}   palettes           The stub returned by `makePalettes`.
+ * @param {Object}   [overrides]        Render overrides.
+ * @param {Object}   [overrides.route]  The route to render with, for the tests that need an open
+ *                                      settings panel (`route.item`).
+ * @param {Function} [overrides.navigate] The route navigator spy.
  *
  * @since TBD
  *
  * @return {void}
  */
-function renderScreen(palettes) {
+function renderScreen(palettes, { route = ROUTE, navigate = () => {} } = {}) {
 	usePalettes.mockReturnValue(palettes);
 
 	act(() =>
-		root.render(<ColorPaletteScreen label="Color Palette" route={ROUTE} navigate={() => {}} library={LIBRARY} />)
+		root.render(<ColorPaletteScreen label="Color Palette" route={route} navigate={navigate} library={LIBRARY} />)
 	);
 }
 
@@ -190,15 +194,116 @@ describe('Color Palette inheritance pills', () => {
 	});
 
 	/**
-	 * The default palette defines the values, so its cards have nothing to inherit and show no
-	 * pill at all.
+	 * The default palette has no other palette to follow, so its cards measure against the shipped
+	 * value instead: an untouched swatch says it is the default, a changed one offers the way back.
+	 * Neither says "From" — there is nothing to be from.
 	 *
 	 * @return void
 	 */
-	it('shows no pill while the default palette is being edited', () => {
+	it('states the default and offers Reset while the default palette is being edited', () => {
 		renderScreen(makePalettes({ editingId: 'default' }));
 
-		expect(container.querySelectorAll(`.${PILL_CLASS}`)).toHaveLength(0);
+		const pills = [...container.querySelectorAll(`.${PILL_CLASS}`)];
+
+		expect(pills).toHaveLength(2);
+		expect(pills[0].textContent).toBe('Default');
+		expect(pills[0].tagName).toBe('SPAN');
+		expect(pills[1].textContent).toBe('Reset');
+		expect(pills[1].tagName).toBe('BUTTON');
+	});
+
+	/**
+	 * A color someone added has no shipped value behind it, so it can neither claim to be a default
+	 * nor be reset to one, and its card carries no pill at all.
+	 *
+	 * @return void
+	 */
+	it('gives a user-added color on the default palette no pill', () => {
+		renderScreen(
+			makePalettes({
+				editingId: 'default',
+				isSwatchCustom: jest.fn((token) => 'accent.two' === token),
+			})
+		);
+
+		const pills = [...container.querySelectorAll(`.${PILL_CLASS}`)];
+
+		expect(pills).toHaveLength(1);
+		expect(pills[0].textContent).toBe('Default');
+	});
+
+	/**
+	 * Resetting on the default palette goes through the same hook call as anywhere else — the
+	 * server decides that "undo" there means restoring the shipped color.
+	 *
+	 * @return void
+	 */
+	it('resets a changed swatch on the default palette through the hook', async () => {
+		const palettes = makePalettes({ editingId: 'default' });
+
+		renderScreen(palettes);
+		await act(async () => container.querySelector(`.${PILL_CLASS}--reset`).click());
+
+		expect(palettes.resetSwatch).toHaveBeenCalledWith('accent.two');
+	});
+
+	/**
+	 * With the settings panel open on the same swatch, a settled reset closes it — the panel's draft
+	 * still holds the value the reset just undid, and its Save would write that value back.
+	 *
+	 * @return void
+	 */
+	it('closes the settings panel when the card resets the swatch it has open', async () => {
+		const navigate = jest.fn();
+
+		renderScreen(makePalettes(), { route: { ...ROUTE, item: 'accent.two' }, navigate });
+		await act(async () => container.querySelector(`.${PILL_CLASS}--reset`).click());
+
+		expect(navigate).toHaveBeenCalledWith({ item: '' });
+	});
+
+	/**
+	 * A panel open on a DIFFERENT swatch is left alone — nothing about it went stale.
+	 *
+	 * @return void
+	 */
+	it('leaves a settings panel open on another swatch alone', async () => {
+		const navigate = jest.fn();
+
+		renderScreen(makePalettes(), { route: { ...ROUTE, item: 'accent.one' }, navigate });
+		await act(async () => container.querySelector(`.${PILL_CLASS}--reset`).click());
+
+		expect(navigate).not.toHaveBeenCalled();
+	});
+
+	/**
+	 * The card's select button stays live during a write, so the open swatch can change while a
+	 * reset is still in flight. The decision to close reads the swatch that is open when the write
+	 * SETTLES, not the one captured when it started — otherwise the reset closes whatever the user
+	 * opened next.
+	 *
+	 * @return void
+	 */
+	it('leaves a panel opened on another swatch during the write alone', async () => {
+		let settle;
+		const write = new Promise((resolve) => {
+			settle = resolve;
+		});
+		const palettes = makePalettes({ resetSwatch: jest.fn(() => write) });
+		const navigate = jest.fn();
+
+		renderScreen(palettes, { route: { ...ROUTE, item: 'accent.two' }, navigate });
+		act(() => container.querySelector(`.${PILL_CLASS}--reset`).click());
+
+		// The user picks a different swatch before the reset comes back.
+		renderScreen(palettes, { route: { ...ROUTE, item: 'accent.one' }, navigate });
+
+		await act(async () => {
+			settle();
+			await write;
+		});
+
+		expect(navigate).not.toHaveBeenCalled();
 	});
 
 	/**

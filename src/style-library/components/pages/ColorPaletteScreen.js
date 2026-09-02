@@ -9,7 +9,7 @@
 /**
  * WordPress dependencies
  */
-import { useCallback, useMemo, useState } from '@wordpress/element';
+import { useCallback, useEffect, useMemo, useRef, useState } from '@wordpress/element';
 import { Button, DropdownMenu, MenuGroup, MenuItem, Notice } from '@wordpress/components';
 import { __, sprintf } from '@wordpress/i18n';
 import { moreVertical, plus } from '@wordpress/icons';
@@ -42,6 +42,7 @@ import {
 	paletteDisplayLabel,
 	paletteShowsInheritance,
 	paletteSuccessorOptions,
+	swatchPillVariant,
 } from '../../helpers/palettes';
 import { ColorPaletteSettings } from './ColorPaletteSettings';
 import './ColorPaletteScreen.scss';
@@ -153,7 +154,12 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 
 	// Plain UI state, not route state — a half-typed modal must not enter browser history.
 	const [isCreateOpen, setIsCreateOpen] = useState(false);
-	const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+	// A snapshot of the palette the delete modal was opened for, not just an open flag: the
+	// delete's own response drops the row from the listing before the confirm resolves, which
+	// snaps `editingId` back to the default palette while the modal is still open — props derived
+	// live at that point would flip its Delete copy to the default palette's Reset copy for the
+	// closing frame.
+	const [deleteTarget, setDeleteTarget] = useState(null);
 	const [isAddGroupOpen, setIsAddGroupOpen] = useState(false);
 	// Carries the whole mapped group entry (`{ id, label, items }`), not just an id, so the modals
 	// can seed the label and count the swatches without a second lookup.
@@ -171,6 +177,19 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 	const defaultLabel = paletteDisplayLabel(
 		palettes.listing.palettes.find((row) => row.id === palettes.listing.defaultId)
 	);
+
+	// The swatch whose settings panel is open, readable at any later moment rather than as of the
+	// render a callback closed over — see `handleResetSwatch`, which decides whether to close the
+	// panel only once its write has settled.
+	//
+	// Synced in an effect, never during render: React can start a render and throw it away, and a
+	// ref written on the way through would then hold a route the user is not actually on. Only a
+	// committed render should move it.
+	const openItemRef = useRef(route.item);
+
+	useEffect(() => {
+		openItemRef.current = route.item;
+	}, [route.item]);
 
 	/**
 	 * Reset one swatch's override, then, on success, move focus to that card's own select button —
@@ -198,13 +217,74 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 			palettes
 				.resetSwatch(token)
 				.then(() => {
+					// A settings panel open on THIS swatch is now editing a value that no longer
+					// exists: its draft still holds the color the reset undid (`useSettingsPanel`
+					// seeds once per item and cannot follow an external write), so its Save would
+					// write that color straight back. A panel on any other swatch is untouched.
+					//
+					// Read through the ref, not this callback's captured `route.item`: a card's
+					// select button stays live during a write (only `isPendingDelete` disables it),
+					// so the open swatch can change before the reset comes back. The captured value
+					// would close whatever the user opened next, and leave open the panel it was
+					// supposed to close.
+					if (openItemRef.current === token) {
+						navigate({ item: '' });
+					}
+
 					card?.querySelector('.kadence-blocks-style-library__swatch-card-select')?.focus();
 				})
 				// Swallowed: a failure already surfaces as a toast from inside `resetSwatch`, and the
 				// card simply keeps showing its override.
 				.catch(() => {});
 		},
-		[palettes.isBusy, palettes.resetSwatch]
+		[palettes.isBusy, palettes.resetSwatch, navigate]
+	);
+
+	/**
+	 * The pill for one mapped grid item, or null when the card carries none. The variant decision
+	 * itself lives in `swatchPillVariant`; this only turns it into the element.
+	 *
+	 * `sourceLabel` is the default palette's own label off the default palette (the pill names the
+	 * palette a value follows) and the fixed word "Default" on it (a reset there restores the
+	 * shipped color, so that is what the button's accessible name should say it resets to).
+	 *
+	 * @param {Object} item A mapped grid item from `mapPaletteToSwatchGroups()`.
+	 *
+	 * @since TBD
+	 *
+	 * @return {?JSX.Element} The pill, or null.
+	 */
+	const renderPill = useCallback(
+		(item) => {
+			const variant = swatchPillVariant({
+				isDefault: !showsInheritance,
+				isCustom: palettes.isSwatchCustom(item.id),
+				overridden: item.overridden,
+			});
+
+			// Off the default palette the pill names a palette, so a listing that cannot name one
+			// shows nothing rather than a blank source.
+			if (!variant || (showsInheritance && !defaultLabel)) {
+				return null;
+			}
+
+			const sourceLabel = showsInheritance ? defaultLabel : __('Default', 'kadence-blocks');
+
+			if ('reset' === variant) {
+				return (
+					<InheritancePill
+						variant="reset"
+						sourceLabel={sourceLabel}
+						swatchName={item.name}
+						isDisabled={palettes.isBusy || item.pendingDelete}
+						onReset={(event) => handleResetSwatch(event, item.id)}
+					/>
+				);
+			}
+
+			return <InheritancePill variant={variant} sourceLabel={sourceLabel} />;
+		},
+		[showsInheritance, defaultLabel, palettes.isBusy, palettes.isSwatchCustom, handleResetSwatch]
 	);
 
 	const options = useMemo(
@@ -233,21 +313,10 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 					// delete, where reordering something about to vanish is not meaningful.
 					isDraggable: !item.pendingDelete,
 					isPendingDelete: item.pendingDelete,
-					pill:
-						!showsInheritance || !defaultLabel ? null : item.overridden ? (
-							<InheritancePill
-								variant="reset"
-								sourceLabel={defaultLabel}
-								swatchName={item.name}
-								isDisabled={palettes.isBusy || item.pendingDelete}
-								onReset={(event) => handleResetSwatch(event, item.id)}
-							/>
-						) : (
-							<InheritancePill variant="inherited" sourceLabel={defaultLabel} />
-						),
+					pill: renderPill(item),
 				})),
 			})),
-		[palettes.palette, palettes.isBusy, showsInheritance, defaultLabel, handleResetSwatch]
+		[palettes.palette, renderPill]
 	);
 
 	return (
@@ -287,10 +356,9 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 					</>
 				}
 				secondaryAction={
-					// Unlike Delete, available on the default palette too — the server only refuses
-					// DELETING it (`delete_item()`'s explicit default-id guard), not relabeling it
-					// (`update_item()` carries no such guard). Always targets the palette being edited,
-					// exactly like Delete, for the same open/activate-split reason.
+					// Available on the default palette too — no palette write carries a default-id guard.
+					// Always targets the palette being edited, exactly like Delete, for the same
+					// open/activate-split reason.
 					<RenamePaletteModal
 						id={palettes.editingId}
 						currentLabel={paletteDisplayLabel(editingRow)}
@@ -305,15 +373,23 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 					// Always targets the palette being edited, never `activeId`: under the open/activate
 					// split you can be editing a palette that isn't live, and acting on the live one instead
 					// would silently re-tint the site as a side effect of cleaning up an unrelated draft.
-					// The `$default` palette is offered too — as a Reset, since the server refuses to remove
-					// it but does drop its overrides.
+					// The `$default` palette is offered too — as a Reset, since the same request drops its
+					// overrides but leaves the palette itself in the listing.
 					<Button
 						isDestructive
 						variant="link"
 						// Reuses DeleteLibraryModal's own styling — the same red text-link treatment, no
 						// new rule needed for a class this app already ships.
 						className="kadence-blocks-style-library__delete-library-action"
-						onClick={() => setIsDeleteOpen(true)}
+						onClick={() =>
+							setDeleteTarget({
+								id: palettes.editingId,
+								label: paletteDisplayLabel(editingRow),
+								isUserCreated: isEditingUserCreated,
+								successors: paletteSuccessorOptions(palettes.listing, palettes.editingId),
+								isActive: palettes.isEditingActive,
+							})
+						}
 					>
 						{isEditingUserCreated ? __('Delete', 'kadence-blocks') : __('Reset', 'kadence-blocks')}
 					</Button>
@@ -430,24 +506,30 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 					}
 				/>
 			)}
-			{isDeleteOpen && (
+			{deleteTarget && (
 				<DeletePaletteModal
-					label={paletteDisplayLabel(editingRow)}
-					isUserCreated={isEditingUserCreated}
-					successors={paletteSuccessorOptions(palettes.listing, palettes.editingId)}
-					isActive={palettes.isEditingActive}
+					label={deleteTarget.label}
+					isUserCreated={deleteTarget.isUserCreated}
+					successors={deleteTarget.successors}
+					isActive={deleteTarget.isActive}
 					isBusy={palettes.isBusy}
 					error={palettes.deleteError}
 					onClose={() => {
-						setIsDeleteOpen(false);
+						setDeleteTarget(null);
 						palettes.clearDeleteError();
 					}}
 					onConfirm={(successorId) =>
 						palettes
-							.deletePalette(palettes.editingId, successorId)
+							.deletePalette(deleteTarget.id, successorId)
 							.then(() => {
-								setIsDeleteOpen(false);
+								setDeleteTarget(null);
 								palettes.clearDeleteError();
+								// Whatever the settings panel had open is stale now: a reset replaced every
+								// swatch's value, and a delete took the whole palette away. Either way its
+								// draft still holds what was there before — `useSettingsPanel` seeds once
+								// per item and cannot follow an external write — so its Save would put that
+								// back. Same reasoning as a single swatch's reset, one level up.
+								navigate({ item: '' });
 							})
 							// Swallowed: a request failure already lands in `deleteError`, rendered inline —
 							// the modal stays open on it.

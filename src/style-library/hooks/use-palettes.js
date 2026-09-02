@@ -13,6 +13,7 @@ import {
 	applyOptimisticOverlay,
 	customColorTokenId,
 	isCustomColorToken,
+	isUserCreatedPalette,
 	newSwatchValue,
 	nextCustomColorSlug,
 	reorderGroupSwatches,
@@ -379,23 +380,30 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 				return busy;
 			}
 
+			// Decides both halves of what this call means: only a user-created palette is removed and
+			// can need a successor, while a baseline one is reset in place and stays in the listing.
+			const isUserCreated = isUserCreatedPalette(listing, id);
+
 			setDeleteError(null);
 			return deletePaletteFlow({
 				namespace,
 				slug,
 				id,
 				currentId: listing.currentId,
+				isUserCreated,
 				successorId,
 				onReceive,
 				refreshFeed,
 				onBusy: setIsBusy,
 				onError: setDeleteError,
 			}).then((result) => {
-				notifySuccess(__('Palette deleted.', 'kadence-blocks'));
+				notifySuccess(
+					isUserCreated ? __('Palette deleted.', 'kadence-blocks') : __('Palette reset.', 'kadence-blocks')
+				);
 				return result;
 			});
 		},
-		[namespace, slug, listing.currentId, onReceive, refreshFeed]
+		[namespace, slug, listing, onReceive, refreshFeed]
 	);
 
 	const saveSwatchEdits = useCallback(
@@ -504,16 +512,20 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 		[feedTokens]
 	);
 
-	// Revert a NON-default palette's own override for a token back to inherited — the counterpart
-	// to `removeSwatch`, for a swatch that is a delta on a built-in token rather than a user-created
-	// one. Not optimistic: unlike a save (where the new value is already known) or a delete (where
-	// "gone" is unambiguous), showing the reverted color instantly would mean guessing the inherited
+	// Undo a palette's own value for one built-in token — the counterpart to `removeSwatch`, which
+	// is for a user-created one. What "undo" resolves to is the server's call and differs by
+	// palette: a non-default palette drops its delta and goes back to inheriting, while the default
+	// palette has nothing to inherit from and gets its SHIPPED color restored instead, keeping the
+	// row (`Palettes_Controller::delete_swatch()`). Both are the same request from here.
+	//
+	// Not optimistic: unlike a save (where the new value is already known) or a delete (where
+	// "gone" is unambiguous), showing the reverted color instantly would mean guessing the restored
 	// value ahead of the response, so this only shows a busy state (`SettingsPanel`'s `isDeleting`,
 	// relabeled "Resetting…" by the caller) until the write confirms.
 	const resetSwatch = useCallback(
 		(token) => {
-			if (!namespace || !slug || editingId === listing.defaultId) {
-				return Promise.reject(new Error('A swatch of the default palette cannot be reverted.'));
+			if (!namespace || !slug) {
+				return Promise.reject(new Error('A swatch cannot be reverted before the library is known.'));
 			}
 
 			const busy = guardBusy();
@@ -532,7 +544,7 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 				onError: (err) => notifyError(err.message),
 			}).then(() => notifySuccess(__('Swatch reset.', 'kadence-blocks')));
 		},
-		[namespace, slug, listing.defaultId, editingId, onReceive, refreshFeed]
+		[namespace, slug, editingId, onReceive, refreshFeed]
 	);
 
 	const addColor = useCallback(

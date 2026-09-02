@@ -375,13 +375,73 @@ describe('ColorPaletteSettings destructive action', () => {
 	});
 
 	/**
-	 * A built-in swatch shows neither Delete nor Reset while editing the DEFAULT palette itself —
-	 * there is nothing to revert to (the default palette has no inherited value to fall back on)
-	 * and it is not a custom swatch to delete.
+	 * A settled reset closes the panel. The panel's draft still holds the value the reset just
+	 * undid — `useSettingsPanel` seeds once per item and deliberately ignores later external
+	 * writes — so leaving it open would offer a Save that writes that value straight back.
 	 *
 	 * @return {void}
 	 */
-	it('shows neither destructive button for a built-in swatch on the default palette', () => {
+	it('closes the panel once a reset settles', async () => {
+		const write = deferred();
+		const palettes = makePalettes(write, {
+			isSwatchCustom: jest.fn(() => false),
+			editingId: 'secondary',
+			listing: { defaultId: 'default' },
+			palette: OVERRIDDEN_PALETTE,
+		});
+		const navigate = renderColorPaletteSettings(palettes);
+
+		act(() => {
+			findButton('Reset').click();
+		});
+
+		expect(navigate).not.toHaveBeenCalled();
+
+		await act(async () => {
+			write.resolve();
+			await write.promise;
+		});
+
+		expect(navigate).toHaveBeenCalledWith({ item: '' });
+	});
+
+	/**
+	 * A failed reset leaves the panel open, so the value the write did not change is still in front
+	 * of the user along with the error.
+	 *
+	 * @return {void}
+	 */
+	it('leaves the panel open when a reset fails', async () => {
+		const write = deferred();
+		const palettes = makePalettes(write, {
+			isSwatchCustom: jest.fn(() => false),
+			editingId: 'secondary',
+			listing: { defaultId: 'default' },
+			palette: OVERRIDDEN_PALETTE,
+		});
+		const navigate = renderColorPaletteSettings(palettes);
+
+		act(() => {
+			findButton('Reset').click();
+		});
+
+		await act(async () => {
+			write.reject(new Error('Conflict'));
+			await write.promise.catch(() => {});
+		});
+
+		expect(navigate).not.toHaveBeenCalled();
+	});
+
+	/**
+	 * A built-in swatch changed away from its shipped value offers Reset on the DEFAULT palette
+	 * too — the server restores the shipped color there rather than dropping the row. It is not a
+	 * custom swatch, so it still offers no Delete. This matches the pill the card itself shows,
+	 * so the panel and the card never disagree about the same swatch.
+	 *
+	 * @return {void}
+	 */
+	it('offers Reset but not Delete for a changed built-in swatch on the default palette', () => {
 		const write = deferred();
 		renderColorPaletteSettings(
 			makePalettes(write, {
@@ -393,7 +453,7 @@ describe('ColorPaletteSettings destructive action', () => {
 		);
 
 		expect(findButton('Delete')).toBeNull();
-		expect(findButton('Reset')).toBeNull();
+		expect(findButton('Reset')).not.toBeNull();
 	});
 
 	/**

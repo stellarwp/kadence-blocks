@@ -285,8 +285,10 @@ export function deleteSwatch(namespace, id, token, slug) {
 }
 
 /**
- * Delete a palette. The library's default palette cannot be deleted — the server refuses with a
- * 400 — and the response on success is the fresh palette listing.
+ * Delete a palette. A palette the shipped baseline defines — the library's default among them — is
+ * not removed: the request drops its overrides and it stays in the listing under its baseline
+ * colors, which is what the UI offers as a Reset. The response is the fresh palette listing either
+ * way.
  *
  * @param {string} namespace REST namespace.
  * @param {string} id        The palette id.

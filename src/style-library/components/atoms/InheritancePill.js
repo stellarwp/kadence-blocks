@@ -24,7 +24,9 @@ import './InheritancePill.scss';
  * Render the inheritance pill.
  *
  * @param {Object}   props               The component props.
- * @param {string}   props.variant       `'inherited'` for the static pill, `'reset'` for the button.
+ * @param {string}   props.variant       `'inherited'` for the static pill naming another palette,
+ *                                       `'default'` for the static pill on the default palette
+ *                                       itself, `'reset'` for the button.
  * @param {string}   [props.sourceLabel] The display label of the palette the value comes from.
  * @param {string}   [props.swatchName]  The color's name, used only in the reset button's
  *                                       accessible name — the visible text stays "Reset" so a row
@@ -59,6 +61,17 @@ export function InheritancePill({
 			>
 				{__('Reset', 'kadence-blocks')}
 			</button>
+		);
+	}
+
+	// On the default palette the pill is a statement, not a pointer: this color is the shipped one.
+	// A fixed word, not `sourceLabel` — the default palette can be renamed, and a pill reading
+	// "From Brand" on the palette named Brand would say it follows itself.
+	if ('default' === variant) {
+		return (
+			<span className="kadence-blocks-style-library__inheritance-pill kadence-blocks-style-library__inheritance-pill--inherited">
+				{__('Default', 'kadence-blocks')}
+			</span>
 		);
 	}
 

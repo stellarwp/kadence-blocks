@@ -14,7 +14,7 @@
 /**
  * WordPress dependencies
  */
-import { useEffect, useState } from '@wordpress/element';
+import { useEffect, useRef, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
 /**
@@ -72,6 +72,17 @@ export function ColorPaletteSettings({ route, navigate, library }) {
 	// the busy animation on only the button the user actually clicked — the `PresetSidebar.js` idiom,
 	// tracked locally for the same reason: only this panel's footer needs the distinction.
 	const [pendingAction, setPendingAction] = useState(null);
+	// The open swatch as of right now, for `onReset` to read once its write settles — the grid's
+	// select buttons stay live during a write, so the panel can be showing a different swatch by
+	// then, and closing on the captured one would close that new selection instead.
+	//
+	// Synced in an effect, never during render: a render React starts and discards would otherwise
+	// move the ref to a swatch that was never committed.
+	const openItemRef = useRef(token);
+
+	useEffect(() => {
+		openItemRef.current = token;
+	}, [token]);
 
 	// The skeleton below lives inside its own `role="status"` region, which only announces "Loading…"
 	// while it is actually mounted — the moment it is replaced by the real panel, that region is
@@ -124,13 +135,16 @@ export function ColorPaletteSettings({ route, navigate, library }) {
 	};
 
 	// A custom swatch is removed entirely (a structure edit, with a best-effort primitive cleanup
-	// after — `removeSwatch` decides that internally). A built-in swatch showing THIS palette's own
-	// override is reverted to inherited instead (`resetSwatch`) — never removed, since its
-	// definition belongs to the default palette, not to the one currently open. A built-in swatch
-	// with nothing to revert here (the default palette itself, or a non-default palette where it
-	// isn't overridden) gets neither action.
+	// after — `removeSwatch` decides that internally). A built-in swatch with something to undo is
+	// reverted instead (`resetSwatch`) — never removed, since the row itself is shipped. What the
+	// revert lands on is the server's call: the palette's inherited value, or the shipped color
+	// when the default palette is the one open. A built-in swatch with nothing to undo gets
+	// neither action.
+	//
+	// Kept in step with the card's own pill (`ColorPaletteScreen`'s `renderPill`) — a card that
+	// offers Reset and a panel that hides it would disagree about the same swatch.
 	const isCustom = palettes.isSwatchCustom(token);
-	const canReset = !isCustom && palettes.editingId !== palettes.listing.defaultId && swatch.overridden;
+	const canReset = !isCustom && swatch.overridden;
 
 	const onDelete = () => {
 		if (palettes.isBusy) {
@@ -152,9 +166,25 @@ export function ColorPaletteSettings({ route, navigate, library }) {
 			return;
 		}
 
+		const resetting = token;
+
 		setPendingAction('delete');
 		palettes
 			.resetSwatch(token)
+			// Closed on success, the same as `onDelete` and for the same kind of reason: the panel is
+			// editing a value that no longer exists. Its draft still holds the color the reset just
+			// undid — `useSettingsPanel` seeds once per item and deliberately ignores later external
+			// writes, so it cannot follow this one — and a panel left open would offer a Save that
+			// writes that color straight back, silently undoing the reset.
+			//
+			// Only when the panel is still showing the swatch that was reset — someone can select a
+			// different one while the write is in flight, and closing then would shut a panel that
+			// has nothing stale in it.
+			.then(() => {
+				if (openItemRef.current === resetting) {
+					panel.close();
+				}
+			})
 			// Swallowed: a failure already surfaces via `notifyError` inside `resetSwatch`, and the
 			// panel simply stays open showing the (unchanged) override.
 			.catch(() => {})
