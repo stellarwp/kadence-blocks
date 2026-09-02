@@ -153,7 +153,12 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 
 	// Plain UI state, not route state — a half-typed modal must not enter browser history.
 	const [isCreateOpen, setIsCreateOpen] = useState(false);
-	const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+	// A snapshot of the palette the delete modal was opened for, not just an open flag: the
+	// delete's own response drops the row from the listing before the confirm resolves, which
+	// snaps `editingId` back to the default palette while the modal is still open — props derived
+	// live at that point would flip its Delete copy to the default palette's Reset copy for the
+	// closing frame.
+	const [deleteTarget, setDeleteTarget] = useState(null);
 	const [isAddGroupOpen, setIsAddGroupOpen] = useState(false);
 	// Carries the whole mapped group entry (`{ id, label, items }`), not just an id, so the modals
 	// can seed the label and count the swatches without a second lookup.
@@ -312,7 +317,15 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 						// Reuses DeleteLibraryModal's own styling — the same red text-link treatment, no
 						// new rule needed for a class this app already ships.
 						className="kadence-blocks-style-library__delete-library-action"
-						onClick={() => setIsDeleteOpen(true)}
+						onClick={() =>
+							setDeleteTarget({
+								id: palettes.editingId,
+								label: paletteDisplayLabel(editingRow),
+								isUserCreated: isEditingUserCreated,
+								successors: paletteSuccessorOptions(palettes.listing, palettes.editingId),
+								isActive: palettes.isEditingActive,
+							})
+						}
 					>
 						{isEditingUserCreated ? __('Delete', 'kadence-blocks') : __('Reset', 'kadence-blocks')}
 					</Button>
@@ -429,23 +442,23 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 					}
 				/>
 			)}
-			{isDeleteOpen && (
+			{deleteTarget && (
 				<DeletePaletteModal
-					label={paletteDisplayLabel(editingRow)}
-					isUserCreated={isEditingUserCreated}
-					successors={paletteSuccessorOptions(palettes.listing, palettes.editingId)}
-					isActive={palettes.isEditingActive}
+					label={deleteTarget.label}
+					isUserCreated={deleteTarget.isUserCreated}
+					successors={deleteTarget.successors}
+					isActive={deleteTarget.isActive}
 					isBusy={palettes.isBusy}
 					error={palettes.deleteError}
 					onClose={() => {
-						setIsDeleteOpen(false);
+						setDeleteTarget(null);
 						palettes.clearDeleteError();
 					}}
 					onConfirm={(successorId) =>
 						palettes
-							.deletePalette(palettes.editingId, successorId)
+							.deletePalette(deleteTarget.id, successorId)
 							.then(() => {
-								setIsDeleteOpen(false);
+								setDeleteTarget(null);
 								palettes.clearDeleteError();
 							})
 							// Swallowed: a request failure already lands in `deleteError`, rendered inline —

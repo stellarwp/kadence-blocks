@@ -232,4 +232,46 @@ describe('Color Palette reset modal', () => {
 		expect(dialog().querySelector('select')).not.toBeNull();
 		expect(buttonByText(dialog(), 'Delete').disabled).toBe(true);
 	});
+
+	/**
+	 * The modal keeps describing the palette it was opened for while the delete settles. The
+	 * delete's own response drops the row from the listing before the confirm resolves, which
+	 * snaps `editingId` back to the default palette — props derived live at that point would flip
+	 * the still-open modal to the default palette's Reset copy for its closing frame.
+	 *
+	 * @return void
+	 */
+	it('keeps the Delete copy while the deleted palette leaves the listing', async () => {
+		const base = makePalettes();
+		const after = makePalettes();
+		let resolveDelete;
+		const palettes = makePalettes({
+			editingId: 'secondary',
+			activeId: 'secondary',
+			listing: { ...base.listing, currentId: 'secondary' },
+			// The write's `onReceive` lands the post-delete listing — the row gone, the default
+			// palette live again — in the same round trip that confirms it, so the screen
+			// re-renders against that state BEFORE this promise resolves and the modal closes.
+			deletePalette: jest.fn(() => {
+				usePalettes.mockReturnValue(after);
+				root.render(
+					<ColorPaletteScreen label="Color Palette" route={ROUTE} navigate={() => {}} library={LIBRARY} />
+				);
+				return new Promise((resolve) => {
+					resolveDelete = resolve;
+				});
+			}),
+		});
+
+		renderScreen(palettes);
+		act(() => buttonByText(container, 'Delete').click());
+		act(() => buttonByText(dialog(), 'Delete').click());
+
+		// The screen already reads the post-delete listing here, but the confirm has not resolved
+		// yet: the still-open modal must keep naming what was deleted.
+		expect(dialog().getAttribute('aria-label')).toBe('Delete "Secondary"?');
+
+		await act(async () => resolveDelete());
+		expect(dialog()).toBeNull();
+	});
 });
