@@ -58,20 +58,6 @@ export function getUpdatedLinkTargetSettings(value, { rel }) {
 }
 
 /**
- * Determines whether an image url points at an SVG.
- *
- * Dynamic Content resolves the url at render time and can supply a non-string when the bound field
- * does not come back as a url, so the type is checked rather than assumed.
- *
- * @param {*} url Image url to test.
- *
- * @return {boolean} True when the url is a string ending in `.svg`.
- */
-export function isSvgUrl(url) {
-	return typeof url === 'string' && url.endsWith('.svg');
-}
-
-/**
  * Determines new Image block attributes size selection.
  *
  * @param {Object} image Media file object for gallery image.

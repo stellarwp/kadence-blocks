@@ -172,7 +172,6 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 = 3.7.10 =
 Release Date: 2nd September 2026
 * Fix: Resolved an issue where submenus opened on hover in the Navigation block could not be dismissed with the Escape key.
-* Fix: Resolved an issue where the Advanced Image block could stop rendering in the editor when Dynamic Content supplied an image value that was not a url.
 
 = 3.7.9.1 =
 Release Date: 12th August 2026

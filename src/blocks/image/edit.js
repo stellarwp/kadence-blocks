@@ -43,7 +43,6 @@ import './editor.scss';
  * Internal dependencies
  */
 import Image from './image';
-import { isSvgUrl } from './utils';
 
 /**
  * Module constants
@@ -264,7 +263,7 @@ export function ImageEdit(props) {
 	uniqueIdHelper(props);
 
 	useEffect(() => {
-		//when the attr url changes set the dynamic url. Also set the attr url if we didn't have one ( initialized with dynamic settings )
+		//when the attr url changes set the dynamic url. Also set the attr url if we didn't have one ( initialized with dynamic seetings )
 		debouncedSetDynamicState(
 			'kadence.dynamicImage',
 			'',
@@ -523,7 +522,7 @@ export function ImageEdit(props) {
 		[`size-${sizeSlug}`]: sizeSlug,
 		[`filter-${imageFilter}`]: imageFilter && imageFilter !== 'none',
 		[`kb-image-is-ratio-size`]: useRatio,
-		'image-is-svg': isSvgUrl(url),
+		'image-is-svg': url && url.endsWith('.svg'),
 		[`kadence-image${uniqueID}`]: uniqueID,
 		'kb-image-max-width-set': imgMaxWidth,
 		'has-transparent-img': urlTransparent,

@@ -9,11 +9,6 @@ import classnames from 'classnames';
 import { RichText, useBlockProps } from '@wordpress/block-editor';
 import { getBlockDefaultClassName } from '@wordpress/blocks';
 
-/**
- * Internal dependencies
- */
-import { isSvgUrl } from './utils';
-
 export default function save({ attributes }) {
 	const {
 		url,
@@ -66,7 +61,7 @@ export default function save({ attributes }) {
 		'is-resized': width || height,
 		[`kb-filter-${imageFilter}`]: imageFilter && imageFilter !== 'none',
 		[`kb-image-is-ratio-size`]: useRatio,
-		'image-is-svg': isSvgUrl(url),
+		'image-is-svg': url && url.endsWith('.svg'),
 	});
 
 	const allClasses = classnames({
@@ -77,7 +72,7 @@ export default function save({ attributes }) {
 		'is-resized': width || height,
 		[`kb-filter-${imageFilter}`]: imageFilter && imageFilter !== 'none',
 		[`kb-image-is-ratio-size`]: useRatio,
-		'image-is-svg': isSvgUrl(url),
+		'image-is-svg': url && url.endsWith('.svg'),
 		[`has-transparent-img`]: urlTransparent,
 	});
 
