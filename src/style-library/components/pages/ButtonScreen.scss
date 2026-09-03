@@ -33,5 +33,6 @@
 	font-weight: var(--kb-sl-font-weight-medium);
 	line-height: var(--kb-sl-line-height-s);
 	white-space: nowrap;
-	transition: background-color 300ms ease, color 300ms ease, border-radius 300ms ease;
+	transition: background-color 300ms ease, color 300ms ease, border-radius 300ms ease, border-color 300ms ease,
+		border-width 300ms ease, box-shadow 300ms ease, padding 300ms ease, margin 300ms ease;
 }
