@@ -33,13 +33,15 @@ const TABS = [
 ];
 
 /**
- * The most preview padding or margin any one side may show. Smaller than the image preview's cap
- * because the chip sits inside a list row rather than standing alone as a tile — the spacing scale
- * runs to 10rem, and an uncapped top-step preset would make its row taller than the screen.
+ * The most preview padding or margin any one side may show, per axis. Deliberately generous —
+ * half the viewport on the side's own axis — because the chip's job is to show what the button
+ * will actually render, so every step of the spacing scale (which tops out at 10rem, far below
+ * either cap) previews at true size. The cap only exists to bound a pathological custom literal,
+ * not to tame real values.
  *
  * @since TBD
  */
-const BOX_PREVIEW_CAP = '2rem';
+const BOX_PREVIEW_CAP = { vertical: '50vh', horizontal: '50vw' };
 
 /**
  * Build a row's preview from its stored tokens.

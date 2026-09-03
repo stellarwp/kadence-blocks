@@ -178,12 +178,14 @@ describe('BUTTON_PRESET.renderPreview', () => {
 		// receives, so the assertions below prove both that `capBoxSides` gets the row's raw
 		// padding/margin plus the chip's cap AND that each return value lands on the matching style
 		// property (not swapped) — `capBoxSides`'s own capping math is covered by `preview.test.js`.
+		const isAxisCap = (cap) => Boolean(cap) && cap.vertical === '50vh' && cap.horizontal === '50vw';
+
 		capBoxSides.mockImplementation((value, cap) => {
-			if (value === preview.padding && cap === '2rem') {
+			if (value === preview.padding && isAxisCap(cap)) {
 				return '11px';
 			}
 
-			if (value === preview.margin && cap === '2rem') {
+			if (value === preview.margin && isAxisCap(cap)) {
 				return '22px';
 			}
 
