@@ -116,6 +116,8 @@ describe('BUTTON_PRESET.renderPreview', () => {
 	 *
 	 * @param {Object} row The row descriptor to render.
 	 *
+	 * @since TBD
+	 *
 	 * @return {HTMLElement} The chip element.
 	 */
 	const mountChip = (row) => {
@@ -165,6 +167,8 @@ describe('BUTTON_PRESET.renderPreview', () => {
 	/**
 	 * AC1/AC4: the chip applies every resolved resting style, with padding and margin capped per
 	 * side so one extreme preset cannot blow up its list row.
+	 *
+	 * @return {void}
 	 */
 	it('applies border, shadow, and capped padding/margin to the chip', () => {
 		// jsdom's bundled cssstyle does not implement the CSS `min()` function: any declaration using
@@ -198,6 +202,8 @@ describe('BUTTON_PRESET.renderPreview', () => {
 	/**
 	 * AC5a: while the pointer is over the chip it swaps to the resolved hover styles, and a hover
 	 * property the preset leaves unset keeps its resting value; leaving restores the resting state.
+	 *
+	 * @return {void}
 	 */
 	it('swaps to hover styles under the pointer and back off it', () => {
 		const chip = mountChip({ id: 'primary', label: 'Primary', preview });
@@ -211,6 +217,8 @@ describe('BUTTON_PRESET.renderPreview', () => {
 		// Unset hover values keep the resting style.
 		expect(chip.style.borderStyle).toBe('dashed');
 		expect(chip.style.borderRadius).toBe('0.5rem');
+		expect(chip.style.borderWidth).toBe('2px');
+		expect(chip.style.borderColor).toBe('#d0d5dd');
 
 		act(() => {
 			chip.dispatchEvent(new MouseEvent('mouseout', { bubbles: true }));
@@ -223,6 +231,8 @@ describe('BUTTON_PRESET.renderPreview', () => {
 	/**
 	 * AC5b: `showHoverState` holds the hover styles with no pointer involved — the screen sets it
 	 * for the row whose panel is on the Hover tab.
+	 *
+	 * @return {void}
 	 */
 	it('holds the hover state when the row carries showHoverState', () => {
 		const chip = mountChip({ id: 'primary', label: 'Primary', preview, showHoverState: true });
@@ -234,6 +244,8 @@ describe('BUTTON_PRESET.renderPreview', () => {
 	/**
 	 * AC3: an unresolved value renders the property absent rather than an invented fallback, so
 	 * the stylesheet's own chip defaults stay in charge.
+	 *
+	 * @return {void}
 	 */
 	it('drops every unresolved style', () => {
 		const chip = mountChip({
