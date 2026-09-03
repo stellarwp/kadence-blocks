@@ -16,9 +16,18 @@
  * resolves to a unitless `0`, and wrapping it once produced exactly that invalid declaration, which
  * the browser silently dropped — leaving the previous padding on screen with nothing assigned.
  *
- * @param {string} value The resolved value: one length, or a space-separated shorthand.
- * @param {string} cap   The most any one side may show — a LENGTH, not a percentage, because the
- *                       preview grows to fit the value rather than insetting into a fixed frame.
+ * The cap is either one length for every side, or a per-axis pair. With a pair, each component is
+ * capped by the axis it lands on under the CSS box shorthand: even positions are vertical (top,
+ * and bottom in the 3-value form), odd positions horizontal — which maps `v h`, `v h v`, and
+ * `v h v h` correctly, and caps a single all-sides value by the vertical axis (any realistic
+ * spacing sits far below either viewport cap, so the distinction never shows there).
+ *
+ * @param {string}                                   value The resolved value: one length, or a
+ *                                                         space-separated shorthand.
+ * @param {string|{vertical: string, horizontal: string}} cap The most any one side may show — a
+ *                       LENGTH (not a percentage, because the preview grows to fit the value rather
+ *                       than insetting into a fixed frame), or a per-axis `{vertical, horizontal}`
+ *                       pair of lengths.
  *
  * @since TBD
  *
@@ -38,8 +47,16 @@ export function capBoxSides(value, cap) {
 		return undefined;
 	}
 
-	return sides
-		.split(/\s+/)
-		.map((side) => (/^[+-]?\d*\.?\d+[a-z%]+$/i.test(side) ? `min(${side}, ${cap})` : side))
+	const capFor = (index) => (typeof cap === 'string' ? cap : index % 2 === 0 ? cap.vertical : cap.horizontal);
+	const parts = sides.split(/\s+/);
+
+	// A one-value shorthand stands for all four sides, so a per-axis cap has to expand it to the
+	// vertical/horizontal pair first — capping it in place would hold the left and right sides to the
+	// vertical bound. The two-, three- and four-value forms already alternate vertical, horizontal by
+	// index, so they need no expansion.
+	const expanded = parts.length === 1 && typeof cap !== 'string' ? [parts[0], parts[0]] : parts;
+
+	return expanded
+		.map((side, index) => (/^[+-]?\d*\.?\d+[a-z%]+$/i.test(side) ? `min(${side}, ${capFor(index)})` : side))
 		.join(' ');
 }
