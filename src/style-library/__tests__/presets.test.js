@@ -160,6 +160,16 @@ describe('presetRows', () => {
 		'semantic.color.on-primary': '#ffffff',
 	};
 
+	const emptyHover = {
+		background: '',
+		color: '',
+		borderRadius: '',
+		borderWidth: '',
+		borderStyle: '',
+		borderColor: '',
+		shadow: '',
+	};
+
 	it('maps the payload to row view models in payload order, resolving preview values', () => {
 		const payload = {
 			userCreated: [],
@@ -190,9 +200,31 @@ describe('presetRows', () => {
 			id: 'primary',
 			label: 'Primary',
 			userCreated: false,
-			preview: { background: '#3633e1', color: '#ffffff', borderRadius: '0.5rem' },
+			preview: {
+				background: '#3633e1',
+				color: '#ffffff',
+				borderRadius: '0.5rem',
+				borderWidth: '',
+				borderStyle: '',
+				borderColor: '',
+				shadow: '',
+				padding: '',
+				margin: '',
+				hover: emptyHover,
+			},
 		});
-		expect(rows[1].preview).toEqual({ background: 'transparent', color: '#3633e1', borderRadius: '0.25rem' });
+		expect(rows[1].preview).toEqual({
+			background: 'transparent',
+			color: '#3633e1',
+			borderRadius: '0.25rem',
+			borderWidth: '',
+			borderStyle: '',
+			borderColor: '',
+			shadow: '',
+			padding: '',
+			margin: '',
+			hover: emptyHover,
+		});
 	});
 
 	it('resolves a responsive preview at the breakpoint being viewed', () => {
@@ -653,18 +685,50 @@ describe('overlayPresetRows', () => {
 		'semantic.color.on-primary': '#ffffff',
 	};
 
+	const emptyHover = {
+		background: '',
+		color: '',
+		borderRadius: '',
+		borderWidth: '',
+		borderStyle: '',
+		borderColor: '',
+		shadow: '',
+	};
+
 	const rows = [
 		{
 			id: 'primary',
 			label: 'Primary',
 			userCreated: false,
-			preview: { background: '#3633e1', color: '#ffffff', borderRadius: '0.5rem' },
+			preview: {
+				background: '#3633e1',
+				color: '#ffffff',
+				borderRadius: '0.5rem',
+				borderWidth: '',
+				borderStyle: '',
+				borderColor: '',
+				shadow: '',
+				padding: '',
+				margin: '',
+				hover: emptyHover,
+			},
 		},
 		{
 			id: 'secondary',
 			label: 'Secondary',
 			userCreated: false,
-			preview: { background: 'transparent', color: '#3633e1', borderRadius: '0.25rem' },
+			preview: {
+				background: 'transparent',
+				color: '#3633e1',
+				borderRadius: '0.25rem',
+				borderWidth: '',
+				borderStyle: '',
+				borderColor: '',
+				shadow: '',
+				padding: '',
+				margin: '',
+				hover: emptyHover,
+			},
 		},
 	];
 
@@ -686,7 +750,26 @@ describe('overlayPresetRows', () => {
 			id: 'primary',
 			label: 'Primary CTA',
 			userCreated: false,
-			preview: { background: '#ffffff', color: '#3633e1', borderRadius: '1rem' },
+			preview: {
+				background: '#ffffff',
+				color: '#3633e1',
+				borderRadius: '1rem',
+				borderWidth: '',
+				borderStyle: '',
+				borderColor: '',
+				shadow: '',
+				padding: '',
+				margin: '',
+				hover: {
+					background: '#3633e1',
+					color: '#ffffff',
+					borderRadius: '',
+					borderWidth: '',
+					borderStyle: '',
+					borderColor: '',
+					shadow: '',
+				},
+			},
 		});
 		expect(next[1]).toBe(rows[1]);
 	});
