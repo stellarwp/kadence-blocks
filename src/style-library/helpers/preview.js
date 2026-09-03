@@ -12,7 +12,9 @@
  * single length rather than a shorthand. Only a component that is a NUMBER WITH A UNIT is wrapped,
  * and that restriction is load-bearing rather than defensive: `min()` requires its arguments to be
  * of one type, so `min(0, 2rem)` — mixing a number with a length — is invalid and the browser drops
- * the whole declaration. A unitless `0` needs no capping anyway.
+ * the whole declaration. A unitless `0` needs no capping anyway: the spacing scale's `None` step
+ * resolves to a unitless `0`, and wrapping it once produced exactly that invalid declaration, which
+ * the browser silently dropped — leaving the previous padding on screen with nothing assigned.
  *
  * @param {string} value The resolved value: one length, or a space-separated shorthand.
  * @param {string} cap   The most any one side may show — a LENGTH, not a percentage, because the

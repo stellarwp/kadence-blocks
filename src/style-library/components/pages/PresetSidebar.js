@@ -87,6 +87,10 @@ function PresetSidebarBody({ navigate, route, screen, initialValues, presetLabel
 
 		publish({ itemId: id, label: presetLabel, draft: panel.draft, isDirty: panel.isDirty, activeTab });
 
+		// Re-running on `activeTab` also clears then republishes on every tab switch: safe because
+		// the guard modal traps focus while it is open (so tabs are unreachable during a guard), and
+		// `clearPublication()` nulling the pending guard action/error batches into the same commit as
+		// the republish that follows it.
 		return () => clearPublication();
 	}, [publish, clearPublication, id, presetLabel, panel.draft, panel.isDirty, activeTab]);
 

@@ -17,8 +17,8 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { BUTTON_MARGIN_FALLBACK, BUTTON_PADDING_FALLBACK } from '../../token-controls/helpers/button-box-defaults';
-import { capBoxSides } from '../helpers/preview';
 import { BUTTON_BLOCK, getPresetProperties, resolveTokenValue } from '../helpers/presets';
+import { capBoxSides } from '../helpers/preview';
 
 export { BUTTON_BLOCK };
 
@@ -157,9 +157,12 @@ function renderPreview(row) {
 
 /**
  * The per-tab settings schema: the Normal tab adds a Border and Shadow section and the Hover tab
- * never does — `button-radius`/`button-border`/`button-shadow` have no hover counterpart, so
- * rendering them there would write a property `guard_surface` rejects. The preset name is not here;
- * it is tab-independent and comes from `presetNameSchema()`.
+ * never does. The block does bind hover counterparts for radius, border, and shadow — `preview()`
+ * above resolves `button-radius-hover`, the hover border trio, and `button-shadow-hover`, and the
+ * chip already previews them — but the Hover tab only offers the color pair today; that is a
+ * scope decision, not a `guard_surface` restriction, and offering the other fields is a separate
+ * schema decision. The preset name is not here; it is tab-independent and comes from
+ * `presetNameSchema()`.
  *
  * @param {string} tab The active tab name (`'normal'` or `'hover'`).
  *
