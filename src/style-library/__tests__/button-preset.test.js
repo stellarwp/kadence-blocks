@@ -20,6 +20,8 @@ jest.mock('../helpers/preview', () => ({
 	capBoxSides: jest.fn(jest.requireActual('../helpers/preview').capBoxSides),
 }));
 
+const actualCapBoxSides = jest.requireActual('../helpers/preview').capBoxSides;
+
 describe('BUTTON_PRESET.preview', () => {
 	/**
 	 * AC2: every resting-state property the preview can show resolves through the feed's value map,
@@ -133,6 +135,10 @@ describe('BUTTON_PRESET.renderPreview', () => {
 	afterEach(() => {
 		act(() => root.unmount());
 		container.remove();
+		// The padding/margin test overrides `capBoxSides`'s implementation to return sentinels;
+		// restore the wrapped-real-implementation default so no other test's outcome depends on
+		// whichever test ran before it.
+		capBoxSides.mockImplementation(actualCapBoxSides);
 	});
 
 	const preview = {
@@ -161,18 +167,32 @@ describe('BUTTON_PRESET.renderPreview', () => {
 	 * side so one extreme preset cannot blow up its list row.
 	 */
 	it('applies border, shadow, and capped padding/margin to the chip', () => {
+		// jsdom's bundled cssstyle does not implement the CSS `min()` function: any declaration using
+		// it is rejected outright (not normalized, the way jsdom rewrites hex colors to `rgb()`), so
+		// `chip.style.padding`/`.margin` cannot hold the real capped value here even though a real
+		// browser renders it. Stand in `min()`-free sentinels keyed to which argument each call
+		// receives, so the assertions below prove both that `capBoxSides` gets the row's raw
+		// padding/margin plus the chip's cap AND that each return value lands on the matching style
+		// property (not swapped) — `capBoxSides`'s own capping math is covered by `preview.test.js`.
+		capBoxSides.mockImplementation((value, cap) => {
+			if (value === preview.padding && cap === '2rem') {
+				return '11px';
+			}
+
+			if (value === preview.margin && cap === '2rem') {
+				return '22px';
+			}
+
+			return actualCapBoxSides(value, cap);
+		});
+
 		const chip = mountChip({ id: 'primary', label: 'Primary', preview });
 
 		expect(chip.style.borderWidth).toBe('2px');
 		expect(chip.style.borderStyle).toBe('dashed');
 		expect(chip.style.boxShadow).toBe('0px 2px 4px 0px rgba(0, 0, 0, 0.2)');
-		// jsdom's bundled cssstyle does not implement the CSS `min()` function: any declaration using
-		// it is rejected outright (not normalized, the way jsdom rewrites hex colors to `rgb()`), so
-		// `chip.style.padding`/`.margin` read back empty here even though a real browser renders the
-		// capped value. Assert on the wiring instead — `capBoxSides` gets the row's raw padding/margin
-		// and the chip's cap — while `capBoxSides`'s own capping math is covered by `preview.test.js`.
-		expect(capBoxSides).toHaveBeenCalledWith(preview.padding, '2rem');
-		expect(capBoxSides).toHaveBeenCalledWith(preview.margin, '2rem');
+		expect(chip.style.padding).toBe('11px');
+		expect(chip.style.margin).toBe('22px');
 	});
 
 	/**
