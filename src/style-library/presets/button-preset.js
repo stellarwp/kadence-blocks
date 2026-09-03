@@ -33,9 +33,11 @@ const TABS = [
 /**
  * Build a row's preview from its stored tokens.
  *
- * The shape is this block's own: a button chip needs a background, a text color and a radius.
- * Another block's rows would preview something else entirely, which is why the generic row mapper
- * takes this as a function rather than reading fixed keys.
+ * The shape is this block's own: every resting-state property the chip can draw — background,
+ * text color, radius, the border trio, shadow, padding, and margin — plus a nested `hover` map
+ * of the state the chip swaps to on interaction (see `renderPreview`). Another block's rows
+ * would preview something else entirely, which is why the generic row mapper takes this as a
+ * function rather than reading fixed keys.
  *
  * @param {Record<string, *>}      tokens       The preset's stored token map.
  * @param {Record<string, string>} values       The feed's resolved value map.
@@ -47,13 +49,31 @@ const TABS = [
  *
  * @since TBD
  *
- * @return {{background: string, color: string, borderRadius: string}} The preview.
+ * @return {{background: string, color: string, borderRadius: string, borderWidth: string, borderStyle: string, borderColor: string, shadow: string, padding: string, margin: string, hover: {background: string, color: string, borderRadius: string, borderWidth: string, borderStyle: string, borderColor: string, shadow: string}}} The preview.
  */
 function preview(tokens, values, breakpoint) {
 	return {
 		background: resolveTokenValue(values, tokens['button-bg'], breakpoint),
 		color: resolveTokenValue(values, tokens['button-text'], breakpoint),
 		borderRadius: resolveTokenValue(values, tokens['button-radius'], breakpoint),
+		borderWidth: resolveTokenValue(values, tokens['button-border-width'], breakpoint),
+		borderStyle: resolveTokenValue(values, tokens['button-border-style'], breakpoint),
+		borderColor: resolveTokenValue(values, tokens['button-border-color'], breakpoint),
+		shadow: resolveTokenValue(values, tokens['button-shadow'], breakpoint),
+		padding: resolveTokenValue(values, tokens['button-padding'], breakpoint),
+		margin: resolveTokenValue(values, tokens['button-margin'], breakpoint),
+		// No hover padding/margin: the block binds no hover counterpart for either, so the chip's
+		// box never changes between states. The hover border trio's key order is the block's own —
+		// `button-border-hover-width`, not `button-border-width-hover` (see `declarations.php`).
+		hover: {
+			background: resolveTokenValue(values, tokens['button-bg-hover'], breakpoint),
+			color: resolveTokenValue(values, tokens['button-text-hover'], breakpoint),
+			borderRadius: resolveTokenValue(values, tokens['button-radius-hover'], breakpoint),
+			borderWidth: resolveTokenValue(values, tokens['button-border-hover-width'], breakpoint),
+			borderStyle: resolveTokenValue(values, tokens['button-border-hover-style'], breakpoint),
+			borderColor: resolveTokenValue(values, tokens['button-border-hover-color'], breakpoint),
+			shadow: resolveTokenValue(values, tokens['button-shadow-hover'], breakpoint),
+		},
 	};
 }
 
