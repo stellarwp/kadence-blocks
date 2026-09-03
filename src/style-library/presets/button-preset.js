@@ -231,7 +231,7 @@ function schemaFor(tab) {
 		],
 	};
 
-	// Normal only, like the radius panel: neither property has a hover counterpart, so a field on the
+	// Normal only: the block binds no hover counterpart for padding or margin, so a field on the
 	// Hover tab would write something `guard_surface` rejects.
 	const spacingPanel = {
 		id: 'spacing',
