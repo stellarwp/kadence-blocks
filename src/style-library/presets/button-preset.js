@@ -10,12 +10,14 @@
 /**
  * WordPress dependencies
  */
+import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
 import { BUTTON_MARGIN_FALLBACK, BUTTON_PADDING_FALLBACK } from '../../token-controls/helpers/button-box-defaults';
+import { capBoxSides } from '../helpers/preview';
 import { BUTTON_BLOCK, getPresetProperties, resolveTokenValue } from '../helpers/presets';
 
 export { BUTTON_BLOCK };
@@ -29,6 +31,15 @@ const TABS = [
 	{ name: 'normal', title: __('Normal', 'kadence-blocks') },
 	{ name: 'hover', title: __('Hover', 'kadence-blocks') },
 ];
+
+/**
+ * The most preview padding or margin any one side may show. Smaller than the image preview's cap
+ * because the chip sits inside a list row rather than standing alone as a tile — the spacing scale
+ * runs to 10rem, and an uncapped top-step preset would make its row taller than the screen.
+ *
+ * @since TBD
+ */
+const BOX_PREVIEW_CAP = '2rem';
 
 /**
  * Build a row's preview from its stored tokens.
@@ -78,33 +89,70 @@ function preview(tokens, values, breakpoint) {
 }
 
 /**
- * The row's live preview chip: a non-interactive span reading "Button", styled from the row's
- * resolved background/text/radius. Hover values are never previewed here — a static chip cannot
- * honestly show `:hover`, the sidebar's Hover tab is the editing surface for that — and an
- * unresolved value renders the property absent rather than an invented fallback.
+ * The live preview chip: a span reading "Button", styled from the row's resolved styles —
+ * background, text, radius, border, shadow, padding, and margin. While the pointer is over the
+ * chip (or `row.showHoverState` is set, which the screen does for the row whose panel is on the
+ * Hover tab), each style swaps to the preset's resolved hover value, per property: an unset hover
+ * value keeps the resting style, exactly what a real button whose preset stores no hover override
+ * does. An unresolved value renders the property absent rather than an invented fallback, leaving
+ * the stylesheet's chip defaults in charge (so a preset that sets only a border color still
+ * previews it: the stylesheet's transparent `1px solid` border supplies the width and style).
+ * Padding and margin are capped per side (see `capBoxSides`) so an extreme preset cannot make its
+ * list row enormous; neither has a hover-bound counterpart, so the chip's box never changes
+ * between states.
  *
  * Styled by `components/pages/ButtonScreen.scss`, which also carries this screen's other overrides
  * and is imported there.
  *
- * @param {{id: string, label: string, preview: {background: string, color: string, borderRadius: string}}} row The row descriptor.
+ * @param {Object} props     The component props.
+ * @param {Object} props.row The row descriptor (`{id, label, preview, showHoverState?}`).
+ *
+ * @since TBD
+ *
+ * @return {JSX.Element} The chip.
+ */
+function ButtonPresetPreviewChip({ row }) {
+	const [isHovered, setIsHovered] = useState(false);
+
+	const resting = row.preview;
+	const hover = resting.hover ?? {};
+	const showHover = isHovered || row.showHoverState === true;
+	const styleFor = (base, hovered) => (showHover && hovered ? hovered : base) || undefined;
+
+	return (
+		<span
+			className="kadence-blocks-style-library__button-preset-preview"
+			onMouseEnter={() => setIsHovered(true)}
+			onMouseLeave={() => setIsHovered(false)}
+			style={{
+				background: styleFor(resting.background, hover.background),
+				color: styleFor(resting.color, hover.color),
+				borderRadius: styleFor(resting.borderRadius, hover.borderRadius),
+				borderWidth: styleFor(resting.borderWidth, hover.borderWidth),
+				borderStyle: styleFor(resting.borderStyle, hover.borderStyle),
+				borderColor: styleFor(resting.borderColor, hover.borderColor),
+				boxShadow: styleFor(resting.shadow, hover.shadow),
+				padding: capBoxSides(resting.padding, BOX_PREVIEW_CAP),
+				margin: capBoxSides(resting.margin, BOX_PREVIEW_CAP),
+			}}
+		>
+			{__('Button', 'kadence-blocks')}
+		</span>
+	);
+}
+
+/**
+ * The row's preview slot: the generic row mapper calls this as a plain function, so it stays one —
+ * the hover state lives inside `ButtonPresetPreviewChip`, which needs to be a component to hold it.
+ *
+ * @param {{id: string, label: string, preview: Object, showHoverState?: boolean}} row The row descriptor.
  *
  * @since TBD
  *
  * @return {JSX.Element} The preview element.
  */
 function renderPreview(row) {
-	return (
-		<span
-			className="kadence-blocks-style-library__button-preset-preview"
-			style={{
-				background: row.preview.background || undefined,
-				color: row.preview.color || undefined,
-				borderRadius: row.preview.borderRadius || undefined,
-			}}
-		>
-			{__('Button', 'kadence-blocks')}
-		</span>
-	);
+	return <ButtonPresetPreviewChip row={row} />;
 }
 
 /**
