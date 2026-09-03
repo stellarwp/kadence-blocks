@@ -145,10 +145,14 @@ export function PresetScreen({ label, route, navigate, library, preset }) {
 	const [breakpoint] = useBreakpoint();
 	const rows = overlayPresetRows(screen.rows, route.item, draft, library?.values, preset.preview, breakpoint);
 
+	// Only the open row, and only while its panel's Hover tab is the one being edited: the chip
+	// then holds the hover state without the pointer, so Hover-tab edits read back immediately.
+	const isHoverDraft = Boolean(draft) && channel.publication.activeTab === 'hover';
+
 	const items = rows.map((row) => ({
 		id: row.id,
 		label: row.label,
-		preview: renderPreview(row),
+		preview: renderPreview(isHoverDraft && row.id === route.item ? { ...row, showHoverState: true } : row),
 		isDraggable: true,
 	}));
 
