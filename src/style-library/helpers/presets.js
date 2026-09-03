@@ -270,7 +270,7 @@ export function resolveTokenValue(values, value, breakpoint = PRESET_BREAKPOINTS
  *
  * @since TBD
  *
- * @return {Array<{id: string, label: string, userCreated: boolean, preview: Object}>} The preset rows.
+ * @return {Array<{id: string, label: string, userCreated: boolean, tokens: Record<string, *>, preview: Object}>} The preset rows.
  */
 export function presetRows(payload, values, preview, breakpoint = PRESET_BREAKPOINTS[0]) {
 	const presets = payload?.presets ?? {};
@@ -283,6 +283,9 @@ export function presetRows(payload, values, preview, breakpoint = PRESET_BREAKPO
 			id: slug,
 			label: preset?.label ?? slug,
 			userCreated: userCreated.includes(slug),
+			// Carried on the row (not just consumed here) so `overlayPresetRows` can merge a live
+			// draft over the preset's effective values instead of previewing the draft in isolation.
+			tokens,
 			preview: preview(tokens, values, breakpoint),
 		};
 	});
@@ -513,13 +516,22 @@ export function nextPresetSlug(existingSlugs, base) {
 }
 
 /**
- * Overlay a live settings-panel draft onto the row it edits: the label and a preview re-resolved
- * from the draft's token map (bare ids), so the row chip always shows what Save would write instead
- * of waiting for it — the preset analog of `overlayDraft` (`helpers/scale.js`), same
- * reference-identity contract. Returns the exact same array reference for a `null`/absent draft or
- * an `itemId` matching no row; every non-matching row keeps its exact object identity either way.
+ * Overlay a live settings-panel draft onto the row it edits: the label, and a preview re-resolved
+ * from the draft's SET properties merged over the row's stored token map — the preset analog of
+ * `overlayDraft` (`helpers/scale.js`), same reference-identity contract. Returns the exact same
+ * array reference for a `null`/absent draft or an `itemId` matching no row; every non-matching row
+ * keeps its exact object identity either way.
  *
- * @param {Array<{id: string, label: string, preview: Object}>} rows    The rows in payload order.
+ * Merged, not replaced, because the draft deliberately seeds every non-overridden property empty
+ * (see `presetInitialValues`) while the row's stored map is baseline-merged: previewing the draft
+ * alone blanks the chip the moment the panel opens, showing a button the preset never renders.
+ * A property the draft leaves unset keeps previewing the stored value — which is also what a save
+ * produces, since `presetSaveTokens` omits unset properties and the reloaded payload re-merges the
+ * baseline. The one imprecision is clearing a previously-overridden property: until save, the chip
+ * keeps showing the old override, because the baseline value it will fall back to is a server-side
+ * merge this client cannot reproduce.
+ *
+ * @param {Array<{id: string, label: string, tokens: Record<string, *>, preview: Object}>} rows The rows in payload order.
  * @param {string}                                              itemId  The open route item id.
  * @param {?{label?: string, tokens?: Record<string, string>}}  draft   The open panel's live draft, or null.
  * @param {Record<string, string>}                              values  The feed's resolved value map.
@@ -553,10 +565,15 @@ export function overlayPresetRows(rows, itemId, draft, values, preview, breakpoi
 		// The draft holds bare ids (what the picker writes); the block's preview builder expects the
 		// stored alias shape, same as a fetched payload. Re-wrapping here means both paths run the
 		// identical builder, so a live overlay can never resolve differently from what lands on save.
-		const asStored = Object.entries(draft.tokens).reduce((acc, [property, value]) => {
-			acc[property] = aliasDeep(value ?? '');
-			return acc;
-		}, {});
+		const asStored = Object.entries(draft.tokens).reduce(
+			(acc, [property, value]) => {
+				if (!isUnsetPresetValue(value)) {
+					acc[property] = aliasDeep(value);
+				}
+				return acc;
+			},
+			{ ...(overlaid.tokens ?? {}) }
+		);
 
 		overlaid.preview = preview(asStored, values, breakpoint);
 	}
