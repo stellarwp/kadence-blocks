@@ -14,7 +14,7 @@
  *
  * Color is out of scope here (see `renderColor`) exactly as in `BorderControl` — this control does
  * not import or build a color picker. The Custom tab's color row wraps whatever `renderColor`
- * renders (the Style Library's swatch-plus-label toggle, the block editor's `PopColorControl`) in
+ * renders (the Style Library's swatch-plus-label toggle, the block editor's `ShadowColorField`) in
  * plain layout chrome; it does not touch what that render prop returns.
  *
  * The token rows also hide their resolved value (`TokenPopover`'s `showValue={false}`) — a shadow's
@@ -205,7 +205,7 @@ function ShadowCustomTab({ shadow, onChange, renderColor, disabled = false }) {
 			{renderColor && (
 				// A plain wrapper, not a rebuilt picker: whatever the caller's `renderColor` already renders
 				// (the Style Library's `TokenColorSelectField` swatch-plus-"Color"-label toggle, the block
-				// editor's `PopColorControl`) keeps its own click-to-open mechanism and chrome untouched;
+				// editor's `ShadowColorField`) keeps its own click-to-open mechanism and chrome untouched;
 				// this only gives it its own row above the axes instead of sitting inline with them.
 				<div className="kb-box-shadow-control__color-row">
 					{renderColor({ value: shadow.color, onChange: (next) => setPart('color', next), disabled })}

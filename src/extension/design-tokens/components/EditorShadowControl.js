@@ -13,14 +13,12 @@
  *   unitless numbers become the composite's `"Npx"` strings, matching `ShadowField`'s own convention.
  * - **no `opacity` field in the composite** — the Shadow screen's `ColorPicker` carries alpha inside
  *   the color itself. Folding native's separate `opacity` into the composite's `color` (as an
- *   `rgba(...)` string when opacity is less than fully opaque, a plain hex otherwise) is what lets a
- *   caller's `renderColor` edit both through one `PopColorControl`, unchanged, via its existing
- *   `opacityValue`/`onArrayChange` props — the same two-channel mechanism the native
- *   `@kadence/components` `BoxShadowControl` already wires it through
- *   (`node_modules/@kadence/components/src/box-shadow-control/index.js`). `combineColorOpacity`/
- *   `splitColorOpacity` below are exported so a caller's `renderColor` can do that combine/split with
- *   the exact same rules this component uses to read/write the native attribute, keeping both
- *   directions symmetric.
+ *   `rgba(...)` string when opacity is less than fully opaque, a plain hex otherwise) is what lets the
+ *   caller's `renderColor` — the block editor's `ShadowColorField`, a `ColorControl` whose Custom tab
+ *   picker carries alpha inline as `#rrggbbaa` — edit both through a single color string.
+ *   `combineColorOpacity`/`splitColorOpacity` below are exported so a caller's `renderColor` can do
+ *   that combine/split with the exact same rules this component uses to read/write the native
+ *   attribute, keeping both directions symmetric.
  * This control renders no enable toggle of its own — whether a `box-shadow` declaration is emitted is
  * decided by inspecting the shadow value's own axes (an all-zero value, including the fixed "None"
  * pick, emits nothing), both on the front end and in the editor-canvas live preview. A host that
@@ -110,10 +108,9 @@ function hexToRgba(hex, alpha) {
 
 /**
  * Fold a native hex color and a separate opacity number into the single string `BoxShadowControl`'s
- * composite color slot carries, so a caller's `renderColor` can hand both to one `PopColorControl` via
- * its `value`/`opacityValue` props. Fully opaque (or unset) opacity stays a plain hex literal — no
- * `rgba(...)` wrapping — so the common case round-trips as the same hex string a plain `PopColorControl`
- * without opacity support would also produce.
+ * composite color slot carries, so a caller's `renderColor` can seed a single color picker with both.
+ * Fully opaque (or unset) opacity stays a plain hex literal — no `rgba(...)` wrapping — so the common
+ * case round-trips as the same hex string the picker emits for an opaque pick.
  *
  * @param {string}  color   The native hex color, an `rgb(...)`/`rgba(...)` literal, or any other CSS
  *                          color literal.
@@ -127,7 +124,7 @@ function hexToRgba(hex, alpha) {
  * `transparent`, `currentColor` — passes through unchanged rather than being corrupted into black;
  * the separate opacity is lost in that one case, a known, accepted limitation (there is no lossless
  * single-string encoding for "an opaque reference plus a multiplier" without `color-mix()`, which
- * `PopColorControl`/`splitColorOpacity` do not parse) — see `splitColorOpacity`'s matching fallback.
+ * `splitColorOpacity` does not parse) — see `splitColorOpacity`'s matching fallback.
  */
 export function combineColorOpacity(color, opacity) {
 	if (!color) {
@@ -182,7 +179,7 @@ export function splitColorOpacity(combined) {
 	}
 
 	// An 8-digit hex (`#RRGGBBAA`) carries its own alpha in the trailing pair — decode it rather than
-	// reading the whole 8-digit string as an opaque color, which `PopColorControl` cannot render.
+	// reading the whole 8-digit string as an opaque color, which would read as fully opaque.
 	const hexAlphaMatch = combined.match(/^#?([0-9a-f]{6})([0-9a-f]{2})$/i);
 
 	if (hexAlphaMatch) {
