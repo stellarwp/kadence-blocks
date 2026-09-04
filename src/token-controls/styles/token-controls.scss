@@ -301,7 +301,7 @@
 /*
  * The color row: a plain full-width wrapper around whatever `renderColor` renders (see the render
  * function's own comment on why this does not rebuild that markup). Margin only, no border/padding
- * of its own — the Style Library's `TokenColorSelectField` and the block editor's `PopColorControl`
+ * of its own — the Style Library's `TokenColorSelectField` and the block editor's `ShadowColorField`
  * already draw their own bordered, clickable swatch-plus-label toggle, and adding a second border
  * around it would double up the chrome the reference `ShadowField` only draws once.
  */
