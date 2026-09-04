@@ -68,7 +68,7 @@ import {
 import { EditorBoxControl } from '../../extension/design-tokens/components/EditorBoxControl';
 import { EditorShadowControl, hasVisibleShadow } from '../../extension/design-tokens/components/EditorShadowControl';
 import { imageBoxShadowCss } from './box-shadow';
-import { renderShadowColor } from '../../extension/design-tokens/components/shadow-color';
+import { ShadowColorField } from '../../extension/design-tokens/components/shadow-color';
 import { useColorGroups } from '../../extension/design-tokens/hooks/use-color-groups';
 import { resolveColorLiteral } from '../../extension/design-tokens/color-literal';
 import { tokenDimension } from '../../extension/design-tokens/token-dimension';
@@ -239,6 +239,10 @@ export default function Image({
 		);
 	// One fetch of the block's effective palette groups, shared by every `ColorControl` on this block.
 	const colorGroups = useColorGroups(clientId);
+
+	// `BoxShadowControl` calls `renderColor` from inside its popover's Custom tab; defined once per
+	// render so the field closes over the shared palette groups rather than fetching its own.
+	const renderShadowColor = useCallback((slot) => <ShadowColorField {...slot} groups={colorGroups} />, [colorGroups]);
 
 	// Empty when the token registry is inactive, which is what keeps the plain controls below as the
 	// fallback rather than leaving the image with no radius/padding control at all.
