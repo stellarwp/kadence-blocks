@@ -96,7 +96,7 @@ import {
 import { EditorBoxControl } from '../../extension/design-tokens/components/EditorBoxControl';
 import { EditorBorderControl } from '../../extension/design-tokens/components/EditorBorderControl';
 import { EditorShadowControl, hasVisibleShadow } from '../../extension/design-tokens/components/EditorShadowControl';
-import { renderShadowColor } from '../../extension/design-tokens/components/shadow-color';
+import { ShadowColorField } from '../../extension/design-tokens/components/shadow-color';
 import { BorderColorField } from '../../extension/design-tokens/components/border-color';
 import { pickableTokensForControl, pickableTokensForKey } from '../../extension/token-picker';
 import { EditorColorControl } from '../../extension/design-tokens/components/EditorColorControl';
@@ -305,6 +305,9 @@ export default function KadenceButtonEdit(props) {
 	// `BorderControl` forwards `renderColor` down through `SlotGrid`'s `renderSlot`, so this is
 	// defined once per render rather than inline at each of the border panels below.
 	const renderBorderColor = useCallback((row) => <BorderColorField {...row} groups={colorGroups} />, [colorGroups]);
+	// Same shape as `renderBorderColor`: `BoxShadowControl` calls `renderColor` from inside its
+	// popover's Custom tab, so this closes over the shared palette groups once per render.
+	const renderShadowColor = useCallback((slot) => <ShadowColorField {...slot} groups={colorGroups} />, [colorGroups]);
 
 	const borderRadiusPresetValue = presetValueForDevice(
 		tokenBinding.borderRadius?.presetValue,

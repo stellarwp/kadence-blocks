@@ -350,6 +350,27 @@ describe('EditorShadowControl native <-> BoxShadowControl value bridging', () =>
 			inset: false,
 		});
 	});
+
+	/**
+	 * A token alias picked as the shadow's color passes through the split untouched as the native
+	 * `color`, with full opacity — the alias-aware color output resolves it on render.
+	 *
+	 * @return {void}
+	 */
+	it('keeps a token alias as the native color with full opacity', () => {
+		const native = toNativeShadow({
+			color: '{semantic.color.accent.main}',
+			offsetX: '2px',
+			offsetY: '3px',
+			blur: '4px',
+			spread: '5px',
+			inset: false,
+		});
+
+		expect(native[0].color).toBe('{semantic.color.accent.main}');
+		expect(native[0].opacity).toBe(1);
+		expect(native[0]).not.toHaveProperty(SHADOW_TOKEN_KEY);
+	});
 });
 
 describe('EditorShadowControl always renders, with no enable toggle', () => {
