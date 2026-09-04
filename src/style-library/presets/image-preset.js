@@ -15,6 +15,7 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { getPresetProperties, resolveTokenValue } from '../helpers/presets';
+import { capBoxSides } from '../helpers/preview';
 
 /**
  * The block name this screen edits — the single JS spelling, shared by the screen registration and
@@ -49,42 +50,6 @@ const IMAGE_PADDING_FALLBACK = ['0', '0', '0', '0'];
 const PADDING_PREVIEW_CAP = '4rem';
 
 /**
- * Cap each side of a resolved padding value, so one extreme preset cannot make a list row enormous.
- *
- * The tile GROWS to fit its padding rather than insetting into a fixed frame (see `ImageScreen.scss`),
- * which is what keeps each step of the scale visibly different and always leaves a photo to see. That
- * alone is unbounded, though, and the spacing scale runs to 10rem — a preset using the top step would
- * produce a tile over 20rem on a side and a row taller than the screen. The cap bounds that end while
- * leaving every step up to `XL` exact, so the values a preset realistically uses are shown true to
- * size.
- *
- * Each side is wrapped separately because a per-corner preset stores four, and CSS `min()` takes a
- * single length rather than a shorthand. Only a component that is a NUMBER WITH A UNIT is wrapped,
- * and that restriction is load-bearing rather than defensive: `min()` requires its arguments to be of
- * one type, so `min(0, 4rem)` — mixing a number with a length — is invalid and the browser drops the
- * whole declaration. The `None` step resolves to a unitless `0` (kept unitless on purpose, so a stored
- * zero still equals the token), which made picking it silently leave the previous padding on screen,
- * the property having never been assigned. Nothing without a unit needs capping anyway.
- *
- * @param {string} padding The resolved padding: one length, or a space-separated shorthand.
- *
- * @since TBD
- *
- * @return {?string} The capped padding, or undefined when there is nothing to apply.
- */
-function cappedPadding(padding) {
-	if (!padding) {
-		return undefined;
-	}
-
-	return String(padding)
-		.trim()
-		.split(/\s+/)
-		.map((side) => (/^-?\d*\.?\d+[a-z%]+$/i.test(side) ? `min(${side}, ${PADDING_PREVIEW_CAP})` : side))
-		.join(' ');
-}
-
-/**
  * Build a row's preview from its stored tokens.
  *
  * Four of the image's six bound properties, which is its whole editable surface here — border color
@@ -116,7 +81,7 @@ function preview(tokens, values, breakpoint) {
  *
  * Three nested elements, each earning its place. The outer carries the radius and the shadow, which
  * has to be cast from outside anything that clips. The middle carries the background AND the padding
- * (capped only at the very top of the scale — see `cappedPadding`), so padding renders as what it
+ * (capped only at the very top of the scale — see `capBoxSides`), so padding renders as what it
  * actually is: space between the frame and the image, at true size, with the tile growing to fit it. The inner is the stand-in photo, a neutral block carrying a generic picture glyph
  * rather than a real image, because a preset skins whatever image a block happens to hold and
  * previewing a specific picture would imply it selects one. The glyph is what makes the padding
@@ -146,7 +111,7 @@ function renderPreview(row) {
 				style={{
 					background: row.preview.background || undefined,
 					borderRadius: radius,
-					padding: cappedPadding(row.preview.padding),
+					padding: capBoxSides(row.preview.padding, PADDING_PREVIEW_CAP),
 				}}
 			>
 				<span className="kadence-blocks-style-library__image-preset-preview-photo">
