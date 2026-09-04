@@ -232,6 +232,34 @@ describe('PresetScreen draft overlay', () => {
 		expect(container.textContent).not.toContain('Leaked');
 		expect(container.textContent).toContain('Primary');
 	});
+
+	/**
+	 * A publication whose panel sits on the Hover tab makes the open row's chip hold the hover
+	 * state — and only the open row's, so sibling chips keep resting styles.
+	 *
+	 * @return {void}
+	 */
+	it('holds the hover state on the open row while the publication is on the hover tab', () => {
+		useDraftChannel.mockReturnValue({
+			publication: {
+				itemId: 'primary',
+				draft: { tokens: { 'button-bg': '#3633e1', 'button-bg-hover': '#ffffff' } },
+				activeTab: 'hover',
+			},
+			guard: (fn) => fn(),
+		});
+
+		renderPresetScreen(
+			{ payload: {}, isLoading: false, loadError: null, rows: ROWS, initialValuesFor: () => ({}) },
+			{ item: 'primary' }
+		);
+
+		const chips = container.querySelectorAll('.kadence-blocks-style-library__button-preset-preview');
+
+		// The open row's chip renders the hover background; the sibling keeps its resting one.
+		expect(chips[0].style.background).toBe('rgb(255, 255, 255)');
+		expect(chips[1].style.background).toBe('rgb(34, 34, 34)');
+	});
 });
 
 describe('PresetScreen selection', () => {
