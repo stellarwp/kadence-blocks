@@ -199,6 +199,9 @@
         "wpml",
         "wpunit",
         "writefunction",
-        "xlarge"
+        "xlarge",
+        "worktree",
+        "Chromedriver",
+        "twentytwentythree"
     ]
 }
