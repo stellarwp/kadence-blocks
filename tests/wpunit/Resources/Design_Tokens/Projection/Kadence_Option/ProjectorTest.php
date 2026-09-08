@@ -108,9 +108,17 @@ final class ProjectorTest extends TestCase {
 		$this->assertArrayHasKey( 'palette', $decoded );
 	}
 
-	// ---- Theme option conditional sync -------------------------------------------------------------
+	// ---- The theme's Style Guide is never written ---------------------------------------------------
 
-	public function testReconcileUpdatesThemePaletteWhenItExists(): void {
+	/**
+	 * An existing kadence_global_palette is left byte-for-byte untouched, including the slots tokens claim.
+	 *
+	 * That option is the user's Style Guide. Writing it destroyed colors chosen in the Customizer with no
+	 * way back, so this asserts the whole stored value, not just the claimed slots.
+	 *
+	 * @return void
+	 */
+	public function testReconcileLeavesAnExistingThemePaletteUntouched(): void {
 		$theme_palette = [
 			'palette' => [
 				[
@@ -130,20 +138,53 @@ final class ProjectorTest extends TestCase {
 				],
 			],
 		];
-		update_option( 'kadence_global_palette', wp_json_encode( $theme_palette ) );
+		$stored        = (string) wp_json_encode( $theme_palette );
+		update_option( 'kadence_global_palette', $stored );
 
 		$this->projector->reconcile();
 
-		$raw     = get_option( 'kadence_global_palette' );
-		$decoded = json_decode( (string) $raw, true );
-		$by_slug = array_column( $decoded['palette'], null, 'slug' );
-
-		// Token-claimed slots must be overwritten.
-		$this->assertNotSame( '#old1', $by_slug['palette1']['color'] );
-		// A slug no token claims must be untouched.
-		$this->assertSame( '#old3', $by_slug['theme-extra']['color'] );
+		$this->assertSame( $stored, get_option( 'kadence_global_palette' ) );
 	}
 
+	/**
+	 * A palette set the theme renders other than "palette" is left untouched too.
+	 *
+	 * The removed write only ever touched $existing['palette'], so a site on second-palette had its
+	 * stored colors destroyed for no visible effect. This pins that the whole option survives.
+	 *
+	 * @return void
+	 */
+	public function testReconcileLeavesANonDefaultActivePaletteSetUntouched(): void {
+		$theme_palette = [
+			'active'         => 'second-palette',
+			'palette'        => [
+				[
+					'color' => '#aaa111',
+					'name'  => 'Palette Color 1',
+					'slug'  => 'palette1',
+				],
+			],
+			'second-palette' => [
+				[
+					'color' => '#bbb222',
+					'name'  => 'Palette Color 1',
+					'slug'  => 'palette1',
+				],
+			],
+		];
+		$stored        = (string) wp_json_encode( $theme_palette );
+		update_option( 'kadence_global_palette', $stored );
+
+		$this->projector->reconcile();
+
+		$this->assertSame( $stored, get_option( 'kadence_global_palette' ) );
+	}
+
+	/**
+	 * The projector never creates the theme's palette option on a site that has none.
+	 *
+	 * @return void
+	 */
 	public function testReconcileNeverCreatesThemePaletteWhenAbsent(): void {
 		$this->projector->reconcile();
 
@@ -275,42 +316,40 @@ final class ProjectorTest extends TestCase {
 
 	// ---- Theme-switch signature flip ---------------------------------------------------------------
 
-	public function testThemeSwitchCausesSignatureFlipAndSyncsThemePalette(): void {
-		// First reconcile without the theme palette present.
+	/**
+	 * Introducing the theme's palette option does not change the sync signature or write anything.
+	 *
+	 * The signature used to carry a "theme present" bit so a theme switch would re-sync and write the
+	 * theme's option. Nothing is written any more, so the bit is gone and the marker is the plugin
+	 * version plus the store version only.
+	 *
+	 * @return void
+	 */
+	public function testIntroducingTheThemePaletteDoesNotFlipTheSignature(): void {
 		$this->projector->reconcile();
 
-		$marker_after_first = get_option( 'kadence_blocks_design_tokens_palette_sync' );
-		$this->assertStringEndsWith( ':0', (string) $marker_after_first );
+		$marker_after_first = (string) get_option( 'kadence_blocks_design_tokens_palette_sync' );
+		$this->assertStringEndsNotWith( ':0', $marker_after_first );
+		$this->assertStringEndsNotWith( ':1', $marker_after_first );
 
-		// Now "switch" the theme by introducing the kadence_global_palette option.
-		update_option(
-			'kadence_global_palette',
-			wp_json_encode(
-				[
-					'palette' => [
-						[
-							'color' => '#old',
-							'name'  => 'P1',
-							'slug'  => 'palette1',
-						],
+		$stored = (string) wp_json_encode(
+			[
+				'palette' => [
+					[
+						'color' => '#old',
+						'name'  => 'P1',
+						'slug'  => 'palette1',
 					],
-				]
-			)
+				],
+			]
 		);
+		update_option( 'kadence_global_palette', $stored );
 
-		// Reset the guard to allow another reconcile.
 		$this->reset_guard( $this->projector );
-
 		$this->projector->reconcile();
 
-		$marker_after_second = get_option( 'kadence_blocks_design_tokens_palette_sync' );
-		$this->assertStringEndsWith( ':1', (string) $marker_after_second );
-
-		// The theme palette must have been updated.
-		$raw     = get_option( 'kadence_global_palette' );
-		$decoded = json_decode( (string) $raw, true );
-		$by_slug = array_column( $decoded['palette'], null, 'slug' );
-		$this->assertNotSame( '#old', $by_slug['palette1']['color'] );
+		$this->assertSame( $marker_after_first, (string) get_option( 'kadence_blocks_design_tokens_palette_sync' ) );
+		$this->assertSame( $stored, get_option( 'kadence_global_palette' ) );
 	}
 
 	// ---- Hook wiring -------------------------------------------------------------------------------
