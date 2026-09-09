@@ -389,6 +389,62 @@ describe('BoxShadowField', () => {
 		window[PICKABLE_TOKENS_GLOBAL] = originalPool;
 	});
 
+	/**
+	 * The color sub-field is the shared `ColorControl`, the same popover the block editor's shadow
+	 * field opens, so both hosts offer one picker rather than two.
+	 *
+	 * @return {void}
+	 */
+	it('renders the color sub-field through the shared ColorControl', () => {
+		act(() => {
+			root.render(createElement(BoxShadowField, { field: { label: 'Shadow' }, value: '', onChange: jest.fn() }));
+		});
+
+		const element = latestBoxShadowControlProps.renderColor({ value: '', onChange: jest.fn() });
+
+		expect(element.type.name).toBe('ColorControl');
+	});
+
+	/**
+	 * A token pick arrives from the popover as a bracket alias and is written back as the BARE id this
+	 * host stores, so a saved preset still compares equal and does not read as dirty.
+	 *
+	 * @return {void}
+	 */
+	it('writes a color pick back as a bare token id', () => {
+		const onColorChange = jest.fn();
+
+		act(() => {
+			root.render(createElement(BoxShadowField, { field: { label: 'Shadow' }, value: '', onChange: jest.fn() }));
+		});
+
+		const element = latestBoxShadowControlProps.renderColor({ value: '', onChange: onColorChange });
+
+		element.props.onPick('{semantic.color.accent.main}');
+
+		expect(onColorChange).toHaveBeenCalledWith('semantic.color.accent.main');
+	});
+
+	/**
+	 * A Custom-tab literal carries its own alpha inline, so it is written through untouched rather than
+	 * bridged as a token id.
+	 *
+	 * @return {void}
+	 */
+	it('writes a custom color through untouched, alpha included', () => {
+		const onColorChange = jest.fn();
+
+		act(() => {
+			root.render(createElement(BoxShadowField, { field: { label: 'Shadow' }, value: '', onChange: jest.fn() }));
+		});
+
+		const element = latestBoxShadowControlProps.renderColor({ value: '', onChange: onColorChange });
+
+		element.props.onCustom('#abcdef80');
+
+		expect(onColorChange).toHaveBeenCalledWith('#abcdef80');
+	});
+
 	it("sources tokens via pickableTokensForType('shadow', 'shadow', ...), excluding the Brand-group semantics", () => {
 		act(() => {
 			root.render(createElement(BoxShadowField, { field: { label: 'Shadow' }, value: '', onChange: jest.fn() }));
