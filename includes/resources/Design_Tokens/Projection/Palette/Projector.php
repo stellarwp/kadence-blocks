@@ -3,7 +3,6 @@
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Palette;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
-use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Contracts\Abstract_Css_Projector;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Kadence_Palette_Slot;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Preset\Css_Builder as Preset_Css_Builder;
@@ -12,6 +11,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Palettes;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 use KadenceWP\KadenceBlocks\Design_Tokens\Utils\Location;
 use Throwable;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Version;
 
 /**
  * Projects the per-block palette switch layer into the WordPress style pipeline.
@@ -41,12 +41,6 @@ final class Projector extends Abstract_Css_Projector {
 	 */
 	private Token_Registry $registry;
 
-	/**
-	 * @var Token_Store The store, for the cache-busting version.
-	 *
-	 * @since TBD
-	 */
-	private Token_Store $store;
 
 	/**
 	 * Owns the active-library pointer, read at build time so the projection follows the active library.
@@ -94,33 +88,44 @@ final class Projector extends Abstract_Css_Projector {
 	 */
 	private array $memo = [];
 
+
+	/**
+	 * Supplies the cache version: the store version, plus the theme Style Guide signature when there is
+	 * one, so a Customizer save invalidates this cache even though it bumps no store version.
+	 *
+	 * @since TBD
+	 *
+	 * @var Effective_Version
+	 */
+	private Effective_Version $versions;
+
 	/**
 	 * @since TBD
 	 *
 	 * @param Token_Registry             $registry    The token registry.
-	 * @param Token_Store                $store       The store, for the cache-busting version.
 	 * @param Active_Token_Library_Store $active      Owns the active-library pointer.
 	 * @param Effective_Palettes         $palettes    Reads the active library's effective palettes.
 	 * @param Token_Resolver             $resolver    Resolves each palette's full color graph.
 	 * @param Preset_Css_Builder         $presets     Supplies the canonical preset-var declarations.
 	 * @param Css_Builder                $css_builder The palette switch-layer builder.
+	 * @param Effective_Version          $versions    Supplies the effective cache version for a library.
 	 */
 	public function __construct(
 		Token_Registry $registry,
-		Token_Store $store,
 		Active_Token_Library_Store $active,
 		Effective_Palettes $palettes,
 		Token_Resolver $resolver,
 		Preset_Css_Builder $presets,
-		Css_Builder $css_builder
+		Css_Builder $css_builder,
+		Effective_Version $versions
 	) {
 		$this->registry    = $registry;
-		$this->store       = $store;
 		$this->active      = $active;
 		$this->palettes    = $palettes;
 		$this->resolver    = $resolver;
 		$this->presets     = $presets;
 		$this->css_builder = $css_builder;
+		$this->versions    = $versions;
 	}
 
 	/**
@@ -180,7 +185,7 @@ final class Projector extends Abstract_Css_Projector {
 	public function css(): string {
 		try {
 			$active  = $this->active->get();
-			$version = $this->store->get_version( $active );
+			$version = $this->versions->for_slug( $active );
 		} catch ( Throwable $e ) {
 			return '';
 		}

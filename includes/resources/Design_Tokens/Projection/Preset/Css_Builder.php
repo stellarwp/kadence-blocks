@@ -3,7 +3,6 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Preset;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Composes_Selector_Suffix;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Identifier;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Value;
@@ -14,6 +13,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Preset_Bindings;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
 use RuntimeException;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Version;
 
 /**
  * Builds the scoped CSS for selectable Kadence block presets for the single active token library.
@@ -129,12 +129,6 @@ final class Css_Builder {
 	 */
 	private Preset_Resolver $presets;
 
-	/**
-	 * @var Token_Store The store, read for the cache-busting version the collect memo keys on.
-	 *
-	 * @since TBD
-	 */
-	private Token_Store $store;
 
 	/**
 	 * Per-request memo of built CSS, keyed on the active library's object-cache key, so a write (which bumps the
@@ -158,16 +152,30 @@ final class Css_Builder {
 	private array $collected = [];
 
 	/**
+	 * Supplies the cache version: the store version, plus the theme Style Guide signature when there is
+	 * one, so a Customizer save invalidates this cache even though it bumps no store version.
+	 *
 	 * @since TBD
 	 *
-	 * @param Token_Registry  $registry The token registry.
-	 * @param Preset_Resolver $presets  The preset resolver.
-	 * @param Token_Store     $store    The store, for the cache-busting version.
+	 * @var Effective_Version
 	 */
-	public function __construct( Token_Registry $registry, Preset_Resolver $presets, Token_Store $store ) {
+	private Effective_Version $versions;
+
+	/**
+	 * @since TBD
+	 *
+	 * @param Token_Registry    $registry The token registry.
+	 * @param Preset_Resolver   $presets  The preset resolver.
+	 * @param Effective_Version $versions Supplies the effective cache version for a library.
+	 */
+	public function __construct(
+		Token_Registry $registry,
+		Preset_Resolver $presets,
+		Effective_Version $versions
+	) {
 		$this->registry = $registry;
 		$this->presets  = $presets;
-		$this->store    = $store;
+		$this->versions = $versions;
 	}
 
 	/**
@@ -331,7 +339,7 @@ final class Css_Builder {
 	 * @return array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:string, dimension:bool, prop:?string, state:?string, editor:?string}>>}>
 	 */
 	private function collect( string $slug ): array {
-		$key = $slug . '_' . $this->store->get_version( $slug );
+		$key = $slug . '_' . $this->versions->for_slug( $slug );
 
 		if ( isset( $this->collected[ $key ] ) ) {
 			return $this->collected[ $key ];

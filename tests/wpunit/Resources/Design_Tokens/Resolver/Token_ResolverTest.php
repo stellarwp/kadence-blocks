@@ -14,6 +14,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Resolved_Tokens;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 use Tests\Support\Classes\Fake_Baseline_Document;
 use Tests\Support\Classes\TestCase;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Version;
 
 final class Token_ResolverTest extends TestCase {
 
@@ -29,7 +30,8 @@ final class Token_ResolverTest extends TestCase {
 			new Effective_Document( new Fake_Baseline_Document( $baseline ) ),
 			new Css_Renderer(),
 			$this->container->get( Effective_Palettes::class ),
-			$this->container->get( Mutator::class )
+			$this->container->get( Mutator::class ),
+			$this->container->get( Effective_Version::class )
 		);
 	}
 
@@ -599,10 +601,11 @@ final class Token_ResolverTest extends TestCase {
 			$this->container->get( Effective_Document::class ),
 			$this->container->get( Css_Renderer::class ),
 			$this->container->get( Effective_Palettes::class ),
-			$this->container->get( Mutator::class )
+			$this->container->get( Mutator::class ),
+			$this->container->get( Effective_Version::class )
 		);
 
-		$version   = $store->get_version();
+		$version   = $this->container->get( Effective_Version::class )->for_slug( 'default' );
 		$cache_key = 'resolved_tokens_default_' . $version;
 
 		wp_cache_delete( $cache_key, 'kb_design_tokens' );
@@ -627,10 +630,11 @@ final class Token_ResolverTest extends TestCase {
 			$this->container->get( Effective_Document::class ),
 			$this->container->get( Css_Renderer::class ),
 			$this->container->get( Effective_Palettes::class ),
-			$this->container->get( Mutator::class )
+			$this->container->get( Mutator::class ),
+			$this->container->get( Effective_Version::class )
 		);
 
-		$version   = $store->get_version();
+		$version   = $this->container->get( Effective_Version::class )->for_slug( 'default' );
 		$cache_key = 'resolved_tokens_default_' . $version;
 		$sentinel  = new Resolved_Tokens(
 			[ 'sentinel.token' => '#sentinel' ],

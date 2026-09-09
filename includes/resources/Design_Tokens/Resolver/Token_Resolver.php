@@ -67,7 +67,7 @@ final class Token_Resolver {
 
 	/**
 	 * Per-request memo of resolved results, keyed on the same cache key load() uses for the object cache:
-	 * the cache prefix "resolved_tokens_{slug}" followed by the store version, e.g.
+	 * the cache prefix "resolved_tokens_{slug}" followed by the effective version, e.g.
 	 * "resolved_tokens_default_v3".
 	 *
 	 * @var array<string,Resolved_Tokens>
@@ -75,7 +75,7 @@ final class Token_Resolver {
 	private array $memo = [];
 
 	/**
-	 * Per-request memo of effective (baseline-merged) documents, keyed on the slug and store version, so the
+	 * Per-request memo of effective (baseline-merged) documents, keyed on the slug and effective version, so the
 	 * stored document is decoded and merged once per version no matter how many callers need the authored
 	 * view — the resolve path itself, the responsive feed, and the REST resolved read all share one build.
 	 *
@@ -84,6 +84,16 @@ final class Token_Resolver {
 	 * @var array<string,array<string,mixed>>
 	 */
 	private array $effective_memo = [];
+
+	/**
+	 * Supplies the cache version: the store version, plus the theme Style Guide signature when there is
+	 * one, so a Customizer save invalidates these caches even though it bumps no store version.
+	 *
+	 * @since TBD
+	 *
+	 * @var Effective_Version
+	 */
+	private Effective_Version $versions;
 
 	/**
 	 * Wire the token store, effective-document builder, and value renderer.
@@ -95,23 +105,26 @@ final class Token_Resolver {
 	 * @param Css_Renderer       $renderer  Renders a flattened value to a CSS-ready string.
 	 * @param Effective_Palettes $palettes  Reads the library's effective color palettes for the `:root` overlay.
 	 * @param Mutator            $mutator   The pure structural setter for the palette overlay.
+	 * @param Effective_Version  $versions  Supplies the effective cache version for a library.
 	 */
 	public function __construct(
 		Token_Store $store,
 		Effective_Document $effective,
 		Css_Renderer $renderer,
 		Effective_Palettes $palettes,
-		Mutator $mutator
+		Mutator $mutator,
+		Effective_Version $versions
 	) {
 		$this->store     = $store;
 		$this->effective = $effective;
 		$this->renderer  = $renderer;
 		$this->palettes  = $palettes;
 		$this->mutator   = $mutator;
+		$this->versions  = $versions;
 	}
 
 	/**
-	 * Resolve a stored token library into flat maps. Memoized per request on the store version,
+	 * Resolve a stored token library into flat maps. Memoized per request on the effective version,
 	 * which is bumped on every write, so the memo invalidates automatically.
 	 *
 	 * @since TBD
@@ -143,14 +156,14 @@ final class Token_Resolver {
 	 * @throws Dangling_Alias_Exception When a stored alias references a path with no token leaf.
 	 */
 	private function load( string $slug, string $cache_prefix ): Resolved_Tokens {
-		$version   = $this->store->get_version( $slug );
+		$version   = $this->versions->for_slug( $slug );
 		$cache_key = $cache_prefix . '_' . $version;
 
 		if ( isset( $this->memo[ $cache_key ] ) ) {
 			return $this->memo[ $cache_key ];
 		}
 
-		// L2: persistent object cache (requires a drop-in such as Memcached or Redis) — survives across requests, keyed on the store version.
+		// L2: persistent object cache (requires a drop-in such as Memcached or Redis) — survives across requests, keyed on the effective version.
 		$cached = wp_cache_get( $cache_key, self::CACHE_GROUP, false, $found );
 
 		if ( $found && $cached instanceof Resolved_Tokens ) {
@@ -189,7 +202,7 @@ final class Token_Resolver {
 	 * The baseline-merged effective document for a stored library, with $extensions intact — the authored view
 	 * the resolved maps flatten away. This is the source the responsive feed and the REST resolved read need
 	 * to recover a token's authored responsive / clamp shape (aliases preserved, unrendered), which the flat
-	 * by_id / by_var maps have already dropped. Memoised per request on the store version like resolve(), so
+	 * by_id / by_var maps have already dropped. Memoized per request on the effective version like resolve(), so
 	 * the stored document is decoded and merged once rather than rebuilt by every caller.
 	 *
 	 * The library's `$current` color palette is overlaid onto the color token leaves here, before the resolved
@@ -203,7 +216,7 @@ final class Token_Resolver {
 	 * @return array<string,mixed> The effective document.
 	 */
 	public function effective_document( string $slug = 'default' ): array {
-		$cache_key = $slug . '_' . $this->store->get_version( $slug );
+		$cache_key = $slug . '_' . $this->versions->for_slug( $slug );
 
 		if ( isset( $this->effective_memo[ $cache_key ] ) ) {
 			return $this->effective_memo[ $cache_key ];
@@ -223,7 +236,7 @@ final class Token_Resolver {
 	 * Resolve the active library's tokens as if a SPECIFIC palette were current, rather than the library's stored
 	 * `$current`. The per-block palette switch layer emits each palette's fully-resolved color graph so a
 	 * `[data-kb-palette="<id>"]` override re-skins its subtree — semantic colors and shadow composites
-	 * included, not just the primitives it re-tints. Memoized per request and cached on the store version
+	 * included, not just the primitives it re-tints. Memoized per request and cached on the effective version
 	 * (bumped on every write) keyed additionally on the palette id.
 	 *
 	 * @since TBD
@@ -237,7 +250,7 @@ final class Token_Resolver {
 	 * @throws Dangling_Alias_Exception When a stored alias references a path with no token leaf.
 	 */
 	public function resolve_palette( string $slug, string $palette_id ): Resolved_Tokens {
-		$version   = $this->store->get_version( $slug );
+		$version   = $this->versions->for_slug( $slug );
 		$cache_key = 'resolved_tokens_palette_' . $palette_id . '_' . $slug . '_' . $version;
 
 		if ( isset( $this->memo[ $cache_key ] ) ) {

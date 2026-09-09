@@ -3,13 +3,13 @@
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
-use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Contracts\Abstract_Css_Projector;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Responsive;
 use KadenceWP\KadenceBlocks\Design_Tokens\Utils\Location;
 use Throwable;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Version;
 
 /**
  * Projects the resolved token library into the WordPress style pipeline.
@@ -39,10 +39,6 @@ final class Projector extends Abstract_Css_Projector {
 	 */
 	private Token_Resolver $resolver;
 
-	/**
-	 * @var Token_Store
-	 */
-	private Token_Store $store;
 
 	/**
 	 * Owns the active-library pointer, read at build time so the projection follows the active library.
@@ -64,29 +60,39 @@ final class Projector extends Abstract_Css_Projector {
 	private Legacy_Filter_Bridge $bridge;
 
 	/**
+	 * Supplies the cache version: the store version, plus the theme Style Guide signature when there is
+	 * one, so a Customizer save invalidates this cache even though it bumps no store version.
+	 *
 	 * @since TBD
 	 *
-	 * @param Token_Registry       $registry
-	 * @param Token_Resolver       $resolver
-	 * @param Token_Store          $store
-	 * @param Active_Token_Library_Store     $active
-	 * @param Css_Builder          $css_builder
-	 * @param Legacy_Filter_Bridge $bridge
+	 * @var Effective_Version
+	 */
+	private Effective_Version $versions;
+
+	/**
+	 * @since TBD
+	 *
+	 * @param Token_Registry             $registry    The token registry.
+	 * @param Token_Resolver             $resolver    The token resolver.
+	 * @param Active_Token_Library_Store $active      Owns the active-library pointer.
+	 * @param Css_Builder                $css_builder The CSS-variable builder.
+	 * @param Legacy_Filter_Bridge       $bridge      Rewrites the legacy palette filter off-theme.
+	 * @param Effective_Version          $versions    Supplies the effective cache version for a library.
 	 */
 	public function __construct(
 		Token_Registry $registry,
 		Token_Resolver $resolver,
-		Token_Store $store,
 		Active_Token_Library_Store $active,
 		Css_Builder $css_builder,
-		Legacy_Filter_Bridge $bridge
+		Legacy_Filter_Bridge $bridge,
+		Effective_Version $versions
 	) {
 		$this->registry    = $registry;
 		$this->resolver    = $resolver;
-		$this->store       = $store;
 		$this->active      = $active;
 		$this->css_builder = $css_builder;
 		$this->bridge      = $bridge;
+		$this->versions    = $versions;
 	}
 
 	/**
@@ -171,7 +177,7 @@ final class Projector extends Abstract_Css_Projector {
 		try {
 			$active   = $this->active->get();
 			$resolved = $this->resolver->resolve( $active );
-			$version  = $this->store->get_version( $active );
+			$version  = $this->versions->for_slug( $active );
 		} catch ( Throwable $e ) {
 			return '';
 		}
