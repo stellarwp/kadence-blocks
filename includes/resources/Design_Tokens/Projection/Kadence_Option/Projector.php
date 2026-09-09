@@ -39,7 +39,7 @@ final class Projector {
 	private const KB_COLORS_OPTION = 'kadence_blocks_colors';
 
 	/**
-	 * Marker option storing the last-synced "{plugin-version}:{store-version}" signature, so a request
+	 * Marker option storing the last-synced "{plugin-version}:{library-slug}:{store-version}" signature, so a request
 	 * where nothing changed skips resolution entirely.
 	 *
 	 * @since TBD
@@ -166,11 +166,12 @@ final class Projector {
 		}
 
 		$slug      = $this->active->get();
-		$signature = KADENCE_BLOCKS_VERSION . ':' . $this->store->get_version( $slug );
+		$signature = KADENCE_BLOCKS_VERSION . ':' . $slug . ':' . $this->store->get_version( $slug );
 
-		// Skip the resolve + write when the active library's version has not changed since the last
-		// successful sync. Switching the active library changes its version, so the signature flips and
-		// the next reconcile re-syncs.
+		// Skip the resolve + write when nothing the sync depends on has changed since the last successful
+		// one. The signature names all three inputs rather than relying on the version alone: a library
+		// version is a per-row hash, so nothing enforces that two libraries cannot share one, and the
+		// marker would then read as unchanged across a switch.
 		if ( get_option( self::SYNC_MARKER_OPTION ) === $signature ) {
 			return;
 		}
@@ -194,7 +195,7 @@ final class Projector {
 		}
 
 		// Autoloaded: the boot pass reads this marker on every request to short-circuit, so it must not
-		// cost a dedicated query. It is a tiny "{plugin-version}:{store-version}" string.
+		// cost a dedicated query. It is a tiny "{plugin-version}:{library-slug}:{store-version}" string.
 		update_option( self::SYNC_MARKER_OPTION, $signature, true );
 	}
 

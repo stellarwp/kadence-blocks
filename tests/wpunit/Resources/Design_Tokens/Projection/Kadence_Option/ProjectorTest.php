@@ -320,8 +320,8 @@ final class ProjectorTest extends TestCase {
 	 * Introducing the theme's palette option does not change the sync signature or write anything.
 	 *
 	 * The signature used to carry a "theme present" bit so a theme switch would re-sync and write the
-	 * theme's option. Nothing is written any more, so the bit is gone and the marker is the plugin
-	 * version plus the store version only.
+	 * theme's option. Nothing is written any more, so the bit is gone and the marker carries only the
+	 * plugin version, the active library slug and that library's store version.
 	 *
 	 * @return void
 	 */
@@ -350,6 +350,24 @@ final class ProjectorTest extends TestCase {
 
 		$this->assertSame( $marker_after_first, (string) get_option( 'kadence_blocks_design_tokens_palette_sync' ) );
 		$this->assertSame( $stored, get_option( 'kadence_global_palette' ) );
+	}
+
+	/**
+	 * The marker names the active library as well as its version, so the sync cannot mistake one library
+	 * for another. A library version is a per-row hash and nothing enforces that two rows carry different
+	 * ones, so the slug is what makes a switch always visible in the signature.
+	 *
+	 * @return void
+	 */
+	public function testSyncMarkerCarriesTheActiveLibrarySlug(): void {
+		$active = $this->container->get( Active_Token_Library_Store::class )->get();
+
+		$this->projector->reconcile();
+
+		$this->assertStringContainsString(
+			':' . $active . ':',
+			(string) get_option( 'kadence_blocks_design_tokens_palette_sync' )
+		);
 	}
 
 	// ---- Hook wiring -------------------------------------------------------------------------------
