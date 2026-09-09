@@ -193,6 +193,10 @@ final class Effective_Palettes {
 	 * keyed by the color-token dot-path it sets. A swatch whose `$value` is a RESET sentinel (null under
 	 * `$value`) is omitted, so the token keeps its baseline value. Empty when the palette is absent.
 	 *
+	 * Reads the EFFECTIVE section, so it is neither the full color set nor what the palette stores. For a
+	 * complete set use {@see complete_swatch_values()}; to ask what a palette actually stores use
+	 * {@see stored_swatch_values()}.
+	 *
 	 * @since TBD
 	 *
 	 * @param string $id   The palette id.
@@ -325,6 +329,47 @@ final class Effective_Palettes {
 		$section = $this->palettes_of( $this->baseline->document() );
 
 		return $this->swatch_values_of( $section, $this->pointer_of( $section, Extensions::get_default_key() ) );
+	}
+
+	/**
+	 * The `{ token => $value }` colors a palette ACTUALLY STORES, read straight from the overrides document
+	 * with no baseline merge behind it. This is the "has its own value" question, and it is not the same as
+	 * {@see swatch_values()}: the default palette also lives in the baseline, so its effective node carries
+	 * every shipped swatch whether or not the site has ever edited one.
+	 *
+	 * The default palette stores only the swatches it changes — a swatch left at the baseline keeps its row
+	 * but drops `$value`, so the token follows whatever the baseline resolves to (on a Kadence site, the
+	 * theme's Style Guide). Reading the effective node instead would report every one of those as stored.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $id   The palette id.
+	 * @param string $slug The token library slug.
+	 *
+	 * @return array<string, string> token dot-path => the stored literal-or-alias value.
+	 */
+	public function stored_swatch_values( string $id, string $slug = 'default' ): array {
+		return $this->swatch_values_of( $this->palettes_of( $this->raw( $slug ) ), $id );
+	}
+
+	/**
+	 * A palette's COMPLETE color set: the shipped baseline colors, overlaid with the library default palette's
+	 * own swatches, overlaid with the palette's. Every baseline token resolves to a value here, which
+	 * {@see swatch_values()} and {@see effective_swatch_values()} no longer guarantee — a swatch the default
+	 * palette leaves at the baseline stores no `$value` at all.
+	 *
+	 * Use this wherever a caller needs the color a token WILL render as. Use the sparser accessors only to ask
+	 * what a palette stores.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $id   The palette id.
+	 * @param string $slug The token library slug.
+	 *
+	 * @return array<string, string> token dot-path => literal-or-alias value.
+	 */
+	public function complete_swatch_values( string $id, string $slug = 'default' ): array {
+		return array_merge( $this->baseline_swatch_values(), $this->effective_swatch_values( $id, $slug ) );
 	}
 
 	/**

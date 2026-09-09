@@ -4,6 +4,7 @@
 namespace Tests\wpunit\Resources\Design_Tokens\Theme_Style_Guide;
 
 use Generator;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Mutator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Baseline\Json_Baseline_Document;
@@ -14,10 +15,14 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Document;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Palettes;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Version;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
+use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Palettes_Controller;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Dtcg_Validator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Theme_Style_Guide\Style_Guide_Mapper;
 use KadenceWP\KadenceBlocks\Design_Tokens\Theme_Style_Guide\Style_Guide_Overlay;
 use Tests\Support\Classes\Fake_Style_Guide_Source;
 use Tests\Support\Classes\TestCase;
+use WP_Error;
+use WP_REST_Request;
 
 final class Style_Guide_IntegrationTest extends TestCase {
 
@@ -205,6 +210,100 @@ final class Style_Guide_IntegrationTest extends TestCase {
 
 		$this->assertSame( '#a10001', $swatches['primitive.color.brand.primary'] );
 		$this->assertSame( '#a30003', $swatches['primitive.color.neutral.900'] );
+	}
+
+	/**
+	 * Editing one swatch in the Style Library must not freeze the rest of the palette. Every write path
+	 * rebuilds the palette node from the baseline merged with the overrides, so before this the node
+	 * carried a value for all 17 swatches and persisting them turned each into an override — the palette
+	 * stopped following the theme, and a later Customizer change no longer reached it.
+	 *
+	 * @return void
+	 */
+	public function testEditingOneSwatchLeavesTheRestFollowingTheTheme(): void {
+		$source = Fake_Style_Guide_Source::with_palette( self::THEME_COLORS );
+
+		$request = new WP_REST_Request( 'PUT' );
+		$request->set_param( 'id', 'default' );
+		$request->set_param( 'token', 'primitive.color.brand.primary' );
+		$request->set_param( '$value', '#0ffc2c' );
+
+		$this->assertNotInstanceOf( WP_Error::class, $this->controller_for( $source )->update_swatch( $request ) );
+
+		// Only the edited token is stored; the other 16 keep their rows but no value of their own.
+		$this->assertSame(
+			[ 'primitive.color.brand.primary' => '#0ffc2c' ],
+			$this->palettes_for( $source )->stored_swatch_values( 'default' )
+		);
+
+		// The user changes a color in the Customizer.
+		$changed             = self::THEME_COLORS;
+		$changed['palette3'] = '#0c0c0c';
+
+		$after = $this->palettes_for( Fake_Style_Guide_Source::with_palette( $changed ) )->complete_swatch_values( 'default' );
+
+		$this->assertSame( '#0ffc2c', $after['primitive.color.brand.primary'], 'The edited swatch stays the user\'s choice.' );
+		$this->assertSame( '#0c0c0c', $after['primitive.color.neutral.900'], 'Every other swatch follows the Customizer.' );
+	}
+
+	/**
+	 * Resetting the edited swatch hands the token back to the theme rather than to the shipped hex.
+	 *
+	 * @return void
+	 */
+	public function testResettingASwatchHandsTheTokenBackToTheTheme(): void {
+		$source     = Fake_Style_Guide_Source::with_palette( self::THEME_COLORS );
+		$controller = $this->controller_for( $source );
+
+		$write = new WP_REST_Request( 'PUT' );
+		$write->set_param( 'id', 'default' );
+		$write->set_param( 'token', 'primitive.color.brand.primary' );
+		$write->set_param( '$value', '#0ffc2c' );
+		$controller->update_swatch( $write );
+
+		$reset = new WP_REST_Request( 'DELETE' );
+		$reset->set_param( 'id', 'default' );
+		$reset->set_param( 'token', 'primitive.color.brand.primary' );
+
+		$this->assertNotInstanceOf( WP_Error::class, $controller->delete_swatch( $reset ) );
+
+		$palettes = $this->palettes_for( $source );
+
+		$this->assertSame( [], $palettes->stored_swatch_values( 'default' ) );
+		$this->assertSame( '#a10001', $palettes->complete_swatch_values( 'default' )['primitive.color.brand.primary'] );
+	}
+
+	/**
+	 * The palette reader over a theme-decorated baseline.
+	 *
+	 * @param Fake_Style_Guide_Source $source The Style Guide source.
+	 *
+	 * @return Effective_Palettes
+	 */
+	private function palettes_for( Fake_Style_Guide_Source $source ): Effective_Palettes {
+		return new Effective_Palettes( $this->baseline_for( $source ), $this->store, $this->container->get( Mutator::class ) );
+	}
+
+	/**
+	 * The palette REST controller composed over a theme-decorated baseline, the way the container composes
+	 * the real one on a Kadence site.
+	 *
+	 * @param Fake_Style_Guide_Source $source The Style Guide source.
+	 *
+	 * @return Palettes_Controller
+	 */
+	private function controller_for( Fake_Style_Guide_Source $source ): Palettes_Controller {
+		wp_set_current_user( $this->factory()->user->create( [ 'role' => 'administrator' ] ) );
+
+		return new Palettes_Controller(
+			$this->store,
+			$this->container->get( Mutator::class ),
+			$this->resolver_for( $source ),
+			$this->container->get( Dtcg_Validator::class ),
+			$this->palettes_for( $source ),
+			$this->registry,
+			$this->container->get( Active_Token_Library_Store::class )
+		);
 	}
 
 	/**
