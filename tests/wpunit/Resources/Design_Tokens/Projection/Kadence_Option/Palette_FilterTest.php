@@ -20,6 +20,11 @@ use Tests\Support\Classes\TestCase;
 
 final class Palette_FilterTest extends TestCase {
 
+	/**
+	 * Slug of the second token library the active-library switch case needs.
+	 */
+	private const OTHER_LIBRARY = 'filter-switch-target';
+
 	private Palette_Filter $filter;
 	private Token_Registry $registry;
 	private Token_Store $store;
@@ -43,6 +48,8 @@ final class Palette_FilterTest extends TestCase {
 
 	protected function tearDown(): void {
 		$this->registry->activate();
+		$this->container->get( Active_Token_Library_Store::class )->set( Token_Store::default_slug() );
+		$this->store->delete( self::OTHER_LIBRARY );
 		$this->filter->on_tokens_changed();
 		$this->store->delete( Token_Store::default_slug() );
 		$this->reset_resolver_memo();
@@ -231,6 +238,43 @@ final class Palette_FilterTest extends TestCase {
 				]
 			)
 		);
+
+		$this->assertSame( '#abcdef', $this->filter->filter( '#old', 'palette1' ) );
+	}
+
+	/**
+	 * Switching the active library clears the memo through the provider's hook, with no manual reset.
+	 *
+	 * The memo is built from the active library's resolved tokens, so the pointer moving invalidates it for
+	 * the same reason a write does. Without the hook a palette read after the switch answers with the
+	 * previous library's colors.
+	 *
+	 * @return void
+	 */
+	public function testActiveLibrarySwitchClearsTheMemoThroughTheHook(): void {
+		$this->store->save_document(
+			(string) wp_json_encode(
+				[
+					'primitive' => [
+						'color' => [
+							'brand' => [
+								'primary' => [
+									'$type'  => 'color',
+									'$value' => '#abcdef',
+								],
+							],
+						],
+					],
+				]
+			),
+			self::OTHER_LIBRARY
+		);
+
+		// Build the memo against the default library first, so the test fails if the switch does not clear it.
+		$before = $this->filter->filter( '#old', 'palette1' );
+		$this->assertNotSame( '#abcdef', $before );
+
+		$this->container->get( Active_Token_Library_Store::class )->set( self::OTHER_LIBRARY );
 
 		$this->assertSame( '#abcdef', $this->filter->filter( '#old', 'palette1' ) );
 	}

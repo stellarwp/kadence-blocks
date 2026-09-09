@@ -2,6 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Kadence_Option;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provider as Provider_Contract;
 
@@ -45,6 +46,15 @@ final class Provider extends Provider_Contract {
 		// answered from a memo built before the write.
 		add_action(
 			Token_Store::changed_action(),
+			$this->container->callback( Palette_Filter::class, 'on_tokens_changed' ),
+			5
+		);
+
+		// The memo is built from the active library's resolved tokens, so moving the pointer invalidates it
+		// for the same reason a write does. Both inputs have to clear it or a read after the switch answers
+		// with the previous library's colors.
+		add_action(
+			Active_Token_Library_Store::changed_action(),
 			$this->container->callback( Palette_Filter::class, 'on_tokens_changed' ),
 			5
 		);
