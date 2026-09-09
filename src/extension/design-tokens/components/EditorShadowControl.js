@@ -348,9 +348,9 @@ export function hasVisibleShadow(item) {
 
 	// A bound item is decided by its binding alone, never by its stored legs — the same rule the
 	// renderers' two copies of this predicate apply. Backed, its real value lives in the token and is
-	// unknown here, so it counts as visible and the derived enable flag stays raised under a shadow the
-	// token does paint. Unbacked, the renderers paint nothing, so raising the flag would leave the
-	// inspector claiming a shadow the page does not show.
+	// unknown here, so it counts as visible and the renderers keep painting the shadow the token does
+	// paint. Unbacked, the renderers paint nothing, so counting it as visible would leave the inspector
+	// claiming a shadow the page does not show.
 	const bound = boundShadowToken(item);
 
 	if (bound) {
@@ -369,12 +369,62 @@ export function hasVisibleShadow(item) {
 }
 
 /**
+ * Whether a native shadow item carries no pick at all: unbound, transparent (or fully see-through),
+ * and with no geometry. This is the item both Reset and the fixed "None" entry write.
+ *
+ * @param {Object} item One `shadow[0]`-shaped item.
+ *
+ * @since TBD
+ *
+ * @return {boolean} Whether the item is the cleared shadow.
+ */
+function isClearedShadow(item) {
+	if (boundShadowToken(item)) {
+		return false;
+	}
+
+	// Inset is a pick in its own right. It paints nothing on its own, so leaving it out here would let
+	// the flag drop on the very write that set it, and the toggle would spring back the way a
+	// color-only pick used to.
+	if (item.inset === true) {
+		return false;
+	}
+
+	const isTransparent = !item.color || item.color === 'transparent' || Number(item.opacity) === 0;
+
+	return isTransparent && !hasVisibleShadow(item);
+}
+
+/**
+ * Whether a stored native shadow is a pick of the block's own — what a host's `display*` flag
+ * records on every write.
+ *
+ * The flag cannot follow visibility. A color chosen before any geometry paints nothing yet, so a
+ * visibility-derived flag lowered itself on that very write, the control read the value back as
+ * unset, and the pick was thrown away. Raising it on every write instead would go too far the other
+ * way: Reset and the fixed "None" entry both arrive as the cleared item and have to keep reading as
+ * unset. A pick is therefore anything but that cleared item. Whether it paints stays with the
+ * renderers, which gate on `hasVisibleShadow()` as well and never trust the flag alone.
+ *
+ * @param {?Array} native The stored native shadow attribute value.
+ *
+ * @since TBD
+ *
+ * @return {boolean} Whether the host's enable flag should be raised for this value.
+ */
+export function hasShadowPick(native) {
+	const item = native?.[0];
+
+	return Boolean(item) && !isClearedShadow(item);
+}
+
+/**
  * Whether a stored native shadow should be treated as "the block sets no shadow of its own".
  *
  * A host that pairs the value with its own enable flag (`kadence/singlebtn`) settles it first: the
  * shipped schema defaults that value to a visible shadow, so geometry alone would read a brand-new
- * button as customized. A lowered flag is the block saying it sets no shadow here, whatever the
- * value's default geometry happens to be.
+ * button as customized. A lowered flag is the block saying it stores no pick of its own here,
+ * whatever the value's default geometry happens to be.
  *
  * Without such a flag, an invisible shadow is a real override only when there is a preset shadow for
  * it to suppress. With nothing behind it, it suppresses nothing and reads as unset.
@@ -409,10 +459,9 @@ export function isUnsetShadow(native, defaultValue, enabled = true) {
 		return false;
 	}
 
-	const isTransparent = !source.color || source.color === 'transparent' || Number(source.opacity) === 0;
-	const hasNoGeometry = ['hOffset', 'vOffset', 'blur', 'spread'].every((axis) => !parseFloat(source[axis]));
-
-	return isTransparent && hasNoGeometry;
+	// The same definition the write side uses for the flag, so the inspector cannot disagree with what
+	// it just stored.
+	return isClearedShadow(source);
 }
 
 /**
@@ -424,7 +473,10 @@ export function isUnsetShadow(native, defaultValue, enabled = true) {
  * @param {string}    props.label         The control's label.
  * @param {?Array}    props.value         The native shadow attribute value, optionally carrying a
  *                                        `shadowToken` binding.
- * @param {Function}  props.onChange      Called with the next native shadow attribute value.
+ * @param {Function}  props.onChange      Called with the next native shadow attribute value, and with
+ *                                        the value the host's own enable flag should take — `true`
+ *                                        when the value is a pick of the block's own, `false` for the
+ *                                        cleared shadow that Reset and "None" write.
  * @param {Array}     [props.tokens]      Pickable `shadow`-type tokens, `[{id, label, value, alias}]`.
  * @param {*}         [props.defaultValue] The active preset's own resolved shadow, or nothing when it
  *                                        declares none — shown MUTED while the block stores no shadow
@@ -461,7 +513,14 @@ export function EditorShadowControl({
 			<BoxShadowControl
 				label={label}
 				value={isUnsetShadow(value, defaultValue, enabled) ? '' : bound || fromNativeShadow(value)}
-				onChange={(next) => onChange(toNativeShadow(next, tokens))}
+				onChange={(next) => {
+					const native = toNativeShadow(next, tokens);
+
+					// The flag travels with the value rather than being recomputed by each host. Seven call
+					// sites would otherwise each have to remember it, and one that forgot would silently
+					// read its own writes back as unset.
+					onChange(native, hasShadowPick(native));
+				}}
 				tokens={tokens}
 				defaultValue={defaultValue}
 				renderColor={renderColor}

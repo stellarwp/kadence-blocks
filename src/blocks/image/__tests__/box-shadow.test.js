@@ -99,4 +99,16 @@ describe('imageBoxShadowCss', () => {
 	it('applies the historic per-leg defaults for missing axes', () => {
 		expect(imageBoxShadowCss(true, [{ color: '#000000', vOffset: 4 }])).toBe('0px 4px 14px 0px rgba(#000000, 0.2)');
 	});
+
+	/**
+	 * A color picked before any geometry raises the block's flag but still paints nothing, so the
+	 * canvas emits no shadow until an axis moves.
+	 *
+	 * @return {void}
+	 */
+	it('emits nothing for a color with no geometry even with the flag raised', () => {
+		const colorOnly = { color: '#3182ce', opacity: 1, spread: 0, blur: 0, hOffset: 0, vOffset: 0, inset: false };
+
+		expect(imageBoxShadowCss(true, [colorOnly])).toBeUndefined();
+	});
 });

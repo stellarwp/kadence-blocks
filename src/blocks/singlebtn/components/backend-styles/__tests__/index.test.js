@@ -318,6 +318,23 @@ describe('BackendStyles shadow flag gating', () => {
 	});
 
 	/**
+	 * A color picked before any geometry raises the flag but paints nothing, so the base state still
+	 * emits no box-shadow — the flag records the pick, the geometry decides the painting.
+	 *
+	 * @return {void}
+	 */
+	it('emits no box-shadow for a color with no geometry even when displayShadow is raised', () => {
+		const colorOnly = { hOffset: 0, vOffset: 0, blur: 0, spread: 0, color: '#3182ce', opacity: 1, inset: false };
+
+		BackendStyles({
+			attributes: { uniqueID: 'abc123', displayShadow: true, shadow: [colorOnly] },
+			previewDevice: 'Desktop',
+		});
+
+		expect(boxShadowFor(fakeCss.rules, BASE_SELECTOR)).toBe('none');
+	});
+
+	/**
 	 * A lowered `displayHoverShadow` suppresses the hover state's box-shadow even though the stored
 	 * shadow itself is visible, matching the PHP renderer's own gate for this state.
 	 *
