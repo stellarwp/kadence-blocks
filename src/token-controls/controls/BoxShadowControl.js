@@ -362,6 +362,10 @@ export function BoxShadowControl({
 					<Dropdown
 						className="kadence-token-field__dropdown"
 						contentClassName="kadence-token-field__popover"
+						// Beside the trigger, not above it — the same placement every other control in this
+						// library uses. The inspector column is narrow enough that a popover opening upward
+						// covers the controls the user was just reading.
+						popoverProps={{ placement: 'left-start' }}
 						renderToggle={({ isOpen, onToggle }) => (
 							<Button
 								className="kadence-token-field__trigger kb-box-shadow-control__trigger"

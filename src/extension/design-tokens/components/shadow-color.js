@@ -51,7 +51,11 @@ export function ShadowColorField({ value, onChange, disabled = false, groups }) 
 	return (
 		<ColorControl
 			label={__('Color', 'kadence-blocks')}
-			value={value || ''}
+			// `transparent` is the composite's "no color yet" default, and it must not reach the picker as
+			// a value: `react-color` reads it as alpha 0, which pins the alpha slider at zero, so every
+			// hue the user then picks is emitted fully see-through and reads straight back as no color.
+			// Passing '' instead opens the picker unset, and the first pick lands at full alpha.
+			value={value && value !== 'transparent' ? value : ''}
 			groups={groups}
 			onPick={onChange}
 			onCustom={onChange}

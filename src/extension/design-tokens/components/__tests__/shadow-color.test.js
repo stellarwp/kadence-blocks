@@ -201,6 +201,19 @@ describe('ShadowColorField', () => {
 	});
 
 	/**
+	 * `transparent` is the composite's "no color yet" default. It must reach the picker as '' rather
+	 * than as a value: read as a color it is alpha 0, which pins the alpha slider at zero and makes
+	 * every hue the user picks come back fully see-through.
+	 *
+	 * @return {void}
+	 */
+	it('opens the picker unset rather than seeding it from transparent', () => {
+		render({ value: 'transparent' });
+
+		expect(container.querySelector('[data-testid="color-picker"]').dataset.color).toBe('');
+	});
+
+	/**
 	 * A shadow always has a color, so the popover offers no Clear row — clearing would leave geometry
 	 * with no color, which renders as an opaque black shadow rather than none.
 	 *
