@@ -40,9 +40,26 @@ const DEFAULT_SHADOW = { color: '#000000', offsetX: 0, offsetY: 0, blur: 0, spre
 const NUMERIC_FIELDS = [
 	{ key: 'offsetX', label: __('X', 'kadence-blocks') },
 	{ key: 'offsetY', label: __('Y', 'kadence-blocks') },
-	{ key: 'blur', label: __('Blur', 'kadence-blocks') },
+	// Blur is the only field with a floor, for the reason `BoxShadowControl`'s own axis list gives:
+	// CSS rejects a negative blur radius, and one invalid component makes the browser drop the whole
+	// `box-shadow`, so a stray `-2` removes the shadow rather than softening it.
+	{ key: 'blur', label: __('Blur', 'kadence-blocks'), min: 0 },
 	{ key: 'spread', label: __('Spread', 'kadence-blocks') },
 ];
+
+/**
+ * Hold a numeric field's value at its own floor, when it has one.
+ *
+ * @param {number}  value The value being written.
+ * @param {?number} min   The field's floor, or undefined when it has none.
+ *
+ * @since TBD
+ *
+ * @return {number} The value, never below the floor.
+ */
+function clampToMin(value, min) {
+	return min === undefined ? value : Math.max(value, min);
+}
 
 /**
  * Render the shadow field.
@@ -64,7 +81,12 @@ export function ShadowField({ field, value, onChange }) {
 			return;
 		}
 
-		onChange({ ...shadow, [key]: next });
+		// The floor belongs to the value, not to the blur input's own change event: applying it on every
+		// write means a negative blur arriving from anywhere is held at zero rather than committed into
+		// a shadow CSS refuses to render.
+		const merged = { ...shadow, [key]: next };
+
+		onChange({ ...merged, blur: Math.max(Number(merged.blur) || 0, 0) });
 	};
 
 	return (
@@ -98,14 +120,17 @@ export function ShadowField({ field, value, onChange }) {
 				)}
 			/>
 			<div className="kadence-blocks-style-library__field-shadow-row">
-				{NUMERIC_FIELDS.map(({ key, label }) => (
+				{NUMERIC_FIELDS.map(({ key, label, min }) => (
 					<div key={key} className="kadence-blocks-style-library__field-shadow-number">
 						<span className="kadence-blocks-style-library__field-shadow-number-label">{label}</span>
 						<NumberControl
 							__next40pxDefaultSize
+							min={min}
 							value={shadow[key]}
 							disabled={field.readOnly}
-							onChange={(next) => setPart(key, next === '' ? 0 : Number(next))}
+							// `min` stops the spinner and arrow keys; a typed or pasted value still arrives
+							// here, so the floor is applied to what gets stored too.
+							onChange={(next) => setPart(key, next === '' ? 0 : clampToMin(Number(next), min))}
 						/>
 					</div>
 				))}

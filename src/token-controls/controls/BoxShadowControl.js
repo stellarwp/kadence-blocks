@@ -77,9 +77,31 @@ import '../styles/token-controls.scss';
 const AXES = [
 	{ key: 'offsetX', label: __('X', 'kadence-blocks') },
 	{ key: 'offsetY', label: __('Y', 'kadence-blocks') },
-	{ key: 'blur', label: __('Blur', 'kadence-blocks') },
+	// Blur is the only axis with a floor. CSS rejects a negative blur radius outright, and an invalid
+	// component makes the browser drop the WHOLE `box-shadow` declaration — so a stray `-2` does not
+	// merely soften the shadow, it silently removes it while the control still shows the value. X, Y
+	// and spread all take negative values legitimately and stay unbounded.
+	{ key: 'blur', label: __('Blur', 'kadence-blocks'), min: 0 },
 	{ key: 'spread', label: __('Spread', 'kadence-blocks') },
 ];
+
+/**
+ * Hold an axis value at its own floor, when it has one.
+ *
+ * `NumberControl`'s `min` already stops the spinner and arrow keys, but a typed or pasted value
+ * still arrives through `onChange`, so the floor is applied to the value being stored rather than
+ * only to the input.
+ *
+ * @param {number}  value The axis value being written.
+ * @param {?number} min   The axis's floor, or undefined when it has none.
+ *
+ * @since TBD
+ *
+ * @return {number} The value, never below the floor.
+ */
+function clampAxis(value, min) {
+	return min === undefined ? value : Math.max(value, min);
+}
 
 /**
  * Apply a patch to the current shadow composite, writing the result through `onChange` with `inset`
@@ -97,7 +119,28 @@ const AXES = [
 function commitShadow(shadow, patch) {
 	const { inset, ...rest } = { ...shadow, ...patch };
 
-	return inset === true ? { ...rest, inset: true } : rest;
+	// The floor belongs to the value, not to the blur input's own change event: every write passes
+	// through here, so a negative blur arriving from anywhere — a pasted value, a preset, a token's
+	// stored legs — is held at zero rather than committed into a shadow CSS refuses to render.
+	const next = { ...rest, blur: floorBlur(rest.blur) };
+
+	return inset === true ? { ...next, inset: true } : next;
+}
+
+/**
+ * Hold a blur length at zero when it is negative, leaving anything that is not a number — a token
+ * alias, an empty slot — exactly as it was.
+ *
+ * @param {*} value The composite's blur slot.
+ *
+ * @since TBD
+ *
+ * @return {*} The blur, never a negative length.
+ */
+function floorBlur(value) {
+	const parsed = Number.parseFloat(value);
+
+	return Number.isFinite(parsed) && parsed < 0 ? '0px' : value;
 }
 
 /**
@@ -212,13 +255,14 @@ function ShadowCustomTab({ shadow, onChange, renderColor, disabled = false }) {
 				</div>
 			)}
 			<div className="kb-box-shadow-control__axes">
-				{AXES.map(({ key, label }) => (
+				{AXES.map(({ key, label, min }) => (
 					<NumberControl
 						key={key}
 						label={label}
+						min={min}
 						value={Number.parseFloat(shadow[key]) || 0}
 						disabled={disabled}
-						onChange={(next) => setPart(key, `${Number(next) || 0}px`)}
+						onChange={(next) => setPart(key, `${clampAxis(Number(next) || 0, min)}px`)}
 					/>
 				))}
 			</div>
