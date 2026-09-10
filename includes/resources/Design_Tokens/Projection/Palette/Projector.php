@@ -8,10 +8,10 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Kadence_Palette_Slot;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Preset\Css_Builder as Preset_Css_Builder;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Palettes;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Version;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 use KadenceWP\KadenceBlocks\Design_Tokens\Utils\Location;
 use Throwable;
-use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Version;
 
 /**
  * Projects the per-block palette switch layer into the WordPress style pipeline.
@@ -40,7 +40,6 @@ final class Projector extends Abstract_Css_Projector {
 	 * @since TBD
 	 */
 	private Token_Registry $registry;
-
 
 	/**
 	 * Owns the active-library pointer, read at build time so the projection follows the active library.
@@ -80,14 +79,13 @@ final class Projector extends Abstract_Css_Projector {
 	private Css_Builder $css_builder;
 
 	/**
-	 * Per-request memo of built CSS, keyed on the active slug and store version.
+	 * Per-request memo of built CSS, keyed on the active slug and effective version.
 	 *
 	 * @since TBD
 	 *
 	 * @var array<string, string>
 	 */
 	private array $memo = [];
-
 
 	/**
 	 * Supplies the cache version: the store version, plus the theme Style Guide signature when there is
@@ -175,7 +173,7 @@ final class Projector extends Abstract_Css_Projector {
 	}
 
 	/**
-	 * Build the palette switch layer for the active library, memoised per request and cached on the store
+	 * Build the palette switch layer for the active library, memoized per request and cached on the effective
 	 * version. Returns an empty string when the active library cannot be read, so the page never crashes.
 	 *
 	 * @since TBD

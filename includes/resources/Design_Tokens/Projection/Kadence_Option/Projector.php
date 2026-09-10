@@ -39,8 +39,8 @@ final class Projector {
 	private const KB_COLORS_OPTION = 'kadence_blocks_colors';
 
 	/**
-	 * Marker option storing the last-synced "{plugin-version}:{library-slug}:{store-version}" signature, so a request
-	 * where nothing changed skips resolution entirely.
+	 * Marker option storing the last-synced "{plugin-version}:{library-slug}:{effective-version}" signature, so a
+	 * request where nothing changed skips resolution entirely.
 	 *
 	 * @since TBD
 	 *
@@ -191,14 +191,15 @@ final class Projector {
 		$entries = $this->builder->entries( $resolved );
 
 		// Empty entries is a valid resolved state (no token values set yet). Still advance the marker so
-		// the next request short-circuits rather than re-resolving. When the user writes token values the
-		// store version changes, the signature flips, and the next reconcile re-enters the write path.
+		// the next request short-circuits rather than re-resolving. When the user writes token values (or
+		// saves the Customizer) the effective version changes, the signature flips, and the next reconcile
+		// re-enters the write path.
 		if ( $entries !== [] ) {
 			$this->sync_kb_colors( $entries );
 		}
 
 		// Autoloaded: the boot pass reads this marker on every request to short-circuit, so it must not
-		// cost a dedicated query. It is a tiny "{plugin-version}:{library-slug}:{store-version}" string.
+		// cost a dedicated query. It is a tiny "{plugin-version}:{library-slug}:{effective-version}" string.
 		update_option( self::SYNC_MARKER_OPTION, $signature, true );
 	}
 

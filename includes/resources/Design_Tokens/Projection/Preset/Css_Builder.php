@@ -141,9 +141,9 @@ final class Css_Builder {
 	private array $memo = [];
 
 	/**
-	 * Per-request memo of the collected preset structure, keyed on the library slug AND its store version, so the
-	 * registry/resolver walk runs once per library even when several layers read it, yet a write (which bumps the
-	 * version) produces a fresh collection rather than serving the pre-write structure.
+	 * Per-request memo of the collected preset structure, keyed on the library slug AND its effective version, so
+	 * the registry/resolver walk runs once per library even when several layers read it, yet a token write or a
+	 * Customizer save (either changes that version) produces a fresh collection rather than serving the stale one.
 	 *
 	 * @since TBD
 	 *
@@ -216,16 +216,16 @@ final class Css_Builder {
 
 	/**
 	 * Cached version of css(): assembles the active library's preset CSS from the object cache with a per-request
-	 * memo. A write bumps the library's store version, which changes the cache key, so a fresh build is produced on
-	 * the next request.
+	 * memo. A token write or a Customizer save changes the effective version, which changes the cache key, so a
+	 * fresh build is produced on the next request.
 	 *
-	 * The plugin version is folded into the cache key alongside the store version, so the cache also busts on a
-	 * plugin build (shipped preset definitions and the baseline can change with it).
+	 * The plugin version is folded into the cache key alongside the effective version, so the cache also busts on
+	 * a plugin build (shipped preset definitions and the baseline can change with it).
 	 *
 	 * @since TBD
 	 *
 	 * @param string                $active_slug The active library's slug.
-	 * @param string                $version     The store version the active library was built from.
+	 * @param string                $version     The effective version the active library was built from.
 	 * @param array<string, string> $breakpoints Breakpoint => media-query string, for the per-breakpoint
 	 *                                           redeclarations.
 	 *
@@ -244,7 +244,7 @@ final class Css_Builder {
 	 * @since TBD
 	 *
 	 * @param string                $active_slug The active library's slug.
-	 * @param string                $version     The store version the active library was built from.
+	 * @param string                $version     The effective version the active library was built from.
 	 * @param array<string, string> $breakpoints Breakpoint => media-query string.
 	 *
 	 * @return string
@@ -278,7 +278,7 @@ final class Css_Builder {
 	 * @since TBD
 	 *
 	 * @param string                $active_slug The active library's slug.
-	 * @param string                $version     The store version the active library was built from.
+	 * @param string                $version     The effective version the active library was built from.
 	 * @param array<string, string> $breakpoints Breakpoint => media-query string.
 	 * @param bool                  $editor      Whether to build the editor-scoped CSS.
 	 *

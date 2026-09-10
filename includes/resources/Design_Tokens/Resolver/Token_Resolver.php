@@ -142,8 +142,9 @@ final class Token_Resolver {
 	}
 
 	/**
-	 * Shared resolve path: per-request memo over a persistent object-cache entry, both keyed on the store
-	 * version (bumped on every write, so they self-invalidate).
+	 * Shared resolve path: per-request memo over a persistent object-cache entry, both keyed on the effective
+	 * version (the store version plus the theme Style Guide signature, so a token write and a Customizer save
+	 * both self-invalidate).
 	 *
 	 * @since TBD
 	 *
