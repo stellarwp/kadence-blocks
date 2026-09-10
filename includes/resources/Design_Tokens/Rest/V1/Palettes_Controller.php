@@ -734,10 +734,10 @@ final class Palettes_Controller extends Controller {
 	 *   - `baseline` — whether the shipped palette defines this swatch. A baseline swatch's row is permanent
 	 *     (see {@see guard_baseline_swatches()}), so the editor offers Reset for it and Delete only for the
 	 *     rest.
-	 *   - `overridden` — whether there is anything to undo. On the DEFAULT palette that means the value
-	 *     differs from the shipped one; on any other palette it means the palette stores its own delta rather
-	 *     than inheriting. Measuring the default palette against its own deltas would mark every swatch
-	 *     overridden, since the default stores them all.
+	 *   - `overridden` — whether there is anything to undo: the palette stores its own value for the swatch.
+	 *     One test serves every palette, the default included, because the default palette stores only the
+	 *     swatches the site changed; a swatch left at the baseline keeps its row but stores no `$value`, so
+	 *     it reads as not overridden and there is nothing to undo.
 	 *
 	 * @since TBD
 	 *
