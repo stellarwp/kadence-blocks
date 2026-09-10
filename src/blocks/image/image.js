@@ -66,9 +66,9 @@ import {
 	presetValueForDevice,
 } from '../../extension/token-indicators/normalize';
 import { EditorBoxControl } from '../../extension/design-tokens/components/EditorBoxControl';
-import { EditorShadowControl, hasVisibleShadow } from '../../extension/design-tokens/components/EditorShadowControl';
+import { EditorShadowControl } from '../../extension/design-tokens/components/EditorShadowControl';
 import { imageBoxShadowCss } from './box-shadow';
-import { renderShadowColor } from '../../extension/design-tokens/components/shadow-color';
+import { ShadowColorField } from '../../extension/design-tokens/components/shadow-color';
 import { useColorGroups } from '../../extension/design-tokens/hooks/use-color-groups';
 import { resolveColorLiteral } from '../../extension/design-tokens/color-literal';
 import { tokenDimension } from '../../extension/design-tokens/token-dimension';
@@ -239,6 +239,10 @@ export default function Image({
 		);
 	// One fetch of the block's effective palette groups, shared by every `ColorControl` on this block.
 	const colorGroups = useColorGroups(clientId);
+
+	// `BoxShadowControl` calls `renderColor` from inside its popover's Custom tab; defined once per
+	// render so the field closes over the shared palette groups rather than fetching its own.
+	const renderShadowColor = useCallback((slot) => <ShadowColorField {...slot} groups={colorGroups} />, [colorGroups]);
 
 	// Empty when the token registry is inactive, which is what keeps the plain controls below as the
 	// fallback rather than leaving the image with no radius/padding control at all.
@@ -1322,21 +1326,19 @@ export default function Image({
 									allowEmpty={true}
 								/>
 							)}
-							{/* `displayBoxShadow` is no longer a control -- it is derived from the value on every
-							    write. It has to keep existing because Gutenberg omits an attribute equal to its
-							    default, so a block saved with the old toggle OFF stored no flag at all and is
-							    indistinguishable from one saved with it on. Deriving it forward means legacy
-							    content keeps whatever the flag said, while anything edited from here on has a
-							    flag that simply agrees with its own geometry. */}
+							{/* `displayBoxShadow` is no longer a control -- the editor writes it from the value on
+							    every change, recording whether the value is a pick rather than whether it paints.
+							    It cannot follow visibility: a color chosen before any geometry paints nothing yet,
+							    and a flag lowered on that write reads the pick straight back as unset. It has to
+							    keep existing because Gutenberg omits an attribute equal to its default, so a block
+							    saved with the old toggle OFF stored no flag at all, and a lowered flag is the only
+							    thing keeping those values -- and the shipped visible default -- unpainted. */}
 							<EditorShadowControl
 								label={__('Box Shadow', 'kadence-blocks')}
 								value={boxShadow}
 								enabled={displayBoxShadow}
-								onChange={(value) =>
-									setAttributes({
-										boxShadow: value,
-										displayBoxShadow: hasVisibleShadow(value?.[0]),
-									})
+								onChange={(value, displayBoxShadow) =>
+									setAttributes({ boxShadow: value, displayBoxShadow })
 								}
 								tokens={shadowTokens}
 								defaultValue={shadowPresetValue}

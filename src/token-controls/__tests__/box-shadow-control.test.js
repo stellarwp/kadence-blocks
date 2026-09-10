@@ -47,13 +47,14 @@ jest.mock('@wordpress/components', () => ({
 			</div>
 		);
 	},
-	__experimentalNumberControl: ({ label, value, onChange, disabled }) => (
+	__experimentalNumberControl: ({ label, value, onChange, disabled, min }) => (
 		<label>
 			{label}
 			<input
 				aria-label={label}
 				type="number"
 				value={value}
+				min={min}
 				disabled={disabled}
 				onChange={(event) => onChange(event.target.value)}
 			/>
@@ -391,6 +392,131 @@ describe('BoxShadowControl initial tab', () => {
 		renderControl({ value: { color: '#000000', offsetX: '2px', offsetY: '2px', blur: '4px', spread: '0px' } });
 
 		expect(numberInput('X')).not.toBeNull();
+	});
+
+	/**
+	 * An unset control seeds its Custom tab from the host's stored legs, so the axes show the shadow the
+	 * block ships with rather than all zeros.
+	 *
+	 * @return {void}
+	 */
+	it('seeds the Custom tab from fallbackShadow when the value is unset', () => {
+		renderControl({
+			value: '',
+			fallbackShadow: { color: '#000000', offsetX: '0px', offsetY: '0px', blur: '14px', spread: '0px' },
+		});
+
+		click(container.querySelector('[data-testid="tab-custom"]'));
+
+		expect(numberInput('Blur').value).toBe('14');
+	});
+
+	/**
+	 * Editing one axis on an unset control commits the stored legs alongside it, so the shadow that
+	 * lands carries a real color instead of the transparent default that paints nothing.
+	 *
+	 * @return {void}
+	 */
+	it('commits the seeded legs when an axis is edited on an unset control', () => {
+		const onChange = jest.fn();
+		renderControl({
+			value: '',
+			onChange,
+			fallbackShadow: { color: '#000000', offsetX: '0px', offsetY: '0px', blur: '14px', spread: '0px' },
+		});
+
+		click(container.querySelector('[data-testid="tab-custom"]'));
+
+		act(() => {
+			const input = numberInput('Y');
+			Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set.call(input, '6');
+			input.dispatchEvent(new Event('change', { bubbles: true }));
+		});
+
+		expect(onChange).toHaveBeenCalledWith(
+			expect.objectContaining({ offsetY: '6px', blur: '14px', color: '#000000' })
+		);
+	});
+
+	/**
+	 * Blur is floored at zero, and the other three axes stay unbounded. CSS rejects a negative blur
+	 * radius, and one invalid component makes the browser drop the whole `box-shadow` — so a negative
+	 * blur removes the shadow instead of softening it, while X, Y and spread take negatives happily.
+	 *
+	 * @return {void}
+	 */
+	it('floors the Blur input at zero and leaves the other axes unbounded', () => {
+		renderControl({ value: { color: '#000000', offsetX: '2px', offsetY: '2px', blur: '4px', spread: '0px' } });
+
+		expect(numberInput('Blur').getAttribute('min')).toBe('0');
+		expect(numberInput('X').getAttribute('min')).toBeNull();
+		expect(numberInput('Y').getAttribute('min')).toBeNull();
+		expect(numberInput('Spread').getAttribute('min')).toBeNull();
+	});
+
+	/**
+	 * A negative blur typed or pasted past the input's own `min` is still held at zero on the way to
+	 * the stored value, so the shadow can never be written into the state CSS discards.
+	 *
+	 * @return {void}
+	 */
+	it('clamps a typed negative blur to zero before storing it', () => {
+		const onChange = jest.fn();
+		renderControl({
+			value: { color: '#000000', offsetX: '2px', offsetY: '2px', blur: '4px', spread: '0px' },
+			onChange,
+		});
+
+		act(() => {
+			const input = numberInput('Blur');
+			Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set.call(input, '-9');
+			input.dispatchEvent(new Event('change', { bubbles: true }));
+		});
+
+		expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ blur: '0px' }));
+	});
+
+	/**
+	 * The floor covers the whole composite, not just the blur input: a negative blur already in the
+	 * value is held at zero by a write to any other axis.
+	 *
+	 * @return {void}
+	 */
+	it('floors a negative blur already in the value when another axis is edited', () => {
+		const onChange = jest.fn();
+		renderControl({
+			value: { color: '#000000', offsetX: '2px', offsetY: '2px', blur: '-6px', spread: '0px' },
+			onChange,
+		});
+
+		act(() => {
+			const input = numberInput('X');
+			Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set.call(input, '5');
+			input.dispatchEvent(new Event('change', { bubbles: true }));
+		});
+
+		expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ offsetX: '5px', blur: '0px' }));
+	});
+
+	/**
+	 * A negative spread is valid CSS — it shrinks the shadow — so it passes through untouched.
+	 *
+	 * @return {void}
+	 */
+	it('stores a negative spread unchanged', () => {
+		const onChange = jest.fn();
+		renderControl({
+			value: { color: '#000000', offsetX: '2px', offsetY: '2px', blur: '4px', spread: '0px' },
+			onChange,
+		});
+
+		act(() => {
+			const input = numberInput('Spread');
+			Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set.call(input, '-4');
+			input.dispatchEvent(new Event('change', { bubbles: true }));
+		});
+
+		expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ spread: '-4px' }));
 	});
 
 	/**

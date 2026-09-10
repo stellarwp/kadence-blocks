@@ -15,9 +15,10 @@
  * shadow, so this adapter reads and writes `field.path`'s value directly, with no breakpoint
  * envelope — unlike `BorderField`/`BoxTokenField`.
  *
- * Color stays out of scope here — a shadow's color packs opacity into the same value, which the
- * shared color popover has no place for — so `renderColor` still wraps `TokenColorSelectField`.
- * `BorderField` no longer does; this is now the only field that renders it.
+ * Color is the shared `ColorControl`, the same popover the block editor's own shadow field opens, so
+ * the two hosts offer one picker rather than two. A shadow's color packs opacity into the same value,
+ * which the popover carries inline as `#rrggbbaa` — the host that needs the pair split back out does
+ * it on its own side.
  */
 
 /**
@@ -32,8 +33,9 @@ import { pickableTokensForType } from '../../../helpers/tokens';
 import { BoxShadowControl } from '../../../../token-controls/controls/BoxShadowControl';
 import { boundTokenIds } from './BoxTokenField';
 import { isTokenAlias } from '../../../../token-controls/helpers/token-summary';
-import { TokenColorSelectField } from './TokenColorSelectField';
-import { noneEntryForRole, parseResolvedShadow } from '../../../../token-controls';
+import { ColorControl, noneEntryForRole, parseResolvedShadow } from '../../../../token-controls';
+import { useActivePaletteGroups } from '../../../hooks/use-active-palette-groups';
+import { resolveLiteral, toControlValue, toStoredValue } from '../../../helpers/color-values';
 
 /**
  * The bare token id a stored shadow holds, or the value unchanged when it holds a composite shadow
@@ -153,6 +155,7 @@ export function resolveShadowPick(picked, tokens) {
  * @return {JSX.Element} The field.
  */
 export function BoxShadowField({ field, value, onChange }) {
+	const groups = useActivePaletteGroups();
 	// `BoxShadowControl` takes no `defaultValue`, so a semantic's VALUE cannot be shown here the way
 	// the box fields show it; unset is the honest reading until that prop exists.
 	const shown = toControlShadow(value);
@@ -179,10 +182,16 @@ export function BoxShadowField({ field, value, onChange }) {
 			tokens={tokens}
 			defaultValue={field.defaultValue}
 			renderColor={({ value: color, onChange: onColorChange }) => (
-				<TokenColorSelectField
-					field={{ label: __('Color', 'kadence-blocks'), readOnly: field.readOnly }}
-					value={color}
-					onChange={onColorChange}
+				<ColorControl
+					label={__('Color', 'kadence-blocks')}
+					// This host stores a BARE token id, never a bracket alias, so the value is bridged in
+					// both directions with the same pair `BorderField` and `ColorSelectField` use.
+					value={toControlValue(color)}
+					groups={groups}
+					onPick={(alias) => onColorChange(toStoredValue(alias))}
+					onCustom={onColorChange}
+					resolveLiteral={resolveLiteral}
+					disabled={field.readOnly}
 				/>
 			)}
 			disabled={field.readOnly}

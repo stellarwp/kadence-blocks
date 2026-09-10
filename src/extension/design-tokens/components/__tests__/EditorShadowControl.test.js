@@ -10,6 +10,7 @@ import {
 	toNativeShadow,
 	fromNativeShadow,
 	hasVisibleShadow,
+	hasShadowPick,
 	isUnsetShadow,
 } from '../EditorShadowControl';
 import { BoxShadowControl } from '../../../../token-controls/controls/BoxShadowControl';
@@ -163,17 +164,20 @@ describe('EditorShadowControl native <-> BoxShadowControl value bridging', () =>
 			inset: false,
 		});
 
-		expect(onChange).toHaveBeenCalledWith([
-			{
-				color: '#111111',
-				opacity: 0.4,
-				hOffset: 9,
-				vOffset: 3,
-				blur: 4,
-				spread: 5,
-				inset: false,
-			},
-		]);
+		expect(onChange).toHaveBeenCalledWith(
+			[
+				{
+					color: '#111111',
+					opacity: 0.4,
+					hOffset: 9,
+					vOffset: 3,
+					blur: 4,
+					spread: 5,
+					inset: false,
+				},
+			],
+			true
+		);
 	});
 
 	/**
@@ -314,17 +318,20 @@ describe('EditorShadowControl native <-> BoxShadowControl value bridging', () =>
 
 		shadowControl.props.onChange('primitive.shadow.unknown');
 
-		expect(onChange).toHaveBeenCalledWith([
-			{
-				color: 'transparent',
-				opacity: 1,
-				hOffset: 0,
-				vOffset: 0,
-				blur: 0,
-				spread: 0,
-				inset: false,
-			},
-		]);
+		expect(onChange).toHaveBeenCalledWith(
+			[
+				{
+					color: 'transparent',
+					opacity: 1,
+					hOffset: 0,
+					vOffset: 0,
+					blur: 0,
+					spread: 0,
+					inset: false,
+				},
+			],
+			false
+		);
 	});
 
 	/**
@@ -349,6 +356,27 @@ describe('EditorShadowControl native <-> BoxShadowControl value bridging', () =>
 			spread: '0px',
 			inset: false,
 		});
+	});
+
+	/**
+	 * A token alias picked as the shadow's color passes through the split untouched as the native
+	 * `color`, with full opacity — the alias-aware color output resolves it on render.
+	 *
+	 * @return {void}
+	 */
+	it('keeps a token alias as the native color with full opacity', () => {
+		const native = toNativeShadow({
+			color: '{semantic.color.accent.main}',
+			offsetX: '2px',
+			offsetY: '3px',
+			blur: '4px',
+			spread: '5px',
+			inset: false,
+		});
+
+		expect(native[0].color).toBe('{semantic.color.accent.main}');
+		expect(native[0].opacity).toBe(1);
+		expect(native[0]).not.toHaveProperty(SHADOW_TOKEN_KEY);
 	});
 });
 
@@ -394,15 +422,30 @@ describe('EditorShadowControl fallbackShadow wiring', () => {
 	});
 
 	/**
-	 * An unbound (plain composite) value has no binding to fall back FROM, so `fallbackShadow` stays
-	 * undefined rather than shadowing `BoxShadowControl`'s own default-composite behavior.
+	 * An unbound value passes its legs down too. The Custom tab needs them whenever the value carries
+	 * none of its own — an unset control included — so that editing one axis produces the shadow the
+	 * block ships with instead of that axis over a transparent, all-zero one.
 	 *
 	 * @return {void}
 	 */
-	it('leaves fallbackShadow undefined for a value with no shadowToken binding', () => {
+	it('passes the stored legs as fallbackShadow for a value with no shadowToken binding', () => {
 		const { shadowControl } = renderEditorShadowControl();
 
-		expect(shadowControl.props.fallbackShadow).toBeUndefined();
+		expect(shadowControl.props.fallbackShadow).toEqual(fromNativeShadow(NATIVE_VALUE));
+	});
+
+	/**
+	 * An unset control still hands its legs down, which is the whole point: the trigger reads muted
+	 * "Default" from the empty value, while the Custom tab behind it seeds from the block's own shadow.
+	 *
+	 * @return {void}
+	 */
+	it('passes the stored legs even while the control reads as unset', () => {
+		const shipped = [{ color: '#000000', opacity: 0.2, spread: 0, blur: 14, hOffset: 0, vOffset: 0 }];
+		const { shadowControl } = renderEditorShadowControl({ value: shipped, enabled: false });
+
+		expect(shadowControl.props.value).toBe('');
+		expect(shadowControl.props.fallbackShadow).toEqual(fromNativeShadow(shipped));
 	});
 });
 
@@ -709,6 +752,165 @@ describe('EditorShadowControl unset rendering', () => {
 		});
 
 		expect(shadowControl.props.value).not.toBe('');
+	});
+});
+
+describe('hasShadowPick', () => {
+	const CLEARED = [{ color: 'transparent', opacity: 1, spread: 0, blur: 0, hOffset: 0, vOffset: 0, inset: false }];
+
+	/**
+	 * With nothing stored there is no pick, so the host's enable flag stays lowered.
+	 *
+	 * @return {void}
+	 */
+	it('reads an absent attribute as no pick', () => {
+		expect(hasShadowPick(undefined)).toBe(false);
+		expect(hasShadowPick([])).toBe(false);
+	});
+
+	/**
+	 * The item Reset and the fixed "None" entry both write is the cleared shadow, which must lower the
+	 * flag so the control goes back to its muted "Default" instead of claiming a bold "None".
+	 *
+	 * @return {void}
+	 */
+	it('reads the cleared item Reset and None write as no pick', () => {
+		expect(hasShadowPick(CLEARED)).toBe(false);
+	});
+
+	/**
+	 * The bug this predicate exists for: a color chosen before any geometry is a real pick, even
+	 * though it paints nothing yet. Deriving the flag from visibility lowered it on this very write
+	 * and threw the color away on the next render.
+	 *
+	 * @return {void}
+	 */
+	it('reads a color with no geometry as a pick', () => {
+		expect(hasShadowPick([{ color: '#3182ce', opacity: 1, spread: 0, blur: 0, hOffset: 0, vOffset: 0 }])).toBe(
+			true
+		);
+	});
+
+	/**
+	 * A fully see-through color is as good as no color, so it stays the cleared item however it was
+	 * spelled.
+	 *
+	 * @return {void}
+	 */
+	it('reads a fully transparent color with no geometry as no pick', () => {
+		expect(hasShadowPick([{ color: '#3182ce', opacity: 0, spread: 0, blur: 0, hOffset: 0, vOffset: 0 }])).toBe(
+			false
+		);
+	});
+
+	/**
+	 * Geometry on its own is a pick too — the user moved an axis, whatever the color says.
+	 *
+	 * @return {void}
+	 */
+	it('reads geometry with no color as a pick', () => {
+		expect(hasShadowPick([{ color: 'transparent', opacity: 1, spread: 0, blur: 4, hOffset: 0, vOffset: 0 }])).toBe(
+			true
+		);
+	});
+
+	/**
+	 * A binding is a deliberate pick even with all-zero stored legs; the token carries the real value.
+	 *
+	 * @return {void}
+	 */
+	it('reads a bound item with zero legs as a pick', () => {
+		const bound = [
+			{
+				color: 'transparent',
+				opacity: 1,
+				spread: 0,
+				blur: 0,
+				hOffset: 0,
+				vOffset: 0,
+				[SHADOW_TOKEN_KEY]: '{semantic.shadow.button}',
+			},
+		];
+
+		expect(hasShadowPick(bound)).toBe(true);
+	});
+
+	/**
+	 * Inset paints nothing by itself, but flipping it is still a deliberate pick — counting it as
+	 * cleared would drop the flag on the write that set it and spring the toggle back.
+	 *
+	 * @return {void}
+	 */
+	it('reads a bare inset toggle as a pick', () => {
+		const inset = [{ color: 'transparent', opacity: 1, spread: 0, blur: 0, hOffset: 0, vOffset: 0, inset: true }];
+
+		expect(hasShadowPick(inset)).toBe(true);
+		expect(isUnsetShadow(inset, undefined, true)).toBe(false);
+	});
+
+	/**
+	 * `block.json`'s shipped default is a visible, colored shadow, so by value alone it reads as a
+	 * pick. What keeps a freshly inserted block clean is its lowered flag, never the value — this is
+	 * the pairing `isUnsetShadow` relies on.
+	 *
+	 * @return {void}
+	 */
+	it("reads block.json's shipped default as a pick, leaving the flag to keep a fresh block clean", () => {
+		const shipped = [{ color: '#000000', opacity: 0.2, spread: 0, blur: 2, hOffset: 1, vOffset: 1, inset: false }];
+
+		expect(hasShadowPick(shipped)).toBe(true);
+		expect(isUnsetShadow(shipped, undefined, false)).toBe(true);
+	});
+
+	/**
+	 * The write side and the read side share one definition of "cleared", so a color picked on an
+	 * unset control is stored as a pick and read straight back as set rather than snapping away.
+	 *
+	 * @return {void}
+	 */
+	it('agrees with isUnsetShadow on a color picked from the Custom tab', () => {
+		const written = toNativeShadow({
+			color: '#3182ce',
+			offsetX: '0px',
+			offsetY: '0px',
+			blur: '0px',
+			spread: '0px',
+			inset: false,
+		});
+
+		expect(hasShadowPick(written)).toBe(true);
+		expect(isUnsetShadow(written, undefined, true)).toBe(false);
+	});
+});
+
+describe('EditorShadowControl colored zero-geometry pick', () => {
+	const COLOR_ONLY = [{ color: '#3182ce', opacity: 1, spread: 0, blur: 0, hOffset: 0, vOffset: 0, inset: false }];
+
+	/**
+	 * With the flag raised, a color-only pick reaches `BoxShadowControl` as a composite, so the Custom
+	 * tab keeps showing the chosen color instead of falling back to transparent.
+	 *
+	 * @return {void}
+	 */
+	it('passes the composite down so the picked color survives the round trip', () => {
+		const { shadowControl } = renderEditorShadowControl({ value: COLOR_ONLY, defaultValue: undefined });
+
+		expect(shadowControl.props.value.color).toBe('#3182ce');
+	});
+
+	/**
+	 * A lowered flag still wins, which is what keeps a freshly inserted block reading as unset.
+	 *
+	 * @return {void}
+	 */
+	it('still passes an empty value down when the enable flag is lowered', () => {
+		const { shadowControl } = renderEditorShadowControl({
+			value: COLOR_ONLY,
+			defaultValue: undefined,
+			enabled: false,
+		});
+
+		expect(shadowControl.props.value).toBe('');
 	});
 });
 

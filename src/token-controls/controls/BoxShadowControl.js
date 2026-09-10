@@ -14,8 +14,8 @@
  *
  * Color is out of scope here (see `renderColor`) exactly as in `BorderControl` — this control does
  * not import or build a color picker. The Custom tab's color row wraps whatever `renderColor`
- * renders (the Style Library's swatch-plus-label toggle, the block editor's `PopColorControl`) in
- * plain layout chrome; it does not touch what that render prop returns.
+ * renders — both hosts now hand it the shared `ColorControl` — in plain layout chrome; it does not
+ * touch what that render prop returns.
  *
  * The token rows also hide their resolved value (`TokenPopover`'s `showValue={false}`) — a shadow's
  * value is a long CSS shorthand that crowds the row the way a short dimension value does not. Other
@@ -77,9 +77,31 @@ import '../styles/token-controls.scss';
 const AXES = [
 	{ key: 'offsetX', label: __('X', 'kadence-blocks') },
 	{ key: 'offsetY', label: __('Y', 'kadence-blocks') },
-	{ key: 'blur', label: __('Blur', 'kadence-blocks') },
+	// Blur is the only axis with a floor. CSS rejects a negative blur radius outright, and an invalid
+	// component makes the browser drop the WHOLE `box-shadow` declaration — so a stray `-2` does not
+	// merely soften the shadow, it silently removes it while the control still shows the value. X, Y
+	// and spread all take negative values legitimately and stay unbounded.
+	{ key: 'blur', label: __('Blur', 'kadence-blocks'), min: 0 },
 	{ key: 'spread', label: __('Spread', 'kadence-blocks') },
 ];
+
+/**
+ * Hold an axis value at its own floor, when it has one.
+ *
+ * `NumberControl`'s `min` already stops the spinner and arrow keys, but a typed or pasted value
+ * still arrives through `onChange`, so the floor is applied to the value being stored rather than
+ * only to the input.
+ *
+ * @param {number}  value The axis value being written.
+ * @param {?number} min   The axis's floor, or undefined when it has none.
+ *
+ * @since TBD
+ *
+ * @return {number} The value, never below the floor.
+ */
+function clampAxis(value, min) {
+	return min === undefined ? value : Math.max(value, min);
+}
 
 /**
  * Apply a patch to the current shadow composite, writing the result through `onChange` with `inset`
@@ -97,7 +119,28 @@ const AXES = [
 function commitShadow(shadow, patch) {
 	const { inset, ...rest } = { ...shadow, ...patch };
 
-	return inset === true ? { ...rest, inset: true } : rest;
+	// The floor belongs to the value, not to the blur input's own change event: every write passes
+	// through here, so a negative blur arriving from anywhere — a pasted value, a preset, a token's
+	// stored legs — is held at zero rather than committed into a shadow CSS refuses to render.
+	const next = { ...rest, blur: floorBlur(rest.blur) };
+
+	return inset === true ? { ...next, inset: true } : next;
+}
+
+/**
+ * Hold a blur length at zero when it is negative, leaving anything that is not a number — a token
+ * alias, an empty slot — exactly as it was.
+ *
+ * @param {*} value The composite's blur slot.
+ *
+ * @since TBD
+ *
+ * @return {*} The blur, never a negative length.
+ */
+function floorBlur(value) {
+	const parsed = Number.parseFloat(value);
+
+	return Number.isFinite(parsed) && parsed < 0 ? '0px' : value;
 }
 
 /**
@@ -204,21 +247,22 @@ function ShadowCustomTab({ shadow, onChange, renderColor, disabled = false }) {
 		<div className="kadence-token-field__custom kb-box-shadow-control__custom">
 			{renderColor && (
 				// A plain wrapper, not a rebuilt picker: whatever the caller's `renderColor` already renders
-				// (the Style Library's `TokenColorSelectField` swatch-plus-"Color"-label toggle, the block
-				// editor's `PopColorControl`) keeps its own click-to-open mechanism and chrome untouched;
-				// this only gives it its own row above the axes instead of sitting inline with them.
+				// (both hosts wrap the shared `ColorControl`, the editor through `ShadowColorField`) keeps
+				// its own click-to-open mechanism and chrome untouched; this only gives it its own row
+				// above the axes instead of sitting inline with them.
 				<div className="kb-box-shadow-control__color-row">
 					{renderColor({ value: shadow.color, onChange: (next) => setPart('color', next), disabled })}
 				</div>
 			)}
 			<div className="kb-box-shadow-control__axes">
-				{AXES.map(({ key, label }) => (
+				{AXES.map(({ key, label, min }) => (
 					<NumberControl
 						key={key}
 						label={label}
+						min={min}
 						value={Number.parseFloat(shadow[key]) || 0}
 						disabled={disabled}
-						onChange={(next) => setPart(key, `${Number(next) || 0}px`)}
+						onChange={(next) => setPart(key, `${clampAxis(Number(next) || 0, min)}px`)}
 					/>
 				))}
 			</div>
@@ -249,11 +293,11 @@ function ShadowCustomTab({ shadow, onChange, renderColor, disabled = false }) {
  * @param {Function}  [props.renderColor] `({ value, onChange }) => Element` for the color sub-field.
  * @param {boolean}   [props.disabled]    Whether the control is read-only.
  * @param {Object}    [props.fallbackShadow] The host's stored composite legs, used to seed the Custom
- *                                        tab only when `value` is a token alias that no longer resolves
- *                                        against `tokens` (the token was deleted after the alias was
- *                                        saved). Without one, a stale alias falls back to the plain
- *                                        default composite, so a host that never binds a token (the
- *                                        Style Library) is unaffected.
+ *                                        tab whenever `value` carries none of its own: an unset
+ *                                        control, or a token alias that no longer resolves against
+ *                                        `tokens` (the token was deleted after the alias was saved).
+ *                                        Without one, both fall back to the plain default composite,
+ *                                        so a host that passes none (the Style Library) is unaffected.
  *
  * @since TBD
  *
@@ -284,9 +328,14 @@ export function BoxShadowControl({
 	// renderers already fall back to for a stale binding, so the Custom tab seeds from it here too,
 	// rather than from the all-zero default.
 	const resolvedAliasShadow = aliasedEntry ? parseResolvedShadow(aliasedEntry.value) : fallbackShadow;
+	// An unset control has no legs of its own to show, but the host still holds the composite the block
+	// ships with. Seeding the Custom tab from that means editing one axis produces the shadow the block
+	// is meant to have; seeding from the plain default instead puts that axis on a fully transparent,
+	// all-zero shadow, so the user moves X and Y and nothing appears.
+	const unsetSeed = hasValue(value) ? {} : fallbackShadow || {};
 	const shadow = aliased
 		? { ...DEFAULT_COMPOSITE, ...(resolvedAliasShadow || {}) }
-		: { ...DEFAULT_COMPOSITE, ...custom };
+		: { ...DEFAULT_COMPOSITE, ...unsetSeed, ...custom };
 	// A fixed pick keeps no live alias, so a sentinel is recognized after the fact by its shorthand.
 	const fixedMatch = !aliased && hasValue(value) ? matchFixedEntry(shadow, tokens) : null;
 	// Display only — `onChange` still sees the real underlying value.
@@ -318,6 +367,10 @@ export function BoxShadowControl({
 					<Dropdown
 						className="kadence-token-field__dropdown"
 						contentClassName="kadence-token-field__popover"
+						// Beside the trigger, not above it — the same placement every other control in this
+						// library uses. The inspector column is narrow enough that a popover opening upward
+						// covers the controls the user was just reading.
+						popoverProps={{ placement: 'left-start' }}
 						renderToggle={({ isOpen, onToggle }) => (
 							<Button
 								className="kadence-token-field__trigger kb-box-shadow-control__trigger"
