@@ -487,6 +487,10 @@
 			"default-hover": {
 				"$type": "dimension",
 				"$value": "{primitive.dimension.border-width.sm}"
+			},
+			"media": {
+				"$type": "dimension",
+				"$value": "0"
 			}
 		},
 		"border-style": {
@@ -745,7 +749,7 @@
 						"tokens": {
 							"background": "{semantic.color.image-bg}",
 							"border": "{semantic.color.border}",
-							"borderWidth": "{semantic.border-width.default}",
+							"borderWidth": "{semantic.border-width.media}",
 							"borderRadius": "{semantic.radius.media}",
 							"shadow": "{semantic.shadow.media}",
 							"padding": "{semantic.spacing.media-padding}"
