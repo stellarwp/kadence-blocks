@@ -20,7 +20,12 @@ use RuntimeException;
  * because the filter runs after the theme picked the set.
  *
  * A literal color is returned rather than a var(--kb-token--…) reference: the theme passes this value
- * through hex2rgb() in places and the Customizer live preview writes it straight into CSS.
+ * through hex2rgb() in places, and a var() reference cannot be converted that way.
+ *
+ * Known limit: the Customizer live preview never reaches this filter. The theme registers the palette
+ * setting with postMessage transport and its preview script writes the control value straight onto
+ * --global-paletteN, so while a palette color is being edited the preview shows the theme's own color
+ * even for a slot a token overrides. The token color is back on the next full page load.
  *
  * Fail-open: a corrupt stored document (alias cycle / dangling alias) leaves every read untouched.
  * Gated on Token_Registry::is_active() so the fail-closed guard is honored.
