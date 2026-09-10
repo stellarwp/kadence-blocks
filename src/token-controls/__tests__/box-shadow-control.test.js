@@ -395,6 +395,50 @@ describe('BoxShadowControl initial tab', () => {
 	});
 
 	/**
+	 * An unset control seeds its Custom tab from the host's stored legs, so the axes show the shadow the
+	 * block ships with rather than all zeros.
+	 *
+	 * @return {void}
+	 */
+	it('seeds the Custom tab from fallbackShadow when the value is unset', () => {
+		renderControl({
+			value: '',
+			fallbackShadow: { color: '#000000', offsetX: '0px', offsetY: '0px', blur: '14px', spread: '0px' },
+		});
+
+		click(container.querySelector('[data-testid="tab-custom"]'));
+
+		expect(numberInput('Blur').value).toBe('14');
+	});
+
+	/**
+	 * Editing one axis on an unset control commits the stored legs alongside it, so the shadow that
+	 * lands carries a real color instead of the transparent default that paints nothing.
+	 *
+	 * @return {void}
+	 */
+	it('commits the seeded legs when an axis is edited on an unset control', () => {
+		const onChange = jest.fn();
+		renderControl({
+			value: '',
+			onChange,
+			fallbackShadow: { color: '#000000', offsetX: '0px', offsetY: '0px', blur: '14px', spread: '0px' },
+		});
+
+		click(container.querySelector('[data-testid="tab-custom"]'));
+
+		act(() => {
+			const input = numberInput('Y');
+			Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set.call(input, '6');
+			input.dispatchEvent(new Event('change', { bubbles: true }));
+		});
+
+		expect(onChange).toHaveBeenCalledWith(
+			expect.objectContaining({ offsetY: '6px', blur: '14px', color: '#000000' })
+		);
+	});
+
+	/**
 	 * Blur is floored at zero, and the other three axes stay unbounded. CSS rejects a negative blur
 	 * radius, and one invalid component makes the browser drop the whole `box-shadow` — so a negative
 	 * blur removes the shadow instead of softening it, while X, Y and spread take negatives happily.

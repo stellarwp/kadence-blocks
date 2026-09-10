@@ -422,15 +422,30 @@ describe('EditorShadowControl fallbackShadow wiring', () => {
 	});
 
 	/**
-	 * An unbound (plain composite) value has no binding to fall back FROM, so `fallbackShadow` stays
-	 * undefined rather than shadowing `BoxShadowControl`'s own default-composite behavior.
+	 * An unbound value passes its legs down too. The Custom tab needs them whenever the value carries
+	 * none of its own — an unset control included — so that editing one axis produces the shadow the
+	 * block ships with instead of that axis over a transparent, all-zero one.
 	 *
 	 * @return {void}
 	 */
-	it('leaves fallbackShadow undefined for a value with no shadowToken binding', () => {
+	it('passes the stored legs as fallbackShadow for a value with no shadowToken binding', () => {
 		const { shadowControl } = renderEditorShadowControl();
 
-		expect(shadowControl.props.fallbackShadow).toBeUndefined();
+		expect(shadowControl.props.fallbackShadow).toEqual(fromNativeShadow(NATIVE_VALUE));
+	});
+
+	/**
+	 * An unset control still hands its legs down, which is the whole point: the trigger reads muted
+	 * "Default" from the empty value, while the Custom tab behind it seeds from the block's own shadow.
+	 *
+	 * @return {void}
+	 */
+	it('passes the stored legs even while the control reads as unset', () => {
+		const shipped = [{ color: '#000000', opacity: 0.2, spread: 0, blur: 14, hOffset: 0, vOffset: 0 }];
+		const { shadowControl } = renderEditorShadowControl({ value: shipped, enabled: false });
+
+		expect(shadowControl.props.value).toBe('');
+		expect(shadowControl.props.fallbackShadow).toEqual(fromNativeShadow(shipped));
 	});
 });
 

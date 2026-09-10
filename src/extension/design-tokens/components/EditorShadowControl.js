@@ -522,9 +522,10 @@ export function EditorShadowControl({
 				defaultValue={defaultValue}
 				renderColor={renderColor}
 				disabled={disabled}
-				// The stored legs are the fallback for a binding whose token has since been deleted — the
-				// same snapshot the renderers already fall back to when a binding no longer resolves.
-				fallbackShadow={bound ? fromNativeShadow(value) : undefined}
+				// The stored legs seed the Custom tab whenever the value itself carries none: a binding whose
+				// token has since been deleted, and an unset control, which would otherwise open the tab on
+				// a transparent all-zero shadow and let the user edit axes that paint nothing.
+				fallbackShadow={fromNativeShadow(value)}
 			/>
 		</TokenControlRow>
 	);
