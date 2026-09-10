@@ -216,16 +216,23 @@
 	text-decoration: underline;
 }
 .kt-button:not(.kb-btn-global-inherit) {
-	padding: 0.4em 1em;
+	padding: var(--kb-btn-padding, 0.4em 1em 0.4em 1em);
 	cursor: pointer;
-	font-size: 1.125rem;
-	border-radius: 3px;
+	// Mirror of style.scss: the button follows the semantic.*.control typography tokens so the editor
+	// preview matches the front end. See the note there.
+	font-size: var(--kb-token--semantic--font-size--control, 1.125rem);
+	font-weight: var(--kb-token--semantic--font-weight--control);
+	font-style: var(--kb-token--semantic--font-style--control);
+	line-height: var(--kb-token--semantic--line-height--control);
+	letter-spacing: var(--kb-token--semantic--letter-spacing--control);
+	text-transform: var(--kb-token--semantic--text-transform--control);
+	border-radius: var(--kb-btn-radius, var(--kb-token--semantic--radius--control, 3px));
 	transition: all 0.3s ease-in-out;
 	box-shadow: none;
 }
 .kt-button.kb-btn-global-fill {
 	border: 0px solid transparent;
-	border-radius: 3px;
+	border-radius: var(--kb-btn-radius, var(--kb-token--semantic--radius--control, 3px));
 	background: var(--global-palette-btn-bg, #3633e1);
 	color: var(--global-palette-btn, #ffffff);
 	&:hover {
@@ -235,7 +242,7 @@
 .kt-button.kb-btn-global-outline {
 	border: 2px solid var(--global-palette-btn-bg, #3633e1);
 	background: transparent;
-	padding: calc(0.4em - 2px) calc(1em - 2px);
+	padding: calc(0.4em - 2px) calc(1em - 2px) calc(0.4em - 2px) calc(1em - 2px);
 	color: var(--global-palette-btn-bg, #3633e1);
 	&:hover {
 		border-color: var(--global-palette-btn-bg-hover, #2f2ffc);
@@ -284,12 +291,12 @@
 .kt-button.kb-btn-global-outline.kt-btn-size-large {
 	border-width: 3px;
 	border-style: solid;
-	padding: calc(0.4em - 3px) calc(1em - 3px);
+	padding: calc(0.4em - 3px) calc(1em - 3px) calc(0.4em - 3px) calc(1em - 3px);
 }
 .kt-button.kb-btn-global-outline.kt-btn-size-small {
 	border-width: 1px;
 	border-style: solid;
-	padding: calc(0.4em - 1px) calc(1em - 1px);
+	padding: calc(0.4em - 1px) calc(1em - 1px) calc(0.4em - 1px) calc(1em - 1px);
 }
 // .wp-block-kadence-advancedbtn .kb-btn-global-inherit.kb-btn-has-icon {
 //     display: flex;
@@ -379,7 +386,7 @@
 	gap: 0.5em;
 
 	&.icon-reveal {
-		$icon-size: var(--kb-button-icon-size, 24px);
+		$icon-size: var(--kb-button-icon-size, var(--kb-token--semantic--icon-size--default, 24px));
 
 		.kt-btn-svg-icon {
 			transition:

@@ -1,0 +1,39 @@
+// Qualified with the app root so this outranks `Button variant="link"` `isDestructive`'s own
+// styling, which core applies via `.is-link`/`.is-destructive` — confirmed by measurement, not
+// assumed: core sets its own padding and, on hover, a `text-decoration: underline` this design
+// does not want in any state. Core does carry a matching destructive hover color/background
+// (`rgb(113, 13, 13)` / `rgba(204, 24, 24, 0.04)`, the same values this rule reproduces below) but
+// only for its `is-secondary`/`is-tertiary`/plain-destructive variants — every one of those rules
+// explicitly excludes `.is-link` (`:not(.is-link)`), so none of them reach this button and the
+// hover state still needs its own rule here, not just a specificity override.
+.kadence-blocks-style-library-root .kadence-blocks-style-library__delete-library-action {
+	padding: var(--kb-sl-space-10);
+	font-size: var(--kb-sl-font-size-m);
+	line-height: var(--kb-sl-line-height-s);
+	font-weight: var(--kb-sl-font-weight-medium);
+	color: var(--kb-sl-color-action-destructive);
+	background-color: transparent;
+	text-decoration: none;
+
+	&:hover,
+	&:focus {
+		color: var(--kb-sl-color-action-destructive-hover);
+		background-color: var(--kb-sl-color-action-destructive-bg-hover);
+		text-decoration: none;
+	}
+}
+
+// Capped for the same reason as the activation modal, and to the same step: on the path where the
+// deleted library is the active one this carries a paragraph of consequence copy, which core would
+// otherwise stretch to the viewport cap and render as full-width lines. See
+// ActivateLibraryModal.scss for why the selector is compound.
+.components-modal__frame.kadence-blocks-style-library__delete-library-modal {
+	max-width: var(--kb-sl-size-modal-medium);
+}
+
+.kadence-blocks-style-library__delete-library-modal-actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: var(--kb-sl-space-10);
+	margin-top: var(--kb-sl-space-20);
+}

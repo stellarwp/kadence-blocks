@@ -4,6 +4,7 @@ namespace Tests\Support\Classes;
 
 use Codeception\TestCase\WPTestCase;
 use KadenceWP\KadenceBlocks\App;
+use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Contracts\Baseline_Document;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Container;
 use RuntimeException;
 use Brain\Monkey;
@@ -49,5 +50,17 @@ class TestCase extends WPTestCase {
 		}
 
 		return (string) file_get_contents( $path );
+	}
+
+	/**
+	 * The shipped baseline DTCG document, as bound in the container.
+	 *
+	 * @return Baseline_Document
+	 */
+	protected function baseline_document(): Baseline_Document {
+		/** @var Baseline_Document $baseline */
+		$baseline = $this->container->get( Baseline_Document::class );
+
+		return $baseline;
 	}
 }

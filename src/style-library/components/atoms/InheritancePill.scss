@@ -1,0 +1,41 @@
+.kadence-blocks-style-library__inheritance-pill {
+	display: inline-flex;
+	align-items: center;
+	box-sizing: border-box;
+	// The two variants must measure the same height even though only one of them draws a border:
+	// a transparent border on the static pill keeps both boxes identical, so a mixed row of cards
+	// stays on one baseline.
+	border: var(--kb-sl-border-width-input) solid transparent;
+	border-radius: var(--kb-sl-radius-full);
+	padding: 0 var(--kb-sl-space-10);
+	font-size: var(--kb-sl-font-size-xs);
+	font-weight: var(--kb-sl-font-weight-regular);
+	// 1.125rem, matching `MetaChip` — the pill ramp, not on the line-height scale.
+	line-height: 1.125rem;
+	white-space: nowrap;
+}
+
+// Not a control: no hover treatment and no pointer cursor, so nothing invites a click that does
+// nothing.
+.kadence-blocks-style-library__inheritance-pill--inherited {
+	background: var(--kb-sl-color-gray-100);
+	color: var(--kb-sl-color-text-muted);
+}
+
+.kadence-blocks-style-library__inheritance-pill--reset {
+	border-color: var(--kb-sl-color-gray-400);
+	background: transparent;
+	color: var(--kb-sl-color-theme);
+	cursor: pointer;
+
+	&:hover:not(:disabled),
+	&:focus-visible {
+		border-color: var(--kb-sl-color-theme);
+		background: var(--kb-sl-color-theme-tint-4);
+	}
+
+	&:disabled {
+		opacity: 0.5;
+		cursor: default;
+	}
+}

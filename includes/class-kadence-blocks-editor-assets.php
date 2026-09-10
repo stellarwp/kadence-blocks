@@ -303,14 +303,10 @@ class Editor_Assets {
 			];
 		}
 		$global_colors = apply_filters( 'kadence_blocks_pattern_global_colors', $global_colors );
-		$font_sizes    = [
-			'sm'   => 'clamp(0.8rem, 0.73rem + 0.217vw, 0.9rem)',
-			'md'   => 'clamp(1.1rem, 0.995rem + 0.326vw, 1.25rem)',
-			'lg'   => 'clamp(1.75rem, 1.576rem + 0.543vw, 2rem)',
-			'xl'   => 'clamp(2.25rem, 1.728rem + 1.63vw, 3rem)',
-			'xxl'  => 'clamp(2.5rem, 1.456rem + 3.26vw, 4rem)',
-			'xxxl' => 'clamp(2.75rem, 0.489rem + 7.065vw, 6rem)',
-		];
+		// The fluid font-size scale is owned by the design-tokens baseline; retrieve it so the shipped
+		// clamp() values are not duplicated here. Empty when token projection is unavailable.
+		$font_sizes = kadence_blocks_variable_font_size_scale();
+
 		$pro_data      = $this->get_pro_data();
 		$is_authorized = ! kadence_blocks_is_ai_disabled() && kadence_blocks_is_legacy_license_authorized();
 		$font_sizes       = apply_filters( 'kadence_blocks_variable_font_sizes', $font_sizes );
@@ -466,6 +462,9 @@ class Editor_Assets {
 
 		$asset_meta = kadence_blocks_get_asset_file( 'dist/early-filters' );
 		wp_enqueue_script( 'kadence-blocks-early-filters-js', KADENCE_BLOCKS_URL . 'dist/early-filters.js', array_merge( $asset_meta['dependencies'], [ 'wp-blocks', 'wp-i18n', 'wp-element' ] ), $asset_meta['version'], true );
+		// Styles bundled into the early-filters entry (e.g. the design-token control UI injected through
+		// the shared control seams). Loaded after the components styles so it can match/override them.
+		wp_enqueue_style( 'kadence-blocks-early-filters-css', KADENCE_BLOCKS_URL . 'dist/early-filters.css', [ 'wp-edit-blocks', 'kadence-components' ], $asset_meta['version'] );
 	}
 	/**
 	 * Get an array font weight options.

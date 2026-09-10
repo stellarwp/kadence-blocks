@@ -1,0 +1,27 @@
+// The value-sized square preview's own box. Unlike the other scale screens, this preview does not
+// fill the shared `.list-row-preview` slot — it is sized to the token's own value (set inline, per
+// row) so the mock's "true CSS size" behavior reads correctly, hence the slot override just below.
+.kadence-blocks-style-library__spacing-preview {
+	// `border-box`, not the `<div>` default `content-box` — otherwise the border below adds on top
+	// of the inline width/height instead of drawing inside it, so the rendered box is 2px larger
+	// than the token's value on every step. Same fix as `.border-width-preview`.
+	box-sizing: border-box;
+	display: block;
+	background: var(--kb-sl-color-gray-100);
+	border: var(--kb-sl-border-width-input) solid var(--kb-sl-color-gray-700);
+	// Unclamped on purpose: the preview must show a token's true CSS size, not a normalized
+	// approximation, so every step (including 3XL/4XL/5XL) renders at its real value and the row
+	// grows to fit it. Accepted consequence: a very large custom value produces a very tall row.
+}
+
+// Scoped to this screen via `ScaleScreen`'s per-screen root modifier class
+// (`--<config.id>`) — Border Radius and Border Width keep the default framed
+// 80px slot from `ListRow.scss`; only Spacing needs a bare, value-sized square with the row
+// growing to contain it.
+.kadence-blocks-style-library__scale-screen--spacing .kadence-blocks-style-library__list-row-preview {
+	width: auto;
+	height: auto;
+	border: 0;
+	background: transparent;
+	overflow: visible;
+}

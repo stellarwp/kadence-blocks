@@ -1,0 +1,65 @@
+.kadence-blocks-style-library__add-tile {
+	// Floored at `SwatchCard`'s width so a wrapped grid lines up, rather than the tile sitting a few
+	// pixels wider than every card beside it. A floor, not a fixed width: a longer label grows the
+	// tile instead of overflowing it.
+	min-width: var(--kb-sl-size-swatch-card-width);
+	// Stretches to match `SwatchCard`'s height via the row's own `align-items: stretch`.
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	border: var(--kb-sl-border-width-input) solid var(--kb-sl-color-gray-200-tint-60);
+	border-radius: var(--kb-sl-radius-l);
+	padding: var(--kb-sl-space-10);
+	background: var(--kb-sl-color-tile-surface);
+	color: var(--kb-sl-color-theme);
+	font-size: var(--kb-sl-font-size-xs);
+	font-weight: var(--kb-sl-font-weight-medium);
+	line-height: var(--kb-sl-line-height-s);
+	cursor: pointer;
+
+	// `:focus-visible`, not bare `:focus` — `:focus` also fires on a mouse click, which would leave
+	// the tile looking permanently "stuck on" after every click.
+	&:hover,
+	&:focus-visible {
+		background: var(--kb-sl-color-surface-hover);
+	}
+}
+
+// No gap and no inline padding: both are what pushed the tile's natural width past the card width
+// above, which left the `min-width` floor never engaging. The icon carries its own alignment box,
+// so the two sit close without needing a gap between them.
+.kadence-blocks-style-library__add-tile-content {
+	display: flex;
+	align-items: center;
+}
+
+// The icon's hit/alignment box — shared with `ScreenHeader`'s primary action so the two plus icons
+// stay identical by construction; see --kb-sl-size-action-icon-box in _semantic.scss.
+.kadence-blocks-style-library__add-tile-icon-wrap {
+	display: flex;
+	flex: 0 0 auto;
+	align-items: center;
+	justify-content: center;
+	width: var(--kb-sl-size-action-icon-box);
+	height: var(--kb-sl-size-action-icon-box);
+}
+
+// Deliberately smaller than its 24px wrapper, unlike the select-dropdown chevron's icon, which
+// fills its own wrapper — `plus` and `chevronDown` fill different proportions of the same 24-unit
+// viewBox, so the two need different wrapper-to-glyph ratios to land on the same apparent size.
+// See --kb-sl-size-action-icon-glyph in _semantic.scss.
+.kadence-blocks-style-library__add-tile-icon {
+	width: var(--kb-sl-size-action-icon-glyph);
+	height: var(--kb-sl-size-action-icon-glyph);
+	// A plain `<button>`, not `@wordpress/components`' `Button`, so it never gets core's free
+	// `fill: currentColor` — without this the SVG renders black instead of the theme-color text.
+	fill: currentColor;
+}
+
+.kadence-blocks-style-library__add-tile-label {
+	font-size: inherit;
+	font-weight: inherit;
+	line-height: inherit;
+}

@@ -439,7 +439,6 @@ export function migrateToInnerblocks(attributes) {
 			}
 			// 12. Box Shadow to new format.
 			if (undefined !== newAttrs?.boxShadow?.[0] && true === newAttrs.boxShadow[0]) {
-				newAttrs.displayShadow = true;
 				newAttrs.shadow = [
 					{
 						color: undefined !== newAttrs?.boxShadow?.[1] ? newAttrs.boxShadow[1] : '#000000',
@@ -454,7 +453,6 @@ export function migrateToInnerblocks(attributes) {
 			}
 			// Hover
 			if (undefined !== newAttrs?.boxShadowHover?.[0] && true === newAttrs.boxShadowHover[0]) {
-				newAttrs.displayHoverShadow = true;
 				newAttrs.shadowHover = [
 					{
 						color: undefined !== newAttrs?.boxShadowHover?.[1] ? newAttrs.boxShadowHover[1] : '#000000',

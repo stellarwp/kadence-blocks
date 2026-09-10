@@ -1,0 +1,47 @@
+// The chip is content-sized (a line of type, not a swatch), so this screen relaxes `ListRow`'s default
+// framed 80px preview slot — the Button, Row Layout, Section, Spacing, Icon Sizes and Shadow
+// slot-override precedent.
+.kadence-blocks-style-library__heading-screen .kadence-blocks-style-library__list-row-preview {
+	width: auto;
+	height: auto;
+	border: 0;
+	background: transparent;
+	overflow: visible;
+}
+
+// Preset names are full words ("Section Title"), not the short numeric labels the shared 4rem column
+// was sized for.
+.kadence-blocks-style-library__heading-screen .kadence-blocks-style-library__list-row-label {
+	width: 15rem;
+}
+
+// The live heading chip. `border-style` is left at `none` so a preset that sets only a border color or
+// width draws no frame — matching the block, where all three are needed before a border renders, and
+// keeping an unstyled preset from sprouting an edge the page would not have.
+//
+// `font-size`, `padding` and `border-width` are all set inline from the preset at the size it actually
+// sets, and the row grows to fit. The values here are the floor for a preset that sets none.
+// `line-height` is unitless so it follows whatever size the chip lands on, rather than pinning a
+// body-text leading onto 6rem type.
+.kadence-blocks-style-library__heading-preset-preview {
+	display: inline-flex;
+	align-items: center;
+	box-sizing: border-box;
+	// A floor, not a fixed inset: the preset's own padding is applied inline and overrides this, while a
+	// preset that sets none still reads as a chip rather than as bare text.
+	padding: var(--kb-sl-space-10) var(--kb-sl-space-20);
+	// A long word at 6rem would otherwise force the row wider than the panel.
+	max-width: 100%;
+	overflow-wrap: anywhere;
+	border-width: 0;
+	border-style: none;
+	font-size: var(--kb-sl-font-size-body);
+	line-height: 1.2;
+	transition:
+		background-color 300ms ease,
+		border-color 300ms ease,
+		border-radius 300ms ease,
+		padding 300ms ease,
+		font-size 300ms ease,
+		color 300ms ease;
+}

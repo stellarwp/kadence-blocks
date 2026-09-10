@@ -1,0 +1,52 @@
+// The shimmer sweep. Named locally rather than as a shared root-level keyframe — nothing else in
+// the app animates yet, so there is no existing convention to fold this into.
+@keyframes kadence-blocks-style-library-skeleton-shimmer {
+	100% {
+		transform: translateX(100%);
+	}
+}
+
+.kadence-blocks-style-library__skeleton {
+	position: relative;
+	display: block;
+	overflow: hidden;
+	border-radius: var(--kb-sl-radius-m);
+	background: var(--kb-sl-color-gray-100);
+
+	// The moving highlight, layered on top rather than animating `background-position` on the base
+	// element — a pseudo-element keeps the base fill's own color intact underneath the sweep.
+	&::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		transform: translateX(-100%);
+		background: linear-gradient(90deg, transparent, var(--kb-sl-color-white) 50%, transparent);
+		opacity: 0.5;
+		animation: kadence-blocks-style-library-skeleton-shimmer 1.6s ease-in-out infinite;
+	}
+}
+
+// A deliberately-added animation, so it needs its own reduced-motion guard — nothing else in this
+// app animates today. The base gray fill still communicates "loading" with the motion off.
+@media (prefers-reduced-motion: reduce) {
+	.kadence-blocks-style-library__skeleton::after {
+		animation: none;
+	}
+}
+
+// A text-line-shaped bar, for a skeleton combined with a real column class (e.g. `.list-row-label`,
+// `.swatch-card-name`) so it inherits that class's exact width instead of a duplicated literal —
+// only the height is this modifier's own, reusing the line-height ramp rather than a new value.
+.kadence-blocks-style-library__skeleton--bar {
+	height: var(--kb-sl-line-height-s);
+}
+
+// A settings-panel field placeholder (`PresetSidebar`/`ColorPaletteSettings`, before their real
+// `initialValues` land): sized as a text-input-shaped bar, reusing the same 40px height every real
+// input in this app already uses (`--kb-sl-space-50`, e.g. `SelectDropdown`'s toggle) and the
+// panel header's own horizontal/vertical padding rhythm, rather than inventing new dimensions.
+.kadence-blocks-style-library__settings-panel-field {
+	width: 100%;
+	height: var(--kb-sl-space-50);
+	margin: 0 0 var(--kb-sl-space-15);
+}

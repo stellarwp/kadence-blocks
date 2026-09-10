@@ -1,0 +1,39 @@
+.kadence-blocks-style-library__field-color-list {
+	display: flex;
+	flex-direction: column;
+}
+
+.kadence-blocks-style-library__field-color-list-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	// border-box: 34px is the row's TOTAL height including padding/border, not a content min-height.
+	box-sizing: border-box;
+	// 34px, off our grid unit — a component-level value.
+	height: 34px;
+	padding: var(--kb-sl-space-05) var(--kb-sl-space-10);
+	// gray-600: nearest ramp match to the reference control's off-system blue-grey border.
+	border: 1px solid var(--kb-sl-color-gray-600);
+	border-radius: 0;
+}
+
+// Collapses the shared 1px edge between adjacent rows so it doesn't double to a 2px line.
+.kadence-blocks-style-library__field-color-list-row + .kadence-blocks-style-library__field-color-list-row {
+	margin-top: -1px;
+}
+
+.kadence-blocks-style-library__field-color-list-name {
+	font-size: var(--kb-sl-font-size-m);
+	color: var(--kb-sl-color-text-primary);
+}
+
+.kadence-blocks-style-library__field-color-list-swatch {
+	flex: 0 0 auto;
+	width: var(--kb-sl-space-20);
+	height: var(--kb-sl-space-20);
+	padding: 0;
+	border: 1px solid var(--kb-sl-color-border);
+	// Circular, unlike this app's other (rounded-square) swatches — matches the reference control.
+	border-radius: var(--kb-sl-radius-full);
+	cursor: pointer;
+}

@@ -1,0 +1,304 @@
+/**
+ * Pickable-token accessor for the editor token picker.
+ *
+ * The pool is printed by the server-side editor localizer to `window.kadenceDesignTokensPickable`:
+ * `{ tokens: [{ id, alias, label, type, layer }], values: { <setSlug>: { <id>: literal } } }`.
+ * This module turns it into the per-control PICKABLE list — hard type filter by the control's kind
+ * (a radius control never lists color or font tokens), narrowed to the control's bound sub-kind when
+ * it binds a role token (radius, not the whole `dimension` bucket) with that token pinned first,
+ * semantic-layer tokens ranked before primitives, and each entry carrying the resolved literal
+ * `value` for the preview swatch/number.
+ * A pick writes the `alias` (the `{id}` string) — never the `value`; consumers of this module build
+ * the picker UI and the attribute write, neither of which lives here.
+ *
+ * The `value` field reflects page-load resolution; a token override written through the REST API
+ * refreshes the projected CSS but not this pool, so a preview swatch can go stale until reload.
+ * That is cosmetic (the alias never goes stale) and live refresh is the picker UI's concern.
+ */
+import { get } from 'lodash';
+import { activeLibrary, blockProperties } from '../preset-picker';
+import { autoEntry, noneEntryForRole } from '../../token-controls';
+
+/**
+ * Token $types compatible with each control kind. Keys are the preset catalog's coarse control
+ * kinds; values are DTCG $type lists. `shadow` is inert until a shadow control kind exists — it is
+ * mapped now so a future shadow control lights up with no change here. An unknown kind yields no
+ * types, so the filter fails closed.
+ *
+ * @since TBD
+ */
+const KIND_TYPES = {
+	color: ['color'],
+	dimension: ['dimension'],
+	text: ['fontFamily', 'fontWeight', 'lineHeight', 'fontStyle', 'textTransform'],
+	shadow: ['shadow'],
+};
+
+/**
+ * The whole pickable-token pool the editor localizer prints, or an empty pool when the token
+ * registry is inactive (nothing pickable).
+ *
+ * @since TBD
+ *
+ * @return {Object} The pool ({ tokens, values }).
+ */
+export function pickableTokenPool() {
+	return get(window, 'kadenceDesignTokensPickable', {}) || {};
+}
+
+/**
+ * The resolved literal values for a token library, falling back to the active library when the requested
+ * library is omitted or absent from the pool.
+ *
+ * @param {string} [library] The token library slug.
+ *
+ * @since TBD
+ *
+ * @return {Object} id => literal value.
+ */
+function valuesFor(library) {
+	const values = get(pickableTokenPool(), 'values', {}) || {};
+	const slug = library || activeLibrary();
+
+	return get(values, [slug], null) || get(values, [activeLibrary()], {}) || {};
+}
+
+/**
+ * The pickable tokens for a control kind: only type-compatible tokens (the hard filter), semantic-
+ * layer tokens ranked before primitives (stable order within each layer, i.e. registry order), each
+ * with its resolved literal `value` from the requested library for the preview swatch/number.
+ *
+ * @param {string} kind      The control kind ('color' | 'dimension' | 'text' | 'shadow').
+ * @param {string} [library] The token library slug; defaults to the active library.
+ *
+ * @since TBD
+ *
+ * @return {Array} The pickable list ([{ id, alias, label, value, type, role }]).
+ */
+export function pickableTokensFor(kind, library) {
+	const types = KIND_TYPES[kind] || [];
+	const tokens = get(pickableTokenPool(), 'tokens', []) || [];
+	const values = valuesFor(library);
+
+	const compatible = tokens.filter((token) => types.includes(token.type));
+
+	// Semantic first, primitives as the fallback pool; filter() preserves registry order per group.
+	const ranked = [
+		...compatible.filter((token) => token.layer === 'semantic'),
+		...compatible.filter((token) => token.layer !== 'semantic'),
+	];
+
+	return ranked.map((token) => ({
+		id: token.id,
+		alias: token.alias,
+		label: token.label,
+		value: get(values, [token.id], ''),
+		type: token.type,
+		role: token.role || '',
+	}));
+}
+
+/**
+ * The alias of the token one block control BINDS, as declared in the preset bindings — the design
+ * system's answer for that control when the block stores nothing of its own.
+ *
+ * A control whose attribute renders as a CSS declaration gets that fallback for free, as the
+ * `var()` the block-default-CSS projector emits. A control whose attribute renders as something a
+ * `var()` cannot reach (a raw SVG geometry attribute, say) has to resolve the same token itself, and
+ * this is where it reads which token that is rather than restating the id the declaration already
+ * owns.
+ *
+ * @param {string} blockName   The block name (e.g. 'kadence/single-icon').
+ * @param {string} controlAttr The attribute the control writes (e.g. 'size').
+ * @param {string} [library]   The token library slug; defaults to the active library.
+ *
+ * @since TBD
+ *
+ * @return {string} The `{dot.alias}` of the bound token, or '' when the control binds none.
+ */
+export function boundTokenAliasForControl(blockName, controlAttr, library) {
+	const property = blockProperties(blockName, library).find((entry) => entry.control_attr === controlAttr);
+
+	return property && property.token ? `{${property.token}}` : '';
+}
+
+/**
+ * The role sub-kind of a token id, read from the pool the catalog already tagged (never parsed here) —
+ * the discriminator that narrows one $type to the control's sub-kind (a radius control's `dimension`
+ * to only radius tokens). Empty when the id is absent from the pool or carries no role.
+ *
+ * @param {string} id The token id (e.g. 'semantic.radius.media').
+ *
+ * @since TBD
+ *
+ * @return {string} The role, or '' when unknown.
+ */
+function roleForId(id) {
+	const tokens = get(pickableTokenPool(), 'tokens', []) || [];
+	const match = tokens.find((token) => token.id === id);
+
+	return match ? match.role || '' : '';
+}
+
+/**
+ * The role sub-kind a control attribute implies, inferred by matching the attribute against the roles
+ * present in a token list — the fallback narrower for a control that binds no role token (a radius
+ * control still shows only radius tokens, not the whole `dimension` bucket). A role matches when its
+ * kebab segments, de-hyphenated, appear as a substring of the lowercased attribute (`borderRadius`
+ * matches `radius`; `iconSize` matches `icon-size`). Empty unless exactly one role matches, so an
+ * ambiguous or unrecognized attribute falls back to the coarse list rather than guessing.
+ *
+ * A handful of control attributes name their role by a different word than the role itself uses
+ * (`padding`/`margin` imply the `spacing` role, but neither string contains "spacing") — those get a
+ * fixed alias here rather than a substring guess.
+ *
+ * @since TBD
+ *
+ * @type {Object<string, string>}
+ */
+const ROLE_ALIASES = {
+	padding: 'spacing',
+	margin: 'spacing',
+};
+
+/**
+ * @param {string} controlAttr The attribute the control writes (e.g. 'borderRadius').
+ * @param {Array}  tokens      The type-filtered token list whose roles are the candidates.
+ *
+ * @since TBD
+ *
+ * @return {string} The single matching role, or '' when none or several match.
+ */
+function inferRoleFromControl(controlAttr, tokens) {
+	const attr = String(controlAttr || '').toLowerCase();
+	if (!attr) {
+		return '';
+	}
+
+	if (ROLE_ALIASES[attr] && tokens.some((token) => token.role === ROLE_ALIASES[attr])) {
+		return ROLE_ALIASES[attr];
+	}
+
+	const roles = [...new Set(tokens.map((token) => token.role).filter(Boolean))];
+	const matches = roles.filter((role) => attr.includes(role.replace(/-/g, '')));
+
+	return matches.length === 1 ? matches[0] : '';
+}
+
+/**
+ * The pickable tokens for an already-resolved bound property: filters and ranks the pool for the
+ * property's kind, narrows to the bound (or inferred) role's sub-kind with that role's primitive scale
+ * steps preferred, and pins the bound token first. Shared by every lookup path
+ * (`pickableTokensForControl`'s `control_attr` match, `pickableTokensForKey`'s `key` match) once each
+ * has found its own `property` entry, so the narrowing logic exists once.
+ *
+ * @param {Object} property    The resolved bound property ({ key, kind, token, control_attr }).
+ * @param {string} controlAttr The attribute to infer a role from when the property binds no token
+ *                              (e.g. 'borderRadius'); pass '' when the caller has no such attribute
+ *                              (e.g. a key-based lookup for a property with no `control_attr`).
+ * @param {string} [library]   The token library slug; defaults to the active library.
+ *
+ * @since TBD
+ *
+ * @return {Array} The pickable list ([{ id, alias, label, value, type, role }]), empty when unmapped.
+ */
+function pickableTokensForProperty(property, controlAttr, library) {
+	if (!property || !property.kind) {
+		return [];
+	}
+
+	const tokens = pickableTokensFor(property.kind, library);
+	// The bound token names the role when the pool knows it, and the control attribute answers when it
+	// does not. Both paths are needed, not one or the other: a binding can name a token the REGISTRY
+	// never declared — several semantics live only in `baseline.json`, so they resolve and paint but
+	// carry no label, group, or role — and reading that as "no role" left the control offering the whole
+	// coarse kind bucket, every semantic in it, rather than its own scale.
+	const role = roleForId(property.token) || inferRoleFromControl(controlAttr, tokens);
+
+	// Nothing identified the role, so the sub-kind is unknown. Still prefer the primitives: the picker
+	// surfaces scale steps, and a semantic is a delivery point for one rather than a choice to make
+	// here. Falling all the way back to the unfiltered list is the last resort.
+	if (!role) {
+		const primitives = tokens.filter((token) => token.id.startsWith('primitive.'));
+
+		return primitives.length ? primitives : tokens;
+	}
+
+	// Narrow to the control's sub-kind. When that sub-kind has primitive scale steps (e.g. the radius
+	// sizes), offer only those — the picker surfaces sizes, not the component-specific semantic tokens
+	// that merely alias them. Fall back to the full narrowed set for a sub-kind with no primitives.
+	const narrowed = tokens.filter((token) => token.role === role);
+	const primitives = narrowed.filter((token) => token.id.startsWith('primitive.'));
+	const scoped = primitives.length ? primitives : narrowed;
+
+	// "None" is a fixed sentinel for every role that has one — never a registered token, so it can
+	// never be renamed or deleted from a Style Library screen. "Auto" is Margin-only, and `role`
+	// alone can't identify Margin: Padding and Margin both narrow to `role === 'spacing'`, so this
+	// reads `controlAttr` (the property's own bound attribute, 'margin' vs 'padding') instead. Auto is
+	// appended after the scale rather than prepended alongside None — None, scale, Auto — to match
+	// the Style Library's `BoxTokenField.tokensForField()`, which orders its own margin field the
+	// same way.
+	const none = noneEntryForRole(role);
+	const withFixed = none ? [none, ...scoped] : scoped;
+
+	// Pin the exact bound token first when it survived the scoping (order carries through for the rest).
+	// An unresolved or scoped-out bound token drops the pin to a no-op.
+	const pinned = [
+		...withFixed.filter((token) => token.id === property.token),
+		...withFixed.filter((token) => token.id !== property.token),
+	];
+
+	return controlAttr === 'margin' ? [...pinned, autoEntry()] : pinned;
+}
+
+/**
+ * The pickable tokens for one block control, keyed by the attribute the control writes: resolves
+ * the control's kind from the preset catalog's { key, kind, token, control_attr } surface, then
+ * defers to the shared narrowing helper. Empty when the block maps no such control in the library —
+ * an unmapped control offers no tokens, which is the "selectable only where it makes sense" guarantee
+ * at the per-control call site.
+ *
+ * Only reaches a property whose `control_attr` this lookup can resolve UNAMBIGUOUSLY by a find-the-
+ * first-match on `controlAttr` — a property bound to a nested/composite native attribute (shadow) is
+ * declared with no `control_attr` at all, and the three border-axis properties share one
+ * (`borderStyle`) among themselves, so none of the four are safely reachable here; use
+ * `pickableTokensForKey` for those instead.
+ *
+ * @param {string} blockName   The block name (e.g. 'kadence/singlebtn').
+ * @param {string} controlAttr The attribute the control writes (e.g. 'borderRadius').
+ * @param {string} [library]   The token library slug; defaults to the active library.
+ *
+ * @since TBD
+ *
+ * @return {Array} The pickable list ([{ id, alias, label, value, type, role }]), empty when unmapped.
+ */
+export function pickableTokensForControl(blockName, controlAttr, library) {
+	const property = blockProperties(blockName, library).find((entry) => entry.control_attr === controlAttr);
+
+	return pickableTokensForProperty(property, controlAttr, library);
+}
+
+/**
+ * The pickable tokens for one bound property, keyed by the property's stable `key` (the PHP bindings
+ * array key, e.g. 'button-shadow') rather than its `control_attr`. Exists for a property whose
+ * `control_attr` cannot resolve a control-based reverse lookup either because it has none at all (a
+ * native attribute that is a nested/composite shape, e.g. border/shadow) or because it shares one
+ * `control_attr` with two other properties (the three border axes all share `borderStyle`, so
+ * `pickableTokensForControl`'s find-the-first-match lookup would be ambiguous among them). Otherwise
+ * identical to `pickableTokensForControl`: defers to the same shared narrowing helper once the
+ * property is found, passing its OWN `control_attr` through (when it has one) as the role-inference
+ * hint — a property with no `control_attr` passes `''`, same as before.
+ *
+ * @param {string} blockName The block name (e.g. 'kadence/singlebtn').
+ * @param {string} key       The property's bindings key (e.g. 'button-shadow').
+ * @param {string} [library] The token library slug; defaults to the active library.
+ *
+ * @since TBD
+ *
+ * @return {Array} The pickable list ([{ id, alias, label, value, type, role }]), empty when unmapped.
+ */
+export function pickableTokensForKey(blockName, key, library) {
+	const property = blockProperties(blockName, library).find((entry) => entry.key === key);
+
+	return pickableTokensForProperty(property, property?.control_attr || '', library);
+}

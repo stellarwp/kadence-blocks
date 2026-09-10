@@ -1,0 +1,341 @@
+<?php declare( strict_types=1 );
+
+namespace Tests\wpunit\Resources\Design_Tokens\Registry;
+
+use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Contracts\Baseline_Document;
+use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Definition;
+use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
+use RuntimeException;
+use Tests\Support\Classes\TestCase;
+
+final class Token_RegistryTest extends TestCase {
+
+	private Token_Registry $registry;
+
+	protected function setUp(): void {
+		parent::setUp();
+
+		$this->registry = new Token_Registry();
+	}
+
+	private function register_button_bg(): void {
+		$this->registry->register(
+			[
+				'id'          => 'semantic.color.button-bg',
+				'type'        => 'color',
+				'label'       => 'Button Background',
+				'group'       => 'Brand',
+				'projections' => [ 'kadence_slot' => 'palette1' ],
+			]
+		);
+	}
+
+	private function register_spacing_md(): void {
+		$this->registry->register(
+			[
+				'id'    => 'semantic.spacing.md',
+				'type'  => 'dimension',
+				'label' => 'Spacing Medium',
+				'group' => 'Layout',
+			]
+		);
+	}
+
+	public function testAllGetHasRoundTrip(): void {
+		$this->register_button_bg();
+
+		$this->assertTrue( $this->registry->has( 'semantic.color.button-bg' ) );
+		$this->assertFalse( $this->registry->has( 'nope' ) );
+		$this->assertInstanceOf( Token_Definition::class, $this->registry->get( 'semantic.color.button-bg' ) );
+		$this->assertNull( $this->registry->get( 'nope' ) );
+		$this->assertCount( 1, $this->registry->all() );
+	}
+
+	public function testItPreservesInsertionOrder(): void {
+		$this->register_button_bg();
+		$this->register_spacing_md();
+
+		$this->assertSame(
+			[ 'semantic.color.button-bg', 'semantic.spacing.md' ],
+			array_keys( $this->registry->all() )
+		);
+	}
+
+	public function testByTypeFiltersAndKeepsIdKeys(): void {
+		$this->register_button_bg();
+		$this->register_spacing_md();
+
+		$colors = $this->registry->by_type( 'color' );
+
+		$this->assertSame( [ 'semantic.color.button-bg' ], array_keys( $colors ) );
+	}
+
+	public function testByProjectionFiltersAndKeepsIdKeys(): void {
+		$this->register_button_bg();
+		$this->register_spacing_md();
+
+		$presets = $this->registry->by_projection( 'kadence_slot' );
+
+		$this->assertSame( [ 'semantic.color.button-bg' ], array_keys( $presets ) );
+	}
+
+	public function testCssVarForKnownToken(): void {
+		$this->register_button_bg();
+
+		$this->assertSame(
+			'--kb-token--semantic--color--button-bg',
+			$this->registry->css_var_for( 'semantic.color.button-bg' )
+		);
+	}
+
+	public function testCssVarForUnknownTokenFallsBackToDerivation(): void {
+		$this->assertSame(
+			'--kb-token--unknown--token',
+			$this->registry->css_var_for( 'unknown.token' )
+		);
+	}
+
+	public function testCssVarForHonoursOverride(): void {
+		$this->registry->register(
+			[
+				'id'      => 'semantic.color.button-bg',
+				'type'    => 'color',
+				'label'   => 'Button Background',
+				'css_var' => '--global-palette1',
+			]
+		);
+
+		$this->assertSame( '--global-palette1', $this->registry->css_var_for( 'semantic.color.button-bg' ) );
+	}
+
+	public function testToUiSchemaBucketsByGroupAndNeverLeaksAValue(): void {
+		$this->register_button_bg();
+		$this->register_spacing_md();
+
+		$schema = $this->registry->to_ui_schema();
+
+		$this->assertArrayHasKey( 'groups', $schema );
+		$this->assertArrayHasKey( 'Brand', $schema['groups'] );
+		$this->assertArrayHasKey( 'Layout', $schema['groups'] );
+
+		$entry = $schema['groups']['Brand'][0];
+		$this->assertSame(
+			[ 'id', 'type', 'label', 'cssVar', 'projections', 'userCreated' ],
+			array_keys( $entry )
+		);
+		$this->assertArrayNotHasKey( 'value', $entry );
+	}
+
+	public function testForBlockReturnsNullUntilRegistered(): void {
+		$this->assertNull( $this->registry->for_block( 'kadence/advancedbtn' ) );
+
+		$this->registry->register_preset_bindings(
+			[
+				'block'   => 'kadence/advancedbtn',
+				'presets' => [ 'primary' ],
+			]
+		);
+
+		$bindings = $this->registry->for_block( 'kadence/advancedbtn' );
+		$this->assertNotNull( $bindings );
+		$this->assertSame( 'kadence/advancedbtn', $bindings->block );
+	}
+
+	public function testAllPresetBindingsIsEmptyUntilRegistered(): void {
+		$this->assertSame( [], $this->registry->all_preset_bindings() );
+	}
+
+	public function testAllPresetBindingsReturnsRegisteredBindingsKeyedByBlockInOrder(): void {
+		$this->registry->register_preset_bindings( [ 'block' => 'kadence/advancedbtn' ] );
+		$this->registry->register_preset_bindings( [ 'block' => 'kadence/advancedheading' ] );
+
+		$bindings = $this->registry->all_preset_bindings();
+
+		$this->assertSame(
+			[ 'kadence/advancedbtn', 'kadence/advancedheading' ],
+			array_keys( $bindings )
+		);
+		// Each block maps to its own preset bindings.
+		$this->assertSame( 'kadence/advancedbtn', $bindings['kadence/advancedbtn']->block );
+		$this->assertSame( 'kadence/advancedheading', $bindings['kadence/advancedheading']->block );
+	}
+
+	public function testIsActiveByDefaultAndDeactivates(): void {
+		$this->assertTrue( $this->registry->is_active() );
+
+		$this->registry->deactivate();
+
+		$this->assertFalse( $this->registry->is_active() );
+	}
+
+	public function testMissingFromBaselineReturnsUnmatchedIds(): void {
+		$this->register_button_bg();
+		$this->register_spacing_md();
+
+		$baseline = new class() implements Baseline_Document {
+			public function has( string $id ): bool {
+				return $id === 'semantic.color.button-bg';
+			}
+
+			public function document(): array {
+				return [];
+			}
+		};
+
+		$this->assertSame( [ 'semantic.spacing.md' ], $this->registry->missing_from_baseline( $baseline ) );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testRegisterUserPrimitiveAddsUserCreatedToken(): void {
+		$this->registry->register_user_primitive( 'user.color.brand', 'color', 'Brand' );
+
+		$token = $this->registry->get( 'user.color.brand' );
+		$this->assertNotNull( $token );
+		$this->assertTrue( $token->is_user_created() );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testRegisterUserPrimitiveReplacesExistingUserCreatedToken(): void {
+		$this->registry->register_user_primitive( 'user.color.brand', 'color', 'Old Label' );
+		$this->registry->register_user_primitive( 'user.color.brand', 'color', 'New Label' );
+
+		$token = $this->registry->get( 'user.color.brand' );
+		$this->assertNotNull( $token );
+		$this->assertSame( 'New Label', $token->label );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testRegisterUserPrimitiveThrowsWhenIdIsSystemToken(): void {
+		$this->register_button_bg();
+
+		$this->expectException( RuntimeException::class );
+
+		$this->registry->register_user_primitive( 'semantic.color.button-bg', 'color', 'Brand' );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testDeregisterUserPrimitiveRemovesUserCreatedToken(): void {
+		$this->registry->register_user_primitive( 'user.color.brand', 'color', 'Brand' );
+		$this->registry->deregister_user_primitive( 'user.color.brand' );
+
+		$this->assertNull( $this->registry->get( 'user.color.brand' ) );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testDeregisterUserPrimitiveIsNoOpForSystemToken(): void {
+		$this->register_button_bg();
+		$this->registry->deregister_user_primitive( 'semantic.color.button-bg' );
+
+		$this->assertNotNull( $this->registry->get( 'semantic.color.button-bg' ) );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testDeregisterUserPrimitiveIsNoOpForAbsentId(): void {
+		$this->registry->deregister_user_primitive( 'user.color.nonexistent' );
+
+		$this->assertFalse( $this->registry->has( 'user.color.nonexistent' ) );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testUserCreatedIdsReturnsOnlyUserCreatedIds(): void {
+		$this->register_button_bg();
+		$this->registry->register_user_primitive( 'user.color.brand', 'color', 'Brand' );
+		$this->registry->register_user_primitive( 'user.color.accent', 'color', 'Accent' );
+
+		$this->assertSame(
+			[ 'user.color.brand', 'user.color.accent' ],
+			$this->registry->user_created_ids()
+		);
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testMissingFromBaselineSkipsUserCreatedTokens(): void {
+		$this->register_button_bg();
+		$this->registry->register_user_primitive( 'user.color.brand', 'color', 'Brand' );
+
+		$baseline = new class() implements Baseline_Document {
+			public function has( string $id ): bool {
+				return false;
+			}
+
+			public function document(): array {
+				return [];
+			}
+		};
+
+		$this->assertSame( [ 'semantic.color.button-bg' ], $this->registry->missing_from_baseline( $baseline ) );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testToUiSchemaEmitsUserCreatedField(): void {
+		$this->register_button_bg();
+		$this->registry->register_user_primitive( 'user.color.brand', 'color', 'Brand' );
+
+		$schema = $this->registry->to_ui_schema();
+
+		$system_entry = $schema['groups']['Brand'][0];
+		$this->assertFalse( $system_entry['userCreated'] );
+
+		$user_entry = $schema['groups'][''][0];
+		$this->assertTrue( $user_entry['userCreated'] );
+	}
+
+	/**
+	 * A declared group_key resolves to the current-locale label of the group it was declared
+	 * alongside, not any other group.
+	 *
+	 * @return void
+	 */
+	public function testGroupLabelForResolvesADeclaredKey(): void {
+		$this->registry->register(
+			[
+				'id'        => 'primitive.dimension.radius.sm',
+				'type'      => 'dimension',
+				'label'     => 'SM',
+				'group'     => 'Border Radius',
+				'group_key' => 'radius',
+			]
+		);
+
+		$this->assertSame( 'Border Radius', $this->registry->group_label_for( 'radius' ) );
+	}
+
+	/**
+	 * A key no declaration carries resolves to null rather than a fatal, so a caller can fail soft.
+	 *
+	 * @return void
+	 */
+	public function testGroupLabelForReturnsNullForAnUnknownKey(): void {
+		$this->assertNull( $this->registry->group_label_for( 'not-declared' ) );
+	}
+
+	/**
+	 * An empty key is never a valid lookup — it must not accidentally match an ungrouped token,
+	 * which also carries an empty group_key by default.
+	 *
+	 * @return void
+	 */
+	public function testGroupLabelForReturnsNullForAnEmptyKey(): void {
+		$this->register_button_bg();
+
+		$this->assertNull( $this->registry->group_label_for( '' ) );
+	}
+}

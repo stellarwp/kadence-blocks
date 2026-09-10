@@ -1,0 +1,228 @@
+/**
+ * The field-library demo schema: one panel per field family, exercising every registered
+ * `FIELD_TYPES` entry with realistic labels drawn from the frames, plus a `readOnly: true` TOKEN
+ * ID field proving the label-only rename rule. Reachable from `PlaceholderScreen`'s dev-only "Open
+ * field-library demo" button — the way the field library and `<SettingsForm>` are provably
+ * complete without component-render tests. Kept in `constants/`, not authored inline, so
+ * `__tests__/settings-schema.test.js` can assert its field types cover the whole registry.
+ */
+
+/**
+ * WordPress dependencies
+ */
+import { __ } from '@wordpress/i18n';
+import { cornerAll, lineSolid } from '@wordpress/icons';
+
+/**
+ * The `?kb-item=` value `PlaceholderScreen`'s dev-only demo button navigates to; the app answers
+ * it by mounting the settings panel with the demo schema instead of resolving a real item.
+ *
+ * @since TBD
+ */
+export const DEMO_ITEM_ID = 'demo';
+
+/**
+ * The demo settings schema.
+ *
+ * @since TBD
+ */
+export const DEMO_SETTINGS_SCHEMA = {
+	panels: [
+		{
+			id: 'identity',
+			title: __('Identity', 'kadence-blocks'),
+			initialOpen: true,
+			fields: [
+				{ type: 'text', path: 'label', label: __('Name', 'kadence-blocks') },
+				{ type: 'text', path: 'id', label: __('Token ID', 'kadence-blocks'), readOnly: true },
+				{
+					type: 'select',
+					path: 'appearance',
+					label: __('Appearance', 'kadence-blocks'),
+					options: [
+						{ value: 'solid', label: __('Solid', 'kadence-blocks') },
+						{ value: 'outline', label: __('Outline', 'kadence-blocks') },
+						{ value: 'ghost', label: __('Ghost', 'kadence-blocks') },
+					],
+				},
+			],
+		},
+		{
+			id: 'typography',
+			title: __('Typography', 'kadence-blocks'),
+			initialOpen: true,
+			fields: [
+				{
+					// Marked responsive, along with Line Height below, to demo two independent switchers.
+					type: 'number-unit',
+					path: 'fontSize',
+					label: __('Font Size', 'kadence-blocks'),
+					unit: 'px',
+					withRange: true,
+					min: 0,
+					max: 200,
+					responsive: true,
+				},
+				{
+					type: 'range-number',
+					path: 'fontSizeSlider',
+					label: __('Font Size (slider)', 'kadence-blocks'),
+					min: 0,
+					max: 200,
+				},
+				{
+					type: 'stepper',
+					path: 'lineHeight',
+					label: __('Line Height', 'kadence-blocks'),
+					step: 0.1,
+					min: 0.8,
+					max: 3,
+					responsive: true,
+				},
+				{
+					// A fixed px suffix, not a switchable unit — `letterSpacingUnit` below demos `unit`.
+					type: 'number-unit',
+					path: 'letterSpacing',
+					label: __('Letter Spacing', 'kadence-blocks'),
+					unit: 'px',
+					min: -20,
+					max: 20,
+				},
+				{
+					type: 'unit',
+					path: 'letterSpacingUnit',
+					label: __('Unit (example)', 'kadence-blocks'),
+					units: [
+						{ value: 'em', label: 'em' },
+						{ value: 'px', label: 'px' },
+					],
+				},
+			],
+		},
+		{
+			id: 'color',
+			title: __('Color', 'kadence-blocks'),
+			initialOpen: true,
+			fields: [
+				{ type: 'color', path: 'background', label: __('Background', 'kadence-blocks') },
+				{ type: 'token-color-select', path: 'tokenColor', label: __('Token Color', 'kadence-blocks') },
+				{ type: 'color-select', path: 'paletteColor', label: __('Palette Color', 'kadence-blocks') },
+				{
+					type: 'color-list',
+					path: 'stateColors',
+					label: __('State Colors', 'kadence-blocks'),
+					rows: [
+						{ id: 'text', name: __('Text', 'kadence-blocks') },
+						{ id: 'bg', name: __('Background', 'kadence-blocks') },
+					],
+				},
+			],
+		},
+		{
+			id: 'spacing',
+			title: __('Spacing', 'kadence-blocks'),
+			initialOpen: true,
+			fields: [
+				{
+					type: 'box-sides',
+					path: 'radius',
+					label: __('Radius', 'kadence-blocks'),
+					tokenType: 'dimension',
+					leadingIcon: cornerAll,
+				},
+				{
+					// The token-controls `BoxControl` in corner geometry — the replacement for the
+					// `box-sides` entry above, kept alongside it while both exist.
+					type: 'radius',
+					path: 'tokenRadius',
+					label: __('Radius (token control)', 'kadence-blocks'),
+					tokenType: 'dimension',
+				},
+				{
+					// The same control in side geometry, which is what padding and margin use.
+					type: 'spacing',
+					path: 'tokenSpacing',
+					label: __('Spacing (token control)', 'kadence-blocks'),
+					tokenType: 'dimension',
+				},
+				{
+					// Same shape as Radius, different leading glyph — proving the glyph is schema data.
+					type: 'box-sides',
+					path: 'borderWidth',
+					label: __('Border Width', 'kadence-blocks'),
+					tokenType: 'dimension',
+					leadingIcon: lineSolid,
+				},
+				{
+					type: 'token-select',
+					path: 'spacing',
+					label: __('Spacing', 'kadence-blocks'),
+					tokenType: 'dimension',
+				},
+				{
+					// The responsive counterpart to `token-select` above: one token-backed length, with a
+					// breakpoint switcher. Left non-responsive here so the responsive-field count below stays
+					// the two the schema is asserted on — the type's own capability is covered by its field.
+					type: 'token-scalar',
+					path: 'iconSize',
+					label: __('Icon Size', 'kadence-blocks'),
+					tokenType: 'dimension',
+				},
+				{
+					// The tabbed font picker, the one field whose value is a plain family string rather than
+					// anything token-shaped — the font catalog is a list of real faces, not a scale.
+					type: 'font-family',
+					path: 'fontFamily',
+					label: __('Font Family', 'kadence-blocks'),
+				},
+				{ type: 'toggle', path: 'enabled', label: __('Enabled', 'kadence-blocks') },
+			],
+		},
+		{
+			id: 'shadow',
+			title: __('Shadow', 'kadence-blocks'),
+			initialOpen: true,
+			fields: [
+				{ type: 'shadow', path: 'shadow', label: __('Shadow', 'kadence-blocks') },
+				{
+					// The token-aware Button-panel counterpart to `box-sides`/`shadow` above.
+					type: 'border',
+					path: 'border',
+					label: __('Border (token control)', 'kadence-blocks'),
+				},
+				{
+					type: 'box-shadow',
+					path: 'boxShadow',
+					label: __('Shadow (token control)', 'kadence-blocks'),
+				},
+			],
+		},
+	],
+};
+
+/**
+ * The demo's initial draft values — plausible defaults for every field in `DEMO_SETTINGS_SCHEMA`.
+ *
+ * @since TBD
+ */
+export const DEMO_SETTINGS_VALUES = {
+	label: __('Large', 'kadence-blocks'),
+	id: 'semantic.font-size.large',
+	appearance: 'solid',
+	fontSize: 24,
+	fontSizeSlider: 24,
+	lineHeight: 1.4,
+	letterSpacing: 2,
+	letterSpacingUnit: '0.02em',
+	background: '#2271b1',
+	tokenColor: '',
+	stateColors: { text: '#1e1e1e', bg: '#2271b1' },
+	radius: '',
+	tokenSpacing: '',
+	borderWidth: '',
+	spacing: '',
+	enabled: true,
+	shadow: { color: '#000000', offsetX: 0, offsetY: 4, blur: 8, spread: 0, inset: false },
+	border: { width: '2px', style: 'solid', color: '#2271b1' },
+	boxShadow: '',
+};

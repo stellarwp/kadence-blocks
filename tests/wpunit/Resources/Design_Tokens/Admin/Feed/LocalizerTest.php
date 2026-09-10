@@ -1,0 +1,444 @@
+<?php declare( strict_types=1 );
+
+namespace Tests\wpunit\Resources\Design_Tokens\Admin\Feed;
+
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Builder;
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Feed_Assembler;
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Font_Catalog;
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Localizer;
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Responsive_Feed;
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Presets;
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Style_Library\Asset_Loader;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Favorite_Font_Index;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Token_Label_Index;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Token_Order_Index;
+use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
+use KadenceWP\KadenceBlocks\Design_Tokens\Registry\User_Primitive_Registrar;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Css_Renderer;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Palettes;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Mutator;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Document;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
+use ReflectionProperty;
+use Tests\Support\Classes\Fake_Baseline_Document;
+use Tests\Support\Classes\TestCase;
+
+final class LocalizerTest extends TestCase {
+
+	private const HANDLE = 'admin-kadence-home';
+
+	private Token_Registry $registry;
+
+	protected function setUp(): void {
+		parent::setUp();
+
+		$this->registry = $this->container->get( Token_Registry::class );
+	}
+
+	protected function tearDown(): void {
+		$this->registry->activate();
+
+		if ( wp_script_is( self::HANDLE, 'registered' ) ) {
+			wp_dequeue_script( self::HANDLE );
+			wp_deregister_script( self::HANDLE );
+		}
+
+		// Clear the resolver memo so values resolved here do not leak into later test classes.
+		$resolver = $this->container->get( Token_Resolver::class );
+		$memo     = new ReflectionProperty( Token_Resolver::class, 'memo' );
+		$memo->setAccessible( true );
+		$memo->setValue( $resolver, [] );
+
+		parent::tearDown();
+	}
+
+	private function enqueue_dashboard(): void {
+		wp_register_script( self::HANDLE, 'https://example.test/admin-kadence-home.js', [], '1', true );
+		wp_enqueue_script( self::HANDLE );
+	}
+
+	/**
+	 * The decoded feed attached to the dashboard handle, or null when none was attached.
+	 *
+	 * The Localizer attaches TWO separate inline scripts to the handle (the feed, and — as its own
+	 * global, never folded into the feed payload — the page-load-only font catalog), each its own
+	 * entry in the 'before' data array. This walks the entries rather than imploding the whole array and running one
+	 * regular expression over it, so the catalog entry (whose global name is a superset string,
+	 * "window.kadenceDesignTokensFontCatalog") can never be mistaken for the feed entry.
+	 *
+	 * @return array<string, mixed>|null
+	 */
+	private function attached_feed(): ?array {
+		$data = wp_scripts()->get_data( self::HANDLE, 'before' );
+
+		if ( ! is_array( $data ) ) {
+			return null;
+		}
+
+		foreach ( array_filter( $data, 'is_string' ) as $entry ) {
+			if ( strpos( $entry, 'window.kadenceDesignTokens =' ) === false ) {
+				continue;
+			}
+
+			$json    = (string) preg_replace( '/^.*?window\.kadenceDesignTokens\s*=\s*(.*);\s*$/s', '$1', $entry );
+			$decoded = json_decode( $json, true );
+
+			return is_array( $decoded ) ? $decoded : null;
+		}
+
+		return null;
+	}
+
+	private function localizer(): Localizer {
+		return $this->container->get( Localizer::class );
+	}
+
+	/**
+	 * The localizer attaches the design tokens feed as inline data on the Style Library screen's script.
+	 *
+	 * @return void
+	 */
+	public function testItAttachesTheFeedOnTheStyleLibraryScreen(): void {
+		wp_register_script(
+			Asset_Loader::get_script_handle(),
+			'https://example.test/admin-kadence-style-library.js',
+			[],
+			'1',
+			true
+		);
+		wp_enqueue_script( Asset_Loader::get_script_handle() );
+
+		$this->localizer()->localize();
+
+		$data = wp_scripts()->get_data( Asset_Loader::get_script_handle(), 'before' );
+		$this->assertIsArray( $data );
+
+		$inline = implode( "\n", array_filter( $data, 'is_string' ) );
+		$this->assertStringContainsString( 'window.kadenceDesignTokens', $inline );
+	}
+
+	public function testItAttachesTheFeedWithSchemaValuesAndRest(): void {
+		$this->enqueue_dashboard();
+
+		$this->localizer()->localize();
+
+		$feed = $this->attached_feed();
+		$this->assertNotNull( $feed, 'A feed should be attached on the dashboard page.' );
+
+		$this->assertTrue( $feed['active'] );
+		$this->assertTrue( $feed['resolved'] );
+		$this->assertSame( Token_Store::default_slug(), $feed['slug'] );
+
+		// Structure: the shipped button-bg token reaches the schema.
+		$ids = [];
+		foreach ( $feed['schema']['groups'] as $entries ) {
+			$ids = array_merge( $ids, array_column( $entries, 'id' ) );
+		}
+		$this->assertContains( 'semantic.color.button-bg', $ids );
+
+		// Values: keyed identically to the schema, the resolved hex.
+		$this->assertSame( '#3633e1', $feed['values']['semantic.color.button-bg'] );
+
+		// REST descriptor.
+		$this->assertSame( 'kb-design-tokens/v1', $feed['rest']['namespace'] );
+		$this->assertNotEmpty( $feed['rest']['nonce'] );
+		$this->assertSame( esc_url_raw( rest_url() ), $feed['rest']['root'] );
+	}
+
+	/**
+	 * The font catalog is attached as its own inline global — window.kadenceDesignTokensFontCatalog
+	 * — separate from window.kadenceDesignTokens, so a client can read the (static,
+	 * library-independent) catalog once at page load without it riding every feed refresh.
+	 *
+	 * @return void
+	 */
+	public function testItAttachesTheFontCatalogAsASeparateGlobal(): void {
+		$this->enqueue_dashboard();
+
+		$this->localizer()->localize();
+
+		$data = wp_scripts()->get_data( self::HANDLE, 'before' );
+		$this->assertIsArray( $data );
+
+		$catalog_entry = null;
+
+		foreach ( array_filter( $data, 'is_string' ) as $entry ) {
+			if ( strpos( $entry, 'window.kadenceDesignTokensFontCatalog =' ) !== false ) {
+				$catalog_entry = $entry;
+				break;
+			}
+		}
+
+		$this->assertNotNull( $catalog_entry, 'The font catalog global must be attached to the dashboard handle.' );
+
+		$json    = (string) preg_replace( '/^.*?window\.kadenceDesignTokensFontCatalog\s*=\s*(.*);\s*$/s', '$1', $catalog_entry );
+		$decoded = json_decode( $json, true );
+
+		$this->assertIsArray( $decoded );
+		$this->assertArrayHasKey( 'google', $decoded );
+		$this->assertArrayHasKey( 'custom', $decoded );
+	}
+
+	public function testItAttachesNothingWhenTheDashboardIsNotOnThePage(): void {
+		// No enqueue.
+		$this->localizer()->localize();
+
+		$this->assertNull( $this->attached_feed() );
+	}
+
+	public function testFailClosedWhenTheRegistryIsInactive(): void {
+		$this->registry->deactivate();
+		$this->enqueue_dashboard();
+
+		$this->localizer()->localize();
+
+		$feed = $this->attached_feed();
+		$this->assertNotNull( $feed );
+		$this->assertFalse( $feed['active'] );
+		$this->assertSame( [ 'groups' => [] ], $feed['schema'] );
+		$this->assertSame( [], $feed['values'] );
+	}
+
+	public function testFailOpenWhenTheStoreIsUnresolvable(): void {
+		$this->enqueue_dashboard();
+
+		// A resolver over a baseline with an alias cycle throws on resolve(); the Localizer must catch it.
+		$cyclic = new Token_Resolver(
+			$this->container->get( Token_Store::class ),
+			new Effective_Document(
+				new Fake_Baseline_Document(
+					[
+						'primitive' => [
+							'color' => [
+								'a' => [
+									'$type'  => 'color',
+									'$value' => '{primitive.color.b}',
+								],
+								'b' => [
+									'$type'  => 'color',
+									'$value' => '{primitive.color.a}',
+								],
+							],
+						],
+					]
+				)
+			),
+			new Css_Renderer(),
+			$this->container->get( Effective_Palettes::class ),
+			$this->container->get( Mutator::class )
+		);
+
+		$assembler = new Feed_Assembler(
+			$cyclic,
+			$this->container->get( Token_Store::class ),
+			$this->container->get( Presets::class ),
+			$this->container->get( Builder::class ),
+			$this->container->get( Responsive_Feed::class ),
+			$this->container->get( Token_Label_Index::class ),
+			$this->container->get( Token_Order_Index::class ),
+			$this->container->get( Favorite_Font_Index::class )
+		);
+
+		$localizer = new Localizer(
+			$this->container->get( Active_Token_Library_Store::class ),
+			$assembler,
+			$this->container->get( Font_Catalog::class )
+		);
+
+		$localizer->localize();
+
+		$feed = $this->attached_feed();
+		$this->assertNotNull( $feed );
+		$this->assertTrue( $feed['active'], 'Structure still renders.' );
+		$this->assertFalse( $feed['resolved'], 'Values could not be resolved.' );
+		$this->assertSame( [], $feed['values'] );
+		$this->assertSame( [], $feed['presets'] );
+		$this->assertArrayHasKey( 'groups', $feed['schema'] );
+	}
+
+	public function testTypeFidelityOfScalars(): void {
+		$this->enqueue_dashboard();
+
+		$this->localizer()->localize();
+
+		$feed = $this->attached_feed();
+		$this->assertNotNull( $feed );
+
+		// Guards the wp_add_inline_script + wp_json_encode choice over wp_localize_script.
+		$this->assertIsBool( $feed['active'] );
+		$this->assertIsBool( $feed['resolved'] );
+		$this->assertIsString( $feed['version'] );
+	}
+
+	public function testTheModuleWiresTheLocalizerOntoAdminHead(): void {
+		$this->assertInstanceOf( Localizer::class, $this->container->get( Localizer::class ) );
+		$this->assertNotFalse( has_action( 'admin_head' ) );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testUserPrimitivesReachTheLocalizedSchemaWithUserCreatedFlag(): void {
+		$store = $this->container->get( Token_Store::class );
+
+		$doc = (string) wp_json_encode(
+			[
+				'primitive'   => [
+					'color' => [
+						'custom' => [
+							'brand-blue' => [
+								'$type'  => 'color',
+								'$value' => '#1a56db',
+							],
+						],
+					],
+				],
+				'$extensions' => [
+					'com.kadence.designTokens' => [
+						'userPrimitives' => [
+							'primitive.color.custom.brand-blue' => [ 'label' => 'Brand Blue' ],
+						],
+					],
+				],
+			]
+		);
+
+		$store->save_document( $doc );
+
+		/** @var User_Primitive_Registrar $registrar */
+		$registrar = $this->container->get( User_Primitive_Registrar::class );
+		$registrar->sync();
+
+		$this->enqueue_dashboard();
+		$this->localizer()->localize();
+
+		$feed = $this->attached_feed();
+		$this->assertNotNull( $feed );
+		$this->assertTrue( $feed['active'] );
+
+		$found = null;
+
+		foreach ( $feed['schema']['groups'] as $entries ) {
+			foreach ( $entries as $entry ) {
+				if ( ( $entry['id'] ?? '' ) === 'primitive.color.custom.brand-blue' ) {
+					$found = $entry;
+					break 2;
+				}
+			}
+		}
+
+		$this->assertNotNull( $found, 'User primitive must appear in the localized schema.' );
+		$this->assertTrue( $found['userCreated'], 'User primitive must carry userCreated: true.' );
+		$this->assertSame( 'Brand Blue', $found['label'] );
+	}
+
+	/**
+	 * The dashboard must read (and, via the REST descriptor's slug, write) whichever library is active —
+	 * not always the default one — so it stays consistent with the registry's user primitives and every
+	 * projector, all of which already resolve against Active_Token_Library_Store::get().
+	 *
+	 * @return void
+	 */
+	public function testFeedFollowsTheActiveLibraryRatherThanAlwaysTheDefaultLibrary(): void {
+		$store  = $this->container->get( Token_Store::class );
+		$active = $this->container->get( Active_Token_Library_Store::class );
+
+		$doc = (string) wp_json_encode(
+			[
+				'primitive'   => [
+					'color' => [
+						'custom' => [
+							'brand-green' => [
+								'$type'  => 'color',
+								'$value' => '#0f7a3d',
+							],
+						],
+					],
+				],
+				'$extensions' => [
+					'com.kadence.designTokens' => [
+						'userPrimitives' => [
+							'primitive.color.custom.brand-green' => [ 'label' => 'Brand Green' ],
+						],
+					],
+				],
+			]
+		);
+
+		$store->save_document( $doc, 'brand-b' );
+		$active->set( 'brand-b' );
+
+		/** @var User_Primitive_Registrar $registrar */
+		$registrar = $this->container->get( User_Primitive_Registrar::class );
+		$registrar->sync();
+
+		$this->enqueue_dashboard();
+		$this->localizer()->localize();
+
+		$feed = $this->attached_feed();
+		$this->assertNotNull( $feed );
+		$this->assertSame( 'brand-b', $feed['slug'] );
+		$this->assertSame( '#0f7a3d', $feed['values']['primitive.color.custom.brand-green'] );
+
+		$found = null;
+
+		foreach ( $feed['schema']['groups'] as $entries ) {
+			foreach ( $entries as $entry ) {
+				if ( ( $entry['id'] ?? '' ) === 'primitive.color.custom.brand-green' ) {
+					$found = $entry;
+					break 2;
+				}
+			}
+		}
+
+		$this->assertNotNull( $found, 'The active library\'s user primitive must appear in the localized schema.' );
+	}
+
+	/**
+	 * A stored tokenLabels entry surfaces as the effective label in the localized schema, with
+	 * labelOverridden set — proving the read/apply wiring end to end (Feed_Assembler decoding the
+	 * document and Builder overlaying it), not just the pure Builder overlay BuilderTest covers.
+	 *
+	 * @return void
+	 */
+	public function testStoredTokenLabelOverridesReachTheLocalizedSchema(): void {
+		$store = $this->container->get( Token_Store::class );
+
+		$doc = (string) wp_json_encode(
+			[
+				'$extensions' => [
+					'com.kadence.designTokens' => [
+						'tokenLabels' => [
+							'semantic.color.button-bg' => 'Cozy Button',
+						],
+					],
+				],
+			]
+		);
+
+		$store->save_document( $doc );
+
+		$this->enqueue_dashboard();
+		$this->localizer()->localize();
+
+		$feed = $this->attached_feed();
+		$this->assertNotNull( $feed );
+
+		$found = null;
+
+		foreach ( $feed['schema']['groups'] as $entries ) {
+			foreach ( $entries as $entry ) {
+				if ( ( $entry['id'] ?? '' ) === 'semantic.color.button-bg' ) {
+					$found = $entry;
+					break 2;
+				}
+			}
+		}
+
+		$this->assertNotNull( $found, 'The overridden token must appear in the localized schema.' );
+		$this->assertSame( 'Cozy Button', $found['label'] );
+		$this->assertTrue( $found['labelOverridden'] );
+	}
+}

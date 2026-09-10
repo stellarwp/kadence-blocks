@@ -1,0 +1,28 @@
+.kadence-blocks-style-library__nav-item-button {
+	display: block;
+	width: 100%;
+	padding: var(--kb-sl-space-10) var(--kb-sl-space-15);
+	border: 0;
+	border-radius: var(--kb-sl-radius-s);
+	background: transparent;
+	color: var(--kb-sl-color-nav-tab-text);
+	font-size: var(--kb-sl-font-size-small);
+	font-weight: var(--kb-sl-font-weight-regular);
+	line-height: var(--kb-sl-line-height-nav-tab);
+	text-align: left;
+	cursor: pointer;
+
+	// Hover only recolors the text with the theme color; the 4%-tint background is reserved for
+	// the selected state below so the two stay visually distinct.
+	&:hover {
+		color: var(--kb-sl-color-nav-tab-text-hover);
+	}
+
+	// Declared after :hover so a selected tab that is also hovered keeps its background and
+	// weight — both selectors share the same specificity, so source order decides the winner.
+	&--active {
+		background: var(--kb-sl-color-nav-tab-bg-selected);
+		color: var(--kb-sl-color-nav-tab-text-selected);
+		font-weight: var(--kb-sl-font-weight-medium);
+	}
+}

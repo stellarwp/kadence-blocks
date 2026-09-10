@@ -1,0 +1,18 @@
+@use '../../styles/mixins' as *;
+
+.kadence-blocks-style-library__color-palette-screen {
+	@include flex-column(var(--kb-sl-space-30));
+}
+
+// The only screen root that is a flex column with its own gap, which would otherwise stack with
+// the shared header's bottom margin: 48px here against 24px everywhere else.
+.kadence-blocks-style-library__color-palette-screen .kadence-blocks-style-library__screen-header {
+	margin-bottom: 0;
+}
+
+// SwatchCard's sub-line renders the swatch's raw `$value` unmodified; this screen renders it in
+// upper case visually only, scoped under the screen root rather than touching SwatchCard.scss,
+// which stays agnostic about the shape of any caller's `subLine`.
+.kadence-blocks-style-library__color-palette-screen .kadence-blocks-style-library__swatch-card-sub-line {
+	text-transform: uppercase;
+}

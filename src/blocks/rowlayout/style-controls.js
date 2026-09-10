@@ -1,3 +1,5 @@
+// cspell:ignore newcount whiteondark blackonlight outlineblack outlinewhite outlinedark outlinelight OZBO
+
 /**
  * BLOCK: Kadence Row / Layout
  */
@@ -34,16 +36,30 @@ import { showSettings } from '@kadence/helpers';
  * Import Block Specific Components
  */
 import { BLEND_OPTIONS } from './constants';
+import metadata from './block.json';
 /**
  * Import WordPress Internals
  */
 import { Fragment } from '@wordpress/element';
 import { TextControl, ToggleControl, SelectControl } from '@wordpress/components';
+import { useDispatch, useSelect } from '@wordpress/data';
 
 /**
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
+import { resetAttr, useLinkedMeasureState, usePresetBinding } from '../../extension/token-indicators';
+import {
+	anyCornerInherited,
+	inheritedMeasureSlots,
+	measureAttrsForDevice,
+	presetValueForDevice,
+} from '../../extension/token-indicators/normalize';
+import { EditorBoxControl } from '../../extension/design-tokens/components/EditorBoxControl';
+import { useColorGroups } from '../../extension/design-tokens/hooks/use-color-groups';
+import { resolveColorLiteral } from '../../extension/design-tokens/color-literal';
+import { pickableTokensForControl } from '../../extension/token-picker';
+import { ColorControl } from '../../token-controls';
 
 /**
  * Build the row edit
@@ -187,6 +203,93 @@ function StyleControls(props) {
 		displayBoxShadow,
 		boxShadow,
 	} = attributes;
+
+	const { previewDevice } = useSelect(
+		(select) => {
+			return {
+				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
+			};
+		},
+		[clientId]
+	);
+	const { setPreviewDeviceType: setPreviewDevice } = useDispatch('kadenceblocks/data');
+
+	// Design-token indicators: the per-attribute bound/overridden state for the selected preset, plus a
+	// reset that clears the mapped attribute back to the preset value (served by the existing scoped CSS).
+	const tokenBinding = usePresetBinding('kadence/rowlayout', attributes, undefined, previewDevice);
+	// The block's own attribute schema is passed through so a reset can clear a color's legacy
+	// palette-CLASS companion (`bgColor` -> `bgColorClass`) as well as the color itself. WordPress emits
+	// those utility classes with `!important`, so a stale one outranks anything the reset restores and
+	// the row would keep the old color while the field claimed otherwise.
+	const resetToken = (attr) => resetAttr(attr, setAttributes, tokenBinding[attr]?.kind, metadata.attributes);
+	// One fetch of the block's effective palette groups, shared by both `ColorControl` instances below.
+	const colorGroups = useColorGroups(clientId);
+
+	// Empty when the token registry is inactive, which is what keeps the plain measurement control below
+	// as the fallback rather than leaving the row with no radius control at all.
+	const borderRadiusTokens = pickableTokensForControl('kadence/rowlayout', 'borderRadius') || [];
+	// The Border Radius control keeps ONE linked/individual mode but writes a different attribute per
+	// breakpoint, so the mode must be read from — and "link" must collapse — whichever device is active.
+	const borderRadiusForDevice = measureAttrsForDevice(
+		attributes,
+		'borderRadius',
+		{ tablet: 'tabletBorderRadius', mobile: 'mobileBorderRadius' },
+		previewDevice
+	);
+	const borderRadiusPresetValue = presetValueForDevice(
+		tokenBinding.borderRadius?.presetValue,
+		tokenBinding.borderRadius?.responsive,
+		previewDevice
+	);
+	// What an unset corner falls back to on the active device: another breakpoint's corner before the
+	// preset's, matching the cascade the row actually renders through. The corners stay stored-empty —
+	// this only tells the field's popover which size is in effect and where it came from.
+	const inheritedBorderRadius = inheritedMeasureSlots(
+		previewDevice,
+		{ desktop: borderRadius, tablet: tabletBorderRadius },
+		borderRadiusPresetValue
+	);
+	const borderRadiusIsRelative = borderRadiusUnit === 'em' || borderRadiusUnit === 'rem';
+	// `resetOn` clears the remembered link choice on a preset change, since an override records a choice
+	// about the PREVIOUS preset's corners — otherwise an explicit "link" would stick and hide a new
+	// preset's per-corner radius.
+	const { isLinked: borderRadiusIsLinked, toggleLink: toggleBorderRadiusLink } = useLinkedMeasureState({
+		forDevice: borderRadiusForDevice,
+		previewDevice,
+		setAttributes,
+		resetOn: attributes.kbPreset,
+	});
+
+	// Every write clears `bgColorClass` as well. That attribute carries a legacy global-palette CLASS,
+	// which the row emits on its own wrapper and which therefore beats the color this control writes —
+	// so leaving a stale one behind would silently discard the pick. `PopColorControl` set the class
+	// itself through `onClassChange`; a palette color is a token alias now, so nothing sets it again.
+	const writeBackgroundColor = (value) => setAttributes({ bgColor: value, bgColorClass: '' });
+
+	// The row offers the same Background Color field in two mutually exclusive branches — the video
+	// background tab and the normal one — so it is built once here rather than written out at both.
+	//
+	// Rendered unconditionally, NOT behind a `colorGroups.length` guard the way the measure controls sit
+	// behind their token pool. The pool is read synchronously from a localized global, so it is either
+	// there on the first render or not at all; `useColorGroups` fetches over REST and returns an empty
+	// list until it resolves, so gating on it would mount the old control and visibly swap it a moment
+	// later. An empty list costs only an empty Style Library tab — the Custom tab still picks any color.
+	const backgroundColorField = (
+		<ColorControl
+			label={__('Background Color', 'kadence-blocks')}
+			value={bgColor ? bgColor : ''}
+			groups={colorGroups}
+			status={{
+				bound: !!tokenBinding.bgColor?.bound,
+				modified: !!tokenBinding.bgColor?.overridden,
+			}}
+			onReset={() => resetToken('bgColor')}
+			onPick={(alias) => writeBackgroundColor(alias)}
+			onCustom={(literal) => writeBackgroundColor(literal)}
+			onClear={() => writeBackgroundColor('')}
+			resolveLiteral={resolveColorLiteral}
+		/>
+	);
 
 	const editorDocument = document.querySelector('iframe[name="editor-canvas"]')?.contentWindow.document || document;
 	const tabletBackgroundType = tabletBackground?.[0]?.type || 'normal';
@@ -1311,13 +1414,7 @@ function StyleControls(props) {
 							/>
 						</>
 					)}
-					<PopColorControl
-						label={__('Background Color', 'kadence-blocks')}
-						value={bgColor ? bgColor : ''}
-						default={''}
-						onChange={(value) => setAttributes({ bgColor: value })}
-						onClassChange={(value) => setAttributes({ bgColorClass: value })}
-					/>
+					{backgroundColorField}
 					{undefined !== backgroundVideoType && 'local' === backgroundVideoType && (
 						<KadenceImageControl
 							label={__('Select Video Poster', 'kadence-blocks')}
@@ -1350,13 +1447,7 @@ function StyleControls(props) {
 			)}
 			{'normal' === backgroundSettingTab && (
 				<>
-					<PopColorControl
-						label={__('Background Color', 'kadence-blocks')}
-						value={bgColor ? bgColor : ''}
-						default={''}
-						onChange={(value) => setAttributes({ bgColor: value })}
-						onClassChange={(value) => setAttributes({ bgColorClass: value })}
-					/>
+					{backgroundColorField}
 					<KadenceBackgroundControl
 						label={__('Background Image', 'kadence-blocks')}
 						hasImage={bgImg}
@@ -1570,23 +1661,46 @@ function StyleControls(props) {
 						onChangeTablet={(value) => setAttributes({ tabletBorderStyle: value })}
 						onChangeMobile={(value) => setAttributes({ mobileBorderStyle: value })}
 					/>
-					<ResponsiveMeasurementControls
-						label={__('Border Radius', 'kadence-blocks')}
-						value={borderRadius}
-						tabletValue={tabletBorderRadius}
-						mobileValue={mobileBorderRadius}
-						onChange={(value) => setAttributes({ borderRadius: value })}
-						onChangeTablet={(value) => setAttributes({ tabletBorderRadius: value })}
-						onChangeMobile={(value) => setAttributes({ mobileBorderRadius: value })}
-						unit={borderRadiusUnit}
-						units={['px', 'em', 'rem', '%']}
-						onUnit={(value) => setAttributes({ borderRadiusUnit: value })}
-						max={borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 24 : 500}
-						step={borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 0.1 : 1}
-						min={0}
-						isBorderRadius={true}
-						allowEmpty={true}
-					/>
+					{borderRadiusTokens.length ? (
+						<EditorBoxControl
+							label={__('Border Radius', 'kadence-blocks')}
+							value={borderRadiusForDevice.value}
+							onChange={(next) => setAttributes({ [borderRadiusForDevice.attr]: next })}
+							previewDevice={previewDevice}
+							onDeviceChange={setPreviewDevice}
+							tokens={borderRadiusTokens}
+							defaultValue={inheritedBorderRadius.values}
+							inherited={anyCornerInherited(inheritedBorderRadius.inherited)}
+							state={tokenBinding.borderRadius}
+							onReset={() => resetToken('borderRadius')}
+							isLinked={borderRadiusIsLinked}
+							onToggleLink={toggleBorderRadiusLink}
+							unit={borderRadiusUnit}
+							units={['px', 'em', 'rem', '%']}
+							onUnit={(value) => setAttributes({ borderRadiusUnit: value })}
+							min={0}
+							max={borderRadiusIsRelative ? 24 : 500}
+							step={borderRadiusIsRelative ? 0.1 : 1}
+						/>
+					) : (
+						<ResponsiveMeasurementControls
+							label={__('Border Radius', 'kadence-blocks')}
+							value={borderRadius}
+							tabletValue={tabletBorderRadius}
+							mobileValue={mobileBorderRadius}
+							onChange={(value) => setAttributes({ borderRadius: value })}
+							onChangeTablet={(value) => setAttributes({ tabletBorderRadius: value })}
+							onChangeMobile={(value) => setAttributes({ mobileBorderRadius: value })}
+							unit={borderRadiusUnit}
+							units={['px', 'em', 'rem', '%']}
+							onUnit={(value) => setAttributes({ borderRadiusUnit: value })}
+							max={borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 24 : 500}
+							step={borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 0.1 : 1}
+							min={0}
+							isBorderRadius={true}
+							allowEmpty={true}
+						/>
+					)}
 					{hasBorderRadius && (
 						<ToggleControl
 							label={__('Overflow Hidden', 'kadence-blocks')}

@@ -1,0 +1,49 @@
+<?php declare( strict_types=1 );
+
+namespace KadenceWP\KadenceBlocks\Design_Tokens\Admin;
+
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Builder;
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Feed_Assembler;
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Font_Catalog;
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Localizer;
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Preset_Nav;
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Presets;
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Style_Library\Asset_Loader;
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Style_Library\Menu;
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Style_Library\Screen;
+use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provider as Provider_Contract;
+
+/**
+ * Registers the admin UI schema feed: binds the builder, preset feed, nav-ready block-presets
+ * section, the shared feed-assembly pipeline, and the localizer as singletons, then hooks the
+ * localizer onto admin_head so the dashboard bundle receives window.kadenceDesignTokens.
+ *
+ * @since TBD
+ */
+final class Provider extends Provider_Contract {
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function register(): void {
+		$this->container->singleton( Builder::class );
+		$this->container->singleton( Presets::class );
+		$this->container->singleton( Preset_Nav::class );
+		$this->container->singleton( Feed_Assembler::class );
+		$this->container->singleton( Font_Catalog::class );
+		$this->container->singleton( Localizer::class );
+		$this->container->singleton( Screen::class );
+		$this->container->singleton( Asset_Loader::class );
+		$this->container->singleton( Menu::class );
+
+		// Register after Kadence_Blocks_Settings::add_menu() so the kadence-blocks parent exists.
+		add_action( 'admin_menu', $this->container->callback( Menu::class, 'register_site_menu' ), 20 );
+		add_action( 'network_admin_menu', $this->container->callback( Menu::class, 'register_network_menu' ), 20 );
+
+		// admin_head fires after the dashboard's admin_print_styles-{page} enqueue and before the footer
+		// where admin-kadence-home prints, so the handle is enqueued when the Localizer's guard runs.
+		add_action( 'admin_head', $this->container->callback( Localizer::class, 'localize' ) );
+	}
+}
