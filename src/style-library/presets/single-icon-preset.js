@@ -42,8 +42,8 @@ const ICON_SIZE_FALLBACK = '1.5rem';
 /**
  * Build a row's preview from its stored tokens.
  *
- * An icon's whole bound surface is its color and its size, so both are previewed — unlike the
- * Button, whose preview shows three of eleven properties. Size is previewed as a real length rather
+ * An icon's whole bound surface is its color and its size, so both are previewed — with no hover
+ * state to swap to, unlike the Button's chip. Size is previewed as a real length rather
  * than a scaled-down swatch, because an icon-size scale is only legible at true size.
  *
  * @param {Record<string, *>}      tokens       The preset's stored token map.

@@ -160,6 +160,16 @@ describe('presetRows', () => {
 		'semantic.color.on-primary': '#ffffff',
 	};
 
+	const emptyHover = {
+		background: '',
+		color: '',
+		borderRadius: '',
+		borderWidth: '',
+		borderStyle: '',
+		borderColor: '',
+		shadow: '',
+	};
+
 	it('maps the payload to row view models in payload order, resolving preview values', () => {
 		const payload = {
 			userCreated: [],
@@ -190,9 +200,36 @@ describe('presetRows', () => {
 			id: 'primary',
 			label: 'Primary',
 			userCreated: false,
-			preview: { background: '#3633e1', color: '#ffffff', borderRadius: '0.5rem' },
+			tokens: {
+				'button-bg': '{semantic.color.action-primary}',
+				'button-text': '{semantic.color.on-primary}',
+				'button-radius': '0.5rem',
+			},
+			preview: {
+				background: '#3633e1',
+				color: '#ffffff',
+				borderRadius: '0.5rem',
+				borderWidth: '',
+				borderStyle: '',
+				borderColor: '',
+				shadow: '',
+				padding: '',
+				margin: '',
+				hover: emptyHover,
+			},
 		});
-		expect(rows[1].preview).toEqual({ background: 'transparent', color: '#3633e1', borderRadius: '0.25rem' });
+		expect(rows[1].preview).toEqual({
+			background: 'transparent',
+			color: '#3633e1',
+			borderRadius: '0.25rem',
+			borderWidth: '',
+			borderStyle: '',
+			borderColor: '',
+			shadow: '',
+			padding: '',
+			margin: '',
+			hover: emptyHover,
+		});
 	});
 
 	it('resolves a responsive preview at the breakpoint being viewed', () => {
@@ -653,18 +690,50 @@ describe('overlayPresetRows', () => {
 		'semantic.color.on-primary': '#ffffff',
 	};
 
+	const emptyHover = {
+		background: '',
+		color: '',
+		borderRadius: '',
+		borderWidth: '',
+		borderStyle: '',
+		borderColor: '',
+		shadow: '',
+	};
+
 	const rows = [
 		{
 			id: 'primary',
 			label: 'Primary',
 			userCreated: false,
-			preview: { background: '#3633e1', color: '#ffffff', borderRadius: '0.5rem' },
+			preview: {
+				background: '#3633e1',
+				color: '#ffffff',
+				borderRadius: '0.5rem',
+				borderWidth: '',
+				borderStyle: '',
+				borderColor: '',
+				shadow: '',
+				padding: '',
+				margin: '',
+				hover: emptyHover,
+			},
 		},
 		{
 			id: 'secondary',
 			label: 'Secondary',
 			userCreated: false,
-			preview: { background: 'transparent', color: '#3633e1', borderRadius: '0.25rem' },
+			preview: {
+				background: 'transparent',
+				color: '#3633e1',
+				borderRadius: '0.25rem',
+				borderWidth: '',
+				borderStyle: '',
+				borderColor: '',
+				shadow: '',
+				padding: '',
+				margin: '',
+				hover: emptyHover,
+			},
 		},
 	];
 
@@ -686,9 +755,90 @@ describe('overlayPresetRows', () => {
 			id: 'primary',
 			label: 'Primary CTA',
 			userCreated: false,
-			preview: { background: '#ffffff', color: '#3633e1', borderRadius: '1rem' },
+			preview: {
+				background: '#ffffff',
+				color: '#3633e1',
+				borderRadius: '1rem',
+				borderWidth: '',
+				borderStyle: '',
+				borderColor: '',
+				shadow: '',
+				padding: '',
+				margin: '',
+				hover: {
+					background: '#3633e1',
+					color: '#ffffff',
+					borderRadius: '',
+					borderWidth: '',
+					borderStyle: '',
+					borderColor: '',
+					shadow: '',
+				},
+			},
 		});
 		expect(next[1]).toBe(rows[1]);
+	});
+
+	it('keeps stored values for properties the draft leaves unset', () => {
+		// A fresh panel seeds every non-overridden property empty (`presetInitialValues`), so a
+		// draft-only preview blanks the chip the moment the panel opens. The overlay must merge the
+		// draft's SET properties over the row's stored (baseline-merged) map instead — opening the
+		// panel changes nothing, and each edit then previews against the preset's real look.
+		const storedRows = [
+			{
+				id: 'primary',
+				label: 'Primary',
+				userCreated: false,
+				tokens: {
+					'button-bg': '{semantic.color.action-primary}',
+					'button-radius': '0.5rem',
+					'button-bg-hover': '{semantic.color.on-primary}',
+				},
+				preview: BUTTON_PRESET.preview(
+					{
+						'button-bg': '{semantic.color.action-primary}',
+						'button-radius': '0.5rem',
+						'button-bg-hover': '{semantic.color.on-primary}',
+					},
+					values
+				),
+			},
+		];
+		// The fresh-open draft shape: only Text set, everything else seeded empty.
+		const draft = {
+			tokens: {
+				'button-bg': '',
+				'button-text': 'semantic.color.on-primary',
+				'button-radius': '',
+				'button-bg-hover': '',
+				'button-padding': ['', '', '', ''],
+			},
+		};
+
+		const next = overlayPresetRows(storedRows, 'primary', draft, values, BUTTON_PRESET.preview);
+
+		expect(next[0].preview.background).toBe('#3633e1');
+		expect(next[0].preview.borderRadius).toBe('0.5rem');
+		expect(next[0].preview.hover.background).toBe('#ffffff');
+		expect(next[0].preview.color).toBe('#ffffff');
+		expect(next[0].preview.padding).toBe('');
+	});
+
+	it('previews a draft value over the stored one for the same property', () => {
+		const storedRows = [
+			{
+				id: 'primary',
+				label: 'Primary',
+				userCreated: false,
+				tokens: { 'button-bg': '{semantic.color.action-primary}' },
+				preview: BUTTON_PRESET.preview({ 'button-bg': '{semantic.color.action-primary}' }, values),
+			},
+		];
+		const draft = { tokens: { 'button-bg': 'semantic.color.on-primary' } };
+
+		const next = overlayPresetRows(storedRows, 'primary', draft, values, BUTTON_PRESET.preview);
+
+		expect(next[0].preview.background).toBe('#ffffff');
 	});
 
 	it('returns the same array reference for a null draft', () => {

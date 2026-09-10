@@ -85,10 +85,14 @@ function PresetSidebarBody({ navigate, route, screen, initialValues, presetLabel
 			return undefined;
 		}
 
-		publish({ itemId: id, label: presetLabel, draft: panel.draft, isDirty: panel.isDirty });
+		publish({ itemId: id, label: presetLabel, draft: panel.draft, isDirty: panel.isDirty, activeTab });
 
+		// Re-running on `activeTab` also clears then republishes on every tab switch: safe because
+		// the guard modal traps focus while it is open (so tabs are unreachable during a guard), and
+		// `clearPublication()` nulling the pending guard action/error batches into the same commit as
+		// the republish that follows it.
 		return () => clearPublication();
-	}, [publish, clearPublication, id, presetLabel, panel.draft, panel.isDirty]);
+	}, [publish, clearPublication, id, presetLabel, panel.draft, panel.isDirty, activeTab]);
 
 	// `screen.saveError`/`screen.deleteError` live on the outer preset-screen binding, not on this
 	// per-preset panel, so a failed write's error otherwise survives past the preset it happened on.

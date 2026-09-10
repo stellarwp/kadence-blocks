@@ -10,6 +10,7 @@
 /**
  * WordPress dependencies
  */
+import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
 /**
@@ -17,6 +18,7 @@ import { __ } from '@wordpress/i18n';
  */
 import { BUTTON_MARGIN_FALLBACK, BUTTON_PADDING_FALLBACK } from '../../token-controls/helpers/button-box-defaults';
 import { BUTTON_BLOCK, getPresetProperties, resolveTokenValue } from '../helpers/presets';
+import { capBoxSides } from '../helpers/preview';
 
 export { BUTTON_BLOCK };
 
@@ -31,11 +33,24 @@ const TABS = [
 ];
 
 /**
+ * The most preview padding or margin any one side may show, per axis. Deliberately generous —
+ * half the viewport on the side's own axis — because the chip's job is to show what the button
+ * will actually render, so every step of the spacing scale (which tops out at 10rem, far below
+ * either cap) previews at true size. The cap only exists to bound a pathological custom literal,
+ * not to tame real values.
+ *
+ * @since TBD
+ */
+const BOX_PREVIEW_CAP = { vertical: '50vh', horizontal: '50vw' };
+
+/**
  * Build a row's preview from its stored tokens.
  *
- * The shape is this block's own: a button chip needs a background, a text color and a radius.
- * Another block's rows would preview something else entirely, which is why the generic row mapper
- * takes this as a function rather than reading fixed keys.
+ * The shape is this block's own: every resting-state property the chip can draw — background,
+ * text color, radius, the border trio, shadow, padding, and margin — plus a nested `hover` map
+ * of the state the chip swaps to on interaction (see `renderPreview`). Another block's rows
+ * would preview something else entirely, which is why the generic row mapper takes this as a
+ * function rather than reading fixed keys.
  *
  * @param {Record<string, *>}      tokens       The preset's stored token map.
  * @param {Record<string, string>} values       The feed's resolved value map.
@@ -47,39 +62,80 @@ const TABS = [
  *
  * @since TBD
  *
- * @return {{background: string, color: string, borderRadius: string}} The preview.
+ * @return {{background: string, color: string, borderRadius: string, borderWidth: string, borderStyle: string, borderColor: string, shadow: string, padding: string, margin: string, hover: {background: string, color: string, borderRadius: string, borderWidth: string, borderStyle: string, borderColor: string, shadow: string}}} The preview.
  */
 function preview(tokens, values, breakpoint) {
 	return {
 		background: resolveTokenValue(values, tokens['button-bg'], breakpoint),
 		color: resolveTokenValue(values, tokens['button-text'], breakpoint),
 		borderRadius: resolveTokenValue(values, tokens['button-radius'], breakpoint),
+		borderWidth: resolveTokenValue(values, tokens['button-border-width'], breakpoint),
+		borderStyle: resolveTokenValue(values, tokens['button-border-style'], breakpoint),
+		borderColor: resolveTokenValue(values, tokens['button-border-color'], breakpoint),
+		shadow: resolveTokenValue(values, tokens['button-shadow'], breakpoint),
+		padding: resolveTokenValue(values, tokens['button-padding'], breakpoint),
+		margin: resolveTokenValue(values, tokens['button-margin'], breakpoint),
+		// No hover padding/margin: the block binds no hover counterpart for either, so the chip's
+		// box never changes between states. The hover border trio's key order is the block's own —
+		// `button-border-hover-width`, not `button-border-width-hover` (see `declarations.php`).
+		hover: {
+			background: resolveTokenValue(values, tokens['button-bg-hover'], breakpoint),
+			color: resolveTokenValue(values, tokens['button-text-hover'], breakpoint),
+			borderRadius: resolveTokenValue(values, tokens['button-radius-hover'], breakpoint),
+			borderWidth: resolveTokenValue(values, tokens['button-border-hover-width'], breakpoint),
+			borderStyle: resolveTokenValue(values, tokens['button-border-hover-style'], breakpoint),
+			borderColor: resolveTokenValue(values, tokens['button-border-hover-color'], breakpoint),
+			shadow: resolveTokenValue(values, tokens['button-shadow-hover'], breakpoint),
+		},
 	};
 }
 
 /**
- * The row's live preview chip: a non-interactive span reading "Button", styled from the row's
- * resolved background/text/radius. Hover values are never previewed here — a static chip cannot
- * honestly show `:hover`, the sidebar's Hover tab is the editing surface for that — and an
- * unresolved value renders the property absent rather than an invented fallback.
+ * The live preview chip: a span reading "Button", styled from the row's resolved styles —
+ * background, text, radius, border, shadow, padding, and margin. While the pointer is over the
+ * chip (or `row.showHoverState` is set, which the screen does for the row whose panel is on the
+ * Hover tab), each style swaps to the preset's resolved hover value, per property: an unset hover
+ * value keeps the resting style, exactly what a real button whose preset stores no hover override
+ * does. An unresolved value renders the property absent rather than an invented fallback, leaving
+ * the stylesheet's chip defaults in charge (so a preset that sets only a border color still
+ * previews it: the stylesheet's transparent `1px solid` border supplies the width and style).
+ * Padding and margin are capped per side (see `capBoxSides`) so an extreme preset cannot make its
+ * list row enormous; neither has a hover-bound counterpart, so the chip's box never changes
+ * between states.
  *
  * Styled by `components/pages/ButtonScreen.scss`, which also carries this screen's other overrides
  * and is imported there.
  *
- * @param {{id: string, label: string, preview: {background: string, color: string, borderRadius: string}}} row The row descriptor.
+ * @param {Object} props     The component props.
+ * @param {Object} props.row The row descriptor (`{id, label, preview, showHoverState?}`).
  *
  * @since TBD
  *
- * @return {JSX.Element} The preview element.
+ * @return {JSX.Element} The chip.
  */
-function renderPreview(row) {
+function ButtonPresetPreviewChip({ row }) {
+	const [isHovered, setIsHovered] = useState(false);
+
+	const resting = row.preview;
+	const hover = resting.hover ?? {};
+	const showHover = isHovered || row.showHoverState === true;
+	const styleFor = (base, hovered) => (showHover && hovered ? hovered : base) || undefined;
+
 	return (
 		<span
 			className="kadence-blocks-style-library__button-preset-preview"
+			onMouseEnter={() => setIsHovered(true)}
+			onMouseLeave={() => setIsHovered(false)}
 			style={{
-				background: row.preview.background || undefined,
-				color: row.preview.color || undefined,
-				borderRadius: row.preview.borderRadius || undefined,
+				background: styleFor(resting.background, hover.background),
+				color: styleFor(resting.color, hover.color),
+				borderRadius: styleFor(resting.borderRadius, hover.borderRadius),
+				borderWidth: styleFor(resting.borderWidth, hover.borderWidth),
+				borderStyle: styleFor(resting.borderStyle, hover.borderStyle),
+				borderColor: styleFor(resting.borderColor, hover.borderColor),
+				boxShadow: styleFor(resting.shadow, hover.shadow),
+				padding: capBoxSides(resting.padding, BOX_PREVIEW_CAP),
+				margin: capBoxSides(resting.margin, BOX_PREVIEW_CAP),
 			}}
 		>
 			{__('Button', 'kadence-blocks')}
@@ -88,10 +144,27 @@ function renderPreview(row) {
 }
 
 /**
+ * The row's preview slot: the generic row mapper calls this as a plain function, so it stays one —
+ * the hover state lives inside `ButtonPresetPreviewChip`, which needs to be a component to hold it.
+ *
+ * @param {{id: string, label: string, preview: Object, showHoverState?: boolean}} row The row descriptor.
+ *
+ * @since TBD
+ *
+ * @return {JSX.Element} The preview element.
+ */
+function renderPreview(row) {
+	return <ButtonPresetPreviewChip row={row} />;
+}
+
+/**
  * The per-tab settings schema: the Normal tab adds a Border and Shadow section and the Hover tab
- * never does — `button-radius`/`button-border`/`button-shadow` have no hover counterpart, so
- * rendering them there would write a property `guard_surface` rejects. The preset name is not here;
- * it is tab-independent and comes from `presetNameSchema()`.
+ * never does. The block does bind hover counterparts for radius, border, and shadow — `preview()`
+ * above resolves `button-radius-hover`, the hover border trio, and `button-shadow-hover`, and the
+ * chip already previews them — but the Hover tab only offers the color pair today; that is a
+ * scope decision, not a `guard_surface` restriction, and offering the other fields is a separate
+ * schema decision. The preset name is not here; it is tab-independent and comes from
+ * `presetNameSchema()`.
  *
  * @param {string} tab The active tab name (`'normal'` or `'hover'`).
  *
@@ -160,7 +233,7 @@ function schemaFor(tab) {
 		],
 	};
 
-	// Normal only, like the radius panel: neither property has a hover counterpart, so a field on the
+	// Normal only: the block binds no hover counterpart for padding or margin, so a field on the
 	// Hover tab would write something `guard_surface` rejects.
 	const spacingPanel = {
 		id: 'spacing',
