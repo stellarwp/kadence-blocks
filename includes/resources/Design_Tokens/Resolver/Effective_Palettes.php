@@ -302,13 +302,16 @@ final class Effective_Palettes {
 	}
 
 	/**
-	 * The shipped baseline `$default` palette flattened to a `{ token => $value }` map — the colors the
-	 * plugin ships, independent of any stored library.
+	 * The baseline `$default` palette flattened to a `{ token => $value }` map, independent of any stored
+	 * library. The baseline it reads is the decorated one, so on a Kadence site these are the theme's Style
+	 * Guide colors (see `Theme_Style_Guide_Baseline_Document`), not the hex values the plugin ships; without
+	 * a Kadence theme they are the shipped values.
 	 *
 	 * Both halves are load-bearing. Its KEYS are the permanent swatch set, whose rows a palette write may
-	 * never drop; its VALUES are what a delete reverts one of those swatches to. No other seam can answer
-	 * either question: {@see Baseline_Document::has()} indexes only the primitive/semantic token layers and
-	 * deliberately skips "$extensions", so it never sees a palette swatch at all.
+	 * never drop; its VALUES are what a delete reverts one of those swatches to — the theme's color on a
+	 * Kadence site, the shipped color elsewhere. No other method can answer either question:
+	 * {@see Baseline_Document::has()} indexes only the primitive/semantic token layers and deliberately
+	 * skips "$extensions", so it never sees a palette swatch at all.
 	 *
 	 * Returned whole rather than behind a per-token predicate because every caller needs the values too,
 	 * or walks the whole set — and the flatten re-walks the baseline document, so a predicate would redo it
@@ -316,7 +319,7 @@ final class Effective_Palettes {
 	 *
 	 * @since TBD
 	 *
-	 * @return array<string, string> token dot-path => the shipped literal-or-alias value.
+	 * @return array<string, string> token dot-path => the baseline literal-or-alias value.
 	 */
 	public function baseline_swatch_values(): array {
 		$section = $this->palettes_of( $this->baseline->document() );
