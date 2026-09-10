@@ -4,12 +4,13 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Kadence_Option;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Theme_Style_Guide\Style_Guide_Reader;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provider as Provider_Contract;
 
 /**
  * Registers the Kadence option projection: binds the builder, projector and palette filter as
  * singletons, wires the reconcile to a once-per-request boot pass and to the token-changed action,
- * and hooks the theme's palette reads.
+ * hooks the theme's palette reads, and clears the palette memo on every input it is built from.
  *
  * @since TBD
  */
@@ -51,12 +52,26 @@ final class Provider extends Provider_Contract {
 		);
 
 		// The memo is built from the active library's resolved tokens, so moving the pointer invalidates it
-		// for the same reason a write does. Both inputs have to clear it or a read after the switch answers
+		// for the same reason a write does. Every input has to clear it or a read after the switch answers
 		// with the previous library's colors.
 		add_action(
 			Active_Token_Library_Store::changed_action(),
 			$this->container->callback( Palette_Filter::class, 'on_tokens_changed' ),
 			5
 		);
+
+		// The memo is also built from the theme's Style Guide: the resolver reads the baseline decorated
+		// with it, so a Customizer save changes the colors with no token write and no library switch.
+		// Same hooks the Style Guide overlay flushes on. Priority 20 because the overlay flushes at 10 on
+		// the option hooks and at 0 on the preview init, and this has to run after it: a palette read
+		// between the two would rebuild the memo from the overlay's stale values and nothing would clear
+		// it again in this request.
+		$clear = $this->container->callback( Palette_Filter::class, 'on_tokens_changed' );
+
+		foreach ( [ 'add_option_', 'update_option_', 'delete_option_' ] as $prefix ) {
+			add_action( $prefix . Style_Guide_Reader::get_palette_option_key(), $clear, 20 );
+		}
+
+		add_action( 'customize_preview_init', $clear, 20 );
 	}
 }

@@ -14,7 +14,11 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Css_Renderer;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Document;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Palettes;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
+use KadenceWP\KadenceBlocks\Design_Tokens\Theme_Style_Guide\Contracts\Style_Guide_Source;
+use KadenceWP\KadenceBlocks\Design_Tokens\Theme_Style_Guide\Style_Guide_Overlay;
+use KadenceWP\KadenceBlocks\Design_Tokens\Theme_Style_Guide\Style_Guide_Reader;
 use ReflectionProperty;
+use Tests\Support\Classes\Fake_Style_Guide_Source;
 use Tests\Support\Classes\Fake_Baseline_Document;
 use Tests\Support\Classes\TestCase;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Version;
@@ -49,6 +53,7 @@ final class Palette_FilterTest extends TestCase {
 
 	protected function tearDown(): void {
 		$this->registry->activate();
+		$this->restore_style_guide_source();
 		$this->container->get( Active_Token_Library_Store::class )->set( Token_Store::default_slug() );
 		$this->store->delete( self::OTHER_LIBRARY );
 		$this->filter->on_tokens_changed();
@@ -282,6 +287,68 @@ final class Palette_FilterTest extends TestCase {
 	}
 
 	/**
+	 * A Style Guide change clears the memo through the provider's hook, after the overlay flushed.
+	 *
+	 * The memo is built from the resolver, and the resolver reads the baseline decorated with the theme's
+	 * Style Guide, so a Customizer save invalidates it with no token write and no library switch. The probe
+	 * read runs on the same hook just before the overlay flushes: if the memo were cleared before the flush
+	 * instead of after, the probe would rebuild it from the stale overlay and nothing would clear it again.
+	 *
+	 * @dataProvider styleGuideHookProvider
+	 *
+	 * @param string $hook           The hook the theme fires when the Style Guide changes.
+	 * @param int    $probe_priority One step before the overlay's own flush on that hook.
+	 *
+	 * @return void
+	 */
+	public function testStyleGuideChangeClearsTheMemoThroughTheHook( string $hook, int $probe_priority ): void {
+		$source = Fake_Style_Guide_Source::with_palette( [ 'palette1' => '#111111' ] );
+		$this->swap_style_guide_source( $source );
+
+		// Build the memo from the first Style Guide, so the test fails if the change does not clear it.
+		$this->assertSame( '#111111', $this->filter->filter( '#old', 'palette1' ) );
+
+		$source->set( Fake_Style_Guide_Source::with_palette( [ 'palette1' => '#222222' ] )->snapshot() );
+
+		$probe = function (): void {
+			$this->filter->filter( '#old', 'palette1' );
+		};
+		add_action( $hook, $probe, $probe_priority );
+
+		try {
+			do_action( $hook );
+		} finally {
+			remove_action( $hook, $probe, $probe_priority );
+		}
+
+		$this->assertSame( '#222222', $this->filter->filter( '#old', 'palette1' ) );
+	}
+
+	/**
+	 * The four hooks the overlay flushes on, each with a probe priority one step before that flush.
+	 *
+	 * @return Generator
+	 */
+	public function styleGuideHookProvider(): Generator {
+		yield 'palette option added' => [
+			'hook'           => 'add_option_' . Style_Guide_Reader::get_palette_option_key(),
+			'probe_priority' => 9,
+		];
+		yield 'palette option updated' => [
+			'hook'           => 'update_option_' . Style_Guide_Reader::get_palette_option_key(),
+			'probe_priority' => 9,
+		];
+		yield 'palette option deleted' => [
+			'hook'           => 'delete_option_' . Style_Guide_Reader::get_palette_option_key(),
+			'probe_priority' => 9,
+		];
+		yield 'customizer preview init' => [
+			'hook'           => 'customize_preview_init',
+			'probe_priority' => -1,
+		];
+	}
+
+	/**
 	 * A read taken before the declarations register does not pin an empty map for the rest of the request.
 	 *
 	 * The theme reads the palette earlier than init:0 (its own CSS and the Customizer both call
@@ -309,6 +376,31 @@ final class Palette_FilterTest extends TestCase {
 
 		// The same filter instance must not answer this read from the empty map it saw first.
 		$this->assertNotSame( '#theme', $filter->filter( '#theme', 'palette1' ) );
+	}
+
+	/**
+	 * Point the container's Style Guide overlay at a source the test controls, so the real overlay,
+	 * decorator, resolver and filter chain runs against a Style Guide without the Kadence theme installed.
+	 *
+	 * @param Style_Guide_Source $source The source to read from.
+	 *
+	 * @return void
+	 */
+	private function swap_style_guide_source( Style_Guide_Source $source ): void {
+		$overlay  = $this->container->get( Style_Guide_Overlay::class );
+		$property = new ReflectionProperty( Style_Guide_Overlay::class, 'source' );
+		$property->setAccessible( true );
+		$property->setValue( $overlay, $source );
+		$overlay->flush();
+	}
+
+	/**
+	 * Put the real reader back on the container's overlay, so later tests see the suite's empty Style Guide.
+	 *
+	 * @return void
+	 */
+	private function restore_style_guide_source(): void {
+		$this->swap_style_guide_source( $this->container->get( Style_Guide_Source::class ) );
 	}
 
 	/**
