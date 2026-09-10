@@ -150,6 +150,13 @@ final class Palette_Filter {
 		// (the Customizer and the theme's own CSS both call palette_option()). Caching the empty map here
 		// would answer every later read in the request with the theme's value, so a token override would
 		// silently do nothing.
+		//
+		// Reads that early still get the theme's own color, not the token's. The theme fills its
+		// editor-color-palette theme support from palette_option() on after_setup_theme, so those entries
+		// carry the raw Style Guide colors, and the plugin's load_color_palette() (after_setup_theme:999)
+		// merges them into its own palette as-is. The block editor does not show them: the theme's
+		// theme.json defines the same slugs as var(--global-paletteN), which this filter feeds once the
+		// declarations are in, and theme.json wins over the theme support by slug.
 		if ( ! $this->builder->has_palette_tokens() ) {
 			return [];
 		}
