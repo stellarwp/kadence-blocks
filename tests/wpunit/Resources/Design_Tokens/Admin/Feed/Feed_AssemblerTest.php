@@ -19,6 +19,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 use ReflectionProperty;
 use Tests\Support\Classes\Fake_Baseline_Document;
 use Tests\Support\Classes\TestCase;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Version;
 
 /**
  * Covers Feed_Assembler in isolation — the pipeline both the Localizer and Feed_Controller share
@@ -173,7 +174,8 @@ final class Feed_AssemblerTest extends TestCase {
 			),
 			new Css_Renderer(),
 			$this->container->get( Effective_Palettes::class ),
-			$this->container->get( Mutator::class )
+			$this->container->get( Mutator::class ),
+			$this->container->get( Effective_Version::class )
 		);
 
 		$assembler = new Feed_Assembler(

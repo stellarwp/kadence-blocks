@@ -4,8 +4,8 @@
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Kadence_Option;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
-use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Version;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 use RuntimeException;
 
@@ -39,8 +39,8 @@ final class Projector {
 	private const KB_COLORS_OPTION = 'kadence_blocks_colors';
 
 	/**
-	 * Marker option storing the last-synced "{plugin-version}:{library-slug}:{store-version}" signature, so a request
-	 * where nothing changed skips resolution entirely.
+	 * Marker option storing the last-synced "{plugin-version}:{library-slug}:{effective-version}" signature, so a
+	 * request where nothing changed skips resolution entirely.
 	 *
 	 * @since TBD
 	 *
@@ -66,14 +66,6 @@ final class Projector {
 	 */
 	private Token_Resolver $resolver;
 
-	/**
-	 * The token store.
-	 *
-	 * @since TBD
-	 *
-	 * @var Token_Store
-	 */
-	private Token_Store $store;
 
 	/**
 	 * Owns the active-library pointer, read at sync time so the synced options follow the active library.
@@ -100,27 +92,38 @@ final class Projector {
 	 */
 	private bool $reconciled_this_request = false;
 
+
+	/**
+	 * Supplies the sync signature's version part: the store version, plus the theme Style Guide
+	 * signature when there is one, so a Customizer save re-syncs KB's own palette option too.
+	 *
+	 * @since TBD
+	 *
+	 * @var Effective_Version
+	 */
+	private Effective_Version $versions;
+
 	/**
 	 * @since TBD
 	 *
-	 * @param Token_Registry             $registry
-	 * @param Token_Resolver             $resolver
-	 * @param Token_Store                $store
-	 * @param Active_Token_Library_Store $active
-	 * @param Palette_Builder            $builder
+	 * @param Token_Registry             $registry The token registry.
+	 * @param Token_Resolver             $resolver The token resolver.
+	 * @param Active_Token_Library_Store $active   The active-library pointer.
+	 * @param Palette_Builder            $builder  The palette entries builder.
+	 * @param Effective_Version          $versions Supplies the sync signature's version part.
 	 */
 	public function __construct(
 		Token_Registry $registry,
 		Token_Resolver $resolver,
-		Token_Store $store,
 		Active_Token_Library_Store $active,
-		Palette_Builder $builder
+		Palette_Builder $builder,
+		Effective_Version $versions
 	) {
 		$this->registry = $registry;
 		$this->resolver = $resolver;
-		$this->store    = $store;
 		$this->active   = $active;
 		$this->builder  = $builder;
+		$this->versions = $versions;
 	}
 
 	/**
@@ -166,7 +169,7 @@ final class Projector {
 		}
 
 		$slug      = $this->active->get();
-		$signature = KADENCE_BLOCKS_VERSION . ':' . $slug . ':' . $this->store->get_version( $slug );
+		$signature = KADENCE_BLOCKS_VERSION . ':' . $slug . ':' . $this->versions->for_slug( $slug );
 
 		// Skip the resolve + write when nothing the sync depends on has changed since the last successful
 		// one. The signature names all three inputs rather than relying on the version alone: a library
@@ -188,14 +191,15 @@ final class Projector {
 		$entries = $this->builder->entries( $resolved );
 
 		// Empty entries is a valid resolved state (no token values set yet). Still advance the marker so
-		// the next request short-circuits rather than re-resolving. When the user writes token values the
-		// store version changes, the signature flips, and the next reconcile re-enters the write path.
+		// the next request short-circuits rather than re-resolving. When the user writes token values (or
+		// saves the Customizer) the effective version changes, the signature flips, and the next reconcile
+		// re-enters the write path.
 		if ( $entries !== [] ) {
 			$this->sync_kb_colors( $entries );
 		}
 
 		// Autoloaded: the boot pass reads this marker on every request to short-circuit, so it must not
-		// cost a dedicated query. It is a tiny "{plugin-version}:{library-slug}:{store-version}" string.
+		// cost a dedicated query. It is a tiny "{plugin-version}:{library-slug}:{effective-version}" string.
 		update_option( self::SYNC_MARKER_OPTION, $signature, true );
 	}
 

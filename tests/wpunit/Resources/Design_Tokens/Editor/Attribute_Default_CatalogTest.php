@@ -11,6 +11,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Document;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 use Tests\Support\Classes\Fake_Baseline_Document;
 use Tests\Support\Classes\TestCase;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Version;
 
 /**
  * Exercises the editor per-block attribute-default catalog the block-registration filter in
@@ -111,7 +112,8 @@ final class Attribute_Default_CatalogTest extends TestCase {
 			new Effective_Document( new Fake_Baseline_Document( $baseline ) ),
 			new Css_Renderer(),
 			$this->container->get( Effective_Palettes::class ),
-			$this->container->get( Mutator::class )
+			$this->container->get( Mutator::class ),
+			$this->container->get( Effective_Version::class )
 		);
 
 		return new Attribute_Default_Catalog( $resolver );

@@ -16,6 +16,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 use ReflectionProperty;
 use Tests\Support\Classes\Fake_Baseline_Document;
 use Tests\Support\Classes\TestCase;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Version;
 
 final class ProjectorTest extends TestCase {
 
@@ -253,15 +254,16 @@ final class ProjectorTest extends TestCase {
 			),
 			new Css_Renderer(),
 			$this->container->get( Effective_Palettes::class ),
-			$this->container->get( Mutator::class )
+			$this->container->get( Mutator::class ),
+			$this->container->get( Effective_Version::class )
 		);
 
 		$projector = new Projector(
 			$this->registry,
 			$corrupt_resolver,
-			$this->container->get( Token_Store::class ),
 			$this->container->get( Active_Token_Library_Store::class ),
-			$this->container->get( Palette_Builder::class )
+			$this->container->get( Palette_Builder::class ),
+			$this->container->get( Effective_Version::class )
 		);
 
 		$projector->reconcile();
