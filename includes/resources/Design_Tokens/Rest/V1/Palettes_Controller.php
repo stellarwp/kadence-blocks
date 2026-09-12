@@ -392,9 +392,9 @@ final class Palettes_Controller extends Controller {
 			return $locked;
 		}
 
-		// The default palette stores every swatch (it is the base). A non-default palette stores only its
-		// DELTAS: a swatch equal to the default palette's value is inherited, not persisted, so the palette
-		// resolves against the default for everything it does not change.
+		// The default palette keeps every swatch row (it is the structure template). A non-default palette
+		// stores only its DELTAS: a swatch equal to the default palette's value is inherited, not persisted, so
+		// the palette resolves against the default for everything it does not change.
 		$node = $this->prepare_for_storage( $node, $slug, $id === $this->palettes->default_palette( $slug ) );
 
 		// Replace the palette node wholesale (remove-then-merge) rather than a plain merge. A delta-reduced node
@@ -511,7 +511,7 @@ final class Palettes_Controller extends Controller {
 			// instead — a token that is stale or no longer a registered color must still be rejected. A
 			// token this palette has never stored has no current value here; that genuinely-new-token case
 			// is left to the downstream DTCG schema validation, which already rejects it.
-			$current_value = $this->palettes->swatch_values( $id, $slug )[ $token ] ?? null;
+			$current_value = $this->palettes->complete_swatch_values( $id, $slug )[ $token ] ?? null;
 
 			if ( is_string( $current_value ) ) {
 				$guard = $this->guard_swatch_target( $id, $token, $current_value );
@@ -527,7 +527,7 @@ final class Palettes_Controller extends Controller {
 		}
 
 		if ( isset( $fields['value'] ) ) {
-			$default = $this->palettes->swatch_values( $default_id, $slug );
+			$default = $this->palettes->complete_swatch_values( $default_id, $slug );
 
 			// A non-default swatch equal to the default value is inherited, not stored, so setting it back to
 			// the default reverts it — identical to a DELETE. Only applies to a value write; a label-only
@@ -574,9 +574,10 @@ final class Palettes_Controller extends Controller {
 
 		$baseline = $this->palettes->baseline_swatch_values();
 
-		// The default palette is the base — it has nothing to inherit from — so a baseline swatch there is
-		// restored to its shipped value rather than dropped. Every other case drops the palette's own entry:
-		// a non-default palette's delta (leaving it inherited) or a user-added row (retiring it).
+		// The default palette's rows are the permanent swatch set, so a baseline swatch there is written back
+		// at its baseline value rather than dropped — {@see reduce_default_to_overrides()} then strips that
+		// value on the way to the store, leaving the row following the baseline again. Every other case drops
+		// the palette's own entry: a non-default palette's delta (leaving it inherited) or a user-added row.
 		$node = ( $id === $this->palettes->default_palette( $slug ) && array_key_exists( $token, $baseline ) )
 			? $this->set_swatch_fields_in_node( $node, $token, [ 'value' => $baseline[ $token ] ], $slug )
 			: $this->remove_swatch_from_node( $node, $token );
@@ -733,10 +734,10 @@ final class Palettes_Controller extends Controller {
 	 *   - `baseline` — whether the shipped palette defines this swatch. A baseline swatch's row is permanent
 	 *     (see {@see guard_baseline_swatches()}), so the editor offers Reset for it and Delete only for the
 	 *     rest.
-	 *   - `overridden` — whether there is anything to undo. On the DEFAULT palette that means the value
-	 *     differs from the shipped one; on any other palette it means the palette stores its own delta rather
-	 *     than inheriting. Measuring the default palette against its own deltas would mark every swatch
-	 *     overridden, since the default stores them all.
+	 *   - `overridden` — whether there is anything to undo: the palette stores its own value for the swatch.
+	 *     One test serves every palette, the default included, because the default palette stores only the
+	 *     swatches the site changed; a swatch left at the baseline keeps its row but stores no `$value`, so
+	 *     it reads as not overridden and there is nothing to undo.
 	 *
 	 * @since TBD
 	 *
@@ -747,11 +748,10 @@ final class Palettes_Controller extends Controller {
 	 */
 	private function effective_view( string $id, string $slug ): array {
 		$template = $this->palettes->palette( $this->palettes->default_palette( $slug ), $slug ) ?? [];
-		$deltas   = $this->palettes->swatch_values( $id, $slug );
+		$deltas   = $this->palettes->stored_swatch_values( $id, $slug );
 		$own      = $this->palettes->palette( $id, $slug ) ?? [];
 		$baseline = $this->palettes->baseline_swatch_values();
 
-		$is_default   = $id === $this->palettes->default_palette( $slug );
 		$token_key    = Extensions::get_swatch_token_key();
 		$label_key    = Extensions::get_label_key();
 		$value_key    = Sentinels::get_value_key();
@@ -776,15 +776,21 @@ final class Palettes_Controller extends Controller {
 					continue;
 				}
 
-				$token   = $swatch[ $token_key ];
-				$has_own = array_key_exists( $token, $deltas );
-				$value   = $has_own ? $deltas[ $token ] : ( $swatch[ $value_key ] ?? '' );
+				$token          = $swatch[ $token_key ];
+				$has_own        = array_key_exists( $token, $deltas );
+				$template_value = $swatch[ $value_key ] ?? null;
 
-				// The default palette stores every swatch, so "has its own value" is always true there and says
-				// nothing; what can be undone on it is a value that no longer matches the shipped one.
-				$overridden = $is_default
-					? ( array_key_exists( $token, $baseline ) && $baseline[ $token ] !== $value )
-					: $has_own;
+				// A swatch this palette does not store falls back to the template's value, and the template
+				// itself may not carry one — a default-palette swatch left at the baseline keeps its row but
+				// stores no `$value`. The baseline answers that last case, so the row shows the color the
+				// token really renders as (on a Kadence site, the theme's Style Guide color).
+				$value = $has_own
+					? $deltas[ $token ]
+					: ( is_string( $template_value ) && $template_value !== '' ? $template_value : ( $baseline[ $token ] ?? '' ) );
+
+				// There is something to reset exactly when the palette stores its own value — true for every
+				// palette now that the default stores only the swatches it changes.
+				$overridden = $has_own;
 
 				$swatches[] = [
 					$token_key   => $token,
@@ -819,12 +825,13 @@ final class Palettes_Controller extends Controller {
 	 *
 	 * @param array<string, mixed> $node       The full palette node from the request.
 	 * @param string               $slug       The token library slug.
-	 * @param bool                 $is_default Whether this is the library's default palette (which keeps every swatch).
+	 * @param bool                 $is_default Whether this is the library's default palette (which keeps every swatch row;
+	 *                                         {@see reduce_default_to_overrides()} then strips the values it does not need).
 	 *
 	 * @return array<string, mixed>
 	 */
 	private function prepare_for_storage( array $node, string $slug, bool $is_default ): array {
-		$default      = $is_default ? [] : $this->palettes->swatch_values( $this->palettes->default_palette( $slug ), $slug );
+		$default      = $is_default ? [] : $this->palettes->complete_swatch_values( $this->palettes->default_palette( $slug ), $slug );
 		$token_key    = Extensions::get_swatch_token_key();
 		$value_key    = Sentinels::get_value_key();
 		$swatches_key = Extensions::get_swatches_key();
@@ -853,7 +860,8 @@ final class Palettes_Controller extends Controller {
 				$token = $swatch[ $token_key ];
 				$value = $swatch[ $value_key ] ?? null;
 
-				// The default palette keeps every swatch; a non-default palette keeps only swatches that differ
+				// The default palette keeps every swatch ROW — it is the structure template, and dropping a row
+				// there removes it from every palette. A non-default palette keeps only swatches that differ
 				// from the default value (the deltas).
 				if ( $is_default || ! ( array_key_exists( $token, $default ) && $default[ $token ] === $value ) ) {
 					$swatches[] = $swatch;
@@ -1381,10 +1389,75 @@ final class Palettes_Controller extends Controller {
 	 * @return WP_REST_Response|WP_Error
 	 */
 	private function write_palette_node( string $slug, string $id, array $node ) {
+		if ( $id === $this->palettes->default_palette( $slug ) ) {
+			$node = $this->reduce_default_to_overrides( $node );
+		}
+
 		$document  = $this->mutator->remove_by_keys( $this->stored_document( $slug ), $this->palette_keys( $id ) );
 		$candidate = $this->mutator->merge( $document, $this->palette_partial( $id, $node ) );
 
 		return $this->validate_and_save( $candidate, $id, $slug );
+	}
+
+	/**
+	 * Reduce the DEFAULT palette to the swatches it actually changes: drop `$value` from every swatch whose
+	 * color already matches the baseline, keeping the row itself. The row has to stay — it is part of the
+	 * permanent swatch set {@see guard_baseline_swatches()} protects, and the stored groups list REPLACES the
+	 * baseline's once anything is stored ({@see Effective_Palettes::without_superseded_groups()}), so a
+	 * dropped row would vanish from every palette.
+	 *
+	 * Without this a single edit freezes the whole palette. Every write path rebuilds the node from
+	 * {@see Effective_Palettes::palette()}, which is the baseline merged with the overrides, so the node
+	 * carries a `$value` for all 17 swatches whether or not the site chose any of them. Persisting those
+	 * turns each one into a stored override: the palette stops following the baseline, and on a Kadence site
+	 * that means it stops following the theme's Style Guide — change a color in the Customizer afterwards and
+	 * the Style Library still shows the color that was captured at write time.
+	 *
+	 * Runs here rather than in {@see prepare_for_storage()} because the swatch endpoints reach the store
+	 * without passing through that method; this is the one choke point all three write paths share.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $node The default palette node being written.
+	 *
+	 * @return array<string, mixed>
+	 */
+	private function reduce_default_to_overrides( array $node ): array {
+		$baseline     = $this->palettes->baseline_swatch_values();
+		$groups_key   = Extensions::get_groups_key();
+		$swatches_key = Extensions::get_swatches_key();
+		$token_key    = Extensions::get_swatch_token_key();
+		$value_key    = Sentinels::get_value_key();
+
+		$groups = $node[ $groups_key ] ?? [];
+
+		if ( ! is_array( $groups ) ) {
+			return $node;
+		}
+
+		foreach ( $groups as $gi => $group ) {
+			if ( ! is_array( $group ) || ! isset( $group[ $swatches_key ] ) || ! is_array( $group[ $swatches_key ] ) ) {
+				continue;
+			}
+
+			foreach ( $group[ $swatches_key ] as $si => $swatch ) {
+				if ( ! is_array( $swatch ) || ! isset( $swatch[ $token_key ] ) || ! is_string( $swatch[ $token_key ] ) ) {
+					continue;
+				}
+
+				$token = $swatch[ $token_key ];
+
+				if ( ! array_key_exists( $token, $baseline ) || ( $swatch[ $value_key ] ?? null ) !== $baseline[ $token ] ) {
+					continue;
+				}
+
+				unset( $groups[ $gi ][ $swatches_key ][ $si ][ $value_key ] );
+			}
+		}
+
+		$node[ $groups_key ] = $groups;
+
+		return $node;
 	}
 
 	/**
