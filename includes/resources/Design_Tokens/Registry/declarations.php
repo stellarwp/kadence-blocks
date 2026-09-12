@@ -189,9 +189,12 @@ $font_size_primitive_tokens = array_map(
 /**
  * The brand + neutral primitives ARE the site's global color palette: each claims a Kadence palette slot
  * (palette1..9), so --global-paletteN follows the primitive and the legacy kadence_blocks_colors palette
- * stays in sync. Values mirror Kadence's default palette (brand at 1-2, a dark→light neutral ramp at 3-9,
- * white at 9), so activation changes nothing until a primitive is overridden. Semantic colors deliberately
- * do NOT claim a slot — they deliver at the block level — so writing a semantic never re-skins the palette.
+ * stays in sync. Baseline values are the plugin's own shipped defaults (brand at 1-2, a dark→light neutral
+ * ramp at 3-9, white at 9) — they match what the plugin emits when the Kadence theme is absent, NOT the
+ * theme's own defaults, which differ at slots 1 and 2. On a Kadence site the theme Style Guide layer
+ * re-values these nine primitives from the active palette set, so resolution starts from the colors the
+ * site already renders. Semantic colors deliberately do NOT claim a slot — they deliver at the block
+ * level — so writing a semantic never re-skins the palette.
  */
 $palette_slots = [
 	'primitive.color.brand.primary'   => [ 'palette1', __( 'Brand Primary', 'kadence-blocks' ) ],

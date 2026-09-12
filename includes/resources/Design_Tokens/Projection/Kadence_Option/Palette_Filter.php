@@ -71,8 +71,8 @@ final class Palette_Filter {
 	private Palette_Builder $builder;
 
 	/**
-	 * Per-request memo of slug => { color, name }. Null until first built; cleared when a token is written
-	 * or the active library changes, the two inputs it is built from.
+	 * Per-request memo of slug => { color, name }. Null until first built; cleared when any input it is
+	 * built from changes: a token write, an active-library switch, or a change to the theme's Style Guide.
 	 *
 	 * @since TBD
 	 *
@@ -123,8 +123,8 @@ final class Palette_Filter {
 
 	/**
 	 * Drop the per-request memo so a change made in this request is visible to later palette reads in the
-	 * same request. Bound to both inputs the memo is built from: the store's changed action and the
-	 * active-library pointer's.
+	 * same request. Bound to every input the memo is built from: the store's changed action, the
+	 * active-library pointer's, the theme's palette option hooks and the Customizer preview init.
 	 *
 	 * @since TBD
 	 *
