@@ -366,7 +366,10 @@ export function BoxShadowControl({
 				<div className="kadence-token-field">
 					<Dropdown
 						className="kadence-token-field__dropdown"
-						contentClassName="kadence-token-field__popover"
+						// The extra class only widens the sheet: this is the one token popover whose Custom tab
+						// lays four number fields across a single row, so it needs more room than the shared
+						// 260px the other controls share.
+						contentClassName="kadence-token-field__popover kb-box-shadow-control__popover"
 						// Beside the trigger, not above it — the same placement every other control in this
 						// library uses. The inspector column is narrow enough that a popover opening upward
 						// covers the controls the user was just reading.

@@ -80,7 +80,7 @@ final class Css_BuilderTest extends TestCase {
 			$css
 		);
 		$this->assertStringContainsString( $this->declaration( 'border-color', 'kb-img-border-color', 'semantic.color.border', '#E2E8F0' ), $css );
-		$this->assertStringContainsString( $this->declaration( 'border-width', 'kb-img-border-width', 'semantic.border-width.default', '1px' ), $css );
+		$this->assertStringContainsString( $this->declaration( 'border-width', 'kb-img-border-width', 'semantic.border-width.media', '0' ), $css );
 		$this->assertStringContainsString( $this->declaration( 'border-radius', 'kb-img-radius', 'semantic.radius.media', '0' ), $css );
 
 		// Padding is rendered on the `.kb-img` descendant, so it gets its own rule.
@@ -94,6 +94,29 @@ final class Css_BuilderTest extends TestCase {
 		$this->assertStringNotContainsString( '.wp-block-kadence-image img{margin', $css );
 		$this->assertStringNotContainsString( 'margin:var(', $css );
 		$this->assertStringNotContainsString( '.wp-block-kadence-advancedbtn', $css );
+	}
+
+	/**
+	 * The image's projected border width falls back to zero. The block's own stylesheet already paints
+	 * `border: 0 solid currentColor` on the same `.wp-block-kadence-image img` selector, so the style is
+	 * already `solid` and a non-zero fallback here would paint a hairline on every image that never asked
+	 * for one -- while the var() indirection stays in place so an override still delivers a width.
+	 *
+	 * @return void
+	 */
+	public function testTheImageBorderWidthDefaultResolvesToZero(): void {
+		$registry = $this->container->get( Token_Registry::class );
+
+		$css = $this->builder( $registry )->css();
+
+		$this->assertStringContainsString(
+			'border-width:var(--kb-img-border-width,var(' . Css_Var::from_id( 'semantic.border-width.media' ) . ',0))',
+			$css
+		);
+		$this->assertStringNotContainsString(
+			'border-width:var(--kb-img-border-width,var(' . Css_Var::from_id( 'semantic.border-width.default' ),
+			$css
+		);
 	}
 
 	/**

@@ -488,6 +488,16 @@ return [
 				'group' => __( 'Media', 'kadence-blocks' ),
 			],
 			[
+				// Image border-width default for the block-default CSS projector. The image block's own stylesheet
+				// already paints `border: 0 solid currentColor` on the rendered <img>, so any non-zero width
+				// delivered on that same selector becomes a visible border. Resolves to 0, matching KB's default
+				// (no border until a width is set); a site owner can give every image a border by overriding it.
+				'id'    => 'semantic.border-width.media',
+				'type'  => 'dimension',
+				'label' => __( 'Media Border Width', 'kadence-blocks' ),
+				'group' => __( 'Media', 'kadence-blocks' ),
+			],
+			[
 				// Button shadow default for the block-default CSS projector, mirroring semantic.shadow.media.
 				// Registered so Css_Var emits --kb-token--semantic--shadow--button; the projector points
 				// kadence/singlebtn's box-shadow at it. Resolves to an invisible (transparent, zero) shadow,
@@ -700,9 +710,14 @@ return [
 			// Image color/border/shadow/radius: low-specificity block-default-CSS rules on the rendered
 			// `<img>`, where KB paints background, border, box-shadow, and border-radius. The projector groups
 			// these into one `.wp-block-kadence-image img { ... }` rule (padding gets its own descendant rule
-			// below). Each token is seeded to KB's existing default (transparent background, invisible border
-			// until a style is set, no shadow, square corners), so a fresh image is unchanged; any value the
-			// user sets renders at higher specificity (the `.kb-image<uid>` instance selector) and still wins.
+			// below). Each token is seeded to KB's existing default (transparent background, zero border width,
+			// no shadow, square corners), so a fresh image is unchanged; any value the user sets renders at
+			// higher specificity (the `.kb-image<uid>` instance selector) and still wins.
+			//
+			// The border width MUST seed to zero, not to the brand default: the block stylesheet paints
+			// `border: 0 solid currentColor` on the same `.wp-block-kadence-image img` selector, so the style is
+			// already `solid` and whichever of the two rules prints later decides the width. On the front end
+			// that is this projected rule, which would otherwise paint a hairline on every image.
 			//
 			// The `border` and `borderWidth` bindings below stay declared -- they feed the block-default rules
 			// that seed an image's border color and width from the tokens -- but the Style Library screen
@@ -747,7 +762,7 @@ return [
 					],
 				],
 				'borderWidth'  => [
-					'token'            => 'semantic.border-width.default',
+					'token'            => 'semantic.border-width.media',
 					'css_prop'         => 'border-width',
 					'css_selector'     => 'img',
 					'css_var'          => 'kb-img-border-width',
