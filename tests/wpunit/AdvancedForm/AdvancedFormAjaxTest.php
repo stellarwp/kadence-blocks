@@ -200,6 +200,63 @@ class AdvancedFormAjaxTest extends WPTestCase {
 		$this->assertEquals('0', $processed_fields[0]['value']);
 	}
 
+	public function testSanitizesValuesForAllFieldTypes() {
+		$mockedForm = $this->getMockBuilder( KB_Ajax_Advanced_Form::class )
+		                   ->onlyMethods( [ 'process_bail' ] )
+		                   ->getMock();
+
+		$fields = [
+			[
+				'inputName' => 'field1',
+				'uniqueID'  => 1,
+				'type'      => 'number',
+			],
+			[
+				'inputName' => 'field2',
+				'uniqueID'  => 2,
+				'type'      => 'range',
+			],
+		];
+		$_POST = [
+			'field1' => '<b>one</b>',
+			'field2' => '<i>two</i>',
+		];
+
+		$mockedForm->expects( $this->never() )->method( 'process_bail' );
+
+		$processed_fields = $mockedForm->process_fields( $fields );
+
+		$this->assertEquals( 'one', $processed_fields[0]['value'] );
+		$this->assertEquals( 'two', $processed_fields[1]['value'] );
+	}
+
+	public function testSanitizeFilterOutputIsSanitized() {
+		add_filter( 'kadence_blocks_form_sanitize_number', static function () {
+			return '<b>filtered</b>';
+		} );
+
+		$mockedForm = $this->getMockBuilder( KB_Ajax_Advanced_Form::class )
+		                   ->onlyMethods( [ 'process_bail' ] )
+		                   ->getMock();
+
+		$fields = [
+			[
+				'inputName' => 'field1',
+				'uniqueID'  => 1,
+				'type'      => 'number',
+			],
+		];
+		$_POST = [
+			'field1' => '5',
+		];
+
+		$processed_fields = $mockedForm->process_fields( $fields );
+
+		remove_all_filters( 'kadence_blocks_form_sanitize_number' );
+
+		$this->assertEquals( 'filtered', $processed_fields[0]['value'] );
+	}
+
 	protected function setUp(): void {
 		parent::setUp();
 

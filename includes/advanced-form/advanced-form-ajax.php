@@ -186,6 +186,7 @@ class KB_Ajax_Advanced_Form {
 				 * @param string $value The field value.
 				 */
 				$value = apply_filters( "kadence_blocks_form_sanitize_{$field_type}", $value );
+				$value = ( is_array( $value ) ? sanitize_text_field( implode( ', ', $value ) ) : sanitize_text_field( $value ) );
 		}
 
 		return $value;
