@@ -993,7 +993,7 @@ class Kadence_Blocks_CSS {
 	 * whole-string `{dot.alias}` in the size attribute, and the editor resolves it to a var() before painting.
 	 * Without this branch the same alias reaches the page as `{dot.alias}px`, which the browser drops, so the
 	 * block silently falls back to its default rule while the canvas shows the picked size. An alias the active
-	 * library does not back yields '' so no declaration is emitted (see {@see self::add_rule()}), matching every
+	 * library does not back yields '' so no declaration is emitted ({@see self::add_rule()}), matching every
 	 * other alias-aware renderer in this class.
 	 *
 	 * @param mixed  $size The stored size: a number, a numeric string, a font-size slug, or a `{dot.alias}`.

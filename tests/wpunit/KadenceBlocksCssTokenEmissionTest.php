@@ -966,6 +966,9 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 	}
 
 	/**
+	 * The non-alias shapes get_font_size accepted before aliases were recognized: slug, integer, decimal
+	 * string, malformed brace.
+	 *
 	 * @return Generator
 	 */
 	public static function nonAliasFontSizeProvider(): Generator {
