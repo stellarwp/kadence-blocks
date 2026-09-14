@@ -11,6 +11,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
 use ReflectionProperty;
 use Tests\Support\Classes\TestCase;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Version;
 
 /**
  * Covers the preset projector: it appends the scoped preset CSS to KB's front-end and editor style
@@ -101,7 +102,12 @@ final class ProjectorTest extends TestCase {
 	 * Build the projector with a given registry, the real preset resolver and the store.
 	 */
 	private function projector( Token_Registry $registry ): Projector {
-		return new Projector( $registry, $this->store, $this->active, new Css_Builder( $registry, $this->resolver, $this->store ) );
+		return new Projector(
+			$registry,
+			$this->active,
+			new Css_Builder( $registry, $this->resolver, $this->container->get( Effective_Version::class ) ),
+			$this->container->get( Effective_Version::class )
+		);
 	}
 
 	/**

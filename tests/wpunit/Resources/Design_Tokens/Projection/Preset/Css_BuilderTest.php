@@ -9,6 +9,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
 use ReflectionProperty;
 use Tests\Support\Classes\TestCase;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Version;
 
 /**
  * Exercises the selectable-preset CSS builder against the real shipped Button preset bindings, so these
@@ -389,7 +390,7 @@ final class Css_BuilderTest extends TestCase {
 	 * @return Css_Builder
 	 */
 	private function builder( Token_Registry $registry ): Css_Builder {
-		return new Css_Builder( $registry, $this->resolver, $this->store );
+		return new Css_Builder( $registry, $this->resolver, $this->container->get( Effective_Version::class ) );
 	}
 
 	/**

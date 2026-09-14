@@ -8,11 +8,12 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Definition;
 /**
  * Normalizes a token's "kadence_slot" projection into a Kadence color-palette slot.
  *
- * The Kadence ecosystem keys nine color slots palette1…palette9. That slug is the identifier in BOTH
- * KB's own kadence_blocks_colors option AND the Kadence theme's kadence_global_palette option, and is
- * also the suffix of the --global-paletteN CSS variable. Both the Css_Var legacy bridge (which rewrites
- * the --global-paletteN filter on non-Kadence sites) and the Kadence_Option projector (which writes the
- * two palette options) resolve through this one class, so the slot they target can never drift.
+ * The Kadence ecosystem keys nine color slots palette1…palette9. That slug is the identifier in KB's own
+ * kadence_blocks_colors option, in the Kadence theme's kadence_global_palette option, and as the suffix
+ * of the --global-paletteN CSS variable. Every consumer resolves through this one class so the slot they
+ * target can never drift: the Css_Var legacy bridge (which rewrites the --global-paletteN filter on
+ * non-Kadence sites), the Kadence_Option projector (which writes KB's own option), and the palette filter
+ * that answers the theme's reads.
  *
  * A token opts in with a bare slug string under "kadence_slot":
  *

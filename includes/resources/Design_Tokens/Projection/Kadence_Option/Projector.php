@@ -4,23 +4,24 @@
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Kadence_Option;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
-use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Version;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 use RuntimeException;
 
 /**
- * Syncs resolved palette-token values into two stored options so pre-existing code paths reflect tokens.
+ * Syncs resolved palette-token values into KB's own stored option so pre-existing code paths reflect tokens.
  *
  *   - kadence_blocks_colors    — KB's own palette option. Synced ALWAYS (any active theme), so KB's
  *                                editor palette UI and its theme.json / editor-settings injection track
  *                                tokens with no change to those code paths.
- *   - kadence_global_palette   — the Kadence theme's option. Synced ONLY when it already exists, NEVER
- *                                created, so non-Kadence-theme sites are left untouched.
+ *
+ * The Kadence theme's kadence_global_palette is NOT written. That option is the user's Style Guide, and
+ * overwriting it destroyed colors the user chose in the Customizer with no way back. Tokens reach the
+ * theme at read time instead, through the kadence_palette_option filter.
  *
  * reconcile() is wired to a once-per-request boot pass AND to kadence_blocks_design_tokens_changed, so a
- * token write syncs immediately and a later theme switch (which newly exposes kadence_global_palette) is
- * caught on the next request. A version+theme marker short-circuits the common no-change case; update_option
+ * token write syncs immediately. A version marker short-circuits the common no-change case; update_option
  * is itself a no-op when the encoded value is unchanged, the correctness backstop. Gated on
  * Token_Registry::is_active() (fail-closed) and a fail-open catch around resolution.
  *
@@ -38,17 +39,8 @@ final class Projector {
 	private const KB_COLORS_OPTION = 'kadence_blocks_colors';
 
 	/**
-	 * The Kadence theme's palette option key.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	private const THEME_PALETTE_OPTION = 'kadence_global_palette';
-
-	/**
-	 * Marker option storing the last-synced "{store-version}:{theme-present}" signature, so a request
-	 * where nothing changed skips resolution entirely.
+	 * Marker option storing the last-synced "{plugin-version}:{library-slug}:{effective-version}" signature, so a
+	 * request where nothing changed skips resolution entirely.
 	 *
 	 * @since TBD
 	 *
@@ -74,14 +66,6 @@ final class Projector {
 	 */
 	private Token_Resolver $resolver;
 
-	/**
-	 * The token store.
-	 *
-	 * @since TBD
-	 *
-	 * @var Token_Store
-	 */
-	private Token_Store $store;
 
 	/**
 	 * Owns the active-library pointer, read at sync time so the synced options follow the active library.
@@ -108,27 +92,38 @@ final class Projector {
 	 */
 	private bool $reconciled_this_request = false;
 
+
+	/**
+	 * Supplies the sync signature's version part: the store version, plus the theme Style Guide
+	 * signature when there is one, so a Customizer save re-syncs KB's own palette option too.
+	 *
+	 * @since TBD
+	 *
+	 * @var Effective_Version
+	 */
+	private Effective_Version $versions;
+
 	/**
 	 * @since TBD
 	 *
-	 * @param Token_Registry             $registry
-	 * @param Token_Resolver             $resolver
-	 * @param Token_Store                $store
-	 * @param Active_Token_Library_Store $active
-	 * @param Palette_Builder            $builder
+	 * @param Token_Registry             $registry The token registry.
+	 * @param Token_Resolver             $resolver The token resolver.
+	 * @param Active_Token_Library_Store $active   The active-library pointer.
+	 * @param Palette_Builder            $builder  The palette entries builder.
+	 * @param Effective_Version          $versions Supplies the sync signature's version part.
 	 */
 	public function __construct(
 		Token_Registry $registry,
 		Token_Resolver $resolver,
-		Token_Store $store,
 		Active_Token_Library_Store $active,
-		Palette_Builder $builder
+		Palette_Builder $builder,
+		Effective_Version $versions
 	) {
 		$this->registry = $registry;
 		$this->resolver = $resolver;
-		$this->store    = $store;
 		$this->active   = $active;
 		$this->builder  = $builder;
+		$this->versions = $versions;
 	}
 
 	/**
@@ -173,13 +168,13 @@ final class Projector {
 			return;
 		}
 
-		$slug          = $this->active->get();
-		$theme_present = $this->theme_palette_exists();
-		$signature     = KADENCE_BLOCKS_VERSION . ':' . $this->store->get_version( $slug ) . ':' . ( $theme_present ? '1' : '0' );
+		$slug      = $this->active->get();
+		$signature = KADENCE_BLOCKS_VERSION . ':' . $slug . ':' . $this->versions->for_slug( $slug );
 
-		// Skip the resolve + writes when neither the active library's version nor the theme-option presence
-		// changed since the last successful sync. Switching the active library changes its version, so the
-		// signature flips and the next reconcile re-syncs; the theme-present bit catches a theme switch.
+		// Skip the resolve + write when nothing the sync depends on has changed since the last successful
+		// one. The signature names all three inputs rather than relying on the version alone: a library
+		// version is a per-row hash, so nothing enforces that two libraries cannot share one, and the
+		// marker would then read as unchanged across a switch.
 		if ( get_option( self::SYNC_MARKER_OPTION ) === $signature ) {
 			return;
 		}
@@ -188,7 +183,7 @@ final class Projector {
 			$resolved = $this->resolver->resolve( $slug );
 		} catch ( RuntimeException $e ) {
 			// Corrupt stored document (alias cycle / dangling alias from a raw DB write). Fail open:
-			// leave both options exactly as they are; do NOT advance the marker, so a later clean write
+			// leave the option exactly as it is; do NOT advance the marker, so a later clean write
 			// re-attempts.
 			return;
 		}
@@ -196,18 +191,15 @@ final class Projector {
 		$entries = $this->builder->entries( $resolved );
 
 		// Empty entries is a valid resolved state (no token values set yet). Still advance the marker so
-		// the next request short-circuits rather than re-resolving. When the user writes token values the
-		// store version changes, the signature flips, and the next reconcile re-enters the write path.
+		// the next request short-circuits rather than re-resolving. When the user writes token values (or
+		// saves the Customizer) the effective version changes, the signature flips, and the next reconcile
+		// re-enters the write path.
 		if ( $entries !== [] ) {
-			$this->sync_kb_colors( $entries );          // Always.
-
-			if ( $theme_present ) {                       // Only when it already exists.
-				$this->sync_theme_palette( $entries );
-			}
+			$this->sync_kb_colors( $entries );
 		}
 
 		// Autoloaded: the boot pass reads this marker on every request to short-circuit, so it must not
-		// cost a dedicated query. It is a tiny "{version}:{theme-bit}" string.
+		// cost a dedicated query. It is a tiny "{plugin-version}:{library-slug}:{effective-version}" string.
 		update_option( self::SYNC_MARKER_OPTION, $signature, true );
 	}
 
@@ -231,42 +223,6 @@ final class Projector {
 		// wp_theme_json_data_theme). update_option only writes when the value changes, and preserves
 		// autoload each time it does — which is the state we want.
 		update_option( self::KB_COLORS_OPTION, (string) wp_json_encode( $merged ), true );
-	}
-
-	/**
-	 * Conditional sync of the Kadence theme's kadence_global_palette. The caller has already proved the
-	 * option exists; we re-read it for the merge. Never creates it.
-	 *
-	 * @since TBD
-	 *
-	 * @param array<string, array{color: string, name: string}> $entries
-	 *
-	 * @return void
-	 */
-	private function sync_theme_palette( array $entries ): void {
-		if ( ! $this->theme_palette_exists() ) {
-			return; // raced away between probe and here; never create.
-		}
-
-		$raw     = get_option( self::THEME_PALETTE_OPTION, '' );
-		$decoded = $this->decode( $raw );
-		$merged  = $this->builder->merge_theme_palette( $decoded, $entries );
-
-		// Pass null so update_option preserves the theme's existing autoload setting rather than
-		// forcing it. It only writes when the value changes.
-		update_option( self::THEME_PALETTE_OPTION, (string) wp_json_encode( $merged ), null );
-	}
-
-	/**
-	 * Whether the Kadence theme's palette option exists. Uses !== false because get_option() returns
-	 * false only when the row is absent, and kadence_global_palette always stores a JSON string.
-	 *
-	 * @since TBD
-	 *
-	 * @return bool
-	 */
-	private function theme_palette_exists(): bool {
-		return get_option( self::THEME_PALETTE_OPTION ) !== false;
 	}
 
 	/**

@@ -20,6 +20,6 @@ modules:
             title: 'Kadence Blocks Snapshot Tests'
             theme: twentytwentyfour
             plugins:
-                - kadence-blocks/kadence-blocks.php
+                - %KB_PLUGIN_DIR%/kadence-blocks.php
             activatePlugins:
-                - kadence-blocks/kadence-blocks.php
+                - %KB_PLUGIN_DIR%/kadence-blocks.php

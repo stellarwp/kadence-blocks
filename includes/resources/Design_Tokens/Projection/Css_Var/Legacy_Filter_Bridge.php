@@ -52,8 +52,9 @@ final class Legacy_Filter_Bridge {
 	 *
 	 * A no-op when the Kadence theme is active: KB's existing CSS emits --global-palette* only when
 	 * the theme is not active, so mirroring that guard here prevents the editor's JS color swatches
-	 * (which use this filter unconditionally) from diverging from the rendered CSS. Token-driven
-	 * palette values under the Kadence theme are handled by a separate palette projector.
+	 * (which use this filter unconditionally) from diverging from the rendered CSS. Under the Kadence
+	 * theme, token colors reach the palette through the kadence_palette_option filter that answers the
+	 * theme's own palette reads; the theme's stored Style Guide palette is never written.
 	 *
 	 * @since TBD
 	 *

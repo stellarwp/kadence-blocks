@@ -3,12 +3,12 @@
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Preset;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
-use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Contracts\Abstract_Css_Projector;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Responsive;
 use KadenceWP\KadenceBlocks\Design_Tokens\Utils\Location;
 use Throwable;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Version;
 
 /**
  * Projects the selectable-preset CSS into the WordPress style pipeline.
@@ -29,12 +29,6 @@ final class Projector extends Abstract_Css_Projector {
 	 */
 	private Token_Registry $registry;
 
-	/**
-	 * @var Token_Store
-	 *
-	 * @since TBD
-	 */
-	private Token_Store $store;
 
 	/**
 	 * Owns the active-library pointer, read at build time so the projection follows the active library.
@@ -52,19 +46,35 @@ final class Projector extends Abstract_Css_Projector {
 	 */
 	private Css_Builder $css_builder;
 
+
+	/**
+	 * Supplies the cache version: the store version, plus the theme Style Guide signature when there is
+	 * one, so a Customizer save invalidates this cache even though it bumps no store version.
+	 *
+	 * @since TBD
+	 *
+	 * @var Effective_Version
+	 */
+	private Effective_Version $versions;
+
 	/**
 	 * @since TBD
 	 *
 	 * @param Token_Registry             $registry    The token registry.
-	 * @param Token_Store                $store       The store, for the cache-busting version.
 	 * @param Active_Token_Library_Store $active      Owns the active-library pointer.
 	 * @param Css_Builder                $css_builder The preset CSS builder.
+	 * @param Effective_Version          $versions    Supplies the effective cache version for a library.
 	 */
-	public function __construct( Token_Registry $registry, Token_Store $store, Active_Token_Library_Store $active, Css_Builder $css_builder ) {
+	public function __construct(
+		Token_Registry $registry,
+		Active_Token_Library_Store $active,
+		Css_Builder $css_builder,
+		Effective_Version $versions
+	) {
 		$this->registry    = $registry;
-		$this->store       = $store;
 		$this->active      = $active;
 		$this->css_builder = $css_builder;
+		$this->versions    = $versions;
 	}
 
 	/**
@@ -128,7 +138,7 @@ final class Projector extends Abstract_Css_Projector {
 	public function css(): string {
 		try {
 			$active  = $this->active->get();
-			$version = $this->store->get_version( $active );
+			$version = $this->versions->for_slug( $active );
 
 			return $this->css_builder->css_for_version( $active, $version, $this->breakpoints() );
 		} catch ( Throwable $e ) {
@@ -154,7 +164,7 @@ final class Projector extends Abstract_Css_Projector {
 	public function editor_css(): string {
 		try {
 			$active  = $this->active->get();
-			$version = $this->store->get_version( $active );
+			$version = $this->versions->for_slug( $active );
 
 			return $this->css_builder->editor_css_for_version( $active, $version, $this->breakpoints() );
 		} catch ( Throwable $e ) {
