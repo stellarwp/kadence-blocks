@@ -1,5 +1,14 @@
 /* eslint-env jest */
-import { computeIsDirty, resolveDraftSeed, resolveSavedSeed } from '../hooks/use-settings-panel';
+/**
+ * External dependencies
+ */
+import { act, createElement, useLayoutEffect } from 'react';
+import { createRoot } from 'react-dom/client';
+
+/**
+ * Internal dependencies
+ */
+import { computeIsDirty, resolveDraftSeed, resolveSavedSeed, useSettingsPanel } from '../hooks/use-settings-panel';
 
 describe('resolveDraftSeed', () => {
 	it('does not seed while the caller has no values yet (initialValues null)', () => {
@@ -129,5 +138,61 @@ describe('resolveSavedSeed', () => {
 		const current = { label: 'Title', tokens: {} };
 
 		expect(resolveSavedSeed(current, current, null)).toBe(current);
+	});
+});
+
+describe('useSettingsPanel item switch', () => {
+	/**
+	 * Records the `isDirty` value of every COMMITTED render, so a stale one that reached the DOM is
+	 * caught. `useLayoutEffect` fires after commit and before paint, so it sees exactly the renders a
+	 * user could have seen, and nothing React discarded before committing.
+	 *
+	 * @param {Object} props               The component props.
+	 * @param {Object} props.route         The route (`{ item }`).
+	 * @param {Object} props.initialValues The persisted values for the open item.
+	 * @param {Array}  props.log           The array each committed `isDirty` is pushed onto.
+	 *
+	 * @since TBD
+	 *
+	 * @return {null} Renders nothing.
+	 */
+	function Probe({ route, initialValues, log }) {
+		const panel = useSettingsPanel({ route, navigate: () => {}, initialValues });
+
+		useLayoutEffect(() => {
+			log.push(panel.isDirty);
+		});
+
+		return null;
+	}
+
+	/**
+	 * Switching to another item whose values are already known never commits a render where the
+	 * previous item's draft is compared against the new item's values — that one stale frame is
+	 * what let Save flash enabled between two swatches.
+	 *
+	 * @return {void}
+	 */
+	it('never commits a dirty render while switching between two seeded items', () => {
+		global.IS_REACT_ACT_ENVIRONMENT = true;
+		const container = document.createElement('div');
+		const root = createRoot(container);
+		const log = [];
+		const first = { label: 'Main 1', value: '#3182CE' };
+		const second = { label: 'Main 2', value: '#2B6CB0' };
+
+		act(() => {
+			root.render(createElement(Probe, { route: { item: 'one' }, initialValues: first, log }));
+		});
+
+		act(() => {
+			root.render(createElement(Probe, { route: { item: 'two' }, initialValues: second, log }));
+		});
+
+		expect(log).not.toContain(true);
+
+		act(() => {
+			root.unmount();
+		});
 	});
 });

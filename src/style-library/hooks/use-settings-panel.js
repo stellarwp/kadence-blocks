@@ -16,7 +16,7 @@
 /**
  * WordPress dependencies
  */
-import { useEffect, useRef, useState } from '@wordpress/element';
+import { useState } from '@wordpress/element';
 
 /**
  * Internal dependencies
@@ -36,8 +36,8 @@ import { isEqual, setValueAtPath } from '../helpers/settings-schema';
  * replaced: `reseedDraft` seeds from a settled write, on a caller that knows one just happened, and
  * leaves the tracking value alone precisely so this guarantee still holds for a sibling panel.
  *
- * Pure so the seeding rule is testable without rendering a component — `useSettingsPanel` is a thin
- * `useEffect` wrapper around this.
+ * Pure so the seeding rule is testable without rendering a component — `useSettingsPanel` applies it
+ * during render.
  *
  * @param {string}  itemId        The open item id.
  * @param {?Object} initialValues The caller's initial values, or null while its data is still loading.
@@ -125,31 +125,41 @@ export function resolveSavedSeed(current, submitted, saved) {
 export function useSettingsPanel({ route, navigate, initialValues }) {
 	const itemId = route.item;
 	const [draft, setDraft] = useState(initialValues || {});
-	const seededForRef = useRef(null);
+	const [seededFor, setSeededFor] = useState(null);
 
-	// See `resolveDraftSeed`'s docblock for the full rule. Depending on `initialValues` here (unlike
-	// a plain itemId-only dependency) is what lets a cold-loaded item's data seed the draft once it
-	// arrives; `resolveDraftSeed`'s one-shot-per-item tracking is what stops that same dependency
-	// from clobbering an in-flight edit on every later identity change (e.g. a save's `refreshFeed`).
-	useEffect(() => {
-		const { shouldSeed, nextSeededFor } = resolveDraftSeed(itemId, initialValues, seededForRef.current);
+	// Seeded DURING render, not in an effect. An effect runs after the commit, which would leave one
+	// committed frame — one the browser can paint — where the previous item's draft is compared
+	// against the new item's values: Save flashes enabled and the fields show the old item for a
+	// blink when switching between two swatches. Setting state mid-render makes React discard this
+	// render and re-run before anything commits, so the stale frame never exists. The tracker is
+	// state rather than a ref for the same reason: a ref written here would not survive the discard.
+	//
+	// See `resolveDraftSeed`'s docblock for the full rule. Reading `initialValues` here (rather than
+	// only reacting to `itemId`) is what lets a cold-loaded item's data seed the draft once it
+	// arrives; `resolveDraftSeed`'s one-shot-per-item tracking is what stops that same input from
+	// clobbering an in-flight edit on every later identity change (e.g. a save's `refreshFeed`).
+	const { shouldSeed, nextSeededFor } = resolveDraftSeed(itemId, initialValues, seededFor);
 
-		seededForRef.current = nextSeededFor;
+	if (shouldSeed) {
+		setDraft(initialValues || {});
+	}
 
-		if (shouldSeed) {
-			setDraft(initialValues || {});
-		}
-	}, [itemId, initialValues]);
+	if (nextSeededFor !== seededFor) {
+		setSeededFor(nextSeededFor);
+	}
 
 	const close = () => navigate({ item: '' });
 	const setFieldValue = (path, value) => setDraft((current) => setValueAtPath(current, path, value));
 	const resetDraft = () => setDraft(initialValues || {});
 	// Functional, so the equality check reads the live draft rather than the one this render closed
 	// over — the whole point is to detect an edit made while the write was in flight. Deliberately does
-	// not touch `seededForRef`: the one-shot seeding rule protects a SIBLING panel from a feed refresh,
+	// not touch `seededFor`: the one-shot seeding rule protects a SIBLING panel from a feed refresh,
 	// and this reseed is a different thing, driven by a caller that knows a write just settled.
 	const reseedDraft = (submitted, saved) => setDraft((current) => resolveSavedSeed(current, submitted, saved));
-	const isDirty = computeIsDirty(draft, initialValues);
+	// Never dirty before the draft has been seeded for this item: until then the draft belongs to a
+	// previous item (or is the empty placeholder), and comparing it to this item's values is
+	// meaningless — see the seeding comment above for the flash that comparison produced.
+	const isDirty = seededFor === itemId && computeIsDirty(draft, initialValues);
 
 	return { itemId, isOpen: Boolean(itemId), close, draft, setFieldValue, isDirty, resetDraft, reseedDraft };
 }
