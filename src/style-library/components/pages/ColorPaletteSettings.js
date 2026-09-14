@@ -1,14 +1,13 @@
 /**
  * The Color Palette screen's settings panel: edits one swatch — its display name (a structure edit
  * written to the default palette) and its color (a granular value write on the palette being
- * edited) — and offers ONE destructive action in the footer, chosen by what kind of swatch is
- * open: a custom, user-created swatch gets Delete (a structure edit, with a best-effort primitive
- * cleanup after); a built-in swatch showing this (non-default) palette's own override gets Reset
- * (reverts that one palette's delta back to inherited, leaving the swatch's definition and every
- * other palette untouched). A built-in swatch that has no action available here (editing the
- * default palette itself, or a non-default palette where it is not currently overridden) shows
- * neither button. Mounted by the app when a swatch token is the open route item; see
- * `ColorPaletteScreen.SettingsPanel`.
+ * edited) — over a footer whose destructive button is chosen by the kind of swatch open and is
+ * always present, enabled only when it can act. A custom, user-created swatch gets Delete (a
+ * structure edit, with a best-effort primitive cleanup after). A built-in swatch gets Reset,
+ * enabled once this palette holds its own saved override: it reverts that one palette's delta back
+ * to inherited, leaving the swatch's definition and every other palette untouched. Neither button
+ * reacts to the draft — an unsaved edit only enables Save. Mounted by the app when a swatch token
+ * is the open route item; see `ColorPaletteScreen.SettingsPanel`.
  */
 
 /**
@@ -135,14 +134,15 @@ export function ColorPaletteSettings({ route, navigate, library }) {
 	};
 
 	// A custom swatch is removed entirely (a structure edit, with a best-effort primitive cleanup
-	// after — `removeSwatch` decides that internally). A built-in swatch with something to undo is
-	// reverted instead (`resetSwatch`) — never removed, since the row itself is shipped. What the
-	// revert lands on is the server's call: the palette's inherited value, or the shipped color
-	// when the default palette is the one open. A built-in swatch with nothing to undo gets
-	// neither action.
+	// after — `removeSwatch` decides that internally), so it gets Delete, always enabled. A built-in
+	// swatch is never removed, since the row itself is shipped; it gets Reset instead, which reverts
+	// its saved override (`resetSwatch`) — and what that revert lands on is the server's call: the
+	// palette's inherited value, or the shipped color when the default palette is the one open.
 	//
-	// Kept in step with the card's own pill (`ColorPaletteScreen`'s `renderPill`) — a card that
-	// offers Reset and a panel that hides it would disagree about the same swatch.
+	// `canReset` is kept in step with the card's own pill (`ColorPaletteScreen`'s `renderPill`) — a
+	// card that offers Reset and a panel that disables it would disagree about the same swatch. It
+	// deliberately ignores `panel.isDirty`: Reset undoes a SAVED change, and a draft that has not
+	// been saved yet is Save's concern (or the close flow's), not Reset's.
 	const isCustom = palettes.isSwatchCustom(token);
 	const canReset = !isCustom && swatch.overridden;
 
@@ -162,13 +162,13 @@ export function ColorPaletteSettings({ route, navigate, library }) {
 	};
 
 	const onReset = () => {
-		if (palettes.isBusy) {
+		if (palettes.isBusy || !canReset) {
 			return;
 		}
 
 		const resetting = token;
 
-		setPendingAction('delete');
+		setPendingAction('reset');
 		palettes
 			.resetSwatch(token)
 			// Closed on success, the same as `onDelete` and for the same kind of reason: the panel is
@@ -195,13 +195,16 @@ export function ColorPaletteSettings({ route, navigate, library }) {
 		<SettingsPanel
 			onClose={panel.close}
 			onSave={onSave}
-			onDelete={isCustom ? onDelete : canReset ? onReset : null}
-			deleteLabel={canReset ? __('Reset', 'kadence-blocks') : __('Delete', 'kadence-blocks')}
-			deleteBusyLabel={canReset ? __('Resetting…', 'kadence-blocks') : __('Deleting…', 'kadence-blocks')}
+			destructiveAction={isCustom ? 'delete' : 'reset'}
+			onDelete={onDelete}
+			canDelete={isCustom}
+			onReset={onReset}
+			canReset={canReset}
 			isDirty={panel.isDirty}
 			isBusy={palettes.isBusy}
 			isSaving={pendingAction === 'save'}
 			isDeleting={pendingAction === 'delete'}
+			isResetting={pendingAction === 'reset'}
 		>
 			<SettingsForm schema={SWATCH_SETTINGS_SCHEMA} values={panel.draft} onChange={panel.setFieldValue} />
 		</SettingsPanel>
