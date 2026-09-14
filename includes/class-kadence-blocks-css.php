@@ -1141,7 +1141,7 @@ class Kadence_Blocks_CSS {
 	 *
 	 * The active library is resolved through Token_Resolver, which memoizes per store version, so repeated
 	 * lookups stay cheap and always reflect the current version. The unresolved-alias log is de-duplicated
-	 * per (library, id) so one stale alias does not flood the error log across a page's many blocks. Fails
+	 * per (library, id) so one stale alias does not flood the debug log across a page's many blocks. Fails
 	 * open: if the container/resolver is unavailable or resolution throws, the alias is treated as backed
 	 * (today's behavior) so a render never crashes and transient resolver issues do not drop all token CSS.
 	 *
@@ -1168,7 +1168,7 @@ class Kadence_Blocks_CSS {
 				$logged[ $slug . '|' . $id ] = true;
 				/** @var LoggerInterface $logger */
 				$logger = kadence_blocks()->get( LoggerInterface::class );
-				$logger->error( sprintf( 'CSS render: skipped unresolved token alias "%s"; falling back to global CSS.', $id ) );
+				$logger->debug( sprintf( 'CSS render: skipped unresolved token alias "%s"; falling back to global CSS.', $id ) );
 			}
 
 			return $backed;
