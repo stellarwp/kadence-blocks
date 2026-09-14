@@ -1,6 +1,8 @@
 /**
  * The settings sidebar any preset screen renders: the draft, the state tabs, the name field, save and
- * delete, and the draft-channel publication that backs the unsaved-changes guard.
+ * delete for a user-created preset (a shipped one shows a Reset instead, never enabled: it has no
+ * saved value the panel can revert), and the draft-channel publication that backs the
+ * unsaved-changes guard.
  *
  * Nothing here knows which block it is editing. A per-block page supplies the three things that
  * differ — the screen binding, the tabs, and the per-tab schema — and reuses everything else. See
@@ -175,7 +177,9 @@ function PresetSidebarBody({ navigate, route, screen, initialValues, presetLabel
 			beforeTabs={
 				<SettingsForm schema={presetNameSchema()} values={panel.draft} onChange={panel.setFieldValue} />
 			}
-			onDelete={screen.isDeletable(id) ? handleDelete : null}
+			destructiveAction={screen.isDeletable(id) ? 'delete' : 'reset'}
+			onDelete={handleDelete}
+			canDelete={screen.isDeletable(id)}
 			onSave={handleSave}
 			isDirty={panel.isDirty}
 			isBusy={screen.isBusy}

@@ -471,3 +471,67 @@ describe('PresetSidebar reset field display', () => {
 		expect(latestBoxControlProps.value).toBe('{semantic.radius.control}');
 	});
 });
+
+/**
+ * A minimal preset-screen binding for the footer-gating tests: one loaded preset, every write a
+ * spy, and whether the preset is deletable set by the caller.
+ *
+ * @param {boolean} deletable Whether `isDeletable` reports the open preset as user-created.
+ *
+ * @since TBD
+ *
+ * @return {Object} The screen binding stub.
+ */
+function makeFooterScreen(deletable) {
+	return {
+		payload: { presets: { primary: { label: 'Primary' } } },
+		isLoading: false,
+		loadError: null,
+		initialValuesFor: () => ({ label: 'Primary' }),
+		savePreset: jest.fn(),
+		deletePreset: jest.fn(),
+		isDeletable: () => deletable,
+		isBusy: false,
+		saveError: null,
+		deleteError: null,
+		clearSaveError: jest.fn(),
+		clearDeleteError: jest.fn(),
+	};
+}
+
+describe('PresetSidebar footer gating', () => {
+	/**
+	 * A user-created preset gets an enabled Delete and no Reset; a baseline preset gets no Delete
+	 * and a Reset instead.
+	 *
+	 * @return {void}
+	 */
+	it('shows Delete for a user-created preset and Reset for a baseline one', () => {
+		renderPresetSidebar(makeFooterScreen(true), 'primary');
+
+		expect(findButton('Delete').disabled).toBe(false);
+		expect(findButton('Reset')).toBeNull();
+
+		renderPresetSidebar(makeFooterScreen(false), 'primary');
+
+		expect(findButton('Delete')).toBeNull();
+		expect(findButton('Reset')).not.toBeNull();
+	});
+
+	/**
+	 * A shipped preset has no saved value the panel can revert, so its Reset stays disabled before
+	 * and after an edit — only Save reacts to the draft.
+	 *
+	 * @return {void}
+	 */
+	it('keeps a baseline preset’s Reset disabled before and after an edit', () => {
+		renderPresetSidebar(makeFooterScreen(false), 'primary');
+
+		expect(findButton('Reset').disabled).toBe(true);
+
+		makeDirty();
+
+		expect(findButton('Save').disabled).toBe(false);
+		expect(findButton('Reset').disabled).toBe(true);
+	});
+});
