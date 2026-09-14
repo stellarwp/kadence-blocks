@@ -1,8 +1,9 @@
 /**
- * The settings sidebar any preset screen renders: the draft, the state tabs, the name field, save and
- * delete for a user-created preset (a shipped one shows a Reset instead, never enabled: it has no
- * saved value the panel can revert), and the draft-channel publication that backs the
- * unsaved-changes guard.
+ * The settings sidebar any preset screen renders: the draft, the state tabs, the name field, save,
+ * one destructive action chosen by the kind of preset open — Delete for a user-created preset, Reset
+ * for a shipped one (enabled once it stores its own value for any property; the same request drops
+ * that override and the preset renders from baseline again) — and the draft-channel publication
+ * that backs the unsaved-changes guard.
  *
  * Nothing here knows which block it is editing. A per-block page supplies the three things that
  * differ — the screen binding, the tabs, and the per-tab schema — and reuses everything else. See
@@ -164,8 +165,35 @@ function PresetSidebarBody({ navigate, route, screen, initialValues, presetLabel
 			.finally(() => setPendingAction(null));
 	};
 
-	// Delete is never guarded and never confirmed beyond the click: prompting to save a draft on a
-	// preset being destroyed is nonsense.
+	// A shipped preset has something to reset once it stores its own value for any property —
+	// `overridden` comes straight from the payload and is the only thing that can tell a real
+	// override apart from a value merely inherited from the baseline's own definition. The label is
+	// not part of that map, so a rename alone does not enable Reset. Deliberately ignores
+	// `panel.isDirty`: Reset undoes a SAVED change; an unsaved edit is Save's concern.
+	const canReset = Object.values(initialValues.overridden ?? {}).some(Boolean);
+
+	// The same request as Delete: the server drops the stored override and, because the preset also
+	// exists in the baseline, the preset stays and renders its shipped definition. Closed on success
+	// for the same reason a delete is — the draft still holds the values the reset just undid, and a
+	// panel left open would offer a Save that writes them straight back.
+	const handleReset = () => {
+		if (screen.isBusy || !canReset) {
+			return;
+		}
+
+		setPendingAction('reset');
+		screen
+			.deletePreset(id)
+			.then(() => {
+				notifySuccess(__('Preset reset.', 'kadence-blocks'));
+				navigate({ item: '' });
+			})
+			.catch(() => {})
+			.finally(() => setPendingAction(null));
+	};
+
+	// Delete and Reset are never guarded and never confirmed beyond the click: prompting to save a
+	// draft on a preset being destroyed or reverted is nonsense.
 	const handleClose = () => (channel ? channel.guard(panel.close) : panel.close());
 
 	return (
@@ -180,11 +208,14 @@ function PresetSidebarBody({ navigate, route, screen, initialValues, presetLabel
 			destructiveAction={screen.isDeletable(id) ? 'delete' : 'reset'}
 			onDelete={handleDelete}
 			canDelete={screen.isDeletable(id)}
+			onReset={handleReset}
+			canReset={canReset}
 			onSave={handleSave}
 			isDirty={panel.isDirty}
 			isBusy={screen.isBusy}
 			isSaving={pendingAction === 'save'}
 			isDeleting={pendingAction === 'delete'}
+			isResetting={pendingAction === 'reset'}
 		>
 			{screen.saveError && (
 				<Notice status="error" isDismissible onRemove={screen.clearSaveError}>
