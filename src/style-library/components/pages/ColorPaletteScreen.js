@@ -37,6 +37,7 @@ import { usePalettes } from '../../hooks/use-palettes';
 import { useLoadingAnnouncement } from '../../hooks/use-loading-announcement';
 import {
 	inheritedSwatchCount,
+	isBaselineGroup,
 	isUserCreatedPalette,
 	mapPaletteToSwatchGroups,
 	paletteDisplayLabel,
@@ -458,11 +459,13 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 										>
 											{__('Rename', 'kadence-blocks')}
 										</MenuItem>
-										{/* Absence, not a disabled item, when only one group remains — the server
-										 * rejects an empty `groups` array (`guard_palette_shape()`), and this
-										 * screen's ethos throughout is to hide an affordance it cannot honor rather
-										 * than disable it. */}
-										{gridGroups.length > 1 && (
+										{/* Absence, not a disabled item, in both cases — this screen's ethos
+										 * throughout is to hide an affordance it cannot honor rather than disable
+										 * it. Only one group left: the server rejects an empty `groups` array
+										 * (`guard_palette_shape()`). A baseline group: the server refuses to drop
+										 * a shipped swatch from the default palette (`guard_baseline_swatches()`),
+										 * and removing the group would do exactly that. */}
+										{gridGroups.length > 1 && !isBaselineGroup(palettes.palette, group.id) && (
 											<MenuItem
 												isDestructive
 												onClick={() => {
