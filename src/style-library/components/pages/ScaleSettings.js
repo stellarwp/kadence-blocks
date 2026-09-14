@@ -1,6 +1,8 @@
 /**
  * The generic scale-screen settings panel shared by Border Radius, Border Width, Spacing, and Icon
- * Sizes: NAME + the per-screen value field, and a Delete/Save footer. Mirrors the Color Palette
+ * Sizes: NAME + the per-screen value field, and a Delete/Save footer for a user-created token or a
+ * Reset/Save one for a shipped token (Reset is never enabled here: a shipped scale token has no
+ * saved value the panel can revert). Mirrors the Color Palette
  * screen's settings-panel shape — calls `useScaleScreen` as its own sibling instance (the screen
  * and its panel share state only through the feed and the route, with `use-draft-channel.js` as
  * the one sanctioned exception).
@@ -143,7 +145,9 @@ export function ScaleSettings({ config, route, navigate, library }) {
 	return (
 		<SettingsPanel
 			onClose={handleClose}
-			onDelete={isDeletable(token) ? handleDelete : null}
+			destructiveAction={isDeletable(token) ? 'delete' : 'reset'}
+			onDelete={handleDelete}
+			canDelete={isDeletable(token)}
 			onSave={handleSave}
 			isDirty={panel.isDirty}
 			isBusy={scale.isBusy}
