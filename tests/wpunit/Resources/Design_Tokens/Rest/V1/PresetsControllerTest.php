@@ -1020,6 +1020,63 @@ final class PresetsControllerTest extends TestCase {
 	}
 
 	/**
+	 * A responsive entry whose desktop base is unset is stored intact: the null base survives the write
+	 * and the overrides stand, which is what lets a Style Library desktop reset keep its tablet value.
+	 *
+	 * @return void
+	 */
+	public function testAResponsivePresetEntryWithANullBaseIsStored(): void {
+		$entry = $this->responsive_entry( null, [ 'tablet' => '2px' ] );
+
+		$response = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'preset' => 'hero',
+					'tokens' => $this->button_tokens( [ 'button-radius' => $entry ] ),
+				]
+			)
+		);
+
+		$this->assertNotInstanceOf( WP_Error::class, $response );
+
+		$stored = json_decode( $this->store->get_document( Token_Store::default_slug() ), true );
+		$tokens = $stored['$extensions']['com.kadence.designTokens']['presets'][ self::BUTTON ]['hero']['tokens'];
+
+		$this->assertArrayHasKey( '$value', $tokens['button-radius'] );
+		$this->assertNull( $tokens['button-radius']['$value'] );
+		$this->assertSame(
+			'2px',
+			$tokens['button-radius']['$extensions']['com.kadence.designTokens']['responsive']['tablet']
+		);
+	}
+
+	/**
+	 * A per-corner override is accepted under an unset base: with no desktop composed var to feed, the
+	 * projection declares the composed var inside the media block itself, so the write-time rule that
+	 * demanded a per-corner base no longer applies when there is no base at all.
+	 *
+	 * @return void
+	 */
+	public function testADimensionPerCornerOverrideIsAcceptedUnderANullBase(): void {
+		$entry = $this->responsive_entry( null, [ 'mobile' => [ '8px', '4px', '8px', '4px' ] ] );
+
+		$response = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'preset' => 'hero',
+					'tokens' => $this->button_tokens( [ 'button-radius' => $entry ] ),
+				]
+			)
+		);
+
+		$this->assertNotInstanceOf( WP_Error::class, $response );
+	}
+
+	/**
 	 * A preset that sets a property the block does not bind is rejected: an unbound property could never
 	 * project, so it must not be storable.
 	 *
