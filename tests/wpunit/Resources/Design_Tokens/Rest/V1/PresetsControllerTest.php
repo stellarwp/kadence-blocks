@@ -610,6 +610,40 @@ final class PresetsControllerTest extends TestCase {
 	}
 
 	/**
+	 * Deleting the shipped `default` preset drops only its stored override: the preset itself stays, renders
+	 * from baseline again, and reports nothing as overridden. The literal `default` slug is not confused with
+	 * the default-pointer sub-route, which registers no DELETE.
+	 *
+	 * @return void
+	 */
+	public function testDeletePresetRevertsTheShippedDefaultPresetToBaseline(): void {
+		$this->controller->update_item(
+			$this->block_request(
+				'PUT',
+				self::BUTTON,
+				[
+					'presets' => [ 'default' => [ 'tokens' => $this->button_tokens() ] ],
+				]
+			)
+		);
+
+		$before = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, self::BUTTON ) )->get_data();
+
+		$this->assertNotEmpty( $before['presets']['default']['overridden'] );
+
+		$response = $this->controller->delete_preset( $this->preset_request( self::BUTTON, 'default' ) );
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+		$this->assertSame( WP_Http::OK, $response->get_status() );
+
+		$data = $response->get_data();
+
+		$this->assertArrayHasKey( 'default', $data['presets'] );
+		$this->assertSame( [], $data['presets']['default']['overridden'] );
+		$this->assertSame( 'default', $data['default'] );
+	}
+
+	/**
 	 * Removing a preset the effective presets still default to is rejected before commit, so the default is
 	 * never left dangling.
 	 *
