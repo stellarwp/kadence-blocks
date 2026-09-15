@@ -33,6 +33,7 @@ import { pickableTokensForType, resolvedTokenValue } from '../../../helpers/toke
 import { isUnsetPresetValue } from '../../../helpers/presets';
 import {
 	PRESET_BREAKPOINTS,
+	isPresetEnvelope,
 	readPresetBreakpoint,
 	resolvePresetBreakpoint,
 	writePresetBreakpoint,
@@ -368,13 +369,15 @@ export function BoxTokenField({ field, value, originalValue, originalValues, onC
 	// own, else genuinely empty. A reset field must not read as a blank, generic "Default" when the
 	// preset it belongs to already has its own bound value for this property — that value is exactly
 	// what saving the reset (an omitted property) resolves back to, so showing it immediately is
-	// showing the truth, not a preview. That only holds while the WHOLE draft is unset: a draft that
-	// still holds an envelope (desktop reset, a breakpoint kept) is saved as-is, its null base included,
-	// so what this breakpoint reads from it is already the truth. Read-path only: `write()` above still
-	// always targets the true draft `value`, so a reset that is never followed by another edit stays reset.
+	// showing the truth, not a preview. That does not hold for a draft that still holds an envelope
+	// with nothing at this breakpoint (desktop reset, a breakpoint kept): the envelope is saved as-is,
+	// its null base included, so the empty read IS what this breakpoint will render. Read-path only:
+	// `write()` above still always targets the true draft `value`, so a reset that is never followed by
+	// another edit stays reset.
+	const resetInsideEnvelope = isPresetEnvelope(value) && isUnsetPresetValue(atBreakpoint);
 	const effectiveAtBreakpoint = !isUnsetPresetValue(shown)
 		? shown
-		: isOverridden && isUnsetPresetValue(value) && !isUnsetPresetValue(originalAtBreakpoint)
+		: isOverridden && !resetInsideEnvelope && !isUnsetPresetValue(originalAtBreakpoint)
 			? originalAtBreakpoint
 			: shown;
 
