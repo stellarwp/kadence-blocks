@@ -35,9 +35,12 @@ export const BORDER_AXIS_INDEX = {
 };
 
 /**
- * `EditorBorderControl`'s native per-side source object (`native[0]`), or `null` for the never-written
- * shape (`undefined`, `[]`, or an array with no first element) — matching `fromNativeBorder`'s own
- * `!source` short-circuit, which is this module's "empty/bound" reading for every border axis.
+ * `EditorBorderControl`'s native per-side source object (`native[0]`), or `null` for a value that was
+ * never written: `undefined`, `[]`, an array with no first element, OR a source whose every side slot
+ * is blank. That last shape is what every `borderStyle` block.json default ships, and nothing the
+ * control itself writes ever looks like it (`toNativeBorder` always fills the style slot, with 'none'
+ * at minimum), so blank-everywhere can only mean "untouched" — the block must read as bound, not as
+ * diverging from a preset it never overrode. `unit` is not a slot and does not count as written.
  *
  * @param {*} value The stored `borderStyle`-shaped attribute value.
  *
@@ -46,7 +49,17 @@ export const BORDER_AXIS_INDEX = {
  * @return {Object|null} The native source object, or null when never written.
  */
 function borderSource(value) {
-	return (Array.isArray(value) ? value[0] : undefined) || null;
+	const source = (Array.isArray(value) ? value[0] : undefined) || null;
+
+	if (!source) {
+		return null;
+	}
+
+	const written = BORDER_SIDES.some((side) =>
+		(source[side] || []).some((slot) => slot !== '' && slot !== undefined && slot !== null)
+	);
+
+	return written ? source : null;
 }
 
 /**
@@ -123,8 +136,9 @@ function matchesBorderAxis(kind, source, presetValue) {
  * Whether a stored attribute value is "empty" (untouched) for a border axis kind — the signal a
  * retarget-bound control uses for `empty => bound`.
  *
- * All three axes share one native shape, and the moment any side is written `toNativeBorder` always
- * fills in all four — so "empty" is a single source-level check, not per-axis.
+ * All three axes share one native shape and one attribute with no per-axis reset, so "empty" is one
+ * source-level answer for every axis: never written, or written with every slot blank (see
+ * `borderSource`). One written slot on any side makes every axis non-empty.
  *
  * @param {*} value The stored primary attribute value.
  *
