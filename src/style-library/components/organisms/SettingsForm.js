@@ -13,8 +13,8 @@
  * the raw, path-taking `onValueChange(path, next)` this component itself was given — additive, and
  * ignored by every field that only needs its own `field.path`. `originalValue`/`originalValues`
  * mirror `value`/`values` the same way, but read the preset's own STORED tokens rather than the
- * draft — a field a user has reset shows as bound to what it will actually resolve to once saved
- * (the preset's own value, when it has one) instead of a generic literal fallback.
+ * draft — a field whose schema declares no `defaultValue` shows the stored value muted, as its
+ * Default, once the user resets it. It is never shown as bound: a reset always reads as unset.
  */
 
 /**
@@ -35,11 +35,10 @@ import './SettingsForm.scss';
  * @param {Object}   props.schema          The authored schema (normalized internally).
  * @param {Object}   props.values          The current draft values.
  * @param {?Object}  [props.originalValues] The preset's own stored values, unaffected by the draft
- *                                         — a field whose type reads it uses it to show a reset
- *                                         property as bound to what it will actually resolve to
- *                                         once saved (the preset's own value), rather than a
- *                                         generic literal fallback. Omit for a schema with no such
- *                                         field (`presetNameSchema()`'s label field ignores it).
+ *                                         — a field whose type reads it shows the stored value as
+ *                                         its muted Default when the schema declares none, never
+ *                                         as bound. Omit for a schema with no such field
+ *                                         (`presetNameSchema()`'s label field ignores it).
  * @param {Function} props.onChange        Called with (path, value) on any field edit.
  *
  * @since TBD

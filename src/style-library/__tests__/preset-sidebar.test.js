@@ -416,7 +416,6 @@ describe('PresetSidebar reset field display', () => {
 							role: 'radius',
 							path: 'tokens.button-radius',
 							label: 'Radius',
-							defaultValue: '0.1875rem',
 						},
 					],
 				},
@@ -425,26 +424,25 @@ describe('PresetSidebar reset field display', () => {
 	};
 
 	/**
-	 * A field the user resets shows as bound to the preset's own currently-stored value, not the
-	 * generic literal `defaultValue` — end to end through `PresetSidebar` -> `SettingsForm` ->
-	 * `BoxTokenField`, not a field mounted with `originalValue` handed in directly. A mismatch
-	 * between how `PresetSidebar` shapes `originalValues` and how `BoxTokenField` reads it (the two
-	 * disagreeing on whether the `tokens.` path prefix is already stripped) would read as "always
-	 * empty" and only a test exercising the real wiring between them can catch it.
+	 * A field the user resets reads as unset, with the preset's own currently-stored value shown only
+	 * as its muted Default — end to end through `PresetSidebar` -> `SettingsForm` -> `BoxTokenField`,
+	 * not a field mounted with `originalValue` handed in directly. A mismatch between how
+	 * `PresetSidebar` threads `originalValues` and how `SettingsForm` reads it by path would read as
+	 * "no default at all" and only a test exercising the real wiring between them can catch it.
 	 *
 	 * @return {void}
 	 */
-	it("shows the preset's own bound value once the field is reset, not a blank Default", () => {
+	it("shows a reset field as unset with the preset's stored value muted as its Default, not still bound", () => {
 		renderPresetSidebarWithPreset(
 			{
 				payload: {
-					presets: { primary: { label: 'Primary', tokens: { 'button-radius': 'semantic.radius.control' } } },
+					presets: { primary: { label: 'Primary', tokens: { 'button-radius': '0.75rem' } } },
 				},
 				isLoading: false,
 				loadError: null,
 				initialValuesFor: () => ({
 					label: 'Primary',
-					tokens: { 'button-radius': 'semantic.radius.control' },
+					tokens: { 'button-radius': '0.75rem' },
 					overridden: { 'button-radius': true },
 				}),
 				savePreset: jest.fn(),
@@ -460,15 +458,17 @@ describe('PresetSidebar reset field display', () => {
 			RADIUS_PRESET
 		);
 
-		expect(latestBoxControlProps.value).toBe('{semantic.radius.control}');
+		expect(latestBoxControlProps.value).toBe(0.75);
 
 		// Reset: the user's edit writes the field back to empty.
 		act(() => {
 			latestBoxControlProps.onChange('');
 		});
 
-		// Still bound to the preset's own value, not a blank field falling back to the generic literal.
-		expect(latestBoxControlProps.value).toBe('{semantic.radius.control}');
+		// Unset now, with the stored value demoted to the muted Default the schema itself declares none for.
+		expect(latestBoxControlProps.value).toBe('');
+		expect(latestBoxControlProps.defaultValue).toBe('0.75rem');
+		expect(latestBoxControlProps.inherited).toBe(false);
 	});
 });
 
