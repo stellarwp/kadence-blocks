@@ -641,6 +641,11 @@ final class PresetsControllerTest extends TestCase {
 		$this->assertArrayHasKey( 'default', $data['presets'] );
 		$this->assertSame( [], $data['presets']['default']['overridden'] );
 		$this->assertSame( 'default', $data['default'] );
+
+		// Persisted, not just reported: a fresh read sees no override either.
+		$after = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, self::BUTTON ) )->get_data();
+
+		$this->assertSame( [], $after['presets']['default']['overridden'] );
 	}
 
 	/**
@@ -672,6 +677,11 @@ final class PresetsControllerTest extends TestCase {
 
 		$this->assertArrayHasKey( 'default', $data['presets'] );
 		$this->assertSame( [], $data['presets']['default']['overridden'] );
+
+		// Persisted, not just reported: a fresh read sees no override either.
+		$after = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, self::BUTTON ) )->get_data();
+
+		$this->assertSame( [], $after['presets']['default']['overridden'] );
 	}
 
 	/**
