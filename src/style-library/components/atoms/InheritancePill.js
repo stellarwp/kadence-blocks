@@ -6,8 +6,9 @@
  * Both states occupy the same slot, so a card either says where its value comes from or offers the
  * way back — never both, and never a slot that changes the card's height.
  *
- * Deliberately no icon and no tooltip: the pill's own words carry the meaning, and at this size a
- * glyph reads as a smudge.
+ * Deliberately no icon: the pill's own words carry the meaning, and at this size a glyph reads as
+ * a smudge. The static pill carries a `title` only because a long palette name is clipped after
+ * two lines.
  */
 
 /**
@@ -75,13 +76,18 @@ export function InheritancePill({
 		);
 	}
 
+	const inheritedLabel = sprintf(
+		// translators: %s: the palette this color's value comes from.
+		__('From %s', 'kadence-blocks'),
+		sourceLabel
+	);
+
 	return (
-		<span className="kadence-blocks-style-library__inheritance-pill kadence-blocks-style-library__inheritance-pill--inherited">
-			{sprintf(
-				// translators: %s: the palette this color's value comes from.
-				__('From %s', 'kadence-blocks'),
-				sourceLabel
-			)}
+		<span
+			className="kadence-blocks-style-library__inheritance-pill kadence-blocks-style-library__inheritance-pill--inherited"
+			title={inheritedLabel}
+		>
+			{inheritedLabel}
 		</span>
 	);
 }
