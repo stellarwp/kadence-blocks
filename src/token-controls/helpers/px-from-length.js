@@ -5,8 +5,9 @@
  * `1.2.3rem`) is declined rather than half-parsed. Nothing here tracks a site's real root font size; that
  * is a known, accepted simplification.
  *
- * The icon block's preview is the consumer: an SVG geometry attribute takes a number, not a `var()`, so
- * a preset's length has to become one before it reaches `GenIcon`. The fixture in
+ * Two consumers: the icon block's preview, where an SVG geometry attribute takes a number, not a `var()`,
+ * so a preset's length has to become one before it reaches `GenIcon`; and the token-indicator dimension
+ * compare, which checks a stored bare number against a preset length. The fixture in
  * `src/extension/design-tokens/__tests__/fixtures/length-to-px-conformance.json` pins the grammar.
  */
 
