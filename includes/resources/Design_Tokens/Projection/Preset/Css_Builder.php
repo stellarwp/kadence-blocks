@@ -615,7 +615,8 @@ final class Css_Builder {
 	 * keeps inheriting live — and, as long as the property has a desktop base, never redeclares the
 	 * composed var (see {@see self::responsive_blocks()}). A per-slot override of a property with NO
 	 * desktop base is the one case the composed var is declared here, since nothing outside the media
-	 * block defines it.
+	 * block defines it — unless the binding has no token var to fill a gap slot with, in which case the
+	 * composed var is only declared when the override sets all four slots.
 	 *
 	 * @since TBD
 	 *
@@ -647,14 +648,19 @@ final class Css_Builder {
 		// With a desktop base the composed var already exists at :root and picks the touched slot vars up
 		// live. Without one there is nothing for the slot vars to feed, so the composed var is declared
 		// here, each corner falling back to the binding's token var when this breakpoint left it a gap.
-		if ( $info['value'] !== null || $info['fallback'] === null ) {
+		// An inline-only binding has no token var to fill a gap with, so it composes only when every
+		// slot is set; with a gap the composed var stays undefined rather than reading an unset slot.
+		if ( $info['value'] !== null || ( $info['fallback'] === null && in_array( '', $slots, true ) ) ) {
 			return $declarations;
 		}
 
 		$refs = [];
 
 		foreach ( self::SLOTS as $slot_suffix ) {
-			$refs[] = 'var(' . $this->slot_var( $block, $preset, $property, $slot_suffix ) . ',var(' . $info['fallback'] . '))';
+			$slot_var = $this->slot_var( $block, $preset, $property, $slot_suffix );
+			$refs[]   = $info['fallback'] === null
+				? 'var(' . $slot_var . ')'
+				: 'var(' . $slot_var . ',var(' . $info['fallback'] . '))';
 		}
 
 		return $declarations . $this->preset_var( $block, $preset, $property ) . ':' . implode( ' ', $refs ) . ';';
