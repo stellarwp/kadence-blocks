@@ -5,8 +5,8 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Preset;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Contracts\Abstract_Css_Projector;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Media_Queries;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
-use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Responsive;
 use KadenceWP\KadenceBlocks\Design_Tokens\Utils\Location;
 use Throwable;
 
@@ -130,7 +130,7 @@ final class Projector extends Abstract_Css_Projector {
 			$active  = $this->active->get();
 			$version = $this->store->get_version( $active );
 
-			return $this->css_builder->css_for_version( $active, $version, $this->breakpoints() );
+			return $this->css_builder->css_for_version( $active, $version, Media_Queries::all() );
 		} catch ( Throwable $e ) {
 			return '';
 		}
@@ -156,27 +156,9 @@ final class Projector extends Abstract_Css_Projector {
 			$active  = $this->active->get();
 			$version = $this->store->get_version( $active );
 
-			return $this->css_builder->editor_css_for_version( $active, $version, $this->breakpoints() );
+			return $this->css_builder->editor_css_for_version( $active, $version, Media_Queries::all() );
 		} catch ( Throwable $e ) {
 			return '';
 		}
-	}
-
-	/**
-	 * The breakpoint => media-query map for the per-breakpoint preset redeclarations, resolved at emit time
-	 * so the filterable KB breakpoints are final. Keyed to match the resolver's breakpoint keys, and reading
-	 * the same filters the token projection does, so a site that moves its breakpoints moves both together.
-	 *
-	 * @since TBD
-	 *
-	 * @return array<string, string>
-	 */
-	private function breakpoints(): array {
-		return [
-			/** This filter is documented in includes/class-kadence-blocks-css.php */
-			Responsive::get_tablet_key() => (string) apply_filters( 'kadence_tablet_media_query', '(max-width: 1024px)' ),
-			/** This filter is documented in includes/class-kadence-blocks-css.php */
-			Responsive::get_mobile_key() => (string) apply_filters( 'kadence_mobile_media_query', '(max-width: 767px)' ),
-		];
 	}
 }
