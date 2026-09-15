@@ -56,7 +56,9 @@ function borderSource(value) {
 	}
 
 	const written = BORDER_SIDES.some((side) =>
-		(source[side] || []).some((slot) => slot !== '' && slot !== undefined && slot !== null)
+		(Array.isArray(source[side]) ? source[side] : []).some(
+			(slot) => slot !== '' && slot !== undefined && slot !== null
+		)
 	);
 
 	return written ? source : null;

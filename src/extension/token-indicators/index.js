@@ -366,12 +366,12 @@ export function presetPropertyReference(blockName, propertyKey, attributes, libr
  * what every caller that omits it wants.
  *
  * A `border` control (the combined `borderStyle` width/style/color entry) clears its `tablet*`/`mobile*`
- * companions the same way, but to an empty ARRAY (`[]`), not `['', '', '', '']` — `EditorBorderControl`'s
- * `fromNativeBorder` reads `[]` (or `undefined`) as "never written" via its `!native?.[0]` short-circuit,
- * which is what makes the control read as bound again. `block.json`'s own declared default is a
- * fully-populated-but-blank per-side object (`[{ top: ['', '', ''], ... }]`); that shape is NOT empty by
- * `fromNativeBorder`'s own test (its `source` is truthy), so resetting to it would leave the control
- * reading as overridden instead of bound.
+ * companions the same way, but to an empty ARRAY (`[]`), not `['', '', '', '']` — `[]` is the shape both
+ * `EditorBorderControl`'s `fromNativeBorder` (via its `!native?.[0]` short-circuit) and the border kind's
+ * `borderSource` read as "never written", which is what makes the control read as bound again.
+ * `block.json`'s own declared default is a fully-populated-but-blank per-side object
+ * (`[{ top: ['', '', ''], ... }]`); `borderSource` now reads that blank-slot shape as never written too,
+ * but `[]` stays the reset target so a reset value is never mistaken for one the control itself wrote.
  *
  * Shared by the per-control reset (`resetAttr`) and the picker's reset-all, so their clearing convention
  * cannot drift.

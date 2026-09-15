@@ -72,6 +72,29 @@ describe('isEmptyValue border', () => {
 		expect(isEmptyValue('border-style', value)).toBe(false);
 		expect(isEmptyValue('border-color', value)).toBe(false);
 	});
+
+	/**
+	 * A side stored as a bare string instead of a `[color, style, size]` tuple is not a written slot: the
+	 * scan skips it rather than throwing on a value with no `.some`, and the value reads as empty.
+	 *
+	 * @return {void}
+	 */
+	it('treats a native border value whose side is a non-array as empty rather than throwing', () => {
+		const value = [
+			{
+				top: 'solid',
+				right: ['', '', ''],
+				bottom: ['', '', ''],
+				left: ['', '', ''],
+				unit: 'px',
+			},
+		];
+
+		expect(() => isEmptyValue('border-style', value)).not.toThrow();
+		expect(isEmptyValue('border-width', value)).toBe(true);
+		expect(isEmptyValue('border-style', value)).toBe(true);
+		expect(isEmptyValue('border-color', value)).toBe(true);
+	});
 });
 
 describe('matchesPreset border', () => {
