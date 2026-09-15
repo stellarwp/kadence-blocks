@@ -354,7 +354,13 @@ describe('the effective value shown when the draft is reset', () => {
 		act(() => {
 			root.render(
 				createElement(BoxTokenField, {
-					field: { path: 'tokens.radius', tokenType: 'dimension', role: 'radius', defaultValue: '0.1875rem' },
+					field: {
+						path: 'tokens.radius',
+						tokenType: 'dimension',
+						role: 'radius',
+						responsive: true,
+						defaultValue: '0.1875rem',
+					},
 					value,
 					originalValue,
 					originalValues: { overridden: { radius: overridden } },
@@ -387,6 +393,19 @@ describe('the effective value shown when the draft is reset', () => {
 	it("falls back to the generic literal fallback when the preset's stored value is only inherited from the baseline, not its own", () => {
 		renderField({ value: '', originalValue: 'semantic.radius.control', overridden: false });
 
+		expect(latestBoxControlProps.value).toEqual(toControlValue(''));
+	});
+
+	it('shows Default at desktop once the base is reset while a tablet override stands, not the stored desktop value', () => {
+		const NS = 'com.kadence.designTokens';
+
+		renderField({
+			value: { $value: null, $extensions: { [NS]: { responsive: { tablet: 'primitive.dimension.radius-xs' } } } },
+			originalValue: 'primitive.dimension.radius-lg',
+		});
+
+		// `BoxControl` is stubbed; its `value` prop is what the field resolved to show at the active
+		// breakpoint (desktop by default).
 		expect(latestBoxControlProps.value).toEqual(toControlValue(''));
 	});
 });
