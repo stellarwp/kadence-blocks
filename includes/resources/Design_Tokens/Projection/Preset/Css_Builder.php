@@ -316,7 +316,7 @@ final class Css_Builder {
 		return $this->canonical_block( $collected )
 			. $this->scoped_presets( $collected, $editor )
 			. $this->scoped_default( $collected, $editor )
-			. $this->responsive_blocks( $active_slug, $collected, $breakpoints );
+			. $this->responsive_blocks( $active_slug, $collected, $breakpoints, $editor );
 	}
 
 	/**
@@ -679,7 +679,7 @@ final class Css_Builder {
 					$block,
 					(string) $preset,
 					$this->state_scope( $data['selector'], $preset_class ),
-					$properties,
+					$this->with_desktop_base( $properties ),
 					$editor
 				);
 			}
@@ -717,10 +717,40 @@ final class Css_Builder {
 				$css .= $data['selector'] . '{' . $declarations . '}';
 			}
 
-			$css .= $this->state_rules( $block, $default, $this->state_scope( $data['selector'], null ), $properties, $editor );
+			$css .= $this->state_rules(
+				$block,
+				$default,
+				$this->state_scope( $data['selector'], null ),
+				$this->with_desktop_base( $properties ),
+				$editor
+			);
 		}
 
 		return $css;
+	}
+
+	/**
+	 * The properties a flat state rule may be emitted for: those with a desktop base.
+	 *
+	 * A state rule sets a real property, not a custom one, so pointing it at a preset var that nothing
+	 * defines at desktop does not fall through to the block's own value the way the var retargets do —
+	 * `color:var(--undefined)` computes to `unset` and wipes the block's own state style. A property set
+	 * only at a breakpoint therefore gets its state rule inside that breakpoint's media block instead
+	 * (see {@see self::responsive_blocks()}).
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string}> $properties The preset's collected properties.
+	 *
+	 * @return array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string}>
+	 */
+	private function with_desktop_base( array $properties ): array {
+		return array_filter(
+			$properties,
+			static function ( array $info ): bool {
+				return $info['value'] !== null;
+			}
+		);
 	}
 
 	/**
@@ -964,20 +994,27 @@ final class Css_Builder {
 	 * redeclaring one slot var here changes what the (untouched, never-redeclared) composed var resolves
 	 * to for elements matching this breakpoint.
 	 *
+	 * A state property with no desktop base has no flat state rule (see {@see self::with_desktop_base()}),
+	 * so the `:root` redeclaration alone would reach nothing. Its state rules — the preset-classed one and,
+	 * for the `$default`, the class-less one — follow the `:root` block inside the same media query, where
+	 * the preset var they read is defined.
+	 *
 	 * @since TBD
 	 *
 	 * @param string                $active_slug The active library's slug.
 	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string}>>}> $collected The collected preset structure, for the block/preset list.
 	 * @param array<string, string> $breakpoints Breakpoint => media-query string.
+	 * @param bool                  $editor      Whether a media-scoped state rule uses the binding's editor state suffix.
 	 *
 	 * @return string
 	 */
-	private function responsive_blocks( string $active_slug, array $collected, array $breakpoints ): string {
+	private function responsive_blocks( string $active_slug, array $collected, array $breakpoints, bool $editor ): string {
 		if ( $collected === [] || $breakpoints === [] ) {
 			return '';
 		}
 
-		$by_breakpoint = [];
+		$by_breakpoint       = [];
+		$rules_by_breakpoint = [];
 
 		foreach ( $collected as $block => $data ) {
 			foreach ( $data['presets'] as $preset => $properties ) {
@@ -995,12 +1032,13 @@ final class Css_Builder {
 							continue;
 						}
 
+						$info        = $properties[ $property ];
 						$declaration = $this->responsive_declarations(
 							$block,
 							(string) $preset,
 							(string) $property,
 							$value,
-							$properties[ $property ]
+							$info
 						);
 
 						// An all-gap per-slot override declares nothing; keeping it out avoids an empty @media block.
@@ -1009,6 +1047,19 @@ final class Css_Builder {
 						}
 
 						$by_breakpoint[ $breakpoint ][] = $declaration;
+
+						if ( $info['value'] !== null || $info['prop'] === null ) {
+							continue;
+						}
+
+						$rules_by_breakpoint[ $breakpoint ][] = $this->media_state_rules(
+							$block,
+							(string) $preset,
+							$data['selector'],
+							$preset === $data['default'],
+							[ (string) $property => $info ],
+							$editor
+						);
 					}
 				}
 			}
@@ -1021,10 +1072,45 @@ final class Css_Builder {
 				continue;
 			}
 
-			$css .= '@media all and ' . $query . '{' . Scope::root() . '{' . implode( '', $by_breakpoint[ $breakpoint ] ) . '}}';
+			$css .= '@media all and ' . $query . '{'
+				. Scope::root() . '{' . implode( '', $by_breakpoint[ $breakpoint ] ) . '}'
+				. implode( '', $rules_by_breakpoint[ $breakpoint ] ?? [] )
+				. '}';
 		}
 
 		return $css;
+	}
+
+	/**
+	 * The state rules a breakpoint-only state property carries inside its media block: the same two scopes
+	 * the flat layer gives a property with a desktop base — the preset-classed rule and, for the `$default`
+	 * preset, the class-less one — so a selected preset and an unselected block both follow the override.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $block      The block name.
+	 * @param string $preset     The preset slug.
+	 * @param string $selector   The block's `.wp-block-*` selector.
+	 * @param bool   $is_default Whether the preset is the block's `$default`.
+	 * @param array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string}> $properties The state property, keyed by name.
+	 * @param bool   $editor     Whether to use the binding's editor state suffix.
+	 *
+	 * @return string
+	 */
+	private function media_state_rules( string $block, string $preset, string $selector, bool $is_default, array $properties, bool $editor ): string {
+		$rules = $this->state_rules(
+			$block,
+			$preset,
+			$this->state_scope( $selector, '.' . Style::preset_class( $preset ) ),
+			$properties,
+			$editor
+		);
+
+		if ( $is_default ) {
+			$rules .= $this->state_rules( $block, $preset, $this->state_scope( $selector, null ), $properties, $editor );
+		}
+
+		return $rules;
 	}
 
 	/**
