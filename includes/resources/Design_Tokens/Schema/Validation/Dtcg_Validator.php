@@ -982,8 +982,8 @@ final class Dtcg_Validator {
 	}
 
 	/**
-	 * Validate a preset token entry that varies by breakpoint: its `$value` is the base — or `null` when
-	 * desktop is unset —, and each override under the vendor extension's `responsive` map is itself a
+	 * Validate a preset token entry that varies by breakpoint: its `$value` is the base (or `null` when
+	 * desktop is unset), and each override under the vendor extension's `responsive` map is itself a
 	 * preset token value.
 	 *
 	 * Mirrors {@see self::validate_responsive_shape()} — same envelope, same breakpoint-key check — but

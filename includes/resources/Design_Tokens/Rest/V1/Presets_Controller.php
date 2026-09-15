@@ -1438,10 +1438,11 @@ final class Presets_Controller extends Controller {
 	 */
 	private function guard_dimension_value_shape( $entry, string $block, string $preset, string $property ): ?WP_Error {
 		$base = Extensions::preset_value_of( $entry );
+
 		// An unset base has no composed var for a per-corner override to feed into, so the projection
 		// declares the composed var inside the media block instead; the per-corner-base rule only
 		// protects a SCALAR base, whose composed var is never built from corner vars.
-		$base_is_slots = is_array( $base ) || $base === null;
+		$corner_override_allowed = is_array( $base ) || $base === null;
 
 		foreach ( $this->preset_entry_values( $entry ) as $value ) {
 			if ( is_string( $value ) && strpos( $value, ' ' ) !== false ) {
@@ -1457,7 +1458,7 @@ final class Presets_Controller extends Controller {
 				);
 			}
 
-			if ( is_array( $value ) && ! $base_is_slots ) {
+			if ( is_array( $value ) && ! $corner_override_allowed ) {
 				return new WP_Error(
 					'rest_design_tokens_invalid',
 					__( 'A per-corner responsive override requires a per-corner base value for the same property.', 'kadence-blocks' ),
