@@ -23,9 +23,9 @@ final class Media_Queries {
 	 */
 	public static function all(): array {
 		return [
-			/** This filter is documented in includes/class-kadence-blocks-css.php */
+			/** This filter is documented in includes/class-kadence-blocks-css.php. */
 			Responsive::get_tablet_key() => (string) apply_filters( 'kadence_tablet_media_query', '(max-width: 1024px)' ),
-			/** This filter is documented in includes/class-kadence-blocks-css.php */
+			/** This filter is documented in includes/class-kadence-blocks-css.php. */
 			Responsive::get_mobile_key() => (string) apply_filters( 'kadence_mobile_media_query', '(max-width: 767px)' ),
 		];
 	}
