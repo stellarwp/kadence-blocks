@@ -644,6 +644,37 @@ final class PresetsControllerTest extends TestCase {
 	}
 
 	/**
+	 * A DELETE for the literal `default` slug, dispatched through the REST server, reaches the single-preset
+	 * handler rather than the default-pointer sub-route (which registers no DELETE), and reverts the shipped
+	 * preset's stored override.
+	 *
+	 * @return void
+	 */
+	public function testDeleteRouteOnTheShippedDefaultSlugRevertsItsOverride(): void {
+		wp_set_current_user( $this->factory()->user->create( [ 'role' => 'administrator' ] ) );
+
+		$this->controller->update_item(
+			$this->block_request(
+				'PUT',
+				self::BUTTON,
+				[
+					'presets' => [ 'default' => [ 'tokens' => $this->button_tokens() ] ],
+				]
+			)
+		);
+
+		$route    = '/' . $this->controller_namespace() . '/' . $this->controller_rest_base() . '/' . self::BUTTON . '/default';
+		$response = $this->rest_server->dispatch( new WP_REST_Request( WP_REST_Server::DELETABLE, $route ) );
+
+		$this->assertSame( WP_Http::OK, $response->get_status() );
+
+		$data = $response->get_data();
+
+		$this->assertArrayHasKey( 'default', $data['presets'] );
+		$this->assertSame( [], $data['presets']['default']['overridden'] );
+	}
+
+	/**
 	 * Removing a preset the effective presets still default to is rejected before commit, so the default is
 	 * never left dangling.
 	 *
