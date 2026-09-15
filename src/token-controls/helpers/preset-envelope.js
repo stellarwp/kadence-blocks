@@ -171,10 +171,11 @@ export function writePresetBreakpoint(raw, breakpoint, value) {
 	}
 
 	const stored = envelope ? raw[ENVELOPE_VALUE_KEY] : raw;
-	// A `null` base is the desktop-reset sentinel and has to survive on any leaf that keeps its object
-	// shape — `presetSaveTokens` reads `null` as unset but would send `''` as a real value. Only the
+	// A cleared base — the `null` desktop-reset sentinel, or a flat draft that was never set — has to
+	// be written as `null` on any leaf that keeps its object shape: the server accepts `null` as an
+	// envelope base but rejects `''`, and `presetSaveTokens` would send `''` as a real value. Only the
 	// bare-scalar collapse turns it into the empty string a flat value uses for "unset".
-	const base = stored === null ? null : (stored ?? '');
+	const base = isCleared(stored) ? null : stored;
 	const scalarBase = base ?? '';
 	const vendor = envelope ? (raw.$extensions?.[KADENCE_TOKEN_NAMESPACE] ?? {}) : {};
 	// `responsive` is pulled out alongside `clamp` so `keep` holds only the vendor keys this write does

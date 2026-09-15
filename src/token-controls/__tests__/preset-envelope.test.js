@@ -50,6 +50,28 @@ describe('writePresetBreakpoint', () => {
 		});
 	});
 
+	it('writes a null base when the first stepped override lands on an empty flat value', () => {
+		// A reset property seeds its draft as '' — the server accepts `null` as an envelope base but
+		// rejects '', so the upgrade must not carry the empty string into `$value`.
+		expect(writePresetBreakpoint('', 'tablet', '0.375rem')).toEqual({
+			$value: null,
+			$extensions: { 'com.kadence.designTokens': { responsive: { tablet: '0.375rem' } } },
+		});
+	});
+
+	it('writes a null base when the first stepped override lands on an undefined flat value', () => {
+		// A property the preset never stored reads as undefined; it upgrades the same way '' does.
+		expect(writePresetBreakpoint(undefined, 'tablet', '0.375rem')).toEqual({
+			$value: null,
+			$extensions: { 'com.kadence.designTokens': { responsive: { tablet: '0.375rem' } } },
+		});
+	});
+
+	it('writes a null base when the first stepped override lands on an all-empty slot list', () => {
+		// An all-empty slot list is a cleared value too, so it must not become the envelope base.
+		expect(writePresetBreakpoint(['', '', '', ''], 'tablet', ['1rem', '', '', '']).$value).toBeNull();
+	});
+
 	it('keeps existing overrides when adding another breakpoint', () => {
 		const once = writePresetBreakpoint('0.5rem', 'tablet', '0.375rem');
 
