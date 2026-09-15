@@ -507,6 +507,72 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
+	 * A state property whose desktop base is unset gets no flat state rule — one would set the real
+	 * property to an undefined var, which computes to `unset` and wipes the block's own state style at
+	 * desktop — and instead carries its state rule inside the breakpoint media block, right after the
+	 * preset var it consumes.
+	 *
+	 * @return void
+	 */
+	public function testABaseLessStatePropertyDeclaresItsStateRuleOnlyInsideTheMediaBlock(): void {
+		$this->seedStatePresets(
+			'{semantic.color.text}',
+			[
+				'$value'      => null,
+				'$extensions' => [
+					'com.kadence.designTokens' => [
+						'responsive' => [ 'tablet' => '{semantic.color.link}' ],
+					],
+				],
+			]
+		);
+
+		$css  = $this->builder( $this->stateRegistry() )->css( 'default', $this->breakpoints() );
+		$rule = ':where(.wp-block-kadence-state-fixture.kb-preset--flare):hover *.kb-svg-icon-wrap'
+			. '{color:var(--kb-token--preset--kadence-state-fixture--flare--color-hover);}';
+
+		$this->assertStringNotContainsString( $rule, explode( '@media', $css, 2 )[0] );
+		$this->assertStringContainsString(
+			'@media all and (max-width: 1024px){:root,:root:where(.kb-tokens){'
+			. '--kb-token--preset--kadence-state-fixture--flare--color-hover:var(--kb-token--semantic--color--link);}'
+			. $rule . '}',
+			$css
+		);
+	}
+
+	/**
+	 * The `$default` preset's base-less state property carries both of its rules — the preset-classed one
+	 * and the class-less one — inside the media block, and the editor build re-scopes them to the editor
+	 * state selector, exactly as the flat layer does for a property with a base.
+	 *
+	 * @return void
+	 */
+	public function testABaseLessDefaultStatePropertyKeepsBothScopesInsideTheMediaBlock(): void {
+		$this->seedStatePresets(
+			[
+				'$value'      => null,
+				'$extensions' => [
+					'com.kadence.designTokens' => [
+						'responsive' => [ 'mobile' => '{semantic.color.text}' ],
+					],
+				],
+			]
+		);
+
+		$css = $this->builder( $this->stateRegistry() )->editor_css( 'default', $this->breakpoints() );
+		$var = '--kb-token--preset--kadence-state-fixture--glow--color-hover';
+
+		$this->assertStringNotContainsString( 'var(' . $var . ')', explode( '@media', $css, 2 )[0] );
+		$this->assertStringContainsString(
+			'@media all and (max-width: 767px){:root,:root:where(.kb-tokens){' . $var . ':var(--kb-token--semantic--color--text);}'
+			. ':where(.wp-block-kadence-state-fixture.kb-preset--glow):hover *.kt-svg-icon{color:var(' . $var . ');}'
+			. ':where(.wp-block-kadence-state-fixture:not([class*="kb-preset--"])):hover *.kt-svg-icon{color:var(' . $var . ');}'
+			. '}',
+			$css
+		);
+	}
+
+	/**
 	 * A library whose presets declare no breakpoint overrides emits no media blocks at all, so every
 	 * existing preset projects byte-identically.
 	 *
@@ -964,9 +1030,12 @@ final class Css_BuilderTest extends TestCase {
 	 * setting both the resting color and the state color, so one build exercises the class-less rule and the
 	 * preset-classed one together.
 	 *
+	 * @param mixed $glow_hover  The `$default` preset's state color entry.
+	 * @param mixed $flare_hover The named preset's state color entry.
+	 *
 	 * @return void
 	 */
-	private function seedStatePresets(): void {
+	private function seedStatePresets( $glow_hover = '{semantic.color.text}', $flare_hover = '{semantic.color.link}' ): void {
 		$document = [
 			'$extensions' => [
 				'com.kadence.designTokens' => [
@@ -977,14 +1046,14 @@ final class Css_BuilderTest extends TestCase {
 								'label'  => 'Glow',
 								'tokens' => [
 									'color'       => '{semantic.color.icon}',
-									'color-hover' => '{semantic.color.text}',
+									'color-hover' => $glow_hover,
 								],
 							],
 							'flare'    => [
 								'label'  => 'Flare',
 								'tokens' => [
 									'color'       => '{semantic.color.icon}',
-									'color-hover' => '{semantic.color.link}',
+									'color-hover' => $flare_hover,
 								],
 							],
 						],
