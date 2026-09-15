@@ -18,6 +18,13 @@
  * so the shared hook reads only the store selector `usePalettes()` itself calls (`getPaletteListing`),
  * not the full hook, which also wires `route`/`navigate` and every palette WRITE flow a read-only
  * field never needs.
+ *
+ * Two more bridges hand the control what the block editor gets for free. A `field.defaultValue`
+ * (a bare token id, translated like the value) lets the control show a muted fallback swatch when
+ * the row stores nothing. And `resolvedTokenValue` stands in as the control's `resolveAlias`: the
+ * editor paints an unlisted alias through its `--kb-token--*` custom properties, but this page
+ * enqueues none of them, so an alias the palette groups do not list (a preset's
+ * `semantic.color.button-*` binding) can only paint from the library's own resolved literal.
  */
 
 /**
@@ -25,6 +32,7 @@
  */
 import { ColorControl } from '../../../../token-controls';
 import { resolveLiteral, toControlValue, toStoredValue } from '../../../helpers/color-values';
+import { resolvedTokenValue } from '../../../helpers/tokens';
 import { useActivePaletteGroups } from '../../../hooks/use-active-palette-groups';
 
 /**
@@ -32,10 +40,12 @@ import { useActivePaletteGroups } from '../../../hooks/use-active-palette-groups
  *
  * @param {Object}  props            The component props.
  * @param {Object}  field            The field definition.
- * @param {string}  field.label      The control's static attribute label (e.g. "Text").
- * @param {boolean} [field.readOnly] Whether the control is non-interactive.
- * @param {string}  props.value      The stored bare token id, or a raw color literal.
- * @param {Function} props.onChange  Called with the new bare token id (or literal) on pick.
+ * @param {string}  field.label          The control's static attribute label (e.g. "Text").
+ * @param {string}  [field.defaultValue] The bare token id (or literal) the row falls back to when
+ *                                       unset, shown muted by the control.
+ * @param {boolean} [field.readOnly]     Whether the control is non-interactive.
+ * @param {string}  props.value          The stored bare token id, or a raw color literal.
+ * @param {Function} props.onChange      Called with the new bare token id (or literal) on pick.
  *
  * @since TBD
  *
@@ -48,10 +58,15 @@ export function ColorSelectField({ field, value, onChange }) {
 		<ColorControl
 			label={field.label}
 			value={toControlValue(value)}
+			defaultValue={toControlValue(field.defaultValue)}
 			groups={groups}
 			onPick={(alias) => onChange(toStoredValue(alias))}
 			onCustom={(literal) => onChange(literal)}
 			resolveLiteral={resolveLiteral}
+			// This page has no `--kb-token--*` custom properties, so an alias the palette groups do not
+			// list (a preset's `semantic.color.button-*` binding) must paint from the library's resolved
+			// literal rather than through CSS.
+			resolveAlias={resolvedTokenValue}
 			disabled={field.readOnly}
 		/>
 	);
