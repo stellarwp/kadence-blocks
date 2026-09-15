@@ -194,6 +194,44 @@ describe('ColorSwatchControl', () => {
 	});
 
 	/**
+	 * An unset slot with a `defaultValue` paints the default's swatch, and the accessible name says
+	 * "Default" the way `ColorControl`'s muted value text does — the trigger has no visible text to
+	 * carry it otherwise.
+	 *
+	 * @return {void}
+	 */
+	it('shows the default swatch and names it Default while unset', () => {
+		render({
+			value: '',
+			defaultValue: '{semantic.color.border}',
+			resolveAlias: (id) => (id === 'semantic.color.border' ? 'rgb(226, 232, 240)' : ''),
+		});
+
+		expect(container.querySelector('.kb-color-swatch').getAttribute('data-background')).toBe('rgb(226, 232, 240)');
+		expect(container.querySelector('.kb-color-swatch-control__button').getAttribute('aria-label')).toBe(
+			'Top Border Color: Default'
+		);
+	});
+
+	/**
+	 * A set value wins over the default: the swatch and the accessible name follow the selection.
+	 *
+	 * @return {void}
+	 */
+	it('shows the selected color over the default once set', () => {
+		render({
+			value: '{semantic.color.accent.main}',
+			defaultValue: '{semantic.color.border}',
+			resolveAlias: (id) => (id === 'semantic.color.border' ? 'rgb(226, 232, 240)' : ''),
+		});
+
+		expect(container.querySelector('.kb-color-swatch').getAttribute('data-background')).toBe('#3182ce');
+		expect(container.querySelector('.kb-color-swatch-control__button').getAttribute('aria-label')).toBe(
+			'Top Border Color: Main'
+		);
+	});
+
+	/**
 	 * A read-only host disables the trigger so the popover cannot be opened at all.
 	 *
 	 * @return {void}

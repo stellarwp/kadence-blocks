@@ -723,6 +723,25 @@ describe('BorderControl row anatomy', () => {
 		});
 		expect(receivedUnlinked).toEqual(['top', 'right', 'bottom', 'left']);
 	});
+
+	/**
+	 * `defaultColor` reaches `renderColor` as `defaultValue`, so a caller's swatch can show the
+	 * color the axis falls back to while unset, the way the width `TokenSelector` shows its own.
+	 *
+	 * @return {void}
+	 */
+	it('passes defaultColor through to renderColor as defaultValue', () => {
+		let received;
+		renderControl({
+			defaultColor: '{semantic.color.border}',
+			renderColor: (props) => {
+				received = props;
+				return null;
+			},
+		});
+
+		expect(received.defaultValue).toBe('{semantic.color.border}');
+	});
 });
 
 describe('BorderControl style picker', () => {

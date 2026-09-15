@@ -8,7 +8,8 @@
  * visible text, the way the Style Library's own swatch toggles already name themselves.
  *
  * The popover body itself is `ColorPopover`, shared with `ColorControl` — the two controls differ
- * only in what opens the popover.
+ * only in what opens the popover. Like `ColorControl`, the trigger shows `defaultValue` muted when
+ * the slot is unset.
  */
 
 /**
@@ -44,6 +45,11 @@ import '../styles/token-controls.scss';
  *                                            token id the groups do not list, or ''. Omit on a page that
  *                                            has the token CSS custom properties; the swatch then paints
  *                                            through `var(--kb-token--…)`.
+ * @param {?string}   [props.defaultValue]   What the slot falls back to when unset — a bracket alias
+ *                                            or literal. Display-only: the trigger shows its swatch and
+ *                                            names it "Default", while the popover keeps seeing the
+ *                                            real (empty) value so nothing reads as picked and Clear
+ *                                            stays disabled.
  * @param {boolean}   [props.disabled]       Whether the control is read-only.
  *
  * @since TBD
@@ -59,11 +65,16 @@ export function ColorSwatchControl({
 	onCustom,
 	resolveLiteral,
 	resolveAlias = null,
+	defaultValue = '',
 	disabled = false,
 }) {
+	// The popover always works from the real value; only the trigger falls back to the default.
 	const selection = colorSelection(groups, value);
-	const { selectedLabel } = selection;
-	const entry = selection.entry || unlistedEntry(value, resolveAlias);
+	const isDefault = !value && !!defaultValue;
+	const shown = isDefault ? colorSelection(groups, defaultValue) : selection;
+	const shownValue = isDefault ? defaultValue : value;
+	const entry = shown.entry || unlistedEntry(shownValue, resolveAlias);
+	const shownLabel = isDefault ? __('Default', 'kadence-blocks') : shown.selectedLabel;
 
 	return (
 		<Dropdown
@@ -80,12 +91,12 @@ export function ColorSwatchControl({
 					// announced — `ColorControl` shows it as its own `selectedLabel`. Composed into the
 					// accessible name so a screen reader hears what is set, not just which field this is.
 					aria-label={
-						selectedLabel
+						shownLabel
 							? sprintf(
-									/* translators: 1: the field's name. 2: the selected color's name. */
+									/* translators: 1: the field's name. 2: the selected color's name, or "Default". */
 									__('%1$s: %2$s', 'kadence-blocks'),
 									label,
-									selectedLabel
+									shownLabel
 								)
 							: label
 					}
@@ -93,7 +104,7 @@ export function ColorSwatchControl({
 					disabled={disabled}
 					onClick={onToggle}
 				>
-					<ColorSwatch entry={entry} value={!entry && !isTokenAlias(value) ? value : null} />
+					<ColorSwatch entry={entry} value={!entry && !isTokenAlias(shownValue) ? shownValue : null} />
 				</button>
 			)}
 			renderContent={({ onClose }) => (

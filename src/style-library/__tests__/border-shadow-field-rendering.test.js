@@ -359,6 +359,34 @@ describe('BorderField', () => {
 		expect(element.props.resolveAlias).toBe(resolvedTokenValue);
 	});
 
+	/**
+	 * The field's `defaultColor` — a bare token id, like every value this host stores — reaches the
+	 * swatch control bridged into the bracket alias it matches on, and stays empty when the field
+	 * declares none.
+	 *
+	 * @return {void}
+	 */
+	it('bridges field.defaultColor into the ColorSwatchControl defaultValue', () => {
+		const mount = (field) => {
+			act(() => {
+				root.render(createElement(BorderField, { field, values: {}, onValueChange: jest.fn() }));
+			});
+
+			return latestBorderControlProps.renderColor({
+				value: '',
+				onChange: jest.fn(),
+				label: null,
+				defaultValue: latestBorderControlProps.defaultColor,
+			});
+		};
+
+		expect(
+			mount({ label: 'Border', path: 'tokens.button-border', defaultColor: 'semantic.color.border' }).props
+				.defaultValue
+		).toBe('{semantic.color.border}');
+		expect(mount({ label: 'Border', path: 'tokens.button-border' }).props.defaultValue).toBe('');
+	});
+
 	it('a width pick writes only the width path, a style change writes only the style path, color stays where it was', () => {
 		const onValueChange = jest.fn();
 

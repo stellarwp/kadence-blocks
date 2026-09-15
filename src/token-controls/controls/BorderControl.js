@@ -103,6 +103,10 @@ function applyToAxis(axis, index, next) {
  *                                                the row collapses to zero height.
  * @param {boolean}   [props.inherited]           Whether that default comes from another breakpoint,
  *                                                which tags it `Inherited` instead of `Default`.
+ * @param {?string}   [props.defaultColor]        What the color axis falls back to when unset, shown
+ *                                                as the swatch's muted default; the width axis has
+ *                                                `defaultValue`. Handed to `renderColor` as its
+ *                                                `defaultValue`.
  * @param {?Array}    [props.slotIcons]            Per-slot glyphs, in stored order (matches
  *                                                `BoxControl`'s prop).
  * @param {?Object}   [props.status]              `{ bound, modified }`; omit for no indicator.
@@ -114,7 +118,7 @@ function applyToAxis(axis, index, next) {
  * @param {?Function} [props.onBreakpointChange]  Breakpoint-change handler.
  * @param {?boolean}  [props.isLinked]            Linked state, when the host controls it.
  * @param {?Function} [props.onToggleLink]        Link-toggle handler; omit to let this own the state.
- * @param {?Function} [props.renderColor]         `({ value, onChange, label, disabled }) =>
+ * @param {?Function} [props.renderColor]         `({ value, onChange, label, defaultValue, disabled }) =>
  *                                                Element` — the caller's existing color field for
  *                                                one side's color. Called once per row with that
  *                                                row's own resolved scalar (the linked row reads
@@ -137,6 +141,7 @@ export function BorderControl({
 	widthTokens = [],
 	defaultValue,
 	inherited = false,
+	defaultColor = null,
 	slotIcons = null,
 	status = null,
 	onReset = null,
@@ -237,6 +242,7 @@ export function BorderControl({
 										// `BorderField.js`'s plain field name) and composing a sentence here would
 										// fight both.
 										label: index === null ? null : slotLabel,
+										defaultValue: defaultColor,
 										disabled,
 									})}
 								</span>

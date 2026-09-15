@@ -218,6 +218,9 @@ export function widthTokensForField(atBreakpoint) {
  *                                             a muted "Default" whenever the draft carries no width
  *                                             there. Tablet and Mobile show the breakpoint above
  *                                             instead, tagged "Inherited".
+ * @param {?string}  [props.field.defaultColor] What the color axis falls back to when unset — a bare
+ *                                             token id, like every color this host stores — shown as
+ *                                             the swatch's muted default.
  * @param {Object}   props.values             The full draft values, read by dot path.
  * @param {?Object}  [props.originalValues]   The preset's own stored values, unaffected by the
  *                                             draft — read by the same dot paths as `values`. Never
@@ -333,7 +336,8 @@ export function BorderField({ field, values, originalValues, onValueChange }) {
 			widthTokens={widthTokens}
 			defaultValue={shownDefault}
 			inherited={inheritsFromBreakpoint}
-			renderColor={({ value: color, onChange: onColorChange, label: side }) => (
+			defaultColor={toControlValue(field.defaultColor)}
+			renderColor={({ value: color, onChange: onColorChange, label: side, defaultValue: defaultColor }) => (
 				<ColorSwatchControl
 					// `side` is the row's bare side name ("top", "right", …), or `null` while linked. Each
 					// row gets a distinct accessible name so unlinked mode's four swatches — which carry no
@@ -342,6 +346,7 @@ export function BorderField({ field, values, originalValues, onValueChange }) {
 					// This host stores a BARE token id, never a bracket alias, so the value is bridged in
 					// both directions with the same pair `ColorSelectField` already uses.
 					value={toControlValue(color)}
+					defaultValue={defaultColor}
 					groups={groups}
 					onPick={(alias) => onColorChange(toStoredValue(alias))}
 					onCustom={(literal) => onColorChange(literal)}
