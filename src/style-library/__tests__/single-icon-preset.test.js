@@ -105,7 +105,7 @@ describe('SINGLE_ICON_PRESET', () => {
 		const types = panels[0].fields.map((field) => field.type);
 
 		expect(paths).toEqual(['tokens.color', 'tokens.size']);
-		expect(types).toEqual(['token-color-select', 'token-scalar']);
+		expect(types).toEqual(['color-select', 'token-scalar']);
 
 		// Every type the schema names must be one the registry can render.
 		types.forEach((type) => expect(FIELD_TYPES).toHaveProperty(type));

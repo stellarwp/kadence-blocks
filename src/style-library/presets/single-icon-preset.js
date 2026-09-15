@@ -97,6 +97,10 @@ function renderPreview(row) {
  * The settings schema. The icon declares no tabs: it binds no hover property, so there is no second
  * state to switch to and `PresetSidebar` renders the field area bare.
  *
+ * Color uses `color-select`, the Style Library adapter for the shared `ColorControl`, so this screen
+ * opens the same trigger-plus-popover picker the block editor's own icon color control does rather
+ * than the older token dropdown.
+ *
  * Size uses `token-scalar` so a preset stores a token id and keeps following the Icon Sizes scale, the
  * same way the block's own size control does — and, like that control, can say something different per
  * breakpoint. The block stores its size in `size`/`tabletSize`/`mobileSize` and the binding declares all
@@ -114,7 +118,7 @@ function schemaFor() {
 				id: 'icon',
 				title: __('Icon', 'kadence-blocks'),
 				fields: [
-					{ type: 'token-color-select', path: 'tokens.color', label: __('Color', 'kadence-blocks') },
+					{ type: 'color-select', path: 'tokens.color', label: __('Color', 'kadence-blocks') },
 					{
 						type: 'token-scalar',
 						tokenType: 'dimension',
