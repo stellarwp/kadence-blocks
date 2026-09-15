@@ -267,10 +267,24 @@ describe('IMAGE_PRESET', () => {
 		const types = panels.flatMap((panel) => panel.fields.map((field) => field.type));
 
 		expect(paths).toEqual(['tokens.background', 'tokens.borderRadius', 'tokens.shadow', 'tokens.padding']);
-		expect(types).toEqual(['token-color-select', 'radius', 'box-shadow', 'spacing']);
+		expect(types).toEqual(['color-select', 'radius', 'box-shadow', 'spacing']);
 
 		// Every type the schema names must be one the registry can render.
 		types.forEach((type) => expect(FIELD_TYPES).toHaveProperty(type));
+	});
+
+	/**
+	 * The Background row falls back to the semantic image background the Default preset binds, so a
+	 * row that stores nothing previews the color a fresh image really renders.
+	 *
+	 * @return {void}
+	 */
+	it('declares the semantic image background as the Background default', () => {
+		const background = IMAGE_PRESET.schemaFor()
+			.panels.flatMap((panel) => panel.fields)
+			.find((field) => field.path === 'tokens.background');
+
+		expect(background.defaultValue).toBe('semantic.color.image-bg');
 	});
 
 	/**
