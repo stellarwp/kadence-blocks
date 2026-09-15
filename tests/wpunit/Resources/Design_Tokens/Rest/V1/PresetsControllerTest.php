@@ -1073,7 +1073,17 @@ final class PresetsControllerTest extends TestCase {
 			)
 		);
 
-		$this->assertNotInstanceOf( WP_Error::class, $response );
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+
+		$stored = json_decode( $this->store->get_document( Token_Store::default_slug() ), true );
+		$tokens = $stored['$extensions']['com.kadence.designTokens']['presets'][ self::BUTTON ]['hero']['tokens'];
+
+		$this->assertArrayHasKey( '$value', $tokens['button-radius'] );
+		$this->assertNull( $tokens['button-radius']['$value'] );
+		$this->assertSame(
+			[ '8px', '4px', '8px', '4px' ],
+			$tokens['button-radius']['$extensions']['com.kadence.designTokens']['responsive']['mobile']
+		);
 	}
 
 	/**
