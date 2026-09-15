@@ -430,6 +430,82 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
+	 * A property whose desktop base is unset emits no flat `:root` declaration, keeps the block-level
+	 * retarget (undefined at desktop, so every `var(--kb-btn-radius, fallback)` takes its fallback), and
+	 * still redeclares the preset var inside the breakpoint media block.
+	 *
+	 * @return void
+	 */
+	public function testAnUnsetBaseEmitsOnlyTheBreakpointRedeclaration(): void {
+		$this->seedResponsivePreset( [ 'tablet' => '{semantic.radius.control}' ], null );
+
+		$css = $this->builder( $this->registry )->css( 'default', $this->breakpoints() );
+
+		// Everything before the first media block is the flat layer; the hero var must not be declared there.
+		$flat = explode( '@media', $css, 2 )[0];
+
+		$this->assertStringNotContainsString( '--kb-token--preset--kadence-singlebtn--hero--button-radius:', $flat );
+		$this->assertStringContainsString(
+			'.wp-block-kadence-singlebtn.kb-preset--hero{',
+			$css
+		);
+		$this->assertStringContainsString(
+			'--kb-btn-radius:var(--kb-token--preset--kadence-singlebtn--hero--button-radius);',
+			$css
+		);
+		$this->assertStringContainsString(
+			'@media all and (max-width: 1024px){:root,:root:where(.kb-tokens){--kb-token--preset--kadence-singlebtn--hero--button-radius:var(--kb-token--semantic--radius--control);}}',
+			$css
+		);
+	}
+
+	/**
+	 * A per-corner override under an unset base declares the composed var inside the media block itself,
+	 * each corner reading its own slot var with the binding's token var as the fallback — there is no
+	 * desktop composed var for the slot vars to feed, so a gap corner falls back to the token rather
+	 * than to nothing.
+	 *
+	 * @return void
+	 */
+	public function testAPerCornerOverrideUnderAnUnsetBaseComposesItsVarInsideTheMediaBlock(): void {
+		$this->seedResponsivePreset( [ 'tablet' => [ '4px', '', '4px', '' ] ], null );
+
+		$css = $this->builder( $this->tokenRadiusRegistry() )->css( 'default', $this->breakpoints() );
+
+		$var      = '--kb-token--preset--kadence-singlebtn--hero--button-radius';
+		$fallback = 'var(--kb-token--semantic--radius--control)';
+
+		$this->assertStringContainsString(
+			'@media all and (max-width: 1024px){:root,:root:where(.kb-tokens){'
+			. $var . '--top:4px;' . $var . '--bottom:4px;'
+			. $var . ':var(' . $var . '--top,' . $fallback . ') var(' . $var . '--right,' . $fallback . ') var(' . $var . '--bottom,' . $fallback . ') var(' . $var . '--left,' . $fallback . ');'
+			. '}}',
+			$css
+		);
+	}
+
+	/**
+	 * A per-corner override under an unset base has no token var to fall back to when the binding is
+	 * inline only, so only the touched slot vars are redeclared and the composed var stays undefined at
+	 * that breakpoint too.
+	 *
+	 * @return void
+	 */
+	public function testAPerCornerOverrideUnderAnUnsetBaseWithoutATokenLeavesTheComposedVarUndefined(): void {
+		$this->seedResponsivePreset( [ 'tablet' => [ '4px', '', '4px', '' ] ], null );
+
+		$css = $this->builder( $this->registry )->css( 'default', $this->breakpoints() );
+
+		$var = '--kb-token--preset--kadence-singlebtn--hero--button-radius';
+
+		$this->assertStringContainsString(
+			'@media all and (max-width: 1024px){:root,:root:where(.kb-tokens){' . $var . '--top:4px;' . $var . '--bottom:4px;}}',
+			$css
+		);
+		$this->assertStringNotContainsString( $var . ':var(', $css );
+	}
+
+	/**
 	 * A library whose presets declare no breakpoint overrides emits no media blocks at all, so every
 	 * existing preset projects byte-identically.
 	 *
@@ -651,10 +727,11 @@ final class Css_BuilderTest extends TestCase {
 	 * Persist a "hero" button preset whose radius varies by breakpoint into the active library.
 	 *
 	 * @param array<string, mixed> $responsive Breakpoint => override value.
+	 * @param string|null          $base       The desktop base value, or null for a radius set only at a breakpoint.
 	 *
 	 * @return void
 	 */
-	private function seedResponsivePreset( array $responsive = [ 'mobile' => '2px' ] ): void {
+	private function seedResponsivePreset( array $responsive = [ 'mobile' => '2px' ], ?string $base = '8px' ): void {
 		$document = [
 			'$extensions' => [
 				'com.kadence.designTokens' => [
@@ -664,7 +741,7 @@ final class Css_BuilderTest extends TestCase {
 								'label'  => 'Hero',
 								'tokens' => [
 									'button-radius' => [
-										'$value'      => '8px',
+										'$value'      => $base,
 										'$extensions' => [
 											'com.kadence.designTokens' => [
 												'responsive' => $responsive,
@@ -819,6 +896,30 @@ final class Css_BuilderTest extends TestCase {
 		$end    = strpos( $css, '}}', $start );
 
 		return $end === false ? '' : substr( $css, $start, $end - $start );
+	}
+
+	/**
+	 * A registry whose Button radius binding references the control radius token, unlike the shipped one
+	 * (inline `css_var` only), so a breakpoint-only per-corner override has a token var to fall back to.
+	 *
+	 * @return Token_Registry
+	 */
+	private function tokenRadiusRegistry(): Token_Registry {
+		$registry = new Token_Registry();
+		$registry->register_preset_bindings(
+			[
+				'block'    => 'kadence/singlebtn',
+				'bindings' => [
+					'button-radius' => [
+						'token'        => 'semantic.radius.control',
+						'css_var'      => 'kb-btn-radius',
+						'control_attr' => 'borderRadius',
+					],
+				],
+			]
+		);
+
+		return $registry;
 	}
 
 	/**
