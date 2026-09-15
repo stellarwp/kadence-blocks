@@ -86,15 +86,19 @@ the team enforces in review; follow them exactly.
 
 - **A block attribute that stores a design value as a bare number (no unit, no CSS variable
   indirection) cannot bind to a `dimension` token through a plain `block_attr`/`css_prop`
-  binding.** An SVG icon's pixel `size` is the example: the token resolves to a CSS length string
-  (`"1.5rem"`), and a plain binding has no unit-conversion step to turn that into the raw number
-  the attribute stores. Register a per-block `Adapter`
-  (`Design_Tokens\Projection\Adapter\Contracts\Abstract_Adapter`) instead, and do the
-  rem/em-to-px conversion inside it.
+  binding alone.** An SVG icon's pixel `size` is the example: the token resolves to a CSS length
+  string (`"1.5rem"`), and a plain binding has no unit-conversion step. Do NOT seed the attribute
+  with a converted number — a number lives in the block as a per-instance value, outranks the
+  preset CSS chain, and never follows a later preset edit. Instead register a per-block `Adapter`
+  (`Design_Tokens\Projection\Adapter\Contracts\Abstract_Adapter`) that blanks the attribute's
+  registration default whenever the token resolves, pair it with an `Editor\Attribute_Default_Catalog`
+  entry so a fresh block starts empty too, and let the low-specificity `Block_Default_Css` rule plus
+  the preset projector's `css_var` size it. The editor's preview then converts the preset's length to a
+  number itself (`pxFromLength`), which is the only place a length-to-px conversion belongs.
 - This is distinct from a block whose attribute is empty-by-default and rendered as a CSS
   declaration in both the editor and the front end (e.g. `kadence/image`'s `borderRadius`,
   `kadence/single-icon`'s `color`) — that shape fits the low-specificity `Block_Default_Css`
-  binding directly, with no adapter and no unit conversion needed.
+  binding directly, with no adapter at all.
 
 ## JavaScript coding conventions
 
