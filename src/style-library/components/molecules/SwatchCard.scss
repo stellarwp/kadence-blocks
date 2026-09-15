@@ -25,8 +25,6 @@
 	flex-direction: column;
 	gap: var(--kb-sl-space-05);
 	width: var(--kb-sl-size-swatch-card-width);
-	// The row stretches the wrapper, not this box; without growing, the border stays short next
-	// to a card whose pill wrapped.
 	flex: 1 1 auto;
 	// gray-300, not the structural --kb-sl-color-border (gray-200) semantic — a card outline is a
 	// distinct role from structural chrome edges.
@@ -201,8 +199,6 @@ button.kadence-blocks-style-library__swatch-card-select {
 	// halves carry it between them instead of the parent.
 	padding: 0 var(--kb-sl-space-10) var(--kb-sl-space-10);
 	min-height: calc(var(--kb-sl-space-30) + var(--kb-sl-space-10));
-	// Lifted above the selecting button's stretched hit area so a control pill gets its own clicks
-	// and a static pill can be hovered for its title; the slot hands its own clicks back to the
-	// card so the surface still selects.
+	// Above the selecting button's stretched hit area, so a pill can be clicked or hovered.
 	position: relative;
 }
