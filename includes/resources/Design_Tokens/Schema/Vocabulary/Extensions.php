@@ -481,7 +481,8 @@ final class Extensions {
 	 *
 	 * @param mixed $entry The preset token entry.
 	 *
-	 * @return mixed The base value.
+	 * @return mixed The base value; `null` when the envelope's desktop base is unset (the overrides still
+	 *               apply); the entry itself when it is not an envelope.
 	 */
 	public static function preset_value_of( $entry ) {
 		if ( is_array( $entry ) && array_key_exists( Sentinels::get_value_key(), $entry ) ) {

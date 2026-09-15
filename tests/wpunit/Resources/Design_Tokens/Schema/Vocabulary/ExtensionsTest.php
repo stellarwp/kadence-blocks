@@ -115,6 +115,26 @@ final class ExtensionsTest extends TestCase {
 	}
 
 	/**
+	 * A responsive entry whose desktop base is unset reports null for the base and still exposes its
+	 * overrides, so every consumer can tell "desktop unset" apart from "no envelope".
+	 *
+	 * @return void
+	 */
+	public function testAResponsivePresetEntryWithANullBaseExposesNullAndItsOverrides(): void {
+		$entry = [
+			'$value'      => null,
+			'$extensions' => [
+				'com.kadence.designTokens' => [
+					'responsive' => [ 'tablet' => '4px' ],
+				],
+			],
+		];
+
+		$this->assertNull( Extensions::preset_value_of( $entry ) );
+		$this->assertSame( [ 'tablet' => '4px' ], Extensions::preset_responsive_of( $entry ) );
+	}
+
+	/**
 	 * A slot list is never mistaken for an envelope: it has no `$value` key, so it reads as its own base
 	 * value with no overrides even though it is an array.
 	 *
