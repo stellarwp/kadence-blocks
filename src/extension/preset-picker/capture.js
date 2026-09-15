@@ -161,7 +161,11 @@ function withResponsive(base, property, attributes, unit) {
 		return base;
 	}
 
-	return { $value: base, $extensions: { [VENDOR_EXTENSION]: { responsive } } };
+	// An empty base is rejected by the server; the envelope's own "desktop unset" spelling is null, the
+	// same reset sentinel a token leaf uses.
+	const isCleared = Array.isArray(base) ? base.every((slot) => slot === '') : base === '';
+
+	return { $value: isCleared ? null : base, $extensions: { [VENDOR_EXTENSION]: { responsive } } };
 }
 
 /**
@@ -204,7 +208,9 @@ export function capturedCatalogValues(tokens, library) {
 		const overrides = get(captured, ['$extensions', VENDOR_EXTENSION, 'responsive'], null);
 		const base = overrides ? captured.$value : captured;
 
-		values[key] = capturedLiteral(base, resolvedLibrary);
+		if (base !== null) {
+			values[key] = capturedLiteral(base, resolvedLibrary);
+		}
 
 		Object.entries(overrides || {}).forEach(([breakpoint, value]) => {
 			responsive[breakpoint] = {
