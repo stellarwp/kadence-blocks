@@ -295,6 +295,14 @@ describe('capturedTokens', () => {
 		});
 	});
 
+	it('omits a property with no desktop value and no breakpoint value, rather than storing an empty string', () => {
+		window.kadenceDesignTokensPresets.libraries[SET][BLOCK].values.primary = { 'button-bg': '#111111' };
+
+		const tokens = capturedTokens(BLOCK, SET, { kbPreset: 'primary' });
+
+		expect(tokens).toEqual({ 'button-bg': '#111111' });
+	});
+
 	it('uses the default preset when no preset is selected', () => {
 		const tokens = capturedTokens(BLOCK, SET, {});
 

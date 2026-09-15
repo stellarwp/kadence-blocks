@@ -224,6 +224,31 @@ export function capturedCatalogValues(tokens, library) {
 }
 
 /**
+ * Add one captured value to the token map, unless there is nothing to store.
+ *
+ * A property can resolve to nothing at every breakpoint: the selected preset sets it only at a breakpoint
+ * (so there is no desktop literal to fall back to) and the block stores no breakpoint value of its own.
+ * The server rejects a bare `''` as an invalid preset value, so writing it would fail the whole save.
+ * Leaving the key out instead lets the property inherit — the same omission `attrToLiteral` applies to a
+ * corner it cannot fill, and the same shape the Style Library saves for a fully cleared property.
+ *
+ * @param {Object} tokens   The token map being built.
+ * @param {string} key      The property key.
+ * @param {*}      captured The captured literal, slot list, envelope, or `''` when nothing resolved.
+ *
+ * @since TBD
+ *
+ * @return {Object} The token map, for the reducer.
+ */
+function withCaptured(tokens, key, captured) {
+	if (captured !== '') {
+		tokens[key] = captured;
+	}
+
+	return tokens;
+}
+
+/**
  * The block's current values across its preset surface, as a `{ propertyKey: literal }` token map: each
  * mapped control's edited value when it has one, else the selected preset's value. Feeds the "save as a
  * new preset" write so the new preset matches what the editor currently shows.
@@ -253,9 +278,7 @@ export function capturedTokens(blockName, library, attributes) {
 		// asked to support — so such a property is skipped and passes the preset's existing value through
 		// unchanged, the same "not edited" fallback every other unmapped property already takes.
 		if (propertyAxis(property)) {
-			tokens[property.key] = presetValue;
-
-			return tokens;
+			return withCaptured(tokens, property.key, presetValue);
 		}
 
 		const attr = property.control_attr;
@@ -266,8 +289,6 @@ export function capturedTokens(blockName, library, attributes) {
 		const edited = attr && !isEmptyValue(property.kind, raw);
 		const base = edited ? attrToLiteral(property.kind, raw, unit, presetValue) : presetValue;
 
-		tokens[property.key] = withResponsive(base, property, attributes, unit);
-
-		return tokens;
+		return withCaptured(tokens, property.key, withResponsive(base, property, attributes, unit));
 	}, {});
 }
