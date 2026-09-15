@@ -485,13 +485,13 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
-	 * A per-corner override under an unset base has no token var to fall back to when the binding is
-	 * inline only, so only the touched slot vars are redeclared and the composed var stays undefined at
-	 * that breakpoint too.
+	 * A per-corner override under an unset base with an inline-only binding has no token var to fill a
+	 * gap corner with, so a sparse override redeclares only the touched slot vars and leaves the
+	 * composed var undefined at that breakpoint too.
 	 *
 	 * @return void
 	 */
-	public function testAPerCornerOverrideUnderAnUnsetBaseWithoutATokenLeavesTheComposedVarUndefined(): void {
+	public function testASparsePerCornerOverrideUnderAnUnsetBaseWithoutATokenLeavesTheComposedVarUndefined(): void {
 		$this->seedResponsivePreset( [ 'tablet' => [ '4px', '', '4px', '' ] ], null );
 
 		$css = $this->builder( $this->registry )->css( 'default', $this->breakpoints() );
@@ -503,6 +503,29 @@ final class Css_BuilderTest extends TestCase {
 			$css
 		);
 		$this->assertStringNotContainsString( $var . ':var(', $css );
+	}
+
+	/**
+	 * A per-corner override under an unset base with an inline-only binding still composes its var inside
+	 * the media block when every corner is set — no corner needs a fallback, so each reads its slot var
+	 * bare — and the block-level retarget then has a defined var to consume at that breakpoint.
+	 *
+	 * @return void
+	 */
+	public function testAFullPerCornerOverrideUnderAnUnsetBaseWithoutATokenComposesItsVarInsideTheMediaBlock(): void {
+		$this->seedResponsivePreset( [ 'tablet' => [ '8px', '4px', '8px', '4px' ] ], null );
+
+		$css = $this->builder( $this->registry )->css( 'default', $this->breakpoints() );
+
+		$var = '--kb-token--preset--kadence-singlebtn--hero--button-radius';
+
+		$this->assertStringContainsString(
+			'@media all and (max-width: 1024px){:root,:root:where(.kb-tokens){'
+			. $var . '--top:8px;' . $var . '--right:4px;' . $var . '--bottom:8px;' . $var . '--left:4px;'
+			. $var . ':var(' . $var . '--top) var(' . $var . '--right) var(' . $var . '--bottom) var(' . $var . '--left);'
+			. '}}',
+			$css
+		);
 	}
 
 	/**
