@@ -138,7 +138,9 @@ function renderPreview(row) {
  * `mobileBorderRadius` (and their hover twins) and its own control is per-device — a preset that
  * could only say one radius for every breakpoint could not reproduce a look a site owner had already
  * built by hand. Background is a single non-responsive picker: the section's background attribute has
- * no per-device counterpart, and `token-color-select` carries no breakpoint switcher to drive one.
+ * no per-device counterpart, and `color-select` carries no breakpoint switcher to drive one. It opens
+ * the same palette popover the block editor's own color controls open, and falls back to the Default
+ * preset's token for the active tab when unset.
  *
  * There is no border-color field on either tab, and its absence is deliberate rather than an
  * omission: the section's border output takes `render_border_styles()`'s shorthand path, which no
@@ -163,9 +165,14 @@ function schemaFor(tab, draft, feed) {
 				title: __('Color', 'kadence-blocks'),
 				fields: [
 					{
-						type: 'token-color-select',
+						type: 'color-select',
 						path: isHover ? 'tokens.backgroundHover' : 'tokens.background',
 						label: __('Background', 'kadence-blocks'),
+						// The semantic background the block binds for each state (the Default preset binds
+						// `column-bg`, see the baseline's `presets["kadence/column"]`; the hover twin is the
+						// block's own hover binding), so a row that stores nothing previews the color a fresh
+						// section really renders — transparent, shown as a blank swatch labeled "Default".
+						defaultValue: isHover ? 'semantic.color.column-bg-hover' : 'semantic.color.column-bg',
 					},
 				],
 			},
