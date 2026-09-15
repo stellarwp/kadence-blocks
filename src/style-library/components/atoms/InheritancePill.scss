@@ -6,7 +6,9 @@
 	// a transparent border on the static pill keeps both boxes identical, so a mixed row of cards
 	// stays on one baseline.
 	border: var(--kb-sl-border-width-input) solid transparent;
-	border-radius: var(--kb-sl-radius-full);
+	// 0.625rem, not on the radius ramp: half the one-line pill height, so a one-line pill keeps its
+	// capsule and a two-line pill keeps these same corners instead of growing rounder.
+	border-radius: 0.625rem;
 	padding: 0 var(--kb-sl-space-10);
 	font-size: var(--kb-sl-font-size-xs);
 	font-weight: var(--kb-sl-font-weight-regular);
