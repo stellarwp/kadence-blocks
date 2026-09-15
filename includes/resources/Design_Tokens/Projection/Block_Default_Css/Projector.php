@@ -5,6 +5,7 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Block_Default_Css;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Contracts\Abstract_Css_Projector;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Media_Queries;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Utils\Location;
 use Throwable;
@@ -139,7 +140,7 @@ final class Projector extends Abstract_Css_Projector {
 			return '';
 		}
 
-		return $this->css_builder->css_for_version( $version, $slug );
+		return $this->css_builder->css_for_version( $version, $slug, Media_Queries::all() );
 	}
 
 	/**
@@ -163,6 +164,6 @@ final class Projector extends Abstract_Css_Projector {
 			return '';
 		}
 
-		return $this->css_builder->editor_css_for_version( $version, $slug );
+		return $this->css_builder->editor_css_for_version( $version, $slug, Media_Queries::all() );
 	}
 }
