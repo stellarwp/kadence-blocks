@@ -170,7 +170,12 @@ export function writePresetBreakpoint(raw, breakpoint, value) {
 		return { ...raw, [ENVELOPE_VALUE_KEY]: isCleared(value) ? null : value };
 	}
 
-	const base = envelope ? (raw[ENVELOPE_VALUE_KEY] ?? '') : (raw ?? '');
+	const stored = envelope ? raw[ENVELOPE_VALUE_KEY] : raw;
+	// A `null` base is the desktop-reset sentinel and has to survive on any leaf that keeps its object
+	// shape — `presetSaveTokens` reads `null` as unset but would send `''` as a real value. Only the
+	// bare-scalar collapse turns it into the empty string a flat value uses for "unset".
+	const base = stored === null ? null : (stored ?? '');
+	const scalarBase = base ?? '';
 	const vendor = envelope ? (raw.$extensions?.[KADENCE_TOKEN_NAMESPACE] ?? {}) : {};
 	// `responsive` is pulled out alongside `clamp` so `keep` holds only the vendor keys this write does
 	// not own — what is left decides whether the namespace survives a full clear.
@@ -212,7 +217,9 @@ export function writePresetBreakpoint(raw, breakpoint, value) {
 				// keeps them — dropping the extensions is not license to discard the rest of the leaf.
 				const { $extensions: unused, [ENVELOPE_VALUE_KEY]: unusedValue, ...rootFields } = envelope ? raw : {};
 
-				return Object.keys(rootFields).length === 0 ? base : { ...rootFields, [ENVELOPE_VALUE_KEY]: base };
+				return Object.keys(rootFields).length === 0
+					? scalarBase
+					: { ...rootFields, [ENVELOPE_VALUE_KEY]: base };
 			}
 
 			return { ...raw, [ENVELOPE_VALUE_KEY]: base, $extensions: siblings };
