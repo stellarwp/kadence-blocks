@@ -2,6 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Editor;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 
 /**
@@ -15,8 +16,9 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
  * per-instance value, so a Style Library edit to the Default preset's size never reached the canvas, and
  * the block read as "Edited" the moment it was inserted.
  *
- * The seed is gated on the token resolving, matching the front-end adapter and the block-default CSS
- * rule, so a site with no icon-size token keeps block.json's own default everywhere.
+ * The seed is gated on the token resolving IN THE ACTIVE LIBRARY, matching the front-end adapter and the
+ * block-default CSS rule, which is built from that same library: a library that disables the icon-size
+ * token gets no rule to fall through to, so block.json's own default must stay there.
  *
  * Scoped to kadence/single-icon's `size` today. Not a general "any block, any attribute" registry:
  * extend the ENTRIES map only when a second real consumer needs it.
@@ -46,12 +48,23 @@ final class Attribute_Default_Catalog {
 	private Token_Resolver $resolver;
 
 	/**
+	 * The active-library pointer, so the gate reads the library the block-default CSS is built from.
+	 *
 	 * @since TBD
 	 *
-	 * @param Token_Resolver $resolver The token resolver.
+	 * @var Active_Token_Library_Store
 	 */
-	public function __construct( Token_Resolver $resolver ) {
+	private Active_Token_Library_Store $active;
+
+	/**
+	 * @since TBD
+	 *
+	 * @param Token_Resolver             $resolver The token resolver.
+	 * @param Active_Token_Library_Store $active   The active-library pointer.
+	 */
+	public function __construct( Token_Resolver $resolver, Active_Token_Library_Store $active ) {
 		$this->resolver = $resolver;
+		$this->active   = $active;
 	}
 
 	/**
@@ -64,7 +77,7 @@ final class Attribute_Default_Catalog {
 	 * @return array<string, array<string, string>>
 	 */
 	public function all(): array {
-		$resolved = $this->resolver->resolve();
+		$resolved = $this->resolver->resolve( $this->active->get() );
 		$out      = [];
 
 		foreach ( self::ENTRIES as $block => $attributes ) {

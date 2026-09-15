@@ -3,6 +3,7 @@
 namespace Tests\wpunit\Resources\Design_Tokens\Editor;
 
 use Generator;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Editor\Attribute_Default_Catalog;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Css_Renderer;
@@ -70,6 +71,34 @@ final class Attribute_Default_CatalogTest extends TestCase {
 	}
 
 	/**
+	 * The gate reads the ACTIVE library, the same one the block-default CSS builds its rule from: a
+	 * non-default library that disables the icon-size token gets no `font-size` rule, so the catalog must
+	 * omit the entry there and let block.json's own default stand.
+	 *
+	 * @return void
+	 */
+	public function testATokenDisabledInTheActiveLibraryOmitsTheEntry(): void {
+		$this->activate_library( [ 'semantic' => [ 'icon-size' => [ 'default' => [ '$disabled' => true ] ] ] ] );
+
+		$this->assertSame( [], $this->container->get( Attribute_Default_Catalog::class )->all() );
+	}
+
+	/**
+	 * A non-default active library that keeps the icon-size token still seeds the empty default, proving
+	 * the active-library gate switches on the token's presence there and not on the library being default.
+	 *
+	 * @return void
+	 */
+	public function testATokenPresentInTheActiveLibrarySeedsTheEmptyDefault(): void {
+		$this->activate_library( [] );
+
+		$this->assertSame(
+			[ 'kadence/single-icon' => [ 'size' => '' ] ],
+			$this->container->get( Attribute_Default_Catalog::class )->all()
+		);
+	}
+
+	/**
 	 * Build a catalog whose `semantic.icon-size.default` leaf resolves to the given dimension value.
 	 *
 	 * @param string $value The `$value` the `semantic.icon-size.default` leaf resolves to.
@@ -107,6 +136,19 @@ final class Attribute_Default_CatalogTest extends TestCase {
 			$this->container->get( Mutator::class )
 		);
 
-		return new Attribute_Default_Catalog( $resolver );
+		return new Attribute_Default_Catalog( $resolver, $this->container->get( Active_Token_Library_Store::class ) );
+	}
+
+	/**
+	 * Save a non-default library carrying the given overrides and make it the active one. The store only
+	 * accepts a slug it knows, so the document is saved before the pointer moves.
+	 *
+	 * @param array<string, mixed> $overrides The library's overrides-only DTCG document.
+	 *
+	 * @return void
+	 */
+	private function activate_library( array $overrides ): void {
+		$this->container->get( Token_Store::class )->save_document( (string) wp_json_encode( $overrides ), 'alternate' );
+		$this->container->get( Active_Token_Library_Store::class )->set( 'alternate' );
 	}
 }

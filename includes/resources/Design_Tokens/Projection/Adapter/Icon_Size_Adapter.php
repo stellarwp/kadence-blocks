@@ -2,6 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Adapter;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Adapter\Contracts\Abstract_Adapter;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 
@@ -18,8 +19,10 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
  * as a per-instance `font-size` rule that outranks the preset chain, so a Style Library edit to the
  * Default preset's size never reached the page, while the preset chain quietly carried the right value.
  *
- * The blank is gated on the token resolving because the block-default CSS rule is gated the same way: a
- * site with no resolvable icon-size token has no rule to fall through to, so block.json's `50` must stay.
+ * The blank is gated on the token resolving IN THE ACTIVE LIBRARY, because the block-default CSS rule is
+ * gated the same way and built from that same library: a library that disables the icon-size token gets
+ * no rule to fall through to, so block.json's `50` must stay there. Resolving the default library instead
+ * would blank the size on a library the CSS never sizes.
  *
  * Because `size` has no `source` key, the block serializer omits it from saved content whenever it equals
  * the registration default, so this also covers every published icon block that never customized its
@@ -53,12 +56,23 @@ final class Icon_Size_Adapter extends Abstract_Adapter {
 	private Token_Resolver $resolver;
 
 	/**
+	 * The active-library pointer, so the gate reads the library the block-default CSS is built from.
+	 *
 	 * @since TBD
 	 *
-	 * @param Token_Resolver $resolver The token resolver.
+	 * @var Active_Token_Library_Store
 	 */
-	public function __construct( Token_Resolver $resolver ) {
+	private Active_Token_Library_Store $active;
+
+	/**
+	 * @since TBD
+	 *
+	 * @param Token_Resolver             $resolver The token resolver.
+	 * @param Active_Token_Library_Store $active   The active-library pointer.
+	 */
+	public function __construct( Token_Resolver $resolver, Active_Token_Library_Store $active ) {
 		$this->resolver = $resolver;
+		$this->active   = $active;
 	}
 
 	/**
@@ -71,7 +85,7 @@ final class Icon_Size_Adapter extends Abstract_Adapter {
 	 * @return array<string, mixed> The transformed default attributes.
 	 */
 	public function apply( array $attributes ): array {
-		if ( $this->resolver->resolve()->value( self::TOKEN ) === null ) {
+		if ( $this->resolver->resolve( $this->active->get() )->value( self::TOKEN ) === null ) {
 			return $attributes;
 		}
 

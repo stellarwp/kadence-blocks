@@ -5,6 +5,7 @@ namespace Tests\wpunit\Resources\Design_Tokens\Projection\Adapter;
 use Generator;
 use Kadence_Blocks_CSS;
 use Kadence_Blocks_Single_Icon_Block;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Adapter\Icon_Size_Adapter;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Adapter\Projector;
@@ -29,7 +30,7 @@ final class Icon_Size_AdapterTest extends TestCase {
 	 * @return void
 	 */
 	public function testAResolvedTokenBlanksTheRegistrationDefault(): void {
-		$adapter = new Icon_Size_Adapter( $this->resolver_resolving_to( '1.5rem' ) );
+		$adapter = new Icon_Size_Adapter( $this->resolver_resolving_to( '1.5rem' ), $this->active_library() );
 
 		$this->assertSame( [ 'size' => '' ], $adapter->apply( [ 'size' => 50 ] ) );
 	}
@@ -45,7 +46,7 @@ final class Icon_Size_AdapterTest extends TestCase {
 	 * @return void
 	 */
 	public function testAResolvedTokenOfAnyUnitBlanksAMissingSize( string $length ): void {
-		$adapter = new Icon_Size_Adapter( $this->resolver_resolving_to( $length ) );
+		$adapter = new Icon_Size_Adapter( $this->resolver_resolving_to( $length ), $this->active_library() );
 
 		$this->assertSame( [ 'size' => '' ], $adapter->apply( [] ) );
 	}
@@ -67,9 +68,38 @@ final class Icon_Size_AdapterTest extends TestCase {
 	 * @return void
 	 */
 	public function testUnresolvedTokenLeavesAttributesUnchanged(): void {
-		$adapter = new Icon_Size_Adapter( $this->resolver_with_no_icon_size_token() );
+		$adapter = new Icon_Size_Adapter( $this->resolver_with_no_icon_size_token(), $this->active_library() );
 
 		$this->assertSame( [], $adapter->apply( [] ) );
+	}
+
+	/**
+	 * The gate reads the ACTIVE library, the same one the block-default CSS builds its rule from: a
+	 * non-default library that disables the icon-size token gets no `font-size` rule, so the adapter must
+	 * leave block.json's `50` in place there rather than blank a size nothing would fall back to.
+	 *
+	 * @return void
+	 */
+	public function testATokenDisabledInTheActiveLibraryLeavesTheDefaultAlone(): void {
+		$this->activate_library( [ 'semantic' => [ 'icon-size' => [ 'default' => [ '$disabled' => true ] ] ] ] );
+
+		$adapter = $this->container->get( Icon_Size_Adapter::class );
+
+		$this->assertSame( [ 'size' => 50 ], $adapter->apply( [ 'size' => 50 ] ) );
+	}
+
+	/**
+	 * A non-default active library that keeps the icon-size token still blanks the default, proving the
+	 * active-library gate switches on the token's presence there and not on the library being default.
+	 *
+	 * @return void
+	 */
+	public function testATokenPresentInTheActiveLibraryStillBlanksTheDefault(): void {
+		$this->activate_library( [] );
+
+		$adapter = $this->container->get( Icon_Size_Adapter::class );
+
+		$this->assertSame( [ 'size' => '' ], $adapter->apply( [ 'size' => 50 ] ) );
 	}
 
 	/**
@@ -218,5 +248,27 @@ final class Icon_Size_AdapterTest extends TestCase {
 			$this->container->get( Effective_Palettes::class ),
 			$this->container->get( Mutator::class )
 		);
+	}
+
+	/**
+	 * The container's active-library pointer, handed to an adapter built by hand.
+	 *
+	 * @return Active_Token_Library_Store
+	 */
+	private function active_library(): Active_Token_Library_Store {
+		return $this->container->get( Active_Token_Library_Store::class );
+	}
+
+	/**
+	 * Save a non-default library carrying the given overrides and make it the active one. The store only
+	 * accepts a slug it knows, so the document is saved before the pointer moves.
+	 *
+	 * @param array<string, mixed> $overrides The library's overrides-only DTCG document.
+	 *
+	 * @return void
+	 */
+	private function activate_library( array $overrides ): void {
+		$this->container->get( Token_Store::class )->save_document( (string) wp_json_encode( $overrides ), 'alternate' );
+		$this->active_library()->set( 'alternate' );
 	}
 }
