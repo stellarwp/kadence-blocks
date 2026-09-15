@@ -3,8 +3,7 @@
  * that plug into the shared `ScaleScreen`/`ScaleSettings` contract (see `ScaleScreen.js`'s module
  * docblock). Two things make this screen genuinely different from its
  * siblings: the value column shows two dimensions for a one-dimension token (presentation-only,
- * via `iconSizeRowValue`), and the SIZE field restricts units to the ones
- * `Icon_Size_Adapter`'s px converter can actually round-trip.
+ * via `iconSizeRowValue`), and the SIZE field restricts units to the ones `pxFromLength` accepts.
  */
 
 /**

@@ -93,8 +93,10 @@ the team enforces in review; follow them exactly.
   (`Design_Tokens\Projection\Adapter\Contracts\Abstract_Adapter`) that blanks the attribute's
   registration default whenever the token resolves, pair it with an `Editor\Attribute_Default_Catalog`
   entry so a fresh block starts empty too, and let the low-specificity `Block_Default_Css` rule plus
-  the preset projector's `css_var` size it. The editor's preview then converts the preset's length to a
-  number itself (`pxFromLength`), which is the only place a length-to-px conversion belongs.
+  the preset projector's `css_var` size it. Length-to-px conversion lives only in `pxFromLength`
+  (`src/token-controls/helpers/px-from-length.js`), shared by the icon preview (an SVG geometry
+  attribute needs a number) and the token-indicator dimension compare (a stored bare number against a
+  preset length).
 - This is distinct from a block whose attribute is empty-by-default and rendered as a CSS
   declaration in both the editor and the front end (e.g. `kadence/image`'s `borderRadius`,
   `kadence/single-icon`'s `color`) — that shape fits the low-specificity `Block_Default_Css`
