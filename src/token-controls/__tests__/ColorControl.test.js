@@ -73,6 +73,20 @@ jest.mock('../molecules/ColorPicker', () => ({
 	ColorPicker: ({ color }) => <div data-testid="color-picker" data-color={color ?? ''} />,
 }));
 
+// jsdom's `CSSStyleDeclaration` drops any `var()` written to the `background` shorthand, leaving
+// `style.background` empty for a token-backed swatch. This stand-in runs the real `colorSwatchStyle`
+// and exposes its result as `data-background` so a test can assert on the CSS variable the swatch
+// really paints with, the same way the `ColorPicker` stand-in exposes `data-color`.
+jest.mock('../atoms/ColorSwatch', () => {
+	const { colorSwatchStyle } = jest.requireActual('../atoms/ColorSwatch');
+
+	return {
+		ColorSwatch: ({ entry, value }) => (
+			<span className="kb-color-swatch" data-background={colorSwatchStyle(entry, value).background} />
+		),
+	};
+});
+
 jest.mock('../styles/token-controls.scss', () => ({}), { virtual: true });
 
 const GROUPS = [
@@ -187,15 +201,75 @@ describe('ColorControl', () => {
 	});
 
 	/**
-	 * The same out-of-group case never leaks the raw bracket-alias string into the swatch's inline
-	 * `background`, which is not a valid CSS color.
+	 * The same out-of-group case paints the swatch through the token's CSS custom property — the value
+	 * is a real color the block renders, only its palette name is unknown — and never leaks the raw
+	 * bracket-alias string into `background`, which is not a valid CSS color.
 	 *
 	 * @return {void}
 	 */
-	it('renders a transparent swatch, not the raw alias, for an out-of-group value', () => {
+	it("renders an out-of-group alias as the token's CSS variable swatch", () => {
 		render({ value: '{semantic.color.button-text}' });
 
-		expect(container.querySelector('.kb-color-swatch').style.background).toBe('transparent');
+		expect(container.querySelector('.kb-color-swatch').getAttribute('data-background')).toBe(
+			'var(--kb-token--semantic--color--button-text)'
+		);
+	});
+
+	/**
+	 * A host without token CSS variables on the page hands the control a resolver, and the swatch
+	 * paints with the resolved literal instead.
+	 *
+	 * @return {void}
+	 */
+	it('renders an out-of-group alias with the literal resolveAlias returns', () => {
+		render({
+			value: '{semantic.color.button-text}',
+			resolveAlias: (id) => (id === 'semantic.color.button-text' ? 'rgb(255, 255, 255)' : ''),
+		});
+
+		expect(container.querySelector('.kb-color-swatch').getAttribute('data-background')).toBe('rgb(255, 255, 255)');
+	});
+
+	/**
+	 * An unset slot with a `defaultValue` shows the default's swatch and a muted "Default" label, so a
+	 * row that stores nothing still names the color the block really renders.
+	 *
+	 * @return {void}
+	 */
+	it('shows the default swatch and a muted "Default" label when the value is unset', () => {
+		render({ value: '', defaultValue: '{semantic.color.accent.strong}' });
+
+		expect(container.querySelector('.kb-color-swatch').getAttribute('data-background')).toBe(
+			'var(--kb-token--semantic--color--accent--strong)'
+		);
+		const label = container.querySelector('.kb-color-control__value');
+		expect(label.textContent).toBe('Default');
+		expect(label.classList.contains('kb-color-control__value--default')).toBe(true);
+	});
+
+	/**
+	 * A default is display-only: the popover still sees the real (empty) value, so the Clear row
+	 * stays disabled and no group row reads as picked.
+	 *
+	 * @return {void}
+	 */
+	it('does not hand the defaultValue to the popover as the current value', () => {
+		render({ value: '', defaultValue: '{semantic.color.accent.strong}', onClear: jest.fn() });
+
+		expect(container.querySelector('.kb-color-control__clear').disabled).toBe(true);
+	});
+
+	/**
+	 * A stored value always wins over the default, with no muted styling.
+	 *
+	 * @return {void}
+	 */
+	it('ignores defaultValue once a value is set', () => {
+		render({ value: '{semantic.color.accent.soft}', defaultValue: '{semantic.color.accent.strong}' });
+
+		const label = container.querySelector('.kb-color-control__value');
+		expect(label.textContent).toBe('Soft');
+		expect(label.classList.contains('kb-color-control__value--default')).toBe(false);
 	});
 
 	/**

@@ -2,7 +2,7 @@
 /**
  * Internal dependencies
  */
-import { colorSelection } from '../helpers/color-selection';
+import { colorSelection, unlistedEntry } from '../helpers/color-selection';
 
 jest.mock('@wordpress/i18n', () => ({
 	__: (text) => text,
@@ -142,5 +142,48 @@ describe('colorSelection', () => {
 		['var(--escaped\\ name)'],
 	])('opens %s on Style Library too', (value) => {
 		expect(colorSelection(GROUPS, value).initialTab).toBe('style-library');
+	});
+});
+
+describe('unlistedEntry', () => {
+	/**
+	 * A bracket alias no group lists still names a real token, so it becomes an entry keyed on that
+	 * alias with no literal — `colorSwatchStyle` turns that into the token's CSS variable.
+	 *
+	 * @return {void}
+	 */
+	it('builds a CSS-variable-backed entry for an alias when no resolver is given', () => {
+		expect(unlistedEntry('{semantic.color.button-text}')).toEqual({
+			id: 'semantic.color.button-text',
+			label: 'Default',
+			value: '',
+			alias: '{semantic.color.button-text}',
+		});
+	});
+
+	/**
+	 * A host with resolved literals (the Style Library page has no token CSS variables) supplies them
+	 * through `resolveAlias`, and the entry carries the literal so the swatch paints without CSS.
+	 *
+	 * @return {void}
+	 */
+	it("carries the host's resolved literal when resolveAlias returns one", () => {
+		const entry = unlistedEntry('{semantic.color.button-text}', (id) =>
+			id === 'semantic.color.button-text' ? '#ffffff' : ''
+		);
+
+		expect(entry.value).toBe('#ffffff');
+		expect(entry.alias).toBe('{semantic.color.button-text}');
+	});
+
+	/**
+	 * A literal or an empty value is not an alias and gets no synthesized entry.
+	 *
+	 * @return {void}
+	 */
+	it('returns null for a literal or an empty value', () => {
+		expect(unlistedEntry('#3182ce')).toBeNull();
+		expect(unlistedEntry('')).toBeNull();
+		expect(unlistedEntry(undefined)).toBeNull();
 	});
 });

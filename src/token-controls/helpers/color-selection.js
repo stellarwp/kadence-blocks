@@ -52,3 +52,37 @@ export function colorSelection(groups, value) {
 		initialTab: isTokenAlias(value) || isCssVariableReference(value) || !value ? 'style-library' : 'custom',
 	};
 }
+
+/**
+ * An entry for a bound alias that none of the control's groups list — e.g. a button preset's
+ * `{semantic.color.button-text}`, a token outside the Accent/Contrast/Background palette. The value
+ * is real and renders, so the trigger must show its color rather than a blank swatch; only its name
+ * is unavailable, hence the muted "Default" label every other token control uses for that case.
+ *
+ * With no `resolveAlias`, the entry carries no literal and `colorSwatchStyle` paints it through the
+ * token's CSS custom property (`var(--kb-token--…)`), which the block editor has on the page. A host
+ * page without those properties (the Style Library) passes `resolveAlias` and the entry carries the
+ * resolved literal instead.
+ *
+ * @param {*}         value          The current slot value.
+ * @param {?Function} [resolveAlias] `(id) => string` — the host's literal for a bare token id, or ''.
+ *
+ * @since TBD
+ *
+ * @return {?{id: string, label: string, value: string, alias: string}} The synthesized entry, or null
+ *         when the value is not a bracket alias.
+ */
+export function unlistedEntry(value, resolveAlias) {
+	if (!isTokenAlias(value)) {
+		return null;
+	}
+
+	const id = value.slice(1, -1);
+
+	return {
+		id,
+		label: __('Default', 'kadence-blocks'),
+		value: resolveAlias ? resolveAlias(id) || '' : '',
+		alias: value,
+	};
+}
