@@ -1069,11 +1069,23 @@ final class Dtcg_ValidatorTest extends TestCase {
 		yield 'single breakpoint only' => [
 			'entry' => $this->responsive_entry( '8px', [ 'mobile' => '2px' ] ),
 		];
+
+		yield 'unset base, literal override' => [
+			'entry' => $this->responsive_entry( null, [ 'tablet' => '4px' ] ),
+		];
+
+		yield 'unset base, slot-list override' => [
+			'entry' => $this->responsive_entry( null, [ 'tablet' => [ '4px', '2px', '4px', '2px' ] ] ),
+		];
+
+		yield 'unset base, slot-list override with a gap' => [
+			'entry' => $this->responsive_entry( null, [ 'mobile' => [ '2px', '', '', '' ] ] ),
+		];
 	}
 
 	/**
-	 * A malformed responsive preset entry is rejected: an unknown breakpoint, an empty override map, a
-	 * missing base value, and a bad value at a breakpoint each fail at their own path.
+	 * A malformed responsive preset entry is rejected: an unknown breakpoint, an empty override map, an
+	 * empty base value, and a bad value at a breakpoint each fail at their own path.
 	 *
 	 * @dataProvider invalidResponsivePresetProvider
 	 *
@@ -1144,6 +1156,32 @@ final class Dtcg_ValidatorTest extends TestCase {
 			'code'  => Validation_Error::get_code_value_invalid(),
 			'path'  => $base . '.1',
 		];
+
+		yield 'unset base with an empty responsive map' => [
+			'entry' => $this->responsive_entry( null, [] ),
+			'code'  => Validation_Error::get_code_value_invalid(),
+			'path'  => $base,
+		];
+	}
+
+	/**
+	 * A bare null preset value — no responsive envelope around it — is rejected: null only means "desktop
+	 * unset" inside an envelope that still carries a breakpoint override.
+	 *
+	 * @return void
+	 */
+	public function testABareNullPresetValueIsRejected(): void {
+		$errors = $this->validator->validate(
+			$this->preset_document( null ),
+			Dtcg_Validator::get_context_overrides()
+		)->errors();
+
+		$this->assertCount( 1, $errors, $this->describe( $errors ) );
+		$this->assertSame( Validation_Error::get_code_value_invalid(), $errors[0]->code );
+		$this->assertSame(
+			'$extensions.com.kadence.designTokens.presets.kadence/x.default.tokens.button-radius',
+			$errors[0]->path
+		);
 	}
 
 	/**

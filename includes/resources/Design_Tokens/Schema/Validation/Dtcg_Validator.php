@@ -977,13 +977,14 @@ final class Dtcg_Validator {
 		return new Validation_Error(
 			$path,
 			Validation_Error::get_code_value_invalid(),
-			'A foundation-preset/block-preset token value must be an alias, a non-empty literal, a slot list, a responsive entry, or a composite shadow.'
+			'A foundation-preset/block-preset token value must be an alias, a non-empty literal, a slot list, a responsive entry (whose base may be null), or a composite shadow.'
 		);
 	}
 
 	/**
-	 * Validate a preset token entry that varies by breakpoint: its `$value` is the base, and each override
-	 * under the vendor extension's `responsive` map is itself a preset token value.
+	 * Validate a preset token entry that varies by breakpoint: its `$value` is the base — or `null` when
+	 * desktop is unset —, and each override under the vendor extension's `responsive` map is itself a
+	 * preset token value.
 	 *
 	 * Mirrors {@see self::validate_responsive_shape()} — same envelope, same breakpoint-key check — but
 	 * validates each override by SHAPE rather than against a `$type`. A preset property has no `$type`
@@ -998,10 +999,17 @@ final class Dtcg_Validator {
 	 * @return Validation_Error|null Null when valid.
 	 */
 	private function validate_extension_envelope( array $entry, string $path ): ?Validation_Error {
-		$error = $this->validate_extension_value( Extensions::preset_value_of( $entry ), $path );
+		$base = Extensions::preset_value_of( $entry );
 
-		if ( $error !== null ) {
-			return $error;
+		// A null base is the same reset sentinel a token leaf uses: desktop is unset and falls back to
+		// the block's own default while the breakpoint overrides below stand on their own. Anything
+		// else that is not a real value (an empty string, a bad literal) is still rejected.
+		if ( $base !== null ) {
+			$error = $this->validate_extension_value( $base, $path );
+
+			if ( $error !== null ) {
+				return $error;
+			}
 		}
 
 		$responsive = Extensions::preset_responsive_of( $entry );
