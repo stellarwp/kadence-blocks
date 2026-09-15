@@ -269,6 +269,35 @@ describe('SwatchCard pill slot', () => {
 	});
 
 	/**
+	 * The slot sits above the selecting button's hit area, so a click on a static pill has to be
+	 * handed back to the card or that patch of the surface would stop selecting.
+	 *
+	 * @return void
+	 */
+	it('selects the card when a static pill is clicked', () => {
+		const onSelect = jest.fn();
+		renderCard({ onSelect, pill: <span data-testid="pill">From Default</span> });
+
+		act(() => cardContainer.querySelector('[data-testid="pill"]').click());
+
+		expect(onSelect).toHaveBeenCalledWith('primitive.color.brand.primary');
+	});
+
+	/**
+	 * A control pill owns its click; the card must not also select on it.
+	 *
+	 * @return void
+	 */
+	it('does not select the card when a button pill is clicked', () => {
+		const onSelect = jest.fn();
+		renderCard({ onSelect, pill: <button type="button" data-testid="pill" /> });
+
+		act(() => cardContainer.querySelector('[data-testid="pill"]').click());
+
+		expect(onSelect).not.toHaveBeenCalled();
+	});
+
+	/**
 	 * With no pill and no reservation, the card has nothing under its sub-line to say, so the
 	 * slot is skipped rather than leaving an empty strip.
 	 *

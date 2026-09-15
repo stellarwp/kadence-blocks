@@ -201,11 +201,8 @@ button.kadence-blocks-style-library__swatch-card-select {
 	// halves carry it between them instead of the parent.
 	padding: 0 var(--kb-sl-space-10) var(--kb-sl-space-10);
 	min-height: calc(var(--kb-sl-space-30) + var(--kb-sl-space-10));
-
-	// A pill that is a CONTROL is lifted above the selecting button's stretched hit area so it
-	// receives its own clicks. Everything else in this slot is deliberately left under it — a pill
-	// that only states a fact should select the card like the rest of the surface around it.
-	> button {
-		position: relative;
-	}
+	// Lifted above the selecting button's stretched hit area so a control pill gets its own clicks
+	// and a static pill can be hovered for its title; the slot hands its own clicks back to the
+	// card so the surface still selects.
+	position: relative;
 }
