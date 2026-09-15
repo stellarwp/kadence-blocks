@@ -3,6 +3,7 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Projection\Block_Default_Css;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Block_Default_Css\Css_Builder;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Css_Var;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
@@ -12,6 +13,7 @@ use KadenceWP\KadenceBlocks\Monolog\Handler\TestHandler;
 use KadenceWP\KadenceBlocks\Monolog\Logger;
 use KadenceWP\KadenceBlocks\Psr\Log\LoggerInterface;
 use KadenceWP\KadenceBlocks\Psr\Log\NullLogger;
+use ReflectionProperty;
 use Tests\Support\Classes\TestCase;
 
 /**
@@ -40,6 +42,21 @@ final class Css_BuilderTest extends TestCase {
 
 		$this->resolver       = $this->container->get( Preset_Resolver::class );
 		$this->token_resolver = $this->container->get( Token_Resolver::class );
+	}
+
+	/**
+	 * @return void
+	 */
+	protected function tearDown(): void {
+		// The shared Token_Resolver singleton memoizes per store version, which the per-test rollback can
+		// reuse; clear it so a document seeded by one test cannot leak into a sibling.
+		foreach ( [ 'memo', 'effective_memo' ] as $property ) {
+			$memo = new ReflectionProperty( $this->token_resolver, $property );
+			$memo->setAccessible( true );
+			$memo->setValue( $this->token_resolver, [] );
+		}
+
+		parent::tearDown();
 	}
 
 	/**
@@ -479,6 +496,98 @@ final class Css_BuilderTest extends TestCase {
 		// Asserted whole rather than by substring: the point is that NOTHING wraps the token variable, which a
 		// containment check on the inner value could not tell apart from the wrapped form.
 		$this->assertSame( '.wp-block-kadence-image img{border-radius:var(' . $var . ',0);}', $css );
+	}
+
+	/**
+	 * A `$default` property with no desktop base emits no resting declaration — the block keeps its own
+	 * default at desktop — but declares the css_prop inside each breakpoint that overrides it, pointing at
+	 * the KB-owned variable the preset projection redeclares there.
+	 *
+	 * @return void
+	 */
+	public function testABaseLessDefaultPropertyEmitsOnlyAMediaScopedDeclaration(): void {
+		$this->seed_base_less_image_radius();
+
+		$css = $this->builder( $this->image_registry( 'kb-img-radius' ) )->css( 'default', $this->breakpoints() );
+
+		// Everything before the first media block is the resting layer; the radius must not be declared there.
+		$this->assertStringNotContainsString( '.wp-block-kadence-image img{border-radius', explode( '@media', $css, 2 )[0] );
+		$this->assertStringContainsString(
+			'@media all and (max-width: 1024px){.wp-block-kadence-image img{border-radius:var(--kb-img-radius);}}',
+			$css
+		);
+		$this->assertStringNotContainsString( '(max-width: 767px)', $css );
+	}
+
+	/**
+	 * A base-less property whose binding declares no css_var has no variable the preset projection could
+	 * redeclare, so nothing is emitted for it at any breakpoint.
+	 *
+	 * @return void
+	 */
+	public function testABaseLessDefaultPropertyWithoutACssVarEmitsNothing(): void {
+		$this->seed_base_less_image_radius();
+
+		$this->assertSame( '', $this->builder( $this->image_registry() )->css( 'default', $this->breakpoints() ) );
+	}
+
+	/**
+	 * With no breakpoint map the builder emits exactly what it always did, so every existing caller is
+	 * byte-identical.
+	 *
+	 * @return void
+	 */
+	public function testNoBreakpointsMeansNoMediaBlocks(): void {
+		$this->seed_base_less_image_radius();
+
+		$this->assertStringNotContainsString( '@media', $this->builder( $this->image_registry( 'kb-img-radius' ) )->css() );
+	}
+
+	/**
+	 * The breakpoint map the tests hand the builder, mirroring the shipped defaults.
+	 *
+	 * @return array<string, string>
+	 */
+	private function breakpoints(): array {
+		return [
+			'tablet' => '(max-width: 1024px)',
+			'mobile' => '(max-width: 767px)',
+		];
+	}
+
+	/**
+	 * Store an Image `$default` preset whose borderRadius has no desktop base and one tablet override,
+	 * so the builder has a base-less property to emit a media-scoped rule for.
+	 *
+	 * @return void
+	 */
+	private function seed_base_less_image_radius(): void {
+		$document = [
+			'$extensions' => [
+				'com.kadence.designTokens' => [
+					'presets' => [
+						'kadence/image' => [
+							'$default' => 'default',
+							'default'  => [
+								'label'  => 'Default',
+								'tokens' => [
+									'borderRadius' => [
+										'$value'      => null,
+										'$extensions' => [
+											'com.kadence.designTokens' => [
+												'responsive' => [ 'tablet' => '4px' ],
+											],
+										],
+									],
+								],
+							],
+						],
+					],
+				],
+			],
+		];
+
+		$this->container->get( Token_Store::class )->save_document( (string) wp_json_encode( $document ), Token_Store::default_slug() );
 	}
 
 	/**

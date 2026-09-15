@@ -52,6 +52,12 @@ use RuntimeException;
  * *selected* preset reaches a property delivered this way; see {@see self::declaration_value()}. Pure: no
  * WordPress calls; the wiring lives in {@see Projector}.
  *
+ * A `$default` property may be unset at desktop yet overridden at a breakpoint. It gets no resting rule
+ * (desktop keeps the block's own default) but, given a breakpoint map, a media-scoped rule per overriding
+ * breakpoint pointing the css_prop at the binding's `css_var` — the variable the preset projection
+ * redeclares inside the same media query. Only a base-less property gets one: a property with a base
+ * already consumes that variable at every width through its resting rule.
+ *
  * @since TBD
  */
 final class Css_Builder {
@@ -109,9 +115,10 @@ final class Css_Builder {
 	private LoggerInterface $logger;
 
 	/**
-	 * Per-request memo keyed on context (front end / editor) + store version + slug, so repeated builds
-	 * within a request are free and a write (which bumps the version) invalidates it without an explicit
-	 * purge. The context is part of the key because the editor build can differ from the front-end one.
+	 * Per-request memo keyed on context (front end / editor) + store version + slug + breakpoint map, so
+	 * repeated builds within a request are free and a write (which bumps the version) invalidates it without
+	 * an explicit purge. The context is part of the key because the editor build can differ from the
+	 * front-end one; the breakpoint map because a filtered media query changes the media-scoped rules.
 	 *
 	 * @since TBD
 	 *
@@ -140,12 +147,14 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The token library whose resolved values the `$default` aliases resolve against.
+	 * @param string                $slug        The token library whose resolved values the `$default` aliases resolve against.
+	 * @param array<string, string> $breakpoints Breakpoint => media-query string, for the media-scoped rules of a
+	 *                                           property unset at desktop; empty emits none.
 	 *
 	 * @return string The CSS, or an empty string when there is nothing to project.
 	 */
-	public function css( string $slug = 'default' ): string {
-		return $this->build( $slug, false );
+	public function css( string $slug = 'default', array $breakpoints = [] ): string {
+		return $this->build( $slug, $breakpoints, false );
 	}
 
 	/**
@@ -160,12 +169,14 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The token library whose resolved values the `$default` aliases resolve against.
+	 * @param string                $slug        The token library whose resolved values the `$default` aliases resolve against.
+	 * @param array<string, string> $breakpoints Breakpoint => media-query string, for the media-scoped rules of a
+	 *                                           property unset at desktop; empty emits none.
 	 *
 	 * @return string The CSS, or an empty string when there is nothing to project.
 	 */
-	public function editor_css( string $slug = 'default' ): string {
-		return $this->build( $slug, true );
+	public function editor_css( string $slug = 'default', array $breakpoints = [] ): string {
+		return $this->build( $slug, $breakpoints, true );
 	}
 
 	/**
@@ -175,13 +186,14 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $version The store version the resolved library was built from.
-	 * @param string $slug    The token library slug.
+	 * @param string                $version     The store version the resolved library was built from.
+	 * @param string                $slug        The token library slug.
+	 * @param array<string, string> $breakpoints Breakpoint => media-query string; part of the cache key.
 	 *
 	 * @return string
 	 */
-	public function css_for_version( string $version, string $slug ): string {
-		return $this->for_version( $version, $slug, false );
+	public function css_for_version( string $version, string $slug, array $breakpoints = [] ): string {
+		return $this->for_version( $version, $slug, $breakpoints, false );
 	}
 
 	/**
@@ -192,13 +204,14 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $version The store version the resolved library was built from.
-	 * @param string $slug    The token library slug.
+	 * @param string                $version     The store version the resolved library was built from.
+	 * @param string                $slug        The token library slug.
+	 * @param array<string, string> $breakpoints Breakpoint => media-query string; part of the cache key.
 	 *
 	 * @return string
 	 */
-	public function editor_css_for_version( string $version, string $slug ): string {
-		return $this->for_version( $version, $slug, true );
+	public function editor_css_for_version( string $version, string $slug, array $breakpoints = [] ): string {
+		return $this->for_version( $version, $slug, $breakpoints, true );
 	}
 
 	/**
@@ -208,12 +221,13 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug   The token library whose resolved values the `$default` aliases resolve against.
-	 * @param bool   $editor Whether to build the editor-scoped preset.
+	 * @param string                $slug        The token library whose resolved values the `$default` aliases resolve against.
+	 * @param array<string, string> $breakpoints Breakpoint => media-query string.
+	 * @param bool                  $editor      Whether to build the editor-scoped preset.
 	 *
 	 * @return string The CSS, or an empty string when there is nothing to project.
 	 */
-	private function build( string $slug, bool $editor ): string {
+	private function build( string $slug, array $breakpoints, bool $editor ): string {
 		$css = '';
 
 		foreach ( $this->registry->preset_binding_blocks() as $block ) {
@@ -229,6 +243,13 @@ final class Css_Builder {
 				$values = $this->presets->resolve_default( $block, $slug );
 			} catch ( RuntimeException $e ) {
 				continue;
+			}
+
+			try {
+				$default    = $this->presets->default_preset( $block, $slug );
+				$responsive = $breakpoints === [] ? [] : $this->presets->resolve_responsive_literal( $block, $default, $slug );
+			} catch ( RuntimeException $e ) {
+				$responsive = [];
 			}
 
 			// The canonical id map of the library — the exact set the Css_Var projector emits a
@@ -304,6 +325,47 @@ final class Css_Builder {
 			foreach ( $by_suffix as $suffix => $declarations ) {
 				$css .= $selector . $suffix . '{' . implode( ';', $declarations ) . ';}';
 			}
+
+			// A property the `$default` preset overrides at a breakpoint but leaves unset at desktop has no
+			// resting declaration above, so nothing would consume the KB-owned variable the preset
+			// projection redeclares inside its media block. Declare the css_prop there, and only there,
+			// so desktop keeps the block's own default while the breakpoint takes the preset's value.
+			foreach ( $responsive as $breakpoint => $overrides ) {
+				$query = $breakpoints[ $breakpoint ] ?? '';
+
+				if ( $query === '' ) {
+					continue;
+				}
+
+				$media_by_suffix = [];
+
+				foreach ( array_keys( $overrides ) as $property ) {
+					if ( array_key_exists( $property, $values ) ) {
+						continue; // The resting declaration already consumes the variable at every width.
+					}
+
+					$binding = $bindings->binding( (string) $property );
+
+					if ( $binding === null || ! $binding->is_token_ref() || $binding->is_state() ) {
+						continue;
+					}
+
+					$prop    = $binding->css_prop();
+					$css_var = $binding->css_var();
+
+					if ( $prop === null || $css_var === null ) {
+						continue;
+					}
+
+					$suffix = $this->selector_suffix( $editor ? $binding->editor_css_selector() : $binding->css_selector() );
+
+					$media_by_suffix[ $suffix ][] = $prop . ':var(--' . $css_var . ')';
+				}
+
+				foreach ( $media_by_suffix as $suffix => $declarations ) {
+					$css .= '@media all and ' . $query . '{' . $selector . $suffix . '{' . implode( ';', $declarations ) . ';}}';
+				}
+			}
 		}
 
 		return $css;
@@ -352,15 +414,16 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $version The store version the resolved library was built from.
-	 * @param string $slug    The token library slug.
-	 * @param bool   $editor  Whether to build the editor-scoped preset.
+	 * @param string                $version     The store version the resolved library was built from.
+	 * @param string                $slug        The token library slug.
+	 * @param array<string, string> $breakpoints Breakpoint => media-query string.
+	 * @param bool                  $editor      Whether to build the editor-scoped preset.
 	 *
 	 * @return string
 	 */
-	private function for_version( string $version, string $slug, bool $editor ): string {
+	private function for_version( string $version, string $slug, array $breakpoints, bool $editor ): string {
 		$context  = $editor ? 'editor' : 'front';
-		$suffix   = $version . ':' . $slug;
+		$suffix   = $version . ':' . $slug . ':' . $this->breakpoint_signature( $breakpoints );
 		$memo_key = $context . ':' . $suffix;
 
 		if ( isset( $this->memo[ $memo_key ] ) ) {
@@ -374,11 +437,30 @@ final class Css_Builder {
 			return $this->memo[ $memo_key ] = $cached;
 		}
 
-		$css = $editor ? $this->editor_css( $slug ) : $this->css( $slug );
+		$css = $editor ? $this->editor_css( $slug, $breakpoints ) : $this->css( $slug, $breakpoints );
 
 		wp_cache_set( $cache_key, $css, self::CACHE_GROUP, DAY_IN_SECONDS );
 
 		return $this->memo[ $memo_key ] = $css;
 	}
 
+	/**
+	 * A stable signature for a breakpoint map, so the cache key changes when the filtered media queries do.
+	 * Mirrors {@see Preset_Css_Builder}'s so the two caches roll over together.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, string> $breakpoints Breakpoint => media-query string.
+	 *
+	 * @return string
+	 */
+	private function breakpoint_signature( array $breakpoints ): string {
+		if ( $breakpoints === [] ) {
+			return 'none';
+		}
+
+		ksort( $breakpoints );
+
+		return md5( (string) wp_json_encode( $breakpoints ) );
+	}
 }
