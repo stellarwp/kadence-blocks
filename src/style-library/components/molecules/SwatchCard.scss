@@ -201,4 +201,5 @@ button.kadence-blocks-style-library__swatch-card-select {
 	min-height: calc(var(--kb-sl-space-30) + var(--kb-sl-space-10));
 	// Above the selecting button's stretched hit area, so a pill can be clicked or hovered.
 	position: relative;
+	cursor: pointer;
 }
