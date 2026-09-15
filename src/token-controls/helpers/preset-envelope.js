@@ -9,6 +9,10 @@
  *           responsive: { tablet: '0.375rem', mobile: '0.25rem' }
  *     } } }
  *
+ * `$value` is `null` when desktop has been reset while an override still stands: the key stays so
+ * the leaf still reads as an envelope, desktop renders the block's own default, and the overrides
+ * below keep applying.
+ *
  * `responsive` and `clamp` are mutually exclusive on one leaf. Both mirror
  * `Schema\Vocabulary\Responsive` on the server, which is the authority for every key spelled here.
  */
@@ -155,7 +159,15 @@ export function writePresetBreakpoint(raw, breakpoint, value) {
 	const envelope = isPresetEnvelope(raw);
 
 	if (breakpoint === 'desktop') {
-		return envelope ? { ...raw, [ENVELOPE_VALUE_KEY]: value } : value;
+		if (!envelope) {
+			return value;
+		}
+
+		// Clearing desktop while overrides stand cannot store an empty string — the server rejects it —
+		// and cannot drop the envelope without dropping the overrides with it. `null` is the same reset
+		// sentinel a token leaf's `$value` uses: desktop unset, block default in effect there, and every
+		// breakpoint below still its own.
+		return { ...raw, [ENVELOPE_VALUE_KEY]: isCleared(value) ? null : value };
 	}
 
 	const base = envelope ? (raw[ENVELOPE_VALUE_KEY] ?? '') : (raw ?? '');

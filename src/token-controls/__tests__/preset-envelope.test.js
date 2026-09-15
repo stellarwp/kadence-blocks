@@ -24,6 +24,18 @@ describe('readPresetBreakpoint', () => {
 	it('reads an absent override as empty rather than undefined', () => {
 		expect(readPresetBreakpoint({ $value: '1rem' }, 'mobile')).toBe('');
 	});
+
+	it('reads a null base as unset at desktop while the override still reads at tablet', () => {
+		const baseLess = {
+			$value: null,
+			$extensions: { 'com.kadence.designTokens': { responsive: { tablet: '0.375rem' } } },
+		};
+
+		expect(readPresetBreakpoint(baseLess, 'desktop')).toBe('');
+		expect(readPresetBreakpoint(baseLess, 'tablet')).toBe('0.375rem');
+		expect(resolvePresetBreakpoint(baseLess, 'mobile')).toBe('0.375rem');
+		expect(resolvePresetBreakpoint(baseLess, 'desktop')).toBe('');
+	});
 });
 
 describe('writePresetBreakpoint', () => {
@@ -121,6 +133,34 @@ describe('writePresetBreakpoint', () => {
 			$value: '0.5rem',
 			$extensions: { 'com.other.vendor': { note: 'keep me' } },
 		});
+	});
+
+	it('clears the desktop base to null on an envelope, leaving every override standing', () => {
+		const withTablet = writePresetBreakpoint('0.5rem', 'tablet', '0.375rem');
+
+		expect(writePresetBreakpoint(withTablet, 'desktop', '')).toEqual({
+			$value: null,
+			$extensions: { 'com.kadence.designTokens': { responsive: { tablet: '0.375rem' } } },
+		});
+	});
+
+	it('treats an all-empty slot list as a desktop clear too', () => {
+		const withTablet = writePresetBreakpoint(['0.5rem', '0.5rem', '0.25rem', '0.25rem'], 'tablet', '0.375rem');
+
+		expect(writePresetBreakpoint(withTablet, 'desktop', ['', '', '', '']).$value).toBeNull();
+	});
+
+	it('leaves a desktop clear on a flat value flat, so an untouched property is still omitted on save', () => {
+		expect(writePresetBreakpoint('0.5rem', 'desktop', '')).toBe('');
+	});
+
+	it('collapses to unset when the last override is cleared on a null-base envelope', () => {
+		const baseLess = {
+			$value: null,
+			$extensions: { 'com.kadence.designTokens': { responsive: { tablet: '0.375rem' } } },
+		};
+
+		expect(writePresetBreakpoint(baseLess, 'tablet', '')).toBe('');
 	});
 });
 
