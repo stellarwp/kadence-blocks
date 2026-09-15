@@ -143,7 +143,8 @@ final class Icon_Size_AdapterTest extends TestCase {
 	 * never reaches the page.
 	 *
 	 * Reads `Kadence_Blocks_CSS::$styles` rather than the returned content; see the note on the previous
-	 * test for why.
+	 * test for why. The `color` attribute is there only to prove the render path emitted this instance's
+	 * rule, so the missing `font-size` is a real absence rather than an unregistered style.
 	 *
 	 * @return void
 	 */
@@ -151,10 +152,20 @@ final class Icon_Size_AdapterTest extends TestCase {
 		$block     = new Kadence_Blocks_Single_Icon_Block();
 		$unique_id = 'icon-size-adapter-missing';
 
-		$block->render_css( [ 'uniqueID' => $unique_id ], '<span class="kb-svg-icon-wrap"></span>', null );
+		$block->render_css(
+			[
+				'uniqueID' => $unique_id,
+				'color'    => '#123456',
+			],
+			'<span class="kb-svg-icon-wrap"></span>',
+			null
+		);
 
-		$css = Kadence_Blocks_CSS::$styles[ 'kb-single-icon' . $unique_id ] ?? '';
+		$this->assertArrayHasKey( 'kb-single-icon' . $unique_id, Kadence_Blocks_CSS::$styles );
 
+		$css = Kadence_Blocks_CSS::$styles[ 'kb-single-icon' . $unique_id ];
+
+		$this->assertStringContainsString( 'color:', $css );
 		$this->assertStringNotContainsString( 'font-size', $css );
 	}
 

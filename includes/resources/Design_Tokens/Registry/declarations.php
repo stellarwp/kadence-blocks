@@ -970,9 +970,10 @@ return [
 			// as a raw SVG width/height prop rather than a CSS declaration, and an SVG geometry attribute cannot
 			// consume a var(). The editor therefore resolves this same token to a pixel NUMBER for its preview
 			// (see the icon's preview component), which is what keeps the two render paths agreeing on a
-			// cleared size. The per-block Adapter and the editor attribute-default catalog are unaffected: they
-			// seed the registration default so a never-customized icon carries a concrete size, and this rule
-			// answers only for an explicitly cleared one.
+			// cleared size. The per-block Adapter and the editor attribute-default catalog blank the registration
+			// default whenever this token resolves, so a never-customized icon carries no size of its own and this
+			// rule, through the selected preset's `--kb-icon-size`, is what sizes it, exactly as it does for an
+			// explicitly cleared one.
 			'block'         => 'kadence/single-icon',
 			'label'         => __( 'Style', 'kadence-blocks' ), // the editor picker control's label.
 			'style_library' => [
