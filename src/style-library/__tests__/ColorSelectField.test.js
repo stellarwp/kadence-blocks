@@ -245,6 +245,7 @@ describe('ColorSelectField', () => {
 	it('hands the control the library resolver for aliases outside the palette', () => {
 		render({ value: 'semantic.color.button-text' });
 
+		expect(capturedProps.resolveAlias).toBe(resolvedTokenValue);
 		expect(capturedProps.resolveAlias('semantic.color.button-text')).toBe('#ffffff');
 		expect(capturedProps.resolveAlias('semantic.color.nowhere')).toBe('');
 	});

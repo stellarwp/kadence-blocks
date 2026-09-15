@@ -1084,13 +1084,6 @@
 	white-space: nowrap;
 }
 
-// The display-only default: the same muted color the width `TokenSelector`'s "Default" summary
-// uses (`.kadence-token-field__label--default`), so an unset color row reads like every other unset
-// token row rather than like a picked value.
-.kb-color-control__value--default {
-	color: #949494;
-}
-
 // The round swatch `ColorControl`'s trigger and `ColorGroupList`'s rows both render.
 .kb-color-swatch {
 	display: inline-flex;

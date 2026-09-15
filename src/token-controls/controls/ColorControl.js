@@ -56,7 +56,9 @@ import '../styles/token-controls.scss';
  *                                           or literal. Display-only: the trigger shows its swatch and
  *                                           a muted "Default", while the popover keeps seeing the real
  *                                           (empty) value so nothing reads as picked and Clear stays
- *                                           disabled.
+ *                                           disabled. The `kb-color-control__value--default` class it
+ *                                           adds is a state hook for hosts and tests, not a style of
+ *                                           its own.
  * @param {?Function} [props.resolveAlias]  `(id) => string` — the host's resolved literal for a bare
  *                                           token id the groups do not list, or ''. Omit on a page that
  *                                           has the token CSS custom properties; the swatch then paints

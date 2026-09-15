@@ -63,9 +63,6 @@ export function ColorSelectField({ field, value, onChange }) {
 			onPick={(alias) => onChange(toStoredValue(alias))}
 			onCustom={(literal) => onChange(literal)}
 			resolveLiteral={resolveLiteral}
-			// This page has no `--kb-token--*` custom properties, so an alias the palette groups do not
-			// list (a preset's `semantic.color.button-*` binding) must paint from the library's resolved
-			// literal rather than through CSS.
 			resolveAlias={resolvedTokenValue}
 			disabled={field.readOnly}
 		/>
