@@ -10,14 +10,14 @@
  * `ColorSwatchControl` opens the same one behind a different, compact trigger.
  *
  * The trigger paints a bound alias the groups do not list (a preset's out-of-palette token) through
- * `unlistedEntry`, and shows `defaultValue` muted when the slot is unset.
+ * `unlistedEntry`, and shows `defaultValue`'s swatch with a muted "Default" label when the slot is
+ * unset.
  */
 
 /**
  * WordPress dependencies
  */
 import { Dropdown } from '@wordpress/components';
-import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -25,7 +25,7 @@ import { __ } from '@wordpress/i18n';
 import { BindingIndicator } from '../atoms/BindingIndicator';
 import { ColorSwatch } from '../atoms/ColorSwatch';
 import { ColorPopover } from '../molecules/ColorPopover';
-import { colorSelection, unlistedEntry } from '../helpers/color-selection';
+import { shownColorSelection } from '../helpers/color-selection';
 import { isTokenAlias } from '../helpers/token-summary';
 import '../styles/token-controls.scss';
 
@@ -83,13 +83,12 @@ export function ColorControl({
 	defaultValue = '',
 	disabled = false,
 }) {
-	// The popover always works from the real value; only the trigger falls back to the default.
-	const selection = colorSelection(groups, value);
-	const isDefault = !value && !!defaultValue;
-	const shown = isDefault ? colorSelection(groups, defaultValue) : selection;
-	const shownValue = isDefault ? defaultValue : value;
-	const entry = shown.entry || unlistedEntry(shownValue, resolveAlias);
-	const shownLabel = isDefault ? __('Default', 'kadence-blocks') : shown.selectedLabel;
+	const { selection, entry, shownValue, shownLabel, isDefault } = shownColorSelection(
+		groups,
+		value,
+		defaultValue,
+		resolveAlias
+	);
 	const valueClassName = isDefault
 		? 'kb-color-control__value kb-color-control__value--default'
 		: 'kb-color-control__value';

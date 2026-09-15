@@ -225,8 +225,9 @@ function schemaFor(tab) {
 				// `var(--kb-btn-border-width)` computes to today. Shown muted when the field is unset,
 				// the same way Radius/Padding/Margin's `defaultValue` above are.
 				defaultValue: '1px',
-				// The color the Default preset binds for the border, shown muted in the swatch when the
-				// row stores nothing — the same fallback the Text/Background rows show above.
+				// The color the Default preset binds for the border. When the row stores nothing the swatch
+				// shows this color and the row names it "Default" — the same fallback the Text/Background
+				// rows show above.
 				defaultColor: 'semantic.color.border',
 			},
 			{

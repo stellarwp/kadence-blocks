@@ -2,7 +2,7 @@
 /**
  * Internal dependencies
  */
-import { colorSelection, unlistedEntry } from '../helpers/color-selection';
+import { colorSelection, shownColorSelection, unlistedEntry } from '../helpers/color-selection';
 
 jest.mock('@wordpress/i18n', () => ({
 	__: (text) => text,
@@ -185,5 +185,84 @@ describe('unlistedEntry', () => {
 		expect(unlistedEntry('#3182ce')).toBeNull();
 		expect(unlistedEntry('')).toBeNull();
 		expect(unlistedEntry(undefined)).toBeNull();
+	});
+});
+
+describe('shownColorSelection', () => {
+	/**
+	 * An unset slot with a default paints the default's entry on the trigger and names it "Default",
+	 * while the popover's selection still reads the real (empty) value so nothing shows as picked.
+	 *
+	 * @return {void}
+	 */
+	it('falls back to the default on the trigger only while the value is unset', () => {
+		const result = shownColorSelection(GROUPS, '', '{semantic.color.accent.main}');
+
+		expect(result.isDefault).toBe(true);
+		expect(result.shownValue).toBe('{semantic.color.accent.main}');
+		expect(result.entry.id).toBe('semantic.color.accent.main');
+		expect(result.shownLabel).toBe('Default');
+		expect(result.selection.entry).toBeFalsy();
+		expect(result.selection.selectedLabel).toBeNull();
+	});
+
+	/**
+	 * A set value wins over the default: the trigger shows the selection's own entry and label.
+	 *
+	 * @return {void}
+	 */
+	it('ignores the default once a value is set', () => {
+		const result = shownColorSelection(GROUPS, '{semantic.color.accent.main}', '{semantic.color.background.base}');
+
+		expect(result.isDefault).toBe(false);
+		expect(result.shownValue).toBe('{semantic.color.accent.main}');
+		expect(result.entry.id).toBe('semantic.color.accent.main');
+		expect(result.shownLabel).toBe('Main');
+		expect(result.selection.entry.id).toBe('semantic.color.accent.main');
+	});
+
+	/**
+	 * A literal default matches no entry, so the trigger gets the literal itself to paint and still
+	 * names it "Default" rather than leaving the label blank.
+	 *
+	 * @return {void}
+	 */
+	it('hands a literal default through with no entry and a Default label', () => {
+		const result = shownColorSelection(GROUPS, '', '#171717');
+
+		expect(result.isDefault).toBe(true);
+		expect(result.shownValue).toBe('#171717');
+		expect(result.entry).toBeNull();
+		expect(result.shownLabel).toBe('Default');
+	});
+
+	/**
+	 * A default alias the groups do not list is synthesized through `unlistedEntry`, carrying the
+	 * host's resolved literal when a resolver is given.
+	 *
+	 * @return {void}
+	 */
+	it('synthesizes an out-of-group default alias through resolveAlias', () => {
+		const result = shownColorSelection(GROUPS, '', '{semantic.color.border}', (id) =>
+			id === 'semantic.color.border' ? 'rgb(226, 232, 240)' : ''
+		);
+
+		expect(result.entry.alias).toBe('{semantic.color.border}');
+		expect(result.entry.value).toBe('rgb(226, 232, 240)');
+		expect(result.shownLabel).toBe('Default');
+	});
+
+	/**
+	 * With no default, an unset slot is not "Default": nothing paints and nothing is named.
+	 *
+	 * @return {void}
+	 */
+	it('shows nothing for an unset value with no default', () => {
+		const result = shownColorSelection(GROUPS, '');
+
+		expect(result.isDefault).toBe(false);
+		expect(result.shownValue).toBe('');
+		expect(result.entry).toBeNull();
+		expect(result.shownLabel).toBeNull();
 	});
 });

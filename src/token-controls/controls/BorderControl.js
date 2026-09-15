@@ -103,10 +103,10 @@ function applyToAxis(axis, index, next) {
  *                                                the row collapses to zero height.
  * @param {boolean}   [props.inherited]           Whether that default comes from another breakpoint,
  *                                                which tags it `Inherited` instead of `Default`.
- * @param {?string}   [props.defaultColor]        What the color axis falls back to when unset, shown
- *                                                as the swatch's muted default; the width axis has
- *                                                `defaultValue`. Handed to `renderColor` as its
- *                                                `defaultValue`.
+ * @param {string}    [props.defaultColor]        What the color axis falls back to when unset: the
+ *                                                swatch shows this color and the row names it
+ *                                                "Default"; the width axis has `defaultValue`. Handed
+ *                                                to `renderColor` as its `defaultValue`.
  * @param {?Array}    [props.slotIcons]            Per-slot glyphs, in stored order (matches
  *                                                `BoxControl`'s prop).
  * @param {?Object}   [props.status]              `{ bound, modified }`; omit for no indicator.
@@ -141,7 +141,7 @@ export function BorderControl({
 	widthTokens = [],
 	defaultValue,
 	inherited = false,
-	defaultColor = null,
+	defaultColor = '',
 	slotIcons = null,
 	status = null,
 	onReset = null,

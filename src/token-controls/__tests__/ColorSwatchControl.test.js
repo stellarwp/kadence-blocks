@@ -214,6 +214,18 @@ describe('ColorSwatchControl', () => {
 	});
 
 	/**
+	 * A default is display-only: the popover still sees the real (empty) value, so the Clear row
+	 * stays disabled and no group row reads as picked.
+	 *
+	 * @return {void}
+	 */
+	it('does not hand the defaultValue to the popover as the current value', () => {
+		render({ value: '', defaultValue: '{semantic.color.border}', onClear: jest.fn() });
+
+		expect(container.querySelector('.kb-color-control__clear').disabled).toBe(true);
+	});
+
+	/**
 	 * A set value wins over the default: the swatch and the accessible name follow the selection.
 	 *
 	 * @return {void}

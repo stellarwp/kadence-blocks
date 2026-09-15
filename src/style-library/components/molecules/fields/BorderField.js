@@ -219,8 +219,8 @@ export function widthTokensForField(atBreakpoint) {
  *                                             there. Tablet and Mobile show the breakpoint above
  *                                             instead, tagged "Inherited".
  * @param {?string}  [props.field.defaultColor] What the color axis falls back to when unset — a bare
- *                                             token id, like every color this host stores — shown as
- *                                             the swatch's muted default.
+ *                                             token id, like every color this host stores. The swatch
+ *                                             shows this color and the row names it "Default".
  * @param {Object}   props.values             The full draft values, read by dot path.
  * @param {?Object}  [props.originalValues]   The preset's own stored values, unaffected by the
  *                                             draft — read by the same dot paths as `values`. Never

@@ -8,8 +8,8 @@
  * visible text, the way the Style Library's own swatch toggles already name themselves.
  *
  * The popover body itself is `ColorPopover`, shared with `ColorControl` — the two controls differ
- * only in what opens the popover. Like `ColorControl`, the trigger shows `defaultValue` muted when
- * the slot is unset.
+ * only in what opens the popover. Like `ColorControl`, the trigger shows `defaultValue`'s swatch
+ * and names it "Default" when the slot is unset.
  */
 
 /**
@@ -23,7 +23,7 @@ import { __, sprintf } from '@wordpress/i18n';
  */
 import { ColorPopover } from '../molecules/ColorPopover';
 import { ColorSwatch } from '../atoms/ColorSwatch';
-import { colorSelection, unlistedEntry } from '../helpers/color-selection';
+import { shownColorSelection } from '../helpers/color-selection';
 import { isTokenAlias } from '../helpers/token-summary';
 import '../styles/token-controls.scss';
 
@@ -68,13 +68,7 @@ export function ColorSwatchControl({
 	defaultValue = '',
 	disabled = false,
 }) {
-	// The popover always works from the real value; only the trigger falls back to the default.
-	const selection = colorSelection(groups, value);
-	const isDefault = !value && !!defaultValue;
-	const shown = isDefault ? colorSelection(groups, defaultValue) : selection;
-	const shownValue = isDefault ? defaultValue : value;
-	const entry = shown.entry || unlistedEntry(shownValue, resolveAlias);
-	const shownLabel = isDefault ? __('Default', 'kadence-blocks') : shown.selectedLabel;
+	const { selection, entry, shownValue, shownLabel } = shownColorSelection(groups, value, defaultValue, resolveAlias);
 
 	return (
 		<Dropdown
