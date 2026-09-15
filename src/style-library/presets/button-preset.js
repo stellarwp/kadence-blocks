@@ -176,13 +176,18 @@ function schemaFor(tab) {
 	const isHover = tab === 'hover';
 	const textPath = isHover ? 'tokens.button-text-hover' : 'tokens.button-text';
 	const bgPath = isHover ? 'tokens.button-bg-hover' : 'tokens.button-bg';
+	// The semantic pair the Default preset binds (see the baseline's `presets["kadence/singlebtn"]`),
+	// so a row that stores nothing previews the color a fresh button really renders — the same
+	// posture Radius/Border/Padding/Margin take below with their literal defaults.
+	const textDefault = isHover ? 'semantic.color.button-text-hover' : 'semantic.color.button-text';
+	const bgDefault = isHover ? 'semantic.color.button-bg-hover' : 'semantic.color.button-bg';
 
 	const colorPanel = {
 		id: 'color',
 		title: __('Color', 'kadence-blocks'),
 		fields: [
-			{ type: 'color-select', path: textPath, label: __('Text', 'kadence-blocks') },
-			{ type: 'color-select', path: bgPath, label: __('Background', 'kadence-blocks') },
+			{ type: 'color-select', path: textPath, label: __('Text', 'kadence-blocks'), defaultValue: textDefault },
+			{ type: 'color-select', path: bgPath, label: __('Background', 'kadence-blocks'), defaultValue: bgDefault },
 		],
 	};
 

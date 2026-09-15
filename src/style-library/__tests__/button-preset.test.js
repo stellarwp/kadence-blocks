@@ -270,3 +270,34 @@ describe('BUTTON_PRESET.renderPreview', () => {
 		expect(chip.getAttribute('style')).toBeFalsy();
 	});
 });
+
+describe('BUTTON_PRESET.schemaFor', () => {
+	/**
+	 * The Normal tab's Text and Background rows fall back to the semantic button colors the Default
+	 * preset binds, so a new preset previews the color a fresh button really renders.
+	 *
+	 * @return {void}
+	 */
+	it('declares the resting button colors as the Normal tab defaults', () => {
+		const fields = BUTTON_PRESET.schemaFor('normal').panels.find((panel) => panel.id === 'color').fields;
+
+		expect(fields.map((field) => [field.path, field.defaultValue])).toEqual([
+			['tokens.button-text', 'semantic.color.button-text'],
+			['tokens.button-bg', 'semantic.color.button-bg'],
+		]);
+	});
+
+	/**
+	 * The Hover tab falls back to the hover pair, never the resting pair.
+	 *
+	 * @return {void}
+	 */
+	it('declares the hover button colors as the Hover tab defaults', () => {
+		const fields = BUTTON_PRESET.schemaFor('hover').panels.find((panel) => panel.id === 'color').fields;
+
+		expect(fields.map((field) => [field.path, field.defaultValue])).toEqual([
+			['tokens.button-text-hover', 'semantic.color.button-text-hover'],
+			['tokens.button-bg-hover', 'semantic.color.button-bg-hover'],
+		]);
+	});
+});
