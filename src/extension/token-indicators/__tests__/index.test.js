@@ -151,14 +151,16 @@ describe('usePresetBinding device-aware overridden', () => {
 });
 
 /**
- * Seed the catalog with a preset whose `button-radius` has NO desktop value and only a tablet override —
- * the shape a Style Library desktop reset stores.
+ * Seed the catalog with a preset whose `button-radius` has NO desktop value and only one breakpoint
+ * override — the shape a Style Library desktop reset stores.
+ *
+ * @param {string} breakpoint The breakpoint carrying the only override, `tablet` or `mobile`.
  *
  * @since TBD
  *
  * @return {void}
  */
-function seedBaseLessCatalog() {
+function seedBaseLessCatalog(breakpoint = 'tablet') {
 	window.kadenceDesignTokensPresets = {
 		active: SET,
 		libraries: {
@@ -173,7 +175,7 @@ function seedBaseLessCatalog() {
 						primary: {},
 					},
 					responsive: {
-						primary: { tablet: { 'button-radius': '8px' } },
+						primary: { [breakpoint]: { 'button-radius': '8px' } },
 					},
 					overridden: {
 						primary: { 'button-radius': true },
@@ -217,6 +219,47 @@ describe('usePresetBinding with a preset value only at a breakpoint', () => {
 	 * @return {void}
 	 */
 	it('reports no preset value on Desktop, so an untouched control reads as the block default', () => {
+		const state = usePresetBinding(BLOCK, { kbPreset: 'primary' }, SET, 'Desktop');
+
+		expect(state.borderRadius.presetValue).toBeUndefined();
+		expect(state.borderRadius.overridden).toBe(false);
+	});
+});
+
+describe('usePresetBinding with a preset value only at the mobile breakpoint', () => {
+	beforeEach(() => {
+		seedBaseLessCatalog('mobile');
+	});
+
+	afterEach(() => {
+		delete window.kadenceDesignTokensPresets;
+	});
+
+	/**
+	 * A property whose only override sits at mobile is admitted the same way a tablet-only one is: the
+	 * control binds, and the Mobile compare reads the mobile override.
+	 *
+	 * @return {void}
+	 */
+	it('still binds the control, reading the mobile override on Mobile', () => {
+		const attributes = { kbPreset: 'primary', mobileBorderRadius: ['8', '8', '8', '8'], borderRadiusUnit: 'px' };
+
+		const state = usePresetBinding(BLOCK, attributes, SET, 'Mobile');
+
+		expect(state.borderRadius).toBeDefined();
+		expect(state.borderRadius.bound).toBe(true);
+		expect(state.borderRadius.overridden).toBe(false);
+		expect(state.borderRadius.responsive.mobile).toBe('8px');
+		expect(state.borderRadius.responsive.tablet).toBeUndefined();
+	});
+
+	/**
+	 * On Desktop a mobile-only preset has nothing to compare against, so the entry carries no preset value
+	 * and an untouched control is not overridden.
+	 *
+	 * @return {void}
+	 */
+	it('reports no preset value on Desktop for a mobile-only preset', () => {
 		const state = usePresetBinding(BLOCK, { kbPreset: 'primary' }, SET, 'Desktop');
 
 		expect(state.borderRadius.presetValue).toBeUndefined();
