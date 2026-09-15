@@ -50,7 +50,7 @@ import { useState } from '@wordpress/element';
  * Internal dependencies
  */
 import { getValueAtPath } from '../../../helpers/settings-schema';
-import { pickableTokensForType } from '../../../helpers/tokens';
+import { pickableTokensForType, resolvedTokenValue } from '../../../helpers/tokens';
 import {
 	PRESET_BREAKPOINTS,
 	readPresetBreakpoint,
@@ -347,6 +347,9 @@ export function BorderField({ field, values, originalValues, onValueChange }) {
 					onCustom={(literal) => onColorChange(literal)}
 					onClear={() => onColorChange('')}
 					resolveLiteral={resolveLiteral}
+					// This page has no `--kb-token--*` custom properties, and the Default preset binds the
+					// border color to `semantic.color.border`, which the palette groups do not list.
+					resolveAlias={resolvedTokenValue}
 					disabled={field.readOnly}
 				/>
 			)}

@@ -22,7 +22,7 @@ import { __, sprintf } from '@wordpress/i18n';
  */
 import { ColorPopover } from '../molecules/ColorPopover';
 import { ColorSwatch } from '../atoms/ColorSwatch';
-import { colorSelection } from '../helpers/color-selection';
+import { colorSelection, unlistedEntry } from '../helpers/color-selection';
 import { isTokenAlias } from '../helpers/token-summary';
 import '../styles/token-controls.scss';
 
@@ -40,6 +40,10 @@ import '../styles/token-controls.scss';
  * @param {Function}  props.onCustom         Called with a literal color from the Custom tab.
  * @param {?Function} [props.resolveLiteral] `(entry) => string` — the host's hook for seeding the
  *                                            Custom tab from a currently-bound token entry.
+ * @param {?Function} [props.resolveAlias]   `(id) => string` — the host's resolved literal for a bare
+ *                                            token id the groups do not list, or ''. Omit on a page that
+ *                                            has the token CSS custom properties; the swatch then paints
+ *                                            through `var(--kb-token--…)`.
  * @param {boolean}   [props.disabled]       Whether the control is read-only.
  *
  * @since TBD
@@ -54,10 +58,12 @@ export function ColorSwatchControl({
 	onPick,
 	onCustom,
 	resolveLiteral,
+	resolveAlias = null,
 	disabled = false,
 }) {
 	const selection = colorSelection(groups, value);
-	const { entry, selectedLabel } = selection;
+	const { selectedLabel } = selection;
+	const entry = selection.entry || unlistedEntry(value, resolveAlias);
 
 	return (
 		<Dropdown
