@@ -169,6 +169,10 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 == Changelog ==
 
+= TBD =
+Release Date: TBD
+* Security: Strengthened input sanitization and output escaping in Kadence Blocks forms.
+
 = 3.7.10 =
 Release Date: 2nd September 2026
 * Fix: Resolved an issue where submenus opened on hover in the Navigation block could not be dismissed with the Escape key.
