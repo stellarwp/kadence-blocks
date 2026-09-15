@@ -118,6 +118,37 @@ describe('BorderField', () => {
 		expect(latestBorderControlProps.value.width).toBe('{semantic.border-width.default}');
 	});
 
+	it('shows Default at desktop once the width base is reset while a tablet override stands, not the stored width', () => {
+		const NS = 'com.kadence.designTokens';
+		const field = { label: 'Border', path: 'tokens.button-border', responsive: true, defaultValue: '1px' };
+
+		act(() => {
+			root.render(
+				createElement(BorderField, {
+					field,
+					values: {
+						tokens: {
+							'button-border-width': {
+								$value: null,
+								$extensions: {
+									[NS]: { responsive: { tablet: 'primitive.dimension.border-width.sm' } },
+								},
+							},
+						},
+					},
+					originalValues: {
+						tokens: { 'button-border-width': 'semantic.border-width.default' },
+						overridden: { 'button-border-width': true },
+					},
+					onValueChange: jest.fn(),
+				})
+			);
+		});
+
+		expect(latestBorderControlProps.value.width).toBe('');
+		expect(latestBorderControlProps.defaultValue).toBe('1px');
+	});
+
 	it("falls back to the generic literal fallback when the preset's stored width is only inherited from the baseline, not its own", () => {
 		const field = { label: 'Border', path: 'tokens.button-border', defaultValue: '1px' };
 

@@ -54,6 +54,7 @@ import { pickableTokensForType } from '../../../helpers/tokens';
 import { isUnsetPresetValue } from '../../../helpers/presets';
 import {
 	PRESET_BREAKPOINTS,
+	isPresetEnvelope,
 	readPresetBreakpoint,
 	resolvePresetBreakpoint,
 	writePresetBreakpoint,
@@ -270,15 +271,21 @@ export function BorderField({ field, values, originalValues, onValueChange }) {
 	const isStyleOverridden = originalValues?.overridden?.[stylePath.replace(/^tokens\./, '')] === true;
 	const isColorOverridden = originalValues?.overridden?.[colorPath.replace(/^tokens\./, '')] === true;
 
+	// A draft that still holds an envelope with nothing at this breakpoint (desktop reset, a breakpoint
+	// kept) is saved as-is, null base included, so the empty read IS what this breakpoint renders — the
+	// stored-value fallback below would show the width the user just reset. Same rule as `BoxTokenField`.
+	const widthResetInsideEnvelope = isPresetEnvelope(rawWidth) && isUnsetPresetValue(widthAtBreakpoint);
+	const styleResetInsideEnvelope = isPresetEnvelope(rawStyle) && isUnsetPresetValue(styleAtBreakpoint);
+
 	// Display only — every `write*` below targets the raw draft, so a reset stays reset.
 	const effectiveWidth = !isUnsetPresetValue(shownWidth)
 		? shownWidth
-		: isWidthOverridden && !isUnsetPresetValue(originalWidthAtBreakpoint)
+		: isWidthOverridden && !widthResetInsideEnvelope && !isUnsetPresetValue(originalWidthAtBreakpoint)
 			? originalWidthAtBreakpoint
 			: shownWidth;
 	const effectiveStyle = !isUnsetPresetValue(styleAtBreakpoint)
 		? styleAtBreakpoint
-		: isStyleOverridden && !isUnsetPresetValue(originalStyleAtBreakpoint)
+		: isStyleOverridden && !styleResetInsideEnvelope && !isUnsetPresetValue(originalStyleAtBreakpoint)
 			? originalStyleAtBreakpoint
 			: styleAtBreakpoint;
 	const effectiveColor = !isUnsetPresetValue(rawColor)
