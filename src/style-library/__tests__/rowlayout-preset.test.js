@@ -80,6 +80,27 @@ describe('ROWLAYOUT_PRESET', () => {
 	});
 
 	/**
+	 * A radius reset at desktop but kept at tablet previews as the row's built-in look at desktop and
+	 * as the tablet literal at tablet — the `null` base is not a value to resolve, it is the absence of
+	 * one.
+	 *
+	 * @return {void}
+	 */
+	it('previews a radius set only at tablet as empty at desktop and resolved at tablet', () => {
+		const values = { 'radius.2x': '1rem' };
+		const tokens = {
+			background: '',
+			borderRadius: {
+				$value: null,
+				$extensions: { 'com.kadence.designTokens': { responsive: { tablet: '{radius.2x}' } } },
+			},
+		};
+
+		expect(ROWLAYOUT_PRESET.preview(tokens, values, 'desktop').borderRadius).toBe('');
+		expect(ROWLAYOUT_PRESET.preview(tokens, values, 'tablet').borderRadius).toBe('1rem');
+	});
+
+	/**
 	 * The slab is two nested elements so the preset's background can sit above the transparency checker
 	 * — a single element cannot layer them in that order. The frame carries the radius, the fill carries
 	 * the background.
