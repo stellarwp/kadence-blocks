@@ -388,7 +388,7 @@ export function BoxShadowControl({
 								<span className="kadence-token-field__icon" aria-hidden="true">
 									{shadowGlyph}
 								</span>
-								{stale && <StaleTokenHint value={value} />}
+								{stale && <StaleTokenHint />}
 								{summary.label && (
 									<span
 										className={`kadence-token-field__label${summary.muted ? ' kadence-token-field__label--default' : ''}`}

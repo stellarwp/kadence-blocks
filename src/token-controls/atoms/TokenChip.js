@@ -46,8 +46,8 @@ export function TokenChip({ value, tokens, onUnlink }) {
 
 	return (
 		<span className="kadence-token-chip">
-			{!entry && <StaleTokenHint value={value} />}
-			<span className={labelClass} title={entry ? entry.value : staleTokenMessage(value)}>
+			{!entry && <StaleTokenHint />}
+			<span className={labelClass} title={entry ? entry.value : staleTokenMessage()}>
 				{label}
 			</span>
 			{onUnlink && (

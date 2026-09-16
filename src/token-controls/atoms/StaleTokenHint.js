@@ -14,7 +14,7 @@
  */
 import { Icon, Tooltip } from '@wordpress/components';
 import { caution } from '@wordpress/icons';
-import { __, sprintf } from '@wordpress/i18n';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -47,37 +47,28 @@ export function staleTokenLabel() {
 }
 
 /**
- * The full explanation for a stale alias, naming the token that went missing.
- *
- * @param {*} value The stale alias.
+ * The explanation for a stale alias.
  *
  * @since TBD
  *
  * @return {string} The translated message.
  */
-export function staleTokenMessage(value) {
-	return sprintf(
-		/* translators: %s: the deleted design token's id, e.g. "primitive.dimension.custom.radius". */
-		__(
-			'The token "%s" was deleted from the Style Library. This field uses the default until you pick a new value or reset it.',
-			'kadence-blocks'
-		),
-		String(value).slice(1, -1)
+export function staleTokenMessage() {
+	return __(
+		'This token was deleted from the Style Library. The default applies until you pick a new value or reset.',
+		'kadence-blocks'
 	);
 }
 
 /**
  * A caution glyph carrying the stale-alias explanation as a tooltip.
  *
- * @param {Object} props       The component props.
- * @param {*}      props.value The stale alias.
- *
  * @since TBD
  *
  * @return {JSX.Element} The glyph.
  */
-export function StaleTokenHint({ value }) {
-	const message = staleTokenMessage(value);
+export function StaleTokenHint() {
+	const message = staleTokenMessage();
 
 	return (
 		<Tooltip text={message}>

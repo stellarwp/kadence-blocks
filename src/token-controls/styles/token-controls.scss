@@ -66,6 +66,8 @@
 }
 
 .kadence-token-field__label {
+	// Pushes the value to the far edge, so the stale-alias hint before the label stays beside it.
+	margin-right: auto;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;

@@ -88,9 +88,7 @@ function StyleLibraryTab({
 			)}
 			{/* No row is pressed for a stale alias — its token is gone from the list — so the list says why
 			    before the user goes looking for the missing selection. */}
-			{isStaleAlias(value, tokens) && (
-				<p className="kadence-token-field__stale-note">{staleTokenMessage(value)}</p>
-			)}
+			{isStaleAlias(value, tokens) && <p className="kadence-token-field__stale-note">{staleTokenMessage()}</p>}
 			<Button
 				className="kadence-token-field__reset"
 				disabled={!hasOverride}

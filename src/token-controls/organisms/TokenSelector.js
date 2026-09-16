@@ -118,7 +118,7 @@ export function TokenSelector({
 	// contradict the divergence dot beside it.
 	const stale = isStaleAlias(value, tokens);
 	const triggerName = stale
-		? staleTokenMessage(value)
+		? staleTokenMessage()
 		: summary.label
 			? `${summary.label}${summary.value ? ` (${summary.value})` : ''}`
 			: resolvedDefault
@@ -161,7 +161,7 @@ export function TokenSelector({
 					>
 						{stale && (
 							<>
-								<StaleTokenHint value={value} />
+								<StaleTokenHint />
 								<span className="kadence-token-field__label kadence-token-field__label--default">
 									{staleTokenLabel()}
 								</span>

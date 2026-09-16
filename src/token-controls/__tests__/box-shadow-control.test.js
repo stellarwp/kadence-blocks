@@ -228,8 +228,9 @@ describe('BoxShadowControl trigger', () => {
 		expect(trigger().querySelector('.kadence-token-field__stale')).not.toBeNull();
 		expect(trigger().textContent).not.toContain('primitive.shadow.custom.shadow');
 		expect(container.querySelector('.kadence-token-field__stale-note').textContent).toContain(
-			'primitive.shadow.custom.shadow'
+			'deleted from the Style Library'
 		);
+		expect(container.textContent).not.toContain('primitive.shadow.custom.shadow');
 	});
 
 	/**
