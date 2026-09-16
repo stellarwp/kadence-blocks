@@ -722,6 +722,57 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
+	 * button-shadow-hover is bound with a css_var rather than a state rule, so a selected preset sets the
+	 * --kb-btn-shadow-hover variable the button's hover rule reads through `var(--kb-btn-shadow-hover, none)`.
+	 *
+	 * @return void
+	 */
+	public function testItProjectsTheHoverShadowToItsVariable(): void {
+		$this->seedLiftedPreset();
+
+		$css = $this->builder( $this->registry )->css( 'default' );
+
+		$this->assertStringContainsString(
+			'--kb-btn-shadow-hover:var(--kb-token--preset--kadence-singlebtn--lifted--button-shadow-hover);',
+			$css
+		);
+		$this->assertStringContainsString(
+			'--kb-token--preset--kadence-singlebtn--lifted--button-shadow-hover:',
+			$css
+		);
+		$this->assertStringNotContainsString( ':hover', $css, 'The hover shadow must not project as a state rule.' );
+	}
+
+	/**
+	 * Persist a user-created "lifted" button preset that sets only a hover shadow into the active library.
+	 *
+	 * @return void
+	 */
+	private function seedLiftedPreset(): void {
+		/** @var Token_Store $store */
+		$store = $this->container->get( Token_Store::class );
+
+		$document = [
+			'$extensions' => [
+				'com.kadence.designTokens' => [
+					'presets' => [
+						'kadence/singlebtn' => [
+							'lifted' => [
+								'label'  => 'Lifted',
+								'tokens' => [
+									'button-shadow-hover' => '0px 6px 16px 0px #17171733',
+								],
+							],
+						],
+					],
+				],
+			],
+		];
+
+		$store->save_document( (string) wp_json_encode( $document ) );
+	}
+
+	/**
 	 * Persist a user-created "midnight" button preset into the "dark" token library only, so it is absent from
 	 * the active "default" library.
 	 *
