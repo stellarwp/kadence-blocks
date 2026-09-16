@@ -203,7 +203,7 @@ class Kadence_Blocks_Submit_Block extends Kadence_Blocks_Advanced_Form_Input_Blo
 		$css->render_border_styles( $attributes, 'borderHoverStyle', true );
 		if ( isset( $attributes['displayHoverShadow'] ) && true === $attributes['displayHoverShadow'] ) {
 			if ( ( 'gradient' === $bg_type || 'gradient' === $bg_hover_type ) && isset( $attributes['shadowHover'][0]['inset'] ) && true === $attributes['shadowHover'][0]['inset'] ) {
-				$css->add_property( 'box-shadow', '0px 0px 0px 0px rgba(0, 0, 0, 0)' );
+				$css->add_property( 'box-shadow', 'none' );
 				$css->set_selector( '.kb-btn' . $class_id . '.kb-button:hover::before' );
 			}
 			if ( isset( $attributes['shadowHover'] ) && is_array( $attributes['shadowHover'] ) && isset( $attributes['shadowHover'][0] ) && is_array( $attributes['shadowHover'][0] ) ) {

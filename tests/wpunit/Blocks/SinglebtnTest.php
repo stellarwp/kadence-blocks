@@ -550,9 +550,57 @@ class SinglebtnTest extends KadenceBlocksUnit {
 			]
 		);
 		$this->assertStringNotContainsString(
-			'0px 0px 0px 0px rgba(0, 0, 0, 0)',
+			'.kb-btn123.kb-button:hover::before',
 			$output,
 			'An invisible hover shadow must not trigger the inset reset just because inset is true.'
+		);
+	}
+
+	/**
+	 * A gradient-background button with a visible inset hover shadow paints that shadow on the `::before`
+	 * pseudo-element that carries the gradient, and resets the button's own hover box-shadow with `none`
+	 * rather than a transparent zero shadow: `none` fades against an inset resting shadow, a transparent
+	 * outer shadow does not.
+	 *
+	 * @return void
+	 */
+	public function testVisibleInsetHoverShadowOnGradientHoverMovesToTheBeforePseudoElement(): void {
+		$this->seedPreset( 'bare', 'Bare', [ 'button-bg' => '#ff0000' ] );
+
+		$output = $this->render_button(
+			[
+				'kbPreset'            => 'bare',
+				'backgroundHoverType' => 'gradient',
+				'gradientHover'       => 'linear-gradient(90deg, #ff0000, #0000ff)',
+				'colorHover'          => '#0000ff',
+				'displayHoverShadow'  => true,
+				'shadowHover'         => [
+					[
+						'color'   => '#00ff00',
+						'opacity' => 1,
+						'hOffset' => 1,
+						'vOffset' => 1,
+						'blur'    => 2,
+						'spread'  => 0,
+						'inset'   => true,
+					],
+				],
+			]
+		);
+
+		$css_helper     = new CSSTestHelper( $output );
+		$hover_selector = '.wp-block-kadence-advancedbtn .kb-btn123.kb-button:hover, .wp-block-kadence-advancedbtn .kb-btn123.kb-button:focus';
+
+		$css_helper->assertCSSPropertiesEqual(
+			$hover_selector,
+			[
+				'color'      => '#00f',
+				'box-shadow' => 'none',
+			]
+		);
+		$css_helper->assertCSSPropertiesEqual(
+			'.kb-btn123.kb-button:hover::before',
+			[ 'box-shadow' => 'inset 1px 1px 2px 0px #0f0' ]
 		);
 	}
 
