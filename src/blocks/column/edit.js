@@ -315,9 +315,11 @@ function SectionEdit(props) {
 		{ desktop: borderRadius, tablet: tabletBorderRadius },
 		borderRadiusPresetValue
 	);
-	// The hover corners cascade among themselves, then fall to the hover radius the active preset resolves
-	// — its own property, never the normal state's, which would report a size the hover state does not
-	// render. Undefined until a preset actually carries one, which leaves the chain exactly as it was.
+	// The hover corners cascade among themselves, then fall to the preset's HOVER radius, and only then
+	// to its resting one. A preset that sets no hover radius really does keep its resting corners
+	// through `:hover`: the column paints a hover radius only from its own attribute, and the state
+	// rule is emitted only for a preset that resolves the property. Without the resting step the field
+	// had no literal to show and rendered empty, where the resting control beside it read "Default".
 	const borderHoverRadiusPresetValue = presetValueForDevice(
 		tokenBinding.borderHoverRadius?.presetValue,
 		tokenBinding.borderHoverRadius?.responsive,
@@ -329,7 +331,7 @@ function SectionEdit(props) {
 			desktop: borderHoverRadius,
 			tablet: tabletBorderHoverRadius,
 		},
-		borderHoverRadiusPresetValue
+		borderHoverRadiusPresetValue ?? borderRadiusPresetValue
 	);
 	// Falls back to a derived indicator while the active preset carries no hover radius of its own: without
 	// a resolved value `usePresetBinding` makes no entry, and the derived one at least reports divergence
