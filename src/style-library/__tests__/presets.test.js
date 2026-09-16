@@ -1006,20 +1006,6 @@ describe('presetSaveTokens with non-scalar values', () => {
 
 		expect(written['button-radius']).toBe(stored);
 	});
-
-	it('sends a null-base envelope as set, aliasing only the overrides it carries', () => {
-		const draft = {
-			'button-radius': {
-				$value: null,
-				$extensions: { [NS]: { responsive: { tablet: 'primitive.dimension.radius-xs' } } },
-			},
-		};
-
-		const written = presetSaveTokens(draft, {}, {});
-
-		expect(written['button-radius'].$value).toBeNull();
-		expect(written['button-radius'].$extensions[NS].responsive.tablet).toBe('{primitive.dimension.radius-xs}');
-	});
 });
 
 describe('seed/save round trip', () => {

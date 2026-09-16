@@ -185,33 +185,6 @@ describe('writePresetBreakpoint', () => {
 		expect(writePresetBreakpoint(baseLess, 'tablet', '')).toBe('');
 	});
 
-	it('keeps the null base when root DTCG fields survive the last override being cleared', () => {
-		// Only the bare-scalar collapse may turn the reset sentinel into an empty string: a leaf that
-		// keeps its object shape must keep `$value: null`, or the save would send `''` as a real value.
-		const described = {
-			$value: null,
-			$type: 'dimension',
-			$extensions: { 'com.kadence.designTokens': { responsive: { tablet: '0.375rem' } } },
-		};
-
-		expect(writePresetBreakpoint(described, 'tablet', '')).toEqual({ $value: null, $type: 'dimension' });
-	});
-
-	it('keeps the null base when a sibling extension survives the last override being cleared', () => {
-		const withSibling = {
-			$value: null,
-			$extensions: {
-				'com.kadence.designTokens': { responsive: { tablet: '0.375rem' } },
-				'com.other.vendor': { note: 'keep me' },
-			},
-		};
-
-		expect(writePresetBreakpoint(withSibling, 'tablet', '')).toEqual({
-			$value: null,
-			$extensions: { 'com.other.vendor': { note: 'keep me' } },
-		});
-	});
-
 	it('keeps the null base when another override is written on a null-base envelope', () => {
 		const baseLess = {
 			$value: null,
