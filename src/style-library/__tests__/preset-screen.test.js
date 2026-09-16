@@ -11,6 +11,7 @@ import { createRoot } from 'react-dom/client';
 import { PresetScreen } from '../components/pages/PresetScreen';
 import { usePresetScreen } from '../hooks/use-preset-screen';
 import { BUTTON_PRESET } from '../presets/button-preset';
+import { COLUMN_PRESET } from '../presets/column-preset';
 import { useDraftChannel } from '../hooks/use-draft-channel';
 
 // A factory: `use-preset-screen.js` pulls in `../api/client`, which imports `@wordpress/api-fetch`
@@ -259,6 +260,50 @@ describe('PresetScreen draft overlay', () => {
 		// The open row's chip renders the hover background; the sibling keeps its resting one.
 		expect(chips[0].style.background).toBe('rgb(255, 255, 255)');
 		expect(chips[1].style.background).toBe('rgb(34, 34, 34)');
+	});
+
+	/**
+	 * The hover hold is not Button-specific: any preset config whose tabs include `hover` and whose
+	 * preview honors `showHoverState` gets it, the Section included.
+	 *
+	 * @return {void}
+	 */
+	it('holds the hover state on the open Section row while the publication is on the hover tab', () => {
+		useDraftChannel.mockReturnValue({
+			publication: {
+				itemId: 'card',
+				draft: { tokens: { background: '#111111', backgroundHover: '#eeeeee' } },
+				activeTab: 'hover',
+			},
+			guard: (fn) => fn(),
+		});
+		usePresetScreen.mockReturnValue({
+			payload: {},
+			isLoading: false,
+			loadError: null,
+			rows: [
+				{ id: 'card', label: 'Card', preview: { background: '#111111', borderRadius: '0' } },
+				{ id: 'plain', label: 'Plain', preview: { background: '#222222', borderRadius: '0' } },
+			],
+			initialValuesFor: () => ({}),
+		});
+
+		act(() => {
+			root.render(
+				createElement(PresetScreen, {
+					label: 'Section',
+					route: { screen: 'blocks/kadence/column', item: 'card' },
+					navigate: () => {},
+					library: LIBRARY,
+					preset: COLUMN_PRESET,
+				})
+			);
+		});
+
+		const fills = container.querySelectorAll('.kadence-blocks-style-library__column-preset-preview-fill');
+
+		expect(fills[0].style.background).toBe('rgb(238, 238, 238)');
+		expect(fills[1].style.background).toBe('rgb(34, 34, 34)');
 	});
 });
 
