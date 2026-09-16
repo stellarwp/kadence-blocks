@@ -906,6 +906,28 @@ describe('restingRadiusSlots', () => {
 	});
 
 	/**
+	 * A resting radius stored as a responsive envelope resolves at the requested breakpoint, stepping
+	 * down the cascade the page renders through, so a tablet hover field names the tablet corners.
+	 *
+	 * @return {void}
+	 */
+	it('resolves a responsive resting radius at the requested breakpoint', () => {
+		const draft = {
+			tokens: {
+				borderRadius: {
+					$value: 'primitive.radius.md',
+					$extensions: { 'com.kadence.designTokens': { responsive: { tablet: '0' } } },
+				},
+			},
+		};
+		const feed = { values: { 'primitive.radius.md': '0.5rem' } };
+
+		expect(restingRadiusSlots(draft, feed, FALLBACK)).toEqual(['0.5rem', '0.5rem', '0.5rem', '0.5rem']);
+		expect(restingRadiusSlots(draft, feed, FALLBACK, 'tablet')).toEqual(['0', '0', '0', '0']);
+		expect(restingRadiusSlots(draft, feed, FALLBACK, 'mobile')).toEqual(['0', '0', '0', '0']);
+	});
+
+	/**
 	 * With no resting radius in the draft, or no draft at all, the caller's fallback is returned.
 	 *
 	 * @return {void}

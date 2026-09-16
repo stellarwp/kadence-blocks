@@ -313,7 +313,9 @@ export function tokensForField(field, atBreakpoint) {
  * @param {boolean}  [props.field.responsive] Whether the field offers a breakpoint switcher.
  * @param {*}        [props.field.defaultValue] What the block itself renders when the preset sets
  *                                              nothing, shown muted as the field's "Default" so an
- *                                              unset or reset field is never blank.
+ *                                              unset or reset field is never blank. A function is
+ *                                              called with the active breakpoint, for a default that
+ *                                              itself varies by breakpoint.
  * @param {?Array}   [props.field.units]    Units the Custom tab offers.
  * @param {?number}  [props.field.min]      Lowest allowed number on the Custom tab.
  * @param {?number}  [props.field.max]      Highest allowed number; the slider needs one.
@@ -363,7 +365,11 @@ export function BoxTokenField({ field, value, originalValue, onChange, slots = '
 	// its size and style classes) declares that value as the field's default, so an unset field reads as
 	// the size actually in effect rather than looking empty. Nothing is stored either way.
 	const onDesktop = !responsive || breakpoint === PRESET_BREAKPOINTS[0];
-	const fieldDefault = field.defaultValue ?? null;
+	// A default can depend on the breakpoint (a hover field falls back to the resting radius in effect
+	// there, which the schema cannot know when it is built), so a function default is resolved here,
+	// where the active breakpoint is.
+	const fieldDefault =
+		(typeof field.defaultValue === 'function' ? field.defaultValue(breakpoint) : field.defaultValue) ?? null;
 	const inheritedAbove = onDesktop
 		? null
 		: resolvePresetBreakpoint(value, PRESET_BREAKPOINTS[PRESET_BREAKPOINTS.indexOf(breakpoint) - 1]);

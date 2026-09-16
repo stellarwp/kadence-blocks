@@ -147,19 +147,25 @@ describe('COLUMN_PRESET', () => {
 
 	/**
 	 * A preset with no hover radius keeps its resting corners through hover, so the hover field's
-	 * muted default is the resting radius the draft resolves to, and square corners only when the
-	 * draft sets none.
+	 * muted default is the resting radius the draft resolves to at the field's active breakpoint,
+	 * and square corners only when the draft sets none. It is a function of the breakpoint because
+	 * the schema is built before the field knows which breakpoint it is on.
 	 *
 	 * @return {void}
 	 */
-	it('defaults the hover radius field to the resolved resting radius', () => {
+	it('defaults the hover radius field to the resolved resting radius at the active breakpoint', () => {
 		const feed = { values: { 'primitive.radius.md': '0.5rem' } };
+		const responsive = {
+			$value: 'primitive.radius.md',
+			$extensions: { 'com.kadence.designTokens': { responsive: { tablet: '0' } } },
+		};
 
-		const set = COLUMN_PRESET.schemaFor('hover', { tokens: { borderRadius: 'primitive.radius.md' } }, feed);
+		const set = COLUMN_PRESET.schemaFor('hover', { tokens: { borderRadius: responsive } }, feed);
 		const unset = COLUMN_PRESET.schemaFor('hover', { tokens: { borderRadius: '' } }, feed);
 
-		expect(set.panels[1].fields[0].defaultValue).toEqual(['0.5rem', '0.5rem', '0.5rem', '0.5rem']);
-		expect(unset.panels[1].fields[0].defaultValue).toEqual(['0', '0', '0', '0']);
+		expect(set.panels[1].fields[0].defaultValue('desktop')).toEqual(['0.5rem', '0.5rem', '0.5rem', '0.5rem']);
+		expect(set.panels[1].fields[0].defaultValue('tablet')).toEqual(['0', '0', '0', '0']);
+		expect(unset.panels[1].fields[0].defaultValue('desktop')).toEqual(['0', '0', '0', '0']);
 	});
 
 	/**

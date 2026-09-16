@@ -146,8 +146,8 @@ function renderPreview(row) {
  * nothing on the page. See the section's `preset_bindings` declaration.
  *
  * @param {string}  tab   The active tab name (`'normal'` or `'hover'`).
- * @param {?Object} draft The panel draft, read for the hover radius default.
- * @param {?Object} feed  The design-tokens feed, read for the hover radius default.
+ * @param {?Object} draft The panel draft, read by the hover radius default.
+ * @param {?Object} feed  The design-tokens feed, read by the hover radius default.
  *
  * @since TBD
  *
@@ -181,11 +181,13 @@ function schemaFor(tab, draft, feed) {
 						path: isHover ? 'tokens.borderHoverRadius' : 'tokens.borderRadius',
 						label: __('Radius', 'kadence-blocks'),
 						// Resting: square corners, which is what an un-preset section renders and what
-						// `semantic.radius.column` holds. Hover: the resting corners in effect, since a
-						// section with no hover radius keeps them through hover. Shown muted so an unset
-						// field reports the radius the section really has rather than reading as empty.
+						// `semantic.radius.column` holds. Hover: the resting corners in effect at the field's
+						// active breakpoint, since a section with no hover radius keeps them through hover;
+						// resolved lazily because the schema is built before the breakpoint is known. Shown
+						// muted so an unset field reports the radius the section really has rather than
+						// reading as empty.
 						defaultValue: isHover
-							? restingRadiusSlots(draft, feed, COLUMN_RADIUS_FALLBACK)
+							? (breakpoint) => restingRadiusSlots(draft, feed, COLUMN_RADIUS_FALLBACK, breakpoint)
 							: COLUMN_RADIUS_FALLBACK,
 					},
 				],

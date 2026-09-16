@@ -459,18 +459,24 @@ describe('a reset responsive field', () => {
 	/**
 	 * Render a responsive `BoxTokenField` and switch it to `breakpoint`.
 	 *
-	 * @param {Object} props        The field's `value`/`originalValue`.
+	 * @param {Object} props        The field's `value`/`originalValue`/`defaultValue`.
 	 * @param {string} breakpoint   The breakpoint to switch to.
 	 *
 	 * @since TBD
 	 *
 	 * @return {void}
 	 */
-	function renderAt({ value, originalValue }, breakpoint) {
+	function renderAt({ value, originalValue, defaultValue }, breakpoint) {
 		act(() => {
 			root.render(
 				createElement(BoxTokenField, {
-					field: { path: 'tokens.radius', tokenType: 'dimension', role: 'radius', responsive: true },
+					field: {
+						path: 'tokens.radius',
+						tokenType: 'dimension',
+						role: 'radius',
+						responsive: true,
+						defaultValue,
+					},
 					value,
 					originalValue,
 					onChange: jest.fn(),
@@ -480,6 +486,21 @@ describe('a reset responsive field', () => {
 		});
 		act(() => latestBoxControlProps.onBreakpointChange(breakpoint));
 	}
+
+	/**
+	 * A function default is called with the active breakpoint, so a default that varies by
+	 * breakpoint (a hover field's resting radius) reads the breakpoint's own value, not desktop's.
+	 *
+	 * @return {void}
+	 */
+	it('resolves a function default at the active breakpoint', () => {
+		const defaultValue = jest.fn((breakpoint) => (breakpoint === 'tablet' ? '0' : '0.5rem'));
+
+		renderAt({ value: '', originalValue: '', defaultValue }, 'tablet');
+
+		expect(defaultValue).toHaveBeenCalledWith('tablet');
+		expect(latestBoxControlProps.defaultValue).toBe('0');
+	});
 
 	/**
 	 * A draft that carries only a desktop value inherits it at Tablet: the control reads unset there,

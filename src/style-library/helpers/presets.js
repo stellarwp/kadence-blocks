@@ -266,16 +266,20 @@ export function resolveTokenValue(values, value, breakpoint = PRESET_BREAKPOINTS
  * page never renders. The draft holds bare token ids, which `resolveTokenValue` reads as literals, so
  * they are wrapped back into aliases first.
  *
- * @param {?Object}  draft    The panel draft (`{ tokens }`), or null before one exists.
- * @param {?Object}  feed     The design-tokens feed (`{ values }`), or null before it loads.
- * @param {string[]} fallback The block's own corners when the draft sets no resting radius.
+ * Resolved at the given breakpoint, stepping down the resting radius's own responsive envelope the
+ * way the page does, so a tablet hover field names the tablet resting corners and not desktop's.
+ *
+ * @param {?Object}  draft        The panel draft (`{ tokens }`), or null before one exists.
+ * @param {?Object}  feed         The design-tokens feed (`{ values }`), or null before it loads.
+ * @param {string[]} fallback     The block's own corners when the draft sets no resting radius.
+ * @param {string}   [breakpoint] The breakpoint to resolve at; defaults to desktop.
  *
  * @since TBD
  *
  * @return {string[]} The four corner literals.
  */
-export function restingRadiusSlots(draft, feed, fallback) {
-	const resolved = resolveTokenValue(feed?.values ?? {}, aliasDeep(draft?.tokens?.borderRadius ?? ''));
+export function restingRadiusSlots(draft, feed, fallback, breakpoint = PRESET_BREAKPOINTS[0]) {
+	const resolved = resolveTokenValue(feed?.values ?? {}, aliasDeep(draft?.tokens?.borderRadius ?? ''), breakpoint);
 	const corners = resolved.trim().split(/\s+/).filter(Boolean);
 
 	if (corners.length === 4) {
