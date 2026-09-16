@@ -409,6 +409,31 @@
 	color: #949494;
 }
 
+// The stale-alias hint: a caution glyph beside the muted label, carrying the explanation as a tooltip.
+.kadence-token-field__stale {
+	display: inline-flex;
+	flex: 0 0 auto;
+	align-items: center;
+	color: #b26200;
+
+	svg {
+		width: 16px;
+		height: 16px;
+		fill: currentColor;
+	}
+}
+
+// The same explanation at the top of the Style Library list, where no row is pressed for a stale alias.
+.kadence-token-field__stale-note {
+	margin: 0 0 8px;
+	padding: 8px;
+	border-radius: 2px;
+	background: #fcf9e8;
+	color: #614200;
+	font-size: 12px;
+	line-height: 1.4;
+}
+
 /**
  * The control shell: a header carrying the label and its affordances, above the control body.
  *

@@ -58,6 +58,7 @@ import { __ } from '@wordpress/i18n';
  */
 import { ControlShell } from '../templates/ControlShell';
 import { TokenPopover } from '../molecules/TokenPopover';
+import { StaleTokenHint, staleTokenLabel } from '../atoms/StaleTokenHint';
 import {
 	defaultSummary,
 	fieldSummary,
@@ -342,9 +343,9 @@ export function BoxShadowControl({
 	const displayValue = fixedMatch ? fixedMatch.alias : value;
 	// The trigger shows a label, never a value — it has no room for the `value` half `fieldSummary()`
 	// also returns. Unset names the shadow it falls back to, or a muted "Default" when there is none.
-	// A stale alias (its token was deleted after binding) takes the unset branch: the front end has
-	// nothing to resolve it to, so naming the fallback matches what renders, where echoing the dot
-	// path showed a raw id.
+	// A stale alias (its token was deleted after binding) is kept in the attribute — the indicator's reset
+	// is the way to drop it — so the trigger reads "Reverted to default" muted with a hint glyph, rather
+	// than echoing the raw dot path or a bare "Default" that would contradict the divergence dot.
 	//
 	// Whether an unset shadow can reach that branch is the host's problem: the button's registered
 	// `shadow` default IS the None composite (see `EditorShadowControl`'s `isUnsetShadow()`).
@@ -352,16 +353,19 @@ export function BoxShadowControl({
 	// label must not be borrowed for a field nobody touched — an all-zero fallback would otherwise read
 	// as an explicit "None" pick. See that helper's own docblock.
 	const fallback = defaultSummary(resolveDefaultValue(defaultValue, tokens, '', false), tokens);
+	const stale = aliased && !aliasedEntry;
 	const summary =
 		aliasedEntry || fixedMatch
 			? { ...fieldSummary(displayValue, tokens, '', __('Custom', 'kadence-blocks')), value: '' }
-			: !hasValue(value) || aliased
-				? {
-						label: fallback.label || __('Default', 'kadence-blocks'),
-						value: '',
-						muted: true,
-					}
-				: { label: __('Custom', 'kadence-blocks'), value: '' };
+			: stale
+				? { label: staleTokenLabel(), value: '', muted: true }
+				: !hasValue(value)
+					? {
+							label: fallback.label || __('Default', 'kadence-blocks'),
+							value: '',
+							muted: true,
+						}
+					: { label: __('Custom', 'kadence-blocks'), value: '' };
 
 	return (
 		<ControlShell label={label} disabled={disabled}>
@@ -384,6 +388,7 @@ export function BoxShadowControl({
 								<span className="kadence-token-field__icon" aria-hidden="true">
 									{shadowGlyph}
 								</span>
+								{stale && <StaleTokenHint value={value} />}
 								{summary.label && (
 									<span
 										className={`kadence-token-field__label${summary.muted ? ' kadence-token-field__label--default' : ''}`}

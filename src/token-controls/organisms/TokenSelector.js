@@ -29,6 +29,7 @@ import {
 } from '../helpers/token-summary';
 import { parseCssLength } from '../helpers/parse-css-length';
 import { TokenPopover } from '../molecules/TokenPopover';
+import { StaleTokenHint, isStaleAlias, staleTokenLabel, staleTokenMessage } from '../atoms/StaleTokenHint';
 import '../styles/token-controls.scss';
 
 /**
@@ -105,22 +106,28 @@ export function TokenSelector({
 				/* translators: %s: the default value, e.g. "3px". */ __('Default (%s)', 'kadence-blocks'),
 				resolvedDefault
 			);
-	const triggerName = summary.label
-		? `${summary.label}${summary.value ? ` (${summary.value})` : ''}`
-		: resolvedDefault
-			? inheritedName
-			: __('Default', 'kadence-blocks');
 	// A `fixed` entry (a sentinel choice with no DTCG registration, e.g. Margin's `Auto`) matches on its
 	// bare `alias` rather than the bracket form `isTokenAlias` checks for, so the entry lookup runs
 	// first and `aliased` widens to cover that match too.
 	const entry = findTokenEntry(tokens, value);
 	const aliased = isTokenAlias(value) || Boolean(entry);
 	const seed = entry ? parseCssLength(entry.value) : null;
+	// A stale alias (its token was deleted after binding) is kept in the attribute — the token may come
+	// back, and the indicator's reset is the way to drop it — so the trigger has to say what it renders
+	// as (the fallback) and why (the hint), instead of the raw dot path or a bare "Default" that would
+	// contradict the divergence dot beside it.
+	const stale = isStaleAlias(value, tokens);
+	const triggerName = stale
+		? staleTokenMessage(value)
+		: summary.label
+			? `${summary.label}${summary.value ? ` (${summary.value})` : ''}`
+			: resolvedDefault
+				? inheritedName
+				: __('Default', 'kadence-blocks');
 	// An unset slot seeds the Custom tab from whatever it falls back to, so opening the editor starts
-	// from the value on screen instead of an empty box the user has to guess at. A stale alias (its
-	// token was deleted after binding) renders as that same fallback, so it seeds from it too.
+	// from the value on screen instead of an empty box the user has to guess at. A stale alias renders as
+	// that same fallback, so it seeds from it too.
 	const unset = value === '' || value === undefined || value === null;
-	const stale = isTokenAlias(value) && !entry;
 	const fallbackNumber = unset || stale ? parseCssLength(resolvedDefault) : null;
 	const number = entry ? (seed ? seed.size : '') : unset || stale ? (fallbackNumber?.size ?? '') : value;
 
@@ -152,9 +159,18 @@ export function TokenSelector({
 						label={triggerName}
 						showTooltip
 					>
+						{stale && (
+							<>
+								<StaleTokenHint value={value} />
+								<span className="kadence-token-field__label kadence-token-field__label--default">
+									{staleTokenLabel()}
+								</span>
+								{fallback.value && <span className="kadence-token-field__value">{fallback.value}</span>}
+							</>
+						)}
 						{summary.label && <span className="kadence-token-field__label">{summary.label}</span>}
 						{summary.value && <span className="kadence-token-field__value">{summary.value}</span>}
-						{!summary.label && !summary.value && fallback.value && (
+						{!stale && !summary.label && !summary.value && fallback.value && (
 							<>
 								{fallback.label && (
 									<span className="kadence-token-field__label kadence-token-field__label--default">

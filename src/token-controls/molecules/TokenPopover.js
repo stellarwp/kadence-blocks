@@ -27,6 +27,7 @@ import { useState } from '@wordpress/element';
  * Internal dependencies
  */
 import { displayDimension, hasValue, isTokenAlias } from '../helpers/token-summary';
+import { isStaleAlias, staleTokenMessage } from '../atoms/StaleTokenHint';
 
 /**
  * The `Style Library` tab body: a `Reset` affordance that clears the slot back to its inherited default,
@@ -84,6 +85,11 @@ function StyleLibraryTab({
 		<div className="kadence-token-field__list">
 			{renderPreview && (
 				<div className="kadence-token-field__preview">{renderPreview({ value, tokens, hoveredEntry })}</div>
+			)}
+			{/* No row is pressed for a stale alias — its token is gone from the list — so the list says why
+			    before the user goes looking for the missing selection. */}
+			{isStaleAlias(value, tokens) && (
+				<p className="kadence-token-field__stale-note">{staleTokenMessage(value)}</p>
 			)}
 			<Button
 				className="kadence-token-field__reset"

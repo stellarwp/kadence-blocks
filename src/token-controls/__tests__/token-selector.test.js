@@ -18,7 +18,10 @@ jest.mock('@wordpress/components', () => ({
 	Button: ({ children, showTooltip, ...props }) => <button {...props}>{children}</button>,
 	Dropdown: ({ renderToggle }) => renderToggle({ isOpen: false, onToggle: () => {} }),
 	Tooltip: ({ children }) => children,
+	Icon: ({ icon, ...props }) => <span {...props}>{icon}</span>,
 }));
+
+jest.mock('@wordpress/icons', () => ({ caution: 'caution' }));
 
 jest.mock('../molecules/TokenPopover', () => ({ TokenPopover: () => null }));
 jest.mock('../styles/token-controls.scss', () => ({}), { virtual: true });
@@ -92,13 +95,13 @@ describe('TokenSelector stale alias', () => {
 	];
 
 	/**
-	 * A slot bound to a token the library has since deleted renders as the block's default on both the
-	 * front end and the canvas, so the trigger names that default (muted) instead of echoing the raw
-	 * dot path the alias still carries.
+	 * A slot bound to a token the library has since deleted keeps its alias, but renders as the block's
+	 * default. The trigger says so — muted "Reverted to default" plus the fallback value and a hint
+	 * glyph — instead of echoing the raw dot path.
 	 *
 	 * @return {void}
 	 */
-	it('names the default a stale alias falls back to, not the raw dot path', () => {
+	it('reads "Reverted to default" with the fallback value and a hint, not the raw dot path', () => {
 		const trigger = renderSelector({
 			value: '{primitive.dimension.custom.radius}',
 			tokens: RADIUS_TOKENS,
@@ -106,22 +109,25 @@ describe('TokenSelector stale alias', () => {
 			defaultValue: '4px',
 		});
 
-		expect(trigger.textContent).toBe('Small4px');
-		expect(trigger.textContent).not.toContain('primitive.dimension.custom.radius');
+		expect(trigger.textContent).toContain('Reverted to default');
+		expect(trigger.textContent).toContain('4px');
+		expect(trigger.textContent).not.toContain('Small');
 		expect(trigger.querySelector('.kadence-token-field__label--default')).not.toBeNull();
+		expect(trigger.querySelector('.kadence-token-field__stale')).not.toBeNull();
 	});
 
 	/**
-	 * With no default to name either, the trigger still shows nothing but its "Default" tooltip name,
-	 * never the dot path.
+	 * The trigger's tooltip name carries the full explanation, naming the missing token so the user knows
+	 * which step went away.
 	 *
 	 * @return {void}
 	 */
-	it('never shows the dot path even when there is no default to fall back to', () => {
+	it('names the deleted token in the trigger tooltip', () => {
 		const trigger = renderSelector({ value: '{primitive.dimension.custom.radius}', tokens: RADIUS_TOKENS });
 
-		expect(trigger.textContent).not.toContain('primitive.dimension.custom.radius');
-		expect(trigger.getAttribute('label')).toBe('Default');
+		expect(trigger.getAttribute('label')).toContain('primitive.dimension.custom.radius');
+		expect(trigger.getAttribute('label')).toContain('deleted from the Style Library');
+		expect(trigger.querySelector('.kadence-token-field__label').textContent).toBe('Reverted to default');
 	});
 });
 
