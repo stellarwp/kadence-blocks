@@ -15,7 +15,13 @@ import { TokenSelector } from '../organisms/TokenSelector';
 // than the top-level `react-dom/client` this test renders with, which trips React's "Invalid hook
 // call" guard. Stand-ins sidestep that; this test only needs the trigger button.
 jest.mock('@wordpress/components', () => ({
-	Button: ({ children, showTooltip, ...props }) => <button {...props}>{children}</button>,
+	// `label` is forwarded as `aria-label`, the attribute the real Button falls back to for its accessible
+	// name, so a test reads what a screen reader would rather than a non-DOM prop leaked onto the node.
+	Button: ({ children, showTooltip, label, ...props }) => (
+		<button {...props} aria-label={label}>
+			{children}
+		</button>
+	),
 	Dropdown: ({ renderToggle }) => renderToggle({ isOpen: false, onToggle: () => {} }),
 	Tooltip: ({ children }) => children,
 	Icon: ({ icon, ...props }) => <span {...props}>{icon}</span>,
@@ -124,8 +130,8 @@ describe('TokenSelector stale alias', () => {
 	it('explains the deleted token in the trigger name without echoing its id', () => {
 		const trigger = renderSelector({ value: '{primitive.dimension.custom.radius}', tokens: RADIUS_TOKENS });
 
-		expect(trigger.getAttribute('label')).toContain('deleted from the Style Library');
-		expect(trigger.getAttribute('label')).not.toContain('primitive.dimension.custom.radius');
+		expect(trigger.getAttribute('aria-label')).toContain('deleted from the Style Library');
+		expect(trigger.getAttribute('aria-label')).not.toContain('primitive.dimension.custom.radius');
 		expect(trigger.querySelector('.kadence-token-field__label').textContent).toBe('Reverted to default');
 	});
 });
