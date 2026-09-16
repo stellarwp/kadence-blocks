@@ -58,7 +58,7 @@ import { __ } from '@wordpress/i18n';
  */
 import { ControlShell } from '../templates/ControlShell';
 import { TokenPopover } from '../molecules/TokenPopover';
-import { StaleTokenHint, staleTokenLabel } from '../atoms/StaleTokenHint';
+import { StaleTokenHint, StaleTokenTooltip, staleTokenLabel } from '../atoms/StaleTokenHint';
 import {
 	defaultSummary,
 	fieldSummary,
@@ -379,24 +379,26 @@ export function BoxShadowControl({
 						// covers the controls the user was just reading.
 						popoverProps={{ placement: 'left-start' }}
 						renderToggle={({ isOpen, onToggle }) => (
-							<Button
-								className="kadence-token-field__trigger kb-box-shadow-control__trigger"
-								onClick={onToggle}
-								disabled={disabled}
-								aria-expanded={isOpen}
-							>
-								<span className="kadence-token-field__icon" aria-hidden="true">
-									{shadowGlyph}
-								</span>
-								{stale && <StaleTokenHint />}
-								{summary.label && (
-									<span
-										className={`kadence-token-field__label${summary.muted ? ' kadence-token-field__label--default' : ''}`}
-									>
-										{summary.label}
+							<StaleTokenTooltip active={stale}>
+								<Button
+									className="kadence-token-field__trigger kb-box-shadow-control__trigger"
+									onClick={onToggle}
+									disabled={disabled}
+									aria-expanded={isOpen}
+								>
+									<span className="kadence-token-field__icon" aria-hidden="true">
+										{shadowGlyph}
 									</span>
-								)}
-							</Button>
+									{stale && <StaleTokenHint />}
+									{summary.label && (
+										<span
+											className={`kadence-token-field__label${summary.muted ? ' kadence-token-field__label--default' : ''}`}
+										>
+											{summary.label}
+										</span>
+									)}
+								</Button>
+							</StaleTokenTooltip>
 						)}
 						renderContent={({ onClose }) => (
 							<TokenPopover

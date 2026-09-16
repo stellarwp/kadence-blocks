@@ -61,20 +61,42 @@ export function staleTokenMessage() {
 }
 
 /**
- * A caution glyph carrying the stale-alias explanation as a tooltip.
+ * The wrapped tooltip a stale field's trigger wears: the full explanation, allowed to wrap instead of
+ * running the sidebar's width as one line. Renders the children untouched when not active, so a
+ * trigger can be wrapped unconditionally.
+ *
+ * @param {Object}      props          The component props.
+ * @param {boolean}     props.active   Whether the field holds a stale alias.
+ * @param {JSX.Element} props.children The trigger.
+ *
+ * @since TBD
+ *
+ * @return {JSX.Element} The trigger, wrapped in the tooltip when active.
+ */
+export function StaleTokenTooltip({ active, children }) {
+	if (!active) {
+		return children;
+	}
+
+	return (
+		<Tooltip text={staleTokenMessage()} className="kadence-token-field__stale-tooltip">
+			{children}
+		</Tooltip>
+	);
+}
+
+/**
+ * The caution glyph shown beside a stale field's label. Decorative: the trigger it sits in already
+ * carries the explanation as its tooltip and accessible name.
  *
  * @since TBD
  *
  * @return {JSX.Element} The glyph.
  */
 export function StaleTokenHint() {
-	const message = staleTokenMessage();
-
 	return (
-		<Tooltip text={message}>
-			<span className="kadence-token-field__stale" role="img" aria-label={message}>
-				<Icon icon={caution} size={16} />
-			</span>
-		</Tooltip>
+		<span className="kadence-token-field__stale" aria-hidden="true">
+			<Icon icon={caution} size={16} />
+		</span>
 	);
 }

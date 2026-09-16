@@ -117,11 +117,11 @@ describe('TokenSelector stale alias', () => {
 	});
 
 	/**
-	 * The trigger's tooltip name carries the explanation, without echoing the dead token id.
+	 * The trigger's accessible name carries the explanation, without echoing the dead token id.
 	 *
 	 * @return {void}
 	 */
-	it('explains the deleted token in the trigger tooltip without naming its id', () => {
+	it('explains the deleted token in the trigger name without echoing its id', () => {
 		const trigger = renderSelector({ value: '{primitive.dimension.custom.radius}', tokens: RADIUS_TOKENS });
 
 		expect(trigger.getAttribute('label')).toContain('deleted from the Style Library');

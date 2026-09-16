@@ -425,6 +425,14 @@
 	}
 }
 
+// The hint's tooltip wraps instead of running the sidebar's width as one line.
+.components-tooltip.kadence-token-field__stale-tooltip {
+	max-width: 220px;
+	white-space: normal;
+	text-align: left;
+	line-height: 1.4;
+}
+
 // The same explanation at the top of the Style Library list, where no row is pressed for a stale alias.
 .kadence-token-field__stale-note {
 	margin: 0 0 8px;

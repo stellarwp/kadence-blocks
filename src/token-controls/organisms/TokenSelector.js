@@ -29,7 +29,13 @@ import {
 } from '../helpers/token-summary';
 import { parseCssLength } from '../helpers/parse-css-length';
 import { TokenPopover } from '../molecules/TokenPopover';
-import { StaleTokenHint, isStaleAlias, staleTokenLabel, staleTokenMessage } from '../atoms/StaleTokenHint';
+import {
+	StaleTokenHint,
+	StaleTokenTooltip,
+	isStaleAlias,
+	staleTokenLabel,
+	staleTokenMessage,
+} from '../atoms/StaleTokenHint';
 import '../styles/token-controls.scss';
 
 /**
@@ -151,36 +157,42 @@ export function TokenSelector({
 				contentClassName="kadence-token-field__popover"
 				popoverProps={{ placement: 'left-start' }}
 				renderToggle={({ isOpen, onToggle }) => (
-					<Button
-						className="kadence-token-field__trigger"
-						onClick={onToggle}
-						disabled={disabled}
-						aria-expanded={isOpen}
-						label={triggerName}
-						showTooltip
-					>
-						{stale && (
-							<>
-								<StaleTokenHint />
-								<span className="kadence-token-field__label kadence-token-field__label--default">
-									{staleTokenLabel()}
-								</span>
-								{fallback.value && <span className="kadence-token-field__value">{fallback.value}</span>}
-							</>
-						)}
-						{summary.label && <span className="kadence-token-field__label">{summary.label}</span>}
-						{summary.value && <span className="kadence-token-field__value">{summary.value}</span>}
-						{!stale && !summary.label && !summary.value && fallback.value && (
-							<>
-								{fallback.label && (
+					<StaleTokenTooltip active={stale}>
+						<Button
+							className="kadence-token-field__trigger"
+							onClick={onToggle}
+							disabled={disabled}
+							aria-expanded={isOpen}
+							label={triggerName}
+							// A stale trigger's tooltip comes from `StaleTokenTooltip` around it instead, which can
+							// wrap the longer text; the button's own would render it as one long line.
+							showTooltip={!stale}
+						>
+							{stale && (
+								<>
+									<StaleTokenHint />
 									<span className="kadence-token-field__label kadence-token-field__label--default">
-										{fallback.label}
+										{staleTokenLabel()}
 									</span>
-								)}
-								<span className="kadence-token-field__value">{fallback.value}</span>
-							</>
-						)}
-					</Button>
+									{fallback.value && (
+										<span className="kadence-token-field__value">{fallback.value}</span>
+									)}
+								</>
+							)}
+							{summary.label && <span className="kadence-token-field__label">{summary.label}</span>}
+							{summary.value && <span className="kadence-token-field__value">{summary.value}</span>}
+							{!stale && !summary.label && !summary.value && fallback.value && (
+								<>
+									{fallback.label && (
+										<span className="kadence-token-field__label kadence-token-field__label--default">
+											{fallback.label}
+										</span>
+									)}
+									<span className="kadence-token-field__value">{fallback.value}</span>
+								</>
+							)}
+						</Button>
+					</StaleTokenTooltip>
 				)}
 				renderContent={({ onClose }) => (
 					<TokenPopover
