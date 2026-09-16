@@ -18,9 +18,13 @@ import { __ } from '@wordpress/i18n';
 import { findTokenEntry } from '../helpers/token-summary';
 
 /**
- * The in-control token display: the token's label (dot-path fallback when no matching entry is found)
- * plus an optional unlink button. Used by the whole-value box-shadow control, which has no per-slot
- * field to turn into a `TokenFieldControl` trigger.
+ * The in-control token display: the token's label plus an optional unlink button. Used by the
+ * whole-value box-shadow control, which has no per-slot field to turn into a `TokenFieldControl`
+ * trigger.
+ *
+ * An alias with no matching entry (its token was deleted after binding) reads as a muted "Default":
+ * the value no longer resolves, so the block renders its default, and the chip names that rather
+ * than echoing a raw dot path. The unlink button stays, so the stale binding can still be cleared.
  *
  * @param {Object}   props
  * @param {string}   props.value     The alias string currently held by the slot.
@@ -34,11 +38,14 @@ import { findTokenEntry } from '../helpers/token-summary';
  */
 export function TokenChip({ value, tokens, onUnlink }) {
 	const entry = findTokenEntry(tokens, value);
-	const label = entry ? entry.label : String(value).slice(1, -1);
+	const label = entry ? entry.label : __('Default', 'kadence-blocks');
+	const labelClass = entry
+		? 'kadence-token-chip__label'
+		: 'kadence-token-chip__label kadence-token-chip__label--default';
 
 	return (
 		<span className="kadence-token-chip">
-			<span className="kadence-token-chip__label" title={entry ? entry.value : undefined}>
+			<span className={labelClass} title={entry ? entry.value : undefined}>
 				{label}
 			</span>
 			{onUnlink && (

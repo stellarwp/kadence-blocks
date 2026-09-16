@@ -205,6 +205,22 @@ describe('BoxShadowControl trigger', () => {
 	});
 
 	/**
+	 * An alias whose token the library has since deleted renders as the block's default shadow, so the
+	 * trigger names that default (muted) rather than echoing the raw dot path the alias still carries.
+	 *
+	 * @return {void}
+	 */
+	it('shows a muted "Default" label for a stale alias, not the dot path', () => {
+		renderControl({ value: '{primitive.shadow.custom.shadow}' });
+
+		const label = trigger().querySelector('.kadence-token-field__label');
+
+		expect(label.textContent).toBe('Default');
+		expect(label.classList.contains('kadence-token-field__label--default')).toBe(true);
+		expect(trigger().textContent).not.toContain('primitive.shadow.custom.shadow');
+	});
+
+	/**
 	 * The trigger shows no value text alongside the bound token's label — unlike every other field's
 	 * `TokenSelector` trigger, this control shows a label only, never a resolved value/shorthand.
 	 *

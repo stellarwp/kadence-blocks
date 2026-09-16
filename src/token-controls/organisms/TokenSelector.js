@@ -117,10 +117,12 @@ export function TokenSelector({
 	const aliased = isTokenAlias(value) || Boolean(entry);
 	const seed = entry ? parseCssLength(entry.value) : null;
 	// An unset slot seeds the Custom tab from whatever it falls back to, so opening the editor starts
-	// from the value on screen instead of an empty box the user has to guess at.
+	// from the value on screen instead of an empty box the user has to guess at. A stale alias (its
+	// token was deleted after binding) renders as that same fallback, so it seeds from it too.
 	const unset = value === '' || value === undefined || value === null;
-	const fallbackNumber = unset ? parseCssLength(resolvedDefault) : null;
-	const number = aliased ? (seed ? seed.size : '') : unset ? (fallbackNumber?.size ?? '') : value;
+	const stale = isTokenAlias(value) && !entry;
+	const fallbackNumber = unset || stale ? parseCssLength(resolvedDefault) : null;
+	const number = entry ? (seed ? seed.size : '') : unset || stale ? (fallbackNumber?.size ?? '') : value;
 
 	// Only a slot that HOLDS a literal opens on its editor. An unset slot opens on the token list even
 	// when what it falls back to is a literal: the fallback is the block's own value, not a choice the

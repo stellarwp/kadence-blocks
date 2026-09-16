@@ -342,6 +342,9 @@ export function BoxShadowControl({
 	const displayValue = fixedMatch ? fixedMatch.alias : value;
 	// The trigger shows a label, never a value — it has no room for the `value` half `fieldSummary()`
 	// also returns. Unset names the shadow it falls back to, or a muted "Default" when there is none.
+	// A stale alias (its token was deleted after binding) takes the unset branch: the front end has
+	// nothing to resolve it to, so naming the fallback matches what renders, where echoing the dot
+	// path showed a raw id.
 	//
 	// Whether an unset shadow can reach that branch is the host's problem: the button's registered
 	// `shadow` default IS the None composite (see `EditorShadowControl`'s `isUnsetShadow()`).
@@ -350,9 +353,9 @@ export function BoxShadowControl({
 	// as an explicit "None" pick. See that helper's own docblock.
 	const fallback = defaultSummary(resolveDefaultValue(defaultValue, tokens, '', false), tokens);
 	const summary =
-		aliased || fixedMatch
+		aliasedEntry || fixedMatch
 			? { ...fieldSummary(displayValue, tokens, '', __('Custom', 'kadence-blocks')), value: '' }
-			: !hasValue(value)
+			: !hasValue(value) || aliased
 				? {
 						label: fallback.label || __('Default', 'kadence-blocks'),
 						value: '',

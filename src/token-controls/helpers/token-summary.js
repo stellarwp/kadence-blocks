@@ -254,6 +254,12 @@ export function defaultSummary(resolvedDefault, tokens, literalLabel = '') {
  * What the slot itself holds: a bound token's label and resolved value, `Custom` plus the literal,
  * or nothing when unset.
  *
+ * A stale alias — one whose token the library no longer defines, because the user deleted that step
+ * after binding it — also summarizes to nothing. Both render paths already fall back to the block's
+ * default for it (the front end's `var()` has nothing to resolve to, and the editor's pixel
+ * conversion finds no entry), so the field names that default too. Echoing the dot path instead
+ * exposed a raw id in place of the display name every other state shows.
+ *
  * @param {*}      value      The slot value.
  * @param {Array}  tokens     The pickable list.
  * @param {string} unit       The control's unit, appended to a literal for display.
@@ -270,11 +276,7 @@ export function fieldSummary(value, tokens, unit, customName) {
 		return { label: entry.label, value: displayDimension(entry.value) };
 	}
 
-	if (isTokenAlias(value)) {
-		return { label: String(value).slice(1, -1), value: '' };
-	}
-
-	if (hasValue(value)) {
+	if (hasValue(value) && !isTokenAlias(value)) {
 		return { label: customName, value: `${value}${unit || ''}` };
 	}
 

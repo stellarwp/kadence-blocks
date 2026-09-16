@@ -86,6 +86,45 @@ describe('TokenSelector disabled state', () => {
 	});
 });
 
+describe('TokenSelector stale alias', () => {
+	const RADIUS_TOKENS = [
+		{ id: 'primitive.dimension.radius-sm', label: 'Small', value: '4px', alias: '{primitive.dimension.radius-sm}' },
+	];
+
+	/**
+	 * A slot bound to a token the library has since deleted renders as the block's default on both the
+	 * front end and the canvas, so the trigger names that default (muted) instead of echoing the raw
+	 * dot path the alias still carries.
+	 *
+	 * @return {void}
+	 */
+	it('names the default a stale alias falls back to, not the raw dot path', () => {
+		const trigger = renderSelector({
+			value: '{primitive.dimension.custom.radius}',
+			tokens: RADIUS_TOKENS,
+			unit: 'px',
+			defaultValue: '4px',
+		});
+
+		expect(trigger.textContent).toBe('Small4px');
+		expect(trigger.textContent).not.toContain('primitive.dimension.custom.radius');
+		expect(trigger.querySelector('.kadence-token-field__label--default')).not.toBeNull();
+	});
+
+	/**
+	 * With no default to name either, the trigger still shows nothing but its "Default" tooltip name,
+	 * never the dot path.
+	 *
+	 * @return {void}
+	 */
+	it('never shows the dot path even when there is no default to fall back to', () => {
+		const trigger = renderSelector({ value: '{primitive.dimension.custom.radius}', tokens: RADIUS_TOKENS });
+
+		expect(trigger.textContent).not.toContain('primitive.dimension.custom.radius');
+		expect(trigger.getAttribute('label')).toBe('Default');
+	});
+});
+
 describe('TokenSelector fixed-entry round trip', () => {
 	// Margin's `Auto` choice (`kadence/singlebtn`'s `edit.js`) is a real spacing slot at the PHP/CSS
 	// layer that was never registered as a DTCG token, so it has no bracket-form alias. Its pickable
