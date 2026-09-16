@@ -229,6 +229,11 @@
 	border-radius: var(--kb-btn-radius, var(--kb-token--semantic--radius--control, 3px));
 	transition: all 0.3s ease-in-out;
 	box-shadow: none;
+	// Mirror of style.scss: the reset must not outrank a block's own `:hover` rule, which is what
+	// carries a per-block shadow into the hover state.
+	&:hover {
+		box-shadow: none;
+	}
 }
 .kt-button.kb-btn-global-fill {
 	border: 0px solid transparent;
@@ -264,9 +269,6 @@
 }
 .kt-button.kb-btn-global-fill::before {
 	background: var(--global-palette-btn-bg-hover, #2f2ffc);
-}
-.editor-styles-wrapper .wp-block-kadence-advancedbtn .kt-button:not(.kb-btn-global-inherit):hover {
-	box-shadow: none;
 }
 .kt-button:hover::before {
 	opacity: 1;

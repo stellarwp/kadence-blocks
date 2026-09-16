@@ -353,6 +353,15 @@ export default function KadenceButtonEdit(props) {
 		undefined,
 		previewDevice
 	);
+	// The Hover tab's Default is the preset's hover shadow, not its resting one: that is what the hover
+	// rule renders through `var(--kb-btn-shadow-hover, none)` when the block sets no hover shadow.
+	const shadowHoverPresetValue = presetPropertyValueForDevice(
+		'kadence/singlebtn',
+		'button-shadow-hover',
+		attributes,
+		undefined,
+		previewDevice
+	);
 
 	// What an unset Border Radius corner falls back to on the active device: another breakpoint's corner
 	// before the preset's, matching the cascade the button actually renders through. The corners stay
@@ -1344,7 +1353,7 @@ export default function KadenceButtonEdit(props) {
 															min={0}
 														/>
 														<EditorShadowControl
-															defaultValue={shadowPresetValue}
+															defaultValue={shadowHoverPresetValue}
 															label={__('Box Shadow', 'kadence-blocks')}
 															value={shadowHover}
 															enabled={displayHoverShadow}
