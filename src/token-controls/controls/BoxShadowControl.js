@@ -68,6 +68,7 @@ import {
 	resolveDefaultValue,
 } from '../helpers/token-summary';
 import { DEFAULT_COMPOSITE, parseResolvedShadow } from '../helpers/shadow-shorthand';
+import { noneEntryForRole } from '../helpers/fixed-tokens';
 import '../styles/token-controls.scss';
 
 /**
@@ -354,6 +355,16 @@ export function BoxShadowControl({
 	// as an explicit "None" pick. See that helper's own docblock.
 	const fallback = defaultSummary(resolveDefaultValue(defaultValue, tokens, '', false), tokens);
 	const stale = aliased && !aliasedEntry;
+	// A host whose preset declares no shadow at all still renders as shadow-less, so the popover
+	// tags the fixed "None" row as its default rather than tagging nothing: without this, a block
+	// with no preset shadow (the button) and one whose preset resolves to a transparent zero shadow
+	// (the image) read differently in the list while painting the same thing. The trigger keeps its
+	// bare "Default" — `defaultSummary()` above ignores fixed entries on purpose.
+	const resolvedDefault =
+		resolvePreviewCss(defaultValue, tokens, {
+			...DEFAULT_COMPOSITE,
+			...(isTokenAlias(defaultValue) || !defaultValue ? {} : defaultValue),
+		}) || noneEntryForRole('shadow').value;
 	const summary =
 		aliasedEntry || fixedMatch
 			? { ...fieldSummary(displayValue, tokens, '', __('Custom', 'kadence-blocks')), value: '' }
@@ -407,10 +418,7 @@ export function BoxShadowControl({
 							<TokenPopover
 								value={displayValue}
 								tokens={tokens}
-								resolvedDefault={resolvePreviewCss(defaultValue, tokens, {
-									...DEFAULT_COMPOSITE,
-									...(isTokenAlias(defaultValue) || !defaultValue ? {} : defaultValue),
-								})}
+								resolvedDefault={resolvedDefault}
 								initialTab={aliased || fixedMatch || !value ? 'style-library' : 'custom'}
 								custom={{ shadow, renderColor, disabled }}
 								renderCustom={(custom) => (
