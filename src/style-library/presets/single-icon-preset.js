@@ -118,7 +118,15 @@ function schemaFor() {
 				id: 'icon',
 				title: __('Icon', 'kadence-blocks'),
 				fields: [
-					{ type: 'color-select', path: 'tokens.color', label: __('Color', 'kadence-blocks') },
+					{
+						type: 'color-select',
+						path: 'tokens.color',
+						label: __('Color', 'kadence-blocks'),
+						// The semantic icon color the Default preset binds (see the baseline's
+						// `presets["kadence/single-icon"]`), so a preset that stores nothing previews the color
+						// a fresh icon really renders — the same posture Size takes with its literal default.
+						defaultValue: 'semantic.color.icon',
+					},
 					{
 						type: 'token-scalar',
 						tokenType: 'dimension',

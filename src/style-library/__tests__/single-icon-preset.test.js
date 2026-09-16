@@ -117,6 +117,19 @@ describe('SINGLE_ICON_PRESET', () => {
 	});
 
 	/**
+	 * The Color row falls back to the semantic icon color the Default preset binds, so a preset that
+	 * stores nothing previews the color a fresh icon really renders.
+	 *
+	 * @return {void}
+	 */
+	it('declares the semantic icon color as the Color default', () => {
+		const color = SINGLE_ICON_PRESET.schemaFor().panels[0].fields[0];
+
+		expect(color.path).toBe('tokens.color');
+		expect(color.defaultValue).toBe('semantic.color.icon');
+	});
+
+	/**
 	 * The block's own size control is per-device (`size`/`tabletSize`/`mobileSize`, all three declared on
 	 * the binding), so the preset field has to be too — otherwise a preset could not reproduce a look a
 	 * site owner had already built with that control.
