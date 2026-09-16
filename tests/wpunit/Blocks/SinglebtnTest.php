@@ -441,13 +441,13 @@ class SinglebtnTest extends KadenceBlocksUnit {
 	}
 
 	/**
-	 * A button with a visible base shadow and an invisible hover shadow writes no `box-shadow` into
-	 * the hover rule, so the base shadow keeps painting on hover through the normal cascade instead
-	 * of being cancelled by a `none` reset.
+	 * A button with a visible base shadow and an invisible hover shadow points the hover rule at the
+	 * preset's hover shadow variable, with `none` as the fallback: the hover state follows its own
+	 * default, and the base shadow must not carry through the cascade into it.
 	 *
 	 * @return void
 	 */
-	public function testInvisibleHoverShadowEmitsNoBoxShadowOnHover(): void {
+	public function testUnsetHoverShadowPointsAtThePresetHoverShadowOnHover(): void {
 		$this->seedPreset( 'bare', 'Bare', [ 'button-bg' => '#ff0000' ] );
 
 		$output = $this->render_button(
@@ -486,26 +486,24 @@ class SinglebtnTest extends KadenceBlocksUnit {
 		$hover_selector = '.wp-block-kadence-advancedbtn .kb-btn123.kb-button:hover, .wp-block-kadence-advancedbtn .kb-btn123.kb-button:focus';
 
 		$css_helper->assertCSSPropertiesEqual( $base_selector, [ 'box-shadow' => '1px 1px 2px 0px #0f0' ] );
-
-		$hover_properties = $css_helper->getPropertyOrder( $hover_selector );
-
-		$this->assertContains( 'color', $hover_properties, 'The hover rule should exist and carry the hover color.' );
-		$this->assertNotContains(
-			'box-shadow',
-			$hover_properties,
-			'An invisible hover shadow must leave the hover rule free of box-shadow so the base shadow persists.'
+		$css_helper->assertCSSPropertiesEqual(
+			$hover_selector,
+			[
+				'color'      => '#00f',
+				'box-shadow' => 'var(--kb-btn-shadow-hover, none)',
+			]
 		);
 	}
 
 	/**
 	 * A gradient-background button with an invisible (all-zero) hover shadow whose `inset` flag is
-	 * `true` writes no `box-shadow` at all into the hover rule — the gradient-specific inset reset
+	 * `true` skips the gradient-specific inset reset and takes the hover default instead — the reset
 	 * lost its `displayHoverShadow` toggle gate along with every other hover site, and must not fire
 	 * on an invisible shadow just because `inset` happens to be `true`.
 	 *
 	 * @return void
 	 */
-	public function testInvisibleInsetHoverShadowEmitsNoBoxShadowOnGradientHover(): void {
+	public function testInvisibleInsetHoverShadowSkipsTheInsetResetOnGradientHover(): void {
 		$this->seedPreset( 'bare', 'Bare', [ 'button-bg' => '#ff0000' ] );
 
 		$output = $this->render_button(
@@ -544,12 +542,16 @@ class SinglebtnTest extends KadenceBlocksUnit {
 		$css_helper     = new CSSTestHelper( $output );
 		$hover_selector = '.wp-block-kadence-advancedbtn .kb-btn123.kb-button:hover, .wp-block-kadence-advancedbtn .kb-btn123.kb-button:focus';
 
-		$hover_properties = $css_helper->getPropertyOrder( $hover_selector );
-
-		$this->assertContains( 'color', $hover_properties, 'The hover rule should exist and carry the hover color.' );
-		$this->assertNotContains(
-			'box-shadow',
-			$hover_properties,
+		$css_helper->assertCSSPropertiesEqual(
+			$hover_selector,
+			[
+				'color'      => '#00f',
+				'box-shadow' => 'var(--kb-btn-shadow-hover, none)',
+			]
+		);
+		$this->assertStringNotContainsString(
+			'0px 0px 0px 0px rgba(0, 0, 0, 0)',
+			$output,
 			'An invisible hover shadow must not trigger the inset reset just because inset is true.'
 		);
 	}

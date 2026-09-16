@@ -180,10 +180,14 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( 'box-shadow', '0px 0px 0px 0px rgba(0, 0, 0, 0)' );
 			$css->set_selector( '.kb-btn' . $unique_id . '.kb-button:hover::before' );
 		}
-		// No `none` fallback on hover: an unset hover shadow must let the base state's shadow
-		// carry through the `:hover` rule via the normal cascade.
+		// The hover state follows its own default, never the resting shadow: with no hover shadow of its
+		// own the rule points at the preset's hover shadow variable, falling back to `none` when the preset
+		// sets none. Always emitted, because a hover rule without a box-shadow would let the resting
+		// shadow carry through the cascade into the hover state.
 		if ( ! empty( $attributes['displayHoverShadow'] ) && isset( $attributes['shadowHover'][0] ) && is_array( $attributes['shadowHover'][0] ) && $this->has_visible_shadow( $attributes['shadowHover'][0] ) ) {
 			$css->add_property( 'box-shadow', $this->render_button_shadow( $css, $attributes['shadowHover'][0] ) );
+		} else {
+			$css->add_property( 'box-shadow', 'var(--kb-btn-shadow-hover, none)' );
 		}
 		// Hover before.
 		if ( 'gradient' === $bg_type && 'normal' === $bg_hover_type && ! empty( $attributes['backgroundHover'] ) ) {
