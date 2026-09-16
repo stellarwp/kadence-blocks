@@ -13,6 +13,7 @@ import {
 	overlayPresetRows,
 	resolveSwatchColor,
 	presetNameSchema,
+	restingRadiusSlots,
 } from '../helpers/presets';
 import { BUTTON_PRESET } from '../presets/button-preset';
 
@@ -874,6 +875,44 @@ describe('resolveSwatchColor', () => {
 
 	it('returns an empty string when unresolvable by either source', () => {
 		expect(resolveSwatchColor(options, values, 'semantic.color.does-not-exist')).toBe('');
+	});
+});
+
+describe('restingRadiusSlots', () => {
+	const FALLBACK = ['0', '0', '0', '0'];
+
+	/**
+	 * A single resting radius id resolves through the feed and fills all four corners.
+	 *
+	 * @return {void}
+	 */
+	it('repeats a single resolved radius across four corners', () => {
+		const draft = { tokens: { borderRadius: 'primitive.radius.md' } };
+		const feed = { values: { 'primitive.radius.md': '0.5rem' } };
+
+		expect(restingRadiusSlots(draft, feed, FALLBACK)).toEqual(['0.5rem', '0.5rem', '0.5rem', '0.5rem']);
+	});
+
+	/**
+	 * A per-corner resting radius carries over corner by corner, ids and literals alike.
+	 *
+	 * @return {void}
+	 */
+	it('keeps a per-corner resting radius corner by corner', () => {
+		const draft = { tokens: { borderRadius: ['primitive.radius.md', '0', 'primitive.radius.md', '0'] } };
+		const feed = { values: { 'primitive.radius.md': '0.5rem' } };
+
+		expect(restingRadiusSlots(draft, feed, FALLBACK)).toEqual(['0.5rem', '0', '0.5rem', '0']);
+	});
+
+	/**
+	 * With no resting radius in the draft, or no draft at all, the caller's fallback is returned.
+	 *
+	 * @return {void}
+	 */
+	it('falls back when the draft sets no resting radius', () => {
+		expect(restingRadiusSlots({ tokens: { borderRadius: '' } }, { values: {} }, FALLBACK)).toEqual(FALLBACK);
+		expect(restingRadiusSlots(null, null, FALLBACK)).toEqual(FALLBACK);
 	});
 });
 

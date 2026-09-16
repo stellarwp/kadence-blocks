@@ -257,6 +257,39 @@ export function resolveTokenValue(values, value, breakpoint = PRESET_BREAKPOINTS
 }
 
 /**
+ * The resting radius a draft resolves to, as four corner literals — what a hover radius field shows
+ * as its muted default.
+ *
+ * A preset with no hover radius keeps its resting corners through hover: the block paints a hover
+ * radius only from its own attribute and the state rule is emitted only for a preset that resolves
+ * one. A hover field reporting square corners while the resting radius is set would name a size the
+ * page never renders. The draft holds bare token ids, which `resolveTokenValue` reads as literals, so
+ * they are wrapped back into aliases first.
+ *
+ * @param {?Object}  draft    The panel draft (`{ tokens }`), or null before one exists.
+ * @param {?Object}  feed     The design-tokens feed (`{ values }`), or null before it loads.
+ * @param {string[]} fallback The block's own corners when the draft sets no resting radius.
+ *
+ * @since TBD
+ *
+ * @return {string[]} The four corner literals.
+ */
+export function restingRadiusSlots(draft, feed, fallback) {
+	const resolved = resolveTokenValue(feed?.values ?? {}, aliasDeep(draft?.tokens?.borderRadius ?? ''));
+	const corners = resolved.trim().split(/\s+/).filter(Boolean);
+
+	if (corners.length === 4) {
+		return corners;
+	}
+
+	if (corners.length === 1) {
+		return [corners[0], corners[0], corners[0], corners[0]];
+	}
+
+	return fallback;
+}
+
+/**
  * Map a block's preset GET payload to the row view models a preset screen renders, in payload
  * order.
  *
@@ -411,7 +444,7 @@ export function isUnsetPresetValue(value) {
  *
  * @return {*} The same shape, with every token id alias-wrapped.
  */
-function aliasDeep(value) {
+export function aliasDeep(value) {
 	if (Array.isArray(value)) {
 		return value.map(aliasDeep);
 	}
