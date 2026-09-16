@@ -45,7 +45,8 @@ import { useActivePaletteGroups } from '../../../hooks/use-active-palette-groups
  *                                       unset, shown muted by the control.
  * @param {boolean} [field.readOnly]     Whether the control is non-interactive.
  * @param {string}  props.value          The stored bare token id, or a raw color literal.
- * @param {Function} props.onChange      Called with the new bare token id (or literal) on pick.
+ * @param {Function} props.onChange      Called with the new bare token id (or literal) on pick, or
+ *                                       '' on Clear.
  *
  * @since TBD
  *
@@ -62,6 +63,9 @@ export function ColorSelectField({ field, value, onChange }) {
 			groups={groups}
 			onPick={(alias) => onChange(toStoredValue(alias))}
 			onCustom={(literal) => onChange(literal)}
+			// No binding indicator sits on a preset row, so Clear is the row's only way back to unset —
+			// and therefore back to the muted default the trigger shows.
+			onClear={() => onChange('')}
 			resolveLiteral={resolveLiteral}
 			resolveAlias={resolvedTokenValue}
 			disabled={field.readOnly}

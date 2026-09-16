@@ -272,4 +272,19 @@ describe('ColorSelectField', () => {
 
 		expect(capturedProps.defaultValue).toBe('');
 	});
+
+	/**
+	 * Clear writes the row back to unset, so a picked color can return to the default the row shows
+	 * muted. Without it a preset row that no binding indicator resets has no way back to empty.
+	 *
+	 * @return {void}
+	 */
+	it('clears the row back to unset', () => {
+		const onChange = jest.fn();
+
+		render({ value: 'semantic.color.accent.main', onChange });
+		capturedProps.onClear();
+
+		expect(onChange).toHaveBeenCalledWith('');
+	});
 });
