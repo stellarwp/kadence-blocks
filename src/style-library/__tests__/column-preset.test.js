@@ -6,6 +6,8 @@
  * contributes: the bound surface it reads, the preview it resolves, its schema, and that it registers
  * on the public screens filter.
  */
+import { act } from 'react';
+import { createRoot } from 'react-dom/client';
 import { applyFilters } from '@wordpress/hooks';
 import { COLUMN_PRESET, COLUMN_BLOCK } from '../presets/column-preset';
 import { PRESET_SCREENS_FILTER } from '../constants/screens';
@@ -48,7 +50,8 @@ describe('COLUMN_PRESET', () => {
 	});
 
 	/**
-	 * The preview resolves both bound properties through the feed's value map, aliases included.
+	 * The preview resolves every bound property through the feed's value map, aliases included, the
+	 * hover twins nested under `hover`.
 	 *
 	 * @return {void}
 	 */
@@ -56,15 +59,20 @@ describe('COLUMN_PRESET', () => {
 		const values = {
 			'semantic.color.column-bg': 'transparent',
 			'semantic.radius.column': '0',
+			'semantic.color.column-bg-hover': '#eeeeee',
+			'semantic.radius.column-hover': '0.25rem',
 		};
 		const tokens = {
 			background: '{semantic.color.column-bg}',
 			borderRadius: '{semantic.radius.column}',
+			backgroundHover: '{semantic.color.column-bg-hover}',
+			borderHoverRadius: '{semantic.radius.column-hover}',
 		};
 
 		expect(COLUMN_PRESET.preview(tokens, values)).toEqual({
 			background: 'transparent',
 			borderRadius: '0',
+			hover: { background: '#eeeeee', borderRadius: '0.25rem' },
 		});
 	});
 
@@ -78,73 +86,31 @@ describe('COLUMN_PRESET', () => {
 		expect(COLUMN_PRESET.preview({ background: '{semantic.color.gone}', borderRadius: '' }, {})).toEqual({
 			background: '',
 			borderRadius: '',
+			hover: { background: '', borderRadius: '' },
 		});
 	});
 
 	/**
-	 * The slab is two nested elements so the preset's background can sit above the transparency checker
-	 * — a single element cannot layer them in that order. The frame carries the radius, the fill carries
-	 * the background.
+	 * The section binds a hover background and a hover radius, so the panel offers a Hover tab. The
+	 * tab is named `hover` because the screen holds the open row's hover preview on that name.
 	 *
 	 * @return {void}
 	 */
-	it('renders the background on a fill nested inside the framed slab', () => {
-		const frame = COLUMN_PRESET.renderPreview({
-			id: 'card',
-			label: 'Card',
-			preview: { background: '#F7FAFC', borderRadius: '0.5rem' },
-		});
-		const fill = frame.props.children;
-
-		expect(frame.props.className).toBe('kadence-blocks-style-library__column-preset-preview');
-		expect(frame.props.style.borderRadius).toBe('0.5rem');
-		// The frame's edge is the stylesheet's neutral hairline; a preset holds no border color.
-		expect(frame.props.style.borderColor).toBeUndefined();
-		// The frame must not paint the background itself, or it would cover its own checker.
-		expect(frame.props.style.background).toBeUndefined();
-
-		expect(fill.props.className).toBe('kadence-blocks-style-library__column-preset-preview-fill');
-		expect(fill.props.style.background).toBe('#F7FAFC');
+	it('declares the normal and hover state tabs', () => {
+		expect(COLUMN_PRESET.tabs.map((tab) => tab.name)).toEqual(['normal', 'hover']);
 	});
 
 	/**
-	 * An unresolved value is left absent rather than invented, so the stylesheet's own square-cornered,
-	 * checkered slab shows through and the row still reads as a discrete shape in the list.
+	 * The Normal tab edits exactly the resting bound surface: a token-color field for the background
+	 * and a radius picker narrowed to the radius scale, both writing token ids rather than literals. No
+	 * border-color field — the section's border output takes `render_border_styles()`'s shorthand
+	 * path, which no block-default `border-color` rule can reach, so the field would save a value that
+	 * changes nothing on the page.
 	 *
 	 * @return {void}
 	 */
-	it('leaves unresolved values absent rather than inventing them', () => {
-		const frame = COLUMN_PRESET.renderPreview({
-			id: 'bare',
-			label: 'Bare',
-			preview: { background: '', borderRadius: '' },
-		});
-
-		expect(frame.props.style.borderRadius).toBeUndefined();
-		expect(frame.props.children.props.style.background).toBeUndefined();
-	});
-
-	/**
-	 * The section binds no hover property, so it declares no tabs and `PresetSidebar` renders the field
-	 * area bare.
-	 *
-	 * @return {void}
-	 */
-	it('declares no state tabs', () => {
-		expect(COLUMN_PRESET.tabs).toBeUndefined();
-	});
-
-	/**
-	 * The schema edits exactly the bound surface and nothing beyond it: a token-color field for the
-	 * background and a radius picker narrowed to the radius scale, both writing token ids rather than
-	 * literals. No border-color field — the section's border output takes `render_border_styles()`'s
-	 * shorthand path, which no block-default `border-color` rule can reach, so the field would save a
-	 * value that changes nothing on the page.
-	 *
-	 * @return {void}
-	 */
-	it('builds panels covering every bound property and nothing more', () => {
-		const { panels } = COLUMN_PRESET.schemaFor();
+	it('builds the Normal tab panels covering every resting bound property and nothing more', () => {
+		const { panels } = COLUMN_PRESET.schemaFor('normal', { tokens: {} }, { values: {} });
 
 		const paths = panels.flatMap((panel) => panel.fields.map((field) => field.path));
 		const types = panels.flatMap((panel) => panel.fields.map((field) => field.type));
@@ -159,6 +125,41 @@ describe('COLUMN_PRESET', () => {
 
 		expect(radius.tokenType).toBe('dimension');
 		expect(radius.role).toBe('radius');
+		expect(radius.defaultValue).toEqual(['0', '0', '0', '0']);
+	});
+
+	/**
+	 * The Hover tab edits exactly the two hover-bound properties, with the same field types as their
+	 * resting twins, so a hover look can be authored the way the resting one is.
+	 *
+	 * @return {void}
+	 */
+	it('builds the Hover tab panels covering every hover bound property and nothing more', () => {
+		const { panels } = COLUMN_PRESET.schemaFor('hover', { tokens: {} }, { values: {} });
+
+		const paths = panels.flatMap((panel) => panel.fields.map((field) => field.path));
+		const types = panels.flatMap((panel) => panel.fields.map((field) => field.type));
+
+		expect(paths).toEqual(['tokens.backgroundHover', 'tokens.borderHoverRadius']);
+		expect(types).toEqual(['token-color-select', 'radius']);
+		expect(panels[1].fields[0].responsive).toBe(true);
+	});
+
+	/**
+	 * A preset with no hover radius keeps its resting corners through hover, so the hover field's
+	 * muted default is the resting radius the draft resolves to, and square corners only when the
+	 * draft sets none.
+	 *
+	 * @return {void}
+	 */
+	it('defaults the hover radius field to the resolved resting radius', () => {
+		const feed = { values: { 'primitive.radius.md': '0.5rem' } };
+
+		const set = COLUMN_PRESET.schemaFor('hover', { tokens: { borderRadius: 'primitive.radius.md' } }, feed);
+		const unset = COLUMN_PRESET.schemaFor('hover', { tokens: { borderRadius: '' } }, feed);
+
+		expect(set.panels[1].fields[0].defaultValue).toEqual(['0.5rem', '0.5rem', '0.5rem', '0.5rem']);
+		expect(unset.panels[1].fields[0].defaultValue).toEqual(['0', '0', '0', '0']);
 	});
 
 	/**
@@ -169,7 +170,7 @@ describe('COLUMN_PRESET', () => {
 	 * @return {void}
 	 */
 	it('makes the radius field responsive, and of a type that can be', () => {
-		const radius = COLUMN_PRESET.schemaFor().panels[1].fields[0];
+		const radius = COLUMN_PRESET.schemaFor('normal', { tokens: {} }, { values: {} }).panels[1].fields[0];
 
 		expect(radius.responsive).toBe(true);
 		expect(RESPONSIVE_CAPABLE_FIELD_TYPES).toContain(radius.type);
@@ -183,10 +184,119 @@ describe('COLUMN_PRESET', () => {
 	 * @return {void}
 	 */
 	it('leaves the color field non-responsive', () => {
-		COLUMN_PRESET.schemaFor().panels[0].fields.forEach((field) => {
+		COLUMN_PRESET.schemaFor('normal', { tokens: {} }, { values: {} }).panels[0].fields.forEach((field) => {
 			expect(field.responsive).toBeUndefined();
 			expect(RESPONSIVE_CAPABLE_FIELD_TYPES).not.toContain(field.type);
 		});
+	});
+});
+
+describe('COLUMN_PRESET.renderPreview', () => {
+	let container;
+	let root;
+
+	beforeEach(() => {
+		global.IS_REACT_ACT_ENVIRONMENT = true;
+		container = document.createElement('div');
+		document.body.appendChild(container);
+		root = createRoot(container);
+	});
+
+	afterEach(() => {
+		act(() => root.unmount());
+		container.remove();
+	});
+
+	const preview = {
+		background: '#111111',
+		borderRadius: '4px',
+		hover: { background: '#eeeeee', borderRadius: '' },
+	};
+
+	/**
+	 * Mount one row preview and return its frame element.
+	 *
+	 * @param {Object} row The row descriptor.
+	 *
+	 * @return {HTMLElement} The frame span.
+	 */
+	function mountFrame(row) {
+		act(() => root.render(COLUMN_PRESET.renderPreview(row)));
+
+		return container.querySelector('.kadence-blocks-style-library__column-preset-preview');
+	}
+
+	/**
+	 * The slab is two nested elements so the preset's background can sit above the transparency checker
+	 * — a single element cannot layer them in that order. The frame carries the radius and must not
+	 * paint the background itself, or it would cover its own checker; its edge is the stylesheet's
+	 * neutral hairline since a preset holds no border color. The fill carries the background.
+	 *
+	 * @return {void}
+	 */
+	it('renders the background on a fill nested inside the framed slab', () => {
+		const frame = mountFrame({
+			id: 'card',
+			label: 'Card',
+			preview: { background: '#F7FAFC', borderRadius: '0.5rem' },
+		});
+		const fill = frame.querySelector('.kadence-blocks-style-library__column-preset-preview-fill');
+
+		expect(frame.style.borderRadius).toBe('0.5rem');
+		expect(frame.style.borderColor).toBe('');
+		expect(frame.style.background).toBe('');
+		expect(fill.style.background).toBe('rgb(247, 250, 252)');
+	});
+
+	/**
+	 * An unresolved value is left absent rather than invented, so the stylesheet's own square-cornered,
+	 * checkered slab shows through and the row still reads as a discrete shape in the list.
+	 *
+	 * @return {void}
+	 */
+	it('leaves unresolved values absent rather than inventing them', () => {
+		const frame = mountFrame({ id: 'bare', label: 'Bare', preview: { background: '', borderRadius: '' } });
+		const fill = frame.querySelector('.kadence-blocks-style-library__column-preset-preview-fill');
+
+		expect(frame.getAttribute('style')).toBeFalsy();
+		expect(fill.getAttribute('style')).toBeFalsy();
+	});
+
+	/**
+	 * Under the pointer the fill swaps to the hover background while an unset hover radius keeps the
+	 * resting radius; leaving restores the resting background.
+	 *
+	 * @return {void}
+	 */
+	it('swaps to hover styles under the pointer and back off it', () => {
+		const frame = mountFrame({ id: 'card', label: 'Card', preview });
+		const fill = frame.querySelector('.kadence-blocks-style-library__column-preset-preview-fill');
+
+		act(() => {
+			frame.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }));
+		});
+
+		expect(fill.style.background).toBe('rgb(238, 238, 238)');
+		expect(frame.style.borderRadius).toBe('4px');
+
+		act(() => {
+			frame.dispatchEvent(new MouseEvent('mouseout', { bubbles: true }));
+		});
+
+		expect(fill.style.background).toBe('rgb(17, 17, 17)');
+	});
+
+	/**
+	 * `showHoverState` holds the hover styles with no pointer involved — the screen sets it for the
+	 * row whose panel is on the Hover tab.
+	 *
+	 * @return {void}
+	 */
+	it('holds the hover state when the row carries showHoverState', () => {
+		const frame = mountFrame({ id: 'card', label: 'Card', preview, showHoverState: true });
+		const fill = frame.querySelector('.kadence-blocks-style-library__column-preset-preview-fill');
+
+		expect(fill.style.background).toBe('rgb(238, 238, 238)');
 	});
 });
 
