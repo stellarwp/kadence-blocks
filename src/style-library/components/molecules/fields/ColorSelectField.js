@@ -3,10 +3,9 @@
  * screen's Text / Background rows): the same trigger-plus-popover control the block editor's
  * `singlebtn` inspector uses, bridged to this host's own palette data and stored-value shape.
  *
- * `TokenColorSelectField.js` stays in place unchanged, still backing the `token-color-select` field
- * type the preset schemas register. This is a second, additive field type, not a replacement.
+ * This is the app's only color-picker field type; every preset color row registers `color-select`.
  *
- * Value format bridge: a `token-color-select`-style field stores a BARE token id (e.g.
+ * Value format bridge: the field stores a BARE token id (e.g.
  * `semantic.color.accent.main`), never a bracket alias — the stored attribute shape does not
  * change here. `ColorControl` itself only understands a bracket alias (`{semantic.color.accent.main}`)
  * or a raw literal, so `resolveLiteral`/`toControlValue`/`toStoredValue` (in

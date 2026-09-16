@@ -105,7 +105,6 @@ export const DEMO_SETTINGS_SCHEMA = {
 			initialOpen: true,
 			fields: [
 				{ type: 'color', path: 'background', label: __('Background', 'kadence-blocks') },
-				{ type: 'token-color-select', path: 'tokenColor', label: __('Token Color', 'kadence-blocks') },
 				{ type: 'color-select', path: 'paletteColor', label: __('Palette Color', 'kadence-blocks') },
 				{
 					type: 'color-list',
@@ -215,7 +214,6 @@ export const DEMO_SETTINGS_VALUES = {
 	letterSpacing: 2,
 	letterSpacingUnit: '0.02em',
 	background: '#2271b1',
-	tokenColor: '',
 	stateColors: { text: '#1e1e1e', bg: '#2271b1' },
 	radius: '',
 	tokenSpacing: '',

@@ -22,7 +22,6 @@ import { ShadowField } from '../components/molecules/fields/ShadowField';
 import { StepperField } from '../components/molecules/fields/StepperField';
 import { TextField } from '../components/molecules/fields/TextField';
 import { ToggleField } from '../components/molecules/fields/ToggleField';
-import { TokenColorSelectField } from '../components/molecules/fields/TokenColorSelectField';
 import { FontFamilyField } from '../components/molecules/fields/FontFamilyField';
 import { TokenSelectField } from '../components/molecules/fields/TokenSelectField';
 import { UnitField } from '../components/molecules/fields/UnitField';
@@ -102,7 +101,6 @@ export const FIELD_TYPES = Object.freeze({
 	'color-list': ColorListField,
 	'token-select': TokenSelectField,
 	'token-scalar': ScalarTokenField,
-	'token-color-select': TokenColorSelectField,
 	'color-select': ColorSelectField,
 	'font-family': FontFamilyField,
 	'box-sides': BoxSidesField,
@@ -119,7 +117,7 @@ export const FIELD_TYPES = Object.freeze({
  * types). `radius` and `spacing` qualify: their slots hold `dimension` values, and the envelope stores
  * whatever a slot holds — an alias overrides per breakpoint just as a literal does.
  *
- * `token-select`/`token-color-select`/`box-sides` remain excluded. Those render a single picker with
+ * `token-select`/`color-select`/`box-sides` remain excluded. Those render a single picker with
  * no breakpoint switcher to drive one, so marking them responsive would write an override no part of
  * their UI could read back; the rest are excluded because their DTCG types are never
  * responsive-capable.

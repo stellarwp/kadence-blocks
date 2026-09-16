@@ -6,8 +6,8 @@
  * A native `<select>` can only render plain-text `<option>`s, so it cannot show what "dashed" or
  * "dotted" actually look like; this exists because the reference wants each option's own line style
  * visible in the list, not just its name. Built on the same `Dropdown` + `MenuGroup`/`MenuItem`
- * (`role="menuitemradio"`/`aria-checked`, a `check` suffix on the active option) idiom
- * `TokenColorSelectField` already established in this codebase, rather than the vendor package's
+ * (`role="menuitemradio"`/`aria-checked`, a `check` suffix on the active option) idiom the Style
+ * Library's own dropdown fields (`SelectDropdown`, `ColorListField`) use, rather than the vendor package's
  * `DropdownMenu` — this stays dependency-free (`@wordpress/components`/`@wordpress/icons` only, no
  * store or global coupling), matching what the rest of `token-controls`/`style-library` already use.
  * `MenuGroup`/`MenuItem` alone give no keyboard roving between options (that is what `DropdownMenu`

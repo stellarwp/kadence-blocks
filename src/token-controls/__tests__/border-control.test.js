@@ -822,8 +822,8 @@ describe('BorderControl style picker', () => {
 	});
 
 	/**
-	 * The active option is marked `aria-checked`, matching the same `role="menuitemradio"` idiom
-	 * `TokenColorSelectField` already uses for its own token list.
+	 * The active option is marked `aria-checked`, the `role="menuitemradio"` idiom the Style Library's
+	 * own dropdown fields use for a single-choice list.
 	 *
 	 * @return {void}
 	 */
