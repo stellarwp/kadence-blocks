@@ -596,6 +596,63 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
+	 * A base-less state property with no token, overridden per corner but only in part, declares only the
+	 * touched slot vars inside the media block and no state rule: the rule would read the composed var,
+	 * which is not declared there, and compute the property to `unset` at that breakpoint.
+	 *
+	 * @return void
+	 */
+	public function testASparsePerCornerBaseLessStatePropertyWithoutATokenEmitsNoStateRule(): void {
+		$document = [
+			'$extensions' => [
+				'com.kadence.designTokens' => [
+					'presets' => [
+						'kadence/state-fixture' => [
+							'flare' => [
+								'label'  => 'Flare',
+								'tokens' => [
+									'radius-hover' => [
+										'$value'      => null,
+										'$extensions' => [
+											'com.kadence.designTokens' => [
+												'responsive' => [ 'tablet' => [ '4px', '', '4px', '' ] ],
+											],
+										],
+									],
+								],
+							],
+						],
+					],
+				],
+			],
+		];
+
+		$this->store->save_document( (string) wp_json_encode( $document ), Token_Store::default_slug() );
+
+		$registry = new Token_Registry();
+		$registry->register_preset_bindings(
+			[
+				'block'    => 'kadence/state-fixture',
+				'bindings' => [
+					'radius-hover' => [
+						'css_prop'  => 'border-radius',
+						'css_state' => ':hover',
+					],
+				],
+			]
+		);
+
+		$css = $this->builder( $registry )->css( 'default', $this->breakpoints() );
+		$var = '--kb-token--preset--kadence-state-fixture--flare--radius-hover';
+
+		$this->assertStringContainsString(
+			'@media all and (max-width: 1024px){:root,:root:where(.kb-tokens){' . $var . '--top:4px;' . $var . '--bottom:4px;}}',
+			$css
+		);
+		$this->assertStringNotContainsString( 'border-radius:var(' . $var . ')', $css );
+	}
+
+	/**
 	 * A library whose presets declare no breakpoint overrides emits no media blocks at all, so every
 	 * existing preset projects byte-identically.
 	 *

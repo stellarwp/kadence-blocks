@@ -1062,7 +1062,14 @@ final class Css_Builder {
 
 						$by_breakpoint[ $breakpoint ][] = $declaration;
 
-						if ( $info['value'] !== null || $info['prop'] === null ) {
+						// A base-less state rule reads the composed var, which a sparse per-corner override with no
+						// token fallback leaves undeclared; emitting the rule anyway would compute the property to
+						// `unset` at this breakpoint, so it is skipped unless the composed var was declared above.
+						if (
+							$info['value'] !== null
+							|| $info['prop'] === null
+							|| ! $this->declares_composed_var( $declaration, $block, (string) $preset, (string) $property )
+						) {
 							continue;
 						}
 
@@ -1093,6 +1100,24 @@ final class Css_Builder {
 		}
 
 		return $css;
+	}
+
+	/**
+	 * Whether a media-block declaration string declares the property's composed var itself, as opposed to
+	 * only its `--<slot>` vars. A slot var is the composed var's name plus a `--` suffix, so the bare name
+	 * followed by `:` can only be the composed declaration.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $declaration The media-block declaration(s) {@see self::responsive_declarations()} produced.
+	 * @param string $block       The block name.
+	 * @param string $preset      The preset slug.
+	 * @param string $property    The block property.
+	 *
+	 * @return bool
+	 */
+	private function declares_composed_var( string $declaration, string $block, string $preset, string $property ): bool {
+		return strpos( $declaration, $this->preset_var( $block, $preset, $property ) . ':' ) !== false;
 	}
 
 	/**
