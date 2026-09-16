@@ -984,16 +984,54 @@ describe('resetAttrPatch', () => {
 
 describe('deriveStateBinding', () => {
 	/**
-	 * When the shared binding is not bound at all (no preset governs the property), the derived state
-	 * is not bound either — there is nothing to compare a per-state value against.
+	 * With no shared entry at all (the registry inactive, or a preset that resolves no resting value)
+	 * there is nothing to compare a per-state value against, so the derived state is neither bound
+	 * nor overridden.
 	 *
 	 * @return {void}
 	 */
-	it('reports not bound when the shared binding is not bound', () => {
+	it('reports neither bound nor overridden when no shared binding exists', () => {
 		expect(deriveStateBinding({ shared: undefined, kind: 'dimension', value: ['4', '4', '4', '4'] })).toEqual({
 			bound: false,
 			overridden: false,
 		});
+	});
+
+	/**
+	 * A shared entry the preset resolves but does not own (every preset shipped in the baseline) still
+	 * yields an override when the state's own value diverges: the dot and the reset need only a value
+	 * to diverge from, the same gate `TokenIndicator` applies to a direct entry.
+	 *
+	 * @return {void}
+	 */
+	it('reports a dimension state as overridden on an unowned preset when its own value diverges', () => {
+		const state = deriveStateBinding({
+			shared: { bound: false },
+			kind: 'dimension',
+			value: ['8', '8', '8', '8'],
+			unit: 'px',
+			devicePresetValue: '0',
+		});
+
+		expect(state).toEqual({ bound: false, overridden: true });
+	});
+
+	/**
+	 * On an unowned preset a state whose own value is empty stays not overridden, and the entry stays
+	 * not bound: an unowned preset never earns the "matches the preset" glyph.
+	 *
+	 * @return {void}
+	 */
+	it('reports a never-written dimension state on an unowned preset as neither bound nor overridden', () => {
+		const state = deriveStateBinding({
+			shared: { bound: false },
+			kind: 'dimension',
+			value: ['', '', '', ''],
+			unit: 'px',
+			devicePresetValue: '0',
+		});
+
+		expect(state).toEqual({ bound: false, overridden: false });
 	});
 
 	/**
@@ -1164,6 +1202,34 @@ describe('deriveStateBinding', () => {
 		const state = deriveStateBinding({ shared, kind: 'border', value, previewDevice: 'Desktop' });
 
 		expect(state).toEqual({ bound: true, overridden: false });
+	});
+
+	/**
+	 * A border state on an unowned preset reports an override when any bound axis diverges, for the
+	 * same reason the dimension case does.
+	 *
+	 * @return {void}
+	 */
+	it('reports a border state as overridden on an unowned preset when an axis diverges', () => {
+		const shared = {
+			bound: false,
+			presetValue: { width: '1px', style: 'solid', color: '#d0d5dd' },
+			responsive: { width: {}, style: {}, color: {} },
+		};
+		const value = [
+			{
+				top: ['#d0d5dd', 'solid', '3'],
+				right: ['#d0d5dd', 'solid', '3'],
+				bottom: ['#d0d5dd', 'solid', '3'],
+				left: ['#d0d5dd', 'solid', '3'],
+				unit: 'px',
+			},
+		];
+
+		expect(deriveStateBinding({ shared, kind: 'border', value, previewDevice: 'Desktop' })).toEqual({
+			bound: false,
+			overridden: true,
+		});
 	});
 });
 

@@ -524,8 +524,9 @@ export function resetAttr(attr, setAttributes, kind, declared, responsiveAttrs) 
  * state's own current value at the active device.
  *
  * There is only one border-radius/border preset property per block, so every state shares Normal's
- * `tokenBinding.borderRadius`/`tokenBinding.borderStyle` for `bound`, `presetValue`, and `responsive`
- * — but `overridden` cannot be shared: Normal's entry only ever compares Normal's own attribute, so
+ * `tokenBinding.borderRadius`/`tokenBinding.borderStyle` for `bound`, `presetValue`, and `responsive`,
+ * and a shared entry the preset resolves without owning still supplies a value to diverge from — but
+ * `overridden` cannot be shared: Normal's entry only ever compares Normal's own attribute, so
  * reusing it on e.g. Sticky would report Normal's divergence on Sticky's field, and its `onReset`
  * would clear Normal's attributes instead of Sticky's. This computes `overridden` fresh from the
  * state's own value, using the exact `isEmptyValue`/`matchesPreset` calls `usePresetBinding`'s own
@@ -555,11 +556,20 @@ export function resetAttr(attr, setAttributes, kind, declared, responsiveAttrs) 
  *
  * @return {{ bound: boolean, overridden: boolean }} This state's own binding state, the shape
  *                                    `EditorBoxControl`/`EditorBorderControl`'s `state` prop expects.
+ *                                    `bound` mirrors the shared entry's ownership; `overridden` is
+ *                                    computed whenever a shared entry exists, owned or not.
  */
 export function deriveStateBinding({ shared, kind, value, unit = '', devicePresetValue, previewDevice }) {
-	if (!shared?.bound) {
+	if (!shared) {
 		return { bound: false, overridden: false };
 	}
+
+	// `bound` keeps the ownership gate for the "matches the preset" glyph. `overridden` deliberately
+	// does not: a preset shipped in the baseline owns nothing until it is re-saved, yet it still
+	// resolves a value for the state to diverge from, and `TokenIndicator` already marks and resets
+	// such a divergence on a direct entry. Gating here hid the dot and the reset on every hover
+	// control of a fresh site while the resting control beside it showed both.
+	const bound = shared.bound === true;
 
 	if (kind === 'border') {
 		const empty = isEmptyValue('border-width', value);
@@ -579,11 +589,11 @@ export function deriveStateBinding({ shared, kind, value, unit = '', devicePrese
 				return !matchesPreset(`border-${axis}`, value, '', axisPresetValue);
 			});
 
-		return { bound: true, overridden };
+		return { bound, overridden };
 	}
 
 	const empty = isEmptyValue(kind, value);
 	const overridden = !empty && !matchesPreset(kind, value, unit, devicePresetValue);
 
-	return { bound: true, overridden };
+	return { bound, overridden };
 }
