@@ -375,7 +375,12 @@ describe('BackendStyles shadow flag gating', () => {
 	 */
 	it('points the hover state at the preset hover shadow when the block has a base shadow but no hover shadow', () => {
 		BackendStyles({
-			attributes: { uniqueID: 'abc123', displayShadow: true, shadow: [VISIBLE_SHADOW], displayHoverShadow: false },
+			attributes: {
+				uniqueID: 'abc123',
+				displayShadow: true,
+				shadow: [VISIBLE_SHADOW],
+				displayHoverShadow: false,
+			},
 			previewDevice: 'Desktop',
 		});
 
