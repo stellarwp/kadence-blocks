@@ -5,7 +5,9 @@
  * The `TokenSelector` shape applied to a value that is not a token. Both tabs write the same plain
  * family string — a favorite is a shortcut to the top of the list, never an alias — so this control
  * takes no `tokens` prop and never calls `resolveToken`. What it shares with its token sibling is
- * the anatomy and the tab-selection rule, not the value model.
+ * the anatomy and the tab-selection rule, not the value model. A theme font reference the catalog no
+ * longer offers reads as "Reverted to default" with a hint, the same way `TokenSelector` treats a
+ * deleted token.
  */
 
 /**
@@ -19,7 +21,8 @@ import { __, sprintf } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { FontFamilyPopover } from '../molecules/FontFamilyPopover';
-import { sameFamily } from '../helpers/font-family';
+import { StaleTokenHint, StaleTokenTooltip, staleFamilyMessage, staleTokenLabel } from '../atoms/StaleTokenHint';
+import { isThemeFontReference, sameFamily } from '../helpers/font-family';
 import '../styles/token-controls.scss';
 
 /**
@@ -98,20 +101,32 @@ export function FontFamilySelector({
 	// family the catalog has since dropped, say) still prints as itself rather than disappearing.
 	const labelFor = (stored) => catalogOptions.find((option) => option.value === stored)?.label ?? stored;
 
+	// A theme font reference the catalog no longer offers: the Kadence theme was swapped out, the
+	// custom property is gone, and the var() already falls back to inherit — the same face an unset
+	// field gets. The value stays (switching the theme back makes it work again; Reset is the way to
+	// drop it), so the field says why it reads as the default instead of printing the CSS.
+	const stale =
+		!unset && isThemeFontReference(family) && !catalogOptions.some((option) => sameFamily(option.value, family));
+
 	// A family already in the favorites opens on the short list; anything else opens on the catalog,
 	// which is where it was picked from and the only tab that can show it in context. An unset field
 	// opens on Favorites, the same nudge `TokenSelector` makes toward the curated list over
 	// hand-picking — unless there are none, in which case the popover renders the catalog alone and
 	// naming a tab that is not there would leave it opening on nothing.
-	const initialTab = favorites.length > 0 && (unset || isFavorite) ? 'favorites' : 'custom';
+	const initialTab = favorites.length > 0 && (unset || isFavorite) && !stale ? 'favorites' : 'custom';
 
 	const fallback = inheritedLabel || __('Theme default', 'kadence-blocks');
-	const triggerName = unset
-		? sprintf(
-				/* translators: %s: the inherited font family, e.g. "Inter". */ __('Default (%s)', 'kadence-blocks'),
-				fallback
-			)
-		: labelFor(family);
+	const triggerName = stale
+		? staleFamilyMessage()
+		: unset
+			? sprintf(
+					/* translators: %s: the inherited font family, e.g. "Inter". */ __(
+						'Default (%s)',
+						'kadence-blocks'
+					),
+					fallback
+				)
+			: labelFor(family);
 
 	return (
 		<div className="kadence-token-field kadence-token-field--font-family">
@@ -120,29 +135,41 @@ export function FontFamilySelector({
 				contentClassName="kadence-token-field__popover"
 				popoverProps={{ placement: 'left-start' }}
 				renderToggle={({ isOpen, onToggle }) => (
-					<Button
-						className="kadence-token-field__trigger"
-						onClick={onToggle}
-						disabled={disabled || pending !== ''}
-						aria-expanded={isOpen}
-						label={pending ? labelFor(pending) : triggerName}
-						showTooltip
-					>
-						{pending ? (
-							<span className="kadence-token-field__value kadence-token-field__value--pending">
-								<Spinner />
-								{labelFor(pending)}
-							</span>
-						) : unset ? (
-							<span className="kadence-token-field__value kadence-token-field__label--default">
-								{fallback}
-							</span>
-						) : (
-							<span className="kadence-token-field__value" style={{ fontFamily: family }}>
-								{labelFor(family)}
-							</span>
-						)}
-					</Button>
+					<StaleTokenTooltip active={stale && !pending} text={staleFamilyMessage()}>
+						<Button
+							className="kadence-token-field__trigger"
+							onClick={onToggle}
+							disabled={disabled || pending !== ''}
+							aria-expanded={isOpen}
+							label={pending ? labelFor(pending) : triggerName}
+							// A stale trigger's tooltip comes from `StaleTokenTooltip` around it instead, which
+							// can wrap the longer text; the button's own would render it as one long line.
+							showTooltip={!stale || pending !== ''}
+						>
+							{pending ? (
+								<span className="kadence-token-field__value kadence-token-field__value--pending">
+									<Spinner />
+									{labelFor(pending)}
+								</span>
+							) : stale ? (
+								<>
+									<StaleTokenHint />
+									<span className="kadence-token-field__label kadence-token-field__label--default">
+										{staleTokenLabel()}
+									</span>
+									<span className="kadence-token-field__value">{fallback}</span>
+								</>
+							) : unset ? (
+								<span className="kadence-token-field__value kadence-token-field__label--default">
+									{fallback}
+								</span>
+							) : (
+								<span className="kadence-token-field__value" style={{ fontFamily: family }}>
+									{labelFor(family)}
+								</span>
+							)}
+						</Button>
+					</StaleTokenTooltip>
 				)}
 				renderContent={({ onClose }) => (
 					<FontFamilyPopover
@@ -150,6 +177,7 @@ export function FontFamilySelector({
 						favorites={favorites}
 						catalogOptions={catalogOptions}
 						initialTab={initialTab}
+						stale={stale}
 						manageUrl={manageUrl}
 						onPick={handlePick}
 						onClear={onClear}
