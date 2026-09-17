@@ -80,20 +80,23 @@ export function staleFamilyMessage() {
  * trigger can be wrapped unconditionally.
  *
  * @param {Object}      props          The component props.
- * @param {boolean}     props.active   Whether the field holds a stale alias.
+ * @param {boolean}     props.active   Whether the field holds a stale value.
+ * @param {string}      [props.text]   The explanation to show. Defaults to the stale-alias one; a
+ *                                     field whose value went stale for another reason (a theme font
+ *                                     reference, say) passes its own.
  * @param {JSX.Element} props.children The trigger.
  *
  * @since TBD
  *
  * @return {JSX.Element} The trigger, wrapped in the tooltip when active.
  */
-export function StaleTokenTooltip({ active, children }) {
+export function StaleTokenTooltip({ active, text = staleTokenMessage(), children }) {
 	if (!active) {
 		return children;
 	}
 
 	return (
-		<Tooltip text={staleTokenMessage()} className="kadence-token-field__stale-tooltip">
+		<Tooltip text={text} className="kadence-token-field__stale-tooltip">
 			{children}
 		</Tooltip>
 	);
