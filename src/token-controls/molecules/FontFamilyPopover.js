@@ -27,6 +27,7 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
+import { staleFamilyMessage } from '../atoms/StaleTokenHint';
 import { filterCatalogOptions } from '../helpers/catalog-filter';
 import { sameFamily } from '../helpers/font-family';
 
@@ -128,6 +129,8 @@ function FavoritesTab({ value, favorites, manageUrl, onPick, onClear, onClose })
  * @param {Object}   props
  * @param {string}   props.value   The current family, so the active row renders checked.
  * @param {Array}    props.options The full catalog option list, in display order.
+ * @param {boolean}  [props.stale] Whether the current value is a theme font reference the list no
+ *                                 longer offers.
  * @param {Function} props.onPick  Called with a family name when one is chosen.
  * @param {Function} props.onClear Called when `Reset` is chosen.
  * @param {Function} props.onClose Closes the popover after a choice.
@@ -136,12 +139,15 @@ function FavoritesTab({ value, favorites, manageUrl, onPick, onClear, onClose })
  *
  * @return {Object} The rendered catalog search.
  */
-export function FontCatalogTab({ value, options, onPick, onClear, onClose }) {
+export function FontCatalogTab({ value, options, stale = false, onPick, onClear, onClose }) {
 	const [query, setQuery] = useState('');
 	const { visible, truncated } = useMemo(() => filterCatalogOptions(options, query), [options, query]);
 
 	return (
 		<div className="kadence-token-field__list kadence-token-field__list--catalog">
+			{/* No row is pressed for a stale theme reference — the option only exists while the Kadence
+			    theme is active — so the list says why before the user goes looking for the selection. */}
+			{stale && <p className="kadence-token-field__stale-note">{staleFamilyMessage()}</p>}
 			<ResetRow value={value} onClear={onClear} onClose={onClose} />
 			<TextControl
 				__nextHasNoMarginBottom
@@ -186,6 +192,8 @@ export function FontCatalogTab({ value, options, onPick, onClear, onClose }) {
  * @param {Array}    props.favorites      The site's favorite families, in display order.
  * @param {Array}    props.catalogOptions The full catalog option list.
  * @param {string}   props.initialTab     Which tab opens first.
+ * @param {boolean}  [props.stale]        Whether the current value is a theme font reference the
+ *                                        catalog no longer offers.
  * @param {string}   [props.manageUrl]    Deep link to the screen that manages favorites.
  * @param {Function} props.onPick         Called with a family name when one is chosen, from either tab.
  * @param {Function} props.onClear        Called when `Reset` is chosen.
@@ -200,6 +208,7 @@ export function FontFamilyPopover({
 	favorites = [],
 	catalogOptions,
 	initialTab,
+	stale = false,
 	manageUrl,
 	onPick,
 	onClear,
@@ -244,6 +253,7 @@ export function FontFamilyPopover({
 					<FontCatalogTab
 						value={value}
 						options={catalogOptions}
+						stale={stale}
 						onPick={onPick}
 						onClear={onClear}
 						onClose={onClose}
