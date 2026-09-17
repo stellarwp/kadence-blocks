@@ -61,6 +61,20 @@ export function staleTokenMessage() {
 }
 
 /**
+ * The explanation for a theme font reference on a theme that does not provide it.
+ *
+ * @since TBD
+ *
+ * @return {string} The translated message.
+ */
+export function staleFamilyMessage() {
+	return __(
+		'This option came from the Kadence theme, which is no longer active. The default applies until you pick a new value or reset.',
+		'kadence-blocks'
+	);
+}
+
+/**
  * The wrapped tooltip a stale field's trigger wears: the full explanation, allowed to wrap instead of
  * running the sidebar's width as one line. Renders the children untouched when not active, so a
  * trigger can be wrapped unconditionally.
