@@ -6,7 +6,9 @@
  * so the control keeps reporting an edit. The value is deliberately NOT cleared — the token may come
  * back under the same id, and the divergence dot's reset is the user's own way to drop it — so the
  * field has to say why it reads as the default while still flagged as edited. This atom is that
- * explanation, shared by every surface that can show a stale alias.
+ * explanation, shared by every surface that can show a stale alias. A theme font reference stored
+ * while the Kadence theme was active goes stale the same way once another theme takes over, and
+ * reuses the atom with its own message.
  */
 
 /**

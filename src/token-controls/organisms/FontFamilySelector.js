@@ -99,7 +99,7 @@ export function FontFamilySelector({
 	// entries store a `var()` reference at the site's typography settings — and printing that raw is
 	// a control showing the user CSS instead of the choice they made. A value no option claims (a
 	// family the catalog has since dropped, say) still prints as itself rather than disappearing.
-	const labelFor = (stored) => catalogOptions.find((option) => option.value === stored)?.label ?? stored;
+	const labelFor = (stored) => catalogOptions.find((option) => sameFamily(option.value, stored))?.label ?? stored;
 
 	// A theme font reference the catalog no longer offers: the Kadence theme was swapped out, the
 	// custom property is gone, and the var() already falls back to inherit — the same face an unset
@@ -135,7 +135,12 @@ export function FontFamilySelector({
 				contentClassName="kadence-token-field__popover"
 				popoverProps={{ placement: 'left-start' }}
 				renderToggle={({ isOpen, onToggle }) => (
-					<StaleTokenTooltip active={stale && !pending} text={staleFamilyMessage()}>
+					<StaleTokenTooltip
+						// A pending pick names the family it is fetching; the stale explanation would sit over
+						// the spinner for a value the user has already moved off.
+						active={stale && !pending}
+						text={staleFamilyMessage()}
+					>
 						<Button
 							className="kadence-token-field__trigger"
 							onClick={onToggle}
@@ -144,7 +149,7 @@ export function FontFamilySelector({
 							label={pending ? labelFor(pending) : triggerName}
 							// A stale trigger's tooltip comes from `StaleTokenTooltip` around it instead, which
 							// can wrap the longer text; the button's own would render it as one long line.
-							showTooltip={!stale || pending !== ''}
+							showTooltip={!stale}
 						>
 							{pending ? (
 								<span className="kadence-token-field__value kadence-token-field__value--pending">
