@@ -822,6 +822,10 @@ final class Css_Builder {
 	 * The `$default` itself never gets one: whatever it resolves the block-default layer declares, and
 	 * whatever it leaves unset is the theme's.
 	 *
+	 * Declarations are grouped by the binding's selector suffix, so a property bound to a descendant (an
+	 * image's `img`, a column's `> .kt-inside-inner-col`) lands on that element rather than on the block
+	 * root — the same split the block-default layer makes.
+	 *
 	 * @since TBD
 	 *
 	 * @param string                                                                                                                   $block        The block name.
@@ -830,29 +834,50 @@ final class Css_Builder {
 	 * @param string                                                                                                                   $preset_class The preset class selector, leading dot included.
 	 * @param bool                                                                                                                     $editor       Whether to target the block's editor markup.
 	 *
-	 * @return string The rule, or '' when the Default covers every property the preset sets.
+	 * @return string The rules, one per selector suffix, or '' when the Default covers every property the
+	 *                preset sets.
 	 */
 	private function default_gap_rules( string $block, string $preset, array $data, string $preset_class, bool $editor ): string {
 		if ( $preset === $data['default'] ) {
 			return '';
 		}
 
-		$covered      = $data['presets'][ $data['default'] ] ?? [];
-		$declarations = [];
+		$bindings  = $this->registry->for_block( $block );
+		$covered   = $data['presets'][ $data['default'] ] ?? [];
+		$by_suffix = [];
 
 		foreach ( $data['presets'][ $preset ] as $property => $info ) {
+			// "Covered" means the `$default` collected the property. The block-default layer additionally
+			// requires the binding to be token-backed with a non-empty literal before it declares one, so
+			// a binding failing only that would go uncovered there and skipped here; no shipped binding
+			// does, and the extra rule would be harmless indirection rather than a wrong value.
 			if ( $info['target'] === null || $info['prop'] === null || isset( $covered[ $property ] ) ) {
 				continue;
 			}
 
-			$declarations[] = $info['prop'] . ':var(' . $this->preset_var( $block, $preset, (string) $property ) . ')';
+			// A binding may paint a descendant rather than the block root (an image's `img`, a column's
+			// `> .kt-inside-inner-col`). Group by that suffix the way the block-default layer does, so the
+			// declaration lands on the element the binding names instead of on the block wrapper.
+			$binding = $bindings !== null ? $bindings->binding( (string) $property ) : null;
+			$suffix  = $binding !== null
+				? $this->selector_suffix( $editor ? $binding->editor_css_selector() : $binding->css_selector() )
+				: '';
+
+			$by_suffix[ $suffix ][] = $info['prop'] . ':var(' . $this->preset_var( $block, $preset, (string) $property ) . ')';
 		}
 
-		if ( $declarations === [] ) {
+		if ( $by_suffix === [] ) {
 			return '';
 		}
 
-		return $this->default_gap_scope( $block, $data['selector'], $preset_class, $editor ) . '{' . implode( ';', $declarations ) . ';}';
+		$scope = $this->default_gap_scope( $block, $data['selector'], $preset_class, $editor );
+		$css   = '';
+
+		foreach ( $by_suffix as $suffix => $declarations ) {
+			$css .= $scope . (string) $suffix . '{' . implode( ';', $declarations ) . ';}';
+		}
+
+		return $css;
 	}
 
 	/**
@@ -882,10 +907,16 @@ final class Css_Builder {
 		$bindings        = $this->registry->for_block( $block );
 		$editor_selector = $bindings !== null ? $bindings->editor_selector : null;
 
-		if ( $editor && $editor_selector !== null && strpos( $editor_selector, $selector ) === 0 ) {
+		// The prefix has to end on a combinator or attachment character, or the whole selector: without
+		// that boundary `.wp-block-kadence-column-inner` would read as `.wp-block-kadence-column` plus the
+		// suffix `-inner`, splicing the class name in half.
+		if ( $editor && $editor_selector !== null && preg_match( '/^' . preg_quote( $selector, '/' ) . '(?=[\s>.:]|$)/', $editor_selector ) === 1 ) {
 			return '.editor-styles-wrapper :where(' . $selector . $preset_class . ')' . substr( $editor_selector, strlen( $selector ) );
 		}
 
+		// No editor selector, or one that does not start with the block class: the front-end scope is used
+		// unchanged, since there is no wrapper/element split to re-target and the block class is on the
+		// styled element in both builds.
 		return ':where(' . $selector . ')' . $preset_class;
 	}
 
