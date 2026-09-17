@@ -329,16 +329,18 @@ describe('FontFamilySelector stale theme reference', () => {
 	const themeRef = 'var( --global-heading-font-family, inherit )';
 
 	/**
-	 * A theme font reference no option claims reads as the default plus the hint, never as CSS.
+	 * A theme font reference no option claims reads as the default plus the hint, never as CSS. No
+	 * fallback name sits beside the label: the trigger is narrow, and a second span would push the
+	 * label into an ellipsis.
 	 *
 	 * @return {void}
 	 */
-	it('reads "Reverted to default" with the fallback name instead of the var() string', () => {
+	it('reads "Reverted to default" alone instead of the var() string', () => {
 		const trigger = renderSelector({ value: themeRef, catalogOptions: [], inheritedLabel: 'Inter' });
 
 		expect(trigger.textContent).not.toContain('var(');
 		expect(trigger.querySelector('.kadence-token-field__label--default').textContent).toBe('Reverted to default');
-		expect(trigger.querySelector('.kadence-token-field__value').textContent).toBe('Inter');
+		expect(trigger.querySelector('.kadence-token-field__value')).toBeNull();
 		expect(trigger.querySelector('.kadence-token-field__stale')).not.toBeNull();
 	});
 

@@ -157,12 +157,14 @@ export function FontFamilySelector({
 									{labelFor(pending)}
 								</span>
 							) : stale ? (
+								// No fallback name beside the label: the trigger is narrow enough that a second
+								// span pushes "Reverted to default" into an ellipsis, cutting the one word that
+								// matters. The tooltip already says the default applies.
 								<>
 									<StaleTokenHint />
 									<span className="kadence-token-field__label kadence-token-field__label--default">
 										{staleTokenLabel()}
 									</span>
-									<span className="kadence-token-field__value">{fallback}</span>
 								</>
 							) : unset ? (
 								<span className="kadence-token-field__value kadence-token-field__label--default">
