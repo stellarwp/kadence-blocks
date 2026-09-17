@@ -3,7 +3,7 @@
 /**
  * Internal dependencies
  */
-import { sameFamily } from '../helpers/font-family';
+import { isThemeFontReference, sameFamily } from '../helpers/font-family';
 
 describe('sameFamily', () => {
 	it('matches an exact family', () => {
@@ -42,5 +42,30 @@ describe('sameFamily', () => {
 		[42, 42],
 	])('does not treat %p and %p as the same font', (a, b) => {
 		expect(sameFamily(a, b)).toBe(false);
+	});
+});
+
+describe('isThemeFontReference', () => {
+	/**
+	 * Both Kadence theme global font entries are recognized, with or without the spacing the
+	 * picker stores them with.
+	 *
+	 * @return {void}
+	 */
+	it('recognizes the theme heading and body font references', () => {
+		expect(isThemeFontReference('var( --global-heading-font-family, inherit )')).toBe(true);
+		expect(isThemeFontReference('var(--global-body-font-family,inherit)')).toBe(true);
+	});
+
+	/**
+	 * A family name, an empty value, and a non-string are not theme references.
+	 *
+	 * @return {void}
+	 */
+	it('rejects family names and non-strings', () => {
+		expect(isThemeFontReference('Inter')).toBe(false);
+		expect(isThemeFontReference('')).toBe(false);
+		expect(isThemeFontReference(null)).toBe(false);
+		expect(isThemeFontReference('var( --kb-primary-font, inherit )')).toBe(false);
 	});
 });
