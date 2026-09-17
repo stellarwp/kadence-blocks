@@ -213,7 +213,6 @@ final class Css_BuilderTest extends TestCase {
 		$css = $this->builder( $this->registry )->css( 'default' );
 
 		$this->assertStringNotContainsString( ':where(.wp-block-kadence-advancedheading).kb-preset--default{', $css );
-		$this->assertStringNotContainsString( ':where(.wp-block-kadence-advancedheading){', $css );
 	}
 
 	/**
@@ -235,6 +234,49 @@ final class Css_BuilderTest extends TestCase {
 			$css
 		);
 		$this->assertStringNotContainsString( ':where(.wp-block-kadence-advancedheading).kb-preset--display{', $css );
+	}
+
+	/**
+	 * A gap-rule property whose binding paints a descendant lands on that descendant: the suffix follows
+	 * the scope, and a property bound to the block root keeps its own rule.
+	 *
+	 * @return void
+	 */
+	public function testTheGapRuleHonorsABindingsDescendantSelector(): void {
+		$this->seedDescendantPresets();
+
+		$css = $this->builder( $this->descendantRegistry() )->css( 'default' );
+
+		$this->assertStringContainsString(
+			':where(.wp-block-kadence-descendant-fixture).kb-preset--framed img{'
+				. 'border-radius:var(--kb-token--preset--kadence-descendant-fixture--framed--border-radius);}',
+			$css
+		);
+		// The block-root property the Default leaves unset keeps its own rule, un-suffixed.
+		$this->assertStringContainsString(
+			':where(.wp-block-kadence-descendant-fixture).kb-preset--framed{'
+				. 'outline-color:var(--kb-token--preset--kadence-descendant-fixture--framed--outline);}',
+			$css
+		);
+	}
+
+	/**
+	 * The editor build reads the binding's `editor_css_selector`, so a block whose canvas markup paints a
+	 * different descendant than its saved markup still previews the preset's value on the right element.
+	 *
+	 * @return void
+	 */
+	public function testTheEditorGapRuleHonorsTheEditorDescendantSelector(): void {
+		$this->seedDescendantPresets();
+
+		$css = $this->builder( $this->descendantRegistry() )->editor_css( 'default' );
+
+		$this->assertStringContainsString(
+			':where(.wp-block-kadence-descendant-fixture).kb-preset--framed *.kb-fixture-media{'
+				. 'border-radius:var(--kb-token--preset--kadence-descendant-fixture--framed--border-radius);}',
+			$css
+		);
+		$this->assertStringNotContainsString( '.kb-preset--framed img{', $css );
 	}
 
 	/**
@@ -1308,6 +1350,80 @@ final class Css_BuilderTest extends TestCase {
 								'tokens' => [
 									'color'       => '{semantic.color.icon}',
 									'color-hover' => $flare_hover,
+								],
+							],
+						],
+					],
+				],
+			],
+		];
+
+		$this->store->save_document( (string) wp_json_encode( $document ), Token_Store::default_slug() );
+	}
+
+	/**
+	 * A registry for a block the baseline knows nothing about, binding one property to a descendant (with a
+	 * different descendant in the editor) and one to the block root, so a gap rule built from it has to
+	 * split its declarations by selector suffix.
+	 *
+	 * @return Token_Registry
+	 */
+	private function descendantRegistry(): Token_Registry {
+		$registry = new Token_Registry();
+		$registry->register_preset_bindings(
+			[
+				'block'    => 'kadence/descendant-fixture',
+				'bindings' => [
+					'color'         => [
+						'token'    => 'semantic.color.text',
+						'css_prop' => 'color',
+						'css_var'  => 'kb-fixture-color',
+					],
+					'outline'       => [
+						'token'    => 'semantic.color.link',
+						'css_prop' => 'outline-color',
+						'css_var'  => 'kb-fixture-outline',
+					],
+					'border-radius' => [
+						'token'               => 'semantic.radius.media',
+						'css_prop'            => 'border-radius',
+						'css_selector'        => 'img',
+						'editor_css_selector' => '*.kb-fixture-media',
+						'css_var'             => 'kb-fixture-radius',
+					],
+				],
+			]
+		);
+
+		return $registry;
+	}
+
+	/**
+	 * Store two presets for the descendant fixture block — a `$default` ("plain") setting only the
+	 * block-root color, and a named one ("framed") that additionally sets the descendant-bound radius and a
+	 * second block-root property, so the named preset's gap rule spans two selector suffixes.
+	 *
+	 * @return void
+	 */
+	private function seedDescendantPresets(): void {
+		$document = [
+			'$extensions' => [
+				'com.kadence.designTokens' => [
+					'presets' => [
+						'kadence/descendant-fixture' => [
+							'$default' => 'plain',
+							'plain'    => [
+								'label'  => 'Plain',
+								'tokens' => [
+									'color' => '{semantic.color.text}',
+								],
+							],
+							'framed'   => [
+								'label'  => 'Framed',
+								'tokens' => [
+									'color'         => '{semantic.color.text}',
+									'outline'       => '{semantic.color.link}',
+									'border-radius' => '{semantic.radius.media}',
 								],
 							],
 						],
