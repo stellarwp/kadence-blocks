@@ -801,9 +801,6 @@
 						"tokens": {
 							"color": "{semantic.color.text}",
 							"background": "{semantic.color.heading-bg}",
-							"fontSize": "{semantic.font-size.heading}",
-							"fontHeight": "{semantic.line-height.heading}",
-							"fontWeight": "{semantic.font-weight.heading}",
 							"letterSpacing": "{semantic.letter-spacing.heading}",
 							"textTransform": "{semantic.text-transform.heading}",
 							"padding": "{semantic.spacing.heading-padding}",
