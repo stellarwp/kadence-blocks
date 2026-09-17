@@ -426,6 +426,20 @@ describe('presetPropertyValueForDevice', () => {
 
 		expect(value).toBeUndefined();
 	});
+
+	/**
+	 * A property the active preset leaves unset resolves to nothing. The Advanced Text's Font Size
+	 * control uses this as its muted default, and its Google-variant request reads the preset weight
+	 * through it — both must see "no value" for a property the Default leaves to the theme, not a
+	 * stale literal.
+	 *
+	 * @return {void}
+	 */
+	it('returns undefined for a property the active preset does not resolve', () => {
+		const value = presetPropertyValueForDevice(BLOCK, 'fontSize', { kbPreset: '' }, undefined, 'Desktop');
+
+		expect(value).toBeUndefined();
+	});
 });
 
 describe('usePresetBinding border width/style/color combining', () => {
