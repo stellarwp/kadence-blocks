@@ -266,6 +266,18 @@ describe('HEADING_PRESET', () => {
 	});
 
 	/**
+	 * The Size field declares no fallback: the Default preset leaves font size to the theme, whose value
+	 * this screen cannot know, so a muted "2rem" would name a size no heading renders at.
+	 *
+	 * @return {void}
+	 */
+	it('declares no fallback size for the Default preset to display', () => {
+		const size = fields().find((field) => field.path === 'tokens.fontSize');
+
+		expect(size.defaultValue).toBeUndefined();
+	});
+
+	/**
 	 * Border style is the field that decides whether a border appears at all. Offering color and width
 	 * without it is the dead control the Row Layout and Section screens had to drop, so its presence is
 	 * asserted on its own rather than left implied by the field list.

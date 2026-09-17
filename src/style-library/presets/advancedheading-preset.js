@@ -27,13 +27,6 @@ import { fontCatalogOptions, fontOptions, fontSizeDisplayValue, fontWeightsFor }
 export const HEADING_BLOCK = 'kadence/advancedheading';
 
 /**
- * The heading's built-in font size, matching `semantic.font-size.heading`.
- *
- * @since TBD
- */
-const HEADING_FONT_SIZE_FALLBACK = '2rem';
-
-/**
  * The heading's built-in corner radius, matching `semantic.radius.heading` (square corners).
  *
  * @since TBD
@@ -305,7 +298,8 @@ function schemaFor(tab, values, feed) {
 						responsive: true,
 						path: 'tokens.fontSize',
 						label: __('Size', 'kadence-blocks'),
-						defaultValue: HEADING_FONT_SIZE_FALLBACK,
+						// No fallback on purpose: the Default preset leaves font size to the theme's own per-tag
+						// rules, and this screen cannot know that value, so an unset field reads as unset.
 					},
 					{
 						type: 'select',
