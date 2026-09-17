@@ -159,6 +159,99 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
+	 * A named heading preset that sets font size and weight renders them outright. The Default preset
+	 * leaves both to the theme, so the block-default layer emits no declaration that would consume the
+	 * preset's var retarget; the scoped rule here supplies the declaration itself, weighted one class so
+	 * it outranks a theme's element rule and yields to the block's per-instance rule.
+	 *
+	 * @return void
+	 */
+	public function testANamedPresetDeclaresAPropertyTheDefaultLeavesUnset(): void {
+		$this->seedDisplayHeadingPreset();
+
+		$css = $this->builder( $this->registry )->css( 'default' );
+
+		$this->assertStringContainsString(
+			':where(.wp-block-kadence-advancedheading).kb-preset--display{'
+				. 'font-size:var(--kb-token--preset--kadence-advancedheading--display--fontSize);'
+				. 'font-weight:var(--kb-token--preset--kadence-advancedheading--display--fontWeight);}',
+			$css
+		);
+
+		// The var retarget is still there — a Default that later sets font size consumes it through the
+		// block-default declaration, and the two paths must agree.
+		$this->assertStringContainsString(
+			'--kb-heading-font-size:var(--kb-token--preset--kadence-advancedheading--display--fontSize);',
+			$css
+		);
+	}
+
+	/**
+	 * A property the Default DOES define is consumed by the block-default layer's declaration, so the
+	 * gap rule carries nothing for it: color stays a var retarget only.
+	 *
+	 * @return void
+	 */
+	public function testTheGapRuleSkipsAPropertyTheDefaultDefines(): void {
+		$this->seedDisplayHeadingPreset();
+
+		$css = $this->builder( $this->registry )->css( 'default' );
+
+		$this->assertStringNotContainsString( 'kb-preset--display{color:', $css );
+		$this->assertStringNotContainsString( ';color:var(--kb-token--preset--kadence-advancedheading--display--color)', $css );
+	}
+
+	/**
+	 * The Default preset itself gets no gap rule: whatever it resolves, the block-default layer already
+	 * declares, and whatever it leaves unset belongs to the theme.
+	 *
+	 * @return void
+	 */
+	public function testTheDefaultPresetGetsNoGapRule(): void {
+		$this->seedDisplayHeadingPreset();
+
+		$css = $this->builder( $this->registry )->css( 'default' );
+
+		$this->assertStringNotContainsString( ':where(.wp-block-kadence-advancedheading).kb-preset--default{', $css );
+		$this->assertStringNotContainsString( ':where(.wp-block-kadence-advancedheading){', $css );
+	}
+
+	/**
+	 * In the editor the block's `.wp-block-*` class sits on the useBlockProps() wrapper, not on the heading
+	 * element, so the gap rule is re-targeted at the element the block's `editor_selector` names, under
+	 * `.editor-styles-wrapper` so it still outranks the theme's `h2` there.
+	 *
+	 * @return void
+	 */
+	public function testTheEditorGapRuleLandsOnTheEditorSelector(): void {
+		$this->seedDisplayHeadingPreset();
+
+		$css = $this->builder( $this->registry )->editor_css( 'default' );
+
+		$this->assertStringContainsString(
+			'.editor-styles-wrapper :where(.wp-block-kadence-advancedheading.kb-preset--display) .kadence-advancedheading-text{'
+				. 'font-size:var(--kb-token--preset--kadence-advancedheading--display--fontSize);'
+				. 'font-weight:var(--kb-token--preset--kadence-advancedheading--display--fontWeight);}',
+			$css
+		);
+		$this->assertStringNotContainsString( ':where(.wp-block-kadence-advancedheading).kb-preset--display{', $css );
+	}
+
+	/**
+	 * A block whose Default defines every property a named preset sets (the Button's accent) emits no gap
+	 * rule at all, so every other block's projected CSS is unchanged by the gap layer.
+	 *
+	 * @return void
+	 */
+	public function testABlockWhoseDefaultCoversThePresetEmitsNoGapRule(): void {
+		$this->seedAccentPreset();
+
+		$css = $this->builder( $this->registry )->css( 'default' );
+
+		$this->assertStringNotContainsString( ':where(.wp-block-kadence-singlebtn)', $css );
+	}
+
+	/**
 	 * A preset that exists only in a NON-active library (a user-created preset on the "dark" library) is not emitted
 	 * while "default" is active: only the active library's presets reach output.
 	 *
@@ -994,6 +1087,36 @@ final class Css_BuilderTest extends TestCase {
 		];
 
 		$store->save_document( (string) wp_json_encode( $document ) );
+	}
+
+	/**
+	 * Persist a user-created "display" heading preset into the active "default" library that sets font size
+	 * and weight — two properties the shipped Default preset leaves to the theme — plus a color the Default
+	 * does define.
+	 *
+	 * @return void
+	 */
+	private function seedDisplayHeadingPreset(): void {
+		$document = [
+			'$extensions' => [
+				'com.kadence.designTokens' => [
+					'presets' => [
+						'kadence/advancedheading' => [
+							'display' => [
+								'label'  => 'Display',
+								'tokens' => [
+									'color'      => '{semantic.color.text}',
+									'fontSize'   => '{semantic.font-size.heading}',
+									'fontWeight' => '{semantic.font-weight.heading}',
+								],
+							],
+						],
+					],
+				],
+			],
+		];
+
+		$this->store->save_document( (string) wp_json_encode( $document ) );
 	}
 
 	/**

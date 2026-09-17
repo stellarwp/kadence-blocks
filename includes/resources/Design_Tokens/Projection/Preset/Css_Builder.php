@@ -48,6 +48,11 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Version;
  *      the ONLY layer that renders a state binding — the block-default-CSS projector skips them, because
  *      that layer renders only the $default preset and so would put a state rule on every instance of the
  *      block whether or not a preset asked for one. See {@see Binding::CSS_STATE}.
+ *   4. Per (block, named preset) GAP rules — ":where(.wp-block-<block>).kb-preset--<preset>" — carrying a
+ *      real "<css_prop>: var(<canonical preset var>)" declaration for each property the block's $default
+ *      leaves unset. The block-default layer declares only what the $default resolves, and that
+ *      declaration is what the retarget in layer 2 is consumed through; a property the $default leaves to
+ *      the theme (the Advanced Text's type) would otherwise have no consumer. See default_gap_rules().
  *
  * Scoping is per (block, preset): the same preset name on two blocks ("ghost" on a Button and a Row) gets
  * its own qualified rule, so values never collide. Both named presets and the "$default" preset carry
@@ -435,7 +440,9 @@ final class Css_Builder {
 						'value'     => $value,
 						'fallback'  => $fallback,
 						'dimension' => $dimension,
-						'prop'      => null,
+						// Kept for the gap rule: a css_prop the $default leaves unset has no block-default
+						// declaration to consume this retarget, so the scoped rule declares it itself.
+						'prop'      => $binding->css_prop(),
 						'state'     => null,
 						'editor'    => null,
 					];
@@ -696,6 +703,8 @@ final class Css_Builder {
 					$this->with_desktop_base( $properties ),
 					$editor
 				);
+
+				$css .= $this->default_gap_rules( $block, (string) $preset, $data, $preset_class, $editor );
 			}
 		}
 
@@ -801,6 +810,86 @@ final class Css_Builder {
 	}
 
 	/**
+	 * Emit, for one named preset, the declarations the block's `$default` leaves to the theme.
+	 *
+	 * The block-default layer writes `<css_prop>:var(--<css_var>,…)` only for a property the `$default`
+	 * resolves, and that declaration is what a selected preset's var retarget is consumed through. A
+	 * property the `$default` deliberately leaves unset — the Advanced Text's font size, line height and
+	 * weight, so an unset heading keeps the theme's own per-tag type — has no such consumer, and a named
+	 * preset that sets it would retarget a variable nothing reads. This rule declares exactly those
+	 * properties outright, so a preset can set what the Default leaves alone.
+	 *
+	 * The `$default` itself never gets one: whatever it resolves the block-default layer declares, and
+	 * whatever it leaves unset is the theme's.
+	 *
+	 * @since TBD
+	 *
+	 * @param string                                                                                                                   $block        The block name.
+	 * @param string                                                                                                                   $preset       The named preset's slug.
+	 * @param array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:string, dimension:bool, prop:?string, state:?string, editor:?string}>>} $data         The block's collected presets.
+	 * @param string                                                                                                                   $preset_class The preset class selector, leading dot included.
+	 * @param bool                                                                                                                     $editor       Whether to target the block's editor markup.
+	 *
+	 * @return string The rule, or '' when the Default covers every property the preset sets.
+	 */
+	private function default_gap_rules( string $block, string $preset, array $data, string $preset_class, bool $editor ): string {
+		if ( $preset === $data['default'] ) {
+			return '';
+		}
+
+		$covered      = $data['presets'][ $data['default'] ] ?? [];
+		$declarations = [];
+
+		foreach ( $data['presets'][ $preset ] as $property => $info ) {
+			if ( $info['target'] === null || $info['prop'] === null || isset( $covered[ $property ] ) ) {
+				continue;
+			}
+
+			$declarations[] = $info['prop'] . ':var(' . $this->preset_var( $block, $preset, (string) $property ) . ')';
+		}
+
+		if ( $declarations === [] ) {
+			return '';
+		}
+
+		return $this->default_gap_scope( $block, $data['selector'], $preset_class, $editor ) . '{' . implode( ';', $declarations ) . ';}';
+	}
+
+	/**
+	 * The selector a gap rule is emitted under, weighted to sit between the theme and the block.
+	 *
+	 * `:where(<block>)<preset-class>` costs one class: above a theme's element rule (`h2`) and below the
+	 * block's own per-instance rule, which spends two classes and up. Wrapping the preset class too would
+	 * cost nothing and lose to the theme; leaving the block class unwrapped would tie the per-instance rule
+	 * and let source order decide.
+	 *
+	 * In the editor the block class sits on the useBlockProps() wrapper rather than on the styled element,
+	 * so a block declaring an `editor_selector` has the rule re-targeted at that element, under
+	 * `.editor-styles-wrapper` so it still outranks the theme's `.editor-styles-wrapper h2` — the same move
+	 * the block-default layer's editor build makes. The preset class is added to the block class inside the
+	 * `:where()` (the wrapper carries both), and the rest of the `editor_selector` follows unchanged.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $block        The block name, for its declared `editor_selector`.
+	 * @param string $selector     The block's `.wp-block-*` selector.
+	 * @param string $preset_class The preset class selector, leading dot included.
+	 * @param bool   $editor       Whether to target the block's editor markup.
+	 *
+	 * @return string
+	 */
+	private function default_gap_scope( string $block, string $selector, string $preset_class, bool $editor ): string {
+		$bindings        = $this->registry->for_block( $block );
+		$editor_selector = $bindings !== null ? $bindings->editor_selector : null;
+
+		if ( $editor && $editor_selector !== null && strpos( $editor_selector, $selector ) === 0 ) {
+			return '.editor-styles-wrapper :where(' . $selector . $preset_class . ')' . substr( $editor_selector, strlen( $selector ) );
+		}
+
+		return ':where(' . $selector . ')' . $preset_class;
+	}
+
+	/**
 	 * Build the `--global-<slot>:var(<canonical preset var>);` declarations for one preset's properties.
 	 *
 	 * @since TBD
@@ -859,7 +948,9 @@ final class Css_Builder {
 		$by_suffix = [];
 
 		foreach ( $properties as $property => $info ) {
-			if ( $info['prop'] === null ) {
+			// A retarget entry now carries its css_prop too (for the gap rule); only a state entry, which
+			// has no target, is a state rule.
+			if ( $info['target'] !== null || $info['prop'] === null ) {
 				continue;
 			}
 

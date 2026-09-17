@@ -18,13 +18,15 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
  * open to '' on its own, so one broken layer never suppresses the others. Only the single active library is
  * emitted: the token-var and preset builders each project the active library's canonical vars, unchanged.
  *
- * `editor_css()` equals `css()` for the context-independent projectors (token vars, preset) — their output
- * carries no dependency on the editor's markup shape. It differs only for the block-default projector, whose
- * editor build re-targets a block's rule at its editor-rendered element (e.g. `.editor-styles-wrapper
- * .wp-block-kadence-advancedheading .kadence-advancedheading-text` instead of the front-end
- * `.wp-block-kadence-advancedheading`) for blocks whose `useBlockProps()` wrapper div is not the element the
- * bindings style. Calling `editor_css()` here rather than `css()` is what gives a live re-injection (a token
- * change applied with no page reload) the same selector the editor's own page-load enqueue used.
+ * `editor_css()` equals `css()` for output that carries no dependency on the editor's markup shape — the
+ * token vars, and the preset projector's var retargets. It differs for the block-default projector, and for
+ * the preset projector's gap rules (the declarations a named preset makes outright where the `$default`
+ * leaves a property to the theme): both re-target a block's rule at its editor-rendered element (e.g.
+ * `.editor-styles-wrapper .wp-block-kadence-advancedheading .kadence-advancedheading-text` instead of the
+ * front-end `.wp-block-kadence-advancedheading`) for blocks whose `useBlockProps()` wrapper div is not the
+ * element the bindings style, which those blocks name with an `editor_selector`. Calling `editor_css()`
+ * here rather than `css()` is what gives a live re-injection (a token change applied with no page reload)
+ * the same selector the editor's own page-load enqueue used.
  *
  * The projectors are gathered from the {@see Css_Projectors} collection, which each CSS projector's own
  * provider adds to — so a new editor-CSS projector joins from its own module, with no change to this class or
