@@ -1056,13 +1056,17 @@ return [
 			// until a value is set, so the whole set fits this mechanism directly with no per-block
 			// adapter and no build_css()/SCSS/editor-JS change. Typography (letter-spacing,
 			// text-transform) uses the heading's own tokens, kept separate from the form-control family
-			// the Button uses; font-size/line-height/font-weight are the heading's own re-skin seeds.
-			// Font FAMILY is deliberately absent: a family is a favorite, not a token, so a heading
-			// inherits the theme's font until someone picks one on the block itself.
-			// The rule also overrides a theme's per-tag element styles (h1/h2/p,
-			// specificity 0,0,1), which is what lets the design-system defaults "re-skin" an unset
-			// heading. A per-instance value renders at higher specificity (the `.kt-adv-heading<uid>`
-			// instance selector) and still wins.
+			// the Button uses.
+			// The block-default rule outranks a theme's per-tag element styles (h1/h2/p, specificity
+			// 0,0,1). That is wanted for color, spacing and borders, and exactly why the shipped Default
+			// preset leaves font-size, line-height and font-weight UNSET: a declaration for those would
+			// change every existing heading on update, from the theme's own h2 size and weight to one
+			// value for every tag. They stay the theme's until a preset sets them — the Default in the
+			// Style Library, which then declares them for every unset heading, or a named preset, which
+			// the preset projector declares outright for headings on it. Font FAMILY is treated the same
+			// way and is additionally absent from the block-default rule altogether (see below).
+			// A per-instance value renders at higher specificity (the `.kt-adv-heading<uid>` instance
+			// selector) and still wins.
 			//
 			// In the editor, useBlockProps() puts `.wp-block-kadence-advancedheading` on a wrapper <div>, not
 			// on the heading element the bindings above are meant to style — the real heading is a descendant
@@ -1121,6 +1125,9 @@ return [
 				// per-breakpoint preset override has nothing to write through for these two. A preset can still
 				// set their base value. Teaching the editor to address a packed device slot belongs with the
 				// Advanced Text preset screen, where there is a control to verify it against.
+				//
+				// fontSize, fontHeight and fontWeight keep their css_prop so a Default that sets them declares
+				// them for every unset heading; the shipped Default does not, so nothing is declared until then.
 				'fontSize'      => [
 					'token'        => 'semantic.font-size.heading',
 					'css_prop'     => 'font-size',
