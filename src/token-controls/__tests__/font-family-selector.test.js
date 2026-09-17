@@ -28,7 +28,8 @@ jest.mock('@wordpress/components', () => ({
 		</>
 	),
 	Spinner: () => <span className="components-spinner" />,
-	Tooltip: ({ children }) => children,
+	// The tooltip text lands on a wrapper so a test can read which explanation the trigger carries.
+	Tooltip: ({ text, children }) => <span data-tooltip={text}>{children}</span>,
 }));
 
 // The popover is captured rather than rendered: these tests assert which tab the field ASKS for, and
@@ -350,6 +351,28 @@ describe('FontFamilySelector stale theme reference', () => {
 		const trigger = renderSelector({ value: themeRef, catalogOptions: [] });
 
 		expect(trigger.getAttribute('label')).toContain('no longer active');
+	});
+
+	/**
+	 * The wrapping tooltip explains the missing theme, not the deleted-token case the atom defaults to.
+	 *
+	 * @return {void}
+	 */
+	it('explains the missing theme in the tooltip', () => {
+		const trigger = renderSelector({ value: themeRef, catalogOptions: [] });
+
+		expect(trigger.parentElement.getAttribute('data-tooltip')).toContain('no longer active');
+	});
+
+	/**
+	 * A plain family, stale or not, carries no wrapping tooltip; the trigger's own name is enough.
+	 *
+	 * @return {void}
+	 */
+	it('adds no tooltip wrapper for a plain family', () => {
+		const trigger = renderSelector({ value: 'Inter', catalogOptions: [] });
+
+		expect(trigger.parentElement.hasAttribute('data-tooltip')).toBe(false);
 	});
 
 	/**
