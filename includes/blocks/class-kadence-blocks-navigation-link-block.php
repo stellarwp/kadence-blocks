@@ -698,7 +698,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 
 			$overlay_html    = '<div class="kb-nav-link-image-overlay" aria-hidden="true"></div>';
 			$container_start = '<div class="kadence-navigation-link-image-inner-intrinsic-container">
-				<div class="kadence-navigation-link-image-intrinsic' . ( 'svg+xml' == $attributes['mediaImage'][0]['subtype'] ? ' kb-navigation-link-image-type-svg' : '' ) . ( $has_ratio ? ' kb-navigation-link-image-ratio kb-navigation-link-image-ratio-' . $attributes['imageRatio'] : '' ) . '">
+				<div class="kadence-navigation-link-image-intrinsic' . ( 'svg+xml' == $attributes['mediaImage'][0]['subtype'] ? ' kb-navigation-link-image-type-svg' : '' ) . ( $has_ratio ? ' kb-navigation-link-image-ratio kb-navigation-link-image-ratio-' . esc_attr( $attributes['imageRatio'] ) : '' ) . '">
 					<div class="kadence-navigation-link-image-inner-intrinsic">';
 			$container_end   = '</div>' . $overlay_html . '</div></div>';
 
@@ -729,7 +729,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			if ( $highlight_with_title ) {
 				$link_classes[] = 'highlight-with-title';
 			}
-			$highlight_label = '<span class="link-highlight-label"><span class="link-highlight-label-text">' . $attributes['highlightLabel'] . '</span>' . $hl_icon . '</span>';
+			$highlight_label = '<span class="link-highlight-label"><span class="link-highlight-label-text">' . wp_kses_post( $attributes['highlightLabel'] ) . '</span>' . $hl_icon . '</span>';
 		}
 
 		$title_html = ! empty( $media ) || ! empty( $attributes['description'] ) ? '<span class="kb-nav-item-title-wrap">' : '';
@@ -738,7 +738,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		}
 		$title_html .= ! empty( $attributes['description'] ) || ! empty( $media ) || ( $has_highlight_label && $highlight_with_title ) ? '<span class="kb-nav-label-content">' . $title . '</span>' : $title;
 		$title_html .= $media;
-		$title_html .= ! empty( $attributes['description'] ) ? '<span class="kb-nav-label-description">' . $attributes['description'] . '</span>' : '';
+		$title_html .= ! empty( $attributes['description'] ) ? '<span class="kb-nav-label-description">' . wp_kses_post( $attributes['description'] ) . '</span>' : '';
 		// $title_html .= $has_children ? '<span class="kb-nav-dropdown-toggle">' . $down_arrow_icon . '</span>' : '';
 		$title_html .= ! empty( $media ) || ! empty( $attributes['description'] ) ? '</span>' : '';
 		if ( ! $highlight_with_title ) {
