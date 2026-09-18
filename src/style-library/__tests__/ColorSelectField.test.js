@@ -10,7 +10,7 @@ import { createRoot } from 'react-dom/client';
  */
 import { ColorSelectField } from '../components/molecules/fields/ColorSelectField';
 import { resolveLiteral, toControlValue, toStoredValue } from '../helpers/color-values';
-import { getDesignTokensFeed } from '../helpers/tokens';
+import { getDesignTokensFeed, resolvedTokenValue } from '../helpers/tokens';
 
 const NAMESPACE = 'kb-design-tokens/v1';
 const SLUG = 'default';
@@ -43,6 +43,7 @@ const LISTING = {
 // cares about the namespace/slug the field hands the store selector.
 jest.mock('../helpers/tokens', () => ({
 	getDesignTokensFeed: jest.fn(),
+	resolvedTokenValue: jest.fn(),
 }));
 
 let capturedProps = null;
@@ -82,6 +83,7 @@ beforeEach(() => {
 	capturedProps = null;
 	mockGetPaletteListing.mockReturnValue(LISTING);
 	getDesignTokensFeed.mockReturnValue({ slug: SLUG, rest: { namespace: NAMESPACE } });
+	resolvedTokenValue.mockImplementation((id) => (id === 'semantic.color.button-text' ? '#ffffff' : ''));
 	global.IS_REACT_ACT_ENVIRONMENT = true;
 });
 
@@ -232,5 +234,57 @@ describe('ColorSelectField', () => {
 		render({ field: { label: 'Text', readOnly: true } });
 
 		expect(capturedProps.disabled).toBe(true);
+	});
+
+	/**
+	 * The Style Library page carries no token CSS variables, so the control gets the library's
+	 * resolved literals to paint an alias the palette groups do not list.
+	 *
+	 * @return {void}
+	 */
+	it('hands the control the library resolver for aliases outside the palette', () => {
+		render({ value: 'semantic.color.button-text' });
+
+		expect(capturedProps.resolveAlias).toBe(resolvedTokenValue);
+		expect(capturedProps.resolveAlias('semantic.color.button-text')).toBe('#ffffff');
+		expect(capturedProps.resolveAlias('semantic.color.nowhere')).toBe('');
+	});
+
+	/**
+	 * A field default is bridged through the same bare-id-to-alias translation the value uses, so the
+	 * control can show it muted when the row stores nothing.
+	 *
+	 * @return {void}
+	 */
+	it('bridges a bare token id default into a bracket alias', () => {
+		render({ field: { label: 'Text', defaultValue: 'semantic.color.button-text' }, value: '' });
+
+		expect(capturedProps.defaultValue).toBe('{semantic.color.button-text}');
+	});
+
+	/**
+	 * A field with no default passes an empty default, so the control shows its bare unset state.
+	 *
+	 * @return {void}
+	 */
+	it('passes an empty default when the field declares none', () => {
+		render({ value: '' });
+
+		expect(capturedProps.defaultValue).toBe('');
+	});
+
+	/**
+	 * Clear writes the row back to unset, so a picked color can return to the default the row shows
+	 * muted. Without it a preset row that no binding indicator resets has no way back to empty.
+	 *
+	 * @return {void}
+	 */
+	it('clears the row back to unset', () => {
+		const onChange = jest.fn();
+
+		render({ value: 'semantic.color.accent.main', onChange });
+		capturedProps.onClear();
+
+		expect(onChange).toHaveBeenCalledWith('');
 	});
 });

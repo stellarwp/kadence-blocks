@@ -148,7 +148,7 @@ describe('ROWLAYOUT_PRESET', () => {
 		const types = panels.flatMap((panel) => panel.fields.map((field) => field.type));
 
 		expect(paths).toEqual(['tokens.background', 'tokens.borderRadius']);
-		expect(types).toEqual(['token-color-select', 'radius']);
+		expect(types).toEqual(['color-select', 'radius']);
 
 		// Every type the schema names must be one the registry can render.
 		types.forEach((type) => expect(FIELD_TYPES).toHaveProperty(type));
@@ -157,6 +157,19 @@ describe('ROWLAYOUT_PRESET', () => {
 
 		expect(radius.tokenType).toBe('dimension');
 		expect(radius.role).toBe('radius');
+	});
+
+	/**
+	 * The Background row falls back to the semantic row background the Default preset binds, so a row
+	 * that stores nothing previews the color a fresh row really renders.
+	 *
+	 * @return {void}
+	 */
+	it('declares the semantic row background as the Background default', () => {
+		const background = ROWLAYOUT_PRESET.schemaFor().panels[0].fields[0];
+
+		expect(background.path).toBe('tokens.background');
+		expect(background.defaultValue).toBe('semantic.color.rowlayout-bg');
 	});
 
 	/**
@@ -175,7 +188,7 @@ describe('ROWLAYOUT_PRESET', () => {
 
 	/**
 	 * Background is a single non-responsive picker: the row's background attribute has no per-device
-	 * counterpart, and `token-color-select` carries no breakpoint switcher to drive one, so marking it
+	 * counterpart, and `color-select` carries no breakpoint switcher to drive one, so marking it
 	 * responsive would write an override its own UI could never read back.
 	 *
 	 * @return {void}

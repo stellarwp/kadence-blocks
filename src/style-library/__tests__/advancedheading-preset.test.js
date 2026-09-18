@@ -241,6 +241,35 @@ describe('HEADING_PRESET', () => {
 	});
 
 	/**
+	 * Every color row opens the shared palette popover, never the older token dropdown, so the three
+	 * color rows on this screen look and behave like the Button screen's.
+	 *
+	 * @return {void}
+	 */
+	it('offers every color row through the shared color picker', () => {
+		const colorFields = fields().filter((field) =>
+			['tokens.color', 'tokens.background', 'tokens.borderColor'].includes(field.path)
+		);
+
+		expect(colorFields).toHaveLength(3);
+		colorFields.forEach((field) => expect(field.type).toBe('color-select'));
+	});
+
+	/**
+	 * Each color row falls back to the semantic token the Default preset binds for it, so a preset that
+	 * stores nothing previews the colors a fresh heading really renders.
+	 *
+	 * @return {void}
+	 */
+	it('declares the Default preset colors as the color row defaults', () => {
+		const byPath = Object.fromEntries(fields().map((field) => [field.path, field]));
+
+		expect(byPath['tokens.color'].defaultValue).toBe('semantic.color.text');
+		expect(byPath['tokens.background'].defaultValue).toBe('semantic.color.heading-bg');
+		expect(byPath['tokens.borderColor'].defaultValue).toBe('semantic.color.border');
+	});
+
+	/**
 	 * A property is a token picker when the design system has a scale for it and a keyword select when it
 	 * does not. `border-style`, `text-transform` and `font-weight` have no primitive layer — their
 	 * semantic groups hold one entry per usage, not a set of choices — so a picker would show an empty

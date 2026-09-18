@@ -723,6 +723,25 @@ describe('BorderControl row anatomy', () => {
 		});
 		expect(receivedUnlinked).toEqual(['top', 'right', 'bottom', 'left']);
 	});
+
+	/**
+	 * `defaultColor` reaches `renderColor` as `defaultValue`, so a caller's swatch can show the
+	 * color the axis falls back to while unset, the way the width `TokenSelector` shows its own.
+	 *
+	 * @return {void}
+	 */
+	it('passes defaultColor through to renderColor as defaultValue', () => {
+		let received;
+		renderControl({
+			defaultColor: '{semantic.color.border}',
+			renderColor: (props) => {
+				received = props;
+				return null;
+			},
+		});
+
+		expect(received.defaultValue).toBe('{semantic.color.border}');
+	});
 });
 
 describe('BorderControl style picker', () => {
@@ -803,8 +822,8 @@ describe('BorderControl style picker', () => {
 	});
 
 	/**
-	 * The active option is marked `aria-checked`, matching the same `role="menuitemradio"` idiom
-	 * `TokenColorSelectField` already uses for its own token list.
+	 * The active option is marked `aria-checked`, the `role="menuitemradio"` idiom the Style Library's
+	 * own dropdown fields use for a single-choice list.
 	 *
 	 * @return {void}
 	 */

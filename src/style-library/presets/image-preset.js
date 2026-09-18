@@ -134,8 +134,9 @@ function renderPreview(row) {
  * Radius and padding are responsive because the block declares per-device attributes for both and its
  * own controls are per-device, so a preset that could name only one value for every breakpoint could
  * not reproduce a look a site owner had already built by hand. Background is a single non-responsive
- * picker (no per-device attribute), and shadow is non-responsive because `BoxShadowField` carries no
- * breakpoint switcher.
+ * picker (no per-device attribute) that opens the same palette popover the block editor's own color
+ * controls open and falls back to the Default preset's token when unset; shadow is non-responsive
+ * because `BoxShadowField` carries no breakpoint switcher.
  *
  * The image binds `border` (color) and `borderWidth` as well, and neither is offered here. Both are
  * unreachable in practice, and the reason is worth stating because it is not obvious from the
@@ -159,9 +160,13 @@ function schemaFor() {
 				title: __('Color', 'kadence-blocks'),
 				fields: [
 					{
-						type: 'token-color-select',
+						type: 'color-select',
 						path: 'tokens.background',
 						label: __('Background', 'kadence-blocks'),
+						// The semantic background the Default preset binds (see the baseline's
+						// `presets["kadence/image"]`), so a row that stores nothing previews the color a fresh
+						// image really renders — transparent, shown as a blank swatch labeled "Default".
+						defaultValue: 'semantic.color.image-bg',
 					},
 				],
 			},

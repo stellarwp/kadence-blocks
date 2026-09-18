@@ -8,6 +8,10 @@
  * with `ColorPopover`, the popover body that shows a grouped Style Library tab (Accent/Contrast/
  * Background/Notices) and a Custom tab for raw colors. The popover lives in `ColorPopover` because
  * `ColorSwatchControl` opens the same one behind a different, compact trigger.
+ *
+ * The trigger paints a bound alias the groups do not list (a preset's out-of-palette token) through
+ * `unlistedEntry`, and shows `defaultValue`'s swatch with a muted "Default" label when the slot is
+ * unset.
  */
 
 /**
@@ -21,7 +25,7 @@ import { Dropdown } from '@wordpress/components';
 import { BindingIndicator } from '../atoms/BindingIndicator';
 import { ColorSwatch } from '../atoms/ColorSwatch';
 import { ColorPopover } from '../molecules/ColorPopover';
-import { colorSelection } from '../helpers/color-selection';
+import { shownColorSelection } from '../helpers/color-selection';
 import { isTokenAlias } from '../helpers/token-summary';
 import '../styles/token-controls.scss';
 
@@ -48,6 +52,17 @@ import '../styles/token-controls.scss';
  *                                           Custom tab from a currently-bound token entry, letting
  *                                           the block-editor adapter read the token's resolved
  *                                           value under the block's own pinned palette scope.
+ * @param {?string}   [props.defaultValue]  What the slot falls back to when unset — a bracket alias
+ *                                           or literal. Display-only: the trigger shows its swatch and
+ *                                           a muted "Default", while the popover keeps seeing the real
+ *                                           (empty) value so nothing reads as picked and Clear stays
+ *                                           disabled. The `kb-color-control__value--default` class it
+ *                                           adds is a state hook for hosts and tests, not a style of
+ *                                           its own.
+ * @param {?Function} [props.resolveAlias]  `(id) => string` — the host's resolved literal for a bare
+ *                                           token id the groups do not list, or ''. Omit on a page that
+ *                                           has the token CSS custom properties; the swatch then paints
+ *                                           through `var(--kb-token--…)`.
  * @param {boolean}   [props.disabled]      Whether the control is read-only.
  *
  * @since TBD
@@ -64,10 +79,19 @@ export function ColorControl({
 	onPick,
 	onCustom,
 	resolveLiteral,
+	resolveAlias = null,
+	defaultValue = '',
 	disabled = false,
 }) {
-	const selection = colorSelection(groups, value);
-	const { entry, selectedLabel } = selection;
+	const { selection, entry, shownValue, shownLabel, isDefault } = shownColorSelection(
+		groups,
+		value,
+		defaultValue,
+		resolveAlias
+	);
+	const valueClassName = isDefault
+		? 'kb-color-control__value kb-color-control__value--default'
+		: 'kb-color-control__value';
 
 	return (
 		<div className="kb-color-control">
@@ -84,9 +108,12 @@ export function ColorControl({
 							disabled={disabled}
 							onClick={onToggle}
 						>
-							<ColorSwatch entry={entry} value={!entry && !isTokenAlias(value) ? value : null} />
+							<ColorSwatch
+								entry={entry}
+								value={!entry && !isTokenAlias(shownValue) ? shownValue : null}
+							/>
 							<span className="kb-color-control__label">{label}</span>
-							{selectedLabel && <span className="kb-color-control__value">{selectedLabel}</span>}
+							{shownLabel && <span className={valueClassName}>{shownLabel}</span>}
 						</button>
 					)}
 					renderContent={({ onClose }) => (

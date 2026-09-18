@@ -62,6 +62,20 @@ jest.mock('../molecules/ColorPicker', () => ({
 	),
 }));
 
+// jsdom drops a `var()` background from an element's inline `style`, which leaves `style.background`
+// empty for a token-backed swatch. Matches `ColorControl.test.js`'s stand-in: it runs the real
+// `colorSwatchStyle` and exposes its result as `data-background` so a test can assert on the CSS
+// variable or resolved literal the swatch really paints with.
+jest.mock('../atoms/ColorSwatch', () => {
+	const { colorSwatchStyle } = jest.requireActual('../atoms/ColorSwatch');
+
+	return {
+		ColorSwatch: ({ entry, value }) => (
+			<span className="kb-color-swatch" data-background={colorSwatchStyle(entry, value).background} />
+		),
+	};
+});
+
 jest.mock('../styles/token-controls.scss', () => ({}), { virtual: true });
 
 const GROUPS = [
@@ -144,6 +158,86 @@ describe('ColorSwatchControl', () => {
 	it('names the selected color in the accessible name', () => {
 		render({ value: '{semantic.color.accent.main}' });
 
+		expect(container.querySelector('.kb-color-swatch-control__button').getAttribute('aria-label')).toBe(
+			'Top Border Color: Main'
+		);
+	});
+
+	/**
+	 * An alias the groups do not list (the Default preset's `semantic.color.border` binding, outside the
+	 * palette groups) paints the swatch through the token's CSS custom property rather than leaking the
+	 * raw bracket-alias string into `background`, which is not a valid CSS color.
+	 *
+	 * @return {void}
+	 */
+	it("renders an out-of-group alias as the token's CSS variable swatch", () => {
+		render({ value: '{semantic.color.border}' });
+
+		expect(container.querySelector('.kb-color-swatch').getAttribute('data-background')).toBe(
+			'var(--kb-token--semantic--color--border)'
+		);
+	});
+
+	/**
+	 * A host without token CSS variables on the page hands the control a resolver, and the swatch
+	 * paints with the resolved literal instead.
+	 *
+	 * @return {void}
+	 */
+	it('renders an out-of-group alias with the literal resolveAlias returns', () => {
+		render({
+			value: '{semantic.color.border}',
+			resolveAlias: (id) => (id === 'semantic.color.border' ? 'rgb(226, 232, 240)' : ''),
+		});
+
+		expect(container.querySelector('.kb-color-swatch').getAttribute('data-background')).toBe('rgb(226, 232, 240)');
+	});
+
+	/**
+	 * An unset slot with a `defaultValue` paints the default's swatch, and the accessible name says
+	 * "Default" the way `ColorControl`'s muted value text does — the trigger has no visible text to
+	 * carry it otherwise.
+	 *
+	 * @return {void}
+	 */
+	it('shows the default swatch and names it Default while unset', () => {
+		render({
+			value: '',
+			defaultValue: '{semantic.color.border}',
+			resolveAlias: (id) => (id === 'semantic.color.border' ? 'rgb(226, 232, 240)' : ''),
+		});
+
+		expect(container.querySelector('.kb-color-swatch').getAttribute('data-background')).toBe('rgb(226, 232, 240)');
+		expect(container.querySelector('.kb-color-swatch-control__button').getAttribute('aria-label')).toBe(
+			'Top Border Color: Default'
+		);
+	});
+
+	/**
+	 * A default is display-only: the popover still sees the real (empty) value, so the Clear row
+	 * stays disabled and no group row reads as picked.
+	 *
+	 * @return {void}
+	 */
+	it('does not hand the defaultValue to the popover as the current value', () => {
+		render({ value: '', defaultValue: '{semantic.color.border}', onClear: jest.fn() });
+
+		expect(container.querySelector('.kb-color-control__clear').disabled).toBe(true);
+	});
+
+	/**
+	 * A set value wins over the default: the swatch and the accessible name follow the selection.
+	 *
+	 * @return {void}
+	 */
+	it('shows the selected color over the default once set', () => {
+		render({
+			value: '{semantic.color.accent.main}',
+			defaultValue: '{semantic.color.border}',
+			resolveAlias: (id) => (id === 'semantic.color.border' ? 'rgb(226, 232, 240)' : ''),
+		});
+
+		expect(container.querySelector('.kb-color-swatch').getAttribute('data-background')).toBe('#3182ce');
 		expect(container.querySelector('.kb-color-swatch-control__button').getAttribute('aria-label')).toBe(
 			'Top Border Color: Main'
 		);

@@ -176,13 +176,18 @@ function schemaFor(tab) {
 	const isHover = tab === 'hover';
 	const textPath = isHover ? 'tokens.button-text-hover' : 'tokens.button-text';
 	const bgPath = isHover ? 'tokens.button-bg-hover' : 'tokens.button-bg';
+	// The semantic pair the Default preset binds (see the baseline's `presets["kadence/singlebtn"]`),
+	// so a row that stores nothing previews the color a fresh button really renders — the same
+	// posture Radius/Border/Padding/Margin take below with their literal defaults.
+	const textDefault = isHover ? 'semantic.color.button-text-hover' : 'semantic.color.button-text';
+	const bgDefault = isHover ? 'semantic.color.button-bg-hover' : 'semantic.color.button-bg';
 
 	const colorPanel = {
 		id: 'color',
 		title: __('Color', 'kadence-blocks'),
 		fields: [
-			{ type: 'color-select', path: textPath, label: __('Text', 'kadence-blocks') },
-			{ type: 'color-select', path: bgPath, label: __('Background', 'kadence-blocks') },
+			{ type: 'color-select', path: textPath, label: __('Text', 'kadence-blocks'), defaultValue: textDefault },
+			{ type: 'color-select', path: bgPath, label: __('Background', 'kadence-blocks'), defaultValue: bgDefault },
 		],
 	};
 
@@ -215,11 +220,15 @@ function schemaFor(tab) {
 				// living at this path.
 				path: 'tokens.button-border',
 				label: __('Border', 'kadence-blocks'),
-				// `BorderControl` only takes one `defaultValue` for its width axis (color/style have no
-				// equivalent fallback prop) — `semantic.border-width.default`'s shipped resolution, the
-				// value `var(--kb-btn-border-width)` computes to today. Shown muted when the field is
-				// unset, the same way Radius/Padding/Margin's `defaultValue` above are.
+				// `BorderControl`'s `defaultValue` covers its width axis only (style has no fallback prop)
+				// — `semantic.border-width.default`'s shipped resolution, the value
+				// `var(--kb-btn-border-width)` computes to today. Shown muted when the field is unset,
+				// the same way Radius/Padding/Margin's `defaultValue` above are.
 				defaultValue: '1px',
+				// The color the Default preset binds for the border. When the row stores nothing the swatch
+				// shows this color and the row names it "Default" — the same fallback the Text/Background
+				// rows show above.
+				defaultColor: 'semantic.color.border',
 			},
 			{
 				type: 'box-shadow',

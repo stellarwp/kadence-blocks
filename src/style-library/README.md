@@ -103,7 +103,9 @@ piece that knows about copy.
 A settings panel renders from a schema, not from hand-placed components: `{ panels: [{ id, title,
 fields: [{ type, path, label }] }] }`. `constants/field-types.js` maps a `type` to its component and
 `organisms/SettingsForm` walks the schema. Adding a control means registering a type and referencing
-it from a schema — no page changes.
+it from a schema — no page changes. Color rows use `color-select`, the adapter for `token-controls`'
+`ColorControl`; a field's `defaultValue` (a bare token id) is what the row shows, muted and labeled
+"Default", when the preset stores nothing.
 
 Values are read and written by dot path, so a field never knows where in the draft it lives.
 Responsive-capable types additionally carry a breakpoint: see `readResponsiveSlot` /

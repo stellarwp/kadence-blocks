@@ -116,7 +116,7 @@ describe('COLUMN_PRESET', () => {
 		const types = panels.flatMap((panel) => panel.fields.map((field) => field.type));
 
 		expect(paths).toEqual(['tokens.background', 'tokens.borderRadius']);
-		expect(types).toEqual(['token-color-select', 'radius']);
+		expect(types).toEqual(['color-select', 'radius']);
 
 		// Every type the schema names must be one the registry can render.
 		types.forEach((type) => expect(FIELD_TYPES).toHaveProperty(type));
@@ -141,7 +141,7 @@ describe('COLUMN_PRESET', () => {
 		const types = panels.flatMap((panel) => panel.fields.map((field) => field.type));
 
 		expect(paths).toEqual(['tokens.backgroundHover', 'tokens.borderHoverRadius']);
-		expect(types).toEqual(['token-color-select', 'radius']);
+		expect(types).toEqual(['color-select', 'radius']);
 		expect(panels[1].fields[0].responsive).toBe(true);
 	});
 
@@ -169,6 +169,23 @@ describe('COLUMN_PRESET', () => {
 	});
 
 	/**
+	 * The Background row falls back to the semantic section background the block binds for its tab:
+	 * the Default preset's resting token on Normal, the block's hover binding on Hover, so a row that
+	 * stores nothing previews the color a fresh section really renders in that state.
+	 *
+	 * @return {void}
+	 */
+	it('declares the semantic section background of each tab as the Background default', () => {
+		const normal = COLUMN_PRESET.schemaFor('normal', { tokens: {} }, { values: {} }).panels[0].fields[0];
+		const hover = COLUMN_PRESET.schemaFor('hover', { tokens: {} }, { values: {} }).panels[0].fields[0];
+
+		expect(normal.path).toBe('tokens.background');
+		expect(normal.defaultValue).toBe('semantic.color.column-bg');
+		expect(hover.path).toBe('tokens.backgroundHover');
+		expect(hover.defaultValue).toBe('semantic.color.column-bg-hover');
+	});
+
+	/**
 	 * The block's own radius control is per-device (`tabletBorderRadius`/`mobileBorderRadius`, both
 	 * declared on the binding), so the preset field has to be too — otherwise a preset could not
 	 * reproduce a look a site owner had already built with that control.
@@ -184,7 +201,7 @@ describe('COLUMN_PRESET', () => {
 
 	/**
 	 * Background is a single non-responsive picker: the section's background attribute has no per-device
-	 * counterpart, and `token-color-select` carries no breakpoint switcher to drive one, so marking it
+	 * counterpart, and `color-select` carries no breakpoint switcher to drive one, so marking it
 	 * responsive would write an override its own UI could never read back.
 	 *
 	 * @return {void}

@@ -9,6 +9,7 @@ import { createRoot } from 'react-dom/client';
  * Internal dependencies
  */
 import { PICKABLE_TOKENS_GLOBAL } from '../constants';
+import { resolvedTokenValue } from '../helpers/tokens';
 
 // Stubs, not the real controls: `BorderControl`/`BoxShadowControl` render a deep tree of pickers and
 // popovers that have nothing to do with what this suite is after. Standing in for them exposes
@@ -335,7 +336,9 @@ describe('BorderField', () => {
 
 	/**
 	 * The color sub-field is the shared compact swatch control, so a border's color opens the same
-	 * grouped Style Library / Custom popover every other color control opens.
+	 * grouped Style Library / Custom popover every other color control opens. It is handed the
+	 * library resolver as `resolveAlias`, since this page enqueues no token CSS custom properties for
+	 * the swatch to paint an out-of-group alias through.
 	 *
 	 * @return {void}
 	 */
@@ -353,6 +356,35 @@ describe('BorderField', () => {
 		const element = latestBorderControlProps.renderColor({ value: '', onChange: jest.fn(), label: null });
 
 		expect(element.type.name).toBe('ColorSwatchControl');
+		expect(element.props.resolveAlias).toBe(resolvedTokenValue);
+	});
+
+	/**
+	 * The field's `defaultColor` — a bare token id, like every value this host stores — reaches the
+	 * swatch control bridged into the bracket alias it matches on, and stays empty when the field
+	 * declares none.
+	 *
+	 * @return {void}
+	 */
+	it('bridges field.defaultColor into the ColorSwatchControl defaultValue', () => {
+		const mount = (field) => {
+			act(() => {
+				root.render(createElement(BorderField, { field, values: {}, onValueChange: jest.fn() }));
+			});
+
+			return latestBorderControlProps.renderColor({
+				value: '',
+				onChange: jest.fn(),
+				label: null,
+				defaultValue: latestBorderControlProps.defaultColor,
+			});
+		};
+
+		expect(
+			mount({ label: 'Border', path: 'tokens.button-border', defaultColor: 'semantic.color.border' }).props
+				.defaultValue
+		).toBe('{semantic.color.border}');
+		expect(mount({ label: 'Border', path: 'tokens.button-border' }).props.defaultValue).toBe('');
 	});
 
 	it('a width pick writes only the width path, a style change writes only the style path, color stays where it was', () => {

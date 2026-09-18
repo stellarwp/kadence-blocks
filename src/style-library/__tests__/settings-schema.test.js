@@ -125,6 +125,17 @@ describe('fieldComponentFor', () => {
 		expect(fieldComponentFor('nonsense')).toBeNull();
 	});
 
+	/**
+	 * The color picker vocabulary is one type: `color-select`, the shared palette popover. The older
+	 * token dropdown is gone so no schema can quietly register a second picker style.
+	 *
+	 * @return {void}
+	 */
+	it('offers exactly one color-picker type', () => {
+		expect(FIELD_TYPES).toHaveProperty('color-select');
+		expect(FIELD_TYPES).not.toHaveProperty('token-color-select');
+	});
+
 	it('resolves "border" and "box-shadow" to distinct, non-null components', () => {
 		expect(fieldComponentFor('border')).not.toBeNull();
 		expect(fieldComponentFor('box-shadow')).not.toBeNull();

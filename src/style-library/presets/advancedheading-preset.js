@@ -233,6 +233,9 @@ function renderPreview(row) {
  * ships, which is why this takes the draft — the two fields are linked, and offering a weight a family
  * does not have would render a synthesized face rather than the one the design system promised.
  *
+ * The three color rows open the same palette popover the block editor's own color controls open, and
+ * each falls back to the token the Default preset binds for it when the preset stores nothing.
+ *
  * The split between a token picker and a keyword select is not arbitrary: a property is offered as a
  * picker when the design system actually has a scale for it, and as a select when it does not.
  * `border-style`, `text-transform` and `font-weight` have no primitive layer at all — their semantic
@@ -263,11 +266,21 @@ function schemaFor(tab, values, feed) {
 				id: 'color',
 				title: __('Color', 'kadence-blocks'),
 				fields: [
-					{ type: 'token-color-select', path: 'tokens.color', label: __('Text', 'kadence-blocks') },
+					// Each row falls back to the semantic token the Default preset binds (see the baseline's
+					// `presets["kadence/advancedheading"]`), so a preset that stores nothing previews the
+					// colors a fresh heading really renders. The background is transparent, shown as a blank
+					// swatch labeled "Default".
 					{
-						type: 'token-color-select',
+						type: 'color-select',
+						path: 'tokens.color',
+						label: __('Text', 'kadence-blocks'),
+						defaultValue: 'semantic.color.text',
+					},
+					{
+						type: 'color-select',
 						path: 'tokens.background',
 						label: __('Background', 'kadence-blocks'),
+						defaultValue: 'semantic.color.heading-bg',
 					},
 				],
 			},
@@ -343,9 +356,11 @@ function schemaFor(tab, values, feed) {
 						defaultValue: HEADING_BORDER_WIDTH_FALLBACK,
 					},
 					{
-						type: 'token-color-select',
+						type: 'color-select',
 						path: 'tokens.borderColor',
 						label: __('Color', 'kadence-blocks'),
+						// The semantic border color the Default preset binds, matching the Button screen's border row.
+						defaultValue: 'semantic.color.border',
 					},
 					{
 						type: 'radius',

@@ -52,3 +52,75 @@ export function colorSelection(groups, value) {
 		initialTab: isTokenAlias(value) || isCssVariableReference(value) || !value ? 'style-library' : 'custom',
 	};
 }
+
+/**
+ * An entry for a bound alias that none of the control's groups list — e.g. a button preset's
+ * `{semantic.color.button-text}`, a token outside the Accent/Contrast/Background palette. The value
+ * is real and renders, so the trigger must show its color rather than a blank swatch; only its name
+ * is unavailable, hence the muted "Default" label every other token control uses for that case.
+ *
+ * With no `resolveAlias`, the entry carries no literal and `colorSwatchStyle` paints it through the
+ * token's CSS custom property (`var(--kb-token--…)`), which the block editor has on the page. A host
+ * page without those properties (the Style Library) passes `resolveAlias` and the entry carries the
+ * resolved literal instead.
+ *
+ * @param {*}         value          The current slot value.
+ * @param {?Function} [resolveAlias] `(id) => string` — the host's literal for a bare token id, or ''.
+ *
+ * @since TBD
+ *
+ * @return {?{id: string, label: string, value: string, alias: string}} The synthesized entry, or null
+ *         when the value is not a bracket alias.
+ */
+export function unlistedEntry(value, resolveAlias) {
+	if (!isTokenAlias(value)) {
+		return null;
+	}
+
+	const id = value.slice(1, -1);
+
+	return {
+		id,
+		label: __('Default', 'kadence-blocks'),
+		value: resolveAlias ? resolveAlias(id) || '' : '',
+		alias: value,
+	};
+}
+
+/**
+ * Derive what a color trigger shows once `defaultValue` is taken into account, next to the
+ * popover's own selection.
+ *
+ * The two are kept apart on purpose: the popover always works from the real slot value, so an
+ * unset slot keeps its Clear row disabled and marks no group row as picked, while only the trigger
+ * falls back to the default's swatch and names it "Default".
+ *
+ * @param {Array}     groups         `[{ id, label, swatches: [{ id, label, value, alias }] }]` — the
+ *                                    active palette's groups, host-resolved.
+ * @param {*}         value          The current slot value: a bracket alias or a raw literal.
+ * @param {*}         [defaultValue] What the slot falls back to when unset — a bracket alias or
+ *                                    literal, or '' for no fallback.
+ * @param {?Function} [resolveAlias] `(id) => string` — the host's literal for a bare token id the
+ *                                    groups do not list, or ''.
+ *
+ * @since TBD
+ *
+ * @return {{selection: Object, entry: ?Object, shownValue: *, shownLabel: ?string, isDefault: boolean}}
+ *         The popover's `colorSelection` for the real value; the entry the trigger's swatch paints
+ *         (listed, or synthesized through `unlistedEntry`); the value that entry stands for; the
+ *         label the trigger shows ("Default" while falling back); and whether it is falling back.
+ */
+export function shownColorSelection(groups, value, defaultValue = '', resolveAlias = null) {
+	const selection = colorSelection(groups, value);
+	const isDefault = !value && !!defaultValue;
+	const shown = isDefault ? colorSelection(groups, defaultValue) : selection;
+	const shownValue = isDefault ? defaultValue : value;
+
+	return {
+		selection,
+		entry: shown.entry || unlistedEntry(shownValue, resolveAlias),
+		shownValue,
+		shownLabel: isDefault ? __('Default', 'kadence-blocks') : shown.selectedLabel,
+		isDefault,
+	};
+}

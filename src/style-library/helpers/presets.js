@@ -622,30 +622,6 @@ export function overlayPresetRows(rows, itemId, draft, values, preview, breakpoi
 }
 
 /**
- * Resolve the color a `token-color-select` field's swatch should paint for the current value: the
- * matching pickable option's own resolved value first (it already carries the active library's
- * literal), then a direct lookup in the feed's resolved value map for an id outside the pool, then
- * `''` (the caller renders that as transparent).
- *
- * @param {Array<{id: string, value: string}>} options The pickable color options (`pickableTokensForType('color')`).
- * @param {Record<string, string>}             values  The feed's resolved value map.
- * @param {string}                              id      The field's current value (a bare token id).
- *
- * @since TBD
- *
- * @return {string} The resolved swatch color, or `''` when unresolvable.
- */
-export function resolveSwatchColor(options, values, id) {
-	const match = (options ?? []).find((option) => option.id === id);
-
-	if (match?.value) {
-		return match.value;
-	}
-
-	return values?.[id] ?? '';
-}
-
-/**
  * The preset name's own schema, rendered above the tabs rather than inside them.
  *
  * The name belongs to the preset, not to one of its states — a rename applies on Normal and Hover

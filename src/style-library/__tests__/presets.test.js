@@ -11,7 +11,6 @@ import {
 	nextPresetSlug,
 	getPresetProperties,
 	overlayPresetRows,
-	resolveSwatchColor,
 	presetNameSchema,
 	restingRadiusSlots,
 } from '../helpers/presets';
@@ -858,23 +857,6 @@ describe('overlayPresetRows', () => {
 		const next = overlayPresetRows(rows, 'primary', draft, values, BUTTON_PRESET.preview);
 
 		expect(next[1]).toBe(rows[1]);
-	});
-});
-
-describe('resolveSwatchColor', () => {
-	const options = [{ id: 'semantic.color.action-primary', value: '#3633e1' }];
-	const values = { 'semantic.color.action-primary': '#000000', 'primitive.color.gray-100': '#eeeeee' };
-
-	it("prefers the matching option's own resolved value", () => {
-		expect(resolveSwatchColor(options, values, 'semantic.color.action-primary')).toBe('#3633e1');
-	});
-
-	it('falls back to the values map for an id outside the options pool', () => {
-		expect(resolveSwatchColor(options, values, 'primitive.color.gray-100')).toBe('#eeeeee');
-	});
-
-	it('returns an empty string when unresolvable by either source', () => {
-		expect(resolveSwatchColor(options, values, 'semantic.color.does-not-exist')).toBe('');
 	});
 });
 
