@@ -70,16 +70,14 @@ export function LibrarySelector({
 	const options = libraries.map((library) => {
 		const badges = [];
 
-		// Order is fixed — the unchanging property before the one that moves — so a row carrying
-		// both does not reshuffle its badges as the active library changes.
-		if (isDefaultLibrary(library.slug)) {
+		// One badge per row at most. Active wins on the row that is both: which library is live is
+		// the thing a user opens this menu to find out, and the two badges never share a row.
+		if (library.slug === activeSlug) {
+			badges.push({ text: __('Active', 'kadence-blocks'), variant: 'state' });
+		} else if (isDefaultLibrary(library.slug)) {
 			// Answers "why can't I delete this one?" before the user tries: the default library is
 			// never removed, only reset to the shipped baseline.
 			badges.push({ text: __('Default', 'kadence-blocks'), variant: 'muted' });
-		}
-
-		if (library.slug === activeSlug) {
-			badges.push({ text: __('Active', 'kadence-blocks'), variant: 'state' });
 		}
 
 		return {
@@ -128,7 +126,7 @@ export function LibrarySelector({
 				onClearError={onClearOpenError}
 				onChange={handleOpen}
 				trailingAction={{
-					label: __('Create Library', 'kadence-blocks'),
+					label: __('New Library', 'kadence-blocks'),
 					// Guarded at the point the modal opens rather than around `onCreate`: creating a
 					// library ends by opening it, so it swaps the feed like any other switch, and
 					// asking here keeps the prompt from appearing on top of the create modal.
