@@ -39,6 +39,35 @@ import {
 import '../styles/token-controls.scss';
 
 /**
+ * The trigger's accessible name and tooltip, by what the slot holds.
+ *
+ * Stale first: an alias whose token is gone needs the explanation, not a value. Then a bound token
+ * or literal names itself with its value. Then the fallback the field inherits. Then a bare "Default"
+ * when there is nothing to name at all.
+ *
+ * @param {Object} args                 The naming inputs.
+ * @param {boolean} args.stale          Whether the slot holds a stale alias.
+ * @param {Object}  args.summary        The slot's own `fieldSummary()`.
+ * @param {string}  args.resolvedDefault The inherited default, resolved to a literal.
+ * @param {string}  args.inheritedName  The name for that default, e.g. "Default (3px)".
+ *
+ * @since TBD
+ *
+ * @return {string} The trigger name.
+ */
+function nameTrigger({ stale, summary, resolvedDefault, inheritedName }) {
+	if (stale) {
+		return staleTokenMessage();
+	}
+
+	if (summary.label) {
+		return summary.value ? `${summary.label} (${summary.value})` : summary.label;
+	}
+
+	return resolvedDefault ? inheritedName : __('Default', 'kadence-blocks');
+}
+
+/**
  * A control's numeric slot as a token field: a corner icon plus a trigger that reads like the control's
  * input (showing the bound token or the literal), opening a popover with a `Style Library` tab (pick/clear a
  * token) and a `Custom` tab (edit a literal value + unit with a slider). The `Custom` number seeds from
@@ -123,13 +152,7 @@ export function TokenSelector({
 	// as (the fallback) and why (the hint), instead of the raw dot path or a bare "Default" that would
 	// contradict the divergence dot beside it.
 	const stale = isStaleAlias(value, tokens);
-	const triggerName = stale
-		? staleTokenMessage()
-		: summary.label
-			? `${summary.label}${summary.value ? ` (${summary.value})` : ''}`
-			: resolvedDefault
-				? inheritedName
-				: __('Default', 'kadence-blocks');
+	const triggerName = nameTrigger({ stale, summary, resolvedDefault, inheritedName });
 	// An unset slot seeds the Custom tab from whatever it falls back to, so opening the editor starts
 	// from the value on screen instead of an empty box the user has to guess at. A stale alias renders as
 	// that same fallback, so it seeds from it too.

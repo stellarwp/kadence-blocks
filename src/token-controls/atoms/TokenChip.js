@@ -19,6 +19,37 @@ import { findTokenEntry } from '../helpers/token-summary';
 import { StaleTokenHint, staleTokenLabel, staleTokenMessage } from './StaleTokenHint';
 
 /**
+ * The chip's label: the bound token's name with its resolved value as the title, or, when no entry
+ * matches the alias (its token was deleted after binding), the muted stale label with a hint glyph
+ * and the explanation as the title.
+ *
+ * @param {Object}  props       The component props.
+ * @param {?Object} props.entry The matching pickable entry, or null for a stale alias.
+ *
+ * @since TBD
+ *
+ * @return {JSX.Element} The label.
+ */
+function ChipLabel({ entry }) {
+	if (entry) {
+		return (
+			<span className="kadence-token-chip__label" title={entry.value}>
+				{entry.label}
+			</span>
+		);
+	}
+
+	return (
+		<>
+			<StaleTokenHint />
+			<span className="kadence-token-chip__label kadence-token-chip__label--default" title={staleTokenMessage()}>
+				{staleTokenLabel()}
+			</span>
+		</>
+	);
+}
+
+/**
  * The in-control token display: the token's label plus an optional unlink button. Used by the
  * whole-value box-shadow control, which has no per-slot field to turn into a `TokenFieldControl`
  * trigger.
@@ -39,17 +70,10 @@ import { StaleTokenHint, staleTokenLabel, staleTokenMessage } from './StaleToken
  */
 export function TokenChip({ value, tokens, onUnlink }) {
 	const entry = findTokenEntry(tokens, value);
-	const label = entry ? entry.label : staleTokenLabel();
-	const labelClass = entry
-		? 'kadence-token-chip__label'
-		: 'kadence-token-chip__label kadence-token-chip__label--default';
 
 	return (
 		<span className="kadence-token-chip">
-			{!entry && <StaleTokenHint />}
-			<span className={labelClass} title={entry ? entry.value : staleTokenMessage()}>
-				{label}
-			</span>
+			<ChipLabel entry={entry} />
 			{onUnlink && (
 				<Button
 					className="kadence-token-chip__unlink"
