@@ -29,3 +29,25 @@ export function sameFamily(a, b) {
 
 	return left !== '' && left === right;
 }
+
+/**
+ * Whether a stored family value is one of the Kadence theme's global font references rather than a
+ * family name.
+ *
+ * The picker offers those two rows only while the Kadence theme is active. Switch theme and the
+ * stored value outlives its option: nothing emits the custom property, so the `var()` falls back to
+ * `inherit` and the block renders as if unset. The value is kept on purpose (switching back makes it
+ * work again), so the field needs a way to tell this case from a family name the catalog dropped.
+ *
+ * @param {*} value The stored family value.
+ *
+ * @since TBD
+ *
+ * @return {boolean} Whether it is a theme font reference.
+ */
+export function isThemeFontReference(value) {
+	return (
+		typeof value === 'string' &&
+		/^var\(\s*--global-(heading|body)-font-family\s*,\s*inherit\s*\)$/.test(value.trim())
+	);
+}

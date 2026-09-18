@@ -20,6 +20,7 @@ import { FontFamilySelector } from '../organisms/FontFamilySelector';
 // `renderContent` runs.
 jest.mock('@wordpress/components', () => ({
 	Button: ({ children, showTooltip, ...props }) => <button {...props}>{children}</button>,
+	Icon: () => null,
 	Dropdown: ({ renderToggle, renderContent }) => (
 		<>
 			{renderToggle({ isOpen: true, onToggle: () => {} })}
@@ -27,7 +28,8 @@ jest.mock('@wordpress/components', () => ({
 		</>
 	),
 	Spinner: () => <span className="components-spinner" />,
-	Tooltip: ({ children }) => children,
+	// The tooltip text lands on a wrapper so a test can read which explanation the trigger carries.
+	Tooltip: ({ text, children }) => <span data-tooltip={text}>{children}</span>,
 }));
 
 // The popover is captured rather than rendered: these tests assert which tab the field ASKS for, and
@@ -320,5 +322,85 @@ describe('FontFamilySelector manage link', () => {
 		renderSelector({ manageUrl: 'https://example.test/wp-admin/admin.php?page=x' });
 
 		expect(popoverProps.manageUrl).toBe('https://example.test/wp-admin/admin.php?page=x');
+	});
+});
+
+describe('FontFamilySelector stale theme reference', () => {
+	const themeRef = 'var( --global-heading-font-family, inherit )';
+
+	/**
+	 * A theme font reference no option claims reads as the default plus the hint, never as CSS. No
+	 * fallback name sits beside the label: the trigger is narrow, and a second span would push the
+	 * label into an ellipsis.
+	 *
+	 * @return {void}
+	 */
+	it('reads "Reverted to default" alone instead of the var() string', () => {
+		const trigger = renderSelector({ value: themeRef, catalogOptions: [], inheritedLabel: 'Inter' });
+
+		expect(trigger.textContent).not.toContain('var(');
+		expect(trigger.querySelector('.kadence-token-field__label--default').textContent).toBe('Reverted to default');
+		expect(trigger.querySelector('.kadence-token-field__value')).toBeNull();
+		expect(trigger.querySelector('.kadence-token-field__stale')).not.toBeNull();
+	});
+
+	/**
+	 * The trigger's accessible name carries the full explanation.
+	 *
+	 * @return {void}
+	 */
+	it('explains the missing theme in the trigger name', () => {
+		const trigger = renderSelector({ value: themeRef, catalogOptions: [] });
+
+		expect(trigger.getAttribute('label')).toContain('no longer active');
+	});
+
+	/**
+	 * The wrapping tooltip explains the missing theme, not the deleted-token case the atom defaults to.
+	 *
+	 * @return {void}
+	 */
+	it('explains the missing theme in the tooltip', () => {
+		const trigger = renderSelector({ value: themeRef, catalogOptions: [] });
+
+		expect(trigger.parentElement.getAttribute('data-tooltip')).toContain('no longer active');
+	});
+
+	/**
+	 * A plain family, stale or not, carries no wrapping tooltip; the trigger's own name is enough.
+	 *
+	 * @return {void}
+	 */
+	it('adds no tooltip wrapper for a plain family', () => {
+		const trigger = renderSelector({ value: 'Inter', catalogOptions: [] });
+
+		expect(trigger.parentElement.hasAttribute('data-tooltip')).toBe(false);
+	});
+
+	/**
+	 * The same reference still names itself by its option label while the theme is active.
+	 *
+	 * @return {void}
+	 */
+	it('is not stale while the catalog still offers the reference', () => {
+		const trigger = renderSelector({
+			value: themeRef,
+			catalogOptions: [{ value: themeRef, label: 'Inherit Heading Font Family' }],
+		});
+
+		expect(trigger.querySelector('.kadence-token-field__stale')).toBeNull();
+		expect(trigger.querySelector('.kadence-token-field__value').textContent).toBe('Inherit Heading Font Family');
+	});
+
+	/**
+	 * A stale reference opens on the catalog tab and tells the popover it is stale.
+	 *
+	 * @return {void}
+	 */
+	it('opens on Custom and flags the popover as stale', () => {
+		renderSelector({ value: themeRef, favorites: ['Inter'], catalogOptions: [] });
+
+		expect(popoverProps.initialTab).toBe('custom');
+		expect(popoverProps.stale).toBe(true);
 	});
 });

@@ -6,7 +6,9 @@
  * so the control keeps reporting an edit. The value is deliberately NOT cleared — the token may come
  * back under the same id, and the divergence dot's reset is the user's own way to drop it — so the
  * field has to say why it reads as the default while still flagged as edited. This atom is that
- * explanation, shared by every surface that can show a stale alias.
+ * explanation, shared by every surface that can show a stale alias. A theme font reference stored
+ * while the Kadence theme was active goes stale the same way once another theme takes over, and
+ * reuses the atom with its own message.
  */
 
 /**
@@ -61,25 +63,42 @@ export function staleTokenMessage() {
 }
 
 /**
+ * The explanation for a theme font reference on a theme that does not provide it.
+ *
+ * @since TBD
+ *
+ * @return {string} The translated message.
+ */
+export function staleFamilyMessage() {
+	return __(
+		'This option came from the Kadence theme, which is no longer active. The default applies until you pick a new value or reset.',
+		'kadence-blocks'
+	);
+}
+
+/**
  * The wrapped tooltip a stale field's trigger wears: the full explanation, allowed to wrap instead of
  * running the sidebar's width as one line. Renders the children untouched when not active, so a
  * trigger can be wrapped unconditionally.
  *
  * @param {Object}      props          The component props.
- * @param {boolean}     props.active   Whether the field holds a stale alias.
+ * @param {boolean}     props.active   Whether the field holds a stale value.
+ * @param {string}      [props.text]   The explanation to show. Defaults to the stale-alias one; a
+ *                                     field whose value went stale for another reason (a theme font
+ *                                     reference, say) passes its own.
  * @param {JSX.Element} props.children The trigger.
  *
  * @since TBD
  *
  * @return {JSX.Element} The trigger, wrapped in the tooltip when active.
  */
-export function StaleTokenTooltip({ active, children }) {
+export function StaleTokenTooltip({ active, text = staleTokenMessage(), children }) {
 	if (!active) {
 		return children;
 	}
 
 	return (
-		<Tooltip text={staleTokenMessage()} className="kadence-token-field__stale-tooltip">
+		<Tooltip text={text} className="kadence-token-field__stale-tooltip">
 			{children}
 		</Tooltip>
 	);
