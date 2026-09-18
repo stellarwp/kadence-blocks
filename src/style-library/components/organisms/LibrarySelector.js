@@ -1,16 +1,16 @@
 /**
  * The Style Library header's library selector: a thin composition of the generic
  * `SelectDropdown` molecule over the library list, plus the library-specific "Create Library"
- * modal its trailing action opens. All of the selector's visual behavior (the toggle, the check
- * icon, the divider, the menu geometry) lives in `SelectDropdown` — this component only supplies
- * library data and the create flow.
+ * modal its trailing action opens. All of the selector's visual behavior (the toggle, the fill on
+ * the current row, the divider, the menu geometry) lives in `SelectDropdown` — this component only
+ * supplies library data and the create flow.
  *
  * Choosing a library here *opens* it for editing. It does not change which library the site
  * renders with; that is a separate, confirmed action (see `ActivateLibraryButton`).
  *
- * The check icon keeps its ordinary meaning — the row you are on — because that is what a check in
- * a menu reads as, and overloading it to mean "live" made the menu harder to read, not easier.
- * Which library the site is serving is said in words instead, by the `Active` badge.
+ * The filled row keeps its ordinary meaning — the row you are on — because that is what a marked
+ * row in a menu reads as, and overloading it to mean "live" made the menu harder to read, not
+ * easier. Which library the site is serving is said in words instead, by the `Active` badge.
  */
 
 /**
@@ -107,6 +107,7 @@ export function LibrarySelector({
 	return (
 		<>
 			<SelectDropdown
+				size="large"
 				value={editingSlug}
 				options={options}
 				// What the toggle shows until `libraries` has loaded and an option can match
