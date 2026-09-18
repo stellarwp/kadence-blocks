@@ -41,10 +41,18 @@ body.kadence-blocks-style-library-page {
 	.components-modal__screen-overlay {
 		z-index: 1000001;
 	}
+
+	// Popovers and modals portal to `<body>`, outside the app root, so the root's own smoothing
+	// rule below never reaches them.
+	.components-popover,
+	.components-modal__frame {
+		-webkit-font-smoothing: antialiased;
+	}
 }
 
 .kadence-blocks-style-library-root {
 	min-height: var(--kb-sl-size-shell-min-height);
+	-webkit-font-smoothing: antialiased;
 
 	// wp-admin styles ul/li globally; reset it here so it can't leak into the app. `display` is
 	// deliberately NOT reset for every `<li>` — a blanket `li { display: block }` selector (one
