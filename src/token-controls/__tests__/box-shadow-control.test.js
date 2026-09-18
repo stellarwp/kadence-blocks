@@ -1123,3 +1123,35 @@ describe('BoxShadowControl fallback labelling', () => {
 		expect(trigger().querySelector('.kadence-token-field__label').textContent).toBe('Medium');
 	});
 });
+
+describe('BoxShadowControl popover default row', () => {
+	/**
+	 * With no preset shadow behind an unset control, the popover tags the fixed "None" row as the
+	 * default and highlights it, since shadow-less is what the block really renders.
+	 *
+	 * @return {void}
+	 */
+	it('tags "None" as the default row when there is no fallback', () => {
+		renderControl({ value: '', tokens: TOKENS_WITH_NONE });
+
+		const none = tokenItem('None');
+
+		expect(none.querySelector('.kadence-token-field__item-tag').textContent).toBe('Default');
+		expect(none.getAttribute('aria-pressed')).toBe('true');
+		expect(tokenItem('Medium').querySelector('.kadence-token-field__item-tag')).toBeNull();
+	});
+
+	/**
+	 * A fallback naming a real token tags that token's row, and "None" stays untagged.
+	 *
+	 * @return {void}
+	 */
+	it('tags the fallback token’s row, not "None", when a fallback is set', () => {
+		renderControl({ value: '', tokens: TOKENS_WITH_NONE, defaultValue: TOKENS[0].alias });
+
+		expect(tokenItem('Medium').querySelector('.kadence-token-field__item-tag').textContent).toBe('Default');
+		expect(tokenItem('Medium').getAttribute('aria-pressed')).toBe('true');
+		expect(tokenItem('None').querySelector('.kadence-token-field__item-tag')).toBeNull();
+		expect(tokenItem('None').getAttribute('aria-pressed')).toBe('false');
+	});
+});
