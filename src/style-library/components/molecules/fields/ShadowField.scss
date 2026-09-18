@@ -1,0 +1,42 @@
+@use '../../../styles/mixins' as *;
+
+// A single-item list row (round swatch + "Color"), matching `ColorListField`'s row shape.
+.kadence-blocks-style-library__field-shadow-color-row {
+	@include flex-row(var(--kb-sl-space-10));
+	width: 100%;
+	margin-bottom: var(--kb-sl-space-10);
+	padding: var(--kb-sl-space-10);
+	border: 1px solid var(--kb-sl-color-border);
+	border-radius: var(--kb-sl-radius-m);
+	background: none;
+	cursor: pointer;
+
+	&:hover {
+		background: var(--kb-sl-color-row-bg-hover);
+	}
+
+	.components-color-indicator {
+		width: var(--kb-sl-space-20);
+		height: var(--kb-sl-space-20);
+	}
+}
+
+.kadence-blocks-style-library__field-shadow-color-label {
+	font-size: var(--kb-sl-font-size-small);
+	color: var(--kb-sl-color-text-primary);
+}
+
+.kadence-blocks-style-library__field-shadow-row {
+	@include flex-row(var(--kb-sl-space-10), flex-end);
+	margin-bottom: var(--kb-sl-space-10);
+}
+
+.kadence-blocks-style-library__field-shadow-number {
+	@include flex-column(var(--kb-sl-space-05));
+	flex: 1 1 auto;
+	min-width: 0;
+}
+
+.kadence-blocks-style-library__field-shadow-number-label {
+	@include meta-text;
+}

@@ -1,0 +1,22 @@
+@use '../../../styles/mixins' as *;
+
+.kadence-blocks-style-library__field-label {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--kb-sl-space-10);
+	// 6px, off the grid-unit scale — a component-level value.
+	margin-bottom: 0.375rem;
+}
+
+.kadence-blocks-style-library__field-label-text {
+	@include small-uppercase-label;
+}
+
+// TextField's read-only rendering (e.g. the immutable token id beside a NAME label) — static text
+// at the body font size/weight, not another uppercase muted label.
+.kadence-blocks-style-library__field-static-value {
+	margin: 0;
+	font-size: var(--kb-sl-font-size-small);
+	color: var(--kb-sl-color-text-secondary);
+}

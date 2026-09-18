@@ -339,10 +339,6 @@
 			"type": "boolean",
 			"default": false
 		},
-		"displayHoverShadow": {
-			"type": "boolean",
-			"default": false
-		},
 		"shadow": {
 			"type": "array",
 			"default": [
@@ -356,6 +352,10 @@
 					"inset": false
 				}
 			]
+		},
+		"displayHoverShadow": {
+			"type": "boolean",
+			"default": false
 		},
 		"shadowHover": {
 			"type": "array",
@@ -533,10 +533,6 @@
 			"type": "boolean",
 			"default": false
 		},
-		"displayHoverShadowTransparent": {
-			"type": "boolean",
-			"default": false
-		},
 		"shadowTransparent": {
 			"type": "array",
 			"default": [
@@ -550,6 +546,10 @@
 					"inset": false
 				}
 			]
+		},
+		"displayHoverShadowTransparent": {
+			"type": "boolean",
+			"default": false
 		},
 		"shadowTransparentHover": {
 			"type": "array",
@@ -705,10 +705,6 @@
 			"type": "boolean",
 			"default": false
 		},
-		"displayHoverShadowSticky": {
-			"type": "boolean",
-			"default": false
-		},
 		"shadowSticky": {
 			"type": "array",
 			"default": [
@@ -722,6 +718,10 @@
 					"inset": false
 				}
 			]
+		},
+		"displayHoverShadowSticky": {
+			"type": "boolean",
+			"default": false
 		},
 		"shadowStickyHover": {
 			"type": "array",
@@ -753,6 +753,14 @@
 		"iconReveal": {
 			"type": "boolean",
 			"default": false
+		},
+		"kbPreset": {
+			"type": "string",
+			"default": ""
+		},
+		"kbPalette": {
+			"type": "string",
+			"default": ""
 		}
 	},
 	"supports": {
@@ -764,7 +772,11 @@
 		"html": false,
 		"reusable": false,
 		"kbMetadata": true,
-		"kbContentLabel": "text"
+		"kbContentLabel": "text",
+		"kbPreset": {
+			"inlinePicker": true
+		},
+		"kbPalette": true
 	},
 	"usesContext": [
 		"postId",

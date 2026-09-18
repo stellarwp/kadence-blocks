@@ -1,0 +1,35 @@
+// The glyph is drawn at its true size (an icon-size scale is only legible at true size), so it can
+// exceed `ListRow`'s framed 80px preview slot. Relax the slot rather than scale the glyph down —
+// the same override the Button, Spacing, Icon Sizes and Shadow screens make.
+.kadence-blocks-style-library__single-icon-screen .kadence-blocks-style-library__list-row-preview {
+	width: auto;
+	height: auto;
+	border: 0;
+	background: transparent;
+	overflow: visible;
+}
+
+// Preset names are full words ("Muted Small"), not the short numeric labels the shared 4rem column
+// was sized for.
+.kadence-blocks-style-library__single-icon-screen .kadence-blocks-style-library__list-row-label {
+	width: 15rem;
+}
+
+// The live glyph. `font-size` carries the resolved size token and the SVG sizes itself in `em`, so
+// one style drives the whole preview; `color` feeds the path's `currentColor` fill. A minimum keeps
+// the smallest step from collapsing to an unreadable speck in the row.
+.kadence-blocks-style-library__single-icon-preset-preview {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 1rem;
+	min-height: 1rem;
+	transition: color 300ms ease, font-size 300ms ease;
+
+	svg {
+		width: 1em;
+		height: 1em;
+		min-width: 1rem;
+		min-height: 1rem;
+	}
+}

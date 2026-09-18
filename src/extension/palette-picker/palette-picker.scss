@@ -1,0 +1,94 @@
+/**
+ * Per-block Color Palette dropdown.
+ *
+ * Mirrors the design-token preset control (see preset-button.scss) so the two token controls read as one
+ * set at the top of the inspector: a label, a bordered toggle button showing the selected palette with a
+ * trailing icon, and a pop-out MenuGroup of palettes with a check on the active one. Kept visually in sync
+ * with the preset button by intent.
+ */
+.kb-palette-picker__control-label {
+	display: block;
+	padding: 0 16px 8px;
+}
+
+.kb-palette-picker__row {
+	padding: 0 16px 16px;
+}
+
+.kb-palette-picker__dropdown {
+	display: block;
+}
+
+.kb-palette-picker__button.components-button {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	width: 100%;
+	height: auto;
+	min-height: 0;
+	padding: 6px 12px;
+	border: 1px solid #949494;
+	border-radius: 2px;
+	color: #1e1e1e;
+	font-size: 0.8125rem; // 13px
+	font-weight: 400;
+	line-height: 1.25rem; // 20px
+	text-align: left;
+
+	.kb-palette-picker__label {
+		flex: 1 1 auto;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.kb-palette-picker__icon {
+		display: inline-flex;
+		flex: 0 0 auto;
+	}
+
+	svg {
+		flex: 0 0 auto;
+		width: 16px;
+		height: 16px;
+		margin: 0; // the 4px icon-to-text gap is the flex `gap`, not a button-default margin.
+	}
+}
+
+.kb-palette-picker__menu {
+	min-width: 220px;
+
+	.components-menu-group {
+		padding: 4px;
+
+		> [role='group'] {
+			display: flex;
+			flex-direction: column;
+			gap: 8px;
+		}
+	}
+
+	.components-menu-group__label {
+		color: #1e1e1e;
+		margin: 0;
+		padding: 12px 12px 16px;
+	}
+
+	.components-menu-item__button {
+		color: #1e1e1e;
+		font-size: 0.8125rem; // 13px
+		font-weight: 400;
+		line-height: 1.25rem; // 20px
+	}
+
+	.kb-palette-picker__check {
+		fill: var(--wp-admin-theme-color, #3858e9);
+	}
+
+	// Suppress the focus ring that lands on the first item when the menu opens by mouse — but keep it for
+	// keyboard users (`:focus-visible`), so arrowing through the list is still visible.
+	.components-menu-item__button:focus:not(:focus-visible) {
+		box-shadow: none;
+		outline: none;
+	}
+}

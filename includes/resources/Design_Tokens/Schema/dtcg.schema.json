@@ -1,0 +1,532 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://schemas.kadencewp.com/design-tokens/dtcg.schema.json",
+    "title": "Kadence Blocks DTCG document",
+    "description": "Design Tokens Community Group document for the Kadence Blocks Design Tokens module. Generated from the PHP source of truth (Token_Type, Alias); do not edit by hand.",
+    "type": "object",
+    "properties": {
+        "$description": {
+            "type": "string"
+        },
+        "$extensions": {
+            "type": "object"
+        }
+    },
+    "patternProperties": {
+        "^[^$].*$": {
+            "$ref": "#/definitions/node"
+        }
+    },
+    "additionalProperties": false,
+    "definitions": {
+        "alias": {
+            "type": "string",
+            "pattern": "^\\{[\\w.-]+\\}$",
+            "description": "A whole-string DTCG alias, e.g. \"{primitive.color.brand.primary}\"."
+        },
+        "node": {
+            "type": "object",
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/leaf"
+                },
+                {
+                    "$ref": "#/definitions/group"
+                }
+            ]
+        },
+        "group": {
+            "type": "object",
+            "properties": {
+                "$description": {
+                    "type": "string"
+                },
+                "$extensions": {
+                    "type": "object"
+                }
+            },
+            "patternProperties": {
+                "^[^$].*$": {
+                    "$ref": "#/definitions/node"
+                }
+            },
+            "additionalProperties": false
+        },
+        "leaf": {
+            "type": "object",
+            "required": [
+                "$type",
+                "$value"
+            ],
+            "properties": {
+                "$type": {
+                    "enum": [
+                        "color",
+                        "dimension",
+                        "fontFamily",
+                        "fontWeight",
+                        "lineHeight",
+                        "fontStyle",
+                        "textTransform",
+                        "borderStyle",
+                        "shadow"
+                    ]
+                },
+                "$value": true,
+                "$description": {
+                    "type": "string"
+                },
+                "$extensions": {
+                    "type": "object"
+                }
+            },
+            "oneOf": [
+                {
+                    "properties": {
+                        "$type": {
+                            "const": "color"
+                        },
+                        "$value": {
+                            "$ref": "#/definitions/colorValue"
+                        }
+                    },
+                    "required": [
+                        "$type",
+                        "$value"
+                    ]
+                },
+                {
+                    "properties": {
+                        "$type": {
+                            "const": "dimension"
+                        },
+                        "$value": {
+                            "$ref": "#/definitions/dimensionValue"
+                        },
+                        "$extensions": {
+                            "$ref": "#/definitions/dimensionExtensions"
+                        }
+                    },
+                    "required": [
+                        "$type",
+                        "$value"
+                    ]
+                },
+                {
+                    "properties": {
+                        "$type": {
+                            "const": "fontFamily"
+                        },
+                        "$value": {
+                            "$ref": "#/definitions/fontFamilyValue"
+                        }
+                    },
+                    "required": [
+                        "$type",
+                        "$value"
+                    ]
+                },
+                {
+                    "properties": {
+                        "$type": {
+                            "const": "fontWeight"
+                        },
+                        "$value": {
+                            "$ref": "#/definitions/fontWeightValue"
+                        }
+                    },
+                    "required": [
+                        "$type",
+                        "$value"
+                    ]
+                },
+                {
+                    "properties": {
+                        "$type": {
+                            "const": "lineHeight"
+                        },
+                        "$value": {
+                            "$ref": "#/definitions/lineHeightValue"
+                        },
+                        "$extensions": {
+                            "$ref": "#/definitions/lineHeightExtensions"
+                        }
+                    },
+                    "required": [
+                        "$type",
+                        "$value"
+                    ]
+                },
+                {
+                    "properties": {
+                        "$type": {
+                            "const": "fontStyle"
+                        },
+                        "$value": {
+                            "$ref": "#/definitions/fontStyleValue"
+                        }
+                    },
+                    "required": [
+                        "$type",
+                        "$value"
+                    ]
+                },
+                {
+                    "properties": {
+                        "$type": {
+                            "const": "textTransform"
+                        },
+                        "$value": {
+                            "$ref": "#/definitions/textTransformValue"
+                        }
+                    },
+                    "required": [
+                        "$type",
+                        "$value"
+                    ]
+                },
+                {
+                    "properties": {
+                        "$type": {
+                            "const": "borderStyle"
+                        },
+                        "$value": {
+                            "$ref": "#/definitions/borderStyleValue"
+                        }
+                    },
+                    "required": [
+                        "$type",
+                        "$value"
+                    ]
+                },
+                {
+                    "properties": {
+                        "$type": {
+                            "const": "shadow"
+                        },
+                        "$value": {
+                            "$ref": "#/definitions/shadowValue"
+                        }
+                    },
+                    "required": [
+                        "$type",
+                        "$value"
+                    ]
+                }
+            ],
+            "additionalProperties": false
+        },
+        "colorValue": {
+            "anyOf": [
+                {
+                    "$ref": "#/definitions/alias"
+                },
+                {
+                    "type": "string"
+                }
+            ]
+        },
+        "dimensionValue": {
+            "anyOf": [
+                {
+                    "$ref": "#/definitions/alias"
+                },
+                {
+                    "type": "string"
+                }
+            ]
+        },
+        "fontFamilyValue": {
+            "anyOf": [
+                {
+                    "$ref": "#/definitions/alias"
+                },
+                {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "minItems": 1
+                }
+            ]
+        },
+        "fontWeightValue": {
+            "anyOf": [
+                {
+                    "$ref": "#/definitions/alias"
+                },
+                {
+                    "type": [
+                        "string",
+                        "number"
+                    ]
+                }
+            ]
+        },
+        "lineHeightValue": {
+            "anyOf": [
+                {
+                    "$ref": "#/definitions/alias"
+                },
+                {
+                    "type": [
+                        "string",
+                        "number"
+                    ]
+                }
+            ]
+        },
+        "fontStyleValue": {
+            "anyOf": [
+                {
+                    "$ref": "#/definitions/alias"
+                },
+                {
+                    "type": "string"
+                }
+            ]
+        },
+        "textTransformValue": {
+            "anyOf": [
+                {
+                    "$ref": "#/definitions/alias"
+                },
+                {
+                    "type": "string"
+                }
+            ]
+        },
+        "borderStyleValue": {
+            "anyOf": [
+                {
+                    "$ref": "#/definitions/alias"
+                },
+                {
+                    "type": "string"
+                }
+            ]
+        },
+        "shadowValue": {
+            "anyOf": [
+                {
+                    "$ref": "#/definitions/alias"
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "color",
+                        "offsetX",
+                        "offsetY",
+                        "blur",
+                        "spread"
+                    ],
+                    "properties": {
+                        "color": {
+                            "anyOf": [
+                                {
+                                    "$ref": "#/definitions/alias"
+                                },
+                                {
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "offsetX": {
+                            "anyOf": [
+                                {
+                                    "$ref": "#/definitions/alias"
+                                },
+                                {
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "offsetY": {
+                            "anyOf": [
+                                {
+                                    "$ref": "#/definitions/alias"
+                                },
+                                {
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "blur": {
+                            "anyOf": [
+                                {
+                                    "$ref": "#/definitions/alias"
+                                },
+                                {
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "spread": {
+                            "anyOf": [
+                                {
+                                    "$ref": "#/definitions/alias"
+                                },
+                                {
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "additionalProperties": false
+                }
+            ]
+        },
+        "dimensionExtensions": {
+            "type": "object",
+            "properties": {
+                "com.kadence.designTokens": {
+                    "type": "object",
+                    "properties": {
+                        "responsive": {
+                            "type": "object",
+                            "properties": {
+                                "tablet": {
+                                    "anyOf": [
+                                        {
+                                            "$ref": "#/definitions/alias"
+                                        },
+                                        {
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "mobile": {
+                                    "anyOf": [
+                                        {
+                                            "$ref": "#/definitions/alias"
+                                        },
+                                        {
+                                            "type": "string"
+                                        }
+                                    ]
+                                }
+                            },
+                            "additionalProperties": false
+                        },
+                        "clamp": {
+                            "type": "object",
+                            "required": [
+                                "min",
+                                "preferred",
+                                "max"
+                            ],
+                            "properties": {
+                                "min": {
+                                    "anyOf": [
+                                        {
+                                            "$ref": "#/definitions/alias"
+                                        },
+                                        {
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "preferred": {
+                                    "type": "string"
+                                },
+                                "max": {
+                                    "anyOf": [
+                                        {
+                                            "$ref": "#/definitions/alias"
+                                        },
+                                        {
+                                            "type": "string"
+                                        }
+                                    ]
+                                }
+                            },
+                            "additionalProperties": false
+                        }
+                    }
+                }
+            }
+        },
+        "lineHeightExtensions": {
+            "type": "object",
+            "properties": {
+                "com.kadence.designTokens": {
+                    "type": "object",
+                    "properties": {
+                        "responsive": {
+                            "type": "object",
+                            "properties": {
+                                "tablet": {
+                                    "anyOf": [
+                                        {
+                                            "$ref": "#/definitions/alias"
+                                        },
+                                        {
+                                            "type": [
+                                                "string",
+                                                "number"
+                                            ]
+                                        }
+                                    ]
+                                },
+                                "mobile": {
+                                    "anyOf": [
+                                        {
+                                            "$ref": "#/definitions/alias"
+                                        },
+                                        {
+                                            "type": [
+                                                "string",
+                                                "number"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            },
+                            "additionalProperties": false
+                        },
+                        "clamp": {
+                            "type": "object",
+                            "required": [
+                                "min",
+                                "preferred",
+                                "max"
+                            ],
+                            "properties": {
+                                "min": {
+                                    "anyOf": [
+                                        {
+                                            "$ref": "#/definitions/alias"
+                                        },
+                                        {
+                                            "type": [
+                                                "string",
+                                                "number"
+                                            ]
+                                        }
+                                    ]
+                                },
+                                "preferred": {
+                                    "type": "string"
+                                },
+                                "max": {
+                                    "anyOf": [
+                                        {
+                                            "$ref": "#/definitions/alias"
+                                        },
+                                        {
+                                            "type": [
+                                                "string",
+                                                "number"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            },
+                            "additionalProperties": false
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,1716 @@
+<?php declare( strict_types=1 );
+
+namespace Tests\wpunit\Resources\Design_Tokens\Rest\V1;
+
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_History_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Documents_Controller;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Sentinels;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Token_Type;
+use Generator;
+use ReflectionClass;
+use ReflectionProperty;
+use Tests\Support\Classes\TestCase;
+use WP_Error;
+use WP_Http;
+use WP_REST_Request;
+use WP_REST_Response;
+use WP_REST_Server;
+
+/**
+ * Covers the read surface of the Design Tokens documents controller: the raw DTCG document collection
+ * and item, and the resolved/flattened preview map.
+ */
+final class DocumentsControllerTest extends TestCase {
+
+	/**
+	 * @var Token_Store
+	 */
+	private Token_Store $store;
+
+	/**
+	 * @var Documents_Controller
+	 */
+	private Documents_Controller $controller;
+
+	/**
+	 * @var WP_REST_Server
+	 */
+	private WP_REST_Server $rest_server;
+
+	/**
+	 * @return void
+	 */
+	protected function setUp(): void {
+		parent::setUp();
+
+		$this->store      = $this->container->get( Token_Store::class );
+		$this->controller = $this->container->get( Documents_Controller::class );
+
+		global $wp_rest_server;
+		$this->rest_server = new WP_REST_Server();
+		$wp_rest_server    = $this->rest_server;
+		do_action( 'rest_api_init' );
+	}
+
+	/**
+	 * @return void
+	 */
+	protected function tearDown(): void {
+		wp_set_current_user( 0 );
+
+		global $wp_rest_server;
+		$wp_rest_server = null;
+
+		parent::tearDown();
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testItRegistersEveryReadRouteWithArgsAndSchema(): void {
+		$routes         = $this->rest_server->get_routes();
+		$namespace      = $this->controller_namespace();
+		$base           = $this->controller_rest_base();
+		$slug_route     = $this->controller_constant( 'SLUG_ROUTE' );
+		$resolved_route = $this->controller_constant( 'RESOLVED_ROUTE' );
+		$slug_param     = $this->controller_constant( 'SLUG_PARAM' );
+
+		$collection = "/$namespace/$base";
+		$item       = "/$namespace/$base/$slug_route";
+		$resolved   = "/$namespace/$base/$slug_route/$resolved_route";
+
+		$this->assertArrayHasKey( $collection, $routes );
+		$this->assertArrayHasKey( $item, $routes );
+		$this->assertArrayHasKey( $resolved, $routes );
+
+		// Every route exposes a schema so the MCP layer can introspect the response shape.
+		foreach ( [ $collection, $item, $resolved ] as $route ) {
+			$options = $this->rest_server->get_route_options( $route );
+
+			$this->assertArrayHasKey( 'schema', $options, "Route $route should expose a schema." );
+			$this->assertIsCallable( $options['schema'] );
+		}
+
+		// The single-library routes declare the slug argument.
+		$this->assertArrayHasKey( $slug_param, $routes[ $item ][0]['args'] );
+		$this->assertArrayHasKey( $slug_param, $routes[ $resolved ][0]['args'] );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testItReturnsTheDefaultSetAsTheCollection(): void {
+		$response = $this->controller->get_items( new WP_REST_Request( WP_REST_Server::READABLE ) );
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+		$this->assertSame( WP_Http::OK, $response->get_status() );
+
+		$data = $response->get_data();
+
+		$this->assertCount( 1, $data );
+		$this->assertSame( Token_Store::default_slug(), $data[0]['slug'] );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testItReturnsTheRawStoredDocumentForTheDefaultSet(): void {
+		$document = '{"primitive":{"color":{"brand":{"$type":"color","$value":"#336699"}}}}';
+
+		$this->store->save_document( $document );
+
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+		$request->set_param( 'slug', Token_Store::default_slug() );
+
+		$response = $this->controller->get_item( $request );
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+
+		$data = $response->get_data();
+
+		$this->assertSame( Token_Store::default_slug(), $data['slug'] );
+		$this->assertSame( json_decode( $document, true ), $data['document'] );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testItReturnsAnEmptyDocumentWhenNothingIsStored(): void {
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+		$request->set_param( 'slug', Token_Store::default_slug() );
+
+		$data = $this->controller->get_item( $request )->get_data();
+
+		$this->assertSame( [], $data['document'] );
+		$this->assertSame( '', $data['version'] );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testItReturnsNotFoundForAnUnknownSlug(): void {
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+		$request->set_param( 'slug', 'does-not-exist' );
+
+		$result = $this->controller->get_item( $request );
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'rest_design_tokens_not_found', $result->get_error_code() );
+		$this->assertSame( WP_Http::NOT_FOUND, $result->get_error_data()['status'] );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testItResolvesAStoredDocumentIntoFlattenedMaps(): void {
+		$this->store->save_document( '{"primitive":{"color":{"test":{"$type":"color","$value":"#336699"}}}}' );
+
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+		$request->set_param( 'slug', Token_Store::default_slug() );
+
+		$response = $this->controller->get_resolved( $request );
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+
+		$data = $response->get_data();
+
+		$this->assertArrayHasKey( 'primitive.color.test', $data['by_id'] );
+		$this->assertSame( '#336699', $data['by_id']['primitive.color.test'] );
+		$this->assertArrayHasKey( '--kb-token--primitive--color--test', $data['by_var'] );
+		$this->assertSame( '#336699', $data['by_var']['--kb-token--primitive--color--test'] );
+	}
+
+	/**
+	 * The resolved read carries the authored responsive shape per token alongside the flat maps, so a client
+	 * re-reading after a write sees the per-breakpoint steps the flat by_id map flattens away.
+	 *
+	 * @return void
+	 */
+	public function testItReturnsTheAuthoredResponsiveShapeAlongsideTheFlatMaps(): void {
+		$this->store->save_document(
+			'{"semantic":{"font-size":{"probe":{"$type":"dimension","$value":"1.125rem",'
+			. '"$extensions":{"com.kadence.designTokens":{"responsive":{"tablet":"1.0625rem","mobile":"1rem"}}}}}}}'
+		);
+
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+		$request->set_param( 'slug', Token_Store::default_slug() );
+
+		$data = $this->controller->get_resolved( $request )->get_data();
+
+		$this->assertArrayHasKey( 'responsive', $data );
+		$this->assertSame(
+			[
+				'base'       => '1.125rem',
+				'responsive' => [
+					'tablet' => '1.0625rem',
+					'mobile' => '1rem',
+				],
+			],
+			$data['responsive']['semantic.font-size.probe']
+		);
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testItReturns422WhenAStoredDocumentHasAnAliasCycle(): void {
+		$this->store->save_document(
+			'{"primitive":{"color":{'
+			. '"cycle-a":{"$type":"color","$value":"{primitive.color.cycle-b}"},'
+			. '"cycle-b":{"$type":"color","$value":"{primitive.color.cycle-a}"}'
+			. '}}}'
+		);
+
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+		$request->set_param( 'slug', Token_Store::default_slug() );
+
+		$result = $this->controller->get_resolved( $request );
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'rest_design_tokens_unresolvable', $result->get_error_code() );
+		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $result->get_error_data()['status'] );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testItReturnsNotFoundFromResolvedForAnUnknownSlug(): void {
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+		$request->set_param( 'slug', 'does-not-exist' );
+
+		$result = $this->controller->get_resolved( $request );
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'rest_design_tokens_not_found', $result->get_error_code() );
+		$this->assertSame( WP_Http::NOT_FOUND, $result->get_error_data()['status'] );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testItDeniesAccessToUsersWithoutTheCapability(): void {
+		wp_set_current_user( $this->factory()->user->create( [ 'role' => 'subscriber' ] ) );
+
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+
+		// Both permission callbacks gate the routes (get_items for the collection, get_item for the single
+		// document and resolved map), so both must deny a user without the capability.
+		foreach ( [ 'get_items_permissions_check', 'get_item_permissions_check' ] as $check ) {
+			$result = $this->controller->$check( $request );
+
+			$this->assertInstanceOf( WP_Error::class, $result, "$check should deny the subscriber." );
+			$this->assertSame( 'rest_forbidden', $result->get_error_code() );
+		}
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testItRegistersTheWriteRoutes(): void {
+		$namespace    = $this->controller_namespace();
+		$base         = $this->controller_rest_base();
+		$slug_route   = $this->controller_constant( 'SLUG_ROUTE' );
+		$tokens_route = $this->controller_constant( 'TOKENS_ROUTE' );
+		$path_route   = $this->controller_constant( 'PATH_ROUTE' );
+
+		$collection = "/$namespace/$base";
+		$item       = "/$namespace/$base/$slug_route";
+		$tokens     = "/$namespace/$base/$slug_route/$tokens_route/$path_route";
+
+		$this->assertContains( 'POST', $this->route_methods( $collection ) );
+
+		foreach ( [ 'POST', 'PUT', 'PATCH', 'DELETE' ] as $method ) {
+			$this->assertContains( $method, $this->route_methods( $item ), "Item route should accept $method." );
+		}
+
+		foreach ( [ 'POST', 'PUT', 'DELETE' ] as $method ) {
+			$this->assertContains( $method, $this->route_methods( $tokens ), "Token route should accept $method." );
+		}
+
+		$options = $this->rest_server->get_route_options( $tokens );
+		$this->assertArrayHasKey( 'schema', $options );
+		$this->assertIsCallable( $options['schema'] );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testPostAndPatchDeepMergeIntoStored(): void {
+		$this->store->save_document( '{"primitive":{"color":{"a":{"$type":"color","$value":"#aaaaaa"}}}}' );
+
+		// POST and PATCH share patch_item; the body's new path merges in beside the stored one.
+		$response = $this->controller->patch_item(
+			$this->write_request(
+				'POST',
+				Token_Store::default_slug(),
+				[
+					'primitive' => [
+						'color' => [
+							'b' => [
+								Token_Type::get_type_key() => 'color',
+								Sentinels::get_value_key() => '#bbbbbb',
+							],
+						],
+					],
+				] 
+			)
+		);
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+		$this->assertSame( WP_Http::OK, $response->get_status() );
+
+		$document = $response->get_data()['document'];
+
+		$this->assertSame( '#aaaaaa', $document['primitive']['color']['a'][ Sentinels::get_value_key() ] );
+		$this->assertSame( '#bbbbbb', $document['primitive']['color']['b'][ Sentinels::get_value_key() ] );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testPutReplacesTheWholeDocumentWholesale(): void {
+		$this->store->save_document( '{"primitive":{"color":{"a":{"$type":"color","$value":"#aaaaaa"}}}}' );
+
+		$response = $this->controller->update_item(
+			$this->write_request(
+				'PUT',
+				Token_Store::default_slug(),
+				[
+					'primitive' => [
+						'color' => [
+							'b' => [
+								Token_Type::get_type_key() => 'color',
+								Sentinels::get_value_key() => '#bbbbbb',
+							],
+						],
+					],
+				] 
+			)
+		);
+
+		$document = $response->get_data()['document'];
+
+		// The stored "a" is gone — PUT replaces rather than merges.
+		$this->assertArrayNotHasKey( 'a', $document['primitive']['color'] );
+		$this->assertArrayHasKey( 'b', $document['primitive']['color'] );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testCollectionPostCreatesTheDefaultSetWith201(): void {
+		$response = $this->controller->create_item(
+			$this->write_request(
+				'POST',
+				'',
+				[
+					'primitive' => [
+						'color' => [
+							'brand' => [
+								'primary' => [
+									Token_Type::get_type_key()  => 'color',
+									Sentinels::get_value_key() => '#3182CE',
+								],
+							],
+						],
+					],
+				] 
+			)
+		);
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+		$this->assertSame( WP_Http::CREATED, $response->get_status() );
+		$this->assertSame( '#3182CE', $response->get_data()['document']['primitive']['color']['brand']['primary'][ Sentinels::get_value_key() ] );
+	}
+
+	/**
+	 * A write-through patch preserves the stored `$extensions` layer verbatim. The `presets` entry uses a
+	 * block the registry does not recognize, so the endpoint must round-trip the opaque extension data
+	 * untouched rather than validate or strip it.
+	 *
+	 * @return void
+	 */
+	public function testMergePreservesTheExtensionsLayer(): void {
+		$this->store->save_document(
+			'{"primitive":{"color":{"a":{"$type":"color","$value":"#aaaaaa"}}},'
+			. '"$extensions":{"com.kadence.designTokens":{"presets":{"core/button":{"$default":"solid"}}}}}'
+		);
+
+		$response = $this->controller->patch_item(
+			$this->write_request(
+				'POST',
+				Token_Store::default_slug(),
+				[
+					'primitive' => [
+						'color' => [
+							'a' => [
+								Token_Type::get_type_key() => 'color',
+								Sentinels::get_value_key() => '#000000',
+							],
+						],
+					],
+				] 
+			)
+		);
+
+		$document = $response->get_data()['document'];
+
+		$this->assertArrayHasKey( '$extensions', $document );
+		$this->assertSame( 'solid', $document['$extensions']['com.kadence.designTokens']['presets']['core/button']['$default'] );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testSetTokenLandsALeafAndInfersItsType(): void {
+		$this->store->save_document( '{"primitive":{"color":{"brand":{"primary":{"$type":"color","$value":"#000000"}}}}}' );
+
+		// The body omits $type; it is inferred from the stored token.
+		$response = $this->controller->set_token(
+			$this->token_request( 'POST', Token_Store::default_slug(), 'primitive.color.brand.primary', [ Sentinels::get_value_key() => '#3182CE' ] )
+		);
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+
+		$leaf = $response->get_data()['document']['primitive']['color']['brand']['primary'];
+
+		$this->assertSame( '#3182CE', $leaf[ Sentinels::get_value_key() ] );
+		$this->assertSame( 'color', $leaf[ Token_Type::get_type_key() ] );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testSetTokenStoresSentinelsVerbatim(): void {
+		// brand.accent is a baseline leaf nothing aliases, so disabling it cannot dangle another token.
+		$response = $this->controller->set_token(
+			$this->token_request( 'PUT', Token_Store::default_slug(), 'primitive.color.brand.accent', [ Sentinels::get_disabled_key() => true ] )
+		);
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+		$this->assertSame( [ Sentinels::get_disabled_key() => true ], $response->get_data()['document']['primitive']['color']['brand']['accent'] );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testSetTokenRequiresATypeForANewToken(): void {
+		$response = $this->controller->set_token(
+			$this->token_request( 'PUT', Token_Store::default_slug(), 'primitive.color.brand-new-xyz', [ Sentinels::get_value_key() => '#123456' ] )
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $response );
+		$this->assertSame( 'rest_design_tokens_type_required', $response->get_error_code() );
+		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $response->get_error_data()['status'] );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testSetTokenInfersTypeForADisabledBaselineToken(): void {
+		// brand.accent is disabled in the overrides; re-enabling it with a bare $value (no $type) must
+		// still infer the type from the baseline token the disable was hiding, not reject it as new.
+		$this->store->save_document( '{"primitive":{"color":{"brand":{"accent":{"$disabled":true}}}}}' );
+
+		$response = $this->controller->set_token(
+			$this->token_request( 'PUT', Token_Store::default_slug(), 'primitive.color.brand.accent', [ Sentinels::get_value_key() => '#3182CE' ] )
+		);
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+
+		$leaf = $response->get_data()['document']['primitive']['color']['brand']['accent'];
+
+		$this->assertSame( '#3182CE', $leaf[ Sentinels::get_value_key() ] );
+		$this->assertSame( 'color', $leaf[ Token_Type::get_type_key() ] );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testSetTokenRejectsAGroupPath(): void {
+		// "primitive.color.brand" is a baseline group (primary/secondary/accent); writing one leaf there
+		// would orphan every token under it, so it is rejected with a precise error.
+		$response = $this->controller->set_token(
+			$this->token_request(
+				'PUT',
+				Token_Store::default_slug(),
+				'primitive.color.brand',
+				[
+					Token_Type::get_type_key() => 'color',
+					Sentinels::get_value_key() => '#3182CE',
+				] 
+			)
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $response );
+		$this->assertSame( 'rest_design_tokens_not_a_token', $response->get_error_code() );
+		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $response->get_error_data()['status'] );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testSetTokenRejectsNestingUnderAnExistingToken(): void {
+		// "primitive.color.brand.primary" is a baseline leaf; a token cannot be written below it.
+		$response = $this->controller->set_token(
+			$this->token_request(
+				'PUT',
+				Token_Store::default_slug(),
+				'primitive.color.brand.primary.deep',
+				[
+					Token_Type::get_type_key() => 'color',
+					Sentinels::get_value_key() => '#3182CE',
+				] 
+			)
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $response );
+		$this->assertSame( 'rest_design_tokens_not_a_token', $response->get_error_code() );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testBulkWriteThatBreaksAReferencedTokenReturns422(): void {
+		// Replacing the brand group with a single leaf removes brand.primary, which baseline semantic
+		// tokens alias. The dry-run resolver rejects the unresolvable result before it can be stored.
+		$response = $this->controller->update_item(
+			$this->write_request(
+				'PUT',
+				Token_Store::default_slug(),
+				[
+					'primitive' => [
+						'color' => [
+							'brand' => [
+								Token_Type::get_type_key() => 'color',
+								Sentinels::get_value_key() => '#3182CE',
+							],
+						],
+					],
+				] 
+			)
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $response );
+		$this->assertSame( 'rest_design_tokens_unresolvable', $response->get_error_code() );
+		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $response->get_error_data()['status'] );
+		$this->assertSame( '', $this->store->get_document( Token_Store::default_slug() ) );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testDeleteTokenRemovesTheOverrideAndPrunesEmpties(): void {
+		$this->store->save_document( '{"primitive":{"color":{"brand":{"primary":{"$type":"color","$value":"#3182CE"}}}}}' );
+
+		$response = $this->controller->delete_token(
+			$this->token_path_request( 'DELETE', Token_Store::default_slug(), 'primitive.color.brand.primary' )
+		);
+
+		$this->assertSame( WP_Http::OK, $response->get_status() );
+		// The now-empty chain is pruned, so the library reverts entirely to baseline.
+		$this->assertSame( [], $response->get_data()['document'] );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testDeleteTokenIsAnIdempotentNoOpWhenAbsent(): void {
+		$this->store->save_document( '{"primitive":{"color":{"brand":{"primary":{"$type":"color","$value":"#3182CE"}}}}}' );
+
+		$version_before = $this->store->get_version( Token_Store::default_slug() );
+
+		$response = $this->controller->delete_token(
+			$this->token_path_request( 'DELETE', Token_Store::default_slug(), 'primitive.color.brand.missing' )
+		);
+
+		$this->assertSame( WP_Http::OK, $response->get_status() );
+		// Nothing was removed, so no write happened and the version is unchanged.
+		$this->assertSame( $version_before, $this->store->get_version( Token_Store::default_slug() ) );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testDeleteTokenThatDanglesAnAliasReturns422AndPersistsNothing(): void {
+		// "ref" aliases "src"; deleting "src" would leave "ref" dangling. The same dry-run that gates the
+		// bulk writes must reject the delete before commit rather than persist an unresolvable document.
+		$stored = '{"primitive":{"color":{"src":{"$type":"color","$value":"#123456"},'
+			. '"ref":{"$type":"color","$value":"{primitive.color.src}"}}}}';
+		$this->store->save_document( $stored );
+
+		$before = $this->store->get_document( Token_Store::default_slug() );
+
+		$response = $this->controller->delete_token(
+			$this->token_path_request( 'DELETE', Token_Store::default_slug(), 'primitive.color.src' )
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $response );
+		$this->assertSame( 'rest_design_tokens_unresolvable', $response->get_error_code() );
+		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $response->get_error_data()['status'] );
+		// The dry-run rejected the delete before commit, so the override survives untouched.
+		$this->assertSame( $before, $this->store->get_document( Token_Store::default_slug() ) );
+	}
+
+	/**
+	 * DELETE on the default library responds 200, reports deleted, and clears the row to baseline
+	 * while keeping it present rather than removing it.
+	 *
+	 * @return void
+	 */
+	public function testDeleteItemResetsTheDefaultLibraryToBaselineInsteadOfRemovingIt(): void {
+		$this->store->save_document( '{"primitive":{"color":{"brand":{"primary":{"$type":"color","$value":"#3182CE"}}}}}' );
+
+		$request = new WP_REST_Request( WP_REST_Server::DELETABLE );
+		$request->set_param( 'slug', Token_Store::default_slug() );
+
+		$response = $this->controller->delete_item( $request );
+
+		$this->assertSame( WP_Http::OK, $response->get_status() );
+		$this->assertTrue( $response->get_data()['deleted'] );
+
+		// The canonical library is never removed: its row survives and now renders from baseline.
+		$this->assertTrue( $this->store->exists( Token_Store::default_slug() ) );
+		$this->assertSame( '', $this->store->get_document( Token_Store::default_slug() ) );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testWriteReturns422OnInvalidDtcg(): void {
+		$response = $this->controller->update_item(
+			$this->write_request(
+				'PUT',
+				Token_Store::default_slug(),
+				[
+					'primitive' => [
+						'color' => [
+							'bad' => [
+								Token_Type::get_type_key() => 'bogus',
+								Sentinels::get_value_key() => '#ffffff',
+							],
+						],
+					],
+				] 
+			)
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $response );
+		$this->assertSame( 'rest_design_tokens_invalid', $response->get_error_code() );
+		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $response->get_error_data()['status'] );
+		$this->assertNotEmpty( $response->get_error_data()['errors'] );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testWriteReturns422OnAliasCycleAndPersistsNothing(): void {
+		$response = $this->controller->update_item(
+			$this->write_request(
+				'PUT',
+				Token_Store::default_slug(),
+				[
+					'primitive' => [
+						'color' => [
+							'cycle-a' => [
+								Token_Type::get_type_key() => 'color',
+								Sentinels::get_value_key() => '{primitive.color.cycle-b}',
+							],
+							'cycle-b' => [
+								Token_Type::get_type_key() => 'color',
+								Sentinels::get_value_key() => '{primitive.color.cycle-a}',
+							],
+						],
+					],
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $response );
+		$this->assertSame( 'rest_design_tokens_unresolvable', $response->get_error_code() );
+		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $response->get_error_data()['status'] );
+		// The dry-run rejected the write before commit, so the store is untouched.
+		$this->assertSame( '', $this->store->get_document( Token_Store::default_slug() ) );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testWriteReturns422OnDanglingAliasAndPersistsNothing(): void {
+		$response = $this->controller->update_item(
+			$this->write_request(
+				'PUT',
+				Token_Store::default_slug(),
+				[
+					'primitive' => [
+						'color' => [
+							'x' => [
+								Token_Type::get_type_key() => 'color',
+								Sentinels::get_value_key() => '{primitive.color.does-not-exist-xyz}',
+							],
+						],
+					],
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $response );
+		$this->assertSame( 'rest_design_tokens_unresolvable', $response->get_error_code() );
+		$this->assertSame( '', $this->store->get_document( Token_Store::default_slug() ) );
+	}
+
+	/**
+	 * POST to the collection with a non-default slug creates that library and responds 201.
+	 *
+	 * @return void
+	 */
+	public function testCollectionPostCreatesANonDefaultLibrary(): void {
+		$response = $this->controller->create_item(
+			$this->write_request(
+				'POST',
+				'other-brand',
+				[
+					'primitive' => [
+						'color' => [
+							'brand' => [
+								'primary' => [
+									Token_Type::get_type_key() => 'color',
+									Sentinels::get_value_key() => '#3182CE',
+								],
+							],
+						],
+					],
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+		$this->assertSame( WP_Http::CREATED, $response->get_status() );
+		$this->assertSame( 'other-brand', $response->get_data()['slug'] );
+		$this->assertTrue( $this->store->exists( 'other-brand' ) );
+	}
+
+	/**
+	 * The collection lists every stored library plus the always-present default, even when the
+	 * default has no row of its own.
+	 *
+	 * @return void
+	 */
+	public function testCollectionListsEveryStoredLibraryAndAlwaysIncludesTheDefault(): void {
+		$this->store->save_document( '{"set":"a"}', 'brand-a' );
+		$this->store->save_document( '{"set":"b"}', 'brand-b' );
+
+		$data  = $this->controller->get_items( new WP_REST_Request( WP_REST_Server::READABLE ) )->get_data();
+		$slugs = array_column( $data, 'slug' );
+
+		// The two stored libraries plus the always-present default, which has no row of its own here.
+		$this->assertContains( Token_Store::default_slug(), $slugs );
+		$this->assertContains( 'brand-a', $slugs );
+		$this->assertContains( 'brand-b', $slugs );
+		$this->assertCount( 3, $slugs );
+	}
+
+	/**
+	 * Each collection item carries its own stored title, keyed to the right library. A non-default library
+	 * saved without one reads back an empty string rather than falling back to its slug.
+	 *
+	 * @return void
+	 */
+	public function testCollectionItemsCarryTheirOwnStoredTitleOrEmptyWhenNoneIsStored(): void {
+		$this->store->save_document( '{"set":"a"}', 'brand-a', 'Brand A' );
+		$this->store->save_document( '{"set":"b"}', 'brand-b' );
+
+		$data           = $this->controller->get_items( new WP_REST_Request( WP_REST_Server::READABLE ) )->get_data();
+		$titles_by_slug = array_column( $data, 'title', 'slug' );
+
+		$this->assertSame( 'Brand A', $titles_by_slug['brand-a'] );
+		$this->assertSame( '', $titles_by_slug['brand-b'] );
+	}
+
+	/**
+	 * The default library is served under its standing name when it has no stored title, so no client has
+	 * to supply a default of its own — including before it has a row at all.
+	 *
+	 * @return void
+	 */
+	public function testDefaultLibraryIsServedUnderItsDefaultTitleWhenUntitled(): void {
+		$data           = $this->controller->get_items( new WP_REST_Request( WP_REST_Server::READABLE ) )->get_data();
+		$titles_by_slug = array_column( $data, 'title', 'slug' );
+
+		$this->assertSame( Token_Store::default_title(), $titles_by_slug[ Token_Store::default_slug() ] );
+	}
+
+	/**
+	 * A title stored for the default library wins over its standing name, so renaming it is not undone by
+	 * the fallback.
+	 *
+	 * @return void
+	 */
+	public function testStoredDefaultLibraryTitleWinsOverTheDefaultTitle(): void {
+		$this->store->save_document( '{"set":"d"}', Token_Store::default_slug(), 'Acme Brand' );
+
+		$data           = $this->controller->get_items( new WP_REST_Request( WP_REST_Server::READABLE ) )->get_data();
+		$titles_by_slug = array_column( $data, 'title', 'slug' );
+
+		$this->assertSame( 'Acme Brand', $titles_by_slug[ Token_Store::default_slug() ] );
+	}
+
+	/**
+	 * The single-library read applies the same default, so the two routes cannot disagree about the
+	 * default library's name.
+	 *
+	 * @return void
+	 */
+	public function testItemReadAppliesTheDefaultTitleForTheUntitledDefaultLibrary(): void {
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+		$request->set_param( 'slug', Token_Store::default_slug() );
+
+		$data = $this->controller->get_item( $request )->get_data();
+
+		$this->assertSame( Token_Store::default_title(), $data['title'] );
+	}
+
+	/**
+	 * A single-library read carries the stored title too, not only the collection route.
+	 *
+	 * @return void
+	 */
+	public function testItemReadCarriesTheStoredTitle(): void {
+		$this->store->save_document( '{"set":"a"}', 'brand-a', 'Brand A' );
+
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+		$request->set_param( 'slug', 'brand-a' );
+
+		$data = $this->controller->get_item( $request )->get_data();
+
+		$this->assertSame( 'Brand A', $data['title'] );
+	}
+
+	/**
+	 * GET on a non-default slug returns that library's slug and decoded document.
+	 *
+	 * @return void
+	 */
+	public function testItReadsANonDefaultLibrary(): void {
+		$document = '{"primitive":{"color":{"brand":{"$type":"color","$value":"#112233"}}}}';
+		$this->store->save_document( $document, 'brand-b' );
+
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+		$request->set_param( 'slug', 'brand-b' );
+
+		$data = $this->controller->get_item( $request )->get_data();
+
+		$this->assertSame( 'brand-b', $data['slug'] );
+		$this->assertSame( json_decode( $document, true ), $data['document'] );
+	}
+
+	/**
+	 * DELETE on a non-default library responds 200, reports the removed library, and drops its row.
+	 *
+	 * @return void
+	 */
+	public function testDeleteItemRemovesANonDefaultLibrary(): void {
+		$this->store->save_document( '{"primitive":{"color":{"brand":{"$type":"color","$value":"#112233"}}}}', 'brand-b' );
+
+		$request = new WP_REST_Request( WP_REST_Server::DELETABLE );
+		$request->set_param( 'slug', 'brand-b' );
+
+		$response = $this->controller->delete_item( $request );
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+		$this->assertSame( WP_Http::OK, $response->get_status() );
+		$this->assertTrue( $response->get_data()['deleted'] );
+		$this->assertSame( 'brand-b', $response->get_data()['previous']['slug'] );
+		$this->assertFalse( $this->store->exists( 'brand-b' ) );
+	}
+
+	/**
+	 * DELETE on a non-default slug that was never stored responds 404 not found.
+	 *
+	 * @return void
+	 */
+	public function testDeleteItemReturnsNotFoundForAnUnknownNonDefaultLibrary(): void {
+		$request = new WP_REST_Request( WP_REST_Server::DELETABLE );
+		$request->set_param( 'slug', 'never-existed' );
+
+		$response = $this->controller->delete_item( $request );
+
+		$this->assertInstanceOf( WP_Error::class, $response );
+		$this->assertSame( 'rest_design_tokens_not_found', $response->get_error_code() );
+		$this->assertSame( WP_Http::NOT_FOUND, $response->get_error_data()['status'] );
+	}
+
+	/**
+	 * Deleting a non-default library also purges its history, leaving no orphaned snapshots.
+	 *
+	 * @return void
+	 */
+	public function testDeleteItemPurgesTheLibraryHistory(): void {
+		$history = $this->container->get( Token_History_Store::class );
+
+		// Two saves leave one archived snapshot for the library.
+		$this->store->save_document( '{"v":1}', 'brand-b' );
+		$this->store->save_document( '{"v":2}', 'brand-b' );
+		$this->assertSame( 1, $history->count( 'brand-b' ) );
+
+		$request = new WP_REST_Request( WP_REST_Server::DELETABLE );
+		$request->set_param( 'slug', 'brand-b' );
+
+		$this->controller->delete_item( $request );
+
+		// Deleting the library drops its trail too, leaving no orphaned history.
+		$this->assertSame( 0, $history->count( 'brand-b' ) );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testValidateTokenPathRejectsANonLayerRoot(): void {
+		$result = $this->controller->validate_token_path( '$extensions.foo', new WP_REST_Request( 'PUT' ), 'path' );
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'rest_invalid_param', $result->get_error_code() );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testValidateTokenPathRejectsABareLayer(): void {
+		$result = $this->controller->validate_token_path( 'primitive', new WP_REST_Request( 'PUT' ), 'path' );
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testValidateTokenPathRejectsEmptySegments(): void {
+		// The path pattern permits runs of dots and a trailing dot, which explode() turns into empty
+		// segments; each must be rejected so no token is ever keyed by an empty string.
+		foreach ( [ 'primitive..brand', 'primitive.color.', 'primitive.color..accent' ] as $path ) {
+			$result = $this->controller->validate_token_path( $path, new WP_REST_Request( 'PUT' ), 'path' );
+
+			$this->assertInstanceOf( WP_Error::class, $result, "Path '$path' should be rejected." );
+			$this->assertSame( 'rest_invalid_param', $result->get_error_code() );
+		}
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testWritesAreDeniedToUsersWithoutTheCapability(): void {
+		wp_set_current_user( $this->factory()->user->create( [ 'role' => 'subscriber' ] ) );
+
+		$request = new WP_REST_Request( WP_REST_Server::CREATABLE );
+
+		$this->assertInstanceOf( WP_Error::class, $this->controller->create_item_permissions_check( $request ) );
+		$this->assertInstanceOf( WP_Error::class, $this->controller->update_item_permissions_check( $request ) );
+		$this->assertInstanceOf( WP_Error::class, $this->controller->delete_item_permissions_check( $request ) );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testAWriteBumpsTheVersion(): void {
+		$this->store->save_document( '{"primitive":{"color":{"a":{"$type":"color","$value":"#aaaaaa"}}}}' );
+
+		$version_before = $this->store->get_version( Token_Store::default_slug() );
+
+		$this->controller->update_item(
+			$this->write_request(
+				'PUT',
+				Token_Store::default_slug(),
+				[
+					'primitive' => [
+						'color' => [
+							'a' => [
+								Token_Type::get_type_key() => 'color',
+								Sentinels::get_value_key() => '#bbbbbb',
+							],
+						],
+					],
+				] 
+			)
+		);
+
+		$this->assertNotSame( $version_before, $this->store->get_version( Token_Store::default_slug() ) );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testPatchBlocksWritingIntoPrimitiveCustomNamespace(): void {
+		$response = $this->controller->patch_item(
+			$this->write_request(
+				'PATCH',
+				Token_Store::default_slug(),
+				[
+					'primitive' => [
+						'color' => [
+							'custom' => [
+								'foo' => [
+									Token_Type::get_type_key() => 'color',
+									Sentinels::get_value_key() => '#aabbcc',
+								],
+							],
+						],
+					],
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $response );
+		$this->assertSame( 'rest_design_tokens_reserved_path', $response->get_error_code() );
+		$this->assertSame( WP_Http::FORBIDDEN, $response->get_error_data()['status'] );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testPatchBlocksWritingDeeperThanPrimitiveCustomNamespace(): void {
+		$response = $this->controller->patch_item(
+			$this->write_request(
+				'PATCH',
+				Token_Store::default_slug(),
+				[
+					'primitive' => [
+						'color' => [
+							'custom' => [
+								'foo' => [
+									'bar' => [
+										Token_Type::get_type_key() => 'color',
+										Sentinels::get_value_key() => '#aabbcc',
+									],
+								],
+							],
+						],
+					],
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $response );
+		$this->assertSame( 'rest_design_tokens_reserved_path', $response->get_error_code() );
+		$this->assertSame( WP_Http::FORBIDDEN, $response->get_error_data()['status'] );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testPatchBlocksWritingIntoReservedExtensionSection(): void {
+		$response = $this->controller->patch_item(
+			$this->write_request(
+				'PATCH',
+				Token_Store::default_slug(),
+				[
+					'$extensions' => [
+						'com.kadence.designTokens' => [
+							'userPrimitives' => [
+								'primitive.color.custom.foo' => [ 'label' => 'Foo' ],
+							],
+						],
+					],
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $response );
+		$this->assertSame( 'rest_design_tokens_reserved_path', $response->get_error_code() );
+		$this->assertSame( WP_Http::FORBIDDEN, $response->get_error_data()['status'] );
+	}
+
+	/**
+	 * PATCH with unreserved paths is allowed even when the stored document already contains user primitives.
+	 *
+	 * @return void
+	 */
+	public function testPatchWithUnreservedPathsSucceedsWhenStoredDocHasUserPrimitives(): void {
+		// Store a document that already carries a user primitive in $extensions.
+		$this->store->save_document(
+			wp_json_encode(
+				[
+					'primitive'   => [
+						'color' => [
+							'custom' => [
+								'my-color' => [
+									Token_Type::get_type_key() => 'color',
+									Sentinels::get_value_key() => '#112233',
+								],
+							],
+						],
+					],
+					'$extensions' => [
+						'com.kadence.designTokens' => [
+							'userPrimitives' => [
+								'primitive.color.custom.my-color' => [ 'label' => 'My Color' ],
+							],
+						],
+					],
+				] 
+			)
+		);
+
+		// A PATCH that only touches an unreserved path should succeed.
+		$response = $this->controller->patch_item(
+			$this->write_request(
+				'PATCH',
+				Token_Store::default_slug(),
+				[
+					'primitive' => [
+						'color' => [
+							'brand' => [
+								'primary' => [
+									Token_Type::get_type_key() => 'color',
+									Sentinels::get_value_key() => '#3182CE',
+								],
+							],
+						],
+					],
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+		$this->assertSame( WP_Http::OK, $response->get_status() );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testPutIsRejectedWhileUserPrimitivesExist(): void {
+		// Store a document that carries user primitives in $extensions.
+		$this->store->save_document(
+			wp_json_encode(
+				[
+					'primitive'   => [
+						'color' => [
+							'custom' => [
+								'my-color' => [
+									Token_Type::get_type_key() => 'color',
+									Sentinels::get_value_key() => '#112233',
+								],
+							],
+						],
+					],
+					'$extensions' => [
+						'com.kadence.designTokens' => [
+							'userPrimitives' => [
+								'primitive.color.custom.my-color' => [ 'label' => 'My Color' ],
+							],
+						],
+					],
+				] 
+			)
+		);
+
+		$response = $this->controller->update_item(
+			$this->write_request(
+				'PUT',
+				Token_Store::default_slug(),
+				[
+					'primitive' => [
+						'color' => [
+							'brand' => [
+								'primary' => [
+									Token_Type::get_type_key() => 'color',
+									Sentinels::get_value_key() => '#3182CE',
+								],
+							],
+						],
+					],
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $response );
+		$this->assertSame( 'rest_design_tokens_put_not_allowed', $response->get_error_code() );
+		$this->assertSame( WP_Http::CONFLICT, $response->get_error_data()['status'] );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testPutProceedsWhenStoredDocHasNoUserPrimitives(): void {
+		$this->store->save_document( '{"primitive":{"color":{"a":{"$type":"color","$value":"#aaaaaa"}}}}' );
+
+		$response = $this->controller->update_item(
+			$this->write_request(
+				'PUT',
+				Token_Store::default_slug(),
+				[
+					'primitive' => [
+						'color' => [
+							'b' => [
+								Token_Type::get_type_key() => 'color',
+								Sentinels::get_value_key() => '#bbbbbb',
+							],
+						],
+					],
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+		$document = $response->get_data()['document'];
+		$this->assertArrayNotHasKey( 'a', $document['primitive']['color'] );
+		$this->assertArrayHasKey( 'b', $document['primitive']['color'] );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testDeleteTokenBlocksReservedCustomPath(): void {
+		$response = $this->controller->delete_token(
+			$this->token_path_request( 'DELETE', Token_Store::default_slug(), 'primitive.color.custom.foo' )
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $response );
+		$this->assertSame( 'rest_design_tokens_reserved_path', $response->get_error_code() );
+		$this->assertSame( WP_Http::FORBIDDEN, $response->get_error_data()['status'] );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testDeleteTokenDoesNotBlockNonCustomPath(): void {
+		$this->store->save_document( '{"primitive":{"color":{"brand":{"primary":{"$type":"color","$value":"#3182CE"}}}}}' );
+
+		$response = $this->controller->delete_token(
+			$this->token_path_request( 'DELETE', Token_Store::default_slug(), 'primitive.color.brand.primary' )
+		);
+
+		// The guard does not fire — the delete proceeds normally.
+		$this->assertNotInstanceOf( WP_Error::class, $response );
+		$this->assertSame( WP_Http::OK, $response->get_status() );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testPatchBlocksAnAliasIntoTheReservedNamespaceOutsideTheSemanticLayer(): void {
+		$response = $this->controller->patch_item(
+			$this->write_request(
+				'PATCH',
+				Token_Store::default_slug(),
+				[
+					'primitive' => [
+						'color' => [
+							'brand' => [
+								'accent' => [
+									Token_Type::get_type_key() => 'color',
+									Sentinels::get_value_key() => '{primitive.color.custom.blue}',
+								],
+							],
+						],
+					],
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $response );
+		$this->assertSame( 'rest_design_tokens_reserved_path', $response->get_error_code() );
+		$this->assertSame( WP_Http::FORBIDDEN, $response->get_error_data()['status'] );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testPatchAllowsASemanticAliasIntoTheReservedNamespace(): void {
+		$this->store->save_document(
+			wp_json_encode(
+				[
+					'primitive'   => [
+						'color' => [
+							'custom' => [
+								'blue' => [
+									Token_Type::get_type_key() => 'color',
+									Sentinels::get_value_key() => '#0000ff',
+								],
+							],
+						],
+					],
+					'$extensions' => [
+						'com.kadence.designTokens' => [
+							'userPrimitives' => [
+								'primitive.color.custom.blue' => [ 'label' => 'Blue' ],
+							],
+						],
+					],
+				]
+			)
+		);
+
+		$response = $this->controller->patch_item(
+			$this->write_request(
+				'PATCH',
+				Token_Store::default_slug(),
+				[
+					'semantic' => [
+						'color' => [
+							'accent' => [
+								Token_Type::get_type_key() => 'color',
+								Sentinels::get_value_key() => '{primitive.color.custom.blue}',
+							],
+						],
+					],
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+		$this->assertSame( WP_Http::OK, $response->get_status() );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testSetTokenRejectsAnUnsupportedAliasIntoTheUserPrimitiveNamespace(): void {
+		$this->store->save_document(
+			wp_json_encode(
+				[
+					'primitive'   => [
+						'color' => [
+							'custom' => [
+								'blue' => [
+									Token_Type::get_type_key() => 'color',
+									Sentinels::get_value_key() => '#0000ff',
+								],
+							],
+						],
+					],
+					'$extensions' => [
+						'com.kadence.designTokens' => [
+							'userPrimitives' => [
+								'primitive.color.custom.blue' => [ 'label' => 'Blue' ],
+							],
+						],
+					],
+				]
+			)
+		);
+
+		// A PUT to a single baseline-layer token whose $value aliases a user primitive from outside the
+		// semantic layer must be rejected, even though set_token() never runs guard_reserved_in_partial().
+		$response = $this->controller->set_token(
+			$this->token_request(
+				'PUT',
+				Token_Store::default_slug(),
+				'primitive.color.brand.accent',
+				[
+					Token_Type::get_type_key() => 'color',
+					Sentinels::get_value_key() => '{primitive.color.custom.blue}',
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $response );
+		$this->assertSame( 'rest_design_tokens_user_primitive_reference_unsupported', $response->get_error_code() );
+		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $response->get_error_data()['status'] );
+	}
+
+	/**
+	 * The rename route is registered under the library, accepts every write verb a WordPress client is
+	 * likely to reach for, and exposes a schema. Setting a title is idempotent, so POST and PATCH are as
+	 * correct as PUT here and all three share one handler.
+	 *
+	 * @return void
+	 */
+	public function testItRegistersTheTitleRoute(): void {
+		$namespace   = $this->controller_namespace();
+		$base        = $this->controller_rest_base();
+		$slug_route  = $this->controller_constant( 'SLUG_ROUTE' );
+		$title_route = $this->controller_constant( 'TITLE_ROUTE' );
+
+		$route   = "/$namespace/$base/$slug_route/$title_route";
+		$methods = $this->route_methods( $route );
+
+		$this->assertContains( 'PUT', $methods );
+		$this->assertContains( 'POST', $methods );
+		$this->assertContains( 'PATCH', $methods );
+		$this->assertContains( 'GET', $methods );
+
+		$options = $this->rest_server->get_route_options( $route );
+		$this->assertArrayHasKey( 'schema', $options );
+		$this->assertIsCallable( $options['schema'] );
+	}
+
+	/**
+	 * Reading the title resource returns the stored label for that library.
+	 *
+	 * @return void
+	 */
+	public function testGetTitleReturnsTheStoredTitle(): void {
+		$this->store->save_document( '{"set":"a"}', 'brand-a', 'Winter 2026' );
+
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+		$request->set_param( 'slug', 'brand-a' );
+
+		$data = $this->controller->get_title( $request )->get_data();
+
+		$this->assertSame( 'brand-a', $data['slug'] );
+		$this->assertSame( 'Winter 2026', $data['title'] );
+	}
+
+	/**
+	 * A library with no stored label reads back an empty title rather than its slug, so a client can tell
+	 * "unnamed" from "named after its slug".
+	 *
+	 * @return void
+	 */
+	public function testGetTitleReturnsEmptyForAnUntitledLibrary(): void {
+		$this->store->save_document( '{"set":"a"}', 'brand-a' );
+
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+		$request->set_param( 'slug', 'brand-a' );
+
+		$this->assertSame( '', $this->controller->get_title( $request )->get_data()['title'] );
+	}
+
+	/**
+	 * Reading the title of a library that does not exist is a 404, matching what renaming one returns, so
+	 * both halves of the resource agree on which libraries exist.
+	 *
+	 * @return void
+	 */
+	public function testGetTitleReturnsNotFoundForAnUnknownLibrary(): void {
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+		$request->set_param( 'slug', 'ghost' );
+
+		$response = $this->controller->get_title( $request );
+
+		$this->assertInstanceOf( WP_Error::class, $response );
+		$this->assertSame( WP_Http::NOT_FOUND, $response->get_error_data()['status'] );
+	}
+
+	/**
+	 * The title read reflects a rename immediately, so the two halves of the resource cannot disagree.
+	 *
+	 * @return void
+	 */
+	public function testGetTitleReflectsARename(): void {
+		$this->store->save_document( '{"set":"a"}', 'brand-a', 'Winter 2026' );
+		$this->controller->update_title( $this->title_request( 'brand-a', 'Spring 2027' ) );
+
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+		$request->set_param( 'slug', 'brand-a' );
+
+		$this->assertSame( 'Spring 2027', $this->controller->get_title( $request )->get_data()['title'] );
+	}
+
+	/**
+	 * Renaming a library writes its label and leaves its stored document and version alone.
+	 *
+	 * @return void
+	 */
+	public function testUpdateTitleWritesTheLabelWithoutTouchingTheDocument(): void {
+		$document = '{"primitive":{"color":{"a":{"$type":"color","$value":"#aaaaaa"}}}}';
+		$this->store->save_document( $document, 'brand-a', 'Brand A' );
+		$version = $this->store->get_version( 'brand-a' );
+
+		$response = $this->controller->update_title( $this->title_request( 'brand-a', 'Winter 2026' ) );
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+		$this->assertSame( WP_Http::OK, $response->get_status() );
+		$this->assertSame( 'Winter 2026', $this->store->get_title( 'brand-a' ) );
+		$this->assertSame( $document, $this->store->get_document( 'brand-a' ) );
+		// The version drives the projected-CSS cache key. A label is in no projection, so renaming
+		// must not invalidate anything downstream.
+		$this->assertSame( $version, $this->store->get_version( 'brand-a' ) );
+	}
+
+	/**
+	 * A library whose stored document would fail validation can still be renamed.
+	 *
+	 * This is the reason the route exists. Sending a title alongside an empty document to a bulk
+	 * write route merges and re-validates the whole stored document, so a library holding anything
+	 * the validator rejects becomes impossible to rename — for reasons that have nothing to do with
+	 * the new name. The document here is deliberately not even valid JSON, which is a stronger
+	 * statement than "invalid DTCG": the rename must not read it at all.
+	 *
+	 * @return void
+	 */
+	public function testUpdateTitleSucceedsWhenTheStoredDocumentIsNotValidJson(): void {
+		$corrupt = '{ this is not json';
+		$this->store->save_document( $corrupt, 'brand-a', 'Brand A' );
+
+		$response = $this->controller->update_title( $this->title_request( 'brand-a', 'Winter 2026' ) );
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+		$this->assertSame( WP_Http::OK, $response->get_status() );
+		$this->assertSame( 'Winter 2026', $this->store->get_title( 'brand-a' ) );
+		$this->assertSame( $corrupt, $this->store->get_document( 'brand-a' ) );
+	}
+
+	/**
+	 * The default library can be renamed even though it has no row until something is written to it.
+	 *
+	 * @return void
+	 */
+	public function testUpdateTitleNamesTheDefaultLibraryOnItsFirstWrite(): void {
+		$slug = Token_Store::default_slug();
+
+		$this->assertFalse( $this->store->exists( $slug ) );
+
+		$response = $this->controller->update_title( $this->title_request( $slug, 'Our Brand' ) );
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+		$this->assertSame( 'Our Brand', $this->store->get_title( $slug ) );
+		// Named, but still rendering from baseline — naming a library is not authoring one.
+		$this->assertSame( '', $this->store->get_document( $slug ) );
+	}
+
+	/**
+	 * A blank or whitespace-only title is refused rather than stored or silently ignored.
+	 *
+	 * @dataProvider blankTitleProvider
+	 *
+	 * @param string $title The rejected title.
+	 *
+	 * @return void
+	 */
+	public function testUpdateTitleRejectsABlankTitle( string $title ): void {
+		$this->store->save_document( '{}', 'brand-a', 'Brand A' );
+
+		$response = $this->controller->update_title( $this->title_request( 'brand-a', $title ) );
+
+		$this->assertInstanceOf( WP_Error::class, $response );
+		$this->assertSame( 'rest_design_tokens_invalid_title', $response->get_error_code() );
+		$this->assertSame( WP_Http::BAD_REQUEST, $response->get_error_data()['status'] );
+		$this->assertSame( 'Brand A', $this->store->get_title( 'brand-a' ) );
+	}
+
+	/**
+	 * Titles that are empty once trimmed.
+	 *
+	 * @return Generator
+	 */
+	public function blankTitleProvider(): Generator {
+		yield 'empty' => [ 'title' => '' ];
+		yield 'spaces' => [ 'title' => '   ' ];
+		yield 'tab and newline' => [ 'title' => "\t\n" ];
+	}
+
+	/**
+	 * Renaming a library that does not exist is a 404, not a silent create.
+	 *
+	 * @return void
+	 */
+	public function testUpdateTitleIsNotFoundForAnUnknownLibrary(): void {
+		$response = $this->controller->update_title( $this->title_request( 'ghost', 'Ghost' ) );
+
+		$this->assertInstanceOf( WP_Error::class, $response );
+		$this->assertSame( 'rest_design_tokens_not_found', $response->get_error_code() );
+		$this->assertSame( WP_Http::NOT_FOUND, $response->get_error_data()['status'] );
+		$this->assertFalse( $this->store->exists( 'ghost' ) );
+	}
+
+	/**
+	 * A surrounding-whitespace title is stored trimmed.
+	 *
+	 * @return void
+	 */
+	public function testUpdateTitleTrimsSurroundingWhitespace(): void {
+		$this->store->save_document( '{}', 'brand-a', 'Brand A' );
+
+		$this->controller->update_title( $this->title_request( 'brand-a', '  Winter 2026  ' ) );
+
+		$this->assertSame( 'Winter 2026', $this->store->get_title( 'brand-a' ) );
+	}
+
+	/**
+	 * Build a rename request carrying the slug and the new title.
+	 *
+	 * @param string $slug  The token library slug.
+	 * @param string $title The new label.
+	 *
+	 * @return WP_REST_Request
+	 */
+	private function title_request( string $slug, string $title ): WP_REST_Request {
+		$request = new WP_REST_Request( 'PUT' );
+		$request->set_param( 'slug', $slug );
+		$request->set_param( 'title', $title );
+
+		return $request;
+	}
+
+	/**
+	 * Build a bulk-write request carrying the slug, document and optional title as parameters.
+	 *
+	 * @param string               $method   The HTTP method.
+	 * @param string               $slug     The token library slug.
+	 * @param array<string, mixed> $document The DTCG document body.
+	 * @param string               $title    Optional label.
+	 *
+	 * @return WP_REST_Request
+	 */
+	private function write_request( string $method, string $slug, array $document, string $title = '' ): WP_REST_Request {
+		$request = new WP_REST_Request( $method );
+		$request->set_param( 'slug', $slug );
+		$request->set_param( 'document', $document );
+
+		if ( $title !== '' ) {
+			$request->set_param( 'title', $title );
+		}
+
+		return $request;
+	}
+
+	/**
+	 * Build a single-token write request: slug and path as params, the bare leaf as the JSON body.
+	 *
+	 * @param string               $method The HTTP method.
+	 * @param string               $slug   The token library slug.
+	 * @param string               $path   The token dot-path.
+	 * @param array<string, mixed> $leaf   The DTCG leaf body.
+	 *
+	 * @return WP_REST_Request
+	 */
+	private function token_request( string $method, string $slug, string $path, array $leaf ): WP_REST_Request {
+		$request = $this->token_path_request( $method, $slug, $path );
+		$request->set_body( (string) wp_json_encode( $leaf ) );
+		$request->set_header( 'Content-Type', 'application/json' );
+
+		return $request;
+	}
+
+	/**
+	 * Build a single-token request carrying just the slug and path (no body), for deletes.
+	 *
+	 * @param string $method The HTTP method.
+	 * @param string $slug   The token library slug.
+	 * @param string $path   The token dot-path.
+	 *
+	 * @return WP_REST_Request
+	 */
+	private function token_path_request( string $method, string $slug, string $path ): WP_REST_Request {
+		$request = new WP_REST_Request( $method );
+		$request->set_param( 'slug', $slug );
+		$request->set_param( 'path', $path );
+
+		return $request;
+	}
+
+	/**
+	 * Collect every HTTP method a registered route accepts across all of its endpoints.
+	 *
+	 * @param string $route The registered route pattern.
+	 *
+	 * @return string[]
+	 */
+	private function route_methods( string $route ): array {
+		$methods = [];
+
+		foreach ( $this->rest_server->get_routes()[ $route ] ?? [] as $endpoint ) {
+			if ( isset( $endpoint['methods'] ) && is_array( $endpoint['methods'] ) ) {
+				$methods = array_merge( $methods, array_keys( array_filter( $endpoint['methods'] ) ) );
+			}
+		}
+
+		return $methods;
+	}
+
+	/**
+	 * The REST namespace the controller registers under, read off the instance so the tests do not
+	 * hardcode it.
+	 *
+	 * @return string
+	 */
+	private function controller_namespace(): string {
+		return $this->controller_property( 'namespace' );
+	}
+
+	/**
+	 * The rest base the controller registers under, read off the instance so the tests do not hardcode it.
+	 *
+	 * @return string
+	 */
+	private function controller_rest_base(): string {
+		return $this->controller_property( 'rest_base' );
+	}
+
+	/**
+	 * Read a protected property off the controller instance.
+	 *
+	 * @param string $property The property name.
+	 *
+	 * @return string
+	 */
+	private function controller_property( string $property ): string {
+		$reflection = new ReflectionProperty( $this->controller, $property );
+		$reflection->setAccessible( true );
+
+		return (string) $reflection->getValue( $this->controller );
+	}
+
+	/**
+	 * Read a class constant off the controller, so route segments are asserted from their single source.
+	 *
+	 * @param string $name The constant name.
+	 *
+	 * @return string
+	 */
+	private function controller_constant( string $name ): string {
+		return (string) ( new ReflectionClass( $this->controller ) )->getConstant( $name );
+	}
+}

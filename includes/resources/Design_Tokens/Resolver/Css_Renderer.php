@@ -1,0 +1,103 @@
+<?php declare( strict_types=1 );
+
+namespace KadenceWP\KadenceBlocks\Design_Tokens\Resolver;
+
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Token_Type;
+use KadenceWP\KadenceBlocks\Utils\Cast;
+
+/**
+ * Renders an already-flattened (alias-free) DTCG value to a CSS-ready string,
+ * dispatching on $type. Input is the literal produced by Token_Resolver — never an alias.
+ *
+ * @since TBD
+ */
+final class Css_Renderer {
+
+	/**
+	 * @param mixed $value Literal scalar, list, or composite array.
+	 */
+	public function render( string $type, $value ): string {
+		switch ( $type ) {
+			case Token_Type::get_type_font_family():
+				return $this->font_family( $value );
+			case Token_Type::get_type_shadow():
+				return $this->shadow( $value );
+			case Token_Type::get_type_color():
+			case Token_Type::get_type_dimension():
+			default:
+				return Cast::to_string( $value );
+		}
+	}
+
+	/**
+	 * Render a structured clamp to "clamp(<min>, <preferred>, <max>)" from already-rendered slot strings.
+	 * The resolver flattens each slot (following any alias, or preserving it as a var() reference for the
+	 * projection form) before handing the strings here.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $min       The rendered minimum-bound slot.
+	 * @param string $preferred The rendered preferred (fluid) slot.
+	 * @param string $max       The rendered maximum-bound slot.
+	 *
+	 * @return string
+	 */
+	public function clamp( string $min, string $preferred, string $max ): string {
+		return sprintf( 'clamp(%s, %s, %s)', $min, $preferred, $max );
+	}
+
+	/**
+	 * @param mixed $value string[] of family names, or a single string.
+	 */
+	private function font_family( $value ): string {
+		if ( is_array( $value ) ) {
+			$families = array_map(
+				static function ( $family ): string {
+					$name = Cast::to_string( $family );
+
+					return strpos( $name, ' ' ) !== false ? '"' . $name . '"' : $name;
+				},
+				$value
+			);
+
+			return implode( ', ', $families );
+		}
+
+		return Cast::to_string( $value );
+	}
+
+	/**
+	 * Render a shadow composite to "<offsetX> <offsetY> <blur> <spread> <color>", prefixed with
+	 * "inset " when the optional "inset" sub-field is present and strictly true.
+	 *
+	 * v1 supports a single shadow object. DTCG also permits a $value that is an array of
+	 * shadow objects (stacked box-shadows); that shape is intentionally not handled here —
+	 * Token_Resolver passes a list through untouched, and supporting it is a follow-up that
+	 * would change this method (join each layer with ", ") and the resolver's list handling.
+	 *
+	 * @param mixed|array{color: string, offsetX: string, offsetY: string, blur: string, spread: string, inset?: bool} $value
+	 *              The resolved shadow shape; typed loosely so a malformed (non-array) token still degrades to "".
+	 */
+	private function shadow( $value ): string {
+		// Render only a single shadow object (an associative map). A non-array, an empty array, or a
+		// list-shaped value (a stacked-shadow array of objects, not supported in v1) has no single
+		// offsetX/offsetY/… to read, so emit nothing rather than a "0 0 0 0" shaped from missing keys.
+		if ( ! is_array( $value ) || $value === [] || array_keys( $value ) === range( 0, count( $value ) - 1 ) ) {
+			return '';
+		}
+
+		$shorthand = trim( sprintf(
+			'%s %s %s %s %s',
+			$value['offsetX'] ?? '0',
+			$value['offsetY'] ?? '0',
+			$value['blur']    ?? '0',
+			$value['spread']  ?? '0',
+			$value['color']   ?? ''
+		) );
+
+		// "inset" is optional and, unlike the required fields, only ever a strict boolean (Composite_Value
+		// rejects anything else at write time) — so absent, false, or a malformed value all fall through
+		// to the plain shorthand, keeping every pre-existing shadow token byte-identical.
+		return ( $value['inset'] ?? null ) === true ? 'inset ' . $shorthand : $shorthand;
+	}
+}

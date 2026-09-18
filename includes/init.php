@@ -6,6 +6,8 @@
  * @package Kadence Blocks
  */
 
+// cspell:ignore editorwidth yourtheme iconset wpmlcore getresponse lotte Sashicons .
+
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -98,14 +100,9 @@ function kadence_blocks_post_block_get_excerpt_length() {
  */
 function kadence_blocks_add_global_gutenberg_inline_styles() {
 	global $content_width;
-	$font_sizes = array(
-		'sm' => 'clamp(0.8rem, 0.73rem + 0.217vw, 0.9rem)',
-		'md' => 'clamp(1.1rem, 0.995rem + 0.326vw, 1.25rem)',
-		'lg' => 'clamp(1.75rem, 1.576rem + 0.543vw, 2rem)',
-		'xl' => 'clamp(2.25rem, 1.728rem + 1.63vw, 3rem)',
-		'xxl' => 'clamp(2.5rem, 1.456rem + 3.26vw, 4rem)',
-		'xxxl' => 'clamp(2.75rem, 0.489rem + 7.065vw, 6rem)',
-	);
+	// The fluid font-size scale is owned by the design-tokens baseline; retrieve it so the shipped clamp()
+	// values are not duplicated here. Empty when token projection is unavailable, leaving the filter intact.
+	$font_sizes = kadence_blocks_variable_font_size_scale();
 	$font_sizes = apply_filters( 'kadence_blocks_variable_font_sizes', $font_sizes );
 	$css = ':root {';
 	foreach ( $font_sizes as $key => $value ) {
@@ -133,17 +130,14 @@ function kadence_blocks_add_global_gutenberg_inline_styles() {
 		}';
 		$css .= '.kb-header-container { --global-content-width: var(--wp--style--global--wide-size, var(--wp--style--global--content-size)) }';
 	}
-	$css .= ':root {
-		--global-kb-spacing-xxs: 0.5rem;
-		--global-kb-spacing-xs: 1rem;
-		--global-kb-spacing-sm: 1.5rem;
-		--global-kb-spacing-md: 2rem;
-		--global-kb-spacing-lg: 3rem;
-		--global-kb-spacing-xl: 4rem;
-		--global-kb-spacing-xxl: 5rem;
-		--global-kb-spacing-3xl: 6.5rem;
-		--global-kb-spacing-4xl: 8rem;
-		--global-kb-spacing-5xl: 10rem;
+	// The spacing scale is owned by the design-tokens baseline; retrieve it so the shipped literals are not
+	// duplicated here. Empty when token projection is unavailable, leaving blocks on their own
+	// var(--global-kb-spacing-*, <rem>) fallbacks.
+	$spacing_css = '';
+	foreach ( kadence_blocks_variable_spacing_scale() as $spacing_slug => $spacing_value ) {
+		$spacing_css .= '--global-kb-spacing-' . $spacing_slug . ':' . $spacing_value . ';';
+	}
+	$css .= ':root {' . $spacing_css . '
 		--global-row-edge-sm: 15px;
 		--global-row-edge-theme: var(--global-content-edge-padding);
 		--global-kb-gutter-sm: 1rem;
@@ -217,14 +211,9 @@ add_action( 'admin_init', 'kadence_blocks_update_global_gutenberg_inline_styles_
  * Add global styles into the frontend.
  */
 function kadence_blocks_add_global_gutenberg_styles_frontend() {
-	$font_sizes = array(
-		'sm' => 'clamp(0.8rem, 0.73rem + 0.217vw, 0.9rem)',
-		'md' => 'clamp(1.1rem, 0.995rem + 0.326vw, 1.25rem)',
-		'lg' => 'clamp(1.75rem, 1.576rem + 0.543vw, 2rem)',
-		'xl' => 'clamp(2.25rem, 1.728rem + 1.63vw, 3rem)',
-		'xxl' => 'clamp(2.5rem, 1.456rem + 3.26vw, 4rem)',
-		'xxxl' => 'clamp(2.75rem, 0.489rem + 7.065vw, 6rem)',
-	);
+	// The fluid font-size scale is owned by the design-tokens baseline; retrieve it so the shipped clamp()
+	// values are not duplicated here. Empty when token projection is unavailable, leaving the filter intact.
+	$font_sizes = kadence_blocks_variable_font_size_scale();
 	$font_sizes = apply_filters( 'kadence_blocks_variable_font_sizes', $font_sizes );
 	$css = ':root {';
 	foreach ( $font_sizes as $key => $value ) {

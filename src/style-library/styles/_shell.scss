@@ -1,0 +1,123 @@
+@use "mixins" as mixins;
+
+// Neutralize wp-admin chrome spacing that fights a full-height locked frame.
+body.kadence-blocks-style-library-page {
+	#wpcontent {
+		padding-left: 0;
+	}
+
+	#wpbody-content {
+		padding-bottom: 0;
+	}
+
+	.kadence-blocks-style-library-wrap {
+		margin: 0;
+	}
+
+	// #wpfooter renders outside #wpbody-content/#wpbody/#wpcontent (a body-level sibling, not a
+	// descendant the app's own root can reach), so it is hidden here rather than from the app's
+	// own markup. It costs the app viewport space the design has no room for.
+	#wpfooter {
+		display: none;
+	}
+
+	// Core stacks popovers above modals — `.components-popover` is z-index 1000000 while
+	// `.components-modal__screen-overlay` is 100000 — so a Popover that is still open when a modal
+	// opens floats over the modal's dim layer instead of being covered by it. The header's library
+	// dropdown does exactly that: open it, click Rename or Delete, and the menu stays drawn on top
+	// of the dialog.
+	//
+	// Core's ordering is deliberate, not a bug: it is what lets a popover opened *from inside* a
+	// modal (a color picker, a dropdown in a modal form) render above it. So this override is
+	// scoped to this admin page rather than applied globally. Modals portal to `document.body`,
+	// which carries this page's body class, so the rule still reaches them even though they render
+	// far outside the app root.
+	//
+	// The consequence to know about: on this page, a popover opened from inside one of these
+	// modals would now be covered by the modal it belongs to. None of the library modals contains
+	// one today — the delete modal's successor picker is a native `<select>`, which the browser
+	// draws in its own layer and z-index cannot touch. A modal that needs a real popover inside it
+	// will have to raise that popover above this value.
+	.components-modal__screen-overlay {
+		z-index: 1000001;
+	}
+}
+
+.kadence-blocks-style-library-root {
+	min-height: var(--kb-sl-size-shell-min-height);
+
+	// wp-admin styles ul/li globally; reset it here so it can't leak into the app. `display` is
+	// deliberately NOT reset for every `<li>` — a blanket `li { display: block }` selector (one
+	// class + one element) outranks a component's own single-class rule regardless of source order,
+	// so `ListRow` could never win the flex layout it declares. Only the nav item wants block, so
+	// that lives on its own class below instead.
+	ul,
+	li {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.kadence-blocks-style-library__nav-item {
+		display: block;
+	}
+}
+
+.kadence-blocks-style-library__shell {
+	display: flex;
+	flex-direction: column;
+	@include mixins.app-viewport-height;
+	overflow: hidden;
+	// The containing block for the busy scrim below, which covers the whole frame.
+	position: relative;
+}
+
+// Laid over the entire frame while the app's content is being replaced — opening a different
+// library swaps the values behind every screen at once, so a spinner tucked beside the selector
+// understates what is happening and leaves the stale content looking current and clickable.
+//
+// Translucent rather than opaque, so the frame stays visible and the app reads as busy rather than
+// as gone. The low z-index is deliberate: it lives inside the shell's own stacking context, so it
+// covers the app and nothing else — never wp-admin's chrome, and never a modal.
+.kadence-blocks-style-library__blocker {
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: var(--kb-sl-color-scrim);
+	// Blocks every pointer interaction underneath for the duration. Keyboard focus can still reach
+	// the covered controls, which is a known gap — the operations they start are all guarded by
+	// their own busy checks, so the worst case is a queued request, not a corrupt state.
+	cursor: progress;
+}
+
+.kadence-blocks-style-library__loading {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	@include mixins.app-viewport-height;
+}
+
+// Core's own `.components-snackbar-list` rule (`position: absolute; width: 100%;`, no offsets) only
+// produces a visible toast inside the block editor, whose own chrome supplies the positioned,
+// bounded ancestor that rule expects. This admin page has no such ancestor, so without this rule the
+// list renders in normal document flow — at the bottom of the app's own content, not the viewport —
+// and ends up entirely below the fold on any screen where the app's content reaches close to the
+// window's height. Pinning it to the viewport with `fixed` sidesteps the ancestor entirely, the same
+// way `wp-admin`'s own toasts anchor to the window regardless of where they're mounted in the DOM.
+.kadence-blocks-style-library__snackbars {
+	position: fixed;
+	inset-inline: 0;
+	bottom: 16px;
+
+	// Core's own `.components-snackbar` is a content-sized pill, but its containing elements
+	// (`.components-snackbar-list__notice-container`, the transition group's own wrapper) are all
+	// block-level and stretch to this list's full width — so the pill sits flush against the left
+	// edge with nothing to center it. Centering the pill itself, rather than trying to center its
+	// ancestors, works regardless of which one actually ends up full-width.
+	.components-snackbar {
+		margin-inline: auto;
+	}
+}
