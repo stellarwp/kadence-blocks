@@ -85,6 +85,23 @@
 	}
 }
 
+/*
+ * The shadow control's own sheet, wider than the shared 260px. Its Custom tab puts X/Y/Blur/Spread
+ * across one row, and at 260px each field is too narrow to show its digits beside the browser's
+ * native spinner: a two-digit value is clipped to its first, so the field reads `1` while the value
+ * is really 18 and the number looks stuck even though the preview keeps moving. 330px is what it
+ * takes for all four to show `-100`, the widest value these axes realistically hold.
+ *
+ * Only this control is widened. The color control's popover deliberately pins itself to the same
+ * 260px as the token field (see `.kb-color-control__popover` below), so widening the shared rule
+ * would split that pair apart.
+ */
+.kb-box-shadow-control__popover {
+	.components-popover__content {
+		min-width: 330px;
+	}
+}
+
 // The tab bar: a gray-300 divider under the tabs, a theme-color underline on the active tab, each tab
 // showing its icon beside the label.
 .kadence-token-field__tabs {

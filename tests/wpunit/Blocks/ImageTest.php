@@ -233,6 +233,37 @@ class ImageTest extends KadenceBlocksUnit {
 	}
 
 	/**
+	 * An image with a box shadow and no border settings emits no border declaration of its own, so the
+	 * only border width reaching the rendered `<img>` is the zero the projected block-default rule falls
+	 * back to. Guards the light outline that appeared between an image and its shadow when that fallback
+	 * was the brand border width.
+	 *
+	 * @return void
+	 */
+	public function testShadowOnlyImageEmitsNoBorderDeclaration(): void {
+		$output = $this->render_image(
+			[
+				'displayBoxShadow' => true,
+				'boxShadow'        => [
+					[
+						'color'   => '#000000',
+						'opacity' => 0.2,
+						'hOffset' => 6,
+						'vOffset' => 6,
+						'blur'    => 14,
+						'spread'  => 0,
+						'inset'   => false,
+					],
+				],
+			]
+		);
+
+		$this->assertStringContainsString( 'box-shadow:6px 6px 14px 0px rgba(0, 0, 0, 0.2)', $output );
+		$this->assertStringNotContainsString( 'border-width', $output );
+		$this->assertStringNotContainsString( 'border-style', $output );
+	}
+
+	/**
 	 * The `boxShadow` attribute default as `block.json` actually registers it.
 	 *
 	 * Read from the schema rather than spelled out here on purpose. These tests stand in for a saved
