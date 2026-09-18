@@ -25,6 +25,7 @@ jest.mock('@wordpress/components', () => ({
 		</button>
 	),
 	Icon: ({ icon, ...props }) => <span {...props}>{icon}</span>,
+	Tooltip: ({ children }) => children,
 	Dropdown: ({ renderToggle, renderContent }) => (
 		<>
 			{renderToggle({ isOpen: true, onToggle: () => {} })}
@@ -74,7 +75,13 @@ jest.mock('@wordpress/components', () => ({
 	),
 }));
 
-jest.mock('@wordpress/icons', () => ({ globe: 'globe', settings: 'settings', undo: 'undo', shadow: 'shadow-glyph' }));
+jest.mock('@wordpress/icons', () => ({
+	globe: 'globe',
+	settings: 'settings',
+	undo: 'undo',
+	shadow: 'shadow-glyph',
+	caution: 'caution',
+}));
 jest.mock('@wordpress/i18n', () => ({
 	__: (text) => text,
 	sprintf: (format, ...args) => format.replace(/%s/g, () => args.shift()),
@@ -202,6 +209,28 @@ describe('BoxShadowControl trigger', () => {
 		renderControl({ value: '{primitive.shadow.md}' });
 
 		expect(trigger().querySelector('.kadence-token-field__label').textContent).toBe('Medium');
+	});
+
+	/**
+	 * An alias whose token the library has since deleted keeps its alias but renders as the block's
+	 * default shadow. The trigger reads a muted "Reverted to default" with a hint glyph, never the raw
+	 * dot path, and the list explains the missing token.
+	 *
+	 * @return {void}
+	 */
+	it('reads "Reverted to default" with a hint for a stale alias, not the dot path', () => {
+		renderControl({ value: '{primitive.shadow.custom.shadow}' });
+
+		const label = trigger().querySelector('.kadence-token-field__label');
+
+		expect(label.textContent).toBe('Reverted to default');
+		expect(label.classList.contains('kadence-token-field__label--default')).toBe(true);
+		expect(trigger().querySelector('.kadence-token-field__stale')).not.toBeNull();
+		expect(trigger().textContent).not.toContain('primitive.shadow.custom.shadow');
+		expect(container.querySelector('.kadence-token-field__stale-note').textContent).toContain(
+			'deleted from the Style Library'
+		);
+		expect(container.textContent).not.toContain('primitive.shadow.custom.shadow');
 	});
 
 	/**

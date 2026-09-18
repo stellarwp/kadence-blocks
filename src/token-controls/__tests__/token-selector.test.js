@@ -15,10 +15,19 @@ import { TokenSelector } from '../organisms/TokenSelector';
 // than the top-level `react-dom/client` this test renders with, which trips React's "Invalid hook
 // call" guard. Stand-ins sidestep that; this test only needs the trigger button.
 jest.mock('@wordpress/components', () => ({
-	Button: ({ children, showTooltip, ...props }) => <button {...props}>{children}</button>,
+	// `label` is forwarded as `aria-label`, the attribute the real Button falls back to for its accessible
+	// name, so a test reads what a screen reader would rather than a non-DOM prop leaked onto the node.
+	Button: ({ children, showTooltip, label, ...props }) => (
+		<button {...props} aria-label={label}>
+			{children}
+		</button>
+	),
 	Dropdown: ({ renderToggle }) => renderToggle({ isOpen: false, onToggle: () => {} }),
 	Tooltip: ({ children }) => children,
+	Icon: ({ icon, ...props }) => <span {...props}>{icon}</span>,
 }));
+
+jest.mock('@wordpress/icons', () => ({ caution: 'caution' }));
 
 jest.mock('../molecules/TokenPopover', () => ({ TokenPopover: () => null }));
 jest.mock('../styles/token-controls.scss', () => ({}), { virtual: true });
@@ -83,6 +92,47 @@ describe('TokenSelector disabled state', () => {
 	 */
 	it('leaves the trigger active by default', () => {
 		expect(renderSelector().disabled).toBe(false);
+	});
+});
+
+describe('TokenSelector stale alias', () => {
+	const RADIUS_TOKENS = [
+		{ id: 'primitive.dimension.radius-sm', label: 'Small', value: '4px', alias: '{primitive.dimension.radius-sm}' },
+	];
+
+	/**
+	 * A slot bound to a token the library has since deleted keeps its alias, but renders as the block's
+	 * default. The trigger says so — muted "Reverted to default" plus the fallback value and a hint
+	 * glyph — instead of echoing the raw dot path.
+	 *
+	 * @return {void}
+	 */
+	it('reads "Reverted to default" with the fallback value and a hint, not the raw dot path', () => {
+		const trigger = renderSelector({
+			value: '{primitive.dimension.custom.radius}',
+			tokens: RADIUS_TOKENS,
+			unit: 'px',
+			defaultValue: '4px',
+		});
+
+		expect(trigger.textContent).toContain('Reverted to default');
+		expect(trigger.textContent).toContain('4px');
+		expect(trigger.textContent).not.toContain('Small');
+		expect(trigger.querySelector('.kadence-token-field__label--default')).not.toBeNull();
+		expect(trigger.querySelector('.kadence-token-field__stale')).not.toBeNull();
+	});
+
+	/**
+	 * The trigger's accessible name carries the explanation, without echoing the dead token id.
+	 *
+	 * @return {void}
+	 */
+	it('explains the deleted token in the trigger name without echoing its id', () => {
+		const trigger = renderSelector({ value: '{primitive.dimension.custom.radius}', tokens: RADIUS_TOKENS });
+
+		expect(trigger.getAttribute('aria-label')).toContain('deleted from the Style Library');
+		expect(trigger.getAttribute('aria-label')).not.toContain('primitive.dimension.custom.radius');
+		expect(trigger.querySelector('.kadence-token-field__label').textContent).toBe('Reverted to default');
 	});
 });
 

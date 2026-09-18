@@ -66,6 +66,8 @@
 }
 
 .kadence-token-field__label {
+	// Pushes the value to the far edge, so the stale-alias hint before the label stays beside it.
+	margin-right: auto;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
@@ -402,6 +404,10 @@
 	white-space: nowrap;
 }
 
+.kadence-token-chip__label--default {
+	color: #949494;
+}
+
 .kadence-token-chip__unlink.components-button {
 	min-width: 0;
 	padding: 0;
@@ -420,6 +426,39 @@
 
 .kadence-token-field__label--default {
 	color: #949494;
+}
+
+// The stale-alias hint: a caution glyph beside the muted label, carrying the explanation as a tooltip.
+.kadence-token-field__stale {
+	display: inline-flex;
+	flex: 0 0 auto;
+	align-items: center;
+	color: #b26200;
+
+	svg {
+		width: 16px;
+		height: 16px;
+		fill: currentColor;
+	}
+}
+
+// The hint's tooltip wraps instead of running the sidebar's width as one line.
+.components-tooltip.kadence-token-field__stale-tooltip {
+	max-width: 220px;
+	white-space: normal;
+	text-align: left;
+	line-height: 1.4;
+}
+
+// The same explanation at the top of the Style Library list, where no row is pressed for a stale alias.
+.kadence-token-field__stale-note {
+	margin: 0 0 8px;
+	padding: 8px;
+	border-radius: 2px;
+	background: #fcf9e8;
+	color: #614200;
+	font-size: 12px;
+	line-height: 1.4;
 }
 
 /**

@@ -219,9 +219,11 @@ describe('fieldSummary', () => {
 		});
 	});
 
-	it('falls back to the dot path when the bound token is missing from the list', () => {
+	it('summarizes a stale alias to nothing, like unset, so the caller shows the default it renders as', () => {
+		// The token was deleted after the block bound it. Neither render path can resolve the alias, so
+		// both fall back to the block default; echoing the dot path here put a raw id in the field.
 		expect(fieldSummary('{primitive.dimension.gone}', TOKENS, 'px', 'Custom')).toEqual({
-			label: 'primitive.dimension.gone',
+			label: '',
 			value: '',
 		});
 	});

@@ -29,7 +29,43 @@ import {
 } from '../helpers/token-summary';
 import { parseCssLength } from '../helpers/parse-css-length';
 import { TokenPopover } from '../molecules/TokenPopover';
+import {
+	StaleTokenHint,
+	StaleTokenTooltip,
+	isStaleAlias,
+	staleTokenLabel,
+	staleTokenMessage,
+} from '../atoms/StaleTokenHint';
 import '../styles/token-controls.scss';
+
+/**
+ * The trigger's accessible name and tooltip, by what the slot holds.
+ *
+ * Stale first: an alias whose token is gone needs the explanation, not a value. Then a bound token
+ * or literal names itself with its value. Then the fallback the field inherits. Then a bare "Default"
+ * when there is nothing to name at all.
+ *
+ * @param {Object} args                 The naming inputs.
+ * @param {boolean} args.stale          Whether the slot holds a stale alias.
+ * @param {Object}  args.summary        The slot's own `fieldSummary()`.
+ * @param {string}  args.resolvedDefault The inherited default, resolved to a literal.
+ * @param {string}  args.inheritedName  The name for that default, e.g. "Default (3px)".
+ *
+ * @since TBD
+ *
+ * @return {string} The trigger name.
+ */
+function nameTrigger({ stale, summary, resolvedDefault, inheritedName }) {
+	if (stale) {
+		return staleTokenMessage();
+	}
+
+	if (summary.label) {
+		return summary.value ? `${summary.label} (${summary.value})` : summary.label;
+	}
+
+	return resolvedDefault ? inheritedName : __('Default', 'kadence-blocks');
+}
 
 /**
  * A control's numeric slot as a token field: a corner icon plus a trigger that reads like the control's
@@ -105,22 +141,24 @@ export function TokenSelector({
 				/* translators: %s: the default value, e.g. "3px". */ __('Default (%s)', 'kadence-blocks'),
 				resolvedDefault
 			);
-	const triggerName = summary.label
-		? `${summary.label}${summary.value ? ` (${summary.value})` : ''}`
-		: resolvedDefault
-			? inheritedName
-			: __('Default', 'kadence-blocks');
 	// A `fixed` entry (a sentinel choice with no DTCG registration, e.g. Margin's `Auto`) matches on its
 	// bare `alias` rather than the bracket form `isTokenAlias` checks for, so the entry lookup runs
 	// first and `aliased` widens to cover that match too.
 	const entry = findTokenEntry(tokens, value);
 	const aliased = isTokenAlias(value) || Boolean(entry);
 	const seed = entry ? parseCssLength(entry.value) : null;
+	// A stale alias (its token was deleted after binding) is kept in the attribute — the token may come
+	// back, and the indicator's reset is the way to drop it — so the trigger has to say what it renders
+	// as (the fallback) and why (the hint), instead of the raw dot path or a bare "Default" that would
+	// contradict the divergence dot beside it.
+	const stale = isStaleAlias(value, tokens);
+	const triggerName = nameTrigger({ stale, summary, resolvedDefault, inheritedName });
 	// An unset slot seeds the Custom tab from whatever it falls back to, so opening the editor starts
-	// from the value on screen instead of an empty box the user has to guess at.
+	// from the value on screen instead of an empty box the user has to guess at. A stale alias renders as
+	// that same fallback, so it seeds from it too.
 	const unset = value === '' || value === undefined || value === null;
-	const fallbackNumber = unset ? parseCssLength(resolvedDefault) : null;
-	const number = aliased ? (seed ? seed.size : '') : unset ? (fallbackNumber?.size ?? '') : value;
+	const fallbackNumber = unset || stale ? parseCssLength(resolvedDefault) : null;
+	const number = entry ? (seed ? seed.size : '') : unset || stale ? (fallbackNumber?.size ?? '') : value;
 
 	// Only a slot that HOLDS a literal opens on its editor. An unset slot opens on the token list even
 	// when what it falls back to is a literal: the fallback is the block's own value, not a choice the
@@ -142,27 +180,42 @@ export function TokenSelector({
 				contentClassName="kadence-token-field__popover"
 				popoverProps={{ placement: 'left-start' }}
 				renderToggle={({ isOpen, onToggle }) => (
-					<Button
-						className="kadence-token-field__trigger"
-						onClick={onToggle}
-						disabled={disabled}
-						aria-expanded={isOpen}
-						label={triggerName}
-						showTooltip
-					>
-						{summary.label && <span className="kadence-token-field__label">{summary.label}</span>}
-						{summary.value && <span className="kadence-token-field__value">{summary.value}</span>}
-						{!summary.label && !summary.value && fallback.value && (
-							<>
-								{fallback.label && (
+					<StaleTokenTooltip active={stale}>
+						<Button
+							className="kadence-token-field__trigger"
+							onClick={onToggle}
+							disabled={disabled}
+							aria-expanded={isOpen}
+							label={triggerName}
+							// A stale trigger's tooltip comes from `StaleTokenTooltip` around it instead, which can
+							// wrap the longer text; the button's own would render it as one long line.
+							showTooltip={!stale}
+						>
+							{stale && (
+								<>
+									<StaleTokenHint />
 									<span className="kadence-token-field__label kadence-token-field__label--default">
-										{fallback.label}
+										{staleTokenLabel()}
 									</span>
-								)}
-								<span className="kadence-token-field__value">{fallback.value}</span>
-							</>
-						)}
-					</Button>
+									{fallback.value && (
+										<span className="kadence-token-field__value">{fallback.value}</span>
+									)}
+								</>
+							)}
+							{summary.label && <span className="kadence-token-field__label">{summary.label}</span>}
+							{summary.value && <span className="kadence-token-field__value">{summary.value}</span>}
+							{!stale && !summary.label && !summary.value && fallback.value && (
+								<>
+									{fallback.label && (
+										<span className="kadence-token-field__label kadence-token-field__label--default">
+											{fallback.label}
+										</span>
+									)}
+									<span className="kadence-token-field__value">{fallback.value}</span>
+								</>
+							)}
+						</Button>
+					</StaleTokenTooltip>
 				)}
 				renderContent={({ onClose }) => (
 					<TokenPopover
