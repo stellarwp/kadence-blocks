@@ -202,6 +202,43 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
+	 * A named preset property the Default leaves unset, set only at a breakpoint, carries its gap rule
+	 * inside that breakpoint's media block and not in the flat layer: the flat rule would read a var
+	 * nothing declares at desktop and compute the property to `unset`, wiping the theme's own size.
+	 *
+	 * @return void
+	 */
+	public function testABaseLessGapPropertyDeclaresItsRuleOnlyInsideTheMediaBlock(): void {
+		$this->seedDisplayHeadingPreset(
+			[
+				'$value'      => null,
+				'$extensions' => [
+					'com.kadence.designTokens' => [
+						'responsive' => [ 'tablet' => '{semantic.font-size.heading}' ],
+					],
+				],
+			]
+		);
+
+		$css  = $this->builder( $this->registry )->css( 'default', $this->breakpoints() );
+		$var  = '--kb-token--preset--kadence-advancedheading--display--fontSize';
+		$rule = ':where(.wp-block-kadence-advancedheading).kb-preset--display{font-size:var(' . $var . ');}';
+
+		// The flat gap rule carries only the weight, which has a desktop base; the retarget for the size is
+		// still there (a custom property is inert until something reads it).
+		$this->assertStringContainsString(
+			':where(.wp-block-kadence-advancedheading).kb-preset--display{font-weight:var(--kb-token--preset--kadence-advancedheading--display--fontWeight);}',
+			explode( '@media', $css, 2 )[0]
+		);
+		$this->assertStringContainsString(
+			'@media all and (max-width: 1024px){:root,:root:where(.kb-tokens){'
+			. $var . ':var(--kb-token--semantic--font-size--heading);}'
+			. $rule . '}',
+			$css
+		);
+	}
+
+	/**
 	 * The Default preset itself gets no gap rule: whatever it resolves, the block-default layer already
 	 * declares, and whatever it leaves unset belongs to the theme.
 	 *
@@ -1136,9 +1173,11 @@ final class Css_BuilderTest extends TestCase {
 	 * and weight — two properties the shipped Default preset leaves to the theme — plus a color the Default
 	 * does define.
 	 *
+	 * @param mixed $font_size The stored `fontSize` value: an alias, or a responsive envelope with no base.
+	 *
 	 * @return void
 	 */
-	private function seedDisplayHeadingPreset(): void {
+	private function seedDisplayHeadingPreset( $font_size = '{semantic.font-size.heading}' ): void {
 		$document = [
 			'$extensions' => [
 				'com.kadence.designTokens' => [
@@ -1148,7 +1187,7 @@ final class Css_BuilderTest extends TestCase {
 								'label'  => 'Display',
 								'tokens' => [
 									'color'      => '{semantic.color.text}',
-									'fontSize'   => '{semantic.font-size.heading}',
+									'fontSize'   => $font_size,
 									'fontWeight' => '{semantic.font-weight.heading}',
 								],
 							],

@@ -826,18 +826,25 @@ final class Css_Builder {
 	 * image's `img`, a column's `> .kt-inside-inner-col`) lands on that element rather than on the block
 	 * root — the same split the block-default layer makes.
 	 *
+	 * Like a state rule, a gap rule sets a real property, so a base-less one is left to the media layer:
+	 * emitted flat, `font-size:var(--undefined)` would compute to `unset` at desktop and wipe the theme's
+	 * own size instead of leaving it alone. The flat call takes only the properties with a desktop base;
+	 * {@see self::responsive_blocks()} hands the base-less ones over one at a time, inside the media block
+	 * that declares their var.
+	 *
 	 * @since TBD
 	 *
-	 * @param string                                                                                                                   $block        The block name.
-	 * @param string                                                                                                                   $preset       The named preset's slug.
-	 * @param array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:string, dimension:bool, prop:?string, state:?string, editor:?string}>>} $data         The block's collected presets.
-	 * @param string                                                                                                                   $preset_class The preset class selector, leading dot included.
-	 * @param bool                                                                                                                     $editor       Whether to target the block's editor markup.
+	 * @param string                                                                                                                                       $block        The block name.
+	 * @param string                                                                                                                                       $preset       The named preset's slug.
+	 * @param array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string}>>} $data         The block's collected presets.
+	 * @param string                                                                                                                                       $preset_class The preset class selector, leading dot included.
+	 * @param bool                                                                                                                                         $editor       Whether to target the block's editor markup.
+	 * @param array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string}>|null       $properties   The properties to consider, or null for the preset's own with a desktop base.
 	 *
 	 * @return string The rules, one per selector suffix, or '' when the Default covers every property the
 	 *                preset sets.
 	 */
-	private function default_gap_rules( string $block, string $preset, array $data, string $preset_class, bool $editor ): string {
+	private function default_gap_rules( string $block, string $preset, array $data, string $preset_class, bool $editor, ?array $properties = null ): string {
 		if ( $preset === $data['default'] ) {
 			return '';
 		}
@@ -846,7 +853,7 @@ final class Css_Builder {
 		$covered   = $data['presets'][ $data['default'] ] ?? [];
 		$by_suffix = [];
 
-		foreach ( $data['presets'][ $preset ] as $property => $info ) {
+		foreach ( $properties ?? $this->with_desktop_base( $data['presets'][ $preset ] ) as $property => $info ) {
 			// "Covered" means the `$default` collected the property. The block-default layer additionally
 			// requires the binding to be token-backed with a non-empty literal before it declares one, so
 			// a binding failing only that would go uncovered there and skipped here; no shipped binding
@@ -1202,6 +1209,17 @@ final class Css_Builder {
 							$preset === $data['default'],
 							[ (string) $property => $info ],
 							$editor
+						);
+
+						// A base-less property the Default leaves unset gets its gap rule here, next to the var
+						// the block above declares, for the same reason the state rule does.
+						$rules_by_breakpoint[ $breakpoint ][] = $this->default_gap_rules(
+							$block,
+							(string) $preset,
+							$data,
+							'.' . Style::preset_class( (string) $preset ),
+							$editor,
+							[ (string) $property => $info ]
 						);
 					}
 				}
