@@ -8,6 +8,7 @@ import {
 	inheritedSwatchCount,
 	isCustomColorToken,
 	isDefaultPalette,
+	isBaselineGroup,
 	isDuplicatePaletteLabel,
 	isUserCreatedPalette,
 	mapPaletteToSwatchGroups,
@@ -558,6 +559,78 @@ describe('isUserCreatedPalette', () => {
 		expect(isUserCreatedPalette({}, 'ocean')).toBe(false);
 		expect(isUserCreatedPalette(undefined, 'ocean')).toBe(false);
 		expect(isUserCreatedPalette(listing, '')).toBe(false);
+	});
+});
+
+describe('isBaselineGroup', () => {
+	const paletteWith = (swatches) => ({
+		id: 'default',
+		label: 'Default',
+		groups: [{ id: 'accent', label: 'Accent', swatches }],
+	});
+
+	/**
+	 * A group holding at least one shipped swatch is a baseline group — the server refuses to drop
+	 * that swatch from the default palette, so the group cannot go either.
+	 *
+	 * @return void
+	 */
+	it('is true when any swatch in the group is baseline', () => {
+		const palette = paletteWith([
+			{ token: 'primitive.color.brand.primary', label: 'Main 1', $value: '#111111', baseline: true },
+			{ token: 'primitive.color.custom.custom-1', label: 'Custom 1', $value: '#222222', baseline: false },
+		]);
+
+		expect(isBaselineGroup(palette, 'accent')).toBe(true);
+	});
+
+	/**
+	 * A group made only of user-created swatches is not baseline, so it may be deleted.
+	 *
+	 * @return void
+	 */
+	it('is false when every swatch in the group is user-created', () => {
+		const palette = paletteWith([
+			{ token: 'primitive.color.custom.custom-1', label: 'Custom 1', $value: '#111111', baseline: false },
+			{ token: 'primitive.color.custom.custom-2', label: 'Custom 2', $value: '#222222', baseline: false },
+		]);
+
+		expect(isBaselineGroup(palette, 'accent')).toBe(false);
+	});
+
+	/**
+	 * Fails closed: a swatch with no `baseline` flag counts as shipped, the same default
+	 * `isBaselineToken()` applies to a missing `userCreated` flag.
+	 *
+	 * @return void
+	 */
+	it('treats a swatch with no baseline flag as baseline', () => {
+		const palette = paletteWith([
+			{ token: 'primitive.color.custom.custom-1', label: 'Custom 1', $value: '#111111' },
+		]);
+
+		expect(isBaselineGroup(palette, 'accent')).toBe(true);
+	});
+
+	/**
+	 * An empty group ships nothing, so nothing in it is locked.
+	 *
+	 * @return void
+	 */
+	it('is false for a group with no swatches', () => {
+		expect(isBaselineGroup(paletteWith([]), 'accent')).toBe(false);
+	});
+
+	/**
+	 * Fails closed on a group the palette does not know, and on a missing palette, so the
+	 * destructive item is never shown against a guess.
+	 *
+	 * @return void
+	 */
+	it('is true for an unknown group id or a missing palette', () => {
+		expect(isBaselineGroup(paletteWith([]), 'missing')).toBe(true);
+		expect(isBaselineGroup(null, 'accent')).toBe(true);
+		expect(isBaselineGroup({ id: 'default', label: 'Default' }, 'accent')).toBe(true);
 	});
 });
 

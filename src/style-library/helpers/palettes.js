@@ -247,6 +247,30 @@ export function isUserCreatedPalette(listing, id) {
 }
 
 /**
+ * Whether a color group is shipped in the baseline. A group counts as baseline when any of its
+ * swatches is a baseline swatch, because the server refuses a default-palette write that drops a
+ * shipped swatch (`guard_baseline_swatches()`), which is exactly what removing the group would
+ * do. Fails closed: a swatch with no `baseline` flag, an unknown group id, or a missing palette
+ * all count as baseline, so the destructive affordance is never offered against a guess.
+ *
+ * @param {?Object} palette The palette being edited's effective view (`{ groups }`), or null.
+ * @param {string}  groupId The group id to check.
+ *
+ * @since TBD
+ *
+ * @return {boolean} True when the group holds at least one baseline swatch or cannot be found.
+ */
+export function isBaselineGroup(palette, groupId) {
+	const group = (palette?.groups ?? []).find((row) => row.id === groupId);
+
+	if (!group) {
+		return true;
+	}
+
+	return (group.swatches ?? []).some((swatch) => swatch.baseline !== false);
+}
+
+/**
  * The palettes a deleted palette can hand the active pointer to: every palette but itself, in
  * listing order. Mirrors `successorOptions` for libraries.
  *
