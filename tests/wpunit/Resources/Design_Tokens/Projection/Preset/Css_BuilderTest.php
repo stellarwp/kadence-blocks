@@ -431,6 +431,228 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
+	 * A property whose desktop base is unset emits no flat `:root` declaration, keeps the block-level
+	 * retarget (undefined at desktop, so every `var(--kb-btn-radius, fallback)` takes its fallback), and
+	 * still redeclares the preset var inside the breakpoint media block.
+	 *
+	 * @return void
+	 */
+	public function testAnUnsetBaseEmitsOnlyTheBreakpointRedeclaration(): void {
+		$this->seedResponsivePreset( [ 'tablet' => '{semantic.radius.control}' ], null );
+
+		$css = $this->builder( $this->registry )->css( 'default', $this->breakpoints() );
+
+		// Everything before the first media block is the flat layer; the hero var must not be declared there.
+		$flat = explode( '@media', $css, 2 )[0];
+
+		$this->assertStringNotContainsString( '--kb-token--preset--kadence-singlebtn--hero--button-radius:', $flat );
+		$this->assertStringContainsString(
+			'.wp-block-kadence-singlebtn.kb-preset--hero{',
+			$css
+		);
+		$this->assertStringContainsString(
+			'--kb-btn-radius:var(--kb-token--preset--kadence-singlebtn--hero--button-radius);',
+			$css
+		);
+		$this->assertStringContainsString(
+			'@media all and (max-width: 1024px){:root,:root:where(.kb-tokens){--kb-token--preset--kadence-singlebtn--hero--button-radius:var(--kb-token--semantic--radius--control);}}',
+			$css
+		);
+	}
+
+	/**
+	 * A per-corner override under an unset base declares the composed var inside the media block itself,
+	 * each corner reading its own slot var with the binding's token var as the fallback — there is no
+	 * desktop composed var for the slot vars to feed, so a gap corner falls back to the token rather
+	 * than to nothing.
+	 *
+	 * @return void
+	 */
+	public function testAPerCornerOverrideUnderAnUnsetBaseComposesItsVarInsideTheMediaBlock(): void {
+		$this->seedResponsivePreset( [ 'tablet' => [ '4px', '', '4px', '' ] ], null );
+
+		$css = $this->builder( $this->tokenRadiusRegistry() )->css( 'default', $this->breakpoints() );
+
+		$var      = '--kb-token--preset--kadence-singlebtn--hero--button-radius';
+		$fallback = 'var(--kb-token--semantic--radius--control)';
+
+		$this->assertStringContainsString(
+			'@media all and (max-width: 1024px){:root,:root:where(.kb-tokens){'
+			. $var . '--top:4px;' . $var . '--bottom:4px;'
+			. $var . ':var(' . $var . '--top,' . $fallback . ') var(' . $var . '--right,' . $fallback . ') var(' . $var . '--bottom,' . $fallback . ') var(' . $var . '--left,' . $fallback . ');'
+			. '}}',
+			$css
+		);
+	}
+
+	/**
+	 * A per-corner override under an unset base with an inline-only binding has no token var to fill a
+	 * gap corner with, so a sparse override redeclares only the touched slot vars and leaves the
+	 * composed var undefined at that breakpoint too.
+	 *
+	 * @return void
+	 */
+	public function testASparsePerCornerOverrideUnderAnUnsetBaseWithoutATokenLeavesTheComposedVarUndefined(): void {
+		$this->seedResponsivePreset( [ 'tablet' => [ '4px', '', '4px', '' ] ], null );
+
+		$css = $this->builder( $this->registry )->css( 'default', $this->breakpoints() );
+
+		$var = '--kb-token--preset--kadence-singlebtn--hero--button-radius';
+
+		$this->assertStringContainsString(
+			'@media all and (max-width: 1024px){:root,:root:where(.kb-tokens){' . $var . '--top:4px;' . $var . '--bottom:4px;}}',
+			$css
+		);
+		$this->assertStringNotContainsString( $var . ':var(', $css );
+	}
+
+	/**
+	 * A per-corner override under an unset base with an inline-only binding still composes its var inside
+	 * the media block when every corner is set — no corner needs a fallback, so each reads its slot var
+	 * bare — and the block-level retarget then has a defined var to consume at that breakpoint.
+	 *
+	 * @return void
+	 */
+	public function testAFullPerCornerOverrideUnderAnUnsetBaseWithoutATokenComposesItsVarInsideTheMediaBlock(): void {
+		$this->seedResponsivePreset( [ 'tablet' => [ '8px', '4px', '8px', '4px' ] ], null );
+
+		$css = $this->builder( $this->registry )->css( 'default', $this->breakpoints() );
+
+		$var = '--kb-token--preset--kadence-singlebtn--hero--button-radius';
+
+		$this->assertStringContainsString(
+			'@media all and (max-width: 1024px){:root,:root:where(.kb-tokens){'
+			. $var . '--top:8px;' . $var . '--right:4px;' . $var . '--bottom:8px;' . $var . '--left:4px;'
+			. $var . ':var(' . $var . '--top) var(' . $var . '--right) var(' . $var . '--bottom) var(' . $var . '--left);'
+			. '}}',
+			$css
+		);
+	}
+
+	/**
+	 * A state property whose desktop base is unset gets no flat state rule — one would set the real
+	 * property to an undefined var, which computes to `unset` and wipes the block's own state style at
+	 * desktop — and instead carries its state rule inside the breakpoint media block, right after the
+	 * preset var it consumes.
+	 *
+	 * @return void
+	 */
+	public function testABaseLessStatePropertyDeclaresItsStateRuleOnlyInsideTheMediaBlock(): void {
+		$this->seedStatePresets(
+			'{semantic.color.text}',
+			[
+				'$value'      => null,
+				'$extensions' => [
+					'com.kadence.designTokens' => [
+						'responsive' => [ 'tablet' => '{semantic.color.link}' ],
+					],
+				],
+			]
+		);
+
+		$css  = $this->builder( $this->stateRegistry() )->css( 'default', $this->breakpoints() );
+		$rule = ':where(.wp-block-kadence-state-fixture.kb-preset--flare):hover *.kb-svg-icon-wrap'
+			. '{color:var(--kb-token--preset--kadence-state-fixture--flare--color-hover);}';
+
+		$this->assertStringNotContainsString( $rule, explode( '@media', $css, 2 )[0] );
+		$this->assertStringContainsString(
+			'@media all and (max-width: 1024px){:root,:root:where(.kb-tokens){'
+			. '--kb-token--preset--kadence-state-fixture--flare--color-hover:var(--kb-token--semantic--color--link);}'
+			. $rule . '}',
+			$css
+		);
+	}
+
+	/**
+	 * The `$default` preset's base-less state property carries both of its rules — the preset-classed one
+	 * and the class-less one — inside the media block, and the editor build re-scopes them to the editor
+	 * state selector, exactly as the flat layer does for a property with a base.
+	 *
+	 * @return void
+	 */
+	public function testABaseLessDefaultStatePropertyKeepsBothScopesInsideTheMediaBlock(): void {
+		$this->seedStatePresets(
+			[
+				'$value'      => null,
+				'$extensions' => [
+					'com.kadence.designTokens' => [
+						'responsive' => [ 'mobile' => '{semantic.color.text}' ],
+					],
+				],
+			]
+		);
+
+		$css = $this->builder( $this->stateRegistry() )->editor_css( 'default', $this->breakpoints() );
+		$var = '--kb-token--preset--kadence-state-fixture--glow--color-hover';
+
+		$this->assertStringNotContainsString( 'var(' . $var . ')', explode( '@media', $css, 2 )[0] );
+		$this->assertStringContainsString(
+			'@media all and (max-width: 767px){:root,:root:where(.kb-tokens){' . $var . ':var(--kb-token--semantic--color--text);}'
+			. ':where(.wp-block-kadence-state-fixture.kb-preset--glow):hover *.kt-svg-icon{color:var(' . $var . ');}'
+			. ':where(.wp-block-kadence-state-fixture:not([class*="kb-preset--"])):hover *.kt-svg-icon{color:var(' . $var . ');}'
+			. '}',
+			$css
+		);
+	}
+
+	/**
+	 * A base-less state property with no token, overridden per corner but only in part, declares only the
+	 * touched slot vars inside the media block and no state rule: the rule would read the composed var,
+	 * which is not declared there, and compute the property to `unset` at that breakpoint.
+	 *
+	 * @return void
+	 */
+	public function testASparsePerCornerBaseLessStatePropertyWithoutATokenEmitsNoStateRule(): void {
+		$document = [
+			'$extensions' => [
+				'com.kadence.designTokens' => [
+					'presets' => [
+						'kadence/state-fixture' => [
+							'flare' => [
+								'label'  => 'Flare',
+								'tokens' => [
+									'radius-hover' => [
+										'$value'      => null,
+										'$extensions' => [
+											'com.kadence.designTokens' => [
+												'responsive' => [ 'tablet' => [ '4px', '', '4px', '' ] ],
+											],
+										],
+									],
+								],
+							],
+						],
+					],
+				],
+			],
+		];
+
+		$this->store->save_document( (string) wp_json_encode( $document ), Token_Store::default_slug() );
+
+		$registry = new Token_Registry();
+		$registry->register_preset_bindings(
+			[
+				'block'    => 'kadence/state-fixture',
+				'bindings' => [
+					'radius-hover' => [
+						'css_prop'  => 'border-radius',
+						'css_state' => ':hover',
+					],
+				],
+			]
+		);
+
+		$css = $this->builder( $registry )->css( 'default', $this->breakpoints() );
+		$var = '--kb-token--preset--kadence-state-fixture--flare--radius-hover';
+
+		$this->assertStringContainsString(
+			'@media all and (max-width: 1024px){:root,:root:where(.kb-tokens){' . $var . '--top:4px;' . $var . '--bottom:4px;}}',
+			$css
+		);
+		$this->assertStringNotContainsString( 'border-radius:var(' . $var . ')', $css );
+	}
+
+	/**
 	 * A library whose presets declare no breakpoint overrides emits no media blocks at all, so every
 	 * existing preset projects byte-identically.
 	 *
@@ -652,10 +874,11 @@ final class Css_BuilderTest extends TestCase {
 	 * Persist a "hero" button preset whose radius varies by breakpoint into the active library.
 	 *
 	 * @param array<string, mixed> $responsive Breakpoint => override value.
+	 * @param string|null          $base       The desktop base value, or null for a radius set only at a breakpoint.
 	 *
 	 * @return void
 	 */
-	private function seedResponsivePreset( array $responsive = [ 'mobile' => '2px' ] ): void {
+	private function seedResponsivePreset( array $responsive = [ 'mobile' => '2px' ], ?string $base = '8px' ): void {
 		$document = [
 			'$extensions' => [
 				'com.kadence.designTokens' => [
@@ -665,7 +888,7 @@ final class Css_BuilderTest extends TestCase {
 								'label'  => 'Hero',
 								'tokens' => [
 									'button-radius' => [
-										'$value'      => '8px',
+										'$value'      => $base,
 										'$extensions' => [
 											'com.kadence.designTokens' => [
 												'responsive' => $responsive,
@@ -823,6 +1046,30 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
+	 * A registry whose Button radius binding references the control radius token, unlike the shipped one
+	 * (inline `css_var` only), so a breakpoint-only per-corner override has a token var to fall back to.
+	 *
+	 * @return Token_Registry
+	 */
+	private function tokenRadiusRegistry(): Token_Registry {
+		$registry = new Token_Registry();
+		$registry->register_preset_bindings(
+			[
+				'block'    => 'kadence/singlebtn',
+				'bindings' => [
+					'button-radius' => [
+						'token'        => 'semantic.radius.control',
+						'css_var'      => 'kb-btn-radius',
+						'control_attr' => 'borderRadius',
+					],
+				],
+			]
+		);
+
+		return $registry;
+	}
+
+	/**
 	 * A registry binding one resting property and one state property on a block the baseline knows nothing
 	 * about, so the state assertions read only what {@see self::seedStatePresets()} put there.
 	 *
@@ -863,9 +1110,12 @@ final class Css_BuilderTest extends TestCase {
 	 * setting both the resting color and the state color, so one build exercises the class-less rule and the
 	 * preset-classed one together.
 	 *
+	 * @param mixed $glow_hover  The `$default` preset's state color entry.
+	 * @param mixed $flare_hover The named preset's state color entry.
+	 *
 	 * @return void
 	 */
-	private function seedStatePresets(): void {
+	private function seedStatePresets( $glow_hover = '{semantic.color.text}', $flare_hover = '{semantic.color.link}' ): void {
 		$document = [
 			'$extensions' => [
 				'com.kadence.designTokens' => [
@@ -876,14 +1126,14 @@ final class Css_BuilderTest extends TestCase {
 								'label'  => 'Glow',
 								'tokens' => [
 									'color'       => '{semantic.color.icon}',
-									'color-hover' => '{semantic.color.text}',
+									'color-hover' => $glow_hover,
 								],
 							],
 							'flare'    => [
 								'label'  => 'Flare',
 								'tokens' => [
 									'color'       => '{semantic.color.icon}',
-									'color-hover' => '{semantic.color.link}',
+									'color-hover' => $flare_hover,
 								],
 							],
 						],

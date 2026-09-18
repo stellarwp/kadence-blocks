@@ -98,7 +98,13 @@ describe('BorderField', () => {
 		expect(latestBorderControlProps.defaultValue).toBe('1px');
 	});
 
-	it("shows the preset's own stored width as bound, not the generic literal fallback, once the draft is reset", () => {
+	/**
+	 * A reset width reads as unset with the schema's default muted; the preset's stored width is never
+	 * put back into the control as a bold, set value.
+	 *
+	 * @return {void}
+	 */
+	it("shows a reset width as unset with the muted Default, never the preset's stored width as bound", () => {
 		const field = { label: 'Border', path: 'tokens.button-border', defaultValue: '1px' };
 
 		act(() => {
@@ -115,20 +121,38 @@ describe('BorderField', () => {
 			);
 		});
 
-		expect(latestBorderControlProps.value.width).toBe('{semantic.border-width.default}');
+		expect(latestBorderControlProps.value.width).toBe('');
+		expect(latestBorderControlProps.defaultValue).toBe('1px');
+		expect(latestBorderControlProps.inherited).toBe(false);
 	});
 
-	it("falls back to the generic literal fallback when the preset's stored width is only inherited from the baseline, not its own", () => {
-		const field = { label: 'Border', path: 'tokens.button-border', defaultValue: '1px' };
+	/**
+	 * A desktop base reset inside an envelope that keeps a tablet override reads as unset at desktop,
+	 * with the schema's default muted — not the stored width the user just reset.
+	 *
+	 * @return {void}
+	 */
+	it('shows Default at desktop once the width base is reset while a tablet override stands, not the stored width', () => {
+		const NS = 'com.kadence.designTokens';
+		const field = { label: 'Border', path: 'tokens.button-border', responsive: true, defaultValue: '1px' };
 
 		act(() => {
 			root.render(
 				createElement(BorderField, {
 					field,
-					values: {},
+					values: {
+						tokens: {
+							'button-border-width': {
+								$value: null,
+								$extensions: {
+									[NS]: { responsive: { tablet: 'primitive.dimension.border-width.sm' } },
+								},
+							},
+						},
+					},
 					originalValues: {
 						tokens: { 'button-border-width': 'semantic.border-width.default' },
-						overridden: {},
+						overridden: { 'button-border-width': true },
 					},
 					onValueChange: jest.fn(),
 				})
@@ -137,8 +161,67 @@ describe('BorderField', () => {
 
 		expect(latestBorderControlProps.value.width).toBe('');
 		expect(latestBorderControlProps.defaultValue).toBe('1px');
+		expect(latestBorderControlProps.inherited).toBe(false);
 	});
 
+	/**
+	 * A draft that carries only a desktop width inherits it at Tablet: the control reads unset there,
+	 * tagged Inherited, with the desktop literal as the muted value.
+	 *
+	 * @return {void}
+	 */
+	it('shows the desktop width muted as Inherited at Tablet when the draft stores no tablet override', () => {
+		const field = { label: 'Border', path: 'tokens.button-border', responsive: true, defaultValue: '1px' };
+
+		act(() => {
+			root.render(
+				createElement(BorderField, {
+					field,
+					values: { tokens: { 'button-border-width': '2px' } },
+					onValueChange: jest.fn(),
+				})
+			);
+		});
+		act(() => latestBorderControlProps.onBreakpointChange('tablet'));
+
+		expect(latestBorderControlProps.value.width).toBe('');
+		expect(latestBorderControlProps.inherited).toBe(true);
+		expect(latestBorderControlProps.defaultValue).toBe('2px');
+	});
+
+	/**
+	 * A schema with no declared default still has something honest to show muted: the preset's own
+	 * stored desktop width, which is what the omitted property resolves back to once saved.
+	 *
+	 * @return {void}
+	 */
+	it("shows the preset's stored width muted, as the Default, when the schema declares none", () => {
+		const field = { label: 'Border', path: 'tokens.button-border' };
+
+		act(() => {
+			root.render(
+				createElement(BorderField, {
+					field,
+					values: {},
+					originalValues: {
+						tokens: { 'button-border-width': '2px' },
+						overridden: { 'button-border-width': true },
+					},
+					onValueChange: jest.fn(),
+				})
+			);
+		});
+
+		expect(latestBorderControlProps.value.width).toBe('');
+		expect(latestBorderControlProps.defaultValue).toBe('2px');
+		expect(latestBorderControlProps.inherited).toBe(false);
+	});
+
+	/**
+	 * With nothing stored anywhere the schema's declared default is all there is to show.
+	 *
+	 * @return {void}
+	 */
 	it('falls back to the generic literal defaultValue when the preset has no stored width either', () => {
 		const field = { label: 'Border', path: 'tokens.button-border', defaultValue: '1px' };
 

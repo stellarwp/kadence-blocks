@@ -51,7 +51,6 @@ import { useState } from '@wordpress/element';
  */
 import { getValueAtPath } from '../../../helpers/settings-schema';
 import { pickableTokensForType } from '../../../helpers/tokens';
-import { isUnsetPresetValue } from '../../../helpers/presets';
 import {
 	PRESET_BREAKPOINTS,
 	readPresetBreakpoint,
@@ -59,7 +58,7 @@ import {
 	writePresetBreakpoint,
 } from '../../../../token-controls/helpers/preset-envelope';
 import { BorderControl } from '../../../../token-controls/controls/BorderControl';
-import { boundTokenIds, withoutSemanticSlots } from './BoxTokenField';
+import { boundTokenIds, isSemanticSlot, semanticDefaultOf, withoutSemanticSlots } from './BoxTokenField';
 import { useBreakpoint } from '../../../../token-controls/context/breakpoint';
 import { parseCssLength } from '../../../../token-controls/helpers/parse-css-length';
 import { isSlotList, readSlot } from '../../../../token-controls/helpers/value-shapes';
@@ -215,21 +214,17 @@ export function widthTokensForField(atBreakpoint) {
  * @param {?string}  [props.field.label]      The control's label.
  * @param {boolean}  [props.field.readOnly]   Whether the control is non-interactive.
  * @param {boolean}  [props.field.responsive] Whether the field offers a breakpoint switcher.
- * @param {*}        [props.field.defaultValue] What the width axis falls back to, shown as a muted
- *                                             "Default", when NEITHER the draft nor the preset's own
- *                                             stored value carries anything — passed straight through
- *                                             to `BorderControl`. A reset width whose preset already
- *                                             has its own value shows that instead, as if bound; see
- *                                             `originalValues` below.
+ * @param {*}        [props.field.defaultValue] What the width axis falls back to at desktop, shown as
+ *                                             a muted "Default" whenever the draft carries no width
+ *                                             there. Tablet and Mobile show the breakpoint above
+ *                                             instead, tagged "Inherited".
  * @param {Object}   props.values             The full draft values, read by dot path.
  * @param {?Object}  [props.originalValues]   The preset's own stored values, unaffected by the
- *                                             draft — read by the same dot paths as `values`, so a
- *                                             reset axis reads as what saving the reset actually
- *                                             resolves to instead of a generic literal fallback.
- *                                             Its `overridden` map gates the substitution to axes the
- *                                             CURRENT preset genuinely has its own stored value for —
- *                                             an axis only inherited from the baseline's own definition
- *                                             of the same preset slug reads as muted "Default" instead.
+ *                                             draft — read by the same dot paths as `values`. Never
+ *                                             shown as bound: the stored width only stands in, muted,
+ *                                             for a missing `field.defaultValue`, so a reset width on
+ *                                             a schema with no declared default still reads as the
+ *                                             value in effect.
  * @param {Function} props.onValueChange      Called with `(path, next)` for any of the three axes.
  *
  * @since TBD
@@ -252,40 +247,45 @@ export function BorderField({ field, values, originalValues, onValueChange }) {
 	const rawStyle = getValueAtPath(values, stylePath);
 	const rawColor = getValueAtPath(values, colorPath);
 
-	const originalWidth = getValueAtPath(originalValues, widthPath);
-	const originalStyle = getValueAtPath(originalValues, stylePath);
-	const originalColor = getValueAtPath(originalValues, colorPath);
-
 	const widthAtBreakpoint = responsive ? readPresetBreakpoint(rawWidth, breakpoint) : rawWidth;
 	const styleAtBreakpoint = responsive ? readPresetBreakpoint(rawStyle, breakpoint) : rawStyle;
-	// Resolved, not read — see `BoxTokenField`: a desktop-only stored value still resolves at Tablet.
-	const originalWidthAtBreakpoint = responsive ? resolvePresetBreakpoint(originalWidth, breakpoint) : originalWidth;
-	const originalStyleAtBreakpoint = responsive ? resolvePresetBreakpoint(originalStyle, breakpoint) : originalStyle;
 
 	// A semantic is the block's own default, not a selection, and the pool offers primitives only —
-	// left in place it renders as a raw dot-path. Blanked before the effective read below.
+	// left in place it renders as a raw dot-path. Blanked, so the control reads it as unset.
+	//
+	// The draft is the only value the control ever shows as set. A reset axis reads unset here and
+	// falls through to the muted Default/Inherited display below — the preset's previously stored
+	// value is never put back in its place, or a Reset would look like it did nothing.
 	const shownWidth = withoutSemanticSlots(widthAtBreakpoint);
 
-	const isWidthOverridden = originalValues?.overridden?.[widthPath.replace(/^tokens\./, '')] === true;
-	const isStyleOverridden = originalValues?.overridden?.[stylePath.replace(/^tokens\./, '')] === true;
-	const isColorOverridden = originalValues?.overridden?.[colorPath.replace(/^tokens\./, '')] === true;
+	// The width an unset breakpoint shows muted, mirroring `BoxTokenField`: Tablet and Mobile inherit
+	// from the breakpoint above, tagged "Inherited"; desktop shows the schema's declared default, or,
+	// when the schema declares none, the preset's own stored desktop width — what a saved reset resolves
+	// back to, so it is honest muted where it would not be bold. A token id in either is resolved to
+	// its literal so the picker keeps offering exactly the border-width scale.
+	const onDesktop = !responsive || breakpoint === PRESET_BREAKPOINTS[0];
+	const inheritedAbove = onDesktop
+		? null
+		: resolvePresetBreakpoint(rawWidth, PRESET_BREAKPOINTS[PRESET_BREAKPOINTS.indexOf(breakpoint) - 1]);
+	const inheritsFromBreakpoint = inheritedAbove !== null && inheritedAbove !== '';
 
-	// Display only — every `write*` below targets the raw draft, so a reset stays reset.
-	const effectiveWidth = !isUnsetPresetValue(shownWidth)
-		? shownWidth
-		: isWidthOverridden && !isUnsetPresetValue(originalWidthAtBreakpoint)
-			? originalWidthAtBreakpoint
-			: shownWidth;
-	const effectiveStyle = !isUnsetPresetValue(styleAtBreakpoint)
-		? styleAtBreakpoint
-		: isStyleOverridden && !isUnsetPresetValue(originalStyleAtBreakpoint)
-			? originalStyleAtBreakpoint
-			: styleAtBreakpoint;
-	const effectiveColor = !isUnsetPresetValue(rawColor)
-		? rawColor
-		: isColorOverridden && !isUnsetPresetValue(originalColor)
-			? originalColor
-			: rawColor;
+	const everyDimension = pickableTokensForType('dimension');
+	const asLiteral = (slot) =>
+		typeof slot !== 'string'
+			? slot
+			: isSemanticSlot(slot)
+				? semanticDefaultOf(slot, everyDimension, '')
+				: (everyDimension.find((token) => token.id === slot)?.value ?? slot);
+	const mapWidthSlots = (axis) => (isSlotList(axis) ? axis.map(asLiteral) : asLiteral(axis));
+
+	const storedWidth = getValueAtPath(originalValues, widthPath);
+	const storedDesktopWidth = responsive ? resolvePresetBreakpoint(storedWidth, PRESET_BREAKPOINTS[0]) : storedWidth;
+	const storedDefault =
+		storedDesktopWidth === undefined || storedDesktopWidth === null || storedDesktopWidth === ''
+			? undefined
+			: mapWidthSlots(storedDesktopWidth);
+
+	const shownDefault = inheritsFromBreakpoint ? mapWidthSlots(inheritedAbove) : (field.defaultValue ?? storedDefault);
 
 	const writeWidth = (next) =>
 		onValueChange(widthPath, responsive ? writePresetBreakpoint(rawWidth, breakpoint, next) : next);
@@ -294,31 +294,31 @@ export function BorderField({ field, values, originalValues, onValueChange }) {
 	const writeColor = (next) => onValueChange(colorPath, next);
 
 	// The bound token is exempt from the narrowing, or the field renders its raw id, not its label.
-	const widthTokens = widthTokensForField(effectiveWidth);
+	const widthTokens = widthTokensForField(shownWidth);
 
 	// Held rather than inferred from the stored shape — see the module docblock.
 	const [unlinked, setUnlinked] = useState({});
 	// A list-shaped color forces the unlinked view too, or one swatch would hide four stored colors.
-	const storedIsList = isSlotList(effectiveWidth) || isSlotList(effectiveStyle) || isSlotList(effectiveColor);
+	const storedIsList = isSlotList(shownWidth) || isSlotList(styleAtBreakpoint) || isSlotList(rawColor);
 	const linked = storedIsList ? false : !unlinked[breakpoint];
 
 	const toggleLink = () => {
 		setUnlinked((current) => ({ ...current, [breakpoint]: linked }));
 
-		// Seeds from the effective axes, so relinking keeps what the user can actually see.
+		// Seeds from what the user can actually see at this breakpoint.
 		if (!linked && storedIsList) {
-			writeWidth(readSlot(effectiveWidth, 0));
-			writeStyle(readSlot(effectiveStyle, 0));
-			writeColor(readSlot(effectiveColor, 0));
+			writeWidth(readSlot(shownWidth, 0));
+			writeStyle(readSlot(styleAtBreakpoint, 0));
+			writeColor(readSlot(rawColor, 0));
 		}
 	};
 
 	return (
 		<BorderControl
 			value={{
-				width: toControlWidthAxis(effectiveWidth),
-				style: toControlStyleAxis(effectiveStyle),
-				color: effectiveColor ?? '',
+				width: toControlWidthAxis(shownWidth),
+				style: toControlStyleAxis(styleAtBreakpoint),
+				color: rawColor ?? '',
 			}}
 			onChange={(next) => {
 				if (field.readOnly) {
@@ -331,7 +331,8 @@ export function BorderField({ field, values, originalValues, onValueChange }) {
 			}}
 			label={field.label}
 			widthTokens={widthTokens}
-			defaultValue={field.defaultValue}
+			defaultValue={shownDefault}
+			inherited={inheritsFromBreakpoint}
 			renderColor={({ value: color, onChange: onColorChange, label: side }) => (
 				<ColorSwatchControl
 					// `side` is the row's bare side name ("top", "right", …), or `null` while linked. Each

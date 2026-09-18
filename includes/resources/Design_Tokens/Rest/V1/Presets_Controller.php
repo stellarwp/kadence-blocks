@@ -1419,7 +1419,8 @@ final class Presets_Controller extends Controller {
 	 *   canonical preset var out of `var()` references to four corner-specific vars when the BASE value is
 	 *   itself a four-slot array; a scalar base emits the canonical var directly, with no corner vars for a
 	 *   later `@media` block to hook into. A per-corner override sitting under a scalar base would redeclare
-	 *   corner vars nothing reads — the media rule would have no visible effect.
+	 *   corner vars nothing reads — the media rule would have no visible effect. An unset (`null`) base is
+	 *   exempt: there is no desktop composed var at all, so the media block declares it on its own.
 	 * - **No scalar dimension literal may contain a space.** `Preset_Resolver::project()` joins a per-corner
 	 *   slot list with a bare space, and `Css_Builder::slots_of()` tells a slot list apart from a scalar
 	 *   literal purely by counting `explode( ' ', $value )`'s parts. A scalar literal like `"8px 4px 8px
@@ -1436,8 +1437,12 @@ final class Presets_Controller extends Controller {
 	 * @return WP_Error|null A WP_Error when either invariant is violated, null otherwise.
 	 */
 	private function guard_dimension_value_shape( $entry, string $block, string $preset, string $property ): ?WP_Error {
-		$base          = Extensions::preset_value_of( $entry );
-		$base_is_slots = is_array( $base );
+		$base = Extensions::preset_value_of( $entry );
+
+		// An unset base has no composed var for a per-corner override to feed into, so the projection
+		// declares the composed var inside the media block instead; the per-corner-base rule only
+		// protects a SCALAR base, whose composed var is never built from corner vars.
+		$corner_override_allowed = is_array( $base ) || $base === null;
 
 		foreach ( $this->preset_entry_values( $entry ) as $value ) {
 			if ( is_string( $value ) && strpos( $value, ' ' ) !== false ) {
@@ -1453,7 +1458,7 @@ final class Presets_Controller extends Controller {
 				);
 			}
 
-			if ( is_array( $value ) && ! $base_is_slots ) {
+			if ( is_array( $value ) && ! $corner_override_allowed ) {
 				return new WP_Error(
 					'rest_design_tokens_invalid',
 					__( 'A per-corner responsive override requires a per-corner base value for the same property.', 'kadence-blocks' ),

@@ -9,6 +9,10 @@
  *           responsive: { tablet: '0.375rem', mobile: '0.25rem' }
  *     } } }
  *
+ * `$value` is `null` when desktop has been reset while an override still stands: the key stays so
+ * the leaf still reads as an envelope, desktop renders the block's own default, and the overrides
+ * below keep applying.
+ *
  * `responsive` and `clamp` are mutually exclusive on one leaf. Both mirror
  * `Schema\Vocabulary\Responsive` on the server, which is the authority for every key spelled here.
  */
@@ -155,10 +159,24 @@ export function writePresetBreakpoint(raw, breakpoint, value) {
 	const envelope = isPresetEnvelope(raw);
 
 	if (breakpoint === 'desktop') {
-		return envelope ? { ...raw, [ENVELOPE_VALUE_KEY]: value } : value;
+		if (!envelope) {
+			return value;
+		}
+
+		// Clearing desktop while overrides stand cannot store an empty string — the server rejects it —
+		// and cannot drop the envelope without dropping the overrides with it. `null` is the same reset
+		// sentinel a token leaf's `$value` uses: desktop unset, block default in effect there, and every
+		// breakpoint below still its own.
+		return { ...raw, [ENVELOPE_VALUE_KEY]: isCleared(value) ? null : value };
 	}
 
-	const base = envelope ? (raw[ENVELOPE_VALUE_KEY] ?? '') : (raw ?? '');
+	const stored = envelope ? raw[ENVELOPE_VALUE_KEY] : raw;
+	// A cleared base — the `null` desktop-reset sentinel, or a flat draft that was never set — has to
+	// be written as `null` on any leaf that keeps its object shape: the server accepts `null` as an
+	// envelope base but rejects `''`, and `presetSaveTokens` would send `''` as a real value. Only the
+	// bare-scalar collapse turns it into the empty string a flat value uses for "unset".
+	const base = isCleared(stored) ? null : stored;
+	const scalarBase = base ?? '';
 	const vendor = envelope ? (raw.$extensions?.[KADENCE_TOKEN_NAMESPACE] ?? {}) : {};
 	// `responsive` is pulled out alongside `clamp` so `keep` holds only the vendor keys this write does
 	// not own — what is left decides whether the namespace survives a full clear.
@@ -200,7 +218,9 @@ export function writePresetBreakpoint(raw, breakpoint, value) {
 				// keeps them — dropping the extensions is not license to discard the rest of the leaf.
 				const { $extensions: unused, [ENVELOPE_VALUE_KEY]: unusedValue, ...rootFields } = envelope ? raw : {};
 
-				return Object.keys(rootFields).length === 0 ? base : { ...rootFields, [ENVELOPE_VALUE_KEY]: base };
+				return Object.keys(rootFields).length === 0
+					? scalarBase
+					: { ...rootFields, [ENVELOPE_VALUE_KEY]: base };
 			}
 
 			return { ...raw, [ENVELOPE_VALUE_KEY]: base, $extensions: siblings };

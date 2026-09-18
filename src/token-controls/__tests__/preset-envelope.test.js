@@ -24,6 +24,18 @@ describe('readPresetBreakpoint', () => {
 	it('reads an absent override as empty rather than undefined', () => {
 		expect(readPresetBreakpoint({ $value: '1rem' }, 'mobile')).toBe('');
 	});
+
+	it('reads a null base as unset at desktop while the override still reads at tablet', () => {
+		const baseLess = {
+			$value: null,
+			$extensions: { 'com.kadence.designTokens': { responsive: { tablet: '0.375rem' } } },
+		};
+
+		expect(readPresetBreakpoint(baseLess, 'desktop')).toBe('');
+		expect(readPresetBreakpoint(baseLess, 'tablet')).toBe('0.375rem');
+		expect(resolvePresetBreakpoint(baseLess, 'mobile')).toBe('0.375rem');
+		expect(resolvePresetBreakpoint(baseLess, 'desktop')).toBe('');
+	});
 });
 
 describe('writePresetBreakpoint', () => {
@@ -36,6 +48,28 @@ describe('writePresetBreakpoint', () => {
 			$value: '0.5rem',
 			$extensions: { 'com.kadence.designTokens': { responsive: { tablet: '0.375rem' } } },
 		});
+	});
+
+	it('writes a null base when the first stepped override lands on an empty flat value', () => {
+		// A reset property seeds its draft as '' — the server accepts `null` as an envelope base but
+		// rejects '', so the upgrade must not carry the empty string into `$value`.
+		expect(writePresetBreakpoint('', 'tablet', '0.375rem')).toEqual({
+			$value: null,
+			$extensions: { 'com.kadence.designTokens': { responsive: { tablet: '0.375rem' } } },
+		});
+	});
+
+	it('writes a null base when the first stepped override lands on an undefined flat value', () => {
+		// A property the preset never stored reads as undefined; it upgrades the same way '' does.
+		expect(writePresetBreakpoint(undefined, 'tablet', '0.375rem')).toEqual({
+			$value: null,
+			$extensions: { 'com.kadence.designTokens': { responsive: { tablet: '0.375rem' } } },
+		});
+	});
+
+	it('writes a null base when the first stepped override lands on an all-empty slot list', () => {
+		// An all-empty slot list is a cleared value too, so it must not become the envelope base.
+		expect(writePresetBreakpoint(['', '', '', ''], 'tablet', ['1rem', '', '', '']).$value).toBeNull();
 	});
 
 	it('keeps existing overrides when adding another breakpoint', () => {
@@ -120,6 +154,46 @@ describe('writePresetBreakpoint', () => {
 		expect(writePresetBreakpoint(value, 'tablet', '')).toEqual({
 			$value: '0.5rem',
 			$extensions: { 'com.other.vendor': { note: 'keep me' } },
+		});
+	});
+
+	it('clears the desktop base to null on an envelope, leaving every override standing', () => {
+		const withTablet = writePresetBreakpoint('0.5rem', 'tablet', '0.375rem');
+
+		expect(writePresetBreakpoint(withTablet, 'desktop', '')).toEqual({
+			$value: null,
+			$extensions: { 'com.kadence.designTokens': { responsive: { tablet: '0.375rem' } } },
+		});
+	});
+
+	it('treats an all-empty slot list as a desktop clear too', () => {
+		const withTablet = writePresetBreakpoint(['0.5rem', '0.5rem', '0.25rem', '0.25rem'], 'tablet', '0.375rem');
+
+		expect(writePresetBreakpoint(withTablet, 'desktop', ['', '', '', '']).$value).toBeNull();
+	});
+
+	it('leaves a desktop clear on a flat value flat, so an untouched property is still omitted on save', () => {
+		expect(writePresetBreakpoint('0.5rem', 'desktop', '')).toBe('');
+	});
+
+	it('collapses to unset when the last override is cleared on a null-base envelope', () => {
+		const baseLess = {
+			$value: null,
+			$extensions: { 'com.kadence.designTokens': { responsive: { tablet: '0.375rem' } } },
+		};
+
+		expect(writePresetBreakpoint(baseLess, 'tablet', '')).toBe('');
+	});
+
+	it('keeps the null base when another override is written on a null-base envelope', () => {
+		const baseLess = {
+			$value: null,
+			$extensions: { 'com.kadence.designTokens': { responsive: { tablet: '0.375rem' } } },
+		};
+
+		expect(writePresetBreakpoint(baseLess, 'mobile', '0.25rem')).toEqual({
+			$value: null,
+			$extensions: { 'com.kadence.designTokens': { responsive: { tablet: '0.375rem', mobile: '0.25rem' } } },
 		});
 	});
 });

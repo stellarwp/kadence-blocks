@@ -150,6 +150,80 @@ describe('usePresetBinding device-aware overridden', () => {
 	});
 });
 
+/**
+ * Seed the catalog with a preset whose `button-radius` has NO desktop value and only a tablet override —
+ * the shape a Style Library desktop reset stores.
+ *
+ * @since TBD
+ *
+ * @return {void}
+ */
+function seedBaseLessCatalog() {
+	window.kadenceDesignTokensPresets = {
+		active: SET,
+		libraries: {
+			[SET]: {
+				[BLOCK]: {
+					default: 'primary',
+					presets: [{ slug: 'primary', label: 'Primary' }],
+					properties: [
+						{ key: 'button-radius', kind: 'dimension', token: null, control_attr: 'borderRadius' },
+					],
+					values: {
+						primary: {},
+					},
+					responsive: {
+						primary: { tablet: { 'button-radius': '8px' } },
+					},
+					overridden: {
+						primary: { 'button-radius': true },
+					},
+				},
+			},
+		},
+	};
+}
+
+describe('usePresetBinding with a preset value only at a breakpoint', () => {
+	beforeEach(() => {
+		seedBaseLessCatalog();
+	});
+
+	afterEach(() => {
+		delete window.kadenceDesignTokensPresets;
+	});
+
+	/**
+	 * A property absent from the desktop values but present in a breakpoint override still binds its
+	 * control, and the Tablet compare reads that override.
+	 *
+	 * @return {void}
+	 */
+	it('still binds the control, reading the tablet override on Tablet', () => {
+		const attributes = { kbPreset: 'primary', tabletBorderRadius: ['8', '8', '8', '8'], borderRadiusUnit: 'px' };
+
+		const state = usePresetBinding(BLOCK, attributes, SET, 'Tablet');
+
+		expect(state.borderRadius).toBeDefined();
+		expect(state.borderRadius.bound).toBe(true);
+		expect(state.borderRadius.overridden).toBe(false);
+		expect(state.borderRadius.responsive.tablet).toBe('8px');
+	});
+
+	/**
+	 * On Desktop the preset has nothing to compare against, so the entry carries no preset value and an
+	 * untouched control is not overridden.
+	 *
+	 * @return {void}
+	 */
+	it('reports no preset value on Desktop, so an untouched control reads as the block default', () => {
+		const state = usePresetBinding(BLOCK, { kbPreset: 'primary' }, SET, 'Desktop');
+
+		expect(state.borderRadius.presetValue).toBeUndefined();
+		expect(state.borderRadius.overridden).toBe(false);
+	});
+});
+
 describe('usePresetBinding per-corner breakpoint gaps', () => {
 	// The preset's tablet override touches only the top corner (index 0); the other three corners
 	// carry a `''` gap, meaning "keep inheriting the base value live" — see

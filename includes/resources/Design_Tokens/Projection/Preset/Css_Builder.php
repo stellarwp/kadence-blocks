@@ -147,7 +147,7 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @var array<string, array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:string, dimension:bool, prop:?string, state:?string, editor:?string}>>}>>
+	 * @var array<string, array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string}>>}>>
 	 */
 	private array $collected = [];
 
@@ -324,7 +324,7 @@ final class Css_Builder {
 		return $this->canonical_block( $collected )
 			. $this->scoped_presets( $collected, $editor )
 			. $this->scoped_default( $collected, $editor )
-			. $this->responsive_blocks( $active_slug, $collected, $breakpoints );
+			. $this->responsive_blocks( $active_slug, $collected, $breakpoints, $editor );
 	}
 
 	/**
@@ -336,7 +336,7 @@ final class Css_Builder {
 	 *
 	 * @param string $slug The library slug to resolve against.
 	 *
-	 * @return array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:string, dimension:bool, prop:?string, state:?string, editor:?string}>>}>
+	 * @return array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string}>>}>
 	 */
 	private function collect( string $slug ): array {
 		$key = $slug . '_' . $this->versions->for_slug( $slug );
@@ -367,6 +367,17 @@ final class Css_Builder {
 			foreach ( $names as $preset ) {
 				try {
 					$values = $this->presets->resolve( $block, $preset, $slug );
+
+					// A property whose desktop base is unset resolves to nothing here but may still carry
+					// breakpoint overrides; it has to be collected so the media layer can redeclare it and
+					// the block-level retarget keeps pointing at a var that exists at those widths.
+					foreach ( $this->presets->resolve_responsive( $block, $preset, $slug ) as $overrides ) {
+						foreach ( array_keys( $overrides ) as $property ) {
+							if ( ! array_key_exists( $property, $values ) ) {
+								$values[ (string) $property ] = null;
+							}
+						}
+					}
 				} catch ( RuntimeException $e ) {
 					continue;
 				}
@@ -379,6 +390,10 @@ final class Css_Builder {
 					if ( $binding === null ) {
 						continue;
 					}
+
+					$fallback = $binding->is_token_ref()
+						? $this->registry->css_var_for( (string) $binding->token )
+						: null;
 
 					// Only a "dimension" kind binding ever carries a per-slot list (the write-time
 					// guard rejects one on any other kind); gating the slot split on this, rather than
@@ -399,6 +414,7 @@ final class Css_Builder {
 						$properties[ $property ] = [
 							'target'    => null,
 							'value'     => $value,
+							'fallback'  => $fallback,
 							'dimension' => $dimension,
 							'prop'      => $prop,
 							'state'     => $binding->css_state(),
@@ -417,6 +433,7 @@ final class Css_Builder {
 					$properties[ $property ] = [
 						'target'    => $target,
 						'value'     => $value,
+						'fallback'  => $fallback,
 						'dimension' => $dimension,
 						'prop'      => null,
 						'state'     => null,
@@ -455,7 +472,7 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:string, dimension:bool, prop:?string, state:?string, editor:?string}>>}> $collected The active library's collected presets.
+	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string}>>}> $collected The active library's collected presets.
 	 *
 	 * @return string
 	 */
@@ -475,7 +492,7 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:string, dimension:bool, prop:?string, state:?string, editor:?string}>>}> $collected The active library's collected presets.
+	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string}>>}> $collected The active library's collected presets.
 	 *
 	 * @return string
 	 */
@@ -513,11 +530,15 @@ final class Css_Builder {
 	 * @param string                                  $block    The block name.
 	 * @param string                                  $preset   The preset slug.
 	 * @param string                                  $property The block property.
-	 * @param array{target:?string, value:string, dimension:bool, prop:?string, state:?string, editor:?string} $info The property's collected target/value/kind.
+	 * @param array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string} $info The property's collected target/value/kind.
 	 *
 	 * @return string
 	 */
 	private function property_declarations( string $block, string $preset, string $property, array $info ): string {
+		if ( $info['value'] === null ) {
+			return ''; // No desktop base: the media layer alone declares this property.
+		}
+
 		$slots = $this->slots_of( $info['value'], $info['dimension'] );
 
 		if ( $slots === null ) {
@@ -591,20 +612,24 @@ final class Css_Builder {
 	 * A scalar override (a non-dimension property, or a dimension property overridden with one uniform
 	 * value) redeclares the canonical var itself, exactly like the pre-per-slot behavior. A per-slot
 	 * override instead redeclares only the touched slot vars — a `''` gap slot is skipped so that slot
-	 * keeps inheriting live — and never redeclares the composed var (see {@see self::responsive_blocks()}).
+	 * keeps inheriting live — and, as long as the property has a desktop base, never redeclares the
+	 * composed var (see {@see self::responsive_blocks()}). A per-slot override of a property with NO
+	 * desktop base is the one case the composed var is declared here, since nothing outside the media
+	 * block defines it — unless the binding has no token var to fill a gap slot with, in which case the
+	 * composed var is only declared when the override sets all four slots.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $block     The block name.
-	 * @param string $preset    The preset slug.
-	 * @param string $property  The block property.
-	 * @param string $value     The breakpoint's projected override value for the property.
-	 * @param bool   $dimension Whether the property is a "dimension" kind binding.
+	 * @param string                                                                                                             $block    The block name.
+	 * @param string                                                                                                             $preset   The preset slug.
+	 * @param string                                                                                                             $property The block property.
+	 * @param string                                                                                                             $value    The breakpoint's projected override value for the property.
+	 * @param array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string} $info     The property's collected base/fallback/kind.
 	 *
 	 * @return string
 	 */
-	private function responsive_declarations( string $block, string $preset, string $property, string $value, bool $dimension ): string {
-		$slots = $this->slots_of( $value, $dimension );
+	private function responsive_declarations( string $block, string $preset, string $property, string $value, array $info ): string {
+		$slots = $this->slots_of( $value, $info['dimension'] );
 
 		if ( $slots === null ) {
 			return $this->preset_var( $block, $preset, $property ) . ':' . $this->sanitize_value( $value ) . ';';
@@ -620,7 +645,25 @@ final class Css_Builder {
 			$declarations .= $this->slot_var( $block, $preset, $property, $slot_suffix ) . ':' . $this->sanitize_value( $slots[ $index ] ) . ';';
 		}
 
-		return $declarations;
+		// With a desktop base the composed var already exists at :root and picks the touched slot vars up
+		// live. Without one there is nothing for the slot vars to feed, so the composed var is declared
+		// here, each corner falling back to the binding's token var when this breakpoint left it a gap.
+		// An inline-only binding has no token var to fill a gap with, so it composes only when every
+		// slot is set; with a gap the composed var stays undefined rather than reading an unset slot.
+		if ( $info['value'] !== null || ( $info['fallback'] === null && in_array( '', $slots, true ) ) ) {
+			return $declarations;
+		}
+
+		$refs = [];
+
+		foreach ( self::SLOTS as $slot_suffix ) {
+			$slot_var = $this->slot_var( $block, $preset, $property, $slot_suffix );
+			$refs[]   = $info['fallback'] === null
+				? 'var(' . $slot_var . ')'
+				: 'var(' . $slot_var . ',var(' . $info['fallback'] . '))';
+		}
+
+		return $declarations . $this->preset_var( $block, $preset, $property ) . ':' . implode( ' ', $refs ) . ';';
 	}
 
 	/**
@@ -630,7 +673,7 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:string, dimension:bool, prop:?string, state:?string, editor:?string}>>}> $collected The active library's collected presets.
+	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string}>>}> $collected The active library's collected presets.
 	 *
 	 * @return string
 	 */
@@ -650,7 +693,7 @@ final class Css_Builder {
 					$block,
 					(string) $preset,
 					$this->state_scope( $data['selector'], $preset_class ),
-					$properties,
+					$this->with_desktop_base( $properties ),
 					$editor
 				);
 			}
@@ -667,7 +710,7 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:string, dimension:bool, prop:?string, state:?string, editor:?string}>>}> $collected The active library's collected presets.
+	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string}>>}> $collected The active library's collected presets.
 	 *
 	 * @return string
 	 */
@@ -688,10 +731,40 @@ final class Css_Builder {
 				$css .= $data['selector'] . '{' . $declarations . '}';
 			}
 
-			$css .= $this->state_rules( $block, $default, $this->state_scope( $data['selector'], null ), $properties, $editor );
+			$css .= $this->state_rules(
+				$block,
+				$default,
+				$this->state_scope( $data['selector'], null ),
+				$this->with_desktop_base( $properties ),
+				$editor
+			);
 		}
 
 		return $css;
+	}
+
+	/**
+	 * The properties a flat state rule may be emitted for: those with a desktop base.
+	 *
+	 * A state rule sets a real property, not a custom one, so pointing it at a preset var that nothing
+	 * defines at desktop does not fall through to the block's own value the way the var retargets do —
+	 * `color:var(--undefined)` computes to `unset` and wipes the block's own state style. A property set
+	 * only at a breakpoint therefore gets its state rule inside that breakpoint's media block instead
+	 * (see {@see self::responsive_blocks()}).
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string}> $properties The preset's collected properties.
+	 *
+	 * @return array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string}>
+	 */
+	private function with_desktop_base( array $properties ): array {
+		return array_filter(
+			$properties,
+			static function ( array $info ): bool {
+				return $info['value'] !== null;
+			}
+		);
 	}
 
 	/**
@@ -734,7 +807,7 @@ final class Css_Builder {
 	 *
 	 * @param string                                            $block      The block name.
 	 * @param string                                            $preset     The preset slug.
-	 * @param array<string, array{target:?string, value:string, dimension:bool, prop:?string, state:?string, editor:?string}> $properties The preset's collected properties.
+	 * @param array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string}> $properties The preset's collected properties.
 	 *
 	 * @return string
 	 */
@@ -777,7 +850,7 @@ final class Css_Builder {
 	 * @param string                                                                                          $block      The block name.
 	 * @param string                                                                                          $preset     The preset slug, for the canonical var name.
 	 * @param string                                                                                          $scope      The selector the state suffix is appended to.
-	 * @param array<string, array{target:?string, value:string, dimension:bool, prop:?string, state:?string, editor:?string}> $properties The preset's collected properties.
+	 * @param array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string}> $properties The preset's collected properties.
 	 * @param bool                                                                                            $editor     Whether to use each binding's editor state suffix.
 	 *
 	 * @return string
@@ -935,20 +1008,27 @@ final class Css_Builder {
 	 * redeclaring one slot var here changes what the (untouched, never-redeclared) composed var resolves
 	 * to for elements matching this breakpoint.
 	 *
+	 * A state property with no desktop base has no flat state rule (see {@see self::with_desktop_base()}),
+	 * so the `:root` redeclaration alone would reach nothing. Its state rules — the preset-classed one and,
+	 * for the `$default`, the class-less one — follow the `:root` block inside the same media query, where
+	 * the preset var they read is defined.
+	 *
 	 * @since TBD
 	 *
 	 * @param string                $active_slug The active library's slug.
-	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:string, dimension:bool, prop:?string, state:?string, editor:?string}>>}> $collected The collected preset structure, for the block/preset list.
+	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string}>>}> $collected The collected preset structure, for the block/preset list.
 	 * @param array<string, string> $breakpoints Breakpoint => media-query string.
+	 * @param bool                  $editor      Whether a media-scoped state rule uses the binding's editor state suffix.
 	 *
 	 * @return string
 	 */
-	private function responsive_blocks( string $active_slug, array $collected, array $breakpoints ): string {
+	private function responsive_blocks( string $active_slug, array $collected, array $breakpoints, bool $editor ): string {
 		if ( $collected === [] || $breakpoints === [] ) {
 			return '';
 		}
 
-		$by_breakpoint = [];
+		$by_breakpoint       = [];
+		$rules_by_breakpoint = [];
 
 		foreach ( $collected as $block => $data ) {
 			foreach ( $data['presets'] as $preset => $properties ) {
@@ -966,12 +1046,13 @@ final class Css_Builder {
 							continue;
 						}
 
+						$info        = $properties[ $property ];
 						$declaration = $this->responsive_declarations(
 							$block,
 							(string) $preset,
 							(string) $property,
 							$value,
-							$properties[ $property ]['dimension']
+							$info
 						);
 
 						// An all-gap per-slot override declares nothing; keeping it out avoids an empty @media block.
@@ -980,6 +1061,26 @@ final class Css_Builder {
 						}
 
 						$by_breakpoint[ $breakpoint ][] = $declaration;
+
+						// A base-less state rule reads the composed var, which a sparse per-corner override with no
+						// token fallback leaves undeclared; emitting the rule anyway would compute the property to
+						// `unset` at this breakpoint, so it is skipped unless the composed var was declared above.
+						if (
+							$info['value'] !== null
+							|| $info['prop'] === null
+							|| ! $this->declares_composed_var( $declaration, $block, (string) $preset, (string) $property )
+						) {
+							continue;
+						}
+
+						$rules_by_breakpoint[ $breakpoint ][] = $this->media_state_rules(
+							$block,
+							(string) $preset,
+							$data['selector'],
+							$preset === $data['default'],
+							[ (string) $property => $info ],
+							$editor
+						);
 					}
 				}
 			}
@@ -992,10 +1093,63 @@ final class Css_Builder {
 				continue;
 			}
 
-			$css .= '@media all and ' . $query . '{' . Scope::root() . '{' . implode( '', $by_breakpoint[ $breakpoint ] ) . '}}';
+			$css .= '@media all and ' . $query . '{'
+				. Scope::root() . '{' . implode( '', $by_breakpoint[ $breakpoint ] ) . '}'
+				. implode( '', $rules_by_breakpoint[ $breakpoint ] ?? [] )
+				. '}';
 		}
 
 		return $css;
+	}
+
+	/**
+	 * Whether a media-block declaration string declares the property's composed var itself, as opposed to
+	 * only its `--<slot>` vars. A slot var is the composed var's name plus a `--` suffix, so the bare name
+	 * followed by `:` can only be the composed declaration.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $declaration The media-block declaration(s) {@see self::responsive_declarations()} produced.
+	 * @param string $block       The block name.
+	 * @param string $preset      The preset slug.
+	 * @param string $property    The block property.
+	 *
+	 * @return bool
+	 */
+	private function declares_composed_var( string $declaration, string $block, string $preset, string $property ): bool {
+		return strpos( $declaration, $this->preset_var( $block, $preset, $property ) . ':' ) !== false;
+	}
+
+	/**
+	 * The state rules a breakpoint-only state property carries inside its media block: the same two scopes
+	 * the flat layer gives a property with a desktop base — the preset-classed rule and, for the `$default`
+	 * preset, the class-less one — so a selected preset and an unselected block both follow the override.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $block      The block name.
+	 * @param string $preset     The preset slug.
+	 * @param string $selector   The block's `.wp-block-*` selector.
+	 * @param bool   $is_default Whether the preset is the block's `$default`.
+	 * @param array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string}> $properties The state property, keyed by name.
+	 * @param bool   $editor     Whether to use the binding's editor state suffix.
+	 *
+	 * @return string
+	 */
+	private function media_state_rules( string $block, string $preset, string $selector, bool $is_default, array $properties, bool $editor ): string {
+		$rules = $this->state_rules(
+			$block,
+			$preset,
+			$this->state_scope( $selector, '.' . Style::preset_class( $preset ) ),
+			$properties,
+			$editor
+		);
+
+		if ( $is_default ) {
+			$rules .= $this->state_rules( $block, $preset, $this->state_scope( $selector, null ), $properties, $editor );
+		}
+
+		return $rules;
 	}
 
 	/**

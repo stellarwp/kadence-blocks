@@ -419,6 +419,32 @@ final class Preset_ResolverTest extends TestCase {
 	}
 
 	/**
+	 * An unset desktop base drops the property from the desktop maps but leaves its breakpoint overrides
+	 * resolving, so desktop falls back to the block's own default while tablet/mobile keep their values.
+	 *
+	 * @return void
+	 */
+	public function testAnUnsetBaseDropsDesktopButKeepsItsOverrides(): void {
+		$this->seedPreset(
+			Token_Store::default_slug(),
+			'hero',
+			'Hero',
+			[ 'button-radius' => $this->responsiveEntry( null, [ 'tablet' => '{semantic.radius.control}' ] ) ]
+		);
+
+		$this->assertArrayNotHasKey( 'button-radius', $this->resolver->resolve( self::BUTTON, 'hero' ) );
+		$this->assertArrayNotHasKey( 'button-radius', $this->resolver->resolve_literal( self::BUTTON, 'hero' ) );
+		$this->assertSame(
+			[ 'tablet' => [ 'button-radius' => 'var(--kb-token--semantic--radius--control)' ] ],
+			$this->resolver->resolve_responsive( self::BUTTON, 'hero' )
+		);
+		$this->assertSame(
+			[ 'tablet' => [ 'button-radius' => '0.1875rem' ] ],
+			$this->resolver->resolve_responsive_literal( self::BUTTON, 'hero' )
+		);
+	}
+
+	/**
 	 * Per-breakpoint overrides project to the same var()-preserving form as the base, keyed by breakpoint,
 	 * so an aliased override still chains through the token cascade.
 	 *

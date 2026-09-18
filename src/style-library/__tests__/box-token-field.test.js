@@ -317,7 +317,7 @@ describe('tokensForField', () => {
 	});
 });
 
-describe('the effective value shown when the draft is reset', () => {
+describe('what a reset draft shows', () => {
 	let container;
 	let root;
 
@@ -340,24 +340,26 @@ describe('the effective value shown when the draft is reset', () => {
 	/**
 	 * Render `BoxTokenField` with the given draft/original values.
 	 *
-	 * @param {Object}  props              The field's `value`/`originalValue` to render with.
-	 * @param {boolean} [props.overridden] Whether the preset genuinely has its own stored value for
-	 *                                     this property — gates whether `originalValue` is shown as
-	 *                                     bound. Defaults to true so existing "preset has its own
-	 *                                     value" cases don't need updating individually.
+	 * @param {Object}  props                The field's `value`/`originalValue` to render with.
+	 * @param {*}       [props.defaultValue] The schema's declared default; `null` declares none.
 	 *
 	 * @since TBD
 	 *
 	 * @return {void}
 	 */
-	function renderField({ value, originalValue, overridden = true }) {
+	function renderField({ value, originalValue, defaultValue = '0.1875rem' }) {
 		act(() => {
 			root.render(
 				createElement(BoxTokenField, {
-					field: { path: 'tokens.radius', tokenType: 'dimension', role: 'radius', defaultValue: '0.1875rem' },
+					field: {
+						path: 'tokens.radius',
+						tokenType: 'dimension',
+						role: 'radius',
+						responsive: true,
+						defaultValue,
+					},
 					value,
 					originalValue,
-					originalValues: { overridden: { radius: overridden } },
 					onChange: jest.fn(),
 					slots: 'corners',
 				})
@@ -365,29 +367,75 @@ describe('the effective value shown when the draft is reset', () => {
 		});
 	}
 
-	it("shows the preset's own stored value, not the generic literal fallback, once the draft is reset", () => {
-		renderField({ value: '', originalValue: 'semantic.radius.control' });
+	/**
+	 * A reset reads as unset with the schema's default shown muted; the preset's stored value is never
+	 * put back into the control as a bold, set value.
+	 *
+	 * @return {void}
+	 */
+	it("shows a reset draft as unset with the muted Default, never the preset's stored value as bound", () => {
+		renderField({ value: '', originalValue: 'primitive.dimension.radius-lg' });
 
-		expect(latestBoxControlProps.value).toEqual(toControlValue('semantic.radius.control'));
+		expect(latestBoxControlProps.value).toEqual(toControlValue(''));
 		expect(latestBoxControlProps.defaultValue).toBe('0.1875rem');
+		expect(latestBoxControlProps.inherited).toBe(false);
 	});
 
-	it('falls back to the generic literal fallback when the preset has no stored value either', () => {
+	/**
+	 * With nothing stored anywhere the schema's declared default is all there is to show.
+	 *
+	 * @return {void}
+	 */
+	it("falls back to the schema's declared default when the preset has no stored value either", () => {
 		renderField({ value: '', originalValue: '' });
 
 		expect(latestBoxControlProps.value).toEqual(toControlValue(''));
+		expect(latestBoxControlProps.defaultValue).toBe('0.1875rem');
 	});
 
+	/**
+	 * A draft that carries a real edit is shown as-is.
+	 *
+	 * @return {void}
+	 */
 	it('shows the draft value untouched when the field actually carries an edit', () => {
 		renderField({ value: '0.5rem', originalValue: 'semantic.radius.control' });
 
 		expect(latestBoxControlProps.value).toEqual(toControlValue('0.5rem'));
 	});
 
-	it("falls back to the generic literal fallback when the preset's stored value is only inherited from the baseline, not its own", () => {
-		renderField({ value: '', originalValue: 'semantic.radius.control', overridden: false });
+	/**
+	 * A schema with no declared default still has something honest to show muted: the preset's own
+	 * stored desktop value, which is what the omitted property resolves back to once saved.
+	 *
+	 * @return {void}
+	 */
+	it("shows the preset's stored desktop value muted, as the Default, when the schema declares none", () => {
+		renderField({ value: '', originalValue: '0.75rem', defaultValue: null });
 
 		expect(latestBoxControlProps.value).toEqual(toControlValue(''));
+		expect(latestBoxControlProps.defaultValue).toBe('0.75rem');
+		expect(latestBoxControlProps.inherited).toBe(false);
+	});
+
+	/**
+	 * A desktop base reset inside an envelope that keeps a tablet override reads as unset at desktop,
+	 * with the schema's default muted — not the stored desktop value the user just reset.
+	 *
+	 * @return {void}
+	 */
+	it('shows Default at desktop once the base is reset while a tablet override stands, not the stored desktop value', () => {
+		const NS = 'com.kadence.designTokens';
+
+		renderField({
+			value: { $value: null, $extensions: { [NS]: { responsive: { tablet: 'primitive.dimension.radius-xs' } } } },
+			originalValue: 'primitive.dimension.radius-lg',
+		});
+
+		// `BoxControl` is stubbed; its `value` prop is what the field resolved to show at the active
+		// breakpoint (desktop by default).
+		expect(latestBoxControlProps.value).toEqual(toControlValue(''));
+		expect(latestBoxControlProps.defaultValue).toBe('0.1875rem');
 	});
 });
 
@@ -425,7 +473,6 @@ describe('a reset responsive field', () => {
 					field: { path: 'tokens.radius', tokenType: 'dimension', role: 'radius', responsive: true },
 					value,
 					originalValue,
-					originalValues: { overridden: { radius: true } },
 					onChange: jest.fn(),
 					slots: 'corners',
 				})
@@ -435,32 +482,49 @@ describe('a reset responsive field', () => {
 	}
 
 	/**
-	 * A preset that stores only a desktop value still resolves to it at Tablet, because that is what a
-	 * reset there actually renders. Reading only the tablet slot would show the generic fallback for a
-	 * value the preset genuinely supplies.
+	 * A draft that carries only a desktop value inherits it at Tablet: the control reads unset there,
+	 * tagged Inherited, with the desktop literal as the muted value.
 	 *
 	 * @return {void}
 	 */
-	it("shows the preset's desktop value at Tablet when it stores no tablet override", () => {
-		renderAt({ value: '', originalValue: 'semantic.radius.control' }, 'tablet');
+	it('shows the desktop value muted as Inherited at Tablet when the draft stores no tablet override', () => {
+		renderAt({ value: '0.75rem', originalValue: '0.75rem' }, 'tablet');
 
-		expect(latestBoxControlProps.value).toEqual(toControlValue('semantic.radius.control'));
+		expect(latestBoxControlProps.value).toEqual(toControlValue(''));
+		expect(latestBoxControlProps.inherited).toBe(true);
+		expect(latestBoxControlProps.defaultValue).toBe('0.75rem');
 	});
 
 	/**
-	 * Mobile steps through tablet first, so a tablet override wins over the desktop value.
+	 * Mobile steps through tablet first, so a tablet override is what Mobile inherits.
 	 *
 	 * @return {void}
 	 */
-	it('prefers a tablet override over the desktop value at Mobile', () => {
+	it('inherits a tablet override over the desktop value at Mobile', () => {
 		const envelope = {
-			$value: 'semantic.radius.control',
+			$value: '0.75rem',
 			$extensions: { 'com.kadence.designTokens': { responsive: { tablet: '0.5rem' } } },
 		};
 
-		renderAt({ value: '', originalValue: envelope }, 'mobile');
+		renderAt({ value: envelope, originalValue: envelope }, 'mobile');
 
-		expect(latestBoxControlProps.value).toEqual(toControlValue('0.5rem'));
+		expect(latestBoxControlProps.value).toEqual(toControlValue(''));
+		expect(latestBoxControlProps.inherited).toBe(true);
+		expect(latestBoxControlProps.defaultValue).toBe('0.5rem');
+	});
+
+	/**
+	 * A fully reset draft has no breakpoint to inherit from, so Tablet shows the preset's stored
+	 * desktop value muted as a plain Default rather than as bound or as Inherited.
+	 *
+	 * @return {void}
+	 */
+	it("shows the preset's stored value muted, not bound, at Tablet once the whole draft is reset", () => {
+		renderAt({ value: '', originalValue: '0.75rem' }, 'tablet');
+
+		expect(latestBoxControlProps.value).toEqual(toControlValue(''));
+		expect(latestBoxControlProps.inherited).toBe(false);
+		expect(latestBoxControlProps.defaultValue).toBe('0.75rem');
 	});
 });
 
@@ -482,13 +546,13 @@ describe('switching unit on a reset field', () => {
 	});
 
 	/**
-	 * The unit switcher retypes what the field is SHOWING. With the draft reset the field shows the
-	 * preset's own value, so switching unit has to materialize that value into the draft — otherwise
-	 * the trigger would read `1px` while nothing was written, and a reload would show `1rem` again.
+	 * The unit switcher retypes what the field is SHOWING, and a reset field shows nothing of its own:
+	 * the preset's stored value stays a muted default and is never materialized into the draft, so a
+	 * reset that is only followed by a unit switch stays reset.
 	 *
 	 * @return {void}
 	 */
-	it("retypes the preset's own value rather than the empty draft", () => {
+	it("leaves a reset draft empty rather than retyping the preset's stored value into it", () => {
 		const onChange = jest.fn();
 
 		act(() => {
@@ -497,7 +561,6 @@ describe('switching unit on a reset field', () => {
 					field: { path: 'tokens.radius', tokenType: 'dimension', role: 'radius' },
 					value: '',
 					originalValue: '1rem',
-					originalValues: { overridden: { radius: true } },
 					onChange,
 					slots: 'corners',
 				})
@@ -506,6 +569,8 @@ describe('switching unit on a reset field', () => {
 
 		act(() => latestBoxControlProps.onUnit('px'));
 
-		expect(onChange).toHaveBeenCalledWith('1px');
+		expect(onChange).not.toHaveBeenCalledWith('1px');
+		expect(latestBoxControlProps.unit).toBe('px');
+		expect(latestBoxControlProps.value).toEqual(toControlValue(''));
 	});
 });

@@ -161,7 +161,11 @@ function withResponsive(base, property, attributes, unit) {
 		return base;
 	}
 
-	return { $value: base, $extensions: { [VENDOR_EXTENSION]: { responsive } } };
+	// An empty base is rejected by the server; the envelope's own "desktop unset" spelling is null, the
+	// same reset sentinel a token leaf uses.
+	const isCleared = Array.isArray(base) ? base.every((slot) => slot === '') : base === '';
+
+	return { $value: isCleared ? null : base, $extensions: { [VENDOR_EXTENSION]: { responsive } } };
 }
 
 /**
@@ -204,7 +208,9 @@ export function capturedCatalogValues(tokens, library) {
 		const overrides = get(captured, ['$extensions', VENDOR_EXTENSION, 'responsive'], null);
 		const base = overrides ? captured.$value : captured;
 
-		values[key] = capturedLiteral(base, resolvedLibrary);
+		if (base !== null) {
+			values[key] = capturedLiteral(base, resolvedLibrary);
+		}
 
 		Object.entries(overrides || {}).forEach(([breakpoint, value]) => {
 			responsive[breakpoint] = {
@@ -235,7 +241,7 @@ export function capturedTokens(blockName, library, attributes) {
 	const currentSlug = activePresetFor(blockName, attributes, resolvedLibrary);
 	const presetValues = get(blockPresetValues(blockName, resolvedLibrary), currentSlug, {});
 
-	return blockProperties(blockName, resolvedLibrary).reduce((tokens, property) => {
+	const tokens = blockProperties(blockName, resolvedLibrary).reduce((captured, property) => {
 		const presetValue = get(presetValues, property.key, '');
 
 		// A property that declares an axis (`propertyAxis`) shares ONE `control_attr` with its siblings,
@@ -247,9 +253,9 @@ export function capturedTokens(blockName, library, attributes) {
 		// asked to support — so such a property is skipped and passes the preset's existing value through
 		// unchanged, the same "not edited" fallback every other unmapped property already takes.
 		if (propertyAxis(property)) {
-			tokens[property.key] = presetValue;
+			captured[property.key] = presetValue;
 
-			return tokens;
+			return captured;
 		}
 
 		const attr = property.control_attr;
@@ -260,8 +266,13 @@ export function capturedTokens(blockName, library, attributes) {
 		const edited = attr && !isEmptyValue(property.kind, raw);
 		const base = edited ? attrToLiteral(property.kind, raw, unit, presetValue) : presetValue;
 
-		tokens[property.key] = withResponsive(base, property, attributes, unit);
+		captured[property.key] = withResponsive(base, property, attributes, unit);
 
-		return tokens;
+		return captured;
 	}, {});
+
+	// A property with no value at any breakpoint (a preset that sets it only at a breakpoint, and a block
+	// storing none of its own) is omitted: the server rejects a bare `''` as a preset value, and leaving
+	// the key out lets the property inherit instead of failing the whole save.
+	return Object.fromEntries(Object.entries(tokens).filter(([, value]) => value !== ''));
 }

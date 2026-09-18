@@ -319,6 +319,22 @@ final class Preset_CatalogTest extends TestCase {
 	}
 
 	/**
+	 * A preset whose desktop base is unset surfaces no desktop value but still surfaces its breakpoint
+	 * override and reports the property as its own, so the editor can bind the control at tablet.
+	 *
+	 * @return void
+	 */
+	public function testAnUnsetBaseSurfacesOnlyTheBreakpointOverride(): void {
+		$this->seedResponsivePreset( null );
+
+		$button = $this->catalog->all()['libraries'][ Token_Store::default_slug() ][ self::BUTTON ];
+
+		$this->assertArrayNotHasKey( 'button-radius', $button['values']['hero'] );
+		$this->assertSame( [ 'mobile' => [ 'button-radius' => '0.1875rem' ] ], $button['responsive']['hero'] );
+		$this->assertTrue( $button['overridden']['hero']['button-radius'] );
+	}
+
+	/**
 	 * A preset with no per-breakpoint overrides carries an empty responsive map, so every existing preset
 	 * is unchanged in the feed.
 	 *
@@ -368,9 +384,11 @@ final class Preset_CatalogTest extends TestCase {
 	/**
 	 * Persist a "hero" button preset whose radius takes an aliased override on mobile.
 	 *
+	 * @param mixed $base The desktop base value; null leaves desktop unset.
+	 *
 	 * @return void
 	 */
-	private function seedResponsivePreset(): void {
+	private function seedResponsivePreset( $base = '8px' ): void {
 		$document = [
 			'$extensions' => [
 				'com.kadence.designTokens' => [
@@ -380,7 +398,7 @@ final class Preset_CatalogTest extends TestCase {
 								'label'  => 'Hero',
 								'tokens' => [
 									'button-radius' => [
-										'$value'      => '8px',
+										'$value'      => $base,
 										'$extensions' => [
 											'com.kadence.designTokens' => [
 												'responsive' => [ 'mobile' => '{semantic.radius.control}' ],

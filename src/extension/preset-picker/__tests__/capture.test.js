@@ -280,6 +280,29 @@ describe('capturedTokens', () => {
 		expect(capturedTokens(BLOCK, SET, attributes)['button-radius']).toBe('8px');
 	});
 
+	it('stores a null base when the block has no desktop value but a breakpoint value', () => {
+		window.kadenceDesignTokensPresets.libraries[SET][BLOCK].values.primary = {};
+
+		const attributes = {
+			kbPreset: 'primary',
+			borderRadiusUnit: 'px',
+			tabletBorderRadius: ['2', '2', '2', '2'],
+		};
+
+		expect(capturedTokens(BLOCK, SET, attributes)['button-radius']).toEqual({
+			$value: null,
+			$extensions: { 'com.kadence.designTokens': { responsive: { tablet: '2px' } } },
+		});
+	});
+
+	it('omits a property with no desktop value and no breakpoint value, rather than storing an empty string', () => {
+		window.kadenceDesignTokensPresets.libraries[SET][BLOCK].values.primary = { 'button-bg': '#111111' };
+
+		const tokens = capturedTokens(BLOCK, SET, { kbPreset: 'primary' });
+
+		expect(tokens).toEqual({ 'button-bg': '#111111' });
+	});
+
 	it('uses the default preset when no preset is selected', () => {
 		const tokens = capturedTokens(BLOCK, SET, {});
 
@@ -463,5 +486,20 @@ describe('capturedCatalogValues', () => {
 			values: { 'button-radius': '1rem' },
 			responsive: { tablet: { 'button-radius': ['9999px', '1rem', '1rem', '1rem'] } },
 		});
+	});
+
+	it('seeds the catalog without a desktop value for a null base, keeping the breakpoint value', () => {
+		const seeded = capturedCatalogValues(
+			{
+				'button-radius': {
+					$value: null,
+					$extensions: { 'com.kadence.designTokens': { responsive: { tablet: '2px' } } },
+				},
+			},
+			SET
+		);
+
+		expect(seeded.values).toEqual({});
+		expect(seeded.responsive).toEqual({ tablet: { 'button-radius': '2px' } });
 	});
 });
