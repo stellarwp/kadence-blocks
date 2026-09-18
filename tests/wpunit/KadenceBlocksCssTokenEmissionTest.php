@@ -1,5 +1,7 @@
 <?php declare( strict_types=1 );
 
+// cspell:ignore aliaspx -- expected fixture output: a malformed brace string with the unit glued on, not a real word.
+
 namespace Tests\wpunit;
 
 use Generator;
@@ -145,6 +147,73 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 			$this->css->css_output(),
 			'render_responsive_range must emit the bare var() for the aliased desktop breakpoint'
 		);
+	}
+
+	/**
+	 * get_font_size returns the bare var() reference for a strict alias, ignoring the unit.
+	 *
+	 * @return void
+	 */
+	public function testGetFontSizeEmitsBareVarForAlias(): void {
+		$this->assertSame(
+			'var(--kb-token--primitive--dimension--font-size--lg)',
+			$this->css->get_font_size( '{primitive.dimension.font-size.lg}', 'px' ),
+			'get_font_size must emit the bare var() for a strict alias and never append the unit'
+		);
+	}
+
+	/**
+	 * get_font_size emits nothing for an alias the active library does not back, so the property falls
+	 * back to the block-default rule instead of carrying a dead variable.
+	 *
+	 * @return void
+	 */
+	public function testGetFontSizeEmitsNothingForUnbackedAlias(): void {
+		$this->assertSame(
+			'',
+			$this->css->get_font_size( '{primitive.dimension.font-size.does-not-exist}', 'px' ),
+			'an alias with no token behind it must produce no declaration value'
+		);
+	}
+
+	/**
+	 * get_font_size renders a slug, a number and a malformed brace string exactly as it did before aliases
+	 * were recognized, so no existing caller's output changes.
+	 *
+	 * @dataProvider nonAliasFontSizeProvider
+	 *
+	 * @param mixed  $size     The stored size.
+	 * @param string $unit     The unit to append to a plain number.
+	 * @param string $expected The declaration value the method must return.
+	 *
+	 * @return void
+	 */
+	public function testGetFontSizeLeavesNonAliasValuesUnchanged( $size, string $unit, string $expected ): void {
+		$this->assertSame( $expected, $this->css->get_font_size( $size, $unit ) );
+	}
+
+	/**
+	 * render_typography emits the bare var() for an aliased size at every breakpoint, with no unit.
+	 *
+	 * @return void
+	 */
+	public function testRenderTypographyEmitsBareVarForAliasedSizePerBreakpoint(): void {
+		$this->css->render_typography( [
+			'typography' => [
+				'sizeType' => 'px',
+				'size'     => [
+					'{primitive.dimension.font-size.xl}',
+					'{primitive.dimension.font-size.lg}',
+					'{primitive.dimension.font-size.md}',
+				],
+			],
+		] );
+		$output = $this->css->css_output();
+
+		$this->assertStringContainsString( 'font-size:var(--kb-token--primitive--dimension--font-size--xl)', $output );
+		$this->assertStringContainsString( 'font-size:var(--kb-token--primitive--dimension--font-size--lg)', $output );
+		$this->assertStringContainsString( 'font-size:var(--kb-token--primitive--dimension--font-size--md)', $output );
+		$this->assertStringNotContainsString( '}px', $output, 'No alias may reach the page with a unit glued to it.' );
 	}
 
 	/**
@@ -894,6 +963,35 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 		yield 'unclosed brace' => [ 'malformed' => '{unclosed' ];
 		yield 'unopened brace' => [ 'malformed' => 'unopened}' ];
 		yield 'empty braces' => [ 'malformed' => '{}' ];
+	}
+
+	/**
+	 * The non-alias shapes get_font_size accepted before aliases were recognized: slug, integer, decimal
+	 * string, malformed brace.
+	 *
+	 * @return Generator
+	 */
+	public static function nonAliasFontSizeProvider(): Generator {
+		yield 'kadence slug' => [
+			'size'     => 'lg',
+			'unit'     => 'px',
+			'expected' => 'var(--global-kb-font-size-lg, 2rem)',
+		];
+		yield 'integer with px' => [
+			'size'     => 32,
+			'unit'     => 'px',
+			'expected' => '32px',
+		];
+		yield 'decimal string with rem' => [
+			'size'     => '1.5',
+			'unit'     => 'rem',
+			'expected' => '1.5rem',
+		];
+		yield 'malformed brace string never mints a var()' => [
+			'size'     => '{not an alias',
+			'unit'     => 'px',
+			'expected' => '{not an aliaspx',
+		];
 	}
 
 	/**

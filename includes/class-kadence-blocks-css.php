@@ -984,14 +984,27 @@ class Kadence_Blocks_CSS {
 		$this->set_media_state( 'desktop' );
 	}
 	/**
-	 * Generates the font output.
+	 * The font-size declaration value for a stored size.
 	 *
-	 * @param array  $font an array of font settings.
-	 * @param object $css an object of css output.
-	 * @param string $inherit an string to determine if the font should inherit.
-	 * @return string
+	 * A design-token alias becomes its token variable; a Kadence font-size slug (sm/md/lg/…) becomes its
+	 * `--global-kb-font-size-<slug>` variable; anything else is the value with the unit appended.
+	 *
+	 * The alias branch keeps the saved page in step with the editor. The token-aware size control stores a
+	 * whole-string `{dot.alias}` in the size attribute, and the editor resolves it to a var() before painting.
+	 * Without this branch the same alias reaches the page as `{dot.alias}px`, which the browser drops, so the
+	 * block silently falls back to its default rule while the canvas shows the picked size. An alias the active
+	 * library does not back yields '' so no declaration is emitted ({@see self::add_rule()}), matching every
+	 * other alias-aware renderer in this class.
+	 *
+	 * @param mixed  $size The stored size: a number, a numeric string, a font-size slug, or a `{dot.alias}`.
+	 * @param string $unit The unit to append to a plain numeric size.
+	 *
+	 * @return string The declaration value, or '' for an alias the active library does not back.
 	 */
 	public function get_font_size( $size, $unit ) {
+		if ( is_string( $size ) && Alias::is_alias( $size ) ) {
+			return $this->get_backed_token_reference( $size ) ?? '';
+		}
 		if ( $this->is_variable_font_size_value( $size ) ) {
 			return $this->get_variable_font_size_value( $size );
 		}
@@ -1128,7 +1141,7 @@ class Kadence_Blocks_CSS {
 	 *
 	 * The active library is resolved through Token_Resolver, which memoizes per store version, so repeated
 	 * lookups stay cheap and always reflect the current version. The unresolved-alias log is de-duplicated
-	 * per (library, id) so one stale alias does not flood the error log across a page's many blocks. Fails
+	 * per (library, id) so one stale alias does not flood the debug log across a page's many blocks. Fails
 	 * open: if the container/resolver is unavailable or resolution throws, the alias is treated as backed
 	 * (today's behavior) so a render never crashes and transient resolver issues do not drop all token CSS.
 	 *
@@ -1155,7 +1168,7 @@ class Kadence_Blocks_CSS {
 				$logged[ $slug . '|' . $id ] = true;
 				/** @var LoggerInterface $logger */
 				$logger = kadence_blocks()->get( LoggerInterface::class );
-				$logger->error( sprintf( 'CSS render: skipped unresolved token alias "%s"; falling back to global CSS.', $id ) );
+				$logger->debug( sprintf( 'CSS render: skipped unresolved token alias "%s"; falling back to global CSS.', $id ) );
 			}
 
 			return $backed;

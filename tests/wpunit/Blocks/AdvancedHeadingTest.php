@@ -156,6 +156,70 @@ class AdvancedHeadingTest extends KadenceBlocksUnit {
 	}
 
 	/**
+	 * A heading whose size slots hold design-token aliases renders each alias as its token variable at its
+	 * own breakpoint, with no unit appended, so the saved page agrees with the editor canvas.
+	 *
+	 * @return void
+	 */
+	public function testTokenAliasFontSizesRenderAsTokenVariablesPerBreakpoint(): void {
+		$css        = new Kadence_Blocks_CSS();
+		$attributes = [
+			'uniqueID' => '321_abcd',
+			'sizeType' => 'px',
+			'fontSize' => [
+				'{primitive.dimension.font-size.xl}',
+				'{primitive.dimension.font-size.lg}',
+				'{primitive.dimension.font-size.md}',
+			],
+		];
+
+		$output = $this->block->build_css( $attributes, $css, '321_abcd', '321_abcd' );
+
+		$this->assertStringContainsString( 'font-size:var(--kb-token--primitive--dimension--font-size--xl)', $output, 'Desktop alias must render as its token variable.' );
+		$this->assertStringContainsString( 'font-size:var(--kb-token--primitive--dimension--font-size--lg)', $output, 'Tablet alias must render as its token variable.' );
+		$this->assertStringContainsString( 'font-size:var(--kb-token--primitive--dimension--font-size--md)', $output, 'Mobile alias must render as its token variable.' );
+		$this->assertStringNotContainsString( '}px', $output, 'No alias may reach the page with a unit glued to it.' );
+	}
+
+	/**
+	 * A heading whose size slot holds an alias the active library does not back emits no font-size of its
+	 * own, so the block-default rule wins — the same fallback the editor shows for that value.
+	 *
+	 * @return void
+	 */
+	public function testUnbackedTokenAliasFontSizeEmitsNoDeclaration(): void {
+		$css        = new Kadence_Blocks_CSS();
+		$attributes = [
+			'uniqueID' => '987_abcd',
+			'sizeType' => 'px',
+			'fontSize' => [ '{primitive.dimension.font-size.does-not-exist}', '', '' ],
+		];
+
+		$output = $this->block->build_css( $attributes, $css, '987_abcd', '987_abcd' );
+
+		$this->assertStringNotContainsString( 'font-size:', $output );
+	}
+
+	/**
+	 * A heading whose size slot holds a plain number keeps rendering the number with its unit, so the alias
+	 * branch changes nothing for a block that never picked a token.
+	 *
+	 * @return void
+	 */
+	public function testNumericFontSizeStillRendersWithItsUnit(): void {
+		$css        = new Kadence_Blocks_CSS();
+		$attributes = [
+			'uniqueID' => '654_abcd',
+			'sizeType' => 'px',
+			'fontSize' => [ '40', '', '' ],
+		];
+
+		$output = $this->block->build_css( $attributes, $css, '654_abcd', '654_abcd' );
+
+		$this->assertStringContainsString( 'font-size:40px', $output );
+	}
+
+	/**
 	 * Seed a preset carrying a family (and optionally a weight), build the block's CSS for a heading
 	 * with no family of its own, and return the Google fonts the build collected.
 	 *
