@@ -1,17 +1,19 @@
 /**
- * The Style Library header bar: title on the left, then a library-selector slot and an actions
- * slot on the right. Presentational only: the slots are filled by the library selector and the
- * header actions (e.g. delete) elsewhere in the app.
+ * The Style Library header bar: logo and title on the left, then a library-selector slot and an
+ * actions slot on the right. Presentational only: the slots are filled by the library selector and
+ * the header actions (e.g. delete) elsewhere in the app.
  */
 
 /**
  * WordPress dependencies
  */
+import { Icon } from '@wordpress/icons';
 import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
+import { kadenceLogo } from '../../icons';
 import './AppHeader.scss';
 
 /**
@@ -28,6 +30,7 @@ import './AppHeader.scss';
 export function AppHeader({ librarySlot, actionsSlot }) {
 	return (
 		<div className="kadence-blocks-style-library__header-bar">
+			<Icon className="kadence-blocks-style-library__logo" icon={kadenceLogo} size={48} />
 			<h1 className="kadence-blocks-style-library__title">{__('Style Library', 'kadence-blocks')}</h1>
 			<div className="kadence-blocks-style-library__header-library">{librarySlot}</div>
 			<div className="kadence-blocks-style-library__header-actions">{actionsSlot}</div>

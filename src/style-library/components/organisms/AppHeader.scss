@@ -5,6 +5,12 @@
 	padding: 0.875rem var(--kb-sl-space-20);
 }
 
+.kadence-blocks-style-library__logo {
+	flex: 0 0 auto;
+	width: var(--kb-sl-size-header-logo);
+	height: var(--kb-sl-size-header-logo);
+}
+
 // Qualified with the app root so this reliably outranks wp-admin's own `.wrap h1` page-title
 // rule, which otherwise wins the cascade and overrides font-size, line-height and padding.
 .kadence-blocks-style-library-root .kadence-blocks-style-library__title {
