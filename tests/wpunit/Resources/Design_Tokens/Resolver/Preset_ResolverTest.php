@@ -194,8 +194,9 @@ final class Preset_ResolverTest extends TestCase {
 	}
 
 	/**
-	 * The Advanced Text (heading) preset bindings are registered at boot and their $default resolves the full
-	 * 13-property core-design and typography surface to the shipped baseline's literal values.
+	 * The shipped Advanced Text preset bindings are registered at boot and the Default preset resolves
+	 * every core-design property, while deliberately leaving font size, line height and font weight
+	 * unset so an unset heading keeps the theme's own per-tag type.
 	 *
 	 * @return void
 	 */
@@ -212,9 +213,6 @@ final class Preset_ResolverTest extends TestCase {
 			[
 				'color'         => '#1A202C',
 				'background'    => 'transparent',
-				'fontSize'      => '2rem',
-				'fontHeight'    => '1.125',
-				'fontWeight'    => '400',
 				'letterSpacing' => '0',
 				'textTransform' => 'none',
 				'padding'       => '0',

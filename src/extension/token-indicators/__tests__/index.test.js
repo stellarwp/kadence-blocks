@@ -426,6 +426,47 @@ describe('presetPropertyValueForDevice', () => {
 
 		expect(value).toBeUndefined();
 	});
+
+	/**
+	 * A property the Advanced Text's Default preset leaves to the theme resolves to nothing, while a
+	 * sibling property the same preset does set still resolves — so "no value" comes from the catalog,
+	 * not from the lookup failing outright. The Font Size control uses this as its muted default, and
+	 * its Google-variant request reads the preset weight through it; both must see nothing rather than
+	 * a stale literal.
+	 *
+	 * @return {void}
+	 */
+	it('returns undefined for a property the active preset does not resolve', () => {
+		window.kadenceDesignTokensPresets.libraries[SET]['kadence/advancedheading'] = {
+			default: 'default',
+			presets: [{ slug: 'default', label: 'Default' }],
+			properties: [
+				{ key: 'color', kind: 'color', token: 'semantic.color.text' },
+				{ key: 'fontSize', kind: 'dimension', token: null },
+			],
+			values: {
+				default: { color: '#1A202C' },
+			},
+		};
+
+		const unset = presetPropertyValueForDevice(
+			'kadence/advancedheading',
+			'fontSize',
+			{ kbPreset: '' },
+			undefined,
+			'Desktop'
+		);
+		const set = presetPropertyValueForDevice(
+			'kadence/advancedheading',
+			'color',
+			{ kbPreset: '' },
+			undefined,
+			'Desktop'
+		);
+
+		expect(unset).toBeUndefined();
+		expect(set).toBe('#1A202C');
+	});
 });
 
 describe('usePresetBinding border width/style/color combining', () => {

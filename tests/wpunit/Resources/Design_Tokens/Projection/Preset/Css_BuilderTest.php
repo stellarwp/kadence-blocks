@@ -159,6 +159,178 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
+	 * A named heading preset that sets font size and weight renders them outright. The Default preset
+	 * leaves both to the theme, so the block-default layer emits no declaration that would consume the
+	 * preset's var retarget; the scoped rule here supplies the declaration itself, weighted one class so
+	 * it outranks a theme's element rule and yields to the block's per-instance rule.
+	 *
+	 * @return void
+	 */
+	public function testANamedPresetDeclaresAPropertyTheDefaultLeavesUnset(): void {
+		$this->seedDisplayHeadingPreset();
+
+		$css = $this->builder( $this->registry )->css( 'default' );
+
+		$this->assertStringContainsString(
+			':where(.wp-block-kadence-advancedheading).kb-preset--display{'
+				. 'font-size:var(--kb-token--preset--kadence-advancedheading--display--fontSize);'
+				. 'font-weight:var(--kb-token--preset--kadence-advancedheading--display--fontWeight);}',
+			$css
+		);
+
+		// The var retarget is still there — a Default that later sets font size consumes it through the
+		// block-default declaration, and the two paths must agree.
+		$this->assertStringContainsString(
+			'--kb-heading-font-size:var(--kb-token--preset--kadence-advancedheading--display--fontSize);',
+			$css
+		);
+	}
+
+	/**
+	 * A property the Default DOES define is consumed by the block-default layer's declaration, so the
+	 * gap rule carries nothing for it: color stays a var retarget only.
+	 *
+	 * @return void
+	 */
+	public function testTheGapRuleSkipsAPropertyTheDefaultDefines(): void {
+		$this->seedDisplayHeadingPreset();
+
+		$css = $this->builder( $this->registry )->css( 'default' );
+
+		$this->assertStringNotContainsString( 'kb-preset--display{color:', $css );
+		$this->assertStringNotContainsString( ';color:var(--kb-token--preset--kadence-advancedheading--display--color)', $css );
+	}
+
+	/**
+	 * A named preset property the Default leaves unset, set only at a breakpoint, carries its gap rule
+	 * inside that breakpoint's media block and not in the flat layer: the flat rule would read a var
+	 * nothing declares at desktop and compute the property to `unset`, wiping the theme's own size.
+	 *
+	 * @return void
+	 */
+	public function testABaseLessGapPropertyDeclaresItsRuleOnlyInsideTheMediaBlock(): void {
+		$this->seedDisplayHeadingPreset(
+			[
+				'$value'      => null,
+				'$extensions' => [
+					'com.kadence.designTokens' => [
+						'responsive' => [ 'tablet' => '{semantic.font-size.heading}' ],
+					],
+				],
+			]
+		);
+
+		$css  = $this->builder( $this->registry )->css( 'default', $this->breakpoints() );
+		$var  = '--kb-token--preset--kadence-advancedheading--display--fontSize';
+		$rule = ':where(.wp-block-kadence-advancedheading).kb-preset--display{font-size:var(' . $var . ');}';
+
+		// The flat gap rule carries only the weight, which has a desktop base; the retarget for the size is
+		// still there (a custom property is inert until something reads it).
+		$this->assertStringContainsString(
+			':where(.wp-block-kadence-advancedheading).kb-preset--display{font-weight:var(--kb-token--preset--kadence-advancedheading--display--fontWeight);}',
+			explode( '@media', $css, 2 )[0]
+		);
+		$this->assertStringContainsString(
+			'@media all and (max-width: 1024px){:root,:root:where(.kb-tokens){'
+			. $var . ':var(--kb-token--semantic--font-size--heading);}'
+			. $rule . '}',
+			$css
+		);
+	}
+
+	/**
+	 * The Default preset itself gets no gap rule: whatever it resolves, the block-default layer already
+	 * declares, and whatever it leaves unset belongs to the theme.
+	 *
+	 * @return void
+	 */
+	public function testTheDefaultPresetGetsNoGapRule(): void {
+		$this->seedDisplayHeadingPreset();
+
+		$css = $this->builder( $this->registry )->css( 'default' );
+
+		$this->assertStringNotContainsString( ':where(.wp-block-kadence-advancedheading).kb-preset--default{', $css );
+	}
+
+	/**
+	 * In the editor the block's `.wp-block-*` class sits on the useBlockProps() wrapper, not on the heading
+	 * element, so the gap rule is re-targeted at the element the block's `editor_selector` names, under
+	 * `.editor-styles-wrapper` so it still outranks the theme's `h2` there.
+	 *
+	 * @return void
+	 */
+	public function testTheEditorGapRuleLandsOnTheEditorSelector(): void {
+		$this->seedDisplayHeadingPreset();
+
+		$css = $this->builder( $this->registry )->editor_css( 'default' );
+
+		$this->assertStringContainsString(
+			'.editor-styles-wrapper :where(.wp-block-kadence-advancedheading.kb-preset--display) .kadence-advancedheading-text{'
+				. 'font-size:var(--kb-token--preset--kadence-advancedheading--display--fontSize);'
+				. 'font-weight:var(--kb-token--preset--kadence-advancedheading--display--fontWeight);}',
+			$css
+		);
+		$this->assertStringNotContainsString( ':where(.wp-block-kadence-advancedheading).kb-preset--display{', $css );
+	}
+
+	/**
+	 * A gap-rule property whose binding paints a descendant lands on that descendant: the suffix follows
+	 * the scope, and a property bound to the block root keeps its own rule.
+	 *
+	 * @return void
+	 */
+	public function testTheGapRuleHonorsABindingsDescendantSelector(): void {
+		$this->seedDescendantPresets();
+
+		$css = $this->builder( $this->descendantRegistry() )->css( 'default' );
+
+		$this->assertStringContainsString(
+			':where(.wp-block-kadence-descendant-fixture).kb-preset--framed img{'
+				. 'border-radius:var(--kb-token--preset--kadence-descendant-fixture--framed--border-radius);}',
+			$css
+		);
+		// The block-root property the Default leaves unset keeps its own rule, un-suffixed.
+		$this->assertStringContainsString(
+			':where(.wp-block-kadence-descendant-fixture).kb-preset--framed{'
+				. 'outline-color:var(--kb-token--preset--kadence-descendant-fixture--framed--outline);}',
+			$css
+		);
+	}
+
+	/**
+	 * The editor build reads the binding's `editor_css_selector`, so a block whose canvas markup paints a
+	 * different descendant than its saved markup still previews the preset's value on the right element.
+	 *
+	 * @return void
+	 */
+	public function testTheEditorGapRuleHonorsTheEditorDescendantSelector(): void {
+		$this->seedDescendantPresets();
+
+		$css = $this->builder( $this->descendantRegistry() )->editor_css( 'default' );
+
+		$this->assertStringContainsString(
+			':where(.wp-block-kadence-descendant-fixture).kb-preset--framed *.kb-fixture-media{'
+				. 'border-radius:var(--kb-token--preset--kadence-descendant-fixture--framed--border-radius);}',
+			$css
+		);
+		$this->assertStringNotContainsString( '.kb-preset--framed img{', $css );
+	}
+
+	/**
+	 * A block whose Default defines every property a named preset sets (the Button's accent) emits no gap
+	 * rule at all, so every other block's projected CSS is unchanged by the gap layer.
+	 *
+	 * @return void
+	 */
+	public function testABlockWhoseDefaultCoversThePresetEmitsNoGapRule(): void {
+		$this->seedAccentPreset();
+
+		$css = $this->builder( $this->registry )->css( 'default' );
+
+		$this->assertStringNotContainsString( ':where(.wp-block-kadence-singlebtn)', $css );
+	}
+
+	/**
 	 * A preset that exists only in a NON-active library (a user-created preset on the "dark" library) is not emitted
 	 * while "default" is active: only the active library's presets reach output.
 	 *
@@ -997,6 +1169,38 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
+	 * Persist a user-created "display" heading preset into the active "default" library that sets font size
+	 * and weight — two properties the shipped Default preset leaves to the theme — plus a color the Default
+	 * does define.
+	 *
+	 * @param mixed $font_size The stored `fontSize` value: an alias, or a responsive envelope with no base.
+	 *
+	 * @return void
+	 */
+	private function seedDisplayHeadingPreset( $font_size = '{semantic.font-size.heading}' ): void {
+		$document = [
+			'$extensions' => [
+				'com.kadence.designTokens' => [
+					'presets' => [
+						'kadence/advancedheading' => [
+							'display' => [
+								'label'  => 'Display',
+								'tokens' => [
+									'color'      => '{semantic.color.text}',
+									'fontSize'   => $font_size,
+									'fontWeight' => '{semantic.font-weight.heading}',
+								],
+							],
+						],
+					],
+				],
+			],
+		];
+
+		$this->store->save_document( (string) wp_json_encode( $document ) );
+	}
+
+	/**
 	 * Persist a user-created "midnight" button preset into the "dark" token library only, so it is absent from
 	 * the active "default" library.
 	 *
@@ -1185,6 +1389,80 @@ final class Css_BuilderTest extends TestCase {
 								'tokens' => [
 									'color'       => '{semantic.color.icon}',
 									'color-hover' => $flare_hover,
+								],
+							],
+						],
+					],
+				],
+			],
+		];
+
+		$this->store->save_document( (string) wp_json_encode( $document ), Token_Store::default_slug() );
+	}
+
+	/**
+	 * A registry for a block the baseline knows nothing about, binding one property to a descendant (with a
+	 * different descendant in the editor) and one to the block root, so a gap rule built from it has to
+	 * split its declarations by selector suffix.
+	 *
+	 * @return Token_Registry
+	 */
+	private function descendantRegistry(): Token_Registry {
+		$registry = new Token_Registry();
+		$registry->register_preset_bindings(
+			[
+				'block'    => 'kadence/descendant-fixture',
+				'bindings' => [
+					'color'         => [
+						'token'    => 'semantic.color.text',
+						'css_prop' => 'color',
+						'css_var'  => 'kb-fixture-color',
+					],
+					'outline'       => [
+						'token'    => 'semantic.color.link',
+						'css_prop' => 'outline-color',
+						'css_var'  => 'kb-fixture-outline',
+					],
+					'border-radius' => [
+						'token'               => 'semantic.radius.media',
+						'css_prop'            => 'border-radius',
+						'css_selector'        => 'img',
+						'editor_css_selector' => '*.kb-fixture-media',
+						'css_var'             => 'kb-fixture-radius',
+					],
+				],
+			]
+		);
+
+		return $registry;
+	}
+
+	/**
+	 * Store two presets for the descendant fixture block — a `$default` ("plain") setting only the
+	 * block-root color, and a named one ("framed") that additionally sets the descendant-bound radius and a
+	 * second block-root property, so the named preset's gap rule spans two selector suffixes.
+	 *
+	 * @return void
+	 */
+	private function seedDescendantPresets(): void {
+		$document = [
+			'$extensions' => [
+				'com.kadence.designTokens' => [
+					'presets' => [
+						'kadence/descendant-fixture' => [
+							'$default' => 'plain',
+							'plain'    => [
+								'label'  => 'Plain',
+								'tokens' => [
+									'color' => '{semantic.color.text}',
+								],
+							],
+							'framed'   => [
+								'label'  => 'Framed',
+								'tokens' => [
+									'color'         => '{semantic.color.text}',
+									'outline'       => '{semantic.color.link}',
+									'border-radius' => '{semantic.radius.media}',
 								],
 							],
 						],

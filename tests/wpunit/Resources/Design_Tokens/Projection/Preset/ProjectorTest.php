@@ -71,7 +71,8 @@ final class ProjectorTest extends TestCase {
 	/**
 	 * The preset projector is context-independent — its scoped rules retarget the `--global-*` slot vars,
 	 * which carry no dependency on the editor's markup shape — so its editor build is byte-for-byte
-	 * identical to its front-end build.
+	 * identical to its front-end build. This holds for the Button, whose Default covers every preset
+	 * property; a block with a gap rule and an `editor_selector` differs, which `Css_BuilderTest` covers.
 	 *
 	 * @return void
 	 */
