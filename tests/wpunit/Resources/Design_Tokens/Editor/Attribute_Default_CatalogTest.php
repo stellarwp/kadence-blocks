@@ -2,6 +2,8 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Editor;
 
+use Generator;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Editor\Attribute_Default_Catalog;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Css_Renderer;
@@ -15,35 +17,38 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Version;
 
 /**
  * Exercises the editor per-block attribute-default catalog the block-registration filter in
- * early-filters.js reads: a resolved token converts and appears in the catalog, an unresolved
- * token is omitted, and a resolved value this catalog cannot convert is omitted too.
+ * early-filters.js reads: a resolved token appears as an empty default, an unresolved token is omitted.
  */
 final class Attribute_Default_CatalogTest extends TestCase {
 
 	/**
-	 * A resolved `rem` token converts to px and appears under its block/attribute path.
+	 * A resolved icon-size token appears under its block/attribute path as an EMPTY default, whatever unit
+	 * the token uses — the editor seeds no size, and the block's preview falls back to the selected preset.
+	 *
+	 * @dataProvider resolvedLengthProvider
+	 *
+	 * @param string $length The resolved token value.
 	 *
 	 * @return void
 	 */
-	public function testResolvedRemTokenAppearsConvertedToPx(): void {
-		$catalog = $this->catalog_resolving_to( '1.5rem' );
+	public function testAResolvedTokenAppearsAsAnEmptyDefault( string $length ): void {
+		$catalog = $this->catalog_resolving_to( $length );
 
-		$this->assertSame( [ 'kadence/single-icon' => [ 'size' => 24.0 ] ], $catalog->all() );
+		$this->assertSame( [ 'kadence/single-icon' => [ 'size' => '' ] ], $catalog->all() );
 	}
 
 	/**
-	 * A resolved `px` token appears as a bare number, unconverted.
-	 *
-	 * @return void
+	 * @return Generator
 	 */
-	public function testResolvedPxTokenAppearsAsIs(): void {
-		$catalog = $this->catalog_resolving_to( '24px' );
-
-		$this->assertSame( [ 'kadence/single-icon' => [ 'size' => 24.0 ] ], $catalog->all() );
+	public function resolvedLengthProvider(): Generator {
+		yield 'rem' => [ 'length' => '1.5rem' ];
+		yield 'px' => [ 'length' => '24px' ];
+		yield 'vw' => [ 'length' => '2vw' ];
 	}
 
 	/**
-	 * A token with no baseline leaf at all is omitted from the catalog rather than guessed.
+	 * A token with no baseline leaf at all is omitted from the catalog, so block.json's own default stays
+	 * in force on a site with no icon-size token.
 	 *
 	 * @return void
 	 */
@@ -54,27 +59,44 @@ final class Attribute_Default_CatalogTest extends TestCase {
 	}
 
 	/**
-	 * A resolved value in a unit this catalog cannot safely convert is omitted rather than guessed.
-	 *
-	 * @return void
-	 */
-	public function testUnconvertibleResolvedValueIsOmitted(): void {
-		$catalog = $this->catalog_resolving_to( '2vw' );
-
-		$this->assertSame( [], $catalog->all() );
-	}
-
-	/**
 	 * `Attribute_Default_Catalog` is registered against the real Token Registry on boot, so the real
-	 * container resolves it with the shipped baseline's `semantic.icon-size.default` (1.5rem, i.e.
-	 * 24px) — proving the wiring, not just the catalog class in isolation.
+	 * container resolves it against the shipped baseline and seeds the empty size — proving the wiring, not
+	 * just the catalog class in isolation.
 	 *
 	 * @return void
 	 */
 	public function testTheRegisteredCatalogResolvesThroughTheRealContainer(): void {
 		$catalog = $this->container->get( Attribute_Default_Catalog::class );
 
-		$this->assertSame( [ 'kadence/single-icon' => [ 'size' => 24.0 ] ], $catalog->all() );
+		$this->assertSame( [ 'kadence/single-icon' => [ 'size' => '' ] ], $catalog->all() );
+	}
+
+	/**
+	 * The gate reads the ACTIVE library, the same one the block-default CSS builds its rule from: a
+	 * non-default library that disables the icon-size token gets no `font-size` rule, so the catalog must
+	 * omit the entry there and let block.json's own default stand.
+	 *
+	 * @return void
+	 */
+	public function testATokenDisabledInTheActiveLibraryOmitsTheEntry(): void {
+		$this->activate_library( [ 'semantic' => [ 'icon-size' => [ 'default' => [ '$disabled' => true ] ] ] ] );
+
+		$this->assertSame( [], $this->container->get( Attribute_Default_Catalog::class )->all() );
+	}
+
+	/**
+	 * A non-default active library that keeps the icon-size token still seeds the empty default, proving
+	 * the active-library gate switches on the token's presence there and not on the library being default.
+	 *
+	 * @return void
+	 */
+	public function testATokenPresentInTheActiveLibrarySeedsTheEmptyDefault(): void {
+		$this->activate_library( [] );
+
+		$this->assertSame(
+			[ 'kadence/single-icon' => [ 'size' => '' ] ],
+			$this->container->get( Attribute_Default_Catalog::class )->all()
+		);
 	}
 
 	/**
@@ -116,6 +138,19 @@ final class Attribute_Default_CatalogTest extends TestCase {
 			$this->container->get( Effective_Version::class )
 		);
 
-		return new Attribute_Default_Catalog( $resolver );
+		return new Attribute_Default_Catalog( $resolver, $this->container->get( Active_Token_Library_Store::class ) );
+	}
+
+	/**
+	 * Save a non-default library carrying the given overrides and make it the active one. The store only
+	 * accepts a slug it knows, so the document is saved before the pointer moves.
+	 *
+	 * @param array<string, mixed> $overrides The library's overrides-only DTCG document.
+	 *
+	 * @return void
+	 */
+	private function activate_library( array $overrides ): void {
+		$this->container->get( Token_Store::class )->save_document( (string) wp_json_encode( $overrides ), 'alternate' );
+		$this->container->get( Active_Token_Library_Store::class )->set( 'alternate' );
 	}
 }

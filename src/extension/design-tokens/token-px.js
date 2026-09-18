@@ -8,10 +8,10 @@
  * `var()`. Those call sites need the token's value as a number before they render.
  *
  * This module is the alias-resolving half: it looks a `{dot.alias}` up in the active token library and
- * hands the resulting literal to `pxFromLength`, which owns the conversion itself and is the JS mirror
- * of the PHP `Converts_Number_To_Px` trait (see that helper for the shared units, the assumed 16px root,
- * and what both languages decline). The conversion lives there rather than here because the indicator
- * layer's dimension compare needs it without any library lookup.
+ * hands the resulting literal to `pxFromLength` in `src/token-controls/helpers/px-from-length.js`, which
+ * owns the conversion itself (see that helper for the accepted units, the assumed 16px root, and what it
+ * declines). The conversion lives there rather than here because the indicator layer's dimension compare
+ * needs it without any library lookup.
  */
 
 /**

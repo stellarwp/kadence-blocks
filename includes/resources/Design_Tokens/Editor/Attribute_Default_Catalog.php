@@ -2,30 +2,33 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Editor;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Converts_Number_To_Px;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 
 /**
  * Builds the compact per-block attribute-default catalog the `blocks.registerBlockType` filter in
- * early-filters.js reads to seed a freshly inserted block's attribute default from a resolved
- * token, instead of the hardcoded static default in block.json.
+ * early-filters.js reads to seed a freshly inserted block's attribute default. Today it seeds one thing:
+ * an EMPTY `size` on kadence/single-icon whenever the icon-size token resolves, replacing block.json's
+ * hardcoded `50`, so a fresh icon holds no size of its own and its preview falls back to the selected
+ * preset's size — the same state the preset picker writes when a preset is chosen.
  *
- * Scoped to kadence/single-icon's `size` today — the only block/attribute pair this ticket needs.
- * Not a general "any block, any attribute" registry: extend the ENTRIES map (or promote to a
- * declarations-driven shape) only when a second real consumer needs it, matching this module's
- * existing preference for composable-but-not-speculative catalogs (see Preset_Catalog, which
- * itself started scoped to what the preset picker needed).
+ * Seeding a pixel NUMBER here instead is the trap this replaces: the number lived in the block as a
+ * per-instance value, so a Style Library edit to the Default preset's size never reached the canvas, and
+ * the block read as "Edited" the moment it was inserted.
+ *
+ * The seed is gated on the token resolving IN THE ACTIVE LIBRARY, matching the front-end adapter and the
+ * block-default CSS rule, which is built from that same library: a library that disables the icon-size
+ * token gets no rule to fall through to, so block.json's own default must stay there.
+ *
+ * Scoped to kadence/single-icon's `size` today. Not a general "any block, any attribute" registry:
+ * extend the ENTRIES map only when a second real consumer needs it.
  *
  * @since TBD
  */
 final class Attribute_Default_Catalog {
 
-	use Converts_Number_To_Px;
-
 	/**
-	 * Block => attribute => resolved-token dot-path. Each entry's value is looked up via the
-	 * resolver and, when present, exposed to JS as a raw number (this catalog only supports
-	 * numeric attribute defaults today — the one case this ticket has).
+	 * Block => attribute => the resolved-token dot-path whose presence gates the seed.
 	 *
 	 * @since TBD
 	 *
@@ -45,43 +48,45 @@ final class Attribute_Default_Catalog {
 	private Token_Resolver $resolver;
 
 	/**
+	 * The active-library pointer, so the gate reads the library the block-default CSS is built from.
+	 *
 	 * @since TBD
 	 *
-	 * @param Token_Resolver $resolver The token resolver.
+	 * @var Active_Token_Library_Store
 	 */
-	public function __construct( Token_Resolver $resolver ) {
+	private Active_Token_Library_Store $active;
+
+	/**
+	 * @since TBD
+	 *
+	 * @param Token_Resolver             $resolver The token resolver.
+	 * @param Active_Token_Library_Store $active   The active-library pointer.
+	 */
+	public function __construct( Token_Resolver $resolver, Active_Token_Library_Store $active ) {
 		$this->resolver = $resolver;
+		$this->active   = $active;
 	}
 
 	/**
-	 * The catalog, keyed by block name then attribute name, each value the resolved numeric
-	 * default. A block/attribute whose token does not resolve, or whose resolved value is not a
-	 * convertible numeric length, is omitted — the editor filter falls back to block.json's own
-	 * default for it.
+	 * The catalog, keyed by block name then attribute name, each value the empty default to seed. A
+	 * block/attribute whose gating token does not resolve is omitted — the editor filter falls back to
+	 * block.json's own default for it.
 	 *
 	 * @since TBD
 	 *
-	 * @return array<string, array<string, float>>
+	 * @return array<string, array<string, string>>
 	 */
 	public function all(): array {
-		$resolved = $this->resolver->resolve();
+		$resolved = $this->resolver->resolve( $this->active->get() );
 		$out      = [];
 
 		foreach ( self::ENTRIES as $block => $attributes ) {
 			foreach ( $attributes as $attribute => $token_id ) {
-				$value = $resolved->value( $token_id );
-
-				if ( $value === null ) {
+				if ( $resolved->value( $token_id ) === null ) {
 					continue;
 				}
 
-				$px = $this->to_px( $value );
-
-				if ( $px === null ) {
-					continue;
-				}
-
-				$out[ $block ][ $attribute ] = $px;
+				$out[ $block ][ $attribute ] = '';
 			}
 		}
 

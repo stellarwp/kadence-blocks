@@ -3,8 +3,7 @@
  * that plug into the shared `ScaleScreen`/`ScaleSettings` contract (see `ScaleScreen.js`'s module
  * docblock). Two things make this screen genuinely different from its
  * siblings: the value column shows two dimensions for a one-dimension token (presentation-only,
- * via `iconSizeRowValue`), and the SIZE field restricts units to the ones
- * `Icon_Size_Adapter`'s px converter can actually round-trip.
+ * via `iconSizeRowValue`), and the SIZE field restricts units to the ones `pxFromLength` accepts.
  */
 
 /**
@@ -64,10 +63,9 @@ export const ICON_SIZES_CONFIG = {
 	slugBase: 'icon-size',
 	newTokenLabel: __('New Icon Size', 'kadence-blocks'),
 	newTokenValue: '1.5rem',
-	// Restricted to the exact unit set `Converts_Number_To_Px::to_px()` accepts (px|rem|em) — a
-	// value outside this domain would silently decouple `kadence/single-icon`'s default `size`
-	// attribute from the token while every CSS-variable consumer kept following it, an
-	// undiagnosable split-brain the UI must not offer.
+	// Restricted to the exact unit set `pxFromLength` accepts (px|rem|em): the editor's icon preview
+	// turns the token's length into an SVG pixel number through it, and a unit it declines would
+	// leave the icon with no preview size.
 	valueField: {
 		type: 'unit',
 		label: __('Size', 'kadence-blocks'),

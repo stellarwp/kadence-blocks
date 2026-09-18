@@ -364,12 +364,11 @@ function matchesPresetSlots(slots, storedUnit, presetSlots) {
  *    its unit in a companion (`borderRadius` + `borderRadiusUnit`), so `8` + `px` equals `8px`. A
  *    preset literal carrying no unit of its own (a bare `0`) matches any stored unit.
  * 2. **Pixel compare**, for a control that stores a RAW NUMBER with no companion unit attribute at all
- *    — `kadence/single-icon`'s `size`, written straight into the SVG's geometry attributes. Its
- *    attribute default is seeded from the token by PHP's `Converts_Number_To_Px`, so a never-touched
- *    icon holds `24` while its preset resolves to `1.5rem`. Compared as strings those disagree and an
- *    untouched control reports as overridden. Converting through `pxFromLength` — the JS mirror of that
- *    same PHP trait, pinned to it by a shared conformance fixture — makes the two agree exactly when
- *    the seeding says they should.
+ *    — `kadence/single-icon`'s `size`, written straight into the SVG's geometry attributes. A user who
+ *    types `24` there, or a block that stored `24` before sizes were left empty by default, must still
+ *    read as matching a `1.5rem` preset. Converting through `pxFromLength` — the same 16px-root
+ *    conversion the icon's preview uses to turn a preset length into an SVG number — makes the two agree
+ *    exactly when the preview says they should.
  *
  * The pixel path is reached only when the stored value has NO unit and the preset literal HAS one, so a
  * control that does carry a unit attribute is unaffected: an `em` value against a `px` preset still

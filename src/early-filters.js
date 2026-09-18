@@ -134,11 +134,12 @@ export function blockPresetAttribute(settings) {
 addFilter('blocks.registerBlockType', 'kadence/kb-preset-attribute', blockPresetAttribute);
 
 /**
- * Override a block's registered attribute defaults with the resolved design-token value, read
- * from window.kadenceDesignTokensAttributeDefaults (Editor\Localizer, Editor\Attribute_Default_Catalog).
- * So a freshly inserted block starts at the brand's token-resolved value instead of the block's
- * own hardcoded static default — without touching the attribute's type or the block's save
- * output for existing content (which already has an explicit stored value).
+ * Override a block's registered attribute defaults with the value the editor attribute-default catalog
+ * names for it, read from window.kadenceDesignTokensAttributeDefaults (Editor\Localizer,
+ * Editor\Attribute_Default_Catalog). Today that is an empty `size` on the icon block: a freshly inserted
+ * icon then holds no size of its own and previews at its selected preset's size, instead of carrying a
+ * pixel number that would outrank every preset. Existing content is untouched — it already has an
+ * explicit stored value, or no stored value and the same empty default.
  *
  * @param {Object} settings The block settings.
  * @param {string} name     The block name.

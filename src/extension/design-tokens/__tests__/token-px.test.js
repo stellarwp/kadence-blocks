@@ -1,16 +1,14 @@
 /* eslint-env jest */
 /**
- * Alias-to-pixel resolution for the editor render paths that cannot consume a CSS variable, and its
- * parity with the PHP `Converts_Number_To_Px` trait.
+ * Alias-to-pixel resolution for the editor render paths that cannot consume a CSS variable.
  *
  * `kadence/single-icon`'s `size` is written into the SVG's `width`/`height` presentation attributes,
- * which take a number rather than a `var()`. The front end renders the same attribute as a
- * `font-size` declaration and resolves the alias in PHP. If the two conversions disagreed, an icon
- * bound to a token would render one size in the editor and another on the front end — so the numeric
- * half of this module is pinned to the same JSON fixture a PHP test asserts against.
+ * which take a number rather than a `var()`. The numeric half of this module is pinned to the shared
+ * fixture in `fixtures/length-to-px-conformance.json`, so the grammar `tokenPx` accepts cannot drift
+ * from what `pxFromLength` declines.
  *
- * The alias-resolution half (reading the localized pool) has no PHP counterpart to match: it is this
- * module reproducing, in the editor, what the resolver already did on the server.
+ * The alias-resolution half (reading the localized pool) is this module reproducing, in the editor,
+ * what the resolver already did on the server.
  */
 
 // `../token-px` pulls in `../../preset-picker` for `activeLibrary()`, which imports

@@ -2,35 +2,35 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Adapter;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Adapter\Contracts\Abstract_Adapter;
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Converts_Number_To_Px;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 
 /**
- * Overlays kadence/single-icon's `size` registration default (block.json hardcodes `50`) with the
- * resolved `semantic.icon-size.default` token value, converted to the raw pixel number the
- * attribute stores. This runs on `kadence_blocks_block_default_attributes`, which fires with the
- * block's *registration* defaults, not its stored instance attributes — so overwriting `size` here
- * is safe: `Kadence_Blocks_Abstract_Block::merge_attributes_with_defaults()` still lets a genuinely
- * customized instance value win afterward. Because `size` has no `source` key and defaults to `50`,
- * the block serializer omits it from saved content whenever it was never customized, so an instance
- * with no stored `size` ends up with this token-resolved default — which covers the large majority
- * of currently-published icon blocks, not a narrow legacy case. Intentional: this mirrors the
- * retroactive re-skin behavior kadence/image's borderRadius token already has in production.
+ * Blanks kadence/single-icon's `size` registration default (block.json hardcodes `50`) whenever the
+ * `semantic.icon-size.default` token resolves, so an icon with no size of its own renders none and the
+ * preset CSS chain sizes it: the preset projector sets `--kb-icon-size` per preset on the block root, and
+ * the block-default projector reads it on `.kb-svg-icon-wrap`. This runs on
+ * `kadence_blocks_block_default_attributes`, which fires with the block's *registration* defaults, not
+ * its stored instance attributes, so `Kadence_Blocks_Abstract_Block::merge_attributes_with_defaults()`
+ * still lets a genuinely customized instance value win afterward.
  *
- * The rem/em-to-px conversion assumes a 16px root font size — the same assumption an unstyled
- * `rem` makes in a browser. Nothing in this module tracks a site's actual root font size, so this
- * is a known, accepted simplification rather than a silent guess.
+ * Seeding a NUMBER here instead (the token converted to px) is the trap this replaces. A number renders
+ * as a per-instance `font-size` rule that outranks the preset chain, so a Style Library edit to the
+ * Default preset's size never reached the page, while the preset chain quietly carried the right value.
  *
- * Does NOT affect a freshly inserted icon block: `single-icon` is a static (client-rendered) block,
- * so a fresh insert's `size` comes from block.json's JS default at insert time, before this
- * render-path filter ever runs. See the editor-default catalog for that case.
+ * The blank is gated on the token resolving IN THE ACTIVE LIBRARY, because the block-default CSS rule is
+ * gated the same way and built from that same library: a library that disables the icon-size token gets
+ * no rule to fall through to, so block.json's `50` must stay there. Resolving the default library instead
+ * would blank the size on a library the CSS never sizes.
+ *
+ * Because `size` has no `source` key, the block serializer omits it from saved content whenever it equals
+ * the registration default, so this also covers every published icon block that never customized its
+ * size — it follows the Default preset from now on, exactly as a cleared size already did.
  *
  * @since TBD
  */
 final class Icon_Size_Adapter extends Abstract_Adapter {
-
-	use Converts_Number_To_Px;
 
 	/**
 	 * @since TBD
@@ -40,7 +40,7 @@ final class Icon_Size_Adapter extends Abstract_Adapter {
 	protected const BLOCK = 'kadence/single-icon';
 
 	/**
-	 * The resolved-token dot-path this adapter reads.
+	 * The resolved-token dot-path whose presence gates the blank.
 	 *
 	 * @since TBD
 	 *
@@ -56,12 +56,23 @@ final class Icon_Size_Adapter extends Abstract_Adapter {
 	private Token_Resolver $resolver;
 
 	/**
+	 * The active-library pointer, so the gate reads the library the block-default CSS is built from.
+	 *
 	 * @since TBD
 	 *
-	 * @param Token_Resolver $resolver The token resolver.
+	 * @var Active_Token_Library_Store
 	 */
-	public function __construct( Token_Resolver $resolver ) {
+	private Active_Token_Library_Store $active;
+
+	/**
+	 * @since TBD
+	 *
+	 * @param Token_Resolver             $resolver The token resolver.
+	 * @param Active_Token_Library_Store $active   The active-library pointer.
+	 */
+	public function __construct( Token_Resolver $resolver, Active_Token_Library_Store $active ) {
 		$this->resolver = $resolver;
+		$this->active   = $active;
 	}
 
 	/**
@@ -74,19 +85,11 @@ final class Icon_Size_Adapter extends Abstract_Adapter {
 	 * @return array<string, mixed> The transformed default attributes.
 	 */
 	public function apply( array $attributes ): array {
-		$length = $this->resolver->resolve()->value( self::TOKEN );
-
-		if ( $length === null ) {
+		if ( $this->resolver->resolve( $this->active->get() )->value( self::TOKEN ) === null ) {
 			return $attributes;
 		}
 
-		$px = $this->to_px( $length );
-
-		if ( $px === null ) {
-			return $attributes;
-		}
-
-		$attributes['size'] = $px;
+		$attributes['size'] = '';
 
 		return $attributes;
 	}
