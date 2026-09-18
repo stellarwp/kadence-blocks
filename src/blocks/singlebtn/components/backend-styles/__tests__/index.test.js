@@ -276,6 +276,7 @@ describe('BackendStyles shadow flag gating', () => {
 	const BASE_SELECTOR = '.kb-single-btn-abc123 .kt-button-abc123';
 	const HOVER_SELECTOR = '.kb-single-btn-abc123 .kt-button-abc123:hover';
 	const VISIBLE_SHADOW = { hOffset: 2, vOffset: 2, blur: 4, spread: 0, color: '#000000', opacity: 1, inset: false };
+	const HOVER_DEFAULT = 'var(--kb-btn-shadow-hover, none)';
 
 	let fakeCss;
 
@@ -335,18 +336,19 @@ describe('BackendStyles shadow flag gating', () => {
 	});
 
 	/**
-	 * A lowered `displayHoverShadow` suppresses the hover state's box-shadow even though the stored
-	 * shadow itself is visible, matching the PHP renderer's own gate for this state.
+	 * A lowered `displayHoverShadow` suppresses the hover state's own box-shadow even though the stored
+	 * shadow itself is visible, so the hover rule falls back to the preset's hover shadow variable,
+	 * matching the PHP renderer's own gate for this state.
 	 *
 	 * @return {void}
 	 */
-	it('emits no box-shadow for the hover state when displayHoverShadow is lowered but the shadow is visible', () => {
+	it('points the hover state at the preset hover shadow when displayHoverShadow is lowered but the shadow is visible', () => {
 		BackendStyles({
 			attributes: { uniqueID: 'abc123', displayHoverShadow: false, shadowHover: [VISIBLE_SHADOW] },
 			previewDevice: 'Desktop',
 		});
 
-		expect(boxShadowFor(fakeCss.rules, HOVER_SELECTOR)).toBe('');
+		expect(boxShadowFor(fakeCss.rules, HOVER_SELECTOR)).toBe(HOVER_DEFAULT);
 	});
 
 	/**
@@ -362,6 +364,28 @@ describe('BackendStyles shadow flag gating', () => {
 		});
 
 		expect(boxShadowFor(fakeCss.rules, HOVER_SELECTOR)).toBe(shadowCss(VISIBLE_SHADOW, 14));
+	});
+
+	/**
+	 * A block with a visible base shadow and no hover shadow of its own does not carry the base shadow
+	 * into the hover state: the hover rule points at the preset's hover shadow variable, whose `none`
+	 * fallback covers a preset that sets no hover shadow.
+	 *
+	 * @return {void}
+	 */
+	it('points the hover state at the preset hover shadow when the block has a base shadow but no hover shadow', () => {
+		BackendStyles({
+			attributes: {
+				uniqueID: 'abc123',
+				displayShadow: true,
+				shadow: [VISIBLE_SHADOW],
+				displayHoverShadow: false,
+			},
+			previewDevice: 'Desktop',
+		});
+
+		expect(boxShadowFor(fakeCss.rules, BASE_SELECTOR)).toBe(shadowCss(VISIBLE_SHADOW, 14));
+		expect(boxShadowFor(fakeCss.rules, HOVER_SELECTOR)).toBe(HOVER_DEFAULT);
 	});
 
 	/**
@@ -385,7 +409,7 @@ describe('BackendStyles shadow flag gating', () => {
 		});
 
 		expect(boxShadowFor(fakeCss.rules, BASE_SELECTOR)).toBe('none');
-		expect(boxShadowFor(fakeCss.rules, HOVER_SELECTOR)).toBe('');
+		expect(boxShadowFor(fakeCss.rules, HOVER_SELECTOR)).toBe(HOVER_DEFAULT);
 	});
 
 	/**

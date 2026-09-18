@@ -648,12 +648,13 @@ return [
 					'css_var' => 'kb-btn-shadow',
 				],
 
-				// The hover half of the same four properties. These take the css_state shape rather than the
-				// css_var shape their resting counterparts use, because a state has no variable of the block's
-				// own to point at: the button reads --kb-btn-radius and friends in its resting rules only and
-				// paints its hover look straight from its own attributes, so there is nothing for a preset to
-				// redirect. Preset\Css_Builder supplies the whole rule instead, and only for a preset that
-				// actually sets the property, so a button whose preset carries no hover keeps the hover it has.
+				// The hover half of the same four properties. Radius and the border trio take the css_state shape
+				// rather than the css_var shape their resting counterparts use, because a state has no variable of
+				// the block's own to point at: the button reads --kb-btn-radius and friends in its resting rules
+				// only and paints its hover look straight from its own attributes, so there is nothing for a
+				// preset to redirect. Preset\Css_Builder supplies the whole rule instead, and only for a preset
+				// that actually sets the property, so a button whose preset carries no hover keeps the hover it
+				// has. Shadow is the exception, see button-shadow-hover below.
 				//
 				// $button_hover_state / $button_hover_state_editor carry the selectors; the weight they spend is
 				// load-bearing, and the note above them says what it buys.
@@ -701,11 +702,15 @@ return [
 				// No control_attr, matching button-shadow: the block's shadow control carries no indicator, and
 				// giving the hover one an attribute its resting twin does not have would make the pair read
 				// inconsistently in the inspector.
+				//
+				// A css_var, unlike the other hover properties: the button's hover rule reads
+				// `var(--kb-btn-shadow-hover, none)` whenever the block sets no hover shadow of its own, so the
+				// hover state always renders its default, the preset's hover shadow or no shadow at all. A state
+				// rule could not do that: with no hover shadow in the preset it would emit nothing, and the
+				// resting shadow would carry through the cascade into the hover state.
 				'button-shadow-hover'       => [
-					'token'            => 'semantic.shadow.button-hover',
-					'css_prop'         => 'box-shadow',
-					'css_state'        => $button_hover_state,
-					'editor_css_state' => $button_hover_state_editor,
+					'token'   => 'semantic.shadow.button-hover',
+					'css_var' => 'kb-btn-shadow-hover',
 				],
 			],
 		],

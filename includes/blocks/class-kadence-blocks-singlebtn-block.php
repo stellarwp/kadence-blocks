@@ -177,13 +177,17 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		// Visibility-gated: without it this fires on any inset-true item, including the invisible
 		// all-zero default the block ships with.
 		if ( ! empty( $attributes['displayHoverShadow'] ) && ( 'gradient' === $bg_type || 'gradient' === $bg_hover_type ) && isset( $attributes['shadowHover'][0] ) && is_array( $attributes['shadowHover'][0] ) && $this->has_visible_shadow( $attributes['shadowHover'][0] ) && isset( $attributes['shadowHover'][0]['inset'] ) && true === $attributes['shadowHover'][0]['inset'] ) {
-			$css->add_property( 'box-shadow', '0px 0px 0px 0px rgba(0, 0, 0, 0)' );
+			$css->add_property( 'box-shadow', 'none' );
 			$css->set_selector( '.kb-btn' . $unique_id . '.kb-button:hover::before' );
 		}
-		// No `none` fallback on hover: an unset hover shadow must let the base state's shadow
-		// carry through the `:hover` rule via the normal cascade.
+		// The hover state follows its own default, never the resting shadow: with no hover shadow of its
+		// own the rule points at the preset's hover shadow variable, falling back to `none` when the preset
+		// sets none. Always emitted, because a hover rule without a box-shadow would let the resting
+		// shadow carry through the cascade into the hover state.
 		if ( ! empty( $attributes['displayHoverShadow'] ) && isset( $attributes['shadowHover'][0] ) && is_array( $attributes['shadowHover'][0] ) && $this->has_visible_shadow( $attributes['shadowHover'][0] ) ) {
 			$css->add_property( 'box-shadow', $this->render_button_shadow( $css, $attributes['shadowHover'][0] ) );
+		} else {
+			$css->add_property( 'box-shadow', 'var(--kb-btn-shadow-hover, none)' );
 		}
 		// Hover before.
 		if ( 'gradient' === $bg_type && 'normal' === $bg_hover_type && ! empty( $attributes['backgroundHover'] ) ) {
@@ -285,7 +289,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		$css->render_border_styles( $attributes, 'borderTransparentHoverStyle', true );
 		// See the base hover state above: this reset needs the same visibility gate.
 		if ( ! empty( $attributes['displayHoverShadowTransparent'] ) && ( 'gradient' === $bg_type_transparent || 'gradient' === $bg_hover_type_transparent ) && isset( $attributes['shadowTransparentHover'] ) && is_array( $attributes['shadowTransparentHover'] ) && isset( $attributes['shadowTransparentHover'][0] ) && is_array( $attributes['shadowTransparentHover'][0] ) && $this->has_visible_shadow( $attributes['shadowTransparentHover'][0] ) && isset( $attributes['shadowTransparentHover'][0]['inset'] ) && true === $attributes['shadowTransparentHover'][0]['inset'] ) {
-			$css->add_property( 'box-shadow', '0px 0px 0px 0px rgba(0, 0, 0, 0)' );
+			$css->add_property( 'box-shadow', 'none' );
 			$css->set_selector( '.kb-btn' . $unique_id . '.kb-button:hover::before' );
 		}
 		// No `none` fallback on hover: an unset hover shadow must let the base state's shadow
@@ -326,7 +330,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		$css->render_border_styles( $attributes, 'borderStickyHoverStyle', true );
 		// See the base hover state above: this reset needs the same visibility gate.
 		if ( ! empty( $attributes['displayHoverShadowSticky'] ) && ( 'gradient' === $bg_type_sticky || 'gradient' === $bg_hover_type_sticky ) && isset( $attributes['shadowStickyHover'] ) && is_array( $attributes['shadowStickyHover'] ) && isset( $attributes['shadowStickyHover'][0] ) && is_array( $attributes['shadowStickyHover'][0] ) && $this->has_visible_shadow( $attributes['shadowStickyHover'][0] ) && isset( $attributes['shadowStickyHover'][0]['inset'] ) && true === $attributes['shadowStickyHover'][0]['inset'] ) {
-			$css->add_property( 'box-shadow', '0px 0px 0px 0px rgba(0, 0, 0, 0)' );
+			$css->add_property( 'box-shadow', 'none' );
 			$css->set_selector( '.kb-btn' . $unique_id . '.kb-button:hover::before' );
 		}
 		// No `none` fallback on hover: an unset hover shadow must let the base state's shadow

@@ -705,7 +705,6 @@ export default function BackendStyles(props) {
 	}
 
 	let btnRad = '0';
-	// No `none` reset: an unset hover shadow must let the base state's carry through the cascade.
 	let btnBox = '';
 	let btnBox2 = '';
 	const btnbgHover = 'gradient' === backgroundHoverType ? gradientHover : KadenceColorOutput(backgroundHover);
@@ -998,7 +997,10 @@ export default function BackendStyles(props) {
 			previewHoverRadiusBottom + (borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px')
 		);
 	}
-	css.add_property('box-shadow', btnBox);
+	// The hover state follows its own default, never the resting shadow: with no hover shadow of its
+	// own the rule points at the preset's hover shadow variable, falling back to `none`. Mirrors the
+	// PHP renderer.
+	css.add_property('box-shadow', btnBox || 'var(--kb-btn-shadow-hover, none)');
 	css.add_property('color', css.render_color(colorHover));
 
 	//transparent styles
