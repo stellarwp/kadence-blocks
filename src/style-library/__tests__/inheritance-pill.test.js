@@ -45,6 +45,35 @@ describe('InheritancePill', () => {
 	});
 
 	/**
+	 * A long source label is never shortened in the markup and is repeated in the title attribute,
+	 * so a clipped pill still exposes the whole palette name.
+	 *
+	 * @return void
+	 */
+	it('keeps the full source label in the DOM and in the title when it is long', () => {
+		const sourceLabel = 'Marketing Site Palette 2026';
+		act(() => root.render(<InheritancePill variant="inherited" sourceLabel={sourceLabel} />));
+
+		const pill = container.querySelector(`.${PILL_CLASS}`);
+
+		expect(pill.textContent).toBe(`From ${sourceLabel}`);
+		expect(pill.getAttribute('title')).toBe(`From ${sourceLabel}`);
+	});
+
+	/**
+	 * The default and reset variants have nothing to clip, so neither carries a title.
+	 *
+	 * @return void
+	 */
+	it('adds no title to the default pill or the reset button', () => {
+		act(() => root.render(<InheritancePill variant="default" />));
+		expect(container.querySelector(`.${PILL_CLASS}`).hasAttribute('title')).toBe(false);
+
+		act(() => root.render(<InheritancePill variant="reset" sourceLabel="Default" swatchName="Main 3" />));
+		expect(container.querySelector(`.${PILL_CLASS}`).hasAttribute('title')).toBe(false);
+	});
+
+	/**
 	 * The reset variant is a real button whose visible text stays short while its accessible name
 	 * says which color it resets and where the value comes back from.
 	 *

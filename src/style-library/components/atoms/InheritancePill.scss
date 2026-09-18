@@ -6,7 +6,8 @@
 	// a transparent border on the static pill keeps both boxes identical, so a mixed row of cards
 	// stays on one baseline.
 	border: var(--kb-sl-border-width-input) solid transparent;
-	border-radius: var(--kb-sl-radius-full);
+	// Half the one-line pill height, not on the radius ramp.
+	border-radius: 0.625rem;
 	padding: 0 var(--kb-sl-space-10);
 	font-size: var(--kb-sl-font-size-xs);
 	font-weight: var(--kb-sl-font-weight-regular);
@@ -15,9 +16,21 @@
 	white-space: nowrap;
 }
 
-// Not a control: no hover treatment and no pointer cursor, so nothing invites a click that does
-// nothing.
+// Not a control: no hover treatment of its own. The cursor comes from the slot, whose click selects
+// the card.
 .kadence-blocks-style-library__inheritance-pill--inherited {
+	// Set to 1 for a single-line pill.
+	--kb-sl-inheritance-pill-max-lines: 2;
+
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: var(--kb-sl-inheritance-pill-max-lines);
+	line-clamp: var(--kb-sl-inheritance-pill-max-lines);
+	overflow: hidden;
+	max-width: 100%;
+	white-space: normal;
+	overflow-wrap: anywhere;
+	text-align: left;
 	background: var(--kb-sl-color-gray-100);
 	color: var(--kb-sl-color-text-muted);
 }

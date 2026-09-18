@@ -121,7 +121,19 @@ export function SwatchCard({
 					<span className="kadence-blocks-style-library__swatch-card-name">{name}</span>
 					{subLine && <span className="kadence-blocks-style-library__swatch-card-sub-line">{subLine}</span>}
 				</button>
-				{hasPillSlot && <span className="kadence-blocks-style-library__swatch-card-pill-slot">{pill}</span>}
+				{hasPillSlot && (
+					<span
+						className="kadence-blocks-style-library__swatch-card-pill-slot"
+						onClick={(event) => {
+							if (isPendingDelete || event.target.closest('button')) {
+								return;
+							}
+							onSelect(id);
+						}}
+					>
+						{pill}
+					</span>
+				)}
 			</div>
 			<span className="kadence-blocks-style-library__swatch-card-handle-slot">
 				{isDraggable && !isPendingDelete && <DragHandle handleProps={dragHandleProps} />}
