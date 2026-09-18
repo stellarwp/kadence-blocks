@@ -93,9 +93,7 @@ function FavoritesTab({ value, favorites, manageUrl, onPick, onClear, onClose })
 						onClose();
 					}}
 				>
-					<span className="kadence-token-field__item-label" style={{ fontFamily: family }}>
-						{family}
-					</span>
+					<span className="kadence-token-field__item-label">{family}</span>
 				</Button>
 			))}
 			{favorites.length === 0 && (
