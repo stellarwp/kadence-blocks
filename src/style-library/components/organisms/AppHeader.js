@@ -1,7 +1,7 @@
 /**
- * The Style Library header bar: logo and title on the left, then a library-selector slot and an
- * actions slot on the right. Presentational only: the slots are filled by the library selector and
- * the header actions (e.g. delete) elsewhere in the app.
+ * The Style Library header bar: logo and title on the left, a slash separator, then a
+ * library-selector slot and an actions slot. Presentational only: the slots are filled by the
+ * library selector and the header actions (e.g. delete) elsewhere in the app.
  */
 
 /**
@@ -13,6 +13,7 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
+import { SlashSeparator } from '../atoms/SlashSeparator';
 import { kadenceLogo } from '../../icons';
 import './AppHeader.scss';
 
@@ -32,6 +33,7 @@ export function AppHeader({ librarySlot, actionsSlot }) {
 		<div className="kadence-blocks-style-library__header-bar">
 			<Icon className="kadence-blocks-style-library__logo" icon={kadenceLogo} size={48} />
 			<h1 className="kadence-blocks-style-library__title">{__('Style Library', 'kadence-blocks')}</h1>
+			<SlashSeparator className="kadence-blocks-style-library__header-separator" />
 			<div className="kadence-blocks-style-library__header-library">{librarySlot}</div>
 			<div className="kadence-blocks-style-library__header-actions">{actionsSlot}</div>
 		</div>

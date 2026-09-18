@@ -1,0 +1,6 @@
+.kadence-blocks-style-library__slash-separator {
+	flex: 0 0 auto;
+	color: var(--kb-sl-color-separator);
+	// Decoration only: a double-click on the title must not select the slash with it.
+	user-select: none;
+}

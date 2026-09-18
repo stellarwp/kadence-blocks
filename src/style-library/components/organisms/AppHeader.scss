@@ -23,6 +23,12 @@
 	line-height: var(--kb-sl-line-height-xl);
 }
 
+// Same size and line height as the title, so the row centers both on the same line.
+.kadence-blocks-style-library__header-separator {
+	font-size: var(--kb-sl-font-size-24);
+	line-height: var(--kb-sl-line-height-xl);
+}
+
 // Neither slot grows — the header row is title, selector, delete, all flowing left and separated
 // only by the row's own gap. A growing library slot (`flex: 1 1 auto`, the previous rule here)
 // consumes all the row's leftover space and pushes the actions slot to the far right edge; with
