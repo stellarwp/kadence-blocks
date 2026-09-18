@@ -97,6 +97,12 @@ body.kadence-blocks-style-library-page {
 	// not reused from --kb-sl-icon-size-s (also 1.125rem): that primitive is a deliberately separate
 	// scale from font-size.
 	--kb-sl-font-size-18: 1.125rem;
+	// `AppHeader`'s title. Also off the Figma ramp, so named by raw px identity like the size above.
+	--kb-sl-font-size-24: 1.5rem;
+
+	// Letter spacing — `em`, not rem: the value resolves where it is used, so one token tightens
+	// text in proportion to whatever font size it lands on.
+	--kb-sl-letter-spacing-tight: -0.01em;
 
 	// Font weight. `semibold` is not on the Figma type table (Regular/Medium only) — it extends that
 	// table for the handful of places (`section-heading` in _mixins.scss, `MetaChip`) that call for

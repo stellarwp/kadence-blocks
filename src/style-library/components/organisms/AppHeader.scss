@@ -1,8 +1,8 @@
 .kadence-blocks-style-library__header-bar {
 	display: flex;
 	align-items: center;
-	gap: 0.625rem;
-	padding: 0.875rem var(--kb-sl-space-20);
+	column-gap: var(--kb-sl-space-20);
+	padding: var(--kb-sl-space-20) var(--kb-sl-space-50);
 }
 
 .kadence-blocks-style-library__logo {
@@ -17,8 +17,9 @@
 	margin: 0;
 	padding: 0;
 	color: var(--kb-sl-color-heading);
-	font-size: var(--kb-sl-font-size-xl);
+	font-size: var(--kb-sl-font-size-24);
 	font-weight: var(--kb-sl-font-weight-regular);
+	letter-spacing: var(--kb-sl-letter-spacing-tight);
 	line-height: var(--kb-sl-line-height-xl);
 }
 
