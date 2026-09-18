@@ -193,6 +193,10 @@ final class Effective_Palettes {
 	 * keyed by the color-token dot-path it sets. A swatch whose `$value` is a RESET sentinel (null under
 	 * `$value`) is omitted, so the token keeps its baseline value. Empty when the palette is absent.
 	 *
+	 * Reads the EFFECTIVE section, so it is neither the full color set nor what the palette stores. For a
+	 * complete set use {@see complete_swatch_values()}; to ask what a palette actually stores use
+	 * {@see stored_swatch_values()}.
+	 *
 	 * @since TBD
 	 *
 	 * @param string $id   The palette id.
@@ -302,13 +306,16 @@ final class Effective_Palettes {
 	}
 
 	/**
-	 * The shipped baseline `$default` palette flattened to a `{ token => $value }` map — the colors the
-	 * plugin ships, independent of any stored library.
+	 * The baseline `$default` palette flattened to a `{ token => $value }` map, independent of any stored
+	 * library. The baseline it reads is the decorated one, so on a Kadence site these are the theme's Style
+	 * Guide colors (see `Theme_Style_Guide_Baseline_Document`), not the hex values the plugin ships; without
+	 * a Kadence theme they are the shipped values.
 	 *
 	 * Both halves are load-bearing. Its KEYS are the permanent swatch set, whose rows a palette write may
-	 * never drop; its VALUES are what a delete reverts one of those swatches to. No other seam can answer
-	 * either question: {@see Baseline_Document::has()} indexes only the primitive/semantic token layers and
-	 * deliberately skips "$extensions", so it never sees a palette swatch at all.
+	 * never drop; its VALUES are what a delete reverts one of those swatches to — the theme's color on a
+	 * Kadence site, the shipped color elsewhere. No other method can answer either question:
+	 * {@see Baseline_Document::has()} indexes only the primitive/semantic token layers and deliberately
+	 * skips "$extensions", so it never sees a palette swatch at all.
 	 *
 	 * Returned whole rather than behind a per-token predicate because every caller needs the values too,
 	 * or walks the whole set — and the flatten re-walks the baseline document, so a predicate would redo it
@@ -316,12 +323,53 @@ final class Effective_Palettes {
 	 *
 	 * @since TBD
 	 *
-	 * @return array<string, string> token dot-path => the shipped literal-or-alias value.
+	 * @return array<string, string> token dot-path => the baseline literal-or-alias value.
 	 */
 	public function baseline_swatch_values(): array {
 		$section = $this->palettes_of( $this->baseline->document() );
 
 		return $this->swatch_values_of( $section, $this->pointer_of( $section, Extensions::get_default_key() ) );
+	}
+
+	/**
+	 * The `{ token => $value }` colors a palette ACTUALLY STORES, read straight from the overrides document
+	 * with no baseline merge behind it. This is the "has its own value" question, and it is not the same as
+	 * {@see swatch_values()}: the default palette also lives in the baseline, so its effective node carries
+	 * every shipped swatch whether or not the site has ever edited one.
+	 *
+	 * The default palette stores only the swatches it changes — a swatch left at the baseline keeps its row
+	 * but drops `$value`, so the token follows whatever the baseline resolves to (on a Kadence site, the
+	 * theme's Style Guide). Reading the effective node instead would report every one of those as stored.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $id   The palette id.
+	 * @param string $slug The token library slug.
+	 *
+	 * @return array<string, string> token dot-path => the stored literal-or-alias value.
+	 */
+	public function stored_swatch_values( string $id, string $slug = 'default' ): array {
+		return $this->swatch_values_of( $this->palettes_of( $this->raw( $slug ) ), $id );
+	}
+
+	/**
+	 * A palette's COMPLETE color set: the shipped baseline colors, overlaid with the library default palette's
+	 * own swatches, overlaid with the palette's. Every baseline token resolves to a value here, which
+	 * {@see swatch_values()} and {@see effective_swatch_values()} no longer guarantee — a swatch the default
+	 * palette leaves at the baseline stores no `$value` at all.
+	 *
+	 * Use this wherever a caller needs the color a token WILL render as. Use the sparser accessors only to ask
+	 * what a palette stores.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $id   The palette id.
+	 * @param string $slug The token library slug.
+	 *
+	 * @return array<string, string> token dot-path => literal-or-alias value.
+	 */
+	public function complete_swatch_values( string $id, string $slug = 'default' ): array {
+		return array_merge( $this->baseline_swatch_values(), $this->effective_swatch_values( $id, $slug ) );
 	}
 
 	/**

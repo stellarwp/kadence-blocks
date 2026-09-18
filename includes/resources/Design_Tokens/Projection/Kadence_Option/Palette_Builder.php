@@ -8,19 +8,19 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Resolved_Tokens;
 
 /**
- * Pure builder for the two palette options the Kadence_Option projector writes.
+ * Pure builder for the palette option the Kadence_Option projector writes.
  *
  * Produces a slug => { color, name } map from every token that claims a palette kadence_slot and
  * resolves to a value, then merges that map onto a decoded existing option. No WordPress calls, no
  * globals, no I/O: the projector owns get_option/update_option and hands decoded arrays in and out, so
  * every merge rule here is unit-testable without the database.
  *
- * The two options have deliberately different merge rules:
+ * The merge rule for kadence_blocks_colors (KB's own option): overwrite color AND name of a claimed
+ * slug, append a claimed slug not yet present, and preserve every other entry plus the "override" flag.
  *
- *   - kadence_blocks_colors (KB's own) — overwrite color AND name of a claimed slug, append a claimed
- *     slug not yet present, and preserve every other entry plus the "override" flag.
- *   - kadence_global_palette (the theme's) — overwrite ONLY color of a claimed slug; never append and
- *     never touch names, since the theme owns the slot labels and structure.
+ * The Kadence theme's kadence_global_palette has no merge rule here because it is never written — that
+ * option is the user's Style Guide, and tokens reach the theme through the kadence_palette_option filter
+ * at read time instead.
  *
  * @since TBD
  */
@@ -145,45 +145,6 @@ final class Palette_Builder {
 		if ( ! array_key_exists( 'override', $existing ) ) {
 			$existing['override'] = false;
 		}
-
-		return $existing;
-	}
-
-	/**
-	 * Merge token entries into a decoded kadence_global_palette payload (the Kadence theme's option).
-	 *
-	 * Overwrites ONLY the color of entries whose slug a token claims; never appends and never rewrites a
-	 * name (the theme owns slot labels and structure). An unexpected shape (no list under "palette") is
-	 * returned untouched, so the theme's option is left exactly as found.
-	 *
-	 * @since TBD
-	 *
-	 * @param array<string, mixed>                              $existing Decoded option (caller guarantees it exists).
-	 * @param array<string, array{color: string, name: string}> $entries  slug => {color,name} from entries().
-	 *
-	 * @return array<string, mixed> The merged payload (re-encode and store).
-	 */
-	public function merge_theme_palette( array $existing, array $entries ): array {
-		$palette = $this->palette_list( $existing );
-		if ( $palette === [] ) {
-			return $existing; // Unexpected shape — leave the theme's option exactly as found.
-		}
-
-		foreach ( $palette as $index => $entry ) {
-			if ( ! is_array( $entry ) ) {
-				continue;
-			}
-
-			$slug = $this->entry_slug( $entry );
-			if ( $slug === null || ! isset( $entries[ $slug ] ) ) {
-				continue;
-			}
-
-			$entry['color']    = $entries[ $slug ]['color'];
-			$palette[ $index ] = $entry;
-		}
-
-		$existing['palette'] = array_values( $palette );
 
 		return $existing;
 	}

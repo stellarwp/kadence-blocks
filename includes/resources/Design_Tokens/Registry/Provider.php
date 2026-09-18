@@ -6,6 +6,9 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Baseline\Json_Baseline_Document;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Contracts\Baseline_Document;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provider as Provider_Contract;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Mutator;
+use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Baseline\Theme_Style_Guide_Baseline_Document;
+use KadenceWP\KadenceBlocks\Design_Tokens\Theme_Style_Guide\Style_Guide_Overlay;
 
 /**
  * Wires the Token Registry: binds the singleton and the shipped baseline, defines the global helper,
@@ -23,12 +26,26 @@ final class Provider extends Provider_Contract {
 	public function register(): void {
 		$this->container->singleton( Token_Registry::class, Token_Registry::class );
 
-		// Bind the baseline contract to the shipped, read-only DTCG document (baseline.json). Every
-		// declared token must now have a matching baseline entry or the guard fails closed. The version
-		// keys the decoded-document cache, so a baseline shipped with a new plugin build invalidates it.
+		// Bind the baseline contract to the shipped, read-only DTCG document (baseline.json), decorated with
+		// the active theme's Style Guide so resolution starts from the site's existing look. Every declared
+		// token must still have a matching shipped entry or the guard fails closed — the decorator's has()
+		// delegates. The version keys the decoded-document cache, so a baseline shipped with a new plugin
+		// build invalidates it. Bound lazily: the theme and the declarations are not loaded when providers
+		// register, and the first document() read happens on init or later.
 		$this->container->singleton(
 			Baseline_Document::class,
-			new Json_Baseline_Document( __DIR__ . '/Baseline/baseline.json', KADENCE_BLOCKS_VERSION )
+			function (): Baseline_Document {
+				/** @var Style_Guide_Overlay $overlay */
+				$overlay = $this->container->get( Style_Guide_Overlay::class );
+				/** @var Mutator $mutator */
+				$mutator = $this->container->get( Mutator::class );
+
+				return new Theme_Style_Guide_Baseline_Document(
+					new Json_Baseline_Document( __DIR__ . '/Baseline/baseline.json', KADENCE_BLOCKS_VERSION ),
+					$overlay,
+					$mutator
+				);
+			}
 		);
 
 		$this->load_helper();

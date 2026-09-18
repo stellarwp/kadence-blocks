@@ -14,6 +14,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Document;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 use Tests\Support\Classes\Fake_Baseline_Document;
 use Tests\Support\Classes\TestCase;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Version;
 
 final class Legacy_Filter_BridgeTest extends TestCase {
 
@@ -53,7 +54,8 @@ final class Legacy_Filter_BridgeTest extends TestCase {
 			new Effective_Document( new Fake_Baseline_Document( $baseline ) ),
 			new Css_Renderer(),
 			$this->container->get( Effective_Palettes::class ),
-			$this->container->get( Mutator::class )
+			$this->container->get( Mutator::class ),
+			$this->container->get( Effective_Version::class )
 		);
 
 		return new Legacy_Filter_Bridge( $this->registry, $resolver );

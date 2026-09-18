@@ -752,13 +752,13 @@ final class Palettes_ControllerTest extends TestCase {
 	 * @return void
 	 */
 	public function testUpdateSwatchAcceptsALabelOnlyWrite(): void {
-		$before = $this->palettes->swatch_values( 'default' )['primitive.color.brand.primary'];
+		$before = $this->palettes->complete_swatch_values( 'default' )['primitive.color.brand.primary'];
 
 		$response = $this->controller->update_swatch(
 			$this->swatch_request( 'PUT', 'default', 'primitive.color.brand.primary', null, 'Brand One' )
 		);
 
-		$this->assertSame( $before, $this->palettes->swatch_values( 'default' )['primitive.color.brand.primary'] );
+		$this->assertSame( $before, $this->palettes->complete_swatch_values( 'default' )['primitive.color.brand.primary'] );
 		$this->assertSame( 'Brand One', $this->swatch_label( 'default', 'primitive.color.brand.primary' ) );
 
 		$this->assertEmbeddedListingShape( $response->get_data() );
@@ -909,7 +909,12 @@ final class Palettes_ControllerTest extends TestCase {
 		);
 
 		$this->assertNotInstanceOf( WP_Error::class, $result );
-		$this->assertSame( '#3182CE', $this->palettes->swatch_values( 'default' )['primitive.color.brand.primary'] );
+		$this->assertSame( '#3182CE', $this->palettes->complete_swatch_values( 'default' )['primitive.color.brand.primary'] );
+		$this->assertArrayNotHasKey(
+			'primitive.color.brand.primary',
+			$this->palettes->stored_swatch_values( 'default' ),
+			'A reverted swatch stops being stored, so it follows the baseline again.'
+		);
 	}
 
 	/**
@@ -929,7 +934,7 @@ final class Palettes_ControllerTest extends TestCase {
 			$this->swatch_request( 'DELETE', 'default', 'primitive.color.brand.primary' )
 		);
 
-		$values = $this->palettes->swatch_values( 'default' );
+		$values = $this->palettes->complete_swatch_values( 'default' );
 
 		$this->assertSame( '#3182CE', $values['primitive.color.brand.primary'] );
 		$this->assertSame( '#00ff00', $values['primitive.color.brand.button'], 'Only the reverted swatch may change.' );
@@ -969,12 +974,12 @@ final class Palettes_ControllerTest extends TestCase {
 	public function testDeleteSwatchIsIdempotent( string $id, string $token ): void {
 		$this->controller->update_item( $this->write_request( 'ocean', 'Ocean', '#0000ff' ) );
 
-		$before = $this->palettes->swatch_values( $id );
+		$before = $this->palettes->complete_swatch_values( $id );
 
 		$this->controller->delete_swatch( $this->swatch_request( 'DELETE', $id, $token ) );
 		$this->controller->delete_swatch( $this->swatch_request( 'DELETE', $id, $token ) );
 
-		$this->assertSame( $before, $this->palettes->swatch_values( $id ) );
+		$this->assertSame( $before, $this->palettes->complete_swatch_values( $id ) );
 	}
 
 	/**
@@ -1109,6 +1114,66 @@ final class Palettes_ControllerTest extends TestCase {
 
 		$this->assertNotInstanceOf( WP_Error::class, $result );
 		$this->assertSame( [ 'primitive.color.brand.primary' => '#DD6B20' ], $this->palettes->swatch_values( 'ocean' ) );
+	}
+
+	/**
+	 * Saving the whole default palette — the shape the Style Library sends — persists only the swatch that
+	 * differs from the baseline. The request carries a value for every swatch, so without the reduction each
+	 * one becomes a stored override and the palette stops following the baseline.
+	 *
+	 * @return void
+	 */
+	public function testUpdateItemStoresOnlyTheChangedDefaultSwatches(): void {
+		$request = $this->default_palette_request();
+		$groups  = $request->get_param( 'groups' );
+
+		$groups[0]['swatches'][3]['$value'] = '#abcdef';
+		$request->set_param( 'groups', $groups );
+
+		$this->assertNotInstanceOf( WP_Error::class, $this->controller->update_item( $request ) );
+
+		$this->assertSame(
+			[ 'primitive.color.brand.button' => '#abcdef' ],
+			$this->palettes->stored_swatch_values( 'default' )
+		);
+	}
+
+	/**
+	 * Writing one swatch through the sub-route stores that swatch alone, leaving its siblings with nothing
+	 * stored of their own.
+	 *
+	 * @return void
+	 */
+	public function testUpdateSwatchStoresOnlyTheEditedDefaultSwatch(): void {
+		$this->controller->update_swatch(
+			$this->swatch_request( 'PUT', 'default', 'primitive.color.brand.primary', '#0000ff' )
+		);
+
+		$this->assertSame(
+			[ 'primitive.color.brand.primary' => '#0000ff' ],
+			$this->palettes->stored_swatch_values( 'default' )
+		);
+	}
+
+	/**
+	 * A default-palette swatch the site has not edited has nothing to reset, so the Style Library shows no
+	 * reset control for it — the flag tracks a stored override, not a value that happens to differ from the
+	 * shipped hex.
+	 *
+	 * @return void
+	 */
+	public function testEffectiveViewMarksOnlyStoredDefaultSwatchesAsOverridden(): void {
+		$this->controller->update_swatch(
+			$this->swatch_request( 'PUT', 'default', 'primitive.color.brand.primary', '#0000ff' )
+		);
+
+		$swatches = $this->view_swatches( 'default' );
+
+		$this->assertTrue( $swatches['primitive.color.brand.primary']['overridden'] );
+		$this->assertSame( '#0000ff', $swatches['primitive.color.brand.primary']['$value'] );
+
+		$this->assertFalse( $swatches['primitive.color.brand.button']['overridden'] );
+		$this->assertSame( '#3633e1', $swatches['primitive.color.brand.button']['$value'], 'An unedited swatch still shows its color.' );
 	}
 
 	/**
