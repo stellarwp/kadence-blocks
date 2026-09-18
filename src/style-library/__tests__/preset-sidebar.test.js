@@ -471,3 +471,112 @@ describe('PresetSidebar reset field display', () => {
 		expect(latestBoxControlProps.value).toBe('{semantic.radius.control}');
 	});
 });
+
+/**
+ * A minimal preset-screen binding for the footer-gating tests: one loaded preset, every write a
+ * spy, whether the preset is deletable set by the caller, and an optional `overridden` map for a
+ * shipped preset that stores its own values.
+ *
+ * @param {boolean}                  deletable    Whether `isDeletable` reports the open preset as user-created.
+ * @param {?Record<string, boolean>} [overridden] The preset's `overridden` property map, if any.
+ *
+ * @since TBD
+ *
+ * @return {Object} The screen binding stub.
+ */
+function makeFooterScreen(deletable, overridden = null) {
+	return {
+		payload: { presets: { primary: { label: 'Primary' } } },
+		isLoading: false,
+		loadError: null,
+		initialValuesFor: () => (overridden ? { label: 'Primary', overridden } : { label: 'Primary' }),
+		savePreset: jest.fn(),
+		deletePreset: jest.fn().mockResolvedValue(undefined),
+		isDeletable: () => deletable,
+		isBusy: false,
+		saveError: null,
+		deleteError: null,
+		clearSaveError: jest.fn(),
+		clearDeleteError: jest.fn(),
+	};
+}
+
+describe('PresetSidebar footer gating', () => {
+	/**
+	 * A user-created preset gets an enabled Delete and no Reset; a baseline preset gets no Delete
+	 * and a Reset instead.
+	 *
+	 * @return {void}
+	 */
+	it('shows Delete for a user-created preset and Reset for a baseline one', () => {
+		renderPresetSidebar(makeFooterScreen(true), 'primary');
+
+		expect(findButton('Delete').disabled).toBe(false);
+		expect(findButton('Reset')).toBeNull();
+
+		renderPresetSidebar(makeFooterScreen(false), 'primary');
+
+		expect(findButton('Delete')).toBeNull();
+		expect(findButton('Reset')).not.toBeNull();
+	});
+
+	/**
+	 * A shipped preset that stores none of its own values has nothing to revert, so its Reset stays
+	 * disabled before and after an edit — only Save reacts to the draft.
+	 *
+	 * @return {void}
+	 */
+	it('keeps a baseline preset’s Reset disabled before and after an edit while nothing is overridden', () => {
+		renderPresetSidebar(makeFooterScreen(false, { color: false }), 'primary');
+
+		expect(findButton('Reset').disabled).toBe(true);
+
+		makeDirty();
+
+		expect(findButton('Save').disabled).toBe(false);
+		expect(findButton('Reset').disabled).toBe(true);
+	});
+
+	/**
+	 * A shipped preset that stores its own value for any property gets an enabled Reset. Clicking it
+	 * issues the same delete request (the server drops the override and the preset reverts to its
+	 * shipped definition), shows "Resetting…" meanwhile, notifies with the reset wording rather than
+	 * the delete one, and closes the panel.
+	 *
+	 * @return {void}
+	 */
+	it('resets an overridden baseline preset through the delete request and closes the panel', async () => {
+		const screen = makeFooterScreen(false, { color: true, background: false });
+		const navigate = renderPresetSidebar(screen, 'primary');
+
+		expect(findButton('Reset').disabled).toBe(false);
+
+		await act(async () => {
+			findButton('Reset').click();
+		});
+
+		expect(screen.deletePreset).toHaveBeenCalledWith('primary');
+		expect(notify.notifySuccess).toHaveBeenCalledWith('Preset reset.');
+		expect(notify.notifySuccess).not.toHaveBeenCalledWith('Preset deleted.');
+		expect(navigate).toHaveBeenCalledWith({ item: '' });
+	});
+
+	/**
+	 * A failed reset leaves the panel open, notifies nothing, and re-enables Reset.
+	 *
+	 * @return {void}
+	 */
+	it('leaves the panel open when a reset fails', async () => {
+		const screen = makeFooterScreen(false, { color: true });
+		screen.deletePreset = jest.fn().mockRejectedValue(new Error('nope'));
+		const navigate = renderPresetSidebar(screen, 'primary');
+
+		await act(async () => {
+			findButton('Reset').click();
+		});
+
+		expect(notify.notifySuccess).not.toHaveBeenCalled();
+		expect(navigate).not.toHaveBeenCalled();
+		expect(findButton('Reset').disabled).toBe(false);
+	});
+});

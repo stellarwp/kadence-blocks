@@ -700,9 +700,11 @@ final class Presets_Controller extends Controller {
 	 * Remove a single preset from a block (DELETE /presets/{block}/{preset}).
 	 *
 	 * Drops the stored override for that preset; a preset that also exists in the baseline reverts to its
-	 * baseline definition. Idempotent: a no-op when nothing is stored for the preset. The `$default` is
-	 * managed through the dedicated sub-route, so deleting "default" here is rejected; and removing a
-	 * preset the effective library still defaults to is rejected (HTTP 422) before commit.
+	 * baseline definition. Idempotent: a no-op when nothing is stored for the preset. Removing a preset the
+	 * effective library still defaults to is rejected (HTTP 422) before commit — a shipped preset passes
+	 * that guard because the baseline keeps defining it, which is what lets the shipped `default` preset
+	 * be reverted here: the same literal segment only clashes with the default-pointer sub-route for the
+	 * verbs that sub-route registers (GET and PUT), never for DELETE.
 	 *
 	 * @since TBD
 	 *
@@ -718,19 +720,7 @@ final class Presets_Controller extends Controller {
 			return $error;
 		}
 
-		$preset = Cast::to_string( $request->get_param( self::PRESET_PARAM ) );
-
-		if ( $preset === self::DEFAULT_ROUTE ) {
-			return new WP_Error(
-				'rest_design_tokens_invalid',
-				__( 'The default preset is managed through the default sub-route.', 'kadence-blocks' ),
-				[
-					'status' => WP_Http::BAD_REQUEST,
-					'block'  => $block,
-				]
-			);
-		}
-
+		$preset    = Cast::to_string( $request->get_param( self::PRESET_PARAM ) );
 		$slug      = $this->slug( $request );
 		$stored    = $this->stored_document( $slug );
 		$candidate = $this->unset_preset( $stored, $block, $preset );

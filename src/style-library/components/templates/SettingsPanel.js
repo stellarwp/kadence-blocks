@@ -1,9 +1,12 @@
 /**
  * The inspector-style settings panel: a header with a close control, optional state tabs (e.g.
- * Button's Normal/Hover), a scrollable field area, and a sticky footer holding a red-outline
- * Delete (present only for a deletable item) and a primary Save (enabled only while dirty). Pure
- * layout — the field area content is the caller's `children` (typically a `SettingsForm`); state
- * (open item, draft, dirty) lives in `hooks/use-settings-panel.js`.
+ * Button's Normal/Hover), a scrollable field area, and a sticky footer holding two buttons that are
+ * always present and disabled until they can act: one red-outline destructive action chosen by the
+ * kind of item open — Delete for a user-created item, Reset for a shipped one (enabled once it has
+ * a saved value to revert) — and a primary Save (enabled while dirty). Pure layout — the
+ * field area content is the caller's `children` (typically a `SettingsForm`); state (open item,
+ * draft, dirty) lives in `hooks/use-settings-panel.js`, and what each button does is the caller's
+ * decision.
  */
 
 /**
@@ -30,24 +33,36 @@ import './SettingsPanel.scss';
  *                                              fields that belong to the item rather than to one tab
  *                                              (a preset's name is the same on Normal and Hover).
  * @param {JSX.Element}    props.children       The field area content (typically a `SettingsForm`).
- * @param {?Function}      [props.onDelete]     Footer destructive-action handler; null hides the button (a
- *                                                non-deletable item).
- * @param {?Function}      [props.onSave]       Footer Save handler; null hides the button.
+ * @param {string}         [props.destructiveAction] Which destructive button the footer shows: `'delete'`
+ *                                                (the default) for a user-created item, `'reset'` for a
+ *                                                shipped one. A shipped item is never deletable and a
+ *                                                user-created one has no shipped value to go back to, so
+ *                                                the two never apply to the same item — the footer shows
+ *                                                one, and shows it even while it cannot act, so the user
+ *                                                learns from the disabled state rather than from a button
+ *                                                that comes and goes.
+ * @param {Function}       [props.onDelete]     Delete handler. Optional; defaults to a no-op.
+ * @param {boolean}        [props.canDelete]    Enables Delete when true (and `destructiveAction` is `'delete'`).
+ * @param {Function}       [props.onReset]      Reset handler. Optional; defaults to a no-op so a caller
+ *                                                whose shipped items have no saved value to revert can leave
+ *                                                it out and simply never enable the button.
+ * @param {boolean}        [props.canReset]     Enables Reset when true (and `destructiveAction` is `'reset'`).
+ *                                                Reset is about a SAVED value — the caller passes whether
+ *                                                the open item has one to revert — never about the draft,
+ *                                                which only `isDirty` reflects.
+ * @param {Function}       [props.onSave]       Footer Save handler. Optional; defaults to a no-op.
  * @param {boolean}        [props.isDirty]      Enables Save when true.
- * @param {boolean}        [props.isBusy]       Disables both footer buttons while a write is in flight. Optional,
- *                                                defaults to false, so callers that never pass it are unaffected.
+ * @param {boolean}        [props.isBusy]       Disables both footer buttons while a write is in flight.
+ *                                                Optional, defaults to false, so callers that never pass it are
+ *                                                unaffected.
  * @param {boolean}        [props.isSaving]     Shows the Save button's busy animation and a "Saving…" label.
- *                                                Optional, defaults to false; distinct from `isBusy` so a delete in
- *                                                flight does not make Save look like it is saving.
- * @param {boolean}        [props.isDeleting]   Shows the destructive button's busy animation and its busy label.
- *                                                Optional, defaults to false, for the same reason as `isSaving`.
- * @param {string}         [props.deleteLabel]      Footer destructive button's idle label. Optional, defaults to
- *                                                "Delete" — a caller whose destructive action is a revert rather
- *                                                than a removal (e.g. resetting a palette swatch's override) passes
- *                                                "Reset" here instead; the button itself and its `onDelete`/`isBusy`
- *                                                wiring are unchanged either way.
- * @param {string}         [props.deleteBusyLabel]  Footer destructive button's busy label. Optional, defaults to
- *                                                "Deleting…"; pairs with `deleteLabel`.
+ *                                                Optional, defaults to false; distinct from `isBusy` so a delete
+ *                                                in flight does not make Save look like it is saving.
+ * @param {boolean}        [props.isDeleting]   Shows the Delete button's busy animation and a "Deleting…"
+ *                                                label. Optional, defaults to false, for the same reason as
+ *                                                `isSaving`.
+ * @param {boolean}        [props.isResetting]  Shows the Reset button's busy animation and a "Resetting…"
+ *                                                label. Optional, defaults to false, for the same reason.
  *
  * @since TBD
  *
@@ -60,14 +75,17 @@ export function SettingsPanel({
 	onTabChange,
 	beforeTabs = null,
 	children,
-	onDelete = null,
-	onSave = null,
+	destructiveAction = 'delete',
+	onDelete = () => {},
+	canDelete = false,
+	onReset = () => {},
+	canReset = false,
+	onSave = () => {},
 	isDirty = false,
 	isBusy = false,
 	isSaving = false,
 	isDeleting = false,
-	deleteLabel = __('Delete', 'kadence-blocks'),
-	deleteBusyLabel = __('Deleting…', 'kadence-blocks'),
+	isResetting = false,
 }) {
 	const fieldArea = <div className="kadence-blocks-style-library__settings-panel-fields">{children}</div>;
 
@@ -100,16 +118,30 @@ export function SettingsPanel({
 				fieldArea
 			)}
 			<div className="kadence-blocks-style-library__settings-panel-footer">
-				{onDelete && (
-					<Button variant="secondary" isDestructive isBusy={isDeleting} disabled={isBusy} onClick={onDelete}>
-						{isDeleting ? deleteBusyLabel : deleteLabel}
+				{'reset' === destructiveAction ? (
+					<Button
+						variant="secondary"
+						isDestructive
+						isBusy={isResetting}
+						disabled={!canReset || isBusy}
+						onClick={onReset}
+					>
+						{isResetting ? __('Resetting…', 'kadence-blocks') : __('Reset', 'kadence-blocks')}
+					</Button>
+				) : (
+					<Button
+						variant="secondary"
+						isDestructive
+						isBusy={isDeleting}
+						disabled={!canDelete || isBusy}
+						onClick={onDelete}
+					>
+						{isDeleting ? __('Deleting…', 'kadence-blocks') : __('Delete', 'kadence-blocks')}
 					</Button>
 				)}
-				{onSave && (
-					<Button variant="primary" isBusy={isSaving} disabled={!isDirty || isBusy} onClick={onSave}>
-						{isSaving ? __('Saving…', 'kadence-blocks') : __('Save', 'kadence-blocks')}
-					</Button>
-				)}
+				<Button variant="primary" isBusy={isSaving} disabled={!isDirty || isBusy} onClick={onSave}>
+					{isSaving ? __('Saving…', 'kadence-blocks') : __('Save', 'kadence-blocks')}
+				</Button>
 			</div>
 		</div>
 	);

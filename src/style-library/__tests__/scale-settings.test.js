@@ -291,3 +291,46 @@ describe('ScaleSettings busy state', () => {
 		expect(findButton('Delete').disabled).toBe(false);
 	});
 });
+
+describe('ScaleSettings footer gating', () => {
+	/**
+	 * A user-created token gets an enabled Delete and no Reset; a baseline (shipped) token gets no
+	 * Delete at all (the server refuses baseline deletion) and a Reset instead.
+	 *
+	 * @return {void}
+	 */
+	it('shows Delete for a user-created token and Reset for a baseline one', () => {
+		const write = deferred();
+		renderScaleSettings(makeScale(write));
+
+		expect(findButton('Delete').disabled).toBe(false);
+		expect(findButton('Reset')).toBeNull();
+
+		const baseline = makeScale(write);
+		baseline.tokenById = () => ({ ...TOKEN, userCreated: false });
+		renderScaleSettings(baseline);
+
+		expect(findButton('Delete')).toBeNull();
+		expect(findButton('Reset')).not.toBeNull();
+	});
+
+	/**
+	 * A shipped scale token has no saved value the panel can revert, so its Reset stays disabled
+	 * before and after an edit — only Save reacts to the draft.
+	 *
+	 * @return {void}
+	 */
+	it('keeps a baseline token’s Reset disabled before and after an edit', () => {
+		const write = deferred();
+		const baseline = makeScale(write);
+		baseline.tokenById = () => ({ ...TOKEN, userCreated: false });
+		renderScaleSettings(baseline);
+
+		expect(findButton('Reset').disabled).toBe(true);
+
+		makeDirty();
+
+		expect(findButton('Save').disabled).toBe(false);
+		expect(findButton('Reset').disabled).toBe(true);
+	});
+});

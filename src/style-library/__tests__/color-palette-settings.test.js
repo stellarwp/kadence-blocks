@@ -312,12 +312,13 @@ const OVERRIDDEN_PALETTE = {
 
 describe('ColorPaletteSettings destructive action', () => {
 	/**
-	 * A custom, user-created swatch always shows Delete, never Reset — regardless of which palette
-	 * is open — and clicking it calls `removeSwatch`, not `resetSwatch`.
+	 * A custom, user-created swatch gets Delete and no Reset (nothing shipped it, so there is no
+	 * baseline value to go back to): Delete is enabled, and clicking it calls `removeSwatch`, never
+	 * `resetSwatch`.
 	 *
 	 * @return {void}
 	 */
-	it('shows Delete, not Reset, for a custom swatch', () => {
+	it('shows an enabled Delete and no Reset for a custom swatch', () => {
 		const write = deferred();
 		const palettes = makePalettes(write, {
 			isSwatchCustom: jest.fn(() => true),
@@ -327,7 +328,7 @@ describe('ColorPaletteSettings destructive action', () => {
 		});
 		renderColorPaletteSettings(palettes);
 
-		expect(findButton('Delete')).not.toBeNull();
+		expect(findButton('Delete').disabled).toBe(false);
 		expect(findButton('Reset')).toBeNull();
 
 		act(() => {
@@ -339,13 +340,13 @@ describe('ColorPaletteSettings destructive action', () => {
 	});
 
 	/**
-	 * A built-in swatch showing this (non-default) palette's own override shows Reset, not Delete,
-	 * and clicking it calls `resetSwatch` — never `removeSwatch` — showing "Resetting…" while the
-	 * write is in flight.
+	 * A built-in swatch showing this (non-default) palette's own override gets Reset and no Delete:
+	 * Reset is enabled, and clicking it calls `resetSwatch` (never `removeSwatch`), showing
+	 * "Resetting…" and disabling Save while the write is in flight.
 	 *
 	 * @return {void}
 	 */
-	it('shows Reset, not Delete, for a built-in swatch overridden on a non-default palette', async () => {
+	it('shows an enabled Reset and no Delete for a built-in swatch overridden on a non-default palette', async () => {
 		const write = deferred();
 		const palettes = makePalettes(write, {
 			isSwatchCustom: jest.fn(() => false),
@@ -355,7 +356,7 @@ describe('ColorPaletteSettings destructive action', () => {
 		});
 		renderColorPaletteSettings(palettes);
 
-		expect(findButton('Reset')).not.toBeNull();
+		expect(findButton('Reset').disabled).toBe(false);
 		expect(findButton('Delete')).toBeNull();
 
 		act(() => {
@@ -365,6 +366,7 @@ describe('ColorPaletteSettings destructive action', () => {
 		expect(palettes.resetSwatch).toHaveBeenCalledWith(TOKEN_PATH);
 		expect(palettes.removeSwatch).not.toHaveBeenCalled();
 		expect(findButton('Resetting…')).not.toBeNull();
+		expect(findButton('Save').disabled).toBe(true);
 
 		await act(async () => {
 			write.resolve();
@@ -406,8 +408,8 @@ describe('ColorPaletteSettings destructive action', () => {
 	});
 
 	/**
-	 * A failed reset leaves the panel open, so the value the write did not change is still in front
-	 * of the user along with the error.
+	 * A failed reset leaves the panel open (the override is unchanged, so there is nothing stale
+	 * in the draft) and settles the busy state, with Reset enabled again.
 	 *
 	 * @return {void}
 	 */
@@ -426,22 +428,23 @@ describe('ColorPaletteSettings destructive action', () => {
 		});
 
 		await act(async () => {
-			write.reject(new Error('Conflict'));
+			write.reject(new Error('nope'));
 			await write.promise.catch(() => {});
 		});
 
 		expect(navigate).not.toHaveBeenCalled();
+		expect(findButton('Resetting…')).toBeNull();
+		expect(findButton('Reset').disabled).toBe(false);
 	});
 
 	/**
-	 * A built-in swatch changed away from its shipped value offers Reset on the DEFAULT palette
-	 * too — the server restores the shipped color there rather than dropping the row. It is not a
-	 * custom swatch, so it still offers no Delete. This matches the pill the card itself shows,
-	 * so the panel and the card never disagree about the same swatch.
+	 * On the default palette a built-in swatch whose color differs from the shipped one offers Reset
+	 * (restoring the shipped color) and never Delete, matching the card's own pill so the panel and
+	 * the card never disagree about the same swatch.
 	 *
 	 * @return {void}
 	 */
-	it('offers Reset but not Delete for a changed built-in swatch on the default palette', () => {
+	it('shows an enabled Reset and no Delete for a changed built-in swatch on the default palette', () => {
 		const write = deferred();
 		renderColorPaletteSettings(
 			makePalettes(write, {
@@ -453,17 +456,16 @@ describe('ColorPaletteSettings destructive action', () => {
 		);
 
 		expect(findButton('Delete')).toBeNull();
-		expect(findButton('Reset')).not.toBeNull();
+		expect(findButton('Reset').disabled).toBe(false);
 	});
 
 	/**
-	 * A built-in swatch shows neither button on a non-default palette when it is not currently
-	 * overridden there — nothing to reset (it already shows the inherited value) and nothing to
-	 * delete (it is not a custom swatch).
+	 * A built-in, non-overridden swatch on a non-default palette has nothing to reset yet: Reset
+	 * stays in the footer, disabled, and there is no Delete since the row is shipped.
 	 *
 	 * @return {void}
 	 */
-	it('shows neither destructive button for a built-in, non-overridden swatch on a non-default palette', () => {
+	it('shows a disabled Reset and no Delete for a built-in, non-overridden swatch', () => {
 		const write = deferred();
 		renderColorPaletteSettings(
 			makePalettes(write, {
@@ -475,6 +477,30 @@ describe('ColorPaletteSettings destructive action', () => {
 		);
 
 		expect(findButton('Delete')).toBeNull();
-		expect(findButton('Reset')).toBeNull();
+		expect(findButton('Reset')).not.toBeNull();
+		expect(findButton('Reset').disabled).toBe(true);
+	});
+
+	/**
+	 * Editing a field enables Save only. Reset is about the SAVED value, so a not-yet-saved change
+	 * leaves it disabled; the unsaved-changes handling, not the footer, is where a draft is discarded.
+	 *
+	 * @return {void}
+	 */
+	it('keeps Reset disabled while an unsaved edit is pending on a non-overridden swatch', () => {
+		const write = deferred();
+		renderColorPaletteSettings(
+			makePalettes(write, {
+				isSwatchCustom: jest.fn(() => false),
+				editingId: 'secondary',
+				listing: { defaultId: 'default' },
+				palette: PALETTE,
+			})
+		);
+
+		makeDirty();
+
+		expect(findButton('Save').disabled).toBe(false);
+		expect(findButton('Reset').disabled).toBe(true);
 	});
 });

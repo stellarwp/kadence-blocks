@@ -610,6 +610,81 @@ final class PresetsControllerTest extends TestCase {
 	}
 
 	/**
+	 * Deleting the shipped `default` preset drops only its stored override: the preset itself stays, renders
+	 * from baseline again, and reports nothing as overridden. The literal `default` slug is not confused with
+	 * the default-pointer sub-route, which registers no DELETE.
+	 *
+	 * @return void
+	 */
+	public function testDeletePresetRevertsTheShippedDefaultPresetToBaseline(): void {
+		$this->controller->update_item(
+			$this->block_request(
+				'PUT',
+				self::BUTTON,
+				[
+					'presets' => [ 'default' => [ 'tokens' => $this->button_tokens() ] ],
+				]
+			)
+		);
+
+		$before = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, self::BUTTON ) )->get_data();
+
+		$this->assertNotEmpty( $before['presets']['default']['overridden'] );
+
+		$response = $this->controller->delete_preset( $this->preset_request( self::BUTTON, 'default' ) );
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+		$this->assertSame( WP_Http::OK, $response->get_status() );
+
+		$data = $response->get_data();
+
+		$this->assertArrayHasKey( 'default', $data['presets'] );
+		$this->assertSame( [], $data['presets']['default']['overridden'] );
+		$this->assertSame( 'default', $data['default'] );
+
+		// Persisted, not just reported: a fresh read sees no override either.
+		$after = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, self::BUTTON ) )->get_data();
+
+		$this->assertSame( [], $after['presets']['default']['overridden'] );
+	}
+
+	/**
+	 * A DELETE for the literal `default` slug, dispatched through the REST server, reaches the single-preset
+	 * handler rather than the default-pointer sub-route (which registers no DELETE), and reverts the shipped
+	 * preset's stored override.
+	 *
+	 * @return void
+	 */
+	public function testDeleteRouteOnTheShippedDefaultSlugRevertsItsOverride(): void {
+		wp_set_current_user( $this->factory()->user->create( [ 'role' => 'administrator' ] ) );
+
+		$this->controller->update_item(
+			$this->block_request(
+				'PUT',
+				self::BUTTON,
+				[
+					'presets' => [ 'default' => [ 'tokens' => $this->button_tokens() ] ],
+				]
+			)
+		);
+
+		$route    = '/' . $this->controller_namespace() . '/' . $this->controller_rest_base() . '/' . self::BUTTON . '/default';
+		$response = $this->rest_server->dispatch( new WP_REST_Request( WP_REST_Server::DELETABLE, $route ) );
+
+		$this->assertSame( WP_Http::OK, $response->get_status() );
+
+		$data = $response->get_data();
+
+		$this->assertArrayHasKey( 'default', $data['presets'] );
+		$this->assertSame( [], $data['presets']['default']['overridden'] );
+
+		// Persisted, not just reported: a fresh read sees no override either.
+		$after = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, self::BUTTON ) )->get_data();
+
+		$this->assertSame( [], $after['presets']['default']['overridden'] );
+	}
+
+	/**
 	 * Removing a preset the effective presets still default to is rejected before commit, so the default is
 	 * never left dangling.
 	 *
