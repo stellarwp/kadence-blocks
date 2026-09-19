@@ -13,7 +13,7 @@ import { applyFilters } from '@wordpress/hooks';
 /**
  * Internal dependencies
  */
-import { BASE_STYLES_SCREENS, PRESET_SCREENS_FILTER } from '../constants/screens';
+import { BASE_STYLES_SCREENS, PRESET_SCREEN_ICONS, PRESET_SCREENS_FILTER } from '../constants/screens';
 
 /**
  * The screen-id prefix that namespaces every block-preset screen away from the fixed Base Styles
@@ -56,10 +56,10 @@ export function blockFromScreenId(screenId) {
  *
  * @since TBD
  *
- * @return {Array<{id: string, label: string}>} The nav entries.
+ * @return {Array<{id: string, label: string, icon: JSX.Element}>} The nav entries.
  */
 export function buildBaseStylesNav() {
-	return BASE_STYLES_SCREENS.map(({ id, label }) => ({ id, label }));
+	return BASE_STYLES_SCREENS.map(({ id, label, icon }) => ({ id, label, icon }));
 }
 
 /**
@@ -70,7 +70,7 @@ export function buildBaseStylesNav() {
  *
  * @since TBD
  *
- * @return {Array<{id: string, label: string, block: string}>} The nav entries.
+ * @return {Array<{id: string, label: string, block: string, icon: ?JSX.Element}>} The nav entries.
  */
 export function buildBlockPresetsNav(feed) {
 	const entries = feed?.presetNav;
@@ -79,7 +79,12 @@ export function buildBlockPresetsNav(feed) {
 		return [];
 	}
 
-	return entries.map(({ block, label }) => ({ id: presetScreenId(block), label, block }));
+	return entries.map(({ block, label }) => ({
+		id: presetScreenId(block),
+		label,
+		block,
+		icon: PRESET_SCREEN_ICONS[block] ?? null,
+	}));
 }
 
 /**

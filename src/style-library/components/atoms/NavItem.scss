@@ -26,3 +26,9 @@
 		font-weight: var(--kb-sl-font-weight-medium);
 	}
 }
+
+.kadence-blocks-style-library__nav-item-icon {
+	flex: 0 0 auto;
+	width: var(--kb-sl-size-nav-item-icon);
+	height: var(--kb-sl-size-nav-item-icon);
+}
