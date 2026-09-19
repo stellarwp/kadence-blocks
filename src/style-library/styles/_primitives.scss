@@ -46,6 +46,8 @@ body.kadence-blocks-style-library-page {
 	--kb-sl-color-theme: var(--wp-admin-theme-color, #2271b1);
 	// Solid fallback; a browser without color-mix() keeps this value — see the @supports block below.
 	--kb-sl-color-theme-tint-4: rgba(34, 113, 177, 0.04);
+	--kb-sl-color-theme-tint-15: rgba(34, 113, 177, 0.15);
+	--kb-sl-color-theme-tint-25: rgba(34, 113, 177, 0.25);
 
 	// Gray-200 at 60% alpha — AddTile's border. Solid fallback; a browser without color-mix() keeps
 	// this value — see the @supports block below.
@@ -97,6 +99,11 @@ body.kadence-blocks-style-library-page {
 	// not reused from --kb-sl-icon-size-s (also 1.125rem): that primitive is a deliberately separate
 	// scale from font-size.
 	--kb-sl-font-size-18: 1.125rem;
+	--kb-sl-font-size-24: 1.5rem;
+
+	// Letter spacing — `em`, not rem: the value resolves where it is used, so one token tightens
+	// text in proportion to whatever font size it lands on.
+	--kb-sl-letter-spacing-tight: -0.01em;
 
 	// Font weight. `semibold` is not on the Figma type table (Regular/Medium only) — it extends that
 	// table for the handful of places (`section-heading` in _mixins.scss, `MetaChip`) that call for
@@ -119,6 +126,7 @@ body.kadence-blocks-style-library-page {
 	// Layout dimensions — app-specific, not derived from any scale.
 	--kb-sl-size-shell-min-height: 32rem;
 	--kb-sl-size-sidebar-width: 12rem;
+	--kb-sl-size-header-logo: 3rem;
 	--kb-sl-size-settings-panel-width: 17.5rem;
 	--kb-sl-size-content-max-width: 42rem;
 	--kb-sl-size-text-max-width: 50rem;
@@ -168,6 +176,8 @@ body.kadence-blocks-style-library-page {
 	.kadence-blocks-style-library-root,
 	body.kadence-blocks-style-library-page {
 		--kb-sl-color-theme-tint-4: color-mix(in srgb, var(--kb-sl-color-theme) 4%, transparent);
+		--kb-sl-color-theme-tint-15: color-mix(in srgb, var(--kb-sl-color-theme) 15%, transparent);
+		--kb-sl-color-theme-tint-25: color-mix(in srgb, var(--kb-sl-color-theme) 25%, transparent);
 		--kb-sl-color-alert-red-tint-4: color-mix(in srgb, var(--kb-sl-color-alert-red) 4%, transparent);
 		--kb-sl-color-gray-200-tint-60: color-mix(in srgb, var(--kb-sl-color-gray-200) 60%, transparent);
 	}
