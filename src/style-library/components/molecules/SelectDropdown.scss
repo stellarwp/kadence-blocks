@@ -223,6 +223,15 @@
 		color: var(--kb-sl-color-gray-900);
 	}
 
+	// Keyboard focus also gets a ring. The fill above is not enough alone: the selected row keeps its
+	// own fill while focused (below), so without this a focused selected row looks exactly like an
+	// unfocused one — and that is the row focus lands on when the menu opens. Drawn inside the row,
+	// so it never crosses the small gap to the next one. After `&:focus`, which clears the outline.
+	&:focus-visible {
+		outline: var(--kb-sl-border-width-input-focus) solid var(--kb-sl-color-control-border-focus);
+		outline-offset: calc(var(--kb-sl-border-width-input-focus) * -1);
+	}
+
 	// The current option, marked by its fill alone. Listed after hover so the row keeps this fill
 	// while hovered: a selected row that lightened under the pointer would look deselected.
 	&[aria-checked="true"],
