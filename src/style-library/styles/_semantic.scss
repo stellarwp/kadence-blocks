@@ -8,8 +8,6 @@
 body.kadence-blocks-style-library-page {
 	// Color — surface/border/text.
 	--kb-sl-color-surface: var(--kb-sl-color-white);
-	// A structural edge (sidebar/header rules, cards, rows), not a form control's border — see the
-	// control-border pair below for that distinct role.
 	--kb-sl-color-border: var(--kb-sl-color-theme-tint-15);
 	--kb-sl-color-separator: var(--kb-sl-color-theme-tint-25);
 	--kb-sl-color-text-primary: var(--kb-sl-color-gray-900);
