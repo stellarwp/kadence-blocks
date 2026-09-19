@@ -23,7 +23,7 @@ jest.mock('../hooks/use-palettes', () => ({
 // `react`/`react-dom` copy trips React's "Invalid hook call" guard under the top-level renderer
 // this test uses. Stand-ins are enough — this test reads pill text and clicks one button. The
 // screen mounts more than `ColorPaletteSettings`-style tests do (`ScreenHeader`, `SelectDropdown`,
-// `ActivatePaletteButton`, and the create/rename/delete/add-group modals all live under it), so this
+// `PaletteActions`, and the create/rename/delete/add-group modals all live under it), so this
 // list covers every export those organisms reach for, not only the ones the screen itself imports.
 jest.mock('@wordpress/components', () => ({
 	Button: ({ children, isBusy, isDestructive, variant, icon, ...props }) => <button {...props}>{children}</button>,

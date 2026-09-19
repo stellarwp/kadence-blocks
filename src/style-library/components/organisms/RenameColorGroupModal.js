@@ -1,7 +1,6 @@
 /**
- * The rename modal for a color group, mirroring `RenamePaletteModal`: a single label field seeded
- * with the group's current label. Not merged with that modal — the seed, validation, copy, and
- * flow (`renameGroup`) all differ, while reusing the same `Modal`-based skeleton.
+ * The rename modal for a color group: a single label field seeded with the group's current
+ * label.
  *
  * No uniqueness check: group **ids** are the uniqueness domain and this rename never touches the
  * id (see `renameGroupInGroups`'s own docblock for why), so a duplicate label is display-only

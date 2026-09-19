@@ -26,10 +26,8 @@ import { ScreenDescription } from '../molecules/ScreenDescription';
 import { EmptyState } from '../molecules/EmptyState';
 import { PaletteInheritanceNotice } from '../molecules/PaletteInheritanceNotice';
 import { Skeleton } from '../atoms/Skeleton';
-import { ActivatePaletteButton } from '../organisms/ActivatePaletteButton';
+import { PaletteActions } from '../organisms/PaletteActions';
 import { CreatePaletteModal } from '../organisms/CreatePaletteModal';
-import { RenamePaletteModal } from '../organisms/RenamePaletteModal';
-import { DeletePaletteModal } from '../organisms/DeletePaletteModal';
 import { AddColorGroupModal } from '../organisms/AddColorGroupModal';
 import { RenameColorGroupModal } from '../organisms/RenameColorGroupModal';
 import { DeleteColorGroupModal } from '../organisms/DeleteColorGroupModal';
@@ -42,7 +40,6 @@ import {
 	mapPaletteToSwatchGroups,
 	paletteDisplayLabel,
 	paletteShowsInheritance,
-	paletteSuccessorOptions,
 	swatchPillVariant,
 } from '../../helpers/palettes';
 import { ColorPaletteSettings } from './ColorPaletteSettings';
@@ -160,7 +157,6 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 	// snaps `editingId` back to the default palette while the modal is still open — props derived
 	// live at that point would flip its Delete copy to the default palette's Reset copy for the
 	// closing frame.
-	const [deleteTarget, setDeleteTarget] = useState(null);
 	const [isAddGroupOpen, setIsAddGroupOpen] = useState(false);
 	// Carries the whole mapped group entry (`{ id, label, items }`), not just an id, so the modals
 	// can seed the label and count the swatches without a second lookup.
@@ -344,56 +340,38 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 								onClick: () => setIsCreateOpen(true),
 							}}
 						/>
-						<ActivatePaletteButton
+						<PaletteActions
 							editingId={palettes.editingId}
 							editingLabel={paletteDisplayLabel(editingRow)}
 							activeLabel={paletteDisplayLabel(activeRow)}
 							isEditingActive={palettes.isEditingActive}
+							isUserCreated={isEditingUserCreated}
+							listing={palettes.listing}
 							isBusy={palettes.isBusy}
-							error={palettes.activateError}
-							onClearError={palettes.clearActivateError}
+							errors={{
+								rename: palettes.renameError,
+								activate: palettes.activateError,
+								delete: palettes.deleteError,
+							}}
+							onClearError={{
+								rename: palettes.clearRenameError,
+								activate: palettes.clearActivateError,
+								delete: palettes.clearDeleteError,
+							}}
+							onRename={palettes.renamePalette}
 							onActivate={palettes.activatePalette}
+							onDelete={(id, successorId) =>
+								palettes.deletePalette(id, successorId).then(() => {
+									// Whatever the settings panel had open is stale now: a reset replaced every
+									// swatch's value, and a delete took the whole palette away. Either way its
+									// draft still holds what was there before — `useSettingsPanel` seeds once
+									// per item and cannot follow an external write — so its Save would put that
+									// back. Same reasoning as a single swatch's reset, one level up.
+									navigate({ item: '' });
+								})
+							}
 						/>
 					</>
-				}
-				secondaryAction={
-					// Available on the default palette too — no palette write carries a default-id guard.
-					// Always targets the palette being edited, exactly like Delete, for the same
-					// open/activate-split reason.
-					<RenamePaletteModal
-						id={palettes.editingId}
-						currentLabel={paletteDisplayLabel(editingRow)}
-						listing={palettes.listing}
-						isBusy={palettes.isBusy}
-						error={palettes.renameError}
-						onClearError={palettes.clearRenameError}
-						onRename={palettes.renamePalette}
-					/>
-				}
-				destructiveAction={
-					// Always targets the palette being edited, never `activeId`: under the open/activate
-					// split you can be editing a palette that isn't live, and acting on the live one instead
-					// would silently re-tint the site as a side effect of cleaning up an unrelated draft.
-					// The `$default` palette is offered too — as a Reset, since the same request drops its
-					// overrides but leaves the palette itself in the listing.
-					<Button
-						isDestructive
-						variant="link"
-						// Reuses DeleteLibraryModal's own styling — the same red text-link treatment, no
-						// new rule needed for a class this app already ships.
-						className="kadence-blocks-style-library__delete-library-action"
-						onClick={() =>
-							setDeleteTarget({
-								id: palettes.editingId,
-								label: paletteDisplayLabel(editingRow),
-								isUserCreated: isEditingUserCreated,
-								successors: paletteSuccessorOptions(palettes.listing, palettes.editingId),
-								isActive: palettes.isEditingActive,
-							})
-						}
-					>
-						{isEditingUserCreated ? __('Delete', 'kadence-blocks') : __('Reset', 'kadence-blocks')}
-					</Button>
 				}
 				primaryAction={
 					<Button variant="secondary" icon={plus} onClick={() => setIsAddGroupOpen(true)}>
@@ -505,37 +483,6 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 							})
 							// Swallowed: an invalid/duplicate label or a request failure already lands in
 							// `createError`, rendered inline — the modal stays open on it.
-							.catch(() => {})
-					}
-				/>
-			)}
-			{deleteTarget && (
-				<DeletePaletteModal
-					label={deleteTarget.label}
-					isUserCreated={deleteTarget.isUserCreated}
-					successors={deleteTarget.successors}
-					isActive={deleteTarget.isActive}
-					isBusy={palettes.isBusy}
-					error={palettes.deleteError}
-					onClose={() => {
-						setDeleteTarget(null);
-						palettes.clearDeleteError();
-					}}
-					onConfirm={(successorId) =>
-						palettes
-							.deletePalette(deleteTarget.id, successorId)
-							.then(() => {
-								setDeleteTarget(null);
-								palettes.clearDeleteError();
-								// Whatever the settings panel had open is stale now: a reset replaced every
-								// swatch's value, and a delete took the whole palette away. Either way its
-								// draft still holds what was there before — `useSettingsPanel` seeds once
-								// per item and cannot follow an external write — so its Save would put that
-								// back. Same reasoning as a single swatch's reset, one level up.
-								navigate({ item: '' });
-							})
-							// Swallowed: a request failure already lands in `deleteError`, rendered inline —
-							// the modal stays open on it.
 							.catch(() => {})
 					}
 				/>
