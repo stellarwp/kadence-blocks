@@ -58,8 +58,9 @@
 	// drives `AppHeader`'s app-wide title, which this was not asked to touch.
 	color: var(--kb-sl-color-text-primary);
 	font-size: var(--kb-sl-font-size-18);
-	font-weight: var(--kb-sl-font-weight-semibold);
-	line-height: var(--kb-sl-line-height-l);
+	font-weight: var(--kb-sl-font-weight-medium);
+	line-height: var(--kb-sl-line-height-22);
+	letter-spacing: var(--kb-sl-letter-spacing-title);
 	// The one thing in the header allowed to give: `min-width: 0` lets it shrink below its own
 	// content's width inside the flex row above (a plain flex item otherwise refuses to shrink
 	// past that), and the three rules together turn the overflow that would otherwise happen into
@@ -75,7 +76,7 @@
 // doesn't already give it: padding, font, gap, and icon sizing. No border/background/color/radius
 // here on purpose — adding them would duplicate what core's variant already provides.
 .kadence-blocks-style-library-root .kadence-blocks-style-library__screen-header-primary-action .components-button {
-	padding: var(--kb-sl-space-10);
+	padding: var(--kb-sl-space-10) var(--kb-sl-space-20);
 	gap: var(--kb-sl-space-05);
 	font-size: var(--kb-sl-font-size-m);
 	font-weight: var(--kb-sl-font-weight-medium);
