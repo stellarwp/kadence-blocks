@@ -118,8 +118,12 @@ export function SwatchCard({
 					<span className="kadence-blocks-style-library__swatch-card-preview" style={previewStyle}>
 						{preview}
 					</span>
-					<span className="kadence-blocks-style-library__swatch-card-name">{name}</span>
-					{subLine && <span className="kadence-blocks-style-library__swatch-card-sub-line">{subLine}</span>}
+					<span className="kadence-blocks-style-library__swatch-card-details">
+						<span className="kadence-blocks-style-library__swatch-card-name">{name}</span>
+						{subLine && (
+							<span className="kadence-blocks-style-library__swatch-card-sub-line">{subLine}</span>
+						)}
+					</span>
 				</button>
 				{hasPillSlot && (
 					<span

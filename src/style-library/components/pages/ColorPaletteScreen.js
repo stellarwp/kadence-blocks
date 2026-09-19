@@ -91,10 +91,12 @@ function SwatchGridSkeleton({ label }) {
 									 * `align-items: flex-start` parent (`.swatch-card-select`) collapses an unsized
 									 * block to 0 width without one. Same fix as the group heading bar above: pin a
 									 * plausible literal width. */}
-									<Skeleton
-										className="kadence-blocks-style-library__swatch-card-name kadence-blocks-style-library__skeleton--bar"
-										style={{ width: '70%' }}
-									/>
+									<span className="kadence-blocks-style-library__swatch-card-details">
+										<Skeleton
+											className="kadence-blocks-style-library__swatch-card-name kadence-blocks-style-library__skeleton--bar"
+											style={{ width: '70%' }}
+										/>
+									</span>
 								</div>
 							</div>
 						</div>
