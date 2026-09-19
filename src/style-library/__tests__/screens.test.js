@@ -39,6 +39,7 @@ describe('buildBlockPresetsNav', () => {
 				label: 'Style',
 				block: 'kadence/singlebtn',
 				icon: PRESET_SCREEN_ICONS['kadence/singlebtn'],
+				count: null,
 			},
 		]);
 	});
@@ -47,6 +48,15 @@ describe('buildBlockPresetsNav', () => {
 		const feed = { presetNav: [{ block: 'my-vendor/my-block', label: 'Mine' }] };
 
 		expect(buildBlockPresetsNav(feed)[0].icon).toBeNull();
+	});
+
+	it('counts the presets the feed lists for the block', () => {
+		const feed = {
+			presetNav: [{ block: 'kadence/singlebtn', label: 'Button' }],
+			presets: { 'kadence/singlebtn': { names: ['default', 'outline', 'ghost'] } },
+		};
+
+		expect(buildBlockPresetsNav(feed)[0].count).toBe(3);
 	});
 
 	it('gives every base styles entry an icon', () => {
