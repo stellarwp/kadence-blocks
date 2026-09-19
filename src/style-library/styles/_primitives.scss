@@ -135,7 +135,7 @@ body.kadence-blocks-style-library-page {
 
 	// Layout dimensions — app-specific, not derived from any scale.
 	--kb-sl-size-shell-min-height: 32rem;
-	--kb-sl-size-sidebar-width: 12rem;
+	--kb-sl-size-sidebar-width: 16rem;
 	--kb-sl-size-header-logo: 3rem;
 	--kb-sl-size-settings-panel-width: 17.5rem;
 	--kb-sl-size-actions-popover-width: 20rem;
@@ -145,8 +145,7 @@ body.kadence-blocks-style-library-page {
 	--kb-sl-size-modal-medium: 32rem;
 	--kb-sl-size-modal-large: 52.5rem;
 	// The select-dropdown control's toggle width (fixed, not a minimum) and its menu's matching
-	// min-width. Numerically equal to --kb-sl-size-sidebar-width but a distinct, independent value —
-	// changing the sidebar must never silently resize this control.
+	// min-width.
 	--kb-sl-size-select-dropdown-width: 12rem;
 	// The menu's width cap before its items wrap. Numerically equal to --kb-sl-size-modal-small by
 	// coincidence — stays its own token rather than pointing at the modal one.
