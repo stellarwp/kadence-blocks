@@ -48,6 +48,8 @@ body.kadence-blocks-style-library-page {
 	--kb-sl-color-theme-tint-4: rgba(34, 113, 177, 0.04);
 	// Strong enough to read as a line, not a fill. Same solid fallback arrangement.
 	--kb-sl-color-theme-tint-15: rgba(34, 113, 177, 0.15);
+	// The strongest tint: for a quiet glyph, where the lighter ones would be too faint to read.
+	--kb-sl-color-theme-tint-25: rgba(34, 113, 177, 0.25);
 
 	// Gray-200 at 60% alpha — AddTile's border. Solid fallback; a browser without color-mix() keeps
 	// this value — see the @supports block below.
@@ -178,6 +180,7 @@ body.kadence-blocks-style-library-page {
 	body.kadence-blocks-style-library-page {
 		--kb-sl-color-theme-tint-4: color-mix(in srgb, var(--kb-sl-color-theme) 4%, transparent);
 		--kb-sl-color-theme-tint-15: color-mix(in srgb, var(--kb-sl-color-theme) 15%, transparent);
+		--kb-sl-color-theme-tint-25: color-mix(in srgb, var(--kb-sl-color-theme) 25%, transparent);
 		--kb-sl-color-alert-red-tint-4: color-mix(in srgb, var(--kb-sl-color-alert-red) 4%, transparent);
 		--kb-sl-color-gray-200-tint-60: color-mix(in srgb, var(--kb-sl-color-gray-200) 60%, transparent);
 	}

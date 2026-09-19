@@ -16,9 +16,10 @@ body.kadence-blocks-style-library-page {
 	// surface, 15% is the strength that matches the design's #e2e8f0 in lightness. It is
 	// translucent, so it only holds that color over white.
 	--kb-sl-color-header-border: var(--kb-sl-color-theme-tint-15);
-	// The design specifies a cool gray (#cbd5e0) from a different system; this is the in-ramp gray
-	// nearest to it in lightness.
-	--kb-sl-color-separator: var(--kb-sl-color-gray-400);
+	// The slash between a title and its selector. A theme tint like the header's line above: over
+	// white, 25% comes nearest the design's #cbd5e0 in lightness. Translucent, so it only holds
+	// that color over white.
+	--kb-sl-color-separator: var(--kb-sl-color-theme-tint-25);
 	--kb-sl-color-text-primary: var(--kb-sl-color-gray-900);
 	--kb-sl-color-text-secondary: var(--kb-sl-color-gray-700);
 	--kb-sl-color-text-muted: var(--kb-sl-color-gray-700);
