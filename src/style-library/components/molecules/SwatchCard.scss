@@ -21,7 +21,6 @@
 	box-sizing: border-box;
 	// The containing block for the selecting button's hit area — see its `::after`.
 	position: relative;
-	// Clips the full-width preview to the card's rounded corners, so the preview needs no radius.
 	overflow: hidden;
 	display: flex;
 	flex-direction: column;
@@ -34,18 +33,13 @@
 }
 
 // The selecting click target. The border, radius and background stay on `.main` above, so every
-// existing hover/selected/placeholder rule keeps describing the same box it always did — but the
-// card's padding lives HERE, not there. A padded parent would leave an inert ring around the
-// button, and clicking a card near its edge would do nothing.
+// hover/selected/placeholder rule describes the same box.
 .kadence-blocks-style-library__swatch-card-select {
-	// `border-box`, so `width: 100%` still measures the parent's full content width once the
-	// padding below is added to it.
 	box-sizing: border-box;
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
 	width: 100%;
-	// No padding: the preview runs full width, and the inset lives on `.swatch-card-details` below.
 	padding: 0;
 	border: 0;
 	background: none;
@@ -69,14 +63,10 @@ button.kadence-blocks-style-library__swatch-card-select {
 	cursor: pointer;
 }
 
-// A card with no pill slot ends on the select, so the select carries the lower inset the pill slot
-// would otherwise provide.
 .kadence-blocks-style-library__swatch-card-select:last-child {
 	padding-bottom: 0.625rem;
 }
 
-// The name and sub line, wrapped so the card's inset applies to them and not to the full-width
-// preview. No bottom padding: a card's lower inset belongs to the pill slot below.
 .kadence-blocks-style-library__swatch-card-details {
 	box-sizing: border-box;
 	display: flex;
@@ -87,13 +77,9 @@ button.kadence-blocks-style-library__swatch-card-select {
 	padding: 0.625rem 0.75rem 0;
 }
 
-// Hover, mirroring `ListRow`'s own hover treatment, with the values repeated rather than shared so
-// a row and a card stay free to diverge even though they agree today. `:not(&--selected)` keeps a
-// selected-and-hovered card showing its selected tint instead of flipping to the neutral hover one.
+// `:not(&--selected)` keeps a selected-and-hovered card showing its selected tint.
 .kadence-blocks-style-library__swatch-card:hover:not(.kadence-blocks-style-library__swatch-card--selected)
 	.kadence-blocks-style-library__swatch-card-main {
-	// The same background and shadow `ListRow` uses on hover (`--kb-sl-list-row-bg-hover` and
-	// `--kb-sl-list-row-shadow-hover`, scoped to that component, so repeated here).
 	background: #f7fafc;
 	box-shadow: 0 0 0.5px 0 rgba(0, 0, 0, 0.25), 0 2px 4px 0 rgba(0, 0, 0, 0.15);
 }
@@ -103,8 +89,7 @@ button.kadence-blocks-style-library__swatch-card-select {
 // on `.main` now, so the fill and the outline always describe the same box.
 .kadence-blocks-style-library__swatch-card--selected .kadence-blocks-style-library__swatch-card-main {
 	border-color: var(--kb-sl-color-theme);
-	// The tint is translucent, so it is layered over the opaque surface color instead of replacing
-	// it — otherwise the floating drag copy of a selected card shows the page through itself.
+	// Layered over the surface color: the tint alone is translucent, so the drag copy would show the page.
 	background: linear-gradient(var(--kb-sl-color-theme-tint-4), var(--kb-sl-color-theme-tint-4)) var(--kb-sl-color-surface);
 }
 
@@ -137,8 +122,6 @@ button.kadence-blocks-style-library__swatch-card-select {
 	pointer-events: none;
 }
 
-// The same handle the preset cards use: a small square chip on a translucent white, since it now
-// sits over the full-width preview instead of the card's plain background.
 .kadence-blocks-style-library__swatch-card .kadence-blocks-style-library__drag-handle {
 	width: var(--kb-sl-space-25);
 	height: var(--kb-sl-space-25);
@@ -156,11 +139,8 @@ button.kadence-blocks-style-library__swatch-card-select {
 	box-sizing: border-box;
 	display: flex;
 	overflow: hidden;
-	// The full width of `.swatch-card-select`, which no longer pads.
 	width: 100%;
 	height: 4rem;
-	// Only a bottom edge, the same color and width as the card border, to separate the preview from
-	// the details; the card border and its clipped corners already outline the rest.
 	border-bottom: var(--kb-sl-border-width-input) solid var(--kb-sl-color-border);
 }
 
@@ -202,7 +182,6 @@ button.kadence-blocks-style-library__swatch-card-select {
 	display: flex;
 	align-items: center;
 	width: 100%;
-	// The card's lower inset — `.swatch-card-details` above has no bottom padding of its own.
 	padding: 0 0.75rem 0.625rem;
 	min-height: calc(var(--kb-sl-space-30) + var(--kb-sl-space-10));
 	// Above the selecting button's stretched hit area, so a pill can be clicked or hovered.

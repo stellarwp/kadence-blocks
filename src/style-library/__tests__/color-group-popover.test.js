@@ -21,8 +21,7 @@ jest.mock('../hooks/use-palettes', () => ({
 
 // Same cross-module-copy rationale as `palette-reset-modal.test.js`: `@wordpress/components`' own
 // nested `react`/`react-dom` copy trips React's "Invalid hook call" guard under the top-level
-// renderer this test uses. Unlike that file, `Dropdown` keeps the real one's contract here (closed
-// until its toggle is used), because the popover's contents are what this file asserts on.
+// renderer this test uses. `Dropdown` keeps the real one's closed-until-toggled contract.
 jest.mock('@wordpress/components', () => ({
 	Button: ({ children, isBusy, isDestructive, variant, icon, label, ...props }) => (
 		<button aria-label={label} {...props}>

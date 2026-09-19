@@ -1,5 +1,4 @@
 .kadence-blocks-style-library__add-tile {
-	// Stretches to match `SwatchCard`'s height via the grid's default stretch.
 	box-sizing: border-box;
 	display: flex;
 	align-items: center;
@@ -15,8 +14,6 @@
 	cursor: pointer;
 }
 
-// The containing block for the label, which is placed out of flow below the icon so the icon alone
-// is what the tile centers and never shifts when the label appears.
 .kadence-blocks-style-library__add-tile-content {
 	position: relative;
 	display: flex;
@@ -47,8 +44,6 @@
 	fill: currentColor;
 }
 
-// Hidden by opacity, never `display: none`, so the button keeps its accessible name. `:focus-visible`,
-// not bare `:focus` — `:focus` also fires on a mouse click, which would leave the label stuck on.
 .kadence-blocks-style-library__add-tile-label {
 	position: absolute;
 	top: 100%;

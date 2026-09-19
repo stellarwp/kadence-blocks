@@ -28,8 +28,6 @@
 	gap: var(--kb-sl-space-15);
 }
 
-// Fixed-width tracks that fill the row and wrap. A grid's items stretch to the tallest one on
-// their line by default, so every card and the trailing `AddTile` share a height.
 .kadence-blocks-style-library__swatch-group-grid {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, 8rem);
