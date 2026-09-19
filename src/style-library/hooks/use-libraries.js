@@ -64,6 +64,7 @@ export function useLibraries(feed, refreshFeed, resetWorkspace) {
 	const [renameError, setRenameError] = useState(null);
 	const [deleteError, setDeleteError] = useState(null);
 	const [isSwappingLibrary, setIsSwappingLibrary] = useState(false);
+	const [pendingSlug, setPendingSlug] = useState(null);
 
 	// The feed always carries a slug, but the default library is the one every read falls back to, so
 	// naming it here keeps a malformed feed from addressing REST paths with `undefined`.
@@ -184,7 +185,13 @@ export function useLibraries(feed, refreshFeed, resetWorkspace) {
 	const openLibrary = useCallback(
 		(slug) => {
 			setOpenError(null);
-			return runOpen({ slug, onError: setOpenError, onBusy: setSwapBusy });
+
+			const onBusy = (busy) => {
+				setSwapBusy(busy);
+				setPendingSlug(busy ? slug : null);
+			};
+
+			return runOpen({ slug, onError: setOpenError, onBusy });
 		},
 		[runOpen, setSwapBusy]
 	);
@@ -253,6 +260,7 @@ export function useLibraries(feed, refreshFeed, resetWorkspace) {
 		libraries,
 		activeSlug,
 		editingSlug,
+		pendingSlug,
 		isEditingActive: activeSlug === editingSlug,
 		isLoading,
 		isBusy,
