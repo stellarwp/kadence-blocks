@@ -1,5 +1,5 @@
 // Qualified with the app root so this outranks wp-admin's own default button sizing, the same
-// way the select toggle's rule does. Mirrors ActivateLibraryButton.scss.
+// way the select toggle's rule does.
 .kadence-blocks-style-library-root .kadence-blocks-style-library__activate-palette-action {
 	height: var(--kb-sl-space-50);
 	padding: 0 var(--kb-sl-space-15);

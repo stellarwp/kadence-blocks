@@ -16,10 +16,8 @@ import { AppShell } from '../components/templates/AppShell';
 import { AppShellSkeleton } from '../components/organisms/AppShellSkeleton';
 import { AppHeader } from '../components/organisms/AppHeader';
 import { AppSidebar } from '../components/organisms/AppSidebar';
+import { LibraryActions } from '../components/organisms/LibraryActions';
 import { LibrarySelector } from '../components/organisms/LibrarySelector';
-import { ActivateLibraryButton } from '../components/organisms/ActivateLibraryButton';
-import { RenameLibraryModal } from '../components/organisms/RenameLibraryModal';
-import { DeleteLibraryModal } from '../components/organisms/DeleteLibraryModal';
 import { UnsavedChangesModal } from '../components/organisms/UnsavedChangesModal';
 import { PlaceholderScreen } from '../components/pages/PlaceholderScreen';
 import { TypographyScreen } from '../components/pages/TypographyScreen';
@@ -206,37 +204,28 @@ export function StyleLibraryApp() {
 								/>
 							}
 							actionsSlot={
-								<>
-									<ActivateLibraryButton
-										editingSlug={libraries.editingSlug}
-										editingTitle={editingTitle}
-										activeTitle={activeTitle}
-										isEditingActive={libraries.isEditingActive}
-										isBusy={libraries.isBusy}
-										error={libraries.activateError}
-										onClearError={libraries.clearActivateError}
-										onActivate={libraries.activateLibrary}
-									/>
-									<RenameLibraryModal
-										slug={libraries.editingSlug}
-										currentTitle={editingTitle}
-										libraries={libraries.libraries}
-										isBusy={libraries.isBusy}
-										error={libraries.renameError}
-										onClearError={libraries.clearRenameError}
-										onRename={libraries.renameLibrary}
-									/>
-									<DeleteLibraryModal
-										editingSlug={libraries.editingSlug}
-										editingTitle={editingTitle}
-										activeSlug={libraries.activeSlug}
-										libraries={libraries.libraries}
-										isBusy={libraries.isBusy}
-										error={libraries.deleteError}
-										onClearError={libraries.clearDeleteError}
-										onDelete={libraries.deleteLibrary}
-									/>
-								</>
+								<LibraryActions
+									editingSlug={libraries.editingSlug}
+									editingTitle={editingTitle}
+									activeSlug={libraries.activeSlug}
+									activeTitle={activeTitle}
+									isEditingActive={libraries.isEditingActive}
+									libraries={libraries.libraries}
+									isBusy={libraries.isBusy}
+									errors={{
+										rename: libraries.renameError,
+										activate: libraries.activateError,
+										delete: libraries.deleteError,
+									}}
+									onClearError={{
+										rename: libraries.clearRenameError,
+										activate: libraries.clearActivateError,
+										delete: libraries.clearDeleteError,
+									}}
+									onRename={libraries.renameLibrary}
+									onActivate={libraries.activateLibrary}
+									onDelete={libraries.deleteLibrary}
+								/>
 							}
 						/>
 					}

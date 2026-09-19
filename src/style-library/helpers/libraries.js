@@ -7,6 +7,7 @@
  * Internal dependencies
  */
 import { DEFAULT_LIBRARY_SLUG } from '../constants';
+import { checkRename } from './rename';
 
 /**
  * Whether a slug addresses the default library, which is reset — not removed — on delete.
@@ -116,6 +117,22 @@ export function isDuplicateLibraryName(title, libraries, excludeSlug) {
 	return rows.some(
 		(library) => library.slug !== excludeSlug && libraryDisplayTitle(library).trim().toLowerCase() === candidate
 	);
+}
+
+/**
+ * `checkRename` with the library rule for a duplicate: another library already displays the name.
+ *
+ * @param {string}                                title        The typed library name.
+ * @param {string}                                currentTitle The library's current display title.
+ * @param {Array<{slug: string, title: string}>} libraries     The existing library rows.
+ * @param {string}                                slug         The slug of the library being renamed.
+ *
+ * @since TBD
+ *
+ * @return {{trimmed: string, isDuplicate: boolean, isSavable: boolean}} See `checkRename`.
+ */
+export function checkLibraryRename(title, currentTitle, libraries, slug) {
+	return checkRename(title, currentTitle, (name) => isDuplicateLibraryName(name, libraries, slug));
 }
 
 /**

@@ -1,8 +1,8 @@
 /**
- * The header's "Set as active" affordance and its confirmation modal for palettes, mirroring
- * `ActivateLibraryButton` exactly: it owns its own open state, and renders nothing while the
- * palette being edited is already `$current` — there is no action to offer, and the dropdown's own
- * Active badge already says which one is live, so a second label here would only repeat it.
+ * The header's "Set as active" affordance and its confirmation modal for palettes: it owns its
+ * own open state, and renders nothing while the palette being edited is already `$current` —
+ * there is no action to offer, and the dropdown's own Active badge already says which one is
+ * live, so a second label here would only repeat it.
  */
 
 /**
