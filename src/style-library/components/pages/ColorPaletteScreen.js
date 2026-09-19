@@ -165,6 +165,7 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 	// Carries the whole mapped group entry (`{ id, label, items }`), not just an id, so the modals
 	// can seed the label and count the swatches without a second lookup.
 	const [deleteGroupTarget, setDeleteGroupTarget] = useState(null);
+	const [isGroupPopoverOpen, setIsGroupPopoverOpen] = useState(false);
 
 	const editingRow = palettes.listing.palettes.find((row) => row.id === palettes.editingId);
 	const isEditingUserCreated = isUserCreatedPalette(palettes.listing, palettes.editingId);
@@ -395,7 +396,7 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 					 * every one of those flows shares this same `structureError` slot (per the settled
 					 * six-slot design) and shows it inline instead, so surfacing it here too would
 					 * render the same message twice. */}
-					{!isAddGroupOpen && !deleteGroupTarget && palettes.structureError && (
+					{!isAddGroupOpen && !deleteGroupTarget && !isGroupPopoverOpen && palettes.structureError && (
 						<Notice status="error" onRemove={palettes.clearStructureError}>
 							{palettes.structureError.message}
 						</Notice>
@@ -433,22 +434,18 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 								)}
 								isBusy={palettes.isBusy}
 								onClose={palettes.clearStructureError}
+								onToggle={setIsGroupPopoverOpen}
 							>
 								{({ close }) => (
 									<ActionsForm
 										title={__('Color group', 'kadence-blocks')}
 										nameLabel={__('Name', 'kadence-blocks')}
 										currentName={group.label}
-										// No uniqueness check: group ids are the uniqueness domain and a rename never
-										// touches the id, so a duplicate label is display-only ambiguity the user chose.
 										checkName={(typed) => checkRename(typed, group.label, () => false)}
 										duplicateMessage={() => ''}
-										// Absence, not a disabled action, in both cases — this screen's ethos throughout
-										// is to hide an affordance it cannot honor rather than disable it. Only one group
-										// left: the server rejects an empty `groups` array (`guard_palette_shape()`). A
-										// baseline group: the server refuses to drop a shipped swatch from the default
-										// palette (`guard_baseline_swatches()`), and removing the group would do exactly
-										// that.
+										// Hidden, not disabled: the server rejects an empty `groups` array
+										// (`guard_palette_shape()`) and dropping a baseline group's swatches
+										// (`guard_baseline_swatches()`).
 										destructiveLabel={
 											gridGroups.length > 1 && !isBaselineGroup(palettes.palette, group.id)
 												? __('Delete', 'kadence-blocks')
@@ -460,7 +457,6 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 											palettes
 												.renameGroup(group.id, label)
 												.then(close)
-												// Swallowed: a failure already lands in `structureError`, shown in the form.
 												.catch(() => {})
 										}
 										onCancel={close}
