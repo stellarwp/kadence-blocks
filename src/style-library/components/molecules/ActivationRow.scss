@@ -1,0 +1,29 @@
+@use '../../styles/mixins' as *;
+
+.kadence-blocks-style-library__activation-row {
+	@include flex-column(var(--kb-sl-space-05));
+
+	align-items: flex-start;
+	padding: var(--kb-sl-space-15) 0;
+	border-top: var(--kb-sl-border-width-input) solid var(--kb-sl-color-border);
+	border-bottom: var(--kb-sl-border-width-input) solid var(--kb-sl-color-border);
+}
+
+.kadence-blocks-style-library__activation-row-status {
+	margin: 0;
+	color: var(--kb-sl-color-text-primary);
+	font-size: var(--kb-sl-font-size-m);
+	font-weight: var(--kb-sl-font-weight-medium);
+	line-height: var(--kb-sl-line-height-s);
+}
+
+.kadence-blocks-style-library__activation-row-hint {
+	margin: 0;
+	color: var(--kb-sl-color-text-muted);
+	font-size: var(--kb-sl-font-size-s);
+	line-height: var(--kb-sl-line-height-s);
+}
+
+.kadence-blocks-style-library__activation-row-action {
+	margin-top: var(--kb-sl-space-10);
+}

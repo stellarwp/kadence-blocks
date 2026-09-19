@@ -1,0 +1,40 @@
+@use '../../styles/mixins' as *;
+
+.kadence-blocks-style-library__actions-form {
+	@include flex-column(var(--kb-sl-space-20));
+
+	width: var(--kb-sl-size-actions-popover-width);
+	padding: var(--kb-sl-space-20);
+}
+
+.kadence-blocks-style-library__actions-form-title {
+	margin: 0;
+	color: var(--kb-sl-color-heading);
+	font-size: var(--kb-sl-font-size-group-title);
+	font-weight: var(--kb-sl-font-weight-medium);
+	line-height: var(--kb-sl-line-height-m);
+}
+
+// Core sets a control's label as small uppercase text; here the label is an ordinary word above
+// its field.
+.kadence-blocks-style-library__actions-form .components-base-control__label {
+	color: var(--kb-sl-color-text-primary);
+	font-size: var(--kb-sl-font-size-m);
+	font-weight: var(--kb-sl-font-weight-regular);
+	line-height: var(--kb-sl-line-height-s);
+	text-transform: none;
+}
+
+// Destructive action alone on the left, the two that close the form together on the right, so a
+// reach for Save never lands on Delete.
+.kadence-blocks-style-library__actions-form-footer {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--kb-sl-space-10);
+}
+
+.kadence-blocks-style-library__actions-form-footer-end {
+	display: flex;
+	gap: var(--kb-sl-space-10);
+}
