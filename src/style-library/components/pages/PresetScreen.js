@@ -1,6 +1,6 @@
 /**
- * The list screen any preset screen renders: the Add action, the load/add/reorder notices, the row
- * list with drag-to-reorder, and the live overlay of the open panel's draft onto its row.
+ * The list screen any preset screen renders: the Add action, the load/add/reorder notices, the card
+ * grid with drag-to-reorder, and the live overlay of the open panel's draft onto its card.
  *
  * Nothing here knows which block it is editing. A per-block page supplies the config and a row
  * preview renderer; see `src/style-library/README.md`.
@@ -23,7 +23,7 @@ import { plus } from '@wordpress/icons';
  * Internal dependencies
  */
 import { ScreenHeader } from '../organisms/ScreenHeader';
-import { RowList } from '../templates/RowList';
+import { PresetGrid } from '../templates/PresetGrid';
 import { ScreenDescription } from '../molecules/ScreenDescription';
 import { EmptyState } from '../molecules/EmptyState';
 import { Skeleton } from '../atoms/Skeleton';
@@ -31,28 +31,26 @@ import { usePresetScreen } from '../../hooks/use-preset-screen';
 import { useDraftChannel } from '../../hooks/use-draft-channel';
 import { useLoadingAnnouncement } from '../../hooks/use-loading-announcement';
 import { overlayPresetRows } from '../../helpers/presets';
+import { pinDefaultFirst } from '../../helpers/preset-grid';
 import { useBreakpoint } from '../../../token-controls/context/breakpoint';
 
-// A fixed count, not derived from anything — there is no "expected row count" to read before the
-// real rows arrive, so this just needs to fill the screen plausibly.
-const SKELETON_ROW_IDS = [0, 1, 2, 3];
+const SKELETON_CARD_IDS = [0, 1, 2];
 
 /**
- * The preset-list loading placeholder: a few row-shaped skeletons in the real `RowList` markup
- * (`.row-list` / `.list-row` / `.list-row-main`), so the loading shape matches the rows it is about
- * to be replaced by instead of collapsing the screen to a single centered spinner.
+ * The preset-grid loading placeholder: a few card-shaped skeletons in the real `PresetGrid` markup,
+ * so the loading shape matches the cards it is about to be replaced by.
  *
  * @param {Object} props       The component props.
  * @param {string} props.label The screen's nav label, used to build the busy-region's accessible name.
  *
  * @since TBD
  *
- * @return {JSX.Element} The row-shaped skeleton list.
+ * @return {JSX.Element} The card-shaped skeleton grid.
  */
-function PresetRowsSkeleton({ label }) {
+function PresetCardsSkeleton({ label }) {
 	return (
 		<ul
-			className="kadence-blocks-style-library__row-list"
+			className="kadence-blocks-style-library__preset-grid"
 			role="status"
 			aria-live="polite"
 			aria-busy="true"
@@ -62,12 +60,11 @@ function PresetRowsSkeleton({ label }) {
 				label
 			)}
 		>
-			{SKELETON_ROW_IDS.map((id) => (
-				<li key={id} className="kadence-blocks-style-library__list-row">
-					<div className="kadence-blocks-style-library__list-row-main">
-						<Skeleton className="kadence-blocks-style-library__list-row-label kadence-blocks-style-library__skeleton--bar" />
-						<Skeleton className="kadence-blocks-style-library__list-row-value kadence-blocks-style-library__skeleton--bar" />
-						<Skeleton className="kadence-blocks-style-library__list-row-preview" />
+			{SKELETON_CARD_IDS.map((id) => (
+				<li key={id} className="kadence-blocks-style-library__preset-card">
+					<div className="kadence-blocks-style-library__preset-card-main">
+						<Skeleton className="kadence-blocks-style-library__preset-card-title kadence-blocks-style-library__skeleton--bar" />
+						<Skeleton className="kadence-blocks-style-library__preset-card-preview" />
 					</div>
 				</li>
 			))}
@@ -145,7 +142,7 @@ export function PresetScreen({ label, route, navigate, library, preset }) {
 	const [breakpoint] = useBreakpoint();
 	const rows = overlayPresetRows(screen.rows, route.item, draft, library?.values, preset.preview, breakpoint);
 
-	// Only the open row, and only while its panel's Hover tab is the one being edited: the chip
+	// Only the open card, and only while its panel's Hover tab is the one being edited: the chip
 	// then holds the hover state without the pointer, so Hover-tab edits read back immediately.
 	const isHoverDraft = Boolean(draft) && channel.publication.activeTab === 'hover';
 
@@ -153,8 +150,11 @@ export function PresetScreen({ label, route, navigate, library, preset }) {
 		id: row.id,
 		label: row.label,
 		preview: renderPreview(isHoverDraft && row.id === route.item ? { ...row, showHoverState: true } : row),
-		isDraggable: true,
 	}));
+
+	const defaultId = screen.payload?.default ?? '';
+	const hasDefault = rows.some((row) => row.id === defaultId);
+	const reorderPresets = (order) => screen.reorderPresets(pinDefaultFirst(order, defaultId, hasDefault));
 
 	const selectPreset = (id) => {
 		if (id === route.item) {
@@ -189,13 +189,14 @@ export function PresetScreen({ label, route, navigate, library, preset }) {
 				</Notice>
 			)}
 			{screen.isLoading ? (
-				<PresetRowsSkeleton label={label} />
+				<PresetCardsSkeleton label={label} />
 			) : (
-				<RowList
+				<PresetGrid
 					items={items}
 					selectedId={route.item}
+					defaultId={defaultId}
 					onSelect={selectPreset}
-					onReorder={screen.reorderPresets}
+					onReorder={reorderPresets}
 					empty={<EmptyState title={label} description={preset.addLabel} action={addAction} />}
 				/>
 			)}
