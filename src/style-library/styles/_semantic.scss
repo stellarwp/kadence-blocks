@@ -12,13 +12,7 @@ body.kadence-blocks-style-library-page {
 	// This is a structural edge (sidebar/header rules), not a form control's border — see the
 	// control-border pair below for that distinct role, which is deliberately a different gray.
 	--kb-sl-color-border: var(--kb-sl-color-gray-200);
-	// The line under the app header. A theme tint, not the gray above: over the header's white
-	// surface, 15% is the strength that matches the design's #e2e8f0 in lightness. It is
-	// translucent, so it only holds that color over white.
 	--kb-sl-color-header-border: var(--kb-sl-color-theme-tint-15);
-	// The slash between a title and its selector. A theme tint like the header's line above: over
-	// white, 25% comes nearest the design's #cbd5e0 in lightness. Translucent, so it only holds
-	// that color over white.
 	--kb-sl-color-separator: var(--kb-sl-color-theme-tint-25);
 	--kb-sl-color-text-primary: var(--kb-sl-color-gray-900);
 	--kb-sl-color-text-secondary: var(--kb-sl-color-gray-700);
