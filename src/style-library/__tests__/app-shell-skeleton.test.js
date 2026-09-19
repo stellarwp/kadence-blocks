@@ -100,4 +100,39 @@ describe('AppShellSkeleton', () => {
 		expect(sidebar).not.toBeNull();
 		expect(sidebar.querySelector('.kadence-blocks-style-library__nav')).not.toBeNull();
 	});
+
+	/**
+	 * The header placeholder holds a logo-sized shape, so the placeholder bar is as tall as the
+	 * real header and the frame below it does not move when the app replaces it.
+	 *
+	 * @return {void}
+	 */
+	it('reserves the logo box in the header-bar region', () => {
+		act(() => {
+			root.render(createElement(AppShellSkeleton));
+		});
+
+		const headerBar = container.querySelector('.kadence-blocks-style-library__header-bar');
+
+		expect(headerBar.querySelector('.kadence-blocks-style-library__shell-skeleton-logo')).not.toBeNull();
+	});
+
+	/**
+	 * With `showHeader` off the placeholder draws no header at all, because the real header stays
+	 * on screen above it, and the sidebar and content regions are still there.
+	 *
+	 * @return {void}
+	 */
+	it('leaves the header out when showHeader is false', () => {
+		act(() => {
+			root.render(createElement(AppShellSkeleton, { showHeader: false }));
+		});
+
+		const skeleton = container.querySelector('.kadence-blocks-style-library__shell-skeleton');
+
+		expect(skeleton.classList.contains('kadence-blocks-style-library__shell-skeleton--body-only')).toBe(true);
+		expect(container.querySelector('.kadence-blocks-style-library__header')).toBeNull();
+		expect(container.querySelector('.kadence-blocks-style-library__sidebar')).not.toBeNull();
+		expect(container.querySelector('.kadence-blocks-style-library__content')).not.toBeNull();
+	});
 });

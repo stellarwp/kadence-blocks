@@ -192,6 +192,7 @@ export function StyleLibraryApp() {
 									libraries={libraries.libraries}
 									activeSlug={libraries.activeSlug}
 									editingSlug={libraries.editingSlug}
+									pendingSlug={libraries.pendingSlug}
 									editingTitle={editingTitle}
 									isBusy={libraries.isBusy}
 									isLoading={libraries.isLoading}

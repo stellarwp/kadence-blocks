@@ -23,8 +23,8 @@ jest.mock('../hooks/use-draft-channel', () => ({
 // what these tests need — a change trigger, the trailing action's click, and the props the selector
 // hands over — keep the tests about this component rather than dropdown or modal internals.
 jest.mock('../components/molecules/SelectDropdown', () => ({
-	SelectDropdown: ({ onChange, trailingAction, options, size }) => (
-		<div data-testid="select-dropdown" data-size={size} data-options={JSON.stringify(options)}>
+	SelectDropdown: ({ onChange, trailingAction, options, size, value }) => (
+		<div data-testid="select-dropdown" data-size={size} data-value={value} data-options={JSON.stringify(options)}>
 			<button data-testid="choose-brand" onClick={() => onChange('brand')}>
 				choose brand
 			</button>
@@ -281,5 +281,53 @@ describe('LibrarySelector options', () => {
 		renderedOptions('default');
 
 		expect(container.querySelector('[data-testid="select-dropdown"]').getAttribute('data-size')).toBe('large');
+	});
+});
+
+describe('LibrarySelector selected library', () => {
+	/**
+	 * Render the selector over two libraries while "default" is the one the app shows.
+	 *
+	 * @param {?string} pendingSlug The library being opened, or null when no switch is in flight.
+	 *
+	 * @return {string} The value the selector hands the dropdown.
+	 */
+	function renderedValue(pendingSlug) {
+		act(() => {
+			root.render(
+				createElement(LibrarySelector, {
+					libraries: [
+						{ slug: 'default', title: 'Default' },
+						{ slug: 'brand', title: 'Brand' },
+					],
+					activeSlug: 'default',
+					editingSlug: 'default',
+					pendingSlug,
+					editingTitle: 'Default',
+					isBusy: Boolean(pendingSlug),
+					isLoading: false,
+					isSwapping: Boolean(pendingSlug),
+					openError: null,
+					createError: null,
+					onOpen: jest.fn(),
+					onCreate: jest.fn(),
+					onClearOpenError: jest.fn(),
+					onClearCreateError: jest.fn(),
+				})
+			);
+		});
+
+		return container.querySelector('[data-testid="select-dropdown"]').getAttribute('data-value');
+	}
+
+	/**
+	 * While a switch is loading the dropdown already shows the library that was picked, and once
+	 * nothing is pending it shows the library the app is on.
+	 *
+	 * @return {void}
+	 */
+	it('shows the library being opened while a switch is in flight', () => {
+		expect(renderedValue('brand')).toBe('brand');
+		expect(renderedValue(null)).toBe('default');
 	});
 });
