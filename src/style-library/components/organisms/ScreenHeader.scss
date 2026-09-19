@@ -1,7 +1,8 @@
 @use "../../styles/mixins" as *;
 
 .kadence-blocks-style-library__screen-header {
-	margin-bottom: var(--kb-sl-space-30);
+	padding: var(--kb-sl-space-20) var(--kb-sl-space-50);
+	border-bottom: 1px solid var(--kb-sl-color-border);
 }
 
 // The floor matches the tallest control the row can hold — the palette `SelectDropdown`, which
