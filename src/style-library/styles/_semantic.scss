@@ -31,15 +31,10 @@ body.kadence-blocks-style-library-page {
 
 	// Color — sidebar nav.
 	--kb-sl-color-nav-tab-text: var(--kb-sl-color-gray-800);
-	--kb-sl-color-nav-tab-text-hover: var(--kb-sl-color-theme);
-	--kb-sl-color-nav-tab-text-selected: var(--kb-sl-color-theme);
-	--kb-sl-color-nav-tab-bg-selected: var(--kb-sl-color-theme-tint-4);
-	--kb-sl-color-nav-section-title: var(--kb-sl-color-gray-800);
+	--kb-sl-color-nav-section-title: var(--kb-sl-color-gray-700);
 	--kb-sl-color-heading: var(--kb-sl-color-gray-800);
 
-	// Color — a generic hover tint for an interactive surface (e.g. `AddTile`). Same value as
-	// --kb-sl-color-nav-tab-bg-selected but a separate alias — the two roles should stay free to
-	// diverge even though they currently agree.
+	// Color — a generic hover tint for an interactive surface (e.g. `AddTile`).
 	--kb-sl-color-surface-hover: var(--kb-sl-color-theme-tint-4);
 	--kb-sl-color-scrim: var(--kb-sl-color-white-tint-70);
 
@@ -63,10 +58,11 @@ body.kadence-blocks-style-library-page {
 	--kb-sl-font-size-group-title: var(--kb-sl-font-size-16);
 	--kb-sl-font-size-body: var(--kb-sl-font-size-l);
 	--kb-sl-font-size-small: var(--kb-sl-font-size-m);
+	--kb-sl-font-size-nav-tab: var(--kb-sl-font-size-14);
 	--kb-sl-font-size-meta: var(--kb-sl-font-size-s);
 	// Large, title-level text: the app title, and a dropdown label set beside a title.
 	--kb-sl-letter-spacing-title: var(--kb-sl-letter-spacing-tight);
-	--kb-sl-line-height-nav-tab: var(--kb-sl-line-height-s);
+	--kb-sl-line-height-nav-tab: var(--kb-sl-line-height-22);
 
 	// Component sizing — grid-unit aliases.
 	--kb-sl-size-toggle-width: var(--kb-sl-space-40);
