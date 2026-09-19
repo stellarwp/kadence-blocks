@@ -1,20 +1,3 @@
-// The chip is content-sized (a line of type, not a swatch), so this screen relaxes `ListRow`'s default
-// framed 80px preview slot — the Button, Row Layout, Section, Spacing, Icon Sizes and Shadow
-// slot-override precedent.
-.kadence-blocks-style-library__heading-screen .kadence-blocks-style-library__list-row-preview {
-	width: auto;
-	height: auto;
-	border: 0;
-	background: transparent;
-	overflow: visible;
-}
-
-// Preset names are full words ("Section Title"), not the short numeric labels the shared 4rem column
-// was sized for.
-.kadence-blocks-style-library__heading-screen .kadence-blocks-style-library__list-row-label {
-	width: 15rem;
-}
-
 // The live heading chip. `border-style` is left at `none` so a preset that sets only a border color or
 // width draws no frame — matching the block, where all three are needed before a border renders, and
 // keeping an unstyled preset from sprouting an edge the page would not have.
