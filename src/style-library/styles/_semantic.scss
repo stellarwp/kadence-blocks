@@ -54,6 +54,11 @@ body.kadence-blocks-style-library-page {
 	// `SwatchCard`'s own hover background — a sibling alias, not a shared reference to
 	// --kb-sl-color-row-bg-hover, since a row and a card should stay free to diverge.
 	--kb-sl-color-card-bg-hover: var(--kb-sl-color-gray-50);
+	// `SelectDropdown`'s menu rows. Tints of the theme color rather than grays, so the fills follow
+	// the admin color scheme; over a white surface, 4% and 8% land on the design's #f7fafc (hover)
+	// and #edf2f7 (selected).
+	--kb-sl-color-menu-item-bg-hover: var(--kb-sl-color-theme-tint-4);
+	--kb-sl-color-menu-item-bg-selected: var(--kb-sl-color-theme-tint-8);
 
 	// Typography
 	--kb-sl-font-size-page-title: var(--kb-sl-font-size-xl);
@@ -61,6 +66,8 @@ body.kadence-blocks-style-library-page {
 	--kb-sl-font-size-body: var(--kb-sl-font-size-l);
 	--kb-sl-font-size-small: var(--kb-sl-font-size-m);
 	--kb-sl-font-size-meta: var(--kb-sl-font-size-s);
+	// Large, title-level text: the app title, and a dropdown label set beside a title.
+	--kb-sl-letter-spacing-title: var(--kb-sl-letter-spacing-tight);
 	--kb-sl-line-height-nav-tab: var(--kb-sl-line-height-s);
 
 	// Component sizing — grid-unit aliases.
@@ -75,7 +82,6 @@ body.kadence-blocks-style-library-page {
 
 	// Component sizing — icons, named for what they're for.
 	--kb-sl-size-icon-chevron: var(--kb-sl-icon-size-s);
-	--kb-sl-size-icon-check: var(--kb-sl-icon-size-m);
 	// Shared by every plus/action icon in the app (`AddTile`, `ScreenHeader`'s primary action) — a
 	// 24px hit box around a deliberately smaller 16px SVG, so a future glyph-size change happens
 	// once and both consumers move together instead of drifting.
