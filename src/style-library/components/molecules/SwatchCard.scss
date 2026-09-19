@@ -26,7 +26,7 @@
 	gap: var(--kb-sl-space-05);
 	width: var(--kb-sl-size-swatch-card-width);
 	flex: 1 1 auto;
-	// gray-300, not the structural --kb-sl-color-border (gray-200) semantic — a card outline is a
+	// gray-300, not the structural --kb-sl-color-border semantic — a card outline is a
 	// distinct role from structural chrome edges.
 	border: var(--kb-sl-border-width-input) solid var(--kb-sl-color-gray-300);
 	border-radius: var(--kb-sl-radius-m);
