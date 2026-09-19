@@ -1,6 +1,7 @@
 /**
- * The header's destructive library action: a red "Delete" text link and its confirmation modal.
- * Always targets the library being edited. Copy branches on whether the target is the default
+ * The confirmation modal for the header's destructive library action. It has no trigger of its
+ * own: a caller mounts it to open it and unmounts it from `onClose`, so every opening starts from
+ * fresh state. Always targets the library being edited. Copy branches on whether the target is the default
  * library — deleting it resets its token values to baseline instead of removing it, and the
  * confirmation must say so honestly rather than presenting a removal that will not happen.
  *
@@ -26,7 +27,7 @@ import { isDefaultLibrary, libraryDisplayTitle, successorOptions } from '../../h
 import './DeleteLibraryModal.scss';
 
 /**
- * Render the delete/reset action and its confirmation modal.
+ * Render the delete/reset confirmation modal.
  *
  * @param {Object}             props              The component props.
  * @param {string}             props.editingSlug  The library being edited, and the delete target.
@@ -37,10 +38,12 @@ import './DeleteLibraryModal.scss';
  * @param {?{message: string}} props.error        The current delete error, if any.
  * @param {Function}           props.onClearError Dismisses the current delete error.
  * @param {Function}           props.onDelete     Called with the target slug and, when required, the successor slug.
+ * @param {Function}           props.onClose      Called when the modal should go away: a finished delete,
+ *                                                Cancel, or one of the Modal's own dismiss paths.
  *
  * @since TBD
  *
- * @return {JSX.Element} The delete action and, when open, its modal.
+ * @return {JSX.Element} The modal.
  */
 export function DeleteLibraryModal({
 	editingSlug,
@@ -51,8 +54,10 @@ export function DeleteLibraryModal({
 	error,
 	onClearError,
 	onDelete,
+	onClose,
 }) {
-	const [isOpen, setIsOpen] = useState(false);
+	// Starts empty on every mount, so a successor picked and then abandoned in an earlier attempt
+	// is never silently reused by the next one.
 	const [successorSlug, setSuccessorSlug] = useState('');
 
 	const isDefault = isDefaultLibrary(editingSlug);
@@ -80,19 +85,12 @@ export function DeleteLibraryModal({
 	// flight; there is no spinner alongside it.
 	const pendingLabel = isDefault ? __('Resetting…', 'kadence-blocks') : __('Deleting…', 'kadence-blocks');
 
-	const handleOpen = () => {
-		// Reset per open, so a successor picked and then abandoned in an earlier attempt is never
-		// silently reused by the next one.
-		setSuccessorSlug('');
-		setIsOpen(true);
-	};
-
 	// Closes the modal and clears its own error, whether that is a confirmed delete, a Cancel
 	// click, or the Modal's own dismiss paths (Escape, click-outside) — all of which are already
 	// gated off while `isBusy`, so this never fires mid-request. Clearing here (not just on the
 	// next open) keeps a past failure from resurfacing anywhere else the delete error is read.
 	const handleClose = () => {
-		setIsOpen(false);
+		onClose();
 		onClearError();
 	};
 
@@ -109,105 +107,89 @@ export function DeleteLibraryModal({
 	};
 
 	return (
-		<>
-			<Button
-				variant="link"
-				isDestructive
-				disabled={isBusy}
-				onClick={handleOpen}
-				className="kadence-blocks-style-library__delete-library-action"
-			>
-				{__('Delete', 'kadence-blocks')}
-			</Button>
-			{isOpen && (
-				<Modal
-					title={isDefault ? __('Reset Library', 'kadence-blocks') : __('Delete Library', 'kadence-blocks')}
-					className="kadence-blocks-style-library__delete-library-modal"
-					onRequestClose={handleClose}
-					// Locked while pending: no close icon, Escape does nothing, clicking outside does
-					// nothing. A user hammering Escape mid-request must not be able to walk away from
-					// (or re-trigger) a delete that is still in flight.
-					isDismissible={!isBusy}
-					shouldCloseOnEsc={!isBusy}
-					shouldCloseOnClickOutside={!isBusy}
-				>
-					{error && (
-						<Notice status="error" isDismissible={false}>
-							{error.message}
-						</Notice>
-					)}
-					<p>
-						{isDefault
-							? sprintf(
-									// translators: %s: the default library's display title.
-									__("Reset '%s' to its default values?", 'kadence-blocks'),
-									label
-								)
-							: sprintf(
-									// translators: %s: the library's display title.
-									__(
-										"Delete '%s'? Its tokens and presets are removed permanently.",
-										'kadence-blocks'
-									),
-									label
-								)}
-					</p>
-					{isSuccessorForced && (
-						<p>
-							{sprintf(
-								// translators: %s: the library the site will use instead.
-								__(
-									'This is also your active library, so your site will use "%s" instead. Its colors, typography, spacing, and other styles go live across your site immediately — on the front end and in the editor.',
-									'kadence-blocks'
-								),
-								libraryDisplayTitle(successors[0])
-							)}
-						</p>
-					)}
-					{needsSuccessor && !isSuccessorForced && (
-						<>
-							<p>
-								{__(
-									'This is also your active library, so your site needs another one. The library you choose below goes live immediately — colors, typography, spacing, and other styles change across your site on the front end and in the editor.',
-									'kadence-blocks'
-								)}
-							</p>
-							<SelectControl
-								label={__('Which library should your site use instead?', 'kadence-blocks')}
-								value={successorSlug}
-								disabled={isBusy}
-								onChange={setSuccessorSlug}
-								// The empty option is deliberately kept selectable-looking rather than
-								// preselecting a library: defaulting to one would reproduce the very
-								// silent fallback this picker exists to remove, since the user would
-								// confirm without reading and land somewhere they never chose. That
-								// reasoning does not apply when there is only one candidate, which is
-								// why that case skips the picker entirely rather than preselecting here.
-								options={[
-									{ value: '', label: __('Select a library…', 'kadence-blocks') },
-									...successors.map((library) => ({
-										value: library.slug,
-										label: libraryDisplayTitle(library),
-									})),
-								]}
-							/>
-						</>
-					)}
-					<div className="kadence-blocks-style-library__delete-library-modal-actions">
-						<Button variant="tertiary" onClick={handleClose} disabled={isBusy}>
-							{__('Cancel', 'kadence-blocks')}
-						</Button>
-						<Button
-							variant="primary"
-							isDestructive
-							disabled={isBusy || (needsSuccessor && chosenSuccessor === '')}
-							onClick={handleConfirm}
-						>
-							{isBusy ? pendingLabel : restingLabel}
-						</Button>
-					</div>
-				</Modal>
+		<Modal
+			title={isDefault ? __('Reset Library', 'kadence-blocks') : __('Delete Library', 'kadence-blocks')}
+			className="kadence-blocks-style-library__delete-library-modal"
+			onRequestClose={handleClose}
+			// Locked while pending: no close icon, Escape does nothing, clicking outside does
+			// nothing. A user hammering Escape mid-request must not be able to walk away from
+			// (or re-trigger) a delete that is still in flight.
+			isDismissible={!isBusy}
+			shouldCloseOnEsc={!isBusy}
+			shouldCloseOnClickOutside={!isBusy}
+		>
+			{error && (
+				<Notice status="error" isDismissible={false}>
+					{error.message}
+				</Notice>
 			)}
-		</>
+			<p>
+				{isDefault
+					? sprintf(
+							// translators: %s: the default library's display title.
+							__("Reset '%s' to its default values?", 'kadence-blocks'),
+							label
+						)
+					: sprintf(
+							// translators: %s: the library's display title.
+							__("Delete '%s'? Its tokens and presets are removed permanently.", 'kadence-blocks'),
+							label
+						)}
+			</p>
+			{isSuccessorForced && (
+				<p>
+					{sprintf(
+						// translators: %s: the library the site will use instead.
+						__(
+							'This is also your active library, so your site will use "%s" instead. Its colors, typography, spacing, and other styles go live across your site immediately — on the front end and in the editor.',
+							'kadence-blocks'
+						),
+						libraryDisplayTitle(successors[0])
+					)}
+				</p>
+			)}
+			{needsSuccessor && !isSuccessorForced && (
+				<>
+					<p>
+						{__(
+							'This is also your active library, so your site needs another one. The library you choose below goes live immediately — colors, typography, spacing, and other styles change across your site on the front end and in the editor.',
+							'kadence-blocks'
+						)}
+					</p>
+					<SelectControl
+						label={__('Which library should your site use instead?', 'kadence-blocks')}
+						value={successorSlug}
+						disabled={isBusy}
+						onChange={setSuccessorSlug}
+						// The empty option is deliberately kept selectable-looking rather than
+						// preselecting a library: defaulting to one would reproduce the very
+						// silent fallback this picker exists to remove, since the user would
+						// confirm without reading and land somewhere they never chose. That
+						// reasoning does not apply when there is only one candidate, which is
+						// why that case skips the picker entirely rather than preselecting here.
+						options={[
+							{ value: '', label: __('Select a library…', 'kadence-blocks') },
+							...successors.map((library) => ({
+								value: library.slug,
+								label: libraryDisplayTitle(library),
+							})),
+						]}
+					/>
+				</>
+			)}
+			<div className="kadence-blocks-style-library__delete-library-modal-actions">
+				<Button variant="tertiary" onClick={handleClose} disabled={isBusy}>
+					{__('Cancel', 'kadence-blocks')}
+				</Button>
+				<Button
+					variant="primary"
+					isDestructive
+					disabled={isBusy || (needsSuccessor && chosenSuccessor === '')}
+					onClick={handleConfirm}
+				>
+					{isBusy ? pendingLabel : restingLabel}
+				</Button>
+			</div>
+		</Modal>
 	);
 }

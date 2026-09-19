@@ -1,5 +1,5 @@
 // Qualified with the app root so this outranks wp-admin's own default button sizing, matching
-// the sibling header actions. Mirrors RenameLibraryModal.scss.
+// the sibling header actions.
 .kadence-blocks-style-library-root .kadence-blocks-style-library__rename-palette-action {
 	height: var(--kb-sl-space-50);
 	padding: 0 var(--kb-sl-space-15);

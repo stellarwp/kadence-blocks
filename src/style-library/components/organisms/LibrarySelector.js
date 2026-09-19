@@ -6,7 +6,7 @@
  * supplies library data and the create flow.
  *
  * Choosing a library here *opens* it for editing. It does not change which library the site
- * renders with; that is a separate, confirmed action (see `ActivateLibraryButton`).
+ * renders with; that is a separate, confirmed action (see `LibraryActions`).
  *
  * The filled row keeps its ordinary meaning — the row you are on — because that is what a marked
  * row in a menu reads as, and overloading it to mean "live" made the menu harder to read, not
