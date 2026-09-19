@@ -69,10 +69,8 @@ export function AppShellSkeleton({ showHeader = true }) {
 							/>
 						</div>
 						<div className="kadence-blocks-style-library__header-actions">
-							<Skeleton
-								className="kadence-blocks-style-library__skeleton--bar"
-								style={{ width: '6rem' }}
-							/>
+							{/* The real actions are a single icon button. */}
+							<Skeleton className="kadence-blocks-style-library__shell-skeleton-action" />
 						</div>
 					</div>
 				</header>
