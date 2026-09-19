@@ -58,8 +58,6 @@
 // header and the row list.
 .kadence-blocks-style-library__typography-toolbar {
 	@include flex-column(var(--kb-sl-space-15));
-
-	margin: var(--kb-sl-space-20) 0;
 }
 
 .kadence-blocks-style-library__typography-toolbar-row {

@@ -27,8 +27,7 @@ describe('ScreenHeader', () => {
 	});
 
 	/**
-	 * The title and the action slots share one flex row inside the header block, so a description
-	 * added under them cannot disturb their alignment.
+	 * The title and the action slots share one flex row inside the header block.
 	 *
 	 * @return {void}
 	 */
@@ -60,18 +59,18 @@ describe('ScreenHeader', () => {
 	});
 
 	/**
-	 * The description sits after the row and inside the block, which is what keeps the block's
-	 * bottom margin as the single gap to the screen's content.
+	 * The description sits after the header block, not inside it, so inside the app shell it stays
+	 * in the scrolling body while the block moves to the fixed slot.
 	 *
 	 * @return {void}
 	 */
-	it('renders the description after the row, inside the header block', () => {
+	it('renders the description after the header block, outside it', () => {
 		act(() => root.render(<ScreenHeader title="Corner Radius" description={<p>What this screen does.</p>} />));
 
 		const header = container.querySelector('.kadence-blocks-style-library__screen-header');
 
-		expect(header.children).toHaveLength(2);
-		expect(header.lastElementChild.textContent).toBe('What this screen does.');
+		expect(header.children).toHaveLength(1);
+		expect(header.nextElementSibling.textContent).toBe('What this screen does.');
 	});
 
 	/**
@@ -88,5 +87,6 @@ describe('ScreenHeader', () => {
 		const header = container.querySelector('.kadence-blocks-style-library__screen-header');
 
 		expect(header.children).toHaveLength(1);
+		expect(header.nextElementSibling).toBeNull();
 	});
 });

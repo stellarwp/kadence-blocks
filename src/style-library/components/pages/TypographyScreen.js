@@ -3,8 +3,8 @@
  * renderer, and the two thin wrappers that plug into the shared `ScaleScreen`/`ScaleSettings`
  * contract (see `ScaleScreen.js`'s module docblock). Two things make this screen genuinely
  * different from its siblings: a toolbar between the header and the list (the FONT catalog
- * dropdown, the contextual Add/Remove Favorite button, and the "+ Add Size" action) built on
- * `ScaleScreen`'s optional `renderToolbar` seam, and screen-level preview state (the currently
+ * dropdown and the contextual Add/Remove Favorite button) built on `ScaleScreen`'s optional
+ * `renderToolbar` seam, and screen-level preview state (the currently
  * previewed font, plus the favorite-font flows) that `renderPreview` and the toolbar close over —
  * absorbed entirely at this screen's own boundary, with no change to the shared hook or flows.
  *
@@ -177,11 +177,8 @@ function buildCatalogOptions(fonts) {
 }
 
 /**
- * Build the `renderToolbar( { addAction, isBusy } )` implementation: the FONT label, the searchable
- * catalog dropdown (favorites pinned at its top) with its contextual Add/Remove Favorite button,
- * and the passed-in add-size action positioned at the row's right edge — the toolbar positions
- * `addAction`, it never re-implements it, so the shared guard/busy discipline cannot fork between
- * this screen and its siblings.
+ * Build the `renderToolbar( { isBusy } )` implementation: the FONT label and the searchable catalog
+ * dropdown (favorites pinned at its top) with its contextual Add/Remove Favorite button.
  *
  * @param {Array<{value: string, label: string, badge?: string}>} args                 The toolbar's inputs.
  * @param {Array<{value: string, label: string, badge?: string}>} args.catalogOptions  The catalog dropdown's option list.
@@ -211,7 +208,7 @@ function typographyToolbarRenderer({
 	fontError,
 	onClearFontError,
 }) {
-	return function renderToolbar({ addAction, isBusy }) {
+	return function renderToolbar({ isBusy }) {
 		const fontBusy = fontPending !== null;
 		const controlsBusy = isBusy || fontBusy;
 
@@ -269,7 +266,6 @@ function typographyToolbarRenderer({
 							</Tooltip>
 						</div>
 					</div>
-					<span className="kadence-blocks-style-library__typography-toolbar-add">{addAction}</span>
 				</div>
 				{/*
 				 * Mounted unconditionally, empty text and all: a live region only announces text

@@ -9,15 +9,57 @@
  * (only Color Palette uses them); all three stay generic and optional rather than special-casing
  * Color Palette into this organism.
  *
- * The component is a block, not a row: the row holds the title and the actions, and `description`
- * renders under it, unwrapped, so a slot that renders nothing leaves nothing behind and the
- * block's bottom margin stays the single gap to the screen's content.
+ * `description` is not part of the header block: it renders right after it, unwrapped, so a slot
+ * that renders nothing leaves nothing behind.
+ *
+ * Inside the app shell the header block is not rendered where the screen puts it: it fills the
+ * shell's header slot, which sits above the scrolling screen body, so the header stays put while
+ * the screen scrolls and no screen has to split itself into a header and a body. The description
+ * does not move: it stays in the screen, as the first thing that scrolls.
  */
+
+/**
+ * WordPress dependencies
+ */
+import { createContext, createPortal, useContext, useMemo, useState } from '@wordpress/element';
 
 /**
  * Internal dependencies
  */
+import { SlashSeparator } from '../atoms/SlashSeparator';
 import './ScreenHeader.scss';
+
+const SlotContext = createContext();
+
+/**
+ * Provide the screen header slot to everything below.
+ *
+ * @param {Object}      props          The component props.
+ * @param {JSX.Element} props.children The tree that holds both the slot and the screens.
+ *
+ * @since TBD
+ *
+ * @return {JSX.Element} The provider.
+ */
+export function ScreenHeaderSlotProvider({ children }) {
+	const [node, setNode] = useState(null);
+	const value = useMemo(() => ({ node, setNode }), [node]);
+
+	return <SlotContext.Provider value={value}>{children}</SlotContext.Provider>;
+}
+
+/**
+ * Render the slot the active screen's header fills.
+ *
+ * @since TBD
+ *
+ * @return {JSX.Element} The slot.
+ */
+export function ScreenHeaderSlot() {
+	const { setNode } = useContext(SlotContext);
+
+	return <div ref={setNode} className="kadence-blocks-style-library__screen-header-slot" />;
+}
 
 /**
  * Render the screen header block.
@@ -28,7 +70,7 @@ import './ScreenHeader.scss';
  * @param {?JSX.Element} [props.secondaryAction]    A non-destructive text-link slot beside the destructive action (e.g. Rename).
  * @param {?JSX.Element} [props.destructiveAction]  The red text-link slot beside the secondary action.
  * @param {?JSX.Element} [props.primaryAction]      The primary "+ Add …" button slot.
- * @param {?JSX.Element} [props.description]        The screen's helper copy, rendered under the row.
+ * @param {?JSX.Element} [props.description]        The screen's helper copy, rendered after the header block.
  *
  * @since TBD
  *
@@ -42,15 +84,20 @@ export function ScreenHeader({
 	primaryAction = null,
 	description = null,
 }) {
-	return (
+	const slot = useContext(SlotContext);
+
+	const header = (
 		<div className="kadence-blocks-style-library__screen-header">
 			<div className="kadence-blocks-style-library__screen-header-row">
 				<div className="kadence-blocks-style-library__screen-header-lead">
 					<h2 className="kadence-blocks-style-library__screen-header-title">{title}</h2>
 					{inlineControl && (
-						<span className="kadence-blocks-style-library__screen-header-inline-control">
-							{inlineControl}
-						</span>
+						<>
+							<SlashSeparator className="kadence-blocks-style-library__screen-header-separator" />
+							<span className="kadence-blocks-style-library__screen-header-inline-control">
+								{inlineControl}
+							</span>
+						</>
 					)}
 					{secondaryAction && (
 						<span className="kadence-blocks-style-library__screen-header-secondary">{secondaryAction}</span>
@@ -69,7 +116,22 @@ export function ScreenHeader({
 					)}
 				</div>
 			</div>
-			{description}
 		</div>
+	);
+
+	if (!slot) {
+		return (
+			<>
+				{header}
+				{description}
+			</>
+		);
+	}
+
+	return (
+		<>
+			{slot.node && createPortal(header, slot.node)}
+			{description}
+		</>
 	);
 }
