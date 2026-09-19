@@ -26,6 +26,7 @@ import { createContext, createPortal, useContext, useMemo, useState } from '@wor
 /**
  * Internal dependencies
  */
+import { SlashSeparator } from '../atoms/SlashSeparator';
 import './ScreenHeader.scss';
 
 const SlotContext = createContext();
@@ -91,9 +92,12 @@ export function ScreenHeader({
 				<div className="kadence-blocks-style-library__screen-header-lead">
 					<h2 className="kadence-blocks-style-library__screen-header-title">{title}</h2>
 					{inlineControl && (
-						<span className="kadence-blocks-style-library__screen-header-inline-control">
-							{inlineControl}
-						</span>
+						<>
+							<SlashSeparator className="kadence-blocks-style-library__screen-header-separator" />
+							<span className="kadence-blocks-style-library__screen-header-inline-control">
+								{inlineControl}
+							</span>
+						</>
 					)}
 					{secondaryAction && (
 						<span className="kadence-blocks-style-library__screen-header-secondary">{secondaryAction}</span>

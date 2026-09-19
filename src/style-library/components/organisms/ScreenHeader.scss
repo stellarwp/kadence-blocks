@@ -52,6 +52,11 @@
 	min-width: 0;
 }
 
+.kadence-blocks-style-library__screen-header-separator {
+	font-size: var(--kb-sl-font-size-18);
+	line-height: var(--kb-sl-line-height-22);
+}
+
 .kadence-blocks-style-library-root .kadence-blocks-style-library__screen-header-title {
 	margin: 0;
 	// --kb-sl-color-text-primary, not the shared --kb-sl-color-heading semantic — that alias also
