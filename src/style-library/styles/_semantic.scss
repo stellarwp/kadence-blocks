@@ -74,6 +74,7 @@ body.kadence-blocks-style-library-page {
 
 	// Component sizing — icons, named for what they're for.
 	--kb-sl-size-icon-chevron: var(--kb-sl-icon-size-s);
+	--kb-sl-size-nav-item-icon: var(--kb-sl-space-20);
 	// Shared by every plus/action icon in the app (`AddTile`, `ScreenHeader`'s primary action) — a
 	// 24px hit box around a deliberately smaller 16px SVG, so a future glyph-size change happens
 	// once and both consumers move together instead of drifting.
