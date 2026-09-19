@@ -6,7 +6,10 @@
 // only for its `is-secondary`/`is-tertiary`/plain-destructive variants — every one of those rules
 // explicitly excludes `.is-link` (`:not(.is-link)`), so none of them reach this button and the
 // hover state still needs its own rule here, not just a specificity override.
-.kadence-blocks-style-library-root .kadence-blocks-style-library__delete-library-action {
+// The second selector is an actions popover's form: a popover renders under `<body>`, outside
+// the app root, so the root-qualified selector alone never reaches a button inside it.
+.kadence-blocks-style-library-root .kadence-blocks-style-library__delete-library-action,
+.kadence-blocks-style-library__actions-form .kadence-blocks-style-library__delete-library-action {
 	padding: var(--kb-sl-space-10);
 	font-size: var(--kb-sl-font-size-m);
 	line-height: var(--kb-sl-line-height-s);
