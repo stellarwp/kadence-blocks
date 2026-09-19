@@ -37,7 +37,7 @@ body.kadence-blocks-style-library-page {
 	--kb-sl-color-surface-hover: var(--kb-sl-color-theme-tint-4);
 	--kb-sl-color-scrim: var(--kb-sl-color-white-tint-70);
 
-	// Color — `gray-50` does two distinct jobs (`AddTile`'s resting surface, `ListRow`'s hover
+	// Color — `gray-50` does two distinct jobs (`AddTile`'s resting surface, `ShadowField`'s row hover
 	// background), so each gets its own role alias rather than pointing at the primitive directly.
 	--kb-sl-color-tile-surface: var(--kb-sl-color-gray-50);
 	// Sized to read as the same visual weight as the theme tint above — differs from `--selected` in

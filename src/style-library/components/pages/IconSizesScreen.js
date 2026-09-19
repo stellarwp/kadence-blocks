@@ -1,9 +1,8 @@
 /**
  * The Icon Sizes screen: the scale config, the star preview renderer, and the two thin wrappers
  * that plug into the shared `ScaleScreen`/`ScaleSettings` contract (see `ScaleScreen.js`'s module
- * docblock). Two things make this screen genuinely different from its
- * siblings: the value column shows two dimensions for a one-dimension token (presentation-only,
- * via `iconSizeRowValue`), and the SIZE field restricts units to the ones `pxFromLength` accepts.
+ * docblock). What makes this screen different from its siblings: the SIZE field restricts units to
+ * the ones `pxFromLength` accepts.
  */
 
 /**
@@ -16,7 +15,6 @@ import { __ } from '@wordpress/i18n';
  */
 import { ScaleScreen } from './ScaleScreen';
 import { ScaleSettings } from './ScaleSettings';
-import { iconSizeRowValue } from '../../helpers/icon-sizes';
 import './IconSizesScreen.scss';
 
 /**
@@ -75,7 +73,6 @@ export const ICON_SIZES_CONFIG = {
 			{ value: 'rem', label: 'rem' },
 		],
 	},
-	formatValue: (row) => iconSizeRowValue(row.value),
 	renderPreview: renderIconSizePreview,
 };
 
