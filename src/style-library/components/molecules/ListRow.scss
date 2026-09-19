@@ -1,8 +1,11 @@
 .kadence-blocks-style-library__list-row {
 	// A component-scoped custom property, not a global primitive — 1.25rem isn't on the spacing
-	// ramp, and this value recurs twice in this file (the handle's offset below, and
-	// `.list-row-main`'s padding further down), so it's named once to keep them from drifting apart.
+	// ramp, and this value recurs in this file (the handle's offset and `.list-row-main`'s padding, both
+	// further down), so it's named once to keep them from drifting apart.
 	--kb-sl-list-row-inset: 1.25rem;
+	--kb-sl-list-row-bg-hover: #f7fafc;
+	--kb-sl-list-row-shadow-hover: 0 0 0.5px 0 rgba(0, 0, 0, 0.25), 0 2px 4px 0 rgba(0, 0, 0, 0.15);
+	--kb-sl-list-row-value-color: #718096;
 
 	position: relative;
 	list-style: none;
@@ -19,7 +22,10 @@
 	// `:not()` excludes `--selected` explicitly so a row that's both selected and hovered keeps its
 	// theme tint instead of flipping to gray.
 	&:hover:not(.kadence-blocks-style-library__list-row--selected) {
-		background: var(--kb-sl-color-row-bg-hover);
+		// Lifts the row above its siblings so their backgrounds don't paint over the shadow.
+		z-index: 1;
+		background: var(--kb-sl-list-row-bg-hover);
+		box-shadow: var(--kb-sl-list-row-shadow-hover);
 	}
 
 	// The drop-target placeholder shown while this row is the one being dragged. Neutral gray,
@@ -60,12 +66,18 @@
 	cursor: pointer;
 }
 
+// Keyed on the row being draggable, not on the handle being present: a pending-delete row drops
+// its handle but must keep its label in the same column as its siblings.
+.kadence-blocks-style-library__list-row--draggable .kadence-blocks-style-library__list-row-main {
+	padding-left: calc(var(--kb-sl-list-row-inset) + var(--kb-sl-space-30) + var(--kb-sl-space-20));
+}
+
 .kadence-blocks-style-library__list-row-label {
 	// A fixed column width, not a minimum — content that doesn't fit wraps to a new line rather than
 	// truncating or overflowing.
 	flex: 0 0 auto;
-	// 4rem per spec, not on the spacing ramp.
-	width: 4rem;
+	// 10rem per spec, not on the spacing ramp.
+	width: 10rem;
 	// `overflow-wrap: anywhere`, not just `word-break`'s default, so a long unbroken string (a hex
 	// value, a token id) wraps inside the fixed column instead of overflowing it.
 	overflow-wrap: anywhere;
@@ -82,7 +94,7 @@
 	// 6rem per spec, not on the spacing ramp.
 	width: 6rem;
 	overflow-wrap: anywhere;
-	color: var(--kb-sl-color-text-secondary);
+	color: var(--kb-sl-list-row-value-color);
 	font-family: var(--kb-sl-font-family-monospace);
 	font-size: var(--kb-sl-font-size-xs);
 	font-weight: var(--kb-sl-font-weight-regular);
@@ -95,7 +107,7 @@
 .kadence-blocks-style-library__list-row .kadence-blocks-style-library__drag-handle {
 	position: absolute;
 	top: 50%;
-	right: var(--kb-sl-list-row-inset);
+	left: var(--kb-sl-list-row-inset);
 	transform: translateY(-50%);
 }
 
