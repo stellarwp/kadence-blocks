@@ -8,7 +8,7 @@
 // presentational gain.
 .kadence-blocks-style-library__scale-screen--typography .kadence-blocks-style-library__list-row-main {
 	flex-wrap: wrap;
-	gap: var(--kb-sl-space-10) var(--kb-sl-space-15);
+	gap: var(--kb-sl-space-10);
 }
 
 .kadence-blocks-style-library__scale-screen--typography .kadence-blocks-style-library__list-row-label,
@@ -17,12 +17,15 @@
 	width: auto;
 	display: inline-flex;
 	align-items: center;
-	padding: 0 var(--kb-sl-space-10);
-	border-radius: var(--kb-sl-radius-full);
-	background: var(--kb-sl-color-gray-100);
-	color: var(--kb-sl-color-text-primary);
+	// 0.25rem/0.5rem per spec, not on the spacing ramp.
+	padding: 0.25rem 0.5rem;
+	// 0.165rem per spec, not on the radius ramp.
+	border-radius: 0.165rem;
+	background: #edf2f7;
+	color: #718096;
 	font-family: inherit;
-	font-size: var(--kb-sl-font-size-s);
+	// 0.625rem per spec, not on the font-size ramp.
+	font-size: 0.625rem;
 	font-weight: var(--kb-sl-font-weight-semibold);
 	line-height: 1.125rem;
 	white-space: nowrap;
@@ -91,6 +94,13 @@
 	@include flex-row(var(--kb-sl-space-10));
 
 	align-items: center;
+}
+
+// Chained with `.components-button.has-icon` so `wp-components`' own icon-button padding, which
+// out-weighs a lone class, cannot win.
+.components-button.has-icon.kadence-blocks-style-library__typography-font-action {
+	height: 2.5rem;
+	padding: var(--kb-sl-space-10) var(--kb-sl-space-20);
 }
 
 // The favorite button's busy stripes, restored for its Remove (tertiary) face. `wp-components`

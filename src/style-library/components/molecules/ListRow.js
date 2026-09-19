@@ -1,6 +1,6 @@
 /**
- * One row in a screen's row list: a label, a monospaced value, an optional preview slot, and a
- * trailing drag handle. Selection, click, and the meaning of the preview are all the caller's —
+ * One row in a screen's row list: a leading drag handle, a label, a monospaced value, and an
+ * optional preview slot. Selection, click, and the meaning of the preview are all the caller's —
  * this component knows nothing about tokens, palettes, or presets. Matches the shared body shape
  * across Border Radius, Border Width, Spacing, Icon Sizes, and Shadow.
  *
@@ -72,10 +72,12 @@ export function ListRow({
 			style={wrapperStyle}
 			className={classnames('kadence-blocks-style-library__list-row', {
 				'kadence-blocks-style-library__list-row--selected': isSelected,
+				'kadence-blocks-style-library__list-row--draggable': isDraggable,
 				'kadence-blocks-style-library__list-row--placeholder': isDragging,
 				'kadence-blocks-style-library__list-row--pending-delete': isPendingDelete,
 			})}
 		>
+			{isDraggable && !isPendingDelete && <DragHandle handleProps={dragHandleProps} />}
 			<button
 				type="button"
 				className="kadence-blocks-style-library__list-row-main"
@@ -87,7 +89,6 @@ export function ListRow({
 				{value && <span className="kadence-blocks-style-library__list-row-value">{value}</span>}
 				{preview && <span className="kadence-blocks-style-library__list-row-preview">{preview}</span>}
 			</button>
-			{isDraggable && !isPendingDelete && <DragHandle handleProps={dragHandleProps} />}
 		</li>
 	);
 }
