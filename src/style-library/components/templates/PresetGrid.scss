@@ -1,0 +1,13 @@
+.kadence-blocks-style-library__preset-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(min(18rem, 100%), 1fr));
+	gap: var(--kb-sl-space-15);
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.kadence-blocks-style-library__preset-grid-empty {
+	display: flex;
+	border: 1px solid var(--kb-sl-color-border);
+}
