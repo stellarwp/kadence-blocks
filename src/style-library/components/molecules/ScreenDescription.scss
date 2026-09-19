@@ -3,7 +3,7 @@
 .kadence-blocks-style-library-root .kadence-blocks-style-library__screen-description {
 	margin: 0;
 	color: var(--kb-sl-color-text-muted);
-	font-size: var(--kb-sl-font-size-small);
+	font-size: var(--kb-sl-font-size-meta);
 	line-height: var(--kb-sl-line-height-s);
 	text-wrap: pretty;
 }
@@ -11,6 +11,6 @@
 // Only what core's own `.components-external-link` does not already set.
 .kadence-blocks-style-library-root .kadence-blocks-style-library__screen-description .components-external-link {
 	margin-left: 0;
-	color: var(--kb-sl-color-theme);
+	color: var(--kb-sl-color-text-primary);
 	font-weight: var(--kb-sl-font-weight-medium);
 }
