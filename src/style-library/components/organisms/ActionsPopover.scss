@@ -1,0 +1,33 @@
+// Qualified with the app root so this outranks wp-admin's own default button sizing.
+.kadence-blocks-style-library-root .kadence-blocks-style-library__actions-popover-toggle {
+	width: var(--kb-sl-space-40);
+	min-width: 0;
+	height: var(--kb-sl-space-40);
+	padding: 0;
+	justify-content: center;
+	border-radius: var(--kb-sl-radius-m);
+	color: var(--kb-sl-color-text-secondary);
+
+	&:hover,
+	&[aria-expanded='true'] {
+		color: var(--kb-sl-color-theme);
+	}
+
+	// Core fills every button icon (`.components-button svg { fill: currentColor }`). This icon is
+	// drawn with strokes, so a fill would turn the pencil into a solid blob.
+	svg {
+		width: var(--kb-sl-size-action-icon-glyph);
+		height: var(--kb-sl-size-action-icon-glyph);
+		fill: none;
+	}
+}
+
+// The class is repeated to outrank core's own popover-content rule, the same way the select
+// dropdown's menu does; core's padding is dropped because the form carries its own.
+.kadence-blocks-style-library__actions-popover-content .components-popover__content.components-popover__content {
+	padding: 0;
+	background: var(--kb-sl-color-surface);
+	border: var(--kb-sl-border-width-input) solid var(--kb-sl-color-gray-300);
+	border-radius: var(--kb-sl-radius-m);
+	box-shadow: var(--kb-sl-shadow-menu);
+}
