@@ -46,6 +46,8 @@ body.kadence-blocks-style-library-page {
 	--kb-sl-color-theme: var(--wp-admin-theme-color, #2271b1);
 	// Solid fallback; a browser without color-mix() keeps this value — see the @supports block below.
 	--kb-sl-color-theme-tint-4: rgba(34, 113, 177, 0.04);
+	// Strong enough to read as a line, not a fill. Same solid fallback arrangement.
+	--kb-sl-color-theme-tint-15: rgba(34, 113, 177, 0.15);
 
 	// Gray-200 at 60% alpha — AddTile's border. Solid fallback; a browser without color-mix() keeps
 	// this value — see the @supports block below.
@@ -175,6 +177,7 @@ body.kadence-blocks-style-library-page {
 	.kadence-blocks-style-library-root,
 	body.kadence-blocks-style-library-page {
 		--kb-sl-color-theme-tint-4: color-mix(in srgb, var(--kb-sl-color-theme) 4%, transparent);
+		--kb-sl-color-theme-tint-15: color-mix(in srgb, var(--kb-sl-color-theme) 15%, transparent);
 		--kb-sl-color-alert-red-tint-4: color-mix(in srgb, var(--kb-sl-color-alert-red) 4%, transparent);
 		--kb-sl-color-gray-200-tint-60: color-mix(in srgb, var(--kb-sl-color-gray-200) 60%, transparent);
 	}
