@@ -286,16 +286,21 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 
 	const options = useMemo(
 		() =>
-			palettes.listing.palettes.map((row) => ({
-				value: row.id,
-				label: paletteDisplayLabel(row),
+			palettes.listing.palettes.map((row) => {
+				const badges = [];
+
 				// The Active badge tracks `$current` independently of which row is being edited —
 				// opening a palette never moves it (`usePalettes().openPalette` is a pure
 				// navigation that only writes the route's `scope`).
-				badges:
-					row.id === palettes.activeId ? [{ text: __('Active', 'kadence-blocks'), variant: 'state' }] : [],
-			})),
-		[palettes.listing.palettes, palettes.activeId]
+				if (row.id === palettes.activeId) {
+					badges.push({ text: __('Active', 'kadence-blocks'), variant: 'state' });
+				} else if (row.id === palettes.listing.defaultId) {
+					badges.push({ text: __('Default', 'kadence-blocks'), variant: 'muted' });
+				}
+
+				return { value: row.id, label: paletteDisplayLabel(row), badges };
+			}),
+		[palettes.listing.palettes, palettes.listing.defaultId, palettes.activeId]
 	);
 
 	const gridGroups = useMemo(
