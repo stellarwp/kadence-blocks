@@ -80,7 +80,7 @@ function SwatchGridSkeleton({ label }) {
 				 * whatever its text measures — so this bar's width is a plain literal, not a reused
 				 * layout value. */}
 				<Skeleton className="kadence-blocks-style-library__skeleton--bar" style={{ width: '8rem' }} />
-				<div className="kadence-blocks-style-library__swatch-group-row">
+				<div className="kadence-blocks-style-library__swatch-group-grid">
 					{SKELETON_SWATCH_IDS.map((id) => (
 						<div key={id} className="kadence-blocks-style-library__swatch-card">
 							<div className="kadence-blocks-style-library__swatch-card-main">
