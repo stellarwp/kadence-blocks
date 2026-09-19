@@ -29,6 +29,7 @@ body.kadence-blocks-style-library-page {
 
 	// Color — sidebar nav.
 	--kb-sl-color-nav-tab-text: var(--kb-sl-color-gray-800);
+	--kb-sl-color-nav-tab-count: var(--kb-sl-color-gray-700);
 	--kb-sl-color-nav-section-title: var(--kb-sl-color-gray-700);
 	--kb-sl-color-heading: var(--kb-sl-color-gray-800);
 
@@ -57,6 +58,7 @@ body.kadence-blocks-style-library-page {
 	--kb-sl-font-size-body: var(--kb-sl-font-size-l);
 	--kb-sl-font-size-small: var(--kb-sl-font-size-m);
 	--kb-sl-font-size-nav-tab: var(--kb-sl-font-size-14);
+	--kb-sl-font-size-nav-tab-count: var(--kb-sl-font-size-10);
 	--kb-sl-font-size-meta: var(--kb-sl-font-size-s);
 	// Large, title-level text: the app title, and a dropdown label set beside a title.
 	--kb-sl-letter-spacing-title: var(--kb-sl-letter-spacing-tight);

@@ -32,3 +32,10 @@
 	width: var(--kb-sl-size-nav-item-icon);
 	height: var(--kb-sl-size-nav-item-icon);
 }
+
+.kadence-blocks-style-library__nav-item-count {
+	margin-left: auto;
+	color: var(--kb-sl-color-nav-tab-count);
+	font-size: var(--kb-sl-font-size-nav-tab-count);
+	font-weight: var(--kb-sl-font-weight-regular);
+}
