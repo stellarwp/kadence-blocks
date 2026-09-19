@@ -9,7 +9,6 @@ import { createRoot } from 'react-dom/client';
  * Internal dependencies
  */
 import { CreateLibraryModal } from '../components/organisms/CreateLibraryModal';
-import { RenameColorGroupModal } from '../components/organisms/RenameColorGroupModal';
 
 // Stand-ins for the nested `@wordpress/components` copy (see any other screen test for why).
 // `Modal` renders its children inline and `TextControl` renders a real input, so the form and its
@@ -148,58 +147,5 @@ describe('CreateLibraryModal submission', () => {
 
 		expect(onClose).toHaveBeenCalled();
 		expect(onCreate).not.toHaveBeenCalled();
-	});
-});
-
-describe('RenameColorGroupModal submission', () => {
-	/**
-	 * The rename modals submit on Enter too, and pass the trimmed value the click path passes.
-	 *
-	 * @return {void}
-	 */
-	it('renames the group on submit', () => {
-		const onRename = jest.fn();
-
-		act(() =>
-			root.render(
-				<RenameColorGroupModal
-					group={{ id: 'accent', label: 'Accent' }}
-					isBusy={false}
-					error={null}
-					onClose={jest.fn()}
-					onRename={onRename}
-				/>
-			)
-		);
-
-		type('  Brand  ');
-		submitForm();
-
-		expect(onRename).toHaveBeenCalledWith('Brand');
-	});
-
-	/**
-	 * A rename to the same label is not submittable — the same guard the Save button uses.
-	 *
-	 * @return {void}
-	 */
-	it('does not rename anything while the label is unchanged', () => {
-		const onRename = jest.fn();
-
-		act(() =>
-			root.render(
-				<RenameColorGroupModal
-					group={{ id: 'accent', label: 'Accent' }}
-					isBusy={false}
-					error={null}
-					onClose={jest.fn()}
-					onRename={onRename}
-				/>
-			)
-		);
-
-		submitForm();
-
-		expect(onRename).not.toHaveBeenCalled();
 	});
 });

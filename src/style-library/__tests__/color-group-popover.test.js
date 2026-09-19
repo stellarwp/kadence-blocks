@@ -21,19 +21,29 @@ jest.mock('../hooks/use-palettes', () => ({
 
 // Same cross-module-copy rationale as `palette-reset-modal.test.js`: `@wordpress/components`' own
 // nested `react`/`react-dom` copy trips React's "Invalid hook call" guard under the top-level
-// renderer this test uses. Unlike that file, `DropdownMenu` renders its render-prop children here,
-// because the menu's contents are what this file asserts on.
+// renderer this test uses. `Dropdown` keeps the real one's closed-until-toggled contract.
 jest.mock('@wordpress/components', () => ({
-	Button: ({ children, isBusy, isDestructive, variant, icon, ...props }) => <button {...props}>{children}</button>,
-	Notice: ({ children, isDismissible, onRemove, status, ...props }) => <div {...props}>{children}</div>,
-	DropdownMenu: ({ children, label }) => (
-		<div role="menu" aria-label={label}>
-			{children({ onClose: () => {} })}
-		</div>
+	Button: ({ children, isBusy, isDestructive, variant, icon, label, ...props }) => (
+		<button aria-label={label} {...props}>
+			{children}
+		</button>
 	),
-	MenuGroup: ({ children }) => <div>{children}</div>,
-	MenuItem: ({ children, isDestructive, ...props }) => <button {...props}>{children}</button>,
-	Dropdown: ({ renderToggle }) => renderToggle({ isOpen: false, onToggle: () => {} }),
+	Notice: ({ children, isDismissible, onRemove, status, ...props }) => <div {...props}>{children}</div>,
+	Dropdown: ({ renderToggle, renderContent, onClose }) => {
+		const React = require('react');
+		const [isOpen, setIsOpen] = React.useState(false);
+		const close = () => {
+			setIsOpen(false);
+			onClose?.();
+		};
+
+		return (
+			<div>
+				{renderToggle({ isOpen, onToggle: () => setIsOpen(!isOpen) })}
+				{isOpen && <div data-popover>{renderContent({ onClose: close })}</div>}
+			</div>
+		);
+	},
 	Spinner: () => <span className="components-spinner" />,
 	ExternalLink: ({ children, ...props }) => <a {...props}>{children}</a>,
 	Tooltip: ({ children }) => children,
@@ -184,42 +194,50 @@ function renderScreen(palettes) {
 }
 
 /**
- * The labels of the items in one group's overflow menu.
+ * Open one group's edit popover and list its buttons' labels.
  *
- * @param {string} groupLabel The group's display label, as used in the menu's accessible name.
+ * @param {string} groupLabel The group's display label, as used in the pencil's accessible name.
  *
  * @since TBD
  *
- * @return {Array<string>} The item labels, in order; empty when the menu is not rendered.
+ * @return {Array<string>} The button labels inside the popover; empty when the pencil is missing.
  */
-function menuItems(groupLabel) {
-	const menu = container.querySelector(`[role="menu"][aria-label="Options for ${groupLabel}"]`);
+function popoverButtons(groupLabel) {
+	const pencil = container.querySelector(`button[aria-label="Edit ${groupLabel}"]`);
 
-	return menu ? [...menu.querySelectorAll('button')].map((button) => button.textContent) : [];
+	if (!pencil) {
+		return [];
+	}
+
+	act(() => pencil.click());
+
+	const popover = container.querySelector('[data-popover]');
+
+	return [...popover.querySelectorAll('button')].map((button) => button.textContent);
 }
 
-describe('Color group overflow menu', () => {
+describe('Color group edit popover', () => {
 	/**
 	 * A shipped group cannot be removed — the server refuses to drop its swatches from the default
-	 * palette — so the menu offers Rename only, instead of a Delete that would just error.
+	 * palette — so the popover offers no Delete, instead of one that would just error.
 	 *
 	 * @return void
 	 */
-	it('offers Rename but not Delete for a baseline group', () => {
+	it('offers no Delete for a baseline group', () => {
 		renderScreen(makePalettes([ACCENT, BRAND]));
 
-		expect(menuItems('Accent')).toEqual(['Rename']);
+		expect(popoverButtons('Accent')).toEqual(['Cancel', 'Save']);
 	});
 
 	/**
-	 * A user-created group is the one kind of group that can go away, so its menu keeps Delete.
+	 * A user-created group is the one kind of group that can go away, so its popover keeps Delete.
 	 *
 	 * @return void
 	 */
-	it('offers both Rename and Delete for a user-created group', () => {
+	it('offers Delete for a user-created group', () => {
 		renderScreen(makePalettes([ACCENT, BRAND]));
 
-		expect(menuItems('Brand')).toEqual(['Rename', 'Delete']);
+		expect(popoverButtons('Brand')).toEqual(['Delete', 'Cancel', 'Save']);
 	});
 
 	/**
@@ -231,6 +249,6 @@ describe('Color group overflow menu', () => {
 	it('still hides Delete when a user-created group is the only group', () => {
 		renderScreen(makePalettes([BRAND]));
 
-		expect(menuItems('Brand')).toEqual(['Rename']);
+		expect(popoverButtons('Brand')).toEqual(['Cancel', 'Save']);
 	});
 });

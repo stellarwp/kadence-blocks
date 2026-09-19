@@ -122,7 +122,7 @@ function SwatchGridGroup({ group, selectedId, onSelect, onReorder, onAdd, addLab
 			</div>
 			<DndContext {...contextProps}>
 				<SortableContext {...sortableContextProps} strategy={rectSortingStrategy}>
-					<div className="kadence-blocks-style-library__swatch-group-row">
+					<div className="kadence-blocks-style-library__swatch-group-grid">
 						{group.items.map((item) => (
 							<SortableSwatchCard
 								key={item.id}
