@@ -20,12 +20,6 @@
 		background: var(--kb-sl-color-card-bg-hover);
 	}
 
-	&:hover .kadence-blocks-style-library__swatch-row-handle-slot,
-	&:focus-within .kadence-blocks-style-library__swatch-row-handle-slot,
-	&--selected .kadence-blocks-style-library__swatch-row-handle-slot {
-		opacity: 1;
-	}
-
 	&--selected {
 		background: var(--kb-sl-color-theme-tint-4);
 		box-shadow: inset 0 0 0 1px var(--kb-sl-color-theme);
@@ -56,7 +50,6 @@
 	flex: 0 0 auto;
 	align-items: center;
 	width: var(--kb-sl-space-30);
-	opacity: 0;
 }
 
 .kadence-blocks-style-library__swatch-row-select {
