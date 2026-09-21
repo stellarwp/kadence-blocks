@@ -15,6 +15,9 @@
 
 	// `:not()` keeps a selected-and-hovered row on its selected tint.
 	&:hover:not(.kadence-blocks-style-library__swatch-row--selected) {
+		// Later rows are positioned too and paint in DOM order, so without this they cover the shadow
+		// this row casts downward.
+		z-index: 1;
 		background: #f7fafc;
 		box-shadow: 0 0 0.5px 0 rgba(0, 0, 0, 0.25), 0 2px 4px 0 rgba(0, 0, 0, 0.15);
 	}
