@@ -105,8 +105,14 @@ button.kadence-blocks-style-library__swatch-row-select {
 	margin-left: auto;
 }
 
+// A fixed floor so the pill keeps the same left edge across rows: a hex value ("#RRGGBB") is the
+// common case and fits well inside it, while a longer value simply grows the column.
 .kadence-blocks-style-library__swatch-row-sub-line {
+	--kb-sl-swatch-row-value-min-width: 5rem;
+
 	flex: 0 0 auto;
+	min-width: var(--kb-sl-swatch-row-value-min-width);
+	text-align: right;
 	color: var(--kb-sl-color-text-muted);
 	font-size: var(--kb-sl-font-size-xs);
 	font-weight: var(--kb-sl-font-weight-medium);
