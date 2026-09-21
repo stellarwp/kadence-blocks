@@ -4,7 +4,7 @@
  *
  * @package Kadence Blocks
  *
- * cSpell:ignore autoembed kses untrailingslashit
+ * cSpell:ignore autoembed kses squiz untrailingslashit
  */
 
 // Exit if accessed directly.
@@ -319,6 +319,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		return $css->css_output();
 	}
 
+	// phpcs:disable Squiz.Commenting.FunctionComment -- Docblock kept in line with the other blocks.
 	/**
 	 * Build up the dynamic styles for a size.
 	 *
@@ -326,6 +327,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 	 * @return array
 	 */
 	public function sized_dynamic_styles( $css, $attributes, $unique_id, $size = 'Desktop' ) {
+		// phpcs:enable Squiz.Commenting.FunctionComment
 		$sized_attributes         = $css->get_sized_attributes_auto( $attributes, $size, false );
 		$sized_attributes_inherit = $css->get_sized_attributes_auto( $attributes, $size );
 
@@ -346,7 +348,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 
 		$css->set_media_state( strtolower( $size ) );
 
-		// no added specificty needed for these variables
+		// no added specificity needed for these variables.
 		// these variable will slot into selectors found in the static stylesheet.
 		$css->set_selector( '.kb-nav-link-' . $unique_id );
 		$css->add_property( '--kb-nav-dropdown-link-color', $css->render_color( $sized_attributes['linkColorDropdown'] ), $sized_attributes['linkColorDropdown'] );
@@ -522,7 +524,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 					}
 				}
 			} elseif ( $sized_attributes['megaMenuWidth'] === 'full' || $sized_attributes['megaMenuWidth'] === '' ) {
-				// this is handled by a seperate js file
+				// this is handled by a separate js file.
 			} elseif ( $sized_attributes['megaMenuWidth'] === 'container' || $sized_attributes['megaMenuWidth'] === 'content' ) {
 				// first sub menu only, no bleed
 				$css->set_selector( '.kb-nav-link-' . $unique_id . ' > .sub-menu.sub-menu.sub-menu.sub-menu.sub-menu' );

@@ -6,6 +6,7 @@
         "bun.lockb",
         "composer.lock",
         "composer.json",
+        "phpstan-baseline.neon",
         "build/**",
         "**/*.min.js",
         "**/*.asset.php",
