@@ -52,6 +52,12 @@
 	flex: 0 0 auto;
 	align-items: center;
 	width: var(--kb-sl-space-30);
+
+	// Same size as the group heading's handle, so the two handles read as one family.
+	.kadence-blocks-style-library__drag-handle-icon {
+		width: 0.875rem;
+		height: 0.875rem;
+	}
 }
 
 .kadence-blocks-style-library__swatch-row-select {
