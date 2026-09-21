@@ -43,9 +43,11 @@
 	}
 }
 
-// Above the select button's stretched `::after`, so the handle stays clickable.
+// The handle comes before the select button in the DOM, so without a z-index the button's stretched
+// `::after` paints over it and swallows the drag.
 .kadence-blocks-style-library__swatch-row-handle-slot {
 	position: relative;
+	z-index: 1;
 	display: flex;
 	flex: 0 0 auto;
 	align-items: center;

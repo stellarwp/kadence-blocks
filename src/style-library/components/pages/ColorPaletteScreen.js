@@ -467,6 +467,7 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 						}
 						addLabel={__('Add color', 'kadence-blocks')}
 						addingGroupIds={palettes.addingGroupIds}
+						view={viewMode}
 						groupActions={(group) => (
 							<ActionsPopover
 								label={sprintf(
