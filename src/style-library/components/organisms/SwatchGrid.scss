@@ -53,3 +53,9 @@
 	box-shadow: var(--kb-sl-shadow-menu);
 	opacity: 0.9;
 }
+
+// Sized on the group heading's own handle only; the swatch and list-row handles keep the default.
+.kadence-blocks-style-library__swatch-group .kadence-blocks-style-library__section-heading-row .kadence-blocks-style-library__drag-handle-icon {
+	width: 0.875rem;
+	height: 0.875rem;
+}
