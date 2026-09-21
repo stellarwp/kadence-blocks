@@ -29,17 +29,21 @@ jest.mock('@wordpress/components', () => ({
 		</button>
 	),
 	Notice: ({ children, isDismissible, onRemove, status, ...props }) => <div {...props}>{children}</div>,
-	Dropdown: ({ renderToggle, renderContent, onClose }) => {
+	Dropdown: ({ renderToggle, renderContent, onClose, onToggle }) => {
 		const React = require('react');
 		const [isOpen, setIsOpen] = React.useState(false);
+		const setOpen = (nextOpen) => {
+			setIsOpen(nextOpen);
+			onToggle?.(nextOpen);
+		};
 		const close = () => {
-			setIsOpen(false);
+			setOpen(false);
 			onClose?.();
 		};
 
 		return (
 			<div>
-				{renderToggle({ isOpen, onToggle: () => setIsOpen(!isOpen) })}
+				{renderToggle({ isOpen, onToggle: () => setOpen(!isOpen) })}
 				{isOpen && <div data-popover>{renderContent({ onClose: close })}</div>}
 			</div>
 		);
@@ -250,5 +254,24 @@ describe('Color group edit popover', () => {
 		renderScreen(makePalettes([BRAND]));
 
 		expect(popoverButtons('Brand')).toEqual(['Cancel', 'Save']);
+	});
+
+	/**
+	 * A structure error shows once: in the notice above the grid while the popover is closed, and
+	 * only inside the popover's form while it is open.
+	 *
+	 * @return void
+	 */
+	it('shows a structure error in one place at a time', () => {
+		const error = { message: 'Rename failed.' };
+
+		renderScreen({ ...makePalettes([ACCENT, BRAND]), structureError: error });
+
+		expect(container.textContent.split('Rename failed.').length - 1).toBe(1);
+
+		popoverButtons('Brand');
+
+		expect(container.textContent.split('Rename failed.').length - 1).toBe(1);
+		expect(container.querySelector('[data-popover]').textContent).toContain('Rename failed.');
 	});
 });
