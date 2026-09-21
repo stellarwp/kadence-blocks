@@ -114,11 +114,12 @@ export function SwatchGrid({
 			</SortableContext>
 			<DragOverlay>
 				{activeGroup && (
-					<div className="kadence-blocks-style-library__swatch-group-ghost">
-						<SectionHeading leading={<DragHandle label={groupHandleLabel(activeGroup.label)} />}>
-							{activeGroup.label}
-						</SectionHeading>
-					</div>
+					<SwatchGroupGhost
+						group={activeGroup}
+						selectedId={selectedId}
+						addLabel={addLabel}
+						groupActions={groupActions}
+					/>
 				)}
 			</DragOverlay>
 		</DndContext>
@@ -237,6 +238,48 @@ function SwatchGridGroup({
 					)}
 				</DragOverlay>
 			</DndContext>
+		</div>
+	);
+}
+
+/**
+ * The floating copy of a whole group shown under the pointer while the group is dragged. Purely
+ * presentational: it calls no sortable or dnd hook, so the overlay registers no drop targets.
+ *
+ * @param {Object}    props            The component props.
+ * @param {Object}    props.group      `{ id, label, items: [SwatchCard props] }`.
+ * @param {string}    props.selectedId The selected card id, '' for none.
+ * @param {string}    props.addLabel   The add-tile label.
+ * @param {?Function} props.groupActions Called with `group`, returning the heading's actions node.
+ *
+ * @since TBD
+ *
+ * @return {JSX.Element} The ghost.
+ */
+export function SwatchGroupGhost({ group, selectedId, addLabel, groupActions }) {
+	const reservePillSlot = group.items.some((item) => Boolean(item.pill));
+
+	return (
+		<div className="kadence-blocks-style-library__swatch-group kadence-blocks-style-library__swatch-group-ghost">
+			<SectionHeading
+				leading={<DragHandle label={groupHandleLabel(group.label)} />}
+				actions={groupActions ? groupActions(group) : null}
+			>
+				{group.label}
+			</SectionHeading>
+			<div className="kadence-blocks-style-library__swatch-group-grid">
+				{group.items.map((item) => (
+					<SwatchCard
+						key={item.id}
+						{...item}
+						isSelected={item.id === selectedId}
+						onSelect={() => {}}
+						pill={null}
+						reservePillSlot={reservePillSlot}
+					/>
+				))}
+				<AddTile label={addLabel} onClick={() => {}} disabled />
+			</div>
 		</div>
 	);
 }

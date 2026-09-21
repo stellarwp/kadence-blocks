@@ -46,9 +46,10 @@
 }
 
 .kadence-blocks-style-library__swatch-group-ghost {
-	display: inline-flex;
+	box-sizing: border-box;
 	padding: var(--kb-sl-space-05) var(--kb-sl-space-10);
 	border-radius: var(--kb-sl-radius-s);
 	background: var(--kb-sl-color-surface);
 	box-shadow: var(--kb-sl-shadow-menu);
+	opacity: 0.9;
 }
