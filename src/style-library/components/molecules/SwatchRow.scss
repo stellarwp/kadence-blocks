@@ -1,0 +1,126 @@
+.kadence-blocks-style-library__swatch-row {
+	// Component-scoped, not global primitives: neither size is on the spacing ramp.
+	--kb-sl-swatch-row-min-height: 3.375rem;
+	--kb-sl-swatch-row-preview-size: 1.875rem;
+
+	position: relative;
+	display: flex;
+	align-items: center;
+	gap: var(--kb-sl-space-15);
+	min-height: var(--kb-sl-swatch-row-min-height);
+	padding: 0 var(--kb-sl-space-15);
+	background: var(--kb-sl-color-surface);
+
+	&:not(:last-child) {
+		border-bottom: 1px solid var(--kb-sl-color-border);
+	}
+
+	// `:not()` keeps a selected-and-hovered row on its selected tint.
+	&:hover:not(.kadence-blocks-style-library__swatch-row--selected) {
+		background: var(--kb-sl-color-card-bg-hover);
+	}
+
+	&:hover .kadence-blocks-style-library__swatch-row-handle-slot,
+	&:focus-within .kadence-blocks-style-library__swatch-row-handle-slot,
+	&--selected .kadence-blocks-style-library__swatch-row-handle-slot {
+		opacity: 1;
+	}
+
+	&--selected {
+		background: var(--kb-sl-color-theme-tint-4);
+		box-shadow: inset 0 0 0 1px var(--kb-sl-color-theme);
+	}
+
+	// Compound selector so it ties the `:not(:last-child)` rule on specificity and wins on source
+	// order — same reason as `ListRow`'s placeholder.
+	&.kadence-blocks-style-library__swatch-row--placeholder {
+		border: var(--kb-sl-border-width-input) dashed var(--kb-sl-color-control-border);
+		background: var(--kb-sl-color-gray-100);
+
+		// `visibility: hidden`, not removed, so the placeholder keeps the row's size.
+		> * {
+			visibility: hidden;
+		}
+	}
+
+	&--pending-delete {
+		opacity: 0.5;
+		pointer-events: none;
+	}
+}
+
+// Above the select button's stretched `::after`, so the handle stays clickable.
+.kadence-blocks-style-library__swatch-row-handle-slot {
+	position: relative;
+	display: flex;
+	flex: 0 0 auto;
+	align-items: center;
+	width: var(--kb-sl-space-30);
+	opacity: 0;
+}
+
+.kadence-blocks-style-library__swatch-row-select {
+	display: flex;
+	flex: 1;
+	align-items: center;
+	gap: var(--kb-sl-space-15);
+	min-width: 0;
+	padding: 0;
+	border: 0;
+	background: none;
+	text-align: left;
+
+	// Stretches the hit area over the whole row while the pill and handle stay separate controls.
+	&::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+	}
+}
+
+// The loading placeholder reuses the class on an inert `div`, which must not promise an action.
+button.kadence-blocks-style-library__swatch-row-select {
+	cursor: pointer;
+}
+
+.kadence-blocks-style-library__swatch-row-preview {
+	box-sizing: border-box;
+	display: flex;
+	flex: 0 0 auto;
+	overflow: hidden;
+	width: var(--kb-sl-swatch-row-preview-size);
+	height: var(--kb-sl-swatch-row-preview-size);
+	border: var(--kb-sl-border-width-input) solid var(--kb-sl-color-gray-200);
+	border-radius: var(--kb-sl-radius-l);
+}
+
+.kadence-blocks-style-library__swatch-row-name {
+	overflow: hidden;
+	min-width: 0;
+	color: var(--kb-sl-color-text-primary);
+	font-size: var(--kb-sl-font-size-small);
+	line-height: var(--kb-sl-line-height-s);
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.kadence-blocks-style-library__swatch-row-pill-slot {
+	position: relative;
+	display: flex;
+	flex: 0 0 auto;
+	align-items: center;
+	margin-left: auto;
+}
+
+.kadence-blocks-style-library__swatch-row-sub-line {
+	flex: 0 0 auto;
+	color: var(--kb-sl-color-text-muted);
+	font-size: var(--kb-sl-font-size-xs);
+	font-weight: var(--kb-sl-font-weight-medium);
+	line-height: var(--kb-sl-line-height-xs);
+}
+
+// Without a pill nothing else takes the free space, so the value pushes itself to the right edge.
+.kadence-blocks-style-library__swatch-row-select + .kadence-blocks-style-library__swatch-row-sub-line {
+	margin-left: auto;
+}
