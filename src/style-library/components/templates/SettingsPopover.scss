@@ -1,0 +1,10 @@
+// The class is repeated to outrank core's own popover-content rule; core's padding is dropped
+// because the panel carries its own header, fields, and footer.
+.kadence-blocks-style-library__settings-popover .components-popover__content.components-popover__content {
+	width: var(--kb-sl-size-settings-popover-width);
+	padding: 0;
+	background: var(--kb-sl-color-surface);
+	border: var(--kb-sl-border-width-input) solid var(--kb-sl-color-gray-300);
+	border-radius: var(--kb-sl-radius-m);
+	box-shadow: var(--kb-sl-shadow-menu);
+}
