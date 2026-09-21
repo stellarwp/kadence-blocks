@@ -4,7 +4,7 @@
  *
  * @package Kadence Blocks
  *
- * cSpell:ignore autoembed kses untrailingslashit
+ * cSpell:ignore autoembed kses squiz untrailingslashit
  */
 
 // Exit if accessed directly.
