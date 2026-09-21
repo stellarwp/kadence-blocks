@@ -1,3 +1,4 @@
+// cspell:ignore labelledby -- the ARIA attribute name.
 /* eslint-env jest */
 /**
  * External dependencies
@@ -8,6 +9,7 @@ import { createRoot } from 'react-dom/client';
 /**
  * Internal dependencies
  */
+import { SETTINGS_PANEL_TITLE_ID } from '../components/templates/SettingsPanel';
 import { SettingsPopover } from '../components/templates/SettingsPopover';
 import { ItemAnchorProvider, useItemAnchorRef } from '../hooks/use-item-anchor';
 
@@ -105,6 +107,7 @@ describe('SettingsPopover', () => {
 		expect(popoverProps.offset).toBe(8);
 		expect(popoverProps.shift).toBe(true);
 		expect(popoverProps.expandOnMobile).toBe(true);
+		expect(popoverProps['aria-labelledby']).toBe(SETTINGS_PANEL_TITLE_ID);
 		expect(container.querySelector('[data-popover] [data-child]')).not.toBeNull();
 	});
 

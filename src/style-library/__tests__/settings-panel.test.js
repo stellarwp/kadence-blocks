@@ -8,7 +8,7 @@ import { createRoot } from 'react-dom/client';
 /**
  * Internal dependencies
  */
-import { SettingsPanel } from '../components/templates/SettingsPanel';
+import { SettingsPanel, SETTINGS_PANEL_TITLE_ID } from '../components/templates/SettingsPanel';
 
 let container;
 let root;

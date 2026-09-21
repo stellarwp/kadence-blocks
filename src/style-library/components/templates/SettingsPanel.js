@@ -22,6 +22,14 @@ import { closeSmall } from '@wordpress/icons';
 import './SettingsPanel.scss';
 
 /**
+ * The id of the panel's title element. Only one panel is ever mounted, so a fixed id is enough for
+ * the popover around it to take its accessible name from the title.
+ *
+ * @since TBD
+ */
+export const SETTINGS_PANEL_TITLE_ID = 'kadence-blocks-style-library-settings-panel-title';
+
+/**
  * Render the settings panel.
  *
  * @param {Object}         props               The component props.
@@ -94,7 +102,9 @@ export function SettingsPanel({
 	return (
 		<div className="kadence-blocks-style-library__settings-panel">
 			<div className="kadence-blocks-style-library__settings-panel-header">
-				<h2 className="kadence-blocks-style-library__settings-panel-title">{title}</h2>
+				<h2 id={SETTINGS_PANEL_TITLE_ID} className="kadence-blocks-style-library__settings-panel-title">
+					{title}
+				</h2>
 				<Button
 					icon={closeSmall}
 					label={__('Close', 'kadence-blocks')}

@@ -1,3 +1,4 @@
+// cspell:ignore labelledby -- the ARIA attribute name.
 /**
  * The popover that holds the open item's settings editor. It attaches to the element the item was
  * clicked on, found through the item anchor registry, so the editor opens next to what it edits.
@@ -7,12 +8,12 @@
  * WordPress dependencies
  */
 import { Popover } from '@wordpress/components';
-import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
 import './SettingsPopover.scss';
+import { SETTINGS_PANEL_TITLE_ID } from './SettingsPanel';
 import { useItemAnchor } from '../../hooks/use-item-anchor';
 
 /**
@@ -56,7 +57,7 @@ export function SettingsPopover({ itemId, onClose, ignoreFocusOutside = false, c
 			shift
 			expandOnMobile
 			focusOnMount="firstElement"
-			aria-label={__('Settings', 'kadence-blocks')}
+			aria-labelledby={SETTINGS_PANEL_TITLE_ID}
 			onClose={onClose}
 			onFocusOutside={handleFocusOutside}
 		>
