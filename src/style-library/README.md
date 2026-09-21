@@ -45,9 +45,9 @@ upward: a template never fetches, and an organism never knows which screen mount
 A preset screen edits one block's presets. `ButtonScreen` + `ButtonSettings` are the first, and
 register for `kadence/singlebtn` on the public preset-screens filter.
 
-### `PresetSidebar` holds everything generic
+### `PresetSettings` holds everything generic
 
-`pages/PresetSidebar.js` is the whole settings panel: the outer gate that waits for the fetched payload and
+`pages/PresetSettings.js` is the whole settings panel: the outer gate that waits for the fetched payload and
 self-heals a stale `kb-item`, and the inner panel that owns the draft, the tabs, the name field,
 save, delete, the error notices, and the draft-channel publication behind the unsaved-changes
 guard. It knows nothing about which block it is editing.
@@ -76,18 +76,18 @@ export const BUTTON_PRESET = Object.freeze({
 
 1. Add `presets/<block>-preset.js` exporting a config of that shape.
 2. Call `usePresetScreen(library, THE_PRESET)`.
-3. Render `<PresetSidebar route navigate screen preset={THE_PRESET} />`.
+3. Render `<PresetSettings route navigate screen preset={THE_PRESET} />`.
 4. Register the screen on the public preset-screens filter.
 
 No new hook, no new panel, no changes to anything generic.
 
-**If a screen needs something `PresetSidebar` cannot express, add a prop for it — do not fork the
+**If a screen needs something `PresetSettings` cannot express, add a prop for it — do not fork the
 file.** A fourth seam is fine; a second copy is not.
 
 ### Known duplication, deliberately left
 
 The draft-channel block — the publish effect, the `actionsRef` assignment, the close guard — is
-duplicated between `PresetSidebar` and `ScaleSettings`. Both are correct and neither is a copy made
+duplicated between `PresetSettings` and `ScaleSettings`. Both are correct and neither is a copy made
 in haste; the open question is whether the right boundary is a `usePresetDraftChannel` hook or
 something wider, and two examples that already differ in their readiness guard is thin evidence.
 Worth revisiting when a third screen needs it, or when either copy has to change.

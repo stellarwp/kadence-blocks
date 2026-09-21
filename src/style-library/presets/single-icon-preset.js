@@ -2,7 +2,7 @@
  * Everything specific to the `kadence/single-icon` preset screen, in one place: the block name, the
  * bound property surface, the row preview, and the settings schema.
  *
- * The generic preset machinery — `helpers/presets.js`, `usePresetScreen`, `PresetSidebar` — reads
+ * The generic preset machinery — `helpers/presets.js`, `usePresetScreen`, `PresetSettings` — reads
  * this config and knows nothing else about icons. See `src/style-library/README.md`.
  */
 
@@ -95,7 +95,7 @@ function renderPreview(row) {
 
 /**
  * The settings schema. The icon declares no tabs: it binds no hover property, so there is no second
- * state to switch to and `PresetSidebar` renders the field area bare.
+ * state to switch to and `PresetSettings` renders the field area bare.
  *
  * Color uses `color-select`, the Style Library adapter for the shared `ColorControl`, so this screen
  * opens the same trigger-plus-popover picker the block editor's own icon color control does rather

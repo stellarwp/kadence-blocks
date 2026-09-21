@@ -68,7 +68,7 @@ export function ColorPaletteSettings({ route, navigate, library }) {
 	const initialValues = palettes.palette ? swatchInitialValues(palettes.palette, token) : null;
 	const panel = useSettingsPanel({ route, navigate, initialValues });
 	// `palettes.isBusy` covers all the write flows with a single flag, but the footer needs to show
-	// the busy animation on only the button the user actually clicked — the `PresetSidebar.js` idiom,
+	// the busy animation on only the button the user actually clicked — the `PresetSettings.js` idiom,
 	// tracked locally for the same reason: only this panel's footer needs the distinction.
 	const [pendingAction, setPendingAction] = useState(null);
 	// The open swatch as of right now, for `onReset` to read once its write settles — the grid's
