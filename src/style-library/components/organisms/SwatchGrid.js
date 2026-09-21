@@ -1,23 +1,48 @@
 /**
  * The swatch-grid screen body: titled groups of cards, each group ending in an add tile (the
- * Color Palette body shape). Reordering is within a group only — each group is its own
- * `SortableContext`; cross-group moves are not in the design and not built.
+ * Color Palette body shape). Two sortable levels: the groups themselves reorder in one outer
+ * `SortableContext`, and each group's swatches reorder in the group's own inner one. A swatch
+ * never crosses into another group — that move is not in the design and not built.
  */
 
 /**
  * External dependencies
  */
+import classnames from 'classnames';
 import { DndContext, DragOverlay } from '@dnd-kit/core';
-import { rectSortingStrategy, SortableContext } from '@dnd-kit/sortable';
+import { rectSortingStrategy, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
+
+/**
+ * WordPress dependencies
+ */
+import { __, sprintf } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
 import { SectionHeading } from '../atoms/SectionHeading';
 import { AddTile } from '../atoms/AddTile';
+import { DragHandle } from '../atoms/DragHandle';
 import { SwatchCard } from '../molecules/SwatchCard';
 import { useReorderableList } from '../../hooks/use-reorderable-list';
 import './SwatchGrid.scss';
+
+/**
+ * The accessible name of a group's drag handle.
+ *
+ * @param {string} label The group's display label.
+ *
+ * @since TBD
+ *
+ * @return {string} `Drag to reorder <label>`.
+ */
+function groupHandleLabel(label) {
+	return sprintf(
+		// translators: %s: the color group name.
+		__('Drag to reorder %s', 'kadence-blocks'),
+		label
+	);
+}
 
 /**
  * The swatch-grid screen body: titled groups of cards, each group ending in an add tile.
@@ -26,7 +51,9 @@ import './SwatchGrid.scss';
  * @param {Array<Object>}  props.groups     `[{ id, label, pendingDelete, items: [SwatchCard props] }]`.
  * @param {string}         [props.selectedId] The selected card id, '' for none.
  * @param {Function}       props.onSelect   Card click handler.
- * @param {Function}       [props.onReorder] Called with `(groupId, orderedIds)` after a drop.
+ * @param {Function}       [props.onReorder] Called with `(groupId, orderedIds)` after a swatch drop.
+ * @param {Function}       [props.onReorderGroups] Called with the ordered group id list after a
+ *                                          group drop.
  * @param {Function}       props.onAdd      Called with the group id when its add tile is clicked.
  * @param {string}         props.addLabel   The add-tile label (e.g. 'Add color') — no literal `+`,
  *                                          the icon supplies it.
@@ -47,27 +74,54 @@ export function SwatchGrid({
 	selectedId = '',
 	onSelect,
 	onReorder = () => {},
+	onReorderGroups = () => {},
 	onAdd,
 	addLabel,
 	groupActions = null,
 	addingGroupIds = [],
 }) {
+	const groupIds = groups.map((group) => group.id);
+	const {
+		contextProps,
+		sortableContextProps,
+		useSortableItem: useSortableGroup,
+		activeId: activeGroupId,
+	} = useReorderableList({
+		ids: groupIds,
+		onReorder: onReorderGroups,
+	});
+	const activeGroup = groups.find((group) => group.id === activeGroupId);
+
 	return (
-		<div className="kadence-blocks-style-library__swatch-grid">
-			{groups.map((group) => (
-				<SwatchGridGroup
-					key={group.id}
-					group={group}
-					selectedId={selectedId}
-					onSelect={onSelect}
-					onReorder={onReorder}
-					onAdd={onAdd}
-					addLabel={addLabel}
-					groupActions={groupActions}
-					isAdding={addingGroupIds.includes(group.id)}
-				/>
-			))}
-		</div>
+		<DndContext {...contextProps}>
+			<SortableContext {...sortableContextProps} strategy={verticalListSortingStrategy}>
+				<div className="kadence-blocks-style-library__swatch-grid">
+					{groups.map((group) => (
+						<SwatchGridGroup
+							key={group.id}
+							group={group}
+							selectedId={selectedId}
+							onSelect={onSelect}
+							onReorder={onReorder}
+							onAdd={onAdd}
+							addLabel={addLabel}
+							groupActions={groupActions}
+							isAdding={addingGroupIds.includes(group.id)}
+							useSortableGroup={useSortableGroup}
+						/>
+					))}
+				</div>
+			</SortableContext>
+			<DragOverlay>
+				{activeGroup && (
+					<div className="kadence-blocks-style-library__swatch-group-ghost">
+						<SectionHeading leading={<DragHandle label={groupHandleLabel(activeGroup.label)} />}>
+							{activeGroup.label}
+						</SectionHeading>
+					</div>
+				)}
+			</DragOverlay>
+		</DndContext>
 	);
 }
 
@@ -87,12 +141,25 @@ export function SwatchGrid({
  *                                         actions slot node.
  * @param {boolean}       [props.isAdding] Whether THIS group's add-color is currently in flight —
  *                                         disables just its own add tile.
+ * @param {Function}      props.useSortableGroup The per-item sortable hook from the grid's outer
+ *                                         `useReorderableList`, called with this group's id.
  *
  * @since TBD
  *
  * @return {JSX.Element} The group.
  */
-function SwatchGridGroup({ group, selectedId, onSelect, onReorder, onAdd, addLabel, groupActions, isAdding }) {
+function SwatchGridGroup({
+	group,
+	selectedId,
+	onSelect,
+	onReorder,
+	onAdd,
+	addLabel,
+	groupActions,
+	isAdding,
+	useSortableGroup,
+}) {
+	const groupSortable = useSortableGroup(group.id);
 	const ids = group.items.map((item) => item.id);
 	const { contextProps, sortableContextProps, useSortableItem, activeId } = useReorderableList({
 		ids,
@@ -108,15 +175,26 @@ function SwatchGridGroup({ group, selectedId, onSelect, onReorder, onAdd, addLab
 	const isGroupPendingDelete = Boolean(group.pendingDelete);
 
 	return (
-		<div className="kadence-blocks-style-library__swatch-group">
+		<div
+			ref={groupSortable.setNodeRef}
+			style={groupSortable.style}
+			className={classnames('kadence-blocks-style-library__swatch-group', {
+				'kadence-blocks-style-library__swatch-group--placeholder': groupSortable.isDragging,
+			})}
+		>
 			<div
-				className={
-					isGroupPendingDelete
-						? 'kadence-blocks-style-library__swatch-group-heading kadence-blocks-style-library__swatch-group-heading--pending-delete'
-						: 'kadence-blocks-style-library__swatch-group-heading'
-				}
+				className={classnames('kadence-blocks-style-library__swatch-group-heading', {
+					'kadence-blocks-style-library__swatch-group-heading--pending-delete': isGroupPendingDelete,
+				})}
 			>
-				<SectionHeading actions={!isGroupPendingDelete && groupActions ? groupActions(group) : null}>
+				<SectionHeading
+					leading={
+						!isGroupPendingDelete ? (
+							<DragHandle handleProps={groupSortable.handleProps} label={groupHandleLabel(group.label)} />
+						) : null
+					}
+					actions={!isGroupPendingDelete && groupActions ? groupActions(group) : null}
+				>
 					{group.label}
 				</SectionHeading>
 			</div>
