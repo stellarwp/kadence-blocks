@@ -2,13 +2,15 @@
 /**
  * External dependencies
  */
+import fs from 'fs';
+import path from 'path';
 import { act } from 'react';
 import { createRoot } from 'react-dom/client';
 
 /**
  * Internal dependencies
  */
-import { SwatchGrid } from '../components/organisms/SwatchGrid';
+import { SwatchGrid, SwatchGroupGhost } from '../components/organisms/SwatchGrid';
 import { SwatchCard } from '../components/molecules/SwatchCard';
 
 const HEADING_PENDING_DELETE_CLASS = 'kadence-blocks-style-library__swatch-group-heading--pending-delete';
@@ -460,5 +462,50 @@ describe('SwatchGrid group drag handle', () => {
 
 		expect(document.querySelector('.kadence-blocks-style-library__swatch-group-ghost')).toBeNull();
 		expect(container.querySelector('.kadence-blocks-style-library__swatch-group--placeholder')).toBeNull();
+	});
+
+	it('renders the whole group in the ghost: handle, title, actions, and every swatch', () => {
+		const group = makeGroup({
+			items: [
+				{ id: 'primitive.color.brand.primary', name: 'Main 1', subLine: '#111111', isDraggable: true },
+				{ id: 'primitive.color.brand.secondary', name: 'Main 2', subLine: '#222222' },
+			],
+		});
+
+		act(() => {
+			root.render(
+				<SwatchGroupGhost
+					group={group}
+					selectedId=""
+					addLabel="Add color"
+					groupActions={() => <button type="button" data-testid="group-menu-trigger" />}
+				/>
+			);
+		});
+
+		const ghost = container.querySelector('.kadence-blocks-style-library__swatch-group-ghost');
+		expect(ghost.querySelector('h3').textContent).toBe('Accent');
+		expect(ghost.querySelector('[aria-label="Drag to reorder Accent"]')).not.toBeNull();
+		expect(ghost.querySelector('[data-testid="group-menu-trigger"]')).not.toBeNull();
+		expect(
+			[...ghost.querySelectorAll('.kadence-blocks-style-library__swatch-card-name')].map((n) => n.textContent)
+		).toEqual(['Main 1', 'Main 2']);
+	});
+
+	it('sizes the drag handle icon only inside a group heading row', () => {
+		const scss = fs.readFileSync(path.join(__dirname, '../components/organisms/SwatchGrid.scss'), 'utf8');
+		const rule = scss.match(/([^{}]*drag-handle-icon)\s*{([^}]*)}/);
+
+		expect(rule[1]).toContain('__section-heading-row');
+		expect(rule[2]).toMatch(/width:\s*0\.875rem/);
+		expect(rule[2]).toMatch(/height:\s*0\.875rem/);
+
+		renderGrid([makeGroup({ items: [{ id: 'a', name: 'A', subLine: '#111', isDraggable: true }] })]);
+
+		const swatchHandle = container.querySelector(
+			'.kadence-blocks-style-library__swatch-card .kadence-blocks-style-library__drag-handle'
+		);
+		expect(swatchHandle.closest('.kadence-blocks-style-library__section-heading-row')).toBeNull();
+		expect(groupHandles()[0].closest('.kadence-blocks-style-library__section-heading-row')).not.toBeNull();
 	});
 });
