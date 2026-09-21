@@ -8,3 +8,18 @@
 	border-radius: var(--kb-sl-radius-m);
 	box-shadow: var(--kb-sl-shadow-menu);
 }
+
+// Under the mobile breakpoint core turns the popover into a full-screen sheet with its own close
+// header, so the fixed width, frame, and the panel's own close control are dropped.
+.kadence-blocks-style-library__settings-popover.is-expanded {
+	.components-popover__content.components-popover__content {
+		width: auto;
+		border: 0;
+		border-radius: 0;
+		box-shadow: none;
+	}
+
+	.kadence-blocks-style-library__settings-panel-close {
+		display: none;
+	}
+}
