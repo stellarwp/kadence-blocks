@@ -144,6 +144,7 @@ export function ScaleSettings({ config, route, navigate, library }) {
 
 	return (
 		<SettingsPanel
+			title={__('Edit token', 'kadence-blocks')}
 			onClose={handleClose}
 			destructiveAction={isDeletable(token) ? 'delete' : 'reset'}
 			onDelete={handleDelete}

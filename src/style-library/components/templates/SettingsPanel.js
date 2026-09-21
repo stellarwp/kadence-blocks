@@ -25,7 +25,8 @@ import './SettingsPanel.scss';
  * Render the settings panel.
  *
  * @param {Object}         props               The component props.
- * @param {Function}       props.onClose        Close-control handler.
+ * @param {Function}       props.onClose        Close-control and Cancel handler.
+ * @param {string}         [props.title]        The header title, defaults to "Settings".
  * @param {?Array<Object>} [props.tabs]         `[{ name, title }]` state tabs (e.g. Normal/Hover), or null for none.
  * @param {?string}        [props.activeTab]    The active tab name (controlled), null without tabs.
  * @param {?Function}      [props.onTabChange]  Tab-change handler.
@@ -70,6 +71,7 @@ import './SettingsPanel.scss';
  */
 export function SettingsPanel({
 	onClose,
+	title = __('Settings', 'kadence-blocks'),
 	tabs = null,
 	activeTab = null,
 	onTabChange,
@@ -92,9 +94,7 @@ export function SettingsPanel({
 	return (
 		<div className="kadence-blocks-style-library__settings-panel">
 			<div className="kadence-blocks-style-library__settings-panel-header">
-				<h2 className="kadence-blocks-style-library__settings-panel-title">
-					{__('Settings', 'kadence-blocks')}
-				</h2>
+				<h2 className="kadence-blocks-style-library__settings-panel-title">{title}</h2>
 				<Button
 					icon={closeSmall}
 					label={__('Close', 'kadence-blocks')}
@@ -139,6 +139,9 @@ export function SettingsPanel({
 						{isDeleting ? __('Deleting…', 'kadence-blocks') : __('Delete', 'kadence-blocks')}
 					</Button>
 				)}
+				<Button variant="tertiary" onClick={onClose}>
+					{__('Cancel', 'kadence-blocks')}
+				</Button>
 				<Button variant="primary" isBusy={isSaving} disabled={!isDirty || isBusy} onClick={onSave}>
 					{isSaving ? __('Saving…', 'kadence-blocks') : __('Save', 'kadence-blocks')}
 				</Button>

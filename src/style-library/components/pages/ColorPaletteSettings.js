@@ -193,6 +193,7 @@ export function ColorPaletteSettings({ route, navigate, library }) {
 
 	return (
 		<SettingsPanel
+			title={__('Edit color', 'kadence-blocks')}
 			onClose={panel.close}
 			onSave={onSave}
 			destructiveAction={isCustom ? 'delete' : 'reset'}

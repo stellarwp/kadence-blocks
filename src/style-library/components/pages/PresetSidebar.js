@@ -198,6 +198,7 @@ function PresetSidebarBody({ navigate, route, screen, initialValues, presetLabel
 
 	return (
 		<SettingsPanel
+			title={__('Edit preset', 'kadence-blocks')}
 			onClose={handleClose}
 			tabs={tabs ?? null}
 			activeTab={activeTab}
