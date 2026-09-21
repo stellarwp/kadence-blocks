@@ -152,4 +152,32 @@ describe('SettingsPopover', () => {
 
 		expect(onClose).not.toHaveBeenCalled();
 	});
+
+	/**
+	 * Focus landing on an item's element is that item's own click, so it must not close the popover.
+	 *
+	 * @return {void}
+	 */
+	it('ignores focus that lands on an item element', () => {
+		const onClose = jest.fn();
+
+		renderPopover({ onClose });
+		popoverProps.onFocusOutside({ relatedTarget: container.querySelector('[data-card="a"]') });
+
+		expect(onClose).not.toHaveBeenCalled();
+	});
+
+	/**
+	 * Focus landing on something that is not an item still closes the popover.
+	 *
+	 * @return {void}
+	 */
+	it('closes when focus lands outside every item', () => {
+		const onClose = jest.fn();
+
+		renderPopover({ onClose });
+		popoverProps.onFocusOutside({ relatedTarget: document.body });
+
+		expect(onClose).toHaveBeenCalledTimes(1);
+	});
 });

@@ -14,7 +14,7 @@ import { Popover } from '@wordpress/components';
  */
 import './SettingsPopover.scss';
 import { SETTINGS_PANEL_TITLE_ID } from './SettingsPanel';
-import { useItemAnchor } from '../../hooks/use-item-anchor';
+import { useIsInsideItemAnchor, useItemAnchor } from '../../hooks/use-item-anchor';
 
 /**
  * Render the settings popover.
@@ -37,13 +37,20 @@ import { useItemAnchor } from '../../hooks/use-item-anchor';
  */
 export function SettingsPopover({ itemId, onClose, ignoreFocusOutside = false, children }) {
 	const anchor = useItemAnchor(itemId);
+	const isInsideItemAnchor = useIsInsideItemAnchor();
 
 	if (!anchor) {
 		return <div hidden>{children}</div>;
 	}
 
-	const handleFocusOutside = () => {
-		if (!ignoreFocusOutside) {
+	// Focus landing on another item is that item's own click at work: it switches the popover, and
+	// closing here as well would run after the switch and shut the popover it just opened.
+	const handleFocusOutside = (event) => {
+		const landedOnItem = [event?.relatedTarget, event?.target, anchor.element.ownerDocument.activeElement].some(
+			isInsideItemAnchor
+		);
+
+		if (!ignoreFocusOutside && !landedOnItem) {
 			onClose();
 		}
 	};

@@ -132,3 +132,26 @@ export function useItemAnchor(id) {
 
 	return anchors?.get(id) ?? null;
 }
+
+/**
+ * Get a function that tells whether a node sits inside any registered item element. The settings
+ * popover uses it to tell a click on another item apart from a click on nothing.
+ *
+ * @since TBD
+ *
+ * @return {Function} `(node) => boolean`.
+ */
+export function useIsInsideItemAnchor() {
+	const anchors = useContext(AnchorsContext);
+
+	return useCallback(
+		(node) => {
+			if (!anchors || !node) {
+				return false;
+			}
+
+			return Array.from(anchors.values()).some(({ element }) => element.contains(node));
+		},
+		[anchors]
+	);
+}
