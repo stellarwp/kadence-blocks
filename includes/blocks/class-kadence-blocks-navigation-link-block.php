@@ -3,6 +3,8 @@
  * Class to Build the Navigation Link Block.
  *
  * @package Kadence Blocks
+ *
+ * cSpell:ignore autoembed kses untrailingslashit
  */
 
 // Exit if accessed directly.
@@ -114,7 +116,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			}
 		}
 
-		// non specific syles / variables
+		// non specific styles / variables.
 		$css->set_selector( '.kb-nav-link-' . $unique_id );
 		if ( isset( $attributes['dropdownShadow'][0]['enable'] ) && $attributes['dropdownShadow'][0]['enable'] ) {
 			$css->add_property( '--kb-nav-dropdown-box-shadow', $css->render_shadow( $attributes['dropdownShadow'][0] ) );
@@ -282,7 +284,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			$css->add_property( 'background-color', 'var(--kb-nav-link-media-container-background-active, var(--kb-nav-link-media-container-background, transparent))' );
 		}
 
-		// styles that need a more speicifc selector
+		// styles that need a more specific selector.
 		$css->set_selector( '.kb-nav-link-' . $unique_id . ' > .kb-link-wrap.kb-link-wrap.kb-link-wrap > .kb-nav-link-content' );
 		$css->render_typography( $attributes );
 
@@ -559,9 +561,9 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 	/**
 	 * Build HTML for dynamic blocks
 	 *
-	 * @param $attributes
-	 * @param $unique_id
-	 * @param $content
+	 * @param array    $attributes     The blocks attributes.
+	 * @param string   $unique_id      The blocks unique id.
+	 * @param string   $content        The inner content.
 	 * @param WP_Block $block_instance The instance of the WP_Block class that represents the block being rendered.
 	 *
 	 * @return mixed
@@ -802,7 +804,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 	/**
 	 * Builds an html attribute string from an array of keys and values.
 	 *
-	 * @param array $attributes The database attribtues.
+	 * @param array $attributes The database attributes.
 	 * @return array
 	 */
 	public function build_html_attributes( $attributes ) {

@@ -1,4 +1,7 @@
 <?php
+/**
+ * cSpell:ignore scriptable
+ */
 
 namespace Tests\wpunit\Blocks;
 
