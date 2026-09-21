@@ -16,6 +16,7 @@ import { rectSortingStrategy, SortableContext, verticalListSortingStrategy } fro
  * WordPress dependencies
  */
 import { __, sprintf } from '@wordpress/i18n';
+import { useMergeRefs } from '@wordpress/compose';
 
 /**
  * Internal dependencies
@@ -27,6 +28,7 @@ import { DragHandle } from '../atoms/DragHandle';
 import { SwatchCard } from '../molecules/SwatchCard';
 import { SwatchRow } from '../molecules/SwatchRow';
 import { useReorderableList } from '../../hooks/use-reorderable-list';
+import { useItemAnchorRef } from '../../hooks/use-item-anchor';
 import './SwatchGrid.scss';
 
 /**
@@ -352,6 +354,7 @@ export function SwatchGroupGhost({ group, selectedId, addLabel, groupActions }) 
  */
 function SortableSwatchCard({ item, isSelected, onSelect, useSortableItem, reservePillSlot }) {
 	const { setNodeRef, style, handleProps, isDragging } = useSortableItem(item.id);
+	const anchorRef = useMergeRefs([setNodeRef, useItemAnchorRef(item.id, 'right-start')]);
 
 	return (
 		<SwatchCard
@@ -359,7 +362,7 @@ function SortableSwatchCard({ item, isSelected, onSelect, useSortableItem, reser
 			isSelected={isSelected}
 			onSelect={onSelect}
 			isDragging={isDragging}
-			innerRef={setNodeRef}
+			innerRef={anchorRef}
 			wrapperStyle={style}
 			dragHandleProps={handleProps}
 			reservePillSlot={reservePillSlot}
@@ -384,6 +387,7 @@ function SortableSwatchCard({ item, isSelected, onSelect, useSortableItem, reser
  */
 function SortableSwatchRow({ item, isSelected, onSelect, useSortableItem }) {
 	const { setNodeRef, style, handleProps, isDragging } = useSortableItem(item.id);
+	const anchorRef = useMergeRefs([setNodeRef, useItemAnchorRef(item.id, 'bottom-start')]);
 
 	return (
 		<SwatchRow
@@ -391,7 +395,7 @@ function SortableSwatchRow({ item, isSelected, onSelect, useSortableItem }) {
 			isSelected={isSelected}
 			onSelect={onSelect}
 			isDragging={isDragging}
-			innerRef={setNodeRef}
+			innerRef={anchorRef}
 			wrapperStyle={style}
 			dragHandleProps={handleProps}
 		/>
