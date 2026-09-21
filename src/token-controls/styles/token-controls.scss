@@ -638,8 +638,8 @@
 }
 
 /*
- * One row: the glyph, then the control box (the field renderSlot() supplies). Shared by the single
- * linked row and every unlinked row, so linked mode gets the same anatomy — glyph included — instead
+ * One row: the icon, then the control box (the field renderSlot() supplies). Shared by the single
+ * linked row and every unlinked row, so linked mode gets the same anatomy — icon included — instead
  * of a bare field.
  */
 .kb-token-control__row {
@@ -671,77 +671,22 @@
 }
 
 /*
- * The row's leading glyph: a small standalone box marking which edge(s) the row names, rather than a
- * `::before` overlay on the field's own border. Base state is a plain 1px square; the modifiers below
- * thicken and re-color one or more of its own edges (and, for a corner, round it) to point at the
- * position the row is for. Border color reuses the same `--kb-border-dark-color` custom property the
- * previous `::before` mark used, so the highlighted edge keeps its established color.
+ * The row's leading icon is an inline SVG. All four parts are always drawn; the ones that are not the
+ * row's own side or corner dim to 25%, and the active ones stay solid.
  */
 .kb-token-control__glyph {
-	box-sizing: border-box;
 	flex: none;
-	width: 15px;
-	height: 15px;
-	border: 1px solid #949494;
-	border-radius: 2px;
+	display: block;
+	width: 20px;
+	height: 20px;
 }
 
-.kb-token-control__glyph--top,
-.kb-token-control__glyph--top-left,
-.kb-token-control__glyph--top-right,
-.kb-token-control__glyph--all {
-	border-top-width: 2px;
-	border-top-color: var(--kb-border-dark-color, #6f8094);
+.kb-token-control__glyph-part {
+	opacity: 0.25;
 }
 
-.kb-token-control__glyph--right,
-.kb-token-control__glyph--top-right,
-.kb-token-control__glyph--bottom-right,
-.kb-token-control__glyph--all {
-	border-right-width: 2px;
-	border-right-color: var(--kb-border-dark-color, #6f8094);
-}
-
-.kb-token-control__glyph--bottom,
-.kb-token-control__glyph--bottom-right,
-.kb-token-control__glyph--bottom-left,
-.kb-token-control__glyph--all {
-	border-bottom-width: 2px;
-	border-bottom-color: var(--kb-border-dark-color, #6f8094);
-}
-
-.kb-token-control__glyph--left,
-.kb-token-control__glyph--top-left,
-.kb-token-control__glyph--bottom-left,
-.kb-token-control__glyph--all {
-	border-left-width: 2px;
-	border-left-color: var(--kb-border-dark-color, #6f8094);
-}
-
-/*
- * A corner glyph also rounds the one corner it names, matching the four-corner rounding the previous
- * `::before` mark drew via `--kb-token-control-mark-radius`, reapplied here to a real element instead.
- */
-.kb-token-control__glyph--top-left {
-	border-top-left-radius: 5px;
-}
-
-.kb-token-control__glyph--top-right {
-	border-top-right-radius: 5px;
-}
-
-.kb-token-control__glyph--bottom-right {
-	border-bottom-right-radius: 5px;
-}
-
-.kb-token-control__glyph--bottom-left {
-	border-bottom-left-radius: 5px;
-}
-
-/* Linked mode's "all corners" glyph rounds every corner, standing in for "every corner is this one
-   value" the way the unlinked grid otherwise shows one corner at a time. */
-.kb-token-control__glyph--corners.kb-token-control__glyph--all {
-	border-radius: 5px;
+.kb-token-control__glyph-part.is-active {
+	opacity: 1;
 }
 
 .kb-token-control__indicator {
