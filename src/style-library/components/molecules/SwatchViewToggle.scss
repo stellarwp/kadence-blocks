@@ -1,20 +1,24 @@
 .kadence-blocks-style-library__swatch-view-toggle {
 	display: flex;
 	align-items: center;
-	gap: var(--kb-sl-space-05);
+	gap: 0.125rem;
+	padding: 0.125rem;
+	border: 1px solid var(--kb-sl-color-border);
+	border-radius: var(--kb-sl-radius-s);
 }
 
 .kadence-blocks-style-library__swatch-view-toggle-button {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	width: var(--kb-sl-size-icon-button);
-	height: var(--kb-sl-size-icon-button);
+	width: 2rem;
+	height: 1.875rem;
 	padding: 0;
 	border: none;
 	border-radius: var(--kb-sl-radius-s);
 	background: transparent;
 	box-shadow: none;
+	color: #718096;
 	cursor: pointer;
 
 	&:focus-visible {
@@ -23,14 +27,12 @@
 	}
 
 	&--pressed {
-		background: var(--kb-sl-color-theme-tint-4);
+		background: #edf2f7;
+		color: #1a202c;
 	}
 }
 
 .kadence-blocks-style-library__swatch-view-toggle-icon {
-	color: var(--kb-sl-color-gray-600);
-}
-
-.kadence-blocks-style-library__swatch-view-toggle-button--pressed .kadence-blocks-style-library__swatch-view-toggle-icon {
-	color: var(--kb-sl-color-theme);
+	width: 1rem;
+	height: 1rem;
 }
