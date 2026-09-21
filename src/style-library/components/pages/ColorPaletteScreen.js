@@ -13,6 +13,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from '@wordpress/el
 import { Button, Notice } from '@wordpress/components';
 import { __, sprintf } from '@wordpress/i18n';
 import { plus } from '@wordpress/icons';
+import classnames from 'classnames';
 
 /**
  * Internal dependencies
@@ -21,6 +22,7 @@ import { colord } from '../../helpers/colord';
 import { InheritancePill } from '../atoms/InheritancePill';
 import { ScreenHeader } from '../organisms/ScreenHeader';
 import { SwatchGrid } from '../organisms/SwatchGrid';
+import { SwatchViewToggle } from '../molecules/SwatchViewToggle';
 import { SelectDropdown } from '../molecules/SelectDropdown';
 import { ScreenDescription } from '../molecules/ScreenDescription';
 import { EmptyState } from '../molecules/EmptyState';
@@ -35,6 +37,7 @@ import { checkRename } from '../../helpers/rename';
 import { DeleteColorGroupModal } from '../organisms/DeleteColorGroupModal';
 import { usePalettes } from '../../hooks/use-palettes';
 import { useLoadingAnnouncement } from '../../hooks/use-loading-announcement';
+import { useSwatchViewMode } from '../../hooks/use-swatch-view-mode';
 import {
 	inheritedSwatchCount,
 	isBaselineGroup,
@@ -50,6 +53,7 @@ import './ColorPaletteScreen.scss';
 // A fixed count, not derived from anything — there is no "expected swatch count" to read before
 // the real palette arrives, so this just needs to fill a group row plausibly.
 const SKELETON_SWATCH_IDS = [0, 1, 2, 3, 4, 5];
+const SKELETON_ROW_IDS = [0, 1, 2, 3];
 
 /**
  * The palette loading placeholder: one group heading and a row of swatch-card-shaped skeletons in
@@ -59,15 +63,21 @@ const SKELETON_SWATCH_IDS = [0, 1, 2, 3, 4, 5];
  *
  * @param {Object} props       The component props.
  * @param {string} props.label The screen's nav label, used to build the busy-region's accessible name.
+ * @param {string} props.view  `'grid'` or `'list'` — the saved view mode, so the placeholder already
+ *                             has the shape of the grid it is about to be replaced by.
  *
  * @since TBD
  *
  * @return {JSX.Element} The swatch-grid-shaped skeleton.
  */
-function SwatchGridSkeleton({ label }) {
+function SwatchGridSkeleton({ label, view }) {
+	const isList = 'list' === view;
+
 	return (
 		<div
-			className="kadence-blocks-style-library__swatch-grid"
+			className={classnames('kadence-blocks-style-library__swatch-grid', {
+				'kadence-blocks-style-library__swatch-grid--list': isList,
+			})}
 			role="status"
 			aria-live="polite"
 			aria-busy="true"
@@ -82,28 +92,45 @@ function SwatchGridSkeleton({ label }) {
 				 * whatever its text measures — so this bar's width is a plain literal, not a reused
 				 * layout value. */}
 				<Skeleton className="kadence-blocks-style-library__skeleton--bar" style={{ width: '8rem' }} />
-				<div className="kadence-blocks-style-library__swatch-group-grid">
-					{SKELETON_SWATCH_IDS.map((id) => (
-						<div key={id} className="kadence-blocks-style-library__swatch-card">
-							<div className="kadence-blocks-style-library__swatch-card-main">
-								<div className="kadence-blocks-style-library__swatch-card-select">
-									<Skeleton className="kadence-blocks-style-library__swatch-card-preview" />
-									{/* `.swatch-card-name` only declares `max-width: 100%`, never a `width` — a real
-									 * swatch name gets its width from its own text, but this shape has none, and its
-									 * `align-items: flex-start` parent (`.swatch-card-select`) collapses an unsized
-									 * block to 0 width without one. Same fix as the group heading bar above: pin a
-									 * plausible literal width. */}
-									<span className="kadence-blocks-style-library__swatch-card-details">
-										<Skeleton
-											className="kadence-blocks-style-library__swatch-card-name kadence-blocks-style-library__skeleton--bar"
-											style={{ width: '70%' }}
-										/>
-									</span>
+				{isList ? (
+					<div className="kadence-blocks-style-library__swatch-group-list">
+						{SKELETON_ROW_IDS.map((id) => (
+							<div key={id} className="kadence-blocks-style-library__swatch-row">
+								<div className="kadence-blocks-style-library__swatch-row-select">
+									<Skeleton className="kadence-blocks-style-library__swatch-row-preview" />
+									{/* Same reason as the card name below: no text to size it, so a literal width. */}
+									<Skeleton
+										className="kadence-blocks-style-library__swatch-row-name kadence-blocks-style-library__skeleton--bar"
+										style={{ width: '8rem' }}
+									/>
 								</div>
 							</div>
-						</div>
-					))}
-				</div>
+						))}
+					</div>
+				) : (
+					<div className="kadence-blocks-style-library__swatch-group-grid">
+						{SKELETON_SWATCH_IDS.map((id) => (
+							<div key={id} className="kadence-blocks-style-library__swatch-card">
+								<div className="kadence-blocks-style-library__swatch-card-main">
+									<div className="kadence-blocks-style-library__swatch-card-select">
+										<Skeleton className="kadence-blocks-style-library__swatch-card-preview" />
+										{/* `.swatch-card-name` only declares `max-width: 100%`, never a `width` — a real
+										 * swatch name gets its width from its own text, but this shape has none, and its
+										 * `align-items: flex-start` parent (`.swatch-card-select`) collapses an unsized
+										 * block to 0 width without one. Same fix as the group heading bar above: pin a
+										 * plausible literal width. */}
+										<span className="kadence-blocks-style-library__swatch-card-details">
+											<Skeleton
+												className="kadence-blocks-style-library__swatch-card-name kadence-blocks-style-library__skeleton--bar"
+												style={{ width: '70%' }}
+											/>
+										</span>
+									</div>
+								</div>
+							</div>
+						))}
+					</div>
+				)}
 			</div>
 		</div>
 	);
@@ -144,6 +171,7 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 	// route, not another `useState`, has to be the source of truth shared with the settings panel's
 	// own separate instance below.
 	const palettes = usePalettes(library.feed, library.refreshFeed, route, navigate);
+	const [viewMode, setViewMode] = useSwatchViewMode();
 
 	// The skeleton below lives inside its own `role="status"` region, which only announces "Loading
 	// X…" while it is actually mounted — the moment it is replaced by the real grid, that region is
@@ -193,10 +221,11 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 	}, [route.item]);
 
 	/**
-	 * Reset one swatch's override, then, on success, move focus to that card's own select button —
-	 * the pill that was just clicked is about to unmount (the card flips back to the static "From"
-	 * pill), and React would otherwise drop focus to `<body>`. The card and its select button are
-	 * resolved from the click event up front rather than through a ref, since `card` is only needed
+	 * Reset one swatch's override, then, on success, move focus to that swatch's own select button —
+	 * the pill that was just clicked is about to unmount (the swatch flips back to the static "From"
+	 * pill), and React would otherwise drop focus to `<body>`. The swatch renders as a card or as a
+	 * list row depending on the view mode, so both shapes are looked up. The swatch and its select
+	 * button are resolved from the click event up front rather than through a ref, since `card` is only needed
 	 * once the promise settles and may be gone from the document by then; a failed reset leaves the
 	 * Reset button in place, so focus is left alone on failure.
 	 *
@@ -213,7 +242,9 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 				return;
 			}
 
-			const card = event.currentTarget?.closest('.kadence-blocks-style-library__swatch-card');
+			const card = event.currentTarget?.closest(
+				'.kadence-blocks-style-library__swatch-card, .kadence-blocks-style-library__swatch-row'
+			);
 
 			palettes
 				.resetSwatch(token)
@@ -232,7 +263,9 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 						navigate({ item: '' });
 					}
 
-					card?.querySelector('.kadence-blocks-style-library__swatch-card-select')?.focus();
+					card?.querySelector(
+						'.kadence-blocks-style-library__swatch-card-select, .kadence-blocks-style-library__swatch-row-select'
+					)?.focus();
 				})
 				// Swallowed: a failure already surfaces as a toast from inside `resetSwatch`, and the
 				// card simply keeps showing its override.
@@ -383,13 +416,16 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 					</>
 				}
 				primaryAction={
-					<Button variant="secondary" icon={plus} onClick={() => setIsAddGroupOpen(true)}>
-						{__('Add Color Group', 'kadence-blocks')}
-					</Button>
+					<>
+						<SwatchViewToggle value={viewMode} onChange={setViewMode} />
+						<Button variant="secondary" icon={plus} onClick={() => setIsAddGroupOpen(true)}>
+							{__('Add Color Group', 'kadence-blocks')}
+						</Button>
+					</>
 				}
 			/>
 			{palettes.isLoading ? (
-				<SwatchGridSkeleton label={label} />
+				<SwatchGridSkeleton label={label} view={viewMode} />
 			) : palettes.palette ? (
 				<>
 					{/* Suppressed while the add-group, rename-group, or delete-group modal is open —
