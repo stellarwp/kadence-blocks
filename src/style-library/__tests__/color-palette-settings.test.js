@@ -10,6 +10,7 @@ import { createRoot } from 'react-dom/client';
  */
 import { ColorPaletteSettings } from '../components/pages/ColorPaletteSettings';
 import { usePalettes } from '../hooks/use-palettes';
+import { DraftChannelContext } from '../hooks/use-draft-channel';
 
 // A factory, not bare automocking — `use-palettes.js` pulls in `../api/client`, which imports
 // `@wordpress/api-fetch` (externalized to the `wp.apiFetch` global in production, not an installed
@@ -502,5 +503,112 @@ describe('ColorPaletteSettings destructive action', () => {
 
 		expect(findButton('Save').disabled).toBe(false);
 		expect(findButton('Reset').disabled).toBe(true);
+	});
+});
+
+describe('ColorPaletteSettings draft channel', () => {
+	/**
+	 * Render the panel under a fake draft channel that records what it is given.
+	 *
+	 * @param {Object} palettes The `usePalettes` stub.
+	 *
+	 * @since TBD
+	 *
+	 * @return {{navigate: Function, channel: Object}} The navigate spy and the fake channel.
+	 */
+	function renderWithChannel(palettes) {
+		usePalettes.mockReturnValue(palettes);
+		const navigate = jest.fn();
+		const channel = {
+			publish: jest.fn(),
+			clearPublication: jest.fn(),
+			actionsRef: { current: null },
+			guard: jest.fn(),
+		};
+
+		act(() => {
+			root.render(
+				createElement(
+					DraftChannelContext.Provider,
+					{ value: channel },
+					createElement(ColorPaletteSettings, {
+						route: { screen: 'color-palette', item: TOKEN_PATH },
+						navigate,
+						library: {},
+					})
+				)
+			);
+		});
+
+		return { navigate, channel };
+	}
+
+	/**
+	 * The panel publishes its item, label and dirty bit, and re-publishes as the draft changes.
+	 *
+	 * @return {void}
+	 */
+	it('publishes the draft and its dirty bit', () => {
+		const { channel } = renderWithChannel(makePalettes(deferred()));
+
+		expect(channel.publish).toHaveBeenLastCalledWith(
+			expect.objectContaining({ itemId: TOKEN_PATH, label: 'Primary', isDirty: false })
+		);
+
+		makeDirty();
+
+		expect(channel.publish).toHaveBeenLastCalledWith(expect.objectContaining({ isDirty: true }));
+	});
+
+	/**
+	 * Cancel and the header close both hand the close to the guard instead of navigating directly.
+	 *
+	 * @return {void}
+	 */
+	it('routes Cancel and the close control through the guard', () => {
+		const { navigate, channel } = renderWithChannel(makePalettes(deferred()));
+
+		act(() => findButton('Cancel').click());
+		act(() => container.querySelector('button[label="Close"]')?.click());
+
+		expect(channel.guard).toHaveBeenCalledTimes(2);
+		expect(navigate).not.toHaveBeenCalled();
+
+		channel.guard.mock.calls[0][0]();
+
+		expect(navigate).toHaveBeenCalledWith({ item: '' });
+	});
+
+	/**
+	 * The registered save action writes the current draft, and discard is registered too.
+	 *
+	 * @return {void}
+	 */
+	it('registers save and discard for the guard modal', () => {
+		const palettes = makePalettes(deferred());
+		const { channel } = renderWithChannel(palettes);
+
+		makeDirty();
+		channel.actionsRef.current.save();
+
+		expect(palettes.saveSwatchEdits).toHaveBeenCalledWith(
+			TOKEN_PATH,
+			expect.objectContaining({ label: 'New Name' }),
+			expect.any(Object)
+		);
+		expect(typeof channel.actionsRef.current.discard).toBe('function');
+	});
+
+	/**
+	 * Unmounting clears the publication so no stale draft is left behind.
+	 *
+	 * @return {void}
+	 */
+	it('clears the publication on unmount', () => {
+		const { channel } = renderWithChannel(makePalettes(deferred()));
+
+		act(() => root.render(null));
+
+		expect(channel.clearPublication).toHaveBeenCalled();
 	});
 });
