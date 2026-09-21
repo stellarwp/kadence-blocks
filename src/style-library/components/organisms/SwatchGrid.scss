@@ -59,3 +59,20 @@
 	width: 0.875rem;
 	height: 0.875rem;
 }
+
+// One bordered box per group in list mode; rows and the footer share it, so `overflow: hidden`
+// clips their square corners to the box radius.
+.kadence-blocks-style-library__swatch-group-list {
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+	border: var(--kb-sl-border-width-input) solid var(--kb-sl-color-border);
+	border-radius: var(--kb-sl-radius-m);
+	background: var(--kb-sl-color-surface);
+}
+
+// No top border of its own: the last row is followed by this footer, so it already draws its
+// bottom separator, and a second line here would double it.
+.kadence-blocks-style-library__swatch-group-list-footer {
+	display: flex;
+}

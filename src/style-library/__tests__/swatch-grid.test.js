@@ -521,3 +521,150 @@ describe('SwatchGrid group drag handle', () => {
 		expect(groupHandles()[0].closest('.kadence-blocks-style-library__section-heading-row')).not.toBeNull();
 	});
 });
+
+describe('SwatchGrid list view', () => {
+	let container;
+	let root;
+
+	beforeEach(() => {
+		global.IS_REACT_ACT_ENVIRONMENT = true;
+		container = document.createElement('div');
+		document.body.appendChild(container);
+		root = createRoot(container);
+	});
+
+	afterEach(() => {
+		act(() => root.unmount());
+		container.remove();
+		delete global.IS_REACT_ACT_ENVIRONMENT;
+	});
+
+	/**
+	 * Render `SwatchGrid` with the given groups and extra props.
+	 *
+	 * @param {Array<Object>} groups The groups to render.
+	 * @param {Object}        [props] Props merged over the required ones.
+	 *
+	 * @since TBD
+	 *
+	 * @return {Object} The `onAdd` spy.
+	 */
+	function renderGrid(groups, props = {}) {
+		const onAdd = jest.fn();
+
+		act(() => {
+			root.render(
+				<SwatchGrid
+					groups={groups}
+					selectedId=""
+					onSelect={() => {}}
+					onAdd={onAdd}
+					addLabel="Add color"
+					{...props}
+				/>
+			);
+		});
+
+		return onAdd;
+	}
+
+	const q = (selector) => container.querySelector(selector);
+	const qa = (selector) => container.querySelectorAll(selector);
+
+	/**
+	 * Without a view prop the grid keeps rendering cards.
+	 *
+	 * @return {void}
+	 */
+	it('renders cards by default', () => {
+		renderGrid([makeGroup()]);
+
+		expect(q('.kadence-blocks-style-library__swatch-grid--list')).toBeNull();
+		expect(qa('.kadence-blocks-style-library__swatch-card')).toHaveLength(2);
+		expect(q('.kadence-blocks-style-library__swatch-row')).toBeNull();
+	});
+
+	/**
+	 * List view renders one bordered box per group with one row per item and no cards.
+	 *
+	 * @return {void}
+	 */
+	it('renders one list box per group and one row per item in list view', () => {
+		renderGrid([makeGroup(), makeGroup({ id: 'base', label: 'Base' })], { view: 'list' });
+
+		expect(q('.kadence-blocks-style-library__swatch-grid--list')).not.toBeNull();
+		expect(qa('.kadence-blocks-style-library__swatch-group-list')).toHaveLength(2);
+		expect(qa('.kadence-blocks-style-library__swatch-row')).toHaveLength(4);
+		expect(q('.kadence-blocks-style-library__swatch-card')).toBeNull();
+		expect(q('.kadence-blocks-style-library__add-tile')).toBeNull();
+	});
+
+	/**
+	 * Rows without a pill render no pill slot, and there is no reserved slot in list view.
+	 *
+	 * @return {void}
+	 */
+	it('renders no pill slot on rows without a pill', () => {
+		renderGrid([makeGroup()], { view: 'list' });
+
+		expect(q('.kadence-blocks-style-library__swatch-row-pill-slot')).toBeNull();
+	});
+
+	/**
+	 * The footer link adds a color to its own group.
+	 *
+	 * @return {void}
+	 */
+	it('calls onAdd with the group id from the footer link', () => {
+		const onAdd = renderGrid([makeGroup()], { view: 'list' });
+
+		act(() => q('.kadence-blocks-style-library__swatch-group-list-footer button').click());
+
+		expect(onAdd).toHaveBeenCalledWith('accent');
+	});
+
+	/**
+	 * The footer link is disabled while that group's add is in flight or the group is pending delete.
+	 *
+	 * @return {void}
+	 */
+	it('disables the footer link while adding or pending delete', () => {
+		renderGrid([makeGroup()], { view: 'list', addingGroupIds: ['accent'] });
+		expect(q('.kadence-blocks-style-library__add-link').disabled).toBe(true);
+
+		renderGrid([makeGroup({ pendingDelete: true })], { view: 'list' });
+		expect(q('.kadence-blocks-style-library__add-link').disabled).toBe(true);
+
+		renderGrid([makeGroup()], { view: 'list' });
+		expect(q('.kadence-blocks-style-library__add-link').disabled).toBe(false);
+	});
+
+	/**
+	 * A pending-delete group dims its heading and hides its actions, same as the card view.
+	 *
+	 * @return {void}
+	 */
+	it('dims the heading and hides the group actions while the group is pending delete', () => {
+		const groupActions = jest.fn(() => <button type="button" data-testid="group-menu-trigger" />);
+
+		renderGrid([makeGroup({ pendingDelete: true })], { view: 'list', groupActions });
+
+		expect(q(`.${HEADING_PENDING_DELETE_CLASS}`)).not.toBeNull();
+		expect(groupActions).not.toHaveBeenCalled();
+		expect(q('[data-testid="group-menu-trigger"]')).toBeNull();
+	});
+
+	/**
+	 * The row matching `selectedId` carries the selected modifier.
+	 *
+	 * @return {void}
+	 */
+	it('marks the selected row', () => {
+		renderGrid([makeGroup()], { view: 'list', selectedId: 'primitive.color.brand.secondary' });
+
+		const rows = qa('.kadence-blocks-style-library__swatch-row');
+
+		expect(rows[0].classList.contains('kadence-blocks-style-library__swatch-row--selected')).toBe(false);
+		expect(rows[1].classList.contains('kadence-blocks-style-library__swatch-row--selected')).toBe(true);
+	});
+});
