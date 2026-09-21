@@ -438,6 +438,35 @@ export function reorderGroupSwatches(groups, groupId, orderedTokens) {
 }
 
 /**
+ * Reorder the groups to `orderedGroupIds`.
+ *
+ * @param {Array<Object>} groups          The write-payload groups array.
+ * @param {Array<string>} orderedGroupIds The group id order `SwatchGrid`'s `onReorderGroups` emits.
+ *
+ * @since TBD
+ *
+ * @return {Array<Object>} A new groups array in the requested order; an id that matches no group
+ *         (or repeats) is skipped, and a group missing from `orderedGroupIds` keeps its relative
+ *         position at the end. The same reference as `groups` (a no-op) when the order does not
+ *         change.
+ */
+export function reorderGroups(groups, orderedGroupIds) {
+	const rows = groups ?? [];
+	const byId = new Map(rows.map((group) => [group.id, group]));
+	const ordered = orderedGroupIds
+		.filter((id, index, ids) => byId.has(id) && ids.indexOf(id) === index)
+		.map((id) => byId.get(id));
+	const remaining = rows.filter((group) => !orderedGroupIds.includes(group.id));
+	const next = [...ordered, ...remaining];
+
+	if (next.length === rows.length && next.every((group, index) => group === rows[index])) {
+		return groups;
+	}
+
+	return next;
+}
+
+/**
  * Append a new group. The caller must supply at least one swatch — the server drops an empty
  * group even on the default palette, so "Add Color Group" must mint the group's first swatch in
  * the same write.

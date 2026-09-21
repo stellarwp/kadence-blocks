@@ -22,6 +22,7 @@ import {
 	renameGroupInGroups,
 	renameSwatchInGroups,
 	reorderGroupSwatches,
+	reorderGroups,
 	reshapePaletteRows,
 	resolveEditingPaletteId,
 	slugifyPaletteLabel,
@@ -376,6 +377,46 @@ describe('reorderGroupSwatches', () => {
 	});
 });
 
+describe('reorderGroups', () => {
+	const groups = () => [
+		{ id: 'accent', label: 'Accent', swatches: [{ token: 'a', label: 'A', $value: '#111' }] },
+		{ id: 'contrast', label: 'Contrast', swatches: [{ token: 'b', label: 'B', $value: '#222' }] },
+		{ id: 'background', label: 'Background', swatches: [{ token: 'c', label: 'C', $value: '#333' }] },
+	];
+
+	it('applies the ordered group id list', () => {
+		const next = reorderGroups(groups(), ['background', 'accent', 'contrast']);
+
+		expect(next.map((group) => group.id)).toEqual(['background', 'accent', 'contrast']);
+	});
+
+	it('keeps groups missing from the order at the end in their relative position', () => {
+		const next = reorderGroups(groups(), ['background']);
+
+		expect(next.map((group) => group.id)).toEqual(['background', 'accent', 'contrast']);
+	});
+
+	it('skips unknown and repeated ids', () => {
+		const next = reorderGroups(groups(), ['ghost', 'contrast', 'contrast', 'accent', 'background']);
+
+		expect(next.map((group) => group.id)).toEqual(['contrast', 'accent', 'background']);
+	});
+
+	it('returns the same reference when the order is unchanged', () => {
+		const input = groups();
+
+		expect(reorderGroups(input, ['accent', 'contrast', 'background'])).toBe(input);
+	});
+
+	it('keeps every group object untouched', () => {
+		const input = groups();
+		const next = reorderGroups(input, ['contrast', 'accent', 'background']);
+
+		expect(next[0]).toBe(input[1]);
+		expect(next[1]).toBe(input[0]);
+	});
+});
+
 describe('addGroupToGroups', () => {
 	it('appends the group', () => {
 		const groups = stripEffectiveFlags(effectivePalette().groups);
@@ -402,6 +443,7 @@ describe('immutability', () => {
 		removeSwatchFromGroups(groups, 'primitive.color.brand.primary');
 		renameSwatchInGroups(groups, 'primitive.color.brand.primary', 'Renamed');
 		reorderGroupSwatches(groups, 'accent', ['primitive.color.brand.secondary', 'primitive.color.brand.primary']);
+		reorderGroups(groups, ['contrast', 'accent']);
 		addGroupToGroups(groups, { id: 'x', label: 'X', swatches: [] });
 		renameGroupInGroups(groups, 'accent', 'Renamed Accent');
 		removeGroupFromGroups(groups, 'accent');
