@@ -134,6 +134,10 @@ export function SettingsPanel({
 						isDestructive
 						isBusy={isResetting}
 						disabled={!canReset || isBusy}
+						// Keeps the button focusable (`aria-disabled` instead of the native attribute) while
+						// disabled — see the `Save` button below for why a disabled-while-focused footer
+						// button is never safe inside this popover.
+						accessibleWhenDisabled
 						onClick={onReset}
 					>
 						{isResetting ? __('Resetting…', 'kadence-blocks') : __('Reset', 'kadence-blocks')}
@@ -144,6 +148,7 @@ export function SettingsPanel({
 						isDestructive
 						isBusy={isDeleting}
 						disabled={!canDelete || isBusy}
+						accessibleWhenDisabled
 						onClick={onDelete}
 					>
 						{isDeleting ? __('Deleting…', 'kadence-blocks') : __('Delete', 'kadence-blocks')}
@@ -152,7 +157,21 @@ export function SettingsPanel({
 				<Button variant="tertiary" onClick={onClose}>
 					{__('Cancel', 'kadence-blocks')}
 				</Button>
-				<Button variant="primary" isBusy={isSaving} disabled={!isDirty || isBusy} onClick={onSave}>
+				{/* `accessibleWhenDisabled`, not a bare `disabled`: a native `disabled` attribute forces
+				    the browser to blur the button the instant `isBusy` flips true, and a click's own
+				    mousedown has already focused it right before that — the resulting blur lands with
+				    nowhere to go (`document.activeElement` falls back to `<body>`), which the settings
+				    popover's own focus-outside detection reads as a genuine click outside itself, closing
+				    the popover through the unsaved-changes guard while the save this same click started
+				    is still in flight. Keeping the button focusable (`aria-disabled` instead) avoids the
+				    forced blur; WP's `Button` still blocks the click/mousedown itself while disabled. */}
+				<Button
+					variant="primary"
+					isBusy={isSaving}
+					disabled={!isDirty || isBusy}
+					accessibleWhenDisabled
+					onClick={onSave}
+				>
 					{isSaving ? __('Saving…', 'kadence-blocks') : __('Save', 'kadence-blocks')}
 				</Button>
 			</div>

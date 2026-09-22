@@ -147,6 +147,21 @@ function findButton(text) {
 	return Array.from(container.querySelectorAll('button')).find((button) => button.textContent === text) ?? null;
 }
 
+/**
+ * Whether a footer button is disabled. The footer's buttons render `accessibleWhenDisabled` (see
+ * `SettingsPanel.js`'s own docblock), so a disabled state is `aria-disabled`, never the native
+ * `disabled` attribute — the element stays focusable throughout.
+ *
+ * @param {HTMLButtonElement} button The button to check.
+ *
+ * @since TBD
+ *
+ * @return {boolean} Whether the button is disabled.
+ */
+function isDisabled(button) {
+	return button.getAttribute('aria-disabled') === 'true';
+}
+
 describe('PresetSettings write flows notify success', () => {
 	/**
 	 * A successful save shows the Snackbar success confirmation, alongside the existing error
@@ -230,7 +245,7 @@ describe('PresetSettings write flows notify success', () => {
 
 		makeDirty();
 
-		expect(findButton('Save').disabled).toBe(false);
+		expect(isDisabled(findButton('Save'))).toBe(false);
 
 		await act(async () => {
 			findButton('Save').click();
@@ -241,7 +256,7 @@ describe('PresetSettings write flows notify success', () => {
 		renderPresetSettings(screen, 'primary');
 
 		// The draft now holds what the server stored, so the panel has nothing left to save.
-		expect(findButton('Save').disabled).toBe(true);
+		expect(isDisabled(findButton('Save'))).toBe(true);
 	});
 
 	/**
@@ -511,7 +526,7 @@ describe('PresetSettings footer gating', () => {
 	it('shows Delete for a user-created preset and Reset for a baseline one', () => {
 		renderPresetSettings(makeFooterScreen(true), 'primary');
 
-		expect(findButton('Delete').disabled).toBe(false);
+		expect(isDisabled(findButton('Delete'))).toBe(false);
 		expect(findButton('Reset')).toBeNull();
 
 		renderPresetSettings(makeFooterScreen(false), 'primary');
@@ -529,12 +544,12 @@ describe('PresetSettings footer gating', () => {
 	it('keeps a baseline preset’s Reset disabled before and after an edit while nothing is overridden', () => {
 		renderPresetSettings(makeFooterScreen(false, { color: false }), 'primary');
 
-		expect(findButton('Reset').disabled).toBe(true);
+		expect(isDisabled(findButton('Reset'))).toBe(true);
 
 		makeDirty();
 
-		expect(findButton('Save').disabled).toBe(false);
-		expect(findButton('Reset').disabled).toBe(true);
+		expect(isDisabled(findButton('Save'))).toBe(false);
+		expect(isDisabled(findButton('Reset'))).toBe(true);
 	});
 
 	/**
@@ -549,7 +564,7 @@ describe('PresetSettings footer gating', () => {
 		const screen = makeFooterScreen(false, { color: true, background: false });
 		const navigate = renderPresetSettings(screen, 'primary');
 
-		expect(findButton('Reset').disabled).toBe(false);
+		expect(isDisabled(findButton('Reset'))).toBe(false);
 
 		await act(async () => {
 			findButton('Reset').click();
@@ -577,6 +592,6 @@ describe('PresetSettings footer gating', () => {
 
 		expect(notify.notifySuccess).not.toHaveBeenCalled();
 		expect(navigate).not.toHaveBeenCalled();
-		expect(findButton('Reset').disabled).toBe(false);
+		expect(isDisabled(findButton('Reset'))).toBe(false);
 	});
 });

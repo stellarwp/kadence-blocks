@@ -41,6 +41,23 @@ function findButton(text) {
 	return Array.from(container.querySelectorAll('button')).find((button) => button.textContent === text) ?? null;
 }
 
+/**
+ * Whether a footer button is disabled. The footer's buttons render `accessibleWhenDisabled` (see
+ * `SettingsPanel.js`'s own docblock for why: a native `disabled` attribute would blur a focused
+ * button the instant it is applied, and that blur is what the settings popover's own
+ * `SettingsPopover.test.js` proves it needs to survive), so a disabled state is `aria-disabled`,
+ * never the native attribute — the element stays focusable throughout.
+ *
+ * @param {HTMLButtonElement} button The button to check.
+ *
+ * @since TBD
+ *
+ * @return {boolean} Whether the button is disabled.
+ */
+function isDisabled(button) {
+	return button.getAttribute('aria-disabled') === 'true';
+}
+
 beforeEach(() => {
 	global.IS_REACT_ACT_ENVIRONMENT = true;
 	container = document.createElement('div');
@@ -68,8 +85,8 @@ describe('SettingsPanel footer', () => {
 		expect(findButton('Delete')).not.toBeNull();
 		expect(findButton('Save')).not.toBeNull();
 		expect(findButton('Reset')).toBeNull();
-		expect(findButton('Delete').disabled).toBe(true);
-		expect(findButton('Save').disabled).toBe(true);
+		expect(isDisabled(findButton('Delete'))).toBe(true);
+		expect(isDisabled(findButton('Save'))).toBe(true);
 	});
 
 	/**
@@ -83,11 +100,11 @@ describe('SettingsPanel footer', () => {
 
 		expect(findButton('Reset')).not.toBeNull();
 		expect(findButton('Delete')).toBeNull();
-		expect(findButton('Reset').disabled).toBe(true);
+		expect(isDisabled(findButton('Reset'))).toBe(true);
 
 		renderPanel({ destructiveAction: 'reset', canReset: true });
 
-		expect(findButton('Reset').disabled).toBe(false);
+		expect(isDisabled(findButton('Reset'))).toBe(false);
 	});
 
 	/**
@@ -102,8 +119,8 @@ describe('SettingsPanel footer', () => {
 		const onSave = jest.fn();
 		renderPanel({ onDelete, canDelete: true, onSave, isDirty: true });
 
-		expect(findButton('Delete').disabled).toBe(false);
-		expect(findButton('Save').disabled).toBe(false);
+		expect(isDisabled(findButton('Delete'))).toBe(false);
+		expect(isDisabled(findButton('Save'))).toBe(false);
 
 		act(() => {
 			findButton('Delete').click();
@@ -130,13 +147,13 @@ describe('SettingsPanel footer', () => {
 	it('does not enable the destructive button from isDirty', () => {
 		renderPanel({ isDirty: true });
 
-		expect(findButton('Save').disabled).toBe(false);
-		expect(findButton('Delete').disabled).toBe(true);
+		expect(isDisabled(findButton('Save'))).toBe(false);
+		expect(isDisabled(findButton('Delete'))).toBe(true);
 
 		renderPanel({ destructiveAction: 'reset', isDirty: true });
 
-		expect(findButton('Save').disabled).toBe(false);
-		expect(findButton('Reset').disabled).toBe(true);
+		expect(isDisabled(findButton('Save'))).toBe(false);
+		expect(isDisabled(findButton('Reset'))).toBe(true);
 	});
 
 	/**
@@ -147,13 +164,43 @@ describe('SettingsPanel footer', () => {
 	it('disables every button while busy', () => {
 		renderPanel({ canDelete: true, isDirty: true, isBusy: true });
 
-		expect(findButton('Delete').disabled).toBe(true);
-		expect(findButton('Save').disabled).toBe(true);
+		expect(isDisabled(findButton('Delete'))).toBe(true);
+		expect(isDisabled(findButton('Save'))).toBe(true);
 
 		renderPanel({ destructiveAction: 'reset', canReset: true, isDirty: true, isBusy: true });
 
-		expect(findButton('Reset').disabled).toBe(true);
-		expect(findButton('Save').disabled).toBe(true);
+		expect(isDisabled(findButton('Reset'))).toBe(true);
+		expect(isDisabled(findButton('Save'))).toBe(true);
+	});
+
+	/**
+	 * A footer button disabled by `isBusy` never gets the native `disabled` attribute — only
+	 * `aria-disabled` — so a click already in flight cannot lose focus to nowhere and trip the
+	 * settings popover's own focus-outside guard (see `SettingsPanel.js`'s docblock on the Save
+	 * button). The element also stays reachable by keyboard and still refuses the click.
+	 *
+	 * @return {void}
+	 */
+	it('keeps a busy button natively focusable and refuses its click', () => {
+		const onSave = jest.fn();
+		renderPanel({ onSave, isDirty: true, isBusy: true, isSaving: true });
+
+		const save = findButton('Saving…');
+
+		expect(save.disabled).toBe(false);
+		expect(save.getAttribute('aria-disabled')).toBe('true');
+
+		act(() => {
+			save.focus();
+		});
+
+		expect(document.activeElement).toBe(save);
+
+		act(() => {
+			save.click();
+		});
+
+		expect(onSave).not.toHaveBeenCalled();
 	});
 
 	/**
