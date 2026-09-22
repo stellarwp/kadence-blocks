@@ -1,5 +1,7 @@
 <?php
 
+declare( strict_types=1 );
+
 namespace Tests\wpunit;
 
 use Kadence_Blocks_CSS;
