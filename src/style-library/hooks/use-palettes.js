@@ -16,6 +16,7 @@ import {
 	isUserCreatedPalette,
 	newSwatchValue,
 	nextCustomColorSlug,
+	reorderGroups,
 	reorderGroupSwatches,
 	resolveEditingPaletteId,
 	validateNewGroupLabel,
@@ -31,6 +32,7 @@ import {
 	removeSwatchFlow,
 	renameGroupFlow,
 	renamePaletteFlow,
+	reorderGroupsFlow,
 	reorderSwatchesFlow,
 	revertSwatchFlow,
 	saveSwatchEditsFlow,
@@ -87,7 +89,7 @@ import { EMPTY_LISTING, EMPTY_OPTIMISTIC_SWATCH_EDIT, paletteEditKey, paletteLis
  *                  clearDeleteError, clearStructureError,
  *                  openPalette, activatePalette, createPalette, renamePalette, deletePalette,
  *                  saveSwatchEdits, removeSwatch, resetSwatch, isSwatchCustom, addColor,
- *                  addingGroupIds, addGroup, reorderSwatches, renameGroup, removeGroup }`.
+ *                  addingGroupIds, addGroup, reorderSwatches, reorderGroups, renameGroup, removeGroup }`.
  *                  `isSwatchCustom(token)` tells the caller whether a swatch should offer Delete
  *                  (a custom, user-created token) or Reset (a built-in token showing this palette's
  *                  own override) — `resetSwatch` is the Reset half, `removeSwatch` the Delete half.
@@ -738,6 +740,39 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 		[namespace, slug, listing.defaultId, palette, onReceive, refreshFeed]
 	);
 
+	const reorderGroupsWrite = useCallback(
+		(orderedGroupIds) => {
+			// Same busy handling as `reorderSwatches`: a drop has no disabled button in front of it,
+			// so the message goes to `structureError` instead of a silent rejection.
+			if (isBusyRef.current) {
+				const message = __('Another change to this library is already in progress.', 'kadence-blocks');
+				setStructureError({ message });
+				return Promise.reject(new Error(message));
+			}
+
+			setStructureError(null);
+
+			if (palette) {
+				setPendingGroups(reorderGroups(palette.groups, orderedGroupIds));
+			}
+
+			return reorderGroupsFlow({
+				namespace,
+				slug,
+				defaultId: listing.defaultId,
+				orderedGroupIds,
+				onReceive,
+				refreshFeed,
+				onBusy: setIsBusy,
+				onError: (err) => {
+					setPendingGroups(null);
+					setStructureError(err);
+				},
+			});
+		},
+		[namespace, slug, listing.defaultId, palette, onReceive, refreshFeed]
+	);
+
 	const renameGroup = useCallback(
 		(groupId, label) => {
 			const busy = guardBusy();
@@ -841,6 +876,7 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 		addingGroupIds,
 		addGroup,
 		reorderSwatches,
+		reorderGroups: reorderGroupsWrite,
 		renameGroup,
 		removeGroup,
 	};

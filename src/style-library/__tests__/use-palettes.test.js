@@ -1218,6 +1218,102 @@ describe('usePalettes', () => {
 		expect(probe.latest().structureError).toEqual({ message: 'Conflict' });
 	});
 
+	const twoGroupDefaultView = () => ({
+		...defaultView(),
+		groups: [
+			...defaultView().groups,
+			{
+				id: 'contrast',
+				label: 'Contrast',
+				swatches: [
+					{ token: 'primitive.color.neutral.900', label: 'Strongest', $value: '#1A202C', overridden: false },
+				],
+			},
+		],
+	});
+
+	it('reorderGroups applies the new group order optimistically, then keeps it once the write resolves', async () => {
+		client.fetchPalettes.mockResolvedValueOnce(listingRows({ defaultView: twoGroupDefaultView }));
+		client.fetchPalette.mockResolvedValueOnce(twoGroupDefaultView());
+		client.savePalette.mockResolvedValueOnce(
+			listingRows({
+				defaultView: () => ({
+					...twoGroupDefaultView(),
+					groups: [...twoGroupDefaultView().groups].reverse(),
+				}),
+			})
+		);
+
+		const probe = mountProbe();
+		await probe.render();
+
+		expect(probe.latest().palette.groups.map((group) => group.id)).toEqual(['accent', 'contrast']);
+
+		let writePromise;
+		act(() => {
+			writePromise = probe.latest().reorderGroups(['contrast', 'accent']);
+		});
+
+		expect(probe.latest().palette.groups.map((group) => group.id)).toEqual(['contrast', 'accent']);
+
+		await act(async () => writePromise);
+
+		expect(client.savePalette).toHaveBeenCalled();
+		expect(probe.latest().palette.groups.map((group) => group.id)).toEqual(['contrast', 'accent']);
+		expect(probe.latest().structureError).toBeNull();
+	});
+
+	it('reorderGroups rolls back the optimistic group order when the write fails', async () => {
+		client.fetchPalettes.mockResolvedValueOnce(listingRows({ defaultView: twoGroupDefaultView }));
+		client.fetchPalette.mockResolvedValueOnce(twoGroupDefaultView());
+		client.savePalette.mockRejectedValueOnce(new Error('Conflict'));
+
+		const probe = mountProbe();
+		await probe.render();
+
+		let writePromise;
+		act(() => {
+			writePromise = probe
+				.latest()
+				.reorderGroups(['contrast', 'accent'])
+				.catch(() => {});
+		});
+
+		expect(probe.latest().palette.groups.map((group) => group.id)).toEqual(['contrast', 'accent']);
+
+		await act(async () => writePromise);
+
+		expect(probe.latest().palette.groups.map((group) => group.id)).toEqual(['accent', 'contrast']);
+		expect(probe.latest().structureError).toEqual({ message: 'Conflict' });
+	});
+
+	it('reorderGroups is blocked while another write is pending, with a visible error and no request', async () => {
+		client.fetchPalettes.mockResolvedValueOnce(listingRows({ defaultView: twoGroupDefaultView }));
+		client.fetchPalette.mockReturnValueOnce(new Promise(() => {}));
+
+		const probe = mountProbe();
+		await probe.render();
+
+		act(() => {
+			probe
+				.latest()
+				.reorderSwatches('accent', ['primitive.color.brand.secondary', 'primitive.color.brand.primary']);
+		});
+		expect(probe.latest().isBusy).toBe(true);
+
+		let reorderPromise;
+		act(() => {
+			reorderPromise = probe.latest().reorderGroups(['contrast', 'accent']);
+		});
+
+		await expect(reorderPromise).rejects.toThrow('Another change to this library is already in progress.');
+		expect(client.fetchPalette).toHaveBeenCalledTimes(1);
+		expect(probe.latest().structureError).toEqual({
+			message: 'Another change to this library is already in progress.',
+		});
+		expect(probe.latest().palette.groups.map((group) => group.id)).toEqual(['accent', 'contrast']);
+	});
+
 	// The exact scenario a reviewer's finding described: save a swatch edit from the settings
 	// panel, then, before that write resolves, drag-reorder a DIFFERENT swatch in the same palette.
 	// Before this guard existed, the reorder would read the palette without the pending edit and

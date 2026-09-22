@@ -2,13 +2,15 @@
 /**
  * External dependencies
  */
+import fs from 'fs';
+import path from 'path';
 import { act } from 'react';
 import { createRoot } from 'react-dom/client';
 
 /**
  * Internal dependencies
  */
-import { SwatchGrid } from '../components/organisms/SwatchGrid';
+import { SwatchGrid, SwatchGroupGhost } from '../components/organisms/SwatchGrid';
 import { SwatchCard } from '../components/molecules/SwatchCard';
 
 const HEADING_PENDING_DELETE_CLASS = 'kadence-blocks-style-library__swatch-group-heading--pending-delete';
@@ -349,5 +351,173 @@ describe('SwatchCard pill slot', () => {
 		renderCard({ onSelect, isPendingDelete: true });
 
 		expect(cardContainer.querySelector('.kadence-blocks-style-library__swatch-card-select').disabled).toBe(true);
+	});
+});
+
+describe('SwatchGrid group drag handle', () => {
+	let container;
+	let root;
+
+	beforeEach(() => {
+		global.IS_REACT_ACT_ENVIRONMENT = true;
+		container = document.createElement('div');
+		document.body.appendChild(container);
+		root = createRoot(container);
+	});
+
+	afterEach(() => {
+		act(() => root.unmount());
+		container.remove();
+		delete global.IS_REACT_ACT_ENVIRONMENT;
+	});
+
+	/**
+	 * Render `SwatchGrid` with the given groups and a marker in every heading's actions slot.
+	 *
+	 * @param {Array<Object>} groups The groups to render.
+	 *
+	 * @since TBD
+	 *
+	 * @return {void}
+	 */
+	function renderGrid(groups) {
+		act(() => {
+			root.render(
+				<SwatchGrid
+					groups={groups}
+					selectedId=""
+					onSelect={() => {}}
+					onAdd={() => {}}
+					addLabel="Add color"
+					groupActions={() => <button type="button" data-testid="group-menu-trigger" />}
+				/>
+			);
+		});
+	}
+
+	/**
+	 * The group handle buttons currently rendered, in DOM order.
+	 *
+	 * @since TBD
+	 *
+	 * @return {Array<HTMLButtonElement>} The handles inside a heading row.
+	 */
+	function groupHandles() {
+		return [
+			...container.querySelectorAll(
+				'.kadence-blocks-style-library__section-heading-row .kadence-blocks-style-library__drag-handle'
+			),
+		];
+	}
+
+	it('renders one named handle per group, first in the heading row, before the title and the actions', () => {
+		renderGrid([makeGroup(), makeGroup({ id: 'contrast', label: 'Contrast' })]);
+
+		const handles = groupHandles();
+		expect(handles.map((button) => button.getAttribute('aria-label'))).toEqual([
+			'Drag to reorder Accent',
+			'Drag to reorder Contrast',
+		]);
+
+		handles.forEach((button) => {
+			const row = button.closest('.kadence-blocks-style-library__section-heading-row');
+			expect(row.firstElementChild).toBe(button);
+			expect(row.querySelector('h3')).not.toBeNull();
+			expect(row.querySelector('[data-testid="group-menu-trigger"]')).not.toBeNull();
+		});
+	});
+
+	it('still renders the handle when the grid holds a single group', () => {
+		renderGrid([makeGroup()]);
+
+		expect(groupHandles().map((button) => button.getAttribute('aria-label'))).toEqual(['Drag to reorder Accent']);
+	});
+
+	it('renders no group handle for a group that is pending delete', () => {
+		renderGrid([makeGroup({ pendingDelete: true }), makeGroup({ id: 'contrast', label: 'Contrast' })]);
+
+		expect(groupHandles().map((button) => button.getAttribute('aria-label'))).toEqual(['Drag to reorder Contrast']);
+	});
+
+	it('keeps the swatch handles with their own generic name, separate from the group handles', () => {
+		renderGrid([
+			makeGroup({
+				items: [{ id: 'primitive.color.brand.primary', name: 'Main 1', subLine: '#111111', isDraggable: true }],
+			}),
+			makeGroup({ id: 'contrast', label: 'Contrast' }),
+		]);
+
+		const swatchHandles = [
+			...container.querySelectorAll(
+				'.kadence-blocks-style-library__swatch-card .kadence-blocks-style-library__drag-handle'
+			),
+		];
+		expect(swatchHandles).toHaveLength(1);
+		expect(swatchHandles[0].getAttribute('aria-label')).toBe('Drag to reorder');
+		expect(groupHandles()).toHaveLength(2);
+	});
+
+	it('renders no group ghost while nothing is being dragged', () => {
+		renderGrid([makeGroup(), makeGroup({ id: 'contrast', label: 'Contrast' })]);
+
+		expect(document.querySelector('.kadence-blocks-style-library__swatch-group-ghost')).toBeNull();
+		expect(container.querySelector('.kadence-blocks-style-library__swatch-group--placeholder')).toBeNull();
+	});
+
+	it('renders the whole group in the ghost: handle, title, actions, and every swatch', () => {
+		const group = makeGroup({
+			items: [
+				{ id: 'primitive.color.brand.primary', name: 'Main 1', subLine: '#111111', isDraggable: true },
+				{ id: 'primitive.color.brand.secondary', name: 'Main 2', subLine: '#222222' },
+			],
+		});
+
+		act(() => {
+			root.render(
+				<SwatchGroupGhost
+					group={group}
+					selectedId=""
+					addLabel="Add color"
+					groupActions={() => <button type="button" data-testid="group-menu-trigger" />}
+				/>
+			);
+		});
+
+		const ghost = container.querySelector('.kadence-blocks-style-library__swatch-group-ghost');
+		expect(ghost.querySelector('h3').textContent).toBe('Accent');
+		expect(ghost.querySelector('[aria-label="Drag to reorder Accent"]')).not.toBeNull();
+		expect(ghost.querySelector('[data-testid="group-menu-trigger"]')).not.toBeNull();
+		expect(
+			[...ghost.querySelectorAll('.kadence-blocks-style-library__swatch-card-name')].map((n) => n.textContent)
+		).toEqual(['Main 1', 'Main 2']);
+	});
+
+	it('makes the ghost inert and hidden from the accessibility tree', () => {
+		const group = makeGroup();
+
+		act(() => {
+			root.render(<SwatchGroupGhost group={group} selectedId="" addLabel="Add color" />);
+		});
+
+		const ghost = container.querySelector('.kadence-blocks-style-library__swatch-group-ghost');
+		expect(ghost.getAttribute('inert')).toBe('');
+		expect(ghost.getAttribute('aria-hidden')).toBe('true');
+	});
+
+	it('sizes the drag handle icon only inside a group heading row', () => {
+		const scss = fs.readFileSync(path.join(__dirname, '../components/organisms/SwatchGrid.scss'), 'utf8');
+		const rule = scss.match(/([^{}]*drag-handle-icon)\s*{([^}]*)}/);
+
+		expect(rule[1]).toContain('__section-heading-row');
+		expect(rule[2]).toMatch(/width:\s*0\.875rem/);
+		expect(rule[2]).toMatch(/height:\s*0\.875rem/);
+
+		renderGrid([makeGroup({ items: [{ id: 'a', name: 'A', subLine: '#111', isDraggable: true }] })]);
+
+		const swatchHandle = container.querySelector(
+			'.kadence-blocks-style-library__swatch-card .kadence-blocks-style-library__drag-handle'
+		);
+		expect(swatchHandle.closest('.kadence-blocks-style-library__section-heading-row')).toBeNull();
+		expect(groupHandles()[0].closest('.kadence-blocks-style-library__section-heading-row')).not.toBeNull();
 	});
 });
