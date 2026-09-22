@@ -415,6 +415,21 @@ describe('reorderGroups', () => {
 		expect(next[0]).toBe(input[1]);
 		expect(next[1]).toBe(input[0]);
 	});
+
+	it('moves only the first occurrence of a duplicated source id, keeping the rest', () => {
+		const duplicated = [
+			{ id: 'accent', label: 'Accent 1', swatches: [{ token: 'a', label: 'A', $value: '#111' }] },
+			{ id: 'contrast', label: 'Contrast', swatches: [{ token: 'b', label: 'B', $value: '#222' }] },
+			{ id: 'accent', label: 'Accent 2', swatches: [{ token: 'c', label: 'C', $value: '#333' }] },
+		];
+
+		const next = reorderGroups(duplicated, ['contrast', 'accent']);
+
+		expect(next).toHaveLength(3);
+		expect(next[0]).toBe(duplicated[1]);
+		expect(next[1]).toBe(duplicated[0]);
+		expect(next[2]).toBe(duplicated[2]);
+	});
 });
 
 describe('addGroupToGroups', () => {

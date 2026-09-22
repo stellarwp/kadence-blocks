@@ -447,16 +447,29 @@ export function reorderGroupSwatches(groups, groupId, orderedTokens) {
  *
  * @return {Array<Object>} A new groups array in the requested order; an id that matches no group
  *         (or repeats) is skipped, and a group missing from `orderedGroupIds` keeps its relative
- *         position at the end. The same reference as `groups` (a no-op) when the order does not
- *         change.
+ *         position at the end. A duplicated source id moves only its first occurrence — the rest
+ *         stay in place among the remaining groups. The same reference as `groups` (a no-op) when
+ *         the order does not change.
  */
 export function reorderGroups(groups, orderedGroupIds) {
 	const rows = groups ?? [];
-	const byId = new Map(rows.map((group) => [group.id, group]));
-	const ordered = orderedGroupIds
-		.filter((id, index, ids) => byId.has(id) && ids.indexOf(id) === index)
-		.map((id) => byId.get(id));
-	const remaining = rows.filter((group) => !orderedGroupIds.includes(group.id));
+	const byId = new Map();
+	rows.forEach((group) => {
+		byId.set(group.id, [...(byId.get(group.id) ?? []), group]);
+	});
+
+	const consumedIds = new Set();
+	const ordered = [];
+	orderedGroupIds.forEach((id) => {
+		const queue = byId.get(id);
+		if (consumedIds.has(id) || !queue?.length) {
+			return;
+		}
+		consumedIds.add(id);
+		ordered.push(queue.shift());
+	});
+
+	const remaining = rows.filter((group) => byId.get(group.id)?.includes(group));
 	const next = [...ordered, ...remaining];
 
 	if (next.length === rows.length && next.every((group, index) => group === rows[index])) {
