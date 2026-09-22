@@ -492,6 +492,18 @@ describe('SwatchGrid group drag handle', () => {
 		).toEqual(['Main 1', 'Main 2']);
 	});
 
+	it('makes the ghost inert and hidden from the accessibility tree', () => {
+		const group = makeGroup();
+
+		act(() => {
+			root.render(<SwatchGroupGhost group={group} selectedId="" addLabel="Add color" />);
+		});
+
+		const ghost = container.querySelector('.kadence-blocks-style-library__swatch-group-ghost');
+		expect(ghost.getAttribute('inert')).toBe('');
+		expect(ghost.getAttribute('aria-hidden')).toBe('true');
+	});
+
 	it('sizes the drag handle icon only inside a group heading row', () => {
 		const scss = fs.readFileSync(path.join(__dirname, '../components/organisms/SwatchGrid.scss'), 'utf8');
 		const rule = scss.match(/([^{}]*drag-handle-icon)\s*{([^}]*)}/);

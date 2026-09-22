@@ -260,7 +260,11 @@ export function SwatchGroupGhost({ group, selectedId, addLabel, groupActions }) 
 	const reservePillSlot = group.items.some((item) => Boolean(item.pill));
 
 	return (
-		<div className="kadence-blocks-style-library__swatch-group kadence-blocks-style-library__swatch-group-ghost">
+		<div
+			className="kadence-blocks-style-library__swatch-group kadence-blocks-style-library__swatch-group-ghost"
+			inert=""
+			aria-hidden="true"
+		>
 			<SectionHeading
 				leading={<DragHandle label={groupHandleLabel(group.label)} />}
 				actions={groupActions ? groupActions(group) : null}
