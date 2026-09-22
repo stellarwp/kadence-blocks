@@ -1,0 +1,135 @@
+.kadence-blocks-style-library__swatch-row {
+	// Component-scoped, not a global primitive: this size is not on the spacing ramp.
+	--kb-sl-swatch-row-preview-size: 1.75rem;
+
+	position: relative;
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	padding: 0.625rem 0.75rem;
+	background: var(--kb-sl-color-surface);
+
+	&:not(:last-child) {
+		border-bottom: 1px solid var(--kb-sl-color-border);
+	}
+
+	// `:not()` keeps a selected-and-hovered row on its selected tint.
+	&:hover:not(.kadence-blocks-style-library__swatch-row--selected) {
+		// Later rows are positioned too and paint in DOM order, so without this they cover the shadow
+		// this row casts downward.
+		z-index: 1;
+		background: #f7fafc;
+		box-shadow: 0 0 0.5px 0 rgba(0, 0, 0, 0.25), 0 2px 4px 0 rgba(0, 0, 0, 0.15);
+	}
+
+	&--selected {
+		background: var(--kb-sl-color-theme-tint-4);
+		box-shadow: inset 0 0 0 1px var(--kb-sl-color-theme);
+	}
+
+	// Compound selector so it ties the `:not(:last-child)` rule on specificity and wins on source
+	// order — same reason as `ListRow`'s placeholder.
+	&.kadence-blocks-style-library__swatch-row--placeholder {
+		border: var(--kb-sl-border-width-input) dashed var(--kb-sl-color-control-border);
+		background: var(--kb-sl-color-gray-100);
+
+		// `visibility: hidden`, not removed, so the placeholder keeps the row's size.
+		> * {
+			visibility: hidden;
+		}
+	}
+
+	&--pending-delete {
+		opacity: 0.5;
+		pointer-events: none;
+	}
+}
+
+// The handle comes before the select button in the DOM, so without a z-index the button's stretched
+// `::after` paints over it and swallows the drag.
+.kadence-blocks-style-library__swatch-row-handle-slot {
+	position: relative;
+	z-index: 1;
+	display: flex;
+	flex: 0 0 auto;
+	align-items: center;
+	width: var(--kb-sl-space-30);
+
+	// Same size as the group heading's handle, so the two handles read as one family.
+	.kadence-blocks-style-library__drag-handle-icon {
+		width: 0.875rem;
+		height: 0.875rem;
+	}
+}
+
+.kadence-blocks-style-library__swatch-row-select {
+	display: flex;
+	flex: 1;
+	align-items: center;
+	gap: var(--kb-sl-space-15);
+	min-width: 0;
+	padding: 0;
+	border: 0;
+	background: none;
+	text-align: left;
+
+	// Stretches the hit area over the whole row while the pill and handle stay separate controls.
+	&::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+	}
+}
+
+// The loading placeholder reuses the class on an inert `div`, which must not promise an action.
+button.kadence-blocks-style-library__swatch-row-select {
+	cursor: pointer;
+}
+
+.kadence-blocks-style-library__swatch-row-preview {
+	box-sizing: border-box;
+	display: flex;
+	flex: 0 0 auto;
+	overflow: hidden;
+	width: var(--kb-sl-swatch-row-preview-size);
+	height: var(--kb-sl-swatch-row-preview-size);
+	border: var(--kb-sl-border-width-input) solid var(--kb-sl-color-gray-200);
+	border-radius: var(--kb-sl-radius-l);
+}
+
+.kadence-blocks-style-library__swatch-row-name {
+	overflow: hidden;
+	min-width: 0;
+	color: var(--kb-sl-color-text-primary);
+	font-size: var(--kb-sl-font-size-small);
+	line-height: var(--kb-sl-line-height-s);
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.kadence-blocks-style-library__swatch-row-pill-slot {
+	position: relative;
+	display: flex;
+	flex: 0 0 auto;
+	align-items: center;
+	margin-left: auto;
+}
+
+// A fixed floor so the pill keeps the same left edge across rows: a hex value ("#RRGGBB") is the
+// common case and fits well inside it, while a longer value simply grows the column.
+.kadence-blocks-style-library__swatch-row-sub-line {
+	--kb-sl-swatch-row-value-min-width: 5rem;
+
+	flex: 0 0 auto;
+	min-width: var(--kb-sl-swatch-row-value-min-width);
+	text-align: right;
+	color: var(--kb-sl-color-text-muted);
+	font-size: var(--kb-sl-font-size-xs);
+	font-weight: var(--kb-sl-font-weight-medium);
+	line-height: var(--kb-sl-line-height-xs);
+}
+
+// Without a pill nothing else takes the free space, so the value pushes itself to the right edge.
+.kadence-blocks-style-library__swatch-row-select + .kadence-blocks-style-library__swatch-row-sub-line {
+	margin-left: auto;
+}

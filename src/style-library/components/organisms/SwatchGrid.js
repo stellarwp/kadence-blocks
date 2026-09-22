@@ -22,8 +22,10 @@ import { __, sprintf } from '@wordpress/i18n';
  */
 import { SectionHeading } from '../atoms/SectionHeading';
 import { AddTile } from '../atoms/AddTile';
+import { AddLink } from '../atoms/AddLink';
 import { DragHandle } from '../atoms/DragHandle';
 import { SwatchCard } from '../molecules/SwatchCard';
+import { SwatchRow } from '../molecules/SwatchRow';
 import { useReorderableList } from '../../hooks/use-reorderable-list';
 import './SwatchGrid.scss';
 
@@ -79,6 +81,7 @@ export function SwatchGrid({
 	addLabel,
 	groupActions = null,
 	addingGroupIds = [],
+	view = 'grid',
 }) {
 	const groupIds = groups.map((group) => group.id);
 	const {
@@ -95,7 +98,11 @@ export function SwatchGrid({
 	return (
 		<DndContext {...contextProps}>
 			<SortableContext {...sortableContextProps} strategy={verticalListSortingStrategy}>
-				<div className="kadence-blocks-style-library__swatch-grid">
+				<div
+					className={classnames('kadence-blocks-style-library__swatch-grid', {
+						'kadence-blocks-style-library__swatch-grid--list': 'list' === view,
+					})}
+				>
 					{groups.map((group) => (
 						<SwatchGridGroup
 							key={group.id}
@@ -108,6 +115,7 @@ export function SwatchGrid({
 							groupActions={groupActions}
 							isAdding={addingGroupIds.includes(group.id)}
 							useSortableGroup={useSortableGroup}
+							view={view}
 						/>
 					))}
 				</div>
@@ -119,6 +127,7 @@ export function SwatchGrid({
 						selectedId={selectedId}
 						addLabel={addLabel}
 						groupActions={groupActions}
+						view={view}
 					/>
 				)}
 			</DragOverlay>
@@ -144,6 +153,7 @@ export function SwatchGrid({
  *                                         disables just its own add tile.
  * @param {Function}      props.useSortableGroup The per-item sortable hook from the grid's outer
  *                                         `useReorderableList`, called with this group's id.
+ * @param {string}        props.view       `'grid'` or `'list'`.
  *
  * @since TBD
  *
@@ -159,7 +169,9 @@ function SwatchGridGroup({
 	groupActions,
 	isAdding,
 	useSortableGroup,
+	view,
 }) {
+	const isList = 'list' === view;
 	const groupSortable = useSortableGroup(group.id);
 	const ids = group.items.map((item) => item.id);
 	const { contextProps, sortableContextProps, useSortableItem, activeId } = useReorderableList({
@@ -200,42 +212,75 @@ function SwatchGridGroup({
 				</SectionHeading>
 			</div>
 			<DndContext {...contextProps}>
-				<SortableContext {...sortableContextProps} strategy={rectSortingStrategy}>
-					<div className="kadence-blocks-style-library__swatch-group-grid">
-						{group.items.map((item) => (
-							<SortableSwatchCard
-								key={item.id}
-								item={item}
-								isSelected={item.id === selectedId}
-								onSelect={onSelect}
-								useSortableItem={useSortableItem}
-								reservePillSlot={reservePillSlot}
+				{isList ? (
+					<SortableContext {...sortableContextProps} strategy={verticalListSortingStrategy}>
+						<div className="kadence-blocks-style-library__swatch-group-list">
+							{group.items.map((item) => (
+								<SortableSwatchRow
+									key={item.id}
+									item={item}
+									isSelected={item.id === selectedId}
+									onSelect={onSelect}
+									useSortableItem={useSortableItem}
+								/>
+							))}
+							<div className="kadence-blocks-style-library__swatch-group-list-footer">
+								<AddLink
+									label={addLabel}
+									onClick={() => onAdd(group.id)}
+									disabled={isAdding || isGroupPendingDelete}
+								/>
+							</div>
+						</div>
+					</SortableContext>
+				) : (
+					<SortableContext {...sortableContextProps} strategy={rectSortingStrategy}>
+						<div className="kadence-blocks-style-library__swatch-group-grid">
+							{group.items.map((item) => (
+								<SortableSwatchCard
+									key={item.id}
+									item={item}
+									isSelected={item.id === selectedId}
+									onSelect={onSelect}
+									useSortableItem={useSortableItem}
+									reservePillSlot={reservePillSlot}
+								/>
+							))}
+							<AddTile
+								label={addLabel}
+								onClick={() => onAdd(group.id)}
+								disabled={isAdding || isGroupPendingDelete}
 							/>
-						))}
-						<AddTile
-							label={addLabel}
-							onClick={() => onAdd(group.id)}
-							disabled={isAdding || isGroupPendingDelete}
-						/>
-					</div>
-				</SortableContext>
+						</div>
+					</SortableContext>
+				)}
 				{/* The floating copy that actually follows the pointer/keyboard focus — see the matching
 				 * comment on `RowList`'s own `DragOverlay`. No sortable wiring here — this copy doesn't
 				 * participate in the sortable group itself. */}
 				<DragOverlay>
-					{activeItem && (
-						// `pill={null}` after the spread: the floating copy must not carry a second
-						// focusable Reset button duplicating the original card's accessible name.
-						// `reservePillSlot` still carries the row's decision, so the overlay keeps
-						// matching the height of the placeholder it stands in for.
-						<SwatchCard
-							{...activeItem}
-							isSelected={activeItem.id === selectedId}
-							onSelect={() => {}}
-							pill={null}
-							reservePillSlot={reservePillSlot}
-						/>
-					)}
+					{activeItem &&
+						(isList ? (
+							// `pill={null}` after the spread: the floating copy must not carry a second
+							// focusable Reset button duplicating the original row's accessible name.
+							<SwatchRow
+								{...activeItem}
+								isSelected={activeItem.id === selectedId}
+								onSelect={() => {}}
+								pill={null}
+							/>
+						) : (
+							// `pill={null}` after the spread: the floating copy must not carry a second
+							// focusable Reset button duplicating the original card's accessible name.
+							// `reservePillSlot` still carries the row's decision, so the overlay keeps
+							// matching the height of the placeholder it stands in for.
+							<SwatchCard
+								{...activeItem}
+								isSelected={activeItem.id === selectedId}
+								onSelect={() => {}}
+								pill={null}
+								reservePillSlot={reservePillSlot}
+							/>
+						))}
 				</DragOverlay>
 			</DndContext>
 		</div>
@@ -318,6 +363,37 @@ function SortableSwatchCard({ item, isSelected, onSelect, useSortableItem, reser
 			wrapperStyle={style}
 			dragHandleProps={handleProps}
 			reservePillSlot={reservePillSlot}
+		/>
+	);
+}
+
+/**
+ * The per-row sortable wrapper: resolves `useSortableItem` for one row and hands its ref, drag
+ * style, and handle props to `SwatchRow`. Not exported — an implementation detail of
+ * `SwatchGridGroup`.
+ *
+ * @param {Object}   props                  The component props.
+ * @param {Object}   props.item             The row descriptor (`SwatchRow` props).
+ * @param {boolean}  props.isSelected       Whether this row is selected.
+ * @param {Function} props.onSelect         Row click handler.
+ * @param {Function} props.useSortableItem  The per-item sortable hook from `useReorderableList`.
+ *
+ * @since TBD
+ *
+ * @return {JSX.Element} The wired row.
+ */
+function SortableSwatchRow({ item, isSelected, onSelect, useSortableItem }) {
+	const { setNodeRef, style, handleProps, isDragging } = useSortableItem(item.id);
+
+	return (
+		<SwatchRow
+			{...item}
+			isSelected={isSelected}
+			onSelect={onSelect}
+			isDragging={isDragging}
+			innerRef={setNodeRef}
+			wrapperStyle={style}
+			dragHandleProps={handleProps}
 		/>
 	);
 }
