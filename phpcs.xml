@@ -85,10 +85,18 @@
 		<exclude-pattern>./includes/resources/Optimizer/Store/Cached_Store_Decorator.php</exclude-pattern>
 	</rule>
 
+	<rule ref="WordPress.WP.GlobalVariablesOverride.Prohibited">
+		<exclude-pattern>./tests/*</exclude-pattern>
+	</rule>
+
 	<rule ref="PHPCompatibilityWP"/>
 	<config name="testVersion" value="7.4-"/>
 
-	<file>./src</file>
-	<exclude-pattern>*.css</exclude-pattern>
-	<exclude-pattern>*.js</exclude-pattern>
+	<arg name="extensions" value="php"/>
+	<arg value="sp"/>
+
+	<file>./includes</file>
+	<file>./kadence-blocks.php</file>
+	<file>./uninstall.php</file>
+	<file>./tests</file>
 </ruleset>
