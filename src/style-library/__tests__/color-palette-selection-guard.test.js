@@ -27,13 +27,34 @@ jest.mock('../hooks/use-palettes', () => ({
 // `ActivatePaletteButton`, and the create/rename/delete/add-group modals all live under it), so this
 // list covers every export those organisms reach for, not only the ones the screen itself imports.
 jest.mock('@wordpress/components', () => ({
-	Button: ({ children, isBusy, isDestructive, variant, icon, ...props }) => <button {...props}>{children}</button>,
+	Button: ({ children, isBusy, isDestructive, variant, icon, iconPosition, ...props }) => (
+		<button {...props}>{children}</button>
+	),
 	Notice: ({ children, isDismissible, onRemove, status, ...props }) => <div {...props}>{children}</div>,
 	DropdownMenu: () => null,
 	MenuGroup: ({ children }) => <div>{children}</div>,
-	MenuItem: ({ children, ...props }) => <button {...props}>{children}</button>,
-	// Never opened by these tests, so only the toggle needs to render.
-	Dropdown: ({ renderToggle }) => renderToggle({ isOpen: false, onToggle: () => {} }),
+	MenuItem: ({ children, suffix, icon, iconPosition, ...props }) => <button {...props}>{children}</button>,
+	// Opens on click and renders its content, so the palette selector's menu items are reachable —
+	// the swatch-selection tests below never open a menu and stay unaffected.
+	Dropdown: ({ renderToggle, renderContent, onClose, onToggle }) => {
+		const React = require('react');
+		const [isOpen, setIsOpen] = React.useState(false);
+		const setOpen = (nextOpen) => {
+			setIsOpen(nextOpen);
+			onToggle?.(nextOpen);
+		};
+		const close = () => {
+			setOpen(false);
+			onClose?.();
+		};
+
+		return (
+			<div>
+				{renderToggle({ isOpen, onToggle: () => setOpen(!isOpen) })}
+				{isOpen && <div data-popover>{renderContent({ onClose: close })}</div>}
+			</div>
+		);
+	},
 	Spinner: () => <span className="components-spinner" />,
 	ExternalLink: ({ children, ...props }) => <a {...props}>{children}</a>,
 	Tooltip: ({ children }) => children,
@@ -42,7 +63,9 @@ jest.mock('@wordpress/components', () => ({
 			{children}
 		</div>
 	),
-	TextControl: (props) => <input {...props} />,
+	TextControl: ({ label, value, onChange, help, ...props }) => (
+		<input aria-label={label} value={value} onChange={(event) => onChange(event.target.value)} {...props} />
+	),
 	SelectControl: ({ children, options, ...props }) => (
 		<select {...props}>
 			{(options ?? []).map((option) => (
@@ -239,5 +262,92 @@ describe('Color Palette selection and the unsaved-changes guard', () => {
 		act(() => container.querySelectorAll(`.${SL}swatch-card-select`)[1]?.click());
 
 		expect(navigate).toHaveBeenCalledWith({ item: 'accent.two' });
+	});
+
+	/**
+	 * Choosing a different palette in the header selector hands the open to the guard instead of
+	 * opening it directly — the open swatch's dirty draft must be able to block it the same way a
+	 * swatch selection does.
+	 *
+	 * @return {void}
+	 */
+	it('routes changing the palette selector through the guard', () => {
+		const channel = makeChannel();
+		const palettes = makePalettes();
+
+		renderScreen(palettes, { channel });
+
+		act(() => container.querySelector(`.${SL}select-dropdown-toggle`)?.click());
+		act(() =>
+			[...container.querySelectorAll('[data-popover] button')]
+				.find((button) => button.textContent === 'Base')
+				?.click()
+		);
+
+		expect(channel.guard).toHaveBeenCalledTimes(1);
+		expect(palettes.openPalette).not.toHaveBeenCalled();
+
+		channel.guard.mock.calls[0][0]();
+
+		expect(palettes.openPalette).toHaveBeenCalledWith('default');
+	});
+
+	/**
+	 * With no channel mounted, changing the palette selector opens the palette directly.
+	 *
+	 * @return {void}
+	 */
+	it('opens the selected palette directly without a channel', () => {
+		const palettes = makePalettes();
+
+		renderScreen(palettes);
+
+		act(() => container.querySelector(`.${SL}select-dropdown-toggle`)?.click());
+		act(() =>
+			[...container.querySelectorAll('[data-popover] button')]
+				.find((button) => button.textContent === 'Base')
+				?.click()
+		);
+
+		expect(palettes.openPalette).toHaveBeenCalledWith('default');
+	});
+
+	/**
+	 * Adding a color group fires its optimistic navigate callback synchronously, before the write
+	 * settles, so the action must go through the guard the same way Add Color already does.
+	 *
+	 * @return {void}
+	 */
+	it('routes adding a color group through the guard', () => {
+		const channel = makeChannel();
+		const palettes = makePalettes();
+
+		renderScreen(palettes, { channel });
+
+		act(() =>
+			[...container.querySelectorAll('button')]
+				.find((button) => button.textContent === 'Add Color Group')
+				?.click()
+		);
+
+		const input = container.querySelector('input[aria-label="Group name"]');
+
+		act(() => {
+			const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
+
+			setter.call(input, 'Highlights');
+			input.dispatchEvent(new Event('input', { bubbles: true }));
+		});
+
+		act(() => {
+			container.querySelector('form')?.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+		});
+
+		expect(channel.guard).toHaveBeenCalledTimes(1);
+		expect(palettes.addGroup).not.toHaveBeenCalled();
+
+		channel.guard.mock.calls[0][0]();
+
+		expect(palettes.addGroup).toHaveBeenCalledWith('Highlights', expect.any(Function));
 	});
 });

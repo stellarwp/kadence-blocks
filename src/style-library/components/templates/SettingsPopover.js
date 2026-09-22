@@ -62,6 +62,7 @@ export function SettingsPopover({ itemId, onClose, ignoreFocusOutside = false, c
 			placement={anchor.placement}
 			offset={8}
 			shift
+			resize={false}
 			expandOnMobile
 			focusOnMount="firstElement"
 			aria-labelledby={SETTINGS_PANEL_TITLE_ID}

@@ -386,7 +386,11 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 							// "fixes" this to also activate would silently re-tint the live site every time
 							// someone merely looks at a different palette; see `usePalettes().openPalette`'s
 							// own comment in `hooks/use-palettes.js`.
-							onChange={(id) => palettes.openPalette(id).catch(() => {})}
+							onChange={(id) => {
+								const open = () => palettes.openPalette(id).catch(() => {});
+
+								channel ? channel.guard(open) : open();
+							}}
 							isBusy={palettes.isBusy}
 							isLoading={palettes.isLoading}
 							error={palettes.openError}
@@ -565,18 +569,21 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 						setIsAddGroupOpen(false);
 						palettes.clearStructureError();
 					}}
-					onAdd={(groupLabel) =>
-						palettes
-							// Opens the new group's settings panel the moment the optimistic group and its
-							// first swatch exist in the store, not after the write confirms — see `addGroup`'s
-							// own `onOptimistic` docs.
-							.addGroup(groupLabel, (newToken) => navigate({ item: newToken }))
-							// A validation rejection (empty/duplicate name) never reaches here —
-							// `AddColorGroupModal` disables its own Add button for both cases before `onAdd`
-							// can fire. A real write failure is already surfaced via Snackbar inside
-							// `addGroup`.
-							.catch(() => {})
-					}
+					onAdd={(groupLabel) => {
+						const add = () =>
+							palettes
+								// Opens the new group's settings panel the moment the optimistic group and its
+								// first swatch exist in the store, not after the write confirms — see `addGroup`'s
+								// own `onOptimistic` docs.
+								.addGroup(groupLabel, (newToken) => navigate({ item: newToken }))
+								// A validation rejection (empty/duplicate name) never reaches here —
+								// `AddColorGroupModal` disables its own Add button for both cases before `onAdd`
+								// can fire. A real write failure is already surfaced via Snackbar inside
+								// `addGroup`.
+								.catch(() => {});
+
+						channel ? channel.guard(add) : add();
+					}}
 				/>
 			)}
 			{deleteGroupTarget && (
