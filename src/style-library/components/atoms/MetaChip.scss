@@ -1,0 +1,13 @@
+.kadence-blocks-style-library__meta-chip {
+	display: inline-flex;
+	align-items: center;
+	padding: 0 var(--kb-sl-space-10);
+	border-radius: var(--kb-sl-radius-full);
+	background: var(--kb-sl-color-gray-100);
+	color: var(--kb-sl-color-text-primary);
+	font-size: var(--kb-sl-font-size-s);
+	font-weight: var(--kb-sl-font-weight-semibold);
+	// 1.125rem per spec, not on the line-height ramp.
+	line-height: 1.125rem;
+	white-space: nowrap;
+}

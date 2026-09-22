@@ -27,7 +27,7 @@ define( 'KADENCE_BLOCKS_VERSION', '3.7.11.1' );
  *
  * @since 3.7.0
  */
-if ( ! defined('KADENCE_BLOCKS_PLUGIN_BASENAME') ) {
+if ( ! defined( 'KADENCE_BLOCKS_PLUGIN_BASENAME' ) ) {
 	define( 'KADENCE_BLOCKS_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 }
 

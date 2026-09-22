@@ -1,0 +1,114 @@
+@use '../../styles/mixins' as *;
+
+// The card row wraps onto two lines: the label/size chips stay on the first line, the sample text
+// preview drops to its own full-width line below. `.list-row-main`'s shared layout is a single
+// non-wrapping flex line, so this screen unlocks wrapping and restyles the label/value spans as
+// small pills — `MetaChip`'s visual treatment, not the component itself: mounting `MetaChip` here
+// would need a new label/value-node seam in `ListRow`'s shared row mapping for purely
+// presentational gain.
+.kadence-blocks-style-library__scale-screen--typography .kadence-blocks-style-library__list-row-main {
+	flex-wrap: wrap;
+	gap: var(--kb-sl-space-10) var(--kb-sl-space-15);
+}
+
+.kadence-blocks-style-library__scale-screen--typography .kadence-blocks-style-library__list-row-label,
+.kadence-blocks-style-library__scale-screen--typography .kadence-blocks-style-library__list-row-value {
+	flex: 0 0 auto;
+	width: auto;
+	display: inline-flex;
+	align-items: center;
+	padding: 0 var(--kb-sl-space-10);
+	border-radius: var(--kb-sl-radius-full);
+	background: var(--kb-sl-color-gray-100);
+	color: var(--kb-sl-color-text-primary);
+	font-family: inherit;
+	font-size: var(--kb-sl-font-size-s);
+	font-weight: var(--kb-sl-font-weight-semibold);
+	line-height: 1.125rem;
+	white-space: nowrap;
+}
+
+// The sample text needs the card's full width on its own line — the shared preview slot's fixed
+// square, `overflow: hidden`, and gray fill exist for a content-agnostic swatch, not a sentence of
+// text at an arbitrary font size.
+.kadence-blocks-style-library__scale-screen--typography .kadence-blocks-style-library__list-row-preview {
+	flex: 1 1 100%;
+	width: auto;
+	height: auto;
+	justify-content: flex-start;
+	overflow: visible;
+	border: 0;
+	background: transparent;
+}
+
+.kadence-blocks-style-library__typography-sample {
+	display: block;
+	overflow-wrap: anywhere;
+	color: var(--kb-sl-color-text-primary);
+	line-height: var(--kb-sl-line-height-ratio-snug);
+}
+
+// The board's selected-card treatment: the shared tinted background already applies through
+// `--list-row--selected`; this adds the blue accent border the board shows on top of it.
+.kadence-blocks-style-library__scale-screen--typography .kadence-blocks-style-library__list-row--selected {
+	border-left: var(--kb-sl-border-width-input) solid var(--kb-sl-color-theme);
+}
+
+// The FONT preview toolbar, rendered by `ScaleScreen`'s optional `renderToolbar` seam between the
+// header and the row list.
+.kadence-blocks-style-library__typography-toolbar {
+	@include flex-column(var(--kb-sl-space-15));
+
+	margin: var(--kb-sl-space-20) 0;
+}
+
+.kadence-blocks-style-library__typography-toolbar-row {
+	display: flex;
+	align-items: flex-end;
+	justify-content: space-between;
+	gap: var(--kb-sl-space-15);
+}
+
+.kadence-blocks-style-library__typography-font-selector {
+	@include flex-column(var(--kb-sl-space-10));
+}
+
+.kadence-blocks-style-library__typography-font-label {
+	@include small-uppercase-label;
+
+	// The spinner sits beside the label while the selected face is being fetched, so the sample
+	// holding its previous font reads as loading rather than as the pick not having registered.
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+
+	.components-spinner {
+		margin: 0;
+	}
+}
+
+// The catalog dropdown and its contextual Add/Remove Favorite button sit side by side, beneath the
+// FONT label — the board's slot for both.
+.kadence-blocks-style-library__typography-font-picker {
+	@include flex-row(var(--kb-sl-space-10));
+
+	align-items: center;
+}
+
+// The favorite button's busy stripes, restored for its Remove (tertiary) face. `wp-components`
+// flattens the background of a disabled secondary OR tertiary button, then re-asserts the busy
+// gradient over that for `.is-secondary.is-busy` alone — there is no tertiary counterpart, and the
+// generic `.components-button.is-busy` rule loses the specificity contest. So Add Favorite animates
+// while Remove Favorite sits perfectly still, which is the state this control most needs to show.
+// Only the background is clobbered; the animation itself survives, so re-declaring the gradient at a
+// weight the disabled rule cannot beat is the whole fix.
+
+// The two literals are `wp-components`' own busy-stripe values, copied exactly so this face animates
+// identically to the Add face beside it and to every other busy button in the app (`SettingsPanel`'s
+// Save and Delete, `PresetScreen`'s Add). They are deliberately NOT routed through `--kb-sl-*`
+// primitives: they belong to the platform's button treatment, not to this app's palette, and giving
+// them a token here would both misfile them and let a palette edit silently break the match.
+.kadence-blocks-style-library__typography-font-action.is-tertiary.is-busy[aria-disabled='true'] {
+	background-image: linear-gradient(-45deg, #fafafa 33%, #e0e0e0 33%, #e0e0e0 70%, #fafafa 70%);
+	background-size: 100px 100%;
+}
