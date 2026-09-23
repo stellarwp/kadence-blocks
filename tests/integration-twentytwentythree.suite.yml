@@ -1,0 +1,23 @@
+# Codeception Test Suite Configuration
+
+# Covers what the plugin does with a block theme and no Kadence theme code.
+path: integration/TwentyTwentyThree
+class_name: IntegrationTester
+modules:
+    enabled: [WPLoader, \Helper\Palette, \Helper\GlobalEditorStyles]
+    config:
+        WPLoader:
+            wpRootFolder: %WP_ROOT_FOLDER%
+            dbName: %WP_TEST_DB_NAME%
+            dbHost: %WP_TEST_DB_HOST%
+            dbUser: %WP_TEST_DB_USER%
+            dbPassword: %WP_TEST_DB_PASSWORD%
+            tablePrefix: test_
+            domain: %WP_DOMAIN%
+            adminEmail: admin@kadence.test
+            title: 'Kadence Blocks Integration Tests'
+            theme: twentytwentythree
+            plugins:
+                - kadence-blocks/kadence-blocks.php
+            activatePlugins:
+                - kadence-blocks/kadence-blocks.php

@@ -1,0 +1,25 @@
+# Codeception Test Suite Configuration
+
+# Covers what the plugin does with the Kadence theme active, in its classic and
+# Full Site Editing modes. Run dev_scripts/integration-theme.sh first to put the
+# theme in place.
+path: integration/Kadence
+class_name: IntegrationTester
+modules:
+    enabled: [WPLoader, \Helper\Palette, \Helper\GlobalEditorStyles]
+    config:
+        WPLoader:
+            wpRootFolder: %WP_ROOT_FOLDER%
+            dbName: %WP_TEST_DB_NAME%
+            dbHost: %WP_TEST_DB_HOST%
+            dbUser: %WP_TEST_DB_USER%
+            dbPassword: %WP_TEST_DB_PASSWORD%
+            tablePrefix: test_
+            domain: %WP_DOMAIN%
+            adminEmail: admin@kadence.test
+            title: 'Kadence Blocks Integration Tests'
+            theme: kadence
+            plugins:
+                - kadence-blocks/kadence-blocks.php
+            activatePlugins:
+                - kadence-blocks/kadence-blocks.php
