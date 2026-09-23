@@ -22,7 +22,6 @@ import { SettingsPanel } from '../templates/SettingsPanel';
 import { SettingsForm } from '../organisms/SettingsForm';
 import { EmptyState } from '../molecules/EmptyState';
 import { DragHandle } from '../atoms/DragHandle';
-import { MetaChip } from '../atoms/MetaChip';
 import { SectionHeading } from '../atoms/SectionHeading';
 import { AddTile } from '../atoms/AddTile';
 import { SelectDropdown } from '../molecules/SelectDropdown';
@@ -388,10 +387,9 @@ function PrimitivesGallery() {
 				/>
 			</GallerySection>
 
-			<GallerySection name="Atoms" layer="atom" note="DragHandle, MetaChip, SectionHeading, AddTile standalone.">
+			<GallerySection name="Atoms" layer="atom" note="DragHandle, SectionHeading, AddTile standalone.">
 				<div className="kadence-blocks-style-library__placeholder-gallery-atoms">
 					<DragHandle />
-					<MetaChip>4XL</MetaChip>
 					<SectionHeading>Group label</SectionHeading>
 					<AddTile label="Add color" onClick={() => window.console.log('add tile clicked')} />
 				</div>
