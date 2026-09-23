@@ -14,6 +14,9 @@ on:
       - 'dev_scripts/integration-theme.sh'
       - '.github/workflows/tests.yml'
   push:
+    branches:
+      - master
+      - release/fse
     paths:
       - '**.php'
       - 'composer.lock'
