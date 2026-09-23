@@ -4,7 +4,7 @@
 // preview drops to its own full-width line below. `.list-row-main`'s shared layout is a single
 // non-wrapping flex line, so this screen unlocks wrapping and restyles the label/value spans as
 // small pills, styled directly here rather than through a shared component — a new label/value-node
-// seam in `ListRow`'s shared row mapping would buy nothing beyond this one screen.
+// slot in `ListRow`'s shared row mapping would buy nothing beyond this one screen.
 .kadence-blocks-style-library__scale-screen--typography .kadence-blocks-style-library__list-row-main {
 	flex-wrap: wrap;
 	gap: var(--kb-sl-space-10);

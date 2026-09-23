@@ -54,7 +54,7 @@ describe('PlaceholderScreen', () => {
 		expect(screen.querySelector('p').textContent).toBe('This screen is coming soon.');
 	});
 
-	it('shows no dev-only controls and owns no settings panel in a development build', () => {
+	it('renders no controls and owns no settings panel in a development build', () => {
 		process.env.NODE_ENV = 'development';
 
 		const { container, PlaceholderScreen } = renderPlaceholderScreen({

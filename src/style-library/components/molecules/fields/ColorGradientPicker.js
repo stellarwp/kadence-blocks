@@ -1,6 +1,6 @@
 /**
  * The shared Color/Gradient two-tab picker body: a solid `ColorPicker` and a `GradientPicker`.
- * Composed by `ColorField` rather than duplicated.
+ * Rendered by `ColorField`.
  */
 
 /**

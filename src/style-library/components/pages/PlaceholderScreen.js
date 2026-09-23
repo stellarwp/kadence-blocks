@@ -22,8 +22,6 @@ import './PlaceholderScreen.scss';
  * @since TBD
  *
  * @return {JSX.Element} The placeholder screen.
- *
- * @todo Replaced per screen by the Style Library per-screen work.
  */
 export function PlaceholderScreen({ label }) {
 	return (

@@ -94,7 +94,7 @@ describe('normalizeSchema', () => {
 
 	it('demotes responsive: true on a non-capable type to false and warns', () => {
 		const schema = {
-			fields: [{ type: 'color', path: 'enabled', label: 'Enabled', responsive: true }],
+			fields: [{ type: 'color', path: 'value', label: 'Color', responsive: true }],
 		};
 
 		const normalized = normalizeSchema(schema);
