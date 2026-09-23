@@ -59,7 +59,7 @@ describe('PlaceholderScreen', () => {
 
 		const { container, PlaceholderScreen } = renderPlaceholderScreen({
 			label: 'Tabs',
-			route: { item: 'demo' },
+			route: { item: 'stale-item' },
 			navigate: () => {},
 		});
 
