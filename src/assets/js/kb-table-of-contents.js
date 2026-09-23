@@ -306,8 +306,14 @@
 			}
 		},
 		scrollToElement(element, offset, history = true) {
-			const originalTop = Math.floor(element.getBoundingClientRect().top) - offset;
-			window.scrollBy({ top: originalTop, left: 0, behavior: 'smooth' });
+			// Math.ceil (not Math.floor) guarantees the scroll distance is at
+			// least the distance needed, so the landed position ends up
+			// at-or-above the offset line instead of just short of it. A
+			// Math.floor here leaves the heading's top a fraction of a pixel
+			// past the offset, which fails initScrollSpy()'s `top <= offset`
+			// check and leaves the previous entry marked active.
+			const delta = Math.ceil(element.getBoundingClientRect().top - offset);
+			window.scrollBy({ top: delta, left: 0, behavior: 'smooth' });
 			element.tabIndex = '-1';
 			element.focus({
 				preventScroll: true,
@@ -354,25 +360,129 @@
 			}
 		},
 		initScrollSpy() {
-			if (typeof Gumshoe == 'function') {
-				const scroll_spy = document.querySelectorAll(
-					'.wp-block-kadence-tableofcontents[data-scroll-spy="true"]'
+			const scroll_spy = document.querySelectorAll(
+				'.wp-block-kadence-tableofcontents[data-scroll-spy="true"]'
+			);
+			if (!scroll_spy.length) {
+				return;
+			}
+			for (let n = 0; n < scroll_spy.length; n++) {
+				const offset = parseInt(scroll_spy[n].getAttribute('data-scroll-offset')) || 0;
+				const navItems = document.querySelectorAll(
+					'.' + scroll_spy[n].classList[2] + ' .kb-table-of-content-list a'
 				);
-				if (!scroll_spy.length) {
-					return;
+				if (!navItems.length) {
+					continue;
 				}
-				const spy_item = [];
-				for (let n = 0; n < scroll_spy.length; n++) {
-					var offset = parseInt(scroll_spy[n].getAttribute('data-scroll-offset'));
-					// Initialize Gumshoe
-					spy_item[n] = new Gumshoe('.' + scroll_spy[n].classList[2] + ' .kb-table-of-content-list a', {
-						nested: true,
-						nestedClass: 'active-parent',
-						offset() {
-							return offset ? offset : 0;
-						},
-					});
+
+				// Pair each nav link with the heading it targets, sorted by
+				// document position.
+				const items = [];
+				navItems.forEach((nav) => {
+					const content = document.getElementById(decodeURIComponent(nav.hash.substr(1)));
+					if (content) {
+						items.push({ nav, content });
+					}
+				});
+				if (!items.length) {
+					continue;
 				}
+				items.sort((a, b) => (a.content.offsetTop || 0) - (b.content.offsetTop || 0));
+
+				let current = null;
+
+				const toggleParents = (nav, add) => {
+					let li = nav.parentNode && nav.parentNode.closest('li');
+					while (li) {
+						li.classList.toggle('active-parent', add);
+						li = li.parentNode && li.parentNode.closest('li');
+					}
+				};
+
+				const deactivate = (item) => {
+					if (!item) {
+						return;
+					}
+					const li = item.nav.closest('li');
+					if (li) {
+						li.classList.remove('active');
+					}
+					item.content.classList.remove('active');
+					toggleParents(item.nav, false);
+				};
+
+				const activate = (item) => {
+					if (!item) {
+						return;
+					}
+					const li = item.nav.closest('li');
+					if (li) {
+						li.classList.add('active');
+					}
+					item.content.classList.add('active');
+					toggleParents(item.nav, true);
+				};
+
+				const isAtBottom = () =>
+					window.innerHeight + window.pageYOffset >=
+					Math.max(document.documentElement.scrollHeight, document.body.scrollHeight);
+
+				// Same selection rule the previous Gumshoe-based implementation
+				// used: the last heading (in document order) whose top has
+				// crossed the offset line, with a fallback to the last item
+				// once the page is scrolled to the very bottom (covers a short
+				// final section whose top never reaches the offset line).
+				const getActive = () => {
+					if (isAtBottom()) {
+						const last = items[items.length - 1];
+						const bounds = last.content.getBoundingClientRect();
+						if (parseInt(bounds.bottom, 10) < (window.innerHeight || document.documentElement.clientHeight)) {
+							return last;
+						}
+					}
+					for (let i = items.length - 1; i >= 0; i--) {
+						const bounds = items[i].content.getBoundingClientRect();
+						if (parseInt(bounds.top, 10) <= offset) {
+							return items[i];
+						}
+					}
+					return null;
+				};
+
+				const detect = () => {
+					const active = getActive();
+					if (active === current) {
+						return;
+					}
+					deactivate(current);
+					activate(active);
+					current = active;
+				};
+
+				// IntersectionObserver replaces scroll-event polling here: the
+				// callback only fires when a heading crosses the offset line,
+				// instead of running detect() on every scroll tick.
+				const observer = new IntersectionObserver(detect, {
+					rootMargin: `-${offset}px 0px 0px 0px`,
+					threshold: 0,
+				});
+				items.forEach((item) => observer.observe(item.content));
+
+				// The offset-line crossing above doesn't fire for the
+				// "scrolled past a short final section" edge case handled in
+				// getActive(), so also recheck on scroll, but only for that one
+				// cheap condition.
+				window.addEventListener(
+					'scroll',
+					() => {
+						if (isAtBottom()) {
+							detect();
+						}
+					},
+					{ passive: true }
+				);
+
+				detect();
 			}
 		},
 		// Initiate sticky when the DOM loads.

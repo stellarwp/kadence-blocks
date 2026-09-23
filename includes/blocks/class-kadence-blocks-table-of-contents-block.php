@@ -284,9 +284,6 @@ class Kadence_Blocks_Tableofcontents_Block extends Kadence_Blocks_Abstract_Block
 		if ( is_feed() ) {
 			return;
 		}
-		if ( isset( $attributes['enableScrollSpy'] ) && $attributes['enableScrollSpy'] ) {
-			wp_register_script( 'kadence-blocks-gumshoe', KADENCE_BLOCKS_URL . 'includes/assets/js/gumshoe.min.js', array(), KADENCE_BLOCKS_VERSION, true );
-		}
 
 		$toc = new Kadence_Blocks_Table_Of_Contents();
 
