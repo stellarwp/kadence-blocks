@@ -1,15 +1,24 @@
 name: 'CI'
 on:
   workflow_dispatch:
+    inputs:
+      kadence_theme_git_ref:
+        description: 'Kadence theme branch or tag the integration suite boots'
+        required: false
+        default: ''
   pull_request:
     paths:
       - '**.php'
       - 'composer.lock'
+      - 'tests/**'
+      - 'dev_scripts/integration-theme.sh'
       - '.github/workflows/tests.yml'
   push:
     paths:
       - '**.php'
       - 'composer.lock'
+      - 'tests/**'
+      - 'dev_scripts/integration-theme.sh'
       - '.github/workflows/tests.yml'
 
 jobs:
@@ -115,4 +124,112 @@ jobs:
               uses: actions/upload-artifact@v6
               with:
                   name: '${{ matrix.test }}-${{ matrix.php }}-${{ matrix.wordpress }}-output'
+                  path: './tests/_output'
+
+    integration:
+        runs-on: ubuntu-latest
+
+        env:
+            COMPOSER_AUTH: '{"github-oauth": {"github.com": "${{ secrets.GH_BOT_TOKEN }}"}}'
+            KADENCE_THEME_GIT_REF: ${{ inputs.kadence_theme_git_ref || vars.KADENCE_THEME_GIT_REF || 'release/fse' }}
+
+        name: Integration (Kadence theme ${{ inputs.kadence_theme_git_ref || vars.KADENCE_THEME_GIT_REF || 'release/fse' }})
+        steps:
+            - name: Checkout the repository
+              uses: actions/checkout@v6
+
+            - name: Checkout slic
+              uses: actions/checkout@v6
+              with:
+                  repository: stellarwp/slic
+                  ref: main
+                  path: slic
+                  fetch-depth: 1
+
+            # The theme repository is private, so it is checked out with the bot token here;
+            # dev_scripts/integration-theme.sh then reuses the checkout and only builds and links it.
+            - name: Checkout the Kadence theme
+              uses: actions/checkout@v6
+              with:
+                  repository: stellarwp/kadence
+                  ref: ${{ env.KADENCE_THEME_GIT_REF }}
+                  path: tests/_themes/kadence
+                  fetch-depth: 1
+                  token: ${{ secrets.GH_BOT_TOKEN }}
+
+            - uses: actions/setup-node@v4
+              with:
+                  node-version-file: '.nvmrc'
+
+            - uses: oven-sh/setup-bun@v2
+              with:
+                  bun-version: latest
+
+            - run: bun install --frozen-lockfile
+              env:
+                  BUN_AUTH_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
+                  GITHUB_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
+                  PUPPETEER_SKIP_DOWNLOAD: true
+
+            - name: Build packages
+              run: bun run build
+
+            - name: Set up slic env vars
+              run: |
+                  echo "SLIC_BIN=${GITHUB_WORKSPACE}/slic/slic" >> $GITHUB_ENV
+                  echo "SLIC_WP_DIR=${GITHUB_WORKSPACE}/slic/_wordpress" >> $GITHUB_ENV
+                  echo "SLIC_WORDPRESS_DOCKERFILE=Dockerfile.base" >> $GITHUB_ENV
+
+            - name: Set run context for slic
+              run: echo "SLIC=1" >> $GITHUB_ENV && echo "CI=1" >> $GITHUB_ENV
+
+            - name: Start ssh-agent
+              run: |
+                  mkdir -p "${HOME}/.ssh";
+                  ssh-agent -a /tmp/ssh_agent.sock;
+
+            - name: Export SSH_AUTH_SOCK env var
+              run: echo "SSH_AUTH_SOCK=/tmp/ssh_agent.sock" >> $GITHUB_ENV
+
+            - name: Set up slic for CI
+              run: |
+                  cd ${GITHUB_WORKSPACE}/..
+                  ${SLIC_BIN} here
+                  ${SLIC_BIN} interactive off
+                  ${SLIC_BIN} build-prompt off
+                  ${SLIC_BIN} build-subdir off
+                  ${SLIC_BIN} xdebug off
+                  ${SLIC_BIN} debug on
+                  ${SLIC_BIN} php-version set 8.2 --skip-rebuild
+                  ${SLIC_BIN} info
+                  ${SLIC_BIN} config
+
+            - name: Use plugin to set PHP version
+              run: ${SLIC_BIN} use kadence-blocks
+
+            # The theme's Full Site Editing mode needs WordPress 7.1 or later.
+            - name: Install WordPress
+              run: |
+                  ${SLIC_BIN} wp core update --version=latest --force
+                  ${SLIC_BIN} wp core version
+
+            - name: Build and link the Kadence theme
+              run: dev_scripts/integration-theme.sh
+
+            - name: Set up plugin
+              run: |
+                  ${SLIC_BIN} composer set-version 2
+                  ${SLIC_BIN} composer install
+
+            - name: Run integration tests with the Kadence theme
+              run: ${SLIC_BIN} run integration-kadence --ext DotReporter
+
+            - name: Run integration tests with Twenty Twenty-Three
+              run: ${SLIC_BIN} run integration-twentytwentythree --ext DotReporter
+
+            - name: Upload codeception output
+              if: ${{ failure() }}
+              uses: actions/upload-artifact@v6
+              with:
+                  name: 'integration-output'
                   path: './tests/_output'
