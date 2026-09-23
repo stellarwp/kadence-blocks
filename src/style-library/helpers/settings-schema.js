@@ -2,10 +2,6 @@
  * Pure helpers behind the settings panel: normalizing an authored schema to the canonical panel
  * shape, resolving a field type to its component through the registry, dot-path value access, a
  * value equality check for dirty tracking, and the responsive-value slot helpers.
- *
- * `box-sides` value shape (Border Radius / Border Width / Spacing): linked is a token-id string;
- * unlinked is a 4-element positional array `[top, right, bottom, left]`, never a named object —
- * see `components/molecules/fields/BoxSidesField.js`'s module docblock for why.
  */
 
 /**

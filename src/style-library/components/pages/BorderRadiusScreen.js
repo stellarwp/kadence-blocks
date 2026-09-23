@@ -2,8 +2,7 @@
  * The Border Radius screen: the scale config, the rounded-square preview renderer, and the two thin
  * wrappers that plug into the shared `ScaleScreen`/`ScaleSettings` contract (see
  * `ScaleScreen.js`'s module docblock). No link/unlink-corners control — a `dimension` token stores
- * one scalar; per-corner composition happens where tokens are consumed (the preset `box-sides`
- * field), not here.
+ * one scalar; per-corner composition happens where tokens are consumed, not here.
  */
 
 /**

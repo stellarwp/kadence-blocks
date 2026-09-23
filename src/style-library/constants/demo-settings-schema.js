@@ -11,7 +11,6 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { cornerAll, lineSolid } from '@wordpress/icons';
 
 /**
  * The `?kb-item=` value `PlaceholderScreen`'s dev-only demo button navigates to; the app answers
@@ -123,15 +122,7 @@ export const DEMO_SETTINGS_SCHEMA = {
 			initialOpen: true,
 			fields: [
 				{
-					type: 'box-sides',
-					path: 'radius',
-					label: __('Radius', 'kadence-blocks'),
-					tokenType: 'dimension',
-					leadingIcon: cornerAll,
-				},
-				{
-					// The token-controls `BoxControl` in corner geometry — the replacement for the
-					// `box-sides` entry above, kept alongside it while both exist.
+					// The token-controls `BoxControl` in corner geometry.
 					type: 'radius',
 					path: 'tokenRadius',
 					label: __('Radius (token control)', 'kadence-blocks'),
@@ -145,23 +136,8 @@ export const DEMO_SETTINGS_SCHEMA = {
 					tokenType: 'dimension',
 				},
 				{
-					// Same shape as Radius, different leading glyph — proving the glyph is schema data.
-					type: 'box-sides',
-					path: 'borderWidth',
-					label: __('Border Width', 'kadence-blocks'),
-					tokenType: 'dimension',
-					leadingIcon: lineSolid,
-				},
-				{
-					type: 'token-select',
-					path: 'spacing',
-					label: __('Spacing', 'kadence-blocks'),
-					tokenType: 'dimension',
-				},
-				{
-					// The responsive counterpart to `token-select` above: one token-backed length, with a
-					// breakpoint switcher. Left non-responsive here so the responsive-field count below stays
-					// the two the schema is asserted on — the type's own capability is covered by its field.
+					// One token-backed length, with a breakpoint switcher. Left non-responsive here — the
+					// type's own responsive capability is covered by its field, not this demo instance.
 					type: 'token-scalar',
 					path: 'iconSize',
 					label: __('Icon Size', 'kadence-blocks'),
@@ -215,10 +191,7 @@ export const DEMO_SETTINGS_VALUES = {
 	letterSpacingUnit: '0.02em',
 	background: '#2271b1',
 	stateColors: { text: '#1e1e1e', bg: '#2271b1' },
-	radius: '',
 	tokenSpacing: '',
-	borderWidth: '',
-	spacing: '',
 	enabled: true,
 	shadow: { color: '#000000', offsetX: 0, offsetY: 4, blur: 8, spread: 0, inset: false },
 	border: { width: '2px', style: 'solid', color: '#2271b1' },

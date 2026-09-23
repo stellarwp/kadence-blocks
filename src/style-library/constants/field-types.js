@@ -9,7 +9,6 @@
  */
 import { BorderField } from '../components/molecules/fields/BorderField';
 import { BoxShadowField } from '../components/molecules/fields/BoxShadowField';
-import { BoxSidesField } from '../components/molecules/fields/BoxSidesField';
 import { BoxTokenField } from '../components/molecules/fields/BoxTokenField';
 import { ColorField } from '../components/molecules/fields/ColorField';
 import { ColorListField } from '../components/molecules/fields/ColorListField';
@@ -23,7 +22,6 @@ import { StepperField } from '../components/molecules/fields/StepperField';
 import { TextField } from '../components/molecules/fields/TextField';
 import { ToggleField } from '../components/molecules/fields/ToggleField';
 import { FontFamilyField } from '../components/molecules/fields/FontFamilyField';
-import { TokenSelectField } from '../components/molecules/fields/TokenSelectField';
 import { UnitField } from '../components/molecules/fields/UnitField';
 
 /**
@@ -99,11 +97,9 @@ export const FIELD_TYPES = Object.freeze({
 	toggle: ToggleField,
 	color: ColorField,
 	'color-list': ColorListField,
-	'token-select': TokenSelectField,
 	'token-scalar': ScalarTokenField,
 	'color-select': ColorSelectField,
 	'font-family': FontFamilyField,
-	'box-sides': BoxSidesField,
 	radius: RadiusField,
 	spacing: SpacingField,
 	shadow: ShadowField,
@@ -117,15 +113,13 @@ export const FIELD_TYPES = Object.freeze({
  * types). `radius` and `spacing` qualify: their slots hold `dimension` values, and the envelope stores
  * whatever a slot holds — an alias overrides per breakpoint just as a literal does.
  *
- * `token-select`/`color-select`/`box-sides` remain excluded. Those render a single picker with
- * no breakpoint switcher to drive one, so marking them responsive would write an override no part of
- * their UI could read back; the rest are excluded because their DTCG types are never
- * responsive-capable.
+ * `color-select` remains excluded. It renders a single picker with no breakpoint switcher to drive
+ * one, so marking it responsive would write an override no part of its UI could read back; the rest
+ * are excluded because their DTCG types are never responsive-capable.
  *
- * `token-scalar` is the responsive answer for a single token-backed length, where `token-select` is the
- * non-responsive one: it wraps `ScalarControl`, which carries the breakpoint switcher, so a property
- * whose block control is itself per-device (an icon's size, stored as `size`/`tabletSize`/`mobileSize`)
- * can be given one value per breakpoint from a preset too.
+ * `token-scalar` wraps `ScalarControl`, which carries the breakpoint switcher, so a property whose
+ * block control is itself per-device (an icon's size, stored as `size`/`tabletSize`/`mobileSize`) can
+ * be given one value per breakpoint from a preset too.
  *
  * `border` qualifies for the same reason `radius`/`spacing` do: its width is a `dimension` value,
  * held in the same per-slot shape. `box-shadow` is excluded — the Button panel's shadow field has no
