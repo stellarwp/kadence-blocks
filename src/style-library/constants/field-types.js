@@ -11,16 +11,11 @@ import { BorderField } from '../components/molecules/fields/BorderField';
 import { BoxShadowField } from '../components/molecules/fields/BoxShadowField';
 import { BoxTokenField } from '../components/molecules/fields/BoxTokenField';
 import { ColorField } from '../components/molecules/fields/ColorField';
-import { ColorListField } from '../components/molecules/fields/ColorListField';
 import { ColorSelectField } from '../components/molecules/fields/ColorSelectField';
-import { NumberUnitField } from '../components/molecules/fields/NumberUnitField';
 import { ScalarTokenField } from '../components/molecules/fields/ScalarTokenField';
-import { RangeNumberField } from '../components/molecules/fields/RangeNumberField';
 import { SelectField } from '../components/molecules/fields/SelectField';
 import { ShadowField } from '../components/molecules/fields/ShadowField';
-import { StepperField } from '../components/molecules/fields/StepperField';
 import { TextField } from '../components/molecules/fields/TextField';
-import { ToggleField } from '../components/molecules/fields/ToggleField';
 import { FontFamilyField } from '../components/molecules/fields/FontFamilyField';
 import { UnitField } from '../components/molecules/fields/UnitField';
 
@@ -89,14 +84,9 @@ const BoxShadowTypeField = (props) => <BoxShadowField {...props} />;
  */
 export const FIELD_TYPES = Object.freeze({
 	text: TextField,
-	'number-unit': NumberUnitField,
-	'range-number': RangeNumberField,
 	select: SelectField,
-	stepper: StepperField,
 	unit: UnitField,
-	toggle: ToggleField,
 	color: ColorField,
-	'color-list': ColorListField,
 	'token-scalar': ScalarTokenField,
 	'color-select': ColorSelectField,
 	'font-family': FontFamilyField,
@@ -127,13 +117,4 @@ export const FIELD_TYPES = Object.freeze({
  *
  * @since TBD
  */
-export const RESPONSIVE_CAPABLE_FIELD_TYPES = Object.freeze([
-	'number-unit',
-	'radius',
-	'spacing',
-	'token-scalar',
-	'range-number',
-	'stepper',
-	'unit',
-	'border',
-]);
+export const RESPONSIVE_CAPABLE_FIELD_TYPES = Object.freeze(['radius', 'spacing', 'token-scalar', 'unit', 'border']);

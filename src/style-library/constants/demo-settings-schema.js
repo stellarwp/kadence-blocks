@@ -52,42 +52,6 @@ export const DEMO_SETTINGS_SCHEMA = {
 			initialOpen: true,
 			fields: [
 				{
-					// Marked responsive, along with Line Height below, to demo two independent switchers.
-					type: 'number-unit',
-					path: 'fontSize',
-					label: __('Font Size', 'kadence-blocks'),
-					unit: 'px',
-					withRange: true,
-					min: 0,
-					max: 200,
-					responsive: true,
-				},
-				{
-					type: 'range-number',
-					path: 'fontSizeSlider',
-					label: __('Font Size (slider)', 'kadence-blocks'),
-					min: 0,
-					max: 200,
-				},
-				{
-					type: 'stepper',
-					path: 'lineHeight',
-					label: __('Line Height', 'kadence-blocks'),
-					step: 0.1,
-					min: 0.8,
-					max: 3,
-					responsive: true,
-				},
-				{
-					// A fixed px suffix, not a switchable unit — `letterSpacingUnit` below demos `unit`.
-					type: 'number-unit',
-					path: 'letterSpacing',
-					label: __('Letter Spacing', 'kadence-blocks'),
-					unit: 'px',
-					min: -20,
-					max: 20,
-				},
-				{
 					type: 'unit',
 					path: 'letterSpacingUnit',
 					label: __('Unit (example)', 'kadence-blocks'),
@@ -105,15 +69,6 @@ export const DEMO_SETTINGS_SCHEMA = {
 			fields: [
 				{ type: 'color', path: 'background', label: __('Background', 'kadence-blocks') },
 				{ type: 'color-select', path: 'paletteColor', label: __('Palette Color', 'kadence-blocks') },
-				{
-					type: 'color-list',
-					path: 'stateColors',
-					label: __('State Colors', 'kadence-blocks'),
-					rows: [
-						{ id: 'text', name: __('Text', 'kadence-blocks') },
-						{ id: 'bg', name: __('Background', 'kadence-blocks') },
-					],
-				},
 			],
 		},
 		{
@@ -150,7 +105,6 @@ export const DEMO_SETTINGS_SCHEMA = {
 					path: 'fontFamily',
 					label: __('Font Family', 'kadence-blocks'),
 				},
-				{ type: 'toggle', path: 'enabled', label: __('Enabled', 'kadence-blocks') },
 			],
 		},
 		{
@@ -160,7 +114,7 @@ export const DEMO_SETTINGS_SCHEMA = {
 			fields: [
 				{ type: 'shadow', path: 'shadow', label: __('Shadow', 'kadence-blocks') },
 				{
-					// The token-aware Button-panel counterpart to `box-sides`/`shadow` above.
+					// The token-aware Button-panel counterpart to `shadow` above.
 					type: 'border',
 					path: 'border',
 					label: __('Border (token control)', 'kadence-blocks'),
@@ -184,15 +138,9 @@ export const DEMO_SETTINGS_VALUES = {
 	label: __('Large', 'kadence-blocks'),
 	id: 'semantic.font-size.large',
 	appearance: 'solid',
-	fontSize: 24,
-	fontSizeSlider: 24,
-	lineHeight: 1.4,
-	letterSpacing: 2,
 	letterSpacingUnit: '0.02em',
 	background: '#2271b1',
-	stateColors: { text: '#1e1e1e', bg: '#2271b1' },
 	tokenSpacing: '',
-	enabled: true,
 	shadow: { color: '#000000', offsetX: 0, offsetY: 4, blur: 8, spread: 0, inset: false },
 	border: { width: '2px', style: 'solid', color: '#2271b1' },
 	boxShadow: '',
