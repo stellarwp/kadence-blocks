@@ -2,7 +2,7 @@
 // cspell:ignore Abril Fatface -- a Google font family named as a concrete example.
 /**
  * The Advanced Text preset config — the one per-block file a preset screen needs. Everything else the
- * screen uses (`PresetScreen`, `PresetSidebar`, `usePresetScreen`, `helpers/presets`) is generic and
+ * screen uses (`PresetScreen`, `PresetSettings`, `usePresetScreen`, `helpers/presets`) is generic and
  * covered by its own suites, so this asserts only what this config contributes: the bound surface it
  * reads, the preview it resolves, its schema, and that it registers on the public screens filter.
  */
@@ -199,7 +199,7 @@ describe('HEADING_PRESET', () => {
 	});
 
 	/**
-	 * The heading binds no hover property, so it declares no tabs and `PresetSidebar` renders the field
+	 * The heading binds no hover property, so it declares no tabs and `PresetSettings` renders the field
 	 * area bare.
 	 *
 	 * @return {void}

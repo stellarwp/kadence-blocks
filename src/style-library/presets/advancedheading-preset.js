@@ -3,7 +3,7 @@
  * Everything specific to the `kadence/advancedheading` (Advanced Text) preset screen, in one place:
  * the block name, the bound property surface, the row preview, and the settings schema.
  *
- * The generic preset machinery — `helpers/presets.js`, `usePresetScreen`, `PresetSidebar` — reads
+ * The generic preset machinery — `helpers/presets.js`, `usePresetScreen`, `PresetSettings` — reads
  * this config and knows nothing else about headings. See `src/style-library/README.md`.
  */
 
@@ -222,7 +222,7 @@ function renderPreview(row) {
 
 /**
  * The settings schema. The heading declares no tabs: it binds no hover property, so there is no second
- * state to switch to and `PresetSidebar` renders the field area bare.
+ * state to switch to and `PresetSettings` renders the field area bare.
  *
  * Eleven of the block's thirteen bound properties are offered, grouped by what a site owner is doing
  * rather than by how each value is stored.

@@ -5,10 +5,16 @@ import { DndContext, DragOverlay } from '@dnd-kit/core';
 import { rectSortingStrategy, SortableContext } from '@dnd-kit/sortable';
 
 /**
+ * WordPress dependencies
+ */
+import { useMergeRefs } from '@wordpress/compose';
+
+/**
  * Internal dependencies
  */
 import { PresetCard } from '../molecules/PresetCard';
 import { useReorderableList } from '../../hooks/use-reorderable-list';
+import { useItemAnchorRef } from '../../hooks/use-item-anchor';
 import { splitDefaultItem } from '../../helpers/preset-grid';
 import './PresetGrid.scss';
 
@@ -42,7 +48,7 @@ export function PresetGrid({ items, selectedId = '', defaultId = '', onSelect, o
 			<SortableContext {...sortableContextProps} strategy={rectSortingStrategy}>
 				<ul className="kadence-blocks-style-library__preset-grid">
 					{pinned && (
-						<PresetCard {...pinned} isDefault isSelected={pinned.id === selectedId} onSelect={onSelect} />
+						<PinnedPresetCard item={pinned} isSelected={pinned.id === selectedId} onSelect={onSelect} />
 					)}
 					{sortable.map((item) => (
 						<SortablePresetCard
@@ -85,6 +91,7 @@ export function PresetGrid({ items, selectedId = '', defaultId = '', onSelect, o
  */
 function SortablePresetCard({ item, isSelected, onSelect, useSortableItem }) {
 	const { setNodeRef, style, handleProps, isDragging } = useSortableItem(item.id);
+	const anchorRef = useMergeRefs([setNodeRef, useItemAnchorRef(item.id, 'right-start')]);
 
 	return (
 		<PresetCard
@@ -93,9 +100,27 @@ function SortablePresetCard({ item, isSelected, onSelect, useSortableItem }) {
 			isSelected={isSelected}
 			onSelect={onSelect}
 			isDragging={isDragging}
-			innerRef={setNodeRef}
+			innerRef={anchorRef}
 			wrapperStyle={style}
 			dragHandleProps={handleProps}
 		/>
 	);
+}
+
+/**
+ * The pinned default card: not sortable, but still an anchor for the settings popover.
+ *
+ * @param {Object}   props            The component props.
+ * @param {Object}   props.item       The card descriptor (`PresetCard` props).
+ * @param {boolean}  props.isSelected Whether this card is selected.
+ * @param {Function} props.onSelect   Card click handler.
+ *
+ * @since TBD
+ *
+ * @return {JSX.Element} The wired card.
+ */
+function PinnedPresetCard({ item, isSelected, onSelect }) {
+	const anchorRef = useItemAnchorRef(item.id, 'right-start');
+
+	return <PresetCard {...item} isDefault isSelected={isSelected} onSelect={onSelect} innerRef={anchorRef} />;
 }

@@ -11,10 +11,16 @@ import { DndContext, DragOverlay } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 
 /**
+ * WordPress dependencies
+ */
+import { useMergeRefs } from '@wordpress/compose';
+
+/**
  * Internal dependencies
  */
 import { ListRow } from '../molecules/ListRow';
 import { useReorderableList } from '../../hooks/use-reorderable-list';
+import { useItemAnchorRef } from '../../hooks/use-item-anchor';
 import './RowList.scss';
 
 /**
@@ -85,6 +91,7 @@ export function RowList({ items, selectedId = '', onSelect, onReorder = () => {}
  */
 function SortableListRow({ item, isSelected, onSelect, useSortableItem }) {
 	const { setNodeRef, style, handleProps, isDragging } = useSortableItem(item.id);
+	const anchorRef = useMergeRefs([setNodeRef, useItemAnchorRef(item.id, 'bottom-start')]);
 
 	return (
 		<ListRow
@@ -92,7 +99,7 @@ function SortableListRow({ item, isSelected, onSelect, useSortableItem }) {
 			isSelected={isSelected}
 			onSelect={onSelect}
 			isDragging={isDragging}
-			innerRef={setNodeRef}
+			innerRef={anchorRef}
 			wrapperStyle={style}
 			dragHandleProps={handleProps}
 		/>

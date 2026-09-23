@@ -21,10 +21,6 @@
 	flex-direction: column;
 	min-width: 0;
 	background: var(--kb-sl-color-surface);
-
-	&--has-settings {
-		border-right: 1px solid var(--kb-sl-color-border);
-	}
 }
 
 .kadence-blocks-style-library__screen-header-slot {
@@ -43,10 +39,4 @@
 		flex-direction: column;
 		gap: var(--kb-sl-space-30);
 	}
-}
-
-.kadence-blocks-style-library__settings {
-	flex: 0 0 var(--kb-sl-size-settings-panel-width);
-	overflow-y: auto;
-	background: var(--kb-sl-color-surface);
 }

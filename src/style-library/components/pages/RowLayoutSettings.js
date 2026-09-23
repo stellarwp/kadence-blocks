@@ -1,12 +1,12 @@
 /**
- * The Row Layout preset's settings sidebar: `PresetSidebar` does the work, this binds the block's
+ * The Row Layout preset's settings panel: `PresetSettings` does the work, this binds the block's
  * config to it.
  */
 
 /**
  * Internal dependencies
  */
-import { PresetSidebar } from './PresetSidebar';
+import { PresetSettings } from './PresetSettings';
 import { usePresetScreen } from '../../hooks/use-preset-screen';
 import { ROWLAYOUT_PRESET } from '../../presets/rowlayout-preset';
 
@@ -25,5 +25,5 @@ import { ROWLAYOUT_PRESET } from '../../presets/rowlayout-preset';
 export function RowLayoutSettings({ route, navigate, library }) {
 	const screen = usePresetScreen(library, ROWLAYOUT_PRESET);
 
-	return <PresetSidebar route={route} navigate={navigate} screen={screen} preset={ROWLAYOUT_PRESET} />;
+	return <PresetSettings route={route} navigate={navigate} screen={screen} preset={ROWLAYOUT_PRESET} />;
 }

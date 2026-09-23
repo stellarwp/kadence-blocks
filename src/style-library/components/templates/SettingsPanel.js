@@ -22,10 +22,19 @@ import { closeSmall } from '@wordpress/icons';
 import './SettingsPanel.scss';
 
 /**
+ * The id of the panel's title element. Only one panel is ever mounted, so a fixed id is enough for
+ * the popover around it to take its accessible name from the title.
+ *
+ * @since TBD
+ */
+export const SETTINGS_PANEL_TITLE_ID = 'kadence-blocks-style-library-settings-panel-title';
+
+/**
  * Render the settings panel.
  *
  * @param {Object}         props               The component props.
- * @param {Function}       props.onClose        Close-control handler.
+ * @param {Function}       props.onClose        Close-control and Cancel handler.
+ * @param {string}         [props.title]        The header title, defaults to "Settings".
  * @param {?Array<Object>} [props.tabs]         `[{ name, title }]` state tabs (e.g. Normal/Hover), or null for none.
  * @param {?string}        [props.activeTab]    The active tab name (controlled), null without tabs.
  * @param {?Function}      [props.onTabChange]  Tab-change handler.
@@ -70,6 +79,7 @@ import './SettingsPanel.scss';
  */
 export function SettingsPanel({
 	onClose,
+	title = __('Settings', 'kadence-blocks'),
 	tabs = null,
 	activeTab = null,
 	onTabChange,
@@ -92,8 +102,8 @@ export function SettingsPanel({
 	return (
 		<div className="kadence-blocks-style-library__settings-panel">
 			<div className="kadence-blocks-style-library__settings-panel-header">
-				<h2 className="kadence-blocks-style-library__settings-panel-title">
-					{__('Settings', 'kadence-blocks')}
+				<h2 id={SETTINGS_PANEL_TITLE_ID} className="kadence-blocks-style-library__settings-panel-title">
+					{title}
 				</h2>
 				<Button
 					icon={closeSmall}
@@ -124,6 +134,10 @@ export function SettingsPanel({
 						isDestructive
 						isBusy={isResetting}
 						disabled={!canReset || isBusy}
+						// Keeps the button focusable (`aria-disabled` instead of the native attribute) while
+						// disabled — see the `Save` button below for why a disabled-while-focused footer
+						// button is never safe inside this popover.
+						accessibleWhenDisabled
 						onClick={onReset}
 					>
 						{isResetting ? __('Resetting…', 'kadence-blocks') : __('Reset', 'kadence-blocks')}
@@ -134,12 +148,30 @@ export function SettingsPanel({
 						isDestructive
 						isBusy={isDeleting}
 						disabled={!canDelete || isBusy}
+						accessibleWhenDisabled
 						onClick={onDelete}
 					>
 						{isDeleting ? __('Deleting…', 'kadence-blocks') : __('Delete', 'kadence-blocks')}
 					</Button>
 				)}
-				<Button variant="primary" isBusy={isSaving} disabled={!isDirty || isBusy} onClick={onSave}>
+				<Button variant="tertiary" onClick={onClose}>
+					{__('Cancel', 'kadence-blocks')}
+				</Button>
+				{/* `accessibleWhenDisabled`, not a bare `disabled`: a native `disabled` attribute forces
+				    the browser to blur the button the instant `isBusy` flips true, and a click's own
+				    mousedown has already focused it right before that — the resulting blur lands with
+				    nowhere to go (`document.activeElement` falls back to `<body>`), which the settings
+				    popover's own focus-outside detection reads as a genuine click outside itself, closing
+				    the popover through the unsaved-changes guard while the save this same click started
+				    is still in flight. Keeping the button focusable (`aria-disabled` instead) avoids the
+				    forced blur; WP's `Button` still blocks the click/mousedown itself while disabled. */}
+				<Button
+					variant="primary"
+					isBusy={isSaving}
+					disabled={!isDirty || isBusy}
+					accessibleWhenDisabled
+					onClick={onSave}
+				>
 					{isSaving ? __('Saving…', 'kadence-blocks') : __('Save', 'kadence-blocks')}
 				</Button>
 			</div>

@@ -36,6 +36,7 @@ import { ActionsPopover } from '../organisms/ActionsPopover';
 import { checkRename } from '../../helpers/rename';
 import { DeleteColorGroupModal } from '../organisms/DeleteColorGroupModal';
 import { usePalettes } from '../../hooks/use-palettes';
+import { useDraftChannel } from '../../hooks/use-draft-channel';
 import { useLoadingAnnouncement } from '../../hooks/use-loading-announcement';
 import { useSwatchViewMode } from '../../hooks/use-swatch-view-mode';
 import {
@@ -171,6 +172,19 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 	// route, not another `useState`, has to be the source of truth shared with the settings panel's
 	// own separate instance below.
 	const palettes = usePalettes(library.feed, library.refreshFeed, route, navigate);
+	const channel = useDraftChannel();
+
+	// Selecting the already-open swatch changes nothing, so it skips the guard; any other selection
+	// or add leaves the open draft behind and goes through it.
+	const selectSwatch = (token) => {
+		if (token === route.item) {
+			return;
+		}
+
+		const run = () => navigate({ item: token });
+
+		channel ? channel.guard(run) : run();
+	};
 	const [viewMode, setViewMode] = useSwatchViewMode();
 
 	// The skeleton below lives inside its own `role="status"` region, which only announces "Loading
@@ -372,7 +386,11 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 							// "fixes" this to also activate would silently re-tint the live site every time
 							// someone merely looks at a different palette; see `usePalettes().openPalette`'s
 							// own comment in `hooks/use-palettes.js`.
-							onChange={(id) => palettes.openPalette(id).catch(() => {})}
+							onChange={(id) => {
+								const open = () => palettes.openPalette(id).catch(() => {});
+
+								channel ? channel.guard(open) : open();
+							}}
 							isBusy={palettes.isBusy}
 							isLoading={palettes.isLoading}
 							error={palettes.openError}
@@ -443,7 +461,7 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 					<SwatchGrid
 						groups={gridGroups}
 						selectedId={route.item}
-						onSelect={(token) => navigate({ item: token })}
+						onSelect={selectSwatch}
 						onReorder={(groupId, orderedTokens) =>
 							palettes
 								.reorderSwatches(groupId, orderedTokens)
@@ -456,15 +474,18 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 								// Swallowed: a failure already lands in `structureError`, rendered above.
 								.catch(() => {})
 						}
-						onAdd={(groupId) =>
-							palettes
-								// Opens the new swatch's settings panel the moment it exists in the store as an
-								// optimistic addition, not after the write confirms — see `addColor`'s own
-								// `onOptimistic` docs.
-								.addColor(groupId, (newToken) => navigate({ item: newToken }))
-								// Swallowed: a failure already surfaces as a toast via `notifyError`.
-								.catch(() => {})
-						}
+						onAdd={(groupId) => {
+							const add = () =>
+								palettes
+									// Opens the new swatch's settings panel the moment it exists in the store as an
+									// optimistic addition, not after the write confirms — see `addColor`'s own
+									// `onOptimistic` docs.
+									.addColor(groupId, (newToken) => navigate({ item: newToken }))
+									// Swallowed: a failure already surfaces as a toast via `notifyError`.
+									.catch(() => {});
+
+							channel ? channel.guard(add) : add();
+						}}
 						addLabel={__('Add color', 'kadence-blocks')}
 						addingGroupIds={palettes.addingGroupIds}
 						view={viewMode}
@@ -548,18 +569,21 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 						setIsAddGroupOpen(false);
 						palettes.clearStructureError();
 					}}
-					onAdd={(groupLabel) =>
-						palettes
-							// Opens the new group's settings panel the moment the optimistic group and its
-							// first swatch exist in the store, not after the write confirms — see `addGroup`'s
-							// own `onOptimistic` docs.
-							.addGroup(groupLabel, (newToken) => navigate({ item: newToken }))
-							// A validation rejection (empty/duplicate name) never reaches here —
-							// `AddColorGroupModal` disables its own Add button for both cases before `onAdd`
-							// can fire. A real write failure is already surfaced via Snackbar inside
-							// `addGroup`.
-							.catch(() => {})
-					}
+					onAdd={(groupLabel) => {
+						const add = () =>
+							palettes
+								// Opens the new group's settings panel the moment the optimistic group and its
+								// first swatch exist in the store, not after the write confirms — see `addGroup`'s
+								// own `onOptimistic` docs.
+								.addGroup(groupLabel, (newToken) => navigate({ item: newToken }))
+								// A validation rejection (empty/duplicate name) never reaches here —
+								// `AddColorGroupModal` disables its own Add button for both cases before `onAdd`
+								// can fire. A real write failure is already surfaced via Snackbar inside
+								// `addGroup`.
+								.catch(() => {});
+
+						channel ? channel.guard(add) : add();
+					}}
 				/>
 			)}
 			{deleteGroupTarget && (

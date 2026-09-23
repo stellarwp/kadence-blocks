@@ -1,5 +1,5 @@
 /**
- * The settings sidebar any preset screen renders: the draft, the state tabs, the name field, save,
+ * The settings panel any preset screen renders: the draft, the state tabs, the name field, save,
  * one destructive action chosen by the kind of preset open — Delete for a user-created preset, Reset
  * for a shipped one (enabled once it stores its own value for any property; the same request drops
  * that override and the preset renders from baseline again) — and the draft-channel publication
@@ -62,7 +62,7 @@ import { notifySuccess } from '../../helpers/notify';
  *
  * @return {JSX.Element} The panel.
  */
-function PresetSidebarBody({ navigate, route, screen, initialValues, presetLabel, tabs, schemaFor }) {
+function PresetSettingsBody({ navigate, route, screen, initialValues, presetLabel, tabs, schemaFor }) {
 	const id = route.item;
 	const panel = useSettingsPanel({ route, navigate, initialValues });
 	// Optional chained rather than `tabs[0].name`: a block whose presets have no states passes no
@@ -198,6 +198,7 @@ function PresetSidebarBody({ navigate, route, screen, initialValues, presetLabel
 
 	return (
 		<SettingsPanel
+			title={__('Edit preset', 'kadence-blocks')}
 			onClose={handleClose}
 			tabs={tabs ?? null}
 			activeTab={activeTab}
@@ -252,7 +253,7 @@ function PresetSidebarBody({ navigate, route, screen, initialValues, presetLabel
  * @return {?JSX.Element} The panel, a loading skeleton while a valid `kb-item`'s presets are still
  *         loading, or null while a stale one self-heals for a tick.
  */
-export function PresetSidebar({ route, navigate, screen, preset }) {
+export function PresetSettings({ route, navigate, screen, preset }) {
 	const { tabs, schemaFor } = preset;
 	const id = route.item;
 	const initialValues = screen.initialValuesFor(id);
@@ -292,7 +293,7 @@ export function PresetSidebar({ route, navigate, screen, preset }) {
 	}
 
 	return (
-		<PresetSidebarBody
+		<PresetSettingsBody
 			key={id}
 			route={route}
 			navigate={navigate}

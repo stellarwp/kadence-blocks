@@ -47,7 +47,7 @@ export function ScaleSettings({ config, route, navigate, library }) {
 	const panel = useSettingsPanel({ route, navigate, initialValues });
 	// `scale.isBusy` covers all the write flows (add/save/delete) with a single flag, but the footer
 	// needs to show the busy animation on only the button the user actually clicked — the
-	// `PresetSidebar.js` idiom, tracked locally for the same reason: only this panel's footer needs
+	// `PresetSettings.js` idiom, tracked locally for the same reason: only this panel's footer needs
 	// the distinction.
 	const [pendingAction, setPendingAction] = useState(null);
 
@@ -144,6 +144,7 @@ export function ScaleSettings({ config, route, navigate, library }) {
 
 	return (
 		<SettingsPanel
+			title={__('Edit token', 'kadence-blocks')}
 			onClose={handleClose}
 			destructiveAction={isDeletable(token) ? 'delete' : 'reset'}
 			onDelete={handleDelete}

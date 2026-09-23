@@ -8,17 +8,17 @@ import { createRoot } from 'react-dom/client';
 /**
  * Internal dependencies
  */
-import { PresetSidebar } from '../components/pages/PresetSidebar';
+import { PresetSettings } from '../components/pages/PresetSettings';
 import * as notify from '../helpers/notify';
 
 jest.mock('../helpers/notify');
 
 // Stands in for the real `BoxControl` the same way `border-shadow-field-rendering.test.js` stands in
-// for `BorderControl`/`BoxShadowControl`: capturing exactly the props `PresetSidebar`'s real
+// for `BorderControl`/`BoxShadowControl`: capturing exactly the props `PresetSettings`'s real
 // `SettingsForm` -> `BoxTokenField` wiring computes, without mounting `BoxControl`'s own deep
 // picker/popover tree. Declared here (rather than per-describe) so the "reset shows the preset's own
 // value" test below exercises the REAL prop-threading path end to end — the bug that motivated it
-// was a shape mismatch between `PresetSidebar` and `BoxTokenField` that a field-level test alone,
+// was a shape mismatch between `PresetSettings` and `BoxTokenField` that a field-level test alone,
 // constructing `originalValue` by hand, could not have caught.
 let latestBoxControlProps;
 
@@ -30,9 +30,9 @@ jest.mock('../../token-controls/controls/BoxControl', () => ({
 	},
 }));
 
-// `PresetSidebar` takes the preset-screen binding as a prop rather than calling a hook itself, so
+// `PresetSettings` takes the preset-screen binding as a prop rather than calling a hook itself, so
 // both cases below can stub `screen` directly with a plain object — no module mock is needed.
-// Both resolve to no initial values, so `PresetSidebar` returns null before mounting its body; the
+// Both resolve to no initial values, so `PresetSettings` returns null before mounting its body; the
 // write-flow fields (`savePreset`, `isDeletable`, etc.) never need stubbing.
 const PRESET = { tabs: null, schemaFor: () => [] };
 
@@ -40,7 +40,7 @@ let container;
 let root;
 
 /**
- * Render `PresetSidebar` with the given `screen` binding and route item, returning the `navigate`
+ * Render `PresetSettings` with the given `screen` binding and route item, returning the `navigate`
  * spy passed to it.
  *
  * @param {Object} screen The preset-screen binding to stub.
@@ -50,12 +50,12 @@ let root;
  *
  * @return {Function} The `navigate` jest spy.
  */
-function renderPresetSidebar(screen, item) {
+function renderPresetSettings(screen, item) {
 	const navigate = jest.fn();
 
 	act(() => {
 		root.render(
-			createElement(PresetSidebar, {
+			createElement(PresetSettings, {
 				route: { screen: 'blocks/kadence/singlebtn', item },
 				navigate,
 				screen,
@@ -68,7 +68,7 @@ function renderPresetSidebar(screen, item) {
 }
 
 /**
- * `renderPresetSidebar`, with the `preset` config also overridable — the module-level `PRESET`
+ * `renderPresetSettings`, with the `preset` config also overridable — the module-level `PRESET`
  * stub's empty `schemaFor` renders no fields at all, which is fine for the write-flow/self-heal
  * tests above but useless for anything that needs a real field on screen.
  *
@@ -80,12 +80,12 @@ function renderPresetSidebar(screen, item) {
  *
  * @return {Function} The `navigate` jest spy.
  */
-function renderPresetSidebarWithPreset(screen, item, preset) {
+function renderPresetSettingsWithPreset(screen, item, preset) {
 	const navigate = jest.fn();
 
 	act(() => {
 		root.render(
-			createElement(PresetSidebar, {
+			createElement(PresetSettings, {
 				route: { screen: 'blocks/kadence/singlebtn', item },
 				navigate,
 				screen,
@@ -147,7 +147,22 @@ function findButton(text) {
 	return Array.from(container.querySelectorAll('button')).find((button) => button.textContent === text) ?? null;
 }
 
-describe('PresetSidebar write flows notify success', () => {
+/**
+ * Whether a footer button is disabled. The footer's buttons render `accessibleWhenDisabled` (see
+ * `SettingsPanel.js`'s own docblock), so a disabled state is `aria-disabled`, never the native
+ * `disabled` attribute — the element stays focusable throughout.
+ *
+ * @param {HTMLButtonElement} button The button to check.
+ *
+ * @since TBD
+ *
+ * @return {boolean} Whether the button is disabled.
+ */
+function isDisabled(button) {
+	return button.getAttribute('aria-disabled') === 'true';
+}
+
+describe('PresetSettings write flows notify success', () => {
 	/**
 	 * A successful save shows the Snackbar success confirmation, alongside the existing error
 	 * handling, which stays untouched.
@@ -157,7 +172,7 @@ describe('PresetSidebar write flows notify success', () => {
 	it('notifies success once a save resolves', async () => {
 		const savePreset = jest.fn().mockResolvedValue(undefined);
 
-		renderPresetSidebar(
+		renderPresetSettings(
 			{
 				payload: { presets: { primary: { label: 'Primary' } } },
 				isLoading: false,
@@ -226,11 +241,11 @@ describe('PresetSidebar write flows notify success', () => {
 			clearDeleteError: jest.fn(),
 		};
 
-		renderPresetSidebar(screen, 'primary');
+		renderPresetSettings(screen, 'primary');
 
 		makeDirty();
 
-		expect(findButton('Save').disabled).toBe(false);
+		expect(isDisabled(findButton('Save'))).toBe(false);
 
 		await act(async () => {
 			findButton('Save').click();
@@ -238,10 +253,10 @@ describe('PresetSidebar write flows notify success', () => {
 
 		// Re-rendered rather than remounted, which is what the store update does in the app: the panel
 		// keeps its draft and receives the refreshed values as a prop.
-		renderPresetSidebar(screen, 'primary');
+		renderPresetSettings(screen, 'primary');
 
 		// The draft now holds what the server stored, so the panel has nothing left to save.
-		expect(findButton('Save').disabled).toBe(true);
+		expect(isDisabled(findButton('Save'))).toBe(true);
 	});
 
 	/**
@@ -253,7 +268,7 @@ describe('PresetSidebar write flows notify success', () => {
 	it('does not notify success when a save fails', async () => {
 		const savePreset = jest.fn().mockRejectedValue(new Error('Conflict'));
 
-		renderPresetSidebar(
+		renderPresetSettings(
 			{
 				payload: { presets: { primary: { label: 'Primary' } } },
 				isLoading: false,
@@ -289,7 +304,7 @@ describe('PresetSidebar write flows notify success', () => {
 	it('notifies success once a delete resolves, and still navigates away', async () => {
 		const deletePreset = jest.fn().mockResolvedValue(undefined);
 
-		const navigate = renderPresetSidebar(
+		const navigate = renderPresetSettings(
 			{
 				payload: { presets: { primary: { label: 'Primary' } } },
 				isLoading: false,
@@ -325,7 +340,7 @@ describe('PresetSidebar write flows notify success', () => {
 	it('does not notify success or navigate away when a delete fails', async () => {
 		const deletePreset = jest.fn().mockRejectedValue(new Error('Conflict'));
 
-		const navigate = renderPresetSidebar(
+		const navigate = renderPresetSettings(
 			{
 				payload: { presets: { primary: { label: 'Primary' } } },
 				isLoading: false,
@@ -352,7 +367,7 @@ describe('PresetSidebar write flows notify success', () => {
 	});
 });
 
-describe('PresetSidebar self-heal guard', () => {
+describe('PresetSettings self-heal guard', () => {
 	/**
 	 * A failed preset fetch must not be mistaken for a stale `kb-item`: the route must survive so a
 	 * retry can still restore the selected preset.
@@ -360,7 +375,7 @@ describe('PresetSidebar self-heal guard', () => {
 	 * @return {void}
 	 */
 	it('does not clear a valid kb-item when the preset fetch fails', () => {
-		const navigate = renderPresetSidebar(
+		const navigate = renderPresetSettings(
 			{
 				payload: null,
 				isLoading: false,
@@ -380,7 +395,7 @@ describe('PresetSidebar self-heal guard', () => {
 	 * @return {void}
 	 */
 	it('clears an unknown kb-item once a successful load finds no matching preset', () => {
-		const navigate = renderPresetSidebar(
+		const navigate = renderPresetSettings(
 			{
 				payload: {},
 				isLoading: false,
@@ -394,7 +409,7 @@ describe('PresetSidebar self-heal guard', () => {
 	});
 });
 
-describe('PresetSidebar reset field display', () => {
+describe('PresetSettings reset field display', () => {
 	/**
 	 * A single-panel, single-field radius schema, real enough to exercise `SettingsForm` ->
 	 * `BoxTokenField`'s actual prop computation rather than a schema-shaped stub.
@@ -425,15 +440,15 @@ describe('PresetSidebar reset field display', () => {
 
 	/**
 	 * A field the user resets reads as unset, with the preset's own currently-stored value shown only
-	 * as its muted Default — end to end through `PresetSidebar` -> `SettingsForm` -> `BoxTokenField`,
+	 * as its muted Default — end to end through `PresetSettings` -> `SettingsForm` -> `BoxTokenField`,
 	 * not a field mounted with `originalValue` handed in directly. A mismatch between how
-	 * `PresetSidebar` threads `originalValues` and how `SettingsForm` reads it by path would read as
+	 * `PresetSettings` threads `originalValues` and how `SettingsForm` reads it by path would read as
 	 * "no default at all" and only a test exercising the real wiring between them can catch it.
 	 *
 	 * @return {void}
 	 */
 	it("shows a reset field as unset with the preset's stored value muted as its Default, not still bound", () => {
-		renderPresetSidebarWithPreset(
+		renderPresetSettingsWithPreset(
 			{
 				payload: {
 					presets: { primary: { label: 'Primary', tokens: { 'button-radius': '0.75rem' } } },
@@ -501,7 +516,7 @@ function makeFooterScreen(deletable, overridden = null) {
 	};
 }
 
-describe('PresetSidebar footer gating', () => {
+describe('PresetSettings footer gating', () => {
 	/**
 	 * A user-created preset gets an enabled Delete and no Reset; a baseline preset gets no Delete
 	 * and a Reset instead.
@@ -509,12 +524,12 @@ describe('PresetSidebar footer gating', () => {
 	 * @return {void}
 	 */
 	it('shows Delete for a user-created preset and Reset for a baseline one', () => {
-		renderPresetSidebar(makeFooterScreen(true), 'primary');
+		renderPresetSettings(makeFooterScreen(true), 'primary');
 
-		expect(findButton('Delete').disabled).toBe(false);
+		expect(isDisabled(findButton('Delete'))).toBe(false);
 		expect(findButton('Reset')).toBeNull();
 
-		renderPresetSidebar(makeFooterScreen(false), 'primary');
+		renderPresetSettings(makeFooterScreen(false), 'primary');
 
 		expect(findButton('Delete')).toBeNull();
 		expect(findButton('Reset')).not.toBeNull();
@@ -527,14 +542,14 @@ describe('PresetSidebar footer gating', () => {
 	 * @return {void}
 	 */
 	it('keeps a baseline preset’s Reset disabled before and after an edit while nothing is overridden', () => {
-		renderPresetSidebar(makeFooterScreen(false, { color: false }), 'primary');
+		renderPresetSettings(makeFooterScreen(false, { color: false }), 'primary');
 
-		expect(findButton('Reset').disabled).toBe(true);
+		expect(isDisabled(findButton('Reset'))).toBe(true);
 
 		makeDirty();
 
-		expect(findButton('Save').disabled).toBe(false);
-		expect(findButton('Reset').disabled).toBe(true);
+		expect(isDisabled(findButton('Save'))).toBe(false);
+		expect(isDisabled(findButton('Reset'))).toBe(true);
 	});
 
 	/**
@@ -547,9 +562,9 @@ describe('PresetSidebar footer gating', () => {
 	 */
 	it('resets an overridden baseline preset through the delete request and closes the panel', async () => {
 		const screen = makeFooterScreen(false, { color: true, background: false });
-		const navigate = renderPresetSidebar(screen, 'primary');
+		const navigate = renderPresetSettings(screen, 'primary');
 
-		expect(findButton('Reset').disabled).toBe(false);
+		expect(isDisabled(findButton('Reset'))).toBe(false);
 
 		await act(async () => {
 			findButton('Reset').click();
@@ -569,7 +584,7 @@ describe('PresetSidebar footer gating', () => {
 	it('leaves the panel open when a reset fails', async () => {
 		const screen = makeFooterScreen(false, { color: true });
 		screen.deletePreset = jest.fn().mockRejectedValue(new Error('nope'));
-		const navigate = renderPresetSidebar(screen, 'primary');
+		const navigate = renderPresetSettings(screen, 'primary');
 
 		await act(async () => {
 			findButton('Reset').click();
@@ -577,6 +592,6 @@ describe('PresetSidebar footer gating', () => {
 
 		expect(notify.notifySuccess).not.toHaveBeenCalled();
 		expect(navigate).not.toHaveBeenCalled();
-		expect(findButton('Reset').disabled).toBe(false);
+		expect(isDisabled(findButton('Reset'))).toBe(false);
 	});
 });

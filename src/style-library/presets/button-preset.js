@@ -2,7 +2,7 @@
  * Everything specific to the `kadence/singlebtn` preset screen, in one place: the block name, the
  * bound property surface, the row preview, the state tabs, and the per-tab settings schema.
  *
- * The generic preset machinery — `helpers/presets.js`, `usePresetScreen`, `PresetSidebar` — reads
+ * The generic preset machinery — `helpers/presets.js`, `usePresetScreen`, `PresetSettings` — reads
  * this config and knows nothing else about buttons. A second preset screen is a second file shaped
  * like this one; see `src/style-library/README.md`.
  */
