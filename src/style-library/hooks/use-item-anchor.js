@@ -13,8 +13,8 @@ import { createContext, useCallback, useContext, useMemo, useRef, useState } fro
 
 /**
  * The stable `register` / `unregister` pair. Split from the anchor map so a card that only
- * registers does not re-render every time another card registers. `null` with no provider mounted
- * (the dev gallery), where registering is a no-op.
+ * registers does not re-render every time another card registers. `null` with no provider mounted,
+ * where registering is a no-op.
  *
  * @since TBD
  */

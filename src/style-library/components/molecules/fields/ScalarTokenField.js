@@ -6,11 +6,10 @@
  * conversion (reused from that module rather than restated). What it drops is everything that only makes
  * sense for four slots — the link toggle, the per-slot mapping, the slot-list unit sniffing.
  *
- * It exists because `token-select` cannot answer here: that field is a bare picker with nowhere to put a
- * breakpoint switcher, so a property whose block control IS responsive — `kadence/single-icon`'s size,
- * which stores `size`/`tabletSize`/`mobileSize` — could only ever be given one value for every device
- * through it. A preset that cannot say what the block's own control can say is a preset that cannot
- * reproduce the look a site owner built.
+ * It exists because a property whose block control IS responsive — `kadence/single-icon`'s size, which
+ * stores `size`/`tabletSize`/`mobileSize` — needs a breakpoint switcher; a bare picker with nowhere to
+ * put one could only ever be given one value for every device. A preset that cannot say what the
+ * block's own control can say is a preset that cannot reproduce the look a site owner built.
  */
 
 /**

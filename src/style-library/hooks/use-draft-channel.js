@@ -22,8 +22,8 @@ import { __ } from '@wordpress/i18n';
 
 /**
  * The draft-channel context. Default value `null` — a consumer with no provider mounted (e.g. a
- * component rendered in isolation, such as the dev gallery) treats a `null` channel as "no channel"
- * and falls back to its pre-channel behavior.
+ * component rendered in isolation, such as a unit test) treats a `null` channel as "no channel" and
+ * falls back to its pre-channel behavior.
  *
  * @since TBD
  */

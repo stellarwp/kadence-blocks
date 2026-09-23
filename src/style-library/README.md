@@ -22,7 +22,7 @@ Atomic design, and the directory names are the contract:
 | Layer | Holds | Example |
 |---|---|---|
 | `components/atoms/` | Single-purpose primitives | `SectionHeading` |
-| `components/molecules/` | Small compositions, including form fields | `ListRow`, `fields/TokenSelectField` |
+| `components/molecules/` | Small compositions, including form fields | `ListRow`, `fields/UnitField` |
 | `components/organisms/` | Self-contained regions | `SettingsForm`, `SwatchGrid` |
 | `components/templates/` | Layout shells with slots, no data | `SettingsPanel` |
 | `components/pages/` | Composition roots that wire hooks to templates | `ButtonScreen`, `ButtonSettings` |

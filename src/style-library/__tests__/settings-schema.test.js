@@ -81,8 +81,8 @@ describe('normalizeSchema', () => {
 	it('defaults responsive to false and preserves an explicit true on a capable type', () => {
 		const schema = {
 			fields: [
-				{ type: 'number-unit', path: 'size', label: 'Size' },
-				{ type: 'number-unit', path: 'width', label: 'Width', responsive: true },
+				{ type: 'unit', path: 'size', label: 'Size' },
+				{ type: 'unit', path: 'width', label: 'Width', responsive: true },
 			],
 		};
 
@@ -94,7 +94,7 @@ describe('normalizeSchema', () => {
 
 	it('demotes responsive: true on a non-capable type to false and warns', () => {
 		const schema = {
-			fields: [{ type: 'toggle', path: 'enabled', label: 'Enabled', responsive: true }],
+			fields: [{ type: 'color', path: 'value', label: 'Color', responsive: true }],
 		};
 
 		const normalized = normalizeSchema(schema);

@@ -161,7 +161,7 @@ describe('item anchor registry', () => {
 	});
 
 	/**
-	 * With no provider the ref is a harmless no-op, as in the dev gallery.
+	 * With no provider mounted, the ref is a harmless no-op.
 	 *
 	 * @return {void}
 	 */
