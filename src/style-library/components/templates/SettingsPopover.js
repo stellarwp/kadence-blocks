@@ -62,7 +62,11 @@ export function SettingsPopover({ itemId, onClose, ignoreFocusOutside = false, c
 			placement={anchor.placement}
 			offset={8}
 			shift
-			resize={false}
+			// `resize` caps the popover's height to the space actually available around the anchor
+			// and adds its own scroll, so a short viewport scrolls the fields instead of cutting
+			// them off. It never touches position, only height/overflow, so it does not conflict
+			// with `shift`'s own repositioning.
+			resize
 			expandOnMobile
 			focusOnMount="firstElement"
 			aria-labelledby={SETTINGS_PANEL_TITLE_ID}

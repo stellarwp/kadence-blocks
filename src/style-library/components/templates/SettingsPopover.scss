@@ -9,19 +9,6 @@
 	box-shadow: var(--kb-sl-shadow-menu);
 }
 
-// `resize={false}` on the `Popover` (see `SettingsPopover.js`) keeps core from shrinking the
-// popover to the viewport on its own, so a short viewport lets the panel's header/typography/
-// border sections grow past the bottom of the screen with nothing to scroll them into view. This
-// caps the popover itself so the panel's sticky header and footer (`SettingsPanel.scss`) have a
-// scroll container to stick within, and the field area scrolls instead of getting cut off. Scoped
-// away from `.is-expanded`, whose full-screen mobile sheet is a different breakpoint that core
-// already sizes to the viewport on its own.
-.kadence-blocks-style-library__settings-popover:not(.is-expanded)
-	.components-popover__content.components-popover__content {
-	max-height: calc(100vh - var(--kb-sl-space-40) * 2);
-	overflow-y: auto;
-}
-
 // Under the mobile breakpoint core turns the popover into a full-screen sheet with its own close
 // header, so the fixed width, frame, and the panel's own close control are dropped.
 .kadence-blocks-style-library__settings-popover.is-expanded {
