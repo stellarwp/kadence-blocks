@@ -1,7 +1,7 @@
-# Checks spelling on the files changed in a pull request.
-# The repository is expected to have pre-existing spelling issues, so this
-# only checks files touched by the PR to avoid blocking on legacy problems
-# while still preventing new issues from being introduced.
+# Checks spelling on the lines a pull request adds.
+# The repository has pre-existing spelling issues, so only added lines are
+# checked (dev_scripts/cspell-changed-lines.sh): touching a file doesn't
+# surface its legacy problems, while new issues are still caught.
 # cSpell:ignore ACMRTUXB
 name: cSpell
 run-name: '[cSpell] ${{ github.event.pull_request.title }}'
@@ -37,15 +37,5 @@ jobs:
           git remote set-branches origin "$GITHUB_BASE_REF"
           git fetch origin --depth=1
 
-          FILES=$(git diff --name-only --diff-filter=ACMRTUXB "origin/$GITHUB_BASE_REF")
-
-          if [ -z "$FILES" ]; then
-            echo "No changed files to spell-check."
-            exit 0
-          fi
-
-          echo "Spell-checking the following files:"
-          echo "$FILES"
-
           # cspell is fetched on demand by bunx; no full project install needed.
-          bun run cspell-cmd $FILES
+          dev_scripts/cspell-changed-lines.sh "origin/$GITHUB_BASE_REF"

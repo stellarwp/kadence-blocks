@@ -1,0 +1,10 @@
+# WordPress core functions, constants and globals that aren't English words.
+absint
+ajaxurl
+allcaps
+autoembed
+dashicons
+kses
+unslash
+wpnonce
+WPINC
