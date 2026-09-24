@@ -327,6 +327,8 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param string $css the css class for blocks.
 	 * @param string $unique_id the blocks attr ID.
 	 * @param string $unique_style_id the blocks alternate ID for queries.
+	 *
+	 * @since TBD Starts the breakout media query at the Global Styles content size in the Kadence theme's Full Site Editing mode, when it is a plain length.
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
@@ -720,8 +722,13 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			}
 			$css->set_media_state( 'desktop' );
 			if ( apply_filters( 'kadence_blocks_css_output_media_queries', true ) ) {
-				if ( isset( $content_width ) && ! empty( $content_width ) ) {
-					$css->start_media_query( '(min-width:' . absint( $content_width ) . 'px)' );
+				// In the Kadence theme's Full Site Editing mode a Global Styles content size set as a plain length moves the breakpoint.
+				$breakout_min_width = kadence_blocks_is_fse_mode() ? $this->get_global_styles_content_size_length() : '';
+				if ( ! $breakout_min_width && isset( $content_width ) && ! empty( $content_width ) ) {
+					$breakout_min_width = absint( $content_width ) . 'px';
+				}
+				if ( $breakout_min_width ) {
+					$css->start_media_query( '(min-width:' . $breakout_min_width . ')' );
 					if ( ( isset( $attributes['breakoutLeft'] ) && true === $attributes['breakoutLeft'] ) ) {
 						$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(1 of *:not(style)):not(.specificity)' );
 						$css->add_property( 'margin-inline-start', 'var(--breakout-negative-margin-left)' );
@@ -1879,6 +1886,26 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 				),
 			)
 		);
+	}
+
+	/**
+	 * The Global Styles content size, when it is a plain length a media query can use.
+	 *
+	 * Media queries can't use CSS variables, so values with `var()`, `calc()` or `clamp()`,
+	 * such as the Kadence theme's default, give an empty string.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The length, for example `650px` or `42rem`, or an empty string.
+	 */
+	private function get_global_styles_content_size_length(): string {
+		$content_size = wp_get_global_settings( [ 'layout', 'contentSize' ] );
+
+		if ( is_string( $content_size ) && preg_match( '/^\d+(\.\d+)?(px|rem|em)$/', trim( $content_size ) ) ) {
+			return trim( $content_size );
+		}
+
+		return '';
 	}
 }
 

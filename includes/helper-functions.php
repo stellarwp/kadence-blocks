@@ -19,6 +19,29 @@ use function KadenceWP\KadenceBlocks\StellarWP\Uplink\is_authorized;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\validate_license;
 
 /**
+ * Whether the Kadence theme runs in its Full Site Editing mode.
+ *
+ * The mode can change within a request when its setting is saved, so the
+ * result is never cached.
+ *
+ * @since TBD
+ *
+ * @return bool
+ */
+function kadence_blocks_is_fse_mode(): bool {
+	$is_fse_mode = function_exists( 'Kadence\is_fse_mode' ) && \Kadence\is_fse_mode();
+
+	/**
+	 * Filters whether the Kadence theme runs in its Full Site Editing mode.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool $is_fse_mode Whether the mode is on.
+	 */
+	return (bool) apply_filters( 'kadence_blocks_is_fse_mode', $is_fse_mode );
+}
+
+/**
  * Check if we are in AMP Mode.
  */
 function kadence_blocks_is_not_amp() {

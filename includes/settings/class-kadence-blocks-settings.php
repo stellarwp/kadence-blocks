@@ -324,8 +324,12 @@ class Kadence_Blocks_Settings {
 	 * Load Gutenberg Palette in editor.
 	 *
 	 * @param array $settings The settings.
+	 * @since TBD Adds nothing in the Kadence theme's Full Site Editing mode, where Global Styles owns the palette.
 	 */
 	public function load_color_palette_editor_settings( $settings ) {
+		if ( kadence_blocks_is_fse_mode() ) {
+			return $settings;
+		}
 
 		$palette = json_decode( get_option( 'kadence_blocks_colors' ), true );
 		if ( isset( $palette['palette'] ) && is_array( $palette['palette'] ) ) {
@@ -423,8 +427,12 @@ class Kadence_Blocks_Settings {
 	 *
 	 * @param WP_Theme_JSON_Data $theme_json The theme.json data object.
 	 * @return WP_Theme_JSON_Data Modified theme.json data.
+	 * @since TBD Adds nothing in the Kadence theme's Full Site Editing mode, where Global Styles owns the palette.
 	 */
 	public function load_color_palette_theme_json( $theme_json ) {
+		if ( kadence_blocks_is_fse_mode() ) {
+			return $theme_json;
+		}
 		$palette = json_decode( get_option( 'kadence_blocks_colors' ), true );
 		if ( isset( $palette['palette'] ) && is_array( $palette['palette'] ) && ! empty( $palette['palette'] ) ) {
 			$san_palette = [];
@@ -492,6 +500,8 @@ class Kadence_Blocks_Settings {
 	}
 	/**
 	 * Load Gutenberg Palette
+	 *
+	 * @since TBD Skips the theme palette support in the Kadence theme's Full Site Editing mode, where Global Styles owns the palette; the color class CSS stays for colors already applied to content.
 	 */
 	public function load_color_palette() {
 		$palette = json_decode( get_option( 'kadence_blocks_colors' ) );
@@ -508,7 +518,7 @@ class Kadence_Blocks_Settings {
 				if ( ( isset( $palette->override ) && true !== $palette->override ) || ! isset( $palette->override ) ) {
 					$theme_palette = get_theme_support( 'editor-color-palette' );
 					if ( is_array( $theme_palette ) ) {
-						$newpalette = array_merge( reset( $theme_palette ), $san_palette );
+						$new_palette = array_merge( reset( $theme_palette ), $san_palette );
 					} else {
 						$default_palette = [
 							[
@@ -567,24 +577,36 @@ class Kadence_Blocks_Settings {
 								'color' => '#313131',
 							],
 						];
-						$newpalette      = array_merge( $default_palette, $san_palette );
+						$new_palette     = array_merge( $default_palette, $san_palette );
 					}
 				} else {
-					$newpalette = $san_palette;
+					$new_palette = $san_palette;
 				}
-				add_theme_support( 'editor-color-palette', $newpalette );
+				if ( ! kadence_blocks_is_fse_mode() ) {
+					add_theme_support( 'editor-color-palette', $new_palette );
+				}
 				add_action( 'wp_head', [ $this, 'print_color_palette_css' ], 8 );
 				add_filter( 'block_editor_settings_all', [ $this, 'add_color_palette_css_to_block_editor' ], 999 );
 			}
 		}
 	}
 
+	/**
+	 * Prints the stored palette's color classes on the frontend.
+	 */
 	public function print_color_palette_css() {
 		if ( $css = $this->get_color_palette_css() ) {
 			printf( '<style id="kadence_blocks_palette_css">%s</style>', $css ); // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped
 		}
 	}
 
+	/**
+	 * Adds the stored palette's color classes to the block editor styles.
+	 *
+	 * @param array{styles?: array<int, array<string, string>>} $settings The block editor settings.
+	 *
+	 * @return array{styles?: array<int, array<string, string>>}
+	 */
 	public function add_color_palette_css_to_block_editor(array $settings) {
 		if ( $css = $this->get_color_palette_css() ) {
 			$settings['styles'][] =[
