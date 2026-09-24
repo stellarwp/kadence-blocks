@@ -72,6 +72,13 @@ final class RowLayoutWidthTest extends WPTestCase {
 		$this->assertStringContainsString( '(min-width:42rem)', $after );
 	}
 
+	public function testFseModeBreakoutRowKeepsTheThemeWidthForAnEmLength(): void {
+		$this->tester->enable_fse_mode();
+		$this->tester->set_global_styles_layout( '42em', '1200px' );
+
+		$this->tester->assert_block_css_matches( 'row-breakout-classic-kadence', $this->row_css( self::BREAKOUT_ROW ) );
+	}
+
 	public function testFseModeBreakoutRowKeepsTheThemeWidthForAnExpression(): void {
 		$this->tester->enable_fse_mode();
 		$this->tester->set_global_styles_layout( 'clamp(40rem, 60vw, 60rem)', '1200px' );
