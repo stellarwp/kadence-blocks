@@ -1892,7 +1892,9 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 	 * The Global Styles content size, when it is a plain length a media query can use.
 	 *
 	 * Media queries can't use CSS variables, so values with `var()`, `calc()` or `clamp()`,
-	 * such as the Kadence theme's default, give an empty string.
+	 * such as the Kadence theme's default, give an empty string. So do `em` values: in a
+	 * media query `em` uses the browser's default font size, while the content width uses
+	 * the font size the content inherits.
 	 *
 	 * @since TBD
 	 *
@@ -1901,7 +1903,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 	private function get_global_styles_content_size_length(): string {
 		$content_size = wp_get_global_settings( [ 'layout', 'contentSize' ] );
 
-		if ( is_string( $content_size ) && preg_match( '/^\d+(\.\d+)?(px|rem|em)$/', trim( $content_size ) ) ) {
+		if ( is_string( $content_size ) && preg_match( '/^\d+(\.\d+)?(px|rem)$/', trim( $content_size ) ) ) {
 			return trim( $content_size );
 		}
 
