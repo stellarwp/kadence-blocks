@@ -80,6 +80,25 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 	];
 
 	/**
+	 * The slug of the theme's secondary preset.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const THEME_SECONDARY = 'theme-secondary';
+
+	/**
+	 * The class a secondary button keeps when its preset falls back to the theme's base preset, so site
+	 * CSS written against it keeps applying.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const SECONDARY_CLASS = 'button-style-secondary';
+
+	/**
 	 * Instance Control
 	 */
 	public static function get_instance() {
@@ -417,6 +436,11 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		if ( $resolved !== null && $resolved['class'] !== '' ) {
 			// The preset's classes paint the button; the mode classes would fight them for the same properties.
 			$classes[] = $resolved['class'];
+
+			if ( $this->stored_preset( $attributes ) === self::THEME_SECONDARY && $resolved['slug'] !== self::THEME_SECONDARY ) {
+				// A secondary button on a theme with no secondary style keeps the class it always carried.
+				$classes[] = self::SECONDARY_CLASS;
+			}
 		} else {
 			$classes[] = self::LEGACY_CLASSES[ $legacy ] ?? 'kb-btn-global-fill';
 		}

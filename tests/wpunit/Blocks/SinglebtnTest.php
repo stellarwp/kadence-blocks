@@ -1112,21 +1112,37 @@ class SinglebtnTest extends KadenceBlocksUnit {
 	}
 
 	/**
-	 * A saved Theme Secondary button on a theme with no secondary style falls back to the Theme Base
-	 * preset's classes, the look the theme already gave it, instead of the Fill shape.
+	 * A Theme Secondary button on a theme with no secondary style falls back to the Theme Base preset's
+	 * classes, the look the theme already gave it, and keeps the secondary class it always carried so site
+	 * CSS written against it keeps applying.
+	 *
+	 * @dataProvider secondaryButtonProvider
+	 *
+	 * @param array<string, mixed> $attributes The attributes under test.
 	 *
 	 * @return void
 	 */
-	public function testLegacySecondaryFallsBackToThemeBaseClassesWhenTheThemeHasNoSecondary(): void {
+	public function testLegacySecondaryFallsBackToThemeBaseClassesWhenTheThemeHasNoSecondary( array $attributes ): void {
 		$this->seed_theme_preset_slugs( [ 'base' ] );
 
-		$html = $this->render_html( [ 'inheritStyles' => 'inherit-secondary' ] );
+		$html = $this->render_html( $attributes );
 
 		$this->assertStringContainsString( 'kb-preset--theme-base', $html );
 		$this->assertStringContainsString( 'wp-block-button__link', $html );
 		$this->assertStringContainsString( 'kb-btn-global-inherit', $html );
-		$this->assertStringNotContainsString( 'button-style-secondary', $html );
+		$this->assertStringContainsString( 'button-style-secondary', $html );
 		$this->assertStringNotContainsString( 'kb-preset--theme-secondary', $html );
+		$this->assertStringNotContainsString( 'kb-btn-global-fill', $html );
+	}
+
+	/**
+	 * The attribute shapes that ask for the theme's secondary preset.
+	 *
+	 * @return Generator
+	 */
+	public function secondaryButtonProvider(): \Generator {
+		yield 'legacy secondary' => [ 'attributes' => [ 'inheritStyles' => 'inherit-secondary' ] ];
+		yield 'stored theme secondary' => [ 'attributes' => [ 'kbPreset' => 'theme-secondary' ] ];
 	}
 
 	/**
