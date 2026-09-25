@@ -182,10 +182,11 @@ class Kadence_Blocks_Abstract_Block {
 	 * Render styles in the footer.
 	 *
 	 * @param string $name the stylesheet name.
+	 * @param string $css  the inline css to print.
 	 */
 	public function render_styles_footer( $name, $css ) {
 		if ( ! is_admin() && ! wp_style_is( $name, 'done' ) && ! is_feed() ) {
-			wp_register_style( $name, false, [], false );
+			wp_register_style( $name, false, [], KADENCE_BLOCKS_VERSION );
 			wp_add_inline_style( $name, $css );
 			wp_enqueue_style( $name );
 		}
@@ -320,6 +321,10 @@ class Kadence_Blocks_Abstract_Block {
 
 	/**
 	 * Potentially prepend inline style to the content, unless it needs to get moved off to the footer.
+	 *
+	 * @param string $content         the block content, prepended with the style tag in place.
+	 * @param string $unique_style_id the blocks alternate ID for queries.
+	 * @param string $css             the css to print.
 	 */
 	public function do_inline_styles( &$content, $unique_style_id, $css ) {
 		if ( apply_filters( 'kadence_blocks_render_styles_footer', $this->block_name == 'data' || $this->block_name == 'slide' ) ) {
@@ -337,7 +342,7 @@ class Kadence_Blocks_Abstract_Block {
 	 * @param string $unique_id the blocks attr ID.
 	 * @param string $unique_style_id the blocks alternate ID for queries.
 	 */
-	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
+	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- a stub; the parameters are the contract a block overrides.
 		return '';
 	}
 
@@ -515,13 +520,13 @@ class Kadence_Blocks_Abstract_Block {
 	 *
 	 * @param array  $attributes Array of the blocks attributes.
 	 * @param string $tag_key Offset on $attributes where the tag is set.
-	 * @param string $default Default tag to use if $tag_key attribute is undefined or invalid.
+	 * @param string $default_tag Default tag to use if $tag_key attribute is undefined or invalid.
 	 * @param array  $allowed_tags Array of allowed tags.
 	 * @param string $level_key If defined, we'll assume heading tags are allowed.
 	 *
 	 * @return string
 	 */
-	public function get_html_tag( $attributes, $tag_key, $default, $allowed_tags = [], $level_key = '' ) {
+	public function get_html_tag( $attributes, $tag_key, $default_tag, $allowed_tags = [], $level_key = '' ) {
 
 		if ( ! empty( $attributes[ $tag_key ] ) && in_array( $attributes[ $tag_key ], $allowed_tags ) ) {
 
@@ -533,7 +538,7 @@ class Kadence_Blocks_Abstract_Block {
 			return $attributes[ $tag_key ];
 		}
 
-		return $default;
+		return $default_tag;
 	}
 
 
@@ -624,7 +629,7 @@ class Kadence_Blocks_Abstract_Block {
 				count( $merged_attributes[ $key ] ) == 1 && isset( $merged_attributes[ $key ][0] ) &&
 				is_array( $merged_attributes[ $key ][0] ) &&
 				is_array( $value ) && count( $value ) == 1 && isset( $value[0] ) ) {
-				// Handle attributes that are an array with a single object
+				// Handle attributes that are an array with a single object.
 				$merged_attributes[ $key ][0] = array_merge( $merged_attributes[ $key ][0], $value[0] );
 			} else {
 				$merged_attributes[ $key ] = $value;
