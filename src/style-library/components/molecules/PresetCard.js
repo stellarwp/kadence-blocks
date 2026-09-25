@@ -22,6 +22,9 @@ import './PresetCard.scss';
  * @param {string}       props.label             The preset name.
  * @param {?JSX.Element} [props.preview]         The preview area's content.
  * @param {boolean}      [props.isDefault]       Whether the Default badge renders.
+ * @param {boolean}      [props.isTheme]         Whether the "From theme" badge renders: the preset was
+ *                                               discovered from the active theme rather than shipped or
+ *                                               created here.
  * @param {boolean}      [props.isSelected]      Whether the card shows the selected treatment.
  * @param {Function}     props.onSelect          Called with the card id on click.
  * @param {boolean}      [props.isDraggable]     Whether the drag handle renders.
@@ -40,6 +43,7 @@ export function PresetCard({
 	label,
 	preview = null,
 	isDefault = false,
+	isTheme = false,
 	isSelected = false,
 	onSelect,
 	isDraggable = false,
@@ -69,6 +73,11 @@ export function PresetCard({
 			{isDefault && (
 				<span className="kadence-blocks-style-library__preset-card-badge">
 					{__('Default', 'kadence-blocks')}
+				</span>
+			)}
+			{isTheme && (
+				<span className="kadence-blocks-style-library__preset-card-badge kadence-blocks-style-library__preset-card-badge--theme">
+					{__('From theme', 'kadence-blocks')}
 				</span>
 			)}
 			{isDraggable && <DragHandle handleProps={dragHandleProps} />}

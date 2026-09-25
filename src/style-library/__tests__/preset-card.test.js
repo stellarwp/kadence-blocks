@@ -73,6 +73,19 @@ describe('PresetCard', () => {
 		expect(container.querySelector(`${PREFIX}-badge`).textContent).toBe('Default');
 	});
 
+	/**
+	 * A preset discovered from the theme says so on its card, and a plain one does not.
+	 *
+	 * @return {void}
+	 */
+	it('shows the From theme badge only on a theme preset card', () => {
+		renderCard();
+		expect(container.querySelector(`${PREFIX}-badge--theme`)).toBeNull();
+
+		renderCard({ isTheme: true });
+		expect(container.querySelector(`${PREFIX}-badge--theme`).textContent).toBe('From theme');
+	});
+
 	it('renders the drag handle outside the selecting button, and only when draggable', () => {
 		renderCard();
 		expect(container.querySelector('.kadence-blocks-style-library__drag-handle')).toBeNull();
