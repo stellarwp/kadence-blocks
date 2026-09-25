@@ -120,6 +120,27 @@ final class Preset_Bindings {
 	public ?string $editor_selector;
 
 	/**
+	 * The compound the class-preset override layer appends to the block's front-end scope so an override
+	 * outranks every rule the theme or the plugin stylesheet writes for a preset's class, e.g.
+	 * ".kb-button.kb-button.kb-button", or null when the block declares none.
+	 *
+	 * @since TBD
+	 *
+	 * @var string|null
+	 */
+	public ?string $class_preset_weight;
+
+	/**
+	 * The editor twin of {@see self::$class_preset_weight}, appended as a descendant of the block wrapper,
+	 * e.g. ".kt-button.kt-button.kt-button.kt-button", or null when the block declares none.
+	 *
+	 * @since TBD
+	 *
+	 * @var string|null
+	 */
+	public ?string $editor_class_preset_weight;
+
+	/**
 	 * The Style Library admin page's per-block presentation metadata, or null when the declaration
 	 * omits the optional "style_library" section. Keyed for forward compatibility rather than a bare
 	 * scalar: today it carries only "label" (the block's BLOCK PRESETS nav label — never the picker
@@ -142,13 +163,17 @@ final class Preset_Bindings {
 	 *                                                     front-end selector in the editor too.
 	 * @param array{label?: string}|null $style_library The Style Library admin page's per-block presentation
 	 *                                                   metadata, or null when the declaration omits it.
+	 * @param string|null                $class_preset_weight        The front-end class-preset override weight, or null.
+	 * @param string|null                $editor_class_preset_weight The editor class-preset override weight, or null.
 	 */
-	private function __construct( string $block, array $bindings, ?string $label, ?string $editor_selector, ?array $style_library ) {
-		$this->block           = $block;
-		$this->bindings        = $bindings;
-		$this->label           = $label;
-		$this->editor_selector = $editor_selector;
-		$this->style_library   = $style_library;
+	private function __construct( string $block, array $bindings, ?string $label, ?string $editor_selector, ?array $style_library, ?string $class_preset_weight = null, ?string $editor_class_preset_weight = null ) {
+		$this->block                      = $block;
+		$this->bindings                   = $bindings;
+		$this->label                      = $label;
+		$this->editor_selector            = $editor_selector;
+		$this->style_library              = $style_library;
+		$this->class_preset_weight        = $class_preset_weight;
+		$this->editor_class_preset_weight = $editor_class_preset_weight;
 	}
 
 	/**
@@ -160,8 +185,10 @@ final class Preset_Bindings {
 	 *                                  {@see Binding::from_array()}), optional "label" (the picker control
 	 *                                  label; omit for preset bindings with no picker), optional
 	 *                                  "editor_selector" (see {@see self::$editor_selector}), and optional
-	 *                                  "style_library" (see {@see self::$style_library}). Preset names,
-	 *                                  default and values are document data, not declared here.
+	 *                                  "style_library" (see {@see self::$style_library}), and optional
+	 *                                  "class_preset_weight" / "editor_class_preset_weight" (see
+	 *                                  {@see self::$class_preset_weight}). Preset names, default and
+	 *                                  values are document data, not declared here.
 	 *
 	 * @throws InvalidArgumentException When "block" is missing or a binding is malformed.
 	 *
@@ -179,7 +206,9 @@ final class Preset_Bindings {
 			self::bindings( $declaration['block'], $declaration['bindings'] ?? [] ),
 			isset( $declaration['label'] ) && is_string( $declaration['label'] ) ? $declaration['label'] : null,
 			isset( $declaration['editor_selector'] ) && is_string( $declaration['editor_selector'] ) ? $declaration['editor_selector'] : null,
-			self::style_library( $declaration['style_library'] ?? null )
+			self::style_library( $declaration['style_library'] ?? null ),
+			self::weight( $declaration['class_preset_weight'] ?? null ),
+			self::weight( $declaration['editor_class_preset_weight'] ?? null )
 		);
 	}
 
@@ -370,6 +399,26 @@ final class Preset_Bindings {
 		}
 
 		return $section;
+	}
+
+	/**
+	 * Parse an optional class-preset weight: a trimmed compound, or null when omitted or empty. Trimmed so
+	 * the scope builder alone decides whether the weight compounds on the element or descends from it.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $declared The declared weight.
+	 *
+	 * @return string|null
+	 */
+	private static function weight( $declared ): ?string {
+		if ( ! is_string( $declared ) ) {
+			return null;
+		}
+
+		$weight = trim( $declared );
+
+		return $weight === '' ? null : $weight;
 	}
 
 	/**
