@@ -65,6 +65,43 @@ final class Theme_Button_Presets_Baseline_DocumentTest extends TestCase {
 	}
 
 	/**
+	 * A class-less style declaring tokens (a block theme's own variation) is written as a value preset: its
+	 * label and tokens, the same tokens as the theme values a reset returns to, and no theme class.
+	 *
+	 * @return void
+	 */
+	public function testWritesAClasslessStyleAsAValuePreset(): void {
+		$tokens = [
+			'button-bg'           => 'transparent',
+			'button-border-width' => [ '1px', '1px', '1px', '1px' ],
+		];
+		$node   = $this->button_node(
+			$this->decorated(
+				new Fake_Button_Style_Source(
+					[
+						'base'    => self::KADENCE_LIKE['base'],
+						'outline' => [
+							'label'  => 'Theme Outline',
+							'class'  => '',
+							'values' => [],
+							'tokens' => $tokens,
+						],
+					]
+				)
+			)->document()
+		);
+
+		$this->assertSame(
+			[
+				'label'       => 'Theme Outline',
+				'tokens'      => $tokens,
+				'themeValues' => $tokens,
+			],
+			$node['theme-outline']
+		);
+	}
+
+	/**
 	 * The shipped presets and the block's `$default` are left exactly as they were.
 	 *
 	 * @return void
