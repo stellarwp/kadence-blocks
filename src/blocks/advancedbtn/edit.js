@@ -62,7 +62,7 @@ import {
 } from '@wordpress/components';
 const DEFAULT_BLOCK = {
 	name: 'kadence/singlebtn',
-	attributesToCopy: ['sizePreset', 'inheritStyles', 'widthType'],
+	attributesToCopy: ['sizePreset', 'kbPreset', 'inheritStyles', 'widthType'],
 };
 function KadenceButtons(props) {
 	const { attributes, className, setAttributes, clientId, context } = props;
