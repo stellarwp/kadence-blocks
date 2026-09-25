@@ -180,6 +180,35 @@ final class Extensions {
 	private const LABEL_KEY = 'label';
 
 	/**
+	 * The key carrying the classes a class-painted preset puts on the block element, so the theme's or the
+	 * plugin's own stylesheet paints it. Written by the theme discovery layer or the shipped baseline, never
+	 * by a client.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const THEME_CLASS_KEY = 'themeClass';
+
+	/**
+	 * The key carrying the values the theme currently renders for a class-painted preset, for display.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const THEME_VALUES_KEY = 'themeValues';
+
+	/**
+	 * The key carrying the theme values a class-painted preset had when its overrides were last saved.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const THEME_SNAPSHOT_KEY = 'themeSnapshot';
+
+	/**
 	 * The key naming a library's current (active) color palette, written to switch the color layer.
 	 *
 	 * @since TBD
@@ -411,6 +440,51 @@ final class Extensions {
 	 */
 	public static function get_label_key(): string {
 		return self::LABEL_KEY;
+	}
+
+	/**
+	 * The key carrying the classes a class-painted preset puts on the block element.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_theme_class_key(): string {
+		return self::THEME_CLASS_KEY;
+	}
+
+	/**
+	 * The key carrying the values the theme currently renders for a class-painted preset.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_theme_values_key(): string {
+		return self::THEME_VALUES_KEY;
+	}
+
+	/**
+	 * The key carrying the theme values a class-painted preset had when its overrides were last saved.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_theme_snapshot_key(): string {
+		return self::THEME_SNAPSHOT_KEY;
+	}
+
+	/**
+	 * The preset keys only the theme discovery layer or the shipped baseline may write, so a client write
+	 * carrying one can be refused.
+	 *
+	 * @since TBD
+	 *
+	 * @return string[]
+	 */
+	public static function get_theme_owned_keys(): array {
+		return [ self::THEME_CLASS_KEY, self::THEME_VALUES_KEY, self::THEME_SNAPSHOT_KEY ];
 	}
 
 	/**
