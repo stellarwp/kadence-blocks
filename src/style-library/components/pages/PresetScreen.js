@@ -23,6 +23,7 @@ import { plus } from '@wordpress/icons';
  * Internal dependencies
  */
 import { ScreenHeader } from '../organisms/ScreenHeader';
+import { DormantPresets } from '../organisms/DormantPresets';
 import { PresetGrid } from '../templates/PresetGrid';
 import { ScreenDescription } from '../molecules/ScreenDescription';
 import { EmptyState } from '../molecules/EmptyState';
@@ -149,6 +150,7 @@ export function PresetScreen({ label, route, navigate, library, preset }) {
 	const items = rows.map((row) => ({
 		id: row.id,
 		label: row.label,
+		isTheme: row.isTheme === true,
 		preview: renderPreview(isHoverDraft && row.id === route.item ? { ...row, showHoverState: true } : row),
 	}));
 
@@ -188,6 +190,11 @@ export function PresetScreen({ label, route, navigate, library, preset }) {
 					{screen.orderError.message}
 				</Notice>
 			)}
+			{screen.dormantError && (
+				<Notice status="error" isDismissible onRemove={screen.clearDormantError}>
+					{screen.dormantError.message}
+				</Notice>
+			)}
 			{screen.isLoading ? (
 				<PresetCardsSkeleton label={label} />
 			) : (
@@ -198,6 +205,14 @@ export function PresetScreen({ label, route, navigate, library, preset }) {
 					onSelect={selectPreset}
 					onReorder={reorderPresets}
 					empty={<EmptyState title={label} description={preset.addLabel} action={addAction} />}
+				/>
+			)}
+			{!screen.isLoading && (
+				<DormantPresets
+					dormant={screen.payload?.dormant}
+					onKeep={screen.keepAsCustom}
+					onDiscard={screen.discardDormant}
+					isBusy={screen.isBusy}
 				/>
 			)}
 		</div>

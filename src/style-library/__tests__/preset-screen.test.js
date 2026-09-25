@@ -36,9 +36,10 @@ jest.mock('../hooks/use-draft-channel', () => ({
 }));
 
 jest.mock('@wordpress/components', () => ({
-	// `isBusy` is a `Button` prop, not a DOM attribute — drop it so React does not warn about it.
-	Button: ({ children, isBusy, ...props }) => <button {...props}>{children}</button>,
-	Notice: ({ children, isDismissible, ...props }) => <div {...props}>{children}</div>,
+	// `isBusy`/`isDestructive`/`variant` are `Button` props and `onRemove` a `Notice` prop, not DOM
+	// attributes — dropped so React does not warn about them.
+	Button: ({ children, isBusy, isDestructive, variant, ...props }) => <button {...props}>{children}</button>,
+	Notice: ({ children, isDismissible, onRemove, ...props }) => <div {...props}>{children}</div>,
 	ExternalLink: ({ children, ...props }) => <a {...props}>{children}</a>,
 }));
 
@@ -416,6 +417,94 @@ describe('PresetScreen default preset', () => {
 
 		expect(container.querySelector('.kadence-blocks-style-library__preset-card-badge')).toBeNull();
 		expect(container.querySelectorAll('.kadence-blocks-style-library__drag-handle')).toHaveLength(3);
+	});
+});
+
+describe('PresetScreen theme presets', () => {
+	const SCREEN = {
+		payload: {
+			default: 'default',
+			dormant: {
+				'theme-secondary': {
+					label: 'Theme Secondary',
+					tokens: { 'button-bg': '#ff0000' },
+					themeSnapshot: { 'button-bg': '#EDF2F7' },
+				},
+			},
+		},
+		isLoading: false,
+		loadError: null,
+		rows: [
+			{ id: 'default', label: 'Default', isTheme: false, preview: { background: '#111111' } },
+			{ id: 'theme-base', label: 'Theme Base', isTheme: true, preview: { background: '#222222' } },
+		],
+		initialValuesFor: () => ({}),
+		keepAsCustom: jest.fn(),
+		discardDormant: jest.fn(),
+		isBusy: false,
+	};
+
+	/**
+	 * A theme preset's card carries the From theme badge; a plain one does not.
+	 *
+	 * @return {void}
+	 */
+	it('badges the theme preset cards', () => {
+		renderPresetScreen(SCREEN);
+
+		const badges = Array.from(
+			container.querySelectorAll('.kadence-blocks-style-library__preset-card-badge--theme')
+		);
+
+		expect(badges.map((badge) => badge.closest('li').textContent)).toEqual(['Theme BaseButtonFrom theme']);
+	});
+
+	/**
+	 * The dormant group renders under the grid from the payload's dormant map and hands its actions to
+	 * the screen binding.
+	 *
+	 * @return {void}
+	 */
+	it('renders the dormant group wired to the screen actions', () => {
+		renderPresetScreen(SCREEN);
+
+		const group = container.querySelector('.kadence-blocks-style-library__dormant');
+
+		expect(group).not.toBeNull();
+		expect(group.textContent).toContain('Theme Secondary');
+
+		act(() => group.querySelector('[data-action="keep"]').click());
+		expect(SCREEN.keepAsCustom).toHaveBeenCalledWith('theme-secondary', {
+			label: 'Theme Secondary',
+			tokens: { 'button-bg': '#ff0000' },
+		});
+
+		act(() => group.querySelector('[data-action="discard"]').click());
+		expect(SCREEN.discardDormant).toHaveBeenCalledWith('theme-secondary');
+	});
+
+	/**
+	 * A failed keep or discard shows its message as a notice the user can dismiss.
+	 *
+	 * @return {void}
+	 */
+	it('renders a dormant action failure as a dismissible notice', () => {
+		const clearDormantError = jest.fn();
+
+		renderPresetScreen({ ...SCREEN, dormantError: { message: 'Could not keep it' }, clearDormantError });
+
+		expect(container.textContent).toContain('Could not keep it');
+	});
+
+	/**
+	 * Nothing dormant renders no group at all.
+	 *
+	 * @return {void}
+	 */
+	it('renders no dormant group when the payload has nothing dormant', () => {
+		renderPresetScreen({ ...SCREEN, payload: { default: 'default', dormant: {} } });
+
+		expect(container.querySelector('.kadence-blocks-style-library__dormant')).toBeNull();
 	});
 });
 

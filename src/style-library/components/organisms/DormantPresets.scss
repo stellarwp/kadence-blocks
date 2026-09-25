@@ -1,0 +1,50 @@
+@use '../../styles/mixins' as *;
+
+.kadence-blocks-style-library__dormant {
+	@include flex-column(var(--kb-sl-space-10));
+
+	margin-top: var(--kb-sl-space-40);
+	padding-top: var(--kb-sl-space-20);
+	border-top: 1px solid var(--kb-sl-color-border);
+}
+
+.kadence-blocks-style-library__dormant-title {
+	margin: 0;
+	color: var(--kb-sl-color-heading);
+	font-size: var(--kb-sl-font-size-body);
+	font-weight: var(--kb-sl-font-weight-semibold);
+	line-height: var(--kb-sl-line-height-ratio-snug);
+}
+
+.kadence-blocks-style-library__dormant-note {
+	@include body-text;
+
+	margin: 0;
+}
+
+.kadence-blocks-style-library__dormant-list {
+	@include flex-column(var(--kb-sl-space-10));
+
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.kadence-blocks-style-library__dormant-item {
+	@include flex-row(var(--kb-sl-space-20), center);
+
+	justify-content: space-between;
+	flex-wrap: wrap;
+	padding: var(--kb-sl-space-15) var(--kb-sl-space-20);
+	border: 1px solid var(--kb-sl-color-border);
+	border-radius: 0.165rem;
+}
+
+.kadence-blocks-style-library__dormant-label {
+	color: var(--kb-sl-color-text-primary);
+	font-size: var(--kb-sl-font-size-s);
+}
+
+.kadence-blocks-style-library__dormant-actions {
+	@include flex-row(var(--kb-sl-space-10), center);
+}
