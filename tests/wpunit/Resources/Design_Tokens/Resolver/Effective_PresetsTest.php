@@ -1,10 +1,12 @@
 <?php declare( strict_types=1 );
-// cspell:ignore advancedbtn .
+// cspell:ignore advancedbtn unseed .
 
 namespace Tests\wpunit\Resources\Design_Tokens\Resolver;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Presets;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
+use Tests\Support\Classes\Seeds_Theme_Presets;
 use Tests\Support\Classes\TestCase;
 
 /**
@@ -12,6 +14,8 @@ use Tests\Support\Classes\TestCase;
  * overrides, asserted against the real baseline so these also guard its preset definitions.
  */
 final class Effective_PresetsTest extends TestCase {
+
+	use Seeds_Theme_Presets;
 
 	private const BUTTON = 'kadence/singlebtn';
 
@@ -33,6 +37,15 @@ final class Effective_PresetsTest extends TestCase {
 
 		$this->store   = $this->container->get( Token_Store::class );
 		$this->presets = $this->container->get( Effective_Presets::class );
+	}
+
+	/**
+	 * @return void
+	 */
+	protected function tearDown(): void {
+		$this->unseed_theme_presets();
+
+		parent::tearDown();
 	}
 
 	/**
@@ -193,5 +206,55 @@ final class Effective_PresetsTest extends TestCase {
 	 */
 	public function testStoredTokensIsEmptyForAnUnknownPresetSlug(): void {
 		$this->assertSame( [], $this->presets->stored_tokens( self::BUTTON, 'not-a-preset' ) );
+	}
+	/**
+	 * A stored theme preset whose theme no longer offers it is dormant: not listed, not user-created, still stored.
+	 *
+	 * @return void
+	 */
+	public function testAStoredThemePresetWithoutADecoratedCounterpartIsDormant(): void {
+		$this->store->save_document(
+			'{"$extensions":{"com.kadence.designTokens":{"presets":{"kadence/singlebtn":{'
+			. '"theme-secondary":{"tokens":{"button-bg":"#ff0000"}}}}}}}'
+		);
+
+		$this->assertSame( [ 'theme-secondary' ], $this->presets->dormant( self::BUTTON ) );
+		$this->assertNotContains( 'theme-secondary', $this->presets->user_created( self::BUTTON ) );
+		$this->assertNotContains( 'theme-secondary', $this->container->get( Preset_Resolver::class )->names( self::BUTTON ) );
+		$this->assertSame( [ 'button-bg' => '#ff0000' ], $this->presets->stored_tokens( self::BUTTON, 'theme-secondary' ) );
+	}
+
+	/**
+	 * A dormant theme preset returns, override included, the moment a theme that offers it is active again.
+	 *
+	 * @return void
+	 */
+	public function testADormantThemePresetReturnsWhenTheThemeOffersItAgain(): void {
+		$this->store->save_document(
+			'{"$extensions":{"com.kadence.designTokens":{"presets":{"kadence/singlebtn":{'
+			. '"theme-secondary":{"tokens":{"button-bg":"#ff0000"}}}}}}}'
+		);
+
+		$this->seed_theme_preset_slugs( [ 'base', 'secondary' ] );
+
+		$this->assertSame( [], $this->presets->dormant( self::BUTTON ) );
+		$this->assertContains( 'theme-secondary', $this->container->get( Preset_Resolver::class )->names( self::BUTTON ) );
+		$this->assertSame( '#ff0000', $this->presets->block( self::BUTTON )['theme-secondary']['tokens']['button-bg'] );
+		$this->assertSame( 'Theme Secondary', $this->presets->block( self::BUTTON )['theme-secondary']['label'] );
+	}
+
+	/**
+	 * A stored override of a theme preset the theme offers is neither dormant nor user-created.
+	 *
+	 * @return void
+	 */
+	public function testAnOfferedThemePresetWithAnOverrideIsNeitherDormantNorUserCreated(): void {
+		$this->store->save_document(
+			'{"$extensions":{"com.kadence.designTokens":{"presets":{"kadence/singlebtn":{'
+			. '"theme-base":{"tokens":{"button-bg":"#ff0000"}}}}}}}'
+		);
+
+		$this->assertSame( [], $this->presets->dormant( self::BUTTON ) );
+		$this->assertSame( [], $this->presets->user_created( self::BUTTON ) );
 	}
 }

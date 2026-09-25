@@ -4,6 +4,7 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Resolver;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Mutator;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Preset\Style;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Contracts\Baseline_Document;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Extensions;
 
@@ -107,7 +108,8 @@ final class Effective_Presets {
 	/**
 	 * The named preset slugs a library defines for a block that are NOT in the baseline — i.e. the
 	 * user-created ones. A slug that shadows a baseline preset is excluded, since deleting it reverts to
-	 * baseline rather than removing it.
+	 * baseline rather than removing it. A theme preset is never user-created, even when the active theme no
+	 * longer offers it (see {@see dormant()}): its overrides belong to the theme that wrote them.
 	 *
 	 * @since TBD
 	 *
@@ -123,7 +125,40 @@ final class Effective_Presets {
 		$baseline_names  = $this->named_of( $baseline_block );
 		$effective_names = $this->named_of( $effective_block );
 
-		return array_values( array_diff( $effective_names, $baseline_names ) );
+		return array_values(
+			array_filter(
+				array_diff( $effective_names, $baseline_names ),
+				static function ( string $name ): bool {
+					return ! Style::is_theme_slug( $name );
+				}
+			)
+		);
+	}
+
+	/**
+	 * The theme preset slugs a library stores overrides for that the active theme does not offer: the
+	 * dormant ones. A dormant preset is not listed, not projected and not deletable, but its overrides stay
+	 * stored, so they return the moment a theme that offers the preset is active again.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $block The block name, e.g. "kadence/singlebtn".
+	 * @param string $slug  The token library slug.
+	 *
+	 * @return string[]
+	 */
+	public function dormant( string $block, string $slug = 'default' ): array {
+		$offered = $this->named_of( $this->block_node( $this->presets_of( $this->baseline->document() ), $block ) );
+		$stored  = $this->named_of( $this->block_node( $this->presets_of( $this->raw( $slug ) ), $block ) );
+
+		return array_values(
+			array_filter(
+				array_diff( $stored, $offered ),
+				static function ( string $name ): bool {
+					return Style::is_theme_slug( $name );
+				}
+			)
+		);
 	}
 
 	/**
