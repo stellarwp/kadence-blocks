@@ -3,7 +3,9 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Rest\V1;
 
+use Generator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Presets;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
 use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Presets_Controller;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Alias;
@@ -314,6 +316,122 @@ final class PresetsControllerTest extends TestCase {
 
 		$this->assertInstanceOf( WP_Error::class, $response );
 		$this->assertSame( 'rest_design_tokens_reserved_slug', $response->get_error_code() );
+	}
+
+	/**
+	 * The "theme-" prefix is reserved for theme-discovered presets: minting a new preset under it is refused.
+	 *
+	 * @return void
+	 */
+	public function testCreatingAThemePrefixedPresetIsRefused(): void {
+		$response = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'preset' => 'theme-x',
+					'label'  => 'Theme X',
+					'tokens' => $this->button_tokens(),
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $response );
+		$this->assertSame( 'rest_design_tokens_reserved_slug', $response->get_error_code() );
+	}
+
+	/**
+	 * A theme preset the library already stores stays writable: a POST to it updates its overrides rather
+	 * than being refused as a reserved creation.
+	 *
+	 * @return void
+	 */
+	public function testAPostToAStoredThemePresetUpdatesItsOverrides(): void {
+		$this->seedClassPreset( 'theme-base', [] );
+
+		$response = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'preset' => 'theme-base',
+					'tokens' => [ 'button-bg' => '#ff0000' ],
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+		$this->assertSame( [ 'button-bg' => '#ff0000' ], $this->container->get( Effective_Presets::class )->stored_tokens( self::BUTTON, 'theme-base' ) );
+	}
+
+	/**
+	 * A body carrying a theme-owned key is refused on both write routes: what paints a class preset is
+	 * never client data.
+	 *
+	 * @dataProvider themeOwnedKeyProvider
+	 *
+	 * @param string $key The theme-owned key.
+	 *
+	 * @return void
+	 */
+	public function testABodyCarryingAThemeOwnedKeyIsRefused( string $key ): void {
+		$response = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'preset' => 'accent',
+					'tokens' => $this->button_tokens(),
+					$key     => 'kb-btn-global-outline',
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $response );
+		$this->assertSame( 'rest_design_tokens_invalid', $response->get_error_code() );
+		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $response->get_error_data()['status'] );
+
+		$response = $this->controller->update_item(
+			$this->block_request(
+				'PUT',
+				self::BUTTON,
+				[
+					'presets' => [
+						'accent' => [
+							'tokens' => $this->button_tokens(),
+							$key     => 'kb-btn-global-outline',
+						],
+					],
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $response );
+		$this->assertSame( 'rest_design_tokens_invalid', $response->get_error_code() );
+	}
+
+	/**
+	 * @return Generator
+	 */
+	public function themeOwnedKeyProvider(): Generator {
+		yield 'theme class' => [ 'key' => 'themeClass' ];
+		yield 'theme values' => [ 'key' => 'themeValues' ];
+		yield 'theme snapshot' => [ 'key' => 'themeSnapshot' ];
+	}
+
+	/**
+	 * A theme preset can never be the block's default.
+	 *
+	 * @return void
+	 */
+	public function testSettingAThemePresetAsTheDefaultIsRefused(): void {
+		$this->seedClassPreset( 'theme-base', [] );
+
+		$result = $this->controller->set_default( $this->default_request( self::BUTTON, 'theme-base' ) );
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'rest_design_tokens_theme_default', $result->get_error_code() );
+		$this->assertSame( WP_Http::BAD_REQUEST, $result->get_error_data()['status'] );
 	}
 
 	/**
@@ -1839,6 +1957,40 @@ final class PresetsControllerTest extends TestCase {
 	 */
 	private function preset_request( string $block, string $preset ): WP_REST_Request {
 		return $this->block_request( WP_REST_Server::DELETABLE, $block, [ 'preset' => $preset ] );
+	}
+
+	/**
+	 * Persist a class-painted button preset into the default library's overrides document, the way the
+	 * theme discovery layer writes one.
+	 *
+	 * @param string               $preset       The preset slug.
+	 * @param array<string, mixed> $theme_values The values the theme renders for the preset.
+	 * @param array<string, mixed> $tokens       The preset's stored overrides.
+	 *
+	 * @return void
+	 */
+	private function seedClassPreset( string $preset, array $theme_values, array $tokens = [] ): void {
+		$this->store->save_document(
+			(string) wp_json_encode(
+				[
+					'$extensions' => [
+						'com.kadence.designTokens' => [
+							'presets' => [
+								self::BUTTON => [
+									$preset => [
+										'label'       => 'Theme Base',
+										'themeClass'  => 'wp-block-button__link button kb-btn-global-inherit',
+										'themeValues' => $theme_values,
+										'tokens'      => $tokens,
+									],
+								],
+							],
+						],
+					],
+				]
+			),
+			Token_Store::default_slug()
+		);
 	}
 
 	/**

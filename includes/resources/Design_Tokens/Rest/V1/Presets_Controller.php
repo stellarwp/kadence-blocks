@@ -6,6 +6,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Mutator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Preset_Order_Index;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Preset\Style;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Preset_Bindings;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Presets;
@@ -536,6 +537,14 @@ final class Presets_Controller extends Controller {
 		$block_node = [ $preset => $this->preset_definition( $request ) ];
 		$slug       = $this->slug( $request );
 
+		// preset_definition() copies only the label and the tokens, so a theme-owned key in the body would
+		// be dropped silently; it is refused instead, the way the collection route refuses it.
+		$error = $this->guard_theme_owned_keys( $this->theme_owned_params( $request ), $block, $preset );
+
+		if ( $error instanceof WP_Error ) {
+			return $error;
+		}
+
 		$error = $this->guard_preset_shape( $block_node, $block );
 
 		if ( $error instanceof WP_Error ) {
@@ -787,6 +796,18 @@ final class Presets_Controller extends Controller {
 		}
 
 		$default = Cast::to_string( $request->get_param( self::DEFAULT_PARAM ) );
+
+		if ( Style::is_theme_slug( $default ) ) {
+			return new WP_Error(
+				'rest_design_tokens_theme_default',
+				__( 'A theme preset cannot be the default preset.', 'kadence-blocks' ),
+				[
+					'status'  => WP_Http::BAD_REQUEST,
+					'block'   => $block,
+					'default' => $default,
+				]
+			);
+		}
 
 		$slug      = $this->slug( $request );
 		$candidate = $this->mutator->merge(
@@ -1183,9 +1204,64 @@ final class Presets_Controller extends Controller {
 					]
 				);
 			}
+
+			$error = $this->guard_theme_owned_keys( array_keys( $preset ), $block, (string) $slug );
+
+			if ( $error instanceof WP_Error ) {
+				return $error;
+			}
 		}
 
 		return null;
+	}
+
+	/**
+	 * Reject a preset write carrying a key only the theme discovery layer or the shipped baseline may set
+	 * (the classes a class-painted preset wears, its displayed theme values, its saved snapshot). A client
+	 * edits a class preset's overrides only; what paints it is never client data.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<int, int|string> $keys   The keys the written preset carries.
+	 * @param string                 $block  The block name, for error context.
+	 * @param string                 $preset The preset slug, for error context.
+	 *
+	 * @return WP_Error|null A WP_Error when a theme-owned key is present, null otherwise.
+	 */
+	private function guard_theme_owned_keys( array $keys, string $block, string $preset ): ?WP_Error {
+		if ( array_intersect( array_map( 'strval', $keys ), Extensions::get_theme_owned_keys() ) === [] ) {
+			return null;
+		}
+
+		return new WP_Error(
+			'rest_design_tokens_invalid',
+			__( 'A preset cannot set theme-owned keys.', 'kadence-blocks' ),
+			[
+				'status' => WP_Http::UNPROCESSABLE_ENTITY,
+				'block'  => $block,
+				'preset' => $preset,
+			]
+		);
+	}
+
+	/**
+	 * The theme-owned keys a single-preset request carries as top-level parameters.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_REST_Request $request The request.
+	 *
+	 * @return string[]
+	 */
+	private function theme_owned_params( WP_REST_Request $request ): array {
+		return array_values(
+			array_filter(
+				Extensions::get_theme_owned_keys(),
+				static function ( string $key ) use ( $request ): bool {
+					return $request->has_param( $key );
+				}
+			)
+		);
 	}
 
 	/**
@@ -1200,6 +1276,10 @@ final class Presets_Controller extends Controller {
 	 * preset should refuse anyway: it is the block's built-in look, and the editor offers deletion only for
 	 * user-created presets. Minting a NEW preset under a reserved slug is still refused, so nobody can
 	 * strand one that cannot be removed.
+	 *
+	 * The theme prefix is reserved the same way: a theme-discovered preset is written by the discovery
+	 * layer, and a client minting one would be listed as a theme's style the theme never offered. A stored
+	 * `theme-*` node the library already carries stays writable, since that is an update of its overrides.
 	 *
 	 * @since TBD
 	 *
@@ -1219,7 +1299,7 @@ final class Presets_Controller extends Controller {
 				continue;
 			}
 
-			if ( ! in_array( (string) $slug, $reserved, true ) ) {
+			if ( ! in_array( (string) $slug, $reserved, true ) && ! Style::is_theme_slug( (string) $slug ) ) {
 				continue;
 			}
 
