@@ -4,6 +4,7 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Resolver;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Document_Path;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Preset_Order_Index;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Preset\Style;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Css_Var;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Unknown_Preset_Exception;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Alias;
@@ -375,6 +376,71 @@ final class Preset_Resolver {
 	}
 
 	/**
+	 * The classes a class-painted preset puts on the block element, or an empty string for a preset the
+	 * projector paints through variables.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $block  The block name.
+	 * @param string $preset The preset slug.
+	 * @param string $slug   The token library slug.
+	 *
+	 * @return string
+	 */
+	public function theme_class( string $block, string $preset, string $slug = 'default' ): string {
+		$node = $this->preset_node( $block, $preset, $slug );
+
+		return Cast::to_string( $node[ Extensions::get_theme_class_key() ] ?? '' );
+	}
+
+	/**
+	 * The values the theme currently renders for a class-painted preset, for display.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $block  The block name.
+	 * @param string $preset The preset slug.
+	 * @param string $slug   The token library slug.
+	 *
+	 * @return array<string, mixed> property => value, empty when the preset carries none.
+	 */
+	public function theme_values( string $block, string $preset, string $slug = 'default' ): array {
+		$node   = $this->preset_node( $block, $preset, $slug );
+		$values = $node[ Extensions::get_theme_values_key() ] ?? [];
+
+		return is_array( $values ) ? $values : [];
+	}
+
+	/**
+	 * Whether a slug names a theme-discovered preset.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $preset The preset slug.
+	 *
+	 * @return bool
+	 */
+	public function is_theme_preset( string $preset ): bool {
+		return Style::is_theme_slug( $preset );
+	}
+
+	/**
+	 * The properties a preset stores itself in a library, as a `property => true` lookup. For a
+	 * class-painted preset these are its overrides: the only values the projector writes as declarations.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $block  The block name.
+	 * @param string $preset The preset slug.
+	 * @param string $slug   The token library slug.
+	 *
+	 * @return array<string, bool>
+	 */
+	public function stored_properties( string $block, string $preset, string $slug = 'default' ): array {
+		return $this->presets->owned_properties( $block, $preset, $slug );
+	}
+
+	/**
 	 * The union of every property the block's presets set a value for in a library — what a
 	 * {@see \KadenceWP\KadenceBlocks\Design_Tokens\Registry\Preset_Bindings::consistency()} check compares the
 	 * block's bindings against, and what a block preset iterates.
@@ -695,6 +761,27 @@ final class Preset_Resolver {
 		$tokens = $node[ $preset ][ Extensions::get_tokens_key() ] ?? [];
 
 		return is_array( $tokens ) ? $tokens : [];
+	}
+
+	/**
+	 * A preset's raw node in a library, or an empty array when the block or the preset is undefined.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $block  The block name.
+	 * @param string $preset The preset slug.
+	 * @param string $slug   The token library slug.
+	 *
+	 * @return array<string, mixed>
+	 */
+	private function preset_node( string $block, string $preset, string $slug ): array {
+		try {
+			$node = $this->block_presets( $block, $slug )[ $preset ] ?? null;
+		} catch ( Unknown_Preset_Exception $e ) {
+			return [];
+		}
+
+		return is_array( $node ) ? $node : [];
 	}
 
 	/**
