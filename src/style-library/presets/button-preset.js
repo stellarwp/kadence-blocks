@@ -189,6 +189,13 @@ function schemaFor(tab, draft = null, feed = null, row = null) {
 	const values = feed?.values ?? {};
 	const themeColor = (property) => (property in themeValues ? aliasToId(themeValues[property]) : undefined);
 	const themeDefault = (property) => themeFieldDefault(themeValues[property], values);
+	// The border control shows its width default as one string, so a theme's four equal sides read as
+	// one width rather than the same value listed four times.
+	const themeBorderWidth = () => {
+		const width = themeDefault('button-border-width');
+
+		return Array.isArray(width) && width.every((side) => side === width[0]) ? width[0] : width;
+	};
 
 	const isHover = tab === 'hover';
 	const textPath = isHover ? 'tokens.button-text-hover' : 'tokens.button-text';
@@ -245,7 +252,7 @@ function schemaFor(tab, draft = null, feed = null, row = null) {
 				// — `semantic.border-width.button`'s shipped resolution, the value
 				// `var(--kb-btn-border-width)` computes to today. Shown muted when the field is unset,
 				// the same way Radius/Padding/Margin's `defaultValue` above are.
-				defaultValue: themeDefault('button-border-width') ?? '0px',
+				defaultValue: themeBorderWidth() ?? '0px',
 				// The color the Default preset binds for the border. When the row stores nothing the swatch
 				// shows this color and the row names it "Default" — the same fallback the Text/Background
 				// rows show above.
