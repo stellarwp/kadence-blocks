@@ -1802,11 +1802,11 @@ final class PresetsControllerTest extends TestCase {
 		$response = $this->controller->set_order( $this->order_request( self::BUTTON, [ 'accent', 'default' ] ) );
 
 		$this->assertInstanceOf( WP_REST_Response::class, $response );
-		$this->assertSame( [ 'accent', 'default', 'outline' ], array_keys( $response->get_data()['presets'] ) );
+		$this->assertSame( [ 'accent', 'default', 'outline', 'theme-base' ], array_keys( $response->get_data()['presets'] ) );
 
 		// The order survives a fresh read.
 		$data = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, self::BUTTON ) )->get_data();
-		$this->assertSame( [ 'accent', 'default', 'outline' ], array_keys( $data['presets'] ) );
+		$this->assertSame( [ 'accent', 'default', 'outline', 'theme-base' ], array_keys( $data['presets'] ) );
 	}
 
 	/**
@@ -1823,7 +1823,7 @@ final class PresetsControllerTest extends TestCase {
 		);
 
 		$this->assertInstanceOf( WP_REST_Response::class, $response );
-		$this->assertSame( [ 'accent', 'default', 'outline' ], array_keys( $response->get_data()['presets'] ) );
+		$this->assertSame( [ 'accent', 'default', 'outline', 'theme-base' ], array_keys( $response->get_data()['presets'] ) );
 	}
 
 	/**
@@ -1867,7 +1867,7 @@ final class PresetsControllerTest extends TestCase {
 		$response = $this->controller->delete_order( $this->order_request( self::BUTTON, [], $version ) );
 
 		$this->assertSame( WP_Http::OK, $response->get_status() );
-		$this->assertSame( [ 'default', 'outline', 'accent' ], array_keys( $response->get_data()['presets'] ) );
+		$this->assertSame( [ 'default', 'outline', 'theme-base', 'accent' ], array_keys( $response->get_data()['presets'] ) );
 	}
 
 	/**
@@ -1922,8 +1922,8 @@ final class PresetsControllerTest extends TestCase {
 		$data     = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, self::BUTTON ) )->get_data();
 		$resolver = $this->container->get( Preset_Resolver::class );
 
-		$this->assertSame( [ 'accent', 'default', 'outline' ], array_keys( $data['presets'] ) );
-		$this->assertSame( [ 'accent', 'default', 'outline' ], $resolver->names( self::BUTTON ) );
+		$this->assertSame( [ 'accent', 'default', 'outline', 'theme-base' ], array_keys( $data['presets'] ) );
+		$this->assertSame( [ 'accent', 'default', 'outline', 'theme-base' ], $resolver->names( self::BUTTON ) );
 	}
 
 	/**
