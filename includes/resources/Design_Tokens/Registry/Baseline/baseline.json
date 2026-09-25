@@ -794,6 +794,25 @@
 								"0"
 							]
 						}
+					},
+					"outline": {
+						"label": "Outline",
+						"themeClass": "kb-btn-global-outline",
+						"themeValues": {
+							"button-bg": "transparent",
+							"button-text": "{semantic.color.button-bg}",
+							"button-bg-hover": "transparent",
+							"button-text-hover": "{semantic.color.button-bg-hover}",
+							"button-border-width": [
+								"2px",
+								"2px",
+								"2px",
+								"2px"
+							],
+							"button-border-style": "solid",
+							"button-border-color": "{semantic.color.button-bg}"
+						},
+						"tokens": {}
 					}
 				},
 				"kadence/single-icon": {

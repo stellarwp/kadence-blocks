@@ -68,6 +68,12 @@ final class Preset_CatalogTest extends TestCase {
 					'userCreated' => false,
 					'themeClass'  => '',
 				],
+				[
+					'slug'        => 'outline',
+					'label'       => 'Outline',
+					'userCreated' => false,
+					'themeClass'  => 'kb-btn-global-outline',
+				],
 			],
 			$button['presets']
 		);

@@ -37,7 +37,7 @@ final class PresetsTest extends TestCase {
 
 		$this->assertSame( 'Style', $button['label'] );
 		$this->assertSame( 'default', $button['default'] );
-		$this->assertSame( [ 'default' ], $button['names'] );
+		$this->assertSame( [ 'default', 'outline' ], $button['names'] );
 		$this->assertContains( 'button-bg', $button['properties'] );
 
 		// Structure: bindings carry the token reference / inline targets.
