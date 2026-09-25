@@ -898,6 +898,7 @@ class SinglebtnTest extends KadenceBlocksUnit {
 		$this->assertStringNotContainsString( 'var(--kb-btn-border-width)', $output );
 		$this->assertStringNotContainsString( 'var(--kb-btn-shadow)', $output );
 		$this->assertStringNotContainsString( 'box-shadow:none', $output );
+		$this->assertStringNotContainsString( 'var(--kb-btn-shadow-hover', $output );
 	}
 
 	/**

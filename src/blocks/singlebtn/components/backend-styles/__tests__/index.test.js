@@ -508,6 +508,7 @@ describe('BackendStyles class-painted mode gating', () => {
 		expect(props['border-style']).toBeUndefined();
 		expect(props['border-color']).toBeUndefined();
 		expect(props['box-shadow']).toBeUndefined();
+		expect(boxShadowFor(fakeCss.rules, `${BASE_SELECTOR}:hover`)).toBeUndefined();
 	});
 
 	/**
@@ -523,6 +524,7 @@ describe('BackendStyles class-painted mode gating', () => {
 		expect(props.padding).toBe('var(--kb-btn-padding)');
 		expect(props['border-style']).toBe('var(--kb-btn-border-style)');
 		expect(props['box-shadow']).toBe('var(--kb-btn-shadow)');
+		expect(boxShadowFor(fakeCss.rules, `${BASE_SELECTOR}:hover`)).toBe('var(--kb-btn-shadow-hover, none)');
 	});
 });
 

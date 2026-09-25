@@ -183,11 +183,12 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		// The hover state follows its own default, never the resting shadow: with no hover shadow of its
 		// own the rule points at the preset's hover shadow variable, falling back to `none` when the preset
-		// sets none. Always emitted, because a hover rule without a box-shadow would let the resting
-		// shadow carry through the cascade into the hover state.
+		// sets none. Emitted for every button that paints its own shape, because a hover rule without a
+		// box-shadow would let the resting shadow carry through the cascade into the hover state. A
+		// theme-painted button keeps the hover shadow the theme's own rules give it.
 		if ( ! empty( $attributes['displayHoverShadow'] ) && isset( $attributes['shadowHover'][0] ) && is_array( $attributes['shadowHover'][0] ) && $this->has_visible_shadow( $attributes['shadowHover'][0] ) ) {
 			$css->add_property( 'box-shadow', $this->render_button_shadow( $css, $attributes['shadowHover'][0] ) );
-		} else {
+		} elseif ( $this->paints_own_shape( $attributes ) ) {
 			$css->add_property( 'box-shadow', 'var(--kb-btn-shadow-hover, none)' );
 		}
 		// Hover before.

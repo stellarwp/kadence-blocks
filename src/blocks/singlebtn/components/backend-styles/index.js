@@ -1016,9 +1016,11 @@ export default function BackendStyles(props) {
 		);
 	}
 	// The hover state follows its own default, never the resting shadow: with no hover shadow of its
-	// own the rule points at the preset's hover shadow variable, falling back to `none`. Mirrors the
-	// PHP renderer.
-	css.add_property('box-shadow', btnBox || 'var(--kb-btn-shadow-hover, none)');
+	// own the rule points at the preset's hover shadow variable, falling back to `none`. A theme-painted
+	// button keeps the hover shadow the theme's own rules give it. Mirrors the PHP renderer.
+	if (btnBox || ownShape) {
+		css.add_property('box-shadow', btnBox || 'var(--kb-btn-shadow-hover, none)');
+	}
 	css.add_property('color', css.render_color(colorHover));
 
 	//transparent styles
