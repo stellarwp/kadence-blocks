@@ -313,7 +313,7 @@ final class Preset_CatalogTest extends TestCase {
 
 		$this->assertSame( '8px', $button['values']['hero']['button-radius'] );
 		$this->assertSame(
-			[ 'mobile' => [ 'button-radius' => '0.1875rem' ] ],
+			[ 'mobile' => [ 'button-radius' => '3px' ] ],
 			$button['responsive']['hero']
 		);
 	}
@@ -330,7 +330,7 @@ final class Preset_CatalogTest extends TestCase {
 		$button = $this->catalog->all()['libraries'][ Token_Store::default_slug() ][ self::BUTTON ];
 
 		$this->assertArrayNotHasKey( 'button-radius', $button['values']['hero'] );
-		$this->assertSame( [ 'mobile' => [ 'button-radius' => '0.1875rem' ] ], $button['responsive']['hero'] );
+		$this->assertSame( [ 'mobile' => [ 'button-radius' => '3px' ] ], $button['responsive']['hero'] );
 		$this->assertTrue( $button['overridden']['hero']['button-radius'] );
 	}
 

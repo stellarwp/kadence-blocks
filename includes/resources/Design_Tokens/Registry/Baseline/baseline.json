@@ -456,7 +456,7 @@
 		"radius": {
 			"control": {
 				"$type": "dimension",
-				"$value": "0.1875rem"
+				"$value": "3px"
 			},
 			"media": {
 				"$type": "dimension",

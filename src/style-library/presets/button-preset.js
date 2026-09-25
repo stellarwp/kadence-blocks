@@ -209,7 +209,7 @@ function schemaFor(tab) {
 				// The button's built-in corner radius — `advancedbtn`'s style.scss falls back to 3px, the
 				// same value `semantic.radius.control` holds. Shown muted when the preset sets nothing, so a
 				// reset field reports the radius the button really has rather than reading as empty.
-				defaultValue: ['0.1875rem', '0.1875rem', '0.1875rem', '0.1875rem'],
+				defaultValue: ['3px', '3px', '3px', '3px'],
 			},
 			{
 				type: 'border',
