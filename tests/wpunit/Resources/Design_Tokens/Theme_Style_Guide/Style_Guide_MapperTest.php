@@ -5,6 +5,7 @@ namespace Tests\wpunit\Resources\Design_Tokens\Theme_Style_Guide;
 
 use Generator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Theme_Style_Guide\Style_Guide_Mapper;
+use Tests\Support\Classes\Fake_Style_Guide_Source;
 use Tests\Support\Classes\TestCase;
 
 final class Style_Guide_MapperTest extends TestCase {
@@ -327,6 +328,178 @@ final class Style_Guide_MapperTest extends TestCase {
 
 		$this->assertArrayNotHasKey( 'primitive.color.brand.primary', $values );
 		$this->assertSame( '#333333', $values['primitive.color.neutral.900'] );
+	}
+
+	/**
+	 * A button setting becomes the expected token value, or is skipped when it is unusable.
+	 *
+	 * @dataProvider buttonSettingProvider
+	 *
+	 * @param array<string, mixed> $settings The settings half of the snapshot.
+	 * @param string|null          $expected The expected semantic.color.button-bg value, or null when skipped.
+	 *
+	 * @return void
+	 */
+	public function testMapsButtonBackgroundSetting( array $settings, ?string $expected ): void {
+		$snapshot             = Fake_Style_Guide_Source::with_palette(
+			[
+				'palette1'  => '#111111',
+				'palette10' => '#FfFfFf',
+				'palette11' => '#13612e',
+			]
+		)->snapshot();
+		$snapshot['settings'] = $settings;
+
+		$values = ( new Style_Guide_Mapper() )->map( $snapshot, self::SLOT_TOKENS );
+
+		if ( $expected === null ) {
+			$this->assertArrayNotHasKey( 'semantic.color.button-bg', $values );
+
+			return;
+		}
+
+		$this->assertSame( $expected, $values['semantic.color.button-bg'] );
+	}
+
+	/**
+	 * Every shape a stored button background can take, and the token value it becomes.
+	 *
+	 * @return Generator
+	 */
+	public function buttonSettingProvider(): Generator {
+		yield 'palette1 reference becomes an alias of the claiming primitive' => [
+			'settings' => [ 'buttons_background' => [ 'color' => 'palette1' ] ],
+			'expected' => '{primitive.color.brand.primary}',
+		];
+		yield 'palette11 reference becomes the active set literal' => [
+			'settings' => [ 'buttons_background' => [ 'color' => 'palette11' ] ],
+			'expected' => '#13612e',
+		];
+		yield 'palette10 holding the complement marker is skipped' => [
+			'settings' => [ 'buttons_background' => [ 'color' => 'palette10' ] ],
+			'expected' => null,
+		];
+		yield 'unclaimed palette reference the set does not carry is skipped' => [
+			'settings' => [ 'buttons_background' => [ 'color' => 'palette12' ] ],
+			'expected' => null,
+		];
+		yield 'hex literal passes through' => [
+			'settings' => [ 'buttons_background' => [ 'color' => '#ABCDEF' ] ],
+			'expected' => '#ABCDEF',
+		];
+		yield 'rgba literal passes through' => [
+			'settings' => [ 'buttons_background' => [ 'color' => 'rgba(0, 0, 0, 0.5)' ] ],
+			'expected' => 'rgba(0, 0, 0, 0.5)',
+		];
+		yield 'hsl literal passes through' => [
+			'settings' => [ 'buttons_background' => [ 'color' => 'hsl(10 20% 30%)' ] ],
+			'expected' => 'hsl(10 20% 30%)',
+		];
+		yield 'linear gradient passes through unchanged' => [
+			'settings' => [ 'buttons_background' => [ 'color' => 'linear-gradient(135deg,rgb(6,147,227) 0%,rgb(20,39,109) 100%)' ] ],
+			'expected' => 'linear-gradient(135deg,rgb(6,147,227) 0%,rgb(20,39,109) 100%)',
+		];
+		yield 'radial gradient passes through unchanged' => [
+			'settings' => [ 'buttons_background' => [ 'color' => 'radial-gradient(circle, #fff 0%, #000 100%)' ] ],
+			'expected' => 'radial-gradient(circle, #fff 0%, #000 100%)',
+		];
+		yield 'surrounding whitespace is trimmed' => [
+			'settings' => [ 'buttons_background' => [ 'color' => '  palette1 ' ] ],
+			'expected' => '{primitive.color.brand.primary}',
+		];
+		yield 'empty string is skipped' => [
+			'settings' => [ 'buttons_background' => [ 'color' => '' ] ],
+			'expected' => null,
+		];
+		yield 'css variable is skipped' => [
+			'settings' => [ 'buttons_background' => [ 'color' => 'var(--global-palette1)' ] ],
+			'expected' => null,
+		];
+		yield 'bare word is skipped' => [
+			'settings' => [ 'buttons_background' => [ 'color' => 'red' ] ],
+			'expected' => null,
+		];
+		yield 'non-string value is skipped' => [
+			'settings' => [ 'buttons_background' => [ 'color' => [ 'nested' => 'palette1' ] ] ],
+			'expected' => null,
+		];
+		yield 'non-array setting is skipped' => [
+			'settings' => [ 'buttons_background' => 'palette1' ],
+			'expected' => null,
+		];
+		yield 'missing sub-key is skipped' => [
+			'settings' => [ 'buttons_background' => [ 'hover' => 'palette2' ] ],
+			'expected' => null,
+		];
+		yield 'missing setting is skipped' => [
+			'settings' => [],
+			'expected' => null,
+		];
+	}
+
+	/**
+	 * All four button rows land on their token ids from one snapshot shaped like the theme's defaults.
+	 *
+	 * @return void
+	 */
+	public function testMapsAllFourButtonRowsFromTheThemeDefaults(): void {
+		$snapshot             = Fake_Style_Guide_Source::with_palette(
+			[
+				'palette1' => '#2B6CB0',
+				'palette2' => '#215387',
+				'palette9' => '#ffffff',
+			]
+		)->snapshot();
+		$snapshot['settings'] = [
+			'buttons_background' => [
+				'color' => 'palette1',
+				'hover' => 'palette2',
+			],
+			'buttons_color'      => [
+				'color' => 'palette9',
+				'hover' => 'palette9',
+			],
+		];
+
+		$values = ( new Style_Guide_Mapper() )->map( $snapshot, self::SLOT_TOKENS + [ 'palette9' => 'primitive.color.neutral.0' ] );
+
+		$this->assertSame( '{primitive.color.brand.primary}', $values['semantic.color.button-bg'] );
+		$this->assertSame( '{primitive.color.brand.secondary}', $values['semantic.color.button-bg-hover'] );
+		$this->assertSame( '{primitive.color.neutral.0}', $values['semantic.color.button-text'] );
+		$this->assertSame( '{primitive.color.neutral.0}', $values['semantic.color.button-text-hover'] );
+	}
+
+	/**
+	 * A button row whose setting is unusable is left out while its siblings still map.
+	 *
+	 * @return void
+	 */
+	public function testAnUnusableButtonRowLeavesItsSiblingsMapped(): void {
+		$snapshot             = Fake_Style_Guide_Source::with_palette( [ 'palette1' => '#2B6CB0' ] )->snapshot();
+		$snapshot['settings'] = [
+			'buttons_background' => [
+				'color' => 'palette1',
+				'hover' => '',
+			],
+		];
+
+		$values = ( new Style_Guide_Mapper() )->map( $snapshot, self::SLOT_TOKENS );
+
+		$this->assertSame( '{primitive.color.brand.primary}', $values['semantic.color.button-bg'] );
+		$this->assertArrayNotHasKey( 'semantic.color.button-bg-hover', $values );
+		$this->assertArrayNotHasKey( 'semantic.color.button-text', $values );
+		$this->assertArrayNotHasKey( 'semantic.color.button-text-hover', $values );
+	}
+
+	/**
+	 * setting_keys() names each theme setting the button rows read, once.
+	 *
+	 * @return void
+	 */
+	public function testSettingKeysListTheButtonSettingsOnce(): void {
+		$keys = Style_Guide_Mapper::setting_keys();
+
+		$this->assertSame( [ 'buttons_background', 'buttons_color' ], $keys );
 	}
 
 	/**
