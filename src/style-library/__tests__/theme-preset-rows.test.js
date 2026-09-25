@@ -180,7 +180,7 @@ describe('BUTTON_PRESET.schemaFor with a theme preset row', () => {
 		const byPath = Object.fromEntries(fields.map((field) => [field.path, field]));
 
 		expect(byPath['tokens.button-radius'].defaultValue).toEqual(['3px', '3px', '3px', '3px']);
-		expect(byPath['tokens.button-border'].defaultValue).toEqual(['1px', '1px', '1px', '1px']);
+		expect(byPath['tokens.button-border'].defaultValue).toBe('1px');
 		expect(byPath['tokens.button-border'].defaultColor).toBe('#123456');
 		expect(byPath['tokens.button-padding'].defaultValue).toEqual(['0.5em', '1.2em', '0.5em', '1.2em']);
 		expect(byPath['tokens.button-shadow'].defaultValue).toEqual({
