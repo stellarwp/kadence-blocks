@@ -880,6 +880,48 @@ class SinglebtnTest extends KadenceBlocksUnit {
 	}
 
 	/**
+	 * A button the theme or the outline stylesheet paints gets none of the preset bridges, so its padding,
+	 * margin, border and shadow come from the same rules they came from before presets existed.
+	 *
+	 * @dataProvider classPaintedModeProvider
+	 *
+	 * @param string $mode The inheritStyles value.
+	 *
+	 * @return void
+	 */
+	public function testClassPaintedButtonsEmitNoPresetBridges( string $mode ): void {
+		$output = $this->render_button( [ 'inheritStyles' => $mode ] );
+
+		$this->assertStringNotContainsString( 'var(--kb-btn-padding)', $output );
+		$this->assertStringNotContainsString( 'var(--kb-btn-margin)', $output );
+		$this->assertStringNotContainsString( 'var(--kb-btn-border-width)', $output );
+		$this->assertStringNotContainsString( 'var(--kb-btn-shadow)', $output );
+	}
+
+	/**
+	 * The inheritStyles modes whose padding, margin, border and shadow the theme or the outline stylesheet paints.
+	 *
+	 * @return Generator
+	 */
+	public function classPaintedModeProvider(): \Generator {
+		yield 'theme base' => [ 'mode' => 'inherit' ];
+		yield 'theme secondary' => [ 'mode' => 'inherit-secondary' ];
+		yield 'outline' => [ 'mode' => 'outline' ];
+	}
+
+	/**
+	 * A Fill button keeps the bridges, since its padding, margin and border are the plugin's own.
+	 *
+	 * @return void
+	 */
+	public function testFillButtonsKeepThePresetBridges(): void {
+		$output = $this->render_button( [ 'inheritStyles' => 'fill' ] );
+
+		$this->assertStringContainsString( 'padding:var(--kb-btn-padding)', $output );
+		$this->assertStringContainsString( 'border-style:var(--kb-btn-border-style)', $output );
+	}
+
+	/**
 	 * The `shadow` attribute default as `block.json` actually registers it.
 	 *
 	 * Read from the schema rather than spelled out here on purpose. These tests stand in for a saved

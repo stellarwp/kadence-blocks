@@ -502,6 +502,10 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 	 * @return void
 	 */
 	private function render_preset_spacing( Kadence_Blocks_CSS $css, array $attributes ): void {
+		if ( ! $this->paints_own_shape( $attributes ) ) {
+			return;
+		}
+
 		try {
 			$registry = kadence_blocks()->get( Token_Registry::class );
 			$library  = kadence_blocks()->get( Active_Token_Library_Store::class );
@@ -558,6 +562,10 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 	 * @return void
 	 */
 	private function render_preset_border( Kadence_Blocks_CSS $css, array $attributes ): void {
+		if ( ! $this->paints_own_shape( $attributes ) ) {
+			return;
+		}
+
 		try {
 			$registry = kadence_blocks()->get( Token_Registry::class );
 			$library  = kadence_blocks()->get( Active_Token_Library_Store::class );
@@ -629,6 +637,10 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 	 * @return bool Whether a preset box-shadow declaration was emitted.
 	 */
 	private function render_preset_shadow( Kadence_Blocks_CSS $css, array $attributes ): bool {
+		if ( ! $this->paints_own_shape( $attributes ) ) {
+			return false;
+		}
+
 		try {
 			$registry = kadence_blocks()->get( Token_Registry::class );
 			$library  = kadence_blocks()->get( Active_Token_Library_Store::class );
@@ -693,6 +705,23 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 				'opacity' => 0.2,
 			]
 		);
+	}
+
+	/**
+	 * Whether the button's shape (padding, margin, border, shadow) is the plugin's own. A button in one of
+	 * the theme-painted modes, or in the outline mode, takes those from the theme's rules or from the outline
+	 * stylesheet, and the preset bridges must not outrank them.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $attributes The block attributes.
+	 *
+	 * @return bool
+	 */
+	private function paints_own_shape( array $attributes ): bool {
+		$mode = Cast::to_string( $attributes['inheritStyles'] ?? '' );
+
+		return $mode === '' || $mode === 'fill';
 	}
 }
 
