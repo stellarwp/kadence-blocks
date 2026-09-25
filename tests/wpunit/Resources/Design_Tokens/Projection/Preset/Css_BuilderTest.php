@@ -3,6 +3,7 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Projection\Preset;
 
+use Generator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Preset\Css_Builder;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
@@ -111,7 +112,8 @@ final class Css_BuilderTest extends TestCase {
 
 	/**
 	 * The $default preset is re-emitted on the class-less block selector, so a button with no preset
-	 * selected still shows its preset look.
+	 * selected still shows its preset look. The button color slots are left out of an untouched library
+	 * (see the lazy retarget tests below), so the rule starts at the radius.
 	 *
 	 * @return void
 	 */
@@ -120,10 +122,6 @@ final class Css_BuilderTest extends TestCase {
 
 		$this->assertStringContainsString(
 			'.wp-block-kadence-singlebtn{'
-				. '--global-palette-btn-bg:var(--kb-token--preset--kadence-singlebtn--default--button-bg);'
-				. '--global-palette-btn:var(--kb-token--preset--kadence-singlebtn--default--button-text);'
-				. '--global-palette-btn-bg-hover:var(--kb-token--preset--kadence-singlebtn--default--button-bg-hover);'
-				. '--global-palette-btn-hover:var(--kb-token--preset--kadence-singlebtn--default--button-text-hover);'
 				. '--kb-btn-radius:var(--kb-token--preset--kadence-singlebtn--default--button-radius);'
 				. '--kb-btn-border-width:var(--kb-token--preset--kadence-singlebtn--default--button-border-width);'
 				. '--kb-btn-border-style:var(--kb-token--preset--kadence-singlebtn--default--button-border-style);'
@@ -132,6 +130,108 @@ final class Css_BuilderTest extends TestCase {
 				. '--kb-btn-margin:var(--kb-token--preset--kadence-singlebtn--default--button-margin);}',
 			$css
 		);
+	}
+
+	/**
+	 * The class-less $default rule carries no button color retarget while no button color is overridden,
+	 * so the theme's :root values reach every button that has no preset selected.
+	 *
+	 * @return void
+	 */
+	public function testDefaultEmitsNoColorRetargetUntilAButtonColorIsOverridden(): void {
+		$css = $this->builder( $this->registry )->css( 'default' );
+
+		$this->assertStringNotContainsString( '.wp-block-kadence-singlebtn{--global-palette-btn-bg:', $css );
+		$this->assertStringContainsString( '.wp-block-kadence-singlebtn{--kb-btn-radius:var(--kb-token--preset--kadence-singlebtn--default--button-radius);', $css );
+	}
+
+	/**
+	 * Overriding a button color semantic in the store activates exactly that slot's retarget on the
+	 * class-less $default rule.
+	 *
+	 * @dataProvider overriddenColorProvider
+	 *
+	 * @param string $token    The overridden semantic token id.
+	 * @param string $expected The retarget declaration the rule must carry.
+	 * @param string $absent   A retarget declaration the rule must still not carry.
+	 *
+	 * @return void
+	 */
+	public function testAnOverriddenButtonColorActivatesItsDefaultRetarget( string $token, string $expected, string $absent ): void {
+		$parts = explode( '.', $token );
+		$this->store->save_document(
+			(string) wp_json_encode( [ $parts[0] => [ $parts[1] => [ $parts[2] => [ '$type' => 'color', '$value' => '#00ff00' ] ] ] ] )
+		);
+
+		$css = $this->builder( $this->registry )->css( 'default' );
+
+		$this->assertStringContainsString( $expected, $css );
+		$this->assertStringNotContainsString( $absent, $css );
+	}
+
+	/**
+	 * The button color semantics a stored override activates the matching slot retarget for.
+	 *
+	 * @return Generator
+	 */
+	public function overriddenColorProvider(): Generator {
+		yield 'background' => [
+			'token'    => 'semantic.color.button-bg',
+			'expected' => '--global-palette-btn-bg:var(--kb-token--preset--kadence-singlebtn--default--button-bg);',
+			'absent'   => '--global-palette-btn:var(',
+		];
+		yield 'text hover' => [
+			'token'    => 'semantic.color.button-text-hover',
+			'expected' => '--global-palette-btn-hover:var(--kb-token--preset--kadence-singlebtn--default--button-text-hover);',
+			'absent'   => '--global-palette-btn-bg:var(',
+		];
+	}
+
+	/**
+	 * A stored value on the primitive behind the button semantic activates the retarget as well, since an
+	 * edit anywhere along the alias chain changes what the button renders.
+	 *
+	 * @return void
+	 */
+	public function testAnOverriddenPrimitiveBehindTheSemanticActivatesTheRetarget(): void {
+		$this->store->save_document(
+			'{"primitive":{"color":{"brand":{"button":{"$type":"color","$value":"#00ff00"}}}}}'
+		);
+
+		$css = $this->builder( $this->registry )->css( 'default' );
+
+		$this->assertStringContainsString( '.wp-block-kadence-singlebtn{--global-palette-btn-bg:var(--kb-token--preset--kadence-singlebtn--default--button-bg);', $css );
+		$this->assertStringNotContainsString( '--global-palette-btn:var(', $css );
+	}
+
+	/**
+	 * A stored value on the default preset's own color property activates the retarget too, since the
+	 * Style Library edits the preset rather than the semantic.
+	 *
+	 * @return void
+	 */
+	public function testAStoredDefaultPresetColorActivatesItsRetarget(): void {
+		$this->store->save_document(
+			'{"$extensions":{"com.kadence.designTokens":{"presets":{"kadence/singlebtn":{'
+			. '"default":{"tokens":{"button-text":"#123456"}}}}}}}'
+		);
+
+		$css = $this->builder( $this->registry )->css( 'default' );
+
+		$this->assertStringContainsString( '.wp-block-kadence-singlebtn{--global-palette-btn:var(--kb-token--preset--kadence-singlebtn--default--button-text);', $css );
+	}
+
+	/**
+	 * A button that selected the Default preset by name follows the same activation rule as one that
+	 * selected nothing, so both render the theme's own colors on an untouched library.
+	 *
+	 * @return void
+	 */
+	public function testTheClassedDefaultRuleIsLazyToo(): void {
+		$css = $this->builder( $this->registry )->css( 'default' );
+
+		$this->assertStringNotContainsString( '.wp-block-kadence-singlebtn.kb-preset--default{--global-palette-btn-bg:', $css );
+		$this->assertStringContainsString( '.wp-block-kadence-singlebtn.kb-preset--default{--kb-btn-radius:var(--kb-token--preset--kadence-singlebtn--default--button-radius);', $css );
 	}
 
 	/**
