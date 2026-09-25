@@ -13,6 +13,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Palette\Renders_Palette_Attribute;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Preset\Renders_Preset_Classes;
+use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Fallback;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Alias;
 use KadenceWP\KadenceBlocks\Utils\Cast;
@@ -425,8 +427,19 @@ class Kadence_Blocks_Abstract_Block {
 			return $content;
 		}
 
-		$preset  = Cast::to_string( $attributes['kbPreset'] ?? '' );
-		$classes = $this->preset_classes( $preset, $this->preset_theme_class( $preset ) );
+		if ( $this->stored_preset( $attributes ) === '' ) {
+			return $content;
+		}
+
+		$resolved = $this->resolved_preset( $attributes );
+
+		if ( $resolved === null ) {
+			// The token services cannot answer (a block outside the preset system, an inactive registry, or a
+			// broken token graph): render the stored class as before, so the page never fails.
+			$classes = $this->preset_classes( Cast::to_string( $attributes['kbPreset'] ?? '' ) );
+		} else {
+			$classes = $this->preset_classes( $resolved['is_default'] ? '' : $resolved['slug'], $resolved['class'] );
+		}
 
 		if ( $classes === [] ) {
 			return $content;
@@ -446,32 +459,68 @@ class Kadence_Blocks_Abstract_Block {
 	}
 
 	/**
-	 * The classes a selected class-painted preset puts on this block's element, or '' when the selection is
-	 * empty, names a preset painted through variables, or the token services cannot answer.
+	 * The preset slug this block asks for: its `kbPreset` attribute. A block that still carries an older
+	 * style attribute maps it to a preset slug here, so the mapping happens at render time and the stored
+	 * attributes are never rewritten.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $preset The selected preset slug.
+	 * @param array<string, mixed> $attributes The block attributes.
 	 *
-	 * @return string
+	 * @return string The stored slug, or '' for the default look.
 	 */
-	protected function preset_theme_class( string $preset ): string {
-		if ( $preset === '' ) {
-			return '';
-		}
+	protected function stored_preset( array $attributes ): string {
+		return Cast::to_string( $attributes['kbPreset'] ?? '' );
+	}
 
+	/**
+	 * The preset this block renders with, after the fallback chain: the stored slug when the library
+	 * defines it, else the theme's base preset for a theme slug, else the block's `$default`. Null when
+	 * the token registry is inactive or the token services cannot answer, so a caller can keep the
+	 * behavior it had before presets existed.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $attributes The block attributes.
+	 *
+	 * @return array{slug: string, class: string, is_default: bool}|null The resolved slug, the classes a
+	 *                                                                    class-painted preset puts on the
+	 *                                                                    element ('' for a preset painted
+	 *                                                                    through variables), and whether the
+	 *                                                                    slug is the block's default.
+	 */
+	protected function resolved_preset( array $attributes ): ?array {
 		try {
+			$registry = kadence_blocks()->get( Token_Registry::class );
+			$fallback = kadence_blocks()->get( Preset_Fallback::class );
 			$resolver = kadence_blocks()->get( Preset_Resolver::class );
 			$library  = kadence_blocks()->get( Active_Token_Library_Store::class );
 
-			if ( ! $resolver instanceof Preset_Resolver || ! $library instanceof Active_Token_Library_Store ) {
-				return '';
+			// The container is typed `mixed`, and this runs on every render, so the services are checked
+			// rather than assumed — a misconfigured container degrades to the look the block had before.
+			if (
+				! $registry instanceof Token_Registry
+				|| ! $fallback instanceof Preset_Fallback
+				|| ! $resolver instanceof Preset_Resolver
+				|| ! $library instanceof Active_Token_Library_Store
+				|| ! $registry->is_active()
+			) {
+				return null;
 			}
 
-			return $resolver->theme_class( $this->namespace . '/' . $this->block_name, $preset, $library->get() );
+			$block  = $this->namespace . '/' . $this->block_name;
+			$slug   = $library->get();
+			$preset = $fallback->resolve( $block, $this->stored_preset( $attributes ), $slug );
+
+			return [
+				'slug'       => $preset,
+				'class'      => $resolver->theme_class( $block, $preset, $slug ),
+				'is_default' => $preset === $resolver->default_preset( $block, $slug ),
+			];
 		} catch ( Throwable $e ) {
-			// This runs in the render path, so a broken token graph must not take the page down with it.
-			return '';
+			// This runs in the render path, so a block with no presets or a broken token graph must not take
+			// the page down with it.
+			return null;
 		}
 	}
 

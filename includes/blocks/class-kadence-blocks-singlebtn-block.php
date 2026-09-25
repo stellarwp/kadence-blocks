@@ -13,7 +13,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
-use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
 use KadenceWP\KadenceBlocks\Utils\Cast;
 
@@ -53,6 +52,34 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 	protected $has_script = true;
 
 	/**
+	 * The preset slug each value of the older "Button Inherit Styles" attribute maps to, read at render
+	 * time when the block carries no `kbPreset` yet. Fill and empty map to nothing: the default look.
+	 *
+	 * @since TBD
+	 *
+	 * @var array<string, string>
+	 */
+	private const LEGACY_PRESETS = [
+		'inherit'           => 'theme-base',
+		'inherit-secondary' => 'theme-secondary',
+		'outline'           => 'outline',
+	];
+
+	/**
+	 * The classes each value of the older "Button Inherit Styles" attribute put on the button before
+	 * presets existed. Read only while the token registry is inactive, so a saved button keeps its look.
+	 *
+	 * @since TBD
+	 *
+	 * @var array<string, string>
+	 */
+	private const LEGACY_CLASSES = [
+		'inherit'           => 'kb-btn-global-inherit wp-block-button__link',
+		'inherit-secondary' => 'kb-btn-global-inherit button-style-secondary wp-block-button__link',
+		'outline'           => 'kb-btn-global-outline',
+	];
+
+	/**
 	 * Instance Control
 	 */
 	public static function get_instance() {
@@ -62,6 +89,29 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 
 		return self::$instance;
 	}
+
+	/**
+	 * The preset slug each value of the older "Button Inherit Styles" attribute maps to.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string, string> inheritStyles value => preset slug.
+	 */
+	public static function get_legacy_presets(): array {
+		return self::LEGACY_PRESETS;
+	}
+
+	/**
+	 * The classes each value of the older "Button Inherit Styles" attribute painted the button with.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string, string> inheritStyles value => space-separated classes.
+	 */
+	public static function get_legacy_classes(): array {
+		return self::LEGACY_CLASSES;
+	}
+
 	/**
 	 * Render for block scripts block.
 	 *
@@ -357,20 +407,18 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 			$this->enqueue_script( 'kadence-blocks-tippy' );
 		}
 
-		$inherit_class_suffix = ! empty( $attributes['inheritStyles'] ) && 'inherit-secondary' === $attributes['inheritStyles'] ? 'inherit' : $attributes['inheritStyles'];
-
-		$theme_class = $this->preset_theme_class( Cast::to_string( $attributes['kbPreset'] ?? '' ) );
+		$legacy   = Cast::to_string( $attributes['inheritStyles'] ?? '' );
+		$resolved = $this->resolved_preset( $attributes );
 
 		$classes   = [ 'kb-button', 'kt-button', 'button', 'kb-btn' . $unique_id ];
 		$classes[] = ! empty( $attributes['sizePreset'] ) ? 'kt-btn-size-' . $attributes['sizePreset'] : 'kt-btn-size-standard';
 		$classes[] = ! empty( $attributes['widthType'] ) ? 'kt-btn-width-type-' . $attributes['widthType'] : 'kt-btn-width-type-auto';
 
-		if ( $theme_class !== '' ) {
+		if ( $resolved !== null && $resolved['class'] !== '' ) {
 			// The preset's classes paint the button; the mode classes would fight them for the same properties.
-			$classes[] = $theme_class;
+			$classes[] = $resolved['class'];
 		} else {
-			$classes[] = ! empty( $attributes['inheritStyles'] ) ? 'kb-btn-global-' . $inherit_class_suffix : 'kb-btn-global-fill';
-			$classes[] = ! empty( $attributes['inheritStyles'] ) && 'inherit-secondary' === $attributes['inheritStyles'] ? 'button-style-secondary' : '';
+			$classes[] = self::LEGACY_CLASSES[ $legacy ] ?? 'kb-btn-global-fill';
 		}
 
 		$classes[] = ! empty( $attributes['text'] ) ? 'kt-btn-has-text-true' : 'kt-btn-has-text-false';
@@ -380,10 +428,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		if ( ! empty( $attributes['target'] ) && 'video' === $attributes['target'] ) {
 			$classes[] = 'ktblocksvideopop';
 		}
-		if ( $theme_class === '' && ! empty( $attributes['inheritStyles'] ) && ( 'inherit' === $attributes['inheritStyles'] || 'inherit-secondary' === $attributes['inheritStyles'] ) ) {
-			$classes[] = 'wp-block-button__link';
-		}
-		$wrapper_args = [ 'class' => implode( ' ', $classes ) ];
+		$wrapper_args = [ 'class' => implode( ' ', array_unique( array_filter( explode( ' ', implode( ' ', $classes ) ) ) ) ) ];
 		if ( ! empty( $attributes['anchor'] ) ) {
 			$wrapper_args['id'] = Cast::to_string( $attributes['anchor'] );
 		}
@@ -513,35 +558,15 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 	 * @return void
 	 */
 	private function render_preset_spacing( Kadence_Blocks_CSS $css, array $attributes ): void {
-		if ( ! $this->paints_own_shape( $attributes ) ) {
+		$resolved = $this->resolved_preset( $attributes );
+
+		if ( $resolved === null || $resolved['class'] !== '' ) {
 			return;
 		}
 
-		try {
-			$registry = kadence_blocks()->get( Token_Registry::class );
-			$library  = kadence_blocks()->get( Active_Token_Library_Store::class );
-			$resolver = kadence_blocks()->get( Preset_Resolver::class );
+		$values = $this->preset_values( $resolved['slug'] );
 
-			// The container is typed `mixed`, and this runs on every button render, so the services are
-			// checked rather than assumed — a misconfigured container degrades to today's spacing.
-			if (
-				! $registry instanceof Token_Registry
-				|| ! $library instanceof Active_Token_Library_Store
-				|| ! $resolver instanceof Preset_Resolver
-				|| ! $registry->is_active()
-			) {
-				return;
-			}
-
-			$slug     = $library->get();
-			$selected = Cast::to_string( $attributes['kbPreset'] ?? '' );
-			$preset   = $selected !== '' && $resolver->has_preset( 'kadence/singlebtn', $selected, $slug )
-				? $selected
-				: $resolver->default_preset( 'kadence/singlebtn', $slug );
-			$values   = $resolver->resolve( 'kadence/singlebtn', $preset, $slug );
-		} catch ( Throwable $e ) {
-			// This runs in the render path, so a broken token graph must not take the page down with it —
-			// the button simply keeps the spacing it has today.
+		if ( $values === null ) {
 			return;
 		}
 
@@ -577,40 +602,15 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 	 * @return void
 	 */
 	private function render_preset_border( Kadence_Blocks_CSS $css, array $attributes ): void {
-		if ( ! $this->paints_own_shape( $attributes ) ) {
+		$resolved = $this->resolved_preset( $attributes );
+
+		if ( $resolved === null || $resolved['class'] !== '' ) {
 			return;
 		}
 
-		try {
-			$registry = kadence_blocks()->get( Token_Registry::class );
-			$library  = kadence_blocks()->get( Active_Token_Library_Store::class );
-			$resolver = kadence_blocks()->get( Preset_Resolver::class );
+		$values = $this->preset_values( $resolved['slug'], $resolved['is_default'] );
 
-			// The container is typed `mixed`, and this runs on every button render, so the services are
-			// checked rather than assumed — a misconfigured container degrades to today's border.
-			if (
-				! $registry instanceof Token_Registry
-				|| ! $library instanceof Active_Token_Library_Store
-				|| ! $resolver instanceof Preset_Resolver
-				|| ! $registry->is_active()
-			) {
-				return;
-			}
-
-			$slug     = $library->get();
-			$selected = Cast::to_string( $attributes['kbPreset'] ?? '' );
-			$default  = $resolver->default_preset( 'kadence/singlebtn', $slug );
-			$preset   = $selected !== '' && $resolver->has_preset( 'kadence/singlebtn', $selected, $slug )
-				? $selected
-				: $default;
-			$values   = $resolver->resolve( 'kadence/singlebtn', $preset, $slug );
-
-			if ( $preset === $default ) {
-				$values = array_intersect_key( $values, $resolver->overridden_default_properties( 'kadence/singlebtn', $slug ) );
-			}
-		} catch ( Throwable $e ) {
-			// This runs in the render path, so a broken token graph must not take the page down with it —
-			// the button simply keeps the border it has today.
+		if ( $values === null ) {
 			return;
 		}
 
@@ -657,45 +657,59 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 	 * @return bool Whether a preset box-shadow declaration was emitted.
 	 */
 	private function render_preset_shadow( Kadence_Blocks_CSS $css, array $attributes ): bool {
-		if ( ! $this->paints_own_shape( $attributes ) ) {
+		$resolved = $this->resolved_preset( $attributes );
+
+		if ( $resolved === null || $resolved['class'] !== '' ) {
 			return false;
 		}
 
-		try {
-			$registry = kadence_blocks()->get( Token_Registry::class );
-			$library  = kadence_blocks()->get( Active_Token_Library_Store::class );
-			$resolver = kadence_blocks()->get( Preset_Resolver::class );
+		$values = $this->preset_values( $resolved['slug'] );
 
-			// The container is typed `mixed`, and this runs on every button render, so the services are
-			// checked rather than assumed — a misconfigured container degrades to today's shadow.
-			if (
-				! $registry instanceof Token_Registry
-				|| ! $library instanceof Active_Token_Library_Store
-				|| ! $resolver instanceof Preset_Resolver
-				|| ! $registry->is_active()
-			) {
-				return false;
-			}
-
-			$slug     = $library->get();
-			$selected = Cast::to_string( $attributes['kbPreset'] ?? '' );
-			$preset   = $selected !== '' && $resolver->has_preset( 'kadence/singlebtn', $selected, $slug )
-				? $selected
-				: $resolver->default_preset( 'kadence/singlebtn', $slug );
-			$values   = $resolver->resolve( 'kadence/singlebtn', $preset, $slug );
-		} catch ( Throwable $e ) {
-			// This runs in the render path, so a broken token graph must not take the page down with it —
-			// the button simply keeps the shadow it has today.
-			return false;
-		}
-
-		if ( ! isset( $values['button-shadow'] ) ) {
+		if ( $values === null || ! isset( $values['button-shadow'] ) ) {
 			return false;
 		}
 
 		$css->add_property( 'box-shadow', 'var(--kb-btn-shadow)' );
 
 		return true;
+	}
+
+	/**
+	 * The values a button preset resolves to, or null when the token services cannot answer. For the
+	 * default preset only the properties the library overrides are kept, since the shipped values equal
+	 * the button's own stylesheet: an untouched button keeps its look where the theme's cascade put it.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $preset     The resolved preset slug.
+	 * @param bool   $is_default Whether the slug is the block's default preset.
+	 *
+	 * @return array<string, mixed>|null property => value.
+	 */
+	private function preset_values( string $preset, bool $is_default = false ): ?array {
+		try {
+			$library  = kadence_blocks()->get( Active_Token_Library_Store::class );
+			$resolver = kadence_blocks()->get( Preset_Resolver::class );
+
+			// The container is typed `mixed`, and this runs on every button render, so the services are
+			// checked rather than assumed — a misconfigured container degrades to today's look.
+			if ( ! $library instanceof Active_Token_Library_Store || ! $resolver instanceof Preset_Resolver ) {
+				return null;
+			}
+
+			$slug   = $library->get();
+			$values = $resolver->resolve( 'kadence/singlebtn', $preset, $slug );
+
+			if ( $is_default ) {
+				$values = array_intersect_key( $values, $resolver->overridden_default_properties( 'kadence/singlebtn', $slug ) );
+			}
+
+			return $values;
+		} catch ( Throwable $e ) {
+			// This runs in the render path, so a broken token graph must not take the page down with it —
+			// the button simply keeps the look it has today.
+			return null;
+		}
 	}
 
 	/**
@@ -728,9 +742,30 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 	}
 
 	/**
-	 * Whether the button's shape (padding, margin, border, shadow) is the plugin's own. A button in one of
-	 * the theme-painted modes, in the outline mode, or on a class-painted preset takes those from the
-	 * theme's rules or from the outline stylesheet, and the preset bridges must not outrank them.
+	 * The preset slug this button asks for: its `kbPreset`, or the preset its older "Button Inherit Styles"
+	 * value maps to, so a saved button renders the same preset with no re-save.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $attributes The block attributes.
+	 *
+	 * @return string The stored slug, or '' for the default look.
+	 */
+	protected function stored_preset( array $attributes ): string {
+		$stored = parent::stored_preset( $attributes );
+
+		if ( $stored !== '' ) {
+			return $stored;
+		}
+
+		return self::LEGACY_PRESETS[ Cast::to_string( $attributes['inheritStyles'] ?? '' ) ] ?? '';
+	}
+
+	/**
+	 * Whether the button's shape (padding, margin, border, shadow) is the plugin's own. A button on a
+	 * class-painted preset takes those from the theme's rules or from the outline stylesheet, and the
+	 * preset bridges must not outrank them. While the token registry is off the older style attribute
+	 * decides, as it did before presets existed.
 	 *
 	 * @since TBD
 	 *
@@ -739,13 +774,15 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 	 * @return bool
 	 */
 	private function paints_own_shape( array $attributes ): bool {
-		$mode = Cast::to_string( $attributes['inheritStyles'] ?? '' );
+		$resolved = $this->resolved_preset( $attributes );
 
-		if ( $mode !== '' && $mode !== 'fill' ) {
-			return false;
+		if ( $resolved !== null ) {
+			return $resolved['class'] === '';
 		}
 
-		return $this->preset_theme_class( Cast::to_string( $attributes['kbPreset'] ?? '' ) ) === '';
+		$mode = Cast::to_string( $attributes['inheritStyles'] ?? '' );
+
+		return $mode === '' || $mode === 'fill';
 	}
 }
 
