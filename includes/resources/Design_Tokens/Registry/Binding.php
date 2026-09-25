@@ -167,6 +167,38 @@ final class Binding {
 	private const EDITOR_CSS_STATE = 'editor_css_state';
 
 	/**
+	 * Inline target: the CSS property a class-painted preset's stored override of this property is written
+	 * as. Kept apart from `css_prop`, which the block-default projector reads for token references: giving
+	 * the border and shadow token references a `css_prop` would make that projector emit rules for them.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const CLASS_PROP = 'class_prop';
+
+	/**
+	 * Inline target: the state selector suffix a class-painted preset's override of this property is
+	 * scoped by on the front end. Read only by the class-preset override layer; `is_state()` ignores it,
+	 * so the property keeps its slot retarget for the `$default`.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const THEME_STATE = 'theme_state';
+
+	/**
+	 * Inline target: the editor twin of `theme_state`, for a block whose editor markup carries the styled
+	 * element as a descendant of the block wrapper.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const EDITOR_THEME_STATE = 'editor_theme_state';
+
+	/**
 	 * Editor-only target: the block attribute the editor control for this property writes, so the
 	 * indicator layer can tell whether a control is bound to the active preset or has been overridden.
 	 * Deliberately NOT a projection target — it is excluded from STRING_TARGETS / inline_targets(), so it
@@ -214,7 +246,7 @@ final class Binding {
 	 *
 	 * @var string[]
 	 */
-	private const STRING_TARGETS = [ self::KADENCE_SLOT, self::BLOCK_ATTR, self::CSS_PROP, self::CSS_SELECTOR, self::EDITOR_CSS_SELECTOR, self::CSS_STATE, self::EDITOR_CSS_STATE, self::CSS_VAR ];
+	private const STRING_TARGETS = [ self::KADENCE_SLOT, self::BLOCK_ATTR, self::CSS_PROP, self::CSS_SELECTOR, self::EDITOR_CSS_SELECTOR, self::CSS_STATE, self::EDITOR_CSS_STATE, self::CLASS_PROP, self::THEME_STATE, self::EDITOR_THEME_STATE, self::CSS_VAR ];
 
 	/**
 	 * The block property this binding drives, e.g. "button-bg". Carried for error messages and so a
@@ -497,6 +529,49 @@ final class Binding {
 		$selector = $this->projections[ self::EDITOR_CSS_STATE ] ?? null;
 
 		return is_string( $selector ) ? $selector : $this->css_state();
+	}
+
+	/**
+	 * The CSS property a class-painted preset's stored override of this property is written as, or null
+	 * when the property cannot be overridden on such a preset. Separate from css_prop(), which the
+	 * block-default projector reads for token references.
+	 *
+	 * @since TBD
+	 *
+	 * @return string|null
+	 */
+	public function class_prop(): ?string {
+		$property = $this->projections[ self::CLASS_PROP ] ?? null;
+
+		return is_string( $property ) ? $property : null;
+	}
+
+	/**
+	 * The state selector a class-painted preset's override of this property is scoped by on the front end,
+	 * or null for a resting property. Read only by the class-preset override layer; `is_state()` ignores it,
+	 * so the property keeps its slot retarget for the $default.
+	 *
+	 * @since TBD
+	 *
+	 * @return string|null
+	 */
+	public function theme_state(): ?string {
+		$state = $this->projections[ self::THEME_STATE ] ?? null;
+
+		return is_string( $state ) ? $state : null;
+	}
+
+	/**
+	 * The editor twin of theme_state().
+	 *
+	 * @since TBD
+	 *
+	 * @return string|null
+	 */
+	public function editor_theme_state(): ?string {
+		$state = $this->projections[ self::EDITOR_THEME_STATE ] ?? null;
+
+		return is_string( $state ) ? $state : null;
 	}
 
 	/**
