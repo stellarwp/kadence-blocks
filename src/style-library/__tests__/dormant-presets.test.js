@@ -108,6 +108,60 @@ describe('DormantPresets', () => {
 	});
 
 	/**
+	 * A theme value the preset write surface refuses — a compound literal in a slot — is left out of the
+	 * kept preset, and the user's own overrides always go through.
+	 *
+	 * @return {void}
+	 */
+	it('leaves out snapshot values a preset write has no slot for', () => {
+		const onKeep = jest.fn();
+
+		render({
+			dormant: {
+				'theme-outline': {
+					label: 'Theme Outline',
+					tokens: { 'button-bg': '#ff0000' },
+					themeSnapshot: {
+						'button-padding': [
+							'calc(0.6rem - 1px)',
+							'calc(1rem - 1px)',
+							'calc(0.6rem - 1px)',
+							'calc(1rem - 1px)',
+						],
+						'button-radius': ['.33rem', '.33rem', '.33rem', '.33rem'],
+						'button-text': 'currentColor',
+						'button-shadow': {
+							color: 'rgba(0, 0, 0, 0.1)',
+							offsetX: '0px',
+							offsetY: '2px',
+							blur: '4px',
+							spread: '0px',
+						},
+					},
+				},
+			},
+			onKeep,
+		});
+		act(() => container.querySelector('[data-action="keep"]').click());
+
+		expect(onKeep).toHaveBeenCalledWith('theme-outline', {
+			label: 'Theme Outline',
+			tokens: {
+				'button-bg': '#ff0000',
+				'button-radius': ['.33rem', '.33rem', '.33rem', '.33rem'],
+				'button-text': 'currentColor',
+				'button-shadow': {
+					color: 'rgba(0, 0, 0, 0.1)',
+					offsetX: '0px',
+					offsetY: '2px',
+					blur: '4px',
+					spread: '0px',
+				},
+			},
+		});
+	});
+
+	/**
 	 * A preset stored without a label falls back to its slug.
 	 *
 	 * @return {void}

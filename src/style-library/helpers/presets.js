@@ -352,6 +352,53 @@ export function isThemePresetSlug(slug) {
 }
 
 /**
+ * Whether a theme value holds a literal the preset write surface stores: a compound literal with a space
+ * in it (`calc(0.6rem - 1px)`, a block theme's padding) is refused for a preset slot, since a slot holds
+ * one token. A composite shadow's color is exempt, the one string a space is ordinary in.
+ *
+ * @param {*} value The theme value.
+ *
+ * @since TBD
+ *
+ * @return {boolean} True when every literal inside the value is a single token.
+ */
+function isWritableThemeValue(value) {
+	if (typeof value === 'string') {
+		return !/\s/.test(value.trim());
+	}
+
+	if (Array.isArray(value)) {
+		return value.every(isWritableThemeValue);
+	}
+
+	if (isCompositeShadow(value)) {
+		return Object.entries(value).every(([field, sub]) => field === 'color' || isWritableThemeValue(sub));
+	}
+
+	if (value !== null && typeof value === 'object') {
+		return Object.values(value).every(isWritableThemeValue);
+	}
+
+	return true;
+}
+
+/**
+ * The theme values a preset write accepts, for "Keep as custom preset": a dormant preset's snapshot
+ * is the theme's own literals, and a theme may render a value the preset write surface has no slot
+ * for. Such a property is left out, so the kept preset falls back to the block's own value there
+ * rather than failing to be created at all.
+ *
+ * @param {Record<string, *>} snapshot The theme snapshot.
+ *
+ * @since TBD
+ *
+ * @return {Record<string, *>} The snapshot without the values a write would refuse.
+ */
+export function writableThemeValues(snapshot) {
+	return Object.fromEntries(Object.entries(snapshot ?? {}).filter(([, value]) => isWritableThemeValue(value)));
+}
+
+/**
  * Shape one of a preset's theme values as a field's muted default: every alias inside it resolved to
  * the literal the library renders, whatever shape holds it — a scalar, a per-corner list, or a
  * composite shadow. A responsive envelope becomes a function of the breakpoint, the form the box

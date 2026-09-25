@@ -15,6 +15,7 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
+import { writableThemeValues } from '../../helpers/presets';
 import './DormantPresets.scss';
 
 /**
@@ -23,7 +24,8 @@ import './DormantPresets.scss';
  * @param {Object}   props           The component props.
  * @param {?Object}  props.dormant   The REST payload's dormant map: slug => { label, tokens, themeSnapshot }.
  * @param {Function} props.onKeep    Called with `(slug, { label, tokens })` — the theme snapshot under the
- *                                   overrides, the full look the preset had when it was last saved.
+ *                                   overrides, the full look the preset had when it was last saved, less
+ *                                   any theme value a preset write has no slot for.
  * @param {Function} props.onDiscard Called with the slug to drop the stored overrides.
  * @param {boolean}  [props.isBusy]  Whether the screen is mid-request; both actions are disabled then.
  *
@@ -52,7 +54,7 @@ export function DormantPresets({ dormant, onKeep, onDiscard, isBusy = false }) {
 			<ul className="kadence-blocks-style-library__dormant-list">
 				{entries.map(([slug, entry]) => {
 					const label = entry?.label || slug;
-					const tokens = { ...(entry?.themeSnapshot ?? {}), ...(entry?.tokens ?? {}) };
+					const tokens = { ...writableThemeValues(entry?.themeSnapshot), ...(entry?.tokens ?? {}) };
 
 					return (
 						<li key={slug} className="kadence-blocks-style-library__dormant-item">
