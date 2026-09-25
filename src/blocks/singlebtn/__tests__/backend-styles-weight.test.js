@@ -1,17 +1,21 @@
 /* eslint-env jest */
 
 /**
- * Pins the weight of the button's own editor-canvas rules. `BackendStyles` renders a `<style>` inside
- * the block, after every head stylesheet, so a rule here wins any tie; three extra `.kt-button` classes
- * put its resting rule at (0,5,0) and its hover rule at (0,6,0), which ties the class-preset override
- * the preset projector emits and outranks every theme editor rule for the button's classes. Together
- * with that print order this is the editor half of "a block's own value wins, per state".
+ * Pins the weight of the button's own editor-canvas rules, per button kind.
+ *
+ * A button on a class-painted preset may carry a Style Library override rule the preset projector emits
+ * at (0,5,0) resting and (0,6,0) hover. `BackendStyles` renders a `<style>` inside the block, after every
+ * head stylesheet, so a rule here wins any tie; three extra `.kt-button` classes put its resting rule at
+ * (0,5,0) and its hover rule at (0,6,0), which ties that override and, with the print order, is the editor
+ * half of "a block's own value wins, per state". Every other button keeps the weight it always had, so a
+ * theme editor rule that outranked the block's before still does and the canvas matches the page.
  */
 
 /**
  * Internal dependencies
  */
 import { KadenceBlocksCSS } from '@kadence/helpers';
+import { blockPresetThemeClass } from '../../../extension/preset-picker';
 import BackendStyles from '../components/backend-styles';
 
 // `backend-styles/index.js` imports the `@kadence/helpers` barrel, which eagerly pulls in a REST-fetch
@@ -35,9 +39,42 @@ jest.mock('../../../extension/preset-picker', () => ({
 	blockPresetThemeClass: jest.fn(() => ''),
 }));
 
-const RESTING = '.kb-single-btn-abc .kt-button-abc.kt-button.kt-button.kt-button';
-const HOVER = '.kb-single-btn-abc .kt-button-abc.kt-button.kt-button.kt-button:hover';
 const SHADOW = { hOffset: 2, vOffset: 2, blur: 4, spread: 0, color: '#000000', opacity: 1, inset: false };
+const ATTRIBUTES = {
+	uniqueID: 'abc',
+	background: '#c81e1e',
+	color: '#ffffff',
+	borderRadius: [20, 20, 20, 20],
+	borderRadiusUnit: 'px',
+	padding: [4, 40, 4, 40],
+	paddingUnit: 'px',
+	borderStyle: [
+		{
+			top: ['#112233', 'solid', 1],
+			right: ['#112233', 'solid', 1],
+			bottom: ['#112233', 'solid', 1],
+			left: ['#112233', 'solid', 1],
+			unit: 'px',
+		},
+	],
+	displayShadow: true,
+	shadow: [SHADOW],
+	backgroundHover: '#a01818',
+	colorHover: '#ffffff',
+	borderHoverRadius: [10, 10, 10, 10],
+	borderHoverRadiusUnit: 'px',
+	borderHoverStyle: [
+		{
+			top: ['#445566', 'solid', 2],
+			right: ['#445566', 'solid', 2],
+			bottom: ['#445566', 'solid', 2],
+			left: ['#445566', 'solid', 2],
+			unit: 'px',
+		},
+	],
+	displayHoverShadow: true,
+	shadowHover: [SHADOW],
+};
 
 /**
  * A fake CSS builder recording every selector and declaration the component adds, so a test can read
@@ -86,94 +123,111 @@ function propertiesFor(rules, selector) {
 	return rules.filter((rule) => rule.selector === selector).flatMap((rule) => Object.keys(rule.props));
 }
 
+/**
+ * Renders the component for the given preset selection into a fresh fake builder.
+ *
+ * @param {string} kbPreset The block's `kbPreset` attribute.
+ *
+ * @since TBD
+ *
+ * @return {Array} The fake builder's recorded rules.
+ */
+function render(kbPreset) {
+	const fakeCss = createFakeCss();
+	KadenceBlocksCSS.mockImplementation(() => fakeCss);
+
+	BackendStyles({ attributes: { ...ATTRIBUTES, kbPreset }, previewDevice: 'Desktop' });
+
+	return fakeCss.rules;
+}
+
 describe('BackendStyles per-instance rule weight', () => {
-	let fakeCss;
-
 	beforeEach(() => {
-		fakeCss = createFakeCss();
-		KadenceBlocksCSS.mockImplementation(() => fakeCss);
-
-		BackendStyles({
-			attributes: {
-				uniqueID: 'abc',
-				background: '#c81e1e',
-				color: '#ffffff',
-				borderRadius: [20, 20, 20, 20],
-				borderRadiusUnit: 'px',
-				padding: [4, 40, 4, 40],
-				paddingUnit: 'px',
-				borderStyle: [
-					{
-						top: ['#112233', 'solid', 1],
-						right: ['#112233', 'solid', 1],
-						bottom: ['#112233', 'solid', 1],
-						left: ['#112233', 'solid', 1],
-						unit: 'px',
-					},
-				],
-				displayShadow: true,
-				shadow: [SHADOW],
-				backgroundHover: '#a01818',
-				colorHover: '#ffffff',
-				borderHoverRadius: [10, 10, 10, 10],
-				borderHoverRadiusUnit: 'px',
-				borderHoverStyle: [
-					{
-						top: ['#445566', 'solid', 2],
-						right: ['#445566', 'solid', 2],
-						bottom: ['#445566', 'solid', 2],
-						left: ['#445566', 'solid', 2],
-						unit: 'px',
-					},
-				],
-				displayHoverShadow: true,
-				shadowHover: [SHADOW],
-			},
-			previewDevice: 'Desktop',
-		});
+		blockPresetThemeClass.mockImplementation((name, slug) => (slug === 'outline' ? 'kb-btn-global-outline' : ''));
 	});
 
 	afterEach(() => {
 		KadenceBlocksCSS.mockReset();
+		blockPresetThemeClass.mockReset();
 	});
 
-	/**
-	 * Every resting value the block sets lands under the raised (0,5,0) selector.
-	 *
-	 * @return {void}
-	 */
-	it('emits the resting values under the raised per-instance selector', () => {
-		const properties = propertiesFor(fakeCss.rules, RESTING);
+	describe('on a class-painted preset', () => {
+		const RESTING = '.kb-single-btn-abc .kt-button-abc.kt-button.kt-button.kt-button';
+		const HOVER = '.kb-single-btn-abc .kt-button-abc.kt-button.kt-button.kt-button:hover';
 
-		expect(properties).toEqual(
-			expect.arrayContaining(['background', 'color', 'border-radius', 'padding-top', 'border-top', 'box-shadow'])
-		);
+		/**
+		 * Every resting value the block sets lands under the raised (0,5,0) selector.
+		 *
+		 * @return {void}
+		 */
+		it('emits the resting values under the raised per-instance selector', () => {
+			const rules = render('outline');
+
+			expect(propertiesFor(rules, RESTING)).toEqual(
+				expect.arrayContaining([
+					'background',
+					'color',
+					'border-radius',
+					'padding-top',
+					'border-top',
+					'box-shadow',
+				])
+			);
+		});
+
+		/**
+		 * Every hover value the block sets lands under the raised (0,6,0) hover selector. The hover
+		 * background is painted by the `::before` overlay, so it is not part of this rule.
+		 *
+		 * @return {void}
+		 */
+		it('emits the hover values under the raised per-instance hover selector', () => {
+			const rules = render('outline');
+
+			expect(propertiesFor(rules, HOVER)).toEqual(
+				expect.arrayContaining(['color', 'border-top-left-radius', 'border-top', 'box-shadow'])
+			);
+		});
+
+		/**
+		 * No rule targets the button at the lighter weights a theme's editor rule could outrank.
+		 *
+		 * @return {void}
+		 */
+		it('emits no lighter per-instance selector', () => {
+			const selectors = render('outline').map((rule) => rule.selector);
+
+			expect(selectors).not.toContain('.kb-single-btn-abc .kt-button-abc');
+			expect(selectors).not.toContain('.kb-single-btn-abc .kt-button-abc:hover');
+			expect(selectors).not.toContain('.kb-single-btn-abc .kt-button-abc.kt-button.kt-button');
+		});
 	});
 
-	/**
-	 * Every hover value the block sets lands under the raised (0,6,0) hover selector. The hover
-	 * background is painted by the `::before` overlay, so it is not part of this rule.
-	 *
-	 * @return {void}
-	 */
-	it('emits the hover values under the raised per-instance hover selector', () => {
-		const properties = propertiesFor(fakeCss.rules, HOVER);
+	describe('on a preset painted through variables, or none', () => {
+		const RESTING = '.kb-single-btn-abc .kt-button-abc';
+		const HOVER = '.kb-single-btn-abc .kt-button-abc:hover';
 
-		expect(properties).toEqual(
-			expect.arrayContaining(['color', 'border-top-left-radius', 'border-top', 'box-shadow'])
-		);
-	});
+		/**
+		 * A button with no class preset keeps the weight it always had, resting and hover, so the theme
+		 * editor rules that outranked it keep doing so and the canvas matches the page.
+		 *
+		 * @return {void}
+		 */
+		it('keeps the historic per-instance weight', () => {
+			for (const kbPreset of ['', 'default']) {
+				const rules = render(kbPreset);
 
-	/**
-	 * No rule targets the button at the old, lighter weights, which the theme's editor rules outranked.
-	 *
-	 * @return {void}
-	 */
-	it('no longer emits the lighter per-instance selectors', () => {
-		const selectors = fakeCss.rules.map((rule) => rule.selector);
-
-		expect(selectors).not.toContain('.kb-single-btn-abc .kt-button-abc');
-		expect(selectors).not.toContain('.kb-single-btn-abc .kt-button-abc:hover');
-		expect(selectors).not.toContain('.kb-single-btn-abc .kt-button-abc.kt-button.kt-button');
+				expect(propertiesFor(rules, RESTING)).toEqual(
+					expect.arrayContaining(['background', 'border-radius', 'padding-top', 'border-top', 'box-shadow'])
+				);
+				expect(propertiesFor(rules, HOVER)).toEqual(
+					expect.arrayContaining(['color', 'border-top-left-radius', 'border-top', 'box-shadow'])
+				);
+				expect(propertiesFor(rules, '.kb-single-btn-abc .kt-button-abc.kt-button.kt-button')).toContain(
+					'color'
+				);
+				expect(rules.map((rule) => rule.selector).join(' ')).not.toContain('.kt-button.kt-button.kt-button');
+			}
+		});
 	});
 });

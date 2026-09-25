@@ -39,6 +39,7 @@ jest.mock('../../../../../extension/preset-picker', () => ({
 	activePresetFor: jest.fn(),
 	blockDefaultOverridden: jest.fn(() => ({})),
 	blockDefaultPreset: jest.fn(() => 'default'),
+	blockPresetThemeClass: jest.fn(() => ''),
 	blockPresetValues: jest.fn(),
 }));
 

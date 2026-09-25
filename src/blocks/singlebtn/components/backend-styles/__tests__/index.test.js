@@ -42,6 +42,7 @@ jest.mock('../../../../../extension/preset-picker', () => ({
 	activePresetFor: jest.fn(),
 	blockDefaultOverridden: jest.fn(() => ({})),
 	blockDefaultPreset: jest.fn(() => 'default'),
+	blockPresetThemeClass: jest.fn(() => ''),
 	blockPresetValues: jest.fn(),
 }));
 
@@ -281,8 +282,8 @@ function boxShadowFor(rules, selector) {
 }
 
 describe('BackendStyles shadow flag gating', () => {
-	const BASE_SELECTOR = '.kb-single-btn-abc123 .kt-button-abc123.kt-button.kt-button.kt-button';
-	const HOVER_SELECTOR = '.kb-single-btn-abc123 .kt-button-abc123.kt-button.kt-button.kt-button:hover';
+	const BASE_SELECTOR = '.kb-single-btn-abc123 .kt-button-abc123';
+	const HOVER_SELECTOR = '.kb-single-btn-abc123 .kt-button-abc123:hover';
 	const VISIBLE_SHADOW = { hOffset: 2, vOffset: 2, blur: 4, spread: 0, color: '#000000', opacity: 1, inset: false };
 	const HOVER_DEFAULT = 'var(--kb-btn-shadow-hover, none)';
 
@@ -442,7 +443,7 @@ describe('BackendStyles shadow flag gating', () => {
 });
 
 describe('BackendStyles class-painted mode gating', () => {
-	const BASE_SELECTOR = '.kb-single-btn-abc123 .kt-button-abc123.kt-button.kt-button.kt-button';
+	const BASE_SELECTOR = '.kb-single-btn-abc123 .kt-button-abc123';
 	const PRESET_TOKENS = {
 		default: {
 			'button-padding': ['0.4em', '1em', '0.4em', '1em'],
