@@ -420,6 +420,70 @@ final class PresetsControllerTest extends TestCase {
 	}
 
 	/**
+	 * Saving a class-painted preset stores only the values that differ from the theme's: a value equal to
+	 * the theme's (in literal or aliased form) is dropped, a real override survives.
+	 *
+	 * @return void
+	 */
+	public function testSavingAThemePresetStoresOnlyTheValuesThatDifferFromTheThemeValues(): void {
+		$this->seedClassPreset(
+			'theme-base',
+			[
+				'button-radius' => [ '3px', '3px', '3px', '3px' ],
+				'button-bg'     => '{semantic.color.button-bg}',
+				'button-text'   => '#ffffff',
+			]
+		);
+
+		$response = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'preset' => 'theme-base',
+					'tokens' => [
+						'button-radius'   => [ '3px', '3px', '3px', '3px' ],
+						'button-bg'       => '#ff0000',
+						// What semantic.color.button-bg resolves to: the normalizer aliases it back to the theme's value.
+						'button-text'     => '#ffffff',
+						'button-bg-hover' => '#3633e1',
+					],
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+
+		$stored = $this->container->get( Effective_Presets::class )->stored_tokens( self::BUTTON, 'theme-base' );
+
+		$this->assertSame( [ 'button-bg', 'button-bg-hover' ], array_keys( $stored ) );
+		$this->assertSame( '#ff0000', $stored['button-bg'] );
+	}
+
+	/**
+	 * A value equal to the theme's once both are normalized is dropped even when the client sends the
+	 * literal the alias resolves to.
+	 *
+	 * @return void
+	 */
+	public function testALiteralEqualToTheThemesAliasedValueIsDropped(): void {
+		$this->seedClassPreset( 'theme-base', [ 'button-bg' => '{semantic.color.button-bg}' ] );
+
+		$this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'preset' => 'theme-base',
+					'tokens' => [ 'button-bg' => '#3633e1' ],
+				]
+			)
+		);
+
+		$this->assertSame( [], $this->container->get( Effective_Presets::class )->stored_tokens( self::BUTTON, 'theme-base' ) );
+	}
+
+	/**
 	 * A theme preset can never be the block's default.
 	 *
 	 * @return void
