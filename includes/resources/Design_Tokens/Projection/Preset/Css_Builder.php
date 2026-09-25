@@ -467,7 +467,7 @@ final class Css_Builder {
 				'selector'  => $this->block_selector( $block ),
 				'default'   => $default,
 				'presets'   => $presets,
-				'activated' => $default === '' ? [] : $this->presets->default_color_overrides( $block, $slug ),
+				'activated' => $default === '' ? [] : $this->presets->overridden_default_properties( $block, $slug ),
 			];
 		}
 

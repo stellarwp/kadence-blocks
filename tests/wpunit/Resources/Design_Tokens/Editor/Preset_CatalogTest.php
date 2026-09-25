@@ -382,6 +382,33 @@ final class Preset_CatalogTest extends TestCase {
 	}
 
 	/**
+	 * An untouched library activates none of the default preset's properties, so the editor emits no
+	 * default-preset bridge for a property the stored document leaves alone.
+	 *
+	 * @return void
+	 */
+	public function testActivatedIsEmptyForAnUntouchedLibrary(): void {
+		$button = $this->catalog->all()['libraries'][ Token_Store::default_slug() ][ self::BUTTON ];
+
+		$this->assertSame( [], $button['activated'] );
+	}
+
+	/**
+	 * A stored value on a token behind one of the default preset's aliases surfaces that property in
+	 * `activated`, while `overridden` still reports nothing of the preset's own.
+	 *
+	 * @return void
+	 */
+	public function testActivatedFollowsAnOverrideAlongTheAliasChain(): void {
+		$this->store->save_document( '{"semantic":{"color":{"button-border":{"$type":"color","$value":"#ff0000"}}}}' );
+
+		$button = $this->catalog->all()['libraries'][ Token_Store::default_slug() ][ self::BUTTON ];
+
+		$this->assertSame( [ 'button-border-color' => true ], $button['activated'] );
+		$this->assertSame( [], $button['overridden']['default'] );
+	}
+
+	/**
 	 * Persist a "hero" button preset whose radius takes an aliased override on mobile.
 	 *
 	 * @param mixed $base The desktop base value; null leaves desktop unset.

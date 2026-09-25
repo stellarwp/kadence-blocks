@@ -425,9 +425,10 @@ final class Preset_Resolver {
 
 	/**
 	 * The $default preset's properties the library actually overrides: the stored default preset owns
-	 * the property, or a token along the alias chain the property points at carries a stored value. Only
-	 * these get a Kadence-slot retarget on the class-less rule, so an untouched library leaves the theme's
-	 * own variables in charge and the Customizer's live preview keeps working.
+	 * the property, or a token along the alias chain the property points at carries a stored value. The
+	 * projectors and the block's render path emit a default-preset bridge only for these, so an untouched
+	 * library leaves the theme's own rules and variables in charge (and the Customizer's live preview
+	 * keeps working).
 	 *
 	 * @since TBD
 	 *
@@ -436,7 +437,7 @@ final class Preset_Resolver {
 	 *
 	 * @return array<string, bool> property => true.
 	 */
-	public function default_color_overrides( string $block, string $slug = 'default' ): array {
+	public function overridden_default_properties( string $block, string $slug = 'default' ): array {
 		try {
 			$default = $this->default_preset( $block, $slug );
 			$tokens  = $this->preset_tokens( $block, $default, $slug );
