@@ -880,8 +880,9 @@ class SinglebtnTest extends KadenceBlocksUnit {
 	}
 
 	/**
-	 * A button the theme or the outline stylesheet paints gets none of the preset bridges, so its padding,
-	 * margin, border and shadow come from the same rules they came from before presets existed.
+	 * A button the theme or the outline stylesheet paints gets none of the preset bridges and no shadow
+	 * reset, so its padding, margin, border and shadow come from the same rules they came from before
+	 * presets existed.
 	 *
 	 * @dataProvider classPaintedModeProvider
 	 *
@@ -896,6 +897,7 @@ class SinglebtnTest extends KadenceBlocksUnit {
 		$this->assertStringNotContainsString( 'var(--kb-btn-margin)', $output );
 		$this->assertStringNotContainsString( 'var(--kb-btn-border-width)', $output );
 		$this->assertStringNotContainsString( 'var(--kb-btn-shadow)', $output );
+		$this->assertStringNotContainsString( 'box-shadow:none', $output );
 	}
 
 	/**

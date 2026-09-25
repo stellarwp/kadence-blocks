@@ -135,9 +135,10 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		$has_preset_shadow = $this->render_preset_shadow( $css, $attributes );
 		if ( ! empty( $attributes['displayShadow'] ) && isset( $attributes['shadow'][0] ) && is_array( $attributes['shadow'][0] ) && $this->has_visible_shadow( $attributes['shadow'][0] ) ) {
 			$css->add_property( 'box-shadow', $this->render_button_shadow( $css, $attributes['shadow'][0] ) );
-		} elseif ( ! $has_preset_shadow ) {
+		} elseif ( ! $has_preset_shadow && $this->paints_own_shape( $attributes ) ) {
 			// Only reset to `none` when nothing else claims this rule's box-shadow — a preset's
-			// `var(--kb-btn-shadow)` above would otherwise be silenced by a trailing `none`.
+			// `var(--kb-btn-shadow)` above would otherwise be silenced by a trailing `none`, and a
+			// theme-painted button keeps the shadow the theme's own rules give it.
 			$css->add_property( 'box-shadow', 'none' );
 		}
 		if ( ! empty( $attributes['textUnderline'] ) ) {
