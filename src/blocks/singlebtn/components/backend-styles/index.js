@@ -7,7 +7,12 @@ import {
 	getBorderColor,
 	getSpacingOptionOutput,
 } from '@kadence/helpers';
-import { activePresetFor, blockPresetValues } from '../../../../extension/preset-picker';
+import {
+	activePresetFor,
+	blockDefaultOverridden,
+	blockDefaultPreset,
+	blockPresetValues,
+} from '../../../../extension/preset-picker';
 import { pathOfAlias } from '../../../../extension/design-tokens/alias';
 import { isBackedToken } from '../../../../extension/design-tokens/backed-tokens';
 import { boundShadowToken } from '../../../../extension/design-tokens/shadow-token';
@@ -45,6 +50,10 @@ function presetSpacingProperties(attributes) {
  * preset that no longer exists — follows the block's default preset, exactly as the server's
  * `has_preset()` / `default_preset()` fallback does.
  *
+ * The default preset counts only the border properties the library overrides, mirroring the PHP
+ * renderer: its shipped values equal the button's own stylesheet, so an untouched button keeps its
+ * border where the theme's cascade put it.
+ *
  * @param {Object} attributes The block attributes.
  *
  * @since TBD
@@ -54,11 +63,14 @@ function presetSpacingProperties(attributes) {
 export function presetBorderProperties(attributes) {
 	const preset = activePresetFor('kadence/singlebtn', attributes);
 	const tokens = blockPresetValues('kadence/singlebtn')?.[preset] ?? {};
+	const activated =
+		preset === blockDefaultPreset('kadence/singlebtn') ? blockDefaultOverridden('kadence/singlebtn') : null;
+	const emits = (key) => key in tokens && (activated === null || Boolean(activated[key]));
 
 	return {
-		width: 'button-border-width' in tokens,
-		style: 'button-border-style' in tokens,
-		color: 'button-border-color' in tokens,
+		width: emits('button-border-width'),
+		style: emits('button-border-style'),
+		color: emits('button-border-color'),
 	};
 }
 

@@ -556,6 +556,10 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 	 * Emitted before `render_border_styles()`'s explicit per-side output so an explicit per-block
 	 * border, which lands later in the same rule, still wins.
 	 *
+	 * The default preset's border is emitted only for a property the library overrides, since the
+	 * shipped values equal the button's own stylesheet: an untouched button keeps its border where the
+	 * theme's cascade put it, exactly as it did before presets existed.
+	 *
 	 * @since TBD
 	 *
 	 * @param Kadence_Blocks_CSS   $css        The css object.
@@ -586,10 +590,15 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 
 			$slug     = $library->get();
 			$selected = Cast::to_string( $attributes['kbPreset'] ?? '' );
+			$default  = $resolver->default_preset( 'kadence/singlebtn', $slug );
 			$preset   = $selected !== '' && $resolver->has_preset( 'kadence/singlebtn', $selected, $slug )
 				? $selected
-				: $resolver->default_preset( 'kadence/singlebtn', $slug );
+				: $default;
 			$values   = $resolver->resolve( 'kadence/singlebtn', $preset, $slug );
+
+			if ( $preset === $default ) {
+				$values = array_intersect_key( $values, $resolver->overridden_default_properties( 'kadence/singlebtn', $slug ) );
+			}
 		} catch ( Throwable $e ) {
 			// This runs in the render path, so a broken token graph must not take the page down with it —
 			// the button simply keeps the border it has today.

@@ -59,6 +59,8 @@ class SinglebtnTest extends KadenceBlocksUnit {
 	 * @return void
 	 */
 	public function testNamedPresetBorderWidthEmitsCssVar(): void {
+		$this->seedSecondaryPreset();
+
 		$output = $this->render_button( [ 'kbPreset' => 'secondary' ] );
 
 		$this->assertStringContainsString( 'border-width:var(--kb-btn-border-width)', $output );
@@ -70,6 +72,8 @@ class SinglebtnTest extends KadenceBlocksUnit {
 	 * @return void
 	 */
 	public function testNamedPresetBorderStyleAndColorEmitCssVars(): void {
+		$this->seedSecondaryPreset();
+
 		$output = $this->render_button( [ 'kbPreset' => 'secondary' ] );
 
 		$this->assertStringContainsString( 'border-style:var(--kb-btn-border-style)', $output );
@@ -132,6 +136,8 @@ class SinglebtnTest extends KadenceBlocksUnit {
 	 * @return void
 	 */
 	public function testExplicitBorderOverridesPresetBorder(): void {
+		$this->seedSecondaryPreset();
+
 		$output = $this->render_button(
 			[
 				'kbPreset'    => 'secondary',
@@ -913,15 +919,55 @@ class SinglebtnTest extends KadenceBlocksUnit {
 	}
 
 	/**
-	 * A Fill button keeps the bridges, since its padding, margin and border are the plugin's own.
+	 * A Fill button keeps the spacing bridge, since its padding and margin are the plugin's own, but an
+	 * untouched library gives it no border bridge: the default preset's border equals the button's own
+	 * stylesheet, so the theme's cascade keeps painting the border exactly as before presets existed.
 	 *
 	 * @return void
 	 */
-	public function testFillButtonsKeepThePresetBridges(): void {
+	public function testFillButtonsKeepTheSpacingBridgeButNoUntouchedBorderBridge(): void {
 		$output = $this->render_button( [ 'inheritStyles' => 'fill' ] );
 
 		$this->assertStringContainsString( 'padding:var(--kb-btn-padding)', $output );
-		$this->assertStringContainsString( 'border-style:var(--kb-btn-border-style)', $output );
+		$this->assertStringNotContainsString( 'var(--kb-btn-border-width)', $output );
+		$this->assertStringNotContainsString( 'var(--kb-btn-border-style)', $output );
+		$this->assertStringNotContainsString( 'var(--kb-btn-border-color)', $output );
+	}
+
+	/**
+	 * Overriding the button border color semantic in the store activates exactly that property's bridge
+	 * on a default-preset button, so a Style Library edit reaches every untouched button.
+	 *
+	 * @return void
+	 */
+	public function testAnOverriddenButtonBorderSemanticActivatesItsBridge(): void {
+		/** @var Token_Store $store */
+		$store = $this->container->get( Token_Store::class );
+		$store->save_document(
+			'{"semantic":{"color":{"button-border":{"$type":"color","$value":"#ff0000"}}}}',
+			Token_Store::default_slug()
+		);
+
+		$output = $this->render_button( [ 'inheritStyles' => 'fill' ] );
+
+		$this->assertStringContainsString( 'border-color:var(--kb-btn-border-color)', $output );
+		$this->assertStringNotContainsString( 'var(--kb-btn-border-width)', $output );
+		$this->assertStringNotContainsString( 'var(--kb-btn-border-style)', $output );
+	}
+
+	/**
+	 * A stored border on the default preset itself activates the bridge the same way, since the Style
+	 * Library edits the preset rather than the semantic.
+	 *
+	 * @return void
+	 */
+	public function testAStoredDefaultPresetBorderActivatesItsBridge(): void {
+		$this->seedPreset( 'default', 'Default', [ 'button-border-width' => '2px' ] );
+
+		$output = $this->render_button( [] );
+
+		$this->assertStringContainsString( 'border-width:var(--kb-btn-border-width)', $output );
+		$this->assertStringNotContainsString( 'var(--kb-btn-border-color)', $output );
 	}
 
 	/**
@@ -957,6 +1003,24 @@ class SinglebtnTest extends KadenceBlocksUnit {
 			$this->css,
 			$unique_id,
 			$unique_id
+		);
+	}
+
+	/**
+	 * Persist a named "secondary" button preset that sets all three border properties, so a test that
+	 * selects it exercises a named preset's border rather than the default preset's fallback.
+	 *
+	 * @return void
+	 */
+	private function seedSecondaryPreset(): void {
+		$this->seedPreset(
+			'secondary',
+			'Secondary',
+			[
+				'button-border-width' => '2px',
+				'button-border-style' => 'solid',
+				'button-border-color' => '#000000',
+			]
 		);
 	}
 

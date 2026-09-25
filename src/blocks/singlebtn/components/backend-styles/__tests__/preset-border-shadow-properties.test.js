@@ -12,7 +12,12 @@
 /**
  * Internal dependencies
  */
-import { activePresetFor, blockPresetValues } from '../../../../../extension/preset-picker';
+import {
+	activePresetFor,
+	blockDefaultOverridden,
+	blockDefaultPreset,
+	blockPresetValues,
+} from '../../../../../extension/preset-picker';
 import { presetBorderProperties, presetShadowProperties } from '../index';
 
 // `backend-styles/index.js` imports the `@kadence/helpers` barrel, which eagerly pulls in a
@@ -32,6 +37,8 @@ jest.mock('@kadence/helpers', () => ({
 
 jest.mock('../../../../../extension/preset-picker', () => ({
 	activePresetFor: jest.fn(),
+	blockDefaultOverridden: jest.fn(() => ({})),
+	blockDefaultPreset: jest.fn(() => 'default'),
 	blockPresetValues: jest.fn(),
 }));
 
@@ -44,6 +51,10 @@ jest.mock('../../../../../extension/preset-picker', () => ({
 beforeEach(() => {
 	activePresetFor.mockReset();
 	blockPresetValues.mockReset();
+	blockDefaultPreset.mockReset();
+	blockDefaultPreset.mockReturnValue('default');
+	blockDefaultOverridden.mockReset();
+	blockDefaultOverridden.mockReturnValue({});
 });
 
 describe('presetBorderProperties', () => {
@@ -101,6 +112,56 @@ describe('presetBorderProperties', () => {
 			style: false,
 			color: false,
 		});
+	});
+
+	const DEFAULT_BORDER = {
+		default: {
+			'button-border-width': '0',
+			'button-border-style': 'solid',
+			'button-border-color': 'transparent',
+		},
+	};
+
+	/**
+	 * An untouched button on the default preset reports no border, even though the default preset
+	 * resolves all three: its shipped values equal the button's own stylesheet, so no bridge is emitted
+	 * and the theme's cascade keeps painting the border, mirroring the PHP renderer.
+	 *
+	 * @return {void}
+	 */
+	it('reports nothing present for the default preset while the library overrides no border property', () => {
+		activePresetFor.mockReturnValue('default');
+		blockPresetValues.mockReturnValue(DEFAULT_BORDER);
+
+		expect(presetBorderProperties({})).toEqual({ width: false, style: false, color: false });
+	});
+
+	/**
+	 * A stored override of a border property on the default preset (or of a token along its alias
+	 * chain) activates exactly that property's bridge.
+	 *
+	 * @return {void}
+	 */
+	it('reports only the overridden border property for the default preset', () => {
+		activePresetFor.mockReturnValue('default');
+		blockPresetValues.mockReturnValue(DEFAULT_BORDER);
+		blockDefaultOverridden.mockReturnValue({ 'button-border-color': true });
+
+		expect(presetBorderProperties({})).toEqual({ width: false, style: false, color: true });
+	});
+
+	/**
+	 * A named preset that sets a border property reports it regardless of the override map, which only
+	 * governs the default preset.
+	 *
+	 * @return {void}
+	 */
+	it('reports a named preset border without consulting the default override map', () => {
+		activePresetFor.mockReturnValue('bold');
+		blockPresetValues.mockReturnValue({ ...DEFAULT_BORDER, bold: { 'button-border-width': '2px' } });
+
+		expect(presetBorderProperties({ kbPreset: 'bold' })).toEqual({ width: true, style: false, color: false });
+		expect(blockDefaultOverridden).not.toHaveBeenCalled();
 	});
 });
 

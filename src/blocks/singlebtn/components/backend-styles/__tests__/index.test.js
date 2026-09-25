@@ -12,7 +12,12 @@
  */
 import { KadenceBlocksCSS } from '@kadence/helpers';
 import BackendStyles, { hasVisibleShadow, paintsOwnShape } from '../index';
-import { activePresetFor, blockPresetValues } from '../../../../../extension/preset-picker';
+import {
+	activePresetFor,
+	blockDefaultOverridden,
+	blockDefaultPreset,
+	blockPresetValues,
+} from '../../../../../extension/preset-picker';
 import { shadowAxisPx, shadowCss } from '../../../../../extension/design-tokens/shadow-css';
 import metadata from '../../../block.json';
 
@@ -35,6 +40,8 @@ jest.mock('@kadence/helpers', () => ({
 
 jest.mock('../../../../../extension/preset-picker', () => ({
 	activePresetFor: jest.fn(),
+	blockDefaultOverridden: jest.fn(() => ({})),
+	blockDefaultPreset: jest.fn(() => 'default'),
 	blockPresetValues: jest.fn(),
 }));
 
@@ -454,12 +461,16 @@ describe('BackendStyles class-painted mode gating', () => {
 		KadenceBlocksCSS.mockImplementation(() => fakeCss);
 		activePresetFor.mockReturnValue('default');
 		blockPresetValues.mockReturnValue(PRESET_TOKENS);
+		blockDefaultPreset.mockReturnValue('default');
+		blockDefaultOverridden.mockReturnValue({});
 	});
 
 	afterEach(() => {
 		KadenceBlocksCSS.mockReset();
 		activePresetFor.mockReset();
 		blockPresetValues.mockReset();
+		blockDefaultPreset.mockReset();
+		blockDefaultOverridden.mockReset();
 	});
 
 	/**
@@ -512,17 +523,21 @@ describe('BackendStyles class-painted mode gating', () => {
 	});
 
 	/**
-	 * A Fill button keeps the bridges, since its padding, margin, border and shadow are the plugin's own.
+	 * A Fill button keeps the spacing and shadow bridges, since its padding, margin and shadow are the
+	 * plugin's own. The border bridge stays out while the library overrides no border property, so the
+	 * theme's cascade keeps painting an untouched button's border.
 	 *
 	 * @return {void}
 	 */
-	it('keeps the preset bridges for fill', () => {
+	it('keeps the spacing and shadow bridges for fill but no untouched border bridge', () => {
 		BackendStyles({ attributes: { uniqueID: 'abc123', inheritStyles: 'fill' }, previewDevice: 'Desktop' });
 
 		const props = basePropsOf(fakeCss.rules);
 
 		expect(props.padding).toBe('var(--kb-btn-padding)');
-		expect(props['border-style']).toBe('var(--kb-btn-border-style)');
+		expect(props['border-width']).toBeUndefined();
+		expect(props['border-style']).toBeUndefined();
+		expect(props['border-color']).toBeUndefined();
 		expect(props['box-shadow']).toBe('var(--kb-btn-shadow)');
 		expect(boxShadowFor(fakeCss.rules, `${BASE_SELECTOR}:hover`)).toBe('var(--kb-btn-shadow-hover, none)');
 	});
