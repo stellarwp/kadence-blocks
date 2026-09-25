@@ -177,9 +177,11 @@ final class Preset_Catalog {
 	}
 
 	/**
-	 * A block's preset options for the picker: { slug, label, userCreated, themeClass } per named preset, in
-	 * catalog order. `themeClass` carries the classes a class-painted preset puts on the block's styled
-	 * element, so the editor canvas can wear them; it is '' for a preset painted through variables.
+	 * A block's preset options for the picker: { slug, label, userCreated, themeClass, readable } per named
+	 * preset, in catalog order. `themeClass` carries the classes a class-painted preset puts on the block's
+	 * styled element, so the editor canvas can wear them; it is '' for a preset painted through variables.
+	 * `readable` says whether the theme's values behind a class-painted preset could be read, so a surface
+	 * can tell a preset it can show values for from one it can only name.
 	 *
 	 * @since TBD
 	 *
@@ -187,7 +189,7 @@ final class Preset_Catalog {
 	 * @param string   $slug  The token library slug.
 	 * @param string[] $names The preset slugs, in catalog order.
 	 *
-	 * @return array<int, array{slug: string, label: string, userCreated: bool, themeClass: string}> The picker's options.
+	 * @return array<int, array{slug: string, label: string, userCreated: bool, themeClass: string, readable: bool}> The picker's options.
 	 */
 	private function preset_options( string $block, string $slug, array $names ): array {
 		$user_created = $this->effective->user_created( $block, $slug );
@@ -199,6 +201,7 @@ final class Preset_Catalog {
 				'label'       => $this->presets->label( $block, $name, $slug ) ?? $name,
 				'userCreated' => in_array( $name, $user_created, true ),
 				'themeClass'  => $this->presets->theme_class( $block, $name, $slug ),
+				'readable'    => $this->presets->theme_values( $block, $name, $slug ) !== [],
 			];
 		}
 
