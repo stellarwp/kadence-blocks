@@ -87,7 +87,7 @@ final class Preset_ResolverTest extends TestCase {
 	}
 
 	public function testItListsTheDocumentsPresetNames(): void {
-		$this->assertSame( [ 'default', 'outline' ], $this->resolver->names( self::BUTTON ) );
+		$this->assertSame( [ 'default', 'outline', 'theme-base' ], $this->resolver->names( self::BUTTON ) );
 	}
 
 	public function testDefaultPresetReadsTheDollarDefault(): void {
@@ -258,7 +258,7 @@ final class Preset_ResolverTest extends TestCase {
 			]
 		);
 
-		$this->assertSame( [ 'default', 'outline', 'accent' ], $this->resolver->names( self::BUTTON ) );
+		$this->assertSame( [ 'default', 'outline', 'theme-base', 'accent' ], $this->resolver->names( self::BUTTON ) );
 		$this->assertTrue( $this->resolver->has_preset( self::BUTTON, 'accent' ) );
 		$this->assertSame( 'Accent', $this->resolver->label( self::BUTTON, 'accent' ) );
 
@@ -337,7 +337,7 @@ final class Preset_ResolverTest extends TestCase {
 
 		// The default library never saw the write.
 		$this->assertFalse( $this->resolver->has_preset( self::BUTTON, 'accent', 'default' ) );
-		$this->assertSame( [ 'default', 'outline' ], $this->resolver->names( self::BUTTON, 'default' ) );
+		$this->assertSame( [ 'default', 'outline', 'theme-base' ], $this->resolver->names( self::BUTTON, 'default' ) );
 	}
 
 	/**

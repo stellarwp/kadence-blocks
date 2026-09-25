@@ -758,7 +758,9 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
-	 * Store a class-painted theme-base preset with the given overrides.
+	 * Store overrides for the theme-base preset the theme discovery adds to the baseline. Only the tokens
+	 * are stored: the classes come from the decorated baseline, so the assertions prove the decorator's
+	 * node rather than a stored copy of it.
 	 *
 	 * @param array<string, mixed> $tokens The overridden property => value map.
 	 *
@@ -773,9 +775,7 @@ final class Css_BuilderTest extends TestCase {
 							'presets' => [
 								'kadence/singlebtn' => [
 									'theme-base' => [
-										'label'      => 'Theme Base',
-										'themeClass' => 'wp-block-button__link button kb-btn-global-inherit',
-										'tokens'     => $tokens,
+										'tokens' => $tokens,
 									],
 								],
 							],
