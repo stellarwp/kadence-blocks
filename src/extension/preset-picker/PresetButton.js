@@ -15,14 +15,14 @@
  * the two design-token controls stay adjacent at the top of the inspector (the generic sidebar panel skips
  * the palette for inline-picker blocks precisely because it surfaces here instead).
  */
-import { Button, Dropdown, MenuGroup, MenuItem } from '@wordpress/components';
+import { Button, Dropdown, MenuGroup, MenuItem, Notice } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { getBlockType } from '@wordpress/blocks';
 import { Icon, check } from '@wordpress/icons';
 import { __ } from '@wordpress/i18n';
 import { get } from 'lodash';
-import { activeLibrary, activePresetFor, blockPresets } from './index';
+import { activeLibrary, activePresetFor, blockPresets, presetFallbackReason } from './index';
 import { PalettePicker } from '../palette-picker';
 import { presetIcon, resetIcon } from './icons';
 import { capturedTokens } from './capture';
@@ -90,6 +90,7 @@ export function PresetButton({ blockName, attributes, setAttributes, library }) 
 
 	const currentSlug = activePresetFor(blockName, attributes, resolvedLibrary);
 	const label = currentPresetLabel(blockName, resolvedLibrary, currentSlug);
+	const reason = presetFallbackReason(blockName, attributes, resolvedLibrary);
 
 	/**
 	 * The setAttributes patch that clears every mapped override back to its preset value, so a control
@@ -138,6 +139,13 @@ export function PresetButton({ blockName, attributes, setAttributes, library }) 
 	return (
 		<>
 			<span className="kb-preset-button__control-label">{__('Preset', 'kadence-blocks')}</span>
+			{reason && (
+				<Notice status="warning" isDismissible={false} className="kb-preset-button__notice">
+					{reason === 'theme'
+						? __("This preset isn't available in the current theme.", 'kadence-blocks')
+						: __('This preset no longer exists.', 'kadence-blocks')}
+				</Notice>
+			)}
 			<div className="kb-preset-button__row">
 				<Dropdown
 					className="kb-preset-button__dropdown"
