@@ -89,6 +89,27 @@ describe('theme preset rows', () => {
 	});
 
 	/**
+	 * A readable preset previews the theme's values under its overrides, so its card shows the look the
+	 * theme paints rather than a bare chip; an unreadable one previews only what it stores.
+	 *
+	 * @return {void}
+	 */
+	it('previews a readable preset from the theme values under its overrides', () => {
+		const previews = {};
+		presetRows(PAYLOAD, FEED.values, (tokens) => tokens).forEach((row) => {
+			previews[row.id] = row.preview;
+		});
+
+		expect(previews['theme-base']).toMatchObject({
+			'button-bg': '#ff0000',
+			'button-text': '{semantic.color.button-text}',
+			'button-radius': ['3px', '3px', '3px', '3px'],
+		});
+		expect(previews['theme-button']).toEqual({});
+		expect(previews.default).toEqual({ 'button-bg': '{semantic.color.button-bg}' });
+	});
+
+	/**
 	 * Only the reserved prefix marks a theme preset.
 	 *
 	 * @return {void}

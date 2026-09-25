@@ -315,15 +315,20 @@ export function presetRows(payload, values, preview, breakpoint = PRESET_BREAKPO
 	const userCreated = Array.isArray(payload?.userCreated) ? payload.userCreated : [];
 
 	return Object.entries(presets).map(([slug, preset]) => {
-		const tokens = preset?.tokens ?? {};
+		const readable = preset?.readable === true;
+		const themeValues = preset?.themeValues ?? {};
+		// A readable preset's look is the theme's values with the stored overrides on top: the payload's
+		// `tokens` hold only the overrides, so previewing them alone would draw a bare chip for a preset
+		// the theme paints in full.
+		const tokens = readable ? { ...themeValues, ...(preset?.tokens ?? {}) } : (preset?.tokens ?? {});
 
 		return {
 			id: slug,
 			label: preset?.label ?? slug,
 			userCreated: userCreated.includes(slug),
 			isTheme: isThemePresetSlug(slug),
-			readable: preset?.readable === true,
-			themeValues: preset?.themeValues ?? {},
+			readable,
+			themeValues,
 			// Carried on the row (not just consumed here) so `overlayPresetRows` can merge a live
 			// draft over the preset's effective values instead of previewing the draft in isolation.
 			tokens,
