@@ -1,5 +1,5 @@
 <?php declare( strict_types=1 );
-// cspell:ignore advancedbtn advancedheading .
+// cspell:ignore advancedbtn advancedheading unseed .
 
 namespace Tests\wpunit\Resources\Design_Tokens\Rest\V1;
 
@@ -11,6 +11,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Presets_Controller;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Alias;
 use ReflectionClass;
 use ReflectionProperty;
+use Tests\Support\Classes\Seeds_Theme_Presets;
 use Tests\Support\Classes\TestCase;
 use WP_Error;
 use WP_Http;
@@ -24,7 +25,31 @@ use WP_REST_Server;
  */
 final class PresetsControllerTest extends TestCase {
 
+	use Seeds_Theme_Presets;
+
 	private const BUTTON = 'kadence/singlebtn';
+
+	/**
+	 * A block theme's own variation, as discovery offers it: no class, its tokens seeded from the theme.
+	 *
+	 * @var array<string, array{label: string, class: string, values: array<string, mixed>, tokens: array<string, mixed>}>
+	 */
+	private const THEME_OUTLINE = [
+		'outline' => [
+			'label'  => 'Theme Outline',
+			'class'  => '',
+			'values' => [],
+			'tokens' => [
+				'button-bg'           => 'transparent',
+				'button-text'         => 'currentColor',
+				'button-bg-hover'     => 'transparent',
+				'button-text-hover'   => 'currentColor',
+				'button-border-width' => [ '1px', '1px', '1px', '1px' ],
+				'button-border-style' => 'solid',
+				'button-border-color' => 'currentColor',
+			],
+		],
+	];
 
 	private const HEADING = 'kadence/advancedheading';
 
@@ -65,6 +90,7 @@ final class PresetsControllerTest extends TestCase {
 	 */
 	protected function tearDown(): void {
 		wp_set_current_user( 0 );
+		$this->unseed_theme_presets();
 
 		global $wp_rest_server;
 		$wp_rest_server = null;
@@ -549,6 +575,61 @@ final class PresetsControllerTest extends TestCase {
 		$this->assertInstanceOf( WP_Error::class, $result );
 		$this->assertSame( 'rest_design_tokens_theme_default', $result->get_error_code() );
 		$this->assertSame( WP_Http::BAD_REQUEST, $result->get_error_data()['status'] );
+	}
+
+	/**
+	 * A theme's value preset (a block theme's own variation) can never be the block's default either.
+	 *
+	 * @return void
+	 */
+	public function testSettingAThemeValuePresetAsTheDefaultIsRefused(): void {
+		$this->seed_theme_presets( self::THEME_OUTLINE );
+
+		$result = $this->controller->set_default( $this->default_request( self::BUTTON, 'theme-outline' ) );
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'rest_design_tokens_theme_default', $result->get_error_code() );
+		$this->assertSame( WP_Http::BAD_REQUEST, $result->get_error_data()['status'] );
+	}
+
+	/**
+	 * Saving a theme's value preset stores only the values that differ from the tokens the theme seeded,
+	 * and deleting it reverts those overrides: the preset stays listed with its seeded tokens.
+	 *
+	 * @return void
+	 */
+	public function testDeletingAThemeValuePresetRevertsItToItsSeededTokens(): void {
+		$this->seed_theme_presets( self::THEME_OUTLINE );
+
+		$seeded = self::THEME_OUTLINE['outline']['tokens'];
+
+		$response = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'preset' => 'theme-outline',
+					'tokens' => array_replace( $seeded, [ 'button-border-color' => '#ff0000' ] ),
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+		$this->assertSame( [ 'button-border-color' => '#ff0000' ], $this->container->get( Effective_Presets::class )->stored_tokens( self::BUTTON, 'theme-outline' ) );
+		$this->assertSame( '#ff0000', $response->get_data()['presets']['theme-outline']['tokens']['button-border-color'] );
+
+		$response = $this->controller->delete_preset( $this->preset_request( self::BUTTON, 'theme-outline' ) );
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+		$this->assertSame( WP_Http::OK, $response->get_status() );
+
+		$data = $response->get_data();
+
+		$this->assertSame( $seeded, $data['presets']['theme-outline']['tokens'] );
+		$this->assertSame( [], $data['presets']['theme-outline']['overridden'] );
+		$this->assertArrayNotHasKey( 'themeClass', $data['presets']['theme-outline'] );
+		$this->assertNotContains( 'theme-outline', $data['userCreated'] );
+		$this->assertSame( [], $this->container->get( Effective_Presets::class )->stored_tokens( self::BUTTON, 'theme-outline' ) );
 	}
 
 	/**
