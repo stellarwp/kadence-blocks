@@ -12,6 +12,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Css_Var;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Preset_Bindings;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
+use KadenceWP\KadenceBlocks\Utils\Cast;
 use RuntimeException;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Version;
 
@@ -53,6 +54,13 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Version;
  *      leaves unset. The block-default layer declares only what the $default resolves, and that
  *      declaration is what the retarget in layer 2 is consumed through; a property the $default leaves to
  *      the theme (the Advanced Text's type) would otherwise have no consumer. See default_gap_rules().
+ *   5. Per (block, CLASS-painted preset) a RESET rule and DIRECT rules. A preset carrying `themeClass` is
+ *      painted by the theme's or the plugin's own stylesheet through the classes it puts on the element, so
+ *      layer 2 would fight that stylesheet: the reset rule instead sets every variable it could retarget that the
+ *      preset does not override to `unset`, handing them back to the theme's own `:root` values, and each
+ *      stored override becomes a real "<class_prop>: var(<canonical preset var>)" declaration under the
+ *      block's declared class-preset weight (resting) or the binding's theme state (hover). Its baseline
+ *      tokens emit nothing; only stored overrides do. See class_preset_properties() and direct_rules().
  *
  * Scoping is per (block, preset): the same preset name on two blocks ("ghost" on a Button and a Row) gets
  * its own qualified rule, so values never collide. Both named presets and the "$default" preset carry
@@ -152,7 +160,7 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @var array<string, array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string}>>, activated:array<string, bool>}>>
+	 * @var array<string, array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string, reset:bool, direct:bool}>>, activated:array<string, bool>}>>
 	 */
 	private array $collected = [];
 
@@ -341,7 +349,7 @@ final class Css_Builder {
 	 *
 	 * @param string $slug The library slug to resolve against.
 	 *
-	 * @return array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string}>>, activated:array<string, bool>}>
+	 * @return array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string, reset:bool, direct:bool}>>, activated:array<string, bool>}>
 	 */
 	private function collect( string $slug ): array {
 		$key = $slug . '_' . $this->versions->for_slug( $slug );
@@ -387,6 +395,12 @@ final class Css_Builder {
 					continue;
 				}
 
+				if ( $this->presets->theme_class( $block, $preset, $slug ) !== '' ) {
+					$presets[ $preset ] = $this->class_preset_properties( $bindings, $values, $this->presets->stored_properties( $block, $preset, $slug ) );
+
+					continue;
+				}
+
 				$properties = [];
 
 				foreach ( $values as $property => $value ) {
@@ -424,6 +438,8 @@ final class Css_Builder {
 							'prop'      => $prop,
 							'state'     => $binding->css_state(),
 							'editor'    => $binding->editor_css_state(),
+							'reset'     => false,
+							'direct'    => false,
 						];
 
 						continue;
@@ -445,6 +461,8 @@ final class Css_Builder {
 						'prop'      => $binding->css_prop(),
 						'state'     => null,
 						'editor'    => null,
+						'reset'     => false,
+						'direct'    => false,
 					];
 				}
 
@@ -475,12 +493,71 @@ final class Css_Builder {
 	}
 
 	/**
+	 * The collected properties of a class-painted preset: a reset entry for every binding whose variable the
+	 * preset could retarget but does not override (so the stylesheet that paints the class reads the theme's own variables), and
+	 * a direct entry for every property it does override, carrying the class_prop and, for a hover property,
+	 * the theme state the declaration is scoped by.
+	 *
+	 * Only a STORED override becomes a direct entry: a class preset's baseline tokens are display data, so a
+	 * shipped class preset emits nothing but its resets until the library edits it.
+	 *
+	 * @since TBD
+	 *
+	 * @param Preset_Bindings      $bindings The block's bindings.
+	 * @param array<string, mixed> $values   The preset's resolved values.
+	 * @param array<string, bool>  $owned    property => true for the properties the preset stores itself.
+	 *
+	 * @return array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string, reset:bool, direct:bool}>
+	 */
+	private function class_preset_properties( Preset_Bindings $bindings, array $values, array $owned ): array {
+		$properties = [];
+
+		foreach ( $bindings->bindings as $property => $binding ) {
+			if ( isset( $owned[ $property ], $values[ $property ] ) && $binding->class_prop() !== null ) {
+				$properties[ $property ] = [
+					'target'    => null,
+					'value'     => Cast::to_string( $values[ $property ] ),
+					'fallback'  => null,
+					'dimension' => $bindings->kind( $property ) === Preset_Bindings::get_kind_dimension(),
+					'prop'      => $binding->class_prop(),
+					'state'     => $binding->theme_state() ?? $binding->css_state(),
+					'editor'    => $binding->editor_theme_state() ?? $binding->editor_css_state(),
+					'reset'     => false,
+					'direct'    => true,
+				];
+
+				continue;
+			}
+
+			$target = $this->target_var( $binding );
+
+			if ( $target === null ) {
+				continue;
+			}
+
+			$properties[ $property ] = [
+				'target'    => $target,
+				'value'     => null,
+				'fallback'  => null,
+				'dimension' => false,
+				'prop'      => null,
+				'state'     => null,
+				'editor'    => null,
+				'reset'     => true,
+				'direct'    => false,
+			];
+		}
+
+		return $properties;
+	}
+
+	/**
 	 * Emit the canonical `--kb-token--preset--*` definitions from the active library's collected presets. The
 	 * value preserves alias indirection canonically, so the preset chains to the active library's token.
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string}>>, activated:array<string, bool>}> $collected The active library's collected presets.
+	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string, reset:bool, direct:bool}>>, activated:array<string, bool>}> $collected The active library's collected presets.
 	 *
 	 * @return string
 	 */
@@ -500,7 +577,7 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string}>>, activated:array<string, bool>}> $collected The active library's collected presets.
+	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string, reset:bool, direct:bool}>>, activated:array<string, bool>}> $collected The active library's collected presets.
 	 *
 	 * @return string
 	 */
@@ -538,7 +615,7 @@ final class Css_Builder {
 	 * @param string                                  $block    The block name.
 	 * @param string                                  $preset   The preset slug.
 	 * @param string                                  $property The block property.
-	 * @param array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string} $info The property's collected target/value/kind.
+	 * @param array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string, reset:bool, direct:bool} $info The property's collected target/value/kind.
 	 *
 	 * @return string
 	 */
@@ -632,7 +709,7 @@ final class Css_Builder {
 	 * @param string                                                                                                             $preset   The preset slug.
 	 * @param string                                                                                                             $property The block property.
 	 * @param string                                                                                                             $value    The breakpoint's projected override value for the property.
-	 * @param array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string} $info     The property's collected base/fallback/kind.
+	 * @param array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string, reset:bool, direct:bool} $info     The property's collected base/fallback/kind.
 	 *
 	 * @return string
 	 */
@@ -681,7 +758,7 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string}>>, activated:array<string, bool>}> $collected The active library's collected presets.
+	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string, reset:bool, direct:bool}>>, activated:array<string, bool>}> $collected The active library's collected presets.
 	 *
 	 * @return string
 	 */
@@ -707,10 +784,99 @@ final class Css_Builder {
 				);
 
 				$css .= $this->default_gap_rules( $block, (string) $preset, $data, $preset_class, $editor );
+
+				$css .= $this->direct_rules( $block, (string) $preset, $data['selector'], $preset_class, $properties, $editor );
 			}
 		}
 
 		return $css;
+	}
+
+	/**
+	 * Emit a class-painted preset's override rules: one resting rule under the block's declared class-preset
+	 * weight, and one rule per distinct theme state suffix under the weightless preset scope, the way
+	 * state_rules() composes a state. The two scopes are never mixed: a state suffix carries its own weight,
+	 * so putting it under the weighted scope would double the button classes. In the editor the state scope
+	 * is nested under the editor root here, since the theme's own editor rules sit there too.
+	 *
+	 * @since TBD
+	 *
+	 * @param string                                                                                                                                       $block        The block name.
+	 * @param string                                                                                                                                       $preset       The preset slug.
+	 * @param string                                                                                                                                       $selector     The block's `.wp-block-*` selector.
+	 * @param string                                                                                                                                       $preset_class The preset class selector, leading dot included.
+	 * @param array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string, reset:bool, direct:bool}> $properties The preset's collected properties.
+	 * @param bool                                                                                                                                         $editor       Whether to target the block's editor markup.
+	 *
+	 * @return string The rules, or '' for a preset with no direct entries.
+	 */
+	private function direct_rules( string $block, string $preset, string $selector, string $preset_class, array $properties, bool $editor ): string {
+		$resting   = [];
+		$by_suffix = [];
+
+		foreach ( $properties as $property => $info ) {
+			if ( ! $info['direct'] || $info['prop'] === null ) {
+				continue;
+			}
+
+			$declaration = $info['prop'] . ':var(' . $this->preset_var( $block, $preset, (string) $property ) . ')';
+			$suffixes    = $this->state_suffixes( $editor ? $info['editor'] : $info['state'] );
+
+			if ( $suffixes === [] ) {
+				$resting[] = $declaration;
+
+				continue;
+			}
+
+			$by_suffix[ implode( ',', $suffixes ) ][] = $declaration;
+		}
+
+		$css = '';
+
+		if ( $resting !== [] ) {
+			$css .= $this->class_preset_scope( $block, $selector, $preset_class, $editor ) . '{' . implode( ';', $resting ) . ';}';
+		}
+
+		$scope = ( $editor ? '.editor-styles-wrapper ' : '' ) . $this->state_scope( $selector, $preset_class );
+
+		foreach ( $by_suffix as $suffix => $declarations ) {
+			$parts = array_map(
+				static function ( string $part ) use ( $scope ): string {
+					return $scope . $part;
+				},
+				explode( ',', (string) $suffix )
+			);
+
+			$css .= implode( ',', $parts ) . '{' . implode( ';', $declarations ) . ';}';
+		}
+
+		return $css;
+	}
+
+	/**
+	 * The selector a class preset's override rule is emitted under: the block-and-preset qualification made
+	 * weightless, then the block's declared weight. On the front end the weight compounds on the same
+	 * element; in the editor the block class sits on a wrapper, so the editor weight is a descendant and the
+	 * rule is nested under the editor root the theme's own editor rules use.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $block        The block name.
+	 * @param string $selector     The block's `.wp-block-*` selector.
+	 * @param string $preset_class The preset class selector, leading dot included.
+	 * @param bool   $editor       Whether to target the block's editor markup.
+	 *
+	 * @return string
+	 */
+	private function class_preset_scope( string $block, string $selector, string $preset_class, bool $editor ): string {
+		$bindings = $this->registry->for_block( $block );
+		$weight   = $bindings === null ? '' : (string) ( $editor ? $bindings->editor_class_preset_weight : $bindings->class_preset_weight );
+
+		if ( $editor ) {
+			return '.editor-styles-wrapper :where(' . $selector . $preset_class . ') ' . $weight;
+		}
+
+		return ':where(' . $selector . $preset_class . ')' . $weight;
 	}
 
 	/**
@@ -721,7 +887,7 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string}>>, activated:array<string, bool>}> $collected The active library's collected presets.
+	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string, reset:bool, direct:bool}>>, activated:array<string, bool>}> $collected The active library's collected presets.
 	 *
 	 * @return string
 	 */
@@ -765,9 +931,9 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string}> $properties The preset's collected properties.
+	 * @param array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string, reset:bool, direct:bool}> $properties The preset's collected properties.
 	 *
-	 * @return array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string}>
+	 * @return array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string, reset:bool, direct:bool}>
 	 */
 	private function with_desktop_base( array $properties ): array {
 		return array_filter(
@@ -785,10 +951,10 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string}> $properties The $default's collected properties.
+	 * @param array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string, reset:bool, direct:bool}> $properties The $default's collected properties.
 	 * @param array<string, bool>                                                                                                                $activated  property => true for the overridden slot properties.
 	 *
-	 * @return array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string}>
+	 * @return array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string, reset:bool, direct:bool}>
 	 */
 	private function without_dormant_slots( array $properties, array $activated ): array {
 		$slot_targets = array_map(
@@ -867,10 +1033,10 @@ final class Css_Builder {
 	 *
 	 * @param string                                                                                                                                       $block        The block name.
 	 * @param string                                                                                                                                       $preset       The named preset's slug.
-	 * @param array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string}>>, activated:array<string, bool>} $data         The block's collected presets.
+	 * @param array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string, reset:bool, direct:bool}>>, activated:array<string, bool>} $data         The block's collected presets.
 	 * @param string                                                                                                                                       $preset_class The preset class selector, leading dot included.
 	 * @param bool                                                                                                                                         $editor       Whether to target the block's editor markup.
-	 * @param array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string}>|null       $properties   The properties to consider, or null for the preset's own with a desktop base.
+	 * @param array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string, reset:bool, direct:bool}>|null       $properties   The properties to consider, or null for the preset's own with a desktop base.
 	 *
 	 * @return string The rules, one per selector suffix, or '' when the Default covers every property the
 	 *                preset sets.
@@ -889,7 +1055,7 @@ final class Css_Builder {
 			// requires the binding to be token-backed with a non-empty literal before it declares one, so
 			// a binding failing only that would go uncovered there and skipped here; no shipped binding
 			// does, and the extra rule would be harmless indirection rather than a wrong value.
-			if ( $info['target'] === null || $info['prop'] === null || isset( $covered[ $property ] ) ) {
+			if ( $info['target'] === null || $info['prop'] === null || $info['direct'] || isset( $covered[ $property ] ) ) {
 				continue;
 			}
 
@@ -959,13 +1125,15 @@ final class Css_Builder {
 	}
 
 	/**
-	 * Build the `--global-<slot>:var(<canonical preset var>);` declarations for one preset's properties.
+	 * Build the `--global-<slot>:var(<canonical preset var>);` declarations for one preset's properties. A
+	 * class-painted preset's reset entry emits `<target>:unset;` instead, handing the variable back to the
+	 * stylesheet that paints the class.
 	 *
 	 * @since TBD
 	 *
 	 * @param string                                            $block      The block name.
 	 * @param string                                            $preset     The preset slug.
-	 * @param array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string}> $properties The preset's collected properties.
+	 * @param array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string, reset:bool, direct:bool}> $properties The preset's collected properties.
 	 *
 	 * @return string
 	 */
@@ -979,7 +1147,9 @@ final class Css_Builder {
 				continue;
 			}
 
-			$declarations .= $info['target'] . ':var(' . $this->preset_var( $block, $preset, (string) $property ) . ');';
+			$declarations .= $info['reset']
+				? $info['target'] . ':unset;'
+				: $info['target'] . ':var(' . $this->preset_var( $block, $preset, (string) $property ) . ');';
 		}
 
 		return $declarations;
@@ -1008,7 +1178,7 @@ final class Css_Builder {
 	 * @param string                                                                                          $block      The block name.
 	 * @param string                                                                                          $preset     The preset slug, for the canonical var name.
 	 * @param string                                                                                          $scope      The selector the state suffix is appended to.
-	 * @param array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string}> $properties The preset's collected properties.
+	 * @param array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string, reset:bool, direct:bool}> $properties The preset's collected properties.
 	 * @param bool                                                                                            $editor     Whether to use each binding's editor state suffix.
 	 *
 	 * @return string
@@ -1018,8 +1188,9 @@ final class Css_Builder {
 
 		foreach ( $properties as $property => $info ) {
 			// A retarget entry now carries its css_prop too (for the gap rule); only a state entry, which
-			// has no target, is a state rule.
-			if ( $info['target'] !== null || $info['prop'] === null ) {
+			// has no target, is a state rule. A class preset's direct entry has no target either, but it
+			// is emitted by direct_rules() under its own scopes.
+			if ( $info['target'] !== null || $info['prop'] === null || $info['direct'] ) {
 				continue;
 			}
 
@@ -1176,7 +1347,7 @@ final class Css_Builder {
 	 * @since TBD
 	 *
 	 * @param string                $active_slug The active library's slug.
-	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string}>>, activated:array<string, bool>}> $collected The collected preset structure, for the block/preset list.
+	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string, reset:bool, direct:bool}>>, activated:array<string, bool>}> $collected The collected preset structure, for the block/preset list.
 	 * @param array<string, string> $breakpoints Breakpoint => media-query string.
 	 * @param bool                  $editor      Whether a media-scoped state rule uses the binding's editor state suffix.
 	 *
@@ -1302,7 +1473,7 @@ final class Css_Builder {
 	 * @param string $preset     The preset slug.
 	 * @param string $selector   The block's `.wp-block-*` selector.
 	 * @param bool   $is_default Whether the preset is the block's `$default`.
-	 * @param array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string}> $properties The state property, keyed by name.
+	 * @param array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string, reset:bool, direct:bool}> $properties The state property, keyed by name.
 	 * @param bool   $editor     Whether to use the binding's editor state suffix.
 	 *
 	 * @return string
