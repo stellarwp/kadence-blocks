@@ -134,13 +134,14 @@ final class Style_Guide_Overlay {
 	}
 
 	/**
-	 * Slot slug => token id for every token declaring a palette kadence_slot.
+	 * Slot slug => token id for every token declaring a palette kadence_slot. Shared with the theme button
+	 * discovery so a Customizer color that names a slot converts to the same alias in both places.
 	 *
 	 * @since TBD
 	 *
 	 * @return array<string, string>
 	 */
-	private function slot_tokens(): array {
+	public function slot_tokens(): array {
 		$slots = [];
 
 		foreach ( $this->registry->by_projection( Kadence_Palette_Slot::get_projection_key() ) as $id => $token ) {
