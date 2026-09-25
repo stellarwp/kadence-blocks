@@ -58,10 +58,11 @@ final class Block_Theme_Button_StylesTest extends TestCase {
 				'color'  => 'var(--wp--preset--color--contrast)',
 			],
 			':hover'  => [
-				'color' => [
+				'color'  => [
 					'background' => 'var(--wp--preset--color--contrast-2)',
 					'text'       => 'var(--wp--preset--color--base)',
 				],
+				'border' => [ 'color' => 'var(--wp--preset--color--contrast-2)' ],
 			],
 		];
 		$tt24_outline     = [
@@ -84,14 +85,15 @@ final class Block_Theme_Button_StylesTest extends TestCase {
 			],
 		];
 		$tt24_base_values = [
-			'button-bg'           => 'var(--wp--preset--color--contrast)',
-			'button-text'         => 'var(--wp--preset--color--base)',
-			'button-bg-hover'     => 'var(--wp--preset--color--contrast-2)',
-			'button-text-hover'   => 'var(--wp--preset--color--base)',
-			'button-radius'       => [ '.33rem', '.33rem', '.33rem', '.33rem' ],
-			'button-border-width' => [ '0', '0', '0', '0' ],
-			'button-border-color' => 'var(--wp--preset--color--contrast)',
-			'button-padding'      => [ '0.6rem', '1rem', '0.6rem', '1rem' ],
+			'button-bg'                 => 'var(--wp--preset--color--contrast)',
+			'button-text'               => 'var(--wp--preset--color--base)',
+			'button-bg-hover'           => 'var(--wp--preset--color--contrast-2)',
+			'button-text-hover'         => 'var(--wp--preset--color--base)',
+			'button-radius'             => [ '.33rem', '.33rem', '.33rem', '.33rem' ],
+			'button-border-width'       => [ '0', '0', '0', '0' ],
+			'button-border-color'       => 'var(--wp--preset--color--contrast)',
+			'button-border-hover-color' => 'var(--wp--preset--color--contrast-2)',
+			'button-padding'            => [ '0.6rem', '1rem', '0.6rem', '1rem' ],
 		];
 
 		// The theme's own data has no border width (twentytwentyfour/theme.json); the merged data carries
@@ -118,15 +120,16 @@ final class Block_Theme_Button_StylesTest extends TestCase {
 					'class'  => '',
 					'values' => [],
 					'tokens' => [
-						'button-bg'           => 'transparent',
-						'button-text'         => 'currentColor',
-						'button-bg-hover'     => 'transparent',
-						'button-text-hover'   => 'currentColor',
-						'button-radius'       => [ '.33rem', '.33rem', '.33rem', '.33rem' ],
-						'button-border-width' => [ '1px', '1px', '1px', '1px' ],
-						'button-border-style' => 'solid',
-						'button-border-color' => 'currentColor',
-						'button-padding'      => [ 'calc(0.6rem - 1px)', 'calc(1rem - 1px)', 'calc(0.6rem - 1px)', 'calc(1rem - 1px)' ],
+						'button-bg'                 => 'transparent',
+						'button-text'               => 'currentColor',
+						'button-bg-hover'           => 'var(--wp--preset--color--contrast-2)',
+						'button-text-hover'         => 'var(--wp--preset--color--base)',
+						'button-radius'             => [ '.33rem', '.33rem', '.33rem', '.33rem' ],
+						'button-border-width'       => [ '1px', '1px', '1px', '1px' ],
+						'button-border-style'       => 'solid',
+						'button-border-color'       => 'currentColor',
+						'button-border-hover-color' => 'var(--wp--preset--color--contrast-2)',
+						'button-padding'            => [ 'calc(0.6rem - 1px)', 'calc(1rem - 1px)', 'calc(0.6rem - 1px)', 'calc(1rem - 1px)' ],
 					],
 				],
 			],
@@ -227,7 +230,7 @@ final class Block_Theme_Button_StylesTest extends TestCase {
 
 	/**
 	 * A twentytwentyfive-shaped outline variation keeps its border and padding, inherits the text color and
-	 * the padding-less base values, and drops its custom css.
+	 * every hover value from the base, and drops its custom css.
 	 *
 	 * @return void
 	 */
@@ -236,6 +239,10 @@ final class Block_Theme_Button_StylesTest extends TestCase {
 			'color'   => [
 				'background' => 'var(--wp--preset--color--contrast)',
 				'text'       => 'var(--wp--preset--color--base)',
+			],
+			':hover'  => [
+				'color'  => [ 'background' => 'color-mix(in srgb, var(--wp--preset--color--contrast) 85%, transparent)' ],
+				'border' => [ 'color' => 'transparent' ],
 			],
 			'spacing' => [
 				'padding' => [
@@ -271,8 +278,10 @@ final class Block_Theme_Button_StylesTest extends TestCase {
 		$this->assertSame( [ '1px', '1px', '1px', '1px' ], $tokens['button-border-width'] );
 		$this->assertSame( 'currentColor', $tokens['button-border-color'] );
 		$this->assertSame( 'transparent', $tokens['button-bg'] );
-		$this->assertSame( 'transparent', $tokens['button-bg-hover'] );
+		$this->assertSame( 'color-mix(in srgb, var(--wp--preset--color--contrast) 85%, transparent)', $tokens['button-bg-hover'] );
+		$this->assertSame( 'transparent', $tokens['button-border-hover-color'] );
 		$this->assertSame( 'var(--wp--preset--color--base)', $tokens['button-text'] );
+		$this->assertArrayNotHasKey( 'button-text-hover', $tokens );
 		$this->assertSame( [ 'calc(1rem - 1px)', 'calc(2.25rem - 1px)', 'calc(1rem - 1px)', 'calc(2.25rem - 1px)' ], $tokens['button-padding'] );
 		$this->assertArrayNotHasKey( 'button-radius', $tokens );
 		$this->assertArrayNotHasKey( 'button-border-style', $tokens );

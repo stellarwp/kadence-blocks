@@ -46,6 +46,7 @@ final class Block_Theme_Button_Styles implements Button_Style_Source {
 		'button-border-width',
 		'button-border-style',
 		'button-border-color',
+		'button-border-hover-color',
 		'button-padding',
 	];
 
@@ -151,10 +152,10 @@ final class Block_Theme_Button_Styles implements Button_Style_Source {
 	}
 
 	/**
-	 * A variation's tokens: the same reading as the element, plus the two things a variation means that
-	 * theme.json leaves implicit. A variation with no background of its own (an outline: core writes it as a
-	 * "transparent none" gradient) clears the background in both states, and a text color with no hover
-	 * twin keeps that color on hover instead of falling back to the base's hover text.
+	 * A variation's tokens: the same reading as the element, plus the one thing a variation means that
+	 * theme.json leaves implicit: a variation with no background of its own (an outline, which core writes
+	 * as a "transparent none" gradient) clears the resting background. Every property it leaves unset, the
+	 * hover state included, stays the theme base's, which is what the theme's own CSS does for its variation.
 	 *
 	 * @since TBD
 	 *
@@ -166,12 +167,7 @@ final class Block_Theme_Button_Styles implements Button_Style_Source {
 		$values = $this->values( $variation );
 
 		if ( ! isset( $values['button-bg'] ) ) {
-			$values['button-bg']       = 'transparent';
-			$values['button-bg-hover'] = 'transparent';
-		}
-
-		if ( isset( $values['button-text'] ) && ! isset( $values['button-text-hover'] ) ) {
-			$values['button-text-hover'] = $values['button-text'];
+			$values['button-bg'] = 'transparent';
 		}
 
 		return $values;
@@ -191,17 +187,18 @@ final class Block_Theme_Button_Styles implements Button_Style_Source {
 	private function values( array $node ): array {
 		$values = [];
 		$color  = $this->sub( $node, 'color' );
-		$hover  = $this->sub( $this->sub( $node, ':hover' ), 'color' );
+		$hover  = $this->sub( $node, ':hover' );
 		$border = $this->sub( $node, 'border' );
 
 		foreach (
 			[
-				'button-bg'           => $color['background'] ?? null,
-				'button-text'         => $color['text'] ?? null,
-				'button-bg-hover'     => $hover['background'] ?? null,
-				'button-text-hover'   => $hover['text'] ?? null,
-				'button-border-style' => $border['style'] ?? null,
-				'button-border-color' => $border['color'] ?? null,
+				'button-bg'                 => $color['background'] ?? null,
+				'button-text'               => $color['text'] ?? null,
+				'button-bg-hover'           => $this->sub( $hover, 'color' )['background'] ?? null,
+				'button-text-hover'         => $this->sub( $hover, 'color' )['text'] ?? null,
+				'button-border-style'       => $border['style'] ?? null,
+				'button-border-color'       => $border['color'] ?? null,
+				'button-border-hover-color' => $this->sub( $hover, 'border' )['color'] ?? null,
 			] as $property => $value
 		) {
 			$css = $this->css( $value );
