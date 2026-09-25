@@ -10,6 +10,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Preset\Style;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Preset_Bindings;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Presets;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Alias_Cycle_Exception;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Dangling_Alias_Exception;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
@@ -285,6 +286,15 @@ final class Presets_Controller extends Controller {
 	private Preset_Order_Index $order_index;
 
 	/**
+	 * Reads a class-painted preset's theme values, so a save of one stores only the values that differ.
+	 *
+	 * @since TBD
+	 *
+	 * @var Preset_Resolver
+	 */
+	private Preset_Resolver $preset_resolver;
+
+	/**
 	 * Memoised item schema for this request. Null until first built.
 	 *
 	 * @since TBD
@@ -304,7 +314,8 @@ final class Presets_Controller extends Controller {
 	 * @param Token_Registry             $registry    Declares which blocks accept presets.
 	 * @param Active_Token_Library_Store $active      Resolves the active library when a request names none.
 	 * @param Preset_Value_Normalizer    $normalizer  Rewrites captured literals into semantic aliases.
-	 * @param Preset_Order_Index         $order_index Reads and writes the presetOrder display-order map.
+	 * @param Preset_Order_Index         $order_index     Reads and writes the presetOrder display-order map.
+	 * @param Preset_Resolver            $preset_resolver Reads a class-painted preset's theme values.
 	 */
 	public function __construct(
 		Token_Store $store,
@@ -315,18 +326,20 @@ final class Presets_Controller extends Controller {
 		Token_Registry $registry,
 		Active_Token_Library_Store $active,
 		Preset_Value_Normalizer $normalizer,
-		Preset_Order_Index $order_index
+		Preset_Order_Index $order_index,
+		Preset_Resolver $preset_resolver
 	) {
-		$this->store       = $store;
-		$this->mutator     = $mutator;
-		$this->resolver    = $resolver;
-		$this->validator   = $validator;
-		$this->presets     = $presets;
-		$this->registry    = $registry;
-		$this->active      = $active;
-		$this->normalizer  = $normalizer;
-		$this->order_index = $order_index;
-		$this->rest_base   = 'presets';
+		$this->store           = $store;
+		$this->mutator         = $mutator;
+		$this->resolver        = $resolver;
+		$this->validator       = $validator;
+		$this->presets         = $presets;
+		$this->registry        = $registry;
+		$this->active          = $active;
+		$this->normalizer      = $normalizer;
+		$this->order_index     = $order_index;
+		$this->preset_resolver = $preset_resolver;
+		$this->rest_base       = 'presets';
 	}
 
 	/**
@@ -564,6 +577,7 @@ final class Presets_Controller extends Controller {
 		}
 
 		$block_node = $this->normalize_block_node( $block_node, $block, $slug );
+		$block_node = $this->without_theme_values( $block_node, $block, $preset, $slug );
 		$stored     = $this->stored_document( $slug );
 
 		// The token map replaces wholesale rather than merging property by property: the client
@@ -1884,6 +1898,46 @@ final class Presets_Controller extends Controller {
 		$definition[ Extensions::get_tokens_key() ] = is_array( $tokens ) ? $tokens : [];
 
 		return $definition;
+	}
+
+	/**
+	 * Drop, from a class-painted preset's submitted token map, every value equal to what the theme already
+	 * renders for it. The client sends the whole map it displayed, theme values included, so without this
+	 * step a save would turn every displayed theme value into a stored override. The theme values are
+	 * normalized through the same pass the submitted map went through, so a literal the user typed that
+	 * equals the theme's value compares equal to it in either form.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $block_node The block's normalized preset node being written.
+	 * @param string               $block      The block name.
+	 * @param string               $preset     The preset slug.
+	 * @param string               $slug       The token library slug.
+	 *
+	 * @return array<string, mixed> The node, its token map reduced to the real overrides.
+	 */
+	private function without_theme_values( array $block_node, string $block, string $preset, string $slug ): array {
+		$raw_theme_values = $this->preset_resolver->theme_values( $block, $preset, $slug );
+		$tokens_key       = Extensions::get_tokens_key();
+		$node             = $block_node[ $preset ] ?? null;
+
+		if ( $raw_theme_values === [] || ! is_array( $node ) || ! isset( $node[ $tokens_key ] ) || ! is_array( $node[ $tokens_key ] ) ) {
+			return $block_node;
+		}
+
+		$theme_values = $this->normalizer->normalize( $raw_theme_values, $slug, $this->registry->for_block( $block ) );
+
+		$node[ $tokens_key ] = array_filter(
+			$node[ $tokens_key ],
+			static function ( $value, $property ) use ( $theme_values ): bool {
+				return ! array_key_exists( $property, $theme_values ) || $theme_values[ $property ] !== $value;
+			},
+			ARRAY_FILTER_USE_BOTH
+		);
+
+		$block_node[ $preset ] = $node;
+
+		return $block_node;
 	}
 
 	/**
