@@ -353,7 +353,7 @@ export function BorderField({ field, values, originalValues, onValueChange }) {
 					onClear={() => onColorChange('')}
 					resolveLiteral={resolveLiteral}
 					// This page has no `--kb-token--*` custom properties, and the Default preset binds the
-					// border color to `semantic.color.border`, which the palette groups do not list.
+					// border color to `semantic.color.button-border`, which the palette groups do not list.
 					resolveAlias={resolvedTokenValue}
 					disabled={field.readOnly}
 				/>

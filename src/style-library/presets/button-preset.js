@@ -221,14 +221,14 @@ function schemaFor(tab) {
 				path: 'tokens.button-border',
 				label: __('Border', 'kadence-blocks'),
 				// `BorderControl`'s `defaultValue` covers its width axis only (style has no fallback prop)
-				// — `semantic.border-width.default`'s shipped resolution, the value
+				// — `semantic.border-width.button`'s shipped resolution, the value
 				// `var(--kb-btn-border-width)` computes to today. Shown muted when the field is unset,
 				// the same way Radius/Padding/Margin's `defaultValue` above are.
-				defaultValue: '1px',
+				defaultValue: '0px',
 				// The color the Default preset binds for the border. When the row stores nothing the swatch
 				// shows this color and the row names it "Default" — the same fallback the Text/Background
 				// rows show above.
-				defaultColor: 'semantic.color.border',
+				defaultColor: 'semantic.color.button-border',
 			},
 			{
 				type: 'box-shadow',
