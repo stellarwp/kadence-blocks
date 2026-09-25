@@ -79,7 +79,7 @@ import {
 import { addFilter, applyFilters, doAction } from '@wordpress/hooks';
 import BackendStyles from './components/backend-styles';
 import { PresetButton } from '../../extension/preset-picker/PresetButton';
-import { blockPresetThemeClass } from '../../extension/preset-picker';
+import { activePresetFor, blockPresetThemeClass } from '../../extension/preset-picker';
 import {
 	usePresetBinding,
 	resetAttr,
@@ -890,7 +890,15 @@ export default function KadenceButtonEdit(props) {
 	const hasIcon = undefined !== previewOnlyText && previewOnlyText ? false : icon;
 	const inheritClassSuffix = inheritStyles && 'inherit-secondary' === inheritStyles ? 'inherit' : inheritStyles;
 	// A class-painted preset's classes paint the button; the mode classes would fight them for the same properties.
-	const presetThemeClass = blockPresetThemeClass('kadence/singlebtn', attributes.kbPreset);
+	// The bare `button` class stays off the canvas: the editor never carried it, and a theme's editor
+	// stylesheet may key on it.
+	const presetThemeClass = blockPresetThemeClass(
+		'kadence/singlebtn',
+		activePresetFor('kadence/singlebtn', attributes)
+	)
+		.split(/\s+/)
+		.filter((themeClass) => themeClass && themeClass !== 'button')
+		.join(' ');
 	const btnClassName = classnames({
 		'kt-button': true,
 		[`kt-button-${uniqueID}`]: true,

@@ -11,6 +11,7 @@ import {
 	activePresetFor,
 	blockDefaultOverridden,
 	blockDefaultPreset,
+	blockPresets,
 	blockPresetThemeClass,
 	blockPresetValues,
 } from '../../../../extension/preset-picker';
@@ -76,9 +77,10 @@ export function presetBorderProperties(attributes) {
 }
 
 /**
- * Whether the button's shape (padding, margin, border, shadow) is the plugin's own. A button in one
- * of the theme-painted modes, or in the outline mode, takes those from the theme's rules or from the
- * outline stylesheet, and the preset bridges must not outrank them. Mirrors the PHP renderer's gate.
+ * Whether the button's shape (padding, margin, border, shadow) is the plugin's own. A button on a
+ * class-painted preset takes those from the theme's rules or from the outline stylesheet, and the preset
+ * bridges must not outrank them. With no preset catalog (the token registry is off) the retired style
+ * attribute decides, as it did before presets existed. Mirrors the PHP renderer's gate.
  *
  * @param {Object} attributes The block attributes.
  *
@@ -87,6 +89,10 @@ export function presetBorderProperties(attributes) {
  * @return {boolean} Whether the preset bridges apply to this button.
  */
 export function paintsOwnShape(attributes) {
+	if (blockPresets('kadence/singlebtn').length) {
+		return !blockPresetThemeClass('kadence/singlebtn', activePresetFor('kadence/singlebtn', attributes));
+	}
+
 	const mode = attributes?.inheritStyles ?? '';
 
 	return mode === '' || mode === 'fill';
@@ -167,7 +173,7 @@ export default function BackendStyles(props) {
 	 * block's own value, the way the front end already resolves it. Every other button keeps the weight
 	 * it always had, so a theme editor rule that outranked the block's before still does.
 	 */
-	const weight = blockPresetThemeClass('kadence/singlebtn', attributes.kbPreset)
+	const weight = blockPresetThemeClass('kadence/singlebtn', activePresetFor('kadence/singlebtn', attributes))
 		? '.kt-button.kt-button.kt-button'
 		: '';
 

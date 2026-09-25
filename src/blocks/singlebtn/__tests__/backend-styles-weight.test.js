@@ -32,10 +32,11 @@ jest.mock('@kadence/helpers', () => ({
 }));
 
 jest.mock('../../../extension/preset-picker', () => ({
-	activePresetFor: jest.fn(() => 'default'),
+	activePresetFor: jest.fn((name, attributes) => attributes?.kbPreset || 'default'),
 	blockDefaultOverridden: jest.fn(() => ({})),
 	blockDefaultPreset: jest.fn(() => 'default'),
 	blockPresetValues: jest.fn(() => ({ default: {} })),
+	blockPresets: jest.fn(() => []),
 	blockPresetThemeClass: jest.fn(() => ''),
 }));
 

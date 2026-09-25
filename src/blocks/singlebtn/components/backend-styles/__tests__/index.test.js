@@ -16,6 +16,8 @@ import {
 	activePresetFor,
 	blockDefaultOverridden,
 	blockDefaultPreset,
+	blockPresets,
+	blockPresetThemeClass,
 	blockPresetValues,
 } from '../../../../../extension/preset-picker';
 import { shadowAxisPx, shadowCss } from '../../../../../extension/design-tokens/shadow-css';
@@ -42,6 +44,7 @@ jest.mock('../../../../../extension/preset-picker', () => ({
 	activePresetFor: jest.fn(),
 	blockDefaultOverridden: jest.fn(() => ({})),
 	blockDefaultPreset: jest.fn(() => 'default'),
+	blockPresets: jest.fn(() => []),
 	blockPresetThemeClass: jest.fn(() => ''),
 	blockPresetValues: jest.fn(),
 }));
@@ -501,6 +504,31 @@ describe('BackendStyles class-painted mode gating', () => {
 		expect(paintsOwnShape({ inheritStyles: 'outline' })).toBe(false);
 		expect(paintsOwnShape({ inheritStyles: 'inherit' })).toBe(false);
 		expect(paintsOwnShape({ inheritStyles: 'inherit-secondary' })).toBe(false);
+	});
+
+	/**
+	 * With a preset catalog present, the active preset decides: a class-painted preset hands the shape to
+	 * the theme, a variable-painted one leaves it to the plugin, whatever the retired mode says.
+	 *
+	 * @return {void}
+	 */
+	it('lets the active preset decide the shape when the catalog offers presets', () => {
+		blockPresets.mockReturnValue([{ slug: 'default' }, { slug: 'theme-base', themeClass: 'button' }]);
+		activePresetFor.mockImplementation((name, attributes) =>
+			attributes.inheritStyles === 'inherit' ? 'theme-base' : 'default'
+		);
+		blockPresetThemeClass.mockImplementation((name, slug) => (slug === 'theme-base' ? 'button' : ''));
+
+		try {
+			expect(paintsOwnShape({ inheritStyles: 'inherit' })).toBe(false);
+			expect(paintsOwnShape({ inheritStyles: 'outline' })).toBe(true);
+			expect(paintsOwnShape({})).toBe(true);
+		} finally {
+			blockPresets.mockReturnValue([]);
+			activePresetFor.mockReset();
+			blockPresetThemeClass.mockReset();
+			blockPresetThemeClass.mockReturnValue('');
+		}
 	});
 
 	/**
