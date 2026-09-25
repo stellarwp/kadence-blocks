@@ -114,6 +114,20 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
+	 * The button's bindings feed this projector nothing: its class-preset override targets (`class_prop`)
+	 * are a separate key from the `css_prop` this layer reads, so no `.wp-block-kadence-singlebtn` rule
+	 * appears here on either surface.
+	 *
+	 * @return void
+	 */
+	public function testTheShippedDeclarationsEmitNoRuleForTheButton(): void {
+		$registry = $this->container->get( Token_Registry::class );
+
+		$this->assertStringNotContainsString( 'wp-block-kadence-singlebtn', $this->builder( $registry )->css() );
+		$this->assertStringNotContainsString( 'wp-block-kadence-singlebtn', $this->builder( $registry )->editor_css() );
+	}
+
+	/**
 	 * The image's projected border width falls back to zero. The block's own stylesheet already paints
 	 * `border: 0 solid currentColor` on the same `.wp-block-kadence-image img` selector, so the style is
 	 * already `solid` and a non-zero fallback here would paint a hairline on every image that never asked
