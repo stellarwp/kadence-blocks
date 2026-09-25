@@ -298,16 +298,17 @@ export function restingRadiusSlots(draft, feed, fallback, breakpoint = PRESET_BR
  * order.
  *
  * `userCreated` is read fail-closed: a payload with no `userCreated` key (an older server) marks
- * every row baseline, mirroring `helpers/token-capabilities.js`'s fail-closed default.
+ * every row baseline, mirroring `helpers/token-capabilities.js`'s fail-closed default. `readable` is
+ * read the same way: a preset the payload does not flag offers no theme values to show.
  *
- * @param {{presets?: Record<string, {label?: string, tokens?: Record<string, string>}>, userCreated?: string[]}} payload The preset GET payload.
+ * @param {{presets?: Record<string, {label?: string, tokens?: Record<string, string>, themeValues?: Record<string, *>, readable?: boolean}>, userCreated?: string[]}} payload The preset GET payload.
  * @param {Record<string, string>}                                                                                 values  The feed's resolved value map.
  * @param {Function}                                                                                               preview `(tokens, values, breakpoint) => object` — the block's own row preview.
  * @param {string}                                                                                                 [breakpoint] The breakpoint the preview resolves at; defaults to desktop.
  *
  * @since TBD
  *
- * @return {Array<{id: string, label: string, userCreated: boolean, tokens: Record<string, *>, preview: Object}>} The preset rows.
+ * @return {Array<{id: string, label: string, userCreated: boolean, isTheme: boolean, readable: boolean, themeValues: Record<string, *>, tokens: Record<string, *>, preview: Object}>} The preset rows.
  */
 export function presetRows(payload, values, preview, breakpoint = PRESET_BREAKPOINTS[0]) {
 	const presets = payload?.presets ?? {};
@@ -320,12 +321,71 @@ export function presetRows(payload, values, preview, breakpoint = PRESET_BREAKPO
 			id: slug,
 			label: preset?.label ?? slug,
 			userCreated: userCreated.includes(slug),
+			isTheme: isThemePresetSlug(slug),
+			readable: preset?.readable === true,
+			themeValues: preset?.themeValues ?? {},
 			// Carried on the row (not just consumed here) so `overlayPresetRows` can merge a live
 			// draft over the preset's effective values instead of previewing the draft in isolation.
 			tokens,
 			preview: preview(tokens, values, breakpoint),
 		};
 	});
+}
+
+/**
+ * Whether a preset slug names one discovered from the active theme — the server's reserved prefix
+ * (`Projection\Preset\Style::get_theme_prefix()`).
+ *
+ * @param {string} slug The preset slug.
+ *
+ * @since TBD
+ *
+ * @return {boolean} True for a theme preset.
+ */
+export function isThemePresetSlug(slug) {
+	return typeof slug === 'string' && slug.startsWith('theme-');
+}
+
+/**
+ * Shape one of a preset's theme values as a field's muted default: every alias inside it resolved to
+ * the literal the library renders, whatever shape holds it — a scalar, a per-corner list, or a
+ * composite shadow. A responsive envelope becomes a function of the breakpoint, the form the box
+ * fields already accept for a default that varies by step, resolved the way the page resolves it.
+ *
+ * Literals, not bare ids: a dimension field's default is shown as-is beside its picker, and a theme
+ * value is the theme's own literal far more often than a token. The color rows are the exception and
+ * read `aliasToId` themselves, since their control names a token default on its own.
+ *
+ * @param {*}                      value  The theme value.
+ * @param {Record<string, string>} values The feed's resolved value map.
+ *
+ * @since TBD
+ *
+ * @return {*} The default, or `undefined` when the theme sets nothing for the property.
+ */
+export function themeFieldDefault(value, values) {
+	if (value === undefined || value === null || value === '') {
+		return undefined;
+	}
+
+	if (isPresetEnvelope(value)) {
+		return (breakpoint) => themeFieldDefault(resolvePresetBreakpoint(value, breakpoint), values);
+	}
+
+	if (Array.isArray(value)) {
+		return value.map((slot) => themeFieldDefault(slot, values) ?? '');
+	}
+
+	if (isCompositeShadow(value)) {
+		return Object.fromEntries(
+			Object.entries(value).map(([field, sub]) => [
+				field,
+				field === 'inset' ? sub : (themeFieldDefault(sub, values) ?? ''),
+			])
+		);
+	}
+
+	return resolveTokenValue(values, value);
 }
 
 /**

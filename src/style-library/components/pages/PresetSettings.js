@@ -34,6 +34,7 @@ import { useLoadingAnnouncement } from '../../hooks/use-loading-announcement';
 import { presetNameSchema } from '../../helpers/presets';
 import { Skeleton } from '../atoms/Skeleton';
 import { notifySuccess } from '../../helpers/notify';
+import './PresetSettings.scss';
 
 /**
  * The panel proper: mounted only once its preset's `initialValues` are known, so `useSettingsPanel`
@@ -46,6 +47,10 @@ import { notifySuccess } from '../../helpers/notify';
  * @param {Object}   props.screen        The preset-screen binding.
  * @param {Object}   props.initialValues The seeded draft (`{label, tokens}`) for the open preset.
  * @param {string}   props.presetLabel   The open preset's persisted label, for the channel publication.
+ * @param {?Object}  props.row           The open preset's row (`{ isTheme, readable, themeValues, … }`),
+ *                                       or null when the screen lists none for it.
+ * @param {Function} props.renderPreview The block's row preview renderer, for the read-only panel a
+ *                                       theme preset with nothing to edit shows in place of fields.
  * @param {?Array}   [props.tabs]        `[{ name, title }]` state tabs, or null/empty for a block
  *                                       whose presets have no states — `schemaFor` is then called
  *                                       with null and should ignore its argument.
@@ -56,14 +61,29 @@ import { notifySuccess } from '../../helpers/notify';
  *                                       actually ships — and the feed is what keeps a list that comes
  *                                       from the library current, a font favorite added on another
  *                                       screen refreshing the feed rather than the page-load global. A
- *                                       config that needs neither ignores both arguments.
+ *                                       config that needs neither ignores both arguments. The row is
+ *                                       the fourth argument, for a config whose fields depend on where
+ *                                       the preset comes from.
  *
  * @since TBD
  *
  * @return {JSX.Element} The panel.
  */
-function PresetSettingsBody({ navigate, route, screen, initialValues, presetLabel, tabs, schemaFor }) {
+function PresetSettingsBody({
+	navigate,
+	route,
+	screen,
+	initialValues,
+	presetLabel,
+	row,
+	renderPreview,
+	tabs,
+	schemaFor,
+}) {
 	const id = route.item;
+	// A theme preset whose values could not be read has nothing to edit: the theme's own stylesheet
+	// paints it and no field could show or change what it renders.
+	const isReadOnly = Boolean(row?.isTheme && !row?.readable);
 	const panel = useSettingsPanel({ route, navigate, initialValues });
 	// Optional chained rather than `tabs[0].name`: a block whose presets have no states passes no
 	// tabs at all, and `SettingsPanel` already renders the field area bare in that case.
@@ -196,6 +216,22 @@ function PresetSettingsBody({ navigate, route, screen, initialValues, presetLabe
 	// draft on a preset being destroyed or reverted is nonsense.
 	const handleClose = () => (channel ? channel.guard(panel.close) : panel.close());
 
+	if (isReadOnly) {
+		return (
+			<SettingsPanel title={__('Theme preset', 'kadence-blocks')} onClose={handleClose} readOnly>
+				<div className="kadence-blocks-style-library__theme-preset">
+					<div className="kadence-blocks-style-library__theme-preset-preview">{renderPreview(row)}</div>
+					<Notice status="info" isDismissible={false}>
+						{__(
+							"Styled by your theme. Kadence Blocks can't read or change these styles.",
+							'kadence-blocks'
+						)}
+					</Notice>
+				</div>
+			</SettingsPanel>
+		);
+	}
+
 	return (
 		<SettingsPanel
 			title={__('Edit preset', 'kadence-blocks')}
@@ -229,7 +265,7 @@ function PresetSettingsBody({ navigate, route, screen, initialValues, presetLabe
 				</Notice>
 			)}
 			<SettingsForm
-				schema={schemaFor(activeTab, panel.draft, screen.feed)}
+				schema={schemaFor(activeTab, panel.draft, screen.feed, row)}
 				values={panel.draft}
 				originalValues={initialValues}
 				onChange={panel.setFieldValue}
@@ -246,7 +282,7 @@ function PresetSettingsBody({ navigate, route, screen, initialValues, presetLabe
  * @param {Function} props.navigate  The route navigator.
  * @param {Object}   props.screen    The preset-screen binding, from the caller's own hook.
  * @param {Object}   props.preset    The block's preset config (`presets/<block>-preset.js`), read
- *                                   for its `tabs` and `schemaFor`.
+ *                                   for its `tabs`, `schemaFor` and `renderPreview`.
  *
  * @since TBD
  *
@@ -254,11 +290,12 @@ function PresetSettingsBody({ navigate, route, screen, initialValues, presetLabe
  *         loading, or null while a stale one self-heals for a tick.
  */
 export function PresetSettings({ route, navigate, screen, preset }) {
-	const { tabs, schemaFor } = preset;
+	const { tabs, schemaFor, renderPreview } = preset;
 	const id = route.item;
 	const initialValues = screen.initialValuesFor(id);
 	const hasInitialValues = Boolean(initialValues);
 	const presetLabel = screen.payload?.presets?.[id]?.label ?? id;
+	const row = screen.rows?.find((candidate) => candidate.id === id) ?? null;
 
 	// The skeleton below lives inside its own `role="status"` region, which only announces "Loading…"
 	// while it is actually mounted — the moment it is replaced by the real panel, that region is
@@ -300,6 +337,8 @@ export function PresetSettings({ route, navigate, screen, preset }) {
 			screen={screen}
 			initialValues={initialValues}
 			presetLabel={presetLabel}
+			row={row}
+			renderPreview={renderPreview}
 			tabs={tabs ?? null}
 			schemaFor={schemaFor}
 		/>

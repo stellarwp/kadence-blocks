@@ -200,6 +200,9 @@ describe('presetRows', () => {
 			id: 'primary',
 			label: 'Primary',
 			userCreated: false,
+			isTheme: false,
+			readable: false,
+			themeValues: {},
 			tokens: {
 				'button-bg': '{semantic.color.action-primary}',
 				'button-text': '{semantic.color.on-primary}',
