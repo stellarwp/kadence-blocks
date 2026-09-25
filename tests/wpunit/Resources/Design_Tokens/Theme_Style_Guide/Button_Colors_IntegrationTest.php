@@ -14,6 +14,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Document;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Palettes;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Version;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
+use KadenceWP\KadenceBlocks\Design_Tokens\Theme_Buttons\Theme_Button_Styles_Overlay;
 use KadenceWP\KadenceBlocks\Design_Tokens\Theme_Style_Guide\Style_Guide_Mapper;
 use KadenceWP\KadenceBlocks\Design_Tokens\Theme_Style_Guide\Style_Guide_Overlay;
 use Tests\Support\Classes\Fake_Style_Guide_Source;
@@ -235,7 +236,11 @@ final class Button_Colors_IntegrationTest extends TestCase {
 	 * @return Effective_Version
 	 */
 	private function version_for( Fake_Style_Guide_Source $source ): Effective_Version {
-		return new Effective_Version( $this->store, new Style_Guide_Overlay( $source, new Style_Guide_Mapper(), $this->registry ) );
+		return new Effective_Version(
+			$this->store,
+			new Style_Guide_Overlay( $source, new Style_Guide_Mapper(), $this->registry ),
+			$this->container->get( Theme_Button_Styles_Overlay::class )
+		);
 	}
 
 	/**
@@ -263,7 +268,7 @@ final class Button_Colors_IntegrationTest extends TestCase {
 			new Css_Renderer(),
 			new Effective_Palettes( $baseline, $this->store, $this->container->get( Mutator::class ) ),
 			$this->container->get( Mutator::class ),
-			new Effective_Version( $this->store, $overlay )
+			new Effective_Version( $this->store, $overlay, $this->container->get( Theme_Button_Styles_Overlay::class ) )
 		);
 	}
 }
