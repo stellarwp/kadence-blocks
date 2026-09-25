@@ -1,4 +1,5 @@
 <?php declare( strict_types=1 );
+// cspell:ignore twentytwentythree .
 
 namespace Tests\wpunit\Resources\Design_Tokens\Theme_Buttons;
 
@@ -109,8 +110,9 @@ final class Theme_Button_Styles_OverlayTest extends TestCase {
 	}
 
 	/**
-	 * The container wires the overlay over the real discovery. The suite runs a theme no adapter reads, so
-	 * the classic fallback's Theme Button is what it offers.
+	 * The container wires the overlay over the real discovery. The suite runs twentytwentythree, a block
+	 * theme whose theme.json styles the button element and defines no variation of its own, so the block
+	 * theme adapter's Theme Base is what it offers, with that theme's values.
 	 *
 	 * @return void
 	 */
@@ -120,7 +122,8 @@ final class Theme_Button_Styles_OverlayTest extends TestCase {
 
 		$this->assertSame( $overlay, $this->container->get( Theme_Button_Styles_Overlay::class ) );
 		$this->assertSame( [ 'theme-base' ], array_keys( $overlay->styles() ) );
-		$this->assertSame( 'Theme Button', $overlay->styles()['theme-base']['label'] );
+		$this->assertSame( 'Theme Base', $overlay->styles()['theme-base']['label'] );
+		$this->assertSame( 'var(--wp--preset--color--primary)', $overlay->styles()['theme-base']['values']['button-bg'] );
 	}
 
 	/**
