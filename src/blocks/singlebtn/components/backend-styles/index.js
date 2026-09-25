@@ -63,6 +63,23 @@ export function presetBorderProperties(attributes) {
 }
 
 /**
+ * Whether the button's shape (padding, margin, border, shadow) is the plugin's own. A button in one
+ * of the theme-painted modes, or in the outline mode, takes those from the theme's rules or from the
+ * outline stylesheet, and the preset bridges must not outrank them. Mirrors the PHP renderer's gate.
+ *
+ * @param {Object} attributes The block attributes.
+ *
+ * @since TBD
+ *
+ * @return {boolean} Whether the preset bridges apply to this button.
+ */
+export function paintsOwnShape(attributes) {
+	const mode = attributes?.inheritStyles ?? '';
+
+	return mode === '' || mode === 'fill';
+}
+
+/**
  * Whether the button's active preset resolves a box-shadow.
  *
  * Reads the same preset surface the inspector does, so the canvas and the panel cannot disagree
@@ -825,7 +842,8 @@ export default function BackendStyles(props) {
 	 * the button's size class supply it — so emitting unconditionally would flatten every button that has
 	 * no preset spacing. Written before the per-side output below, so an explicit attribute still wins.
 	 */
-	const presetSpacing = presetSpacingProperties(attributes);
+	const ownShape = paintsOwnShape(attributes);
+	const presetSpacing = ownShape ? presetSpacingProperties(attributes) : {};
 
 	if (presetSpacing.padding) {
 		css.add_property('padding', 'var(--kb-btn-padding)');
@@ -865,7 +883,7 @@ export default function BackendStyles(props) {
 	 * width/style/color at the preset variables, but only for a property the active preset actually
 	 * resolves. Written before the per-side output below, so an explicit attribute still wins.
 	 */
-	const presetBorder = presetBorderProperties(attributes);
+	const presetBorder = ownShape ? presetBorderProperties(attributes) : {};
 
 	if (presetBorder.width) {
 		css.add_property('border-width', 'var(--kb-btn-border-width)');
@@ -914,7 +932,7 @@ export default function BackendStyles(props) {
 	 * contract: when the block's own shadow is invisible the `box-shadow: none` reset below is
 	 * skipped, or the trailing `none` would silence this `var(--kb-btn-shadow)`.
 	 */
-	const hasPresetShadow = presetShadowProperties(attributes);
+	const hasPresetShadow = ownShape && presetShadowProperties(attributes);
 	if (hasPresetShadow) {
 		css.add_property('box-shadow', 'var(--kb-btn-shadow)');
 	}
@@ -924,7 +942,7 @@ export default function BackendStyles(props) {
 	// the PHP renderer's `box-shadow` sites so a lowered flag falls through the same as an invisible shadow.
 	const hasExplicitShadow = displayShadow && hasVisibleShadow(shadow?.[0]);
 
-	if (hasExplicitShadow || !hasPresetShadow) {
+	if (hasExplicitShadow || (ownShape && !hasPresetShadow)) {
 		css.add_property('box-shadow', hasExplicitShadow ? shadowCss(shadow[0], 14) : 'none');
 	}
 
