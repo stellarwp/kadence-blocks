@@ -79,6 +79,7 @@ import {
 import { addFilter, applyFilters, doAction } from '@wordpress/hooks';
 import BackendStyles from './components/backend-styles';
 import { PresetButton } from '../../extension/preset-picker/PresetButton';
+import { blockPresetThemeClass } from '../../extension/preset-picker';
 import {
 	usePresetBinding,
 	resetAttr,
@@ -888,13 +889,18 @@ export default function KadenceButtonEdit(props) {
 	const nonTransAttrs = ['hideLink', 'link', 'target', 'download', 'text', 'sponsor'];
 	const hasIcon = undefined !== previewOnlyText && previewOnlyText ? false : icon;
 	const inheritClassSuffix = inheritStyles && 'inherit-secondary' === inheritStyles ? 'inherit' : inheritStyles;
+	// A class-painted preset's classes paint the button; the mode classes would fight them for the same properties.
+	const presetThemeClass = blockPresetThemeClass('kadence/singlebtn', attributes.kbPreset);
 	const btnClassName = classnames({
 		'kt-button': true,
 		[`kt-button-${uniqueID}`]: true,
-		[`kb-btn-global-${inheritClassSuffix}`]: inheritClassSuffix,
+		[presetThemeClass]: presetThemeClass,
+		[`kb-btn-global-${inheritClassSuffix}`]: !presetThemeClass && inheritClassSuffix,
 		'wp-block-button__link':
-			inheritStyles && ('inherit' === inheritStyles || 'inherit-secondary' === inheritStyles),
-		'button-style-secondary': inheritStyles && 'inherit-secondary' === inheritStyles,
+			!presetThemeClass &&
+			inheritStyles &&
+			('inherit' === inheritStyles || 'inherit-secondary' === inheritStyles),
+		'button-style-secondary': !presetThemeClass && inheritStyles && 'inherit-secondary' === inheritStyles,
 		[`kb-btn-has-icon`]: hasIcon,
 		[`kt-btn-svg-show-${!iconHover ? 'always' : 'hover'}`]: icon,
 		[`kb-btn-only-icon`]: previewOnlyIcon,

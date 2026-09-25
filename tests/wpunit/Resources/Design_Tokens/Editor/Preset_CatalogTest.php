@@ -66,6 +66,7 @@ final class Preset_CatalogTest extends TestCase {
 					'slug'        => 'default',
 					'label'       => 'Default',
 					'userCreated' => false,
+					'themeClass'  => '',
 				],
 			],
 			$button['presets']

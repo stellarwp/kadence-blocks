@@ -9,6 +9,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Container;
 use Tests\Support\Classes\KadenceBlocksUnit;
 use Tests\helpers\CSSTestHelper;
+use WP_Block_Supports;
 
 /**
  * Covers `render_preset_border()`/`render_preset_shadow()` — the front end's bridge from a button's
@@ -988,6 +989,67 @@ class SinglebtnTest extends KadenceBlocksUnit {
 	}
 
 	/**
+	 * A selected class-painted preset puts its classes on the button in place of the mode classes, so the
+	 * element never carries both a mode class and the preset's class for the same properties.
+	 *
+	 * @return void
+	 */
+	public function testAClassPresetReplacesTheModeClasses(): void {
+		$this->seedClassPreset( 'theme-base', 'wp-block-button__link button kb-btn-global-inherit' );
+
+		$html = $this->render_html(
+			[
+				'kbPreset'      => 'theme-base',
+				'inheritStyles' => 'fill',
+			]
+		);
+
+		$this->assertStringContainsString( 'kb-btn-global-inherit', $html );
+		$this->assertStringContainsString( 'wp-block-button__link', $html );
+		$this->assertStringNotContainsString( 'kb-btn-global-fill', $html );
+	}
+
+	/**
+	 * A button on a class-painted preset takes its shape from the preset's stylesheet: none of the preset
+	 * spacing, border or shadow bridges is emitted for it.
+	 *
+	 * @return void
+	 */
+	public function testAClassPresetButtonEmitsNoPresetBridges(): void {
+		$this->seedClassPreset( 'theme-base', 'wp-block-button__link button kb-btn-global-inherit' );
+
+		$output = $this->render_button(
+			[
+				'kbPreset'      => 'theme-base',
+				'inheritStyles' => 'fill',
+			]
+		);
+
+		$this->assertStringNotContainsString( 'var(--kb-btn-padding)', $output );
+		$this->assertStringNotContainsString( 'var(--kb-btn-border-width)', $output );
+		$this->assertStringNotContainsString( 'var(--kb-btn-shadow', $output );
+	}
+
+	/**
+	 * A preset painted through variables leaves the mode classes in place.
+	 *
+	 * @return void
+	 */
+	public function testAValuePresetKeepsTheModeClasses(): void {
+		$this->seedSecondaryPreset();
+
+		$html = $this->render_html(
+			[
+				'kbPreset'      => 'secondary',
+				'inheritStyles' => 'fill',
+			]
+		);
+
+		$this->assertStringContainsString( 'kb-btn-global-fill', $html );
+		$this->assertStringContainsString( 'kb-preset--secondary', $html );
+	}
+
+	/**
 	 * Build the button's rendered CSS for a fixed unique id, filling in the attributes every render
 	 * needs (`uniqueID`) alongside the case-specific ones under test.
 	 *
@@ -1004,6 +1066,68 @@ class SinglebtnTest extends KadenceBlocksUnit {
 			$unique_id,
 			$unique_id
 		);
+	}
+
+	/**
+	 * Render the button's front-end markup through the block's render path, so the preset classes the
+	 * abstract block adds are part of the output.
+	 *
+	 * @param array<string, mixed> $attributes Attributes to merge over the minimal defaults.
+	 *
+	 * @return string The rendered HTML.
+	 */
+	private function render_html( array $attributes ): string {
+		$attributes = array_merge(
+			[
+				'uniqueID' => '123',
+				'text'     => 'Button',
+			],
+			$attributes
+		);
+
+		// get_block_wrapper_attributes() reads the block core is currently rendering; outside a real render
+		// nothing sets it, so the test stands in for the block parser here.
+		WP_Block_Supports::$block_to_render = [
+			'blockName' => 'kadence/singlebtn',
+			'attrs'     => $attributes,
+		];
+
+		try {
+			return (string) $this->block->render_css( $attributes, '', $this->generate_block_instance( 'kadence/singlebtn', $attributes ) );
+		} finally {
+			WP_Block_Supports::$block_to_render = null;
+		}
+	}
+
+	/**
+	 * Persist a class-painted button preset into the default token library's overrides document.
+	 *
+	 * @param string $preset      The preset slug.
+	 * @param string $theme_class The classes the preset puts on the button.
+	 *
+	 * @return void
+	 */
+	private function seedClassPreset( string $preset, string $theme_class ): void {
+		/** @var Token_Store $store */
+		$store = $this->container->get( Token_Store::class );
+
+		$document = [
+			'$extensions' => [
+				'com.kadence.designTokens' => [
+					'presets' => [
+						'kadence/singlebtn' => [
+							$preset => [
+								'label'      => 'Theme Base',
+								'themeClass' => $theme_class,
+								'tokens'     => [],
+							],
+						],
+					],
+				],
+			],
+		];
+
+		$store->save_document( (string) wp_json_encode( $document ), Token_Store::default_slug() );
 	}
 
 	/**
