@@ -899,10 +899,9 @@ export default function KadenceButtonEdit(props) {
 		.split(/\s+/)
 		.filter((themeClass) => themeClass && themeClass !== 'button')
 		.join(' ');
-	const btnClassName = classnames({
+	const btnClassName = classnames(presetThemeClass, {
 		'kt-button': true,
 		[`kt-button-${uniqueID}`]: true,
-		[presetThemeClass]: presetThemeClass,
 		[`kb-btn-global-${inheritClassSuffix}`]: !presetThemeClass && inheritClassSuffix,
 		'wp-block-button__link':
 			!presetThemeClass &&
