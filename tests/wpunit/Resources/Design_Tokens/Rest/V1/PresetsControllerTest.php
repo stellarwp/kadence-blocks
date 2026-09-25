@@ -124,6 +124,59 @@ final class PresetsControllerTest extends TestCase {
 	}
 
 	/**
+	 * The item schema documents the `dormant` map the GET item response carries.
+	 *
+	 * @return void
+	 */
+	public function testItemSchemaDocumentsTheDormantMap(): void {
+		$schema = $this->controller->get_item_schema();
+
+		$this->assertArrayHasKey( 'dormant', $schema['properties'] );
+		$this->assertSame( 'object', $schema['properties']['dormant']['type'] );
+		$this->assertTrue( $schema['properties']['dormant']['readonly'] );
+		$this->assertArrayHasKey( 'themeSnapshot', $schema['properties']['dormant']['additionalProperties']['properties'] );
+	}
+
+	/**
+	 * A stored theme preset the active theme does not offer is reported under `dormant` with its label,
+	 * overrides and theme snapshot, and nowhere else in the payload.
+	 *
+	 * @return void
+	 */
+	public function testGetItemReportsAStoredThemePresetTheThemeDoesNotOfferAsDormant(): void {
+		$this->store->save_document(
+			'{"$extensions":{"com.kadence.designTokens":{"presets":{"kadence/singlebtn":{'
+			. '"theme-secondary":{"label":"Theme Secondary","themeSnapshot":{"button-bg":"#0000ff"},"tokens":{"button-bg":"#ff0000"}}}}}}}'
+		);
+
+		$data = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, self::BUTTON ) )->get_data();
+
+		$this->assertSame(
+			[
+				'theme-secondary' => [
+					'label'         => 'Theme Secondary',
+					'tokens'        => [ 'button-bg' => '#ff0000' ],
+					'themeSnapshot' => [ 'button-bg' => '#0000ff' ],
+				],
+			],
+			$data['dormant']
+		);
+		$this->assertArrayNotHasKey( 'theme-secondary', $data['presets'] );
+		$this->assertNotContains( 'theme-secondary', $data['userCreated'] );
+	}
+
+	/**
+	 * With nothing dormant the payload carries an empty map, so a client can read it unconditionally.
+	 *
+	 * @return void
+	 */
+	public function testGetItemReportsAnEmptyDormantMapWhenNothingIsDormant(): void {
+		$data = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, self::BUTTON ) )->get_data();
+
+		$this->assertSame( [], $data['dormant'] );
+	}
+
+	/**
 	 * The item schema documents the `userCreated` property added to the GET item response.
 	 *
 	 * @return void

@@ -999,6 +999,31 @@ final class Presets_Controller extends Controller {
 					'context'              => [ 'view' ],
 					'additionalProperties' => $preset_schema,
 				],
+				'dormant'     => [
+					'description'          => __( 'The stored theme presets the active theme does not offer, keyed by slug: not listed, not projected, kept until a theme that offers them is active again.', 'kadence-blocks' ),
+					'type'                 => 'object',
+					'context'              => [ 'view' ],
+					'readonly'             => true,
+					'additionalProperties' => [
+						'type'       => 'object',
+						'properties' => [
+							Extensions::get_label_key()  => [
+								'description' => __( 'The label the preset was stored with.', 'kadence-blocks' ),
+								'type'        => 'string',
+							],
+							Extensions::get_tokens_key() => [
+								'description'          => __( 'The overrides the preset keeps.', 'kadence-blocks' ),
+								'type'                 => 'object',
+								'additionalProperties' => [ 'type' => [ 'string', 'number', 'array', 'object' ] ],
+							],
+							Extensions::get_theme_snapshot_key() => [
+								'description'          => __( 'The theme values the preset had when its overrides were last saved.', 'kadence-blocks' ),
+								'type'                 => 'object',
+								'additionalProperties' => [ 'type' => [ 'string', 'number', 'array', 'object' ] ],
+							],
+						],
+					],
+				],
 			],
 		];
 
@@ -1808,7 +1833,8 @@ final class Presets_Controller extends Controller {
 	 *                              the library defines beyond the baseline).
 	 */
 	private function prepare_item( string $block, string $slug ): array {
-		$node    = $this->set_node( $this->presets->section( $slug ), $block );
+		$dormant = $this->presets->dormant( $block, $slug );
+		$node    = array_diff_key( $this->set_node( $this->presets->section( $slug ), $block ), array_fill_keys( $dormant, true ) );
 		$ordered = $this->order_index->apply( $this->stored_document( $slug ), $block, $this->preset_names( $node ) );
 
 		return [
@@ -1818,7 +1844,44 @@ final class Presets_Controller extends Controller {
 			'default'     => $this->default_of( $node ),
 			'userCreated' => $this->presets->user_created( $block, $slug ),
 			'presets'     => $this->with_overridden( $this->ordered_presets( $this->named_presets( $node ), $ordered ), $block, $slug ),
+			'dormant'     => $this->dormant_presets( $block, $slug, $dormant ),
 		];
+	}
+
+	/**
+	 * The stored theme presets the active theme does not offer, keyed by slug: the label and theme snapshot
+	 * they were saved with and the overrides they keep, so a client can show what a theme switch would bring
+	 * back without listing them as presets a button could pick.
+	 *
+	 * @since TBD
+	 *
+	 * @param string   $block   The block name.
+	 * @param string   $slug    The token library slug.
+	 * @param string[] $dormant The dormant preset slugs.
+	 *
+	 * @return array<string, array<string, mixed>> Preset slug => { label, tokens, themeSnapshot }.
+	 */
+	private function dormant_presets( string $block, string $slug, array $dormant ): array {
+		$stored = $this->stored_document( $slug );
+
+		foreach ( $this->node_path( $block ) as $key ) {
+			$stored = is_array( $stored[ $key ] ?? null ) ? $stored[ $key ] : [];
+		}
+
+		$out = [];
+
+		foreach ( $dormant as $preset ) {
+			$entry    = is_array( $stored[ $preset ] ?? null ) ? $stored[ $preset ] : [];
+			$snapshot = $entry[ Extensions::get_theme_snapshot_key() ] ?? [];
+
+			$out[ $preset ] = [
+				Extensions::get_label_key()          => Cast::to_string( $entry[ Extensions::get_label_key() ] ?? '' ),
+				Extensions::get_tokens_key()         => $this->presets->stored_tokens( $block, $preset, $slug ),
+				Extensions::get_theme_snapshot_key() => is_array( $snapshot ) ? $snapshot : [],
+			];
+		}
+
+		return $out;
 	}
 
 	/**

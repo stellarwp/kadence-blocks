@@ -786,7 +786,8 @@ final class Preset_Resolver {
 
 	/**
 	 * The preset-bearing node for a block in a library: the `$default` plus named presets the rest of the
-	 * resolver reads — or throw when the block is undefined.
+	 * resolver reads, without the theme presets the active theme no longer offers — or throw when the block
+	 * is undefined.
 	 *
 	 * @since TBD
 	 *
@@ -804,7 +805,7 @@ final class Preset_Resolver {
 			throw Unknown_Preset_Exception::for_block( $block );
 		}
 
-		return $presets[ $block ];
+		return array_diff_key( $presets[ $block ], array_fill_keys( $this->presets->dormant( $block, $slug ), true ) );
 	}
 
 	/**
