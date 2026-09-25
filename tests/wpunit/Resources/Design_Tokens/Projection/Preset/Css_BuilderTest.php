@@ -508,9 +508,12 @@ final class Css_BuilderTest extends TestCase {
 		$css = $this->builder( $this->registry )->css( 'default' );
 
 		$this->assertStringContainsString( ':where(.wp-block-kadence-singlebtn.kb-preset--theme-base).kb-button.kb-button.kb-button{background:var(--kb-token--preset--kadence-singlebtn--theme-base--button-bg);border-radius:var(--kb-token--preset--kadence-singlebtn--theme-base--button-radius);}', $css );
-		$this->assertStringNotContainsString( '--kb-btn-radius:unset', $css );
-		$this->assertStringNotContainsString( '--global-palette-btn-bg:unset', $css );
-		$this->assertStringContainsString( '--kb-btn-padding:unset', $css );
+
+		$reset = $this->resetRule( $css, 'theme-base' );
+
+		$this->assertStringNotContainsString( '--kb-btn-radius:unset', $reset );
+		$this->assertStringNotContainsString( '--global-palette-btn-bg:unset', $reset );
+		$this->assertStringContainsString( '--kb-btn-padding:unset', $reset );
 	}
 
 	/**
@@ -532,7 +535,7 @@ final class Css_BuilderTest extends TestCase {
 		$css = $this->builder( $this->registry )->css( 'default' );
 
 		$this->assertStringContainsString( ':where(.wp-block-kadence-singlebtn.kb-preset--theme-base).kb-button.kb-button.kb-button{' . $declaration . ';}', $css );
-		$this->assertStringNotContainsString( $reset, $css );
+		$this->assertStringNotContainsString( $reset, $this->resetRule( $css, 'theme-base' ) );
 	}
 
 	/**
@@ -610,7 +613,7 @@ final class Css_BuilderTest extends TestCase {
 		$css = $this->builder( $this->registry )->css( 'default' );
 
 		$this->assertStringContainsString( ':where(.wp-block-kadence-singlebtn.kb-preset--theme-base).kb-button.kb-button.kb-button:hover,:where(.wp-block-kadence-singlebtn.kb-preset--theme-base).kb-button.kb-button.kb-button:focus{box-shadow:var(--kb-token--preset--kadence-singlebtn--theme-base--button-shadow-hover);}', $css );
-		$this->assertStringNotContainsString( '--kb-btn-shadow-hover:unset', $css );
+		$this->assertStringNotContainsString( '--kb-btn-shadow-hover:unset', $this->resetRule( $css, 'theme-base' ) );
 	}
 
 	/**
@@ -699,6 +702,59 @@ final class Css_BuilderTest extends TestCase {
 		$this->assertStringContainsString( '--kb-token--preset--kadence-singlebtn--theme-base--button-border-hover-color:#445566;', $css );
 		$this->assertStringNotContainsString( ':where(.wp-block-kadence-singlebtn).kb-preset--theme-base', $css );
 		$this->assertSame( 1, substr_count( $css, 'border-color:var(--kb-token--preset--kadence-singlebtn--theme-base--button-border-hover-color)' ) );
+	}
+
+	/**
+	 * The shipped outline preset emits nothing but resets: its stylesheet paints it from the theme's own
+	 * variables, exactly as the outline mode always rendered.
+	 *
+	 * @return void
+	 */
+	public function testTheShippedOutlinePresetOnlyResets(): void {
+		$css = $this->builder( $this->registry )->css( 'default' );
+
+		$this->assertStringContainsString( '.wp-block-kadence-singlebtn.kb-preset--outline{--global-palette-btn-bg:unset;--global-palette-btn:unset;--global-palette-btn-bg-hover:unset;--global-palette-btn-hover:unset;--kb-btn-radius:unset;', $css );
+		$this->assertStringNotContainsString( 'kb-preset--outline{--global-palette-btn-bg:var(', $css );
+		$this->assertStringNotContainsString( ':where(.wp-block-kadence-singlebtn.kb-preset--outline)', $css );
+		$this->assertStringNotContainsString( '--kb-token--preset--kadence-singlebtn--outline--', $css );
+		$this->assertStringNotContainsString( '.wp-block-button', $css );
+	}
+
+	/**
+	 * A stored override on the shipped outline preset becomes a direct declaration, and only that one.
+	 *
+	 * @return void
+	 */
+	public function testAStoredOutlineOverrideIsTheOnlyDirectDeclaration(): void {
+		$this->store->save_document(
+			'{"$extensions":{"com.kadence.designTokens":{"presets":{"kadence/singlebtn":{'
+			. '"outline":{"tokens":{"button-text":"#112233"}}}}}}}'
+		);
+
+		$css = $this->builder( $this->registry )->css( 'default' );
+
+		$this->assertStringContainsString( ':where(.wp-block-kadence-singlebtn.kb-preset--outline).kb-button.kb-button.kb-button{color:var(--kb-token--preset--kadence-singlebtn--outline--button-text);}', $css );
+
+		$reset = $this->resetRule( $css, 'outline' );
+
+		$this->assertStringNotContainsString( '--global-palette-btn:unset', $reset );
+		$this->assertStringContainsString( '--global-palette-btn-bg:unset', $reset );
+		$this->assertSame( 1, substr_count( $css, ':where(.wp-block-kadence-singlebtn.kb-preset--outline)' ) );
+	}
+
+	/**
+	 * The class-painted preset's own reset rule, so an assertion about its resets cannot match another
+	 * class preset's rule (the shipped outline resets the same variables).
+	 *
+	 * @param string $css    The built CSS.
+	 * @param string $preset The class preset slug.
+	 *
+	 * @return string The `.wp-block-kadence-singlebtn.kb-preset--<preset>{...}` rule, or '' when absent.
+	 */
+	private function resetRule( string $css, string $preset ): string {
+		preg_match( '/\.wp-block-kadence-singlebtn\.kb-preset--' . preg_quote( $preset, '/' ) . '\{[^}]*\}/', $css, $match );
+
+		return $match[0] ?? '';
 	}
 
 	/**

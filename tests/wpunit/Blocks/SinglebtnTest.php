@@ -1031,6 +1031,22 @@ class SinglebtnTest extends KadenceBlocksUnit {
 	}
 
 	/**
+	 * The shipped Outline preset renders the outline stylesheet's class next to its preset class, and no
+	 * preset spacing bridge, so it looks exactly like the outline mode.
+	 *
+	 * @return void
+	 */
+	public function testOutlinePresetRendersTheOutlineClass(): void {
+		$html = $this->render_html( [ 'kbPreset' => 'outline' ] );
+		$css  = $this->render_button( [ 'kbPreset' => 'outline' ] );
+
+		$this->assertStringContainsString( 'kb-btn-global-outline', $html );
+		$this->assertStringContainsString( 'kb-preset--outline', $html );
+		$this->assertStringNotContainsString( 'kb-btn-global-fill', $html );
+		$this->assertStringNotContainsString( 'var(--kb-btn-padding)', $css );
+	}
+
+	/**
 	 * A preset painted through variables leaves the mode classes in place.
 	 *
 	 * @return void
