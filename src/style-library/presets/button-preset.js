@@ -17,7 +17,7 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { BUTTON_MARGIN_FALLBACK, BUTTON_PADDING_FALLBACK } from '../../token-controls/helpers/button-box-defaults';
-import { BUTTON_BLOCK, getPresetProperties, resolveTokenValue } from '../helpers/presets';
+import { aliasToId, BUTTON_BLOCK, getPresetProperties, resolveTokenValue, themeFieldDefault } from '../helpers/presets';
 import { capBoxSides } from '../helpers/preview';
 
 export { BUTTON_BLOCK };
@@ -166,21 +166,42 @@ function renderPreview(row) {
  * schema decision. The preset name is not here; it is tab-independent and comes from
  * `presetNameSchema()`.
  *
- * @param {string} tab The active tab name (`'normal'` or `'hover'`).
+ * A preset whose values the theme renders (`row.readable`) shows those values as its muted defaults
+ * instead of the block's own: Theme Base's rows then read the Customizer's colors, radius and padding,
+ * and the shipped Outline's read the outline look it really has. A theme preset whose values could
+ * not be read offers no fields at all — the panel says so in place of them.
+ *
+ * @param {string}  tab     The active tab name (`'normal'` or `'hover'`).
+ * @param {?Object} [draft] The panel's current draft; unused here.
+ * @param {?Object} [feed]  The live design-tokens feed, whose `values` resolve a theme value's alias.
+ * @param {?Object} [row]   The open preset's row (`{ isTheme, readable, themeValues }`), or null.
  *
  * @since TBD
  *
  * @return {{panels: Array<Object>}} The settings-form schema for the active tab.
  */
-function schemaFor(tab) {
+function schemaFor(tab, draft = null, feed = null, row = null) {
+	if (row?.isTheme && !row?.readable) {
+		return { panels: [] };
+	}
+
+	const themeValues = row?.readable ? (row.themeValues ?? {}) : {};
+	const values = feed?.values ?? {};
+	const themeColor = (property) => (property in themeValues ? aliasToId(themeValues[property]) : undefined);
+	const themeDefault = (property) => themeFieldDefault(themeValues[property], values);
+
 	const isHover = tab === 'hover';
 	const textPath = isHover ? 'tokens.button-text-hover' : 'tokens.button-text';
 	const bgPath = isHover ? 'tokens.button-bg-hover' : 'tokens.button-bg';
 	// The semantic pair the Default preset binds (see the baseline's `presets["kadence/singlebtn"]`),
 	// so a row that stores nothing previews the color a fresh button really renders — the same
 	// posture Radius/Border/Padding/Margin take below with their literal defaults.
-	const textDefault = isHover ? 'semantic.color.button-text-hover' : 'semantic.color.button-text';
-	const bgDefault = isHover ? 'semantic.color.button-bg-hover' : 'semantic.color.button-bg';
+	const textDefault =
+		themeColor(isHover ? 'button-text-hover' : 'button-text') ??
+		(isHover ? 'semantic.color.button-text-hover' : 'semantic.color.button-text');
+	const bgDefault =
+		themeColor(isHover ? 'button-bg-hover' : 'button-bg') ??
+		(isHover ? 'semantic.color.button-bg-hover' : 'semantic.color.button-bg');
 
 	const colorPanel = {
 		id: 'color',
@@ -209,7 +230,7 @@ function schemaFor(tab) {
 				// The button's built-in corner radius — `advancedbtn`'s style.scss falls back to 3px, the
 				// same value `semantic.radius.control` holds. Shown muted when the preset sets nothing, so a
 				// reset field reports the radius the button really has rather than reading as empty.
-				defaultValue: ['3px', '3px', '3px', '3px'],
+				defaultValue: themeDefault('button-radius') ?? ['3px', '3px', '3px', '3px'],
 			},
 			{
 				type: 'border',
@@ -224,20 +245,19 @@ function schemaFor(tab) {
 				// — `semantic.border-width.button`'s shipped resolution, the value
 				// `var(--kb-btn-border-width)` computes to today. Shown muted when the field is unset,
 				// the same way Radius/Padding/Margin's `defaultValue` above are.
-				defaultValue: '0px',
+				defaultValue: themeDefault('button-border-width') ?? '0px',
 				// The color the Default preset binds for the border. When the row stores nothing the swatch
 				// shows this color and the row names it "Default" — the same fallback the Text/Background
 				// rows show above.
-				defaultColor: 'semantic.color.button-border',
+				defaultColor: themeColor('button-border-color') ?? 'semantic.color.button-border',
 			},
 			{
 				type: 'box-shadow',
 				path: 'tokens.button-shadow',
 				label: __('Shadow', 'kadence-blocks'),
-				// No `defaultValue`: a button renders no shadow of its own when the preset sets none, so
-				// there is no literal to name — the control's own bare muted "Default" already says that.
-				// (`BoxShadowControl` does now read a `defaultValue`, so one can be added here the day a
-				// button grows a built-in shadow.)
+				// A button renders no shadow of its own when the preset sets none, so only a theme's shadow
+				// has a value to name — the control's own bare muted "Default" already says the rest.
+				defaultValue: themeDefault('button-shadow'),
 			},
 		],
 	};
@@ -258,7 +278,7 @@ function schemaFor(tab) {
 				// What `advancedbtn`'s style.scss gives a standard fill button, so an unset field shows the
 				// padding the button actually renders. Only the base case is named: the size and outline
 				// variants compute their own, and the preset deliberately stores nothing until a user sets it.
-				defaultValue: BUTTON_PADDING_FALLBACK,
+				defaultValue: themeDefault('button-padding') ?? BUTTON_PADDING_FALLBACK,
 			},
 			{
 				type: 'spacing',
@@ -268,7 +288,7 @@ function schemaFor(tab) {
 				path: 'tokens.button-margin',
 				label: __('Margin', 'kadence-blocks'),
 				// The button carries no margin of its own, which is a real answer rather than an absent one.
-				defaultValue: BUTTON_MARGIN_FALLBACK,
+				defaultValue: themeDefault('button-margin') ?? BUTTON_MARGIN_FALLBACK,
 			},
 		],
 	};
