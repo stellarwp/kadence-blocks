@@ -85,6 +85,13 @@
 	pointer-events: none;
 }
 
+// Muted, so a theme preset reads as "where this comes from" rather than as the Default's own accent.
+// A theme preset is never the default, so the two badges never share a card.
+.kadence-blocks-style-library__preset-card-badge--theme {
+	border-color: var(--kb-sl-color-text-muted);
+	color: var(--kb-sl-color-text-muted);
+}
+
 .kadence-blocks-style-library__preset-card .kadence-blocks-style-library__drag-handle {
 	position: absolute;
 	top: var(--kb-sl-preset-card-inset-block);
