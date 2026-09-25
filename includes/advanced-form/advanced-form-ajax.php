@@ -373,7 +373,34 @@ class KB_Ajax_Advanced_Form {
 							$allowed_file_categories = empty( $field['allowedTypes'] ) ? [ 'images' ] : $field['allowedTypes'];
 							$allowed_file_mimes      = apply_filters( 'kadence_form_allowed_mime_types', $this->get_allowed_mimes( $allowed_file_categories ), $field );
 
+							// An empty map would make WordPress fall back to the site-wide list.
+							if ( ! $allowed_file_mimes || ! wp_check_filetype( $file['name'], $allowed_file_mimes )['ext'] ) {
+								$field_errors[] = [
+									'message' => __( 'Sorry, you are not allowed to upload this file type.', 'kadence-blocks' ),
+									'field'   => $expected_field,
+									'type'    => 'custom',
+								];
+								continue 2; // Skip to next field.
+							}
+							if ( ! $this->sanitize_svg_upload( $file['tmp_name'], $file['name'], absint( $max_upload_size_bytes ) ) ) {
+								$field_errors[] = [
+									'message' => __( 'File could not be uploaded', 'kadence-blocks' ),
+									'field'   => $expected_field,
+									'type'    => 'custom',
+								];
+								continue 2; // Skip to next field.
+							}
+
+							// Sanitizing can change the file size.
 							$file_size = filesize( $file['tmp_name'] );
+							if ( $file_size > $max_upload_size_bytes ) {
+								$field_errors[] = [
+									'message' => __( 'File too large', 'kadence-blocks' ),
+									'field'   => $expected_field,
+									'type'    => 'custom',
+								];
+								continue 2; // Skip to next field.
+							}
 
 							// Check if multisite has a quota.
 							if ( is_multisite() ) {
@@ -392,22 +419,6 @@ class KB_Ajax_Advanced_Form {
 							}
 							if ( ! function_exists( 'wp_handle_upload' ) ) {
 								require_once ABSPATH . 'wp-admin/includes/file.php';
-							}
-							if ( ! wp_check_filetype( $file['name'], $allowed_file_mimes )['ext'] ) {
-								$field_errors[] = [
-									'message' => __( 'Sorry, you are not allowed to upload this file type.', 'kadence-blocks' ),
-									'field'   => $expected_field,
-									'type'    => 'custom',
-								];
-								continue 2; // Skip to next field.
-							}
-							if ( ! $this->sanitize_svg_upload( $file['tmp_name'], $file['name'], absint( $max_upload_size_bytes ) ) ) {
-								$field_errors[] = [
-									'message' => __( 'File could not be uploaded', 'kadence-blocks' ),
-									'field'   => $expected_field,
-									'type'    => 'custom',
-								];
-								continue 2; // Skip to next field.
 							}
 							add_filter( 'kb_process_advanced_form_submit_prefilter', [ $this, 'override_upload_directory' ] );
 							$file_upload = wp_handle_upload(
@@ -677,8 +688,15 @@ class KB_Ajax_Advanced_Form {
 
 		$sanitizer = new Sanitizer();
 		$sanitizer->removeRemoteReferences( true );
-		$clean = $sanitizer->sanitize( $content );
-		if ( $clean && 'svgz' === $extension ) {
+		try {
+			$clean = $sanitizer->sanitize( $content );
+		} catch ( Exception $e ) {
+			return false;
+		}
+		if ( ! $clean || ! $this->has_svg_root( $clean ) ) {
+			return false;
+		}
+		if ( 'svgz' === $extension ) {
 			$clean = gzencode( $clean );
 		}
 		if ( ! $clean ) {
@@ -888,6 +906,26 @@ Header set X-Robots-Tag "noindex"
 		}
 
 		return $root_dir;
+	}
+
+	/**
+	 * Check that the markup is an SVG document.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $xml The XML markup.
+	 *
+	 * @return bool True when the root element is an SVG element, false otherwise.
+	 */
+	private function has_svg_root( $xml ) {
+		$use_errors = libxml_use_internal_errors( true );
+		$document   = new DOMDocument();
+		$loaded     = $document->loadXML( $xml );
+		libxml_clear_errors();
+		libxml_use_internal_errors( $use_errors );
+
+		// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- Native DOM properties.
+		return $loaded && 'svg' === $document->documentElement->localName && in_array( $document->documentElement->namespaceURI ?? '', [ '', 'http://www.w3.org/2000/svg' ], true );
 	}
 }
 

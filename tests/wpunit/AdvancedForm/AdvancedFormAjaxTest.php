@@ -294,6 +294,17 @@ class AdvancedFormAjaxTest extends WPTestCase {
 		$this->assertFalse( $result );
 	}
 
+	public function testSanitizeSvgUploadRejectsNonSvgDocuments() {
+		foreach ( [ '<foo/>', '<g xmlns="http://www.w3.org/2000/svg"><svg><rect/></svg></g>' ] as $xml ) {
+			$path = $this->create_temp_file( $xml );
+
+			$result = $this->adv_form_ajax->sanitize_svg_upload( $path, 'image.svg', MB_IN_BYTES );
+			unlink( $path );
+
+			$this->assertFalse( $result, $xml );
+		}
+	}
+
 	public function testSanitizeSvgUploadRejectsContentOverSizeLimit() {
 		$svg  = '<svg xmlns="http://www.w3.org/2000/svg"><rect width="10" height="10"/></svg>';
 		$path = $this->create_temp_file( gzencode( $svg ) );
