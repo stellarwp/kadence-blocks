@@ -1,5 +1,8 @@
 <?php
 
+// phpcs:disable WordPressVIPMinimum.Functions.RestrictedFunctions, WordPressVIPMinimum.Performance.FetchingRemoteData -- Tests use local temp files.
+/* cspell:ignore nopriv svgz */
+
 namespace Tests\wpunit\AdvancedForm;
 
 use Codeception\TestCase\WPTestCase;
@@ -257,6 +260,62 @@ class AdvancedFormAjaxTest extends WPTestCase {
 		$this->assertEquals( 'filtered', $processed_fields[0]['value'] );
 	}
 
+	public function testSanitizeSvgUploadRemovesScripts() {
+		$path = $this->create_temp_file( '<svg xmlns="http://www.w3.org/2000/svg" onload="alert(1)"><script>alert(2)</script><rect width="10" height="10"/></svg>' );
+
+		$this->assertTrue( $this->adv_form_ajax->sanitize_svg_upload( $path, 'image.SVG', MB_IN_BYTES ) );
+
+		$content = file_get_contents( $path );
+		unlink( $path );
+
+		$this->assertStringNotContainsString( '<script', $content );
+		$this->assertStringNotContainsString( 'onload', $content );
+		$this->assertStringContainsString( '<rect', $content );
+	}
+
+	public function testSanitizeSvgUploadKeepsCompressedFilesCompressed() {
+		$path = $this->create_temp_file( gzencode( '<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script><rect width="10" height="10"/></svg>' ) );
+
+		$this->assertTrue( $this->adv_form_ajax->sanitize_svg_upload( $path, 'image.svgz', MB_IN_BYTES ) );
+
+		$content = gzdecode( file_get_contents( $path ) );
+		unlink( $path );
+
+		$this->assertStringNotContainsString( '<script', $content );
+		$this->assertStringContainsString( '<rect', $content );
+	}
+
+	public function testSanitizeSvgUploadRejectsInvalidSvg() {
+		$path = $this->create_temp_file( 'not an svg' );
+
+		$result = $this->adv_form_ajax->sanitize_svg_upload( $path, 'image.svg', MB_IN_BYTES );
+		unlink( $path );
+
+		$this->assertFalse( $result );
+	}
+
+	public function testSanitizeSvgUploadRejectsContentOverSizeLimit() {
+		$svg  = '<svg xmlns="http://www.w3.org/2000/svg"><rect width="10" height="10"/></svg>';
+		$path = $this->create_temp_file( gzencode( $svg ) );
+
+		$result = $this->adv_form_ajax->sanitize_svg_upload( $path, 'image.svgz', strlen( $svg ) - 1 );
+		unlink( $path );
+
+		$this->assertFalse( $result );
+	}
+
+	public function testSanitizeSvgUploadIgnoresOtherFileTypes() {
+		$original = '<script>alert(1)</script>';
+		$path     = $this->create_temp_file( $original );
+
+		$this->assertTrue( $this->adv_form_ajax->sanitize_svg_upload( $path, 'notes.txt', MB_IN_BYTES ) );
+
+		$content = file_get_contents( $path );
+		unlink( $path );
+
+		$this->assertSame( $original, $content );
+	}
+
 	protected function setUp(): void {
 		parent::setUp();
 
@@ -264,5 +323,12 @@ class AdvancedFormAjaxTest extends WPTestCase {
 	}
 
 	protected function _after() {
+	}
+
+	private function create_temp_file( string $content ): string {
+		$path = tempnam( get_temp_dir(), 'kb-form-upload' );
+		file_put_contents( $path, $content );
+
+		return $path;
 	}
 }

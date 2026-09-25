@@ -6,6 +6,13 @@
  * @package Kadence Blocks
  */
 
+/*
+ * cspell:ignore aaudio absint addin dotm googlev matroska mimtypes msword nopriv officedocument onenote onepkg onetmp onetoc
+ * cspell:ignore opendocument openxmlformats oxps prefilter presentationml quicktime realaudio recaptchaerror spreadsheetml svgz unslash wordprocessingml xlsb xpsdocument
+ */
+
+use KadenceWP\KadenceBlocks\enshrined\svgSanitize\Sanitizer;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -55,7 +62,7 @@ class KB_Ajax_Advanced_Form {
 
 		if ( isset( $_POST['_kb_adv_form_id'] ) && ! empty( $_POST['_kb_adv_form_id'] ) && isset( $_POST['_kb_adv_form_post_id'] ) && ! empty( $_POST['_kb_adv_form_post_id'] ) ) {
 			$this->start_buffer();
-			// Nonce verification isn't used as it's not a login form but can be enabled with a filter. Note that caching the page will cause the nonce to fail after a cetain amount of time.
+			// Nonce verification isn't used as it's not a login form but can be enabled with a filter. Note that caching the page will cause the nonce to fail after a certain amount of time.
 			if ( apply_filters( 'kadence_blocks_form_verify_nonce', false ) && ! check_ajax_referer( 'kb_form_nonce', '_kb_form_verify', false ) ) {
 				$this->process_bail( __( 'Submission rejected, invalid security token. Reload the page and try again.', 'kadence-blocks' ), __( 'Token invalid', 'kadence-blocks' ) );
 			}
@@ -251,6 +258,8 @@ class KB_Ajax_Advanced_Form {
 	/**
 	 * Process the fields
 	 *
+	 * @since TBD Validates file types against the field settings and sanitizes SVG uploads.
+	 *
 	 * @param array $fields the fields.
 	 */
 	public function process_fields( $fields ) {
@@ -260,7 +269,7 @@ class KB_Ajax_Advanced_Form {
 
 		foreach ( $fields as $index => $field ) {
 			$expected_field = ! empty( $field['inputName'] ) ? $field['inputName'] : 'field' . $field['uniqueID'];
-			// Skip proccessing this field if it's misssing (usually because hidden frontend).
+			// Skip processing this field if it's missing (usually because hidden frontend).
 			if ( ( ! isset( $_POST[ $expected_field ] ) || ( isset( $_POST[ $expected_field ] ) && $_POST[ $expected_field ] === '' ) ) && empty( $_FILES[ $expected_field ] ) ) {
 				if ( ! empty( $field['required'] ) && $field['required'] ) {
 					if ( ! empty( $field['kadenceFieldConditional']['conditionalData']['enable'] ) ) {
@@ -383,6 +392,22 @@ class KB_Ajax_Advanced_Form {
 							}
 							if ( ! function_exists( 'wp_handle_upload' ) ) {
 								require_once ABSPATH . 'wp-admin/includes/file.php';
+							}
+							if ( ! wp_check_filetype( $file['name'], $allowed_file_mimes )['ext'] ) {
+								$field_errors[] = [
+									'message' => __( 'Sorry, you are not allowed to upload this file type.', 'kadence-blocks' ),
+									'field'   => $expected_field,
+									'type'    => 'custom',
+								];
+								continue 2; // Skip to next field.
+							}
+							if ( ! $this->sanitize_svg_upload( $file['tmp_name'], $file['name'], absint( $max_upload_size_bytes ) ) ) {
+								$field_errors[] = [
+									'message' => __( 'File could not be uploaded', 'kadence-blocks' ),
+									'field'   => $expected_field,
+									'type'    => 'custom',
+								];
+								continue 2; // Skip to next field.
 							}
 							add_filter( 'kb_process_advanced_form_submit_prefilter', [ $this, 'override_upload_directory' ] );
 							$file_upload = wp_handle_upload(
@@ -626,6 +651,43 @@ class KB_Ajax_Advanced_Form {
 
 		return $allowed_mime_types;
 	}
+
+	/**
+	 * Sanitize an uploaded SVG file in place.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $path      The uploaded file path.
+	 * @param string $name      The original file name.
+	 * @param int    $max_bytes The maximum allowed content size in bytes.
+	 *
+	 * @return bool True when the file is not an SVG or was sanitized, false otherwise.
+	 */
+	public function sanitize_svg_upload( $path, $name, $max_bytes ) {
+		$extension = strtolower( pathinfo( $name, PATHINFO_EXTENSION ) );
+		if ( 'svg' !== $extension && 'svgz' !== $extension ) {
+			return true;
+		}
+
+		// The zlib wrapper reads both plain and gzip-compressed files.
+		$content = file_get_contents( 'compress.zlib://' . $path, false, null, 0, $max_bytes + 1 ); // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData -- Local uploaded file.
+		if ( ! $content || strlen( $content ) > $max_bytes ) {
+			return false;
+		}
+
+		$sanitizer = new Sanitizer();
+		$sanitizer->removeRemoteReferences( true );
+		$clean = $sanitizer->sanitize( $content );
+		if ( $clean && 'svgz' === $extension ) {
+			$clean = gzencode( $clean );
+		}
+		if ( ! $clean ) {
+			return false;
+		}
+
+		return false !== file_put_contents( $path, $clean );
+	}
+
 	/**
 	 * Add filter to override the upload directory for form submissions.
 	 *
