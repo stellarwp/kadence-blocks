@@ -18,23 +18,32 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Preset;
 trait Renders_Preset_Classes {
 
 	/**
-	 * The `kb-preset--<preset>` class a block's `kbPreset` selection outputs, as a single-element list (or
-	 * an empty list when nothing is selected). A non-string or empty selection yields nothing, so a block can
-	 * pass the raw attribute straight through.
+	 * The `kb-preset--<preset>` class a block's `kbPreset` selection outputs, followed by the classes a
+	 * class-painted preset puts on the element (or an empty list when nothing is selected). A non-string or
+	 * empty selection yields nothing, so a block can pass the raw attribute straight through.
 	 *
 	 * @since TBD
 	 *
-	 * @param mixed $kb_preset The block's `kbPreset` attribute (the selected preset slug).
+	 * @param mixed  $kb_preset   The block's `kbPreset` attribute (the selected preset slug).
+	 * @param string $theme_class The selected preset's space-separated theme classes, or '' when it has none.
 	 *
 	 * @return string[]
 	 */
-	protected function preset_classes( $kb_preset ): array {
+	protected function preset_classes( $kb_preset, string $theme_class = '' ): array {
 		$preset = is_string( $kb_preset ) ? $kb_preset : '';
 
 		if ( $preset === '' ) {
 			return [];
 		}
 
-		return [ Style::preset_class( $preset ) ];
+		$classes = [ Style::preset_class( $preset ) ];
+
+		foreach ( preg_split( '/\s+/', trim( $theme_class ) ) ?: [] as $class ) {
+			if ( $class !== '' ) {
+				$classes[] = sanitize_html_class( $class );
+			}
+		}
+
+		return array_values( array_unique( $classes ) );
 	}
 }
