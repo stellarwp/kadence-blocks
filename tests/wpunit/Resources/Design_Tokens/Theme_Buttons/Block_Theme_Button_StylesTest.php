@@ -258,6 +258,7 @@ final class Block_Theme_Button_StylesTest extends TestCase {
 				'color' => 'currentColor',
 				'width' => '1px',
 			],
+			'color'   => [ 'gradient' => 'transparent none' ],
 			'css'     => '.wp-block-button__link:not(.has-background):hover {background-color:color-mix(in srgb, var(--wp--preset--color--contrast) 5%, transparent);}',
 			'spacing' => [
 				'padding' => [
@@ -285,6 +286,36 @@ final class Block_Theme_Button_StylesTest extends TestCase {
 		$this->assertSame( [ 'calc(1rem - 1px)', 'calc(2.25rem - 1px)', 'calc(1rem - 1px)', 'calc(2.25rem - 1px)' ], $tokens['button-padding'] );
 		$this->assertArrayNotHasKey( 'button-radius', $tokens );
 		$this->assertArrayNotHasKey( 'button-border-style', $tokens );
+	}
+
+	/**
+	 * A variation with no gradient of its own (a rounded fill, say) is not an outline: its background, rest
+	 * and hover, stays the theme base's, and only what it sets is its own.
+	 *
+	 * @return void
+	 */
+	public function testAVariationWithoutAGradientKeepsTheBaseBackground(): void {
+		$element = [
+			'color'  => [
+				'background' => 'var(--wp--preset--color--contrast)',
+				'text'       => 'var(--wp--preset--color--base)',
+			],
+			':hover' => [ 'color' => [ 'background' => 'var(--wp--preset--color--contrast-2)' ] ],
+		];
+		$styles  = [
+			'elements' => [ 'button' => $element ],
+			'blocks'   => [ 'core/button' => [ 'variations' => [ 'rounded' => [ 'border' => [ 'radius' => '9999px' ] ] ] ] ],
+		];
+
+		$this->assertSame(
+			[
+				'button-bg'       => 'var(--wp--preset--color--contrast)',
+				'button-text'     => 'var(--wp--preset--color--base)',
+				'button-bg-hover' => 'var(--wp--preset--color--contrast-2)',
+				'button-radius'   => [ '9999px', '9999px', '9999px', '9999px' ],
+			],
+			$this->adapter( $styles, $styles )->styles()['rounded']['tokens']
+		);
 	}
 
 	/**

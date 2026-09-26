@@ -153,9 +153,10 @@ final class Block_Theme_Button_Styles implements Button_Style_Source {
 
 	/**
 	 * A variation's tokens: the same reading as the element, plus the one thing a variation means that
-	 * theme.json leaves implicit: a variation with no background of its own (an outline, which core writes
-	 * as a "transparent none" gradient) clears the resting background. Every property it leaves unset, the
-	 * hover state included, stays the theme base's, which is what the theme's own CSS does for its variation.
+	 * theme.json leaves implicit: an outline clears the resting background through a "transparent none"
+	 * gradient (core's own outline data, merged into every variation of that name), which has no binding of
+	 * its own. Every property it leaves unset, the hover state included, stays the theme base's, which is
+	 * what the theme's own CSS does for its variation.
 	 *
 	 * @since TBD
 	 *
@@ -166,11 +167,27 @@ final class Block_Theme_Button_Styles implements Button_Style_Source {
 	private function variation_values( array $variation ): array {
 		$values = $this->values( $variation );
 
-		if ( ! isset( $values['button-bg'] ) ) {
+		if ( ! isset( $values['button-bg'] ) && $this->clears_background( $variation ) ) {
 			$values['button-bg'] = 'transparent';
 		}
 
 		return $values;
+	}
+
+	/**
+	 * Whether a variation's gradient is the "transparent none" (or "none", or "transparent") core writes to
+	 * take a button's background away, as opposed to no gradient at all, which leaves the base background.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $variation The merged variation data.
+	 *
+	 * @return bool
+	 */
+	private function clears_background( array $variation ): bool {
+		$gradient = $this->css( $this->sub( $variation, 'color' )['gradient'] ?? null );
+
+		return $gradient !== null && preg_match( '/^(transparent|none)(\s+(transparent|none))?$/i', $gradient ) === 1;
 	}
 
 	/**
