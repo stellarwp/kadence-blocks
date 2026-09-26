@@ -164,6 +164,23 @@ export function blockPresetOverridden(name, library) {
 }
 
 /**
+ * The default preset's properties the library overrides, as a `property => true` map: the stored
+ * default owns the property, or a token along its alias chain carries a stored value. Mirrors the
+ * server's `Preset_Resolver::overridden_default_properties()`, which the front end's render path
+ * reads to decide whether a default-preset bridge is emitted at all.
+ *
+ * @param {string} name     The block name.
+ * @param {string} [library] The token library slug; defaults to the active library.
+ *
+ * @since TBD
+ *
+ * @return {Object} The default preset's overridden-property map.
+ */
+export function blockDefaultOverridden(name, library) {
+	return get(blockEntry(name, library), 'activated', {}) || {};
+}
+
+/**
  * The block library's default preset slug in a token library.
  *
  * @param {string} name     The block name.
