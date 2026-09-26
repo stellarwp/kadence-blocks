@@ -553,6 +553,47 @@ describe('BackendStyles class-painted mode gating', () => {
 	});
 
 	/**
+	 * A Fill button on a class-painted preset is painted by the preset's classes, so it gets none of the
+	 * preset bridges and no shadow reset either: the front end's gate makes the same call, and a bridge
+	 * here would outrank both the theme's editor rules and the preset's own override rules.
+	 *
+	 * @return {void}
+	 */
+	it('emits no preset bridge or shadow reset for a fill button on a class-painted preset', () => {
+		blockPresets.mockReturnValue([{ slug: 'default' }, { slug: 'outline', themeClass: 'kb-btn-global-outline' }]);
+		activePresetFor.mockImplementation((name, attributes) => attributes?.kbPreset || 'default');
+		blockPresetThemeClass.mockImplementation((name, slug) => (slug === 'outline' ? 'kb-btn-global-outline' : ''));
+
+		try {
+			expect(paintsOwnShape({ inheritStyles: 'fill', kbPreset: 'outline' })).toBe(false);
+			expect(paintsOwnShape({ inheritStyles: 'fill', kbPreset: 'default' })).toBe(true);
+
+			BackendStyles({
+				attributes: { uniqueID: 'abc123', inheritStyles: 'fill', kbPreset: 'outline' },
+				previewDevice: 'Desktop',
+			});
+
+			const raised = `${BASE_SELECTOR}.kt-button.kt-button.kt-button`;
+			const props = Object.assign(
+				{},
+				...fakeCss.rules.filter((entry) => entry.selector === raised).map((entry) => entry.props)
+			);
+
+			expect(props.padding).toBeUndefined();
+			expect(props.margin).toBeUndefined();
+			expect(props['border-width']).toBeUndefined();
+			expect(props['border-style']).toBeUndefined();
+			expect(props['border-color']).toBeUndefined();
+			expect(props['box-shadow']).toBeUndefined();
+			expect(boxShadowFor(fakeCss.rules, `${raised}:hover`)).toBeUndefined();
+		} finally {
+			blockPresets.mockReturnValue([]);
+			blockPresetThemeClass.mockReset();
+			blockPresetThemeClass.mockReturnValue('');
+		}
+	});
+
+	/**
 	 * A Fill button keeps the spacing and shadow bridges, since its padding, margin and shadow are the
 	 * plugin's own. The border bridge stays out while the library overrides no border property, so the
 	 * theme's cascade keeps painting an untouched button's border.
