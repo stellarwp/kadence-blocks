@@ -16,6 +16,7 @@ import {
 	activePresetFor,
 	blockDefaultOverridden,
 	blockDefaultPreset,
+	blockPresetThemeClass,
 	blockPresetValues,
 } from '../../../../../extension/preset-picker';
 import { shadowAxisPx, shadowCss } from '../../../../../extension/design-tokens/shadow-css';
@@ -521,6 +522,41 @@ describe('BackendStyles class-painted mode gating', () => {
 		expect(props['border-color']).toBeUndefined();
 		expect(props['box-shadow']).toBeUndefined();
 		expect(boxShadowFor(fakeCss.rules, `${BASE_SELECTOR}:hover`)).toBeUndefined();
+	});
+
+	/**
+	 * A Fill button on a class-painted preset is painted by the preset's classes, so it gets none of the
+	 * preset bridges and no shadow reset either: the front end's gate makes the same call, and a bridge
+	 * here would outrank both the theme's editor rules and the preset's own override rules.
+	 *
+	 * @return {void}
+	 */
+	it('emits no preset bridge or shadow reset for a fill button on a class-painted preset', () => {
+		blockPresetThemeClass.mockImplementation((name, slug) => (slug === 'outline' ? 'kb-btn-global-outline' : ''));
+
+		expect(paintsOwnShape({ inheritStyles: 'fill', kbPreset: 'outline' })).toBe(false);
+		expect(paintsOwnShape({ inheritStyles: 'fill', kbPreset: 'default' })).toBe(true);
+
+		BackendStyles({
+			attributes: { uniqueID: 'abc123', inheritStyles: 'fill', kbPreset: 'outline' },
+			previewDevice: 'Desktop',
+		});
+
+		const raised = `${BASE_SELECTOR}.kt-button.kt-button.kt-button`;
+		const props = Object.assign(
+			{},
+			...fakeCss.rules.filter((entry) => entry.selector === raised).map((entry) => entry.props)
+		);
+
+		expect(props.padding).toBeUndefined();
+		expect(props.margin).toBeUndefined();
+		expect(props['border-width']).toBeUndefined();
+		expect(props['border-style']).toBeUndefined();
+		expect(props['border-color']).toBeUndefined();
+		expect(props['box-shadow']).toBeUndefined();
+		expect(boxShadowFor(fakeCss.rules, `${raised}:hover`)).toBeUndefined();
+
+		blockPresetThemeClass.mockImplementation(() => '');
 	});
 
 	/**
