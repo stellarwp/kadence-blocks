@@ -77,8 +77,9 @@ export function presetBorderProperties(attributes) {
 
 /**
  * Whether the button's shape (padding, margin, border, shadow) is the plugin's own. A button in one
- * of the theme-painted modes, or in the outline mode, takes those from the theme's rules or from the
- * outline stylesheet, and the preset bridges must not outrank them. Mirrors the PHP renderer's gate.
+ * of the theme-painted modes, in the outline mode, or on a class-painted preset takes those from the
+ * theme's rules or from the outline stylesheet, and the preset bridges must not outrank them. Mirrors
+ * the PHP renderer's gate.
  *
  * @param {Object} attributes The block attributes.
  *
@@ -89,7 +90,11 @@ export function presetBorderProperties(attributes) {
 export function paintsOwnShape(attributes) {
 	const mode = attributes?.inheritStyles ?? '';
 
-	return mode === '' || mode === 'fill';
+	if (mode !== '' && mode !== 'fill') {
+		return false;
+	}
+
+	return !blockPresetThemeClass('kadence/singlebtn', attributes?.kbPreset);
 }
 
 /**
