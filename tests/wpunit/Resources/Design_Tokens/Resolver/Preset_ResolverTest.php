@@ -86,6 +86,12 @@ final class Preset_ResolverTest extends TestCase {
 		);
 	}
 
+	/**
+	 * The Button's preset names are the shipped ones followed by the theme's, with no theme active in the
+	 * suite that is the classic fallback's Theme Button.
+	 *
+	 * @return void
+	 */
 	public function testItListsTheDocumentsPresetNames(): void {
 		$this->assertSame( [ 'default', 'outline', 'theme-base' ], $this->resolver->names( self::BUTTON ) );
 	}
