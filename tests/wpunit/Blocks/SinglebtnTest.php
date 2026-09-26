@@ -59,6 +59,11 @@ class SinglebtnTest extends KadenceBlocksUnit {
 		$this->container = App::instance()->container();
 	}
 
+	/**
+	 * Drops the seeded theme presets so the next test starts from the real theme.
+	 *
+	 * @return void
+	 */
 	protected function tearDown(): void {
 		$this->unseed_theme_presets();
 
