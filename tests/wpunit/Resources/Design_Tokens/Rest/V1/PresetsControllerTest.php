@@ -608,7 +608,7 @@ final class PresetsControllerTest extends TestCase {
 				'button-bg'   => '#2B6CB0',
 				'button-text' => '#ffffff',
 			],
-			$node['themeSnapshot'] 
+			$node['themeSnapshot']
 		);
 	}
 
@@ -644,7 +644,7 @@ final class PresetsControllerTest extends TestCase {
 						'button-radius' => [ '3px', '3px', '3px', '3px' ],
 					],
 				],
-			] 
+			]
 		);
 		$save();
 
@@ -677,7 +677,7 @@ final class PresetsControllerTest extends TestCase {
 				[
 					'preset' => 'theme-base',
 					'tokens' => [ 'button-bg' => '#ff0000' ],
-				] 
+				]
 			)
 		);
 		$this->controller->create_item(
@@ -687,7 +687,7 @@ final class PresetsControllerTest extends TestCase {
 				[
 					'preset' => 'theme-base',
 					'label'  => 'Renamed',
-				] 
+				]
 			)
 		);
 
@@ -713,7 +713,7 @@ final class PresetsControllerTest extends TestCase {
 				[
 					'preset' => 'theme-base',
 					'tokens' => [ 'button-bg' => '#ff0000' ],
-				] 
+				]
 			)
 		);
 
@@ -1791,7 +1791,7 @@ final class PresetsControllerTest extends TestCase {
 						[
 							'button-bg'   => '#3633e1',
 							'button-text' => 'rgba(1,2,3,0.42)',
-						] 
+						]
 					),
 				]
 			)
@@ -2441,7 +2441,7 @@ final class PresetsControllerTest extends TestCase {
 			[
 				'order'   => $order,
 				'version' => $version,
-			] 
+			]
 		);
 	}
 
