@@ -562,6 +562,26 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 	}
 
 	/**
+	 * The preset slug this button asks for: its `kbPreset`, or the preset its older "Button Inherit Styles"
+	 * value maps to, so a saved button renders the same preset with no re-save.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $attributes The block attributes.
+	 *
+	 * @return string The stored slug, or '' for the default look.
+	 */
+	protected function stored_preset( array $attributes ): string {
+		$stored = parent::stored_preset( $attributes );
+
+		if ( $stored !== '' ) {
+			return $stored;
+		}
+
+		return self::LEGACY_PRESETS[ Cast::to_string( $attributes['inheritStyles'] ?? '' ) ] ?? '';
+	}
+
+	/**
 	 * Point padding and margin at their preset variables, but only for a property the active preset
 	 * actually resolves.
 	 *
@@ -763,26 +783,6 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 				'opacity' => 0.2,
 			]
 		);
-	}
-
-	/**
-	 * The preset slug this button asks for: its `kbPreset`, or the preset its older "Button Inherit Styles"
-	 * value maps to, so a saved button renders the same preset with no re-save.
-	 *
-	 * @since TBD
-	 *
-	 * @param array<string, mixed> $attributes The block attributes.
-	 *
-	 * @return string The stored slug, or '' for the default look.
-	 */
-	protected function stored_preset( array $attributes ): string {
-		$stored = parent::stored_preset( $attributes );
-
-		if ( $stored !== '' ) {
-			return $stored;
-		}
-
-		return self::LEGACY_PRESETS[ Cast::to_string( $attributes['inheritStyles'] ?? '' ) ] ?? '';
 	}
 
 	/**
