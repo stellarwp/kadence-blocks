@@ -217,8 +217,19 @@ function PresetSettingsBody({
 	const handleClose = () => (channel ? channel.guard(panel.close) : panel.close());
 
 	if (isReadOnly) {
+		// The preset can still hold overrides saved under a theme that did read it (the slug is shared
+		// across themes), and they keep painting here. The panel cannot edit them, so it says so and
+		// keeps Reset, the one way to drop them.
 		return (
-			<SettingsPanel title={__('Theme preset', 'kadence-blocks')} onClose={handleClose} readOnly>
+			<SettingsPanel
+				title={__('Theme preset', 'kadence-blocks')}
+				onClose={handleClose}
+				onReset={handleReset}
+				canReset={canReset}
+				isBusy={screen.isBusy}
+				isResetting={pendingAction === 'reset'}
+				readOnly
+			>
 				<div className="kadence-blocks-style-library__theme-preset">
 					<div className="kadence-blocks-style-library__theme-preset-preview">{renderPreview(row)}</div>
 					<Notice status="info" isDismissible={false}>
@@ -226,7 +237,18 @@ function PresetSettingsBody({
 							"Styled by your theme. Kadence Blocks can't read or change these styles.",
 							'kadence-blocks'
 						)}
+						{canReset &&
+							' ' +
+								__(
+									'Changes saved under another theme still apply to it. Reset removes them.',
+									'kadence-blocks'
+								)}
 					</Notice>
+					{screen.deleteError && (
+						<Notice status="error" isDismissible onRemove={screen.clearDeleteError}>
+							{screen.deleteError.message}
+						</Notice>
+					)}
 				</div>
 			</SettingsPanel>
 		);

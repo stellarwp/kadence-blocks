@@ -573,6 +573,37 @@ describe('PresetSettings unreadable theme preset', () => {
 	});
 
 	/**
+	 * A theme preset that cannot be read but still stores overrides (saved under a theme that could read
+	 * it) keeps Reset beside Close, says the overrides still apply, and Reset drops the stored node.
+	 *
+	 * @return {void}
+	 */
+	it('keeps Reset on an unreadable theme preset that stores overrides', async () => {
+		const screen = unreadableScreen();
+		screen.deletePreset = jest.fn().mockResolvedValue(undefined);
+		screen.initialValuesFor = () => ({
+			label: 'Theme Button',
+			tokens: { 'button-bg': '#ff0000' },
+			overridden: { 'button-bg': true },
+		});
+
+		const navigate = renderPresetSettingsWithPreset(screen, 'theme-button', PRESET_WITH_PREVIEW);
+
+		expect(container.textContent).toContain(NOTE);
+		expect(container.textContent).toContain('Changes saved under another theme still apply to it.');
+		expect(findButton('Save')).toBeNull();
+		expect(findButton('Delete')).toBeNull();
+		expect(findButton('Reset')).not.toBeNull();
+
+		await act(async () => {
+			findButton('Reset').click();
+		});
+
+		expect(screen.deletePreset).toHaveBeenCalledWith('theme-button');
+		expect(navigate).toHaveBeenCalledWith({ item: '' });
+	});
+
+	/**
 	 * A readable theme preset keeps the ordinary editable panel: the name field, Save and Reset.
 	 *
 	 * @return {void}

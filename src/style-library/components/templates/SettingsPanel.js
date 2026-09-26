@@ -72,9 +72,11 @@ export const SETTINGS_PANEL_TITLE_ID = 'kadence-blocks-style-library-settings-pa
  *                                                `isSaving`.
  * @param {boolean}        [props.isResetting]  Shows the Reset button's busy animation and a "Resetting…"
  *                                                label. Optional, defaults to false, for the same reason.
- * @param {boolean}        [props.readOnly]     Renders the panel with nothing to act on: the footer keeps
- *                                                only a Close button, since a destructive action or a Save
- *                                                shown disabled would promise an edit that can never come.
+ * @param {boolean}        [props.readOnly]     Renders the panel with nothing to edit: the footer keeps a
+ *                                                Close button, since a Save shown disabled would promise an
+ *                                                edit that can never come. Reset still renders when
+ *                                                `canReset` is true: a saved override outlives the fields
+ *                                                that wrote it, and dropping it must stay reachable.
  *
  * @since TBD
  *
@@ -102,6 +104,21 @@ export function SettingsPanel({
 	readOnly = false,
 }) {
 	const fieldArea = <div className="kadence-blocks-style-library__settings-panel-fields">{children}</div>;
+	const resetButton = (
+		<Button
+			variant="secondary"
+			isDestructive
+			isBusy={isResetting}
+			disabled={!canReset || isBusy}
+			// Keeps the button focusable (`aria-disabled` instead of the native attribute) while
+			// disabled — see the `Save` button below for why a disabled-while-focused footer
+			// button is never safe inside this popover.
+			accessibleWhenDisabled
+			onClick={onReset}
+		>
+			{isResetting ? __('Resetting…', 'kadence-blocks') : __('Reset', 'kadence-blocks')}
+		</Button>
+	);
 
 	return (
 		<div className="kadence-blocks-style-library__settings-panel">
@@ -133,6 +150,7 @@ export function SettingsPanel({
 			)}
 			{readOnly ? (
 				<div className="kadence-blocks-style-library__settings-panel-footer">
+					{canReset && resetButton}
 					<Button variant="tertiary" onClick={onClose}>
 						{__('Close', 'kadence-blocks')}
 					</Button>
@@ -140,19 +158,7 @@ export function SettingsPanel({
 			) : (
 				<div className="kadence-blocks-style-library__settings-panel-footer">
 					{'reset' === destructiveAction ? (
-						<Button
-							variant="secondary"
-							isDestructive
-							isBusy={isResetting}
-							disabled={!canReset || isBusy}
-							// Keeps the button focusable (`aria-disabled` instead of the native attribute) while
-							// disabled — see the `Save` button below for why a disabled-while-focused footer
-							// button is never safe inside this popover.
-							accessibleWhenDisabled
-							onClick={onReset}
-						>
-							{isResetting ? __('Resetting…', 'kadence-blocks') : __('Reset', 'kadence-blocks')}
-						</Button>
+						resetButton
 					) : (
 						<Button
 							variant="secondary"
