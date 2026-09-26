@@ -1,4 +1,5 @@
 <?php
+// cspell:ignore unseed .
 
 namespace Tests\wpunit\Blocks;
 
@@ -6,8 +7,10 @@ use Kadence_Blocks_CSS;
 use Kadence_Blocks_Singlebtn_Block;
 use KadenceWP\KadenceBlocks\App;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Container;
 use Tests\Support\Classes\KadenceBlocksUnit;
+use Tests\Support\Classes\Seeds_Theme_Presets;
 use Tests\helpers\CSSTestHelper;
 use WP_Block_Supports;
 
@@ -17,6 +20,9 @@ use WP_Block_Supports;
  * own coverage shape.
  */
 class SinglebtnTest extends KadenceBlocksUnit {
+
+	use Seeds_Theme_Presets;
+
 	/**
 	 * Block name.
 	 *
@@ -51,6 +57,17 @@ class SinglebtnTest extends KadenceBlocksUnit {
 		$this->block     = new Kadence_Blocks_Singlebtn_Block();
 		$this->css       = new Kadence_Blocks_CSS();
 		$this->container = App::instance()->container();
+	}
+
+	/**
+	 * Drops the seeded theme presets so the next test starts from the real theme.
+	 *
+	 * @return void
+	 */
+	protected function tearDown(): void {
+		$this->unseed_theme_presets();
+
+		parent::tearDown();
 	}
 
 	/**
@@ -1063,6 +1080,211 @@ class SinglebtnTest extends KadenceBlocksUnit {
 
 		$this->assertStringContainsString( 'kb-btn-global-fill', $html );
 		$this->assertStringContainsString( 'kb-preset--secondary', $html );
+	}
+
+	/**
+	 * A saved Theme Base button, which stores only the older inheritStyles value, renders the Theme Base
+	 * preset's classes with no re-save: the same classes the theme painted it with before presets existed.
+	 *
+	 * @return void
+	 */
+	public function testLegacyInheritRendersTheThemeBasePresetClasses(): void {
+		$this->seed_theme_preset_slugs( [ 'base', 'secondary' ] );
+
+		$html = $this->render_html( [ 'inheritStyles' => 'inherit' ] );
+
+		$this->assertStringContainsString( 'kb-preset--theme-base', $html );
+		$this->assertStringContainsString( 'wp-block-button__link', $html );
+		$this->assertStringContainsString( 'kb-btn-global-inherit', $html );
+		$this->assertStringNotContainsString( 'button-style-secondary', $html );
+		$this->assertStringNotContainsString( 'kb-btn-global-fill', $html );
+	}
+
+	/**
+	 * A saved Theme Secondary button renders the Theme Secondary preset's classes when the theme offers it.
+	 *
+	 * @return void
+	 */
+	public function testLegacySecondaryRendersTheThemeSecondaryPresetClasses(): void {
+		$this->seed_theme_preset_slugs( [ 'base', 'secondary' ] );
+
+		$html = $this->render_html( [ 'inheritStyles' => 'inherit-secondary' ] );
+
+		$this->assertStringContainsString( 'kb-preset--theme-secondary', $html );
+		$this->assertStringContainsString( 'button-style-secondary', $html );
+		$this->assertStringContainsString( 'wp-block-button__link', $html );
+		$this->assertStringContainsString( 'kb-btn-global-inherit', $html );
+	}
+
+	/**
+	 * A Theme Secondary button on a theme with no secondary style falls back to the Theme Base preset's
+	 * classes, the look the theme already gave it, and keeps the secondary class it always carried so site
+	 * CSS written against it keeps applying.
+	 *
+	 * @dataProvider secondaryButtonProvider
+	 *
+	 * @param array<string, mixed> $attributes The attributes under test.
+	 *
+	 * @return void
+	 */
+	public function testLegacySecondaryFallsBackToThemeBaseClassesWhenTheThemeHasNoSecondary( array $attributes ): void {
+		$this->seed_theme_preset_slugs( [ 'base' ] );
+
+		$html = $this->render_html( $attributes );
+
+		$this->assertStringContainsString( 'kb-preset--theme-base', $html );
+		$this->assertStringContainsString( 'wp-block-button__link', $html );
+		$this->assertStringContainsString( 'kb-btn-global-inherit', $html );
+		$this->assertStringContainsString( 'button-style-secondary', $html );
+		$this->assertStringNotContainsString( 'kb-preset--theme-secondary', $html );
+		$this->assertStringNotContainsString( 'kb-btn-global-fill', $html );
+	}
+
+	/**
+	 * The attribute shapes that ask for the theme's secondary preset.
+	 *
+	 * @return Generator
+	 */
+	public function secondaryButtonProvider(): \Generator {
+		yield 'legacy secondary' => [ 'attributes' => [ 'inheritStyles' => 'inherit-secondary' ] ];
+		yield 'stored theme secondary' => [ 'attributes' => [ 'kbPreset' => 'theme-secondary' ] ];
+	}
+
+	/**
+	 * A saved Outline button renders the shipped Outline preset, whose class is the outline stylesheet's.
+	 *
+	 * @return void
+	 */
+	public function testLegacyOutlineRendersTheOutlinePreset(): void {
+		$html = $this->render_html( [ 'inheritStyles' => 'outline' ] );
+
+		$this->assertStringContainsString( 'kb-preset--outline', $html );
+		$this->assertStringContainsString( 'kb-btn-global-outline', $html );
+		$this->assertStringNotContainsString( 'kb-btn-global-fill', $html );
+	}
+
+	/**
+	 * A Fill button, or one with no older style value, renders no preset class: it is the default look.
+	 *
+	 * @dataProvider defaultLookProvider
+	 *
+	 * @param array<string, mixed> $attributes The attributes under test.
+	 *
+	 * @return void
+	 */
+	public function testTheDefaultLookRendersNoPresetClass( array $attributes ): void {
+		$html = $this->render_html( $attributes );
+
+		$this->assertStringContainsString( 'kb-btn-global-fill', $html );
+		$this->assertStringNotContainsString( 'kb-preset--', $html );
+	}
+
+	/**
+	 * The attribute shapes that all mean "the default look".
+	 *
+	 * @return Generator
+	 */
+	public function defaultLookProvider(): \Generator {
+		yield 'fill' => [ 'attributes' => [ 'inheritStyles' => 'fill' ] ];
+		yield 'no mode' => [ 'attributes' => [] ];
+		yield 'the default preset selected' => [ 'attributes' => [ 'kbPreset' => 'default' ] ];
+		yield 'a preset the library lacks' => [ 'attributes' => [ 'kbPreset' => 'gone' ] ];
+	}
+
+	/**
+	 * A stored preset wins over the older style value: the preset decides the classes, the mode does not.
+	 *
+	 * @return void
+	 */
+	public function testAStoredPresetWinsOverTheLegacyMode(): void {
+		$html = $this->render_html(
+			[
+				'kbPreset'      => 'outline',
+				'inheritStyles' => 'inherit',
+			]
+		);
+
+		$this->assertStringContainsString( 'kb-preset--outline', $html );
+		$this->assertStringContainsString( 'kb-btn-global-outline', $html );
+		$this->assertStringNotContainsString( 'kb-btn-global-inherit', $html );
+		$this->assertStringNotContainsString( 'wp-block-button__link', $html );
+	}
+
+	/**
+	 * A button on a theme preset takes its shape from the theme's rules, so none of the preset spacing,
+	 * border or shadow bridges is emitted for it, whether the preset is stored or mapped from the older
+	 * style value.
+	 *
+	 * @dataProvider themePresetButtonProvider
+	 *
+	 * @param array<string, mixed> $attributes The attributes under test.
+	 *
+	 * @return void
+	 */
+	public function testThemePresetButtonsEmitNoPresetBridges( array $attributes ): void {
+		$this->seed_theme_preset_slugs( [ 'base', 'secondary' ] );
+
+		$output = $this->render_button( $attributes );
+
+		$this->assertStringNotContainsString( 'var(--kb-btn-padding)', $output );
+		$this->assertStringNotContainsString( 'var(--kb-btn-margin)', $output );
+		$this->assertStringNotContainsString( 'var(--kb-btn-border-width)', $output );
+		$this->assertStringNotContainsString( 'var(--kb-btn-shadow', $output );
+		$this->assertStringNotContainsString( 'box-shadow:none', $output );
+	}
+
+	/**
+	 * The attribute shapes that put a button on a theme preset.
+	 *
+	 * @return Generator
+	 */
+	public function themePresetButtonProvider(): \Generator {
+		yield 'stored theme base' => [ 'attributes' => [ 'kbPreset' => 'theme-base' ] ];
+		yield 'stored theme secondary' => [ 'attributes' => [ 'kbPreset' => 'theme-secondary' ] ];
+		yield 'legacy inherit' => [ 'attributes' => [ 'inheritStyles' => 'inherit' ] ];
+		yield 'legacy secondary' => [ 'attributes' => [ 'inheritStyles' => 'inherit-secondary' ] ];
+	}
+
+	/**
+	 * With the token registry inactive the static table paints a saved button with the classes it had
+	 * before presets existed, and no preset class.
+	 *
+	 * @return void
+	 */
+	public function testLegacyClassesRenderWhenTheRegistryIsInactive(): void {
+		/** @var Token_Registry $registry */
+		$registry = $this->container->get( Token_Registry::class );
+		$registry->deactivate();
+
+		try {
+			$html = $this->render_html( [ 'inheritStyles' => 'inherit-secondary' ] );
+			$css  = $this->render_button( [ 'inheritStyles' => 'inherit-secondary' ] );
+		} finally {
+			$registry->activate();
+		}
+
+		$this->assertStringContainsString( 'kb-btn-global-inherit', $html );
+		$this->assertStringContainsString( 'button-style-secondary', $html );
+		$this->assertStringContainsString( 'wp-block-button__link', $html );
+		$this->assertStringNotContainsString( 'kb-preset--', $html );
+		$this->assertStringNotContainsString( 'var(--kb-btn-padding)', $css );
+	}
+
+	/**
+	 * The legacy tables map every older style value to a preset slug and to the classes it painted.
+	 *
+	 * @return void
+	 */
+	public function testTheLegacyTablesCoverEveryOlderStyleValue(): void {
+		$this->assertSame(
+			[
+				'inherit'           => 'theme-base',
+				'inherit-secondary' => 'theme-secondary',
+				'outline'           => 'outline',
+			],
+			Kadence_Blocks_Singlebtn_Block::get_legacy_presets()
+		);
+		$this->assertSame( array_keys( Kadence_Blocks_Singlebtn_Block::get_legacy_presets() ), array_keys( Kadence_Blocks_Singlebtn_Block::get_legacy_classes() ) );
 	}
 
 	/**

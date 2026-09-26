@@ -13,6 +13,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Palette\Renders_Palette_Attribute;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Preset\Renders_Preset_Classes;
+use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Fallback;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Alias;
 use KadenceWP\KadenceBlocks\Utils\Cast;
@@ -182,10 +184,11 @@ class Kadence_Blocks_Abstract_Block {
 	 * Render styles in the footer.
 	 *
 	 * @param string $name the stylesheet name.
+	 * @param string $css  the inline css to print.
 	 */
 	public function render_styles_footer( $name, $css ) {
 		if ( ! is_admin() && ! wp_style_is( $name, 'done' ) && ! is_feed() ) {
-			wp_register_style( $name, false, [], false );
+			wp_register_style( $name, false, [], KADENCE_BLOCKS_VERSION );
 			wp_add_inline_style( $name, $css );
 			wp_enqueue_style( $name );
 		}
@@ -320,6 +323,10 @@ class Kadence_Blocks_Abstract_Block {
 
 	/**
 	 * Potentially prepend inline style to the content, unless it needs to get moved off to the footer.
+	 *
+	 * @param string $content         the block content, prepended with the style tag in place.
+	 * @param string $unique_style_id the blocks alternate ID for queries.
+	 * @param string $css             the css to print.
 	 */
 	public function do_inline_styles( &$content, $unique_style_id, $css ) {
 		if ( apply_filters( 'kadence_blocks_render_styles_footer', $this->block_name == 'data' || $this->block_name == 'slide' ) ) {
@@ -337,7 +344,7 @@ class Kadence_Blocks_Abstract_Block {
 	 * @param string $unique_id the blocks attr ID.
 	 * @param string $unique_style_id the blocks alternate ID for queries.
 	 */
-	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
+	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- a stub; the parameters are the contract a block overrides.
 		return '';
 	}
 
@@ -420,8 +427,19 @@ class Kadence_Blocks_Abstract_Block {
 			return $content;
 		}
 
-		$preset  = Cast::to_string( $attributes['kbPreset'] ?? '' );
-		$classes = $this->preset_classes( $preset, $this->preset_theme_class( $preset ) );
+		if ( $this->stored_preset( $attributes ) === '' ) {
+			return $content;
+		}
+
+		$resolved = $this->resolved_preset( $attributes );
+
+		if ( $resolved === null ) {
+			// The token services cannot answer (a block outside the preset system, an inactive registry, or a
+			// broken token graph): render the stored class as before, so the page never fails.
+			$classes = $this->preset_classes( Cast::to_string( $attributes['kbPreset'] ?? '' ) );
+		} else {
+			$classes = $this->preset_classes( $resolved['is_default'] ? '' : $resolved['slug'], $resolved['class'] );
+		}
 
 		if ( $classes === [] ) {
 			return $content;
@@ -441,32 +459,68 @@ class Kadence_Blocks_Abstract_Block {
 	}
 
 	/**
-	 * The classes a selected class-painted preset puts on this block's element, or '' when the selection is
-	 * empty, names a preset painted through variables, or the token services cannot answer.
+	 * The preset slug this block asks for: its `kbPreset` attribute. A block that still carries an older
+	 * style attribute maps it to a preset slug here, so the mapping happens at render time and the stored
+	 * attributes are never rewritten.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $preset The selected preset slug.
+	 * @param array<string, mixed> $attributes The block attributes.
 	 *
-	 * @return string
+	 * @return string The stored slug, or '' for the default look.
 	 */
-	protected function preset_theme_class( string $preset ): string {
-		if ( $preset === '' ) {
-			return '';
-		}
+	protected function stored_preset( array $attributes ): string {
+		return Cast::to_string( $attributes['kbPreset'] ?? '' );
+	}
 
+	/**
+	 * The preset this block renders with, after the fallback chain: the stored slug when the library
+	 * defines it, else the theme's base preset for a theme slug, else the block's `$default`. Null when
+	 * the token registry is inactive or the token services cannot answer, so a caller can keep the
+	 * behavior it had before presets existed.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $attributes The block attributes.
+	 *
+	 * @return array{slug: string, class: string, is_default: bool}|null The resolved slug, the classes a
+	 *                                                                    class-painted preset puts on the
+	 *                                                                    element ('' for a preset painted
+	 *                                                                    through variables), and whether the
+	 *                                                                    slug is the block's default.
+	 */
+	protected function resolved_preset( array $attributes ): ?array {
 		try {
+			$registry = kadence_blocks()->get( Token_Registry::class );
+			$fallback = kadence_blocks()->get( Preset_Fallback::class );
 			$resolver = kadence_blocks()->get( Preset_Resolver::class );
 			$library  = kadence_blocks()->get( Active_Token_Library_Store::class );
 
-			if ( ! $resolver instanceof Preset_Resolver || ! $library instanceof Active_Token_Library_Store ) {
-				return '';
+			// The container is typed `mixed`, and this runs on every render, so the services are checked
+			// rather than assumed — a misconfigured container degrades to the look the block had before.
+			if (
+				! $registry instanceof Token_Registry
+				|| ! $fallback instanceof Preset_Fallback
+				|| ! $resolver instanceof Preset_Resolver
+				|| ! $library instanceof Active_Token_Library_Store
+				|| ! $registry->is_active()
+			) {
+				return null;
 			}
 
-			return $resolver->theme_class( $this->namespace . '/' . $this->block_name, $preset, $library->get() );
+			$block  = $this->namespace . '/' . $this->block_name;
+			$slug   = $library->get();
+			$preset = $fallback->resolve( $block, $this->stored_preset( $attributes ), $slug );
+
+			return [
+				'slug'       => $preset,
+				'class'      => $resolver->theme_class( $block, $preset, $slug ),
+				'is_default' => $preset === $resolver->default_preset( $block, $slug ),
+			];
 		} catch ( Throwable $e ) {
-			// This runs in the render path, so a broken token graph must not take the page down with it.
-			return '';
+			// This runs in the render path, so a block with no presets or a broken token graph must not take
+			// the page down with it.
+			return null;
 		}
 	}
 
@@ -515,13 +569,13 @@ class Kadence_Blocks_Abstract_Block {
 	 *
 	 * @param array  $attributes Array of the blocks attributes.
 	 * @param string $tag_key Offset on $attributes where the tag is set.
-	 * @param string $default Default tag to use if $tag_key attribute is undefined or invalid.
+	 * @param string $default_tag Default tag to use if $tag_key attribute is undefined or invalid.
 	 * @param array  $allowed_tags Array of allowed tags.
 	 * @param string $level_key If defined, we'll assume heading tags are allowed.
 	 *
 	 * @return string
 	 */
-	public function get_html_tag( $attributes, $tag_key, $default, $allowed_tags = [], $level_key = '' ) {
+	public function get_html_tag( $attributes, $tag_key, $default_tag, $allowed_tags = [], $level_key = '' ) {
 
 		if ( ! empty( $attributes[ $tag_key ] ) && in_array( $attributes[ $tag_key ], $allowed_tags ) ) {
 
@@ -533,7 +587,7 @@ class Kadence_Blocks_Abstract_Block {
 			return $attributes[ $tag_key ];
 		}
 
-		return $default;
+		return $default_tag;
 	}
 
 
@@ -624,7 +678,7 @@ class Kadence_Blocks_Abstract_Block {
 				count( $merged_attributes[ $key ] ) == 1 && isset( $merged_attributes[ $key ][0] ) &&
 				is_array( $merged_attributes[ $key ][0] ) &&
 				is_array( $value ) && count( $value ) == 1 && isset( $value[0] ) ) {
-				// Handle attributes that are an array with a single object
+				// Handle attributes that are an array with a single object.
 				$merged_attributes[ $key ][0] = array_merge( $merged_attributes[ $key ][0], $value[0] );
 			} else {
 				$merged_attributes[ $key ] = $value;

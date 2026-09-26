@@ -16,6 +16,7 @@ import {
 	activePresetFor,
 	blockDefaultOverridden,
 	blockDefaultPreset,
+	blockPresets,
 	blockPresetThemeClass,
 	blockPresetValues,
 } from '../../../../../extension/preset-picker';
@@ -43,6 +44,8 @@ jest.mock('../../../../../extension/preset-picker', () => ({
 	activePresetFor: jest.fn(),
 	blockDefaultOverridden: jest.fn(() => ({})),
 	blockDefaultPreset: jest.fn(() => 'default'),
+	blockPresetOverridden: jest.fn(() => ({})),
+	blockPresets: jest.fn(() => []),
 	blockPresetThemeClass: jest.fn(() => ''),
 	blockPresetValues: jest.fn(),
 }));
@@ -505,6 +508,31 @@ describe('BackendStyles class-painted mode gating', () => {
 	});
 
 	/**
+	 * With a preset catalog present, the active preset decides: a class-painted preset hands the shape to
+	 * the theme, a variable-painted one leaves it to the plugin, whatever the retired mode says.
+	 *
+	 * @return {void}
+	 */
+	it('lets the active preset decide the shape when the catalog offers presets', () => {
+		blockPresets.mockReturnValue([{ slug: 'default' }, { slug: 'theme-base', themeClass: 'button' }]);
+		activePresetFor.mockImplementation((name, attributes) =>
+			attributes.inheritStyles === 'inherit' ? 'theme-base' : 'default'
+		);
+		blockPresetThemeClass.mockImplementation((name, slug) => (slug === 'theme-base' ? 'button' : ''));
+
+		try {
+			expect(paintsOwnShape({ inheritStyles: 'inherit' })).toBe(false);
+			expect(paintsOwnShape({ inheritStyles: 'outline' })).toBe(true);
+			expect(paintsOwnShape({})).toBe(true);
+		} finally {
+			blockPresets.mockReturnValue([]);
+			activePresetFor.mockReset();
+			blockPresetThemeClass.mockReset();
+			blockPresetThemeClass.mockReturnValue('');
+		}
+	});
+
+	/**
 	 * A theme-painted or outline button gets none of the preset bridges and no shadow reset, so the
 	 * editor canvas keeps the padding, border and shadow the theme's or the outline rules give it.
 	 *
@@ -532,31 +560,37 @@ describe('BackendStyles class-painted mode gating', () => {
 	 * @return {void}
 	 */
 	it('emits no preset bridge or shadow reset for a fill button on a class-painted preset', () => {
+		blockPresets.mockReturnValue([{ slug: 'default' }, { slug: 'outline', themeClass: 'kb-btn-global-outline' }]);
+		activePresetFor.mockImplementation((name, attributes) => attributes?.kbPreset || 'default');
 		blockPresetThemeClass.mockImplementation((name, slug) => (slug === 'outline' ? 'kb-btn-global-outline' : ''));
 
-		expect(paintsOwnShape({ inheritStyles: 'fill', kbPreset: 'outline' })).toBe(false);
-		expect(paintsOwnShape({ inheritStyles: 'fill', kbPreset: 'default' })).toBe(true);
+		try {
+			expect(paintsOwnShape({ inheritStyles: 'fill', kbPreset: 'outline' })).toBe(false);
+			expect(paintsOwnShape({ inheritStyles: 'fill', kbPreset: 'default' })).toBe(true);
 
-		BackendStyles({
-			attributes: { uniqueID: 'abc123', inheritStyles: 'fill', kbPreset: 'outline' },
-			previewDevice: 'Desktop',
-		});
+			BackendStyles({
+				attributes: { uniqueID: 'abc123', inheritStyles: 'fill', kbPreset: 'outline' },
+				previewDevice: 'Desktop',
+			});
 
-		const raised = `${BASE_SELECTOR}.kt-button.kt-button.kt-button`;
-		const props = Object.assign(
-			{},
-			...fakeCss.rules.filter((entry) => entry.selector === raised).map((entry) => entry.props)
-		);
+			const raised = `${BASE_SELECTOR}.kt-button.kt-button.kt-button`;
+			const props = Object.assign(
+				{},
+				...fakeCss.rules.filter((entry) => entry.selector === raised).map((entry) => entry.props)
+			);
 
-		expect(props.padding).toBeUndefined();
-		expect(props.margin).toBeUndefined();
-		expect(props['border-width']).toBeUndefined();
-		expect(props['border-style']).toBeUndefined();
-		expect(props['border-color']).toBeUndefined();
-		expect(props['box-shadow']).toBeUndefined();
-		expect(boxShadowFor(fakeCss.rules, `${raised}:hover`)).toBeUndefined();
-
-		blockPresetThemeClass.mockImplementation(() => '');
+			expect(props.padding).toBeUndefined();
+			expect(props.margin).toBeUndefined();
+			expect(props['border-width']).toBeUndefined();
+			expect(props['border-style']).toBeUndefined();
+			expect(props['border-color']).toBeUndefined();
+			expect(props['box-shadow']).toBeUndefined();
+			expect(boxShadowFor(fakeCss.rules, `${raised}:hover`)).toBeUndefined();
+		} finally {
+			blockPresets.mockReturnValue([]);
+			blockPresetThemeClass.mockReset();
+			blockPresetThemeClass.mockReturnValue('');
+		}
 	});
 
 	/**

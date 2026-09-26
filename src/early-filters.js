@@ -12,7 +12,7 @@ import { createHigherOrderComponent } from '@wordpress/compose';
 import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
 import { useDispatch, select } from '@wordpress/data';
-import { blockPresets, activeLibrary } from './extension/preset-picker';
+import { blockPresets, activeLibrary, activePresetFor, blockDefaultPreset } from './extension/preset-picker';
 import { PresetButton } from './extension/preset-picker/PresetButton';
 import { designTokenInspectorControl } from './extension/preset-picker/inspector-control';
 import { PalettePicker, selectablePalettes } from './extension/palette-picker';
@@ -258,7 +258,9 @@ addFilter('blocks.getSaveContent.extraProps', 'kadence/kb-palette-save-attr', bl
 
 /**
  * Mirror the kb-preset--<name> class onto the block in the editor canvas, so a selected preset previews
- * live with the same scoped overrides the front end uses.
+ * live with the same scoped overrides the front end uses. The class names the preset the block renders
+ * with after the fallback chain (`activePresetFor()`), exactly as the server does for a dynamic block, and
+ * is left out for the default preset, whose rules are scoped by the absence of a preset class.
  *
  * @since TBD
  */
@@ -270,7 +272,9 @@ const withBlockPresetClass = createHigherOrderComponent((BlockListBlock) => {
 			return <BlockListBlock {...props} />;
 		}
 
-		const presetClass = kbPresetClassName(get(attributes, 'kbPreset', ''));
+		const activePreset = activePresetFor(name, attributes);
+		const presetClass =
+			activePreset && activePreset !== blockDefaultPreset(name) ? kbPresetClassName(activePreset) : '';
 
 		if (!presetClass) {
 			return <BlockListBlock {...props} />;
