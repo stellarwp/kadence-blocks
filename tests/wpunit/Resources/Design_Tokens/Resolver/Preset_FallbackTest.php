@@ -24,6 +24,8 @@ final class Preset_FallbackTest extends TestCase {
 	private Preset_Fallback $fallback;
 
 	/**
+	 * Resolves the fallback under test from the container.
+	 *
 	 * @return void
 	 */
 	protected function setUp(): void {
@@ -33,6 +35,8 @@ final class Preset_FallbackTest extends TestCase {
 	}
 
 	/**
+	 * Drops the seeded theme presets so the next test starts from the real theme.
+	 *
 	 * @return void
 	 */
 	protected function tearDown(): void {
