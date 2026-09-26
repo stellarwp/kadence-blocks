@@ -11,10 +11,11 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Theme_Buttons\Theme_Button_Styles_Over
  *
  * Decorates the baseline (already re-valued by the theme Style Guide): document() is the inner document
  * with one `theme-*` preset node per discovered style under the Button's presets, after the shipped ones,
- * so the picker, the Style Library and the projector see them as ordinary presets. Each node carries the
- * classes the theme paints the button with, the values the theme renders for display, and the tokens a
- * value preset declares (empty for a class-painted one). Stored overrides still merge on top
- * (Effective_Presets), so a library's override of a theme preset wins over the theme's display value.
+ * so the picker, the Style Library and the projector see them as ordinary presets. A class-painted style
+ * becomes a node carrying the classes the theme paints the button with and the values the theme renders,
+ * for display; a style the theme's CSS cannot paint on the Button (a block theme's own variation) becomes
+ * a value node, its tokens doubling as the theme values a reset returns to. Stored overrides still merge
+ * on top (Effective_Presets), so a library's override of a theme preset wins over the theme's value.
  *
  * has() delegates unchanged: no token id is ever added, so the fail-closed guard sees exactly the
  * shipped ids.
@@ -106,6 +107,16 @@ final class Theme_Button_Presets_Baseline_Document implements Baseline_Document 
 		}
 
 		foreach ( $styles as $slug => $style ) {
+			if ( $style['class'] === '' ) {
+				$node[ $slug ] = [
+					Extensions::get_label_key()        => $style['label'],
+					Extensions::get_tokens_key()       => $style['tokens'],
+					Extensions::get_theme_values_key() => $style['tokens'],
+				];
+
+				continue;
+			}
+
 			$node[ $slug ] = [
 				Extensions::get_label_key()        => $style['label'],
 				Extensions::get_theme_class_key()  => $style['class'],

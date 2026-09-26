@@ -784,8 +784,9 @@ final class Preset_ResolverTest extends TestCase {
 	 * @return void
 	 */
 	/**
-	 * A stored preset carrying `themeClass` exposes it, and `themeValues` when it carries them; a preset
-	 * carrying neither, or an unknown preset or block, reads empty.
+	 * A stored preset carrying `themeClass` exposes it, and `themeValues` when it carries them, each merged
+	 * over what the active theme's own preset node carries; a preset carrying neither, or an unknown preset
+	 * or block, reads empty.
 	 *
 	 * @return void
 	 */
@@ -793,7 +794,7 @@ final class Preset_ResolverTest extends TestCase {
 		$this->seedClassPreset( 'theme-base', 'wp-block-button__link button', [ 'button-bg' => '#112233' ] );
 
 		$this->assertSame( 'wp-block-button__link button', $this->resolver->theme_class( self::BUTTON, 'theme-base' ) );
-		$this->assertSame( [ 'button-bg' => '#112233' ], $this->resolver->theme_values( self::BUTTON, 'theme-base' ) );
+		$this->assertSame( '#112233', $this->resolver->theme_values( self::BUTTON, 'theme-base' )['button-bg'] );
 
 		$this->assertSame( '', $this->resolver->theme_class( self::BUTTON, 'default' ) );
 		$this->assertSame( [], $this->resolver->theme_values( self::BUTTON, 'default' ) );
