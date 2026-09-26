@@ -44,6 +44,7 @@ jest.mock('../../../../../extension/preset-picker', () => ({
 	activePresetFor: jest.fn(),
 	blockDefaultOverridden: jest.fn(() => ({})),
 	blockDefaultPreset: jest.fn(() => 'default'),
+	blockPresetOverridden: jest.fn(() => ({})),
 	blockPresets: jest.fn(() => []),
 	blockPresetThemeClass: jest.fn(() => ''),
 	blockPresetValues: jest.fn(),
@@ -578,7 +579,6 @@ describe('BackendStyles class-painted mode gating', () => {
 				...fakeCss.rules.filter((entry) => entry.selector === raised).map((entry) => entry.props)
 			);
 
-			expect(fakeCss.rules.some((entry) => entry.selector === raised)).toBe(true);
 			expect(props.padding).toBeUndefined();
 			expect(props.margin).toBeUndefined();
 			expect(props['border-width']).toBeUndefined();

@@ -3,21 +3,20 @@
 /**
  * Pins the weight of the button's own editor-canvas rules, per button kind.
  *
- * A button on a class-painted preset may carry a Style Library override rule the preset projector emits
- * at (0,5,0) resting and (0,6,0) hover. `BackendStyles` renders a `<style>` inside the block, after every
- * head stylesheet, so a rule here wins any tie; three extra `.kt-button` classes put its resting rule at
- * (0,5,0) and its hover rule at (0,6,0), which ties that override and, with the print order, is the editor
- * half of "a block's own value wins, per state". The raise applies whether or not the library has stored an
- * override for the preset, so a Style Library edit never flips which editor rules win on the button's own
- * values. Every other button keeps the weight it always had, so a theme editor rule that outranked the
- * block's before still does and the canvas matches the page.
+ * A button on a class-painted preset the Style Library has overridden carries an override rule the preset
+ * projector emits at (0,5,0) resting and (0,6,0) hover. `BackendStyles` renders a `<style>` inside the
+ * block, after every head stylesheet, so a rule here wins any tie; three extra `.kt-button` classes put its
+ * resting rule at (0,5,0) and its hover rule at (0,6,0), which ties that override and, with the print
+ * order, is the editor half of "a block's own value wins, per state". Every other button, including one on
+ * an untouched class-painted preset (no override rule exists for it), keeps the weight it always had, so a
+ * theme editor rule that outranked the block's before still does and the canvas matches the page.
  */
 
 /**
  * Internal dependencies
  */
 import { KadenceBlocksCSS } from '@kadence/helpers';
-import { blockPresetThemeClass } from '../../../extension/preset-picker';
+import { blockPresetOverridden, blockPresetThemeClass } from '../../../extension/preset-picker';
 import BackendStyles from '../components/backend-styles';
 
 // `backend-styles/index.js` imports the `@kadence/helpers` barrel, which eagerly pulls in a REST-fetch
@@ -37,6 +36,7 @@ jest.mock('../../../extension/preset-picker', () => ({
 	activePresetFor: jest.fn((name, attributes) => attributes?.kbPreset || 'default'),
 	blockDefaultOverridden: jest.fn(() => ({})),
 	blockDefaultPreset: jest.fn(() => 'default'),
+	blockPresetOverridden: jest.fn(() => ({})),
 	blockPresetValues: jest.fn(() => ({ default: {} })),
 	blockPresets: jest.fn(() => []),
 	blockPresetThemeClass: jest.fn(() => ''),
@@ -147,14 +147,16 @@ function render(kbPreset) {
 describe('BackendStyles per-instance rule weight', () => {
 	beforeEach(() => {
 		blockPresetThemeClass.mockImplementation((name, slug) => (slug === 'outline' ? 'kb-btn-global-outline' : ''));
+		blockPresetOverridden.mockReturnValue({ outline: { 'button-bg': true } });
 	});
 
 	afterEach(() => {
 		KadenceBlocksCSS.mockReset();
 		blockPresetThemeClass.mockReset();
+		blockPresetOverridden.mockReset();
 	});
 
-	describe('on a class-painted preset', () => {
+	describe('on a class-painted preset the library overrides', () => {
 		const RESTING = '.kb-single-btn-abc .kt-button-abc.kt-button.kt-button.kt-button';
 		const HOVER = '.kb-single-btn-abc .kt-button-abc.kt-button.kt-button.kt-button:hover';
 
@@ -203,6 +205,25 @@ describe('BackendStyles per-instance rule weight', () => {
 			expect(selectors).not.toContain('.kb-single-btn-abc .kt-button-abc');
 			expect(selectors).not.toContain('.kb-single-btn-abc .kt-button-abc:hover');
 			expect(selectors).not.toContain('.kb-single-btn-abc .kt-button-abc.kt-button.kt-button');
+		});
+	});
+
+	describe('on a class-painted preset the library leaves untouched', () => {
+		/**
+		 * With no override there is no override rule to tie, so the button keeps the weight it always had:
+		 * a theme editor rule that outranks the block's own value keeps doing so, as it does on the page.
+		 *
+		 * @return {void}
+		 */
+		it('keeps the historic per-instance weight', () => {
+			blockPresetOverridden.mockReturnValue({ outline: {} });
+
+			const rules = render('outline');
+
+			expect(propertiesFor(rules, '.kb-single-btn-abc .kt-button-abc')).toEqual(
+				expect.arrayContaining(['background', 'border-radius', 'padding-top', 'border-top', 'box-shadow'])
+			);
+			expect(rules.map((rule) => rule.selector).join(' ')).not.toContain('.kt-button.kt-button.kt-button');
 		});
 	});
 
