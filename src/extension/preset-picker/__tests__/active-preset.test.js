@@ -4,7 +4,7 @@
 // component. This file never renders it, so stub the module out.
 jest.mock('@kadence/components', () => ({}));
 
-import { activePresetFor } from '../index';
+import { activePresetFor, blockPresetThemeClass } from '../index';
 
 const BLOCK = 'kadence/singlebtn';
 const SET = 'default';
@@ -24,7 +24,7 @@ function seedCatalog() {
 					default: 'primary',
 					presets: [
 						{ slug: 'primary', label: 'Primary' },
-						{ slug: 'ghost', label: 'Ghost' },
+						{ slug: 'ghost', label: 'Ghost', themeClass: 'kb-btn-global-outline' },
 					],
 					properties: [],
 					values: { primary: {}, ghost: {} },
@@ -70,5 +70,34 @@ describe('activePresetFor', () => {
 	 */
 	it('falls back to the default preset when kbPreset names a deleted preset', () => {
 		expect(activePresetFor(BLOCK, { kbPreset: 'deleted-preset' }, SET)).toBe('primary');
+	});
+});
+
+describe('blockPresetThemeClass', () => {
+	beforeEach(() => {
+		seedCatalog();
+	});
+
+	afterEach(() => {
+		delete window.kadenceDesignTokensPresets;
+	});
+
+	/**
+	 * A class-painted preset answers the classes the catalog carries for it.
+	 *
+	 * @return {void}
+	 */
+	it('returns the catalog themeClass of a class-painted preset', () => {
+		expect(blockPresetThemeClass(BLOCK, 'ghost', SET)).toBe('kb-btn-global-outline');
+	});
+
+	/**
+	 * A preset painted through variables, or an unknown slug, answers an empty string.
+	 *
+	 * @return {void}
+	 */
+	it('returns an empty string for a preset without a themeClass', () => {
+		expect(blockPresetThemeClass(BLOCK, 'primary', SET)).toBe('');
+		expect(blockPresetThemeClass(BLOCK, 'missing', SET)).toBe('');
 	});
 });

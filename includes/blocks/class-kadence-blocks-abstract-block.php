@@ -10,9 +10,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Palette\Renders_Palette_Attribute;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Preset\Renders_Preset_Classes;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Alias;
+use KadenceWP\KadenceBlocks\Utils\Cast;
 
 /**
  * Abstract class to register blocks, build CSS, and enqueue scripts.
@@ -409,14 +412,16 @@ class Kadence_Blocks_Abstract_Block {
 	 * @param mixed $attributes The block attributes.
 	 * @param mixed $content    The block's rendered HTML.
 	 *
-	 * @return mixed The HTML, with the kb-preset--<slug> class added to the root element when a preset is set.
+	 * @return mixed The HTML, with the kb-preset--<slug> class (and a class-painted preset's own classes) added
+	 *               to the root element when a preset is set.
 	 */
 	protected function render_preset_class( $attributes, $content ) {
 		if ( ! is_array( $attributes ) || ! is_string( $content ) || $content === '' ) {
 			return $content;
 		}
 
-		$classes = $this->preset_classes( $attributes['kbPreset'] ?? '' );
+		$preset  = Cast::to_string( $attributes['kbPreset'] ?? '' );
+		$classes = $this->preset_classes( $preset, $this->preset_theme_class( $preset ) );
 
 		if ( $classes === [] ) {
 			return $content;
@@ -433,6 +438,36 @@ class Kadence_Blocks_Abstract_Block {
 		}
 
 		return $tags->get_updated_html();
+	}
+
+	/**
+	 * The classes a selected class-painted preset puts on this block's element, or '' when the selection is
+	 * empty, names a preset painted through variables, or the token services cannot answer.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $preset The selected preset slug.
+	 *
+	 * @return string
+	 */
+	protected function preset_theme_class( string $preset ): string {
+		if ( $preset === '' ) {
+			return '';
+		}
+
+		try {
+			$resolver = kadence_blocks()->get( Preset_Resolver::class );
+			$library  = kadence_blocks()->get( Active_Token_Library_Store::class );
+
+			if ( ! $resolver instanceof Preset_Resolver || ! $library instanceof Active_Token_Library_Store ) {
+				return '';
+			}
+
+			return $resolver->theme_class( $this->namespace . '/' . $this->block_name, $preset, $library->get() );
+		} catch ( Throwable $e ) {
+			// This runs in the render path, so a broken token graph must not take the page down with it.
+			return '';
+		}
 	}
 
 	/**

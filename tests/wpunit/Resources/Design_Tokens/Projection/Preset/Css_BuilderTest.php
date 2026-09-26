@@ -474,6 +474,319 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
+	 * A class-painted preset resets every variable it could retarget but does not override, so the stylesheet
+	 * that paints the class reads the theme's :root values (or its own fallbacks) again.
+	 *
+	 * @return void
+	 */
+	public function testAClassPresetResetsTheVariablesItDoesNotOverride(): void {
+		// Pins the declaration order on purpose: it is the binding order in declarations.php, and a reorder
+		// there should be a deliberate change that updates this string.
+		$this->seedClassPreset( [] );
+
+		$css = $this->builder( $this->registry )->css( 'default' );
+
+		$this->assertStringContainsString( '.wp-block-kadence-singlebtn.kb-preset--theme-base{--global-palette-btn-bg:unset;--global-palette-btn:unset;--global-palette-btn-bg-hover:unset;--global-palette-btn-hover:unset;--kb-btn-radius:unset;--kb-btn-padding:unset;--kb-btn-margin:unset;--kb-btn-border-width:unset;--kb-btn-border-style:unset;--kb-btn-border-color:unset;--kb-btn-shadow:unset;--kb-btn-shadow-hover:unset;}', $css );
+		$this->assertStringNotContainsString( '.wp-block-kadence-singlebtn.kb-preset--theme-base{--global-palette-btn-bg:var(', $css );
+		$this->assertStringNotContainsString( ':where(.wp-block-kadence-singlebtn.kb-preset--theme-base)', $css );
+	}
+
+	/**
+	 * A class-painted preset's overridden property is a real declaration under a scope that beats the
+	 * theme's strongest button rule and ties the block's own per-instance rule.
+	 *
+	 * @return void
+	 */
+	public function testAClassPresetOverrideIsADirectDeclaration(): void {
+		$this->seedClassPreset(
+			[
+				'button-radius' => '12px',
+				'button-bg'     => '#112233',
+			]
+		);
+
+		$css = $this->builder( $this->registry )->css( 'default' );
+
+		$this->assertStringContainsString( ':where(.wp-block-kadence-singlebtn.kb-preset--theme-base).kb-button.kb-button.kb-button{background:var(--kb-token--preset--kadence-singlebtn--theme-base--button-bg);border-radius:var(--kb-token--preset--kadence-singlebtn--theme-base--button-radius);}', $css );
+
+		$reset = $this->resetRule( $css, 'theme-base' );
+
+		$this->assertStringNotContainsString( '--kb-btn-radius:unset', $reset );
+		$this->assertStringNotContainsString( '--global-palette-btn-bg:unset', $reset );
+		$this->assertStringContainsString( '--kb-btn-padding:unset', $reset );
+	}
+
+	/**
+	 * Every shape property a class preset can store becomes a direct declaration of its own CSS property,
+	 * and its variable is no longer reset.
+	 *
+	 * @dataProvider shapeOverrideProvider
+	 *
+	 * @param string $property    The preset property.
+	 * @param mixed  $value       The stored override.
+	 * @param string $declaration The declaration the direct rule must carry.
+	 * @param string $reset       The reset the rule must no longer carry.
+	 *
+	 * @return void
+	 */
+	public function testEveryShapeOverrideIsADirectDeclaration( string $property, $value, string $declaration, string $reset ): void {
+		$this->seedClassPreset( [ $property => $value ] );
+
+		$css = $this->builder( $this->registry )->css( 'default' );
+
+		$this->assertStringContainsString( ':where(.wp-block-kadence-singlebtn.kb-preset--theme-base).kb-button.kb-button.kb-button{' . $declaration . ';}', $css );
+		$this->assertStringNotContainsString( $reset, $this->resetRule( $css, 'theme-base' ) );
+	}
+
+	/**
+	 * @return Generator
+	 */
+	public function shapeOverrideProvider(): Generator {
+		$var = static function ( string $property ): string {
+			return 'var(--kb-token--preset--kadence-singlebtn--theme-base--' . $property . ')';
+		};
+
+		yield 'padding' => [
+			'property'    => 'button-padding',
+			'value'       => [ '4px', '40px', '4px', '40px' ],
+			'declaration' => 'padding:' . $var( 'button-padding' ),
+			'reset'       => '--kb-btn-padding:unset',
+		];
+		yield 'margin' => [
+			'property'    => 'button-margin',
+			'value'       => [ '0', '8px', '0', '8px' ],
+			'declaration' => 'margin:' . $var( 'button-margin' ),
+			'reset'       => '--kb-btn-margin:unset',
+		];
+		yield 'border width' => [
+			'property'    => 'button-border-width',
+			'value'       => [ '3px', '3px', '3px', '3px' ],
+			'declaration' => 'border-width:' . $var( 'button-border-width' ),
+			'reset'       => '--kb-btn-border-width:unset',
+		];
+		yield 'border style' => [
+			'property'    => 'button-border-style',
+			'value'       => 'dashed',
+			'declaration' => 'border-style:' . $var( 'button-border-style' ),
+			'reset'       => '--kb-btn-border-style:unset',
+		];
+		yield 'border color' => [
+			'property'    => 'button-border-color',
+			'value'       => '#112233',
+			'declaration' => 'border-color:' . $var( 'button-border-color' ),
+			'reset'       => '--kb-btn-border-color:unset',
+		];
+		yield 'shadow' => [
+			'property'    => 'button-shadow',
+			'value'       => [
+				'color'   => '#000000',
+				'offsetX' => '0px',
+				'offsetY' => '4px',
+				'blur'    => '8px',
+				'spread'  => '0px',
+				'inset'   => false,
+			],
+			'declaration' => 'box-shadow:' . $var( 'button-shadow' ),
+			'reset'       => '--kb-btn-shadow:unset',
+		];
+	}
+
+	/**
+	 * A stored hover shadow lands on the hover/focus state rule.
+	 *
+	 * @return void
+	 */
+	public function testAClassPresetHoverShadowOverrideUsesTheHoverState(): void {
+		$this->seedClassPreset(
+			[
+				'button-shadow-hover' => [
+					'color'   => '#000000',
+					'offsetX' => '0px',
+					'offsetY' => '4px',
+					'blur'    => '8px',
+					'spread'  => '0px',
+					'inset'   => false,
+				],
+			]
+		);
+
+		$css = $this->builder( $this->registry )->css( 'default' );
+
+		$this->assertStringContainsString( ':where(.wp-block-kadence-singlebtn.kb-preset--theme-base).kb-button.kb-button.kb-button:hover,:where(.wp-block-kadence-singlebtn.kb-preset--theme-base).kb-button.kb-button.kb-button:focus{box-shadow:var(--kb-token--preset--kadence-singlebtn--theme-base--button-shadow-hover);}', $css );
+		$this->assertStringNotContainsString( '--kb-btn-shadow-hover:unset', $this->resetRule( $css, 'theme-base' ) );
+	}
+
+	/**
+	 * A class-painted preset's overridden hover color lands on the hover/focus state rule at the button's
+	 * hover weight, one above the per-instance resting rule, so a block with only a resting value of its
+	 * own still takes the preset's hover.
+	 *
+	 * @return void
+	 */
+	public function testAClassPresetHoverOverrideUsesTheHoverState(): void {
+		$this->seedClassPreset( [ 'button-bg-hover' => '#445566' ] );
+
+		$css = $this->builder( $this->registry )->css( 'default' );
+
+		$this->assertStringContainsString( ':where(.wp-block-kadence-singlebtn.kb-preset--theme-base).kb-button.kb-button.kb-button:hover,:where(.wp-block-kadence-singlebtn.kb-preset--theme-base).kb-button.kb-button.kb-button:focus{background:var(--kb-token--preset--kadence-singlebtn--theme-base--button-bg-hover);}', $css );
+		$this->assertStringNotContainsString( '.kb-button.kb-button.kb-button{background', $css );
+	}
+
+	/**
+	 * A class-painted preset's hover border override is emitted at the raised theme states on both
+	 * surfaces, never at the two-class editor state the value-preset state rule uses.
+	 *
+	 * @return void
+	 */
+	public function testAClassPresetHoverBorderOverrideUsesTheRaisedEditorState(): void {
+		$this->seedClassPreset( [ 'button-border-hover-color' => '#445566' ] );
+
+		$front  = $this->builder( $this->registry )->css( 'default' );
+		$editor = $this->builder( $this->registry )->editor_css( 'default' );
+
+		$this->assertStringContainsString( ':where(.wp-block-kadence-singlebtn.kb-preset--theme-base).kb-button.kb-button.kb-button:hover,:where(.wp-block-kadence-singlebtn.kb-preset--theme-base).kb-button.kb-button.kb-button:focus{border-color:var(--kb-token--preset--kadence-singlebtn--theme-base--button-border-hover-color);}', $front );
+		$this->assertStringContainsString( '.editor-styles-wrapper :where(.wp-block-kadence-singlebtn.kb-preset--theme-base) *.kt-button.kt-button.kt-button.kt-button:hover,.editor-styles-wrapper :where(.wp-block-kadence-singlebtn.kb-preset--theme-base) *.kt-button.kt-button.kt-button.kt-button:focus{border-color:var(--kb-token--preset--kadence-singlebtn--theme-base--button-border-hover-color);}', $editor );
+		$this->assertStringNotContainsString( '*.kt-button.kt-button:hover', $editor );
+	}
+
+	/**
+	 * In the editor a class preset's override is a descendant rule under the editor root, one class heavier
+	 * than the theme's strongest (outline) editor rule and tied with the block's own raised per-instance rule,
+	 * which prints later and so wins.
+	 *
+	 * @return void
+	 */
+	public function testAClassPresetOverrideTargetsTheEditorButtonAsADescendant(): void {
+		$this->seedClassPreset(
+			[
+				'button-radius'   => '12px',
+				'button-bg-hover' => '#445566',
+			]
+		);
+
+		$css = $this->builder( $this->registry )->editor_css( 'default' );
+
+		$this->assertStringContainsString( '.editor-styles-wrapper :where(.wp-block-kadence-singlebtn.kb-preset--theme-base) .kt-button.kt-button.kt-button.kt-button{border-radius:var(--kb-token--preset--kadence-singlebtn--theme-base--button-radius);}', $css );
+		$this->assertStringContainsString( '.editor-styles-wrapper :where(.wp-block-kadence-singlebtn.kb-preset--theme-base) *.kt-button.kt-button.kt-button.kt-button:hover,.editor-styles-wrapper :where(.wp-block-kadence-singlebtn.kb-preset--theme-base) *.kt-button.kt-button.kt-button.kt-button:focus{background:var(--kb-token--preset--kadence-singlebtn--theme-base--button-bg-hover);}', $css );
+	}
+
+	/**
+	 * A class preset's resting override never rises above the block's own per-instance weight: exactly
+	 * three button classes on the front end and, under the editor root, four in the editor.
+	 *
+	 * @return void
+	 */
+	public function testABlockRestingValueOutranksAClassPresetRestingOverride(): void {
+		$this->seedClassPreset( [ 'button-bg' => '#112233' ] );
+
+		$front  = $this->builder( $this->registry )->css( 'default' );
+		$editor = $this->builder( $this->registry )->editor_css( 'default' );
+
+		$this->assertStringContainsString( ':where(.wp-block-kadence-singlebtn.kb-preset--theme-base).kb-button.kb-button.kb-button{', $front );
+		$this->assertStringNotContainsString( '.kb-button.kb-button.kb-button.kb-button{', $front );
+		$this->assertStringContainsString( '.editor-styles-wrapper :where(.wp-block-kadence-singlebtn.kb-preset--theme-base) .kt-button.kt-button.kt-button.kt-button{', $editor );
+		$this->assertStringNotContainsString( '.kt-button.kt-button.kt-button.kt-button.kt-button{', $editor );
+	}
+
+	/**
+	 * A class preset's overrides still define their canonical preset vars, and no gap or value-preset state
+	 * rule is emitted for them.
+	 *
+	 * @return void
+	 */
+	public function testAClassPresetOverrideDefinesItsPresetVarAndNoOtherRule(): void {
+		$this->seedClassPreset( [ 'button-border-hover-color' => '#445566' ] );
+
+		$css = $this->builder( $this->registry )->css( 'default' );
+
+		$this->assertStringContainsString( '--kb-token--preset--kadence-singlebtn--theme-base--button-border-hover-color:#445566;', $css );
+		$this->assertStringNotContainsString( ':where(.wp-block-kadence-singlebtn).kb-preset--theme-base', $css );
+		$this->assertSame( 1, substr_count( $css, 'border-color:var(--kb-token--preset--kadence-singlebtn--theme-base--button-border-hover-color)' ) );
+	}
+
+	/**
+	 * The shipped outline preset emits nothing but resets: its stylesheet paints it from the theme's own
+	 * variables, exactly as the outline mode always rendered.
+	 *
+	 * @return void
+	 */
+	public function testTheShippedOutlinePresetOnlyResets(): void {
+		$css = $this->builder( $this->registry )->css( 'default' );
+
+		$this->assertStringContainsString( '.wp-block-kadence-singlebtn.kb-preset--outline{--global-palette-btn-bg:unset;--global-palette-btn:unset;--global-palette-btn-bg-hover:unset;--global-palette-btn-hover:unset;--kb-btn-radius:unset;', $css );
+		$this->assertStringNotContainsString( 'kb-preset--outline{--global-palette-btn-bg:var(', $css );
+		$this->assertStringNotContainsString( ':where(.wp-block-kadence-singlebtn.kb-preset--outline)', $css );
+		$this->assertStringNotContainsString( '--kb-token--preset--kadence-singlebtn--outline--', $css );
+		$this->assertStringNotContainsString( '.wp-block-button', $css );
+	}
+
+	/**
+	 * A stored override on the shipped outline preset becomes a direct declaration, and only that one.
+	 *
+	 * @return void
+	 */
+	public function testAStoredOutlineOverrideIsTheOnlyDirectDeclaration(): void {
+		$this->store->save_document(
+			'{"$extensions":{"com.kadence.designTokens":{"presets":{"kadence/singlebtn":{'
+			. '"outline":{"tokens":{"button-text":"#112233"}}}}}}}'
+		);
+
+		$css = $this->builder( $this->registry )->css( 'default' );
+
+		$this->assertStringContainsString( ':where(.wp-block-kadence-singlebtn.kb-preset--outline).kb-button.kb-button.kb-button{color:var(--kb-token--preset--kadence-singlebtn--outline--button-text);}', $css );
+
+		$reset = $this->resetRule( $css, 'outline' );
+
+		$this->assertStringNotContainsString( '--global-palette-btn:unset', $reset );
+		$this->assertStringContainsString( '--global-palette-btn-bg:unset', $reset );
+		$this->assertSame( 1, substr_count( $css, ':where(.wp-block-kadence-singlebtn.kb-preset--outline)' ) );
+	}
+
+	/**
+	 * The class-painted preset's own reset rule, so an assertion about its resets cannot match another
+	 * class preset's rule (the shipped outline resets the same variables).
+	 *
+	 * @param string $css    The built CSS.
+	 * @param string $preset The class preset slug.
+	 *
+	 * @return string The `.wp-block-kadence-singlebtn.kb-preset--<preset>{...}` rule, or '' when absent.
+	 */
+	private function resetRule( string $css, string $preset ): string {
+		preg_match( '/\.wp-block-kadence-singlebtn\.kb-preset--' . preg_quote( $preset, '/' ) . '\{[^}]*\}/', $css, $match );
+
+		return $match[0] ?? '';
+	}
+
+	/**
+	 * Store a class-painted theme-base preset with the given overrides.
+	 *
+	 * @param array<string, mixed> $tokens The overridden property => value map.
+	 *
+	 * @return void
+	 */
+	private function seedClassPreset( array $tokens ): void {
+		$this->store->save_document(
+			(string) wp_json_encode(
+				[
+					'$extensions' => [
+						'com.kadence.designTokens' => [
+							'presets' => [
+								'kadence/singlebtn' => [
+									'theme-base' => [
+										'label'      => 'Theme Base',
+										'themeClass' => 'wp-block-button__link button kb-btn-global-inherit',
+										'tokens'     => $tokens,
+									],
+								],
+							],
+						],
+					],
+				]
+			)
+		);
+	}
+
+	/**
 	 * A binding declaring a `css_state` is emitted as a real declaration scoped to the preset class plus the
 	 * state suffix, rather than as a custom-property retarget on the block root.
 	 *

@@ -52,15 +52,15 @@ final class Effective_PresetsTest extends TestCase {
 	public function testAStoredOverrideAddsAPresetAlongsideTheBaselineOnes(): void {
 		$this->store->save_document(
 			'{"$extensions":{"com.kadence.designTokens":{"presets":{"kadence/singlebtn":{'
-			. '"outline":{"label":"Outline","tokens":{"button-bg":"transparent"}}}}}}}'
+			. '"ghost":{"label":"Ghost","tokens":{"button-bg":"transparent"}}}}}}}'
 		);
 
 		$node = $this->presets->block( self::BUTTON );
 
 		$this->assertIsArray( $node );
 		// The override-only preset appears next to the baseline ones.
-		$this->assertArrayHasKey( 'outline', $node );
-		$this->assertSame( 'Outline', $node['outline']['label'] );
+		$this->assertArrayHasKey( 'ghost', $node );
+		$this->assertSame( 'Ghost', $node['ghost']['label'] );
 		$this->assertArrayHasKey( 'default', $node );
 	}
 
@@ -91,7 +91,7 @@ final class Effective_PresetsTest extends TestCase {
 				'com.kadence.designTokens' => [
 					'presets' => [
 						self::BUTTON => [
-							'outline' => [ 'tokens' => [ 'button-bg' => 'transparent' ] ],
+							'ghost' => [ 'tokens' => [ 'button-bg' => 'transparent' ] ],
 						],
 					],
 				],
@@ -100,7 +100,7 @@ final class Effective_PresetsTest extends TestCase {
 
 		$section = $this->presets->for_overrides( $candidate );
 
-		$this->assertArrayHasKey( 'outline', $section[ self::BUTTON ] );
+		$this->assertArrayHasKey( 'ghost', $section[ self::BUTTON ] );
 		$this->assertArrayHasKey( 'default', $section[ self::BUTTON ] );
 		// The store was never written.
 		$this->assertSame( '', $this->store->get_document( Token_Store::default_slug() ) );
@@ -123,13 +123,13 @@ final class Effective_PresetsTest extends TestCase {
 	public function testUserCreatedReportsOverrideOnlyPresets(): void {
 		$this->store->save_document(
 			'{"$extensions":{"com.kadence.designTokens":{"presets":{"kadence/singlebtn":{'
-			. '"outline":{"label":"Outline","tokens":{"button-bg":"transparent"}},'
+			. '"ghost":{"label":"Ghost","tokens":{"button-bg":"transparent"}},'
 			. '"default":{"tokens":{"button-bg":"#000000"}}}}}}}'
 		);
 
 		$user_created = $this->presets->user_created( self::BUTTON, 'default' );
 
-		$this->assertContains( 'outline', $user_created );
+		$this->assertContains( 'ghost', $user_created );
 		// "default" shadows the baseline preset, so it is not user-created.
 		$this->assertNotContains( 'default', $user_created );
 	}
@@ -170,11 +170,11 @@ final class Effective_PresetsTest extends TestCase {
 	public function testStoredTokensReturnsTheFullMapForAnOverrideOnlyPreset(): void {
 		$this->store->save_document(
 			'{"$extensions":{"com.kadence.designTokens":{"presets":{"kadence/singlebtn":{'
-			. '"outline":{"label":"Outline","tokens":{"button-bg":"transparent","button-text":"#000000"}}'
+			. '"ghost":{"label":"Ghost","tokens":{"button-bg":"transparent","button-text":"#000000"}}'
 			. '}}}}}'
 		);
 
-		$stored = $this->presets->stored_tokens( self::BUTTON, 'outline' );
+		$stored = $this->presets->stored_tokens( self::BUTTON, 'ghost' );
 
 		$this->assertSame(
 			[

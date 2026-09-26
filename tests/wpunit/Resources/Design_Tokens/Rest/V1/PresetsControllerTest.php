@@ -3,7 +3,9 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Rest\V1;
 
+use Generator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Presets;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
 use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Presets_Controller;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Alias;
@@ -170,13 +172,13 @@ final class PresetsControllerTest extends TestCase {
 	public function testGetItemReflectsAStoredOverride(): void {
 		$this->store->save_document(
 			'{"$extensions":{"com.kadence.designTokens":{"presets":{"kadence/singlebtn":{'
-			. '"outline":{"label":"Outline","tokens":{"button-bg":"transparent"}}}}}}}'
+			. '"ghost":{"label":"Ghost","tokens":{"button-bg":"transparent"}}}}}}}'
 		);
 
 		$data = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, self::BUTTON ) )->get_data();
 
-		$this->assertArrayHasKey( 'outline', $data['presets'] );
-		$this->assertSame( 'Outline', $data['presets']['outline']['label'] );
+		$this->assertArrayHasKey( 'ghost', $data['presets'] );
+		$this->assertSame( 'Ghost', $data['presets']['ghost']['label'] );
 	}
 
 	/**
@@ -317,6 +319,186 @@ final class PresetsControllerTest extends TestCase {
 	}
 
 	/**
+	 * The "theme-" prefix is reserved for theme-discovered presets: minting a new preset under it is refused.
+	 *
+	 * @return void
+	 */
+	public function testCreatingAThemePrefixedPresetIsRefused(): void {
+		$response = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'preset' => 'theme-x',
+					'label'  => 'Theme X',
+					'tokens' => $this->button_tokens(),
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $response );
+		$this->assertSame( 'rest_design_tokens_reserved_slug', $response->get_error_code() );
+	}
+
+	/**
+	 * A theme preset the library already stores stays writable: a POST to it updates its overrides rather
+	 * than being refused as a reserved creation.
+	 *
+	 * @return void
+	 */
+	public function testAPostToAStoredThemePresetUpdatesItsOverrides(): void {
+		$this->seedClassPreset( 'theme-base', [] );
+
+		$response = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'preset' => 'theme-base',
+					'tokens' => [ 'button-bg' => '#ff0000' ],
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+		$this->assertSame( [ 'button-bg' => '#ff0000' ], $this->container->get( Effective_Presets::class )->stored_tokens( self::BUTTON, 'theme-base' ) );
+	}
+
+	/**
+	 * A body carrying a theme-owned key is refused on both write routes: what paints a class preset is
+	 * never client data.
+	 *
+	 * @dataProvider themeOwnedKeyProvider
+	 *
+	 * @param string $key The theme-owned key.
+	 *
+	 * @return void
+	 */
+	public function testABodyCarryingAThemeOwnedKeyIsRefused( string $key ): void {
+		$response = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'preset' => 'accent',
+					'tokens' => $this->button_tokens(),
+					$key     => 'kb-btn-global-outline',
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $response );
+		$this->assertSame( 'rest_design_tokens_invalid', $response->get_error_code() );
+		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $response->get_error_data()['status'] );
+
+		$response = $this->controller->update_item(
+			$this->block_request(
+				'PUT',
+				self::BUTTON,
+				[
+					'presets' => [
+						'accent' => [
+							'tokens' => $this->button_tokens(),
+							$key     => 'kb-btn-global-outline',
+						],
+					],
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $response );
+		$this->assertSame( 'rest_design_tokens_invalid', $response->get_error_code() );
+	}
+
+	/**
+	 * @return Generator
+	 */
+	public function themeOwnedKeyProvider(): Generator {
+		yield 'theme class' => [ 'key' => 'themeClass' ];
+		yield 'theme values' => [ 'key' => 'themeValues' ];
+		yield 'theme snapshot' => [ 'key' => 'themeSnapshot' ];
+	}
+
+	/**
+	 * Saving a class-painted preset stores only the values that differ from the theme's: a value equal to
+	 * the theme's (in literal or aliased form) is dropped, a real override survives.
+	 *
+	 * @return void
+	 */
+	public function testSavingAThemePresetStoresOnlyTheValuesThatDifferFromTheThemeValues(): void {
+		$this->seedClassPreset(
+			'theme-base',
+			[
+				'button-radius' => [ '3px', '3px', '3px', '3px' ],
+				'button-bg'     => '{semantic.color.button-bg}',
+				'button-text'   => '#ffffff',
+			]
+		);
+
+		$response = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'preset' => 'theme-base',
+					'tokens' => [
+						'button-radius'   => [ '3px', '3px', '3px', '3px' ],
+						'button-bg'       => '#ff0000',
+						// What semantic.color.button-bg resolves to: the normalizer aliases it back to the theme's value.
+						'button-text'     => '#ffffff',
+						'button-bg-hover' => '#3633e1',
+					],
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+
+		$stored = $this->container->get( Effective_Presets::class )->stored_tokens( self::BUTTON, 'theme-base' );
+
+		$this->assertSame( [ 'button-bg', 'button-bg-hover' ], array_keys( $stored ) );
+		$this->assertSame( '#ff0000', $stored['button-bg'] );
+	}
+
+	/**
+	 * A value equal to the theme's once both are normalized is dropped even when the client sends the
+	 * literal the alias resolves to.
+	 *
+	 * @return void
+	 */
+	public function testALiteralEqualToTheThemesAliasedValueIsDropped(): void {
+		$this->seedClassPreset( 'theme-base', [ 'button-bg' => '{semantic.color.button-bg}' ] );
+
+		$this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'preset' => 'theme-base',
+					'tokens' => [ 'button-bg' => '#3633e1' ],
+				]
+			)
+		);
+
+		$this->assertSame( [], $this->container->get( Effective_Presets::class )->stored_tokens( self::BUTTON, 'theme-base' ) );
+	}
+
+	/**
+	 * A theme preset can never be the block's default.
+	 *
+	 * @return void
+	 */
+	public function testSettingAThemePresetAsTheDefaultIsRefused(): void {
+		$this->seedClassPreset( 'theme-base', [] );
+
+		$result = $this->controller->set_default( $this->default_request( self::BUTTON, 'theme-base' ) );
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'rest_design_tokens_theme_default', $result->get_error_code() );
+		$this->assertSame( WP_Http::BAD_REQUEST, $result->get_error_data()['status'] );
+	}
+
+	/**
 	 * A create deep-merges a single preset into the block's presets, leaving the baseline siblings and the default in
 	 * place.
 	 *
@@ -328,8 +510,8 @@ final class PresetsControllerTest extends TestCase {
 				WP_REST_Server::CREATABLE,
 				self::BUTTON,
 				[
-					'preset' => 'outline',
-					'label'  => 'Outline',
+					'preset' => 'ghost',
+					'label'  => 'Ghost',
 					'tokens' => $this->button_tokens(),
 				]
 			)
@@ -342,7 +524,7 @@ final class PresetsControllerTest extends TestCase {
 		$data = $response->get_data();
 
 		// The new preset lands while the baseline sibling and the default survive.
-		$this->assertArrayHasKey( 'outline', $data['presets'] );
+		$this->assertArrayHasKey( 'ghost', $data['presets'] );
 		$this->assertArrayHasKey( 'default', $data['presets'] );
 		$this->assertSame( 'default', $data['default'] );
 	}
@@ -359,17 +541,17 @@ final class PresetsControllerTest extends TestCase {
 				WP_REST_Server::CREATABLE,
 				self::BUTTON,
 				[
-					'preset' => 'outline',
-					'label'  => 'Outline',
+					'preset' => 'ghost',
+					'label'  => 'Ghost',
 					'tokens' => $this->button_tokens(),
 				]
 			)
 		);
 
-		$this->assertContains( 'outline', $response->get_data()['userCreated'] );
+		$this->assertContains( 'ghost', $response->get_data()['userCreated'] );
 
 		$data = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, self::BUTTON ) )->get_data();
-		$this->assertContains( 'outline', $data['userCreated'] );
+		$this->assertContains( 'ghost', $data['userCreated'] );
 	}
 
 	/**
@@ -412,8 +594,8 @@ final class PresetsControllerTest extends TestCase {
 				WP_REST_Server::CREATABLE,
 				self::BUTTON,
 				[
-					'preset' => 'outline',
-					'label'  => 'Outline',
+					'preset' => 'ghost',
+					'label'  => 'Ghost',
 					'tokens' => $this->button_tokens( [ 'button-padding' => '0.4em' ] ),
 				]
 			)
@@ -424,14 +606,14 @@ final class PresetsControllerTest extends TestCase {
 				WP_REST_Server::CREATABLE,
 				self::BUTTON,
 				[
-					'preset' => 'outline',
-					'label'  => 'Outline',
+					'preset' => 'ghost',
+					'label'  => 'Ghost',
 					'tokens' => $this->button_tokens(),
 				]
 			)
 		);
 
-		$tokens = $response->get_data()['presets']['outline']['tokens'];
+		$tokens = $response->get_data()['presets']['ghost']['tokens'];
 
 		$this->assertArrayNotHasKey( 'button-padding', $tokens );
 	}
@@ -507,7 +689,7 @@ final class PresetsControllerTest extends TestCase {
 				WP_REST_Server::CREATABLE,
 				self::BUTTON,
 				[
-					'preset' => 'outline',
+					'preset' => 'ghost',
 					'tokens' => $this->button_tokens(),
 				]
 			)
@@ -527,15 +709,15 @@ final class PresetsControllerTest extends TestCase {
 			$this->block_request(
 				'PUT',
 				self::BUTTON,
-				[ 'presets' => [ 'outline' => [ 'tokens' => $this->button_tokens() ] ] ]
+				[ 'presets' => [ 'ghost' => [ 'tokens' => $this->button_tokens() ] ] ]
 			)
 		);
 
 		$data = $response->get_data();
 
-		// The override "dashed" is dropped; "outline" survives. Baseline presets always remain visible.
+		// The override "dashed" is dropped; "ghost" survives. Baseline presets always remain visible.
 		$this->assertArrayNotHasKey( 'dashed', $data['presets'] );
-		$this->assertArrayHasKey( 'outline', $data['presets'] );
+		$this->assertArrayHasKey( 'ghost', $data['presets'] );
 		$this->assertArrayHasKey( 'default', $data['presets'] );
 	}
 
@@ -551,7 +733,7 @@ final class PresetsControllerTest extends TestCase {
 				WP_REST_Server::CREATABLE,
 				self::BUTTON,
 				[
-					'preset' => 'outline',
+					'preset' => 'ghost',
 					'tokens' => $this->button_tokens(),
 				]
 			)
@@ -564,7 +746,7 @@ final class PresetsControllerTest extends TestCase {
 		$data = $response->get_data();
 
 		// The override is gone; the block renders its baseline presets again.
-		$this->assertArrayNotHasKey( 'outline', $data['presets'] );
+		$this->assertArrayNotHasKey( 'ghost', $data['presets'] );
 		$this->assertArrayHasKey( 'default', $data['presets'] );
 	}
 
@@ -579,16 +761,16 @@ final class PresetsControllerTest extends TestCase {
 				WP_REST_Server::CREATABLE,
 				self::BUTTON,
 				[
-					'preset' => 'outline',
+					'preset' => 'ghost',
 					'tokens' => $this->button_tokens(),
 				]
 			)
 		);
 
-		$response = $this->controller->delete_preset( $this->preset_request( self::BUTTON, 'outline' ) );
+		$response = $this->controller->delete_preset( $this->preset_request( self::BUTTON, 'ghost' ) );
 
 		$this->assertSame( WP_Http::OK, $response->get_status() );
-		$this->assertArrayNotHasKey( 'outline', $response->get_data()['presets'] );
+		$this->assertArrayNotHasKey( 'ghost', $response->get_data()['presets'] );
 	}
 
 	/**
@@ -597,7 +779,7 @@ final class PresetsControllerTest extends TestCase {
 	public function testDeletePresetIsAnIdempotentNoOpWhenAbsent(): void {
 		$this->store->save_document(
 			'{"$extensions":{"com.kadence.designTokens":{"presets":{"kadence/singlebtn":{'
-			. '"outline":{"tokens":{"button-bg":"transparent"}}}}}}}'
+			. '"ghost":{"tokens":{"button-bg":"transparent"}}}}}}}'
 		);
 
 		$version_before = $this->store->get_version( Token_Store::default_slug() );
@@ -697,13 +879,13 @@ final class PresetsControllerTest extends TestCase {
 				'PUT',
 				self::BUTTON,
 				[
-					'presets' => [ 'outline' => [ 'tokens' => $this->button_tokens() ] ],
-					'default' => 'outline',
+					'presets' => [ 'ghost' => [ 'tokens' => $this->button_tokens() ] ],
+					'default' => 'ghost',
 				]
 			)
 		);
 
-		$result = $this->controller->delete_preset( $this->preset_request( self::BUTTON, 'outline' ) );
+		$result = $this->controller->delete_preset( $this->preset_request( self::BUTTON, 'ghost' ) );
 
 		$this->assertInstanceOf( WP_Error::class, $result );
 		$this->assertSame( 'rest_design_tokens_invalid', $result->get_error_code() );
@@ -1198,7 +1380,7 @@ final class PresetsControllerTest extends TestCase {
 				WP_REST_Server::CREATABLE,
 				self::BUTTON,
 				[
-					'preset' => 'outline',
+					'preset' => 'ghost',
 					'tokens' => $this->button_tokens(
 						[
 							'button-border-width' => '2px',
@@ -1214,7 +1396,7 @@ final class PresetsControllerTest extends TestCase {
 		$this->assertInstanceOf( WP_REST_Response::class, $response );
 		$this->assertSame( WP_Http::CREATED, $response->get_status() );
 
-		$tokens = $response->get_data()['presets']['outline']['tokens'];
+		$tokens = $response->get_data()['presets']['ghost']['tokens'];
 
 		$this->assertSame( '2px', $tokens['button-border-width'] );
 		$this->assertSame( 'dashed', $tokens['button-border-style'] );
@@ -1528,7 +1710,7 @@ final class PresetsControllerTest extends TestCase {
 	public function testAWriteBumpsTheVersion(): void {
 		$this->store->save_document(
 			'{"$extensions":{"com.kadence.designTokens":{"presets":{"kadence/singlebtn":{'
-			. '"outline":{"tokens":{"button-bg":"transparent"}}}}}}}'
+			. '"ghost":{"tokens":{"button-bg":"transparent"}}}}}}}'
 		);
 
 		$version_before = $this->store->get_version( Token_Store::default_slug() );
@@ -1620,11 +1802,11 @@ final class PresetsControllerTest extends TestCase {
 		$response = $this->controller->set_order( $this->order_request( self::BUTTON, [ 'accent', 'default' ] ) );
 
 		$this->assertInstanceOf( WP_REST_Response::class, $response );
-		$this->assertSame( [ 'accent', 'default' ], array_keys( $response->get_data()['presets'] ) );
+		$this->assertSame( [ 'accent', 'default', 'outline' ], array_keys( $response->get_data()['presets'] ) );
 
 		// The order survives a fresh read.
 		$data = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, self::BUTTON ) )->get_data();
-		$this->assertSame( [ 'accent', 'default' ], array_keys( $data['presets'] ) );
+		$this->assertSame( [ 'accent', 'default', 'outline' ], array_keys( $data['presets'] ) );
 	}
 
 	/**
@@ -1641,7 +1823,7 @@ final class PresetsControllerTest extends TestCase {
 		);
 
 		$this->assertInstanceOf( WP_REST_Response::class, $response );
-		$this->assertSame( [ 'accent', 'default' ], array_keys( $response->get_data()['presets'] ) );
+		$this->assertSame( [ 'accent', 'default', 'outline' ], array_keys( $response->get_data()['presets'] ) );
 	}
 
 	/**
@@ -1685,7 +1867,7 @@ final class PresetsControllerTest extends TestCase {
 		$response = $this->controller->delete_order( $this->order_request( self::BUTTON, [], $version ) );
 
 		$this->assertSame( WP_Http::OK, $response->get_status() );
-		$this->assertSame( [ 'default', 'accent' ], array_keys( $response->get_data()['presets'] ) );
+		$this->assertSame( [ 'default', 'outline', 'accent' ], array_keys( $response->get_data()['presets'] ) );
 	}
 
 	/**
@@ -1740,8 +1922,8 @@ final class PresetsControllerTest extends TestCase {
 		$data     = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, self::BUTTON ) )->get_data();
 		$resolver = $this->container->get( Preset_Resolver::class );
 
-		$this->assertSame( [ 'accent', 'default' ], array_keys( $data['presets'] ) );
-		$this->assertSame( [ 'accent', 'default' ], $resolver->names( self::BUTTON ) );
+		$this->assertSame( [ 'accent', 'default', 'outline' ], array_keys( $data['presets'] ) );
+		$this->assertSame( [ 'accent', 'default', 'outline' ], $resolver->names( self::BUTTON ) );
 	}
 
 	/**
@@ -1839,6 +2021,40 @@ final class PresetsControllerTest extends TestCase {
 	 */
 	private function preset_request( string $block, string $preset ): WP_REST_Request {
 		return $this->block_request( WP_REST_Server::DELETABLE, $block, [ 'preset' => $preset ] );
+	}
+
+	/**
+	 * Persist a class-painted button preset into the default library's overrides document, the way the
+	 * theme discovery layer writes one.
+	 *
+	 * @param string               $preset       The preset slug.
+	 * @param array<string, mixed> $theme_values The values the theme renders for the preset.
+	 * @param array<string, mixed> $tokens       The preset's stored overrides.
+	 *
+	 * @return void
+	 */
+	private function seedClassPreset( string $preset, array $theme_values, array $tokens = [] ): void {
+		$this->store->save_document(
+			(string) wp_json_encode(
+				[
+					'$extensions' => [
+						'com.kadence.designTokens' => [
+							'presets' => [
+								self::BUTTON => [
+									$preset => [
+										'label'       => 'Theme Base',
+										'themeClass'  => 'wp-block-button__link button kb-btn-global-inherit',
+										'themeValues' => $theme_values,
+										'tokens'      => $tokens,
+									],
+								],
+							],
+						],
+					],
+				]
+			),
+			Token_Store::default_slug()
+		);
 	}
 
 	/**

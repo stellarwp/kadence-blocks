@@ -93,7 +93,26 @@ final class Baseline_PresetsTest extends TestCase {
 	}
 
 	/**
-	 * Assert a single preset carries a non-empty label and a non-empty tokens map.
+	 * The shipped Outline button preset is class-painted: its look is its class, so its token map is empty
+	 * and it carries the values the outline stylesheet renders for display.
+	 *
+	 * @return void
+	 */
+	public function testAClassPresetNodeCarriesThemeValuesForDisplay(): void {
+		$outline = $this->presets_section()['kadence/singlebtn']['outline'] ?? null;
+
+		$this->assertIsArray( $outline );
+		$this->assertSame( 'kb-btn-global-outline', $outline['themeClass'] );
+		$this->assertSame( [], $outline['tokens'] );
+		$this->assertSame(
+			[ 'button-bg', 'button-text', 'button-bg-hover', 'button-text-hover', 'button-border-width', 'button-border-style', 'button-border-color' ],
+			array_keys( $outline['themeValues'] )
+		);
+	}
+
+	/**
+	 * Assert a single preset carries a non-empty label and a tokens map, non-empty unless the preset is
+	 * class-painted (its look is its classes, so it may store nothing).
 	 *
 	 * @param string $block   The block name, for failure messages.
 	 * @param string $name    The preset slug, for failure messages.
@@ -112,7 +131,10 @@ final class Baseline_PresetsTest extends TestCase {
 
 		$this->assertArrayHasKey( 'tokens', $preset, sprintf( '%s is missing a tokens map.', $where ) );
 		$this->assertIsArray( $preset['tokens'], sprintf( '%s tokens must be a map.', $where ) );
-		$this->assertNotEmpty( $preset['tokens'], sprintf( '%s tokens map must not be empty.', $where ) );
+
+		if ( empty( $preset['themeClass'] ) ) {
+			$this->assertNotEmpty( $preset['tokens'], sprintf( '%s tokens map must not be empty.', $where ) );
+		}
 	}
 
 	/**

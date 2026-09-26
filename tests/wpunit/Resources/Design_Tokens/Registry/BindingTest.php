@@ -209,6 +209,62 @@ final class BindingTest extends TestCase {
 	}
 
 	/**
+	 * A declared theme_state is exposed for the class-preset override layer only: the binding stays a
+	 * resting one, so the retarget layers keep treating it as before.
+	 *
+	 * @return void
+	 */
+	public function testThemeStateDoesNotMarkTheBindingAsAStateBinding(): void {
+		$binding = Binding::from_array(
+			'button-bg-hover',
+			[
+				'kadence_slot'       => 'palette-btn-bg-hover',
+				'class_prop'         => 'background',
+				'theme_state'        => '.kb-button:hover',
+				'editor_theme_state' => '*.kt-button:hover',
+			]
+		);
+
+		$this->assertSame( '.kb-button:hover', $binding->theme_state() );
+		$this->assertSame( '*.kt-button:hover', $binding->editor_theme_state() );
+		$this->assertFalse( $binding->is_state() );
+		$this->assertNull( $binding->css_state() );
+	}
+
+	/**
+	 * A declared class_prop is exposed through class_prop() alone; css_prop() stays null so the
+	 * block-default projector never picks it up.
+	 *
+	 * @return void
+	 */
+	public function testClassPropIsSeparateFromCssProp(): void {
+		$binding = Binding::from_array(
+			'button-border-width',
+			[
+				'token'      => 'semantic.border-width.button',
+				'css_var'    => 'kb-btn-border-width',
+				'class_prop' => 'border-width',
+			]
+		);
+
+		$this->assertSame( 'border-width', $binding->class_prop() );
+		$this->assertNull( $binding->css_prop() );
+	}
+
+	/**
+	 * A binding declaring none of the class-preset targets reads null for each.
+	 *
+	 * @return void
+	 */
+	public function testClassPresetTargetsAreNullWhenAbsent(): void {
+		$binding = Binding::from_array( 'button-bg', [ 'kadence_slot' => 'palette-btn-bg' ] );
+
+		$this->assertNull( $binding->class_prop() );
+		$this->assertNull( $binding->theme_state() );
+		$this->assertNull( $binding->editor_theme_state() );
+	}
+
+	/**
 	 * With no editor_css_state declared, the editor reuses the front-end state selector — right for every
 	 * block whose two render paths agree on the element, and what keeps the override opt-in.
 	 *

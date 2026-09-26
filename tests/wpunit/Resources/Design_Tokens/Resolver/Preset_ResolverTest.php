@@ -87,7 +87,7 @@ final class Preset_ResolverTest extends TestCase {
 	}
 
 	public function testItListsTheDocumentsPresetNames(): void {
-		$this->assertSame( [ 'default' ], $this->resolver->names( self::BUTTON ) );
+		$this->assertSame( [ 'default', 'outline' ], $this->resolver->names( self::BUTTON ) );
 	}
 
 	public function testDefaultPresetReadsTheDollarDefault(): void {
@@ -258,7 +258,7 @@ final class Preset_ResolverTest extends TestCase {
 			]
 		);
 
-		$this->assertSame( [ 'default', 'accent' ], $this->resolver->names( self::BUTTON ) );
+		$this->assertSame( [ 'default', 'outline', 'accent' ], $this->resolver->names( self::BUTTON ) );
 		$this->assertTrue( $this->resolver->has_preset( self::BUTTON, 'accent' ) );
 		$this->assertSame( 'Accent', $this->resolver->label( self::BUTTON, 'accent' ) );
 
@@ -337,7 +337,7 @@ final class Preset_ResolverTest extends TestCase {
 
 		// The default library never saw the write.
 		$this->assertFalse( $this->resolver->has_preset( self::BUTTON, 'accent', 'default' ) );
-		$this->assertSame( [ 'default' ], $this->resolver->names( self::BUTTON, 'default' ) );
+		$this->assertSame( [ 'default', 'outline' ], $this->resolver->names( self::BUTTON, 'default' ) );
 	}
 
 	/**
@@ -777,6 +777,79 @@ final class Preset_ResolverTest extends TestCase {
 	 *
 	 * @return void
 	 */
+	/**
+	 * A stored preset carrying `themeClass` exposes it, and `themeValues` when it carries them; a preset
+	 * carrying neither, or an unknown preset or block, reads empty.
+	 *
+	 * @return void
+	 */
+	public function testThemeClassAndThemeValuesReadTheStoredNode(): void {
+		$this->seedClassPreset( 'theme-base', 'wp-block-button__link button', [ 'button-bg' => '#112233' ] );
+
+		$this->assertSame( 'wp-block-button__link button', $this->resolver->theme_class( self::BUTTON, 'theme-base' ) );
+		$this->assertSame( [ 'button-bg' => '#112233' ], $this->resolver->theme_values( self::BUTTON, 'theme-base' ) );
+
+		$this->assertSame( '', $this->resolver->theme_class( self::BUTTON, 'default' ) );
+		$this->assertSame( [], $this->resolver->theme_values( self::BUTTON, 'default' ) );
+		$this->assertSame( '', $this->resolver->theme_class( self::BUTTON, 'missing' ) );
+		$this->assertSame( '', $this->resolver->theme_class( 'kadence/unknown', 'theme-base' ) );
+	}
+
+	/**
+	 * A theme preset is recognized by its reserved slug prefix alone.
+	 *
+	 * @return void
+	 */
+	public function testIsThemePresetReadsTheSlugPrefix(): void {
+		$this->assertTrue( $this->resolver->is_theme_preset( 'theme-base' ) );
+		$this->assertFalse( $this->resolver->is_theme_preset( 'default' ) );
+	}
+
+	/**
+	 * The stored properties of a preset are the ones the library stores itself, never the baseline's.
+	 *
+	 * @return void
+	 */
+	public function testStoredPropertiesListOnlyTheLibraryOwnValues(): void {
+		$this->seedPreset( Token_Store::default_slug(), 'default', 'Default', [ 'button-bg' => '#112233' ] );
+
+		$this->assertSame( [ 'button-bg' => true ], $this->resolver->stored_properties( self::BUTTON, 'default' ) );
+		$this->assertSame( [], $this->resolver->stored_properties( self::BUTTON, 'missing' ) );
+	}
+
+	/**
+	 * Persist a class-painted button preset into the default library's overrides document.
+	 *
+	 * @param string               $preset      The preset slug.
+	 * @param string               $theme_class The classes the preset puts on the button.
+	 * @param array<string, mixed> $values      The theme values the preset displays.
+	 *
+	 * @return void
+	 */
+	private function seedClassPreset( string $preset, string $theme_class, array $values ): void {
+		/** @var Token_Store $store */
+		$store = $this->container->get( Token_Store::class );
+
+		$document = [
+			'$extensions' => [
+				'com.kadence.designTokens' => [
+					'presets' => [
+						self::BUTTON => [
+							$preset => [
+								'label'       => 'Theme Base',
+								'themeClass'  => $theme_class,
+								'themeValues' => $values,
+								'tokens'      => [],
+							],
+						],
+					],
+				],
+			],
+		];
+
+		$store->save_document( (string) wp_json_encode( $document ), Token_Store::default_slug() );
+	}
+
 	private function seedPreset( string $slug, string $preset, string $label, array $tokens ): void {
 		/** @var Token_Store $store */
 		$store = $this->container->get( Token_Store::class );

@@ -341,14 +341,27 @@ $button_hover_state = '.kb-button.kb-button.kb-button:hover,.kb-button.kb-button
  * `.wp-block-kadence-singlebtn` on a wrapper div and the button itself carries `.kt-button`. The leading `*`
  * is how a suffix that would otherwise read as a compound asks for the descendant combinator.
  *
- * It spends one class less than its front-end twin because the editor spends one less on the rules it has to
- * sit between: BackendStyles writes `.kb-single-btn-<uid> .kt-button-<uid>:hover` (three classes) where the
- * front end writes four, and the editor SCSS has no hover reset to clear. Matching the front end's four would
- * put a preset's hover ABOVE the block's own, so the canvas would disagree with the page it previews.
+ * The editor's rules stack in this order, lowest first: the theme's editor rules (at most five classes for
+ * Kadence's outline hover), then the value-preset state rule below (three classes, printed before the
+ * block's own), then the class-preset override (`$button_theme_hover_state_editor`, six classes), then
+ * BackendStyles' own `.kb-single-btn-<uid> .kt-button-<uid>.kt-button.kt-button.kt-button:hover` (six
+ * classes, printed last so it wins the tie). A value preset's state rule only has to beat the plugin's own
+ * hover reset, and a per-instance hover still wins over it; it must not rise, or a preset hover would beat
+ * a block hover set on a button that carries no preset override.
  *
  * @var string
  */
 $button_hover_state_editor = '*.kt-button.kt-button:hover,*.kt-button.kt-button:focus';
+
+/**
+ * The editor hover selector a class-painted preset's OVERRIDE is scoped by. Four `.kt-button` classes under
+ * the weightless `.editor-styles-wrapper :where(...)` scope make six, one above Kadence's strongest editor
+ * button rule (its outline hover) and tied with the block's own raised per-instance hover, which prints
+ * later and so still wins. The front end reuses `$button_hover_state` for the same job.
+ *
+ * @var string
+ */
+$button_theme_hover_state_editor = '*.kt-button.kt-button.kt-button.kt-button:hover,*.kt-button.kt-button.kt-button.kt-button:focus';
 
 return [
 	'tokens'          => array_merge(
@@ -560,32 +573,54 @@ return [
 			 * each is overridable on its own semantic. Picking a preset re-skins a button with
 			 * zero changes to its render path; a fresh button follows the $default.
 			 */
-			'block'         => 'kadence/singlebtn',
-			'label'         => __( 'Style', 'kadence-blocks' ), // a picker-driven set; this is the editor control's label.
-			'style_library' => [
+			'block'                      => 'kadence/singlebtn',
+			'label'                      => __( 'Style', 'kadence-blocks' ), // a picker-driven set; this is the editor control's label.
+			'style_library'              => [
 				// The Style Library BLOCK PRESETS nav label — distinct from "label" above, which names the
 				// inspector's picker control, not the block.
 				'label' => __( 'Button', 'kadence-blocks' ),
 			],
-			'bindings'      => [
+
+			/*
+			 * A class-painted preset (the shipped Outline, a theme's own button style) is painted by a
+			 * stylesheet the plugin does not control, so a Style Library override of one of its properties
+			 * is written as a real declaration rather than a variable retarget. These weights are what that
+			 * declaration is emitted under: on the front end the block class and the button are one element,
+			 * so three `.kb-button` compound with the weightless `:where(block.preset)` to (0,3,0), one tie
+			 * with the block's own per-instance rule (which prints later and wins) and above every theme
+			 * button rule; in the editor the button is a descendant of the block wrapper and the theme's
+			 * editor rules sit under `.editor-styles-wrapper`, so four `.kt-button` make (0,5,0) there.
+			 */
+			'class_preset_weight'        => '.kb-button.kb-button.kb-button',
+			'editor_class_preset_weight' => '.kt-button.kt-button.kt-button.kt-button',
+			'bindings'                   => [
 				'button-bg'                 => [
 					'kadence_slot' => 'palette-btn-bg',
+					'class_prop'   => 'background',
 					'control_attr' => 'background',
 				],
 				'button-text'               => [
 					'kadence_slot' => 'palette-btn',
+					'class_prop'   => 'color',
 					'control_attr' => 'color',
 				],
 				'button-bg-hover'           => [
-					'kadence_slot' => 'palette-btn-bg-hover',
-					'control_attr' => 'backgroundHover',
+					'kadence_slot'       => 'palette-btn-bg-hover',
+					'class_prop'         => 'background',
+					'theme_state'        => $button_hover_state,
+					'editor_theme_state' => $button_theme_hover_state_editor,
+					'control_attr'       => 'backgroundHover',
 				],
 				'button-text-hover'         => [
-					'kadence_slot' => 'palette-btn-hover',
-					'control_attr' => 'colorHover',
+					'kadence_slot'       => 'palette-btn-hover',
+					'class_prop'         => 'color',
+					'theme_state'        => $button_hover_state,
+					'editor_theme_state' => $button_theme_hover_state_editor,
+					'control_attr'       => 'colorHover',
 				],
 				'button-radius'             => [
 					'css_var'          => 'kb-btn-radius', // drives --kb-btn-radius so a preset can vary the radius.
+					'class_prop'       => 'border-radius',
 					'control_attr'     => 'borderRadius',
 					// The block names its per-device radius attributes by a prefix convention, which is a naming
 					// rule rather than something safely derivable, so the editor is told them rather than
@@ -602,6 +637,7 @@ return [
 				// declaration is emitted.
 				'button-padding'            => [
 					'css_var'          => 'kb-btn-padding',
+					'class_prop'       => 'padding',
 					'control_attr'     => 'padding',
 					'responsive_attrs' => [
 						'tablet' => 'tabletPadding',
@@ -610,6 +646,7 @@ return [
 				],
 				'button-margin'             => [
 					'css_var'          => 'kb-btn-margin',
+					'class_prop'       => 'margin',
 					'control_attr'     => 'margin',
 					'responsive_attrs' => [
 						'tablet' => 'tabletMargin',
@@ -635,18 +672,21 @@ return [
 				'button-border-width'       => [
 					'token'        => 'semantic.border-width.button',
 					'css_var'      => 'kb-btn-border-width',
+					'class_prop'   => 'border-width',
 					'control_attr' => 'borderStyle',
 					'axis'         => 'border-width',
 				],
 				'button-border-style'       => [
 					'token'        => 'semantic.border-style.button',
 					'css_var'      => 'kb-btn-border-style',
+					'class_prop'   => 'border-style',
 					'control_attr' => 'borderStyle',
 					'axis'         => 'border-style',
 				],
 				'button-border-color'       => [
 					'token'        => 'semantic.color.button-border',
 					'css_var'      => 'kb-btn-border-color',
+					'class_prop'   => 'border-color',
 					'control_attr' => 'borderStyle',
 					'axis'         => 'border-color',
 				],
@@ -654,8 +694,9 @@ return [
 				// this property entirely and the projector emits no box-shadow rule until a preset (or the
 				// user) sets one.
 				'button-shadow'             => [
-					'token'   => 'semantic.shadow.button',
-					'css_var' => 'kb-btn-shadow',
+					'token'      => 'semantic.shadow.button',
+					'css_var'    => 'kb-btn-shadow',
+					'class_prop' => 'box-shadow',
 				],
 
 				// The hover half of the same four properties. Radius and the border trio take the css_state shape
@@ -667,13 +708,18 @@ return [
 				// has. Shadow is the exception, see button-shadow-hover below.
 				//
 				// $button_hover_state / $button_hover_state_editor carry the selectors; the weight they spend is
-				// load-bearing, and the note above them says what it buys.
+				// load-bearing, and the note above them says what it buys. A class-painted preset's override of
+				// the same property is emitted at the raised theme states instead, never at the two-class
+				// editor state, or Kadence's own editor hover rules would outrank it.
 				'button-radius-hover'       => [
-					'css_prop'         => 'border-radius',
-					'css_state'        => $button_hover_state,
-					'editor_css_state' => $button_hover_state_editor,
-					'control_attr'     => 'borderHoverRadius',
-					'responsive_attrs' => [
+					'css_prop'           => 'border-radius',
+					'class_prop'         => 'border-radius',
+					'css_state'          => $button_hover_state,
+					'editor_css_state'   => $button_hover_state_editor,
+					'theme_state'        => $button_hover_state,
+					'editor_theme_state' => $button_theme_hover_state_editor,
+					'control_attr'       => 'borderHoverRadius',
+					'responsive_attrs'   => [
 						'tablet' => 'tabletBorderHoverRadius',
 						'mobile' => 'mobileBorderHoverRadius',
 					],
@@ -685,28 +731,37 @@ return [
 				// `-width`/`-style`/`-color` to its own path — so these read `button-border-hover-*` rather than
 				// the `button-border-*-hover` the resting trio's names would suggest.
 				'button-border-hover-width' => [
-					'token'            => 'semantic.border-width.default-hover',
-					'css_prop'         => 'border-width',
-					'css_state'        => $button_hover_state,
-					'editor_css_state' => $button_hover_state_editor,
-					'control_attr'     => 'borderHoverStyle',
-					'axis'             => 'border-width',
+					'token'              => 'semantic.border-width.default-hover',
+					'css_prop'           => 'border-width',
+					'class_prop'         => 'border-width',
+					'css_state'          => $button_hover_state,
+					'editor_css_state'   => $button_hover_state_editor,
+					'theme_state'        => $button_hover_state,
+					'editor_theme_state' => $button_theme_hover_state_editor,
+					'control_attr'       => 'borderHoverStyle',
+					'axis'               => 'border-width',
 				],
 				'button-border-hover-style' => [
-					'token'            => 'semantic.border-style.default-hover',
-					'css_prop'         => 'border-style',
-					'css_state'        => $button_hover_state,
-					'editor_css_state' => $button_hover_state_editor,
-					'control_attr'     => 'borderHoverStyle',
-					'axis'             => 'border-style',
+					'token'              => 'semantic.border-style.default-hover',
+					'css_prop'           => 'border-style',
+					'class_prop'         => 'border-style',
+					'css_state'          => $button_hover_state,
+					'editor_css_state'   => $button_hover_state_editor,
+					'theme_state'        => $button_hover_state,
+					'editor_theme_state' => $button_theme_hover_state_editor,
+					'control_attr'       => 'borderHoverStyle',
+					'axis'               => 'border-style',
 				],
 				'button-border-hover-color' => [
-					'token'            => 'semantic.color.border-hover',
-					'css_prop'         => 'border-color',
-					'css_state'        => $button_hover_state,
-					'editor_css_state' => $button_hover_state_editor,
-					'control_attr'     => 'borderHoverStyle',
-					'axis'             => 'border-color',
+					'token'              => 'semantic.color.border-hover',
+					'css_prop'           => 'border-color',
+					'class_prop'         => 'border-color',
+					'css_state'          => $button_hover_state,
+					'editor_css_state'   => $button_hover_state_editor,
+					'theme_state'        => $button_hover_state,
+					'editor_theme_state' => $button_theme_hover_state_editor,
+					'control_attr'       => 'borderHoverStyle',
+					'axis'               => 'border-color',
 				],
 
 				// No control_attr, matching button-shadow: the block's shadow control carries no indicator, and
@@ -719,8 +774,11 @@ return [
 				// rule could not do that: with no hover shadow in the preset it would emit nothing, and the
 				// resting shadow would carry through the cascade into the hover state.
 				'button-shadow-hover'       => [
-					'token'   => 'semantic.shadow.button-hover',
-					'css_var' => 'kb-btn-shadow-hover',
+					'token'              => 'semantic.shadow.button-hover',
+					'css_var'            => 'kb-btn-shadow-hover',
+					'class_prop'         => 'box-shadow',
+					'theme_state'        => $button_hover_state,
+					'editor_theme_state' => $button_theme_hover_state_editor,
 				],
 			],
 		],

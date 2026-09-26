@@ -36,6 +36,47 @@ final class StyleTest extends TestCase {
 	}
 
 	/**
+	 * A slug is a theme preset only when it carries the reserved prefix followed by a name.
+	 *
+	 * @dataProvider themeSlugProvider
+	 *
+	 * @param string $slug     The preset slug.
+	 * @param bool   $expected Whether the slug names a theme preset.
+	 *
+	 * @return void
+	 */
+	public function testIsThemeSlug( string $slug, bool $expected ): void {
+		$this->assertSame( $expected, Style::is_theme_slug( $slug ) );
+	}
+
+	/**
+	 * @return Generator
+	 */
+	public function themeSlugProvider(): Generator {
+		yield 'theme preset' => [
+			'slug'     => 'theme-base',
+			'expected' => true,
+		];
+		yield 'prefix inside a word' => [
+			'slug'     => 'themed',
+			'expected' => false,
+		];
+		yield 'bare prefix' => [
+			'slug'     => 'theme-',
+			'expected' => false,
+		];
+	}
+
+	/**
+	 * The reserved theme prefix is exposed for the REST guard.
+	 *
+	 * @return void
+	 */
+	public function testThemePrefix(): void {
+		$this->assertSame( 'theme-', Style::get_theme_prefix() );
+	}
+
+	/**
 	 * @return Generator
 	 */
 	public function unsafeSegmentProvider(): Generator {
