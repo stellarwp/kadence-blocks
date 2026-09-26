@@ -80,8 +80,8 @@ final class DiscoveryTest extends TestCase {
 						'label'  => 'Pill',
 						'tokens' => [ 'button-radius' => '999px' ],
 					],
-				] 
-			) 
+				]
+			)
 		) )->styles();
 
 		$this->assertSame( [ 'theme-pill' ], array_keys( $styles ) );

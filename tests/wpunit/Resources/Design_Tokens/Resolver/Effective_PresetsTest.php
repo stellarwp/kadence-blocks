@@ -207,6 +207,7 @@ final class Effective_PresetsTest extends TestCase {
 	public function testStoredTokensIsEmptyForAnUnknownPresetSlug(): void {
 		$this->assertSame( [], $this->presets->stored_tokens( self::BUTTON, 'not-a-preset' ) );
 	}
+
 	/**
 	 * A stored theme preset whose theme no longer offers it is dormant: not listed, not user-created, still stored.
 	 *
