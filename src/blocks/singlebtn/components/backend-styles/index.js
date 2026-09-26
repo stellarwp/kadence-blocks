@@ -11,7 +11,6 @@ import {
 	activePresetFor,
 	blockDefaultOverridden,
 	blockDefaultPreset,
-	blockPresetOverridden,
 	blockPresets,
 	blockPresetThemeClass,
 	blockPresetValues,
@@ -100,26 +99,6 @@ export function paintsOwnShape(attributes) {
 }
 
 /**
- * Whether the button's active preset is class-painted and carries Style Library overrides: the only case
- * the preset projector emits a direct override rule the block's own editor rules must outweigh.
- *
- * @param {Object} attributes The block attributes.
- *
- * @since TBD
- *
- * @return {boolean} True when an override rule exists for the active preset.
- */
-export function hasPresetOverrides(attributes) {
-	const preset = activePresetFor('kadence/singlebtn', attributes);
-
-	if (!blockPresetThemeClass('kadence/singlebtn', preset)) {
-		return false;
-	}
-
-	return Object.keys(blockPresetOverridden('kadence/singlebtn')?.[preset] ?? {}).length > 0;
-}
-
-/**
  * Whether the button's active preset resolves a box-shadow.
  *
  * Reads the same preset surface the inspector does, so the canvas and the panel cannot disagree
@@ -188,14 +167,17 @@ export default function BackendStyles(props) {
 	const { attributes, isSelected, previewDevice, currentRef, context } = props;
 
 	/*
-	 * A button on a class-painted preset the Style Library has overridden carries an override rule the
-	 * preset projector emits at (0,5,0) resting / (0,6,0) hover, so its own rules spend three extra
-	 * `.kt-button` classes to tie it: this <style> renders inside the block, after every head stylesheet,
-	 * so the tie goes to the block's own value, the way the front end already resolves it. With no
-	 * override there is no such rule, and the button keeps the weight it always had, so a theme editor
-	 * rule that outranked the block's before still does, exactly as it does on the front end.
+	 * A button on a class-painted preset may carry a Style Library override rule the preset projector emits
+	 * at (0,5,0) resting / (0,6,0) hover, so its own rules spend three extra `.kt-button` classes to tie
+	 * it: this <style> renders inside the block, after every head stylesheet, so the tie goes to the
+	 * block's own value, the way the front end already resolves it. The raise applies whether or not the
+	 * library has stored an override for the preset, so a Style Library edit never flips which editor rules
+	 * win on the button's own values. Every other button keeps the weight it always had, so a theme editor
+	 * rule that outranked the block's before still does.
 	 */
-	const weight = hasPresetOverrides(attributes) ? '.kt-button.kt-button.kt-button' : '';
+	const weight = blockPresetThemeClass('kadence/singlebtn', activePresetFor('kadence/singlebtn', attributes))
+		? '.kt-button.kt-button.kt-button'
+		: '';
 
 	const {
 		uniqueID,
