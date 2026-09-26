@@ -563,6 +563,210 @@ final class PresetsControllerTest extends TestCase {
 	}
 
 	/**
+	 * Saving a readable theme preset records the raw theme values it was saved against, so a later theme
+	 * switch can still offer them as a custom preset; only the values that differ are stored as tokens.
+	 *
+	 * @return void
+	 */
+	public function testSavingAThemePresetRecordsTheThemeSnapshot(): void {
+		$this->seed_theme_presets(
+			[
+				'base' => [
+					'label'  => 'Theme Base',
+					'class'  => 'wp-block-button__link button kb-btn-global-inherit',
+					'values' => [
+						'button-bg'   => '#2B6CB0',
+						'button-text' => '#ffffff',
+					],
+				],
+			]
+		);
+
+		$response = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'preset' => 'theme-base',
+					'tokens' => [
+						'button-bg'   => '#ff0000',
+						'button-text' => '#ffffff',
+					],
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+		$this->assertSame( WP_Http::CREATED, $response->get_status() );
+
+		$node = $this->stored_preset_node( 'theme-base' );
+
+		$this->assertSame( [ 'button-bg' => '#ff0000' ], $node['tokens'] );
+		// The raw literal, never the alias the normalizer would map `#ffffff` to.
+		$this->assertSame(
+			[
+				'button-bg'   => '#2B6CB0',
+				'button-text' => '#ffffff',
+			],
+			$node['themeSnapshot']
+		);
+	}
+
+	/**
+	 * A later save replaces the whole snapshot: a value the theme no longer renders does not survive from
+	 * the earlier snapshot through the merge.
+	 *
+	 * @return void
+	 */
+	public function testASecondSaveReplacesTheThemeSnapshotWholesale(): void {
+		$base = [
+			'label' => 'Theme Base',
+			'class' => 'wp-block-button__link button kb-btn-global-inherit',
+		];
+		$save = function (): void {
+			$this->controller->create_item(
+				$this->block_request(
+					WP_REST_Server::CREATABLE,
+					self::BUTTON,
+					[
+						'preset' => 'theme-base',
+						'tokens' => [ 'button-bg' => '#ff0000' ],
+					]
+				)
+			);
+		};
+
+		$this->seed_theme_presets(
+			[
+				'base' => $base + [
+					'values' => [
+						'button-bg'     => '#2B6CB0',
+						'button-radius' => [ '3px', '3px', '3px', '3px' ],
+					],
+				],
+			]
+		);
+		$save();
+
+		$this->seed_theme_presets( [ 'base' => $base + [ 'values' => [ 'button-bg' => '#0000ff' ] ] ] );
+		$save();
+
+		$this->assertSame( [ 'button-bg' => '#0000ff' ], $this->stored_preset_node( 'theme-base' )['themeSnapshot'] );
+	}
+
+	/**
+	 * A label-only write leaves the stored snapshot alone, the way it leaves the stored tokens alone.
+	 *
+	 * @return void
+	 */
+	public function testALabelOnlyWriteKeepsTheStoredThemeSnapshot(): void {
+		$this->seed_theme_presets(
+			[
+				'base' => [
+					'label'  => 'Theme Base',
+					'class'  => 'wp-block-button__link button kb-btn-global-inherit',
+					'values' => [ 'button-bg' => '#2B6CB0' ],
+				],
+			]
+		);
+
+		$this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'preset' => 'theme-base',
+					'tokens' => [ 'button-bg' => '#ff0000' ],
+				]
+			)
+		);
+		$this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'preset' => 'theme-base',
+					'label'  => 'Renamed',
+				]
+			)
+		);
+
+		$node = $this->stored_preset_node( 'theme-base' );
+
+		$this->assertSame( 'Renamed', $node['label'] );
+		$this->assertSame( [ 'button-bg' => '#ff0000' ], $node['tokens'] );
+		$this->assertSame( [ 'button-bg' => '#2B6CB0' ], $node['themeSnapshot'] );
+	}
+
+	/**
+	 * Saving a preset the theme renders no values for records no snapshot: there is nothing to keep.
+	 *
+	 * @return void
+	 */
+	public function testSavingAnUnreadableThemePresetRecordsNoSnapshot(): void {
+		$this->seed_theme_preset_slugs( [ 'base' ] );
+
+		$this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'preset' => 'theme-base',
+					'tokens' => [ 'button-bg' => '#ff0000' ],
+				]
+			)
+		);
+
+		$this->assertArrayNotHasKey( 'themeSnapshot', $this->stored_preset_node( 'theme-base' ) );
+	}
+
+	/**
+	 * Every listed preset says whether the theme's values behind it could be read: true for a theme preset
+	 * with values and for the shipped Outline, false for a theme preset with none and for a plain preset.
+	 *
+	 * @return void
+	 */
+	public function testGetItemReportsWhetherAPresetsThemeValuesAreReadable(): void {
+		$this->seed_theme_presets(
+			[
+				'base'      => [
+					'label'  => 'Theme Base',
+					'class'  => 'wp-block-button__link button kb-btn-global-inherit',
+					'values' => [ 'button-bg' => '#2B6CB0' ],
+				],
+				'secondary' => [
+					'label'  => 'Theme Secondary',
+					'class'  => 'wp-block-button__link button button-style-secondary kb-btn-global-inherit',
+					'values' => [],
+				],
+			]
+		);
+
+		$data = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, self::BUTTON ) )->get_data();
+
+		$this->assertTrue( $data['presets']['theme-base']['readable'] );
+		$this->assertSame( [ 'button-bg' => '#2B6CB0' ], $data['presets']['theme-base']['themeValues'] );
+		$this->assertFalse( $data['presets']['theme-secondary']['readable'] );
+		$this->assertTrue( $data['presets']['outline']['readable'] );
+		$this->assertFalse( $data['presets']['default']['readable'] );
+	}
+
+	/**
+	 * The item schema describes the theme class, the theme values and the readable flag each preset carries.
+	 *
+	 * @return void
+	 */
+	public function testItemSchemaDescribesTheThemeFacingPresetKeys(): void {
+		$schema = $this->controller->get_item_schema();
+		$preset = $schema['properties']['presets']['additionalProperties']['properties'];
+
+		$this->assertSame( 'string', $preset['themeClass']['type'] );
+		$this->assertSame( 'object', $preset['themeValues']['type'] );
+		$this->assertSame( 'boolean', $preset['readable']['type'] );
+		$this->assertTrue( $preset['readable']['readonly'] );
+	}
+
+	/**
 	 * A theme preset can never be the block's default.
 	 *
 	 * @return void
@@ -1587,7 +1791,7 @@ final class PresetsControllerTest extends TestCase {
 						[
 							'button-bg'   => '#3633e1',
 							'button-text' => 'rgba(1,2,3,0.42)',
-						] 
+						]
 					),
 				]
 			)
@@ -2158,6 +2362,20 @@ final class PresetsControllerTest extends TestCase {
 	}
 
 	/**
+	 * The raw node the store holds for a Button preset, exactly as written.
+	 *
+	 * @param string $preset The preset slug.
+	 *
+	 * @return array<string, mixed> The stored node, empty when absent.
+	 */
+	private function stored_preset_node( string $preset ): array {
+		$raw  = $this->container->get( Effective_Presets::class )->raw();
+		$node = $raw['$extensions']['com.kadence.designTokens']['presets'][ self::BUTTON ][ $preset ] ?? [];
+
+		return is_array( $node ) ? $node : [];
+	}
+
+	/**
 	 * Persist a class-painted button preset into the default library's overrides document, the way the
 	 * theme discovery layer writes one.
 	 *
@@ -2223,7 +2441,7 @@ final class PresetsControllerTest extends TestCase {
 			[
 				'order'   => $order,
 				'version' => $version,
-			] 
+			]
 		);
 	}
 

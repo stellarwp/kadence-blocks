@@ -593,6 +593,14 @@ final class Presets_Controller extends Controller {
 				$stored,
 				array_merge( $this->node_path( $block ), [ $preset, Extensions::get_tokens_key() ] )
 			);
+
+			// The snapshot is replaced wholesale for the same reason: a theme value the theme no longer
+			// sets must not survive from an older snapshot through the merge below.
+			$block_node = $this->with_theme_snapshot( $block_node, $block, $preset, $slug );
+			$stored     = $this->mutator->remove_by_keys(
+				$stored,
+				array_merge( $this->node_path( $block ), [ $preset, Extensions::get_theme_snapshot_key() ] )
+			);
 		}
 
 		$candidate = $this->mutator->merge( $stored, $this->partial( $block, $block_node ) );
@@ -936,11 +944,11 @@ final class Presets_Controller extends Controller {
 		$preset_schema = [
 			'type'       => 'object',
 			'properties' => [
-				Extensions::get_label_key()  => [
+				Extensions::get_label_key()        => [
 					'description' => __( 'The preset\'s human-readable label.', 'kadence-blocks' ),
 					'type'        => 'string',
 				],
-				Extensions::get_tokens_key() => [
+				Extensions::get_tokens_key()       => [
 					'description'          => __( 'The preset\'s property => value map: an alias or literal, a per-corner list, or a responsive envelope.', 'kadence-blocks' ),
 					'type'                 => 'object',
 					// A value is not always scalar. A dimension property can hold a per-corner list, or a
@@ -949,11 +957,27 @@ final class Presets_Controller extends Controller {
 					// schema that says otherwise misleads anything generated from it.
 					'additionalProperties' => [ 'type' => [ 'string', 'number', 'array', 'object' ] ],
 				],
-				'overridden'                 => [
+				'overridden'                       => [
 					'description'          => __( 'Which properties this preset genuinely stores itself, as property => true. A bound property absent here is only inherited from the baseline\'s own definition of the same preset slug, and a control shows it as a muted default rather than as bound.', 'kadence-blocks' ),
 					'type'                 => 'object',
 					'additionalProperties' => [ 'type' => 'boolean' ],
 					'readonly'             => true,
+				],
+				Extensions::get_theme_class_key()  => [
+					'description' => __( 'The classes the theme\'s own stylesheet paints this preset through, for a preset painted by class rather than by variables.', 'kadence-blocks' ),
+					'type'        => 'string',
+					'readonly'    => true,
+				],
+				Extensions::get_theme_values_key() => [
+					'description'          => __( 'The values the theme currently renders for this preset, for display only: a control shows them as muted defaults and a save stores only the values that differ.', 'kadence-blocks' ),
+					'type'                 => 'object',
+					'additionalProperties' => [ 'type' => [ 'string', 'number', 'array', 'object' ] ],
+					'readonly'             => true,
+				],
+				'readable'                         => [
+					'description' => __( 'Whether the theme\'s values behind this preset could be read. A preset that is not readable can be previewed and picked but offers nothing to edit.', 'kadence-blocks' ),
+					'type'        => 'boolean',
+					'readonly'    => true,
 				],
 			],
 		];
@@ -1890,7 +1914,9 @@ final class Presets_Controller extends Controller {
 	 * be told apart from a value only inherited from the baseline's own definition of that same preset
 	 * slug. A client reads this to decide whether an unset field should show as bound to the merged
 	 * value (this preset has its own override) or as a muted generic default (nothing here is this
-	 * preset's own) — see {@see Effective_Presets::stored_tokens()}.
+	 * preset's own) — see {@see Effective_Presets::stored_tokens()}. Each preset also gains `readable`:
+	 * whether the theme's values behind it could be read, so a client can tell a preset it can show
+	 * values for from one it can only name.
 	 *
 	 * @since TBD
 	 *
@@ -1899,7 +1925,7 @@ final class Presets_Controller extends Controller {
 	 * @param string               $slug    The token library slug.
 	 *
 	 * @return array<string, mixed> The same map, each preset gaining an `overridden` key
-	 *                              (`{ property => true }`, only for properties it owns).
+	 *                              (`{ property => true }`, only for properties it owns) and a `readable` flag.
 	 */
 	private function with_overridden( array $presets, string $block, string $slug ): array {
 		foreach ( $presets as $preset_slug => $preset ) {
@@ -1908,6 +1934,7 @@ final class Presets_Controller extends Controller {
 			}
 
 			$preset['overridden'] = $this->presets->owned_properties( $block, (string) $preset_slug, $slug );
+			$preset['readable']   = $this->preset_resolver->theme_values( $block, (string) $preset_slug, $slug ) !== [];
 
 			$presets[ $preset_slug ] = $preset;
 		}
@@ -1999,6 +2026,34 @@ final class Presets_Controller extends Controller {
 		);
 
 		$block_node[ $preset ] = $node;
+
+		return $block_node;
+	}
+
+	/**
+	 * Record, on a theme preset being written, the values the theme renders for it right now. A later theme
+	 * switch leaves the preset dormant, and the snapshot is what lets its overrides be kept as a custom preset
+	 * that still looks the way the old theme showed it. The RAW theme values are stored, never the normalized
+	 * copy the reduce step compares against: normalizing would turn a literal into the alias that happens to
+	 * resolve to it today, and the kept preset would then re-value under the new theme.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $block_node The block's preset node being written.
+	 * @param string               $block      The block name.
+	 * @param string               $preset     The preset slug.
+	 * @param string               $slug       The token library slug.
+	 *
+	 * @return array<string, mixed> The node, carrying the snapshot when the theme renders values for the preset.
+	 */
+	private function with_theme_snapshot( array $block_node, string $block, string $preset, string $slug ): array {
+		$raw_theme_values = $this->preset_resolver->theme_values( $block, $preset, $slug );
+
+		if ( $raw_theme_values === [] || ! is_array( $block_node[ $preset ] ?? null ) ) {
+			return $block_node;
+		}
+
+		$block_node[ $preset ][ Extensions::get_theme_snapshot_key() ] = $raw_theme_values;
 
 		return $block_node;
 	}
