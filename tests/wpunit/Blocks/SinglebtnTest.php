@@ -1083,6 +1083,47 @@ class SinglebtnTest extends KadenceBlocksUnit {
 	}
 
 	/**
+	 * A button that stores a variable-painted named preset next to a retired style value keeps that
+	 * value's own legacy classes, the look it had before presets existed, rather than the fill class.
+	 *
+	 * @return void
+	 */
+	public function testARetiredModeUnderANamedPresetKeepsItsLegacyClasses(): void {
+		$this->seedSecondaryPreset();
+
+		$html = $this->render_html(
+			[
+				'kbPreset'      => 'secondary',
+				'inheritStyles' => 'outline',
+			]
+		);
+
+		$this->assertStringContainsString( 'kb-btn-global-outline', $html );
+		$this->assertStringContainsString( 'kb-preset--secondary', $html );
+		$this->assertStringNotContainsString( 'kb-btn-global-fill', $html );
+	}
+
+	/**
+	 * A button whose stored preset slug is missing from the library falls back to the default,
+	 * variable-painted preset; a retired style value stored next to it still keeps its own legacy classes
+	 * rather than the fill class.
+	 *
+	 * @return void
+	 */
+	public function testARetiredModeUnderAMissingPresetKeepsItsLegacyClasses(): void {
+		$html = $this->render_html(
+			[
+				'kbPreset'      => 'gone',
+				'inheritStyles' => 'inherit',
+			]
+		);
+
+		$this->assertStringContainsString( 'kb-btn-global-inherit', $html );
+		$this->assertStringContainsString( 'wp-block-button__link', $html );
+		$this->assertStringNotContainsString( 'kb-btn-global-fill', $html );
+	}
+
+	/**
 	 * A saved Theme Base button, which stores only the older inheritStyles value, renders the Theme Base
 	 * preset's classes with no re-save: the same classes the theme painted it with before presets existed.
 	 *

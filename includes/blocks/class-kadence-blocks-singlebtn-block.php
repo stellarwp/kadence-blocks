@@ -67,7 +67,12 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 
 	/**
 	 * The classes each value of the older "Button Inherit Styles" attribute put on the button before
-	 * presets existed. Read only while the token registry is inactive, so a saved button keeps its look.
+	 * presets existed, so a saved button keeps its look. Read whenever no preset paints the button through
+	 * a class: while the token registry is inactive or cannot answer, and on an active registry when the
+	 * resolved preset is painted through variables (the default look, a value preset, or a stored slug the
+	 * library lacks, which falls back to the default). A value with no entry, such as Fill or empty, gets
+	 * the fill class. On an active registry a retired value alone always maps to a class-painted preset,
+	 * so a match here comes only from a button that also stores a variable-painted `kbPreset`.
 	 *
 	 * @since TBD
 	 *
