@@ -302,16 +302,16 @@ describe('BUTTON_PRESET.schemaFor', () => {
 	});
 
 	/**
-	 * The border row falls back to the semantic border color the Default preset binds, so an empty
-	 * row shows that color muted instead of a transparent swatch.
+	 * The border row falls back to the button border semantic the Default preset binds, so an empty
+	 * row names that token instead of showing a bare swatch.
 	 *
 	 * @return {void}
 	 */
-	it('declares the semantic border color as the border field default color', () => {
+	it('declares the button border semantic as the border field default color', () => {
 		const field = BUTTON_PRESET.schemaFor('normal')
 			.panels.flatMap((panel) => panel.fields)
 			.find((candidate) => candidate.path === 'tokens.button-border');
 
-		expect(field.defaultColor).toBe('semantic.color.border');
+		expect(field.defaultColor).toBe('semantic.color.button-border');
 	});
 });

@@ -11,7 +11,13 @@
  * Internal dependencies
  */
 import { KadenceBlocksCSS } from '@kadence/helpers';
-import BackendStyles, { hasVisibleShadow } from '../index';
+import BackendStyles, { hasVisibleShadow, paintsOwnShape } from '../index';
+import {
+	activePresetFor,
+	blockDefaultOverridden,
+	blockDefaultPreset,
+	blockPresetValues,
+} from '../../../../../extension/preset-picker';
 import { shadowAxisPx, shadowCss } from '../../../../../extension/design-tokens/shadow-css';
 import metadata from '../../../block.json';
 
@@ -34,6 +40,8 @@ jest.mock('@kadence/helpers', () => ({
 
 jest.mock('../../../../../extension/preset-picker', () => ({
 	activePresetFor: jest.fn(),
+	blockDefaultOverridden: jest.fn(() => ({})),
+	blockDefaultPreset: jest.fn(() => 'default'),
 	blockPresetValues: jest.fn(),
 }));
 
@@ -430,6 +438,108 @@ describe('BackendStyles shadow flag gating', () => {
 		});
 
 		expect(boxShadowFor(fakeCss.rules, BASE_SELECTOR)).toBe(shadowCss(metadata.attributes.shadow.default[0], 14));
+	});
+});
+
+describe('BackendStyles class-painted mode gating', () => {
+	const BASE_SELECTOR = '.kb-single-btn-abc123 .kt-button-abc123';
+	const PRESET_TOKENS = {
+		default: {
+			'button-padding': ['0.4em', '1em', '0.4em', '1em'],
+			'button-margin': ['0', '0', '0', '0'],
+			'button-border-width': '0px',
+			'button-border-style': 'solid',
+			'button-border-color': 'transparent',
+			'button-shadow': '{primitive.shadow.md}',
+		},
+	};
+
+	let fakeCss;
+
+	beforeEach(() => {
+		fakeCss = createFakeCss();
+		KadenceBlocksCSS.mockImplementation(() => fakeCss);
+		activePresetFor.mockReturnValue('default');
+		blockPresetValues.mockReturnValue(PRESET_TOKENS);
+		blockDefaultPreset.mockReturnValue('default');
+		blockDefaultOverridden.mockReturnValue({});
+	});
+
+	afterEach(() => {
+		KadenceBlocksCSS.mockReset();
+		activePresetFor.mockReset();
+		blockPresetValues.mockReset();
+		blockDefaultPreset.mockReset();
+		blockDefaultOverridden.mockReset();
+	});
+
+	/**
+	 * Reads back every property recorded for the base selector.
+	 *
+	 * @param {Array} rules The fake CSS builder's recorded rules.
+	 *
+	 * @since TBD
+	 *
+	 * @return {Object} The merged property map for the base selector.
+	 */
+	function basePropsOf(rules) {
+		return Object.assign(
+			{},
+			...rules.filter((entry) => entry.selector === BASE_SELECTOR).map((entry) => entry.props)
+		);
+	}
+
+	/**
+	 * Only the plugin-painted modes own the button's shape.
+	 *
+	 * @return {void}
+	 */
+	it('treats fill and an unset mode as the plugin painting its own shape', () => {
+		expect(paintsOwnShape({})).toBe(true);
+		expect(paintsOwnShape({ inheritStyles: 'fill' })).toBe(true);
+		expect(paintsOwnShape({ inheritStyles: 'outline' })).toBe(false);
+		expect(paintsOwnShape({ inheritStyles: 'inherit' })).toBe(false);
+		expect(paintsOwnShape({ inheritStyles: 'inherit-secondary' })).toBe(false);
+	});
+
+	/**
+	 * A theme-painted or outline button gets none of the preset bridges and no shadow reset, so the
+	 * editor canvas keeps the padding, border and shadow the theme's or the outline rules give it.
+	 *
+	 * @return {void}
+	 */
+	it.each(['inherit', 'inherit-secondary', 'outline'])('emits no preset bridge or shadow reset for %s', (mode) => {
+		BackendStyles({ attributes: { uniqueID: 'abc123', inheritStyles: mode }, previewDevice: 'Desktop' });
+
+		const props = basePropsOf(fakeCss.rules);
+
+		expect(props.padding).toBeUndefined();
+		expect(props.margin).toBeUndefined();
+		expect(props['border-width']).toBeUndefined();
+		expect(props['border-style']).toBeUndefined();
+		expect(props['border-color']).toBeUndefined();
+		expect(props['box-shadow']).toBeUndefined();
+		expect(boxShadowFor(fakeCss.rules, `${BASE_SELECTOR}:hover`)).toBeUndefined();
+	});
+
+	/**
+	 * A Fill button keeps the spacing and shadow bridges, since its padding, margin and shadow are the
+	 * plugin's own. The border bridge stays out while the library overrides no border property, so the
+	 * theme's cascade keeps painting an untouched button's border.
+	 *
+	 * @return {void}
+	 */
+	it('keeps the spacing and shadow bridges for fill but no untouched border bridge', () => {
+		BackendStyles({ attributes: { uniqueID: 'abc123', inheritStyles: 'fill' }, previewDevice: 'Desktop' });
+
+		const props = basePropsOf(fakeCss.rules);
+
+		expect(props.padding).toBe('var(--kb-btn-padding)');
+		expect(props['border-width']).toBeUndefined();
+		expect(props['border-style']).toBeUndefined();
+		expect(props['border-color']).toBeUndefined();
+		expect(props['box-shadow']).toBe('var(--kb-btn-shadow)');
+		expect(boxShadowFor(fakeCss.rules, `${BASE_SELECTOR}:hover`)).toBe('var(--kb-btn-shadow-hover, none)');
 	});
 });
 

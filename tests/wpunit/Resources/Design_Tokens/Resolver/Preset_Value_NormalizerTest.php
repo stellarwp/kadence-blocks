@@ -104,8 +104,8 @@ final class Preset_Value_NormalizerTest extends TestCase {
 	 * @return void
 	 */
 	public function testItAliasesEachSlotOfAPerCornerValue(): void {
-		// 0.1875rem is the resolved value of the control radius semantic; 8px matches nothing.
-		$result = $this->normalizer->normalize( [ 'button-radius' => [ '0.1875rem', '8px', '0.1875rem', '8px' ] ], self::SET );
+		// 3px is the resolved value of the control radius semantic; 8px matches nothing.
+		$result = $this->normalizer->normalize( [ 'button-radius' => [ '3px', '8px', '3px', '8px' ] ], self::SET );
 
 		$this->assertIsArray( $result['button-radius'] );
 		$this->assertTrue( Alias::is_alias( $result['button-radius'][0] ), 'A matched slot should become an alias.' );
@@ -113,7 +113,7 @@ final class Preset_Value_NormalizerTest extends TestCase {
 		$this->assertTrue( Alias::is_alias( $result['button-radius'][2] ) );
 		$this->assertSame( '8px', $result['button-radius'][3] );
 		$this->assertSame(
-			'0.1875rem',
+			'3px',
 			$this->resolver->resolve( self::SET )->value( Alias::path_of( $result['button-radius'][0] ) ),
 			'The chosen alias should resolve back to the captured value.'
 		);
@@ -145,9 +145,9 @@ final class Preset_Value_NormalizerTest extends TestCase {
 			'$value'      => '8px',
 			'$extensions' => [
 				'com.kadence.designTokens' => [
-					// 0.1875rem is the control radius semantic's resolved value; 9px matches nothing.
+					// 3px is the control radius semantic's resolved value; 9px matches nothing.
 					'responsive' => [
-						'tablet' => '0.1875rem',
+						'tablet' => '3px',
 						'mobile' => '9px',
 					],
 				],
@@ -160,7 +160,7 @@ final class Preset_Value_NormalizerTest extends TestCase {
 		$this->assertSame( '8px', $result['$value'], 'An unmatched base literal should stay a literal.' );
 		$this->assertTrue( Alias::is_alias( $responsive['tablet'] ), 'A matched override should become an alias.' );
 		$this->assertSame(
-			'0.1875rem',
+			'3px',
 			$this->resolver->resolve( self::SET )->value( Alias::path_of( $responsive['tablet'] ) ),
 			'The chosen alias should resolve back to the captured value.'
 		);

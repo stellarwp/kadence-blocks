@@ -402,6 +402,10 @@
 				"$type": "color",
 				"$value": "{primitive.color.neutral.0}"
 			},
+			"button-border": {
+				"$type": "color",
+				"$value": "{primitive.color.transparent}"
+			},
 			"icon": {
 				"$type": "color",
 				"$value": "{primitive.color.brand.primary}"
@@ -456,7 +460,7 @@
 		"radius": {
 			"control": {
 				"$type": "dimension",
-				"$value": "0.1875rem"
+				"$value": "3px"
 			},
 			"media": {
 				"$type": "dimension",
@@ -491,6 +495,10 @@
 			"media": {
 				"$type": "dimension",
 				"$value": "0"
+			},
+			"button": {
+				"$type": "dimension",
+				"$value": "0"
 			}
 		},
 		"border-style": {
@@ -501,6 +509,10 @@
 			"default-hover": {
 				"$type": "borderStyle",
 				"$value": "none"
+			},
+			"button": {
+				"$type": "borderStyle",
+				"$value": "solid"
 			}
 		},
 		"icon-size": {
@@ -766,9 +778,9 @@
 							"button-bg-hover": "{semantic.color.button-bg-hover}",
 							"button-text-hover": "{semantic.color.button-text-hover}",
 							"button-radius": "{semantic.radius.control}",
-							"button-border-width": "{semantic.border-width.default}",
-							"button-border-style": "{semantic.border-style.default}",
-							"button-border-color": "{semantic.color.border}",
+							"button-border-width": "{semantic.border-width.button}",
+							"button-border-style": "{semantic.border-style.button}",
+							"button-border-color": "{semantic.color.button-border}",
 							"button-padding": [
 								"0.4em",
 								"1em",

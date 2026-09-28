@@ -135,9 +135,10 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		$has_preset_shadow = $this->render_preset_shadow( $css, $attributes );
 		if ( ! empty( $attributes['displayShadow'] ) && isset( $attributes['shadow'][0] ) && is_array( $attributes['shadow'][0] ) && $this->has_visible_shadow( $attributes['shadow'][0] ) ) {
 			$css->add_property( 'box-shadow', $this->render_button_shadow( $css, $attributes['shadow'][0] ) );
-		} elseif ( ! $has_preset_shadow ) {
+		} elseif ( ! $has_preset_shadow && $this->paints_own_shape( $attributes ) ) {
 			// Only reset to `none` when nothing else claims this rule's box-shadow — a preset's
-			// `var(--kb-btn-shadow)` above would otherwise be silenced by a trailing `none`.
+			// `var(--kb-btn-shadow)` above would otherwise be silenced by a trailing `none`, and a
+			// theme-painted button keeps the shadow the theme's own rules give it.
 			$css->add_property( 'box-shadow', 'none' );
 		}
 		if ( ! empty( $attributes['textUnderline'] ) ) {
@@ -182,11 +183,12 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		// The hover state follows its own default, never the resting shadow: with no hover shadow of its
 		// own the rule points at the preset's hover shadow variable, falling back to `none` when the preset
-		// sets none. Always emitted, because a hover rule without a box-shadow would let the resting
-		// shadow carry through the cascade into the hover state.
+		// sets none. Emitted for every button that paints its own shape, because a hover rule without a
+		// box-shadow would let the resting shadow carry through the cascade into the hover state. A
+		// theme-painted button keeps the hover shadow the theme's own rules give it.
 		if ( ! empty( $attributes['displayHoverShadow'] ) && isset( $attributes['shadowHover'][0] ) && is_array( $attributes['shadowHover'][0] ) && $this->has_visible_shadow( $attributes['shadowHover'][0] ) ) {
 			$css->add_property( 'box-shadow', $this->render_button_shadow( $css, $attributes['shadowHover'][0] ) );
-		} else {
+		} elseif ( $this->paints_own_shape( $attributes ) ) {
 			$css->add_property( 'box-shadow', 'var(--kb-btn-shadow-hover, none)' );
 		}
 		// Hover before.
@@ -502,6 +504,10 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 	 * @return void
 	 */
 	private function render_preset_spacing( Kadence_Blocks_CSS $css, array $attributes ): void {
+		if ( ! $this->paints_own_shape( $attributes ) ) {
+			return;
+		}
+
 		try {
 			$registry = kadence_blocks()->get( Token_Registry::class );
 			$library  = kadence_blocks()->get( Active_Token_Library_Store::class );
@@ -550,6 +556,10 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 	 * Emitted before `render_border_styles()`'s explicit per-side output so an explicit per-block
 	 * border, which lands later in the same rule, still wins.
 	 *
+	 * The default preset's border is emitted only for a property the library overrides, since the
+	 * shipped values equal the button's own stylesheet: an untouched button keeps its border where the
+	 * theme's cascade put it, exactly as it did before presets existed.
+	 *
 	 * @since TBD
 	 *
 	 * @param Kadence_Blocks_CSS   $css        The css object.
@@ -558,6 +568,10 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 	 * @return void
 	 */
 	private function render_preset_border( Kadence_Blocks_CSS $css, array $attributes ): void {
+		if ( ! $this->paints_own_shape( $attributes ) ) {
+			return;
+		}
+
 		try {
 			$registry = kadence_blocks()->get( Token_Registry::class );
 			$library  = kadence_blocks()->get( Active_Token_Library_Store::class );
@@ -576,10 +590,15 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 
 			$slug     = $library->get();
 			$selected = Cast::to_string( $attributes['kbPreset'] ?? '' );
+			$default  = $resolver->default_preset( 'kadence/singlebtn', $slug );
 			$preset   = $selected !== '' && $resolver->has_preset( 'kadence/singlebtn', $selected, $slug )
 				? $selected
-				: $resolver->default_preset( 'kadence/singlebtn', $slug );
+				: $default;
 			$values   = $resolver->resolve( 'kadence/singlebtn', $preset, $slug );
+
+			if ( $preset === $default ) {
+				$values = array_intersect_key( $values, $resolver->overridden_default_properties( 'kadence/singlebtn', $slug ) );
+			}
 		} catch ( Throwable $e ) {
 			// This runs in the render path, so a broken token graph must not take the page down with it —
 			// the button simply keeps the border it has today.
@@ -629,6 +648,10 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 	 * @return bool Whether a preset box-shadow declaration was emitted.
 	 */
 	private function render_preset_shadow( Kadence_Blocks_CSS $css, array $attributes ): bool {
+		if ( ! $this->paints_own_shape( $attributes ) ) {
+			return false;
+		}
+
 		try {
 			$registry = kadence_blocks()->get( Token_Registry::class );
 			$library  = kadence_blocks()->get( Active_Token_Library_Store::class );
@@ -693,6 +716,23 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 				'opacity' => 0.2,
 			]
 		);
+	}
+
+	/**
+	 * Whether the button's shape (padding, margin, border, shadow) is the plugin's own. A button in one of
+	 * the theme-painted modes, or in the outline mode, takes those from the theme's rules or from the outline
+	 * stylesheet, and the preset bridges must not outrank them.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $attributes The block attributes.
+	 *
+	 * @return bool
+	 */
+	private function paints_own_shape( array $attributes ): bool {
+		$mode = Cast::to_string( $attributes['inheritStyles'] ?? '' );
+
+		return $mode === '' || $mode === 'fill';
 	}
 }
 
