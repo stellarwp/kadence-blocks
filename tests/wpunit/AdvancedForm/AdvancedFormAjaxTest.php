@@ -272,6 +272,17 @@ class AdvancedFormAjaxTest extends WPTestCase {
 		$this->assertStringContainsString( '<rect', $content );
 	}
 
+	public function testSanitizeSvgUploadRemovesRemoteReferences() {
+		$path = $this->create_temp_file( '<svg xmlns="http://www.w3.org/2000/svg"><rect width="10" height="10" fill="url(\'https://example.com/paint.svg#p\')"/></svg>' );
+
+		$this->assertTrue( $this->adv_form_ajax->sanitize_svg_upload( $path, 'image.svg', MB_IN_BYTES ) );
+
+		$content = $this->read_temp_file( $path );
+
+		$this->assertStringNotContainsString( 'example.com', $content );
+		$this->assertStringContainsString( '<rect', $content );
+	}
+
 	public function testSanitizeSvgUploadKeepsCompressedFilesCompressed() {
 		$path = $this->create_temp_file( gzencode( '<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script><rect width="10" height="10"/></svg>' ) );
 
