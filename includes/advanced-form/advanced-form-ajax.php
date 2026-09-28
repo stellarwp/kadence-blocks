@@ -680,8 +680,13 @@ class KB_Ajax_Advanced_Form {
 			return true;
 		}
 
-		// The zlib wrapper reads both plain and gzip-compressed files.
-		$content = file_get_contents( 'compress.zlib://' . $path, false, null, 0, $max_bytes + 1 ); // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData -- Local uploaded file.
+		// gzopen() reads both plain and gzip-compressed files.
+		$handle = gzopen( $path, 'rb' );
+		if ( ! $handle ) {
+			return false;
+		}
+		$content = stream_get_contents( $handle, $max_bytes + 1 );
+		gzclose( $handle );
 		if ( ! $content || strlen( $content ) > $max_bytes ) {
 			return false;
 		}
@@ -919,13 +924,18 @@ Header set X-Robots-Tag "noindex"
 	 */
 	private function has_svg_root( $xml ) {
 		$use_errors = libxml_use_internal_errors( true );
-		$document   = new DOMDocument();
-		$loaded     = $document->loadXML( $xml );
+		$root       = simplexml_load_string( $xml );
 		libxml_clear_errors();
 		libxml_use_internal_errors( $use_errors );
 
-		// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- Native DOM properties.
-		return $loaded && 'svg' === $document->documentElement->localName && in_array( $document->documentElement->namespaceURI ?? '', [ '', 'http://www.w3.org/2000/svg' ], true );
+		if ( false === $root || 'svg' !== $root->getName() ) {
+			return false;
+		}
+
+		// A root without a namespace is accepted too.
+		$namespace = current( $root->getNamespaces() );
+
+		return false === $namespace || 'http://www.w3.org/2000/svg' === $namespace;
 	}
 }
 

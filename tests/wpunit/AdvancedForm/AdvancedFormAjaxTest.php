@@ -1,12 +1,12 @@
 <?php
 
-// phpcs:disable WordPressVIPMinimum.Functions.RestrictedFunctions, WordPressVIPMinimum.Performance.FetchingRemoteData -- Tests use local temp files.
 /* cspell:ignore nopriv svgz */
 
 namespace Tests\wpunit\AdvancedForm;
 
 use Codeception\TestCase\WPTestCase;
 use KB_Ajax_Advanced_Form;
+use WP_Filesystem_Direct;
 
 class AdvancedFormAjaxTest extends WPTestCase {
 
@@ -265,8 +265,7 @@ class AdvancedFormAjaxTest extends WPTestCase {
 
 		$this->assertTrue( $this->adv_form_ajax->sanitize_svg_upload( $path, 'image.SVG', MB_IN_BYTES ) );
 
-		$content = file_get_contents( $path );
-		unlink( $path );
+		$content = $this->read_temp_file( $path );
 
 		$this->assertStringNotContainsString( '<script', $content );
 		$this->assertStringNotContainsString( 'onload', $content );
@@ -278,8 +277,7 @@ class AdvancedFormAjaxTest extends WPTestCase {
 
 		$this->assertTrue( $this->adv_form_ajax->sanitize_svg_upload( $path, 'image.svgz', MB_IN_BYTES ) );
 
-		$content = gzdecode( file_get_contents( $path ) );
-		unlink( $path );
+		$content = gzdecode( $this->read_temp_file( $path ) );
 
 		$this->assertStringNotContainsString( '<script', $content );
 		$this->assertStringContainsString( '<rect', $content );
@@ -289,7 +287,7 @@ class AdvancedFormAjaxTest extends WPTestCase {
 		$path = $this->create_temp_file( 'not an svg' );
 
 		$result = $this->adv_form_ajax->sanitize_svg_upload( $path, 'image.svg', MB_IN_BYTES );
-		unlink( $path );
+		wp_delete_file( $path );
 
 		$this->assertFalse( $result );
 	}
@@ -299,7 +297,7 @@ class AdvancedFormAjaxTest extends WPTestCase {
 			$path = $this->create_temp_file( $xml );
 
 			$result = $this->adv_form_ajax->sanitize_svg_upload( $path, 'image.svg', MB_IN_BYTES );
-			unlink( $path );
+			wp_delete_file( $path );
 
 			$this->assertFalse( $result, $xml );
 		}
@@ -310,7 +308,7 @@ class AdvancedFormAjaxTest extends WPTestCase {
 		$path = $this->create_temp_file( gzencode( $svg ) );
 
 		$result = $this->adv_form_ajax->sanitize_svg_upload( $path, 'image.svgz', strlen( $svg ) - 1 );
-		unlink( $path );
+		wp_delete_file( $path );
 
 		$this->assertFalse( $result );
 	}
@@ -321,14 +319,17 @@ class AdvancedFormAjaxTest extends WPTestCase {
 
 		$this->assertTrue( $this->adv_form_ajax->sanitize_svg_upload( $path, 'notes.txt', MB_IN_BYTES ) );
 
-		$content = file_get_contents( $path );
-		unlink( $path );
+		$content = $this->read_temp_file( $path );
 
 		$this->assertSame( $original, $content );
 	}
 
 	protected function setUp(): void {
 		parent::setUp();
+
+		require_once ABSPATH . 'wp-admin/includes/file.php';
+		require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-base.php';
+		require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-direct.php';
 
 		$this->adv_form_ajax = new KB_Ajax_Advanced_Form();
 	}
@@ -337,9 +338,16 @@ class AdvancedFormAjaxTest extends WPTestCase {
 	}
 
 	private function create_temp_file( string $content ): string {
-		$path = tempnam( get_temp_dir(), 'kb-form-upload' );
+		$path = wp_tempnam( 'kb-form-upload' );
 		file_put_contents( $path, $content );
 
 		return $path;
+	}
+
+	private function read_temp_file( string $path ): string {
+		$content = ( new WP_Filesystem_Direct( null ) )->get_contents( $path );
+		wp_delete_file( $path );
+
+		return $content;
 	}
 }
