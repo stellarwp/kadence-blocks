@@ -38,5 +38,15 @@ final class Site_Styles_Provider extends Provider {
 			},
 			1
 		);
+
+		$this->container->singleton( User_Data_Filter::class, User_Data_Filter::class );
+		add_filter( 'wp_theme_json_data_user', $this->container->callback( User_Data_Filter::class, 'filter' ) );
+
+		// Around core's Global Styles (priority 9) and post (10) KSES filters.
+		$this->container->singleton( Kses_Keeper::class, Kses_Keeper::class );
+		foreach ( [ 'content_save_pre', 'content_filtered_save_pre' ] as $hook ) {
+			add_filter( $hook, $this->container->callback( Kses_Keeper::class, 'capture' ), 8 );
+			add_filter( $hook, $this->container->callback( Kses_Keeper::class, 'restore' ), 11 );
+		}
 	}
 }
