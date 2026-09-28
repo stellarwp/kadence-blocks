@@ -39,6 +39,9 @@ final class Site_Styles_Provider extends Provider {
 			1
 		);
 
+		$this->container->singleton( Block_Supports::class, Block_Supports::class );
+		add_filter( 'block_type_metadata', $this->container->callback( Block_Supports::class, 'filter_metadata' ) );
+
 		$this->container->singleton( User_Data_Filter::class, User_Data_Filter::class );
 		add_filter( 'wp_theme_json_data_user', $this->container->callback( User_Data_Filter::class, 'filter' ) );
 
