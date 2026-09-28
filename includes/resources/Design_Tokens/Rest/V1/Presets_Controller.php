@@ -641,6 +641,13 @@ final class Presets_Controller extends Controller {
 			$block_node[ Extensions::get_default_key() ] = $default;
 		}
 
+		// The body's own `$default` key lands in the node too, so the guard reads the node, not the param.
+		$error = $this->guard_theme_default( $this->default_of( $block_node ), $block );
+
+		if ( $error instanceof WP_Error ) {
+			return $error;
+		}
+
 		$slug = $this->slug( $request );
 
 		$error = $this->guard_preset_shape( $block_node, $block );
@@ -810,17 +817,10 @@ final class Presets_Controller extends Controller {
 		}
 
 		$default = Cast::to_string( $request->get_param( self::DEFAULT_PARAM ) );
+		$error   = $this->guard_theme_default( $default, $block );
 
-		if ( Style::is_theme_slug( $default ) ) {
-			return new WP_Error(
-				'rest_design_tokens_theme_default',
-				__( 'A theme preset cannot be the default preset.', 'kadence-blocks' ),
-				[
-					'status'  => WP_Http::BAD_REQUEST,
-					'block'   => $block,
-					'default' => $default,
-				]
-			);
+		if ( $error instanceof WP_Error ) {
+			return $error;
 		}
 
 		$slug      = $this->slug( $request );
@@ -1640,6 +1640,34 @@ final class Presets_Controller extends Controller {
 				'status'  => WP_Http::UNPROCESSABLE_ENTITY,
 				'block'   => $block,
 				'default' => $default,
+			]
+		);
+	}
+
+	/**
+	 * Reject a theme-discovered preset as the block's default. A theme preset is painted by the theme's
+	 * own classes, so making it the default would hand the block's baseline look to whatever the active
+	 * theme happens to render. Shared by every route that can write the `$default` pointer.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $default_slug The default preset slug being written; empty when the write sets none.
+	 * @param string $block        The block name, for error context.
+	 *
+	 * @return WP_Error|null A WP_Error when the default names a theme preset, null otherwise.
+	 */
+	private function guard_theme_default( string $default_slug, string $block ): ?WP_Error {
+		if ( ! Style::is_theme_slug( $default_slug ) ) {
+			return null;
+		}
+
+		return new WP_Error(
+			'rest_design_tokens_theme_default',
+			__( 'A theme preset cannot be the default preset.', 'kadence-blocks' ),
+			[
+				'status'  => WP_Http::BAD_REQUEST,
+				'block'   => $block,
+				'default' => $default_slug,
 			]
 		);
 	}

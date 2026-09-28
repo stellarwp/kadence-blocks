@@ -499,6 +499,49 @@ final class PresetsControllerTest extends TestCase {
 	}
 
 	/**
+	 * A replace (PUT) naming a theme preset as the default is refused the same way the default sub-route
+	 * refuses it, whether the slug comes from the `default` parameter or from a `$default` key inside the
+	 * presets body.
+	 *
+	 * @dataProvider themeDefaultReplaceBodyProvider
+	 *
+	 * @param array<string, mixed> $body The replace-route body parameters.
+	 *
+	 * @return void
+	 */
+	public function testReplacingWithAThemePresetAsTheDefaultIsRefused( array $body ): void {
+		$this->seedClassPreset( 'theme-base', [] );
+
+		$result = $this->controller->update_item( $this->block_request( 'PUT', self::BUTTON, $body ) );
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'rest_design_tokens_theme_default', $result->get_error_code() );
+		$this->assertSame( WP_Http::BAD_REQUEST, $result->get_error_data()['status'] );
+		$this->assertSame( 'default', $this->controller->get_default( $this->block_request( WP_REST_Server::READABLE, self::BUTTON ) )->get_data()['default'] );
+	}
+
+	/**
+	 * @return Generator
+	 */
+	public function themeDefaultReplaceBodyProvider(): Generator {
+		yield 'default parameter' => [
+			'body' => [
+				'presets' => [ 'theme-base' => [ 'tokens' => [] ] ],
+				'default' => 'theme-base',
+			],
+		];
+
+		yield 'default key inside the presets body' => [
+			'body' => [
+				'presets' => [
+					'$default'   => 'theme-base',
+					'theme-base' => [ 'tokens' => [] ],
+				],
+			],
+		];
+	}
+
+	/**
 	 * A create deep-merges a single preset into the block's presets, leaving the baseline siblings and the default in
 	 * place.
 	 *
