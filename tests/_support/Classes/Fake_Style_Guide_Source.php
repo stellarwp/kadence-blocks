@@ -56,6 +56,24 @@ final class Fake_Style_Guide_Source implements Style_Guide_Source {
 	}
 
 	/**
+	 * A copy of this source whose settings half carries the given theme settings.
+	 *
+	 * @param array<string, mixed> $settings Setting key => the value the theme's option() returns.
+	 *
+	 * @return self
+	 */
+	public function with_settings( array $settings ): self {
+		$snapshot = $this->snapshot ?? [
+			'palette'  => [],
+			'settings' => [],
+		];
+
+		$snapshot['settings'] = $settings;
+
+		return new self( $snapshot );
+	}
+
+	/**
 	 * Replace the snapshot this source returns.
 	 *
 	 * @param array{palette: array<string, mixed>, settings: array<string, mixed>}|null $snapshot The new snapshot.
