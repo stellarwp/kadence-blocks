@@ -166,6 +166,31 @@ final class PresetsControllerTest extends TestCase {
 	}
 
 	/**
+	 * Deleting a dormant theme preset drops its stored node for good: it has no baseline definition to
+	 * revert to, so nothing is left to report under `dormant`, `presets`, or the token store. This is what
+	 * the Style Library's "Discard changes" action relies on.
+	 *
+	 * @return void
+	 */
+	public function testDeletingADormantThemePresetDropsItsStoredNode(): void {
+		$this->store->save_document(
+			'{"$extensions":{"com.kadence.designTokens":{"presets":{"kadence/singlebtn":{'
+			. '"theme-secondary":{"label":"Theme Secondary","themeSnapshot":{"button-bg":"#0000ff"},"tokens":{"button-bg":"#ff0000"}}}}}}}'
+		);
+
+		$response = $this->controller->delete_preset( $this->preset_request( self::BUTTON, 'theme-secondary' ) );
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+		$this->assertSame( WP_Http::OK, $response->get_status() );
+
+		$data = $response->get_data();
+
+		$this->assertSame( [], $data['dormant'] );
+		$this->assertArrayNotHasKey( 'theme-secondary', $data['presets'] );
+		$this->assertSame( [], $this->container->get( Effective_Presets::class )->stored_tokens( self::BUTTON, 'theme-secondary' ) );
+	}
+
+	/**
 	 * With nothing dormant the payload carries an empty map, so a client can read it unconditionally.
 	 *
 	 * @return void
