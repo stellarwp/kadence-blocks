@@ -42,6 +42,10 @@ final class Site_Styles_Provider extends Provider {
 		$this->container->singleton( Block_Supports::class, Block_Supports::class );
 		add_filter( 'block_type_metadata', $this->container->callback( Block_Supports::class, 'filter_metadata' ) );
 
+		// After Editor_Assets enqueues the early filters script (priority 10).
+		$this->container->singleton( Editor_Params::class, Editor_Params::class );
+		add_action( 'enqueue_block_editor_assets', $this->container->callback( Editor_Params::class, 'add_script_data' ), 11 );
+
 		$this->container->singleton( User_Data_Filter::class, User_Data_Filter::class );
 		add_filter( 'wp_theme_json_data_user', $this->container->callback( User_Data_Filter::class, 'filter' ) );
 

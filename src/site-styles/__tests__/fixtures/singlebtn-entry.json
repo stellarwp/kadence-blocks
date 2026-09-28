@@ -1,0 +1,20 @@
+{
+	"slug": "singlebtn",
+	"exclude": [
+		"hideLink",
+		"link",
+		"target",
+		"download",
+		"text",
+		"noFollow",
+		"sponsored",
+		"kadenceDynamic",
+		"metadata",
+		"className",
+		"lock"
+	],
+	"attributesMap": { "background": "color.background", "color": "color.text" },
+	"supports": {
+		"color": { "background": true, "text": true, "gradients": false, "__experimentalSkipSerialization": true }
+	}
+}

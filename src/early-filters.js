@@ -11,6 +11,9 @@ import { createHigherOrderComponent } from '@wordpress/compose';
 import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
 import { useDispatch, select } from '@wordpress/data';
+import { addSiteStylesSupports } from './site-styles/block-supports';
+import { hideCoreColorControls } from './site-styles/instance-controls';
+import { withSiteStyles } from './site-styles/edit-overlay';
 
 /**
  * Add animation attributes
@@ -67,6 +70,9 @@ function convertArrayTitleToString(arr) {
 }
 
 addFilter('blocks.registerBlockType', 'kadence/block-label', blockMetadataAttribute);
+addFilter('blocks.registerBlockType', 'kadence/site-styles-supports', addSiteStylesSupports);
+addFilter('blockEditor.useSetting.before', 'kadence/site-styles-instance-controls', hideCoreColorControls);
+addFilter('editor.BlockEdit', 'kadence/site-styles-overlay', withSiteStyles);
 
 const kadenceHeaderTemplatePartNotice = createHigherOrderComponent((BlockEdit) => {
 	return (props) => {
