@@ -9,6 +9,13 @@ const STYLE_ID = 'kb-site-styles-preview-hover';
 const HOVER_CLASS = 'kb-site-styles-force-hover';
 
 /**
+ * The rules last written to each hover sheet.
+ *
+ * @type {WeakMap<HTMLStyleElement, string>}
+ */
+const writtenRules = new WeakMap();
+
+/**
  * @param {CSSRuleList} rules   The rules to copy from.
  * @param {string}      wrapper The enclosing at-rule prelude, empty at the top level.
  * @param {string[]}    out     The copied rules.
@@ -73,13 +80,16 @@ function writeHoverSheet(doc, rules) {
 		doc.head.appendChild(style);
 	}
 
-	const key = `${rules.length}:${rules.join('').length}`;
-	if (style.dataset.key === key) {
+	const content = rules.join('\n');
+	if (writtenRules.get(style) === content) {
 		return;
 	}
 
-	style.dataset.key = key;
-	style.textContent = '';
+	writtenRules.set(style, content);
+	// Through the CSSOM: the rules were inserted there, so emptying the element's text doesn't remove them.
+	while (style.sheet.cssRules.length) {
+		style.sheet.deleteRule(0);
+	}
 	// One rule at a time: a single rule the parser rejects would void a sheet written as text.
 	rules.forEach((rule) => {
 		try {
