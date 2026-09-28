@@ -4,12 +4,17 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Theme_Buttons;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Theme_Buttons\Contracts\Button_Style_Source;
 use KadenceWP\KadenceBlocks\Utils\Cast;
+use WP_Block_Styles_Registry;
 use WP_Theme_JSON_Resolver;
 
 /**
  * A block theme's button styles, read from its theme.json. Asked after the Kadence adapter and before the
  * classic fallback, and it answers only when the theme's own data styles the button element or block, so
- * core's defaults never read as a theme's values.
+ * core's defaults never read as a theme's values. WordPress copies the `style_data` of every registered
+ * block style into the theme data, whoever registered it, so a core/button variation that only the block
+ * styles registry supplies is dropped from the theme's data: a plugin's style never reads as the theme's.
+ * A theme that registers its variation only through `register_block_style()` looks the same and is dropped
+ * too; one it also declares in theme.json or a style partial is kept.
  *
  * Theme Base is class-painted: the theme's global styles keep painting the button, and the values are read
  * from the merged data (core, theme and the user's Global Styles) for display only. A variation the theme
@@ -87,14 +92,26 @@ final class Block_Theme_Button_Styles implements Button_Style_Source {
 	private $merged_data;
 
 	/**
+	 * Returns the `style_data` of each block style registered for core/button, keyed by style name. Null
+	 * resolves to the block styles registry at read time.
+	 *
 	 * @since TBD
 	 *
-	 * @param callable|null $theme_data  Returns the theme's own `styles` array; tests hand in a fixture.
-	 * @param callable|null $merged_data Returns the merged `styles` array; tests hand in a fixture.
+	 * @var callable|null
 	 */
-	public function __construct( ?callable $theme_data = null, ?callable $merged_data = null ) {
-		$this->theme_data  = $theme_data;
-		$this->merged_data = $merged_data;
+	private $registered_data;
+
+	/**
+	 * @since TBD
+	 *
+	 * @param callable|null $theme_data      Returns the theme's own `styles` array; tests hand in a fixture.
+	 * @param callable|null $merged_data     Returns the merged `styles` array; tests hand in a fixture.
+	 * @param callable|null $registered_data Returns the registered core/button `style_data` by name; tests hand in a fixture.
+	 */
+	public function __construct( ?callable $theme_data = null, ?callable $merged_data = null, ?callable $registered_data = null ) {
+		$this->theme_data      = $theme_data;
+		$this->merged_data     = $merged_data;
+		$this->registered_data = $registered_data;
 	}
 
 	/**
@@ -123,8 +140,9 @@ final class Block_Theme_Button_Styles implements Button_Style_Source {
 			],
 		];
 
-		// Only the theme's own variations: core ships an outline variation, and the merged data carries it on
-		// every theme, but a preset named after it would promise a look the theme never defined.
+		// Only the theme's own variations: core ships an outline variation and plugins can register more, and
+		// the merged data carries them on every theme, but a preset named after one would promise a look the
+		// theme never defined.
 		$own        = $this->sub( $this->sub( $blocks, 'core/button' ), 'variations' );
 		$variations = $this->sub( $block, 'variations' );
 
@@ -336,7 +354,8 @@ final class Block_Theme_Button_Styles implements Button_Style_Source {
 	}
 
 	/**
-	 * The theme's own `styles`, empty on a theme without theme.json so a classic theme is never read.
+	 * The theme's own `styles`, empty on a theme without theme.json so a classic theme is never read, and
+	 * without the core/button variations only the block styles registry supplies.
 	 *
 	 * @since TBD
 	 *
@@ -344,14 +363,83 @@ final class Block_Theme_Button_Styles implements Button_Style_Source {
 	 */
 	private function theme_styles(): array {
 		if ( $this->theme_data !== null ) {
-			return $this->section( ( $this->theme_data )() );
-		}
-
-		if ( ! wp_theme_has_theme_json() ) {
+			$styles = $this->section( ( $this->theme_data )() );
+		} elseif ( wp_theme_has_theme_json() ) {
+			$styles = $this->section( WP_Theme_JSON_Resolver::get_theme_data()->get_raw_data()['styles'] ?? null );
+		} else {
 			return [];
 		}
 
-		return $this->section( WP_Theme_JSON_Resolver::get_theme_data()->get_raw_data()['styles'] ?? null );
+		return $this->without_registered_variations( $styles );
+	}
+
+	/**
+	 * The styles with every core/button variation the theme adds nothing to removed. Since 6.6 the theme
+	 * data carries the `style_data` of each registered block style, with the theme's own data for that name
+	 * merged on top, so a variation equal to its registered data came from the registry alone.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $styles The theme data's `styles`.
+	 *
+	 * @return array<string, mixed>
+	 */
+	private function without_registered_variations( array $styles ): array {
+		$blocks     = $this->sub( $styles, 'blocks' );
+		$block      = $this->sub( $blocks, 'core/button' );
+		$variations = $this->sub( $block, 'variations' );
+
+		if ( $variations === [] ) {
+			return $styles;
+		}
+
+		$registered = $this->registered_styles();
+
+		foreach ( $variations as $name => $data ) {
+			$style_data = $this->sub( $registered, Cast::to_string( $name ) );
+
+			if ( $style_data !== [] && is_array( $data ) && array_replace_recursive( $style_data, $data ) === $style_data ) {
+				unset( $variations[ $name ] );
+			}
+		}
+
+		unset( $block['variations'] );
+
+		if ( $variations !== [] ) {
+			$block['variations'] = $variations;
+		}
+
+		unset( $blocks['core/button'] );
+
+		if ( $block !== [] ) {
+			$blocks['core/button'] = $block;
+		}
+
+		$styles['blocks'] = $blocks;
+
+		return $styles;
+	}
+
+	/**
+	 * The `style_data` of each block style registered for core/button, keyed by style name. A style without
+	 * it maps to an empty array, since WordPress copies nothing of it into the theme data.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string, mixed>
+	 */
+	private function registered_styles(): array {
+		if ( $this->registered_data !== null ) {
+			return $this->section( ( $this->registered_data )() );
+		}
+
+		$styles = [];
+
+		foreach ( WP_Block_Styles_Registry::get_instance()->get_registered_styles_for_block( 'core/button' ) as $name => $style ) {
+			$styles[ Cast::to_string( $name ) ] = $this->sub( $style, 'style_data' );
+		}
+
+		return $styles;
 	}
 
 	/**

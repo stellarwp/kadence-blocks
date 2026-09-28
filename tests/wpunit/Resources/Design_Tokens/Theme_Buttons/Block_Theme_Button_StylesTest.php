@@ -14,6 +14,21 @@ use Tests\Support\Classes\TestCase;
 final class Block_Theme_Button_StylesTest extends TestCase {
 
 	/**
+	 * Unregisters the plugin-registered style added for the registry test, so it never leaks into another
+	 * test's theme.json read.
+	 *
+	 * @return void
+	 */
+	protected function tearDown(): void {
+		if ( \WP_Block_Styles_Registry::get_instance()->is_registered( 'core/button', 'kb-test-pill' ) ) {
+			unregister_block_style( 'core/button', 'kb-test-pill' );
+			\WP_Theme_JSON_Resolver::clean_cached_data();
+		}
+
+		parent::tearDown();
+	}
+
+	/**
 	 * The classes Theme Base wears on every theme.
 	 *
 	 * @var string
@@ -467,20 +482,133 @@ final class Block_Theme_Button_StylesTest extends TestCase {
 	}
 
 	/**
+	 * A core/button variation whose data the theme adds nothing to is dropped as registry-only, whether it
+	 * sits alone or beside the theme's own button element; a variation the theme adds a property to, or a
+	 * registered style with no `style_data` at all, is kept.
+	 *
+	 * @dataProvider registryOnlyVariationProvider
+	 *
+	 * @param array<string, mixed> $theme      The theme's own styles.
+	 * @param array<string, mixed> $merged     The merged styles the page renders.
+	 * @param array<string, mixed> $registered The registered core/button styles' `style_data`, by name.
+	 * @param string[]             $expected   The expected styles() result keys.
+	 *
+	 * @return void
+	 */
+	public function testDropsVariationsOnlyTheRegistrySupplies( array $theme, array $merged, array $registered, array $expected ): void {
+		$this->assertSame( $expected, array_keys( $this->adapter( $theme, $merged, $registered )->styles() ) );
+	}
+
+	/**
+	 * @return Generator
+	 */
+	public function registryOnlyVariationProvider(): Generator {
+		yield 'registry-only variation on a theme with no other button data' => [
+			'theme'      => [
+				'blocks' => [ 'core/button' => [ 'variations' => [ 'pill' => [ 'border' => [ 'radius' => '999px' ] ] ] ] ],
+			],
+			'merged'     => [
+				'blocks' => [ 'core/button' => [ 'variations' => [ 'pill' => [ 'border' => [ 'radius' => '999px' ] ] ] ] ],
+			],
+			'registered' => [ 'pill' => [ 'border' => [ 'radius' => '999px' ] ] ],
+			'expected'   => [],
+		];
+
+		yield 'registry-only variation beside a theme button element' => [
+			'theme'      => [
+				'elements' => [ 'button' => [ 'color' => [ 'background' => 'var(--wp--preset--color--contrast)' ] ] ],
+				'blocks'   => [ 'core/button' => [ 'variations' => [ 'pill' => [ 'border' => [ 'radius' => '999px' ] ] ] ] ],
+			],
+			'merged'     => [
+				'elements' => [ 'button' => [ 'color' => [ 'background' => 'var(--wp--preset--color--contrast)' ] ] ],
+				'blocks'   => [ 'core/button' => [ 'variations' => [ 'pill' => [ 'border' => [ 'radius' => '999px' ] ] ] ] ],
+			],
+			'registered' => [ 'pill' => [ 'border' => [ 'radius' => '999px' ] ] ],
+			'expected'   => [ 'base' ],
+		];
+
+		yield 'theme adds a property to a registered name' => [
+			'theme'      => [
+				'blocks' => [
+					'core/button' => [
+						'variations' => [
+							'pill' => [
+								'border' => [ 'radius' => '999px' ],
+								'color'  => [ 'text' => 'var(--wp--preset--color--base)' ],
+							],
+						],
+					],
+				],
+			],
+			'merged'     => [
+				'blocks' => [
+					'core/button' => [
+						'variations' => [
+							'pill' => [
+								'border' => [ 'radius' => '999px' ],
+								'color'  => [ 'text' => 'var(--wp--preset--color--base)' ],
+							],
+						],
+					],
+				],
+			],
+			'registered' => [ 'pill' => [ 'border' => [ 'radius' => '999px' ] ] ],
+			'expected'   => [ 'base', 'pill' ],
+		];
+
+		yield 'registered name without style_data is kept when the theme declares it' => [
+			'theme'      => [
+				'blocks' => [ 'core/button' => [ 'variations' => [ 'no-shadow' => [ 'border' => [ 'radius' => '0' ] ] ] ] ],
+			],
+			'merged'     => [
+				'blocks' => [ 'core/button' => [ 'variations' => [ 'no-shadow' => [ 'border' => [ 'radius' => '0' ] ] ] ] ],
+			],
+			'registered' => [ 'no-shadow' => [] ],
+			'expected'   => [ 'base', 'no-shadow' ],
+		];
+	}
+
+	/**
+	 * A plugin's own registered core/button style never reads as the active theme's, even though WordPress
+	 * copies its `style_data` into the theme data for every theme.
+	 *
+	 * @return void
+	 */
+	public function testAPluginRegisteredButtonStyleIsNotReadAsTheThemes(): void {
+		register_block_style(
+			'core/button',
+			[
+				'name'       => 'kb-test-pill',
+				'label'      => 'Pill',
+				'style_data' => [ 'border' => [ 'radius' => '999px' ] ],
+			]
+		);
+		\WP_Theme_JSON_Resolver::clean_cached_data();
+
+		$styles = ( new Block_Theme_Button_Styles() )->styles();
+
+		$this->assertSame( [ 'base' ], array_keys( $styles ) );
+	}
+
+	/**
 	 * An adapter reading the given fixtures in place of the theme.json resolver.
 	 *
-	 * @param array<string, mixed> $theme  The theme's own styles.
-	 * @param array<string, mixed> $merged The merged styles.
+	 * @param array<string, mixed> $theme      The theme's own styles.
+	 * @param array<string, mixed> $merged     The merged styles.
+	 * @param array<string, mixed> $registered The registered core/button styles' `style_data`, by name.
 	 *
 	 * @return Block_Theme_Button_Styles
 	 */
-	private function adapter( array $theme, array $merged ): Block_Theme_Button_Styles {
+	private function adapter( array $theme, array $merged, array $registered = [] ): Block_Theme_Button_Styles {
 		return new Block_Theme_Button_Styles(
 			static function () use ( $theme ): array {
 				return $theme;
 			},
 			static function () use ( $merged ): array {
 				return $merged;
+			},
+			static function () use ( $registered ): array {
+				return $registered;
 			}
 		);
 	}
