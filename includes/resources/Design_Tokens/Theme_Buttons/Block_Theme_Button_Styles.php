@@ -136,6 +136,12 @@ final class Block_Theme_Button_Styles implements Button_Style_Source {
 				continue;
 			}
 
+			$values = $this->variation_values( $variation );
+
+			if ( $values === null ) {
+				continue;
+			}
+
 			$styles[ $name ] = [
 				'label'  => sprintf(
 					/* translators: %s: the theme's button style variation name, e.g. "Outline". */
@@ -144,7 +150,7 @@ final class Block_Theme_Button_Styles implements Button_Style_Source {
 				),
 				'class'  => '',
 				'values' => [],
-				'tokens' => $this->ordered( array_replace( $base, $this->variation_values( $variation ) ) ),
+				'tokens' => $this->ordered( array_replace( $base, $values ) ),
 			];
 		}
 
@@ -158,36 +164,44 @@ final class Block_Theme_Button_Styles implements Button_Style_Source {
 	 * its own. Every property it leaves unset, the hover state included, stays the theme base's, which is
 	 * what the theme's own CSS does for its variation.
 	 *
+	 * Null when the variation paints a real gradient and sets no background: a preset has no gradient
+	 * property, and the theme base's solid background in its place would be a look the theme never defined.
+	 *
 	 * @since TBD
 	 *
 	 * @param array<string, mixed> $variation The merged variation data.
 	 *
-	 * @return array<string, mixed>
+	 * @return array<string, mixed>|null
 	 */
-	private function variation_values( array $variation ): array {
-		$values = $this->values( $variation );
+	private function variation_values( array $variation ): ?array {
+		$values   = $this->values( $variation );
+		$gradient = $this->css( $this->sub( $variation, 'color' )['gradient'] ?? null );
 
-		if ( ! isset( $values['button-bg'] ) && $this->clears_background( $variation ) ) {
-			$values['button-bg'] = 'transparent';
+		if ( isset( $values['button-bg'] ) || $gradient === null ) {
+			return $values;
 		}
+
+		if ( ! $this->clears_background( $gradient ) ) {
+			return null;
+		}
+
+		$values['button-bg'] = 'transparent';
 
 		return $values;
 	}
 
 	/**
-	 * Whether a variation's gradient is the "transparent none" (or "none", or "transparent") core writes to
-	 * take a button's background away, as opposed to no gradient at all, which leaves the base background.
+	 * Whether a gradient is the "transparent none" (or "none", or "transparent") core writes to take a
+	 * button's background away, as opposed to a real gradient the button would paint.
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, mixed> $variation The merged variation data.
+	 * @param string $gradient The variation's gradient, as CSS.
 	 *
 	 * @return bool
 	 */
-	private function clears_background( array $variation ): bool {
-		$gradient = $this->css( $this->sub( $variation, 'color' )['gradient'] ?? null );
-
-		return $gradient !== null && preg_match( '/^(transparent|none)(\s+(transparent|none))?$/i', $gradient ) === 1;
+	private function clears_background( string $gradient ): bool {
+		return preg_match( '/^(transparent|none)(\s+(transparent|none))?$/i', $gradient ) === 1;
 	}
 
 	/**
