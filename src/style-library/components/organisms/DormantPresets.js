@@ -25,6 +25,10 @@ import './DormantPresets.scss';
  * renders values for the preset, and the collection write records none. Keep then has only the overrides to
  * work from, so the item says so and its action is named for what it really keeps.
  *
+ * A snapshot can also be recorded yet hold no value a preset write accepts (every property a compound
+ * literal); Keep has only the overrides then too, but the note says the values could not be carried over
+ * rather than that they were never recorded.
+ *
  * Both actions swallow the rejection their flow re-throws: the flow has already reported the failure
  * through the screen's error notice, and a click handler that returned the rejected promise would only
  * add an unhandled-rejection report for an error already shown.
@@ -64,20 +68,26 @@ export function DormantPresets({ dormant, onKeep, onDiscard, isBusy = false }) {
 			<ul className="kadence-blocks-style-library__dormant-list">
 				{entries.map(([slug, entry]) => {
 					const label = entry?.label || slug;
+					const wasRecorded = Object.keys(entry?.themeSnapshot ?? {}).length > 0;
 					const snapshot = writableThemeValues(entry?.themeSnapshot);
-					const hasSnapshot = Object.keys(snapshot).length > 0;
+					const hasThemeValues = Object.keys(snapshot).length > 0;
 					const tokens = { ...snapshot, ...(entry?.tokens ?? {}) };
 
 					return (
 						<li key={slug} className="kadence-blocks-style-library__dormant-item">
 							<span className="kadence-blocks-style-library__dormant-label">
 								{label}
-								{!hasSnapshot && (
+								{!hasThemeValues && (
 									<span className="kadence-blocks-style-library__dormant-warning">
-										{__(
-											"The theme's own values for this preset were not recorded, so only your changes can be kept.",
-											'kadence-blocks'
-										)}
+										{wasRecorded
+											? __(
+													"The theme's own values for this preset cannot be saved in a preset, so only your changes can be kept.",
+													'kadence-blocks'
+												)
+											: __(
+													"The theme's own values for this preset were not recorded, so only your changes can be kept.",
+													'kadence-blocks'
+												)}
 									</span>
 								)}
 							</span>
@@ -90,7 +100,7 @@ export function DormantPresets({ dormant, onKeep, onDiscard, isBusy = false }) {
 										void Promise.resolve(onKeep(slug, { label, tokens })).catch(() => undefined);
 									}}
 								>
-									{hasSnapshot
+									{hasThemeValues
 										? __('Keep as custom preset', 'kadence-blocks')
 										: __('Keep changes as custom preset', 'kadence-blocks')}
 								</Button>

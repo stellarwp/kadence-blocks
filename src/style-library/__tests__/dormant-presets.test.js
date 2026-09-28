@@ -204,6 +204,48 @@ describe('DormantPresets', () => {
 	});
 
 	/**
+	 * A snapshot that was recorded but holds only values a preset write refuses is not called unrecorded:
+	 * the note says the theme's values cannot be saved, the action is named for the changes it keeps, and
+	 * only the overrides are handed over.
+	 *
+	 * @return {void}
+	 */
+	it('says the theme values cannot be kept when every recorded snapshot value is not writable', () => {
+		const onKeep = jest.fn();
+
+		render({
+			dormant: {
+				'theme-outline': {
+					label: 'Theme Outline',
+					tokens: { 'button-bg': '#ff0000' },
+					themeSnapshot: {
+						'button-padding': [
+							'calc(0.6rem - 1px)',
+							'calc(1rem - 1px)',
+							'calc(0.6rem - 1px)',
+							'calc(1rem - 1px)',
+						],
+						'button-text': 'rgb(26, 32, 44)',
+					},
+				},
+			},
+			onKeep,
+		});
+
+		expect(container.querySelector('.kadence-blocks-style-library__dormant-warning').textContent).toBe(
+			"The theme's own values for this preset cannot be saved in a preset, so only your changes can be kept."
+		);
+		expect(container.querySelector('[data-action="keep"]').textContent).toBe('Keep changes as custom preset');
+
+		act(() => container.querySelector('[data-action="keep"]').click());
+
+		expect(onKeep).toHaveBeenCalledWith('theme-outline', {
+			label: 'Theme Outline',
+			tokens: { 'button-bg': '#ff0000' },
+		});
+	});
+
+	/**
 	 * An entry with a recorded snapshot carries no such note and keeps the plain action label.
 	 *
 	 * @return {void}
