@@ -11,6 +11,7 @@ import {
 	activePresetFor,
 	blockDefaultOverridden,
 	blockDefaultPreset,
+	blockPresetThemeClass,
 	blockPresetValues,
 } from '../../../../extension/preset-picker';
 import { pathOfAlias } from '../../../../extension/design-tokens/alias';
@@ -76,8 +77,9 @@ export function presetBorderProperties(attributes) {
 
 /**
  * Whether the button's shape (padding, margin, border, shadow) is the plugin's own. A button in one
- * of the theme-painted modes, or in the outline mode, takes those from the theme's rules or from the
- * outline stylesheet, and the preset bridges must not outrank them. Mirrors the PHP renderer's gate.
+ * of the theme-painted modes, in the outline mode, or on a class-painted preset takes those from the
+ * theme's rules or from the outline stylesheet, and the preset bridges must not outrank them. Mirrors
+ * the PHP renderer's gate.
  *
  * @param {Object} attributes The block attributes.
  *
@@ -88,7 +90,11 @@ export function presetBorderProperties(attributes) {
 export function paintsOwnShape(attributes) {
 	const mode = attributes?.inheritStyles ?? '';
 
-	return mode === '' || mode === 'fill';
+	if (mode !== '' && mode !== 'fill') {
+		return false;
+	}
+
+	return !blockPresetThemeClass('kadence/singlebtn', attributes?.kbPreset);
 }
 
 /**
@@ -158,6 +164,17 @@ export function hasVisibleShadow(shadowItem) {
 
 export default function BackendStyles(props) {
 	const { attributes, isSelected, previewDevice, currentRef, context } = props;
+
+	/*
+	 * A button on a class-painted preset may carry a Style Library override rule the preset projector emits
+	 * at (0,5,0) resting / (0,6,0) hover, so its own rules spend three extra `.kt-button` classes to tie
+	 * it: this <style> renders inside the block, after every head stylesheet, so the tie goes to the
+	 * block's own value, the way the front end already resolves it. Every other button keeps the weight
+	 * it always had, so a theme editor rule that outranked the block's before still does.
+	 */
+	const weight = blockPresetThemeClass('kadence/singlebtn', attributes.kbPreset)
+		? '.kt-button.kt-button.kt-button'
+		: '';
 
 	const {
 		uniqueID,
@@ -816,7 +833,7 @@ export default function BackendStyles(props) {
 
 	css.add_raw_styles(previewTypographyCSS);
 	//global outline styles
-	css.set_selector(`.kb-single-btn-${uniqueID} .kt-button-${uniqueID}.kb-btn-global-outline`);
+	css.set_selector(`.kb-single-btn-${uniqueID} .kt-button-${uniqueID}.kb-btn-global-outline${weight}`);
 	if (!previewBorderTopStyle) {
 		css.add_property('border-top-color', css.render_color(previewBorderTopColor));
 	}
@@ -829,7 +846,7 @@ export default function BackendStyles(props) {
 	if (!previewBorderBottomStyle) {
 		css.add_property('border-bottom-color', css.render_color(previewBorderBottomColor));
 	}
-	css.set_selector(`.kb-single-btn-${uniqueID} .kt-button-${uniqueID}.kb-btn-global-outline:hover`);
+	css.set_selector(`.kb-single-btn-${uniqueID} .kt-button-${uniqueID}.kb-btn-global-outline${weight}:hover`);
 	if (!previewBorderHoverTopStyle) {
 		css.add_property('border-top-color', css.render_color(previewBorderHoverTopColor));
 	}
@@ -843,7 +860,7 @@ export default function BackendStyles(props) {
 		css.add_property('border-bottom-color', css.render_color(previewBorderHoverBottomColor));
 	}
 	//standard styles
-	css.set_selector(`.kb-single-btn-${uniqueID} .kt-button-${uniqueID}`);
+	css.set_selector(`.kb-single-btn-${uniqueID} .kt-button-${uniqueID}${weight}`);
 
 	/*
 	 * Mirrors the front end's gate (`render_preset_spacing` in the block's PHP): point spacing at the
@@ -964,7 +981,10 @@ export default function BackendStyles(props) {
 		css.add_property('-webkit-background-clip', 'text');
 		css.add_property('-webkit-text-fill-color', 'transparent');
 	} else {
-		css.set_selector(`.kb-single-btn-${uniqueID} .kt-button-${uniqueID}.kt-button.kt-button`);
+		// Already two classes above the rest; one more reaches the same (0,5,0) as the other raised rules.
+		css.set_selector(
+			`.kb-single-btn-${uniqueID} .kt-button-${uniqueID}.kt-button.kt-button${weight ? '.kt-button' : ''}`
+		);
 		css.add_property('color', css.render_color(color));
 	}
 
@@ -977,7 +997,7 @@ export default function BackendStyles(props) {
 		css.add_property('color', css.render_color(colorHover));
 	}
 
-	css.set_selector(`.kb-single-btn-${uniqueID} .kt-button-${uniqueID}`);
+	css.set_selector(`.kb-single-btn-${uniqueID} .kt-button-${uniqueID}${weight}`);
 	css.add_property('background', btnbg);
 	css.add_property(
 		'width',
@@ -990,7 +1010,7 @@ export default function BackendStyles(props) {
 	);
 
 	//hover styles
-	css.set_selector(`.kb-single-btn-${uniqueID} .kt-button-${uniqueID}:hover`);
+	css.set_selector(`.kb-single-btn-${uniqueID} .kt-button-${uniqueID}${weight}:hover`);
 	if (previewBorderHoverTopStyle) {
 		css.add_property('border-top', previewBorderHoverTopStyle);
 	}
@@ -1038,7 +1058,7 @@ export default function BackendStyles(props) {
 	//transparent styles
 	if (context?.['kadence/headerIsTransparent'] == '1') {
 		//standard transparent styles
-		css.set_selector(`.kb-single-btn-${uniqueID} .kt-button-${uniqueID}`);
+		css.set_selector(`.kb-single-btn-${uniqueID} .kt-button-${uniqueID}${weight}`);
 		if (previewBorderTransparentTopStyle) {
 			css.add_property('border-top', previewBorderTransparentTopStyle);
 		}
@@ -1083,7 +1103,7 @@ export default function BackendStyles(props) {
 		css.add_property('background', btnbgTransparent);
 
 		//hover styles
-		css.set_selector(`.kb-single-btn-${uniqueID} .kt-button-${uniqueID}:hover`);
+		css.set_selector(`.kb-single-btn-${uniqueID} .kt-button-${uniqueID}${weight}:hover`);
 		if (previewBorderTransparentHoverTopStyle) {
 			css.add_property('border-top', previewBorderTransparentHoverTopStyle);
 		}
@@ -1131,7 +1151,7 @@ export default function BackendStyles(props) {
 	//sticky styles
 	if (context?.['kadence/headerIsSticky'] == '1') {
 		//standard sticky styles
-		css.set_selector(`.kb-single-btn-${uniqueID} .kt-button-${uniqueID}`);
+		css.set_selector(`.kb-single-btn-${uniqueID} .kt-button-${uniqueID}${weight}`);
 		if (previewBorderStickyTopStyle) {
 			css.add_property('border-top', previewBorderStickyTopStyle);
 		}
@@ -1176,7 +1196,7 @@ export default function BackendStyles(props) {
 		css.add_property('background', btnbgSticky);
 
 		//hover styles
-		css.set_selector(`.kb-single-btn-${uniqueID} .kt-button-${uniqueID}:hover`);
+		css.set_selector(`.kb-single-btn-${uniqueID} .kt-button-${uniqueID}${weight}:hover`);
 		if (previewBorderStickyHoverTopStyle) {
 			css.add_property('border-top', previewBorderStickyHoverTopStyle);
 		}

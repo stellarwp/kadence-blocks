@@ -6,9 +6,11 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Mutator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Preset_Order_Index;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Preset\Style;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Preset_Bindings;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Presets;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Alias_Cycle_Exception;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Dangling_Alias_Exception;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
@@ -284,6 +286,15 @@ final class Presets_Controller extends Controller {
 	private Preset_Order_Index $order_index;
 
 	/**
+	 * Reads a class-painted preset's theme values, so a save of one stores only the values that differ.
+	 *
+	 * @since TBD
+	 *
+	 * @var Preset_Resolver
+	 */
+	private Preset_Resolver $preset_resolver;
+
+	/**
 	 * Memoised item schema for this request. Null until first built.
 	 *
 	 * @since TBD
@@ -303,7 +314,8 @@ final class Presets_Controller extends Controller {
 	 * @param Token_Registry             $registry    Declares which blocks accept presets.
 	 * @param Active_Token_Library_Store $active      Resolves the active library when a request names none.
 	 * @param Preset_Value_Normalizer    $normalizer  Rewrites captured literals into semantic aliases.
-	 * @param Preset_Order_Index         $order_index Reads and writes the presetOrder display-order map.
+	 * @param Preset_Order_Index         $order_index     Reads and writes the presetOrder display-order map.
+	 * @param Preset_Resolver            $preset_resolver Reads a class-painted preset's theme values.
 	 */
 	public function __construct(
 		Token_Store $store,
@@ -314,18 +326,20 @@ final class Presets_Controller extends Controller {
 		Token_Registry $registry,
 		Active_Token_Library_Store $active,
 		Preset_Value_Normalizer $normalizer,
-		Preset_Order_Index $order_index
+		Preset_Order_Index $order_index,
+		Preset_Resolver $preset_resolver
 	) {
-		$this->store       = $store;
-		$this->mutator     = $mutator;
-		$this->resolver    = $resolver;
-		$this->validator   = $validator;
-		$this->presets     = $presets;
-		$this->registry    = $registry;
-		$this->active      = $active;
-		$this->normalizer  = $normalizer;
-		$this->order_index = $order_index;
-		$this->rest_base   = 'presets';
+		$this->store           = $store;
+		$this->mutator         = $mutator;
+		$this->resolver        = $resolver;
+		$this->validator       = $validator;
+		$this->presets         = $presets;
+		$this->registry        = $registry;
+		$this->active          = $active;
+		$this->normalizer      = $normalizer;
+		$this->order_index     = $order_index;
+		$this->preset_resolver = $preset_resolver;
+		$this->rest_base       = 'presets';
 	}
 
 	/**
@@ -536,6 +550,14 @@ final class Presets_Controller extends Controller {
 		$block_node = [ $preset => $this->preset_definition( $request ) ];
 		$slug       = $this->slug( $request );
 
+		// preset_definition() copies only the label and the tokens, so a theme-owned key in the body would
+		// be dropped silently; it is refused instead, the way the collection route refuses it.
+		$error = $this->guard_theme_owned_keys( $this->theme_owned_params( $request ), $block, $preset );
+
+		if ( $error instanceof WP_Error ) {
+			return $error;
+		}
+
 		$error = $this->guard_preset_shape( $block_node, $block );
 
 		if ( $error instanceof WP_Error ) {
@@ -555,6 +577,7 @@ final class Presets_Controller extends Controller {
 		}
 
 		$block_node = $this->normalize_block_node( $block_node, $block, $slug );
+		$block_node = $this->without_theme_values( $block_node, $block, $preset, $slug );
 		$stored     = $this->stored_document( $slug );
 
 		// The token map replaces wholesale rather than merging property by property: the client
@@ -618,6 +641,13 @@ final class Presets_Controller extends Controller {
 			$block_node[ Extensions::get_default_key() ] = $default;
 		}
 
+		// The body's own `$default` key lands in the node too, so the guard reads the node, not the param.
+		$error = $this->guard_theme_default( $this->default_of( $block_node ), $block );
+
+		if ( $error instanceof WP_Error ) {
+			return $error;
+		}
+
 		$slug = $this->slug( $request );
 
 		$error = $this->guard_preset_shape( $block_node, $block );
@@ -639,6 +669,10 @@ final class Presets_Controller extends Controller {
 		}
 
 		$block_node = $this->normalize_block_node( $block_node, $block, $slug );
+
+		foreach ( $this->preset_names( $block_node ) as $preset ) {
+			$block_node = $this->without_theme_values( $block_node, $block, $preset, $slug );
+		}
 
 		// Replace, not merge: drop the stored block node first so a preset the body omits does not survive.
 		$stored    = $this->unset_block( $this->stored_document( $slug ), $block );
@@ -787,6 +821,11 @@ final class Presets_Controller extends Controller {
 		}
 
 		$default = Cast::to_string( $request->get_param( self::DEFAULT_PARAM ) );
+		$error   = $this->guard_theme_default( $default, $block );
+
+		if ( $error instanceof WP_Error ) {
+			return $error;
+		}
 
 		$slug      = $this->slug( $request );
 		$candidate = $this->mutator->merge(
@@ -1183,9 +1222,64 @@ final class Presets_Controller extends Controller {
 					]
 				);
 			}
+
+			$error = $this->guard_theme_owned_keys( array_keys( $preset ), $block, (string) $slug );
+
+			if ( $error instanceof WP_Error ) {
+				return $error;
+			}
 		}
 
 		return null;
+	}
+
+	/**
+	 * Reject a preset write carrying a key only the theme discovery layer or the shipped baseline may set
+	 * (the classes a class-painted preset wears, its displayed theme values, its saved snapshot). A client
+	 * edits a class preset's overrides only; what paints it is never client data.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<int, int|string> $keys   The keys the written preset carries.
+	 * @param string                 $block  The block name, for error context.
+	 * @param string                 $preset The preset slug, for error context.
+	 *
+	 * @return WP_Error|null A WP_Error when a theme-owned key is present, null otherwise.
+	 */
+	private function guard_theme_owned_keys( array $keys, string $block, string $preset ): ?WP_Error {
+		if ( array_intersect( array_map( 'strval', $keys ), Extensions::get_theme_owned_keys() ) === [] ) {
+			return null;
+		}
+
+		return new WP_Error(
+			'rest_design_tokens_invalid',
+			__( 'A preset cannot set theme-owned keys.', 'kadence-blocks' ),
+			[
+				'status' => WP_Http::UNPROCESSABLE_ENTITY,
+				'block'  => $block,
+				'preset' => $preset,
+			]
+		);
+	}
+
+	/**
+	 * The theme-owned keys a single-preset request carries as top-level parameters.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_REST_Request $request The request.
+	 *
+	 * @return string[]
+	 */
+	private function theme_owned_params( WP_REST_Request $request ): array {
+		return array_values(
+			array_filter(
+				Extensions::get_theme_owned_keys(),
+				static function ( string $key ) use ( $request ): bool {
+					return $request->has_param( $key );
+				}
+			)
+		);
 	}
 
 	/**
@@ -1200,6 +1294,10 @@ final class Presets_Controller extends Controller {
 	 * preset should refuse anyway: it is the block's built-in look, and the editor offers deletion only for
 	 * user-created presets. Minting a NEW preset under a reserved slug is still refused, so nobody can
 	 * strand one that cannot be removed.
+	 *
+	 * The theme prefix is reserved the same way: a theme-discovered preset is written by the discovery
+	 * layer, and a client minting one would be listed as a theme's style the theme never offered. A stored
+	 * `theme-*` node the library already carries stays writable, since that is an update of its overrides.
 	 *
 	 * @since TBD
 	 *
@@ -1219,7 +1317,7 @@ final class Presets_Controller extends Controller {
 				continue;
 			}
 
-			if ( ! in_array( (string) $slug, $reserved, true ) ) {
+			if ( ! in_array( (string) $slug, $reserved, true ) && ! Style::is_theme_slug( (string) $slug ) ) {
 				continue;
 			}
 
@@ -1551,6 +1649,34 @@ final class Presets_Controller extends Controller {
 	}
 
 	/**
+	 * Reject a theme-discovered preset as the block's default. A theme preset is painted by the theme's
+	 * own classes, so making it the default would hand the block's baseline look to whatever the active
+	 * theme happens to render. Shared by every route that can write the `$default` pointer.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $default_slug The default preset slug being written; empty when the write sets none.
+	 * @param string $block        The block name, for error context.
+	 *
+	 * @return WP_Error|null A WP_Error when the default names a theme preset, null otherwise.
+	 */
+	private function guard_theme_default( string $default_slug, string $block ): ?WP_Error {
+		if ( ! Style::is_theme_slug( $default_slug ) ) {
+			return null;
+		}
+
+		return new WP_Error(
+			'rest_design_tokens_theme_default',
+			__( 'A theme preset cannot be the default preset.', 'kadence-blocks' ),
+			[
+				'status'  => WP_Http::BAD_REQUEST,
+				'block'   => $block,
+				'default' => $default_slug,
+			]
+		);
+	}
+
+	/**
 	 * Reject a written preset that sets a property the block does not bind.
 	 *
 	 * A preset may define any subset of the block's bound surface — different presets may define
@@ -1804,6 +1930,46 @@ final class Presets_Controller extends Controller {
 		$definition[ Extensions::get_tokens_key() ] = is_array( $tokens ) ? $tokens : [];
 
 		return $definition;
+	}
+
+	/**
+	 * Drop, from a class-painted preset's submitted token map, every value equal to what the theme already
+	 * renders for it. The client sends the whole map it displayed, theme values included, so without this
+	 * step a save would turn every displayed theme value into a stored override. The theme values are
+	 * normalized through the same pass the submitted map went through, so a literal the user typed that
+	 * equals the theme's value compares equal to it in either form.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $block_node The block's normalized preset node being written.
+	 * @param string               $block      The block name.
+	 * @param string               $preset     The preset slug.
+	 * @param string               $slug       The token library slug.
+	 *
+	 * @return array<string, mixed> The node, its token map reduced to the real overrides.
+	 */
+	private function without_theme_values( array $block_node, string $block, string $preset, string $slug ): array {
+		$raw_theme_values = $this->preset_resolver->theme_values( $block, $preset, $slug );
+		$tokens_key       = Extensions::get_tokens_key();
+		$node             = $block_node[ $preset ] ?? null;
+
+		if ( $raw_theme_values === [] || ! is_array( $node ) || ! isset( $node[ $tokens_key ] ) || ! is_array( $node[ $tokens_key ] ) ) {
+			return $block_node;
+		}
+
+		$theme_values = $this->normalizer->normalize( $raw_theme_values, $slug, $this->registry->for_block( $block ) );
+
+		$node[ $tokens_key ] = array_filter(
+			$node[ $tokens_key ],
+			static function ( $value, $property ) use ( $theme_values ): bool {
+				return ! array_key_exists( $property, $theme_values ) || $theme_values[ $property ] !== $value;
+			},
+			ARRAY_FILTER_USE_BOTH
+		);
+
+		$block_node[ $preset ] = $node;
+
+		return $block_node;
 	}
 
 	/**

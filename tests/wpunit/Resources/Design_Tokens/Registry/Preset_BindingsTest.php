@@ -60,6 +60,35 @@ final class Preset_BindingsTest extends TestCase {
 	}
 
 	/**
+	 * The class-preset override weights are read and trimmed, so the scope builder alone decides how they
+	 * attach to the block scope.
+	 *
+	 * @return void
+	 */
+	public function testItReadsAndTrimsTheClassPresetWeights(): void {
+		$bindings = Preset_Bindings::from_array(
+			$this->declaration() + [
+				'class_preset_weight'        => ' .kb-button.kb-button.kb-button ',
+				'editor_class_preset_weight' => ' .kt-button.kt-button.kt-button.kt-button',
+			]
+		);
+
+		$this->assertSame( '.kb-button.kb-button.kb-button', $bindings->class_preset_weight );
+		$this->assertSame( '.kt-button.kt-button.kt-button.kt-button', $bindings->editor_class_preset_weight );
+	}
+
+	/**
+	 * A block that declares no class-preset weight reads null for both, as does one declaring an empty one.
+	 *
+	 * @return void
+	 */
+	public function testTheClassPresetWeightsAreNullWhenOmittedOrEmpty(): void {
+		$this->assertNull( Preset_Bindings::from_array( $this->declaration() )->class_preset_weight );
+		$this->assertNull( Preset_Bindings::from_array( $this->declaration() )->editor_class_preset_weight );
+		$this->assertNull( Preset_Bindings::from_array( $this->declaration() + [ 'class_preset_weight' => '  ' ] )->class_preset_weight );
+	}
+
+	/**
 	 * A block that renders identically in the editor and on the front end (the common case) omits
 	 * `editor_selector`, and the parser must leave it null rather than defaulting to some other selector.
 	 *
