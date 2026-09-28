@@ -114,6 +114,13 @@ describe('migrateToInnerblocks', () => {
 		expect(attributes.inheritStyles).toBe('');
 	});
 
+	it('normalizes a v1 solid background type so the migrated button keeps rendering its fill', () => {
+		const attributes = migrateOne({ background: '#0000ff', borderWidth: 0 });
+
+		expect(attributes.backgroundType).toBe('normal');
+		expect(attributes.backgroundHoverType).toBe('normal');
+	});
+
 	it('gives a v1 button with a gradient background and no border the default look', () => {
 		const attributes = migrateOne({ backgroundType: 'gradient', borderWidth: '0' });
 
