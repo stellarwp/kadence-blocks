@@ -165,6 +165,10 @@ final class Preset_Catalog {
 				'references' => $this->references_for( $block, $slug, $names ),
 				'responsive' => $this->responsive_for( $block, $slug, $names ),
 				'overridden' => $this->overridden_for( $block, $slug, $names ),
+				// The default preset's properties the library changes away from the shipped value, counting
+				// an override stored anywhere along a property's alias chain — the map the render path reads
+				// to decide whether a default-preset bridge is emitted at all.
+				'activated'  => $this->presets->overridden_default_properties( $block, $slug ),
 				'label'      => $bindings->label,
 			];
 		}

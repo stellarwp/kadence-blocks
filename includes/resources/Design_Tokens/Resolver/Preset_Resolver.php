@@ -2,6 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Resolver;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Document_Path;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Preset_Order_Index;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Css_Var;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Unknown_Preset_Exception;
@@ -420,6 +421,66 @@ final class Preset_Resolver {
 		}
 
 		return $default;
+	}
+
+	/**
+	 * The $default preset's properties the library actually overrides: the stored default preset owns
+	 * the property, or a token along the alias chain the property points at carries a stored value. The
+	 * projectors and the block's render path emit a default-preset bridge only for these, so an untouched
+	 * library leaves the theme's own rules and variables in charge (and the Customizer's live preview
+	 * keeps working).
+	 *
+	 * @since TBD
+	 *
+	 * @param string $block The block name.
+	 * @param string $slug  The token library slug.
+	 *
+	 * @return array<string, bool> property => true.
+	 */
+	public function overridden_default_properties( string $block, string $slug = 'default' ): array {
+		try {
+			$default = $this->default_preset( $block, $slug );
+			$tokens  = $this->preset_tokens( $block, $default, $slug );
+		} catch ( Unknown_Preset_Exception $e ) {
+			return [];
+		}
+
+		$owned    = $this->presets->owned_properties( $block, $default, $slug );
+		$raw      = $this->presets->raw( $slug );
+		$resolved = $this->resolver->resolve( $slug );
+		$out      = [];
+
+		foreach ( $tokens as $property => $value ) {
+			if ( isset( $owned[ $property ] ) ) {
+				$out[ (string) $property ] = true;
+
+				continue;
+			}
+
+			if ( ! is_string( $value ) || ! Alias::is_alias( $value ) ) {
+				continue;
+			}
+
+			// An edit anywhere along the chain (semantic, then the primitive behind it) changes what the
+			// button renders, so every hop has to activate the retarget. The seen set guards a cycle.
+			$id   = Alias::path_of( $value );
+			$seen = [];
+
+			while ( $id !== null && $id !== '' && ! isset( $seen[ $id ] ) ) {
+				$seen[ $id ] = true;
+				$leaf        = Document_Path::node_at( $raw, $id );
+
+				if ( $leaf !== null && isset( $leaf['$value'] ) ) {
+					$out[ (string) $property ] = true;
+
+					break;
+				}
+
+				$id = $resolved->target( $id );
+			}
+		}
+
+		return $out;
 	}
 
 	/**

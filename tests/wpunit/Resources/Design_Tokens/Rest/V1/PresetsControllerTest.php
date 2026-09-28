@@ -1202,7 +1202,7 @@ final class PresetsControllerTest extends TestCase {
 					'tokens' => $this->button_tokens(
 						[
 							'button-border-width' => '2px',
-							'button-border-style' => 'solid',
+							'button-border-style' => 'dashed',
 							'button-border-color' => '#000000',
 							'button-shadow'       => '{primitive.shadow.md}',
 						]
@@ -1217,7 +1217,7 @@ final class PresetsControllerTest extends TestCase {
 		$tokens = $response->get_data()['presets']['outline']['tokens'];
 
 		$this->assertSame( '2px', $tokens['button-border-width'] );
-		$this->assertSame( 'solid', $tokens['button-border-style'] );
+		$this->assertSame( 'dashed', $tokens['button-border-style'] );
 		$this->assertSame( '#000000', $tokens['button-border-color'] );
 		$this->assertSame( '{primitive.shadow.md}', $tokens['button-shadow'] );
 	}

@@ -43,7 +43,7 @@ final class Preset_ResolverTest extends TestCase {
 		$this->assertSame( '#2f2ffc', $values['button-bg-hover'] );
 		$this->assertSame( '#ffffff', $values['button-text-hover'] );
 		// {semantic.radius.control} -> the button's long-standing 3px.
-		$this->assertSame( '0.1875rem', $values['button-radius'] );
+		$this->assertSame( '3px', $values['button-radius'] );
 	}
 
 	/**
@@ -356,7 +356,7 @@ final class Preset_ResolverTest extends TestCase {
 
 		$values = $this->resolver->resolve_literal( self::BUTTON, 'corners' );
 
-		$this->assertSame( [ '0.1875rem', '8px', '0.1875rem', '8px' ], $values['button-radius'] );
+		$this->assertSame( [ '3px', '8px', '3px', '8px' ], $values['button-radius'] );
 	}
 
 	/**
@@ -437,7 +437,7 @@ final class Preset_ResolverTest extends TestCase {
 			$this->resolver->resolve_responsive( self::BUTTON, 'hero' )
 		);
 		$this->assertSame(
-			[ 'tablet' => [ 'button-radius' => '0.1875rem' ] ],
+			[ 'tablet' => [ 'button-radius' => '3px' ] ],
 			$this->resolver->resolve_responsive_literal( self::BUTTON, 'hero' )
 		);
 	}
@@ -488,7 +488,7 @@ final class Preset_ResolverTest extends TestCase {
 		);
 
 		$this->assertSame(
-			[ 'mobile' => [ 'button-radius' => '0.1875rem' ] ],
+			[ 'mobile' => [ 'button-radius' => '3px' ] ],
 			$this->resolver->resolve_responsive_literal( self::BUTTON, 'hero' )
 		);
 	}
@@ -555,7 +555,7 @@ final class Preset_ResolverTest extends TestCase {
 		);
 
 		$this->assertSame(
-			[ 'tablet' => [ 'button-radius' => [ '0.1875rem', '', '', '' ] ] ],
+			[ 'tablet' => [ 'button-radius' => [ '3px', '', '', '' ] ] ],
 			$this->resolver->resolve_responsive_literal( self::BUTTON, 'hero' )
 		);
 	}
@@ -602,7 +602,7 @@ final class Preset_ResolverTest extends TestCase {
 		);
 
 		$this->assertSame(
-			[ '0.1875rem', '8px', '0.1875rem', '8px' ],
+			[ '3px', '8px', '3px', '8px' ],
 			$this->resolver->resolve_literal( self::BUTTON, 'corners' )['button-radius']
 		);
 		$this->assertSame(

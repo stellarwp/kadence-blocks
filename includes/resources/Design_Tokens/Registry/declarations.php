@@ -231,6 +231,7 @@ $button_color_labels = [
 	'button-text'       => __( 'Button Text', 'kadence-blocks' ),
 	'button-bg-hover'   => __( 'Button Background (Hover)', 'kadence-blocks' ),
 	'button-text-hover' => __( 'Button Text (Hover)', 'kadence-blocks' ),
+	'button-border'     => __( 'Button Border', 'kadence-blocks' ),
 ];
 
 $button_color_tokens = [];
@@ -501,6 +502,15 @@ return [
 				'group' => __( 'Media', 'kadence-blocks' ),
 			],
 			[
+				// Button border width. The Default Button preset aliases it, so a button's border follows the
+				// button's own semantic rather than the brand-wide one the image and heading share. Resolves
+				// to 0, matching KB's default (a button carries no border until a preset or the user sets one).
+				'id'    => 'semantic.border-width.button',
+				'type'  => 'dimension',
+				'label' => __( 'Button Border Width', 'kadence-blocks' ),
+				'group' => __( 'Brand', 'kadence-blocks' ),
+			],
+			[
 				// Button shadow default for the block-default CSS projector, mirroring semantic.shadow.media.
 				// Registered so Css_Var emits --kb-token--semantic--shadow--button; the projector points
 				// kadence/singlebtn's box-shadow at it. Resolves to an invisible (transparent, zero) shadow,
@@ -606,7 +616,7 @@ return [
 						'mobile' => 'mobileMargin',
 					],
 				],
-				// Border and shadow reuse the brand-wide tokens (and, for shadow, a button-scoped one),
+				// Border and shadow read button-scoped tokens that hold the button's shipped values,
 				// mirroring button-padding/button-margin/button-radius's css_var shape above rather than a
 				// css_prop shape: a css_prop binding only ever reaches Block_Default_Css\Css_Builder, which
 				// resolves exclusively the block's $default preset and can never reflect a *selected*
@@ -623,19 +633,19 @@ return [
 				// the editor would compare the nested shape as a flat one and never match. token-indicators
 				// reads the declared axis and combines the three into one bound/overridden state entry.
 				'button-border-width'       => [
-					'token'        => 'semantic.border-width.default',
+					'token'        => 'semantic.border-width.button',
 					'css_var'      => 'kb-btn-border-width',
 					'control_attr' => 'borderStyle',
 					'axis'         => 'border-width',
 				],
 				'button-border-style'       => [
-					'token'        => 'semantic.border-style.default',
+					'token'        => 'semantic.border-style.button',
 					'css_var'      => 'kb-btn-border-style',
 					'control_attr' => 'borderStyle',
 					'axis'         => 'border-style',
 				],
 				'button-border-color'       => [
-					'token'        => 'semantic.color.border',
+					'token'        => 'semantic.color.button-border',
 					'css_var'      => 'kb-btn-border-color',
 					'control_attr' => 'borderStyle',
 					'axis'         => 'border-color',
