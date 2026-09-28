@@ -319,6 +319,74 @@ final class Block_Theme_Button_StylesTest extends TestCase {
 	}
 
 	/**
+	 * A variation that paints a real gradient and sets no background is not offered: a preset has no gradient
+	 * property, and seeding it with the theme base's solid background would promise a look the theme never
+	 * defined. Theme Base and the theme's other variations are still read.
+	 *
+	 * @return void
+	 */
+	public function testAVariationWithARealGradientAndNoBackgroundIsSkipped(): void {
+		$element = [
+			'color' => [
+				'background' => 'var(--wp--preset--color--contrast)',
+				'text'       => 'var(--wp--preset--color--base)',
+			],
+		];
+		$styles  = [
+			'elements' => [ 'button' => $element ],
+			'blocks'   => [
+				'core/button' => [
+					'variations' => [
+						'gradient' => [
+							'color' => [
+								'gradient' => 'linear-gradient(90deg, var(--wp--preset--color--contrast), var(--wp--preset--color--accent))',
+								'text'     => 'var(--wp--preset--color--base)',
+							],
+						],
+						'rounded'  => [ 'border' => [ 'radius' => '9999px' ] ],
+					],
+				],
+			],
+		];
+
+		$result = $this->adapter( $styles, $styles )->styles();
+
+		$this->assertSame( [ 'base', 'rounded' ], array_keys( $result ) );
+		$this->assertSame( 'var(--wp--preset--color--contrast)', $result['base']['values']['button-bg'] );
+		$this->assertSame( 'var(--wp--preset--color--contrast)', $result['rounded']['tokens']['button-bg'] );
+	}
+
+	/**
+	 * A variation that paints a real gradient over a background of its own keeps that background: the value
+	 * is the variation's, not the theme base's, so the preset is still offered.
+	 *
+	 * @return void
+	 */
+	public function testAVariationWithARealGradientAndABackgroundIsKept(): void {
+		$element = [ 'color' => [ 'background' => 'var(--wp--preset--color--contrast)' ] ];
+		$styles  = [
+			'elements' => [ 'button' => $element ],
+			'blocks'   => [
+				'core/button' => [
+					'variations' => [
+						'accent' => [
+							'color' => [
+								'background' => 'var(--wp--preset--color--accent)',
+								'gradient'   => 'linear-gradient(90deg, red, blue)',
+							],
+						],
+					],
+				],
+			],
+		];
+
+		$this->assertSame(
+			'var(--wp--preset--color--accent)',
+			$this->adapter( $styles, $styles )->styles()['accent']['tokens']['button-bg']
+		);
+	}
+
+	/**
 	 * A per-corner radius object is read corner by corner, and a padding object missing a side is omitted
 	 * whole, since a preset value is all four slots.
 	 *
