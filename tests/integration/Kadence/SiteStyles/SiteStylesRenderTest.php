@@ -59,7 +59,7 @@ final class SiteStylesRenderTest extends WPTestCase {
 		$this->assertStringContainsString( 'border-top-left-radius:20px;', $rule );
 	}
 
-	public function testAPaletteBackgroundRendersKadencesPaletteVariable(): void {
+	public function testAPaletteBackgroundRendersTheKadencePaletteVariable(): void {
 		$this->tester->enable_fse_mode();
 		$this->store_background_and_radius( 'var:preset|color|theme-palette1', 20 );
 

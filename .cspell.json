@@ -24,10 +24,12 @@
         "languages/**",
         "vendor/**",
         "node_modules/**",
-        "**/*.svg"
+        "**/*.svg",
+        "tests/_data/**"
     ],
     "words": [
         "ABSPATH",
+        "Adbar",
         "advancedbtn",
         "advancedgallery",
         "advancedheading",
