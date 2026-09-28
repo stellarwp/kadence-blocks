@@ -21,12 +21,22 @@ import './DormantPresets.scss';
 /**
  * Render the "Not available in the current theme" group.
  *
+ * A stored entry can arrive with no theme snapshot: the single-preset write only records one when the theme
+ * renders values for the preset, and the collection write records none. Keep then has only the overrides to
+ * work from, so the item says so and its action is named for what it really keeps.
+ *
+ * Both actions swallow the rejection their flow re-throws: the flow has already reported the failure
+ * through the screen's error notice, and a click handler that returned the rejected promise would only
+ * add an unhandled-rejection report for an error already shown.
+ *
  * @param {Object}   props           The component props.
  * @param {?Object}  props.dormant   The REST payload's dormant map: slug => { label, tokens, themeSnapshot }.
  * @param {Function} props.onKeep    Called with `(slug, { label, tokens })` — the theme snapshot under the
  *                                   overrides, the full look the preset had when it was last saved, less
- *                                   any theme value a preset write has no slot for.
- * @param {Function} props.onDiscard Called with the slug to drop the stored overrides.
+ *                                   any theme value a preset write has no slot for. May return a promise
+ *                                   that rejects on failure.
+ * @param {Function} props.onDiscard Called with the slug to drop the stored overrides. May return a promise
+ *                                   that rejects on failure.
  * @param {boolean}  [props.isBusy]  Whether the screen is mid-request; both actions are disabled then.
  *
  * @since TBD
@@ -54,26 +64,44 @@ export function DormantPresets({ dormant, onKeep, onDiscard, isBusy = false }) {
 			<ul className="kadence-blocks-style-library__dormant-list">
 				{entries.map(([slug, entry]) => {
 					const label = entry?.label || slug;
-					const tokens = { ...writableThemeValues(entry?.themeSnapshot), ...(entry?.tokens ?? {}) };
+					const snapshot = writableThemeValues(entry?.themeSnapshot);
+					const hasSnapshot = Object.keys(snapshot).length > 0;
+					const tokens = { ...snapshot, ...(entry?.tokens ?? {}) };
 
 					return (
 						<li key={slug} className="kadence-blocks-style-library__dormant-item">
-							<span className="kadence-blocks-style-library__dormant-label">{label}</span>
+							<span className="kadence-blocks-style-library__dormant-label">
+								{label}
+								{!hasSnapshot && (
+									<span className="kadence-blocks-style-library__dormant-warning">
+										{__(
+											"The theme's own values for this preset were not recorded, so only your changes can be kept.",
+											'kadence-blocks'
+										)}
+									</span>
+								)}
+							</span>
 							<span className="kadence-blocks-style-library__dormant-actions">
 								<Button
 									variant="secondary"
 									data-action="keep"
 									disabled={isBusy}
-									onClick={() => onKeep(slug, { label, tokens })}
+									onClick={() => {
+										void Promise.resolve(onKeep(slug, { label, tokens })).catch(() => undefined);
+									}}
 								>
-									{__('Keep as custom preset', 'kadence-blocks')}
+									{hasSnapshot
+										? __('Keep as custom preset', 'kadence-blocks')
+										: __('Keep changes as custom preset', 'kadence-blocks')}
 								</Button>
 								<Button
 									variant="tertiary"
 									isDestructive
 									data-action="discard"
 									disabled={isBusy}
-									onClick={() => onDiscard(slug)}
+									onClick={() => {
+										void Promise.resolve(onDiscard(slug)).catch(() => undefined);
+									}}
 								>
 									{__('Discard changes', 'kadence-blocks')}
 								</Button>

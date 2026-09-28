@@ -41,7 +41,15 @@
 }
 
 .kadence-blocks-style-library__dormant-label {
+	@include flex-column(var(--kb-sl-space-05));
+
 	color: var(--kb-sl-color-text-primary);
+	font-size: var(--kb-sl-font-size-s);
+}
+
+.kadence-blocks-style-library__dormant-warning {
+	@include body-text;
+
 	font-size: var(--kb-sl-font-size-s);
 }
 

@@ -176,6 +176,76 @@ describe('DormantPresets', () => {
 	});
 
 	/**
+	 * An entry stored without a theme snapshot says so, names its action for what it really keeps, and
+	 * hands over only the overrides — nothing is made up for the theme values that were never recorded.
+	 *
+	 * @return {void}
+	 */
+	it('says only the changes can be kept when the entry has no theme snapshot', () => {
+		const onKeep = jest.fn();
+
+		render({
+			dormant: { 'theme-secondary': { label: 'Theme Secondary', tokens: { 'button-bg': '#ff0000' } } },
+			onKeep,
+		});
+
+		expect(container.querySelector('.kadence-blocks-style-library__dormant-warning').textContent).toBe(
+			"The theme's own values for this preset were not recorded, so only your changes can be kept."
+		);
+		expect(container.querySelector('[data-action="keep"]').textContent).toBe('Keep changes as custom preset');
+		expect(container.querySelector('[data-action="keep"]').disabled).toBe(false);
+
+		act(() => container.querySelector('[data-action="keep"]').click());
+
+		expect(onKeep).toHaveBeenCalledWith('theme-secondary', {
+			label: 'Theme Secondary',
+			tokens: { 'button-bg': '#ff0000' },
+		});
+	});
+
+	/**
+	 * An entry with a recorded snapshot carries no such note and keeps the plain action label.
+	 *
+	 * @return {void}
+	 */
+	it('keeps the plain action label when the entry has a theme snapshot', () => {
+		render();
+
+		expect(container.querySelector('.kadence-blocks-style-library__dormant-warning')).toBeNull();
+		expect(container.querySelector('[data-action="keep"]').textContent).toBe('Keep as custom preset');
+	});
+
+	/**
+	 * A Keep or Discard the flow rejects is already reported through the screen's error notice, so the
+	 * click handler swallows the rejection instead of letting it surface as an unhandled one.
+	 *
+	 * @return {void}
+	 */
+	it('does not leak a rejected keep or discard out of the click handler', async () => {
+		const unhandled = jest.fn();
+		process.on('unhandledRejection', unhandled);
+
+		try {
+			const onKeep = jest.fn(() => Promise.reject(new Error('keep failed')));
+			const onDiscard = jest.fn(() => Promise.reject(new Error('discard failed')));
+
+			render({ onKeep, onDiscard });
+			act(() => container.querySelector('[data-action="keep"]').click());
+			act(() => container.querySelector('[data-action="discard"]').click());
+
+			await act(async () => {
+				await new Promise((resolve) => setImmediate(resolve));
+			});
+
+			expect(onKeep).toHaveBeenCalledTimes(1);
+			expect(onDiscard).toHaveBeenCalledTimes(1);
+			expect(unhandled).not.toHaveBeenCalled();
+		} finally {
+			process.off('unhandledRejection', unhandled);
+		}
+	});
+
+	/**
 	 * Both actions wait while the screen is busy.
 	 *
 	 * @return {void}
