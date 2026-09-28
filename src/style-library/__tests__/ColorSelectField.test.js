@@ -170,12 +170,37 @@ describe('ColorSelectField gradient chip', () => {
 	});
 
 	/**
-	 * A gradient stored as the row's own value renders the same chip.
+	 * A gradient the row itself stores is a saved override, so it keeps the color control (which can
+	 * change or clear it) instead of the read-only chip.
 	 *
 	 * @return {void}
 	 */
-	it('renders the chip for a gradient value too', () => {
-		expect(renderMarkup({ value: GRADIENT })).toContain('kadence-blocks-style-library__gradient-chip');
+	it('keeps the color control for a stored gradient value', () => {
+		const html = renderMarkup({ value: GRADIENT });
+
+		expect(html).not.toContain('kadence-blocks-style-library__gradient-chip');
+		expect(capturedProps.value).toBe(GRADIENT);
+	});
+
+	/**
+	 * A stored gradient stays editable even when the row would fall back to a gradient once cleared.
+	 *
+	 * @return {void}
+	 */
+	it('keeps the color control for a stored gradient over a gradient default', () => {
+		const onChange = jest.fn();
+		const html = renderMarkup({
+			field: { label: 'Background', defaultValue: 'linear-gradient(90deg,#111 0%,#222 100%)' },
+			value: GRADIENT,
+			onChange,
+		});
+
+		expect(html).not.toContain('kadence-blocks-style-library__gradient-chip');
+		expect(capturedProps.value).toBe(GRADIENT);
+
+		capturedProps.onClear();
+
+		expect(onChange).toHaveBeenCalledWith('');
 	});
 
 	/**
