@@ -84,13 +84,15 @@ final class Style_Guide_Mapper {
 
 	/**
 	 * A CSS gradient the theme stores in place of a background color. Kept as-is: the button's background
-	 * shorthand renders it, and dropping it would change the site.
+	 * shorthand renders it, and dropping it would change the site. A value carrying a comment opener is
+	 * rejected because the CSS builder's sanitizer does not strip it, and an unclosed comment would swallow
+	 * the rest of the stylesheet.
 	 *
 	 * @since TBD
 	 *
 	 * @var string
 	 */
-	private const GRADIENT_PATTERN = '/^(linear|radial|conic)-gradient\(.+\)$/i';
+	private const GRADIENT_PATTERN = '/^(linear|radial|conic)-gradient\((?!.*\/\*).+\)$/i';
 
 	/**
 	 * Map a snapshot onto the tokens that claim palette slots.
