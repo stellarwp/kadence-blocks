@@ -120,6 +120,29 @@ class Kadence_Blocks_Abstract_Block {
 	}
 
 	/**
+	 * The block type name, e.g. `kadence/singlebtn`.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The block type name.
+	 */
+	public function get_name(): string {
+		return $this->namespace . '/' . $this->block_name;
+	}
+
+	/**
+	 * The block name without its namespace, e.g. `singlebtn`, as in the block's
+	 * `kadence_blocks_<slug>_render_block_attributes` filter.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The block slug.
+	 */
+	public function get_slug(): string {
+		return $this->block_name;
+	}
+
+	/**
 	 * On init startup register the block.
 	 */
 	public function on_init() {

@@ -13,6 +13,7 @@ use KadenceWP\KadenceBlocks\Image_Downloader\Image_Downloader_Provider;
 use KadenceWP\KadenceBlocks\Log\Log_Provider;
 use KadenceWP\KadenceBlocks\Optimizer\Optimizer_Provider;
 use KadenceWP\KadenceBlocks\Shutdown\Shutdown_Provider;
+use KadenceWP\KadenceBlocks\Site_Styles\Site_Styles_Provider;
 use KadenceWP\KadenceBlocks\StellarWP\ContainerContract\ContainerInterface;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Container;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Providable;
@@ -50,6 +51,7 @@ final class App {
 		Image_Downloader_Provider::class,
 		Optimizer_Provider::class,
 		Cache_Provider::class,
+		Site_Styles_Provider::class,
 		Shutdown_Provider::class,
 	];
 

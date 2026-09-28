@@ -10,12 +10,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Supports_Site_Styles;
+
 /**
  * Class to Build the Single Button.
  *
  * @category class
  */
-class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
+class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block implements Supports_Site_Styles {
 	/**
 	 * Instance of this class
 	 *
@@ -471,6 +473,53 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		wp_register_script( 'kadence-blocks-glight-video-init', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-glight-video-init.min.js', [ 'kadence-glightbox' ], KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-popper', KADENCE_BLOCKS_URL . 'includes/assets/js/popper.min.js', [], KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-tippy', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-tippy.min.js', [ 'kadence-blocks-popper' ], KADENCE_BLOCKS_VERSION, true );
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_excluded_attributes(): array {
+		return [ 'hideLink', 'link', 'target', 'download', 'text', 'noFollow', 'sponsored', 'kadenceDynamic', 'metadata', 'className', 'lock' ];
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_attributes_map(): array {
+		return [
+			'background' => 'color.background',
+			'color'      => 'color.text',
+		];
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_supports(): array {
+		return [
+			'color' => [
+				'background'                      => true,
+				'text'                            => true,
+				'gradients'                       => false,
+				'__experimentalSkipSerialization' => true,
+			],
+		];
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_selectors(): array {
+		// The button element, which the editor wraps and the front end doesn't.
+		return [ 'root' => '.wp-block-kadence-singlebtn.kt-button, .wp-block-kadence-singlebtn .kt-button' ];
 	}
 }
 
