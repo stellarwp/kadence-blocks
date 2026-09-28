@@ -670,6 +670,10 @@ final class Presets_Controller extends Controller {
 
 		$block_node = $this->normalize_block_node( $block_node, $block, $slug );
 
+		foreach ( $this->preset_names( $block_node ) as $preset ) {
+			$block_node = $this->without_theme_values( $block_node, $block, $preset, $slug );
+		}
+
 		// Replace, not merge: drop the stored block node first so a preset the body omits does not survive.
 		$stored    = $this->unset_block( $this->stored_document( $slug ), $block );
 		$candidate = $this->mutator->merge( $stored, $this->partial( $block, $block_node ) );

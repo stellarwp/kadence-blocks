@@ -542,6 +542,45 @@ final class PresetsControllerTest extends TestCase {
 	}
 
 	/**
+	 * A replace (PUT) stores, for a class-painted preset, only the values that differ from the theme's, the
+	 * same way the single-preset save does: a value equal to the theme's is dropped, a real override survives.
+	 *
+	 * @return void
+	 */
+	public function testReplacingAThemePresetStoresOnlyTheValuesThatDifferFromTheThemeValues(): void {
+		$this->seedClassPreset(
+			'theme-base',
+			[
+				'button-bg'   => '#ff0000',
+				'button-text' => '#ffffff',
+			]
+		);
+
+		$response = $this->controller->update_item(
+			$this->block_request(
+				'PUT',
+				self::BUTTON,
+				[
+					'presets' => [
+						'theme-base' => [
+							'tokens' => [
+								'button-bg'   => '#ff0000',
+								'button-text' => '#000000',
+							],
+						],
+					],
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+		$this->assertSame(
+			[ 'button-text' => '#000000' ],
+			$this->container->get( Effective_Presets::class )->stored_tokens( self::BUTTON, 'theme-base' )
+		);
+	}
+
+	/**
 	 * A create deep-merges a single preset into the block's presets, leaving the baseline siblings and the default in
 	 * place.
 	 *
