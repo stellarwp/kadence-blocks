@@ -137,8 +137,10 @@ final class Effective_Presets {
 
 	/**
 	 * The theme preset slugs a library stores overrides for that the active theme does not offer: the
-	 * dormant ones. A dormant preset is not listed, not projected and not deletable, but its overrides stay
-	 * stored, so they return the moment a theme that offers the preset is active again.
+	 * dormant ones. A dormant preset is not listed and not projected while it stays dormant, but nothing
+	 * stops its stored node from being changed: a REST write can still update it, and a REST delete drops
+	 * it outright, which is what the Style Library's "Discard changes" action does. Left alone, its
+	 * overrides stay stored and return the moment a theme that offers the preset is active again.
 	 *
 	 * @since TBD
 	 *
