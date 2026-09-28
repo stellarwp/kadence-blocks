@@ -10,7 +10,7 @@
         "@dnd-kit/sortable": "^10.0.0",
         "@floating-ui/react": "^0.27.12",
         "@hcaptcha/react-hcaptcha": "^1.8.1",
-        "@kadence/components": "github:stellarwp/kadence-components#1.1.9",
+        "@kadence/components": "github:stellarwp/kadence-components#SOFT-4745/site-styles-block-defaults",
         "@kadence/helpers": "github:stellarwp/kadence-helpers#1.1.0",
         "@kadence/icons": "github:stellarwp/kadence-icons#1.1.4",
         "@lottiefiles/dotlottie-react": "^0.15.2",
@@ -649,7 +649,7 @@
 
     "@jridgewell/trace-mapping": ["@jridgewell/trace-mapping@0.3.31", "", { "dependencies": { "@jridgewell/resolve-uri": "^3.1.0", "@jridgewell/sourcemap-codec": "^1.4.14" } }, "sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw=="],
 
-    "@kadence/components": ["@kadence/components@github:stellarwp/kadence-components#da6ab6f", { "dependencies": { "@floating-ui/react": "^0.26.16", "@wordpress/icons": "^9.49.0", "classnames": "^2.2.6", "colord": "^2.9.3", "react-color": "^2.18.0", "react-select": "^5.10.2" }, "peerDependencies": { "@kadence/helpers": "*", "@kadence/icons": "*", "react": ">=17 <19", "react-dom": ">=17 <19" }, "optionalPeers": ["@kadence/helpers", "@kadence/icons"] }, "stellarwp-kadence-components-da6ab6f", "sha512-Ei/wOwF1Yh1PunwprGDxaVpTQcY4Rn6SdO/BZ9sbI7R3tA0H9zOqIBrXX3o9dcI6oK1WTEVb8Pjj15XHs49Vig=="],
+    "@kadence/components": ["@kadence/components@github:stellarwp/kadence-components#7db7ff0", { "dependencies": { "@floating-ui/react": "^0.26.16", "@wordpress/icons": "^9.49.0", "classnames": "^2.2.6", "colord": "^2.9.3", "react-color": "^2.18.0", "react-select": "^5.10.2" }, "peerDependencies": { "@kadence/helpers": "*", "@kadence/icons": "*", "react": ">=17 <19", "react-dom": ">=17 <19" }, "optionalPeers": ["@kadence/helpers", "@kadence/icons"] }, "stellarwp-kadence-components-7db7ff0", "sha512-xHZt/lFRC43uuXFRinrAQFyzL1jBdCtFoBSU3kQ07RyCueTxpumlRViXLm4qeBxJBV+IHWjNYGzlYEKDlsK4MA=="],
 
     "@kadence/helpers": ["@kadence/helpers@github:stellarwp/kadence-helpers#64f9b4f", { "dependencies": { "@kadence/icons": "git+https://github.com/stellarwp/kadence-icons.git#package" }, "peerDependencies": { "react": ">=17 <19", "react-dom": ">=17 <19" } }, "stellarwp-kadence-helpers-64f9b4f", "sha512-NOyNNQXGhvizVt842l7/I1YlZeb4AYLsYVuVAJ7Oyo8TTtDC+h1Ye7Z1NG8SEMoRK9lZQOK8FtYR4IBbSBM29g=="],
 
