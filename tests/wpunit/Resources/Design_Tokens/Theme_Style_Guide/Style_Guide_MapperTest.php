@@ -403,6 +403,14 @@ final class Style_Guide_MapperTest extends TestCase {
 			'settings' => [ 'buttons_background' => [ 'color' => 'radial-gradient(circle, #fff 0%, #000 100%)' ] ],
 			'expected' => 'radial-gradient(circle, #fff 0%, #000 100%)',
 		];
+		yield 'gradient trailing an unclosed comment opener is skipped' => [
+			'settings' => [ 'buttons_background' => [ 'color' => 'linear-gradient(45deg,red,blue) /* unclosed )' ] ],
+			'expected' => null,
+		];
+		yield 'gradient with a comment opener inside its arguments is skipped' => [
+			'settings' => [ 'buttons_background' => [ 'color' => 'linear-gradient(45deg,/* x */red,blue)' ] ],
+			'expected' => null,
+		];
 		yield 'surrounding whitespace is trimmed' => [
 			'settings' => [ 'buttons_background' => [ 'color' => '  palette1 ' ] ],
 			'expected' => '{primitive.color.brand.primary}',
