@@ -17,15 +17,15 @@ const writtenRules = new WeakMap();
 
 /**
  * @param {CSSRuleList} rules   The rules to copy from.
- * @param {string}      wrapper The enclosing at-rule prelude, empty at the top level.
+ * @param {string[]}    wrapper The enclosing group rules' preludes (`@media …`, `@supports …`), outermost first.
  * @param {string[]}    out     The copied rules.
  */
 function copyHoverRules(rules, wrapper, out) {
 	for (const rule of rules) {
-		if (rule.cssRules && rule.media) {
-			copyHoverRules(rule.cssRules, '@media ' + rule.media.mediaText, out);
-		} else if (rule.cssRules && !rule.selectorText) {
-			copyHoverRules(rule.cssRules, wrapper, out);
+		if (rule.cssRules && !rule.selectorText) {
+			// A group rule (`@media`, `@supports`, `@container`, `@layer`): keep its condition for the rules inside.
+			const prelude = rule.cssText.slice(0, rule.cssText.indexOf('{')).trim();
+			copyHoverRules(rule.cssRules, prelude ? [...wrapper, prelude] : wrapper, out);
 		} else if (rule.selectorText && rule.selectorText.includes(':hover')) {
 			const selectors = rule.selectorText
 				.split(',')
@@ -36,9 +36,8 @@ function copyHoverRules(rules, wrapper, out) {
 			const declarations = [...rule.style]
 				.map((property) => `${property}:${rule.style.getPropertyValue(property)} !important`)
 				.join(';');
-			const css = `${selectors}{${declarations}}`;
 
-			out.push(wrapper ? `${wrapper}{${css}}` : css);
+			out.push(wrapper.reduceRight((css, prelude) => `${prelude}{${css}}`, `${selectors}{${declarations}}`));
 		}
 	}
 }
@@ -55,7 +54,7 @@ function hoverRules(doc) {
 			continue;
 		}
 		try {
-			copyHoverRules(sheet.cssRules, '', out);
+			copyHoverRules(sheet.cssRules, [], out);
 		} catch (error) {
 			// A cross-origin sheet can't be read; its hover rules aren't previewed.
 		}
