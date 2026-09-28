@@ -28,6 +28,15 @@ final class Style {
 	private const CLASS_PREFIX = 'kb-preset--';
 
 	/**
+	 * The prefix every theme-discovered preset slug carries. Reserved: a client may not create one.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const THEME_PREFIX = 'theme-';
+
+	/**
 	 * The class a preset slug outputs, e.g. "secondary" => "kb-preset--secondary". Mirrors the JS
 	 * kbPresetClassName() sanitizer so the class always matches the selector the projected CSS targets.
 	 *
@@ -51,5 +60,29 @@ final class Style {
 	 */
 	public static function get_class_prefix(): string {
 		return self::CLASS_PREFIX;
+	}
+
+	/**
+	 * The slug prefix every theme-discovered preset carries, e.g. "theme-".
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_theme_prefix(): string {
+		return self::THEME_PREFIX;
+	}
+
+	/**
+	 * Whether a slug names a theme-discovered preset.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $slug The preset slug.
+	 *
+	 * @return bool
+	 */
+	public static function is_theme_slug( string $slug ): bool {
+		return strlen( $slug ) > strlen( self::THEME_PREFIX ) && strpos( $slug, self::THEME_PREFIX ) === 0;
 	}
 }

@@ -181,6 +181,22 @@ export function blockDefaultOverridden(name, library) {
 }
 
 /**
+ * The classes a class-painted preset puts on the block's styled element, or an empty string for a preset
+ * painted through variables.
+ *
+ * @param {string} name      The block name.
+ * @param {string} slug      The preset slug.
+ * @param {string} [library] The token library slug; defaults to the active library.
+ *
+ * @since TBD
+ *
+ * @return {string} The space-separated classes, or ''.
+ */
+export function blockPresetThemeClass(name, slug, library) {
+	return blockPresets(name, library).find((preset) => preset.slug === slug)?.themeClass || '';
+}
+
+/**
  * The block library's default preset slug in a token library.
  *
  * @param {string} name     The block name.
