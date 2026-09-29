@@ -29,7 +29,12 @@ jest.mock('@wordpress/components', () => ({
 	DropdownMenu: () => null,
 	MenuGroup: ({ children }) => <div>{children}</div>,
 	MenuItem: ({ children, ...props }) => <button {...props}>{children}</button>,
-	Dropdown: ({ renderToggle }) => renderToggle({ isOpen: false, onToggle: () => {} }),
+	Dropdown: ({ className, renderToggle, renderContent }) => (
+		<>
+			{renderToggle({ isOpen: false, onToggle: () => {} })}
+			{className === 'kadence-blocks-style-library__actions-popover' && renderContent({ onClose: () => {} })}
+		</>
+	),
 	Spinner: () => <span className="components-spinner" />,
 	ExternalLink: ({ children, ...props }) => <a {...props}>{children}</a>,
 	Tooltip: ({ children }) => children,
