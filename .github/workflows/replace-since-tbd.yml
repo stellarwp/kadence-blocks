@@ -43,6 +43,9 @@ jobs:
       - name: Open PR with replacements
         uses: peter-evans/create-pull-request@v6
         with:
+          # GITHUB_TOKEN is barred from opening PRs by the Actions settings, which a
+          # permissions block cannot override, so the bot account opens it instead.
+          token: ${{ secrets.GH_BOT_TOKEN }}
           base: ${{ github.ref_name }}
           branch: chore/replace-since-tbd-${{ inputs.version }}
           title: "chore: replace @since TBD with ${{ inputs.version }}"
