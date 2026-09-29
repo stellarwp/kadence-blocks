@@ -8,6 +8,7 @@
  * WordPress dependencies
  */
 import { Popover } from '@wordpress/components';
+import { useEffect } from '@wordpress/element';
 
 /**
  * Internal dependencies
@@ -18,6 +19,12 @@ import { useIsInsideItemAnchor, useItemAnchor } from '../../hooks/use-item-ancho
 
 /**
  * Render the settings popover.
+ *
+ * Whenever the open item's element becomes the anchor, it is scrolled into view first. A newly added
+ * item lands at the end of a list that may reach below the fold, so without this the popover opens
+ * next to a row the user cannot see. This one place covers every screen (row lists, preset grids,
+ * swatch grids) because they all register their items with the anchor registry. An element that is
+ * already fully visible does not move.
  *
  * The children are always mounted, even before the item's element exists (a list still loading, a
  * deep link), because the panel's own effects publish its draft and clear a stale item. Until the
@@ -38,6 +45,13 @@ import { useIsInsideItemAnchor, useItemAnchor } from '../../hooks/use-item-ancho
 export function SettingsPopover({ itemId, onClose, ignoreFocusOutside = false, children }) {
 	const anchor = useItemAnchor(itemId);
 	const isInsideItemAnchor = useIsInsideItemAnchor();
+	const anchorElement = anchor?.element ?? null;
+
+	useEffect(() => {
+		if (anchorElement && typeof anchorElement.scrollIntoView === 'function') {
+			anchorElement.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'smooth' });
+		}
+	}, [anchorElement]);
 
 	if (!anchor) {
 		return <div hidden>{children}</div>;

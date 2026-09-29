@@ -32,6 +32,7 @@
 	min-height: 0;
 	overflow-y: auto;
 	padding: var(--kb-sl-space-25) var(--kb-sl-space-50) var(--kb-sl-space-50);
+	scroll-padding-block: var(--kb-sl-space-25) var(--kb-sl-space-50);
 
 	&,
 	> * {
