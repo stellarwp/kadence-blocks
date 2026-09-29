@@ -7,7 +7,7 @@ import {
 	presetScreenId,
 	resolveScreen,
 } from '../helpers/screens';
-import { BASE_STYLES_SCREENS, PRESET_SCREENS_FILTER } from '../constants/screens';
+import { BASE_STYLES_SCREENS, PRESET_SCREEN_ICONS, PRESET_SCREENS_FILTER } from '../constants/screens';
 
 describe('presetScreenId and blockFromScreenId', () => {
 	it('round-trip a block name', () => {
@@ -24,7 +24,7 @@ describe('presetScreenId and blockFromScreenId', () => {
 
 describe('buildBaseStylesNav', () => {
 	it('returns the seven fixed entries in design order', () => {
-		expect(buildBaseStylesNav()).toEqual(BASE_STYLES_SCREENS.map(({ id, label }) => ({ id, label })));
+		expect(buildBaseStylesNav()).toEqual(BASE_STYLES_SCREENS.map(({ id, label, icon }) => ({ id, label, icon })));
 		expect(buildBaseStylesNav()).toHaveLength(7);
 	});
 });
@@ -34,8 +34,23 @@ describe('buildBlockPresetsNav', () => {
 		const feed = { presetNav: [{ block: 'kadence/singlebtn', label: 'Style' }] };
 
 		expect(buildBlockPresetsNav(feed)).toEqual([
-			{ id: 'blocks/kadence/singlebtn', label: 'Style', block: 'kadence/singlebtn' },
+			{
+				id: 'blocks/kadence/singlebtn',
+				label: 'Style',
+				block: 'kadence/singlebtn',
+				icon: PRESET_SCREEN_ICONS['kadence/singlebtn'],
+			},
 		]);
+	});
+
+	it('gives a block with no registered icon a null icon', () => {
+		const feed = { presetNav: [{ block: 'my-vendor/my-block', label: 'Mine' }] };
+
+		expect(buildBlockPresetsNav(feed)[0].icon).toBeNull();
+	});
+
+	it('gives every base styles entry an icon', () => {
+		BASE_STYLES_SCREENS.forEach(({ icon }) => expect(icon).toBeTruthy());
 	});
 
 	it('returns an empty list when the feed lacks presetNav', () => {
