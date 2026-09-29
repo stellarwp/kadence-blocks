@@ -158,12 +158,11 @@ function renderPreview(row) {
 }
 
 /**
- * The per-tab settings schema: the Normal tab adds a Border and Shadow section and the Hover tab
- * never does. The block does bind hover counterparts for radius, border, and shadow — `preview()`
- * above resolves `button-radius-hover`, the hover border trio, and `button-shadow-hover`, and the
- * chip already previews them — but the Hover tab only offers the color pair today; that is a
- * scope decision, not a `guard_surface` restriction, and offering the other fields is a separate
- * schema decision. The preset name is not here; it is tab-independent and comes from
+ * The per-tab settings schema: the Normal tab adds a Border and Shadow section, and the Hover tab
+ * offers the color pair and a Border. The block also binds hover counterparts for radius and shadow
+ * — `preview()` above resolves `button-radius-hover` and `button-shadow-hover`, and the chip already
+ * previews them — but the Hover tab does not offer those; that is a scope decision, not a
+ * `guard_surface` restriction. The preset name is not here; it is tab-independent and comes from
  * `presetNameSchema()`.
  *
  * A preset whose values the theme renders (`row.readable`) shows those values as its muted defaults
@@ -220,7 +219,28 @@ function schemaFor(tab, draft = null, feed = null, row = null) {
 	};
 
 	if (isHover) {
-		return { panels: [colorPanel] };
+		const hoverBorderPanel = {
+			id: 'border',
+			title: __('Border', 'kadence-blocks'),
+			fields: [
+				{
+					type: 'border',
+					// The hover trio declares no tablet or mobile attributes, so the field stays desktop-only.
+					responsive: false,
+					path: 'tokens.button-border-hover',
+					label: __('Border', 'kadence-blocks'),
+					// A hover state the preset leaves unset keeps the resting border, so the muted defaults
+					// name the resting width, and the resting color unless the Customizer sets a hover one.
+					defaultValue: themeBorderWidth() ?? '0px',
+					defaultColor:
+						themeColor('button-border-hover-color') ??
+						themeColor('button-border-color') ??
+						'semantic.color.button-border',
+				},
+			],
+		};
+
+		return { panels: [colorPanel, hoverBorderPanel] };
 	}
 
 	const borderAndShadowPanel = {

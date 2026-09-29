@@ -966,11 +966,11 @@ describe('BUTTON_PRESET.schemaFor', () => {
 		]);
 	});
 
-	it('lists the hover color fields, with no radius field, on the Hover tab', () => {
+	it('lists the hover color and border fields, with no radius field, on the Hover tab', () => {
 		const schema = BUTTON_PRESET.schemaFor('hover');
 		const paths = schema.panels.flatMap((panel) => panel.fields.map((field) => field.path));
 
-		expect(paths).toEqual(['tokens.button-text-hover', 'tokens.button-bg-hover']);
+		expect(paths).toEqual(['tokens.button-text-hover', 'tokens.button-bg-hover', 'tokens.button-border-hover']);
 		expect(paths).not.toContain('tokens.button-radius');
 	});
 

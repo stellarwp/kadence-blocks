@@ -230,6 +230,31 @@ describe('BUTTON_PRESET.schemaFor with a theme preset row', () => {
 			['tokens.button-bg-hover', '#000000'],
 		]);
 	});
+
+	/**
+	 * The hover Border's muted color follows the Customizer's hover border color, then its resting one,
+	 * and its muted width follows the theme's border width, so a theme preset names what it really paints.
+	 *
+	 * @return {void}
+	 */
+	it('uses the theme border values as the hover Border defaults', () => {
+		const themed = (themeValues) => {
+			const row = { ...rowsBySlug()['theme-base'], themeValues };
+
+			return BUTTON_PRESET.schemaFor('hover', { tokens: {} }, FEED, row)
+				.panels.flatMap((panel) => panel.fields)
+				.find((field) => field.type === 'border');
+		};
+
+		const both = themed({
+			'button-border-color': '#111111',
+			'button-border-hover-color': '#222222',
+			'button-border-width': ['2px', '2px', '2px', '2px'],
+		});
+		expect([both.defaultColor, both.defaultValue]).toEqual(['#222222', '2px']);
+
+		expect(themed({ 'button-border-color': '#111111' }).defaultColor).toBe('#111111');
+	});
 });
 
 describe('themeFieldDefault', () => {
