@@ -1,8 +1,7 @@
 /**
  * The generic scale-screen settings panel shared by Border Radius, Border Width, Spacing, and Icon
  * Sizes: NAME + the per-screen value field, and a Delete/Save footer for a user-created token or a
- * Reset/Save one for a shipped token (Reset is never enabled here: a shipped scale token has no
- * saved value the panel can revert). Mirrors the Color Palette
+ * Reset/Save one for a shipped token (Reset is enabled once the token stores its own value). Mirrors the Color Palette
  * screen's settings-panel shape — calls `useScaleScreen` as its own sibling instance (the screen
  * and its panel share state only through the feed and the route, with `use-draft-channel.js` as
  * the one sanctioned exception).
@@ -137,7 +136,28 @@ export function ScaleSettings({ config, route, navigate, library }) {
 			.finally(() => setPendingAction(null));
 	};
 
-	// Delete is deliberately never guarded: destroying the token makes its draft moot, so prompting
+	// A shipped token has something to reset once the library stores its own value for it — the feed's
+	// `valueOverridden` flag, the same "is there anything to undo" test the palette and preset panels
+	// use. It deliberately ignores `panel.isDirty`: Reset undoes a SAVED change, and an unsaved edit
+	// is Save's concern. A rename is a separate override and does not enable it.
+	const canReset = !isDeletable(token) && token.overridden;
+
+	// Closed on success, the same as Delete and for the same kind of reason: the draft still holds the
+	// value the reset just undid, and a panel left open would offer a Save that writes it straight back.
+	const handleReset = () => {
+		if (scale.isBusy || !canReset) {
+			return;
+		}
+
+		setPendingAction('reset');
+		scale
+			.resetToken(id)
+			.then(() => navigate({ item: '' }))
+			.catch(() => {})
+			.finally(() => setPendingAction(null));
+	};
+
+	// Delete (and Reset above) is deliberately never guarded: destroying the token makes its draft moot, so prompting
 	// "save your changes?" about a token the user just chose to delete would be nonsense — this
 	// keeps calling `handleDelete` (and, through it, the raw `navigate({ item: '' })`) directly.
 	const handleClose = () => (channel ? channel.guard(panel.close) : panel.close());
@@ -149,11 +169,14 @@ export function ScaleSettings({ config, route, navigate, library }) {
 			destructiveAction={isDeletable(token) ? 'delete' : 'reset'}
 			onDelete={handleDelete}
 			canDelete={isDeletable(token)}
+			onReset={handleReset}
+			canReset={canReset}
 			onSave={handleSave}
 			isDirty={panel.isDirty}
 			isBusy={scale.isBusy}
 			isSaving={pendingAction === 'save'}
 			isDeleting={pendingAction === 'delete'}
+			isResetting={pendingAction === 'reset'}
 		>
 			<SettingsForm schema={schema} values={panel.draft} onChange={panel.setFieldValue} />
 		</SettingsPanel>

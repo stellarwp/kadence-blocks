@@ -92,6 +92,24 @@ export function saveTokenLeaf(namespace, tokenId, leaf, slug) {
 }
 
 /**
+ * Drop a single token's stored value so it reverts to its shipped value.
+ *
+ * @param {string} namespace REST namespace.
+ * @param {string} tokenId   Dot-path token id.
+ * @param {string} slug      Token library slug.
+ *
+ * @since TBD
+ *
+ * @return {Promise<object>} Updated document item.
+ */
+export function deleteTokenLeaf(namespace, tokenId, slug) {
+	return apiFetch({
+		path: tokenPath(namespace, tokenId, slug),
+		method: 'DELETE',
+	});
+}
+
+/**
  * Set or clear a token's display-label override.
  *
  * @since TBD

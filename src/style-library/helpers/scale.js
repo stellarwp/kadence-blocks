@@ -21,7 +21,7 @@ import { tokenTypeIdSegment } from './tokens';
  *
  * @since TBD
  *
- * @return {Array<{id: string, label: string, value: string, userCreated: boolean}>} The rows, or
+ * @return {Array<{id: string, label: string, value: string, userCreated: boolean, overridden: boolean}>} The rows, or
  *         `[]` for a missing schema or an unknown group.
  */
 export function scaleRows(schema, values, group) {
@@ -36,6 +36,7 @@ export function scaleRows(schema, values, group) {
 		label: entry.label,
 		value: values?.[entry.id] ?? '',
 		userCreated: entry.userCreated === true,
+		overridden: entry.valueOverridden === true,
 	}));
 }
 

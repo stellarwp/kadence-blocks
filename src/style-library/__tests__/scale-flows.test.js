@@ -3,6 +3,7 @@ import {
 	addScaleTokenFlow,
 	deleteScaleTokenFlow,
 	reorderScaleTokensFlow,
+	resetScaleTokenFlow,
 	saveScaleTokenFlow,
 } from '../helpers/scale-flows';
 import * as client from '../api/client';
@@ -11,6 +12,7 @@ import * as client from '../api/client';
 // imports `@wordpress/api-fetch`, externalized in production and not an npm dependency here.
 jest.mock('../api/client', () => ({
 	createUserPrimitive: jest.fn(),
+	deleteTokenLeaf: jest.fn(),
 	deleteUserPrimitive: jest.fn(),
 	saveTokenLeaf: jest.fn(),
 	setGroupOrder: jest.fn(),
@@ -325,6 +327,51 @@ describe('deleteScaleTokenFlow', () => {
 			})
 		).rejects.toBe(failure);
 
+		expect(onError).toHaveBeenCalledWith({ message: failure.message });
+		expect(onBusy.mock.calls).toEqual([[true], [false]]);
+	});
+});
+
+describe('resetScaleTokenFlow', () => {
+	it('drops the stored value for the token and refreshes', async () => {
+		client.deleteTokenLeaf.mockResolvedValue({});
+		const refreshFeed = jest.fn().mockResolvedValue({});
+		const onBusy = jest.fn();
+		const onError = jest.fn();
+
+		await resetScaleTokenFlow({
+			slug: 'default',
+			namespace: 'kb/v1',
+			tokenId: 'primitive.dimension.border-width.md',
+			refreshFeed,
+			onBusy,
+			onError,
+		});
+
+		expect(client.deleteTokenLeaf).toHaveBeenCalledWith('kb/v1', 'primitive.dimension.border-width.md', 'default');
+		expect(refreshFeed).toHaveBeenCalledWith('default');
+		expect(onBusy.mock.calls).toEqual([[true], [false]]);
+	});
+
+	it('surfaces the error, clears busy, and re-throws on failure', async () => {
+		const failure = new Error('Boom');
+		client.deleteTokenLeaf.mockRejectedValue(failure);
+		const refreshFeed = jest.fn();
+		const onBusy = jest.fn();
+		const onError = jest.fn();
+
+		await expect(
+			resetScaleTokenFlow({
+				slug: 'default',
+				namespace: 'kb/v1',
+				tokenId: 'primitive.dimension.border-width.md',
+				refreshFeed,
+				onBusy,
+				onError,
+			})
+		).rejects.toBe(failure);
+
+		expect(refreshFeed).not.toHaveBeenCalled();
 		expect(onError).toHaveBeenCalledWith({ message: failure.message });
 		expect(onBusy.mock.calls).toEqual([[true], [false]]);
 	});

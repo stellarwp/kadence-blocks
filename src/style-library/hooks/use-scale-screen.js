@@ -35,6 +35,7 @@ import {
 	addScaleTokenFlow,
 	deleteScaleTokenFlow,
 	reorderScaleTokensFlow,
+	resetScaleTokenFlow,
 	saveScaleTokenFlow,
 } from '../helpers/scale-flows';
 import { isEqual } from '../helpers/settings-schema';
@@ -51,7 +52,7 @@ import { STORE_NAME } from '../store';
  *
  * @since TBD
  *
- * @return {{rows: Array<Object>, selectedId: string, selectToken: Function, isBusy: boolean, addError: ?Object, orderError: ?Object, clearAddError: Function, clearOrderError: Function, addToken: Function, saveToken: Function, deleteToken: Function, reorderTokens: Function, tokenById: Function, initialValuesFor: Function}}
+ * @return {{rows: Array<Object>, selectedId: string, selectToken: Function, isBusy: boolean, addError: ?Object, orderError: ?Object, clearAddError: Function, clearOrderError: Function, addToken: Function, saveToken: Function, resetToken: Function, deleteToken: Function, reorderTokens: Function, tokenById: Function, initialValuesFor: Function}}
  */
 export function useScaleScreen(config, library, route, navigate) {
 	const registry = useRegistry();
@@ -232,6 +233,21 @@ export function useScaleScreen(config, library, route, navigate) {
 		[library, feedVersion, registry]
 	);
 
+	// Not optimistic: the shipped value the token reverts to is the server's to resolve, so this only
+	// shows a busy state until the write confirms and the feed refresh brings the reverted value.
+	const resetToken = useCallback(
+		(id) =>
+			resetScaleTokenFlow({
+				slug: library.slug,
+				namespace: feed?.rest?.namespace,
+				tokenId: id,
+				refreshFeed: library.refreshFeed,
+				onBusy: setIsBusy,
+				onError: (err) => notifyError(err.message),
+			}).then(() => notifySuccess(__('Token reset.', 'kadence-blocks'))),
+		[library, feed]
+	);
+
 	const reorderTokens = useCallback(
 		(orderedIds) => {
 			// Applied immediately (optimistic), at drop time, before the write is even queued — a
@@ -288,6 +304,7 @@ export function useScaleScreen(config, library, route, navigate) {
 		clearOrderError,
 		addToken,
 		saveToken,
+		resetToken,
 		deleteToken,
 		reorderTokens,
 		tokenById,
