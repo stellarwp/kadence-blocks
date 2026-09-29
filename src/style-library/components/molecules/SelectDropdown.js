@@ -1,7 +1,7 @@
 /**
- * A general-purpose selector control for the Style Library app: a bordered toggle showing the
- * active option's label with a trailing chevron, opening a menu that lists every option (a check
- * icon on the active one) with an optional single trailing action below a divider. Knows nothing
+ * A general-purpose selector control for the Style Library app: a text toggle showing the
+ * active option's label with a trailing chevron, opening a menu that lists every option (a fill
+ * on the active one) with an optional single trailing action below a divider. Knows nothing
  * about what the options represent — a caller supplies values, labels, and a change handler (the
  * library selector is one caller; the Color Palette screen's palette selector is another, with
  * identical geometry and only different strings).
@@ -12,7 +12,7 @@
  */
 import { Button, Dropdown, MenuGroup, MenuItem, Notice, Spinner } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import { Icon, check, chevronDown } from '@wordpress/icons';
+import { Icon, chevronDown, plus } from '@wordpress/icons';
 
 /**
  * External dependencies
@@ -30,6 +30,12 @@ import './SelectDropdown.scss';
 // arrive, so this is a plain visual approximation, not a value derived from real data.
 const SKELETON_ROW_IDS = [0, 1, 2];
 
+// The gap between the toggle and its menu: 1rem at wp-admin's 16px root. A number of pixels, not a
+// CSS value, because `Popover` hands `offset` to its positioning library, which does the math in
+// pixels. A CSS margin on the popover instead would shift the menu without the library knowing, so
+// its flip-above and stay-in-viewport checks would work from the wrong position.
+const MENU_OFFSET = 16;
+
 /**
  * Render the selector dropdown.
  *
@@ -37,8 +43,8 @@ const SKELETON_ROW_IDS = [0, 1, 2];
  * @param {string}                                props.value           The current option's value.
  * @param {Array<{value: string, label: string, badges?: Array<{text: string, variant?: string}>}>} props.options
  *                                                                       The selectable options, in display order. An option may carry short badges
- *                                                                       rendered after its label in the menu (never in the toggle, which is a fixed
- *                                                                       width the label already truncates against). `variant` is `'state'` for a
+ *                                                                       rendered after its label in the menu (never in the toggle, whose width is
+ *                                                                       capped and whose label already truncates against that cap). `variant` is `'state'` for a
  *                                                                       condition that changes over time and `'muted'` for an unchanging property —
  *                                                                       this component only maps them to class names, it does not know what any
  *                                                                       badge means.
@@ -63,6 +69,8 @@ const SKELETON_ROW_IDS = [0, 1, 2];
  *                                                                       first paint; this component stays unaware of what that naming rule is.
  * @param {?import('@wordpress/icons').IconType}  [props.leadingIcon]   An optional glyph rendered before the label inside the toggle only (never
  *                                                                       in the menu rows); caller data, omitted for the plain library-selector shape.
+ * @param {'default'|'large'}                     [props.size]          The toggle label's size. `'large'` is for a dropdown set on the same line as
+ *                                                                       a page title; everything else keeps `'default'`.
  *
  * @since TBD
  *
@@ -81,6 +89,7 @@ export function SelectDropdown({
 	className,
 	valueLabel,
 	leadingIcon,
+	size = 'default',
 }) {
 	const activeOption = options.find((option) => option.value === value);
 	const activeLabel = activeOption?.label ?? valueLabel ?? value;
@@ -91,13 +100,16 @@ export function SelectDropdown({
 	useLoadingAnnouncement(isLoading, __('Options loaded.', 'kadence-blocks'));
 
 	return (
-		<div className={classnames('kadence-blocks-style-library__select-dropdown', className)}>
+		<div
+			className={classnames('kadence-blocks-style-library__select-dropdown', className, {
+				'kadence-blocks-style-library__select-dropdown--large': size === 'large',
+			})}
+		>
 			<Dropdown
 				className="kadence-blocks-style-library__select-dropdown-dropdown"
 				contentClassName="kadence-blocks-style-library__select-dropdown-menu"
-				// offset: 0 — the design has the menu flush against the toggle's bottom border, and
-				// Popover's own default offset would otherwise leave a gap between them.
-				popoverProps={{ placement: 'bottom-start', offset: 0 }}
+				// `bottom` is this API's name for bottom-center: no `-start`/`-end` suffix means centered.
+				popoverProps={{ placement: 'bottom', offset: MENU_OFFSET }}
 				renderToggle={({ isOpen, onToggle }) => (
 					<Button
 						className="kadence-blocks-style-library__select-dropdown-toggle"
@@ -152,41 +164,27 @@ export function SelectDropdown({
 											role="menuitemradio"
 											aria-checked={isCurrent}
 											disabled={isBusy}
-											// Badges ride in the suffix rather than beside the label, so they and
-											// the check are siblings of the label's own box and the button's
-											// single `gap` spaces all three identically — no margins of their
-											// own to keep in step with it.
-											//
-											// The check slot is always rendered, empty on the rows without a
-											// check, so every row reserves the same trailing column. Without it
-											// the check's width exists on one row only, and everything to its
-											// left sits at a different right edge there than on its neighbors.
+											// Badges ride in the suffix rather than beside the label, so they are a
+											// sibling of the label's own box and the button's single `gap` spaces
+											// them — no margins of their own to keep in step with it. The current
+											// row has no mark of its own here: `aria-checked` above is what the
+											// stylesheet fills, so the visual and the announced state cannot drift.
 											suffix={
-												<>
-													{option.badges?.length > 0 && (
-														<span className="kadence-blocks-style-library__select-dropdown-badges">
-															{option.badges.map((badge) => (
-																<span
-																	key={badge.text}
-																	className={classnames(
-																		'kadence-blocks-style-library__select-dropdown-badge',
-																		`kadence-blocks-style-library__select-dropdown-badge--${badge.variant ?? 'muted'}`
-																	)}
-																>
-																	{badge.text}
-																</span>
-															))}
-														</span>
-													)}
-													<span className="kadence-blocks-style-library__select-dropdown-check-slot">
-														{isCurrent && (
-															<Icon
-																className="kadence-blocks-style-library__select-dropdown-check"
-																icon={check}
-															/>
-														)}
+												option.badges?.length > 0 && (
+													<span className="kadence-blocks-style-library__select-dropdown-badges">
+														{option.badges.map((badge) => (
+															<span
+																key={badge.text}
+																className={classnames(
+																	'kadence-blocks-style-library__select-dropdown-badge',
+																	`kadence-blocks-style-library__select-dropdown-badge--${badge.variant ?? 'muted'}`
+																)}
+															>
+																{badge.text}
+															</span>
+														))}
 													</span>
-												</>
+												)
 											}
 											onClick={() => {
 												onClose();
@@ -204,12 +202,11 @@ export function SelectDropdown({
 						</MenuGroup>
 						{trailingAction && (
 							<>
-								{/* An explicit divider, not a border on the second MenuGroup: the design insets
-								 * the line from the menu edges (12px horizontal / 8px vertical padding around
-								 * it), which a full-bleed group border can't express. The wrapper carries that
-								 * padding; the line itself is a real child element, not a `::before` — a pseudo
-								 * has no separate node to inspect, which is exactly why the line's geometry took
-								 * three rounds to get right. */}
+								{/* An explicit divider, not a border on the second MenuGroup: the line keeps a small
+								 * padding around it (see the stylesheet), which a group border can't express. The
+								 * wrapper carries that padding; the line itself is a real child element, not a
+								 * `::before` — a pseudo has no separate node to inspect, which is exactly why the
+								 * line's geometry took three rounds to get right. */}
 								<div
 									className="kadence-blocks-style-library__select-dropdown-divider"
 									role="separator"
@@ -220,6 +217,8 @@ export function SelectDropdown({
 								<MenuGroup>
 									<MenuItem
 										className="kadence-blocks-style-library__select-dropdown-trailing-action"
+										icon={plus}
+										iconPosition="left"
 										disabled={isBusy}
 										onClick={() => {
 											onClose();

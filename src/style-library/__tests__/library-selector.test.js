@@ -20,11 +20,11 @@ jest.mock('../hooks/use-draft-channel', () => ({
 // `SelectDropdown` and `CreateLibraryModal` both render `@wordpress/components` controls, which
 // ship their own nested `react` copy and trip React's "Invalid hook call" guard under this test's
 // top-level renderer (see `scale-settings.test.js`'s identical note). Stand-ins that expose only
-// what these tests need — a change trigger and the trailing action's click — keep the tests about
-// guard routing rather than dropdown or modal internals.
+// what these tests need — a change trigger, the trailing action's click, and the props the selector
+// hands over — keep the tests about this component rather than dropdown or modal internals.
 jest.mock('../components/molecules/SelectDropdown', () => ({
-	SelectDropdown: ({ onChange, trailingAction }) => (
-		<div>
+	SelectDropdown: ({ onChange, trailingAction, options, size }) => (
+		<div data-testid="select-dropdown" data-size={size} data-options={JSON.stringify(options)}>
 			<button data-testid="choose-brand" onClick={() => onChange('brand')}>
 				choose brand
 			</button>
@@ -201,5 +201,85 @@ describe('LibrarySelector draft-channel guard', () => {
 		clickButton('trailing-action');
 
 		expect(container.querySelector('[data-testid="create-library-modal"]')).not.toBeNull();
+	});
+});
+
+describe('LibrarySelector options', () => {
+	/**
+	 * Render the selector over three libraries and read back the options it hands the dropdown.
+	 *
+	 * @param {string} activeSlug The slug the site renders with.
+	 *
+	 * @return {Array<{value: string, badges: string[]}>} Each option's value and badge texts.
+	 */
+	function renderedOptions(activeSlug) {
+		act(() => {
+			root.render(
+				createElement(LibrarySelector, {
+					libraries: [
+						{ slug: 'default', title: 'Default' },
+						{ slug: 'brand', title: 'Brand' },
+						{ slug: 'draft', title: 'Draft' },
+					],
+					activeSlug,
+					editingSlug: 'default',
+					editingTitle: 'Default',
+					isBusy: false,
+					isLoading: false,
+					isSwapping: false,
+					openError: null,
+					createError: null,
+					onOpen: jest.fn(),
+					onCreate: jest.fn(),
+					onClearOpenError: jest.fn(),
+					onClearCreateError: jest.fn(),
+				})
+			);
+		});
+
+		const dropdown = container.querySelector('[data-testid="select-dropdown"]');
+
+		return JSON.parse(dropdown.getAttribute('data-options')).map((option) => ({
+			value: option.value,
+			badges: option.badges.map((badge) => badge.text),
+		}));
+	}
+
+	/**
+	 * When the default library is the active one, its row says Active only: the two badges never
+	 * share a row.
+	 *
+	 * @return {void}
+	 */
+	it('shows only Active on a default library that is active', () => {
+		expect(renderedOptions('default')).toEqual([
+			{ value: 'default', badges: ['Active'] },
+			{ value: 'brand', badges: [] },
+			{ value: 'draft', badges: [] },
+		]);
+	});
+
+	/**
+	 * When another library is active, Active and Default sit on their own rows.
+	 *
+	 * @return {void}
+	 */
+	it('puts Active and Default on separate rows when another library is active', () => {
+		expect(renderedOptions('brand')).toEqual([
+			{ value: 'default', badges: ['Default'] },
+			{ value: 'brand', badges: ['Active'] },
+			{ value: 'draft', badges: [] },
+		]);
+	});
+
+	/**
+	 * The header's selector asks for the large dropdown, which sits on the title's line.
+	 *
+	 * @return {void}
+	 */
+	it('asks for the large dropdown', () => {
+		renderedOptions('default');
+
+		expect(container.querySelector('[data-testid="select-dropdown"]').getAttribute('data-size')).toBe('large');
 	});
 });

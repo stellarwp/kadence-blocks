@@ -46,6 +46,9 @@ body.kadence-blocks-style-library-page {
 	--kb-sl-color-theme: var(--wp-admin-theme-color, #2271b1);
 	// Solid fallback; a browser without color-mix() keeps this value — see the @supports block below.
 	--kb-sl-color-theme-tint-4: rgba(34, 113, 177, 0.04);
+	// Twice the tint above, for a fill that has to stay apart from a 4% one beside it. Same solid
+	// fallback arrangement.
+	--kb-sl-color-theme-tint-8: rgba(34, 113, 177, 0.08);
 	--kb-sl-color-theme-tint-15: rgba(34, 113, 177, 0.15);
 	--kb-sl-color-theme-tint-25: rgba(34, 113, 177, 0.25);
 
@@ -99,6 +102,8 @@ body.kadence-blocks-style-library-page {
 	// not reused from --kb-sl-icon-size-s (also 1.125rem): that primitive is a deliberately separate
 	// scale from font-size.
 	--kb-sl-font-size-18: 1.125rem;
+	// `SelectDropdown`'s row badges. Below the ramp's smallest step, named by raw px identity.
+	--kb-sl-font-size-10: 0.625rem;
 	--kb-sl-font-size-24: 1.5rem;
 
 	// Letter spacing — `em`, not rem: the value resolves where it is used, so one token tightens
@@ -140,6 +145,9 @@ body.kadence-blocks-style-library-page {
 	// The menu's width cap before its items wrap. Numerically equal to --kb-sl-size-modal-small by
 	// coincidence — stays its own token rather than pointing at the modal one.
 	--kb-sl-size-select-dropdown-max-width: 24rem;
+	// The menu's own floor, wider than the toggle-derived width above: a row holds a label and a
+	// badge side by side, and the toggle is no longer a box the menu has to match.
+	--kb-sl-size-select-dropdown-menu-min-width: 17.5rem;
 	// The floor for a menu item's label column, so a short label still holds the row open and the
 	// badges after it line up across rows instead of tracking each label's own width.
 	--kb-sl-size-select-dropdown-label-min-width: 8rem;
@@ -176,6 +184,7 @@ body.kadence-blocks-style-library-page {
 	.kadence-blocks-style-library-root,
 	body.kadence-blocks-style-library-page {
 		--kb-sl-color-theme-tint-4: color-mix(in srgb, var(--kb-sl-color-theme) 4%, transparent);
+		--kb-sl-color-theme-tint-8: color-mix(in srgb, var(--kb-sl-color-theme) 8%, transparent);
 		--kb-sl-color-theme-tint-15: color-mix(in srgb, var(--kb-sl-color-theme) 15%, transparent);
 		--kb-sl-color-theme-tint-25: color-mix(in srgb, var(--kb-sl-color-theme) 25%, transparent);
 		--kb-sl-color-alert-red-tint-4: color-mix(in srgb, var(--kb-sl-color-alert-red) 4%, transparent);

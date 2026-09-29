@@ -3,8 +3,8 @@
  * the way `DeleteLibraryModal` owns its trigger.
  *
  * Renders nothing while the library being edited is already the active one — there is no action to
- * offer, and the selector's own check icon already marks which library the site is live with, so a
- * second "Active" label here would only repeat it.
+ * offer, and the selector's own `Active` badge already marks which library the site is live with,
+ * so a second "Active" label here would only repeat it.
  */
 
 /**

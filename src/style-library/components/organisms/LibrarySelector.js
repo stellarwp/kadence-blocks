@@ -1,16 +1,16 @@
 /**
  * The Style Library header's library selector: a thin composition of the generic
  * `SelectDropdown` molecule over the library list, plus the library-specific "Create Library"
- * modal its trailing action opens. All of the selector's visual behavior (the toggle, the check
- * icon, the divider, the menu geometry) lives in `SelectDropdown` — this component only supplies
- * library data and the create flow.
+ * modal its trailing action opens. All of the selector's visual behavior (the toggle, the fill on
+ * the current row, the divider, the menu geometry) lives in `SelectDropdown` — this component only
+ * supplies library data and the create flow.
  *
  * Choosing a library here *opens* it for editing. It does not change which library the site
  * renders with; that is a separate, confirmed action (see `ActivateLibraryButton`).
  *
- * The check icon keeps its ordinary meaning — the row you are on — because that is what a check in
- * a menu reads as, and overloading it to mean "live" made the menu harder to read, not easier.
- * Which library the site is serving is said in words instead, by the `Active` badge.
+ * The filled row keeps its ordinary meaning — the row you are on — because that is what a marked
+ * row in a menu reads as, and overloading it to mean "live" made the menu harder to read, not
+ * easier. Which library the site is serving is said in words instead, by the `Active` badge.
  */
 
 /**
@@ -70,16 +70,14 @@ export function LibrarySelector({
 	const options = libraries.map((library) => {
 		const badges = [];
 
-		// Order is fixed — the unchanging property before the one that moves — so a row carrying
-		// both does not reshuffle its badges as the active library changes.
-		if (isDefaultLibrary(library.slug)) {
+		// One badge per row at most. Active wins on the row that is both: which library is live is
+		// the thing a user opens this menu to find out, and the two badges never share a row.
+		if (library.slug === activeSlug) {
+			badges.push({ text: __('Active', 'kadence-blocks'), variant: 'state' });
+		} else if (isDefaultLibrary(library.slug)) {
 			// Answers "why can't I delete this one?" before the user tries: the default library is
 			// never removed, only reset to the shipped baseline.
 			badges.push({ text: __('Default', 'kadence-blocks'), variant: 'muted' });
-		}
-
-		if (library.slug === activeSlug) {
-			badges.push({ text: __('Active', 'kadence-blocks'), variant: 'state' });
 		}
 
 		return {
@@ -107,6 +105,7 @@ export function LibrarySelector({
 	return (
 		<>
 			<SelectDropdown
+				size="large"
 				value={editingSlug}
 				options={options}
 				// What the toggle shows until `libraries` has loaded and an option can match
@@ -127,7 +126,7 @@ export function LibrarySelector({
 				onClearError={onClearOpenError}
 				onChange={handleOpen}
 				trailingAction={{
-					label: __('Create Library', 'kadence-blocks'),
+					label: __('New Library', 'kadence-blocks'),
 					// Guarded at the point the modal opens rather than around `onCreate`: creating a
 					// library ends by opening it, so it swaps the feed like any other switch, and
 					// asking here keeps the prompt from appearing on top of the create modal.
