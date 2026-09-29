@@ -72,6 +72,11 @@ export const SETTINGS_PANEL_TITLE_ID = 'kadence-blocks-style-library-settings-pa
  *                                                `isSaving`.
  * @param {boolean}        [props.isResetting]  Shows the Reset button's busy animation and a "Resetting…"
  *                                                label. Optional, defaults to false, for the same reason.
+ * @param {boolean}        [props.readOnly]     Renders the panel with nothing to edit: the footer keeps a
+ *                                                Close button, since a Save shown disabled would promise an
+ *                                                edit that can never come. Reset still renders when
+ *                                                `canReset` is true: a saved override outlives the fields
+ *                                                that wrote it, and dropping it must stay reachable.
  *
  * @since TBD
  *
@@ -96,8 +101,24 @@ export function SettingsPanel({
 	isSaving = false,
 	isDeleting = false,
 	isResetting = false,
+	readOnly = false,
 }) {
 	const fieldArea = <div className="kadence-blocks-style-library__settings-panel-fields">{children}</div>;
+	const resetButton = (
+		<Button
+			variant="secondary"
+			isDestructive
+			isBusy={isResetting}
+			disabled={!canReset || isBusy}
+			// Keeps the button focusable (`aria-disabled` instead of the native attribute) while
+			// disabled — see the `Save` button below for why a disabled-while-focused footer
+			// button is never safe inside this popover.
+			accessibleWhenDisabled
+			onClick={onReset}
+		>
+			{isResetting ? __('Resetting…', 'kadence-blocks') : __('Reset', 'kadence-blocks')}
+		</Button>
+	);
 
 	return (
 		<div className="kadence-blocks-style-library__settings-panel">
@@ -127,37 +148,33 @@ export function SettingsPanel({
 			) : (
 				fieldArea
 			)}
-			<div className="kadence-blocks-style-library__settings-panel-footer">
-				{'reset' === destructiveAction ? (
-					<Button
-						variant="secondary"
-						isDestructive
-						isBusy={isResetting}
-						disabled={!canReset || isBusy}
-						// Keeps the button focusable (`aria-disabled` instead of the native attribute) while
-						// disabled — see the `Save` button below for why a disabled-while-focused footer
-						// button is never safe inside this popover.
-						accessibleWhenDisabled
-						onClick={onReset}
-					>
-						{isResetting ? __('Resetting…', 'kadence-blocks') : __('Reset', 'kadence-blocks')}
+			{readOnly ? (
+				<div className="kadence-blocks-style-library__settings-panel-footer">
+					{canReset && resetButton}
+					<Button variant="tertiary" onClick={onClose}>
+						{__('Close', 'kadence-blocks')}
 					</Button>
-				) : (
-					<Button
-						variant="secondary"
-						isDestructive
-						isBusy={isDeleting}
-						disabled={!canDelete || isBusy}
-						accessibleWhenDisabled
-						onClick={onDelete}
-					>
-						{isDeleting ? __('Deleting…', 'kadence-blocks') : __('Delete', 'kadence-blocks')}
+				</div>
+			) : (
+				<div className="kadence-blocks-style-library__settings-panel-footer">
+					{'reset' === destructiveAction ? (
+						resetButton
+					) : (
+						<Button
+							variant="secondary"
+							isDestructive
+							isBusy={isDeleting}
+							disabled={!canDelete || isBusy}
+							accessibleWhenDisabled
+							onClick={onDelete}
+						>
+							{isDeleting ? __('Deleting…', 'kadence-blocks') : __('Delete', 'kadence-blocks')}
+						</Button>
+					)}
+					<Button variant="tertiary" onClick={onClose}>
+						{__('Cancel', 'kadence-blocks')}
 					</Button>
-				)}
-				<Button variant="tertiary" onClick={onClose}>
-					{__('Cancel', 'kadence-blocks')}
-				</Button>
-				{/* `accessibleWhenDisabled`, not a bare `disabled`: a native `disabled` attribute forces
+					{/* `accessibleWhenDisabled`, not a bare `disabled`: a native `disabled` attribute forces
 				    the browser to blur the button the instant `isBusy` flips true, and a click's own
 				    mousedown has already focused it right before that — the resulting blur lands with
 				    nowhere to go (`document.activeElement` falls back to `<body>`), which the settings
@@ -165,16 +182,17 @@ export function SettingsPanel({
 				    the popover through the unsaved-changes guard while the save this same click started
 				    is still in flight. Keeping the button focusable (`aria-disabled` instead) avoids the
 				    forced blur; WP's `Button` still blocks the click/mousedown itself while disabled. */}
-				<Button
-					variant="primary"
-					isBusy={isSaving}
-					disabled={!isDirty || isBusy}
-					accessibleWhenDisabled
-					onClick={onSave}
-				>
-					{isSaving ? __('Saving…', 'kadence-blocks') : __('Save', 'kadence-blocks')}
-				</Button>
-			</div>
+					<Button
+						variant="primary"
+						isBusy={isSaving}
+						disabled={!isDirty || isBusy}
+						accessibleWhenDisabled
+						onClick={onSave}
+					>
+						{isSaving ? __('Saving…', 'kadence-blocks') : __('Save', 'kadence-blocks')}
+					</Button>
+				</div>
+			)}
 		</div>
 	);
 }

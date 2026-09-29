@@ -43,7 +43,7 @@ import { STORE_NAME } from '../store';
  * `savePreset` resolves with the saved preset in the panel's own seed shape — what the server actually
  * stored, not what was sent — or null when an unchanged draft was skipped.
  *
- * @return {{feed: ?object, payload: ?object, isLoading: boolean, loadError: ?Error, rows: Array<Object>, initialValuesFor: Function, isBusy: boolean, addError: ?Object, saveError: ?Object, deleteError: ?Object, orderError: ?Object, clearAddError: Function, clearSaveError: Function, clearDeleteError: Function, clearOrderError: Function, addPreset: Function, savePreset: Function, deletePreset: Function, reorderPresets: Function, isDeletable: Function}}
+ * @return {{feed: ?object, payload: ?object, isLoading: boolean, loadError: ?Error, rows: Array<Object>, initialValuesFor: Function, isBusy: boolean, addError: ?Object, saveError: ?Object, deleteError: ?Object, orderError: ?Object, dormantError: ?Object, clearAddError: Function, clearSaveError: Function, clearDeleteError: Function, clearOrderError: Function, clearDormantError: Function, addPreset: Function, savePreset: Function, deletePreset: Function, reorderPresets: Function, keepAsCustom: Function, discardDormant: Function, isDeletable: Function}}
  */
 export function usePresetScreen(library, preset) {
 	// `properties` is deliberately not destructured here: on the preset configs it is a getter that
@@ -57,6 +57,7 @@ export function usePresetScreen(library, preset) {
 	const [saveError, setSaveError] = useState(null);
 	const [deleteError, setDeleteError] = useState(null);
 	const [orderError, setOrderError] = useState(null);
+	const [dormantError, setDormantError] = useState(null);
 	const [pendingOrder, setPendingOrder] = useState(null);
 
 	const namespace = library?.rest?.namespace;
@@ -149,6 +150,7 @@ export function usePresetScreen(library, preset) {
 	const clearSaveError = useCallback(() => setSaveError(null), []);
 	const clearDeleteError = useCallback(() => setDeleteError(null), []);
 	const clearOrderError = useCallback(() => setOrderError(null), []);
+	const clearDormantError = useCallback(() => setDormantError(null), []);
 
 	const addPreset = useCallback(() => {
 		setAddError(null);
@@ -209,6 +211,48 @@ export function usePresetScreen(library, preset) {
 			});
 		},
 		[namespace, block, presets.payload, slug, refreshFeed]
+	);
+
+	// "Keep as custom preset": a new preset of the user's own from a dormant theme preset's full look —
+	// the theme snapshot under the overrides, as `DormantPresets` hands it over. The dormant node itself
+	// is left alone, so a switch back to its theme still re-attaches the overrides.
+	const keepAsCustom = useCallback(
+		(dormantSlug, { label, tokens }) => {
+			setDormantError(null);
+
+			return createPresetFlow({
+				namespace,
+				block,
+				slugBase: 'custom',
+				existingSlugs: Object.keys(presets.payload?.presets ?? {}),
+				defaultTokens: tokens,
+				newLabel: label || dormantSlug,
+				slug,
+				refreshFeed,
+				onBusy: setIsBusy,
+				onError: setDormantError,
+			});
+		},
+		[namespace, block, presets.payload, slug, refreshFeed]
+	);
+
+	// "Discard changes": the same delete a listed preset gets, which drops the stored node. The theme
+	// preset is not listed, so there is nothing to revert to and nothing left behind.
+	const discardDormant = useCallback(
+		(dormantSlug) => {
+			setDormantError(null);
+
+			return deletePresetFlow({
+				namespace,
+				block,
+				preset: dormantSlug,
+				slug,
+				refreshFeed,
+				onBusy: setIsBusy,
+				onError: setDormantError,
+			});
+		},
+		[namespace, block, slug, refreshFeed]
 	);
 
 	const isDeletable = useCallback(
@@ -285,14 +329,18 @@ export function usePresetScreen(library, preset) {
 		saveError,
 		deleteError,
 		orderError,
+		dormantError,
 		clearAddError,
 		clearSaveError,
 		clearDeleteError,
 		clearOrderError,
+		clearDormantError,
 		addPreset,
 		savePreset,
 		deletePreset,
 		reorderPresets,
+		keepAsCustom,
+		discardDormant,
 		isDeletable,
 	};
 }

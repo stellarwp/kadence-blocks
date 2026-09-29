@@ -516,6 +516,126 @@ function makeFooterScreen(deletable, overridden = null) {
 	};
 }
 
+describe('PresetSettings unreadable theme preset', () => {
+	const NOTE = "Styled by your theme. Kadence Blocks can't read or change these styles.";
+
+	/**
+	 * The screen binding for a theme preset whose values could not be read.
+	 *
+	 * @since TBD
+	 *
+	 * @return {Object} The stubbed binding.
+	 */
+	function unreadableScreen() {
+		return {
+			payload: { presets: { 'theme-button': { label: 'Theme Button' } } },
+			rows: [{ id: 'theme-button', label: 'Theme Button', isTheme: true, readable: false, preview: {} }],
+			isLoading: false,
+			loadError: null,
+			initialValuesFor: () => ({ label: 'Theme Button', tokens: {}, overridden: {} }),
+			savePreset: jest.fn(),
+			deletePreset: jest.fn(),
+			isDeletable: () => false,
+			isBusy: false,
+			saveError: null,
+			deleteError: null,
+			clearSaveError: jest.fn(),
+			clearDeleteError: jest.fn(),
+		};
+	}
+
+	// No tabs: the read-only branch never renders them, and the editable branch is only checked for its
+	// name field and footer here, which need none.
+	const PRESET_WITH_PREVIEW = {
+		tabs: null,
+		schemaFor: () => ({ panels: [] }),
+		renderPreview: (row) => createElement('span', { className: 'chip' }, row.label),
+	};
+
+	/**
+	 * A theme preset with nothing to edit shows its preview and the note in place of fields, and no
+	 * name field, Save, Reset or Delete.
+	 *
+	 * @return {void}
+	 */
+	it('renders the preview and the note with nothing editable', () => {
+		renderPresetSettingsWithPreset(unreadableScreen(), 'theme-button', PRESET_WITH_PREVIEW);
+
+		expect(container.textContent).toContain(NOTE);
+		expect(container.querySelector('.kadence-blocks-style-library__theme-preset-preview .chip').textContent).toBe(
+			'Theme Button'
+		);
+		expect(container.querySelector('input[type="text"]')).toBeNull();
+		expect(findButton('Save')).toBeNull();
+		expect(findButton('Reset')).toBeNull();
+		expect(findButton('Delete')).toBeNull();
+		expect(findButton('Close')).not.toBeNull();
+	});
+
+	/**
+	 * A theme preset that cannot be read but still stores overrides (saved under a theme that could read
+	 * it) keeps Reset beside Close, says the overrides still apply, and Reset drops the stored node.
+	 *
+	 * @return {void}
+	 */
+	it('keeps Reset on an unreadable theme preset that stores overrides', async () => {
+		const screen = unreadableScreen();
+		screen.deletePreset = jest.fn().mockResolvedValue(undefined);
+		screen.initialValuesFor = () => ({
+			label: 'Theme Button',
+			tokens: { 'button-bg': '#ff0000' },
+			overridden: { 'button-bg': true },
+		});
+
+		const navigate = renderPresetSettingsWithPreset(screen, 'theme-button', PRESET_WITH_PREVIEW);
+
+		expect(container.textContent).toContain(NOTE);
+		expect(container.textContent).toContain('Changes saved under another theme still apply to it.');
+		expect(findButton('Save')).toBeNull();
+		expect(findButton('Delete')).toBeNull();
+		expect(findButton('Reset')).not.toBeNull();
+
+		await act(async () => {
+			findButton('Reset').click();
+		});
+
+		expect(screen.deletePreset).toHaveBeenCalledWith('theme-button');
+		expect(navigate).toHaveBeenCalledWith({ item: '' });
+	});
+
+	/**
+	 * A readable theme preset keeps the ordinary editable panel: the name field, Save and Reset.
+	 *
+	 * @return {void}
+	 */
+	it('keeps the editable panel for a readable theme preset', () => {
+		const screen = unreadableScreen();
+		screen.rows = [{ id: 'theme-button', label: 'Theme Button', isTheme: true, readable: true, preview: {} }];
+
+		renderPresetSettingsWithPreset(screen, 'theme-button', PRESET_WITH_PREVIEW);
+
+		expect(container.textContent).not.toContain(NOTE);
+		expect(container.querySelector('input[type="text"]')).not.toBeNull();
+		expect(findButton('Save')).not.toBeNull();
+		expect(findButton('Reset')).not.toBeNull();
+	});
+
+	/**
+	 * The open preset's row reaches the schema builder as its fourth argument.
+	 *
+	 * @return {void}
+	 */
+	it('hands the open row to schemaFor', () => {
+		const schemaFor = jest.fn(() => ({ panels: [] }));
+		const screen = unreadableScreen();
+		screen.rows = [{ id: 'theme-button', label: 'Theme Button', isTheme: true, readable: true, preview: {} }];
+
+		renderPresetSettingsWithPreset(screen, 'theme-button', { ...PRESET_WITH_PREVIEW, schemaFor });
+
+		expect(schemaFor).toHaveBeenCalledWith(null, expect.any(Object), undefined, screen.rows[0]);
+	});
+});
+
 describe('PresetSettings footer gating', () => {
 	/**
 	 * A user-created preset gets an enabled Delete and no Reset; a baseline preset gets no Delete
