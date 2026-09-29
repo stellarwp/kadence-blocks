@@ -1,22 +1,5 @@
 @use "../../styles/mixins" as *;
 
-// The tile carries a shadow, which is cast OUTSIDE the element casting it, so this screen relaxes
-// `ListRow`'s default framed preview slot rather than letting `overflow: hidden` clip it — the same
-// override the Shadow screen makes for the same reason.
-.kadence-blocks-style-library__image-screen .kadence-blocks-style-library__list-row-preview {
-	width: auto;
-	height: auto;
-	border: 0;
-	background: transparent;
-	overflow: visible;
-}
-
-// Preset names are full words ("Framed Soft"), not the short numeric labels the shared 4rem column
-// was sized for.
-.kadence-blocks-style-library__image-screen .kadence-blocks-style-library__list-row-label {
-	width: 15rem;
-}
-
 // Unlike the Row Layout band and the Section slab, this tile has no fixed size: it GROWS to fit the
 // preset's padding, so a bigger step reads as a bigger inset instead of eating the photo. The frame
 // mixin supplies the border and the transparency checker and leaves the geometry to the fill inside.

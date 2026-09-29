@@ -110,7 +110,7 @@ afterEach(() => {
 
 describe('PresetScreen loading state', () => {
 	/**
-	 * While `usePresetScreen` is still fetching, the screen must show a row-shaped skeleton instead
+	 * While `usePresetScreen` is still fetching, the screen must show a card-shaped skeleton instead
 	 * of the empty state — `usePresetScreen` starts with `isLoading: true` and no rows, and
 	 * rendering the empty state at that point would flash "Add Button" before the presets arrive.
 	 *
@@ -140,7 +140,7 @@ describe('PresetScreen loading state', () => {
 	 *
 	 * @return {void}
 	 */
-	it('renders the rows once loading finishes with presets present', () => {
+	it('renders the cards once loading finishes with presets present', () => {
 		const rows = [
 			{
 				id: 'primary',
@@ -153,7 +153,7 @@ describe('PresetScreen loading state', () => {
 
 		expect(container.querySelector('.kadence-blocks-style-library__skeleton')).toBeNull();
 		expect(container.querySelector('.kadence-blocks-style-library__empty-state')).toBeNull();
-		expect(container.querySelector('.kadence-blocks-style-library__row-list')).not.toBeNull();
+		expect(container.querySelector('.kadence-blocks-style-library__preset-grid')).not.toBeNull();
 	});
 });
 
@@ -338,7 +338,7 @@ describe('PresetScreen selection', () => {
 		);
 
 		act(() => {
-			container.querySelectorAll('.kadence-blocks-style-library__list-row-main')[1].click();
+			container.querySelectorAll('.kadence-blocks-style-library__preset-card-main')[1].click();
 		});
 
 		expect(guard).toHaveBeenCalled();
@@ -362,11 +362,77 @@ describe('PresetScreen selection', () => {
 		);
 
 		act(() => {
-			container.querySelectorAll('.kadence-blocks-style-library__list-row-main')[0].click();
+			container.querySelectorAll('.kadence-blocks-style-library__preset-card-main')[0].click();
 		});
 
 		expect(guard).not.toHaveBeenCalled();
 		expect(navigate).not.toHaveBeenCalled();
+	});
+});
+
+describe('PresetScreen default preset', () => {
+	const ROWS = [
+		{ id: 'outline', label: 'Outline', preview: {} },
+		{ id: 'default', label: 'Default', preview: {} },
+		{ id: 'ghost', label: 'Ghost', preview: {} },
+	];
+
+	/**
+	 * The default preset's card renders first whatever its stored position, and is the only card
+	 * with no drag handle.
+	 *
+	 * @return {void}
+	 */
+	it('pins the default preset first and gives it no drag handle', () => {
+		renderPresetScreen({
+			payload: { default: 'default' },
+			isLoading: false,
+			loadError: null,
+			rows: ROWS,
+			initialValuesFor: () => ({}),
+		});
+
+		const cards = container.querySelectorAll('.kadence-blocks-style-library__preset-card');
+
+		expect(cards[0].querySelector('.kadence-blocks-style-library__preset-card-title').textContent).toBe('Default');
+		expect(cards[0].querySelector('.kadence-blocks-style-library__preset-card-badge')).not.toBeNull();
+		expect(cards[0].querySelector('.kadence-blocks-style-library__drag-handle')).toBeNull();
+		expect(cards[1].querySelector('.kadence-blocks-style-library__drag-handle')).not.toBeNull();
+	});
+
+	/**
+	 * A block whose payload names no default preset pins nothing, so every card stays draggable.
+	 *
+	 * @return {void}
+	 */
+	it('pins no card when the payload names no default preset', () => {
+		renderPresetScreen({
+			payload: {},
+			isLoading: false,
+			loadError: null,
+			rows: ROWS,
+			initialValuesFor: () => ({}),
+		});
+
+		expect(container.querySelector('.kadence-blocks-style-library__preset-card-badge')).toBeNull();
+		expect(container.querySelectorAll('.kadence-blocks-style-library__drag-handle')).toHaveLength(3);
+	});
+});
+
+describe('PresetScreen loading skeleton', () => {
+	/**
+	 * The loading placeholder uses the real grid and card markup inside a status region, so the
+	 * loading shape matches the cards that replace it.
+	 *
+	 * @return {void}
+	 */
+	it('renders card-shaped skeletons in a status region', () => {
+		renderPresetScreen({ payload: null, isLoading: true, loadError: null, rows: [], initialValuesFor: () => ({}) });
+
+		const region = container.querySelector('[role="status"]');
+
+		expect(region.classList.contains('kadence-blocks-style-library__preset-grid')).toBe(true);
+		expect(region.querySelectorAll('.kadence-blocks-style-library__preset-card')).toHaveLength(3);
 	});
 });
 
