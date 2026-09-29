@@ -339,28 +339,19 @@ function schemaFor(tab, values, feed) {
 				title: __('Border', 'kadence-blocks'),
 				fields: [
 					{
-						type: 'select',
-						path: 'tokens.borderStyle',
-						label: __('Style', 'kadence-blocks'),
-						options: BORDER_STYLE_OPTIONS,
-						// The library's resolved map, so a value storage aliased to a token id still
-						// displays as the keyword it resolves to rather than blanking the select.
-						values: feed?.values,
-					},
-					{
-						type: 'token-scalar',
-						tokenType: 'dimension',
-						role: 'border-width',
-						path: 'tokens.borderWidth',
-						label: __('Width', 'kadence-blocks'),
+						type: 'border',
+						// The block names its three border properties `borderWidth`, `borderStyle` and
+						// `borderColor` rather than one base key with suffixes, so each axis is named here.
+						path: 'tokens.border',
+						axisPaths: {
+							width: 'tokens.borderWidth',
+							style: 'tokens.borderStyle',
+							color: 'tokens.borderColor',
+						},
+						label: __('Border', 'kadence-blocks'),
 						defaultValue: HEADING_BORDER_WIDTH_FALLBACK,
-					},
-					{
-						type: 'color-select',
-						path: 'tokens.borderColor',
-						label: __('Color', 'kadence-blocks'),
 						// The semantic border color the Default preset binds, matching the Button screen's border row.
-						defaultValue: 'semantic.color.border',
+						defaultColor: 'semantic.color.border',
 					},
 					{
 						type: 'radius',

@@ -205,12 +205,37 @@ export function widthTokensForField(atBreakpoint) {
 }
 
 /**
+ * The dot paths a border field stores its three axes at.
+ *
+ * A field with only a base `path` stores them at its `-width` / `-style` / `-color` siblings, the
+ * shape the Button's border properties have. A block whose properties are not named after one base
+ * key lists each axis in `axisPaths` instead, and those are used as given.
+ *
+ * @param {Object}  field                 The field definition.
+ * @param {string}  field.path            The base dot path.
+ * @param {?Object} [field.axisPaths]     The path of each axis, as `{ width, style, color }`.
+ *
+ * @since TBD
+ *
+ * @return {{width: string, style: string, color: string}} The path of each axis.
+ */
+export function borderAxisPaths(field) {
+	return {
+		width: field.axisPaths?.width ?? `${field.path}-width`,
+		style: field.axisPaths?.style ?? `${field.path}-style`,
+		color: field.axisPaths?.color ?? `${field.path}-color`,
+	};
+}
+
+/**
  * Render a border field from a settings schema entry.
  *
  * @param {Object}   props                    The component props.
  * @param {Object}   props.field              The field definition.
  * @param {string}   props.field.path         The base dot path; the width/style/color axes are
  *                                             stored at `${path}-width` / `-style` / `-color`.
+ * @param {?Object}  [props.field.axisPaths]  The path of each axis as `{ width, style, color }`, for a
+ *                                             block whose properties do not share a base key.
  * @param {?string}  [props.field.label]      The control's label.
  * @param {boolean}  [props.field.readOnly]   Whether the control is non-interactive.
  * @param {boolean}  [props.field.responsive] Whether the field offers a breakpoint switcher.
@@ -242,9 +267,7 @@ export function BorderField({ field, values, originalValues, onValueChange }) {
 
 	const groups = useActivePaletteGroups();
 
-	const widthPath = `${field.path}-width`;
-	const stylePath = `${field.path}-style`;
-	const colorPath = `${field.path}-color`;
+	const { width: widthPath, style: stylePath, color: colorPath } = borderAxisPaths(field);
 
 	const rawWidth = getValueAtPath(values, widthPath);
 	const rawStyle = getValueAtPath(values, stylePath);

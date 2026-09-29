@@ -223,9 +223,7 @@ describe('HEADING_PRESET', () => {
 			'tokens.fontSize',
 			'tokens.fontWeight',
 			'tokens.textTransform',
-			'tokens.borderStyle',
-			'tokens.borderWidth',
-			'tokens.borderColor',
+			'tokens.border',
 			'tokens.borderRadius',
 			'tokens.padding',
 		]);
@@ -247,11 +245,9 @@ describe('HEADING_PRESET', () => {
 	 * @return {void}
 	 */
 	it('offers every color row through the shared color picker', () => {
-		const colorFields = fields().filter((field) =>
-			['tokens.color', 'tokens.background', 'tokens.borderColor'].includes(field.path)
-		);
+		const colorFields = fields().filter((field) => ['tokens.color', 'tokens.background'].includes(field.path));
 
-		expect(colorFields).toHaveLength(3);
+		expect(colorFields).toHaveLength(2);
 		colorFields.forEach((field) => expect(field.type).toBe('color-select'));
 	});
 
@@ -266,7 +262,7 @@ describe('HEADING_PRESET', () => {
 
 		expect(byPath['tokens.color'].defaultValue).toBe('semantic.color.text');
 		expect(byPath['tokens.background'].defaultValue).toBe('semantic.color.heading-bg');
-		expect(byPath['tokens.borderColor'].defaultValue).toBe('semantic.color.border');
+		expect(byPath['tokens.border'].defaultColor).toBe('semantic.color.border');
 	});
 
 	/**
@@ -280,7 +276,7 @@ describe('HEADING_PRESET', () => {
 	it('offers a keyword select exactly where there is no token scale to pick from', () => {
 		const byPath = Object.fromEntries(fields().map((field) => [field.path, field]));
 
-		['tokens.fontWeight', 'tokens.textTransform', 'tokens.borderStyle'].forEach((path) => {
+		['tokens.fontWeight', 'tokens.textTransform'].forEach((path) => {
 			expect(byPath[path].type).toBe('select');
 			expect(byPath[path].options.length).toBeGreaterThan(1);
 		});
@@ -291,7 +287,6 @@ describe('HEADING_PRESET', () => {
 		expect(byPath['tokens.typography'].options).toBeUndefined();
 
 		expect(byPath['tokens.fontSize'].type).toBe('token-scalar');
-		expect(byPath['tokens.borderWidth'].type).toBe('token-scalar');
 	});
 
 	/**
@@ -307,19 +302,22 @@ describe('HEADING_PRESET', () => {
 	});
 
 	/**
-	 * Border style is the field that decides whether a border appears at all. Offering color and width
-	 * without it is the dead control the Row Layout and Section screens had to drop, so its presence is
-	 * asserted on its own rather than left implied by the field list.
+	 * The three border properties are offered through one border control, stored at the block's own
+	 * keys. The style axis is what decides whether a border appears at all, so the control has to reach
+	 * it: without it a preset could set a color and width and never make them visible.
 	 *
 	 * @return {void}
 	 */
-	it('offers a border style, without which a preset border could never be seen', () => {
-		const style = fields().find((field) => field.path === 'tokens.borderStyle');
+	it('offers the border as one control over the width, style and color properties', () => {
+		const border = fields().find((field) => field.path === 'tokens.border');
 
-		expect(style).toBeDefined();
-		expect(style.options.map((option) => option.value)).toEqual(
-			expect.arrayContaining(['solid', 'dashed', 'dotted', 'double'])
-		);
+		expect(border.type).toBe('border');
+		expect(border.axisPaths).toEqual({
+			width: 'tokens.borderWidth',
+			style: 'tokens.borderStyle',
+			color: 'tokens.borderColor',
+		});
+		expect(border.defaultValue).toBe('1px');
 	});
 
 	/**
