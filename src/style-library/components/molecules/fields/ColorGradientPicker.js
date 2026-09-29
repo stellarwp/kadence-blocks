@@ -1,7 +1,6 @@
 /**
  * The shared Color/Gradient two-tab picker body: a solid `ColorPicker` and a `GradientPicker`.
- * Composed by both `ColorField` (inline) and `ColorListField` (inside each row's popover) rather
- * than duplicated.
+ * Rendered by `ColorField`.
  */
 
 /**

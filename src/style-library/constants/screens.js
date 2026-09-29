@@ -40,8 +40,8 @@ import {
 export const PRESET_SCREENS_FILTER = 'kadence_blocks.style_library.preset_screens';
 
 /**
- * The fixed BASE STYLES nav entries, in design order. Every entry renders `PlaceholderScreen`
- * until its per-screen ticket lands.
+ * The fixed BASE STYLES nav entries, in design order. An entry with no component registered in
+ * `StyleLibraryApp` falls back to `PlaceholderScreen`.
  *
  * @since TBD
  */

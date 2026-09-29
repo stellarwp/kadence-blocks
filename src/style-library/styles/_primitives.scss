@@ -116,8 +116,8 @@ body.kadence-blocks-style-library-page {
 	--kb-sl-letter-spacing-tight: -0.01em;
 
 	// Font weight. `semibold` is not on the Figma type table (Regular/Medium only) — it extends that
-	// table for the handful of places (`section-heading` in _mixins.scss, `MetaChip`) that call for
-	// a heavier weight.
+	// table for the handful of places (`section-heading` in _mixins.scss) that call for a heavier
+	// weight.
 	--kb-sl-font-weight-regular: 400;
 	--kb-sl-font-weight-medium: 500;
 	--kb-sl-font-weight-semibold: 600;

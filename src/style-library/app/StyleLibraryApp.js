@@ -66,9 +66,9 @@ const SCREEN_COMPONENTS = {
  * resolved for the active route. A screen that owns a settings panel exposes it as a static
  * `SettingsPanel` property on its page component (`MyScreen.SettingsPanel = MyScreenSettings`);
  * this is the one place that property is read and mounted into the settings popover.
- * The app itself carries no per-screen knowledge — not the demo, not any real screen's panel
- * contents — so a screen and its panel are siblings that share state only through the server and
- * the route, never through this component.
+ * The app itself carries no per-screen knowledge — not any screen's panel contents — so a screen
+ * and its panel are siblings that share state only through the server and the route, never through
+ * this component.
  *
  * @since TBD
  *

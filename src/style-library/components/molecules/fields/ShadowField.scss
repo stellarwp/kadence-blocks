@@ -1,6 +1,6 @@
 @use '../../../styles/mixins' as *;
 
-// A single-item list row (round swatch + "Color"), matching `ColorListField`'s row shape.
+// A single-item list row: round swatch + "Color".
 .kadence-blocks-style-library__field-shadow-color-row {
 	@include flex-row(var(--kb-sl-space-10));
 	width: 100%;

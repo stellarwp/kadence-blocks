@@ -1,8 +1,8 @@
 /**
  * The shared label row every field renders above its control: an uppercase label with an optional
- * trailing slot (e.g. `BoxSidesField`'s link/unlink toggle, or a responsive field's breakpoint
- * switcher). Content-agnostic — a caller decides what the trailing slot holds. The label text's own
- * typography is the `small-uppercase-label` mixin (styles/_mixins.scss), shared with `SectionHeading`.
+ * trailing slot (e.g. `UnitField`'s breakpoint switcher). Content-agnostic — a caller decides what
+ * the trailing slot holds. The label text's own typography is the `small-uppercase-label` mixin
+ * (styles/_mixins.scss), shared with `SectionHeading`.
  */
 
 /**
