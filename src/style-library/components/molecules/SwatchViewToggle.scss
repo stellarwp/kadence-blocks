@@ -1,0 +1,38 @@
+.kadence-blocks-style-library__swatch-view-toggle {
+	display: flex;
+	align-items: center;
+	gap: 0.125rem;
+	padding: 0.125rem;
+	border: 1px solid var(--kb-sl-color-border);
+	border-radius: 0.1875rem;
+}
+
+.kadence-blocks-style-library__swatch-view-toggle-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 2rem;
+	height: 1.875rem;
+	padding: 0;
+	border: none;
+	border-radius: 0.1875rem;
+	background: transparent;
+	box-shadow: none;
+	color: #718096;
+	cursor: pointer;
+
+	&:focus-visible {
+		outline: 2px solid var(--kb-sl-color-control-border-focus);
+		outline-offset: 1px;
+	}
+
+	&--pressed {
+		background: #edf2f7;
+		color: #1a202c;
+	}
+}
+
+.kadence-blocks-style-library__swatch-view-toggle-icon {
+	width: 1rem;
+	height: 1rem;
+}
