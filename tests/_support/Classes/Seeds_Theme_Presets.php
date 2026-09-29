@@ -14,7 +14,7 @@ trait Seeds_Theme_Presets {
 	/**
 	 * The styles to answer with; null leaves discovery alone.
 	 *
-	 * @var array<string, array{label: string, class: string, values: array<string, mixed>}>|null
+	 * @var array<string, array{label: string, class: string, values: array<string, mixed>, tokens?: array<string, mixed>}>|null
 	 */
 	private ?array $seeded_theme_styles = null;
 
@@ -34,7 +34,7 @@ trait Seeds_Theme_Presets {
 	 * An empty array means "the theme offers nothing": the classic fallback is bypassed too, because the
 	 * filter runs after it.
 	 *
-	 * @param array<string, array{label: string, class: string, values: array<string, mixed>}> $styles The styles.
+	 * @param array<string, array{label: string, class: string, values: array<string, mixed>, tokens?: array<string, mixed>}> $styles The styles.
 	 *
 	 * @return void
 	 */
