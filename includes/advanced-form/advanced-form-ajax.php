@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Advanced Form Ajax Handing.
  *
