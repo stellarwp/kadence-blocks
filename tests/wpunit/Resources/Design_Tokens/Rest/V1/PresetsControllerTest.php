@@ -124,6 +124,84 @@ final class PresetsControllerTest extends TestCase {
 	}
 
 	/**
+	 * The item schema documents the `dormant` map the GET item response carries.
+	 *
+	 * @return void
+	 */
+	public function testItemSchemaDocumentsTheDormantMap(): void {
+		$schema = $this->controller->get_item_schema();
+
+		$this->assertArrayHasKey( 'dormant', $schema['properties'] );
+		$this->assertSame( 'object', $schema['properties']['dormant']['type'] );
+		$this->assertTrue( $schema['properties']['dormant']['readonly'] );
+		$this->assertArrayHasKey( 'themeSnapshot', $schema['properties']['dormant']['additionalProperties']['properties'] );
+	}
+
+	/**
+	 * A stored theme preset the active theme does not offer is reported under `dormant` with its label,
+	 * overrides and theme snapshot, and nowhere else in the payload.
+	 *
+	 * @return void
+	 */
+	public function testGetItemReportsAStoredThemePresetTheThemeDoesNotOfferAsDormant(): void {
+		$this->store->save_document(
+			'{"$extensions":{"com.kadence.designTokens":{"presets":{"kadence/singlebtn":{'
+			. '"theme-secondary":{"label":"Theme Secondary","themeSnapshot":{"button-bg":"#0000ff"},"tokens":{"button-bg":"#ff0000"}}}}}}}'
+		);
+
+		$data = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, self::BUTTON ) )->get_data();
+
+		$this->assertSame(
+			[
+				'theme-secondary' => [
+					'label'         => 'Theme Secondary',
+					'tokens'        => [ 'button-bg' => '#ff0000' ],
+					'themeSnapshot' => [ 'button-bg' => '#0000ff' ],
+				],
+			],
+			$data['dormant']
+		);
+		$this->assertArrayNotHasKey( 'theme-secondary', $data['presets'] );
+		$this->assertNotContains( 'theme-secondary', $data['userCreated'] );
+	}
+
+	/**
+	 * Deleting a dormant theme preset drops its stored node for good: it has no baseline definition to
+	 * revert to, so nothing is left to report under `dormant`, `presets`, or the token store. This is what
+	 * the Style Library's "Discard changes" action relies on.
+	 *
+	 * @return void
+	 */
+	public function testDeletingADormantThemePresetDropsItsStoredNode(): void {
+		$this->store->save_document(
+			'{"$extensions":{"com.kadence.designTokens":{"presets":{"kadence/singlebtn":{'
+			. '"theme-secondary":{"label":"Theme Secondary","themeSnapshot":{"button-bg":"#0000ff"},"tokens":{"button-bg":"#ff0000"}}}}}}}'
+		);
+
+		$response = $this->controller->delete_preset( $this->preset_request( self::BUTTON, 'theme-secondary' ) );
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+		$this->assertSame( WP_Http::OK, $response->get_status() );
+
+		$data = $response->get_data();
+
+		$this->assertSame( [], $data['dormant'] );
+		$this->assertArrayNotHasKey( 'theme-secondary', $data['presets'] );
+		$this->assertSame( [], $this->container->get( Effective_Presets::class )->stored_tokens( self::BUTTON, 'theme-secondary' ) );
+	}
+
+	/**
+	 * With nothing dormant the payload carries an empty map, so a client can read it unconditionally.
+	 *
+	 * @return void
+	 */
+	public function testGetItemReportsAnEmptyDormantMapWhenNothingIsDormant(): void {
+		$data = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, self::BUTTON ) )->get_data();
+
+		$this->assertSame( [], $data['dormant'] );
+	}
+
+	/**
 	 * The item schema documents the `userCreated` property added to the GET item response.
 	 *
 	 * @return void
@@ -1884,11 +1962,11 @@ final class PresetsControllerTest extends TestCase {
 		$response = $this->controller->set_order( $this->order_request( self::BUTTON, [ 'accent', 'default' ] ) );
 
 		$this->assertInstanceOf( WP_REST_Response::class, $response );
-		$this->assertSame( [ 'accent', 'default', 'outline' ], array_keys( $response->get_data()['presets'] ) );
+		$this->assertSame( [ 'accent', 'default', 'outline', 'theme-base' ], array_keys( $response->get_data()['presets'] ) );
 
 		// The order survives a fresh read.
 		$data = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, self::BUTTON ) )->get_data();
-		$this->assertSame( [ 'accent', 'default', 'outline' ], array_keys( $data['presets'] ) );
+		$this->assertSame( [ 'accent', 'default', 'outline', 'theme-base' ], array_keys( $data['presets'] ) );
 	}
 
 	/**
@@ -1905,7 +1983,7 @@ final class PresetsControllerTest extends TestCase {
 		);
 
 		$this->assertInstanceOf( WP_REST_Response::class, $response );
-		$this->assertSame( [ 'accent', 'default', 'outline' ], array_keys( $response->get_data()['presets'] ) );
+		$this->assertSame( [ 'accent', 'default', 'outline', 'theme-base' ], array_keys( $response->get_data()['presets'] ) );
 	}
 
 	/**
@@ -1949,7 +2027,7 @@ final class PresetsControllerTest extends TestCase {
 		$response = $this->controller->delete_order( $this->order_request( self::BUTTON, [], $version ) );
 
 		$this->assertSame( WP_Http::OK, $response->get_status() );
-		$this->assertSame( [ 'default', 'outline', 'accent' ], array_keys( $response->get_data()['presets'] ) );
+		$this->assertSame( [ 'default', 'outline', 'theme-base', 'accent' ], array_keys( $response->get_data()['presets'] ) );
 	}
 
 	/**
@@ -2004,8 +2082,8 @@ final class PresetsControllerTest extends TestCase {
 		$data     = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, self::BUTTON ) )->get_data();
 		$resolver = $this->container->get( Preset_Resolver::class );
 
-		$this->assertSame( [ 'accent', 'default', 'outline' ], array_keys( $data['presets'] ) );
-		$this->assertSame( [ 'accent', 'default', 'outline' ], $resolver->names( self::BUTTON ) );
+		$this->assertSame( [ 'accent', 'default', 'outline', 'theme-base' ], array_keys( $data['presets'] ) );
+		$this->assertSame( [ 'accent', 'default', 'outline', 'theme-base' ], $resolver->names( self::BUTTON ) );
 	}
 
 	/**

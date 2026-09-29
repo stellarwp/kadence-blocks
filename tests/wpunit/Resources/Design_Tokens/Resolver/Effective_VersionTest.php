@@ -6,8 +6,11 @@ namespace Tests\wpunit\Resources\Design_Tokens\Resolver;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Version;
+use KadenceWP\KadenceBlocks\Design_Tokens\Theme_Buttons\Discovery;
+use KadenceWP\KadenceBlocks\Design_Tokens\Theme_Buttons\Theme_Button_Styles_Overlay;
 use KadenceWP\KadenceBlocks\Design_Tokens\Theme_Style_Guide\Style_Guide_Mapper;
 use KadenceWP\KadenceBlocks\Design_Tokens\Theme_Style_Guide\Style_Guide_Overlay;
+use Tests\Support\Classes\Fake_Button_Style_Source;
 use Tests\Support\Classes\Fake_Style_Guide_Source;
 use Tests\Support\Classes\TestCase;
 
@@ -30,8 +33,9 @@ final class Effective_VersionTest extends TestCase {
 	}
 
 	/**
-	 * With no overlay (a site not running the Kadence theme) the effective version is exactly the store
-	 * version, so every cache key that folds it in is byte-identical to what it was before this layer.
+	 * With both overlays empty (no Kadence theme, no theme button styles) the effective version is exactly
+	 * the store version, so every cache key that folds it in is byte-identical to what it was before this
+	 * layer.
 	 *
 	 * @return void
 	 */
@@ -120,6 +124,41 @@ final class Effective_VersionTest extends TestCase {
 	}
 
 	/**
+	 * Two different theme button style lists give two different effective versions for the same store
+	 * version and Style Guide. That is what makes a theme switch invalidate the resolved and projected
+	 * caches.
+	 *
+	 * @return void
+	 */
+	public function testDiffersWhenTheThemeButtonStylesDiffer(): void {
+		$slug    = Token_Store::default_slug();
+		$palette = Fake_Style_Guide_Source::with_palette( [ 'palette1' => '#111111' ] );
+		$base    = $this->versions( $palette, new Fake_Button_Style_Source( self::THEME_BASE ) );
+		$none    = $this->versions( $palette, new Fake_Button_Style_Source() );
+
+		$this->assertNotSame( $base->for_slug( $slug ), $none->for_slug( $slug ) );
+	}
+
+	/**
+	 * The store version stays a prefix of the effective version when only the theme button styles are
+	 * overlaid, so a token write still changes it.
+	 *
+	 * @return void
+	 */
+	public function testKeepsTheStoreVersionAsItsPrefixWithThemeButtonStyles(): void {
+		$slug = Token_Store::default_slug();
+
+		$this->store->save_document( (string) wp_json_encode( [ 'primitive' => [] ] ) );
+
+		$versions = $this->versions( new Fake_Style_Guide_Source( null ), new Fake_Button_Style_Source( self::THEME_BASE ) );
+		$version  = $this->store->get_version( $slug );
+
+		$this->assertNotSame( '', $version );
+		$this->assertStringStartsWith( $version, $versions->for_slug( $slug ) );
+		$this->assertNotSame( $version, $versions->for_slug( $slug ) );
+	}
+
+	/**
 	 * The container wires the service, so every projector resolves the same instance.
 	 *
 	 * @return void
@@ -129,16 +168,32 @@ final class Effective_VersionTest extends TestCase {
 	}
 
 	/**
-	 * An Effective_Version over the given Style Guide source, with the real store and registry.
+	 * A theme-base style with today's classes and no values.
 	 *
-	 * @param Fake_Style_Guide_Source $source The Style Guide source.
+	 * @var array<string, array{label: string, class: string, values: array<string, mixed>}>
+	 */
+	private const THEME_BASE = [
+		'base' => [
+			'label'  => 'Theme Base',
+			'class'  => 'wp-block-button__link button kb-btn-global-inherit',
+			'values' => [],
+		],
+	];
+
+	/**
+	 * An Effective_Version over the given Style Guide source and theme button source, with the real store
+	 * and registry. With no button source the theme offers no button styles.
+	 *
+	 * @param Fake_Style_Guide_Source       $source  The Style Guide source.
+	 * @param Fake_Button_Style_Source|null $buttons The theme button style source.
 	 *
 	 * @return Effective_Version
 	 */
-	private function versions( Fake_Style_Guide_Source $source ): Effective_Version {
+	private function versions( Fake_Style_Guide_Source $source, ?Fake_Button_Style_Source $buttons = null ): Effective_Version {
 		return new Effective_Version(
 			$this->store,
-			new Style_Guide_Overlay( $source, new Style_Guide_Mapper(), $this->registry )
+			new Style_Guide_Overlay( $source, new Style_Guide_Mapper(), $this->registry ),
+			new Theme_Button_Styles_Overlay( new Discovery( $buttons ?? new Fake_Button_Style_Source() ) )
 		);
 	}
 }

@@ -17,6 +17,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Version;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Palettes_Controller;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Dtcg_Validator;
+use KadenceWP\KadenceBlocks\Design_Tokens\Theme_Buttons\Theme_Button_Styles_Overlay;
 use KadenceWP\KadenceBlocks\Design_Tokens\Theme_Style_Guide\Style_Guide_Mapper;
 use KadenceWP\KadenceBlocks\Design_Tokens\Theme_Style_Guide\Style_Guide_Overlay;
 use Tests\Support\Classes\Fake_Style_Guide_Source;
@@ -169,7 +170,7 @@ final class Style_Guide_IntegrationTest extends TestCase {
 
 		$first     = Fake_Style_Guide_Source::with_palette( [ 'palette1' => '#111111' ] );
 		$overlay   = new Style_Guide_Overlay( $first, new Style_Guide_Mapper(), $this->registry );
-		$versions  = new Effective_Version( $this->store, $overlay );
+		$versions  = new Effective_Version( $this->store, $overlay, $this->container->get( Theme_Button_Styles_Overlay::class ) );
 		$effective = $versions->for_slug( $slug );
 
 		$this->assertSame( '#111111', $this->resolver_for( $first )->resolve()->value( 'primitive.color.brand.primary' ) );
@@ -177,7 +178,7 @@ final class Style_Guide_IntegrationTest extends TestCase {
 		// A new request after the Customizer save: a fresh overlay over the changed Style Guide.
 		$second        = Fake_Style_Guide_Source::with_palette( [ 'palette1' => '#999999' ] );
 		$next_overlay  = new Style_Guide_Overlay( $second, new Style_Guide_Mapper(), $this->registry );
-		$next_versions = new Effective_Version( $this->store, $next_overlay );
+		$next_versions = new Effective_Version( $this->store, $next_overlay, $this->container->get( Theme_Button_Styles_Overlay::class ) );
 
 		$this->assertSame( '#999999', $this->resolver_for( $second )->resolve()->value( 'primitive.color.brand.primary' ) );
 		$this->assertNotSame( $effective, $next_versions->for_slug( $slug ) );
@@ -336,7 +337,7 @@ final class Style_Guide_IntegrationTest extends TestCase {
 			$this->container->get( Mutator::class )
 		);
 
-		return $this->resolver_over( $baseline, new Effective_Version( $this->store, $overlay ) );
+		return $this->resolver_over( $baseline, new Effective_Version( $this->store, $overlay, $this->container->get( Theme_Button_Styles_Overlay::class ) ) );
 	}
 
 	/**
@@ -348,7 +349,7 @@ final class Style_Guide_IntegrationTest extends TestCase {
 		$baseline = $this->shipped_baseline( 'integration-shipped' );
 		$overlay  = new Style_Guide_Overlay( new Fake_Style_Guide_Source( null ), new Style_Guide_Mapper(), $this->registry );
 
-		return $this->resolver_over( $baseline, new Effective_Version( $this->store, $overlay ) );
+		return $this->resolver_over( $baseline, new Effective_Version( $this->store, $overlay, $this->container->get( Theme_Button_Styles_Overlay::class ) ) );
 	}
 
 	/**

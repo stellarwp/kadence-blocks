@@ -45,7 +45,8 @@ final class Preset_CatalogTest extends TestCase {
 
 	/**
 	 * The catalog reports the active library and, per library, the shipped Button's default and its named presets as
-	 * { slug, label, userCreated }, plus the picker control label and the controllable surface.
+	 * { slug, label, userCreated, themeClass } — the theme's Theme Button after the shipped ones — plus the picker
+	 * control label and the controllable surface.
 	 *
 	 * @return void
 	 */
@@ -74,9 +75,32 @@ final class Preset_CatalogTest extends TestCase {
 					'userCreated' => false,
 					'themeClass'  => 'kb-btn-global-outline',
 				],
+				[
+					'slug'        => 'theme-base',
+					'label'       => 'Theme Button',
+					'userCreated' => false,
+					'themeClass'  => 'wp-block-button__link button kb-btn-global-inherit',
+				],
 			],
 			$button['presets']
 		);
+	}
+
+	/**
+	 * The picker lists the shipped presets first, then the theme's, then the user's, so the order is the
+	 * same on every site whatever was stored when.
+	 *
+	 * @return void
+	 */
+	public function testTheButtonOptionsAreOrderedDefaultOutlineThemeThenUser(): void {
+		$this->store->save_document(
+			'{"$extensions":{"com.kadence.designTokens":{"presets":{"kadence/singlebtn":{'
+			. '"hero":{"label":"Hero","tokens":{"button-bg":"#ff0000"}}}}}}}'
+		);
+
+		$presets = $this->catalog->all()['libraries'][ Token_Store::default_slug() ][ self::BUTTON ]['presets'];
+
+		$this->assertSame( [ 'default', 'outline', 'theme-base', 'hero' ], array_column( $presets, 'slug' ) );
 	}
 
 	/**
