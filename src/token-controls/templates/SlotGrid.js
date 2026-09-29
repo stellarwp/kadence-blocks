@@ -8,6 +8,7 @@
 /**
  * Internal dependencies
  */
+import { SlotGlyph } from '../atoms/SlotGlyph';
 import { SLOT_LABELS, readSlot, writeSlot } from '../helpers/value-shapes';
 
 /**
@@ -28,15 +29,15 @@ const GRID_ORDER = {
 };
 
 /**
- * The position label a glyph keys its highlighted edge(s) on: the slot's own label, or `'all'` for
- * the linked, every-edge state — a state the grid never rendered before this row anatomy.
+ * The position label a glyph highlights: the slot's own label, or `'all'` for
+ * the linked, every-part state.
  *
  * @param {string}  role  'sides' or 'corners' — picks the label set.
  * @param {?number} index The slot index, or `null` while linked.
  *
  * @since TBD
  *
- * @return {string} The position the glyph's modifier class keys on.
+ * @return {string} The position the glyph highlights.
  */
 function glyphPosition(role, index) {
 	if (index === null) {
@@ -46,33 +47,6 @@ function glyphPosition(role, index) {
 	const labels = SLOT_LABELS[role] ?? SLOT_LABELS.sides;
 
 	return labels[index] ?? 'all';
-}
-
-/**
- * The row's leading glyph: a small box marking which edge(s) a slot names.
- *
- * A real element rather than a border overlay on the field, so its edges are independent of the
- * field's own border/radius. Role-agnostic geometry — `sides` highlights one edge, `corners`
- * highlights two adjacent edges and rounds the corner they meet at, and the linked `all` state
- * highlights every edge (and, for corners, rounds every corner) — so the same helper serves any
- * future role built on the same `sides`/`corners` distinction.
- *
- * @param {string}  role  'sides' or 'corners'.
- * @param {?number} index The slot index, or `null` while linked.
- *
- * @since TBD
- *
- * @return {JSX.Element} The glyph element.
- */
-function renderGlyph(role, index) {
-	const position = glyphPosition(role, index);
-
-	return (
-		<span
-			className={`kb-token-control__glyph kb-token-control__glyph--${role} kb-token-control__glyph--${position}`}
-			aria-hidden="true"
-		/>
-	);
 }
 
 /**
@@ -102,7 +76,7 @@ export function SlotGrid({ value, onChange, isLinked, renderSlot, role = 'sides'
 		// render no mark at all.
 		return (
 			<div className="kb-token-control__row">
-				{renderGlyph(role, null)}
+				<SlotGlyph role={role} position={glyphPosition(role, null)} />
 				{renderSlot({
 					value: readSlot(value, 0),
 					onChange: (next) => onChange(collapse ? next : Array(labels.length).fill(next)),
@@ -114,12 +88,12 @@ export function SlotGrid({ value, onChange, isLinked, renderSlot, role = 'sides'
 	}
 
 	// Each row is tagged with its position for identification/testing; the glyph inside it (not a
-	// CSS rule keyed on this class) is what actually draws the highlighted edge(s).
+	// CSS rule keyed on this class) is what marks the row's side or corner.
 	return (
 		<div className="kb-token-control__grid">
 			{order.map((index) => (
 				<div key={index} className={`kb-token-control__row kb-token-control__row--${labels[index]}`}>
-					{renderGlyph(role, index)}
+					<SlotGlyph role={role} position={glyphPosition(role, index)} />
 					{renderSlot({
 						value: readSlot(value, index),
 						onChange: (next) => onChange(writeSlot(value, index, next, collapse)),

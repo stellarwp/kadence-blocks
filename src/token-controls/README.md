@@ -28,7 +28,7 @@ the Style Library and be permanently wrong in the editor, whose array never coll
 | Layer | Holds |
 |---|---|
 | `helpers/` | Pure functions — value shapes, slot reads and writes |
-| `atoms/` | Single-purpose marks — `BindingIndicator` |
+| `atoms/` | Single-purpose marks — `BindingIndicator`, `SlotGlyph` |
 | `molecules/` | Small compositions — `TokenPopover` |
 | `organisms/` | Self-contained regions — `TokenSelector` |
 | `templates/` | Slot-based layout with no data — `ControlShell`, `SlotGrid` |

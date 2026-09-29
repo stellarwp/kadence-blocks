@@ -65,6 +65,7 @@ describe('SlotGrid glyph', () => {
 			const glyph = row.querySelector('.kb-token-control__glyph');
 
 			expect(glyph).not.toBeNull();
+			expect(glyph.tagName.toLowerCase()).toBe('svg');
 			expect(row.querySelector('.stub-slot')).not.toBeNull();
 			// The glyph precedes the field within the row.
 			expect(row.firstElementChild).toBe(glyph);
@@ -75,7 +76,7 @@ describe('SlotGrid glyph', () => {
 		renderSlotGrid({ role: 'sides' });
 
 		const glyphs = [...container.querySelectorAll('.kb-token-control__glyph')];
-		const positions = glyphs.map((glyph) => glyph.className);
+		const positions = glyphs.map((glyph) => glyph.getAttribute('class'));
 
 		expect(positions[0]).toContain('kb-token-control__glyph--top');
 		expect(positions[1]).toContain('kb-token-control__glyph--right');
@@ -87,7 +88,7 @@ describe('SlotGrid glyph', () => {
 		renderSlotGrid({ role: 'corners' });
 
 		const glyphs = [...container.querySelectorAll('.kb-token-control__glyph')];
-		const positions = glyphs.map((glyph) => glyph.className);
+		const positions = glyphs.map((glyph) => glyph.getAttribute('class'));
 
 		// SLOT_LABELS.corners is already clockwise, and the stacked-row grid renders that order
 		// directly: top-left, top-right, bottom-right, bottom-left.
@@ -101,7 +102,7 @@ describe('SlotGrid glyph', () => {
 		renderSlotGrid({ role: 'corners' });
 
 		container.querySelectorAll('.kb-token-control__glyph').forEach((glyph) => {
-			expect(glyph.className).toContain('kb-token-control__glyph--corners');
+			expect(glyph.getAttribute('class')).toContain('kb-token-control__glyph--corners');
 		});
 	});
 
@@ -114,8 +115,8 @@ describe('SlotGrid glyph', () => {
 
 		const glyph = rows[0].querySelector('.kb-token-control__glyph');
 
-		expect(glyph.className).toContain('kb-token-control__glyph--sides');
-		expect(glyph.className).toContain('kb-token-control__glyph--all');
+		expect(glyph.getAttribute('class')).toContain('kb-token-control__glyph--sides');
+		expect(glyph.getAttribute('class')).toContain('kb-token-control__glyph--all');
 		expect(rows[0].querySelector('.stub-slot').dataset.index).toBe('linked');
 	});
 
@@ -124,8 +125,23 @@ describe('SlotGrid glyph', () => {
 
 		const glyph = container.querySelector('.kb-token-control__glyph');
 
-		expect(glyph.className).toContain('kb-token-control__glyph--corners');
-		expect(glyph.className).toContain('kb-token-control__glyph--all');
+		expect(glyph.getAttribute('class')).toContain('kb-token-control__glyph--corners');
+		expect(glyph.getAttribute('class')).toContain('kb-token-control__glyph--all');
+	});
+
+	it('highlights only its own part when unlinked and every part when linked', () => {
+		renderSlotGrid({ role: 'sides' });
+
+		const active = container
+			.querySelector('.kb-token-control__row--right')
+			.querySelectorAll('.kb-token-control__glyph-part.is-active');
+
+		expect(active).toHaveLength(1);
+		expect(active[0].getAttribute('data-position')).toBe('right');
+
+		renderSlotGrid({ role: 'sides', isLinked: true });
+
+		expect(container.querySelectorAll('.kb-token-control__glyph-part.is-active')).toHaveLength(4);
 	});
 
 	it('wraps unlinked rows in the flex-column grid container', () => {
