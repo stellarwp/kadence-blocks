@@ -1,6 +1,6 @@
 /**
- * The header's "Rename" action and its modal for palettes, mirroring `RenameLibraryModal`: a
- * single label field over the palette being edited, seeded with its current label.
+ * The header's "Rename" action and its modal for palettes: a single label field over the
+ * palette being edited, seeded with its current label.
  *
  * Unlike Delete, Rename is available on the default palette too — the server only refuses
  * DELETING it, not relabeling it.

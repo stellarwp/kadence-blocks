@@ -1,5 +1,6 @@
 /* eslint-env jest */
 import {
+	checkLibraryRename,
 	isDefaultLibrary,
 	isDuplicateLibraryName,
 	isDuplicateLibraryTitle,
@@ -188,5 +189,64 @@ describe('successorOptions', () => {
 		];
 
 		expect(successorOptions(libraries, 'brand-a').map((library) => library.slug)).toEqual(['default']);
+	});
+});
+
+describe('checkLibraryRename', () => {
+	const libraries = [
+		{ slug: 'brand-a', title: 'Brand A' },
+		{ slug: 'brand-b', title: 'Brand B' },
+	];
+
+	/**
+	 * A new, unused name is savable, and comes back trimmed the way it would be stored.
+	 *
+	 * @return {void}
+	 */
+	it('accepts a new name and trims it', () => {
+		expect(checkLibraryRename('  Brand C ', 'Brand A', libraries, 'brand-a')).toEqual({
+			trimmed: 'Brand C',
+			isDuplicate: false,
+			isSavable: true,
+		});
+	});
+
+	/**
+	 * An empty or whitespace-only name is not savable, and is not reported as a duplicate.
+	 *
+	 * @return {void}
+	 */
+	it('refuses an empty name', () => {
+		expect(checkLibraryRename('   ', 'Brand A', libraries, 'brand-a')).toEqual({
+			trimmed: '',
+			isDuplicate: false,
+			isSavable: false,
+		});
+	});
+
+	/**
+	 * The library's own current name is not a duplicate, but saving it would change nothing.
+	 *
+	 * @return {void}
+	 */
+	it('refuses an unchanged name without calling it a duplicate', () => {
+		expect(checkLibraryRename('Brand A ', 'Brand A', libraries, 'brand-a')).toEqual({
+			trimmed: 'Brand A',
+			isDuplicate: false,
+			isSavable: false,
+		});
+	});
+
+	/**
+	 * A name another library already displays is reported as a duplicate, ignoring letter case.
+	 *
+	 * @return {void}
+	 */
+	it('refuses a name another library uses', () => {
+		expect(checkLibraryRename('brand b', 'Brand A', libraries, 'brand-a')).toEqual({
+			trimmed: 'brand b',
+			isDuplicate: true,
+			isSavable: false,
+		});
 	});
 });
