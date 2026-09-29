@@ -1025,6 +1025,56 @@ class KadenceBlocksCssTest extends WPTestCase {
 	}
 
 	/**
+	 * A color stored without a line style writes the color only, so the default `solid` does not
+	 * override the style a preset carries.
+	 *
+	 * @return void
+	 */
+	public function testRenderBorderStylesLeavesStyleAloneForColorOnly(): void {
+		$this->css->render_border_styles( [
+			'borderStyle' => [
+				[
+					'top'    => [ '#ff0000', '', '' ],
+					'right'  => [ '#ff0000', '', '' ],
+					'bottom' => [ '#ff0000', '', '' ],
+					'left'   => [ '#ff0000', '', '' ],
+					'unit'   => 'px',
+				],
+			],
+		], 'borderStyle', true );
+		$output = $this->css->css_output();
+
+		$this->assertStringContainsString( 'border-top-color:#ff0000', $output,
+			'A stored color is written' );
+		$this->assertStringNotContainsString( 'border-top-style', $output,
+			'A style the block does not store is not written' );
+	}
+
+	/**
+	 * A line style stored only at the tablet size is written for tablet even when the block stores no
+	 * width anywhere.
+	 *
+	 * @return void
+	 */
+	public function testRenderBorderStylesWritesTabletStyleWithoutWidth(): void {
+		$this->css->render_border_styles( [
+			'tabletBorderStyle' => [
+				[
+					'top'    => [ '', 'dashed', '' ],
+					'right'  => [ '', '', '' ],
+					'bottom' => [ '', '', '' ],
+					'left'   => [ '', '', '' ],
+					'unit'   => 'px',
+				],
+			],
+		], 'borderStyle', true );
+		$output = $this->css->css_output();
+
+		$this->assertStringContainsString( 'border-top-style:dashed', $output,
+			'A style stored at the tablet size is written with no width stored' );
+	}
+
+	/**
 	 * render_typography resolves aliased line-height and letter-spacing values to token
 	 * vars (no unit), and keeps numeric typography values byte-identical.
 	 *

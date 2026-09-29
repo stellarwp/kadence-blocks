@@ -2355,18 +2355,19 @@ class Kadence_Blocks_CSS {
 					$this->add_property( $property_prefix . $args[ $prop_key ], $width . ' ' . $style . ' ' . $color );
 				} elseif ( $single_styles && $color ) {
 					$this->add_property( $property_prefix . $args[ $prop_key ] . '-color', $color );
-					if ( $style ) {
+					// Only a style the block stores: the default `solid` would override a preset's own style.
+					if ( $style && $this->has_stored_border_style( $attributes, $args, $side, $size, true ) ) {
 						$this->add_property( $property_prefix . $args[ $prop_key ] . '-style', $style );
 					}
 				} elseif ( $single_styles && $style ) {
 					$desktop_width = $this->get_border_value( $attributes, $args, $side, 'desktop', 'width', $single_styles );
 					$tablet_width = $this->get_border_value( $attributes, $args, $side, 'tablet', 'width', $single_styles );
 
-					// A style the block stores itself has to go out even with no width and no color: the width comes from the preset, which knows nothing of the style picked here.
-					$stored_style = ! empty( $attributes[ $args['desktop_key'] ][0][ $side ][1] );
+					// A style the block stores at this breakpoint has to go out even with no width and no color: the width comes from the preset, which knows nothing of the style picked here.
+					$stored_style = $this->has_stored_border_style( $attributes, $args, $side, $size, false );
 
-					// Only need to output *just* the border-style if we're inheriting a width
-					if( ( 'desktop' === $size && $stored_style ) || ( $size === 'tablet' && !empty( $desktop_width ) ) || ( $size === 'mobile' && !empty( $desktop_width ) && !empty( $tablet_width ) ) ) {
+					// Otherwise only need to output *just* the border-style if we're inheriting a width
+					if( $stored_style || ( $size === 'tablet' && !empty( $desktop_width ) ) || ( $size === 'mobile' && !empty( $desktop_width ) && !empty( $tablet_width ) ) ) {
 						$this->add_property( $property_prefix . $args[ $prop_key ] . '-style', $style );
 					}
 				}
@@ -2375,6 +2376,45 @@ class Kadence_Blocks_CSS {
 
 		$this->set_media_state( 'desktop' );
 	}
+	/**
+	 * Whether the block stores a border line style for a side at a size.
+	 *
+	 * `get_border_value()` fills a missing style with `solid`, so it cannot tell a style the block
+	 * stores from that default.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $attributes    The block attributes.
+	 * @param array<string, mixed> $args          The border settings, holding the attribute key of each size.
+	 * @param string               $side          The side: top, right, bottom or left.
+	 * @param string               $size          The size: desktop, tablet or mobile.
+	 * @param bool                 $with_fallback Whether a style stored at a wider size counts.
+	 *
+	 * @return bool
+	 */
+	private function has_stored_border_style( $attributes, $args, $side, $size, $with_fallback ) {
+		$keys = array(
+			'desktop' => array( 'desktop_key' ),
+			'tablet'  => array( 'tablet_key', 'desktop_key' ),
+			'mobile'  => array( 'mobile_key', 'tablet_key', 'desktop_key' ),
+		);
+
+		$size_keys = $with_fallback ? $keys[ $size ] : array_slice( $keys[ $size ], 0, 1 );
+
+		foreach ( $size_keys as $size_key ) {
+			$attribute = $args[ $size_key ] ?? '';
+			$stored    = is_string( $attribute ) ? ( $attributes[ $attribute ] ?? null ) : null;
+			$border    = is_array( $stored ) ? ( $stored[0] ?? null ) : null;
+			$values    = is_array( $border ) ? ( $border[ $side ] ?? null ) : null;
+
+			if ( is_array( $values ) && ! empty( $values[1] ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	/**
 	 * Gets a border value for a side and size.
 	 * Checks for values in sizes above itself if the given size has none
