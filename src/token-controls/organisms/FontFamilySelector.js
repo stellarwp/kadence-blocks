@@ -31,7 +31,8 @@ import '../styles/token-controls.scss';
  * An unset family reads "Theme default", muted, rather than empty: a block with no family set still
  * renders in some face. That wording lives here, so every host says the same thing. A host whose preset
  * supplies a family passes it as `inheritedLabel`, and only then does the muted text name a family — the
- * same distinction `TokenSelector` draws between a value and its inherited default.
+ * same distinction `TokenSelector` draws between a value and its inherited default. A stored family equal
+ * to that inherited family reads muted too.
  *
  * @param {Object}   props
  * @param {string}   props.value            The current family, or `''` when unset.
@@ -108,6 +109,10 @@ export function FontFamilySelector({
 	const initialTab = favorites.length > 0 && (unset || isFavorite) && !stale ? 'favorites' : 'custom';
 
 	const fallback = inheritedLabel || __('Theme default', 'kadence-blocks');
+
+	// A stored family that is the one the preset supplies reads muted, like the unset field does: it
+	// matches what the block would show with nothing stored, so it is not a choice the user made.
+	const matchesInherited = !unset && sameFamily(family, inheritedLabel);
 	const triggerName = stale
 		? staleFamilyMessage()
 		: unset
@@ -163,7 +168,13 @@ export function FontFamilySelector({
 									{fallback}
 								</span>
 							) : (
-								<span className="kadence-token-field__label">{labelFor(family)}</span>
+								<span
+									className={`kadence-token-field__label${
+										matchesInherited ? ' kadence-token-field__label--default' : ''
+									}`}
+								>
+									{labelFor(family)}
+								</span>
 							)}
 						</Button>
 					</StaleTokenTooltip>

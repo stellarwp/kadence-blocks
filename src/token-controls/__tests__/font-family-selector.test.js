@@ -106,6 +106,34 @@ describe('FontFamilySelector trigger', () => {
 	});
 
 	/**
+	 * A stored family that is the one the preset supplies reads muted like the inherited default, since
+	 * it matches what the block would show unset. The comparison ignores case, like every other
+	 * family comparison here.
+	 *
+	 * @return {void}
+	 */
+	it('shows a family equal to the preset family muted', () => {
+		const trigger = renderSelector({ value: 'anton', inheritedLabel: 'Anton' });
+		const label = trigger.querySelector('.kadence-token-field__label');
+
+		expect(label.textContent).toBe('anton');
+		expect(label.className).toContain('kadence-token-field__label--default');
+	});
+
+	/**
+	 * A family that differs from the preset's stays in full color.
+	 *
+	 * @return {void}
+	 */
+	it('keeps a family that differs from the preset family in full color', () => {
+		const trigger = renderSelector({ value: 'Abril Fatface', inheritedLabel: 'Anton' });
+
+		expect(trigger.querySelector('.kadence-token-field__label').className).not.toContain(
+			'kadence-token-field__label--default'
+		);
+	});
+
+	/**
 	 * An unset family shows what it falls back to, muted — a block with no family set still renders
 	 * in some face, and naming it keeps "what this block sets" and "what it inherits" apart.
 	 *
