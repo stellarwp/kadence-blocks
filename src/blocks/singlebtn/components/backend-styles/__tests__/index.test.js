@@ -763,6 +763,30 @@ describe('BackendStyles hover border without a stored width', () => {
 	});
 
 	/**
+	 * The resting border follows the same split: a stored color and line style with no width go out on
+	 * their own, so a preset width does not paint a border with no line style.
+	 *
+	 * @return {void}
+	 */
+	it('emits the resting border color and style separately when no width is stored', () => {
+		getBorderColor.mockReturnValue('#00ff00');
+
+		BackendStyles({
+			attributes: { uniqueID: 'abc123', borderStyle: hoverBorderWithoutWidth('#00ff00', 'solid') },
+			previewDevice: 'Desktop',
+		});
+
+		const props = fakeCss.rules.find(
+			(entry) => entry.selector === '.kb-single-btn-abc123 .kt-button-abc123'
+		)?.props;
+
+		SIDES.forEach((side) => {
+			expect(props[`border-${side}-color`]).toBe('#00ff00');
+			expect(props[`border-${side}-style`]).toBe('solid');
+		});
+	});
+
+	/**
 	 * A button with no hover border at all emits no hover border declarations.
 	 *
 	 * @return {void}

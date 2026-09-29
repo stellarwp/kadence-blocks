@@ -22,24 +22,60 @@ import { boundShadowToken } from '../../../../extension/design-tokens/shadow-tok
 import { shadowCss } from '../../../../extension/design-tokens/shadow-css';
 
 /**
- * The line style (`solid`, `dashed`, ...) a hover border side carries at a device, or '' when none is set.
+ * The line style (`solid`, `dashed`, ...) a border side carries at a device, or '' when none is set.
  *
- * A hover border stored without a width has no shorthand to write, because the width comes from the
- * active preset. The style still has to reach the button on its own, or the preset's width paints a
- * border with no line style. Falls back through the wider devices like the other border helpers.
+ * Falls back through the wider devices like the other border helpers.
  *
  * @param {string}   device The preview device: 'Desktop', 'Tablet' or 'Mobile'.
  * @param {string}   side   The border side: 'top', 'right', 'bottom' or 'left'.
- * @param {Object[]} values The desktop, tablet and mobile hover border attributes, in that order.
+ * @param {Object[]} values The desktop, tablet and mobile border attributes, in that order.
  *
  * @since TBD
  *
  * @return {string} The line style, or ''.
  */
-function hoverBorderLineStyle(device, side, [desktop, tablet, mobile]) {
+function borderLineStyle(device, side, [desktop, tablet, mobile]) {
 	const chain = 'Mobile' === device ? [mobile, tablet, desktop] : 'Tablet' === device ? [tablet, desktop] : [desktop];
 
 	return chain.map((value) => value?.[0]?.[side]?.[1]).find((style) => style) || '';
+}
+
+/**
+ * Writes one border declaration per side into the rule being built.
+ *
+ * A side with a width carries the whole `width style color` shorthand. A side stored without a width
+ * has no shorthand to write, because the width comes from the active preset, so its color and line
+ * style go out on their own instead. Without them the preset's width paints a border with no line
+ * style. This is the front end's own split.
+ *
+ * @param {Object}   css     The CSS builder, with its selector already set.
+ * @param {string}   device  The preview device: 'Desktop', 'Tablet' or 'Mobile'.
+ * @param {Object[]} values  The desktop, tablet and mobile border attributes, in that order.
+ * @param {Object}   sides   Each side mapped to its `[shorthand, color]` pair.
+ *
+ * @since TBD
+ *
+ * @return {void}
+ */
+function addBorderSides(css, device, values, sides) {
+	Object.entries(sides).forEach(([side, [shorthand, color]]) => {
+		const property = `border-${side}`;
+
+		if (shorthand) {
+			css.add_property(property, shorthand);
+			return;
+		}
+
+		if (color) {
+			css.add_property(`${property}-color`, color);
+		}
+
+		const lineStyle = borderLineStyle(device, side, values);
+
+		if (lineStyle) {
+			css.add_property(`${property}-style`, lineStyle);
+		}
+	});
 }
 
 /**
@@ -968,18 +1004,12 @@ export default function BackendStyles(props) {
 		css.add_property('border-color', 'var(--kb-btn-border-color)');
 	}
 
-	if (previewBorderTopStyle) {
-		css.add_property('border-top', previewBorderTopStyle);
-	}
-	if (previewBorderRightStyle) {
-		css.add_property('border-right', previewBorderRightStyle);
-	}
-	if (previewBorderLeftStyle) {
-		css.add_property('border-left', previewBorderLeftStyle);
-	}
-	if (previewBorderBottomStyle) {
-		css.add_property('border-bottom', previewBorderBottomStyle);
-	}
+	addBorderSides(css, previewDevice, [borderStyle, tabletBorderStyle, mobileBorderStyle], {
+		top: [previewBorderTopStyle, previewBorderTopColor],
+		right: [previewBorderRightStyle, previewBorderRightColor],
+		left: [previewBorderLeftStyle, previewBorderLeftColor],
+		bottom: [previewBorderBottomStyle, previewBorderBottomColor],
+	});
 	// `render_measure_output` rather than four manual `render_size` calls: a corner can now be a
 	// design-token alias (the box control's token-pick path), and `render_size` only knows how to
 	// concatenate a number with a unit — it would emit `{alias}px`, invalid CSS, for a picked corner.
@@ -1053,27 +1083,11 @@ export default function BackendStyles(props) {
 
 	//hover styles
 	css.set_selector(`.kb-single-btn-${uniqueID} .kt-button-${uniqueID}${weight}:hover`);
-	[
-		['top', 'border-top', previewBorderHoverTopStyle, previewBorderHoverTopColor],
-		['right', 'border-right', previewBorderHoverRightStyle, previewBorderHoverRightColor],
-		['left', 'border-left', previewBorderHoverLeftStyle, previewBorderHoverLeftColor],
-		['bottom', 'border-bottom', previewBorderHoverBottomStyle, previewBorderHoverBottomColor],
-	].forEach(([side, property, shorthand, color]) => {
-		if (shorthand) {
-			css.add_property(property, shorthand);
-			return;
-		}
-		if (color) {
-			css.add_property(`${property}-color`, color);
-		}
-		const lineStyle = hoverBorderLineStyle(previewDevice, side, [
-			borderHoverStyle,
-			tabletBorderHoverStyle,
-			mobileBorderHoverStyle,
-		]);
-		if (lineStyle) {
-			css.add_property(`${property}-style`, lineStyle);
-		}
+	addBorderSides(css, previewDevice, [borderHoverStyle, tabletBorderHoverStyle, mobileBorderHoverStyle], {
+		top: [previewBorderHoverTopStyle, previewBorderHoverTopColor],
+		right: [previewBorderHoverRightStyle, previewBorderHoverRightColor],
+		left: [previewBorderHoverLeftStyle, previewBorderHoverLeftColor],
+		bottom: [previewBorderHoverBottomStyle, previewBorderHoverBottomColor],
 	});
 	if ('' !== previewHoverRadiusTop) {
 		css.add_property(
