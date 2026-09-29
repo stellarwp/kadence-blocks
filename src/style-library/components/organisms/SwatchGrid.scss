@@ -27,3 +27,9 @@
 	flex-wrap: wrap;
 	gap: var(--kb-sl-space-15);
 }
+
+.kadence-blocks-style-library__swatch-group-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, 8rem);
+	gap: 0.75rem;
+}

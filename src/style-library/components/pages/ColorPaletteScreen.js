@@ -10,9 +10,9 @@
  * WordPress dependencies
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from '@wordpress/element';
-import { Button, DropdownMenu, MenuGroup, MenuItem, Notice } from '@wordpress/components';
+import { Button, Notice } from '@wordpress/components';
 import { __, sprintf } from '@wordpress/i18n';
-import { moreVertical, plus } from '@wordpress/icons';
+import { plus } from '@wordpress/icons';
 
 /**
  * Internal dependencies
@@ -29,7 +29,9 @@ import { Skeleton } from '../atoms/Skeleton';
 import { PaletteActions } from '../organisms/PaletteActions';
 import { CreatePaletteModal } from '../organisms/CreatePaletteModal';
 import { AddColorGroupModal } from '../organisms/AddColorGroupModal';
-import { RenameColorGroupModal } from '../organisms/RenameColorGroupModal';
+import { ActionsForm } from '../organisms/ActionsForm';
+import { ActionsPopover } from '../organisms/ActionsPopover';
+import { checkRename } from '../../helpers/rename';
 import { DeleteColorGroupModal } from '../organisms/DeleteColorGroupModal';
 import { usePalettes } from '../../hooks/use-palettes';
 import { useLoadingAnnouncement } from '../../hooks/use-loading-announcement';
@@ -80,7 +82,7 @@ function SwatchGridSkeleton({ label }) {
 				 * whatever its text measures — so this bar's width is a plain literal, not a reused
 				 * layout value. */}
 				<Skeleton className="kadence-blocks-style-library__skeleton--bar" style={{ width: '8rem' }} />
-				<div className="kadence-blocks-style-library__swatch-group-row">
+				<div className="kadence-blocks-style-library__swatch-group-grid">
 					{SKELETON_SWATCH_IDS.map((id) => (
 						<div key={id} className="kadence-blocks-style-library__swatch-card">
 							<div className="kadence-blocks-style-library__swatch-card-main">
@@ -91,10 +93,12 @@ function SwatchGridSkeleton({ label }) {
 									 * `align-items: flex-start` parent (`.swatch-card-select`) collapses an unsized
 									 * block to 0 width without one. Same fix as the group heading bar above: pin a
 									 * plausible literal width. */}
-									<Skeleton
-										className="kadence-blocks-style-library__swatch-card-name kadence-blocks-style-library__skeleton--bar"
-										style={{ width: '70%' }}
-									/>
+									<span className="kadence-blocks-style-library__swatch-card-details">
+										<Skeleton
+											className="kadence-blocks-style-library__swatch-card-name kadence-blocks-style-library__skeleton--bar"
+											style={{ width: '70%' }}
+										/>
+									</span>
 								</div>
 							</div>
 						</div>
@@ -160,8 +164,8 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 	const [isAddGroupOpen, setIsAddGroupOpen] = useState(false);
 	// Carries the whole mapped group entry (`{ id, label, items }`), not just an id, so the modals
 	// can seed the label and count the swatches without a second lookup.
-	const [renameGroupTarget, setRenameGroupTarget] = useState(null);
 	const [deleteGroupTarget, setDeleteGroupTarget] = useState(null);
+	const [isGroupPopoverOpen, setIsGroupPopoverOpen] = useState(false);
 
 	const editingRow = palettes.listing.palettes.find((row) => row.id === palettes.editingId);
 	const isEditingUserCreated = isUserCreatedPalette(palettes.listing, palettes.editingId);
@@ -392,7 +396,7 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 					 * every one of those flows shares this same `structureError` slot (per the settled
 					 * six-slot design) and shows it inline instead, so surfacing it here too would
 					 * render the same message twice. */}
-					{!isAddGroupOpen && !renameGroupTarget && !deleteGroupTarget && palettes.structureError && (
+					{!isAddGroupOpen && !deleteGroupTarget && !isGroupPopoverOpen && palettes.structureError && (
 						<Notice status="error" onRemove={palettes.clearStructureError}>
 							{palettes.structureError.message}
 						</Notice>
@@ -422,46 +426,47 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 						addLabel={__('Add color', 'kadence-blocks')}
 						addingGroupIds={palettes.addingGroupIds}
 						groupActions={(group) => (
-							<DropdownMenu
-								icon={moreVertical}
+							<ActionsPopover
 								label={sprintf(
 									// translators: %s: the color group name.
-									__('Options for %s', 'kadence-blocks'),
+									__('Edit %s', 'kadence-blocks'),
 									group.label
 								)}
-								popoverProps={{ placement: 'bottom-end' }}
-								toggleProps={{ size: 'small' }}
+								isBusy={palettes.isBusy}
+								onClose={palettes.clearStructureError}
+								onToggle={setIsGroupPopoverOpen}
 							>
-								{({ onClose }) => (
-									<MenuGroup>
-										<MenuItem
-											onClick={() => {
-												setRenameGroupTarget(group);
-												onClose();
-											}}
-										>
-											{__('Rename', 'kadence-blocks')}
-										</MenuItem>
-										{/* Absence, not a disabled item, in both cases — this screen's ethos
-										 * throughout is to hide an affordance it cannot honor rather than disable
-										 * it. Only one group left: the server rejects an empty `groups` array
-										 * (`guard_palette_shape()`). A baseline group: the server refuses to drop
-										 * a shipped swatch from the default palette (`guard_baseline_swatches()`),
-										 * and removing the group would do exactly that. */}
-										{gridGroups.length > 1 && !isBaselineGroup(palettes.palette, group.id) && (
-											<MenuItem
-												isDestructive
-												onClick={() => {
-													setDeleteGroupTarget(group);
-													onClose();
-												}}
-											>
-												{__('Delete', 'kadence-blocks')}
-											</MenuItem>
-										)}
-									</MenuGroup>
+								{({ close }) => (
+									<ActionsForm
+										title={__('Color group', 'kadence-blocks')}
+										nameLabel={__('Name', 'kadence-blocks')}
+										currentName={group.label}
+										checkName={(typed) => checkRename(typed, group.label, () => false)}
+										duplicateMessage={() => ''}
+										// Hidden, not disabled: the server rejects an empty `groups` array
+										// (`guard_palette_shape()`) and dropping a baseline group's swatches
+										// (`guard_baseline_swatches()`).
+										destructiveLabel={
+											gridGroups.length > 1 && !isBaselineGroup(palettes.palette, group.id)
+												? __('Delete', 'kadence-blocks')
+												: undefined
+										}
+										isBusy={palettes.isBusy}
+										error={palettes.structureError}
+										onSave={(label) =>
+											palettes
+												.renameGroup(group.id, label)
+												.then(close)
+												.catch(() => {})
+										}
+										onCancel={close}
+										onDelete={() => {
+											close();
+											setDeleteGroupTarget(group);
+										}}
+									/>
 								)}
-							</DropdownMenu>
+							</ActionsPopover>
 						)}
 					/>
 				</>
@@ -510,28 +515,6 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 							// `AddColorGroupModal` disables its own Add button for both cases before `onAdd`
 							// can fire. A real write failure is already surfaced via Snackbar inside
 							// `addGroup`.
-							.catch(() => {})
-					}
-				/>
-			)}
-			{renameGroupTarget && (
-				<RenameColorGroupModal
-					group={renameGroupTarget}
-					isBusy={palettes.isBusy}
-					error={palettes.structureError}
-					onClose={() => {
-						setRenameGroupTarget(null);
-						palettes.clearStructureError();
-					}}
-					onRename={(label) =>
-						palettes
-							.renameGroup(renameGroupTarget.id, label)
-							.then(() => {
-								setRenameGroupTarget(null);
-								palettes.clearStructureError();
-							})
-							// Swallowed: a request failure already lands in `structureError`, rendered
-							// inline — the modal stays open on it.
 							.catch(() => {})
 					}
 				/>
