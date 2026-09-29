@@ -112,6 +112,28 @@ describe('SettingsPopover', () => {
 	});
 
 	/**
+	 * The anchor element is scrolled into view when it becomes the anchor, so a newly added item
+	 * below the fold is visible.
+	 *
+	 * @return {void}
+	 */
+	it('scrolls the anchor element into view when it becomes the anchor', () => {
+		const scrollIntoView = jest.fn();
+		const original = window.HTMLElement.prototype.scrollIntoView;
+		window.HTMLElement.prototype.scrollIntoView = scrollIntoView;
+
+		try {
+			renderPopover();
+		} finally {
+			window.HTMLElement.prototype.scrollIntoView = original;
+		}
+
+		expect(scrollIntoView).toHaveBeenCalledTimes(1);
+		expect(scrollIntoView.mock.instances[0]).toBe(container.querySelector('[data-card="a"]'));
+		expect(scrollIntoView).toHaveBeenCalledWith(expect.objectContaining({ block: 'nearest' }));
+	});
+
+	/**
 	 * Escape (the popover's own close) calls the given close handler.
 	 *
 	 * @return {void}
