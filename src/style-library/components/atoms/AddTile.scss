@@ -12,6 +12,11 @@
 	font-weight: var(--kb-sl-font-weight-medium);
 	line-height: var(--kb-sl-line-height-s);
 	cursor: pointer;
+
+	&:hover,
+	&:focus-visible {
+		background: #f7fafc;
+	}
 }
 
 .kadence-blocks-style-library__add-tile-content {
