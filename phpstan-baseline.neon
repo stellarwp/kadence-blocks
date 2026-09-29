@@ -42,7 +42,7 @@ parameters:
 
 		-
 			message: "#^Call to function is_array\\(\\) with string will always evaluate to false\\.$#"
-			count: 1
+			count: 2
 			path: includes/advanced-form/advanced-form-ajax.php
 
 		-
@@ -1626,16 +1626,6 @@ parameters:
 			path: includes/blocks/class-kadence-blocks-advanced-heading-block.php
 
 		-
-			message: "#^Method Kadence_Blocks_Advancedheading_Block\\:\\:build_html\\(\\) has parameter \\$content with no type specified\\.$#"
-			count: 1
-			path: includes/blocks/class-kadence-blocks-advanced-heading-block.php
-
-		-
-			message: "#^Method Kadence_Blocks_Advancedheading_Block\\:\\:build_html\\(\\) has parameter \\$unique_id with no type specified\\.$#"
-			count: 1
-			path: includes/blocks/class-kadence-blocks-advanced-heading-block.php
-
-		-
 			message: "#^Method Kadence_Blocks_Advancedheading_Block\\:\\:get_cascading_value\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: includes/blocks/class-kadence-blocks-advanced-heading-block.php
@@ -2846,11 +2836,6 @@ parameters:
 			path: includes/blocks/class-kadence-blocks-identity-block.php
 
 		-
-			message: "#^Parameter \\#3 \\$subject of function preg_replace expects array\\|string, string\\|null given\\.$#"
-			count: 6
-			path: includes/blocks/class-kadence-blocks-identity-block.php
-
-		-
 			message: "#^Property Kadence_Blocks_Identity_Block\\:\\:\\$has_script \\(string\\) does not accept default value of type false\\.$#"
 			count: 1
 			path: includes/blocks/class-kadence-blocks-identity-block.php
@@ -3496,17 +3481,7 @@ parameters:
 			path: includes/blocks/class-kadence-blocks-navigation-link-block.php
 
 		-
-			message: "#^Method Kadence_Blocks_Navigation_Link_Block\\:\\:build_html\\(\\) has parameter \\$attributes with no type specified\\.$#"
-			count: 1
-			path: includes/blocks/class-kadence-blocks-navigation-link-block.php
-
-		-
-			message: "#^Method Kadence_Blocks_Navigation_Link_Block\\:\\:build_html\\(\\) has parameter \\$content with no type specified\\.$#"
-			count: 1
-			path: includes/blocks/class-kadence-blocks-navigation-link-block.php
-
-		-
-			message: "#^Method Kadence_Blocks_Navigation_Link_Block\\:\\:build_html\\(\\) has parameter \\$unique_id with no type specified\\.$#"
+			message: "#^Method Kadence_Blocks_Navigation_Link_Block\\:\\:build_html\\(\\) has parameter \\$attributes with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: includes/blocks/class-kadence-blocks-navigation-link-block.php
 
@@ -4177,11 +4152,6 @@ parameters:
 
 		-
 			message: "#^Method Kadence_Blocks_Show_More_Block\\:\\:build_html\\(\\) has parameter \\$attributes with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: includes/blocks/class-kadence-blocks-show-more-block.php
-
-		-
-			message: "#^Method Kadence_Blocks_Show_More_Block\\:\\:build_html\\(\\) should return string but returns string\\|null\\.$#"
 			count: 1
 			path: includes/blocks/class-kadence-blocks-show-more-block.php
 
@@ -5306,18 +5276,8 @@ parameters:
 			path: includes/blocks/form/class-kadence-blocks-accept-block.php
 
 		-
-			message: "#^Result of method Kadence_Blocks_Advanced_Form_Input_Block\\:\\:field_id\\(\\) \\(void\\) is used\\.$#"
-			count: 2
-			path: includes/blocks/form/class-kadence-blocks-accept-block.php
-
-		-
 			message: "#^Result of method Kadence_Blocks_Advanced_Form_Input_Block\\:\\:field_legend\\(\\) \\(void\\) is used\\.$#"
 			count: 1
-			path: includes/blocks/form/class-kadence-blocks-accept-block.php
-
-		-
-			message: "#^Result of method Kadence_Blocks_Advanced_Form_Input_Block\\:\\:field_name\\(\\) \\(void\\) is used\\.$#"
-			count: 2
 			path: includes/blocks/form/class-kadence-blocks-accept-block.php
 
 		-
@@ -5391,16 +5351,6 @@ parameters:
 			path: includes/blocks/form/class-kadence-blocks-advanced-form-input-block.php
 
 		-
-			message: "#^Method Kadence_Blocks_Advanced_Form_Input_Block\\:\\:field_id\\(\\) has parameter \\$attributes with no type specified\\.$#"
-			count: 1
-			path: includes/blocks/form/class-kadence-blocks-advanced-form-input-block.php
-
-		-
-			message: "#^Method Kadence_Blocks_Advanced_Form_Input_Block\\:\\:field_id\\(\\) with return type void returns mixed but should not return anything\\.$#"
-			count: 1
-			path: includes/blocks/form/class-kadence-blocks-advanced-form-input-block.php
-
-		-
 			message: "#^Method Kadence_Blocks_Advanced_Form_Input_Block\\:\\:field_label\\(\\) has parameter \\$attributes with no type specified\\.$#"
 			count: 1
 			path: includes/blocks/form/class-kadence-blocks-advanced-form-input-block.php
@@ -5417,16 +5367,6 @@ parameters:
 
 		-
 			message: "#^Method Kadence_Blocks_Advanced_Form_Input_Block\\:\\:field_legend\\(\\) with return type void returns string but should not return anything\\.$#"
-			count: 1
-			path: includes/blocks/form/class-kadence-blocks-advanced-form-input-block.php
-
-		-
-			message: "#^Method Kadence_Blocks_Advanced_Form_Input_Block\\:\\:field_name\\(\\) has parameter \\$attributes with no type specified\\.$#"
-			count: 1
-			path: includes/blocks/form/class-kadence-blocks-advanced-form-input-block.php
-
-		-
-			message: "#^Method Kadence_Blocks_Advanced_Form_Input_Block\\:\\:field_name\\(\\) with return type void returns mixed but should not return anything\\.$#"
 			count: 1
 			path: includes/blocks/form/class-kadence-blocks-advanced-form-input-block.php
 
@@ -5491,22 +5431,12 @@ parameters:
 			path: includes/blocks/form/class-kadence-blocks-advanced-form-input-block.php
 
 		-
-			message: "#^Parameter \\#1 \\$text of function esc_attr expects string, null given\\.$#"
-			count: 1
-			path: includes/blocks/form/class-kadence-blocks-advanced-form-input-block.php
-
-		-
 			message: "#^Property Kadence_Blocks_Advanced_Form_Input_Block\\:\\:\\$has_script \\(string\\) does not accept default value of type false\\.$#"
 			count: 1
 			path: includes/blocks/form/class-kadence-blocks-advanced-form-input-block.php
 
 		-
 			message: "#^Property Kadence_Blocks_Advanced_Form_Input_Block\\:\\:\\$has_style \\(string\\) does not accept default value of type false\\.$#"
-			count: 1
-			path: includes/blocks/form/class-kadence-blocks-advanced-form-input-block.php
-
-		-
-			message: "#^Result of method Kadence_Blocks_Advanced_Form_Input_Block\\:\\:field_id\\(\\) \\(void\\) is used\\.$#"
 			count: 1
 			path: includes/blocks/form/class-kadence-blocks-advanced-form-input-block.php
 
@@ -5706,11 +5636,6 @@ parameters:
 			path: includes/blocks/form/class-kadence-blocks-checkbox-block.php
 
 		-
-			message: "#^Parameter \\#1 \\$text of function esc_attr expects string, null given\\.$#"
-			count: 2
-			path: includes/blocks/form/class-kadence-blocks-checkbox-block.php
-
-		-
 			message: "#^Result of method Kadence_Blocks_Advanced_Form_Input_Block\\:\\:class_id\\(\\) \\(void\\) is used\\.$#"
 			count: 2
 			path: includes/blocks/form/class-kadence-blocks-checkbox-block.php
@@ -5728,11 +5653,6 @@ parameters:
 		-
 			message: "#^Result of method Kadence_Blocks_Advanced_Form_Input_Block\\:\\:field_legend\\(\\) \\(void\\) is used\\.$#"
 			count: 1
-			path: includes/blocks/form/class-kadence-blocks-checkbox-block.php
-
-		-
-			message: "#^Result of method Kadence_Blocks_Advanced_Form_Input_Block\\:\\:field_name\\(\\) \\(void\\) is used\\.$#"
-			count: 2
 			path: includes/blocks/form/class-kadence-blocks-checkbox-block.php
 
 		-
@@ -5796,11 +5716,6 @@ parameters:
 			path: includes/blocks/form/class-kadence-blocks-date-input-block.php
 
 		-
-			message: "#^Parameter \\#1 \\$text of function esc_attr expects string, null given\\.$#"
-			count: 2
-			path: includes/blocks/form/class-kadence-blocks-date-input-block.php
-
-		-
 			message: "#^Parameter \\#1 \\$text of function esc_attr expects string, string\\|false given\\.$#"
 			count: 1
 			path: includes/blocks/form/class-kadence-blocks-date-input-block.php
@@ -5816,17 +5731,7 @@ parameters:
 			path: includes/blocks/form/class-kadence-blocks-date-input-block.php
 
 		-
-			message: "#^Result of method Kadence_Blocks_Advanced_Form_Input_Block\\:\\:field_id\\(\\) \\(void\\) is used\\.$#"
-			count: 1
-			path: includes/blocks/form/class-kadence-blocks-date-input-block.php
-
-		-
 			message: "#^Result of method Kadence_Blocks_Advanced_Form_Input_Block\\:\\:field_label\\(\\) \\(void\\) is used\\.$#"
-			count: 1
-			path: includes/blocks/form/class-kadence-blocks-date-input-block.php
-
-		-
-			message: "#^Result of method Kadence_Blocks_Advanced_Form_Input_Block\\:\\:field_name\\(\\) \\(void\\) is used\\.$#"
 			count: 1
 			path: includes/blocks/form/class-kadence-blocks-date-input-block.php
 
@@ -5886,11 +5791,6 @@ parameters:
 			path: includes/blocks/form/class-kadence-blocks-email-input-block.php
 
 		-
-			message: "#^Parameter \\#1 \\$text of function esc_attr expects string, null given\\.$#"
-			count: 2
-			path: includes/blocks/form/class-kadence-blocks-email-input-block.php
-
-		-
 			message: "#^Result of method Kadence_Blocks_Advanced_Form_Input_Block\\:\\:class_id\\(\\) \\(void\\) is used\\.$#"
 			count: 2
 			path: includes/blocks/form/class-kadence-blocks-email-input-block.php
@@ -5901,17 +5801,7 @@ parameters:
 			path: includes/blocks/form/class-kadence-blocks-email-input-block.php
 
 		-
-			message: "#^Result of method Kadence_Blocks_Advanced_Form_Input_Block\\:\\:field_id\\(\\) \\(void\\) is used\\.$#"
-			count: 1
-			path: includes/blocks/form/class-kadence-blocks-email-input-block.php
-
-		-
 			message: "#^Result of method Kadence_Blocks_Advanced_Form_Input_Block\\:\\:field_label\\(\\) \\(void\\) is used\\.$#"
-			count: 1
-			path: includes/blocks/form/class-kadence-blocks-email-input-block.php
-
-		-
-			message: "#^Result of method Kadence_Blocks_Advanced_Form_Input_Block\\:\\:field_name\\(\\) \\(void\\) is used\\.$#"
 			count: 1
 			path: includes/blocks/form/class-kadence-blocks-email-input-block.php
 
@@ -5971,11 +5861,6 @@ parameters:
 			path: includes/blocks/form/class-kadence-blocks-file-block.php
 
 		-
-			message: "#^Parameter \\#1 \\$text of function esc_attr expects string, null given\\.$#"
-			count: 2
-			path: includes/blocks/form/class-kadence-blocks-file-block.php
-
-		-
 			message: "#^Result of method Kadence_Blocks_Advanced_Form_Input_Block\\:\\:class_id\\(\\) \\(void\\) is used\\.$#"
 			count: 2
 			path: includes/blocks/form/class-kadence-blocks-file-block.php
@@ -5986,17 +5871,7 @@ parameters:
 			path: includes/blocks/form/class-kadence-blocks-file-block.php
 
 		-
-			message: "#^Result of method Kadence_Blocks_Advanced_Form_Input_Block\\:\\:field_id\\(\\) \\(void\\) is used\\.$#"
-			count: 1
-			path: includes/blocks/form/class-kadence-blocks-file-block.php
-
-		-
 			message: "#^Result of method Kadence_Blocks_Advanced_Form_Input_Block\\:\\:field_label\\(\\) \\(void\\) is used\\.$#"
-			count: 1
-			path: includes/blocks/form/class-kadence-blocks-file-block.php
-
-		-
-			message: "#^Result of method Kadence_Blocks_Advanced_Form_Input_Block\\:\\:field_name\\(\\) \\(void\\) is used\\.$#"
 			count: 1
 			path: includes/blocks/form/class-kadence-blocks-file-block.php
 
@@ -6022,21 +5897,6 @@ parameters:
 
 		-
 			message: "#^Method Kadence_Blocks_Hidden_Input_Block\\:\\:get_instance\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: includes/blocks/form/class-kadence-blocks-hidden-input-block.php
-
-		-
-			message: "#^Parameter \\#1 \\$text of function esc_attr expects string, null given\\.$#"
-			count: 2
-			path: includes/blocks/form/class-kadence-blocks-hidden-input-block.php
-
-		-
-			message: "#^Result of method Kadence_Blocks_Advanced_Form_Input_Block\\:\\:field_id\\(\\) \\(void\\) is used\\.$#"
-			count: 1
-			path: includes/blocks/form/class-kadence-blocks-hidden-input-block.php
-
-		-
-			message: "#^Result of method Kadence_Blocks_Advanced_Form_Input_Block\\:\\:field_name\\(\\) \\(void\\) is used\\.$#"
 			count: 1
 			path: includes/blocks/form/class-kadence-blocks-hidden-input-block.php
 
@@ -6096,11 +5956,6 @@ parameters:
 			path: includes/blocks/form/class-kadence-blocks-number-input-block.php
 
 		-
-			message: "#^Parameter \\#1 \\$text of function esc_attr expects string, null given\\.$#"
-			count: 2
-			path: includes/blocks/form/class-kadence-blocks-number-input-block.php
-
-		-
 			message: "#^Result of method Kadence_Blocks_Advanced_Form_Input_Block\\:\\:class_id\\(\\) \\(void\\) is used\\.$#"
 			count: 2
 			path: includes/blocks/form/class-kadence-blocks-number-input-block.php
@@ -6111,17 +5966,7 @@ parameters:
 			path: includes/blocks/form/class-kadence-blocks-number-input-block.php
 
 		-
-			message: "#^Result of method Kadence_Blocks_Advanced_Form_Input_Block\\:\\:field_id\\(\\) \\(void\\) is used\\.$#"
-			count: 1
-			path: includes/blocks/form/class-kadence-blocks-number-input-block.php
-
-		-
 			message: "#^Result of method Kadence_Blocks_Advanced_Form_Input_Block\\:\\:field_label\\(\\) \\(void\\) is used\\.$#"
-			count: 1
-			path: includes/blocks/form/class-kadence-blocks-number-input-block.php
-
-		-
-			message: "#^Result of method Kadence_Blocks_Advanced_Form_Input_Block\\:\\:field_name\\(\\) \\(void\\) is used\\.$#"
 			count: 1
 			path: includes/blocks/form/class-kadence-blocks-number-input-block.php
 
@@ -6181,11 +6026,6 @@ parameters:
 			path: includes/blocks/form/class-kadence-blocks-radio-block.php
 
 		-
-			message: "#^Parameter \\#1 \\$text of function esc_attr expects string, null given\\.$#"
-			count: 2
-			path: includes/blocks/form/class-kadence-blocks-radio-block.php
-
-		-
 			message: "#^Result of method Kadence_Blocks_Advanced_Form_Input_Block\\:\\:class_id\\(\\) \\(void\\) is used\\.$#"
 			count: 2
 			path: includes/blocks/form/class-kadence-blocks-radio-block.php
@@ -6203,11 +6043,6 @@ parameters:
 		-
 			message: "#^Result of method Kadence_Blocks_Advanced_Form_Input_Block\\:\\:field_legend\\(\\) \\(void\\) is used\\.$#"
 			count: 1
-			path: includes/blocks/form/class-kadence-blocks-radio-block.php
-
-		-
-			message: "#^Result of method Kadence_Blocks_Advanced_Form_Input_Block\\:\\:field_name\\(\\) \\(void\\) is used\\.$#"
-			count: 2
 			path: includes/blocks/form/class-kadence-blocks-radio-block.php
 
 		-
@@ -6271,16 +6106,6 @@ parameters:
 			path: includes/blocks/form/class-kadence-blocks-select-block.php
 
 		-
-			message: "#^Parameter \\#1 \\$text of function esc_attr expects string, null given\\.$#"
-			count: 1
-			path: includes/blocks/form/class-kadence-blocks-select-block.php
-
-		-
-			message: "#^Parameter \\#1 \\$text of function esc_attr expects string, string\\|null given\\.$#"
-			count: 1
-			path: includes/blocks/form/class-kadence-blocks-select-block.php
-
-		-
 			message: "#^Result of method Kadence_Blocks_Advanced_Form_Input_Block\\:\\:class_id\\(\\) \\(void\\) is used\\.$#"
 			count: 2
 			path: includes/blocks/form/class-kadence-blocks-select-block.php
@@ -6291,18 +6116,8 @@ parameters:
 			path: includes/blocks/form/class-kadence-blocks-select-block.php
 
 		-
-			message: "#^Result of method Kadence_Blocks_Advanced_Form_Input_Block\\:\\:field_id\\(\\) \\(void\\) is used\\.$#"
-			count: 1
-			path: includes/blocks/form/class-kadence-blocks-select-block.php
-
-		-
 			message: "#^Result of method Kadence_Blocks_Advanced_Form_Input_Block\\:\\:field_label\\(\\) \\(void\\) is used\\.$#"
 			count: 1
-			path: includes/blocks/form/class-kadence-blocks-select-block.php
-
-		-
-			message: "#^Result of method Kadence_Blocks_Advanced_Form_Input_Block\\:\\:field_name\\(\\) \\(void\\) is used\\.$#"
-			count: 2
 			path: includes/blocks/form/class-kadence-blocks-select-block.php
 
 		-
@@ -6446,11 +6261,6 @@ parameters:
 			path: includes/blocks/form/class-kadence-blocks-telephone-input-block.php
 
 		-
-			message: "#^Parameter \\#1 \\$text of function esc_attr expects string, null given\\.$#"
-			count: 2
-			path: includes/blocks/form/class-kadence-blocks-telephone-input-block.php
-
-		-
 			message: "#^Result of method Kadence_Blocks_Advanced_Form_Input_Block\\:\\:class_id\\(\\) \\(void\\) is used\\.$#"
 			count: 2
 			path: includes/blocks/form/class-kadence-blocks-telephone-input-block.php
@@ -6461,17 +6271,7 @@ parameters:
 			path: includes/blocks/form/class-kadence-blocks-telephone-input-block.php
 
 		-
-			message: "#^Result of method Kadence_Blocks_Advanced_Form_Input_Block\\:\\:field_id\\(\\) \\(void\\) is used\\.$#"
-			count: 1
-			path: includes/blocks/form/class-kadence-blocks-telephone-input-block.php
-
-		-
 			message: "#^Result of method Kadence_Blocks_Advanced_Form_Input_Block\\:\\:field_label\\(\\) \\(void\\) is used\\.$#"
-			count: 1
-			path: includes/blocks/form/class-kadence-blocks-telephone-input-block.php
-
-		-
-			message: "#^Result of method Kadence_Blocks_Advanced_Form_Input_Block\\:\\:field_name\\(\\) \\(void\\) is used\\.$#"
 			count: 1
 			path: includes/blocks/form/class-kadence-blocks-telephone-input-block.php
 
@@ -6531,11 +6331,6 @@ parameters:
 			path: includes/blocks/form/class-kadence-blocks-text-input-block.php
 
 		-
-			message: "#^Parameter \\#1 \\$text of function esc_attr expects string, null given\\.$#"
-			count: 2
-			path: includes/blocks/form/class-kadence-blocks-text-input-block.php
-
-		-
 			message: "#^Result of method Kadence_Blocks_Advanced_Form_Input_Block\\:\\:class_id\\(\\) \\(void\\) is used\\.$#"
 			count: 2
 			path: includes/blocks/form/class-kadence-blocks-text-input-block.php
@@ -6546,17 +6341,7 @@ parameters:
 			path: includes/blocks/form/class-kadence-blocks-text-input-block.php
 
 		-
-			message: "#^Result of method Kadence_Blocks_Advanced_Form_Input_Block\\:\\:field_id\\(\\) \\(void\\) is used\\.$#"
-			count: 1
-			path: includes/blocks/form/class-kadence-blocks-text-input-block.php
-
-		-
 			message: "#^Result of method Kadence_Blocks_Advanced_Form_Input_Block\\:\\:field_label\\(\\) \\(void\\) is used\\.$#"
-			count: 1
-			path: includes/blocks/form/class-kadence-blocks-text-input-block.php
-
-		-
-			message: "#^Result of method Kadence_Blocks_Advanced_Form_Input_Block\\:\\:field_name\\(\\) \\(void\\) is used\\.$#"
 			count: 1
 			path: includes/blocks/form/class-kadence-blocks-text-input-block.php
 
@@ -6616,11 +6401,6 @@ parameters:
 			path: includes/blocks/form/class-kadence-blocks-textarea-input-block.php
 
 		-
-			message: "#^Parameter \\#1 \\$text of function esc_attr expects string, null given\\.$#"
-			count: 2
-			path: includes/blocks/form/class-kadence-blocks-textarea-input-block.php
-
-		-
 			message: "#^Result of method Kadence_Blocks_Advanced_Form_Input_Block\\:\\:class_id\\(\\) \\(void\\) is used\\.$#"
 			count: 2
 			path: includes/blocks/form/class-kadence-blocks-textarea-input-block.php
@@ -6631,17 +6411,7 @@ parameters:
 			path: includes/blocks/form/class-kadence-blocks-textarea-input-block.php
 
 		-
-			message: "#^Result of method Kadence_Blocks_Advanced_Form_Input_Block\\:\\:field_id\\(\\) \\(void\\) is used\\.$#"
-			count: 1
-			path: includes/blocks/form/class-kadence-blocks-textarea-input-block.php
-
-		-
 			message: "#^Result of method Kadence_Blocks_Advanced_Form_Input_Block\\:\\:field_label\\(\\) \\(void\\) is used\\.$#"
-			count: 1
-			path: includes/blocks/form/class-kadence-blocks-textarea-input-block.php
-
-		-
-			message: "#^Result of method Kadence_Blocks_Advanced_Form_Input_Block\\:\\:field_name\\(\\) \\(void\\) is used\\.$#"
 			count: 1
 			path: includes/blocks/form/class-kadence-blocks-textarea-input-block.php
 
@@ -6711,17 +6481,7 @@ parameters:
 			path: includes/blocks/form/class-kadence-blocks-time-input-block.php
 
 		-
-			message: "#^Result of method Kadence_Blocks_Advanced_Form_Input_Block\\:\\:field_id\\(\\) \\(void\\) is used\\.$#"
-			count: 1
-			path: includes/blocks/form/class-kadence-blocks-time-input-block.php
-
-		-
 			message: "#^Result of method Kadence_Blocks_Advanced_Form_Input_Block\\:\\:field_label\\(\\) \\(void\\) is used\\.$#"
-			count: 1
-			path: includes/blocks/form/class-kadence-blocks-time-input-block.php
-
-		-
-			message: "#^Result of method Kadence_Blocks_Advanced_Form_Input_Block\\:\\:field_name\\(\\) \\(void\\) is used\\.$#"
 			count: 1
 			path: includes/blocks/form/class-kadence-blocks-time-input-block.php
 
@@ -9026,21 +8786,6 @@ parameters:
 			path: includes/class-kadence-blocks-editor-assets.php
 
 		-
-			message: "#^Offset 'domain' on array\\{key\\: string, email\\: string, product\\: string, api_key\\?\\: non\\-falsy\\-string, api_email\\?\\: non\\-falsy\\-string\\} in empty\\(\\) does not exist\\.$#"
-			count: 1
-			path: includes/class-kadence-blocks-editor-assets.php
-
-		-
-			message: "#^Offset 'env' does not exist on array\\{key\\: string, email\\: string, product\\: string, api_key\\?\\: non\\-falsy\\-string, api_email\\?\\: non\\-falsy\\-string, domain\\: string\\}\\.$#"
-			count: 1
-			path: includes/class-kadence-blocks-editor-assets.php
-
-		-
-			message: "#^Offset 'env' on array\\{key\\: string, email\\: string, product\\: string, api_key\\?\\: non\\-falsy\\-string, api_email\\?\\: non\\-falsy\\-string, domain\\: string\\} in empty\\(\\) does not exist\\.$#"
-			count: 1
-			path: includes/class-kadence-blocks-editor-assets.php
-
-		-
 			message: "#^Parameter \\#1 \\$json of function json_decode expects string, mixed given\\.$#"
 			count: 1
 			path: includes/class-kadence-blocks-editor-assets.php
@@ -9331,31 +9076,6 @@ parameters:
 			path: includes/class-kadence-blocks-google-fonts.php
 
 		-
-			message: "#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\\.$#"
-			count: 1
-			path: includes/class-kadence-blocks-image-picker-rest.php
-
-		-
-			message: "#^Cannot access offset 'crop' on mixed\\.$#"
-			count: 1
-			path: includes/class-kadence-blocks-image-picker-rest.php
-
-		-
-			message: "#^Cannot access offset 'height' on mixed\\.$#"
-			count: 1
-			path: includes/class-kadence-blocks-image-picker-rest.php
-
-		-
-			message: "#^Cannot access offset 'id' on mixed\\.$#"
-			count: 1
-			path: includes/class-kadence-blocks-image-picker-rest.php
-
-		-
-			message: "#^Cannot access offset 'width' on mixed\\.$#"
-			count: 1
-			path: includes/class-kadence-blocks-image-picker-rest.php
-
-		-
 			message: "#^Cannot call method download\\(\\) on mixed\\.$#"
 			count: 1
 			path: includes/class-kadence-blocks-image-picker-rest.php
@@ -9381,17 +9101,7 @@ parameters:
 			path: includes/class-kadence-blocks-image-picker-rest.php
 
 		-
-			message: "#^Parameter \\#1 \\$maybeint of function absint expects array\\|bool\\|float\\|int\\|resource\\|string\\|null, mixed given\\.$#"
-			count: 2
-			path: includes/class-kadence-blocks-image-picker-rest.php
-
-		-
 			message: "#^Parameter \\#1 \\$route_namespace of function register_rest_route expects non\\-falsy\\-string, string given\\.$#"
-			count: 1
-			path: includes/class-kadence-blocks-image-picker-rest.php
-
-		-
-			message: "#^Parameter \\#1 \\$str of function sanitize_text_field expects string, mixed given\\.$#"
 			count: 1
 			path: includes/class-kadence-blocks-image-picker-rest.php
 
@@ -9686,11 +9396,6 @@ parameters:
 			path: includes/class-kadence-blocks-prebuilt-library-rest-api.php
 
 		-
-			message: "#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\\.$#"
-			count: 1
-			path: includes/class-kadence-blocks-prebuilt-library-rest-api.php
-
-		-
 			message: "#^Argument of an invalid type string supplied for foreach, only iterables are supported\\.$#"
 			count: 1
 			path: includes/class-kadence-blocks-prebuilt-library-rest-api.php
@@ -9726,11 +9431,6 @@ parameters:
 			path: includes/class-kadence-blocks-prebuilt-library-rest-api.php
 
 		-
-			message: "#^Cannot access offset 'crop' on mixed\\.$#"
-			count: 1
-			path: includes/class-kadence-blocks-prebuilt-library-rest-api.php
-
-		-
 			message: "#^Cannot access offset 'data' on mixed\\.$#"
 			count: 4
 			path: includes/class-kadence-blocks-prebuilt-library-rest-api.php
@@ -9748,16 +9448,6 @@ parameters:
 		-
 			message: "#^Cannot access offset 'expires' on mixed\\.$#"
 			count: 2
-			path: includes/class-kadence-blocks-prebuilt-library-rest-api.php
-
-		-
-			message: "#^Cannot access offset 'height' on mixed\\.$#"
-			count: 1
-			path: includes/class-kadence-blocks-prebuilt-library-rest-api.php
-
-		-
-			message: "#^Cannot access offset 'id' on mixed\\.$#"
-			count: 1
 			path: includes/class-kadence-blocks-prebuilt-library-rest-api.php
 
 		-
@@ -9807,11 +9497,6 @@ parameters:
 
 		-
 			message: "#^Cannot access offset 'tone' on mixed\\.$#"
-			count: 1
-			path: includes/class-kadence-blocks-prebuilt-library-rest-api.php
-
-		-
-			message: "#^Cannot access offset 'width' on mixed\\.$#"
 			count: 1
 			path: includes/class-kadence-blocks-prebuilt-library-rest-api.php
 
@@ -9901,11 +9586,6 @@ parameters:
 			path: includes/class-kadence-blocks-prebuilt-library-rest-api.php
 
 		-
-			message: "#^Method Kadence_Blocks_Prebuilt_Library_REST_Controller\\:\\:get_connection\\(\\) should return WP_REST_Response but returns WP_Error\\.$#"
-			count: 5
-			path: includes/class-kadence-blocks-prebuilt-library-rest-api.php
-
-		-
 			message: "#^Method Kadence_Blocks_Prebuilt_Library_REST_Controller\\:\\:get_image_info\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: includes/class-kadence-blocks-prebuilt-library-rest-api.php
@@ -9922,11 +9602,6 @@ parameters:
 
 		-
 			message: "#^Method Kadence_Blocks_Prebuilt_Library_REST_Controller\\:\\:get_items_permission_check\\(\\) should return WP_Error\\|true but returns bool\\.$#"
-			count: 1
-			path: includes/class-kadence-blocks-prebuilt-library-rest-api.php
-
-		-
-			message: "#^Method Kadence_Blocks_Prebuilt_Library_REST_Controller\\:\\:get_library\\(\\) should return WP_REST_Response but returns WP_Error\\.$#"
 			count: 1
 			path: includes/class-kadence-blocks-prebuilt-library-rest-api.php
 
@@ -10206,11 +9881,6 @@ parameters:
 			path: includes/class-kadence-blocks-prebuilt-library-rest-api.php
 
 		-
-			message: "#^Parameter \\#1 \\$maybeint of function absint expects array\\|bool\\|float\\|int\\|resource\\|string\\|null, mixed given\\.$#"
-			count: 2
-			path: includes/class-kadence-blocks-prebuilt-library-rest-api.php
-
-		-
 			message: "#^Parameter \\#1 \\$name of function wp_upload_bits expects non\\-empty\\-string, string given\\.$#"
 			count: 1
 			path: includes/class-kadence-blocks-prebuilt-library-rest-api.php
@@ -10231,23 +9901,13 @@ parameters:
 			path: includes/class-kadence-blocks-prebuilt-library-rest-api.php
 
 		-
-			message: "#^Parameter \\#1 \\$route_namespace of function register_rest_route expects non\\-falsy\\-string, string given\\.$#"
-			count: 19
-			path: includes/class-kadence-blocks-prebuilt-library-rest-api.php
-
-		-
 			message: "#^Parameter \\#1 \\$str of function base64_encode expects string, string\\|false given\\.$#"
 			count: 1
 			path: includes/class-kadence-blocks-prebuilt-library-rest-api.php
 
 		-
-			message: "#^Parameter \\#1 \\$str of function rtrim expects string, mixed given\\.$#"
-			count: 6
-			path: includes/class-kadence-blocks-prebuilt-library-rest-api.php
-
-		-
 			message: "#^Parameter \\#1 \\$str of function sanitize_text_field expects string, mixed given\\.$#"
-			count: 2
+			count: 1
 			path: includes/class-kadence-blocks-prebuilt-library-rest-api.php
 
 		-
@@ -10342,11 +10002,6 @@ parameters:
 
 		-
 			message: "#^Variable \\$key in empty\\(\\) always exists and is not falsy\\.$#"
-			count: 1
-			path: includes/class-kadence-blocks-prebuilt-library-rest-api.php
-
-		-
-			message: "#^Variable \\$library_url in empty\\(\\) always exists and is not falsy\\.$#"
 			count: 1
 			path: includes/class-kadence-blocks-prebuilt-library-rest-api.php
 
@@ -11446,6 +11101,11 @@ parameters:
 			path: includes/form-ajax.php
 
 		-
+			message: "#^Call to function is_array\\(\\) with string will always evaluate to false\\.$#"
+			count: 1
+			path: includes/form-ajax.php
+
+		-
 			message: "#^Call to function is_wp_error\\(\\) with string will always evaluate to false\\.$#"
 			count: 2
 			path: includes/form-ajax.php
@@ -12276,11 +11936,6 @@ parameters:
 			path: includes/resources/Database/Database_Provider.php
 
 		-
-			message: "#^Offset 'is_premium' does not exist on array\\{name\\: string, page_url\\: string\\}\\.$#"
-			count: 1
-			path: includes/resources/Harbor/Actions/Get_Known_Plugins.php
-
-		-
 			message: "#^Method KadenceWP\\\\KadenceBlocks\\\\Harbor\\\\Actions\\\\Report_Legacy_Licenses\\:\\:__invoke\\(\\) has parameter \\$licenses with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: includes/resources/Harbor/Actions/Report_Legacy_Licenses.php
@@ -12831,11 +12486,6 @@ parameters:
 			path: includes/resources/Optimizer/Rest/Optimize_Rest_Controller.php
 
 		-
-			message: "#^Cannot access offset mixed on mixed\\.$#"
-			count: 1
-			path: includes/resources/Optimizer/Rest/Optimize_Rest_Controller.php
-
-		-
 			message: "#^Method KadenceWP\\\\KadenceBlocks\\\\Optimizer\\\\Rest\\\\Optimize_Rest_Controller\\:\\:get_create_params\\(\\) should return array\\<string, array\\{type\\: string, description\\: string, minimum\\: int\\<1, max\\>, required\\: true, sanitize_callback\\: callable\\(\\)\\: mixed, properties\\: array\\<string, mixed\\>\\}\\> but returns non\\-empty\\-array\\<string, array\\{type\\: 'object', properties\\: array\\}\\|array\\{type\\: string, description\\: string, minimum\\: int\\<1, max\\>, required\\: true, sanitize_callback\\: callable\\(\\)\\: mixed\\}\\>\\.$#"
 			count: 1
 			path: includes/resources/Optimizer/Rest/Optimize_Rest_Controller.php
@@ -12848,11 +12498,6 @@ parameters:
 		-
 			message: "#^Parameter \\#1 \\$attributes of static method KadenceWP\\\\KadenceBlocks\\\\Optimizer\\\\Response\\\\WebsiteAnalysis\\:\\:from\\(\\) expects array\\{isStale\\?\\: bool, desktop\\: array, mobile\\: array, images\\: array\\}, mixed given\\.$#"
 			count: 1
-			path: includes/resources/Optimizer/Rest/Optimize_Rest_Controller.php
-
-		-
-			message: "#^Parameter \\#1 \\$path of class KadenceWP\\\\KadenceBlocks\\\\Optimizer\\\\Path\\\\Path constructor expects string, mixed given\\.$#"
-			count: 4
 			path: includes/resources/Optimizer/Rest/Optimize_Rest_Controller.php
 
 		-
@@ -12898,11 +12543,6 @@ parameters:
 		-
 			message: "#^Parameter \\#1 \\$value of function trailingslashit expects string, string\\|false given\\.$#"
 			count: 1
-			path: includes/resources/Optimizer/Rest/Optimize_Rest_Controller.php
-
-		-
-			message: "#^Parameter \\#2 \\$post_id of class KadenceWP\\\\KadenceBlocks\\\\Optimizer\\\\Path\\\\Path constructor expects int\\|null, mixed given\\.$#"
-			count: 4
 			path: includes/resources/Optimizer/Rest/Optimize_Rest_Controller.php
 
 		-

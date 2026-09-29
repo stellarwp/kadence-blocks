@@ -3,6 +3,8 @@
  * Class to Build the Navigation Link Block.
  *
  * @package Kadence Blocks
+ *
+ * cSpell:ignore autoembed kses squiz untrailingslashit
  */
 
 // Exit if accessed directly.
@@ -114,7 +116,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			}
 		}
 
-		// non specific syles / variables
+		// non specific styles / variables.
 		$css->set_selector( '.kb-nav-link-' . $unique_id );
 		if ( isset( $attributes['dropdownShadow'][0]['enable'] ) && $attributes['dropdownShadow'][0]['enable'] ) {
 			$css->add_property( '--kb-nav-dropdown-box-shadow', $css->render_shadow( $attributes['dropdownShadow'][0] ) );
@@ -282,7 +284,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			$css->add_property( 'background-color', 'var(--kb-nav-link-media-container-background-active, var(--kb-nav-link-media-container-background, transparent))' );
 		}
 
-		// styles that need a more speicifc selector
+		// styles that need a more specific selector.
 		$css->set_selector( '.kb-nav-link-' . $unique_id . ' > .kb-link-wrap.kb-link-wrap.kb-link-wrap > .kb-nav-link-content' );
 		$css->render_typography( $attributes );
 
@@ -317,6 +319,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		return $css->css_output();
 	}
 
+	// phpcs:disable Squiz.Commenting.FunctionComment -- Docblock kept in line with the other blocks.
 	/**
 	 * Build up the dynamic styles for a size.
 	 *
@@ -324,6 +327,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 	 * @return array
 	 */
 	public function sized_dynamic_styles( $css, $attributes, $unique_id, $size = 'Desktop' ) {
+		// phpcs:enable Squiz.Commenting.FunctionComment
 		$sized_attributes         = $css->get_sized_attributes_auto( $attributes, $size, false );
 		$sized_attributes_inherit = $css->get_sized_attributes_auto( $attributes, $size );
 
@@ -344,7 +348,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 
 		$css->set_media_state( strtolower( $size ) );
 
-		// no added specificty needed for these variables
+		// no added specificity needed for these variables.
 		// these variable will slot into selectors found in the static stylesheet.
 		$css->set_selector( '.kb-nav-link-' . $unique_id );
 		$css->add_property( '--kb-nav-dropdown-link-color', $css->render_color( $sized_attributes['linkColorDropdown'] ), $sized_attributes['linkColorDropdown'] );
@@ -520,7 +524,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 					}
 				}
 			} elseif ( $sized_attributes['megaMenuWidth'] === 'full' || $sized_attributes['megaMenuWidth'] === '' ) {
-				// this is handled by a seperate js file
+				// this is handled by a separate js file.
 			} elseif ( $sized_attributes['megaMenuWidth'] === 'container' || $sized_attributes['megaMenuWidth'] === 'content' ) {
 				// first sub menu only, no bleed
 				$css->set_selector( '.kb-nav-link-' . $unique_id . ' > .sub-menu.sub-menu.sub-menu.sub-menu.sub-menu' );
@@ -559,9 +563,9 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 	/**
 	 * Build HTML for dynamic blocks
 	 *
-	 * @param $attributes
-	 * @param $unique_id
-	 * @param $content
+	 * @param array    $attributes     The blocks attributes.
+	 * @param string   $unique_id      The blocks unique id.
+	 * @param string   $content        The inner content.
 	 * @param WP_Block $block_instance The instance of the WP_Block class that represents the block being rendered.
 	 *
 	 * @return mixed
@@ -698,7 +702,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 
 			$overlay_html    = '<div class="kb-nav-link-image-overlay" aria-hidden="true"></div>';
 			$container_start = '<div class="kadence-navigation-link-image-inner-intrinsic-container">
-				<div class="kadence-navigation-link-image-intrinsic' . ( 'svg+xml' == $attributes['mediaImage'][0]['subtype'] ? ' kb-navigation-link-image-type-svg' : '' ) . ( $has_ratio ? ' kb-navigation-link-image-ratio kb-navigation-link-image-ratio-' . $attributes['imageRatio'] : '' ) . '">
+				<div class="kadence-navigation-link-image-intrinsic' . ( 'svg+xml' == $attributes['mediaImage'][0]['subtype'] ? ' kb-navigation-link-image-type-svg' : '' ) . ( $has_ratio ? ' kb-navigation-link-image-ratio kb-navigation-link-image-ratio-' . esc_attr( $attributes['imageRatio'] ) : '' ) . '">
 					<div class="kadence-navigation-link-image-inner-intrinsic">';
 			$container_end   = '</div>' . $overlay_html . '</div></div>';
 
@@ -729,7 +733,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			if ( $highlight_with_title ) {
 				$link_classes[] = 'highlight-with-title';
 			}
-			$highlight_label = '<span class="link-highlight-label"><span class="link-highlight-label-text">' . $attributes['highlightLabel'] . '</span>' . $hl_icon . '</span>';
+			$highlight_label = '<span class="link-highlight-label"><span class="link-highlight-label-text">' . wp_kses_post( $attributes['highlightLabel'] ) . '</span>' . $hl_icon . '</span>';
 		}
 
 		$title_html = ! empty( $media ) || ! empty( $attributes['description'] ) ? '<span class="kb-nav-item-title-wrap">' : '';
@@ -738,7 +742,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		}
 		$title_html .= ! empty( $attributes['description'] ) || ! empty( $media ) || ( $has_highlight_label && $highlight_with_title ) ? '<span class="kb-nav-label-content">' . $title . '</span>' : $title;
 		$title_html .= $media;
-		$title_html .= ! empty( $attributes['description'] ) ? '<span class="kb-nav-label-description">' . $attributes['description'] . '</span>' : '';
+		$title_html .= ! empty( $attributes['description'] ) ? '<span class="kb-nav-label-description">' . wp_kses_post( $attributes['description'] ) . '</span>' : '';
 		// $title_html .= $has_children ? '<span class="kb-nav-dropdown-toggle">' . $down_arrow_icon . '</span>' : '';
 		$title_html .= ! empty( $media ) || ! empty( $attributes['description'] ) ? '</span>' : '';
 		if ( ! $highlight_with_title ) {
@@ -802,7 +806,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 	/**
 	 * Builds an html attribute string from an array of keys and values.
 	 *
-	 * @param array $attributes The database attribtues.
+	 * @param array $attributes The database attributes.
 	 * @return array
 	 */
 	public function build_html_attributes( $attributes ) {
