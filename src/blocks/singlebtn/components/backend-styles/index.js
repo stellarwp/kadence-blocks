@@ -22,6 +22,27 @@ import { boundShadowToken } from '../../../../extension/design-tokens/shadow-tok
 import { shadowCss } from '../../../../extension/design-tokens/shadow-css';
 
 /**
+ * The line style (`solid`, `dashed`, ...) a hover border side carries at a device, or '' when none is set.
+ *
+ * A hover border stored without a width has no shorthand to write, because the width comes from the
+ * active preset. The style still has to reach the button on its own, or the preset's width paints a
+ * border with no line style. Falls back through the wider devices like the other border helpers.
+ *
+ * @param {string}   device The preview device: 'Desktop', 'Tablet' or 'Mobile'.
+ * @param {string}   side   The border side: 'top', 'right', 'bottom' or 'left'.
+ * @param {Object[]} values The desktop, tablet and mobile hover border attributes, in that order.
+ *
+ * @since TBD
+ *
+ * @return {string} The line style, or ''.
+ */
+function hoverBorderLineStyle(device, side, [desktop, tablet, mobile]) {
+	const chain = 'Mobile' === device ? [mobile, tablet, desktop] : 'Tablet' === device ? [tablet, desktop] : [desktop];
+
+	return chain.map((value) => value?.[0]?.[side]?.[1]).find((style) => style) || '';
+}
+
+/**
  * Whether the button's active preset resolves a padding and/or a margin.
  *
  * Reads the same preset surface the inspector does, so the canvas and the panel cannot disagree about
@@ -1032,18 +1053,28 @@ export default function BackendStyles(props) {
 
 	//hover styles
 	css.set_selector(`.kb-single-btn-${uniqueID} .kt-button-${uniqueID}${weight}:hover`);
-	if (previewBorderHoverTopStyle) {
-		css.add_property('border-top', previewBorderHoverTopStyle);
-	}
-	if (previewBorderHoverRightStyle) {
-		css.add_property('border-right', previewBorderHoverRightStyle);
-	}
-	if (previewBorderHoverLeftStyle) {
-		css.add_property('border-left', previewBorderHoverLeftStyle);
-	}
-	if (previewBorderHoverBottomStyle) {
-		css.add_property('border-bottom', previewBorderHoverBottomStyle);
-	}
+	[
+		['top', 'border-top', previewBorderHoverTopStyle, previewBorderHoverTopColor],
+		['right', 'border-right', previewBorderHoverRightStyle, previewBorderHoverRightColor],
+		['left', 'border-left', previewBorderHoverLeftStyle, previewBorderHoverLeftColor],
+		['bottom', 'border-bottom', previewBorderHoverBottomStyle, previewBorderHoverBottomColor],
+	].forEach(([side, property, shorthand, color]) => {
+		if (shorthand) {
+			css.add_property(property, shorthand);
+			return;
+		}
+		if (color) {
+			css.add_property(`${property}-color`, color);
+		}
+		const lineStyle = hoverBorderLineStyle(previewDevice, side, [
+			borderHoverStyle,
+			tabletBorderHoverStyle,
+			mobileBorderHoverStyle,
+		]);
+		if (lineStyle) {
+			css.add_property(`${property}-style`, lineStyle);
+		}
+	});
 	if ('' !== previewHoverRadiusTop) {
 		css.add_property(
 			'border-top-left-radius',
