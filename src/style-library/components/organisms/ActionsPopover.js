@@ -26,19 +26,22 @@ const POPOVER_OFFSET = 16;
  * @param {string}   props.label       The pencil's accessible name and tooltip (e.g. "Edit library").
  * @param {boolean}  props.isBusy      Whether an operation is in flight, which disables the pencil.
  * @param {Function} [props.onClose]   Called whenever the popover closes, by any route.
+ * @param {Function} [props.onToggle]  Called with `true` when the popover opens and `false` when it
+ *                                     closes.
  * @param {Function} props.children    Called with `{ close }`; returns the popover's content.
  *
  * @since TBD
  *
  * @return {JSX.Element} The pencil and its popover.
  */
-export function ActionsPopover({ label, isBusy, onClose, children }) {
+export function ActionsPopover({ label, isBusy, onClose, onToggle, children }) {
 	return (
 		<Dropdown
 			className="kadence-blocks-style-library__actions-popover"
 			contentClassName="kadence-blocks-style-library__actions-popover-content"
 			popoverProps={{ placement: 'bottom-start', offset: POPOVER_OFFSET }}
 			onClose={onClose}
+			onToggle={onToggle}
 			renderToggle={({ isOpen, onToggle }) => (
 				<Button
 					className="kadence-blocks-style-library__actions-popover-toggle"

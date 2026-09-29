@@ -33,15 +33,17 @@ import './ActionsForm.scss';
  *                                                      `helpers/rename.js`).
  * @param {Function}           props.duplicateMessage   Called with the trimmed name; returns the
  *                                                      sentence shown when it is already taken.
- * @param {string}             props.destructiveLabel   The destructive action's text (e.g. "Delete").
- * @param {Object}             props.activationLabels   The texts for `ActivationRow`.
- * @param {boolean}            props.isActive           Whether the thing being edited is the active one.
+ * @param {string}             [props.destructiveLabel] The destructive action's text (e.g. "Delete"); the
+ *                                                      action is left out when unset.
+ * @param {Object}             [props.activationLabels] The texts for `ActivationRow`; the row is left out
+ *                                                      when unset.
+ * @param {boolean}            [props.isActive]         Whether the thing being edited is the active one.
  * @param {boolean}            props.isBusy             Whether an operation is in flight.
  * @param {?{message: string}} props.error              The current rename error, if any.
  * @param {Function}           props.onSave             Called with the trimmed new name.
  * @param {Function}           props.onCancel           Called when the user backs out.
- * @param {Function}           props.onActivate         Called when the user asks to make it active.
- * @param {Function}           props.onDelete           Called when the user asks for the destructive action.
+ * @param {Function}           [props.onActivate]       Called when the user asks to make it active.
+ * @param {Function}           [props.onDelete]         Called when the user asks for the destructive action.
  *
  * @since TBD
  *
@@ -101,18 +103,22 @@ export function ActionsForm({
 				data-lpignore="true"
 				data-bwignore
 			/>
-			<ActivationRow isActive={isActive} isBusy={isBusy} onActivate={onActivate} labels={activationLabels} />
+			{activationLabels && (
+				<ActivationRow isActive={isActive} isBusy={isBusy} onActivate={onActivate} labels={activationLabels} />
+			)}
 			<div className="kadence-blocks-style-library__actions-form-footer">
-				<Button
-					className="kadence-blocks-style-library__delete-library-action"
-					type="button"
-					variant="link"
-					isDestructive
-					disabled={isBusy}
-					onClick={onDelete}
-				>
-					{destructiveLabel}
-				</Button>
+				{destructiveLabel && (
+					<Button
+						className="kadence-blocks-style-library__delete-library-action"
+						type="button"
+						variant="link"
+						isDestructive
+						disabled={isBusy}
+						onClick={onDelete}
+					>
+						{destructiveLabel}
+					</Button>
+				)}
 				<div className="kadence-blocks-style-library__actions-form-footer-end">
 					<Button type="button" variant="tertiary" disabled={isBusy} onClick={onCancel}>
 						{__('Cancel', 'kadence-blocks')}
