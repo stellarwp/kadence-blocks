@@ -257,7 +257,7 @@ class KB_Ajax_Advanced_Form {
 	/**
 	 * Process the fields
 	 *
-	 * @since TBD Validates file types against the field settings and sanitizes SVG uploads.
+	 * @since 3.7.12 Validates file types against the field settings and sanitizes SVG uploads.
 	 *
 	 * @param array $fields the fields.
 	 */
@@ -665,7 +665,7 @@ class KB_Ajax_Advanced_Form {
 	/**
 	 * Sanitize an uploaded SVG file in place.
 	 *
-	 * @since TBD
+	 * @since 3.7.12
 	 *
 	 * @param string $path      The uploaded file path.
 	 * @param string $name      The original file name.
@@ -915,7 +915,7 @@ Header set X-Robots-Tag "noindex"
 	/**
 	 * Check that the markup is an SVG document.
 	 *
-	 * @since TBD
+	 * @since 3.7.12
 	 *
 	 * @param string $xml The XML markup.
 	 *
