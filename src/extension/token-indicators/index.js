@@ -172,7 +172,8 @@ export function mappedAttrsFor(blockName, library) {
  * @return {Object} attrName => { property, token, kind, presetValue, responsive, bound, overridden }.
  *                   Keyed by the DESKTOP attribute name even when `overridden` reflects another
  *                   device, so a caller can still look a control up by its one stable key. A
- *                   property the preset sets only at a breakpoint still gets an entry, with
+ *                   property the preset leaves unset, or sets only at a breakpoint, still gets an
+ *                   entry, with
  *                   `presetValue` undefined and the breakpoint value under `responsive`. The
  *                   `borderStyle` entry is the one exception: `kind` is `'border'` and `property`/
  *                   `token`/`presetValue`/`responsive` are each `{ width, style, color }` objects,
@@ -201,14 +202,12 @@ export function usePresetBinding(blockName, attributes, library, previewDevice) 
 	properties.forEach((property) => {
 		const attr = property.control_attr;
 
-		// The per-preset surface gates binding, not just the block's full property list. A property the
-		// preset sets only at a breakpoint — desktop reset, tablet kept — is part of that surface too, or
-		// its tablet value would never reach the control.
-		const setAtABreakpoint = ['tablet', 'mobile'].some(
-			(breakpoint) => property.key in get(presetBreakpoints, breakpoint, {})
-		);
-
-		if (!attr || (!(property.key in presetValues) && !setAtABreakpoint)) {
+		// A mapped control is tracked for every property of the block's surface, including one the
+		// active preset leaves unset. Skipping those would leave a value the block stores there with
+		// nothing to diverge from, so a heading that picks its own font family while the Default sets
+		// none would never read as edited. Such an entry is unbound and carries no preset value; it is
+		// overridden as soon as the block stores something. Without a resolvable preset, nothing is bound.
+		if (!attr || !activePreset) {
 			return;
 		}
 
