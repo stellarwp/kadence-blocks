@@ -22,6 +22,7 @@ final class Provider extends Provider_Contract {
 		$this->container->singleton( Css_Renderer::class );
 		$this->container->singleton( Token_Resolver::class );
 		$this->container->singleton( Preset_Resolver::class );
+		$this->container->singleton( Preset_Fallback::class );
 		$this->container->singleton( Preset_Value_Normalizer::class );
 		$this->container->singleton( Effective_Presets::class );
 		$this->container->singleton( Effective_Palettes::class );

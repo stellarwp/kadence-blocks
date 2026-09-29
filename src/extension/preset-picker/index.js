@@ -13,6 +13,7 @@
  * wherever it surfaces.
  */
 import { get } from 'lodash';
+import { LEGACY_PRESETS, LEGACY_PRESET_BLOCKS } from './legacy';
 
 /**
  * The whole design-token preset catalog the editor localizer prints, or an empty object when the token
@@ -208,11 +209,60 @@ export function blockDefaultPreset(name, library) {
 }
 
 /**
- * The block's active preset slug for a set of attributes: the explicit `kbPreset` selection when it
- * still names a preset the block declares, otherwise the library's default preset. Mirrors the PHP
- * resolver's `has_preset()` / `default_preset()` fallback (`Preset_Resolver`), so a `kbPreset` left
- * over from a deleted preset degrades here the same way it does server-side, instead of every caller
- * trusting a non-empty string at face value.
+ * The preset slug the theme's other presets fall back to, e.g. "theme-base".
+ *
+ * @since TBD
+ */
+const THEME_BASE = 'theme-base';
+
+/**
+ * The slug prefix every theme-discovered preset carries.
+ *
+ * @since TBD
+ */
+const THEME_PREFIX = 'theme-';
+
+/**
+ * Whether a block's library defines a preset slug.
+ *
+ * @param {string} name    The block name.
+ * @param {string} library The token library slug.
+ * @param {string} slug    The preset slug.
+ *
+ * @since TBD
+ *
+ * @return {boolean} True when the library lists the slug.
+ */
+function hasPreset(name, library, slug) {
+	return Boolean(slug) && blockPresets(name, library).some((preset) => preset.slug === slug);
+}
+
+/**
+ * The preset a block asks for: its kbPreset, or the preset its retired inheritStyles value maps to.
+ *
+ * @param {string} name       The block name.
+ * @param {Object} attributes The block's current attributes.
+ *
+ * @since TBD
+ *
+ * @return {string} The stored slug, or '' for the default look.
+ */
+export function storedPresetFor(name, attributes) {
+	const stored = get(attributes, 'kbPreset', '') || '';
+
+	if (stored || !LEGACY_PRESET_BLOCKS.includes(name)) {
+		return stored;
+	}
+
+	return LEGACY_PRESETS[get(attributes, 'inheritStyles', '')] || '';
+}
+
+/**
+ * The block's active preset slug for a set of attributes, after the fallback chain: the stored slug
+ * (see `storedPresetFor()`) when the library still defines it, else the theme's base preset for a theme
+ * slug the active theme no longer offers, else the library's default preset. Mirrors the PHP
+ * `Preset_Fallback`, so a `kbPreset` left over from a deleted preset or a theme switch degrades here the
+ * same way it does server-side, instead of every caller trusting a non-empty string at face value.
  *
  * @param {string} name       The block name.
  * @param {Object} attributes The block's current attributes.
@@ -224,10 +274,39 @@ export function blockDefaultPreset(name, library) {
  */
 export function activePresetFor(name, attributes, library) {
 	const resolvedLibrary = library || activeLibrary();
-	const selected = get(attributes, 'kbPreset', '');
-	const exists = selected && blockPresets(name, resolvedLibrary).some((preset) => preset.slug === selected);
+	const stored = storedPresetFor(name, attributes);
 
-	return exists ? selected : blockDefaultPreset(name, resolvedLibrary);
+	if (hasPreset(name, resolvedLibrary, stored)) {
+		return stored;
+	}
+
+	if (stored.startsWith(THEME_PREFIX) && hasPreset(name, resolvedLibrary, THEME_BASE)) {
+		return THEME_BASE;
+	}
+
+	return blockDefaultPreset(name, resolvedLibrary);
+}
+
+/**
+ * Why the stored preset is not the one rendered: 'theme' for a theme preset the active theme lacks,
+ * 'missing' for a slug the library no longer defines, '' when the stored slug renders.
+ *
+ * @param {string} name       The block name.
+ * @param {Object} attributes The block's current attributes.
+ * @param {string} [library]  The token library slug; defaults to the active library.
+ *
+ * @since TBD
+ *
+ * @return {string} The reason, or ''.
+ */
+export function presetFallbackReason(name, attributes, library) {
+	const stored = storedPresetFor(name, attributes);
+
+	if (!stored || hasPreset(name, library || activeLibrary(), stored)) {
+		return '';
+	}
+
+	return stored.startsWith(THEME_PREFIX) ? 'theme' : 'missing';
 }
 
 /**

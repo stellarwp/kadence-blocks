@@ -11,6 +11,8 @@ import {
 	activePresetFor,
 	blockDefaultOverridden,
 	blockDefaultPreset,
+	blockPresetOverridden,
+	blockPresets,
 	blockPresetThemeClass,
 	blockPresetValues,
 } from '../../../../extension/preset-picker';
@@ -76,10 +78,10 @@ export function presetBorderProperties(attributes) {
 }
 
 /**
- * Whether the button's shape (padding, margin, border, shadow) is the plugin's own. A button in one
- * of the theme-painted modes, in the outline mode, or on a class-painted preset takes those from the
- * theme's rules or from the outline stylesheet, and the preset bridges must not outrank them. Mirrors
- * the PHP renderer's gate.
+ * Whether the button's shape (padding, margin, border, shadow) is the plugin's own. A button on a
+ * class-painted preset takes those from the theme's rules or from the outline stylesheet, and the preset
+ * bridges must not outrank them. With no preset catalog (the token registry is off) the retired style
+ * attribute decides, as it did before presets existed. Mirrors the PHP renderer's gate.
  *
  * @param {Object} attributes The block attributes.
  *
@@ -88,13 +90,33 @@ export function presetBorderProperties(attributes) {
  * @return {boolean} Whether the preset bridges apply to this button.
  */
 export function paintsOwnShape(attributes) {
+	if (blockPresets('kadence/singlebtn').length) {
+		return !blockPresetThemeClass('kadence/singlebtn', activePresetFor('kadence/singlebtn', attributes));
+	}
+
 	const mode = attributes?.inheritStyles ?? '';
 
-	if (mode !== '' && mode !== 'fill') {
+	return mode === '' || mode === 'fill';
+}
+
+/**
+ * Whether the button's active preset is class-painted and carries Style Library overrides: the only case
+ * the preset projector emits a direct override rule the block's own editor rules must outweigh.
+ *
+ * @param {Object} attributes The block attributes.
+ *
+ * @since TBD
+ *
+ * @return {boolean} True when an override rule exists for the active preset.
+ */
+export function hasPresetOverrides(attributes) {
+	const preset = activePresetFor('kadence/singlebtn', attributes);
+
+	if (!blockPresetThemeClass('kadence/singlebtn', preset)) {
 		return false;
 	}
 
-	return !blockPresetThemeClass('kadence/singlebtn', attributes?.kbPreset);
+	return Object.keys(blockPresetOverridden('kadence/singlebtn')?.[preset] ?? {}).length > 0;
 }
 
 /**
@@ -166,15 +188,14 @@ export default function BackendStyles(props) {
 	const { attributes, isSelected, previewDevice, currentRef, context } = props;
 
 	/*
-	 * A button on a class-painted preset may carry a Style Library override rule the preset projector emits
-	 * at (0,5,0) resting / (0,6,0) hover, so its own rules spend three extra `.kt-button` classes to tie
-	 * it: this <style> renders inside the block, after every head stylesheet, so the tie goes to the
-	 * block's own value, the way the front end already resolves it. Every other button keeps the weight
-	 * it always had, so a theme editor rule that outranked the block's before still does.
+	 * A button on a class-painted preset the Style Library has overridden carries an override rule the
+	 * preset projector emits at (0,5,0) resting / (0,6,0) hover, so its own rules spend three extra
+	 * `.kt-button` classes to tie it: this <style> renders inside the block, after every head stylesheet,
+	 * so the tie goes to the block's own value, the way the front end already resolves it. With no
+	 * override there is no such rule, and the button keeps the weight it always had, so a theme editor
+	 * rule that outranked the block's before still does, exactly as it does on the front end.
 	 */
-	const weight = blockPresetThemeClass('kadence/singlebtn', attributes.kbPreset)
-		? '.kt-button.kt-button.kt-button'
-		: '';
+	const weight = hasPresetOverrides(attributes) ? '.kt-button.kt-button.kt-button' : '';
 
 	const {
 		uniqueID,

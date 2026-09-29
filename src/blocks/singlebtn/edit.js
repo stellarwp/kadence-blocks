@@ -79,7 +79,7 @@ import {
 import { addFilter, applyFilters, doAction } from '@wordpress/hooks';
 import BackendStyles from './components/backend-styles';
 import { PresetButton } from '../../extension/preset-picker/PresetButton';
-import { blockPresetThemeClass } from '../../extension/preset-picker';
+import { activePresetFor, blockPresetThemeClass, storedPresetFor } from '../../extension/preset-picker';
 import {
 	usePresetBinding,
 	resetAttr,
@@ -890,17 +890,28 @@ export default function KadenceButtonEdit(props) {
 	const hasIcon = undefined !== previewOnlyText && previewOnlyText ? false : icon;
 	const inheritClassSuffix = inheritStyles && 'inherit-secondary' === inheritStyles ? 'inherit' : inheritStyles;
 	// A class-painted preset's classes paint the button; the mode classes would fight them for the same properties.
-	const presetThemeClass = blockPresetThemeClass('kadence/singlebtn', attributes.kbPreset);
-	const btnClassName = classnames({
+	// The bare `button` class stays off the canvas: the editor never carried it, and a theme's editor
+	// stylesheet may key on it.
+	const activePreset = activePresetFor('kadence/singlebtn', attributes);
+	const presetThemeClass = blockPresetThemeClass('kadence/singlebtn', activePreset)
+		.split(/\s+/)
+		.filter((themeClass) => themeClass && themeClass !== 'button')
+		.join(' ');
+	// A secondary button on a theme with no secondary style keeps the class it always carried.
+	const keepsSecondaryClass =
+		Boolean(presetThemeClass) &&
+		storedPresetFor('kadence/singlebtn', attributes) === 'theme-secondary' &&
+		activePreset !== 'theme-secondary';
+	const btnClassName = classnames(presetThemeClass, {
 		'kt-button': true,
 		[`kt-button-${uniqueID}`]: true,
-		[presetThemeClass]: presetThemeClass,
 		[`kb-btn-global-${inheritClassSuffix}`]: !presetThemeClass && inheritClassSuffix,
 		'wp-block-button__link':
 			!presetThemeClass &&
 			inheritStyles &&
 			('inherit' === inheritStyles || 'inherit-secondary' === inheritStyles),
-		'button-style-secondary': !presetThemeClass && inheritStyles && 'inherit-secondary' === inheritStyles,
+		'button-style-secondary':
+			keepsSecondaryClass || (!presetThemeClass && inheritStyles && 'inherit-secondary' === inheritStyles),
 		[`kb-btn-has-icon`]: hasIcon,
 		[`kt-btn-svg-show-${!iconHover ? 'always' : 'hover'}`]: icon,
 		[`kb-btn-only-icon`]: previewOnlyIcon,
