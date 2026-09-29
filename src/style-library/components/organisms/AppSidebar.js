@@ -16,11 +16,11 @@ import './AppSidebar.scss';
 /**
  * Render the Style Library sidebar navigation.
  *
- * @param {Object}                              props                 The component props.
- * @param {Array<{id: string, label: string}>}   props.baseStylesNav   The BASE STYLES nav entries.
- * @param {Array<{id: string, label: string}>}   props.blockPresetsNav The BLOCK PRESETS nav entries.
- * @param {string}                              props.activeId        The active screen id from the route.
- * @param {Function}                            props.onNavigate      Called with a screen id when an item is clicked.
+ * @param {Object}                                                              props                 The component props.
+ * @param {Array<{id: string, label: string, icon: JSX.Element}>}               props.baseStylesNav   The BASE STYLES nav entries.
+ * @param {Array<{id: string, label: string, icon: ?JSX.Element, count: ?number}>} props.blockPresetsNav The BLOCK PRESETS nav entries.
+ * @param {string}                                                              props.activeId        The active screen id from the route.
+ * @param {Function}                                                            props.onNavigate      Called with a screen id when an item is clicked.
  *
  * @since TBD
  *

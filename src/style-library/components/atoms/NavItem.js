@@ -24,6 +24,7 @@ import './NavItem.scss';
  * @param {Object}   props         The component props.
  * @param {string}   props.label   The item label.
  * @param {?JSX.Element} props.icon The icon shown before the label, if the item has one.
+ * @param {?number} props.count The number shown after the label, if the item has one.
  * @param {boolean}  props.active  Whether this item is the active screen.
  * @param {Function} props.onClick Called when the item is clicked.
  *
@@ -31,7 +32,7 @@ import './NavItem.scss';
  *
  * @return {JSX.Element} The nav item.
  */
-export function NavItem({ label, icon, active, onClick }) {
+export function NavItem({ label, icon, count, active, onClick }) {
 	return (
 		<li className="kadence-blocks-style-library__nav-item">
 			<button
@@ -44,6 +45,9 @@ export function NavItem({ label, icon, active, onClick }) {
 			>
 				{icon && <Icon className="kadence-blocks-style-library__nav-item-icon" icon={icon} size={16} />}
 				{label}
+				{Number.isInteger(count) && (
+					<span className="kadence-blocks-style-library__nav-item-count">{count}</span>
+				)}
 			</button>
 		</li>
 	);

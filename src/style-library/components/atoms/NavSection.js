@@ -15,7 +15,7 @@ import './NavSection.scss';
  *
  * @param {Object}                          props            The component props.
  * @param {string}                          props.label      The section label.
- * @param {Array<{id: string, label: string, icon: ?JSX.Element}>} props.items      The section's nav entries.
+ * @param {Array<{id: string, label: string, icon: ?JSX.Element, count: ?number}>} props.items      The section's nav entries.
  * @param {string}                          props.activeId   The active screen id.
  * @param {Function}                        props.onNavigate Called with a screen id when an item is clicked.
  *
@@ -37,6 +37,7 @@ export function NavSection({ label, items, activeId, onNavigate }) {
 						key={item.id}
 						label={item.label}
 						icon={item.icon}
+						count={item.count}
 						active={item.id === activeId}
 						onClick={() => onNavigate(item.id)}
 					/>

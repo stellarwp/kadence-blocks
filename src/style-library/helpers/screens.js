@@ -64,16 +64,19 @@ export function buildBaseStylesNav() {
 
 /**
  * Build the BLOCK PRESETS nav entries from the admin feed's `presetNav` section, already ordered
- * and labeled by PHP. Tolerates a missing/empty section (older feed) by returning [].
+ * and labeled by PHP. Tolerates a missing/empty section (older feed) by returning []. Each entry
+ * carries the number of presets its block has, or null when the feed does not list them.
  *
  * @param {Object} feed The `window.kadenceDesignTokens` feed object.
  *
  * @since TBD
  *
- * @return {Array<{id: string, label: string, block: string, icon: ?JSX.Element}>} The nav entries.
+ * @return {Array<{id: string, label: string, block: string, icon: ?JSX.Element, count: ?number}>} The nav
+ *                                                                                        entries.
  */
 export function buildBlockPresetsNav(feed) {
 	const entries = feed?.presetNav;
+	const presets = feed?.presets ?? {};
 
 	if (!Array.isArray(entries)) {
 		return [];
@@ -84,6 +87,7 @@ export function buildBlockPresetsNav(feed) {
 		label,
 		block,
 		icon: PRESET_SCREEN_ICONS[block] ?? null,
+		count: Array.isArray(presets[block]?.names) ? presets[block].names.length : null,
 	}));
 }
 
