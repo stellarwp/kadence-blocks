@@ -15,7 +15,14 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { createUserPrimitive, deleteUserPrimitive, saveTokenLeaf, setGroupOrder, setTokenLabel } from '../api/client';
+import {
+	createUserPrimitive,
+	deleteTokenLeaf,
+	deleteUserPrimitive,
+	saveTokenLeaf,
+	setGroupOrder,
+	setTokenLabel,
+} from '../api/client';
 import { isEqual } from './settings-schema';
 import { buildTokenLeaf } from './tokens';
 import { customScaleTokenId } from './scale';
@@ -191,6 +198,37 @@ export function deleteScaleTokenFlow({ slug, tokenId, feedVersion, refreshFeed, 
 	onBusy(true);
 
 	return deleteUserPrimitive(slug, tokenId, feedVersion)
+		.then(() => refreshFeed(slug))
+		.then(() => onBusy(false))
+		.catch((err) => {
+			onError({ message: errorMessage(err) });
+			onBusy(false);
+
+			throw err;
+		});
+}
+
+/**
+ * Reset a shipped scale token: drop its stored value so it reverts to the shipped one, then refresh
+ * the feed. A rename is a separate override and is left alone.
+ *
+ * @param {Object}   args
+ * @param {string}   args.slug        Token library slug.
+ * @param {string}   args.namespace   REST namespace for the token-leaf write.
+ * @param {string}   args.tokenId     The token's canonical dot-path id.
+ * @param {Function} args.refreshFeed Replaces the feed with a fresh REST read for a slug.
+ * @param {Function} args.onBusy      Called with a boolean as the request starts and settles.
+ * @param {Function} args.onError     Called with `{ message }` on failure.
+ *
+ * @since TBD
+ *
+ * @return {Promise<void>} Resolves once the reset and the feed refresh complete; rejects on
+ *                          failure, after `onError`/`onBusy` have already run.
+ */
+export function resetScaleTokenFlow({ slug, namespace, tokenId, refreshFeed, onBusy, onError }) {
+	onBusy(true);
+
+	return deleteTokenLeaf(namespace, tokenId, slug)
 		.then(() => refreshFeed(slug))
 		.then(() => onBusy(false))
 		.catch((err) => {

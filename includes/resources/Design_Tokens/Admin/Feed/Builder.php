@@ -2,8 +2,10 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Document_Path;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Token_Sorter;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
+use KadenceWP\KadenceBlocks\Utils\Cast;
 
 /**
  * Pure assembler for the admin UI schema feed — the `window.kadenceDesignTokens` payload the dashboard
@@ -81,10 +83,12 @@ final class Builder {
 	 * @param array<string, string>                                 $labels     id => display-label override for this library.
 	 * @param array<int, string>                                    $order      The flat ordered token id list for this library.
 	 * @param array<int, string>                                    $favorite_fonts The ordered favorite font families for this library.
+	 * @param array<string, mixed>                                  $stored     The library's stored overrides document, read to tell which
+	 *                                                                          tokens keep their own value.
 	 *
 	 * @return array<string, mixed> The localized payload.
 	 */
-	public function build( array $values, bool $resolved, array $presets, array $rest, string $version, string $slug, string $title = '', array $responsive = [], array $labels = [], array $order = [], array $favorite_fonts = [] ): array {
+	public function build( array $values, bool $resolved, array $presets, array $rest, string $version, string $slug, string $title = '', array $responsive = [], array $labels = [], array $order = [], array $favorite_fonts = [], array $stored = [] ): array {
 		$active = $this->registry->is_active();
 
 		return [
@@ -96,7 +100,7 @@ final class Builder {
 			// paint, before its REST list has loaded and any row is available to look the title up in.
 			'title'         => $title,
 			'schema'        => $active
-				? $this->apply_group_order( $this->apply_label_overrides( $this->registry->to_ui_schema(), $labels ), $order )
+				? $this->apply_group_order( $this->apply_value_overrides( $this->apply_label_overrides( $this->registry->to_ui_schema(), $labels ), $stored ), $order )
 				: [ 'groups' => [] ],
 			'values'        => $active ? $values : [],
 			'presets'       => $active ? $presets : [],
@@ -131,6 +135,29 @@ final class Builder {
 
 				$schema['groups'][ $group ][ $i ]['label']           = $override ?? $row['label'];
 				$schema['groups'][ $group ][ $i ]['labelOverridden'] = $override !== null;
+			}
+		}
+
+		return $schema;
+	}
+
+	/**
+	 * Flag every token row that stores its own value in the library's overrides document. Every row
+	 * gains a `valueOverridden` flag (stable shape whether or not any override exists) so the admin UI
+	 * can enable Reset only when there is a saved value to drop. A row left at its shipped value stores
+	 * nothing, so it reads as not overridden.
+	 *
+	 * @since TBD
+	 *
+	 * @param array{groups: array<string, array<int, array<string, mixed>>>} $schema The registry UI schema.
+	 * @param array<string, mixed>                                           $stored The stored overrides document.
+	 *
+	 * @return array{groups: array<string, array<int, array<string, mixed>>>} The schema with `valueOverridden` set.
+	 */
+	private function apply_value_overrides( array $schema, array $stored ): array {
+		foreach ( $schema['groups'] as $group => $rows ) {
+			foreach ( $rows as $i => $row ) {
+				$schema['groups'][ $group ][ $i ]['valueOverridden'] = Document_Path::has_value( $stored, Cast::to_string( $row['id'] ) );
 			}
 		}
 

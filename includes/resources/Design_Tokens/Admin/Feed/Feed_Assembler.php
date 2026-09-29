@@ -178,7 +178,8 @@ final class Feed_Assembler {
 			$responsive,
 			$this->label_index->all( $document ),
 			$this->order_index->all( $document ),
-			$this->favorite_font_index->all( $document )
+			$this->favorite_font_index->all( $document ),
+			$document
 		);
 	}
 

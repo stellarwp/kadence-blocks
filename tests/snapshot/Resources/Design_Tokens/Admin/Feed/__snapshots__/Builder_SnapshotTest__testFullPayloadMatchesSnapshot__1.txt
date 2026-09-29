@@ -16,7 +16,8 @@
                         "kadence_slot": "palette1"
                     },
                     "userCreated": false,
-                    "labelOverridden": false
+                    "labelOverridden": false,
+                    "valueOverridden": false
                 },
                 {
                     "id": "semantic.color.button-text",
@@ -25,7 +26,8 @@
                     "cssVar": "--kb-token--semantic--color--button-text",
                     "projections": [],
                     "userCreated": false,
-                    "labelOverridden": false
+                    "labelOverridden": false,
+                    "valueOverridden": false
                 }
             ],
             "Layout": [
@@ -36,7 +38,8 @@
                     "cssVar": "--kb-token--semantic--spacing--md",
                     "projections": [],
                     "userCreated": false,
-                    "labelOverridden": false
+                    "labelOverridden": false,
+                    "valueOverridden": false
                 }
             ]
         }

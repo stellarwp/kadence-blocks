@@ -260,6 +260,56 @@ final class BuilderTest extends TestCase {
 	}
 
 	/**
+	 * A row gains `valueOverridden: true` only when the stored document holds its own concrete value;
+	 * a reset sentinel, an absent path and every other row stay `false`.
+	 *
+	 * @return void
+	 */
+	public function testStoredValuesFlagOnlyTheRowsThatKeepTheirOwnValue(): void {
+		$this->registry->register(
+			[
+				'id'          => 'semantic.color.button-text',
+				'type'        => 'color',
+				'label'       => 'Button Text',
+				'group'       => 'Brand',
+				'projections' => [],
+			]
+		);
+
+		$feed = $this->builder()->build(
+			[],
+			true,
+			[],
+			$this->rest(),
+			'v7',
+			'default',
+			'',
+			[],
+			[],
+			[],
+			[],
+			[
+				'semantic' => [
+					'color' => [
+						'button-bg'   => [ '$value' => '#ffffff' ],
+						'button-text' => [ '$value' => null ],
+					],
+				],
+			]
+		);
+
+		$rows = [];
+		foreach ( $feed['schema']['groups'] as $group_rows ) {
+			foreach ( $group_rows as $row ) {
+				$rows[ $row['id'] ] = $row;
+			}
+		}
+
+		$this->assertTrue( $rows['semantic.color.button-bg']['valueOverridden'] );
+		$this->assertFalse( $rows['semantic.color.button-text']['valueOverridden'] );
+	}
+
+	/**
 	 * An override for an id the schema does not contain is ignored — no row gains it, and no
 	 * error is raised.
 	 *
@@ -505,8 +555,8 @@ final class BuilderTest extends TestCase {
 	}
 
 	/**
-	 * Overlay every row of a raw registry schema with `labelOverridden: false`, matching what the
-	 * Builder does when no override map is passed. Used to keep the existing structural
+	 * Overlay every row of a raw registry schema with `labelOverridden: false` and
+	 * `valueOverridden: false`, matching what the Builder does when no override map is passed. Used to keep the existing structural
 	 * assertions comparing against the raw registry schema meaningful now that the Builder always
 	 * augments its rows.
 	 *
@@ -518,6 +568,7 @@ final class BuilderTest extends TestCase {
 		foreach ( $schema['groups'] as $group => $rows ) {
 			foreach ( $rows as $i => $row ) {
 				$schema['groups'][ $group ][ $i ]['labelOverridden'] = false;
+				$schema['groups'][ $group ][ $i ]['valueOverridden'] = false;
 			}
 		}
 

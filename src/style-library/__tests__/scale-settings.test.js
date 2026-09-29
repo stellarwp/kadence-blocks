@@ -110,6 +110,10 @@ function makeScale(write) {
 			state.isBusy = true;
 			return track(write.promise);
 		}),
+		resetToken: jest.fn(() => {
+			state.isBusy = true;
+			return track(write.promise);
+		}),
 		get isBusy() {
 			return state.isBusy;
 		},
@@ -317,12 +321,12 @@ describe('ScaleSettings footer gating', () => {
 	});
 
 	/**
-	 * A shipped scale token has no saved value the panel can revert, so its Reset stays disabled
-	 * before and after an edit — only Save reacts to the draft.
+	 * A shipped scale token that stores no value of its own has nothing to revert, so its Reset stays
+	 * disabled before and after an edit — only Save reacts to the draft.
 	 *
 	 * @return {void}
 	 */
-	it('keeps a baseline token’s Reset disabled before and after an edit', () => {
+	it('keeps a baseline token’s Reset disabled while it stores no value, before and after an edit', () => {
 		const write = deferred();
 		const baseline = makeScale(write);
 		baseline.tokenById = () => ({ ...TOKEN, userCreated: false });
@@ -334,5 +338,34 @@ describe('ScaleSettings footer gating', () => {
 
 		expect(findButton('Save').disabled).toBe(false);
 		expect(findButton('Reset').disabled).toBe(true);
+	});
+
+	/**
+	 * A shipped scale token that stores its own value gets an enabled Reset, and clicking it resets
+	 * that token and closes the panel once the write settles.
+	 *
+	 * @return {void}
+	 */
+	it('enables Reset for an overridden baseline token and closes the panel after it', async () => {
+		const write = deferred();
+		const overridden = makeScale(write);
+		overridden.tokenById = () => ({ ...TOKEN, userCreated: false, overridden: true });
+		const navigate = renderScaleSettings(overridden);
+
+		expect(findButton('Reset').disabled).toBe(false);
+
+		act(() => {
+			findButton('Reset').click();
+		});
+
+		expect(overridden.resetToken).toHaveBeenCalledWith(TOKEN.id);
+		expect(findButton('Resetting…')).not.toBeNull();
+
+		await act(async () => {
+			write.resolve();
+			await write.promise;
+		});
+
+		expect(navigate).toHaveBeenCalledWith({ item: '' });
 	});
 });

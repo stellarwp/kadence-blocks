@@ -2,6 +2,8 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Document;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Sentinels;
+
 /**
  * Dot-path lookups within a decoded DTCG document.
  *
@@ -31,5 +33,24 @@ final class Document_Path {
 		}
 
 		return is_array( $node ) ? $node : null;
+	}
+
+	/**
+	 * Whether a decoded document stores its own concrete value at a dot-path.
+	 *
+	 * A reset sentinel (`"$value": null`) and a disable sentinel carry no value of their own, so neither
+	 * counts: the token still shows the shipped value.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $document The document to walk.
+	 * @param string               $path     The dot-path to look up.
+	 *
+	 * @return bool
+	 */
+	public static function has_value( array $document, string $path ): bool {
+		$node = self::node_at( $document, $path );
+
+		return $node !== null && ( $node[ Sentinels::get_value_key() ] ?? null ) !== null;
 	}
 }

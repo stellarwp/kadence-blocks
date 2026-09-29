@@ -22,11 +22,11 @@ describe('scaleRows', () => {
 		expect(scaleRows(schema, {}, 'Border Width')).toEqual([]);
 	});
 
-	it('maps id, effective label, resolved value, and userCreated in feed order', () => {
+	it('maps id, effective label, resolved value, userCreated, and overridden in feed order', () => {
 		const schema = {
 			groups: {
 				'Border Radius': [
-					{ id: 'primitive.dimension.radius.xs', label: 'XS', userCreated: false },
+					{ id: 'primitive.dimension.radius.xs', label: 'XS', userCreated: false, valueOverridden: true },
 					{ id: 'primitive.dimension.custom.radius-2', label: 'Custom', userCreated: true },
 				],
 			},
@@ -37,8 +37,20 @@ describe('scaleRows', () => {
 		};
 
 		expect(scaleRows(schema, values, 'Border Radius')).toEqual([
-			{ id: 'primitive.dimension.radius.xs', label: 'XS', value: '0.125rem', userCreated: false },
-			{ id: 'primitive.dimension.custom.radius-2', label: 'Custom', value: '0.75rem', userCreated: true },
+			{
+				id: 'primitive.dimension.radius.xs',
+				label: 'XS',
+				value: '0.125rem',
+				userCreated: false,
+				overridden: true,
+			},
+			{
+				id: 'primitive.dimension.custom.radius-2',
+				label: 'Custom',
+				value: '0.75rem',
+				userCreated: true,
+				overridden: false,
+			},
 		]);
 	});
 
