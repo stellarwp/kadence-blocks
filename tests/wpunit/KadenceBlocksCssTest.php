@@ -973,6 +973,58 @@ class KadenceBlocksCssTest extends WPTestCase {
 	}
 
 	/**
+	 * With single styles on, a side stored without a width still writes its color and line style, so the
+	 * preset's width is not left painting a border with no line style.
+	 *
+	 * @return void
+	 */
+	public function testRenderBorderStylesWritesColorAndStyleWithoutWidth(): void {
+		$this->css->render_border_styles( [
+			'borderStyle' => [
+				[
+					'top'    => [ '#ff0000', 'dashed', '' ],
+					'right'  => [ '#ff0000', 'dashed', '' ],
+					'bottom' => [ '#ff0000', 'dashed', '' ],
+					'left'   => [ '#ff0000', 'dashed', '' ],
+					'unit'   => 'px',
+				],
+			],
+		], 'borderStyle', true );
+		$output = $this->css->css_output();
+
+		$this->assertStringContainsString( 'border-top-color:#ff0000', $output,
+			'A stored color goes out on its own when there is no width' );
+		$this->assertStringContainsString( 'border-top-style:dashed', $output,
+			'A stored line style goes out on its own when there is no width' );
+	}
+
+	/**
+	 * With single styles on, a side stored with only a line style still writes that style, and an
+	 * untouched side writes nothing.
+	 *
+	 * @return void
+	 */
+	public function testRenderBorderStylesWritesStoredStyleAlone(): void {
+		$this->css->render_border_styles( [
+			'borderStyle' => [
+				[
+					'top'    => [ '', 'dotted', '' ],
+					'right'  => [ '', '', '' ],
+					'bottom' => [ '', '', '' ],
+					'left'   => [ '', '', '' ],
+					'unit'   => 'px',
+				],
+			],
+		], 'borderStyle', true );
+		$output = $this->css->css_output();
+
+		$this->assertStringContainsString( 'border-top-style:dotted', $output,
+			'A stored line style is written even with no width and no color' );
+		$this->assertStringNotContainsString( 'border-right', $output,
+			'A side with nothing stored writes nothing' );
+	}
+
+	/**
 	 * render_typography resolves aliased line-height and letter-spacing values to token
 	 * vars (no unit), and keeps numeric typography values byte-identical.
 	 *

@@ -20,62 +20,22 @@ import { pathOfAlias } from '../../../../extension/design-tokens/alias';
 import { isBackedToken } from '../../../../extension/design-tokens/backed-tokens';
 import { boundShadowToken } from '../../../../extension/design-tokens/shadow-token';
 import { shadowCss } from '../../../../extension/design-tokens/shadow-css';
-
-/**
- * The line style (`solid`, `dashed`, ...) a border side carries at a device, or '' when none is set.
- *
- * Falls back through the wider devices like the other border helpers.
- *
- * @param {string}   device The preview device: 'Desktop', 'Tablet' or 'Mobile'.
- * @param {string}   side   The border side: 'top', 'right', 'bottom' or 'left'.
- * @param {Object[]} values The desktop, tablet and mobile border attributes, in that order.
- *
- * @since TBD
- *
- * @return {string} The line style, or ''.
- */
-function borderLineStyle(device, side, [desktop, tablet, mobile]) {
-	const chain = 'Mobile' === device ? [mobile, tablet, desktop] : 'Tablet' === device ? [tablet, desktop] : [desktop];
-
-	return chain.map((value) => value?.[0]?.[side]?.[1]).find((style) => style) || '';
-}
+import { borderSideDeclarations } from '../../../../extension/design-tokens/border-sides';
 
 /**
  * Writes one border declaration per side into the rule being built.
  *
- * A side with a width carries the whole `width style color` shorthand. A side stored without a width
- * has no shorthand to write, because the width comes from the active preset, so its color and line
- * style go out on their own instead. Without them the preset's width paints a border with no line
- * style. This is the front end's own split.
- *
- * @param {Object}   css     The CSS builder, with its selector already set.
- * @param {string}   device  The preview device: 'Desktop', 'Tablet' or 'Mobile'.
- * @param {Object[]} values  The desktop, tablet and mobile border attributes, in that order.
- * @param {Object}   sides   Each side mapped to its `[shorthand, color]` pair.
+ * @param {Object}   css    The CSS builder, with its selector already set.
+ * @param {string}   device The preview device: 'Desktop', 'Tablet' or 'Mobile'.
+ * @param {Object[]} values The desktop, tablet and mobile border attributes, in that order.
+ * @param {Object}   sides  Each side mapped to its `[shorthand, color]` pair.
  *
  * @since TBD
  *
  * @return {void}
  */
 function addBorderSides(css, device, values, sides) {
-	Object.entries(sides).forEach(([side, [shorthand, color]]) => {
-		const property = `border-${side}`;
-
-		if (shorthand) {
-			css.add_property(property, shorthand);
-			return;
-		}
-
-		if (color) {
-			css.add_property(`${property}-color`, color);
-		}
-
-		const lineStyle = borderLineStyle(device, side, values);
-
-		if (lineStyle) {
-			css.add_property(`${property}-style`, lineStyle);
-		}
-	});
+	borderSideDeclarations(device, values, sides).forEach(([property, value]) => css.add_property(property, value));
 }
 
 /**
