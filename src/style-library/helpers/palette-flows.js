@@ -1,7 +1,7 @@
 /**
  * Pure orchestration for the Color Palette screen's write flows: open, activate, create, rename,
  * delete, the settings-panel save (swatch rename + recolor), swatch removal, add color, add color
- * group, and within-group reorder. Extracted out of `hooks/use-palettes` so each flow can be
+ * group, within-group reorder, and group reorder. Extracted out of `hooks/use-palettes` so each flow can be
  * exercised directly in tests without rendering a component — a flow takes the REST calls it needs
  * (imported here, so a test mocks `api/client`) plus a small set of injected callbacks for the
  * state a caller reacts to (busy, a scoped error slot, and an `onReceive`/`refreshFeed` pair the
@@ -58,6 +58,7 @@ import {
 	removeGroupFromGroups,
 	removeSwatchFromGroups,
 	renameGroupInGroups,
+	reorderGroups,
 	reorderGroupSwatches,
 	slugifyPaletteLabel,
 	stripEffectiveFlags,
@@ -496,6 +497,47 @@ export function reorderSwatchesFlow({
 		slug,
 		defaultId,
 		edit: (groups) => reorderGroupSwatches(groups, groupId, orderedTokens),
+		onReceive,
+		refreshFeed,
+		onBusy,
+		onError,
+	});
+}
+
+/**
+ * Reorder the palette's color groups — a structure edit, written to the default palette node
+ * regardless of which palette is being edited, exactly like `reorderSwatchesFlow`.
+ *
+ * @param {Object}        args
+ * @param {string}        args.namespace       The REST namespace.
+ * @param {string}        args.slug            The token library slug.
+ * @param {string}        args.defaultId       The listing's `$default` palette id.
+ * @param {Array<string>} args.orderedGroupIds The new group id order.
+ * @param {Function}      args.onReceive       Called with the write's own raw response (the flat
+ *                                             embedded-array wire rows), once the write succeeds.
+ * @param {Function}      args.refreshFeed     Replaces the feed for a slug.
+ * @param {Function}      args.onBusy          Called with a boolean as the chain starts and settles.
+ * @param {Function}      args.onError         Called with `{ message }` on failure.
+ *
+ * @since TBD
+ *
+ * @return {Promise<void>} See `writeDefaultPaletteFlow`.
+ */
+export function reorderGroupsFlow({
+	namespace,
+	slug,
+	defaultId,
+	orderedGroupIds,
+	onReceive,
+	refreshFeed,
+	onBusy,
+	onError,
+}) {
+	return writeDefaultPaletteFlow({
+		namespace,
+		slug,
+		defaultId,
+		edit: (groups) => reorderGroups(groups, orderedGroupIds),
 		onReceive,
 		refreshFeed,
 		onBusy,

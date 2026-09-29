@@ -10,29 +10,33 @@
 import './SectionHeading.scss';
 
 /**
- * Render a section heading, optionally with a trailing actions slot (e.g. an overflow menu).
+ * Render a section heading, optionally with a leading slot (e.g. a drag handle) before the title
+ * and a trailing actions slot (e.g. an edit popover) after it.
  *
- * @param {Object}                     props          The component props.
- * @param {import('react').ReactNode}  props.children The heading text.
+ * @param {Object}                     props           The component props.
+ * @param {import('react').ReactNode}  props.children  The heading text.
+ * @param {import('react').ReactNode}  [props.leading] Optional node rendered before the title on
+ *                                                      the heading row.
  * @param {import('react').ReactNode}  [props.actions] Optional trailing actions, rendered on the
- *                                                     heading row; the heading is unchanged when
- *                                                     unset.
+ *                                                      heading row; the heading is unchanged when
+ *                                                      neither slot is set.
  *
  * @since TBD
  *
  * @return {JSX.Element} The heading.
  */
-export function SectionHeading({ children, actions = null }) {
+export function SectionHeading({ children, leading = null, actions = null }) {
 	const heading = <h3 className="kadence-blocks-style-library__section-heading">{children}</h3>;
 
-	if (!actions) {
+	if (!leading && !actions) {
 		return heading;
 	}
 
 	return (
 		<div className="kadence-blocks-style-library__section-heading-row">
+			{leading}
 			{heading}
-			<div className="kadence-blocks-style-library__section-heading-actions">{actions}</div>
+			{actions && <div className="kadence-blocks-style-library__section-heading-actions">{actions}</div>}
 		</div>
 	);
 }

@@ -414,6 +414,12 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 								// Swallowed: a failure already lands in `structureError`, rendered above.
 								.catch(() => {})
 						}
+						onReorderGroups={(orderedGroupIds) =>
+							palettes
+								.reorderGroups(orderedGroupIds)
+								// Swallowed: a failure already lands in `structureError`, rendered above.
+								.catch(() => {})
+						}
 						onAdd={(groupId) =>
 							palettes
 								// Opens the new swatch's settings panel the moment it exists in the store as an

@@ -1066,6 +1066,37 @@ final class Palettes_ControllerTest extends TestCase {
 	}
 
 	/**
+	 * Writing the default palette's groups in a new order reorders every palette's effective view, because group
+	 * order is structure and structure lives only on the default node.
+	 *
+	 * @return void
+	 */
+	public function testUpdateItemReordersTheGroupsForEveryPalette(): void {
+		$this->create_custom_palette();
+
+		$request = $this->default_palette_request();
+		$groups  = array_reverse( $request->get_param( 'groups' ) );
+		$request->set_param( 'groups', $groups );
+
+		$result = $this->controller->update_item( $request );
+		$this->assertNotInstanceOf( WP_Error::class, $result );
+
+		$expected = array_column( $groups, 'id' );
+		$this->assertGreaterThan( 1, count( $expected ), 'The shipped default palette must hold more than one group for this test to mean anything.' );
+
+		foreach ( [ 'default', 'custom' ] as $id ) {
+			$read = new WP_REST_Request( WP_REST_Server::READABLE );
+			$read->set_param( 'id', $id );
+
+			$this->assertSame(
+				$expected,
+				array_column( $this->controller->get_item( $read )->get_data()['groups'], 'id' ),
+				"Palette '{$id}' should follow the default palette's group order."
+			);
+		}
+	}
+
+	/**
 	 * The default palette may still drop a swatch the baseline does NOT define — a user-added color is deletable,
 	 * which is the whole point of scoping the lock to the shipped set.
 	 *

@@ -9,6 +9,7 @@ import {
 	removeSwatchFlow,
 	renameGroupFlow,
 	renamePaletteFlow,
+	reorderGroupsFlow,
 	reorderSwatchesFlow,
 	revertSwatchFlow,
 	saveSwatchEditsFlow,
@@ -1123,6 +1124,49 @@ describe('reorderSwatchesFlow', () => {
 			'primitive.color.brand.secondary',
 			'primitive.color.brand.primary',
 		]);
+	});
+});
+
+describe('reorderGroupsFlow', () => {
+	it('writes the reordered DEFAULT node with the groups in the new order', async () => {
+		const twoGroupView = {
+			...defaultView(),
+			groups: [
+				...defaultView().groups,
+				{
+					id: 'contrast',
+					label: 'Contrast',
+					swatches: [{ token: 'primitive.color.neutral.900', label: 'Strongest', $value: '#1A202C' }],
+				},
+			],
+		};
+		client.fetchPalette.mockResolvedValue(twoGroupView);
+		client.savePalette.mockResolvedValue(listingRows());
+		const onReceive = jest.fn();
+		const refreshFeed = jest.fn().mockResolvedValue(undefined);
+
+		await reorderGroupsFlow({
+			namespace: NAMESPACE,
+			slug: SLUG,
+			defaultId: DEFAULT_ID,
+			orderedGroupIds: ['contrast', 'accent'],
+			onReceive,
+			refreshFeed,
+			onBusy: jest.fn(),
+			onError: jest.fn(),
+		});
+
+		expect(client.fetchPalette).toHaveBeenCalledWith(NAMESPACE, DEFAULT_ID, SLUG);
+		const [, id, payload] = client.savePalette.mock.calls[0];
+		expect(id).toBe(DEFAULT_ID);
+		expect(payload.groups.map((group) => group.id)).toEqual(['contrast', 'accent']);
+		expect(payload.groups[1].swatches[0]).toEqual({
+			token: 'primitive.color.brand.primary',
+			label: 'Main 1',
+			$value: '#111111',
+		});
+		expect(onReceive).toHaveBeenCalledWith(listingRows());
+		expect(refreshFeed).toHaveBeenCalledWith(SLUG);
 	});
 });
 

@@ -175,6 +175,7 @@ function makePalettes(groups) {
 		addingGroupIds: [],
 		addGroup: jest.fn(() => Promise.resolve()),
 		reorderSwatches: jest.fn(() => Promise.resolve()),
+		reorderGroups: jest.fn(() => Promise.resolve()),
 		renameGroup: jest.fn(() => Promise.resolve()),
 		removeGroup: jest.fn(() => Promise.resolve()),
 	};

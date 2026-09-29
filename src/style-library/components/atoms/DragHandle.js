@@ -18,19 +18,23 @@ import './DragHandle.scss';
 /**
  * Render the drag handle.
  *
- * @param {Object} props             The component props.
+ * @param {Object} props               The component props.
  * @param {Object} [props.handleProps] The dnd-kit listeners/attributes to spread onto the button.
+ * @param {string} [props.label]       The button's accessible name. Defaults to "Drag to reorder";
+ *                                     a list with more than one kind of draggable thing (the swatch
+ *                                     grid's groups and swatches) names the thing so the two are
+ *                                     told apart by a screen reader.
  *
  * @since TBD
  *
  * @return {JSX.Element} The drag handle button.
  */
-export function DragHandle({ handleProps }) {
+export function DragHandle({ handleProps, label }) {
 	return (
 		<button
 			type="button"
 			className="kadence-blocks-style-library__drag-handle"
-			aria-label={__('Drag to reorder', 'kadence-blocks')}
+			aria-label={label || __('Drag to reorder', 'kadence-blocks')}
 			{...handleProps}
 		>
 			<Icon icon={dragHandle} className="kadence-blocks-style-library__drag-handle-icon" />
