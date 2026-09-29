@@ -12,6 +12,8 @@ body.kadence-blocks-style-library-page {
 	// This is a structural edge (sidebar/header rules), not a form control's border — see the
 	// control-border pair below for that distinct role, which is deliberately a different gray.
 	--kb-sl-color-border: var(--kb-sl-color-gray-200);
+	--kb-sl-color-header-border: var(--kb-sl-color-theme-tint-15);
+	--kb-sl-color-separator: var(--kb-sl-color-theme-tint-25);
 	--kb-sl-color-text-primary: var(--kb-sl-color-gray-900);
 	--kb-sl-color-text-secondary: var(--kb-sl-color-gray-700);
 	--kb-sl-color-text-muted: var(--kb-sl-color-gray-700);
