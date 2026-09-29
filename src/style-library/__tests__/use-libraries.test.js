@@ -258,6 +258,61 @@ describe('useLibraries', () => {
 		expect(select.getPaletteListing(NAMESPACE, 'brand').palettes).toEqual([]);
 	});
 
+	it('names the library being opened for exactly as long as the open is in flight', async () => {
+		fetchLibraries.mockResolvedValue([ROW_A, ROW_B]);
+
+		let finishRead;
+		const refreshFeed = jest.fn(
+			() =>
+				new Promise((resolve) => {
+					finishRead = resolve;
+				})
+		);
+		const probe = mountProbe();
+		await probe.render({ slug: 'default' }, refreshFeed);
+
+		expect(probe.latest().pendingSlug).toBeNull();
+
+		let opening;
+		await act(async () => {
+			opening = probe.latest().openLibrary('brand');
+			await jest.runOnlyPendingTimersAsync();
+		});
+
+		expect(probe.latest().pendingSlug).toBe('brand');
+		expect(probe.latest().editingSlug).toBe('default');
+
+		await act(async () => {
+			finishRead();
+			await settleWithTimers(opening);
+		});
+
+		expect(probe.latest().pendingSlug).toBeNull();
+	});
+
+	it('drops the library being opened when the open fails, leaving the app where it was', async () => {
+		fetchLibraries.mockResolvedValue([ROW_A, ROW_B]);
+
+		const probe = mountProbe();
+		await probe.render(
+			{ slug: 'default' },
+			jest.fn(() => Promise.reject(new Error('nope')))
+		);
+
+		await act(() =>
+			settleWithTimers(
+				probe
+					.latest()
+					.openLibrary('brand')
+					.catch(() => {})
+			)
+		);
+
+		expect(probe.latest().pendingSlug).toBeNull();
+		expect(probe.latest().editingSlug).toBe('default');
+		expect(probe.latest().openError).not.toBeNull();
+	});
+
 	it('hands the workspace reset it was given to both the open and the delete flow', async () => {
 		fetchLibraries.mockResolvedValue([ROW_A, ROW_B]);
 		setActiveLibrary.mockResolvedValue({ slug: 'default' });

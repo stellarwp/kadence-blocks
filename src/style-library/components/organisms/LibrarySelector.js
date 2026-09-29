@@ -34,6 +34,7 @@ import { useDraftChannel } from '../../hooks/use-draft-channel';
  * @param {Array<Object>} props.libraries          The ordered library rows (`{ slug, title }`).
  * @param {string}        props.activeSlug         The slug the site renders with.
  * @param {string}        props.editingSlug        The slug the app is showing.
+ * @param {?string}       [props.pendingSlug]      The slug being opened, while a switch is in flight.
  * @param {string}        props.editingTitle       That library's display title, already resolved by the caller.
  * @param {boolean}       props.isBusy             Whether a library operation is in flight.
  * @param {boolean}       [props.isLoading]        Whether the libraries list is still loading.
@@ -53,6 +54,7 @@ export function LibrarySelector({
 	libraries,
 	activeSlug,
 	editingSlug,
+	pendingSlug,
 	editingTitle,
 	isBusy,
 	isLoading,
@@ -106,7 +108,7 @@ export function LibrarySelector({
 		<>
 			<SelectDropdown
 				size="large"
-				value={editingSlug}
+				value={pendingSlug ?? editingSlug}
 				options={options}
 				// What the toggle shows until `libraries` has loaded and an option can match
 				// `editingSlug`. The caller resolves it from the inline page feed, so the library is

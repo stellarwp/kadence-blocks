@@ -4,6 +4,11 @@
 import { __ } from '@wordpress/i18n';
 
 /**
+ * External dependencies
+ */
+import classnames from 'classnames';
+
+/**
  * Internal dependencies
  */
 import { Skeleton } from '../atoms/Skeleton';
@@ -17,9 +22,9 @@ const SKELETON_NAV_IDS = [0, 1, 2, 3, 4, 5, 6];
  * The whole-app loading placeholder: a header-bar-shaped skeleton, a sidebar-nav-shaped skeleton,
  * and a blank content area, in the real `AppShell` markup (`.kadence-blocks-style-library__header`
  * / `__sidebar` / `__content` and the region classes the first two wrap) — used both for the app's
- * cold-start gate (`StyleLibraryApp.js`, before `feed.isReady`) and, reused as-is, for `AppShell`'s
- * library-switch overlay (`isBlocked`), so both loading moments render the same shape instead of a
- * spinner.
+ * cold-start gate (`StyleLibraryApp.js`, before `feed.isReady`) and for `AppShell`'s library-switch
+ * overlay (`isBlocked`), so both loading moments render the same shape instead of a spinner. The
+ * overlay drops the header part: it sits below the real header, which stays on screen.
  *
  * The content area stays empty on purpose: the incoming screen's shape is not knowable from here —
  * a screen supplies its own skeleton once it mounts (`PresetScreen`'s row list, `ColorPaletteScreen`'s
@@ -31,30 +36,47 @@ const SKELETON_NAV_IDS = [0, 1, 2, 3, 4, 5, 6];
  * labels showing through the placeholder, and the nav column sizes itself to its own content
  * instead of the sidebar's width.
  *
+ * @param {Object}  props              The component props.
+ * @param {boolean} [props.showHeader] Whether to draw the header-bar placeholder. False when the
+ *                                     real header is already on screen above this skeleton.
+ *
  * @since TBD
  *
  * @return {JSX.Element} The shell-shaped skeleton.
  */
-export function AppShellSkeleton() {
+export function AppShellSkeleton({ showHeader = true }) {
 	return (
 		<div
-			className="kadence-blocks-style-library__shell-skeleton"
+			className={classnames('kadence-blocks-style-library__shell-skeleton', {
+				'kadence-blocks-style-library__shell-skeleton--body-only': !showHeader,
+			})}
 			role="status"
 			aria-live="polite"
 			aria-busy="true"
 			aria-label={__('Loading…', 'kadence-blocks')}
 		>
-			<header className="kadence-blocks-style-library__header">
-				<div className="kadence-blocks-style-library__header-bar">
-					<Skeleton className="kadence-blocks-style-library__skeleton--bar" style={{ width: '8rem' }} />
-					<div className="kadence-blocks-style-library__header-library">
-						<Skeleton className="kadence-blocks-style-library__skeleton--bar" style={{ width: '12rem' }} />
+			{showHeader && (
+				<header className="kadence-blocks-style-library__header">
+					<div className="kadence-blocks-style-library__header-bar">
+						{/* Logo-sized, so the bar is as tall as the real header and nothing below it
+						 * moves when the app replaces this placeholder. */}
+						<Skeleton className="kadence-blocks-style-library__shell-skeleton-logo" />
+						<Skeleton className="kadence-blocks-style-library__skeleton--bar" style={{ width: '9rem' }} />
+						<div className="kadence-blocks-style-library__header-library">
+							<Skeleton
+								className="kadence-blocks-style-library__skeleton--bar"
+								style={{ width: '10rem' }}
+							/>
+						</div>
+						<div className="kadence-blocks-style-library__header-actions">
+							<Skeleton
+								className="kadence-blocks-style-library__skeleton--bar"
+								style={{ width: '6rem' }}
+							/>
+						</div>
 					</div>
-					<div className="kadence-blocks-style-library__header-actions">
-						<Skeleton className="kadence-blocks-style-library__skeleton--bar" style={{ width: '6rem' }} />
-					</div>
-				</div>
-			</header>
+				</header>
+			)}
 			<div className="kadence-blocks-style-library__body">
 				<nav className="kadence-blocks-style-library__sidebar">
 					<div className="kadence-blocks-style-library__nav">

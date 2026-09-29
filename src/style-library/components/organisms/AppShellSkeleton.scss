@@ -25,3 +25,19 @@
 		min-height: calc(100vh - 46px);
 	}
 }
+
+// The library-switch overlay: it fills the body under the real header, which is shorter than the
+// viewport-height floor above, so that floor would push it past the bottom of the frame.
+.kadence-blocks-style-library__shell-skeleton--body-only {
+	min-height: 0;
+
+	@media (max-width: 782px) {
+		min-height: 0;
+	}
+}
+
+.kadence-blocks-style-library__shell-skeleton-logo {
+	flex: 0 0 auto;
+	width: var(--kb-sl-size-header-logo);
+	height: var(--kb-sl-size-header-logo);
+}

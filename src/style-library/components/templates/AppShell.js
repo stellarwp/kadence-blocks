@@ -22,9 +22,9 @@ import { AppShellSkeleton } from '../organisms/AppShellSkeleton';
  * @param {?JSX.Element} props.sidebar        The left navigation content, or null when empty.
  * @param {?JSX.Element} props.content        The active screen, or null when empty.
  * @param {?JSX.Element} props.settingsPanel  The settings panel, or null when closed.
- * @param {boolean}      [props.isBlocked]    Whether to cover the frame with a busy scrim, for a
- *                                            change that replaces the app's whole content rather
- *                                            than one region of it.
+ * @param {boolean}      [props.isBlocked]    Whether to cover everything below the header with a
+ *                                            busy scrim, for a change that replaces the app's
+ *                                            whole content rather than one region of it.
  *
  * @since TBD
  *
@@ -44,15 +44,17 @@ export function AppShell({ header, sidebar, content, settingsPanel, isBlocked })
 					{content}
 				</main>
 				{settingsPanel && <aside className="kadence-blocks-style-library__settings">{settingsPanel}</aside>}
+				{isBlocked && (
+					/* Inside the body, so the header stays on screen: almost nothing in it changes
+					 * with the library, and a placeholder drawn over it only made the bar flicker.
+					 * The header's controls do describe the library on its way out, but each one
+					 * already disables itself through the caller's own busy flag, so none of them
+					 * can start a second change against stale state. */
+					<div className="kadence-blocks-style-library__blocker">
+						<AppShellSkeleton showHeader={false} />
+					</div>
+				)}
 			</div>
-			{isBlocked && (
-				/* Covers the header too, not just the content column: while the app is being
-				 * repopulated, the header's own controls describe the library that is on its way out,
-				 * so leaving them live would let a second change start against stale state. */
-				<div className="kadence-blocks-style-library__blocker">
-					<AppShellSkeleton />
-				</div>
-			)}
 		</div>
 	);
 }
