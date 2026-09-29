@@ -184,4 +184,41 @@ describe('BorderColorField', () => {
 			'Border Color'
 		);
 	});
+
+	/**
+	 * An unset row falls back to the preset's color: the swatch paints it and the accessible name says
+	 * "Default", so a fresh block does not show an empty swatch beside a border it already paints.
+	 *
+	 * @return {void}
+	 */
+	it('shows the default color and names it Default while unset', () => {
+		render({ value: '', defaultValue: '{semantic.color.accent.main}' });
+
+		expect(container.querySelector('.kb-color-swatch').style.background).toBe('rgb(49, 130, 206)');
+		expect(container.querySelector('.kb-color-swatch-control__button').getAttribute('aria-label')).toBe(
+			'Border Color: Default'
+		);
+	});
+
+	/**
+	 * A color picked over the default replaces it in the swatch and the accessible name.
+	 *
+	 * @return {void}
+	 */
+	it('shows the picked color over the default once set', () => {
+		render({ value: '#171717', defaultValue: '{semantic.color.accent.main}' });
+
+		expect(container.querySelector('.kb-color-swatch').style.background).toBe('rgb(23, 23, 23)');
+	});
+
+	/**
+	 * Clear stays disabled while only the default is showing, so the popover treats the row as unset.
+	 *
+	 * @return {void}
+	 */
+	it('keeps Clear disabled while only the default is showing', () => {
+		render({ value: '', defaultValue: '{semantic.color.accent.main}' });
+
+		expect(container.querySelector('.kb-color-control__clear').disabled).toBe(true);
+	});
 });

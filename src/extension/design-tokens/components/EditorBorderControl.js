@@ -237,6 +237,8 @@ function toNativeBorder(value, unit = 'px') {
  *                                         height, per its own `TokenSelector`'s summary/fallback
  *                                         logic). One scalar for every side: presets set a single
  *                                         border width, never a per-side default.
+ * @param {?string}   [props.defaultColor] What the color axis falls back to when unset — the active
+ *                                         preset's border color, shown muted as "Default".
  * @param {?Function} [props.renderColor]  The block's existing color field for `value.color`.
  * @param {?Object}   [props.state]        The block's own binding state (`{ bound, overridden }`).
  * @param {?Function} [props.onReset]      Reset handler for the indicator.
@@ -257,6 +259,7 @@ export function EditorBorderControl({
 	label,
 	widthTokens = [],
 	defaultValue,
+	defaultColor,
 	renderColor,
 	state = null,
 	onReset = null,
@@ -322,6 +325,7 @@ export function EditorBorderControl({
 					onChange={(next) => activeSetter(toNativeBorder(next, activeUnit))}
 					widthTokens={widthTokens}
 					defaultValue={defaultValue}
+					defaultColor={defaultColor}
 					// The editor's own mark, not this library's: it is the same indicator the block's other
 					// controls show, and two marks meaning the same thing should not look different.
 					indicator={<TokenIndicator state={state} onReset={onReset} />}

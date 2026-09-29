@@ -30,6 +30,8 @@ import { resolveColorLiteral } from '../color-literal';
  * @param {Function}  props.onChange   Called with the next color scalar.
  * @param {?string}   [props.label]    The row's own bare side name (e.g. "top"), or `null` while
  *                                      linked.
+ * @param {*}         [props.defaultValue] What the row falls back to when unset, shown muted as
+ *                                          "Default".
  * @param {boolean}   [props.disabled] Whether the row is read-only.
  * @param {Array}     props.groups     The block's effective palette groups, from `useColorGroups()`.
  *
@@ -37,11 +39,12 @@ import { resolveColorLiteral } from '../color-literal';
  *
  * @return {JSX.Element} The rendered color field.
  */
-export function BorderColorField({ value, onChange, label, disabled = false, groups }) {
+export function BorderColorField({ value, onChange, label, defaultValue, disabled = false, groups }) {
 	return (
 		<ColorSwatchControl
 			label={borderColorLabel(label)}
 			value={value || ''}
+			defaultValue={defaultValue}
 			groups={groups}
 			onPick={onChange}
 			onCustom={onChange}

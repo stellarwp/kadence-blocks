@@ -281,6 +281,18 @@ describe('EditorBorderControl native <-> control value bridging', () => {
 	});
 
 	/**
+	 * `defaultColor` is passed straight through to `BorderControl`, which hands it to `renderColor` as
+	 * the color row's `defaultValue` — the caller resolves the active preset's border color.
+	 *
+	 * @return {void}
+	 */
+	it('passes defaultColor straight through to BorderControl', () => {
+		const { borderControl } = renderEditorBorderControl({ defaultColor: '{semantic.color.button-border}' });
+
+		expect(borderControl.props.defaultColor).toBe('{semantic.color.button-border}');
+	});
+
+	/**
 	 * A `defaultValue` of `0` (a real, meaningful preset value) passes through unchanged rather than
 	 * being falsy-collapsed to `undefined` on the way to `BorderControl`.
 	 *
