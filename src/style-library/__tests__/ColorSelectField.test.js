@@ -120,6 +120,102 @@ function render(props = {}) {
 	container.remove();
 }
 
+describe('ColorSelectField gradient chip', () => {
+	const GRADIENT = 'linear-gradient(135deg,#000 0%,#fff 100%)';
+
+	/**
+	 * Render the field and keep it mounted so the DOM can be read, then unmount.
+	 *
+	 * @param {Object} props The component props.
+	 *
+	 * @since TBD
+	 *
+	 * @return {string} The rendered markup.
+	 */
+	function renderMarkup(props) {
+		const container = document.createElement('div');
+		document.body.appendChild(container);
+		const root = createRoot(container);
+
+		act(() =>
+			root.render(
+				createElement(ColorSelectField, {
+					field: { label: 'Background' },
+					value: '',
+					onChange: jest.fn(),
+					...props,
+				})
+			)
+		);
+
+		const html = container.innerHTML;
+
+		act(() => root.unmount());
+		container.remove();
+
+		return html;
+	}
+
+	/**
+	 * A gradient default renders as a gradient chip in the control's place, not as a black swatch.
+	 *
+	 * @return {void}
+	 */
+	it('renders a read-only gradient chip when the row falls back to a gradient', () => {
+		const html = renderMarkup({ field: { label: 'Background', defaultValue: GRADIENT } });
+
+		expect(html).toContain('kadence-blocks-style-library__gradient-chip');
+		expect(html).toContain('From theme');
+		expect(capturedProps).toBeNull();
+	});
+
+	/**
+	 * A gradient the row itself stores is a saved override, so it keeps the color control (which can
+	 * change or clear it) instead of the read-only chip.
+	 *
+	 * @return {void}
+	 */
+	it('keeps the color control for a stored gradient value', () => {
+		const html = renderMarkup({ value: GRADIENT });
+
+		expect(html).not.toContain('kadence-blocks-style-library__gradient-chip');
+		expect(capturedProps.value).toBe(GRADIENT);
+	});
+
+	/**
+	 * A stored gradient stays editable even when the row would fall back to a gradient once cleared.
+	 *
+	 * @return {void}
+	 */
+	it('keeps the color control for a stored gradient over a gradient default', () => {
+		const onChange = jest.fn();
+		const html = renderMarkup({
+			field: { label: 'Background', defaultValue: 'linear-gradient(90deg,#111 0%,#222 100%)' },
+			value: GRADIENT,
+			onChange,
+		});
+
+		expect(html).not.toContain('kadence-blocks-style-library__gradient-chip');
+		expect(capturedProps.value).toBe(GRADIENT);
+
+		capturedProps.onClear();
+
+		expect(onChange).toHaveBeenCalledWith('');
+	});
+
+	/**
+	 * A solid default keeps the color control.
+	 *
+	 * @return {void}
+	 */
+	it('keeps the color control for a solid default', () => {
+		const html = renderMarkup({ field: { label: 'Background', defaultValue: '#2B6CB0' } });
+
+		expect(html).not.toContain('kadence-blocks-style-library__gradient-chip');
+		expect(capturedProps.defaultValue).toBe('#2B6CB0');
+	});
+});
+
 describe('toControlValue', () => {
 	it('wraps a bare token id into the bracket alias ColorControl expects', () => {
 		expect(toControlValue('semantic.color.accent.main')).toBe('{semantic.color.accent.main}');

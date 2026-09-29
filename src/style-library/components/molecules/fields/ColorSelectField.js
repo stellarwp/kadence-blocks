@@ -24,7 +24,18 @@
  * editor paints an unlisted alias through its `--kb-token--*` custom properties, but this page
  * enqueues none of them, so an alias the palette groups do not list (a preset's
  * `semantic.color.button-*` binding) can only paint from the library's own resolved literal.
+ *
+ * A gradient FALLBACK is the one value the control does not get: it comes from the theme (a Customizer
+ * button background) rather than from any pick made here, and the control's muted default swatch has no
+ * gradient of its own to show. While the row stores nothing, it renders a read-only gradient chip in the
+ * control's place, so the theme's look is shown as it is. A gradient the row itself stores stays with the
+ * control: it is a saved override like any other, and Clear is the only way back to the theme's value.
  */
+
+/**
+ * WordPress dependencies
+ */
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -33,6 +44,36 @@ import { ColorControl } from '../../../../token-controls';
 import { resolveLiteral, toControlValue, toStoredValue } from '../../../helpers/color-values';
 import { resolvedTokenValue } from '../../../helpers/tokens';
 import { useActivePaletteGroups } from '../../../hooks/use-active-palette-groups';
+import { isGradientValue } from './ColorGradientPicker';
+import './ColorSelectField.scss';
+
+/**
+ * The read-only row a gradient renders as: the chip, the row's label and a muted "From theme", laid out
+ * with the control's own trigger classes so it lines up with the color rows around it.
+ *
+ * @param {Object} props          The component props.
+ * @param {string} props.label    The row's label.
+ * @param {string} props.gradient The CSS gradient.
+ *
+ * @since TBD
+ *
+ * @return {JSX.Element} The row.
+ */
+function GradientRow({ label, gradient }) {
+	return (
+		<div className="kb-color-control">
+			<div className="kb-color-control__trigger">
+				<button type="button" className="kb-color-control__trigger-button" disabled>
+					<span className="kadence-blocks-style-library__gradient-chip" style={{ background: gradient }} />
+					<span className="kb-color-control__label">{label}</span>
+					<span className="kb-color-control__value kb-color-control__value--default">
+						{__('From theme', 'kadence-blocks')}
+					</span>
+				</button>
+			</div>
+		</div>
+	);
+}
 
 /**
  * Render a color-select field.
@@ -53,6 +94,12 @@ import { useActivePaletteGroups } from '../../../hooks/use-active-palette-groups
  */
 export function ColorSelectField({ field, value, onChange }) {
 	const groups = useActivePaletteGroups();
+
+	// Only a gradient the row FALLS BACK to is read-only; a stored gradient is an override the user must
+	// still be able to change or clear, so it goes through the control.
+	if (!value && isGradientValue(field.defaultValue)) {
+		return <GradientRow label={field.label} gradient={field.defaultValue} />;
+	}
 
 	return (
 		<ColorControl

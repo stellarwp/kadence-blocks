@@ -1,0 +1,10 @@
+// The gradient chip a color row shows when the theme paints the row with a gradient: the same
+// footprint as the round swatch the trigger otherwise shows, squared so a gradient reads as one.
+.kadence-blocks-style-library__gradient-chip {
+	display: inline-flex;
+	flex: 0 0 auto;
+	width: 20px;
+	height: 20px;
+	border: 1px solid rgba(0, 0, 0, 0.1);
+	border-radius: 0.165rem;
+}
