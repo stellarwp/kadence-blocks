@@ -30,6 +30,7 @@ jest.mock('../../token-picker', () => ({
 import { applyFilters } from '@wordpress/hooks';
 import { pickableTokensForControl } from '../../token-picker';
 import { registerComponentTokenFilters } from '../register-component-filters';
+import { TokenIndicator } from '../../token-indicators/components/TokenIndicator';
 // Through the barrel, the same path the production file uses: importing the implementation files
 // directly would let this pass while a missing or renamed barrel export broke the real import.
 import {
@@ -281,6 +282,50 @@ describe('editor seam', () => {
 
 describe('actions seam', () => {
 	/**
+	 * A block that supplies binding state gets the preset indicator in the font-family header, beside
+	 * the label. Font family is not token-backed, but a preset can still set one, so there is a preset
+	 * value to match or diverge from and the mark reports which.
+	 *
+	 * @return {void}
+	 */
+	it('renders the binding indicator in the font-family header when the block supplies binding state', () => {
+		const onReset = jest.fn();
+		const actions = applyFilters(ACTIONS_HOOK, [], {
+			control: 'fontFamily',
+			index: null,
+			value: 'Inter',
+			onChange: jest.fn(),
+			context: {
+				blockName: 'kadence/advancedheading',
+				state: { bound: true, overridden: true },
+				onReset,
+			},
+		});
+
+		expect(actions).toHaveLength(1);
+		expect(actions[0].type).toBe(TokenIndicator);
+		expect(actions[0].props.state).toEqual({ bound: true, overridden: true });
+		expect(actions[0].props.onReset).toBe(onReset);
+	});
+
+	/**
+	 * A block whose preset surface carries no family entry passes no state, and the header gets no mark.
+	 *
+	 * @return {void}
+	 */
+	it('adds no font-family header action when the block supplies no binding state', () => {
+		const actions = applyFilters(ACTIONS_HOOK, [], {
+			control: 'fontFamily',
+			index: null,
+			value: 'Inter',
+			onChange: jest.fn(),
+			context: { blockName: 'kadence/singlebtn' },
+		});
+
+		expect(actions).toEqual([]);
+	});
+
+	/**
 	 * A field control carries its token affordance in the editor seam, so it appends nothing to the
 	 * header actions.
 	 *
@@ -368,50 +413,6 @@ describe('font-family seam', () => {
 		expect(editor.props.value).toBe('Inter');
 		expect(editor.props.favorites).toEqual(['Georgia']);
 		expect(editor.props.manageUrl).toBe('https://example.test/manage');
-	});
-
-	/**
-	 * A block that supplies binding state gets the preset indicator beside the field. Font family is
-	 * not token-backed, but a preset can still set one, so there is a preset value to match or diverge
-	 * from and the mark reports which.
-	 *
-	 * @return {void}
-	 */
-	it('renders the binding indicator when the block supplies binding state', () => {
-		const onReset = jest.fn();
-		const editor = applyFilters(EDITOR_HOOK, 'DEFAULT', {
-			control: 'fontFamily',
-			index: null,
-			value: 'Inter',
-			onChange: jest.fn(),
-			context: {
-				blockName: 'kadence/advancedheading',
-				state: { bound: true, overridden: true },
-				onReset,
-			},
-		});
-
-		expect(editor.props.indicator).not.toBeNull();
-		expect(editor.props.indicator.props.state).toEqual({ bound: true, overridden: true });
-		expect(editor.props.indicator.props.onReset).toBe(onReset);
-	});
-
-	/**
-	 * A block whose preset surface carries no family entry passes no state, and the field renders
-	 * exactly as it did before the indicator existed.
-	 *
-	 * @return {void}
-	 */
-	it('renders no indicator when the block supplies no binding state', () => {
-		const editor = applyFilters(EDITOR_HOOK, 'DEFAULT', {
-			control: 'fontFamily',
-			index: null,
-			value: 'Inter',
-			onChange: jest.fn(),
-			context: { blockName: 'kadence/singlebtn' },
-		});
-
-		expect(editor.props.indicator).toBeNull();
 	});
 
 	/**

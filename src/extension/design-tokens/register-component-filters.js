@@ -227,12 +227,6 @@ function fontFamilyEditor(defaultEditor, ctx) {
 			catalogOptions={fontCatalogOptions()}
 			manageUrl={favoriteFontsManageUrl()}
 			inheritedLabel={ctx.context?.inheritedDefault}
-			// A family is not a token, but a preset can still set one, so the field has a preset value to
-			// match or diverge from. The block passes its own binding state the same way it does for every
-			// other mapped control; a block that passes none gets no mark, exactly as before.
-			indicator={
-				ctx.context?.state ? <TokenIndicator state={ctx.context.state} onReset={ctx.context.onReset} /> : null
-			}
 			onPick={async (family) => {
 				await loadFontFamily(family, {
 					doc: canvasDocument(),
@@ -259,6 +253,29 @@ function canvasDocument() {
 }
 
 /**
+ * Actions seam, font-family case: the preset binding mark, in the header beside the "Font Family"
+ * label, the same place every other mapped control carries it.
+ *
+ * A family is not a token, but a preset can still set one, so the field has a preset value to match
+ * or diverge from and the mark reports which. The block supplies its own binding state through
+ * `context`; a block whose preset surface has no family entry passes none and gets no mark.
+ *
+ * @param {Array}  actions The default action nodes (empty).
+ * @param {Object} ctx     Neutral seam context: { control, value, onChange, context }.
+ *
+ * @since TBD
+ *
+ * @return {Array} The action nodes to render.
+ */
+function fontFamilyActions(actions, ctx) {
+	if (!ctx.context?.blockName || !ctx.context?.state) {
+		return actions;
+	}
+
+	return [...actions, <TokenIndicator key="kb-token" state={ctx.context.state} onReset={ctx.context.onReset} />];
+}
+
+/**
  * Actions seam: the whole-value box-shadow control has no per-slot field, so its token affordance lives
  * beside the label — a `TokenChip` when a token is set (unlink clears it), else a `TokenPickerButton`.
  * Field controls carry their affordance in the editor seam, so they append nothing here.
@@ -271,6 +288,10 @@ function canvasDocument() {
  * @return {Array} The action nodes to render.
  */
 function actionsFilter(actions, ctx) {
+	if (ctx.control === 'fontFamily') {
+		return fontFamilyActions(actions, ctx);
+	}
+
 	if (ctx.control !== 'boxShadow') {
 		return actions;
 	}
