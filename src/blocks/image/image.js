@@ -50,6 +50,7 @@ import {
 	getFontSizeOptionOutput,
 	getSpacingOptionOutput,
 	getBorderStyle,
+	getBorderColor,
 } from '@kadence/helpers';
 import { isExternalImage } from './edit';
 import metadata from './block.json';
@@ -72,6 +73,7 @@ import { ShadowColorField } from '../../extension/design-tokens/components/shado
 import { useColorGroups } from '../../extension/design-tokens/hooks/use-color-groups';
 import { resolveColorLiteral } from '../../extension/design-tokens/color-literal';
 import { tokenDimension } from '../../extension/design-tokens/token-dimension';
+import { borderSideDeclarations } from '../../extension/design-tokens/border-sides';
 import { pickableTokensForControl, pickableTokensForKey } from '../../extension/token-picker';
 import { ColorControl } from '../../token-controls';
 /**
@@ -396,6 +398,26 @@ export default function Image({
 		borderStyle,
 		tabletBorderStyle,
 		mobileBorderStyle
+	);
+	const previewBorderDeclarations = Object.fromEntries(
+		borderSideDeclarations(previewDevice, [borderStyle, tabletBorderStyle, mobileBorderStyle], {
+			top: [
+				previewBorderTopStyle,
+				getBorderColor(previewDevice, 'top', borderStyle, tabletBorderStyle, mobileBorderStyle),
+			],
+			right: [
+				previewBorderRightStyle,
+				getBorderColor(previewDevice, 'right', borderStyle, tabletBorderStyle, mobileBorderStyle),
+			],
+			bottom: [
+				previewBorderBottomStyle,
+				getBorderColor(previewDevice, 'bottom', borderStyle, tabletBorderStyle, mobileBorderStyle),
+			],
+			left: [
+				previewBorderLeftStyle,
+				getBorderColor(previewDevice, 'left', borderStyle, tabletBorderStyle, mobileBorderStyle),
+			],
+		}).map(([property, value]) => [property.replace(/-([a-z])/g, (match, letter) => letter.toUpperCase()), value])
 	);
 	const previewRadiusTop = getPreviewSize(
 		previewDevice,
@@ -1935,10 +1957,7 @@ export default function Image({
 							? getSpacingOptionOutput(previewPaddingLeft, paddingUnit)
 							: undefined,
 
-					borderTop: previewBorderTopStyle ? previewBorderTopStyle : undefined,
-					borderRight: previewBorderRightStyle ? previewBorderRightStyle : undefined,
-					borderBottom: previewBorderBottomStyle ? previewBorderBottomStyle : undefined,
-					borderLeft: previewBorderLeftStyle ? previewBorderLeftStyle : undefined,
+					...previewBorderDeclarations,
 					borderTopLeftRadius:
 						'' !== previewRadiusTop
 							? tokenDimension(previewRadiusTop, borderRadiusUnit ? borderRadiusUnit : 'px')
