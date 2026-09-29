@@ -14,7 +14,6 @@ import {
 	getBorderColor,
 	uniqueIdHelper,
 	getInQueryBlock,
-	compareVersions,
 } from '@kadence/helpers';
 
 import {
@@ -727,9 +726,6 @@ export default function KadenceButtonEdit(props) {
 		}
 	}, [isSelected]);
 
-	const themeVersion = window?.kadence_blocks_params?.tVersion ? window.kadence_blocks_params.tVersion : '1.0.0';
-	const supportsSecondaryButton = compareVersions(themeVersion, '1.4.0') >= 0;
-
 	function startEditing(event) {
 		event.preventDefault();
 		setIsEditingURL(true);
@@ -759,18 +755,6 @@ export default function KadenceButtonEdit(props) {
 	const defineWidthType = (type) => {
 		setAttributes({ widthType: type });
 	};
-	const buttonStyleOptions = supportsSecondaryButton
-		? [
-				{ value: 'fill', label: __('Fill', 'kadence-blocks') },
-				{ value: 'outline', label: __('Outline', 'kadence-blocks') },
-				{ value: 'inherit', label: __('Theme Base', 'kadence-blocks') },
-				{ value: 'inherit-secondary', label: __('Theme Secondary', 'kadence-blocks') },
-			]
-		: [
-				{ value: 'fill', label: __('Fill', 'kadence-blocks') },
-				{ value: 'outline', label: __('Outline', 'kadence-blocks') },
-				{ value: 'inherit', label: __('Theme Base', 'kadence-blocks') },
-			];
 	const previewMarginTop = getPreviewSize(
 		previewDevice,
 		undefined !== margin?.[0] ? margin[0] : '',
@@ -1137,18 +1121,6 @@ export default function KadenceButtonEdit(props) {
 											context={context}
 										/>
 									)}
-									<KadenceRadioButtons
-										value={inheritStyles}
-										className={'button-style-inherit-control'}
-										options={buttonStyleOptions}
-										hideLabel={false}
-										label={__('Button Inherit Styles', 'kadence-blocks')}
-										onChange={(value) => {
-											setAttributes({
-												inheritStyles: value,
-											});
-										}}
-									/>
 									{showSettings('sizeSettings', 'kadence/advancedbtn') && (
 										<>
 											<KadenceRadioButtons
