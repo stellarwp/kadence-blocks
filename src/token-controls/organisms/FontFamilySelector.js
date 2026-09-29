@@ -171,9 +171,7 @@ export function FontFamilySelector({
 									{fallback}
 								</span>
 							) : (
-								<span className="kadence-token-field__value" style={{ fontFamily: family }}>
-									{labelFor(family)}
-								</span>
+								<span className="kadence-token-field__label">{labelFor(family)}</span>
 							)}
 						</Button>
 					</StaleTokenTooltip>

@@ -90,17 +90,19 @@ function renderSelector(props = {}) {
 
 describe('FontFamilySelector trigger', () => {
 	/**
-	 * A set family names itself on the trigger, and is previewed in its own face so the field reads
-	 * as the font it selects rather than only saying so.
+	 * A set family names itself on the trigger in the control's own face and full color, so it never
+	 * reads like the muted inherited default.
 	 *
 	 * @return {void}
 	 */
-	it('shows the family, rendered in that family', () => {
+	it('shows the family in the control face, not muted', () => {
 		const trigger = renderSelector({ value: 'Abril Fatface' });
-		const value = trigger.querySelector('.kadence-token-field__value');
+		const label = trigger.querySelector('.kadence-token-field__label');
 
-		expect(value.textContent).toBe('Abril Fatface');
-		expect(value.style.fontFamily).toBe('Abril Fatface');
+		expect(label.textContent).toBe('Abril Fatface');
+		expect(label.style.fontFamily).toBe('');
+		expect(label.className).not.toContain('kadence-token-field__label--default');
+		expect(trigger.querySelector('.kadence-token-field__value')).toBeNull();
 	});
 
 	/**
@@ -166,7 +168,7 @@ describe('FontFamilySelector stored-value label', () => {
 			],
 		});
 
-		expect(trigger.querySelector('.kadence-token-field__value').textContent).toBe('Inherit Heading Font Family');
+		expect(trigger.querySelector('.kadence-token-field__label').textContent).toBe('Inherit Heading Font Family');
 	});
 
 	/**
@@ -178,7 +180,7 @@ describe('FontFamilySelector stored-value label', () => {
 	it('falls back to the stored value when no option claims it', () => {
 		const trigger = renderSelector({ value: 'Abril Fatface', catalogOptions: [] });
 
-		expect(trigger.querySelector('.kadence-token-field__value').textContent).toBe('Abril Fatface');
+		expect(trigger.querySelector('.kadence-token-field__label').textContent).toBe('Abril Fatface');
 	});
 });
 
@@ -389,7 +391,7 @@ describe('FontFamilySelector stale theme reference', () => {
 		});
 
 		expect(trigger.querySelector('.kadence-token-field__stale')).toBeNull();
-		expect(trigger.querySelector('.kadence-token-field__value').textContent).toBe('Inherit Heading Font Family');
+		expect(trigger.querySelector('.kadence-token-field__label').textContent).toBe('Inherit Heading Font Family');
 	});
 
 	/**
