@@ -13,6 +13,7 @@ import classnames from 'classnames';
  */
 import './AppShell.scss';
 import { AppShellSkeleton } from '../organisms/AppShellSkeleton';
+import { ScreenHeaderSlot, ScreenHeaderSlotProvider } from '../organisms/ScreenHeader';
 
 /**
  * Render the app shell layout.
@@ -32,29 +33,32 @@ import { AppShellSkeleton } from '../organisms/AppShellSkeleton';
  */
 export function AppShell({ header, sidebar, content, settingsPanel, isBlocked }) {
 	return (
-		<div className="kadence-blocks-style-library__shell">
-			<header className="kadence-blocks-style-library__header">{header}</header>
-			<div className="kadence-blocks-style-library__body">
-				<nav className="kadence-blocks-style-library__sidebar">{sidebar}</nav>
-				<main
-					className={classnames('kadence-blocks-style-library__content', {
-						'kadence-blocks-style-library__content--has-settings': Boolean(settingsPanel),
-					})}
-				>
-					{content}
-				</main>
-				{settingsPanel && <aside className="kadence-blocks-style-library__settings">{settingsPanel}</aside>}
-				{isBlocked && (
-					/* Inside the body, so the header stays on screen: almost nothing in it changes
-					 * with the library, and a placeholder drawn over it only made the bar flicker.
-					 * The header's controls do describe the library on its way out, but each one
-					 * already disables itself through the caller's own busy flag, so none of them
-					 * can start a second change against stale state. */
-					<div className="kadence-blocks-style-library__blocker">
-						<AppShellSkeleton showHeader={false} />
-					</div>
-				)}
+		<ScreenHeaderSlotProvider>
+			<div className="kadence-blocks-style-library__shell">
+				<header className="kadence-blocks-style-library__header">{header}</header>
+				<div className="kadence-blocks-style-library__body">
+					<nav className="kadence-blocks-style-library__sidebar">{sidebar}</nav>
+					<main
+						className={classnames('kadence-blocks-style-library__content', {
+							'kadence-blocks-style-library__content--has-settings': Boolean(settingsPanel),
+						})}
+					>
+						<ScreenHeaderSlot />
+						<div className="kadence-blocks-style-library__screen-body">{content}</div>
+					</main>
+					{settingsPanel && <aside className="kadence-blocks-style-library__settings">{settingsPanel}</aside>}
+					{isBlocked && (
+						/* Inside the body, so the header stays on screen: almost nothing in it changes
+						 * with the library, and a placeholder drawn over it only made the bar flicker.
+						 * The header's controls do describe the library on its way out, but each one
+						 * already disables itself through the caller's own busy flag, so none of them
+						 * can start a second change against stale state. */
+						<div className="kadence-blocks-style-library__blocker">
+							<AppShellSkeleton showHeader={false} />
+						</div>
+					)}
+				</div>
 			</div>
-		</div>
+		</ScreenHeaderSlotProvider>
 	);
 }

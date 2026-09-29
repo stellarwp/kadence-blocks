@@ -108,9 +108,9 @@ export function ScaleScreen({ config, route, navigate, library }) {
 			<ScreenHeader
 				title={config.title}
 				description={<ScreenDescription screenId={route.screen} />}
-				primaryAction={config.renderToolbar ? null : addAction}
+				primaryAction={addAction}
 			/>
-			{config.renderToolbar && config.renderToolbar({ addAction, isBusy: scale.isBusy })}
+			{config.renderToolbar && config.renderToolbar({ isBusy: scale.isBusy })}
 			{scale.addError && (
 				<Notice status="error" isDismissible onRemove={scale.clearAddError}>
 					{scale.addError.message}
