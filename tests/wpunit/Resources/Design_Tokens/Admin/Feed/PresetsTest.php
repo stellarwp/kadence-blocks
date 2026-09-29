@@ -24,6 +24,12 @@ final class PresetsTest extends TestCase {
 		$this->resolver = $this->container->get( Preset_Resolver::class );
 	}
 
+	/**
+	 * The feed carries the shipped Button's picker label, default, preset names (shipped first, then the
+	 * theme's) and bound properties, with the structure and the resolved values the Style Library reads.
+	 *
+	 * @return void
+	 */
 	public function testItBuildsStructureAndResolvedValuesForTheShippedButton(): void {
 		/** @var Token_Registry $registry */
 		$registry = $this->container->get( Token_Registry::class );
@@ -37,7 +43,7 @@ final class PresetsTest extends TestCase {
 
 		$this->assertSame( 'Style', $button['label'] );
 		$this->assertSame( 'default', $button['default'] );
-		$this->assertSame( [ 'default', 'outline' ], $button['names'] );
+		$this->assertSame( [ 'default', 'outline', 'theme-base' ], $button['names'] );
 		$this->assertContains( 'button-bg', $button['properties'] );
 
 		// Structure: bindings carry the token reference / inline targets.

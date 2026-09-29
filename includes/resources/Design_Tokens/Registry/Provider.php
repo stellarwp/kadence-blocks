@@ -7,7 +7,9 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Baseline\Json_Baseline_Docume
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Contracts\Baseline_Document;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provider as Provider_Contract;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Mutator;
+use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Baseline\Theme_Button_Presets_Baseline_Document;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Baseline\Theme_Style_Guide_Baseline_Document;
+use KadenceWP\KadenceBlocks\Design_Tokens\Theme_Buttons\Theme_Button_Styles_Overlay;
 use KadenceWP\KadenceBlocks\Design_Tokens\Theme_Style_Guide\Style_Guide_Overlay;
 
 /**
@@ -27,23 +29,29 @@ final class Provider extends Provider_Contract {
 		$this->container->singleton( Token_Registry::class, Token_Registry::class );
 
 		// Bind the baseline contract to the shipped, read-only DTCG document (baseline.json), decorated with
-		// the active theme's Style Guide so resolution starts from the site's existing look. Every declared
-		// token must still have a matching shipped entry or the guard fails closed — the decorator's has()
-		// delegates. The version keys the decoded-document cache, so a baseline shipped with a new plugin
-		// build invalidates it. Bound lazily: the theme and the declarations are not loaded when providers
-		// register, and the first document() read happens on init or later.
+		// the active theme's Style Guide so resolution starts from the site's existing look, then with the
+		// theme's button styles as Button presets. Every declared token must still have a matching shipped
+		// entry or the guard fails closed — both decorators' has() delegate. The version keys the
+		// decoded-document cache, so a baseline shipped with a new plugin build invalidates it. Bound lazily:
+		// the theme and the declarations are not loaded when providers register, and the first document()
+		// read happens on init or later.
 		$this->container->singleton(
 			Baseline_Document::class,
 			function (): Baseline_Document {
 				/** @var Style_Guide_Overlay $overlay */
 				$overlay = $this->container->get( Style_Guide_Overlay::class );
+				/** @var Theme_Button_Styles_Overlay $buttons */
+				$buttons = $this->container->get( Theme_Button_Styles_Overlay::class );
 				/** @var Mutator $mutator */
 				$mutator = $this->container->get( Mutator::class );
 
-				return new Theme_Style_Guide_Baseline_Document(
-					new Json_Baseline_Document( __DIR__ . '/Baseline/baseline.json', KADENCE_BLOCKS_VERSION ),
-					$overlay,
-					$mutator
+				return new Theme_Button_Presets_Baseline_Document(
+					new Theme_Style_Guide_Baseline_Document(
+						new Json_Baseline_Document( __DIR__ . '/Baseline/baseline.json', KADENCE_BLOCKS_VERSION ),
+						$overlay,
+						$mutator
+					),
+					$buttons
 				);
 			}
 		);

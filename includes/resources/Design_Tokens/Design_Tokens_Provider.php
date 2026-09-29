@@ -19,6 +19,7 @@ final class Design_Tokens_Provider extends Provider {
 		Database\Provider::class,
 		Schema\Provider::class,
 		Theme_Style_Guide\Provider::class,
+		Theme_Buttons\Provider::class,
 		Resolver\Provider::class,
 		Projection\Provider::class,
 		Foundation_Presets\Provider::class,

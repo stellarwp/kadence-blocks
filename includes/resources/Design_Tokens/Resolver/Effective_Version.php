@@ -3,16 +3,18 @@
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Resolver;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Theme_Buttons\Theme_Button_Styles_Overlay;
 use KadenceWP\KadenceBlocks\Design_Tokens\Theme_Style_Guide\Style_Guide_Overlay;
 
 /**
  * The version of a library's EFFECTIVE document — everything the resolved values depend on that can
- * change at runtime: the stored overrides (the store version) and the theme Style Guide the baseline
- * is re-valued from (the overlay signature).
+ * change at runtime: the stored overrides (the store version), the theme Style Guide the baseline is
+ * re-valued from (the Style Guide overlay signature) and the button styles the theme offers as presets
+ * (the theme buttons overlay signature).
  *
  * Every resolved-tokens and projected-CSS cache keys on this instead of the store version alone, so a
- * Customizer save — which bumps no store version — still invalidates them. On a site where the overlay
- * is empty (no Kadence theme) this IS the store version, so those cache keys are unchanged.
+ * Customizer save or a theme switch — which bumps no store version — still invalidates them. On a site
+ * where both overlays are empty this IS the store version, so those cache keys are unchanged.
  *
  * Not for optimistic concurrency: the REST layer keeps comparing the store version, because a
  * Customizer save does not change the stored document a client is editing.
@@ -40,19 +42,30 @@ final class Effective_Version {
 	private Style_Guide_Overlay $overlay;
 
 	/**
+	 * The theme button styles overlay whose signature is folded in.
+	 *
 	 * @since TBD
 	 *
-	 * @param Token_Store         $store   The token store.
-	 * @param Style_Guide_Overlay $overlay The theme Style Guide overlay.
+	 * @var Theme_Button_Styles_Overlay
 	 */
-	public function __construct( Token_Store $store, Style_Guide_Overlay $overlay ) {
+	private Theme_Button_Styles_Overlay $buttons;
+
+	/**
+	 * @since TBD
+	 *
+	 * @param Token_Store                 $store   The token store.
+	 * @param Style_Guide_Overlay         $overlay The theme Style Guide overlay.
+	 * @param Theme_Button_Styles_Overlay $buttons The theme button styles overlay.
+	 */
+	public function __construct( Token_Store $store, Style_Guide_Overlay $overlay, Theme_Button_Styles_Overlay $buttons ) {
 		$this->store   = $store;
 		$this->overlay = $overlay;
+		$this->buttons = $buttons;
 	}
 
 	/**
-	 * The effective version for a library: the store version, extended with the overlay signature when
-	 * there is one.
+	 * The effective version for a library: the store version, extended with each overlay signature that
+	 * is not empty.
 	 *
 	 * @since TBD
 	 *
@@ -61,9 +74,14 @@ final class Effective_Version {
 	 * @return string
 	 */
 	public function for_slug( string $slug ): string {
-		$version   = $this->store->get_version( $slug );
-		$signature = $this->overlay->signature();
+		$version = $this->store->get_version( $slug );
 
-		return $signature === '' ? $version : $version . '-' . $signature;
+		foreach ( [ $this->overlay->signature(), $this->buttons->signature() ] as $signature ) {
+			if ( $signature !== '' ) {
+				$version .= '-' . $signature;
+			}
+		}
+
+		return $version;
 	}
 }
