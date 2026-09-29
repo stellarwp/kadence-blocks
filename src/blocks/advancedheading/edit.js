@@ -93,6 +93,7 @@ import {
 import { borderSideDeclarations } from '../../extension/design-tokens/border-sides';
 import { EditorBorderControl } from '../../extension/design-tokens/components/EditorBorderControl';
 import { EditorBoxControl } from '../../extension/design-tokens/components/EditorBoxControl';
+import { EditorFontFamilyControl } from '../../extension/design-tokens/components/EditorFontFamilyControl';
 import { EditorScalarControl } from '../../extension/design-tokens/components/EditorScalarControl';
 import { useColorGroups } from '../../extension/design-tokens/hooks/use-color-groups';
 import { resolveColorLiteral } from '../../extension/design-tokens/color-literal';
@@ -2132,14 +2133,20 @@ function KadenceAdvancedHeading(props) {
 										onLetterSpacingType={(value) => setAttributes({ letterSpacingType: value })}
 										fontFamily={typography}
 										onFontFamily={(value) => setAttributes({ typography: value })}
-										// The family is not a token, but the heading's preset surface can carry one, so the field
-										// gets the same bound/overridden mark every other mapped control on this block shows.
-										context={{
-											blockName: 'kadence/advancedheading',
-											state: tokenBinding.typography,
-											inheritedDefault: presetTypography,
-											onReset: () => resetToken('typography'),
-										}}
+										context={{ blockName: 'kadence/advancedheading' }}
+										// The family is not a token, but the heading's preset surface can carry one, so the row
+										// wears the same chrome and bound/overridden mark as Font Size above it.
+										renderFontFamily={({ label, value, onChange, onClear }) => (
+											<EditorFontFamilyControl
+												label={label}
+												value={value}
+												onChange={onChange}
+												onClear={onClear}
+												inheritedLabel={presetTypography}
+												state={tokenBinding.typography}
+												onReset={() => resetToken('typography')}
+											/>
+										)}
 										onFontChange={(select) => {
 											setAttributes({
 												typography: select.value,

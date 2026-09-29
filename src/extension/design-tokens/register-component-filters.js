@@ -33,17 +33,8 @@
  */
 import { addFilter, removeFilter } from '@wordpress/hooks';
 import { pickableTokensForControl } from '../token-picker';
-import { favoriteFonts, favoriteFontsManageUrl, fontCatalogOptions, isGoogleFamily } from '../font-picker';
-import {
-	FontFamilySelector,
-	TokenChip,
-	TokenPickerButton,
-	TokenSelector,
-	googleFontHref,
-	isTokenAlias,
-	loadFontFamily,
-} from '../../token-controls';
-import { TokenIndicator } from '../token-indicators/components/TokenIndicator';
+import { TokenChip, TokenPickerButton, TokenSelector, isTokenAlias } from '../../token-controls';
+import { fontFamilyPicker } from './components/EditorFontFamilyControl';
 
 const NAMESPACE = 'kadence-blocks/component-token';
 const EDITOR_HOOK = 'kadence.components.control.editor';
@@ -220,59 +211,12 @@ function fontFamilyEditor(defaultEditor, ctx) {
 		return defaultEditor;
 	}
 
-	return (
-		<FontFamilySelector
-			value={ctx.value}
-			favorites={favoriteFonts()}
-			catalogOptions={fontCatalogOptions()}
-			manageUrl={favoriteFontsManageUrl()}
-			inheritedLabel={ctx.context?.inheritedDefault}
-			onPick={async (family) => {
-				await loadFontFamily(family, {
-					doc: canvasDocument(),
-					href: isGoogleFamily(family) ? googleFontHref(family) : null,
-				});
-
-				write(family);
-			}}
-			onClear={() => write('')}
-		/>
-	);
-}
-
-/**
- * The document the block canvas renders into: its own once the editor is iframed, the page's
- * otherwise. A font loaded into the wrong one is a font the user never sees.
- *
- * @since TBD
- *
- * @return {Document} The canvas document.
- */
-function canvasDocument() {
-	return window.frames?.['editor-canvas']?.document || document;
-}
-
-/**
- * Actions seam, font-family case: the preset binding mark, in the header beside the "Font Family"
- * label, the same place every other mapped control carries it.
- *
- * A family is not a token, but a preset can still set one, so the field has a preset value to match
- * or diverge from and the mark reports which. The block supplies its own binding state through
- * `context`; a block whose preset surface has no family entry passes none and gets no mark.
- *
- * @param {Array}  actions The default action nodes (empty).
- * @param {Object} ctx     Neutral seam context: { control, value, onChange, context }.
- *
- * @since TBD
- *
- * @return {Array} The action nodes to render.
- */
-function fontFamilyActions(actions, ctx) {
-	if (!ctx.context?.blockName || !ctx.context?.state) {
-		return actions;
-	}
-
-	return [...actions, <TokenIndicator key="kb-token" state={ctx.context.state} onReset={ctx.context.onReset} />];
+	return fontFamilyPicker({
+		value: ctx.value,
+		onChange: write,
+		onClear: () => write(''),
+		inheritedLabel: ctx.context?.inheritedDefault,
+	});
 }
 
 /**
@@ -288,10 +232,6 @@ function fontFamilyActions(actions, ctx) {
  * @return {Array} The action nodes to render.
  */
 function actionsFilter(actions, ctx) {
-	if (ctx.control === 'fontFamily') {
-		return fontFamilyActions(actions, ctx);
-	}
-
 	if (ctx.control !== 'boxShadow') {
 		return actions;
 	}
