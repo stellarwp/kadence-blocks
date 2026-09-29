@@ -10,12 +10,12 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Theme_Buttons\Contracts\Button_Style_S
 final class Fake_Button_Style_Source implements Button_Style_Source {
 
 	/**
-	 * @var array<string, array{label: string, class: string, values: array<string, mixed>}>
+	 * @var array<string, array{label: string, class: string, values: array<string, mixed>, tokens?: array<string, mixed>}>
 	 */
 	private array $styles;
 
 	/**
-	 * @param array<string, array{label: string, class: string, values: array<string, mixed>}> $styles The styles to return.
+	 * @param array<string, array{label: string, class: string, values: array<string, mixed>, tokens?: array<string, mixed>}> $styles The styles to return.
 	 */
 	public function __construct( array $styles = [] ) {
 		$this->styles = $styles;
@@ -24,7 +24,7 @@ final class Fake_Button_Style_Source implements Button_Style_Source {
 	/**
 	 * Replace the styles this source returns.
 	 *
-	 * @param array<string, array{label: string, class: string, values: array<string, mixed>}> $styles The new styles.
+	 * @param array<string, array{label: string, class: string, values: array<string, mixed>, tokens?: array<string, mixed>}> $styles The new styles.
 	 *
 	 * @return void
 	 */

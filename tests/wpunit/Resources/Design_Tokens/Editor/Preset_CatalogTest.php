@@ -45,7 +45,7 @@ final class Preset_CatalogTest extends TestCase {
 
 	/**
 	 * The catalog reports the active library and, per library, the shipped Button's default and its named presets as
-	 * { slug, label, userCreated, themeClass } — the theme's Theme Button after the shipped ones — plus the picker
+	 * { slug, label, userCreated, themeClass } — the theme's Theme Base after the shipped ones — plus the picker
 	 * control label and the controllable surface.
 	 *
 	 * @return void
@@ -77,7 +77,7 @@ final class Preset_CatalogTest extends TestCase {
 				],
 				[
 					'slug'        => 'theme-base',
-					'label'       => 'Theme Button',
+					'label'       => 'Theme Base',
 					'userCreated' => false,
 					'themeClass'  => 'wp-block-button__link button kb-btn-global-inherit',
 				],

@@ -1,5 +1,5 @@
 <?php declare( strict_types=1 );
-// cspell:ignore palette .
+// cspell:ignore palette twentytwentythree .
 
 namespace Tests\wpunit\Resources\Design_Tokens\Registry\Baseline;
 
@@ -62,6 +62,43 @@ final class Theme_Button_Presets_Baseline_DocumentTest extends TestCase {
 			$node['theme-base']
 		);
 		$this->assertSame( 'wp-block-button__link button button-style-secondary kb-btn-global-inherit', $node['theme-secondary']['themeClass'] );
+	}
+
+	/**
+	 * A class-less style declaring tokens (a block theme's own variation) is written as a value preset: its
+	 * label and tokens, the same tokens as the theme values a reset returns to, and no theme class.
+	 *
+	 * @return void
+	 */
+	public function testWritesAClasslessStyleAsAValuePreset(): void {
+		$tokens = [
+			'button-bg'           => 'transparent',
+			'button-border-width' => [ '1px', '1px', '1px', '1px' ],
+		];
+		$node   = $this->button_node(
+			$this->decorated(
+				new Fake_Button_Style_Source(
+					[
+						'base'    => self::KADENCE_LIKE['base'],
+						'outline' => [
+							'label'  => 'Theme Outline',
+							'class'  => '',
+							'values' => [],
+							'tokens' => $tokens,
+						],
+					]
+				)
+			)->document()
+		);
+
+		$this->assertSame(
+			[
+				'label'       => 'Theme Outline',
+				'tokens'      => $tokens,
+				'themeValues' => $tokens,
+			],
+			$node['theme-outline']
+		);
 	}
 
 	/**
@@ -179,16 +216,18 @@ final class Theme_Button_Presets_Baseline_DocumentTest extends TestCase {
 	}
 
 	/**
-	 * The container's baseline carries the theme presets: the suite runs a theme no adapter reads, so it is
-	 * the classic fallback's Theme Button.
+	 * The container's baseline carries the theme presets: the suite runs twentytwentythree, whose theme.json
+	 * styles the button element, so it is the block theme adapter's class-painted Theme Base with that
+	 * theme's display values.
 	 *
 	 * @return void
 	 */
 	public function testTheContainerBaselineCarriesTheThemePresets(): void {
 		$node = $this->button_node( $this->baseline_document()->document() );
 
-		$this->assertSame( 'Theme Button', $node['theme-base']['label'] );
+		$this->assertSame( 'Theme Base', $node['theme-base']['label'] );
 		$this->assertSame( 'wp-block-button__link button kb-btn-global-inherit', $node['theme-base']['themeClass'] );
+		$this->assertSame( 'var(--wp--preset--color--primary)', $node['theme-base']['themeValues']['button-bg'] );
 		$this->assertSame( [], $node['theme-base']['tokens'] );
 	}
 
