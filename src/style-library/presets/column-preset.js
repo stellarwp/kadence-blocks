@@ -2,7 +2,7 @@
  * Everything specific to the `kadence/column` (Section) preset screen, in one place: the block name,
  * the bound property surface, the row preview, the state tabs, and the per-tab settings schema.
  *
- * The generic preset machinery — `helpers/presets.js`, `usePresetScreen`, `PresetSidebar` — reads
+ * The generic preset machinery — `helpers/presets.js`, `usePresetScreen`, `PresetSettings` — reads
  * this config and knows nothing else about sections. See `src/style-library/README.md`.
  */
 

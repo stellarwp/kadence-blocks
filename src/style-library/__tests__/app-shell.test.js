@@ -41,7 +41,6 @@ describe('AppShell', () => {
 					header: createElement('span', { id: 'real-header' }),
 					sidebar: null,
 					content: null,
-					settingsPanel: null,
 					isBlocked: true,
 				})
 			);
@@ -67,12 +66,25 @@ describe('AppShell', () => {
 					header: null,
 					sidebar: null,
 					content: null,
-					settingsPanel: null,
 					isBlocked: false,
 				})
 			);
 		});
 
 		expect(container.querySelector('.kadence-blocks-style-library__blocker')).toBeNull();
+	});
+
+	/**
+	 * The shell has no settings column: the editor is a popover mounted outside it.
+	 *
+	 * @return {void}
+	 */
+	it('renders no settings aside', () => {
+		act(() => {
+			root.render(createElement(AppShell, { header: null, sidebar: null, content: null }));
+		});
+
+		expect(container.querySelector('aside')).toBeNull();
+		expect(container.querySelector('.kadence-blocks-style-library__content--has-settings')).toBeNull();
 	});
 });

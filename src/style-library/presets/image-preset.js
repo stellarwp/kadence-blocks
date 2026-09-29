@@ -2,7 +2,7 @@
  * Everything specific to the `kadence/image` (Advanced Image) preset screen, in one place: the block
  * name, the bound property surface, the row preview, and the settings schema.
  *
- * The generic preset machinery — `helpers/presets.js`, `usePresetScreen`, `PresetSidebar` — reads
+ * The generic preset machinery — `helpers/presets.js`, `usePresetScreen`, `PresetSettings` — reads
  * this config and knows nothing else about images. See `src/style-library/README.md`.
  */
 
@@ -129,7 +129,7 @@ function renderPreview(row) {
 
 /**
  * The settings schema. The image declares no tabs: it binds no hover property, so there is no second
- * state to switch to and `PresetSidebar` renders the field area bare.
+ * state to switch to and `PresetSettings` renders the field area bare.
  *
  * Radius and padding are responsive because the block declares per-device attributes for both and its
  * own controls are per-device, so a preset that could name only one value for every breakpoint could

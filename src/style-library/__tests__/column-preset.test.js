@@ -1,7 +1,7 @@
 /* eslint-env jest */
 /**
  * The Section (`kadence/column`) preset config — the one per-block file a preset screen needs.
- * Everything else the screen uses (`PresetScreen`, `PresetSidebar`, `usePresetScreen`,
+ * Everything else the screen uses (`PresetScreen`, `PresetSettings`, `usePresetScreen`,
  * `helpers/presets`) is generic and covered by its own suites, so this asserts only what this config
  * contributes: the bound surface it reads, the preview it resolves, its schema, and that it registers
  * on the public screens filter.

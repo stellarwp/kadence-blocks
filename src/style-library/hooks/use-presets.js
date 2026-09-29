@@ -24,7 +24,7 @@ import { STORE_NAME } from '../store';
  * Read a block's preset collection from the store and bind it to row view models.
  *
  * A screen and its settings panel are separate mounts of this hook (see `usePresetScreen` and
- * `PresetSidebar`), and both read the same selector call when they share a `namespace`/`block`/
+ * `PresetSettings`), and both read the same selector call when they share a `namespace`/`block`/
  * `slug`, so only one of them ever triggers the resolver.
  *
  * @param {Object} library The design-tokens feed hook's return value (`useDesignTokensFeed()`).

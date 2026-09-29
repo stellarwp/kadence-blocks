@@ -1,12 +1,12 @@
 /**
- * The Section preset's settings sidebar: `PresetSidebar` does the work, this binds the block's config
+ * The Section preset's settings panel: `PresetSettings` does the work, this binds the block's config
  * to it.
  */
 
 /**
  * Internal dependencies
  */
-import { PresetSidebar } from './PresetSidebar';
+import { PresetSettings } from './PresetSettings';
 import { usePresetScreen } from '../../hooks/use-preset-screen';
 import { COLUMN_PRESET } from '../../presets/column-preset';
 
@@ -25,5 +25,5 @@ import { COLUMN_PRESET } from '../../presets/column-preset';
 export function ColumnSettings({ route, navigate, library }) {
 	const screen = usePresetScreen(library, COLUMN_PRESET);
 
-	return <PresetSidebar route={route} navigate={navigate} screen={screen} preset={COLUMN_PRESET} />;
+	return <PresetSettings route={route} navigate={navigate} screen={screen} preset={COLUMN_PRESET} />;
 }

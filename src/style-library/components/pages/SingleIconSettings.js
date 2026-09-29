@@ -1,12 +1,12 @@
 /**
- * The Single Icon preset's settings sidebar: `PresetSidebar` does the work, this binds the block's
+ * The Single Icon preset's settings panel: `PresetSettings` does the work, this binds the block's
  * config to it.
  */
 
 /**
  * Internal dependencies
  */
-import { PresetSidebar } from './PresetSidebar';
+import { PresetSettings } from './PresetSettings';
 import { usePresetScreen } from '../../hooks/use-preset-screen';
 import { SINGLE_ICON_PRESET } from '../../presets/single-icon-preset';
 
@@ -25,5 +25,5 @@ import { SINGLE_ICON_PRESET } from '../../presets/single-icon-preset';
 export function SingleIconSettings({ route, navigate, library }) {
 	const screen = usePresetScreen(library, SINGLE_ICON_PRESET);
 
-	return <PresetSidebar route={route} navigate={navigate} screen={screen} preset={SINGLE_ICON_PRESET} />;
+	return <PresetSettings route={route} navigate={navigate} screen={screen} preset={SINGLE_ICON_PRESET} />;
 }

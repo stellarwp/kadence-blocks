@@ -18,6 +18,7 @@ import { AppHeader } from '../components/organisms/AppHeader';
 import { AppSidebar } from '../components/organisms/AppSidebar';
 import { LibraryActions } from '../components/organisms/LibraryActions';
 import { LibrarySelector } from '../components/organisms/LibrarySelector';
+import { SettingsPopover } from '../components/templates/SettingsPopover';
 import { UnsavedChangesModal } from '../components/organisms/UnsavedChangesModal';
 import { PlaceholderScreen } from '../components/pages/PlaceholderScreen';
 import { TypographyScreen } from '../components/pages/TypographyScreen';
@@ -36,6 +37,7 @@ import '../components/pages/HeadingScreen';
 import { useDesignTokensFeed } from '../hooks/use-design-tokens-feed';
 import { useStyleLibraryRoute } from '../hooks/use-style-library-route';
 import { useLibraries } from '../hooks/use-libraries';
+import { ItemAnchorProvider } from '../hooks/use-item-anchor';
 import { DraftChannelContext, useDraftChannelState } from '../hooks/use-draft-channel';
 import { BreakpointProvider } from '../../token-controls/context/breakpoint';
 import { DEFAULT_SCREEN_ID } from '../constants/screens';
@@ -63,7 +65,7 @@ const SCREEN_COMPONENTS = {
  * Render the Style Library application: feed gate, route hook, sidebar navigation, and the screen
  * resolved for the active route. A screen that owns a settings panel exposes it as a static
  * `SettingsPanel` property on its page component (`MyScreen.SettingsPanel = MyScreenSettings`);
- * this is the one place that property is read and mounted into `AppShell`'s `settingsPanel` slot.
+ * this is the one place that property is read and mounted into the settings popover.
  * The app itself carries no per-screen knowledge — not the demo, not any real screen's panel
  * contents — so a screen and its panel are siblings that share state only through the server and
  * the route, never through this component.
@@ -72,7 +74,7 @@ const SCREEN_COMPONENTS = {
  *
  * @return {?JSX.Element} The app, or null while the route is being normalized to a known screen.
  */
-export function StyleLibraryApp() {
+function StyleLibraryAppContent() {
 	const feed = useDesignTokensFeed();
 	const { route, navigate, replace } = useStyleLibraryRoute();
 
@@ -238,12 +240,16 @@ export function StyleLibraryApp() {
 						/>
 					}
 					content={<resolution.Component label={label} route={route} navigate={navigate} library={feed} />}
-					settingsPanel={
-						resolution.Component.SettingsPanel && route.item ? (
-							<resolution.Component.SettingsPanel route={route} navigate={navigate} library={feed} />
-						) : null
-					}
 				/>
+				{resolution.Component.SettingsPanel && route.item && (
+					<SettingsPopover
+						itemId={route.item}
+						onClose={() => channel.guard(() => navigate({ item: '' }))}
+						ignoreFocusOutside={channel.isGuardOpen}
+					>
+						<resolution.Component.SettingsPanel route={route} navigate={navigate} library={feed} />
+					</SettingsPopover>
+				)}
 				<UnsavedChangesModal
 					isOpen={channel.isGuardOpen}
 					label={channel.publication?.label}
@@ -260,5 +266,21 @@ export function StyleLibraryApp() {
 				/>
 			</BreakpointProvider>
 		</DraftChannelContext.Provider>
+	);
+}
+
+/**
+ * Render the Style Library application inside the item anchor registry, which the screens write to
+ * and the settings popover reads from.
+ *
+ * @since TBD
+ *
+ * @return {JSX.Element} The app.
+ */
+export function StyleLibraryApp() {
+	return (
+		<ItemAnchorProvider>
+			<StyleLibraryAppContent />
+		</ItemAnchorProvider>
 	);
 }

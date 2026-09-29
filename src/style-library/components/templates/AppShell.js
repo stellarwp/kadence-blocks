@@ -1,12 +1,7 @@
 /**
- * The Style Library frame: header bar on top, then sidebar | content | optional settings panel.
+ * The Style Library frame: header bar on top, then sidebar | content.
  * Pure layout — every region is a slot the caller fills.
  */
-
-/**
- * External dependencies
- */
-import classnames from 'classnames';
 
 /**
  * Internal dependencies
@@ -22,7 +17,6 @@ import { ScreenHeaderSlot, ScreenHeaderSlotProvider } from '../organisms/ScreenH
  * @param {JSX.Element}  props.header         The header-bar content.
  * @param {?JSX.Element} props.sidebar        The left navigation content, or null when empty.
  * @param {?JSX.Element} props.content        The active screen, or null when empty.
- * @param {?JSX.Element} props.settingsPanel  The settings panel, or null when closed.
  * @param {boolean}      [props.isBlocked]    Whether to cover everything below the header with a
  *                                            busy scrim, for a change that replaces the app's
  *                                            whole content rather than one region of it.
@@ -31,22 +25,17 @@ import { ScreenHeaderSlot, ScreenHeaderSlotProvider } from '../organisms/ScreenH
  *
  * @return {JSX.Element} The shell.
  */
-export function AppShell({ header, sidebar, content, settingsPanel, isBlocked }) {
+export function AppShell({ header, sidebar, content, isBlocked }) {
 	return (
 		<ScreenHeaderSlotProvider>
 			<div className="kadence-blocks-style-library__shell">
 				<header className="kadence-blocks-style-library__header">{header}</header>
 				<div className="kadence-blocks-style-library__body">
 					<nav className="kadence-blocks-style-library__sidebar">{sidebar}</nav>
-					<main
-						className={classnames('kadence-blocks-style-library__content', {
-							'kadence-blocks-style-library__content--has-settings': Boolean(settingsPanel),
-						})}
-					>
+					<main className="kadence-blocks-style-library__content">
 						<ScreenHeaderSlot />
 						<div className="kadence-blocks-style-library__screen-body">{content}</div>
 					</main>
-					{settingsPanel && <aside className="kadence-blocks-style-library__settings">{settingsPanel}</aside>}
 					{isBlocked && (
 						/* Inside the body, so the header stays on screen: almost nothing in it changes
 						 * with the library, and a placeholder drawn over it only made the bar flicker.

@@ -1,12 +1,12 @@
 /**
- * The Advanced Image preset's settings sidebar: `PresetSidebar` does the work, this binds the block's
+ * The Advanced Image preset's settings panel: `PresetSettings` does the work, this binds the block's
  * config to it.
  */
 
 /**
  * Internal dependencies
  */
-import { PresetSidebar } from './PresetSidebar';
+import { PresetSettings } from './PresetSettings';
 import { usePresetScreen } from '../../hooks/use-preset-screen';
 import { IMAGE_PRESET } from '../../presets/image-preset';
 
@@ -25,5 +25,5 @@ import { IMAGE_PRESET } from '../../presets/image-preset';
 export function ImageSettings({ route, navigate, library }) {
 	const screen = usePresetScreen(library, IMAGE_PRESET);
 
-	return <PresetSidebar route={route} navigate={navigate} screen={screen} preset={IMAGE_PRESET} />;
+	return <PresetSettings route={route} navigate={navigate} screen={screen} preset={IMAGE_PRESET} />;
 }

@@ -23,6 +23,7 @@ import { SettingsPanel } from '../templates/SettingsPanel';
 import { SettingsForm } from '../organisms/SettingsForm';
 import { usePalettes } from '../../hooks/use-palettes';
 import { useSettingsPanel } from '../../hooks/use-settings-panel';
+import { useDraftChannel } from '../../hooks/use-draft-channel';
 import { useLoadingAnnouncement } from '../../hooks/use-loading-announcement';
 import { findSwatch, swatchInitialValues } from '../../helpers/palettes';
 import { Skeleton } from '../atoms/Skeleton';
@@ -67,8 +68,9 @@ export function ColorPaletteSettings({ route, navigate, library }) {
 	// seeding empty at mount and never re-seeding. See that hook's own docblock for the contract.
 	const initialValues = palettes.palette ? swatchInitialValues(palettes.palette, token) : null;
 	const panel = useSettingsPanel({ route, navigate, initialValues });
+	const channel = useDraftChannel();
 	// `palettes.isBusy` covers all the write flows with a single flag, but the footer needs to show
-	// the busy animation on only the button the user actually clicked — the `PresetSidebar.js` idiom,
+	// the busy animation on only the button the user actually clicked — the `PresetSettings.js` idiom,
 	// tracked locally for the same reason: only this panel's footer needs the distinction.
 	const [pendingAction, setPendingAction] = useState(null);
 	// The open swatch as of right now, for `onReset` to read once its write settles — the grid's
@@ -97,6 +99,30 @@ export function ColorPaletteSettings({ route, navigate, library }) {
 			navigate({ item: '' });
 		}
 	}, [palettes.isLoading, palettes.palette, swatch, navigate]);
+
+	// Pulled out of `channel` so the effect depends on the stable callbacks, not on the channel
+	// object `StyleLibraryApp` rebuilds every render — see `ScaleSettings` for the same reasoning.
+	const publish = channel?.publish;
+	const clearPublication = channel?.clearPublication;
+
+	useEffect(() => {
+		if (!publish || !clearPublication || !token || !swatch) {
+			return undefined;
+		}
+
+		publish({ itemId: token, label: swatch.label, draft: panel.draft, isDirty: panel.isDirty });
+
+		return () => clearPublication();
+	}, [publish, clearPublication, token, swatch, panel.draft, panel.isDirty]);
+
+	// Reassigned every render, never held in state: these close over the current draft. `save` keeps
+	// its rejection so the guard modal's own Save button can show a failure.
+	if (channel) {
+		channel.actionsRef.current = {
+			save: () => palettes.saveSwatchEdits(token, panel.draft, initialValues),
+			discard: panel.resetDraft,
+		};
+	}
 
 	if (token && palettes.isLoading) {
 		return (
@@ -191,9 +217,13 @@ export function ColorPaletteSettings({ route, navigate, library }) {
 			.finally(() => setPendingAction(null));
 	};
 
+	// Delete and Reset are never guarded: they make the draft moot.
+	const handleClose = () => (channel ? channel.guard(panel.close) : panel.close());
+
 	return (
 		<SettingsPanel
-			onClose={panel.close}
+			title={__('Edit color', 'kadence-blocks')}
+			onClose={handleClose}
 			onSave={onSave}
 			destructiveAction={isCustom ? 'delete' : 'reset'}
 			onDelete={onDelete}

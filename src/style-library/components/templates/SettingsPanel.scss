@@ -3,10 +3,8 @@
 .kadence-blocks-style-library__settings-panel {
 	display: flex;
 	flex-direction: column;
-	height: 100%;
-	// The panel is its own scroll container (not the AppShell aside) so the header and the sticky
-	// footer stay put while only the field area scrolls.
-	overflow-y: auto;
+	// The popover's content is the scroll container, capped to the space left in the viewport, so
+	// the sticky header and footer stay put while the field area scrolls.
 }
 
 .kadence-blocks-style-library__settings-panel-header {
@@ -28,8 +26,7 @@
 	color: var(--kb-sl-color-heading);
 }
 
-// `flex: 1 1 auto` lets this grow to fill the space between the sticky header and footer, which is
-// what confines `.settings-panel`'s scrolling to this region. No padding: `PanelBody`'s own
+// `flex: 1 1 auto` lets this grow to fill the space between the sticky header and footer. No padding: `PanelBody`'s own
 // `.is-opened` padding already supplies it.
 .kadence-blocks-style-library__settings-panel-fields {
 	flex: 1 1 auto;
@@ -44,4 +41,8 @@
 	padding: var(--kb-sl-space-15) var(--kb-sl-space-20);
 	border-top: 1px solid var(--kb-sl-color-border);
 	background: var(--kb-sl-color-surface);
+}
+
+.kadence-blocks-style-library__settings-panel-footer > :first-child:not(:last-child) {
+	margin-right: auto;
 }

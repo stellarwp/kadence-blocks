@@ -31,9 +31,11 @@ jest.mock('../hooks/use-draft-channel', () => ({
 // renderer this test uses. Simple stand-ins are enough — this test only needs to read each footer
 // button's label and disabled state, not exercise the real controls.
 jest.mock('@wordpress/components', () => ({
-	// `isBusy`/`isDestructive`/`variant` are `Button` props, not DOM attributes — drop them so React
-	// does not warn about unrecognized attributes.
-	Button: ({ children, isBusy, isDestructive, variant, ...props }) => <button {...props}>{children}</button>,
+	// `isBusy`/`isDestructive`/`variant`/`accessibleWhenDisabled` are `Button` props, not DOM
+	// attributes — drop them so React does not warn about unrecognized attributes.
+	Button: ({ children, isBusy, isDestructive, variant, accessibleWhenDisabled, ...props }) => (
+		<button {...props}>{children}</button>
+	),
 	Notice: ({ children, isDismissible, ...props }) => <div {...props}>{children}</div>,
 }));
 
