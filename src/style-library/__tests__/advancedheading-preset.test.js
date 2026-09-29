@@ -362,18 +362,18 @@ describe('HEADING_PRESET font family and weight', () => {
 	}
 
 	/**
-	 * The family field is the tabbed picker, and it names what an unset family falls back to rather than
-	 * reading as empty -- a heading with no family of its own still renders in the theme's face.
+	 * The family field is the tabbed picker. It names no fallback of its own, so an unset family reads
+	 * with the shared control's "Theme default" wording rather than a second spelling of it.
 	 *
 	 * @return {void}
 	 */
-	it('uses the tabbed font picker and names the fallback face', () => {
+	it('uses the tabbed font picker and leaves the unset label to the shared control', () => {
 		stubFonts(['Inter', 'Abril Fatface'], {});
 
 		const family = fields().find((field) => field.path === 'tokens.typography');
 
 		expect(family.type).toBe('font-family');
-		expect(family.inherited).toBe('Theme Font');
+		expect(family.inherited).toBeUndefined();
 	});
 
 	/**

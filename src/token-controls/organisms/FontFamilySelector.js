@@ -28,10 +28,10 @@ import '../styles/token-controls.scss';
 /**
  * Render the font-family field.
  *
- * An unset family shows the theme's name, muted, rather than reading as empty: a block with no
- * family set still renders in *some* face, and naming it keeps "what this block sets" and "what it
- * falls back to" apart — the same distinction `TokenSelector` draws between a value and its
- * inherited default.
+ * An unset family reads "Theme default", muted, rather than empty: a block with no family set still
+ * renders in some face. That wording lives here, so every host says the same thing. A host whose preset
+ * supplies a family passes it as `inheritedLabel`, and only then does the muted text name a family — the
+ * same distinction `TokenSelector` draws between a value and its inherited default.
  *
  * @param {Object}   props
  * @param {string}   props.value            The current family, or `''` when unset.
@@ -40,7 +40,8 @@ import '../styles/token-controls.scss';
  *                                          Also what the trigger reads to name the stored value, so
  *                                          an option whose value is not its own label reads as the
  *                                          label rather than as the raw stored string.
- * @param {string}   [props.inheritedLabel] What an unset family falls back to, for the muted trigger.
+ * @param {string}   [props.inheritedLabel] The family the preset supplies for an unset field, for the muted
+ *                                          trigger. Leave it out and the trigger says "Theme default".
  * @param {string}   [props.manageUrl]      Deep link to the screen that manages favorites.
  * @param {Function} props.onPick           Writes a chosen family. May return a promise, in which
  *                                          case the field reads as loading until it settles.

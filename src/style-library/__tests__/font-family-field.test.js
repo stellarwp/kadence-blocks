@@ -95,6 +95,29 @@ describe('FontFamilyField', () => {
 	}
 
 	/**
+	 * The field names no fallback of its own, so an unset family reads with the shared control's own
+	 * wording and the two apps never spell it differently.
+	 *
+	 * @return {void}
+	 */
+	it('leaves the unset label to the shared control', () => {
+		renderField('', jest.fn());
+
+		expect(latestSelectorProps.inheritedLabel).toBeUndefined();
+	});
+
+	/**
+	 * A schema that knows what the preset brings can still name it.
+	 *
+	 * @return {void}
+	 */
+	it('passes a fallback the schema names', () => {
+		renderField('', jest.fn(), { inherited: 'Anton' });
+
+		expect(latestSelectorProps.inheritedLabel).toBe('Anton');
+	});
+
+	/**
 	 * The favorites are pinned above the full catalog, so the faces a site has kept sit at the top of a
 	 * list otherwise nearly two thousand names long.
 	 *
