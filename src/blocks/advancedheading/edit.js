@@ -90,6 +90,7 @@ import {
 	measureAttrsForDevice,
 	presetValueForDevice,
 } from '../../extension/token-indicators/normalize';
+import { borderSideDeclarations } from '../../extension/design-tokens/border-sides';
 import { EditorBorderControl } from '../../extension/design-tokens/components/EditorBorderControl';
 import { EditorBoxControl } from '../../extension/design-tokens/components/EditorBoxControl';
 import { EditorScalarControl } from '../../extension/design-tokens/components/EditorScalarControl';
@@ -967,10 +968,42 @@ function KadenceAdvancedHeading(props) {
 		mobileBorderStyle
 	);
 	const previewBorderLeft = getBorderStyle(previewDevice, 'left', borderStyle, tabletBorderStyle, mobileBorderStyle);
-	// const previewBorderTopColor = getBorderColor( previewDevice, 'top', borderStyle, tabletBorderStyle, mobileBorderStyle );
-	// const previewBorderRightColor = getBorderColor( previewDevice, 'right', borderStyle, tabletBorderStyle, mobileBorderStyle );
-	// const previewBorderBottomColor = getBorderColor( previewDevice, 'bottom', borderStyle, tabletBorderStyle, mobileBorderStyle );
-	// const previewBorderLeftColor = getBorderColor( previewDevice, 'left', borderStyle, tabletBorderStyle, mobileBorderStyle );
+	const previewBorderTopColor = getBorderColor(
+		previewDevice,
+		'top',
+		borderStyle,
+		tabletBorderStyle,
+		mobileBorderStyle
+	);
+	const previewBorderRightColor = getBorderColor(
+		previewDevice,
+		'right',
+		borderStyle,
+		tabletBorderStyle,
+		mobileBorderStyle
+	);
+	const previewBorderBottomColor = getBorderColor(
+		previewDevice,
+		'bottom',
+		borderStyle,
+		tabletBorderStyle,
+		mobileBorderStyle
+	);
+	const previewBorderLeftColor = getBorderColor(
+		previewDevice,
+		'left',
+		borderStyle,
+		tabletBorderStyle,
+		mobileBorderStyle
+	);
+	const previewBorderDeclarations = Object.fromEntries(
+		borderSideDeclarations(previewDevice, [borderStyle, tabletBorderStyle, mobileBorderStyle], {
+			top: [previewBorderTop, previewBorderTopColor],
+			right: [previewBorderRight, previewBorderRightColor],
+			bottom: [previewBorderBottom, previewBorderBottomColor],
+			left: [previewBorderLeft, previewBorderLeftColor],
+		}).map(([property, value]) => [property.replace(/-([a-z])/g, (match, letter) => letter.toUpperCase()), value])
+	);
 
 	const previewBorderRadiusTop = getPreviewSize(
 		previewDevice,
@@ -1297,10 +1330,7 @@ function KadenceAdvancedHeading(props) {
 				borderTopRightRadius: tokenDimension(previewBorderRadiusRight, borderRadiusUnit),
 				borderBottomRightRadius: tokenDimension(previewBorderRadiusBottom, borderRadiusUnit),
 				borderBottomLeftRadius: tokenDimension(previewBorderRadiusLeft, borderRadiusUnit),
-				borderTop: previewBorderTop ? previewBorderTop : undefined,
-				borderRight: previewBorderRight ? previewBorderRight : undefined,
-				borderBottom: previewBorderBottom ? previewBorderBottom : undefined,
-				borderLeft: previewBorderLeft ? previewBorderLeft : undefined,
+				...previewBorderDeclarations,
 			}}
 		>
 			{iconSide === 'left' && renderIcon()}

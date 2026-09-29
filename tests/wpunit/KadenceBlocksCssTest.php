@@ -973,6 +973,108 @@ class KadenceBlocksCssTest extends WPTestCase {
 	}
 
 	/**
+	 * With single styles on, a side stored without a width still writes its color and line style, so the
+	 * preset's width is not left painting a border with no line style.
+	 *
+	 * @return void
+	 */
+	public function testRenderBorderStylesWritesColorAndStyleWithoutWidth(): void {
+		$this->css->render_border_styles( [
+			'borderStyle' => [
+				[
+					'top'    => [ '#ff0000', 'dashed', '' ],
+					'right'  => [ '#ff0000', 'dashed', '' ],
+					'bottom' => [ '#ff0000', 'dashed', '' ],
+					'left'   => [ '#ff0000', 'dashed', '' ],
+					'unit'   => 'px',
+				],
+			],
+		], 'borderStyle', true );
+		$output = $this->css->css_output();
+
+		$this->assertStringContainsString( 'border-top-color:#ff0000', $output,
+			'A stored color goes out on its own when there is no width' );
+		$this->assertStringContainsString( 'border-top-style:dashed', $output,
+			'A stored line style goes out on its own when there is no width' );
+	}
+
+	/**
+	 * With single styles on, a side stored with only a line style still writes that style, and an
+	 * untouched side writes nothing.
+	 *
+	 * @return void
+	 */
+	public function testRenderBorderStylesWritesStoredStyleAlone(): void {
+		$this->css->render_border_styles( [
+			'borderStyle' => [
+				[
+					'top'    => [ '', 'dotted', '' ],
+					'right'  => [ '', '', '' ],
+					'bottom' => [ '', '', '' ],
+					'left'   => [ '', '', '' ],
+					'unit'   => 'px',
+				],
+			],
+		], 'borderStyle', true );
+		$output = $this->css->css_output();
+
+		$this->assertStringContainsString( 'border-top-style:dotted', $output,
+			'A stored line style is written even with no width and no color' );
+		$this->assertStringNotContainsString( 'border-right', $output,
+			'A side with nothing stored writes nothing' );
+	}
+
+	/**
+	 * A color stored without a line style writes the color only, so the default `solid` does not
+	 * override the style a preset carries.
+	 *
+	 * @return void
+	 */
+	public function testRenderBorderStylesLeavesStyleAloneForColorOnly(): void {
+		$this->css->render_border_styles( [
+			'borderStyle' => [
+				[
+					'top'    => [ '#ff0000', '', '' ],
+					'right'  => [ '#ff0000', '', '' ],
+					'bottom' => [ '#ff0000', '', '' ],
+					'left'   => [ '#ff0000', '', '' ],
+					'unit'   => 'px',
+				],
+			],
+		], 'borderStyle', true );
+		$output = $this->css->css_output();
+
+		$this->assertStringContainsString( 'border-top-color:#ff0000', $output,
+			'A stored color is written' );
+		$this->assertStringNotContainsString( 'border-top-style', $output,
+			'A style the block does not store is not written' );
+	}
+
+	/**
+	 * A line style stored only at the tablet size is written for tablet even when the block stores no
+	 * width anywhere.
+	 *
+	 * @return void
+	 */
+	public function testRenderBorderStylesWritesTabletStyleWithoutWidth(): void {
+		$this->css->render_border_styles( [
+			'tabletBorderStyle' => [
+				[
+					'top'    => [ '', 'dashed', '' ],
+					'right'  => [ '', '', '' ],
+					'bottom' => [ '', '', '' ],
+					'left'   => [ '', '', '' ],
+					'unit'   => 'px',
+				],
+			],
+		], 'borderStyle', true );
+		$output = $this->css->css_output();
+
+		$this->assertStringContainsString( 'border-top-style:dashed', $output,
+			'A style stored at the tablet size is written with no width stored' );
+	}
+
+	/**
 	 * render_typography resolves aliased line-height and letter-spacing values to token
 	 * vars (no unit), and keeps numeric typography values byte-identical.
 	 *

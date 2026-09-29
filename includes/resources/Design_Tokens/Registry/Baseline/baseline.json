@@ -380,7 +380,7 @@
 			},
 			"border-hover": {
 				"$type": "color",
-				"$value": "{primitive.color.neutral.200}"
+				"$value": "{primitive.color.transparent}"
 			},
 			"link": {
 				"$type": "color",
@@ -490,7 +490,7 @@
 			},
 			"default-hover": {
 				"$type": "dimension",
-				"$value": "{primitive.dimension.border-width.sm}"
+				"$value": "0"
 			},
 			"media": {
 				"$type": "dimension",
@@ -508,7 +508,7 @@
 			},
 			"default-hover": {
 				"$type": "borderStyle",
-				"$value": "none"
+				"$value": "solid"
 			},
 			"button": {
 				"$type": "borderStyle",

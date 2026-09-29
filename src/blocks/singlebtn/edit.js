@@ -1234,6 +1234,7 @@ export default function KadenceButtonEdit(props) {
 																label={__('Color Hover', 'kadence-blocks')}
 																value={colorHover ? colorHover : ''}
 																groups={colorGroups}
+																defaultValue={tokenBinding.colorHover?.presetValue}
 																status={{
 																	bound: !!tokenBinding.colorHover?.bound,
 																	modified: !!tokenBinding.colorHover?.overridden,
@@ -1269,6 +1270,7 @@ export default function KadenceButtonEdit(props) {
 																label={__('Background Color', 'kadence-blocks')}
 																value={backgroundHover ? backgroundHover : ''}
 																groups={colorGroups}
+																defaultValue={tokenBinding.backgroundHover?.presetValue}
 																status={{
 																	bound: !!tokenBinding.backgroundHover?.bound,
 																	modified:
@@ -1303,6 +1305,9 @@ export default function KadenceButtonEdit(props) {
 															onDeviceChange={setPreviewDevice}
 															widthTokens={borderWidthPickableTokens}
 															defaultValue={borderHoverWidthPresetValue}
+															defaultColor={
+																tokenBinding.borderHoverStyle?.presetValue?.color
+															}
 															renderColor={renderBorderColor}
 															state={
 																tokenBinding.borderHoverStyle ??
@@ -1381,6 +1386,7 @@ export default function KadenceButtonEdit(props) {
 																label={__('Color', 'kadence-blocks')}
 																value={color ? color : ''}
 																groups={colorGroups}
+																defaultValue={tokenBinding.color?.presetValue}
 																status={{
 																	bound: !!tokenBinding.color?.bound,
 																	modified: !!tokenBinding.color?.overridden,
@@ -1414,6 +1420,7 @@ export default function KadenceButtonEdit(props) {
 																label={__('Background Color', 'kadence-blocks')}
 																value={background ? background : ''}
 																groups={colorGroups}
+																defaultValue={tokenBinding.background?.presetValue}
 																status={{
 																	bound: !!tokenBinding.background?.bound,
 																	modified: !!tokenBinding.background?.overridden,
@@ -1443,6 +1450,7 @@ export default function KadenceButtonEdit(props) {
 															onDeviceChange={setPreviewDevice}
 															widthTokens={borderWidthPickableTokens}
 															defaultValue={borderWidthPresetValue}
+															defaultColor={tokenBinding.borderStyle?.presetValue?.color}
 															renderColor={renderBorderColor}
 															state={tokenBinding.borderStyle}
 															onReset={() => resetToken('borderStyle')}

@@ -20,6 +20,23 @@ import { pathOfAlias } from '../../../../extension/design-tokens/alias';
 import { isBackedToken } from '../../../../extension/design-tokens/backed-tokens';
 import { boundShadowToken } from '../../../../extension/design-tokens/shadow-token';
 import { shadowCss } from '../../../../extension/design-tokens/shadow-css';
+import { borderSideDeclarations } from '../../../../extension/design-tokens/border-sides';
+
+/**
+ * Writes one border declaration per side into the rule being built.
+ *
+ * @param {Object}   css    The CSS builder, with its selector already set.
+ * @param {string}   device The preview device: 'Desktop', 'Tablet' or 'Mobile'.
+ * @param {Object[]} values The desktop, tablet and mobile border attributes, in that order.
+ * @param {Object}   sides  Each side mapped to its `[shorthand, color]` pair.
+ *
+ * @since TBD
+ *
+ * @return {void}
+ */
+function addBorderSides(css, device, values, sides) {
+	borderSideDeclarations(device, values, sides).forEach(([property, value]) => css.add_property(property, value));
+}
 
 /**
  * Whether the button's active preset resolves a padding and/or a margin.
@@ -947,18 +964,12 @@ export default function BackendStyles(props) {
 		css.add_property('border-color', 'var(--kb-btn-border-color)');
 	}
 
-	if (previewBorderTopStyle) {
-		css.add_property('border-top', previewBorderTopStyle);
-	}
-	if (previewBorderRightStyle) {
-		css.add_property('border-right', previewBorderRightStyle);
-	}
-	if (previewBorderLeftStyle) {
-		css.add_property('border-left', previewBorderLeftStyle);
-	}
-	if (previewBorderBottomStyle) {
-		css.add_property('border-bottom', previewBorderBottomStyle);
-	}
+	addBorderSides(css, previewDevice, [borderStyle, tabletBorderStyle, mobileBorderStyle], {
+		top: [previewBorderTopStyle, previewBorderTopColor],
+		right: [previewBorderRightStyle, previewBorderRightColor],
+		left: [previewBorderLeftStyle, previewBorderLeftColor],
+		bottom: [previewBorderBottomStyle, previewBorderBottomColor],
+	});
 	// `render_measure_output` rather than four manual `render_size` calls: a corner can now be a
 	// design-token alias (the box control's token-pick path), and `render_size` only knows how to
 	// concatenate a number with a unit — it would emit `{alias}px`, invalid CSS, for a picked corner.
@@ -1032,18 +1043,12 @@ export default function BackendStyles(props) {
 
 	//hover styles
 	css.set_selector(`.kb-single-btn-${uniqueID} .kt-button-${uniqueID}${weight}:hover`);
-	if (previewBorderHoverTopStyle) {
-		css.add_property('border-top', previewBorderHoverTopStyle);
-	}
-	if (previewBorderHoverRightStyle) {
-		css.add_property('border-right', previewBorderHoverRightStyle);
-	}
-	if (previewBorderHoverLeftStyle) {
-		css.add_property('border-left', previewBorderHoverLeftStyle);
-	}
-	if (previewBorderHoverBottomStyle) {
-		css.add_property('border-bottom', previewBorderHoverBottomStyle);
-	}
+	addBorderSides(css, previewDevice, [borderHoverStyle, tabletBorderHoverStyle, mobileBorderHoverStyle], {
+		top: [previewBorderHoverTopStyle, previewBorderHoverTopColor],
+		right: [previewBorderHoverRightStyle, previewBorderHoverRightColor],
+		left: [previewBorderHoverLeftStyle, previewBorderHoverLeftColor],
+		bottom: [previewBorderHoverBottomStyle, previewBorderHoverBottomColor],
+	});
 	if ('' !== previewHoverRadiusTop) {
 		css.add_property(
 			'border-top-left-radius',

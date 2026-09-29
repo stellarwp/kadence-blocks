@@ -10,7 +10,7 @@
 /**
  * Internal dependencies
  */
-import { KadenceBlocksCSS } from '@kadence/helpers';
+import { KadenceBlocksCSS, getBorderColor, getBorderStyle } from '@kadence/helpers';
 import BackendStyles, { hasVisibleShadow, paintsOwnShape } from '../index';
 import {
 	activePresetFor,
@@ -663,5 +663,141 @@ describe('hasVisibleShadow with a binding', () => {
 				shadowToken: '{semantic.shadow.card}',
 			})
 		).toBe(false);
+	});
+});
+
+describe('BackendStyles hover border without a stored width', () => {
+	const HOVER_SELECTOR = '.kb-single-btn-abc123 .kt-button-abc123:hover';
+	const SIDES = ['top', 'right', 'bottom', 'left'];
+
+	/**
+	 * Builds a hover border attribute value that carries a color and a line style but no width.
+	 *
+	 * @param {string} color The border color of every side.
+	 * @param {string} style The line style of every side.
+	 *
+	 * @since TBD
+	 *
+	 * @return {Object[]} The hover border attribute value.
+	 */
+	function hoverBorderWithoutWidth(color, style) {
+		const value = { unit: 'px' };
+		SIDES.forEach((side) => {
+			value[side] = [color, style, ''];
+		});
+
+		return [value];
+	}
+
+	/**
+	 * Reads back the property map recorded for the hover rule that carries the border declarations.
+	 *
+	 * @param {Array} rules The fake CSS builder's recorded rules.
+	 *
+	 * @since TBD
+	 *
+	 * @return {Object} The recorded properties, or an empty object when the rule is missing.
+	 */
+	function hoverProps(rules) {
+		return rules.find((entry) => entry.selector === HOVER_SELECTOR)?.props ?? {};
+	}
+
+	let fakeCss;
+
+	beforeEach(() => {
+		fakeCss = createFakeCss();
+		KadenceBlocksCSS.mockImplementation(() => fakeCss);
+		getBorderStyle.mockReturnValue('');
+		getBorderColor.mockReturnValue('');
+	});
+
+	afterEach(() => {
+		KadenceBlocksCSS.mockReset();
+		getBorderStyle.mockReset();
+		getBorderColor.mockReset();
+	});
+
+	/**
+	 * A hover border set to a color and a line style but left at the preset's default width has no
+	 * shorthand to write, so the hover rule must carry the color and the style on their own or the
+	 * preset's width paints a border with no line style.
+	 *
+	 * @return {void}
+	 */
+	it('emits the hover border color and style separately when no width is stored', () => {
+		getBorderColor.mockReturnValue('#ff0000');
+
+		BackendStyles({
+			attributes: { uniqueID: 'abc123', borderHoverStyle: hoverBorderWithoutWidth('#ff0000', 'dashed') },
+			previewDevice: 'Desktop',
+		});
+
+		const props = hoverProps(fakeCss.rules);
+
+		SIDES.forEach((side) => {
+			expect(props[`border-${side}-color`]).toBe('#ff0000');
+			expect(props[`border-${side}-style`]).toBe('dashed');
+			expect(props[`border-${side}`]).toBeUndefined();
+		});
+	});
+
+	/**
+	 * A stored width still produces the full shorthand and none of the separate declarations, so the
+	 * existing behavior for a button with an explicit hover width is unchanged.
+	 *
+	 * @return {void}
+	 */
+	it('keeps the shorthand and skips the separate declarations when a width is stored', () => {
+		getBorderStyle.mockReturnValue('2px solid #ff0000');
+
+		BackendStyles({
+			attributes: { uniqueID: 'abc123', borderHoverStyle: hoverBorderWithoutWidth('#ff0000', 'solid') },
+			previewDevice: 'Desktop',
+		});
+
+		const props = hoverProps(fakeCss.rules);
+
+		expect(props['border-top']).toBe('2px solid #ff0000');
+		expect(props['border-top-color']).toBeUndefined();
+		expect(props['border-top-style']).toBeUndefined();
+	});
+
+	/**
+	 * The resting border follows the same split: a stored color and line style with no width go out on
+	 * their own, so a preset width does not paint a border with no line style.
+	 *
+	 * @return {void}
+	 */
+	it('emits the resting border color and style separately when no width is stored', () => {
+		getBorderColor.mockReturnValue('#00ff00');
+
+		BackendStyles({
+			attributes: { uniqueID: 'abc123', borderStyle: hoverBorderWithoutWidth('#00ff00', 'solid') },
+			previewDevice: 'Desktop',
+		});
+
+		const props = fakeCss.rules.find(
+			(entry) => entry.selector === '.kb-single-btn-abc123 .kt-button-abc123'
+		)?.props;
+
+		SIDES.forEach((side) => {
+			expect(props[`border-${side}-color`]).toBe('#00ff00');
+			expect(props[`border-${side}-style`]).toBe('solid');
+		});
+	});
+
+	/**
+	 * A button with no hover border at all emits no hover border declarations.
+	 *
+	 * @return {void}
+	 */
+	it('emits nothing for a button with no hover border', () => {
+		BackendStyles({ attributes: { uniqueID: 'abc123' }, previewDevice: 'Desktop' });
+
+		const props = hoverProps(fakeCss.rules);
+
+		expect(
+			Object.keys(props).filter((property) => /^border-(top|right|bottom|left)(-color|-style)?$/.test(property))
+		).toEqual([]);
 	});
 });

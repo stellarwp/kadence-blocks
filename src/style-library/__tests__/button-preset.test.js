@@ -314,4 +314,37 @@ describe('BUTTON_PRESET.schemaFor', () => {
 
 		expect(field.defaultColor).toBe('semantic.color.button-border');
 	});
+
+	/**
+	 * The Hover tab offers a desktop-only Border on the hover key trio, since the block declares no
+	 * tablet or mobile attribute for it, and its muted defaults name the resting border.
+	 *
+	 * @return {void}
+	 */
+	it('offers a desktop-only hover Border defaulting to the resting border', () => {
+		const field = BUTTON_PRESET.schemaFor('hover')
+			.panels.flatMap((panel) => panel.fields)
+			.find((candidate) => candidate.type === 'border');
+
+		expect(field.path).toBe('tokens.button-border-hover');
+		expect(field.responsive).toBe(false);
+		expect(field.defaultValue).toBe('0px');
+		expect(field.defaultColor).toBe('semantic.color.button-border');
+	});
+
+	/**
+	 * The Normal tab keeps its own Border on the resting key, so the two never share a path.
+	 *
+	 * @return {void}
+	 */
+	it('keeps the Normal and Hover borders on separate paths', () => {
+		const paths = ['normal', 'hover'].map(
+			(tab) =>
+				BUTTON_PRESET.schemaFor(tab)
+					.panels.flatMap((panel) => panel.fields)
+					.find((candidate) => candidate.type === 'border').path
+		);
+
+		expect(paths).toEqual(['tokens.button-border', 'tokens.button-border-hover']);
+	});
 });
