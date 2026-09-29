@@ -2363,11 +2363,15 @@ class Kadence_Blocks_CSS {
 					$desktop_width = $this->get_border_value( $attributes, $args, $side, 'desktop', 'width', $single_styles );
 					$tablet_width = $this->get_border_value( $attributes, $args, $side, 'tablet', 'width', $single_styles );
 
-					// A style the block stores at this breakpoint has to go out even with no width and no color: the width comes from the preset, which knows nothing of the style picked here.
+					// A style the block stores at this breakpoint has to go out even with no width and no color:
+					// the width comes from the preset, which knows nothing of the style picked here.
 					$stored_style = $this->has_stored_border_style( $attributes, $args, $side, $size, false );
 
-					// Otherwise only need to output *just* the border-style if we're inheriting a width
-					if( $stored_style || ( $size === 'tablet' && !empty( $desktop_width ) ) || ( $size === 'mobile' && !empty( $desktop_width ) && !empty( $tablet_width ) ) ) {
+					// Otherwise only need to output *just* the border-style if we're inheriting a width.
+					$inherits_tablet_width = 'tablet' === $size && ! empty( $desktop_width );
+					$inherits_mobile_width = 'mobile' === $size && ! empty( $desktop_width ) && ! empty( $tablet_width );
+
+					if ( $stored_style || $inherits_tablet_width || $inherits_mobile_width ) {
 						$this->add_property( $property_prefix . $args[ $prop_key ] . '-style', $style );
 					}
 				}
