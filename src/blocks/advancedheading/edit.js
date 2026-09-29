@@ -2137,6 +2137,7 @@ function KadenceAdvancedHeading(props) {
 										context={{
 											blockName: 'kadence/advancedheading',
 											state: tokenBinding.typography,
+											inheritedDefault: presetTypography,
 											onReset: () => resetToken('typography'),
 										}}
 										onFontChange={(select) => {
