@@ -224,6 +224,56 @@ describe('usePresetBinding with a preset value only at a breakpoint', () => {
 	});
 });
 
+describe('usePresetBinding with a property the active preset leaves unset', () => {
+	beforeEach(() => {
+		window.kadenceDesignTokensPresets = {
+			active: SET,
+			libraries: {
+				[SET]: {
+					[BLOCK]: {
+						default: 'primary',
+						presets: [{ slug: 'primary', label: 'Primary' }],
+						properties: [{ key: 'button-font', kind: 'text', token: null, control_attr: 'typography' }],
+						values: { primary: {} },
+						responsive: {},
+						overridden: {},
+					},
+				},
+			},
+		};
+	});
+
+	afterEach(() => {
+		delete window.kadenceDesignTokensPresets;
+	});
+
+	/**
+	 * A mapped control the preset does not set still gets an entry, so a value the block stores on it
+	 * reads as diverging from a preset that holds nothing there.
+	 *
+	 * @return {void}
+	 */
+	it('reports overridden once the block stores a value the preset does not set', () => {
+		const state = usePresetBinding(BLOCK, { kbPreset: 'primary', typography: 'Anton' }, SET, 'Desktop');
+
+		expect(state.typography.bound).toBe(false);
+		expect(state.typography.presetValue).toBeUndefined();
+		expect(state.typography.overridden).toBe(true);
+	});
+
+	/**
+	 * An untouched control on a preset that leaves the property unset is neither bound nor overridden.
+	 *
+	 * @return {void}
+	 */
+	it('reports not overridden while the block stores nothing', () => {
+		const state = usePresetBinding(BLOCK, { kbPreset: 'primary', typography: '' }, SET, 'Desktop');
+
+		expect(state.typography.bound).toBe(false);
+		expect(state.typography.overridden).toBe(false);
+	});
+});
+
 describe('usePresetBinding per-corner breakpoint gaps', () => {
 	// The preset's tablet override touches only the top corner (index 0); the other three corners
 	// carry a `''` gap, meaning "keep inheriting the base value live" — see

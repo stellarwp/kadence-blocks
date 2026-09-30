@@ -17,7 +17,6 @@
 /**
  * WordPress dependencies
  */
-import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -73,7 +72,8 @@ function loadPickedFamily(family) {
  *                                              another screen is selectable without a reload; falls
  *                                              back to the page-load global when absent.
  * @param {?Array}   [props.field.catalogOptions] The full option list, on the same terms.
- * @param {?string}  [props.field.inherited] What an unset family falls back to, named on the muted trigger.
+ * @param {?string}  [props.field.inherited] The family a preset supplies for an unset field, named on the
+ *                                            muted trigger. Omit it and the control says "Theme default".
  * @param {?string}  [props.field.weightPath] The sibling weight's dot path, when the schema pairs one
  *                                            with this family. Omitted by a screen with no weight field.
  * @param {boolean}  [props.field.readOnly]  Whether the control is non-interactive.
@@ -101,7 +101,7 @@ export function FontFamilyField({ field, value, onChange, values = {}, onValueCh
 				value={value ?? ''}
 				favorites={field.favorites ?? fontOptions(feed).map((font) => font.label)}
 				catalogOptions={field.catalogOptions ?? fontCatalogOptions(feed)}
-				inheritedLabel={field.inherited ?? __('Theme Font', 'kadence-blocks')}
+				inheritedLabel={field.inherited}
 				onPick={async (family) => {
 					if (field.readOnly) {
 						return;

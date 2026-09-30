@@ -9,6 +9,7 @@ import {
 	toStoredStyleAxis,
 	toStoredWidth,
 	toStoredWidthAxis,
+	borderAxisPaths,
 	widthTokensForField,
 } from '../components/molecules/fields/BorderField';
 
@@ -110,5 +111,40 @@ describe('toStoredStyleAxis', () => {
 
 	it('defaults every unset slot of a four-slot style axis to none', () => {
 		expect(toStoredStyleAxis(['solid', '', 'dotted', undefined])).toEqual(['solid', 'none', 'dotted', 'none']);
+	});
+});
+
+describe('borderAxisPaths', () => {
+	/**
+	 * A field with only a base path stores its axes at the `-width` / `-style` / `-color` siblings of
+	 * that path, the shape the Button's three border properties use.
+	 *
+	 * @return {void}
+	 */
+	it('derives the sibling keys from the base path', () => {
+		expect(borderAxisPaths({ path: 'tokens.button-border' })).toEqual({
+			width: 'tokens.button-border-width',
+			style: 'tokens.button-border-style',
+			color: 'tokens.button-border-color',
+		});
+	});
+
+	/**
+	 * A block whose border properties are not named after one base key names each axis itself, and
+	 * those paths are used as given.
+	 *
+	 * @return {void}
+	 */
+	it('uses the axis paths a field names itself', () => {
+		expect(
+			borderAxisPaths({
+				path: 'tokens.border',
+				axisPaths: { width: 'tokens.borderWidth', style: 'tokens.borderStyle', color: 'tokens.borderColor' },
+			})
+		).toEqual({
+			width: 'tokens.borderWidth',
+			style: 'tokens.borderStyle',
+			color: 'tokens.borderColor',
+		});
 	});
 });

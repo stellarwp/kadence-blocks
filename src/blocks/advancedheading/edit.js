@@ -93,6 +93,7 @@ import {
 import { borderSideDeclarations } from '../../extension/design-tokens/border-sides';
 import { EditorBorderControl } from '../../extension/design-tokens/components/EditorBorderControl';
 import { EditorBoxControl } from '../../extension/design-tokens/components/EditorBoxControl';
+import { EditorFontFamilyControl } from '../../extension/design-tokens/components/EditorFontFamilyControl';
 import { EditorScalarControl } from '../../extension/design-tokens/components/EditorScalarControl';
 import { useColorGroups } from '../../extension/design-tokens/hooks/use-color-groups';
 import { resolveColorLiteral } from '../../extension/design-tokens/color-literal';
@@ -2036,77 +2037,79 @@ function KadenceAdvancedHeading(props) {
 												units={['px', 'em', 'rem', 'vw']}
 											/>
 										)}
-										<TwoColumn className="kb-font-settings">
-											<ResponsiveUnitControl
-												label={__('Line Height', 'kadence-blocks')}
-												value={undefined !== fontHeight?.[0] ? fontHeight[0] : ''}
-												onChange={(value) =>
-													setAttributes({
-														fontHeight: [
-															value,
-															undefined !== fontHeight[1] ? fontHeight[1] : '',
-															undefined !== fontHeight[2] ? fontHeight[2] : '',
-														],
-													})
-												}
-												tabletValue={undefined !== fontHeight?.[1] ? fontHeight[1] : ''}
-												onChangeTablet={(value) =>
-													setAttributes({
-														fontHeight: [
-															undefined !== fontHeight[0] ? fontHeight[0] : '',
-															value,
-															undefined !== fontHeight[2] ? fontHeight[2] : '',
-														],
-													})
-												}
-												mobileValue={undefined !== fontHeight?.[2] ? fontHeight[2] : ''}
-												onChangeMobile={(value) =>
-													setAttributes({
-														fontHeight: [
-															undefined !== fontHeight[0] ? fontHeight[0] : '',
-															undefined !== fontHeight[1] ? fontHeight[1] : '',
-															value,
-														],
-													})
-												}
-												min={0}
-												max={fontHeightType === 'px' ? 200 : 12}
-												step={fontHeightType === 'px' ? 1 : 0.1}
-												unit={fontHeightType ? fontHeightType : ''}
-												onUnit={(value) => setAttributes({ fontHeightType: value })}
-												units={['-', 'px', 'em', 'rem']}
-												compressedDevice={true}
-											/>
-											<KadenceRadioButtons
-												label={__('Letter Case', 'kadence-blocks')}
-												value={textTransform}
-												className={'kb-letter-case'}
-												options={[
-													{
-														value: 'none',
-														label: __('-', 'kadence-blocks'),
-														tooltip: __('None', 'kadence-blocks'),
-													},
-													{
-														value: 'uppercase',
-														label: __('AB', 'kadence-blocks'),
-														tooltip: __('Uppercase', 'kadence-blocks'),
-													},
-													{
-														value: 'lowercase',
-														label: __('ab', 'kadence-blocks'),
-														tooltip: __('Lowercase', 'kadence-blocks'),
-													},
-													{
-														value: 'capitalize',
-														label: __('Ab', 'kadence-blocks'),
-														tooltip: __('Capitalize', 'kadence-blocks'),
-													},
-												]}
-												allowClear={true}
-												onChange={(value) => setAttributes({ textTransform: value })}
-											/>
-										</TwoColumn>
+										<div className="kb-advanced-heading-font-settings">
+											<TwoColumn className="kb-font-settings">
+												<ResponsiveUnitControl
+													label={__('Line Height', 'kadence-blocks')}
+													value={undefined !== fontHeight?.[0] ? fontHeight[0] : ''}
+													onChange={(value) =>
+														setAttributes({
+															fontHeight: [
+																value,
+																undefined !== fontHeight[1] ? fontHeight[1] : '',
+																undefined !== fontHeight[2] ? fontHeight[2] : '',
+															],
+														})
+													}
+													tabletValue={undefined !== fontHeight?.[1] ? fontHeight[1] : ''}
+													onChangeTablet={(value) =>
+														setAttributes({
+															fontHeight: [
+																undefined !== fontHeight[0] ? fontHeight[0] : '',
+																value,
+																undefined !== fontHeight[2] ? fontHeight[2] : '',
+															],
+														})
+													}
+													mobileValue={undefined !== fontHeight?.[2] ? fontHeight[2] : ''}
+													onChangeMobile={(value) =>
+														setAttributes({
+															fontHeight: [
+																undefined !== fontHeight[0] ? fontHeight[0] : '',
+																undefined !== fontHeight[1] ? fontHeight[1] : '',
+																value,
+															],
+														})
+													}
+													min={0}
+													max={fontHeightType === 'px' ? 200 : 12}
+													step={fontHeightType === 'px' ? 1 : 0.1}
+													unit={fontHeightType ? fontHeightType : ''}
+													onUnit={(value) => setAttributes({ fontHeightType: value })}
+													units={['-', 'px', 'em', 'rem']}
+													compressedDevice={true}
+												/>
+												<KadenceRadioButtons
+													label={__('Letter Case', 'kadence-blocks')}
+													value={textTransform}
+													className={'kb-letter-case'}
+													options={[
+														{
+															value: 'none',
+															label: __('-', 'kadence-blocks'),
+															tooltip: __('None', 'kadence-blocks'),
+														},
+														{
+															value: 'uppercase',
+															label: __('AB', 'kadence-blocks'),
+															tooltip: __('Uppercase', 'kadence-blocks'),
+														},
+														{
+															value: 'lowercase',
+															label: __('ab', 'kadence-blocks'),
+															tooltip: __('Lowercase', 'kadence-blocks'),
+														},
+														{
+															value: 'capitalize',
+															label: __('Ab', 'kadence-blocks'),
+															tooltip: __('Capitalize', 'kadence-blocks'),
+														},
+													]}
+													allowClear={true}
+													onChange={(value) => setAttributes({ textTransform: value })}
+												/>
+											</TwoColumn>
+										</div>
 									</>
 								)}
 							</KadencePanelBody>
@@ -2130,13 +2133,20 @@ function KadenceAdvancedHeading(props) {
 										onLetterSpacingType={(value) => setAttributes({ letterSpacingType: value })}
 										fontFamily={typography}
 										onFontFamily={(value) => setAttributes({ typography: value })}
-										// The family is not a token, but the heading's preset surface can carry one, so the field
-										// gets the same bound/overridden mark every other mapped control on this block shows.
-										context={{
-											blockName: 'kadence/advancedheading',
-											state: tokenBinding.typography,
-											onReset: () => resetToken('typography'),
-										}}
+										context={{ blockName: 'kadence/advancedheading' }}
+										// The family is not a token, but the heading's preset surface can carry one, so the row
+										// wears the same chrome and bound/overridden mark as Font Size above it.
+										renderFontFamily={({ label, value, onChange, onClear }) => (
+											<EditorFontFamilyControl
+												label={label}
+												value={value}
+												onChange={onChange}
+												onClear={onClear}
+												inheritedLabel={presetTypography}
+												state={tokenBinding.typography}
+												onReset={() => resetToken('typography')}
+											/>
+										)}
 										onFontChange={(select) => {
 											setAttributes({
 												typography: select.value,

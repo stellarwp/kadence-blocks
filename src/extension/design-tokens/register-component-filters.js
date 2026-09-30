@@ -33,17 +33,8 @@
  */
 import { addFilter, removeFilter } from '@wordpress/hooks';
 import { pickableTokensForControl } from '../token-picker';
-import { favoriteFonts, favoriteFontsManageUrl, fontCatalogOptions, isGoogleFamily } from '../font-picker';
-import {
-	FontFamilySelector,
-	TokenChip,
-	TokenPickerButton,
-	TokenSelector,
-	googleFontHref,
-	isTokenAlias,
-	loadFontFamily,
-} from '../../token-controls';
-import { TokenIndicator } from '../token-indicators/components/TokenIndicator';
+import { TokenChip, TokenPickerButton, TokenSelector, isTokenAlias } from '../../token-controls';
+import { fontFamilyPicker } from './components/EditorFontFamilyControl';
 
 const NAMESPACE = 'kadence-blocks/component-token';
 const EDITOR_HOOK = 'kadence.components.control.editor';
@@ -220,42 +211,12 @@ function fontFamilyEditor(defaultEditor, ctx) {
 		return defaultEditor;
 	}
 
-	return (
-		<FontFamilySelector
-			value={ctx.value}
-			favorites={favoriteFonts()}
-			catalogOptions={fontCatalogOptions()}
-			manageUrl={favoriteFontsManageUrl()}
-			inheritedLabel={ctx.context?.inheritedDefault}
-			// A family is not a token, but a preset can still set one, so the field has a preset value to
-			// match or diverge from. The block passes its own binding state the same way it does for every
-			// other mapped control; a block that passes none gets no mark, exactly as before.
-			indicator={
-				ctx.context?.state ? <TokenIndicator state={ctx.context.state} onReset={ctx.context.onReset} /> : null
-			}
-			onPick={async (family) => {
-				await loadFontFamily(family, {
-					doc: canvasDocument(),
-					href: isGoogleFamily(family) ? googleFontHref(family) : null,
-				});
-
-				write(family);
-			}}
-			onClear={() => write('')}
-		/>
-	);
-}
-
-/**
- * The document the block canvas renders into: its own once the editor is iframed, the page's
- * otherwise. A font loaded into the wrong one is a font the user never sees.
- *
- * @since TBD
- *
- * @return {Document} The canvas document.
- */
-function canvasDocument() {
-	return window.frames?.['editor-canvas']?.document || document;
+	return fontFamilyPicker({
+		value: ctx.value,
+		onChange: write,
+		onClear: () => write(''),
+		inheritedLabel: ctx.context?.inheritedDefault,
+	});
 }
 
 /**

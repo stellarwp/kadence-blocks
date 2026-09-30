@@ -297,9 +297,6 @@ function schemaFor(tab, values, feed) {
 						// is what makes the new face selectable here without a reload.
 						favorites: fontOptions(feed).map((font) => font.label),
 						catalogOptions: fontCatalogOptions(feed),
-						// What a heading with no family of its own renders in. Named on the muted trigger so
-						// an unset field reports the face actually in use rather than reading as empty.
-						inherited: __('Theme Font', 'kadence-blocks'),
 						// Pairs the Weight field below with this one, so a family switch clears a weight
 						// the new family has no face for instead of leaving it to be synthesized.
 						weightPath: 'tokens.fontWeight',
@@ -339,28 +336,19 @@ function schemaFor(tab, values, feed) {
 				title: __('Border', 'kadence-blocks'),
 				fields: [
 					{
-						type: 'select',
-						path: 'tokens.borderStyle',
-						label: __('Style', 'kadence-blocks'),
-						options: BORDER_STYLE_OPTIONS,
-						// The library's resolved map, so a value storage aliased to a token id still
-						// displays as the keyword it resolves to rather than blanking the select.
-						values: feed?.values,
-					},
-					{
-						type: 'token-scalar',
-						tokenType: 'dimension',
-						role: 'border-width',
-						path: 'tokens.borderWidth',
-						label: __('Width', 'kadence-blocks'),
+						type: 'border',
+						// The block names its three border properties `borderWidth`, `borderStyle` and
+						// `borderColor` rather than one base key with suffixes, so each axis is named here.
+						path: 'tokens.border',
+						axisPaths: {
+							width: 'tokens.borderWidth',
+							style: 'tokens.borderStyle',
+							color: 'tokens.borderColor',
+						},
+						label: __('Border', 'kadence-blocks'),
 						defaultValue: HEADING_BORDER_WIDTH_FALLBACK,
-					},
-					{
-						type: 'color-select',
-						path: 'tokens.borderColor',
-						label: __('Color', 'kadence-blocks'),
 						// The semantic border color the Default preset binds, matching the Button screen's border row.
-						defaultValue: 'semantic.color.border',
+						defaultColor: 'semantic.color.border',
 					},
 					{
 						type: 'radius',
