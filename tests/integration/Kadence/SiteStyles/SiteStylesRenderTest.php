@@ -46,7 +46,7 @@ final class SiteStylesRenderTest extends WPTestCase {
 		$this->assertStringContainsString( 'border-bottom-right-radius:20px;', $rule );
 	}
 
-	public function testAnOutlineButtonTakesTheShapeButNotTheColours(): void {
+	public function testAnOutlineButtonTakesTheShapeButNotTheColors(): void {
 		$this->tester->enable_fse_mode();
 		$this->store_background_and_radius( '#cc0000', 20 );
 

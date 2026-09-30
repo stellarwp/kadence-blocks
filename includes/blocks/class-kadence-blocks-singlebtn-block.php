@@ -521,7 +521,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block imple
 	public function site_styles_selectors(): array {
 		/*
 		 * The button element, which the editor wraps and the front end doesn't. Only Fill
-		 * buttons: core's colours would otherwise reach the Outline and theme styles.
+		 * buttons: core's colors would otherwise reach the Outline and theme styles.
 		 */
 		return [ 'root' => '.wp-block-kadence-singlebtn.kt-button.kb-btn-global-fill, .wp-block-kadence-singlebtn .kt-button.kb-btn-global-fill' ];
 	}
@@ -537,7 +537,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block imple
 
 	/**
 	 * Site values describe Fill buttons. Outline takes only the shape, so it
-	 * keeps its transparent background and theme outline colours; the theme
+	 * keeps its transparent background and theme outline colors; the theme
 	 * button styles take none.
 	 *
 	 * @since TBD
