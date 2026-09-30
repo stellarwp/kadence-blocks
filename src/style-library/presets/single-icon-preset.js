@@ -30,7 +30,7 @@ export const SINGLE_ICON_BLOCK = 'kadence/single-icon';
  *
  * @since TBD
  */
-const ICON_COLOR_FALLBACK = '#3182CE';
+const ICON_COLOR_FALLBACK = 'currentColor';
 
 /**
  * The icon's built-in size, matching `semantic.icon-size.default`.
