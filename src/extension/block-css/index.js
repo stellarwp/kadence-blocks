@@ -40,12 +40,11 @@ addFilter('blocks.registerBlockType', 'kadence/blockCSS', blockCSSAttribute);
 
 /**
  * Build the block css control
+ *
+ * Hooks run before the isSelected check to satisfy the Rules of Hooks.
  */
 const BlockCSSComponent = createHigherOrderComponent((BlockEdit) => {
 	return (props) => {
-		if (!props.isSelected) {
-			return <BlockEdit {...props} />;
-		}
 		const { hasBlockCSS, openTab } = useSelect((select) => {
 			const hasSupport = select(blocksStore).hasBlockSupport(props.name, 'kbcss');
 			let openTab = 'general';
@@ -67,6 +66,9 @@ const BlockCSSComponent = createHigherOrderComponent((BlockEdit) => {
 		const [isOpen, setOpen] = useState(false);
 		const openModal = () => setOpen(true);
 		const closeModal = () => setOpen(false);
+		if (!props.isSelected) {
+			return <BlockEdit {...props} />;
+		}
 		if (hasBlockCSS && openTab == 'advanced' && showSettings('show', 'kadence/customcss')) {
 			const {
 				attributes: { kadenceBlockCSS },
