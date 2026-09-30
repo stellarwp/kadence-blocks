@@ -26,7 +26,7 @@ final class SiteStylesBlockSupportsTest extends WPTestCase {
 			],
 			$metadata['supports']['color']
 		);
-		$this->assertSame( '.wp-block-kadence-singlebtn.kt-button, .wp-block-kadence-singlebtn .kt-button', $metadata['selectors']['root'] );
+		$this->assertSame( '.wp-block-kadence-singlebtn.kt-button.kb-btn-global-fill, .wp-block-kadence-singlebtn .kt-button.kb-btn-global-fill', $metadata['selectors']['root'] );
 		$this->assertSame( 'kadence/advancedbtn', $metadata['supports']['existing'] );
 	}
 

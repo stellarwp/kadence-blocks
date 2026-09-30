@@ -519,8 +519,11 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block imple
 	 * @since TBD
 	 */
 	public function site_styles_selectors(): array {
-		// The button element, which the editor wraps and the front end doesn't.
-		return [ 'root' => '.wp-block-kadence-singlebtn.kt-button, .wp-block-kadence-singlebtn .kt-button' ];
+		/*
+		 * The button element, which the editor wraps and the front end doesn't. Only Fill
+		 * buttons: core's colours would otherwise reach the Outline and theme styles.
+		 */
+		return [ 'root' => '.wp-block-kadence-singlebtn.kt-button.kb-btn-global-fill, .wp-block-kadence-singlebtn .kt-button.kb-btn-global-fill' ];
 	}
 
 	/**
