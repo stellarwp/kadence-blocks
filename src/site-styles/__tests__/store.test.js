@@ -3,6 +3,7 @@ import {
 	guardWrite,
 	merge,
 	mergeAttributes,
+	scopeSiteAttributes,
 	siteAttributes,
 	toCoreColor,
 	toKadenceColor,
@@ -11,6 +12,7 @@ import {
 	withStoredForm,
 } from '../store';
 import conformance from './fixtures/merge-conformance.json';
+import scopeConformance from './fixtures/scope-conformance.json';
 import singleButton from './fixtures/singlebtn-entry.json';
 
 const BLOCK = 'kadence/singlebtn';
@@ -26,6 +28,12 @@ afterEach(() => {
 describe('merge', () => {
 	it.each(conformance.map((c) => [c.name, c]))('%s', (name, c) => {
 		expect(merge(c.instance, c.site, c.default)).toEqual(c.expected);
+	});
+});
+
+describe('scopeSiteAttributes', () => {
+	it.each(scopeConformance.map((c) => [c.name, c]))('%s', (name, c) => {
+		expect(scopeSiteAttributes(c.site, c.instance, c.scope, c.defaultStyle)).toEqual(c.expected);
 	});
 });
 
@@ -99,6 +107,16 @@ describe('toStoredForm', () => {
 		});
 	});
 
+	it('never stores the button style', () => {
+		expect(
+			toStoredForm(
+				{ inheritStyles: 'outline', borderRadius: [20, 20, 20, 20] },
+				{ ...definitions, inheritStyles: { default: 'fill' } },
+				BLOCK
+			)
+		).toEqual({ core: {}, custom: { borderRadius: [20, 20, 20, 20] } });
+	});
+
 	it('stores nothing when everything is at its default', () => {
 		expect(toStoredForm({ background: '', sizePreset: 'standard' }, definitions, BLOCK)).toEqual({
 			core: {},
@@ -169,6 +187,20 @@ describe('write guard', () => {
 		const shown = mergeAttributes(stored, site, definitions);
 
 		expect(guardWrite({ background: '#00aa00' }, shown, stored, site)).toEqual({ background: '#00aa00' });
+	});
+
+	it('stores only the new style when a Fill button switches to Outline', () => {
+		const stored = { background: '', typography: [{ size: ['', '', ''], family: '' }] };
+		const { scope } = singleButton;
+		const fillSite = scopeSiteAttributes(site, stored, scope, 'fill');
+		const shown = mergeAttributes(stored, fillSite, definitions);
+
+		expect(guardWrite({ inheritStyles: 'outline' }, shown, stored, fillSite)).toEqual({ inheritStyles: 'outline' });
+
+		const outlineSite = scopeSiteAttributes(site, { inheritStyles: 'outline' }, scope, 'fill');
+
+		expect(outlineSite).toEqual({ typography: site.typography });
+		expect(mergeAttributes({ ...stored, inheritStyles: 'outline' }, outlineSite, definitions).background).toBe('');
 	});
 
 	it('unmerge returns the stored value for an unchanged write', () => {

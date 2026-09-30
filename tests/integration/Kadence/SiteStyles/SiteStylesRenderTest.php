@@ -23,22 +23,19 @@ final class SiteStylesRenderTest extends WPTestCase {
 	/**
 	 * @return array<string, array{string}>
 	 */
-	public function siteStyledButtonProvider(): array {
+	public function fillButtonProvider(): array {
 		return [
 			'fill'             => [ 'ss_fill' ],
-			'outline'          => [ 'ss_outline' ],
-			'theme base'       => [ 'ss_base' ],
-			'theme secondary'  => [ 'ss_secondary' ],
 			'in template part' => [ 'ss_part' ],
 		];
 	}
 
 	/**
-	 * @dataProvider siteStyledButtonProvider
+	 * @dataProvider fillButtonProvider
 	 *
 	 * @param string $unique_id The button's unique ID in the fixture.
 	 */
-	public function testSiteValuesReachEveryButtonWithoutItsOwn( string $unique_id ): void {
+	public function testSiteValuesReachEveryFillButtonWithoutItsOwn( string $unique_id ): void {
 		$this->tester->enable_fse_mode();
 		$this->store_background_and_radius( '#cc0000', 20 );
 
@@ -47,6 +44,42 @@ final class SiteStylesRenderTest extends WPTestCase {
 		$this->assertStringContainsString( 'background:#cc0000;', $rule );
 		$this->assertStringContainsString( 'border-top-left-radius:20px;', $rule );
 		$this->assertStringContainsString( 'border-bottom-right-radius:20px;', $rule );
+	}
+
+	public function testAnOutlineButtonTakesTheShapeButNotTheColours(): void {
+		$this->tester->enable_fse_mode();
+		$this->store_background_and_radius( '#cc0000', 20 );
+
+		$rule = $this->button_rule( $this->fixture_css(), 'ss_outline' );
+
+		$this->assertStringNotContainsString( 'background:', $rule );
+		$this->assertStringContainsString( 'border-top-left-radius:20px;', $rule );
+	}
+
+	/**
+	 * @return array<string, array{string}>
+	 */
+	public function themeStyledButtonProvider(): array {
+		return [
+			'theme base'      => [ 'ss_base' ],
+			'theme secondary' => [ 'ss_secondary' ],
+		];
+	}
+
+	/**
+	 * @dataProvider themeStyledButtonProvider
+	 *
+	 * @param string $unique_id The button's unique ID in the fixture.
+	 */
+	public function testAThemeStyledButtonTakesNoSiteValue( string $unique_id ): void {
+		$this->tester->enable_fse_mode();
+		$this->store_background_and_radius( '#cc0000', 20 );
+
+		$css  = $this->fixture_css();
+		$main = '.wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button{';
+
+		$this->assertStringNotContainsString( '}' . $main, $css );
+		$this->assertStringNotContainsString( "\n" . $main, $css );
 	}
 
 	public function testTheInstanceBackgroundWins(): void {

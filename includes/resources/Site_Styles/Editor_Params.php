@@ -2,6 +2,8 @@
 
 namespace KadenceWP\KadenceBlocks\Site_Styles;
 
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Scopes_Site_Styles;
+
 /**
  * Gives the editor scripts the site-level styles state, as
  * `window.kadenceSiteStyles`, before the early block filters run: the FSE
@@ -58,6 +60,13 @@ final class Editor_Params {
 					'attributesMap' => $block->site_styles_attributes_map(),
 					'supports'      => $block->site_styles_supports(),
 				];
+
+				if ( $block instanceof Scopes_Site_Styles ) {
+					$blocks[ $name ]['scope'] = [
+						'attribute'  => $block->site_styles_scope_attribute(),
+						'attributes' => $block->site_styles_scoped_attributes(),
+					];
+				}
 			}
 		}
 

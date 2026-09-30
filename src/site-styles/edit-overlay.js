@@ -6,7 +6,7 @@ import { createHigherOrderComponent } from '@wordpress/compose';
 import { getBlockType } from '@wordpress/blocks';
 import { useCallback, useMemo } from '@wordpress/element';
 import { getSupportedBlock, isFseMode } from './supported-blocks';
-import { guardWrite, mergeAttributes, siteAttributes } from './store';
+import { guardWrite, mergeAttributes, scopeSiteAttributes, siteAttributes } from './store';
 import { useGlobalStylesRecord } from './use-global-styles-record';
 import { isVirtualBlock } from './virtual-blocks';
 
@@ -18,7 +18,19 @@ import { isVirtualBlock } from './virtual-blocks';
 function SiteStylesBlockEdit({ BlockEdit, ...props }) {
 	const { name, attributes, setAttributes } = props;
 	const record = useGlobalStylesRecord();
-	const site = useMemo(() => siteAttributes(record, name), [record, name]);
+	const scope = getSupportedBlock(name)?.scope;
+	const style = scope ? attributes[scope.attribute] : undefined;
+	const site = useMemo(() => {
+		const values = siteAttributes(record, name);
+
+		if (!scope) {
+			return values;
+		}
+
+		const definitions = getBlockType(name)?.attributes || {};
+
+		return scopeSiteAttributes(values, { [scope.attribute]: style }, scope, definitions[scope.attribute]?.default);
+	}, [record, name, scope, style]);
 	const hasSiteValues = Object.keys(site).length > 0;
 	const shown = useMemo(
 		() => (hasSiteValues ? mergeAttributes(attributes, site, getBlockType(name)?.attributes || {}) : attributes),

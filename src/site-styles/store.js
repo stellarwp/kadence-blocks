@@ -3,10 +3,10 @@
  * Styles record, and merging them into instance attributes.
  *
  * Pure functions, shared by the editor overlay and the Kadence panel; the
- * merge follows the same rules as the PHP overlay (the fixture in
- * `__tests__/fixtures/merge-conformance.json` pins both).
+ * merge and the scoping follow the same rules as the PHP overlay (the
+ * fixtures in `__tests__/fixtures/` pin both).
  */
-import { cloneDeep, get, isEmpty, isEqual, kebabCase, set, unset } from 'lodash';
+import { cloneDeep, get, isEmpty, isEqual, kebabCase, pick, set, unset } from 'lodash';
 import { getSupportedBlock } from './supported-blocks';
 
 /**
@@ -199,6 +199,27 @@ export function merge(instance, site, defaultValue) {
 	}
 
 	return instance;
+}
+
+/**
+ * Keeps the site values the instance's style takes. The style is the
+ * instance's own value of the scope attribute, or the block's default. A style
+ * that isn't listed takes every site value.
+ *
+ * @param {Attributes}                                            site         The site values.
+ * @param {Attributes}                                            attributes   The instance's attributes.
+ * @param {import('./supported-blocks').SiteStylesScope} scope        The block's scope.
+ * @param {*}                                                     defaultStyle The scope attribute's default.
+ * @return {Attributes} The site values the instance takes.
+ */
+export function scopeSiteAttributes(site, attributes, scope, defaultStyle) {
+	const style = attributes[scope.attribute] ?? defaultStyle;
+
+	if (typeof style !== 'string' || !Object.prototype.hasOwnProperty.call(scope.attributes, style)) {
+		return site;
+	}
+
+	return pick(site, scope.attributes[style]);
 }
 
 /**
