@@ -252,15 +252,16 @@ describe('HEADING_PRESET', () => {
 	});
 
 	/**
-	 * Each color row falls back to the semantic token the Default preset binds for it, so a preset that
-	 * stores nothing previews the colors a fresh heading really renders.
+	 * The background and border rows fall back to the semantic token the Default preset binds for them. The
+	 * text row has no fallback, because the Default stores no text color and a fresh heading keeps the
+	 * theme's color.
 	 *
 	 * @return {void}
 	 */
-	it('declares the Default preset colors as the color row defaults', () => {
+	it('declares the Default preset colors as the color row defaults, except the text color', () => {
 		const byPath = Object.fromEntries(fields().map((field) => [field.path, field]));
 
-		expect(byPath['tokens.color'].defaultValue).toBe('semantic.color.text');
+		expect(byPath['tokens.color'].defaultValue).toBeUndefined();
 		expect(byPath['tokens.background'].defaultValue).toBe('semantic.color.heading-bg');
 		expect(byPath['tokens.border'].defaultColor).toBe('semantic.color.border');
 	});
