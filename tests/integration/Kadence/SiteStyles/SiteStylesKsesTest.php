@@ -40,7 +40,7 @@ final class SiteStylesKsesTest extends WPTestCase {
 		$this->assertStringNotContainsString( '<script>', $saved['settings']['custom']['kadence']['singlebtn']['icon'] );
 	}
 
-	public function testUnknownBlocksAttributesAndContentAreDropped(): void {
+	public function testUnknownBlocksAttributesAndExcludedAttributesAreDropped(): void {
 		$saved = $this->save_without_unfiltered_html(
 			[
 				'settings' => [
@@ -52,6 +52,7 @@ final class SiteStylesKsesTest extends WPTestCase {
 								'text'           => 'Buy now',
 								'noFollow'       => true,
 								'uniqueID'       => 'abc',
+								'inheritStyles'  => 'outline',
 							],
 							'infobox'   => [ 'borderRadius' => [ 20, 20, 20, 20 ] ],
 						],

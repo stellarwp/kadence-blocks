@@ -2,6 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Site_Styles;
 
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Scopes_Site_Styles;
 use WP_Block_Type_Registry;
 
 /**
@@ -9,7 +10,9 @@ use WP_Block_Type_Registry;
  * Kadence builds its markup and CSS, so the existing builders render them.
  *
  * Precedence is decided per leaf: an instance leaf that differs from the
- * block's default wins, every other leaf takes the site value.
+ * block's default wins, every other leaf takes the site value. A block that
+ * scopes its site styles gives each instance only the site values its style
+ * takes.
  *
  * @since TBD
  */
@@ -95,12 +98,50 @@ final class Overlay {
 
 		$block_type = WP_Block_Type_Registry::get_instance()->get_registered( $block_name );
 		$defaults   = $block_type ? $block_type->attributes : [];
+		$block      = $this->blocks->get( $block_name );
+
+		if ( $block instanceof Scopes_Site_Styles ) {
+			$scope_attribute = $block->site_styles_scope_attribute();
+			$site            = self::scope(
+				$site,
+				$attributes,
+				[
+					'attribute'  => $scope_attribute,
+					'attributes' => $block->site_styles_scoped_attributes(),
+				],
+				$defaults[ $scope_attribute ]['default'] ?? null
+			);
+		}
 
 		foreach ( $site as $name => $value ) {
 			$attributes[ $name ] = self::merge( $attributes[ $name ] ?? null, $value, $defaults[ $name ]['default'] ?? null );
 		}
 
 		return $attributes;
+	}
+
+	/**
+	 * Keeps the site values the instance's style takes. The style is the
+	 * instance's own value of the scope attribute, or the block's default. A
+	 * style that isn't listed takes every site value.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed>                                              $site          Attribute name => site value.
+	 * @param array<string, mixed>                                              $attributes    The instance's attributes.
+	 * @param array{attribute: string, attributes: array<string, list<string>>} $scope         The scope attribute, and style => the site attributes it takes.
+	 * @param mixed                                                             $default_style The scope attribute's default.
+	 *
+	 * @return array<string, mixed> The site values the instance takes.
+	 */
+	public static function scope( array $site, array $attributes, array $scope, $default_style ): array {
+		$style = $attributes[ $scope['attribute'] ] ?? $default_style;
+
+		if ( ! is_string( $style ) || ! isset( $scope['attributes'][ $style ] ) ) {
+			return $site;
+		}
+
+		return array_intersect_key( $site, array_flip( $scope['attributes'][ $style ] ) );
 	}
 
 	/**
