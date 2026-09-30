@@ -201,8 +201,8 @@ final class Preset_ResolverTest extends TestCase {
 
 	/**
 	 * The shipped Advanced Text preset bindings are registered at boot and the Default preset resolves
-	 * every core-design property, while deliberately leaving font size, line height and font weight
-	 * unset so an unset heading keeps the theme's own per-tag type.
+	 * every core-design property, while deliberately leaving color, letter spacing, text transform, font
+	 * size, line height and font weight unset so an unset heading keeps the theme's own type and color.
 	 *
 	 * @return void
 	 */
@@ -217,15 +217,12 @@ final class Preset_ResolverTest extends TestCase {
 
 		$this->assertSame(
 			[
-				'color'         => '#1A202C',
-				'background'    => 'transparent',
-				'letterSpacing' => '0',
-				'textTransform' => 'none',
-				'padding'       => '0',
-				'borderColor'   => '#E2E8F0',
-				'borderWidth'   => '1px',
-				'borderRadius'  => '0',
-				'borderStyle'   => 'none',
+				'background'   => 'transparent',
+				'padding'      => '0',
+				'borderColor'  => '#E2E8F0',
+				'borderWidth'  => '1px',
+				'borderRadius' => '0',
+				'borderStyle'  => 'none',
 			],
 			$this->resolver->resolve_default( 'kadence/advancedheading' )
 		);
