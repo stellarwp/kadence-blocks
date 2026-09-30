@@ -70,6 +70,88 @@ describe('normalizeShadow', () => {
 	});
 });
 
+describe('normalizeShadow with several layers', () => {
+	/**
+	 * A layer that paints nothing does not hide a layer that does. Each comma-separated layer is judged on
+	 * its own.
+	 *
+	 * @return {void}
+	 */
+	it('keeps a visible layer next to a transparent one', () => {
+		expect(normalizeShadow('0 0 4px transparent, 0 0 8px #000000')).not.toBe('');
+		expect(normalizeShadow('0 0 4px transparent, 0 0 8px #000000')).toBe(normalizeShadow('0 0 8px #000000'));
+	});
+
+	/**
+	 * The commas inside a color function are not layer separators.
+	 *
+	 * @return {void}
+	 */
+	it('does not split a layer at the commas inside its color', () => {
+		expect(normalizeShadow('0 0 8px rgba(0, 0, 0, 0.2), 0 0 4px transparent')).toBe(
+			normalizeShadow('0 0 8px rgba(0, 0, 0, 0.2)')
+		);
+	});
+
+	/**
+	 * A value where every layer paints nothing is still none.
+	 *
+	 * @return {void}
+	 */
+	it('reads a value as none only when every layer paints nothing', () => {
+		expect(normalizeShadow('0 0 4px transparent, 0 0 0 0 #000000')).toBe('');
+	});
+});
+
+describe('normalizeShadow with omitted lengths', () => {
+	/**
+	 * An omitted spread is zero, so a literal written without it equals the stored item that keeps it.
+	 *
+	 * @return {void}
+	 */
+	it('treats an omitted spread as zero', () => {
+		expect(normalizeShadow(BLOCK_DEFAULT)).toBe(normalizeShadow('0 0 14px rgba(0, 0, 0, 0.2)'));
+	});
+
+	/**
+	 * An omitted blur is zero too.
+	 *
+	 * @return {void}
+	 */
+	it('treats an omitted blur as zero', () => {
+		const stored = [{ color: '#000000', opacity: 0.2, spread: 0, blur: 0, hOffset: 0, vOffset: 4 }];
+
+		expect(normalizeShadow(stored)).toBe(normalizeShadow('0 4px rgba(0, 0, 0, 0.2)'));
+	});
+
+	/**
+	 * A different spread is still a different shadow.
+	 *
+	 * @return {void}
+	 */
+	it('keeps a non-zero spread significant', () => {
+		expect(normalizeShadow('0 0 14px 2px rgba(0, 0, 0, 0.2)')).not.toBe(
+			normalizeShadow('0 0 14px rgba(0, 0, 0, 0.2)')
+		);
+	});
+});
+
+describe('normalizeShadow with a token binding', () => {
+	/**
+	 * A whole-shadow token the library backs resolves to a custom property, whose value is unknown here.
+	 * That reference has no digits in a name like this one, but the token still paints, so it must not read
+	 * as none.
+	 *
+	 * @return {void}
+	 */
+	it('keeps a backed token reference as a value even when its name has no digits', () => {
+		const bound = [{ shadowToken: '{semantic.shadow.media}' }];
+
+		expect(normalizeShadow(bound)).not.toBe('');
+		expect(isEmptyValue('shadow', bound)).toBe(false);
+	});
+});
+
 describe('shadow kind dispatch', () => {
 	/**
 	 * A block that stores no shadow is untouched.

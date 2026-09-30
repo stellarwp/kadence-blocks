@@ -33,40 +33,132 @@ const BLUR_FALLBACK = 14;
 const OPACITY_FALLBACK = 0.2;
 
 /**
- * Canonicalize a `box-shadow` literal.
+ * Split a string at a separator that sits outside any parentheses, so the commas and spaces inside a
+ * color function stay with it.
+ *
+ * @param {string} text      The text to split.
+ * @param {string} separator `,` to split into layers, or a space to split a layer into its parts.
+ *
+ * @since TBD
+ *
+ * @return {string[]} The trimmed, non-empty parts.
+ */
+function splitOutsideParens(text, separator) {
+	const parts = [];
+	let depth = 0;
+	let current = '';
+
+	for (const character of text) {
+		if (character === '(') {
+			depth++;
+		} else if (character === ')') {
+			depth = Math.max(0, depth - 1);
+		}
+
+		const isSeparator = separator === ',' ? character === ',' : /\s/.test(character);
+
+		if (depth === 0 && isSeparator) {
+			parts.push(current);
+			current = '';
+		} else {
+			current += character;
+		}
+	}
+
+	parts.push(current);
+
+	return parts.map((part) => part.trim()).filter(Boolean);
+}
+
+/**
+ * One length as a canonical string: `px` is implied, zero is a bare `0`, and a leading-dot number gets its
+ * zero.
+ *
+ * @param {string} length The length token.
+ *
+ * @since TBD
+ *
+ * @return {string} The canonical length.
+ */
+function canonicalLength(length) {
+	const number = parseFloat(length);
+
+	if (number === 0) {
+		return '0';
+	}
+
+	const unit = length.replace(/^-?[\d.]+/, '');
+
+	return `${number}${unit === 'px' ? '' : unit}`;
+}
+
+/**
+ * Canonicalize one shadow layer.
+ *
+ * The lengths are offset-x, offset-y, then optional blur and spread, which default to zero, so they are
+ * padded to four before comparing. A layer that names a custom property is kept whole and counts as
+ * painting: its value is not known here.
+ *
+ * @param {string} layer One comma-separated layer.
+ *
+ * @since TBD
+ *
+ * @return {string} The canonical layer, or '' when it paints nothing.
+ */
+function canonicalizeLayer(layer) {
+	const text = layer
+		.toLowerCase()
+		.replace(/\s+/g, ' ')
+		.replace(/\(\s+/g, '(')
+		.replace(/\s+\)/g, ')')
+		.replace(/\s*,\s*/g, ',');
+
+	if (text.includes('var(')) {
+		return text;
+	}
+
+	const lengths = [];
+	const colorParts = [];
+	let inset = false;
+
+	splitOutsideParens(text, ' ').forEach((part) => {
+		if (part === 'inset') {
+			inset = true;
+		} else if (/^-?(?:\d+\.?\d*|\.\d+)(?:px|rem|em)?$/.test(part)) {
+			lengths.push(part);
+		} else {
+			colorParts.push(part);
+		}
+	});
+
+	const padded = [0, 1, 2, 3].map((index) => canonicalLength(lengths[index] ?? '0'));
+	const color = colorParts.join(' ').replace(/(^|[^\d])\.(\d)/g, '$10.$2');
+	const transparent = color === 'transparent' || /^(?:rgba|hsla)\([^)]*,0(?:\.0+)?\)$/.test(color);
+
+	if (transparent || padded.every((length) => length === '0')) {
+		return '';
+	}
+
+	return [inset ? 'inset' : '', ...padded, color].filter(Boolean).join(' ');
+}
+
+/**
+ * Canonicalize a `box-shadow` literal, layer by layer.
  *
  * @param {string} css The literal.
  *
  * @since TBD
  *
- * @return {string} The canonical literal, or '' when it paints nothing.
+ * @return {string} The canonical literal, or '' when no layer paints anything.
  */
 function canonicalize(css) {
-	const text = String(css)
-		.trim()
-		.toLowerCase()
-		.replace(/\s+/g, ' ')
-		.replace(/\s*,\s*/g, ',')
-		.replace(/\(\s+/g, '(')
-		.replace(/\s+\)/g, ')');
+	const text = String(css).trim().toLowerCase();
 
 	if (text === '' || text === 'none') {
 		return '';
 	}
 
-	const lengths =
-		text
-			.replace(/(?:rgba?|hsla?)\([^)]*\)|#[0-9a-f]{3,8}\b/g, '')
-			.replace('inset', '')
-			.match(/-?\d*\.?\d+[a-z%]*/g) || [];
-	const hasGeometry = lengths.some((length) => parseFloat(length) !== 0);
-	const transparent = /\btransparent\b/.test(text) || /rgba\([^)]*,0(?:\.0+)?\)/.test(text);
-
-	if (!hasGeometry || transparent) {
-		return '';
-	}
-
-	return text.replace(/\b0(?:px|rem|em)\b/g, '0');
+	return splitOutsideParens(text, ',').map(canonicalizeLayer).filter(Boolean).join(',');
 }
 
 /**
@@ -148,5 +240,8 @@ export function normalizeShadow(value) {
 		return canonicalize(item);
 	}
 
-	return canonicalize(itemLiteral(item));
+	const literal = itemLiteral(item);
+
+	// An item that cannot be built into a literal is kept opaque, so it never matches a preset.
+	return literal.startsWith('unresolved:') ? literal : canonicalize(literal);
 }
