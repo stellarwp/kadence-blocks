@@ -274,6 +274,101 @@ describe('usePresetBinding with a property the active preset leaves unset', () =
 	});
 });
 
+describe('usePresetBinding with a shadow property', () => {
+	const SHADOW_BLOCK = 'kadence/image';
+	const DEFAULT_SHADOW = [
+		{ color: '#000000', opacity: 0.2, spread: 0, blur: 14, hOffset: 0, vOffset: 0, inset: false },
+	];
+
+	beforeEach(() => {
+		window.kadenceDesignTokensPresets = {
+			active: SET,
+			libraries: {
+				[SET]: {
+					[SHADOW_BLOCK]: {
+						default: 'default',
+						presets: [{ slug: 'default', label: 'Default' }],
+						properties: [{ key: 'shadow', kind: 'shadow', token: null, control_attr: 'boxShadow' }],
+						values: { default: { shadow: '0px 0px 0px 0px transparent' } },
+						responsive: {},
+						overridden: {},
+					},
+				},
+			},
+		};
+	});
+
+	afterEach(() => {
+		delete window.kadenceDesignTokensPresets;
+	});
+
+	/**
+	 * A fresh block holds the block default shadow, a visible value kept out of the page by its enable
+	 * flag. It has not been changed, so it must not read as edited against a preset that stores none.
+	 *
+	 * @return {void}
+	 */
+	it('does not report a fresh block as overridden while its shadow flag is off', () => {
+		const state = usePresetBinding(
+			SHADOW_BLOCK,
+			{ kbPreset: 'default', boxShadow: DEFAULT_SHADOW, displayBoxShadow: false },
+			SET,
+			'Desktop'
+		);
+
+		expect(state.boxShadow.overridden).toBe(false);
+	});
+
+	/**
+	 * Once the shadow is turned on and it paints something the preset does not, it is an override.
+	 *
+	 * @return {void}
+	 */
+	it('reports overridden once the shadow is on and paints something the preset does not', () => {
+		const state = usePresetBinding(
+			SHADOW_BLOCK,
+			{ kbPreset: 'default', boxShadow: DEFAULT_SHADOW, displayBoxShadow: true },
+			SET,
+			'Desktop'
+		);
+
+		expect(state.boxShadow.overridden).toBe(true);
+	});
+
+	/**
+	 * An enabled shadow with no geometry paints nothing, the same as the preset's transparent zero shadow.
+	 *
+	 * @return {void}
+	 */
+	it('does not report an enabled shadow that paints nothing', () => {
+		const flat = [{ color: '#000000', opacity: 0.2, spread: 0, blur: 0, hOffset: 0, vOffset: 0, inset: false }];
+		const state = usePresetBinding(
+			SHADOW_BLOCK,
+			{ kbPreset: 'default', boxShadow: flat, displayBoxShadow: true },
+			SET,
+			'Desktop'
+		);
+
+		expect(state.boxShadow.overridden).toBe(false);
+	});
+
+	/**
+	 * A block that declares no enable flag is judged on its value alone.
+	 *
+	 * @return {void}
+	 */
+	it('judges a block with no enable flag on its value alone', () => {
+		const state = usePresetBinding(
+			SHADOW_BLOCK,
+			{ kbPreset: 'default', boxShadow: DEFAULT_SHADOW },
+			SET,
+			'Desktop'
+		);
+
+		expect(state.boxShadow.overridden).toBe(true);
+	});
+});
+
 describe('usePresetBinding per-corner breakpoint gaps', () => {
 	// The preset's tablet override touches only the top corner (index 0); the other three corners
 	// carry a `''` gap, meaning "keep inheriting the base value live" — see

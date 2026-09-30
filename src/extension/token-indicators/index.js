@@ -12,7 +12,7 @@
  * one-line change when a seeded block is wired later. See the Phase 3 recipe caveat.)
  */
 
-import { get } from 'lodash';
+import { get, has } from 'lodash';
 import {
 	activeLibrary,
 	activePresetFor,
@@ -81,6 +81,24 @@ function deviceAttrFor(attr, device, responsiveAttrs) {
  */
 function unitAttrFor(kind, attr) {
 	return kind === 'dimension' ? `${attr}Unit` : '';
+}
+
+/**
+ * The attribute holding a shadow control's enable flag, following the `display<Attribute>` naming the
+ * shadow blocks use (`boxShadow` is switched by `displayBoxShadow`), or `''` for any other kind.
+ *
+ * A shadow block keeps a visible default value and hides it behind this flag, so the value alone cannot
+ * say whether the block holds a shadow of its own.
+ *
+ * @param {string} kind The property kind.
+ * @param {string} attr The control attribute name.
+ *
+ * @since TBD
+ *
+ * @return {string} The enable-flag attribute name, or ''.
+ */
+function enabledAttrFor(kind, attr) {
+	return kind === 'shadow' ? `display${attr.charAt(0).toUpperCase()}${attr.slice(1)}` : '';
 }
 
 /**
@@ -238,7 +256,13 @@ export function usePresetBinding(blockName, attributes, library, previewDevice) 
 		const devicePresetValue = isDeviceAware
 			? presetValueForDevice(presetValue, propertyBreakpoints, previewDevice)
 			: presetValue;
-		const value = get(attributes, deviceAttr, '');
+		const enabledAttr = enabledAttrFor(kind, attr);
+		// A shadow the block declares a flag for, with the flag off, is the block's untouched default and
+		// counts as no value. A block with no such flag is judged on its value alone.
+		const value =
+			enabledAttr && has(attributes, enabledAttr) && !get(attributes, enabledAttr)
+				? ''
+				: get(attributes, deviceAttr, '');
 		const unit = unitAttrFor(kind, attr) ? get(attributes, unitAttrFor(kind, attr), '') : '';
 
 		const empty = isEmptyValue(kind, value);
