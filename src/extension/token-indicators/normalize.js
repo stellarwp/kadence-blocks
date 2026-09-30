@@ -24,6 +24,7 @@ import * as dimension from './kinds/dimension';
 import * as border from './kinds/border';
 import { normalizeColor } from './kinds/color';
 import { normalizeText } from './kinds/text';
+import { normalizeShadow } from './kinds/shadow';
 
 export { normalizeColor } from './kinds/color';
 export { normalizeText } from './kinds/text';
@@ -67,6 +68,19 @@ const text = {
 };
 
 /**
+ * The `shadow` kind's `isEmpty`/`matches` pair for the `KINDS` dispatch table below. A shadow that
+ * paints nothing is empty, and two shadows match when they build to the same canonical literal.
+ *
+ * @since TBD
+ *
+ * @type {{ isEmpty: Function, matches: Function }}
+ */
+const shadow = {
+	isEmpty: (value) => normalizeShadow(value) === '',
+	matches: (value, unit, presetValue) => normalizeShadow(value) === normalizeShadow(presetValue),
+};
+
+/**
  * The per-kind `{ isEmpty, matches }` handlers `isEmptyValue`/`matchesPreset` dispatch through. The three
  * border axes share one handler — `EditorBorderControl`'s native shape is axis-agnostic, and `border`'s
  * own `matches` takes the kind as its first argument to know which axis to read.
@@ -79,6 +93,7 @@ const KINDS = {
 	dimension,
 	color,
 	text,
+	shadow,
 	'border-width': border,
 	'border-style': border,
 	'border-color': border,
