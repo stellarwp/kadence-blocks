@@ -6,7 +6,7 @@ import { compose } from '@wordpress/compose';
 import { store as noticesStore } from '@wordpress/notices';
 import apiFetch from '@wordpress/api-fetch';
 import { useDispatch, useSelect } from '@wordpress/data';
-import { useSetting, store as blockEditorStore } from '@wordpress/block-editor';
+import { useSetting, useSettings, store as blockEditorStore } from '@wordpress/block-editor';
 
 const kbColorUniqueIDs = [];
 /**
@@ -24,7 +24,8 @@ export default function KadenceColorDefault() {
 					override: false,
 				}
 	);
-	const colorPalette = useSetting('color.palette');
+	// The theme origin, which this panel writes back: the resolved palette holds only the user colors once one exists.
+	const [colorPalette] = useSettings('color.palette.theme');
 	const disableCustomColors = !useSetting('color.custom');
 	const [colors, setColors] = useState('');
 	const [themeColors, setThemeColors] = useState([]);

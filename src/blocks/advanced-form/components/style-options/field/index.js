@@ -19,7 +19,7 @@ import {
 	ResponsiveMeasureRangeControl,
 } from '@kadence/components';
 import { KadenceColorOutput } from '@kadence/helpers';
-import { useSetting } from '@wordpress/block-editor';
+import { useSettings } from '@wordpress/block-editor';
 import { default as useColorIsDark } from '../../use-color-is-dark';
 
 export default function FieldStyles({ setMetaAttribute, inputFont, style, useFormMeta }) {
@@ -31,7 +31,8 @@ export default function FieldStyles({ setMetaAttribute, inputFont, style, useFor
 	const [fieldBorderStyle] = useFormMeta('_kad_form_fieldBorderStyle');
 	const [tabletFieldBorderStyle] = useFormMeta('_kad_form_tabletFieldBorderStyle');
 	const [mobileFieldBorderStyle] = useFormMeta('_kad_form_mobileFieldBorderStyle');
-	const colors = useSetting('color.palette');
+	// paletteN values index the theme palette, whatever user colors exist.
+	const [colors] = useSettings('color.palette.theme');
 	const saveStyle = (value) => {
 		setMetaAttribute({ ...style, ...value }, 'style');
 	};
