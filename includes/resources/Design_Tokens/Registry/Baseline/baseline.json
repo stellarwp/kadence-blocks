@@ -528,15 +528,7 @@
 		"font-size": {
 			"control": {
 				"$type": "dimension",
-				"$value": "1.125rem",
-				"$extensions": {
-					"com.kadence.designTokens": {
-						"responsive": {
-							"tablet": "1.0625rem",
-							"mobile": "1rem"
-						}
-					}
-				}
+				"$value": "1.125rem"
 			},
 			"heading": {
 				"$type": "dimension",
