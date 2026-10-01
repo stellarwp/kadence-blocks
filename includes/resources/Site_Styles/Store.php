@@ -120,7 +120,7 @@ final class Store {
 			return $match[1];
 		}
 
-		if ( 0 !== strpos( $value, 'var:preset|' ) ) {
+		if ( ! str_starts_with( $value, 'var:preset|' ) ) {
 			return $value;
 		}
 
