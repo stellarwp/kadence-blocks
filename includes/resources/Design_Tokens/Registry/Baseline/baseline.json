@@ -830,10 +830,7 @@
 					"default": {
 						"label": "Default",
 						"tokens": {
-							"color": "{semantic.color.text}",
 							"background": "{semantic.color.heading-bg}",
-							"letterSpacing": "{semantic.letter-spacing.heading}",
-							"textTransform": "{semantic.text-transform.heading}",
 							"padding": "{semantic.spacing.heading-padding}",
 							"borderColor": "{semantic.color.border}",
 							"borderWidth": "{semantic.border-width.default}",

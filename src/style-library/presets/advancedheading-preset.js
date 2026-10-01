@@ -266,15 +266,15 @@ function schemaFor(tab, values, feed) {
 				id: 'color',
 				title: __('Color', 'kadence-blocks'),
 				fields: [
-					// Each row falls back to the semantic token the Default preset binds (see the baseline's
-					// `presets["kadence/advancedheading"]`), so a preset that stores nothing previews the
-					// colors a fresh heading really renders. The background is transparent, shown as a blank
-					// swatch labeled "Default".
+					// The Default preset stores no text color, so a heading that sets none keeps the theme's (or
+					// its parent block's) color and the Text row starts empty. The background falls back to the
+					// semantic token the Default preset binds (see the baseline's
+					// `presets["kadence/advancedheading"]`); it is transparent, shown as a blank swatch labeled
+					// "Default".
 					{
 						type: 'color-select',
 						path: 'tokens.color',
 						label: __('Text', 'kadence-blocks'),
-						defaultValue: 'semantic.color.text',
 					},
 					{
 						type: 'color-select',

@@ -259,8 +259,8 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
-	 * A named heading preset that sets font size and weight renders them outright. The Default preset
-	 * leaves both to the theme, so the block-default layer emits no declaration that would consume the
+	 * A named heading preset that sets color, font size and weight renders them outright. The Default
+	 * preset leaves all three to the theme, so the block-default layer emits no declaration that would consume the
 	 * preset's var retarget; the scoped rule here supplies the declaration itself, weighted one class so
 	 * it outranks a theme's element rule and yields to the block's per-instance rule.
 	 *
@@ -273,6 +273,7 @@ final class Css_BuilderTest extends TestCase {
 
 		$this->assertStringContainsString(
 			':where(.wp-block-kadence-advancedheading).kb-preset--display{'
+				. 'color:var(--kb-token--preset--kadence-advancedheading--display--color);'
 				. 'font-size:var(--kb-token--preset--kadence-advancedheading--display--fontSize);'
 				. 'font-weight:var(--kb-token--preset--kadence-advancedheading--display--fontWeight);}',
 			$css
@@ -288,17 +289,39 @@ final class Css_BuilderTest extends TestCase {
 
 	/**
 	 * A property the Default DOES define is consumed by the block-default layer's declaration, so the
-	 * gap rule carries nothing for it: color stays a var retarget only.
+	 * gap rule carries nothing for it: background stays a var retarget only, while color, which the Default
+	 * leaves unset, is declared outright.
 	 *
 	 * @return void
 	 */
 	public function testTheGapRuleSkipsAPropertyTheDefaultDefines(): void {
-		$this->seedDisplayHeadingPreset();
+		$this->store->save_document(
+			(string) wp_json_encode(
+				[
+					'$extensions' => [
+						'com.kadence.designTokens' => [
+							'presets' => [
+								'kadence/advancedheading' => [
+									'display' => [
+										'label'  => 'Display',
+										'tokens' => [
+											'color'      => '{semantic.color.text}',
+											'background' => '{semantic.color.heading-bg}',
+										],
+									],
+								],
+							],
+						],
+					],
+				]
+			)
+		);
 
 		$css = $this->builder( $this->registry )->css( 'default' );
 
-		$this->assertStringNotContainsString( 'kb-preset--display{color:', $css );
-		$this->assertStringNotContainsString( ';color:var(--kb-token--preset--kadence-advancedheading--display--color)', $css );
+		$this->assertStringContainsString( 'kb-preset--display{color:var(--kb-token--preset--kadence-advancedheading--display--color);}', $css );
+		$this->assertStringNotContainsString( 'kb-preset--display{background', $css );
+		$this->assertStringNotContainsString( ';background:var(--kb-token--preset--kadence-advancedheading--display--background)', $css );
 	}
 
 	/**
@@ -324,10 +347,10 @@ final class Css_BuilderTest extends TestCase {
 		$var  = '--kb-token--preset--kadence-advancedheading--display--fontSize';
 		$rule = ':where(.wp-block-kadence-advancedheading).kb-preset--display{font-size:var(' . $var . ');}';
 
-		// The flat gap rule carries only the weight, which has a desktop base; the retarget for the size is
-		// still there (a custom property is inert until something reads it).
+		// The flat gap rule carries only the color and weight, which have a desktop base; the retarget for the
+		// size is still there (a custom property is inert until something reads it).
 		$this->assertStringContainsString(
-			':where(.wp-block-kadence-advancedheading).kb-preset--display{font-weight:var(--kb-token--preset--kadence-advancedheading--display--fontWeight);}',
+			':where(.wp-block-kadence-advancedheading).kb-preset--display{color:var(--kb-token--preset--kadence-advancedheading--display--color);font-weight:var(--kb-token--preset--kadence-advancedheading--display--fontWeight);}',
 			explode( '@media', $css, 2 )[0]
 		);
 		$this->assertStringContainsString(
@@ -366,6 +389,7 @@ final class Css_BuilderTest extends TestCase {
 
 		$this->assertStringContainsString(
 			'.editor-styles-wrapper :where(.wp-block-kadence-advancedheading.kb-preset--display) .kadence-advancedheading-text{'
+				. 'color:var(--kb-token--preset--kadence-advancedheading--display--color);'
 				. 'font-size:var(--kb-token--preset--kadence-advancedheading--display--fontSize);'
 				. 'font-weight:var(--kb-token--preset--kadence-advancedheading--display--fontWeight);}',
 			$css

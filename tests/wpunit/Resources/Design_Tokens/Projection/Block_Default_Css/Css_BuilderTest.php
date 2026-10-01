@@ -252,8 +252,8 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
-	 * The shipped Advanced Text (heading) declarations emit the 9 core-design and typography properties
-	 * the Default preset defines as one grouped, low-specificity rule on the block root, each pointing its
+	 * The shipped Advanced Text (heading) declarations emit the 6 core-design properties the
+	 * Default preset defines as one grouped, low-specificity rule on the block root, each pointing its
 	 * css_prop at the matching token var with the resolved default as the fallback. Font FAMILY is
 	 * deliberately not among them — a family is a favorite, not a token, so an unset heading inherits the
 	 * theme's font.
@@ -266,15 +266,9 @@ final class Css_BuilderTest extends TestCase {
 		$css = $this->builder( $registry )->css();
 
 		$this->assertStringContainsString(
-			'.wp-block-kadence-advancedheading{' . $this->declaration( 'color', 'kb-heading-color', 'semantic.color.text', '#1A202C' ),
+			'.wp-block-kadence-advancedheading{' . $this->declaration( 'background-color', 'kb-heading-bg', 'semantic.color.heading-bg', 'transparent' ),
 			$css
 		);
-		$this->assertStringContainsString(
-			$this->declaration( 'background-color', 'kb-heading-bg', 'semantic.color.heading-bg', 'transparent' ),
-			$css
-		);
-		$this->assertStringContainsString( $this->declaration( 'letter-spacing', 'kb-heading-letter-spacing', 'semantic.letter-spacing.heading', '0' ), $css );
-		$this->assertStringContainsString( $this->declaration( 'text-transform', 'kb-heading-text-transform', 'semantic.text-transform.heading', 'none' ), $css );
 		$this->assertStringContainsString( $this->declaration( 'padding', 'kb-heading-padding', 'semantic.spacing.heading-padding', '0' ), $css );
 		$this->assertStringContainsString( $this->declaration( 'border-color', 'kb-heading-border-color', 'semantic.color.border', '#E2E8F0' ), $css );
 		$this->assertStringContainsString( $this->declaration( 'border-width', 'kb-heading-border-width', 'semantic.border-width.default', '1px' ), $css );
@@ -282,11 +276,15 @@ final class Css_BuilderTest extends TestCase {
 		$this->assertStringContainsString( $this->declaration( 'border-style', 'kb-heading-border-style', 'semantic.border-style.default', 'none' ) . '}', $css );
 		$this->assertStringNotContainsString( 'font-family:', $css, 'A heading inherits the theme font; no font-family default is emitted.' );
 
-		// Font size, line height and font weight are left to the theme's own per-tag rules: the Default
-		// preset does not define them, so no declaration is emitted for them here — a declaration would
-		// outrank a theme's `h2` element rule and change every unset heading on update. Scoped to the
+		// Color, letter spacing, text transform, font size, line height and font weight are left to the
+		// theme's own rules and to the parent block: the Default preset does not define them, so no
+		// declaration is emitted for them here — a declaration would outrank a theme's `h2` element rule,
+		// stop a Row or Column passing its text color down, and change every unset heading on update. Scoped to the
 		// heading's own rule because the single-icon block emits an unrelated `font-size` of its own.
 		$heading_rule = $this->rule( $css, '.wp-block-kadence-advancedheading{' );
+		$this->assertStringNotContainsString( 'color:', preg_replace( '/(background|border)-color:[^;}]*;?/', '', $heading_rule ) );
+		$this->assertStringNotContainsString( 'letter-spacing:', $heading_rule );
+		$this->assertStringNotContainsString( 'text-transform:', $heading_rule );
 		$this->assertStringNotContainsString( 'font-size:', $heading_rule );
 		$this->assertStringNotContainsString( 'line-height:', $heading_rule );
 		$this->assertStringNotContainsString( 'font-weight:', $heading_rule );
@@ -297,7 +295,7 @@ final class Css_BuilderTest extends TestCase {
 	 * heading element the bindings style — the real heading carries the stable `kadence-advancedheading-text`
 	 * class instead. The declared `editor_selector` re-targets the editor build of the rule at that
 	 * descendant, scoped under `.editor-styles-wrapper` so it still outranks the theme's own per-tag element
-	 * styles there, while still carrying every one of the 9 declarations the Default preset defines.
+	 * styles there, while still carrying every one of the 6 declarations the Default preset defines.
 	 *
 	 * @return void
 	 */
@@ -307,15 +305,9 @@ final class Css_BuilderTest extends TestCase {
 		$css = $this->builder( $registry )->editor_css();
 
 		$this->assertStringContainsString(
-			'.editor-styles-wrapper .wp-block-kadence-advancedheading .kadence-advancedheading-text{' . $this->declaration( 'color', 'kb-heading-color', 'semantic.color.text', '#1A202C' ),
+			'.editor-styles-wrapper .wp-block-kadence-advancedheading .kadence-advancedheading-text{' . $this->declaration( 'background-color', 'kb-heading-bg', 'semantic.color.heading-bg', 'transparent' ),
 			$css
 		);
-		$this->assertStringContainsString(
-			$this->declaration( 'background-color', 'kb-heading-bg', 'semantic.color.heading-bg', 'transparent' ),
-			$css
-		);
-		$this->assertStringContainsString( $this->declaration( 'letter-spacing', 'kb-heading-letter-spacing', 'semantic.letter-spacing.heading', '0' ), $css );
-		$this->assertStringContainsString( $this->declaration( 'text-transform', 'kb-heading-text-transform', 'semantic.text-transform.heading', 'none' ), $css );
 		$this->assertStringContainsString( $this->declaration( 'padding', 'kb-heading-padding', 'semantic.spacing.heading-padding', '0' ), $css );
 		$this->assertStringContainsString( $this->declaration( 'border-color', 'kb-heading-border-color', 'semantic.color.border', '#E2E8F0' ), $css );
 		$this->assertStringContainsString( $this->declaration( 'border-width', 'kb-heading-border-width', 'semantic.border-width.default', '1px' ), $css );
@@ -323,11 +315,15 @@ final class Css_BuilderTest extends TestCase {
 		$this->assertStringContainsString( $this->declaration( 'border-style', 'kb-heading-border-style', 'semantic.border-style.default', 'none' ) . '}', $css );
 		$this->assertStringNotContainsString( 'font-family:', $css, 'A heading inherits the theme font; no font-family default is emitted.' );
 
-		// Font size, line height and font weight are left to the theme's own per-tag rules: the Default
-		// preset does not define them, so no declaration is emitted for them here — a declaration would
-		// outrank a theme's `h2` element rule and change every unset heading on update. Scoped to the
+		// Color, letter spacing, text transform, font size, line height and font weight are left to the
+		// theme's own rules and to the parent block: the Default preset does not define them, so no
+		// declaration is emitted for them here — a declaration would outrank a theme's `h2` element rule,
+		// stop a Row or Column passing its text color down, and change every unset heading on update. Scoped to the
 		// heading's own rule because the single-icon block emits an unrelated `font-size` of its own.
 		$heading_rule = $this->rule( $css, '.editor-styles-wrapper .wp-block-kadence-advancedheading .kadence-advancedheading-text{' );
+		$this->assertStringNotContainsString( 'color:', preg_replace( '/(background|border)-color:[^;}]*;?/', '', $heading_rule ) );
+		$this->assertStringNotContainsString( 'letter-spacing:', $heading_rule );
+		$this->assertStringNotContainsString( 'text-transform:', $heading_rule );
 		$this->assertStringNotContainsString( 'font-size:', $heading_rule );
 		$this->assertStringNotContainsString( 'line-height:', $heading_rule );
 		$this->assertStringNotContainsString( 'font-weight:', $heading_rule );

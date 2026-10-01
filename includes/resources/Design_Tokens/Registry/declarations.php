@@ -1126,13 +1126,15 @@ return [
 			// text-transform) uses the heading's own tokens, kept separate from the form-control family
 			// the Button uses.
 			// The block-default rule outranks a theme's per-tag element styles (h1/h2/p, specificity
-			// 0,0,1). That is wanted for color, spacing and borders, and exactly why the shipped Default
-			// preset leaves font-size, line-height and font-weight UNSET: a declaration for those would
-			// change every existing heading on update, from the theme's own h2 size and weight to one
-			// value for every tag. They stay the theme's until a preset sets them — the Default in the
-			// Style Library, which then declares them for every unset heading, or a named preset, which
-			// the preset projector declares outright for headings on it. Font FAMILY is treated the same
-			// way and is additionally absent from the block-default rule altogether (see below).
+			// 0,0,1), and it sets each property directly on the element, which also stops a parent Row,
+			// Column or Cover from passing its text color down. The block renders headings AND p/span/div.
+			// That is why the shipped Default preset leaves color, letter-spacing, text-transform,
+			// font-size, line-height and font-weight UNSET: a declaration for any of them would change
+			// every existing block on update, from the theme's own heading type and color to one value for
+			// every tag. They stay the theme's (or the parent block's) until a preset sets them — the
+			// Default in the Style Library, which then declares them for every unset block, or a named
+			// preset, which the preset projector declares outright for blocks on it. Font FAMILY is treated
+			// the same way and is additionally absent from the block-default rule altogether (see below).
 			// A per-instance value renders at higher specificity (the `.kt-adv-heading<uid>` instance
 			// selector) and still wins.
 			//

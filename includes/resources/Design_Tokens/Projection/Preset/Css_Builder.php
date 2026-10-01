@@ -53,7 +53,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Version;
  *      real "<css_prop>: var(<canonical preset var>)" declaration for each property the block's $default
  *      leaves unset. The block-default layer declares only what the $default resolves, and that
  *      declaration is what the retarget in layer 2 is consumed through; a property the $default leaves to
- *      the theme (the Advanced Text's type) would otherwise have no consumer. See default_gap_rules().
+ *      the theme (every Advanced Text property) would otherwise have no consumer. See default_gap_rules().
  *   5. Per (block, CLASS-painted preset) a RESET rule and DIRECT rules. A preset carrying `themeClass` is
  *      painted by the theme's or the plugin's own stylesheet through the classes it puts on the element, so
  *      layer 2 would fight that stylesheet: the reset rule instead sets every variable it could retarget that the
@@ -1011,10 +1011,11 @@ final class Css_Builder {
 	 *
 	 * The block-default layer writes `<css_prop>:var(--<css_var>,…)` only for a property the `$default`
 	 * resolves, and that declaration is what a selected preset's var retarget is consumed through. A
-	 * property the `$default` deliberately leaves unset — the Advanced Text's font size, line height and
-	 * weight, so an unset heading keeps the theme's own per-tag type — has no such consumer, and a named
-	 * preset that sets it would retarget a variable nothing reads. This rule declares exactly those
-	 * properties outright, so a preset can set what the Default leaves alone.
+	 * property the `$default` deliberately leaves unset — the Advanced Text's color, letter spacing, text
+	 * transform, font size, line height and weight, so an unset heading keeps the theme's own type and
+	 * color — has no such consumer, and a named preset that sets it would retarget a variable nothing
+	 * reads. This rule declares exactly those properties outright, so a preset can set what the Default
+	 * leaves alone.
 	 *
 	 * The `$default` itself never gets one: whatever it resolves the block-default layer declares, and
 	 * whatever it leaves unset is the theme's.
