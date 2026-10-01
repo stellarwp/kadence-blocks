@@ -29,7 +29,7 @@ use function KadenceWP\KadenceBlocks\StellarWP\Uplink\validate_license;
  * @return bool
  */
 function kadence_blocks_is_fse_mode(): bool {
-	$is_fse_mode = function_exists( 'Kadence\is_fse_mode' ) && \Kadence\is_fse_mode();
+	$is_fse_mode = function_exists( 'Kadence\is_fse_mode' ) && Kadence\is_fse_mode();
 
 	/**
 	 * Filters whether the Kadence theme runs in its Full Site Editing mode.
