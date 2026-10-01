@@ -185,7 +185,7 @@ final class Css_BuilderTest extends TestCase {
 
 		// Grouped into the same `.kb-svg-icon-wrap` rule as color, with the resolved length as the fallback.
 		$this->assertStringContainsString(
-			$this->declaration( 'font-size', 'kb-icon-size', 'semantic.icon-size.default', '1.5rem' ),
+			$this->declaration( 'font-size', 'kb-icon-size', 'semantic.icon-size.icon', '50px' ),
 			$css
 		);
 		$this->assertStringContainsString( '.wp-block-kadence-single-icon *.kb-svg-icon-wrap{', $css );

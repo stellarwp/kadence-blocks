@@ -136,4 +136,21 @@ final class Icon_Size_ResolutionTest extends TestCase {
 		$this->assertSame( '1.5rem', $resolved->value( 'semantic.icon-size.default' ) );
 		$this->assertSame( 'currentColor', $resolved->value( 'semantic.color.icon' ) );
 	}
+
+	/**
+	 * The shipped baseline gives the icon block its own 50px size token, while the button's icon size
+	 * token keeps resolving to 1.5rem through the "md" step of the Icon Sizes scale.
+	 *
+	 * @return void
+	 */
+	public function testTheShippedIconBlockSizeIsFiftyPixelsAndTheButtonIconSizeIsUnchanged(): void {
+		/** @var Token_Resolver $resolver */
+		$resolver = $this->container->get( Token_Resolver::class );
+
+		$resolved = $resolver->resolve();
+
+		$this->assertSame( '50px', $resolved->value( 'semantic.icon-size.icon' ) );
+		$this->assertSame( '1.5rem', $resolved->value( 'semantic.icon-size.default' ) );
+		$this->assertSame( 'primitive.dimension.icon-size.md', $resolved->target( 'semantic.icon-size.default' ) );
+	}
 }

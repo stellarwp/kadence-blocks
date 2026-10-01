@@ -270,7 +270,7 @@ function KadenceSingleIcon(props) {
 									onDeviceChange={(device) => setPreviewDeviceType(device)}
 									tokens={iconSizeTokens}
 									// So an unset field names the size actually in effect — "Inherited (50px)" on a
-									// breakpoint taking Desktop's value, "Default (MD)" once the cascade reaches the
+									// breakpoint taking Desktop's value, "Default (50px)" once the cascade reaches the
 									// token — instead of reading blank after a Reset.
 									defaultValue={iconSizeDefault}
 									inherited={inheritedSize !== undefined}

@@ -11,6 +11,10 @@ import {
 	pickableTokensForControl,
 	pickableTokensForKey,
 } from '../index';
+import { tokenLiteral } from '../../design-tokens/token-literals';
+import { isEmptyValue, matchesPreset } from '../../token-indicators/normalize';
+import { defaultSummary, resolveDefaultValue } from '../../../token-controls/helpers/token-summary';
+import { pxFromLength } from '../../../token-controls/helpers/px-from-length';
 
 /**
  * The fixture pickable-token pool: layers are interleaved on purpose to prove the semantic-first
@@ -83,6 +87,14 @@ const POOL = {
 			role: 'icon-size',
 		},
 		{
+			id: 'semantic.icon-size.icon',
+			alias: '{semantic.icon-size.icon}',
+			label: 'Icon Block Size',
+			type: 'dimension',
+			layer: 'semantic',
+			role: 'icon-size',
+		},
+		{
 			// A Style Library custom token minted under the Icon Sizes group: it lives in the reserved
 			// `custom` namespace but carries the group's role, which is what makes it pickable alongside the
 			// shipped scale steps rather than stranded under a `custom` role of its own.
@@ -144,6 +156,7 @@ const POOL = {
 			'semantic.spacing.block': '1.5rem',
 			'primitive.dimension.icon-size.md': '1.5rem',
 			'semantic.icon-size.default': '1.5rem',
+			'semantic.icon-size.icon': '50px',
 			'primitive.dimension.custom.brand-icon': '2rem',
 			'primitive.font-weight.bold': '700',
 			'primitive.shadow.sm': '0 1px 2px rgba(0,0,0,0.1)',
@@ -186,7 +199,7 @@ const PRESETS = {
 					{
 						key: 'size',
 						kind: 'dimension',
-						token: 'semantic.icon-size.default',
+						token: 'semantic.icon-size.icon',
 						control_attr: 'size',
 						responsive_attrs: { tablet: 'tabletSize', mobile: 'mobileSize' },
 					},
@@ -274,6 +287,7 @@ describe('pickableTokensFor', () => {
 			'semantic.radius.button',
 			'semantic.spacing.block',
 			'semantic.icon-size.default',
+			'semantic.icon-size.icon',
 			'semantic.border-width.default',
 			'primitive.dimension.radius.sm',
 			'primitive.dimension.spacing.md',
@@ -285,6 +299,7 @@ describe('pickableTokensFor', () => {
 			'0.5rem',
 			'1.5rem',
 			'1.5rem',
+			'50px',
 			'2px',
 			'4px',
 			'16px',
@@ -409,8 +424,8 @@ describe('pickableTokensForControl', () => {
 	it('narrows the icon size control to the icon-size scale, dropping radius and spacing', () => {
 		const result = pickableTokensForControl('kadence/single-icon', 'size');
 
-		// The bound `semantic.icon-size.default` fixes the sub-kind, and the primitives-only scoping then
-		// offers the scale steps rather than the component semantic that merely aliases one of them. `size`
+		// The bound `semantic.icon-size.icon` fixes the sub-kind, and the primitives-only scoping then
+		// offers the scale steps rather than the block's own semantic size token. `size`
 		// alone would infer nothing (it matches no role once de-hyphenated), so the bound token is doing the
 		// narrowing here — without it the whole dimension bucket would be offered.
 		expect(result.map((token) => token.id)).toEqual([
@@ -544,7 +559,7 @@ describe('boundTokenAliasForControl', () => {
 	});
 
 	it('returns the bound token as an alias, ready to resolve', () => {
-		expect(boundTokenAliasForControl('kadence/single-icon', 'size')).toBe('{semantic.icon-size.default}');
+		expect(boundTokenAliasForControl('kadence/single-icon', 'size')).toBe('{semantic.icon-size.icon}');
 	});
 
 	it('returns empty for a control that binds no token', () => {
@@ -561,5 +576,45 @@ describe('boundTokenAliasForControl', () => {
 
 		expect(() => boundTokenAliasForControl('kadence/single-icon', 'size')).not.toThrow();
 		expect(boundTokenAliasForControl('kadence/single-icon', 'size')).toBe('');
+	});
+});
+
+describe('Single Icon size control default', () => {
+	beforeEach(() => {
+		window.kadenceDesignTokensPickable = POOL;
+		window.kadenceDesignTokensPresets = PRESETS;
+	});
+
+	afterEach(() => {
+		delete window.kadenceDesignTokensPickable;
+		delete window.kadenceDesignTokensPresets;
+	});
+
+	/**
+	 * An untouched icon's Size field falls back to the bound icon block size token, which is not a step on
+	 * the Icon Sizes scale, so the field names it "Default" with its 50px value.
+	 *
+	 * @return {void}
+	 */
+	it('shows "Default" with 50px for an untouched icon', () => {
+		const tokens = pickableTokensForControl('kadence/single-icon', 'size');
+		const defaultValue = tokenLiteral(boundTokenAliasForControl('kadence/single-icon', 'size'), 'default');
+		const resolved = resolveDefaultValue(defaultValue, tokens, 'px', false);
+
+		expect(defaultValue).toBe('50px');
+		expect(defaultSummary(resolved, tokens, 'Default')).toEqual({ label: 'Default', value: '50px' });
+		expect(pxFromLength(resolved)).toBe(50);
+	});
+
+	/**
+	 * An icon that stores no size, or stores exactly 50, matches the 50px preset value, so the indicator
+	 * reads as the default rather than as edited.
+	 *
+	 * @return {void}
+	 */
+	it('does not report an untouched or 50px icon as edited', () => {
+		expect(isEmptyValue('dimension', '')).toBe(true);
+		expect(matchesPreset('dimension', 50, '', '50px')).toBe(true);
+		expect(matchesPreset('dimension', 24, '', '50px')).toBe(false);
 	});
 });

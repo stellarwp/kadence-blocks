@@ -8,7 +8,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 
 /**
  * Blanks kadence/single-icon's `size` registration default (block.json hardcodes `50`) whenever the
- * `semantic.icon-size.default` token resolves, so an icon with no size of its own renders none and the
+ * `semantic.icon-size.icon` token resolves, so an icon with no size of its own renders none and the
  * preset CSS chain sizes it: the preset projector sets `--kb-icon-size` per preset on the block root, and
  * the block-default projector reads it on `.kb-svg-icon-wrap`. This runs on
  * `kadence_blocks_block_default_attributes`, which fires with the block's *registration* defaults, not
@@ -46,7 +46,7 @@ final class Icon_Size_Adapter extends Abstract_Adapter {
 	 *
 	 * @var string
 	 */
-	private const TOKEN = 'semantic.icon-size.default';
+	private const TOKEN = 'semantic.icon-size.icon';
 
 	/**
 	 * @since TBD

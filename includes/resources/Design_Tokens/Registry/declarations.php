@@ -128,7 +128,7 @@ $border_width_tokens = array_map(
 
 // The icon-size scale steps are primitives the Style Library's Icon Sizes screen lists and edits
 // directly (semantic.icon-size.default already carries the projection that delivers the "md" step
-// into the icon block and the button's icon size, so the scale declares none of its own).
+// into the button's icon size, so the scale declares none of its own).
 $icon_size_slugs = [ 'sm', 'md', 'lg' ];
 
 $icon_size_tokens = array_map(
@@ -397,6 +397,12 @@ return [
 				'id'    => 'semantic.icon-size.default',
 				'type'  => 'dimension',
 				'label' => __( 'Icon Size', 'kadence-blocks' ),
+				'group' => __( 'Brand', 'kadence-blocks' ),
+			],
+			[
+				'id'    => 'semantic.icon-size.icon',
+				'type'  => 'dimension',
+				'label' => __( 'Icon Block Size', 'kadence-blocks' ),
 				'group' => __( 'Brand', 'kadence-blocks' ),
 			],
 			[
@@ -1102,7 +1108,7 @@ return [
 					'control_attr'     => 'hColor',
 				],
 				'size'        => [
-					'token'            => 'semantic.icon-size.default',
+					'token'            => 'semantic.icon-size.icon',
 					'css_prop'         => 'font-size',
 					'css_selector'     => '*.kb-svg-icon-wrap',
 					'css_var'          => 'kb-icon-size',

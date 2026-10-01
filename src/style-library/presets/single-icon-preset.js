@@ -33,11 +33,11 @@ export const SINGLE_ICON_BLOCK = 'kadence/single-icon';
 const ICON_COLOR_FALLBACK = 'currentColor';
 
 /**
- * The icon's built-in size, matching `semantic.icon-size.default`.
+ * The icon's built-in size, matching `semantic.icon-size.icon`.
  *
  * @since TBD
  */
-const ICON_SIZE_FALLBACK = '1.5rem';
+const ICON_SIZE_FALLBACK = '50px';
 
 /**
  * Build a row's preview from its stored tokens.

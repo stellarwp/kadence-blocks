@@ -9,6 +9,8 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Adapter\Icon_Size_Adapter;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Adapter\Projector;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Block_Default_Css\Css_Builder;
+use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Css_Var;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Css_Renderer;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Palettes;
@@ -62,7 +64,7 @@ final class Icon_Size_AdapterTest extends TestCase {
 	}
 
 	/**
-	 * An unresolved token (no `semantic.icon-size.default` leaf in the baseline) leaves the attributes
+	 * An unresolved token (no `semantic.icon-size.icon` leaf in the baseline) leaves the attributes
 	 * untouched, so block.json's own default keeps rendering on a site with no icon-size token — the same
 	 * condition under which the block-default CSS emits no `font-size` rule.
 	 *
@@ -82,7 +84,7 @@ final class Icon_Size_AdapterTest extends TestCase {
 	 * @return void
 	 */
 	public function testATokenDisabledInTheActiveLibraryLeavesTheDefaultAlone(): void {
-		$this->activate_library( [ 'semantic' => [ 'icon-size' => [ 'default' => [ '$disabled' => true ] ] ] ] );
+		$this->activate_library( [ 'semantic' => [ 'icon-size' => [ 'icon' => [ '$disabled' => true ] ] ] ] );
 
 		$adapter = $this->container->get( Icon_Size_Adapter::class );
 
@@ -201,11 +203,39 @@ final class Icon_Size_AdapterTest extends TestCase {
 	}
 
 	/**
-	 * A baseline whose `semantic.icon-size.default` resolves to the given dimension value, mirroring
+	 * With the shipped baseline, an untouched icon emits no per-instance `font-size`, and the block-default
+	 * CSS sizes it through the icon block's own size token with a 50px fallback, so it renders at the same
+	 * 50px it always did.
+	 *
+	 * @return void
+	 */
+	public function testAnUntouchedIconIsSizedFiftyPixelsByTheBlockDefaultCss(): void {
+		$block     = new Kadence_Blocks_Single_Icon_Block();
+		$unique_id = 'icon-size-adapter-untouched';
+
+		$block->render_css(
+			[
+				'uniqueID' => $unique_id,
+				'color'    => '#123456',
+			],
+			'<span class="kb-svg-icon-wrap"></span>',
+			null
+		);
+
+		$this->assertStringNotContainsString( 'font-size', Kadence_Blocks_CSS::$styles[ 'kb-single-icon' . $unique_id ] ?? '' );
+
+		$this->assertStringContainsString(
+			'font-size:var(--kb-icon-size,var(' . Css_Var::from_id( 'semantic.icon-size.icon' ) . ',50px));',
+			$this->container->get( Css_Builder::class )->css()
+		);
+	}
+
+	/**
+	 * A baseline whose `semantic.icon-size.icon` resolves to the given dimension value, mirroring
 	 * Icon_Size_ResolutionTest's own helper so the resolver behind this adapter is built the same way
 	 * every other icon-size test already builds it.
 	 *
-	 * @param string $value The `$value` the `semantic.icon-size.default` leaf resolves to.
+	 * @param string $value The `$value` the `semantic.icon-size.icon` leaf resolves to.
 	 *
 	 * @return Token_Resolver
 	 */
@@ -214,7 +244,7 @@ final class Icon_Size_AdapterTest extends TestCase {
 			[
 				'semantic' => [
 					'icon-size' => [
-						'default' => [
+						'icon' => [
 							'$type'  => 'dimension',
 							'$value' => $value,
 						],
@@ -225,7 +255,7 @@ final class Icon_Size_AdapterTest extends TestCase {
 	}
 
 	/**
-	 * A resolver over a baseline with no `semantic.icon-size.default` leaf at all, so the token is
+	 * A resolver over a baseline with no `semantic.icon-size.icon` leaf at all, so the token is
 	 * genuinely unresolved rather than resolved to an unrecognized value.
 	 *
 	 * @return Token_Resolver

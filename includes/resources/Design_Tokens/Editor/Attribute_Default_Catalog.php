@@ -36,7 +36,7 @@ final class Attribute_Default_Catalog {
 	 */
 	private const ENTRIES = [
 		'kadence/single-icon' => [
-			'size' => 'semantic.icon-size.default',
+			'size' => 'semantic.icon-size.icon',
 		],
 	];
 
