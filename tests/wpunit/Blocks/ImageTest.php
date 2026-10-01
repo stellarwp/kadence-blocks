@@ -264,6 +264,30 @@ class ImageTest extends KadenceBlocksUnit {
 	}
 
 	/**
+	 * The head CSS pass hands the block its raw attributes, and Gutenberg omits an attribute equal to its
+	 * default, so an image switched on without editing its shadow arrives with the flag and NO `boxShadow`
+	 * key at all. It must still render the shadow it has always rendered.
+	 *
+	 * @return void
+	 */
+	public function testRawAttributesWithOnlyTheFlagRenderTheShippedShadow(): void {
+		$output = $this->render_image( [ 'displayBoxShadow' => true ] );
+
+		$this->assertStringContainsString( 'box-shadow:0px 0px 14px 0px rgba(0, 0, 0, 0.2)', $output );
+	}
+
+	/**
+	 * Without the flag, a missing `boxShadow` stays off: only a raised flag asks for the shipped shadow.
+	 *
+	 * @return void
+	 */
+	public function testRawAttributesWithNeitherFlagNorValueRenderNoShadow(): void {
+		$output = $this->render_image( [] );
+
+		$this->assertStringNotContainsString( 'box-shadow', $output );
+	}
+
+	/**
 	 * The `boxShadow` attribute default as `block.json` actually registers it.
 	 *
 	 * Read from the schema rather than spelled out here on purpose. These tests stand in for a saved
