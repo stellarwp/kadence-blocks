@@ -1377,9 +1377,9 @@ class Kadence_Blocks_CSS {
 			if ( $render_zero ) {
 				if ( ! is_numeric( $attributes[ $name ] ) ) {
 					return false;
-				} elseif ( empty( $attributes[ $name ] ) ) {
-					return false;
 				}
+			} elseif ( empty( $attributes[ $name ] ) ) {
+				return false;
 			}
 			$this->add_property( $property, $attributes[ $name ] . $unit );
 		}
