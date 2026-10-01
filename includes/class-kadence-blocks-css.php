@@ -2304,7 +2304,7 @@ class Kadence_Blocks_CSS {
 	 * @param array   $attributes an array of attributes.
 	 * @param string  $name an string of the attribute name.
 	 * @param boolean $single_styles if property values should be calculated to be output alone.
-	 * @param array   $args an array of settings.
+	 * @param array   $args an array of settings. `transparent_color` (bool, default false) keeps a stored width with no color transparent instead of the text color.
 	 * @return string
 	 */
 	public function render_border_styles( $attributes, $name = 'borderStyle', $single_styles = false, $args = array() ) {
@@ -2332,6 +2332,7 @@ class Kadence_Blocks_CSS {
 			),
 			'renderAsVars' => false,
 			'varBase' => '--kb-',
+			'transparent_color' => false,
 		);
 		$args = wp_parse_args( $args, $defaults );
 		$sizes = array(
@@ -2348,9 +2349,11 @@ class Kadence_Blocks_CSS {
 				$color = $this->get_border_value( $attributes, $args, $side, $size, 'color', $single_styles );
 				$style = $this->get_border_value( $attributes, $args, $side, $size, 'style', $single_styles );
 				if ( $width ) {
-					// A shorthand with no color falls back to `currentColor`, so a stored width without a color stays transparent.
+					// A shorthand with no color falls back to `currentColor`, so a caller that wants a stored width without a color to stay invisible opts in.
 					// An unresolved alias comes back as `false` and is left alone.
-					$color = '' === $color ? 'transparent' : $color;
+					if ( $args['transparent_color'] && '' === $color ) {
+						$color = 'transparent';
+					}
 					$this->add_property( $property_prefix . $args[ $prop_key ], $width . ' ' . $style . ' ' . $color );
 				} elseif ( $single_styles && $color ) {
 					$this->add_property( $property_prefix . $args[ $prop_key ] . '-color', $color );
