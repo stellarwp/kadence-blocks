@@ -134,6 +134,6 @@ final class Icon_Size_ResolutionTest extends TestCase {
 		$resolved = $resolver->resolve();
 
 		$this->assertSame( '1.5rem', $resolved->value( 'semantic.icon-size.default' ) );
-		$this->assertSame( '#3182CE', $resolved->value( 'semantic.color.icon' ) );
+		$this->assertSame( 'currentColor', $resolved->value( 'semantic.color.icon' ) );
 	}
 }

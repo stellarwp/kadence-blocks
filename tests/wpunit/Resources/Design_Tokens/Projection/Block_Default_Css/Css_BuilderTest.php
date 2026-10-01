@@ -152,7 +152,8 @@ final class Css_BuilderTest extends TestCase {
 
 	/**
 	 * The icon color binding registered for `kadence/single-icon` emits a low-specificity rule pointing the
-	 * `.kb-svg-icon-wrap` descendant's `color` at the brand icon-color token, while the legacy `kadence/icon`
+	 * `.kb-svg-icon-wrap` descendant's `color` at the icon-color token, which falls back to `currentColor` so an
+	 * icon with no color set keeps following the surrounding text, while the legacy `kadence/icon`
 	 * container (which has no top-level color/size attribute to bind) emits nothing.
 	 *
 	 * @return void
@@ -163,7 +164,7 @@ final class Css_BuilderTest extends TestCase {
 		$css = $this->builder( $registry )->css();
 
 		$this->assertStringContainsString(
-			'.wp-block-kadence-single-icon *.kb-svg-icon-wrap{' . $this->declaration( 'color', 'kb-icon-color', 'semantic.color.icon', '#3182CE' ),
+			'.wp-block-kadence-single-icon *.kb-svg-icon-wrap{' . $this->declaration( 'color', 'kb-icon-color', 'semantic.color.icon', 'currentColor' ),
 			$css
 		);
 		$this->assertStringNotContainsString( '.wp-block-kadence-icon ', $css );

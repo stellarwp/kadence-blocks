@@ -408,7 +408,7 @@
 			},
 			"icon": {
 				"$type": "color",
-				"$value": "{primitive.color.brand.primary}"
+				"$value": "currentColor"
 			},
 			"icon-hover": {
 				"$type": "color",
