@@ -153,6 +153,19 @@ final class Json_Baseline_DocumentTest extends TestCase {
 		);
 	}
 
+	/**
+	 * The shipped control font size is one flat value, so a default button is the same size at every screen width.
+	 *
+	 * @return void
+	 */
+	public function testTheShippedControlFontSizeHasNoResponsiveOverrides(): void {
+		$document = ( new Json_Baseline_Document( self::BASELINE_PATH, 'test-control-font-size' ) )->document();
+		$token    = $document['semantic']['font-size']['control'];
+
+		$this->assertSame( '1.125rem', $token['$value'] );
+		$this->assertArrayNotHasKey( '$extensions', $token );
+	}
+
 	public function testDocumentIsEmptyWhenTheFileIsMissing(): void {
 		$document = ( new Json_Baseline_Document( self::BASELINE_PATH . '.nope', 'test-doc-missing' ) )->document();
 
