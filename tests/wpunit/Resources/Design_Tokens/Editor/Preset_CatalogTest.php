@@ -317,7 +317,7 @@ final class Preset_CatalogTest extends TestCase {
 
 		$this->assertSame( 'size', $by_key['size']['control_attr'] );
 		$this->assertSame( 'dimension', $by_key['size']['kind'] );
-		$this->assertSame( 'semantic.icon-size.default', $by_key['size']['token'] );
+		$this->assertSame( 'semantic.icon-size.icon', $by_key['size']['token'] );
 		$this->assertSame(
 			[
 				'tablet' => 'tabletSize',
@@ -331,7 +331,7 @@ final class Preset_CatalogTest extends TestCase {
 
 		// The default preset resolves the size to the icon-size token's literal, which is what a control
 		// compares against to decide bound-vs-overridden.
-		$this->assertSame( '1.5rem', $icon['values']['default']['size'] );
+		$this->assertSame( '50px', $icon['values']['default']['size'] );
 	}
 
 	/**

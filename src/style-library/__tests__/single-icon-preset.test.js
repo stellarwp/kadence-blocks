@@ -54,16 +54,16 @@ describe('SINGLE_ICON_PRESET', () => {
 	it('resolves the preview color and size from stored aliases', () => {
 		const values = {
 			'semantic.color.icon': '#3182CE',
-			'semantic.icon-size.default': '1.5rem',
+			'semantic.icon-size.icon': '50px',
 		};
 		const tokens = {
 			color: '{semantic.color.icon}',
-			size: '{semantic.icon-size.default}',
+			size: '{semantic.icon-size.icon}',
 		};
 
 		expect(SINGLE_ICON_PRESET.preview(tokens, values)).toEqual({
 			color: '#3182CE',
-			size: '1.5rem',
+			size: '50px',
 		});
 	});
 

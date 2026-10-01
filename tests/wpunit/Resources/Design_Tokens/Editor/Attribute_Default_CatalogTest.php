@@ -79,7 +79,7 @@ final class Attribute_Default_CatalogTest extends TestCase {
 	 * @return void
 	 */
 	public function testATokenDisabledInTheActiveLibraryOmitsTheEntry(): void {
-		$this->activate_library( [ 'semantic' => [ 'icon-size' => [ 'default' => [ '$disabled' => true ] ] ] ] );
+		$this->activate_library( [ 'semantic' => [ 'icon-size' => [ 'icon' => [ '$disabled' => true ] ] ] ] );
 
 		$this->assertSame( [], $this->container->get( Attribute_Default_Catalog::class )->all() );
 	}
@@ -100,9 +100,9 @@ final class Attribute_Default_CatalogTest extends TestCase {
 	}
 
 	/**
-	 * Build a catalog whose `semantic.icon-size.default` leaf resolves to the given dimension value.
+	 * Build a catalog whose `semantic.icon-size.icon` leaf resolves to the given dimension value.
 	 *
-	 * @param string $value The `$value` the `semantic.icon-size.default` leaf resolves to.
+	 * @param string $value The `$value` the `semantic.icon-size.icon` leaf resolves to.
 	 *
 	 * @return Attribute_Default_Catalog
 	 */
@@ -111,7 +111,7 @@ final class Attribute_Default_CatalogTest extends TestCase {
 			[
 				'semantic' => [
 					'icon-size' => [
-						'default' => [
+						'icon' => [
 							'$type'  => 'dimension',
 							'$value' => $value,
 						],

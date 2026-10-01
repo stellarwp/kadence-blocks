@@ -157,3 +157,40 @@ describe('TokenSelector fixed-entry round trip', () => {
 		expect(trigger.textContent).not.toContain('Custom');
 	});
 });
+
+describe('TokenSelector off-scale default', () => {
+	const ICON_SIZE_SCALE = [
+		{
+			id: 'primitive.dimension.icon-size.sm',
+			alias: '{primitive.dimension.icon-size.sm}',
+			label: 'SM',
+			value: '1rem',
+		},
+		{
+			id: 'primitive.dimension.icon-size.md',
+			alias: '{primitive.dimension.icon-size.md}',
+			label: 'MD',
+			value: '1.5rem',
+		},
+		{
+			id: 'primitive.dimension.icon-size.lg',
+			alias: '{primitive.dimension.icon-size.lg}',
+			label: 'LG',
+			value: '2.25rem',
+		},
+	];
+
+	/**
+	 * An unset field whose default matches no scale step, like the icon block's 50px size, reads as
+	 * "Default" with that value rather than borrowing a step's name.
+	 *
+	 * @return {void}
+	 */
+	it('names an unset field "Default" with its off-scale value', () => {
+		const trigger = renderSelector({ tokens: ICON_SIZE_SCALE, unit: 'px', defaultValue: '50px' });
+
+		expect(trigger.querySelector('.kadence-token-field__label--default').textContent).toBe('Default');
+		expect(trigger.querySelector('.kadence-token-field__value').textContent).toBe('50px');
+		expect(trigger.getAttribute('aria-label')).toBe('Default (50px)');
+	});
+});

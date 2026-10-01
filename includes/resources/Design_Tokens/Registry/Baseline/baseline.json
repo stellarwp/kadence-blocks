@@ -519,6 +519,10 @@
 			"default": {
 				"$type": "dimension",
 				"$value": "{primitive.dimension.icon-size.md}"
+			},
+			"icon": {
+				"$type": "dimension",
+				"$value": "50px"
 			}
 		},
 		"font-size": {
@@ -821,7 +825,7 @@
 						"label": "Default",
 						"tokens": {
 							"color": "{semantic.color.icon}",
-							"size": "{semantic.icon-size.default}"
+							"size": "{semantic.icon-size.icon}"
 						}
 					}
 				},

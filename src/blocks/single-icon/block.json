@@ -57,7 +57,7 @@
 		},
 		"padding": {
 			"type": "array",
-			"default": ["xs", "xs", "xs", "xs"]
+			"default": ["", "", "", ""]
 		},
 		"paddingUnit": {
 			"type": "string",
