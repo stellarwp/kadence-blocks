@@ -1211,6 +1211,32 @@ class KadenceBlocksCssTest extends WPTestCase {
 	}
 
 	/**
+	 * With single styles on, a stored width with a color alias that does not resolve is not forced to
+	 * transparent.
+	 *
+	 * @return void
+	 */
+	public function testRenderBorderStylesLeavesUnresolvedColorAliasAlone(): void {
+		$this->css->render_border_styles(
+			[
+				'borderStyle' => [
+					[
+						'top'    => [ '{semantic.does.not.exist}', 'solid', '2' ],
+						'right'  => [ '', '', '' ],
+						'bottom' => [ '', '', '' ],
+						'left'   => [ '', '', '' ],
+						'unit'   => 'px',
+					],
+				],
+			],
+			'borderStyle',
+			true
+		);
+
+		$this->assertStringNotContainsString( 'transparent', $this->css->css_output(), 'An unresolved alias is not turned into transparent' );
+	}
+
+	/**
 	 * @return Generator
 	 */
 	public function widthWithoutColorProvider(): Generator {
