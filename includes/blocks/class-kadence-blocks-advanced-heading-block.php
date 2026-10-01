@@ -258,7 +258,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		$css->set_media_state( 'desktop' );
 
 
-		$css->render_border_styles( $attributes, 'borderStyle', true );
+		$css->render_border_styles( $attributes, 'borderStyle', true, [ 'transparent_color' => true ] );
 		$css->render_border_radius( $attributes, 'borderRadius', ( !empty( $attributes['borderRadiusUnit']) ? $attributes['borderRadiusUnit'] : 'px' ) );
 
 		$css->set_media_state('tablet');
