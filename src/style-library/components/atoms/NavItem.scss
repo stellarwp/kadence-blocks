@@ -1,0 +1,41 @@
+.kadence-blocks-style-library__nav-item-button {
+	display: flex;
+	align-items: center;
+	gap: var(--kb-sl-space-12);
+	width: 100%;
+	padding: var(--kb-sl-space-10) var(--kb-sl-space-15);
+	border: 0;
+	border-radius: var(--kb-sl-radius-s);
+	background: transparent;
+	color: var(--kb-sl-color-nav-tab-text);
+	font-size: var(--kb-sl-font-size-nav-tab);
+	font-weight: var(--kb-sl-font-weight-regular);
+	line-height: var(--kb-sl-line-height-nav-tab);
+	text-align: left;
+	cursor: pointer;
+
+	&:hover {
+		background-color: var(--kb-sl-color-menu-item-bg-hover);
+	}
+
+	// Declared after :hover so a selected tab that is also hovered keeps its fill and weight — both selectors
+	// share the same specificity, so source order decides the winner.
+	&--active,
+	&--active:hover {
+		background-color: var(--kb-sl-color-menu-item-bg-selected);
+		font-weight: var(--kb-sl-font-weight-medium);
+	}
+}
+
+.kadence-blocks-style-library__nav-item-icon {
+	flex: 0 0 auto;
+	width: var(--kb-sl-size-nav-item-icon);
+	height: var(--kb-sl-size-nav-item-icon);
+}
+
+.kadence-blocks-style-library__nav-item-count {
+	margin-left: auto;
+	color: var(--kb-sl-color-nav-tab-count);
+	font-size: var(--kb-sl-font-size-nav-tab-count);
+	font-weight: var(--kb-sl-font-weight-regular);
+}

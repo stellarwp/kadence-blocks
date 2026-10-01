@@ -911,11 +911,6 @@ parameters:
 			path: includes/blocks/class-kadence-blocks-abstract-block.php
 
 		-
-			message: "#^Method Kadence_Blocks_Abstract_Block\\:\\:get_attributes_with_defaults\\(\\) has parameter \\$cache with no type specified\\.$#"
-			count: 1
-			path: includes/blocks/class-kadence-blocks-abstract-block.php
-
-		-
 			message: "#^Method Kadence_Blocks_Abstract_Block\\:\\:get_attributes_with_defaults\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: includes/blocks/class-kadence-blocks-abstract-block.php
@@ -1017,11 +1012,6 @@ parameters:
 
 		-
 			message: "#^Method Kadence_Blocks_Abstract_Block\\:\\:should_render_inline_stylesheet\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: includes/blocks/class-kadence-blocks-abstract-block.php
-
-		-
-			message: "#^PHPDoc tag @param references unknown parameter\\: \\$block_name$#"
 			count: 1
 			path: includes/blocks/class-kadence-blocks-abstract-block.php
 
@@ -1397,41 +1387,6 @@ parameters:
 
 		-
 			message: "#^Cannot access offset 0 on mixed\\.$#"
-			count: 4
-			path: includes/blocks/class-kadence-blocks-advanced-form-block.php
-
-		-
-			message: "#^Cannot access offset 1 on mixed\\.$#"
-			count: 2
-			path: includes/blocks/class-kadence-blocks-advanced-form-block.php
-
-		-
-			message: "#^Cannot access offset 2 on mixed\\.$#"
-			count: 2
-			path: includes/blocks/class-kadence-blocks-advanced-form-block.php
-
-		-
-			message: "#^Cannot access offset 3 on mixed\\.$#"
-			count: 2
-			path: includes/blocks/class-kadence-blocks-advanced-form-block.php
-
-		-
-			message: "#^Cannot access offset 4 on mixed\\.$#"
-			count: 2
-			path: includes/blocks/class-kadence-blocks-advanced-form-block.php
-
-		-
-			message: "#^Cannot access offset 5 on mixed\\.$#"
-			count: 2
-			path: includes/blocks/class-kadence-blocks-advanced-form-block.php
-
-		-
-			message: "#^Cannot access offset 6 on mixed\\.$#"
-			count: 2
-			path: includes/blocks/class-kadence-blocks-advanced-form-block.php
-
-		-
-			message: "#^Cannot access offset 7 on mixed\\.$#"
 			count: 2
 			path: includes/blocks/class-kadence-blocks-advanced-form-block.php
 
@@ -1518,11 +1473,6 @@ parameters:
 		-
 			message: "#^Parameter \\#1 \\$attributes of method Kadence_Blocks_CSS\\:\\:render_typography\\(\\) expects array, mixed given\\.$#"
 			count: 1
-			path: includes/blocks/class-kadence-blocks-advanced-form-block.php
-
-		-
-			message: "#^Parameter \\#1 \\$color of method Kadence_Blocks_CSS\\:\\:render_color\\(\\) expects string, mixed given\\.$#"
-			count: 2
 			path: includes/blocks/class-kadence-blocks-advanced-form-block.php
 
 		-
@@ -1716,61 +1666,6 @@ parameters:
 			path: includes/blocks/class-kadence-blocks-advanced-heading-block.php
 
 		-
-			message: "#^Cannot call method add_property\\(\\) on string\\.$#"
-			count: 94
-			path: includes/blocks/class-kadence-blocks-advancedbtn-block.php
-
-		-
-			message: "#^Cannot call method css_output\\(\\) on string\\.$#"
-			count: 1
-			path: includes/blocks/class-kadence-blocks-advancedbtn-block.php
-
-		-
-			message: "#^Cannot call method get_font_size\\(\\) on string\\.$#"
-			count: 6
-			path: includes/blocks/class-kadence-blocks-advancedbtn-block.php
-
-		-
-			message: "#^Cannot call method render_color\\(\\) on string\\.$#"
-			count: 21
-			path: includes/blocks/class-kadence-blocks-advancedbtn-block.php
-
-		-
-			message: "#^Cannot call method render_font_family\\(\\) on string\\.$#"
-			count: 1
-			path: includes/blocks/class-kadence-blocks-advancedbtn-block.php
-
-		-
-			message: "#^Cannot call method render_font_weight\\(\\) on string\\.$#"
-			count: 1
-			path: includes/blocks/class-kadence-blocks-advancedbtn-block.php
-
-		-
-			message: "#^Cannot call method render_gap\\(\\) on string\\.$#"
-			count: 1
-			path: includes/blocks/class-kadence-blocks-advancedbtn-block.php
-
-		-
-			message: "#^Cannot call method render_measure_output\\(\\) on string\\.$#"
-			count: 3
-			path: includes/blocks/class-kadence-blocks-advancedbtn-block.php
-
-		-
-			message: "#^Cannot call method set_media_state\\(\\) on string\\.$#"
-			count: 19
-			path: includes/blocks/class-kadence-blocks-advancedbtn-block.php
-
-		-
-			message: "#^Cannot call method set_selector\\(\\) on string\\.$#"
-			count: 24
-			path: includes/blocks/class-kadence-blocks-advancedbtn-block.php
-
-		-
-			message: "#^Cannot call method set_style_id\\(\\) on string\\.$#"
-			count: 1
-			path: includes/blocks/class-kadence-blocks-advancedbtn-block.php
-
-		-
 			message: "#^Method Kadence_Blocks_Advancedbtn_Block\\:\\:build_css\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: includes/blocks/class-kadence-blocks-advancedbtn-block.php
@@ -1801,8 +1696,8 @@ parameters:
 			path: includes/blocks/class-kadence-blocks-advancedbtn-block.php
 
 		-
-			message: "#^Offset 7 on array in isset\\(\\) always exists and is not nullable\\.$#"
-			count: 3
+			message: "#^Parameter \\#2 \\$css \\(Kadence_Blocks_CSS\\) of method Kadence_Blocks_Advancedbtn_Block\\:\\:build_css\\(\\) should be compatible with parameter \\$css \\(string\\) of method Kadence_Blocks_Abstract_Block\\:\\:build_css\\(\\)$#"
+			count: 1
 			path: includes/blocks/class-kadence-blocks-advancedbtn-block.php
 
 		-
@@ -1811,22 +1706,7 @@ parameters:
 			path: includes/blocks/class-kadence-blocks-advancedbtn-block.php
 
 		-
-			message: "#^Result of && is always false\\.$#"
-			count: 1
-			path: includes/blocks/class-kadence-blocks-advancedbtn-block.php
-
-		-
-			message: "#^Result of && is always true\\.$#"
-			count: 2
-			path: includes/blocks/class-kadence-blocks-advancedbtn-block.php
-
-		-
 			message: "#^Static property Kadence_Blocks_Advancedbtn_Block\\:\\:\\$instance \\(null\\) does not accept Kadence_Blocks_Advancedbtn_Block\\.$#"
-			count: 1
-			path: includes/blocks/class-kadence-blocks-advancedbtn-block.php
-
-		-
-			message: "#^Strict comparison using \\=\\=\\= between true and mixed will always evaluate to false\\.$#"
 			count: 1
 			path: includes/blocks/class-kadence-blocks-advancedbtn-block.php
 
@@ -1911,27 +1791,7 @@ parameters:
 			path: includes/blocks/class-kadence-blocks-advancedgallery-block.php
 
 		-
-			message: "#^Method Kadence_Blocks_Advancedgallery_Block\\:\\:render_gallery_images\\(\\) has parameter \\$attributes with no type specified\\.$#"
-			count: 1
-			path: includes/blocks/class-kadence-blocks-advancedgallery-block.php
-
-		-
-			message: "#^Method Kadence_Blocks_Advancedgallery_Block\\:\\:render_gallery_images\\(\\) has parameter \\$image with no type specified\\.$#"
-			count: 1
-			path: includes/blocks/class-kadence-blocks-advancedgallery-block.php
-
-		-
 			message: "#^Method Kadence_Blocks_Advancedgallery_Block\\:\\:render_gallery_thumb_images\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: includes/blocks/class-kadence-blocks-advancedgallery-block.php
-
-		-
-			message: "#^Method Kadence_Blocks_Advancedgallery_Block\\:\\:render_gallery_thumb_images\\(\\) has parameter \\$attributes with no type specified\\.$#"
-			count: 1
-			path: includes/blocks/class-kadence-blocks-advancedgallery-block.php
-
-		-
-			message: "#^Method Kadence_Blocks_Advancedgallery_Block\\:\\:render_gallery_thumb_images\\(\\) has parameter \\$image with no type specified\\.$#"
 			count: 1
 			path: includes/blocks/class-kadence-blocks-advancedgallery-block.php
 
@@ -1981,7 +1841,27 @@ parameters:
 			path: includes/blocks/class-kadence-blocks-advancedgallery-block.php
 
 		-
+			message: "#^Parameter \\#1 \\$id of method Kadence_Blocks_Advancedgallery_Block\\:\\:get_image_srcset_output\\(\\) expects int\\|null, mixed given\\.$#"
+			count: 1
+			path: includes/blocks/class-kadence-blocks-advancedgallery-block.php
+
+		-
 			message: "#^Parameter \\#1 \\$node of method DOMDocument\\:\\:saveHTML\\(\\) expects DOMNode\\|null, mixed given\\.$#"
+			count: 1
+			path: includes/blocks/class-kadence-blocks-advancedgallery-block.php
+
+		-
+			message: "#^Parameter \\#1 \\$post of function get_permalink expects int\\|WP_Post, mixed given\\.$#"
+			count: 1
+			path: includes/blocks/class-kadence-blocks-advancedgallery-block.php
+
+		-
+			message: "#^Parameter \\#1 \\$post_id of function get_post_meta expects int, mixed given\\.$#"
+			count: 2
+			path: includes/blocks/class-kadence-blocks-advancedgallery-block.php
+
+		-
+			message: "#^Parameter \\#1 \\$post_id of function wp_get_attachment_caption expects int, mixed given\\.$#"
 			count: 1
 			path: includes/blocks/class-kadence-blocks-advancedgallery-block.php
 
@@ -2001,12 +1881,32 @@ parameters:
 			path: includes/blocks/class-kadence-blocks-advancedgallery-block.php
 
 		-
+			message: "#^Parameter \\#1 \\$text of function esc_attr expects string, mixed given\\.$#"
+			count: 23
+			path: includes/blocks/class-kadence-blocks-advancedgallery-block.php
+
+		-
 			message: "#^Parameter \\#1 \\$text of function esc_attr expects string, string\\|null given\\.$#"
 			count: 2
 			path: includes/blocks/class-kadence-blocks-advancedgallery-block.php
 
 		-
 			message: "#^Parameter \\#2 \\$css \\(Kadence_Blocks_CSS\\) of method Kadence_Blocks_Advancedgallery_Block\\:\\:build_css\\(\\) should be compatible with parameter \\$css \\(string\\) of method Kadence_Blocks_Abstract_Block\\:\\:build_css\\(\\)$#"
+			count: 1
+			path: includes/blocks/class-kadence-blocks-advancedgallery-block.php
+
+		-
+			message: "#^Parameter \\#2 \\$url of method Kadence_Blocks_Advancedgallery_Block\\:\\:get_image_srcset_output\\(\\) expects string\\|null, mixed given\\.$#"
+			count: 1
+			path: includes/blocks/class-kadence-blocks-advancedgallery-block.php
+
+		-
+			message: "#^Parameter \\#3 \\$width of method Kadence_Blocks_Advancedgallery_Block\\:\\:get_image_srcset_output\\(\\) expects string\\|null, mixed given\\.$#"
+			count: 1
+			path: includes/blocks/class-kadence-blocks-advancedgallery-block.php
+
+		-
+			message: "#^Parameter \\#4 \\$height of method Kadence_Blocks_Advancedgallery_Block\\:\\:get_image_srcset_output\\(\\) expects string\\|null, mixed given\\.$#"
 			count: 1
 			path: includes/blocks/class-kadence-blocks-advancedgallery-block.php
 
@@ -2061,66 +1961,6 @@ parameters:
 			path: includes/blocks/class-kadence-blocks-column-block.php
 
 		-
-			message: "#^Cannot call method add_css_string\\(\\) on string\\.$#"
-			count: 1
-			path: includes/blocks/class-kadence-blocks-column-block.php
-
-		-
-			message: "#^Cannot call method add_property\\(\\) on string\\.$#"
-			count: 195
-			path: includes/blocks/class-kadence-blocks-column-block.php
-
-		-
-			message: "#^Cannot call method css_output\\(\\) on string\\.$#"
-			count: 1
-			path: includes/blocks/class-kadence-blocks-column-block.php
-
-		-
-			message: "#^Cannot call method is_number\\(\\) on string\\.$#"
-			count: 81
-			path: includes/blocks/class-kadence-blocks-column-block.php
-
-		-
-			message: "#^Cannot call method render_border_styles\\(\\) on string\\.$#"
-			count: 2
-			path: includes/blocks/class-kadence-blocks-column-block.php
-
-		-
-			message: "#^Cannot call method render_color\\(\\) on string\\.$#"
-			count: 13
-			path: includes/blocks/class-kadence-blocks-column-block.php
-
-		-
-			message: "#^Cannot call method render_color_output\\(\\) on string\\.$#"
-			count: 1
-			path: includes/blocks/class-kadence-blocks-column-block.php
-
-		-
-			message: "#^Cannot call method render_measure_output\\(\\) on string\\.$#"
-			count: 6
-			path: includes/blocks/class-kadence-blocks-column-block.php
-
-		-
-			message: "#^Cannot call method render_row_gap\\(\\) on string\\.$#"
-			count: 3
-			path: includes/blocks/class-kadence-blocks-column-block.php
-
-		-
-			message: "#^Cannot call method set_media_state\\(\\) on string\\.$#"
-			count: 39
-			path: includes/blocks/class-kadence-blocks-column-block.php
-
-		-
-			message: "#^Cannot call method set_selector\\(\\) on string\\.$#"
-			count: 82
-			path: includes/blocks/class-kadence-blocks-column-block.php
-
-		-
-			message: "#^Cannot call method set_style_id\\(\\) on string\\.$#"
-			count: 1
-			path: includes/blocks/class-kadence-blocks-column-block.php
-
-		-
 			message: "#^Method Kadence_Blocks_Column_Block\\:\\:build_css\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: includes/blocks/class-kadence-blocks-column-block.php
@@ -2166,7 +2006,7 @@ parameters:
 			path: includes/blocks/class-kadence-blocks-column-block.php
 
 		-
-			message: "#^Parameter \\#4 \\$css of method Kadence_Blocks_Column_Block\\:\\:set_vertical_align\\(\\) expects object, string given\\.$#"
+			message: "#^Parameter \\#2 \\$css \\(Kadence_Blocks_CSS\\) of method Kadence_Blocks_Column_Block\\:\\:build_css\\(\\) should be compatible with parameter \\$css \\(string\\) of method Kadence_Blocks_Abstract_Block\\:\\:build_css\\(\\)$#"
 			count: 1
 			path: includes/blocks/class-kadence-blocks-column-block.php
 
@@ -2341,11 +2181,6 @@ parameters:
 			path: includes/blocks/class-kadence-blocks-form-block.php
 
 		-
-			message: "#^Offset 7 on array in isset\\(\\) always exists and is not nullable\\.$#"
-			count: 3
-			path: includes/blocks/class-kadence-blocks-form-block.php
-
-		-
 			message: "#^Parameter \\#1 \\$text of function esc_attr expects string, mixed given\\.$#"
 			count: 4
 			path: includes/blocks/class-kadence-blocks-form-block.php
@@ -2361,27 +2196,12 @@ parameters:
 			path: includes/blocks/class-kadence-blocks-form-block.php
 
 		-
-			message: "#^Result of && is always false\\.$#"
-			count: 1
-			path: includes/blocks/class-kadence-blocks-form-block.php
-
-		-
-			message: "#^Result of && is always true\\.$#"
-			count: 2
-			path: includes/blocks/class-kadence-blocks-form-block.php
-
-		-
 			message: "#^Right side of && is always true\\.$#"
 			count: 12
 			path: includes/blocks/class-kadence-blocks-form-block.php
 
 		-
 			message: "#^Static property Kadence_Blocks_Form_Block\\:\\:\\$instance \\(null\\) does not accept Kadence_Blocks_Form_Block\\.$#"
-			count: 1
-			path: includes/blocks/class-kadence-blocks-form-block.php
-
-		-
-			message: "#^Strict comparison using \\=\\=\\= between true and mixed will always evaluate to false\\.$#"
 			count: 1
 			path: includes/blocks/class-kadence-blocks-form-block.php
 
@@ -3821,101 +3641,6 @@ parameters:
 			path: includes/blocks/class-kadence-blocks-row-layout-block.php
 
 		-
-			message: "#^Cannot call method add_css_string\\(\\) on string\\.$#"
-			count: 1
-			path: includes/blocks/class-kadence-blocks-row-layout-block.php
-
-		-
-			message: "#^Cannot call method add_property\\(\\) on string\\.$#"
-			count: 174
-			path: includes/blocks/class-kadence-blocks-row-layout-block.php
-
-		-
-			message: "#^Cannot call method css_output\\(\\) on string\\.$#"
-			count: 1
-			path: includes/blocks/class-kadence-blocks-row-layout-block.php
-
-		-
-			message: "#^Cannot call method get_variable_value\\(\\) on string\\.$#"
-			count: 2
-			path: includes/blocks/class-kadence-blocks-row-layout-block.php
-
-		-
-			message: "#^Cannot call method is_number\\(\\) on string\\.$#"
-			count: 63
-			path: includes/blocks/class-kadence-blocks-row-layout-block.php
-
-		-
-			message: "#^Cannot call method is_variable_value\\(\\) on string\\.$#"
-			count: 2
-			path: includes/blocks/class-kadence-blocks-row-layout-block.php
-
-		-
-			message: "#^Cannot call method render_border_styles\\(\\) on string\\.$#"
-			count: 1
-			path: includes/blocks/class-kadence-blocks-row-layout-block.php
-
-		-
-			message: "#^Cannot call method render_color\\(\\) on string\\.$#"
-			count: 13
-			path: includes/blocks/class-kadence-blocks-row-layout-block.php
-
-		-
-			message: "#^Cannot call method render_color_output\\(\\) on string\\.$#"
-			count: 10
-			path: includes/blocks/class-kadence-blocks-row-layout-block.php
-
-		-
-			message: "#^Cannot call method render_gradient\\(\\) on string\\.$#"
-			count: 6
-			path: includes/blocks/class-kadence-blocks-row-layout-block.php
-
-		-
-			message: "#^Cannot call method render_measure_output\\(\\) on string\\.$#"
-			count: 5
-			path: includes/blocks/class-kadence-blocks-row-layout-block.php
-
-		-
-			message: "#^Cannot call method render_opacity_from_100\\(\\) on string\\.$#"
-			count: 3
-			path: includes/blocks/class-kadence-blocks-row-layout-block.php
-
-		-
-			message: "#^Cannot call method render_row_gap\\(\\) on string\\.$#"
-			count: 2
-			path: includes/blocks/class-kadence-blocks-row-layout-block.php
-
-		-
-			message: "#^Cannot call method render_row_gap_property\\(\\) on string\\.$#"
-			count: 7
-			path: includes/blocks/class-kadence-blocks-row-layout-block.php
-
-		-
-			message: "#^Cannot call method set_media_state\\(\\) on string\\.$#"
-			count: 56
-			path: includes/blocks/class-kadence-blocks-row-layout-block.php
-
-		-
-			message: "#^Cannot call method set_selector\\(\\) on string\\.$#"
-			count: 80
-			path: includes/blocks/class-kadence-blocks-row-layout-block.php
-
-		-
-			message: "#^Cannot call method set_style_id\\(\\) on string\\.$#"
-			count: 1
-			path: includes/blocks/class-kadence-blocks-row-layout-block.php
-
-		-
-			message: "#^Cannot call method start_media_query\\(\\) on string\\.$#"
-			count: 1
-			path: includes/blocks/class-kadence-blocks-row-layout-block.php
-
-		-
-			message: "#^Cannot call method stop_media_query\\(\\) on string\\.$#"
-			count: 1
-			path: includes/blocks/class-kadence-blocks-row-layout-block.php
-
-		-
 			message: "#^Method Kadence_Blocks_Rowlayout_Block\\:\\:build_css\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: includes/blocks/class-kadence-blocks-row-layout-block.php
@@ -4046,18 +3771,8 @@ parameters:
 			path: includes/blocks/class-kadence-blocks-row-layout-block.php
 
 		-
-			message: "#^Offset 'borderRadiusOverflow' on array in isset\\(\\) always exists and is not nullable\\.$#"
-			count: 1
-			path: includes/blocks/class-kadence-blocks-row-layout-block.php
-
-		-
 			message: "#^Parameter \\#1 \\$attributes of method Kadence_Blocks_Abstract_Block\\:\\:build_escaped_html_attributes\\(\\) expects array\\<string, bool\\|float\\|int\\|string\\>, array\\<string, mixed\\> given\\.$#"
 			count: 1
-			path: includes/blocks/class-kadence-blocks-row-layout-block.php
-
-		-
-			message: "#^Parameter \\#1 \\$css of method Kadence_Blocks_Rowlayout_Block\\:\\:get_template_columns\\(\\) expects object, string given\\.$#"
-			count: 6
 			path: includes/blocks/class-kadence-blocks-row-layout-block.php
 
 		-
@@ -4072,6 +3787,11 @@ parameters:
 
 		-
 			message: "#^Parameter \\#2 \\$alpha of function kadence_blocks_hex2rgba expects float\\|int, float\\|int\\|string given\\.$#"
+			count: 1
+			path: includes/blocks/class-kadence-blocks-row-layout-block.php
+
+		-
+			message: "#^Parameter \\#2 \\$css \\(Kadence_Blocks_CSS\\) of method Kadence_Blocks_Rowlayout_Block\\:\\:build_css\\(\\) should be compatible with parameter \\$css \\(string\\) of method Kadence_Blocks_Abstract_Block\\:\\:build_css\\(\\)$#"
 			count: 1
 			path: includes/blocks/class-kadence-blocks-row-layout-block.php
 
@@ -4351,77 +4071,12 @@ parameters:
 			path: includes/blocks/class-kadence-blocks-single-icon-list-block.php
 
 		-
-			message: "#^Cannot call method add_property\\(\\) on string\\.$#"
-			count: 31
-			path: includes/blocks/class-kadence-blocks-singlebtn-block.php
-
-		-
-			message: "#^Cannot call method css_output\\(\\) on string\\.$#"
-			count: 1
-			path: includes/blocks/class-kadence-blocks-singlebtn-block.php
-
-		-
-			message: "#^Cannot call method render_border_styles\\(\\) on string\\.$#"
-			count: 2
-			path: includes/blocks/class-kadence-blocks-singlebtn-block.php
-
-		-
-			message: "#^Cannot call method render_color\\(\\) on string\\.$#"
-			count: 9
-			path: includes/blocks/class-kadence-blocks-singlebtn-block.php
-
-		-
-			message: "#^Cannot call method render_measure_output\\(\\) on string\\.$#"
-			count: 5
-			path: includes/blocks/class-kadence-blocks-singlebtn-block.php
-
-		-
-			message: "#^Cannot call method render_responsive_range\\(\\) on string\\.$#"
-			count: 3
-			path: includes/blocks/class-kadence-blocks-singlebtn-block.php
-
-		-
-			message: "#^Cannot call method render_typography\\(\\) on string\\.$#"
-			count: 1
-			path: includes/blocks/class-kadence-blocks-singlebtn-block.php
-
-		-
-			message: "#^Cannot call method set_media_state\\(\\) on string\\.$#"
-			count: 6
-			path: includes/blocks/class-kadence-blocks-singlebtn-block.php
-
-		-
-			message: "#^Cannot call method set_selector\\(\\) on string\\.$#"
-			count: 19
-			path: includes/blocks/class-kadence-blocks-singlebtn-block.php
-
-		-
-			message: "#^Cannot call method set_style_id\\(\\) on string\\.$#"
-			count: 1
-			path: includes/blocks/class-kadence-blocks-singlebtn-block.php
-
-		-
 			message: "#^Method Kadence_Blocks_Singlebtn_Block\\:\\:build_css\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: includes/blocks/class-kadence-blocks-singlebtn-block.php
 
 		-
 			message: "#^Method Kadence_Blocks_Singlebtn_Block\\:\\:build_css\\(\\) has parameter \\$attributes with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: includes/blocks/class-kadence-blocks-singlebtn-block.php
-
-		-
-			message: "#^Method Kadence_Blocks_Singlebtn_Block\\:\\:build_html\\(\\) has parameter \\$attributes with no type specified\\.$#"
-			count: 1
-			path: includes/blocks/class-kadence-blocks-singlebtn-block.php
-
-		-
-			message: "#^Method Kadence_Blocks_Singlebtn_Block\\:\\:build_html\\(\\) has parameter \\$content with no type specified\\.$#"
-			count: 1
-			path: includes/blocks/class-kadence-blocks-singlebtn-block.php
-
-		-
-			message: "#^Method Kadence_Blocks_Singlebtn_Block\\:\\:build_html\\(\\) has parameter \\$unique_id with no type specified\\.$#"
 			count: 1
 			path: includes/blocks/class-kadence-blocks-singlebtn-block.php
 
@@ -4446,27 +4101,7 @@ parameters:
 			path: includes/blocks/class-kadence-blocks-singlebtn-block.php
 
 		-
-			message: "#^Method Kadence_Blocks_Singlebtn_Block\\:\\:sized_dynamic_styles\\(\\) has parameter \\$attributes with no type specified\\.$#"
-			count: 1
-			path: includes/blocks/class-kadence-blocks-singlebtn-block.php
-
-		-
-			message: "#^Method Kadence_Blocks_Singlebtn_Block\\:\\:sized_dynamic_styles\\(\\) has parameter \\$css with no type specified\\.$#"
-			count: 1
-			path: includes/blocks/class-kadence-blocks-singlebtn-block.php
-
-		-
-			message: "#^Method Kadence_Blocks_Singlebtn_Block\\:\\:sized_dynamic_styles\\(\\) has parameter \\$unique_id with no type specified\\.$#"
-			count: 1
-			path: includes/blocks/class-kadence-blocks-singlebtn-block.php
-
-		-
-			message: "#^Method Kadence_Blocks_Singlebtn_Block\\:\\:sized_dynamic_styles\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: includes/blocks/class-kadence-blocks-singlebtn-block.php
-
-		-
-			message: "#^Method Kadence_Blocks_Singlebtn_Block\\:\\:sized_dynamic_styles\\(\\) should return array but return statement is missing\\.$#"
+			message: "#^Parameter \\#2 \\$css \\(Kadence_Blocks_CSS\\) of method Kadence_Blocks_Singlebtn_Block\\:\\:build_css\\(\\) should be compatible with parameter \\$css \\(string\\) of method Kadence_Blocks_Abstract_Block\\:\\:build_css\\(\\)$#"
 			count: 1
 			path: includes/blocks/class-kadence-blocks-singlebtn-block.php
 
@@ -6131,56 +5766,6 @@ parameters:
 			path: includes/blocks/form/class-kadence-blocks-select-block.php
 
 		-
-			message: "#^Cannot call method add_property\\(\\) on string\\.$#"
-			count: 26
-			path: includes/blocks/form/class-kadence-blocks-submit-block.php
-
-		-
-			message: "#^Cannot call method css_output\\(\\) on string\\.$#"
-			count: 1
-			path: includes/blocks/form/class-kadence-blocks-submit-block.php
-
-		-
-			message: "#^Cannot call method render_border_styles\\(\\) on string\\.$#"
-			count: 2
-			path: includes/blocks/form/class-kadence-blocks-submit-block.php
-
-		-
-			message: "#^Cannot call method render_color\\(\\) on string\\.$#"
-			count: 9
-			path: includes/blocks/form/class-kadence-blocks-submit-block.php
-
-		-
-			message: "#^Cannot call method render_measure_output\\(\\) on string\\.$#"
-			count: 5
-			path: includes/blocks/form/class-kadence-blocks-submit-block.php
-
-		-
-			message: "#^Cannot call method render_responsive_range\\(\\) on string\\.$#"
-			count: 2
-			path: includes/blocks/form/class-kadence-blocks-submit-block.php
-
-		-
-			message: "#^Cannot call method render_typography\\(\\) on string\\.$#"
-			count: 1
-			path: includes/blocks/form/class-kadence-blocks-submit-block.php
-
-		-
-			message: "#^Cannot call method set_media_state\\(\\) on string\\.$#"
-			count: 5
-			path: includes/blocks/form/class-kadence-blocks-submit-block.php
-
-		-
-			message: "#^Cannot call method set_selector\\(\\) on string\\.$#"
-			count: 16
-			path: includes/blocks/form/class-kadence-blocks-submit-block.php
-
-		-
-			message: "#^Cannot call method set_style_id\\(\\) on string\\.$#"
-			count: 1
-			path: includes/blocks/form/class-kadence-blocks-submit-block.php
-
-		-
 			message: "#^Method Kadence_Blocks_Submit_Block\\:\\:build_css\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: includes/blocks/form/class-kadence-blocks-submit-block.php
@@ -6197,6 +5782,11 @@ parameters:
 
 		-
 			message: "#^Method Kadence_Blocks_Submit_Block\\:\\:get_instance\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: includes/blocks/form/class-kadence-blocks-submit-block.php
+
+		-
+			message: "#^Parameter \\#2 \\$css \\(Kadence_Blocks_CSS\\) of method Kadence_Blocks_Submit_Block\\:\\:build_css\\(\\) should be compatible with parameter \\$css \\(string\\) of method Kadence_Blocks_Abstract_Block\\:\\:build_css\\(\\)$#"
 			count: 1
 			path: includes/blocks/form/class-kadence-blocks-submit-block.php
 

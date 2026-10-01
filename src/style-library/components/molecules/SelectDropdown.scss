@@ -1,0 +1,363 @@
+.kadence-blocks-style-library__select-dropdown {
+	display: flex;
+	align-items: center;
+	gap: var(--kb-sl-space-10);
+}
+
+.kadence-blocks-style-library__select-dropdown-dropdown {
+	display: block;
+}
+
+// Qualified with the app root so this outranks wp-admin's own default button border/radius.
+// Label first, chevron trailing — the DOM order below matches what is drawn, it is not a
+// `row-reverse` trick, so it's also the order a screen reader walks. The toggle reads as text with
+// a chevron, not as a boxed field: no border, no padding, and a width that follows the label up to
+// a cap, past which the label truncates (below). `flex: 0 0 auto` keeps a flex ancestor (the
+// header row) from stretching or shrinking it.
+.kadence-blocks-style-library-root .kadence-blocks-style-library__select-dropdown-toggle {
+	display: flex;
+	flex: 0 0 auto;
+	align-items: center;
+	column-gap: var(--kb-sl-space-10);
+	height: auto;
+	// Twice the width the toggle had as a fixed box, which is also the narrowest the menu opens.
+	max-width: calc(var(--kb-sl-size-select-dropdown-width) * 2);
+	padding: 0;
+	border: 0;
+	border-radius: 0;
+	color: var(--kb-sl-color-text-primary);
+	font-size: var(--kb-sl-font-size-m);
+	font-weight: var(--kb-sl-font-weight-regular);
+	// Deliberately the CSS keyword, not a line-height ramp value (unlike the menu items, which use
+	// the 20px ramp step) — the toggle's authoritative spec calls for normal, not a token.
+	line-height: normal;
+	text-align: left;
+
+	// WordPress core swaps this same button's text color to the theme color on hover and while
+	// `aria-expanded="true"` — re-assert gray-900 so the label never changes color in any state.
+	&:hover,
+	&[aria-expanded="true"] {
+		color: var(--kb-sl-color-text-primary);
+	}
+
+	&:focus,
+	&:focus-visible {
+		color: var(--kb-sl-color-text-primary);
+		box-shadow: none;
+		outline: none;
+	}
+
+	// With no border left to recolor, keyboard focus needs its own mark, or a tab stop lands here
+	// with nothing on screen to show it. `:focus-visible` only, so a mouse click draws no ring.
+	&:focus-visible {
+		outline: var(--kb-sl-border-width-input-focus) solid var(--kb-sl-color-control-border-focus);
+		outline-offset: var(--kb-sl-space-05);
+	}
+}
+
+// A fixed box; `flex: 0 0 auto` so a shrinking label can't squeeze it.
+.kadence-blocks-style-library__select-dropdown-leading-icon {
+	display: flex;
+	flex: 0 0 auto;
+	align-items: center;
+	justify-content: center;
+	width: var(--kb-sl-size-icon-chevron);
+	height: var(--kb-sl-size-icon-chevron);
+	color: var(--kb-sl-color-text-muted);
+}
+
+.kadence-blocks-style-library__select-dropdown-label {
+	flex: 1 1 auto;
+	// Without this, a flex item refuses to shrink below its content's natural width, and the
+	// ellipsis below would never get a chance to trigger — the label would overflow the toggle
+	// instead of truncating.
+	min-width: 0;
+	// A label wider than the toggle's cap truncates — never wraps and never runs under or up
+	// against the chevron, which is a non-shrinking flex sibling (see below) rather than something
+	// the label's box could overlap.
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	font-size: var(--kb-sl-font-size-18);
+	letter-spacing: var(--kb-sl-letter-spacing-title);
+}
+
+// The header's library picker sits on the same line as the page title and matches its size.
+.kadence-blocks-style-library__select-dropdown--large .kadence-blocks-style-library__select-dropdown-label {
+	font-size: var(--kb-sl-font-size-24);
+}
+
+// The chevron's alignment box, a normal flex sibling of the label — `flex: 0 0 auto` so a long,
+// shrinking label can never squeeze it.
+//
+// The box is deliberately bigger than the visible mark: `chevronDown`'s glyph only fills part of
+// its 24-unit viewBox (measured: ~46% of the width, ~23% of the height — a thin V, not a shape
+// that fills its square), so a 20px box draws a V about 9px wide. Sizing the SVG itself down to
+// the mark's own width instead shrinks the glyph inside its margin until it is barely visible.
+.kadence-blocks-style-library__select-dropdown-icon {
+	display: flex;
+	flex: 0 0 auto;
+	align-items: center;
+	justify-content: center;
+	width: var(--kb-sl-icon-size-m);
+	height: var(--kb-sl-icon-size-m);
+}
+
+// Fills the wrapper above rather than being sized on its own — see that rule for why. The
+// icon's own `width="24" height="24"` attributes stay in the markup (from `@wordpress/icons`, not
+// something this CSS file controls) but a CSS width/height on a rendered SVG always outranks its
+// own presentation attributes, so this still renders at the wrapper's size.
+//
+// `AddTile`'s plus icon (components/atoms/AddTile.scss) deliberately does the opposite — its SVG
+// is sized smaller than its wrapper instead of filling it. `plus` and this thin chevron V fill
+// different proportions of the same 24-unit viewBox, so the two need different ratios to land on
+// the same apparent size — not an inconsistency to "fix."
+.kadence-blocks-style-library__select-dropdown-chevron {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+// The popover surface itself: WordPress core draws its own approximate border/shadow via
+// box-shadow layers on `.components-popover__content` — this replaces all of it with the
+// authoritative values instead of layering on top. Width is content-driven between a floor and
+// the 384px cap, which is also the toggle's own cap — so the menu is never narrower than the
+// toggle it opens from, and a short toggle label still opens a menu wide enough to read; items
+// wrap within that range rather than the menu growing past the cap.
+//
+// The class is repeated (`.components-popover__content.components-popover__content`) to push
+// this rule's specificity above core's own
+// `.components-dropdown__content .components-popover__content:has(.components-menu-group)`,
+// which otherwise wins and zeroes the padding — a `:has()` pseudo-class counts the same as a
+// plain class for specificity, so that core selector out-specifies a straightforward two-class
+// rule here.
+.kadence-blocks-style-library__select-dropdown-menu .components-popover__content.components-popover__content {
+	background: var(--kb-sl-color-surface);
+	border: var(--kb-sl-border-width-input) solid var(--kb-sl-color-gray-300);
+	border-radius: var(--kb-sl-radius-m);
+	min-width: var(--kb-sl-size-select-dropdown-menu-min-width);
+	max-width: var(--kb-sl-size-select-dropdown-max-width);
+	padding: var(--kb-sl-space-10);
+	box-shadow: var(--kb-sl-shadow-menu);
+}
+
+// Core gives every MenuGroup its own 8px padding; zeroed here because the container's own 4px
+// padding above plus each item's 8px/12px padding below already produce the design's spacing —
+// keeping core's group padding on top would double it.
+.kadence-blocks-style-library__select-dropdown-menu .components-menu-group {
+	padding: 0;
+
+	// Core wraps the rows in this `role="group"` box, which has no class of its own. The gap keeps
+	// a hovered row's fill from touching the selected row's fill next to it; a gap on the
+	// container, not a margin on each row, so there is none before the first row or after the last.
+	> [role="group"] {
+		display: flex;
+		flex-direction: column;
+		// Below the spacing scale's smallest step (0.25rem), so a literal.
+		row-gap: 0.125rem;
+	}
+}
+
+// The divider between the option list and the separated trailing action: an explicit element (see
+// SelectDropdown.js), not a border on the second MenuGroup. The wrapper carries the padding; it
+// cannot be the line itself. The padding equals the rows' own `row-gap`, so the line sits as far
+// from the rows on either side as the rows sit from each other.
+.kadence-blocks-style-library__select-dropdown-menu .kadence-blocks-style-library__select-dropdown-divider {
+	padding: 0.5rem 0;
+}
+
+// The line: a real child element, not a `::before` — a pseudo-element has no separate node to
+// inspect in devtools, which is exactly why this line's geometry was wrong three times in a row
+// before it was ever visible. --kb-sl-border-width-input (1px) is the same value the design gives
+// as 0.0625rem — both are exactly 1px, rem or px, since rem is anchored to the document root, not
+// this app's own 13px font-size; kept in px because hairlines are this token layer's one
+// deliberate px exception (see _primitives.scss).
+.kadence-blocks-style-library__select-dropdown-menu .kadence-blocks-style-library__select-dropdown-divider-line {
+	display: block;
+	height: var(--kb-sl-border-width-input);
+	background-color: var(--kb-sl-color-border);
+}
+
+// A wrapping item, not a fixed-height one — unlike the single-line toggle, the design specifies
+// a *minimum* height here (24px, the content row without its padding) and expects long option
+// labels to wrap to as many lines as they need instead of truncating; the toggle itself is where
+// a truncated value is always fully readable one click away, so nothing is hidden by wrapping here.
+//
+// Core's `.is-compact` class (`.components-button.is-compact { height: 32px }`) fights this: a
+// fixed `height`, not a `min-height`, clamps the button regardless of what its content needs. The
+// `.is-compact` repeated onto our own selector below beats that two-class core rule on
+// specificity and clears the fixed height explicitly, rather than reaching for `!important`.
+.kadence-blocks-style-library__select-dropdown-menu .components-menu-item__button {
+	// Centers the badges against the label's full height, wrapped or not — on the rare wrapped item
+	// this centers against the whole multi-line block rather than pinning to the first line; that
+	// trade is intentional (the menu's 384px cap and short library names make wrapping rare), so no
+	// special-case first-line alignment on top of this.
+	align-items: center;
+	padding: var(--kb-sl-space-10) var(--kb-sl-space-15);
+	border-radius: 0.165rem;
+	gap: var(--kb-sl-space-30);
+	font-size: var(--kb-sl-font-size-m);
+	line-height: var(--kb-sl-line-height-s);
+	font-weight: var(--kb-sl-font-weight-regular);
+	color: var(--kb-sl-color-gray-900);
+
+	// `:focus` alone only ever drops core's default blue box-shadow ring — it never sets the hover
+	// look below, because `:focus` also fires on a mouse click, and restyling the row then reads as
+	// a stray flash rather than a meaningful state.
+	&:focus {
+		box-shadow: none;
+		outline: none;
+	}
+
+	// A light fill marks hover and *keyboard-visible* focus alike. `:focus-visible` is what keeps
+	// this from firing on a mouse click too: the browser only matches it when focus should be shown
+	// (keyboard navigation), which is also what replaces the ring. The *selected* row has its own,
+	// darker fill (below), because selected and focused are different rows the moment someone
+	// starts navigating with the keyboard.
+	//
+	// The text color is re-asserted, not left alone: core turns this button's text the theme color
+	// on hover, and the fill is meant to be the only thing that changes.
+	&:hover,
+	&:focus-visible {
+		background-color: var(--kb-sl-color-menu-item-bg-hover);
+		color: var(--kb-sl-color-gray-900);
+	}
+
+	// Keyboard focus also gets a ring. The fill above is not enough alone: the selected row keeps its
+	// own fill while focused (below), so without this a focused selected row looks exactly like an
+	// unfocused one — and that is the row focus lands on when the menu opens. Drawn inside the row,
+	// so it never crosses the small gap to the next one. After `&:focus`, which clears the outline.
+	&:focus-visible {
+		outline: var(--kb-sl-border-width-input-focus) solid var(--kb-sl-color-control-border-focus);
+		outline-offset: calc(var(--kb-sl-border-width-input-focus) * -1);
+	}
+
+	// The current option, marked by its fill alone. Listed after hover so the row keeps this fill
+	// while hovered: a selected row that lightened under the pointer would look deselected.
+	&[aria-checked="true"],
+	&[aria-checked="true"]:hover,
+	&[aria-checked="true"]:focus-visible {
+		background-color: var(--kb-sl-color-menu-item-bg-selected);
+	}
+
+	.components-menu-item__item {
+		display: flex;
+		align-items: center;
+		// Fills the row rather than hugging its content, so the badges that follow it are
+		// pushed to the trailing edge without either of them needing an auto margin.
+		flex: 1 1 auto;
+		// A floor for the label column, so a short label ("Default") still holds the row open and
+		// the badges after it land in the same place as on a row with a long one — otherwise each
+		// row's badges track its own label width and the column looks ragged.
+		min-width: var(--kb-sl-size-select-dropdown-label-min-width);
+		// --kb-sl-space-30 (24px), not --kb-sl-line-height-m (also 24px): this is sizing the item's
+		// content row, the same role the identical-valued space token already plays for the
+		// button's gap just above — not spacing text lines, which is what the line-height ramp is
+		// for. The two ramps coinciding at 24px is not a reason to borrow across them.
+		min-height: var(--kb-sl-space-30);
+		white-space: normal;
+		word-break: break-word;
+	}
+}
+
+.kadence-blocks-style-library__select-dropdown-menu .components-menu-item__button.is-compact {
+	height: auto;
+}
+
+// The trailing action (e.g. "New Library") is an action, not an option — the theme color sets it
+// apart from the list above the divider, matching the frame. It is the same weight/size and the
+// same box as the other items (not bolder, not shorter).
+//
+// Theme-colored text in every state; hover and keyboard focus add the same light fill the option
+// rows get, and nothing else — no border, no weight change, no underline. The option rows' hover
+// rule also sets their gray text color, which would reach this button too, so the theme color is
+// re-asserted below.
+// `.components-button` is repeated in the selector on purpose: core sets a 4px gap through
+// `.components-button.has-icon.has-text` (three classes), which outranks a two-class rule here.
+.kadence-blocks-style-library__select-dropdown-menu
+	.components-button.kadence-blocks-style-library__select-dropdown-trailing-action {
+	// Tighter than an option row's gap, which separates a label from its far-side badges; here
+	// it sits between an icon and the label it belongs to.
+	column-gap: var(--kb-sl-space-10);
+	// Core narrows the padding of a button that has an icon; restore the option rows' own values so
+	// this row is the same box as the ones above it and its icon starts on their labels' line.
+	padding: var(--kb-sl-space-10) var(--kb-sl-space-15);
+	color: var(--kb-sl-color-theme);
+	text-decoration: none;
+
+	&:hover,
+	&:focus-visible {
+		color: var(--kb-sl-color-theme);
+	}
+
+	// Core spaces this icon with its own side margins; the gap above replaces them, so the
+	// distance is one number instead of a margin plus a gap.
+	.components-menu-items__item-icon {
+		flex: 0 0 auto;
+		width: var(--kb-sl-size-action-icon-glyph);
+		height: var(--kb-sl-size-action-icon-glyph);
+		margin: 0;
+	}
+}
+
+// A badge sits after an option's label, inside the same wrapping content row, so a long label
+// wraps and carries it along rather than pushing it out of the menu. `margin-left: auto` on the
+// first one pins the group to the row's trailing edge, which is where the token-value picker puts
+// its own "Default" tag.
+//
+// The run of badges. A sibling of the label's box, not a child of the label — so the button's own
+// `gap` (below) is the single thing spacing label and badges, and this
+// element carries no margin or padding of its own that would have to be kept in step with it.
+//
+// Right-alignment is not this element's job either: the label box grows to fill the row (see
+// `.components-menu-item__item`), which leaves the badges sitting at the trailing edge on
+// their own.
+.kadence-blocks-style-library__select-dropdown-menu .kadence-blocks-style-library__select-dropdown-badges {
+	display: flex;
+	flex: 0 0 auto;
+	align-items: center;
+	// The same step the button uses between its own children, so badge-to-badge matches
+	// label-to-badge and the row reads as one evenly-spaced run.
+	gap: var(--kb-sl-space-30);
+}
+
+// Two variants, because the two badges this menu shows are different kinds of fact and must not
+// read as one list of equal labels. `state` says which library the site is actually serving — the
+// answer with consequences — so it takes the theme color and the heavier weight. `muted` marks an
+// unchanging property of an option and stays reference-level quiet. A row can carry both: the
+// default library is also the active one on a fresh install, which is the common first-run case,
+// not an edge case.
+.kadence-blocks-style-library__select-dropdown-menu .kadence-blocks-style-library__select-dropdown-badge {
+	flex: 0 0 auto;
+	font-size: var(--kb-sl-font-size-10);
+	line-height: var(--kb-sl-line-height-s);
+	white-space: nowrap;
+}
+
+.kadence-blocks-style-library__select-dropdown-badge--muted {
+	color: var(--kb-sl-color-text-muted);
+	font-weight: var(--kb-sl-font-weight-regular);
+}
+
+.kadence-blocks-style-library__select-dropdown-badge--state {
+	color: var(--kb-sl-color-theme);
+	font-weight: var(--kb-sl-font-weight-semibold);
+}
+
+// Matches `.components-menu-item__button`'s own padding/min-height above, so a skeleton row
+// occupies the exact same box a real `MenuItem` would.
+.kadence-blocks-style-library__select-dropdown-skeleton-row {
+	display: flex;
+	align-items: center;
+	padding: var(--kb-sl-space-10) var(--kb-sl-space-15);
+	min-height: var(--kb-sl-space-30);
+}
+
+.kadence-blocks-style-library__select-dropdown-skeleton-label {
+	width: 60%;
+	height: 1em;
+}
+
+.kadence-blocks-style-library__select-dropdown-error {
+	margin: 0;
+}

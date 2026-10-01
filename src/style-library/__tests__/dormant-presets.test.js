@@ -1,0 +1,314 @@
+/* eslint-env jest */
+/**
+ * External dependencies
+ */
+import { act, createElement } from 'react';
+import { createRoot } from 'react-dom/client';
+
+/**
+ * Internal dependencies
+ */
+import { DormantPresets } from '../components/organisms/DormantPresets';
+
+// The same reason `preset-screen.test.js` gives: the `@wordpress/components` copy Jest resolves nests
+// its own React, and mounting its real `Button` under the top-level renderer trips React's hook
+// guard. The group only needs a clickable element per action.
+jest.mock('@wordpress/components', () => ({
+	Button: ({ children, isBusy, isDestructive, variant, ...props }) => <button {...props}>{children}</button>,
+}));
+
+const DORMANT = {
+	'theme-secondary': {
+		label: 'Theme Secondary',
+		tokens: { 'button-bg': '#ff0000' },
+		themeSnapshot: { 'button-bg': '#EDF2F7', 'button-text': '#1A202C' },
+	},
+};
+
+let container;
+let root;
+
+beforeEach(() => {
+	global.IS_REACT_ACT_ENVIRONMENT = true;
+	container = document.createElement('div');
+	document.body.appendChild(container);
+	root = createRoot(container);
+});
+
+afterEach(() => {
+	act(() => root.unmount());
+	container.remove();
+});
+
+/**
+ * Render the group with the given props over the shared dormant map.
+ *
+ * @param {Object} props The props to override.
+ *
+ * @since TBD
+ *
+ * @return {void}
+ */
+function render(props = {}) {
+	act(() =>
+		root.render(
+			createElement(DormantPresets, { dormant: DORMANT, onKeep: jest.fn(), onDiscard: jest.fn(), ...props })
+		)
+	);
+}
+
+describe('DormantPresets', () => {
+	/**
+	 * The group names itself and lists each dormant preset by its stored label.
+	 *
+	 * @return {void}
+	 */
+	it('lists the dormant presets under the group title', () => {
+		render();
+
+		expect(container.textContent).toContain('Not available in the current theme');
+		expect(container.querySelector('.kadence-blocks-style-library__dormant-label').textContent).toBe(
+			'Theme Secondary'
+		);
+	});
+
+	/**
+	 * "Keep as custom preset" hands the screen the snapshot merged under the overrides.
+	 *
+	 * @return {void}
+	 */
+	it('keeps a dormant preset as a custom preset from its snapshot plus overrides', () => {
+		const onKeep = jest.fn();
+		const onDiscard = jest.fn();
+
+		render({ onKeep, onDiscard });
+		act(() => container.querySelector('[data-action="keep"]').click());
+
+		expect(onKeep).toHaveBeenCalledWith('theme-secondary', {
+			label: 'Theme Secondary',
+			tokens: { 'button-bg': '#ff0000', 'button-text': '#1A202C' },
+		});
+		expect(onDiscard).not.toHaveBeenCalled();
+	});
+
+	/**
+	 * "Discard changes" asks the screen to drop the stored node.
+	 *
+	 * @return {void}
+	 */
+	it('discards a dormant preset', () => {
+		const onKeep = jest.fn();
+		const onDiscard = jest.fn();
+
+		render({ onKeep, onDiscard });
+		act(() => container.querySelector('[data-action="discard"]').click());
+
+		expect(onDiscard).toHaveBeenCalledWith('theme-secondary');
+		expect(onKeep).not.toHaveBeenCalled();
+	});
+
+	/**
+	 * A theme value the preset write surface refuses — a compound literal in a slot — is left out of the
+	 * kept preset, and the user's own overrides always go through.
+	 *
+	 * @return {void}
+	 */
+	it('leaves out snapshot values a preset write has no slot for', () => {
+		const onKeep = jest.fn();
+
+		render({
+			dormant: {
+				'theme-outline': {
+					label: 'Theme Outline',
+					tokens: { 'button-bg': '#ff0000' },
+					themeSnapshot: {
+						'button-padding': [
+							'calc(0.6rem - 1px)',
+							'calc(1rem - 1px)',
+							'calc(0.6rem - 1px)',
+							'calc(1rem - 1px)',
+						],
+						'button-radius': ['.33rem', '.33rem', '.33rem', '.33rem'],
+						'button-text': 'currentColor',
+						'button-shadow': {
+							color: 'rgba(0, 0, 0, 0.1)',
+							offsetX: '0px',
+							offsetY: '2px',
+							blur: '4px',
+							spread: '0px',
+						},
+					},
+				},
+			},
+			onKeep,
+		});
+		act(() => container.querySelector('[data-action="keep"]').click());
+
+		expect(onKeep).toHaveBeenCalledWith('theme-outline', {
+			label: 'Theme Outline',
+			tokens: {
+				'button-bg': '#ff0000',
+				'button-radius': ['.33rem', '.33rem', '.33rem', '.33rem'],
+				'button-text': 'currentColor',
+				'button-shadow': {
+					color: 'rgba(0, 0, 0, 0.1)',
+					offsetX: '0px',
+					offsetY: '2px',
+					blur: '4px',
+					spread: '0px',
+				},
+			},
+		});
+	});
+
+	/**
+	 * A preset stored without a label falls back to its slug.
+	 *
+	 * @return {void}
+	 */
+	it('falls back to the slug when the stored node has no label', () => {
+		const onKeep = jest.fn();
+
+		render({ dormant: { 'theme-base': { tokens: {}, themeSnapshot: {} } }, onKeep });
+		act(() => container.querySelector('[data-action="keep"]').click());
+
+		expect(onKeep).toHaveBeenCalledWith('theme-base', { label: 'theme-base', tokens: {} });
+	});
+
+	/**
+	 * An entry stored without a theme snapshot says so, names its action for what it really keeps, and
+	 * hands over only the overrides — nothing is made up for the theme values that were never recorded.
+	 *
+	 * @return {void}
+	 */
+	it('says only the changes can be kept when the entry has no theme snapshot', () => {
+		const onKeep = jest.fn();
+
+		render({
+			dormant: { 'theme-secondary': { label: 'Theme Secondary', tokens: { 'button-bg': '#ff0000' } } },
+			onKeep,
+		});
+
+		expect(container.querySelector('.kadence-blocks-style-library__dormant-warning').textContent).toBe(
+			"The theme's own values for this preset were not recorded, so only your changes can be kept."
+		);
+		expect(container.querySelector('[data-action="keep"]').textContent).toBe('Keep changes as custom preset');
+		expect(container.querySelector('[data-action="keep"]').disabled).toBe(false);
+
+		act(() => container.querySelector('[data-action="keep"]').click());
+
+		expect(onKeep).toHaveBeenCalledWith('theme-secondary', {
+			label: 'Theme Secondary',
+			tokens: { 'button-bg': '#ff0000' },
+		});
+	});
+
+	/**
+	 * A snapshot that was recorded but holds only values a preset write refuses is not called unrecorded:
+	 * the note says the theme's values cannot be saved, the action is named for the changes it keeps, and
+	 * only the overrides are handed over.
+	 *
+	 * @return {void}
+	 */
+	it('says the theme values cannot be kept when every recorded snapshot value is not writable', () => {
+		const onKeep = jest.fn();
+
+		render({
+			dormant: {
+				'theme-outline': {
+					label: 'Theme Outline',
+					tokens: { 'button-bg': '#ff0000' },
+					themeSnapshot: {
+						'button-padding': [
+							'calc(0.6rem - 1px)',
+							'calc(1rem - 1px)',
+							'calc(0.6rem - 1px)',
+							'calc(1rem - 1px)',
+						],
+						'button-text': 'rgb(26, 32, 44)',
+					},
+				},
+			},
+			onKeep,
+		});
+
+		expect(container.querySelector('.kadence-blocks-style-library__dormant-warning').textContent).toBe(
+			"The theme's own values for this preset cannot be saved in a preset, so only your changes can be kept."
+		);
+		expect(container.querySelector('[data-action="keep"]').textContent).toBe('Keep changes as custom preset');
+
+		act(() => container.querySelector('[data-action="keep"]').click());
+
+		expect(onKeep).toHaveBeenCalledWith('theme-outline', {
+			label: 'Theme Outline',
+			tokens: { 'button-bg': '#ff0000' },
+		});
+	});
+
+	/**
+	 * An entry with a recorded snapshot carries no such note and keeps the plain action label.
+	 *
+	 * @return {void}
+	 */
+	it('keeps the plain action label when the entry has a theme snapshot', () => {
+		render();
+
+		expect(container.querySelector('.kadence-blocks-style-library__dormant-warning')).toBeNull();
+		expect(container.querySelector('[data-action="keep"]').textContent).toBe('Keep as custom preset');
+	});
+
+	/**
+	 * A Keep or Discard the flow rejects is already reported through the screen's error notice, so the
+	 * click handler swallows the rejection instead of letting it surface as an unhandled one.
+	 *
+	 * @return {void}
+	 */
+	it('does not leak a rejected keep or discard out of the click handler', async () => {
+		const unhandled = jest.fn();
+		process.on('unhandledRejection', unhandled);
+
+		try {
+			const onKeep = jest.fn(() => Promise.reject(new Error('keep failed')));
+			const onDiscard = jest.fn(() => Promise.reject(new Error('discard failed')));
+
+			render({ onKeep, onDiscard });
+			act(() => container.querySelector('[data-action="keep"]').click());
+			act(() => container.querySelector('[data-action="discard"]').click());
+
+			await act(async () => {
+				await new Promise((resolve) => setImmediate(resolve));
+			});
+
+			expect(onKeep).toHaveBeenCalledTimes(1);
+			expect(onDiscard).toHaveBeenCalledTimes(1);
+			expect(unhandled).not.toHaveBeenCalled();
+		} finally {
+			process.off('unhandledRejection', unhandled);
+		}
+	});
+
+	/**
+	 * Both actions wait while the screen is busy.
+	 *
+	 * @return {void}
+	 */
+	it('disables both actions while busy', () => {
+		render({ isBusy: true });
+
+		expect(container.querySelector('[data-action="keep"]').disabled).toBe(true);
+		expect(container.querySelector('[data-action="discard"]').disabled).toBe(true);
+	});
+
+	/**
+	 * Nothing renders when there is nothing dormant, so the screen stays as it was.
+	 *
+	 * @return {void}
+	 */
+	it('renders nothing without dormant presets', () => {
+		render({ dormant: {} });
+		expect(container.innerHTML).toBe('');
+
+		render({ dormant: undefined });
+		expect(container.innerHTML).toBe('');
+	});
+});

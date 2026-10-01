@@ -1,0 +1,29 @@
+.kadence-blocks-style-library__add-link {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--kb-sl-space-05);
+	padding: var(--kb-sl-space-10) var(--kb-sl-space-15);
+	border: 0;
+	background: none;
+	color: var(--kb-sl-color-theme);
+	font-size: var(--kb-sl-font-size-xs);
+	font-weight: var(--kb-sl-font-weight-medium);
+	cursor: pointer;
+
+	&:hover,
+	&:focus-visible {
+		text-decoration: underline;
+	}
+
+	&:disabled {
+		opacity: 0.5;
+		cursor: default;
+	}
+}
+
+// `fill: currentColor` so the glyph follows the link color; a plain `<button>` gets none from core.
+.kadence-blocks-style-library__add-link-icon {
+	width: var(--kb-sl-size-action-icon-glyph);
+	height: var(--kb-sl-size-action-icon-glyph);
+	fill: currentColor;
+}

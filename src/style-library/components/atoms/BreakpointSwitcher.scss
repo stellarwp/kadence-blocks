@@ -1,0 +1,44 @@
+// 8px `gap`, not margins — buttons are separated, not a joined segmented group.
+.kadence-blocks-style-library__breakpoint-switcher {
+	display: flex;
+	align-items: center;
+	gap: var(--kb-sl-space-10);
+}
+
+.kadence-blocks-style-library__breakpoint-switcher-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: var(--kb-sl-size-icon-button);
+	height: var(--kb-sl-size-icon-button);
+	padding: 0;
+	border: none;
+	background: transparent;
+	box-shadow: none;
+	cursor: pointer;
+
+	// The non-visual half of covering the reference control's color-only active state: a ring
+	// showing which button has keyboard focus (distinct from which is checked).
+	&:focus-visible {
+		outline: 2px solid var(--kb-sl-color-control-border-focus);
+		outline-offset: 1px;
+		border-radius: var(--kb-sl-radius-s);
+	}
+}
+
+.kadence-blocks-style-library__breakpoint-switcher-icon {
+	// 15×15, off every scale this app has — a component-level value. A dashicon renders at its
+	// `font-size` (core defaults both to 20px), so both must be set or the glyph overflows the box.
+	width: 15px;
+	height: 15px;
+	font-size: 15px;
+	line-height: 1;
+	// gray-600: nearest ramp match to the reference control's off-system muted blue-grey.
+	color: var(--kb-sl-color-gray-600);
+	transition: color 0.1s ease-in;
+}
+
+.kadence-blocks-style-library__breakpoint-switcher-button[aria-checked='true']
+	.kadence-blocks-style-library__breakpoint-switcher-icon {
+	color: var(--kb-sl-color-theme);
+}

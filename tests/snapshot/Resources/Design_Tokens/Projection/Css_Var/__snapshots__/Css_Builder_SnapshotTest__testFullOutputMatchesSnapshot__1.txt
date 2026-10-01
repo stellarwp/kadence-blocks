@@ -1,0 +1,1 @@
+:root,:root:where(.kb-tokens){--kb-token--semantic--color--button-bg:#3182CE;}

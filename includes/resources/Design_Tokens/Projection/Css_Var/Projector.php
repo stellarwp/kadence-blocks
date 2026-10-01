@@ -1,0 +1,198 @@
+<?php declare( strict_types=1 );
+
+namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var;
+
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Contracts\Abstract_Css_Projector;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Media_Queries;
+use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
+use KadenceWP\KadenceBlocks\Design_Tokens\Utils\Location;
+use Throwable;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Version;
+
+/**
+ * Projects the resolved token library into the WordPress style pipeline.
+ *
+ * Reacts to WordPress hooks to inject the --kb-token--* custom properties into KB's existing inline
+ * styles and feeds the legacy color/font-size filters — all gated on Token_Registry::is_active()
+ * so a deactivated registry leaves KB's behavior untouched.
+ *
+ * This is the non-coercive surface: a custom property placed in :root styles nothing until something
+ * references it. Only the single active library is emitted — its canonical --kb-token--<id> custom properties
+ * at :root — so block content and the preset/slot bridges (which read the canonical names) resolve against
+ * it. Multiple libraries may still be stored; the active-library pointer selects the one library that is emitted, and
+ * switching the pointer re-emits with the new library's values. Only the active library's tokens reach the coercive
+ * native-block and theme.json styling paths.
+ *
+ * @since TBD
+ */
+final class Projector extends Abstract_Css_Projector {
+
+	/**
+	 * @var Token_Registry
+	 */
+	private Token_Registry $registry;
+
+	/**
+	 * @var Token_Resolver
+	 */
+	private Token_Resolver $resolver;
+
+
+	/**
+	 * Owns the active-library pointer, read at build time so the projection follows the active library.
+	 *
+	 * @since TBD
+	 *
+	 * @var Active_Token_Library_Store
+	 */
+	private Active_Token_Library_Store $active;
+
+	/**
+	 * @var Css_Builder
+	 */
+	private Css_Builder $css_builder;
+
+	/**
+	 * @var Legacy_Filter_Bridge
+	 */
+	private Legacy_Filter_Bridge $bridge;
+
+	/**
+	 * Supplies the cache version: the store version, plus the theme Style Guide signature when there is
+	 * one, so a Customizer save invalidates this cache even though it bumps no store version.
+	 *
+	 * @since TBD
+	 *
+	 * @var Effective_Version
+	 */
+	private Effective_Version $versions;
+
+	/**
+	 * @since TBD
+	 *
+	 * @param Token_Registry             $registry    The token registry.
+	 * @param Token_Resolver             $resolver    The token resolver.
+	 * @param Active_Token_Library_Store $active      Owns the active-library pointer.
+	 * @param Css_Builder                $css_builder The CSS-variable builder.
+	 * @param Legacy_Filter_Bridge       $bridge      Rewrites the legacy palette filter off-theme.
+	 * @param Effective_Version          $versions    Supplies the effective cache version for a library.
+	 */
+	public function __construct(
+		Token_Registry $registry,
+		Token_Resolver $resolver,
+		Active_Token_Library_Store $active,
+		Css_Builder $css_builder,
+		Legacy_Filter_Bridge $bridge,
+		Effective_Version $versions
+	) {
+		$this->registry    = $registry;
+		$this->resolver    = $resolver;
+		$this->active      = $active;
+		$this->css_builder = $css_builder;
+		$this->bridge      = $bridge;
+		$this->versions    = $versions;
+	}
+
+	/**
+	 * Append the projected CSS to the front-end global-variables handle.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function enqueue_front_end(): void {
+		if ( ! $this->is_active() ) {
+			return;
+		}
+
+		$css = $this->css();
+		if ( $css !== '' ) {
+			wp_add_inline_style( 'kadence-blocks-global-variables', $css );
+		}
+	}
+
+	/**
+	 * Append the projected CSS to the editor global-styles handle.
+	 *
+	 * Only runs on requests where the block editor will load its scripts, determined
+	 * by matching known editor page slugs. Can be overridden with the
+	 * `kadence_blocks_load_editor_token_vars` filter.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function enqueue_editor(): void {
+		if ( ! $this->is_active() ) {
+			return;
+		}
+
+		/**
+		 * Whether to append the token CSS to the editor global-styles handle.
+		 *
+		 * @param bool $load True on known block-editor page slugs.
+		 */
+		if ( ! apply_filters( 'kadence_blocks_load_editor_token_vars', Location::is_block_editor() ) ) {
+			return;
+		}
+
+		$css = $this->css();
+		if ( $css !== '' ) {
+			wp_add_inline_style( 'kadence-blocks-global-editor-styles', $css );
+		}
+	}
+
+	/**
+	 * @since TBD
+	 *
+	 * @param array<string,string> $colors
+	 *
+	 * @return array<string,string>
+	 */
+	public function filter_global_colors( array $colors ): array {
+		if ( ! $this->is_active() ) {
+			return $colors;
+		}
+
+		return $this->bridge->global_colors( $colors );
+	}
+
+	/**
+	 * Build the projected CSS for the single active token library, using the per-request memo and object cache
+	 * so repeated calls within the same request are free.
+	 *
+	 * The active library is resolved to its canonical `--kb-token--*` maps, then the builder emits the one `:root`
+	 * block (canonical token layer, slot bridges, and responsive redeclarations). An active library whose stored
+	 * document cannot be resolved (e.g. an alias cycle introduced by a direct DB write that bypassed the REST
+	 * validation gate) yields an empty string rather than a fatal, so the page falls back to KB's existing
+	 * variables without crashing.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function css(): string {
+		try {
+			$active   = $this->active->get();
+			$resolved = $this->resolver->resolve( $active );
+			$version  = $this->versions->for_slug( $active );
+		} catch ( Throwable $e ) {
+			return '';
+		}
+
+		return $this->css_builder->css_for_version( $resolved, $active, $version, Media_Queries::all() );
+	}
+
+	/**
+	 * Whether token projection is active.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	private function is_active(): bool {
+		return $this->registry->is_active();
+	}
+}

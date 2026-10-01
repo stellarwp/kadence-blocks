@@ -1,0 +1,11 @@
+@use "../../styles/mixins" as *;
+
+// A Row Layout is always full-width and short relative to its width, and a corner radius reads very
+// differently at those proportions than on a square swatch, so the band keeps that aspect.
+.kadence-blocks-style-library__rowlayout-preset-preview {
+	@include preset-surface-preview(7.5rem, 2.75rem);
+}
+
+.kadence-blocks-style-library__rowlayout-preset-preview-fill {
+	@include preset-surface-fill;
+}

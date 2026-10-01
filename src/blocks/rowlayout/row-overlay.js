@@ -6,6 +6,8 @@ import memoize from 'memize';
 
 import { KadenceColorOutput, getPreviewSize } from '@kadence/helpers';
 
+import { tokenDimension } from '../../extension/design-tokens/token-dimension';
+
 const overlayOpacityOutput = memoize((opacity) => {
 	if (opacity < 10) {
 		return '0.0' + opacity;
@@ -323,19 +325,19 @@ function Overlay({ attributes, previewDevice }) {
 								: undefined,
 						borderTopLeftRadius:
 							!borderRadiusOverflow && previewRadiusTop
-								? previewRadiusTop + (borderRadiusUnit ? borderRadiusUnit : 'px')
+								? tokenDimension(previewRadiusTop, borderRadiusUnit ? borderRadiusUnit : 'px')
 								: undefined,
 						borderTopRightRadius:
 							!borderRadiusOverflow && previewRadiusRight
-								? previewRadiusRight + (borderRadiusUnit ? borderRadiusUnit : 'px')
+								? tokenDimension(previewRadiusRight, borderRadiusUnit ? borderRadiusUnit : 'px')
 								: undefined,
 						borderBottomRightRadius:
 							!borderRadiusOverflow && previewRadiusBottom
-								? previewRadiusBottom + (borderRadiusUnit ? borderRadiusUnit : 'px')
+								? tokenDimension(previewRadiusBottom, borderRadiusUnit ? borderRadiusUnit : 'px')
 								: undefined,
 						borderBottomLeftRadius:
 							!borderRadiusOverflow && previewRadiusLeft
-								? previewRadiusLeft + (borderRadiusUnit ? borderRadiusUnit : 'px')
+								? tokenDimension(previewRadiusLeft, borderRadiusUnit ? borderRadiusUnit : 'px')
 								: undefined,
 					}}
 				></div>
@@ -364,19 +366,19 @@ function Overlay({ attributes, previewDevice }) {
 								: undefined,
 						borderTopLeftRadius:
 							!borderRadiusOverflow && previewRadiusTop
-								? previewRadiusTop + (borderRadiusUnit ? borderRadiusUnit : 'px')
+								? tokenDimension(previewRadiusTop, borderRadiusUnit ? borderRadiusUnit : 'px')
 								: undefined,
 						borderTopRightRadius:
 							!borderRadiusOverflow && previewRadiusRight
-								? previewRadiusRight + (borderRadiusUnit ? borderRadiusUnit : 'px')
+								? tokenDimension(previewRadiusRight, borderRadiusUnit ? borderRadiusUnit : 'px')
 								: undefined,
 						borderBottomRightRadius:
 							!borderRadiusOverflow && previewRadiusBottom
-								? previewRadiusBottom + (borderRadiusUnit ? borderRadiusUnit : 'px')
+								? tokenDimension(previewRadiusBottom, borderRadiusUnit ? borderRadiusUnit : 'px')
 								: undefined,
 						borderBottomLeftRadius:
 							!borderRadiusOverflow && previewRadiusLeft
-								? previewRadiusLeft + (borderRadiusUnit ? borderRadiusUnit : 'px')
+								? tokenDimension(previewRadiusLeft, borderRadiusUnit ? borderRadiusUnit : 'px')
 								: undefined,
 					}}
 				></div>
@@ -394,19 +396,19 @@ function Overlay({ attributes, previewDevice }) {
 								: undefined,
 						borderTopLeftRadius:
 							!borderRadiusOverflow && previewRadiusTop
-								? previewRadiusTop + (borderRadiusUnit ? borderRadiusUnit : 'px')
+								? tokenDimension(previewRadiusTop, borderRadiusUnit ? borderRadiusUnit : 'px')
 								: undefined,
 						borderTopRightRadius:
 							!borderRadiusOverflow && previewRadiusRight
-								? previewRadiusRight + (borderRadiusUnit ? borderRadiusUnit : 'px')
+								? tokenDimension(previewRadiusRight, borderRadiusUnit ? borderRadiusUnit : 'px')
 								: undefined,
 						borderBottomRightRadius:
 							!borderRadiusOverflow && previewRadiusBottom
-								? previewRadiusBottom + (borderRadiusUnit ? borderRadiusUnit : 'px')
+								? tokenDimension(previewRadiusBottom, borderRadiusUnit ? borderRadiusUnit : 'px')
 								: undefined,
 						borderBottomLeftRadius:
 							!borderRadiusOverflow && previewRadiusLeft
-								? previewRadiusLeft + (borderRadiusUnit ? borderRadiusUnit : 'px')
+								? tokenDimension(previewRadiusLeft, borderRadiusUnit ? borderRadiusUnit : 'px')
 								: undefined,
 					}}
 				></div>

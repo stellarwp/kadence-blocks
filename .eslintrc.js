@@ -132,6 +132,18 @@ const eslintConfig = {
 				'no-var': 'off',
 			},
 		},
+		{
+			// The design-token surfaces rely on hook-shaped helpers; keep the hook rules on here so a
+			// conditional hook call can't land silently while the repo-wide rule stays off.
+			files: [
+				'src/extension/variant-picker/**',
+				'src/extension/token-indicators/**',
+				'src/extension/design-tokens/**',
+			],
+			rules: {
+				'react-hooks/rules-of-hooks': 'error',
+			},
+		},
 	],
 	ignorePatterns: [],
 };

@@ -4,6 +4,7 @@
 import { KadenceColorOutput } from '@kadence/helpers';
 import { createBlock } from '@wordpress/blocks';
 import { times } from 'lodash';
+import { LEGACY_PRESETS } from '../../extension/preset-picker/legacy';
 function convertAlphaColors(hex, alpha) {
 	if (null === hex) {
 		return '';
@@ -113,13 +114,9 @@ export function migrateToInnerblocks(attributes) {
 			if (undefined !== textTransform && '' !== textTransform) {
 				newAttrs.typography[0].textTransform = textTransform;
 			}
-			// 9. Update inheritStyles to new default of fill.
-			if (
-				undefined !== newAttrs?.inheritStyles &&
-				'' !== newAttrs.inheritStyles &&
-				'inherit' === newAttrs.inheritStyles
-			) {
-				newAttrs.inheritStyles = 'inherit';
+			// 9. Map the retired inherit style onto the preset the button renders with.
+			if (undefined !== newAttrs?.inheritStyles && 'inherit' === newAttrs.inheritStyles) {
+				newAttrs.kbPreset = LEGACY_PRESETS.inherit;
 			} else if (
 				undefined !== newAttrs?.borderWidth &&
 				'' !== newAttrs.borderWidth &&
@@ -127,10 +124,11 @@ export function migrateToInnerblocks(attributes) {
 				((undefined !== newAttrs?.background && '' !== newAttrs.background) ||
 					(undefined !== newAttrs?.backgroundType && 'gradient' === newAttrs.backgroundType))
 			) {
-				newAttrs.inheritStyles = 'fill';
+				newAttrs.kbPreset = '';
 			} else {
-				newAttrs.inheritStyles = 'outline';
+				newAttrs.kbPreset = LEGACY_PRESETS.outline;
 			}
+			newAttrs.inheritStyles = '';
 			// 2. Update Border to new format.
 			let tempBorderRadius = ['', '', '', ''];
 			if (undefined !== newAttrs?.borderRadius && '' !== newAttrs.borderRadius) {
@@ -439,7 +437,6 @@ export function migrateToInnerblocks(attributes) {
 			}
 			// 12. Box Shadow to new format.
 			if (undefined !== newAttrs?.boxShadow?.[0] && true === newAttrs.boxShadow[0]) {
-				newAttrs.displayShadow = true;
 				newAttrs.shadow = [
 					{
 						color: undefined !== newAttrs?.boxShadow?.[1] ? newAttrs.boxShadow[1] : '#000000',
@@ -454,7 +451,6 @@ export function migrateToInnerblocks(attributes) {
 			}
 			// Hover
 			if (undefined !== newAttrs?.boxShadowHover?.[0] && true === newAttrs.boxShadowHover[0]) {
-				newAttrs.displayHoverShadow = true;
 				newAttrs.shadowHover = [
 					{
 						color: undefined !== newAttrs?.boxShadowHover?.[1] ? newAttrs.boxShadowHover[1] : '#000000',
