@@ -160,7 +160,7 @@ final class Kses_Keeper {
 	 * @return array<string, mixed>|null The decoded content when it is user Global Styles, null otherwise.
 	 */
 	private static function global_styles_data( $content ): ?array {
-		if ( ! is_string( $content ) || false === strpos( $content, 'isGlobalStylesUserThemeJSON' ) ) {
+		if ( ! is_string( $content ) || ! str_contains( $content, 'isGlobalStylesUserThemeJSON' ) ) {
 			return null;
 		}
 

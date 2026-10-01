@@ -62,7 +62,7 @@ final class BlockCss extends Module {
 
 		$css = '';
 		foreach ( Kadence_Blocks_CSS::$styles as $style_id => $style ) {
-			if ( 0 === strpos( $style_id, 'kb-' . $block_name ) ) {
+			if ( str_starts_with( $style_id, 'kb-' . $block_name ) ) {
 				$css .= $style;
 			}
 		}
