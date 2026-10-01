@@ -12,7 +12,7 @@ use RuntimeException;
  * Feeds resolved token values into KB's legacy color palette so existing blocks inherit tokens without
  * per-block changes.
  *
- * kadence_blocks_pattern_global_colors — tokens declaring a kadence_slot of palette[1-9] override that
+ * Filter kadence_blocks_pattern_global_colors — tokens declaring a kadence_slot of palette[1-9] override that
  * --global-paletteN entry. The callback is a transform of the incoming array: a token-claimed slot is
  * rewritten to "var(--kb-token--…, <resolved literal>)" so legacy blocks react to preset overrides of
  * --kb-token--* with the resolved literal as a fallback for contexts that lack the token definitions

@@ -88,6 +88,8 @@ abstract class Abstract_Target implements Target {
 	/**
 	 * @inheritDoc
 	 *
+	 * @param Token_Definition $token The token definition.
+	 *
 	 * @since TBD
 	 */
 	final public static function from_token( Token_Definition $token ): ?self {
@@ -124,6 +126,8 @@ abstract class Abstract_Target implements Target {
 
 	/**
 	 * @inheritDoc
+	 *
+	 * @param string $slug The claimed slug, e.g. "lg".
 	 *
 	 * @since TBD
 	 */

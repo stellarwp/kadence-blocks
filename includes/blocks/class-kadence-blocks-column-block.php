@@ -125,6 +125,7 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( 'max-width', $attributes['maxWidth'][0] . $max_width_unit );
 			$css->add_property( 'margin-left', 'auto' );
 			$css->add_property( 'margin-right', 'auto' );
+			// phpcs:ignore Squiz.PHP.CommentedOutCode.Found -- The commented-out selector below is kept as a reference.
 			// Section inside Section compatibility.
 			// $css->set_selector( '.wp-block-kadence-column>.kt-inside-inner-col>.kadence-column' . $unique_id );
 			// $css->add_property( 'flex', '1 ' . $attributes['maxWidth'][0] . ( isset( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px' ) );

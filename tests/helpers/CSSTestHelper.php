@@ -106,12 +106,12 @@ class CSSTestHelper {
 	 *
 	 * @return array<int, string> The property names, in declaration order.
 	 */
-	public function getPropertyOrder($selector): array {
+	public function getPropertyOrder( $selector ): array { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid -- Called by name from SinglebtnTest.
 		return array_map(
-			function ($rule) {
+			function ( $rule ) {
 				return $rule->getRule();
 			},
-			$this->getRulesForSelector($selector)
+			$this->getRulesForSelector( $selector )
 		);
 	}
 

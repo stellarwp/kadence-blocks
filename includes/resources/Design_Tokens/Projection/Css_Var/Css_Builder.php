@@ -124,14 +124,16 @@ final class Css_Builder {
 		$cached = wp_cache_get( $cache_key, self::CACHE_GROUP, false, $found );
 
 		if ( $found && is_string( $cached ) ) {
-			return $this->memo[ $cache_key ] = $cached;
+			$this->memo[ $cache_key ] = $cached;
+			return $this->memo[ $cache_key ];
 		}
 
 		$css = $this->build_root( $resolved, $breakpoints );
 
 		wp_cache_set( $cache_key, $css, self::CACHE_GROUP, DAY_IN_SECONDS );
 
-		return $this->memo[ $cache_key ] = $css;
+		$this->memo[ $cache_key ] = $css;
+		return $this->memo[ $cache_key ];
 	}
 
 	/**
@@ -230,6 +232,7 @@ final class Css_Builder {
 			return 'none';
 		}
 
+		// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize -- Only hashed into a cache key, never read back.
 		return substr( md5( serialize( $breakpoints ) ), 0, 12 );
 	}
 
@@ -262,8 +265,10 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param Resolved_Tokens      $resolved     The resolved token maps.
-	 * @param class-string<Target> $target_class The slot-target type for this family.
+	 * @param Resolved_Tokens $resolved     The resolved token maps.
+	 * @param string          $target_class The slot-target type for this family.
+	 *
+	 * @phpstan-param class-string<Target> $target_class
 	 *
 	 * @return string
 	 */

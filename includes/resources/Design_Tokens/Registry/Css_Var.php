@@ -46,19 +46,21 @@ final class Css_Var {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $id        The DTCG dot-path id.
-	 * @param string $namespace Optional token-library slug to namespace the variable under. Empty yields the
-	 *                          canonical (un-namespaced) name.
+	 * @param string $id      The DTCG dot-path id.
+	 * @param string $library Optional token-library slug to namespace the variable under. Empty yields the
+	 *                        canonical (un-namespaced) name.
 	 *
 	 * @return string The derived CSS custom-property name.
 	 */
-	public static function from_id( string $id, string $namespace = '' ): string {
+	public static function from_id( string $id, string $library = '' ): string {
 		$name = str_replace( '.', '--', $id );
 
-		if ( $namespace !== '' ) {
-			$namespace = self::sanitize_identifier( $namespace ) . '--';
+		$prefix = '';
+
+		if ( $library !== '' ) {
+			$prefix = self::sanitize_identifier( $library ) . '--';
 		}
 
-		return self::PREFIX . $namespace . $name;
+		return self::PREFIX . $prefix . $name;
 	}
 }

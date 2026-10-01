@@ -486,7 +486,12 @@ final class Css_BuilderTest extends TestCase {
 			[],
 			[ $var => '1.125rem' ],
 			[],
-			[ $var => [ 'tablet' => '1rem', 'mobile' => '0.9rem' ] ]
+			[
+				$var => [
+					'tablet' => '1rem',
+					'mobile' => '0.9rem',
+				],
+			]
 		);
 
 		$breakpoints = [
@@ -520,7 +525,10 @@ final class Css_BuilderTest extends TestCase {
 			$resolved,
 			'default',
 			'v1',
-			[ 'tablet' => '(max-width: 1024px)', 'mobile' => '(max-width: 767px)' ]
+			[
+				'tablet' => '(max-width: 1024px)',
+				'mobile' => '(max-width: 767px)',
+			]
 		);
 
 		$this->assertStringNotContainsString( '@media', $css );

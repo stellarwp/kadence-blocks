@@ -160,7 +160,18 @@ final class Css_BuilderTest extends TestCase {
 	public function testAnOverriddenButtonColorActivatesItsDefaultRetarget( string $token, string $expected, string $absent ): void {
 		$parts = explode( '.', $token );
 		$this->store->save_document(
-			(string) wp_json_encode( [ $parts[0] => [ $parts[1] => [ $parts[2] => [ '$type' => 'color', '$value' => '#00ff00' ] ] ] ] )
+			(string) wp_json_encode(
+				[
+					$parts[0] => [
+						$parts[1] => [
+							$parts[2] => [
+								'$type'  => 'color',
+								'$value' => '#00ff00',
+							],
+						],
+					],
+				]
+			)
 		);
 
 		$css = $this->builder( $this->registry )->css( 'default' );
@@ -1443,7 +1454,7 @@ final class Css_BuilderTest extends TestCase {
 										'label'  => 'Compact',
 										'tokens' => [
 											'size' => [
-												'$value'      => '2rem',
+												'$value' => '2rem',
 												'$extensions' => [
 													'com.kadence.designTokens' => [
 														'responsive' => [ 'mobile' => '1rem' ],

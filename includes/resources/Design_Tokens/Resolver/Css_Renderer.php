@@ -14,7 +14,10 @@ use KadenceWP\KadenceBlocks\Utils\Cast;
 final class Css_Renderer {
 
 	/**
-	 * @param mixed $value Literal scalar, list, or composite array.
+	 * Render a resolved literal to its CSS value for the given DTCG type.
+	 *
+	 * @param string $type  The DTCG `$type` to dispatch on.
+	 * @param mixed  $value Literal scalar, list, or composite array.
 	 */
 	public function render( string $type, $value ): string {
 		switch ( $type ) {
@@ -70,7 +73,7 @@ final class Css_Renderer {
 	 * Render a shadow composite to "<offsetX> <offsetY> <blur> <spread> <color>", prefixed with
 	 * "inset " when the optional "inset" sub-field is present and strictly true.
 	 *
-	 * v1 supports a single shadow object. DTCG also permits a $value that is an array of
+	 * Only a single shadow object is supported (v1). DTCG also permits a $value that is an array of
 	 * shadow objects (stacked box-shadows); that shape is intentionally not handled here —
 	 * Token_Resolver passes a list through untouched, and supporting it is a follow-up that
 	 * would change this method (join each layer with ", ") and the resolver's list handling.
@@ -86,14 +89,16 @@ final class Css_Renderer {
 			return '';
 		}
 
-		$shorthand = trim( sprintf(
-			'%s %s %s %s %s',
-			$value['offsetX'] ?? '0',
-			$value['offsetY'] ?? '0',
-			$value['blur']    ?? '0',
-			$value['spread']  ?? '0',
-			$value['color']   ?? ''
-		) );
+		$shorthand = trim(
+			sprintf(
+				'%s %s %s %s %s',
+				$value['offsetX'] ?? '0',
+				$value['offsetY'] ?? '0',
+				$value['blur'] ?? '0',
+				$value['spread'] ?? '0',
+				$value['color'] ?? ''
+			)
+		);
 
 		// "inset" is optional and, unlike the required fields, only ever a strict boolean (Composite_Value
 		// rejects anything else at write time) — so absent, false, or a malformed value all fall through

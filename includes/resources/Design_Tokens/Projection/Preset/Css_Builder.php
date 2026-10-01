@@ -308,14 +308,16 @@ final class Css_Builder {
 		$cached = wp_cache_get( $cache_key, self::CACHE_GROUP, false, $found );
 
 		if ( $found && is_string( $cached ) ) {
-			return $this->memo[ $cache_key ] = $cached;
+			$this->memo[ $cache_key ] = $cached;
+			return $this->memo[ $cache_key ];
 		}
 
 		$css = $this->build( $active_slug, $breakpoints, $editor );
 
 		wp_cache_set( $cache_key, $css, self::CACHE_GROUP, DAY_IN_SECONDS );
 
-		return $this->memo[ $cache_key ] = $css;
+		$this->memo[ $cache_key ] = $css;
+		return $this->memo[ $cache_key ];
 	}
 
 	/**
@@ -351,7 +353,7 @@ final class Css_Builder {
 	 *
 	 * @return array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string, reset:bool, direct:bool}>>, activated:array<string, bool>}>
 	 */
-	private function collect( string $slug ): array {
+	private function collect( string $slug ): array { // phpcs:ignore Generic.Metrics.NestingLevel.TooHigh -- Walks the block, preset and property levels of the collected map.
 		$key = $slug . '_' . $this->versions->for_slug( $slug );
 
 		if ( isset( $this->collected[ $key ] ) ) {
@@ -489,7 +491,8 @@ final class Css_Builder {
 			];
 		}
 
-		return $this->collected[ $key ] = $out;
+		$this->collected[ $key ] = $out;
+		return $this->collected[ $key ];
 	}
 
 	/**
@@ -612,9 +615,9 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param string                                  $block    The block name.
-	 * @param string                                  $preset   The preset slug.
-	 * @param string                                  $property The block property.
+	 * @param string                                                                                                                                       $block    The block name.
+	 * @param string                                                                                                                                       $preset   The preset slug.
+	 * @param string                                                                                                                                       $property The block property.
 	 * @param array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string, reset:bool, direct:bool} $info The property's collected target/value/kind.
 	 *
 	 * @return string
@@ -705,10 +708,10 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param string                                                                                                             $block    The block name.
-	 * @param string                                                                                                             $preset   The preset slug.
-	 * @param string                                                                                                             $property The block property.
-	 * @param string                                                                                                             $value    The breakpoint's projected override value for the property.
+	 * @param string                                                                                                                                       $block    The block name.
+	 * @param string                                                                                                                                       $preset   The preset slug.
+	 * @param string                                                                                                                                       $property The block property.
+	 * @param string                                                                                                                                       $value    The breakpoint's projected override value for the property.
 	 * @param array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string, reset:bool, direct:bool} $info     The property's collected base/fallback/kind.
 	 *
 	 * @return string
@@ -759,6 +762,7 @@ final class Css_Builder {
 	 * @since TBD
 	 *
 	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string, reset:bool, direct:bool}>>, activated:array<string, bool>}> $collected The active library's collected presets.
+	 * @param bool                                                                                                                                                                                                                                                                     $editor Whether to emit the editor-scoped selectors.
 	 *
 	 * @return string
 	 */
@@ -801,12 +805,12 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param string                                                                                                                                       $block        The block name.
-	 * @param string                                                                                                                                       $preset       The preset slug.
-	 * @param string                                                                                                                                       $selector     The block's `.wp-block-*` selector.
-	 * @param string                                                                                                                                       $preset_class The preset class selector, leading dot included.
+	 * @param string                                                                                                                                                      $block        The block name.
+	 * @param string                                                                                                                                                      $preset       The preset slug.
+	 * @param string                                                                                                                                                      $selector     The block's `.wp-block-*` selector.
+	 * @param string                                                                                                                                                      $preset_class The preset class selector, leading dot included.
 	 * @param array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string, reset:bool, direct:bool}> $properties The preset's collected properties.
-	 * @param bool                                                                                                                                         $editor       Whether to target the block's editor markup.
+	 * @param bool                                                                                                                                                        $editor       Whether to target the block's editor markup.
 	 *
 	 * @return string The rules, or '' for a preset with no direct entries.
 	 */
@@ -888,6 +892,7 @@ final class Css_Builder {
 	 * @since TBD
 	 *
 	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string, reset:bool, direct:bool}>>, activated:array<string, bool>}> $collected The active library's collected presets.
+	 * @param bool                                                                                                                                                                                                                                                                     $editor Whether to emit the editor-scoped selectors.
 	 *
 	 * @return string
 	 */
@@ -952,7 +957,7 @@ final class Css_Builder {
 	 * @since TBD
 	 *
 	 * @param array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string, reset:bool, direct:bool}> $properties The $default's collected properties.
-	 * @param array<string, bool>                                                                                                                $activated  property => true for the overridden slot properties.
+	 * @param array<string, bool>                                                                                                                                         $activated  property => true for the overridden slot properties.
 	 *
 	 * @return array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string, reset:bool, direct:bool}>
 	 */
@@ -1032,12 +1037,12 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param string                                                                                                                                       $block        The block name.
-	 * @param string                                                                                                                                       $preset       The named preset's slug.
+	 * @param string                                                                                                                                                                                                                                                    $block        The block name.
+	 * @param string                                                                                                                                                                                                                                                    $preset       The named preset's slug.
 	 * @param array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string, reset:bool, direct:bool}>>, activated:array<string, bool>} $data         The block's collected presets.
-	 * @param string                                                                                                                                       $preset_class The preset class selector, leading dot included.
-	 * @param bool                                                                                                                                         $editor       Whether to target the block's editor markup.
-	 * @param array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string, reset:bool, direct:bool}>|null       $properties   The properties to consider, or null for the preset's own with a desktop base.
+	 * @param string                                                                                                                                                                                                                                                    $preset_class The preset class selector, leading dot included.
+	 * @param bool                                                                                                                                                                                                                                                      $editor       Whether to target the block's editor markup.
+	 * @param array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string, reset:bool, direct:bool}>|null                                                                                          $properties   The properties to consider, or null for the preset's own with a desktop base.
 	 *
 	 * @return string The rules, one per selector suffix, or '' when the Default covers every property the
 	 *                preset sets.
@@ -1132,8 +1137,8 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param string                                            $block      The block name.
-	 * @param string                                            $preset     The preset slug.
+	 * @param string                                                                                                                                                      $block      The block name.
+	 * @param string                                                                                                                                                      $preset     The preset slug.
 	 * @param array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string, reset:bool, direct:bool}> $properties The preset's collected properties.
 	 *
 	 * @return string
@@ -1176,11 +1181,11 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param string                                                                                          $block      The block name.
-	 * @param string                                                                                          $preset     The preset slug, for the canonical var name.
-	 * @param string                                                                                          $scope      The selector the state suffix is appended to.
+	 * @param string                                                                                                                                                      $block      The block name.
+	 * @param string                                                                                                                                                      $preset     The preset slug, for the canonical var name.
+	 * @param string                                                                                                                                                      $scope      The selector the state suffix is appended to.
 	 * @param array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string, reset:bool, direct:bool}> $properties The preset's collected properties.
-	 * @param bool                                                                                            $editor     Whether to use each binding's editor state suffix.
+	 * @param bool                                                                                                                                                        $editor     Whether to use each binding's editor state suffix.
 	 *
 	 * @return string
 	 */
@@ -1347,10 +1352,10 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param string                $active_slug The active library's slug.
+	 * @param string                                                                                                                                                                                                                                                                   $active_slug The active library's slug.
 	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string, reset:bool, direct:bool}>>, activated:array<string, bool>}> $collected The collected preset structure, for the block/preset list.
-	 * @param array<string, string> $breakpoints Breakpoint => media-query string.
-	 * @param bool                  $editor      Whether a media-scoped state rule uses the binding's editor state suffix.
+	 * @param array<string, string>                                                                                                                                                                                                                                                    $breakpoints Breakpoint => media-query string.
+	 * @param bool                                                                                                                                                                                                                                                                     $editor      Whether a media-scoped state rule uses the binding's editor state suffix.
 	 *
 	 * @return string
 	 */
@@ -1470,12 +1475,12 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $block      The block name.
-	 * @param string $preset     The preset slug.
-	 * @param string $selector   The block's `.wp-block-*` selector.
-	 * @param bool   $is_default Whether the preset is the block's `$default`.
+	 * @param string                                                                                                                                                      $block      The block name.
+	 * @param string                                                                                                                                                      $preset     The preset slug.
+	 * @param string                                                                                                                                                      $selector   The block's `.wp-block-*` selector.
+	 * @param bool                                                                                                                                                        $is_default Whether the preset is the block's `$default`.
 	 * @param array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string, reset:bool, direct:bool}> $properties The state property, keyed by name.
-	 * @param bool   $editor     Whether to use the binding's editor state suffix.
+	 * @param bool                                                                                                                                                        $editor     Whether to use the binding's editor state suffix.
 	 *
 	 * @return string
 	 */

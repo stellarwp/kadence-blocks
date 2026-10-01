@@ -48,8 +48,8 @@ final class Slot_Target_Reader {
 	/**
 	 * @since TBD
 	 *
-	 * @param Token_Registry   $registry
-	 * @param Token_Resolver   $resolver
+	 * @param Token_Registry             $registry
+	 * @param Token_Resolver             $resolver
 	 * @param Active_Token_Library_Store $active
 	 */
 	public function __construct( Token_Registry $registry, Token_Resolver $resolver, Active_Token_Library_Store $active ) {
@@ -63,8 +63,10 @@ final class Slot_Target_Reader {
 	 *
 	 * @since TBD
 	 *
-	 * @param class-string<Target> $target_class The slot target defining the family's projection key,
-	 *                                           shipped slugs and backing primitive ids.
+	 * @param string $target_class The slot target defining the family's projection key, shipped slugs and
+	 *                             backing primitive ids.
+	 *
+	 * @phpstan-param class-string<Target> $target_class
 	 *
 	 * @return array<string,string> Slug => resolved scale value (a length, or a clamp() string for a fluid
 	 *                              family).

@@ -198,16 +198,18 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 	 * @return void
 	 */
 	public function testRenderTypographyEmitsBareVarForAliasedSizePerBreakpoint(): void {
-		$this->css->render_typography( [
-			'typography' => [
-				'sizeType' => 'px',
-				'size'     => [
-					'{primitive.dimension.font-size.xl}',
-					'{primitive.dimension.font-size.lg}',
-					'{primitive.dimension.font-size.md}',
+		$this->css->render_typography(
+			[
+				'typography' => [
+					'sizeType' => 'px',
+					'size'     => [
+						'{primitive.dimension.font-size.xl}',
+						'{primitive.dimension.font-size.lg}',
+						'{primitive.dimension.font-size.md}',
+					],
 				],
-			],
-		] );
+			]
+		);
 		$output = $this->css->css_output();
 
 		$this->assertStringContainsString( 'font-size:var(--kb-token--primitive--dimension--font-size--xl)', $output );
@@ -224,15 +226,17 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 	public function testRenderShadowEmitsBareVarForAlias(): void {
 		$this->assertSame(
 			'var(--kb-token--semantic--radius--media) 1px 4px 2px #000000',
-			$this->css->render_shadow( [
-				'color'   => '#000000',
-				'opacity' => 1,
-				'spread'  => 2,
-				'blur'    => 4,
-				'hOffset' => '{semantic.radius.media}',
-				'vOffset' => 1,
-				'inset'   => false,
-			] ),
+			$this->css->render_shadow(
+				[
+					'color'   => '#000000',
+					'opacity' => 1,
+					'spread'  => 2,
+					'blur'    => 4,
+					'hOffset' => '{semantic.radius.media}',
+					'vOffset' => 1,
+					'inset'   => false,
+				]
+			),
 			'render_shadow must emit the bare var() in the hOffset position for a strict alias'
 		);
 	}
@@ -246,16 +250,18 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 	public function testRenderShadowEmitsBareVarForWholeShadowBinding(): void {
 		$this->assertSame(
 			'var(--kb-token--semantic--shadow--card)',
-			$this->css->render_shadow( [
-				'shadowToken' => '{semantic.shadow.card}',
-				'color'       => '#0f0',
-				'opacity'     => 1,
-				'hOffset'     => 0,
-				'vOffset'     => 2,
-				'blur'        => 8,
-				'spread'      => 0,
-				'inset'       => false,
-			] ),
+			$this->css->render_shadow(
+				[
+					'shadowToken' => '{semantic.shadow.card}',
+					'color'       => '#0f0',
+					'opacity'     => 1,
+					'hOffset'     => 0,
+					'vOffset'     => 2,
+					'blur'        => 8,
+					'spread'      => 0,
+					'inset'       => false,
+				]
+			),
 			'render_shadow must emit the bare var() for a whole-shadow binding'
 		);
 	}
@@ -268,16 +274,18 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 	 */
 	public function testRenderShadowReturnsFalseForUnbackedWholeShadowBinding(): void {
 		$this->assertFalse(
-			$this->css->render_shadow( [
-				'shadowToken' => '{semantic.shadow.does-not-exist}',
-				'color'       => '#0f0',
-				'opacity'     => 1,
-				'hOffset'     => 0,
-				'vOffset'     => 2,
-				'blur'        => 8,
-				'spread'      => 0,
-				'inset'       => false,
-			] ),
+			$this->css->render_shadow(
+				[
+					'shadowToken' => '{semantic.shadow.does-not-exist}',
+					'color'       => '#0f0',
+					'opacity'     => 1,
+					'hOffset'     => 0,
+					'vOffset'     => 2,
+					'blur'        => 8,
+					'spread'      => 0,
+					'inset'       => false,
+				]
+			),
 			'render_shadow must return false when the bound token is not backed'
 		);
 	}
@@ -388,13 +396,15 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 	 * @return void
 	 */
 	public function testRenderTypographyEmitsBareVarForAliasedLineHeightAndLetterSpacing(): void {
-		$this->css->render_typography( [
-			'typography' => [
-				'lineType'      => 'px',
-				'lineHeight'    => [ '{semantic.radius.media}', '', '' ],
-				'letterSpacing' => [ '{semantic.radius.control}', '', '' ],
-			],
-		] );
+		$this->css->render_typography(
+			[
+				'typography' => [
+					'lineType'      => 'px',
+					'lineHeight'    => [ '{semantic.radius.media}', '', '' ],
+					'letterSpacing' => [ '{semantic.radius.control}', '', '' ],
+				],
+			]
+		);
 		$output = $this->css->css_output();
 
 		$this->assertStringContainsString(
@@ -426,7 +436,7 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 				],
 			],
 		];
-		$args = [
+		$args       = [
 			'desktop_key' => 'borderStyle',
 			'tablet_key'  => 'tabletBorderStyle',
 			'mobile_key'  => 'mobileBorderStyle',
@@ -562,15 +572,17 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 	public function testRenderShadowDropsShorthandForUnresolvedAliasPart(): void {
 		$this->assertSame(
 			false,
-			$this->css->render_shadow( [
-				'color'   => '#000000',
-				'opacity' => 1,
-				'spread'  => 2,
-				'blur'    => 4,
-				'hOffset' => '{semantic.does.not.exist}',
-				'vOffset' => 1,
-				'inset'   => false,
-			] ),
+			$this->css->render_shadow(
+				[
+					'color'   => '#000000',
+					'opacity' => 1,
+					'spread'  => 2,
+					'blur'    => 4,
+					'hOffset' => '{semantic.does.not.exist}',
+					'vOffset' => 1,
+					'inset'   => false,
+				]
+			),
 			'render_shadow must drop the whole shorthand for an unresolved alias part'
 		);
 	}
@@ -597,12 +609,14 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 	 * @return void
 	 */
 	public function testRenderTypographyDropsUnresolvedNumericLineHeight(): void {
-		$this->css->render_typography( [
-			'typography' => [
-				'lineType'   => 'px',
-				'lineHeight' => [ '{semantic.does.not.exist}', '', '' ],
-			],
-		] );
+		$this->css->render_typography(
+			[
+				'typography' => [
+					'lineType'   => 'px',
+					'lineHeight' => [ '{semantic.does.not.exist}', '', '' ],
+				],
+			]
+		);
 
 		$this->assertStringNotContainsString( 'line-height:', $this->css->css_output() );
 	}
@@ -676,8 +690,8 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 	 */
 	public function testRenderRangeFailsOpenForMalformedAlias( string $malformed ): void {
 		$baseline = $this->css->css_output();
-		$actual = $this->css->render_range( [ 'width' => $malformed ], 'width', 'width', 'px' );
-		$output = $this->css->css_output();
+		$actual   = $this->css->render_range( [ 'width' => $malformed ], 'width', 'width', 'px' );
+		$output   = $this->css->css_output();
 
 		$this->assertSame(
 			false,
@@ -763,7 +777,7 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 				],
 			],
 		];
-		$args = [
+		$args       = [
 			'desktop_key' => 'borderStyle',
 			'tablet_key'  => 'tabletBorderStyle',
 			'mobile_key'  => 'mobileBorderStyle',
@@ -889,15 +903,17 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 	 * @return void
 	 */
 	public function testRenderShadowFailsOpenForMalformedAlias( string $malformed ): void {
-		$actual = $this->css->render_shadow( [
-			'color'   => '#000000',
-			'opacity' => 1,
-			'spread'  => 2,
-			'blur'    => 4,
-			'hOffset' => $malformed,
-			'vOffset' => 1,
-			'inset'   => false,
-		] );
+		$actual = $this->css->render_shadow(
+			[
+				'color'   => '#000000',
+				'opacity' => 1,
+				'spread'  => 2,
+				'blur'    => 4,
+				'hOffset' => $malformed,
+				'vOffset' => 1,
+				'inset'   => false,
+			]
+		);
 
 		$this->assertSame(
 			$malformed . 'px 1px 4px 2px #000000',
@@ -924,15 +940,17 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 	 */
 	public function testRenderTypographyFailsOpenForMalformedAlias( string $malformed ): void {
 		$baseline = $this->css->css_output();
-		$this->css->render_typography( [
-			'typography' => [
-				'lineType'      => 'px',
-				'lineHeight'    => [ $malformed, '', '' ],
-				'letterSpacing' => [ $malformed, '', '' ],
-			],
-		] );
+		$this->css->render_typography(
+			[
+				'typography' => [
+					'lineType'      => 'px',
+					'lineHeight'    => [ $malformed, '', '' ],
+					'letterSpacing' => [ $malformed, '', '' ],
+				],
+			]
+		);
 		$output = $this->css->css_output();
-		$added = substr( $output, 0, strlen( $output ) - strlen( $baseline ) );
+		$added  = substr( $output, 0, strlen( $output ) - strlen( $baseline ) );
 
 		$this->assertStringContainsString(
 			'line-height:' . $malformed . 'px',
@@ -1046,17 +1064,17 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 	 * @dataProvider measureRangeMixedSidesProvider
 	 *
 	 * @param array  $measure          The 4-side border-width array with one aliased side.
-	 * @param string $expectedProperty The css property expected to carry the var().
-	 * @param string $expectedValue    The expected var() value on that property.
+	 * @param string $expected_property The css property expected to carry the var().
+	 * @param string $expected_value    The expected var() value on that property.
 	 *
 	 * @return void
 	 */
-	public function testRenderMeasureRangeMixesAliasedAndNumericSides( array $measure, string $expectedProperty, string $expectedValue ): void {
+	public function testRenderMeasureRangeMixesAliasedAndNumericSides( array $measure, string $expected_property, string $expected_value ): void {
 		$this->css->render_measure_range( [ 'borderWidth' => $measure ], 'borderWidth', 'border-width' );
 		$output = $this->css->css_output();
 
 		$this->assertStringContainsString(
-			$expectedProperty . ':' . $expectedValue,
+			$expected_property . ':' . $expected_value,
 			$output,
 			'render_measure_range must emit the var() on the aliased side'
 		);
@@ -1074,14 +1092,14 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 	 */
 	public static function measureRangeMixedSidesProvider(): Generator {
 		yield 'alias in first (top) side' => [
-			'measure'          => [ '{semantic.radius.media}', 20, 30, 40 ],
-			'expectedProperty' => 'border-top-width',
-			'expectedValue'    => 'var(--kb-token--semantic--radius--media)',
+			'measure'           => [ '{semantic.radius.media}', 20, 30, 40 ],
+			'expected_property' => 'border-top-width',
+			'expected_value'    => 'var(--kb-token--semantic--radius--media)',
 		];
 		yield 'alias in last (left) side' => [
-			'measure'          => [ 10, 20, 30, '{semantic.radius.media}' ],
-			'expectedProperty' => 'border-left-width',
-			'expectedValue'    => 'var(--kb-token--semantic--radius--media)',
+			'measure'           => [ 10, 20, 30, '{semantic.radius.media}' ],
+			'expected_property' => 'border-left-width',
+			'expected_value'    => 'var(--kb-token--semantic--radius--media)',
 		];
 	}
 
@@ -1290,7 +1308,10 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 	 */
 	public function testRenderMeasureOutputEmitsBareVarForAlias(): void {
 		$this->css->render_measure_output(
-			[ 'borderRadius' => [ '{semantic.radius.media}', 10, 20, 30 ], 'borderRadiusUnit' => 'px' ],
+			[
+				'borderRadius'     => [ '{semantic.radius.media}', 10, 20, 30 ],
+				'borderRadiusUnit' => 'px',
+			],
 			'borderRadius',
 			'border-radius',
 			[ 'unit_key' => 'borderRadiusUnit' ]
@@ -1317,7 +1338,10 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 	 */
 	public function testRenderMeasureOutputMixesAliasedAndNumericCorners( array $corners, array $expected ): void {
 		$this->css->render_measure_output(
-			[ 'borderRadius' => $corners, 'borderRadiusUnit' => 'px' ],
+			[
+				'borderRadius'     => $corners,
+				'borderRadiusUnit' => 'px',
+			],
 			'borderRadius',
 			'border-radius',
 			[ 'unit_key' => 'borderRadiusUnit' ]
@@ -1391,7 +1415,10 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 	 */
 	public function testRenderMeasureOutputFailsOpenForMalformedAlias( string $malformed ): void {
 		$this->css->render_measure_output(
-			[ 'borderRadius' => [ $malformed, $malformed, $malformed, $malformed ], 'borderRadiusUnit' => 'px' ],
+			[
+				'borderRadius'     => [ $malformed, $malformed, $malformed, $malformed ],
+				'borderRadiusUnit' => 'px',
+			],
 			'borderRadius',
 			'border-radius',
 			[ 'unit_key' => 'borderRadiusUnit' ]

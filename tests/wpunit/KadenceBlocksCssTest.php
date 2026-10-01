@@ -521,12 +521,18 @@ class KadenceBlocksCssTest extends WPTestCase {
 	 * @return void
 	 */
 	public function testGetTokenReference( $value, ?string $expected ): void {
-		$this->assertSame( $expected, $this->invokeGetTokenReference( $value ),
-			'Alias recognizer must match the JS resolveTokenAlias output byte-for-byte' );
+		$this->assertSame(
+			$expected,
+			$this->invokeGetTokenReference( $value ),
+			'Alias recognizer must match the JS resolveTokenAlias output byte-for-byte'
+		);
 
 		if ( null !== $expected ) {
-			$this->assertStringNotContainsString( ',', $expected,
-				'A resolved token reference is a bare var() with no fallback literal' );
+			$this->assertStringNotContainsString(
+				',',
+				$expected,
+				'A resolved token reference is a bare var() with no fallback literal'
+			);
 		}
 	}
 
@@ -662,12 +668,21 @@ class KadenceBlocksCssTest extends WPTestCase {
 		$this->css->render_border_radius( [ 'borderRadius' => [ '{semantic.radius.media}', 10, '{bad path}', '' ] ] );
 		$output = $this->css->css_output();
 
-		$this->assertStringContainsString( 'border-top-left-radius:var(--kb-token--semantic--radius--media)', $output,
-			'An aliased corner emits the token var with no unit' );
-		$this->assertStringContainsString( 'border-top-right-radius:10px', $output,
-			'A numeric corner is still rendered with its unit' );
-		$this->assertStringNotContainsString( 'border-bottom-right-radius', $output,
-			'A malformed alias corner fails open and emits nothing' );
+		$this->assertStringContainsString(
+			'border-top-left-radius:var(--kb-token--semantic--radius--media)',
+			$output,
+			'An aliased corner emits the token var with no unit'
+		);
+		$this->assertStringContainsString(
+			'border-top-right-radius:10px',
+			$output,
+			'A numeric corner is still rendered with its unit'
+		);
+		$this->assertStringNotContainsString(
+			'border-bottom-right-radius',
+			$output,
+			'A malformed alias corner fails open and emits nothing'
+		);
 	}
 
 	/**
@@ -684,10 +699,16 @@ class KadenceBlocksCssTest extends WPTestCase {
 		);
 		$output = $this->css->css_output();
 
-		$this->assertStringContainsString( 'border-top-width:var(--kb-token--semantic--border-width--default)', $output,
-			'An aliased side emits the token var with no unit' );
-		$this->assertStringContainsString( 'border-right-width:2px', $output,
-			'A numeric side is still rendered with its unit' );
+		$this->assertStringContainsString(
+			'border-top-width:var(--kb-token--semantic--border-width--default)',
+			$output,
+			'An aliased side emits the token var with no unit'
+		);
+		$this->assertStringContainsString(
+			'border-right-width:2px',
+			$output,
+			'A numeric side is still rendered with its unit'
+		);
 	}
 
 	/**
@@ -698,13 +719,19 @@ class KadenceBlocksCssTest extends WPTestCase {
 	 */
 	public function testRenderRangeResolvesTokenAlias(): void {
 		$this->css->render_range( [ 'width' => '{semantic.radius.media}' ], 'width', 'width' );
-		$this->assertStringContainsString( 'width:var(--kb-token--semantic--radius--media)', $this->css->css_output(),
-			'An aliased range value emits the token var with no unit' );
+		$this->assertStringContainsString(
+			'width:var(--kb-token--semantic--radius--media)',
+			$this->css->css_output(),
+			'An aliased range value emits the token var with no unit'
+		);
 
 		$numeric = new Kadence_Blocks_CSS();
 		$numeric->render_range( [ 'width' => 10 ], 'width', 'width' );
-		$this->assertStringContainsString( 'width:10px', $numeric->css_output(),
-			'A numeric range value is still rendered with its unit' );
+		$this->assertStringContainsString(
+			'width:10px',
+			$numeric->css_output(),
+			'A numeric range value is still rendered with its unit'
+		);
 	}
 
 	/**
@@ -715,18 +742,30 @@ class KadenceBlocksCssTest extends WPTestCase {
 	 */
 	public function testRenderResponsiveRangeResolvesTokenAlias(): void {
 		$this->css->render_responsive_range(
-			[ 'spacing' => [ '{semantic.spacing.media-padding}', 20, '{semantic.radius.control}' ], 'spacingType' => 'px' ],
+			[
+				'spacing'     => [ '{semantic.spacing.media-padding}', 20, '{semantic.radius.control}' ],
+				'spacingType' => 'px',
+			],
 			'spacing',
 			'margin'
 		);
 		$output = $this->css->css_output();
 
-		$this->assertStringContainsString( 'margin:var(--kb-token--semantic--spacing--media-padding)', $output,
-			'An aliased desktop value emits the token var with no unit' );
-		$this->assertStringContainsString( 'margin:20px', $output,
-			'A numeric tablet value is still rendered with its unit' );
-		$this->assertStringContainsString( 'margin:var(--kb-token--semantic--radius--control)', $output,
-			'An aliased mobile value emits the token var with no unit' );
+		$this->assertStringContainsString(
+			'margin:var(--kb-token--semantic--spacing--media-padding)',
+			$output,
+			'An aliased desktop value emits the token var with no unit'
+		);
+		$this->assertStringContainsString(
+			'margin:20px',
+			$output,
+			'A numeric tablet value is still rendered with its unit'
+		);
+		$this->assertStringContainsString(
+			'margin:var(--kb-token--semantic--radius--control)',
+			$output,
+			'An aliased mobile value emits the token var with no unit'
+		);
 	}
 
 	/**
@@ -737,16 +776,26 @@ class KadenceBlocksCssTest extends WPTestCase {
 	 */
 	public function testRenderResponsiveSizeResolvesTokenAlias(): void {
 		$this->css->render_responsive_size(
-			[ 'width' => '{semantic.radius.media}', 'tabletWidth' => '20', 'mobileWidth' => '' ],
+			[
+				'width'       => '{semantic.radius.media}',
+				'tabletWidth' => '20',
+				'mobileWidth' => '',
+			],
 			[ 'width', 'tabletWidth', 'mobileWidth' ],
 			'width'
 		);
 		$output = $this->css->css_output();
 
-		$this->assertStringContainsString( 'width:var(--kb-token--semantic--radius--media)', $output,
-			'An aliased desktop value emits the token var with no unit' );
-		$this->assertStringContainsString( 'width:20px', $output,
-			'A literal tablet value is still rendered with its unit' );
+		$this->assertStringContainsString(
+			'width:var(--kb-token--semantic--radius--media)',
+			$output,
+			'An aliased desktop value emits the token var with no unit'
+		);
+		$this->assertStringContainsString(
+			'width:20px',
+			$output,
+			'A literal tablet value is still rendered with its unit'
+		);
 	}
 
 	/**
@@ -769,12 +818,21 @@ class KadenceBlocksCssTest extends WPTestCase {
 		);
 		$output = $this->css->css_output();
 
-		$this->assertStringContainsString( 'font-size:var(--kb-token--primitive--dimension--icon-size--lg)', $output,
-			'An aliased desktop size emits the token var with no px unit appended' );
-		$this->assertStringContainsString( 'font-size:var(--kb-token--primitive--dimension--icon-size--sm)', $output,
-			'An aliased tablet size emits its own token var' );
-		$this->assertStringContainsString( 'font-size:32px', $output,
-			'A numeric mobile size still renders with the px unit the attribute implies' );
+		$this->assertStringContainsString(
+			'font-size:var(--kb-token--primitive--dimension--icon-size--lg)',
+			$output,
+			'An aliased desktop size emits the token var with no px unit appended'
+		);
+		$this->assertStringContainsString(
+			'font-size:var(--kb-token--primitive--dimension--icon-size--sm)',
+			$output,
+			'An aliased tablet size emits its own token var'
+		);
+		$this->assertStringContainsString(
+			'font-size:32px',
+			$output,
+			'A numeric mobile size still renders with the px unit the attribute implies'
+		);
 	}
 
 	/**
@@ -828,28 +886,32 @@ class KadenceBlocksCssTest extends WPTestCase {
 	public function testRenderShadowResolvesTokenAlias(): void {
 		$this->assertSame(
 			'var(--kb-token--semantic--radius--media) 1px 4px 2px rgba(0, 0, 0, 0.5)',
-			$this->css->render_shadow( [
-				'color'   => '#000000',
-				'opacity' => 0.5,
-				'spread'  => 2,
-				'blur'    => 4,
-				'hOffset' => '{semantic.radius.media}',
-				'vOffset' => 1,
-				'inset'   => false,
-			] ),
+			$this->css->render_shadow(
+				[
+					'color'   => '#000000',
+					'opacity' => 0.5,
+					'spread'  => 2,
+					'blur'    => 4,
+					'hOffset' => '{semantic.radius.media}',
+					'vOffset' => 1,
+					'inset'   => false,
+				]
+			),
 			'An aliased offset is a bare var while numeric pieces keep their px unit'
 		);
 		$this->assertSame(
 			'1px 1px 4px 2px rgba(0, 0, 0, 0.5)',
-			$this->css->render_shadow( [
-				'color'   => '#000000',
-				'opacity' => 0.5,
-				'spread'  => 2,
-				'blur'    => 4,
-				'hOffset' => 1,
-				'vOffset' => 1,
-				'inset'   => false,
-			] ),
+			$this->css->render_shadow(
+				[
+					'color'   => '#000000',
+					'opacity' => 0.5,
+					'spread'  => 2,
+					'blur'    => 4,
+					'hOffset' => 1,
+					'vOffset' => 1,
+					'inset'   => false,
+				]
+			),
 			'A fully numeric shadow is byte-identical to the pre-alias output'
 		);
 	}
@@ -868,8 +930,11 @@ class KadenceBlocksCssTest extends WPTestCase {
 	 * @return void
 	 */
 	public function testRenderShadowAppliesDefaults( array $shadow, array $defaults, string $expected ): void {
-		$this->assertSame( $expected, $this->css->render_shadow( $shadow, $defaults ),
-			'Defaults must fill empty/missing legs without altering present numeric or alias legs' );
+		$this->assertSame(
+			$expected,
+			$this->css->render_shadow( $shadow, $defaults ),
+			'Defaults must fill empty/missing legs without altering present numeric or alias legs'
+		);
 	}
 
 	/**
@@ -887,7 +952,7 @@ class KadenceBlocksCssTest extends WPTestCase {
 			'color'   => '#000000',
 			'opacity' => 0.2,
 		];
-		$hover_defaults = [
+		$hover_defaults  = [
 			'hOffset' => '2',
 			'vOffset' => '2',
 			'blur'    => '3',
@@ -897,32 +962,75 @@ class KadenceBlocksCssTest extends WPTestCase {
 		];
 
 		yield 'complete literal shadow renders byte-identically' => [
-			'shadow'   => [ 'hOffset' => '1', 'vOffset' => '1', 'blur' => '2', 'spread' => '0', 'color' => '#000000', 'opacity' => 0.2, 'inset' => false ],
+			'shadow'   => [
+				'hOffset' => '1',
+				'vOffset' => '1',
+				'blur'    => '2',
+				'spread'  => '0',
+				'color'   => '#000000',
+				'opacity' => 0.2,
+				'inset'   => false,
+			],
 			'defaults' => $button_defaults,
 			'expected' => '1px 1px 2px 0px rgba(0, 0, 0, 0.2)',
 		];
 		yield 'empty blur falls back to its default' => [
-			'shadow'   => [ 'hOffset' => '1', 'vOffset' => '1', 'blur' => '', 'spread' => '0', 'color' => '#000000', 'opacity' => 0.2, 'inset' => false ],
+			'shadow'   => [
+				'hOffset' => '1',
+				'vOffset' => '1',
+				'blur'    => '',
+				'spread'  => '0',
+				'color'   => '#000000',
+				'opacity' => 0.2,
+				'inset'   => false,
+			],
 			'defaults' => $button_defaults,
 			'expected' => '1px 1px 14px 0px rgba(0, 0, 0, 0.2)',
 		];
 		yield 'missing legs use the supplied defaults' => [
-			'shadow'   => [ 'color' => '#000000', 'opacity' => 0.2 ],
+			'shadow'   => [
+				'color'   => '#000000',
+				'opacity' => 0.2,
+			],
 			'defaults' => $button_defaults,
 			'expected' => '0px 0px 14px 0px rgba(0, 0, 0, 0.2)',
 		];
 		yield 'aliased offset passes through as a token var' => [
-			'shadow'   => [ 'hOffset' => '{semantic.radius.media}', 'vOffset' => '1', 'blur' => '4', 'spread' => '2', 'color' => '#000000', 'opacity' => 0.5, 'inset' => false ],
+			'shadow'   => [
+				'hOffset' => '{semantic.radius.media}',
+				'vOffset' => '1',
+				'blur'    => '4',
+				'spread'  => '2',
+				'color'   => '#000000',
+				'opacity' => 0.5,
+				'inset'   => false,
+			],
 			'defaults' => $button_defaults,
 			'expected' => 'var(--kb-token--semantic--radius--media) 1px 4px 2px rgba(0, 0, 0, 0.5)',
 		];
 		yield 'truthy inset prefixes the declaration' => [
-			'shadow'   => [ 'hOffset' => '1', 'vOffset' => '1', 'blur' => '2', 'spread' => '0', 'color' => '#000000', 'opacity' => 0.2, 'inset' => true ],
+			'shadow'   => [
+				'hOffset' => '1',
+				'vOffset' => '1',
+				'blur'    => '2',
+				'spread'  => '0',
+				'color'   => '#000000',
+				'opacity' => 0.2,
+				'inset'   => true,
+			],
 			'defaults' => $button_defaults,
 			'expected' => 'inset 1px 1px 2px 0px rgba(0, 0, 0, 0.2)',
 		];
 		yield 'all-empty legs fall back to the hover defaults' => [
-			'shadow'   => [ 'color' => '', 'opacity' => '', 'hOffset' => '', 'vOffset' => '', 'blur' => '', 'spread' => '', 'inset' => false ],
+			'shadow'   => [
+				'color'   => '',
+				'opacity' => '',
+				'hOffset' => '',
+				'vOffset' => '',
+				'blur'    => '',
+				'spread'  => '',
+				'inset'   => false,
+			],
 			'defaults' => $hover_defaults,
 			'expected' => '2px 2px 3px 0px rgba(0, 0, 0, 0.4)',
 		];
@@ -937,11 +1045,30 @@ class KadenceBlocksCssTest extends WPTestCase {
 	public function testRenderShadowWithoutDefaultsIsUnchanged(): void {
 		$this->assertSame(
 			'1px 1px 4px 2px rgba(0, 0, 0, 0.5)',
-			$this->css->render_shadow( [ 'color' => '#000000', 'opacity' => 0.5, 'spread' => 2, 'blur' => 4, 'hOffset' => 1, 'vOffset' => 1, 'inset' => false ] ),
+			$this->css->render_shadow(
+				[
+					'color'   => '#000000',
+					'opacity' => 0.5,
+					'spread'  => 2,
+					'blur'    => 4,
+					'hOffset' => 1,
+					'vOffset' => 1,
+					'inset'   => false,
+				]
+			),
 			'A complete shadow with no defaults renders exactly as before'
 		);
 		$this->assertFalse(
-			$this->css->render_shadow( [ 'color' => '#000000', 'opacity' => 0.5, 'spread' => 2, 'blur' => 4, 'hOffset' => 1, 'vOffset' => 1 ] ),
+			$this->css->render_shadow(
+				[
+					'color'   => '#000000',
+					'opacity' => 0.5,
+					'spread'  => 2,
+					'blur'    => 4,
+					'hOffset' => 1,
+					'vOffset' => 1,
+				]
+			),
 			'A shadow missing a required leg still returns false when no defaults are supplied'
 		);
 	}
@@ -953,23 +1080,31 @@ class KadenceBlocksCssTest extends WPTestCase {
 	 * @return void
 	 */
 	public function testRenderBorderStylesResolvesTokenWidth(): void {
-		$this->css->render_border_styles( [
-			'borderStyle' => [
-				[
-					'top'    => [ '#000000', 'solid', '{semantic.border-width.default}' ],
-					'right'  => [ '#000000', 'solid', 1 ],
-					'bottom' => [ '#000000', 'solid', 1 ],
-					'left'   => [ '#000000', 'solid', 1 ],
-					'unit'   => 'px',
+		$this->css->render_border_styles(
+			[
+				'borderStyle' => [
+					[
+						'top'    => [ '#000000', 'solid', '{semantic.border-width.default}' ],
+						'right'  => [ '#000000', 'solid', 1 ],
+						'bottom' => [ '#000000', 'solid', 1 ],
+						'left'   => [ '#000000', 'solid', 1 ],
+						'unit'   => 'px',
+					],
 				],
-			],
-		] );
+			]
+		);
 		$output = $this->css->css_output();
 
-		$this->assertStringContainsString( 'border-top:var(--kb-token--semantic--border-width--default) solid #000000', $output,
-			'An aliased width resolves to the token var and the width branch still fires' );
-		$this->assertStringContainsString( 'border-right:1px solid #000000', $output,
-			'A numeric width is still rendered with its unit' );
+		$this->assertStringContainsString(
+			'border-top:var(--kb-token--semantic--border-width--default) solid #000000',
+			$output,
+			'An aliased width resolves to the token var and the width branch still fires'
+		);
+		$this->assertStringContainsString(
+			'border-right:1px solid #000000',
+			$output,
+			'A numeric width is still rendered with its unit'
+		);
 	}
 
 	/**
@@ -979,23 +1114,33 @@ class KadenceBlocksCssTest extends WPTestCase {
 	 * @return void
 	 */
 	public function testRenderBorderStylesWritesColorAndStyleWithoutWidth(): void {
-		$this->css->render_border_styles( [
-			'borderStyle' => [
-				[
-					'top'    => [ '#ff0000', 'dashed', '' ],
-					'right'  => [ '#ff0000', 'dashed', '' ],
-					'bottom' => [ '#ff0000', 'dashed', '' ],
-					'left'   => [ '#ff0000', 'dashed', '' ],
-					'unit'   => 'px',
+		$this->css->render_border_styles(
+			[
+				'borderStyle' => [
+					[
+						'top'    => [ '#ff0000', 'dashed', '' ],
+						'right'  => [ '#ff0000', 'dashed', '' ],
+						'bottom' => [ '#ff0000', 'dashed', '' ],
+						'left'   => [ '#ff0000', 'dashed', '' ],
+						'unit'   => 'px',
+					],
 				],
 			],
-		], 'borderStyle', true );
+			'borderStyle',
+			true
+		);
 		$output = $this->css->css_output();
 
-		$this->assertStringContainsString( 'border-top-color:#ff0000', $output,
-			'A stored color goes out on its own when there is no width' );
-		$this->assertStringContainsString( 'border-top-style:dashed', $output,
-			'A stored line style goes out on its own when there is no width' );
+		$this->assertStringContainsString(
+			'border-top-color:#ff0000',
+			$output,
+			'A stored color goes out on its own when there is no width'
+		);
+		$this->assertStringContainsString(
+			'border-top-style:dashed',
+			$output,
+			'A stored line style goes out on its own when there is no width'
+		);
 	}
 
 	/**
@@ -1005,23 +1150,33 @@ class KadenceBlocksCssTest extends WPTestCase {
 	 * @return void
 	 */
 	public function testRenderBorderStylesWritesStoredStyleAlone(): void {
-		$this->css->render_border_styles( [
-			'borderStyle' => [
-				[
-					'top'    => [ '', 'dotted', '' ],
-					'right'  => [ '', '', '' ],
-					'bottom' => [ '', '', '' ],
-					'left'   => [ '', '', '' ],
-					'unit'   => 'px',
+		$this->css->render_border_styles(
+			[
+				'borderStyle' => [
+					[
+						'top'    => [ '', 'dotted', '' ],
+						'right'  => [ '', '', '' ],
+						'bottom' => [ '', '', '' ],
+						'left'   => [ '', '', '' ],
+						'unit'   => 'px',
+					],
 				],
 			],
-		], 'borderStyle', true );
+			'borderStyle',
+			true
+		);
 		$output = $this->css->css_output();
 
-		$this->assertStringContainsString( 'border-top-style:dotted', $output,
-			'A stored line style is written even with no width and no color' );
-		$this->assertStringNotContainsString( 'border-right', $output,
-			'A side with nothing stored writes nothing' );
+		$this->assertStringContainsString(
+			'border-top-style:dotted',
+			$output,
+			'A stored line style is written even with no width and no color'
+		);
+		$this->assertStringNotContainsString(
+			'border-right',
+			$output,
+			'A side with nothing stored writes nothing'
+		);
 	}
 
 	/**
@@ -1031,23 +1186,33 @@ class KadenceBlocksCssTest extends WPTestCase {
 	 * @return void
 	 */
 	public function testRenderBorderStylesLeavesStyleAloneForColorOnly(): void {
-		$this->css->render_border_styles( [
-			'borderStyle' => [
-				[
-					'top'    => [ '#ff0000', '', '' ],
-					'right'  => [ '#ff0000', '', '' ],
-					'bottom' => [ '#ff0000', '', '' ],
-					'left'   => [ '#ff0000', '', '' ],
-					'unit'   => 'px',
+		$this->css->render_border_styles(
+			[
+				'borderStyle' => [
+					[
+						'top'    => [ '#ff0000', '', '' ],
+						'right'  => [ '#ff0000', '', '' ],
+						'bottom' => [ '#ff0000', '', '' ],
+						'left'   => [ '#ff0000', '', '' ],
+						'unit'   => 'px',
+					],
 				],
 			],
-		], 'borderStyle', true );
+			'borderStyle',
+			true
+		);
 		$output = $this->css->css_output();
 
-		$this->assertStringContainsString( 'border-top-color:#ff0000', $output,
-			'A stored color is written' );
-		$this->assertStringNotContainsString( 'border-top-style', $output,
-			'A style the block does not store is not written' );
+		$this->assertStringContainsString(
+			'border-top-color:#ff0000',
+			$output,
+			'A stored color is written'
+		);
+		$this->assertStringNotContainsString(
+			'border-top-style',
+			$output,
+			'A style the block does not store is not written'
+		);
 	}
 
 	/**
@@ -1057,21 +1222,28 @@ class KadenceBlocksCssTest extends WPTestCase {
 	 * @return void
 	 */
 	public function testRenderBorderStylesWritesTabletStyleWithoutWidth(): void {
-		$this->css->render_border_styles( [
-			'tabletBorderStyle' => [
-				[
-					'top'    => [ '', 'dashed', '' ],
-					'right'  => [ '', '', '' ],
-					'bottom' => [ '', '', '' ],
-					'left'   => [ '', '', '' ],
-					'unit'   => 'px',
+		$this->css->render_border_styles(
+			[
+				'tabletBorderStyle' => [
+					[
+						'top'    => [ '', 'dashed', '' ],
+						'right'  => [ '', '', '' ],
+						'bottom' => [ '', '', '' ],
+						'left'   => [ '', '', '' ],
+						'unit'   => 'px',
+					],
 				],
 			],
-		], 'borderStyle', true );
+			'borderStyle',
+			true
+		);
 		$output = $this->css->css_output();
 
-		$this->assertStringContainsString( 'border-top-style:dashed', $output,
-			'A style stored at the tablet size is written with no width stored' );
+		$this->assertStringContainsString(
+			'border-top-style:dashed',
+			$output,
+			'A style stored at the tablet size is written with no width stored'
+		);
 	}
 
 	/**
@@ -1081,33 +1253,49 @@ class KadenceBlocksCssTest extends WPTestCase {
 	 * @return void
 	 */
 	public function testRenderTypographyResolvesTokenAlias(): void {
-		$this->css->render_typography( [
-			'typography' => [
-				'lineHeight'    => [ '{semantic.line-height.heading}', '', '' ],
-				'letterSpacing' => [ '{semantic.letter-spacing.heading}', '', '' ],
-			],
-		] );
+		$this->css->render_typography(
+			[
+				'typography' => [
+					'lineHeight'    => [ '{semantic.line-height.heading}', '', '' ],
+					'letterSpacing' => [ '{semantic.letter-spacing.heading}', '', '' ],
+				],
+			]
+		);
 		$output = $this->css->css_output();
 
-		$this->assertStringContainsString( 'line-height:var(--kb-token--semantic--line-height--heading)', $output,
-			'An aliased line-height resolves to the token var with no unit' );
-		$this->assertStringContainsString( 'letter-spacing:var(--kb-token--semantic--letter-spacing--heading)', $output,
-			'An aliased letter-spacing resolves to the token var with no unit' );
+		$this->assertStringContainsString(
+			'line-height:var(--kb-token--semantic--line-height--heading)',
+			$output,
+			'An aliased line-height resolves to the token var with no unit'
+		);
+		$this->assertStringContainsString(
+			'letter-spacing:var(--kb-token--semantic--letter-spacing--heading)',
+			$output,
+			'An aliased letter-spacing resolves to the token var with no unit'
+		);
 
 		$numeric = new Kadence_Blocks_CSS();
-		$numeric->render_typography( [
-			'typography' => [
-				'lineType'      => 'px',
-				'lineHeight'    => [ 1.5, '', '' ],
-				'letterSpacing' => [ 2, '', '' ],
-			],
-		] );
+		$numeric->render_typography(
+			[
+				'typography' => [
+					'lineType'      => 'px',
+					'lineHeight'    => [ 1.5, '', '' ],
+					'letterSpacing' => [ 2, '', '' ],
+				],
+			]
+		);
 		$numeric_output = $numeric->css_output();
 
-		$this->assertStringContainsString( 'line-height:1.5px', $numeric_output,
-			'A numeric line-height is still rendered with its unit' );
-		$this->assertStringContainsString( 'letter-spacing:2px', $numeric_output,
-			'A numeric letter-spacing is still rendered with its unit' );
+		$this->assertStringContainsString(
+			'line-height:1.5px',
+			$numeric_output,
+			'A numeric line-height is still rendered with its unit'
+		);
+		$this->assertStringContainsString(
+			'letter-spacing:2px',
+			$numeric_output,
+			'A numeric letter-spacing is still rendered with its unit'
+		);
 	}
 
 	protected function _before() {

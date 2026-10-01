@@ -2,7 +2,6 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Block_Default_Css;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Preset\Css_Builder as Preset_Css_Builder;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Composes_Selector_Suffix;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Value;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Binding;
@@ -390,14 +389,14 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param Binding $binding The binding being rendered.
-	 * @param string  $var     The referenced token's CSS variable, including its leading `--`.
-	 * @param string  $literal The resolved literal, used as the token variable's fallback.
+	 * @param Binding $binding      The binding being rendered.
+	 * @param string  $css_variable The referenced token's CSS variable, including its leading `--`.
+	 * @param string  $literal      The resolved literal, used as the token variable's fallback.
 	 *
 	 * @return string The declaration value.
 	 */
-	private function declaration_value( Binding $binding, string $var, string $literal ): string {
-		$value   = 'var(' . $var . ',' . $this->sanitize_value( $literal ) . ')';
+	private function declaration_value( Binding $binding, string $css_variable, string $literal ): string {
+		$value   = 'var(' . $css_variable . ',' . $this->sanitize_value( $literal ) . ')';
 		$css_var = $binding->css_var();
 
 		if ( $css_var === null ) {
@@ -434,14 +433,16 @@ final class Css_Builder {
 		$cached    = wp_cache_get( $cache_key, self::CACHE_GROUP, false, $found );
 
 		if ( $found && is_string( $cached ) ) {
-			return $this->memo[ $memo_key ] = $cached;
+			$this->memo[ $memo_key ] = $cached;
+			return $this->memo[ $memo_key ];
 		}
 
 		$css = $editor ? $this->editor_css( $slug, $breakpoints ) : $this->css( $slug, $breakpoints );
 
 		wp_cache_set( $cache_key, $css, self::CACHE_GROUP, DAY_IN_SECONDS );
 
-		return $this->memo[ $memo_key ] = $css;
+		$this->memo[ $memo_key ] = $css;
+		return $this->memo[ $memo_key ];
 	}
 
 	/**

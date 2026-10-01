@@ -101,14 +101,14 @@ final class Css_RendererTest extends TestCase {
 			'spread'  => '0px',
 		];
 
-		$withFalseInset          = $shadow;
-		$withFalseInset['inset'] = false;
+		$with_false_inset          = $shadow;
+		$with_false_inset['inset'] = false;
 
 		$this->assertSame(
 			$this->renderer->render( 'shadow', $shadow ),
-			$this->renderer->render( 'shadow', $withFalseInset )
+			$this->renderer->render( 'shadow', $with_false_inset )
 		);
-		$this->assertSame( '0px 2px 8px 0px #1A202C', $this->renderer->render( 'shadow', $withFalseInset ) );
+		$this->assertSame( '0px 2px 8px 0px #1A202C', $this->renderer->render( 'shadow', $with_false_inset ) );
 	}
 
 	public function testNonScalarScalarTypeReturnsEmptyString(): void {

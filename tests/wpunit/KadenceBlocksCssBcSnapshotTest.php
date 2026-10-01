@@ -26,10 +26,6 @@ final class KadenceBlocksCssBcSnapshotTest extends TestCase {
 		$this->css = new Kadence_Blocks_CSS();
 	}
 
-	protected function tearDown(): void {
-		parent::tearDown();
-	}
-
 	/**
 	 * render_number returns byte-identical output for numeric/literal input, and
 	 * short-circuits to false for non-numeric, non-alias input.
@@ -43,8 +39,11 @@ final class KadenceBlocksCssBcSnapshotTest extends TestCase {
 	 * @return void
 	 */
 	public function testRenderNumberBcCases( $number, ?string $unit, $expected ): void {
-		$this->assertSame( $expected, $this->css->render_number( $number, $unit ),
-			'render_number must be byte-identical to its pre-recognizer output for numeric/literal input' );
+		$this->assertSame(
+			$expected,
+			$this->css->render_number( $number, $unit ),
+			'render_number must be byte-identical to its pre-recognizer output for numeric/literal input'
+		);
 	}
 
 	/**
@@ -109,25 +108,34 @@ final class KadenceBlocksCssBcSnapshotTest extends TestCase {
 	 *
 	 * @param array         $attributes      The attributes array keyed by "width".
 	 * @param string        $unit            The unit to append.
-	 * @param mixed         $expectedReturn  The expected return value.
-	 * @param string|null   $expectedFragment The expected declaration fragment, or null if none.
+	 * @param mixed         $expected_return  The expected return value.
+	 * @param string|null   $expected_fragment The expected declaration fragment, or null if none.
 	 *
 	 * @return void
 	 */
-	public function testRenderRangeBcCases( array $attributes, string $unit, $expectedReturn, ?string $expectedFragment ): void {
+	public function testRenderRangeBcCases( array $attributes, string $unit, $expected_return, ?string $expected_fragment ): void {
 		$actual = $this->css->render_range( $attributes, 'width', 'width', $unit );
 
-		$this->assertSame( $expectedReturn, $actual,
-			'render_range must return byte-identical values for numeric/literal input' );
+		$this->assertSame(
+			$expected_return,
+			$actual,
+			'render_range must return byte-identical values for numeric/literal input'
+		);
 
 		$output = $this->css->css_output();
 
-		if ( null !== $expectedFragment ) {
-			$this->assertStringContainsString( $expectedFragment, $output,
-				'render_range must emit the byte-identical declaration for numeric input' );
+		if ( null !== $expected_fragment ) {
+			$this->assertStringContainsString(
+				$expected_fragment,
+				$output,
+				'render_range must emit the byte-identical declaration for numeric input'
+			);
 		} else {
-			$this->assertStringNotContainsString( 'width:', $output,
-				'render_range must add nothing when the value is not numeric' );
+			$this->assertStringNotContainsString(
+				'width:',
+				$output,
+				'render_range must add nothing when the value is not numeric'
+			);
 		}
 	}
 
@@ -138,40 +146,40 @@ final class KadenceBlocksCssBcSnapshotTest extends TestCase {
 	 */
 	public static function renderRangeProvider(): Generator {
 		yield 'number with px unit' => [
-			'attributes'       => [ 'width' => 16 ],
-			'unit'             => 'px',
-			'expectedReturn'   => null,
-			'expectedFragment' => 'width:16px',
+			'attributes'        => [ 'width' => 16 ],
+			'unit'              => 'px',
+			'expected_return'   => null,
+			'expected_fragment' => 'width:16px',
 		];
 		yield 'float with em unit' => [
-			'attributes'       => [ 'width' => 1.5 ],
-			'unit'             => 'em',
-			'expectedReturn'   => null,
-			'expectedFragment' => 'width:1.5em',
+			'attributes'        => [ 'width' => 1.5 ],
+			'unit'              => 'em',
+			'expected_return'   => null,
+			'expected_fragment' => 'width:1.5em',
 		];
 		yield 'zero renders with unit' => [
-			'attributes'       => [ 'width' => 0 ],
-			'unit'             => 'px',
-			'expectedReturn'   => null,
-			'expectedFragment' => 'width:0px',
+			'attributes'        => [ 'width' => 0 ],
+			'unit'              => 'px',
+			'expected_return'   => null,
+			'expected_fragment' => 'width:0px',
 		];
 		yield 'negative number keeps its sign' => [
-			'attributes'       => [ 'width' => -10 ],
-			'unit'             => 'px',
-			'expectedReturn'   => null,
-			'expectedFragment' => 'width:-10px',
+			'attributes'        => [ 'width' => -10 ],
+			'unit'              => 'px',
+			'expected_return'   => null,
+			'expected_fragment' => 'width:-10px',
 		];
 		yield 'brace-containing non-alias is not numeric and short-circuits' => [
-			'attributes'       => [ 'width' => '1px solid {semantic.color.brand}' ],
-			'unit'             => 'px',
-			'expectedReturn'   => false,
-			'expectedFragment' => null,
+			'attributes'        => [ 'width' => '1px solid {semantic.color.brand}' ],
+			'unit'              => 'px',
+			'expected_return'   => false,
+			'expected_fragment' => null,
 		];
 		yield 'empty string short-circuits' => [
-			'attributes'       => [ 'width' => '' ],
-			'unit'             => 'px',
-			'expectedReturn'   => false,
-			'expectedFragment' => null,
+			'attributes'        => [ 'width' => '' ],
+			'unit'              => 'px',
+			'expected_return'   => false,
+			'expected_fragment' => null,
 		];
 	}
 
@@ -187,8 +195,11 @@ final class KadenceBlocksCssBcSnapshotTest extends TestCase {
 	 * @return void
 	 */
 	public function testRenderColorBcCases( $color, $expected ): void {
-		$this->assertSame( $expected, $this->css->render_color( $color ),
-			'render_color must be byte-identical to its pre-recognizer output for literal input' );
+		$this->assertSame(
+			$expected,
+			$this->css->render_color( $color ),
+			'render_color must be byte-identical to its pre-recognizer output for literal input'
+		);
 	}
 
 	/**
@@ -203,8 +214,11 @@ final class KadenceBlocksCssBcSnapshotTest extends TestCase {
 	 * @return void
 	 */
 	public function testSanitizeColorBcCases( $color, $expected ): void {
-		$this->assertSame( $expected, $this->css->sanitize_color( $color ),
-			'sanitize_color must be byte-identical to its pre-recognizer output for literal input' );
+		$this->assertSame(
+			$expected,
+			$this->css->sanitize_color( $color ),
+			'sanitize_color must be byte-identical to its pre-recognizer output for literal input'
+		);
 	}
 
 	/**
@@ -259,14 +273,26 @@ final class KadenceBlocksCssBcSnapshotTest extends TestCase {
 		);
 		$output = $this->css->css_output();
 
-		$this->assertStringContainsString( 'border-top-width:2px', $output,
-			'A numeric side is rendered with its unit' );
-		$this->assertStringContainsString( 'border-right-width:0px', $output,
-			'A zero side still renders since is_numeric(0) is true' );
-		$this->assertStringNotContainsString( 'border-bottom-width', $output,
-			'An empty side is not numeric and adds nothing' );
-		$this->assertStringNotContainsString( 'border-left-width', $output,
-			'A brace-containing non-alias side is not numeric and adds nothing' );
+		$this->assertStringContainsString(
+			'border-top-width:2px',
+			$output,
+			'A numeric side is rendered with its unit'
+		);
+		$this->assertStringContainsString(
+			'border-right-width:0px',
+			$output,
+			'A zero side still renders since is_numeric(0) is true'
+		);
+		$this->assertStringNotContainsString(
+			'border-bottom-width',
+			$output,
+			'An empty side is not numeric and adds nothing'
+		);
+		$this->assertStringNotContainsString(
+			'border-left-width',
+			$output,
+			'A brace-containing non-alias side is not numeric and adds nothing'
+		);
 	}
 
 	/**
@@ -282,8 +308,11 @@ final class KadenceBlocksCssBcSnapshotTest extends TestCase {
 	 * @return void
 	 */
 	public function testRenderMeasureBcCases( array $measure, string $expected ): void {
-		$this->assertSame( $expected, $this->css->render_measure( $measure ),
-			'render_measure must be byte-identical to its pre-recognizer output for numeric/literal input' );
+		$this->assertSame(
+			$expected,
+			$this->css->render_measure( $measure ),
+			'render_measure must be byte-identical to its pre-recognizer output for numeric/literal input'
+		);
 	}
 
 	/**
@@ -321,14 +350,26 @@ final class KadenceBlocksCssBcSnapshotTest extends TestCase {
 		$this->css->render_border_radius( [ 'borderRadius' => [ 1, 0, '', '1px solid {semantic.color.brand}' ] ] );
 		$output = $this->css->css_output();
 
-		$this->assertStringContainsString( 'border-top-left-radius:1px', $output,
-			'A numeric corner is rendered with its unit' );
-		$this->assertStringContainsString( 'border-top-right-radius:0px', $output,
-			'A zero corner still renders since is_numeric(0) is true' );
-		$this->assertStringNotContainsString( 'border-bottom-right-radius', $output,
-			'An empty corner is not numeric and adds nothing' );
-		$this->assertStringNotContainsString( 'border-bottom-left-radius', $output,
-			'A brace-containing non-alias corner is not numeric and adds nothing' );
+		$this->assertStringContainsString(
+			'border-top-left-radius:1px',
+			$output,
+			'A numeric corner is rendered with its unit'
+		);
+		$this->assertStringContainsString(
+			'border-top-right-radius:0px',
+			$output,
+			'A zero corner still renders since is_numeric(0) is true'
+		);
+		$this->assertStringNotContainsString(
+			'border-bottom-right-radius',
+			$output,
+			'An empty corner is not numeric and adds nothing'
+		);
+		$this->assertStringNotContainsString(
+			'border-bottom-left-radius',
+			$output,
+			'A brace-containing non-alias corner is not numeric and adds nothing'
+		);
 	}
 
 	/**
@@ -349,12 +390,21 @@ final class KadenceBlocksCssBcSnapshotTest extends TestCase {
 		);
 		$output = $this->css->css_output();
 
-		$this->assertStringContainsString( 'margin:10px', $output,
-			'The desktop breakpoint is rendered with its unit' );
-		$this->assertStringContainsString( 'margin:0px', $output,
-			'The zero tablet breakpoint still renders since is_numeric(0) is true' );
-		$this->assertStringNotContainsString( '{semantic.color.brand}', $output,
-			'A brace-containing non-alias mobile breakpoint is not numeric and adds nothing' );
+		$this->assertStringContainsString(
+			'margin:10px',
+			$output,
+			'The desktop breakpoint is rendered with its unit'
+		);
+		$this->assertStringContainsString(
+			'margin:0px',
+			$output,
+			'The zero tablet breakpoint still renders since is_numeric(0) is true'
+		);
+		$this->assertStringNotContainsString(
+			'{semantic.color.brand}',
+			$output,
+			'A brace-containing non-alias mobile breakpoint is not numeric and adds nothing'
+		);
 	}
 
 	/**
@@ -370,8 +420,11 @@ final class KadenceBlocksCssBcSnapshotTest extends TestCase {
 	 * @return void
 	 */
 	public function testRenderShadowBcCases( array $shadow, string $expected ): void {
-		$this->assertSame( $expected, $this->css->render_shadow( $shadow ),
-			'render_shadow must be byte-identical to its pre-recognizer output for numeric/literal input' );
+		$this->assertSame(
+			$expected,
+			$this->css->render_shadow( $shadow ),
+			'render_shadow must be byte-identical to its pre-recognizer output for numeric/literal input'
+		);
 	}
 
 	/**
@@ -441,49 +494,73 @@ final class KadenceBlocksCssBcSnapshotTest extends TestCase {
 	 * @return void
 	 */
 	public function testRenderTypographyLineHeightAndLetterSpacingBcCase(): void {
-		$this->css->render_typography( [
-			'typography' => [
-				'lineType'      => 'px',
-				'lineHeight'    => [ 1.5, '', '' ],
-				'letterSpacing' => [ 2, '', '' ],
-			],
-		] );
+		$this->css->render_typography(
+			[
+				'typography' => [
+					'lineType'      => 'px',
+					'lineHeight'    => [ 1.5, '', '' ],
+					'letterSpacing' => [ 2, '', '' ],
+				],
+			]
+		);
 		$numeric_output = $this->css->css_output();
 
-		$this->assertStringContainsString( 'line-height:1.5px', $numeric_output,
-			'A numeric line-height is rendered with its unit' );
-		$this->assertStringContainsString( 'letter-spacing:2px', $numeric_output,
-			'A numeric letter-spacing is rendered with its unit' );
+		$this->assertStringContainsString(
+			'line-height:1.5px',
+			$numeric_output,
+			'A numeric line-height is rendered with its unit'
+		);
+		$this->assertStringContainsString(
+			'letter-spacing:2px',
+			$numeric_output,
+			'A numeric letter-spacing is rendered with its unit'
+		);
 
 		$zero_css = new Kadence_Blocks_CSS();
-		$zero_css->render_typography( [
-			'typography' => [
-				'lineType'      => 'px',
-				'lineHeight'    => [ 0, '', '' ],
-				'letterSpacing' => [ 0, '', '' ],
-			],
-		] );
+		$zero_css->render_typography(
+			[
+				'typography' => [
+					'lineType'      => 'px',
+					'lineHeight'    => [ 0, '', '' ],
+					'letterSpacing' => [ 0, '', '' ],
+				],
+			]
+		);
 		$zero_output = $zero_css->css_output();
 
-		$this->assertStringNotContainsString( 'line-height:', $zero_output,
-			'A falsy zero line-height is skipped by the !empty() gate' );
-		$this->assertStringContainsString( 'letter-spacing:0px', $zero_output,
-			'A zero letter-spacing still renders since its gate is is_numeric()' );
+		$this->assertStringNotContainsString(
+			'line-height:',
+			$zero_output,
+			'A falsy zero line-height is skipped by the !empty() gate'
+		);
+		$this->assertStringContainsString(
+			'letter-spacing:0px',
+			$zero_output,
+			'A zero letter-spacing still renders since its gate is is_numeric()'
+		);
 
 		$brace_css = new Kadence_Blocks_CSS();
-		$brace_css->render_typography( [
-			'typography' => [
-				'lineType'      => 'px',
-				'lineHeight'    => [ '1px solid {semantic.color.brand}', '', '' ],
-				'letterSpacing' => [ '1px solid {semantic.color.brand}', '', '' ],
-			],
-		] );
+		$brace_css->render_typography(
+			[
+				'typography' => [
+					'lineType'      => 'px',
+					'lineHeight'    => [ '1px solid {semantic.color.brand}', '', '' ],
+					'letterSpacing' => [ '1px solid {semantic.color.brand}', '', '' ],
+				],
+			]
+		);
 		$brace_output = $brace_css->css_output();
 
-		$this->assertStringContainsString( 'line-height:1px solid {semantic.color.brand}px', $brace_output,
-			'A brace-containing non-alias line-height passes through unconditionally with its unit suffix' );
-		$this->assertStringNotContainsString( 'letter-spacing:1px solid', $brace_output,
-			'A brace-containing non-alias letter-spacing is rejected by the is_numeric() gate' );
+		$this->assertStringContainsString(
+			'line-height:1px solid {semantic.color.brand}px',
+			$brace_output,
+			'A brace-containing non-alias line-height passes through unconditionally with its unit suffix'
+		);
+		$this->assertStringNotContainsString(
+			'letter-spacing:1px solid',
+			$brace_output,
+			'A brace-containing non-alias letter-spacing is rejected by the is_numeric() gate'
+		);
 	}
 
 	/**
@@ -510,16 +587,18 @@ final class KadenceBlocksCssBcSnapshotTest extends TestCase {
 				],
 			],
 		];
-		$args = [
+		$args       = [
 			'desktop_key' => 'borderStyle',
 			'tablet_key'  => 'tabletBorderStyle',
 			'mobile_key'  => 'mobileBorderStyle',
 			'unit_key'    => 'unit',
 		];
 
-		$this->assertSame( $expected,
+		$this->assertSame(
+			$expected,
 			$this->css->get_border_value( $attributes, $args, 'top', 'desktop', 'width', false ),
-			'get_border_value must be byte-identical to its pre-recognizer output for numeric/literal width' );
+			'get_border_value must be byte-identical to its pre-recognizer output for numeric/literal width'
+		);
 	}
 
 	/**

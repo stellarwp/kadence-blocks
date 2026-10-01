@@ -113,7 +113,8 @@ final class Json_Baseline_Document implements Baseline_Document {
 		$cached = wp_cache_get( $key, self::CACHE_GROUP, false, $found );
 
 		if ( $found && is_array( $cached ) ) {
-			return $this->document = $cached;
+			$this->document = $cached;
+			return $this->document;
 		}
 
 		$document = $this->load();
@@ -126,7 +127,8 @@ final class Json_Baseline_Document implements Baseline_Document {
 			wp_cache_set( $key, $document, self::CACHE_GROUP );
 		}
 
-		return $this->document = $document;
+		$this->document = $document;
+		return $this->document;
 	}
 
 	/**
@@ -151,7 +153,8 @@ final class Json_Baseline_Document implements Baseline_Document {
 			}
 		}
 
-		return $this->index = $index;
+		$this->index = $index;
+		return $this->index;
 	}
 
 	/**
@@ -204,7 +207,7 @@ final class Json_Baseline_Document implements Baseline_Document {
 			return [];
 		}
 
-		$raw = file_get_contents( $this->path );
+		$raw = file_get_contents( $this->path ); // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown -- Reads the bundled baseline file, not a remote URL.
 
 		if ( $raw === false ) {
 			return [];

@@ -24,7 +24,7 @@ final class Json_Baseline_DocumentTest extends TestCase {
 	protected function tearDown(): void {
 		foreach ( $this->temp_files as $file ) {
 			if ( is_file( $file ) ) {
-				unlink( $file );
+				wp_delete_file( $file );
 			}
 		}
 
@@ -100,21 +100,27 @@ final class Json_Baseline_DocumentTest extends TestCase {
 	public function testLeavesAreDistinguishedFromGroupsInAFixture(): void {
 		$path = $this->write_fixture(
 			[
-				'primitive' => [
+				'primitive'   => [
 					'color' => [
 						// Group node -> not a token.
 						'brand' => [
 							// Leaf -> token.
-							'primary' => [ '$type' => 'color', '$value' => '#000000' ],
+							'primary' => [
+								'$type'  => 'color',
+								'$value' => '#000000',
+							],
 						],
 					],
 				],
-				'semantic'  => [
+				'semantic'    => [
 					'shadow' => [
 						// Composite leaf -> single token, its sub-fields are not tokens.
 						'card' => [
 							'$type'  => 'shadow',
-							'$value' => [ 'color' => '#000', 'offsetX' => '0px' ],
+							'$value' => [
+								'color'   => '#000',
+								'offsetX' => '0px',
+							],
 						],
 					],
 				],
@@ -177,7 +183,10 @@ final class Json_Baseline_DocumentTest extends TestCase {
 			[
 				'semantic' => [
 					'color' => [
-						'button-bg' => [ '$type' => 'color', '$value' => '#fff' ],
+						'button-bg' => [
+							'$type'  => 'color',
+							'$value' => '#fff',
+						],
 					],
 				],
 			]
@@ -189,7 +198,7 @@ final class Json_Baseline_DocumentTest extends TestCase {
 
 		// Remove the source file: a second instance on the same version must still answer from cache —
 		// both the full document and the has() index it derives.
-		unlink( $path );
+		wp_delete_file( $path );
 		$this->temp_files = [];
 
 		$second = new Json_Baseline_Document( $path, 'test-cache' );
@@ -198,9 +207,9 @@ final class Json_Baseline_DocumentTest extends TestCase {
 	}
 
 	public function testAFailedLoadIsNotCachedSoALaterRequestRecovers(): void {
-		$path    = tempnam( sys_get_temp_dir(), 'kb_baseline_' );
+		$path    = tempnam( sys_get_temp_dir(), 'kb_baseline_' ); // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_tempnam -- Creates the file in the system temp dir for the test.
 		$version = 'test-recover';
-		unlink( $path );
+		wp_delete_file( $path );
 
 		// First read happens while the file is unavailable (e.g. mid-deploy): empty, and must NOT cache.
 		$first = new Json_Baseline_Document( $path, $version );
@@ -211,7 +220,16 @@ final class Json_Baseline_DocumentTest extends TestCase {
 		file_put_contents(
 			$path,
 			(string) wp_json_encode(
-				[ 'semantic' => [ 'color' => [ 'button-bg' => [ '$type' => 'color', '$value' => '#fff' ] ] ] ]
+				[
+					'semantic' => [
+						'color' => [
+							'button-bg' => [
+								'$type'  => 'color',
+								'$value' => '#fff',
+							],
+						],
+					],
+				]
 			)
 		);
 		$this->temp_files[] = $path;
@@ -228,7 +246,7 @@ final class Json_Baseline_DocumentTest extends TestCase {
 	}
 
 	public function testMalformedJsonYieldsNoTokens(): void {
-		$path = tempnam( sys_get_temp_dir(), 'kb_baseline_' );
+		$path = tempnam( sys_get_temp_dir(), 'kb_baseline_' ); // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_tempnam -- Creates the file in the system temp dir for the test.
 		file_put_contents( $path, '{ not valid json' );
 		$this->temp_files[] = $path;
 
@@ -245,7 +263,7 @@ final class Json_Baseline_DocumentTest extends TestCase {
 	 * @return string
 	 */
 	private function write_fixture( array $document ): string {
-		$path = tempnam( sys_get_temp_dir(), 'kb_baseline_' );
+		$path = tempnam( sys_get_temp_dir(), 'kb_baseline_' ); // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_tempnam -- Creates the file in the system temp dir for the test.
 
 		file_put_contents( $path, (string) wp_json_encode( $document ) );
 
