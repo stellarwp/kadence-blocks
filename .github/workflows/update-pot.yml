@@ -49,6 +49,7 @@ jobs:
       - name: Create pull request
         uses: peter-evans/create-pull-request@v6
         with:
+          token: ${{ secrets.GH_BOT_TOKEN }}
           commit-message: 'chore: update pot file'
           branch: chore/update-pot
           branch-suffix: timestamp

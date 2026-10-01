@@ -43,6 +43,7 @@ jobs:
       - name: Open PR with replacements
         uses: peter-evans/create-pull-request@v6
         with:
+          token: ${{ secrets.GH_BOT_TOKEN }}
           base: ${{ github.ref_name }}
           branch: chore/replace-since-tbd-${{ inputs.version }}
           title: "chore: replace @since TBD with ${{ inputs.version }}"

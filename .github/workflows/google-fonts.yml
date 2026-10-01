@@ -51,6 +51,7 @@ jobs:
         if: steps.check_changes.outputs.changes == 'true'
         uses: peter-evans/create-pull-request@v5
         with:
+          token: ${{ secrets.GH_BOT_TOKEN }}
           commit-message: 'chore: update Google Fonts list'
           title: 'Update Google Fonts List'
           body: 'Updates the Google Fonts variants list with latest font data.'

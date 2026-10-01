@@ -135,11 +135,11 @@ defined( 'ABSPATH' ) || exit;
 											$file_value_array = explode( ', ', $data['value'] );
 											$value_output = array();
 											foreach ( $file_name_array as $key => $name ) {
-												$value_output[] = '<a href="' . $file_value_array[ $key ] . '" target="_blank">' . $name . '</a>';
+												$value_output[] = '<a href="' . esc_url( $file_value_array[ $key ] ) . '" target="_blank">' . esc_html( $name ) . '</a>';
 											}
 											$file_output = implode( ', ', $value_output );
 										} else {
-											$file_output = '<a href="' . $data['value'] . '" target="_blank">' . $file_name . '</a>';
+											$file_output = '<a href="' . esc_url( $data['value'] ) . '" target="_blank">' . esc_html( $file_name ) . '</a>';
 										}
 										?>
 										<?php echo wpautop( '<p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px; padding-bottom: 5px;">' . $file_output . '</p>' ); ?>

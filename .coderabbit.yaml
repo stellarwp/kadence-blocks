@@ -1,0 +1,40 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+#
+# CodeRabbit review configuration for this repository.
+#
+# @see https://docs.coderabbit.ai/reference/configuration
+tone_instructions: >-
+  Direct and specific, like a senior engineer on a Slack thread. Only flag what
+  needs to change. Skip praise, skip restating the diff. Lead with the change,
+  then the why. Prefix findings with "blocking", "should fix", or "nit".
+
+reviews:
+  auto_review:
+    # CodeRabbit reviews a PR whatever branch it targets, including main and one
+    # stacked onto another feature branch. This list only adds to the default
+    # branch, so narrowing it is how you exclude a base, not '!' patterns.
+    base_branches:
+      - '.*'
+    drafts: true
+
+  # CodeRabbit writes code as well as reviewing it: docstrings for new functions
+  # and unit tests for new code, both posted as committable suggestions on the
+  # PR. We take neither. Its docstrings restate the signature instead of
+  # explaining why the code does what it does, and its tests do not know this
+  # suite's base classes, factories, or the shared traits in tests/php/_support/.
+  #
+  # @see https://docs.coderabbit.ai/finishing-touches
+  finishing_touches:
+    docstrings:
+      enabled: false
+    unit_tests:
+      enabled: false
+
+# CodeRabbit carries these into a review alongside the diff: repo docs it treats
+# as standing rules, corrections it remembers between PRs, and the linked Linear
+# issues.
+#
+# @see https://docs.coderabbit.ai/knowledge-base
+knowledge_base:
+  learnings:
+    scope: local

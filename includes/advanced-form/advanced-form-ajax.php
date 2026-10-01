@@ -1,10 +1,16 @@
 <?php
-
 /**
  * Advanced Form Ajax Handing.
  *
  * @package Kadence Blocks
  */
+
+/*
+ * cspell:ignore aaudio absint addin dotm googlev matroska mimtypes msword nopriv officedocument onenote onepkg onetmp onetoc
+ * cspell:ignore opendocument openxmlformats oxps prefilter presentationml quicktime realaudio recaptchaerror spreadsheetml svgz unslash wordprocessingml xlsb xpsdocument
+ */
+
+use KadenceWP\KadenceBlocks\enshrined\svgSanitize\Sanitizer;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -55,7 +61,7 @@ class KB_Ajax_Advanced_Form {
 
 		if ( isset( $_POST['_kb_adv_form_id'] ) && ! empty( $_POST['_kb_adv_form_id'] ) && isset( $_POST['_kb_adv_form_post_id'] ) && ! empty( $_POST['_kb_adv_form_post_id'] ) ) {
 			$this->start_buffer();
-			// Nonce verification isn't used as it's not a login form but can be enabled with a filter. Note that caching the page will cause the nonce to fail after a cetain amount of time.
+			// Nonce verification isn't used as it's not a login form but can be enabled with a filter. Note that caching the page will cause the nonce to fail after a certain amount of time.
 			if ( apply_filters( 'kadence_blocks_form_verify_nonce', false ) && ! check_ajax_referer( 'kb_form_nonce', '_kb_form_verify', false ) ) {
 				$this->process_bail( __( 'Submission rejected, invalid security token. Reload the page and try again.', 'kadence-blocks' ), __( 'Token invalid', 'kadence-blocks' ) );
 			}
@@ -186,6 +192,7 @@ class KB_Ajax_Advanced_Form {
 				 * @param string $value The field value.
 				 */
 				$value = apply_filters( "kadence_blocks_form_sanitize_{$field_type}", $value );
+				$value = ( is_array( $value ) ? sanitize_text_field( implode( ', ', $value ) ) : sanitize_text_field( $value ) );
 		}
 
 		return $value;
@@ -250,6 +257,8 @@ class KB_Ajax_Advanced_Form {
 	/**
 	 * Process the fields
 	 *
+	 * @since 3.7.12 Validates file types against the field settings and sanitizes SVG uploads.
+	 *
 	 * @param array $fields the fields.
 	 */
 	public function process_fields( $fields ) {
@@ -259,7 +268,7 @@ class KB_Ajax_Advanced_Form {
 
 		foreach ( $fields as $index => $field ) {
 			$expected_field = ! empty( $field['inputName'] ) ? $field['inputName'] : 'field' . $field['uniqueID'];
-			// Skip proccessing this field if it's misssing (usually because hidden frontend).
+			// Skip processing this field if it's missing (usually because hidden frontend).
 			if ( ( ! isset( $_POST[ $expected_field ] ) || ( isset( $_POST[ $expected_field ] ) && $_POST[ $expected_field ] === '' ) ) && empty( $_FILES[ $expected_field ] ) ) {
 				if ( ! empty( $field['required'] ) && $field['required'] ) {
 					if ( ! empty( $field['kadenceFieldConditional']['conditionalData']['enable'] ) ) {
@@ -363,7 +372,34 @@ class KB_Ajax_Advanced_Form {
 							$allowed_file_categories = empty( $field['allowedTypes'] ) ? [ 'images' ] : $field['allowedTypes'];
 							$allowed_file_mimes      = apply_filters( 'kadence_form_allowed_mime_types', $this->get_allowed_mimes( $allowed_file_categories ), $field );
 
+							// An empty map would make WordPress fall back to the site-wide list.
+							if ( ! $allowed_file_mimes || ! wp_check_filetype( $file['name'], $allowed_file_mimes )['ext'] ) {
+								$field_errors[] = [
+									'message' => __( 'Sorry, you are not allowed to upload this file type.', 'kadence-blocks' ),
+									'field'   => $expected_field,
+									'type'    => 'custom',
+								];
+								continue 2; // Skip to next field.
+							}
+							if ( ! $this->sanitize_svg_upload( $file['tmp_name'], $file['name'], absint( $max_upload_size_bytes ) ) ) {
+								$field_errors[] = [
+									'message' => __( 'File could not be uploaded', 'kadence-blocks' ),
+									'field'   => $expected_field,
+									'type'    => 'custom',
+								];
+								continue 2; // Skip to next field.
+							}
+
+							// Sanitizing can change the file size.
 							$file_size = filesize( $file['tmp_name'] );
+							if ( $file_size > $max_upload_size_bytes ) {
+								$field_errors[] = [
+									'message' => __( 'File too large', 'kadence-blocks' ),
+									'field'   => $expected_field,
+									'type'    => 'custom',
+								];
+								continue 2; // Skip to next field.
+							}
 
 							// Check if multisite has a quota.
 							if ( is_multisite() ) {
@@ -625,6 +661,55 @@ class KB_Ajax_Advanced_Form {
 
 		return $allowed_mime_types;
 	}
+
+	/**
+	 * Sanitize an uploaded SVG file in place.
+	 *
+	 * @since 3.7.12
+	 *
+	 * @param string $path      The uploaded file path.
+	 * @param string $name      The original file name.
+	 * @param int    $max_bytes The maximum allowed content size in bytes.
+	 *
+	 * @return bool True when the file is not an SVG or was sanitized, false otherwise.
+	 */
+	public function sanitize_svg_upload( $path, $name, $max_bytes ) {
+		$extension = strtolower( pathinfo( $name, PATHINFO_EXTENSION ) );
+		if ( 'svg' !== $extension && 'svgz' !== $extension ) {
+			return true;
+		}
+
+		// gzopen() reads both plain and gzip-compressed files.
+		$handle = gzopen( $path, 'rb' );
+		if ( ! $handle ) {
+			return false;
+		}
+		$content = stream_get_contents( $handle, $max_bytes + 1 );
+		gzclose( $handle );
+		if ( ! $content || strlen( $content ) > $max_bytes ) {
+			return false;
+		}
+
+		$sanitizer = new Sanitizer();
+		$sanitizer->removeRemoteReferences( true );
+		try {
+			$clean = $sanitizer->sanitize( $content );
+		} catch ( Exception $e ) {
+			return false;
+		}
+		if ( ! $clean || ! $this->has_svg_root( $clean ) ) {
+			return false;
+		}
+		if ( 'svgz' === $extension ) {
+			$clean = gzencode( $clean );
+		}
+		if ( ! $clean ) {
+			return false;
+		}
+
+		return false !== file_put_contents( $path, $clean );
+	}
+
 	/**
 	 * Add filter to override the upload directory for form submissions.
 	 *
@@ -825,6 +910,31 @@ Header set X-Robots-Tag "noindex"
 		}
 
 		return $root_dir;
+	}
+
+	/**
+	 * Check that the markup is an SVG document.
+	 *
+	 * @since 3.7.12
+	 *
+	 * @param string $xml The XML markup.
+	 *
+	 * @return bool True when the root element is an SVG element, false otherwise.
+	 */
+	private function has_svg_root( $xml ) {
+		$use_errors = libxml_use_internal_errors( true );
+		$root       = simplexml_load_string( $xml );
+		libxml_clear_errors();
+		libxml_use_internal_errors( $use_errors );
+
+		if ( false === $root || 'svg' !== $root->getName() ) {
+			return false;
+		}
+
+		// A root without a namespace is accepted too.
+		$namespace = current( $root->getNamespaces() );
+
+		return false === $namespace || 'http://www.w3.org/2000/svg' === $namespace;
 	}
 }
 

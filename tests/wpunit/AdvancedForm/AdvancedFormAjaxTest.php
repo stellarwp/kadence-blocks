@@ -1,9 +1,12 @@
 <?php
 
+/* cspell:ignore nopriv svgz */
+
 namespace Tests\wpunit\AdvancedForm;
 
 use Codeception\TestCase\WPTestCase;
 use KB_Ajax_Advanced_Form;
+use WP_Filesystem_Direct;
 
 class AdvancedFormAjaxTest extends WPTestCase {
 
@@ -200,12 +203,162 @@ class AdvancedFormAjaxTest extends WPTestCase {
 		$this->assertEquals('0', $processed_fields[0]['value']);
 	}
 
+	public function testSanitizesValuesForAllFieldTypes() {
+		$mockedForm = $this->getMockBuilder( KB_Ajax_Advanced_Form::class )
+		                   ->onlyMethods( [ 'process_bail' ] )
+		                   ->getMock();
+
+		$fields = [
+			[
+				'inputName' => 'field1',
+				'uniqueID'  => 1,
+				'type'      => 'number',
+			],
+			[
+				'inputName' => 'field2',
+				'uniqueID'  => 2,
+				'type'      => 'range',
+			],
+		];
+		$_POST = [
+			'field1' => '<b>one</b>',
+			'field2' => '<i>two</i>',
+		];
+
+		$mockedForm->expects( $this->never() )->method( 'process_bail' );
+
+		$processed_fields = $mockedForm->process_fields( $fields );
+
+		$this->assertEquals( 'one', $processed_fields[0]['value'] );
+		$this->assertEquals( 'two', $processed_fields[1]['value'] );
+	}
+
+	public function testSanitizeFilterOutputIsSanitized() {
+		add_filter( 'kadence_blocks_form_sanitize_number', static function () {
+			return '<b>filtered</b>';
+		} );
+
+		$mockedForm = $this->getMockBuilder( KB_Ajax_Advanced_Form::class )
+		                   ->onlyMethods( [ 'process_bail' ] )
+		                   ->getMock();
+
+		$fields = [
+			[
+				'inputName' => 'field1',
+				'uniqueID'  => 1,
+				'type'      => 'number',
+			],
+		];
+		$_POST = [
+			'field1' => '5',
+		];
+
+		$processed_fields = $mockedForm->process_fields( $fields );
+
+		remove_all_filters( 'kadence_blocks_form_sanitize_number' );
+
+		$this->assertEquals( 'filtered', $processed_fields[0]['value'] );
+	}
+
+	public function testSanitizeSvgUploadRemovesScripts() {
+		$path = $this->create_temp_file( '<svg xmlns="http://www.w3.org/2000/svg" onload="alert(1)"><script>alert(2)</script><rect width="10" height="10"/></svg>' );
+
+		$this->assertTrue( $this->adv_form_ajax->sanitize_svg_upload( $path, 'image.SVG', MB_IN_BYTES ) );
+
+		$content = $this->read_temp_file( $path );
+
+		$this->assertStringNotContainsString( '<script', $content );
+		$this->assertStringNotContainsString( 'onload', $content );
+		$this->assertStringContainsString( '<rect', $content );
+	}
+
+	public function testSanitizeSvgUploadRemovesRemoteReferences() {
+		$path = $this->create_temp_file( '<svg xmlns="http://www.w3.org/2000/svg"><rect width="10" height="10" fill="url(\'https://example.com/paint.svg#p\')"/></svg>' );
+
+		$this->assertTrue( $this->adv_form_ajax->sanitize_svg_upload( $path, 'image.svg', MB_IN_BYTES ) );
+
+		$content = $this->read_temp_file( $path );
+
+		$this->assertStringNotContainsString( 'example.com', $content );
+		$this->assertStringContainsString( '<rect', $content );
+	}
+
+	public function testSanitizeSvgUploadKeepsCompressedFilesCompressed() {
+		$path = $this->create_temp_file( gzencode( '<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script><rect width="10" height="10"/></svg>' ) );
+
+		$this->assertTrue( $this->adv_form_ajax->sanitize_svg_upload( $path, 'image.svgz', MB_IN_BYTES ) );
+
+		$content = gzdecode( $this->read_temp_file( $path ) );
+
+		$this->assertStringNotContainsString( '<script', $content );
+		$this->assertStringContainsString( '<rect', $content );
+	}
+
+	public function testSanitizeSvgUploadRejectsInvalidSvg() {
+		$path = $this->create_temp_file( 'not an svg' );
+
+		$result = $this->adv_form_ajax->sanitize_svg_upload( $path, 'image.svg', MB_IN_BYTES );
+		wp_delete_file( $path );
+
+		$this->assertFalse( $result );
+	}
+
+	public function testSanitizeSvgUploadRejectsNonSvgDocuments() {
+		foreach ( [ '<foo/>', '<g xmlns="http://www.w3.org/2000/svg"><svg><rect/></svg></g>' ] as $xml ) {
+			$path = $this->create_temp_file( $xml );
+
+			$result = $this->adv_form_ajax->sanitize_svg_upload( $path, 'image.svg', MB_IN_BYTES );
+			wp_delete_file( $path );
+
+			$this->assertFalse( $result, $xml );
+		}
+	}
+
+	public function testSanitizeSvgUploadRejectsContentOverSizeLimit() {
+		$svg  = '<svg xmlns="http://www.w3.org/2000/svg"><rect width="10" height="10"/></svg>';
+		$path = $this->create_temp_file( gzencode( $svg ) );
+
+		$result = $this->adv_form_ajax->sanitize_svg_upload( $path, 'image.svgz', strlen( $svg ) - 1 );
+		wp_delete_file( $path );
+
+		$this->assertFalse( $result );
+	}
+
+	public function testSanitizeSvgUploadIgnoresOtherFileTypes() {
+		$original = '<script>alert(1)</script>';
+		$path     = $this->create_temp_file( $original );
+
+		$this->assertTrue( $this->adv_form_ajax->sanitize_svg_upload( $path, 'notes.txt', MB_IN_BYTES ) );
+
+		$content = $this->read_temp_file( $path );
+
+		$this->assertSame( $original, $content );
+	}
+
 	protected function setUp(): void {
 		parent::setUp();
+
+		require_once ABSPATH . 'wp-admin/includes/file.php';
+		require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-base.php';
+		require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-direct.php';
 
 		$this->adv_form_ajax = new KB_Ajax_Advanced_Form();
 	}
 
 	protected function _after() {
+	}
+
+	private function create_temp_file( string $content ): string {
+		$path = wp_tempnam( 'kb-form-upload' );
+		file_put_contents( $path, $content );
+
+		return $path;
+	}
+
+	private function read_temp_file( string $path ): string {
+		$content = ( new WP_Filesystem_Direct( null ) )->get_contents( $path );
+		wp_delete_file( $path );
+
+		return $content;
 	}
 }
