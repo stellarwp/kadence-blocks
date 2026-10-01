@@ -1180,6 +1180,52 @@ class KadenceBlocksCssTest extends WPTestCase {
 	}
 
 	/**
+	 * With single styles on, a width stored without a color keeps a transparent border color, so the
+	 * shorthand does not fall back to the text color.
+	 *
+	 * @param array<int, string> $stored   The stored top side: color, style, width.
+	 * @param string             $expected The declaration that must be in the output.
+	 *
+	 * @dataProvider widthWithoutColorProvider
+	 *
+	 * @return void
+	 */
+	public function testRenderBorderStylesKeepsWidthWithoutColorTransparent( array $stored, string $expected ): void {
+		$this->css->render_border_styles(
+			[
+				'borderStyle' => [
+					[
+						'top'    => $stored,
+						'right'  => [ '', '', '' ],
+						'bottom' => [ '', '', '' ],
+						'left'   => [ '', '', '' ],
+						'unit'   => 'px',
+					],
+				],
+			],
+			'borderStyle',
+			true
+		);
+
+		$this->assertStringContainsString( $expected, $this->css->css_output(), 'The border color stays transparent' );
+	}
+
+	/**
+	 * @return Generator
+	 */
+	public function widthWithoutColorProvider(): Generator {
+		yield 'width only' => [
+			'stored'   => [ '', '', '2' ],
+			'expected' => 'border-top:2px solid transparent',
+		];
+
+		yield 'width and style' => [
+			'stored'   => [ '', 'dashed', '2' ],
+			'expected' => 'border-top:2px dashed transparent',
+		];
+	}
+
+	/**
 	 * A color stored without a line style writes the color only, so the default `solid` does not
 	 * override the style a preset carries.
 	 *

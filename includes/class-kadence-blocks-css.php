@@ -2348,6 +2348,8 @@ class Kadence_Blocks_CSS {
 				$color = $this->get_border_value( $attributes, $args, $side, $size, 'color', $single_styles );
 				$style = $this->get_border_value( $attributes, $args, $side, $size, 'style', $single_styles );
 				if ( $width ) {
+					// A shorthand with no color falls back to `currentColor`, so a stored width without a color stays transparent.
+					$color = $color ? $color : 'transparent';
 					$this->add_property( $property_prefix . $args[ $prop_key ], $width . ' ' . $style . ' ' . $color );
 				} elseif ( $single_styles && $color ) {
 					$this->add_property( $property_prefix . $args[ $prop_key ] . '-color', $color );
