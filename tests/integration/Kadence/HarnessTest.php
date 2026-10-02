@@ -6,12 +6,21 @@ namespace Tests\integration\Kadence;
 
 use Codeception\TestCase\WPTestCase;
 use Kadence\FSE\Mode;
+use Kadence\Theme;
 
 /**
  * Pins the environment this suite relies on: the Kadence theme is booted,
  * and its Full Site Editing mode can be switched within a test.
  */
 final class HarnessTest extends WPTestCase {
+
+	private Mode $mode;
+
+	public function set_up(): void {
+		parent::set_up();
+
+		$this->mode = Theme::instance()->container()->get( Mode::class );
+	}
 
 	public function testKadenceIsTheActiveTheme(): void {
 		$this->assertSame( 'kadence', get_stylesheet() );
@@ -24,7 +33,7 @@ final class HarnessTest extends WPTestCase {
 	}
 
 	public function testWordPressSupportsFseMode(): void {
-		$this->assertTrue( Mode::is_supported(), 'The suite needs WordPress ' . Mode::minimum_wp_version() . ' or later.' );
+		$this->assertTrue( $this->mode->is_supported(), 'The suite needs WordPress ' . $this->mode->minimum_wp_version() . ' or later.' );
 	}
 
 	public function testFseModeIsOffByDefault(): void {
@@ -32,11 +41,11 @@ final class HarnessTest extends WPTestCase {
 	}
 
 	public function testFseModeSwitchesWithinATest(): void {
-		Mode::enable();
+		$this->mode->enable();
 
 		$this->assertTrue( \Kadence\is_fse_mode() );
 
-		Mode::disable();
+		$this->mode->disable();
 
 		$this->assertFalse( \Kadence\is_fse_mode() );
 	}
