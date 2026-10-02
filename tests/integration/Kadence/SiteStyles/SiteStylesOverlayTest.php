@@ -89,6 +89,53 @@ final class SiteStylesOverlayTest extends WPTestCase {
 		}
 	}
 
+	public function testStoredContentValuesAreIgnored(): void {
+		$this->tester->enable_fse_mode();
+		$this->tester->store_user_global_styles(
+			[
+				'settings' => [
+					'custom' => [
+						'kadence' => [
+							'singlebtn' => [
+								'borderRadius'     => [ 20, 20, 20, 20 ],
+								'label'            => 'Site label',
+								'buttonRole'       => true,
+								'iconTitle'        => 'Site icon title',
+								'tooltip'          => 'Site tooltip',
+								'tooltipPlacement' => 'bottom',
+								'isSubmit'         => true,
+								'uniqueID'         => 'site',
+							],
+						],
+					],
+				],
+			]
+		);
+
+		$render = static fn( array $attributes ): array => apply_filters( 'kadence_blocks_singlebtn_render_block_attributes', $attributes );
+
+		$labelled = $render(
+			[
+				'uniqueID' => 'a',
+				'label'    => 'Own label',
+			]
+		);
+		$plain    = $render( [ 'uniqueID' => 'b' ] );
+
+		$this->assertSame( 'Own label', $labelled['label'] );
+		$this->assertSame( [ 20, 20, 20, 20 ], $labelled['borderRadius'] );
+		$this->assertSame(
+			[
+				'uniqueID'     => 'b',
+				'borderRadius' => [ 20, 20, 20, 20 ],
+			],
+			$plain
+		);
+		foreach ( [ 'buttonRole', 'iconTitle', 'tooltip', 'tooltipPlacement', 'isSubmit' ] as $content ) {
+			$this->assertArrayNotHasKey( $content, $labelled );
+		}
+	}
+
 	public function testClassicModeLeavesTheAttributesAlone(): void {
 		$this->tester->store_user_global_styles(
 			[ 'styles' => [ 'blocks' => [ 'kadence/singlebtn' => [ 'color' => [ 'background' => '#cc0000' ] ] ] ] ]
