@@ -28,42 +28,53 @@ class GoogleFontsLinkTest extends KadenceBlocksTestCase {
 	}
 
 	public function test_frontend_link_keeps_font_family_inside_href(): void {
-		$output = $this->print_link( [ Kadence_Blocks_Frontend::get_instance(), 'print_gfonts' ], 'X" onerror="alert(1)' );
+		$output = $this->print_link( [ Kadence_Blocks_Frontend::get_instance(), 'print_gfonts' ], [ 'X" onerror="alert(1)' => [ '700', 'latin' ] ] );
 
 		$this->assertMatchesRegularExpression( self::LINK_PATTERN, $output );
 	}
 
 	public function test_google_fonts_link_keeps_font_family_inside_href(): void {
-		$output = $this->print_link( [ Kadence_Blocks_Google_Fonts::get_instance(), 'print_gfonts' ], 'X" onerror="alert(1)' );
+		$output = $this->print_link( [ Kadence_Blocks_Google_Fonts::get_instance(), 'print_gfonts' ], [ 'X" onerror="alert(1)' => [ '700', 'latin' ] ] );
 
 		$this->assertMatchesRegularExpression( self::LINK_PATTERN, $output );
 	}
 
 	public function test_frontend_link_loads_font_family(): void {
-		$expected = '<link href="https://fonts.googleapis.com/css?family=Open%20Sans:700&#038;subset=latin&#038;display=swap" rel="stylesheet">';
+		$fonts    = [
+			'Open Sans'    => [ '700', 'latin' ],
+			'Roboto'       => [ '400italic', 'latin-ext' ],
+			'Lato'         => [ '300', 'latin' ],
+			'Noto Sans JP' => [ '400', 'japanese' ],
+		];
+		$expected = '<link href="https://fonts.googleapis.com/css?family=Open%20Sans:700%7CRoboto:400italic%7CLato:300%7CNoto%20Sans%20JP:400&#038;subset=latin,latin-ext,japanese&#038;display=swap" rel="stylesheet">';
 
-		$this->assertSame( $expected, $this->print_link( [ Kadence_Blocks_Frontend::get_instance(), 'print_gfonts' ], 'Open Sans' ) );
+		$this->assertSame( $expected, $this->print_link( [ Kadence_Blocks_Frontend::get_instance(), 'print_gfonts' ], $fonts ) );
 
 		delete_option( 'kadence_blocks_font_settings' );
 
-		$this->assertSame( $expected, $this->print_link( [ Kadence_Blocks_Frontend::get_instance(), 'print_gfonts' ], 'Open Sans' ) );
+		$this->assertSame( $expected, $this->print_link( [ Kadence_Blocks_Frontend::get_instance(), 'print_gfonts' ], $fonts ) );
 	}
 
-	private function print_link( callable $printer, string $family ): string {
+	/**
+	 * @param callable                             $printer The print_gfonts() callable.
+	 * @param array<string, array{string, string}> $fonts   Font family => [ variant, subset ].
+	 */
+	private function print_link( callable $printer, array $fonts ): string {
+		$gfonts = [];
+		foreach ( $fonts as $family => [ $variant, $subset ] ) {
+			$gfonts[ $family ] = [
+				'fontfamily'   => $family,
+				'fontvariants' => [ $variant ],
+				'fontsubsets'  => [ $subset ],
+			];
+		}
+
 		// Writing to the missing fonts folder raises a warning before the remote URL is used.
 		set_error_handler( static fn() => true, E_WARNING ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_set_error_handler
 		ob_start();
 
 		try {
-			$printer(
-				[
-					$family => [
-						'fontfamily'   => $family,
-						'fontvariants' => [ '700' ],
-						'fontsubsets'  => [ 'latin' ],
-					],
-				]
-			);
+			$printer( $gfonts );
 		} finally {
 			restore_error_handler();
 		}
