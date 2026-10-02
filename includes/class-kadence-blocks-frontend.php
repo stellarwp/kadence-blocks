@@ -6,6 +6,10 @@
  * @package Kadence Blocks
  */
 
+/*
+ * cspell:ignore accorion blockattr fontsubsets fontvariants indexkey initialisation innerhtml matzeeable subfolders surecart
+ */
+
 use function KadenceWP\KadenceBlocks\get_webfont_url;
 
 // Exit if accessed directly.
@@ -343,6 +347,10 @@ class Kadence_Blocks_Frontend {
 
 	/**
 	 * Print gFonts
+	 *
+	 * @since TBD Escape the stylesheet URL on output.
+	 *
+	 * @param array $gfonts The Google Fonts to load.
 	 */
 	public function print_gfonts( $gfonts ) {
 		$link    = '';
@@ -365,18 +373,18 @@ class Kadence_Blocks_Frontend {
 			}
 		}
 		if ( ! empty( $subsets ) ) {
-			$link .= '&amp;subset=' . implode( ',', $subsets );
+			$link .= '&subset=' . implode( ',', $subsets );
 		}
 		if ( apply_filters( 'kadence_display_swap_google_fonts', true ) ) {
-			$link .= '&amp;display=swap';
+			$link .= '&display=swap';
 		}
 
-		$full_link           = 'https://fonts.googleapis.com/css?family=' . esc_attr( str_replace( '|', '%7C', $link ) );
+		$full_link           = 'https://fonts.googleapis.com/css?family=' . str_replace( '|', '%7C', $link );
 		$local_font_settings = get_option( 'kadence_blocks_font_settings' );
 		if ( $local_font_settings && isset( $local_font_settings['load_fonts_local'] ) && $local_font_settings['load_fonts_local'] == 'true' && function_exists( 'KadenceWP\KadenceBlocks\get_webfont_url' ) ) {
-			$full_link = get_webfont_url( htmlspecialchars_decode( $full_link ) );
+			$full_link = get_webfont_url( $full_link );
 		}
-		echo '<link href="' . $full_link . '" rel="stylesheet">'; //phpcs:ignore
+		echo '<link href="' . esc_url( $full_link ) . '" rel="stylesheet">'; //phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet
 	}
 	/**
 	 * Process the SC Single Product Template for Kadence Blocks.

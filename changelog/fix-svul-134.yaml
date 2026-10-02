@@ -1,0 +1,4 @@
+significance: patch
+type: security
+entry: Improved output escaping for font links.
+timestamp: 2026-10-02T17:01:36.408Z
