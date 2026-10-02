@@ -1,3 +1,4 @@
+// cSpell:ignore ajaxurl describedby grecaptcha telregex urlregex
 /* global kadence_blocks_advanced_form_params, turnstile, hcaptcha */
 (function () {
 	'use strict';
@@ -477,12 +478,29 @@
 			return form_data;
 		},
 		strip_tags(input, allowed) {
-			allowed = (((allowed || '') + '').toLowerCase().match(/<[a-z][a-z0-9]*>/g) || []).join(''); // making sure the allowed arg is a string containing only tags in lowercase (<a><b><c>)
-			const tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
-				commentsAndPhpTags = /<!--[\s\S]*?-->|<\?(?:php)?[\s\S]*?\?>/gi;
-			return input.replace(commentsAndPhpTags, '').replace(tags, function ($0, $1) {
-				return allowed.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : '';
+			const allowedTags = (allowed || '').toLowerCase().match(/[a-z][a-z0-9]*/g) || [];
+			const isSafeUrl = (url) => {
+				try {
+					return ['http:', 'https:', 'mailto:', 'tel:'].includes(new URL(url, window.location.href).protocol);
+				} catch (error) {
+					return false;
+				}
+			};
+			const body = new DOMParser().parseFromString(input, 'text/html').body;
+
+			body.querySelectorAll('*').forEach((element) => {
+				if (!allowedTags.includes(element.localName)) {
+					element.replaceWith(...element.childNodes);
+					return;
+				}
+				[...element.attributes].forEach(({ name, value }) => {
+					if (name.startsWith('on') || ('href' === name && !isSafeUrl(value))) {
+						element.removeAttribute(name);
+					}
+				});
 			});
+
+			return body.innerHTML;
 		},
 		createElementFromHTML(htmlString) {
 			const div = document.createElement('div');

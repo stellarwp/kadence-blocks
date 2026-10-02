@@ -1,3 +1,4 @@
+// cSpell:ignore galllery glightbox lightboxes
 /* global GLightbox */
 /**
  * File lightbox-init.js.
@@ -46,12 +47,29 @@
 			}
 		},
 		strip_tags(input, allowed) {
-			allowed = (((allowed || '') + '').toLowerCase().match(/<[a-z][a-z0-9]*>/g) || []).join('');
-			const tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
-				commentsAndPhpTags = /<!--[\s\S]*?-->|<\?(?:php)?[\s\S]*?\?>/gi;
-			return input.replace(commentsAndPhpTags, '').replace(tags, function ($0, $1) {
-				return allowed.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : '';
+			const allowedTags = (allowed || '').toLowerCase().match(/[a-z][a-z0-9]*/g) || [];
+			const isSafeUrl = (url) => {
+				try {
+					return ['http:', 'https:', 'mailto:', 'tel:'].includes(new URL(url, window.location.href).protocol);
+				} catch (error) {
+					return false;
+				}
+			};
+			const body = new DOMParser().parseFromString(input, 'text/html').body;
+
+			body.querySelectorAll('*').forEach((element) => {
+				if (!allowedTags.includes(element.localName)) {
+					element.replaceWith(...element.childNodes);
+					return;
+				}
+				[...element.attributes].forEach(({ name, value }) => {
+					if (name.startsWith('on') || ('href' === name && !isSafeUrl(value))) {
+						element.removeAttribute(name);
+					}
+				});
 			});
+
+			return body.innerHTML;
 		},
 		findGalleries() {
 			const foundGalleries = document.querySelectorAll('.kb-gallery-magnific-init');
