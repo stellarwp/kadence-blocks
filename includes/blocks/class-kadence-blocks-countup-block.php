@@ -46,6 +46,13 @@ class Kadence_Blocks_Countup_Block extends Kadence_Blocks_Abstract_Block {
 	protected $has_style = false;
 
 	/**
+	 * Allowed HTML tags for the title.
+	 *
+	 * @var string[]
+	 */
+	protected $allowed_html_tags = [ 'heading', 'p', 'span', 'div' ];
+
+	/**
 	 * Instance Control
 	 */
 	public static function get_instance() {
@@ -217,6 +224,8 @@ class Kadence_Blocks_Countup_Block extends Kadence_Blocks_Abstract_Block {
 	}
 	/**
 	 * Builds HTML for block.
+	 *
+	 * @since TBD Only allows the title tags available in the editor.
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
 		if ( apply_filters( 'kadence-blocks-countup-static', false, $attributes, $block_instance ) ) {
@@ -254,7 +263,11 @@ class Kadence_Blocks_Countup_Block extends Kadence_Blocks_Abstract_Block {
 			$countup_content    = '<div class="kb-count-up-process kb-count-up-number">' . esc_html( $prefix . $ending_number . $suffix ) . '</div>';
 			$countup_title      = '';
 			if ( ! empty( $attributes['title'] ) && isset( $attributes['displayTitle'] ) && $attributes['displayTitle'] ) {
-				$title_tag     = ( ! empty( $attributes['titleFont'][0]['htmlTag'] ) && 'heading' !== $attributes['titleFont'][0]['htmlTag'] ? $attributes['titleFont'][0]['htmlTag'] : 'h' . $attributes['titleFont'][0]['level'] );
+				$title_font = isset( $attributes['titleFont'][0] ) && is_array( $attributes['titleFont'][0] ) ? $attributes['titleFont'][0] : [];
+				if ( empty( $title_font['htmlTag'] ) ) {
+					$title_font['htmlTag'] = 'heading';
+				}
+				$title_tag     = $this->get_html_tag( $title_font, 'htmlTag', 'div', $this->allowed_html_tags, 'level' );
 				$countup_title = '<' . esc_attr( $title_tag ) . ' class="kb-count-up-title">' . esc_html( $attributes['title'] ) . '</' . esc_attr( $title_tag ) . '>';
 			}
 			$content = sprintf( '<div %1$s>%2$s%3$s</div>', $countup_attributes, $countup_content, $countup_title );
