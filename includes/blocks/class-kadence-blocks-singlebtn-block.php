@@ -481,15 +481,6 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block imple
 	 *
 	 * @since TBD
 	 */
-	public function site_styles_excluded_attributes(): array {
-		return [ 'hideLink', 'link', 'target', 'download', 'text', 'noFollow', 'sponsored', 'kadenceDynamic', 'metadata', 'className', 'lock', 'inheritStyles' ];
-	}
-
-	/**
-	 * @inheritDoc
-	 *
-	 * @since TBD
-	 */
 	public function site_styles_attributes_map(): array {
 		return [
 			'background' => 'color.background',

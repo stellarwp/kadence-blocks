@@ -68,6 +68,29 @@ describe('siteAttributes', () => {
 		});
 	});
 
+	it('ignores stored content values', () => {
+		const record = {
+			settings: {
+				custom: {
+					kadence: {
+						singlebtn: {
+							label: 'Site label',
+							buttonRole: true,
+							iconTitle: 'Site icon title',
+							tooltip: 'Site tooltip',
+							tooltipPlacement: 'bottom',
+							isSubmit: true,
+							uniqueID: 'site',
+							borderRadius: [20, 20, 20, 20],
+						},
+					},
+				},
+			},
+		};
+
+		expect(siteAttributes(record, BLOCK)).toEqual({ borderRadius: [20, 20, 20, 20] });
+	});
+
 	it('gives nothing for a missing record, an empty store or an unsupported block', () => {
 		expect(siteAttributes(undefined, BLOCK)).toEqual({});
 		expect(siteAttributes({ settings: { custom: { kadence: { singlebtn: [] } } } }, BLOCK)).toEqual({});
