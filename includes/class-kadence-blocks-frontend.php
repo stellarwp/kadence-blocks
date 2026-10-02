@@ -7,7 +7,7 @@
  */
 
 /*
- * cspell:ignore accorion blockattr fontsubsets fontvariants indexkey initialisation innerhtml matzeeable subfolders surecart
+ * cspell:ignore accorion blockattr fontsubsets fontvariants indexkey matzeeable surecart
  */
 
 use function KadenceWP\KadenceBlocks\get_webfont_url;
@@ -222,7 +222,7 @@ class Kadence_Blocks_Frontend {
 		$allowed_tags = apply_filters( 'kadence_blocks_faq_schema_allowed_tags', '<a><strong><br><h2><h3><h4><h5><ul><li><ol><p>', $block );
 		if ( ! is_null( self::$faq_schema ) ) {
 			if ( is_array( $block['innerBlocks'] ) && ! empty( $block['innerBlocks'] ) ) {
-				// an accordion pane has it's "question" in the pane's innerhtml
+				// an accordion pane has its "question" in the pane's innerHTML
 				// the "answer" is everything in innerblocks
 				// here we parse that out and build the question and answer
 				
@@ -261,12 +261,12 @@ class Kadence_Blocks_Frontend {
 	/**
 	 * Checks if the current request is a WP REST API request.
 	 *
-	 * Case #1: After WP_REST_Request initialisation
+	 * Case #1: After WP_REST_Request initialization
 	 * Case #2: Support "plain" permalink settings
 	 * Case #3: It can happen that WP_Rewrite is not yet initialized,
 	 *          so do this (wp-settings.php)
 	 * Case #4: URL Path begins with wp-json/ (your REST prefix)
-	 *          Also supports WP installations in subfolders
+	 *          Also supports WP installations in subdirectories
 	 *
 	 * @returns boolean
 	 * @author matzeeable
