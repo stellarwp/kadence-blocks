@@ -2,7 +2,9 @@
 
 namespace KadenceWP\KadenceBlocks\Site_Styles;
 
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Scopes_Site_Styles;
 use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Supports_Site_Styles;
+use WP_Block_Type_Registry;
 
 /**
  * The blocks that take site-level styles, keyed by block name. Each block's
@@ -13,9 +15,11 @@ use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Supports_Site_Styles;
 final class Supported_Blocks {
 
 	/**
-	 * Attributes no site-level value may set, whatever the block.
+	 * Identifiers and per-instance data no site-level value may set, whatever
+	 * the block. `kadenceDynamic` holds Kadence Blocks Pro's dynamic-content
+	 * bindings, which it adds to blocks outside their `block.json`.
 	 */
-	private const ALWAYS_EXCLUDED = [ 'uniqueID', 'inQueryBlock', 'anchor', 'noCustomDefaults' ];
+	private const ALWAYS_EXCLUDED = [ 'uniqueID', 'anchor', 'inQueryBlock', 'noCustomDefaults', 'metadata', 'lock', 'className', 'kadenceDynamic' ];
 
 	/**
 	 * Block name => block.
@@ -56,8 +60,9 @@ final class Supported_Blocks {
 	}
 
 	/**
-	 * The attributes a block's site-level values never set: its content
-	 * attributes and the ones excluded for every block.
+	 * The attributes a block's site-level values never set: the ones excluded
+	 * for every block, the attributes its `block.json` marks as content, and
+	 * its scope attribute when it scopes its site styles.
 	 *
 	 * @since TBD
 	 *
@@ -66,6 +71,26 @@ final class Supported_Blocks {
 	 * @return list<string> Attribute names.
 	 */
 	public static function excluded_attributes( Supports_Site_Styles $block ): array {
-		return array_merge( self::ALWAYS_EXCLUDED, $block->site_styles_excluded_attributes() );
+		$excluded   = self::ALWAYS_EXCLUDED;
+		$block_type = WP_Block_Type_Registry::get_instance()->get_registered( $block->get_name() );
+		$attributes = $block_type && is_array( $block_type->attributes ) ? $block_type->attributes : [];
+
+		foreach ( $attributes as $name => $definition ) {
+			if ( ! is_array( $definition ) ) {
+				continue;
+			}
+
+			$role = $definition['role'] ?? $definition['__experimentalRole'] ?? null;
+
+			if ( 'content' === $role && ! in_array( $name, $excluded, true ) ) {
+				$excluded[] = $name;
+			}
+		}
+
+		if ( $block instanceof Scopes_Site_Styles ) {
+			$excluded[] = $block->site_styles_scope_attribute();
+		}
+
+		return $excluded;
 	}
 }

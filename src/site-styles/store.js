@@ -10,12 +10,6 @@ import { cloneDeep, get, isEmpty, isEqual, kebabCase, omit, pick, set, unset } f
 import { getSupportedBlock } from './supported-blocks';
 
 /**
- * Attributes no site-level value may set, whatever the block. The same list
- * `getTransferableAttributes()` in `@kadence/helpers` always leaves out.
- */
-const ALWAYS_EXCLUDED = ['uniqueID', 'inQueryBlock', 'anchor', 'noCustomDefaults'];
-
-/**
  * @typedef {Object<string, *>} Attributes Block attribute name => value.
  */
 
@@ -80,9 +74,7 @@ export function siteAttributes(record, blockName) {
 
 	const custom = record.settings?.custom?.kadence?.[block.slug];
 	const attributes =
-		custom && typeof custom === 'object' && !Array.isArray(custom)
-			? omit(custom, [...ALWAYS_EXCLUDED, ...block.exclude])
-			: {};
+		custom && typeof custom === 'object' && !Array.isArray(custom) ? omit(custom, block.exclude) : {};
 	const styles = record.styles?.blocks?.[blockName] || {};
 
 	// Every mapped path is `color.<key>`: the server keeps no other.
@@ -117,12 +109,10 @@ export function toStoredForm(attributes, definitions, blockName) {
 		return { core, custom };
 	}
 
-	const excluded = [...ALWAYS_EXCLUDED, ...block.exclude];
-
 	Object.entries(attributes).forEach(([name, value]) => {
 		const definition = definitions[name];
 
-		if (excluded.includes(name) || !definition || isEqual(value, definition.default)) {
+		if (block.exclude.includes(name) || !definition || isEqual(value, definition.default)) {
 			return;
 		}
 

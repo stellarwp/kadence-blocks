@@ -56,7 +56,7 @@ final class Editor_Params {
 			foreach ( $this->blocks->all() as $name => $block ) {
 				$blocks[ $name ] = [
 					'slug'          => $block->get_slug(),
-					'exclude'       => $block->site_styles_excluded_attributes(),
+					'exclude'       => Supported_Blocks::excluded_attributes( $block ),
 					'attributesMap' => $block->site_styles_attributes_map(),
 					'supports'      => $block->site_styles_supports(),
 				];
