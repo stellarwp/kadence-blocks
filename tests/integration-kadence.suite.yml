@@ -6,7 +6,7 @@
 path: integration/Kadence
 class_name: IntegrationTester
 modules:
-    enabled: [WPLoader, \Helper\Palette, \Helper\GlobalEditorStyles]
+    enabled: [WPLoader, \Helper\Palette, \Helper\GlobalEditorStyles, \Helper\FseMode, \Helper\BlockCss, \Helper\GlobalStylesLayout, \Helper\ContentWidth]
     config:
         WPLoader:
             wpRootFolder: %WP_ROOT_FOLDER%

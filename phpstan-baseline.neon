@@ -9261,11 +9261,6 @@ parameters:
 			path: includes/class-kadence-blocks-posts-rest-api.php
 
 		-
-			message: "#^Method Kadence_Blocks_Post_Rest_Controller\\:\\:prepare_query_item_for_response\\(\\) has parameter \\$post with no type specified\\.$#"
-			count: 1
-			path: includes/class-kadence-blocks-posts-rest-api.php
-
-		-
 			message: "#^Method Kadence_Blocks_Post_Rest_Controller\\:\\:prepare_query_item_for_response\\(\\) should return WP_REST_Response but returns array\\<string, mixed\\>\\.$#"
 			count: 1
 			path: includes/class-kadence-blocks-posts-rest-api.php

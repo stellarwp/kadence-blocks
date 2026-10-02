@@ -20,7 +20,8 @@
 		"link-kadence-packages": "node node_modules/@kadence/components/scripts/npm/link-kadence-packages.js",
 		"unlink-kadence-packages": "node node_modules/@kadence/components/scripts/npm/unlink-kadence-packages.js",
 		"cspell-cmd": "bunx cspell lint -c .cspell.json --no-progress --no-must-find-files --dot",
-		"cspell-full": "bun run cspell-cmd '**'"
+		"cspell-full": "bun run cspell-cmd '**'",
+		"cspell-changed": "dev_scripts/cspell-changed-lines.sh"
 	},
 	"dependencies": {
 		"@algolia/autocomplete-js": "^1.10.0",

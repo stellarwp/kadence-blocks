@@ -56,9 +56,18 @@ test for another theme goes in that theme's suite.
 
 ## Shared test code
 
-Both `integration-*` suites enable the Codeception helpers in
-`tests/_support/Helper/` (`Palette`, `GlobalEditorStyles`); tests call them
-through `$this->tester`.
+The `integration-*` suites enable the Codeception helpers in
+`tests/_support/Helper/`; tests call them through `$this->tester`. Each helper
+cleans up after a test only when that test used it:
+
+- `Palette`: stores a Kadence Blocks palette.
+- `GlobalEditorStyles`: compares the editor global styles CSS with
+  `tests/_data/global-editor-styles/`.
+- `BlockCss`: builds a block's CSS and compares it with `tests/_data/block-css/`.
+- `GlobalStylesLayout`: sets the Global Styles content and wide sizes.
+- `ContentWidth`: sets the theme's `$content_width`.
+- `FseMode` (`integration-kadence` only): switches the Kadence theme's Full
+  Site Editing mode on and off.
 
 ## CI
 
@@ -69,6 +78,6 @@ CI runs the steps above and both `integration-*` suites in the `integration` job
 
 ### Stored expectations
 
-`tests/_data/global-editor-styles/` holds the editor CSS each site shape
-produces. When a change to that CSS is intended, update the matching file in
+`tests/_data/global-editor-styles/` and `tests/_data/block-css/` hold the CSS
+each site shape produces. When a change to that CSS is intended, update the matching file in
 the same commit.
