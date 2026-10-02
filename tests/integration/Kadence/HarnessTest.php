@@ -16,8 +16,8 @@ final class HarnessTest extends WPTestCase {
 
 	private Mode $mode;
 
-	public function set_up(): void {
-		parent::set_up();
+	protected function setUp(): void {
+		parent::setUp();
 
 		$this->mode = Theme::instance()->container()->get( Mode::class );
 	}
