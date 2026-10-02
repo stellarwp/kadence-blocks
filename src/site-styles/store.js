@@ -6,7 +6,7 @@
  * merge and the scoping follow the same rules as the PHP overlay (the
  * fixtures in `__tests__/fixtures/` pin both).
  */
-import { cloneDeep, get, isEmpty, isEqual, kebabCase, pick, set, unset } from 'lodash';
+import { cloneDeep, get, isEmpty, isEqual, kebabCase, omit, pick, set, unset } from 'lodash';
 import { getSupportedBlock } from './supported-blocks';
 
 /**
@@ -65,6 +65,7 @@ export function toCoreColor(value) {
 /**
  * Reads a block's site-level values from the Global Styles record, as block
  * attributes: `settings.custom.kadence.<slug>` plus the colors in core's style.
+ * Stored values of attributes the block excludes are ignored.
  *
  * @param {GlobalStylesRecord|undefined} record    The edited Global Styles record.
  * @param {string}                       blockName Block name.
@@ -78,7 +79,10 @@ export function siteAttributes(record, blockName) {
 	}
 
 	const custom = record.settings?.custom?.kadence?.[block.slug];
-	const attributes = custom && typeof custom === 'object' && !Array.isArray(custom) ? { ...custom } : {};
+	const attributes =
+		custom && typeof custom === 'object' && !Array.isArray(custom)
+			? omit(custom, [...ALWAYS_EXCLUDED, ...block.exclude])
+			: {};
 	const styles = record.styles?.blocks?.[blockName] || {};
 
 	// Every mapped path is `color.<key>`: the server keeps no other.
