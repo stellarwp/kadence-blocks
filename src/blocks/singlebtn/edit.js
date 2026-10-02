@@ -83,6 +83,7 @@ import {
 } from '@wordpress/components';
 import { addFilter, applyFilters, doAction } from '@wordpress/hooks';
 import BackendStyles from './components/backend-styles';
+import { isVirtualBlock } from '../../site-styles/virtual-blocks';
 
 export default function KadenceButtonEdit(props) {
 	const { attributes, setAttributes, isSelected, context, clientId, name } = props;
@@ -743,18 +744,21 @@ export default function KadenceButtonEdit(props) {
 											context={context}
 										/>
 									)}
-									<KadenceRadioButtons
-										value={inheritStyles}
-										className={'button-style-inherit-control'}
-										options={buttonStyleOptions}
-										hideLabel={false}
-										label={__('Button Inherit Styles', 'kadence-blocks')}
-										onChange={(value) => {
-											setAttributes({
-												inheritStyles: value,
-											});
-										}}
-									/>
+									{/* Site-level values describe Fill buttons, so the Kadence panel has no style choice. */}
+									{!isVirtualBlock(clientId) && (
+										<KadenceRadioButtons
+											value={inheritStyles}
+											className={'button-style-inherit-control'}
+											options={buttonStyleOptions}
+											hideLabel={false}
+											label={__('Button Inherit Styles', 'kadence-blocks')}
+											onChange={(value) => {
+												setAttributes({
+													inheritStyles: value,
+												});
+											}}
+										/>
+									)}
 									{showSettings('sizeSettings', 'kadence/advancedbtn') && (
 										<>
 											<KadenceRadioButtons

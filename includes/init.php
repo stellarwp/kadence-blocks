@@ -95,6 +95,8 @@ function kadence_blocks_post_block_get_excerpt_length() {
 }
 /**
  * Add global styles into the backend editor.
+ *
+ * @since TBD Follows the Global Styles content size in the Kadence theme's Full Site Editing mode.
  */
 function kadence_blocks_add_global_gutenberg_inline_styles() {
 	global $content_width;
@@ -113,7 +115,16 @@ function kadence_blocks_add_global_gutenberg_inline_styles() {
 	}
 	$css .= '}';
 	if ( isset( $content_width ) ) {
-		if ( class_exists( 'Kadence\Theme' ) ) {
+		if ( class_exists( 'Kadence\Theme' ) && kadence_blocks_is_fse_mode() ) {
+			// Global Styles sets the width without the edge padding, which the Kadence content width includes.
+			$global_styles_content_width = 'calc(var(--wp--style--global--content-size) + 2 * var(--global-content-edge-padding))';
+
+			$css .= '.kb-header-container, .wp-block-kadence-navigation-link { --global-content-width:' . $global_styles_content_width . ';}';
+			$css .= '.editor-styles-wrapper{ --kb-global-content-width:' . $global_styles_content_width . ';}';
+			$css .= '.wp-block-kadence-rowlayout > .kb-theme-content-width {
+				max-width:' . $global_styles_content_width . ';
+			}';
+		} elseif ( class_exists( 'Kadence\Theme' ) ) {
 			$css .= '.kb-header-container, .wp-block-kadence-navigation-link { --global-content-width:' . \Kadence\kadence()->sub_option( 'content_width', 'size' ) . \Kadence\kadence()->sub_option( 'content_width', 'unit' ) . ';}';
 			$css .= '.editor-styles-wrapper{ --kb-global-content-width:' . \Kadence\kadence()->sub_option( 'content_width', 'size' ) . \Kadence\kadence()->sub_option( 'content_width', 'unit' ) . ';}';
 			$css .= '.wp-block-kadence-rowlayout > .kb-theme-content-width {

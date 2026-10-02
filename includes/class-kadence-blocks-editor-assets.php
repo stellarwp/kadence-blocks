@@ -364,6 +364,8 @@ class Editor_Assets {
 				'privacy_title'          => ( get_option( 'wp_page_for_privacy_policy' ) ? get_the_title( get_option( 'wp_page_for_privacy_policy' ) ) : '' ),
 				'editor_width'           => $enable_editor_width,
 				'isKadenceT'             => class_exists( 'Kadence\Theme' ),
+				'isFseMode'              => kadence_blocks_is_fse_mode(),
+				'siteStylesBlocks'       => kadence_blocks_is_fse_mode() ? $this->site_styles_blocks() : [],
 				'headingWeights'         => apply_filters( 'kadence_blocks_default_heading_font_weights', ( class_exists( 'Kadence\Theme' ) ? $this->get_headings_weights() : null ) ),
 				'bodyWeights'            => apply_filters( 'kadence_blocks_default_body_font_weights', ( class_exists( 'Kadence\Theme' ) ? $this->get_body_weights() : null ) ),
 				'buttonWeights'          => apply_filters( 'kadence_blocks_default_button_font_weights', ( class_exists( 'Kadence\Theme' ) ? $this->get_button_weights() : null ) ),
@@ -452,6 +454,20 @@ class Editor_Assets {
 				]
 			);
 		}
+	}
+
+	/**
+	 * The blocks that take site-level styles, for the editor scripts.
+	 *
+	 * @since TBD
+	 *
+	 * @return list<string> Block names.
+	 */
+	private function site_styles_blocks(): array {
+		/** @var Site_Styles\Supported_Blocks $blocks */
+		$blocks = App::instance()->container()->get( Site_Styles\Supported_Blocks::class );
+
+		return array_keys( $blocks->all() );
 	}
 
 	/**

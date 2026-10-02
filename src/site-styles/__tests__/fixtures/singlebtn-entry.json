@@ -1,0 +1,58 @@
+{
+	"slug": "singlebtn",
+	"exclude": [
+		"hideLink",
+		"link",
+		"target",
+		"download",
+		"text",
+		"noFollow",
+		"sponsored",
+		"kadenceDynamic",
+		"metadata",
+		"className",
+		"lock",
+		"inheritStyles"
+	],
+	"attributesMap": { "background": "color.background", "color": "color.text" },
+	"supports": {
+		"color": { "background": true, "text": true, "gradients": false, "__experimentalSkipSerialization": true }
+	},
+	"scope": {
+		"attribute": "inheritStyles",
+		"attributes": {
+			"outline": [
+				"typography",
+				"sizePreset",
+				"widthType",
+				"width",
+				"widthUnit",
+				"gap",
+				"padding",
+				"tabletPadding",
+				"mobilePadding",
+				"paddingUnit",
+				"margin",
+				"tabletMargin",
+				"mobileMargin",
+				"marginUnit",
+				"borderRadius",
+				"tabletBorderRadius",
+				"mobileBorderRadius",
+				"borderRadiusUnit",
+				"borderHoverRadius",
+				"tabletBorderHoverRadius",
+				"mobileBorderHoverRadius",
+				"borderHoverRadiusUnit",
+				"iconSize",
+				"iconSizeUnit",
+				"iconPadding",
+				"tabletIconPadding",
+				"mobileIconPadding",
+				"iconPaddingUnit"
+			],
+			"inherit": [],
+			"inherit-secondary": []
+		}
+	}
+}

@@ -10,12 +10,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Scopes_Site_Styles;
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Supports_Site_Styles;
+
 /**
  * Class to Build the Single Button.
  *
  * @category class
  */
-class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
+class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block implements Supports_Site_Styles, Scopes_Site_Styles {
 	/**
 	 * Instance of this class
 	 *
@@ -471,6 +474,111 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		wp_register_script( 'kadence-blocks-glight-video-init', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-glight-video-init.min.js', [ 'kadence-glightbox' ], KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-popper', KADENCE_BLOCKS_URL . 'includes/assets/js/popper.min.js', [], KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-tippy', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-tippy.min.js', [ 'kadence-blocks-popper' ], KADENCE_BLOCKS_VERSION, true );
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_excluded_attributes(): array {
+		return [ 'hideLink', 'link', 'target', 'download', 'text', 'noFollow', 'sponsored', 'kadenceDynamic', 'metadata', 'className', 'lock', 'inheritStyles' ];
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_attributes_map(): array {
+		return [
+			'background' => 'color.background',
+			'color'      => 'color.text',
+		];
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_supports(): array {
+		return [
+			'color' => [
+				'background'                      => true,
+				'text'                            => true,
+				'gradients'                       => false,
+				'__experimentalSkipSerialization' => true,
+			],
+		];
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_selectors(): array {
+		/*
+		 * The button element, which the editor wraps and the front end doesn't. Only Fill
+		 * buttons: core's colors would otherwise reach the Outline and theme styles.
+		 */
+		return [ 'root' => '.wp-block-kadence-singlebtn.kt-button.kb-btn-global-fill, .wp-block-kadence-singlebtn .kt-button.kb-btn-global-fill' ];
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_scope_attribute(): string {
+		return 'inheritStyles';
+	}
+
+	/**
+	 * Site values describe Fill buttons. Outline takes only the shape, so it
+	 * keeps its transparent background and theme outline colors; the theme
+	 * button styles take none.
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_scoped_attributes(): array {
+		$shape = [
+			'typography',
+			'sizePreset',
+			'widthType',
+			'width',
+			'widthUnit',
+			'gap',
+			'padding',
+			'tabletPadding',
+			'mobilePadding',
+			'paddingUnit',
+			'margin',
+			'tabletMargin',
+			'mobileMargin',
+			'marginUnit',
+			'borderRadius',
+			'tabletBorderRadius',
+			'mobileBorderRadius',
+			'borderRadiusUnit',
+			'borderHoverRadius',
+			'tabletBorderHoverRadius',
+			'mobileBorderHoverRadius',
+			'borderHoverRadiusUnit',
+			'iconSize',
+			'iconSizeUnit',
+			'iconPadding',
+			'tabletIconPadding',
+			'mobileIconPadding',
+			'iconPaddingUnit',
+		];
+
+		return [
+			'outline'           => $shape,
+			'inherit'           => [],
+			'inherit-secondary' => [],
+		];
 	}
 }
 
