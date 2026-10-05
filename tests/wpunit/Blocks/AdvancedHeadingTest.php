@@ -28,16 +28,18 @@ class AdvancedHeadingTest extends KadenceBlocksUnit {
 	public function test_get_html_tag_only_allows_heading_levels_1_to_6(): void {
 		$allowed = [ 'heading', 'p', 'span', 'div' ];
 
-		$expected_tags = [
-			3                    => 'h3',
-			'4'                  => 'h4',
-			7                    => 'h2',
-			'x onfocus=alert(1)' => 'h2',
-			'4 onfocus=alert(1)' => 'h2',
-			-4                   => 'h2',
+		$cases = [
+			[ 3, 'h3' ],
+			[ '4', 'h4' ],
+			[ 7, 'h2' ],
+			[ 'x onfocus=alert(1)', 'h2' ],
+			[ '4 onfocus=alert(1)', 'h2' ],
+			[ -4, 'h2' ],
+			[ '1e1', 'h2' ],
+			[ null, 'h2' ],
 		];
 
-		foreach ( $expected_tags as $level => $expected ) {
+		foreach ( $cases as [ $level, $expected ] ) {
 			$attributes = [
 				'htmlTag' => 'heading',
 				'level'   => $level,
