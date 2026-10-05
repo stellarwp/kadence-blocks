@@ -400,8 +400,17 @@ class Kadence_Blocks_Abstract_Block {
 		if ( ! empty( $attributes[ $tag_key ] ) && in_array( $attributes[ $tag_key ], $allowed_tags, true ) ) {
 
 			if ( $attributes[ $tag_key ] === 'heading' ) {
-				$level = isset( $attributes[ $level_key ] ) ? absint( $attributes[ $level_key ] ) : 0;
-				return 'h' . ( $level >= 1 && $level <= 6 ? $level : 2 );
+				$level = filter_var(
+					$attributes[ $level_key ] ?? null,
+					FILTER_VALIDATE_INT,
+					[
+						'options' => [
+							'min_range' => 1,
+							'max_range' => 6,
+						],
+					]
+				);
+				return 'h' . ( false !== $level ? $level : 2 );
 			}
 
 			return $attributes[ $tag_key ];

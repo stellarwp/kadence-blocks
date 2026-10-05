@@ -31,6 +31,8 @@ class PostsTest extends KadenceBlocksUnit {
 
 		$this->assertStringStartsWith( '<h3 class="entry-title">', $this->render_title( '3' ) );
 		$this->assertStringStartsWith( '<h2 class="entry-title">', $this->render_title( 'x onfocus=alert(1)' ) );
+		$this->assertStringStartsWith( '<h2 class="entry-title">', $this->render_title( '4 onfocus=alert(1)' ) );
+		$this->assertStringStartsWith( '<h2 class="entry-title">', $this->render_title( '-4' ) );
 	}
 
 	private function render_title( string $level ): string {

@@ -13,8 +13,17 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$level    = isset( $attributes['titleFont'][0]['level'] ) ? absint( $attributes['titleFont'][0]['level'] ) : 0;
-$html_tag = 'h' . ( $level >= 1 && $level <= 6 ? $level : 2 );
+$level    = filter_var(
+	$attributes['titleFont'][0]['level'] ?? null,
+	FILTER_VALIDATE_INT,
+	[
+		'options' => [
+			'min_range' => 1,
+			'max_range' => 6,
+		],
+	]
+);
+$html_tag = 'h' . ( false !== $level ? $level : 2 );
 
 
 the_title( '<' . esc_attr( $html_tag ) . ' class="entry-title"><a href="' . esc_url( get_permalink() ) . '" rel="bookmark">', '</a></' . esc_attr( $html_tag ) . '>' );

@@ -33,6 +33,8 @@ class AdvancedHeadingTest extends KadenceBlocksUnit {
 			'4'                  => 'h4',
 			7                    => 'h2',
 			'x onfocus=alert(1)' => 'h2',
+			'4 onfocus=alert(1)' => 'h2',
+			-4                   => 'h2',
 		];
 
 		foreach ( $expected_tags as $level => $expected ) {
