@@ -201,6 +201,32 @@ class AdvancedHeadingTest extends KadenceBlocksUnit {
 	}
 
 	/**
+	 * A heading with a border width and no border color writes a transparent border, as 3.7.12 did, instead
+	 * of falling back to the text color.
+	 *
+	 * @return void
+	 */
+	public function testBorderWidthWithoutColorRendersTransparent(): void {
+		$css        = new Kadence_Blocks_CSS();
+		$attributes = [
+			'uniqueID'    => '555_abcd',
+			'borderStyle' => [
+				[
+					'top'    => [ '', 'solid', '2' ],
+					'right'  => [ '', 'solid', '2' ],
+					'bottom' => [ '', 'solid', '2' ],
+					'left'   => [ '', 'solid', '2' ],
+					'unit'   => 'px',
+				],
+			],
+		];
+
+		$output = $this->block->build_css( $attributes, $css, '555_abcd', '555_abcd' );
+
+		$this->assertStringContainsString( 'border-top:2px solid transparent', $output, 'A stored width with no color stays transparent.' );
+	}
+
+	/**
 	 * A heading whose size slot holds a plain number keeps rendering the number with its unit, so the alias
 	 * branch changes nothing for a block that never picked a token.
 	 *

@@ -1180,7 +1180,7 @@ class KadenceBlocksCssTest extends WPTestCase {
 	}
 
 	/**
-	 * With single styles on, a width stored without a color keeps a transparent border color, so the
+	 * With single styles and `transparent_color` on, a width stored without a color keeps a transparent border color, so the
 	 * shorthand does not fall back to the text color.
 	 *
 	 * @param array<int, string> $stored   The stored top side: color, style, width.
@@ -1204,10 +1204,39 @@ class KadenceBlocksCssTest extends WPTestCase {
 				],
 			],
 			'borderStyle',
-			true
+			true,
+			[ 'transparent_color' => true ]
 		);
 
 		$this->assertStringContainsString( $expected, $this->css->css_output(), 'The border color stays transparent' );
+	}
+
+	/**
+	 * With single styles on and no opt-in, a width stored without a color is not forced to transparent,
+	 * so the shorthand keeps the text color it had before.
+	 *
+	 * @return void
+	 */
+	public function testRenderBorderStylesLeavesWidthWithoutColorAloneByDefault(): void {
+		$this->css->render_border_styles(
+			[
+				'borderStyle' => [
+					[
+						'top'    => [ '', 'solid', '2' ],
+						'right'  => [ '', '', '' ],
+						'bottom' => [ '', '', '' ],
+						'left'   => [ '', '', '' ],
+						'unit'   => 'px',
+					],
+				],
+			],
+			'borderStyle',
+			true
+		);
+		$output = $this->css->css_output();
+
+		$this->assertStringContainsString( 'border-top:2px solid', $output, 'The width and style are written' );
+		$this->assertStringNotContainsString( 'transparent', $output, 'No transparent color is added without the opt-in' );
 	}
 
 	/**
@@ -1230,7 +1259,8 @@ class KadenceBlocksCssTest extends WPTestCase {
 				],
 			],
 			'borderStyle',
-			true
+			true,
+			[ 'transparent_color' => true ]
 		);
 
 		$this->assertStringNotContainsString( 'transparent', $this->css->css_output(), 'An unresolved alias is not turned into transparent' );
