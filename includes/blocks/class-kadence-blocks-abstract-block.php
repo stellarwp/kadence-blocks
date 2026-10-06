@@ -385,6 +385,8 @@ class Kadence_Blocks_Abstract_Block {
 	 * Gets the HTML tag from the attributes.
 	 * If the tag provided isn't allowed, return the default value.
 	 *
+	 * @since 3.7.12.1 Only allows heading levels 1 to 6.
+	 *
 	 * @param array  $attributes Array of the blocks attributes.
 	 * @param string $tag_key Offset on $attributes where the tag is set.
 	 * @param string $default Default tag to use if $tag_key attribute is undefined or invalid.
@@ -395,11 +397,20 @@ class Kadence_Blocks_Abstract_Block {
 	 */
 	public function get_html_tag( $attributes, $tag_key, $default, $allowed_tags = [], $level_key = '' ) {
 
-		if ( ! empty( $attributes[ $tag_key ] ) && in_array( $attributes[ $tag_key ], $allowed_tags ) ) {
+		if ( ! empty( $attributes[ $tag_key ] ) && in_array( $attributes[ $tag_key ], $allowed_tags, true ) ) {
 
 			if ( $attributes[ $tag_key ] === 'heading' ) {
-				$level = ! empty( $attributes[ $level_key ] ) ? $attributes[ $level_key ] : 2;
-				return 'h' . $level;
+				$level = filter_var(
+					$attributes[ $level_key ] ?? null,
+					FILTER_VALIDATE_INT,
+					[
+						'options' => [
+							'min_range' => 1,
+							'max_range' => 6,
+						],
+					]
+				);
+				return 'h' . ( false !== $level ? $level : 2 );
 			}
 
 			return $attributes[ $tag_key ];

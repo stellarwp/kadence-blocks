@@ -1,3 +1,4 @@
+// cSpell:ignore animatefill atomiks ctippy describedby Documen Insta rende specity tippies
 /**
  * File kb-tippy.js.
  * Gets the tooltip working.
@@ -2742,29 +2743,21 @@
 		strip_tags(input) {
 			const allowedTags = ['br', 'b', 'i', 'u', 'p', 'ol', 'ul', 'li', 'strong', 'small'];
 			const allowedAttributes = ['id', 'class'];
-			input = input.replace(/<!--[\s\S]*?-->/g, '');
+			const body = new DOMParser().parseFromString(input, 'text/html').body;
 
-			// Handle allowed tags and their allowed attributes
-			const sanitized = input.replace(/<([a-z][a-z0-9]*)\b[^>]*>/gi, (match, tag) => {
-				if (allowedTags.includes(tag.toLowerCase())) {
-					// Extract allowed attributes
-					const attributes = match.match(/([a-z0-9-]+)="([^"]*)"/gi) || [];
-					const allowedAttributesString = attributes
-						.filter((attr) => allowedAttributes.some((allowed) => attr.startsWith(allowed + '=')))
-						.join(' ');
-
-					return `<${tag.toLowerCase()}${allowedAttributesString ? ' ' + allowedAttributesString : ''}>`;
+			body.querySelectorAll('*').forEach((element) => {
+				if (!allowedTags.includes(element.localName)) {
+					element.replaceWith(...element.childNodes);
+					return;
 				}
-				return '';
+				[...element.attributes].forEach(({ name }) => {
+					if (!allowedAttributes.includes(name)) {
+						element.removeAttribute(name);
+					}
+				});
 			});
 
-			// Remove any remaining disallowed tags
-			return sanitized.replace(/<\/?([a-z][a-z0-9]*)\b[^>]*>/gi, (match, tag) => {
-				if (allowedTags.includes(tag.toLowerCase())) {
-					return match;
-				}
-				return '';
-			});
+			return body.innerHTML;
 		},
 		/**
 		 * Run initializeTippy.

@@ -6,6 +6,10 @@
  * @package Kadence Blocks
  */
 
+/*
+ * cspell:ignore accorion blockattr fontsubsets fontvariants indexkey matzeeable surecart
+ */
+
 use function KadenceWP\KadenceBlocks\get_webfont_url;
 
 // Exit if accessed directly.
@@ -218,7 +222,7 @@ class Kadence_Blocks_Frontend {
 		$allowed_tags = apply_filters( 'kadence_blocks_faq_schema_allowed_tags', '<a><strong><br><h2><h3><h4><h5><ul><li><ol><p>', $block );
 		if ( ! is_null( self::$faq_schema ) ) {
 			if ( is_array( $block['innerBlocks'] ) && ! empty( $block['innerBlocks'] ) ) {
-				// an accordion pane has it's "question" in the pane's innerhtml
+				// an accordion pane has its "question" in the pane's innerHTML
 				// the "answer" is everything in innerblocks
 				// here we parse that out and build the question and answer
 				
@@ -257,12 +261,12 @@ class Kadence_Blocks_Frontend {
 	/**
 	 * Checks if the current request is a WP REST API request.
 	 *
-	 * Case #1: After WP_REST_Request initialisation
+	 * Case #1: After WP_REST_Request initialization
 	 * Case #2: Support "plain" permalink settings
 	 * Case #3: It can happen that WP_Rewrite is not yet initialized,
 	 *          so do this (wp-settings.php)
 	 * Case #4: URL Path begins with wp-json/ (your REST prefix)
-	 *          Also supports WP installations in subfolders
+	 *          Also supports WP installations in subdirectories
 	 *
 	 * @returns boolean
 	 * @author matzeeable
@@ -343,6 +347,10 @@ class Kadence_Blocks_Frontend {
 
 	/**
 	 * Print gFonts
+	 *
+	 * @since 3.7.12.1 Escape the stylesheet URL on output.
+	 *
+	 * @param array<string, array{fontfamily: string, fontvariants?: string[], fontsubsets?: string[]}> $gfonts The Google Fonts to load.
 	 */
 	public function print_gfonts( $gfonts ) {
 		$link    = '';
@@ -365,18 +373,18 @@ class Kadence_Blocks_Frontend {
 			}
 		}
 		if ( ! empty( $subsets ) ) {
-			$link .= '&amp;subset=' . implode( ',', $subsets );
+			$link .= '&subset=' . implode( ',', $subsets );
 		}
 		if ( apply_filters( 'kadence_display_swap_google_fonts', true ) ) {
-			$link .= '&amp;display=swap';
+			$link .= '&display=swap';
 		}
 
-		$full_link           = 'https://fonts.googleapis.com/css?family=' . esc_attr( str_replace( '|', '%7C', $link ) );
+		$full_link           = 'https://fonts.googleapis.com/css?family=' . str_replace( '|', '%7C', $link );
 		$local_font_settings = get_option( 'kadence_blocks_font_settings' );
 		if ( $local_font_settings && isset( $local_font_settings['load_fonts_local'] ) && $local_font_settings['load_fonts_local'] == 'true' && function_exists( 'KadenceWP\KadenceBlocks\get_webfont_url' ) ) {
-			$full_link = get_webfont_url( htmlspecialchars_decode( $full_link ) );
+			$full_link = get_webfont_url( $full_link );
 		}
-		echo '<link href="' . $full_link . '" rel="stylesheet">'; //phpcs:ignore
+		echo '<link href="' . esc_url( $full_link ) . '" rel="stylesheet">'; //phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet
 	}
 	/**
 	 * Process the SC Single Product Template for Kadence Blocks.
