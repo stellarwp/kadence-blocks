@@ -1,4 +1,0 @@
-significance: patch
-type: security
-entry: Improved output escaping for block heading tags and tooltip content.
-timestamp: 2026-10-02T16:56:51.297Z

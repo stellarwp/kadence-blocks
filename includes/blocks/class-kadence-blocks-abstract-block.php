@@ -385,7 +385,7 @@ class Kadence_Blocks_Abstract_Block {
 	 * Gets the HTML tag from the attributes.
 	 * If the tag provided isn't allowed, return the default value.
 	 *
-	 * @since TBD Only allows heading levels 1 to 6.
+	 * @since 3.7.12.1 Only allows heading levels 1 to 6.
 	 *
 	 * @param array  $attributes Array of the blocks attributes.
 	 * @param string $tag_key Offset on $attributes where the tag is set.

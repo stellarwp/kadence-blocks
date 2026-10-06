@@ -121,7 +121,7 @@ class Kadence_Blocks_Google_Fonts {
 	/**
 	 * Print gFonts
 	 *
-	 * @since TBD Escape the stylesheet URL on output.
+	 * @since 3.7.12.1 Escape the stylesheet URL on output.
 	 *
 	 * @param array<string, array{fontfamily: string, fontvariants?: string[], fontsubsets?: string[]}> $gfonts The Google Fonts to load.
 	 */

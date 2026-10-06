@@ -225,7 +225,7 @@ class Kadence_Blocks_Countup_Block extends Kadence_Blocks_Abstract_Block {
 	/**
 	 * Builds HTML for block.
 	 *
-	 * @since TBD Only allows the title tags available in the editor.
+	 * @since 3.7.12.1 Only allows the title tags available in the editor.
 	 *
 	 * @param array    $attributes     The block attributes.
 	 * @param string   $unique_id      The block's unique ID.
