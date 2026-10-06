@@ -226,6 +226,13 @@ class Kadence_Blocks_Countup_Block extends Kadence_Blocks_Abstract_Block {
 	 * Builds HTML for block.
 	 *
 	 * @since TBD Only allows the title tags available in the editor.
+	 *
+	 * @param array    $attributes     The block attributes.
+	 * @param string   $unique_id      The block's unique ID.
+	 * @param string   $content        The block's content.
+	 * @param WP_Block $block_instance The instance of the WP_Block class that represents the block being rendered.
+	 *
+	 * @return string Returns the block output.
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
 		if ( apply_filters( 'kadence-blocks-countup-static', false, $attributes, $block_instance ) ) {
