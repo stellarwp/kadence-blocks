@@ -12,8 +12,7 @@ function miscJs() {
 }
 
 function fseStyles() {
-	stylesTasks.fseStyles();
-	watch(stylesTasks.fseSources, stylesTasks.fseStyles);
+	watch(stylesTasks.fseSources, { ignoreInitial: false }, stylesTasks.fseStyles);
 }
 
 exports.watch = parallel(miscStyles, miscJs, fseStyles);

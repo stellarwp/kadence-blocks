@@ -131,5 +131,5 @@ exports.fseStyles = fseStyles;
 exports.fseSources = FSE_SOURCES;
 exports.weakenDefaultButtonColors = weakenDefaultButtonColors;
 
-exports.buildStyles = parallel(miscStyles, fseStyles);
-exports.styles = parallel(miscStyles, fseStyles);
+exports.buildStyles = parallel(miscStyles);
+exports.styles = parallel(miscStyles);

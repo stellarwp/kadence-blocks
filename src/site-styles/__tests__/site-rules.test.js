@@ -1,5 +1,5 @@
 /* eslint-env jest */
-import { PLACEHOLDER, siteRulesFrom } from '../site-rules';
+import { PLACEHOLDER, retain, siteRulesFrom, writeToHead } from '../site-rules';
 
 // Editor globals the module imports; the functions under test don't use them.
 jest.mock('@wordpress/blocks', () => ({}), { virtual: true });
@@ -32,5 +32,23 @@ describe('siteRulesFrom', () => {
 		expect(siteRulesFrom(before, after, selectors)).toBe(
 			`${media}{.wp-block-kadence-singlebtn .kt-button:where(.kb-btn-global-fill)::before{opacity:1;}}`
 		);
+	});
+});
+
+describe('retain', () => {
+	it('removes the shared style element when the last owner releases it', () => {
+		const doc = document.implementation.createHTMLDocument();
+		const id = 'kadence-blocks-site-rules-singlebtn';
+		writeToHead(doc, id, '.a{color:red;}');
+
+		const releaseFirst = retain(doc, id);
+		const releaseSecond = retain(doc, id);
+		releaseFirst();
+
+		expect(doc.getElementById(id)).not.toBeNull();
+
+		releaseSecond();
+
+		expect(doc.getElementById(id)).toBeNull();
 	});
 });

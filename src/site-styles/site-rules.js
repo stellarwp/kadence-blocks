@@ -150,7 +150,7 @@ function siteRulesCss(name, StyleComponent, selectors, record, previewDevice) {
  * @param {string}   id  The style element's ID.
  * @param {string}   css The CSS, empty to remove the element.
  */
-function writeToHead(doc, id, css) {
+export function writeToHead(doc, id, css) {
 	const existing = doc.getElementById(id);
 
 	if (!css) {
@@ -165,6 +165,29 @@ function writeToHead(doc, id, css) {
 	doc.head.appendChild(style);
 }
 
+const owners = new WeakMap();
+
+/**
+ * Counts the mounted components that share a document's style element.
+ *
+ * @param {Document} doc The document the style element is in.
+ * @param {string}   id  The style element's ID.
+ * @return {Function} Releases the element: the last release removes it.
+ */
+export function retain(doc, id) {
+	const counts = owners.get(doc) || new Map();
+	owners.set(doc, counts);
+	counts.set(id, (counts.get(id) || 0) + 1);
+
+	return () => {
+		counts.set(id, counts.get(id) - 1);
+
+		if (!counts.get(id)) {
+			writeToHead(doc, id, '');
+		}
+	};
+}
+
 /**
  * @param {Object}   props                The component props.
  * @param {string}   props.name           Block name.
@@ -177,21 +200,21 @@ function SiteRulesStyle({ name, StyleComponent, selectors }) {
 	const previewDevice = useSelect((select) => select('kadenceblocks/data').getPreviewDeviceType(), []);
 	const ref = useRefEffect(
 		(node) => {
+			const doc = node.ownerDocument;
+			const id = `kadence-blocks-site-rules-${getSupportedBlock(name).slug}`;
+			const release = retain(doc, id);
 			let active = Boolean(record);
 
 			// After the commit: React can't render the off-screen style component while it commits.
 			queueMicrotask(() => {
 				if (active) {
-					writeToHead(
-						node.ownerDocument,
-						`kadence-blocks-site-rules-${getSupportedBlock(name).slug}`,
-						siteRulesCss(name, StyleComponent, selectors, record, previewDevice)
-					);
+					writeToHead(doc, id, siteRulesCss(name, StyleComponent, selectors, record, previewDevice));
 				}
 			});
 
 			return () => {
 				active = false;
+				release();
 			};
 		},
 		[name, StyleComponent, selectors, record, previewDevice]
