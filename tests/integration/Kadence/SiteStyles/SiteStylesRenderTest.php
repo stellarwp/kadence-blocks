@@ -7,9 +7,10 @@ namespace Tests\integration\Kadence\SiteStyles;
 use Codeception\TestCase\WPTestCase;
 
 /**
- * Covers how Single Button site-level styles reach the rendered block CSS, on a
- * fixture page with every button style, an instance-coloured button and a
- * button in a template part.
+ * Covers the rendered instance CSS of Single Buttons with site-level styles, on
+ * a fixture page with every button style, an instance-coloured button and a
+ * button in a template part. Core's Global Styles and the site rules render
+ * the site values, so the instance CSS keeps only the instance's own.
  */
 final class SiteStylesRenderTest extends WPTestCase {
 	protected \IntegrationTester $tester;
@@ -20,40 +21,14 @@ final class SiteStylesRenderTest extends WPTestCase {
 		$this->tester->assert_block_css_matches( 'singlebtn-site-styles-baseline', $this->fixture_css() );
 	}
 
-	/**
-	 * @return array<string, array{string}>
-	 */
-	public function fillButtonProvider(): array {
-		return [
-			'fill'             => [ 'ss_fill' ],
-			'in template part' => [ 'ss_part' ],
-		];
-	}
-
-	/**
-	 * @dataProvider fillButtonProvider
-	 *
-	 * @param string $unique_id The button's unique ID in the fixture.
-	 */
-	public function testSiteValuesReachEveryFillButtonWithoutItsOwn( string $unique_id ): void {
+	public function testSiteValuesStayOutOfTheInstanceCss(): void {
 		$this->tester->enable_fse_mode();
 		$this->store_background_and_radius( '#cc0000', 20 );
 
-		$rule = $this->button_rule( $this->fixture_css(), $unique_id );
+		$css = $this->fixture_css();
 
-		$this->assertStringContainsString( 'background:#cc0000;', $rule );
-		$this->assertStringContainsString( 'border-top-left-radius:20px;', $rule );
-		$this->assertStringContainsString( 'border-bottom-right-radius:20px;', $rule );
-	}
-
-	public function testAnOutlineButtonTakesTheShapeButNotTheColors(): void {
-		$this->tester->enable_fse_mode();
-		$this->store_background_and_radius( '#cc0000', 20 );
-
-		$rule = $this->button_rule( $this->fixture_css(), 'ss_outline' );
-
-		$this->assertStringNotContainsString( 'background:', $rule );
-		$this->assertStringContainsString( 'border-top-left-radius:20px;', $rule );
+		$this->assertStringNotContainsString( '#cc0000', $css );
+		$this->assertStringNotContainsString( 'radius:20px', $css );
 	}
 
 	/**
@@ -82,21 +57,14 @@ final class SiteStylesRenderTest extends WPTestCase {
 		$this->assertStringNotContainsString( "\n" . $main, $css );
 	}
 
-	public function testTheInstanceBackgroundWins(): void {
+	public function testTheInstanceKeepsItsOwnBackground(): void {
 		$this->tester->enable_fse_mode();
 		$this->store_background_and_radius( '#cc0000', 20 );
 
 		$rule = $this->button_rule( $this->fixture_css(), 'ss_instance' );
 
 		$this->assertStringContainsString( 'background:#00aa00;', $rule );
-		$this->assertStringContainsString( 'border-top-left-radius:20px;', $rule );
-	}
-
-	public function testAPaletteBackgroundRendersTheKadencePaletteVariable(): void {
-		$this->tester->enable_fse_mode();
-		$this->store_background_and_radius( 'var:preset|color|theme-palette1', 20 );
-
-		$this->assertStringContainsString( 'background:var(--global-palette1', $this->button_rule( $this->fixture_css(), 'ss_fill' ) );
+		$this->assertStringNotContainsString( 'radius:20px', $rule );
 	}
 
 	public function testClassicModeIgnoresTheSiteValues(): void {

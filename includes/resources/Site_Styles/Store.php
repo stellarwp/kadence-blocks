@@ -34,9 +34,9 @@ final class Store {
 	}
 
 	/**
-	 * Returns a block's site-level values as block attributes: its
-	 * `settings.custom.kadence.<slug>` values plus the colors stored in core's
-	 * style for the block, converted to Kadence color values.
+	 * Returns a block's `settings.custom.kadence.<slug>` values as block
+	 * attributes. The colors in core's style for the block are left to core's
+	 * global stylesheet.
 	 *
 	 * @since TBD
 	 *
@@ -51,82 +51,54 @@ final class Store {
 			return [];
 		}
 
-		$user_data  = $this->user_data();
-		$data       = new Dot( $user_data );
-		$attributes = $data->get( 'settings.custom.kadence.' . $block->get_slug(), [] );
-		$attributes = is_array( $attributes ) ? $attributes : [];
-		$colors     = $data->get( 'styles.blocks.' . $block_name . '.color', [] );
+		$attributes = ( new Dot( $this->user_data() ) )->get( 'settings.custom.kadence.' . $block->get_slug(), [] );
 
-		if ( ! is_array( $colors ) ) {
-			return $attributes;
-		}
-
-		foreach ( $block->site_styles_attributes_map() as $attribute => $path ) {
-			if ( ! self::can_convert( $path ) ) {
-				continue;
-			}
-
-			$key    = substr( $path, strlen( 'color.' ) );
-			$stored = $colors[ $key ] ?? null;
-
-			if ( ! is_string( $stored ) || '' === $stored ) {
-				continue;
-			}
-
-			$value = $this->attribute_color( $key, $stored );
-
-			if ( '' !== $value ) {
-				$attributes[ $attribute ] = $value;
-			}
-		}
-
-		return $attributes;
+		return is_array( $attributes ) ? $attributes : [];
 	}
 
 	/**
-	 * Whether a path in a block's core style has a converter to a block
-	 * attribute value. Only colors (`color.<key>`) do.
+	 * Returns the mapped paths in a block's core style that hold a site value
+	 * on any device, e.g. `color.background`.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $path Path in the block's core style, e.g. `color.background`.
+	 * @param string $block_name Block name, e.g. `kadence/singlebtn`.
 	 *
-	 * @return bool Whether the store can read a value at the path.
+	 * @return list<string> Paths, in the order of the block's attributes map; empty in classic mode or for an unsupported block.
 	 */
-	public static function can_convert( string $path ): bool {
-		return 1 === preg_match( '/^color\.[A-Za-z]+$/', $path );
-	}
+	public function core_paths( string $block_name ): array {
+		$block = $this->blocks->get( $block_name );
 
-	/**
-	 * Converts a color stored in core's style to a Kadence color attribute value.
-	 *
-	 * A Kadence palette reference becomes `paletteN`, which Kadence renders as
-	 * `var(--global-paletteN)`. It is accepted in both stored forms: the
-	 * `var:preset|color|theme-paletteN` reference, and the
-	 * `var(--wp--preset--color--theme-paletteN)` value core's KSES pass rewrites
-	 * it to, which names a variable core doesn't define. Other preset references
-	 * become CSS through the style engine; any other value is kept.
-	 *
-	 * @param string $core_key The key under the block's `color` style, e.g. `background`.
-	 * @param string $value    The stored value.
-	 *
-	 * @return string The attribute value, empty when the style engine returns none.
-	 */
-	private function attribute_color( string $core_key, string $value ): string {
-		if (
-			preg_match( '/^var:preset\|color\|theme-(palette\d+)$/', $value, $match )
-			|| preg_match( '/^var\(--wp--preset--color--theme-(palette\d+)\)$/', $value, $match )
-		) {
-			return $match[1];
+		if ( null === $block || ! kadence_blocks_is_fse_mode() ) {
+			return [];
 		}
 
-		if ( ! str_starts_with( $value, 'var:preset|' ) ) {
-			return $value;
+		$style = ( new Dot( $this->user_data() ) )->get( 'styles.blocks.' . $block_name, [] );
+
+		if ( ! is_array( $style ) ) {
+			return [];
 		}
 
-		$declarations = wp_style_engine_get_styles( [ 'color' => [ $core_key => $value ] ] )['declarations'];
+		$states = [ $style ];
 
-		return $declarations ? reset( $declarations ) : '';
+		foreach ( $style as $key => $value ) {
+			if ( is_string( $key ) && 0 === strpos( $key, '@' ) && is_array( $value ) ) {
+				$states[] = $value;
+			}
+		}
+
+		$paths = [];
+
+		foreach ( $block->site_styles_attributes_map() as $path ) {
+			foreach ( $states as $state ) {
+				if ( ! empty( ( new Dot( $state ) )->get( $path ) ) ) {
+					$paths[] = $path;
+					break;
+				}
+			}
+		}
+
+		return $paths;
 	}
 
 	/**

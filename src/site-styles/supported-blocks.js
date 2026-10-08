@@ -6,6 +6,7 @@
  * @typedef {Object} SupportedBlock
  * @property {string}                 slug      Key under `settings.custom.kadence` in Global Styles.
  * @property {string[]}               exclude   Content attributes that are never stored site-wide.
+ * @property {string[]}               overlay   Site values merged into the instance's attributes; CSS renders the rest.
  * @property {Object<string, string>} attributesMap Block attribute => path in the block's core style, e.g. `color.background`.
  * @property {Object}                 supports  Core supports added in FSE mode.
  * @property {SiteStylesScope}        [scope]   For a block whose instances take site values by a style they pick.

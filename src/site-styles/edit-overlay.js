@@ -1,10 +1,12 @@
 /**
- * Renders supported blocks in the editor with their site-level values merged
- * in, and keeps those values out of what the block stores.
+ * Renders supported blocks in the editor with the site-level values they list
+ * for the overlay merged in, and keeps those values out of what the block
+ * stores. Core's Global Styles and the block's site rules render the rest.
  */
 import { createHigherOrderComponent } from '@wordpress/compose';
 import { getBlockType } from '@wordpress/blocks';
 import { useCallback, useMemo } from '@wordpress/element';
+import { pick } from 'lodash';
 import { getSupportedBlock, isFseMode } from './supported-blocks';
 import { guardWrite, mergeAttributes, scopeSiteAttributes, siteAttributes } from './store';
 import { useGlobalStylesRecord } from './use-global-styles-record';
@@ -18,10 +20,10 @@ import { isVirtualBlock } from './virtual-blocks';
 function SiteStylesBlockEdit({ BlockEdit, ...props }) {
 	const { name, attributes, setAttributes } = props;
 	const record = useGlobalStylesRecord();
-	const scope = getSupportedBlock(name)?.scope;
+	const { scope, overlay } = getSupportedBlock(name);
 	const style = scope ? attributes[scope.attribute] : undefined;
 	const site = useMemo(() => {
-		const values = siteAttributes(record, name);
+		const values = pick(siteAttributes(record, name), overlay);
 
 		if (!scope) {
 			return values;
@@ -30,7 +32,7 @@ function SiteStylesBlockEdit({ BlockEdit, ...props }) {
 		const definitions = getBlockType(name)?.attributes || {};
 
 		return scopeSiteAttributes(values, { [scope.attribute]: style }, scope, definitions[scope.attribute]?.default);
-	}, [record, name, scope, style]);
+	}, [record, name, scope, overlay, style]);
 	const hasSiteValues = Object.keys(site).length > 0;
 	const shown = useMemo(
 		() => (hasSiteValues ? mergeAttributes(attributes, site, getBlockType(name)?.attributes || {}) : attributes),

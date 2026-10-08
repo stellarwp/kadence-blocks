@@ -41,9 +41,22 @@ interface Supports_Site_Styles {
 	public function site_styles_excluded_attributes(): array;
 
 	/**
+	 * Site values that must reach the instance's attributes: settings that change
+	 * the markup's classes, and settings the block's editor applies as inline
+	 * styles. No stylesheet rule can reach either. Every other value renders
+	 * through CSS.
+	 *
+	 * @since TBD
+	 *
+	 * @return list<string> Attribute names.
+	 */
+	public function site_styles_overlay_attributes(): array;
+
+	/**
 	 * Attributes that core's Styles screen also edits, stored at a path in the
-	 * block's core style so both surfaces edit one value. Only `color.*` paths
-	 * are supported for now.
+	 * block's core style so both surfaces edit one value. Core's global
+	 * stylesheet renders them, devices included. Only `color.*` paths are
+	 * supported for now.
 	 *
 	 * @since TBD
 	 *

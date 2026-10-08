@@ -11,4 +11,9 @@ function miscJs() {
 	watch(['src/assets/js/*.js', 'src/assets/js/vendor/*.js', 'includes/resources/**/*.js'], jsTasks.miscJs);
 }
 
-exports.watch = parallel(miscStyles, miscJs);
+function fseStyles() {
+	stylesTasks.fseStyles();
+	watch(stylesTasks.fseSources, stylesTasks.fseStyles);
+}
+
+exports.watch = parallel(miscStyles, miscJs, fseStyles);

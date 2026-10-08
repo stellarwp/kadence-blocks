@@ -84,6 +84,19 @@ import {
 import { addFilter, applyFilters, doAction } from '@wordpress/hooks';
 import BackendStyles from './components/backend-styles';
 import { isVirtualBlock } from '../../site-styles/virtual-blocks';
+import SiteRules from '../../site-styles/site-rules';
+
+/**
+ * The selectors the block's site rules use in place of the instance's, as on the front end.
+ *
+ * @param {string} placeholder The unique ID the style component rendered under.
+ * @param {string} style       The button style the rules are for, e.g. `fill`.
+ * @return {Object<string, string>} Instance selector => site selector.
+ */
+const siteRuleSelectors = (placeholder, style) => ({
+	[`.kb-single-btn-${placeholder}`]: '.wp-block-kadence-singlebtn',
+	[`.kt-button-${placeholder}`]: `.kt-button:where(.kb-btn-global-${style})`,
+});
 
 export default function KadenceButtonEdit(props) {
 	const { attributes, setAttributes, isSelected, context, clientId, name } = props;
@@ -558,6 +571,7 @@ export default function KadenceButtonEdit(props) {
 
 	return (
 		<div {...blockProps}>
+			<SiteRules name={name} StyleComponent={BackendStyles} selectors={siteRuleSelectors} />
 			<BackendStyles {...props} previewDevice={previewDevice} />
 			<BlockControls>
 				<ToolbarGroup>
