@@ -7,36 +7,13 @@ namespace Tests\integration\Kadence\SiteStyles;
 use Codeception\TestCase\WPTestCase;
 
 /**
- * Covers merging Single Button site-level values into instance attributes.
+ * Covers merging Single Button's overlay-listed site values into instance
+ * attributes. Core's Global Styles and the site rules render the rest.
  */
 final class SiteStylesOverlayTest extends WPTestCase {
 	protected \IntegrationTester $tester;
 
-	public function testTheRenderFilterMergesTheStoredValues(): void {
-		$this->tester->enable_fse_mode();
-		$this->tester->store_user_global_styles(
-			[
-				'settings' => [ 'custom' => [ 'kadence' => [ 'singlebtn' => [ 'borderRadius' => [ 20, 20, 20, 20 ] ] ] ] ],
-				'styles'   => [ 'blocks' => [ 'kadence/singlebtn' => [ 'color' => [ 'background' => '#cc0000' ] ] ] ],
-			]
-		);
-
-		$default_button  = apply_filters( 'kadence_blocks_singlebtn_render_block_attributes', [ 'uniqueID' => 'a' ] );
-		$coloured_button = apply_filters(
-			'kadence_blocks_singlebtn_render_block_attributes',
-			[
-				'uniqueID'   => 'b',
-				'background' => '#00aa00',
-			]
-		);
-
-		$this->assertSame( '#cc0000', $default_button['background'] );
-		$this->assertSame( [ 20, 20, 20, 20 ], $default_button['borderRadius'] );
-		$this->assertSame( '#00aa00', $coloured_button['background'] );
-		$this->assertSame( [ 20, 20, 20, 20 ], $coloured_button['borderRadius'] );
-	}
-
-	public function testEachButtonStyleTakesItsSiteValues(): void {
+	public function testTheRenderFilterMergesOnlyTheOverlayAttributes(): void {
 		$this->tester->enable_fse_mode();
 		$this->tester->store_user_global_styles(
 			[
@@ -44,8 +21,8 @@ final class SiteStylesOverlayTest extends WPTestCase {
 					'custom' => [
 						'kadence' => [
 							'singlebtn' => [
-								'borderRadius'  => [ 20, 20, 20, 20 ],
-								'displayShadow' => true,
+								'sizePreset'   => 'large',
+								'borderRadius' => [ 20, 20, 20, 20 ],
 							],
 						],
 					],
@@ -54,30 +31,39 @@ final class SiteStylesOverlayTest extends WPTestCase {
 			]
 		);
 
+		$default_button = apply_filters( 'kadence_blocks_singlebtn_render_block_attributes', [ 'uniqueID' => 'a' ] );
+		$small_button   = apply_filters(
+			'kadence_blocks_singlebtn_render_block_attributes',
+			[
+				'uniqueID'   => 'b',
+				'sizePreset' => 'small',
+			]
+		);
+
+		$this->assertSame( 'large', $default_button['sizePreset'] );
+		$this->assertArrayNotHasKey( 'borderRadius', $default_button );
+		$this->assertArrayNotHasKey( 'background', $default_button );
+		$this->assertSame( 'small', $small_button['sizePreset'] );
+	}
+
+	public function testEachButtonStyleTakesItsSiteValues(): void {
+		$this->tester->enable_fse_mode();
+		$this->tester->store_user_global_styles(
+			[ 'settings' => [ 'custom' => [ 'kadence' => [ 'singlebtn' => [ 'sizePreset' => 'large' ] ] ] ] ]
+		);
+
 		$render = static fn( array $attributes ): array => apply_filters( 'kadence_blocks_singlebtn_render_block_attributes', $attributes );
 
-		$default = $render( [ 'uniqueID' => 'a' ] );
-		$fill    = $render(
-			[
-				'uniqueID'      => 'b',
-				'inheritStyles' => 'fill',
-			]
-		);
-		$outline = $render(
-			[
-				'uniqueID'      => 'c',
-				'inheritStyles' => 'outline',
-			]
-		);
+		foreach ( [ 'fill', 'outline' ] as $style ) {
+			$button = $render(
+				[
+					'uniqueID'      => 'b',
+					'inheritStyles' => $style,
+				]
+			);
 
-		foreach ( [ $default, $fill ] as $button ) {
-			$this->assertSame( '#cc0000', $button['background'] );
-			$this->assertSame( [ 20, 20, 20, 20 ], $button['borderRadius'] );
-			$this->assertTrue( $button['displayShadow'] );
+			$this->assertSame( 'large', $button['sizePreset'], $style );
 		}
-		$this->assertSame( [ 20, 20, 20, 20 ], $outline['borderRadius'] );
-		$this->assertArrayNotHasKey( 'background', $outline );
-		$this->assertArrayNotHasKey( 'displayShadow', $outline );
 
 		foreach ( [ 'inherit', 'inherit-secondary' ] as $style ) {
 			$attributes = [

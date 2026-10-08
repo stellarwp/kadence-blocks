@@ -14,33 +14,17 @@ use KadenceWP\KadenceBlocks\Site_Styles\Store;
 final class SiteStylesStoreTest extends WPTestCase {
 	protected \IntegrationTester $tester;
 
-	public function testReturnsTheCustomValuesAndTheCoreColors(): void {
+	public function testReturnsTheCustomValuesAndLeavesTheCoreColorsToCore(): void {
 		$radius = [ 20, 20, 20, 20 ];
 		$this->tester->enable_fse_mode();
 		$this->tester->store_user_global_styles(
 			[
 				'settings' => [ 'custom' => [ 'kadence' => [ 'singlebtn' => [ 'borderRadius' => $radius ] ] ] ],
-				'styles'   => [
-					'blocks' => [
-						'kadence/singlebtn' => [
-							'color' => [
-								'background' => '#cc0000',
-								'text'       => '#ffffff',
-							],
-						],
-					],
-				],
+				'styles'   => [ 'blocks' => [ 'kadence/singlebtn' => [ 'color' => [ 'background' => '#cc0000' ] ] ] ],
 			]
 		);
 
-		$this->assertSame(
-			[
-				'borderRadius' => $radius,
-				'background'   => '#cc0000',
-				'color'        => '#ffffff',
-			],
-			$this->store()->attributes( 'kadence/singlebtn' )
-		);
+		$this->assertSame( [ 'borderRadius' => $radius ], $this->store()->attributes( 'kadence/singlebtn' ) );
 	}
 
 	public function testMissingPathsGiveNoValues(): void {
@@ -48,30 +32,6 @@ final class SiteStylesStoreTest extends WPTestCase {
 		$this->tester->store_user_global_styles( [ 'settings' => [ 'color' => [ 'custom' => true ] ] ] );
 
 		$this->assertSame( [], $this->store()->attributes( 'kadence/singlebtn' ) );
-	}
-
-	/**
-	 * @return array<string, array{string, string}>
-	 */
-	public function colorProvider(): array {
-		return [
-			'palette reference'         => [ 'var:preset|color|theme-palette1', 'palette1' ],
-			'palette rewritten by KSES' => [ 'var(--wp--preset--color--theme-palette13)', 'palette13' ],
-			'another preset'            => [ 'var:preset|color|vivid-red', 'var(--wp--preset--color--vivid-red)' ],
-			'custom color'              => [ '#cc0000', '#cc0000' ],
-		];
-	}
-
-	/**
-	 * @dataProvider colorProvider
-	 */
-	public function testCoreColorsBecomeKadenceColorValues( string $stored, string $expected ): void {
-		$this->tester->enable_fse_mode();
-		$this->tester->store_user_global_styles(
-			[ 'styles' => [ 'blocks' => [ 'kadence/singlebtn' => [ 'color' => [ 'background' => $stored ] ] ] ] ]
-		);
-
-		$this->assertSame( [ 'background' => $expected ], $this->store()->attributes( 'kadence/singlebtn' ) );
 	}
 
 	public function testClassicModeGivesNoValues(): void {

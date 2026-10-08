@@ -14,6 +14,18 @@
 		"lock",
 		"inheritStyles"
 	],
+	"overlay": [
+		"sizePreset",
+		"widthType",
+		"width",
+		"widthUnit",
+		"iconSize",
+		"iconSizeUnit",
+		"iconPadding",
+		"tabletIconPadding",
+		"mobileIconPadding",
+		"iconPaddingUnit"
+	],
 	"attributesMap": { "background": "color.background", "color": "color.text" },
 	"supports": {
 		"color": { "background": true, "text": true, "gradients": false, "__experimentalSkipSerialization": true }

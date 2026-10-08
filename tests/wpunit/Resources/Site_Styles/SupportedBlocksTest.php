@@ -5,7 +5,6 @@ declare( strict_types=1 );
 namespace Tests\wpunit\Resources\Site_Styles;
 
 use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Scopes_Site_Styles;
-use KadenceWP\KadenceBlocks\Site_Styles\Store;
 use KadenceWP\KadenceBlocks\Site_Styles\Supported_Blocks;
 use Tests\Support\Classes\TestCase;
 use WP_Block_Type_Registry;
@@ -35,14 +34,15 @@ final class SupportedBlocksTest extends TestCase {
 		$this->assertNotEmpty( $block->site_styles_selectors()['root'] );
 	}
 
-	public function testEverySupportedBlockMapsOnlyConvertiblePaths(): void {
+	public function testEverySupportedBlockMapsOnlyColorPaths(): void {
 		$blocks = $this->container->get( Supported_Blocks::class )->all();
 
 		$this->assertNotEmpty( $blocks );
 		foreach ( $blocks as $name => $block ) {
 			$this->assertSame( $name, $block->get_name() );
 			foreach ( $block->site_styles_attributes_map() as $attribute => $path ) {
-				$this->assertTrue( Store::can_convert( $path ), "{$name}: {$attribute} maps to {$path}, which the store can't convert." );
+				// The Kadence panel converts only colors between core's and Kadence's values.
+				$this->assertMatchesRegularExpression( '/^color\.[A-Za-z]+$/', $path, "{$name}: {$attribute} maps to {$path}, which isn't a color." );
 			}
 		}
 	}

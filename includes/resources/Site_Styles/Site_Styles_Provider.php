@@ -39,6 +39,13 @@ final class Site_Styles_Provider extends Provider {
 			1
 		);
 
+		// After Kadence's instance rules (priority 180), so site rules win ties with parent block rules.
+		$this->container->singleton( Site_Rules::class, Site_Rules::class );
+		add_action( 'wp_enqueue_scripts', $this->container->callback( Site_Rules::class, 'enqueue' ), 190 );
+
+		$this->container->singleton( Fse_Stylesheets::class, Fse_Stylesheets::class );
+		add_filter( 'style_loader_src', $this->container->callback( Fse_Stylesheets::class, 'filter_src' ) );
+
 		$this->container->singleton( Block_Supports::class, Block_Supports::class );
 		add_filter( 'block_type_metadata', $this->container->callback( Block_Supports::class, 'filter_metadata' ) );
 

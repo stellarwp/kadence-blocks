@@ -29,4 +29,16 @@ interface Scopes_Site_Styles {
 	 * @return array<string, list<string>> Style => attribute names.
 	 */
 	public function site_styles_scoped_attributes(): array;
+
+	/**
+	 * The class an instance of the style carries, which scopes the site rules
+	 * printed for that style.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $style The style, e.g. `fill`.
+	 *
+	 * @return string Class name, e.g. `kb-btn-global-fill`.
+	 */
+	public function site_styles_scope_class( string $style ): string;
 }

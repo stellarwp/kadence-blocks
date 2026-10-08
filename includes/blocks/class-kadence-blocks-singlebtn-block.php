@@ -486,6 +486,28 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block imple
 	}
 
 	/**
+	 * The size preset and width type set classes on the markup, and the width
+	 * renders only with a fixed width type; the editor sets the icon size and
+	 * padding inline.
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_overlay_attributes(): array {
+		return [
+			'sizePreset',
+			'widthType',
+			'width',
+			'widthUnit',
+			'iconSize',
+			'iconSizeUnit',
+			'iconPadding',
+			'tabletIconPadding',
+			'mobileIconPadding',
+			'iconPaddingUnit',
+		];
+	}
+
+	/**
 	 * @inheritDoc
 	 *
 	 * @since TBD
@@ -579,6 +601,19 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block imple
 			'inherit'           => [],
 			'inherit-secondary' => [],
 		];
+	}
+
+	/**
+	 * The button's `kb-btn-global-<style>` class.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $style The style, e.g. `fill`.
+	 *
+	 * @return string Class name.
+	 */
+	public function site_styles_scope_class( string $style ): string {
+		return 'kb-btn-global-' . $style;
 	}
 }
 
