@@ -61,7 +61,7 @@ final class Fse_Stylesheets {
 	 *
 	 * @param string|mixed $src The stylesheet URL.
 	 *
-	 * @return string|mixed The URL of the FSE copy, or the URL unchanged.
+	 * @return string|mixed The URL of the FSE copy, or the URL unchanged, also when the build has no copy.
 	 */
 	public function filter_src( $src ) {
 		if (
@@ -82,7 +82,13 @@ final class Fse_Stylesheets {
 		}
 
 		$keys = array_map( static fn( string $path ): string => array_slice( explode( '.', $path ), -1 )[0], $paths );
+		$copy = $match[1] . '-fse-' . implode( '-', $keys ) . '.css';
 
-		return str_replace( '/dist/' . $match[1] . '.css', '/dist/' . $match[1] . '-fse-' . implode( '-', $keys ) . '.css', $src );
+		// A build without the copies, e.g. `bun run build-wp` alone, keeps the original rather than a missing file.
+		if ( ! file_exists( KADENCE_BLOCKS_PATH . 'dist/' . $copy ) ) {
+			return $src;
+		}
+
+		return str_replace( '/dist/' . $match[1] . '.css', '/dist/' . $copy, $src );
 	}
 }

@@ -84,6 +84,20 @@ final class SiteStylesSiteRulesTest extends WPTestCase {
 		$this->assertSame( $front_end, $stylesheets->filter_src( $front_end ), 'Without site colors the front end keeps the original.' );
 	}
 
+	public function testAMissingCopyKeepsTheOriginalStylesheet(): void {
+		$stylesheets = App::instance()->container()->get( Fse_Stylesheets::class );
+		$editor      = KADENCE_BLOCKS_URL . 'dist/blocks-advancedbtn.css?ver=1';
+		$copy        = KADENCE_BLOCKS_PATH . 'dist/blocks-advancedbtn-fse-background-text.css';
+		$this->tester->enable_fse_mode();
+		rename( $copy, $copy . '.bak' ); // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_rename -- Hides the built copy; restored below.
+
+		try {
+			$this->assertSame( $editor, $stylesheets->filter_src( $editor ) );
+		} finally {
+			rename( $copy . '.bak', $copy ); // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_rename
+		}
+	}
+
 	private function site_rules(): Site_Rules {
 		return App::instance()->container()->get( Site_Rules::class );
 	}
