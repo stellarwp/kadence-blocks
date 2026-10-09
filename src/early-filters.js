@@ -15,6 +15,7 @@ import { addSiteStylesSupports } from './site-styles/block-supports';
 import { hideCoreColorControls } from './site-styles/instance-controls';
 import { withSiteStyles } from './site-styles/edit-overlay';
 import { gateBlockDefaults } from './site-styles/block-defaults';
+import { isFseMode } from './site-styles/supported-blocks';
 
 /**
  * Add animation attributes
@@ -163,6 +164,7 @@ const kadenceHeaderTemplatePartNotice = createHigherOrderComponent((BlockEdit) =
 	};
 }, 'withTemplatePartNotice');
 
-if (!window.wpWidgets) {
+// In the Kadence theme's FSE mode the header part is the theme's own header, which Replace would empty.
+if (!window.wpWidgets && !isFseMode()) {
 	addFilter('editor.BlockEdit', 'kadence-blocks/with-template-part-notice', kadenceHeaderTemplatePartNotice);
 }
