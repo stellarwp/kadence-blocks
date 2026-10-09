@@ -1,5 +1,15 @@
 {
     "version": "0.2",
+    "dictionaryDefinitions": [
+        {
+            "name": "wordpress",
+            "path": "./.cspell/wordpress.txt",
+            "addWords": true
+        }
+    ],
+    "dictionaries": [
+        "wordpress"
+    ],
     "ignorePaths": [
         "package-lock.json",
         "bun.lock",
@@ -14,17 +24,20 @@
         "languages/**",
         "vendor/**",
         "node_modules/**",
-        "**/*.svg"
+        "**/*.svg",
+        "tests/_data/**"
     ],
     "words": [
         "absint",
         "ABSPATH",
+        "Adbar",
         "advancedbtn",
         "advancedgallery",
         "advancedheading",
         "algoliasearch",
         "alignleft",
         "alignright",
+        "archivetrans",
         "autoplay",
         "axios",
         "blocksy",
@@ -34,6 +47,7 @@
         "bunfig",
         "bunx",
         "changelogger",
+        "codecept",
         "codeception",
         "colapse",
         "commoditize",
@@ -123,6 +137,7 @@
         "tableofcontents",
         "thumbslider",
         "trailingslashit",
+        "twentytwentythree",
         "uncollapsed",
         "undefed",
         "userrole",
@@ -135,6 +150,7 @@
         "wiggleroom",
         "woocommerce",
         "woodardmc",
+        "worktrees",
         "wpdb",
         "wpml",
         "wpunit",
