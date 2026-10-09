@@ -129,8 +129,9 @@ jobs:
       # ------------------------------------------------------------------------------
       # Setup Node (still required: the @kadence/* package build loop uses npm).
       # ------------------------------------------------------------------------------
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
+          node-version-file: ${{ hashFiles('.nvmrc') != '' && '.nvmrc' || '' }}
           registry-url: 'https://npm.pkg.github.com'
 
       # ------------------------------------------------------------------------------
