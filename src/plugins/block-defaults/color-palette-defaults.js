@@ -25,7 +25,10 @@ export default function KadenceColorDefault() {
 				}
 	);
 	// The theme origin, which this panel writes back: the resolved palette holds only the user colors once one exists.
-	const [colorPalette] = useSettings('color.palette.theme');
+	// A theme without a palette has no theme origin, so it starts from a copy of the resolved palette:
+	// the panel edits its list in place, and the resolved one belongs to the default or user origin.
+	const [themePalette, resolvedPalette] = useSettings('color.palette.theme', 'color.palette');
+	const colorPalette = themePalette ?? [...(resolvedPalette ?? [])];
 	const disableCustomColors = !useSetting('color.custom');
 	const [colors, setColors] = useState('');
 	const [themeColors, setThemeColors] = useState([]);

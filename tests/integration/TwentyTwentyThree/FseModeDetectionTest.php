@@ -15,6 +15,13 @@ final class FseModeDetectionTest extends WPTestCase {
 		$this->assertFalse( kadence_blocks_is_fse_mode() );
 	}
 
+	public function testALeftoverModeSettingDoesNotTurnItOn(): void {
+		// What switching away from the Kadence theme with FSE mode on leaves behind.
+		update_option( 'kadence_fse_mode', 'enabled' );
+
+		$this->assertFalse( kadence_blocks_is_fse_mode() );
+	}
+
 	public function testFilterOverridesTheResult(): void {
 		add_filter( 'kadence_blocks_is_fse_mode', '__return_true' );
 
