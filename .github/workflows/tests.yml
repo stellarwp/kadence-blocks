@@ -57,6 +57,11 @@ jobs:
                   path: slic
                   fetch-depth: 1
 
+            - name: Set up Node
+              uses: actions/setup-node@v6
+              with:
+                  node-version-file: .nvmrc
+
             - uses: oven-sh/setup-bun@v2
               with:
                   bun-version: latest

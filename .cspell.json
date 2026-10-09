@@ -28,6 +28,7 @@
         "tests/_data/**"
     ],
     "words": [
+        "absint",
         "ABSPATH",
         "Adbar",
         "advancedbtn",

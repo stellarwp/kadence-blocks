@@ -25,6 +25,30 @@ class AdvancedHeadingTest extends KadenceBlocksUnit {
 		$this->block = new Kadence_Blocks_Advancedheading_Block();
 	}
 
+	public function test_get_html_tag_only_allows_heading_levels_1_to_6(): void {
+		$allowed = [ 'heading', 'p', 'span', 'div' ];
+
+		$cases = [
+			[ 3, 'h3' ],
+			[ '4', 'h4' ],
+			[ 7, 'h2' ],
+			[ 'x onfocus=alert(1)', 'h2' ],
+			[ '4 onfocus=alert(1)', 'h2' ],
+			[ -4, 'h2' ],
+			[ '1e1', 'h2' ],
+			[ null, 'h2' ],
+		];
+
+		foreach ( $cases as [ $level, $expected ] ) {
+			$attributes = [
+				'htmlTag' => 'heading',
+				'level'   => $level,
+			];
+
+			$this->assertSame( $expected, $this->block->get_html_tag( $attributes, 'htmlTag', 'h2', $allowed, 'level' ) );
+		}
+	}
+
 	/**
 	 * A plain heading (no icon/gradient) with a dynamic link must derive its href from the
 	 * (per-post) link attribute, not from the saved $content markup.

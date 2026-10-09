@@ -2236,6 +2236,11 @@ parameters:
 			path: includes/blocks/class-kadence-blocks-countup-block.php
 
 		-
+			message: "#^Method Kadence_Blocks_Countup_Block\\:\\:build_html\\(\\) has parameter \\$attributes with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: includes/blocks/class-kadence-blocks-countup-block.php
+
+		-
 			message: "#^Method Kadence_Blocks_Countup_Block\\:\\:build_html\\(\\) has parameter \\$attributes with no type specified\\.$#"
 			count: 1
 			path: includes/blocks/class-kadence-blocks-countup-block.php
