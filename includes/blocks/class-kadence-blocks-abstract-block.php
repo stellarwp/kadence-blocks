@@ -10,12 +10,24 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Palette\Renders_Palette_Attribute;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Preset\Renders_Preset_Classes;
+use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Fallback;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Alias;
+use KadenceWP\KadenceBlocks\Utils\Cast;
+
 /**
  * Abstract class to register blocks, build CSS, and enqueue scripts.
  *
  * @category class
  */
 class Kadence_Blocks_Abstract_Block {
+
+	use Renders_Palette_Attribute;
+	use Renders_Preset_Classes;
 
 	/**
 	 * Block namespace.
@@ -96,6 +108,7 @@ class Kadence_Blocks_Abstract_Block {
 		'accept',
 		'captcha',
 		'submit',
+		'single-icon',
 	];
 
 	/**
@@ -171,10 +184,11 @@ class Kadence_Blocks_Abstract_Block {
 	 * Render styles in the footer.
 	 *
 	 * @param string $name the stylesheet name.
+	 * @param string $css  the inline css to print.
 	 */
 	public function render_styles_footer( $name, $css ) {
 		if ( ! is_admin() && ! wp_style_is( $name, 'done' ) && ! is_feed() ) {
-			wp_register_style( $name, false, [], false );
+			wp_register_style( $name, false, [], KADENCE_BLOCKS_VERSION );
 			wp_add_inline_style( $name, $css );
 			wp_enqueue_style( $name );
 		}
@@ -288,6 +302,8 @@ class Kadence_Blocks_Abstract_Block {
 			$attributes = apply_filters( 'kadence_blocks_' . str_replace( '-', '_', $this->block_name ) . '_render_block_attributes', $attributes, $block_instance );
 
 			$content = $this->build_html( $attributes, $unique_id, $content, $block_instance );
+			$content = $this->render_palette_attribute( $attributes, $content );
+			$content = $this->render_preset_class( $attributes, $content );
 			if ( ! $css_class->has_styles( 'kb-' . $this->block_name . $unique_style_id ) && ! is_feed() && apply_filters( 'kadence_blocks_render_inline_css', true, $this->block_name, $unique_id ) ) {
 				$css = $this->build_css( $attributes, $css_class, $unique_id, $unique_style_id );
 				if ( ! empty( $css ) && ! wp_is_block_theme() ) {
@@ -307,6 +323,10 @@ class Kadence_Blocks_Abstract_Block {
 
 	/**
 	 * Potentially prepend inline style to the content, unless it needs to get moved off to the footer.
+	 *
+	 * @param string $content         the block content, prepended with the style tag in place.
+	 * @param string $unique_style_id the blocks alternate ID for queries.
+	 * @param string $css             the css to print.
 	 */
 	public function do_inline_styles( &$content, $unique_style_id, $css ) {
 		if ( apply_filters( 'kadence_blocks_render_styles_footer', $this->block_name == 'data' || $this->block_name == 'slide' ) ) {
@@ -324,7 +344,7 @@ class Kadence_Blocks_Abstract_Block {
 	 * @param string $unique_id the blocks attr ID.
 	 * @param string $unique_style_id the blocks alternate ID for queries.
 	 */
-	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
+	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- a stub; the parameters are the contract a block overrides.
 		return '';
 	}
 
@@ -340,6 +360,168 @@ class Kadence_Blocks_Abstract_Block {
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
 		return $content;
+	}
+
+	/**
+	 * Reflect a block's per-block color-palette override onto its rendered root element as
+	 * data-kb-palette="<id>", so the Design Tokens projector's `[data-kb-palette]` switch layer re-skins the
+	 * block's colors on the front end. Generic across every dynamic block: a block opts in by registering the
+	 * `kbPalette` attribute (via `kbPalette` block support) and needs no per-block PHP. A no-op when no palette
+	 * is pinned, the content is empty, or it has no opening tag to carry the attribute.
+	 *
+	 * The attribute lands on the block's own root element (the tag carrying its `wp-block-<namespace>-<name>`
+	 * class), not an outer wrapper such as an animation `data-aos` div, and the whole method short-circuits
+	 * before any parsing when nothing is pinned.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $attributes The block attributes.
+	 * @param mixed $content    The block's rendered HTML.
+	 *
+	 * @return mixed The HTML, with data-kb-palette set on the root element when a palette is pinned.
+	 */
+	protected function render_palette_attribute( $attributes, $content ) {
+		if ( ! is_array( $attributes ) || ! is_string( $content ) || $content === '' ) {
+			return $content;
+		}
+
+		$palette = $this->palette_attributes( $attributes['kbPalette'] ?? '' );
+
+		if ( ! isset( $palette['data-kb-palette'] ) ) {
+			return $content;
+		}
+
+		$tags = new WP_HTML_Tag_Processor( $content );
+
+		if ( ! $tags->next_tag( [ 'class_name' => 'wp-block-' . $this->namespace . '-' . $this->block_name ] ) ) {
+			return $content;
+		}
+
+		$tags->set_attribute( 'data-kb-palette', $palette['data-kb-palette'] );
+
+		return $tags->get_updated_html();
+	}
+
+	/**
+	 * Add a block's selected design-token preset class (`kb-preset--<slug>`) to its rendered root element, so
+	 * the Design Tokens projector's scoped preset CSS applies on the front end. Generic across every dynamic
+	 * block: a block opts in by registering the `kbPreset` attribute (via `kbPreset` block support) and needs
+	 * no per-block PHP. A no-op when no preset is selected, the content is empty, or it has no opening tag to
+	 * carry the class.
+	 *
+	 * The class lands on the block's own root element (the tag carrying its `wp-block-<namespace>-<name>` class),
+	 * not an outer wrapper such as an animation `data-aos` div — the scoped preset selector is compound on the
+	 * block class (`.wp-block-<name>.kb-preset--<slug>`), so a class on a wrapper never matches. The whole method
+	 * short-circuits before any parsing when nothing is selected.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $attributes The block attributes.
+	 * @param mixed $content    The block's rendered HTML.
+	 *
+	 * @return mixed The HTML, with the kb-preset--<slug> class (and a class-painted preset's own classes) added
+	 *               to the root element when a preset is set.
+	 */
+	protected function render_preset_class( $attributes, $content ) {
+		if ( ! is_array( $attributes ) || ! is_string( $content ) || $content === '' ) {
+			return $content;
+		}
+
+		if ( $this->stored_preset( $attributes ) === '' ) {
+			return $content;
+		}
+
+		$resolved = $this->resolved_preset( $attributes );
+
+		if ( $resolved === null ) {
+			// The token services cannot answer (a block outside the preset system, an inactive registry, or a
+			// broken token graph): render the stored class as before, so the page never fails.
+			$classes = $this->preset_classes( Cast::to_string( $attributes['kbPreset'] ?? '' ) );
+		} else {
+			$classes = $this->preset_classes( $resolved['is_default'] ? '' : $resolved['slug'], $resolved['class'] );
+		}
+
+		if ( $classes === [] ) {
+			return $content;
+		}
+
+		$tags = new WP_HTML_Tag_Processor( $content );
+
+		if ( ! $tags->next_tag( [ 'class_name' => 'wp-block-' . $this->namespace . '-' . $this->block_name ] ) ) {
+			return $content;
+		}
+
+		foreach ( $classes as $preset_class ) {
+			$tags->add_class( $preset_class );
+		}
+
+		return $tags->get_updated_html();
+	}
+
+	/**
+	 * The preset slug this block asks for: its `kbPreset` attribute. A block that still carries an older
+	 * style attribute maps it to a preset slug here, so the mapping happens at render time and the stored
+	 * attributes are never rewritten.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $attributes The block attributes.
+	 *
+	 * @return string The stored slug, or '' for the default look.
+	 */
+	protected function stored_preset( array $attributes ): string {
+		return Cast::to_string( $attributes['kbPreset'] ?? '' );
+	}
+
+	/**
+	 * The preset this block renders with, after the fallback chain: the stored slug when the library
+	 * defines it, else the theme's base preset for a theme slug, else the block's `$default`. Null when
+	 * the token registry is inactive or the token services cannot answer, so a caller can keep the
+	 * behavior it had before presets existed.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $attributes The block attributes.
+	 *
+	 * @return array{slug: string, class: string, is_default: bool}|null The resolved slug, the classes a
+	 *                                                                    class-painted preset puts on the
+	 *                                                                    element ('' for a preset painted
+	 *                                                                    through variables), and whether the
+	 *                                                                    slug is the block's default.
+	 */
+	protected function resolved_preset( array $attributes ): ?array {
+		try {
+			$registry = kadence_blocks()->get( Token_Registry::class );
+			$fallback = kadence_blocks()->get( Preset_Fallback::class );
+			$resolver = kadence_blocks()->get( Preset_Resolver::class );
+			$library  = kadence_blocks()->get( Active_Token_Library_Store::class );
+
+			// The container is typed `mixed`, and this runs on every render, so the services are checked
+			// rather than assumed — a misconfigured container degrades to the look the block had before.
+			if (
+				! $registry instanceof Token_Registry
+				|| ! $fallback instanceof Preset_Fallback
+				|| ! $resolver instanceof Preset_Resolver
+				|| ! $library instanceof Active_Token_Library_Store
+				|| ! $registry->is_active()
+			) {
+				return null;
+			}
+
+			$block  = $this->namespace . '/' . $this->block_name;
+			$slug   = $library->get();
+			$preset = $fallback->resolve( $block, $this->stored_preset( $attributes ), $slug );
+
+			return [
+				'slug'       => $preset,
+				'class'      => $resolver->theme_class( $block, $preset, $slug ),
+				'is_default' => $preset === $resolver->default_preset( $block, $slug ),
+			];
+		} catch ( Throwable $e ) {
+			// This runs in the render path, so a block with no presets or a broken token graph must not take
+			// the page down with it.
+			return null;
+		}
 	}
 
 	/**
@@ -389,13 +571,13 @@ class Kadence_Blocks_Abstract_Block {
 	 *
 	 * @param array  $attributes Array of the blocks attributes.
 	 * @param string $tag_key Offset on $attributes where the tag is set.
-	 * @param string $default Default tag to use if $tag_key attribute is undefined or invalid.
+	 * @param string $default_tag Default tag to use if $tag_key attribute is undefined or invalid.
 	 * @param array  $allowed_tags Array of allowed tags.
 	 * @param string $level_key If defined, we'll assume heading tags are allowed.
 	 *
 	 * @return string
 	 */
-	public function get_html_tag( $attributes, $tag_key, $default, $allowed_tags = [], $level_key = '' ) {
+	public function get_html_tag( $attributes, $tag_key, $default_tag, $allowed_tags = [], $level_key = '' ) {
 
 		if ( ! empty( $attributes[ $tag_key ] ) && in_array( $attributes[ $tag_key ], $allowed_tags, true ) ) {
 
@@ -416,7 +598,7 @@ class Kadence_Blocks_Abstract_Block {
 			return $attributes[ $tag_key ];
 		}
 
-		return $default;
+		return $default_tag;
 	}
 
 
@@ -426,7 +608,7 @@ class Kadence_Blocks_Abstract_Block {
 	 *
 	 * @param string $cache_key The cache key (usually unique id).
 	 * @param array  $attributes The block's attributes.
-	 * @param string $block_name The name of the block.
+	 * @param bool   $cache Whether to cache the merged result. Default true.
 	 * @return array
 	 */
 	public function get_attributes_with_defaults( $cache_key, $attributes, $cache = true ) {
@@ -435,7 +617,31 @@ class Kadence_Blocks_Abstract_Block {
 		}
 
 		$default_attributes = $this->get_block_default_attributes();
-		$merged_attributes  = $this->merge_attributes_with_defaults( $attributes, $default_attributes );
+
+		/**
+		 * Filters a block's default attributes before they are merged with the instance's attributes.
+		 *
+		 * Lets a module contribute an extra layer of defaults (e.g. the Design Tokens block preset) that
+		 * sits above the block.json defaults yet below the instance attributes, so the merge below still
+		 * lets a per-instance value win.
+		 *
+		 * @since TBD
+		 *
+		 * @param array<string, mixed> $default_attributes The block's registration defaults: attribute
+		 *                                                 name => default value.
+		 * @param string               $block_name         The full block name, e.g. "kadence/advancedbtn".
+		 *
+		 * @return array<string, mixed> The default attributes, after any module's overlay.
+		 */
+		$filtered_attributes = apply_filters( 'kadence_blocks_block_default_attributes', $default_attributes, 'kadence/' . $this->block_name );
+
+		// A third-party callback could return a non-array; ignore it and keep KB's own defaults rather than
+		// letting a bad value corrupt the merge below.
+		if ( is_array( $filtered_attributes ) ) {
+			$default_attributes = $filtered_attributes;
+		}
+
+		$merged_attributes = $this->merge_attributes_with_defaults( $attributes, $default_attributes );
 
 		if ( $cache ) {
 			$this->attributes_with_defaults[ $cache_key ] = $merged_attributes;
@@ -483,7 +689,7 @@ class Kadence_Blocks_Abstract_Block {
 				count( $merged_attributes[ $key ] ) == 1 && isset( $merged_attributes[ $key ][0] ) &&
 				is_array( $merged_attributes[ $key ][0] ) &&
 				is_array( $value ) && count( $value ) == 1 && isset( $value[0] ) ) {
-				// Handle attributes that are an array with a single object
+				// Handle attributes that are an array with a single object.
 				$merged_attributes[ $key ][0] = array_merge( $merged_attributes[ $key ][0], $value[0] );
 			} else {
 				$merged_attributes[ $key ] = $value;
@@ -604,5 +810,60 @@ class Kadence_Blocks_Abstract_Block {
 		}
 
 		return $html;
+	}
+
+	/**
+	 * Whether a native shadow item paints anything visible — all-zero offsets, blur, and spread
+	 * render nothing regardless of color, matching the value the "None" pick writes.
+	 *
+	 * A non-numeric, non-empty leg is a {dot.alias} token reference, which resolves to a var() whose
+	 * value is unknown here — it counts as visible, since treating it as a zero would let the
+	 * caller's `box-shadow: none` reset erase a shadow the token does paint. A `shadowToken` binding on
+	 * the item follows the same reasoning for the whole shadow, but only while the binding is backed by
+	 * the active library: an unbacked one (a token deleted after the item was saved) no longer paints
+	 * anything the renderer will emit, so it must not block the `box-shadow: none` reset either — it is
+	 * treated as invisible, the same as an item with no binding and no geometry.
+	 *
+	 * Lives here rather than on any one block because it answers a question about the shared shadow
+	 * value shape, which every shadow-carrying block stores identically. It is what a block gates its
+	 * `box-shadow` output on once it has no separate "enable" boolean to read.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $shadow_item One `shadow[0]`-shaped item.
+	 *
+	 * @return bool Whether the item paints a visible shadow.
+	 */
+	protected function has_visible_shadow( array $shadow_item ): bool {
+		// A bound item's visibility is decided by its binding alone; the stored legs are never consulted
+		// for one. Backed, its real value lives in the token and is unknown here, so it counts as visible
+		// or the caller's `box-shadow: none` reset would erase a shadow the token does paint. Unbacked, it
+		// renders nothing (see Kadence_Blocks_CSS::render_shadow()), so it must count as INVISIBLE and let
+		// the caller fall through to that reset — reading its legs instead would keep a stale binding in
+		// the shadow branch, where the empty render is dropped and the reset never runs.
+		$shadow_token = $shadow_item[ Kadence_Blocks_CSS::get_shadow_token_key() ] ?? null;
+		if ( Alias::is_alias( $shadow_token ) ) {
+			return Kadence_Blocks_CSS::get_instance()->is_token_reference_backed( $shadow_token );
+		}
+
+		foreach ( [ 'hOffset', 'vOffset', 'blur', 'spread' ] as $axis ) {
+			$value = $shadow_item[ $axis ] ?? 0;
+
+			if ( is_numeric( $value ) ) {
+				if ( 0.0 !== (float) $value ) {
+					return true;
+				}
+
+				continue;
+			}
+
+			// A {dot.alias} leg resolves to a var() unknown here, so it counts as visible — read as zero,
+			// the caller's `box-shadow: none` would erase a shadow the token does paint.
+			if ( is_string( $value ) && '' !== trim( $value ) ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }

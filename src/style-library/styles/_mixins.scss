@@ -1,0 +1,111 @@
+// Fills the app viewport below the wp-admin bar, matching core's toolbar height swap at 782px.
+@mixin app-viewport-height {
+	height: calc(100vh - var(--wp-admin--admin-bar--height, 32px));
+
+	@media (max-width: 782px) {
+		height: calc(100vh - 46px);
+	}
+}
+
+@mixin flex-column($gap) {
+	display: flex;
+	flex-direction: column;
+	gap: $gap;
+}
+
+@mixin flex-row($gap, $align: center) {
+	display: flex;
+	align-items: $align;
+	gap: $gap;
+}
+
+@mixin flex-row-wrap($gap, $align: flex-start) {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: $align;
+	gap: $gap;
+}
+
+@mixin body-text {
+	margin: 0;
+	max-width: var(--kb-sl-size-content-max-width);
+	color: var(--kb-sl-color-text-secondary);
+	font-size: var(--kb-sl-font-size-body);
+	line-height: var(--kb-sl-line-height-ratio-relaxed);
+}
+
+@mixin section-heading($size: var(--kb-sl-font-size-group-title)) {
+	margin: 0 0 var(--kb-sl-space-15);
+	font-size: $size;
+	font-weight: var(--kb-sl-font-weight-semibold);
+	line-height: var(--kb-sl-line-height-ratio-snug);
+}
+
+@mixin card-surface {
+	padding: var(--kb-sl-space-20);
+	border: 1px solid var(--kb-sl-color-border);
+	border-radius: var(--kb-sl-radius-m);
+	background: var(--kb-sl-color-surface);
+}
+
+@mixin meta-text {
+	font-size: var(--kb-sl-font-size-meta);
+	color: var(--kb-sl-color-text-muted);
+}
+
+// Shared by `SectionHeading` and `FieldLabel`'s label text — not the same as `section-heading($size)`
+// above (a different, larger heading). `0.9625rem` is the one place this off-ramp literal lives; do
+// not re-add it in either consumer.
+@mixin small-uppercase-label {
+	font-size: var(--kb-sl-font-size-xs);
+	font-weight: var(--kb-sl-font-weight-medium);
+	line-height: 0.9625rem;
+	text-transform: uppercase;
+	color: var(--kb-sl-color-text-primary);
+}
+
+// The frame half of a block-preset row preview that stands in for a colored surface (the Row Layout
+// band, the Section slab). Draws the border the preset's color is applied to, and a checker BEHIND
+// where the preset's background will be painted -- both blocks ship a transparent background, and
+// against the list's white surface a transparent background and a white one are indistinguishable, so
+// without the checker every unstyled preset would look like it had set white.
+//
+// The background belongs to the companion `preset-surface-fill` element, not here: a single element
+// cannot layer them in this order, because a background image always paints above its own background
+// color. Geometry is the caller's, since the proportions are the point -- a Row Layout is wide and
+// short, a Section is tall and narrow, and a corner radius reads very differently at each.
+@mixin preset-surface-frame {
+	position: relative;
+	box-sizing: border-box;
+	border: var(--kb-sl-border-width-input) solid var(--kb-sl-color-gray-200);
+	background-color: #fff;
+	background-image: repeating-conic-gradient(var(--kb-sl-color-gray-200) 0% 25%, transparent 0% 50%);
+	background-size: 0.75rem 0.75rem;
+	transition:
+		border-color 300ms ease,
+		border-radius 300ms ease;
+}
+
+// The fixed-geometry form, for a preview whose size says something about the block (a Row Layout band
+// is wide and short, a Section slab tall and narrow). A preview that has to GROW with one of its own
+// values instead -- the image's padding -- takes `preset-surface-frame` and sizes itself.
+@mixin preset-surface-preview($width, $height) {
+	@include preset-surface-frame;
+
+	display: block;
+	width: $width;
+	height: $height;
+}
+
+// The fill half: the preset's resolved background, laid over the checker `preset-surface-preview`
+// draws. Inherits the radius so a rounded preset does not show square corners of fill poking past its
+// frame.
+@mixin preset-surface-fill {
+	position: absolute;
+	inset: 0;
+	display: block;
+	border-radius: inherit;
+	transition:
+		background-color 300ms ease,
+		border-radius 300ms ease;
+}

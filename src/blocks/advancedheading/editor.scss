@@ -1,3 +1,4 @@
+// cspell:ignore fontfamily suggesed -- class names the block already ships.
 /**
  * #.# Editor Styles
  *
@@ -15,6 +16,15 @@
 	border-radius: 3px;
 	font-weight: 600;
 	color: #c05621;
+}
+// Sets the Line Height / Letter Case row apart from the Font Size field above it.
+.kb-advanced-heading-font-settings {
+	margin-top: 16px;
+}
+
+// Sets the Font Weight select apart from the Font Family field above it.
+.kb-typography-control .kb-token-control {
+	margin-bottom: 16px;
 }
 .kb-advanced-heading-svg-icon svg {
 	display: block !important;

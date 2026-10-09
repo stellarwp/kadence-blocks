@@ -1,0 +1,24 @@
+@use '../../styles/mixins' as *;
+
+.kadence-blocks-style-library__placeholder-screen {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	min-height: 100%;
+	padding: var(--kb-sl-space-40);
+	text-align: center;
+}
+
+.kadence-blocks-style-library__placeholder-screen-title {
+	@include section-heading(var(--kb-sl-font-size-page-title));
+
+	color: var(--kb-sl-color-text-primary);
+}
+
+.kadence-blocks-style-library__placeholder-screen-copy {
+	@include body-text;
+
+	margin-left: auto;
+	margin-right: auto;
+}

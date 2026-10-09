@@ -1,0 +1,133 @@
+.kadence-blocks-style-library__list-row {
+	// A component-scoped custom property, not a global primitive — 1.25rem isn't on the spacing
+	// ramp, and this value recurs in this file (the handle's offset and `.list-row-main`'s padding, both
+	// further down), so it's named once to keep them from drifting apart.
+	--kb-sl-list-row-inset: 1.25rem;
+	--kb-sl-list-row-bg-hover: #f7fafc;
+	--kb-sl-list-row-shadow-hover: 0 0 0.5px 0 rgba(0, 0, 0, 0.25), 0 2px 4px 0 rgba(0, 0, 0, 0.15);
+	--kb-sl-list-row-value-color: #718096;
+
+	position: relative;
+	list-style: none;
+	background: transparent;
+
+	&:not(:last-child) {
+		border-bottom: 1px solid var(--kb-sl-color-border);
+	}
+
+	&--selected {
+		background: var(--kb-sl-color-theme-tint-4);
+	}
+
+	// `:not()` excludes `--selected` explicitly so a row that's both selected and hovered keeps its
+	// theme tint instead of flipping to gray.
+	&:hover:not(.kadence-blocks-style-library__list-row--selected) {
+		// Lifts the row above its siblings so their backgrounds don't paint over the shadow.
+		z-index: 1;
+		background: var(--kb-sl-list-row-bg-hover);
+		box-shadow: var(--kb-sl-list-row-shadow-hover);
+	}
+
+	// The drop-target placeholder shown while this row is the one being dragged. Neutral gray,
+	// dashed — deliberately not the theme color, which already signals *selected*.
+	// `&.list-row--placeholder`, not a bare `&--placeholder`: this ties the `:not(:last-child)` rule
+	// above on specificity and wins on source order, since a lone modifier class alone would lose
+	// the border-bottom fight.
+	&.kadence-blocks-style-library__list-row--placeholder {
+		border: var(--kb-sl-border-width-input) dashed var(--kb-sl-color-control-border);
+		background: var(--kb-sl-color-gray-100);
+
+		// `visibility: hidden`, not removed, so the placeholder's size stays identical to the row's
+		// normal size.
+		> * {
+			visibility: hidden;
+		}
+	}
+
+	// A row mid-delete: still visible (product decision — delete is conservative, not an instant
+	// vanish), just dimmed and inert. Same weight as `SwatchCard`'s identical `--pending-delete`
+	// treatment.
+	&--pending-delete {
+		opacity: 0.5;
+		pointer-events: none;
+	}
+}
+
+.kadence-blocks-style-library__list-row-main {
+	display: flex;
+	align-items: center;
+	width: 100%;
+	// 6rem per spec, not on the spacing ramp.
+	gap: 6rem;
+	padding: var(--kb-sl-space-30) var(--kb-sl-list-row-inset);
+	border: 0;
+	background: transparent;
+	text-align: left;
+	cursor: pointer;
+}
+
+// Keyed on the row being draggable, not on the handle being present: a pending-delete row drops
+// its handle but must keep its label in the same column as its siblings.
+.kadence-blocks-style-library__list-row--draggable .kadence-blocks-style-library__list-row-main {
+	padding-left: calc(var(--kb-sl-list-row-inset) + var(--kb-sl-space-30) + var(--kb-sl-space-20));
+}
+
+.kadence-blocks-style-library__list-row-label {
+	// A fixed column width, not a minimum — content that doesn't fit wraps to a new line rather than
+	// truncating or overflowing.
+	flex: 0 0 auto;
+	// 10rem per spec, not on the spacing ramp.
+	width: 10rem;
+	// `overflow-wrap: anywhere`, not just `word-break`'s default, so a long unbroken string (a hex
+	// value, a token id) wraps inside the fixed column instead of overflowing it.
+	overflow-wrap: anywhere;
+	color: var(--kb-sl-color-text-primary);
+	font-size: var(--kb-sl-font-size-m);
+	font-weight: var(--kb-sl-font-weight-medium);
+	// 1.2188rem per spec, not on the line-height ramp.
+	line-height: 1.2188rem;
+}
+
+.kadence-blocks-style-library__list-row-value {
+	// Same treatment as the label column, at its own fixed width.
+	flex: 0 0 auto;
+	// 6rem per spec, not on the spacing ramp.
+	width: 6rem;
+	overflow-wrap: anywhere;
+	color: var(--kb-sl-list-row-value-color);
+	font-family: var(--kb-sl-font-family-monospace);
+	font-size: var(--kb-sl-font-size-xs);
+	font-weight: var(--kb-sl-font-weight-regular);
+	// 0.6875rem per spec, not on the line-height ramp.
+	line-height: 0.6875rem;
+}
+
+// Scoped to this context (a descendant rule) rather than making the shared `DragHandle` atom
+// position-aware — `SwatchCard` scopes its own presentation of the same atom the same way.
+.kadence-blocks-style-library__list-row .kadence-blocks-style-library__drag-handle {
+	position: absolute;
+	top: 50%;
+	left: var(--kb-sl-list-row-inset);
+	transform: translateY(-50%);
+}
+
+// The preview slot's default look: a gray-filled square with a visible border, so a screen that
+// passes plain content still reads correctly; a per-screen rule overrides radius/border-width/size
+// as needed. A normal in-flow child of `.list-row-main`, not absolutely positioned — the row's own
+// height grows to contain it.
+.kadence-blocks-style-library__list-row-preview {
+	// `border-box`, not the `<span>` default `content-box` — otherwise the border below renders the
+	// box oversize.
+	box-sizing: border-box;
+	// Fixed, not shrinkable — a screen-supplied larger override must be free to grow the row rather
+	// than being squeezed back down by the row's own flex layout.
+	flex: 0 0 auto;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+	width: var(--kb-sl-size-row-preview);
+	height: var(--kb-sl-size-row-preview);
+	border: var(--kb-sl-border-width-input) solid var(--kb-sl-color-gray-700);
+	background: var(--kb-sl-color-gray-200);
+}

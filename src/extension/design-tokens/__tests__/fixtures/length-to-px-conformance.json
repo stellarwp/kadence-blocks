@@ -1,0 +1,29 @@
+{
+	"_comment": "The single grammar spec for the resolved-CSS-length -> raw pixel number conversion done by pxFromLength (src/token-controls/helpers/px-from-length.js) and, through it, tokenPx. The test asserts tokenPx(length) === px for each pair and null for every 'unconvertible' entry. A 16px root font size is assumed for rem/em -- the same assumption an unstyled rem makes in a browser. Note what is deliberately unconvertible: a UNITLESS value (including a bare '0', which CSS accepts as a length) has no unit to convert from. Inputs are canonical and carry no surrounding whitespace.",
+	"lengths": [
+		{ "length": "24px", "px": 24 },
+		{ "length": "9999px", "px": 9999 },
+		{ "length": "1rem", "px": 16 },
+		{ "length": "1.5rem", "px": 24 },
+		{ "length": "2.25rem", "px": 36 },
+		{ "length": "0.5em", "px": 8 },
+		{ "length": "-1rem", "px": -16 },
+		{ "length": "+2px", "px": 2 },
+		{ "length": ".5px", "px": 0.5 }
+	],
+	"unconvertible": [
+		"0",
+		"50",
+		"50%",
+		"2vw",
+		"auto",
+		"inherit",
+		"clamp(1rem, 2vw, 3rem)",
+		"1rem 2rem",
+		"",
+		"1..2px",
+		"..px",
+		"1.2.3rem",
+		"1.rem"
+	]
+}

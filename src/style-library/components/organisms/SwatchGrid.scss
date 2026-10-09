@@ -1,0 +1,79 @@
+@use '../../styles/mixins' as *;
+
+.kadence-blocks-style-library__swatch-grid {
+	@include flex-column(var(--kb-sl-space-30));
+}
+
+// Owns the heading-to-cards gap (container `gap`, not a child margin on `SectionHeading` — a
+// shared atom other contexts use without wanting that spacing baked in).
+.kadence-blocks-style-library__swatch-group {
+	@include flex-column(var(--kb-sl-space-10));
+}
+
+// A group mid-delete: its heading, Rename/Delete menu, and Add-color tile read as inert while the
+// swatches inside it already dim through their own `--pending-delete` cascade (`SwatchCard.scss`).
+// Same weight as that per-swatch treatment, applied to the heading row instead of the whole group
+// so the swatch row's own per-swatch dimming and interactivity are untouched.
+.kadence-blocks-style-library__swatch-group-heading--pending-delete {
+	opacity: 0.5;
+	pointer-events: none;
+}
+
+// No `align-items` set here, deliberately not even an explicit `stretch` — the shared
+// `flex-row-wrap` mixin always sets one, which was stopping every card and the trailing `AddTile`
+// from sharing the wrapped line's tallest height; flex's own initial value is already `stretch`.
+.kadence-blocks-style-library__swatch-group-row {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--kb-sl-space-15);
+}
+
+.kadence-blocks-style-library__swatch-group-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, 8rem);
+	gap: 0.75rem;
+}
+
+.kadence-blocks-style-library__swatch-group--placeholder {
+	box-sizing: border-box;
+	border: var(--kb-sl-border-width-input) dashed var(--kb-sl-color-control-border);
+	border-radius: var(--kb-sl-radius-s);
+	background: var(--kb-sl-color-gray-100);
+
+	> * {
+		visibility: hidden;
+	}
+}
+
+.kadence-blocks-style-library__swatch-group-ghost {
+	box-sizing: border-box;
+	padding: var(--kb-sl-space-05) var(--kb-sl-space-10);
+	border-radius: var(--kb-sl-radius-s);
+	background: var(--kb-sl-color-surface);
+	box-shadow: var(--kb-sl-shadow-menu);
+	opacity: 0.9;
+}
+
+// Sized on the group heading's own handle only; the swatch card handle keeps the default, and the
+// list row sizes its own in `SwatchRow.scss`.
+.kadence-blocks-style-library__swatch-group .kadence-blocks-style-library__section-heading-row .kadence-blocks-style-library__drag-handle-icon {
+	width: 0.875rem;
+	height: 0.875rem;
+}
+
+// One bordered box per group in list mode; rows and the footer share it, so `overflow: hidden`
+// clips their square corners to the box radius.
+.kadence-blocks-style-library__swatch-group-list {
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+	border: var(--kb-sl-border-width-input) solid var(--kb-sl-color-border);
+	border-radius: var(--kb-sl-radius-m);
+	background: var(--kb-sl-color-surface);
+}
+
+// No top border of its own: the last row is followed by this footer, so it already draws its
+// bottom separator, and a second line here would double it.
+.kadence-blocks-style-library__swatch-group-list-footer {
+	display: flex;
+}

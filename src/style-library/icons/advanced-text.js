@@ -1,0 +1,16 @@
+/**
+ * WordPress dependencies
+ */
+import { SVG, Path } from '@wordpress/primitives';
+
+/**
+ * The Advanced Text block's glyph, for its preset screen.
+ *
+ * @since TBD
+ */
+export const advancedText = (
+	<SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+		<Path d="M15.0044 15.4327C15.2394 15.4327 15.4327 15.2393 15.4327 15.0043V0.995656C15.4327 0.760656 15.2394 0.567322 15.0044 0.567322H0.995713C0.760713 0.567322 0.567383 0.760656 0.567383 0.995656V15.0043C0.567383 15.2393 0.760713 15.4327 0.995713 15.4327H15.0044ZM1.42405 1.42399H14.5761V14.576H1.42405V1.42399Z" />
+		<Path d="M3.74023 2.91199H6.19357V6.95099H9.80624V2.91199H12.2599V13.0847H9.80624V8.83699H6.19357V13.0847H3.74023V2.91199Z" />
+	</SVG>
+);

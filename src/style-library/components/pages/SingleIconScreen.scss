@@ -1,0 +1,18 @@
+// The live glyph. `font-size` carries the resolved size token and the SVG sizes itself in `em`, so
+// one style drives the whole preview; `color` feeds the path's `currentColor` fill. A minimum keeps
+// the smallest step from collapsing to an unreadable speck in the row.
+.kadence-blocks-style-library__single-icon-preset-preview {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 1rem;
+	min-height: 1rem;
+	transition: color 300ms ease, font-size 300ms ease;
+
+	svg {
+		width: 1em;
+		height: 1em;
+		min-width: 1rem;
+		min-height: 1rem;
+	}
+}

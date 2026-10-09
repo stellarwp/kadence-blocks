@@ -1,0 +1,558 @@
+/* eslint-env jest */
+/**
+ * External dependencies
+ */
+import { act, createElement } from 'react';
+import { createRoot } from 'react-dom/client';
+
+/**
+ * Internal dependencies
+ */
+import { PresetScreen } from '../components/pages/PresetScreen';
+import { usePresetScreen } from '../hooks/use-preset-screen';
+import { BUTTON_PRESET } from '../presets/button-preset';
+import { COLUMN_PRESET } from '../presets/column-preset';
+import { useDraftChannel } from '../hooks/use-draft-channel';
+
+// A factory: `use-preset-screen.js` pulls in `../api/client`, which imports `@wordpress/api-fetch`
+// (externalized to the `wp.apiFetch` global in production, not an installed npm dependency), so
+// automocking would fail to resolve it. The screen only reads the hook's return value, so a bare
+// jest.fn() stand-in is enough.
+jest.mock('../hooks/use-preset-screen', () => ({
+	usePresetScreen: jest.fn(),
+}));
+
+// `jest.config.js` maps the `@wordpress/components` specifier to the copy nested under
+// `@kadence/components/node_modules`, which resolves its own nested `react`/`react-dom` — a
+// different module instance than the top-level `react-dom/client` this test renders with. Mounting
+// a real `Button`/`Notice` from that nested copy under the top-level renderer trips React's
+// "Invalid hook call" guard. Simple stand-ins sidestep the cross-copy mismatch; this test only
+// needs to tell the loading/empty/populated states apart, not exercise the real controls.
+// The screen reads its draft overlay and its selection guard off this hook. Stubbed per test so
+// the overlay branch (which needs a publication for the open item) and the guard branch are
+// reachable without standing up the real provider.
+jest.mock('../hooks/use-draft-channel', () => ({
+	useDraftChannel: jest.fn(),
+}));
+
+jest.mock('@wordpress/components', () => ({
+	// `isBusy`/`isDestructive`/`variant` are `Button` props and `onRemove` a `Notice` prop, not DOM
+	// attributes — dropped so React does not warn about them.
+	Button: ({ children, isBusy, isDestructive, variant, ...props }) => <button {...props}>{children}</button>,
+	Notice: ({ children, isDismissible, onRemove, ...props }) => <div {...props}>{children}</div>,
+	ExternalLink: ({ children, ...props }) => <a {...props}>{children}</a>,
+}));
+
+// `@wordpress/primitives` (which `@wordpress/icons`'s `Icon`/`SVG` build on) nests its own `react`
+// copy under `node_modules/@wordpress/primitives/node_modules/react` — a different module instance
+// than the top-level `react-dom/client` this test renders with. `DragHandle` mounts a real `Icon`
+// for draggable rows, which trips the same "Objects are not valid as a React child" cross-copy
+// error the `@wordpress/components` mock above sidesteps; stub `Icon` and the icon glyphs it takes
+// for the same reason.
+jest.mock('@wordpress/icons', () => ({
+	Icon: (props) => <span className="components-icon" {...props} />,
+	dragHandle: 'dragHandle',
+	plus: 'plus',
+}));
+
+const LIBRARY = { rest: { namespace: 'kb-design-tokens/v1' }, slug: 'default', version: 1, values: {} };
+
+let container;
+let root;
+
+/**
+ * Render `PresetScreen` (with `BUTTON_PRESET`, the same value `ButtonScreen` passes) using the
+ * given `usePresetScreen` stub and return the mounted container.
+ *
+ * @param {Object}   screen             The `usePresetScreen` return value to stub.
+ * @param {Object}   [options]          Overrides for the props the selection and overlay paths read.
+ * @param {string}   [options.item]     The route's open `kb-item`.
+ * @param {Function} [options.navigate] The navigate spy.
+ * @param {string}   [options.screenId] The route's screen id — varies which helper copy applies.
+ *
+ * @since TBD
+ *
+ * @return {HTMLElement} The container the screen was rendered into.
+ */
+function renderPresetScreen(screen, { item = '', navigate = () => {}, screenId = 'blocks/kadence/singlebtn' } = {}) {
+	usePresetScreen.mockReturnValue(screen);
+
+	act(() => {
+		root.render(
+			createElement(PresetScreen, {
+				label: 'Button',
+				route: { screen: screenId, item },
+				navigate,
+				library: LIBRARY,
+				preset: BUTTON_PRESET,
+			})
+		);
+	});
+
+	return container;
+}
+
+beforeEach(() => {
+	global.IS_REACT_ACT_ENVIRONMENT = true;
+	container = document.createElement('div');
+	document.body.appendChild(container);
+	root = createRoot(container);
+	usePresetScreen.mockReset();
+	useDraftChannel.mockReset();
+	useDraftChannel.mockReturnValue(null);
+});
+
+afterEach(() => {
+	act(() => {
+		root.unmount();
+	});
+	container.remove();
+});
+
+describe('PresetScreen loading state', () => {
+	/**
+	 * While `usePresetScreen` is still fetching, the screen must show a card-shaped skeleton instead
+	 * of the empty state — `usePresetScreen` starts with `isLoading: true` and no rows, and
+	 * rendering the empty state at that point would flash "Add Button" before the presets arrive.
+	 *
+	 * @return {void}
+	 */
+	it('renders a skeleton instead of the empty state while loading', () => {
+		renderPresetScreen({ payload: null, isLoading: true, loadError: null, rows: [], initialValuesFor: () => ({}) });
+
+		expect(container.querySelectorAll('.kadence-blocks-style-library__skeleton').length).toBeGreaterThan(0);
+		expect(container.querySelector('.kadence-blocks-style-library__empty-state')).toBeNull();
+	});
+
+	/**
+	 * Once loading finishes with no rows, the empty state renders in place of the skeleton.
+	 *
+	 * @return {void}
+	 */
+	it('renders the empty state once loading finishes with no rows', () => {
+		renderPresetScreen({ payload: {}, isLoading: false, loadError: null, rows: [], initialValuesFor: () => ({}) });
+
+		expect(container.querySelector('.kadence-blocks-style-library__skeleton')).toBeNull();
+		expect(container.querySelector('.kadence-blocks-style-library__empty-state')).not.toBeNull();
+	});
+
+	/**
+	 * Once loading finishes with rows present, neither the skeleton nor the empty state renders.
+	 *
+	 * @return {void}
+	 */
+	it('renders the cards once loading finishes with presets present', () => {
+		const rows = [
+			{
+				id: 'primary',
+				label: 'Primary',
+				preview: { background: '#111111', color: '#ffffff', borderRadius: '4px' },
+			},
+		];
+
+		renderPresetScreen({ payload: {}, isLoading: false, loadError: null, rows, initialValuesFor: () => ({}) });
+
+		expect(container.querySelector('.kadence-blocks-style-library__skeleton')).toBeNull();
+		expect(container.querySelector('.kadence-blocks-style-library__empty-state')).toBeNull();
+		expect(container.querySelector('.kadence-blocks-style-library__preset-grid')).not.toBeNull();
+	});
+});
+
+describe('PresetScreen load failure', () => {
+	/**
+	 * A failed preset fetch renders its message as a notice. The list still renders, so a retry
+	 * that succeeds needs no remount.
+	 *
+	 * @return {void}
+	 */
+	it('renders the load error message and still renders the list', () => {
+		renderPresetScreen({
+			payload: null,
+			isLoading: false,
+			loadError: new Error('Request failed'),
+			rows: [],
+			initialValuesFor: () => ({}),
+		});
+
+		expect(container.textContent).toContain('Request failed');
+		expect(container.querySelector('.components-spinner')).toBeNull();
+	});
+});
+
+describe('PresetScreen draft overlay', () => {
+	const ROWS = [
+		{
+			id: 'primary',
+			label: 'Primary',
+			preview: { background: '#111111', color: '#ffffff', borderRadius: '4px' },
+		},
+		{
+			id: 'secondary',
+			label: 'Secondary',
+			preview: { background: '#222222', color: '#ffffff', borderRadius: '4px' },
+		},
+	];
+
+	/**
+	 * A publication for the open item overlays that row's label, so the list shows what Save would
+	 * write rather than the last fetched value.
+	 *
+	 * @return {void}
+	 */
+	it('overlays the open row label from the draft publication', () => {
+		useDraftChannel.mockReturnValue({
+			publication: { itemId: 'primary', draft: { label: 'Primary edited' } },
+			guard: (fn) => fn(),
+		});
+
+		renderPresetScreen(
+			{ payload: {}, isLoading: false, loadError: null, rows: ROWS, initialValuesFor: () => ({}) },
+			{ item: 'primary' }
+		);
+
+		expect(container.textContent).toContain('Primary edited');
+		expect(container.textContent).toContain('Secondary');
+	});
+
+	/**
+	 * A publication belonging to a different item must not leak onto this screen's rows, so the
+	 * fetched labels stay as they are.
+	 *
+	 * @return {void}
+	 */
+	it('ignores a publication whose itemId is not the open item', () => {
+		useDraftChannel.mockReturnValue({
+			publication: { itemId: 'secondary', draft: { label: 'Leaked' } },
+			guard: (fn) => fn(),
+		});
+
+		renderPresetScreen(
+			{ payload: {}, isLoading: false, loadError: null, rows: ROWS, initialValuesFor: () => ({}) },
+			{ item: 'primary' }
+		);
+
+		expect(container.textContent).not.toContain('Leaked');
+		expect(container.textContent).toContain('Primary');
+	});
+
+	/**
+	 * A publication whose panel sits on the Hover tab makes the open row's chip hold the hover
+	 * state — and only the open row's, so sibling chips keep resting styles.
+	 *
+	 * @return {void}
+	 */
+	it('holds the hover state on the open row while the publication is on the hover tab', () => {
+		useDraftChannel.mockReturnValue({
+			publication: {
+				itemId: 'primary',
+				draft: { tokens: { 'button-bg': '#3633e1', 'button-bg-hover': '#ffffff' } },
+				activeTab: 'hover',
+			},
+			guard: (fn) => fn(),
+		});
+
+		renderPresetScreen(
+			{ payload: {}, isLoading: false, loadError: null, rows: ROWS, initialValuesFor: () => ({}) },
+			{ item: 'primary' }
+		);
+
+		const chips = container.querySelectorAll('.kadence-blocks-style-library__button-preset-preview');
+
+		// The open row's chip renders the hover background; the sibling keeps its resting one.
+		expect(chips[0].style.background).toBe('rgb(255, 255, 255)');
+		expect(chips[1].style.background).toBe('rgb(34, 34, 34)');
+	});
+
+	/**
+	 * The hover hold is not Button-specific: any preset config whose tabs include `hover` and whose
+	 * preview honors `showHoverState` gets it, the Section included.
+	 *
+	 * @return {void}
+	 */
+	it('holds the hover state on the open Section row while the publication is on the hover tab', () => {
+		useDraftChannel.mockReturnValue({
+			publication: {
+				itemId: 'card',
+				draft: { tokens: { background: '#111111', backgroundHover: '#eeeeee' } },
+				activeTab: 'hover',
+			},
+			guard: (fn) => fn(),
+		});
+		usePresetScreen.mockReturnValue({
+			payload: {},
+			isLoading: false,
+			loadError: null,
+			rows: [
+				{ id: 'card', label: 'Card', preview: { background: '#111111', borderRadius: '0' } },
+				{ id: 'plain', label: 'Plain', preview: { background: '#222222', borderRadius: '0' } },
+			],
+			initialValuesFor: () => ({}),
+		});
+
+		act(() => {
+			root.render(
+				createElement(PresetScreen, {
+					label: 'Section',
+					route: { screen: 'blocks/kadence/column', item: 'card' },
+					navigate: () => {},
+					library: LIBRARY,
+					preset: COLUMN_PRESET,
+				})
+			);
+		});
+
+		const fills = container.querySelectorAll('.kadence-blocks-style-library__column-preset-preview-fill');
+
+		expect(fills[0].style.background).toBe('rgb(238, 238, 238)');
+		expect(fills[1].style.background).toBe('rgb(34, 34, 34)');
+	});
+});
+
+describe('PresetScreen selection', () => {
+	const ROWS = [
+		{
+			id: 'primary',
+			label: 'Primary',
+			preview: { background: '#111111', color: '#ffffff', borderRadius: '4px' },
+		},
+		{
+			id: 'secondary',
+			label: 'Secondary',
+			preview: { background: '#222222', color: '#ffffff', borderRadius: '4px' },
+		},
+	];
+
+	/**
+	 * Selecting a different preset routes through the draft guard before navigating, so an unsaved
+	 * draft is never dropped silently.
+	 *
+	 * @return {void}
+	 */
+	it('routes a selection of another preset through the guard', () => {
+		const guard = jest.fn((fn) => fn());
+		const navigate = jest.fn();
+		useDraftChannel.mockReturnValue({ publication: null, guard });
+
+		renderPresetScreen(
+			{ payload: {}, isLoading: false, loadError: null, rows: ROWS, initialValuesFor: () => ({}) },
+			{ item: 'primary', navigate }
+		);
+
+		act(() => {
+			container.querySelectorAll('.kadence-blocks-style-library__preset-card-main')[1].click();
+		});
+
+		expect(guard).toHaveBeenCalled();
+		expect(navigate).toHaveBeenCalledWith({ item: 'secondary' });
+	});
+
+	/**
+	 * Selecting the preset that is already open is a no-op that bypasses the guard entirely, so an
+	 * in-progress draft survives a stray click on its own row.
+	 *
+	 * @return {void}
+	 */
+	it('does nothing when the already-open preset is selected', () => {
+		const guard = jest.fn((fn) => fn());
+		const navigate = jest.fn();
+		useDraftChannel.mockReturnValue({ publication: null, guard });
+
+		renderPresetScreen(
+			{ payload: {}, isLoading: false, loadError: null, rows: ROWS, initialValuesFor: () => ({}) },
+			{ item: 'primary', navigate }
+		);
+
+		act(() => {
+			container.querySelectorAll('.kadence-blocks-style-library__preset-card-main')[0].click();
+		});
+
+		expect(guard).not.toHaveBeenCalled();
+		expect(navigate).not.toHaveBeenCalled();
+	});
+});
+
+describe('PresetScreen default preset', () => {
+	const ROWS = [
+		{ id: 'outline', label: 'Outline', preview: {} },
+		{ id: 'default', label: 'Default', preview: {} },
+		{ id: 'ghost', label: 'Ghost', preview: {} },
+	];
+
+	/**
+	 * The default preset's card renders first whatever its stored position, and is the only card
+	 * with no drag handle.
+	 *
+	 * @return {void}
+	 */
+	it('pins the default preset first and gives it no drag handle', () => {
+		renderPresetScreen({
+			payload: { default: 'default' },
+			isLoading: false,
+			loadError: null,
+			rows: ROWS,
+			initialValuesFor: () => ({}),
+		});
+
+		const cards = container.querySelectorAll('.kadence-blocks-style-library__preset-card');
+
+		expect(cards[0].querySelector('.kadence-blocks-style-library__preset-card-title').textContent).toBe('Default');
+		expect(cards[0].querySelector('.kadence-blocks-style-library__preset-card-badge')).not.toBeNull();
+		expect(cards[0].querySelector('.kadence-blocks-style-library__drag-handle')).toBeNull();
+		expect(cards[1].querySelector('.kadence-blocks-style-library__drag-handle')).not.toBeNull();
+	});
+
+	/**
+	 * A block whose payload names no default preset pins nothing, so every card stays draggable.
+	 *
+	 * @return {void}
+	 */
+	it('pins no card when the payload names no default preset', () => {
+		renderPresetScreen({
+			payload: {},
+			isLoading: false,
+			loadError: null,
+			rows: ROWS,
+			initialValuesFor: () => ({}),
+		});
+
+		expect(container.querySelector('.kadence-blocks-style-library__preset-card-badge')).toBeNull();
+		expect(container.querySelectorAll('.kadence-blocks-style-library__drag-handle')).toHaveLength(3);
+	});
+});
+
+describe('PresetScreen theme presets', () => {
+	const SCREEN = {
+		payload: {
+			default: 'default',
+			dormant: {
+				'theme-secondary': {
+					label: 'Theme Secondary',
+					tokens: { 'button-bg': '#ff0000' },
+					themeSnapshot: { 'button-bg': '#EDF2F7' },
+				},
+			},
+		},
+		isLoading: false,
+		loadError: null,
+		rows: [
+			{ id: 'default', label: 'Default', isTheme: false, preview: { background: '#111111' } },
+			{ id: 'theme-base', label: 'Theme Base', isTheme: true, preview: { background: '#222222' } },
+		],
+		initialValuesFor: () => ({}),
+		keepAsCustom: jest.fn(),
+		discardDormant: jest.fn(),
+		isBusy: false,
+	};
+
+	/**
+	 * A theme preset's card carries the From theme badge; a plain one does not.
+	 *
+	 * @return {void}
+	 */
+	it('badges the theme preset cards', () => {
+		renderPresetScreen(SCREEN);
+
+		const badges = Array.from(
+			container.querySelectorAll('.kadence-blocks-style-library__preset-card-badge--theme')
+		);
+
+		expect(badges.map((badge) => badge.closest('li').textContent)).toEqual(['Theme BaseButtonFrom theme']);
+	});
+
+	/**
+	 * The dormant group renders under the grid from the payload's dormant map and hands its actions to
+	 * the screen binding.
+	 *
+	 * @return {void}
+	 */
+	it('renders the dormant group wired to the screen actions', () => {
+		renderPresetScreen(SCREEN);
+
+		const group = container.querySelector('.kadence-blocks-style-library__dormant');
+
+		expect(group).not.toBeNull();
+		expect(group.textContent).toContain('Theme Secondary');
+
+		act(() => group.querySelector('[data-action="keep"]').click());
+		expect(SCREEN.keepAsCustom).toHaveBeenCalledWith('theme-secondary', {
+			label: 'Theme Secondary',
+			tokens: { 'button-bg': '#ff0000' },
+		});
+
+		act(() => group.querySelector('[data-action="discard"]').click());
+		expect(SCREEN.discardDormant).toHaveBeenCalledWith('theme-secondary');
+	});
+
+	/**
+	 * A failed keep or discard shows its message as a notice the user can dismiss.
+	 *
+	 * @return {void}
+	 */
+	it('renders a dormant action failure as a dismissible notice', () => {
+		const clearDormantError = jest.fn();
+
+		renderPresetScreen({ ...SCREEN, dormantError: { message: 'Could not keep it' }, clearDormantError });
+
+		expect(container.textContent).toContain('Could not keep it');
+	});
+
+	/**
+	 * Nothing dormant renders no group at all.
+	 *
+	 * @return {void}
+	 */
+	it('renders no dormant group when the payload has nothing dormant', () => {
+		renderPresetScreen({ ...SCREEN, payload: { default: 'default', dormant: {} } });
+
+		expect(container.querySelector('.kadence-blocks-style-library__dormant')).toBeNull();
+	});
+});
+
+describe('PresetScreen loading skeleton', () => {
+	/**
+	 * The loading placeholder uses the real grid and card markup inside a status region, so the
+	 * loading shape matches the cards that replace it.
+	 *
+	 * @return {void}
+	 */
+	it('renders card-shaped skeletons in a status region', () => {
+		renderPresetScreen({ payload: null, isLoading: true, loadError: null, rows: [], initialValuesFor: () => ({}) });
+
+		const region = container.querySelector('[role="status"]');
+
+		expect(region.classList.contains('kadence-blocks-style-library__preset-grid')).toBe(true);
+		expect(region.querySelectorAll('.kadence-blocks-style-library__preset-card')).toHaveLength(3);
+	});
+});
+
+describe('PresetScreen helper copy', () => {
+	const LOADED = { payload: {}, isLoading: false, loadError: null, rows: [], initialValuesFor: () => ({}) };
+
+	/**
+	 * The button preset screen has helper copy in the catalog, so its sentence and documentation
+	 * link render under the header row.
+	 *
+	 * @return {void}
+	 */
+	it('renders the button screen helper copy under the header row', () => {
+		renderPresetScreen(LOADED);
+
+		const description = container.querySelector('.kadence-blocks-style-library__screen-description');
+
+		expect(description).not.toBeNull();
+		expect(description.textContent).toContain('Save button styles as presets');
+		expect(description.querySelector('a').getAttribute('href')).toBe('https://evnt.is/kadence-button');
+	});
+
+	/**
+	 * A third-party preset screen has no catalog entry, so it renders no description at all — not
+	 * an empty paragraph — and its spacing is unchanged from before helper copy existed.
+	 *
+	 * @return {void}
+	 */
+	it('renders no description on a preset screen the copy catalog does not cover', () => {
+		renderPresetScreen(LOADED, { screenId: 'blocks/acme/widget' });
+
+		expect(container.querySelector('.kadence-blocks-style-library__screen-description')).toBeNull();
+	});
+});
