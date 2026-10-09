@@ -3,6 +3,7 @@ absint
 ajaxurl
 allcaps
 autoembed
+Dashicon
 dashicons
 kses
 unslash
