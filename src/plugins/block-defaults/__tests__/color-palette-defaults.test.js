@@ -119,7 +119,9 @@ describe('Kadence Blocks color palette panel', () => {
 	});
 
 	it('adds a color after the resolved palette on a theme without one', async () => {
-		renderPanel({ default: [{ ...BLACK }, { ...WHITE }] });
+		const defaults = [{ ...BLACK }, { ...WHITE }];
+
+		renderPanel({ default: defaults });
 		await addColor();
 
 		expect(mockApiFetch).toHaveBeenCalledWith(
@@ -128,6 +130,7 @@ describe('Kadence Blocks color palette panel', () => {
 			})
 		);
 		expect(writtenThemePalette()).toEqual([BLACK, WHITE, KADENCE_COLOR]);
+		expect(defaults).toEqual([BLACK, WHITE]);
 	});
 
 	it("writes back the theme's palette, not the user's colors", async () => {
