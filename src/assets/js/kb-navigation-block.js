@@ -536,24 +536,35 @@
 					var offsetTarget = scrollSpyTarget.closest('.wp-block-kadence-header-row');
 				}
 				const scrollSpyId = scrollSpyTarget.dataset?.scrollSpyId;
-				// Initialize Gumshoe
-				new Gumshoe(
+				const scrollSpySelector =
 					'.wp-block-kadence-navigation[data-scroll-spy-id="' +
-						scrollSpyId +
-						'"] .kb-navigation .kb-nav-link-content',
-					{
-						nested: true,
-						nestedClass: 'current-menu-ancestor',
-						navClass: 'current-menu-item',
-						offset: offsetManual
-							? offsetManual
-							: offsetTarget
-								? function () {
-										return offsetTarget?.getBoundingClientRect().height;
-									}
-								: 0,
+					scrollSpyId +
+					'"] .kb-navigation .kb-nav-link-content';
+				// Gumshoe reads contents[contents.length - 1] without guarding against an
+				// empty list, so it throws once the visitor reaches the bottom of a page
+				// that holds none of the anchor targets. Skip those pages entirely.
+				const hasAnchorTarget = Array.prototype.some.call(
+					document.querySelectorAll(scrollSpySelector),
+					function (link) {
+						return link.hash && document.getElementById(decodeURIComponent(link.hash.substring(1)));
 					}
 				);
+				if (!hasAnchorTarget) {
+					return;
+				}
+				// Initialize Gumshoe
+				new Gumshoe(scrollSpySelector, {
+					nested: true,
+					nestedClass: 'current-menu-ancestor',
+					navClass: 'current-menu-item',
+					offset: offsetManual
+						? offsetManual
+						: offsetTarget
+							? function () {
+									return offsetTarget?.getBoundingClientRect().height;
+								}
+							: 0,
+				});
 			});
 		}
 	};
