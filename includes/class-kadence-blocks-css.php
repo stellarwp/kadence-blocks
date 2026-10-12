@@ -1198,7 +1198,8 @@ class Kadence_Blocks_CSS {
 	/**
 	 * Generates the color output.
 	 *
-	 * @param string $color any color attribute.
+	 * @param string $color   any color attribute.
+	 * @param mixed  $opacity the opacity to apply to the color, if any.
 	 * @return string|false
 	 */
 	public function render_color( $color, $opacity = null ) {
@@ -1252,7 +1253,8 @@ class Kadence_Blocks_CSS {
 	/**
 	 * Generates the color output.
 	 *
-	 * @param string $color any color attribute.
+	 * @param string $color   any color attribute.
+	 * @param mixed  $opacity the opacity to apply to the color, if any.
 	 * @return string|false
 	 */
 	public function sanitize_color( $color, $opacity = null ) {
@@ -1355,9 +1357,11 @@ class Kadence_Blocks_CSS {
 	/**
 	 * Generates the size output.
 	 *
-	 * @param array  $size an array of size settings.
-	 * @param string $device the device this is showing on.
-	 * @param bool   $render_zero if 0 should be rendered or not.
+	 * @param array<string, mixed> $attributes an array of attributes.
+	 * @param string               $name the attribute name.
+	 * @param string               $property the css property name.
+	 * @param string               $unit the unit to append to the value.
+	 * @param bool                 $render_zero if 0 should be rendered or not.
 	 * @return string
 	 */
 	public function render_range( $attributes, $name = 'width', $property = 'width', $unit = 'px', $render_zero = true ) {
@@ -1826,6 +1830,7 @@ class Kadence_Blocks_CSS {
 	 *
 	 * @param array  $attributes an array of attributes.
 	 * @param string $name an string of the attribute name.
+	 * @param string $unit the unit to append to the value.
 	 * @return string
 	 */
 	public function render_border_radius( $attributes, $name = 'borderRadius', $unit = 'px' ) {
@@ -2751,7 +2756,8 @@ class Kadence_Blocks_CSS {
 	/**
 	 * Generates the measure output.
 	 *
-	 * @param array $measure an array of font settings.
+	 * @param array  $measure an array of font settings.
+	 * @param string $unit the unit to append to the value.
 	 * @return string|false
 	 */
 	public function render_measure( $measure, $unit = 'px' ) {
