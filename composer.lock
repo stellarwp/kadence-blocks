@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e7fc8edf81b022da149ee1b605c83c88",
+    "content-hash": "4f7ef06c0bdd0f5dc49facb248b307bd",
     "packages": [
         {
             "name": "adbario/php-dot-notation",
@@ -1023,16 +1023,16 @@
         },
         {
             "name": "stellarwp/harbor",
-            "version": "v1.6.1",
+            "version": "dev-main",
             "source": {
                 "type": "git",
                 "url": "https://github.com/stellarwp/harbor.git",
-                "reference": "1a05907ab2ff356c95d344f3734d98429ea1951e"
+                "reference": "97c18c9b10a798bc20123c74062a57fcfca1a8b3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stellarwp/harbor/zipball/1a05907ab2ff356c95d344f3734d98429ea1951e",
-                "reference": "1a05907ab2ff356c95d344f3734d98429ea1951e",
+                "url": "https://api.github.com/repos/stellarwp/harbor/zipball/97c18c9b10a798bc20123c74062a57fcfca1a8b3",
+                "reference": "97c18c9b10a798bc20123c74062a57fcfca1a8b3",
                 "shasum": ""
             },
             "require": {
@@ -1062,6 +1062,7 @@
                 "szepeviktor/phpstan-wordpress": ">=1.0",
                 "wp-cli/wp-cli": "^2"
             },
+            "default-branch": true,
             "bin": [
                 "bin/stellar-harbor"
             ],
@@ -1087,9 +1088,9 @@
             "description": "A library that integrates a WordPress product with the Liquid Web licensing system.",
             "support": {
                 "issues": "https://github.com/stellarwp/harbor/issues",
-                "source": "https://github.com/stellarwp/harbor/tree/v1.6.1"
+                "source": "https://github.com/stellarwp/harbor/tree/main"
             },
-            "time": "2026-09-23T18:33:29+00:00"
+            "time": "2026-10-12T15:17:52+00:00"
         },
         {
             "name": "stellarwp/licensing-api-client",
@@ -12984,6 +12985,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
+        "stellarwp/harbor": 20,
         "stellarwp/uplink": 20
     },
     "prefer-stable": false,
@@ -12995,5 +12997,5 @@
     "platform-overrides": {
         "php": "7.4"
     },
-    "plugin-api-version": "2.9.0"
+    "plugin-api-version": "2.6.0"
 }
