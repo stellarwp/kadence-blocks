@@ -1,6 +1,6 @@
 <?php
 
-/* cspell:ignore nopriv svgz */
+/* cspell:ignore nopriv svgz HrEf */
 
 namespace Tests\wpunit\AdvancedForm;
 
@@ -301,6 +301,55 @@ class AdvancedFormAjaxTest extends WPTestCase {
 		wp_delete_file( $path );
 
 		$this->assertFalse( $result );
+	}
+
+	public function testSanitizeSvgUploadRejectsCustomDtdEntities() {
+		$svg  = '<?xml version="1.0"?><!DOCTYPE svg [<!ENTITY Tab "#">]>';
+		$svg .= '<svg xmlns="http://www.w3.org/2000/svg"><a href="&Tab;javascript:void(0)"><text>x</text></a></svg>';
+		$path = $this->create_temp_file( $svg );
+
+		$result = $this->adv_form_ajax->sanitize_svg_upload( $path, 'image.svg', MB_IN_BYTES );
+		wp_delete_file( $path );
+
+		$this->assertFalse( $result );
+	}
+
+	public function testSanitizeSvgUploadHandlesDtdAttributeDefaults() {
+		$svg  = '<?xml version="1.0"?><!DOCTYPE svg [<!ATTLIST svg badhref CDATA #FIXED "javascript:void(0)">]>';
+		$svg .= '<svg xmlns="http://www.w3.org/2000/svg" badhref="x"><rect width="10" height="10"/></svg>';
+		$path = $this->create_temp_file( $svg );
+
+		// This input used to crash the PHP process, so reaching the assertions is part of the test.
+		$result = $this->adv_form_ajax->sanitize_svg_upload( $path, 'image.svg', MB_IN_BYTES );
+
+		$content = $result ? $this->read_temp_file( $path ) : '';
+		wp_delete_file( $path );
+
+		$this->assertStringNotContainsString( 'javascript:', $content );
+		$this->assertStringNotContainsString( '<!DOCTYPE', $content );
+	}
+
+	public function testSanitizeSvgUploadTreatsMixedCaseUseHrefLikeLowerCase() {
+		$sanitize = function ( string $attribute ): string {
+			$svg = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><defs>';
+			for ( $i = 0; $i < 12; $i++ ) {
+				$svg .= '<g id="g' . $i . '">';
+				if ( $i ) {
+					$svg .= str_repeat( '<use ' . $attribute . '="#g' . ( $i - 1 ) . '"/>', 3 );
+				} else {
+					$svg .= '<rect width="1" height="1"/>';
+				}
+				$svg .= '</g>';
+			}
+			$svg .= '</defs><use ' . $attribute . '="#g11"/></svg>';
+
+			$path = $this->create_temp_file( $svg );
+			$this->assertTrue( $this->adv_form_ajax->sanitize_svg_upload( $path, 'image.svg', MB_IN_BYTES ) );
+
+			return $this->read_temp_file( $path );
+		};
+
+		$this->assertSame( $sanitize( 'xlink:href' ), $sanitize( 'xlink:HrEf' ) );
 	}
 
 	public function testSanitizeSvgUploadRejectsNonSvgDocuments() {
