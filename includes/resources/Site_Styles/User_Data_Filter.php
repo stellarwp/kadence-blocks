@@ -3,6 +3,7 @@
 namespace KadenceWP\KadenceBlocks\Site_Styles;
 
 use WP_Theme_JSON_Data;
+use WP_Theme_JSON_Data_Gutenberg;
 
 /**
  * Keeps the Kadence site-level values out of what core renders from the user
@@ -42,9 +43,9 @@ final class User_Data_Filter {
 	 *
 	 * @since TBD
 	 *
-	 * @param WP_Theme_JSON_Data $theme_json The user-origin Global Styles.
+	 * @param WP_Theme_JSON_Data|WP_Theme_JSON_Data_Gutenberg $theme_json The user-origin Global Styles.
 	 *
-	 * @return WP_Theme_JSON_Data The Global Styles without the Kadence values.
+	 * @return WP_Theme_JSON_Data|WP_Theme_JSON_Data_Gutenberg The Global Styles without the Kadence values.
 	 */
 	public function filter( $theme_json ) {
 		$data    = $theme_json->get_data();
