@@ -21,8 +21,12 @@ final class SupportedBlocksTest extends TestCase {
 		$this->assertNotNull( $block );
 		$this->assertSame( 'kadence/singlebtn', $block->get_name() );
 		$this->assertSame( 'singlebtn', $block->get_slug() );
-		foreach ( [ 'text', 'link', 'target', 'download', 'noFollow', 'sponsored' ] as $content ) {
-			$this->assertContains( $content, $block->site_styles_excluded_attributes() );
+		$excluded = Supported_Blocks::excluded_attributes( $block );
+		foreach ( [ 'text', 'link', 'target', 'download', 'noFollow', 'sponsored', 'hideLink', 'label', 'buttonRole', 'iconTitle', 'tooltip', 'tooltipPlacement', 'isSubmit' ] as $content ) {
+			$this->assertContains( $content, $excluded, "kadence/singlebtn: `{$content}` describes one button; mark it as content in block.json." );
+		}
+		foreach ( [ 'background', 'sizePreset', 'borderRadius', 'typography', 'icon' ] as $style ) {
+			$this->assertNotContains( $style, $excluded );
 		}
 		$this->assertSame(
 			[
@@ -33,6 +37,16 @@ final class SupportedBlocksTest extends TestCase {
 		);
 		$this->assertTrue( $block->site_styles_supports()['color']['__experimentalSkipSerialization'] );
 		$this->assertNotEmpty( $block->site_styles_selectors()['root'] );
+	}
+
+	public function testEverySupportedBlockExcludesTheIdentifiers(): void {
+		foreach ( $this->container->get( Supported_Blocks::class )->all() as $name => $block ) {
+			$excluded = Supported_Blocks::excluded_attributes( $block );
+
+			foreach ( [ 'uniqueID', 'anchor', 'inQueryBlock', 'noCustomDefaults', 'metadata', 'lock', 'className', 'kadenceDynamic' ] as $identifier ) {
+				$this->assertContains( $identifier, $excluded, "{$name}: `{$identifier}` must not be stored site-wide." );
+			}
+		}
 	}
 
 	public function testEverySupportedBlockMapsOnlyConvertiblePaths(): void {
@@ -57,7 +71,7 @@ final class SupportedBlocksTest extends TestCase {
 		foreach ( $scoped as $name => $block ) {
 			$attributes = WP_Block_Type_Registry::get_instance()->get_registered( $name )->attributes;
 
-			$this->assertContains( $block->site_styles_scope_attribute(), $block->site_styles_excluded_attributes(), "{$name}: the scope attribute must not be stored site-wide." );
+			$this->assertContains( $block->site_styles_scope_attribute(), Supported_Blocks::excluded_attributes( $block ), "{$name}: the scope attribute must not be stored site-wide." );
 			foreach ( $block->site_styles_scoped_attributes() as $style => $names ) {
 				foreach ( $names as $attribute ) {
 					$this->assertArrayHasKey( $attribute, $attributes, "{$name}: {$style} scopes {$attribute}, which the block doesn't have." );

@@ -32,15 +32,6 @@ interface Supports_Site_Styles {
 	public function get_slug(): string;
 
 	/**
-	 * Content attributes, which are never stored site-wide.
-	 *
-	 * @since TBD
-	 *
-	 * @return list<string> Attribute names.
-	 */
-	public function site_styles_excluded_attributes(): array;
-
-	/**
 	 * Attributes that core's Styles screen also edits, stored at a path in the
 	 * block's core style so both surfaces edit one value. Only `color.*` paths
 	 * are supported for now.

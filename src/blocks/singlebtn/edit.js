@@ -83,7 +83,7 @@ import {
 } from '@wordpress/components';
 import { addFilter, applyFilters, doAction } from '@wordpress/hooks';
 import BackendStyles from './components/backend-styles';
-import { isVirtualBlock } from '../../site-styles/virtual-blocks';
+import { useIsSiteStylesPanel } from '../../site-styles/use-is-site-styles-panel';
 
 export default function KadenceButtonEdit(props) {
 	const { attributes, setAttributes, isSelected, context, clientId, name } = props;
@@ -258,6 +258,8 @@ export default function KadenceButtonEdit(props) {
 		},
 		[clientId]
 	);
+	// The Kadence panel edits site-wide styles, so it leaves out per-button settings.
+	const isSiteStylesPanel = useIsSiteStylesPanel();
 	const marginMouseOver = mouseOverVisualizer();
 	const paddingMouseOver = mouseOverVisualizer();
 
@@ -709,7 +711,7 @@ export default function KadenceButtonEdit(props) {
 									initialOpen={true}
 									panelName={'kb-adv-single-btn'}
 								>
-									{!hideLink && (
+									{!hideLink && !isSiteStylesPanel && (
 										<URLInputControl
 											label={__('Button Link', 'kadence-blocks')}
 											url={link}
@@ -745,7 +747,7 @@ export default function KadenceButtonEdit(props) {
 										/>
 									)}
 									{/* Site-level values describe Fill buttons, so the Kadence panel has no style choice. */}
-									{!isVirtualBlock(clientId) && (
+									{!isSiteStylesPanel && (
 										<KadenceRadioButtons
 											value={inheritStyles}
 											className={'button-style-inherit-control'}
@@ -2289,17 +2291,19 @@ export default function KadenceButtonEdit(props) {
 											units={['px', 'em', 'rem']}
 											onUnit={(value) => setAttributes({ iconPaddingUnit: value })}
 										/>
-										<TextControl
-											label={__('Title for screen readers', 'kadence-blocks')}
-											help={__(
-												'If no title added screen readers will ignore, good if the icon is purely decorative.',
-												'kadence-blocks'
-											)}
-											value={iconTitle}
-											onChange={(value) => {
-												setAttributes({ iconTitle: value });
-											}}
-										/>
+										{!isSiteStylesPanel && (
+											<TextControl
+												label={__('Title for screen readers', 'kadence-blocks')}
+												help={__(
+													'If no title added screen readers will ignore, good if the icon is purely decorative.',
+													'kadence-blocks'
+												)}
+												value={iconTitle}
+												onChange={(value) => {
+													setAttributes({ iconTitle: value });
+												}}
+											/>
+										)}
 										<ToggleControl
 											label={__('Icon Reveal on Hover', 'kadence-blocks')}
 											checked={iconReveal}
@@ -2406,33 +2410,39 @@ export default function KadenceButtonEdit(props) {
 												onMouseOut={marginMouseOver.onMouseOut}
 												allowAuto={true}
 											/>
-											<TextControl
-												label={__('Add Aria Label', 'kadence-blocks')}
-												value={label ? label : ''}
-												onChange={(value) => setAttributes({ label: value })}
-												className={'kb-textbox-style'}
-											/>
-											<ToggleControl
-												label={__('Button Role', 'kadence-blocks')}
-												help={__(
-													'If the button is used to trigger something in javascript enable this to apply the button role.',
-													'kadence-blocks'
-												)}
-												checked={buttonRole}
-												onChange={(value) => setAttributes({ buttonRole: value })}
-											/>
+											{!isSiteStylesPanel && (
+												<>
+													<TextControl
+														label={__('Add Aria Label', 'kadence-blocks')}
+														value={label ? label : ''}
+														onChange={(value) => setAttributes({ label: value })}
+														className={'kb-textbox-style'}
+													/>
+													<ToggleControl
+														label={__('Button Role', 'kadence-blocks')}
+														help={__(
+															'If the button is used to trigger something in javascript enable this to apply the button role.',
+															'kadence-blocks'
+														)}
+														checked={buttonRole}
+														onChange={(value) => setAttributes({ buttonRole: value })}
+													/>
+												</>
+											)}
 										</KadencePanelBody>
 
 										<div className="kt-sidebar-settings-spacer"></div>
 									</>
 								)}
 
-								<KadenceBlockDefaults
-									attributes={attributes}
-									defaultAttributes={metadata.attributes}
-									blockSlug={metadata.name}
-									excludedAttrs={nonTransAttrs}
-								/>
+								{!isSiteStylesPanel && (
+									<KadenceBlockDefaults
+										attributes={attributes}
+										defaultAttributes={metadata.attributes}
+										blockSlug={metadata.name}
+										excludedAttrs={nonTransAttrs}
+									/>
+								)}
 							</>
 						)}
 					</InspectorControls>
