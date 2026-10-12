@@ -5,6 +5,8 @@
  * These are not included in php-stubs/wordpress-stubs.
  */
 
+declare( strict_types=1 );
+
 /**
  * The Gutenberg plugin's copy of WP_Theme_JSON_Data. It doesn't extend core's class.
  */
