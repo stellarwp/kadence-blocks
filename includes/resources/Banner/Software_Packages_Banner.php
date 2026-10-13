@@ -11,7 +11,7 @@ use KadenceWP\KadenceBlocks\Nexcess\Banners\Registry;
 /**
  * The Nexcess software packages banner.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Software_Packages_Banner {
 
@@ -42,7 +42,7 @@ final class Software_Packages_Banner {
 	/**
 	 * Registers the banner.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return void
 	 */
@@ -66,7 +66,7 @@ final class Software_Packages_Banner {
 	/**
 	 * Renders the banner, when the audience allows it.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return void
 	 */

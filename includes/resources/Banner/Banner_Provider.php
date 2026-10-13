@@ -7,7 +7,7 @@ use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provi
 /**
  * Shows the Nexcess software packages banner on Kadence Blocks admin pages.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Banner_Provider extends Provider {
 

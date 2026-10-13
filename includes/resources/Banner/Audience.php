@@ -11,7 +11,7 @@ use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_resource;
 /**
  * Decides whether the Nexcess software packages banner shows on the current screen.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Audience {
 
@@ -35,7 +35,7 @@ final class Audience {
 	/**
 	 * Whether the banner shows on the current screen.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return bool
 	 */
@@ -47,7 +47,7 @@ final class Audience {
 	 * Whether a Nexcess license for Kadence, or a kadencewp.com license for a paid Kadence plugin,
 	 * is active, from stored state only.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return bool
 	 */
@@ -78,7 +78,7 @@ final class Audience {
 	/**
 	 * Whether this is an admin page or a post type list under the Kadence menu.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return bool
 	 */
@@ -98,7 +98,7 @@ final class Audience {
 	/**
 	 * Whether this is the Nexcess licensing page.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return bool
 	 */
