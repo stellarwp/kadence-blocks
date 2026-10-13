@@ -7,6 +7,7 @@ use InvalidArgumentException;
 use KadenceWP\KadenceBlocks\Adbar\Dot;
 use KadenceWP\KadenceBlocks\Admin\Admin_Provider;
 use KadenceWP\KadenceBlocks\Asset\Asset_Provider;
+use KadenceWP\KadenceBlocks\Banner\Banner_Provider;
 use KadenceWP\KadenceBlocks\Cache\Cache_Provider;
 use KadenceWP\KadenceBlocks\Database\Database_Provider;
 use KadenceWP\KadenceBlocks\Design_Tokens\Design_Tokens_Provider;
@@ -47,6 +48,7 @@ final class App {
 		Asset_Provider::class,
 		Uplink_Provider::class,
 		Harbor_Provider::class,
+		Banner_Provider::class,
 		Health_Provider::class,
 		Admin_Provider::class,
 		Image_Downloader_Provider::class,

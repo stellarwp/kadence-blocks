@@ -41,6 +41,7 @@
 		"enshrined/svg-sanitize": "^1.0",
 		"lucatume/di52": "^4.0",
 		"psr/container": "^1.0",
+		"stellarwp/banners": "^1.1",
 		"stellarwp/container-contract": "^1.1",
 		"stellarwp/db": "^1.1",
 		"stellarwp/harbor": "^2.0.2",
