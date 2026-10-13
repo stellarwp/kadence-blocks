@@ -103,6 +103,7 @@ function BlockItem({ thisBlock, activeBlock, toggleCollapse, collapsed, isOver, 
 	const hasSyncedLink =
 		isPostType &&
 		thisBlock?.attributes?.kind === 'post-type' &&
+		thisBlock?.attributes?.type &&
 		thisBlock?.attributes?.id &&
 		!thisBlock?.attributes?.disableLink;
 
