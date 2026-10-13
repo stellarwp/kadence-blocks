@@ -169,6 +169,13 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 == Changelog ==
 
+= 3.8.0 =
+Release Date: 13th October 2026
+* Add: Added the Style Library, a design system for setting colors, typography, spacing, borders, shadows and block presets once and applying them across Kadence blocks.
+* Tweak: Improved the unified licensing page experience.
+* Tweak: Added a dismissible announcement banner to plugin admin pages.
+* Security: Improved SVG sanitization and reject vector imports that can't be safely cleaned.
+
 = 3.7.12.1 =
 Release Date: 6th October 2026
 * Security: Improved output escaping for block attributes.

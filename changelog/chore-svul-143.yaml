@@ -1,4 +1,0 @@
-significance: patch
-type: security
-entry: Improved SVG sanitization and reject vector imports that can't be safely cleaned.
-timestamp: 2026-10-13T16:22:24.000Z
