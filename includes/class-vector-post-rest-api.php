@@ -467,6 +467,6 @@ class KadenceBlocksAllowedAttributes implements AttributeInterface {
 			'xml:space',
 			'xmlns:xlink',
 		);
-		// cspell:enable
+		/* cspell:enable */
 	}
 }
