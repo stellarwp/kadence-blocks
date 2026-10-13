@@ -11062,7 +11062,7 @@ parameters:
 
 		-
 			message: "#^Method Kadence_Vector_post_REST_Controller\\:\\:create_vector\\(\\) should return array but returns WP_Error\\.$#"
-			count: 2
+			count: 1
 			path: includes/class-vector-post-rest-api.php
 
 		-
