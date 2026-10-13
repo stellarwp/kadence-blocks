@@ -8,14 +8,14 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Token_Type;
  * Validates a shadow $value: an alias, or an object of { color, offsetX, offsetY, blur, spread } where
  * each sub-field is itself an alias or its literal kind (a color, the rest dimensions).
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Shadow_Value extends Composite_Value {
 
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	protected function type(): string {
 		return Token_Type::get_type_shadow();

@@ -12,14 +12,14 @@ use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provi
  * singletons, wires the reconcile to a once-per-request boot pass and to the token-changed action,
  * hooks the theme's palette reads, and clears the palette memo on every input it is built from.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Provider extends Provider_Contract {
 
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	public function register(): void {
 		$this->container->singleton( Palette_Builder::class );

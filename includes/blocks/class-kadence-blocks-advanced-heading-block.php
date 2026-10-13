@@ -951,7 +951,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 	 * `css_prop`, which is what keeps font-family out of the block-default rule that every heading gets
 	 * (see the declaration for why that would break theme inheritance).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Kadence_Blocks_CSS   $css        The css object.
 	 * @param array<string, mixed> $attributes The block attributes.
@@ -1026,7 +1026,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 	 * step. A weight neither recognizes yields `''`, which asks for no variant and so leaves the family
 	 * loading exactly as it did before this bridge existed.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $attributes The block attributes.
 	 * @param array<string, mixed> $values     The active preset's resolved values.

@@ -13,7 +13,7 @@ use Tests\Support\Classes\TestCase;
  * `Alias::path_of()`, or `Css_Var::from_id()` on the PHP side, or in `resolveTokenAlias()` on the JS
  * side, fails whichever suite still expects the old string.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class AliasConformanceTest extends TestCase {
 

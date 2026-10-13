@@ -11,7 +11,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Extensions;
  * document builder strips $extensions, so an override can never reach projected CSS.
  * Every mutating method returns the updated document; the original is not modified.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Token_Label_Index {
 
@@ -22,7 +22,7 @@ final class Token_Label_Index {
 	 * A whitespace-only label counts as empty — it would render as a nameless token, which is
 	 * the state an override exists to prevent.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document
 	 *
@@ -47,7 +47,7 @@ final class Token_Label_Index {
 	}
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document
 	 * @param string               $id Canonical dot-path id.
@@ -59,7 +59,7 @@ final class Token_Label_Index {
 	}
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document
 	 * @param string               $id
@@ -77,7 +77,7 @@ final class Token_Label_Index {
 	 * called; the throw guards future callers. Whitespace-only is empty here too, matching the
 	 * read side — an entry all() drops must not be storable in the first place.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document
 	 * @param string               $id
@@ -116,7 +116,7 @@ final class Token_Label_Index {
 	/**
 	 * Remove an override. A no-op (same document returned) when none is stored.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document
 	 * @param string               $id
@@ -149,7 +149,7 @@ final class Token_Label_Index {
 	}
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document
 	 *
@@ -172,7 +172,7 @@ final class Token_Label_Index {
 	}
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document
 	 *

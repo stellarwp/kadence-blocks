@@ -34,7 +34,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Layers;
  * it honors the order of the library the editor renders by default (the same pointer the feed reads),
  * and a picker opened against another library keeps that ordering.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Pickable_Tokens_Catalog {
 
@@ -43,7 +43,7 @@ final class Pickable_Tokens_Catalog {
 	 * dimension tokens carry no such wrapper (`semantic.<role>.<name>`), so it is normalized away in
 	 * role derivation to make both layers report the same role for the same sub-kind.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -52,7 +52,7 @@ final class Pickable_Tokens_Catalog {
 	/**
 	 * The token registry, source of the registered token structure.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Registry
 	 */
@@ -61,7 +61,7 @@ final class Pickable_Tokens_Catalog {
 	/**
 	 * The token resolver, source of each library's resolved literal values (by id).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Resolver
 	 */
@@ -70,7 +70,7 @@ final class Pickable_Tokens_Catalog {
 	/**
 	 * The persistence gateway, source of the stored library slugs.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Store
 	 */
@@ -79,7 +79,7 @@ final class Pickable_Tokens_Catalog {
 	/**
 	 * The active-library pointer, naming the library whose stored sort order the pool honors.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Active_Token_Library_Store
 	 */
@@ -88,14 +88,14 @@ final class Pickable_Tokens_Catalog {
 	/**
 	 * The shared stored-order permutation, applied one group at a time.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Sorter
 	 */
 	private Token_Sorter $sorter;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Token_Registry             $registry The token registry.
 	 * @param Token_Resolver             $resolver The token resolver.
@@ -120,7 +120,7 @@ final class Pickable_Tokens_Catalog {
 	/**
 	 * The pool: the pickable token structure plus the per-library resolved preview values.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array{tokens: array<int, array{id: string, alias: string, label: string, type: string, layer: string, role: string}>, values: array<string, array<string, string>>}
 	 */
@@ -136,7 +136,7 @@ final class Pickable_Tokens_Catalog {
 	 * token, in the active library's stored sort order within each UI group, registry insertion order
 	 * for the ids that order does not mention. Library-independent — values live in values().
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<int, array{id: string, alias: string, label: string, type: string, layer: string, role: string}>
 	 */
@@ -174,7 +174,7 @@ final class Pickable_Tokens_Catalog {
 	 * semantic-before-primitive ranking read the pool as one flat list, and both keep behaving exactly
 	 * as they did before any order was stored.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<int, array{id: string, alias: string, label: string, type: string, layer: string, role: string}> $tokens The pool in registry order.
 	 * @param array<string, array<int, int>>                                                                         $slots  UI group => the pool positions its tokens occupy.
@@ -218,7 +218,7 @@ final class Pickable_Tokens_Catalog {
 	 * token carries no group_key. Only `primitive.dimension.custom.*` derives role `custom`, so no other
 	 * token (colors included, which carry no machine group_key) is affected.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $id        The token id (a dot-path).
 	 * @param string $group_key The token's group_key, used to recover a custom dimension token's sub-kind.
@@ -247,7 +247,7 @@ final class Pickable_Tokens_Catalog {
 	 * layer is by construction the id's leading segment (the document walk registers ids under their
 	 * top-level layer key).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $id The token id (a dot-path).
 	 *
@@ -265,7 +265,7 @@ final class Pickable_Tokens_Catalog {
 	 * preview — a pick writes the alias, so a stale or missing value is cosmetic. A library whose stored
 	 * document cannot be resolved is skipped, so one corrupt library never empties the map.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, array<string, string>> library slug => ( id => literal value ).
 	 */
@@ -286,7 +286,7 @@ final class Pickable_Tokens_Catalog {
 	/**
 	 * The library slugs to resolve values for: every stored library plus the always-present default.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string[]
 	 */

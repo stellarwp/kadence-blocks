@@ -92,7 +92,7 @@ afterEach(() => {
  *
  * @param {Object} [overrides] Fields merged over the defaults — e.g. `{ editingId: 'secondary' }`.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The `usePalettes` stub.
  */
@@ -153,7 +153,7 @@ function makePalettes(overrides = {}) {
  *                                        settings panel (`route.item`).
  * @param {Function} [overrides.navigate] The route navigator spy.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {void}
  */
@@ -171,7 +171,7 @@ function renderScreen(palettes, { route = ROUTE, navigate = () => {} } = {}) {
  * @param {Element} scope The element to search under.
  * @param {string}  text  The exact button label.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {?Element} The button, or null when nothing matches.
  */
@@ -182,7 +182,7 @@ function buttonByText(scope, text) {
 /**
  * The open modal.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {?Element} The dialog element, or null while none is open.
  */

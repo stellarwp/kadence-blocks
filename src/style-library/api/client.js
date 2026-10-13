@@ -38,14 +38,14 @@ import { DEFAULT_LIBRARY_SLUG } from '../constants';
  * address the module's own routes only, unlike the token/palette calls above which take a
  * namespace parameter for reuse from other consumers.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const NAMESPACE = 'kb-design-tokens/v1';
 
 /**
  * Configure apiFetch middleware from the localized REST descriptor.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @param {{ root: string, nonce: string }} rest REST descriptor from the feed.
  * @return {void}
@@ -62,7 +62,7 @@ export function configureRestClient(rest) {
 /**
  * Fetch the resolved token value map.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @param {string} namespace REST namespace.
  * @param {string} slug      Token library slug.
@@ -75,7 +75,7 @@ export function fetchResolvedTokens(namespace, slug) {
 /**
  * Persist a single token leaf via the REST API.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @param {string}               namespace REST namespace.
  * @param {string}               tokenId   Dot-path token id.
@@ -98,7 +98,7 @@ export function saveTokenLeaf(namespace, tokenId, leaf, slug) {
  * @param {string} tokenId   Dot-path token id.
  * @param {string} slug      Token library slug.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Promise<object>} Updated document item.
  */
@@ -112,7 +112,7 @@ export function deleteTokenLeaf(namespace, tokenId, slug) {
 /**
  * Set or clear a token's display-label override.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @param {string}                             slug    Token library slug.
  * @param {string}                             id      The token id (baseline dot-path, or a user
@@ -131,7 +131,7 @@ export function setTokenLabel(slug, id, payload) {
 /**
  * Persist a UI-schema group's full sort order.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @param {string}                                       slug    Token library slug.
  * @param {string}                                        group   The UI-schema group label.
@@ -153,7 +153,7 @@ export function setGroupOrder(slug, group, payload) {
  * @param {string}                  family  The font family name.
  * @param {{ version: string }}     payload Request body.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Promise<object>} Updated document item.
  */
@@ -172,7 +172,7 @@ export function addFavoriteFont(slug, family, payload) {
  * @param {string}              family  The font family name.
  * @param {{ version: string }} payload Request body.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Promise<object>} Updated document item.
  */
@@ -191,7 +191,7 @@ export function removeFavoriteFont(slug, family, payload) {
  * @param {string} namespace REST namespace.
  * @param {string} slug      Token set slug.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Promise<object[]>} Flat, fully embedded palette listing.
  */
@@ -202,7 +202,7 @@ export function fetchPalettes(namespace, slug) {
 /**
  * Fetch a single palette node (its label and ordered groups of swatches).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @param {string} namespace REST namespace.
  * @param {string} id        The palette id.
@@ -216,7 +216,7 @@ export function fetchPalette(namespace, id, slug) {
 /**
  * Set the set's current palette.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @param {string} namespace REST namespace.
  * @param {string} id        The palette id to make current.
@@ -234,7 +234,7 @@ export function setCurrentPalette(namespace, id, slug) {
 /**
  * Create or replace a palette (label + ordered groups of swatches).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @param {string} namespace REST namespace.
  * @param {string} id        The palette id.
@@ -261,7 +261,7 @@ export function savePalette(namespace, id, payload, slug) {
  * @param {{value?: string, label?: string}} fields At least one of `value`/`label`.
  * @param {string} slug      Token set slug.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Promise<object>} The fresh, fully embedded palette listing.
  */
@@ -287,7 +287,7 @@ export function saveSwatch(namespace, id, token, fields, slug) {
  * Revert a single palette swatch to inherited (the granular per-token delete): drop the palette's own value
  * for this token so it falls back to the default palette.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @param {string} namespace REST namespace.
  * @param {string} id        The palette id.
@@ -312,7 +312,7 @@ export function deleteSwatch(namespace, id, token, slug) {
  * @param {string} id        The palette id.
  * @param {string} slug      Token set slug.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Promise<object>} The updated palette listing.
  */
@@ -323,7 +323,7 @@ export function deletePalette(namespace, id, slug) {
 /**
  * Fetch the alias-reference preview for a user primitive.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @param {string} slug Token library slug.
  * @param {string} id   Canonical dot-path id of the user primitive.
@@ -336,7 +336,7 @@ export function fetchUserPrimitiveReferences(slug, id) {
 /**
  * Create a new user-defined color primitive.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @param {string} slug    Token library slug.
  * @param {object} payload Request body including id, $type, $value, label, version.
@@ -353,7 +353,7 @@ export function createUserPrimitive(slug, payload) {
 /**
  * Delete a user-defined primitive.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @param {string} slug    Token library slug.
  * @param {string} id      Canonical dot-path id of the user primitive.
@@ -371,7 +371,7 @@ export function deleteUserPrimitive(slug, id, version) {
 /**
  * Rename a user-defined primitive.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @param {string} slug    Token library slug.
  * @param {string} id      Current canonical dot-path id.
@@ -392,7 +392,7 @@ export function renameUserPrimitive(slug, id, payload) {
  * one — never the slug or another synthesized value — so a caller that wants a display label
  * falls back to the slug itself.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Promise<Array<{slug: string, title: string, version: string, document: object}>>} The library rows.
  */
@@ -403,7 +403,7 @@ export function fetchLibraries() {
 /**
  * Read the active-library pointer.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Promise<{slug: string}>} The resolved active slug.
  */
@@ -416,7 +416,7 @@ export function getActiveLibrary() {
  *
  * @param {string} slug Token library slug to make active.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Promise<{slug: string}>} The resolved active slug.
  */
@@ -431,7 +431,7 @@ export function setActiveLibrary(slug) {
  * @param {string} slug  Token library slug.
  * @param {string} title Human-readable label for the library.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Promise<{slug: string, version: string, document: object}>} The created document item.
  */
@@ -460,7 +460,7 @@ export function createLibrary(slug, title) {
  * @param {string} slug  Token library slug.
  * @param {string} title The new human-readable label.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Promise<{slug: string, title: string, version: string, document: object}>} The updated document item.
  */
@@ -478,7 +478,7 @@ export function renameLibrary(slug, title) {
  *
  * @param {string} slug Token library slug.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Promise<{deleted: boolean, previous: object}>} The delete result.
  */
@@ -489,7 +489,7 @@ export function deleteLibrary(slug) {
 /**
  * Fetch a block's effective (baseline-merged) preset collection.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @param {string} namespace REST namespace.
  * @param {string} block     The block name, e.g. `kadence/singlebtn`.
@@ -507,7 +507,7 @@ export function fetchBlockPresets(namespace, block, slug) {
  * preset collection and silently drops any preset the body omits, which would be a data-loss trap
  * for a single-preset save.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @param {string}                                          namespace REST namespace.
  * @param {string}                                          block     The block name, e.g. `kadence/singlebtn`.
@@ -527,7 +527,7 @@ export function saveBlockPreset(namespace, block, payload, slug) {
  * Delete a preset. A preset that also exists in the baseline reverts to its baseline definition
  * rather than disappearing.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @param {string} namespace REST namespace.
  * @param {string} block     The block name, e.g. `kadence/singlebtn`.
@@ -545,7 +545,7 @@ export function deleteBlockPreset(namespace, block, preset, slug) {
 /**
  * Persist a block's full preset display order.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @param {string}                                 namespace REST namespace.
  * @param {string}                                 block     The block name, e.g. `kadence/singlebtn`.
@@ -568,7 +568,7 @@ export function setBlockPresetOrder(namespace, block, payload, slug) {
  *
  * @param {string} slug Token library slug.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Promise<object>} The feed payload.
  */

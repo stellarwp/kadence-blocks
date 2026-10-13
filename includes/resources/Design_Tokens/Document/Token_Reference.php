@@ -5,14 +5,14 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Document;
 /**
  * A single alias reference from a stored token to another token id.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Token_Reference {
 
 	/**
 	 * The reference kind. One of the KIND_* values.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -21,7 +21,7 @@ final class Token_Reference {
 	/**
 	 * The canonical dot-path of the token holding the reference.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -30,7 +30,7 @@ final class Token_Reference {
 	/**
 	 * Whether the rename/delete cascade can automatically handle this reference.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var bool
 	 */
@@ -39,7 +39,7 @@ final class Token_Reference {
 	/**
 	 * Semantic layer override with a direct $value alias.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -48,7 +48,7 @@ final class Token_Reference {
 	/**
 	 * Alias found inside a composite $value sub-field (e.g. shadow.color).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -57,7 +57,7 @@ final class Token_Reference {
 	/**
 	 * Alias found inside $extensions.presets or $extensions.foundationPresets.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -66,14 +66,14 @@ final class Token_Reference {
 	/**
 	 * Primitive layer override with a direct $value alias to another primitive.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
 	private const KIND_PRIMITIVE_OVERRIDE = 'primitive_override';
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $kind      One of the KIND_* values.
 	 * @param string $path      Canonical dot-path of the referencing token.
@@ -86,7 +86,7 @@ final class Token_Reference {
 	}
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -95,7 +95,7 @@ final class Token_Reference {
 	}
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -104,7 +104,7 @@ final class Token_Reference {
 	}
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -113,7 +113,7 @@ final class Token_Reference {
 	}
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */

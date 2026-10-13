@@ -35,7 +35,7 @@ import { resolveColorLiteral } from '../color-literal';
  * @param {boolean}   [props.disabled] Whether the row is read-only.
  * @param {Array}     props.groups     The block's effective palette groups, from `useColorGroups()`.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The rendered color field.
  */

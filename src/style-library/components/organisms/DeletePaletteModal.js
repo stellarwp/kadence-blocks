@@ -35,7 +35,7 @@ import './DeletePaletteModal.scss';
  * @param {Function}           props.onClose       Called to dismiss the modal.
  * @param {Function}           props.onConfirm     Called with the chosen successor id to run the action.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The modal.
  */

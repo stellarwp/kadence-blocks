@@ -56,7 +56,7 @@ import { isStaleAlias, staleTokenMessage } from '../atoms/StaleTokenHint';
  *                                      `{ kind: 'reset' }` while the `Reset` row does, or
  *                                      `{ kind: 'token', entry }` while a token row does.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The rendered token list.
  */
@@ -152,7 +152,7 @@ function StyleLibraryTab({
  * @param {number}   [props.step]    Slider and number step.
  * @param {Function} props.onNumber  Writes a literal number to the slot.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The rendered tab body.
  */
@@ -230,7 +230,7 @@ export function CustomTab({ number, unit, units, onUnit, min, max, step, onNumbe
  *                                          only, so every existing `TokenPopover` consumer that
  *                                          does not pass it is unaffected.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The rendered tabs.
  */

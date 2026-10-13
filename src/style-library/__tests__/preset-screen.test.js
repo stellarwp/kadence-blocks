@@ -70,7 +70,7 @@ let root;
  * @param {Function} [options.navigate] The navigate spy.
  * @param {string}   [options.screenId] The route's screen id — varies which helper copy applies.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {HTMLElement} The container the screen was rendered into.
  */

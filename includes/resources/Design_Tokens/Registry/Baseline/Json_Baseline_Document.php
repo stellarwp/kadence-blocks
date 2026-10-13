@@ -22,7 +22,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Layers;
  * and REST writes. A token "leaf" is any node carrying a $value; the $extensions layer (foundation
  * presets, block presets, presets) is intentionally NOT indexed, as those are not registrable tokens.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Json_Baseline_Document implements Baseline_Document {
 
@@ -31,7 +31,7 @@ final class Json_Baseline_Document implements Baseline_Document {
 	 *
 	 * @var string
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	private const CACHE_GROUP = 'kb_design_tokens';
 
@@ -40,7 +40,7 @@ final class Json_Baseline_Document implements Baseline_Document {
 	 *
 	 * @var string
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	private string $path;
 
@@ -49,7 +49,7 @@ final class Json_Baseline_Document implements Baseline_Document {
 	 *
 	 * @var string
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	private string $version;
 
@@ -58,7 +58,7 @@ final class Json_Baseline_Document implements Baseline_Document {
 	 *
 	 * @var array<string, mixed>|null
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	private ?array $document = null;
 
@@ -67,12 +67,12 @@ final class Json_Baseline_Document implements Baseline_Document {
 	 *
 	 * @var array<string, true>|null
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	private ?array $index = null;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $path    Absolute path to the shipped baseline.json.
 	 * @param string $version Cache-busting version (pass the plugin version); the document cache is keyed
@@ -86,7 +86,7 @@ final class Json_Baseline_Document implements Baseline_Document {
 	/**
 	 * Whether the baseline defines a token at the given dot-path id.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $id A token DTCG dot-path id, e.g. "semantic.color.button-bg".
 	 *
@@ -100,7 +100,7 @@ final class Json_Baseline_Document implements Baseline_Document {
 	 * The full decoded baseline document, loaded once per request and cached across requests on the
 	 * version.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -135,7 +135,7 @@ final class Json_Baseline_Document implements Baseline_Document {
 	 * The flattened id index has() consults: every token leaf's dot-path id. Derived from the (cached)
 	 * document and memoised per request.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, true>
 	 */
@@ -160,7 +160,7 @@ final class Json_Baseline_Document implements Baseline_Document {
 	/**
 	 * Walk a DTCG subtree depth-first, recording the dot-path of every token leaf (a node with $value).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $node   The current group node.
 	 * @param string               $prefix The dot-path accumulated so far.
@@ -198,7 +198,7 @@ final class Json_Baseline_Document implements Baseline_Document {
 	 * document, so every has() returns false and the fail-closed guard keeps token projection off
 	 * rather than acting on a partial baseline.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, mixed>
 	 */

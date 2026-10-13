@@ -11,7 +11,7 @@
  * @param {string}   currentName The current name.
  * @param {Function} isDuplicate Called with the trimmed name; true when something else already uses it.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{trimmed: string, isDuplicate: boolean, isSavable: boolean}} The name as it would be
  *         saved, whether something else already uses it, and whether it may be saved at all.

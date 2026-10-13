@@ -19,7 +19,7 @@ import { SHADOW_TOKEN_KEY } from '../../shadow-token';
 /**
  * A pickable shadow token, shaped like one entry of `pickableTokensForKey()`'s output.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @type {Object}
  */
@@ -36,7 +36,7 @@ const SHADOW_TOKEN = {
  * A representative native shadow value — every field a different, distinguishable number/string, so a
  * round-trip that silently dropped or shuffled a field would be caught.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @type {Array}
  */
@@ -61,7 +61,7 @@ const NATIVE_VALUE = [
  *
  * @param {Object} overrides Props to override on top of the defaults.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{root: Object, shadowControl: Object, onChange: Function}} The root element
  *   (`TokenControlRow`), the `BoxShadowControl` element it always renders, and the `onChange` spy

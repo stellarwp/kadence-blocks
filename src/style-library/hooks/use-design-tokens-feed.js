@@ -29,7 +29,7 @@ import { bumpFeedRevision, isFeedRevisionCurrent } from '../store/resolvers';
  * @param {Function} dispatch A `@wordpress/data` registry's `dispatch` (defaults to the default
  *                              registry's, for production; tests pass an isolated test registry's).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {void}
  */
@@ -59,7 +59,7 @@ export function seedDesignTokensFeed(dispatch = defaultDispatch) {
  * with. `refreshFeed` is the one path that always forces a fresh REST read through the store, for
  * after the active library changes, or after a write on the current library, without a page reload.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{ feed: object|null, tokens: object[], isReady: boolean, isActive: boolean, isResolved: boolean, values: Record<string, string>, responsive: Record<string, object>, rest: object|null, version: string, slug: string, title: string, refreshFeed: Function }}
  */
@@ -132,7 +132,7 @@ export function useDesignTokensFeed() {
 	 *
 	 * @param {string} targetSlug The token library slug to read the feed for.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return {Promise<object>} The fresh feed payload.
 	 */

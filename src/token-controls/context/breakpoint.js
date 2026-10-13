@@ -24,7 +24,7 @@ import { createContext, useContext, useMemo, useState } from '@wordpress/element
  * The shared breakpoint context. Null when no provider is mounted, which is what tells a consumer to
  * fall back to local state.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const BreakpointContext = createContext(null);
 
@@ -37,7 +37,7 @@ const BreakpointContext = createContext(null);
  * @param {?Function} [props.onChange]   Called with the next breakpoint, when the host owns it.
  * @param {string}    [props.defaultValue] The breakpoint to start on when the provider owns it.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The provider.
  */
@@ -61,7 +61,7 @@ export function BreakpointProvider({ children, value = null, onChange = null, de
  *
  * @param {string} [defaultValue] The breakpoint the local fallback starts on.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {[string, Function]} The active breakpoint and its setter.
  */

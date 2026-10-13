@@ -45,7 +45,7 @@ const ACTIVATION_LABELS = {
  *
  * @param {string} name The library name the user typed.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The message.
  */
@@ -71,7 +71,7 @@ function duplicateLibraryMessage(name) {
  * @param {Function}      props.onActivate      Called with a slug to make that library active.
  * @param {Function}      props.onDelete        Called with the target slug and, when required, the successor slug.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The pencil, its popover and, while open, a confirmation modal.
  */

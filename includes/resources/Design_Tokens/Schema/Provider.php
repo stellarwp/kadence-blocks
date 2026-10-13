@@ -10,12 +10,12 @@ use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provi
  * Resolver dry-run resolve the same instance, and binds the runtime accessor for the committed schema
  * file that the REST schema endpoint serves. Both are stateless singletons with no hooks.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Provider extends Provider_Contract {
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return void
 	 */

@@ -28,7 +28,7 @@ import { isTokenId } from '../../token-controls';
  *
  * @param {Object} entry The token entry (`{ id, label, value, alias }`) to resolve.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The entry's resolved literal.
  */
@@ -41,7 +41,7 @@ export function resolveLiteral(entry) {
  *
  * @param {string} value The stored value: a bare token id, a raw literal, or empty.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The bracket alias for a token id, the literal unchanged, or ''.
  */
@@ -54,7 +54,7 @@ export function toControlValue(value) {
  *
  * @param {string} alias The bracket alias `onPick` handed back (e.g. `{semantic.color.accent.main}`).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The bare token id.
  */

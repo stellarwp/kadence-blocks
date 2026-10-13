@@ -38,7 +38,7 @@ import { Icon, check } from '@wordpress/icons';
  * @param {boolean}  [props.disabled] Whether the trigger is inert.
  * @param {Function} props.onChange   Called with the picked style's `value`.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The rendered picker.
  */

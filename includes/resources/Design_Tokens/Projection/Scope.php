@@ -10,14 +10,14 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection;
  * selector weighs more than a bare :root, and nothing emitted under this scope is !important, so a
  * per-instance override always wins by ordinary cascade.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Scope {
 
 	/**
 	 * The root scope selector shared by the projection CSS builders.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -26,7 +26,7 @@ final class Scope {
 	/**
 	 * The root scope selector shared by the projection CSS builders.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */

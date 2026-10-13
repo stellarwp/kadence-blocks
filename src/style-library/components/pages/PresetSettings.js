@@ -65,7 +65,7 @@ import './PresetSettings.scss';
  *                                       the fourth argument, for a config whose fields depend on where
  *                                       the preset comes from.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The panel.
  */
@@ -306,7 +306,7 @@ function PresetSettingsBody({
  * @param {Object}   props.preset    The block's preset config (`presets/<block>-preset.js`), read
  *                                   for its `tabs`, `schemaFor` and `renderPreview`.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {?JSX.Element} The panel, a loading skeleton while a valid `kb-item`'s presets are still
  *         loading, or null while a stale one self-heals for a tick.

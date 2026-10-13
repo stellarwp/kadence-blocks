@@ -11,14 +11,14 @@ use Tests\Support\Classes\TestCase;
 /**
  * Covers the tokenLabels display-label override map read/write operations of Token_Label_Index.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Token_Label_IndexTest extends TestCase {
 
 	/**
 	 * The index under test.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Label_Index
 	 */

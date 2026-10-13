@@ -5,7 +5,7 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Resolver;
 /**
  * Immutable result of resolution: two flat, alias-free maps projectors consume directly.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Resolved_Tokens {
 
@@ -21,7 +21,7 @@ final class Resolved_Tokens {
 	 * keeps var() for any aliased field. Equal to the literal map for raw-valued tokens. The css-var
 	 * projection consumes this; the literal maps stay the source for host-publishing surfaces.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var array<string,string>
 	 */
@@ -31,7 +31,7 @@ final class Resolved_Tokens {
 	 * Immediate alias target per reference-valued token, token-id => target token-id. Only tokens whose
 	 * effective $value is a whole-string alias appear here; raw-valued and composite tokens are absent.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var array<string,string>
 	 */
@@ -42,7 +42,7 @@ final class Resolved_Tokens {
 	 * per-media-query redeclaration the css-var projection emits. Only responsive (stepped) tokens with an
 	 * override at a breakpoint appear; a flat token is absent, so a flat token projects exactly as before.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var array<string,array<string,string>>
 	 */
@@ -53,7 +53,7 @@ final class Resolved_Tokens {
 	 * and the write-back adapters that fan a breakpoint value into a block's indexed / suffixed attributes.
 	 * Mirrors by_var_responsive keyed by id, with literals rather than var() references.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var array<string,array<string,string>>
 	 */
@@ -63,7 +63,7 @@ final class Resolved_Tokens {
 	 * Build the resolved maps. The projection defaults to the literal var map when omitted, so a
 	 * caller with no aliases to preserve constructs with just the two literal maps.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string,string>               $by_id             token-id => literal CSS value.
 	 * @param array<string,string>               $by_var            css-var => literal CSS value.
@@ -92,7 +92,7 @@ final class Resolved_Tokens {
 	/**
 	 * The flat literal map keyed by token id, the source for host-publishing surfaces.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string,string> token-id => literal CSS value
 	 */
@@ -103,7 +103,7 @@ final class Resolved_Tokens {
 	/**
 	 * The flat literal map keyed by css-var.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string,string> css-var => literal CSS value
 	 */
@@ -114,7 +114,7 @@ final class Resolved_Tokens {
 	/**
 	 * The css-var projection form, with alias indirection preserved as var() references.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string,string> css-var => var()-preserving CSS value
 	 */
@@ -125,7 +125,7 @@ final class Resolved_Tokens {
 	/**
 	 * The immediate alias target per reference-valued token.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string,string> token-id => target token-id
 	 */
@@ -136,7 +136,7 @@ final class Resolved_Tokens {
 	/**
 	 * The literal CSS value for a token, or null when the token is unknown.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $id The token id.
 	 *
@@ -149,7 +149,7 @@ final class Resolved_Tokens {
 	/**
 	 * The immediate alias target for a token, or null when the token is not reference-valued.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $id The token id.
 	 *
@@ -164,7 +164,7 @@ final class Resolved_Tokens {
 	 * The css-var projection redeclares each of these inside the matching media query. Empty for a document
 	 * with no responsive tokens, so flat projection is byte-for-byte unchanged.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string,array<string,string>>
 	 */
@@ -176,7 +176,7 @@ final class Resolved_Tokens {
 	 * The literal CSS value for a token at a breakpoint, or null when the token has no override there. A
 	 * token with no responsive shape returns null for every breakpoint (its base value is read via value()).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $id         The token id.
 	 * @param string $breakpoint The breakpoint key (e.g. "tablet", "mobile").

@@ -46,7 +46,7 @@ export {
  * generic ('color') for a value that is really a bare string — see `isEmptyValue`'s original combined
  * check.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @type {{ isEmpty: Function, matches: Function }}
  */
@@ -58,7 +58,7 @@ const color = {
 /**
  * The `text` kind's `isEmpty`/`matches` pair for the `KINDS` dispatch table below.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @type {{ isEmpty: Function, matches: Function }}
  */
@@ -71,7 +71,7 @@ const text = {
  * The `shadow` kind's `isEmpty`/`matches` pair for the `KINDS` dispatch table below. A shadow that
  * paints nothing is empty, and two shadows match when they build to the same canonical literal.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @type {{ isEmpty: Function, matches: Function }}
  */
@@ -85,7 +85,7 @@ const shadow = {
  * border axes share one handler — `EditorBorderControl`'s native shape is axis-agnostic, and `border`'s
  * own `matches` takes the kind as its first argument to know which axis to read.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @type {Object<string, Object>}
  */
@@ -107,7 +107,7 @@ const KINDS = {
  *
  * @param {string} kind The property kind.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{ isEmpty: Function, matches: Function }} The handler to dispatch through.
  */
@@ -128,7 +128,7 @@ function handlerFor(kind) {
  * `'shadow'`, before its own dispatch entry lands), and a `TypeError` here would crash the editor
  * render rather than merely mis-marking the indicator.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True when the value is unset/empty.
  */
@@ -147,7 +147,7 @@ export function isEmptyValue(kind, value) {
  * An unrecognized `kind` falls back to the `text` kind's handler, matching `isEmptyValue`'s own
  * fallback — see its docblock for why.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True when the stored value matches the preset value.
  */

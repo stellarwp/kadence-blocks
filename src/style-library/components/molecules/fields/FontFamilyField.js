@@ -38,7 +38,7 @@ import { FieldLabel } from './FieldLabel';
  *
  * @param {string} family The family to load.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Promise} Resolves when the font is usable, or immediately when there is nothing to fetch.
  */
@@ -82,7 +82,7 @@ function loadPickedFamily(family) {
  * @param {Object}   [props.values]          The full draft, for reading the sibling weight.
  * @param {Function} [props.onValueChange]   The raw path-taking writer, for clearing that weight.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The field.
  */

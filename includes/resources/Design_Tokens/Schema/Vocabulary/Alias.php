@@ -11,7 +11,7 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary;
  * document root; the Resolver follows it, recursively, and is the only place aliases
  * flatten. Mirrors the static-util style of Css_Var so the alias rule cannot drift between consumers.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Alias {
 
@@ -20,7 +20,7 @@ final class Alias {
 	 * dots and dashes, then a "}", anchored end to end. Exposed via pattern() so the schema generator
 	 * and the Resolver reuse the exact same expression.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -30,7 +30,7 @@ final class Alias {
 	 * The whole-string alias pattern (PCRE, without delimiters), for consumers that build their own
 	 * matcher — e.g. the JSON Schema generator and the Resolver.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -44,7 +44,7 @@ final class Alias {
 	 * Only strings can be aliases; any non-string (number, array, object, null) returns false so
 	 * callers can short-circuit "alias OR literal" cleanly.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed $value The value to test.
 	 *
@@ -62,7 +62,7 @@ final class Alias {
 	 * rather than an invalid value. Deliberately looser than the canonical pattern — it owns the "{ }"
 	 * delimiter knowledge so consumers never hard-code it.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed $value The value to test.
 	 *
@@ -79,7 +79,7 @@ final class Alias {
 	/**
 	 * The dot-path referenced by an alias string, with the surrounding braces stripped.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $value An alias string, e.g. "{primitive.color.brand.primary}".
 	 *
@@ -98,7 +98,7 @@ final class Alias {
 	 * Wrap a dot-path into an alias string. The inverse of path_of(), so callers that mint an alias (e.g.
 	 * the preset value normalizer) do not hard-code the brace delimiters.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $id A dot-path into the document, e.g. "semantic.color.button-bg".
 	 *

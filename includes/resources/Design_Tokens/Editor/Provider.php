@@ -12,14 +12,14 @@ use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provi
  * admin_head so window.kadenceDesignTokensPickable (the token picker's accessor) reaches whichever of
  * the editor bundle or the Style Library admin bundle is on the page.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Provider extends Provider_Contract {
 
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	public function register(): void {
 		$this->container->singleton( Preset_Catalog::class );

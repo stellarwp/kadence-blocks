@@ -30,7 +30,7 @@ import { STORE_NAME } from '../store';
  * @param {Object} library The design-tokens feed hook's return value (`useDesignTokensFeed()`).
  * @param {Object} preset  The block's preset config.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{payload: ?object, isLoading: boolean, loadError: ?Error, rows: Array<Object>, initialValuesFor: Function}}
  */

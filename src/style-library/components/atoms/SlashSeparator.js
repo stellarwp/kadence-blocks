@@ -20,7 +20,7 @@ import './SlashSeparator.scss';
  * @param {Object} props             The component props.
  * @param {string} [props.className] Extra class names, used by the caller to set the font size.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The separator.
  */

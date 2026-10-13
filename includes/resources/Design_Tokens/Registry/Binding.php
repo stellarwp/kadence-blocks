@@ -30,14 +30,14 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Responsive;
  * of the projected bindings. See {@see Binding::control_attr()}, {@see Binding::responsive_attrs()} and
  * {@see Binding::axis()}.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Binding {
 
 	/**
 	 * Declaration key selecting the token-reference form.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -46,7 +46,7 @@ final class Binding {
 	/**
 	 * Inline target: a Kadence palette slot (palette1..9) → `--global-paletteN`.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -55,7 +55,7 @@ final class Binding {
 	/**
 	 * Inline target: a block attribute, so a block preset can seed an attribute default.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -67,7 +67,7 @@ final class Binding {
 	 * preset bucket (e.g. border-radius): the block reads `var(--<css_var>, <token fallback>)`, and a selected
 	 * preset sets `--<css_var>` on its scope so the value can vary per preset.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -79,7 +79,7 @@ final class Binding {
 	 * token's variable. Used for the dimension families KB gives no ownable variable for (radius, icon
 	 * size); see that projector's Css_Builder for the full rationale.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -93,7 +93,7 @@ final class Binding {
 	 * (`>`, `+`, `~`, `.`, `:`, `#`, `[`, `&`) is used verbatim. Optional; the rule targets the block root
 	 * when omitted.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -113,7 +113,7 @@ final class Binding {
 	 * declares this one. Optional; `css_selector` is reused in the editor when omitted, which is the
 	 * right answer for every block whose two render paths agree.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -144,7 +144,7 @@ final class Binding {
 	 * block whose own CSS treats hover and keyboard focus as one look. The projector scopes each part on its
 	 * own, so every part is qualified by the block and preset rather than only the first.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -160,7 +160,7 @@ final class Binding {
 	 * with `css_state` reused in the editor when omitted, which is right for every block whose two render
 	 * paths agree on the element.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -171,7 +171,7 @@ final class Binding {
 	 * as. Kept apart from `css_prop`, which the block-default projector reads for token references: giving
 	 * the border and shadow token references a `css_prop` would make that projector emit rules for them.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -182,7 +182,7 @@ final class Binding {
 	 * scoped by on the front end. Read only by the class-preset override layer; `is_state()` ignores it,
 	 * so the property keeps its slot retarget for the `$default`.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -192,7 +192,7 @@ final class Binding {
 	 * Inline target: the editor twin of `theme_state`, for a block whose editor markup carries the styled
 	 * element as a descendant of the block wrapper.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -205,7 +205,7 @@ final class Binding {
 	 * never enters $projections and effective_projections() never emits it. That is what keeps a bound but
 	 * untouched attribute EMPTY (nothing is seeded), which the editor's "empty = bound" detection relies on.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -215,7 +215,7 @@ final class Binding {
 	 * Declaration key naming the per-breakpoint block attributes an editor control writes, keyed by
 	 * breakpoint. Editor-only metadata, like CONTROL_ATTR.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -233,7 +233,7 @@ final class Binding {
 	 * property owns. Omitted for the overwhelming majority of bindings, whose `control_attr` holds the
 	 * property's own value directly.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -242,7 +242,7 @@ final class Binding {
 	/**
 	 * The inline string targets and their validation: each, when present, must be a non-empty string.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string[]
 	 */
@@ -252,7 +252,7 @@ final class Binding {
 	 * The block property this binding drives, e.g. "button-bg". Carried for error messages and so a
 	 * binding can travel without its map key.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -261,7 +261,7 @@ final class Binding {
 	/**
 	 * The referenced token id for the token-reference form, or null for an inline binding.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string|null
 	 */
@@ -270,7 +270,7 @@ final class Binding {
 	/**
 	 * Inline projection targets (target key => value); empty for the token-reference form.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var array<string, mixed>
 	 */
@@ -280,7 +280,7 @@ final class Binding {
 	 * The block attribute the editor control for this property writes, or null when the binding declares
 	 * none. Editor-only metadata; kept out of $projections on purpose so no projector seeds it.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string|null
 	 */
@@ -290,7 +290,7 @@ final class Binding {
 	 * The per-breakpoint block attributes this binding's editor control writes, keyed by breakpoint
 	 * ("tablet" => "tabletBorderRadius"). Empty when the binding declares none.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var array<string, string>
 	 */
@@ -301,14 +301,14 @@ final class Binding {
 	 * "border-color"), or null when the binding's control attribute holds this property's value directly.
 	 * Editor-only metadata; kept out of $projections like control_attr.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string|null
 	 */
 	public ?string $axis;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string                $property     The block property this binding drives.
 	 * @param string|null           $token        Referenced token id, or null when inline.
@@ -329,7 +329,7 @@ final class Binding {
 	/**
 	 * Build a binding from its declaration, validating the token-reference XOR inline-target contract.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string               $property The block property (the binding map key).
 	 * @param array<string, mixed> $spec     The binding declaration.
@@ -376,7 +376,7 @@ final class Binding {
 	 * The projection key for the Kadence palette-slot target ("kadence_slot"), used to read a binding's
 	 * slot out of its effective projections.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -387,7 +387,7 @@ final class Binding {
 	/**
 	 * Whether this binding reuses a registered token's projections rather than declaring inline targets.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return bool
 	 */
@@ -400,7 +400,7 @@ final class Binding {
 	 * projector to map a resolved preset value onto a block's default attribute. Always an inline target
 	 * — tokens never carry a `block_attr` — so it is read straight off this binding.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string|null
 	 */
@@ -415,7 +415,7 @@ final class Binding {
 	 * none. Editor-only: read by the preset catalog so the indicator layer can key an override signal to a
 	 * control. Unlike block_attr(), this is NOT a projection target and never seeds an attribute default.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string|null
 	 */
@@ -431,7 +431,7 @@ final class Binding {
 	 * naming rule rather than something safely derivable across blocks, so it is declared. Editor-only,
 	 * like control_attr(): never a projection target.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, string> Breakpoint => attribute name.
 	 */
@@ -447,7 +447,7 @@ final class Binding {
 	 * attribute to compare, instead of keying that off a hardcoded list of property names. Editor-only,
 	 * like control_attr(): never a projection target.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string|null
 	 */
@@ -461,7 +461,7 @@ final class Binding {
 	 * block renders as a literal. Always an inline target — tokens never carry a `css_prop` — so it is read
 	 * straight off this binding.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string|null
 	 */
@@ -475,7 +475,7 @@ final class Binding {
 	 * The selector suffix for this binding's `css_prop` rule (e.g. " img"), or null when the property is
 	 * rendered on the block root. Inline only.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string|null
 	 */
@@ -491,7 +491,7 @@ final class Binding {
 	 * than its saved markup, and otherwise {@see self::css_selector()}, which is the right answer whenever
 	 * the two render paths agree. Inline only.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string|null
 	 */
@@ -506,7 +506,7 @@ final class Binding {
 	 * or null when the binding drives the block's resting appearance. Its presence is what marks a binding as
 	 * a state binding — see {@see self::CSS_STATE} for what that changes. Inline only.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string|null
 	 */
@@ -521,7 +521,7 @@ final class Binding {
 	 * editor markup paints a different element than its saved markup, and otherwise {@see self::css_state()},
 	 * which is right whenever the two render paths agree. Inline only.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string|null
 	 */
@@ -536,7 +536,7 @@ final class Binding {
 	 * when the property cannot be overridden on such a preset. Separate from css_prop(), which the
 	 * block-default projector reads for token references.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string|null
 	 */
@@ -551,7 +551,7 @@ final class Binding {
 	 * or null for a resting property. Read only by the class-preset override layer; `is_state()` ignores it,
 	 * so the property keeps its slot retarget for the $default.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string|null
 	 */
@@ -564,7 +564,7 @@ final class Binding {
 	/**
 	 * The editor twin of theme_state().
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string|null
 	 */
@@ -578,7 +578,7 @@ final class Binding {
 	 * Whether this binding scopes its property to a UI state rather than to the block's resting appearance.
 	 * True exactly when it declares a `css_state`.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return bool
 	 */
@@ -591,7 +591,7 @@ final class Binding {
 	 * "kb-btn-radius"), or null when it declares none. Read by the preset projector to set that variable on a
 	 * selected preset's scope so the value can vary per preset. Inline only.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string|null
 	 */
@@ -604,7 +604,7 @@ final class Binding {
 	/**
 	 * Extract and validate the inline projection targets from a binding declaration.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string               $property The block property, for error messages.
 	 * @param array<string, mixed> $spec     The binding declaration.
@@ -639,7 +639,7 @@ final class Binding {
 	 * Breakpoint keys are checked against {@see Responsive::get_breakpoint_keys()} at registration, so a
 	 * typo fails loudly here rather than silently never capturing that device.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string               $property The property the binding is for, for error messages.
 	 * @param array<string, mixed> $spec     The binding declaration.
@@ -693,7 +693,7 @@ final class Binding {
 	 * inline_targets() on purpose: control_attr is NOT a projection target, so it must never reach
 	 * $projections (and hence effective_projections()).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string               $property The block property, for error messages.
 	 * @param array<string, mixed> $spec     The binding declaration.
@@ -721,7 +721,7 @@ final class Binding {
 	/**
 	 * Read and validate the optional composite-control axis, which must be a non-empty string when present.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string               $property The block property (for the error message).
 	 * @param array<string, mixed> $spec     The binding declaration.

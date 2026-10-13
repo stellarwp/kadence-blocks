@@ -57,7 +57,7 @@ import { TokenControlRow } from '../../token-indicators/components/TokenControlR
  * @param {number}    [props.step]         Custom tab increment.
  * @param {string}    [props.role]         'corners' or 'sides' — the control's geometry.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The control.
  */

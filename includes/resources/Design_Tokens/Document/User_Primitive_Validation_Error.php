@@ -5,26 +5,26 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Document;
 /**
  * A single invariant violation detected by User_Primitive_Document_Validator.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class User_Primitive_Validation_Error {
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
 	private string $id;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
 	private string $message;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $id      The canonical dot-path id that is corrupt.
 	 * @param string $message Human-readable description of the violation.
@@ -35,7 +35,7 @@ final class User_Primitive_Validation_Error {
 	}
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -44,7 +44,7 @@ final class User_Primitive_Validation_Error {
 	}
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */

@@ -13,19 +13,19 @@ use Throwable;
  * — when projection is fail-closed, when no adapter is registered for the block, or when the adapter
  * throws, so it is safe to run for every block on every render.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Projector {
 
 	/**
 	 * @var Token_Registry The registry the block's adapter is read from.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	private Token_Registry $registry;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Token_Registry $registry The token registry.
 	 */
@@ -36,7 +36,7 @@ final class Projector {
 	/**
 	 * Run the block's adapter over its attributes, returning the transformed attributes.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $attributes The block's attributes.
 	 * @param string               $block      The Kadence Blocks block name, e.g. "kadence/advancedheading".

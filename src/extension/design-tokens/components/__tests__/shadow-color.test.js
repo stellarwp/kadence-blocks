@@ -107,7 +107,7 @@ afterEach(() => {
  *
  * @param {Object} props Prop overrides merged over the defaults.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {void}
  */

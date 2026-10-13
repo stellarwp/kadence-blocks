@@ -29,14 +29,14 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
  * on every library switch, while the catalog (~29KB of Google font names) is static and
  * library-independent — folding it into the feed would re-send it on every save.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Localizer {
 
 	/**
 	 * The dashboard script handle the feed is attached to (registered in class-kadence-blocks-settings).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -45,7 +45,7 @@ final class Localizer {
 	/**
 	 * Script handles that receive the design-token feed when enqueued on the current screen.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string[]
 	 */
@@ -59,7 +59,7 @@ final class Localizer {
 	/**
 	 * The JS global the React app reads.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -68,7 +68,7 @@ final class Localizer {
 	/**
 	 * The JS global the font catalog is emitted under.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -79,7 +79,7 @@ final class Localizer {
 	 * (CSS vars, theme.json, block presets, selectable presets) resolve against, so the dashboard edits the library that
 	 * is actually live rather than always the default one.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Active_Token_Library_Store
 	 */
@@ -88,7 +88,7 @@ final class Localizer {
 	/**
 	 * The shared pipeline that builds a feed payload for a slug.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Feed_Assembler
 	 */
@@ -97,14 +97,14 @@ final class Localizer {
 	/**
 	 * The font catalog reader, for the page-load-only catalog global.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Font_Catalog
 	 */
 	private Font_Catalog $catalog;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Active_Token_Library_Store $active    The active-library pointer.
 	 * @param Feed_Assembler             $assembler The shared pipeline that builds a feed payload for a slug.
@@ -119,7 +119,7 @@ final class Localizer {
 	/**
 	 * Attach the feed to the dashboard bundle, when that bundle is on the page.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return void
 	 */
@@ -158,7 +158,7 @@ final class Localizer {
 	 * Attach the font catalog to the same handle, as its own inline global — built once per
 	 * page load, never rebuilt when the feed refreshes after a write.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $handle The script handle the feed was just attached to.
 	 *
@@ -184,7 +184,7 @@ final class Localizer {
 	/**
 	 * The first supported script handle enqueued on the current screen.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string|null
 	 */

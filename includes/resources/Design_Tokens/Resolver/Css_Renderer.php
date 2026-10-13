@@ -9,7 +9,7 @@ use KadenceWP\KadenceBlocks\Utils\Cast;
  * Renders an already-flattened (alias-free) DTCG value to a CSS-ready string,
  * dispatching on $type. Input is the literal produced by Token_Resolver — never an alias.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Css_Renderer {
 
@@ -37,7 +37,7 @@ final class Css_Renderer {
 	 * The resolver flattens each slot (following any alias, or preserving it as a var() reference for the
 	 * projection form) before handing the strings here.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $min       The rendered minimum-bound slot.
 	 * @param string $preferred The rendered preferred (fluid) slot.

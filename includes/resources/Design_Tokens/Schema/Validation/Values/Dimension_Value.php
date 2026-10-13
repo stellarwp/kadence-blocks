@@ -15,14 +15,14 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Validation_Error;
  * check each per-breakpoint / clamp slot. So this validator only ever sees the flat base value and needs
  * no responsive branch of its own.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Dimension_Value implements Value_Validator {
 
 	/**
 	 * Validate a dimension $value.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed  $value The decoded $value.
 	 * @param string $path  Dot-path to the value, for error reporting.

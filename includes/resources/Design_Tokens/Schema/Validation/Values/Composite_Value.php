@@ -15,14 +15,14 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Validation_Error;
  * The field => $type map comes from Token_Type::composite_fields(), so adding or reshaping a composite
  * is a data edit there, not a change here. Subclasses only name their $type.
  *
- * @since TBD
+ * @since 3.8.0
  */
 abstract class Composite_Value implements Value_Validator {
 
 	/**
 	 * The composite $type this validator covers (Token_Type::get_type_shadow()).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -31,7 +31,7 @@ abstract class Composite_Value implements Value_Validator {
 	/**
 	 * Validate a composite $value.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed  $value The decoded $value.
 	 * @param string $path  Dot-path to the value, for error reporting.

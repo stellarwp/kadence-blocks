@@ -18,7 +18,7 @@ if ( ! function_exists( 'kadence_blocks_register_design_token' ) ) {
 	 * Register before `init` priority 1: the baseline guard runs once there and does not re-validate
 	 * tokens declared later, so a token registered on a later hook skips baseline validation entirely.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $definition The token declaration. See Token_Definition::from_array().
 	 *
@@ -36,7 +36,7 @@ if ( ! function_exists( 'kadence_blocks_register_design_preset_bindings' ) ) {
 	 * Declare that a block accepts presets, plus its per-property bindings. Preset names, default and
 	 * values are document data, not declared here.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array{block: string, bindings?: array<string, array<string, mixed>>} $declaration See Preset_Bindings::from_array().
 	 *
@@ -60,7 +60,7 @@ if ( ! function_exists( 'kadence_blocks_register_design_token_adapter' ) ) {
 	 * Register any time before the block renders (e.g. on `init`): the adapter projector looks the adapter
 	 * up by block when KB assembles the block's attributes, so registration order does not matter.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Adapter_Interface $adapter The adapter to register.
 	 *
@@ -79,7 +79,7 @@ if ( ! function_exists( 'kadence_blocks_design_foundation_presets' ) ) {
 	 * accessor over the Catalog service that lists the shipped type scales and starter palettes (the
 	 * admin UI and MCP surface read it to render the picker).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return Catalog
 	 */
@@ -96,7 +96,7 @@ if ( ! function_exists( 'kadence_blocks_apply_design_foundation_preset' ) ) {
 	 * Apply a foundation-preset choice, seeding the primitive layer as store overrides. Thin readability
 	 * wrapper over Selector::apply().
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $group  The preset group key, e.g. "typeScale".
 	 * @param string $choice The preset slug within the group, e.g. "goldenRatio".
@@ -118,7 +118,7 @@ if ( ! function_exists( 'kadence_blocks_variable_font_size_scale' ) ) {
 	 * rather than being copied into each emission site. Returns an empty array when token projection is
 	 * unavailable or inactive, so callers keep their own fallback. Thin accessor over the Slot_Target_Reader.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string,string> Slug => resolved font-size value (a clamp() string by default).
 	 */
@@ -142,7 +142,7 @@ if ( ! function_exists( 'kadence_blocks_variable_spacing_scale' ) ) {
 	 * projection is unavailable or inactive, so callers keep their own fallback. Thin accessor over the
 	 * Slot_Target_Reader.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string,string> Slug => resolved spacing length.
 	 */

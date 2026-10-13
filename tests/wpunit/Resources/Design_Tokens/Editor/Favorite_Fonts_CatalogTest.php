@@ -15,28 +15,28 @@ use Tests\Support\Classes\TestCase;
 final class Favorite_Fonts_CatalogTest extends TestCase {
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Favorite_Fonts_Catalog
 	 */
 	private Favorite_Fonts_Catalog $catalog;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Store
 	 */
 	private Token_Store $store;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Active_Token_Library_Store
 	 */
 	private Active_Token_Library_Store $active;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Favorite_Font_Index
 	 */
@@ -59,7 +59,7 @@ final class Favorite_Fonts_CatalogTest extends TestCase {
 	/**
 	 * The custom-fonts callback a test registered, so tearDown can remove exactly that one.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var callable|null
 	 */

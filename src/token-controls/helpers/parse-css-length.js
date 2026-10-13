@@ -20,7 +20,7 @@ const CSS_LENGTH_PATTERN = /^([+-]?\d*\.?\d+)(px|em|rem|%)?$/;
  *
  * @param {*} value The literal to parse (e.g. `'0.5rem'`, `'6px'`, `'50%'`, `'0'`, `12`).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {?{size: number, unit: string}} `{ size, unit }` when the value is a well-formed CSS
  * length (`unit` is `''` for a unitless number or `'0'`); `null` when the value cannot be parsed

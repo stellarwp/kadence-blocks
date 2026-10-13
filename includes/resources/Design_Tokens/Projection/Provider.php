@@ -10,14 +10,14 @@ use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provi
  * Each projector lives in its own sub-namespace (Css_Var, Preset, …) with its own Provider,
  * keeping bindings and hook registrations isolated per target format. This provider boots them.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Provider extends Provider_Contract {
 
 	/**
 	 * Projector-specific providers to register, in order.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var class-string<Provider_Contract>[]
 	 */
@@ -34,7 +34,7 @@ final class Provider extends Provider_Contract {
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	public function register(): void {
 		// The shared collection each CSS projector's provider adds itself to; bound before the sub-providers so

@@ -14,7 +14,7 @@ use Tests\Support\Classes\SnapshotTestCase;
  * Snapshot the exact admin UI feed payload so any format change is an explicit, reviewable diff — the
  * regression guard that "register a token => it reaches the feed" stays true.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Builder_SnapshotTest extends SnapshotTestCase {
 
@@ -27,7 +27,7 @@ final class Builder_SnapshotTest extends SnapshotTestCase {
 	}
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	public function testFullPayloadMatchesSnapshot(): void {
 		$tokens = [

@@ -62,7 +62,7 @@ describe('PresetGrid', () => {
 	 *
 	 * @param {Object} props The props to override.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return {HTMLElement} The container the grid was rendered into.
 	 */

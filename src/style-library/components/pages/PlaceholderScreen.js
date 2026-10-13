@@ -19,7 +19,7 @@ import './PlaceholderScreen.scss';
  * @param {Object} props       The component props.
  * @param {string} props.label The active screen's nav label.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The placeholder screen.
  */

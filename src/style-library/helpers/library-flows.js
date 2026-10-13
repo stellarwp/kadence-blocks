@@ -32,7 +32,7 @@ import { isDefaultLibrary, isDuplicateLibraryName, slugifyLibraryTitle } from '.
  *
  * @param {*} error The rejected value from an `apiFetch` call.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} A user-facing message.
  */
@@ -55,7 +55,7 @@ export function errorMessage(error) {
  * @param {Function} args.onBusy         Called with a boolean as the request starts and settles.
  * @param {Function} args.onError        Called with `{ message }` on failure.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Promise<void>} Resolves once the feed refresh completes; rejects on failure, after
  *                          `onError`/`onBusy` have already run.
@@ -105,7 +105,7 @@ export function openLibraryFlow({ slug, refreshFeed, resetWorkspace, onBusy, onE
  * @param {Function} args.onError     Called with `{ message }` on failure.
  * @param {Function} args.onActivated Called with the slug the server resolved as active.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Promise<void>} Resolves once the pointer has moved; rejects on failure, after
  *                          `onError`/`onBusy` have already run.
@@ -145,7 +145,7 @@ export function activateLibraryFlow({ slug, onBusy, onError, onActivated }) {
  * @param {Function}      args.onBusy        Called with a boolean as the request starts and settles.
  * @param {Function}      args.onError       Called with `{ message }` on failure or invalid input.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Promise<void>} Resolves once the library is created, opened, and the list is
  *                          refreshed; rejects on an invalid title, a duplicate title, or a
@@ -199,7 +199,7 @@ export function createLibraryFlow({ title, libraries, openLibrary, loadLibraries
  * @param {Function}      args.onBusy        Called with a boolean as the request starts and settles.
  * @param {Function}      args.onError       Called with `{ message }` on failure or invalid input.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Promise<void>} Resolves once the rename and the list refresh complete; rejects on an
  *                          empty or duplicate name, or a request failure, after `onError` has run.
@@ -264,7 +264,7 @@ export function renameLibraryFlow({ slug, title, libraries, loadLibraries, onBus
  * @param {Function} args.onError                 Called with `{ message }` on failure.
  * @param {Function} args.onActiveChanged         Called with the slug that ends up active, when it moves.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Promise<void>} Resolves once the delete (and any activation and feed refresh it
  *                          entails) completes; rejects on failure, after `onError` has run.

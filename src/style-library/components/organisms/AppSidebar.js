@@ -22,7 +22,7 @@ import './AppSidebar.scss';
  * @param {string}                                                              props.activeId        The active screen id from the route.
  * @param {Function}                                                            props.onNavigate      Called with a screen id when an item is clicked.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The sidebar.
  */

@@ -20,33 +20,33 @@ use WP_REST_Server;
  * its narrowed write path, the never-hides-a-token merge guarantee, and the version-conditional
  * guard.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class DocumentsControllerOrderTest extends TestCase {
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Store
 	 */
 	private Token_Store $store;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Documents_Controller
 	 */
 	private Documents_Controller $controller;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Order_Index
 	 */
 	private Token_Order_Index $order_index;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Registry
 	 */
@@ -56,7 +56,7 @@ final class DocumentsControllerOrderTest extends TestCase {
 	 * The full ordered id list registered under self::GROUP, discovered fresh per test so the
 	 * fixture stays correct regardless of which baseline tokens actually declare that group.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var list<string>
 	 */

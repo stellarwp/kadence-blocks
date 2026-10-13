@@ -49,7 +49,7 @@ import './BoxTokenField.scss';
  * @param {*}      value    A scalar or slot list of stored values.
  * @param {string} fallback The unit to assume when nothing carries one yet.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The unit in play.
  */
@@ -72,7 +72,7 @@ function unitInPlay(value, fallback) {
  *
  * @param {*} slot The stored slot value.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True when the slot is bound to a semantic.
  */
@@ -94,7 +94,7 @@ export function isSemanticSlot(slot) {
  *
  * @param {*} value The stored scalar or slot list.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {*} The value with semantic slots blanked, in the same shape.
  */
@@ -126,7 +126,7 @@ export function withoutSemanticSlots(value) {
  * @param {Array} everyToken   The full token pool, before any role narrowing, used to resolve an id.
  * @param {*}     fieldDefault The field's own declared default, for the corners that bind no semantic.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {*} The resolved default, in the value's shape, or null when no slot binds a semantic.
  */
@@ -151,7 +151,7 @@ export function semanticDefaultOf(value, everyToken, fieldDefault = null) {
  *
  * @param {*} stored The stored slot value.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {*} The control-shaped value.
  */
@@ -176,7 +176,7 @@ export function toControlValue(stored) {
  * @param {*}      next The control-shaped value: an alias, a number, or ''.
  * @param {string} unit The unit to rejoin a bare number with.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {*} The stored value.
  */
@@ -214,7 +214,7 @@ export function toStoredValue(next, unit) {
  * @param {string} unit  The unit currently in play.
  * @param {Object} field The field definition, whose own bounds win when given.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{min: number, max: number, step: number}} The bounds for this unit.
  */
@@ -243,7 +243,7 @@ function boundsForUnit(unit, field) {
  *
  * @param {*} value The stored scalar or slot list.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array<string>} The bound primitive token ids, empty when nothing is bound.
  */
@@ -259,7 +259,7 @@ export function boundTokenIds(value) {
  * @param {*}        value   The scalar or slot list.
  * @param {Function} convert The per-slot converter.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {*} The converted value, in the same shape.
  */
@@ -287,7 +287,7 @@ function mapSlots(value, convert) {
  * @param {*}      atBreakpoint The resolved value at the active breakpoint, used to exempt any
  *                               already-bound token from the primitive narrowing.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array} The pickable-token list.
  */
@@ -329,7 +329,7 @@ export function tokensForField(field, atBreakpoint) {
  * @param {Function} props.onChange         Called with the next stored value.
  * @param {string}   [props.slots]          'corners' or 'sides' — the control's geometry.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The field.
  */

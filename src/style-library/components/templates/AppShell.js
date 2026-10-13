@@ -21,7 +21,7 @@ import { ScreenHeaderSlot, ScreenHeaderSlotProvider } from '../organisms/ScreenH
  *                                            busy scrim, for a change that replaces the app's
  *                                            whole content rather than one region of it.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The shell.
  */

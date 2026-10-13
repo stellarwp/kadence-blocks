@@ -31,7 +31,7 @@ describe('useLoadingAnnouncement', () => {
 	 * Mount `useLoadingAnnouncement` behind a single probe component type, so a re-render updates
 	 * the mounted hook (and its `isLoading` transition) rather than remounting it.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return {{rerender: Function}} Re-renders the mounted probe with new props.
 	 */
@@ -49,7 +49,7 @@ describe('useLoadingAnnouncement', () => {
 	/**
 	 * Find the live-region node this hook appends directly to `document.body`.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return {?Element} The node, or null if none is mounted.
 	 */

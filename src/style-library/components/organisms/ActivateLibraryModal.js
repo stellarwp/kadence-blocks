@@ -29,7 +29,7 @@ import './ActivateLibraryModal.scss';
  * @param {Function}           props.onClose      Called to dismiss the modal.
  * @param {Function}           props.onConfirm    Called to activate the library.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The modal.
  */

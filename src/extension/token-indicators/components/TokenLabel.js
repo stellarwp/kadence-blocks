@@ -21,7 +21,7 @@ import { TokenIndicator } from './TokenIndicator';
  * @param {Function} [props.onReset]   Called with `attr` to reset that control's override (with `showReset`).
  * @param {boolean}  [props.showReset] Whether to render the reset icon / matching mark inline (default false).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The label node.
  */

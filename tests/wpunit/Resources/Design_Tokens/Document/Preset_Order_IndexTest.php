@@ -10,7 +10,7 @@ use Tests\Support\Classes\TestCase;
 /**
  * Covers the presetOrder per-block ordered-slug-list read/write operations of Preset_Order_Index.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Preset_Order_IndexTest extends TestCase {
 
@@ -19,7 +19,7 @@ final class Preset_Order_IndexTest extends TestCase {
 	/**
 	 * The index under test.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Preset_Order_Index
 	 */

@@ -18,14 +18,14 @@ use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provi
  * section, the shared feed-assembly pipeline, and the localizer as singletons, then hooks the
  * localizer onto admin_head so the dashboard bundle receives window.kadenceDesignTokens.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Provider extends Provider_Contract {
 
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	public function register(): void {
 		$this->container->singleton( Builder::class );

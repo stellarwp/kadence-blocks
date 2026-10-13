@@ -10,7 +10,7 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Theme_Style_Guide\Contracts;
  * Picking the active palette set and turning it into token values is the mapper's job, so that
  * logic stays unit-testable without a theme.
  *
- * @since TBD
+ * @since 3.8.0
  */
 interface Style_Guide_Source {
 
@@ -18,7 +18,7 @@ interface Style_Guide_Source {
 	 * The theme's Style Guide as raw data, or null when the source is not available (the Kadence theme is
 	 * not active), so callers can tell "nothing to read" from "read, but empty".
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array{palette: array<string, mixed>, settings: array<string, mixed>}|null
 	 */

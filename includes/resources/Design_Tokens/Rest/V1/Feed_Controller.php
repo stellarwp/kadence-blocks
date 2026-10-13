@@ -24,14 +24,14 @@ use WP_REST_Server;
  * decides what "the feed for a slug" means — so a switched library can never render differently
  * from a freshly loaded one.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Feed_Controller extends Controller {
 
 	/**
 	 * The request parameter that carries the token library slug.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -41,7 +41,7 @@ final class Feed_Controller extends Controller {
 	 * The slug path segment. Built from SLUG_PARAM so the named capture and the read parameter
 	 * never drift apart.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -50,7 +50,7 @@ final class Feed_Controller extends Controller {
 	/**
 	 * The sole gateway to the kb_design_tokens table, used to validate the requested slug exists.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Store
 	 */
@@ -59,7 +59,7 @@ final class Feed_Controller extends Controller {
 	/**
 	 * The shared pipeline that builds a feed payload for a slug.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Feed_Assembler
 	 */
@@ -68,14 +68,14 @@ final class Feed_Controller extends Controller {
 	/**
 	 * Memoized item schema for this request. Null until first built.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var array<string, mixed>|null
 	 */
 	private ?array $item_schema = null;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Token_Store    $store     The sole gateway to the kb_design_tokens table.
 	 * @param Feed_Assembler $assembler The shared pipeline that builds a feed payload for a slug.
@@ -89,7 +89,7 @@ final class Feed_Controller extends Controller {
 	/**
 	 * Register the read route for the feed resource.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return void
 	 */
@@ -116,7 +116,7 @@ final class Feed_Controller extends Controller {
 	 * a 404 — mirroring the sibling document routes rather than silently falling back to a
 	 * different library than the one requested.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -142,7 +142,7 @@ final class Feed_Controller extends Controller {
 	/**
 	 * The JSON Schema for the feed payload.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -236,7 +236,7 @@ final class Feed_Controller extends Controller {
 	/**
 	 * The arguments for the read route: the target slug path parameter.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, mixed>
 	 */

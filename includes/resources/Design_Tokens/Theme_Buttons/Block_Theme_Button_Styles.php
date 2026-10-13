@@ -22,14 +22,14 @@ use WP_Theme_JSON_Resolver;
  * wrapper the Button block does not have. Its tokens are the theme base values with the variation's own on
  * top, so a property the variation leaves unset follows the theme's button rather than the plugin's Default.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Block_Theme_Button_Styles implements Button_Style_Source {
 
 	/**
 	 * The classes the theme's global styles paint a button with.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -38,7 +38,7 @@ final class Block_Theme_Button_Styles implements Button_Style_Source {
 	/**
 	 * The preset properties in the order they are listed, whichever order theme.json declares them in.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string[]
 	 */
@@ -58,7 +58,7 @@ final class Block_Theme_Button_Styles implements Button_Style_Source {
 	/**
 	 * The sides of a padding object, in slot order.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string[]
 	 */
@@ -67,7 +67,7 @@ final class Block_Theme_Button_Styles implements Button_Style_Source {
 	/**
 	 * The corners of a radius object, in slot order.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string[]
 	 */
@@ -76,7 +76,7 @@ final class Block_Theme_Button_Styles implements Button_Style_Source {
 	/**
 	 * Returns the theme's own `styles` array. Null resolves to the theme.json resolver at read time.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var callable|null
 	 */
@@ -85,7 +85,7 @@ final class Block_Theme_Button_Styles implements Button_Style_Source {
 	/**
 	 * Returns the merged `styles` array the page renders. Null resolves to the theme.json resolver at read time.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var callable|null
 	 */
@@ -95,14 +95,14 @@ final class Block_Theme_Button_Styles implements Button_Style_Source {
 	 * Returns the `style_data` of each block style registered for core/button, keyed by style name. Null
 	 * resolves to the block styles registry at read time.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var callable|null
 	 */
 	private $registered_data;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param callable|null $theme_data      Returns the theme's own `styles` array; tests hand in a fixture.
 	 * @param callable|null $merged_data     Returns the merged `styles` array; tests hand in a fixture.
@@ -117,7 +117,7 @@ final class Block_Theme_Button_Styles implements Button_Style_Source {
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	public function styles(): array {
 		$theme    = $this->theme_styles();
@@ -185,7 +185,7 @@ final class Block_Theme_Button_Styles implements Button_Style_Source {
 	 * Null when the variation paints a real gradient and sets no background: a preset has no gradient
 	 * property, and the theme base's solid background in its place would be a look the theme never defined.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $variation The merged variation data.
 	 *
@@ -212,7 +212,7 @@ final class Block_Theme_Button_Styles implements Button_Style_Source {
 	 * Whether a gradient is the "transparent none" (or "none", or "transparent") core writes to take a
 	 * button's background away, as opposed to a real gradient the button would paint.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $gradient The variation's gradient, as CSS.
 	 *
@@ -227,7 +227,7 @@ final class Block_Theme_Button_Styles implements Button_Style_Source {
 	 * preset field, a gradient and custom css have no binding, and the focus, active and visited states have
 	 * no counterpart, so they are not read.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $node The style node: the button element, the button block or a variation.
 	 *
@@ -282,7 +282,7 @@ final class Block_Theme_Button_Styles implements Button_Style_Source {
 	 * A one-value-or-per-slot setting as four slots: a string fills every slot, an object needs every slot
 	 * set. Null when the setting is absent or partial.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed    $setting The theme.json value.
 	 * @param string[] $keys    The object keys, in slot order.
@@ -320,7 +320,7 @@ final class Block_Theme_Button_Styles implements Button_Style_Source {
 	 * The v3 `var:preset|<group>|<slug>` shorthand becomes the variable core writes for it at CSS time, so a
 	 * value stored from here is always valid CSS.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed $value The theme.json value.
 	 *
@@ -343,7 +343,7 @@ final class Block_Theme_Button_Styles implements Button_Style_Source {
 	/**
 	 * A value map in the listing order.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $values The values, in reading order.
 	 *
@@ -357,7 +357,7 @@ final class Block_Theme_Button_Styles implements Button_Style_Source {
 	 * The theme's own `styles`, empty on a theme without theme.json so a classic theme is never read, and
 	 * without the core/button variations only the block styles registry supplies.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -378,7 +378,7 @@ final class Block_Theme_Button_Styles implements Button_Style_Source {
 	 * data carries the `style_data` of each registered block style, with the theme's own data for that name
 	 * merged on top, so a variation equal to its registered data came from the registry alone.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $styles The theme data's `styles`.
 	 *
@@ -424,7 +424,7 @@ final class Block_Theme_Button_Styles implements Button_Style_Source {
 	 * The `style_data` of each block style registered for core/button, keyed by style name. A style without
 	 * it maps to an empty array, since WordPress copies nothing of it into the theme data.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -445,7 +445,7 @@ final class Block_Theme_Button_Styles implements Button_Style_Source {
 	/**
 	 * The merged `styles` the page renders: core, the theme and the user's Global Styles.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -460,7 +460,7 @@ final class Block_Theme_Button_Styles implements Button_Style_Source {
 	/**
 	 * A raw `styles` section narrowed to an array.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed $styles The section.
 	 *
@@ -473,7 +473,7 @@ final class Block_Theme_Button_Styles implements Button_Style_Source {
 	/**
 	 * The array under a key, empty when the key is missing or holds a scalar.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $node The parent.
 	 * @param string               $key  The key.

@@ -15,7 +15,7 @@ import { parseDimensionLiteral } from './dimension';
  * The order `EditorBorderControl`'s native shape stores per-side tuples in, and the index each axis
  * occupies within a side's `[color, style, size]` tuple.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @type {string[]}
  */
@@ -24,7 +24,7 @@ export const BORDER_SIDES = ['top', 'right', 'bottom', 'left'];
 /**
  * The index within a side's `[color, style, size]` tuple for each border axis kind.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @type {Object<string, number>}
  */
@@ -44,7 +44,7 @@ export const BORDER_AXIS_INDEX = {
  *
  * @param {*} value The stored `borderStyle`-shaped attribute value.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object|null} The native source object, or null when never written.
  */
@@ -73,7 +73,7 @@ function borderSource(value) {
  * @param {*}      size The side's stored width slot.
  * @param {string} unit The border's shared unit (`source.unit`, defaulting to 'px').
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The width literal, or '' when the slot is unset.
  */
@@ -94,7 +94,7 @@ function borderWidthLiteral(size, unit) {
  * @param {Object} source      The native border source object (`value[0]`), already confirmed non-null.
  * @param {string} presetValue The preset's resolved literal for this axis.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True when every side's axis value equals the preset value.
  */
@@ -144,7 +144,7 @@ function matchesBorderAxis(kind, source, presetValue) {
  *
  * @param {*} value The stored primary attribute value.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True when the value is unset/empty.
  */
@@ -160,7 +160,7 @@ export function isEmpty(value) {
  * @param {string} unit        Unused for border kinds (the shared unit lives on the stored value itself).
  * @param {string} presetValue The preset's resolved literal for this axis.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True when the stored value matches the preset value.
  */

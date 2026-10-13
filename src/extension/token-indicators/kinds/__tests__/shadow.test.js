@@ -10,7 +10,7 @@ import { isEmptyValue, matchesPreset } from '../../normalize';
  * The block default `kadence/image` ships for `boxShadow`: a visible shadow, kept out of the page by a
  * separate flag.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @type {Array}
  */

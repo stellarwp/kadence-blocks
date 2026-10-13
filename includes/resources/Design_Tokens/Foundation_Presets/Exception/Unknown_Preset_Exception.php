@@ -9,14 +9,14 @@ use RuntimeException;
  * or when a preset references a primitive the baseline carries no $type for (a programming error: the
  * shipped presets only ever target shipped primitives).
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Unknown_Preset_Exception extends RuntimeException {
 
 	/**
 	 * No such preset group (e.g. "typeScale").
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $group The requested group key.
 	 *
@@ -29,7 +29,7 @@ final class Unknown_Preset_Exception extends RuntimeException {
 	/**
 	 * No such preset within an existing group.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $group  The group key.
 	 * @param string $choice The requested preset slug.
@@ -43,7 +43,7 @@ final class Unknown_Preset_Exception extends RuntimeException {
 	/**
 	 * A preset token targets a dot-path the baseline carries no concrete $type for.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $dot_path The token dot-path.
 	 *

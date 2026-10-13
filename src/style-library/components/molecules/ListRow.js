@@ -48,7 +48,7 @@ import './ListRow.scss';
  * @param {Object}        [props.wrapperStyle]   The `dnd-kit` drag transform/transition style for the
  *                                               row's root element, supplied by the sortable wrapper.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The row.
  */

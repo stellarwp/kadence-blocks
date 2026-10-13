@@ -35,7 +35,7 @@ use InvalidArgumentException;
  * intentionally distinct from `label` — that names the picker CONTROL rendered inside the block
  * inspector, not the block itself, so it is the wrong string to show as a nav entry.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Preset_Bindings {
 
@@ -43,7 +43,7 @@ final class Preset_Bindings {
 	 * The coarse input kind for a length-valued property — the only kind a per-corner slot list is
 	 * meaningful for.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -52,7 +52,7 @@ final class Preset_Bindings {
 	/**
 	 * The coarse input kind for a color-valued property.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -61,7 +61,7 @@ final class Preset_Bindings {
 	/**
 	 * The fallback kind for a property that classifies as neither a dimension nor a color.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -70,7 +70,7 @@ final class Preset_Bindings {
 	/**
 	 * The coarse input kind for a shadow-valued property.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -79,7 +79,7 @@ final class Preset_Bindings {
 	/**
 	 * The block name, e.g. "kadence/singlebtn".
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -89,7 +89,7 @@ final class Preset_Bindings {
 	 * The block's bindable surface, keyed by property name — the union of properties any preset may
 	 * control. Shared by every preset; a preset defines values for any subset of these.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var array<string, Binding>
 	 */
@@ -99,7 +99,7 @@ final class Preset_Bindings {
 	 * The editor picker's control label (e.g. "Style"), or null for preset bindings that show no picker.
 	 * Names the CONTROL, not a preset.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string|null
 	 */
@@ -113,7 +113,7 @@ final class Preset_Bindings {
 	 * bindings are meant to style — e.g. a wrapper `<div>` around the real rendered element — so the
 	 * front-end selector would land the rule on the wrong node in the editor canvas.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string|null
 	 */
@@ -124,7 +124,7 @@ final class Preset_Bindings {
 	 * outranks every rule the theme or the plugin stylesheet writes for a preset's class, e.g.
 	 * ".kb-button.kb-button.kb-button", or null when the block declares none.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string|null
 	 */
@@ -134,7 +134,7 @@ final class Preset_Bindings {
 	 * The editor twin of {@see self::$class_preset_weight}, appended as a descendant of the block wrapper,
 	 * e.g. ".kt-button.kt-button.kt-button.kt-button", or null when the block declares none.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string|null
 	 */
@@ -147,14 +147,14 @@ final class Preset_Bindings {
 	 * control's `$label`, which names the inspector control, not the block); a later per-block
 	 * settings-field schema is expected to add sibling keys here without a breaking change.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var array{label?: string}|null
 	 */
 	public ?array $style_library;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string                     $block           The block name.
 	 * @param array<string, Binding>     $bindings        The block's bindable surface, keyed by property.
@@ -179,7 +179,7 @@ final class Preset_Bindings {
 	/**
 	 * Build a preset bindings object from its declaration array.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $declaration The declaration: "block", optional "bindings" (property =>
 	 *                                  {@see Binding::from_array()}), optional "label" (the picker control
@@ -215,7 +215,7 @@ final class Preset_Bindings {
 	/**
 	 * The binding for a property, or null when the set declares none.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $property The block property, e.g. "button-bg".
 	 *
@@ -233,7 +233,7 @@ final class Preset_Bindings {
 	 * cannot reach output and are the harmful case; "unvalued" are bindings no preset ever sets — dead
 	 * wiring. Well-formed preset bindings report neither.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string[] $value_properties Properties set by the block's presets in the document.
 	 *
@@ -254,7 +254,7 @@ final class Preset_Bindings {
 	 * are NOT here — those are document data read through the Preset_Resolver. Mirrors
 	 * {@see Token_Registry::to_ui_schema()}.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array{bindings: array<string, array{token: string|null, projections: array<string, mixed>}>}
 	 */
@@ -275,7 +275,7 @@ final class Preset_Bindings {
 	 * The coarse input kind for a length-valued property, the one kind a per-corner slot list is valid
 	 * for. Read by the REST write guard, which cannot compare against the constant directly.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -287,7 +287,7 @@ final class Preset_Bindings {
 	 * The coarse input kind for a shadow-valued property. Read by the editor's token-picker lookup,
 	 * which cannot compare against the constant directly.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -302,7 +302,7 @@ final class Preset_Bindings {
 	 * `semantic.shadow.button` => "shadow"), otherwise inferred from the property name (e.g. `button-bg` =>
 	 * "color", `button-radius` => "dimension"). Falls back to "text".
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $property The bound property, e.g. "button-bg".
 	 *
@@ -330,7 +330,7 @@ final class Preset_Bindings {
 	 * declaration has no "style_library" section or leaves "label" empty. Distinct from
 	 * {@see self::$label}, which names the picker CONTROL rather than the block.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string|null
 	 */
@@ -343,7 +343,7 @@ final class Preset_Bindings {
 	/**
 	 * Build the property => Binding map from a declaration's "bindings".
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $block    The block name, for error messages.
 	 * @param mixed  $declared The declared "bindings" value.
@@ -381,7 +381,7 @@ final class Preset_Bindings {
 	 * malformed section yields null rather than throwing, since it is optional and its absence must
 	 * not block registration of the block's preset bindings.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed $declared The declared "style_library" value.
 	 *
@@ -405,7 +405,7 @@ final class Preset_Bindings {
 	 * Parse an optional class-preset weight: a trimmed compound, or null when omitted or empty. Trimmed so
 	 * the scope builder alone decides whether the weight compounds on the element or descends from it.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed $declared The declared weight.
 	 *
@@ -427,7 +427,7 @@ final class Preset_Bindings {
 	 * the other lists; dimension is checked before color so "borderRadius" resolves to "dimension" rather
 	 * than matching the "border" color term.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $term The term to classify.
 	 *

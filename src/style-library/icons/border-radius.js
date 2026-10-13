@@ -6,7 +6,7 @@ import { SVG, Path } from '@wordpress/primitives';
 /**
  * A rounded corner, for the Border Radius screen.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const borderRadius = (
 	<SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">

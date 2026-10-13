@@ -96,7 +96,7 @@ afterEach(() => {
  *
  * @param {Object} props The component props.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {void}
  */
@@ -128,7 +128,7 @@ describe('ColorSelectField gradient chip', () => {
 	 *
 	 * @param {Object} props The component props.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return {string} The rendered markup.
 	 */

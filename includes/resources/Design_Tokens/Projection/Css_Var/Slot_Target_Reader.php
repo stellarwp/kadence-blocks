@@ -21,7 +21,7 @@ use Throwable;
  * Fails open to an empty array when the registry is inactive or a stored document cannot be resolved, so a
  * caller keeps its own fallback and a broken token store never suppresses KB's own scale.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Slot_Target_Reader {
 
@@ -39,14 +39,14 @@ final class Slot_Target_Reader {
 	 * Owns the active-library pointer, so the scale follows the active library (e.g. a switched palette) the
 	 * same way the projected CSS does.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Active_Token_Library_Store
 	 */
 	private Active_Token_Library_Store $active;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Token_Registry             $registry
 	 * @param Token_Resolver             $resolver
@@ -61,7 +61,7 @@ final class Slot_Target_Reader {
 	/**
 	 * The resolved scale for a slot family as a slug => value map.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $target_class The slot target defining the family's projection key, shipped slugs and
 	 *                             backing primitive ids.

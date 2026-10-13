@@ -21,14 +21,14 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary;
  * The responsive_of() / clamp_of() readers are the single seam every consumer goes through, so old and
  * new leaf shapes are interpreted identically in one place.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Responsive {
 
 	/**
 	 * The key carrying the per-breakpoint (stepped) override map.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -37,7 +37,7 @@ final class Responsive {
 	/**
 	 * The tablet (max-width) breakpoint override key inside the responsive map.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -46,7 +46,7 @@ final class Responsive {
 	/**
 	 * The mobile (max-width) breakpoint override key inside the responsive map.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -55,7 +55,7 @@ final class Responsive {
 	/**
 	 * The key carrying the structured fluid-clamp shape.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -64,7 +64,7 @@ final class Responsive {
 	/**
 	 * The clamp minimum-bound slot key.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -73,7 +73,7 @@ final class Responsive {
 	/**
 	 * The clamp preferred (fluid) slot key; carries a calc-style expression.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -82,7 +82,7 @@ final class Responsive {
 	/**
 	 * The clamp maximum-bound slot key.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -91,7 +91,7 @@ final class Responsive {
 	/**
 	 * The key carrying the per-breakpoint override map.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -102,7 +102,7 @@ final class Responsive {
 	/**
 	 * The tablet breakpoint override key.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -113,7 +113,7 @@ final class Responsive {
 	/**
 	 * The mobile breakpoint override key.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -124,7 +124,7 @@ final class Responsive {
 	/**
 	 * The breakpoint override keys, in cascade order (tablet, then mobile).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string[]
 	 */
@@ -135,7 +135,7 @@ final class Responsive {
 	/**
 	 * The key carrying the structured fluid-clamp shape.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -146,7 +146,7 @@ final class Responsive {
 	/**
 	 * The clamp minimum-bound slot key.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -157,7 +157,7 @@ final class Responsive {
 	/**
 	 * The clamp preferred (fluid) slot key.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -168,7 +168,7 @@ final class Responsive {
 	/**
 	 * The clamp maximum-bound slot key.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -181,7 +181,7 @@ final class Responsive {
 	 * types are responsive-capable; single-value types (fontFamily / fontWeight / fontStyle /
 	 * textTransform / borderStyle) and composites are not.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $type The token $type.
 	 *
@@ -197,7 +197,7 @@ final class Responsive {
 	 * shape returns the raw value so the validator can reject it; readers should treat non-array as
 	 * "no overrides".
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $leaf The decoded token leaf.
 	 *
@@ -213,7 +213,7 @@ final class Responsive {
 	 * The structured clamp map for a leaf, or null when absent. A present-but-non-array shape returns
 	 * the raw value so the validator can reject it.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $leaf The decoded token leaf.
 	 *
@@ -228,7 +228,7 @@ final class Responsive {
 	/**
 	 * Whether the leaf declares a responsive (stepped) shape.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $leaf The decoded token leaf.
 	 *
@@ -241,7 +241,7 @@ final class Responsive {
 	/**
 	 * Whether the leaf declares a structured clamp shape.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $leaf The decoded token leaf.
 	 *
@@ -256,7 +256,7 @@ final class Responsive {
 	 * when the leaf carries no such extension. The shared internal accessor behind the responsive_of() /
 	 * clamp_of() / has_responsive() / has_clamp() readers, which are the seam every consumer goes through.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $leaf The decoded token leaf.
 	 *

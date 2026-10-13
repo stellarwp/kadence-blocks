@@ -83,7 +83,7 @@ const ATTRIBUTES = {
  * A fake CSS builder recording every selector and declaration the component adds, so a test can read
  * the rule body emitted under one selector.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{set_selector: Function, add_property: Function, add_raw_styles: Function, render_color:
  *   Function, render_measure_output: Function, css_output: Function, rules: Array}} The fake builder.
@@ -118,7 +118,7 @@ function createFakeCss() {
  * @param {Array}  rules    The fake builder's recorded rules.
  * @param {string} selector The selector to read.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string[]} The declared property names.
  */
@@ -131,7 +131,7 @@ function propertiesFor(rules, selector) {
  *
  * @param {string} kbPreset The block's `kbPreset` attribute.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array} The fake builder's recorded rules.
  */

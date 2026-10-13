@@ -46,7 +46,7 @@ import { useDraftChannel } from '../../hooks/use-draft-channel';
  * @param {Function}      props.onClearOpenError   Dismisses the current open error.
  * @param {Function}      props.onClearCreateError Dismisses the current create error.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The selector, and, while open, the create-library modal.
  */

@@ -37,7 +37,7 @@ const SlotContext = createContext();
  * @param {Object}      props          The component props.
  * @param {JSX.Element} props.children The tree that holds both the slot and the screens.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The provider.
  */
@@ -51,7 +51,7 @@ export function ScreenHeaderSlotProvider({ children }) {
 /**
  * Render the slot the active screen's header fills.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The slot.
  */
@@ -72,7 +72,7 @@ export function ScreenHeaderSlot() {
  * @param {?JSX.Element} [props.primaryAction]      The primary "+ Add …" button slot.
  * @param {?JSX.Element} [props.description]        The screen's helper copy, rendered after the header block.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The header block.
  */

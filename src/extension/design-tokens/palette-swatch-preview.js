@@ -41,7 +41,7 @@ const CANVAS_SELECTOR = '.editor-styles-wrapper';
  * The library `$current` palette id from the server-localized catalog, defaulting to 'default'. Used to hold the
  * canvas on the active palette while the inspector previews another.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The current palette id.
  */
@@ -55,7 +55,7 @@ function currentPaletteId() {
  * The selected block's effective palette id: its own `kbPalette`, else the nearest ancestor's — mirroring the
  * projector's `[data-kb-palette]` cascade to descendants — else '' when no block is selected or none is pinned.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The effective palette id, or '' when there is no override to preview.
  */
@@ -93,7 +93,7 @@ export function effectivePalette() {
  * @param {Element} el The element to stamp.
  * @param {string}  id The palette id ('' removes the attribute).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {void}
  */
@@ -120,7 +120,7 @@ function reflect(el, id) {
  *
  * @param {string} id The effective palette id ('' clears the override so swatches follow the set `$current`).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {void}
  */
@@ -146,7 +146,7 @@ export function applyPalettePreview(id) {
  * preview that palette's colors through the projector's existing switch layer. Applies once immediately, then on
  * every block-editor store change. Returns the unsubscribe handle.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Function} The unsubscribe function.
  */

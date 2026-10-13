@@ -23,7 +23,7 @@ import { tokenCssVar } from '../helpers/token-css-var';
  * @param {?string} [value]      A raw literal (hex/rgba), used only when `entry` is null — a
  *                                Custom-tab pick with no backing token entry.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{background: string}} The swatch's inline style.
  */
@@ -52,7 +52,7 @@ export function colorSwatchStyle(entry, value) {
  * @param {?Object} props.entry The swatch's token entry (`{ id, label, value, alias }`), or null.
  * @param {?string} [props.value] A raw literal, used only when `entry` is null.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The rendered swatch.
  */

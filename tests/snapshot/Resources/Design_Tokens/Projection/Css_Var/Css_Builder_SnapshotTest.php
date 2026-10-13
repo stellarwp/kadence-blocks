@@ -12,7 +12,7 @@ use Tests\Support\Classes\SnapshotTestCase;
 /**
  * Snapshot the exact CSS output of Css_Builder so any format change is an explicit, reviewable diff.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Css_Builder_SnapshotTest extends SnapshotTestCase {
 
@@ -29,7 +29,7 @@ final class Css_Builder_SnapshotTest extends SnapshotTestCase {
 	}
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	public function testFullOutputMatchesSnapshot(): void {
 		$this->registry->register(

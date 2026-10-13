@@ -16,14 +16,14 @@ import { createContext, useCallback, useContext, useMemo, useRef, useState } fro
  * registers does not re-render every time another card registers. `null` with no provider mounted,
  * where registering is a no-op.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const RegistryActionsContext = createContext(null);
 
 /**
  * The map of item id to `{ element, placement }`.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const AnchorsContext = createContext(null);
 
@@ -33,7 +33,7 @@ const AnchorsContext = createContext(null);
  * @param {Object}      props          The component props.
  * @param {JSX.Element} props.children The tree that registers and reads anchors.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The provider.
  */
@@ -86,7 +86,7 @@ export function ItemAnchorProvider({ children }) {
  * @param {string} id        The item id.
  * @param {string} placement The popover placement to use for this element, e.g. `right-start`.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Function} A callback ref.
  */
@@ -123,7 +123,7 @@ export function useItemAnchorRef(id, placement) {
  *
  * @param {string} id The item id.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {?{element: HTMLElement, placement: string}} The anchor, or null when none is registered.
  */
@@ -137,7 +137,7 @@ export function useItemAnchor(id) {
  * Get a function that tells whether a node sits inside any registered item element. The settings
  * popover uses it to tell a click on another item apart from a click on nothing.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Function} `(node) => boolean`.
  */

@@ -51,7 +51,7 @@ import { STORE_NAME } from '../store';
  * @param {Function} resetWorkspace Clears the draft channel and the open route item, so a replaced
  *                                  feed never strands an open settings panel's draft.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The library list, the two slugs, the busy flag, the per-flow error slots and
  *                  the functions that clear them, and the five operations.
@@ -124,7 +124,7 @@ export function useLibraries(feed, refreshFeed, resetWorkspace) {
 	 *
 	 * @param {string} slug Token library slug.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return {void}
 	 */
@@ -147,7 +147,7 @@ export function useLibraries(feed, refreshFeed, resetWorkspace) {
 	 * resolver can still briefly refire against the previous library. What keeps that from reaching
 	 * the user is that a palette listing error is cleared when the library changes.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return {void}
 	 */

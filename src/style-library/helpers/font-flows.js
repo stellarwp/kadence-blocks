@@ -26,7 +26,7 @@ import { addFavoriteFont, removeFavoriteFont } from '../api/client';
  *
  * @param {*} error The rejected value from an `apiFetch` call.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} A user-facing message.
  */
@@ -46,7 +46,7 @@ function errorMessage(error) {
  * @param {Function} args.onBusy      Called with a boolean as the request starts and settles.
  * @param {Function} args.onError     Called with `{ message }` on failure.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Promise<string>} Resolves with the added family name; rejects on failure, after
  *                            `onError`/`onBusy` have already run.
@@ -79,7 +79,7 @@ export function addFavoriteFontFlow({ name, slug, feedVersion, refreshFeed, onBu
  * @param {Function} args.onBusy      Called with a boolean as the request starts and settles.
  * @param {Function} args.onError     Called with `{ message }` on failure.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Promise<string>} Resolves with the removed family name; rejects on failure, after
  *                            `onError`/`onBusy` have already run.

@@ -107,7 +107,7 @@ let root;
  *
  * @param {string} palette The palette id to pin, or '' for no pinned override.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {void}
  */

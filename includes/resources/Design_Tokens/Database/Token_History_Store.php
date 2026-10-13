@@ -22,7 +22,7 @@ use KadenceWP\KadenceBlocks\StellarWP\DB\Database\Exceptions\DatabaseQueryExcept
  * @see Provider for the table binding and the superseded-action subscription.
  * @see Token_Store::superseded_action() for the signal this store reacts to.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Token_History_Store extends Query {
 
@@ -31,14 +31,14 @@ final class Token_History_Store extends Query {
 	 *          oldest are pruned. The shipped default; override via the
 	 *          kadence_blocks_design_tokens_history_limit filter.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	private const DEFAULT_HISTORY_LIMIT = 5;
 
 	/**
 	 * The default token library slug, mirroring Token_Store's default.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -55,7 +55,7 @@ final class Token_History_Store extends Query {
 	 * retention limit. Recording is skipped entirely for a library whose history is
 	 * disabled via the kadence_blocks_design_tokens_history_enabled filter.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug     The token library slug the snapshot belongs to.
 	 * @param string $document The previous overrides-only DTCG JSON being archived.
@@ -88,7 +88,7 @@ final class Token_History_Store extends Query {
 	 * This is the one-step-undo source: the document the library held immediately
 	 * before its current value.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug The token library slug.
 	 *
@@ -107,7 +107,7 @@ final class Token_History_Store extends Query {
 	/**
 	 * A page of a token library's snapshots, newest first.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug   The token library slug.
 	 * @param int    $limit  Maximum rows to return.
@@ -129,7 +129,7 @@ final class Token_History_Store extends Query {
 	/**
 	 * Count the snapshots stored for a token library.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug The token library slug.
 	 *
@@ -147,7 +147,7 @@ final class Token_History_Store extends Query {
 	 * Called once a library's row has been deleted, so its trail leaves no orphaned history behind. Wired
 	 * to Token_Store's deleted action by Provider, keeping this store the sole writer of its own table.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug The token library slug whose snapshots to drop.
 	 *
@@ -172,7 +172,7 @@ final class Token_History_Store extends Query {
 	 * takes LIMIT count, not LIMIT offset, count — and a self-referencing subquery
 	 * delete is rejected, so the boundary id is resolved first.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug The token library slug to prune.
 	 *
@@ -207,7 +207,7 @@ final class Token_History_Store extends Query {
 	 * The retention limit for a token library's history: how many of the most-recent
 	 * snapshots to keep. Always at least 1 — this is a cap, not an on/off switch.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug The token library slug the limit applies to.
 	 *
@@ -221,7 +221,7 @@ final class Token_History_Store extends Query {
 		 * clamped to a minimum of 1. To stop recording history altogether, use the
 		 * kadence_blocks_design_tokens_history_enabled filter instead.
 		 *
-		 * @since TBD
+		 * @since 3.8.0
 		 *
 		 * @param int    $limit The number of most-recent snapshots to retain. Default 5.
 		 * @param string $slug  The token library slug being pruned.
@@ -236,7 +236,7 @@ final class Token_History_Store extends Query {
 	 * nothing for the library — independent of the retention cap. Existing snapshots
 	 * are left in place; only further recording (and its pruning) stops.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug The token library slug.
 	 *
@@ -250,7 +250,7 @@ final class Token_History_Store extends Query {
 		 * recording, no pruning). Independent of the retention cap set by
 		 * kadence_blocks_design_tokens_history_limit.
 		 *
-		 * @since TBD
+		 * @since 3.8.0
 		 *
 		 * @param bool   $enabled Whether to record history. Default true.
 		 * @param string $slug    The token library slug.

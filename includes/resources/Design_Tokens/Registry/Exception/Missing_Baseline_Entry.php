@@ -7,7 +7,7 @@ use RuntimeException;
 /**
  * Thrown (under WP_DEBUG) when a declared token has no entry in the baseline document.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Missing_Baseline_Entry extends RuntimeException {
 }

@@ -11,14 +11,14 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary;
  * colors, length units, and CSS function forms like var()/calc()/clamp(). They never see aliases:
  * callers short-circuit Alias::is_alias() first, so "alias anywhere" stays a single rule applied once.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Literals {
 
 	/**
 	 * Length units accepted in a dimension literal. "0" is also allowed unit-less.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -27,7 +27,7 @@ final class Literals {
 	/**
 	 * CSS-wide keywords and the dynamic color keywords, valid for any kind.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string[]
 	 */
@@ -43,7 +43,7 @@ final class Literals {
 	/**
 	 * The CSS font-weight keywords accepted as a non-numeric weight literal.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string[]
 	 */
@@ -58,7 +58,7 @@ final class Literals {
 	 * The CSS font-style keywords accepted as a fontStyle literal. "oblique <angle>" is intentionally
 	 * not modeled — the keyword forms cover the design-system need.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string[]
 	 */
@@ -71,7 +71,7 @@ final class Literals {
 	/**
 	 * The CSS text-transform keywords accepted as a textTransform literal.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string[]
 	 */
@@ -87,7 +87,7 @@ final class Literals {
 	/**
 	 * The CSS border-style keywords accepted as a borderStyle literal.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string[]
 	 */
@@ -108,7 +108,7 @@ final class Literals {
 	 * The CSS named colors (CSS Color Module Level 4 extended set, lower-cased). A curated allowlist is
 	 * what lets "not-a-color" be rejected while "rebeccapurple" is accepted.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string[]
 	 */
@@ -267,7 +267,7 @@ final class Literals {
 	 * Whether the value is a valid color literal: a hex color, a CSS color function, a CSS-wide or
 	 * dynamic keyword, or a named color.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed $value The candidate color.
 	 *
@@ -297,7 +297,7 @@ final class Literals {
 	 * Whether the value is a valid dimension literal: unit-less "0", a number with a length/angle/time
 	 * unit, or a CSS function form (var()/calc()/clamp()/min()/max()).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed $value The candidate dimension.
 	 *
@@ -323,7 +323,7 @@ final class Literals {
 	 * Whether the value is a valid fontFamily literal: a non-empty list of non-empty string family
 	 * names (e.g. ["Inter", "system-ui", "sans-serif"]).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed $value The candidate fontFamily.
 	 *
@@ -350,7 +350,7 @@ final class Literals {
 	 * Whether the value is a valid fontWeight literal: a numeric weight 1-1000, its string form, or a
 	 * CSS weight keyword.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed $value The candidate fontWeight.
 	 *
@@ -381,7 +381,7 @@ final class Literals {
 	 * Whether the value is a valid lineHeight literal: a unit-less number (int or float), a dimension,
 	 * or the "normal" keyword.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed $value The candidate lineHeight.
 	 *
@@ -411,7 +411,7 @@ final class Literals {
 	 * dimension literal rejects — a clamp() argument accepts a <calc-sum> without a calc() wrapper, so the
 	 * preferred slot must too. This is a shape gate, not a full CSS math validator.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed $value The candidate clamp preferred slot.
 	 *
@@ -436,7 +436,7 @@ final class Literals {
 	/**
 	 * Whether the value is a valid fontStyle literal: one of the CSS font-style keywords.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed $value The candidate fontStyle.
 	 *
@@ -449,7 +449,7 @@ final class Literals {
 	/**
 	 * Whether the value is a valid textTransform literal: one of the CSS text-transform keywords.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed $value The candidate textTransform.
 	 *
@@ -462,7 +462,7 @@ final class Literals {
 	/**
 	 * Whether the value is a valid borderStyle literal: one of the CSS border-style keywords.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed $value The candidate borderStyle.
 	 *
@@ -490,7 +490,7 @@ final class Literals {
 	 * are not checked, so e.g. clamp(1rem) (too few args) still passes; that grammar belongs in a real CSS
 	 * parser.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $value The candidate function string.
 	 *

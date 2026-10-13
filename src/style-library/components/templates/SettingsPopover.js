@@ -38,7 +38,7 @@ import { useIsInsideItemAnchor, useItemAnchor } from '../../hooks/use-item-ancho
  *                                                   changes modal) has taken focus on purpose.
  * @param {JSX.Element} props.children               The settings panel.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The popover, or the hidden wrapper while there is no anchor.
  */

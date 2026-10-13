@@ -25,14 +25,14 @@ use RuntimeException;
  * is itself a no-op when the encoded value is unchanged, the correctness backstop. Gated on
  * Token_Registry::is_active() (fail-closed) and a fail-open catch around resolution.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Projector {
 
 	/**
 	 * KB's own palette option key.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -42,7 +42,7 @@ final class Projector {
 	 * Marker option storing the last-synced "{plugin-version}:{library-slug}:{effective-version}" signature, so a
 	 * request where nothing changed skips resolution entirely.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -51,7 +51,7 @@ final class Projector {
 	/**
 	 * The token registry.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Registry
 	 */
@@ -60,7 +60,7 @@ final class Projector {
 	/**
 	 * The token resolver.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Resolver
 	 */
@@ -70,7 +70,7 @@ final class Projector {
 	/**
 	 * Owns the active-library pointer, read at sync time so the synced options follow the active library.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Active_Token_Library_Store
 	 */
@@ -79,7 +79,7 @@ final class Projector {
 	/**
 	 * The palette builder.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Palette_Builder
 	 */
@@ -97,14 +97,14 @@ final class Projector {
 	 * Supplies the sync signature's version part: the store version, plus the theme Style Guide
 	 * signature when there is one, so a Customizer save re-syncs KB's own palette option too.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Effective_Version
 	 */
 	private Effective_Version $versions;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Token_Registry             $registry The token registry.
 	 * @param Token_Resolver             $resolver The token resolver.
@@ -130,7 +130,7 @@ final class Projector {
 	 * Once-per-request reconcile. Bound to the boot pass (low priority on init) and may be re-entered by
 	 * on_tokens_changed(); the per-request guard keeps it to one pass unless a write forces a re-sync.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return void
 	 */
@@ -147,7 +147,7 @@ final class Projector {
 	 * Force a re-sync after a token write, regardless of the per-request guard, so the new values land
 	 * in the same request. Bound to kadence_blocks_design_tokens_changed.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return void
 	 */
@@ -159,7 +159,7 @@ final class Projector {
 	/**
 	 * The sync itself: gate, resolve, short-circuit on an unchanged signature, then write.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return void
 	 */
@@ -207,7 +207,7 @@ final class Projector {
 	 * Always-on sync of KB's own kadence_blocks_colors. Reads + decodes the existing JSON, merges, and
 	 * writes back as JSON. update_option no-ops when the string is unchanged.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, array{color: string, name: string}> $entries
 	 *
@@ -228,7 +228,7 @@ final class Projector {
 	/**
 	 * Decode a stored JSON option to an array, tolerating an empty/invalid value (=> []).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed $raw
 	 *

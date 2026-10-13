@@ -28,14 +28,14 @@ import './ShadowField.scss';
 /**
  * The shadow value's default shape when no value is supplied yet.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const DEFAULT_SHADOW = { color: '#000000', offsetX: 0, offsetY: 0, blur: 0, spread: 0, inset: false };
 
 /**
  * The four numeric sub-fields, in display order.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const NUMERIC_FIELDS = [
 	{ key: 'offsetX', label: __('X', 'kadence-blocks') },
@@ -53,7 +53,7 @@ const NUMERIC_FIELDS = [
  * @param {number}  value The value being written.
  * @param {?number} min   The field's floor, or undefined when it has none.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {number} The value, never below the floor.
  */
@@ -69,7 +69,7 @@ function clampToMin(value, min) {
  * @param {?Object}  props.value    The current shadow value ({ color, offsetX, offsetY, blur, spread, inset }).
  * @param {Function} props.onChange Called with the new shadow value on edit; never called when read-only.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The field.
  */

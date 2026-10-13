@@ -29,7 +29,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Value;
  *
  * Pure: no WordPress calls, no globals, no side effects. The WordPress wiring lives in Projector.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Css_Builder {
 
@@ -39,7 +39,7 @@ final class Css_Builder {
 	/**
 	 * The HTML attribute a block sets to render its subtree against a specific palette.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -48,7 +48,7 @@ final class Css_Builder {
 	/**
 	 * The attribute name a block wrapper carries to select a palette for its subtree ("data-kb-palette").
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -62,7 +62,7 @@ final class Css_Builder {
 	 * `[data-kb-palette="<id>"]{ <css-var>: <literal>; … }` selector per palette. A palette with no resolved
 	 * color vars emits nothing.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, array<string, string>> $palettes            palette id => ( css-var => resolved literal ).
 	 * @param string                               $preset_declarations The canonical `--kb-token--preset--*`

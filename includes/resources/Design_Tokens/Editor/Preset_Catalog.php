@@ -34,14 +34,14 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
  * errors the admin feed must guard; preset bindings registered but absent from a token library
  * (Unknown_Preset_Exception) are skipped, so one undefined block never empties the catalog.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Preset_Catalog {
 
 	/**
 	 * The token registry, source of the registered preset-bindings blocks and their bindings.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Registry
 	 */
@@ -50,7 +50,7 @@ final class Preset_Catalog {
 	/**
 	 * The preset resolver, source of each block's default, names and labels per library.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Preset_Resolver
 	 */
@@ -59,7 +59,7 @@ final class Preset_Catalog {
 	/**
 	 * The persistence gateway, source of the stored library slugs.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Store
 	 */
@@ -68,7 +68,7 @@ final class Preset_Catalog {
 	/**
 	 * The active-library pointer, so the catalog can report which library the editor renders by default.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Active_Token_Library_Store
 	 */
@@ -77,14 +77,14 @@ final class Preset_Catalog {
 	/**
 	 * The effective-presets reader, source of each preset's user-created provenance per library.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Effective_Presets
 	 */
 	private Effective_Presets $effective;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Token_Registry             $registry  The token registry.
 	 * @param Preset_Resolver            $presets  The preset resolver.
@@ -109,7 +109,7 @@ final class Preset_Catalog {
 	/**
 	 * The catalog: the active library slug plus the per-block catalog for every library.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array{active: string, libraries: array<string, array<string, mixed>>}
 	 */
@@ -130,7 +130,7 @@ final class Preset_Catalog {
 	 * The per-block catalog for one token library. Only PICKER preset bindings are surfaced; a block's preset /
 	 * default-preset bindings (with no `label`) have no picker, so they are skipped.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug The token library slug.
 	 *
@@ -183,7 +183,7 @@ final class Preset_Catalog {
 	 * `readable` says whether the theme's values behind a class-painted preset could be read, so a surface
 	 * can tell a preset it can show values for from one it can only name.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string   $block The block name.
 	 * @param string   $slug  The token library slug.
@@ -219,7 +219,7 @@ final class Preset_Catalog {
 	 * recognize the shape from the declaration instead of from a hardcoded list of property names, so a
 	 * second block declaring the same composite under different property keys works with no editor change.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Preset_Bindings $bindings The block's preset bindings.
 	 *
@@ -253,7 +253,7 @@ final class Preset_Catalog {
 	 * a joined string, so the editor's compare and the control's inherited-default display read each corner
 	 * on its own — a joined shorthand is not parseable as a single length.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string   $block The block name.
 	 * @param string   $slug  The token library slug.
@@ -291,7 +291,7 @@ final class Preset_Catalog {
 	 * wrapper, so a `var()` reference resolves through whichever palette the block is on. A literal was
 	 * resolved against the default palette before it ever reached the editor and cannot follow the block.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string   $block The block name.
 	 * @param string   $slug  The token library slug.
@@ -322,7 +322,7 @@ final class Preset_Catalog {
 	 * editor can read `responsive[preset]` unconditionally. A preset whose resolution fails is skipped,
 	 * matching `values_for()`.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string   $block The block name.
 	 * @param string   $slug  The token library slug.
@@ -354,7 +354,7 @@ final class Preset_Catalog {
 	 * field should show as bound to the merged value (this preset has its own override) or as a muted
 	 * generic default (nothing here is this preset's own).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string   $block The block name.
 	 * @param string   $slug  The token library slug.
@@ -376,7 +376,7 @@ final class Preset_Catalog {
 	/**
 	 * The library slugs to build the catalog for: every stored library plus the always-present default.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string[]
 	 */

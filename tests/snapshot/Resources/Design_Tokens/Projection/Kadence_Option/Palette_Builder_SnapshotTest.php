@@ -13,7 +13,7 @@ use Tests\Support\Classes\SnapshotTestCase;
  * Snapshot the exact merged kadence_blocks_colors payload of Palette_Builder so any format change is
  * an explicit, reviewable diff.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Palette_Builder_SnapshotTest extends SnapshotTestCase {
 

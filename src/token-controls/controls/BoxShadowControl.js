@@ -74,7 +74,7 @@ import '../styles/token-controls.scss';
 /**
  * The four length axes of a shadow, in CSS declaration order.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const AXES = [
 	{ key: 'offsetX', label: __('X', 'kadence-blocks') },
@@ -97,7 +97,7 @@ const AXES = [
  * @param {number}  value The axis value being written.
  * @param {?number} min   The axis's floor, or undefined when it has none.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {number} The value, never below the floor.
  */
@@ -114,7 +114,7 @@ function clampAxis(value, min) {
  * @param {Object} shadow The current composite shadow value.
  * @param {Object} patch  The fields to overwrite.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The next composite shadow value, `inset` present only when `true`.
  */
@@ -135,7 +135,7 @@ function commitShadow(shadow, patch) {
  *
  * @param {*} value The composite's blur slot.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {*} The blur, never a negative length.
  */
@@ -154,7 +154,7 @@ function floorBlur(value) {
  * @param {Object} shadow The composite value with defaults already filled.
  * @param {Array}  tokens The pickable-token list.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {?Object} The matching fixed entry, or null.
  */
@@ -177,7 +177,7 @@ function matchFixedEntry(shadow, tokens) {
  * @param {Object} shadow The composite value with defaults already filled — used both for a literal
  *                        composite and as the stale-alias fallback.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The resolved `box-shadow` CSS, or '' when unset.
  */
@@ -216,7 +216,7 @@ function resolvePreviewCss(value, tokens, shadow) {
  * @param {Array}   tokens       The pickable-token list, used when nothing is hovered/focused.
  * @param {Object}  shadow       The composite value with defaults already filled.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The resolved `box-shadow` CSS, or '' for a shadow-less preview.
  */
@@ -238,7 +238,7 @@ function resolveHoverPreviewCss(hoveredEntry, value, tokens, shadow) {
  * @param {Function} [props.renderColor] `({ value, onChange }) => Element` for the color sub-field.
  * @param {boolean}  [props.disabled]   Whether every sub-field is read-only.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The Custom tab body.
  */
@@ -301,7 +301,7 @@ function ShadowCustomTab({ shadow, onChange, renderColor, disabled = false }) {
  *                                        Without one, both fall back to the plain default composite,
  *                                        so a host that passes none (the Style Library) is unaffected.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The rendered control.
  */

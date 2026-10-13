@@ -26,7 +26,7 @@ import { findTokenEntry, isCssVariableReference, isTokenAlias } from './token-su
  * @param {*}     value  The current slot value: a bracket alias (`{token.id}`, a token pick) or a
  *                        raw literal (hex/rgba, a Custom-tab pick).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{allSwatches: Array, entry: ?Object, selectedLabel: ?string, initialTab: string}} The
  *         flattened swatch list, the matched token entry (or null), the label a trigger shows for
@@ -67,7 +67,7 @@ export function colorSelection(groups, value) {
  * @param {*}         value          The current slot value.
  * @param {?Function} [resolveAlias] `(id) => string` — the host's literal for a bare token id, or ''.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {?{id: string, label: string, value: string, alias: string}} The synthesized entry, or null
  *         when the value is not a bracket alias.
@@ -103,7 +103,7 @@ export function unlistedEntry(value, resolveAlias) {
  * @param {?Function} [resolveAlias] `(id) => string` — the host's literal for a bare token id the
  *                                    groups do not list, or ''.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{selection: Object, entry: ?Object, shownValue: *, shownLabel: ?string, isDefault: boolean}}
  *         The popover's `colorSelection` for the real value; the entry the trigger's swatch paints

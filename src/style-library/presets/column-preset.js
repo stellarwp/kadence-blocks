@@ -22,7 +22,7 @@ import { getPresetProperties, resolveTokenValue, restingRadiusSlots } from '../h
  * code, and this is the single JS spelling of the code name, shared by the screen registration and
  * the config below so the two can never drift.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const COLUMN_BLOCK = 'kadence/column';
 
@@ -30,7 +30,7 @@ export const COLUMN_BLOCK = 'kadence/column';
  * The panel's state tabs, in display order. `hover` is the name the screen watches to hold the open
  * row's hover preview while that tab is being edited.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const TABS = [
 	{ name: 'normal', title: __('Normal', 'kadence-blocks') },
@@ -40,7 +40,7 @@ const TABS = [
 /**
  * The section's built-in corner radius, matching `semantic.radius.column` (square corners).
  *
- * @since TBD
+ * @since 3.8.0
  */
 const COLUMN_RADIUS_FALLBACK = ['0', '0', '0', '0'];
 
@@ -56,7 +56,7 @@ const COLUMN_RADIUS_FALLBACK = ['0', '0', '0', '0'];
  * @param {Record<string, string>} values       The feed's resolved value map.
  * @param {string}                 [breakpoint] The breakpoint to resolve responsive values at.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{background: string, borderRadius: string, hover: {background: string, borderRadius: string}}} The preview.
  */
@@ -89,7 +89,7 @@ function preview(tokens, values, breakpoint) {
  * @param {Object} props     The component props.
  * @param {Object} props.row The row descriptor (`{id, label, preview, showHoverState?}`).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The preview element.
  */
@@ -122,7 +122,7 @@ function ColumnPresetPreview({ row }) {
  *
  * @param {{id: string, label: string, preview: Object, showHoverState?: boolean}} row The row descriptor.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The preview element.
  */
@@ -151,7 +151,7 @@ function renderPreview(row) {
  * @param {?Object} draft The panel draft, read by the hover radius default.
  * @param {?Object} feed  The design-tokens feed, read by the hover radius default.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{panels: Array<Object>}} The settings-form schema for the active tab.
  */
@@ -210,7 +210,7 @@ function schemaFor(tab, draft, feed) {
  * frozen at module evaluation, before the localized feed is guaranteed to exist, so a snapshot taken
  * here could throw or go stale.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const COLUMN_PRESET = Object.freeze({
 	block: COLUMN_BLOCK,

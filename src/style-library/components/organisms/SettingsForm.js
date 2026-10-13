@@ -41,7 +41,7 @@ import './SettingsForm.scss';
  *                                         (`presetNameSchema()`'s label field ignores it).
  * @param {Function} props.onChange        Called with (path, value) on any field edit.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The form.
  */
@@ -55,7 +55,7 @@ import './SettingsForm.scss';
  * @param {Object}      props          The component props.
  * @param {JSX.Element} props.children The panel's fields.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The wrapped fields.
  */

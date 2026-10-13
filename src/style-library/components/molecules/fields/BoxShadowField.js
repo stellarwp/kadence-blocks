@@ -47,7 +47,7 @@ import { resolveLiteral, toControlValue, toStoredValue } from '../../../helpers/
  *
  * @param {*} value The stored value: a bare token id, an alias, or a composite shadow object.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {*} The bare id, or the value unchanged.
  */
@@ -63,7 +63,7 @@ function bareShadowId(value) {
  *
  * @param {*} value The stored value: a bare token id, an alias, or a composite shadow object.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array<string>} The bound primitive token ids, empty when nothing is bound.
  */
@@ -84,7 +84,7 @@ function boundShadowTokenIds(value) {
  *
  * @param {*} value The stored value: a bare token id, an alias, or a composite shadow object.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {*} The control-shaped value.
  */
@@ -110,7 +110,7 @@ export function toControlShadow(value) {
  *
  * @param {*} next The control-shaped value: an alias, or a composite shadow object.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {*} The value a preset draft stores.
  */
@@ -128,7 +128,7 @@ export function toStoredShadow(next) {
  * @param {string|Object} picked What `BoxShadowControl.onChange` reported.
  * @param {Array}         tokens The pickable-token list `picked` was chosen from.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string|Object} What this field writes.
  */
@@ -150,7 +150,7 @@ export function resolveShadowPick(picked, tokens) {
  * @param {*}       props.value            The stored value: a token alias, or a composite shadow object.
  * @param {Function} props.onChange        Called with the next alias or composite object.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The field.
  */

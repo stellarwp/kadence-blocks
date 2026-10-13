@@ -18,14 +18,14 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Slot\Contracts\Abst
  *
  * The slug is validated against the set Kadence Blocks ships, so a typo never emits a dead override.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Font_Size_Target extends Abstract_Target {
 
 	/**
 	 * The projection key a token declares to claim a font-size slug.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -34,7 +34,7 @@ final class Font_Size_Target extends Abstract_Target {
 	/**
 	 * The custom-property prefix Kadence Blocks emits each font-size slug under.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -44,7 +44,7 @@ final class Font_Size_Target extends Abstract_Target {
 	 * The font-size slugs Kadence Blocks defines (see includes/init.php / class-kadence-blocks-css.php).
 	 * A claim on any other slug is ignored so the override can never point at a slug no block reads.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string[]
 	 */
@@ -55,7 +55,7 @@ final class Font_Size_Target extends Abstract_Target {
 	 * itself, so this prefix plus the slug is the projection-holding token's own id (and resolves to its
 	 * fluid clamp()).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */

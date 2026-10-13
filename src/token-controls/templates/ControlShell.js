@@ -36,7 +36,7 @@ import { BindingIndicator } from '../atoms/BindingIndicator';
  * control rather than two that merely resemble each other. The rules moved into this library's own
  * CSS, which both hosts load; the package's `editor.scss` only ever reached the editor.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const BREAKPOINT_LABELS = {
 	desktop: __('Desktop', 'kadence-blocks'),
@@ -47,7 +47,7 @@ const BREAKPOINT_LABELS = {
 /**
  * The breakpoint switcher's dashicon and item class per breakpoint.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const BREAKPOINTS_UI = {
 	desktop: { icon: 'desktop', itemClass: 'kb-desk-tab' },
@@ -85,7 +85,7 @@ const BREAKPOINTS_UI = {
  *                                                     that means the same thing but looks different.
  * @param {boolean}         [props.disabled]           Whether every affordance is inert.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The wrapped control.
  */

@@ -14,14 +14,14 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Theme_Style_Guide\Contracts\Style_Guid
  * decorator and the cache-version service read the same values. The signature is what lets a
  * Customizer save — which bumps no store version — invalidate every resolved/projected cache.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Style_Guide_Overlay {
 
 	/**
 	 * Where the Style Guide is read from.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Style_Guide_Source
 	 */
@@ -30,7 +30,7 @@ final class Style_Guide_Overlay {
 	/**
 	 * Snapshot => token values.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Style_Guide_Mapper
 	 */
@@ -39,7 +39,7 @@ final class Style_Guide_Overlay {
 	/**
 	 * Supplies the slot => token map from the tokens declaring a kadence_slot.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Registry
 	 */
@@ -48,14 +48,14 @@ final class Style_Guide_Overlay {
 	/**
 	 * Per-request memo of token id => $value. Null until a complete result was computed.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var array<string, string>|null
 	 */
 	private ?array $values = null;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Style_Guide_Source $source   The Style Guide source.
 	 * @param Style_Guide_Mapper $mapper   The pure mapper.
@@ -70,7 +70,7 @@ final class Style_Guide_Overlay {
 	/**
 	 * Token id => $value derived from the theme. Empty when the Kadence theme is not active.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, string>
 	 */
@@ -105,7 +105,7 @@ final class Style_Guide_Overlay {
 	 * A short fingerprint of values(): empty when there is nothing to overlay, so a cache key that
 	 * folds it in is unchanged on non-Kadence sites.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -125,7 +125,7 @@ final class Style_Guide_Overlay {
 	 * Drop the per-request memo. Used by tests and by any caller that changes the Style Guide and needs
 	 * the new values within the same request.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return void
 	 */
@@ -137,7 +137,7 @@ final class Style_Guide_Overlay {
 	 * Slot slug => token id for every token declaring a palette kadence_slot. Shared with the theme button
 	 * discovery so a Customizer color that names a slot converts to the same alias in both places.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, string>
 	 */

@@ -32,14 +32,14 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Contracts\Controller;
  * {@see \KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Feed_Controller} get the overridden labels,
  * stored order and favorites automatically instead of one of them silently missing them.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Feed_Assembler {
 
 	/**
 	 * The resolver supplying current token values (by_id).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Resolver
 	 */
@@ -48,7 +48,7 @@ final class Feed_Assembler {
 	/**
 	 * The store, for the current library's version hash.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Store
 	 */
@@ -57,7 +57,7 @@ final class Feed_Assembler {
 	/**
 	 * The presets section builder.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Presets
 	 */
@@ -66,7 +66,7 @@ final class Feed_Assembler {
 	/**
 	 * The pure payload assembler.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Builder
 	 */
@@ -75,7 +75,7 @@ final class Feed_Assembler {
 	/**
 	 * Extracts the raw authored responsive / clamp shapes for the editor to hydrate from.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Responsive_Feed
 	 */
@@ -84,7 +84,7 @@ final class Feed_Assembler {
 	/**
 	 * Reads the tokenLabels display-label override map out of the stored document.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Label_Index
 	 */
@@ -93,7 +93,7 @@ final class Feed_Assembler {
 	/**
 	 * Reads the tokenOrder flat ordered id list out of the stored document.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Order_Index
 	 */
@@ -102,14 +102,14 @@ final class Feed_Assembler {
 	/**
 	 * Reads the favoriteFonts ordered family list out of the stored document.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Favorite_Font_Index
 	 */
 	private Favorite_Font_Index $favorite_font_index;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Token_Resolver      $resolver            The token resolver.
 	 * @param Token_Store         $store               The token store.
@@ -143,7 +143,7 @@ final class Feed_Assembler {
 	/**
 	 * Assemble the full feed payload for one token library.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug The token library slug to assemble the feed for.
 	 *
@@ -187,7 +187,7 @@ final class Feed_Assembler {
 	 * The active library's display title, defaulted the same way the REST representation defaults it, so
 	 * the name the selector paints on load matches the one its list supplies a moment later.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug The token library slug.
 	 *
@@ -208,7 +208,7 @@ final class Feed_Assembler {
 	 * root, the v1 namespace, and a wp_rest nonce (sent as X-WP-Nonce; the REST permission-check
 	 * still re-validates capability).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array{root: string, namespace: string, nonce: string}
 	 */

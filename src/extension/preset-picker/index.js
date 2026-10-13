@@ -98,7 +98,7 @@ export function blockProperties(name, library) {
  * @param {string} name     The block name.
  * @param {string} [library] The token library slug; defaults to the active library.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The per-preset value map.
  */
@@ -120,7 +120,7 @@ export function blockPresetValues(name, library) {
  * @param {string} name      The block name.
  * @param {string} [library] The token library slug; defaults to the active library.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The per-preset reference map.
  */
@@ -138,7 +138,7 @@ export function blockPresetReferences(name, library) {
  * @param {string} name     The block name.
  * @param {string} [library] The token library slug; defaults to the active library.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The per-preset, per-breakpoint value map.
  */
@@ -156,7 +156,7 @@ export function blockPresetResponsive(name, library) {
  * @param {string} name     The block name.
  * @param {string} [library] The token library slug; defaults to the active library.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The per-preset "own override" map.
  */
@@ -173,7 +173,7 @@ export function blockPresetOverridden(name, library) {
  * @param {string} name     The block name.
  * @param {string} [library] The token library slug; defaults to the active library.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The default preset's overridden-property map.
  */
@@ -189,7 +189,7 @@ export function blockDefaultOverridden(name, library) {
  * @param {string} slug      The preset slug.
  * @param {string} [library] The token library slug; defaults to the active library.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The space-separated classes, or ''.
  */
@@ -211,14 +211,14 @@ export function blockDefaultPreset(name, library) {
 /**
  * The preset slug the theme's other presets fall back to, e.g. "theme-base".
  *
- * @since TBD
+ * @since 3.8.0
  */
 const THEME_BASE = 'theme-base';
 
 /**
  * The slug prefix every theme-discovered preset carries.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const THEME_PREFIX = 'theme-';
 
@@ -229,7 +229,7 @@ const THEME_PREFIX = 'theme-';
  * @param {string} library The token library slug.
  * @param {string} slug    The preset slug.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True when the library lists the slug.
  */
@@ -243,7 +243,7 @@ function hasPreset(name, library, slug) {
  * @param {string} name       The block name.
  * @param {Object} attributes The block's current attributes.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The stored slug, or '' for the default look.
  */
@@ -268,7 +268,7 @@ export function storedPresetFor(name, attributes) {
  * @param {Object} attributes The block's current attributes.
  * @param {string} [library]  The token library slug; defaults to the active library.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The resolved preset slug, or '' when the block declares no default either.
  */
@@ -295,7 +295,7 @@ export function activePresetFor(name, attributes, library) {
  * @param {Object} attributes The block's current attributes.
  * @param {string} [library]  The token library slug; defaults to the active library.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The reason, or ''.
  */
@@ -359,7 +359,7 @@ export function appendPreset(name, library, preset) {
  * @param {Object} values     The preset's resolved values ({ property: literal }).
  * @param {Object} responsive The preset's per-breakpoint values ({ breakpoint: { property: literal } }).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {void}
  */

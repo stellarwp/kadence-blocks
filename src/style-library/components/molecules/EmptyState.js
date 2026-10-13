@@ -18,7 +18,7 @@ import './EmptyState.scss';
  * @param {string}       [props.description] The supporting description text.
  * @param {?JSX.Element} [props.action] The action slot (e.g. a primary "+ Add X" button), or null.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The empty state.
  */

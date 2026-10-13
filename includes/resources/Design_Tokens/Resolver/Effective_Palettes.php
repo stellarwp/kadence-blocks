@@ -27,33 +27,33 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Sentinels;
  * pointer (which palette is active at `:root`), and a palette flattened to a `{ token => $value }` overlay
  * (its groups' swatches collapsed) so the resolver can re-tint the color tokens before alias flattening.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Effective_Palettes {
 
 	/**
 	 * @var Baseline_Document The shipped baseline the palette definitions are merged onto.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	private Baseline_Document $baseline;
 
 	/**
 	 * @var Token_Store The gateway the stored overrides are read from.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	private Token_Store $store;
 
 	/**
 	 * @var Mutator The pure deep-merge the baseline and overrides palettes are combined through.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	private Mutator $mutator;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Baseline_Document $baseline The shipped baseline document.
 	 * @param Token_Store       $store    The persistence gateway.
@@ -69,7 +69,7 @@ final class Effective_Palettes {
 	 * The effective colorPalettes section for a stored library: baseline deep-merged with the library's overrides,
 	 * keyed by palette id (plus the `$default` / `$current` pointers).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug The token library slug.
 	 *
@@ -83,7 +83,7 @@ final class Effective_Palettes {
 	 * The effective palette node for one palette id in a stored library, or null when neither the baseline nor
 	 * the overrides define it.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $id   The palette id, e.g. "default", "dark".
 	 * @param string $slug The token library slug.
@@ -101,7 +101,7 @@ final class Effective_Palettes {
 	 * palettes deep-merged with the candidate's colorPalettes subtree. Used to validate a write against its
 	 * post-merge effective section before it is committed (e.g. that `$current` still names a present palette).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $overrides A decoded overrides-only DTCG document.
 	 *
@@ -116,7 +116,7 @@ final class Effective_Palettes {
 	/**
 	 * The named palette ids a library defines (every key except the `$default` / `$current` pointers), in order.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug The token library slug.
 	 *
@@ -141,7 +141,7 @@ final class Effective_Palettes {
 	 * An id that shadows a baseline palette is excluded, since deleting it reverts that palette to
 	 * baseline rather than removing it.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug The token library slug.
 	 *
@@ -164,7 +164,7 @@ final class Effective_Palettes {
 	/**
 	 * The library's `$default` palette id (the shipped/fallback palette), falling back to "default".
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug The token library slug.
 	 *
@@ -178,7 +178,7 @@ final class Effective_Palettes {
 	 * The library's `$current` (active) palette id — the palette the resolver applies at `:root`. Falls back to
 	 * the `$default` pointer, then to "default", and only ever returns an id that names a present palette.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug The token library slug.
 	 *
@@ -197,7 +197,7 @@ final class Effective_Palettes {
 	 * complete set use {@see complete_swatch_values()}; to ask what a palette actually stores use
 	 * {@see stored_swatch_values()}.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $id   The palette id.
 	 * @param string $slug The token library slug.
@@ -214,7 +214,7 @@ final class Effective_Palettes {
 	 * deltas plus the default for everything it omits). This is what the per-block switch layer emits, so an
 	 * override fully re-skins a subtree with default fallback regardless of the library's current palette.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $id   The palette id.
 	 * @param string $slug The token library slug.
@@ -232,7 +232,7 @@ final class Effective_Palettes {
 	 * The `{ token => $value }` overlay for the library's `$current` palette — the color re-tint the resolver
 	 * applies at `:root`.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug The token library slug.
 	 *
@@ -247,7 +247,7 @@ final class Effective_Palettes {
 	 * second store read: the baseline palettes deep-merged with the candidate, its `$current` resolved, then
 	 * flattened. The resolver uses this so the overlay reads the SAME document it is resolving.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $overrides A decoded overrides-only DTCG document.
 	 *
@@ -264,7 +264,7 @@ final class Effective_Palettes {
 	 * token that is otherwise unchanged (or carries a direct override) is left untouched; a non-default palette
 	 * or an edited swatch contributes exactly the tokens it re-tints.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $overrides A decoded overrides-only DTCG document.
 	 *
@@ -280,7 +280,7 @@ final class Effective_Palettes {
 	 * whole token graph "as if this palette were active", which the per-block switch layer emits so an
 	 * override fully re-skins its subtree.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $id   The palette id.
 	 * @param string $slug The token library slug.
@@ -295,7 +295,7 @@ final class Effective_Palettes {
 	 * Decode a library's stored overrides document, tolerating an absent/empty/malformed row as "no overrides".
 	 * The single decode seam for the stored overrides, mirroring {@see Effective_Presets::raw()}.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug The token library slug.
 	 *
@@ -321,7 +321,7 @@ final class Effective_Palettes {
 	 * or walks the whole set — and the flatten re-walks the baseline document, so a predicate would redo it
 	 * once per swatch.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, string> token dot-path => the baseline literal-or-alias value.
 	 */
@@ -341,7 +341,7 @@ final class Effective_Palettes {
 	 * but drops `$value`, so the token follows whatever the baseline resolves to (on a Kadence site, the
 	 * theme's Style Guide). Reading the effective node instead would report every one of those as stored.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $id   The palette id.
 	 * @param string $slug The token library slug.
@@ -361,7 +361,7 @@ final class Effective_Palettes {
 	 * Use this wherever a caller needs the color a token WILL render as. Use the sparser accessors only to ask
 	 * what a palette stores.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $id   The palette id.
 	 * @param string $slug The token library slug.
@@ -389,7 +389,7 @@ final class Effective_Palettes {
 	 * layer down. Sibling keys (`label`) still merge normally, and a baseline palette the overrides only
 	 * relabel keeps its baseline groups.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $baseline The baseline colorPalettes section.
 	 * @param array<string, mixed> $stored   The stored overrides' colorPalettes section.
@@ -415,7 +415,7 @@ final class Effective_Palettes {
 	/**
 	 * Reduce a `{ token => value }` map to the entries that differ from the baseline default palette.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, string> $values token => value.
 	 *
@@ -440,7 +440,7 @@ final class Effective_Palettes {
 	 * The `$current` palette overlay for an effective section: resolve its `$current` pointer, then flatten
 	 * that palette's swatches.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $section The effective colorPalettes section.
 	 *
@@ -453,7 +453,7 @@ final class Effective_Palettes {
 	/**
 	 * The `$current` (active) palette id for an effective section, falling back to `$default`, then "default".
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $section The effective colorPalettes section.
 	 *
@@ -474,7 +474,7 @@ final class Effective_Palettes {
 	 * no token, or carries no non-empty scalar `$value` (e.g. a RESET), is skipped. Empty when the palette is
 	 * absent.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $section The effective colorPalettes section.
 	 * @param string               $id      The palette id.
@@ -530,7 +530,7 @@ final class Effective_Palettes {
 	 * The pointer value (`$default` or `$current`) in an effective section, when it is a string naming a
 	 * present palette; otherwise the library's default slug ("default").
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $section The effective colorPalettes section.
 	 * @param string               $key     The pointer key.
@@ -551,7 +551,7 @@ final class Effective_Palettes {
 	 * Walk a decoded document down to its `$extensions...colorPalettes` subtree, or an empty array when
 	 * absent.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document The decoded document.
 	 *

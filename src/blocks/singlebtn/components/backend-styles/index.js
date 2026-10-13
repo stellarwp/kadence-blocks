@@ -30,7 +30,7 @@ import { borderSideDeclarations } from '../../../../extension/design-tokens/bord
  * @param {Object[]} values The desktop, tablet and mobile border attributes, in that order.
  * @param {Object}   sides  Each side mapped to its `[shorthand, color]` pair.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {void}
  */
@@ -48,7 +48,7 @@ function addBorderSides(css, device, values, sides) {
  *
  * @param {Object} attributes The block attributes.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{padding: boolean, margin: boolean}} Which spacing properties the preset defines.
  */
@@ -76,7 +76,7 @@ function presetSpacingProperties(attributes) {
  *
  * @param {Object} attributes The block attributes.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{width: boolean, style: boolean, color: boolean}} Which border properties the preset defines.
  */
@@ -102,7 +102,7 @@ export function presetBorderProperties(attributes) {
  *
  * @param {Object} attributes The block attributes.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} Whether the preset bridges apply to this button.
  */
@@ -122,7 +122,7 @@ export function paintsOwnShape(attributes) {
  *
  * @param {Object} attributes The block attributes.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True when an override rule exists for the active preset.
  */
@@ -146,7 +146,7 @@ export function hasPresetOverrides(attributes) {
  *
  * @param {Object} attributes The block attributes.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} Whether the preset defines a box-shadow.
  */
@@ -170,7 +170,7 @@ export function presetShadowProperties(attributes) {
  *
  * @param {?Object} shadowItem One `shadow[0]`-shaped item.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} Whether the item has any non-zero offset, blur, or spread.
  */

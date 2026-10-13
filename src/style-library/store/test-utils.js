@@ -14,7 +14,7 @@ import { STORE_NAME, storeConfig } from './index';
  * import time — the default registry is a process-wide singleton, so sharing it across tests would
  * let one test's writes leak into the next test's reads.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} A registry with only this store registered.
  */

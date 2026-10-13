@@ -13,7 +13,7 @@ use KadenceWP\KadenceBlocks\Utils\Cast;
  * theme or a compatibility plugin shape the list, and every slug is prefixed so it can never collide with
  * a user preset.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Discovery {
 
@@ -22,14 +22,14 @@ final class Discovery {
 	/**
 	 * The adapters in the order they are asked. The first one that answers wins.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Button_Style_Source[]
 	 */
 	private array $sources;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Button_Style_Source ...$sources The adapters, most specific first, the classic fallback last.
 	 */
@@ -41,7 +41,7 @@ final class Discovery {
 	 * The discovered styles keyed by prefixed slug: label, the classes the theme paints, the display values,
 	 * and the tokens a value preset declares (empty for a class-painted one).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, array{label: string, class: string, values: array<string, mixed>, tokens: array<string, mixed>}>
 	 */
@@ -63,7 +63,7 @@ final class Discovery {
 		 * classes the theme paints the button with, a label, and optional display values keyed by the
 		 * Button's preset properties (button-bg, button-text, button-radius…).
 		 *
-		 * @since TBD
+		 * @since 3.8.0
 		 *
 		 * @param array<string, array{label: string, class: string, values: array<string, mixed>}> $styles The discovered styles.
 		 * @param string                                                                            $theme  The active theme's stylesheet slug.
@@ -79,7 +79,7 @@ final class Discovery {
 	 * The filtered list reduced to the entries that can be offered: each slug prefixed and sanitized, each
 	 * label filled in, and anything a filter handed back that is not a usable entry dropped.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed $styles The filtered styles, keyed by unprefixed slug.
 	 *

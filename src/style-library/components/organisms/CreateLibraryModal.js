@@ -30,7 +30,7 @@ import './CreateLibraryModal.scss';
  * @param {Function}            props.onClose   Called to dismiss the modal.
  * @param {Function}            props.onCreate  Called with the typed title to create the library.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The modal.
  */

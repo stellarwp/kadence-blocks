@@ -25,7 +25,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Version;
  * switching the pointer re-emits with the new library's values. Only the active library's tokens reach the coercive
  * native-block and theme.json styling paths.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Projector extends Abstract_Css_Projector {
 
@@ -43,7 +43,7 @@ final class Projector extends Abstract_Css_Projector {
 	/**
 	 * Owns the active-library pointer, read at build time so the projection follows the active library.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Active_Token_Library_Store
 	 */
@@ -63,14 +63,14 @@ final class Projector extends Abstract_Css_Projector {
 	 * Supplies the cache version: the store version, plus the theme Style Guide signature when there is
 	 * one, so a Customizer save invalidates this cache even though it bumps no store version.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Effective_Version
 	 */
 	private Effective_Version $versions;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Token_Registry             $registry    The token registry.
 	 * @param Token_Resolver             $resolver    The token resolver.
@@ -98,7 +98,7 @@ final class Projector extends Abstract_Css_Projector {
 	/**
 	 * Append the projected CSS to the front-end global-variables handle.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return void
 	 */
@@ -120,7 +120,7 @@ final class Projector extends Abstract_Css_Projector {
 	 * by matching known editor page slugs. Can be overridden with the
 	 * `kadence_blocks_load_editor_token_vars` filter.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return void
 	 */
@@ -145,7 +145,7 @@ final class Projector extends Abstract_Css_Projector {
 	}
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string,string> $colors
 	 *
@@ -169,7 +169,7 @@ final class Projector extends Abstract_Css_Projector {
 	 * validation gate) yields an empty string rather than a fatal, so the page falls back to KB's existing
 	 * variables without crashing.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -188,7 +188,7 @@ final class Projector extends Abstract_Css_Projector {
 	/**
 	 * Whether token projection is active.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return bool
 	 */

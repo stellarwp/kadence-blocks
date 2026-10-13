@@ -17,14 +17,14 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Contracts;
  * CSS projector, so a new one joins by implementing this contract and adding itself to the collection from
  * its own provider.
  *
- * @since TBD
+ * @since 3.8.0
  */
 interface Css_Projector {
 
 	/**
 	 * Append the projected CSS to the front-end global-variables handle.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return void
 	 */
@@ -33,7 +33,7 @@ interface Css_Projector {
 	/**
 	 * Append the projected CSS to the editor global-styles handle.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return void
 	 */
@@ -43,7 +43,7 @@ interface Css_Projector {
 	 * The projector's CSS — the unguarded builder, since the enqueue-context gate (the block-editor page
 	 * check) stays in enqueue_editor() and does not apply to a REST request.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -54,7 +54,7 @@ interface Css_Projector {
 	 * where the editor needs a differently-scoped selector (e.g. a block whose editor markup wraps the
 	 * bound element in a div, so the front-end selector lands on the wrong node).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */

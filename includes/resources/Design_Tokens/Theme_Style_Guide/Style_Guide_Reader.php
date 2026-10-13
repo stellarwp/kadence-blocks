@@ -16,14 +16,14 @@ use KadenceWP\KadenceBlocks\Utils\Cast;
  * The theme is not part of the plugin's static-analysis scan, so it is called through a validated
  * callable and every result is narrowed here rather than typed against theme classes.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Style_Guide_Reader implements Style_Guide_Source {
 
 	/**
 	 * The theme's palette option key.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -32,7 +32,7 @@ final class Style_Guide_Reader implements Style_Guide_Source {
 	/**
 	 * The theme's accessor function; returns its Template_Tags proxy.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -41,7 +41,7 @@ final class Style_Guide_Reader implements Style_Guide_Source {
 	/**
 	 * The theme class whose presence means the theme is active.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -50,7 +50,7 @@ final class Style_Guide_Reader implements Style_Guide_Source {
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	public function snapshot(): ?array {
 		$theme = $this->theme();
@@ -77,7 +77,7 @@ final class Style_Guide_Reader implements Style_Guide_Source {
 	/**
 	 * The theme's palette option key, for callers that need to invalidate on its change.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -93,7 +93,7 @@ final class Style_Guide_Reader implements Style_Guide_Source {
 	 * kadence_palette_option filter the projection layer hooks, which resolves tokens, which builds the
 	 * baseline this reader feeds — a loop. get_option() still passes the theme's own normalize filter.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param object $theme The theme's Template_Tags proxy.
 	 *
@@ -123,7 +123,7 @@ final class Style_Guide_Reader implements Style_Guide_Source {
 	/**
 	 * The theme's Template_Tags proxy, or null when the Kadence theme is not active or not yet loaded.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return object|null
 	 */

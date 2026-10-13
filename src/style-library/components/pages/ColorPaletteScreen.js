@@ -67,7 +67,7 @@ const SKELETON_ROW_IDS = [0, 1, 2, 3];
  * @param {string} props.view  `'grid'` or `'list'` — the saved view mode, so the placeholder already
  *                             has the shape of the grid it is about to be replaced by.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The swatch-grid-shaped skeleton.
  */
@@ -145,7 +145,7 @@ function SwatchGridSkeleton({ label, view }) {
  *
  * @param {string} value The swatch's raw `$value`.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The inline style for `SwatchCard`'s `previewStyle`.
  */
@@ -162,7 +162,7 @@ function swatchPreviewStyle(value) {
  * @param {Function} props.navigate The route navigator.
  * @param {Object}   props.library  The design-tokens feed surface (`feed`, `slug`, `version`, `rest`, `refreshFeed`).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The screen.
  */
@@ -246,7 +246,7 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 	 * @param {Event}  event The click event from the pill's own button.
 	 * @param {string} token The swatch token to reset.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return {void}
 	 */
@@ -298,7 +298,7 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 	 *
 	 * @param {Object} item A mapped grid item from `mapPaletteToSwatchGroups()`.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return {?JSX.Element} The pill, or null.
 	 */
@@ -631,6 +631,6 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
  * The screen-panel contract: a screen exposes its settings panel as a static property on its page
  * component, read by `StyleLibraryApp` and mounted into `AppShell`'s `settingsPanel` slot.
  *
- * @since TBD
+ * @since 3.8.0
  */
 ColorPaletteScreen.SettingsPanel = ColorPaletteSettings;

@@ -6,7 +6,7 @@ import { SVG, Path } from '@wordpress/primitives';
 /**
  * A ruler, for the Spacing screen.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const spacing = (
 	<SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">

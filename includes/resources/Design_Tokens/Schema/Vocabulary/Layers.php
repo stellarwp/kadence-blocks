@@ -9,14 +9,14 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary;
  * while "$extensions" (foundation presets, block presets, presets) is NOT a token tree and must
  * never be walked, merged, or indexed as one.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Layers {
 
 	/**
 	 * The "primitive" layer: raw, context-free token values.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -25,7 +25,7 @@ final class Layers {
 	/**
 	 * The "semantic" layer: role-based tokens, often aliasing into the primitive layer.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -37,7 +37,7 @@ final class Layers {
 	 *
 	 * @var string[]
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	private const TOKEN_LAYERS = [
 		self::PRIMITIVE,
@@ -47,7 +47,7 @@ final class Layers {
 	/**
 	 * The DTCG layers that carry resolvable tokens.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string[]
 	 */
@@ -58,7 +58,7 @@ final class Layers {
 	/**
 	 * The "semantic" layer name — the role-based layer a preset value aliases into.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -69,7 +69,7 @@ final class Layers {
 	/**
 	 * The "primitive" layer name — the raw, context-free layer a semantic token typically aliases into.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */

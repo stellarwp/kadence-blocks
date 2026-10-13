@@ -23,7 +23,7 @@ import './HeadingScreen.scss';
  *
  * @param {Object} props The screen props (`label`, `route`, `navigate`, `library`).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The screen body.
  */
@@ -38,7 +38,7 @@ HeadingScreen.SettingsPanel = HeadingSettings;
  * exactly as a third party would — the app never imports this component directly, so this module-scope
  * call is the only registration path.
  *
- * @since TBD
+ * @since 3.8.0
  */
 addFilter(PRESET_SCREENS_FILTER, 'kadence-blocks/style-library-heading-screen', (screens) => ({
 	...screens,

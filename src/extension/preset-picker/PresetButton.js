@@ -41,7 +41,7 @@ import './preset-button.scss';
  * @param {string} library The token library slug.
  * @param {string} slug The resolved preset slug (see `activePresetFor()`), not a raw `kbPreset` value.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The preset label.
  */
@@ -61,7 +61,7 @@ function currentPresetLabel(name, library, slug) {
  * @param {Function} props.setAttributes The block's setAttributes.
  * @param {string}   [props.library]     The token library the block is on; defaults to the active library.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object|null} The button, or null when the block has no presets.
  */
@@ -96,7 +96,7 @@ export function PresetButton({ blockName, attributes, setAttributes, library }) 
 	 * The setAttributes patch that clears every mapped override back to its preset value, so a control
 	 * carries no leftover edit.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return {Object} The reset patch.
 	 */
@@ -114,7 +114,7 @@ export function PresetButton({ blockName, attributes, setAttributes, library }) 
 	 *
 	 * @param {string} slug The preset slug to select.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return {void}
 	 */
@@ -127,7 +127,7 @@ export function PresetButton({ blockName, attributes, setAttributes, library }) 
 	 * Clear every mapped override for the block, so all mapped controls fall back to the selected
 	 * preset's values (served by the existing scoped CSS), then refresh the live preview.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return {void}
 	 */

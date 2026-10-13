@@ -44,7 +44,7 @@ const SKELETON_CARD_IDS = [0, 1, 2];
  * @param {Object} props       The component props.
  * @param {string} props.label The screen's nav label, used to build the busy-region's accessible name.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The card-shaped skeleton grid.
  */
@@ -84,7 +84,7 @@ function PresetCardsSkeleton({ label }) {
  * @param {Object}   props.preset        The block's preset config (`presets/<block>-preset.js`),
  *                                       read for its label, preview builders and root class.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The screen body.
  */

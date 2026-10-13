@@ -373,7 +373,7 @@ class Kadence_Blocks_Abstract_Block {
 	 * class), not an outer wrapper such as an animation `data-aos` div, and the whole method short-circuits
 	 * before any parsing when nothing is pinned.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed $attributes The block attributes.
 	 * @param mixed $content    The block's rendered HTML.
@@ -414,7 +414,7 @@ class Kadence_Blocks_Abstract_Block {
 	 * block class (`.wp-block-<name>.kb-preset--<slug>`), so a class on a wrapper never matches. The whole method
 	 * short-circuits before any parsing when nothing is selected.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed $attributes The block attributes.
 	 * @param mixed $content    The block's rendered HTML.
@@ -463,7 +463,7 @@ class Kadence_Blocks_Abstract_Block {
 	 * style attribute maps it to a preset slug here, so the mapping happens at render time and the stored
 	 * attributes are never rewritten.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $attributes The block attributes.
 	 *
@@ -479,7 +479,7 @@ class Kadence_Blocks_Abstract_Block {
 	 * the token registry is inactive or the token services cannot answer, so a caller can keep the
 	 * behavior it had before presets existed.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $attributes The block attributes.
 	 *
@@ -625,7 +625,7 @@ class Kadence_Blocks_Abstract_Block {
 		 * sits above the block.json defaults yet below the instance attributes, so the merge below still
 		 * lets a per-instance value win.
 		 *
-		 * @since TBD
+		 * @since 3.8.0
 		 *
 		 * @param array<string, mixed> $default_attributes The block's registration defaults: attribute
 		 *                                                 name => default value.
@@ -828,7 +828,7 @@ class Kadence_Blocks_Abstract_Block {
 	 * value shape, which every shadow-carrying block stores identically. It is what a block gates its
 	 * `box-shadow` output on once it has no separate "enable" boolean to read.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $shadow_item One `shadow[0]`-shaped item.
 	 *

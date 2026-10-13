@@ -70,7 +70,7 @@ import { useActivePaletteGroups } from '../../../hooks/use-active-palette-groups
  * The only unit border width is stored in — the `border-width` scale's tokens (`1px`, `2px`,
  * `4px`) are all pixels, and `BorderControl` offers no switcher to pick another.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const WIDTH_UNIT = 'px';
 
@@ -79,7 +79,7 @@ const WIDTH_UNIT = 'px';
  *
  * @param {*} stored The stored width.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {*} The control-shaped width.
  */
@@ -102,7 +102,7 @@ export function toControlWidth(stored) {
  *
  * @param {*} next The control-shaped width: an alias, a number, or ''.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {*} The stored width, in `px`.
  */
@@ -129,7 +129,7 @@ export function toStoredWidth(next) {
  *
  * @param {*} stored The stored width axis.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {*} The control-shaped width axis.
  */
@@ -142,7 +142,7 @@ export function toControlWidthAxis(stored) {
  *
  * @param {*} next The control-shaped width axis.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {*} The stored width axis.
  */
@@ -157,7 +157,7 @@ export function toStoredWidthAxis(next) {
  *
  * @param {*} stored The stored style axis.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {*} The control-shaped style axis.
  */
@@ -170,7 +170,7 @@ export function toControlStyleAxis(stored) {
  *
  * @param {*} next The control-shaped style axis.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {*} The stored style axis.
  */
@@ -194,7 +194,7 @@ export function toStoredStyleAxis(next) {
  * @param {*} atBreakpoint The resolved width value at the active breakpoint, used to exempt any
  *                          already-bound token from the primitive narrowing.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array} The pickable-token list.
  */
@@ -215,7 +215,7 @@ export function widthTokensForField(atBreakpoint) {
  * @param {string}  field.path            The base dot path.
  * @param {?Object} [field.axisPaths]     The path of each axis, as `{ width, style, color }`.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{width: string, style: string, color: string}} The path of each axis.
  */
@@ -255,7 +255,7 @@ export function borderAxisPaths(field) {
  *                                             value in effect.
  * @param {Function} props.onValueChange      Called with `(path, next)` for any of the three axes.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The field.
  */

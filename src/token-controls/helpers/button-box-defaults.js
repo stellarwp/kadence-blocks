@@ -12,13 +12,13 @@
  * The literal each padding side falls back to — also what `src/blocks/advancedbtn/style.scss`'s
  * default rule uses, top/right/bottom/left order.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const BUTTON_PADDING_FALLBACK = ['0.4em', '1em', '0.4em', '1em'];
 
 /**
  * The literal each margin side falls back to.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const BUTTON_MARGIN_FALLBACK = ['0', '0', '0', '0'];

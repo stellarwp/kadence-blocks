@@ -45,7 +45,7 @@ import './ActionsForm.scss';
  * @param {Function}           [props.onActivate]       Called when the user asks to make it active.
  * @param {Function}           [props.onDelete]         Called when the user asks for the destructive action.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The form.
  */

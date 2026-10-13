@@ -23,7 +23,7 @@ use WP_REST_Server;
  * /documents/{slug}/labels/{id}, its narrowed write path, the user-created-id routing to
  * userPrimitives, and the version-conditional guard.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class DocumentsControllerLabelsTest extends TestCase {
 
@@ -31,35 +31,35 @@ final class DocumentsControllerLabelsTest extends TestCase {
 	 * A baseline token id present in the registered baseline, used wherever the test only needs
 	 * a real registered id and does not care which one.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
 	private const BASELINE_ID = 'semantic.color.button-bg';
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Store
 	 */
 	private Token_Store $store;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Documents_Controller
 	 */
 	private Documents_Controller $controller;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Label_Index
 	 */
 	private Token_Label_Index $label_index;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var User_Primitive_Index
 	 */

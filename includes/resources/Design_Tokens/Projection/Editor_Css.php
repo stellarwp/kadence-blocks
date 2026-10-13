@@ -32,14 +32,14 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
  * provider adds to — so a new editor-CSS projector joins from its own module, with no change to this class or
  * the Projection provider.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Editor_Css {
 
 	/**
 	 * The token registry, for the fail-closed gate.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Registry
 	 */
@@ -48,14 +48,14 @@ final class Editor_Css {
 	/**
 	 * The collection of CSS projectors whose editor CSS is aggregated, in load order.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Css_Projectors
 	 */
 	private Css_Projectors $projectors;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Token_Registry $registry   The token registry.
 	 * @param Css_Projectors $projectors The collection of CSS projectors to aggregate.
@@ -68,7 +68,7 @@ final class Editor_Css {
 	/**
 	 * The combined design-token editor CSS, or an empty string when the registry is deactivated.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */

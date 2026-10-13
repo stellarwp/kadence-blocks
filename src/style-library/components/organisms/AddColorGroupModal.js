@@ -29,7 +29,7 @@ import './AddColorGroupModal.scss';
  *                                            the caller decides success/failure asynchronously, surfaced via
  *                                            Snackbar rather than by keeping the modal open.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The modal.
  */

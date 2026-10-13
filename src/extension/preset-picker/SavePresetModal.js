@@ -27,7 +27,7 @@ import './save-preset-modal.scss';
  * @param {Function} props.onClose       Called to dismiss the modal.
  * @param {Function} props.onSaved       Called with the new preset slug after a successful save.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The modal element.
  */
@@ -42,7 +42,7 @@ export function SavePresetModal({ blockName, library, tokens, existingSlugs = []
 	/**
 	 * Write the new preset from the captured values, then update the catalog and select it.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return {void}
 	 */

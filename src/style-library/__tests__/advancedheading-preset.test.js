@@ -20,7 +20,7 @@ jest.mock('../components/pages/HeadingSettings', () => ({ HeadingSettings: () =>
 /**
  * Every field the schema declares, flattened across its panels.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array<Object>} The fields.
  */
@@ -353,7 +353,7 @@ describe('HEADING_PRESET font family and weight', () => {
 	 * @param {string[]}                 favorites The library's favorite families.
 	 * @param {Record<string, string[]>} weights   The catalog's per-family weights.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return {void}
 	 */

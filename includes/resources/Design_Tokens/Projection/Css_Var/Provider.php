@@ -9,14 +9,14 @@ use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provi
  * Registers the CSS-variable projector: binds the builder, bridge and projector as singletons
  * then wires their public methods to WordPress actions and filters.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Provider extends Provider_Contract {
 
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	public function register(): void {
 		$this->container->singleton( Css_Builder::class );

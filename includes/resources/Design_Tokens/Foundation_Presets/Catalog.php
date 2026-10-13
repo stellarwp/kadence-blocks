@@ -17,19 +17,19 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Extensions;
  *
  * The baseline is the single source of truth; this class never holds its own copy of the catalogue.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Catalog {
 
 	/**
 	 * @var Baseline_Document The shipped, read-only baseline the catalogue is read from.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	private Baseline_Document $baseline;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Baseline_Document $baseline The shipped baseline document.
 	 */
@@ -40,7 +40,7 @@ final class Catalog {
 	/**
 	 * The available preset group keys, e.g. ["typeScale"].
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string[]
 	 */
@@ -51,7 +51,7 @@ final class Catalog {
 	/**
 	 * The selectable presets in a group as slug => label, with the structural "$default" key skipped.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $group The preset group key.
 	 *
@@ -78,7 +78,7 @@ final class Catalog {
 	/**
 	 * The group's default preset slug, or an empty string when none is declared.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $group The preset group key.
 	 *
@@ -96,7 +96,7 @@ final class Catalog {
 	 * A preset's flat token map: primitive dot-path => raw value. This is what {@see Selector}
 	 * turns into store overrides.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $group  The preset group key.
 	 * @param string $choice The preset slug within the group.
@@ -125,7 +125,7 @@ final class Catalog {
 	 * preset omits are cleared rather than left behind, so switching presets can never leave a previous
 	 * preset's exclusive paths applied.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $group The preset group key.
 	 *
@@ -148,7 +148,7 @@ final class Catalog {
 	/**
 	 * The presets in a group (named presets plus the "$default" key), or throw when the group is unknown.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $group The preset group key.
 	 *
@@ -169,7 +169,7 @@ final class Catalog {
 	/**
 	 * The whole foundation-presets section from the baseline, or an empty array when absent.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, mixed>
 	 */

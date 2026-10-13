@@ -20,7 +20,7 @@ import './ColorGradientPicker.scss';
 /**
  * The Color/Gradient tabs.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const TABS = [
 	{ name: 'color', title: __('Color', 'kadence-blocks') },
@@ -32,7 +32,7 @@ const TABS = [
  *
  * @param {string} value The value to check.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True when the value looks like a gradient.
  */
@@ -50,7 +50,7 @@ export function isGradientValue(value) {
  * @param {boolean}  [props.colorOnly] Renders the solid-color tab body with no Gradient tab at all.
  * @param {Function} props.onChange    Called with the new value on edit; never called when read-only.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The picker body.
  */

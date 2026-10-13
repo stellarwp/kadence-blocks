@@ -7,7 +7,7 @@ import { SVG, Path } from '@wordpress/primitives';
  * The Section block's glyph, for its preset screen. The plus is cut out of the circle, so the row's
  * background shows through it in every state.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const section = (
 	<SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">

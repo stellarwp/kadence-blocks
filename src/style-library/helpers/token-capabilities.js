@@ -16,7 +16,7 @@
  *
  * @param {Object} token The token entry from `feed.schema.groups`.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True for a baseline token.
  */
@@ -29,7 +29,7 @@ export function isBaselineToken(token) {
  *
  * @param {Object} token The token entry from `feed.schema.groups`.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True when deletable.
  */
@@ -43,7 +43,7 @@ export function isDeletable(token) {
  *
  * @param {Object} token The token entry from `feed.schema.groups`.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True when renameable (always, for a token entry).
  */

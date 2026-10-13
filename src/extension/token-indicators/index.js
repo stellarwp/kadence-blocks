@@ -48,7 +48,7 @@ export { useLinkedMeasureState } from './use-linked-measure-state';
  *                                    defaults to desktop for a caller with no device context.
  * @param {?Object} [responsiveAttrs] The binding's declared `{ tablet, mobile }` attribute names.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The attribute the given device stores its value in.
  */
@@ -75,7 +75,7 @@ function deviceAttrFor(attr, device, responsiveAttrs) {
  * @param {string} kind The property kind.
  * @param {string} attr The primary attribute name.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The unit attribute name, or ''.
  */
@@ -93,7 +93,7 @@ function unitAttrFor(kind, attr) {
  * @param {string} kind The property kind.
  * @param {string} attr The control attribute name.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The enable-flag attribute name, or ''.
  */
@@ -125,7 +125,7 @@ function enabledAttrFor(kind, attr) {
  *
  * @param {Object} property The catalog property entry.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The declared axis, or '' when the property owns its control attribute outright.
  */
@@ -147,7 +147,7 @@ export function propertyAxis(property) {
  * @param {string} blockName The block name.
  * @param {string} [library] The token library slug; defaults to the active library.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array} The mapped attributes ([{ attr, kind }]).
  */
@@ -185,7 +185,7 @@ export function mappedAttrsFor(blockName, library) {
  *                                omit it only for a caller with no device context, e.g. a block-wide
  *                                "is anything overridden" summary that doesn't distinguish devices.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} attrName => { property, token, kind, presetValue, responsive, bound, overridden }.
  *                   Keyed by the DESKTOP attribute name even when `overridden` reflects another
@@ -329,7 +329,7 @@ export function usePresetBinding(blockName, attributes, library, previewDevice) 
  * @param {string} [library]     The token library slug; defaults to the active library.
  * @param {string} [previewDevice] The active preview device ('Desktop' | 'Tablet' | 'Mobile').
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {*} The resolved literal value, or `undefined` when the active preset does not set it.
  *             Not gated on ownership: this feeds a control's muted default, which must name what the
@@ -370,7 +370,7 @@ export function presetPropertyValueForDevice(blockName, propertyKey, attributes,
  * @param {Object} attributes  The block's current attributes — read for `kbPreset`.
  * @param {string} [library]   The token library slug; defaults to the active library.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {*} The `var()` chain, or `undefined` when the active preset does not set the property.
  */
@@ -415,7 +415,7 @@ export function presetPropertyReference(blockName, propertyKey, attributes, libr
  * @param {?Object} [responsiveAttrs] The binding's declared `{ tablet, mobile }` attribute names, for a block
  *                                    that names its per-device attributes outside the prefix convention.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The attribute patch to pass to `setAttributes`.
  */
@@ -473,7 +473,7 @@ export function resetAttrPatch(attr, kind, declared, responsiveAttrs) {
  * @param {string}  kind       The property kind; only a color carries a palette class.
  * @param {?Object} [declared] The block's declared attributes, read for which companion exists.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The patch, with any declared palette-class companion cleared.
  */
@@ -507,7 +507,7 @@ function withPaletteClassCompanions(patch, attr, kind, declared) {
  * @param {?Object} [responsiveAttrs] The binding's declared `{ tablet, mobile }` names, when it
  *                                    spells its companions something other than the convention.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The patch, with any companions added.
  */
@@ -533,7 +533,7 @@ function withDeviceCompanions(patch, attr, declared, empty, responsiveAttrs) {
  *                                     has are written.
  * @param {?Object}  [responsiveAttrs] The binding's declared `{ tablet, mobile }` attribute names.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {void}
  */
@@ -575,7 +575,7 @@ export function resetAttr(attr, setAttributes, kind, declared, responsiveAttrs) 
  * @param {string}   [previewDevice] The active preview device ('Desktop' | 'Tablet' | 'Mobile') — only
  *                                    needed for 'border', to resolve each axis's device preset value.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{ bound: boolean, overridden: boolean }} This state's own binding state, the shape
  *                                    `EditorBoxControl`/`EditorBorderControl`'s `state` prop expects.

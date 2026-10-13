@@ -20,21 +20,21 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Document;
  * already-decoded document (through {@see Token_Order_Index}) and permutes arrays, so it stays free
  * of WordPress calls and I/O.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Token_Sorter {
 
 	/**
 	 * The reader for the stored flat token id list.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Order_Index
 	 */
 	private Token_Order_Index $order_index;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Token_Order_Index $order_index The reader for the stored flat token id list.
 	 */
@@ -45,7 +45,7 @@ final class Token_Sorter {
 	/**
 	 * The flat ordered token id list stored on a decoded library document, empty when it carries none.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document The decoded library document.
 	 *
@@ -61,7 +61,7 @@ final class Token_Sorter {
 	 * An empty order returns the rows untouched (declaration order), so removing the stored order
 	 * restores declaration order with no other code path involved.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @template TRow of array<string, mixed>
 	 *

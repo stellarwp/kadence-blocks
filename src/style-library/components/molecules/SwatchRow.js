@@ -37,7 +37,7 @@ import './SwatchRow.scss';
  * @param {Function}     [props.innerRef]        A dnd-kit node ref for the root element.
  * @param {Object}       [props.wrapperStyle]    The dnd-kit drag transform/transition style.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The row.
  */

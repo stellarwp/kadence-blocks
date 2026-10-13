@@ -7,7 +7,7 @@
  *
  * @param {*} value The stored value.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The trimmed string, or '' when empty.
  */

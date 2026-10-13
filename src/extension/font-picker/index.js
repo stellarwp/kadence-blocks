@@ -30,14 +30,14 @@ import { __ } from '@wordpress/i18n';
  * The muted badge a site-registered custom font carries in the catalog list, matching the Style
  * Library's Typography screen.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const CUSTOM_BADGE = __('Custom', 'kadence-blocks');
 
 /**
  * The muted badge a favorite carries where it sits pinned above the catalog.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const FAVORITE_BADGE = __('Favorite', 'kadence-blocks');
 
@@ -45,7 +45,7 @@ const FAVORITE_BADGE = __('Favorite', 'kadence-blocks');
  * The muted badge the Kadence theme's two global font entries carry, so a row whose value is a CSS
  * variable rather than a family name reads as one.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const THEME_BADGE = __('Theme', 'kadence-blocks');
 
@@ -61,7 +61,7 @@ const THEME_BADGE = __('Theme', 'kadence-blocks');
  * Offered only when the Kadence theme is active. On any other theme the custom properties are never
  * emitted, and an option resolving to `inherit` everywhere would be a row that does nothing.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array<{value: string, label: string, badge: string}>} The theme options, or none.
  */
@@ -88,7 +88,7 @@ function themeFontOptions() {
  * Read the design-tokens font global. Fail-safe on a missing or malformed global, mirroring the
  * token pool's posture — a caller never has to null-check before using either list.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{favorites: string[], custom: string[], manageUrl: string}} The pool, or empty values.
  */
@@ -105,7 +105,7 @@ function fontPool() {
 /**
  * The Google family names the editor already localizes, fail-safe to an empty list.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string[]} The Google family names.
  */
@@ -118,7 +118,7 @@ function googleNames() {
 /**
  * The site's favorite font families, in stored order, with blank entries dropped.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string[]} The favorite families.
  */
@@ -142,7 +142,7 @@ export function favoriteFonts() {
  * duplicates a Google one renders once — the same rule the Style Library's Typography dropdown
  * applies, so the two screens list the same names in the same order.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array<{value: string, label: string, badge?: string}>} The option list.
  */
@@ -183,7 +183,7 @@ export function fontCatalogOptions() {
  * The admin URL of the screen that edits the favorites list, for the picker's footer link. Empty
  * when the global carries none, which the control renders as plain text rather than a dead link.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The deep link, or an empty string.
  */
@@ -199,7 +199,7 @@ export function favoriteFontsManageUrl() {
  *
  * @param {string} family The family name.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} Whether to fetch it from Google.
  */

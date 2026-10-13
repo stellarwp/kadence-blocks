@@ -72,7 +72,7 @@ const MENU_OFFSET = 16;
  * @param {'default'|'large'}                     [props.size]          The toggle label's size. `'large'` is for a dropdown set on the same line as
  *                                                                       a page title; everything else keeps `'default'`.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The dropdown.
  */

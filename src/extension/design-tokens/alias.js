@@ -44,7 +44,7 @@ export function isTokenAlias(value) {
  *
  * @param {*} value A value that may be an alias string, e.g. `{primitive.color.brand.primary}`.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The inner dot-path, e.g. `primitive.color.brand.primary`. Empty string when the
  *                   value is not a well-formed alias.

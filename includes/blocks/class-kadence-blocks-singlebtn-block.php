@@ -55,7 +55,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 	 * The preset slug each value of the older "Button Inherit Styles" attribute maps to, read at render
 	 * time when the block carries no `kbPreset` yet. Fill and empty map to nothing: the default look.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var array<string, string>
 	 */
@@ -74,7 +74,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 	 * the fill class. On an active registry a retired value alone always maps to a class-painted preset,
 	 * so a match here comes only from a button that also stores a variable-painted `kbPreset`.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var array<string, string>
 	 */
@@ -87,7 +87,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 	/**
 	 * The slug of the theme's secondary preset.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -97,7 +97,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 	 * The class a secondary button keeps when its preset falls back to the theme's base preset, so site
 	 * CSS written against it keeps applying.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -117,7 +117,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 	/**
 	 * The preset slug each value of the older "Button Inherit Styles" attribute maps to.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, string> inheritStyles value => preset slug.
 	 */
@@ -128,7 +128,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 	/**
 	 * The classes each value of the older "Button Inherit Styles" attribute painted the button with.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, string> inheritStyles value => space-separated classes.
 	 */
@@ -570,7 +570,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 	 * The preset slug this button asks for: its `kbPreset`, or the preset its older "Button Inherit Styles"
 	 * value maps to, so a saved button renders the same preset with no re-save.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $attributes The block attributes.
 	 *
@@ -599,7 +599,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 	 * rule, still wins. Responsiveness needs nothing here: a per-breakpoint override redeclares the
 	 * canonical preset variable inside a media query, and this bridge follows it.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Kadence_Blocks_CSS   $css        The css object.
 	 * @param array<string, mixed> $attributes The block attributes.
@@ -643,7 +643,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 	 * shipped values equal the button's own stylesheet: an untouched button keeps its border where the
 	 * theme's cascade put it, exactly as it did before presets existed.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Kadence_Blocks_CSS   $css        The css object.
 	 * @param array<string, mixed> $attributes The block attributes.
@@ -698,7 +698,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 	 * wins. Distinguishing them would need a real "explicitly none" marker outside the shadow value
 	 * itself, which is a design change, not a bug fix.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Kadence_Blocks_CSS   $css        The css object.
 	 * @param array<string, mixed> $attributes The block attributes.
@@ -728,7 +728,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 	 * default preset only the properties the library overrides are kept, since the shipped values equal
 	 * the button's own stylesheet: an untouched button keeps its look where the theme's cascade put it.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $preset     The resolved preset slug.
 	 * @param bool   $is_default Whether the slug is the block's default preset.
@@ -769,7 +769,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 	 * instead of freezing to a literal, and a `shadowToken` binding on the item resolves the whole
 	 * shorthand to its token var().
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Kadence_Blocks_CSS $css    The active CSS builder.
 	 * @param mixed              $shadow The stored shadow object ( e.g. $attributes['shadow'][0] ).
@@ -796,7 +796,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 	 * preset bridges must not outrank them. While the token registry is off the older style attribute
 	 * decides, as it did before presets existed.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $attributes The block attributes.
 	 *

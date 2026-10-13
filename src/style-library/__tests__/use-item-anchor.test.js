@@ -42,7 +42,7 @@ afterEach(() => {
  * @param {string} props.id        The item id.
  * @param {string} props.placement The placement to register.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The card.
  */
@@ -58,7 +58,7 @@ function Card({ id, placement }) {
  * @param {Object} props    The component props.
  * @param {string} props.id The item id to read.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {null} Nothing.
  */
@@ -73,7 +73,7 @@ function Reader({ id }) {
  *
  * @param {...JSX.Element} nodes The nodes to render.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {void}
  */

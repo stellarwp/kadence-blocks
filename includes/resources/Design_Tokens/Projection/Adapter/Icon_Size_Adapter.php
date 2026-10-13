@@ -28,12 +28,12 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
  * the registration default, so this also covers every published icon block that never customized its
  * size — it follows the Default preset from now on, exactly as a cleared size already did.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Icon_Size_Adapter extends Abstract_Adapter {
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -42,14 +42,14 @@ final class Icon_Size_Adapter extends Abstract_Adapter {
 	/**
 	 * The resolved-token dot-path whose presence gates the blank.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
 	private const TOKEN = 'semantic.icon-size.icon';
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Resolver
 	 */
@@ -58,14 +58,14 @@ final class Icon_Size_Adapter extends Abstract_Adapter {
 	/**
 	 * The active-library pointer, so the gate reads the library the block-default CSS is built from.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Active_Token_Library_Store
 	 */
 	private Active_Token_Library_Store $active;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Token_Resolver             $resolver The token resolver.
 	 * @param Active_Token_Library_Store $active   The active-library pointer.
@@ -78,7 +78,7 @@ final class Icon_Size_Adapter extends Abstract_Adapter {
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $attributes The block's registration default attributes.
 	 *

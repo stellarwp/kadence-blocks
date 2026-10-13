@@ -20,7 +20,7 @@ import { SCREEN_DOCS, SCREEN_DOCS_FILTER } from '../constants/screen-docs';
  *
  * @param {*} value The candidate URL.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True for an http(s) URL.
  */
@@ -46,7 +46,7 @@ function isLinkableUrl(value) {
  *
  * @param {string} screenId The screen id from the route.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {?{description: string, docUrl: string}} The entry, or null. `docUrl` is '' when the
  *                                                   entry has no usable link.

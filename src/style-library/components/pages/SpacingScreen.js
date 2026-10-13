@@ -26,7 +26,7 @@ import './SpacingScreen.scss';
  *
  * @param {{id: string, label: string, value: string, userCreated: boolean}} row The row descriptor.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The preview element.
  */
@@ -43,7 +43,7 @@ function renderSpacingPreview(row) {
  * The Spacing screen's config — see `ScaleScreen`'s module docblock for the full per-screen
  * config contract.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const SPACING_CONFIG = {
 	id: 'spacing',
@@ -74,7 +74,7 @@ export const SPACING_CONFIG = {
  *
  * @param {Object} props The props `ScaleScreen` accepts (`{ label, route, navigate, library }`).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The screen.
  */
@@ -87,7 +87,7 @@ export function SpacingScreen(props) {
  *
  * @param {Object} props The props `ScaleSettings` accepts (`{ route, navigate, library }`).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {?JSX.Element} The panel.
  */

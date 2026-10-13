@@ -18,14 +18,14 @@ use WP_Filesystem_Direct;
  * once per request (memoised on the instance) and cached in the object cache keyed on the plugin
  * version, surviving across requests and invalidating automatically when a new plugin version ships.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Dtcg_Schema {
 
 	/**
 	 * Object-cache group shared with the rest of the Design Tokens module.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -34,7 +34,7 @@ final class Dtcg_Schema {
 	/**
 	 * Absolute path to the committed dtcg.schema.json.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -43,7 +43,7 @@ final class Dtcg_Schema {
 	/**
 	 * Cache-busting version the schema is keyed on (the plugin version).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -52,14 +52,14 @@ final class Dtcg_Schema {
 	/**
 	 * Memoised raw schema JSON for this request. Null until first loaded.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string|null
 	 */
 	private ?string $json = null;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $path    Absolute path to the committed dtcg.schema.json.
 	 * @param string $version Cache-busting version (pass the plugin version); the schema cache is keyed on
@@ -74,7 +74,7 @@ final class Dtcg_Schema {
 	 * The committed DTCG JSON Schema as its raw, ready-to-serve JSON string, loaded once per request and
 	 * cached across requests on the version.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string The raw schema JSON, or an empty string when the file is missing or unreadable.
 	 */
@@ -115,7 +115,7 @@ final class Dtcg_Schema {
 	 * asset, and the direct handler always reads it without the credential prompt that the bootstrap can
 	 * trigger on non-direct hosts.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */

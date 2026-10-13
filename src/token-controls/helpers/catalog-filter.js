@@ -11,7 +11,7 @@
  * The maximum number of matching options rendered at once. 1,916 uncapped rows is visibly slow to
  * open, and a virtualization dependency is not worth it for a type-to-narrow catalog.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const CATALOG_RENDER_CAP = 100;
 
@@ -25,7 +25,7 @@ export const CATALOG_RENDER_CAP = 100;
  * @param {number}                                 [cap]   The maximum rendered rows. Defaults to
  *                                                          `CATALOG_RENDER_CAP`.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{visible: Array<Object>, truncated: boolean}} The rows to render, and whether the full
  *         match count exceeds `cap` (the caller shows the "keep typing" footer when true).

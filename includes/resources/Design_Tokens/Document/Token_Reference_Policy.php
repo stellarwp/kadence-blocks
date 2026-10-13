@@ -18,14 +18,14 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Layers;
  * semantic layer — is answered by `all_semantic_overrides()` instead; a primitive-layer direct
  * alias is cascade-supported but not a legal location for a brand-new write to create.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Token_Reference_Policy {
 
 	/**
 	 * Find all references to $primitive_id in the document.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document     The decoded stored overrides document.
 	 * @param string               $primitive_id The canonical dot-path of the target primitive.
@@ -45,7 +45,7 @@ final class Token_Reference_Policy {
 	/**
 	 * Whether all found references are supported (i.e. deletion is safe to proceed).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Token_Reference[] $references
 	 *
@@ -70,7 +70,7 @@ final class Token_Reference_Policy {
 	 * outside the semantic layer. Write-time guards use this check instead of `all_supported()`
 	 * for that reason.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Token_Reference[] $references
 	 *
@@ -89,7 +89,7 @@ final class Token_Reference_Policy {
 	/**
 	 * Walk the primitive and semantic token layers for alias references.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document
 	 * @param string               $alias
@@ -111,7 +111,7 @@ final class Token_Reference_Policy {
 	/**
 	 * Walk one node, classifying every alias match.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $node
 	 * @param string               $prefix
@@ -166,7 +166,7 @@ final class Token_Reference_Policy {
 	 * Recursively scan a composite $value structure for alias references at any nesting depth.
 	 * Generic over shape so future composite/list sub-fields cannot silently bypass detection.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<int|string, mixed> $value
 	 * @param string                   $prefix
@@ -195,7 +195,7 @@ final class Token_Reference_Policy {
 	/**
 	 * Scan $extensions for alias references.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document
 	 * @param string               $alias
@@ -228,7 +228,7 @@ final class Token_Reference_Policy {
 	}
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $section
 	 * @param string               $prefix

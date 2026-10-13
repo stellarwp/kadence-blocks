@@ -13,7 +13,7 @@ import { EditorScalarControl } from '../EditorScalarControl';
  *
  * @param {Object} overrides Props to override on top of the defaults.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{provider: Object, scalarControl: Object, onDeviceChange: Function}} The provider element,
  *   the `ScalarControl` element nested inside it, and the `onDeviceChange` spy passed in.

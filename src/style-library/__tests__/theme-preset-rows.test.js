@@ -56,7 +56,7 @@ const FEED = { values: { 'semantic.color.button-text': '#ffffff', 'semantic.colo
 /**
  * The rows the payload maps to, keyed by slug.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Record<string, Object>} Slug => row.
  */

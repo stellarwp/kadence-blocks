@@ -30,7 +30,7 @@ import './ShadowScreen.scss';
  *
  * @param {{id: string, label: string, value: string|Object, userCreated: boolean}} row The row descriptor.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The preview element.
  */
@@ -46,7 +46,7 @@ function renderShadowPreview(row) {
  * to always return an empty string: the board's rows carry no value column at all, and `ListRow`
  * already renders no column for a falsy `value`.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const SHADOW_CONFIG = {
 	id: 'shadow',
@@ -72,7 +72,7 @@ export const SHADOW_CONFIG = {
  *
  * @param {Object} props The props `ScaleScreen` accepts (`{ label, route, navigate, library }`).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The screen.
  */
@@ -85,7 +85,7 @@ export function ShadowScreen(props) {
  *
  * @param {Object} props The props `ScaleSettings` accepts (`{ route, navigate, library }`).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {?JSX.Element} The panel.
  */

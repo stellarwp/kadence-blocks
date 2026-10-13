@@ -10,7 +10,7 @@
 /**
  * The CSS custom-property namespace for Kadence design tokens.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const TOKEN_VAR_PREFIX = '--kb-token--';
 
@@ -19,7 +19,7 @@ const TOKEN_VAR_PREFIX = '--kb-token--';
  *
  * @param {string} id The token's dot-path id, e.g. `semantic.radius.media`.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} `--kb-token--<id>`, with every `.` replaced by `--`.
  */

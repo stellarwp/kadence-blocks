@@ -29,14 +29,14 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary;
  * "tokenLabels" is id-keyed metadata with no tokens map at all, so neither is returned by get_sections()
  * (that drives the tokens-map walk).
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Extensions {
 
 	/**
 	 * The DTCG vendor-extension namespace this module owns.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -45,7 +45,7 @@ final class Extensions {
 	/**
 	 * The `$extensions` key carrying the module's namespace.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -54,7 +54,7 @@ final class Extensions {
 	/**
 	 * The foundation-presets section: type scales and starter palettes that seed the primitive layer.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -63,7 +63,7 @@ final class Extensions {
 	/**
 	 * The presets section: block presets.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -73,7 +73,7 @@ final class Extensions {
 	 * The color-palettes section: named palettes within the library, each an ordered list of groups of swatches.
 	 * NOT returned by get_sections() — its values live under each swatch's `$value`, not a `tokens` map.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -83,7 +83,7 @@ final class Extensions {
 	 * The user-created primitives section in the $extensions namespace.
 	 * NOT returned by get_sections() — it is not preset-shaped.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -96,7 +96,7 @@ final class Extensions {
 	 * descend into it; it holds ids and labels, never {alias} values. The validator covers it
 	 * with its own explicit branch instead.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -111,7 +111,7 @@ final class Extensions {
 	 * order and ignore stale ids, so an order can permute the registered set but never hide a
 	 * token. The validator covers it with its own explicit branch instead.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -127,7 +127,7 @@ final class Extensions {
 	 * readers append unmentioned slugs in declaration order and ignore stale ones, so an order can
 	 * permute the registered set but never hide a preset.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -146,7 +146,7 @@ final class Extensions {
 	 * exists. Storing families as tokens would imply all three, and would offer a narrower set than
 	 * the font catalog a block's own picker already lists.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -155,7 +155,7 @@ final class Extensions {
 	/**
 	 * The key naming a group's default preset slug.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -164,7 +164,7 @@ final class Extensions {
 	/**
 	 * The key carrying a preset's flat dot-path => value token map.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -173,7 +173,7 @@ final class Extensions {
 	/**
 	 * The key carrying a preset's human-readable label.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -184,7 +184,7 @@ final class Extensions {
 	 * plugin's own stylesheet paints it. Written by the theme discovery layer or the shipped baseline, never
 	 * by a client.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -193,7 +193,7 @@ final class Extensions {
 	/**
 	 * The key carrying the values the theme currently renders for a class-painted preset, for display.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -202,7 +202,7 @@ final class Extensions {
 	/**
 	 * The key carrying the theme values a class-painted preset had when its overrides were last saved.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -211,7 +211,7 @@ final class Extensions {
 	/**
 	 * The key naming a library's current (active) color palette, written to switch the color layer.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -220,7 +220,7 @@ final class Extensions {
 	/**
 	 * The key carrying a palette's ordered list of color groups.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -229,7 +229,7 @@ final class Extensions {
 	/**
 	 * The key carrying a group's ordered list of swatches.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -238,7 +238,7 @@ final class Extensions {
 	/**
 	 * The key naming the color token dot-path a swatch sets.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -247,7 +247,7 @@ final class Extensions {
 	/**
 	 * The key carrying a group's stable id.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -256,7 +256,7 @@ final class Extensions {
 	/**
 	 * The DTCG vendor-extension namespace this module owns.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -267,7 +267,7 @@ final class Extensions {
 	/**
 	 * The `$extensions` key.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -278,7 +278,7 @@ final class Extensions {
 	/**
 	 * The foundation-presets section name.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -289,7 +289,7 @@ final class Extensions {
 	/**
 	 * The presets section name: block presets.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -300,7 +300,7 @@ final class Extensions {
 	/**
 	 * The color-palettes section name: named palettes within the library.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -312,7 +312,7 @@ final class Extensions {
 	 * The user-created primitives section name in the $extensions namespace.
 	 * NOT returned by get_sections() — it is not preset-shaped.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -324,7 +324,7 @@ final class Extensions {
 	 * The per-token display-label overrides section name.
 	 * NOT returned by get_sections() — it is id-keyed metadata, not preset-shaped.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -336,7 +336,7 @@ final class Extensions {
 	 * The per-group token sort-order section name.
 	 * NOT returned by get_sections() — it is id-keyed metadata, not preset-shaped.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -348,7 +348,7 @@ final class Extensions {
 	 * The per-block preset display-order section name.
 	 * NOT returned by get_sections() — it is id-keyed metadata, not preset-shaped.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -360,7 +360,7 @@ final class Extensions {
 	 * The favorite-font-families section name.
 	 * NOT returned by get_sections() — it is a flat name list, not preset-shaped.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -371,7 +371,7 @@ final class Extensions {
 	/**
 	 * Every section name the module owns under its namespace.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string[]
 	 */
@@ -382,7 +382,7 @@ final class Extensions {
 	/**
 	 * The literal key path to the presets section, from the document root.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string[]
 	 */
@@ -397,7 +397,7 @@ final class Extensions {
 	/**
 	 * The literal key path to the color-palettes section, from the document root.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string[]
 	 */
@@ -412,7 +412,7 @@ final class Extensions {
 	/**
 	 * The key naming a group's default preset slug.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -423,7 +423,7 @@ final class Extensions {
 	/**
 	 * The key carrying a preset's flat dot-path => value token map.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -434,7 +434,7 @@ final class Extensions {
 	/**
 	 * The key carrying a preset's human-readable label.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -445,7 +445,7 @@ final class Extensions {
 	/**
 	 * The key carrying the classes a class-painted preset puts on the block element.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -456,7 +456,7 @@ final class Extensions {
 	/**
 	 * The key carrying the values the theme currently renders for a class-painted preset.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -467,7 +467,7 @@ final class Extensions {
 	/**
 	 * The key carrying the theme values a class-painted preset had when its overrides were last saved.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -479,7 +479,7 @@ final class Extensions {
 	 * The preset keys only the theme discovery layer or the shipped baseline may write, so a client write
 	 * carrying one can be refused.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string[]
 	 */
@@ -490,7 +490,7 @@ final class Extensions {
 	/**
 	 * The key naming a library's current (active) color palette.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -501,7 +501,7 @@ final class Extensions {
 	/**
 	 * The key carrying a palette's ordered list of color groups.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -512,7 +512,7 @@ final class Extensions {
 	/**
 	 * The key carrying a group's ordered list of swatches.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -523,7 +523,7 @@ final class Extensions {
 	/**
 	 * The key naming the color token dot-path a swatch sets.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -534,7 +534,7 @@ final class Extensions {
 	/**
 	 * The key carrying a group's stable id.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -551,7 +551,7 @@ final class Extensions {
 	 * collapses both shapes to the base, so no consumer hand-rolls the unwrap. A slot list has no `$value`
 	 * key, so it is never mistaken for an envelope.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed $entry The preset token entry.
 	 *
@@ -570,7 +570,7 @@ final class Extensions {
 	 * The per-breakpoint overrides a preset token entry declares, or an empty array when it declares none.
 	 * Delegates to {@see Responsive} so the lookup path is byte-identical to a token leaf's.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed $entry The preset token entry.
 	 *

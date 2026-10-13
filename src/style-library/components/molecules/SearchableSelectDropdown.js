@@ -45,7 +45,7 @@ import './SearchableSelectDropdown.scss';
  * @param {string}                                                              [props.className]   Extra class names for the root wrapper.
  * @param {string}                                                              [props.valueLabel]  The label for `value` to show while no option in `options` matches it yet — falls back to the raw `value` when omitted.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The dropdown.
  */

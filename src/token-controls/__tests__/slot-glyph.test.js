@@ -32,7 +32,7 @@ afterEach(() => {
  *
  * @param {Object} props The glyph props.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {SVGElement} The rendered svg.
  */
@@ -49,7 +49,7 @@ function renderGlyph(props = {}) {
  *
  * @param {SVGElement} svg The rendered svg.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string[]} The active positions.
  */

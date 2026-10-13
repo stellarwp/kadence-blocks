@@ -18,7 +18,7 @@
  * @param {*} a One stored family value.
  * @param {*} b The other.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} Whether they name the same font. Two empty values are not a match: an unset
  *         field has no family to be the same as.
@@ -41,7 +41,7 @@ export function sameFamily(a, b) {
  *
  * @param {*} value The stored family value.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} Whether it is a theme font reference.
  */

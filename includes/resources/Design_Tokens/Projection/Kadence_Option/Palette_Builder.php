@@ -22,14 +22,14 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Resolved_Tokens;
  * option is the user's Style Guide, and tokens reach the theme through the kadence_palette_option filter
  * at read time instead.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Palette_Builder {
 
 	/**
 	 * The token registry.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Registry
 	 */
@@ -46,7 +46,7 @@ final class Palette_Builder {
 	 * Whether any token claims a palette slot — the value-independent, in-memory gate the projector
 	 * checks before resolving (resolution is the expensive step).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return bool
 	 */
@@ -64,7 +64,7 @@ final class Palette_Builder {
 	 * Slug => [ 'color' => hex, 'name' => label ] for every token that claims a palette slot AND
 	 * resolves to a non-empty value. Returns [] when nothing applies, so the caller skips both writes.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Resolved_Tokens $resolved The resolved token maps.
 	 *
@@ -101,7 +101,7 @@ final class Palette_Builder {
 	 * it to false on a fresh write so KB merges rather than replaces the theme palette). Entry shape is
 	 * { color, name, slug } — exactly what KB's consumers read.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed>                              $existing Decoded option, or [] when absent.
 	 * @param array<string, array{color: string, name: string}> $entries  slug => {color,name} from entries().
@@ -152,7 +152,7 @@ final class Palette_Builder {
 	/**
 	 * The "palette" list from a decoded option, or [] when missing or malformed.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $existing Decoded option.
 	 *
@@ -165,7 +165,7 @@ final class Palette_Builder {
 	/**
 	 * A palette entry's slug as a string, or null when it has no usable string "slug".
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<array-key, mixed> $entry A single (already array-typed) palette entry.
 	 *

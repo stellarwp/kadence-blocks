@@ -26,33 +26,33 @@ use RuntimeException;
  * Persisting through {@see Token_Store::save_document()} bumps the library version and fires
  * `kadence_blocks_design_tokens_changed`, so every projector and cache reacts automatically.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Selector {
 
 	/**
 	 * @var Catalog The catalogue reader the chosen preset's tokens and the group footprint come from.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	private Catalog $catalog;
 
 	/**
 	 * @var Baseline_Document The baseline each override leaf's $type is sourced from.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	private Baseline_Document $baseline;
 
 	/**
 	 * @var Token_Store The sole gateway the seeded overrides are persisted through.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	private Token_Store $store;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Catalog           $catalog  The catalogue reader.
 	 * @param Baseline_Document $baseline The shipped baseline document.
@@ -67,7 +67,7 @@ final class Selector {
 	/**
 	 * Seed the primitive layer from a foundation-preset choice and persist it as store overrides.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string      $group  The preset group key, e.g. "typeScale".
 	 * @param string      $choice The preset slug within the group, e.g. "goldenRatio".
@@ -127,7 +127,7 @@ final class Selector {
 	/**
 	 * The concrete $type the baseline declares for a token dot-path.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $dot_path A token dot-path, e.g. "primitive.fontSize.lg".
 	 *
@@ -159,7 +159,7 @@ final class Selector {
 	 * Set an override leaf at a dot-path, creating intermediate groups as needed. A leaf replaces
 	 * whatever sits at the path wholesale — preset tokens always target a primitive leaf.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document The overrides document, mutated in place.
 	 * @param string               $dot_path The token dot-path to write.
@@ -201,7 +201,7 @@ final class Selector {
 	 * overrides document stays sparse (no `primitive: { fontSize: {} }` residue). A no-op when the path
 	 * is absent.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $node     The current group node, mutated in place.
 	 * @param string               $dot_path The token dot-path to remove.
@@ -216,7 +216,7 @@ final class Selector {
 	 * Recursive worker for {@see unset_leaf()}: walk the remaining segments, unset the final key, then
 	 * prune the parent if the removal emptied it.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $node     The current group node, mutated in place.
 	 * @param string[]             $segments The remaining dot-path segments.

@@ -30,7 +30,7 @@ class Kadence_Blocks_CSS {
 	 * shadow for readers that do not know this key and has something to fall back to when the bound
 	 * token is no longer in the active library.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -269,7 +269,7 @@ class Kadence_Blocks_CSS {
 	/**
 	 * The shadow item key that carries a whole-shadow token binding.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string The binding key.
 	 */
@@ -1074,7 +1074,7 @@ class Kadence_Blocks_CSS {
 	 * fixture); it does NOT consider whether the token resolves. Render callers that must drop an
 	 * unresolved (e.g. since-deleted) token use {@see self::get_backed_token_reference()} instead.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed $value The raw attribute value.
 	 *
@@ -1096,7 +1096,7 @@ class Kadence_Blocks_CSS {
 	 * let the property fall back to whatever global CSS exists. A syntactically-valid but unbacked alias,
 	 * and any non-alias, both return null.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed $value The raw attribute value.
 	 *
@@ -1123,7 +1123,7 @@ class Kadence_Blocks_CSS {
 	 * back to a default. Exposed for callers outside this class (e.g. the shadow-visibility gate on
 	 * {@see Kadence_Blocks_Abstract_Block}) that need to reuse the check rather than duplicate it.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed $value The raw attribute value.
 	 *
@@ -1145,7 +1145,7 @@ class Kadence_Blocks_CSS {
 	 * open: if the container/resolver is unavailable or resolution throws, the alias is treated as backed
 	 * (today's behavior) so a render never crashes and transient resolver issues do not drop all token CSS.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $id The design-token id (the alias path).
 	 *
@@ -1803,7 +1803,7 @@ class Kadence_Blocks_CSS {
 	 * shape onto the keyed array render_shadow() expects and applies the caller's per-state
 	 * defaults, so a {dot.alias} on any numeric leg resolves to its token var().
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<int, mixed>           $box_shadow The positional shadow array (indexes 1-7 are read).
 	 * @param array<string, string|float> $defaults   Per-caller fallback literals for empty legs.
@@ -2393,7 +2393,7 @@ class Kadence_Blocks_CSS {
 	 * `get_border_value()` fills a missing style with `solid`, so it cannot tell a style the block
 	 * stores from that default.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $attributes    The block attributes.
 	 * @param array<string, mixed> $args          The border settings, holding the attribute key of each size.
@@ -2645,7 +2645,7 @@ class Kadence_Blocks_CSS {
 	 * to its `var(--kb-token--…)` reference, and a legacy spacing variable resolves to its stored size.
 	 * An empty/unset value emits nothing.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $prop     The CSS property to write (e.g. `border-top-left-radius`).
 	 * @param mixed  $value    The side's value: a number, a `position` keyword, a design-token alias, a
@@ -3334,7 +3334,7 @@ class Kadence_Blocks_CSS {
 	 * supplied default, matching the historic per-site `is_numeric( $value ) ? $value : $default`
 	 * inline behavior.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed>        $shadow   The stored shadow parts (may be partial).
 	 * @param array<string, string|float> $defaults Per-caller fallback literals for empty legs.

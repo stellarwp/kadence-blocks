@@ -43,21 +43,21 @@ use KadenceWP\KadenceBlocks\Utils\Cast;
  * is resolved alongside the baseline ones. The core Resolver's Effective_Document deliberately strips
  * `$extensions`, so presets are resolved here rather than through that deep-merge.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Preset_Resolver {
 
 	/**
 	 * @var Effective_Presets The per-library effective preset definitions (the baseline deep-merged with the library's stored overrides) are read from.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	private Effective_Presets $presets;
 
 	/**
 	 * @var Token_Resolver The token resolver whose flattened id map preset aliases are looked up in.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	private Token_Resolver $resolver;
 
@@ -66,7 +66,7 @@ final class Preset_Resolver {
 	 *                          other names()-derived surface (the admin feed, the editor picker) inherits it
 	 *                          through.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	private Preset_Order_Index $order_index;
 
@@ -74,12 +74,12 @@ final class Preset_Resolver {
 	 * @var Css_Renderer Renders a composite value into the one CSS string its property takes, so a stored
 	 *                    composite and an aliased one reach output in the same form.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	private Css_Renderer $renderer;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Effective_Presets  $presets     The per-library effective preset definitions.
 	 * @param Token_Resolver     $resolver    The token resolver.
@@ -107,7 +107,7 @@ final class Preset_Resolver {
 	 * (via flatten()) is what guarantees an aliased target resolves to a real token, hence that its
 	 * `--kb-token--*` var is emitted by the base projection for the reference to point at.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $block  The block name, e.g. "kadence/singlebtn".
 	 * @param string $preset The preset slug, e.g. "ghost".
@@ -155,7 +155,7 @@ final class Preset_Resolver {
 	 * Everywhere else prefer resolve() so the indirection survives and the value follows a token edit live.
 	 * A property whose alias resolves to nothing is omitted, matching resolve()'s property set.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $block   The block name, e.g. "kadence/singlebtn".
 	 * @param string $preset The preset slug, e.g. "ghost".
@@ -195,7 +195,7 @@ final class Preset_Resolver {
 	 * other breakpoints are unaffected, so a stale reference degrades to "no override here" rather than
 	 * taking the whole property down.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $block  The block name.
 	 * @param string $preset The preset slug.
@@ -237,7 +237,7 @@ final class Preset_Resolver {
 	 * here" apart from "not overridden here" per corner. This is the one place this resolver's output is
 	 * deliberately sparse; every other property/value it returns is fully resolved.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $block  The block name.
 	 * @param string $preset The preset slug.
@@ -279,7 +279,7 @@ final class Preset_Resolver {
 	 * projection never calls this — it walks the named presets through resolve() (projected) and re-emits
 	 * the `$default`'s declarations from those, so the default still chains in CSS.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $block The block name.
 	 * @param string $slug  The token library whose effective presets and resolved values are read.
@@ -301,7 +301,7 @@ final class Preset_Resolver {
 	 * feed's presets section, the editor picker, Preset_Nav consumers) inherits the display order through,
 	 * so the Style Library and the editor can never disagree on it.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $block The block name.
 	 * @param string $slug  The token library whose effective presets are read.
@@ -329,7 +329,7 @@ final class Preset_Resolver {
 	 * Whether a block declares the given preset in a library. False for an unknown block (no throw), so callers
 	 * can validate a selection without first checking the block exists.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $block The block name.
 	 * @param string $name  The preset slug.
@@ -349,7 +349,7 @@ final class Preset_Resolver {
 	 * The human-readable label a block's preset declares in a library, or null when the block, the preset, or
 	 * its label is absent. A lookup convenience that never throws, mirroring has_preset().
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $block   The block name.
 	 * @param string $preset The preset slug.
@@ -379,7 +379,7 @@ final class Preset_Resolver {
 	 * The classes a class-painted preset puts on the block element, or an empty string for a preset the
 	 * projector paints through variables.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $block  The block name.
 	 * @param string $preset The preset slug.
@@ -396,7 +396,7 @@ final class Preset_Resolver {
 	/**
 	 * The values the theme currently renders for a class-painted preset, for display.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $block  The block name.
 	 * @param string $preset The preset slug.
@@ -414,7 +414,7 @@ final class Preset_Resolver {
 	/**
 	 * Whether a slug names a theme-discovered preset.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $preset The preset slug.
 	 *
@@ -428,7 +428,7 @@ final class Preset_Resolver {
 	 * The properties a preset stores itself in a library, as a `property => true` lookup. For a
 	 * class-painted preset these are its overrides: the only values the projector writes as declarations.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $block  The block name.
 	 * @param string $preset The preset slug.
@@ -445,7 +445,7 @@ final class Preset_Resolver {
 	 * {@see \KadenceWP\KadenceBlocks\Design_Tokens\Registry\Preset_Bindings::consistency()} check compares the
 	 * block's bindings against, and what a block preset iterates.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $block The block name.
 	 * @param string $slug  The token library whose effective presets are read.
@@ -470,7 +470,7 @@ final class Preset_Resolver {
 	 * A block's default preset slug for a library, read from the effective library's `$default` — the
 	 * single source of truth for the default (no registry mirror to drift from).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $block The block name.
 	 * @param string $slug  The token library whose effective presets are read.
@@ -496,7 +496,7 @@ final class Preset_Resolver {
 	 * library leaves the theme's own rules and variables in charge (and the Customizer's live preview
 	 * keeps working).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $block The block name.
 	 * @param string $slug  The token library slug.
@@ -558,7 +558,7 @@ final class Preset_Resolver {
 	 * corner by corner; a pre-joined "8px 4px 8px 4px" is not parseable as a single length and would read
 	 * back as one opaque literal. Joining is the css-emitting caller's job, in project().
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed           $value     The raw binding value (alias string, literal, or slot list).
 	 * @param Resolved_Tokens $resolved  The resolved token maps.
@@ -602,7 +602,7 @@ final class Preset_Resolver {
 	 * boolean, which would drop the whole property. A shadow that saved cleanly and then rendered nothing
 	 * is the worst way for this to fail, so the flag skips the step that cannot handle it.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $value    The composite's sub-field map.
 	 * @param Resolved_Tokens      $resolved The resolved token maps.
@@ -650,7 +650,7 @@ final class Preset_Resolver {
 	 * false) fail the property closed exactly like any other unresolvable slot, so a gap that somehow
 	 * reaches the base path here is caught rather than silently emitted as an empty literal.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<int|string, mixed> $slots     The raw slot list.
 	 * @param Resolved_Tokens          $resolved  The resolved token maps.
@@ -697,7 +697,7 @@ final class Preset_Resolver {
 	 * shorthand (e.g. `var(--kb-token--…) 8px var(--kb-token--…) 8px`) that each aliased corner still
 	 * chains through, so a token edit reaches that corner live.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed $value The raw binding value (alias string, literal, or slot list).
 	 *
@@ -741,7 +741,7 @@ final class Preset_Resolver {
 	 * Only an undefined block or preset is an error; a malformed-but-present `tokens` fails soft, in line
 	 * with the resolver's other lookups.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $block   The block name.
 	 * @param string $preset The preset slug.
@@ -766,7 +766,7 @@ final class Preset_Resolver {
 	/**
 	 * A preset's raw node in a library, or an empty array when the block or the preset is undefined.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $block  The block name.
 	 * @param string $preset The preset slug.
@@ -789,7 +789,7 @@ final class Preset_Resolver {
 	 * resolver reads, without the theme presets the active theme no longer offers — or throw when the block
 	 * is undefined.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $block The block name.
 	 * @param string $slug  The token library whose effective presets are read.
@@ -812,7 +812,7 @@ final class Preset_Resolver {
 	 * The whole effective presets section for a library (the baseline deep-merged with the library's stored
 	 * overrides), or an empty array when absent.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug The token library whose effective presets are read.
 	 *

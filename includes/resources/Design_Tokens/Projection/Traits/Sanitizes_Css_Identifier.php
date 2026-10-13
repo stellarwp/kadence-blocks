@@ -6,7 +6,7 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits;
  * Shared sanitizer for a CSS identifier segment (a block name, preset slug or property), used by the
  * projection helpers that build selectors and custom-property names.
  *
- * @since TBD
+ * @since 3.8.0
  */
 trait Sanitizes_Css_Identifier {
 
@@ -15,7 +15,7 @@ trait Sanitizes_Css_Identifier {
 	 * break out of a selector or a custom-property name. Keeps word characters and hyphens; collapses
 	 * anything else to a single hyphen.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $segment The raw segment.
 	 *

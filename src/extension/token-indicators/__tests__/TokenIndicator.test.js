@@ -25,7 +25,7 @@ import { TokenIndicator } from '../components/TokenIndicator';
  *
  * @param {*} node The element (or child) to walk.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string[]} Every className found, in traversal order.
  */

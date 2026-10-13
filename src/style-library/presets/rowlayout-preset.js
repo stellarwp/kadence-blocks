@@ -20,14 +20,14 @@ import { getPresetProperties, resolveTokenValue } from '../helpers/presets';
  * The block name this screen edits — the single JS spelling, shared by the screen registration and
  * the config below so the two can never drift.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const ROWLAYOUT_BLOCK = 'kadence/rowlayout';
 
 /**
  * The row's built-in corner radius, matching `semantic.radius.rowlayout` (square corners).
  *
- * @since TBD
+ * @since 3.8.0
  */
 const ROW_RADIUS_FALLBACK = ['0', '0', '0', '0'];
 
@@ -43,7 +43,7 @@ const ROW_RADIUS_FALLBACK = ['0', '0', '0', '0'];
  * @param {Record<string, string>} values       The feed's resolved value map.
  * @param {string}                 [breakpoint] The breakpoint to resolve responsive values at.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{background: string, borderRadius: string}} The preview.
  */
@@ -69,7 +69,7 @@ function preview(tokens, values, breakpoint) {
  *
  * @param {{id: string, label: string, preview: {background: string, borderRadius: string}}} row The row descriptor.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The preview element.
  */
@@ -102,7 +102,7 @@ function renderPreview(row) {
  * rule can reach. Offering the field would save a value that changes nothing on the page. See the
  * row's `preset_bindings` declaration.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{panels: Array<Object>}} The settings-form schema.
  */
@@ -153,7 +153,7 @@ function schemaFor() {
  * frozen at module evaluation, before the localized feed is guaranteed to exist, so a snapshot taken
  * here could throw or go stale.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const ROWLAYOUT_PRESET = Object.freeze({
 	block: ROWLAYOUT_BLOCK,

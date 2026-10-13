@@ -19,7 +19,7 @@ import { parseRoute, serializeRoute } from '../helpers/route';
 /**
  * Read and drive the app route.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{route: {screen: string, scope: string, item: string}, navigate: Function, replace: Function}}
  *         The current route plus the push/replace navigators, each taking a partial route object.

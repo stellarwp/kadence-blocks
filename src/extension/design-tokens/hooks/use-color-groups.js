@@ -76,7 +76,7 @@ const PALETTE_NOT_FOUND = {};
 /**
  * The active library slug the palette REST route resolves against, from the localized palette catalog.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The library slug, defaulting to 'default' when the catalog has none.
  */
@@ -89,7 +89,7 @@ function librarySlug() {
 /**
  * The site's current palette id from the localized palette catalog.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The current palette id, defaulting to 'default' when the catalog has none.
  */
@@ -112,7 +112,7 @@ function sitePaletteId() {
  * @param {Function} select   The `useSelect` registry selector.
  * @param {string}   clientId The block's own client id.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The palette id to fetch.
  */
@@ -160,7 +160,7 @@ function resolveEffectivePaletteId(select, clientId) {
  * @param {string} paletteId The palette id to fetch.
  * @param {string} library   The library slug the palette id is resolved against.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Promise<?Array|Object>} The mapped groups, `null` when the palette could not be read, or
  *         `PALETTE_NOT_FOUND` when the library defines no palette with that id.
@@ -225,7 +225,7 @@ function fetchColorGroups(paletteId, library) {
  *                           groups follow this block's `kbPalette` (or its nearest pinned ancestor's)
  *                           as it changes.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array} `[{ id, label, swatches: [{ id, label, value, alias }] }]`, or `[]` while loading.
  */

@@ -17,7 +17,7 @@
 /**
  * A whole-string design-token alias, e.g. `{semantic.dimension.radius-sm}`.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const TOKEN_ALIAS_PATTERN = /^\{[\w.-]+\}$/;
 
@@ -26,7 +26,7 @@ const TOKEN_ALIAS_PATTERN = /^\{[\w.-]+\}$/;
  *
  * @param {*} value The slot value.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True when the value is an alias.
  */
@@ -50,7 +50,7 @@ export function isTokenAlias(value) {
  * custom-property name, the name may contain non-ASCII or backslash-escaped characters, and a
  * fallback may follow a comma and span lines.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const CSS_VAR_PATTERN = /^var\(\s*--(?:\\.|[^\s,()\\])+\s*(?:,[\s\S]*)?\)$/i;
 
@@ -60,7 +60,7 @@ const CSS_VAR_PATTERN = /^var\(\s*--(?:\\.|[^\s,()\\])+\s*(?:,[\s\S]*)?\)$/i;
  *
  * @param {*} value The slot value.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True when the value is a `var(--...)` reference.
  */
@@ -73,7 +73,7 @@ export function isCssVariableReference(value) {
  *
  * @param {*} value The slot value.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True when the slot is set.
  */
@@ -110,7 +110,7 @@ export function hasValue(value) {
  * @param {Array}  tokens The pickable-token list.
  * @param {*}      value  The alias, fixed sentinel, or legacy size slug to match.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {?Object} The matching entry, or null.
  */
@@ -131,7 +131,7 @@ export function findTokenEntry(tokens, value) {
  * @param {Object} entry The pickable entry.
  * @param {*}      value The stored slot value.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True when the entry is the primitive that slug names.
  */
@@ -149,7 +149,7 @@ function isLegacySlugFor(entry, value) {
  * The shipped clamp bodies (`baseline.json`'s Font Size primitives) contain no nested parentheses, so
  * splitting `clamp(...)`'s inner argument list on top-level commas is safe without a full CSS parser.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const CLAMP_PATTERN = /^clamp\((.*)\)$/;
 
@@ -166,7 +166,7 @@ const CLAMP_PATTERN = /^clamp\((.*)\)$/;
  *
  * @param {*} value A resolved dimension: a plain length, or a `clamp(min, preferred, max)` string.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {*} The clamp's `max`, or the value verbatim when it is not a three-argument clamp.
  */
@@ -194,7 +194,7 @@ export function displayDimension(value) {
  * @param {string}  unit         The control's unit, completing an inherited bare number.
  * @param {boolean} [inherited]  Whether the default came from another breakpoint.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The resolved literal, or '' when there is none.
  */
@@ -231,7 +231,7 @@ export function resolveDefaultValue(defaultValue, tokens, unit, inherited) {
  * @param {string} resolvedDefault The default, already resolved to a literal.
  * @param {Array}  tokens          The pickable list, used to name it.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{label: string, value: string}} The label and value, both '' when there is no default.
  */
@@ -265,7 +265,7 @@ export function defaultSummary(resolvedDefault, tokens, literalLabel = '') {
  * @param {string} unit       The control's unit, appended to a literal for display.
  * @param {string} customName The word for a literal value, translated by the caller.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{label: string, value: string}} The trigger label and secondary text, both '' when unset.
  */

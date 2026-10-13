@@ -28,7 +28,7 @@ import { displayDimension } from '../../token-controls';
  *
  * @param {string} family A single family name, already trimmed of surrounding whitespace.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The family name with a matching pair of wrapping quotes removed, or the input
  *         verbatim when it carries none.
@@ -50,7 +50,7 @@ function unquoteFamily(family) {
  *
  * @param {{ favoriteFonts?: string[] }} feed The design-tokens feed.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * Blank and duplicate entries are dropped. The store already trims and deduplicates on exact
  * strings, but it compares before unquoting: `Inter` and `\"Inter\"` are two entries there and one
@@ -100,7 +100,7 @@ export function fontOptions(feed) {
  *
  * @param {string} family A single family name, already unquoted and trimmed.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The `font-family` value.
  */
@@ -125,7 +125,7 @@ export function familyStack(family) {
  *
  * @param {string} value The feed's resolved value for a font-size token.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The clamp's `max`, or the value verbatim when it is not a three-argument clamp.
  */
@@ -138,7 +138,7 @@ export function fontSizeDisplayValue(value) {
  * fonts). Fail-safe on a missing/malformed global, mirroring `getDesignTokensFeed()`'s posture —
  * a caller never has to null-check before using either list.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{google: string[], custom: string[], weights: Record<string, string[]>}} The catalog, or
  *         two empty lists and an empty weight map when unavailable.
@@ -169,7 +169,7 @@ export function getFontCatalog() {
  *
  * @param {{ favoriteFonts?: string[] }} feed The design-tokens feed.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array<{value: string, label: string, badge?: string}>} The option list.
  */
@@ -213,7 +213,7 @@ export function fontCatalogOptions(feed) {
  *
  * @param {string} family The family name.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {?string[]} The family's weights, or null when the catalog does not know it.
  */
@@ -241,7 +241,7 @@ export function fontWeightsFor(family) {
  * @param {string} family The family to check against.
  * @param {*}      weight The stored weight.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True when `family` can still render `weight`.
  */
@@ -262,7 +262,7 @@ export function shipsFontWeight(family, weight) {
  * @param {Array<{id: string, label: string}>} fonts The library's favorites (`fontOptions()`).
  * @param {string}                              name  The catalog family name to match.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {?{id: string, label: string}} The matching favorite, or `null` when none matches.
  */
@@ -285,7 +285,7 @@ export function findFontByFamily(fonts, name) {
  * @param {string}                              name  The catalog family name currently shown in the
  *                                                    dropdown.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{type: ('add'|'remove'), disabled: boolean, font: ?Object}} The button state.
  */

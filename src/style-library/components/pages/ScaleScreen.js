@@ -49,7 +49,7 @@ import { overlayDraft } from '../../helpers/scale';
  * @param {Function} props.navigate The route navigator.
  * @param {Object}   props.library  The design-tokens feed hook's return value.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The screen body.
  */

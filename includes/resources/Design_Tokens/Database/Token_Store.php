@@ -18,14 +18,14 @@ use KadenceWP\KadenceBlocks\Utils\Cast;
  *
  * @see Provider for the table binding.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Token_Store extends Query {
 
 	/**
 	 * @var string Action fired after any write so projectors and caches can react.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	private const CHANGED_ACTION = 'kadence_blocks_design_tokens_changed';
 
@@ -37,7 +37,7 @@ final class Token_Store extends Query {
 	 *             failed write throws before this is reached, so nothing is
 	 *             archived for a save that did not happen.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	private const SUPERSEDED_ACTION = 'kadence_blocks_design_tokens_superseded';
 
@@ -45,21 +45,21 @@ final class Token_Store extends Query {
 	 * @var string Action fired after a library's row is deleted, carrying the slug, so
 	 *             consumers (the history store) can drop the library's related state.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	private const DELETED_ACTION = 'kadence_blocks_design_tokens_deleted';
 
 	/**
 	 * @var string The default token library slug, the always-present canonical library.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	private const DEFAULT_SLUG = 'default';
 
 	/**
 	 * The action hook that fires after any write, for callers that need to react to changes.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -73,7 +73,7 @@ final class Token_Store extends Query {
 	 * Subscribers receive the slug plus the now-previous document and version, for
 	 * callers (the history store) that archive state once a save has committed.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -85,7 +85,7 @@ final class Token_Store extends Query {
 	 * The action hook that fires after a library's row is deleted, for callers that need to drop a
 	 * library's related state once it is gone.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -96,7 +96,7 @@ final class Token_Store extends Query {
 	/**
 	 * The default token library slug.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -115,7 +115,7 @@ final class Token_Store extends Query {
 	 * Translated on read, never stored: a persisted title would then be indistinguishable from one the
 	 * user typed, and it would stay in whatever locale was active when the row happened to be written.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -126,7 +126,7 @@ final class Token_Store extends Query {
 	/**
 	 * Read the raw overrides-only DTCG document for a token library.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug The token library slug.
 	 *
@@ -153,7 +153,7 @@ final class Token_Store extends Query {
 	 * with no row, and a row whose JSON is unreadable or does not decode to an array, both yield an empty
 	 * document, so a caller renders entirely from baseline instead of handling a decode failure itself.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug The token library slug.
 	 *
@@ -177,7 +177,7 @@ final class Token_Store extends Query {
 	 * Consumed by downstream caches (e.g. the projected-CSS string is keyed on
 	 * this value) to know when a token library has changed.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug The token library slug.
 	 *
@@ -199,7 +199,7 @@ final class Token_Store extends Query {
 	/**
 	 * Read the human-readable label for a token library.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug The token library slug.
 	 *
@@ -220,7 +220,7 @@ final class Token_Store extends Query {
 	/**
 	 * Insert or update a token library's document, bump its version and signal change.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $document The raw overrides-only DTCG JSON to persist.
 	 * @param string $slug     The token library slug.
@@ -269,7 +269,7 @@ final class Token_Store extends Query {
 	 * Returns true on success, false on version mismatch (caller maps to 409).
 	 * Throws DatabaseQueryException on a real write failure.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $document         The raw DTCG JSON to persist.
 	 * @param string $expected_version The version the caller last read. Empty for first write.
@@ -347,7 +347,7 @@ final class Token_Store extends Query {
 	 * output depends on a title, so bumping the version would invalidate the projected-CSS cache for
 	 * a change no visitor can see.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug  The token library slug.
 	 * @param string $title The new label. An empty string is rejected rather than treated as
@@ -408,7 +408,7 @@ final class Token_Store extends Query {
 	 *
 	 * Returns true on success, false on version mismatch or if slug is the default library.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug             The named library slug.
 	 * @param string $expected_version The version the caller last read.
@@ -454,7 +454,7 @@ final class Token_Store extends Query {
 	 *
 	 * No-op when the library does not exist — there is nothing cached to invalidate.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug The token library slug.
 	 *
@@ -493,7 +493,7 @@ final class Token_Store extends Query {
 	 * that has never written the default returns an empty list. Callers that must always surface the
 	 * default (the REST collection) layer that invariant on top.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<int,array{slug:string,title:string,version:string}> The libraries, ordered by slug.
 	 */
@@ -523,7 +523,7 @@ final class Token_Store extends Query {
 	 * A library with no row renders entirely from baseline; the default library may legitimately have no
 	 * row yet, so callers that treat the default as always-known must account for that themselves.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug The token library slug.
 	 *
@@ -546,7 +546,7 @@ final class Token_Store extends Query {
 	 * Removing a library that does not exist is a no-op — there is nothing to remove and nothing to
 	 * signal. This guard is enforced here so every caller is protected, not just the REST surface.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug The token library slug.
 	 *
@@ -582,7 +582,7 @@ final class Token_Store extends Query {
 	/**
 	 * Build the document/version/updated_at/title column data shared by every write path.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string      $document The raw DTCG JSON to persist.
 	 * @param string      $title    Optional label. Omitted from the array (not just left
@@ -620,7 +620,7 @@ final class Token_Store extends Query {
 	 * The microtime() salt guarantees the hash changes on every write, so repeated
 	 * saves (and document-less version bumps) always invalidate downstream caches.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $document The document the hash is derived from.
 	 *
@@ -633,7 +633,7 @@ final class Token_Store extends Query {
 	/**
 	 * Signal that a token library changed so projectors and caches can react.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug The token library slug that changed.
 	 *
@@ -654,7 +654,7 @@ final class Token_Store extends Query {
 	 * Fires after a successful upsert so a subscriber can archive the document
 	 * that was just replaced (the history store), with the captured prior values.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug     The token library slug that was overwritten.
 	 * @param string $document The now-previous document that was replaced.
@@ -676,7 +676,7 @@ final class Token_Store extends Query {
 	/**
 	 * Signal that a token library's row was deleted so consumers can drop its related state.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug The token library slug that was deleted.
 	 *

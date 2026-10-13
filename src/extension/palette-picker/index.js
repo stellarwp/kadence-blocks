@@ -21,7 +21,7 @@ import './palette-picker.scss';
  * The whole palette catalog the editor localizer prints, or an empty shape when the token registry is
  * inactive (no palettes offered).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The catalog ({ active, current, palettes }).
  */
@@ -32,7 +32,7 @@ function paletteCatalog() {
 /**
  * The active set's palettes as `[ { id, label } ]`, or an empty array when none are offered.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array} The palettes.
  */
@@ -45,7 +45,7 @@ export function selectablePalettes() {
 /**
  * The set's `$current` palette id, defaulting to "default".
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The current palette id.
  */
@@ -65,7 +65,7 @@ export function currentPalette() {
  * @param {Function} props.onChange Called with the selected palette id.
  * @param {string}   [props.label]  The control label.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object|null} The selector element, or null when there is nothing to switch between.
  */
@@ -137,7 +137,7 @@ export function PalettePicker({ value, onChange, label }) {
  *
  * @param {string} current The set's current palette id.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The option label.
  */

@@ -12,21 +12,21 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Contracts\Css_Projector;
  * provider. Projectors are returned in the order they were added, which follows the Projection provider's
  * sub-provider order and so mirrors the load-time enqueue.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Css_Projectors {
 
 	/**
 	 * The projectors, in registration order.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Css_Projector[]
 	 */
 	private array $projectors;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Css_Projector[] $projectors The projectors to seed the collection with.
 	 */
@@ -37,7 +37,7 @@ final class Css_Projectors {
 	/**
 	 * Add a CSS projector to the collection.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Css_Projector $projector The projector to add.
 	 *
@@ -50,7 +50,7 @@ final class Css_Projectors {
 	/**
 	 * The projectors, in registration order.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return Css_Projector[]
 	 */

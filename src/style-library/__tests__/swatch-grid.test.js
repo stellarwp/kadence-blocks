@@ -51,7 +51,7 @@ describe('SwatchGrid group pendingDelete', () => {
 	 *
 	 * @param {Object} group The group to render.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return {Function} `groupActions` invocation spy.
 	 */
@@ -125,7 +125,7 @@ describe('SwatchGrid pill slot reservation', () => {
 	 *
 	 * @param {Object} group The group to render.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return {void}
 	 */
@@ -233,7 +233,7 @@ describe('SwatchCard pill slot', () => {
 	 *
 	 * @param {Object} props Props merged over the card's required ones.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return {void}
 	 */
@@ -376,7 +376,7 @@ describe('SwatchGrid group drag handle', () => {
 	 *
 	 * @param {Array<Object>} groups The groups to render.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return {void}
 	 */
@@ -398,7 +398,7 @@ describe('SwatchGrid group drag handle', () => {
 	/**
 	 * The group handle buttons currently rendered, in DOM order.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return {Array<HTMLButtonElement>} The handles inside a heading row.
 	 */
@@ -545,7 +545,7 @@ describe('SwatchGrid list view', () => {
 	 * @param {Array<Object>} groups The groups to render.
 	 * @param {Object}        [props] Props merged over the required ones.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return {Object} The `onAdd` spy.
 	 */

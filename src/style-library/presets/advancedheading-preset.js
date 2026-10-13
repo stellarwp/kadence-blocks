@@ -22,28 +22,28 @@ import { fontCatalogOptions, fontOptions, fontSizeDisplayValue, fontWeightsFor }
  * The block name this screen edits. The block is called Advanced Text in the UI but
  * `kadence/advancedheading` in code, and this is the single JS spelling of the code name.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const HEADING_BLOCK = 'kadence/advancedheading';
 
 /**
  * The heading's built-in corner radius, matching `semantic.radius.heading` (square corners).
  *
- * @since TBD
+ * @since 3.8.0
  */
 const HEADING_RADIUS_FALLBACK = ['0', '0', '0', '0'];
 
 /**
  * The heading's built-in padding, matching `semantic.spacing.heading-padding` (none).
  *
- * @since TBD
+ * @since 3.8.0
  */
 const HEADING_PADDING_FALLBACK = ['0', '0', '0', '0'];
 
 /**
  * The heading's built-in border width, matching `semantic.border-width.default`.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const HEADING_BORDER_WIDTH_FALLBACK = '1px';
 
@@ -54,7 +54,7 @@ const HEADING_BORDER_WIDTH_FALLBACK = '1px';
  * `semantic.border-style` holds a single `default` entry, which is a delivery point rather than a set
  * of choices — so a select over the keywords is the honest control. See `schemaFor()`.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const BORDER_STYLE_OPTIONS = [
 	{ value: '', label: __('Default', 'kadence-blocks') },
@@ -69,7 +69,7 @@ const BORDER_STYLE_OPTIONS = [
  * The CSS keywords `text-transform` accepts, as the preset offers them. A closed keyword set, for the
  * same reason as {@see BORDER_STYLE_OPTIONS}.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const TEXT_TRANSFORM_OPTIONS = [
 	{ value: '', label: __('Default', 'kadence-blocks') },
@@ -82,7 +82,7 @@ const TEXT_TRANSFORM_OPTIONS = [
 /**
  * The human name for each CSS weight, so a list narrowed to one family still reads as words.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const FONT_WEIGHT_LABELS = {
 	100: __('100 Thin', 'kadence-blocks'),
@@ -99,7 +99,7 @@ const FONT_WEIGHT_LABELS = {
 /**
  * Every CSS weight, offered when nothing narrower is known.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const ALL_FONT_WEIGHTS = Object.keys(FONT_WEIGHT_LABELS);
 
@@ -114,7 +114,7 @@ const ALL_FONT_WEIGHTS = Object.keys(FONT_WEIGHT_LABELS);
  *
  * @param {string} family The family the preset has chosen, or '' for the theme's font.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array<{value: string, label: string}>} The weight options.
  */
@@ -141,7 +141,7 @@ function fontWeightOptions(family) {
  * @param {Record<string, string>} values       The feed's resolved value map.
  * @param {string}                 [breakpoint] The breakpoint to resolve responsive values at.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Record<string, string>} The preview.
  */
@@ -184,7 +184,7 @@ function preview(tokens, values, breakpoint) {
  *
  * @param {{id: string, label: string, preview: Record<string, string>}} row The row descriptor.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The preview element.
  */
@@ -253,7 +253,7 @@ function renderPreview(row) {
  * @param {Object} values The current draft, read for the chosen font family.
  * @param {Object} feed   The live design-tokens feed, read for the library's font favorites.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{panels: Array<Object>}} The settings-form schema.
  */
@@ -387,7 +387,7 @@ function schemaFor(tab, values, feed) {
  * frozen at module evaluation, before the localized feed is guaranteed to exist, so a snapshot taken
  * here could throw or go stale.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const HEADING_PRESET = Object.freeze({
 	block: HEADING_BLOCK,

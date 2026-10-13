@@ -16,7 +16,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Extensions;
  * here for the same reason {@see Token_Order_Index} avoids storing a UI-schema group label: a
  * preset slug is a stable, locale-independent identifier, never a translated display string.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Preset_Order_Index {
 
@@ -27,7 +27,7 @@ final class Preset_Order_Index {
 	 * occurrence, so a hand-corrupted section degrades to "no order" instead of a type error or a
 	 * repeated preset downstream.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document The decoded overrides document.
 	 * @param string               $block    The block name.
@@ -59,7 +59,7 @@ final class Preset_Order_Index {
 	 * Store one block's order wholesale (the endpoint's PUT-replaces contract). Deduplicates the
 	 * incoming slugs, keeping first occurrence.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document The decoded overrides document.
 	 * @param string               $block    The block name.
@@ -75,7 +75,7 @@ final class Preset_Order_Index {
 	 * Remove one block's stored order — declaration order applies again for that block. No-op
 	 * (the same document is returned) when the block has no order currently stored.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document The decoded overrides document.
 	 * @param string               $block    The block name.
@@ -108,7 +108,7 @@ final class Preset_Order_Index {
 	 * this method rather than reimplement the merge, so the controller, the resolver, and the
 	 * admin feed can never disagree.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document The decoded overrides document.
 	 * @param string               $block    The block name.
@@ -125,7 +125,7 @@ final class Preset_Order_Index {
 	}
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document The decoded overrides document.
 	 * @param string               $block    The block name.
@@ -137,7 +137,7 @@ final class Preset_Order_Index {
 	}
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document The decoded overrides document.
 	 *
@@ -162,7 +162,7 @@ final class Preset_Order_Index {
 	}
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document The decoded overrides document.
 	 * @param string               $block    The block name.
@@ -179,7 +179,7 @@ final class Preset_Order_Index {
 	}
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document The decoded overrides document.
 	 * @param array<string, mixed> $map      The full presetOrder map to store.
@@ -207,7 +207,7 @@ final class Preset_Order_Index {
 	 * Remove the whole presetOrder section, pruning an emptied namespace/extensions node along
 	 * with it so a fully-cleared order leaves no residue in the stored document.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document The decoded overrides document.
 	 *

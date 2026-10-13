@@ -10,14 +10,14 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Validation_Error;
 /**
  * Validates a color $value: an alias or a color literal (hex / function / keyword / named color).
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Color_Value implements Value_Validator {
 
 	/**
 	 * Validate a color $value.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed  $value The decoded $value.
 	 * @param string $path  Dot-path to the value, for error reporting.

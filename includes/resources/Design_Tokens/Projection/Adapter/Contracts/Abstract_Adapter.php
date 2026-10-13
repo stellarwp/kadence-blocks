@@ -10,7 +10,7 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Adapter\Contracts;
  * the inherited get_block() could not read it through late static binding. Protected is the minimum
  * that lets the accessor defined here resolve the child's value via static::BLOCK.
  *
- * @since TBD
+ * @since 3.8.0
  */
 abstract class Abstract_Adapter implements Adapter_Interface {
 
@@ -18,7 +18,7 @@ abstract class Abstract_Adapter implements Adapter_Interface {
 	 * The Kadence Blocks block type this adapter is keyed to, e.g. "kadence/advancedheading". Concrete
 	 * adapters override with their own block.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -27,7 +27,7 @@ abstract class Abstract_Adapter implements Adapter_Interface {
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	final public function get_block(): string {
 		return static::BLOCK;

@@ -25,7 +25,7 @@ import { tokenCssVar } from '../../token-controls/helpers/token-css-var';
  *
  * @param {Object} entry The token entry (`{ id, label, value, alias }`) to resolve.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The resolved CSS color literal, or '' when there is no document to read from.
  */

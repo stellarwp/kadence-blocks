@@ -115,7 +115,7 @@ let root;
  *
  * @param {Array<string>} favoriteFonts The families the feed reports as favorites.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The design-tokens feed hook's return value, as far as this screen reads it.
  */
@@ -134,7 +134,7 @@ function libraryWith(favoriteFonts) {
  *
  * @param {Array<string>} favoriteFonts The families the feed reports as favorites.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {void}
  */
@@ -154,7 +154,7 @@ function renderScreen(favoriteFonts) {
 /**
  * The contextual Add/Remove Favorite button currently mounted.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {HTMLElement} The button node.
  */
@@ -165,7 +165,7 @@ function favoriteButton() {
 /**
  * The toolbar's polite live region.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {HTMLElement} The live-region node.
  */
@@ -179,7 +179,7 @@ function liveRegion() {
  *
  * @param {Function} flow The mocked flow to arm.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Function} Returns the captured `{ args, resolve, reject }` for the call in flight.
  */

@@ -10,14 +10,14 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Validation_Error;
 /**
  * Validates a textTransform $value: an alias or a textTransform literal.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Text_Transform_Value implements Value_Validator {
 
 	/**
 	 * Validate a textTransform $value.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed  $value The decoded $value.
 	 * @param string $path  Dot-path to the value, for error reporting.

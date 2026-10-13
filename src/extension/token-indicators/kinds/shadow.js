@@ -21,14 +21,14 @@ import { normalizeColor } from './color';
  * What a stored item's `blur` falls back to when unset. `kadence/image`, the block that binds a shadow
  * control attribute, defaults it to 14.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const BLUR_FALLBACK = 14;
 
 /**
  * What a stored item's `opacity` falls back to when unset. `kadence/image` defaults it to 0.2.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const OPACITY_FALLBACK = 0.2;
 
@@ -39,7 +39,7 @@ const OPACITY_FALLBACK = 0.2;
  * @param {string} text      The text to split.
  * @param {string} separator `,` to split into layers, or a space to split a layer into its parts.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string[]} The trimmed, non-empty parts.
  */
@@ -76,7 +76,7 @@ function splitOutsideParens(text, separator) {
  *
  * @param {string} length The length token.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The canonical length.
  */
@@ -101,7 +101,7 @@ function canonicalLength(length) {
  *
  * @param {string} layer One comma-separated layer.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The canonical layer, or '' when it paints nothing.
  */
@@ -147,7 +147,7 @@ function canonicalizeLayer(layer) {
  *
  * @param {string} css The literal.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The canonical literal, or '' when no layer paints anything.
  */
@@ -170,7 +170,7 @@ function canonicalize(css) {
  * @param {*} color   The stored color.
  * @param {*} opacity The stored opacity.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The CSS color.
  */
@@ -197,7 +197,7 @@ function colorLiteral(color, opacity) {
  *
  * @param {Object} item One stored shadow item.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The literal.
  */
@@ -225,7 +225,7 @@ function itemLiteral(item) {
  *
  * @param {*} value The stored or preset value.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The canonical literal, or '' when the value paints nothing.
  */

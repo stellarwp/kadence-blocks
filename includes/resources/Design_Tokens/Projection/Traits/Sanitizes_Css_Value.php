@@ -5,7 +5,7 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits;
 /**
  * Shared defense-in-depth sanitizer for a CSS custom-property value, used by the projection CSS builders.
  *
- * @since TBD
+ * @since 3.8.0
  */
 trait Sanitizes_Css_Value {
 
@@ -17,7 +17,7 @@ trait Sanitizes_Css_Value {
 	 * characters). Not esc_attr(), which would mangle legitimate CSS such as the quotes/commas in a
 	 * font-family stack.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $value The raw CSS value.
 	 *

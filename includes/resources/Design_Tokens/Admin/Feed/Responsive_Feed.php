@@ -22,7 +22,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Token_Type;
  * raw authored strings (an alias slot stays a "{dot.path}" reference); the editor shows what was authored.
  * Pure: no WordPress calls, no globals, no I/O.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Responsive_Feed {
 
@@ -30,7 +30,7 @@ final class Responsive_Feed {
 	 * Build the id => authored-shape map for every responsive-capable leaf that carries a responsive or
 	 * clamp shape.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string,mixed> $document The effective (baseline-merged) DTCG document.
 	 *
@@ -46,7 +46,7 @@ final class Responsive_Feed {
 	/**
 	 * Depth-first walk collecting the authored shape of each responsive-capable leaf.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string,mixed>               $node   The current node.
 	 * @param string                            $prefix The dot-path accumulated so far.
@@ -86,7 +86,7 @@ final class Responsive_Feed {
 	 * The authored responsive / clamp shape for a leaf, or an empty array when it is flat. Base is the raw
 	 * scalar $value; responsive and clamp are the raw authored maps.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string,mixed> $leaf The decoded leaf.
 	 *

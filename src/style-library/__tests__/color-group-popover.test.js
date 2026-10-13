@@ -132,7 +132,7 @@ afterEach(() => {
  *
  * @param {Array<Object>} groups The effective-view groups to render.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The `usePalettes` stub.
  */
@@ -186,7 +186,7 @@ function makePalettes(groups) {
  *
  * @param {Object} palettes The stub returned by `makePalettes`.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {void}
  */
@@ -203,7 +203,7 @@ function renderScreen(palettes) {
  *
  * @param {string} groupLabel The group's display label, as used in the pencil's accessible name.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array<string>} The button labels inside the popover; empty when the pencil is missing.
  */

@@ -39,7 +39,7 @@ import { boundTokenIds, semanticDefaultOf, toControlValue, toStoredValue, withou
  * @param {*}      value    The stored value.
  * @param {string} fallback The unit to assume when nothing carries one yet.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The unit in play.
  */
@@ -54,7 +54,7 @@ function unitInPlay(value, fallback) {
  * @param {string} unit  The unit in play.
  * @param {Object} field The field definition, which may override any bound.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{min: number, max: number, step: number}} The bounds.
  */
@@ -87,7 +87,7 @@ function boundsForUnit(unit, field) {
  * @param {*}        props.value                The stored value: an alias, a literal, or empty.
  * @param {Function} props.onChange             Called with the next stored value.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The field.
  */

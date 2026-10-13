@@ -38,7 +38,7 @@ const ICON_PROPS = {
  * @param {string}   props.value    The current mode, `'grid'` or `'list'`.
  * @param {Function} props.onChange Called with the mode of the clicked button.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The toggle.
  */

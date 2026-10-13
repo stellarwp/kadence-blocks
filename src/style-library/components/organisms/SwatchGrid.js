@@ -36,7 +36,7 @@ import './SwatchGrid.scss';
  *
  * @param {string} label The group's display label.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} `Drag to reorder <label>`.
  */
@@ -69,7 +69,7 @@ function groupHandleLabel(label) {
  *                                          disables just that group's own add tile, not every
  *                                          group's.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The grid.
  */
@@ -157,7 +157,7 @@ export function SwatchGrid({
  *                                         `useReorderableList`, called with this group's id.
  * @param {string}        props.view       `'grid'` or `'list'`.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The group.
  */
@@ -299,7 +299,7 @@ function SwatchGridGroup({
  * @param {string}    props.addLabel   The add-tile label.
  * @param {?Function} props.groupActions Called with `group`, returning the heading's actions node.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The ghost.
  */
@@ -348,7 +348,7 @@ export function SwatchGroupGhost({ group, selectedId, addLabel, groupActions }) 
  * @param {boolean}  props.reservePillSlot  Whether the group has at least one pill, forwarded to
  *                                          `SwatchCard` so every card in the row reserves the slot.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The wired card.
  */
@@ -381,7 +381,7 @@ function SortableSwatchCard({ item, isSelected, onSelect, useSortableItem, reser
  * @param {Function} props.onSelect         Row click handler.
  * @param {Function} props.useSortableItem  The per-item sortable hook from `useReorderableList`.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The wired row.
  */

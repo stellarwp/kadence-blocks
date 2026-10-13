@@ -50,7 +50,7 @@ import { STORE_NAME } from '../store';
  * @param {Object}   route    The current route (`{ screen, item }`).
  * @param {Function} navigate The route navigator.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{rows: Array<Object>, selectedId: string, selectToken: Function, isBusy: boolean, addError: ?Object, orderError: ?Object, clearAddError: Function, clearOrderError: Function, addToken: Function, saveToken: Function, resetToken: Function, deleteToken: Function, reorderTokens: Function, tokenById: Function, initialValuesFor: Function}}
  */

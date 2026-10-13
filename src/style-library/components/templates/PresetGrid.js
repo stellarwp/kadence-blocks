@@ -29,7 +29,7 @@ import './PresetGrid.scss';
  * @param {Function}      [props.onReorder]  Called with the reordered non-default ids after a drop.
  * @param {?JSX.Element}  [props.empty]      Rendered when `items` is empty.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The grid.
  */
@@ -85,7 +85,7 @@ export function PresetGrid({ items, selectedId = '', defaultId = '', onSelect, o
  * @param {Function} props.onSelect        Card click handler.
  * @param {Function} props.useSortableItem The per-item sortable hook from `useReorderableList`.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The wired card.
  */
@@ -115,7 +115,7 @@ function SortablePresetCard({ item, isSelected, onSelect, useSortableItem }) {
  * @param {boolean}  props.isSelected Whether this card is selected.
  * @param {Function} props.onSelect   Card click handler.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The wired card.
  */

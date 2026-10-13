@@ -19,7 +19,7 @@ import { tokenTypeIdSegment } from './tokens';
  * @param {Record<string, string>}                      values The feed's resolved value map.
  * @param {string}                                       group  The UI-schema group label to list.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array<{id: string, label: string, value: string, userCreated: boolean, overridden: boolean}>} The rows, or
  *         `[]` for a missing schema or an unknown group.
@@ -49,7 +49,7 @@ export function scaleRows(schema, values, group) {
  * @param {Array<{id: string}>} rows       The rows in their current order.
  * @param {string[]}             orderedIds The desired id order.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array<Object>} The reordered rows.
  */
@@ -85,7 +85,7 @@ export function applyRowOrder(rows, orderedIds) {
  * @param {Object}        overlay The optimistic overlay for this slug — see `store/constants.js`'s
  *                                `EMPTY_OPTIMISTIC_SCALE_EDIT`.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array<Object>} The rows with every pending optimistic edit applied, or the original
  *                          `rows` reference unchanged when nothing is pending.
@@ -131,7 +131,7 @@ export function applyOptimisticScaleOverlay(rows, overlay) {
  * @param {string[]} existingIds The full canonical ids already registered.
  * @param {string}   slugBase    The slug stem (e.g. `'radius'`).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The first free terminal slug.
  */
@@ -167,7 +167,7 @@ export function nextScaleSlug(existingIds, slugBase) {
  * @param {string} tokenType The DTCG `$type` (e.g. `'dimension'`, `'fontFamily'`).
  * @param {string} slug      The terminal slug.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The canonical dot-path id.
  */
@@ -191,7 +191,7 @@ export function customScaleTokenId(tokenType, slug) {
  *                                                   the identity function, byte-identical to before
  *                                                   this argument existed.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {?{label: string, value: *}} The seeded draft, or null for an unknown id.
  */
@@ -217,7 +217,7 @@ export function scaleInitialValues(entry, values, parseValue) {
  *
  * @param {Object} valueField The per-screen `config.valueField` schema fragment.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The value field, with `path: 'value'` and `responsive` forced to `false`.
  */
@@ -251,7 +251,7 @@ export function scaleValueField(valueField) {
  *                                                                                          draft, or
  *                                                                                          `null`.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array<Object>} The rows, with the matching row's `label`/`value` overlaid.
  */

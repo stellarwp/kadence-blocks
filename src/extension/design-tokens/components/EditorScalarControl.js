@@ -44,7 +44,7 @@ import { BREAKPOINT_FOR_DEVICE, deviceForBreakpoint } from './breakpoints';
  * @param {number}    [props.max]          Custom tab maximum.
  * @param {number}    [props.step]         Custom tab increment.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The control.
  */

@@ -25,7 +25,7 @@ import './ScreenDescription.scss';
  * @param {Object} props          The component props.
  * @param {string} props.screenId The screen id from the route.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {?JSX.Element} The description paragraph, or null when the screen has no copy.
  */

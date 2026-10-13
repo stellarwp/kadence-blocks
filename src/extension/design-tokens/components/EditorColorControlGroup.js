@@ -26,7 +26,7 @@ import { TokenControlRow } from '../../token-indicators/components/TokenControlR
  * @param {Object} props          The component props.
  * @param {*}      props.children The `ColorControl`s to stack, forwarded untouched.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The wrapped group.
  */

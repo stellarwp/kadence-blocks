@@ -27,7 +27,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Extensions;
  * or remove. Only the comparison folds case; the stored name keeps whatever casing it arrived with,
  * which is what a picker displays.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Favorite_Font_Index {
 
@@ -39,7 +39,7 @@ final class Favorite_Font_Index {
 	 * keeping first occurrence, so neither a hand-written repeat nor a pair of spellings can render the
 	 * same family twice.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document
 	 *
@@ -83,7 +83,7 @@ final class Favorite_Font_Index {
 	/**
 	 * Whether a family is already a favorite, matched case-insensitively.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document
 	 * @param string               $family The catalog family name.
@@ -107,7 +107,7 @@ final class Favorite_Font_Index {
 	 * same document, keeping its existing position rather than moving to the end — a picker's
 	 * display order must not shuffle because a client replayed a write.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document
 	 * @param string               $family The catalog family name.
@@ -133,7 +133,7 @@ final class Favorite_Font_Index {
 	 * through the one that happens to be stored. No-op (the same document is returned) when the family
 	 * is not in the list.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document
 	 * @param string               $family The catalog family name.
@@ -160,7 +160,7 @@ final class Favorite_Font_Index {
 	 * REST catalog gate uses and the `toLowerCase()` both pickers collapse their lists with, so the
 	 * three agree on what counts as the same font.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $family The family name.
 	 *
@@ -171,7 +171,7 @@ final class Favorite_Font_Index {
 	}
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document
 	 *
@@ -194,7 +194,7 @@ final class Favorite_Font_Index {
 	}
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document
 	 * @param array<int, string>   $families
@@ -221,7 +221,7 @@ final class Favorite_Font_Index {
 	}
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document
 	 *

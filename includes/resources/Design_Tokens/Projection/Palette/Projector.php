@@ -21,14 +21,14 @@ use Throwable;
  * Token_Registry::is_active(). A block that carries a `data-kb-palette` override renders its subtree against
  * the chosen palette; a block with no override follows the library `$current` at `:root` (applied by the resolver).
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Projector extends Abstract_Css_Projector {
 
 	/**
 	 * Object-cache group shared with the rest of the Design Tokens module.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -37,14 +37,14 @@ final class Projector extends Abstract_Css_Projector {
 	/**
 	 * @var Token_Registry
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	private Token_Registry $registry;
 
 	/**
 	 * Owns the active-library pointer, read at build time so the projection follows the active library.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Active_Token_Library_Store
 	 */
@@ -53,35 +53,35 @@ final class Projector extends Abstract_Css_Projector {
 	/**
 	 * @var Effective_Palettes Reads the active library's effective palettes and their flattened swatches.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	private Effective_Palettes $palettes;
 
 	/**
 	 * @var Token_Resolver Resolves each palette's full color graph (primitives, semantics, composites).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	private Token_Resolver $resolver;
 
 	/**
 	 * @var Preset_Css_Builder Supplies the canonical preset-var declarations the switch layer re-emits.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	private Preset_Css_Builder $presets;
 
 	/**
 	 * @var Css_Builder
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	private Css_Builder $css_builder;
 
 	/**
 	 * Per-request memo of built CSS, keyed on the active slug and effective version.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var array<string, string>
 	 */
@@ -91,14 +91,14 @@ final class Projector extends Abstract_Css_Projector {
 	 * Supplies the cache version: the store version, plus the theme Style Guide signature when there is
 	 * one, so a Customizer save invalidates this cache even though it bumps no store version.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Effective_Version
 	 */
 	private Effective_Version $versions;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Token_Registry             $registry    The token registry.
 	 * @param Active_Token_Library_Store $active      Owns the active-library pointer.
@@ -129,7 +129,7 @@ final class Projector extends Abstract_Css_Projector {
 	/**
 	 * Append the palette switch layer to the front-end global-variables handle.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return void
 	 */
@@ -151,7 +151,7 @@ final class Projector extends Abstract_Css_Projector {
 	 * Shares the Css_Var projector's editor gate (the same page check and filter), so the palette layer and
 	 * the token vars load together in the editor or not at all.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return void
 	 */
@@ -176,7 +176,7 @@ final class Projector extends Abstract_Css_Projector {
 	 * Build the palette switch layer for the active library, memoized per request and cached on the effective
 	 * version. Returns an empty string when the active library cannot be read, so the page never crashes.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -226,7 +226,7 @@ final class Projector extends Abstract_Css_Projector {
 	 * per-palette value, so content that reads the numbered bridge (including the WordPress preset color classes
 	 * redirected to it by {@see global_palette_overrides()}) swaps alongside the `--kb-token--*` vars.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $active The active library slug.
 	 *
@@ -283,7 +283,7 @@ final class Projector extends Abstract_Css_Projector {
 	 * per-palette value onto the numbered `--global-paletteN` variable. Skips any non-palette `kadence_slot`
 	 * (e.g. a font-size slot).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, string> css var => slot slug.
 	 */
@@ -328,7 +328,7 @@ final class Projector extends Abstract_Css_Projector {
 	 * Both slug schemes map to the same bridge: the plugin's own `palette-N` and the Kadence theme's
 	 * `theme-palette-N`. The `theme-palette-N` selectors are simply inert on other themes.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */

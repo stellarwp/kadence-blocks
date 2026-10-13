@@ -24,7 +24,7 @@ import {
  * @param {string}   slug    Token library slug.
  * @param {Function} matches `(key, slug) => boolean`, the predicate for this slice's key shape.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The slice without the matching entries, or `state` itself when none matched.
  */
@@ -40,7 +40,7 @@ function omitLibraryEntries(state, slug, matches) {
  * @param {string} key  The state key.
  * @param {string} slug Token library slug.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True when the key addresses that library.
  */
@@ -200,7 +200,7 @@ function scaleBusy(state = {}, action) {
 /**
  * The Style Library store's root reducer.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const reducer = combineReducers({
 	libraries,

@@ -10,14 +10,14 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Validation_Error;
 /**
  * Validates a fontFamily $value: an alias or a non-empty list of non-empty family-name strings.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Font_Family_Value implements Value_Validator {
 
 	/**
 	 * Validate a fontFamily $value.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed  $value The decoded $value.
 	 * @param string $path  Dot-path to the value, for error reporting.

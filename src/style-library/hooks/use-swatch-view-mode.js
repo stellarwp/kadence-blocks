@@ -18,7 +18,7 @@ import { isSwatchViewMode, readSwatchViewMode, writeSwatchViewMode } from '../he
  * The saved value is read in the `useState` initializer, not in an effect, so the very first
  * render (including the loading skeleton) already shows the saved mode instead of flashing grid.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array} `[viewMode, setViewMode]`.
  */

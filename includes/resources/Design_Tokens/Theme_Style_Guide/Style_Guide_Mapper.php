@@ -14,14 +14,14 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Theme_Style_Guide;
  * kadence_slot) are produced, and the settings half writes only the token ids listed here, so the
  * mapper can never introduce a token id of its own.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Style_Guide_Mapper {
 
 	/**
 	 * The palette option key naming the set the theme renders.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -30,7 +30,7 @@ final class Style_Guide_Mapper {
 	/**
 	 * The palette set the theme falls back to when "active" is missing or empty.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -40,7 +40,7 @@ final class Style_Guide_Mapper {
 	 * The theme stores this on palette10 to mean "derive the complement of palette1 at render time".
 	 * It is a marker, not a color, so it must never become a token value.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -51,7 +51,7 @@ final class Style_Guide_Mapper {
 	 * skipped so a bad theme value never reaches the resolver. A palette slot never carries a gradient; a
 	 * button setting may, and GRADIENT_PATTERN admits it there.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -61,7 +61,7 @@ final class Style_Guide_Mapper {
 	 * Theme color settings that re-value a semantic color: token id => [ setting key, sub-key ] inside the
 	 * array kadence()->option( setting key ) returns.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var array<string, string[]>
 	 */
@@ -76,7 +76,7 @@ final class Style_Guide_Mapper {
 	 * Matches a theme palette reference such as "palette4". Wider than the projection's palette1…9 pattern
 	 * because the theme lets a setting point at any of its fifteen slots.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -88,7 +88,7 @@ final class Style_Guide_Mapper {
 	 * rejected because the CSS builder's sanitizer does not strip it, and an unclosed comment would swallow
 	 * the rest of the stylesheet.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -97,7 +97,7 @@ final class Style_Guide_Mapper {
 	/**
 	 * Map a snapshot onto the tokens that claim palette slots.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array{palette: array<string, mixed>, settings: array<string, mixed>} $snapshot    The reader's snapshot.
 	 * @param array<string, string>                                                $slot_tokens Slot slug => token id, from the registry.
@@ -135,7 +135,7 @@ final class Style_Guide_Mapper {
 	/**
 	 * The theme setting keys the reader must fetch.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string[]
 	 */
@@ -148,7 +148,7 @@ final class Style_Guide_Mapper {
 	 * claims the slot, a palette10…15 reference becomes the active set's literal, a color or gradient
 	 * literal stays as it is. Anything else is null.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed                 $raw         The setting value.
 	 * @param array<string, string> $set         Slot slug => color of the active set.
@@ -185,7 +185,7 @@ final class Style_Guide_Mapper {
 	 * pointer means "palette"; a pointer naming a set that does not exist yields nothing (the theme
 	 * renders empty values in that case, so re-valuing nothing keeps the two in step).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $palette The decoded kadence_global_palette option.
 	 *
@@ -222,7 +222,7 @@ final class Style_Guide_Mapper {
 	 * The usable color stored on a slot, or null when the slot is absent, empty, the complement marker,
 	 * or not a color literal.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, string> $set  Slot slug => color of the active set.
 	 * @param string                $slug The slot slug.
@@ -242,7 +242,7 @@ final class Style_Guide_Mapper {
 	/**
 	 * The value at a key path inside the settings snapshot, or null when any step is missing or not an array.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $settings Setting key => the value kadence()->option() returned.
 	 * @param string[]             $path     The key path, e.g. [ 'buttons_background', 'color' ].

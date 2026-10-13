@@ -39,7 +39,7 @@ afterEach(() => {
  *
  * @param {Object} props Tooltip props.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {?string} The tooltip text the wrapper carries, or null when nothing wraps the button.
  */

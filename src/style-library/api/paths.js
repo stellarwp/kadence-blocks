@@ -3,7 +3,7 @@ import { DEFAULT_LIBRARY_SLUG } from '../constants';
 /**
  * Build a REST path for a token library document.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @param {string} namespace REST namespace (e.g. kb-design-tokens/v1).
  * @param {string} slug      Token library slug.
@@ -19,7 +19,7 @@ export function documentPath(namespace, slug = DEFAULT_LIBRARY_SLUG) {
  * Its own endpoint, separate from the document routes: a rename writes the label alone and never
  * validates, resolves or rewrites the stored document.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @param {string} namespace REST namespace (e.g. kb-design-tokens/v1).
  * @param {string} slug      Token library slug.
@@ -32,7 +32,7 @@ export function libraryTitlePath(namespace, slug = DEFAULT_LIBRARY_SLUG) {
 /**
  * Build a REST path for the user-primitives collection of a document.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @param {string} slug Token library slug.
  * @return {string} REST path relative to wp-json root.
@@ -44,7 +44,7 @@ export function userPrimitivesPath(slug) {
 /**
  * Build a REST path for the references preview of a single user primitive.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @param {string} slug Token library slug.
  * @param {string} id   Canonical dot-path id of the user primitive.
@@ -57,7 +57,7 @@ export function userPrimitiveReferencesPath(slug, id) {
 /**
  * Build a REST path for a single user primitive resource.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @param {string} slug Token library slug.
  * @param {string} id   Canonical dot-path id of the user primitive.
@@ -70,7 +70,7 @@ export function userPrimitivePath(slug, id) {
 /**
  * Build a REST path for the rename action on a single user primitive.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @param {string} slug Token library slug.
  * @param {string} id   Canonical dot-path id of the user primitive.
@@ -83,7 +83,7 @@ export function userPrimitiveRenamePath(slug, id) {
 /**
  * Build a REST path for a token's display-label override.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @param {string} slug Token library slug.
  * @param {string} id   The token id (baseline dot-path, or a user primitive's canonical id).
@@ -97,7 +97,7 @@ export function tokenLabelPath(slug, id) {
  * Build a REST path for a UI-schema group's stored sort order. `group` is the translated feed
  * group label (e.g. "Border Radius") — encoded because it contains a space.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @param {string} slug  Token library slug.
  * @param {string} group The UI-schema group label.
@@ -114,7 +114,7 @@ export function groupOrderPath(slug, group) {
  * @param {string} slug   Token library slug.
  * @param {string} family The font family name.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} REST path relative to wp-json root.
  */
@@ -125,7 +125,7 @@ export function favoriteFontPath(slug, family) {
 /**
  * Build a REST path for the resolved token map.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @param {string} namespace REST namespace.
  * @param {string} slug      Token library slug.
@@ -138,7 +138,7 @@ export function resolvedPath(namespace, slug = DEFAULT_LIBRARY_SLUG) {
 /**
  * Build a REST path for a single token leaf write.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @param {string} namespace REST namespace.
  * @param {string} tokenId   Dot-path token id.
@@ -153,7 +153,7 @@ export function tokenPath(namespace, tokenId, slug = DEFAULT_LIBRARY_SLUG) {
  * Build a REST path for the token-library documents collection (list, or create-by-merge at the
  * default library).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} REST path relative to wp-json root.
  */
@@ -164,7 +164,7 @@ export function documentsPath() {
 /**
  * Build a REST path for the active-library pointer.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} REST path relative to wp-json root.
  */
@@ -179,7 +179,7 @@ export function activeLibraryPath() {
  *
  * @param {string} slug Token library slug.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} REST path relative to wp-json root.
  */
@@ -192,7 +192,7 @@ export function feedPath(slug) {
  *
  * @param {string} slug Token library slug.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} REST path relative to wp-json root.
  */
@@ -203,7 +203,7 @@ export function activateLibraryPath(slug) {
 /**
  * Build a REST path for the color-palettes collection of a library.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @param {string} namespace REST namespace.
  * @param {string} slug      Token library slug.
@@ -216,7 +216,7 @@ export function palettesPath(namespace, slug = DEFAULT_LIBRARY_SLUG) {
 /**
  * Build a REST path for a single palette resource.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @param {string} namespace REST namespace.
  * @param {string} id        The palette id.
@@ -231,7 +231,7 @@ export function palettePath(namespace, id, slug = DEFAULT_LIBRARY_SLUG) {
  * Build a REST path for a single palette swatch (the granular per-token write). encodeURIComponent leaves the
  * dots of a token dot-path intact, so the token stays a readable path segment.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @param {string} namespace REST namespace.
  * @param {string} id        The palette id.
@@ -246,7 +246,7 @@ export function paletteSwatchPath(namespace, id, token, slug = DEFAULT_LIBRARY_S
 /**
  * Build a REST path for the library's current-palette pointer.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @param {string} namespace REST namespace.
  * @param {string} slug      Token library slug.
@@ -266,7 +266,7 @@ export function paletteCurrentPath(namespace, slug = DEFAULT_LIBRARY_SLUG) {
  * The two must agree on the path shape; the builders here additionally append the `?library=<slug>`
  * query the Style Library always scopes its writes by.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @param {string} namespace REST namespace (e.g. kb-design-tokens/v1).
  * @param {string} block     The block name, e.g. `kadence/singlebtn`.
@@ -280,7 +280,7 @@ function blockPresetsBasePath(namespace, block) {
 /**
  * Build a REST path for a block's preset collection (read, create-or-merge).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @param {string} namespace REST namespace (e.g. kb-design-tokens/v1).
  * @param {string} block     The block name, e.g. `kadence/singlebtn`.
@@ -294,7 +294,7 @@ export function blockPresetsPath(namespace, block, slug = DEFAULT_LIBRARY_SLUG) 
 /**
  * Build a REST path for a single preset resource within a block's preset collection.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @param {string} namespace REST namespace (e.g. kb-design-tokens/v1).
  * @param {string} block     The block name, e.g. `kadence/singlebtn`.
@@ -309,7 +309,7 @@ export function blockPresetPath(namespace, block, preset, slug = DEFAULT_LIBRARY
 /**
  * Build a REST path for a block's preset display-order resource.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @param {string} namespace REST namespace (e.g. kb-design-tokens/v1).
  * @param {string} block     The block name, e.g. `kadence/singlebtn`.

@@ -20,14 +20,14 @@ import { slugifyLibraryTitle } from './libraries';
  * The token prefix a user-created color primitive is minted under (mirrors
  * `Reserved_Namespace::canonical()`).
  *
- * @since TBD
+ * @since 3.8.0
  */
 const CUSTOM_COLOR_PREFIX = 'primitive.color.custom.';
 
 /**
  * The starting value for a swatch with no neighboring color to copy.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const FALLBACK_SWATCH_VALUE = '#000000';
 
@@ -53,7 +53,7 @@ export { reshapePaletteRows, mapPaletteToSwatchGroups } from '../../token-contro
  * @param {Object} palette The palette effective view.
  * @param {string} token   The swatch token dot-path.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object|null} The swatch entry `{ token, label, $value, overridden }`, or null.
  */
@@ -79,7 +79,7 @@ export function findSwatch(palette, token) {
  * @param {Object} palette The palette effective view.
  * @param {string} token   The swatch token dot-path.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{label: string, value: string}} Empty strings when the swatch is missing, so the panel
  *         can detect a stale item id.
@@ -101,7 +101,7 @@ export function swatchInitialValues(palette, token) {
  * @param {Object} listing The palette listing (`{ defaultId, currentId, palettes }`).
  * @param {string} id      The palette id to check.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True when `id` is the default palette, or when the default pointer is unknown.
  */
@@ -123,7 +123,7 @@ export function isDefaultPalette(listing, id) {
  * @param {Object} listing   The palette listing (`{ defaultId, currentId, palettes }`).
  * @param {string} editingId The id of the palette being edited.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True when this palette's cards show the inheritance pill.
  */
@@ -153,7 +153,7 @@ export function paletteShowsInheritance(listing, editingId) {
  * @param {boolean} args.isCustom   Whether the swatch's token was created by a user rather than shipped.
  * @param {boolean} args.overridden Whether the swatch has anything to undo.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {?string} `'default'`, `'reset'`, `'inherited'`, or null for no pill.
  */
@@ -176,7 +176,7 @@ export function swatchPillVariant({ isDefault, isCustom, overridden }) {
  *
  * @param {Array<Object>} groups The mapped grid groups from `mapPaletteToSwatchGroups()`.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {number} The number of swatches with no value of their own in this palette.
  */
@@ -204,7 +204,7 @@ export function inheritedSwatchCount(groups) {
  * @param {string} scope   The route's `scope` value (a palette id, or '').
  * @param {Object} listing The palette listing (`{ currentId, palettes }`).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The palette id to treat as being edited.
  */
@@ -219,7 +219,7 @@ export function resolveEditingPaletteId(scope, listing) {
  *
  * @param {{id: string, label: string}} row The palette listing row.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The row's label, or its id when the label is ''.
  */
@@ -236,7 +236,7 @@ export function paletteDisplayLabel(row) {
  * @param {Object} listing The palette listing (`{ userCreated }`).
  * @param {string} id      The palette id to check.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True when the palette is user-created.
  */
@@ -256,7 +256,7 @@ export function isUserCreatedPalette(listing, id) {
  * @param {?Object} palette The palette being edited's effective view (`{ groups }`), or null.
  * @param {string}  groupId The group id to check.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True when the group holds at least one baseline swatch or cannot be found.
  */
@@ -277,7 +277,7 @@ export function isBaselineGroup(palette, groupId) {
  * @param {Object} listing  The palette listing (`{ palettes }`).
  * @param {string} targetId The palette being deleted.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array<{id: string, label: string}>} The candidate rows.
  */
@@ -292,7 +292,7 @@ export function paletteSuccessorOptions(listing, targetId) {
  *
  * @param {string} label The typed palette label.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The slug. '' when nothing survives.
  */
@@ -311,7 +311,7 @@ export function slugifyPaletteLabel(label) {
  *                               own current label (whose derived slug is its own unchanged id)
  *                               is not reported as a collision with itself.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True when the label's derived slug matches an existing palette id other than
  *         `excludeId`.
@@ -330,7 +330,7 @@ export function isDuplicatePaletteLabel(label, listing, excludeId) {
  *
  * @param {Array<Object>} groups The effective view's `groups` array.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array<Object>} A new groups array; swatches carry only `token`, `label`, `$value`.
  */
@@ -348,7 +348,7 @@ export function stripEffectiveFlags(groups) {
  * @param {string}        groupId The target group's id.
  * @param {Object}        swatch  The swatch to append, `{ token, label, $value }`.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array<Object>} A new groups array with the swatch appended; the same reference as
  *         `groups` (a no-op) when `groupId` matches no group, so callers can detect the miss.
@@ -370,7 +370,7 @@ export function addSwatchToGroups(groups, groupId, swatch) {
  * @param {Array<Object>} groups The write-payload groups array.
  * @param {string}        token  The swatch token dot-path to remove.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array<Object>} A new groups array with the swatch (and, if emptied, its group) removed;
  *         the same reference as `groups` (a no-op) when no group carries `token`.
@@ -394,7 +394,7 @@ export function removeSwatchFromGroups(groups, token) {
  * @param {string}        token  The swatch token dot-path to rename.
  * @param {string}        label  The new label.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array<Object>} A new groups array with the target swatch relabeled.
  */
@@ -412,7 +412,7 @@ export function renameSwatchInGroups(groups, token, label) {
  * @param {string}        groupId       The target group's id.
  * @param {Array<string>} orderedTokens The swatch token order `SwatchGrid`'s `onReorder` emits.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array<Object>} A new groups array with the target group's swatches reordered; tokens
  *         missing from `orderedTokens` keep their relative position at the end. The same
@@ -443,7 +443,7 @@ export function reorderGroupSwatches(groups, groupId, orderedTokens) {
  * @param {Array<Object>} groups          The write-payload groups array.
  * @param {Array<string>} orderedGroupIds The group id order `SwatchGrid`'s `onReorderGroups` emits.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array<Object>} A new groups array in the requested order; an id that matches no group
  *         (or repeats) is skipped, and a group missing from `orderedGroupIds` keeps its relative
@@ -487,7 +487,7 @@ export function reorderGroups(groups, orderedGroupIds) {
  * @param {Array<Object>} groups The write-payload groups array.
  * @param {Object}        group  The group to append, `{ id, label, swatches }`.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array<Object>} A new groups array with `group` appended.
  */
@@ -502,7 +502,7 @@ export function addGroupToGroups(groups, group) {
  *                                    flattened feed token ids plus the palette's own swatch
  *                                    tokens, so a collision against either source is impossible.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} `custom-<n>`, starting at `custom-1` and skipping any suffix already in use.
  */
@@ -527,7 +527,7 @@ export function nextCustomColorSlug(existingIds) {
  *
  * @param {string} slug The custom-color slug (e.g. `custom-1`).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} `primitive.color.custom.<slug>`.
  */
@@ -542,7 +542,7 @@ export function customColorTokenId(slug) {
  *                                write payload; only `$value` is read).
  * @param {string}        groupId The target group's id.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The group's last swatch's `$value` when the group has one — a neighboring
  *         color is a friendlier starting point than black — otherwise `#000000`.
@@ -561,7 +561,7 @@ export function newSwatchValue(groups, groupId) {
  *
  * @param {string} token The swatch token dot-path.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True when `token` carries the custom-color prefix.
  */
@@ -578,7 +578,7 @@ export function isCustomColorToken(token) {
  * @param {string}        groupId The target group's id.
  * @param {string}        label   The new label.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array<Object>} A new groups array with the target group relabeled.
  */
@@ -595,7 +595,7 @@ export function renameGroupInGroups(groups, groupId, label) {
  * @param {Array<Object>} groups  The write-payload groups array.
  * @param {string}        groupId The group id to remove.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array<Object>} A new groups array without the group; the same reference as `groups`
  *         (a no-op) when `groupId` matches no group, so callers can detect the miss.
@@ -622,7 +622,7 @@ export function removeGroupFromGroups(groups, groupId) {
  * @param {Object}  overlay The optimistic overlay for this palette's listing key — see
  *                          `store/constants.js`'s `EMPTY_OPTIMISTIC_SWATCH_EDIT`.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {?Object} The palette with every pending optimistic edit applied, or the original
  *                    `palette` unchanged when nothing is pending.
@@ -689,7 +689,7 @@ export function applyOptimisticOverlay(palette, overlay) {
  * @param {string}  label   The typed group label.
  * @param {?Object} palette The palette being edited's effective view, for the duplicate check.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{groupId: string, error: null}|{groupId: null, error: string}} The slugified id on
  *          success, or a user-facing error message on failure.

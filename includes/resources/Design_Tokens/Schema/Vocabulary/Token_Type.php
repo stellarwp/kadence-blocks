@@ -16,14 +16,14 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary;
  * per property — there is no bundled typography composite, because a block that sets each property
  * individually can never consume a single `font` shorthand.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Token_Type {
 
 	/**
 	 * The color $type.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -32,7 +32,7 @@ final class Token_Type {
 	/**
 	 * The dimension $type (covers spacing, radius, border-width, icon-size, font-size, letter-spacing).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -41,7 +41,7 @@ final class Token_Type {
 	/**
 	 * The fontFamily $type (an array $value).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -50,7 +50,7 @@ final class Token_Type {
 	/**
 	 * The fontWeight $type (a numeric weight 1-1000 or a CSS weight keyword).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -59,7 +59,7 @@ final class Token_Type {
 	/**
 	 * The lineHeight $type (a unit-less number, a dimension, or "normal").
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -68,7 +68,7 @@ final class Token_Type {
 	/**
 	 * The fontStyle $type (an enum literal: normal/italic/oblique).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -77,7 +77,7 @@ final class Token_Type {
 	/**
 	 * The textTransform $type (an enum literal: none/uppercase/…).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -86,7 +86,7 @@ final class Token_Type {
 	/**
 	 * The borderStyle $type (an enum literal: none/solid/dashed/…).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -95,7 +95,7 @@ final class Token_Type {
 	/**
 	 * The shadow $type (a composite object $value).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -105,7 +105,7 @@ final class Token_Type {
 	 * The DTCG leaf key whose value is one of the $types above. Single-sourced here so the validator,
 	 * resolver and projectors never hardcode the spelling.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -116,7 +116,7 @@ final class Token_Type {
 	 * so it never appears in TYPES — it only marks an optional composite sub-field as a strict
 	 * literal boolean in Composite_Value::validate().
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -127,7 +127,7 @@ final class Token_Type {
 	 *
 	 * @var string[]
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	private const TYPES = [
 		self::COLOR,
@@ -151,7 +151,7 @@ final class Token_Type {
 	 * This map is the single place that reconciles the two so Reserved_Namespace and the
 	 * mirrored JS map never re-derive it independently.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var array<string, string>
 	 */
@@ -171,7 +171,7 @@ final class Token_Type {
 	 *
 	 * @var array<string, array<string, string>>
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	private const COMPOSITE_FIELDS = [
 		self::SHADOW => [
@@ -195,7 +195,7 @@ final class Token_Type {
 	 *
 	 * @var array<string, array<string, string>>
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	private const OPTIONAL_FIELDS = [
 		self::SHADOW => [
@@ -206,7 +206,7 @@ final class Token_Type {
 	/**
 	 * Every v1 $type.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string[]
 	 */
@@ -222,7 +222,7 @@ final class Token_Type {
 	 * callers pass a $type that already passed is_valid(). An unregistered input returns
 	 * verbatim and produces an id downstream validation rejects.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $type The DTCG $type (spec spelling).
 	 *
@@ -235,7 +235,7 @@ final class Token_Type {
 	/**
 	 * Every v1 $type's registered-id segment, in the same declaration order as all().
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string[]
 	 */
@@ -246,7 +246,7 @@ final class Token_Type {
 	/**
 	 * Whether the given string is a known v1 $type.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $type The candidate $type.
 	 *
@@ -259,7 +259,7 @@ final class Token_Type {
 	/**
 	 * Whether the given $type carries an object $value walked field by field.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $type The $type to test.
 	 *
@@ -284,7 +284,7 @@ final class Token_Type {
 	 * missing a required field is not claimed here, so it keeps the generic "not a valid value" answer
 	 * rather than being reported as a broken shadow.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $type  The composite $type to test against.
 	 * @param mixed  $value The value to test.
@@ -314,7 +314,7 @@ final class Token_Type {
 	/**
 	 * The sub-field => $type map for a composite $type, or an empty array for a non-composite type.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $type The composite $type.
 	 *
@@ -329,7 +329,7 @@ final class Token_Type {
 	 * type or one with no optional fields. A field returned here is never required by
 	 * Composite_Value::validate() — it is only validated when present.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $type The composite $type.
 	 *
@@ -342,7 +342,7 @@ final class Token_Type {
 	/**
 	 * The DTCG leaf key that carries a token's $type.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -353,7 +353,7 @@ final class Token_Type {
 	/**
 	 * The "boolean" kind label used by an optional composite sub-field (e.g. shadow's "inset").
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -364,7 +364,7 @@ final class Token_Type {
 	/**
 	 * The color $type.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -375,7 +375,7 @@ final class Token_Type {
 	/**
 	 * The dimension $type.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -386,7 +386,7 @@ final class Token_Type {
 	/**
 	 * The fontFamily $type.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -397,7 +397,7 @@ final class Token_Type {
 	/**
 	 * The fontWeight $type.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -408,7 +408,7 @@ final class Token_Type {
 	/**
 	 * The lineHeight $type.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -419,7 +419,7 @@ final class Token_Type {
 	/**
 	 * The fontStyle $type.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -430,7 +430,7 @@ final class Token_Type {
 	/**
 	 * The textTransform $type.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -441,7 +441,7 @@ final class Token_Type {
 	/**
 	 * The borderStyle $type.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -452,7 +452,7 @@ final class Token_Type {
 	/**
 	 * The shadow $type.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */

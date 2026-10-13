@@ -21,7 +21,7 @@ import { useEffect, useRef } from '@wordpress/element';
  * @param {boolean} isLoading Whether the paired skeleton is currently showing.
  * @param {string}  message   The exact text to announce once loading finishes (e.g. "Color Palette loaded.").
  *
- * @since TBD
+ * @since 3.8.0
  */
 export function useLoadingAnnouncement(isLoading, message) {
 	const nodeRef = useRef(null);

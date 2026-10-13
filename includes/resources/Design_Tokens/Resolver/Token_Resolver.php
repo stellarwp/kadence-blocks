@@ -18,14 +18,14 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Token_Type;
  * Flattens the effective DTCG document into two ready-to-emit maps. The single place
  * alias semantics are interpreted — projectors downstream never see an alias.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Token_Resolver {
 
 	/**
 	 * Object-cache group shared by all resolved-token entries.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -50,7 +50,7 @@ final class Token_Resolver {
 	 * Reads the library's effective color palettes, so the resolver can re-tint the color tokens with the library's
 	 * `$current` palette before alias flattening.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Effective_Palettes
 	 */
@@ -59,7 +59,7 @@ final class Token_Resolver {
 	/**
 	 * The pure structural setter used to write the palette overlay onto a color leaf's `$value`.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Mutator
 	 */
@@ -79,7 +79,7 @@ final class Token_Resolver {
 	 * stored document is decoded and merged once per version no matter how many callers need the authored
 	 * view — the resolve path itself, the responsive feed, and the REST resolved read all share one build.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var array<string,array<string,mixed>>
 	 */
@@ -89,7 +89,7 @@ final class Token_Resolver {
 	 * Supplies the cache version: the store version, plus the theme Style Guide signature when there is
 	 * one, so a Customizer save invalidates these caches even though it bumps no store version.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Effective_Version
 	 */
@@ -98,7 +98,7 @@ final class Token_Resolver {
 	/**
 	 * Wire the token store, effective-document builder, and value renderer.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Token_Store        $store     The token library store.
 	 * @param Effective_Document $effective Builds the baseline-merged effective document.
@@ -127,7 +127,7 @@ final class Token_Resolver {
 	 * Resolve a stored token library into flat maps. Memoized per request on the effective version,
 	 * which is bumped on every write, so the memo invalidates automatically.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug The token library slug to resolve.
 	 *
@@ -146,7 +146,7 @@ final class Token_Resolver {
 	 * version (the store version plus the theme Style Guide signature, so a token write and a Customizer save
 	 * both self-invalidate).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug         The token library slug to resolve.
 	 * @param string $cache_prefix Cache-key prefix for the resolved-tokens entry.
@@ -188,7 +188,7 @@ final class Token_Resolver {
 	 * write layer to reject aliasing cycles and dangling aliases before committing. A dry run by
 	 * nature: it never touches the store or the memo.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string,mixed> $overrides Decoded candidate overrides.
 	 *
@@ -210,7 +210,7 @@ final class Token_Resolver {
 	 * maps flatten aliases — so every semantic color that aliases a re-tinted primitive follows the palette
 	 * for free, and switching the palette (writing `$current`) re-tints without touching the primitives.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug The token library slug.
 	 *
@@ -240,7 +240,7 @@ final class Token_Resolver {
 	 * included, not just the primitives it re-tints. Memoized per request and cached on the effective version
 	 * (bumped on every write) keyed additionally on the palette id.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug       The token library slug to resolve.
 	 * @param string $palette_id The palette whose colors the graph resolves against.
@@ -289,7 +289,7 @@ final class Token_Resolver {
 	 * guards reject those at write time, so this stays a fail-soft render step. The default palette carries
 	 * the baseline color values, so overlaying it is a no-op.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string,mixed>   $document The baseline-merged effective document.
 	 * @param array<string, string> $overlay  The color overlay to apply (token dot-path => re-tint value), from
@@ -316,7 +316,7 @@ final class Token_Resolver {
 	/**
 	 * Walk an effective document into the flat maps.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string,mixed> $document
 	 */
@@ -340,7 +340,7 @@ final class Token_Resolver {
 	/**
 	 * Depth-first walk, collecting every token leaf.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string,mixed>                $node             The current group node.
 	 * @param string                             $prefix           The dot-path accumulated so far.
@@ -425,7 +425,7 @@ final class Token_Resolver {
 	 * maps. A no-op when the leaf has no responsive shape. Each slot may itself be an alias, flattened for the
 	 * literal form and preserved as a var() reference for the projection form.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string,mixed>                $child             The leaf node.
 	 * @param string                             $type              The leaf's $type.
@@ -467,7 +467,7 @@ final class Token_Resolver {
 	 * verbatim. When $projected is true, alias slots are preserved as var() references (for the css-var
 	 * projection); otherwise they are flattened to literals (for host surfaces).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string,mixed> $clamp         The decoded clamp map.
 	 * @param string              $type          The leaf's $type.
@@ -501,7 +501,7 @@ final class Token_Resolver {
 	 * immediate target (the chain is preserved across tokens by the cascade) and only ever runs after
 	 * resolve_value() has already rejected cycles and dangling aliases for the same leaf.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed $value
 	 *
@@ -528,7 +528,7 @@ final class Token_Resolver {
 	 * Resolve a raw $value to a literal: aliases follow their reference recursively;
 	 * composite arrays resolve field by field; scalars and lists pass through.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed               $value
 	 * @param array<string,mixed> $document
@@ -593,7 +593,7 @@ final class Token_Resolver {
 	/**
 	 * Look up a leaf node by dot-path within the effective document.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string              $path     The dot-path to look up.
 	 * @param array<string,mixed> $document The effective document to search.
@@ -608,7 +608,7 @@ final class Token_Resolver {
 	 * Whether the array is a zero-indexed list (a fontFamily stack or stacked shadow) rather than an
 	 * associative composite map.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<mixed> $value
 	 */

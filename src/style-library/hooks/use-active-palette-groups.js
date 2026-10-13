@@ -35,7 +35,7 @@ import { EMPTY_LISTING, STORE_NAME } from '../store/constants';
 /**
  * Read the site's active palette as color-control groups.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array} `[{ id, label, swatches: [{ id, label, value, alias }] }]`, empty when the feed or
  *         the listing is not available.

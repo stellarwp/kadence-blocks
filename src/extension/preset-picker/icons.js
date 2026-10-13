@@ -6,7 +6,7 @@
  * The design-token preset icon shown on the preset button: a globe over a merge glyph. Paints with
  * `currentColor` so it follows the button's text color across hover/focus/disabled states.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @type {JSX.Element}
  */
@@ -24,7 +24,7 @@ export const presetIcon = (
  * button can render it muted (`#949494`) when there is nothing to reset and dark (`#1e1e1e`) when the
  * block has edits.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @type {JSX.Element}
  */

@@ -10,14 +10,14 @@ use Tests\Support\Classes\TestCase;
 /**
  * Covers the favoriteFonts ordered-family-list read/write operations of Favorite_Font_Index.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Favorite_Font_IndexTest extends TestCase {
 
 	/**
 	 * The index under test.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Favorite_Font_Index
 	 */

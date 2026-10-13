@@ -29,7 +29,7 @@ import { deriveMeasureMode } from './normalize';
  *                                        about one preset's slots doesn't stick onto the next. Omit to
  *                                        never auto-clear.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{isLinked: boolean, toggleLink: Function}} Whether the active device reads as linked, and
  *  the toggle handler.

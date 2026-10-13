@@ -24,7 +24,7 @@ import { isValidHex } from 'react-color/lib/helpers/color';
  * @param {number} min   The minimum.
  * @param {number} max   The maximum.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {number} The clamped number.
  */
@@ -37,7 +37,7 @@ function clamp(value, min, max) {
  *
  * @param {number} value The channel value.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} A two-character hex pair.
  */
@@ -54,7 +54,7 @@ function channelToHex(value) {
  *
  * @param {*} value The candidate value.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True when the value is absent or blank.
  */
@@ -67,7 +67,7 @@ function isBlank(value) {
  *
  * @param {*} value The candidate alpha value.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {number} The clamped, rounded alpha, or 1 when `value` is not a number.
  */
@@ -91,7 +91,7 @@ function clampAlpha(value) {
  * @param {*}      value    The candidate value.
  * @param {number} fallback The value to use when `value` is not a usable number.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {number} The parsed number, or `fallback`.
  */
@@ -111,7 +111,7 @@ function numberOr(value, fallback) {
  * @param {*}      value    The candidate value.
  * @param {number} fallback The 0-1 fraction to use when `value` is not a usable number.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {number} The parsed 0-1 fraction, or `fallback`.
  */
@@ -135,7 +135,7 @@ function percentOr(value, fallback) {
  * @param {number} rgb.b The blue channel (0-255).
  * @param {number} [rgb.a] The alpha channel (0-1). Treated as fully opaque when omitted.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} An uppercase-free `#rrggbb` or `#rrggbbaa` string.
  */
@@ -149,7 +149,7 @@ export function toCssColor({ r, g, b, a = 1 }) {
  * The color-fields row's numeric formats, in cycling order. A third format (e.g. HSB) only needs
  * adding here — `cycleFieldsView()` and its chevron pair need no other change.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const FIELDS_VIEWS = ['rgb', 'hsl'];
 
@@ -161,7 +161,7 @@ const FIELDS_VIEWS = ['rgb', 'hsl'];
  * @param {'rgb'|'hsl'} view      The current view.
  * @param {1|-1}        direction 1 to step forward (chevron down), -1 to step backward (chevron up).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {'rgb'|'hsl'} The next view.
  */
@@ -182,7 +182,7 @@ export function cycleFieldsView(view, direction) {
  * @param {Object}                                            data    The edited input's payload.
  * @param {{rgb: {r:number,g:number,b:number,a:number}, hsl: {h:number,s:number,l:number,a:number}}} current The picker's current color state.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object|null} A `react-color`-shaped change payload, or null when `data` matches
  *                        nothing this picker's fields can produce (e.g. an invalid hex).

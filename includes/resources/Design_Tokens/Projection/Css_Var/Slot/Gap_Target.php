@@ -18,14 +18,14 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Slot\Contracts\Abst
  * The literal-only gutter presets KB ships (narrow/wide/widest) have no variable to redirect and are not
  * slots.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Gap_Target extends Abstract_Target {
 
 	/**
 	 * The projection key a token declares to claim a gap slot.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -34,7 +34,7 @@ final class Gap_Target extends Abstract_Target {
 	/**
 	 * The custom-property prefix Kadence Blocks references each gap slug under.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -45,7 +45,7 @@ final class Gap_Target extends Abstract_Target {
 	 * claim on any other value — including the literal-only gutter presets (narrow/wide/widest) — is
 	 * ignored so the override can never point at a slug no block reads.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string[]
 	 */
@@ -55,7 +55,7 @@ final class Gap_Target extends Abstract_Target {
 	 * The primitive dimension tokens that back the gap slugs; the slug is claimed on the primitive itself,
 	 * so this prefix plus the slug is the projection-holding token's own id.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */

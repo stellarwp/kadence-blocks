@@ -4,7 +4,7 @@
  * @param {Array<{id: string}>} items     The grid items, in display order.
  * @param {string}              defaultId The default preset's id, or '' for none.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{pinned: ?Object, sortable: Array<Object>}} The pinned item (or null) and the rest.
  */
@@ -25,7 +25,7 @@ export function splitDefaultItem(items, defaultId) {
  * @param {string}   defaultId  The default preset's id.
  * @param {boolean}  hasDefault Whether a default card is pinned on this screen.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string[]} The full order to store.
  */

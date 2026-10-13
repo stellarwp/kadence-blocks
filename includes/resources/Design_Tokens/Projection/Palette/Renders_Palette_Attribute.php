@@ -15,7 +15,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Identi
  * {@see Sanitizes_Css_Identifier} sanitizer so it always matches the switch selector; this trait is only the
  * "read the attribute, produce the wrapper args" seam so every block does it identically.
  *
- * @since TBD
+ * @since 3.8.0
  */
 trait Renders_Palette_Attribute {
 
@@ -26,7 +26,7 @@ trait Renders_Palette_Attribute {
 	 * (or an empty map when nothing is selected). A non-string or empty selection yields nothing, so a block can
 	 * pass the raw attribute straight through.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed $kb_palette The block's `kbPalette` attribute (the selected palette id).
 	 *

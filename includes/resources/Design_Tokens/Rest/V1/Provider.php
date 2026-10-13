@@ -8,7 +8,7 @@ use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provi
 /**
  * Registers the v1 Design Tokens REST controllers onto rest_api_init.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Provider extends Provider_Contract {
 
@@ -19,7 +19,7 @@ final class Provider extends Provider_Contract {
 	 * Endpoint controllers are added here as the read, write, and preset
 	 * surfaces land.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var class-string<Controller>[]
 	 */
@@ -37,7 +37,7 @@ final class Provider extends Provider_Contract {
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	public function register(): void {
 		$this->container->singleton( Document_Write_Pipeline::class, Document_Write_Pipeline::class );

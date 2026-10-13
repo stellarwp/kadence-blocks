@@ -49,7 +49,7 @@ import { resetWorkspace } from '../helpers/workspace';
  * The Base Styles ids with a real screen component, extended by each subsequent per-screen
  * ticket. Every id not listed here falls back to `PlaceholderScreen` in the registry below.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const SCREEN_COMPONENTS = {
 	typography: TypographyScreen,
@@ -70,7 +70,7 @@ const SCREEN_COMPONENTS = {
  * and its panel are siblings that share state only through the server and the route, never through
  * this component.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {?JSX.Element} The app, or null while the route is being normalized to a known screen.
  */
@@ -273,7 +273,7 @@ function StyleLibraryAppContent() {
  * Render the Style Library application inside the item anchor registry, which the screens write to
  * and the settings popover reads from.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The app.
  */

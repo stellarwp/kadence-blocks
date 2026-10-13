@@ -154,7 +154,7 @@ describe('usePresetBinding device-aware overridden', () => {
  * Seed the catalog with a preset whose `button-radius` has NO desktop value and only a tablet override —
  * the shape a Style Library desktop reset stores.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {void}
  */

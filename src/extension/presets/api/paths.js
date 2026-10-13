@@ -18,7 +18,7 @@
  * @param {string} namespace The REST namespace, e.g. "kb-design-tokens/v1".
  * @param {string} block     The block name, e.g. "kadence/singlebtn".
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The REST path relative to the wp-json root.
  */

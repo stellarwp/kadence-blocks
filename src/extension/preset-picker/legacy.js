@@ -3,7 +3,7 @@
  * kbPreset yet, so a saved button renders and lists the same preset the server resolves for it. Fill and
  * an empty value map to nothing: the default look.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const LEGACY_PRESETS = Object.freeze({
 	inherit: 'theme-base',
@@ -14,6 +14,6 @@ export const LEGACY_PRESETS = Object.freeze({
 /**
  * The blocks whose retired style attribute maps to a preset.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const LEGACY_PRESET_BLOCKS = Object.freeze(['kadence/singlebtn']);

@@ -26,7 +26,7 @@ const OPACITY_FALLBACK = 0.2;
  * @param {boolean} displayBoxShadow The block's stored shadow enable flag.
  * @param {?Array}  boxShadow        The stored `boxShadow` attribute value.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string|undefined} The `box-shadow` value, or undefined when the image paints no shadow.
  */

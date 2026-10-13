@@ -6,7 +6,7 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits;
  * Shared composer for the selector suffix a binding appends after a block's `.wp-block-*` class, used by
  * every projector that emits a real CSS declaration rather than a custom property.
  *
- * @since TBD
+ * @since 3.8.0
  */
 trait Composes_Selector_Suffix {
 
@@ -26,7 +26,7 @@ trait Composes_Selector_Suffix {
 	 * `&:hover` attaches and `& .child` descends, which is exactly the distinction the whitespace after the
 	 * `&` already carries.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string|null $selector The binding's raw `css_selector` / `css_state`, or null when it names none.
 	 *

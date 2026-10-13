@@ -20,7 +20,7 @@ import { isTokenAlias } from './alias';
 /**
  * The shadow item key that carries a whole-shadow token binding.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const SHADOW_TOKEN_KEY = 'shadowToken';
 
@@ -29,7 +29,7 @@ export const SHADOW_TOKEN_KEY = 'shadowToken';
  *
  * @param {?Object} shadowItem One `shadow[0]`-shaped item.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {?string} The bound `{dot.alias}`, or null when the item carries no binding.
  */

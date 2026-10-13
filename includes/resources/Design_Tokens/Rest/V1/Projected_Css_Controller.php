@@ -20,14 +20,14 @@ use WP_REST_Server;
  *
  * Read-only and gated by the shared design-tokens capability; a deactivated registry yields an empty string.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Projected_Css_Controller extends Controller {
 
 	/**
 	 * Aggregates every projector's editor CSS into one string.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Editor_Css
 	 */
@@ -36,14 +36,14 @@ final class Projected_Css_Controller extends Controller {
 	/**
 	 * Memoised item schema for this request. Null until first built.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var array<string, mixed>|null
 	 */
 	private ?array $item_schema = null;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Editor_Css $editor_css Aggregates every projector's editor CSS.
 	 */
@@ -55,7 +55,7 @@ final class Projected_Css_Controller extends Controller {
 	/**
 	 * Register the read route for the projected editor CSS.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return void
 	 */
@@ -78,7 +78,7 @@ final class Projected_Css_Controller extends Controller {
 	/**
 	 * Read the combined design-token editor CSS.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -91,7 +91,7 @@ final class Projected_Css_Controller extends Controller {
 	/**
 	 * The JSON Schema for the projected-CSS resource.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, mixed>
 	 */

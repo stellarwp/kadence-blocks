@@ -18,7 +18,7 @@ import { COLUMN_PRESET } from '../../presets/column-preset';
  * @param {Function} props.navigate The route navigator.
  * @param {Object}   props.library  The design-tokens feed hook's return value.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {?JSX.Element} The sidebar, or null while there is no open preset to edit.
  */

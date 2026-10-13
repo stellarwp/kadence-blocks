@@ -11,7 +11,7 @@
 /**
  * The control's breakpoint key for an editor device name.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @type {Object<string, string>}
  */
@@ -26,7 +26,7 @@ export const BREAKPOINT_FOR_DEVICE = {
  *
  * @param {string} breakpoint The control's breakpoint key (`desktop`/`tablet`/`mobile`).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The matching editor device name, defaulting to `Desktop`.
  */

@@ -46,7 +46,7 @@ const ACTIONS_HOOK = 'kadence.components.control.actions';
  * so the field filter stays shape-agnostic. The whole-value box-shadow control writes its alias
  * directly and needs no adapter.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @type {Object<string, Object>}
  */
@@ -83,7 +83,7 @@ ADAPTERS.measure = ADAPTERS.measureRange;
  *
  * @param {Object} ctx The seam context.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array} The pickable-token list ([{ id, alias, label, value, … }]).
  */
@@ -101,7 +101,7 @@ function tokensFor(ctx) {
  *
  * @param {Object} ctx The seam context.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {?Function} The write handler, or null when none is available.
  */
@@ -123,7 +123,7 @@ function writerFor(ctx) {
  * @param {*}      defaultValue The context's inherited default (a value or a per-corner list).
  * @param {?number} index       The slot index being rendered; null for the linked slot.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {*} The default for this slot.
  */
@@ -143,7 +143,7 @@ function defaultValueForSlot(defaultValue, index) {
  * @param {*}      defaultEditor The control's own editor node for this slot.
  * @param {Object} ctx           Neutral seam context: { control, index, value, onChange, context }.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {*} The token field when the control is token-mapped, otherwise `defaultEditor`.
  */
@@ -200,7 +200,7 @@ function editorFilter(defaultEditor, ctx) {
  * @param {*}      defaultEditor The control's own select node.
  * @param {Object} ctx           Neutral seam context: { control, index, value, onChange, context }.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {*} The font-family field when the block opted in, otherwise `defaultEditor`.
  */
@@ -227,7 +227,7 @@ function fontFamilyEditor(defaultEditor, ctx) {
  * @param {Array}  actions The default action nodes (empty).
  * @param {Object} ctx     Neutral seam context: { control, value, onChange, context, readOnly? }.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array} The action nodes to render.
  */
@@ -266,7 +266,7 @@ function actionsFilter(actions, ctx) {
  * removes any prior listener under this namespace first, so it is safe to call more than once (editor
  * init plus a test's setup).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {void}
  */

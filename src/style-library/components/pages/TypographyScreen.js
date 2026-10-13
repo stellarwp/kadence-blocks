@@ -44,7 +44,7 @@ import './TypographyScreen.scss';
  * The fixed sample text every card renders, matching both boards. An editable sample is new UI
  * state with no board spec, so it is not built.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const SAMPLE_TEXT = __('Visualize your font', 'kadence-blocks');
 
@@ -52,14 +52,14 @@ const SAMPLE_TEXT = __('Visualize your font', 'kadence-blocks');
  * The muted badge a catalog custom font carries in the dropdown menu, matching the `SelectDropdown`
  * badge treatment used elsewhere in the app.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const CUSTOM_BADGE = __('Custom', 'kadence-blocks');
 
 /**
  * The muted badge a favorite carries where it sits pinned above the catalog.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const FAVORITE_BADGE = __('Favorite', 'kadence-blocks');
 
@@ -70,7 +70,7 @@ const FAVORITE_BADGE = __('Favorite', 'kadence-blocks');
  * only feedback for the whole round trip is the control going flat, which reads as the click not
  * having registered.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const FONT_ACTION_LABELS = {
 	add: {
@@ -88,7 +88,7 @@ const FONT_ACTION_LABELS = {
  * is, so a label and its explanation cannot drift apart. A favorite is a pin, not a style, so both
  * sentences say plainly that no text on the site moves.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const FONT_ACTION_HINTS = {
 	add: __(
@@ -109,7 +109,7 @@ const FONT_ACTION_HINTS = {
  * @param {('add'|'remove')} type The action that just settled.
  * @param {string}           name The family name it was applied to.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The announcement text.
  */
@@ -129,7 +129,7 @@ function favoriteAnnouncement(type, name) {
  *
  * @param {string} fontStack The selected font's resolved `font-family` CSS value.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Function} The `config.renderPreview` implementation.
  */
@@ -159,7 +159,7 @@ function samplePreviewRenderer(fontStack) {
  *
  * @param {Array<{label: string}>} fonts The library's favorites (`fontOptions()`).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array<{value: string, label: string, badge?: string}>} The dropdown's option list.
  */
@@ -192,7 +192,7 @@ function buildCatalogOptions(fonts) {
  * @param {?{message: string}}                                   args.fontError       The current favorite-write error, if any.
  * @param {Function}                                             args.onClearFontError Dismisses `fontError`.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Function} The `config.renderToolbar` implementation.
  */
@@ -287,7 +287,7 @@ function typographyToolbarRenderer({
  * seed from the authored scalar (a clamp's `max`), never the resolved `clamp(...)` string a
  * fluid step actually carries.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const TYPOGRAPHY_CONFIG = {
 	id: 'typography',
@@ -325,7 +325,7 @@ export const TYPOGRAPHY_CONFIG = {
  *
  * @param {Object} props The props `ScaleScreen` accepts (`{ label, route, navigate, library }`).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The screen.
  */
@@ -444,7 +444,7 @@ export function TypographyScreen(props) {
  *
  * @param {Object} props The props `ScaleSettings` accepts (`{ route, navigate, library }`).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {?JSX.Element} The panel.
  */

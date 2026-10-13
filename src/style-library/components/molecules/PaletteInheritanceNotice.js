@@ -24,7 +24,7 @@ import './PaletteInheritanceNotice.scss';
  * @param {number} props.count       How many colors still follow the source palette.
  * @param {string} props.sourceLabel The source palette's display label.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {?JSX.Element} The notice, or null when nothing is inherited.
  */

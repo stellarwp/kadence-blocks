@@ -22,14 +22,14 @@ import { __ } from '@wordpress/i18n';
  * 'blocks/my-vendor/my-block': { description: '…', docUrl: 'https://…' } } ) )`. Resolution runs
  * on every lookup, so a listener added after first render still takes effect.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const SCREEN_DOCS_FILTER = 'kadence_blocks.style_library.screen_docs';
 
 /**
  * The shipped catalog. Copy is authored by the documentation owner — do not reword it here.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const SCREEN_DOCS = {
 	'color-palette': {

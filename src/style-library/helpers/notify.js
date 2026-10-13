@@ -37,7 +37,7 @@ import '@wordpress/notices';
  *
  * @param {string} message The confirmation text (e.g. "Color saved.").
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {void}
  */
@@ -52,7 +52,7 @@ export function notifySuccess(message) {
  *
  * @param {string} message The failure text — typically a REST error's own message.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {void}
  */

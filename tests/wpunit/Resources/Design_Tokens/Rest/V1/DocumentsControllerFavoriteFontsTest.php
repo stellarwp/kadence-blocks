@@ -18,26 +18,26 @@ use WP_REST_Server;
  * Covers the favorite-fonts sub-route: PUT/DELETE /documents/{slug}/favorite-fonts/{family}, its
  * catalog membership gate, its narrowed write path, and the version-conditional guard.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class DocumentsControllerFavoriteFontsTest extends TestCase {
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Store
 	 */
 	private Token_Store $store;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Documents_Controller
 	 */
 	private Documents_Controller $controller;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Favorite_Font_Index
 	 */
@@ -47,7 +47,7 @@ final class DocumentsControllerFavoriteFontsTest extends TestCase {
 	 * Two real catalog family names, discovered fresh per test so the fixture stays correct
 	 * regardless of what the generated Google names file happens to ship.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var list<string>
 	 */

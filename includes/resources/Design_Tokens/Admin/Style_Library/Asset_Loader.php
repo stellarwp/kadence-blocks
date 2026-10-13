@@ -7,14 +7,14 @@ use KadenceWP\KadenceBlocks\Asset\Asset;
 /**
  * Enqueues the Style Library admin bundle on its screen.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Asset_Loader {
 
 	/**
 	 * The script handle for the Style Library bundle.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -25,7 +25,7 @@ final class Asset_Loader {
 	 *
 	 * Compiled by wp-scripts; companion metadata lives at dist/admin-kadence-style-library.asset.php.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -34,14 +34,14 @@ final class Asset_Loader {
 	/**
 	 * Resolves plugin asset URLs and webpack metadata.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Asset
 	 */
 	private Asset $asset;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Asset $asset Resolves plugin asset URLs and webpack metadata.
 	 */
@@ -52,7 +52,7 @@ final class Asset_Loader {
 	/**
 	 * The script handle for the Style Library bundle.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -63,7 +63,7 @@ final class Asset_Loader {
 	/**
 	 * Enqueue the Style Library scripts and styles.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return void
 	 */

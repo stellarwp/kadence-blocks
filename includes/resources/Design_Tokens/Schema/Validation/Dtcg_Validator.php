@@ -47,14 +47,14 @@ use KadenceWP\KadenceBlocks\Utils\Cast;
  * as far as this ticket's scope: foundation-preset / block-preset `tokens` map values must be alias-or-literal; richer
  * preset semantics are out of scope here.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Dtcg_Validator {
 
 	/**
 	 * Validate the shipped, full baseline document. Sentinels are not allowed.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -63,7 +63,7 @@ final class Dtcg_Validator {
 	/**
 	 * Validate a sparse overrides document (a store write). Sentinels are allowed.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -73,7 +73,7 @@ final class Dtcg_Validator {
 	 * The side count of a per-corner preset token slot list, matching the 4-side measure attribute a
 	 * block stores (top-left, top-right, bottom-right, bottom-left).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var int
 	 */
@@ -82,7 +82,7 @@ final class Dtcg_Validator {
 	/**
 	 * Value validators keyed by $type.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var array<string, Value_Validator>
 	 */
@@ -92,7 +92,7 @@ final class Dtcg_Validator {
 	 * Wire the per-$type value validators. The map is the dispatch table walk() uses once a leaf's $type
 	 * has been verified, so this set must match Token_Type's v1 enum exactly.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	public function __construct() {
 		$this->validators = [
@@ -111,7 +111,7 @@ final class Dtcg_Validator {
 	/**
 	 * Context for validating the shipped, full baseline document (sentinels not allowed).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -122,7 +122,7 @@ final class Dtcg_Validator {
 	/**
 	 * Context for validating a sparse overrides document / store write (sentinels allowed).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -133,7 +133,7 @@ final class Dtcg_Validator {
 	/**
 	 * Validate a decoded DTCG document.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document The decoded document (json_decode with associative = true).
 	 * @param string               $context  self::CONTEXT_BASELINE or self::CONTEXT_OVERRIDES.
@@ -170,7 +170,7 @@ final class Dtcg_Validator {
 	/**
 	 * Walk one node, which is either a token leaf or a group of child nodes.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed  $node    The decoded node.
 	 * @param string $path    Dot-path to the node.
@@ -210,7 +210,7 @@ final class Dtcg_Validator {
 	/**
 	 * Validate a token leaf, applying the context's sentinel rules.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $leaf    The decoded leaf.
 	 * @param string               $path    Dot-path to the leaf.
@@ -272,7 +272,7 @@ final class Dtcg_Validator {
 	 * ($type, $value, $description, $extensions, sentinels and forward-looking extensions); a non-"$" key
 	 * is structural noise that the published schema rejects via additionalProperties:false.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $leaf The decoded leaf.
 	 * @param string               $path Dot-path to the leaf.
@@ -300,7 +300,7 @@ final class Dtcg_Validator {
 	/**
 	 * Validate a concrete (non-sentinel) leaf: it must carry a valid $type and a $value of that type.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $leaf The decoded leaf.
 	 * @param string               $path Dot-path to the leaf.
@@ -348,7 +348,7 @@ final class Dtcg_Validator {
 	 * exclusive, and each present slot is validated as an alias-or-literal of the leaf's own $type (the
 	 * clamp preferred slot additionally accepts a bare calc-style expression).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $leaf The decoded leaf.
 	 * @param string               $type The leaf's validated $type.
@@ -408,7 +408,7 @@ final class Dtcg_Validator {
 	 * Validate a per-breakpoint `responsive` map: a non-empty object whose keys are known breakpoints and
 	 * whose values are each an alias-or-literal of the leaf's $type.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed  $responsive The decoded responsive map.
 	 * @param string $type       The leaf's $type.
@@ -456,7 +456,7 @@ final class Dtcg_Validator {
 	 * max are alias-or-literal of the leaf's $type; preferred additionally accepts a bare calc-style
 	 * expression (a clamp() argument is a <calc-sum>, which a plain dimension literal rejects).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed  $clamp The decoded clamp map.
 	 * @param string $type  The leaf's $type.
@@ -522,7 +522,7 @@ final class Dtcg_Validator {
 	 * "1.2") exactly as its min / max slots do; the calc-style branch accepts what a plain type literal
 	 * rejects — a clamp() preferred takes a <calc-sum> like "0.995rem + 0.326vw" without a calc() wrapper.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed  $value The decoded preferred slot.
 	 * @param string $type  The leaf's $type.
@@ -575,7 +575,7 @@ final class Dtcg_Validator {
 	 * tokens). The walk descends every array branch and validates each `tokens` map it finds, so all of these
 	 * are covered by the same logic.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed $extensions The decoded $extensions node.
 	 *
@@ -668,7 +668,7 @@ final class Dtcg_Validator {
 	 * to report. The caller only checks that the key is present; anything else here would let a scalar
 	 * stored under it skip validation and pass as a valid document.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed  $palettes The decoded colorPalettes section, before its shape is known.
 	 * @param string $prefix   Dot-path to the section, for error messages.
@@ -736,7 +736,7 @@ final class Dtcg_Validator {
 	 *
 	 * Takes the section unshaped, for the reason {@see validate_color_palettes()} gives.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed  $labels The decoded tokenLabels section, before its shape is known.
 	 * @param string $prefix Dot-path to the section, for error messages.
@@ -779,7 +779,7 @@ final class Dtcg_Validator {
 	 *
 	 * Takes the section unshaped, for the reason {@see validate_color_palettes()} gives.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed  $order  The decoded tokenOrder section, before its shape is known.
 	 * @param string $prefix Dot-path to the section, for error messages.
@@ -835,7 +835,7 @@ final class Dtcg_Validator {
 	 *
 	 * Takes the section unshaped, for the reason {@see validate_color_palettes()} gives.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed  $favorites The decoded favoriteFonts section, before its shape is known.
 	 * @param string $prefix    Dot-path to the section, for error messages.
@@ -889,7 +889,7 @@ final class Dtcg_Validator {
 	 * The `$default` slug (and any other non-array metadata) is a leaf with no `tokens` map, so it is
 	 * skipped naturally.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<int|string, mixed> $node   The current subtree node.
 	 * @param string                   $prefix Dot-path to the node, for error messages.
@@ -932,7 +932,7 @@ final class Dtcg_Validator {
 	 * identifies it. The envelope is claimed first because a composite validator tolerates `$`-prefixed
 	 * keys, and an envelope carrying `$value` would otherwise be mistaken for one.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed  $value     The decoded value.
 	 * @param string $path      Dot-path to the value.
@@ -991,7 +991,7 @@ final class Dtcg_Validator {
 	 * (the walk sees a property name like "button-radius", not a token id), which is also why the kind
 	 * gate lives in the REST write guard rather than here.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $entry The decoded entry.
 	 * @param string               $path  Dot-path to the entry.
@@ -1057,7 +1057,7 @@ final class Dtcg_Validator {
 	 * free of spaces — the projection round-trips a slot list through a space-separated shorthand, so a
 	 * compound literal such as `calc(1px + 1px)` would break the split and is rejected here at write time.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<int, mixed> $slots     The slot list.
 	 * @param string            $path      Dot-path to the list.
@@ -1115,7 +1115,7 @@ final class Dtcg_Validator {
 	 * Whether an array is a list — sequential integer keys from zero. Hand-rolled because the plugin
 	 * supports PHP 7.4, where array_is_list() does not exist.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<int|string, mixed> $value The array to test.
 	 *
@@ -1136,7 +1136,7 @@ final class Dtcg_Validator {
 	 * node is a leaf that is missing its $value rather than a typed group — which surfaces the right
 	 * error. Child token/group names are dot-path segments and never collide with these "$" keys.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $node The decoded node.
 	 *
@@ -1151,7 +1151,7 @@ final class Dtcg_Validator {
 	/**
 	 * Whether a node key is DTCG metadata (a "$"-prefixed key) rather than a child token/group name.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed $key The node key.
 	 *

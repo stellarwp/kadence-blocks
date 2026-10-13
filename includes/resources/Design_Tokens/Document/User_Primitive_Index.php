@@ -9,14 +9,14 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Extensions;
  * $type and $value live exclusively in the primitive tree.
  * Every mutating method returns the updated document; the original is not modified.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class User_Primitive_Index {
 
 	/**
 	 * All user-primitive entries, keyed by canonical dot-path id.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document
 	 *
@@ -29,7 +29,7 @@ final class User_Primitive_Index {
 	}
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document
 	 * @param string               $id Canonical dot-path id.
@@ -41,7 +41,7 @@ final class User_Primitive_Index {
 	}
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document
 	 * @param string               $id
@@ -62,7 +62,7 @@ final class User_Primitive_Index {
 	 * entry so a document with no grouped custom tokens stays byte-identical to before this param
 	 * existed.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document
 	 * @param string               $id
@@ -105,7 +105,7 @@ final class User_Primitive_Index {
 	}
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document
 	 * @param string               $id
@@ -142,7 +142,7 @@ final class User_Primitive_Index {
 	 * id explicitly — the old entry is gone by the time add() would look for it, so relying on
 	 * add()'s own preserve-by-default lookup here would silently drop the group instead.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document
 	 * @param string               $old_id
@@ -161,7 +161,7 @@ final class User_Primitive_Index {
 	}
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document
 	 *
@@ -184,7 +184,7 @@ final class User_Primitive_Index {
 	}
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document
 	 *

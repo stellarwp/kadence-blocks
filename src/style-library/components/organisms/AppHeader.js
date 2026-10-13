@@ -24,7 +24,7 @@ import './AppHeader.scss';
  * @param {?JSX.Element} props.librarySlot  The library selector, or null when empty.
  * @param {?JSX.Element} props.actionsSlot  The header actions (e.g. delete), or null when empty.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The header bar.
  */

@@ -18,7 +18,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Sentinels;
  * leaf replaces wholesale, exactly like a concrete leaf, so the Resolver can interpret them at read
  * time. Callers that want to DROP an override (rather than store a sentinel) use remove().
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Mutator {
 
@@ -29,7 +29,7 @@ final class Mutator {
 	 * survives. A leaf or sentinel in the partial replaces the corresponding node wholesale (a token
 	 * value is never field-merged); two groups descend; otherwise the partial wins.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $current The stored overrides document (decoded).
 	 * @param array<string, mixed> $partial The partial overrides document to merge in (decoded).
@@ -74,7 +74,7 @@ final class Mutator {
 	 * The leaf is assigned wholesale at the terminal segment; an existing leaf or scalar in the way of an
 	 * intermediate segment is replaced by a fresh group so the path can be built.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document The stored overrides document (decoded).
 	 * @param string               $path     The dot-path, e.g. "primitive.color.brand".
@@ -107,7 +107,7 @@ final class Mutator {
 	 *
 	 * A no-op when the path is absent, so a delete of an unset override leaves the document unchanged.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document The stored overrides document (decoded).
 	 * @param string               $path     The dot-path to remove.
@@ -125,7 +125,7 @@ final class Mutator {
 	 * carry dots ("com.kadence.designTokens") or slashes ("kadence/singlebtn") can remove a node the
 	 * dot-path form could not express.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $node The current node.
 	 * @param string[]             $keys The remaining literal keys to the node to remove.
@@ -175,7 +175,7 @@ final class Mutator {
 	 * A "$type"-only node, e.g. { "$type": "color" }, is deliberately NOT a leaf: it is invalid DTCG the
 	 * validator rejects downstream, so it is descended into as a group rather than replaced.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $node The decoded node.
 	 *

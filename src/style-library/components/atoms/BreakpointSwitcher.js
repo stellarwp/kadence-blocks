@@ -27,14 +27,14 @@ import './BreakpointSwitcher.scss';
  * The dashicon glyph name per breakpoint step. `smartphone`, not `mobile` — there is no
  * `dashicons-mobile`.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const BREAKPOINT_DASHICONS = { desktop: 'desktop', tablet: 'tablet', mobile: 'smartphone' };
 
 /**
  * The accessible name per breakpoint step, announced by assistive tech regardless of icon color.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const BREAKPOINT_LABELS = {
 	desktop: __('Desktop', 'kadence-blocks'),
@@ -51,7 +51,7 @@ const BREAKPOINT_LABELS = {
  * @param {string}   props.breakpoint  The active breakpoint.
  * @param {Function} props.onChange    Called with the newly selected breakpoint.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The switcher.
  */

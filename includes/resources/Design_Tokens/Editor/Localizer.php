@@ -19,14 +19,14 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Contracts\Controller;
  * Emitted with wp_add_inline_script + wp_json_encode; the JSON_HEX_* flags make the payload safe to
  * inline inside a <script> without further escaping.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Localizer {
 
 	/**
 	 * The editor script handle the catalogs are attached to (enqueued in class-kadence-blocks-editor-assets).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -35,7 +35,7 @@ final class Localizer {
 	/**
 	 * The JS global the preset picker reads.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -44,7 +44,7 @@ final class Localizer {
 	/**
 	 * The JS global the per-block palette selector and library-level palette switch read.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -53,7 +53,7 @@ final class Localizer {
 	/**
 	 * The JS global the block-registration preset-default filter reads.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -62,7 +62,7 @@ final class Localizer {
 	/**
 	 * The JS global the preset writes read for the REST root, namespace and nonce.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -71,7 +71,7 @@ final class Localizer {
 	/**
 	 * The JS global the editor token picker's accessor reads (the pickable-token pool).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -81,7 +81,7 @@ final class Localizer {
 	 * The JS global the editor's font-family picker reads (the active library's favorite families and
 	 * the site's custom family names).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -90,7 +90,7 @@ final class Localizer {
 	/**
 	 * The token registry, for the fail-closed gate.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Registry
 	 */
@@ -99,7 +99,7 @@ final class Localizer {
 	/**
 	 * The preset catalog builder.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Preset_Catalog
 	 */
@@ -108,7 +108,7 @@ final class Localizer {
 	/**
 	 * The per-block attribute-default catalog builder.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Attribute_Default_Catalog
 	 */
@@ -117,7 +117,7 @@ final class Localizer {
 	/**
 	 * The pickable-token pool builder.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Pickable_Tokens_Catalog
 	 */
@@ -126,7 +126,7 @@ final class Localizer {
 	/**
 	 * The color-palette catalog builder.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Palette_Catalog
 	 */
@@ -135,14 +135,14 @@ final class Localizer {
 	/**
 	 * The favorite-fonts catalog builder.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Favorite_Fonts_Catalog
 	 */
 	private Favorite_Fonts_Catalog $favorite_fonts;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Token_Registry            $registry           The token registry.
 	 * @param Preset_Catalog            $preset_catalog     The preset catalog builder.
@@ -171,7 +171,7 @@ final class Localizer {
 	 * Attach the editor-only catalogs to the editor bundle, when that bundle is on the page and the
 	 * registry is active.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return void
 	 */
@@ -195,7 +195,7 @@ final class Localizer {
 	 * Attach the pickable-token pool alone to whichever of {@see pickable_handles()} is enqueued,
 	 * when the registry is active.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return void
 	 */
@@ -216,7 +216,7 @@ final class Localizer {
 	/**
 	 * The first {@see pickable_handles()} entry enqueued on the current screen.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string|null
 	 */
@@ -234,7 +234,7 @@ final class Localizer {
 	 * Script handles that receive the pickable-token pool, in resolution order: the editor bundle,
 	 * then the Style Library admin bundle. Only the first found enqueued is used.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string[]
 	 */
@@ -249,7 +249,7 @@ final class Localizer {
 	 * The REST descriptor the editor's preset writes POST to: the wp-json root, the v1 namespace, and a
 	 * nonce. Mirrors the admin feed's descriptor so the editor's presets client reuses the same middleware.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array{root: string, namespace: string, nonce: string}
 	 */
@@ -265,7 +265,7 @@ final class Localizer {
 	 * Encode a catalog and attach it to a script handle as a window global. A catalog that cannot be
 	 * serialized is skipped rather than injected as malformed JS.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string              $handle      The script handle to attach the inline script to.
 	 * @param string              $global_name The window global name to assign.

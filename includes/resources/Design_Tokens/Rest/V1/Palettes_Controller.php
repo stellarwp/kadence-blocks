@@ -43,14 +43,14 @@ use WP_REST_Server;
  * {@see delete_swatch()} does with them: restore the shipped color on the default palette, drop the delta
  * (back to inherited) on any other. Only a user-added swatch's row is actually removable.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Palettes_Controller extends Controller {
 
 	/**
 	 * The request parameter that carries the token library slug a read/write targets.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -59,7 +59,7 @@ final class Palettes_Controller extends Controller {
 	/**
 	 * The palette id path/request parameter.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -68,7 +68,7 @@ final class Palettes_Controller extends Controller {
 	/**
 	 * The palette label request parameter.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -77,7 +77,7 @@ final class Palettes_Controller extends Controller {
 	/**
 	 * The palette groups request parameter.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -86,7 +86,7 @@ final class Palettes_Controller extends Controller {
 	/**
 	 * The `$current` pointer request parameter.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -95,7 +95,7 @@ final class Palettes_Controller extends Controller {
 	/**
 	 * The literal segment for the `$current` sub-route.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -104,7 +104,7 @@ final class Palettes_Controller extends Controller {
 	/**
 	 * The palette-id path capture.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -113,7 +113,7 @@ final class Palettes_Controller extends Controller {
 	/**
 	 * The swatch-token path/request parameter.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -123,7 +123,7 @@ final class Palettes_Controller extends Controller {
 	 * The single-swatch sub-route under a palette: `{id}/swatches/{token}`. The token capture allows the dots
 	 * and hyphens a token dot-path carries (e.g. `primitive.color.brand.button-hover`).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -132,63 +132,63 @@ final class Palettes_Controller extends Controller {
 	/**
 	 * @var Token_Store
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	private Token_Store $store;
 
 	/**
 	 * @var Mutator
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	private Mutator $mutator;
 
 	/**
 	 * @var Token_Resolver
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	private Token_Resolver $resolver;
 
 	/**
 	 * @var Dtcg_Validator
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	private Dtcg_Validator $validator;
 
 	/**
 	 * @var Effective_Palettes
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	private Effective_Palettes $palettes;
 
 	/**
 	 * @var Token_Registry
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	private Token_Registry $registry;
 
 	/**
 	 * @var Active_Token_Library_Store
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	private Active_Token_Library_Store $active;
 
 	/**
 	 * Memoised item schema for this request.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var array<string, mixed>|null
 	 */
 	private ?array $item_schema = null;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Token_Store                $store     The sole gateway to the kb_design_tokens table.
 	 * @param Mutator                    $mutator   The pure structural document transforms.
@@ -223,7 +223,7 @@ final class Palettes_Controller extends Controller {
 	 * The `current` sub-route is registered before the single-palette `{id}` route so the literal segment
 	 * is not captured as a palette id.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return void
 	 */
@@ -318,7 +318,7 @@ final class Palettes_Controller extends Controller {
 	 * `is_current` / `user_created` flags, each with an embeddable `self` link `_embed` resolves into
 	 * the palette's full `effective_view()`.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -337,7 +337,7 @@ final class Palettes_Controller extends Controller {
 	/**
 	 * Read a single palette node, or 404 when the library defines no palette with that id.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -362,7 +362,7 @@ final class Palettes_Controller extends Controller {
 	 * A write against the default palette must additionally keep every baseline swatch: dropping one there
 	 * removes it from every palette, so it is a 403 rather than a structure edit.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -417,7 +417,7 @@ final class Palettes_Controller extends Controller {
 	 * Idempotent for a baseline palette (a reset with nothing stored changes nothing); a palette the library
 	 * does not define at all is a 404.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -458,7 +458,7 @@ final class Palettes_Controller extends Controller {
 	 * inherited by every palette — so it can only be set on the library's default palette; sending one against
 	 * any other palette id is rejected. A request for a palette the library does not define is a 404.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -555,7 +555,7 @@ final class Palettes_Controller extends Controller {
 	 * Idempotent either way: a token a palette never set is already inherited, and a row already gone stays
 	 * gone. An unknown palette is a 404.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -588,7 +588,7 @@ final class Palettes_Controller extends Controller {
 	/**
 	 * Read the library's `$current` palette id.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -602,7 +602,7 @@ final class Palettes_Controller extends Controller {
 	 * Set the library's `$current` palette (PUT /palettes/current). The target must name a palette the library
 	 * defines, otherwise it is a 422.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -638,7 +638,7 @@ final class Palettes_Controller extends Controller {
 	/**
 	 * The JSON Schema for a palette resource.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -684,7 +684,7 @@ final class Palettes_Controller extends Controller {
 	 * happens to be active, returning the wrong palette's data for a listing requested against a
 	 * non-active library.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $item    The listing row: `{id, label, is_default, is_current, user_created}`.
 	 * @param WP_REST_Request      $request Full details about the request.
@@ -705,7 +705,7 @@ final class Palettes_Controller extends Controller {
 	 * it, `_embed` falls back to the site's active library, which is wrong whenever the listing
 	 * targets a non-active one.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $item The listing row.
 	 * @param string               $slug The token library slug the listing was resolved for.
@@ -739,7 +739,7 @@ final class Palettes_Controller extends Controller {
 	 *     swatches the site changed; a swatch left at the baseline keeps its row but stores no `$value`, so
 	 *     it reads as not overridden and there is nothing to undo.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $id   The palette id.
 	 * @param string $slug The token library slug.
@@ -821,7 +821,7 @@ final class Palettes_Controller extends Controller {
 	 * whose `$value` equals the library's default palette value for that token (and any group left empty). So a
 	 * palette persists only the colors it actually changes; the rest are inherited from the default.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $node       The full palette node from the request.
 	 * @param string               $slug       The token library slug.
@@ -886,7 +886,7 @@ final class Palettes_Controller extends Controller {
 	 * the DTCG validator (422) and a resolver dry-run (422) gate the write, the encode is guarded (500), and
 	 * the store persists it. First write to a library reports 201.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $candidate The full candidate overrides document.
 	 * @param string               $id        The palette id being written, for error context.
@@ -947,7 +947,7 @@ final class Palettes_Controller extends Controller {
 	/**
 	 * Commit a raw document to a library and respond with the palette listing, mapping a write failure to 500.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $document The raw overrides-only DTCG JSON (empty string clears the library).
 	 * @param string $id       The palette id being written, for error context.
@@ -978,7 +978,7 @@ final class Palettes_Controller extends Controller {
 	 * group an object with an id / label / swatches list, and each swatch an object with a string token,
 	 * a string label, and a `$value`. The swatch `$value` grammar itself is left to the DTCG validator.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $node The palette node being written.
 	 * @param string               $id   The palette id, for error context.
@@ -1030,7 +1030,7 @@ final class Palettes_Controller extends Controller {
 	 * palette. Because palette `$value`s live under `$extensions`, the resolver dry-run never sees them, so
 	 * any alias `$value` target is checked here against the registry too.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $node The palette node being written.
 	 * @param string               $id   The palette id, for error context.
@@ -1104,7 +1104,7 @@ final class Palettes_Controller extends Controller {
 	 * Scoped to the default palette on purpose: a non-default palette is stored as DELTAS, so it legitimately
 	 * omits most baseline tokens, and applying this guard there would reject every ordinary palette write.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $node The palette node being written.
 	 * @param string               $id   The palette id, for error context.
@@ -1145,7 +1145,7 @@ final class Palettes_Controller extends Controller {
 	/**
 	 * Every swatch token a palette node carries, across all of its groups, in order.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $node The palette node.
 	 *
@@ -1180,7 +1180,7 @@ final class Palettes_Controller extends Controller {
 	 * Guard a single swatch (a token + value), reusing the palette-write swatch guards: the token must target
 	 * a registered color, and an aliased value must name a token that exists.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $id    The palette id, for error context.
 	 * @param string $token The swatch token dot-path.
@@ -1214,7 +1214,7 @@ final class Palettes_Controller extends Controller {
 	 * palette already carries the token, otherwise add it to the group the default template places it
 	 * in (creating that group if the palette does not have it yet). Returns the updated node.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed>  $node   The palette node.
 	 * @param string                $token  The swatch token dot-path.
@@ -1291,7 +1291,7 @@ final class Palettes_Controller extends Controller {
 	/**
 	 * Remove a swatch from a palette node by token, dropping a group left empty. Returns the updated node.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $node  The palette node.
 	 * @param string               $token The swatch token dot-path.
@@ -1339,7 +1339,7 @@ final class Palettes_Controller extends Controller {
 	 * placed under when the edited palette does not carry the token yet. Falls back to a generic Accent group
 	 * when the template does not group the token (it is still a valid color, since the guard passed).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $token The swatch token dot-path.
 	 * @param string $slug  The token library slug.
@@ -1380,7 +1380,7 @@ final class Palettes_Controller extends Controller {
 	 * in. The remove-then-merge avoids index-merging the rebuilt groups list into the previous stored node, and
 	 * runs the same validate-and-save path as the full palette write.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string               $slug The token library slug.
 	 * @param string               $id   The palette id.
@@ -1416,7 +1416,7 @@ final class Palettes_Controller extends Controller {
 	 * Runs here rather than in {@see prepare_for_storage()} because the swatch endpoints reach the store
 	 * without passing through that method; this is the one choke point all three write paths share.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $node The default palette node being written.
 	 *
@@ -1465,7 +1465,7 @@ final class Palettes_Controller extends Controller {
 	 * object — every write response uses this unconditionally, so the client never needs a follow-up
 	 * GET to see the fresh state a write just produced.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug The token library slug.
 	 *
@@ -1492,7 +1492,7 @@ final class Palettes_Controller extends Controller {
 	 * `is_current`/`user_created` flags carry what the old `{$default, $current, palettes,
 	 * userCreated}` wrapper used to convey at the collection level.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug The token library slug.
 	 *
@@ -1523,7 +1523,7 @@ final class Palettes_Controller extends Controller {
 	/**
 	 * The decoded stored overrides document for a library (the raw palettes source), or an empty array.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug The token library slug.
 	 *
@@ -1536,7 +1536,7 @@ final class Palettes_Controller extends Controller {
 	/**
 	 * A partial document nesting one palette node under the colorPalettes section, for a deep-merge.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string               $id   The palette id.
 	 * @param array<string, mixed> $node The palette node.
@@ -1550,7 +1550,7 @@ final class Palettes_Controller extends Controller {
 	/**
 	 * A partial document nesting a colorPalettes pointer (`$default` / `$current`) for a deep-merge.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $key The pointer key.
 	 * @param string $id  The palette id the pointer names.
@@ -1564,7 +1564,7 @@ final class Palettes_Controller extends Controller {
 	/**
 	 * Nest a colorPalettes subtree under `$extensions.<namespace>.colorPalettes` for a deep-merge.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $subtree The colorPalettes subtree to nest.
 	 *
@@ -1584,7 +1584,7 @@ final class Palettes_Controller extends Controller {
 	 * The literal key path to a palette node, for {@see Mutator::remove_by_keys()} — literal keys so the
 	 * dotted namespace segment is not split.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $id The palette id.
 	 *
@@ -1603,7 +1603,7 @@ final class Palettes_Controller extends Controller {
 	 * The groups payload from the request as an array (an absent / non-array payload becomes an empty list,
 	 * which the shape guard rejects).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -1619,7 +1619,7 @@ final class Palettes_Controller extends Controller {
 	 * The token library a request targets: the `library` parameter when it names a known library, otherwise the
 	 * active library. An unknown or absent `library` falls back rather than 404ing.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -1638,7 +1638,7 @@ final class Palettes_Controller extends Controller {
 	/**
 	 * A 404 for a palette a library does not define.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $id The palette id.
 	 *
@@ -1658,7 +1658,7 @@ final class Palettes_Controller extends Controller {
 	/**
 	 * A 422 for a malformed palette write.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $id      The palette id.
 	 * @param string $message The human-readable reason.
@@ -1679,7 +1679,7 @@ final class Palettes_Controller extends Controller {
 	/**
 	 * The optional token-library argument shared by every route.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -1696,7 +1696,7 @@ final class Palettes_Controller extends Controller {
 	/**
 	 * The arguments for the single-palette read / delete routes: the palette id plus the optional library.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -1716,7 +1716,7 @@ final class Palettes_Controller extends Controller {
 	/**
 	 * The arguments for the palette write route: id, label, groups, and the optional library.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -1743,7 +1743,7 @@ final class Palettes_Controller extends Controller {
 	 * The token keeps its dots (a dot-path), so it is sanitized with sanitize_text_field rather than the id's
 	 * sanitize_key, which would strip them.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -1766,7 +1766,7 @@ final class Palettes_Controller extends Controller {
 	 * The arguments for the swatch write route: the value and/or the structural label, each optional
 	 * individually — `update_swatch()` requires at least one to be present.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -1789,7 +1789,7 @@ final class Palettes_Controller extends Controller {
 	/**
 	 * The arguments for the `$current` write route: the target palette id plus the optional library.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, mixed>
 	 */

@@ -13,7 +13,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Definition;
  * the inherited methods could not read it through late static binding. Protected is the minimum that
  * lets the logic defined here resolve the child's values via static::PROJECTION / VAR_PREFIX / SLOTS.
  *
- * @since TBD
+ * @since 3.8.0
  */
 abstract class Abstract_Target implements Target {
 
@@ -21,7 +21,7 @@ abstract class Abstract_Target implements Target {
 	 * The projection key a token declares to claim a slot in this family, e.g. "kb_spacing_slot". Concrete
 	 * families override.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -31,7 +31,7 @@ abstract class Abstract_Target implements Target {
 	 * The custom-property prefix Kadence Blocks emits each slug under, e.g. "--global-kb-spacing-".
 	 * Concrete families override.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -41,7 +41,7 @@ abstract class Abstract_Target implements Target {
 	 * The slugs Kadence Blocks ships for this family; a claim on any other slug is ignored so the override
 	 * can never point at a slug no block reads. Concrete families override.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string[]
 	 */
@@ -51,7 +51,7 @@ abstract class Abstract_Target implements Target {
 	 * The dot-path prefix of the primitive dimension token backing a slug in this family, e.g.
 	 * "primitive.dimension.spacing.". Concrete families override.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -60,7 +60,7 @@ abstract class Abstract_Target implements Target {
 	/**
 	 * The claimed slug, e.g. "lg".
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -79,7 +79,7 @@ abstract class Abstract_Target implements Target {
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	final public static function get_projection_key(): string {
 		return static::PROJECTION;
@@ -90,7 +90,7 @@ abstract class Abstract_Target implements Target {
 	 *
 	 * @param Token_Definition $token The token definition.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	final public static function from_token( Token_Definition $token ): ?self {
 		if ( ! $token->has_projection( static::PROJECTION ) ) {
@@ -109,7 +109,7 @@ abstract class Abstract_Target implements Target {
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	final public function css_property(): string {
 		return static::VAR_PREFIX . $this->slot;
@@ -118,7 +118,7 @@ abstract class Abstract_Target implements Target {
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	final public function slot(): string {
 		return $this->slot;
@@ -129,7 +129,7 @@ abstract class Abstract_Target implements Target {
 	 *
 	 * @param string $slug The claimed slug, e.g. "lg".
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	final public static function get_primitive_id( string $slug ): string {
 		return static::PRIMITIVE_PREFIX . $slug;

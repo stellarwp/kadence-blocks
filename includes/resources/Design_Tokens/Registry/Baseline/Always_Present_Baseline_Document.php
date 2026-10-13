@@ -13,12 +13,12 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Contracts\Baseline_Document;
  * path without the real baseline. The fail-closed "missing" path is covered by Empty_Baseline_Document
  * and per-test fakes.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Always_Present_Baseline_Document implements Baseline_Document {
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $id A token DTCG dot-path id.
 	 *
@@ -31,7 +31,7 @@ final class Always_Present_Baseline_Document implements Baseline_Document {
 	/**
 	 * No real document backs this fixture; only has() is meaningful here.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, mixed>
 	 */

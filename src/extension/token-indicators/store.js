@@ -16,7 +16,7 @@ const actions = {
 	 *
 	 * @param {boolean} on Whether to highlight overridden controls.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return {Object} The action.
 	 */
@@ -31,7 +31,7 @@ const selectors = {
 	 *
 	 * @param {Object} state The store state.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return {boolean} True when overridden controls should be highlighted.
 	 */
@@ -46,7 +46,7 @@ const selectors = {
  * @param {Object} state  The current state.
  * @param {Object} action The dispatched action.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The next state.
  */

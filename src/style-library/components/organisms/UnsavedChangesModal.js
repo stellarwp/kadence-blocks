@@ -33,7 +33,7 @@ import './UnsavedChangesModal.scss';
  * @param {Function}           props.onDiscard Reverts the draft, then completes the parked action.
  * @param {Function}           props.onCancel  Drops the parked action; the dirty draft stays.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {?JSX.Element} The modal, or `null` while closed.
  */

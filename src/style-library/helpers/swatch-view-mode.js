@@ -7,7 +7,7 @@
 /**
  * The view modes the Color Palette screen offers.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @type {ReadonlyArray<string>}
  */
@@ -16,7 +16,7 @@ export const SWATCH_VIEW_MODES = Object.freeze(['grid', 'list']);
 /**
  * The mode used when nothing valid is stored.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @type {string}
  */
@@ -25,7 +25,7 @@ export const DEFAULT_SWATCH_VIEW_MODE = 'grid';
 /**
  * The `localStorage` key holding the chosen mode.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @type {string}
  */
@@ -35,7 +35,7 @@ export const SWATCH_VIEW_MODE_STORAGE_KEY = 'kadence-blocks:style-library:swatch
  * The browser's `localStorage`, or null when it cannot be reached. Reading the property itself can
  * throw (blocked site data), so the access sits inside the try.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {?Storage} The storage, or null.
  */
@@ -52,7 +52,7 @@ function defaultStorage() {
  *
  * @param {*} value The value to check.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True for `'grid'` and `'list'`.
  */
@@ -66,7 +66,7 @@ export function isSwatchViewMode(value) {
  *
  * @param {?Storage} [storage] The store to read; defaults to `window.localStorage`.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The mode.
  */
@@ -86,7 +86,7 @@ export function readSwatchViewMode(storage = defaultStorage()) {
  * @param {string}   mode      The mode to save.
  * @param {?Storage} [storage] The store to write; defaults to `window.localStorage`.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {void}
  */

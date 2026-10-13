@@ -35,7 +35,7 @@ import { __ } from '@wordpress/i18n';
  * @param {boolean}   [props.showReset]  Render the matching glyph and the reset button. False
  *                                       leaves only the dot, for a control that resets elsewhere.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {?JSX.Element} The indicator, or null when there is nothing to show.
  */

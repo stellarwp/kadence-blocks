@@ -17,7 +17,7 @@ import './FieldLabel.scss';
  * @param {import('react').ReactNode}  props.children  The label text.
  * @param {?JSX.Element}                [props.trailing] An optional trailing control (e.g. a link/unlink button).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The label row.
  */

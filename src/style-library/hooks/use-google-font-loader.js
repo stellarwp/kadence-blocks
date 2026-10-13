@@ -31,7 +31,7 @@ import { getFontCatalog } from '../helpers/typography';
  * @param {string} familyName The selected font's family (`fontOptions()`'s `label`), or an empty
  *                             string when nothing is selected yet.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{readyFamily: string, isLoading: boolean}} The family safe to render in, and whether a
  *         different one is still being fetched.

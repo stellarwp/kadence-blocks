@@ -19,14 +19,14 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Theme_Style_Guide\Style_Guide_Overlay;
  * Not for optimistic concurrency: the REST layer keeps comparing the store version, because a
  * Customizer save does not change the stored document a client is editing.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Effective_Version {
 
 	/**
 	 * The token store.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Store
 	 */
@@ -35,7 +35,7 @@ final class Effective_Version {
 	/**
 	 * The theme-derived overlay whose signature is folded in.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Style_Guide_Overlay
 	 */
@@ -44,14 +44,14 @@ final class Effective_Version {
 	/**
 	 * The theme button styles overlay whose signature is folded in.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Theme_Button_Styles_Overlay
 	 */
 	private Theme_Button_Styles_Overlay $buttons;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Token_Store                 $store   The token store.
 	 * @param Style_Guide_Overlay         $overlay The theme Style Guide overlay.
@@ -67,7 +67,7 @@ final class Effective_Version {
 	 * The effective version for a library: the store version, extended with each overlay signature that
 	 * is not empty.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug The token library slug.
 	 *

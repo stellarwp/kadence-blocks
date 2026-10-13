@@ -29,7 +29,7 @@ import './DeleteColorGroupModal.scss';
  * @param {Function}           props.onClose   Called to dismiss the modal.
  * @param {Function}           props.onConfirm Called to delete the group.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The modal.
  */

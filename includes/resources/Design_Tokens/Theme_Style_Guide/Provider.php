@@ -9,14 +9,14 @@ use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provi
  * Wires the theme Style Guide layer: the Kadence reader as the source, the pure mapper, and the
  * per-request overlay the baseline decorator and cache versioning read.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Provider extends Provider_Contract {
 
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	public function register(): void {
 		$this->container->singleton( Style_Guide_Source::class, Style_Guide_Reader::class );

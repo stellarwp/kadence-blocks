@@ -38,7 +38,7 @@ import { STORE_NAME } from '../store';
  *                           screen edits), `properties` (its bound property surface, read lazily)
  *                           and `slugBase` (the stem new preset slugs are minted from).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * `savePreset` resolves with the saved preset in the panel's own seed shape — what the server actually
  * stored, not what was sent — or null when an unchanged draft was skipped.

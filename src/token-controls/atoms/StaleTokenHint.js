@@ -29,7 +29,7 @@ import { findTokenEntry, isTokenAlias } from '../helpers/token-summary';
  * @param {*}     value  The slot value.
  * @param {Array} tokens The pickable-token list.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True when the value is a stale alias.
  */
@@ -40,7 +40,7 @@ export function isStaleAlias(value, tokens) {
 /**
  * The label a stale field shows in place of a token name.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The translated label.
  */
@@ -51,7 +51,7 @@ export function staleTokenLabel() {
 /**
  * The explanation for a stale alias.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The translated message.
  */
@@ -65,7 +65,7 @@ export function staleTokenMessage() {
 /**
  * The explanation for a theme font reference on a theme that does not provide it.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The translated message.
  */
@@ -88,7 +88,7 @@ export function staleFamilyMessage() {
  *                                     reference, say) passes its own.
  * @param {JSX.Element} props.children The trigger.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The trigger, wrapped in the tooltip when active.
  */
@@ -108,7 +108,7 @@ export function StaleTokenTooltip({ active, text = staleTokenMessage(), children
  * The caution glyph shown beside a stale field's label. Decorative: the trigger it sits in already
  * carries the explanation as its tooltip and accessible name.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The glyph.
  */

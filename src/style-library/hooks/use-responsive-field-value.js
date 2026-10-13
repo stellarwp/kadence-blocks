@@ -24,7 +24,7 @@ import { BREAKPOINTS, DESKTOP_BREAKPOINT, readResponsiveSlot, writeResponsiveSlo
  * @param {*}        rawValue    The value `SettingsForm` resolved by dot path (the raw leaf).
  * @param {Function} rawOnChange `SettingsForm`'s plain `(next) => onChange(field.path, next)` callback.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{value: *, onChange: Function, switcher: ?JSX.Element}} The value/onChange the field
  *         should render with, and the switcher element for the field's `FieldLabel` trailing slot

@@ -20,14 +20,14 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Extensions;
  * the palette REST surface. The `slots` map is the editor's single source for the slot -> alias binding, mirroring
  * the projection declared in `declarations.php`.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Palette_Catalog {
 
 	/**
 	 * The active-library pointer, so the catalog reports the library the editor renders by default.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Active_Token_Library_Store
 	 */
@@ -36,7 +36,7 @@ final class Palette_Catalog {
 	/**
 	 * The effective-palettes reader, source of the active library's palettes and its `$current` pointer.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Effective_Palettes
 	 */
@@ -45,14 +45,14 @@ final class Palette_Catalog {
 	/**
 	 * The token registry, source of the palette-slot -> token bindings the `slots` map exposes.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Registry
 	 */
 	private Token_Registry $registry;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Active_Token_Library_Store $active   The active-library pointer.
 	 * @param Effective_Palettes         $palettes The effective-palettes reader.
@@ -68,7 +68,7 @@ final class Palette_Catalog {
 	 * The palette catalog for the active library: its palettes as `{ id, label }`, the `current` palette id, and
 	 * the active library slug.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array{active: string, current: string, palettes: array<int, array{id: string, label: string}>, slots: array<string, string>}
 	 */
@@ -102,7 +102,7 @@ final class Palette_Catalog {
 	 * it. Resolved through {@see Kadence_Palette_Slot} so the slot set can never drift from the projection,
 	 * making `declarations.php` the single source of truth.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, string> slug => `{alias}`.
 	 */

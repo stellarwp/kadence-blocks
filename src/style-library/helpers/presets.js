@@ -32,7 +32,7 @@ import { getDesignTokensFeed } from './tokens';
  * The number of corners a per-corner slot list carries (top-left, top-right, bottom-right,
  * bottom-left) — the sibling per-corner-values work's `Dtcg_Validator::SLOT_LIST_SIDES`.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const SLOT_LIST_SIDES = 4;
 
@@ -40,7 +40,7 @@ const SLOT_LIST_SIDES = 4;
  * The sub-fields every composite shadow carries, mirroring `Token_Type::COMPOSITE_FIELDS`. `inset` is
  * optional and deliberately absent: a shadow that predates it is still a shadow.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @type {string[]}
  */
@@ -51,7 +51,7 @@ const SHADOW_FIELDS = ['color', 'offsetX', 'offsetY', 'blur', 'spread'];
  * filter registration, the fetch-and-bind hook, and any future preset screen reusing this contract
  * never risk a typo'd duplicate.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const BUTTON_BLOCK = 'kadence/singlebtn';
 
@@ -67,7 +67,7 @@ export const BUTTON_BLOCK = 'kadence/singlebtn';
  *
  * @param {string} block The block name whose surface to read.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @throws {Error} When the feed has no non-empty `properties` array for that block.
  *
@@ -91,7 +91,7 @@ export function getPresetProperties(block) {
  *
  * @param {string} value The stored token value, e.g. `'{semantic.color.action-primary}'`.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The bare id, or the literal value unchanged.
  */
@@ -111,7 +111,7 @@ export function aliasToId(value) {
  *
  * @param {string} value The candidate value.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True when the value is shaped like a token id.
  */
@@ -125,7 +125,7 @@ function looksLikeTokenId(value) {
  *
  * @param {string} value A bare dot-path id, e.g. `'semantic.color.action-primary'`.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The alias-wrapped value.
  */
@@ -143,7 +143,7 @@ export function idToAlias(value) {
  *
  * @param {*} value The stored token entry.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True when `value` is a per-corner slot list.
  */
@@ -161,7 +161,7 @@ function isSlotList(value) {
  *
  * @param {*} value The stored token entry.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True when `value` is a composite shadow.
  */
@@ -182,7 +182,7 @@ function isCompositeShadow(value) {
  *
  * @param {*} value The stored (or draft-seeded) token entry.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True when `value` is non-scalar.
  */
@@ -207,7 +207,7 @@ export function isNonScalarPresetValue(value) {
  *                                              slot list).
  * @param {string}                 [breakpoint] The breakpoint to resolve at; defaults to desktop.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The resolved value, or `''` when unresolvable.
  */
@@ -274,7 +274,7 @@ export function resolveTokenValue(values, value, breakpoint = PRESET_BREAKPOINTS
  * @param {string[]} fallback     The block's own corners when the draft sets no resting radius.
  * @param {string}   [breakpoint] The breakpoint to resolve at; defaults to desktop.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string[]} The four corner literals.
  */
@@ -306,7 +306,7 @@ export function restingRadiusSlots(draft, feed, fallback, breakpoint = PRESET_BR
  * @param {Function}                                                                                               preview `(tokens, values, breakpoint) => object` — the block's own row preview.
  * @param {string}                                                                                                 [breakpoint] The breakpoint the preview resolves at; defaults to desktop.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array<{id: string, label: string, userCreated: boolean, isTheme: boolean, readable: boolean, themeValues: Record<string, *>, tokens: Record<string, *>, preview: Object}>} The preset rows.
  */
@@ -343,7 +343,7 @@ export function presetRows(payload, values, preview, breakpoint = PRESET_BREAKPO
  *
  * @param {string} slug The preset slug.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True for a theme preset.
  */
@@ -358,7 +358,7 @@ export function isThemePresetSlug(slug) {
  *
  * @param {*} value The theme value.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True when every literal inside the value is a single token.
  */
@@ -390,7 +390,7 @@ function isWritableThemeValue(value) {
  *
  * @param {Record<string, *>} snapshot The theme snapshot.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Record<string, *>} The snapshot without the values a write would refuse.
  */
@@ -411,7 +411,7 @@ export function writableThemeValues(snapshot) {
  * @param {*}                      value  The theme value.
  * @param {Record<string, string>} values The feed's resolved value map.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {*} The default, or `undefined` when the theme sets nothing for the property.
  */
@@ -449,7 +449,7 @@ export function themeFieldDefault(value, values) {
  * @param {string}                                                                        slug       The preset slug to seed.
  * @param {string[]}                                                                      properties The block's bound property surface.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {?{label: string, tokens: Record<string, string>, overridden: Record<string, boolean>}} The
  *   seeded draft, or null. `overridden` carries the property keys THIS preset genuinely has its own
@@ -496,7 +496,7 @@ export function presetInitialValues(payload, slug, properties) {
  * @param {{presets?: Record<string, {tokens?: Record<string, *>}>}} payload The preset GET payload.
  * @param {string}                                                    slug    The preset slug.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Record<string, *>} The property => stored-value map, or `{}` for an unknown slug.
  */
@@ -514,7 +514,7 @@ export function presetStoredTokens(payload, slug) {
  *
  * @param {*} value The draft property value.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True when the value carries nothing to save.
  */
@@ -556,7 +556,7 @@ export function isUnsetPresetValue(value) {
  *
  * @param {*} value A scalar, a slot list, or a responsive envelope.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {*} The same shape, with every token id alias-wrapped.
  */
@@ -584,7 +584,7 @@ export function aliasDeep(value) {
  *
  * @param {*} value A scalar, a slot list, or a responsive envelope.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {*} The same shape, with every alias unwrapped to a bare id.
  */
@@ -629,7 +629,7 @@ function aliasToIdDeep(value) {
  *                                                 (`presetStoredTokens`), read verbatim for any
  *                                                 property the draft did not change.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Record<string, *>} The property => value map ready for the write.
  */
@@ -656,7 +656,7 @@ export function presetSaveTokens(draftTokens, initialTokens = {}, storedTokens =
  * @param {string[]} existingSlugs The preset slugs already taken.
  * @param {string}   base          The slug stem, e.g. `'button'`.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The first free slug.
  */
@@ -689,7 +689,7 @@ export function nextPresetSlug(existingSlugs, base) {
  *                                                                      overlaid row and a fetched one cannot drift.
  * @param {string} [breakpoint] The breakpoint the preview resolves at; defaults to desktop.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array<Object>} The rows, with the matching row's label/preview overlaid.
  */
@@ -739,7 +739,7 @@ export function overlayPresetRows(rows, itemId, draft, values, preview, breakpoi
  * The name belongs to the preset, not to one of its states — a rename applies on Normal and Hover
  * alike, because both write the same `label` path.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{panels: Array<Object>}} The name-only settings-form schema.
  */

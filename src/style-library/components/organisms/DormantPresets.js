@@ -43,7 +43,7 @@ import './DormantPresets.scss';
  *                                   that rejects on failure.
  * @param {boolean}  [props.isBusy]  Whether the screen is mid-request; both actions are disabled then.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {?JSX.Element} The group, or null when nothing is dormant.
  */

@@ -57,7 +57,7 @@ use RuntimeException;
  * redeclares inside the same media query. Only a base-less property gets one: a property with a base
  * already consumes that variable at every width through its resting rule.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Css_Builder {
 
@@ -67,7 +67,7 @@ final class Css_Builder {
 	/**
 	 * Object-cache group shared with the rest of the Design Tokens module.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -76,7 +76,7 @@ final class Css_Builder {
 	/**
 	 * The registry the preset bindings are read from.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Registry
 	 */
@@ -85,7 +85,7 @@ final class Css_Builder {
 	/**
 	 * Resolves each block's `$default` preset to its `property => value` map.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Preset_Resolver
 	 */
@@ -97,7 +97,7 @@ final class Css_Builder {
 	 * variable no projector defines, so this is what "backed" is tested against (not the registry's declared
 	 * subset, which omits baseline-only semantic tokens such as `semantic.color.text`).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Resolver
 	 */
@@ -107,7 +107,7 @@ final class Css_Builder {
 	 * Logger for the unresolved-token diagnostics; the bound instance writes to the PHP error log under
 	 * WP_DEBUG and is a NullLogger otherwise (see {@see \KadenceWP\KadenceBlocks\Log\Log_Provider}).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var LoggerInterface
 	 */
@@ -119,14 +119,14 @@ final class Css_Builder {
 	 * an explicit purge. The context is part of the key because the editor build can differ from the
 	 * front-end one; the breakpoint map because a filtered media query changes the media-scoped rules.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var array<string, string>
 	 */
 	private array $memo = [];
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Token_Registry  $registry The token registry.
 	 * @param Preset_Resolver $presets  The preset resolver.
@@ -144,7 +144,7 @@ final class Css_Builder {
 	 * Build the block-default dimension CSS for a token library. Empty when no registered block binds a
 	 * `css_prop`.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string                $slug        The token library whose resolved values the `$default` aliases resolve against.
 	 * @param array<string, string> $breakpoints Breakpoint => media-query string, for the media-scoped rules of a
@@ -166,7 +166,7 @@ final class Css_Builder {
 	 * `editor_css_selector` (currently the Section's, whose editor renders `.kadence-inner-column-inner` where
 	 * `save.js` renders `.kt-inside-inner-col`) swaps the DESCENDANT suffix for that property alone.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string                $slug        The token library whose resolved values the `$default` aliases resolve against.
 	 * @param array<string, string> $breakpoints Breakpoint => media-query string, for the media-scoped rules of a
@@ -183,7 +183,7 @@ final class Css_Builder {
 	 * version (and plugin version), so a token write (which bumps the store version) and a plugin upgrade
 	 * both invalidate it automatically.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string                $version     The store version the resolved library was built from.
 	 * @param string                $slug        The token library slug.
@@ -201,7 +201,7 @@ final class Css_Builder {
 	 * one for any block declaring an `editor_selector`, or any binding declaring an `editor_css_selector`)
 	 * never collides with, or gets served in place of, the front-end cache entry.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string                $version     The store version the resolved library was built from.
 	 * @param string                $slug        The token library slug.
@@ -218,7 +218,7 @@ final class Css_Builder {
 	 * block from a set-level `editor_selector` declaration and per property from a binding's
 	 * `editor_css_selector`.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string                $slug        The token library whose resolved values the `$default` aliases resolve against.
 	 * @param array<string, string> $breakpoints Breakpoint => media-query string.
@@ -387,7 +387,7 @@ final class Css_Builder {
 	 * the browser falls through to the token variable, and the declaration resolves to exactly the value it
 	 * resolved to before the wrapper existed.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Binding $binding      The binding being rendered.
 	 * @param string  $css_variable The referenced token's CSS variable, including its leading `--`.
@@ -411,7 +411,7 @@ final class Css_Builder {
 	 * The context (front end vs editor) is folded into both the per-request memo key and the object-cache key
 	 * so the two builds never share a cache slot.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string                $version     The store version the resolved library was built from.
 	 * @param string                $slug        The token library slug.
@@ -449,7 +449,7 @@ final class Css_Builder {
 	 * A stable signature for a breakpoint map, so the cache key changes when the filtered media queries do.
 	 * Mirrors {@see Preset_Css_Builder}'s so the two caches roll over together.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, string> $breakpoints Breakpoint => media-query string.
 	 *

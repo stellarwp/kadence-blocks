@@ -7,7 +7,7 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Utils;
  * Answers "where are we?" questions about the current request, shared by the projectors that decide
  * whether to append their CSS to the editor style handles.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Location {
 
@@ -20,7 +20,7 @@ final class Location {
 	 * (e.g. via the Classic Editor plugin) is correctly reported as not a block-editor page; the
 	 * site editor and widgets screens are always block-based.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return bool
 	 */

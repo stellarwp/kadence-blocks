@@ -20,14 +20,14 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Theme_Buttons\Theme_Button_Styles_Over
  * has() delegates unchanged: no token id is ever added, so the fail-closed guard sees exactly the
  * shipped ids.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Theme_Button_Presets_Baseline_Document implements Baseline_Document {
 
 	/**
 	 * The block whose presets the theme's button styles join.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -36,7 +36,7 @@ final class Theme_Button_Presets_Baseline_Document implements Baseline_Document 
 	/**
 	 * The baseline being decorated.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Baseline_Document
 	 */
@@ -45,14 +45,14 @@ final class Theme_Button_Presets_Baseline_Document implements Baseline_Document 
 	/**
 	 * The theme's button styles for this request.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Theme_Button_Styles_Overlay
 	 */
 	private Theme_Button_Styles_Overlay $overlay;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Baseline_Document           $inner   The baseline to decorate.
 	 * @param Theme_Button_Styles_Overlay $overlay The theme button styles overlay.
@@ -65,7 +65,7 @@ final class Theme_Button_Presets_Baseline_Document implements Baseline_Document 
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $id The token id.
 	 *
@@ -78,7 +78,7 @@ final class Theme_Button_Presets_Baseline_Document implements Baseline_Document 
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * Not memoized: the inner document memoizes its own (expensive) build and changes independently of the
 	 * button styles, so a memo keyed on the button signature alone would serve a stale inner document after a
@@ -132,7 +132,7 @@ final class Theme_Button_Presets_Baseline_Document implements Baseline_Document 
 	 * The array at a key path, or null when any step is missing. Key paths (not dot-paths) because the
 	 * extensions namespace key contains dots.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document The document.
 	 * @param string[]             $path     The key path.
@@ -156,7 +156,7 @@ final class Theme_Button_Presets_Baseline_Document implements Baseline_Document 
 	/**
 	 * Replace the array at a key path. The caller has proved the path exists.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document The document.
 	 * @param string[]             $path     The key path.

@@ -23,7 +23,7 @@ import metadata from './block.json';
  *
  * @param {*} value The stored size.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {?number} The unitless number, or null when there is none.
  */

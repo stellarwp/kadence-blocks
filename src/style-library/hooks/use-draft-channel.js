@@ -25,7 +25,7 @@ import { __ } from '@wordpress/i18n';
  * component rendered in isolation, such as a unit test) treats a `null` channel as "no channel" and
  * falls back to its pre-channel behavior.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const DraftChannelContext = createContext(null);
 
@@ -34,7 +34,7 @@ export const DraftChannelContext = createContext(null);
  * `DraftChannelContext.Provider` and also reads it directly — a component cannot consume the very
  * context it provides.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{publication: ?Object, publish: Function, clearPublication: Function, actionsRef: Object, guard: Function, isGuardOpen: boolean, isGuardBusy: boolean, guardError: ?Object, confirmSave: Function, confirmDiscard: Function, cancelGuard: Function}}
  *         The channel value.
@@ -147,7 +147,7 @@ export function useDraftChannelState() {
  * additionally publishes and registers `actionsRef.current`. Returns `null` when no
  * `DraftChannelContext.Provider` is mounted.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {?Object} The channel value, or `null` outside a provider.
  */

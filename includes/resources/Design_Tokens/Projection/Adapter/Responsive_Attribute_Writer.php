@@ -26,21 +26,21 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Responsive;
  * block that adopts a responsive raw-attribute binding has a tested seam to build on. Pure: no
  * WordPress calls, no globals.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Responsive_Attribute_Writer {
 
 	/**
 	 * The resolved token maps a value and its per-breakpoint overrides are read from.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Resolved_Tokens
 	 */
 	private Resolved_Tokens $resolved;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Resolved_Tokens $resolved The resolved token maps.
 	 */
@@ -52,7 +52,7 @@ final class Responsive_Attribute_Writer {
 	 * The indexed [desktop, tablet, mobile] array for a token, for a render_typography sub-value. An absent
 	 * breakpoint override is an empty string so the block renderer inherits the desktop value there.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $id The token id.
 	 *
@@ -70,7 +70,7 @@ final class Responsive_Attribute_Writer {
 	 * The suffixed sibling attributes for a token: the desktop attribute plus its tablet / mobile siblings
 	 * (`<attr>`, `tablet<Attr>`, `mobile<Attr>`). An absent breakpoint override is an empty string.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $id        The token id.
 	 * @param string $attribute The desktop attribute name (e.g. "padding").

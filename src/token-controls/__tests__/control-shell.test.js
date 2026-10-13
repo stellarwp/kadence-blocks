@@ -47,7 +47,7 @@ afterEach(() => {
  * @param {Function} Component The component to render.
  * @param {Object}   props     Its props.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {HTMLElement} The container it rendered into.
  */

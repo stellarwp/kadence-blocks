@@ -22,14 +22,14 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Adapter\Contracts;
  * {@see Abstract_Adapter} supplies get_block() so a concrete adapter only declares its block const and
  * the transform.
  *
- * @since TBD
+ * @since 3.8.0
  */
 interface Adapter_Interface {
 
 	/**
 	 * The Kadence Blocks block type this adapter is keyed to, e.g. "kadence/advancedheading".
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -41,7 +41,7 @@ interface Adapter_Interface {
 	 * Runs in the render path, so it must be a pure, side-effect-free function of its input: it receives
 	 * the block's attributes and returns them, leaving any value it does not handle untouched.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $attributes The block's attributes.
 	 *

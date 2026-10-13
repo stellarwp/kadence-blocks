@@ -50,7 +50,7 @@ afterEach(() => {
  *
  * @param {Function} onChange The change handler to pass through.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array<HTMLElement>} The rendered number inputs.
  */
@@ -74,7 +74,7 @@ function renderField(onChange = jest.fn()) {
  * @param {HTMLElement} input The input to type into.
  * @param {string}      next  The value to type.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {void}
  */

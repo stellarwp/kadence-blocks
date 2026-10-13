@@ -32,7 +32,7 @@ afterEach(() => {
  *
  * @param {Object} props Props to merge over the defaults.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {HTMLElement} The container `SlotGrid` rendered into.
  */

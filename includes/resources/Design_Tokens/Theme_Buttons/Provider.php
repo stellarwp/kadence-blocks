@@ -8,14 +8,14 @@ use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provi
  * Wires the theme button discovery: the adapters in the order they are asked, and the per-request overlay
  * the baseline decorator and cache versioning read, flushed whenever the theme's button data can change.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Provider extends Provider_Contract {
 
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	public function register(): void {
 		$this->container->singleton( Kadence_Button_Styles::class );

@@ -9,7 +9,7 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Theme_Buttons\Contracts;
  * block theme from its theme.json button data, and a classic theme with nothing readable gets the one
  * class-painted preset that keeps today's rendering. Tests hand discovery a fake.
  *
- * @since TBD
+ * @since 3.8.0
  */
 interface Button_Style_Source {
 
@@ -21,7 +21,7 @@ interface Button_Style_Source {
 	 * tokens instead, as a value preset. An empty array means this source has nothing to offer, so the
 	 * next one is asked.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, array{label: string, class: string, values: array<string, mixed>, tokens?: array<string, mixed>}>
 	 */

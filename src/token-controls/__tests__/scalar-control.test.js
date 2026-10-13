@@ -72,7 +72,7 @@ afterEach(() => {
  *
  * @param {Object} props Overrides for the defaults below.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {HTMLElement} The container it rendered into.
  */

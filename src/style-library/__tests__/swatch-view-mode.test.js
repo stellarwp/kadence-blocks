@@ -15,7 +15,7 @@ import {
  *
  * @param {Object} [initial] Starting entries.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The stub, with a `data` map for assertions.
  */
@@ -34,7 +34,7 @@ function makeStorage(initial = {}) {
 /**
  * A `Storage` stand-in whose every call throws, like a blocked or full store.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The throwing stub.
  */

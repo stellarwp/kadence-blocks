@@ -14,7 +14,7 @@ import { isTokenAlias, pathOfAlias } from './alias';
  *
  * @param {string} library The token library slug.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} id => literal value.
  */
@@ -32,7 +32,7 @@ function libraryLiterals(library) {
  * @param {*}      value   The value, an alias or a literal.
  * @param {string} library The token library slug.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {*} The resolved literal.
  */

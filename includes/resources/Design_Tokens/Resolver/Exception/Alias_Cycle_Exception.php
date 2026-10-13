@@ -8,6 +8,6 @@ use RuntimeException;
  * Thrown when alias resolution re-enters a dot-path already on the resolution stack.
  * Caught by the REST write layer and surfaced as HTTP 422.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Alias_Cycle_Exception extends RuntimeException {}

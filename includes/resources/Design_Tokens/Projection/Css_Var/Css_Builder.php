@@ -36,7 +36,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Resolved_Tokens;
  * Pure: no WordPress calls beyond the object cache in css_for_version(), no globals, no side effects. The
  * WordPress wiring lives in Projector.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Css_Builder {
 
@@ -45,7 +45,7 @@ final class Css_Builder {
 	/**
 	 * Object-cache group shared with the resolver.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -54,7 +54,7 @@ final class Css_Builder {
 	/**
 	 * The registry the active token library is resolved and projected from.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Registry
 	 */
@@ -64,7 +64,7 @@ final class Css_Builder {
 	 * Per-request memo of built CSS, keyed on the object-cache key of the `:root` block, so a write (which
 	 * bumps the library's version) invalidates the affected entry without an explicit purge hook.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var array<string,string>
 	 */
@@ -81,7 +81,7 @@ final class Css_Builder {
 	 * Build the active library's CSS string. Front end and editor share it verbatim. The pure, uncached
 	 * assembler (its cached counterpart is css_for_version()).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Resolved_Tokens      $resolved    The active library's canonical resolved maps (from
 	 *                                           Token_Resolver::resolve()).
@@ -104,7 +104,7 @@ final class Css_Builder {
 	 * stored overrides, but projected CSS also depends on shipped declarations and the baseline, which change
 	 * with a plugin build. Including KADENCE_BLOCKS_VERSION busts on upgrade.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Resolved_Tokens      $resolved    The active library's canonical resolved maps.
 	 * @param string               $slug        The active library's slug, folded into the cache key.
@@ -148,7 +148,7 @@ final class Css_Builder {
 	 * from the alias grammar (`[\w.-]+`) and survive sanitization untouched, which still strips any breakout
 	 * characters from the literal portions.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Resolved_Tokens      $resolved    The active library's canonical resolved maps.
 	 * @param array<string,string> $breakpoints Breakpoint => media-query string, for the responsive
@@ -179,7 +179,7 @@ final class Css_Builder {
 	 * max-width override wins by source order. A document with no responsive tokens emits nothing, keeping
 	 * flat output byte-for-byte unchanged.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string,array<string,string>> $responsive  css-var => [ breakpoint => value ] overrides.
 	 * @param array<string,string>               $breakpoints Breakpoint => media-query string.
@@ -221,7 +221,7 @@ final class Css_Builder {
 	 * change to the filterable breakpoints busts the projected-CSS cache. serialize() keeps this
 	 * dependency-free (the builder stays WordPress-agnostic).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string,string> $breakpoints Breakpoint => media-query string.
 	 *
@@ -240,7 +240,7 @@ final class Css_Builder {
 	 * The slot-family bridge declarations for the resolved active library: `--global-kb-<family>-<slug>:
 	 * var(--kb-token--<id>, <literal>);` for every spacing, gap and font-size token claiming a slot.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Resolved_Tokens $resolved The resolved token maps.
 	 *
@@ -263,7 +263,7 @@ final class Css_Builder {
 	 * slot at the token, with the resolved length as a literal fallback for contexts that lack the token vars
 	 * (e.g. preview iframes).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Resolved_Tokens $resolved     The resolved token maps.
 	 * @param string          $target_class The slot-target type for this family.

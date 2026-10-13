@@ -21,7 +21,7 @@ import { SLOT_LABELS, readSlot, writeSlot } from '../helpers/value-shapes';
  * has no quadrants to match, so it reads the stored clockwise order directly.) Sides also keep
  * identity order. The stored array order never changes either way.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const GRID_ORDER = {
 	sides: [0, 1, 2, 3],
@@ -35,7 +35,7 @@ const GRID_ORDER = {
  * @param {string}  role  'sides' or 'corners' — picks the label set.
  * @param {?number} index The slot index, or `null` while linked.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The position the glyph highlights.
  */
@@ -61,7 +61,7 @@ function glyphPosition(role, index) {
  * @param {string}   [props.label]    Fallback label for the linked slot.
  * @param {boolean}  [props.collapse] Collapse four identical slots to a scalar on write.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The rendered slot or grid, each row led by its glyph.
  */

@@ -29,7 +29,7 @@
  *                       than insetting into a fixed frame), or a per-axis `{vertical, horizontal}`
  *                       pair of lengths.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {?string} The capped value, or undefined when there is nothing to apply.
  */

@@ -76,7 +76,7 @@ describe('FontFamilyField', () => {
 	 * @param {Object}   [values]        The surrounding draft, for the sibling-weight rule.
 	 * @param {Function} [onValueChange] The raw path-taking writer.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return {void}
 	 */

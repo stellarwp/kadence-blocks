@@ -27,14 +27,14 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Document\Favorite_Font_Index;
  * to add to that list can get to where it is done rather than being told it exists somewhere. Built here rather than in the shared control, which knows nothing about admin URLs or
  * about which host mounted it.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Favorite_Fonts_Catalog {
 
 	/**
 	 * The Style Library screen that edits the favorites list.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -43,7 +43,7 @@ final class Favorite_Fonts_Catalog {
 	/**
 	 * The sole gateway to the stored token libraries.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Store
 	 */
@@ -52,7 +52,7 @@ final class Favorite_Fonts_Catalog {
 	/**
 	 * The active-library pointer, naming the library whose favorites the editor lists.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Active_Token_Library_Store
 	 */
@@ -61,7 +61,7 @@ final class Favorite_Fonts_Catalog {
 	/**
 	 * Reads the favoriteFonts list out of a stored document.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Favorite_Font_Index
 	 */
@@ -70,14 +70,14 @@ final class Favorite_Fonts_Catalog {
 	/**
 	 * The site's font catalog, for the normalized custom-family names.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Font_Catalog
 	 */
 	private Font_Catalog $catalog;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Token_Store                $store     The token store.
 	 * @param Active_Token_Library_Store $active    The active-library pointer.
@@ -100,7 +100,7 @@ final class Favorite_Fonts_Catalog {
 	 * The editor's font list: the active library's favorites in stored order, and the site's custom
 	 * family names.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array{favorites: list<string>, custom: string[], manageUrl: string}
 	 */

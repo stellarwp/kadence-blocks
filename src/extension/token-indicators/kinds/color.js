@@ -13,7 +13,7 @@ import { get } from 'lodash';
  * `SinglePopColorControl`, the swatch component behind `PopColorControl`). Empty when the params are
  * absent, so an unresolved slug simply compares as itself — the degrade-safe fallback.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} slug ('paletteN') => color literal.
  */
@@ -37,7 +37,7 @@ function paletteMap() {
  *
  * @param {*} value The stored color value (slug or literal), possibly empty.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The comparable literal, or '' when empty.
  */

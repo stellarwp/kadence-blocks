@@ -19,7 +19,7 @@ import './NavSection.scss';
  * @param {string}                          props.activeId   The active screen id.
  * @param {Function}                        props.onNavigate Called with a screen id when an item is clicked.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {?JSX.Element} The section, or null when it has no items.
  */

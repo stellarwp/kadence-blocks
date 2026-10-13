@@ -18,7 +18,7 @@ import { LEGACY_PRESETS } from '../../extension/preset-picker/legacy';
  *
  * @param {Object} attributes The saved attributes.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True when the block needs the migration.
  */
@@ -32,7 +32,7 @@ export function needsPresetMigration(attributes) {
  *
  * @param {Object} attributes The saved attributes.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The migrated attributes.
  */

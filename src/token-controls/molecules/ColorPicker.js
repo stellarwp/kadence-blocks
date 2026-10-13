@@ -43,7 +43,7 @@ import './ColorPicker.scss';
  * @param {{h:number,s:number,l:number,a:number}}               props.hsl     The current HSL state.
  * @param {Function}                                            props.onChange Called with a `react-color`-shaped change payload.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The fields row.
  */
@@ -145,7 +145,7 @@ function ColorPickerFields({ hex, rgb, hsl, onChange }) {
  * @param {Object}                                 props.hsv      The current HSV state (`Saturation` needs this in addition to `hsl`).
  * @param {Function}                               props.onChange The internal `react-color` change handler.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The picker body.
  */
@@ -188,7 +188,7 @@ const CustomColorPicker = CustomPicker(ColorPickerBody);
  *                                   parse — hex, hex8, rgb(a), hsl(a)).
  * @param {Function} props.onChange Called with the new color as a `#rrggbb`/`#rrggbbaa` string.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The picker.
  */

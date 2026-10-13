@@ -32,7 +32,7 @@ const HOOK = 'kadence.components.popColorControl.colors';
  * map (registry inactive, or nothing claims a slot) makes the listener a no-op, so a site with no active
  * tokens keeps its literal palette colors untouched.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object<string, string>} slug => `{alias}`.
  */
@@ -53,7 +53,7 @@ function paletteSlotAliases() {
  * @param {Object} swatch      A color-palette swatch ({ color, slug, name }).
  * @param {Object} slotAliases The slug -> `{alias}` map from the localized catalog.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The swatch, aliased when its slug is a token-backed global-palette slot.
  */
@@ -74,7 +74,7 @@ function aliasSwatch(swatch, slotAliases) {
  * @param {Array}   context.allColors The full unfiltered editor palette.
  * @param {boolean} context.override  Whether the "Use only Custom Colors" override is on.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array} The swatches to render, with token-backed slots aliased (and retained in override mode).
  */
@@ -113,7 +113,7 @@ function applyTokenPaletteColors(colors, { allColors, override }) {
  * Idempotent: it removes any prior listener under this namespace before adding, so it is safe to call
  * more than once (e.g. editor init plus a test's setup).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {void}
  */

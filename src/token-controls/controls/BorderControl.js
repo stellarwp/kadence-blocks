@@ -56,7 +56,7 @@ import { isSlotList, readSlot, toSlotList, writeSlot } from '../helpers/value-sh
  * (`Literals.php`'s `BORDER_STYLE_KEYWORDS`), but this control deliberately offers a curated 5 —
  * `groove`/`ridge`/`inset`/`outset`/`hidden` are legacy 3D effects nobody designs with here.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const STYLES = [
 	{ value: 'none', label: __('None', 'kadence-blocks') },
@@ -77,7 +77,7 @@ const STYLES = [
  * @param {?number} index The slot `SlotGrid` reported (`null` while linked).
  * @param {*}      next  The value to write.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {*} The axis's next scalar or slot list.
  */
@@ -130,7 +130,7 @@ function applyToAxis(axis, index, next) {
  * @param {boolean}   [props.stacked]             Header above a full-width body instead of beside it.
  * @param {boolean}   [props.disabled]            Whether the control is read-only.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The rendered control.
  */

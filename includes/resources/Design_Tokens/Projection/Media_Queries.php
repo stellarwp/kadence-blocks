@@ -12,12 +12,12 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Responsive;
  * moves the token, preset and block-default projections together. Desktop is the base (`:root`), so
  * only the tablet / mobile max-width overrides are listed.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Media_Queries {
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, string> Breakpoint key => media-query string.
 	 */

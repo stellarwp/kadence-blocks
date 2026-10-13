@@ -5,14 +5,14 @@ namespace KadenceWP\KadenceBlocks\Utils;
 /**
  * Safe type-casting utilities for Design Token values.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Cast {
 
 	/**
 	 * Safely casts a value to a string; returns "" for non-scalar values.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed $value
 	 *

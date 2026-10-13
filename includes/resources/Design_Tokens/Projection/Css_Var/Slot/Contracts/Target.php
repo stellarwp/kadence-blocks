@@ -15,14 +15,14 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Definition;
  * Implementations validate against the slugs Kadence Blocks ships so an override never points at a slug
  * no block reads.
  *
- * @since TBD
+ * @since 3.8.0
  */
 interface Target {
 
 	/**
 	 * The projection key a token declares to claim a slot in this family, e.g. "kb_spacing_slot".
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -32,7 +32,7 @@ interface Target {
 	 * Resolve a token's slot projection to a target, or null when the token declares no usable slot (so
 	 * callers skip it).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Token_Definition $token The token definition.
 	 *
@@ -43,7 +43,7 @@ interface Target {
 	/**
 	 * The Kadence Blocks custom property this slot is emitted under, e.g. "--global-kb-spacing-lg".
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -52,7 +52,7 @@ interface Target {
 	/**
 	 * The claimed slug, e.g. "lg".
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -64,7 +64,7 @@ interface Target {
 	 * font-size it is the primitive the projection-holding semantic aliases. Used to resolve a slug's
 	 * scale value.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug The claimed slug, e.g. "lg".
 	 *

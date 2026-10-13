@@ -25,7 +25,7 @@ let root;
  *
  * @param {Object} props The props to override.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {HTMLElement} The container the card was rendered into.
  */

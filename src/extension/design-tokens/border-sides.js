@@ -7,7 +7,7 @@
  * @param {string}   side   The border side: 'top', 'right', 'bottom' or 'left'.
  * @param {Object[]} values The desktop, tablet and mobile border attributes, in that order.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The line style, or ''.
  */
@@ -29,7 +29,7 @@ function borderLineStyle(device, side, [desktop, tablet, mobile]) {
  * @param {Object[]} values The desktop, tablet and mobile border attributes, in that order.
  * @param {Object}   sides  Each side (`top`, `right`, `bottom`, `left`) mapped to its `[shorthand, color]` pair.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array<[string, string]>} The declarations to write, in side order.
  */

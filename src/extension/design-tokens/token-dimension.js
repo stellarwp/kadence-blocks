@@ -31,7 +31,7 @@ import { isBackedToken } from './backed-tokens';
  * @param {*}      value The stored slot value: a number, a numeric string, or a `{dot.alias}`.
  * @param {string} unit  The unit attribute's value, already defaulted by the caller.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} A CSS length, or a `var(--kb-token--<id>)` reference for a backed alias.
  */

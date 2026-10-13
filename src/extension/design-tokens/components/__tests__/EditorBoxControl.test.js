@@ -14,7 +14,7 @@ import { EditorBoxControl } from '../EditorBoxControl';
  *
  * @param {Object} overrides Props to override on top of the defaults.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{provider: Object, boxControl: Object, onDeviceChange: Function}} The `BreakpointProvider`
  *   element (one level inside the root `TokenControlRow`), the `BoxControl` element nested inside it,

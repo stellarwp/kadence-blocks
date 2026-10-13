@@ -8,7 +8,7 @@
  * The mark colors to choose between, matching the design tokens' own light/dark text colors
  * (`token-controls.scss`'s header comment: gray-900 `#1e1e1e` text, white surfaces).
  *
- * @since TBD
+ * @since 3.8.0
  */
 const LIGHT_MARK = '#ffffff';
 const DARK_MARK = '#1e1e1e';
@@ -18,7 +18,7 @@ const DARK_MARK = '#1e1e1e';
  * alpha-bearing swatch color is composited against, since `readableMarkColor()` picks a mark
  * color for how the swatch actually reads on that surface, not for its channels in isolation.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const SWATCH_BACKING = { r: 255, g: 255, b: 255 };
 
@@ -30,7 +30,7 @@ const SWATCH_BACKING = { r: 255, g: 255, b: 255 };
  *
  * @param {string} value The color string.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {?{r: number, g: number, b: number, a: number}} The parsed channels, or null.
  */
@@ -75,7 +75,7 @@ export function parseColorChannels(value) {
  *
  * @param {{r: number, g: number, b: number, a: number}} channels The parsed channels.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{r: number, g: number, b: number}} The composited, fully opaque channels.
  */
@@ -92,7 +92,7 @@ function compositeOverBacking({ r, g, b, a }) {
  *
  * @param {number} channel An 0-255 color channel.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {number} The linearized 0-1 contribution.
  */
@@ -107,7 +107,7 @@ function linearize(channel) {
  *
  * @param {{r: number, g: number, b: number}} channels The color's channels.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {number} The relative luminance.
  */
@@ -123,7 +123,7 @@ export function relativeLuminance({ r, g, b }) {
  *
  * @param {*} value The swatch's resolved CSS color.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} `#ffffff` or `#1e1e1e`.
  */

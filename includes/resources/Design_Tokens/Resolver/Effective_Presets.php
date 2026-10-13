@@ -21,33 +21,33 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Extensions;
  * The REST presets controller consumes this for its raw reads. It is also the seam a later projector that
  * needs override-aware resolved values (the native-block and kbPreset projectors) can build on.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Effective_Presets {
 
 	/**
 	 * @var Baseline_Document The shipped baseline the preset definitions are merged onto.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	private Baseline_Document $baseline;
 
 	/**
 	 * @var Token_Store The gateway the stored overrides are read from.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	private Token_Store $store;
 
 	/**
 	 * @var Mutator The pure deep-merge the baseline and overrides presets are combined through.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	private Mutator $mutator;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Baseline_Document $baseline The shipped baseline document.
 	 * @param Token_Store       $store    The persistence gateway.
@@ -63,7 +63,7 @@ final class Effective_Presets {
 	 * The effective presets section for a stored library: baseline deep-merged with the library's overrides,
 	 * keyed by block name.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug The token library slug.
 	 *
@@ -77,7 +77,7 @@ final class Effective_Presets {
 	 * The effective presets node for one block in a stored library, or null when neither the baseline nor
 	 * the overrides define presets for it.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $block The block name, e.g. "kadence/singlebtn".
 	 * @param string $slug  The token library slug.
@@ -95,7 +95,7 @@ final class Effective_Presets {
 	 * deep-merged with the candidate's presets subtree. Used to validate a write against its post-merge
 	 * effective library before it is committed (e.g. that a `$default` still names a present preset).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $overrides A decoded overrides-only DTCG document.
 	 *
@@ -111,7 +111,7 @@ final class Effective_Presets {
 	 * baseline rather than removing it. A theme preset is never user-created, even when the active theme no
 	 * longer offers it (see {@see dormant()}): its overrides belong to the theme that wrote them.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $block The block name, e.g. "kadence/singlebtn".
 	 * @param string $slug  The token library slug.
@@ -142,7 +142,7 @@ final class Effective_Presets {
 	 * it outright, which is what the Style Library's "Discard changes" action does. Left alone, its
 	 * overrides stay stored and return the moment a theme that offers the preset is active again.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $block The block name, e.g. "kadence/singlebtn".
 	 * @param string $slug  The token library slug.
@@ -167,7 +167,7 @@ final class Effective_Presets {
 	 * The preset-bearing node for a block within a presets section — its `{ $default, <preset> }` map —
 	 * or an empty array when absent, so the callers above fail soft.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $section The presets section (baseline or effective).
 	 * @param string               $block   The block name.
@@ -181,7 +181,7 @@ final class Effective_Presets {
 	/**
 	 * The named preset slugs of a block preset node, skipping "$"-prefixed metadata keys.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $node The block's preset node.
 	 *
@@ -209,7 +209,7 @@ final class Effective_Presets {
 	 * captured) value; a property absent here is falling through to whatever the effective/merged read
 	 * resolves it to, with nothing of this preset's own behind it.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $block  The block name, e.g. "kadence/singlebtn".
 	 * @param string $preset The preset slug.
@@ -233,7 +233,7 @@ final class Effective_Presets {
 	 * reduced to the shape a client reads. Both the editor catalog and the REST payload surface exactly
 	 * this map, so the reduction lives here rather than being written out at each of them.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $block  The block name, e.g. "kadence/singlebtn".
 	 * @param string $preset The preset slug.
@@ -251,7 +251,7 @@ final class Effective_Presets {
 	 * The single decode seam for the stored overrides: callers that need the raw decoded document, rather than
 	 * its merged presets view, reuse this instead of decoding the store themselves.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug The token library slug.
 	 *
@@ -264,7 +264,7 @@ final class Effective_Presets {
 	/**
 	 * Walk a decoded document down to its `$extensions...presets` subtree, or an empty array when absent.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document The decoded document.
 	 *

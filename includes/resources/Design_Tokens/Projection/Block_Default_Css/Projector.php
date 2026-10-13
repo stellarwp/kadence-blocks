@@ -19,14 +19,14 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Version;
  * front-end one is what gives the token default editor-canvas parity for free — a block's `$default`
  * radius / icon-size applies until a per-instance value KB renders wins by higher specificity.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Projector extends Abstract_Css_Projector {
 
 	/**
 	 * The token registry, used to gate projection on the registry being active.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Registry
 	 */
@@ -36,7 +36,7 @@ final class Projector extends Abstract_Css_Projector {
 	/**
 	 * Owns the active-library pointer, read at build time so the projection follows the active library.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Active_Token_Library_Store
 	 */
@@ -45,7 +45,7 @@ final class Projector extends Abstract_Css_Projector {
 	/**
 	 * The block-default CSS builder.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Css_Builder
 	 */
@@ -55,14 +55,14 @@ final class Projector extends Abstract_Css_Projector {
 	 * Supplies the cache version: the store version, plus the theme Style Guide signature when there is
 	 * one, so a Customizer save invalidates this cache even though it bumps no store version.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Effective_Version
 	 */
 	private Effective_Version $versions;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Token_Registry             $registry    The token registry.
 	 * @param Active_Token_Library_Store $active      Owns the active-library pointer.
@@ -84,7 +84,7 @@ final class Projector extends Abstract_Css_Projector {
 	/**
 	 * Append the block-default CSS to the front-end global-variables handle.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return void
 	 */
@@ -106,7 +106,7 @@ final class Projector extends Abstract_Css_Projector {
 	 * Shares the Css_Var projector's editor gate (the same page check and filter), so the default CSS and
 	 * the token vars load together in the editor or not at all.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return void
 	 */
@@ -134,7 +134,7 @@ final class Projector extends Abstract_Css_Projector {
 	 * alias cycle from a direct DB write that bypassed the REST gate), so the page never crashes — the
 	 * inline style is simply omitted and KB falls back to its own defaults.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -158,7 +158,7 @@ final class Projector extends Abstract_Css_Projector {
 	 *
 	 * Returns an empty string under the same failure conditions as {@see self::css()}.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */

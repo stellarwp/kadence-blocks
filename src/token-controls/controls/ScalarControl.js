@@ -53,7 +53,7 @@ import { TokenSelector } from '../organisms/TokenSelector';
  * @param {?number}      [props.max]                Highest allowed number; the slider needs one.
  * @param {number}       [props.step]               Custom tab increment.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The rendered control.
  */

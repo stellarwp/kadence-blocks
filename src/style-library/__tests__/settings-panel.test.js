@@ -18,7 +18,7 @@ let root;
  *
  * @param {Object} props The panel props to render with.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {void}
  */
@@ -33,7 +33,7 @@ function renderPanel(props) {
  *
  * @param {string} text The button's text content.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {?HTMLButtonElement} The matching button, or null when none matches.
  */
@@ -50,7 +50,7 @@ function findButton(text) {
  *
  * @param {HTMLButtonElement} button The button to check.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} Whether the button is disabled.
  */

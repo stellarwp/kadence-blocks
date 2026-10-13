@@ -18,7 +18,7 @@ import { pxFromLength } from '../../../token-controls/helpers/px-from-length';
  *
  * @param {*} value The stored dimension value (number, string, or 4-side array).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string[]} The populated sides as trimmed strings; empty array when nothing is set.
  */
@@ -36,7 +36,7 @@ function dimensionSides(value) {
  *
  * @param {*} value The stored dimension value (number, string, or 4-side array).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string[]} The slots as trimmed strings, empty slots preserved as ''.
  */
@@ -55,7 +55,7 @@ export function dimensionSlots(value) {
  * @param {*}      presetValue The selected preset's value for the property.
  * @param {number} index       The corner index.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The inherited value for that corner, or '' when the preset has none.
  */
@@ -83,7 +83,7 @@ export function presetSlotAt(presetValue, index) {
  * @param {*}     presetValue The preset's base value for the property, the last fallback.
  * @param {number} index      The corner index.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The corner's resolved value at this device.
  */
@@ -126,7 +126,7 @@ function cornerValueForDevice(chain, presetValue, index) {
  *                              when the preset declares no override there.
  * @param {string} [device]     The active preview device ('Desktop' | 'Tablet' | 'Mobile').
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {*} The preset's value in effect at that device — a per-corner array when the property is
  *             corner-shaped, otherwise a scalar.
@@ -158,7 +158,7 @@ export function presetValueForDevice(presetValue, responsive = {}, device = 'Des
  * @param {*} value    The preset's resolved value for the property.
  * @param {*} fallback What to use when the preset sets nothing.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {*} The value to display.
  */
@@ -179,7 +179,7 @@ export function presetValueOr(value, fallback) {
  * @param {Object} [responsive] Device key ('tablet' | 'mobile') => attribute name.
  * @param {string} [device]    The active preview device ('Desktop' | 'Tablet' | 'Mobile').
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{ attr: string, value: * }} The device's attribute name and its stored value.
  */
@@ -208,7 +208,7 @@ export function measureAttrsForDevice(attributes, baseAttr, responsive = {}, dev
  * @param {Object} [values]      The stored dimension per device: { desktop, tablet }.
  * @param {*}      [presetValue] The selected preset's value for the property, the last fallback.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{ values: string[], inherited: boolean[] }} The four inherited corners, and per corner whether
  *                                                      it came from another device rather than the preset.
@@ -250,7 +250,7 @@ export function inheritedMeasureSlots(device, values = {}, presetValue) {
  *
  * @param {boolean[]} inherited Per-corner inherited flags, i.e. `inheritedMeasureSlots().inherited`.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} Whether any corner inherits from another breakpoint rather than the preset.
  */
@@ -274,7 +274,7 @@ export function anyCornerInherited(inherited) {
  *
  * @param {*} value The stored dimension value (4-side array or scalar).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} 'linked' when every stored corner matches, otherwise 'individual'.
  */
@@ -294,7 +294,7 @@ export function deriveMeasureMode(value) {
  * @param {*}      value The stored dimension value (number, string, or 4-side array).
  * @param {string} unit  The companion unit attribute (e.g. `borderRadiusUnit`).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{ value: string, unit: string }} The canonical dimension, `value: ''` when empty.
  */
@@ -314,7 +314,7 @@ export function normalizeDimension(value, unit) {
  *
  * @param {string} literal The resolved dimension literal.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{ value: string, unit: string }} The parsed value and unit.
  */
@@ -343,7 +343,7 @@ export function parseDimensionLiteral(literal) {
  * @param {string}   storedUnit  The stored companion unit.
  * @param {Array}    presetSlots The preset's per-corner literals.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True when every populated corner equals its preset slot.
  */
@@ -378,7 +378,7 @@ function matchesPresetSlots(slots, storedUnit, presetSlots) {
  * @param {string} storedUnit    The stored companion unit, '' when the control has none.
  * @param {*}      presetLiteral The preset's resolved literal for this slot.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True when the two describe the same length.
  */
@@ -404,7 +404,7 @@ function lengthMatches(side, storedUnit, presetLiteral) {
  *
  * @param {*} value The stored primary attribute value.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True when the value is unset/empty.
  */
@@ -425,7 +425,7 @@ export function isEmpty(value) {
  * @param {string} unit        The companion unit.
  * @param {string} presetValue The preset's resolved literal for this property.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True when the stored value matches the preset value.
  */

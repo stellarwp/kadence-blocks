@@ -14,7 +14,7 @@ use WP_REST_Request;
  * applied to every route through the standard permission-check methods. Concrete
  * controllers extend this to register their routes and implement their handlers.
  *
- * @since TBD
+ * @since 3.8.0
  */
 abstract class Controller extends WP_REST_Controller {
 
@@ -24,7 +24,7 @@ abstract class Controller extends WP_REST_Controller {
 	 * Site-wide branding is a theme-level concern, so this gates on
 	 * edit_theme_options rather than KB's content-level edit_posts.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -33,7 +33,7 @@ abstract class Controller extends WP_REST_Controller {
 	/**
 	 * The shared namespace value. Read by non-controller callers through {@see self::namespace()}.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var non-falsy-string
 	 */
@@ -46,7 +46,7 @@ abstract class Controller extends WP_REST_Controller {
 	 * guaranteed non-empty string, so concrete controllers can pass it straight to register_rest_route()
 	 * without re-narrowing it at each call.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var non-falsy-string
 	 */
@@ -56,7 +56,7 @@ abstract class Controller extends WP_REST_Controller {
 	 * The shared namespace, for non-controller callers (e.g. the admin UI feed Localizer) that need
 	 * the exact value the routes register under, with no drift.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -71,7 +71,7 @@ abstract class Controller extends WP_REST_Controller {
 	 * requirement per route or method (for example, requiring a higher capability
 	 * on writes than reads) without registering a new filter.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request The current request.
 	 *
@@ -81,7 +81,7 @@ abstract class Controller extends WP_REST_Controller {
 		/**
 		 * Filters the capability required to access the Design Tokens REST routes.
 		 *
-		 * @since TBD
+		 * @since 3.8.0
 		 *
 		 * @param string          $capability The required capability.
 		 * @param WP_REST_Request $request    The current request.
@@ -94,7 +94,7 @@ abstract class Controller extends WP_REST_Controller {
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -107,7 +107,7 @@ abstract class Controller extends WP_REST_Controller {
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -120,7 +120,7 @@ abstract class Controller extends WP_REST_Controller {
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -133,7 +133,7 @@ abstract class Controller extends WP_REST_Controller {
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -146,7 +146,7 @@ abstract class Controller extends WP_REST_Controller {
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -159,7 +159,7 @@ abstract class Controller extends WP_REST_Controller {
 	/**
 	 * Shared permission gate for every design-token route.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *

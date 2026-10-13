@@ -12,12 +12,12 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Contracts\Baseline_Document;
  * Not the bound default in this ticket (see Always_Present_Baseline_Document); kept as the
  * fail-closed reference stub and exercised by the guard's "missing" tests.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Empty_Baseline_Document implements Baseline_Document {
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $id A token DTCG dot-path id.
 	 *
@@ -30,7 +30,7 @@ final class Empty_Baseline_Document implements Baseline_Document {
 	/**
 	 * No baseline exists, so the document is empty — consistent with has() always being false.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, mixed>
 	 */

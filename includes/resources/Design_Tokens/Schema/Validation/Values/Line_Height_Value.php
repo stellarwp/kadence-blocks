@@ -10,14 +10,14 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Validation_Error;
 /**
  * Validates a lineHeight $value: an alias or a lineHeight literal.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Line_Height_Value implements Value_Validator {
 
 	/**
 	 * Validate a lineHeight $value.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed  $value The decoded $value.
 	 * @param string $path  Dot-path to the value, for error reporting.

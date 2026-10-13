@@ -14,33 +14,33 @@ use KadenceWP\KadenceBlocks\Utils\Cast;
  *
  * Only primitive.<type>.custom.* leaves of supported types are accepted.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class User_Primitive_Document_Validator {
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var User_Primitive_Index
 	 */
 	private User_Primitive_Index $index;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Baseline_Document
 	 */
 	private Baseline_Document $baseline;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Registry
 	 */
 	private Token_Registry $registry;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param User_Primitive_Index $index    Envelope reader.
 	 * @param Baseline_Document    $baseline Baseline document, for collision detection.
@@ -60,7 +60,7 @@ final class User_Primitive_Document_Validator {
 	 * Validate the user-primitive invariant in a candidate document.
 	 * Returns all violations; an empty array means the invariant holds.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document The decoded candidate overrides document.
 	 *
@@ -87,7 +87,7 @@ final class User_Primitive_Document_Validator {
 	}
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed>                        $document
 	 * @param string                                      $id
@@ -171,7 +171,7 @@ final class User_Primitive_Document_Validator {
 	 * because it keys off tree position, not node shape; do not "improve" it into a recursive
 	 * walk.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document
 	 *

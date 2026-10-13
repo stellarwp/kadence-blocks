@@ -62,7 +62,7 @@ let root;
  * A deferred promise, so a test can assert the busy state while a write is still in flight and
  * only then settle it (success or failure).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{promise: Promise, resolve: Function, reject: Function}} The deferred promise and its
  *         resolvers.
@@ -95,7 +95,7 @@ function deferred() {
  * @param {Object}  [overrides] Fields to merge over the defaults — e.g. `{ isSwatchCustom: () =>
  *                              false, editingId: 'secondary' }` for a Reset-path test.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The `usePalettes` stub.
  */
@@ -135,7 +135,7 @@ function makePalettes(write, overrides = {}) {
  *
  * @param {Object} palettes The `usePalettes` stub to render with.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Function} The `navigate` jest spy.
  */
@@ -182,7 +182,7 @@ function makeDirty() {
  *
  * @param {string} text The button's text content.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {?HTMLButtonElement} The matching button, or null when none matches.
  */
@@ -514,7 +514,7 @@ describe('ColorPaletteSettings draft channel', () => {
 	 *
 	 * @param {Object} palettes The `usePalettes` stub.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return {{navigate: Function, channel: Object}} The navigate spy and the fake channel.
 	 */

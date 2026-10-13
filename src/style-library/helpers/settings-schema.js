@@ -14,7 +14,7 @@ import { RESPONSIVE_BREAKPOINTS } from './tokens';
  * Field types already warned about in this session, so an unregistered type logs once rather than
  * once per render.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const warnedTypes = new Set();
 
@@ -22,7 +22,7 @@ const warnedTypes = new Set();
  * Field paths already warned about for carrying `responsive: true` on a non-capable type, so the
  * warning logs once rather than once per render.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const warnedResponsiveFields = new Set();
 
@@ -30,14 +30,14 @@ const warnedResponsiveFields = new Set();
  * The desktop (base value) breakpoint key — the base `$value` itself, never a `responsive` map
  * entry, mirroring `Schema\Vocabulary\Responsive`'s shape.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const DESKTOP_BREAKPOINT = 'desktop';
 
 /**
  * Every breakpoint a responsive-capable field can be edited at, desktop first.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const BREAKPOINTS = [DESKTOP_BREAKPOINT, ...RESPONSIVE_BREAKPOINTS];
 
@@ -50,7 +50,7 @@ export const BREAKPOINTS = [DESKTOP_BREAKPOINT, ...RESPONSIVE_BREAKPOINTS];
  *
  * @param {Object} schema The authored schema.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The canonical schema.
  */
@@ -106,7 +106,7 @@ export function normalizeSchema(schema) {
  *
  * @param {string} type The field type string.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {?Function} The field component.
  */
@@ -120,7 +120,7 @@ export function fieldComponentFor(type) {
  * @param {Object} values The values object.
  * @param {string} path   The dot path (e.g. 'border.top').
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {*} The value.
  */
@@ -149,7 +149,7 @@ export function getValueAtPath(values, path) {
  * @param {string} path   The dot path.
  * @param {*}      value  The value to write.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} A new values object.
  */
@@ -182,7 +182,7 @@ export function setValueAtPath(values, path, value) {
  * @param {*}      raw        The leaf value (scalar, or the structured responsive/clamp shape).
  * @param {string} breakpoint One of `BREAKPOINTS`.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {*} The value at that breakpoint ('' when the leaf carries no override for it yet).
  */
@@ -209,7 +209,7 @@ export function readResponsiveSlot(raw, breakpoint) {
  * @param {string} breakpoint One of `BREAKPOINTS`.
  * @param {*}      value      The value to write at that breakpoint.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {*} The next leaf value.
  */
@@ -233,7 +233,7 @@ export function writeResponsiveSlot(raw, breakpoint, value) {
  * @param {string} path       The dot path.
  * @param {string} breakpoint One of `BREAKPOINTS`.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {*} The value at that path and breakpoint.
  */
@@ -249,7 +249,7 @@ export function getResponsiveValueAtPath(values, path, breakpoint) {
  * @param {*} a The first value.
  * @param {*} b The second value.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True when the two values are deeply equal.
  */

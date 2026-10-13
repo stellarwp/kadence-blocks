@@ -10,14 +10,14 @@ use InvalidArgumentException;
  * Built from a declaration array via from_array(); the css-var is derived from the id by default
  * (Css_Var) and only overridden when a token must match a pre-existing variable name.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Token_Definition {
 
 	/**
 	 * DTCG dot-path, e.g. "semantic.color.button-bg".
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -26,7 +26,7 @@ final class Token_Definition {
 	/**
 	 * DTCG $type: color | dimension | shadow | typography | …
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -35,7 +35,7 @@ final class Token_Definition {
 	/**
 	 * Human-readable label for the custom UI.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -44,7 +44,7 @@ final class Token_Definition {
 	/**
 	 * UI grouping bucket, e.g. "Brand".
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -54,7 +54,7 @@ final class Token_Definition {
 	 * Stable machine key for the group, e.g. "border-radius". Empty for a group nothing can mint
 	 * a user primitive into. Never a translated string — see Token_Registry::group_label_for().
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -63,7 +63,7 @@ final class Token_Definition {
 	/**
 	 * The canonical (or overridden) CSS custom-property name.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -72,7 +72,7 @@ final class Token_Definition {
 	/**
 	 * Projection targets. Keys are projection ids; values are projection-specific config.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var array<string, mixed> e.g. [ 'kadence_slot' => 'palette1' ]
 	 */
@@ -81,7 +81,7 @@ final class Token_Definition {
 	/**
 	 * Whether this token was created by a user (not shipped with the plugin).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var bool
 	 */
@@ -120,7 +120,7 @@ final class Token_Definition {
 	/**
 	 * Build a token definition from its declaration array.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $definition The token declaration.
 	 *
@@ -175,7 +175,7 @@ final class Token_Definition {
 	/**
 	 * The only factory that produces a user-created definition.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $id        Canonical dot-path id.
 	 * @param string $type      DTCG $type.
@@ -207,7 +207,7 @@ final class Token_Definition {
 	 *
 	 * Avoid empty() so a legitimate "0" string is not mistaken for a missing value.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed  $value The raw declaration value.
 	 * @param string $key   The declaration key, used for the error message.
@@ -232,7 +232,7 @@ final class Token_Definition {
 	 * Validated here so a bad declaration raises the documented InvalidArgumentException rather than a
 	 * raw TypeError from the constructor's typed params — this is a public helper.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed  $value The raw declaration value.
 	 * @param string $key   The declaration key, used for the error message.
@@ -254,7 +254,7 @@ final class Token_Definition {
 	/**
 	 * Whether this token was created by a user rather than shipped with the plugin.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return bool
 	 */
@@ -265,7 +265,7 @@ final class Token_Definition {
 	/**
 	 * Whether the token declares the given projection target.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $projection A projection id, e.g. "kadence_slot".
 	 *

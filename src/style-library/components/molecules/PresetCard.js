@@ -34,7 +34,7 @@ import './PresetCard.scss';
  * @param {Function}     [props.innerRef]        The dnd-kit node ref for the card's root element.
  * @param {Object}       [props.wrapperStyle]    The dnd-kit transform/transition style.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The card.
  */

@@ -46,7 +46,7 @@ afterEach(() => {
 /**
  * Mount the hook behind a probe, so each render's return value can be read directly.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{render: Function, latest: Function}} The probe's renderer and its last result.
  */

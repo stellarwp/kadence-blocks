@@ -23,7 +23,7 @@ import './AddLink.scss';
  * @param {boolean}  [props.disabled] Whether the link is disabled — a double-click guard for the
  *                                    duration of its own in-flight add.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The add link.
  */

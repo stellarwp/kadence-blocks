@@ -48,7 +48,7 @@ let root;
  * Render `LibrarySelector` with a fresh set of prop spies, so each test can assert on calls
  * without wiring its own boilerplate.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{onOpen: Function}} The spies the component was rendered with.
  */
@@ -81,7 +81,7 @@ function renderSelector(onOpen = jest.fn(() => Promise.resolve())) {
  *
  * @param {string} testId The button's `data-testid`.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {void}
  */

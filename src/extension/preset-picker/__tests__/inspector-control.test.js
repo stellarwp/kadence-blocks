@@ -12,7 +12,7 @@ import { designTokenInspectorControl } from '../inspector-control';
  *
  * @param {Object} overrides The fields to override.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The options object.
  */

@@ -33,7 +33,7 @@ import { moveItem } from '../helpers/reorder';
  * @param {Array<string>} options.ids       The ordered item ids.
  * @param {Function}      options.onReorder Called with the new ordered-id list (no-ops skipped).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} `{ contextProps, sortableContextProps, useSortableItem, activeId }` —
  *         `contextProps`/`sortableContextProps` spread onto `DndContext`/`SortableContext`;

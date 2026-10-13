@@ -10,8 +10,8 @@
         "@dnd-kit/sortable": "^10.0.0",
         "@floating-ui/react": "^0.27.12",
         "@hcaptcha/react-hcaptcha": "^1.8.1",
-        "@kadence/components": "github:stellarwp/kadence-components#feature/design-tokens-module",
-        "@kadence/helpers": "github:stellarwp/kadence-helpers#feature/design-tokens-module",
+        "@kadence/components": "github:stellarwp/kadence-components#1.1.10",
+        "@kadence/helpers": "github:stellarwp/kadence-helpers#1.1.1",
         "@kadence/icons": "github:stellarwp/kadence-icons#1.1.4",
         "@lottiefiles/dotlottie-react": "^0.15.2",
         "@react-google-maps/api": "^2.12.0",
@@ -683,9 +683,9 @@
 
     "@jridgewell/trace-mapping": ["@jridgewell/trace-mapping@0.3.31", "", { "dependencies": { "@jridgewell/resolve-uri": "^3.1.0", "@jridgewell/sourcemap-codec": "^1.4.14" } }, "sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw=="],
 
-    "@kadence/components": ["@kadence/components@github:stellarwp/kadence-components#bde7024", { "dependencies": { "@floating-ui/react": "^0.26.16", "@wordpress/icons": "^9.49.0", "classnames": "^2.2.6", "colord": "^2.9.3", "react-color": "^2.18.0", "react-select": "^5.10.2" }, "peerDependencies": { "@kadence/helpers": "*", "@kadence/icons": "*", "react": ">=17 <19", "react-dom": ">=17 <19" }, "optionalPeers": ["@kadence/helpers", "@kadence/icons"] }, "stellarwp-kadence-components-bde7024", "sha512-khs3chMDGh99czrS7g+bjngezX+Dp/gCTD0TstRt1lQnAtyVrRv5ASmaaw84+QMHNQiIb13O5unLuZl4lS8RJQ=="],
+    "@kadence/components": ["@kadence/components@github:stellarwp/kadence-components#3d1140c", { "dependencies": { "@floating-ui/react": "^0.26.16", "@wordpress/icons": "^9.49.0", "classnames": "^2.2.6", "colord": "^2.9.3", "react-color": "^2.18.0", "react-select": "^5.10.2" }, "peerDependencies": { "@kadence/helpers": "*", "@kadence/icons": "*", "react": ">=17 <19", "react-dom": ">=17 <19" }, "optionalPeers": ["@kadence/helpers", "@kadence/icons"] }, "stellarwp-kadence-components-3d1140c", "sha512-v1r4zmpFotK8SuA6K1jxTiUFKV+j102V7cocI2TCCeARbp2SmuYIPm4QRbiXq4WinFIP44pWMk71Wo+oDiHuEA=="],
 
-    "@kadence/helpers": ["@kadence/helpers@github:stellarwp/kadence-helpers#e192350", { "dependencies": { "@kadence/icons": "git+https://github.com/stellarwp/kadence-icons.git#1.1.0" }, "peerDependencies": { "@wordpress/hooks": ">=4 <5", "react": ">=17 <19", "react-dom": ">=17 <19" } }, "stellarwp-kadence-helpers-e192350"],
+    "@kadence/helpers": ["@kadence/helpers@github:stellarwp/kadence-helpers#50382fc", { "dependencies": { "@kadence/icons": "git+https://github.com/stellarwp/kadence-icons.git#1.1.0" }, "peerDependencies": { "@wordpress/hooks": ">=4 <5", "react": ">=17 <19", "react-dom": ">=17 <19" } }, "stellarwp-kadence-helpers-50382fc", "sha512-nSBGmYFJyl2lL3lRazQ0v1XYE7mu9tyPMYwRAgzw5RUEG7VffPzZl3INwq+aTX7Z0jE39wlQ0LTRulxeCkYuAQ=="],
 
     "@kadence/icons": ["@kadence/icons@github:stellarwp/kadence-icons#568e2a9", { "peerDependencies": { "react": ">=17 <19", "react-dom": ">=17 <19" } }, "stellarwp-kadence-icons-568e2a9"],
 
@@ -3555,7 +3555,7 @@
 
     "@kadence/components/@wordpress/icons": ["@wordpress/icons@9.49.0", "", { "dependencies": { "@babel/runtime": "^7.16.0", "@wordpress/element": "^5.35.0", "@wordpress/primitives": "^3.56.0" } }, "sha512-Z8F+ledkfkcKDuS1c/RkM0dEWdfv2AXs6bCgey89p0atJSscf7qYbMJR9zE5rZ5aqXyFfV0DAFKJEgayNqneNQ=="],
 
-    "@kadence/helpers/@kadence/icons": ["@kadence/icons@github:stellarwp/kadence-icons#f056b8b", { "peerDependencies": { "react": ">=17 <19", "react-dom": ">=17 <19" } }, "stellarwp-kadence-icons-f056b8b"],
+    "@kadence/helpers/@kadence/icons": ["@kadence/icons@github:stellarwp/kadence-icons#f056b8b", { "peerDependencies": { "react": ">=17 <19", "react-dom": ">=17 <19" } }, "stellarwp-kadence-icons-f056b8b", "sha512-RAxoJy1JreaKeVp4QnPlgeTWlNrSfQDvih3LJDq91HTF1OwdeiNbPCXcfnEdUvnIMomjt8SXyCLNy2QuOkCNwQ=="],
 
     "@keyv/bigmap/keyv": ["keyv@5.6.0", "", { "dependencies": { "@keyv/serialize": "^1.1.1" } }, "sha512-CYDD3SOtsHtyXeEORYRx2qBtpDJFjRTGXUtmNEMGyzYOKj1TE3tycdlho7kA1Ufx9OYWZzg52QFBGALTirzDSw=="],
 

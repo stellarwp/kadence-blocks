@@ -12,14 +12,14 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Registry\Contracts;
  *
  * Fulfilled by the shipped baseline DTCG document (Json_Baseline_Document).
  *
- * @since TBD
+ * @since 3.8.0
  */
 interface Baseline_Document {
 
 	/**
 	 * Whether the baseline defines a token at the given dot-path id.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $id A token DTCG dot-path id.
 	 *
@@ -31,7 +31,7 @@ interface Baseline_Document {
 	 * The full shipped baseline document, decoded. Consumed by the Resolver to build the effective
 	 * document (baseline deep-merged with the stored overrides). Empty when no baseline is available.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, mixed>
 	 */

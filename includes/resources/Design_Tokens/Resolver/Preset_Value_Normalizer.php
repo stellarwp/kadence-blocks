@@ -37,19 +37,19 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Sentinels;
  * Matching is done PHP-side on write because the Resolver is the only authority that can guarantee the chosen
  * alias resolves, and it keeps the whole semantic value map off the editor page.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Preset_Value_Normalizer {
 
 	/**
 	 * @var Token_Resolver The resolver whose flattened semantic values captured literals are matched against.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	private Token_Resolver $resolver;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Token_Resolver $resolver The token resolver.
 	 */
@@ -61,7 +61,7 @@ final class Preset_Value_Normalizer {
 	 * Rewrite a property => value token map, replacing each literal with a matching semantic alias where one
 	 * exists in the given library.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $tokens   The preset's property => alias-or-literal token map.
 	 * @param string               $slug     The token library the values are matched against.
@@ -96,7 +96,7 @@ final class Preset_Value_Normalizer {
 	 * cascade exactly as a scalar capture does. Without this a per-corner preset would be second-class:
 	 * frozen as literals while every scalar preset gets aliased.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string                  $property  The property the value is set on, used to break ties.
 	 * @param mixed                   $value     The captured value (alias string, literal, or slot list).
@@ -157,7 +157,7 @@ final class Preset_Value_Normalizer {
 	 * Only a semantic-layer token qualifies. A binding may point straight at a primitive, and aliasing a
 	 * captured value to a primitive would skip the semantic layer the cascade is built on.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Preset_Bindings|null $bindings The block's bindings, or null when the caller has none.
 	 * @param string               $property The property to read the declared token for.
@@ -178,7 +178,7 @@ final class Preset_Value_Normalizer {
 	 * Build the normalized-value => semantic-ids index for a library: every semantic-layer entry of the
 	 * resolved token map, keyed by its normalized value, preserving document order within each bucket.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug The token library to resolve.
 	 *
@@ -202,7 +202,7 @@ final class Preset_Value_Normalizer {
 	/**
 	 * Pick the semantic id whose name best matches the property's role, tie-broken by document order.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string   $property   The property the value is set on, e.g. "button-bg" or "borderRadius".
 	 * @param string[] $candidates The semantic ids sharing the value, in document order.
@@ -234,7 +234,7 @@ final class Preset_Value_Normalizer {
 	 * camelCase property as a single run of characters that appears in no id, so every candidate scored
 	 * zero and the tie-break fell through to document order.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $property The property name.
 	 *
@@ -249,7 +249,7 @@ final class Preset_Value_Normalizer {
 	/**
 	 * How many of the property's role words appear in a semantic id.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string   $id    The semantic id.
 	 * @param string[] $parts The property's role words, lowercased.
@@ -273,7 +273,7 @@ final class Preset_Value_Normalizer {
 	 * Normalize a literal for equality: lowercase and trim, and expand a 3-digit hex to its 6-digit form so
 	 * "#ABC" matches "#aabbcc". Non-color literals compare on their trimmed, lowercased form; no unit math.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $value The literal value.
 	 *

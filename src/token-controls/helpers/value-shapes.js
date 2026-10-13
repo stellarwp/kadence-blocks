@@ -17,7 +17,7 @@
  * The number of slots in an unlinked box value. Not a general "sides" count — it is the array
  * length the stored preset shape requires, which is exactly four or nothing.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const SLOT_COUNT = 4;
 
@@ -25,7 +25,7 @@ export const SLOT_COUNT = 4;
  * Slot index labels per role, in stored order. `SlotGrid` reorders corners for display; the stored
  * order never changes.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const SLOT_LABELS = {
 	sides: ['top', 'right', 'bottom', 'left'],
@@ -37,7 +37,7 @@ export const SLOT_LABELS = {
  *
  * @param {*} value The value to test.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True when the value is a positional slot array.
  */
@@ -50,7 +50,7 @@ export function isSlotList(value) {
  *
  * @param {*} value A scalar or an existing slot list.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array} A four-element slot list.
  */
@@ -72,7 +72,7 @@ export function toSlotList(value) {
  *
  * @param {number} index The slot index to check.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @throws {Error} When `index` is not an integer in `0`-`3`.
  *
@@ -91,7 +91,7 @@ function guardSlotIndex(index) {
  * @param {*}      value The current scalar or slot list.
  * @param {number} index The slot to read, 0-3.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @throws {Error} When `index` is not an integer in `0`-`3`.
  *
@@ -116,7 +116,7 @@ export function readSlot(value, index) {
  * @param {*}       next       The value for that slot.
  * @param {boolean} [collapse] Return a scalar when every slot ends up identical.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @throws {Error} When `index` is not an integer in `0`-`3`.
  *
@@ -140,7 +140,7 @@ export function writeSlot(value, index, next, collapse = false) {
  *
  * @param {*} value The candidate value.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True when the value is shaped like a token id.
  */
@@ -158,7 +158,7 @@ export function isTokenId(value) {
  *
  * @param {*} value A slot list, or any other value (returned unchanged).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {*} The shorthand string, or the value untouched when it is not a slot list.
  */

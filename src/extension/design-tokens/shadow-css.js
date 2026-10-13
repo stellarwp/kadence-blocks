@@ -30,7 +30,7 @@ import { boundShadowToken } from './shadow-token';
  * @param {*} raw      The stored axis value.
  * @param {*} fallback What this axis defaults to when unset.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {*} The axis value to serialize.
  */
@@ -63,7 +63,7 @@ export function shadowAxisPx(raw, fallback) {
  *                                  one — `kadence/singlebtn` has always used 1 and `kadence/image`
  *                                  0.2 — so it too stays with the call site.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The `box-shadow` value, or '' when there is no item to render or the item's
  *                   binding is no longer backed by the active library.

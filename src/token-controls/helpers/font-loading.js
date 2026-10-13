@@ -28,7 +28,7 @@
  * editor canvas is replaced on device switches — the entry for a discarded document goes with it,
  * instead of claiming a stylesheet is present in a document that no longer exists.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @type {WeakMap<Document, Map<string, Promise<void>>>}
  */
@@ -37,7 +37,7 @@ const injected = new WeakMap();
 /**
  * How long to wait on any single step before giving up and letting the caller proceed.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @type {number}
  */
@@ -51,7 +51,7 @@ export const FONT_LOAD_TIMEOUT = 3000;
  *
  * @param {string} family The family name.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The stylesheet URL.
  */
@@ -66,7 +66,7 @@ export function googleFontHref(family) {
  * @param {Promise} promise The promise to bound.
  * @param {number}  timeout Milliseconds to wait.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Promise<void>} Settles either way.
  */
@@ -88,7 +88,7 @@ function bounded(promise, timeout) {
  * @param {Document} doc       The document to inject into.
  * @param {number}   [timeout] Milliseconds to wait for the load event.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Promise<void>} Resolves once the stylesheet is parsed, or on timeout.
  */
@@ -140,7 +140,7 @@ export function ensureStylesheet(href, doc = document, timeout = FONT_LOAD_TIMEO
  *                                      already has (a system face, or one the site loads itself).
  * @param {number}    [options.timeout] Milliseconds to wait for each step.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Promise<void>} Resolves when the font is usable, or when waiting has gone on long enough.
  */

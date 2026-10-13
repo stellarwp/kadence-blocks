@@ -10,14 +10,14 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Validation_Error;
 /**
  * Validates a fontWeight $value: an alias or a fontWeight literal.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Font_Weight_Value implements Value_Validator {
 
 	/**
 	 * Validate a fontWeight $value.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed  $value The decoded $value.
 	 * @param string $path  Dot-path to the value, for error reporting.

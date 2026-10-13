@@ -18,14 +18,14 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Version;
  * deactivated registry leaves KB's behavior untouched. The class that activates a rule is added by the
  * editor-side kbPreset filter; this side only emits the CSS the class hooks.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Projector extends Abstract_Css_Projector {
 
 	/**
 	 * @var Token_Registry
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	private Token_Registry $registry;
 
@@ -33,7 +33,7 @@ final class Projector extends Abstract_Css_Projector {
 	/**
 	 * Owns the active-library pointer, read at build time so the projection follows the active library.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Active_Token_Library_Store
 	 */
@@ -42,7 +42,7 @@ final class Projector extends Abstract_Css_Projector {
 	/**
 	 * @var Css_Builder
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	private Css_Builder $css_builder;
 
@@ -51,14 +51,14 @@ final class Projector extends Abstract_Css_Projector {
 	 * Supplies the cache version: the store version, plus the theme Style Guide signature when there is
 	 * one, so a Customizer save invalidates this cache even though it bumps no store version.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Effective_Version
 	 */
 	private Effective_Version $versions;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Token_Registry             $registry    The token registry.
 	 * @param Active_Token_Library_Store $active      Owns the active-library pointer.
@@ -80,7 +80,7 @@ final class Projector extends Abstract_Css_Projector {
 	/**
 	 * Append the preset CSS to the front-end global-variables handle.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return void
 	 */
@@ -102,7 +102,7 @@ final class Projector extends Abstract_Css_Projector {
 	 * Shares the Css_Var projector's editor gate (the same page check and filter), so the preset CSS and
 	 * the token vars load together in the editor or not at all.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return void
 	 */
@@ -131,7 +131,7 @@ final class Projector extends Abstract_Css_Projector {
 	 * (e.g. an alias cycle from a direct DB write that bypassed the REST gate), so the page never crashes —
 	 * the inline style is simply omitted and KB falls back to its $default look.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -157,7 +157,7 @@ final class Projector extends Abstract_Css_Projector {
 	 * Degrades the same way {@see self::css()} does: an unreadable store version or an unresolvable preset
 	 * yields an empty string rather than an exception, so the editor loads without the inline style.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */

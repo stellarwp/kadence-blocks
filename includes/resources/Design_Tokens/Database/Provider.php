@@ -10,14 +10,14 @@ use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provi
  * Note: the table itself is registered centrally in Database_Provider's
  * Register::tables([...]) list, not here.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Provider extends Provider_Contract {
 
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	public function register(): void {
 		$this->register_token_store();
@@ -28,7 +28,7 @@ final class Provider extends Provider_Contract {
 	/**
 	 * Bind Token_Store as a singleton and inject its table name.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return void
 	 */
@@ -49,7 +49,7 @@ final class Provider extends Provider_Contract {
 	 * its own table — it only announces the prior state and the deletion, and
 	 * history is a separable consumer of those signals.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return void
 	 */
@@ -83,7 +83,7 @@ final class Provider extends Provider_Contract {
 	 * only announces the deletion, and the pointer drops back to the default as a separable consumer of
 	 * that signal, mirroring how history reacts.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return void
 	 */

@@ -35,7 +35,7 @@ import {
  * on every screen render (inside `resolveScreen`), so a listener added after the app has already
  * rendered a screen still takes effect on the next render or navigation.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const PRESET_SCREENS_FILTER = 'kadence_blocks.style_library.preset_screens';
 
@@ -43,7 +43,7 @@ export const PRESET_SCREENS_FILTER = 'kadence_blocks.style_library.preset_screen
  * The fixed BASE STYLES nav entries, in design order. An entry with no component registered in
  * `StyleLibraryApp` falls back to `PlaceholderScreen`.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const BASE_STYLES_SCREENS = [
 	{ id: 'color-palette', label: __('Color Palette', 'kadence-blocks'), icon: colorPalette },
@@ -59,7 +59,7 @@ export const BASE_STYLES_SCREENS = [
  * The sidebar icon of each BLOCK PRESETS entry, keyed by block name. The entries themselves come
  * from the admin feed, which carries no icon; a block with no icon here renders its label alone.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const PRESET_SCREEN_ICONS = {
 	'kadence/singlebtn': button,
@@ -73,6 +73,6 @@ export const PRESET_SCREEN_ICONS = {
 /**
  * The screen the app falls back to when the route names no screen or an unknown one.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const DEFAULT_SCREEN_ID = BASE_STYLES_SCREENS[0].id;

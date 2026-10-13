@@ -25,14 +25,14 @@ use WP_REST_Server;
  * a write to a known library persists the pointer and fires Active_Token_Library_Store::changed_action()
  * so caches and projectors can react.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Active_Token_Library_Controller extends Controller {
 
 	/**
 	 * The request parameter that carries the token library slug.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -42,7 +42,7 @@ final class Active_Token_Library_Controller extends Controller {
 	 * The slug path segment for the write route. Built from SLUG_PARAM so the named capture and the read
 	 * parameter never drift apart.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -51,7 +51,7 @@ final class Active_Token_Library_Controller extends Controller {
 	/**
 	 * Owns the active-library pointer.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Active_Token_Library_Store
 	 */
@@ -60,7 +60,7 @@ final class Active_Token_Library_Controller extends Controller {
 	/**
 	 * The sole gateway to the kb_design_tokens table, used to validate a write target exists.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Store
 	 */
@@ -69,14 +69,14 @@ final class Active_Token_Library_Controller extends Controller {
 	/**
 	 * Memoised item schema for this request. Null until first built.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var array<string, mixed>|null
 	 */
 	private ?array $item_schema = null;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Active_Token_Library_Store $active Owns the active-library pointer.
 	 * @param Token_Store                $store  The sole gateway to the kb_design_tokens table.
@@ -94,7 +94,7 @@ final class Active_Token_Library_Controller extends Controller {
 	 * mirroring the {slug} routing on the documents resource. Both carry their args and schema so the
 	 * MCP layer can introspect the request and response shapes.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return void
 	 */
@@ -134,7 +134,7 @@ final class Active_Token_Library_Controller extends Controller {
 	 * Returns the resolved slug, which always names a readable library: the store falls back to the
 	 * default library when the stored pointer is empty or dangling.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -151,7 +151,7 @@ final class Active_Token_Library_Controller extends Controller {
 	 * has a stored row — otherwise it is a 404. On success the pointer is persisted and the resolved
 	 * active slug is returned.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -179,7 +179,7 @@ final class Active_Token_Library_Controller extends Controller {
 	/**
 	 * The JSON Schema for the active-library pointer.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -208,7 +208,7 @@ final class Active_Token_Library_Controller extends Controller {
 	/**
 	 * The arguments for the write route: the target slug path parameter.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, mixed>
 	 */

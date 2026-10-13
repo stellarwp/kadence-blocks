@@ -9,6 +9,6 @@ use RuntimeException;
  * (the path is missing, or points at a group rather than a token with a $value).
  * Caught by the REST write layer and surfaced as HTTP 422.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Dangling_Alias_Exception extends RuntimeException {}

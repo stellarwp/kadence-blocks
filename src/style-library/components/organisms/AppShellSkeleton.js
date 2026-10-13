@@ -40,7 +40,7 @@ const SKELETON_NAV_IDS = [0, 1, 2, 3, 4, 5, 6];
  * @param {boolean} [props.showHeader] Whether to draw the header-bar placeholder. False when the
  *                                     real header is already on screen above this skeleton.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The shell-shaped skeleton.
  */

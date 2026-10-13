@@ -5,14 +5,14 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Admin\Style_Library;
 /**
  * Renders the Style Library admin screen mount point.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Screen {
 
 	/**
 	 * The DOM id the React bundle mounts into.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -21,7 +21,7 @@ final class Screen {
 	/**
 	 * Output the Style Library screen markup.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return void
 	 */

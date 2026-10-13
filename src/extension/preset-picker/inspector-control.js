@@ -16,7 +16,7 @@
  * @param {number}  options.presetCount  How many presets the active library defines for it.
  * @param {number}  options.paletteCount How many palettes are selectable.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {?string} `'preset'`, `'palette'`, or null when the filter renders nothing.
  */

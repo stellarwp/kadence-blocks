@@ -56,7 +56,7 @@ import { SHADOW_TOKEN_KEY, boundShadowToken } from '../shadow-token';
  * separated, no leading zero normalization) so `splitColorOpacity` can parse back what this component
  * writes without a separate, potentially drifting, format.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const RGBA_PATTERN = /^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*([\d.]+))?\s*\)$/i;
 
@@ -64,7 +64,7 @@ const RGBA_PATTERN = /^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*([\d.]+)
  * A 3-, 6-, or 8-digit hex color, with or without a leading `#` — the only shapes `hexToRgba` can
  * safely convert. The 8-digit form's trailing pair is its own embedded alpha.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const HEX_PATTERN = /^#?([0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})$/i;
 
@@ -73,7 +73,7 @@ const HEX_PATTERN = /^#?([0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})$/i;
  *
  * @param {number} channel The channel value.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} Two lowercase hex digits.
  */
@@ -92,7 +92,7 @@ function channelToHex(channel) {
  * @param {string} hex   A 3- or 6-digit hex color, with or without a leading `#`.
  * @param {number} alpha The alpha value (0-1).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The `rgba(...)` string.
  */
@@ -116,7 +116,7 @@ function hexToRgba(hex, alpha) {
  *                          color literal.
  * @param {?number} opacity The native opacity (0-1), or undefined for fully opaque.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The combined color, `rgba(...)` when partially transparent and `color` is a hex
  * or `rgb(...)`/`rgba(...)` literal (both channel-decodable, so the opacity can be folded in
@@ -158,7 +158,7 @@ export function combineColorOpacity(color, opacity) {
  *
  * @param {string} combined The composite's color slot value.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{color: string, opacity: number}} The native color and opacity.
  */
@@ -196,7 +196,7 @@ export function splitColorOpacity(combined) {
  *
  * @param {?number} axis The native axis value.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The composite's px string for this axis.
  */
@@ -210,7 +210,7 @@ function axisToComposite(axis) {
  *
  * @param {*} slot The composite's axis value.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {number} The native axis value.
  */
@@ -232,7 +232,7 @@ function axisToNative(slot) {
  * @param {string} alias  The picked token alias.
  * @param {Array}  tokens Pickable `shadow`-type tokens, `[{id, label, value, alias}]`.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {?Object} The resolved composite, or `null` when the alias matches no pickable token.
  */
@@ -247,7 +247,7 @@ function resolveShadowAlias(alias, tokens) {
  *
  * @param {?Array} native The stored native shadow attribute value.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {?string} The bound `{dot.alias}`, or null when the value carries no binding.
  */
@@ -261,7 +261,7 @@ export function shadowTokenOf(native) {
  *
  * @param {?Array} native The native shadow attribute value.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The composite `{ color, offsetX, offsetY, blur, spread, inset }` shape.
  */
@@ -296,7 +296,7 @@ export function fromNativeShadow(native) {
  * @param {Array}         [tokens] Pickable `shadow`-type tokens, `[{id, label, value, alias}]`, used
  *                                 to resolve a picked alias to its literal value.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array} `[{ color, opacity, hOffset, vOffset, blur, spread, inset }]`.
  */
@@ -334,7 +334,7 @@ export function toNativeShadow(value, tokens = []) {
  *
  * @param {?Object} item One `shadow[0]`-shaped item.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} Whether the item paints a visible shadow.
  */
@@ -371,7 +371,7 @@ export function hasVisibleShadow(item) {
  *
  * @param {Object} item One `shadow[0]`-shaped item.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} Whether the item is the cleared shadow.
  */
@@ -405,7 +405,7 @@ function isClearedShadow(item) {
  *
  * @param {?Array} native The stored native shadow attribute value.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} Whether the host's enable flag should be raised for this value.
  */
@@ -430,7 +430,7 @@ export function hasShadowPick(native) {
  * @param {*}       defaultValue The active preset's own resolved shadow, or nothing when it has none.
  * @param {boolean} [enabled]    The host's own enable flag for this shadow, when it keeps one.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True when the control should render as unset.
  */
@@ -486,7 +486,7 @@ export function isUnsetShadow(native, defaultValue, enabled = true) {
  *                                        (see `isUnsetShadow()`). Defaults to `true` for a host with
  *                                        no such flag.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The rendered control.
  */

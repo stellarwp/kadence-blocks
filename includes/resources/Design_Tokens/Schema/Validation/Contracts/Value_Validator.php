@@ -12,14 +12,14 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Validation_Error;
  * One implementation per v1 $type; the walker dispatches by $type. Composite implementations (shadow,
  * typography) validate the object $value field by field.
  *
- * @since TBD
+ * @since 3.8.0
  */
 interface Value_Validator {
 
 	/**
 	 * Validate a decoded value.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed  $value The decoded $value (PHP scalar, array, or null).
 	 * @param string $path  DTCG dot-path to the value, for error reporting (e.g. "semantic.color.text.$value").

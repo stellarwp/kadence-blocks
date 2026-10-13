@@ -8,14 +8,14 @@ use RuntimeException;
  * Thrown when the Preset_Resolver is asked for a block or preset the document does not define, or for
  * a block whose preset collection declares no `$default`.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Unknown_Preset_Exception extends RuntimeException {
 
 	/**
 	 * The block declares no presets in the document.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $block The block name.
 	 *
@@ -28,7 +28,7 @@ final class Unknown_Preset_Exception extends RuntimeException {
 	/**
 	 * The block has presets, but not the requested one.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $block   The block name.
 	 * @param string $preset The requested preset slug.
@@ -42,7 +42,7 @@ final class Unknown_Preset_Exception extends RuntimeException {
 	/**
 	 * The block's preset collection declares no `$default`.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $block The block name.
 	 *

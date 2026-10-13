@@ -22,7 +22,7 @@ const HOOKS = ['kadence.helpers.colorValue', 'kadence.helpers.dimensionValue'];
  *
  * @param {*} value The raw value the helper received.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {*} The resolved value.
  */

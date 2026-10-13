@@ -26,7 +26,7 @@ import { StaleTokenHint, staleTokenLabel, staleTokenMessage } from './StaleToken
  * @param {Object}  props       The component props.
  * @param {?Object} props.entry The matching pickable entry, or null for a stale alias.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The label.
  */
@@ -64,7 +64,7 @@ function ChipLabel({ entry }) {
  * @param {Function} [props.onUnlink] Called with no arguments when the unlink button is pressed; the
  *                                    button is hidden when this is not provided.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The rendered token chip.
  */

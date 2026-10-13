@@ -30,14 +30,14 @@ use RuntimeException;
  * Fail-open: a corrupt stored document (alias cycle / dangling alias) leaves every read untouched.
  * Gated on Token_Registry::is_active() so the fail-closed guard is honored.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Palette_Filter {
 
 	/**
 	 * The token registry.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Registry
 	 */
@@ -46,7 +46,7 @@ final class Palette_Filter {
 	/**
 	 * The token resolver.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Resolver
 	 */
@@ -55,7 +55,7 @@ final class Palette_Filter {
 	/**
 	 * Owns the active-library pointer, read at filter time so the projected colors follow the active library.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Active_Token_Library_Store
 	 */
@@ -64,7 +64,7 @@ final class Palette_Filter {
 	/**
 	 * Builds the slug => { color, name } map from the resolved tokens.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Palette_Builder
 	 */
@@ -74,14 +74,14 @@ final class Palette_Filter {
 	 * Per-request memo of slug => { color, name }. Null until first built; cleared when any input it is
 	 * built from changes: a token write, an active-library switch, or a change to the theme's Style Guide.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var array<string, array{color: string, name: string}>|null
 	 */
 	private ?array $entries = null;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Token_Registry             $registry The token registry.
 	 * @param Token_Resolver             $resolver The token resolver.
@@ -103,7 +103,7 @@ final class Palette_Filter {
 	/**
 	 * Return the resolved token color for a palette slot a token claims, or the theme's own value.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed $value  The value the theme resolved for this slot.
 	 * @param mixed $subkey The slot being read, e.g. "palette1". Not type-hinted because the theme
@@ -126,7 +126,7 @@ final class Palette_Filter {
 	 * same request. Bound to every input the memo is built from: the store's changed action, the
 	 * active-library pointer's, the theme's palette option hooks and the Customizer preview init.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return void
 	 */
@@ -137,7 +137,7 @@ final class Palette_Filter {
 	/**
 	 * The slug => { color, name } map for the active library, built once per request.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, array{color: string, name: string}>
 	 */

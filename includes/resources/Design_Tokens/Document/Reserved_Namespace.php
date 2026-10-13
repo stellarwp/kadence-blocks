@@ -14,14 +14,14 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Token_Type;
  * Token_Type rather than hardcoding "color", so a future custom primitive under an existing $type (e.g.
  * a gap or radius primitive, both "dimension") is guarded automatically.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Reserved_Namespace {
 
 	/**
 	 * The token layer the reserved namespace lives under.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -30,7 +30,7 @@ final class Reserved_Namespace {
 	/**
 	 * The tree segment, directly under the reserved $type, that holds user-created primitives.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -39,7 +39,7 @@ final class Reserved_Namespace {
 	/**
 	 * The kebab-case pattern a terminal slug must match, without anchors or delimiters.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -48,7 +48,7 @@ final class Reserved_Namespace {
 	/**
 	 * Whether a canonical dot-path id names a user-primitive leaf: primitive.<type>.custom.<slug>.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $id The canonical dot-path id.
 	 *
@@ -69,7 +69,7 @@ final class Reserved_Namespace {
 	/**
 	 * The anchored, unescaped slug pattern, suitable for a REST `args` `pattern` entry.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -83,7 +83,7 @@ final class Reserved_Namespace {
 	 * custom token's real sub-kind from its group) references this single source of truth instead of
 	 * repeating the literal.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -94,7 +94,7 @@ final class Reserved_Namespace {
 	/**
 	 * Whether a terminal slug (not a full id) is valid kebab-case.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug The terminal slug.
 	 *
@@ -116,7 +116,7 @@ final class Reserved_Namespace {
 	 * not necessarily the $type spelling itself: the id feeds Css_Var::from_id(), which requires
 	 * the kebab charset, while $type stays the DTCG spec spelling.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $type The DTCG $type (spec spelling).
 	 * @param string $slug The terminal slug.
@@ -141,7 +141,7 @@ final class Reserved_Namespace {
 	 * gate three call sites and the REST 422 contract hang off, and a future version may
 	 * genuinely want to gate a type again.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $type The candidate DTCG $type.
 	 *
@@ -157,7 +157,7 @@ final class Reserved_Namespace {
 	 * Unlike is_reserved_id(), this also matches a path deeper than a single custom-primitive leaf (e.g. a
 	 * sub-field of a composite value), so a write cannot reach into the namespace at any depth.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $path The dot-path to test.
 	 *
@@ -175,7 +175,7 @@ final class Reserved_Namespace {
 	/**
 	 * Walk a primitive-layer subtree and collect every path at or below the reserved namespace.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $node   The node to walk, e.g. a decoded document's "primitive" subtree.
 	 * @param string               $prefix The dot-path prefix of $node, e.g. "primitive".

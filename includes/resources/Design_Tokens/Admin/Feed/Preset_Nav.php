@@ -16,21 +16,21 @@ use WP_Block_Type_Registry;
  * {@see self::label_for()} and never falls back to that same picker-control string, which names
  * the inspector control rather than the block.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Preset_Nav {
 
 	/**
 	 * The token registry, source of the registered preset bindings.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Registry
 	 */
 	private Token_Registry $registry;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Token_Registry $registry The token registry.
 	 */
@@ -46,7 +46,7 @@ final class Preset_Nav {
 	 * {@see Preset_Bindings::$label} being non-null — the Style Library section below only
 	 * changes how an included entry is labeled, never whether it is included.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<int, array{block: string, label: string}> The entries.
 	 */
@@ -78,7 +78,7 @@ final class Preset_Nav {
 	 *    is not registered at all — degrades gracefully rather than showing a raw block name or the
 	 *    picker control's `$label`.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string          $block    The block name.
 	 * @param Preset_Bindings $bindings The block's preset bindings.
@@ -106,7 +106,7 @@ final class Preset_Nav {
 	 * underscores turned into spaces and each word capitalized (e.g. "kadence/my-block" ->
 	 * "My Block").
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $block The block name.
 	 *

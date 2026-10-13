@@ -20,7 +20,7 @@ import { __ } from '@wordpress/i18n';
  * is needed anywhere else. Shadow can't collapse to a number; its resolved value is the same
  * `box-shadow` shorthand shape a real shadow token's `value` already carries.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const NONE_VALUE_BY_ROLE = {
 	radius: 0,
@@ -34,7 +34,7 @@ const NONE_VALUE_BY_ROLE = {
  *
  * @param {string} role The token role ('radius' | 'spacing' | 'border-width' | 'shadow').
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {?Object} The fixed entry, or null when the role has no "None".
  */
@@ -60,7 +60,7 @@ export function noneEntryForRole(role) {
  * Margin's "Auto" sentinel: the CSS keyword `auto`, not a length, so — like "None" above — it is
  * deliberately never a registered token (see `declarations.php`'s comment on `$spacing_slugs`).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The fixed entry.
  */

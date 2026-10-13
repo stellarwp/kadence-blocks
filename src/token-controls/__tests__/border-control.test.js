@@ -117,7 +117,7 @@ afterEach(() => {
  *
  * @param {Object} props Overrides for the defaults below.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {HTMLElement} The container it rendered into.
  */
@@ -148,7 +148,7 @@ const linkToggle = () => container.querySelector('.kadence-control-toggle');
  *
  * @param {HTMLElement} element The element to click.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {void}
  */
@@ -166,7 +166,7 @@ function click(element) {
  *                                 option's `kb-border-control__style-preview-rule--{styleValue}`
  *                                 modifier class.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {void}
  */

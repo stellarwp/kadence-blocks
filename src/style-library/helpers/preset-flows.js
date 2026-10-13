@@ -29,7 +29,7 @@ import { nextPresetSlug, presetSaveTokens } from './presets';
  *
  * @param {*} error The rejected value from an `apiFetch` call.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} A user-facing message.
  */
@@ -57,7 +57,7 @@ function errorMessage(error) {
  * @param {Function}               args.onBusy        Called with a boolean as the request starts and settles.
  * @param {Function}               args.onError       Called with `{ message }` on failure.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Promise<string>} Resolves with the new preset's slug; rejects on failure, after
  *                            `onError`/`onBusy` have already run.
@@ -116,7 +116,7 @@ export function createPresetFlow({
  * @param {Function} args.onBusy      Called with a boolean as the request starts and settles.
  * @param {Function} args.onError     Called with `{ message }` on failure.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Promise<?Object>} Resolves with the preset payload the write returned — the same shape a
  *                             read returns, carrying the server's normalized tokens — or null when an
@@ -179,7 +179,7 @@ export function savePresetFlow({
  * @param {Function} args.onBusy      Called with a boolean as the request starts and settles.
  * @param {Function} args.onError     Called with `{ message }` on failure.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Promise<void>} Resolves once the delete and the feed refresh complete; rejects on
  *                          failure, after `onError`/`onBusy` have already run.
@@ -214,7 +214,7 @@ export function deletePresetFlow({ namespace, block, preset, slug, refreshFeed, 
  * @param {Function} args.onBusy      Called with a boolean as the request starts and settles.
  * @param {Function} args.onError     Called with `{ message }` on failure.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Promise<void>} Resolves once the write and the feed refresh complete; rejects on
  *                          failure, after `onError`/`onBusy` have already run.

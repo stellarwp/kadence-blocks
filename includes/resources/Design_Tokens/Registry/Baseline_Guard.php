@@ -15,7 +15,7 @@ use KadenceWP\KadenceBlocks\Psr\Log\LoggerInterface;
  *   - In production: deactivate token projection (fall back to existing KB behavior) + admin notice.
  *     Never white-screen a live site.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Baseline_Guard {
 
@@ -26,14 +26,14 @@ final class Baseline_Guard {
 	/**
 	 * Whether a missing entry throws. Resolves to WP_DEBUG when null (the production/dev default).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var bool|null
 	 */
 	private ?bool $throw_on_missing;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Token_Registry    $registry         The registry whose declared tokens are validated.
 	 * @param Baseline_Document $baseline         The baseline to validate the declared tokens against.
@@ -57,7 +57,7 @@ final class Baseline_Guard {
 	/**
 	 * Run the guard: log, then either throw (debug) or fail closed (production) on missing entries.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @throws Missing_Baseline_Entry When WP_DEBUG is on and any declared token lacks a baseline entry.
 	 *
@@ -98,7 +98,7 @@ final class Baseline_Guard {
 	 * Whether to throw on a misconfiguration. Honours an injected override, else defers to WP_DEBUG —
 	 * the seam lets tests exercise both branches without redefining the WP_DEBUG constant.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return bool
 	 */
@@ -113,7 +113,7 @@ final class Baseline_Guard {
 	/**
 	 * Register the production admin notice explaining why token projection is disabled.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string[] $missing The token ids missing a baseline entry.
 	 *

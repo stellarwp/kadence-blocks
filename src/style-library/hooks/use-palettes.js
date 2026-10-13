@@ -80,7 +80,7 @@ import { EMPTY_LISTING, EMPTY_OPTIMISTIC_SWATCH_EDIT, paletteEditKey, paletteLis
  * @param {Object}   route       The route from `useStyleLibraryRoute` — only `route.scope` is read.
  * @param {Function} navigate    The route navigator — `openPalette` writes `scope` through it.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} `{ listing, activeId, editingId, isEditingActive, palette, isLoading, isBusy,
  *                  openError, activateError, createError, renameError, deleteError,

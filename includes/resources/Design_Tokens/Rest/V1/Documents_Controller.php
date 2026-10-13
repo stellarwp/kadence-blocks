@@ -51,14 +51,14 @@ use WP_REST_Server;
  * library cannot be deleted — a DELETE against it resets it to baseline, while a DELETE against any
  * other library removes it entirely.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Documents_Controller extends Controller {
 
 	/**
 	 * The request parameter that carries the token library slug.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -67,7 +67,7 @@ final class Documents_Controller extends Controller {
 	/**
 	 * The request parameter that carries a single token's dot-path.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -76,7 +76,7 @@ final class Documents_Controller extends Controller {
 	/**
 	 * The request parameter that carries the raw DTCG document on a bulk write.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -85,7 +85,7 @@ final class Documents_Controller extends Controller {
 	/**
 	 * The request parameter that carries an optional human-readable label for the library.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -95,7 +95,7 @@ final class Documents_Controller extends Controller {
 	 * The slug path segment shared by the single-library routes. Built from SLUG_PARAM so the named capture
 	 * and the read parameter never drift apart.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -104,7 +104,7 @@ final class Documents_Controller extends Controller {
 	/**
 	 * The sub-route, relative to a single library, that returns the resolved/flattened token map.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -113,7 +113,7 @@ final class Documents_Controller extends Controller {
 	/**
 	 * The sub-route, relative to a single library, that collects the single-token endpoints.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -122,7 +122,7 @@ final class Documents_Controller extends Controller {
 	/**
 	 * The sub-route, relative to a single library, that writes only its human-readable label.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -131,7 +131,7 @@ final class Documents_Controller extends Controller {
 	/**
 	 * The sub-route, relative to a single library, that collects the per-token label-override endpoints.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -140,7 +140,7 @@ final class Documents_Controller extends Controller {
 	/**
 	 * The request parameter that carries a single token's canonical dot-path id, on the labels sub-route.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -149,7 +149,7 @@ final class Documents_Controller extends Controller {
 	/**
 	 * The id path segment for the labels sub-route. Same grammar as PATH_ROUTE — a token id is a dot-path.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -158,7 +158,7 @@ final class Documents_Controller extends Controller {
 	/**
 	 * The request parameter that carries the display-label override text on a labels write.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -168,7 +168,7 @@ final class Documents_Controller extends Controller {
 	 * The request parameter that carries the client's last-read version, for the version-conditional
 	 * guard on the labels sub-route.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -177,7 +177,7 @@ final class Documents_Controller extends Controller {
 	/**
 	 * The sub-route, relative to a single library, that collects the per-group sort-order endpoints.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -186,7 +186,7 @@ final class Documents_Controller extends Controller {
 	/**
 	 * The request parameter that carries the UI-schema group name, on the order sub-route.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -205,7 +205,7 @@ final class Documents_Controller extends Controller {
 	 * `sanitize_callback` on the group arg (see `get_order_delete_params()`), and the decoded value
 	 * is what is validated against the real declared groups in `unknown_group()`.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -214,7 +214,7 @@ final class Documents_Controller extends Controller {
 	/**
 	 * The request parameter that carries the ordered list of token ids on an order write.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -223,7 +223,7 @@ final class Documents_Controller extends Controller {
 	/**
 	 * The sub-route, relative to a single library, that collects the favorite-font endpoints.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -232,7 +232,7 @@ final class Documents_Controller extends Controller {
 	/**
 	 * The request parameter that carries a single font family name, on the favorite-fonts sub-route.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -249,7 +249,7 @@ final class Documents_Controller extends Controller {
 	 * the family is a single URL path segment; the percent-encoding is undone by the
 	 * `sanitize_callback` on the family arg (see `get_favorite_font_params()`).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -259,7 +259,7 @@ final class Documents_Controller extends Controller {
 	 * The dot-path path segment for the single-token routes. The character class matches the alias
 	 * grammar (a dot-path) minus the braces, so a token is addressable as a sub-resource of its library.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -268,7 +268,7 @@ final class Documents_Controller extends Controller {
 	/**
 	 * The sole gateway to the kb_design_tokens table.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Store
 	 */
@@ -277,7 +277,7 @@ final class Documents_Controller extends Controller {
 	/**
 	 * Flattens a stored token library into the ready-to-emit maps, and dry-runs candidate overrides.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Resolver
 	 */
@@ -286,7 +286,7 @@ final class Documents_Controller extends Controller {
 	/**
 	 * Validates the DTCG grammar of a candidate document before it is committed.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Dtcg_Validator
 	 */
@@ -295,7 +295,7 @@ final class Documents_Controller extends Controller {
 	/**
 	 * Pure merge / set / remove transforms used to assemble the candidate overrides document.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Mutator
 	 */
@@ -304,7 +304,7 @@ final class Documents_Controller extends Controller {
 	/**
 	 * Builds the baseline-merged effective document, used to infer a token's $type on a single-token write.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Effective_Document
 	 */
@@ -313,7 +313,7 @@ final class Documents_Controller extends Controller {
 	/**
 	 * Inspects documents for the presence of user-created primitives.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var User_Primitive_Index
 	 */
@@ -322,7 +322,7 @@ final class Documents_Controller extends Controller {
 	/**
 	 * Enforces the user-primitive document invariant on every write.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var User_Primitive_Document_Validator
 	 */
@@ -331,7 +331,7 @@ final class Documents_Controller extends Controller {
 	/**
 	 * Scans a candidate document for alias references to a user primitive.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Reference_Policy
 	 */
@@ -341,7 +341,7 @@ final class Documents_Controller extends Controller {
 	 * Extracts the authored responsive / clamp shape per token, so a read of the resolved map can carry the
 	 * per-breakpoint steps the flat by_id map flattens away.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Responsive_Feed
 	 */
@@ -350,7 +350,7 @@ final class Documents_Controller extends Controller {
 	/**
 	 * The token registry, used only to 404 a label write against an unregistered id.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Registry
 	 */
@@ -359,7 +359,7 @@ final class Documents_Controller extends Controller {
 	/**
 	 * Reads and writes the tokenLabels display-label override map.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Label_Index
 	 */
@@ -368,7 +368,7 @@ final class Documents_Controller extends Controller {
 	/**
 	 * Reads and writes the tokenOrder flat ordered id list.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Order_Index
 	 */
@@ -377,7 +377,7 @@ final class Documents_Controller extends Controller {
 	/**
 	 * Reads and writes the favoriteFonts ordered family list.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Favorite_Font_Index
 	 */
@@ -386,7 +386,7 @@ final class Documents_Controller extends Controller {
 	/**
 	 * The site's font catalog, used only to 404 a favorite write against a family the site cannot render.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Font_Catalog
 	 */
@@ -395,7 +395,7 @@ final class Documents_Controller extends Controller {
 	/**
 	 * Memoized item schema for this request. Null until first built.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var array<string, mixed>|null
 	 */
@@ -404,14 +404,14 @@ final class Documents_Controller extends Controller {
 	/**
 	 * Memoized resolved-map schema for this request. Null until first built.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var array<string, mixed>|null
 	 */
 	private ?array $resolved_schema = null;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Token_Store                       $store                 The sole gateway to the kb_design_tokens table.
 	 * @param Token_Resolver                    $resolver              Flattens a stored token library and dry-runs candidate overrides.
@@ -472,7 +472,7 @@ final class Documents_Controller extends Controller {
 	 * PATCH). PUT is the full replace. This matches core controllers, where POST to a resource updates
 	 * only the fields provided.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return void
 	 */
@@ -694,7 +694,7 @@ final class Documents_Controller extends Controller {
 	 * titles come from this one list_stores() call rather than a per-item lookup, so surfacing title
 	 * alongside slug/version costs no additional query over the whole collection.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -725,7 +725,7 @@ final class Documents_Controller extends Controller {
 	 *
 	 * The default library is always known; any other slug must have a stored row, otherwise it is a 404.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -753,7 +753,7 @@ final class Documents_Controller extends Controller {
 	 * client that re-reads this endpoint after a write — the Style Library token editor does, to keep its
 	 * per-breakpoint inputs fresh — would otherwise fall back to a stale bootstrap of the responsive shape.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -802,7 +802,7 @@ final class Documents_Controller extends Controller {
 	 * stored; merging into an empty (or not-yet-existing) library simply creates it. The slug defaults to
 	 * the default library when omitted, since the collection route carries no slug path segment.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -823,7 +823,7 @@ final class Documents_Controller extends Controller {
 	/**
 	 * Deep-merge a partial document into the stored library (POST or PATCH /documents/{slug}).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -851,7 +851,7 @@ final class Documents_Controller extends Controller {
 	 * stored document has any user-created primitive, since a full replace has no way to express
 	 * "preserve these" — delete them first or use PATCH instead.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -889,7 +889,7 @@ final class Documents_Controller extends Controller {
 	 * An unknown library is a 404, matching {@see self::update_title()} — the two halves of the resource
 	 * agree on which libraries exist.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -930,7 +930,7 @@ final class Documents_Controller extends Controller {
 	 * The default library is renameable like any other: it has no row until something is written to
 	 * it, and naming it is a legitimate first write.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -987,7 +987,7 @@ final class Documents_Controller extends Controller {
 	 * unknown non-default library is a 404. The prior state is captured before the delete and returned as
 	 * the deleted resource, following the WordPress delete-response shape.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -1032,7 +1032,7 @@ final class Documents_Controller extends Controller {
 	 * effective document; $type is required only when creating a brand-new token. Sentinels
 	 * ("$value": null reset, "$disabled": true) carry no $type and are stored as-is.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -1103,7 +1103,7 @@ final class Documents_Controller extends Controller {
 	 * another override aliasing the removed token is rejected (HTTP 422) before commit rather than
 	 * persisting a dangling alias.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -1143,7 +1143,7 @@ final class Documents_Controller extends Controller {
 	 * then carries the rename into the registry, and the tokenLabels remove() is defense in depth
 	 * against a hand-written entry for the same id.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -1192,7 +1192,7 @@ final class Documents_Controller extends Controller {
 	 * baseline id to its declared label and a user-created id to the humanized-last-segment
 	 * fallback ({@see Token_Definition::from_user_primitive()}) — never a nameless token.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -1230,7 +1230,7 @@ final class Documents_Controller extends Controller {
 	 * 404 — that is a caller bug, and accepting it would accumulate unreachable sections nothing can
 	 * display or clear from the UI.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -1274,7 +1274,7 @@ final class Documents_Controller extends Controller {
 	 * that group to declaration order. Idempotent: when nothing is stored for the group, this
 	 * returns the current item without a write, mirroring delete_label()'s idempotency.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -1321,7 +1321,7 @@ final class Documents_Controller extends Controller {
 	 * current item without a write, and keeps its existing position rather than moving it to the
 	 * end, so a replayed write cannot shuffle a picker's display order.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -1365,7 +1365,7 @@ final class Documents_Controller extends Controller {
 	 * catalog would strand it in the document with no way to remove it from the UI. Idempotent:
 	 * removing a family that is not in the list returns the current item without a write.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -1403,7 +1403,7 @@ final class Documents_Controller extends Controller {
 	 * server matches routes against the raw request path, so a multi-word family arrives as e.g.
 	 * `Abril%20Fatface`.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed $value The raw, still percent-encoded family segment.
 	 *
@@ -1420,7 +1420,7 @@ final class Documents_Controller extends Controller {
 	 * bare layer with no token, or one with an empty segment (the pattern allows runs of dots, e.g.
 	 * "primitive..brand" or a trailing dot) is rejected as a 400 before a handler runs.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed           $value   The submitted path.
 	 * @param WP_REST_Request $request Full details about the request.
@@ -1460,7 +1460,7 @@ final class Documents_Controller extends Controller {
 	 * happens exactly once, here at the args layer, so every handler reading `self::GROUP_PARAM`
 	 * already sees the real label.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed $value The raw, still percent-encoded group value from the URL.
 	 *
@@ -1473,7 +1473,7 @@ final class Documents_Controller extends Controller {
 	/**
 	 * The JSON Schema for a token-library document item.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -1521,7 +1521,7 @@ final class Documents_Controller extends Controller {
 	/**
 	 * The JSON Schema for the resolved/flattened token map response.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -1579,7 +1579,7 @@ final class Documents_Controller extends Controller {
 	 * The JSON Schema for a single-token response. A single-token write returns the full document item, so
 	 * the document schema describes its shape.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -1593,7 +1593,7 @@ final class Documents_Controller extends Controller {
 	 * No collection parameters are accepted yet; the definition is declared explicitly so the surface
 	 * documents itself and gains parameters without changing shape.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -1609,7 +1609,7 @@ final class Documents_Controller extends Controller {
 	 * creates that library. An empty candidate clears the overrides (the library renders from baseline)
 	 * and needs no validation or dry-run, since an empty document cannot carry an alias cycle.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $candidate The full candidate overrides document to validate and store.
 	 * @param string               $slug      The token library slug.
@@ -1710,7 +1710,7 @@ final class Documents_Controller extends Controller {
 	 * Commit a raw document string to the store and build the response, mapping a write failure to 500 and a
 	 * version mismatch to 409.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $document         The raw overrides-only DTCG JSON (empty string clears the library).
 	 * @param string $slug             The token library slug.
@@ -1767,7 +1767,7 @@ final class Documents_Controller extends Controller {
 	 * Required rather than defaulted, so a caller that has not been updated fails loudly rather than
 	 * silently keeping the old behavior.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $candidate      The candidate document with the metadata edit applied.
 	 * @param string               $slug           The token library slug.
@@ -1807,7 +1807,7 @@ final class Documents_Controller extends Controller {
 	 * Either path is idempotent: when nothing changes, the candidate equals the stored document and
 	 * this returns the current item without a write, mirroring delete_token()'s idempotency.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $stored         The stored document to clear the override from.
 	 * @param string               $slug           The token library slug.
@@ -1834,7 +1834,7 @@ final class Documents_Controller extends Controller {
 	 * Client-conditional guard for the labels sub-route, mirroring the write pipeline's version
 	 * check: the stored version must equal what the client last read (both '' for a first write).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug           The token library slug.
 	 * @param string $client_version The version the client last read. Empty only for a first write.
@@ -1861,7 +1861,7 @@ final class Documents_Controller extends Controller {
 	/**
 	 * The error returned when a labels-route id does not name a registered token.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $id The unregistered token id.
 	 *
@@ -1881,7 +1881,7 @@ final class Documents_Controller extends Controller {
 	/**
 	 * The error returned when an order-route group does not name a UI-schema group.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $group The unknown group name.
 	 *
@@ -1901,7 +1901,7 @@ final class Documents_Controller extends Controller {
 	/**
 	 * The error returned when a favorite-fonts family is not in the site's font catalog.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $family The unknown family name.
 	 *
@@ -1924,7 +1924,7 @@ final class Documents_Controller extends Controller {
 	 * The default library is always known — it renders from baseline even before it has a row — and any
 	 * other slug is known once it has a stored row.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug The requested slug.
 	 *
@@ -1943,7 +1943,7 @@ final class Documents_Controller extends Controller {
 	 * explicit, addressed error rather than the confusing downstream dangling-alias failure it would
 	 * otherwise become.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $effective The baseline-merged effective document.
 	 * @param string               $path      The token dot-path.
@@ -2014,7 +2014,7 @@ final class Documents_Controller extends Controller {
 	/**
 	 * Whether a node in the effective document is a token leaf rather than a group of child tokens.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $node The decoded node.
 	 *
@@ -2029,7 +2029,7 @@ final class Documents_Controller extends Controller {
 	/**
 	 * Read the document body parameter as an array, coercing any non-array to an empty document.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -2044,7 +2044,7 @@ final class Documents_Controller extends Controller {
 	/**
 	 * The arguments shared by the single-library routes: the slug path parameter.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -2067,7 +2067,7 @@ final class Documents_Controller extends Controller {
 	 * request to this route carries nothing else, so an absent title would ask the server to do
 	 * nothing at all.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -2090,7 +2090,7 @@ final class Documents_Controller extends Controller {
 	 * optional title. The document is validated for its DTCG grammar by Dtcg_Validator, so the arg only
 	 * asserts it is an object.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -2105,7 +2105,7 @@ final class Documents_Controller extends Controller {
 	 * The arguments accepted by the collection create route: the DTCG document, an optional title and an
 	 * optional slug (defaulting to the default library, since the collection route has no slug path segment).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -2127,7 +2127,7 @@ final class Documents_Controller extends Controller {
 	/**
 	 * The document and title body parameters shared by the bulk write routes.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -2152,7 +2152,7 @@ final class Documents_Controller extends Controller {
 	 * The arguments shared by the single-token routes: the slug and the validated token dot-path. The leaf
 	 * itself is read from the raw JSON body, since DTCG's "$"-prefixed keys do not map onto named args.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -2175,7 +2175,7 @@ final class Documents_Controller extends Controller {
 	 * The arguments accepted by the labels-route PUT: the slug, the token id, the label text and
 	 * the version-conditional guard.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -2197,7 +2197,7 @@ final class Documents_Controller extends Controller {
 	 * The arguments accepted by the labels-route DELETE: the slug, the token id and the
 	 * version-conditional guard.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -2225,7 +2225,7 @@ final class Documents_Controller extends Controller {
 	 * The arguments accepted by the order-route PUT: the slug, the group, the ordered id list and
 	 * the version-conditional guard.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -2247,7 +2247,7 @@ final class Documents_Controller extends Controller {
 	 * The arguments accepted by the order-route DELETE: the slug, the group and the
 	 * version-conditional guard.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -2282,7 +2282,7 @@ final class Documents_Controller extends Controller {
 	 * a favorite carries no payload beyond the family already named in the path — PUT and DELETE
 	 * take exactly the same arguments.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -2317,7 +2317,7 @@ final class Documents_Controller extends Controller {
 	 * whatever the generator or the registering theme chose and a client should not have to match
 	 * it byte for byte.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $family The submitted family name.
 	 *
@@ -2355,7 +2355,7 @@ final class Documents_Controller extends Controller {
 	 * has to special-case the default library, and the name is translated per request instead of frozen
 	 * into the row.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string      $slug  The token library slug.
 	 * @param string|null $title The library's title when the caller already has it (the collection route
@@ -2380,7 +2380,7 @@ final class Documents_Controller extends Controller {
 	 * The title to serve for a library: what it has stored, or the default library's standing name when
 	 * the default has none.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug   The token library slug.
 	 * @param string $stored The title stored for that library, empty when it has none.
@@ -2398,7 +2398,7 @@ final class Documents_Controller extends Controller {
 	/**
 	 * Reject a partial document that writes into reserved namespaces.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $partial The incoming partial (not the merged candidate).
 	 * @param string               $slug
@@ -2436,7 +2436,7 @@ final class Documents_Controller extends Controller {
 	 * but this guard is about a brand-new write introducing the reference, which only the semantic
 	 * layer may legitimately do.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $partial The incoming partial (not the merged candidate).
 	 *
@@ -2469,7 +2469,7 @@ final class Documents_Controller extends Controller {
 	/**
 	 * Whether the partial writes into the userPrimitives extension section.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $partial
 	 *
@@ -2494,7 +2494,7 @@ final class Documents_Controller extends Controller {
 	/**
 	 * The error returned when a slug does not name a known token library.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug The unknown slug.
 	 *

@@ -40,7 +40,7 @@ $scale_step_labels = [
 /**
  * Resolves a scale-step slug to its display label.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @param string $slug The scale-step slug (e.g. "sm").
  *

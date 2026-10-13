@@ -14,7 +14,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Sentinels;
  * baseline entry without physically deleting it: DISABLE ($disabled: true) removes the
  * entry entirely; RESET ($value: null) skips the override and keeps the baseline value.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Effective_Document {
 

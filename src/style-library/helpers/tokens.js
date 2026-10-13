@@ -22,7 +22,7 @@ export function getDesignTokensFeed() {
  * Read the localized pickable-token pool from the window global. Yields an empty pool rather than
  * null when absent, so a caller never has to null-check before filtering.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{tokens: Array<{id: string, label: string, type: string}>, values: Record<string, Record<string, string>>}}
  *         The pickable pool.
@@ -43,7 +43,7 @@ export function getPickableTokensPool() {
  *
  * @param {string} id The token id.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The resolved literal, or '' when the library does not resolve that id.
  */
@@ -74,7 +74,7 @@ export function resolvedTokenValue(id) {
  * @param {?(string|Array)}       selected The currently-bound token id, or ids, exempt from the
  *                                         narrowing.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array<{id: string}>} The primitive-only list plus any exempted selections, in the pool's
  * own order, or `tokens` unchanged when it has no primitives.
@@ -118,7 +118,7 @@ export function preferPrimitiveTokens(tokens, selected) {
  *                                       primitive narrowing so a bound semantic alias is never
  *                                       filtered out of its own picker.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array<{id: string, label: string, value: string, role: ?string}>} The pickable tokens for the type.
  */
@@ -185,7 +185,7 @@ export { KADENCE_TOKEN_NAMESPACE };
 /**
  * The stepped responsive breakpoint keys, in cascade order (mirrors Schema\Vocabulary\Responsive).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @type {string[]}
  */
@@ -197,7 +197,7 @@ export const RESPONSIVE_BREAKPOINTS = ['tablet', 'mobile'];
  * this map uses its own spelling verbatim. The full six-entry map ships, not just `fontFamily`, so
  * the two sides cannot drift entry by entry.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @type {Record<string, string>}
  */
@@ -217,7 +217,7 @@ export const TOKEN_TYPE_ID_SEGMENTS = {
  *
  * @param {string} type The DTCG `$type` (spec spelling).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The registered-id segment for `type`.
  */
@@ -264,7 +264,7 @@ export function buildTokenLeaf(type, value) {
  * Build the `com.kadence.designTokens` extension body for a structured value, or null when it carries no
  * non-empty responsive / clamp values.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @param {{ responsive?: Record<string, string>, clamp?: Record<string, string> }} value Structured value.
  * @return {{ responsive: object }|{ clamp: object }|null} Extension body, or null.
@@ -315,7 +315,7 @@ export function isColorType(type) {
  * Whether a token type is responsive-capable (mirrors Schema\Vocabulary\Responsive::is_responsive_capable):
  * only dimension and lineHeight may carry a per-breakpoint / clamp shape.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @param {string} type Token type from the schema.
  * @return {boolean}

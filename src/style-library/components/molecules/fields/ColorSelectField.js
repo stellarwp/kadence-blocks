@@ -55,7 +55,7 @@ import './ColorSelectField.scss';
  * @param {string} props.label    The row's label.
  * @param {string} props.gradient The CSS gradient.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The row.
  */
@@ -88,7 +88,7 @@ function GradientRow({ label, gradient }) {
  * @param {Function} props.onChange      Called with the new bare token id (or literal) on pick, or
  *                                       '' on Clear.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The field.
  */

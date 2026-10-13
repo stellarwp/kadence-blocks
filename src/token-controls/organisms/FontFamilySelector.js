@@ -52,7 +52,7 @@ import '../styles/token-controls.scss';
  *                                          guarding only the write callbacks would leave the field
  *                                          looking editable while silently dropping writes.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The rendered font-family field.
  */

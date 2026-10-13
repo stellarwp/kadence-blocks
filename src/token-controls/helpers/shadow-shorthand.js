@@ -10,7 +10,7 @@
  * `noneEntryForRole('shadow')`'s resolved value (`fixed-tokens.js`) in its own coordinate system —
  * transparent and all-zero, not the old visible black composite.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const DEFAULT_COMPOSITE = {
 	color: 'transparent',
@@ -28,7 +28,7 @@ export const DEFAULT_COMPOSITE = {
  * after the fourth dimension" (rather than a fifth token) keeps a color with internal spaces —
  * `rgba(23, 23, 23, 0.12)` — intact.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const SHADOW_SHORTHAND_PATTERN = /^(inset\s+)?(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(.+)$/;
 
@@ -39,7 +39,7 @@ const SHADOW_SHORTHAND_PATTERN = /^(inset\s+)?(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(.
  * @param {*} css The resolved shorthand (e.g. `"0px 2px 8px 0px #1717171f"`, with an optional
  *                `inset ` prefix), or anything that fails to parse as one.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The parsed composite, or the field's default shape when `css` is empty or does
  *                   not match the shorthand grammar.

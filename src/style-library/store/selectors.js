@@ -22,7 +22,7 @@ import { reshapePaletteRows } from '../helpers/palettes';
  *
  * @param {Object} state The store's state.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array<Object>} The library rows.
  */
@@ -38,7 +38,7 @@ export function getLibraries(state) {
  * @param {string} block     The block name, e.g. `kadence/singlebtn`.
  * @param {string} slug      Token library slug.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {?Object} The preset collection, or `null` if not yet resolved.
  */
@@ -54,7 +54,7 @@ export function getBlockPresets(state, namespace, block, slug) {
  * re-render loop and `@wordpress/data`'s "returns different values" dev warning on every render of
  * any component reading this selector.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const reshapedListingCache = new WeakMap();
 
@@ -66,7 +66,7 @@ const reshapedListingCache = new WeakMap();
  * @param {string} namespace REST namespace.
  * @param {string} slug      Token library slug.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{defaultId: string, currentId: string, palettes: Array<Object>, userCreated: Array<string>}}
  */
@@ -90,7 +90,7 @@ export function getPaletteListing(state, namespace, slug) {
  * @param {Object} state The store's state.
  * @param {string} slug  Token library slug.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {?Object} The feed, or `null` if not yet resolved.
  */
@@ -109,7 +109,7 @@ export function getDesignTokensFeed(state, slug) {
  * @param {string} slug      Token library slug.
  * @param {string} paletteId The palette id being edited.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The overlay, or `EMPTY_OPTIMISTIC_SWATCH_EDIT` when nothing is pending.
  */
@@ -123,7 +123,7 @@ export function getOptimisticSwatchEdit(state, namespace, slug, paletteId) {
  * @param {Object} state The store state.
  * @param {string} slug  Token library slug.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The overlay, or `EMPTY_OPTIMISTIC_SCALE_EDIT` when nothing is pending.
  */
@@ -142,7 +142,7 @@ export function getOptimisticScaleEdit(state, slug) {
  * @param {string} namespace REST namespace.
  * @param {string} slug      Token library slug.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} Whether the library has a write in flight.
  */
@@ -158,7 +158,7 @@ export function getPaletteBusy(state, namespace, slug) {
  * @param {Object} state The store state.
  * @param {string} slug  Token library slug.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} Whether the library has a write in flight.
  */

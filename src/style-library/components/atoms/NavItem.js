@@ -28,7 +28,7 @@ import './NavItem.scss';
  * @param {boolean}  props.active  Whether this item is the active screen.
  * @param {Function} props.onClick Called when the item is clicked.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The nav item.
  */

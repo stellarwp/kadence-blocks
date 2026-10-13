@@ -16,7 +16,7 @@
  *
  * @param {Array<Object>} rows The flat embedded-array rows.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{defaultId: string, currentId: string, palettes: Array<Object>, userCreated: Array<string>}}
  */
@@ -39,7 +39,7 @@ export function reshapePaletteRows(rows) {
  *
  * @param {Object} palette The palette effective view.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array<Object>} `[{ id, label, pendingDelete, items: [{ id, name, subLine, value,
  *         overridden, pendingDelete }] }]` — `id` is the swatch token dot-path (stable, unique per
@@ -76,7 +76,7 @@ export function mapPaletteToSwatchGroups(palette) {
  *
  * @param {Object} palette The palette effective view.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array<Object>} `[{ id, label, swatches: [{ id, label, value, alias }] }]`.
  */

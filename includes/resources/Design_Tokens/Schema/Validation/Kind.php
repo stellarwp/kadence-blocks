@@ -20,14 +20,14 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Token_Type;
  *                                   rather than being told it is an invalid color/dimension).
  *   3. otherwise                  → a literal check via Literals; failure is CODE_VALUE_INVALID.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Kind {
 
 	/**
 	 * Validate a value of the given kind, accepting an alias.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $kind  A Token_Type $type or KIND_* constant.
 	 * @param mixed  $value The decoded value.
@@ -69,7 +69,7 @@ final class Kind {
 	/**
 	 * Whether a literal (non-alias) value satisfies the grammar for the kind.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $kind  A Token_Type $type or KIND_* constant.
 	 * @param mixed  $value The decoded value.
@@ -102,7 +102,7 @@ final class Kind {
 	/**
 	 * Render a decoded value as a short string for an error message.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed $value The decoded value.
 	 *

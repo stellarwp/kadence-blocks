@@ -11,14 +11,14 @@ use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provi
  * stay isolated across versions; this provider boots the version-specific
  * providers, which in turn register their controllers.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Provider extends Provider_Contract {
 
 	/**
 	 * Version-specific REST providers to register, in order.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var class-string<Provider_Contract>[]
 	 */
@@ -29,7 +29,7 @@ final class Provider extends Provider_Contract {
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	public function register(): void {
 		foreach ( self::PROVIDERS as $provider ) {

@@ -11,21 +11,21 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation;
  * payload and the WP_Error / HTTP 422 envelope is the REST layer's concern, which keeps the Schema
  * module unit-testable without loading REST.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Validation_Result {
 
 	/**
 	 * The collected errors, in discovery order.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Validation_Error[]
 	 */
 	private array $errors;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Validation_Error[] $errors The collected errors.
 	 */
@@ -36,7 +36,7 @@ final class Validation_Result {
 	/**
 	 * Whether the document validated cleanly.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return bool
 	 */
@@ -47,7 +47,7 @@ final class Validation_Result {
 	/**
 	 * The collected errors.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return Validation_Error[]
 	 */
@@ -58,7 +58,7 @@ final class Validation_Result {
 	/**
 	 * Plain-array form of every error, for the REST/MCP boundary.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<int, array{path: string, code: string, message: string}>
 	 */

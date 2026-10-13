@@ -20,54 +20,54 @@ use WP_REST_Response;
  * The shared DTCG document write pipeline: load, validate, dry-run resolve, conditional persist.
  * Used by User_Primitives_Controller only.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Document_Write_Pipeline {
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Store
 	 */
 	private Token_Store $store;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Resolver
 	 */
 	private Token_Resolver $resolver;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Dtcg_Validator
 	 */
 	private Dtcg_Validator $validator;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var User_Primitive_Document_Validator
 	 */
 	private User_Primitive_Document_Validator $user_primitive_validator;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var User_Primitive_Index
 	 */
 	private User_Primitive_Index $user_primitive_index;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Reference_Policy
 	 */
 	private Token_Reference_Policy $reference_policy;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Token_Store                       $store
 	 * @param Token_Resolver                    $resolver
@@ -95,7 +95,7 @@ final class Document_Write_Pipeline {
 	/**
 	 * Load and decode the stored overrides document for a library.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug
 	 *
@@ -108,7 +108,7 @@ final class Document_Write_Pipeline {
 	/**
 	 * Read the current cache/concurrency version for a library.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug The token-library slug.
 	 *
@@ -121,7 +121,7 @@ final class Document_Write_Pipeline {
 	/**
 	 * Read the node at a dot-path within a decoded document.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document
 	 * @param string               $path
@@ -135,7 +135,7 @@ final class Document_Write_Pipeline {
 	/**
 	 * Apply the multi-library document API slug policy.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug
 	 *
@@ -159,7 +159,7 @@ final class Document_Write_Pipeline {
 	/**
 	 * Check the stored version against the client-supplied version. Returns a 409 on mismatch.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug           The token library slug.
 	 * @param string $client_version The version the client last read. Empty only for first write.
@@ -190,7 +190,7 @@ final class Document_Write_Pipeline {
 	/**
 	 * Validate a candidate document, dry-run resolve it, then conditionally persist.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $candidate                            Full candidate overrides document.
 	 * @param string               $slug                                 Token library slug.
@@ -287,7 +287,7 @@ final class Document_Write_Pipeline {
 	}
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $candidate
 	 * @param string               $slug

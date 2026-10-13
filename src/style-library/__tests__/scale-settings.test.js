@@ -62,7 +62,7 @@ let root;
  * A deferred promise, so a test can assert the busy state while a write is still in flight and
  * only then settle it (success or failure).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{promise: Promise, resolve: Function, reject: Function}} The deferred promise and its
  *         resolvers.
@@ -87,7 +87,7 @@ function deferred() {
  *
  * @param {Object} write The deferred promise the pending write resolves/rejects through.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The `useScaleScreen` stub.
  */
@@ -125,7 +125,7 @@ function makeScale(write) {
  *
  * @param {Object} scale The `useScaleScreen` stub to render with.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Function} The `navigate` jest spy.
  */
@@ -173,7 +173,7 @@ function makeDirty() {
  *
  * @param {string} text The button's text content.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {?HTMLButtonElement} The matching button, or null when none matches.
  */

@@ -12,14 +12,14 @@ use Tests\Support\Classes\TestCase;
  * Covers the shared stored-order permutation both the admin feed and the editor's pickable-token pool
  * apply, so the two surfaces can never disagree about where a token sits.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Token_SorterTest extends TestCase {
 
 	/**
 	 * The sorter under test.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Sorter
 	 */

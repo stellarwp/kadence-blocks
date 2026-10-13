@@ -20,7 +20,7 @@ import { STORE_NAME } from './constants';
  * same store fresh inside an isolated registry per test, instead of every test sharing the process-
  * wide default registry this module registers into below.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const storeConfig = { reducer, actions, resolvers, selectors };
 

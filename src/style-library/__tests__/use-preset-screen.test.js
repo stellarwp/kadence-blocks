@@ -86,7 +86,7 @@ describe('usePresetScreen reorder version handling', () => {
 	 * mounted hook rather than replacing it. A fresh component type per render would remount and
 	 * reset the version refs these tests are about.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return {{rerender: Function, latest: Function}} Re-renders the mounted probe, and reads the
 	 *                                                    hook's most recent return value.

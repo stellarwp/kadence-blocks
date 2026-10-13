@@ -20,14 +20,14 @@
 /**
  * The vendor extension key every Kadence design-token leaf hangs its structured shapes under.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const KADENCE_TOKEN_NAMESPACE = 'com.kadence.designTokens';
 
 /**
  * The sentinel key a leaf wraps its base value in, mirroring `Sentinels::get_value_key()`.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const ENVELOPE_VALUE_KEY = '$value';
 
@@ -35,7 +35,7 @@ export const ENVELOPE_VALUE_KEY = '$value';
  * The breakpoints a responsive value can carry an override for, desktop first. Desktop is the leaf's
  * own `$value`, never an entry in the override map.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const PRESET_BREAKPOINTS = ['desktop', 'tablet', 'mobile'];
 
@@ -48,7 +48,7 @@ export const PRESET_BREAKPOINTS = ['desktop', 'tablet', 'mobile'];
  *
  * @param {*} value The stored token entry.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True when `value` is a responsive envelope.
  */
@@ -66,7 +66,7 @@ export function isPresetEnvelope(value) {
  * @param {*}      raw        The stored preset value: scalar, slot list, or responsive envelope.
  * @param {string} breakpoint One of `PRESET_BREAKPOINTS`.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {*} The value at that breakpoint, or '' when there is no override for it.
  */
@@ -99,7 +99,7 @@ export function readPresetBreakpoint(raw, breakpoint) {
  * @param {*}      raw        The stored preset value.
  * @param {string} breakpoint One of `PRESET_BREAKPOINTS`.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {*} The value in effect, or '' when nothing is set anywhere in the chain.
  */
@@ -124,7 +124,7 @@ export function resolvePresetBreakpoint(raw, breakpoint) {
  *
  * @param {*} value The value to test.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True when the value overrides nothing.
  */
@@ -151,7 +151,7 @@ function isCleared(value) {
  * @param {string} breakpoint One of `PRESET_BREAKPOINTS`.
  * @param {*}      value      The value to write at that breakpoint.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {*} The next stored value.
  */

@@ -12,7 +12,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Identi
  * with any other block style rather than replacing it. The editor adds the class via the shared kbPreset
  * save/preview filters (see src/early-filters.js), mirroring the same sanitizer used here.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Style {
 
@@ -21,7 +21,7 @@ final class Style {
 	/**
 	 * The class prefix a selected preset outputs, shared by every Kadence block.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -30,7 +30,7 @@ final class Style {
 	/**
 	 * The prefix every theme-discovered preset slug carries. Reserved: a client may not create one.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -40,7 +40,7 @@ final class Style {
 	 * The class a preset slug outputs, e.g. "secondary" => "kb-preset--secondary". Mirrors the JS
 	 * kbPresetClassName() sanitizer so the class always matches the selector the projected CSS targets.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $preset The preset slug.
 	 *
@@ -54,7 +54,7 @@ final class Style {
 	 * The class prefix every selected preset shares, e.g. "kb-preset--". Read by the projector to build the
 	 * "no preset selected" test its `$default` state rule is scoped by.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -65,7 +65,7 @@ final class Style {
 	/**
 	 * The slug prefix every theme-discovered preset carries, e.g. "theme-".
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -76,7 +76,7 @@ final class Style {
 	/**
 	 * Whether a slug names a theme-discovered preset.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug The preset slug.
 	 *

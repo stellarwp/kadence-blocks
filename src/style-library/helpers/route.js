@@ -25,7 +25,7 @@ import { addQueryArgs, getQueryArg, removeQueryArgs } from '@wordpress/url';
  * The query-string arg holding the active screen id. Namespaced (`kb-` prefix) because this URL
  * is shared wp-admin real estate — see the module docblock.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const SCREEN_QUERY_ARG = 'kb-screen';
 
@@ -33,7 +33,7 @@ export const SCREEN_QUERY_ARG = 'kb-screen';
  * The query-string arg holding the active screen's own sub-selection. Namespaced (`kb-` prefix)
  * because this URL is shared wp-admin real estate — see the module docblock.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const SCOPE_QUERY_ARG = 'kb-scope';
 
@@ -41,7 +41,7 @@ export const SCOPE_QUERY_ARG = 'kb-scope';
  * The query-string arg holding the open settings-panel target. Namespaced (`kb-` prefix) because
  * this URL is shared wp-admin real estate — see the module docblock.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const ITEM_QUERY_ARG = 'kb-item';
 
@@ -50,7 +50,7 @@ export const ITEM_QUERY_ARG = 'kb-item';
  *
  * @param {string} url The current URL or search string.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{screen: string, scope: string, item: string}} The route; empty strings when an arg is absent.
  */
@@ -69,7 +69,7 @@ export function parseRoute(url) {
  * @param {{screen?: string, scope?: string, item?: string}} route The route to write.
  * @param {string}                                            url   The URL to layer it onto.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The updated URL.
  */

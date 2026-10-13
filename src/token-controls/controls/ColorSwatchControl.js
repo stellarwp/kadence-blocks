@@ -52,7 +52,7 @@ import '../styles/token-controls.scss';
  *                                            stays disabled.
  * @param {boolean}   [props.disabled]       Whether the control is read-only.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The rendered control.
  */

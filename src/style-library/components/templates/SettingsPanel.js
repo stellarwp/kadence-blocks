@@ -25,7 +25,7 @@ import './SettingsPanel.scss';
  * The id of the panel's title element. Only one panel is ever mounted, so a fixed id is enough for
  * the popover around it to take its accessible name from the title.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const SETTINGS_PANEL_TITLE_ID = 'kadence-blocks-style-library-settings-panel-title';
 
@@ -78,7 +78,7 @@ export const SETTINGS_PANEL_TITLE_ID = 'kadence-blocks-style-library-settings-pa
  *                                                `canReset` is true: a saved override outlives the fields
  *                                                that wrote it, and dropping it must stay reachable.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The panel.
  */

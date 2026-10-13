@@ -16,7 +16,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Identi
  *
  * The --kb-token-- prefix keeps the variable inside KB's --global-kb-* family.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Css_Var {
 
@@ -27,7 +27,7 @@ final class Css_Var {
 	/**
 	 * The shared custom-property prefix every token variable carries ("--kb-token--").
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -44,7 +44,7 @@ final class Css_Var {
 	 * `--kb-token--dark--semantic--color--text`), so every library's tokens occupy their own namespace
 	 * while sharing the one derivation rule — names and ids cannot drift, namespaced or not.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $id      The DTCG dot-path id.
 	 * @param string $library Optional token-library slug to namespace the variable under. Empty yields the

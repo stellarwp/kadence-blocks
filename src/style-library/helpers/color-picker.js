@@ -24,7 +24,7 @@ import { colord } from './colord';
  * @param {*} a The first value.
  * @param {*} b The second value.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True when both parse to the same color.
  */

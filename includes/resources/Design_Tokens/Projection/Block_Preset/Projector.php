@@ -22,35 +22,35 @@ use Throwable;
  * when the block has no registered preset bindings, or when the token graph cannot resolve, so the filter
  * is safe to run for every block on every render.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Projector {
 
 	/**
 	 * @var Token_Registry The registry the block's preset bindings are read from.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	private Token_Registry $registry;
 
 	/**
 	 * @var Preset_Resolver Resolves the block's `$default` preset to its `property => value` map.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	private Preset_Resolver $resolver;
 
 	/**
 	 * Owns the active-library pointer, read at render time so preset defaults follow the active library.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Active_Token_Library_Store
 	 */
 	private Active_Token_Library_Store $active;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Token_Registry             $registry The token registry.
 	 * @param Preset_Resolver            $resolver The preset resolver.
@@ -65,7 +65,7 @@ final class Projector {
 	/**
 	 * Overlay a block's preset (its `$default` preset) onto the given attribute defaults.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $defaults The registration (block.json) attribute defaults.
 	 * @param string               $block    The block name, e.g. "kadence/singlebtn".

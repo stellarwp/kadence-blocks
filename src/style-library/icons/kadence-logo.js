@@ -7,7 +7,7 @@ import { SVG, Path } from '@wordpress/primitives';
  * The Kadence logo mark, shaped like a `@wordpress/icons` glyph so it renders through `Icon`. The
  * fill is the brand blue rather than `currentColor`: the logo keeps its color wherever it sits.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const kadenceLogo = (
 	<SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 44" fill="none">

@@ -7,14 +7,14 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Sentinels;
 /**
  * Dot-path lookups within a decoded DTCG document.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Document_Path {
 
 	/**
 	 * Read the node at a dot-path within a decoded document.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document The document to walk.
 	 * @param string               $path     The dot-path to look up.
@@ -41,7 +41,7 @@ final class Document_Path {
 	 * A reset sentinel (`"$value": null`) and a disable sentinel carry no value of their own, so neither
 	 * counts: the token still shows the shipped value.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document The document to walk.
 	 * @param string               $path     The dot-path to look up.

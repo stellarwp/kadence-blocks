@@ -14,7 +14,7 @@ import { SLOT_LABELS } from '../helpers/value-shapes';
 /**
  * The sides icon: four separate bars with open corners, in `SLOT_LABELS.sides` order.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const SIDES_PARTS = [
 	{ position: 'top', d: 'M13.75 3.75L6.25 3.75L6.25 5L13.75 5L13.75 3.75Z' },
@@ -26,7 +26,7 @@ const SIDES_PARTS = [
 /**
  * The corners icon: four rounded corner arcs, in `SLOT_LABELS.corners` order.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const CORNERS_PARTS = [
 	{
@@ -50,7 +50,7 @@ const CORNERS_PARTS = [
 /**
  * Geometry per role: the viewBox each export was drawn in and its parts.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const GEOMETRY = {
 	sides: { viewBox: '0 0 20 20', parts: SIDES_PARTS },
@@ -64,7 +64,7 @@ const GEOMETRY = {
  * @param {string} [props.role]     'sides' or 'corners' — picks the geometry. Unknown roles use sides.
  * @param {string} [props.position] A label from `SLOT_LABELS[role]`, or `'all'` to highlight every part.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The icon.
  */

@@ -40,7 +40,7 @@ import { sameFamily } from '../helpers/font-family';
  * @param {Function} props.onClear Called when `Reset` is chosen.
  * @param {Function} props.onClose Closes the popover after the choice.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The rendered reset button.
  */
@@ -76,7 +76,7 @@ function ResetRow({ value, onClear, onClose }) {
  * @param {Function} props.onClear     Called when `Reset` is chosen.
  * @param {Function} props.onClose     Closes the popover after a choice.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The rendered favorites list.
  */
@@ -133,7 +133,7 @@ function FavoritesTab({ value, favorites, manageUrl, onPick, onClear, onClose })
  * @param {Function} props.onClear Called when `Reset` is chosen.
  * @param {Function} props.onClose Closes the popover after a choice.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The rendered catalog search.
  */
@@ -197,7 +197,7 @@ export function FontCatalogTab({ value, options, stale = false, onPick, onClear,
  * @param {Function} props.onClear        Called when `Reset` is chosen.
  * @param {Function} props.onClose        Closes the popover after a choice.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The rendered picker.
  */

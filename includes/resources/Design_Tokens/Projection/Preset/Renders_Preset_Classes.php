@@ -13,7 +13,7 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Preset;
  * {@see Style::preset_class()}; this trait is only the "read the attribute, produce the list" seam so every
  * block does it identically.
  *
- * @since TBD
+ * @since 3.8.0
  */
 trait Renders_Preset_Classes {
 
@@ -22,7 +22,7 @@ trait Renders_Preset_Classes {
 	 * class-painted preset puts on the element (or an empty list when nothing is selected). A non-string or
 	 * empty selection yields nothing, so a block can pass the raw attribute straight through.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed  $kb_preset   The block's `kbPreset` attribute (the selected preset slug).
 	 * @param string $theme_class The selected preset's space-separated theme classes, or '' when it has none.

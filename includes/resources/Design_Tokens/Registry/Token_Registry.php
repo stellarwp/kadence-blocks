@@ -16,7 +16,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Contracts\Baseline_Document;
  * Resolved as a singleton from KB's container; tokens are declared during the module's Provider boot
  * via kadence_blocks_register_design_token().
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Token_Registry {
 
@@ -44,7 +44,7 @@ final class Token_Registry {
 	 * group_label_for() itself; see User_Primitive_Registrar::register_entry(), the one caller with
 	 * a logger to report an unresolvable $group_key.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $id
 	 * @param string $type
@@ -70,7 +70,7 @@ final class Token_Registry {
 	 * Remove a user-created primitive. Only removes the entry when it is user-created.
 	 * No-op when the id is absent or belongs to a system token.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $id
 	 *
@@ -83,7 +83,7 @@ final class Token_Registry {
 	}
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string[]
 	 */
@@ -99,7 +99,7 @@ final class Token_Registry {
 	/**
 	 * Register a single token from its declaration array.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $definition See Token_Definition::from_array().
 	 *
@@ -115,7 +115,7 @@ final class Token_Registry {
 	 * Register a block's preset bindings — its bindable surface and picker label. One preset-bindings registration per
 	 * block; a later registration for the same block replaces the earlier one.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $declaration See Preset_Bindings::from_array().
 	 *
@@ -131,7 +131,7 @@ final class Token_Registry {
 	 * Register a per-block adapter — a named transform keyed to the Kadence Blocks block type it adapts.
 	 * At most one adapter per block; a later registration for the same block replaces the earlier one.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Adapter_Interface $adapter The adapter to register.
 	 *
@@ -158,7 +158,7 @@ final class Token_Registry {
 	/**
 	 * All registered tokens, keyed by id in insertion order.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, Token_Definition>
 	 */
@@ -169,7 +169,7 @@ final class Token_Registry {
 	/**
 	 * A single token by id, or null when it is not registered.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $id The token id.
 	 *
@@ -182,7 +182,7 @@ final class Token_Registry {
 	/**
 	 * Whether a token is registered for the given id.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $id The token id.
 	 *
@@ -193,7 +193,7 @@ final class Token_Registry {
 	}
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $type DTCG $type, e.g. "color".
 	 *
@@ -211,7 +211,7 @@ final class Token_Registry {
 	/**
 	 * Tokens that declare a given projection target, e.g. all tokens with a "kadence_slot" projection.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $projection Projection id.
 	 *
@@ -231,7 +231,7 @@ final class Token_Registry {
 	 * picker-driven and the preset (no-picker) projectors read this; distinguish the two by their
 	 * `label` (picker-driven preset bindings declare one, no-picker preset bindings do not).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $block The block name, e.g. "kadence/singlebtn".
 	 *
@@ -245,7 +245,7 @@ final class Token_Registry {
 	 * All registered preset bindings, keyed by block name, in registration order. The admin UI feed
 	 * iterates this to render per-block preset editors; mirrors all() for tokens.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, Preset_Bindings>
 	 */
@@ -257,7 +257,7 @@ final class Token_Registry {
 	 * The adapter registered for a Kadence Blocks block, or null when the block has none (the default —
 	 * its CSS vars already carry the tokens).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $block The Kadence Blocks block name, e.g. "kadence/advancedheading".
 	 *
@@ -270,7 +270,7 @@ final class Token_Registry {
 	/**
 	 * All registered adapters, keyed by Kadence Blocks block name.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, Adapter_Interface>
 	 */
@@ -283,7 +283,7 @@ final class Token_Registry {
 	 * these to emit each block's preset output; the preset values themselves come from the document via
 	 * the Preset_Resolver.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string[]
 	 */
@@ -298,7 +298,7 @@ final class Token_Registry {
 	 * block_attr the token never carries). A reference to an unregistered token contributes nothing, so
 	 * a stale reference fails soft (its projections are skipped) rather than fatal.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Binding $binding The binding to resolve.
 	 *
@@ -318,7 +318,7 @@ final class Token_Registry {
 	/**
 	 * Convenience: the canonical css-var for an id, honouring any override.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $id The token id.
 	 *
@@ -335,7 +335,7 @@ final class Token_Registry {
 	 * UI with no JS change. Values are NOT included here — the resolver supplies current values
 	 * separately; this is structure only.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array{groups: array<string, array<int, array<string, mixed>>>}
 	 */
@@ -364,7 +364,7 @@ final class Token_Registry {
 	 * would never be translated. The key only ever selects among labels that already exist as literal
 	 * __() calls in declarations.php.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $group_key The stable machine key, e.g. "border-radius".
 	 *
@@ -389,7 +389,7 @@ final class Token_Registry {
 	/**
 	 * Whether token projection is currently active.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return bool
 	 */
@@ -400,7 +400,7 @@ final class Token_Registry {
 	/**
 	 * Validate that every declared token has a baseline entry. See the fail-closed policy.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Baseline_Document $baseline The baseline to validate declared tokens against.
 	 *
@@ -425,7 +425,7 @@ final class Token_Registry {
 	/**
 	 * Disable projection (fail-closed degraded mode).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return void
 	 */
@@ -436,7 +436,7 @@ final class Token_Registry {
 	/**
 	 * Re-enable projection after a previous deactivate() call.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return void
 	 */

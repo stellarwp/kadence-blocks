@@ -30,7 +30,7 @@
  *                                          mounted (a component rendered in isolation).
  * @param {Function}  args.replace          Rewrites the route without a history entry.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {void}
  */

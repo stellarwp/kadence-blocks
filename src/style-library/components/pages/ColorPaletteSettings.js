@@ -33,7 +33,7 @@ import { Skeleton } from '../atoms/Skeleton';
  * Gradient tab unreachable from this screen — see `ColorGradientPicker`'s own docblock for why a
  * picked gradient string would otherwise persist.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const SWATCH_SETTINGS_SCHEMA = {
 	fields: [
@@ -50,7 +50,7 @@ const SWATCH_SETTINGS_SCHEMA = {
  * @param {Function} props.navigate The route navigator.
  * @param {Object}   props.library  The design-tokens feed surface.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {?JSX.Element} The panel, or null while a stale item normalizes away.
  */

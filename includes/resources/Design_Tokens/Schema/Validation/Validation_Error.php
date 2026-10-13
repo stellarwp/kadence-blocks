@@ -10,14 +10,14 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation;
  * key — REST responses and MCP clients branch on it, so the CODE_* set is a cross-component contract,
  * not a free-form label.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Validation_Error {
 
 	/**
 	 * A node's $type is missing, not a string, or not in the v1 enum.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -26,7 +26,7 @@ final class Validation_Error {
 	/**
 	 * A value that looks like an alias is not a well-formed "{dot.path}" string.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -35,7 +35,7 @@ final class Validation_Error {
 	/**
 	 * A literal value is not valid for its $type / kind (e.g. a color of "not-a-color").
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -44,7 +44,7 @@ final class Validation_Error {
 	/**
 	 * A non-sentinel leaf has no $value.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -53,7 +53,7 @@ final class Validation_Error {
 	/**
 	 * An override sentinel ($value:null or $disabled) appeared in the baseline context.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -62,7 +62,7 @@ final class Validation_Error {
 	/**
 	 * The $disabled key is present but its value is not boolean true.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -71,7 +71,7 @@ final class Validation_Error {
 	/**
 	 * A composite $value is not an object, or a required composite sub-field is absent.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -80,7 +80,7 @@ final class Validation_Error {
 	/**
 	 * A composite $value carries a sub-field not defined for its type.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -89,7 +89,7 @@ final class Validation_Error {
 	/**
 	 * A document, group, or leaf node is not the expected array/object shape.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -98,7 +98,7 @@ final class Validation_Error {
 	/**
 	 * A token leaf carries a non-"$"-prefixed key that the DTCG leaf shape does not allow.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -107,7 +107,7 @@ final class Validation_Error {
 	/**
 	 * A leaf carries the responsive / clamp extension shape on a $type that is not responsive-capable.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -116,7 +116,7 @@ final class Validation_Error {
 	/**
 	 * A leaf carries both the responsive and the clamp extension shapes, which are mutually exclusive.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -125,7 +125,7 @@ final class Validation_Error {
 	/**
 	 * DTCG dot-path to the offending node.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -134,7 +134,7 @@ final class Validation_Error {
 	/**
 	 * Stable machine code; one of the CODE_* constants.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -143,14 +143,14 @@ final class Validation_Error {
 	/**
 	 * Human-readable explanation.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
 	public string $message;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $path    DTCG dot-path to the offending node.
 	 * @param string $code    A stable code, as returned by the code_*() accessors.
@@ -165,7 +165,7 @@ final class Validation_Error {
 	/**
 	 * Array form for the REST/MCP boundary.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array{path: string, code: string, message: string}
 	 */
@@ -180,7 +180,7 @@ final class Validation_Error {
 	/**
 	 * Code: a node's $type is missing, not a string, or not in the v1 enum.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -191,7 +191,7 @@ final class Validation_Error {
 	/**
 	 * Code: a value that looks like an alias is not a well-formed "{dot.path}" string.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -202,7 +202,7 @@ final class Validation_Error {
 	/**
 	 * Code: a literal value is not valid for its $type / kind.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -213,7 +213,7 @@ final class Validation_Error {
 	/**
 	 * Code: a non-sentinel leaf has no $value.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -224,7 +224,7 @@ final class Validation_Error {
 	/**
 	 * Code: an override sentinel appeared in the baseline context.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -235,7 +235,7 @@ final class Validation_Error {
 	/**
 	 * Code: the $disabled key is present but its value is not boolean true.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -246,7 +246,7 @@ final class Validation_Error {
 	/**
 	 * Code: a composite $value is not an object, or a required sub-field is absent.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -257,7 +257,7 @@ final class Validation_Error {
 	/**
 	 * Code: a composite $value carries a sub-field not defined for its type.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -268,7 +268,7 @@ final class Validation_Error {
 	/**
 	 * Code: a document, group, or leaf node is not the expected array/object shape.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -279,7 +279,7 @@ final class Validation_Error {
 	/**
 	 * Code: a token leaf carries a non-"$"-prefixed key that the DTCG leaf shape does not allow.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -290,7 +290,7 @@ final class Validation_Error {
 	/**
 	 * Code: a leaf carries the responsive / clamp shape on a $type that is not responsive-capable.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -301,7 +301,7 @@ final class Validation_Error {
 	/**
 	 * Code: a leaf carries both the responsive and clamp shapes, which are mutually exclusive.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */

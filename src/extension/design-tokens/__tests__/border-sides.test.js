@@ -8,7 +8,7 @@ import { borderSideDeclarations } from '../border-sides';
  * @param {string} color The border color.
  * @param {string} style The line style.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object[]} The border attribute value.
  */

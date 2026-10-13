@@ -21,7 +21,7 @@ import './Skeleton.scss';
  *                                   token (`var(--kb-sl-size-row-preview)`) for a shape with no
  *                                   layout class of its own to borrow from.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The placeholder shape.
  */

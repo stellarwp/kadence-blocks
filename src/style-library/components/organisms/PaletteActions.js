@@ -47,7 +47,7 @@ const ACTIVATION_LABELS = {
  *
  * @param {string} name The palette name the user typed.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The message.
  */
@@ -73,7 +73,7 @@ function duplicatePaletteMessage(name) {
  * @param {Function} props.onActivate      Called with an id to make that palette active.
  * @param {Function} props.onDelete        Called with the target id and the successor id.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The pencil, its popover and, while open, a confirmation modal.
  */

@@ -19,7 +19,7 @@ import '../styles/token-controls.scss';
  * @param {Object} props          The component props.
  * @param {*}      props.children The `ColorControl`s to stack.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The rendered group.
  */

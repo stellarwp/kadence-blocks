@@ -18,7 +18,7 @@ use KadenceWP\KadenceBlocks\Utils\Cast;
  * The theme is not part of the plugin's static-analysis scan, so it is reached through a validated
  * callable and every setting is narrowed here rather than typed against theme classes.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Kadence_Button_Styles implements Button_Style_Source {
 
@@ -26,7 +26,7 @@ final class Kadence_Button_Styles implements Button_Style_Source {
 	 * Candidate sections, probed at runtime: unprefixed slug => the setting prefix the section stores under
 	 * and the classes the theme paints it with. A section that does not answer is not offered.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var array<string, array{prefix: string, class: string}>
 	 */
@@ -44,7 +44,7 @@ final class Kadence_Button_Styles implements Button_Style_Source {
 	/**
 	 * The device whose values are displayed. The theme's controls are per device; a preset value is one.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -53,7 +53,7 @@ final class Kadence_Button_Styles implements Button_Style_Source {
 	/**
 	 * The theme's accessor function; returns its Template_Tags proxy.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -62,7 +62,7 @@ final class Kadence_Button_Styles implements Button_Style_Source {
 	/**
 	 * The theme class whose presence means the theme is active.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -71,7 +71,7 @@ final class Kadence_Button_Styles implements Button_Style_Source {
 	/**
 	 * The theme's palette, so a setting that names a palette slot converts the same way the Style Guide does.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Style_Guide_Source
 	 */
@@ -80,7 +80,7 @@ final class Kadence_Button_Styles implements Button_Style_Source {
 	/**
 	 * Converts a theme color setting to a token value.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Style_Guide_Mapper
 	 */
@@ -89,7 +89,7 @@ final class Kadence_Button_Styles implements Button_Style_Source {
 	/**
 	 * Supplies the slot => token map the color conversion aliases through.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Style_Guide_Overlay
 	 */
@@ -99,14 +99,14 @@ final class Kadence_Button_Styles implements Button_Style_Source {
 	 * Returns kadence()->option( $key ). Null resolves to the theme's own reader at read time, so the theme
 	 * can load after this object is built.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var callable|null
 	 */
 	private $option_reader;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Style_Guide_Source  $palette       The theme's palette source.
 	 * @param Style_Guide_Mapper  $mapper        The color conversion.
@@ -128,7 +128,7 @@ final class Kadence_Button_Styles implements Button_Style_Source {
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	public function styles(): array {
 		$read = $this->option_reader ?? $this->theme_option_reader();
@@ -162,7 +162,7 @@ final class Kadence_Button_Styles implements Button_Style_Source {
 	/**
 	 * The preset label of a section.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug The unprefixed section slug.
 	 *
@@ -176,7 +176,7 @@ final class Kadence_Button_Styles implements Button_Style_Source {
 	 * The values the theme renders for a section, keyed by the Button's preset properties. A setting the
 	 * theme leaves empty is omitted, so the theme's static stylesheet stays the source of that value.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param callable              $read   Returns kadence()->option( $key ).
 	 * @param string                $prefix The section's setting prefix.
@@ -242,7 +242,7 @@ final class Kadence_Button_Styles implements Button_Style_Source {
 	/**
 	 * A range setting ({ size: { desktop… }, unit: { desktop… } }) as one length, or null when unset.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed $option The setting value.
 	 *
@@ -266,7 +266,7 @@ final class Kadence_Button_Styles implements Button_Style_Source {
 	 * A measure setting ({ size: { desktop: [ top, right, bottom, left ] }, unit: { desktop… } }) as four
 	 * lengths, or null unless every side is set.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed $option The setting value.
 	 *
@@ -301,7 +301,7 @@ final class Kadence_Button_Styles implements Button_Style_Source {
 	 * A border setting ({ desktop: { width, unit, style } }) as its width and style, or null when the theme
 	 * emits no border (no style set).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed $option The setting value.
 	 *
@@ -332,7 +332,7 @@ final class Kadence_Button_Styles implements Button_Style_Source {
 	 * A shadow setting ({ color, hOffset, vOffset, blur, spread, inset, disabled }) as a shadow composite,
 	 * or null when the theme renders none.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed                 $option The setting value.
 	 * @param array<string, string> $set    Slot slug => color of the active palette set.
@@ -366,7 +366,7 @@ final class Kadence_Button_Styles implements Button_Style_Source {
 	/**
 	 * A shadow offset as a pixel length; the theme renders every non-numeric or empty offset as 0.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed $value The offset.
 	 *
@@ -379,7 +379,7 @@ final class Kadence_Button_Styles implements Button_Style_Source {
 	/**
 	 * The desktop unit of a range or measure setting, px when unset.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $option The setting value.
 	 *
@@ -394,7 +394,7 @@ final class Kadence_Button_Styles implements Button_Style_Source {
 	/**
 	 * A reader over the theme's option(), or null when the Kadence theme is not active or not yet loaded.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return callable|null
 	 */

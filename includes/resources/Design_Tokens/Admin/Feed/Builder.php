@@ -19,14 +19,14 @@ use KadenceWP\KadenceBlocks\Utils\Cast;
  * caller passes `$resolved = false` and an empty values map, so structure still renders and the editor
  * stays usable. No WordPress calls, no globals, no I/O.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Builder {
 
 	/**
 	 * The token registry, the single source of token + preset structure.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Registry
 	 */
@@ -35,7 +35,7 @@ final class Builder {
 	/**
 	 * The nav-ready block-presets section builder.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Preset_Nav
 	 */
@@ -44,14 +44,14 @@ final class Builder {
 	/**
 	 * The shared stored-order permutation, applied one schema group at a time.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Sorter
 	 */
 	private Token_Sorter $sorter;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Token_Registry $registry   The token registry.
 	 * @param Preset_Nav     $preset_nav The nav-ready block-presets section builder.
@@ -66,7 +66,7 @@ final class Builder {
 	/**
 	 * Shape the localized payload from the pre-gathered values, presets, REST descriptor and version.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, string>                                 $values     id => resolved value (by_id), or [] when unresolved.
 	 * @param bool                                                  $resolved   Whether resolution succeeded.
@@ -121,7 +121,7 @@ final class Builder {
 	 * override for an id the schema does not contain is ignored (stale data, pruned by the write
 	 * surface on its next save of that id).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array{groups: array<string, array<int, array<string, mixed>>>} $schema The registry UI schema.
 	 * @param array<string, string>                                          $labels id => override label.
@@ -147,7 +147,7 @@ final class Builder {
 	 * can enable Reset only when there is a saved value to drop. A row left at its shipped value stores
 	 * nothing, so it reads as not overridden.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array{groups: array<string, array<int, array<string, mixed>>>} $schema The registry UI schema.
 	 * @param array<string, mixed>                                           $stored The stored overrides document.
@@ -171,7 +171,7 @@ final class Builder {
 	 * ids first by position, unmentioned ids appended in declaration order (never hidden), an empty
 	 * stored order returning the schema untouched.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array{groups: array<string, array<int, array<string, mixed>>>} $schema The (label-overlaid) UI schema.
 	 * @param array<int, string>                                             $order  The flat ordered token id list.

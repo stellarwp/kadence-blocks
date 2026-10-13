@@ -10,14 +10,14 @@ use Tests\Support\Classes\TestCase;
 /**
  * Covers the tokenOrder flat ordered-id-list read/write operations of Token_Order_Index.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Token_Order_IndexTest extends TestCase {
 
 	/**
 	 * The index under test.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Order_Index
 	 */

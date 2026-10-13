@@ -20,7 +20,7 @@ import { getPresetProperties, resolveTokenValue } from '../helpers/presets';
  * The block name this screen edits — the single JS spelling, shared by the screen registration and
  * the config below so the two can never drift.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const SINGLE_ICON_BLOCK = 'kadence/single-icon';
 
@@ -28,14 +28,14 @@ export const SINGLE_ICON_BLOCK = 'kadence/single-icon';
  * The icon's built-in color, used when the preset's color does not resolve — `semantic.color.icon`'s
  * own shipped value, which is what an un-preset icon renders at.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const ICON_COLOR_FALLBACK = 'currentColor';
 
 /**
  * The icon's built-in size, matching `semantic.icon-size.icon`.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const ICON_SIZE_FALLBACK = '50px';
 
@@ -50,7 +50,7 @@ const ICON_SIZE_FALLBACK = '50px';
  * @param {Record<string, string>} values       The feed's resolved value map.
  * @param {string}                 [breakpoint] The breakpoint to resolve responsive values at.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{color: string, size: string}} The preview.
  */
@@ -70,7 +70,7 @@ function preview(tokens, values, breakpoint) {
  *
  * @param {{id: string, label: string, preview: {color: string, size: string}}} row The row descriptor.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The preview element.
  */
@@ -107,7 +107,7 @@ function renderPreview(row) {
  * three, so a preset that could only set one value for every device would be unable to reproduce a look
  * a site owner had already built with the block's own control.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{panels: Array<Object>}} The settings-form schema.
  */
@@ -151,7 +151,7 @@ function schemaFor() {
  * frozen at module evaluation, before the localized feed is guaranteed to exist, so a snapshot taken
  * here could throw or go stale.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const SINGLE_ICON_PRESET = Object.freeze({
 	block: SINGLE_ICON_BLOCK,

@@ -58,7 +58,7 @@ const SIDES = ['top', 'right', 'bottom', 'left'];
  * keys the token vocabulary uses. Mapping here keeps that spelling difference out of both, matching
  * `EditorBoxControl`'s own table exactly.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @type {Object<string, string>}
  */
@@ -73,7 +73,7 @@ const BREAKPOINT_FOR_DEVICE = {
  *
  * @param {string} breakpoint The control's breakpoint key (`desktop`/`tablet`/`mobile`).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The matching editor device name, defaulting to `Desktop`.
  */
@@ -90,7 +90,7 @@ function deviceForBreakpoint(breakpoint) {
  *
  * @param {?Array} native `[{top,right,bottom,left,unit}]` or undefined.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} Whether every side currently matches.
  */
@@ -119,7 +119,7 @@ function isUniformBorder(native) {
  *
  * @param {?Array} native `[{top,right,bottom,left,unit}]` or undefined.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} `{ width, style, color }`.
  */
@@ -163,7 +163,7 @@ function fromNativeBorder(native) {
  * @param {string} slot The width slot's value.
  * @param {string} unit The border's shared unit.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string|number} The native size value for this slot.
  */
@@ -199,7 +199,7 @@ function toNativeSize(slot, unit) {
  * @param {string} [unit] The border's shared unit (defaults to `'px'`, matching the native default
  *                        in `ResponsiveBorderControl`'s `deskDefault`).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array} `[{top,right,bottom,left,unit}]`.
  */
@@ -243,7 +243,7 @@ function toNativeBorder(value, unit = 'px') {
  * @param {?Object}   [props.state]        The block's own binding state (`{ bound, overridden }`).
  * @param {?Function} [props.onReset]      Reset handler for the indicator.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The rendered control.
  */

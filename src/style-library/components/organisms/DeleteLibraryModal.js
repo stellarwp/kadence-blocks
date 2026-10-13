@@ -41,7 +41,7 @@ import './DeleteLibraryModal.scss';
  * @param {Function}           props.onClose      Called when the modal should go away: a finished delete,
  *                                                Cancel, or one of the Modal's own dismiss paths.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The modal.
  */

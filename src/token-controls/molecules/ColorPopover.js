@@ -46,7 +46,7 @@ import { isCssVariableReference } from '../helpers/token-summary';
  *                                            `colorSelection` the single place the derivation
  *                                            happens. Omit it and this derives its own.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The rendered popover body.
  */

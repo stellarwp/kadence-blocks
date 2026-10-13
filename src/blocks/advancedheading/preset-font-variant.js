@@ -19,7 +19,7 @@
  *
  * @param {*} weight The preset's stored font weight.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The Google variant, or '' when the weight names no face to ask for.
  */

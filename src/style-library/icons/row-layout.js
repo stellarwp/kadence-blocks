@@ -7,7 +7,7 @@ import { SVG, Path, Defs, Rect, Circle, G } from '@wordpress/primitives';
  * The Row Layout block's glyph, for its preset screen. The mask keeps a thin gap between the frame
  * and the circle, and the plus is cut out of the circle, so the row's background shows through both.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const rowLayout = (
 	<SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">

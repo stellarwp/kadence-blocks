@@ -12,7 +12,7 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Contracts;
  * enqueue_editor(), and css() are left for the subclass because they differ per projector (different
  * style handles, builders, and active-library plumbing).
  *
- * @since TBD
+ * @since 3.8.0
  */
 abstract class Abstract_Css_Projector implements Css_Projector {
 
@@ -22,7 +22,7 @@ abstract class Abstract_Css_Projector implements Css_Projector {
 	 * var retarget), so the editor needs no separate build. A projector whose editor markup renders a binding
 	 * on a different element overrides this with an editor-scoped selector.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */

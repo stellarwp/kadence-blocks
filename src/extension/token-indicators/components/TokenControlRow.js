@@ -32,7 +32,7 @@ import { TokenIndicator } from './TokenIndicator';
  *                                   like the responsive measurement inputs) instead of the side-by-side row.
  * @param {Object}   props.children  The wrapped control element, rendered untouched.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The wrapped control with its adjacent indicator.
  */

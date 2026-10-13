@@ -7,14 +7,14 @@ use KadenceWP\KadenceBlocks\Utils\Cast;
 /**
  * Registers the Style Library submenu under the Kadence admin menu.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Menu {
 
 	/**
 	 * The parent menu slug for Kadence admin submenus.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -23,7 +23,7 @@ final class Menu {
 	/**
 	 * The Style Library screen slug.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -37,7 +37,7 @@ final class Menu {
 	 * anywhere but the default screen. Declared beside the menu slug because a link needs both, and
 	 * a caller that had to know one string and guess the other would be the drift waiting to happen.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -48,7 +48,7 @@ final class Menu {
 	 *
 	 * Must stay an integer so Home remains the first submenu item and the default Kadence parent link.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var int
 	 */
@@ -57,7 +57,7 @@ final class Menu {
 	/**
 	 * The body class scoping the full-height layout overrides to the Style Library screen.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -68,7 +68,7 @@ final class Menu {
 	 * (`wp-admin/admin-header.php`), where the Style Library app mounts. Emptied on this screen
 	 * so a notice never renders inside — or beside — the app frame.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string[]
 	 */
@@ -82,7 +82,7 @@ final class Menu {
 	/**
 	 * Renders the Style Library admin screen markup.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Screen
 	 */
@@ -91,14 +91,14 @@ final class Menu {
 	/**
 	 * Enqueues the Style Library bundle on its admin screen.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Asset_Loader
 	 */
 	private Asset_Loader $asset_loader;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Screen       $screen       The screen renderer.
 	 * @param Asset_Loader $asset_loader The asset loader.
@@ -111,7 +111,7 @@ final class Menu {
 	/**
 	 * The Style Library screen slug.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -122,7 +122,7 @@ final class Menu {
 	/**
 	 * An admin URL that opens the Style Library on one of its screens.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $screen The screen id, e.g. "typography". Empty opens the default screen.
 	 *
@@ -141,7 +141,7 @@ final class Menu {
 	/**
 	 * The body class scoping the full-height layout overrides to the Style Library screen.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -152,7 +152,7 @@ final class Menu {
 	/**
 	 * The core hooks emptied on this screen so no admin notice renders inside the app frame.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string[]
 	 */
@@ -163,7 +163,7 @@ final class Menu {
 	/**
 	 * Register admin menu hooks.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return void
 	 */
@@ -174,7 +174,7 @@ final class Menu {
 	/**
 	 * Register the Style Library submenu on network admin.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return void
 	 */
@@ -193,7 +193,7 @@ final class Menu {
 	/**
 	 * Add the body-class filter, scoped to the Style Library screen via the `load-{$hook}` action.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return void
 	 */
@@ -204,7 +204,7 @@ final class Menu {
 	/**
 	 * Append the full-height layout body class, leaving every existing class intact.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $classes The space-separated body classes.
 	 *
@@ -221,7 +221,7 @@ final class Menu {
 	 * mounts — and after `admin_init` and `admin_menu`, the hooks most notice registrations use,
 	 * so this catches them without touching the admin bar or admin menu.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return void
 	 */
@@ -234,7 +234,7 @@ final class Menu {
 	/**
 	 * Add the submenu page and wire screen assets.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $parent_slug The parent menu slug.
 	 *
@@ -263,7 +263,7 @@ final class Menu {
 	/**
 	 * The capability required to access the Style Library screen.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -271,7 +271,7 @@ final class Menu {
 		/**
 		 * Filters the capability required to access the Style Library admin screen.
 		 *
-		 * @since TBD
+		 * @since 3.8.0
 		 *
 		 * @param string $capability The required capability.
 		 *

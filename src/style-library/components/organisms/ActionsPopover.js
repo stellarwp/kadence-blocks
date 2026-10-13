@@ -30,7 +30,7 @@ const POPOVER_OFFSET = 16;
  *                                     closes.
  * @param {Function} props.children    Called with `{ close }`; returns the popover's content.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The pencil and its popover.
  */

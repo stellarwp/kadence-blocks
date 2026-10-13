@@ -43,7 +43,7 @@ import { isEqual, setValueAtPath } from '../helpers/settings-schema';
  * @param {?Object} initialValues The caller's initial values, or null while its data is still loading.
  * @param {?string} seededFor     The item id the draft was last actually seeded for, or null if never.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{shouldSeed: boolean, nextSeededFor: ?string}} `shouldSeed` when the draft must be
  *          (re)seeded from `initialValues` this render; `nextSeededFor` the tracking value to store.
@@ -69,7 +69,7 @@ export function resolveDraftSeed(itemId, initialValues, seededFor) {
  * @param {Object}  draft         The panel's current draft values.
  * @param {?Object} initialValues The caller's persisted values, or null while still loading.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True when `draft` differs from `initialValues`.
  */
@@ -94,7 +94,7 @@ export function computeIsDirty(draft, initialValues) {
  * @param {Object}  submitted The draft the write was given.
  * @param {?Object} saved     What the server stored, or null when there was nothing to write.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The draft to hold.
  */
@@ -116,7 +116,7 @@ export function resolveSavedSeed(current, submitted, saved) {
  *                                         the caller's data is still loading — see this module's
  *                                         docblock for the readiness contract.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{itemId: string, isOpen: boolean, close: Function, draft: Object, setFieldValue: Function, isDirty: boolean, resetDraft: Function, reseedDraft: Function}}
  *         The panel state and controls. `reseedDraft(submitted, saved)` re-seeds from a settled write —

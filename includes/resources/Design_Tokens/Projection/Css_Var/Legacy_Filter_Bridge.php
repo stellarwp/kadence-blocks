@@ -24,7 +24,7 @@ use RuntimeException;
  * A no-op when the Kadence theme owns the palette. Activation is gated upstream by the Projector (it
  * only calls this when Token_Registry::is_active()).
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Legacy_Filter_Bridge {
 
@@ -56,7 +56,7 @@ final class Legacy_Filter_Bridge {
 	 * theme, token colors reach the palette through the kadence_palette_option filter that answers the
 	 * theme's own palette reads; the theme's stored Style Guide palette is never written.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string,string> $colors The current --global-palette* map.
 	 *

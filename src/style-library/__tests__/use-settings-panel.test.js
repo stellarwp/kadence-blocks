@@ -152,7 +152,7 @@ describe('useSettingsPanel item switch', () => {
 	 * @param {Object} props.initialValues The persisted values for the open item.
 	 * @param {Array}  props.log           The array each committed `isDirty` is pushed onto.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return {null} Renders nothing.
 	 */

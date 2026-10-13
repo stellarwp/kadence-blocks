@@ -26,7 +26,7 @@ use Tests\Support\Classes\TestCase;
  * The conformance target is the real shipped baseline (includes/resources/Design_Tokens/Registry/
  * Baseline/baseline.json), read straight from the plugin source.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Dtcg_Schema_ConformanceTest extends TestCase {
 

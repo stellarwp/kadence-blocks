@@ -17,14 +17,14 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary;
  * field named "disabled". Both sentinels are valid ONLY in the overrides context; the baseline must
  * carry concrete values. This locks the spelling the design doc left open.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Sentinels {
 
 	/**
 	 * The leaf key whose boolean-true value removes a token from the effective document.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -33,7 +33,7 @@ final class Sentinels {
 	/**
 	 * The leaf key whose null value resets a token to its baseline.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -42,7 +42,7 @@ final class Sentinels {
 	/**
 	 * The leaf key that carries the DISABLE sentinel.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -53,7 +53,7 @@ final class Sentinels {
 	/**
 	 * The DTCG $value key, which also carries the RESET sentinel when null.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -67,7 +67,7 @@ final class Sentinels {
 	 * Uses array_key_exists rather than isset so a present-but-null $value is detected (isset would
 	 * treat it as absent).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $leaf The decoded leaf node.
 	 *
@@ -81,7 +81,7 @@ final class Sentinels {
 	 * Whether a decoded leaf carries the DISABLE sentinel key (regardless of its value). Whether the
 	 * value is the required boolean true is a validation concern, not a detection one.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $leaf The decoded leaf node.
 	 *
@@ -94,7 +94,7 @@ final class Sentinels {
 	/**
 	 * Whether a decoded leaf is a well-formed DISABLE sentinel: "$disabled": true exactly.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $leaf The decoded leaf node.
 	 *

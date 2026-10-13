@@ -116,7 +116,7 @@ describe('BUTTON_PRESET.renderPreview', () => {
 	 *
 	 * @param {Object} row The row descriptor to render.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return {HTMLElement} The chip element.
 	 */

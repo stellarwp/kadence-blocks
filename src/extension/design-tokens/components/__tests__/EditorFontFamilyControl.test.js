@@ -28,7 +28,7 @@ import { EditorFontFamilyControl } from '../EditorFontFamilyControl';
  *
  * @param {Object} overrides Props to override on top of the defaults.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{shell: Object, selector: Object, props: Object}} The `ControlShell` element, the
  *   `FontFamilySelector` nested in it, and the props passed in.

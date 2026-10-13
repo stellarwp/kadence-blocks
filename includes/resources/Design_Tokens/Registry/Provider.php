@@ -16,12 +16,12 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Theme_Style_Guide\Style_Guide_Overlay;
  * Wires the Token Registry: binds the singleton and the shipped baseline, defines the global helper,
  * registers the token declarations, then runs the fail-closed baseline guard once all tokens are in.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Provider extends Provider_Contract {
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return void
 	 */
@@ -79,7 +79,7 @@ final class Provider extends Provider_Contract {
 	 * Define the public global helper. Always safe — it only declares functions; third-party callers
 	 * use it on their own hooks once the kadence_blocks() accessor exists.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return void
 	 */
@@ -93,7 +93,7 @@ final class Provider extends Provider_Contract {
 	 * Reads declarations.php as data and registers via the container. Hooked on init (priority 0) because
 	 * declarations carry __() strings that must not resolve before the textdomain is available.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return void
 	 */
@@ -112,7 +112,7 @@ final class Provider extends Provider_Contract {
 	}
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return void
 	 */
@@ -127,7 +127,7 @@ final class Provider extends Provider_Contract {
 	 * multi-library projection renders every library, so every library's user primitives must stay
 	 * registered.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return void
 	 */
@@ -138,7 +138,7 @@ final class Provider extends Provider_Contract {
 	}
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return void
 	 */

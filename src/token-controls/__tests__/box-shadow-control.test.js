@@ -128,7 +128,7 @@ const TOKENS_WITH_NONE = [...TOKENS, NONE_TOKEN];
  *
  * @param {Object} props Overrides for the defaults below.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {HTMLElement} The container it rendered into.
  */
@@ -161,7 +161,7 @@ const insetCheckbox = () => container.querySelector('input[aria-label="Inset"]')
  *
  * @param {HTMLElement} element The element to click.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {void}
  */
@@ -175,7 +175,7 @@ function click(element) {
  * @param {HTMLElement} element The input element.
  * @param {string}      value   The next value.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {void}
  */

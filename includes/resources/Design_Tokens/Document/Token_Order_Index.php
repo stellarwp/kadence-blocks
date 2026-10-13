@@ -20,7 +20,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Extensions;
  * belonging to the target group, so they can isolate that group's slice of the flat list without
  * ever storing the group name itself.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Token_Order_Index {
 
@@ -30,7 +30,7 @@ final class Token_Order_Index {
 	 * entries inside an otherwise-valid list are filtered out, so a hand-corrupted section
 	 * degrades to "no order" instead of a type error downstream.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document
 	 *
@@ -61,7 +61,7 @@ final class Token_Order_Index {
 	 * every other group's relative order untouched, since only relative position within a group is
 	 * ever read. Deduplicates the incoming ids, keeping first occurrence.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document
 	 * @param array<int, string>   $group_ids The full set of token ids registered in the target group,
@@ -82,7 +82,7 @@ final class Token_Order_Index {
 	 * Remove one group's ids from the stored order — declaration order applies again for that
 	 * group. No-op (the same document is returned) when the group has no ids currently stored.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document
 	 * @param array<int, string>   $group_ids The full set of token ids registered in the target group.
@@ -101,7 +101,7 @@ final class Token_Order_Index {
 	}
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document
 	 *
@@ -124,7 +124,7 @@ final class Token_Order_Index {
 	}
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document
 	 * @param array<int, string>   $ids
@@ -151,7 +151,7 @@ final class Token_Order_Index {
 	}
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document
 	 *

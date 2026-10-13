@@ -25,7 +25,7 @@ import './DragHandle.scss';
  *                                     grid's groups and swatches) names the thing so the two are
  *                                     told apart by a screen reader.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The drag handle button.
  */

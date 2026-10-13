@@ -17,14 +17,14 @@ use WP_REST_Server;
  * satisfy ($type enum, alias pattern, leaf and composite shapes). This is the format contract for
  * external tooling and the MCP layer, distinct from the registry's to_ui_schema() admin-UI catalog.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Schema_Controller extends Controller {
 
 	/**
 	 * Runtime accessor for the committed DTCG JSON Schema.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Dtcg_Schema
 	 */
@@ -33,14 +33,14 @@ final class Schema_Controller extends Controller {
 	/**
 	 * Memoised item schema for this request. Null until first built.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var array<string, mixed>|null
 	 */
 	private ?array $item_schema = null;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Dtcg_Schema $dtcg_schema Runtime accessor for the committed DTCG JSON Schema.
 	 */
@@ -52,7 +52,7 @@ final class Schema_Controller extends Controller {
 	/**
 	 * Register the read route for the DTCG schema.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return void
 	 */
@@ -82,7 +82,7 @@ final class Schema_Controller extends Controller {
 	 * The decoded schema is also set as the response data so server-side callers (rest_do_request(), which
 	 * never runs the rest_pre_serve_request filter) read it via get_data() rather than getting an empty body.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -131,7 +131,7 @@ final class Schema_Controller extends Controller {
 	 * The response is itself an open-ended JSON Schema document, so the properties are described
 	 * permissively rather than enumerated.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, mixed>
 	 */

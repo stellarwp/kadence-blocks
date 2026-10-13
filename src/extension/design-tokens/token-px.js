@@ -33,7 +33,7 @@ import { tokenLiteral } from './token-literals';
  * @param {*}      value     The value to resolve: a `{dot.alias}` or a CSS length literal.
  * @param {string} [library] The token library slug; defaults to the active library.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {?number} The pixel value, or `null` when the value cannot be converted.
  */

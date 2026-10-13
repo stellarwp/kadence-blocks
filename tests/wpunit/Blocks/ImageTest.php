@@ -24,7 +24,7 @@ class ImageTest extends KadenceBlocksUnit {
 	/**
 	 * The CSS builder each render writes into.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Kadence_Blocks_CSS
 	 */
@@ -307,7 +307,7 @@ class ImageTest extends KadenceBlocksUnit {
 	/**
 	 * Build the block's CSS for a set of attributes, mirroring `SinglebtnTest::render_button()`.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $attributes The block attributes to render.
 	 *

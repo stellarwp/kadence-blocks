@@ -1,14 +1,14 @@
 /**
  * Default token library slug exposed by the REST API.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const DEFAULT_LIBRARY_SLUG = 'default';
 
 /**
  * Global injected by the admin feed localizer.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const DESIGN_TOKENS_GLOBAL = 'kadenceDesignTokens';
 
@@ -17,6 +17,6 @@ export const DESIGN_TOKENS_GLOBAL = 'kadenceDesignTokens';
  * payload the block editor's token picker reads). Read by `helpers/tokens.js`'s
  * `getPickableTokensPool()`.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const PICKABLE_TOKENS_GLOBAL = 'kadenceDesignTokensPickable';

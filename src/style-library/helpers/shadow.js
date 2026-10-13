@@ -11,7 +11,7 @@
  * resolved value that is empty or fails to parse seeds the panel with a shape the field already
  * knows how to render rather than a bespoke "nothing yet" sentinel.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const DEFAULT_SHADOW_DRAFT = { color: '#000000', offsetX: 0, offsetY: 0, blur: 0, spread: 0, inset: false };
 
@@ -22,7 +22,7 @@ const DEFAULT_SHADOW_DRAFT = { color: '#000000', offsetX: 0, offsetY: 0, blur: 0
  * dimension" (rather than a fifth token) keeps a color with internal spaces —
  * `rgba(23, 23, 23, 0.12)` — intact.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const SHADOW_SHORTHAND_PATTERN = /^(inset\s+)?(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(.+)$/;
 
@@ -32,7 +32,7 @@ const SHADOW_SHORTHAND_PATTERN = /^(inset\s+)?(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(.
  * @param {string} css The resolved `box-shadow` shorthand (e.g. `"0px 2px 8px 0px #1717171f"`, with
  *                      an optional `inset ` prefix), or a string that is empty or fails to parse.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{color: string, offsetX: number, offsetY: number, blur: number, spread: number, inset: boolean}}
  *         The parsed draft, or the field's default shape when the input is empty or fails to parse —
@@ -68,7 +68,7 @@ export function parseShadowValue(css) {
  * @param {{color: string, offsetX: number, offsetY: number, blur: number, spread: number, inset?: boolean}} draftValue
  *        The panel's current draft.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{color: string, offsetX: string, offsetY: string, blur: string, spread: string, inset?: true}}
  *         The composite leaf `$value`.
@@ -99,7 +99,7 @@ export function shadowLeafValue(draftValue) {
  * @param {string} tokenType The DTCG `$type` (`'shadow'`).
  * @param {Object} draftValue The panel's current draft.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{$type: string, $value: Object}} The composite token leaf.
  */
@@ -117,7 +117,7 @@ export function buildShadowLeaf(tokenType, draftValue) {
  * @param {string|{color: string, offsetX: number|string, offsetY: number|string, blur: number|string, spread: number|string, inset?: boolean}} value
  *        A row's `value`, resolved string or draft object.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The `box-shadow` CSS value, or an empty string for an empty/missing value.
  */

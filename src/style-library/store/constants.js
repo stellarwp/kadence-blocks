@@ -7,7 +7,7 @@
  * The registered store name — visible in Redux DevTools and via
  * `wp.data.select('kadence-blocks/style-library')` in the browser console.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const STORE_NAME = 'kadence-blocks/style-library';
 
@@ -15,7 +15,7 @@ export const STORE_NAME = 'kadence-blocks/style-library';
  * The separator every key builder below joins its segments with. Named rather than inlined
  * because the predicates further down split keys back apart on it — the two must never drift.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const KEY_SEPARATOR = '::';
 
@@ -26,7 +26,7 @@ const KEY_SEPARATOR = '::';
  * @param {string} block     The block name, e.g. `kadence/singlebtn`.
  * @param {string} slug      Token library slug.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The state key.
  */
@@ -40,7 +40,7 @@ export function presetsKey(namespace, block, slug) {
  * @param {string} namespace REST namespace.
  * @param {string} slug      Token library slug.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The state key.
  */
@@ -58,7 +58,7 @@ export function paletteListingKey(namespace, slug) {
  * @param {string} slug      Token library slug.
  * @param {string} paletteId The palette id being edited.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The state key.
  */
@@ -78,7 +78,7 @@ export function paletteEditKey(namespace, slug, paletteId) {
  * @param {string} key  A key built by `paletteListingKey()` or `paletteEditKey()`.
  * @param {string} slug Token library slug.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True when the key addresses that library.
  */
@@ -94,7 +94,7 @@ export function isLibraryScopedKey(key, slug) {
  * @param {string} key  A key built by `presetsKey()`.
  * @param {string} slug Token library slug.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True when the key addresses that library.
  */
@@ -105,7 +105,7 @@ export function isPresetsKeyForLibrary(key, slug) {
 /**
  * The shape `getPaletteListing` returns before its palette listing has resolved yet.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const EMPTY_LISTING = { defaultId: '', currentId: '', palettes: [], userCreated: [] };
 
@@ -114,7 +114,7 @@ export const EMPTY_LISTING = { defaultId: '', currentId: '', palettes: [], userC
  * addition. Returned by `getOptimisticSwatchEdit` for a listing key with nothing pending, so
  * `applyOptimisticOverlay` never has to branch on `undefined`.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const EMPTY_OPTIMISTIC_SWATCH_EDIT = {
 	patches: {},
@@ -128,6 +128,6 @@ export const EMPTY_OPTIMISTIC_SWATCH_EDIT = {
  * The empty optimistic-edit overlay for a scale-type screen's tokens — no pending patch,
  * deletion, or addition. Returned by `getOptimisticScaleEdit` for a slug with nothing pending.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const EMPTY_OPTIMISTIC_SCALE_EDIT = { patches: {}, deletedTokens: [], addedTokens: [] };

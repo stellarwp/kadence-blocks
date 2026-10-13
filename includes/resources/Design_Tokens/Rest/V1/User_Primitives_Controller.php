@@ -21,14 +21,14 @@ use WP_REST_Server;
 /**
  * REST controller for user-primitive sub-resources: preview-references, create, delete, and rename.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class User_Primitives_Controller extends Controller {
 
 	/**
 	 * The request parameter that carries the token library slug.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -37,7 +37,7 @@ final class User_Primitives_Controller extends Controller {
 	/**
 	 * The request parameter that carries the user-primitive canonical dot-path id.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -46,7 +46,7 @@ final class User_Primitives_Controller extends Controller {
 	/**
 	 * The slug path segment shared by routes that scope to a single document.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -56,7 +56,7 @@ final class User_Primitives_Controller extends Controller {
 	 * The id path segment for user-primitive sub-resources.
 	 * Matches the canonical path format: primitive.<type>.custom.<slug>
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -65,7 +65,7 @@ final class User_Primitives_Controller extends Controller {
 	/**
 	 * The sub-route segment for user-primitive resources within a document.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -74,7 +74,7 @@ final class User_Primitives_Controller extends Controller {
 	/**
 	 * The sub-route segment for the references preview endpoint.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -83,7 +83,7 @@ final class User_Primitives_Controller extends Controller {
 	/**
 	 * The sub-route segment for the rename endpoint.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -92,7 +92,7 @@ final class User_Primitives_Controller extends Controller {
 	/**
 	 * Shared DTCG document write pipeline: load, validate, dry-run, conditional persist.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Document_Write_Pipeline
 	 */
@@ -101,7 +101,7 @@ final class User_Primitives_Controller extends Controller {
 	/**
 	 * Reads and writes the userPrimitives provenance map in the overrides document.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var User_Primitive_Index
 	 */
@@ -110,7 +110,7 @@ final class User_Primitives_Controller extends Controller {
 	/**
 	 * Scans documents for alias references to a given primitive id.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Reference_Policy
 	 */
@@ -119,7 +119,7 @@ final class User_Primitives_Controller extends Controller {
 	/**
 	 * Pure merge / set / remove transforms.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Mutator
 	 */
@@ -128,7 +128,7 @@ final class User_Primitives_Controller extends Controller {
 	/**
 	 * Baseline document.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Baseline_Document
 	 */
@@ -137,14 +137,14 @@ final class User_Primitives_Controller extends Controller {
 	/**
 	 * Token registry.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Registry
 	 */
 	private Token_Registry $registry;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Document_Write_Pipeline $pipeline The shared DTCG write pipeline.
 	 * @param User_Primitive_Index    $index    Reads the userPrimitives provenance map.
@@ -173,7 +173,7 @@ final class User_Primitives_Controller extends Controller {
 	/**
 	 * Register routes for user-primitive sub-resources.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return void
 	 */
@@ -237,7 +237,7 @@ final class User_Primitives_Controller extends Controller {
 	/**
 	 * Return the set of alias references to a user primitive and whether deletion is safe.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -293,7 +293,7 @@ final class User_Primitives_Controller extends Controller {
 	/**
 	 * Create a new user-defined primitive.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -415,7 +415,7 @@ final class User_Primitives_Controller extends Controller {
 	 * whether those references live in the semantic layer or are primitive-layer
 	 * direct `$value` aliases.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -515,7 +515,7 @@ final class User_Primitives_Controller extends Controller {
 	 * extension preset alias) — the cascade cannot rewrite those, so proceeding would
 	 * leave them silently pointing at an id that no longer exists.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -641,7 +641,7 @@ final class User_Primitives_Controller extends Controller {
 	/**
 	 * The JSON Schema for the references preview response.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -700,7 +700,7 @@ final class User_Primitives_Controller extends Controller {
 	 * Sanitize and derive a display label from user input or the slug.
 	 * Returns a non-empty string of at most 60 characters.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $input Raw label from the request.
 	 * @param string $slug  Fallback slug to derive from when input is empty.
@@ -719,7 +719,7 @@ final class User_Primitives_Controller extends Controller {
 	 * in the primitive and semantic layers of `$document`, the same layers scanned by
 	 * `Token_Reference_Policy`. Collects dot-paths of rewritten tokens.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document
 	 * @param string               $old_alias
@@ -743,7 +743,7 @@ final class User_Primitives_Controller extends Controller {
 	}
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $node
 	 * @param string               $prefix
@@ -780,7 +780,7 @@ final class User_Primitives_Controller extends Controller {
 	/**
 	 * Validate that the supplied id is in the allowed user-primitive namespace.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $id
 	 *
@@ -804,7 +804,7 @@ final class User_Primitives_Controller extends Controller {
 	/**
 	 * Route arguments for the references endpoint.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -829,7 +829,7 @@ final class User_Primitives_Controller extends Controller {
 	/**
 	 * Route arguments for the create endpoint.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -880,7 +880,7 @@ final class User_Primitives_Controller extends Controller {
 	/**
 	 * Route arguments for the delete endpoint.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -910,7 +910,7 @@ final class User_Primitives_Controller extends Controller {
 	/**
 	 * Route arguments for the rename endpoint.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, mixed>
 	 */

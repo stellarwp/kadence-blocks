@@ -20,14 +20,14 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed;
  * itself be a font-stack expression such as `"My Font", sans-serif`), so a string key is taken as
  * a name; an integer-keyed string entry (a plain list of names) passes through as-is.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Font_Catalog {
 
 	/**
 	 * The generated Google font names file, relative to the plugin root.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -36,7 +36,7 @@ final class Font_Catalog {
 	/**
 	 * The generated Google font detail file, read for its per-family weight lists alone.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -45,7 +45,7 @@ final class Font_Catalog {
 	/**
 	 * The filter the block editor already reads for site-registered custom fonts.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -59,7 +59,7 @@ final class Font_Catalog {
 	 * from the map rather than present with an empty list, which lets a consumer tell "this family
 	 * ships only regular" apart from "nothing is known about this family".
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array{google: string[], custom: string[], weights: array<string, string[]>}
 	 */
@@ -85,7 +85,7 @@ final class Font_Catalog {
 	 * Fail-soft to an empty map when the generated file is absent, the same posture google_names()
 	 * takes for its own file.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, string[]>
 	 */
@@ -146,7 +146,7 @@ final class Font_Catalog {
 	 * The Google font names, fail-soft to an empty list when the generated file is absent — the
 	 * same posture class-kadence-blocks-editor-assets.php already takes for the same file.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string[]
 	 */
@@ -165,7 +165,7 @@ final class Font_Catalog {
 	/**
 	 * The site's custom font names, normalized from the custom-fonts filter's associative shape.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string[]
 	 */
@@ -176,7 +176,7 @@ final class Font_Catalog {
 		 * expression (`"My Font", sans-serif`, the shape kadence_blocks_convert_custom_fonts()
 		 * builds when a fallback is registered); an integer-keyed string entry is a plain name.
 		 *
-		 * @since TBD
+		 * @since 3.8.0
 		 *
 		 * @param array<string|int, mixed> $fonts The registered custom fonts.
 		 *
@@ -213,7 +213,7 @@ final class Font_Catalog {
 	 * single-family stack, the same rule that keeps a generic fallback from being invented for a
 	 * Google family.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $entry The catalog entry, a family name or a font-stack expression.
 	 *

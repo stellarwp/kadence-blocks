@@ -27,7 +27,7 @@ import { resetIcon, presetIcon } from '../../preset-picker/icons';
  * @param {Function} props.onReset     Called to clear the control's override back to the preset value.
  * @param {boolean}  [props.showReset] Whether to render the reset icon / matching mark (default true).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object|null} The indicator element, or null when the control is unmapped.
  */

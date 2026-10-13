@@ -8,7 +8,7 @@ import { SVG, Path } from '@wordpress/primitives';
  * stroke attributes below are the drawing, and a stylesheet that fills every button icon has to
  * leave this one unfilled (see `LibraryActions.scss`).
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const pencil = (
 	<SVG

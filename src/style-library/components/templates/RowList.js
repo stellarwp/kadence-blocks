@@ -33,7 +33,7 @@ import './RowList.scss';
  * @param {Function}       [props.onReorder] Called with the reordered id list after a drop.
  * @param {?JSX.Element}   [props.empty]    Rendered when `items` is empty.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The list.
  */
@@ -85,7 +85,7 @@ export function RowList({ items, selectedId = '', onSelect, onReorder = () => {}
  * @param {Function} props.onSelect        Row click handler.
  * @param {Function} props.useSortableItem The per-item sortable hook from `useReorderableList`.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The wired row.
  */

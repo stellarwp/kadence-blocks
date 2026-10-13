@@ -27,7 +27,7 @@ import { UnitField } from '../components/molecules/fields/UnitField';
  *
  * @param {Object} props The field props from `SettingsForm`.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The field.
  */
@@ -41,7 +41,7 @@ const RadiusField = (props) => <BoxTokenField {...props} slots="corners" />;
  *
  * @param {Object} props The field props from `SettingsForm`.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The field.
  */
@@ -55,7 +55,7 @@ const SpacingField = (props) => <BoxTokenField {...props} slots="sides" />;
  *
  * @param {Object} props The field props from `SettingsForm`.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The field.
  */
@@ -70,7 +70,7 @@ const BorderTypeField = (props) => <BorderField {...props} />;
  *
  * @param {Object} props The field props from `SettingsForm`.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The field.
  */
@@ -80,7 +80,7 @@ const BoxShadowTypeField = (props) => <BoxShadowField {...props} />;
  * The field-type registry: `type` string => field component. Frozen so a consumer can't mutate the
  * vocabulary at runtime.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const FIELD_TYPES = Object.freeze({
 	text: TextField,
@@ -115,6 +115,6 @@ export const FIELD_TYPES = Object.freeze({
  * held in the same per-slot shape. `box-shadow` is excluded — the Button panel's shadow field has no
  * breakpoint switcher (see `BoxShadowField.js`'s docblock).
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const RESPONSIVE_CAPABLE_FIELD_TYPES = Object.freeze(['radius', 'spacing', 'token-scalar', 'unit', 'border']);

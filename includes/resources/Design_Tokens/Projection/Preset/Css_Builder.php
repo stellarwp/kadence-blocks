@@ -71,7 +71,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Version;
  *
  * Pure: no WordPress calls beyond the object cache in css_for_version(). The hooks live in Projector.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Css_Builder {
 
@@ -82,7 +82,7 @@ final class Css_Builder {
 	/**
 	 * The preset var namespace, appended after the shared --kb-token-- prefix.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -96,7 +96,7 @@ final class Css_Builder {
 	 * 0/`'top'` is really the top-left corner. Index N here is slot index N everywhere else in the
 	 * pipeline — the resolver's slot list and the editor's `dimensionSlots()`.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string[]
 	 */
@@ -108,7 +108,7 @@ final class Css_Builder {
 	 * button render path already consumes — so a preset re-skins the button with no change to its
 	 * render path.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string[]
 	 */
@@ -122,7 +122,7 @@ final class Css_Builder {
 	/**
 	 * Object-cache group shared with the rest of the Design Tokens module.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -131,14 +131,14 @@ final class Css_Builder {
 	/**
 	 * @var Token_Registry The registry the preset bindings are read from.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	private Token_Registry $registry;
 
 	/**
 	 * @var Preset_Resolver Flattens each preset's bindings to resolved CSS values.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	private Preset_Resolver $presets;
 
@@ -147,7 +147,7 @@ final class Css_Builder {
 	 * Per-request memo of built CSS, keyed on the active library's object-cache key, so a write (which bumps the
 	 * library's version) invalidates the affected entry on its own.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var array<string, string>
 	 */
@@ -158,7 +158,7 @@ final class Css_Builder {
 	 * the registry/resolver walk runs once per library even when several layers read it, yet a token write or a
 	 * Customizer save (either changes that version) produces a fresh collection rather than serving the stale one.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var array<string, array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string, reset:bool, direct:bool}>>, activated:array<string, bool>}>>
 	 */
@@ -168,14 +168,14 @@ final class Css_Builder {
 	 * Supplies the cache version: the store version, plus the theme Style Guide signature when there is
 	 * one, so a Customizer save invalidates this cache even though it bumps no store version.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Effective_Version
 	 */
 	private Effective_Version $versions;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Token_Registry    $registry The token registry.
 	 * @param Preset_Resolver   $presets  The preset resolver.
@@ -195,7 +195,7 @@ final class Css_Builder {
 	 * Build the active library's preset CSS: the canonical preset-var definitions plus the scoped retarget
 	 * rules. The pure, uncached assembler (its cached counterpart is css_for_version()).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string                $active_slug The active library's slug.
 	 * @param array<string, string> $breakpoints Breakpoint => media-query string (e.g.
@@ -216,7 +216,7 @@ final class Css_Builder {
 	 * paints `.kadence-inner-column-inner` in the canvas and `.kt-inside-inner-col` on the front end — so the
 	 * state lands in the preview too.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string                $active_slug The active library's slug.
 	 * @param array<string, string> $breakpoints Breakpoint => media-query string.
@@ -235,7 +235,7 @@ final class Css_Builder {
 	 * The plugin version is folded into the cache key alongside the effective version, so the cache also busts on
 	 * a plugin build (shipped preset definitions and the baseline can change with it).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string                $active_slug The active library's slug.
 	 * @param string                $version     The effective version the active library was built from.
@@ -254,7 +254,7 @@ final class Css_Builder {
 	 * one for any state binding declaring an `editor_css_state`) never collides with, or gets served in place
 	 * of, the front-end cache entry.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string                $active_slug The active library's slug.
 	 * @param string                $version     The effective version the active library was built from.
@@ -273,7 +273,7 @@ final class Css_Builder {
 	 * against the subtree's re-tinted semantics (a preset that aliases a palette-changed color follows the
 	 * chosen palette, so a preset Button re-skins with the rest of its subtree).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $active_slug The active library's slug.
 	 *
@@ -288,7 +288,7 @@ final class Css_Builder {
 	 * The context (front end vs editor) is folded into both the per-request memo key and the object-cache key
 	 * so the two builds never share a cache slot.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string                $active_slug The active library's slug.
 	 * @param string                $version     The effective version the active library was built from.
@@ -325,7 +325,7 @@ final class Css_Builder {
 	 * per-preset scoped rules and the class-less $default rules. The single assembly definition shared by
 	 * css()/editor_css() and their cached counterparts.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string                $active_slug The active library slug.
 	 * @param array<string, string> $breakpoints Breakpoint => media-query string.
@@ -347,7 +347,7 @@ final class Css_Builder {
 	 * structure the layers below build from. The projected value keeps its var() target canonical, so an
 	 * aliased preset chains to the library's canonical token. Memoized per slug for the request.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug The library slug to resolve against.
 	 *
@@ -504,7 +504,7 @@ final class Css_Builder {
 	 * Only a STORED override becomes a direct entry: a class preset's baseline tokens are display data, so a
 	 * shipped class preset emits nothing but its resets until the library edits it.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Preset_Bindings      $bindings The block's bindings.
 	 * @param array<string, mixed> $values   The preset's resolved values.
@@ -558,7 +558,7 @@ final class Css_Builder {
 	 * Emit the canonical `--kb-token--preset--*` definitions from the active library's collected presets. The
 	 * value preserves alias indirection canonically, so the preset chains to the active library's token.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string, reset:bool, direct:bool}>>, activated:array<string, bool>}> $collected The active library's collected presets.
 	 *
@@ -578,7 +578,7 @@ final class Css_Builder {
 	 * slot-specific vars alongside its usual canonical var — see {@see self::property_declarations()}.
 	 * Every other property emits exactly the single declaration it always has.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string, reset:bool, direct:bool}>>, activated:array<string, bool>}> $collected The active library's collected presets.
 	 *
@@ -613,7 +613,7 @@ final class Css_Builder {
 	 * that already points at it keeps working unchanged, and {@see self::responsive_blocks()} can redeclare
 	 * a single touched slot without ever redeclaring the composed var itself.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string                                                                                                                                       $block    The block name.
 	 * @param string                                                                                                                                       $preset   The preset slug.
@@ -659,7 +659,7 @@ final class Css_Builder {
 	 * @todo A slot list handed over as an array, rather than pre-joined into a string by the resolver,
 	 *       would remove the need to split it back apart here at all.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $value     The property's projected value.
 	 * @param bool   $dimension Whether the property is a "dimension" kind binding.
@@ -681,7 +681,7 @@ final class Css_Builder {
 	 * The per-slot var name for a (block, preset, property, slot): the canonical preset var with a
 	 * "--<slot>" suffix, e.g. --kb-token--preset--kadence-singlebtn--hero--button-radius--top.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $block       The block name.
 	 * @param string $preset      The preset slug.
@@ -706,7 +706,7 @@ final class Css_Builder {
 	 * block defines it — unless the binding has no token var to fill a gap slot with, in which case the
 	 * composed var is only declared when the override sets all four slots.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string                                                                                                                                       $block    The block name.
 	 * @param string                                                                                                                                       $preset   The preset slug.
@@ -759,7 +759,7 @@ final class Css_Builder {
 	 * ".wp-block-<block>.kb-preset--<preset>" rule pointing each --global-<slot> at the canonical preset
 	 * var.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string, reset:bool, direct:bool}>>, activated:array<string, bool>}> $collected The active library's collected presets.
 	 * @param bool                                                                                                                                                                                                                                                                     $editor Whether to emit the editor-scoped selectors.
@@ -803,7 +803,7 @@ final class Css_Builder {
 	 * so putting it under the weighted scope would double the button classes. In the editor the state scope
 	 * is nested under the editor root here, since the theme's own editor rules sit there too.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string                                                                                                                                                      $block        The block name.
 	 * @param string                                                                                                                                                      $preset       The preset slug.
@@ -863,7 +863,7 @@ final class Css_Builder {
 	 * element; in the editor the block class sits on a wrapper, so the editor weight is a descendant and the
 	 * rule is nested under the editor root the theme's own editor rules use.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $block        The block name.
 	 * @param string $selector     The block's `.wp-block-*` selector.
@@ -889,7 +889,7 @@ final class Css_Builder {
 	 * selected still shows its preset. Its lower specificity yields to the kb-preset-- rules (a selected
 	 * preset) and to a per-instance edit, so it only fills the gap.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string, reset:bool, direct:bool}>>, activated:array<string, bool>}> $collected The active library's collected presets.
 	 * @param bool                                                                                                                                                                                                                                                                     $editor Whether to emit the editor-scoped selectors.
@@ -934,7 +934,7 @@ final class Css_Builder {
 	 * only at a breakpoint therefore gets its state rule inside that breakpoint's media block instead
 	 * (see {@see self::responsive_blocks()}).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string, reset:bool, direct:bool}> $properties The preset's collected properties.
 	 *
@@ -954,7 +954,7 @@ final class Css_Builder {
 	 * class-less rule sits on the element and beats the theme's :root declaration by inheritance, so
 	 * emitting it for an untouched library would replace the theme's button colors with the shipped ones.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string, reset:bool, direct:bool}> $properties The $default's collected properties.
 	 * @param array<string, bool>                                                                                                                                         $activated  property => true for the overridden slot properties.
@@ -995,7 +995,7 @@ final class Css_Builder {
 	 * which is why the `$default`'s is qualified by "this block has no preset class" rather than by nothing:
 	 * the two must never both match, since neither could then outrank the other.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string      $selector The block's `.wp-block-*` selector.
 	 * @param string|null $preset   The preset class selector (leading dot included) for a named preset, or
@@ -1035,7 +1035,7 @@ final class Css_Builder {
 	 * {@see self::responsive_blocks()} hands the base-less ones over one at a time, inside the media block
 	 * that declares their var.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string                                                                                                                                                                                                                                                    $block        The block name.
 	 * @param string                                                                                                                                                                                                                                                    $preset       The named preset's slug.
@@ -1104,7 +1104,7 @@ final class Css_Builder {
 	 * the block-default layer's editor build makes. The preset class is added to the block class inside the
 	 * `:where()` (the wrapper carries both), and the rest of the `editor_selector` follows unchanged.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $block        The block name, for its declared `editor_selector`.
 	 * @param string $selector     The block's `.wp-block-*` selector.
@@ -1135,7 +1135,7 @@ final class Css_Builder {
 	 * class-painted preset's reset entry emits `<target>:unset;` instead, handing the variable back to the
 	 * stylesheet that paints the class.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string                                                                                                                                                      $block      The block name.
 	 * @param string                                                                                                                                                      $preset     The preset slug.
@@ -1179,7 +1179,7 @@ final class Css_Builder {
 	 * selector list only applies its leading compound to its FIRST part, so a naive concatenation would leave
 	 * every part after the first matching the whole document.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string                                                                                                                                                      $block      The block name.
 	 * @param string                                                                                                                                                      $preset     The preset slug, for the canonical var name.
@@ -1232,7 +1232,7 @@ final class Css_Builder {
 	 * Split a binding's raw state selector into its individual, composed suffixes, dropping any part that
 	 * sanitizes away to nothing.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string|null $state The binding's raw `css_state` / `editor_css_state`.
 	 *
@@ -1260,7 +1260,7 @@ final class Css_Builder {
 	 * no palette slot). The preset's scoped rule sets this property to the per-preset value, so it can vary
 	 * per preset while the block reads the same variable.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Binding $binding The preset binding.
 	 *
@@ -1290,7 +1290,7 @@ final class Css_Builder {
 	 * binding's effective projections so a token-reference binding inherits the referenced token's
 	 * slot and an inline binding declares its own; both reach the same --global-<slot>.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Binding $binding The preset binding.
 	 *
@@ -1313,7 +1313,7 @@ final class Css_Builder {
 	/**
 	 * The block's CSS class selector: a Kadence (or any namespaced) block => ".wp-block-<namespace>-<name>".
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $block The block name.
 	 *
@@ -1350,7 +1350,7 @@ final class Css_Builder {
 	 * for the `$default`, the class-less one — follow the `:root` block inside the same media query, where
 	 * the preset var they read is defined.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string                                                                                                                                                                                                                                                                   $active_slug The active library's slug.
 	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:?string, value:?string, fallback:?string, dimension:bool, prop:?string, state:?string, editor:?string, reset:bool, direct:bool}>>, activated:array<string, bool>}> $collected The collected preset structure, for the block/preset list.
@@ -1455,7 +1455,7 @@ final class Css_Builder {
 	 * only its `--<slot>` vars. A slot var is the composed var's name plus a `--` suffix, so the bare name
 	 * followed by `:` can only be the composed declaration.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $declaration The media-block declaration(s) {@see self::responsive_declarations()} produced.
 	 * @param string $block       The block name.
@@ -1473,7 +1473,7 @@ final class Css_Builder {
 	 * the flat layer gives a property with a desktop base — the preset-classed rule and, for the `$default`
 	 * preset, the class-less one — so a selected preset and an unselected block both follow the override.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string                                                                                                                                                      $block      The block name.
 	 * @param string                                                                                                                                                      $preset     The preset slug.
@@ -1503,7 +1503,7 @@ final class Css_Builder {
 	/**
 	 * A stable signature for a breakpoint map, so the cache key changes when the filtered media queries do.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, string> $breakpoints Breakpoint => media-query string.
 	 *
@@ -1524,7 +1524,7 @@ final class Css_Builder {
 	 * "--kb-token--preset--<block>--<preset>--<property>", e.g.
 	 * --kb-token--preset--kadence-singlebtn--secondary--button-bg.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $block    The block name.
 	 * @param string $preset   The preset slug.

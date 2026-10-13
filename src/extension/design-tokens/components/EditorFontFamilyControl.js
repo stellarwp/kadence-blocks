@@ -21,7 +21,7 @@ import { TokenIndicator } from '../../token-indicators/components/TokenIndicator
  * The document the block canvas renders into: its own once the editor is iframed, the page's
  * otherwise. A font loaded into the wrong one is a font the user never sees.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Document} The canvas document.
  */
@@ -42,7 +42,7 @@ function canvasDocument() {
  * @param {Function} props.onClear        Clears the family.
  * @param {string}   [props.inheritedLabel] What an unset family falls back to.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The picker element.
  */
@@ -79,7 +79,7 @@ export function fontFamilyPicker({ value, onChange, onClear, inheritedLabel }) {
  * @param {?Object}   [props.state]          The block's own binding state (`{ bound, overridden }`).
  * @param {?Function} [props.onReset]        Reset handler for the indicator.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The control.
  */

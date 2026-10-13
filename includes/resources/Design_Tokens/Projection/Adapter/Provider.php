@@ -15,7 +15,7 @@ use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provi
  * as a clean token/variable reference. The projector looks the adapter up by block at render time, so a
  * block with no adapter is a no-op.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Provider extends Provider_Contract {
 
@@ -24,7 +24,7 @@ final class Provider extends Provider_Contract {
 	 * can take the Registry or Resolver as a dependency. A Kadence Blocks block whose attributes cannot be
 	 * expressed as a clean token/variable reference lists its adapter here.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var class-string<Adapter_Interface>[]
 	 */
@@ -35,7 +35,7 @@ final class Provider extends Provider_Contract {
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	public function register(): void {
 		$this->container->singleton( Projector::class );
@@ -57,7 +57,7 @@ final class Provider extends Provider_Contract {
 	/**
 	 * Register the declared adapters against the Token Registry.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return void
 	 */

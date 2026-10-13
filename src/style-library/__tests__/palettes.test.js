@@ -559,7 +559,7 @@ describe('isCustomColorToken', () => {
  *
  * @param {Object} value The value to freeze, recursively.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The same value, frozen.
  */

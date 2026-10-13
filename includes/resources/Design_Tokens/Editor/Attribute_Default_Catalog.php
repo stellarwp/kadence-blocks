@@ -23,14 +23,14 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
  * Scoped to kadence/single-icon's `size` today. Not a general "any block, any attribute" registry:
  * extend the ENTRIES map only when a second real consumer needs it.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Attribute_Default_Catalog {
 
 	/**
 	 * Block => attribute => the resolved-token dot-path whose presence gates the seed.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var array<string, array<string, string>>
 	 */
@@ -41,7 +41,7 @@ final class Attribute_Default_Catalog {
 	];
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Resolver
 	 */
@@ -50,14 +50,14 @@ final class Attribute_Default_Catalog {
 	/**
 	 * The active-library pointer, so the gate reads the library the block-default CSS is built from.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Active_Token_Library_Store
 	 */
 	private Active_Token_Library_Store $active;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Token_Resolver             $resolver The token resolver.
 	 * @param Active_Token_Library_Store $active   The active-library pointer.
@@ -72,7 +72,7 @@ final class Attribute_Default_Catalog {
 	 * block/attribute whose gating token does not resolve is omitted — the editor filter falls back to
 	 * block.json's own default for it.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, array<string, string>>
 	 */

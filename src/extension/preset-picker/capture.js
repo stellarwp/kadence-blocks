@@ -25,7 +25,7 @@ import { tokenLiteral } from '../design-tokens/token-literals';
  * The vendor extension a responsive token leaf carries its per-breakpoint overrides under. Mirrors the
  * PHP `Extensions` vendor key.
  *
- * @since TBD
+ * @since 3.8.0
  */
 // The one definition lives with the envelope contract both hosts read and write.
 const VENDOR_EXTENSION = KADENCE_TOKEN_NAMESPACE;
@@ -33,7 +33,7 @@ const VENDOR_EXTENSION = KADENCE_TOKEN_NAMESPACE;
 /**
  * The breakpoints a responsive property can override, checked in this order.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const CASCADE = ['tablet', 'mobile'];
 
@@ -48,7 +48,7 @@ const CASCADE = ['tablet', 'mobile'];
  * @param {string} slot The stored slot value.
  * @param {string} unit The companion unit.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The slot literal.
  */
@@ -79,7 +79,7 @@ function slotToLiteral(slot, unit) {
  * @param {boolean} [keepGaps]  Whether an unset corner captures as a gap (`''`) instead of being filled —
  *                              true for a responsive-override capture, false for the base.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string|string[]} The token literal, or the per-corner slot list.
  */
@@ -135,7 +135,7 @@ function attrToLiteral(kind, value, unit, presetValue, keepGaps = false) {
  * @param {string} unit        The property's unit. A responsive measure control carries ONE unit across
  *                             all three devices, so every breakpoint composes against the same one.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {*} The base value, or the responsive envelope wrapping it.
  */
@@ -175,7 +175,7 @@ function withResponsive(base, property, attributes, unit) {
  * @param {*}      value   The captured value.
  * @param {string} library The token library slug.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {*} The resolved literal, or the per-corner literal list.
  */
@@ -195,7 +195,7 @@ function capturedLiteral(value, library) {
  * @param {Object} tokens  The captured token map ({ propertyKey: literal-or-envelope }).
  * @param {string} library The token library the values were captured against.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{ values: Object, responsive: Object }} The catalog value maps for the preset.
  */
@@ -232,7 +232,7 @@ export function capturedCatalogValues(tokens, library) {
  * @param {string} library    The token library the block is on.
  * @param {Object} attributes The block's current attributes.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The captured token map keyed by property.
  */

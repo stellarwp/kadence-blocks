@@ -19,14 +19,14 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
  * boundary. A block's preset / default-preset bindings (with no picker) surface the same way, without a
  * `label`.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Presets {
 
 	/**
 	 * The token registry, source of the registered preset bindings.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Registry
 	 */
@@ -35,14 +35,14 @@ final class Presets {
 	/**
 	 * The preset resolver, source of the preset list and resolved values.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Preset_Resolver
 	 */
 	private Preset_Resolver $presets;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Token_Registry  $registry The token registry.
 	 * @param Preset_Resolver $presets The preset resolver.
@@ -55,7 +55,7 @@ final class Presets {
 	/**
 	 * The presets section, keyed by block name.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug The token library whose values preset aliases resolve against.
 	 *

@@ -296,7 +296,7 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 	 * is the regression case: reading the binding after normalize_shadow_defaults() strips the
 	 * `shadowToken` key made the lookup always miss on that path.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return void
 	 */
@@ -331,7 +331,7 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 	 * A whole-shadow binding the active library no longer backs renders nothing even when a non-empty
 	 * $defaults array is passed.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return void
 	 */
@@ -367,7 +367,7 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 	 * the emptiness check, not after: the two guards must stay separate rather than being
 	 * collapsed into one leading `! is_array( $shadow ) || empty( $shadow )` check.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return void
 	 */

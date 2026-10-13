@@ -33,7 +33,7 @@ describe('SwatchViewToggle', () => {
 	 * @param {string}   value    The current mode.
 	 * @param {Function} onChange The change spy.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return {void}
 	 */

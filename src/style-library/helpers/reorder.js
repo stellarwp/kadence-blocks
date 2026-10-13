@@ -18,7 +18,7 @@ import { arrayMove } from '@dnd-kit/sortable';
  * @param {string}        activeId The dragged id.
  * @param {string}        overId   The id dropped onto.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array<string>} The reordered list, or the input on a no-op.
  */

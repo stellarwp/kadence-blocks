@@ -24,7 +24,7 @@ import './AddTile.scss';
  *                                  duration of this tile's own in-flight add, not a visual busy
  *                                  state.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The add tile.
  */

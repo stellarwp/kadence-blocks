@@ -85,7 +85,7 @@ import {
  * @param {Function} args.onBusy       Called with a boolean as the chain starts and settles.
  * @param {Function} args.onError      Called with `{ message }` on failure.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Promise<void>} Resolves once the write, `onReceive`, and the feed refresh complete;
  *                          rejects on failure after `onError`/`onBusy` have run.
@@ -135,7 +135,7 @@ export function writeDefaultPaletteFlow({ namespace, slug, defaultId, edit, onRe
  * @param {Function} args.onBusy      Called with a boolean as the chain starts and settles.
  * @param {Function} args.onError     Called with `{ message }` on failure.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Promise<void>} Resolves immediately, with no request, when neither field changed;
  *                          otherwise resolves once every dirty write, `onReceive`, and the feed
@@ -205,7 +205,7 @@ export function saveSwatchEditsFlow({
  * @param {Function} args.onBusy      Called with a boolean as the request starts and settles.
  * @param {Function} args.onError     Called with `{ message }` on failure.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Promise<void>} Resolves once the pointer has moved, `onReceive` has run, and the feed
  *                          refreshed; rejects on failure after `onError`/`onBusy` have run.
@@ -257,7 +257,7 @@ export function activatePaletteFlow({ namespace, slug, id, onReceive, refreshFee
  * @param {Function} args.onBusy      Called with a boolean as the request starts and settles.
  * @param {Function} args.onError     Called with `{ message }` on failure or invalid input.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Promise<void>} Resolves once the palette is created, `onReceive` has run, and the new
  *                          palette opened for editing; rejects on an empty or duplicate label, or a
@@ -345,7 +345,7 @@ export function createPaletteFlow({
  * @param {Function} args.onBusy      Called with a boolean as the request starts and settles.
  * @param {Function} args.onError     Called with `{ message }` on failure.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Promise<void>} Resolves once the activation, delete, `onReceive`, and feed refresh
  *                          complete; rejects on a missing successor or a request failure, after
@@ -426,7 +426,7 @@ export function deletePaletteFlow({
  * @param {Function} args.onBusy      Called with a boolean as the request starts and settles.
  * @param {Function} args.onError     Called with `{ message }` on failure or invalid input.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Promise<void>} Resolves once the rename and `onReceive` complete; rejects on an
  *                          empty or duplicate label, or a request failure, after `onError` has
@@ -477,7 +477,7 @@ export function renamePaletteFlow({ namespace, slug, id, label, listing, onRecei
  * @param {Function}       args.onBusy        Called with a boolean as the chain starts and settles.
  * @param {Function}       args.onError       Called with `{ message }` on failure.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Promise<void>} See `writeDefaultPaletteFlow`.
  */
@@ -519,7 +519,7 @@ export function reorderSwatchesFlow({
  * @param {Function}      args.onBusy          Called with a boolean as the chain starts and settles.
  * @param {Function}      args.onError         Called with `{ message }` on failure.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Promise<void>} See `writeDefaultPaletteFlow`.
  */
@@ -565,7 +565,7 @@ export function reorderGroupsFlow({
  * @param {Function} args.onBusy     Called with a boolean as the chain starts and settles.
  * @param {Function} args.onError    Called with `{ message }` on failure.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Promise<void>} Resolves once the write, `onReceive`, and the feed refresh complete;
  *                          rejects on failure after `onError`/`onBusy` have run.
@@ -613,7 +613,7 @@ export function revertSwatchFlow({ namespace, slug, id, token, onReceive, refres
  * @param {Function} args.onBusy        Called with a boolean as the chain starts and settles.
  * @param {Function} args.onError       Called with `{ message }` on failure of the row-removal write.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Promise<void>} Resolves once the row-removal write (and, for a user-created token, the
  *                          best-effort cleanup attempt) settle; rejects only when the row-removal
@@ -686,7 +686,7 @@ export function removeSwatchFlow({
  * @param {Function} args.onBusy      Called with a boolean as the chain starts and settles.
  * @param {Function} args.onError     Called with `{ message }` on failure.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Promise<string>} Resolves with the new swatch's token id, so the caller can select it;
  *                            rejects on failure after `onError`/`onBusy` have run.
@@ -759,7 +759,7 @@ export function addColorFlow({
  * @param {Function} args.onBusy      Called with a boolean as the chain starts and settles.
  * @param {Function} args.onError     Called with `{ message }` on failure.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Promise<string>} Resolves with the new group's first swatch's token id; rejects on a
  *                            request failure, after `onError`/`onBusy` have run.
@@ -854,7 +854,7 @@ export function addGroupFlow({
  * @param {Function} args.onBusy      Called with a boolean as the chain starts and settles.
  * @param {Function} args.onError     Called with `{ message }` on failure.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Promise<void>} See `writeDefaultPaletteFlow`.
  */
@@ -911,7 +911,7 @@ export function renameGroupFlow({
  * @param {Function}      args.onError           Called with `{ message }` on failure of the
  *                                               group-removal write.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Promise<void>} Resolves once the group-removal write and every best-effort cleanup
  *                          attempt settle; rejects only when the group-removal write itself

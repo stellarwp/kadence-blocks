@@ -22,14 +22,14 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Definition;
  * Font-size slots (sm/md/lg/…) also travel under "kadence_slot" but are NOT palette slots; from_token()
  * returns null for them, so callers that only care about colors skip them cleanly.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Kadence_Palette_Slot {
 
 	/**
 	 * The projection key a token declares to claim a Kadence slot.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -38,7 +38,7 @@ final class Kadence_Palette_Slot {
 	/**
 	 * Matches the nine Kadence palette slots, palette1…palette9.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -48,7 +48,7 @@ final class Kadence_Palette_Slot {
 	 * The palette slot slug, e.g. "palette1". This is the entry slug in both palette options and the
 	 * suffix of --global-paletteN.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -64,7 +64,7 @@ final class Kadence_Palette_Slot {
 	/**
 	 * The projection key.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -76,7 +76,7 @@ final class Kadence_Palette_Slot {
 	 * Resolve a token's kadence_slot config to a palette slot, or null when the token declares no
 	 * kadence_slot, or declares one that is not a palette slot (e.g. a font-size key).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Token_Definition $token The token definition.
 	 *

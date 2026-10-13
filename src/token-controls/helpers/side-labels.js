@@ -23,7 +23,7 @@ import { __, sprintf } from '@wordpress/i18n';
  *
  * @param {string} side The side key: `top`, `right`, `bottom` or `left`.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The translated side name, or the key itself when it is not one of the four.
  */
@@ -47,7 +47,7 @@ export function sideLabel(side) {
  *
  * @param {?string} side The row's bare side key, or `null` while the sides are linked.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The field's accessible name.
  */

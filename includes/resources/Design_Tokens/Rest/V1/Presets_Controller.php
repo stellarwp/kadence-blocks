@@ -52,14 +52,14 @@ use WP_REST_Server;
  * resolves to {@see Token_Store::default_slug()} when none is selected). So a read or write lands in
  * whichever library the editor has the block on, and the default library is used by default.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Presets_Controller extends Controller {
 
 	/**
 	 * The request parameter that carries the block's vendor segment, e.g. "kadence".
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -68,7 +68,7 @@ final class Presets_Controller extends Controller {
 	/**
 	 * The request parameter that carries the block's name segment, e.g. "singlebtn".
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -77,7 +77,7 @@ final class Presets_Controller extends Controller {
 	/**
 	 * The request parameter that carries a single preset slug.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -86,7 +86,7 @@ final class Presets_Controller extends Controller {
 	/**
 	 * The request parameter that carries a preset's human-readable label on a create.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -95,7 +95,7 @@ final class Presets_Controller extends Controller {
 	/**
 	 * The request parameter that carries a preset's property => alias-or-literal token map.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -104,7 +104,7 @@ final class Presets_Controller extends Controller {
 	/**
 	 * The request parameter that carries the whole preset map on a replace (PUT).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -113,7 +113,7 @@ final class Presets_Controller extends Controller {
 	/**
 	 * The request parameter that carries the default preset slug.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -122,7 +122,7 @@ final class Presets_Controller extends Controller {
 	/**
 	 * The request parameter that carries the token library slug a read/write targets.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -131,7 +131,7 @@ final class Presets_Controller extends Controller {
 	/**
 	 * The request parameter that carries the version the client last read, on the order sub-route.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -140,7 +140,7 @@ final class Presets_Controller extends Controller {
 	/**
 	 * The request parameter that carries the ordered list of preset slugs on an order write.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -149,7 +149,7 @@ final class Presets_Controller extends Controller {
 	/**
 	 * The block vendor path segment. A slug-safe class with no slash; the block name is the second segment.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -158,7 +158,7 @@ final class Presets_Controller extends Controller {
 	/**
 	 * The block name path segment.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -168,7 +168,7 @@ final class Presets_Controller extends Controller {
 	 * The full block path: vendor + "/" + name, reassembled into "vendor/name" in each handler. A block
 	 * name carries a slash, so it is captured as two slug-free segments rather than one encoded segment.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -177,7 +177,7 @@ final class Presets_Controller extends Controller {
 	/**
 	 * The single-preset path segment.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -186,7 +186,7 @@ final class Presets_Controller extends Controller {
 	/**
 	 * The literal sub-route, relative to a block, that reads / sets the block's `$default`.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -197,7 +197,7 @@ final class Presets_Controller extends Controller {
 	 * display order. Registered before the single-preset route so the literal segment is not
 	 * captured as a preset slug — the same trick DEFAULT_ROUTE relies on.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -206,7 +206,7 @@ final class Presets_Controller extends Controller {
 	/**
 	 * The sole gateway to the kb_design_tokens table.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Store
 	 */
@@ -215,7 +215,7 @@ final class Presets_Controller extends Controller {
 	/**
 	 * Pure merge transform used to assemble the candidate overrides document.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Mutator
 	 */
@@ -224,7 +224,7 @@ final class Presets_Controller extends Controller {
 	/**
 	 * Dry-runs a candidate's token layers to reject alias cycles / dangling aliases before commit.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Resolver
 	 */
@@ -233,7 +233,7 @@ final class Presets_Controller extends Controller {
 	/**
 	 * Validates the DTCG grammar of a candidate document before it is committed.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Dtcg_Validator
 	 */
@@ -242,7 +242,7 @@ final class Presets_Controller extends Controller {
 	/**
 	 * Reads the effective (baseline-merged) presets section, so reads reflect writes.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Effective_Presets
 	 */
@@ -251,7 +251,7 @@ final class Presets_Controller extends Controller {
 	/**
 	 * Declares which blocks accept presets. A block with no registered preset bindings is a 404.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Registry
 	 */
@@ -260,7 +260,7 @@ final class Presets_Controller extends Controller {
 	/**
 	 * Resolves the active token library when a request names none.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Active_Token_Library_Store
 	 */
@@ -269,7 +269,7 @@ final class Presets_Controller extends Controller {
 	/**
 	 * Rewrites captured literal preset values into semantic aliases where one matches.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Preset_Value_Normalizer
 	 */
@@ -279,7 +279,7 @@ final class Presets_Controller extends Controller {
 	 * Reads and writes the presetOrder per-block display-order map, applied at every read seam
 	 * this controller serves.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Preset_Order_Index
 	 */
@@ -288,7 +288,7 @@ final class Presets_Controller extends Controller {
 	/**
 	 * Reads a class-painted preset's theme values, so a save of one stores only the values that differ.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Preset_Resolver
 	 */
@@ -297,14 +297,14 @@ final class Presets_Controller extends Controller {
 	/**
 	 * Memoised item schema for this request. Null until first built.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var array<string, mixed>|null
 	 */
 	private ?array $item_schema = null;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Token_Store                $store       The sole gateway to the kb_design_tokens table.
 	 * @param Mutator                    $mutator     Assembles the candidate overrides document.
@@ -353,7 +353,7 @@ final class Presets_Controller extends Controller {
 	 * The `default` and `order` sub-routes are registered before the single-preset route so their literal
 	 * segments are not captured as a preset slug.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return void
 	 */
@@ -469,7 +469,7 @@ final class Presets_Controller extends Controller {
 	/**
 	 * List the blocks that accept presets, each with its default and named preset slugs.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -497,7 +497,7 @@ final class Presets_Controller extends Controller {
 	/**
 	 * Read a single block's effective preset collection.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -520,7 +520,7 @@ final class Presets_Controller extends Controller {
 	 * The body carries the preset slug, an optional label and its property => value token map. The preset
 	 * is deep-merged into the stored library, so sibling presets and the `$default` are left intact.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -626,7 +626,7 @@ final class Presets_Controller extends Controller {
 	 * The stored presets for the block are dropped first, then the body's preset map (and optional
 	 * default) is written, so a preset absent from the body no longer applies.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -713,7 +713,7 @@ final class Presets_Controller extends Controller {
 	 * Removes the whole stored `presets.<block>` node, so the block renders its baseline presets. A no-op
 	 * when nothing is stored for the block.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -748,7 +748,7 @@ final class Presets_Controller extends Controller {
 	 * be reverted here: the same literal segment only clashes with the default-pointer sub-route for the
 	 * verbs that sub-route registers (GET and PUT), never for DELETE.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -783,7 +783,7 @@ final class Presets_Controller extends Controller {
 	/**
 	 * Read a block's default preset slug (GET /presets/{block}/default).
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -814,7 +814,7 @@ final class Presets_Controller extends Controller {
 	 * The default must name a preset the effective library defines, otherwise the write is rejected (HTTP 422)
 	 * before commit.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -859,7 +859,7 @@ final class Presets_Controller extends Controller {
 	 * vanished slug. Pruning to an empty list clears the stored order entirely, so "no preference" has one
 	 * spelling.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -902,7 +902,7 @@ final class Presets_Controller extends Controller {
 	 * Clear a block's stored preset display order (DELETE /presets/{block}/order), reverting it to merge
 	 * order. Idempotent: a no-op when nothing is stored for the block.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -936,7 +936,7 @@ final class Presets_Controller extends Controller {
 	/**
 	 * The JSON Schema for a block's preset collection.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -1064,7 +1064,7 @@ final class Presets_Controller extends Controller {
 	 * The list is scoped to a single token library via the optional `library` parameter, defaulting to the
 	 * active library.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -1081,7 +1081,7 @@ final class Presets_Controller extends Controller {
 	 * dangling aliases in the token layers before commit (HTTP 422), then persists. An empty candidate
 	 * clears the overrides, so the library renders from baseline, and needs no validation.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $candidate The full candidate overrides document to validate and store.
 	 * @param string               $block     The block being written, for error context.
@@ -1144,7 +1144,7 @@ final class Presets_Controller extends Controller {
 	/**
 	 * Commit a raw document string to a library and build the response, mapping a write failure to 500.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $document The raw overrides-only DTCG JSON (empty string clears the library).
 	 * @param string $block    The block being written.
@@ -1173,7 +1173,7 @@ final class Presets_Controller extends Controller {
 	/**
 	 * Reject a request for a block that has no registered preset bindings.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $block The block name.
 	 *
@@ -1199,7 +1199,7 @@ final class Presets_Controller extends Controller {
 	 * read (both '' for a first write), mirroring the documents controller's identical guard for its own
 	 * order route.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug           The token library slug.
 	 * @param string $client_version The version the client last read. Empty only for a first write.
@@ -1226,7 +1226,7 @@ final class Presets_Controller extends Controller {
 	 * slug and be an object, its label (when present) a string and its tokens (when present) an object. The
 	 * alias-or-literal grammar of the token values is left to the DTCG validator.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $block_node The block's preset node being written.
 	 * @param string               $block      The block name, for error context.
@@ -1287,7 +1287,7 @@ final class Presets_Controller extends Controller {
 	 * (the classes a class-painted preset wears, its displayed theme values, its saved snapshot). A client
 	 * edits a class preset's overrides only; what paints it is never client data.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<int, int|string> $keys   The keys the written preset carries.
 	 * @param string                 $block  The block name, for error context.
@@ -1314,7 +1314,7 @@ final class Presets_Controller extends Controller {
 	/**
 	 * The theme-owned keys a single-preset request carries as top-level parameters.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request The request.
 	 *
@@ -1348,7 +1348,7 @@ final class Presets_Controller extends Controller {
 	 * layer, and a client minting one would be listed as a theme's style the theme never offered. A stored
 	 * `theme-*` node the library already carries stays writable, since that is an update of its overrides.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $block_node The block's preset node being written.
 	 * @param string               $block      The block name, for error context.
@@ -1391,7 +1391,7 @@ final class Presets_Controller extends Controller {
 	/**
 	 * The named preset slugs a block already has in a library, baseline and stored overrides merged.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $block   The block name.
 	 * @param string $library The token library slug.
@@ -1423,7 +1423,7 @@ final class Presets_Controller extends Controller {
 	 * list. Unwrapping here keeps each guard's own rule unchanged — it just runs over every value the
 	 * entry actually contributes.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed $entry The preset token entry.
 	 *
@@ -1445,7 +1445,7 @@ final class Presets_Controller extends Controller {
 	 * it walks is a property name like "button-radius", not a token id). The registry does know, so the
 	 * check lives here, alongside the other registry-aware guards.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $block_node The block's preset node being written.
 	 * @param string               $block      The block name, for error context.
@@ -1529,7 +1529,7 @@ final class Presets_Controller extends Controller {
 	 * corner is not overridden here, keep inheriting" — this guard only inspects the base, read through
 	 * {@see Extensions::preset_value_of()} so a responsive envelope's overrides are never mistaken for it.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed  $entry    The preset token entry.
 	 * @param string $block    The block name, for error context.
@@ -1574,7 +1574,7 @@ final class Presets_Controller extends Controller {
 	 *   4px"` would count as four parts and be misread as a genuine four-corner list, corrupting a value
 	 *   that was only ever meant to be one opaque literal.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed  $entry    The preset token entry.
 	 * @param string $block    The block name, for error context.
@@ -1635,7 +1635,7 @@ final class Presets_Controller extends Controller {
 	 * just produced came back as "a per-corner value is only valid for a dimension property" — an error
 	 * about corners, for a value that never mentioned one.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param mixed  $entry    The preset token entry.
 	 * @param string $block    The block name, for error context.
@@ -1671,7 +1671,7 @@ final class Presets_Controller extends Controller {
 	 * Evaluated against the post-merge effective library (baseline merged with the candidate), so a default that
 	 * resolves to a baseline preset is accepted and one left dangling by a removal is rejected.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $candidate The candidate overrides document.
 	 * @param string               $block     The block name.
@@ -1702,7 +1702,7 @@ final class Presets_Controller extends Controller {
 	 * own classes, so making it the default would hand the block's baseline look to whatever the active
 	 * theme happens to render. Shared by every route that can write the `$default` pointer.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $default_slug The default preset slug being written; empty when the write sets none.
 	 * @param string $block        The block name, for error context.
@@ -1734,7 +1734,7 @@ final class Presets_Controller extends Controller {
 	 * rejected: it could never project. Only the presets carried by the request are checked, each against
 	 * its post-merge token library, so a partial edit is validated while the baseline presets are left alone.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $candidate  The post-merge candidate overrides document.
 	 * @param array<string, mixed> $block_node The block's preset node from the request.
@@ -1788,7 +1788,7 @@ final class Presets_Controller extends Controller {
 	 * any other that happens to resolve to the same literal. Several unrelated semantics collide whenever
 	 * they resolve alike, and without the declaration the tie-break has only the property's name to go on.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $block_node The block's preset node from the request.
 	 * @param string               $block      The block name, for reading its declared bindings.
@@ -1825,7 +1825,7 @@ final class Presets_Controller extends Controller {
 	 * at projection. Normalizer-minted aliases resolve by construction; this only catches a hand-supplied or
 	 * stale alias. Only the aliases the request carries are checked.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $block_node The block's preset node from the request.
 	 * @param string               $block      The block name, for error context.
@@ -1880,7 +1880,7 @@ final class Presets_Controller extends Controller {
 	/**
 	 * Build the response payload for a block's preset collection, read from the effective (baseline-merged) presets.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $block The block name.
 	 * @param string $slug  The token library slug being read.
@@ -1909,7 +1909,7 @@ final class Presets_Controller extends Controller {
 	 * they were saved with and the overrides they keep, so a client can show what a theme switch would bring
 	 * back without listing them as presets a button could pick.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string   $block   The block name.
 	 * @param string   $slug    The token library slug.
@@ -1950,7 +1950,7 @@ final class Presets_Controller extends Controller {
 	 * whether the theme's values behind it could be read, so a client can tell a preset it can show
 	 * values for from one it can only name.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $presets The ordered `{ slug => { label, tokens } }` map.
 	 * @param string               $block   The block name.
@@ -1978,7 +1978,7 @@ final class Presets_Controller extends Controller {
 	 * Reorder a slug => preset map to a given slug order. A slug the map does not carry (a stale ordered id
 	 * that has since been removed) is skipped rather than inserted as a hole.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $presets The named presets, keyed by slug.
 	 * @param string[]             $order   The desired slug order.
@@ -2000,7 +2000,7 @@ final class Presets_Controller extends Controller {
 	/**
 	 * Assemble the preset definition for a create from the request: an optional label plus the token map.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -2029,7 +2029,7 @@ final class Presets_Controller extends Controller {
 	 * normalized through the same pass the submitted map went through, so a literal the user typed that
 	 * equals the theme's value compares equal to it in either form.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $block_node The block's normalized preset node being written.
 	 * @param string               $block      The block name.
@@ -2069,7 +2069,7 @@ final class Presets_Controller extends Controller {
 	 * copy the reduce step compares against: normalizing would turn a literal into the alias that happens to
 	 * resolve to it today, and the kept preset would then re-value under the new theme.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $block_node The block's preset node being written.
 	 * @param string               $block      The block name.
@@ -2093,7 +2093,7 @@ final class Presets_Controller extends Controller {
 	/**
 	 * Build a partial overrides document carrying only the given preset node for one block's preset bindings.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string               $block      The block name.
 	 * @param array<string, mixed> $block_node The block's preset node.
@@ -2115,7 +2115,7 @@ final class Presets_Controller extends Controller {
 	/**
 	 * Remove the stored preset-collection node (`presets.<block>`), pruning any ancestor emptied by the removal.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document The stored overrides document.
 	 * @param string               $block    The block name.
@@ -2129,7 +2129,7 @@ final class Presets_Controller extends Controller {
 	/**
 	 * Remove one stored preset (`presets.<block>.<preset>`), pruning any ancestor emptied by the removal.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document The stored overrides document.
 	 * @param string               $block    The block name.
@@ -2144,7 +2144,7 @@ final class Presets_Controller extends Controller {
 	/**
 	 * The literal key path to the presets section.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string[]
 	 */
@@ -2155,7 +2155,7 @@ final class Presets_Controller extends Controller {
 	/**
 	 * The document key-path to a block's preset node: `presets.<block>`.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $block The block name.
 	 *
@@ -2169,7 +2169,7 @@ final class Presets_Controller extends Controller {
 	 * The preset-bearing node for a block within a presets section — its `{ $default, <preset> }` map — or
 	 * an empty array when absent.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $section The presets section.
 	 * @param string               $block   The block name.
@@ -2183,7 +2183,7 @@ final class Presets_Controller extends Controller {
 	/**
 	 * The `$default` slug of a preset node, or an empty string when none is set.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $node The block's preset node.
 	 *
@@ -2196,7 +2196,7 @@ final class Presets_Controller extends Controller {
 	/**
 	 * The named preset slugs of a preset node, skipping "$"-prefixed metadata keys.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $node The block's preset node.
 	 *
@@ -2219,7 +2219,7 @@ final class Presets_Controller extends Controller {
 	/**
 	 * The named presets of a preset node, keyed by slug, skipping "$"-prefixed metadata keys.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $node The block's preset node.
 	 *
@@ -2245,7 +2245,7 @@ final class Presets_Controller extends Controller {
 	 * Reuses the reader's single decode seam ({@see Effective_Presets::raw()}) so the controller does not
 	 * decode the store itself.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug The token library slug.
 	 *
@@ -2258,7 +2258,7 @@ final class Presets_Controller extends Controller {
 	/**
 	 * Reassemble the block name from its two captured path segments.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -2275,7 +2275,7 @@ final class Presets_Controller extends Controller {
 	 * the active library. An unknown or absent `library` falls back rather than 404ing, so a stale editor
 	 * pointer degrades to the active library instead of failing the write.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -2295,7 +2295,7 @@ final class Presets_Controller extends Controller {
 	 * Whether a slug names a library that exists. The default library is always known even before it has a
 	 * stored row, mirroring the documents controller.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug The token library slug.
 	 *
@@ -2308,7 +2308,7 @@ final class Presets_Controller extends Controller {
 	/**
 	 * The block path segment arguments shared by every single-block route.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -2336,7 +2336,7 @@ final class Presets_Controller extends Controller {
 	 * The optional token-library argument shared by every route: names the library a read/write targets,
 	 * defaulting to the active library when absent or unknown.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -2353,7 +2353,7 @@ final class Presets_Controller extends Controller {
 	/**
 	 * The arguments accepted by the single-preset route: the block segments plus the preset slug.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -2376,7 +2376,7 @@ final class Presets_Controller extends Controller {
 	 * The arguments accepted by the create route: the block segments plus a preset slug, optional label and
 	 * its token map.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -2411,7 +2411,7 @@ final class Presets_Controller extends Controller {
 	 * The arguments accepted by the replace route: the block segments plus the whole preset map and an
 	 * optional default.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -2438,7 +2438,7 @@ final class Presets_Controller extends Controller {
 	/**
 	 * The arguments accepted by the set-default route: the block segments plus the default preset slug.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -2461,7 +2461,7 @@ final class Presets_Controller extends Controller {
 	 * The arguments accepted by the order-route PUT: the block segments, the ordered slug list and the
 	 * version-conditional guard.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -2483,7 +2483,7 @@ final class Presets_Controller extends Controller {
 	/**
 	 * The arguments accepted by the order-route DELETE: the block segments plus the version-conditional guard.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return array<string, mixed>
 	 */

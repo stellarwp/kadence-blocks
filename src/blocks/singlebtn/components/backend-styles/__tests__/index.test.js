@@ -153,7 +153,7 @@ describe('shadowAxisPx', () => {
 /**
  * A shadow item bound to a backed token, plus the localized pool that backs it.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @type {Object}
  */
@@ -241,7 +241,7 @@ describe('shadowCss', () => {
  * component adds, so a test can read back the final `box-shadow` value for a given selector without
  * pulling in the real class or its rendering.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{set_selector: Function, add_property: Function, add_raw_styles: Function, render_color:
  *   Function, render_measure_output: Function, css_output: Function, rules: Array}} The fake CSS
@@ -277,7 +277,7 @@ function createFakeCss() {
  * @param {Array}  rules    The fake CSS builder's recorded rules.
  * @param {string} selector The selector to look up.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {*} The recorded `box-shadow` value, or undefined when none was recorded.
  */
@@ -483,7 +483,7 @@ describe('BackendStyles class-painted mode gating', () => {
 	 *
 	 * @param {Array} rules The fake CSS builder's recorded rules.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return {Object} The merged property map for the base selector.
 	 */
@@ -676,7 +676,7 @@ describe('BackendStyles hover border without a stored width', () => {
 	 * @param {string} color The border color of every side.
 	 * @param {string} style The line style of every side.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return {Object[]} The hover border attribute value.
 	 */
@@ -694,7 +694,7 @@ describe('BackendStyles hover border without a stored width', () => {
 	 *
 	 * @param {Array} rules The fake CSS builder's recorded rules.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return {Object} The recorded properties, or an empty object when the rule is missing.
 	 */

@@ -17,40 +17,40 @@ use KadenceWP\KadenceBlocks\Psr\Log\LoggerInterface;
  * default library's definition wins any id collision; every other library's colliding entry is skipped
  * and logged.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class User_Primitive_Registrar {
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Store
 	 */
 	private Token_Store $store;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Registry
 	 */
 	private Token_Registry $registry;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var User_Primitive_Index
 	 */
 	private User_Primitive_Index $index;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var LoggerInterface
 	 */
 	private LoggerInterface $logger;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Token_Store          $store
 	 * @param Token_Registry       $registry
@@ -73,7 +73,7 @@ final class User_Primitive_Registrar {
 	 * Deregister all current user primitives, then re-register from every stored library's committed
 	 * document. Safe to call both at boot and from the change-action subscriber.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return void
 	 */
@@ -98,7 +98,7 @@ final class User_Primitive_Registrar {
 	/**
 	 * Every stored library's slug, the default library first so it wins any cross-library id collision.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string[]
 	 */
@@ -112,7 +112,7 @@ final class User_Primitive_Registrar {
 	}
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string                                      $slug     The token library slug the entry was read from.
 	 * @param array<string, mixed>                        $document
@@ -178,7 +178,7 @@ final class User_Primitive_Registrar {
 	}
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $node The document root, walked segment by segment as $id is traversed.
 	 * @param string               $id

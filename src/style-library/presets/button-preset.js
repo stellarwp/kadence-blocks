@@ -25,7 +25,7 @@ export { BUTTON_BLOCK };
 /**
  * The panel's state tabs, in display order.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const TABS = [
 	{ name: 'normal', title: __('Normal', 'kadence-blocks') },
@@ -39,7 +39,7 @@ const TABS = [
  * either cap) previews at true size. The cap only exists to bound a pathological custom literal,
  * not to tame real values.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const BOX_PREVIEW_CAP = { vertical: '50vh', horizontal: '50vw' };
 
@@ -60,7 +60,7 @@ const BOX_PREVIEW_CAP = { vertical: '50vh', horizontal: '50vw' };
  *                                              shows the step currently being viewed/edited rather
  *                                              than always falling back to desktop.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{background: string, color: string, borderRadius: string, borderWidth: string, borderStyle: string, borderColor: string, shadow: string, padding: string, margin: string, hover: {background: string, color: string, borderRadius: string, borderWidth: string, borderStyle: string, borderColor: string, shadow: string}}} The preview.
  */
@@ -109,7 +109,7 @@ function preview(tokens, values, breakpoint) {
  * @param {Object} props     The component props.
  * @param {Object} props.row The row descriptor (`{id, label, preview, showHoverState?}`).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The chip.
  */
@@ -149,7 +149,7 @@ function ButtonPresetPreviewChip({ row }) {
  *
  * @param {{id: string, label: string, preview: Object, showHoverState?: boolean}} row The row descriptor.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The preview element.
  */
@@ -175,7 +175,7 @@ function renderPreview(row) {
  * @param {?Object} [feed]  The live design-tokens feed, whose `values` resolve a theme value's alias.
  * @param {?Object} [row]   The open preset's row (`{ isTheme, readable, themeValues }`), or null.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{panels: Array<Object>}} The settings-form schema for the active tab.
  */
@@ -332,7 +332,7 @@ function schemaFor(tab, draft = null, feed = null, row = null) {
  * time would throw for any test that imports this module before stubbing the feed, even one that
  * never touches `properties`.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const BUTTON_PRESET = Object.freeze({
 	block: BUTTON_BLOCK,

@@ -236,7 +236,7 @@ describe('the pending unit', () => {
 	 * Render `BoxTokenField` with whatever `value` currently holds, refreshing the captured
 	 * `BoxControl` props.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return {void}
 	 */
@@ -343,7 +343,7 @@ describe('what a reset draft shows', () => {
 	 * @param {Object}  props                The field's `value`/`originalValue` to render with.
 	 * @param {*}       [props.defaultValue] The schema's declared default; `null` declares none.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return {void}
 	 */
@@ -462,7 +462,7 @@ describe('a reset responsive field', () => {
 	 * @param {Object} props        The field's `value`/`originalValue`/`defaultValue`.
 	 * @param {string} breakpoint   The breakpoint to switch to.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return {void}
 	 */

@@ -8,7 +8,7 @@
  *
  * @param {Array<Object>} rows The library rows.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The action.
  */
@@ -22,7 +22,7 @@ export function receiveLibraries(rows) {
  * @param {string} key     `presetsKey()`'s output for this block/library.
  * @param {Object} payload The fetched preset collection.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The action.
  */
@@ -36,7 +36,7 @@ export function receiveBlockPresets(key, payload) {
  * @param {string}        key  `paletteListingKey()`'s output for this library.
  * @param {Array<Object>} rows The fetched palette listing rows.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The action.
  */
@@ -50,7 +50,7 @@ export function receivePaletteListing(key, rows) {
  * @param {string} slug The library slug the feed was resolved for.
  * @param {Object} feed The feed payload.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The action.
  */
@@ -69,7 +69,7 @@ export function receiveDesignTokensFeed(slug, feed) {
  *
  * @param {string} slug Token library slug.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The action object.
  */
@@ -88,7 +88,7 @@ export function forgetLibrary(slug) {
  *                       spread-merge silently adds a stray `value` key instead of overwriting the
  *                       one `mapPaletteToSwatchGroups`/`SwatchCard` actually read.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The action.
  */
@@ -102,7 +102,7 @@ export function setOptimisticSwatchPatch(key, token, patch) {
  * @param {string} key   The palette listing key.
  * @param {string} token The swatch token dot-path.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The action.
  */
@@ -119,7 +119,7 @@ export function clearOptimisticSwatchPatch(key, token) {
  * @param {'swatch'|'group'}  kind Which id list to add to.
  * @param {string}            id   The swatch token or group id.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The action.
  */
@@ -135,7 +135,7 @@ export function setOptimisticDeletion(key, kind, id) {
  * @param {'swatch'|'group'}  kind Which id list to remove from.
  * @param {string}            id   The swatch token or group id.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The action.
  */
@@ -154,7 +154,7 @@ export function clearOptimisticDeletion(key, kind, id) {
  *                                  matching `kind`. `$value`, not `value` — see
  *                                  `setOptimisticSwatchPatch`'s docblock for why.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The action.
  */
@@ -170,7 +170,7 @@ export function setOptimisticAddition(key, kind, entry) {
  * @param {'swatch'|'group'}  kind Which list to remove from.
  * @param {string}            id   The swatch token or group id to remove.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The action.
  */
@@ -186,7 +186,7 @@ export function clearOptimisticAddition(key, kind, id) {
  * @param {string} tokenId The token's canonical dot-path id.
  * @param {Object} patch   `{ label?, value? }`.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The action.
  */
@@ -200,7 +200,7 @@ export function setOptimisticScalePatch(slug, tokenId, patch) {
  * @param {string} slug    Token library slug.
  * @param {string} tokenId The token's canonical dot-path id.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The action.
  */
@@ -214,7 +214,7 @@ export function clearOptimisticScalePatch(slug, tokenId) {
  * @param {string} slug    Token library slug.
  * @param {string} tokenId The token's canonical dot-path id.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The action.
  */
@@ -228,7 +228,7 @@ export function setOptimisticScaleDeletion(slug, tokenId) {
  * @param {string} slug    Token library slug.
  * @param {string} tokenId The token's canonical dot-path id.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The action.
  */
@@ -244,7 +244,7 @@ export function clearOptimisticScaleDeletion(slug, tokenId) {
  * @param {Object} entry `{ id, label, value, userCreated }` — matches `scaleRows()`'s own row
  *                       shape, so `applyOptimisticScaleOverlay` can append it as-is.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The action.
  */
@@ -259,7 +259,7 @@ export function setOptimisticScaleAddition(slug, entry) {
  * @param {string} slug    Token library slug.
  * @param {string} tokenId The token's canonical dot-path id to remove.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The action.
  */
@@ -274,7 +274,7 @@ export function clearOptimisticScaleAddition(slug, tokenId) {
  * @param {string}  key     The palette listing key (`paletteListingKey(namespace, slug)`).
  * @param {boolean} isBusy  Whether a write is currently in flight.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The action.
  */
@@ -290,7 +290,7 @@ export function setPaletteBusy(key, isBusy) {
  * @param {string}  slug   Token library slug.
  * @param {boolean} isBusy Whether a write is currently in flight.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The action.
  */

@@ -10,14 +10,14 @@ use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provi
  * then wires the projector's enqueue methods to the same hooks the other CSS projectors use, so the palette
  * layer ships alongside the token vars on the front end and in the editor.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Provider extends Provider_Contract {
 
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	public function register(): void {
 		$this->container->singleton( Css_Builder::class );

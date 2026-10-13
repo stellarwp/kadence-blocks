@@ -21,21 +21,21 @@ import { capBoxSides } from '../helpers/preview';
  * The block name this screen edits — the single JS spelling, shared by the screen registration and
  * the config below so the two can never drift.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const IMAGE_BLOCK = 'kadence/image';
 
 /**
  * The image's built-in corner radius, matching `semantic.radius.media` (square corners).
  *
- * @since TBD
+ * @since 3.8.0
  */
 const IMAGE_RADIUS_FALLBACK = ['0', '0', '0', '0'];
 
 /**
  * The image's built-in padding, matching `semantic.spacing.media-padding` (none).
  *
- * @since TBD
+ * @since 3.8.0
  */
 const IMAGE_PADDING_FALLBACK = ['0', '0', '0', '0'];
 
@@ -45,7 +45,7 @@ const IMAGE_PADDING_FALLBACK = ['0', '0', '0', '0'];
  * A LENGTH, not a percentage: the tile sizes itself from the photo plus the padding, so a percentage
  * would resolve against a width the padding itself determines.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const PADDING_PREVIEW_CAP = '4rem';
 
@@ -61,7 +61,7 @@ const PADDING_PREVIEW_CAP = '4rem';
  * @param {Record<string, string>} values       The feed's resolved value map.
  * @param {string}                 [breakpoint] The breakpoint to resolve responsive values at.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{background: string, borderRadius: string, shadow: string, padding: string}} The preview.
  */
@@ -94,7 +94,7 @@ function preview(tokens, values, breakpoint) {
  *
  * @param {{id: string, label: string, preview: {background: string, borderRadius: string, shadow: string, padding: string}}} row The row descriptor.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The preview element.
  */
@@ -148,7 +148,7 @@ function renderPreview(row) {
  * all, because `getBorderStyle()` returns an empty string without a width. Offering either field would
  * save a value a site owner could not see. SOFT-4234 covers making them work.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{panels: Array<Object>}} The settings-form schema.
  */
@@ -223,7 +223,7 @@ function schemaFor() {
  * frozen at module evaluation, before the localized feed is guaranteed to exist, so a snapshot taken
  * here could throw or go stale.
  *
- * @since TBD
+ * @since 3.8.0
  */
 export const IMAGE_PRESET = Object.freeze({
 	block: IMAGE_BLOCK,

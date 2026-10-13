@@ -19,7 +19,7 @@ import { BASE_STYLES_SCREENS, PRESET_SCREEN_ICONS, PRESET_SCREENS_FILTER } from 
  * The screen-id prefix that namespaces every block-preset screen away from the fixed Base Styles
  * ids, so the two id spaces can never collide.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const PRESET_SCREEN_PREFIX = 'blocks/';
 
@@ -28,7 +28,7 @@ const PRESET_SCREEN_PREFIX = 'blocks/';
  *
  * @param {string} block The block name.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The screen id.
  */
@@ -41,7 +41,7 @@ export function presetScreenId(block) {
  *
  * @param {string} screenId The screen id.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The block name, or ''.
  */
@@ -54,7 +54,7 @@ export function blockFromScreenId(screenId) {
 /**
  * Build the BASE STYLES nav entries (fixed order, from the constants).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array<{id: string, label: string, icon: JSX.Element}>} The nav entries.
  */
@@ -69,7 +69,7 @@ export function buildBaseStylesNav() {
  *
  * @param {Object} feed The `window.kadenceDesignTokens` feed object.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array<{id: string, label: string, block: string, icon: ?JSX.Element, count: ?number}>} The nav
  *                                                                                        entries.
@@ -101,7 +101,7 @@ export function buildBlockPresetsNav(feed) {
  * @param {Object} registry `{ baseStyles: {id: Component}, presetFallback: Component }` — the
  *                           app-owned component map.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {?{Component: Function, block: string}} The resolution, or null for an unknown id.
  */

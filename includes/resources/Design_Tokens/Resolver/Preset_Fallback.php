@@ -10,14 +10,14 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Unknown_Preset_Exce
  * preset the active theme lacks falls to the theme's base preset, anything else falls to the block's
  * `$default`. The stored value itself is never rewritten, so switching the theme back restores the look.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Preset_Fallback {
 
 	/**
 	 * The reason a theme preset was not rendered: the active theme does not offer it.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -26,7 +26,7 @@ final class Preset_Fallback {
 	/**
 	 * The reason any other preset was not rendered: the library no longer defines it.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -35,21 +35,21 @@ final class Preset_Fallback {
 	/**
 	 * The unprefixed slug of the theme preset every other theme preset falls back to.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
 	private const THEME_BASE = 'base';
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Preset_Resolver
 	 */
 	private Preset_Resolver $presets;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Preset_Resolver $presets The preset resolver.
 	 */
@@ -61,7 +61,7 @@ final class Preset_Fallback {
 	 * The slug a block renders with: the stored one when the library defines it, else theme-base for a
 	 * theme slug the library also defines, else the block's $default.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $block  The block name.
 	 * @param string $stored The block's kbPreset attribute, left untouched.
@@ -89,7 +89,7 @@ final class Preset_Fallback {
 	 * Why the stored slug was not rendered: 'theme' for a theme preset the active theme lacks, 'missing'
 	 * for any other undefined slug, '' when the stored slug rendered.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $block  The block name.
 	 * @param string $stored The block's kbPreset attribute.
@@ -108,7 +108,7 @@ final class Preset_Fallback {
 	/**
 	 * The slug of the theme preset every other theme preset falls back to, e.g. "theme-base".
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -119,7 +119,7 @@ final class Preset_Fallback {
 	/**
 	 * The reason answered for a theme preset the active theme lacks.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -130,7 +130,7 @@ final class Preset_Fallback {
 	/**
 	 * The reason answered for a slug the library no longer defines.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */

@@ -113,7 +113,7 @@ afterEach(() => {
  *
  * @param {Object} [overrides] Fields merged over the defaults — e.g. `{ editingId: 'default' }`.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The `usePalettes` stub.
  */
@@ -186,7 +186,7 @@ function makePalettes(overrides = {}) {
  * @param {Function} [overrides.navigate] The route navigator spy.
  * @param {?Object}  [overrides.channel]  The draft channel to provide, or null for none.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {void}
  */
@@ -208,7 +208,7 @@ describe('Color Palette selection and the unsaved-changes guard', () => {
 	/**
 	 * Build a fake draft channel whose guard records what it was asked to run.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return {Object} The channel.
 	 */

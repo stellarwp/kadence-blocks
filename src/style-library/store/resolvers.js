@@ -14,7 +14,7 @@ import { presetsKey, paletteListingKey } from './constants';
 /**
  * Resolve `selectors.getLibraries()`.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Function} A `@wordpress/data` thunk.
  */
@@ -32,7 +32,7 @@ export const getLibraries =
  * @param {string} block     The block name, e.g. `kadence/singlebtn`.
  * @param {string} slug      Token library slug.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Function} A `@wordpress/data` thunk.
  */
@@ -49,7 +49,7 @@ export const getBlockPresets =
  * @param {string} namespace REST namespace.
  * @param {string} slug      Token library slug.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Function} A `@wordpress/data` thunk.
  */
@@ -79,7 +79,7 @@ export const getPaletteListing =
  * Keying a `WeakMap` on the caller's `registry` object scopes the revision tracking to the
  * registry it actually belongs to.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const feedRevisionByRegistry = new WeakMap();
 
@@ -93,7 +93,7 @@ const feedRevisionByRegistry = new WeakMap();
  * @param {Object} registry The `@wordpress/data` registry this fetch belongs to.
  * @param {string} slug     Token library slug.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {number} The new current revision for this slug — pass this to `isFeedRevisionCurrent`
  *         once the fetch this call started resolves.
@@ -116,7 +116,7 @@ export function bumpFeedRevision(registry, slug) {
  * @param {string} slug     Token library slug.
  * @param {number} revision The revision `bumpFeedRevision` returned when this fetch started.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} Whether this revision's response may still be dispatched.
  */
@@ -129,7 +129,7 @@ export function isFeedRevisionCurrent(registry, slug, revision) {
  *
  * @param {string} slug Token library slug.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Function} A `@wordpress/data` thunk.
  */

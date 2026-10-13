@@ -25,7 +25,7 @@ import { autoEntry, noneEntryForRole } from '../../token-controls';
  * mapped now so a future shadow control lights up with no change here. An unknown kind yields no
  * types, so the filter fails closed.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const KIND_TYPES = {
 	color: ['color'],
@@ -38,7 +38,7 @@ const KIND_TYPES = {
  * The whole pickable-token pool the editor localizer prints, or an empty pool when the token
  * registry is inactive (nothing pickable).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The pool ({ tokens, values }).
  */
@@ -52,7 +52,7 @@ export function pickableTokenPool() {
  *
  * @param {string} [library] The token library slug.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} id => literal value.
  */
@@ -71,7 +71,7 @@ function valuesFor(library) {
  * @param {string} kind      The control kind ('color' | 'dimension' | 'text' | 'shadow').
  * @param {string} [library] The token library slug; defaults to the active library.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array} The pickable list ([{ id, alias, label, value, type, role }]).
  */
@@ -112,7 +112,7 @@ export function pickableTokensFor(kind, library) {
  * @param {string} controlAttr The attribute the control writes (e.g. 'size').
  * @param {string} [library]   The token library slug; defaults to the active library.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The `{dot.alias}` of the bound token, or '' when the control binds none.
  */
@@ -129,7 +129,7 @@ export function boundTokenAliasForControl(blockName, controlAttr, library) {
  *
  * @param {string} id The token id (e.g. 'semantic.radius.media').
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The role, or '' when unknown.
  */
@@ -152,7 +152,7 @@ function roleForId(id) {
  * (`padding`/`margin` imply the `spacing` role, but neither string contains "spacing") — those get a
  * fixed alias here rather than a substring guess.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @type {Object<string, string>}
  */
@@ -165,7 +165,7 @@ const ROLE_ALIASES = {
  * @param {string} controlAttr The attribute the control writes (e.g. 'borderRadius').
  * @param {Array}  tokens      The type-filtered token list whose roles are the candidates.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The single matching role, or '' when none or several match.
  */
@@ -198,7 +198,7 @@ function inferRoleFromControl(controlAttr, tokens) {
  *                              (e.g. a key-based lookup for a property with no `control_attr`).
  * @param {string} [library]   The token library slug; defaults to the active library.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array} The pickable list ([{ id, alias, label, value, type, role }]), empty when unmapped.
  */
@@ -268,7 +268,7 @@ function pickableTokensForProperty(property, controlAttr, library) {
  * @param {string} controlAttr The attribute the control writes (e.g. 'borderRadius').
  * @param {string} [library]   The token library slug; defaults to the active library.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array} The pickable list ([{ id, alias, label, value, type, role }]), empty when unmapped.
  */
@@ -293,7 +293,7 @@ export function pickableTokensForControl(blockName, controlAttr, library) {
  * @param {string} key       The property's bindings key (e.g. 'button-shadow').
  * @param {string} [library] The token library slug; defaults to the active library.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array} The pickable list ([{ id, alias, label, value, type, role }]), empty when unmapped.
  */

@@ -106,7 +106,7 @@ addFilter('blocks.registerBlockType', 'kadence/block-label', blockMetadataAttrib
  *
  * @param {Object} settings The block settings.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The block settings with the kbPreset and/or kbPalette attributes added.
  */
@@ -144,7 +144,7 @@ addFilter('blocks.registerBlockType', 'kadence/kb-preset-attribute', blockPreset
  * @param {Object} settings The block settings.
  * @param {string} name     The block name.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The block settings, with any catalog-covered attribute defaults overridden.
  */
@@ -177,7 +177,7 @@ addFilter('blocks.registerBlockType', 'kadence/preset-attribute-default', blockP
  *
  * @param {string} slug The raw slug.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The sanitized slug.
  */
@@ -191,7 +191,7 @@ function sanitizeTokenIdentifier(slug) {
  *
  * @param {string} kbPreset The kbPreset attribute (the selected preset slug).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The preset class, or an empty string.
  */
@@ -209,7 +209,7 @@ function kbPresetClassName(kbPreset) {
  * @param {Object} blockType  The block type.
  * @param {Object} attributes The block attributes.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The props, with the preset class appended when one is selected.
  */
@@ -237,7 +237,7 @@ addFilter('blocks.getSaveContent.extraProps', 'kadence/kb-preset-save-class', bl
  * @param {Object} blockType  The block type.
  * @param {Object} attributes The block attributes.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The props, with the data attribute appended when a palette is pinned.
  */
@@ -262,7 +262,7 @@ addFilter('blocks.getSaveContent.extraProps', 'kadence/kb-palette-save-attr', bl
  * with after the fallback chain (`activePresetFor()`), exactly as the server does for a dynamic block, and
  * is left out for the default preset, whose rules are scoped by the absence of a preset class.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const withBlockPresetClass = createHigherOrderComponent((BlockListBlock) => {
 	return (props) => {
@@ -292,7 +292,7 @@ addFilter('editor.BlockListBlock', 'kadence/kb-preset-class', withBlockPresetCla
  * override previews live with the same switch-layer re-pointing the front end uses. Added via wrapperProps
  * so it lands on the same block wrapper the projector's `[data-kb-palette]` selector targets.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const withBlockPaletteAttr = createHigherOrderComponent((BlockListBlock) => {
 	return (props) => {
@@ -338,7 +338,7 @@ addFilter('editor.BlockListBlock', 'kadence/kb-palette-attr', withBlockPaletteAt
  * A block whose `kbPreset` support requests `inlinePicker` renders `PresetButton` itself, from inside its own
  * inspector layout, so this filter renders neither control for it.
  *
- * @since TBD
+ * @since 3.8.0
  */
 const withPresetPicker = createHigherOrderComponent((BlockEdit) => {
 	return (props) => {

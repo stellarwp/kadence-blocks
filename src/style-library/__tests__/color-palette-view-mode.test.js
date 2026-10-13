@@ -89,7 +89,7 @@ afterEach(() => {
  *
  * @param {Object} [overrides] Fields merged over the defaults — e.g. `{ editingId: 'default' }`.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The `usePalettes` stub.
  */
@@ -161,7 +161,7 @@ function makePalettes(overrides = {}) {
  *                                      settings panel (`route.item`).
  * @param {Function} [overrides.navigate] The route navigator spy.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {void}
  */

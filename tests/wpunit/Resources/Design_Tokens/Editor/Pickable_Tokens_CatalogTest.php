@@ -30,7 +30,7 @@ final class Pickable_Tokens_CatalogTest extends TestCase {
 	/**
 	 * The token registry, for the UI groups the pool's order is applied within.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Registry
 	 */
@@ -41,7 +41,7 @@ final class Pickable_Tokens_CatalogTest extends TestCase {
 	 * shared container rather than the database, so unlike stored rows it is not rolled back between
 	 * tests and a leaked registration would follow the suite into every later case.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string[]
 	 */

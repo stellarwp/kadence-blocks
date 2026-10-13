@@ -20,7 +20,7 @@ import { __ } from '@wordpress/i18n';
  * @param {Function} [props.onSelect] Called with the chosen entry's `alias` when a token is picked.
  * @param {boolean}  [props.isActive] Whether the toggle should render pressed.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {?Object} The rendered picker button, or null when there is nothing to pick from.
  */

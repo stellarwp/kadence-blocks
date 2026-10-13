@@ -28,7 +28,7 @@ import './ActivationRow.scss';
  * @param {string}   props.labels.inactiveHint The sentence saying what activating does.
  * @param {string}   props.labels.action     The action button's text.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The row.
  */

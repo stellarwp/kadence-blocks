@@ -20,7 +20,7 @@ describe('useSwatchViewMode', () => {
 	/**
 	 * A probe that exposes the hook's state and setter to the test.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return {JSX.Element} An empty marker element.
 	 */
@@ -53,7 +53,7 @@ describe('useSwatchViewMode', () => {
 	/**
 	 * Mount the probe.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return {void}
 	 */

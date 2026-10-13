@@ -23,7 +23,7 @@ import './ButtonScreen.scss';
  *
  * @param {Object} props The screen props (`label`, `route`, `navigate`, `library`).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The screen body.
  */
@@ -39,7 +39,7 @@ ButtonScreen.SettingsPanel = ButtonSettings;
  * call is the only registration path. `resolveScreen` (`helpers/screens.js`) applies the filter on
  * every render, so a module-scope `addFilter` is race-free regardless of import order.
  *
- * @since TBD
+ * @since 3.8.0
  */
 addFilter(PRESET_SCREENS_FILTER, 'kadence-blocks/style-library-button-screen', (screens) => ({
 	...screens,

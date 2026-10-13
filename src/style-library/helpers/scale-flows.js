@@ -35,7 +35,7 @@ import { customScaleTokenId } from './scale';
  *
  * @param {*} error The rejected value from an `apiFetch` call.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} A user-facing message.
  */
@@ -65,7 +65,7 @@ function errorMessage(error) {
  * @param {Function} args.onBusy       Called with a boolean as the request starts and settles.
  * @param {Function} args.onError      Called with `{ message }` on failure.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Promise<string>} Resolves with the new token's canonical id; rejects on failure, after
  *                            `onError`/`onBusy` have already run.
@@ -130,7 +130,7 @@ export function addScaleTokenFlow({
  *                                    shape). A screen whose value is a composite object (e.g.
  *                                    Shadow's `buildShadowLeaf`) supplies its own.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Promise<void>} Resolves once every changed write (and the feed refresh) completes;
  *                          rejects on failure, after `onError`/`onBusy` have already run.
@@ -189,7 +189,7 @@ export function saveScaleTokenFlow({
  * @param {Function} args.onBusy      Called with a boolean as the request starts and settles.
  * @param {Function} args.onError     Called with `{ message }` on failure.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Promise<void>} Resolves once the delete and the feed refresh complete; rejects on
  *                          failure, after `onError`/`onBusy` have already run.
@@ -220,7 +220,7 @@ export function deleteScaleTokenFlow({ slug, tokenId, feedVersion, refreshFeed, 
  * @param {Function} args.onBusy      Called with a boolean as the request starts and settles.
  * @param {Function} args.onError     Called with `{ message }` on failure.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Promise<void>} Resolves once the reset and the feed refresh complete; rejects on
  *                          failure, after `onError`/`onBusy` have already run.
@@ -252,7 +252,7 @@ export function resetScaleTokenFlow({ slug, namespace, tokenId, refreshFeed, onB
  * @param {Function} args.onBusy      Called with a boolean as the request starts and settles.
  * @param {Function} args.onError     Called with `{ message }` on failure.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Promise<void>} Resolves once the order write and the feed refresh complete; rejects on
  *                          failure, after `onError`/`onBusy` have already run.

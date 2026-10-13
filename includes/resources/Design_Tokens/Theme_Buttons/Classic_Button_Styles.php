@@ -9,14 +9,14 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Theme_Buttons\Contracts\Button_Style_S
  * painted by the same classes the Button's Theme Base mode has always put on the element, so a button on
  * it renders exactly as a theme-styled button does today. Asked last, and it always answers.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Classic_Button_Styles implements Button_Style_Source {
 
 	/**
 	 * The classes the theme's own stylesheet paints a button with.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
@@ -25,7 +25,7 @@ final class Classic_Button_Styles implements Button_Style_Source {
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	public function styles(): array {
 		return [

@@ -31,7 +31,7 @@ jest.mock('../../../../token-controls/controls/BorderControl', () => ({
  * A representative native border value: every side different, so a round-trip that silently
  * dropped or shuffled a side would be caught.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @type {Array}
  */
@@ -49,7 +49,7 @@ const NATIVE_VALUE = [
  * A representative native border value with every side identical — the shape `isUniformBorder`
  * reads as linked.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @type {Array}
  */
@@ -88,7 +88,7 @@ afterEach(() => {
  *
  * @param {Object} overrides Props to override on top of the defaults.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{borderControl: {props: Object}, onChange: Function, onChangeTablet: Function,
  *   onChangeMobile: Function, onDeviceChange: Function}} The captured `BorderControl` props (wrapped

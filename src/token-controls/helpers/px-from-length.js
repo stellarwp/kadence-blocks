@@ -19,7 +19,7 @@ import { parseCssLength } from './parse-css-length';
 /**
  * Pixel-convertible units and their multiplier against the assumed 16px root.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @type {Object<string, number>}
  */
@@ -34,7 +34,7 @@ const PX_PER_UNIT = {
  *
  * @param {*} literal A CSS length literal (`"1.5rem"`, `"24px"`).
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {?number} The pixel value, or `null` when the literal cannot be safely converted.
  */

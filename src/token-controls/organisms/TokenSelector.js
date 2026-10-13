@@ -51,7 +51,7 @@ import '../styles/token-controls.scss';
  * @param {string}  args.resolvedDefault The inherited default, resolved to a literal.
  * @param {string}  args.inheritedName  The name for that default, e.g. "Default (3px)".
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The trigger name.
  */
@@ -100,7 +100,7 @@ function nameTrigger({ stale, summary, resolvedDefault, inheritedName }) {
  *                                      write callbacks leave the field looking editable while
  *                                      silently dropping the writes.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The rendered token field.
  */

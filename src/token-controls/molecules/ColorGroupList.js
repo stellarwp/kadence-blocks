@@ -31,7 +31,7 @@ import { readableMarkColor } from '../helpers/contrast';
  * @param {Function} props.onPick  Called with a swatch's `alias` when it is chosen.
  * @param {Function} props.onClose Closes the popover after a choice.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The rendered grouped list.
  */

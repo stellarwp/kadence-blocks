@@ -13,7 +13,7 @@ import { get } from 'lodash';
 /**
  * The active token library slug, defaulting to "default".
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The active library slug.
  */
@@ -28,7 +28,7 @@ function activeLibrary() {
  * catalog skipped it). Null means "backing cannot be determined"; an empty object is an answer — the
  * library resolved and backs nothing.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object|null} id => literal value, or null when no map is available.
  */
@@ -56,7 +56,7 @@ function resolvedValues() {
  *
  * @param {string} id The design-token id (the alias path, e.g. "semantic.color.border").
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True when the id is backed, or when no resolved map is available (fail-open).
  */

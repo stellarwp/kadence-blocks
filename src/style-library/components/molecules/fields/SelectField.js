@@ -29,7 +29,7 @@ import { FieldLabel } from './FieldLabel';
  * @param {string}   props.value     The current value: a literal, or a token id storage aliased it to.
  * @param {Function} props.onChange  Called with the new value on edit; never called when read-only.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The field.
  */

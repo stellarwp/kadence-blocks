@@ -48,7 +48,7 @@ afterEach(() => {
  * @param {string} props.id        The item id.
  * @param {string} props.placement The placement to register.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The card.
  */
@@ -63,7 +63,7 @@ function Card({ id, placement }) {
  * @param {boolean} options.withCard     Whether the item's card is mounted.
  * @param {Object}  options.popoverProps Extra props for the popover.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {void}
  */

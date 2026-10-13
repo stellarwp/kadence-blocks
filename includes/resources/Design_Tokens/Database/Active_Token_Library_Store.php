@@ -17,14 +17,14 @@ use KadenceWP\KadenceBlocks\Utils\Cast;
  * names an existing library is done there (a 404), while this store guarantees the
  * read invariant and signals a real change so caches and projectors can react.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Active_Token_Library_Store {
 
 	/**
 	 * @var string The option that holds the active token library slug.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	private const OPTION = 'kadence_blocks_design_tokens_active_library';
 
@@ -34,7 +34,7 @@ final class Active_Token_Library_Store {
 	 *             from Token_Store's document-change signal: this announces the
 	 *             selection moving, not a library's contents changing.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	private const CHANGED_ACTION = 'kadence_blocks_design_tokens_active_library_changed';
 
@@ -42,14 +42,14 @@ final class Active_Token_Library_Store {
 	 * The sole gateway to the kb_design_tokens table, used to validate that a stored
 	 * pointer still references an existing library.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Token_Store
 	 */
 	private Token_Store $store;
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Token_Store $store The sole gateway to the kb_design_tokens table.
 	 */
@@ -60,7 +60,7 @@ final class Active_Token_Library_Store {
 	/**
 	 * The action hook that fires after the active library changes, for callers that need to react.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string
 	 */
@@ -75,7 +75,7 @@ final class Active_Token_Library_Store {
 	 * row (a since-deleted library) — the default is the always-present canonical library, so the returned
 	 * slug always names a readable library.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return string The active library slug, or the default library when the stored pointer is empty or dangling.
 	 */
@@ -97,7 +97,7 @@ final class Active_Token_Library_Store {
 	 * existing library is the REST layer's job (a 404); this store persists the pointer and announces
 	 * the change.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug The token library slug to make active.
 	 *
@@ -124,7 +124,7 @@ final class Active_Token_Library_Store {
 	 * their own, so this only keeps the stored option clean and emits the change signal at deletion
 	 * time. A delete of any other library leaves the pointer untouched.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug The token library slug that was deleted.
 	 *
@@ -146,7 +146,7 @@ final class Active_Token_Library_Store {
 	 * The default library is always known — it renders from baseline even before it has a row — and any
 	 * other slug is known once it has a stored row. Mirrors Documents_Controller's read gate.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $slug The slug to test.
 	 *
@@ -159,7 +159,7 @@ final class Active_Token_Library_Store {
 	/**
 	 * Signal that the active library changed so caches and projectors can react.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $new_slug The now-active library slug.
 	 * @param string $old_slug The now-previous library slug.

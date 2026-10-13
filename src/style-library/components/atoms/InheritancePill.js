@@ -35,7 +35,7 @@ import './InheritancePill.scss';
  * @param {Function} [props.onReset]     Called when the reset button is clicked.
  * @param {boolean}  [props.isDisabled]  Whether this pill's action is unavailable right now.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {JSX.Element} The pill.
  */

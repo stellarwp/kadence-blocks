@@ -13,7 +13,7 @@
  *
  * @param {*} selectReturnValue What the mocked `select( 'kadence/token-indicators' )` returns.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} `{ register }` — the mocked `register` spy, for assertions.
  */

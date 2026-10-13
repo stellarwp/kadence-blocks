@@ -14,7 +14,7 @@ import { checkRename } from './rename';
  *
  * @param {string} slug The library slug.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True for the default library.
  */
@@ -28,7 +28,7 @@ export function isDefaultLibrary(slug) {
  *
  * @param {string} title The typed library title.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The slug.
  */
@@ -51,7 +51,7 @@ export function slugifyLibraryTitle(title) {
  * @param {string} title The typed library title.
  * @param {Array<{slug: string}>} libraries The existing library rows.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True when the title's derived slug matches an existing library's slug.
  */
@@ -73,7 +73,7 @@ export function isDuplicateLibraryTitle(title, libraries) {
  *
  * @param {{slug: string, title: string}} library The library row.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {string} The display name.
  */
@@ -99,7 +99,7 @@ export function libraryDisplayTitle(library) {
  * @param {Array<{slug: string, title: string}>} libraries    The existing library rows.
  * @param {string}                                excludeSlug The slug of the library being renamed.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} True when another library already displays that name.
  */
@@ -127,7 +127,7 @@ export function isDuplicateLibraryName(title, libraries, excludeSlug) {
  * @param {Array<{slug: string, title: string}>} libraries     The existing library rows.
  * @param {string}                                slug         The slug of the library being renamed.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {{trimmed: string, isDuplicate: boolean, isSavable: boolean}} See `checkRename`.
  */
@@ -146,7 +146,7 @@ export function checkLibraryRename(title, currentTitle, libraries, slug) {
  * @param {Array<{slug: string, title: string}>} libraries  The existing library rows.
  * @param {string}                                targetSlug The library about to be deleted.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array<{slug: string, title: string}>} The candidate successors, ordered.
  */
@@ -161,7 +161,7 @@ export function successorOptions(libraries, targetSlug) {
  *
  * @param {Array<{slug: string, title: string}>} libraries The library rows from the REST list.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Array<{slug: string, title: string}>} The ordered copy.
  */

@@ -46,7 +46,7 @@ let root;
  * @param {Object} screen The preset-screen binding to stub.
  * @param {string} item   The route's `item` (`kb-item`) value.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Function} The `navigate` jest spy.
  */
@@ -76,7 +76,7 @@ function renderPresetSettings(screen, item) {
  * @param {string} item   The route's `item` (`kb-item`) value.
  * @param {Object} preset The preset config (`{ tabs, schemaFor }`) to render with.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Function} The `navigate` jest spy.
  */
@@ -139,7 +139,7 @@ function makeDirty() {
  *
  * @param {string} text The button's text content.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {?HTMLButtonElement} The matching button, or null when none matches.
  */
@@ -154,7 +154,7 @@ function findButton(text) {
  *
  * @param {HTMLButtonElement} button The button to check.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {boolean} Whether the button is disabled.
  */
@@ -414,7 +414,7 @@ describe('PresetSettings reset field display', () => {
 	 * A single-panel, single-field radius schema, real enough to exercise `SettingsForm` ->
 	 * `BoxTokenField`'s actual prop computation rather than a schema-shaped stub.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @type {Object}
 	 */
@@ -495,7 +495,7 @@ describe('PresetSettings reset field display', () => {
  * @param {boolean}                  deletable    Whether `isDeletable` reports the open preset as user-created.
  * @param {?Record<string, boolean>} [overridden] The preset's `overridden` property map, if any.
  *
- * @since TBD
+ * @since 3.8.0
  *
  * @return {Object} The screen binding stub.
  */
@@ -522,7 +522,7 @@ describe('PresetSettings unreadable theme preset', () => {
 	/**
 	 * The screen binding for a theme preset whose values could not be read.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return {Object} The stubbed binding.
 	 */

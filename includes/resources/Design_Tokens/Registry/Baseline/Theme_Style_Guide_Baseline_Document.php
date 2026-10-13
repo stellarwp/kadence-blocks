@@ -25,14 +25,14 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Theme_Style_Guide\Style_Guide_Overlay;
  * The $default color palette's swatches are re-valued alongside the tokens they point at, so the Style
  * Library shows the theme's colors and "reset swatch" restores them rather than the shipped hex.
  *
- * @since TBD
+ * @since 3.8.0
  */
 final class Theme_Style_Guide_Baseline_Document implements Baseline_Document {
 
 	/**
 	 * The shipped baseline being decorated.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Baseline_Document
 	 */
@@ -41,7 +41,7 @@ final class Theme_Style_Guide_Baseline_Document implements Baseline_Document {
 	/**
 	 * The theme-derived token values for this request.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Style_Guide_Overlay
 	 */
@@ -50,7 +50,7 @@ final class Theme_Style_Guide_Baseline_Document implements Baseline_Document {
 	/**
 	 * The pure structural setter used to write a re-valued leaf back into the document.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var Mutator
 	 */
@@ -59,7 +59,7 @@ final class Theme_Style_Guide_Baseline_Document implements Baseline_Document {
 	/**
 	 * Memoized merged document for this request. Null until first built.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var array<string, mixed>|null
 	 */
@@ -69,14 +69,14 @@ final class Theme_Style_Guide_Baseline_Document implements Baseline_Document {
 	 * The overlay signature the memoized document was built from, so a signature change within a request
 	 * (the overlay finishing its own memo, a test swapping the source) rebuilds it.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @var string
 	 */
 	private string $signature = '';
 
 	/**
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param Baseline_Document   $inner   The shipped baseline.
 	 * @param Style_Guide_Overlay $overlay The theme Style Guide overlay.
@@ -91,7 +91,7 @@ final class Theme_Style_Guide_Baseline_Document implements Baseline_Document {
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param string $id The token id.
 	 *
@@ -104,7 +104,7 @@ final class Theme_Style_Guide_Baseline_Document implements Baseline_Document {
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 */
 	public function document(): array {
 		$signature = $this->overlay->signature();
@@ -145,7 +145,7 @@ final class Theme_Style_Guide_Baseline_Document implements Baseline_Document {
 	/**
 	 * Write the theme value into every swatch of the $default color palette whose token was re-valued.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed>  $document The document with re-valued token leaves.
 	 * @param array<string, string> $values   Token id => value that was applied.
@@ -202,7 +202,7 @@ final class Theme_Style_Guide_Baseline_Document implements Baseline_Document {
 	 * The array at a key path, or null when any step is missing. Key paths (not dot-paths) because the
 	 * extensions namespace key contains dots.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document The document.
 	 * @param string[]             $path     The key path.
@@ -226,7 +226,7 @@ final class Theme_Style_Guide_Baseline_Document implements Baseline_Document {
 	/**
 	 * Replace the array at a key path. The caller has proved the path exists.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document The document.
 	 * @param string[]             $path     The key path.
@@ -254,7 +254,7 @@ final class Theme_Style_Guide_Baseline_Document implements Baseline_Document {
 	/**
 	 * Memoize the merged document with the signature it was built from.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $document  The merged document.
 	 * @param string               $signature The overlay signature it reflects.

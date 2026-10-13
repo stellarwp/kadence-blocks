@@ -40,7 +40,7 @@ describe('SwatchRow', () => {
 	 *
 	 * @param {Object} [props] Props merged over the defaults.
 	 *
-	 * @since TBD
+	 * @since 3.8.0
 	 *
 	 * @return {Object} The `onSelect` spy.
 	 */
