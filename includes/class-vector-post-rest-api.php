@@ -55,7 +55,7 @@ class Kadence_Vector_post_REST_Controller extends WP_REST_Controller {
 	 * Create a vector SVG post from object
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
-	 * @return Array
+	 * @return array|WP_Error
 	 */
 	public function create_vector( $request ) {
 		$jsonParams = $request->get_json_params();
