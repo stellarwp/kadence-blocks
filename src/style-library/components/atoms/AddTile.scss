@@ -1,0 +1,68 @@
+.kadence-blocks-style-library__add-tile {
+	box-sizing: border-box;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+	border: var(--kb-sl-border-width-input) solid var(--kb-sl-color-border);
+	border-radius: var(--kb-sl-radius-m);
+	background: var(--kb-sl-color-surface);
+	color: var(--kb-sl-color-theme);
+	font-size: var(--kb-sl-font-size-xs);
+	font-weight: var(--kb-sl-font-weight-medium);
+	line-height: var(--kb-sl-line-height-s);
+	cursor: pointer;
+
+	&:hover,
+	&:focus-visible {
+		background: #f7fafc;
+	}
+}
+
+.kadence-blocks-style-library__add-tile-content {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+// The icon's hit/alignment box — shared with `ScreenHeader`'s primary action so the two plus icons
+// stay identical by construction; see --kb-sl-size-action-icon-box in _semantic.scss.
+.kadence-blocks-style-library__add-tile-icon-wrap {
+	display: flex;
+	flex: 0 0 auto;
+	align-items: center;
+	justify-content: center;
+	width: var(--kb-sl-size-action-icon-box);
+	height: var(--kb-sl-size-action-icon-box);
+}
+
+// Deliberately smaller than its 24px wrapper, unlike the select-dropdown chevron's icon, which
+// fills its own wrapper — `plus` and `chevronDown` fill different proportions of the same 24-unit
+// viewBox, so the two need different wrapper-to-glyph ratios to land on the same apparent size.
+// See --kb-sl-size-action-icon-glyph in _semantic.scss.
+.kadence-blocks-style-library__add-tile-icon {
+	width: var(--kb-sl-size-action-icon-glyph);
+	height: var(--kb-sl-size-action-icon-glyph);
+	// A plain `<button>`, not `@wordpress/components`' `Button`, so it never gets core's free
+	// `fill: currentColor` — without this the SVG renders black instead of the theme-color text.
+	fill: currentColor;
+}
+
+.kadence-blocks-style-library__add-tile-label {
+	position: absolute;
+	top: 100%;
+	left: 50%;
+	transform: translateX(-50%);
+	font-size: inherit;
+	font-weight: inherit;
+	line-height: inherit;
+	white-space: nowrap;
+	opacity: 0;
+	transition: opacity 0.15s ease;
+}
+
+.kadence-blocks-style-library__add-tile:hover .kadence-blocks-style-library__add-tile-label,
+.kadence-blocks-style-library__add-tile:focus-visible .kadence-blocks-style-library__add-tile-label {
+	opacity: 1;
+}

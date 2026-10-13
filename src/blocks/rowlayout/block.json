@@ -794,6 +794,8 @@
 		"ktdynamic": true,
 		"kbcss": true,
 		"html": false,
-		"kbMetadata": true
+		"kbMetadata": true,
+		"kbPreset": true,
+		"kbPalette": true
 	}
 }
