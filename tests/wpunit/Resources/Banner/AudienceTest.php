@@ -27,10 +27,13 @@ final class AudienceTest extends TestCase {
 
 	private ?string $plugin_page;
 
+	private ?string $pagenow;
+
 	protected function setUp(): void {
 		parent::setUp();
 
 		$this->plugin_page = $GLOBALS['plugin_page'] ?? null;
+		$this->pagenow     = $GLOBALS['pagenow'] ?? null;
 
 		wp_set_current_user( self::factory()->user->create( [ 'role' => 'administrator' ] ) );
 		$this->on_page( 'kadence-blocks', 'toplevel_page_kadence-blocks' );
@@ -46,6 +49,7 @@ final class AudienceTest extends TestCase {
 		}
 
 		$GLOBALS['plugin_page'] = $this->plugin_page;
+		$GLOBALS['pagenow']     = $this->pagenow;
 		set_current_screen( 'front' );
 
 		parent::tearDown();
@@ -129,7 +133,7 @@ final class AudienceTest extends TestCase {
 	 */
 	public function test_it_shows_the_banner_on_post_type_lists( string $post_type ): void {
 		$this->store_license_status( 'kadence-blocks-pro', 'valid' );
-		$this->on_page( null, "edit-{$post_type}" );
+		$this->on_page( null, "edit-{$post_type}", 'edit.php' );
 
 		$this->assertTrue( $this->audience()->should_display() );
 	}
@@ -139,7 +143,7 @@ final class AudienceTest extends TestCase {
 	 */
 	public function test_it_hides_the_banner_in_the_editor( string $post_type ): void {
 		$this->store_license_status( 'kadence-blocks-pro', 'valid' );
-		$this->on_page( null, $post_type );
+		$this->on_page( null, $post_type, 'post.php' );
 
 		$this->assertFalse( $this->audience()->should_display() );
 	}
@@ -157,7 +161,7 @@ final class AudienceTest extends TestCase {
 
 	public function test_it_shows_the_banner_on_the_licensing_page(): void {
 		$this->store_license_status( 'kadence-blocks-pro', 'valid' );
-		$this->on_page( 'lw-software-manager', 'settings_page_lw-software-manager' );
+		$this->on_page( 'lw-software-manager', 'settings_page_lw-software-manager', 'options-general.php' );
 
 		$this->assertTrue( $this->audience()->should_display() );
 	}
@@ -165,14 +169,21 @@ final class AudienceTest extends TestCase {
 	public function test_it_hides_the_banner_on_other_admin_pages(): void {
 		$this->store_license_status( 'kadence-blocks-pro', 'valid' );
 
-		$this->on_page( null, 'dashboard' );
+		$this->on_page( null, 'dashboard', 'index.php' );
 		$this->assertFalse( $this->audience()->should_display(), 'Dashboard' );
 
-		$this->on_page( null, 'edit-post' );
+		$this->on_page( null, 'edit-post', 'edit.php' );
 		$this->assertFalse( $this->audience()->should_display(), 'Posts' );
 
 		$this->on_page( 'another-plugin', 'toplevel_page_another-plugin' );
 		$this->assertFalse( $this->audience()->should_display(), 'Another plugin' );
+	}
+
+	public function test_it_hides_the_banner_when_another_admin_url_names_a_kadence_page(): void {
+		$this->store_license_status( 'kadence-blocks-pro', 'valid' );
+		$this->on_page( 'kadence-blocks', 'dashboard', 'index.php' );
+
+		$this->assertFalse( $this->audience()->should_display() );
 	}
 
 	public function test_it_shows_the_banner_to_editors(): void {
@@ -186,8 +197,9 @@ final class AudienceTest extends TestCase {
 		return $this->container->get( Audience::class );
 	}
 
-	private function on_page( ?string $plugin_page, string $screen ): void {
+	private function on_page( ?string $plugin_page, string $screen, string $pagenow = 'admin.php' ): void {
 		$GLOBALS['plugin_page'] = $plugin_page;
+		$GLOBALS['pagenow']     = $pagenow;
 		set_current_screen( $screen );
 	}
 

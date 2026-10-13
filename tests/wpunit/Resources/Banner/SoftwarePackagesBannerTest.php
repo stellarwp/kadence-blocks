@@ -12,6 +12,8 @@ final class SoftwarePackagesBannerTest extends TestCase {
 
 	private ?string $plugin_page;
 
+	private ?string $pagenow;
+
 	protected function setUp(): void {
 		parent::setUp();
 
@@ -20,12 +22,14 @@ final class SoftwarePackagesBannerTest extends TestCase {
 		}
 
 		$this->plugin_page = $GLOBALS['plugin_page'] ?? null;
+		$this->pagenow     = $GLOBALS['pagenow'] ?? null;
 
 		unset( $GLOBALS['nx_banners'][ Software_Packages_Banner::ID ] );
 		$this->container->get( Software_Packages_Banner::class )->register();
 
 		wp_set_current_user( self::factory()->user->create( [ 'role' => 'administrator' ] ) );
 		$GLOBALS['plugin_page'] = 'kadence-blocks';
+		$GLOBALS['pagenow']     = 'admin.php';
 		set_current_screen( 'toplevel_page_kadence-blocks' );
 
 		uopz_set_return( 'lw_harbor_is_product_license_active', true );
@@ -38,6 +42,7 @@ final class SoftwarePackagesBannerTest extends TestCase {
 		}
 
 		$GLOBALS['plugin_page'] = $this->plugin_page;
+		$GLOBALS['pagenow']     = $this->pagenow;
 		set_current_screen( 'front' );
 
 		parent::tearDown();

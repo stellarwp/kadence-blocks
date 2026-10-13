@@ -81,9 +81,10 @@ final class Audience {
 	 * @return bool
 	 */
 	private function is_kadence_page(): bool {
-		global $plugin_page;
+		global $pagenow, $plugin_page;
 
-		if ( in_array( $plugin_page, self::PAGES, true ) ) {
+		// Any admin URL can carry a `page` argument, and admin.php serves the Kadence menu pages.
+		if ( 'admin.php' === $pagenow && in_array( $plugin_page, self::PAGES, true ) ) {
 			return true;
 		}
 
