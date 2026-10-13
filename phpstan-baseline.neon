@@ -11061,11 +11061,6 @@ parameters:
 			path: includes/class-vector-post-rest-api.php
 
 		-
-			message: "#^Method Kadence_Vector_post_REST_Controller\\:\\:create_vector\\(\\) should return array but returns WP_Error\\.$#"
-			count: 1
-			path: includes/class-vector-post-rest-api.php
-
-		-
 			message: "#^Method Kadence_Vector_post_REST_Controller\\:\\:create_vector_permission_check\\(\\) should return WP_Error\\|true but returns bool\\.$#"
 			count: 1
 			path: includes/class-vector-post-rest-api.php
