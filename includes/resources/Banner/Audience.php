@@ -21,14 +21,16 @@ final class Audience {
 	private const LEGACY_SLUGS = [ 'kadence-blocks-pro', 'kadence-creative-kit' ];
 
 	/**
-	 * Kadence Blocks admin pages, by their `page` query argument.
+	 * Admin pages under the Kadence menu, by their `page` query argument. Kadence Blocks Pro adds
+	 * Form Entries and Form Analytics.
 	 */
-	private const PAGES = [ 'kadence-blocks', 'kadence-blocks-home' ];
+	private const PAGES = [ 'kadence-blocks', 'kadence-blocks-home', 'kadence-blocks-entries', 'kadence-form-analytics' ];
 
 	/**
-	 * Kadence Blocks post types listed under the Kadence menu.
+	 * Post types listed under the Kadence menu. Kadence Blocks Pro adds Queries, Query Cards and
+	 * Custom Icons.
 	 */
-	private const POST_TYPES = [ 'kadence_form', 'kadence_header', 'kadence_navigation' ];
+	private const POST_TYPES = [ 'kadence_form', 'kadence_header', 'kadence_navigation', 'kadence_query', 'kadence_query_card', 'kb_icon' ];
 
 	/**
 	 * Whether the banner shows on the current screen.
@@ -74,7 +76,7 @@ final class Audience {
 	}
 
 	/**
-	 * Whether this is a Kadence Blocks admin page, or a list of its post types.
+	 * Whether this is an admin page or a post type list under the Kadence menu.
 	 *
 	 * @since TBD
 	 *

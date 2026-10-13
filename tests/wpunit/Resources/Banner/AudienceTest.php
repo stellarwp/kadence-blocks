@@ -25,6 +25,13 @@ final class AudienceTest extends TestCase {
 	 */
 	private int $requests = 0;
 
+	/**
+	 * Post types the test registered.
+	 *
+	 * @var string[]
+	 */
+	private array $post_types = [];
+
 	private ?string $plugin_page;
 
 	private ?string $pagenow;
@@ -42,6 +49,10 @@ final class AudienceTest extends TestCase {
 	protected function tearDown(): void {
 		foreach ( $this->registered as $slug ) {
 			get_container()->get( Collection::class )->offsetUnset( $slug );
+		}
+
+		foreach ( $this->post_types as $post_type ) {
+			unregister_post_type( $post_type );
 		}
 
 		if ( function_exists( 'uopz_unset_return' ) ) {
@@ -121,11 +132,25 @@ final class AudienceTest extends TestCase {
 		return $response;
 	}
 
-	public function test_it_shows_the_banner_on_the_home_page(): void {
+	/**
+	 * @dataProvider pages
+	 */
+	public function test_it_shows_the_banner_on_kadence_menu_pages( string $page, string $screen ): void {
 		$this->store_license_status( 'kadence-blocks-pro', 'valid' );
-		$this->on_page( 'kadence-blocks-home', 'kadence_page_kadence-blocks-home' );
+		$this->on_page( $page, $screen );
 
 		$this->assertTrue( $this->audience()->should_display() );
+	}
+
+	/**
+	 * @return array<string, string[]>
+	 */
+	public function pages(): array {
+		return [
+			'Home'           => [ 'kadence-blocks-home', 'kadence_page_kadence-blocks-home' ],
+			'Form Entries'   => [ 'kadence-blocks-entries', 'kadence_page_kadence-blocks-entries' ],
+			'Form Analytics' => [ 'kadence-form-analytics', 'admin_page_kadence-form-analytics' ],
+		];
 	}
 
 	/**
@@ -133,6 +158,7 @@ final class AudienceTest extends TestCase {
 	 */
 	public function test_it_shows_the_banner_on_post_type_lists( string $post_type ): void {
 		$this->store_license_status( 'kadence-blocks-pro', 'valid' );
+		$this->register_post_type( $post_type );
 		$this->on_page( null, "edit-{$post_type}", 'edit.php' );
 
 		$this->assertTrue( $this->audience()->should_display() );
@@ -143,6 +169,7 @@ final class AudienceTest extends TestCase {
 	 */
 	public function test_it_hides_the_banner_in_the_editor( string $post_type ): void {
 		$this->store_license_status( 'kadence-blocks-pro', 'valid' );
+		$this->register_post_type( $post_type );
 		$this->on_page( null, $post_type, 'post.php' );
 
 		$this->assertFalse( $this->audience()->should_display() );
@@ -153,9 +180,12 @@ final class AudienceTest extends TestCase {
 	 */
 	public function post_types(): array {
 		return [
-			'Forms'       => [ 'kadence_form' ],
-			'Headers'     => [ 'kadence_header' ],
-			'Navigations' => [ 'kadence_navigation' ],
+			'Forms'        => [ 'kadence_form' ],
+			'Headers'      => [ 'kadence_header' ],
+			'Navigations'  => [ 'kadence_navigation' ],
+			'Queries'      => [ 'kadence_query' ],
+			'Query Cards'  => [ 'kadence_query_card' ],
+			'Custom Icons' => [ 'kb_icon' ],
 		];
 	}
 
@@ -195,6 +225,18 @@ final class AudienceTest extends TestCase {
 
 	private function audience(): Audience {
 		return $this->container->get( Audience::class );
+	}
+
+	/**
+	 * Registers a post type Kadence Blocks Pro adds, which the test site doesn't have.
+	 */
+	private function register_post_type( string $post_type ): void {
+		if ( post_type_exists( $post_type ) ) {
+			return;
+		}
+
+		$this->post_types[] = $post_type;
+		register_post_type( $post_type, [ 'show_ui' => true ] );
 	}
 
 	private function on_page( ?string $plugin_page, string $screen, string $pagenow = 'admin.php' ): void {
