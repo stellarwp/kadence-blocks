@@ -64,7 +64,11 @@ class VectorRestControllerTest extends WPTestCase {
 	private function create_vector( string $svg ) {
 		$request = new WP_REST_Request( 'POST', '/kb-vector/v1/vectors' );
 		$request->set_header( 'content-type', 'application/json' );
-		$request->set_body( wp_json_encode( [ 'title' => 'My vector', 'vectorSVG' => $svg ] ) );
+		$body = [
+			'title'     => 'My vector',
+			'vectorSVG' => $svg,
+		];
+		$request->set_body( wp_json_encode( $body ) );
 
 		return $this->controller->create_vector( $request );
 	}
