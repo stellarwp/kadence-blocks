@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "52c6bd92f1ff36980be36954454f33fe",
+    "content-hash": "d3d4196ad3a1f3b9b3a07e17cbf34864",
     "packages": [
         {
             "name": "adbario/php-dot-notation",
@@ -1023,16 +1023,16 @@
         },
         {
             "name": "stellarwp/harbor",
-            "version": "v1.6.1",
+            "version": "v2.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/stellarwp/harbor.git",
-                "reference": "1a05907ab2ff356c95d344f3734d98429ea1951e"
+                "reference": "bc13f0ee39c7f1460aa746dddb183dcf0462c5d3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stellarwp/harbor/zipball/1a05907ab2ff356c95d344f3734d98429ea1951e",
-                "reference": "1a05907ab2ff356c95d344f3734d98429ea1951e",
+                "url": "https://api.github.com/repos/stellarwp/harbor/zipball/bc13f0ee39c7f1460aa746dddb183dcf0462c5d3",
+                "reference": "bc13f0ee39c7f1460aa746dddb183dcf0462c5d3",
                 "shasum": ""
             },
             "require": {
@@ -1087,9 +1087,9 @@
             "description": "A library that integrates a WordPress product with the Liquid Web licensing system.",
             "support": {
                 "issues": "https://github.com/stellarwp/harbor/issues",
-                "source": "https://github.com/stellarwp/harbor/tree/v1.6.1"
+                "source": "https://github.com/stellarwp/harbor/tree/v2.0.2"
             },
-            "time": "2026-09-23T18:33:29+00:00"
+            "time": "2026-10-13T13:58:47+00:00"
         },
         {
             "name": "stellarwp/licensing-api-client",
@@ -13434,5 +13434,5 @@
     "platform-overrides": {
         "php": "7.4"
     },
-    "plugin-api-version": "2.9.0"
+    "plugin-api-version": "2.6.0"
 }
