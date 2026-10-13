@@ -78,6 +78,31 @@ import Typed from 'typed.js';
  * Import Css
  */
 import './editor.scss';
+import {
+	presetPropertyValueForDevice,
+	resetAttr,
+	useLinkedMeasureState,
+	usePresetBinding,
+} from '../../extension/token-indicators';
+import {
+	anyCornerInherited,
+	inheritedMeasureSlots,
+	measureAttrsForDevice,
+	presetValueForDevice,
+} from '../../extension/token-indicators/normalize';
+import { borderSideDeclarations } from '../../extension/design-tokens/border-sides';
+import { EditorBorderControl } from '../../extension/design-tokens/components/EditorBorderControl';
+import { EditorBoxControl } from '../../extension/design-tokens/components/EditorBoxControl';
+import { EditorFontFamilyControl } from '../../extension/design-tokens/components/EditorFontFamilyControl';
+import { EditorScalarControl } from '../../extension/design-tokens/components/EditorScalarControl';
+import { useColorGroups } from '../../extension/design-tokens/hooks/use-color-groups';
+import { resolveColorLiteral } from '../../extension/design-tokens/color-literal';
+import { BorderColorField } from '../../extension/design-tokens/components/border-color';
+import { tokenDimension } from '../../extension/design-tokens/token-dimension';
+import { pickableTokensForControl, pickableTokensForKey } from '../../extension/token-picker';
+import { ColorControl } from '../../token-controls';
+import { EditorColorControlGroup } from '../../extension/design-tokens/components/EditorColorControlGroup';
+import { presetFontVariant } from './preset-font-variant';
 import metadata from './block.json';
 /**
  * Internal block libraries
@@ -94,7 +119,7 @@ import {
 	getColorClassName,
 	useBlockProps,
 } from '@wordpress/block-editor';
-import { useEffect, useState, useRef } from '@wordpress/element';
+import { useCallback, useEffect, useState, useRef } from '@wordpress/element';
 
 import {
 	ToolbarGroup,
@@ -282,6 +307,123 @@ function KadenceAdvancedHeading(props) {
 	);
 
 	const { replaceBlocks, insertBlocks } = useDispatch('core/block-editor');
+	const { setPreviewDeviceType: setPreviewDevice } = useDispatch('kadenceblocks/data');
+
+	// Design-token indicators: the per-attribute bound/overridden state for the selected preset, plus a
+	// reset that clears the mapped attribute back to the preset value (served by the existing scoped CSS).
+	const tokenBinding = usePresetBinding('kadence/advancedheading', attributes, undefined, previewDevice);
+	// The block's attribute schema goes through so a reset clears a color's legacy palette-CLASS
+	// companion (`color` -> `colorClass`, `background` -> `backgroundColorClass`) alongside the color.
+	// WordPress emits those utility classes with `!important`, so a stale one outranks whatever the
+	// reset restores and the heading would keep the old color while the field claimed otherwise.
+	const resetToken = (attr) => resetAttr(attr, setAttributes, tokenBinding[attr]?.kind, metadata.attributes);
+	// One fetch of the block's effective palette groups, shared by every `ColorControl` on this block.
+	const colorGroups = useColorGroups(clientId);
+	// `BorderControl` forwards `renderColor` down through `SlotGrid`'s `renderSlot`, so this is
+	// defined once per render rather than inline at each of the border panels below.
+	const renderBorderColor = useCallback((row) => <BorderColorField {...row} groups={colorGroups} />, [colorGroups]);
+
+	// Empty when the token registry is inactive, which is what keeps each plain control below as the
+	// fallback rather than leaving the heading without it.
+	const fontSizeTokens = pickableTokensForControl('kadence/advancedheading', 'fontSize') || [];
+	const borderRadiusTokens = pickableTokensForControl('kadence/advancedheading', 'borderRadius') || [];
+	const paddingTokens = pickableTokensForControl('kadence/advancedheading', 'padding') || [];
+	// Width, style and color all declare `borderStyle` as their control attribute, so a lookup by
+	// attribute cannot tell them apart — the width pool is fetched by the binding's own key instead.
+	const borderWidthTokens = pickableTokensForKey('kadence/advancedheading', 'borderWidth');
+
+	// A measure control keeps ONE linked/individual mode but writes a different attribute per
+	// breakpoint, so the mode must be read from — and "link" must collapse — whichever device is active.
+	const borderRadiusForDevice = measureAttrsForDevice(
+		attributes,
+		'borderRadius',
+		{ tablet: 'tabletBorderRadius', mobile: 'mobileBorderRadius' },
+		previewDevice
+	);
+	const paddingForDevice = measureAttrsForDevice(
+		attributes,
+		'padding',
+		{ tablet: 'tabletPadding', mobile: 'mobilePadding' },
+		previewDevice
+	);
+	const borderRadiusPresetValue = presetValueForDevice(
+		tokenBinding.borderRadius?.presetValue,
+		tokenBinding.borderRadius?.responsive,
+		previewDevice
+	);
+	const paddingPresetValue = presetValueForDevice(
+		tokenBinding.padding?.presetValue,
+		tokenBinding.padding?.responsive,
+		previewDevice
+	);
+	// What an unset slot falls back to on the active device: another breakpoint's slot before the
+	// preset's, matching the cascade the heading actually renders through. The slots stay stored-empty —
+	// this only tells the field's popover which size is in effect and where it came from.
+	const inheritedBorderRadius = inheritedMeasureSlots(
+		previewDevice,
+		{ desktop: borderRadius, tablet: tabletBorderRadius },
+		borderRadiusPresetValue
+	);
+	const inheritedPadding = inheritedMeasureSlots(
+		previewDevice,
+		{ desktop: padding, tablet: tabletPadding },
+		paddingPresetValue
+	);
+
+	// Font size packs all three devices into ONE array attribute (`fontSize[0..2]` is desktop/tablet/
+	// mobile) rather than naming a separate attribute per device, so `measureAttrsForDevice` — which maps
+	// a breakpoint to an attribute NAME — cannot address it. The index is resolved here instead, and the
+	// control reads and writes through it; the same reason the binding declares no `responsive_attrs`.
+	const fontSizeIndex = { Tablet: 1, Mobile: 2 }[previewDevice] ?? 0;
+	const fontSizeValue = fontSize?.[fontSizeIndex] ?? '';
+	const writeFontSize = (next) => {
+		const slots = [fontSize?.[0] ?? '', fontSize?.[1] ?? '', fontSize?.[2] ?? ''];
+
+		slots[fontSizeIndex] = next;
+
+		setAttributes({ fontSize: slots });
+	};
+	// The heading's own cascade for an unset size: the breakpoints above this one, then the preset's own
+	// value. A preset can only set the base size (see the binding's docblock), so there is no per-device
+	// preset value to prefer over it.
+	const inheritedFontSize = ({ Tablet: [fontSize?.[0]], Mobile: [fontSize?.[1], fontSize?.[0]] }[previewDevice] || [])
+		.filter((value) => value !== undefined && value !== null && value !== '')
+		.shift();
+	const fontSizePresetValue = presetPropertyValueForDevice(
+		'kadence/advancedheading',
+		'fontSize',
+		attributes,
+		undefined,
+		previewDevice
+	);
+	// The border width shares one control with style and color, so its default is read by the binding's
+	// key rather than off a `borderWidth` attribute the block does not have.
+	const borderWidthPresetValue = presetPropertyValueForDevice(
+		'kadence/advancedheading',
+		'borderWidth',
+		attributes,
+		undefined,
+		previewDevice
+	);
+
+	const borderRadiusIsRelative = borderRadiusUnit === 'em' || borderRadiusUnit === 'rem';
+	const paddingIsRelative = paddingType === 'em' || paddingType === 'rem';
+	// `resetOn` clears the remembered link choice on a preset change, since an override records a choice
+	// about the PREVIOUS preset's slots — otherwise an explicit "link" would stick and hide a new preset's
+	// per-slot value.
+	const { isLinked: borderRadiusIsLinked, toggleLink: toggleBorderRadiusLink } = useLinkedMeasureState({
+		forDevice: borderRadiusForDevice,
+		previewDevice,
+		setAttributes,
+		resetOn: attributes.kbPreset,
+	});
+	const { isLinked: paddingIsLinked, toggleLink: togglePaddingLink } = useLinkedMeasureState({
+		forDevice: paddingForDevice,
+		previewDevice,
+		setAttributes,
+		resetOn: attributes.kbPreset,
+	});
+
 	const handlePaste = (event) => {
 		const pastedText = event.clipboardData.getData('text/plain');
 
@@ -516,7 +658,23 @@ function KadenceAdvancedHeading(props) {
 		richTextFormats = richTextFormatsBase;
 	}
 
-	const renderTypography = typography && !typography.includes(',') ? "'" + typography + "'" : typography;
+	// The family a heading with none of its own falls back to: whatever the SELECTED preset carries.
+	// A preset stores the family as a literal (the font catalog is not a token scale), so this is the
+	// name itself rather than a token reference, and it is quoted for CSS exactly like the block's own.
+	// The front end does the same through `render_preset_typography()`, which points font-family at the
+	// preset variable only when the block's own `typography` is empty — the two agree by construction.
+	const presetTypography = presetPropertyValueForDevice(metadata.name, 'typography', attributes);
+	// The weight to ASK GOOGLE FOR alongside that family. The preset's weight already reaches the page
+	// as a `font-weight` declaration through its own binding, but the face it names has to be requested
+	// too — a family loaded at 400 with `font-weight: 700` over it renders as a synthesized bold. An
+	// explicit variant on the block still wins, then a weight the block sets itself, then the preset's.
+	const presetFontWeight = presetPropertyValueForDevice(metadata.name, 'fontWeight', attributes);
+	const presetVariant = fontVariant || presetFontVariant(fontWeight || presetFontWeight);
+	const effectiveTypography = typography || presetTypography || '';
+	const renderTypography =
+		effectiveTypography && !effectiveTypography.includes(',')
+			? "'" + effectiveTypography + "'"
+			: effectiveTypography;
 	const markBGString = markBG ? KadenceColorOutput(markBG, markBGOpacity) : '';
 	const markBorderString = markBorder ? KadenceColorOutput(markBorder, markBorderOpacity) : '';
 	const textColorClass = getColorClassName('color', colorClass);
@@ -811,10 +969,42 @@ function KadenceAdvancedHeading(props) {
 		mobileBorderStyle
 	);
 	const previewBorderLeft = getBorderStyle(previewDevice, 'left', borderStyle, tabletBorderStyle, mobileBorderStyle);
-	// const previewBorderTopColor = getBorderColor( previewDevice, 'top', borderStyle, tabletBorderStyle, mobileBorderStyle );
-	// const previewBorderRightColor = getBorderColor( previewDevice, 'right', borderStyle, tabletBorderStyle, mobileBorderStyle );
-	// const previewBorderBottomColor = getBorderColor( previewDevice, 'bottom', borderStyle, tabletBorderStyle, mobileBorderStyle );
-	// const previewBorderLeftColor = getBorderColor( previewDevice, 'left', borderStyle, tabletBorderStyle, mobileBorderStyle );
+	const previewBorderTopColor = getBorderColor(
+		previewDevice,
+		'top',
+		borderStyle,
+		tabletBorderStyle,
+		mobileBorderStyle
+	);
+	const previewBorderRightColor = getBorderColor(
+		previewDevice,
+		'right',
+		borderStyle,
+		tabletBorderStyle,
+		mobileBorderStyle
+	);
+	const previewBorderBottomColor = getBorderColor(
+		previewDevice,
+		'bottom',
+		borderStyle,
+		tabletBorderStyle,
+		mobileBorderStyle
+	);
+	const previewBorderLeftColor = getBorderColor(
+		previewDevice,
+		'left',
+		borderStyle,
+		tabletBorderStyle,
+		mobileBorderStyle
+	);
+	const previewBorderDeclarations = Object.fromEntries(
+		borderSideDeclarations(previewDevice, [borderStyle, tabletBorderStyle, mobileBorderStyle], {
+			top: [previewBorderTop, previewBorderTopColor],
+			right: [previewBorderRight, previewBorderRightColor],
+			bottom: [previewBorderBottom, previewBorderBottomColor],
+			left: [previewBorderLeft, previewBorderLeftColor],
+		}).map(([property, value]) => [property.replace(/-([a-z])/g, (match, letter) => letter.toUpperCase()), value])
+	);
 
 	const previewBorderRadiusTop = getPreviewSize(
 		previewDevice,
@@ -1137,14 +1327,11 @@ function KadenceAdvancedHeading(props) {
 				fontSize: previewFontSize
 					? getFontSizeOptionOutput(previewFontSize, sizeType ? sizeType : 'px')
 					: undefined,
-				borderTopLeftRadius: previewBorderRadiusTop + borderRadiusUnit,
-				borderTopRightRadius: previewBorderRadiusRight + borderRadiusUnit,
-				borderBottomRightRadius: previewBorderRadiusBottom + borderRadiusUnit,
-				borderBottomLeftRadius: previewBorderRadiusLeft + borderRadiusUnit,
-				borderTop: previewBorderTop ? previewBorderTop : undefined,
-				borderRight: previewBorderRight ? previewBorderRight : undefined,
-				borderBottom: previewBorderBottom ? previewBorderBottom : undefined,
-				borderLeft: previewBorderLeft ? previewBorderLeft : undefined,
+				borderTopLeftRadius: tokenDimension(previewBorderRadiusTop, borderRadiusUnit),
+				borderTopRightRadius: tokenDimension(previewBorderRadiusRight, borderRadiusUnit),
+				borderBottomRightRadius: tokenDimension(previewBorderRadiusBottom, borderRadiusUnit),
+				borderBottomLeftRadius: tokenDimension(previewBorderRadiusLeft, borderRadiusUnit),
+				...previewBorderDeclarations,
 			}}
 		>
 			{iconSide === 'left' && renderIcon()}
@@ -1176,7 +1363,7 @@ function KadenceAdvancedHeading(props) {
 							? previewLetterSpacing + (letterSpacingType ? letterSpacingType : 'px')
 							: undefined,
 						textTransform: textTransform ? textTransform : undefined,
-						fontFamily: typography ? renderTypography : '',
+						fontFamily: effectiveTypography ? renderTypography : '',
 						textShadow: enableTextShadow
 							? `${previewHOffset}px ${previewVOffset}px ${previewBlur}px ${
 									isRGBA(previewColorTextShadow)
@@ -1461,6 +1648,7 @@ function KadenceAdvancedHeading(props) {
 							onLetterSpacing={(value) => setAttributes({ letterSpacing: value })}
 							fontFamily={typography}
 							onFontFamily={(value) => setAttributes({ typography: value })}
+							context={{ blockName: 'kadence/advancedheading' }}
 							onFontChange={(select) => {
 								setAttributes({
 									typography: select.value,
@@ -1550,11 +1738,17 @@ function KadenceAdvancedHeading(props) {
 					)}
 				{showSettings('allSettings', 'kadence/advancedheading') &&
 					showSettings('toolbarColor', 'kadence/advancedheading', false) && (
+						/* Left as-is while the inspector's Color moved to `ColorControl`. The toolbar is not
+						   token-blind: it routes through the same `kadence.components.popColorControl.colors`
+						   filter, so a palette pick here writes the same `{alias}` the inspector would. What it
+						   lacks is the Style Library picker and the binding indicator, which do not fit a
+						   toolbar popover. Only an explicit Custom pick here replaces a token, which is the
+						   same thing that control has always done. */
 						<InlinePopColorControl
 							label={__('Color', 'kadence-blocks')}
 							value={color ? color : ''}
 							default={''}
-							onChange={(value) => setAttributes({ color: value })}
+							onChange={(value) => setAttributes({ color: value, colorClass: '' })}
 							onClassChange={(value) => setAttributes({ colorClass: value })}
 						/>
 					)}
@@ -1712,24 +1906,56 @@ function KadenceAdvancedHeading(props) {
 								{showSettings('colorSettings', 'kadence/advancedheading') && (
 									<>
 										{!enableTextGradient && (
-											<ColorGroup>
-												<PopColorControl
+											<EditorColorControlGroup>
+												{/* Every write clears the matching `*Class` attribute. Those carry
+												    legacy global-palette CLASSES the heading emits on its own
+												    element, so they beat the color these controls write and a stale
+												    one would silently discard the pick. `PopColorControl` set them
+												    itself through `onClassChange`; a palette color is a token alias
+												    now, so nothing sets them again. */}
+												<ColorControl
 													label={__('Color', 'kadence-blocks')}
 													value={color ? color : ''}
-													default={''}
-													onChange={(value) => setAttributes({ color: value })}
-													onClassChange={(value) => setAttributes({ colorClass: value })}
+													groups={colorGroups}
+													status={{
+														bound: !!tokenBinding.color?.bound,
+														modified: !!tokenBinding.color?.overridden,
+													}}
+													onReset={() => resetToken('color')}
+													onPick={(alias) => setAttributes({ color: alias, colorClass: '' })}
+													onCustom={(literal) =>
+														setAttributes({ color: literal, colorClass: '' })
+													}
+													onClear={() => setAttributes({ color: '', colorClass: '' })}
+													resolveLiteral={resolveColorLiteral}
 												/>
-												<PopColorControl
+												<ColorControl
 													label={__('Background Color', 'kadence-blocks')}
 													value={background ? background : ''}
-													default={''}
-													onChange={(value) => setAttributes({ background: value })}
-													onClassChange={(value) =>
-														setAttributes({ backgroundColorClass: value })
+													groups={colorGroups}
+													status={{
+														bound: !!tokenBinding.background?.bound,
+														modified: !!tokenBinding.background?.overridden,
+													}}
+													onReset={() => resetToken('background')}
+													onPick={(alias) =>
+														setAttributes({
+															background: alias,
+															backgroundColorClass: '',
+														})
 													}
+													onCustom={(literal) =>
+														setAttributes({
+															background: literal,
+															backgroundColorClass: '',
+														})
+													}
+													onClear={() =>
+														setAttributes({ background: '', backgroundColorClass: '' })
+													}
+													resolveLiteral={resolveColorLiteral}
 												/>
-											</ColorGroup>
+											</EditorColorControlGroup>
 										)}
 										<ToggleControl
 											style={{ marginTop: '10px' }}
@@ -1749,118 +1975,141 @@ function KadenceAdvancedHeading(props) {
 								)}
 								{showSettings('sizeSettings', 'kadence/advancedheading') && (
 									<>
-										<ResponsiveFontSizeControl
-											label={__('Font Size', 'kadence-blocks')}
-											value={undefined !== fontSize?.[0] ? fontSize[0] : ''}
-											onChange={(value) =>
-												setAttributes({
-													fontSize: [
-														value,
-														undefined !== fontSize[1] ? fontSize[1] : '',
-														undefined !== fontSize[2] ? fontSize[2] : '',
-													],
-												})
-											}
-											tabletValue={undefined !== fontSize?.[1] ? fontSize[1] : ''}
-											onChangeTablet={(value) =>
-												setAttributes({
-													fontSize: [
-														undefined !== fontSize[0] ? fontSize[0] : '',
-														value,
-														undefined !== fontSize[2] ? fontSize[2] : '',
-													],
-												})
-											}
-											mobileValue={undefined !== fontSize?.[2] ? fontSize[2] : ''}
-											onChangeMobile={(value) =>
-												setAttributes({
-													fontSize: [
-														undefined !== fontSize[0] ? fontSize[0] : '',
-														undefined !== fontSize[1] ? fontSize[1] : '',
-														value,
-													],
-												})
-											}
-											min={0}
-											max={sizeType === 'px' ? 200 : 12}
-											step={sizeType === 'px' ? 1 : 0.001}
-											unit={sizeType ? sizeType : 'px'}
-											onUnit={(value) => {
-												setAttributes({ sizeType: value });
-											}}
-											units={['px', 'em', 'rem', 'vw']}
-										/>
-										<TwoColumn className="kb-font-settings">
-											<ResponsiveUnitControl
-												label={__('Line Height', 'kadence-blocks')}
-												value={undefined !== fontHeight?.[0] ? fontHeight[0] : ''}
+										{fontSizeTokens.length ? (
+											<EditorScalarControl
+												label={__('Font Size', 'kadence-blocks')}
+												value={fontSizeValue}
+												onChange={writeFontSize}
+												previewDevice={previewDevice}
+												onDeviceChange={setPreviewDevice}
+												tokens={fontSizeTokens}
+												defaultValue={inheritedFontSize ?? fontSizePresetValue}
+												inherited={inheritedFontSize !== undefined}
+												state={tokenBinding.fontSize}
+												onReset={() => resetToken('fontSize')}
+												unit={sizeType ? sizeType : 'px'}
+												units={['px', 'em', 'rem', 'vw']}
+												onUnit={(value) => setAttributes({ sizeType: value })}
+												min={0}
+												max={sizeType === 'px' ? 200 : 12}
+												step={sizeType === 'px' ? 1 : 0.001}
+											/>
+										) : (
+											<ResponsiveFontSizeControl
+												label={__('Font Size', 'kadence-blocks')}
+												value={undefined !== fontSize?.[0] ? fontSize[0] : ''}
 												onChange={(value) =>
 													setAttributes({
-														fontHeight: [
+														fontSize: [
 															value,
-															undefined !== fontHeight[1] ? fontHeight[1] : '',
-															undefined !== fontHeight[2] ? fontHeight[2] : '',
+															undefined !== fontSize[1] ? fontSize[1] : '',
+															undefined !== fontSize[2] ? fontSize[2] : '',
 														],
 													})
 												}
-												tabletValue={undefined !== fontHeight?.[1] ? fontHeight[1] : ''}
+												tabletValue={undefined !== fontSize?.[1] ? fontSize[1] : ''}
 												onChangeTablet={(value) =>
 													setAttributes({
-														fontHeight: [
-															undefined !== fontHeight[0] ? fontHeight[0] : '',
+														fontSize: [
+															undefined !== fontSize[0] ? fontSize[0] : '',
 															value,
-															undefined !== fontHeight[2] ? fontHeight[2] : '',
+															undefined !== fontSize[2] ? fontSize[2] : '',
 														],
 													})
 												}
-												mobileValue={undefined !== fontHeight?.[2] ? fontHeight[2] : ''}
+												mobileValue={undefined !== fontSize?.[2] ? fontSize[2] : ''}
 												onChangeMobile={(value) =>
 													setAttributes({
-														fontHeight: [
-															undefined !== fontHeight[0] ? fontHeight[0] : '',
-															undefined !== fontHeight[1] ? fontHeight[1] : '',
+														fontSize: [
+															undefined !== fontSize[0] ? fontSize[0] : '',
+															undefined !== fontSize[1] ? fontSize[1] : '',
 															value,
 														],
 													})
 												}
 												min={0}
-												max={fontHeightType === 'px' ? 200 : 12}
-												step={fontHeightType === 'px' ? 1 : 0.1}
-												unit={fontHeightType ? fontHeightType : ''}
-												onUnit={(value) => setAttributes({ fontHeightType: value })}
-												units={['-', 'px', 'em', 'rem']}
-												compressedDevice={true}
+												max={sizeType === 'px' ? 200 : 12}
+												step={sizeType === 'px' ? 1 : 0.001}
+												unit={sizeType ? sizeType : 'px'}
+												onUnit={(value) => {
+													setAttributes({ sizeType: value });
+												}}
+												units={['px', 'em', 'rem', 'vw']}
 											/>
-											<KadenceRadioButtons
-												label={__('Letter Case', 'kadence-blocks')}
-												value={textTransform}
-												className={'kb-letter-case'}
-												options={[
-													{
-														value: 'none',
-														label: __('-', 'kadence-blocks'),
-														tooltip: __('None', 'kadence-blocks'),
-													},
-													{
-														value: 'uppercase',
-														label: __('AB', 'kadence-blocks'),
-														tooltip: __('Uppercase', 'kadence-blocks'),
-													},
-													{
-														value: 'lowercase',
-														label: __('ab', 'kadence-blocks'),
-														tooltip: __('Lowercase', 'kadence-blocks'),
-													},
-													{
-														value: 'capitalize',
-														label: __('Ab', 'kadence-blocks'),
-														tooltip: __('Capitalize', 'kadence-blocks'),
-													},
-												]}
-												allowClear={true}
-												onChange={(value) => setAttributes({ textTransform: value })}
-											/>
-										</TwoColumn>
+										)}
+										<div className="kb-advanced-heading-font-settings">
+											<TwoColumn className="kb-font-settings">
+												<ResponsiveUnitControl
+													label={__('Line Height', 'kadence-blocks')}
+													value={undefined !== fontHeight?.[0] ? fontHeight[0] : ''}
+													onChange={(value) =>
+														setAttributes({
+															fontHeight: [
+																value,
+																undefined !== fontHeight[1] ? fontHeight[1] : '',
+																undefined !== fontHeight[2] ? fontHeight[2] : '',
+															],
+														})
+													}
+													tabletValue={undefined !== fontHeight?.[1] ? fontHeight[1] : ''}
+													onChangeTablet={(value) =>
+														setAttributes({
+															fontHeight: [
+																undefined !== fontHeight[0] ? fontHeight[0] : '',
+																value,
+																undefined !== fontHeight[2] ? fontHeight[2] : '',
+															],
+														})
+													}
+													mobileValue={undefined !== fontHeight?.[2] ? fontHeight[2] : ''}
+													onChangeMobile={(value) =>
+														setAttributes({
+															fontHeight: [
+																undefined !== fontHeight[0] ? fontHeight[0] : '',
+																undefined !== fontHeight[1] ? fontHeight[1] : '',
+																value,
+															],
+														})
+													}
+													min={0}
+													max={fontHeightType === 'px' ? 200 : 12}
+													step={fontHeightType === 'px' ? 1 : 0.1}
+													unit={fontHeightType ? fontHeightType : ''}
+													onUnit={(value) => setAttributes({ fontHeightType: value })}
+													units={['-', 'px', 'em', 'rem']}
+													compressedDevice={true}
+												/>
+												<KadenceRadioButtons
+													label={__('Letter Case', 'kadence-blocks')}
+													value={textTransform}
+													className={'kb-letter-case'}
+													options={[
+														{
+															value: 'none',
+															label: __('-', 'kadence-blocks'),
+															tooltip: __('None', 'kadence-blocks'),
+														},
+														{
+															value: 'uppercase',
+															label: __('AB', 'kadence-blocks'),
+															tooltip: __('Uppercase', 'kadence-blocks'),
+														},
+														{
+															value: 'lowercase',
+															label: __('ab', 'kadence-blocks'),
+															tooltip: __('Lowercase', 'kadence-blocks'),
+														},
+														{
+															value: 'capitalize',
+															label: __('Ab', 'kadence-blocks'),
+															tooltip: __('Capitalize', 'kadence-blocks'),
+														},
+													]}
+													allowClear={true}
+													onChange={(value) => setAttributes({ textTransform: value })}
+												/>
+											</TwoColumn>
+										</div>
 									</>
 								)}
 							</KadencePanelBody>
@@ -1884,6 +2133,20 @@ function KadenceAdvancedHeading(props) {
 										onLetterSpacingType={(value) => setAttributes({ letterSpacingType: value })}
 										fontFamily={typography}
 										onFontFamily={(value) => setAttributes({ typography: value })}
+										context={{ blockName: 'kadence/advancedheading' }}
+										// The family is not a token, but the heading's preset surface can carry one, so the row
+										// wears the same chrome and bound/overridden mark as Font Size above it.
+										renderFontFamily={({ label, value, onChange, onClear }) => (
+											<EditorFontFamilyControl
+												label={label}
+												value={value}
+												onChange={onChange}
+												onClear={onClear}
+												inheritedLabel={presetTypography}
+												state={tokenBinding.typography}
+												onReset={() => resetToken('typography')}
+											/>
+										)}
 										onFontChange={(select) => {
 											setAttributes({
 												typography: select.value,
@@ -1912,32 +2175,74 @@ function KadenceAdvancedHeading(props) {
 								initialOpen={false}
 								panelName={'kb-adv-heading-border'}
 							>
-								<ResponsiveBorderControl
-									label={__('Border', 'kadence-blocks')}
-									value={borderStyle}
-									tabletValue={tabletBorderStyle}
-									mobileValue={mobileBorderStyle}
-									onChange={(value) => setAttributes({ borderStyle: value })}
-									onChangeTablet={(value) => setAttributes({ tabletBorderStyle: value })}
-									onChangeMobile={(value) => setAttributes({ mobileBorderStyle: value })}
-								/>
-								<ResponsiveMeasurementControls
-									label={__('Border Radius', 'kadence-blocks')}
-									value={borderRadius}
-									tabletValue={tabletBorderRadius}
-									mobileValue={mobileBorderRadius}
-									onChange={(value) => setAttributes({ borderRadius: value })}
-									onChangeTablet={(value) => setAttributes({ tabletBorderRadius: value })}
-									onChangeMobile={(value) => setAttributes({ mobileBorderRadius: value })}
-									unit={borderRadiusUnit}
-									units={['px', 'em', 'rem', '%']}
-									onUnit={(value) => setAttributes({ borderRadiusUnit: value })}
-									max={borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 24 : 500}
-									step={borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 0.1 : 1}
-									min={0}
-									isBorderRadius={true}
-									allowEmpty={true}
-								/>
+								{borderWidthTokens.length ? (
+									<EditorBorderControl
+										label={__('Border', 'kadence-blocks')}
+										value={borderStyle}
+										tabletValue={tabletBorderStyle}
+										mobileValue={mobileBorderStyle}
+										onChange={(value) => setAttributes({ borderStyle: value })}
+										onChangeTablet={(value) => setAttributes({ tabletBorderStyle: value })}
+										onChangeMobile={(value) => setAttributes({ mobileBorderStyle: value })}
+										previewDevice={previewDevice}
+										onDeviceChange={setPreviewDevice}
+										widthTokens={borderWidthTokens}
+										defaultValue={borderWidthPresetValue}
+										renderColor={renderBorderColor}
+										state={tokenBinding.borderStyle}
+										onReset={() => resetToken('borderStyle')}
+									/>
+								) : (
+									<ResponsiveBorderControl
+										label={__('Border', 'kadence-blocks')}
+										value={borderStyle}
+										tabletValue={tabletBorderStyle}
+										mobileValue={mobileBorderStyle}
+										onChange={(value) => setAttributes({ borderStyle: value })}
+										onChangeTablet={(value) => setAttributes({ tabletBorderStyle: value })}
+										onChangeMobile={(value) => setAttributes({ mobileBorderStyle: value })}
+									/>
+								)}
+								{borderRadiusTokens.length ? (
+									<EditorBoxControl
+										label={__('Border Radius', 'kadence-blocks')}
+										value={borderRadiusForDevice.value}
+										onChange={(next) => setAttributes({ [borderRadiusForDevice.attr]: next })}
+										previewDevice={previewDevice}
+										onDeviceChange={setPreviewDevice}
+										tokens={borderRadiusTokens}
+										defaultValue={inheritedBorderRadius.values}
+										inherited={anyCornerInherited(inheritedBorderRadius.inherited)}
+										state={tokenBinding.borderRadius}
+										onReset={() => resetToken('borderRadius')}
+										isLinked={borderRadiusIsLinked}
+										onToggleLink={toggleBorderRadiusLink}
+										unit={borderRadiusUnit}
+										units={['px', 'em', 'rem', '%']}
+										onUnit={(value) => setAttributes({ borderRadiusUnit: value })}
+										min={0}
+										max={borderRadiusIsRelative ? 24 : 500}
+										step={borderRadiusIsRelative ? 0.1 : 1}
+									/>
+								) : (
+									<ResponsiveMeasurementControls
+										label={__('Border Radius', 'kadence-blocks')}
+										value={borderRadius}
+										tabletValue={tabletBorderRadius}
+										mobileValue={mobileBorderRadius}
+										onChange={(value) => setAttributes({ borderRadius: value })}
+										onChangeTablet={(value) => setAttributes({ tabletBorderRadius: value })}
+										onChangeMobile={(value) => setAttributes({ mobileBorderRadius: value })}
+										unit={borderRadiusUnit}
+										units={['px', 'em', 'rem', '%']}
+										onUnit={(value) => setAttributes({ borderRadiusUnit: value })}
+										max={borderRadiusIsRelative ? 24 : 500}
+										step={borderRadiusIsRelative ? 0.1 : 1}
+										min={0}
+										isBorderRadius={true}
+										allowEmpty={true}
+									/>
+								)}
 							</KadencePanelBody>
 							<KadencePanelBody
 								title={__('Text Shadow Settings', 'kadence-blocks')}
@@ -2391,6 +2696,7 @@ function KadenceAdvancedHeading(props) {
 										onLetterSpacingType={(value) => setAttributes({ markLetterSpacingType: value })}
 										fontFamily={markTypography}
 										onFontFamily={(value) => setAttributes({ markTypography: value })}
+										context={{ blockName: 'kadence/advancedheading' }}
 										onFontChange={(select) => {
 											setAttributes({
 												markTypography: select.value,
@@ -2622,23 +2928,47 @@ function KadenceAdvancedHeading(props) {
 							{showSettings('marginSettings', 'kadence/advancedheading') && (
 								<>
 									<KadencePanelBody panelName={'kb-row-padding'}>
-										<ResponsiveMeasureRangeControl
-											label={__('Padding', 'kadence-blocks')}
-											value={padding}
-											tabletValue={tabletPadding}
-											mobileValue={mobilePadding}
-											onChange={(value) => setAttributes({ padding: value })}
-											onChangeTablet={(value) => setAttributes({ tabletPadding: value })}
-											onChangeMobile={(value) => setAttributes({ mobilePadding: value })}
-											min={0}
-											max={paddingType === 'em' || paddingType === 'rem' ? 12 : 999}
-											step={paddingType === 'em' || paddingType === 'rem' ? 0.1 : 1}
-											unit={paddingType}
-											units={['px', 'em', 'rem', '%']}
-											onUnit={(value) => setAttributes({ paddingType: value })}
-											onMouseOver={paddingMouseOver.onMouseOver}
-											onMouseOut={paddingMouseOver.onMouseOut}
-										/>
+										{paddingTokens.length ? (
+											<EditorBoxControl
+												label={__('Padding', 'kadence-blocks')}
+												value={paddingForDevice.value}
+												onChange={(next) => setAttributes({ [paddingForDevice.attr]: next })}
+												previewDevice={previewDevice}
+												onDeviceChange={setPreviewDevice}
+												tokens={paddingTokens}
+												defaultValue={inheritedPadding.values}
+												inherited={anyCornerInherited(inheritedPadding.inherited)}
+												state={tokenBinding.padding}
+												onReset={() => resetToken('padding')}
+												isLinked={paddingIsLinked}
+												onToggleLink={togglePaddingLink}
+												role="sides"
+												unit={paddingType}
+												units={['px', 'em', 'rem', '%']}
+												onUnit={(value) => setAttributes({ paddingType: value })}
+												min={0}
+												max={paddingIsRelative ? 12 : 999}
+												step={paddingIsRelative ? 0.1 : 1}
+											/>
+										) : (
+											<ResponsiveMeasureRangeControl
+												label={__('Padding', 'kadence-blocks')}
+												value={padding}
+												tabletValue={tabletPadding}
+												mobileValue={mobilePadding}
+												onChange={(value) => setAttributes({ padding: value })}
+												onChangeTablet={(value) => setAttributes({ tabletPadding: value })}
+												onChangeMobile={(value) => setAttributes({ mobilePadding: value })}
+												min={0}
+												max={paddingIsRelative ? 12 : 999}
+												step={paddingIsRelative ? 0.1 : 1}
+												unit={paddingType}
+												units={['px', 'em', 'rem', '%']}
+												onUnit={(value) => setAttributes({ paddingType: value })}
+												onMouseOver={paddingMouseOver.onMouseOver}
+												onMouseOut={paddingMouseOver.onMouseOut}
+											/>
+										)}
 										<ResponsiveMeasureRangeControl
 											label={__('Margin', 'kadence-blocks')}
 											value={margin}
@@ -2727,6 +3057,18 @@ function KadenceAdvancedHeading(props) {
 				</div>
 			)}
 			{!kadenceAnimation && (link ? headingLinkContent : headingContent)}
+			{/*
+			 * The preset's family is loaded on the same terms as the block's own. Without this a heading
+			 * that takes its family from a preset renders in a fallback face: the loader is driven by the
+			 * `typography` attribute, which is empty in exactly the case the preset supplies one.
+			 */}
+			{!typography && presetTypography && (
+				<KadenceWebfontLoader
+					typography={[{ family: presetTypography, variant: presetVariant }]}
+					clientId={clientId}
+					id={'adv-heading-preset'}
+				/>
+			)}
 			{googleFont && typography && (
 				<KadenceWebfontLoader
 					typography={[{ family: typography, variant: fontVariant ? fontVariant : '' }]}
