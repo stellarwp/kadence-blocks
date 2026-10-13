@@ -55,7 +55,7 @@ class Kadence_Vector_post_REST_Controller extends WP_REST_Controller {
 	 * Create a vector SVG post from object
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
-	 * @return Array
+	 * @return array|WP_Error
 	 */
 	public function create_vector( $request ) {
 		$jsonParams = $request->get_json_params();
@@ -75,7 +75,7 @@ class Kadence_Vector_post_REST_Controller extends WP_REST_Controller {
 
 		// The sanitizer returns false for SVGs it can't safely clean.
 		if ( ! $svg_content ) {
-			return new WP_Error( 'invalid_svg', __( 'Vector contains invalid SVG', 'kadence-blocks' ), array( 'status' => 200 ) );
+			return new WP_Error( 'invalid_svg', __( 'Vector contains invalid SVG', 'kadence-blocks' ), [ 'status' => 200 ] );
 		}
 
 		// Create post object
@@ -130,6 +130,7 @@ class KadenceBlocksAllowedAttributes implements AttributeInterface {
 	 * @return array
 	 */
 	public static function getAttributes() {
+		// cspell:disable -- HTML/SVG/MathML attribute names are lowercase compounds.
 		return array(
 			// HTML
 			'about',
@@ -466,5 +467,6 @@ class KadenceBlocksAllowedAttributes implements AttributeInterface {
 			'xml:space',
 			'xmlns:xlink',
 		);
+		/* cspell:enable */
 	}
 }
