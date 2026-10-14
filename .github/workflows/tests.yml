@@ -57,6 +57,11 @@ jobs:
                   path: slic
                   fetch-depth: 1
 
+            - name: Set up Node
+              uses: actions/setup-node@v6
+              with:
+                  node-version-file: .nvmrc
+
             - uses: oven-sh/setup-bun@v2
               with:
                   bun-version: latest
@@ -121,6 +126,9 @@ jobs:
 
             - name: Run acceptance tests
               run: ${SLIC_BIN} run acceptance --ext DotReporter
+
+            - name: Run snapshot tests
+              run: ${SLIC_BIN} run snapshot --ext DotReporter
 
             - name: Upload codeception output
               if: ${{ failure() }}

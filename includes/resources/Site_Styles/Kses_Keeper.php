@@ -25,11 +25,6 @@ use WP_Block_Type_Registry;
 final class Kses_Keeper {
 
 	/**
-	 * Attributes no site-level value may set, whatever the block.
-	 */
-	private const ALWAYS_EXCLUDED = [ 'uniqueID', 'inQueryBlock', 'anchor', 'noCustomDefaults' ];
-
-	/**
 	 * The supported blocks.
 	 *
 	 * @var Supported_Blocks
@@ -125,7 +120,7 @@ final class Kses_Keeper {
 				continue;
 			}
 
-			$excluded = array_merge( self::ALWAYS_EXCLUDED, $block->site_styles_excluded_attributes() );
+			$excluded = Supported_Blocks::excluded_attributes( $block );
 
 			foreach ( $values as $attribute => $value ) {
 				if ( ! is_string( $attribute ) || ! isset( $block_type->attributes[ $attribute ] ) || in_array( $attribute, $excluded, true ) ) {

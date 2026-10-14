@@ -308,7 +308,8 @@
 		},
 		"label": {
 			"type": "string",
-			"default": ""
+			"default": "",
+			"__experimentalRole": "content"
 		},
 		"inheritStyles": {
 			"type": "string",
@@ -339,10 +340,6 @@
 			"type": "boolean",
 			"default": false
 		},
-		"displayHoverShadow": {
-			"type": "boolean",
-			"default": false
-		},
 		"shadow": {
 			"type": "array",
 			"default": [
@@ -356,6 +353,10 @@
 					"inset": false
 				}
 			]
+		},
+		"displayHoverShadow": {
+			"type": "boolean",
+			"default": false
 		},
 		"shadowHover": {
 			"type": "array",
@@ -383,7 +384,8 @@
 		},
 		"hideLink": {
 			"type": "boolean",
-			"default": false
+			"default": false,
+			"__experimentalRole": "content"
 		},
 		"noCustomDefaults": {
 			"type": "boolean",
@@ -391,7 +393,8 @@
 		},
 		"iconTitle": {
 			"type": "string",
-			"default": ""
+			"default": "",
+			"__experimentalRole": "content"
 		},
 		"colorTransparent": {
 			"type": "string",
@@ -533,10 +536,6 @@
 			"type": "boolean",
 			"default": false
 		},
-		"displayHoverShadowTransparent": {
-			"type": "boolean",
-			"default": false
-		},
 		"shadowTransparent": {
 			"type": "array",
 			"default": [
@@ -550,6 +549,10 @@
 					"inset": false
 				}
 			]
+		},
+		"displayHoverShadowTransparent": {
+			"type": "boolean",
+			"default": false
 		},
 		"shadowTransparentHover": {
 			"type": "array",
@@ -705,10 +708,6 @@
 			"type": "boolean",
 			"default": false
 		},
-		"displayHoverShadowSticky": {
-			"type": "boolean",
-			"default": false
-		},
 		"shadowSticky": {
 			"type": "array",
 			"default": [
@@ -722,6 +721,10 @@
 					"inset": false
 				}
 			]
+		},
+		"displayHoverShadowSticky": {
+			"type": "boolean",
+			"default": false
 		},
 		"shadowStickyHover": {
 			"type": "array",
@@ -744,15 +747,25 @@
 		},
 		"tooltipPlacement": {
 			"type": "string",
-			"default": ""
+			"default": "",
+			"__experimentalRole": "content"
 		},
 		"isSubmit": {
 			"type": "boolean",
-			"default": false
+			"default": false,
+			"__experimentalRole": "content"
 		},
 		"iconReveal": {
 			"type": "boolean",
 			"default": false
+		},
+		"kbPreset": {
+			"type": "string",
+			"default": ""
+		},
+		"kbPalette": {
+			"type": "string",
+			"default": ""
 		}
 	},
 	"supports": {
@@ -764,7 +777,11 @@
 		"html": false,
 		"reusable": false,
 		"kbMetadata": true,
-		"kbContentLabel": "text"
+		"kbContentLabel": "text",
+		"kbPreset": {
+			"inlinePicker": true
+		},
+		"kbPalette": true
 	},
 	"usesContext": [
 		"postId",
