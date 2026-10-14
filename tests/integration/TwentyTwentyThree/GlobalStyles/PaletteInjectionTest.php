@@ -35,6 +35,14 @@ final class PaletteInjectionTest extends WPTestCase {
 
 	protected \IntegrationTester $tester;
 
+	protected function setUp(): void {
+		parent::setUp();
+
+		// Design Tokens seeds palette1..9 into the stored palette on `init`; start each test without one.
+		delete_option( 'kadence_blocks_colors' );
+		wp_clean_theme_json_cache();
+	}
+
 	public function testTheThemeRegistersNoEditorColorPaletteSupport(): void {
 		$this->assertFalse( get_theme_support( 'editor-color-palette' ) );
 	}
