@@ -17,9 +17,10 @@ final class Supported_Blocks {
 	/**
 	 * Identifiers and per-instance data no site-level value may set, whatever
 	 * the block. `kadenceDynamic` holds Kadence Blocks Pro's dynamic-content
-	 * bindings, which it adds to blocks outside their `block.json`.
+	 * bindings, which it adds to blocks outside their `block.json`. `kbPreset`
+	 * and `kbPalette` are each instance's design-token picks.
 	 */
-	private const ALWAYS_EXCLUDED = [ 'uniqueID', 'anchor', 'inQueryBlock', 'noCustomDefaults', 'metadata', 'lock', 'className', 'kadenceDynamic' ];
+	private const ALWAYS_EXCLUDED = [ 'uniqueID', 'anchor', 'inQueryBlock', 'noCustomDefaults', 'metadata', 'lock', 'className', 'kadenceDynamic', 'kbPreset', 'kbPalette' ];
 
 	/**
 	 * Block name => block.

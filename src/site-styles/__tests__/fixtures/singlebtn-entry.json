@@ -9,6 +9,8 @@
 		"lock",
 		"className",
 		"kadenceDynamic",
+		"kbPreset",
+		"kbPalette",
 		"text",
 		"link",
 		"target",

@@ -619,6 +619,36 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block imple
 	}
 
 	/**
+	 * The style the button renders as. A class-painted preset (Outline, or a theme style) sets it, since
+	 * presets replace `inheritStyles`; otherwise it's the button's `inheritStyles`, as in `build_html()`.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $attributes The instance's attributes.
+	 *
+	 * @return string|null
+	 */
+	public function site_styles_scope_style( array $attributes ): ?string {
+		$resolved = $this->resolved_preset( $attributes );
+		$classes  = null === $resolved ? [] : preg_split( '/\s+/', $resolved['class'], -1, PREG_SPLIT_NO_EMPTY );
+
+		if ( ! $classes ) {
+			return isset( $attributes['inheritStyles'] ) ? Cast::to_string( $attributes['inheritStyles'] ) : null;
+		}
+
+		if ( in_array( 'kb-btn-global-outline', $classes, true ) ) {
+			return 'outline';
+		}
+
+		// Any other class-painted preset is a theme style.
+		if ( in_array( self::SECONDARY_CLASS, $classes, true ) || self::THEME_SECONDARY === $this->stored_preset( $attributes ) ) {
+			return 'inherit-secondary';
+		}
+
+		return 'inherit';
+	}
+
+	/**
 	 * Site values describe Fill buttons. Outline takes only the shape, so it
 	 * keeps its transparent background and theme outline colors; the theme
 	 * button styles take none.
