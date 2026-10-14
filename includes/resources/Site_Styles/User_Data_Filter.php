@@ -38,8 +38,9 @@ final class User_Data_Filter {
 	}
 
 	/**
-	 * Untyped, and the result is built from the same class it was given, since the Gutenberg
-	 * plugin passes its own WP_Theme_JSON_Data_Gutenberg, which doesn't extend core's class.
+	 * The parameter is untyped, and the result is built from the same class it was given,
+	 * since the Gutenberg plugin passes its own WP_Theme_JSON_Data_Gutenberg, which doesn't
+	 * extend core's class.
 	 *
 	 * @since TBD
 	 *
@@ -47,7 +48,7 @@ final class User_Data_Filter {
 	 *
 	 * @return WP_Theme_JSON_Data|WP_Theme_JSON_Data_Gutenberg The Global Styles without the Kadence values.
 	 */
-	public function filter( $theme_json ) {
+	public function filter( $theme_json ): object {
 		$data    = $theme_json->get_data();
 		$changed = false;
 
