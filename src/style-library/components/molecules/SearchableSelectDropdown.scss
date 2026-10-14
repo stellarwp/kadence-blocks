@@ -1,0 +1,152 @@
+.kadence-blocks-style-library__searchable-select-dropdown {
+	display: flex;
+	align-items: center;
+	gap: var(--kb-sl-space-10);
+}
+
+.kadence-blocks-style-library__searchable-select-dropdown-dropdown {
+	display: block;
+}
+
+// Same fixed toggle geometry as SelectDropdown's toggle — the visual model this component follows
+// without extending.
+.kadence-blocks-style-library-root .kadence-blocks-style-library__searchable-select-dropdown-toggle {
+	display: flex;
+	flex: 0 0 auto;
+	align-items: center;
+	gap: var(--kb-sl-space-10);
+	height: var(--kb-sl-space-50);
+	width: var(--kb-sl-size-select-dropdown-width);
+	padding: 0 var(--kb-sl-space-10) 0 var(--kb-sl-space-15);
+	border: var(--kb-sl-border-width-input) solid var(--kb-sl-color-control-border);
+	border-radius: var(--kb-sl-radius-s);
+	color: var(--kb-sl-color-text-primary);
+	font-size: var(--kb-sl-font-size-m);
+	font-weight: var(--kb-sl-font-weight-regular);
+	line-height: normal;
+	text-align: left;
+
+	&:hover,
+	&[aria-expanded="true"] {
+		color: var(--kb-sl-color-text-primary);
+	}
+
+	&:focus,
+	&:focus-visible,
+	&[aria-expanded="true"] {
+		border-color: var(--kb-sl-color-control-border-focus);
+	}
+
+	&:focus,
+	&:focus-visible {
+		color: var(--kb-sl-color-text-primary);
+		box-shadow: none;
+		outline: none;
+	}
+}
+
+.kadence-blocks-style-library__searchable-select-dropdown-label {
+	flex: 1 1 auto;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.kadence-blocks-style-library__searchable-select-dropdown-icon {
+	display: flex;
+	flex: 0 0 auto;
+	align-items: center;
+	justify-content: center;
+	width: var(--kb-sl-size-icon-chevron);
+	height: var(--kb-sl-size-icon-chevron);
+}
+
+.kadence-blocks-style-library__searchable-select-dropdown-chevron {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+// The popover surface, matching SelectDropdown's own replacement of core's approximate
+// border/shadow. A taller max-height + its own scroll region is the one geometry difference from
+// SelectDropdown's menu: the catalog list (even capped at 100 rows) is far longer than any closed
+// list this app shows elsewhere.
+.kadence-blocks-style-library__searchable-select-dropdown-menu
+	.components-popover__content.components-popover__content {
+	display: flex;
+	flex-direction: column;
+	background: var(--kb-sl-color-surface);
+	border: var(--kb-sl-border-width-input) solid var(--kb-sl-color-gray-300);
+	border-radius: var(--kb-sl-radius-m);
+	min-width: var(--kb-sl-size-select-dropdown-width);
+	max-width: var(--kb-sl-size-select-dropdown-max-width);
+	max-height: min(60vh, 420px);
+	padding: var(--kb-sl-space-05);
+	box-shadow: var(--kb-sl-shadow-menu);
+	overflow: hidden;
+}
+
+.kadence-blocks-style-library__searchable-select-dropdown-search {
+	flex: 0 0 auto;
+	margin: var(--kb-sl-space-05) var(--kb-sl-space-05) 0;
+
+	input {
+		border-radius: var(--kb-sl-radius-s);
+	}
+}
+
+.kadence-blocks-style-library__searchable-select-dropdown-options {
+	flex: 1 1 auto;
+	overflow-y: auto;
+	padding: 0;
+}
+
+.kadence-blocks-style-library__searchable-select-dropdown-menu .components-menu-item__button {
+	align-items: center;
+	padding: var(--kb-sl-space-10) var(--kb-sl-space-15);
+	border-radius: var(--kb-sl-radius-s);
+	gap: var(--kb-sl-space-30);
+	font-size: var(--kb-sl-font-size-m);
+	line-height: var(--kb-sl-line-height-s);
+	font-weight: var(--kb-sl-font-weight-regular);
+	color: var(--kb-sl-color-gray-900);
+
+	&:focus {
+		box-shadow: none;
+		outline: none;
+	}
+
+	&:hover,
+	&:focus-visible {
+		color: var(--kb-sl-color-theme);
+	}
+}
+
+.kadence-blocks-style-library__searchable-select-dropdown-menu
+	.kadence-blocks-style-library__searchable-select-dropdown-badge {
+	flex: 0 0 auto;
+	color: var(--kb-sl-color-text-muted);
+	font-size: var(--kb-sl-font-size-s);
+	font-weight: var(--kb-sl-font-weight-regular);
+	line-height: var(--kb-sl-line-height-s);
+	white-space: nowrap;
+}
+
+.kadence-blocks-style-library__searchable-select-dropdown-footer {
+	flex: 0 0 auto;
+	padding: var(--kb-sl-space-10) var(--kb-sl-space-15);
+	border-top: var(--kb-sl-border-width-input) solid var(--kb-sl-color-border);
+	color: var(--kb-sl-color-text-muted);
+	font-size: var(--kb-sl-font-size-s);
+	text-align: center;
+}
+
+// Replaces the option list, so unlike the footer it needs no top border.
+.kadence-blocks-style-library__searchable-select-dropdown-empty {
+	flex: 0 0 auto;
+	padding: var(--kb-sl-space-15);
+	color: var(--kb-sl-color-text-muted);
+	font-size: var(--kb-sl-font-size-s);
+	text-align: center;
+}
