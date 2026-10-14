@@ -1,0 +1,190 @@
+.kadence-blocks-style-library__swatch-card {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	// No width, border, or background of its own — `.swatch-card-main` below carries border, radius,
+	// and background together on the one element that has an explicit width, and this shrink-wraps
+	// to it. Splitting the border across this wrapper and `.main` used to make the card measure 98px
+	// against main's 96px: a shrink-wrapping container's own border adds on top of its child
+	// regardless of `box-sizing`, since the container itself has no explicit width.
+
+	&:hover .kadence-blocks-style-library__swatch-card-handle-slot,
+	&:focus-within .kadence-blocks-style-library__swatch-card-handle-slot,
+	&--selected .kadence-blocks-style-library__swatch-card-handle-slot {
+		opacity: 1;
+	}
+}
+
+.kadence-blocks-style-library__swatch-card-main {
+	// `border-box`, not the `<div>` default `content-box` — without it, the padding below renders
+	// 16px wider than the width intends.
+	box-sizing: border-box;
+	// The containing block for the selecting button's hit area — see its `::after`.
+	position: relative;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	gap: var(--kb-sl-space-05);
+	width: 100%;
+	flex: 1 1 auto;
+	border: var(--kb-sl-border-width-input) solid var(--kb-sl-color-border);
+	border-radius: var(--kb-sl-radius-m);
+	background: var(--kb-sl-color-surface);
+}
+
+// The selecting click target. The border, radius and background stay on `.main` above, so every
+// hover/selected/placeholder rule describes the same box.
+.kadence-blocks-style-library__swatch-card-select {
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	width: 100%;
+	padding: 0;
+	border: 0;
+	background: none;
+	text-align: left;
+
+	// Selecting a card is a whole-card gesture, but the button can only ever be the top half of one
+	// — the pill slot has to stay its sibling so a pill can be a control of its own. This stretches
+	// the button's hit area over the entire card so the pill row and the padding around it select
+	// too, with no second click target and nothing extra in the accessibility tree.
+	&::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+	}
+}
+
+// The pointer belongs to the real control, not to the layout: the loading placeholder reuses the
+// class above on an inert `div` to inherit the same alignment, and a pointer cursor there would
+// promise an action nothing can perform.
+button.kadence-blocks-style-library__swatch-card-select {
+	cursor: pointer;
+}
+
+.kadence-blocks-style-library__swatch-card-select:last-child {
+	padding-bottom: 0.625rem;
+}
+
+.kadence-blocks-style-library__swatch-card-details {
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	gap: 0.125rem;
+	width: 100%;
+	max-width: 100%;
+	padding: 0.625rem 0.75rem 0;
+}
+
+// `:not(&--selected)` keeps a selected-and-hovered card showing its selected tint.
+.kadence-blocks-style-library__swatch-card:hover:not(.kadence-blocks-style-library__swatch-card--selected)
+	.kadence-blocks-style-library__swatch-card-main {
+	background: #f7fafc;
+	box-shadow: 0 0 0.5px 0 rgba(0, 0, 0, 0.25), 0 2px 4px 0 rgba(0, 0, 0, 0.15);
+}
+
+// Selected — the theme-color border stays the primary signal, and a theme tint background
+// (--kb-sl-color-theme-tint-4, same as `ListRow`'s `&--selected`) is added on top of it. Both live
+// on `.main` now, so the fill and the outline always describe the same box.
+.kadence-blocks-style-library__swatch-card--selected .kadence-blocks-style-library__swatch-card-main {
+	border-color: var(--kb-sl-color-theme);
+	// Layered over the surface color: the tint alone is translucent, so the drag copy would show the page.
+	background: linear-gradient(var(--kb-sl-color-theme-tint-4), var(--kb-sl-color-theme-tint-4)) var(--kb-sl-color-surface);
+}
+
+// The drop-target placeholder shown while this card is the one being dragged. Neutral gray,
+// dashed — deliberately not the theme color, which already signals *selected*. Lives on `.main`,
+// not the outer wrapper: the wrapper carries no border in any state, so a placeholder border there
+// would reintroduce the 98-vs-96px mismatch above.
+.kadence-blocks-style-library__swatch-card--placeholder .kadence-blocks-style-library__swatch-card-main {
+	border-style: dashed;
+	border-color: var(--kb-sl-color-control-border);
+	background: var(--kb-sl-color-gray-100);
+
+	// Scoped to `.main`'s children, not `.main` itself: `visibility: hidden` hides the whole box,
+	// which would also hide the border/background set just above.
+	> * {
+		visibility: hidden;
+	}
+}
+
+// The handle-slot has no border or background of its own to preserve, so it can be hidden outright.
+.kadence-blocks-style-library__swatch-card--placeholder .kadence-blocks-style-library__swatch-card-handle-slot {
+	visibility: hidden;
+}
+
+// A swatch mid-delete: still visible (product decision — delete is conservative, not an instant
+// vanish), just dimmed and inert. Same weight as the drag placeholder above, on the whole card
+// rather than only `.main`, since there is no drop-target box to preserve here.
+.kadence-blocks-style-library__swatch-card--pending-delete {
+	opacity: 0.5;
+	pointer-events: none;
+}
+
+.kadence-blocks-style-library__swatch-card .kadence-blocks-style-library__drag-handle {
+	width: var(--kb-sl-space-25);
+	height: var(--kb-sl-space-25);
+	background: rgba(255, 255, 255, 0.9);
+}
+
+.kadence-blocks-style-library__swatch-card .kadence-blocks-style-library__drag-handle-icon {
+	width: var(--kb-sl-space-17);
+	height: var(--kb-sl-space-17);
+}
+
+.kadence-blocks-style-library__swatch-card-preview {
+	// `border-box`, same reason as `.swatch-card-main` above — otherwise the border below renders
+	// the box oversize.
+	box-sizing: border-box;
+	display: flex;
+	overflow: hidden;
+	width: 100%;
+	height: 4rem;
+	border-bottom: var(--kb-sl-border-width-input) solid var(--kb-sl-color-border);
+}
+
+.kadence-blocks-style-library__swatch-card-name {
+	overflow: hidden;
+	max-width: 100%;
+	color: var(--kb-sl-color-text-primary);
+	font-size: var(--kb-sl-font-size-small);
+	font-weight: var(--kb-sl-font-weight-regular);
+	line-height: var(--kb-sl-line-height-s);
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.kadence-blocks-style-library__swatch-card-sub-line {
+	color: var(--kb-sl-color-text-muted);
+	font-size: var(--kb-sl-font-size-xs);
+	font-weight: var(--kb-sl-font-weight-medium);
+	line-height: var(--kb-sl-line-height-xs);
+}
+
+.kadence-blocks-style-library__swatch-card-handle-slot {
+	position: absolute;
+	top: 0.375rem;
+	left: 0.375rem;
+	display: flex;
+	// Reserved even when the drag handle is absent — an empty flex box with no sized child collapses
+	// to 0×0, leaving nothing for `:hover`/`:focus-within` to reveal.
+	width: var(--kb-sl-space-25);
+	height: var(--kb-sl-space-25);
+	opacity: 0;
+}
+
+// Reserved whether or not a pill is in it — an empty slot with no sized child would collapse and
+// let a card with nothing to say sit shorter than its neighbors, which is the one thing the single
+// slot exists to prevent.
+.kadence-blocks-style-library__swatch-card-pill-slot {
+	box-sizing: border-box;
+	display: flex;
+	align-items: center;
+	width: 100%;
+	padding: 0 0.75rem 0.625rem;
+	min-height: calc(var(--kb-sl-space-30) + var(--kb-sl-space-10));
+	// Above the selecting button's stretched hit area, so a pill can be clicked or hovered.
+	position: relative;
+	cursor: pointer;
+}

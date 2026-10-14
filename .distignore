@@ -45,3 +45,6 @@ diff.txt
 diffcs.txt
 phpcs.json
 changelog/
+AGENTS.md
+CLAUDE.md
+jest.config.js
