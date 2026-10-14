@@ -108,7 +108,7 @@ final class Overlay {
 			$scope_attribute = $block->site_styles_scope_attribute();
 			$site            = self::scope(
 				$site,
-				$attributes,
+				[ $scope_attribute => $block->site_styles_scope_style( $attributes ) ],
 				[
 					'attribute'  => $scope_attribute,
 					'attributes' => $block->site_styles_scoped_attributes(),

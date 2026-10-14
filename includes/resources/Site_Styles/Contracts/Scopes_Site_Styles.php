@@ -21,6 +21,18 @@ interface Scopes_Site_Styles {
 	public function site_styles_scope_attribute(): string;
 
 	/**
+	 * The style an instance takes site values as. Usually its scope attribute's
+	 * value, but a block can read it from what the instance actually renders.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $attributes The instance's attributes.
+	 *
+	 * @return mixed The style, as a key of `site_styles_scoped_attributes()`, or null for the block's default.
+	 */
+	public function site_styles_scope_style( array $attributes );
+
+	/**
 	 * The site attributes each style takes. A style that isn't listed takes
 	 * all of them; an empty list takes none.
 	 *
