@@ -43,7 +43,7 @@ final class SupportedBlocksTest extends TestCase {
 		foreach ( $this->container->get( Supported_Blocks::class )->all() as $name => $block ) {
 			$excluded = Supported_Blocks::excluded_attributes( $block );
 
-			foreach ( [ 'uniqueID', 'anchor', 'inQueryBlock', 'noCustomDefaults', 'metadata', 'lock', 'className', 'kadenceDynamic' ] as $identifier ) {
+			foreach ( [ 'uniqueID', 'anchor', 'inQueryBlock', 'noCustomDefaults', 'metadata', 'lock', 'className', 'kadenceDynamic', 'kbPreset', 'kbPalette' ] as $identifier ) {
 				$this->assertContains( $identifier, $excluded, "{$name}: `{$identifier}` must not be stored site-wide." );
 			}
 		}

@@ -1329,6 +1329,65 @@ class SinglebtnTest extends KadenceBlocksUnit {
 	}
 
 	/**
+	 * Site styles scope a button by the style its class-painted preset renders, since presets replace
+	 * `inheritStyles`.
+	 *
+	 * @return void
+	 */
+	public function testSiteStylesScopeStyleFollowsAClassPaintedPreset(): void {
+		$this->seed_theme_preset_slugs( [ 'base', 'secondary' ] );
+
+		$this->assertSame( 'outline', $this->block->site_styles_scope_style( [ 'kbPreset' => 'outline', 'inheritStyles' => 'fill' ] ) );
+		$this->assertSame( 'outline', $this->block->site_styles_scope_style( [ 'kbPreset' => '', 'inheritStyles' => 'outline' ] ) );
+		$this->assertSame( 'inherit', $this->block->site_styles_scope_style( [ 'kbPreset' => 'theme-base', 'inheritStyles' => '' ] ) );
+		$this->assertSame( 'inherit-secondary', $this->block->site_styles_scope_style( [ 'kbPreset' => 'theme-secondary', 'inheritStyles' => 'fill' ] ) );
+	}
+
+	/**
+	 * A secondary button stays secondary for site styles when its preset falls back to the theme's base.
+	 *
+	 * @return void
+	 */
+	public function testSiteStylesScopeStyleKeepsAFallenBackSecondaryButtonSecondary(): void {
+		$this->seed_theme_preset_slugs( [ 'base' ] );
+
+		$this->assertSame( 'inherit-secondary', $this->block->site_styles_scope_style( [ 'kbPreset' => 'theme-secondary', 'inheritStyles' => '' ] ) );
+	}
+
+	/**
+	 * A preset painted through variables leaves the scope to `inheritStyles`, as the render does.
+	 *
+	 * @return void
+	 */
+	public function testSiteStylesScopeStyleUsesInheritStylesForAValuePreset(): void {
+		$this->seedSecondaryPreset();
+
+		$this->assertSame( 'fill', $this->block->site_styles_scope_style( [ 'kbPreset' => '', 'inheritStyles' => 'fill' ] ) );
+		$this->assertSame( '', $this->block->site_styles_scope_style( [ 'kbPreset' => 'default', 'inheritStyles' => '' ] ) );
+		$this->assertSame( 'fill', $this->block->site_styles_scope_style( [ 'kbPreset' => 'secondary', 'inheritStyles' => 'fill' ] ) );
+		$this->assertNull( $this->block->site_styles_scope_style( [] ) );
+	}
+
+	/**
+	 * With the token registry off, a button renders, and is scoped, by its `inheritStyles`.
+	 *
+	 * @return void
+	 */
+	public function testSiteStylesScopeStyleUsesInheritStylesWhenTheRegistryIsInactive(): void {
+		/** @var Token_Registry $registry */
+		$registry = $this->container->get( Token_Registry::class );
+		$registry->deactivate();
+
+		try {
+			$style = $this->block->site_styles_scope_style( [ 'kbPreset' => 'outline', 'inheritStyles' => '' ] );
+		} finally {
+			$registry->activate();
+		}
+
+		$this->assertSame( '', $style );
+	}
+
+	/**
 	 * Build the button's rendered CSS for a fixed unique id, filling in the attributes every render
 	 * needs (`uniqueID`) alongside the case-specific ones under test.
 	 *
