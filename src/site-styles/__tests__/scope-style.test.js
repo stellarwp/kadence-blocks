@@ -19,7 +19,11 @@ const SITE = { background: '#000', color: '#fff', typography: ['16'] };
  */
 function seedCatalog(themeSlugs = ['theme-base', 'theme-secondary']) {
 	const theme = {
-		'theme-base': { slug: 'theme-base', label: 'Theme Base', themeClass: 'wp-block-button__link button kb-btn-global-inherit' },
+		'theme-base': {
+			slug: 'theme-base',
+			label: 'Theme Base',
+			themeClass: 'wp-block-button__link button kb-btn-global-inherit',
+		},
 		'theme-secondary': {
 			slug: 'theme-secondary',
 			label: 'Theme Secondary',
@@ -62,13 +66,17 @@ describe('scopeStyle', () => {
 
 	it('reads a theme style from a theme preset', () => {
 		expect(scopeStyle(BLOCK, { kbPreset: 'theme-base', inheritStyles: 'fill' }, entry.scope)).toBe('inherit');
-		expect(scopeStyle(BLOCK, { kbPreset: 'theme-secondary', inheritStyles: '' }, entry.scope)).toBe('inherit-secondary');
+		expect(scopeStyle(BLOCK, { kbPreset: 'theme-secondary', inheritStyles: '' }, entry.scope)).toBe(
+			'inherit-secondary'
+		);
 	});
 
 	it('keeps a secondary button secondary when its preset falls back to the theme base', () => {
 		seedCatalog(['theme-base']);
 
-		expect(scopeStyle(BLOCK, { kbPreset: 'theme-secondary', inheritStyles: '' }, entry.scope)).toBe('inherit-secondary');
+		expect(scopeStyle(BLOCK, { kbPreset: 'theme-secondary', inheritStyles: '' }, entry.scope)).toBe(
+			'inherit-secondary'
+		);
 	});
 
 	it('reads a legacy style through its preset', () => {
@@ -89,7 +97,12 @@ describe('scopeStyle', () => {
 
 	it('gives an Outline preset button only the shape values, and a theme preset button none', () => {
 		const scoped = (attributes) =>
-			scopeSiteAttributes(SITE, { inheritStyles: scopeStyle(BLOCK, attributes, entry.scope) }, entry.scope, 'fill');
+			scopeSiteAttributes(
+				SITE,
+				{ inheritStyles: scopeStyle(BLOCK, attributes, entry.scope) },
+				entry.scope,
+				'fill'
+			);
 
 		expect(scoped({ kbPreset: 'outline', inheritStyles: 'fill' })).toEqual({ typography: ['16'] });
 		expect(scoped({ kbPreset: 'theme-base', inheritStyles: '' })).toEqual({});
