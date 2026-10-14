@@ -7,6 +7,7 @@ import { getBlockType } from '@wordpress/blocks';
 import { useCallback, useMemo } from '@wordpress/element';
 import { getSupportedBlock, isFseMode } from './supported-blocks';
 import { guardWrite, mergeAttributes, scopeSiteAttributes, siteAttributes } from './store';
+import { scopeStyle } from './scope-style';
 import { useGlobalStylesRecord } from './use-global-styles-record';
 import { isVirtualBlock } from './virtual-blocks';
 
@@ -19,7 +20,7 @@ function SiteStylesBlockEdit({ BlockEdit, ...props }) {
 	const { name, attributes, setAttributes } = props;
 	const record = useGlobalStylesRecord();
 	const scope = getSupportedBlock(name)?.scope;
-	const style = scope ? attributes[scope.attribute] : undefined;
+	const style = scope ? scopeStyle(name, attributes, scope) : undefined;
 	const site = useMemo(() => {
 		const values = siteAttributes(record, name);
 

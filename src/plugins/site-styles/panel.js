@@ -11,6 +11,7 @@ import { SlotFillProvider } from '@wordpress/components';
 import { siteAttributes, toStoredForm, withStoredForm } from '../../site-styles/store';
 import { useGlobalStylesEntity } from '../../site-styles/use-global-styles-record';
 import { addVirtualBlock, removeVirtualBlock } from '../../site-styles/virtual-blocks';
+import { SITE_STYLES_PANEL_SETTING } from '../../site-styles/use-is-site-styles-panel';
 import SiteStylesPreview from './preview';
 
 /**
@@ -55,7 +56,10 @@ export default function SiteStylesPanel({ blockName }) {
 	const { editEntityRecord } = useDispatch('core');
 	const parentSettings = useSelect((select) => select('core/block-editor').getSettings(), []);
 	// The Site Editor's browse mode runs the editor in preview mode, which hides the block's controls.
-	const settings = useMemo(() => ({ ...parentSettings, isPreviewMode: false }), [parentSettings]);
+	const settings = useMemo(
+		() => ({ ...parentSettings, isPreviewMode: false, [SITE_STYLES_PANEL_SETTING]: true }),
+		[parentSettings]
+	);
 	const site = useMemo(() => siteAttributes(record, blockName), [record, blockName]);
 	const blockRef = useRef(null);
 	const [blocks, setBlocks] = useState(null);

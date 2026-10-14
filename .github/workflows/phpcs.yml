@@ -34,12 +34,33 @@ jobs:
       - uses: ramsey/composer-install@v3
 
       - name: Run PHPCS on changed lines
+        env:
+          GH_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           # On a pull_request the base is the PR's target branch; fall back to
           # master for a manual workflow_dispatch run.
           BASE_REF="${GITHUB_BASE_REF:-master}"
 
           git remote set-branches origin "$BASE_REF"
-          git fetch origin --depth=1
+          if ! git fetch origin --depth=1; then
+            # A re-run can replay a stale event payload: if the PR's base
+            # branch was renamed after this run was first queued,
+            # GITHUB_BASE_REF still names the old, now-deleted branch. Ask
+            # the API for the PR's current base and retry once before
+            # giving up.
+            if [ -z "$PR_NUMBER" ]; then
+              exit 1
+            fi
+
+            BASE_REF="$(gh pr view "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --json baseRefName --jq .baseRefName)"
+
+            if [ -z "$BASE_REF" ]; then
+              exit 1
+            fi
+
+            git remote set-branches origin "$BASE_REF"
+            git fetch origin --depth=1
+          fi
 
           composer phpcs-ci "origin/$BASE_REF"
