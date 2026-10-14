@@ -28,9 +28,9 @@ interface Scopes_Site_Styles {
 	 *
 	 * @param array<string, mixed> $attributes The instance's attributes.
 	 *
-	 * @return mixed The style, as a key of `site_styles_scoped_attributes()`, or null for the block's default.
+	 * @return string|null The style, as a key of `site_styles_scoped_attributes()`, or null for the block's default.
 	 */
-	public function site_styles_scope_style( array $attributes );
+	public function site_styles_scope_style( array $attributes ): ?string;
 
 	/**
 	 * The site attributes each style takes. A style that isn't listed takes

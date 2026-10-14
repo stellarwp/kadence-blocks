@@ -1480,9 +1480,9 @@ class SinglebtnTest extends KadenceBlocksUnit {
 	 * @param string $preset         The stored `kbPreset`.
 	 * @param string $inherit_styles The stored `inheritStyles`.
 	 *
-	 * @return mixed
+	 * @return string|null
 	 */
-	private function scope_style( string $preset, string $inherit_styles ) {
+	private function scope_style( string $preset, string $inherit_styles ): ?string {
 		return $this->block->site_styles_scope_style(
 			[
 				'kbPreset'      => $preset,

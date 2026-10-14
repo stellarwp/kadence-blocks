@@ -626,14 +626,14 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block imple
 	 *
 	 * @param array<string, mixed> $attributes The instance's attributes.
 	 *
-	 * @return mixed
+	 * @return string|null
 	 */
-	public function site_styles_scope_style( array $attributes ) {
+	public function site_styles_scope_style( array $attributes ): ?string {
 		$resolved = $this->resolved_preset( $attributes );
 		$classes  = null === $resolved ? [] : preg_split( '/\s+/', $resolved['class'], -1, PREG_SPLIT_NO_EMPTY );
 
 		if ( ! $classes ) {
-			return $attributes['inheritStyles'] ?? null;
+			return isset( $attributes['inheritStyles'] ) ? Cast::to_string( $attributes['inheritStyles'] ) : null;
 		}
 
 		if ( in_array( 'kb-btn-global-outline', $classes, true ) ) {
