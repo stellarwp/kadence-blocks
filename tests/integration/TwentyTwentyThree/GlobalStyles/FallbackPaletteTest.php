@@ -7,8 +7,8 @@ namespace Tests\integration\TwentyTwentyThree\GlobalStyles;
 use Codeception\TestCase\WPTestCase;
 
 /**
- * Without the Kadence theme the frontend gets the plugin's hard-coded
- * `--global-palette*` fallback.
+ * Without the Kadence theme the frontend gets the plugin's `--global-palette*`
+ * fallback, backed by its design tokens.
  */
 final class FallbackPaletteTest extends WPTestCase {
 
@@ -25,6 +25,6 @@ final class FallbackPaletteTest extends WPTestCase {
 		kadence_blocks_add_global_gutenberg_styles_frontend();
 
 		$css = implode( "\n", wp_styles()->get_data( 'kadence-blocks-global-variables', 'after' ) );
-		$this->assertStringContainsString( ':root {--global-palette1: #3182CE;', $css );
+		$this->assertStringContainsString( ':root {--global-palette1: var(--kb-token--primitive--color--brand--primary, #3182CE);', $css );
 	}
 }
