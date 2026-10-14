@@ -1337,10 +1337,10 @@ class SinglebtnTest extends KadenceBlocksUnit {
 	public function testSiteStylesScopeStyleFollowsAClassPaintedPreset(): void {
 		$this->seed_theme_preset_slugs( [ 'base', 'secondary' ] );
 
-		$this->assertSame( 'outline', $this->block->site_styles_scope_style( [ 'kbPreset' => 'outline', 'inheritStyles' => 'fill' ] ) );
-		$this->assertSame( 'outline', $this->block->site_styles_scope_style( [ 'kbPreset' => '', 'inheritStyles' => 'outline' ] ) );
-		$this->assertSame( 'inherit', $this->block->site_styles_scope_style( [ 'kbPreset' => 'theme-base', 'inheritStyles' => '' ] ) );
-		$this->assertSame( 'inherit-secondary', $this->block->site_styles_scope_style( [ 'kbPreset' => 'theme-secondary', 'inheritStyles' => 'fill' ] ) );
+		$this->assertSame( 'outline', $this->scope_style( 'outline', 'fill' ) );
+		$this->assertSame( 'outline', $this->scope_style( '', 'outline' ) );
+		$this->assertSame( 'inherit', $this->scope_style( 'theme-base', '' ) );
+		$this->assertSame( 'inherit-secondary', $this->scope_style( 'theme-secondary', 'fill' ) );
 	}
 
 	/**
@@ -1351,7 +1351,7 @@ class SinglebtnTest extends KadenceBlocksUnit {
 	public function testSiteStylesScopeStyleKeepsAFallenBackSecondaryButtonSecondary(): void {
 		$this->seed_theme_preset_slugs( [ 'base' ] );
 
-		$this->assertSame( 'inherit-secondary', $this->block->site_styles_scope_style( [ 'kbPreset' => 'theme-secondary', 'inheritStyles' => '' ] ) );
+		$this->assertSame( 'inherit-secondary', $this->scope_style( 'theme-secondary', '' ) );
 	}
 
 	/**
@@ -1362,9 +1362,9 @@ class SinglebtnTest extends KadenceBlocksUnit {
 	public function testSiteStylesScopeStyleUsesInheritStylesForAValuePreset(): void {
 		$this->seedSecondaryPreset();
 
-		$this->assertSame( 'fill', $this->block->site_styles_scope_style( [ 'kbPreset' => '', 'inheritStyles' => 'fill' ] ) );
-		$this->assertSame( '', $this->block->site_styles_scope_style( [ 'kbPreset' => 'default', 'inheritStyles' => '' ] ) );
-		$this->assertSame( 'fill', $this->block->site_styles_scope_style( [ 'kbPreset' => 'secondary', 'inheritStyles' => 'fill' ] ) );
+		$this->assertSame( 'fill', $this->scope_style( '', 'fill' ) );
+		$this->assertSame( '', $this->scope_style( 'default', '' ) );
+		$this->assertSame( 'fill', $this->scope_style( 'secondary', 'fill' ) );
 		$this->assertNull( $this->block->site_styles_scope_style( [] ) );
 	}
 
@@ -1379,7 +1379,7 @@ class SinglebtnTest extends KadenceBlocksUnit {
 		$registry->deactivate();
 
 		try {
-			$style = $this->block->site_styles_scope_style( [ 'kbPreset' => 'outline', 'inheritStyles' => '' ] );
+			$style = $this->scope_style( 'outline', '' );
 		} finally {
 			$registry->activate();
 		}
@@ -1474,6 +1474,23 @@ class SinglebtnTest extends KadenceBlocksUnit {
 	 *
 	 * @return void
 	 */
+	/**
+	 * The style site styles scope a button with this preset and `inheritStyles` by.
+	 *
+	 * @param string $preset         The stored `kbPreset`.
+	 * @param string $inherit_styles The stored `inheritStyles`.
+	 *
+	 * @return mixed
+	 */
+	private function scope_style( string $preset, string $inherit_styles ) {
+		return $this->block->site_styles_scope_style(
+			[
+				'kbPreset'      => $preset,
+				'inheritStyles' => $inherit_styles,
+			]
+		);
+	}
+
 	private function seedSecondaryPreset(): void {
 		$this->seedPreset(
 			'secondary',
