@@ -5,10 +5,14 @@
  * @package Kadence Blocks
  */
 
+// cspell:ignore aligncenter kses linetype
+
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+
+use KadenceWP\KadenceBlocks\Utils\Cast;
 
 /**
  * Class to Build the Progress Bar Block.
@@ -235,7 +239,7 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 		return $css->css_output();
 	}
 	/**
-	 * Builds HTML for block.
+	 * {@inheritDoc}
 	 *
 	 * @since 3.7.8.1 Escape the container class output.
 	 */
@@ -247,8 +251,8 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 		$progress_color = ! empty( $attributes['progressColor'] ) ? $css->sanitize_color( $attributes['progressColor'], $attributes['progressOpacity'] ) : 'var(--global-palette1, #2B6CB0)';
 		$bar_background = ! empty( $attributes['barBackground'] ) ? $css->sanitize_color( $attributes['barBackground'], $attributes['barBackgroundOpacity'] ) : 'var(--global-palette7, #EDF2F7)';
 
-		$prefix          = isset( $attributes['numberPrefix'] ) ? esc_attr( $attributes['numberPrefix'] ) : '';
-		$suffix          = isset( $attributes['numberSuffix'] ) ? esc_attr( $attributes['numberSuffix'] ) : '';
+		$prefix          = isset( $attributes['numberPrefix'] ) ? $this->to_plain_text( $attributes['numberPrefix'] ) : '';
+		$suffix          = isset( $attributes['numberSuffix'] ) ? $this->to_plain_text( $attributes['numberSuffix'] ) : '';
 		$progress_min    = 0;
 		$progress_amount = ! empty( $attributes['progressAmount'] ) ? $attributes['progressAmount'] : 0;
 		$progress_max    = ! empty( $attributes['progressMax'] ) ? $attributes['progressMax'] : 100;
@@ -522,6 +526,31 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 			}
 		}
 		return $a_return;
+	}
+	/**
+	 * Reduce a stored value to plain text for the front-end script.
+	 *
+	 * `wp_localize_script()` decodes entities again, so decode until stable before stripping tags;
+	 * otherwise a multiply-encoded value comes out of the localized data as markup.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $value The raw attribute value.
+	 *
+	 * @return string The plain-text value.
+	 */
+	private function to_plain_text( $value ): string {
+		$text = Cast::to_string( $value );
+
+		for ( $i = 0; $i < 5; $i++ ) {
+			$decoded = html_entity_decode( $text );
+			if ( $decoded === $text ) {
+				break;
+			}
+			$text = $decoded;
+		}
+
+		return wp_strip_all_tags( $text );
 	}
 	/**
 	 * Enqueue the block's items.

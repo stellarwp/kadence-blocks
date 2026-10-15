@@ -88,11 +88,11 @@
 						}
 
 						if (elementAbove) {
-							elementAbove.innerHTML = prefix + value + suffix;
+							elementAbove.textContent = prefix + value + suffix;
 						} else if (elementInside) {
-							elementInside.innerHTML = prefix + value + suffix;
+							elementInside.textContent = prefix + value + suffix;
 						} else if (elementBelow) {
-							elementBelow.innerHTML = prefix + value + suffix;
+							elementBelow.textContent = prefix + value + suffix;
 						}
 					},
 				});

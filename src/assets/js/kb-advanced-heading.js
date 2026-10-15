@@ -60,7 +60,7 @@ const kbAdvHeadingTypedListener = setInterval(function () {
 				stringsArray = [...sanitizedStrings];
 			}
 
-			stringsArray.unshift(element.textContent.replaceAll('&', '&amp;'));
+			stringsArray.unshift(sanitizeString(element.textContent));
 
 			kbTypedSettings.strings = stringsArray;
 

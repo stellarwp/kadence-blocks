@@ -2,6 +2,8 @@
 
 namespace Tests\wpunit\Blocks;
 
+// cspell:ignore aaaonmouseoveralert alignnone
+
 use Kadence_Blocks_Progress_Bar_Block;
 use Tests\Support\Classes\KadenceBlocksUnit;
 
@@ -50,6 +52,24 @@ class ProgressBarTest extends KadenceBlocksUnit {
 		$this->assertStringNotContainsString( '<img', $html );
 		$this->assertStringNotContainsString( '<script>', $html );
 		$this->assertStringContainsString( '&lt;img src=x onerror=alert(1)&gt;', $html );
+	}
+
+	/**
+	 * A multiply entity-encoded prefix and suffix reach the localized script data as plain text with no markup.
+	 *
+	 * @return void
+	 */
+	public function testEncodedNumberPrefixAndSuffixAreLocalizedAsPlainText(): void {
+		$this->render( '{"uniqueID":"4_ddd","numberPrefix":"&amp;lt;img src=x onerror=alert(1)&amp;gt;$","numberSuffix":"&amp;lt;b&amp;gt;%"}' );
+		$this->block->data_enqueue();
+
+		$data = (string) wp_scripts()->get_data( 'kadence-blocks-progress-bar', 'data' );
+		$this->assertNotSame( '', $data, 'The block localizes its items.' );
+
+		// The client decodes entities again, so no encoded markup may survive in the localized data either.
+		$this->assertStringNotContainsString( '<img', $data );
+		$this->assertStringNotContainsString( '&lt;img', $data );
+		$this->assertStringContainsString( '\"prefix\":\"$\",\"suffix\":\"%\"', $data );
 	}
 
 	public function testAlignIsEscapedInContainerClasses() {
