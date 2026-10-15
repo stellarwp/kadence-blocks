@@ -5,6 +5,7 @@ declare( strict_types=1 );
 namespace Tests\integration\Kadence\DesignTokens;
 
 use Codeception\TestCase\WPTestCase;
+use IntegrationTester;
 use KadenceWP\KadenceBlocks\App;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_History_Table;
@@ -20,7 +21,7 @@ use KadenceWP\KadenceBlocks\StellarWP\DB\DB;
  * history and the active library pointer.
  */
 final class StyleLibraryDataTest extends WPTestCase {
-	protected \IntegrationTester $tester;
+	protected IntegrationTester $tester;
 
 	/**
 	 * The seeded library's slug.

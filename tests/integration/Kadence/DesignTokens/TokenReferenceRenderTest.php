@@ -6,6 +6,7 @@ namespace Tests\integration\Kadence\DesignTokens;
 
 use Codeception\TestCase\WPTestCase;
 use Generator;
+use IntegrationTester;
 use Kadence_Blocks_Advancedheading_Block;
 use KadenceWP\KadenceBlocks\App;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
@@ -20,7 +21,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Preset\Projector as Preset_
  * defines it is unchanged and still reaches the page.
  */
 final class TokenReferenceRenderTest extends WPTestCase {
-	protected \IntegrationTester $tester;
+	protected IntegrationTester $tester;
 
 	/**
 	 * The variable the heading color references.
