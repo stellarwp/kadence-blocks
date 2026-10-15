@@ -16,6 +16,7 @@ import { addSiteStylesSupports } from './site-styles/block-supports';
 import { hideCoreColorControls } from './site-styles/instance-controls';
 import { withSiteStyles } from './site-styles/edit-overlay';
 import { gateBlockDefaults } from './site-styles/block-defaults';
+import { isFseMode } from './site-styles/supported-blocks';
 import { blockPresets, activeLibrary, activePresetFor, blockDefaultPreset } from './extension/preset-picker';
 import { PresetButton } from './extension/preset-picker/PresetButton';
 import { designTokenInspectorControl } from './extension/preset-picker/inspector-control';
@@ -496,6 +497,7 @@ const kadenceHeaderTemplatePartNotice = createHigherOrderComponent((BlockEdit) =
 	};
 }, 'withTemplatePartNotice');
 
-if (!window.wpWidgets) {
+// In the Kadence theme's FSE mode the header part is the theme's own header, which Replace would empty.
+if (!window.wpWidgets && !isFseMode()) {
 	addFilter('editor.BlockEdit', 'kadence-blocks/with-template-part-notice', kadenceHeaderTemplatePartNotice);
 }

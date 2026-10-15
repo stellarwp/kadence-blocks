@@ -68,6 +68,9 @@ cleans up after a test only when that test used it:
 - `ContentWidth`: sets the theme's `$content_width`.
 - `FseMode` (`integration-kadence` only): switches the Kadence theme's Full
   Site Editing mode on and off.
+- `DesignTokens` (`integration-kadence` only): starts design token reads from
+  the cold caches a new request has, and swaps in empty style and script
+  registries.
 
 ## CI
 
