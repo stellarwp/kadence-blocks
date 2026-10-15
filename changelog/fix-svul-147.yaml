@@ -1,0 +1,4 @@
+significance: patch
+type: security
+entry: Improved output handling in block front-end scripts.
+timestamp: 2026-10-15T17:25:05.000Z
