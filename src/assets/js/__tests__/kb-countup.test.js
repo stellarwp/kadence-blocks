@@ -4,6 +4,7 @@
  */
 const SCRIPT = '../kb-countup.js';
 const PAYLOAD_DOUBLE_ENCODED = '&amp;lt;img src=x onerror=window.__xss=1&amp;gt;';
+const PAYLOAD_SINGLE_ENCODED = '&lt;img src=x onerror=window.__xss=1&gt;';
 
 /**
  * Render a Count Up element, load the script, and return the options CountUp received.
@@ -16,10 +17,11 @@ const PAYLOAD_DOUBLE_ENCODED = '&amp;lt;img src=x onerror=window.__xss=1&amp;gt;
  */
 function runCountUp(data) {
 	// Build the attributes as HTML so the parser entity-decodes them once, as it does on the front end.
-	const attributes = Object.keys(data)
-		.map((key) => `data-${key}="${data[key]}"`)
+	const merged = { start: '0', end: '12345', duration: '2', ...data };
+	const attributes = Object.keys(merged)
+		.map((key) => `data-${key}="${merged[key]}"`)
 		.join(' ');
-	document.body.innerHTML = `<div class="kb-count-up" data-start="0" data-end="12345" data-duration="2" ${attributes}><div class="kb-count-up-process"></div></div>`;
+	document.body.innerHTML = `<div class="kb-count-up" ${attributes}><div class="kb-count-up-process"></div></div>`;
 
 	let received;
 	class MockCountUp {
@@ -75,5 +77,32 @@ describe('kb-countup', () => {
 		runCountUp({ prefix: PAYLOAD_DOUBLE_ENCODED });
 
 		expect(document.querySelector('.screen-reader-text img')).toBeNull();
+	});
+
+	it.each(['prefix', 'suffix'])(
+		'shows a double entity-encoded %s in the screen reader text as literal text',
+		(attribute) => {
+			runCountUp({ [attribute]: PAYLOAD_DOUBLE_ENCODED });
+
+			const helper = document.querySelector('.screen-reader-text');
+			expect(helper.children).toHaveLength(0);
+			expect(helper.textContent).toContain('<img');
+			expect(window.__xss).toBeUndefined();
+		}
+	);
+
+	it('shows a single entity-encoded end value in the screen reader text as literal text', () => {
+		runCountUp({ end: PAYLOAD_SINGLE_ENCODED });
+
+		const helper = document.querySelector('.screen-reader-text');
+		expect(helper.children).toHaveLength(0);
+		expect(helper.textContent).toContain('<img');
+	});
+
+	it.each(['prefix', 'suffix'])('strips a single entity-encoded %s before it is used', (attribute) => {
+		const options = runCountUp({ [attribute]: PAYLOAD_SINGLE_ENCODED });
+
+		expect(options[attribute]).toBe('');
+		expect(document.querySelector('.screen-reader-text').textContent).not.toContain('<img');
 	});
 });
