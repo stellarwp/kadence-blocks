@@ -40,8 +40,8 @@ final class Screen {
 	}
 
 	/**
-	 * Print a notice that site-wide colors and typography are managed in Global Styles while the
-	 * Kadence theme runs in its Full Site Editing mode.
+	 * Print a notice that site-wide colors are managed in Global Styles while the Kadence theme
+	 * runs in its Full Site Editing mode.
 	 *
 	 * @since TBD
 	 *
@@ -60,7 +60,7 @@ final class Screen {
 
 		$message = sprintf(
 			/* translators: %s: Link to Global Styles in the Site Editor. */
-			esc_html__( 'This site uses the Kadence theme in Full Site Editing mode, so site-wide colors and typography are managed in the Site Editor\'s %s.', 'kadence-blocks' ),
+			esc_html__( 'This site uses the Kadence theme in Full Site Editing mode, so site-wide colors are managed in the Site Editor\'s %s.', 'kadence-blocks' ),
 			$global_styles_link
 		);
 
