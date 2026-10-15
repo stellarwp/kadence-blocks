@@ -5,7 +5,9 @@
  * @package Kadence Blocks
  */
 
-// cspell:ignore aligncenter kses linetype
+/*
+ * cspell:ignore aligncenter kses linetype
+ */
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
