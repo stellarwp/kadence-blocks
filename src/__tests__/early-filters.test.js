@@ -3,14 +3,33 @@
 const NOTICE = 'kadence-blocks/with-template-part-notice';
 
 // Stand-ins for the editor packages early-filters needs to load.
-jest.mock('@wordpress/blocks', () => ({ hasBlockSupport: () => false, getBlockSupport: () => undefined }), {
-	virtual: true,
-});
+jest.mock(
+	'@wordpress/blocks',
+	() => ({
+		hasBlockSupport: () => false,
+		getBlockSupport: () => undefined,
+		createBlock: () => ({}),
+		getBlockType: () => undefined,
+		getBlockFromExample: () => ({}),
+	}),
+	{ virtual: true }
+);
+jest.mock('@wordpress/block-editor', () => ({ InspectorControls: () => null }), { virtual: true });
+jest.mock('@wordpress/api-fetch', () => () => Promise.resolve(), { virtual: true });
 jest.mock('@wordpress/components', () => ({}), { virtual: true });
 jest.mock('@wordpress/compose', () => ({ createHigherOrderComponent: (hoc) => hoc }), { virtual: true });
-jest.mock('@wordpress/data', () => ({ useDispatch: () => ({}), select: () => ({}), useSelect: () => ({}) }), {
-	virtual: true,
-});
+jest.mock(
+	'@wordpress/data',
+	() => ({
+		useDispatch: () => ({}),
+		select: () => ({}),
+		useSelect: () => ({}),
+		subscribe: () => () => {},
+		createReduxStore: (name) => ({ name }),
+		register: () => {},
+	}),
+	{ virtual: true }
+);
 jest.mock('@kadence/helpers', () => ({ blockExists: () => false }));
 
 /**
