@@ -66,10 +66,24 @@ class ProgressBarTest extends KadenceBlocksUnit {
 		$data = (string) wp_scripts()->get_data( 'kadence-blocks-progress-bar', 'data' );
 		$this->assertNotSame( '', $data, 'The block localizes its items.' );
 
-		// The client decodes entities again, so no encoded markup may survive in the localized data either.
+		// No tag or encoded tag may remain in the localized data.
 		$this->assertStringNotContainsString( '<img', $data );
 		$this->assertStringNotContainsString( '&lt;img', $data );
 		$this->assertStringContainsString( '\"prefix\":\"$\",\"suffix\":\"%\"', $data );
+	}
+
+	/**
+	 * A prefix and suffix keep their leading and trailing spaces in the localized script data.
+	 *
+	 * @return void
+	 */
+	public function testNumberPrefixAndSuffixKeepEdgeWhitespaceWhenLocalized(): void {
+		$this->render( '{"uniqueID":"5_eee","numberPrefix":"USD ","numberSuffix":" pts"}' );
+		$this->block->data_enqueue();
+
+		$data = (string) wp_scripts()->get_data( 'kadence-blocks-progress-bar', 'data' );
+
+		$this->assertStringContainsString( '\"prefix\":\"USD \",\"suffix\":\" pts\"', $data );
 	}
 
 	public function testAlignIsEscapedInContainerClasses() {

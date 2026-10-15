@@ -29,6 +29,19 @@ const kbAdvHeadingTypedListener = setInterval(function () {
 			return input.replace(reg, (match) => map[match]);
 		}
 
+		/**
+		 * Turn an escaped string back into plain text without parsing it into live elements.
+		 *
+		 * @param {string} input The escaped string.
+		 *
+		 * @since TBD
+		 *
+		 * @return {string} The plain text.
+		 */
+		function toPlainText(input) {
+			return new DOMParser().parseFromString(input, 'text/html').documentElement.textContent || '';
+		}
+
 		const typedHeadings = document.querySelectorAll('.kt-typed-text');
 
 		// Check if user prefers reduced motion
@@ -115,7 +128,7 @@ const kbAdvHeadingTypedListener = setInterval(function () {
 				// Announce the complete string when it's fully typed
 				const currentString = self.strings[arrayPos];
 				if (currentString) {
-					const cleanString = currentString.replace(cursorChar, '').trim(); // Remove cursor character
+					const cleanString = toPlainText(currentString).replace(cursorChar, '').trim(); // Remove cursor character
 					if (cleanString) {
 						// Update the live region to trigger screen reader announcement
 						liveRegion.textContent = '';

@@ -33,7 +33,7 @@ describe('kb-glight-video-init', () => {
 
 		expect(anchor.hasAttribute('data-glightbox')).toBe(false);
 
-		// Reproduce GLightbox's innerHTML write of the title it reads from data-title.
+		// Parse the caption as HTML and confirm no element is created.
 		const probe = document.createElement('div');
 		probe.innerHTML = anchor.dataset.title;
 		expect(probe.querySelector('img')).toBeNull();
@@ -45,5 +45,31 @@ describe('kb-glight-video-init', () => {
 		const probe = document.createElement('div');
 		probe.innerHTML = anchor.dataset.title;
 		expect(probe.textContent).toBe('My video');
+	});
+
+	it.each([
+		['data-content', 'data-content="&lt;img src=x onerror=window.__xss=1&gt;"'],
+		['data-href', 'data-href="javascript:window.__xss=1"'],
+		['data-type', 'data-type="inline" data-content="&lt;b&gt;x&lt;/b&gt;"'],
+		['data-glightbox content', 'data-glightbox="content: &lt;img src=x onerror=window.__xss=1&gt;"'],
+	])('drops slide settings supplied through %s', (name, attribute) => {
+		const anchor = bindAnchor(`<a class="ktblocksvideopop" href="x.jpg" ${attribute}>open</a>`);
+
+		['data-content', 'data-href', 'data-type', 'data-glightbox'].forEach((attr) => {
+			expect(anchor.hasAttribute(attr)).toBe(false);
+		});
+	});
+
+	it('removes an href that is not a web or relative URL', () => {
+		const anchor = bindAnchor('<a class="ktblocksvideopop" href="javascript:window.__xss=1">open</a>');
+
+		expect(anchor.hasAttribute('href')).toBe(false);
+	});
+
+	it('keeps https and relative links', () => {
+		expect(bindAnchor('<a class="ktblocksvideopop" href="https://example.com/v.mp4">open</a>').getAttribute('href')).toBe(
+			'https://example.com/v.mp4'
+		);
+		expect(bindAnchor('<a class="ktblocksvideopop" href="/v.mp4">open</a>').getAttribute('href')).toBe('/v.mp4');
 	});
 });

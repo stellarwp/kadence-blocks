@@ -78,7 +78,7 @@
 					el = self.querySelector('.kb-count-up-process');
 				let theSeparator = separator === 'true' ? ',' : separator;
 				theSeparator = theSeparator === 'false' ? '' : theSeparator;
-				// CountUp writes these with innerHTML, and stripHtml() decodes entities, so escape them.
+				// Escape the text options before they are handed to CountUp.
 				const KbCounterOptions = {
 					startVal: start ? start : 0,
 					duration: duration ? duration : 2,

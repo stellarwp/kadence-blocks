@@ -14,7 +14,7 @@ describe('kb-advanced-heading typed text', () => {
 		jest.useRealTimers();
 	});
 
-	it('escapes the span text so Typed.js innerHTML cannot create markup', () => {
+	it('passes the span text to Typed.js as literal text', () => {
 		document.body.innerHTML =
 			'<h2><span class="kt-typed-text" data-strings="[&quot;hi&quot;]">&lt;img src=x onerror=window.__xss=1&gt;</span></h2>';
 		let settings;
@@ -43,5 +43,19 @@ describe('kb-advanced-heading typed text', () => {
 		jest.advanceTimersByTime(200);
 
 		expect(settings.strings[0]).toBe('plain-control-text');
+	});
+
+	it('announces an apostrophe as plain text in the live region', () => {
+		document.body.innerHTML = '<h2><span class="kt-typed-text" data-strings="[]">Don\'t</span></h2>';
+		let settings;
+		window.Typed = jest.fn().mockImplementation((el, options) => {
+			settings = options;
+		});
+		jest.isolateModules(() => require(SCRIPT));
+		jest.advanceTimersByTime(200);
+
+		settings.onStringTyped(0, { strings: settings.strings });
+
+		expect(document.querySelector('.kt-typed-text-sr-only').textContent).toBe("Don't");
 	});
 });

@@ -532,8 +532,7 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 	/**
 	 * Reduce a stored value to plain text for the front-end script.
 	 *
-	 * `wp_localize_script()` decodes entities again, so decode until stable before stripping tags;
-	 * otherwise a multiply-encoded value comes out of the localized data as markup.
+	 * Entities are decoded until the value is stable, then tags are removed.
 	 *
 	 * @since TBD
 	 *
@@ -552,7 +551,11 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 			$text = $decoded;
 		}
 
-		return wp_strip_all_tags( $text );
+		// wp_strip_all_tags() trims, so carry any edge whitespace (e.g. " pts") across.
+		preg_match( '/^\s*/u', $text, $lead );
+		preg_match( '/\s*$/u', $text, $trail );
+
+		return Cast::to_string( $lead[0] ?? '' ) . wp_strip_all_tags( $text ) . Cast::to_string( $trail[0] ?? '' );
 	}
 	/**
 	 * Enqueue the block's items.

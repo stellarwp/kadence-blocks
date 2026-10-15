@@ -45,13 +45,13 @@ describe('kb-countup', () => {
 	});
 
 	it.each(['prefix', 'suffix', 'separator'])(
-		'escapes a double entity-encoded %s so CountUp innerHTML cannot create markup',
+		'outputs a double entity-encoded %s as literal text',
 		(attribute) => {
 			const options = runCountUp({ [attribute]: PAYLOAD_DOUBLE_ENCODED });
 
 			expect(options[attribute]).not.toMatch(/[<>]/);
 
-			// Reproduce CountUp's innerHTML write and confirm no element is created.
+			// Parse the option as HTML and confirm no element is created.
 			const probe = document.createElement('div');
 			probe.innerHTML = options[attribute];
 			expect(probe.querySelector('img')).toBeNull();

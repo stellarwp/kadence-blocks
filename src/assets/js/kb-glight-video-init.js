@@ -29,11 +29,10 @@
 			return String(text).replace(/[&<>"']/g, (match) => map[match]);
 		},
 		/**
-		 * Make an anchor's caption data safe before GLightbox reads it.
+		 * Make an anchor's slide data safe before GLightbox reads it.
 		 *
-		 * GLightbox writes the slide title with innerHTML, taking it from the data-glightbox / data-title
-		 * attributes or the title attribute, all of which the browser has already entity-decoded. Replace
-		 * them with an escaped data-title so the caption renders as text.
+		 * Only the href and a text caption are used, so other slide settings are dropped, the caption is
+		 * escaped, and the href is limited to web or relative URLs.
 		 *
 		 * @param {HTMLElement} el The anchor GLightbox will be bound to.
 		 *
@@ -41,11 +40,23 @@
 		 *
 		 * @return {void}
 		 */
-		sanitizeCaption(el) {
+		sanitizeSlideData(el) {
 			const rawTitle = el.dataset.title || el.getAttribute('title') || '';
-			el.removeAttribute('data-glightbox');
-			el.removeAttribute('data-description');
+			[
+				'data-glightbox',
+				'data-description',
+				'data-content',
+				'data-href',
+				'data-type',
+				'data-desc-position',
+				'data-effect',
+			].forEach((name) => el.removeAttribute(name));
 			el.setAttribute('data-title', kadenceBlocksVideoLightbox.escapeHtml(rawTitle));
+
+			// el.protocol is the resolved scheme.
+			if (el.hasAttribute('href') && !['http:', 'https:'].includes(el.protocol)) {
+				el.removeAttribute('href');
+			}
 		},
 		/**
 		 * Initiate the script to process all
@@ -61,7 +72,7 @@
 					foundVideos[i].setAttribute('aria-haspopup', 'dialog');
 					kadenceBlocksVideoLightbox.foundClasses[i] = 'kb-video-pop-' + i;
 					foundVideos[i].classList.add('kb-video-pop-' + i);
-					kadenceBlocksVideoLightbox.sanitizeCaption(foundVideos[i]);
+					kadenceBlocksVideoLightbox.sanitizeSlideData(foundVideos[i]);
 					kadenceBlocksVideoLightbox.lightboxes[i] = new GLightbox({
 						selector: '.' + kadenceBlocksVideoLightbox.foundClasses[i],
 						touchNavigation: true,
