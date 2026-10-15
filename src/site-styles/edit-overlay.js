@@ -9,6 +9,7 @@ import { useCallback, useMemo } from '@wordpress/element';
 import { pick } from 'lodash';
 import { getSupportedBlock, isFseMode } from './supported-blocks';
 import { guardWrite, mergeAttributes, scopeSiteAttributes, siteAttributes } from './store';
+import { scopeStyle } from './scope-style';
 import { useGlobalStylesRecord } from './use-global-styles-record';
 import { isVirtualBlock } from './virtual-blocks';
 
@@ -21,7 +22,7 @@ function SiteStylesBlockEdit({ BlockEdit, ...props }) {
 	const { name, attributes, setAttributes } = props;
 	const record = useGlobalStylesRecord();
 	const { scope, overlay } = getSupportedBlock(name);
-	const style = scope ? attributes[scope.attribute] : undefined;
+	const style = scope ? scopeStyle(name, attributes, scope) : undefined;
 	const site = useMemo(() => {
 		const values = pick(siteAttributes(record, name), overlay);
 

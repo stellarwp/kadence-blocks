@@ -10,7 +10,8 @@ use WP_Block_Type_Registry;
  * Kadence builds its markup and CSS, so the existing builders render them.
  *
  * Precedence is decided per leaf: an instance leaf that differs from the
- * block's default wins, every other leaf takes the site value. A block that
+ * block's default wins, every other leaf takes the site value. Stored values
+ * of attributes the block excludes are ignored. A block that
  * scopes its site styles gives each instance only the site values its style
  * takes.
  *
@@ -109,7 +110,7 @@ final class Overlay {
 			$scope_attribute = $block->site_styles_scope_attribute();
 			$site            = self::scope(
 				$site,
-				$attributes,
+				[ $scope_attribute => $block->site_styles_scope_style( $attributes ) ],
 				[
 					'attribute'  => $scope_attribute,
 					'attributes' => $block->site_styles_scoped_attributes(),

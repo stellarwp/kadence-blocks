@@ -32,15 +32,6 @@ interface Supports_Site_Styles {
 	public function get_slug(): string;
 
 	/**
-	 * Content attributes, which are never stored site-wide.
-	 *
-	 * @since TBD
-	 *
-	 * @return list<string> Attribute names.
-	 */
-	public function site_styles_excluded_attributes(): array;
-
-	/**
 	 * Site values that must reach the instance's attributes: settings that change
 	 * the markup's classes, and settings the block's editor applies as inline
 	 * styles. No stylesheet rule can reach either. Every other value renders

@@ -1,0 +1,21 @@
+@use '../../styles/mixins' as *;
+
+// The read-only body a theme preset with nothing to edit shows: its preview where the fields would be,
+// and the note that says why there are none.
+.kadence-blocks-style-library__theme-preset {
+	@include flex-column(var(--kb-sl-space-20));
+
+	padding: var(--kb-sl-space-20);
+}
+
+.kadence-blocks-style-library__theme-preset-preview {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: var(--kb-sl-space-40) var(--kb-sl-space-20);
+	background: var(--kb-sl-color-gray-100);
+}
+
+.kadence-blocks-style-library__theme-preset .components-notice {
+	margin: 0;
+}
