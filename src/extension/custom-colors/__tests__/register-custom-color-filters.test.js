@@ -130,7 +130,9 @@ describe('registerCustomColorFilters', () => {
 		const slot = { color: '#3182ce', name: 'Brand Primary', slug: 'palette1' };
 
 		window.kadenceDesignTokensPalettes = { slots: { palette1: '{primitive.color.brand.primary}' } };
+		// Production order (src/early-filters.js), so only the priority puts the custom colors first.
 		registerColorControlFilters();
+		registerCustomColorFilters();
 
 		const result = applyFilters(HOOK, [], { allColors: [slot, user], override: true });
 
