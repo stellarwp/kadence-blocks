@@ -33,11 +33,14 @@ final class StyleLibraryNoticeTest extends WPTestCase {
 	 * @return void
 	 */
 	public function testALeftoverKadenceModeShowsNoNotice(): void {
-		$output = $this->render();
+		$before = $this->render();
 
 		update_option( 'kadence_fse_mode', 'enabled' );
 
-		$this->assertSame( $output, $this->render() );
+		$after = $this->render();
+
+		$this->assertStringNotContainsString( 'notice', $after );
+		$this->assertSame( $before, $after );
 	}
 
 	/**
