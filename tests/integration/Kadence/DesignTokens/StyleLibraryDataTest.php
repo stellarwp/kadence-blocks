@@ -21,20 +21,49 @@ use KadenceWP\KadenceBlocks\StellarWP\DB\DB;
  * history and the active library pointer.
  */
 final class StyleLibraryDataTest extends WPTestCase {
+	/**
+	 * The suite actor.
+	 *
+	 * @since TBD
+	 *
+	 * @var IntegrationTester
+	 */
 	protected IntegrationTester $tester;
 
 	/**
 	 * The seeded library's slug.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
 	 */
 	private const LIBRARY = 'fse-mode-library';
 
 	/**
 	 * The option that holds the active library slug.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
 	 */
 	private const ACTIVE_OPTION = 'kadence_blocks_design_tokens_active_library';
 
+	/**
+	 * The token library store.
+	 *
+	 * @since TBD
+	 *
+	 * @var Token_Store
+	 */
 	private Token_Store $store;
 
+	/**
+	 * The active library store.
+	 *
+	 * @since TBD
+	 *
+	 * @var Active_Token_Library_Store
+	 */
 	private Active_Token_Library_Store $active;
 
 	protected function setUp(): void {

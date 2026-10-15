@@ -29,6 +29,8 @@ final class DesignTokens extends Module {
 	/**
 	 * The per-request memos the token projections keep, by class.
 	 *
+	 * @since TBD
+	 *
 	 * @var array<class-string, string[]>
 	 */
 	private const MEMOS = [
@@ -41,21 +43,37 @@ final class DesignTokens extends Module {
 
 	/**
 	 * Whether the current test read through the token caches.
+	 *
+	 * @since TBD
+	 *
+	 * @var bool
 	 */
 	private bool $cached = false;
 
 	/**
 	 * Whether the current test replaced the style and script registries.
+	 *
+	 * @since TBD
+	 *
+	 * @var bool
 	 */
 	private bool $swapped = false;
 
 	/**
 	 * The styles registry before the test replaced it.
+	 *
+	 * @since TBD
+	 *
+	 * @var WP_Styles|null
 	 */
 	private ?WP_Styles $styles = null;
 
 	/**
 	 * The scripts registry before the test replaced it.
+	 *
+	 * @since TBD
+	 *
+	 * @var WP_Scripts|null
 	 */
 	private ?WP_Scripts $scripts = null;
 

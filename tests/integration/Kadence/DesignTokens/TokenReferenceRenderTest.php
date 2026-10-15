@@ -21,21 +21,40 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Preset\Projector as Preset_
  * defines it is unchanged and still reaches the page.
  */
 final class TokenReferenceRenderTest extends WPTestCase {
+	/**
+	 * The suite actor.
+	 *
+	 * @since TBD
+	 *
+	 * @var IntegrationTester
+	 */
 	protected IntegrationTester $tester;
 
 	/**
 	 * The variable the heading color references.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
 	 */
 	private const VARIABLE = '--kb-token--primitive--color--brand--primary';
 
 	/**
 	 * The saved override the variable is defined with.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
 	 */
 	private const COLOR = '#123456';
 
 	/**
 	 * An Advanced Heading whose color is a stored token reference. With the
 	 * Kadence theme active, the empty color class makes it emit color CSS.
+	 *
+	 * @since TBD
+	 *
+	 * @var array<string, string>
 	 */
 	private const HEADING = [
 		'uniqueID'   => '10_token',
@@ -45,9 +64,20 @@ final class TokenReferenceRenderTest extends WPTestCase {
 
 	/**
 	 * The front-end style handle the token CSS is attached to.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
 	 */
 	private const HANDLE = 'kadence-blocks-global-variables';
 
+	/**
+	 * The token library store.
+	 *
+	 * @since TBD
+	 *
+	 * @var Token_Store
+	 */
 	private Token_Store $store;
 
 	protected function setUp(): void {
