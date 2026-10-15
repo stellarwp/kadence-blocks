@@ -101,7 +101,11 @@ final class Site_Rules {
 			return '';
 		}
 
-		$site = array_diff_key( $this->store->attributes( $block_name ), array_flip( $block->site_styles_overlay_attributes() ) );
+		$site = array_diff_key(
+			$this->store->attributes( $block_name ),
+			array_flip( $block->site_styles_overlay_attributes() ),
+			array_flip( Supported_Blocks::excluded_attributes( $block ) )
+		);
 
 		if ( ! $site ) {
 			return '';

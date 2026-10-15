@@ -28,7 +28,7 @@ function miscStyles() {
 /**
  * Stylesheets with the Fill button's default rule: `style-*` on the front end, the others in the editor.
  */
-const FSE_SOURCES = ['dist/style-blocks-advancedbtn.css', 'dist/blocks-advancedbtn.css', 'dist/blocks-advanced-form.css'];
+const FSE_SOURCES = ['dist/style-blocks-advancedbtn.css', 'dist/blocks-advancedbtn.css'];
 
 /**
  * The Fill button's default rule, as each stylesheet selects it.

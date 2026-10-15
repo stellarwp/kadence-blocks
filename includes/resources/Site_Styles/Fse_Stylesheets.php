@@ -26,7 +26,6 @@ final class Fse_Stylesheets {
 	private const FILES = [
 		'style-blocks-advancedbtn' => 'kadence/singlebtn',
 		'blocks-advancedbtn'       => 'kadence/singlebtn',
-		'blocks-advanced-form'     => 'kadence/singlebtn',
 	];
 
 	/**

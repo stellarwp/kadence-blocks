@@ -83,7 +83,7 @@ final class SiteStylesOverlayTest extends WPTestCase {
 					'custom' => [
 						'kadence' => [
 							'singlebtn' => [
-								'borderRadius'     => [ 20, 20, 20, 20 ],
+								'sizePreset'       => 'large',
 								'label'            => 'Site label',
 								'buttonRole'       => true,
 								'iconTitle'        => 'Site icon title',
@@ -109,11 +109,11 @@ final class SiteStylesOverlayTest extends WPTestCase {
 		$plain    = $render( [ 'uniqueID' => 'b' ] );
 
 		$this->assertSame( 'Own label', $labelled['label'] );
-		$this->assertSame( [ 20, 20, 20, 20 ], $labelled['borderRadius'] );
+		$this->assertSame( 'large', $labelled['sizePreset'] );
 		$this->assertSame(
 			[
-				'uniqueID'     => 'b',
-				'borderRadius' => [ 20, 20, 20, 20 ],
+				'uniqueID'   => 'b',
+				'sizePreset' => 'large',
 			],
 			$plain
 		);
