@@ -46,6 +46,10 @@ final class Palette_FilterTest extends TestCase {
 		$this->store->delete( Token_Store::default_slug() );
 		$this->reset_resolver_memo();
 
+		// Start every test with no Style Guide, so the result never depends on whether the Kadence theme
+		// is active and has a palette saved in the environment running the suite.
+		$this->swap_style_guide_source( new Fake_Style_Guide_Source() );
+
 		// Token_Resolver also caches in the object cache keyed on the store version, so without this a
 		// resolver built inside a test is served the document an earlier test resolved.
 		wp_cache_flush();
