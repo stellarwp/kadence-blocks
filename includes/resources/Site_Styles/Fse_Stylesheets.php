@@ -65,7 +65,7 @@ final class Fse_Stylesheets {
 	public function filter_src( $src ) {
 		if (
 			! is_string( $src )
-			|| 0 !== strpos( $src, KADENCE_BLOCKS_URL . 'dist/' )
+			|| ! str_starts_with( $src, KADENCE_BLOCKS_URL . 'dist/' )
 			|| ! preg_match( '#/dist/(' . implode( '|', array_keys( self::FILES ) ) . ')\.css#', $src, $match )
 			|| ! kadence_blocks_is_fse_mode()
 		) {
@@ -74,7 +74,7 @@ final class Fse_Stylesheets {
 
 		$block_name = self::FILES[ $match[1] ];
 		$block      = $this->blocks->get( $block_name );
-		$paths      = 0 === strpos( $match[1], 'style-' ) ? $this->store->core_paths( $block_name ) : array_values( $block ? $block->site_styles_attributes_map() : [] );
+		$paths      = str_starts_with( $match[1], 'style-' ) ? $this->store->core_paths( $block_name ) : array_values( $block ? $block->site_styles_attributes_map() : [] );
 
 		if ( ! $paths ) {
 			return $src;

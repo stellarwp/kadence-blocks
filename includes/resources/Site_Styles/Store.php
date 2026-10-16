@@ -82,7 +82,7 @@ final class Store {
 		$states = [ $style ];
 
 		foreach ( $style as $key => $value ) {
-			if ( is_string( $key ) && 0 === strpos( $key, '@' ) && is_array( $value ) ) {
+			if ( is_string( $key ) && str_starts_with( $key, '@' ) && is_array( $value ) ) {
 				$states[] = $value;
 			}
 		}
