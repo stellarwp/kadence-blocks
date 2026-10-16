@@ -25,7 +25,7 @@ final class Site_Rules {
 	 *
 	 * @var string
 	 */
-	public const HANDLE = 'kadence-blocks-site-rules';
+	private const HANDLE = 'kadence-blocks-site-rules';
 
 	/**
 	 * The unique ID the builder runs under.
