@@ -7,7 +7,16 @@
  * fixtures in `__tests__/fixtures/` pin both).
  */
 import { cloneDeep, get, isEmpty, isEqual, kebabCase, omit, pick, set, unset } from 'lodash';
+import { isTokenAlias, resolveTokenAlias } from '../extension/design-tokens/alias';
 import { getSupportedBlock } from './supported-blocks';
+
+/**
+ * A design token's CSS variable, as `resolveTokenAlias()` writes it: `var(--kb-token--<id>)`,
+ * with every `.` of the id written as `--`. Token ids never hold `--` themselves.
+ *
+ * @since TBD
+ */
+const TOKEN_VAR = /^var\(--kb-token--([a-z0-9-]+)\)$/;
 
 /**
  * @typedef {Object<string, *>} Attributes Block attribute name => value.
@@ -26,8 +35,9 @@ import { getSupportedBlock } from './supported-blocks';
  * `var(--global-paletteN)`: core's preset variables aren't defined in every
  * editor frame. Both stored forms are accepted, the `var:preset` reference and
  * the `var(--wp--preset--color--…)` value the edited record can hold. Another
- * preset reference becomes its CSS variable, as the style engine writes it;
- * any other value is kept.
+ * preset reference becomes its CSS variable, as the style engine writes it. A
+ * design token's CSS variable becomes its `{token}` reference again, so the
+ * Kadence control shows the token; any other value is kept.
  *
  * @param {string} value The stored color.
  * @return {string} The Kadence color value.
@@ -43,16 +53,29 @@ export function toKadenceColor(value) {
 
 	const preset = /^var:preset\|color\|(.+)$/.exec(value);
 
-	return preset ? `var(--wp--preset--color--${kebabCase(preset[1])})` : value;
+	if (preset) {
+		return `var(--wp--preset--color--${kebabCase(preset[1])})`;
+	}
+
+	const token = TOKEN_VAR.exec(value);
+
+	return token ? `{${token[1].replace(/--/g, '.')}}` : value;
 }
 
 /**
  * Converts a Kadence color attribute value to the form stored in core's style.
  *
+ * A design token's `{token}` reference is stored as its CSS variable, since
+ * core prints the stored value as is.
+ *
  * @param {string} value The Kadence color value.
- * @return {string} `var:preset|color|theme-paletteN` for a palette color, the value otherwise.
+ * @return {string} `var:preset|color|theme-paletteN` for a palette color, `var(--kb-token--…)` for a design token, the value otherwise.
  */
 export function toCoreColor(value) {
+	if (isTokenAlias(value)) {
+		return resolveTokenAlias(value);
+	}
+
 	return /^palette\d+$/.test(value) ? `var:preset|color|theme-${value}` : value;
 }
 
@@ -129,7 +152,12 @@ export function toStoredForm(attributes, definitions, blockName) {
 /**
  * Writes a block's stored form into a copy of the Global Styles record's
  * styles and settings. A mapped path without a value is removed, with any
- * object it leaves empty inside the block's styles.
+ * object it leaves empty, up to `styles.blocks`.
+ *
+ * `settings.custom.kadence` and `settings.custom` are removed once they are
+ * empty too. WordPress saves an empty object as an empty array, which a later
+ * write couldn't add a key to, so an empty array already stored on the way to
+ * a value is replaced before writing.
  *
  * @param {GlobalStylesRecord}                                 record    The edited Global Styles record.
  * @param {string}                                             blockName Block name.
@@ -145,27 +173,67 @@ export function withStoredForm(record, blockName, stored) {
 		const target = ['blocks', blockName, ...path.split('.')];
 
 		if (undefined !== stored.core[path]) {
+			for (let length = 1; length < target.length; length++) {
+				replaceEmptyList(styles, target.slice(0, length));
+			}
+
 			set(styles, target, stored.core[path]);
 			return;
 		}
 
 		unset(styles, target);
 
-		// Up to, not including, the block's own entry.
 		let parent = target.slice(0, -1);
-		while (parent.length > 2 && isEmpty(get(styles, parent))) {
+		while (parent.length && isEmpty(get(styles, parent))) {
 			unset(styles, parent);
 			parent = parent.slice(0, -1);
 		}
 	});
 
 	if (Object.keys(stored.custom).length) {
+		replaceEmptyList(settings, ['custom']);
+		replaceEmptyList(settings, ['custom', 'kadence']);
 		set(settings, ['custom', 'kadence', slug], stored.custom);
 	} else {
 		unset(settings, ['custom', 'kadence', slug]);
+		unsetIfEmpty(settings, ['custom', 'kadence']);
+		unsetIfEmpty(settings, ['custom']);
 	}
 
 	return { styles, settings };
+}
+
+/**
+ * Replaces an empty array at a path with an empty object, so named keys can be
+ * set under it. WordPress returns an empty object it saved as an empty array.
+ *
+ * @param {Object}   object The object to change.
+ * @param {string[]} path   The path.
+ *
+ * @since TBD
+ */
+function replaceEmptyList(object, path) {
+	const value = get(object, path);
+
+	if (Array.isArray(value) && !value.length) {
+		set(object, path, {});
+	}
+}
+
+/**
+ * Removes the value at a path when it is an empty object or array.
+ *
+ * @param {Object}   object The object to change.
+ * @param {string[]} path   The path.
+ *
+ * @since TBD
+ */
+function unsetIfEmpty(object, path) {
+	const value = get(object, path);
+
+	if (value !== null && typeof value === 'object' && isEmpty(value)) {
+		unset(object, path);
+	}
 }
 
 /**

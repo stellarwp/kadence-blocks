@@ -2,6 +2,9 @@
 
 namespace KadenceWP\KadenceBlocks\Site_Styles;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Css_Var;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Alias;
+use Kadence_Blocks_CSS;
 use WP_Theme_JSON_Data;
 use WP_Theme_JSON_Data_Gutenberg;
 
@@ -12,6 +15,12 @@ use WP_Theme_JSON_Data_Gutenberg;
  *   `:root` custom property (the overlay reads the stored post instead);
  * - the supported blocks' `styles.blocks` entries when FSE mode is off, since
  *   the theme's `theme.json` makes core print them in classic mode too.
+ *
+ * In FSE mode a design token in a supported block's `styles.blocks` entry is
+ * rendered as its CSS variable, whether it is stored as a `{token}` reference,
+ * which core would print as is, or as the variable the site styles window
+ * stores. A token the active library doesn't define is left out, as it is for a
+ * block instance, so the block falls back to its other styles.
  *
  * The stored post is never changed, so switching FSE mode back on restores
  * everything. The REST endpoint the Site Editor loads reads the post directly
@@ -57,11 +66,27 @@ final class User_Data_Filter {
 			$changed = true;
 		}
 
-		if ( ! kadence_blocks_is_fse_mode() ) {
-			foreach ( array_keys( $this->blocks->all() ) as $block_name ) {
-				if ( isset( $data['styles']['blocks'][ $block_name ] ) ) {
-					unset( $data['styles']['blocks'][ $block_name ] );
-					$changed = true;
+		$fse_mode = kadence_blocks_is_fse_mode();
+
+		foreach ( array_keys( $this->blocks->all() ) as $block_name ) {
+			if ( ! isset( $data['styles']['blocks'][ $block_name ] ) ) {
+				continue;
+			}
+
+			if ( ! $fse_mode ) {
+				unset( $data['styles']['blocks'][ $block_name ] );
+				$changed = true;
+				continue;
+			}
+
+			$style = $data['styles']['blocks'][ $block_name ];
+
+			if ( is_array( $style ) ) {
+				$resolved = self::resolve_tokens( $style );
+
+				if ( $resolved !== $style ) {
+					$data['styles']['blocks'][ $block_name ] = $resolved;
+					$changed                                 = true;
 				}
 			}
 		}
@@ -73,5 +98,54 @@ final class User_Data_Filter {
 		$class = get_class( $theme_json );
 
 		return new $class( $data, 'custom' );
+	}
+
+	/**
+	 * @param array<array-key, mixed> $style A block's style, or part of it.
+	 *
+	 * @return array<array-key, mixed> The style, with each design token as its CSS variable and each undefined one removed.
+	 */
+	private static function resolve_tokens( array $style ): array {
+		foreach ( $style as $key => $value ) {
+			if ( is_array( $value ) ) {
+				$style[ $key ] = self::resolve_tokens( $value );
+				continue;
+			}
+
+			$alias = self::token_alias( $value );
+
+			if ( null === $alias ) {
+				continue;
+			}
+
+			if ( Kadence_Blocks_CSS::get_instance()->is_token_reference_backed( $alias ) ) {
+				$style[ $key ] = 'var(' . Css_Var::from_id( Alias::path_of( $alias ) ) . ')';
+			} else {
+				unset( $style[ $key ] );
+			}
+		}
+
+		return $style;
+	}
+
+	/**
+	 * @param mixed $value A style value.
+	 *
+	 * @return string|null The `{token}` reference the value names, null when it names no design token.
+	 */
+	private static function token_alias( $value ): ?string {
+		if ( ! is_string( $value ) ) {
+			return null;
+		}
+
+		if ( Alias::is_alias( $value ) ) {
+			return $value;
+		}
+
+		if ( 1 === preg_match( '/^var\(' . preg_quote( Css_Var::get_prefix(), '/' ) . '([a-z0-9-]+)\)$/', $value, $matches ) ) {
+			return Alias::wrap( str_replace( '--', '.', $matches[1] ) );
+		}
+
+		return null;
 	}
 }
