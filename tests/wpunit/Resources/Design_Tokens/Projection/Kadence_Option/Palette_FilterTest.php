@@ -239,6 +239,22 @@ final class Palette_FilterTest extends TestCase {
 	}
 
 	/**
+	 * A non-string value cannot be compared with the saved color, so it is not treated as another palette set.
+	 *
+	 * @return void
+	 */
+	public function testNonStringValueStillGetsTheTokenColor(): void {
+		$this->swap_style_guide_source( Fake_Style_Guide_Source::with_palette( [ 'palette1' => '#111111' ] ) );
+
+		$resolved = $this->container->get( Token_Resolver::class )->resolve();
+
+		$this->assertSame(
+			$resolved->value( 'primitive.color.brand.primary' ),
+			$this->filter->filter( null, 'palette1' )
+		);
+	}
+
+	/**
 	 * A corrupt stored document fails open: the theme's own value is returned.
 	 *
 	 * @return void
