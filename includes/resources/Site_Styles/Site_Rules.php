@@ -23,6 +23,8 @@ final class Site_Rules {
 	/**
 	 * The handle of the inline stylesheet.
 	 *
+	 * @since TBD
+	 *
 	 * @var string
 	 */
 	private const HANDLE = 'kadence-blocks-site-rules';
