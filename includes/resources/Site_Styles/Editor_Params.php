@@ -57,6 +57,7 @@ final class Editor_Params {
 				$blocks[ $name ] = [
 					'slug'          => $block->get_slug(),
 					'exclude'       => Supported_Blocks::excluded_attributes( $block ),
+					'overlay'       => $block->site_styles_overlay_attributes(),
 					'attributesMap' => $block->site_styles_attributes_map(),
 					'supports'      => $block->site_styles_supports(),
 				];

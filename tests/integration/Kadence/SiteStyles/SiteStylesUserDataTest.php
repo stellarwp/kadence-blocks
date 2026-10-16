@@ -22,7 +22,7 @@ final class SiteStylesUserDataTest extends WPTestCase {
 		'styles'   => [ 'blocks' => [ 'kadence/singlebtn' => [ 'color' => [ 'background' => '#cc0000' ] ] ] ],
 	];
 
-	public function testFseModePrintsNoKadenceVariablesAndTheOverlayStillReadsThem(): void {
+	public function testFseModePrintsNoKadenceVariablesAndTheStoreStillReadsThem(): void {
 		$this->tester->enable_fse_mode();
 		$this->tester->store_user_global_styles( self::DATA );
 
@@ -39,11 +39,16 @@ final class SiteStylesUserDataTest extends WPTestCase {
 		$this->assertStringNotContainsString( '--wp--custom--kadence', $css );
 	}
 
-	public function testFseModeStillPrintsCoresSingleButtonRule(): void {
+	public function testFseModePrintsCoresSingleButtonRulesWithTheirDevices(): void {
+		$data = self::DATA;
+		$data['styles']['blocks']['kadence/singlebtn']['@mobile'] = [ 'color' => [ 'background' => '#00aa00' ] ];
 		$this->tester->enable_fse_mode();
-		$this->tester->store_user_global_styles( self::DATA );
+		$this->tester->store_user_global_styles( $data );
 
-		$this->assertStringContainsString( 'wp-block-kadence-singlebtn', wp_get_global_stylesheet() );
+		$css = wp_get_global_stylesheet();
+
+		$this->assertStringContainsString( 'wp-block-kadence-singlebtn', $css );
+		$this->assertMatchesRegularExpression( '/@media[^{]*767px[^{]*\{[^}]*kadence-singlebtn[^}]*\{background-color: ?#00aa00;/', $css );
 	}
 
 	public function testTheStoredPostIsUnchangedAfterAModeRoundTrip(): void {

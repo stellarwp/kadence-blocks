@@ -15,7 +15,7 @@ use WP_Block_Type_Registry;
  * scopes its site styles gives each instance only the site values its style
  * takes.
  *
- * @since TBD
+ * @since TBD Merges only the values the block lists for the overlay (classes and editor inline styles). Core's global stylesheet renders the core keys, and `Site_Rules` the rest.
  */
 final class Overlay {
 
@@ -92,10 +92,12 @@ final class Overlay {
 	 */
 	public function apply( string $block_name, array $attributes ): array {
 		$block = $this->blocks->get( $block_name );
-		$site  = null === $block ? [] : array_diff_key(
-			$this->store->attributes( $block_name ),
-			array_flip( Supported_Blocks::excluded_attributes( $block ) )
-		);
+
+		if ( null === $block ) {
+			return $attributes;
+		}
+
+		$site = array_intersect_key( $this->store->attributes( $block_name ), array_flip( $block->site_styles_overlay_attributes() ) );
 
 		if ( ! $site ) {
 			return $attributes;
