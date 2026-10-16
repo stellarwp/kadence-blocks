@@ -726,7 +726,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block imple
 	 * @return string Class name.
 	 */
 	public function site_styles_scope_class( string $style ): string {
-		return 'kb-btn-global-' . $style;
+		return 'kb-btn-global-' . sanitize_key( $style );
 	}
 
 	/**
