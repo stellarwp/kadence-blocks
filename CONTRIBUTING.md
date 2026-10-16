@@ -69,9 +69,10 @@ bun run build
 | Command | Description |
 |---|---|
 | `bun run start` | Watch mode — rebuilds JS/CSS on change |
-| `bun run build` | Production build (`wp-scripts build` + `gulp build`) |
+| `bun run build` | Production build (`wp-scripts build` + `gulp build` + `gulp fseStyles`) |
 | `bun run build-wp` | Webpack build only |
 | `bun run build-gulp` | Gulp build only (legacy JS/CSS) |
+| `bun run build-fse` | FSE-mode copies of the Fill button stylesheets (run after `build-wp`) |
 | `bun run lint-js` | Lint JavaScript |
 | `bun run lint-js-fix` | Lint and auto-fix JavaScript |
 | `bun run format` | Format source files |

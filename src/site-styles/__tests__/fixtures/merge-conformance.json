@@ -1,0 +1,182 @@
+[
+	{
+		"name": "instance at the default takes the site value",
+		"instance": "",
+		"site": "#cc0000",
+		"default": "",
+		"expected": "#cc0000"
+	},
+	{
+		"name": "instance without the attribute takes the site value",
+		"instance": null,
+		"site": "#cc0000",
+		"default": "",
+		"expected": "#cc0000"
+	},
+	{
+		"name": "instance value wins",
+		"instance": "#00aa00",
+		"site": "#cc0000",
+		"default": "",
+		"expected": "#00aa00"
+	},
+	{
+		"name": "per-device values merge per index",
+		"instance": [
+			20,
+			"",
+			""
+		],
+		"site": [
+			"",
+			14,
+			10
+		],
+		"default": [
+			"",
+			"",
+			""
+		],
+		"expected": [
+			20,
+			14,
+			10
+		]
+	},
+	{
+		"name": "typography keeps the instance size and takes the site family",
+		"instance": [
+			{
+				"size": [
+					30,
+					"",
+					""
+				],
+				"sizeType": "px",
+				"family": ""
+			}
+		],
+		"site": [
+			{
+				"size": [
+					24,
+					"",
+					""
+				],
+				"sizeType": "px",
+				"family": "Georgia"
+			}
+		],
+		"default": [
+			{
+				"size": [
+					"",
+					"",
+					""
+				],
+				"sizeType": "px",
+				"family": ""
+			}
+		],
+		"expected": [
+			{
+				"size": [
+					30,
+					"",
+					""
+				],
+				"sizeType": "px",
+				"family": "Georgia"
+			}
+		]
+	},
+	{
+		"name": "typography at the default takes the whole site value",
+		"instance": [
+			{
+				"size": [
+					"",
+					"",
+					""
+				],
+				"sizeType": "px",
+				"family": ""
+			}
+		],
+		"site": [
+			{
+				"size": [
+					24,
+					"",
+					""
+				],
+				"sizeType": "px",
+				"family": "Georgia"
+			}
+		],
+		"default": [
+			{
+				"size": [
+					"",
+					"",
+					""
+				],
+				"sizeType": "px",
+				"family": ""
+			}
+		],
+		"expected": [
+			{
+				"size": [
+					24,
+					"",
+					""
+				],
+				"sizeType": "px",
+				"family": "Georgia"
+			}
+		]
+	},
+	{
+		"name": "instance leaves that differ from the default are kept",
+		"instance": [
+			4,
+			4,
+			4,
+			4
+		],
+		"site": [
+			20,
+			"",
+			"",
+			""
+		],
+		"default": [
+			"",
+			"",
+			"",
+			""
+		],
+		"expected": [
+			4,
+			4,
+			4,
+			4
+		]
+	},
+	{
+		"name": "a scalar instance value is not merged into a site array",
+		"instance": "custom",
+		"site": [
+			"",
+			14,
+			10
+		],
+		"default": [
+			"",
+			"",
+			""
+		],
+		"expected": "custom"
+	}
+]

@@ -14,6 +14,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Scopes_Site_Styles;
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Supports_Site_Styles;
 use KadenceWP\KadenceBlocks\Utils\Cast;
 
 /**
@@ -21,7 +23,7 @@ use KadenceWP\KadenceBlocks\Utils\Cast;
  *
  * @category class
  */
-class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
+class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block implements Supports_Site_Styles, Scopes_Site_Styles {
 
 	/**
 	 * Instance of this class
@@ -564,6 +566,167 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		wp_register_script( 'kadence-blocks-glight-video-init', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-glight-video-init.min.js', [ 'kadence-glightbox' ], KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-popper', KADENCE_BLOCKS_URL . 'includes/assets/js/popper.min.js', [], KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-tippy', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-tippy.min.js', [ 'kadence-blocks-popper' ], KADENCE_BLOCKS_VERSION, true );
+	}
+
+	/**
+	 * The size preset and width type set classes on the markup, and the width
+	 * renders only with a fixed width type; the editor sets the icon size and
+	 * padding inline.
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_overlay_attributes(): array {
+		return [
+			'sizePreset',
+			'widthType',
+			'width',
+			'widthUnit',
+			'iconSize',
+			'iconSizeUnit',
+			'iconPadding',
+			'tabletIconPadding',
+			'mobileIconPadding',
+			'iconPaddingUnit',
+		];
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_attributes_map(): array {
+		return [
+			'background' => 'color.background',
+			'color'      => 'color.text',
+		];
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_supports(): array {
+		return [
+			'color' => [
+				'background'                      => true,
+				'text'                            => true,
+				'gradients'                       => false,
+				'__experimentalSkipSerialization' => true,
+			],
+		];
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_selectors(): array {
+		/*
+		 * The button element, which the editor wraps and the front end doesn't. Only Fill
+		 * buttons: core's colors would otherwise reach the Outline and theme styles.
+		 */
+		return [ 'root' => '.wp-block-kadence-singlebtn.kt-button.kb-btn-global-fill, .wp-block-kadence-singlebtn .kt-button.kb-btn-global-fill' ];
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_scope_attribute(): string {
+		return 'inheritStyles';
+	}
+
+	/**
+	 * The style the button renders as. A class-painted preset (Outline, or a theme style) sets it, since
+	 * presets replace `inheritStyles`; otherwise it's the button's `inheritStyles`, as in `build_html()`.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $attributes The instance's attributes.
+	 *
+	 * @return string|null
+	 */
+	public function site_styles_scope_style( array $attributes ): ?string {
+		$resolved = $this->resolved_preset( $attributes );
+		$classes  = null === $resolved ? [] : preg_split( '/\s+/', $resolved['class'], -1, PREG_SPLIT_NO_EMPTY );
+
+		if ( ! $classes ) {
+			return isset( $attributes['inheritStyles'] ) ? Cast::to_string( $attributes['inheritStyles'] ) : null;
+		}
+
+		if ( in_array( 'kb-btn-global-outline', $classes, true ) ) {
+			return 'outline';
+		}
+
+		// Any other class-painted preset is a theme style.
+		if ( in_array( self::SECONDARY_CLASS, $classes, true ) || self::THEME_SECONDARY === $this->stored_preset( $attributes ) ) {
+			return 'inherit-secondary';
+		}
+
+		return 'inherit';
+	}
+
+	/**
+	 * Site values describe Fill buttons. Outline takes only the shape, so it
+	 * keeps its transparent background and theme outline colors; the theme
+	 * button styles take none.
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_scoped_attributes(): array {
+		$shape = [
+			'typography',
+			'sizePreset',
+			'widthType',
+			'width',
+			'widthUnit',
+			'gap',
+			'padding',
+			'tabletPadding',
+			'mobilePadding',
+			'paddingUnit',
+			'margin',
+			'tabletMargin',
+			'mobileMargin',
+			'marginUnit',
+			'borderRadius',
+			'tabletBorderRadius',
+			'mobileBorderRadius',
+			'borderRadiusUnit',
+			'borderHoverRadius',
+			'tabletBorderHoverRadius',
+			'mobileBorderHoverRadius',
+			'borderHoverRadiusUnit',
+			'iconSize',
+			'iconSizeUnit',
+			'iconPadding',
+			'tabletIconPadding',
+			'mobileIconPadding',
+			'iconPaddingUnit',
+		];
+
+		return [
+			'outline'           => $shape,
+			'inherit'           => [],
+			'inherit-secondary' => [],
+		];
+	}
+
+	/**
+	 * The button's `kb-btn-global-<style>` class.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $style The style, e.g. `fill`.
+	 *
+	 * @return string Class name.
+	 */
+	public function site_styles_scope_class( string $style ): string {
+		return 'kb-btn-global-' . sanitize_key( $style );
 	}
 
 	/**

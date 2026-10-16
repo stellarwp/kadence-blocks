@@ -12,7 +12,8 @@
 		"start": "concurrently --kill-others \"bun run start-wp\" \"bun run start-gulp\"",
 		"build-wp": "wp-scripts build",
 		"build-gulp": "gulp build",
-		"build": "wp-scripts build && gulp build",
+		"build-fse": "gulp fseStyles",
+		"build": "wp-scripts build && gulp build && gulp fseStyles",
 		"build:custom": "wp-scripts build --webpack-bundle-analyzer",
 		"test": "wp-scripts test-unit-js",
 		"lint-js": "wp-scripts lint-js",
@@ -21,7 +22,8 @@
 		"link-kadence-packages": "node node_modules/@kadence/components/scripts/npm/link-kadence-packages.js",
 		"unlink-kadence-packages": "node node_modules/@kadence/components/scripts/npm/unlink-kadence-packages.js",
 		"cspell-cmd": "bunx cspell lint -c .cspell.json --no-progress --no-must-find-files --dot",
-		"cspell-full": "bun run cspell-cmd '**'"
+		"cspell-full": "bun run cspell-cmd '**'",
+		"cspell-changed": "dev_scripts/cspell-changed-lines.sh"
 	},
 	"dependencies": {
 		"@algolia/autocomplete-js": "^1.10.0",
@@ -29,7 +31,7 @@
 		"@dnd-kit/sortable": "^10.0.0",
 		"@floating-ui/react": "^0.27.12",
 		"@hcaptcha/react-hcaptcha": "^1.8.1",
-		"@kadence/components": "github:stellarwp/kadence-components#1.1.10",
+		"@kadence/components": "github:stellarwp/kadence-components#release/fse",
 		"@kadence/helpers": "github:stellarwp/kadence-helpers#1.1.1",
 		"@kadence/icons": "github:stellarwp/kadence-icons#1.1.4",
 		"@lottiefiles/dotlottie-react": "^0.15.2",

@@ -1,0 +1,82 @@
+{
+	"slug": "singlebtn",
+	"exclude": [
+		"uniqueID",
+		"anchor",
+		"inQueryBlock",
+		"noCustomDefaults",
+		"metadata",
+		"lock",
+		"className",
+		"kadenceDynamic",
+		"kbPreset",
+		"kbPalette",
+		"text",
+		"link",
+		"target",
+		"noFollow",
+		"sponsored",
+		"download",
+		"buttonRole",
+		"label",
+		"hideLink",
+		"iconTitle",
+		"tooltip",
+		"tooltipPlacement",
+		"isSubmit",
+		"inheritStyles"
+	],
+	"overlay": [
+		"sizePreset",
+		"widthType",
+		"width",
+		"widthUnit",
+		"iconSize",
+		"iconSizeUnit",
+		"iconPadding",
+		"tabletIconPadding",
+		"mobileIconPadding",
+		"iconPaddingUnit"
+	],
+	"attributesMap": { "background": "color.background", "color": "color.text" },
+	"supports": {
+		"color": { "background": true, "text": true, "gradients": false, "__experimentalSkipSerialization": true }
+	},
+	"scope": {
+		"attribute": "inheritStyles",
+		"attributes": {
+			"outline": [
+				"typography",
+				"sizePreset",
+				"widthType",
+				"width",
+				"widthUnit",
+				"gap",
+				"padding",
+				"tabletPadding",
+				"mobilePadding",
+				"paddingUnit",
+				"margin",
+				"tabletMargin",
+				"mobileMargin",
+				"marginUnit",
+				"borderRadius",
+				"tabletBorderRadius",
+				"mobileBorderRadius",
+				"borderRadiusUnit",
+				"borderHoverRadius",
+				"tabletBorderHoverRadius",
+				"mobileBorderHoverRadius",
+				"borderHoverRadiusUnit",
+				"iconSize",
+				"iconSizeUnit",
+				"iconPadding",
+				"tabletIconPadding",
+				"mobileIconPadding",
+				"iconPaddingUnit"
+			],
+			"inherit": [],
+			"inherit-secondary": []
+		}
+	}
+}

@@ -1,0 +1,74 @@
+/**
+ * Renders supported blocks in the editor with the site-level values they list
+ * for the overlay merged in, and keeps those values out of what the block
+ * stores. Core's Global Styles and the block's site rules render the rest.
+ */
+import { createHigherOrderComponent } from '@wordpress/compose';
+import { getBlockType } from '@wordpress/blocks';
+import { useCallback, useMemo } from '@wordpress/element';
+import { pick } from 'lodash';
+import { getSupportedBlock, isFseMode } from './supported-blocks';
+import { guardWrite, mergeAttributes, scopeSiteAttributes, siteAttributes } from './store';
+import { scopeStyle } from './scope-style';
+import { useGlobalStylesRecord } from './use-global-styles-record';
+import { isVirtualBlock } from './virtual-blocks';
+
+/**
+ * @param {Object}   props           The block edit props plus the wrapped component.
+ * @param {Function} props.BlockEdit The wrapped block edit component.
+ * @return {Element} The block edit with merged attributes and a guarded `setAttributes`.
+ */
+function SiteStylesBlockEdit({ BlockEdit, ...props }) {
+	const { name, attributes, setAttributes } = props;
+	const record = useGlobalStylesRecord();
+	const { scope, overlay } = getSupportedBlock(name);
+	const style = scope ? scopeStyle(name, attributes, scope) : undefined;
+	const site = useMemo(() => {
+		const values = pick(siteAttributes(record, name), overlay);
+
+		if (!scope) {
+			return values;
+		}
+
+		const definitions = getBlockType(name)?.attributes || {};
+
+		return scopeSiteAttributes(values, { [scope.attribute]: style }, scope, definitions[scope.attribute]?.default);
+	}, [record, name, scope, overlay, style]);
+	const hasSiteValues = Object.keys(site).length > 0;
+	const shown = useMemo(
+		() => (hasSiteValues ? mergeAttributes(attributes, site, getBlockType(name)?.attributes || {}) : attributes),
+		[hasSiteValues, attributes, site, name]
+	);
+	const guardedSetAttributes = useCallback(
+		(written) => {
+			const next = typeof written === 'function' ? written(shown) : written;
+			const kept = guardWrite(next, shown, attributes, site);
+
+			if (Object.keys(kept).length) {
+				setAttributes(kept);
+			}
+		},
+		[shown, attributes, site, setAttributes]
+	);
+
+	if (!hasSiteValues) {
+		return <BlockEdit {...props} />;
+	}
+
+	return <BlockEdit {...props} attributes={shown} setAttributes={guardedSetAttributes} />;
+}
+
+/**
+ * The `editor.BlockEdit` filter: wraps supported blocks in FSE mode, except
+ * the Kadence panel's virtual and preview blocks.
+ */
+export const withSiteStyles = createHigherOrderComponent(
+	(BlockEdit) => (props) => {
+		if (!isFseMode() || !getSupportedBlock(props.name) || isVirtualBlock(props.clientId)) {
+			return <BlockEdit {...props} />;
+		}
+
+		return <SiteStylesBlockEdit {...props} BlockEdit={BlockEdit} />;
+	},
+	'withSiteStyles'
+);
