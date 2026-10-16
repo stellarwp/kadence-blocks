@@ -152,20 +152,86 @@ final class Palette_FilterTest extends TestCase {
 	}
 
 	/**
-	 * The filter answers a slot the same way whichever palette set the theme has active.
-	 *
-	 * The removed option write only ever touched the "palette" set, so a site on second-palette saw
-	 * nothing. The filter runs after the theme picks the set, so the set never reaches this code.
+	 * A read the theme resolved from the saved active palette set gets the token color.
 	 *
 	 * @return void
 	 */
-	public function testResultDoesNotDependOnTheThemesActivePaletteSet(): void {
-		$resolved = $this->container->get( Token_Resolver::class )->resolve();
-		$expected = $resolved->value( 'primitive.color.brand.primary' );
+	public function testValueFromTheActivePaletteSetGetsTheTokenColor(): void {
+		$this->swap_style_guide_source( $this->style_guide_with_two_sets() );
 
-		$this->assertSame( $expected, $this->filter->filter( '#from-palette', 'palette1' ) );
-		$this->assertSame( $expected, $this->filter->filter( '#from-second-palette', 'palette1' ) );
-		$this->assertSame( $expected, $this->filter->filter( '#from-third-palette', 'palette1' ) );
+		$resolved = $this->container->get( Token_Resolver::class )->resolve();
+
+		$this->assertSame(
+			$resolved->value( 'primitive.color.brand.primary' ),
+			$this->filter->filter( '#111111', 'palette1' )
+		);
+	}
+
+	/**
+	 * A read the theme resolved from a palette set other than the saved active one is left untouched.
+	 *
+	 * Kadence Pro's dark mode asks the theme for second-palette while the site renders palette, and the
+	 * filter receives only the slot, so the value is what tells the two apart.
+	 *
+	 * @dataProvider otherPaletteSetProvider
+	 *
+	 * @param string $value  The color the theme resolved from the requested set.
+	 * @param string $subkey The slot being read.
+	 *
+	 * @return void
+	 */
+	public function testValueFromAnotherPaletteSetPassesThrough( string $value, string $subkey ): void {
+		$this->swap_style_guide_source( $this->style_guide_with_two_sets() );
+
+		$this->assertSame( $value, $this->filter->filter( $value, $subkey ) );
+	}
+
+	/**
+	 * Slot reads that resolve from second-palette while palette is active.
+	 *
+	 * @return Generator
+	 */
+	public function otherPaletteSetProvider(): Generator {
+		yield 'second palette slot 1' => [
+			'value'  => '#999999',
+			'subkey' => 'palette1',
+		];
+		yield 'second palette slot 3' => [
+			'value'  => '#aaaaaa',
+			'subkey' => 'palette3',
+		];
+	}
+
+	/**
+	 * The comparison with the saved active color ignores case and surrounding whitespace.
+	 *
+	 * @return void
+	 */
+	public function testActiveSetComparisonIgnoresCaseAndWhitespace(): void {
+		$this->swap_style_guide_source( Fake_Style_Guide_Source::with_palette( [ 'palette1' => '#AbCdEf' ] ) );
+
+		$resolved = $this->container->get( Token_Resolver::class )->resolve();
+
+		$this->assertSame(
+			$resolved->value( 'primitive.color.brand.primary' ),
+			$this->filter->filter( ' #abcdef ', 'palette1' )
+		);
+	}
+
+	/**
+	 * A slot the active set has no color for is not treated as another palette set.
+	 *
+	 * @return void
+	 */
+	public function testSlotMissingFromTheActiveSetStillGetsTheTokenColor(): void {
+		$this->swap_style_guide_source( Fake_Style_Guide_Source::with_palette( [ 'palette2' => '#222222' ] ) );
+
+		$resolved = $this->container->get( Token_Resolver::class )->resolve();
+
+		$this->assertSame(
+			$resolved->value( 'primitive.color.brand.primary' ),
+			$this->filter->filter( '#anything', 'palette1' )
+		);
 	}
 
 	/**
@@ -202,7 +268,8 @@ final class Palette_FilterTest extends TestCase {
 			$this->registry,
 			$corrupt_resolver,
 			$this->container->get( Active_Token_Library_Store::class ),
-			$this->container->get( Palette_Builder::class )
+			$this->container->get( Palette_Builder::class ),
+			$this->container->get( Style_Guide_Overlay::class )
 		);
 
 		$this->assertSame( '#old', $filter->filter( '#old', 'palette1' ) );
@@ -306,12 +373,12 @@ final class Palette_FilterTest extends TestCase {
 		$this->swap_style_guide_source( $source );
 
 		// Build the memo from the first Style Guide, so the test fails if the change does not clear it.
-		$this->assertSame( '#111111', $this->filter->filter( '#old', 'palette1' ) );
+		$this->assertSame( '#111111', $this->filter->filter( '#111111', 'palette1' ) );
 
 		$source->set( Fake_Style_Guide_Source::with_palette( [ 'palette1' => '#222222' ] )->snapshot() );
 
 		$probe = function (): void {
-			$this->filter->filter( '#old', 'palette1' );
+			$this->filter->filter( '#222222', 'palette1' );
 		};
 		add_action( $hook, $probe, $probe_priority );
 
@@ -321,7 +388,7 @@ final class Palette_FilterTest extends TestCase {
 			remove_action( $hook, $probe, $probe_priority );
 		}
 
-		$this->assertSame( '#222222', $this->filter->filter( '#old', 'palette1' ) );
+		$this->assertSame( '#222222', $this->filter->filter( '#222222', 'palette1' ) );
 	}
 
 	/**
@@ -363,7 +430,8 @@ final class Palette_FilterTest extends TestCase {
 			$this->registry,
 			$this->container->get( Token_Resolver::class ),
 			$this->container->get( Active_Token_Library_Store::class ),
-			$builder
+			$builder,
+			$this->container->get( Style_Guide_Overlay::class )
 		);
 
 		// A theme read before init:0: the registry has no palette tokens yet, so the theme's value stands.
@@ -376,6 +444,34 @@ final class Palette_FilterTest extends TestCase {
 
 		// The same filter instance must not answer this read from the empty map it saw first.
 		$this->assertNotSame( '#theme', $filter->filter( '#theme', 'palette1' ) );
+	}
+
+	/**
+	 * A Style Guide whose active "palette" set and its "second-palette" disagree on every slot.
+	 *
+	 * @return Fake_Style_Guide_Source
+	 */
+	private function style_guide_with_two_sets(): Fake_Style_Guide_Source {
+		$snapshot                      = Fake_Style_Guide_Source::with_palette(
+			[
+				'palette1' => '#111111',
+				'palette3' => '#333333',
+			]
+		)->snapshot();
+		$snapshot['palette']['second-palette'] = [
+			[
+				'color' => '#999999',
+				'name'  => 'PALETTE1',
+				'slug'  => 'palette1',
+			],
+			[
+				'color' => '#aaaaaa',
+				'name'  => 'PALETTE3',
+				'slug'  => 'palette3',
+			],
+		];
+
+		return new Fake_Style_Guide_Source( $snapshot );
 	}
 
 	/**

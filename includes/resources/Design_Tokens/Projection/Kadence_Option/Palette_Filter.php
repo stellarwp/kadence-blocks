@@ -6,6 +6,7 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Kadence_Option;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
+use KadenceWP\KadenceBlocks\Design_Tokens\Theme_Style_Guide\Style_Guide_Overlay;
 use RuntimeException;
 
 /**
@@ -18,6 +19,10 @@ use RuntimeException;
  * the token baseline reads from, so resetting a token gives the user their own color back, and it
  * works for whichever palette set (palette / second-palette / third-palette) the theme has active,
  * because the filter runs after the theme picked the set.
+ *
+ * The filter only receives the slot, not the set, so a read for a set other than the saved active one
+ * (Kadence Pro's dark mode asks for second-palette while the site renders palette) is told apart by its
+ * value: it does not match the color the active set has saved for that slot, and is left untouched.
  *
  * A literal color is returned rather than a var(--kb-token--…) reference: the theme passes this value
  * through hex2rgb() in places, and a var() reference cannot be converted that way.
@@ -62,6 +67,15 @@ final class Palette_Filter {
 	private Active_Token_Library_Store $active;
 
 	/**
+	 * Supplies the color the active palette set has saved for a slot.
+	 *
+	 * @since TBD
+	 *
+	 * @var Style_Guide_Overlay
+	 */
+	private Style_Guide_Overlay $overlay;
+
+	/**
 	 * Builds the slug => { color, name } map from the resolved tokens.
 	 *
 	 * @since 3.8.0
@@ -87,17 +101,20 @@ final class Palette_Filter {
 	 * @param Token_Resolver             $resolver The token resolver.
 	 * @param Active_Token_Library_Store $active   The active-library pointer.
 	 * @param Palette_Builder            $builder  The palette entries builder.
+	 * @param Style_Guide_Overlay        $overlay  The Style Guide overlay.
 	 */
 	public function __construct(
 		Token_Registry $registry,
 		Token_Resolver $resolver,
 		Active_Token_Library_Store $active,
-		Palette_Builder $builder
+		Palette_Builder $builder,
+		Style_Guide_Overlay $overlay
 	) {
 		$this->registry = $registry;
 		$this->resolver = $resolver;
 		$this->active   = $active;
 		$this->builder  = $builder;
+		$this->overlay  = $overlay;
 	}
 
 	/**
@@ -118,7 +135,11 @@ final class Palette_Filter {
 
 		$entries = $this->entries();
 
-		return isset( $entries[ $subkey ] ) ? $entries[ $subkey ]['color'] : $value;
+		if ( ! isset( $entries[ $subkey ] ) || $this->is_other_palette_set( $value, $subkey ) ) {
+			return $value;
+		}
+
+		return $entries[ $subkey ]['color'];
 	}
 
 	/**
@@ -132,6 +153,34 @@ final class Palette_Filter {
 	 */
 	public function on_tokens_changed(): void {
 		$this->entries = null;
+	}
+
+	/**
+	 * Whether the theme resolved this slot from a palette set other than the saved active one.
+	 *
+	 * The theme hands the filter the color it read for the slot. For the active set that is exactly the
+	 * color saved in kadence_global_palette, so a different value means another set was requested.
+	 * Unknown when the active set has no color for the slot (or the theme is not readable), which is not
+	 * treated as a mismatch.
+	 *
+	 * Known limit: a slot saved with the same color in both sets is indistinguishable, so it still gets
+	 * the token color.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed  $value  The value the theme resolved for the slot.
+	 * @param string $subkey The slot being read.
+	 *
+	 * @return bool
+	 */
+	private function is_other_palette_set( $value, string $subkey ): bool {
+		$saved = $this->overlay->active_palette()[ $subkey ] ?? null;
+
+		if ( $saved === null || ! is_string( $value ) ) {
+			return false;
+		}
+
+		return strtolower( trim( $value ) ) !== strtolower( trim( $saved ) );
 	}
 
 	/**
