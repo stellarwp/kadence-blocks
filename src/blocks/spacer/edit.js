@@ -22,6 +22,7 @@ import {
  */
 import './editor.scss';
 import metadata from './block.json';
+import { useIsSiteStylesPanel } from '../../site-styles/use-is-site-styles-panel';
 
 /**
  * Internal block libraries
@@ -86,6 +87,7 @@ function KadenceSpacerDivider(props) {
 	uniqueIdHelper(props);
 
 	const [activeTab, setActiveTab] = useState('general');
+	const isSiteStylesPanel = useIsSiteStylesPanel();
 
 	const blockProps = useBlockProps({
 		className: classnames(className, {
@@ -159,7 +161,7 @@ function KadenceSpacerDivider(props) {
 					<InspectorControls>
 						<InspectorControlTabs
 							panelName={'spacer'}
-							allowedTabs={['general', 'advanced']}
+							allowedTabs={isSiteStylesPanel ? ['general'] : ['general', 'advanced']}
 							setActiveTab={(value) => setActiveTab(value)}
 							activeTab={activeTab}
 						/>
@@ -198,7 +200,7 @@ function KadenceSpacerDivider(props) {
 									initialOpen={true}
 									panelName={'kb-divider-settings'}
 								>
-									{showSettings('dividerToggle', 'kadence/spacer') && (
+									{!isSiteStylesPanel && showSettings('dividerToggle', 'kadence/spacer') && (
 										<ToggleControl
 											label={__('Enable Divider', 'kadence-blocks')}
 											checked={dividerEnable}
@@ -207,30 +209,34 @@ function KadenceSpacerDivider(props) {
 									)}
 									{dividerEnable && showSettings('dividerStyles', 'kadence/spacer') && (
 										<>
-											<ResponsiveAlignControls
-												label={__('Alignment', 'kadence-blocks')}
-												value={hAlign ? hAlign : ''}
-												mobileValue={mobileHAlign ? mobileHAlign : ''}
-												tabletValue={tabletHAlign ? tabletHAlign : ''}
-												onChange={(nextAlign) => setAttributes({ hAlign: nextAlign })}
-												onChangeTablet={(nextAlign) =>
-													setAttributes({ tabletHAlign: nextAlign })
-												}
-												onChangeMobile={(nextAlign) =>
-													setAttributes({ mobileHAlign: nextAlign })
-												}
-											/>
-											<SelectControl
-												label={__('Divider Style', 'kadence-blocks')}
-												value={dividerStyle}
-												options={[
-													{ value: 'solid', label: __('Solid', 'kadence-blocks') },
-													{ value: 'dashed', label: __('Dashed', 'kadence-blocks') },
-													{ value: 'dotted', label: __('Dotted', 'kadence-blocks') },
-													{ value: 'stripe', label: __('Stripe', 'kadence-blocks') },
-												]}
-												onChange={(value) => setAttributes({ dividerStyle: value })}
-											/>
+											{!isSiteStylesPanel && (
+												<ResponsiveAlignControls
+													label={__('Alignment', 'kadence-blocks')}
+													value={hAlign ? hAlign : ''}
+													mobileValue={mobileHAlign ? mobileHAlign : ''}
+													tabletValue={tabletHAlign ? tabletHAlign : ''}
+													onChange={(nextAlign) => setAttributes({ hAlign: nextAlign })}
+													onChangeTablet={(nextAlign) =>
+														setAttributes({ tabletHAlign: nextAlign })
+													}
+													onChangeMobile={(nextAlign) =>
+														setAttributes({ mobileHAlign: nextAlign })
+													}
+												/>
+											)}
+											{!isSiteStylesPanel && (
+												<SelectControl
+													label={__('Divider Style', 'kadence-blocks')}
+													value={dividerStyle}
+													options={[
+														{ value: 'solid', label: __('Solid', 'kadence-blocks') },
+														{ value: 'dashed', label: __('Dashed', 'kadence-blocks') },
+														{ value: 'dotted', label: __('Dotted', 'kadence-blocks') },
+														{ value: 'stripe', label: __('Stripe', 'kadence-blocks') },
+													]}
+													onChange={(value) => setAttributes({ dividerStyle: value })}
+												/>
+											)}
 											<PopColorControl
 												label={__('Divider Color', 'kadence-blocks')}
 												value={dividerColor ? dividerColor : ''}
@@ -303,7 +309,7 @@ function KadenceSpacerDivider(props) {
 							</>
 						)}
 
-						{activeTab === 'advanced' && (
+						{activeTab === 'advanced' && !isSiteStylesPanel && (
 							<>
 								<KadencePanelBody
 									title={__('Visibility Settings', 'kadence-blocks')}

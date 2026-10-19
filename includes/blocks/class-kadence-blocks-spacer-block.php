@@ -10,12 +10,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Groups_Site_Styles;
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Scopes_Site_Styles;
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Supports_Site_Styles;
+use KadenceWP\KadenceBlocks\Utils\Cast;
+
 /**
  * Class to Build the Spacer Block.
  *
  * @category class
  */
-class Kadence_Blocks_Spacer_Block extends Kadence_Blocks_Abstract_Block {
+class Kadence_Blocks_Spacer_Block extends Kadence_Blocks_Abstract_Block implements Supports_Site_Styles, Scopes_Site_Styles, Groups_Site_Styles {
 
 	/**
 	 * Instance of this class
@@ -161,6 +166,112 @@ class Kadence_Blocks_Spacer_Block extends Kadence_Blocks_Abstract_Block {
 		return $css->css_output();
 	}
 
+	/**
+	 * The editor paints every value inline, and each desktop value has a default
+	 * the instance rule prints, so every site value goes through the overlay.
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_overlay_attributes(): array {
+		return array_merge( ...$this->site_styles_attribute_groups() );
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_attributes_map(): array {
+		return [];
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_supports(): array {
+		return [];
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_selectors(): array {
+		return [];
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_scope_attribute(): string {
+		return 'dividerStyle';
+	}
+
+	/**
+	 * The divider's own style, from its `dividerStyle` attribute.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $attributes The instance's attributes.
+	 *
+	 * @return string|null The style, or null when the instance has none.
+	 */
+	public function site_styles_scope_style( array $attributes ): ?string {
+		return isset( $attributes['dividerStyle'] ) ? Cast::to_string( $attributes['dividerStyle'] ) : null;
+	}
+
+	/**
+	 * A stripe divider saves its color, opacity and pattern in its markup, and
+	 * uses the divider height as its band height, so it takes only the spacer
+	 * height and the divider width. Other styles take every value.
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_scoped_attributes(): array {
+		return [ 'stripe' => array_merge( $this->site_styles_spacer_height_attributes(), $this->site_styles_divider_width_attributes() ) ];
+	}
+
+	/**
+	 * Each height, width and color takes its unit, its tablet and mobile values,
+	 * or its opacity with it.
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_attribute_groups(): array {
+		return [
+			$this->site_styles_spacer_height_attributes(),
+			[ 'dividerHeight', 'tabletDividerHeight', 'mobileDividerHeight' ],
+			$this->site_styles_divider_width_attributes(),
+			[ 'dividerColor', 'dividerOpacity' ],
+		];
+	}
+
+	/**
+	 * The spacer height on each device and its unit.
+	 *
+	 * @since TBD
+	 *
+	 * @return list<string> Attribute names.
+	 */
+	private function site_styles_spacer_height_attributes(): array {
+		return [ 'spacerHeight', 'tabletSpacerHeight', 'mobileSpacerHeight', 'spacerHeightUnits' ];
+	}
+
+	/**
+	 * The divider width on each device and its unit.
+	 *
+	 * @since TBD
+	 *
+	 * @return list<string> Attribute names.
+	 */
+	private function site_styles_divider_width_attributes(): array {
+		return [ 'dividerWidth', 'tabletDividerWidth', 'mobileDividerWidth', 'dividerWidthUnits' ];
+	}
 }
 
 Kadence_Blocks_Spacer_Block::get_instance();
