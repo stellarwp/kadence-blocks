@@ -117,6 +117,63 @@ final class SupportedBlocksTest extends TestCase {
 	}
 
 	/**
+	 * Spacer takes its heights, widths and divider color through the overlay, in four groups, scoped by its
+	 * divider style, with no core surface and no site rules, so its per-instance settings are never stored.
+	 *
+	 * @return void
+	 */
+	public function testSpacerDescribesItsSiteStyles(): void {
+		$block = $this->container->get( Supported_Blocks::class )->get( 'kadence/spacer' );
+
+		$this->assertInstanceOf( Scopes_Site_Styles::class, $block );
+		$this->assertNotInstanceOf( Prints_Site_Rules::class, $block );
+		$this->assertInstanceOf( Groups_Site_Styles::class, $block );
+		$this->assertSame( [], $block->site_styles_attributes_map() );
+		$this->assertSame( [], $block->site_styles_supports() );
+		$this->assertSame( [], $block->site_styles_selectors() );
+		$this->assertCount( 13, $block->site_styles_overlay_attributes() );
+		$this->assertSame( $block->site_styles_overlay_attributes(), array_merge( ...$block->site_styles_attribute_groups() ) );
+		foreach ( [ 'dividerStyle', 'dividerEnable', 'hAlign', 'rotate', 'strokeWidth', 'strokeGap', 'vsdesk' ] as $attribute ) {
+			$this->assertContains( $attribute, Supported_Blocks::excluded_attributes( $block ) );
+		}
+		$this->assertSame( [ 'stripe' ], array_keys( $block->site_styles_scoped_attributes() ) );
+		$this->assertNotContains( 'dividerColor', $block->site_styles_scoped_attributes()['stripe'] );
+		$this->assertNotContains( 'dividerHeight', $block->site_styles_scoped_attributes()['stripe'] );
+	}
+
+	/**
+	 * Spacer's style is its divider style, and an instance without one takes the block's default.
+	 *
+	 * @dataProvider spacerStyleProvider
+	 *
+	 * @param array<string, mixed> $attributes The instance's attributes.
+	 * @param string|null          $expected   The style.
+	 *
+	 * @return void
+	 */
+	public function testSpacerScopeStyle( array $attributes, ?string $expected ): void {
+		$this->assertSame( $expected, $this->container->get( Supported_Blocks::class )->get( 'kadence/spacer' )->site_styles_scope_style( $attributes ) );
+	}
+
+	/**
+	 * @return Generator
+	 */
+	public function spacerStyleProvider(): Generator {
+		yield 'stripe' => [
+			'attributes' => [ 'dividerStyle' => 'stripe' ],
+			'expected'   => 'stripe',
+		];
+		yield 'dashed' => [
+			'attributes' => [ 'dividerStyle' => 'dashed' ],
+			'expected'   => 'dashed',
+		];
+		yield 'none' => [
+			'attributes' => [],
+			'expected'   => null,
+		];
+	}
+
+	/**
 	 * A block without a scope excludes every registered attribute that isn't on its overlay list or attributes map.
 	 *
 	 * @dataProvider unscopedBlockProvider
@@ -166,6 +223,7 @@ final class SupportedBlocksTest extends TestCase {
 			$checked[] = $name;
 		}
 
+		$this->assertContains( 'kadence/spacer', $checked );
 		$this->assertContains( 'kadence/icon', $checked );
 		$this->assertContains( 'kadence/single-icon', $checked );
 	}

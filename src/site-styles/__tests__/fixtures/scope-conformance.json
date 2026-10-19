@@ -6,20 +6,11 @@
 			"color": "#ffffff",
 			"typography": [
 				{
-					"size": [
-						"24",
-						"",
-						""
-					],
+					"size": ["24", "", ""],
 					"family": "Georgia, serif"
 				}
 			],
-			"padding": [
-				30,
-				30,
-				30,
-				30
-			],
+			"padding": [30, 30, 30, 30],
 			"displayShadow": true
 		},
 		"instance": {
@@ -28,10 +19,7 @@
 		"scope": {
 			"attribute": "inheritStyles",
 			"attributes": {
-				"outline": [
-					"typography",
-					"padding"
-				],
+				"outline": ["typography", "padding"],
 				"inherit": [],
 				"inherit-secondary": []
 			}
@@ -42,20 +30,11 @@
 			"color": "#ffffff",
 			"typography": [
 				{
-					"size": [
-						"24",
-						"",
-						""
-					],
+					"size": ["24", "", ""],
 					"family": "Georgia, serif"
 				}
 			],
-			"padding": [
-				30,
-				30,
-				30,
-				30
-			],
+			"padding": [30, 30, 30, 30],
 			"displayShadow": true
 		}
 	},
@@ -66,30 +45,18 @@
 			"color": "#ffffff",
 			"typography": [
 				{
-					"size": [
-						"24",
-						"",
-						""
-					],
+					"size": ["24", "", ""],
 					"family": "Georgia, serif"
 				}
 			],
-			"padding": [
-				30,
-				30,
-				30,
-				30
-			],
+			"padding": [30, 30, 30, 30],
 			"displayShadow": true
 		},
 		"instance": {},
 		"scope": {
 			"attribute": "inheritStyles",
 			"attributes": {
-				"outline": [
-					"typography",
-					"padding"
-				],
+				"outline": ["typography", "padding"],
 				"inherit": [],
 				"inherit-secondary": []
 			}
@@ -100,20 +67,11 @@
 			"color": "#ffffff",
 			"typography": [
 				{
-					"size": [
-						"24",
-						"",
-						""
-					],
+					"size": ["24", "", ""],
 					"family": "Georgia, serif"
 				}
 			],
-			"padding": [
-				30,
-				30,
-				30,
-				30
-			],
+			"padding": [30, 30, 30, 30],
 			"displayShadow": true
 		}
 	},
@@ -124,20 +82,11 @@
 			"color": "#ffffff",
 			"typography": [
 				{
-					"size": [
-						"24",
-						"",
-						""
-					],
+					"size": ["24", "", ""],
 					"family": "Georgia, serif"
 				}
 			],
-			"padding": [
-				30,
-				30,
-				30,
-				30
-			],
+			"padding": [30, 30, 30, 30],
 			"displayShadow": true
 		},
 		"instance": {
@@ -146,10 +95,7 @@
 		"scope": {
 			"attribute": "inheritStyles",
 			"attributes": {
-				"outline": [
-					"typography",
-					"padding"
-				],
+				"outline": ["typography", "padding"],
 				"inherit": [],
 				"inherit-secondary": []
 			}
@@ -158,20 +104,11 @@
 		"expected": {
 			"typography": [
 				{
-					"size": [
-						"24",
-						"",
-						""
-					],
+					"size": ["24", "", ""],
 					"family": "Georgia, serif"
 				}
 			],
-			"padding": [
-				30,
-				30,
-				30,
-				30
-			]
+			"padding": [30, 30, 30, 30]
 		}
 	},
 	{
@@ -181,30 +118,18 @@
 			"color": "#ffffff",
 			"typography": [
 				{
-					"size": [
-						"24",
-						"",
-						""
-					],
+					"size": ["24", "", ""],
 					"family": "Georgia, serif"
 				}
 			],
-			"padding": [
-				30,
-				30,
-				30,
-				30
-			],
+			"padding": [30, 30, 30, 30],
 			"displayShadow": true
 		},
 		"instance": {},
 		"scope": {
 			"attribute": "inheritStyles",
 			"attributes": {
-				"outline": [
-					"typography",
-					"padding"
-				],
+				"outline": ["typography", "padding"],
 				"inherit": [],
 				"inherit-secondary": []
 			}
@@ -213,20 +138,11 @@
 		"expected": {
 			"typography": [
 				{
-					"size": [
-						"24",
-						"",
-						""
-					],
+					"size": ["24", "", ""],
 					"family": "Georgia, serif"
 				}
 			],
-			"padding": [
-				30,
-				30,
-				30,
-				30
-			]
+			"padding": [30, 30, 30, 30]
 		}
 	},
 	{
@@ -236,20 +152,11 @@
 			"color": "#ffffff",
 			"typography": [
 				{
-					"size": [
-						"24",
-						"",
-						""
-					],
+					"size": ["24", "", ""],
 					"family": "Georgia, serif"
 				}
 			],
-			"padding": [
-				30,
-				30,
-				30,
-				30
-			],
+			"padding": [30, 30, 30, 30],
 			"displayShadow": true
 		},
 		"instance": {
@@ -258,10 +165,7 @@
 		"scope": {
 			"attribute": "inheritStyles",
 			"attributes": {
-				"outline": [
-					"typography",
-					"padding"
-				],
+				"outline": ["typography", "padding"],
 				"inherit": [],
 				"inherit-secondary": []
 			}
@@ -276,20 +180,11 @@
 			"color": "#ffffff",
 			"typography": [
 				{
-					"size": [
-						"24",
-						"",
-						""
-					],
+					"size": ["24", "", ""],
 					"family": "Georgia, serif"
 				}
 			],
-			"padding": [
-				30,
-				30,
-				30,
-				30
-			],
+			"padding": [30, 30, 30, 30],
 			"displayShadow": true
 		},
 		"instance": {
@@ -298,10 +193,7 @@
 		"scope": {
 			"attribute": "inheritStyles",
 			"attributes": {
-				"outline": [
-					"typography",
-					"padding"
-				],
+				"outline": ["typography", "padding"],
 				"inherit": [],
 				"inherit-secondary": []
 			}
@@ -316,20 +208,11 @@
 			"color": "#ffffff",
 			"typography": [
 				{
-					"size": [
-						"24",
-						"",
-						""
-					],
+					"size": ["24", "", ""],
 					"family": "Georgia, serif"
 				}
 			],
-			"padding": [
-				30,
-				30,
-				30,
-				30
-			],
+			"padding": [30, 30, 30, 30],
 			"displayShadow": true
 		},
 		"instance": {
@@ -338,10 +221,7 @@
 		"scope": {
 			"attribute": "inheritStyles",
 			"attributes": {
-				"outline": [
-					"typography",
-					"padding"
-				],
+				"outline": ["typography", "padding"],
 				"inherit": [],
 				"inherit-secondary": []
 			}
@@ -352,20 +232,11 @@
 			"color": "#ffffff",
 			"typography": [
 				{
-					"size": [
-						"24",
-						"",
-						""
-					],
+					"size": ["24", "", ""],
 					"family": "Georgia, serif"
 				}
 			],
-			"padding": [
-				30,
-				30,
-				30,
-				30
-			],
+			"padding": [30, 30, 30, 30],
 			"displayShadow": true
 		}
 	},
@@ -376,20 +247,11 @@
 			"color": "#ffffff",
 			"typography": [
 				{
-					"size": [
-						"24",
-						"",
-						""
-					],
+					"size": ["24", "", ""],
 					"family": "Georgia, serif"
 				}
 			],
-			"padding": [
-				30,
-				30,
-				30,
-				30
-			],
+			"padding": [30, 30, 30, 30],
 			"displayShadow": true
 		},
 		"instance": {
@@ -398,10 +260,7 @@
 		"scope": {
 			"attribute": "inheritStyles",
 			"attributes": {
-				"outline": [
-					"typography",
-					"padding"
-				],
+				"outline": ["typography", "padding"],
 				"inherit": [],
 				"inherit-secondary": []
 			}
@@ -412,21 +271,121 @@
 			"color": "#ffffff",
 			"typography": [
 				{
-					"size": [
-						"24",
-						"",
-						""
-					],
+					"size": ["24", "", ""],
 					"family": "Georgia, serif"
 				}
 			],
-			"padding": [
-				30,
-				30,
-				30,
-				30
-			],
+			"padding": [30, 30, 30, 30],
 			"displayShadow": true
+		}
+	},
+	{
+		"name": "a stripe divider takes only the spacer height and divider width",
+		"site": {
+			"spacerHeight": 40,
+			"spacerHeightUnits": "rem",
+			"dividerHeight": 8,
+			"dividerWidth": 50,
+			"dividerColor": "#ff0000",
+			"dividerOpacity": 50
+		},
+		"instance": {
+			"dividerStyle": "stripe"
+		},
+		"scope": {
+			"attribute": "dividerStyle",
+			"attributes": {
+				"stripe": [
+					"spacerHeight",
+					"tabletSpacerHeight",
+					"mobileSpacerHeight",
+					"spacerHeightUnits",
+					"dividerWidth",
+					"tabletDividerWidth",
+					"mobileDividerWidth",
+					"dividerWidthUnits"
+				]
+			}
+		},
+		"defaultStyle": "solid",
+		"expected": {
+			"spacerHeight": 40,
+			"spacerHeightUnits": "rem",
+			"dividerWidth": 50
+		}
+	},
+	{
+		"name": "a dashed divider takes every site value",
+		"site": {
+			"spacerHeight": 40,
+			"spacerHeightUnits": "rem",
+			"dividerHeight": 8,
+			"dividerWidth": 50,
+			"dividerColor": "#ff0000",
+			"dividerOpacity": 50
+		},
+		"instance": {
+			"dividerStyle": "dashed"
+		},
+		"scope": {
+			"attribute": "dividerStyle",
+			"attributes": {
+				"stripe": [
+					"spacerHeight",
+					"tabletSpacerHeight",
+					"mobileSpacerHeight",
+					"spacerHeightUnits",
+					"dividerWidth",
+					"tabletDividerWidth",
+					"mobileDividerWidth",
+					"dividerWidthUnits"
+				]
+			}
+		},
+		"defaultStyle": "solid",
+		"expected": {
+			"spacerHeight": 40,
+			"spacerHeightUnits": "rem",
+			"dividerHeight": 8,
+			"dividerWidth": 50,
+			"dividerColor": "#ff0000",
+			"dividerOpacity": 50
+		}
+	},
+	{
+		"name": "a divider without a style takes the default style's values",
+		"site": {
+			"spacerHeight": 40,
+			"spacerHeightUnits": "rem",
+			"dividerHeight": 8,
+			"dividerWidth": 50,
+			"dividerColor": "#ff0000",
+			"dividerOpacity": 50
+		},
+		"instance": {},
+		"scope": {
+			"attribute": "dividerStyle",
+			"attributes": {
+				"stripe": [
+					"spacerHeight",
+					"tabletSpacerHeight",
+					"mobileSpacerHeight",
+					"spacerHeightUnits",
+					"dividerWidth",
+					"tabletDividerWidth",
+					"mobileDividerWidth",
+					"dividerWidthUnits"
+				]
+			}
+		},
+		"defaultStyle": "solid",
+		"expected": {
+			"spacerHeight": 40,
+			"spacerHeightUnits": "rem",
+			"dividerHeight": 8,
+			"dividerWidth": 50,
+			"dividerColor": "#ff0000",
+			"dividerOpacity": 50
 		}
 	}
 ]
