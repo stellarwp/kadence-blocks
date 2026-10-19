@@ -412,7 +412,7 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 	 *
 	 * @since 3.7.8.1 Escape the rendered output.
 	 *
-	 * @param $attributes
+	 * @param array<string, mixed> $attributes The block attributes.
 	 *
 	 * @return string
 	 */
