@@ -5,7 +5,7 @@
 /**
  * @typedef {Object} SupportedBlock
  * @property {string}                 slug      Key under `settings.custom.kadence` in Global Styles.
- * @property {string[]}               exclude   Attributes never stored site-wide: content attributes, identifiers and the scope attribute.
+ * @property {string[]}               exclude   Attributes never stored site-wide: content attributes, identifiers, the scope attribute, and for a block without a scope every attribute that isn't on its overlay list or attributes map.
  * @property {string[]}               overlay   Site values merged into the instance's attributes; CSS renders the rest.
  * @property {Object<string, string>} attributesMap Block attribute => path in the block's core style, e.g. `color.background`.
  * @property {Object}                 supports  Core supports added in FSE mode.

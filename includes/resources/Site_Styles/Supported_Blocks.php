@@ -65,6 +65,10 @@ final class Supported_Blocks {
 	 * for every block, the attributes its `block.json` marks as content, and
 	 * its scope attribute when it scopes its site styles.
 	 *
+	 * A block that doesn't scope its site styles has no site rules, so only its
+	 * overlay attributes and the attributes core's style stores can show a site
+	 * value. It excludes every other attribute too.
+	 *
 	 * @since TBD
 	 *
 	 * @param Supports_Site_Styles $block The block.
@@ -90,6 +94,16 @@ final class Supported_Blocks {
 
 		if ( $block instanceof Scopes_Site_Styles ) {
 			$excluded[] = $block->site_styles_scope_attribute();
+
+			return $excluded;
+		}
+
+		$rendered = array_merge( $block->site_styles_overlay_attributes(), array_keys( $block->site_styles_attributes_map() ) );
+
+		foreach ( array_keys( $attributes ) as $name ) {
+			if ( is_string( $name ) && ! in_array( $name, $rendered, true ) && ! in_array( $name, $excluded, true ) ) {
+				$excluded[] = $name;
+			}
 		}
 
 		return $excluded;
