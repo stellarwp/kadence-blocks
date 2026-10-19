@@ -384,7 +384,7 @@ function isObjectLike(value) {
 
 /**
  * Whether an attribute can be one of a block's site values. An excluded
- * attribute never is. A block without a scope has no site rules, so only its
+ * attribute never is. For a block without site rules, scoped or not, only its
  * overlay attributes and the ones core's style stores can show a site value;
  * that also keeps out attributes the server doesn't register, which other
  * scripts add to the block in the editor.
@@ -402,7 +402,7 @@ function isSiteAttribute(block, name) {
 	}
 
 	return (
-		Boolean(block.scope) ||
+		Boolean(block.siteRules) ||
 		block.overlay.includes(name) ||
 		Object.prototype.hasOwnProperty.call(block.attributesMap, name)
 	);

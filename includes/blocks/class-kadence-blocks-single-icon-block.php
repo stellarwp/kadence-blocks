@@ -5,7 +5,7 @@
  * @package Kadence Blocks
  */
 
-use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Scopes_Site_Styles;
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Prints_Site_Rules;
 use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Supports_Site_Styles;
 use KadenceWP\KadenceBlocks\Utils\Cast;
 
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @category class
  */
-class Kadence_Blocks_Single_Icon_Block extends Kadence_Blocks_Abstract_Block implements Supports_Site_Styles, Scopes_Site_Styles {
+class Kadence_Blocks_Single_Icon_Block extends Kadence_Blocks_Abstract_Block implements Supports_Site_Styles, Prints_Site_Rules {
 	/**
 	 * Instance of this class
 	 *

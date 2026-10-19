@@ -32,6 +32,19 @@ const unscopedEntry = {
 	supports: {},
 };
 
+/**
+ * A scoped block entry without site rules: like a block without a scope, only its overlay attributes and its
+ * attributes map can be site values.
+ */
+const scopedEntry = {
+	slug: 'spacer',
+	exclude: ['uniqueID', 'dividerStyle', 'hAlign'],
+	overlay: ['spacerHeight'],
+	attributesMap: {},
+	supports: {},
+	scope: { attribute: 'dividerStyle', attributes: { stripe: ['spacerHeight'] } },
+};
+
 beforeEach(() => {
 	window.kadenceSiteStyles = { isFseMode: true, blocks: { 'kadence/singlebtn': singleButton } };
 });
@@ -146,6 +159,17 @@ describe('siteAttributes', () => {
 		};
 
 		expect(siteAttributes(record, UNSCOPED)).toEqual({ heightDesktop: 300, textColor: '#222222' });
+	});
+
+	it('keeps only the overlay attributes of a scoped block without site rules', () => {
+		window.kadenceSiteStyles.blocks['kadence/spacer'] = scopedEntry;
+		const record = {
+			settings: {
+				custom: { kadence: { spacer: { spacerHeight: 100, hAlign: 'left', kadenceAnimation: 'fade-in' } } },
+			},
+		};
+
+		expect(siteAttributes(record, 'kadence/spacer')).toEqual({ spacerHeight: 100 });
 	});
 
 	it('gives nothing for a missing record, an empty store or an unsupported block', () => {

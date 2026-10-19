@@ -6,6 +6,7 @@ namespace Tests\wpunit\Resources\Site_Styles;
 
 use Generator;
 use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Groups_Site_Styles;
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Prints_Site_Rules;
 use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Scopes_Site_Styles;
 use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Supports_Site_Styles;
 use KadenceWP\KadenceBlocks\Site_Styles\Supported_Blocks;
@@ -140,6 +141,32 @@ final class SupportedBlocksTest extends TestCase {
 			$this->assertContains( $identifier, $excluded );
 		}
 		$this->assertSame( array_values( array_unique( $excluded ) ), $excluded );
+	}
+
+	/**
+	 * Every supported block without site rules, scoped or not, excludes exactly the registered attributes outside
+	 * its overlay list and attributes map.
+	 *
+	 * @return void
+	 */
+	public function testEveryBlockWithoutSiteRulesExcludesEveryAttributeOutsideItsOverlayAndMap(): void {
+		$checked = [];
+
+		foreach ( $this->container->get( Supported_Blocks::class )->all() as $name => $block ) {
+			if ( $block instanceof Prints_Site_Rules ) {
+				continue;
+			}
+
+			$rendered = array_merge( $block->site_styles_overlay_attributes(), array_keys( $block->site_styles_attributes_map() ) );
+			$excluded = Supported_Blocks::excluded_attributes( $block );
+
+			foreach ( array_keys( WP_Block_Type_Registry::get_instance()->get_registered( $name )->attributes ) as $attribute ) {
+				$this->assertSame( ! in_array( $attribute, $rendered, true ), in_array( $attribute, $excluded, true ), "{$name}: {$attribute}" );
+			}
+			$checked[] = $name;
+		}
+
+		$this->assertContains( 'kadence/icon', $checked );
 	}
 
 	/**

@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
-use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Scopes_Site_Styles;
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Prints_Site_Rules;
 use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Supports_Site_Styles;
 use KadenceWP\KadenceBlocks\Utils\Cast;
 
@@ -23,7 +23,7 @@ use KadenceWP\KadenceBlocks\Utils\Cast;
  *
  * @category class
  */
-class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block implements Supports_Site_Styles, Scopes_Site_Styles {
+class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block implements Supports_Site_Styles, Prints_Site_Rules {
 
 	/**
 	 * Instance of this class
