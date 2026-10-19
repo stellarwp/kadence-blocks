@@ -5,7 +5,7 @@
  * @package Kadence Blocks
  */
 
-use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Prints_Site_Rules;
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Scopes_Site_Styles;
 use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Supports_Site_Styles;
 use KadenceWP\KadenceBlocks\Utils\Cast;
 
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @category class
  */
-class Kadence_Blocks_Single_Icon_Block extends Kadence_Blocks_Abstract_Block implements Supports_Site_Styles, Prints_Site_Rules {
+class Kadence_Blocks_Single_Icon_Block extends Kadence_Blocks_Abstract_Block implements Supports_Site_Styles, Scopes_Site_Styles {
 	/**
 	 * Instance of this class
 	 *
@@ -204,19 +204,6 @@ class Kadence_Blocks_Single_Icon_Block extends Kadence_Blocks_Abstract_Block imp
 	 */
 	public function site_styles_scoped_attributes(): array {
 		return [ 'default' => $this->site_styles_icon_attributes() ];
-	}
-
-	/**
-	 * The icon's `kt-svg-style-<style>` class.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $style The style, e.g. `stacked`.
-	 *
-	 * @return string Class name.
-	 */
-	public function site_styles_scope_class( string $style ): string {
-		return 'kt-svg-style-' . sanitize_key( $style );
 	}
 
 	/**

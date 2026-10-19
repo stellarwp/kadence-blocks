@@ -167,6 +167,24 @@ final class SupportedBlocksTest extends TestCase {
 		}
 
 		$this->assertContains( 'kadence/icon', $checked );
+		$this->assertContains( 'kadence/single-icon', $checked );
+	}
+
+	/**
+	 * Only Single Button prints site rules. Every other supported block's site values render through the overlay
+	 * or core's stylesheet.
+	 *
+	 * @return void
+	 */
+	public function testOnlySingleButtonPrintsSiteRules(): void {
+		$printing = array_keys(
+			array_filter(
+				$this->container->get( Supported_Blocks::class )->all(),
+				static fn( $block ): bool => $block instanceof Prints_Site_Rules
+			)
+		);
+
+		$this->assertSame( [ 'kadence/singlebtn' ], $printing );
 	}
 
 	/**
