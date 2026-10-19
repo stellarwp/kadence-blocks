@@ -6,11 +6,20 @@
 			"color": "#ffffff",
 			"typography": [
 				{
-					"size": ["24", "", ""],
+					"size": [
+						"24",
+						"",
+						""
+					],
 					"family": "Georgia, serif"
 				}
 			],
-			"padding": [30, 30, 30, 30],
+			"padding": [
+				30,
+				30,
+				30,
+				30
+			],
 			"displayShadow": true
 		},
 		"instance": {
@@ -19,7 +28,10 @@
 		"scope": {
 			"attribute": "inheritStyles",
 			"attributes": {
-				"outline": ["typography", "padding"],
+				"outline": [
+					"typography",
+					"padding"
+				],
 				"inherit": [],
 				"inherit-secondary": []
 			}
@@ -30,11 +42,20 @@
 			"color": "#ffffff",
 			"typography": [
 				{
-					"size": ["24", "", ""],
+					"size": [
+						"24",
+						"",
+						""
+					],
 					"family": "Georgia, serif"
 				}
 			],
-			"padding": [30, 30, 30, 30],
+			"padding": [
+				30,
+				30,
+				30,
+				30
+			],
 			"displayShadow": true
 		}
 	},
@@ -45,18 +66,30 @@
 			"color": "#ffffff",
 			"typography": [
 				{
-					"size": ["24", "", ""],
+					"size": [
+						"24",
+						"",
+						""
+					],
 					"family": "Georgia, serif"
 				}
 			],
-			"padding": [30, 30, 30, 30],
+			"padding": [
+				30,
+				30,
+				30,
+				30
+			],
 			"displayShadow": true
 		},
 		"instance": {},
 		"scope": {
 			"attribute": "inheritStyles",
 			"attributes": {
-				"outline": ["typography", "padding"],
+				"outline": [
+					"typography",
+					"padding"
+				],
 				"inherit": [],
 				"inherit-secondary": []
 			}
@@ -67,11 +100,20 @@
 			"color": "#ffffff",
 			"typography": [
 				{
-					"size": ["24", "", ""],
+					"size": [
+						"24",
+						"",
+						""
+					],
 					"family": "Georgia, serif"
 				}
 			],
-			"padding": [30, 30, 30, 30],
+			"padding": [
+				30,
+				30,
+				30,
+				30
+			],
 			"displayShadow": true
 		}
 	},
@@ -82,11 +124,20 @@
 			"color": "#ffffff",
 			"typography": [
 				{
-					"size": ["24", "", ""],
+					"size": [
+						"24",
+						"",
+						""
+					],
 					"family": "Georgia, serif"
 				}
 			],
-			"padding": [30, 30, 30, 30],
+			"padding": [
+				30,
+				30,
+				30,
+				30
+			],
 			"displayShadow": true
 		},
 		"instance": {
@@ -95,7 +146,10 @@
 		"scope": {
 			"attribute": "inheritStyles",
 			"attributes": {
-				"outline": ["typography", "padding"],
+				"outline": [
+					"typography",
+					"padding"
+				],
 				"inherit": [],
 				"inherit-secondary": []
 			}
@@ -104,11 +158,20 @@
 		"expected": {
 			"typography": [
 				{
-					"size": ["24", "", ""],
+					"size": [
+						"24",
+						"",
+						""
+					],
 					"family": "Georgia, serif"
 				}
 			],
-			"padding": [30, 30, 30, 30]
+			"padding": [
+				30,
+				30,
+				30,
+				30
+			]
 		}
 	},
 	{
@@ -118,18 +181,30 @@
 			"color": "#ffffff",
 			"typography": [
 				{
-					"size": ["24", "", ""],
+					"size": [
+						"24",
+						"",
+						""
+					],
 					"family": "Georgia, serif"
 				}
 			],
-			"padding": [30, 30, 30, 30],
+			"padding": [
+				30,
+				30,
+				30,
+				30
+			],
 			"displayShadow": true
 		},
 		"instance": {},
 		"scope": {
 			"attribute": "inheritStyles",
 			"attributes": {
-				"outline": ["typography", "padding"],
+				"outline": [
+					"typography",
+					"padding"
+				],
 				"inherit": [],
 				"inherit-secondary": []
 			}
@@ -138,11 +213,20 @@
 		"expected": {
 			"typography": [
 				{
-					"size": ["24", "", ""],
+					"size": [
+						"24",
+						"",
+						""
+					],
 					"family": "Georgia, serif"
 				}
 			],
-			"padding": [30, 30, 30, 30]
+			"padding": [
+				30,
+				30,
+				30,
+				30
+			]
 		}
 	},
 	{
@@ -152,11 +236,20 @@
 			"color": "#ffffff",
 			"typography": [
 				{
-					"size": ["24", "", ""],
+					"size": [
+						"24",
+						"",
+						""
+					],
 					"family": "Georgia, serif"
 				}
 			],
-			"padding": [30, 30, 30, 30],
+			"padding": [
+				30,
+				30,
+				30,
+				30
+			],
 			"displayShadow": true
 		},
 		"instance": {
@@ -165,7 +258,10 @@
 		"scope": {
 			"attribute": "inheritStyles",
 			"attributes": {
-				"outline": ["typography", "padding"],
+				"outline": [
+					"typography",
+					"padding"
+				],
 				"inherit": [],
 				"inherit-secondary": []
 			}
@@ -180,11 +276,20 @@
 			"color": "#ffffff",
 			"typography": [
 				{
-					"size": ["24", "", ""],
+					"size": [
+						"24",
+						"",
+						""
+					],
 					"family": "Georgia, serif"
 				}
 			],
-			"padding": [30, 30, 30, 30],
+			"padding": [
+				30,
+				30,
+				30,
+				30
+			],
 			"displayShadow": true
 		},
 		"instance": {
@@ -193,7 +298,10 @@
 		"scope": {
 			"attribute": "inheritStyles",
 			"attributes": {
-				"outline": ["typography", "padding"],
+				"outline": [
+					"typography",
+					"padding"
+				],
 				"inherit": [],
 				"inherit-secondary": []
 			}
@@ -208,11 +316,20 @@
 			"color": "#ffffff",
 			"typography": [
 				{
-					"size": ["24", "", ""],
+					"size": [
+						"24",
+						"",
+						""
+					],
 					"family": "Georgia, serif"
 				}
 			],
-			"padding": [30, 30, 30, 30],
+			"padding": [
+				30,
+				30,
+				30,
+				30
+			],
 			"displayShadow": true
 		},
 		"instance": {
@@ -221,7 +338,10 @@
 		"scope": {
 			"attribute": "inheritStyles",
 			"attributes": {
-				"outline": ["typography", "padding"],
+				"outline": [
+					"typography",
+					"padding"
+				],
 				"inherit": [],
 				"inherit-secondary": []
 			}
@@ -232,11 +352,20 @@
 			"color": "#ffffff",
 			"typography": [
 				{
-					"size": ["24", "", ""],
+					"size": [
+						"24",
+						"",
+						""
+					],
 					"family": "Georgia, serif"
 				}
 			],
-			"padding": [30, 30, 30, 30],
+			"padding": [
+				30,
+				30,
+				30,
+				30
+			],
 			"displayShadow": true
 		}
 	},
@@ -247,11 +376,20 @@
 			"color": "#ffffff",
 			"typography": [
 				{
-					"size": ["24", "", ""],
+					"size": [
+						"24",
+						"",
+						""
+					],
 					"family": "Georgia, serif"
 				}
 			],
-			"padding": [30, 30, 30, 30],
+			"padding": [
+				30,
+				30,
+				30,
+				30
+			],
 			"displayShadow": true
 		},
 		"instance": {
@@ -260,7 +398,10 @@
 		"scope": {
 			"attribute": "inheritStyles",
 			"attributes": {
-				"outline": ["typography", "padding"],
+				"outline": [
+					"typography",
+					"padding"
+				],
 				"inherit": [],
 				"inherit-secondary": []
 			}
@@ -271,11 +412,20 @@
 			"color": "#ffffff",
 			"typography": [
 				{
-					"size": ["24", "", ""],
+					"size": [
+						"24",
+						"",
+						""
+					],
 					"family": "Georgia, serif"
 				}
 			],
-			"padding": [30, 30, 30, 30],
+			"padding": [
+				30,
+				30,
+				30,
+				30
+			],
 			"displayShadow": true
 		}
 	},
