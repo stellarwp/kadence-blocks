@@ -52,10 +52,11 @@ describe('kb-glight-video-init', () => {
 		['data-href', 'data-href="javascript:window.__xss=1"'],
 		['data-type', 'data-type="inline" data-content="&lt;b&gt;x&lt;/b&gt;"'],
 		['data-glightbox content', 'data-glightbox="content: &lt;img src=x onerror=window.__xss=1&gt;"'],
+		['data-video-provider', 'data-video-provider="youtube&quot;&gt;&lt;img src=x onerror=window.__xss=1&gt;"'],
 	])('drops slide settings supplied through %s', (name, attribute) => {
 		const anchor = bindAnchor(`<a class="ktblocksvideopop" href="x.jpg" ${attribute}>open</a>`);
 
-		['data-content', 'data-href', 'data-type', 'data-glightbox'].forEach((attr) => {
+		['data-content', 'data-href', 'data-type', 'data-glightbox', 'data-video-provider'].forEach((attr) => {
 			expect(anchor.hasAttribute(attr)).toBe(false);
 		});
 	});

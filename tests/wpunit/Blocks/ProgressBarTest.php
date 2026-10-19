@@ -51,7 +51,7 @@ class ProgressBarTest extends KadenceBlocksUnit {
 
 		$this->assertStringNotContainsString( '<img', $html );
 		$this->assertStringNotContainsString( '<script>', $html );
-		$this->assertStringContainsString( '&lt;img src=x onerror=alert(1)&gt;', $html );
+		$this->assertStringNotContainsString( 'onerror', $html );
 	}
 
 	/**
@@ -70,6 +70,19 @@ class ProgressBarTest extends KadenceBlocksUnit {
 		$this->assertStringNotContainsString( '<img', $data );
 		$this->assertStringNotContainsString( '&lt;img', $data );
 		$this->assertStringContainsString( '\"prefix\":\"$\",\"suffix\":\"%\"', $data );
+	}
+
+	/**
+	 * A multiply entity-encoded prefix and suffix render in the initial label with their tags removed, matching the animated label.
+	 *
+	 * @return void
+	 */
+	public function testEncodedNumberPrefixAndSuffixRenderAsPlainTextInInitialLabel(): void {
+		$html = $this->render( '{"uniqueID":"6_fff","numberPrefix":"&amp;lt;b&amp;gt;$","numberSuffix":"%"}' );
+
+		$this->assertStringContainsString( '>$90%</span>', $html );
+		$this->assertStringNotContainsString( '&amp;lt;', $html );
+		$this->assertStringNotContainsString( '&lt;b', $html );
 	}
 
 	/**

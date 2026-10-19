@@ -421,8 +421,8 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 			return '';
 		}
 
-		$prefix          = $attributes['numberPrefix'] ?? '';
-		$suffix          = $attributes['numberSuffix'] ?? '';
+		$prefix          = isset( $attributes['numberPrefix'] ) ? $this->to_plain_text( $attributes['numberPrefix'] ) : '';
+		$suffix          = isset( $attributes['numberSuffix'] ) ? $this->to_plain_text( $attributes['numberSuffix'] ) : '';
 		$progress_amount = ! empty( $attributes['progressAmount'] ) ? $attributes['progressAmount'] : 0;
 		$progress_max    = ! empty( $attributes['progressMax'] ) ? $attributes['progressMax'] : 100;
 

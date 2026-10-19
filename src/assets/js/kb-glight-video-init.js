@@ -50,6 +50,7 @@
 				'data-type',
 				'data-desc-position',
 				'data-effect',
+				'data-video-provider',
 			].forEach((name) => el.removeAttribute(name));
 			el.setAttribute('data-title', kadenceBlocksVideoLightbox.escapeHtml(rawTitle));
 
