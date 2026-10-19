@@ -179,6 +179,20 @@ final class SiteStylesOverlayTest extends WPTestCase {
 		$this->assertArrayNotHasKey( 'spacerHeightUnits', $own );
 		$this->assertArrayNotHasKey( 'tabletSpacerHeight', $own );
 		$this->assertSame( 50, $own['dividerWidth'] );
+
+		// An instance that carries the block's defaults doesn't set the group, so it still takes the site values.
+		$defaults = $overlay->apply(
+			'kadence/spacer',
+			[
+				'uniqueID'           => 'c',
+				'spacerHeight'       => 60,
+				'tabletSpacerHeight' => '',
+				'spacerHeightUnits'  => 'px',
+			]
+		);
+
+		$this->assertSame( 'rem', $defaults['spacerHeightUnits'] );
+		$this->assertSame( 30, $defaults['tabletSpacerHeight'] );
 	}
 
 

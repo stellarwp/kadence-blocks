@@ -11,11 +11,22 @@ const HEIGHT = ['spacerHeight', 'tabletSpacerHeight', 'mobileSpacerHeight', 'spa
 const UNTOUCHED = { spacerHeight: 60, tabletSpacerHeight: '', mobileSpacerHeight: '', spacerHeightUnits: 'px' };
 
 let mockRecord = {};
+// The block editor store's copy of the instance's attributes, which a write updates at once.
+let mockStored = {};
 
 jest.mock('@kadence/components', () => ({}));
 jest.mock('../use-global-styles-record', () => ({ useGlobalStylesRecord: () => mockRecord }));
 jest.mock('../virtual-blocks', () => ({ isVirtualBlock: () => false }));
 jest.mock('@wordpress/compose', () => ({ createHigherOrderComponent: (hoc) => hoc }), { virtual: true });
+jest.mock(
+	'@wordpress/data',
+	() => ({
+		useRegistry: () => ({ select: () => ({ getBlockAttributes: () => mockStored }) }),
+		useSelect: () => ({}),
+		select: () => ({}),
+	}),
+	{ virtual: true }
+);
 jest.mock(
 	'@wordpress/blocks',
 	() => ({
@@ -46,6 +57,8 @@ const { withSiteStyles } = require('../edit-overlay');
  */
 function render(attributes, setAttributes = () => {}) {
 	let props;
+
+	mockStored = attributes;
 	const root = createRoot(document.createElement('div'));
 
 	act(() => {
@@ -136,6 +149,37 @@ describe('editor overlay with groups', () => {
 		expect(setAttributes).toHaveBeenCalledWith({
 			spacerHeight: 5,
 			tabletSpacerHeight: 30,
+			spacerHeightUnits: 'rem',
+		});
+	});
+
+	/**
+	 * Two changes before a re-render: the second sees the first, so it stores only its own change instead of
+	 * starting the group again from the values the first one replaced.
+	 *
+	 * @return {void}
+	 */
+	it('keeps the first of two changes made before a re-render', () => {
+		mockRecord = {
+			settings: {
+				custom: {
+					kadence: { spacer: { spacerHeight: 40, tabletSpacerHeight: 30, spacerHeightUnits: 'rem' } },
+				},
+			},
+		};
+		const setAttributes = jest.fn((kept) => {
+			mockStored = { ...mockStored, ...kept };
+		});
+		const props = render(UNTOUCHED, setAttributes);
+
+		props.setAttributes({ spacerHeight: 5 });
+		props.setAttributes({ mobileSpacerHeight: 10 });
+
+		expect(setAttributes).toHaveBeenLastCalledWith({ mobileSpacerHeight: 10 });
+		expect(mockStored).toEqual({
+			spacerHeight: 5,
+			tabletSpacerHeight: 30,
+			mobileSpacerHeight: 10,
 			spacerHeightUnits: 'rem',
 		});
 	});
