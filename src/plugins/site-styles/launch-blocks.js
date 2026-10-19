@@ -2,7 +2,9 @@
  * Which Kadence panels a core Styles > Blocks screen opens.
  *
  * Core lists only blocks with core supports, so a supported block without any,
- * such as a wrapper, is reached from the screen of a block it contains.
+ * such as a wrapper, is reached from the screen of a block it contains. One no
+ * other block's screen opens, such as Spacer, opens from its own screen, which
+ * core keeps for every block type even when it doesn't list it.
  */
 import { getBlockType, getBlockTypes } from '@wordpress/blocks';
 import { getSupportedBlock } from '../../site-styles/supported-blocks';
@@ -19,9 +21,25 @@ function isListedByCore(name) {
 }
 
 /**
- * The supported block a screen is for, from the screen's title. Only blocks
- * core lists count, so core's own Icon never opens a Kadence panel, and a title
- * another registered block shares matches nothing: the screen can't tell them apart.
+ * @param {string} name Block name.
+ *
+ * @since TBD
+ *
+ * @return {boolean} Whether another supported block's screen opens the block's panel: a supported block can be
+ * placed in it.
+ */
+function isOpenedFromAnotherScreen(name) {
+	return getBlockTypes().some(
+		(type) => type.name !== name && getSupportedBlock(type.name) && (type.parent || []).includes(name)
+	);
+}
+
+/**
+ * The supported block a screen is for, from the screen's title. A block core
+ * lists counts, and so does one no other block's screen opens. A block another
+ * screen opens doesn't, so core's own Icon never opens the Kadence Icon panel,
+ * and a title another registered block shares matches nothing: the screen
+ * can't tell them apart.
  *
  * @param {string|undefined} title The screen's title.
  *
@@ -32,7 +50,13 @@ function isListedByCore(name) {
 export function screenBlockName(title) {
 	const matches = getBlockTypes().filter((type) => type.title === title);
 
-	return matches.length === 1 && isListedByCore(matches[0].name) ? matches[0].name : undefined;
+	if (matches.length !== 1 || !getSupportedBlock(matches[0].name)) {
+		return undefined;
+	}
+
+	const { name } = matches[0];
+
+	return isListedByCore(name) || !isOpenedFromAnotherScreen(name) ? name : undefined;
 }
 
 /**
