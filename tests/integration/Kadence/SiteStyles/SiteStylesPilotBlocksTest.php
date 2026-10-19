@@ -21,8 +21,6 @@ final class SiteStylesPilotBlocksTest extends WPTestCase {
 	protected IntegrationTester $tester;
 
 	/**
-	 * The Single Icon block type registered before a test re-registered it.
-	 *
 	 * @since TBD
 	 *
 	 * @var WP_Block_Type|null

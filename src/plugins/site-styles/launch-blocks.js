@@ -4,8 +4,8 @@
  * Core lists only blocks with core supports, so a supported block without any,
  * such as a wrapper, is reached from the screen of a block it contains.
  */
-import { getBlockType } from '@wordpress/blocks';
-import { getSupportedBlock, getSupportedBlockNames } from '../../site-styles/supported-blocks';
+import { getBlockType, getBlockTypes } from '@wordpress/blocks';
+import { getSupportedBlock } from '../../site-styles/supported-blocks';
 
 /**
  * @param {string} name Block name.
@@ -20,8 +20,8 @@ function isListedByCore(name) {
 
 /**
  * The supported block a screen is for, from the screen's title. Only blocks
- * core lists count, so a core block with the same title, e.g. core's Icon,
- * never opens a Kadence panel.
+ * core lists count, so core's own Icon never opens a Kadence panel, and a title
+ * another registered block shares matches nothing: the screen can't tell them apart.
  *
  * @param {string|undefined} title The screen's title.
  *
@@ -30,11 +30,9 @@ function isListedByCore(name) {
  * @return {string|undefined} Block name.
  */
 export function screenBlockName(title) {
-	if (!title) {
-		return undefined;
-	}
+	const matches = getBlockTypes().filter((type) => type.title === title);
 
-	return getSupportedBlockNames().find((name) => isListedByCore(name) && getBlockType(name)?.title === title);
+	return matches.length === 1 && isListedByCore(matches[0].name) ? matches[0].name : undefined;
 }
 
 /**

@@ -6,9 +6,17 @@ const mockTypes = {
 	'kadence/icon': { title: 'Icon' },
 	'kadence/singlebtn': { title: 'Single Button', parent: ['kadence/advancedbtn'] },
 	'kadence/advancedbtn': { title: 'Buttons (Adv)' },
+	'third-party/button': { title: 'Single Button' },
 };
 
-jest.mock('@wordpress/blocks', () => ({ getBlockType: (name) => mockTypes[name] }), { virtual: true });
+jest.mock(
+	'@wordpress/blocks',
+	() => ({
+		getBlockType: (name) => mockTypes[name],
+		getBlockTypes: () => Object.entries(mockTypes).map(([name, type]) => ({ name, ...type })),
+	}),
+	{ virtual: true }
+);
 
 const colors = { color: { text: true } };
 
@@ -35,6 +43,10 @@ describe('screenBlockName', () => {
 
 	it("ignores a supported block core doesn't list, so core's Icon screen opens no Kadence panel", () => {
 		expect(screenBlockName('Icon')).toBeUndefined();
+	});
+
+	it('ignores a title another registered block shares, since the screen cannot tell them apart', () => {
+		expect(screenBlockName('Single Button')).toBeUndefined();
 	});
 
 	it('finds nothing without a title', () => {
