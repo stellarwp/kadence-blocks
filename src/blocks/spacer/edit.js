@@ -246,7 +246,7 @@ function KadenceSpacerDivider(props) {
 												onOpacityChange={(value) => setAttributes({ dividerOpacity: value })}
 												opacityUnit={100}
 											/>
-											{'stripe' === dividerStyle && (
+											{!isSiteStylesPanel && 'stripe' === dividerStyle && (
 												<>
 													<RangeControl
 														label={__('Stripe Angle', 'kadence-blocks')}
