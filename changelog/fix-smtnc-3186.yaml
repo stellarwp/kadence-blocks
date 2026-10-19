@@ -1,4 +1,0 @@
-significance: patch
-type: fix
-entry: Fix Design Tokens overriding palette reads for a non-active palette set, which stopped Kadence Pro dark mode from applying its dark palette.
-timestamp: 2026-10-16T15:07:58.000Z
