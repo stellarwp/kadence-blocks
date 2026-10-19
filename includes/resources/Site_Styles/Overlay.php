@@ -3,7 +3,6 @@
 namespace KadenceWP\KadenceBlocks\Site_Styles;
 
 use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Scopes_Site_Styles;
-use WP_Block_Type_Registry;
 
 /**
  * Merges a block's site-level values into each instance's attributes before
@@ -45,8 +44,10 @@ final class Overlay {
 	}
 
 	/**
-	 * The render-attributes filter of each supported block, e.g.
-	 * `kadence_blocks_singlebtn_render_block_attributes`.
+	 * The render-attributes filters of each supported block, e.g.
+	 * `kadence_blocks_singlebtn_render_block_attributes`. A slug with a hyphen has
+	 * two: the CSS built in the page head keeps the hyphen, the block render
+	 * replaces it with an underscore.
 	 *
 	 * @since TBD
 	 *
@@ -56,7 +57,9 @@ final class Overlay {
 		$hooks = [];
 
 		foreach ( $this->blocks->all() as $block_name => $block ) {
-			$hooks[ 'kadence_blocks_' . str_replace( '-', '_', $block->get_slug() ) . '_render_block_attributes' ] = $block_name;
+			foreach ( array_unique( [ $block->get_slug(), str_replace( '-', '_', $block->get_slug() ) ] ) as $slug ) {
+				$hooks[ 'kadence_blocks_' . $slug . '_render_block_attributes' ] = $block_name;
+			}
 		}
 
 		return $hooks;
@@ -83,6 +86,10 @@ final class Overlay {
 	}
 
 	/**
+	 * An untouched instance carries the registered defaults, filled in by the block
+	 * render, or the defaults the design tokens supply, merged in for the page
+	 * head's CSS. A value equal to either is not the instance's own.
+	 *
 	 * @since TBD
 	 *
 	 * @param string               $block_name Block name, e.g. `kadence/singlebtn`.
@@ -103,8 +110,10 @@ final class Overlay {
 			return $attributes;
 		}
 
-		$block_type = WP_Block_Type_Registry::get_instance()->get_registered( $block_name );
-		$defaults   = $block_type ? $block_type->attributes : [];
+		$registered = Supported_Blocks::registered_defaults( $block_name );
+		/** This filter is documented in includes/blocks/class-kadence-blocks-abstract-block.php */
+		$filtered = apply_filters( 'kadence_blocks_block_default_attributes', $registered, $block_name );
+		$filtered = is_array( $filtered ) ? $filtered : $registered;
 
 		if ( $block instanceof Scopes_Site_Styles ) {
 			$scope_attribute = $block->site_styles_scope_attribute();
@@ -115,12 +124,14 @@ final class Overlay {
 					'attribute'  => $scope_attribute,
 					'attributes' => $block->site_styles_scoped_attributes(),
 				],
-				$defaults[ $scope_attribute ]['default'] ?? null
+				$registered[ $scope_attribute ] ?? null
 			);
 		}
 
 		foreach ( $site as $name => $value ) {
-			$attributes[ $name ] = self::merge( $attributes[ $name ] ?? null, $value, $defaults[ $name ]['default'] ?? null );
+			$instance            = $attributes[ $name ] ?? null;
+			$default             = array_key_exists( $name, $filtered ) && $instance === $filtered[ $name ] ? $filtered[ $name ] : ( $registered[ $name ] ?? null );
+			$attributes[ $name ] = self::merge( $instance, $value, $default );
 		}
 
 		return $attributes;

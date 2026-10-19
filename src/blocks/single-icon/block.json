@@ -13,15 +13,18 @@
 		},
 		"icon": {
 			"type": "string",
-			"default": "fe_aperture"
+			"default": "fe_aperture",
+			"__experimentalRole": "content"
 		},
 		"link": {
 			"type": "string",
-			"default": ""
+			"default": "",
+			"__experimentalRole": "content"
 		},
 		"target": {
 			"type": "string",
-			"default": "_self"
+			"default": "_self",
+			"__experimentalRole": "content"
 		},
 		"size": {
 			"type": ["number", "string"],
@@ -33,7 +36,8 @@
 		},
 		"title": {
 			"type": "string",
-			"default": ""
+			"default": "",
+			"__experimentalRole": "content"
 		},
 		"color": {
 			"type": "string",
@@ -89,7 +93,8 @@
 		},
 		"linkTitle": {
 			"type": "string",
-			"default": ""
+			"default": "",
+			"__experimentalRole": "content"
 		},
 		"tabletSize": {
 			"type": ["number", "string"],
@@ -123,11 +128,13 @@
 		},
 		"tooltipPlacement": {
 			"type": "string",
-			"default": ""
+			"default": "",
+			"__experimentalRole": "content"
 		},
 		"tooltipDash": {
 			"type": "boolean",
-			"default": false
+			"default": false,
+			"__experimentalRole": "content"
 		},
 		"inQueryBlock": {
 			"type": "boolean",

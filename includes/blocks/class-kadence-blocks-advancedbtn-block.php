@@ -7,6 +7,8 @@
 
 // cspell:ignore bgtype btnkey btnvalue simplelightbox videolight .
 
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Supports_Site_Styles;
+
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -17,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @category class
  */
-class Kadence_Blocks_Advancedbtn_Block extends Kadence_Blocks_Abstract_Block {
+class Kadence_Blocks_Advancedbtn_Block extends Kadence_Blocks_Abstract_Block implements Supports_Site_Styles {
 	/**
 	 * Instance of this class
 	 *
@@ -597,6 +599,43 @@ class Kadence_Blocks_Advancedbtn_Block extends Kadence_Blocks_Abstract_Block {
 		wp_register_script( 'kadence-simplelightbox', KADENCE_BLOCKS_URL . 'includes/assets/js/simplelightbox.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 
 		wp_register_script( 'kadence-blocks-videolight-js', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-init-video-popup.min.js', array( 'kadence-simplelightbox' ), KADENCE_BLOCKS_VERSION, true );
+	}
+
+	/**
+	 * The editor paints the layout inline. The typography, width and `btns`
+	 * attributes only style buttons saved before the Single Button block.
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_overlay_attributes(): array {
+		return [ 'hAlign', 'thAlign', 'mhAlign', 'vAlign', 'tvAlign', 'mvAlign', 'orientation', 'gap', 'gapUnit', 'padding', 'tabletPadding', 'mobilePadding', 'paddingUnit', 'margin', 'marginUnit' ];
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_attributes_map(): array {
+		return [];
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_supports(): array {
+		return [];
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_selectors(): array {
+		return [];
 	}
 }
 

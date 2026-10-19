@@ -294,6 +294,25 @@ export function guardWrite(written, shown, stored, site) {
 }
 
 /**
+ * The attributes of the Kadence panel's virtual block: the block's defaults
+ * and site values, and the current block's values of the attributes never
+ * stored site-wide, e.g. its unique ID or an icon's style, so a change to the
+ * record doesn't reset them.
+ *
+ * @param {string}     blockName Block name.
+ * @param {Attributes} defaults  The block's default attributes.
+ * @param {Attributes} site      The site values.
+ * @param {Attributes} current   The current virtual block's attributes, empty before it exists.
+ *
+ * @since TBD
+ *
+ * @return {Attributes} The virtual block's attributes.
+ */
+export function panelAttributes(blockName, defaults, site, current) {
+	return { ...defaults, ...site, ...pick(current, getSupportedBlock(blockName)?.exclude || []) };
+}
+
+/**
  * @param {*} value A value.
  * @return {boolean} Whether it's an array or a plain object.
  */

@@ -1,6 +1,7 @@
 /**
  * The "Custom Kadence styles" item on core's Styles > Blocks screen of a
- * supported block, which opens the Kadence panel.
+ * supported block, which opens the Kadence panel, and an item for each
+ * supported block it is placed in that core doesn't list.
  *
  * Core's per-block Styles screen has no extension API, so the item is appended
  * to the screen by a MutationObserver. It only ever appends its own node, and
@@ -8,7 +9,7 @@
  * a missing item, never a broken Styles screen. The Block Defaults button is
  * the route to the panel that doesn't depend on core's markup.
  */
-import { __, isRTL } from '@wordpress/i18n';
+import { __, isRTL, sprintf } from '@wordpress/i18n';
 import { dispatch } from '@wordpress/data';
 import { createRoot } from '@wordpress/element';
 import { getBlockType } from '@wordpress/blocks';
@@ -22,7 +23,7 @@ import {
 	__experimentalSpacer as Spacer,
 	__experimentalVStack as VStack,
 } from '@wordpress/components';
-import { getSupportedBlockNames } from '../../site-styles/supported-blocks';
+import { launchBlockNames, screenBlockName } from './launch-blocks';
 import { STORE_NAME } from './store';
 
 /**
@@ -38,12 +39,22 @@ function LaunchItem({ blockName }) {
 		<Spacer padding={4}>
 			<VStack spacing={2}>
 				<ItemGroup isBordered isSeparated>
-					<Item as="button" onClick={() => dispatch(STORE_NAME).openSiteStyles(blockName)}>
-						<HStack direction="row">
-							<FlexItem>{__('Custom Kadence styles', 'kadence-blocks')}</FlexItem>
-							<Icon icon={isRTL() ? chevronLeft : chevronRight} />
-						</HStack>
-					</Item>
+					{launchBlockNames(blockName).map((name) => (
+						<Item key={name} as="button" onClick={() => dispatch(STORE_NAME).openSiteStyles(name)}>
+							<HStack direction="row">
+								<FlexItem>
+									{name === blockName
+										? __('Custom Kadence styles', 'kadence-blocks')
+										: sprintf(
+												/* translators: %s: The title of the block this one is placed in, e.g. Buttons (Adv). */
+												__('%s layout', 'kadence-blocks'),
+												getBlockType(name)?.title
+											)}
+								</FlexItem>
+								<Icon icon={isRTL() ? chevronLeft : chevronRight} />
+							</HStack>
+						</Item>
+					))}
 				</ItemGroup>
 			</VStack>
 		</Spacer>
@@ -56,10 +67,8 @@ function LaunchItem({ blockName }) {
  * is matched, not the URL: in canvas mode the URL keeps the last block screen
  * after navigating back.
  */
-function screenBlockName(heading) {
-	const title = heading?.textContent.trim();
-
-	return title ? getSupportedBlockNames().find((name) => getBlockType(name)?.title === title) : undefined;
+function headingBlockName(heading) {
+	return screenBlockName(heading?.textContent.trim());
 }
 
 /**
@@ -85,7 +94,7 @@ export function watchStylesScreens() {
 	const update = () => {
 		try {
 			const heading = document.querySelector('h2.global-styles-ui-header');
-			const blockName = screenBlockName(heading);
+			const blockName = headingBlockName(heading);
 			const screen = heading?.closest('.global-styles-ui-sidebar__navigator-screen');
 
 			if (!blockName || !screen) {

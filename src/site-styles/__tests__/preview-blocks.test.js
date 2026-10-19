@@ -5,7 +5,7 @@ import singleButton from './fixtures/singlebtn-entry.json';
 const mockTypes = {
 	'kadence/singlebtn': {
 		parent: ['kadence/advancedbtn'],
-		example: { attributes: { text: 'Click Me!', background: '#000000' } },
+		example: { attributes: { text: 'Click Me!', background: '#000000', inheritStyles: 'fill' } },
 	},
 	'kadence/standalone': {},
 };
@@ -52,6 +52,12 @@ describe('previewBlocks', () => {
 		const [block] = blocks[0].innerBlocks;
 		expect(block.clientId).toBe(clientId);
 		expect(block.attributes).toEqual({ text: 'Click Me!', background: 'palette2', uniqueID: '' });
+	});
+
+	it("keeps the block's own style over the example's", () => {
+		const { blocks } = previewBlocks('kadence/singlebtn', { inheritStyles: 'outline' });
+
+		expect(blocks[0].innerBlocks[0].attributes.inheritStyles).toBe('outline');
 	});
 
 	it('previews a block without a parent or an example on its own', () => {

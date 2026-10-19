@@ -1,7 +1,7 @@
 /**
  * The blocks the Kadence panel previews for a block type.
  */
-import { pick } from 'lodash';
+import { omit, pick } from 'lodash';
 import { createBlock, getBlockFromExample, getBlockType } from '@wordpress/blocks';
 import { getSupportedBlock } from './supported-blocks';
 
@@ -17,7 +17,9 @@ import { getSupportedBlock } from './supported-blocks';
 export function previewBlocks(blockName, attributes) {
 	const type = getBlockType(blockName);
 	const example = type?.example ? getBlockFromExample(blockName, type.example) : null;
-	const content = pick(example?.attributes || {}, getSupportedBlock(blockName)?.exclude || []);
+	const supported = getSupportedBlock(blockName);
+	// The style is the panel's choice, e.g. a Stacked icon, not the example's.
+	const content = omit(pick(example?.attributes || {}, supported?.exclude || []), supported?.scope?.attribute || []);
 	// No uniqueID: the preview mustn't claim a real block's ID and its CSS.
 	const block = createBlock(blockName, { ...attributes, ...content, uniqueID: '' }, example?.innerBlocks || []);
 	const parent = type?.parent?.[0];

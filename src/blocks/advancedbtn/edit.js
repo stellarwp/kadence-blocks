@@ -60,6 +60,7 @@ import {
 	TabPanel,
 	ToolbarGroup,
 } from '@wordpress/components';
+import { useIsSiteStylesPanel } from '../../site-styles/use-is-site-styles-panel';
 const DEFAULT_BLOCK = {
 	name: 'kadence/singlebtn',
 	attributesToCopy: ['sizePreset', 'kbPreset', 'inheritStyles', 'widthType'],
@@ -116,6 +117,8 @@ function KadenceButtons(props) {
 	}, []);
 
 	uniqueIdHelper(props);
+	// The panel's block has one inner block, and its gap is a site value all the same.
+	const isSiteStylesPanel = useIsSiteStylesPanel();
 
 	useEffect(() => {
 		if (uniqueID && !childBlocks.length) {
@@ -427,7 +430,7 @@ function KadenceButtons(props) {
 							}
 							type={'orientation'}
 						/>
-						{undefined !== thisBlock?.innerBlocks?.length && thisBlock.innerBlocks.length > 1 && (
+						{(isSiteStylesPanel || thisBlock?.innerBlocks?.length > 1) && (
 							<ResponsiveGapSizeControl
 								label={__('Button Gap', 'kadence-blocks')}
 								value={undefined !== gap?.[0] ? gap[0] : ''}
