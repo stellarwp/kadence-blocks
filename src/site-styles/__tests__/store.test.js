@@ -1,5 +1,6 @@
 /* eslint-env jest */
 import {
+	groupSiteAttributes,
 	guardWrite,
 	merge,
 	mergeAttributes,
@@ -12,6 +13,7 @@ import {
 	withStoredForm,
 } from '../store';
 import conformance from './fixtures/merge-conformance.json';
+import groupConformance from './fixtures/group-conformance.json';
 import scopeConformance from './fixtures/scope-conformance.json';
 import singleButton from './fixtures/singlebtn-entry.json';
 
@@ -46,6 +48,16 @@ describe('merge', () => {
 describe('scopeSiteAttributes', () => {
 	it.each(scopeConformance.map((c) => [c.name, c]))('%s', (name, c) => {
 		expect(scopeSiteAttributes(c.site, c.instance, c.scope, c.defaultStyle)).toEqual(c.expected);
+	});
+});
+
+describe('groupSiteAttributes', () => {
+	it.each(groupConformance.map((c) => [c.name, c]))('%s', (name, c) => {
+		const definitions = Object.fromEntries(
+			Object.entries(c.defaults).map(([key, value]) => [key, { default: value }])
+		);
+
+		expect(groupSiteAttributes(c.site, c.instance, c.groups, definitions)).toEqual(c.expected);
 	});
 });
 
@@ -306,5 +318,73 @@ describe('write guard', () => {
 
 	it('unmerge returns the stored value for an unchanged write', () => {
 		expect(unmerge('palette2', 'palette2', '')).toBe('');
+	});
+});
+
+describe('write guard with groups', () => {
+	const groups = [['spacerHeight', 'tabletSpacerHeight', 'mobileSpacerHeight', 'spacerHeightUnits']];
+	const definitions = {
+		spacerHeight: { default: 60 },
+		tabletSpacerHeight: { default: '' },
+		mobileSpacerHeight: { default: '' },
+		spacerHeightUnits: { default: 'px' },
+		dividerWidth: { default: 80 },
+	};
+	const untouched = { spacerHeight: 60, tabletSpacerHeight: '', mobileSpacerHeight: '', spacerHeightUnits: 'px' };
+	const site = { tabletSpacerHeight: 30, spacerHeightUnits: 'rem', dividerWidth: 50 };
+	const shown = { ...untouched, tabletSpacerHeight: 30, spacerHeightUnits: 'rem', dividerWidth: 50 };
+
+	it('stores the whole group as shown when a change starts the instance setting it', () => {
+		expect(guardWrite({ spacerHeight: 5 }, shown, untouched, site, groups, definitions)).toEqual({
+			spacerHeight: 5,
+			tabletSpacerHeight: 30,
+			spacerHeightUnits: 'rem',
+		});
+	});
+
+	it('copies nothing for a change outside every group', () => {
+		expect(guardWrite({ dividerWidth: 40 }, shown, untouched, site, groups, definitions)).toEqual({
+			dividerWidth: 40,
+		});
+	});
+
+	it('copies nothing when the write leaves the group unset', () => {
+		expect(
+			guardWrite({ spacerHeight: 60, spacerHeightUnits: 'rem' }, shown, untouched, site, groups, definitions)
+		).toEqual({ spacerHeight: 60 });
+	});
+
+	it('stores only the change for a group the instance already sets', () => {
+		const stored = { ...untouched, spacerHeight: 120 };
+		const ownSite = { dividerWidth: 50 };
+
+		expect(
+			guardWrite(
+				{ tabletSpacerHeight: 40 },
+				{ ...stored, dividerWidth: 50 },
+				stored,
+				ownSite,
+				groups,
+				definitions
+			)
+		).toEqual({ tabletSpacerHeight: 40 });
+	});
+
+	it('keeps the written value whole, not just its changed leaves, when the group starts', () => {
+		const padGroups = [['padding', 'paddingUnit']];
+		const padDefinitions = { padding: { default: ['', '', '', ''] }, paddingUnit: { default: 'px' } };
+		const padStored = { padding: ['', '', '', ''], paddingUnit: 'px' };
+		const padSite = { padding: [20, 20, 20, 20], paddingUnit: 'rem' };
+
+		expect(
+			guardWrite(
+				{ padding: [10, 20, 20, 20] },
+				{ padding: [20, 20, 20, 20], paddingUnit: 'rem' },
+				padStored,
+				padSite,
+				padGroups,
+				padDefinitions
+			)
+		).toEqual({ padding: [10, 20, 20, 20], paddingUnit: 'rem' });
 	});
 });

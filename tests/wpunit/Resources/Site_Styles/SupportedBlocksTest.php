@@ -5,6 +5,7 @@ declare( strict_types=1 );
 namespace Tests\wpunit\Resources\Site_Styles;
 
 use Generator;
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Groups_Site_Styles;
 use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Scopes_Site_Styles;
 use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Supports_Site_Styles;
 use KadenceWP\KadenceBlocks\Site_Styles\Supported_Blocks;
@@ -137,6 +138,26 @@ final class SupportedBlocksTest extends TestCase {
 			foreach ( $block->site_styles_overlay_attributes() as $attribute ) {
 				$this->assertArrayHasKey( $attribute, $attributes, "{$name}: the overlay attribute {$attribute} isn't registered." );
 				$this->assertNotContains( $attribute, $excluded, "{$name}: the overlay attribute {$attribute} is excluded, so it can never be stored." );
+			}
+		}
+	}
+
+	/**
+	 * Every group of a supported block holds only its overlay attributes, each in one group at most.
+	 *
+	 * @return void
+	 */
+	public function testEveryGroupHoldsOnlyOverlayAttributesOnce(): void {
+		foreach ( $this->container->get( Supported_Blocks::class )->all() as $name => $block ) {
+			if ( ! $block instanceof Groups_Site_Styles ) {
+				continue;
+			}
+
+			$grouped = array_merge( ...$block->site_styles_attribute_groups() );
+
+			$this->assertSame( array_values( array_unique( $grouped ) ), $grouped, "{$name}: an attribute is in more than one group." );
+			foreach ( $grouped as $attribute ) {
+				$this->assertContains( $attribute, $block->site_styles_overlay_attributes(), "{$name}: the grouped attribute {$attribute} isn't on the overlay list." );
 			}
 		}
 	}
