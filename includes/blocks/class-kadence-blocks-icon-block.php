@@ -5,6 +5,8 @@
  * @package Kadence Blocks
  */
 
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Supports_Site_Styles;
+
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -15,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @category class
  */
-class Kadence_Blocks_Icon_Block extends Kadence_Blocks_Abstract_Block {
+class Kadence_Blocks_Icon_Block extends Kadence_Blocks_Abstract_Block implements Supports_Site_Styles {
 	/**
 	 * Instance of this class
 	 *
@@ -95,6 +97,43 @@ class Kadence_Blocks_Icon_Block extends Kadence_Blocks_Abstract_Block {
 		$css->render_gap( $attributes );
 
 		return $css->css_output();
+	}
+
+	/**
+	 * The editor paints the layout inline. The block and vertical alignments are
+	 * classes in the saved markup, which no site value can reach, so they stay per icon.
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_overlay_attributes(): array {
+		return [ 'textAlignment', 'tabletTextAlignment', 'mobileTextAlignment', 'wrapIcons', 'gap', 'gapUnit' ];
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_attributes_map(): array {
+		return [];
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_supports(): array {
+		return [];
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_selectors(): array {
+		return [];
 	}
 }
 

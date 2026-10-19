@@ -5,10 +5,10 @@
 import { debounce, isEqual } from 'lodash';
 import { select, useDispatch, useSelect } from '@wordpress/data';
 import { useEffect, useMemo, useRef, useState } from '@wordpress/element';
-import { createBlock, getBlockType } from '@wordpress/blocks';
+import { createBlock, getBlockFromExample, getBlockType } from '@wordpress/blocks';
 import { BlockEditorProvider, BlockList, InspectorControls } from '@wordpress/block-editor';
 import { SlotFillProvider } from '@wordpress/components';
-import { siteAttributes, toStoredForm, withStoredForm } from '../../site-styles/store';
+import { panelAttributes, siteAttributes, toStoredForm, withStoredForm } from '../../site-styles/store';
 import { useGlobalStylesEntity } from '../../site-styles/use-global-styles-record';
 import { addVirtualBlock, removeVirtualBlock } from '../../site-styles/virtual-blocks';
 import { SITE_STYLES_PANEL_SETTING } from '../../site-styles/use-is-site-styles-panel';
@@ -72,18 +72,24 @@ export default function SiteStylesPanel({ blockName }) {
 			return;
 		}
 
-		const attributes = { ...defaultAttributes(blockName), ...site };
+		const attributes = panelAttributes(
+			blockName,
+			defaultAttributes(blockName),
+			site,
+			blockRef.current?.attributes || {}
+		);
 
 		if (!blockRef.current) {
-			blockRef.current = createBlock(blockName, attributes);
+			// The example's inner blocks: the wrapper blocks remove themselves without any.
+			const example = getBlockType(blockName)?.example;
+			blockRef.current = createBlock(
+				blockName,
+				attributes,
+				example ? getBlockFromExample(blockName, example).innerBlocks : []
+			);
 			addVirtualBlock(blockRef.current.clientId);
-		} else if (
-			!isEqual(blockRef.current.attributes, { ...attributes, uniqueID: blockRef.current.attributes.uniqueID })
-		) {
-			blockRef.current = {
-				...blockRef.current,
-				attributes: { ...attributes, uniqueID: blockRef.current.attributes.uniqueID },
-			};
+		} else if (!isEqual(blockRef.current.attributes, attributes)) {
+			blockRef.current = { ...blockRef.current, attributes };
 		} else {
 			return;
 		}

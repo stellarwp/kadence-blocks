@@ -4,6 +4,7 @@ import {
 	guardWrite,
 	merge,
 	mergeAttributes,
+	panelAttributes,
 	scopeSiteAttributes,
 	siteAttributes,
 	toCoreColor,
@@ -386,5 +387,27 @@ describe('write guard with groups', () => {
 				padDefinitions
 			)
 		).toEqual({ padding: [10, 20, 20, 20], paddingUnit: 'rem' });
+	});
+});
+
+describe('panelAttributes', () => {
+	it('keeps the excluded attributes of the current block over the defaults and site values', () => {
+		const current = { uniqueID: 'virtual', inheritStyles: 'outline', text: 'Preview', borderRadius: [9, 9, 9, 9] };
+
+		expect(
+			panelAttributes(
+				BLOCK,
+				{ inheritStyles: 'fill', borderRadius: [0, 0, 0, 0] },
+				{ borderRadius: [4, 4, 4, 4] },
+				current
+			)
+		).toEqual({ uniqueID: 'virtual', inheritStyles: 'outline', text: 'Preview', borderRadius: [4, 4, 4, 4] });
+	});
+
+	it('takes the defaults and site values before the block exists', () => {
+		expect(panelAttributes(BLOCK, { inheritStyles: 'fill' }, { sizePreset: 'large' }, {})).toEqual({
+			inheritStyles: 'fill',
+			sizePreset: 'large',
+		});
 	});
 });

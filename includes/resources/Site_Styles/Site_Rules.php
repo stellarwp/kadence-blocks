@@ -5,7 +5,7 @@ namespace KadenceWP\KadenceBlocks\Site_Styles;
 use Kadence_Blocks_Abstract_Block;
 use Kadence_Blocks_CSS;
 use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Scopes_Site_Styles;
-use WP_Block_Type_Registry;
+use KadenceWP\KadenceBlocks\Utils\Cast;
 
 /**
  * Prints a block's Kadence-only site values with the block's own CSS builder.
@@ -113,21 +113,13 @@ final class Site_Rules {
 			return '';
 		}
 
-		$block_type = WP_Block_Type_Registry::get_instance()->get_registered( $block_name );
-		$defaults   = [];
-
-		foreach ( ( $block_type ? $block_type->attributes : null ) ?? [] as $name => $definition ) {
-			if ( array_key_exists( 'default', $definition ) ) {
-				$defaults[ $name ] = $definition['default'];
-			}
-		}
-
+		$defaults        = Supported_Blocks::registered_defaults( $block_name );
 		$scope_attribute = $block->site_styles_scope_attribute();
 		$scope           = [
 			'attribute'  => $scope_attribute,
 			'attributes' => $block->site_styles_scoped_attributes(),
 		];
-		$styles          = array_unique( array_merge( [ $defaults[ $scope_attribute ] ?? '' ], array_keys( $scope['attributes'] ) ) );
+		$styles          = array_unique( array_merge( [ Cast::to_string( $defaults[ $scope_attribute ] ?? '' ) ], array_keys( $scope['attributes'] ) ) );
 		$css             = '';
 
 		foreach ( $styles as $style ) {

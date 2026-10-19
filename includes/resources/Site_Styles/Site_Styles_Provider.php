@@ -2,6 +2,9 @@
 
 namespace KadenceWP\KadenceBlocks\Site_Styles;
 
+use Kadence_Blocks_Advancedbtn_Block;
+use Kadence_Blocks_Icon_Block;
+use Kadence_Blocks_Single_Icon_Block;
 use Kadence_Blocks_Singlebtn_Block;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provider;
 
@@ -20,7 +23,14 @@ final class Site_Styles_Provider extends Provider {
 		$this->container->singleton(
 			Supported_Blocks::class,
 			static function (): Supported_Blocks {
-				return new Supported_Blocks( [ Kadence_Blocks_Singlebtn_Block::get_instance() ] );
+				return new Supported_Blocks(
+					[
+						Kadence_Blocks_Advancedbtn_Block::get_instance(),
+						Kadence_Blocks_Singlebtn_Block::get_instance(),
+						Kadence_Blocks_Icon_Block::get_instance(),
+						Kadence_Blocks_Single_Icon_Block::get_instance(),
+					]
+				);
 			}
 		);
 		$this->container->singleton( Store::class, Store::class );

@@ -4,7 +4,6 @@ namespace KadenceWP\KadenceBlocks\Site_Styles;
 
 use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Groups_Site_Styles;
 use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Scopes_Site_Styles;
-use WP_Block_Type_Registry;
 
 /**
  * Merges a block's site-level values into each instance's attributes before
@@ -47,8 +46,10 @@ final class Overlay {
 	}
 
 	/**
-	 * The render-attributes filter of each supported block, e.g.
-	 * `kadence_blocks_singlebtn_render_block_attributes`.
+	 * The render-attributes filters of each supported block, e.g.
+	 * `kadence_blocks_singlebtn_render_block_attributes`. A slug with a hyphen has
+	 * two: the CSS built in the page head keeps the hyphen, the block render
+	 * replaces it with an underscore.
 	 *
 	 * @since TBD
 	 *
@@ -58,7 +59,9 @@ final class Overlay {
 		$hooks = [];
 
 		foreach ( $this->blocks->all() as $block_name => $block ) {
-			$hooks[ 'kadence_blocks_' . str_replace( '-', '_', $block->get_slug() ) . '_render_block_attributes' ] = $block_name;
+			foreach ( array_unique( [ $block->get_slug(), str_replace( '-', '_', $block->get_slug() ) ] ) as $slug ) {
+				$hooks[ 'kadence_blocks_' . $slug . '_render_block_attributes' ] = $block_name;
+			}
 		}
 
 		return $hooks;
@@ -85,6 +88,10 @@ final class Overlay {
 	}
 
 	/**
+	 * An untouched instance carries the registered defaults, filled in by the block
+	 * render, or the defaults the design tokens supply, merged in for the page
+	 * head's CSS. A value equal to either is not the instance's own.
+	 *
 	 * @since TBD
 	 *
 	 * @param string               $block_name Block name, e.g. `kadence/singlebtn`.
@@ -105,8 +112,10 @@ final class Overlay {
 			return $attributes;
 		}
 
-		$block_type = WP_Block_Type_Registry::get_instance()->get_registered( $block_name );
-		$defaults   = $block_type ? $block_type->attributes : [];
+		$registered = Supported_Blocks::registered_defaults( $block_name );
+		/** This filter is documented in includes/blocks/class-kadence-blocks-abstract-block.php */
+		$filtered = apply_filters( 'kadence_blocks_block_default_attributes', $registered, $block_name );
+		$filtered = is_array( $filtered ) ? $filtered : $registered;
 
 		if ( $block instanceof Scopes_Site_Styles ) {
 			$scope_attribute = $block->site_styles_scope_attribute();
@@ -117,21 +126,24 @@ final class Overlay {
 					'attribute'  => $scope_attribute,
 					'attributes' => $block->site_styles_scoped_attributes(),
 				],
-				$defaults[ $scope_attribute ]['default'] ?? null
+				$registered[ $scope_attribute ] ?? null
 			);
 		}
 
 		if ( $block instanceof Groups_Site_Styles ) {
-			$site = self::group(
-				$site,
-				$attributes,
-				$block->site_styles_attribute_groups(),
-				array_map( static fn( $definition ) => is_array( $definition ) ? ( $definition['default'] ?? null ) : null, $defaults ?? [] )
-			);
+			$groups   = $block->site_styles_attribute_groups();
+			$defaults = [];
+
+			foreach ( array_merge( ...$groups ) as $name ) {
+				$defaults[ $name ] = self::default_value( $name, $attributes[ $name ] ?? null, $registered, $filtered );
+			}
+
+			$site = self::group( $site, $attributes, $groups, $defaults );
 		}
 
 		foreach ( $site as $name => $value ) {
-			$attributes[ $name ] = self::merge( $attributes[ $name ] ?? null, $value, $defaults[ $name ]['default'] ?? null );
+			$instance            = $attributes[ $name ] ?? null;
+			$attributes[ $name ] = self::merge( $instance, $value, self::default_value( $name, $instance, $registered, $filtered ) );
 		}
 
 		return $attributes;
@@ -211,5 +223,23 @@ final class Overlay {
 		}
 
 		return $instance;
+	}
+
+	/**
+	 * The default an instance value is measured against. A value that matches
+	 * the filtered default came from Block Defaults when the block was
+	 * inserted, so it counts as the default too.
+	 *
+	 * @since TBD
+	 *
+	 * @param string               $name       Attribute name.
+	 * @param mixed                $instance   The instance value, null when the instance doesn't have it.
+	 * @param array<string, mixed> $registered Attribute name => the default the block registers.
+	 * @param array<string, mixed> $filtered   Attribute name => the default after Block Defaults.
+	 *
+	 * @return mixed The default.
+	 */
+	private static function default_value( string $name, $instance, array $registered, array $filtered ) {
+		return ( array_key_exists( $name, $filtered ) && $instance === $filtered[ $name ] ) ? $instance : ( $registered[ $name ] ?? null );
 	}
 }
