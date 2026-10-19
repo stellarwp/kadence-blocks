@@ -503,7 +503,7 @@
 		}
 	},
 	{
-		"name": "a divider without a style takes the default style's values",
+		"name": "a divider without a style takes every site value, as a solid one does",
 		"site": {
 			"spacerHeight": 40,
 			"spacerHeightUnits": "rem",
