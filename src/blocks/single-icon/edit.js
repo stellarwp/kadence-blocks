@@ -32,6 +32,7 @@ import { PreviewIcon } from './preview-icon';
 import { AdvancedSettings } from './advanced-settings';
 import { tooltip as tooltipIcon } from '@kadence/icons';
 import metadata from './block.json';
+import { useIsSiteStylesPanel } from '../../site-styles/use-is-site-styles-panel';
 
 /**
  * Internal block libraries
@@ -81,6 +82,7 @@ function KadenceSingleIcon(props) {
 	const nonTransAttrs = ['icon', 'link', 'target'];
 
 	const [activeTab, setActiveTab] = useState('general');
+	const isSiteStylesPanel = useIsSiteStylesPanel();
 
 	const { previewDevice } = useSelect(
 		(select) => {
@@ -252,12 +254,14 @@ function KadenceSingleIcon(props) {
 							initialOpen={true}
 							panelName={'kb-icon-settings'}
 						>
-							<KadenceIconPicker
-								value={icon}
-								onChange={(value) => {
-									setAttributes({ icon: value });
-								}}
-							/>
+							{!isSiteStylesPanel && (
+								<KadenceIconPicker
+									value={icon}
+									onChange={(value) => {
+										setAttributes({ icon: value });
+									}}
+								/>
+							)}
 
 							{iconSizeTokens.length ? (
 								<EditorScalarControl
@@ -308,7 +312,7 @@ function KadenceSingleIcon(props) {
 									unit={'px'}
 								/>
 							)}
-							{icon && 'fe' === icon.substring(0, 2) && (
+							{!isSiteStylesPanel && icon && 'fe' === icon.substring(0, 2) && (
 								<RangeControl
 									label={__('Line Width', 'kadence-blocks')}
 									value={width}
@@ -330,6 +334,14 @@ function KadenceSingleIcon(props) {
 								]}
 								onChange={(value) => setAttributes({ style: value })}
 							/>
+							{isSiteStylesPanel && (
+								<p className="components-base-control__help">
+									{__(
+										'Each icon keeps its own style. Pick Stacked to edit the box that Stacked icons use.',
+										'kadence-blocks'
+									)}
+								</p>
+							)}
 							{/* One two-swatch control becomes two single-value ones, matching the Button's own
 							    icon pair. Both are bound now that the icon's hover color is a preset property,
 							    so each carries its own binding state and its own reset -- the hover swatch's
@@ -415,45 +427,49 @@ function KadenceSingleIcon(props) {
 									/>
 								</>
 							)}
-							<URLInputControl
-								label={__('Link', 'kadence-blocks')}
-								url={link}
-								onChangeUrl={(value) => {
-									setAttributes({ link: value });
-								}}
-								additionalControls={true}
-								opensInNewTab={target && '_blank' == target ? true : false}
-								onChangeTarget={(value) => {
-									if (value) {
-										setAttributes({ target: '_blank' });
-									} else {
-										setAttributes({ target: '_self' });
-									}
-								}}
-								linkTitle={linkTitle}
-								onChangeTitle={(value) => {
-									setAttributes({ linkTitle: value });
-								}}
-								dynamicAttribute={'link'}
-								allowClear={true}
-								isSelected={isSelected}
-								attributes={attributes}
-								setAttributes={setAttributes}
-								name={name}
-								clientId={clientId}
-								context={context}
-							/>
-							<TextControl
-								label={__('Title for screen readers', 'kadence-blocks')}
-								help={__(
-									'If no title added screen readers will ignore, good if the icon is purely decorative.',
-									'kadence-blocks'
-								)}
-								value={title}
-								onChange={(value) => {
-									setAttributes({ title: value });
-								}}
-							/>
+							{!isSiteStylesPanel && (
+								<>
+									<URLInputControl
+										label={__('Link', 'kadence-blocks')}
+										url={link}
+										onChangeUrl={(value) => {
+											setAttributes({ link: value });
+										}}
+										additionalControls={true}
+										opensInNewTab={target && '_blank' == target ? true : false}
+										onChangeTarget={(value) => {
+											if (value) {
+												setAttributes({ target: '_blank' });
+											} else {
+												setAttributes({ target: '_self' });
+											}
+										}}
+										linkTitle={linkTitle}
+										onChangeTitle={(value) => {
+											setAttributes({ linkTitle: value });
+										}}
+										dynamicAttribute={'link'}
+										allowClear={true}
+										isSelected={isSelected}
+										attributes={attributes}
+										setAttributes={setAttributes}
+										name={name}
+										clientId={clientId}
+										context={context}
+									/>
+									<TextControl
+										label={__('Title for screen readers', 'kadence-blocks')}
+										help={__(
+											'If no title added screen readers will ignore, good if the icon is purely decorative.',
+											'kadence-blocks'
+										)}
+										value={title}
+										onChange={(value) => {
+											setAttributes({ title: value });
+										}}
+									/>
+								</>
+							)}
 						</KadencePanelBody>
 					</>
 				)}
@@ -461,12 +477,14 @@ function KadenceSingleIcon(props) {
 					<>
 						<AdvancedSettings attributes={attributes} setAttributes={setAttributes} />
 
-						<KadenceBlockDefaults
-							attributes={attributes}
-							defaultAttributes={metadata.attributes}
-							blockSlug={metadata.name}
-							excludedAttrs={nonTransAttrs}
-						/>
+						{!isSiteStylesPanel && (
+							<KadenceBlockDefaults
+								attributes={attributes}
+								defaultAttributes={metadata.attributes}
+								blockSlug={metadata.name}
+								excludedAttrs={nonTransAttrs}
+							/>
+						)}
 					</>
 				)}
 			</KadenceInspectorControls>

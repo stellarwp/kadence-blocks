@@ -94,4 +94,26 @@ final class Supported_Blocks {
 
 		return $excluded;
 	}
+
+	/**
+	 * The defaults a block's registration declares.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $block_name Block name, e.g. `kadence/singlebtn`.
+	 *
+	 * @return array<string, mixed> Attribute name => default value.
+	 */
+	public static function registered_defaults( string $block_name ): array {
+		$block_type = WP_Block_Type_Registry::get_instance()->get_registered( $block_name );
+		$defaults   = [];
+
+		foreach ( ( $block_type ? $block_type->attributes : null ) ?? [] as $name => $definition ) {
+			if ( array_key_exists( 'default', $definition ) ) {
+				$defaults[ $name ] = $definition['default'];
+			}
+		}
+
+		return $defaults;
+	}
 }
