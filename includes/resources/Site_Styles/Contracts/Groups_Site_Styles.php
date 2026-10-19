@@ -12,6 +12,10 @@ namespace KadenceWP\KadenceBlocks\Site_Styles\Contracts;
  * number into another length, and a site tablet value never overrides the
  * instance's own desktop value.
  *
+ * In the editor, a change that starts an instance setting a group stores the
+ * whole group as shown, so the block keeps looking as it did apart from the
+ * change. An instance nobody changes stores no site value.
+ *
  * @since TBD
  */
 interface Groups_Site_Styles {
