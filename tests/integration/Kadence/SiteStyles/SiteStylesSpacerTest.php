@@ -106,10 +106,8 @@ final class SiteStylesSpacerTest extends WPTestCase {
 			]
 		);
 
-		$this->assertStringContainsString( 'height:25px !important', $css );
-		$this->assertStringContainsString( 'height:15px !important', $css );
-		$this->assertStringNotContainsString( 'height:20px !important', $css );
-		$this->assertStringNotContainsString( 'height:10px !important', $css );
+		$this->assertSame( '25px !important', $this->stripe_band_height( $css, '(max-width: 1024px)' ) );
+		$this->assertSame( '15px !important', $this->stripe_band_height( $css, '(max-width: 767px)' ) );
 	}
 
 	/**
@@ -128,10 +126,8 @@ final class SiteStylesSpacerTest extends WPTestCase {
 			]
 		);
 
-		$this->assertStringContainsString( 'height:30px !important', $css );
-		$this->assertStringContainsString( 'height:35px !important', $css );
-		$this->assertStringNotContainsString( 'height:25px !important', $css );
-		$this->assertStringNotContainsString( 'height:15px !important', $css );
+		$this->assertSame( '30px !important', $this->stripe_band_height( $css, '(max-width: 1024px)' ) );
+		$this->assertSame( '35px !important', $this->stripe_band_height( $css, '(max-width: 767px)' ) );
 	}
 
 	/**
@@ -193,6 +189,26 @@ final class SiteStylesSpacerTest extends WPTestCase {
 				],
 			]
 		);
+	}
+
+	/**
+	 * The height a stripe's band gets inside one media query.
+	 *
+	 * @param string $css   The CSS.
+	 * @param string $query The media query, e.g. `(max-width: 1024px)`.
+	 *
+	 * @return string|null The height, null when the media query sets none.
+	 */
+	private function stripe_band_height( string $css, string $query ): ?string {
+		preg_match_all( '/@media all and ' . preg_quote( $query, '/' ) . '\{((?:[^{}]+\{[^}]*\})*)\}/', $css, $blocks );
+
+		foreach ( $blocks[1] as $block ) {
+			if ( preg_match( '/\.kt-divider-stripe\{[^}]*height:([^;}]+)/', $block, $match ) ) {
+				return $match[1];
+			}
+		}
+
+		return null;
 	}
 
 	/**
