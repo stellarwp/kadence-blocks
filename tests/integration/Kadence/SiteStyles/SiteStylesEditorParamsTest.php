@@ -8,6 +8,7 @@ use Codeception\TestCase\WPTestCase;
 use KadenceWP\KadenceBlocks\App;
 use KadenceWP\KadenceBlocks\Editor_Assets;
 use KadenceWP\KadenceBlocks\Site_Styles\Editor_Params;
+use KadenceWP\KadenceBlocks\Site_Styles\Supported_Blocks;
 
 /**
  * Covers the FSE mode flag and the supported blocks the editor scripts receive.
@@ -22,21 +23,34 @@ final class SiteStylesEditorParamsTest extends WPTestCase {
 		$this->assertTrue( $this->site_styles( Editor_Params::PLUGIN_HANDLE )['isFseMode'] );
 	}
 
+	/**
+	 * In FSE mode the editor scripts get every supported block, each entry matching the fixture the JS tests read.
+	 *
+	 * @return void
+	 */
 	public function testFseModeGivesTheSupportedBlocksAsTheJsTestsSeeThem(): void {
 		$this->tester->enable_fse_mode();
-		$json = file_get_contents( KADENCE_BLOCKS_PATH . 'src/site-styles/__tests__/fixtures/singlebtn-entry.json' );
-		$this->assertIsString( $json );
+		$supported = App::instance()->container()->get( Supported_Blocks::class )->all();
 
 		$blocks = $this->site_styles( Editor_Params::EARLY_FILTERS_HANDLE )['blocks'];
 
-		$this->assertSame( [ 'kadence/singlebtn' ], array_keys( $blocks ) );
-		$this->assertEquals( json_decode( $json, true ), $blocks['kadence/singlebtn'] );
+		$this->assertSame( array_keys( $supported ), array_keys( $blocks ) );
+		foreach ( $supported as $name => $block ) {
+			$json = file_get_contents( KADENCE_BLOCKS_PATH . 'src/site-styles/__tests__/fixtures/' . $block->get_slug() . '-entry.json' );
+			$this->assertIsString( $json, "{$name}: add src/site-styles/__tests__/fixtures/{$block->get_slug()}-entry.json." );
+			$this->assertEquals( json_decode( $json, true ), $blocks[ $name ], $name );
+		}
 	}
 
 	public function testClassicModeGivesFalseAndNoBlocks(): void {
 		$this->assertStringContainsString( 'window.kadenceSiteStyles = window.kadenceSiteStyles || {"isFseMode":false,"blocks":{}};', $this->script_data( Editor_Params::EARLY_FILTERS_HANDLE ) );
 	}
 
+	/**
+	 * The editor params carry the FSE mode flag and the names of the supported blocks.
+	 *
+	 * @return void
+	 */
 	public function testTheEditorParamsCarryTheFlag(): void {
 		$this->tester->enable_fse_mode();
 		wp_register_script( 'kadence-blocks-js', false, [], null, false );
@@ -52,7 +66,7 @@ final class SiteStylesEditorParamsTest extends WPTestCase {
 
 		// wp_localize_script() turns booleans into strings, like every flag in kadence_blocks_params.
 		$this->assertSame( '1', $params['isFseMode'] );
-		$this->assertSame( [ 'kadence/singlebtn' ], $params['siteStylesBlocks'] );
+		$this->assertSame( array_keys( App::instance()->container()->get( Supported_Blocks::class )->all() ), $params['siteStylesBlocks'] );
 	}
 
 	/**

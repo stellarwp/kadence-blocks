@@ -16,6 +16,18 @@ import scopeConformance from './fixtures/scope-conformance.json';
 import singleButton from './fixtures/singlebtn-entry.json';
 
 const BLOCK = 'kadence/singlebtn';
+const UNSCOPED = 'kadence/show-more';
+
+/**
+ * A block entry without a scope: only its overlay attributes and its attributes map can be site values.
+ */
+const unscopedEntry = {
+	slug: 'show-more',
+	exclude: ['uniqueID', 'showHideMore'],
+	overlay: ['heightDesktop', 'paddingDesktop'],
+	attributesMap: { textColor: 'color.text' },
+	supports: {},
+};
 
 beforeEach(() => {
 	window.kadenceSiteStyles = { isFseMode: true, blocks: { 'kadence/singlebtn': singleButton } };
@@ -91,6 +103,33 @@ describe('siteAttributes', () => {
 		expect(siteAttributes(record, BLOCK)).toEqual({ borderRadius: [20, 20, 20, 20] });
 	});
 
+	it('ignores cleared values', () => {
+		const record = { settings: { custom: { kadence: { singlebtn: { borderRadius: undefined, sizePreset: 'large' } } } } };
+
+		expect(siteAttributes(record, BLOCK)).toEqual({ sizePreset: 'large' });
+	});
+
+	it('keeps only the overlay attributes and the mapped colors of a block without a scope', () => {
+		window.kadenceSiteStyles.blocks[UNSCOPED] = unscopedEntry;
+		const record = {
+			settings: {
+				custom: {
+					kadence: {
+						'show-more': {
+							heightDesktop: 300,
+							showHideMore: false,
+							defaultExpandedDesktop: true,
+							kadenceBlockCSS: 'selector { color: red; }',
+						},
+					},
+				},
+			},
+			styles: { blocks: { [UNSCOPED]: { color: { text: '#222222' } } } },
+		};
+
+		expect(siteAttributes(record, UNSCOPED)).toEqual({ heightDesktop: 300, textColor: '#222222' });
+	});
+
 	it('gives nothing for a missing record, an empty store or an unsupported block', () => {
 		expect(siteAttributes(undefined, BLOCK)).toEqual({});
 		expect(siteAttributes({ settings: { custom: { kadence: { singlebtn: [] } } } }, BLOCK)).toEqual({});
@@ -144,6 +183,40 @@ describe('toStoredForm', () => {
 		expect(toStoredForm({ background: '', sizePreset: 'standard' }, definitions, BLOCK)).toEqual({
 			core: {},
 			custom: {},
+		});
+	});
+
+	it('stores no cleared value', () => {
+		expect(toStoredForm({ borderRadius: undefined, sizePreset: 'large' }, definitions, BLOCK)).toEqual({
+			core: {},
+			custom: { sizePreset: 'large' },
+		});
+	});
+
+	it('stores only the overlay attributes and the mapped colors of a block without a scope', () => {
+		window.kadenceSiteStyles.blocks[UNSCOPED] = unscopedEntry;
+		const attributes = {
+			uniqueID: 'abc',
+			heightDesktop: 300,
+			paddingDesktop: ['', '', '', ''],
+			showHideMore: false,
+			defaultExpandedDesktop: true,
+			kadenceBlockCSS: 'selector { color: red; }',
+			textColor: '#222222',
+		};
+		const unscopedDefinitions = {
+			uniqueID: { default: '' },
+			heightDesktop: { default: 250 },
+			paddingDesktop: { default: ['', '', '', ''] },
+			showHideMore: { default: true },
+			defaultExpandedDesktop: { default: false },
+			kadenceBlockCSS: { default: '' },
+			textColor: { default: '' },
+		};
+
+		expect(toStoredForm(attributes, unscopedDefinitions, UNSCOPED)).toEqual({
+			core: { 'color.text': '#222222' },
+			custom: { heightDesktop: 300 },
 		});
 	});
 });

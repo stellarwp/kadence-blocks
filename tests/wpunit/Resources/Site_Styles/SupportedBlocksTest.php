@@ -4,7 +4,9 @@ declare( strict_types=1 );
 
 namespace Tests\wpunit\Resources\Site_Styles;
 
+use Generator;
 use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Scopes_Site_Styles;
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Supports_Site_Styles;
 use KadenceWP\KadenceBlocks\Site_Styles\Supported_Blocks;
 use Tests\Support\Classes\TestCase;
 use WP_Block_Type_Registry;
@@ -93,5 +95,121 @@ final class SupportedBlocksTest extends TestCase {
 
 	public function testAnUnsupportedBlockGivesNothing(): void {
 		$this->assertNull( $this->container->get( Supported_Blocks::class )->get( 'kadence/advancedheading' ) );
+	}
+
+	/**
+	 * A block without a scope excludes every registered attribute that isn't on its overlay list or attributes map.
+	 *
+	 * @dataProvider unscopedBlockProvider
+	 *
+	 * @param list<string>          $overlay The block's overlay attributes.
+	 * @param array<string, string> $map     The block's attributes map.
+	 * @param list<string>          $kept    Attributes that stay site values.
+	 *
+	 * @return void
+	 */
+	public function testAnUnscopedBlockExcludesEveryAttributeOutsideItsOverlayAndMap( array $overlay, array $map, array $kept ): void {
+		$excluded   = Supported_Blocks::excluded_attributes( $this->unscoped_block( $overlay, $map ) );
+		$attributes = array_keys( WP_Block_Type_Registry::get_instance()->get_registered( 'kadence/show-more' )->attributes );
+
+		foreach ( $kept as $attribute ) {
+			$this->assertNotContains( $attribute, $excluded );
+		}
+		foreach ( array_diff( $attributes, $kept ) as $attribute ) {
+			$this->assertContains( $attribute, $excluded );
+		}
+		foreach ( [ 'uniqueID', 'kadenceDynamic', 'kbPreset' ] as $identifier ) {
+			$this->assertContains( $identifier, $excluded );
+		}
+		$this->assertSame( array_values( array_unique( $excluded ) ), $excluded );
+	}
+
+	/**
+	 * Every overlay attribute of a supported block is registered and can be a site value.
+	 *
+	 * @return void
+	 */
+	public function testEveryOverlayAttributeIsRegisteredAndNotExcluded(): void {
+		foreach ( $this->container->get( Supported_Blocks::class )->all() as $name => $block ) {
+			$attributes = WP_Block_Type_Registry::get_instance()->get_registered( $name )->attributes;
+			$excluded   = Supported_Blocks::excluded_attributes( $block );
+
+			foreach ( $block->site_styles_overlay_attributes() as $attribute ) {
+				$this->assertArrayHasKey( $attribute, $attributes, "{$name}: the overlay attribute {$attribute} isn't registered." );
+				$this->assertNotContains( $attribute, $excluded, "{$name}: the overlay attribute {$attribute} is excluded, so it can never be stored." );
+			}
+		}
+	}
+
+	/**
+	 * @return Generator
+	 */
+	public function unscopedBlockProvider(): Generator {
+		yield 'overlay only' => [
+			'overlay' => [ 'heightDesktop', 'paddingDesktop' ],
+			'map'     => [],
+			'kept'    => [ 'heightDesktop', 'paddingDesktop' ],
+		];
+		yield 'overlay and map' => [
+			'overlay' => [ 'heightDesktop' ],
+			'map'     => [ 'marginUnit' => 'color.text' ],
+			'kept'    => [ 'heightDesktop', 'marginUnit' ],
+		];
+	}
+
+	/**
+	 * A Show More stand-in without a scope, with the given overlay attributes and attributes map.
+	 *
+	 * @param list<string>          $overlay The overlay attributes.
+	 * @param array<string, string> $map     The attributes map.
+	 *
+	 * @return Supports_Site_Styles The block.
+	 */
+	private function unscoped_block( array $overlay, array $map ): Supports_Site_Styles {
+		return new class( $overlay, $map ) implements Supports_Site_Styles {
+
+			/**
+			 * @var list<string>
+			 */
+			private array $overlay;
+
+			/**
+			 * @var array<string, string>
+			 */
+			private array $map;
+
+			/**
+			 * @param list<string>          $overlay The overlay attributes.
+			 * @param array<string, string> $map     The attributes map.
+			 */
+			public function __construct( array $overlay, array $map ) {
+				$this->overlay = $overlay;
+				$this->map     = $map;
+			}
+
+			public function get_name(): string {
+				return 'kadence/show-more';
+			}
+
+			public function get_slug(): string {
+				return 'show-more';
+			}
+
+			public function site_styles_overlay_attributes(): array {
+				return $this->overlay;
+			}
+
+			public function site_styles_attributes_map(): array {
+				return $this->map;
+			}
+
+			public function site_styles_supports(): array {
+				return [];
+			}
+
+			public function site_styles_selectors(): array {
+				return [];
+			}
+		};
 	}
 }
