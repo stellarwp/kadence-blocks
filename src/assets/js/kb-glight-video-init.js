@@ -1,4 +1,5 @@
 /* global GLightbox */
+// cspell:ignore gbtn gclose glight ktblocksvideopop lighbox lightboxes plyr
 /**
  * File kb-glight-video-init.js.
  * Gets video lighbox working for buttons.
@@ -8,6 +9,55 @@
 	var kadenceBlocksVideoLightbox = {
 		lightboxes: {},
 		foundClasses: {},
+		/**
+		 * Escape a plain-text string so it is safe to be written with innerHTML.
+		 *
+		 * @param {string} text The plain text to escape.
+		 *
+		 * @since TBD
+		 *
+		 * @return {string} The escaped text.
+		 */
+		escapeHtml(text) {
+			const map = {
+				'&': '&amp;',
+				'<': '&lt;',
+				'>': '&gt;',
+				'"': '&quot;',
+				"'": '&#x27;',
+			};
+			return String(text).replace(/[&<>"']/g, (match) => map[match]);
+		},
+		/**
+		 * Make an anchor's slide data safe before GLightbox reads it.
+		 *
+		 * Only the href and a text caption are used, so other slide settings are dropped, the caption is
+		 * escaped, and the href is limited to web or relative URLs.
+		 *
+		 * @param {HTMLElement} el The anchor GLightbox will be bound to.
+		 *
+		 * @since TBD
+		 *
+		 * @return {void}
+		 */
+		sanitizeSlideData(el) {
+			const rawTitle = el.dataset.title || el.getAttribute('title') || '';
+			[
+				'data-glightbox',
+				'data-description',
+				'data-content',
+				'data-href',
+				'data-type',
+				'data-desc-position',
+				'data-effect',
+			].forEach((name) => el.removeAttribute(name));
+			el.setAttribute('data-title', kadenceBlocksVideoLightbox.escapeHtml(rawTitle));
+
+			// el.protocol is the resolved scheme.
+			if (el.hasAttribute('href') && !['http:', 'https:'].includes(el.protocol)) {
+				el.removeAttribute('href');
+			}
+		},
 		/**
 		 * Initiate the script to process all
 		 */
@@ -22,6 +72,7 @@
 					foundVideos[i].setAttribute('aria-haspopup', 'dialog');
 					kadenceBlocksVideoLightbox.foundClasses[i] = 'kb-video-pop-' + i;
 					foundVideos[i].classList.add('kb-video-pop-' + i);
+					kadenceBlocksVideoLightbox.sanitizeSlideData(foundVideos[i]);
 					kadenceBlocksVideoLightbox.lightboxes[i] = new GLightbox({
 						selector: '.' + kadenceBlocksVideoLightbox.foundClasses[i],
 						touchNavigation: true,

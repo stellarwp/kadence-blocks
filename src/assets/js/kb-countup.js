@@ -41,6 +41,25 @@
 
 			return doc.body.textContent || '';
 		},
+		/**
+		 * Escape a plain-text string so it is safe to write with innerHTML.
+		 *
+		 * @param {string} text The plain text to escape.
+		 *
+		 * @since TBD
+		 *
+		 * @return {string} The escaped text.
+		 */
+		escapeHtml(text) {
+			const map = {
+				'&': '&amp;',
+				'<': '&lt;',
+				'>': '&gt;',
+				'"': '&quot;',
+				"'": '&#x27;',
+			};
+			return String(text).replace(/[&<>"']/g, (match) => map[match]);
+		},
 		initScrollSpy() {
 			window.kadenceCountUp.countUpItems = document.querySelectorAll('.kb-count-up');
 			if (!window.kadenceCountUp.countUpItems.length) {
@@ -59,13 +78,14 @@
 					el = self.querySelector('.kb-count-up-process');
 				let theSeparator = separator === 'true' ? ',' : separator;
 				theSeparator = theSeparator === 'false' ? '' : theSeparator;
+				// Escape the text options before they are handed to CountUp.
 				const KbCounterOptions = {
 					startVal: start ? start : 0,
 					duration: duration ? duration : 2,
-					prefix: prefix ? prefix : '',
-					suffix: suffix ? suffix : '',
-					separator: theSeparator,
-					decimal,
+					prefix: prefix ? window.kadenceCountUp.escapeHtml(prefix) : '',
+					suffix: suffix ? window.kadenceCountUp.escapeHtml(suffix) : '',
+					separator: window.kadenceCountUp.escapeHtml(theSeparator),
+					decimal: decimal ? window.kadenceCountUp.escapeHtml(decimal) : decimal,
 					decimalPlaces: decimalSpaces,
 				};
 				window.kadenceCountUp.cache[n] = new countUp.CountUp(el, end, KbCounterOptions);
@@ -81,7 +101,7 @@
 		accessabilityModifications(el, end, prefix, suffix) {
 			const div = document.createElement('div');
 			div.classList.add('screen-reader-text');
-			div.innerHTML = prefix + end + suffix;
+			div.textContent = prefix + end + suffix;
 			el.before(div);
 			el.setAttribute('aria-hidden', 'true');
 		},
