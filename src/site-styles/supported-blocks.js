@@ -10,6 +10,7 @@
  * @property {Object<string, string>} attributesMap Block attribute => path in the block's core style, e.g. `color.background`.
  * @property {Object}                 supports  Core supports added in FSE mode.
  * @property {SiteStylesScope}        [scope]   For a block whose instances take site values by a style they pick.
+ * @property {string[][]}             [groups]  Site attributes that only make sense together; an instance that sets any attribute of a group takes none of the group's site values.
  */
 
 /**

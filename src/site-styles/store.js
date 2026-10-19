@@ -6,7 +6,7 @@
  * merge and the scoping follow the same rules as the PHP overlay (the
  * fixtures in `__tests__/fixtures/` pin both).
  */
-import { cloneDeep, get, isEmpty, isEqual, kebabCase, pick, pickBy, set, unset } from 'lodash';
+import { cloneDeep, get, isEmpty, isEqual, kebabCase, omit, pick, pickBy, set, unset } from 'lodash';
 import { getSupportedBlock } from './supported-blocks';
 
 /**
@@ -220,6 +220,24 @@ export function scopeSiteAttributes(site, attributes, scope, defaultStyle) {
 }
 
 /**
+ * Drops the site values of every group the instance sets itself. The instance
+ * sets a group when it has a value other than the block's default for any of
+ * the group's attributes, the same test `merge()` uses.
+ *
+ * @param {Attributes}                    site        The site values.
+ * @param {Attributes}                    attributes  The instance's attributes.
+ * @param {string[][]}                    groups      Groups of attribute names.
+ * @param {Object<string, {default: *}>} definitions The block type's attribute definitions.
+ *
+ * @since TBD
+ *
+ * @return {Attributes} The site values the instance takes.
+ */
+export function groupSiteAttributes(site, attributes, groups, definitions) {
+	return groups.reduce((kept, group) => (setsGroup(attributes, group, definitions) ? omit(kept, group) : kept), site);
+}
+
+/**
  * Merges a block's site values into its attributes.
  *
  * @param {Attributes}                    attributes  The instance's attributes.
@@ -271,13 +289,20 @@ export function unmerge(next, shown, stored) {
  * value, only the changed leaves are kept, and an unchanged attribute is
  * dropped.
  *
- * @param {Attributes} written The attributes being written.
- * @param {Attributes} shown   The attributes the block was shown.
- * @param {Attributes} stored  The instance's stored attributes.
- * @param {Attributes} site    The site values.
+ * A write that starts the instance setting one of its block's groups is the
+ * exception. The group then takes no site values, so the whole group is
+ * stored as shown, with the written values, and the block keeps looking as it
+ * did apart from the change.
+ *
+ * @param {Attributes}                    written       The attributes being written.
+ * @param {Attributes}                    shown         The attributes the block was shown.
+ * @param {Attributes}                    stored        The instance's stored attributes.
+ * @param {Attributes}                    site          The site values.
+ * @param {string[][]}                    [groups]      The block's groups of attribute names.
+ * @param {Object<string, {default: *}>} [definitions] The block type's attribute definitions.
  * @return {Attributes} The attributes to store.
  */
-export function guardWrite(written, shown, stored, site) {
+export function guardWrite(written, shown, stored, site, groups = [], definitions = {}) {
 	const kept = {};
 
 	Object.keys(written).forEach((name) => {
@@ -293,7 +318,41 @@ export function guardWrite(written, shown, stored, site) {
 		}
 	});
 
+	groups.forEach((group) => {
+		if (setsGroup(stored, group, definitions) || !setsGroup({ ...stored, ...kept }, group, definitions)) {
+			return;
+		}
+
+		group.forEach((name) => {
+			const value = name in written ? written[name] : shown[name];
+
+			if (!isEqual(value, stored[name])) {
+				kept[name] = value;
+			}
+		});
+	});
+
 	return kept;
+}
+
+/**
+ * Whether an instance sets a group itself: it has a value other than the
+ * block's default for any of the group's attributes.
+ *
+ * @param {Attributes}                    attributes  The instance's attributes.
+ * @param {string[]}                      group       The group's attribute names.
+ * @param {Object<string, {default: *}>} definitions The block type's attribute definitions.
+ *
+ * @since TBD
+ *
+ * @return {boolean} Whether the instance sets the group.
+ */
+function setsGroup(attributes, group, definitions) {
+	return group.some((name) => {
+		const value = attributes[name];
+
+		return undefined !== value && null !== value && !isEqual(value, definitions[name]?.default);
+	});
 }
 
 /**

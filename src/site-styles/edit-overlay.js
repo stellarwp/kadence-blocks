@@ -8,7 +8,7 @@ import { getBlockType } from '@wordpress/blocks';
 import { useCallback, useMemo } from '@wordpress/element';
 import { pick } from 'lodash';
 import { getSupportedBlock, isFseMode } from './supported-blocks';
-import { guardWrite, mergeAttributes, scopeSiteAttributes, siteAttributes } from './store';
+import { groupSiteAttributes, guardWrite, mergeAttributes, scopeSiteAttributes, siteAttributes } from './store';
 import { scopeStyle } from './scope-style';
 import { useGlobalStylesRecord } from './use-global-styles-record';
 import { isVirtualBlock } from './virtual-blocks';
@@ -21,9 +21,9 @@ import { isVirtualBlock } from './virtual-blocks';
 function SiteStylesBlockEdit({ BlockEdit, ...props }) {
 	const { name, attributes, setAttributes } = props;
 	const record = useGlobalStylesRecord();
-	const { scope, overlay } = getSupportedBlock(name);
+	const { scope, overlay, groups } = getSupportedBlock(name);
 	const style = scope ? scopeStyle(name, attributes, scope) : undefined;
-	const site = useMemo(() => {
+	const scoped = useMemo(() => {
 		const values = pick(siteAttributes(record, name), overlay);
 
 		if (!scope) {
@@ -34,6 +34,11 @@ function SiteStylesBlockEdit({ BlockEdit, ...props }) {
 
 		return scopeSiteAttributes(values, { [scope.attribute]: style }, scope, definitions[scope.attribute]?.default);
 	}, [record, name, scope, overlay, style]);
+	// A group the instance sets itself takes no site values, so the instance's own attributes decide.
+	const site = useMemo(
+		() => (groups ? groupSiteAttributes(scoped, attributes, groups, getBlockType(name)?.attributes || {}) : scoped),
+		[scoped, groups, attributes, name]
+	);
 	const hasSiteValues = Object.keys(site).length > 0;
 	const shown = useMemo(
 		() => (hasSiteValues ? mergeAttributes(attributes, site, getBlockType(name)?.attributes || {}) : attributes),
@@ -42,13 +47,13 @@ function SiteStylesBlockEdit({ BlockEdit, ...props }) {
 	const guardedSetAttributes = useCallback(
 		(written) => {
 			const next = typeof written === 'function' ? written(shown) : written;
-			const kept = guardWrite(next, shown, attributes, site);
+			const kept = guardWrite(next, shown, attributes, site, groups, getBlockType(name)?.attributes || {});
 
 			if (Object.keys(kept).length) {
 				setAttributes(kept);
 			}
 		},
-		[shown, attributes, site, setAttributes]
+		[shown, attributes, site, groups, name, setAttributes]
 	);
 
 	if (!hasSiteValues) {

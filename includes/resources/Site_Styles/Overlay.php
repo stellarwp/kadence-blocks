@@ -2,6 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Site_Styles;
 
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Groups_Site_Styles;
 use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Scopes_Site_Styles;
 use WP_Block_Type_Registry;
 
@@ -13,7 +14,8 @@ use WP_Block_Type_Registry;
  * block's default wins, every other leaf takes the site value. Stored values
  * of attributes the block excludes are ignored. A block that
  * scopes its site styles gives each instance only the site values its style
- * takes.
+ * takes, and a block that groups them gives a group the instance sets itself
+ * none of the group's site values.
  *
  * @since TBD Merges only the values the block lists for the overlay (classes and editor inline styles). Core's global stylesheet renders the core keys, and `Site_Rules` the rest.
  */
@@ -119,6 +121,15 @@ final class Overlay {
 			);
 		}
 
+		if ( $block instanceof Groups_Site_Styles ) {
+			$site = self::group(
+				$site,
+				$attributes,
+				$block->site_styles_attribute_groups(),
+				array_map( static fn( $definition ) => is_array( $definition ) ? ( $definition['default'] ?? null ) : null, $defaults ?? [] )
+			);
+		}
+
 		foreach ( $site as $name => $value ) {
 			$attributes[ $name ] = self::merge( $attributes[ $name ] ?? null, $value, $defaults[ $name ]['default'] ?? null );
 		}
@@ -148,6 +159,33 @@ final class Overlay {
 		}
 
 		return array_intersect_key( $site, array_flip( $scope['attributes'][ $style ] ) );
+	}
+
+	/**
+	 * Drops the site values of every group the instance sets itself. The
+	 * instance sets a group when it has a value other than the block's
+	 * default for any of the group's attributes, the same test `merge()` uses.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed>     $site       Attribute name => site value.
+	 * @param array<string, mixed>     $attributes The instance's attributes.
+	 * @param array<int, list<string>> $groups     Groups of attribute names.
+	 * @param array<string, mixed>     $defaults   Attribute name => the block's default value.
+	 *
+	 * @return array<string, mixed> The site values the instance takes.
+	 */
+	public static function group( array $site, array $attributes, array $groups, array $defaults ): array {
+		foreach ( $groups as $group ) {
+			foreach ( $group as $name ) {
+				if ( isset( $attributes[ $name ] ) && $attributes[ $name ] !== ( $defaults[ $name ] ?? null ) ) {
+					$site = array_diff_key( $site, array_flip( $group ) );
+					break;
+				}
+			}
+		}
+
+		return $site;
 	}
 
 	/**
