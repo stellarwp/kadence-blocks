@@ -9,6 +9,7 @@ const mockTypes = {
 	'third-party/button': { title: 'Single Button' },
 	'kadence/spacer': { title: 'Spacer / Divider' },
 	'kadence/rowlayout': { title: 'Row Layout' },
+	'kadence/column': { title: 'Section', parent: ['kadence/rowlayout'] },
 };
 
 jest.mock(
@@ -54,6 +55,12 @@ describe('screenBlockName', () => {
 
 	it("finds a supported block core doesn't list when no other block's screen opens it", () => {
 		expect(screenBlockName('Spacer / Divider')).toBe('kadence/spacer');
+	});
+
+	it("finds a supported block core doesn't list when only unsupported blocks are placed in it", () => {
+		window.kadenceSiteStyles.blocks['kadence/rowlayout'] = { supports: {} };
+
+		expect(screenBlockName('Row Layout')).toBe('kadence/rowlayout');
 	});
 
 	it('ignores a block that is not supported', () => {
