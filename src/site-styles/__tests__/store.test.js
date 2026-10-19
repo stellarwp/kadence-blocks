@@ -104,9 +104,14 @@ describe('siteAttributes', () => {
 	});
 
 	it('ignores cleared values', () => {
-		const record = { settings: { custom: { kadence: { singlebtn: { borderRadius: undefined, sizePreset: 'large' } } } } };
+		const record = {
+			settings: { custom: { kadence: { singlebtn: { borderRadius: undefined, sizePreset: 'large' } } } },
+		};
 
-		expect(siteAttributes(record, BLOCK)).toEqual({ sizePreset: 'large' });
+		const attributes = siteAttributes(record, BLOCK);
+
+		expect(attributes).toEqual({ sizePreset: 'large' });
+		expect(attributes).not.toHaveProperty('borderRadius');
 	});
 
 	it('keeps only the overlay attributes and the mapped colors of a block without a scope', () => {
@@ -187,10 +192,10 @@ describe('toStoredForm', () => {
 	});
 
 	it('stores no cleared value', () => {
-		expect(toStoredForm({ borderRadius: undefined, sizePreset: 'large' }, definitions, BLOCK)).toEqual({
-			core: {},
-			custom: { sizePreset: 'large' },
-		});
+		const stored = toStoredForm({ borderRadius: undefined, sizePreset: 'large' }, definitions, BLOCK);
+
+		expect(stored).toEqual({ core: {}, custom: { sizePreset: 'large' } });
+		expect(stored.custom).not.toHaveProperty('borderRadius');
 	});
 
 	it('stores only the overlay attributes and the mapped colors of a block without a scope', () => {
