@@ -6,7 +6,6 @@ const mockTypes = {
 	'kadence/icon': { title: 'Icon' },
 	'kadence/singlebtn': { title: 'Single Button', parent: ['kadence/advancedbtn'] },
 	'kadence/advancedbtn': { title: 'Buttons (Adv)' },
-	'core/icon': { title: 'Icon' },
 };
 
 jest.mock('@wordpress/blocks', () => ({ getBlockType: (name) => mockTypes[name] }), { virtual: true });
@@ -51,6 +50,12 @@ describe('launchBlockNames', () => {
 
 	it('leaves out a parent that is not supported', () => {
 		delete window.kadenceSiteStyles.blocks['kadence/icon'];
+
+		expect(launchBlockNames('kadence/single-icon')).toEqual(['kadence/single-icon']);
+	});
+
+	it('leaves out a parent core lists, since it has its own screen', () => {
+		window.kadenceSiteStyles.blocks['kadence/icon'] = { supports: colors };
 
 		expect(launchBlockNames('kadence/single-icon')).toEqual(['kadence/single-icon']);
 	});

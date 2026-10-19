@@ -191,7 +191,7 @@ class Kadence_Blocks_Single_Icon_Block extends Kadence_Blocks_Abstract_Block imp
 	 *
 	 * @param array<string, mixed> $attributes The instance's attributes.
 	 *
-	 * @return string|null
+	 * @return string|null The style, or null when the instance has none.
 	 */
 	public function site_styles_scope_style( array $attributes ): ?string {
 		return isset( $attributes['style'] ) ? Cast::to_string( $attributes['style'] ) : null;

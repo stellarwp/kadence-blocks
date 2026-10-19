@@ -130,7 +130,7 @@ final class Overlay {
 
 		foreach ( $site as $name => $value ) {
 			$instance            = $attributes[ $name ] ?? null;
-			$default             = array_key_exists( $name, $filtered ) && $instance === $filtered[ $name ] ? $filtered[ $name ] : ( $registered[ $name ] ?? null );
+			$default             = ( array_key_exists( $name, $filtered ) && $instance === $filtered[ $name ] ) ? $instance : ( $registered[ $name ] ?? null );
 			$attributes[ $name ] = self::merge( $instance, $value, $default );
 		}
 

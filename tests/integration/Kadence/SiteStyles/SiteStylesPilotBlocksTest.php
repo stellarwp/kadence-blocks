@@ -6,6 +6,7 @@ declare( strict_types=1 );
 namespace Tests\integration\Kadence\SiteStyles;
 
 use Codeception\TestCase\WPTestCase;
+use IntegrationTester;
 use Kadence_Blocks_CSS;
 use Kadence_Blocks_Single_Icon_Block;
 use WP_Block_Type;
@@ -17,7 +18,7 @@ use WP_Block_Type_Registry;
  * instance attributes through the overlay.
  */
 final class SiteStylesPilotBlocksTest extends WPTestCase {
-	protected \IntegrationTester $tester;
+	protected IntegrationTester $tester;
 
 	/**
 	 * The Single Icon block type registered before a test re-registered it.
@@ -29,11 +30,13 @@ final class SiteStylesPilotBlocksTest extends WPTestCase {
 	private ?WP_Block_Type $registered_single_icon = null;
 
 	/**
-	 * Restores the Single Icon block type a test re-registered.
+	 * Restores the Single Icon block type a test re-registered and empties the CSS a test built.
 	 *
 	 * @return void
 	 */
 	protected function tearDown(): void {
+		Kadence_Blocks_CSS::$styles = [];
+
 		if ( null !== $this->registered_single_icon ) {
 			WP_Block_Type_Registry::get_instance()->unregister( 'kadence/single-icon' );
 			WP_Block_Type_Registry::get_instance()->register( $this->registered_single_icon );
@@ -145,10 +148,10 @@ final class SiteStylesPilotBlocksTest extends WPTestCase {
 		$this->tester->enable_fse_mode();
 		$this->store_site_sizes();
 		Kadence_Blocks_CSS::$styles = [];
+		$this->assertSame( '', apply_filters( 'kadence_blocks_block_default_attributes', [ 'size' => 50 ], 'kadence/single-icon' )['size'], 'The design tokens no longer blank the size default this test relies on.' );
 
 		Kadence_Blocks_Single_Icon_Block::get_instance()->output_head_data( parse_blocks( $this->single_icon_markup( 'default', 'ic_head' ) )[0] );
 
-		$this->assertSame( '', apply_filters( 'kadence_blocks_block_default_attributes', [ 'size' => 50 ], 'kadence/single-icon' )['size'], 'The design tokens no longer blank the size default this test relies on.' );
 		$this->assert_site_sizes( $this->single_icon_css() );
 	}
 
@@ -284,7 +287,7 @@ final class SiteStylesPilotBlocksTest extends WPTestCase {
 	/**
 	 * Stores Kadence-only site values for one block.
 	 *
-	 * @param string                                       $slug   The block's key under `settings.custom.kadence`.
+	 * @param string                                     $slug   The block's key under `settings.custom.kadence`.
 	 * @param array<string, int|string|list<int|string>> $values The site values.
 	 *
 	 * @return void
@@ -342,7 +345,7 @@ final class SiteStylesPilotBlocksTest extends WPTestCase {
 	/**
 	 * Runs a block's render-attributes filter.
 	 *
-	 * @param string                                       $filter_slug The block slug in the filter name, e.g. `single_icon`.
+	 * @param string                                     $filter_slug The block slug in the filter name, e.g. `single_icon`.
 	 * @param array<string, int|string|list<int|string>> $attributes  The instance's attributes.
 	 *
 	 * @return array<string, int|string|list<int|string>> The attributes the block renders with.
@@ -357,8 +360,8 @@ final class SiteStylesPilotBlocksTest extends WPTestCase {
 	 * @return void
 	 */
 	private function reregister_single_icon(): void {
-		$registry                     = WP_Block_Type_Registry::get_instance();
-		$this->registered_single_icon = $registry->unregister( 'kadence/single-icon' ) ?: null;
+		$unregistered                 = WP_Block_Type_Registry::get_instance()->unregister( 'kadence/single-icon' );
+		$this->registered_single_icon = $unregistered instanceof WP_Block_Type ? $unregistered : null;
 
 		Kadence_Blocks_Single_Icon_Block::get_instance()->on_init();
 	}

@@ -49,7 +49,7 @@ export function screenBlockName(title) {
  */
 export function launchBlockNames(blockName) {
 	const parents = (getBlockType(blockName)?.parent || []).filter(
-		(name) => getSupportedBlock(name) && !isListedByCore(name)
+		(name) => getSupportedBlock(name) && getBlockType(name) && !isListedByCore(name)
 	);
 
 	return [blockName, ...parents];

@@ -117,7 +117,6 @@ function KadenceButtons(props) {
 	}, []);
 
 	uniqueIdHelper(props);
-	// The panel's block has one inner block, and its gap is a site value all the same.
 	const isSiteStylesPanel = useIsSiteStylesPanel();
 
 	useEffect(() => {
@@ -430,6 +429,7 @@ function KadenceButtons(props) {
 							}
 							type={'orientation'}
 						/>
+						{/* The panel's block has one inner block, and its gap is a site value all the same. */}
 						{(isSiteStylesPanel || thisBlock?.innerBlocks?.length > 1) && (
 							<ResponsiveGapSizeControl
 								label={__('Button Gap', 'kadence-blocks')}

@@ -77,7 +77,6 @@ function KadenceIcons(props) {
 	}, []);
 
 	uniqueIdHelper(props);
-	// The panel's block has one inner block, and its gap is a site value all the same.
 	const isSiteStylesPanel = useIsSiteStylesPanel();
 
 	useEffect(() => {
@@ -213,6 +212,7 @@ function KadenceIcons(props) {
 								setAttributes({ wrapIcons: value });
 							}}
 						/>
+						{/* The panel's block has one inner block, and its gap is a site value all the same. */}
 						{(isSiteStylesPanel || iconsBlock?.innerBlocks?.length > 1) && (
 							<ResponsiveGapSizeControl
 								label={__('Icons Gap', 'kadence-blocks')}
