@@ -1,0 +1,156 @@
+{
+	"groups": [
+		{ "unit": "paddingUnit", "values": ["padding", "tabletPadding", "mobilePadding"] },
+		{ "unit": "marginUnit", "values": ["margin", "tabletMargin", "mobileMargin"] },
+		{ "values": ["gap", "tabletGap", "mobileGap"] }
+	],
+	"defaults": {
+		"sizePreset": "standard",
+		"paddingUnit": "px",
+		"padding": ["", "", "", ""],
+		"tabletPadding": ["", "", "", ""],
+		"mobilePadding": ["", "", "", ""],
+		"marginUnit": "px",
+		"margin": ["", "", "", ""],
+		"tabletMargin": ["", "", "", ""],
+		"mobileMargin": ["", "", "", ""],
+		"gap": ""
+	},
+	"cases": [
+		{
+			"name": "an instance with no own value keeps every site value",
+			"site": { "paddingUnit": "em", "padding": [1, 2, 1, 2], "mobilePadding": [0.5, 1, 0.5, 1] },
+			"instance": {},
+			"expected": { "paddingUnit": "em", "padding": [1, 2, 1, 2], "mobilePadding": [0.5, 1, 0.5, 1] }
+		},
+		{
+			"name": "an instance value equal to the default is not its own",
+			"site": { "padding": [20, 40, 20, 40], "mobilePadding": [6, 12, 6, 12] },
+			"instance": { "paddingUnit": "px", "padding": ["", "", "", ""] },
+			"expected": { "padding": [20, 40, 20, 40], "mobilePadding": [6, 12, 6, 12] }
+		},
+		{
+			"name": "a null instance value is not its own",
+			"site": { "padding": [20, 40, 20, 40], "mobilePadding": [6, 12, 6, 12] },
+			"instance": { "padding": null },
+			"expected": { "padding": [20, 40, 20, 40], "mobilePadding": [6, 12, 6, 12] }
+		},
+		{
+			"name": "an own desktop value drops the tablet and mobile site values",
+			"site": { "padding": [20, 40, 20, 40], "tabletPadding": [10, 20, 10, 20], "mobilePadding": [6, 12, 6, 12] },
+			"instance": { "padding": [2, 10, 2, 10] },
+			"expected": { "padding": [20, 40, 20, 40] }
+		},
+		{
+			"name": "an own tablet value keeps the desktop site value and drops the mobile one",
+			"site": { "padding": [20, 40, 20, 40], "tabletPadding": [10, 20, 10, 20], "mobilePadding": [6, 12, 6, 12] },
+			"instance": { "tabletPadding": [30, "", "", ""] },
+			"expected": { "padding": [20, 40, 20, 40], "tabletPadding": [10, 20, 10, 20] }
+		},
+		{
+			"name": "an own mobile value keeps the desktop and tablet site values",
+			"site": { "padding": [20, 40, 20, 40], "tabletPadding": [10, 20, 10, 20], "mobilePadding": [6, 12, 6, 12] },
+			"instance": { "mobilePadding": [30, "", "", ""] },
+			"expected": {
+				"padding": [20, 40, 20, 40],
+				"tabletPadding": [10, 20, 10, 20],
+				"mobilePadding": [6, 12, 6, 12]
+			}
+		},
+		{
+			"name": "an own tablet and mobile value together drop only the mobile site value",
+			"site": { "padding": [20, 40, 20, 40], "tabletPadding": [10, 20, 10, 20], "mobilePadding": [6, 12, 6, 12] },
+			"instance": { "tabletPadding": [30, "", "", ""], "mobilePadding": [20, "", "", ""] },
+			"expected": { "padding": [20, 40, 20, 40], "tabletPadding": [10, 20, 10, 20] }
+		},
+		{
+			"name": "an own desktop value in another unit than the site's drops every site value of the group",
+			"site": { "paddingUnit": "em", "padding": [1, 2, 1, 2], "mobilePadding": [0.5, 1, 0.5, 1] },
+			"instance": { "padding": [20, 20, 20, 20] },
+			"expected": {}
+		},
+		{
+			"name": "an own tablet value in another unit than the site's drops every site value of the group",
+			"site": { "paddingUnit": "em", "padding": [1, 2, 1, 2], "tabletPadding": [1, 1, 1, 1] },
+			"instance": { "tabletPadding": [20, "", "", ""] },
+			"expected": {}
+		},
+		{
+			"name": "an own mobile value in another unit than the site's drops every site value of the group",
+			"site": { "paddingUnit": "em", "padding": [1, 2, 1, 2], "mobilePadding": [0.5, 1, 0.5, 1] },
+			"instance": { "mobilePadding": [20, "", "", ""] },
+			"expected": {}
+		},
+		{
+			"name": "an own unit other than the site's drops every site value of the group",
+			"site": { "padding": [20, 40, 20, 40], "mobilePadding": [6, 12, 6, 12] },
+			"instance": { "paddingUnit": "em" },
+			"expected": {}
+		},
+		{
+			"name": "an own value in the site's unit still keeps the earlier devices",
+			"site": { "paddingUnit": "em", "padding": [1, 2, 1, 2], "mobilePadding": [0.5, 1, 0.5, 1] },
+			"instance": { "paddingUnit": "em", "padding": [2, 2, 2, 2] },
+			"expected": { "paddingUnit": "em", "padding": [1, 2, 1, 2] }
+		},
+		{
+			"name": "an own unit equal to the site's keeps every site value",
+			"site": { "paddingUnit": "em", "padding": [1, 2, 1, 2], "mobilePadding": [0.5, 1, 0.5, 1] },
+			"instance": { "paddingUnit": "em" },
+			"expected": { "paddingUnit": "em", "padding": [1, 2, 1, 2], "mobilePadding": [0.5, 1, 0.5, 1] }
+		},
+		{
+			"name": "a null instance unit falls back to the default, so an own value in another unit than the site's drops the group",
+			"site": { "paddingUnit": "em", "padding": [1, 2, 1, 2] },
+			"instance": { "paddingUnit": null, "padding": [20, 20, 20, 20] },
+			"expected": {}
+		},
+		{
+			"name": "a site unit equal to the default agrees with an instance that sets none, so the cascade applies",
+			"site": { "paddingUnit": "px", "padding": [20, 40, 20, 40], "mobilePadding": [6, 12, 6, 12] },
+			"instance": { "padding": [2, 10, 2, 10] },
+			"expected": { "paddingUnit": "px", "padding": [20, 40, 20, 40] }
+		},
+		{
+			"name": "a site that stores only a unit loses it to an own value in another unit",
+			"site": { "paddingUnit": "em" },
+			"instance": { "padding": [20, 20, 20, 20] },
+			"expected": {}
+		},
+		{
+			"name": "a unit mismatch in one group leaves the other group's site values",
+			"site": {
+				"padding": [20, 40, 20, 40],
+				"mobilePadding": [6, 12, 6, 12],
+				"marginUnit": "em",
+				"margin": [1, 1, 1, 1]
+			},
+			"instance": { "margin": [10, 10, 10, 10] },
+			"expected": { "padding": [20, 40, 20, 40], "mobilePadding": [6, 12, 6, 12] }
+		},
+		{
+			"name": "an own value in one group leaves the other group's site values",
+			"site": { "padding": [20, 40, 20, 40], "margin": [10, 12, 10, 12], "mobileMargin": [4, 6, 4, 6] },
+			"instance": { "padding": [2, 10, 2, 10] },
+			"expected": { "padding": [20, 40, 20, 40], "margin": [10, 12, 10, 12], "mobileMargin": [4, 6, 4, 6] }
+		},
+		{
+			"name": "a group without a unit cascades by device alone",
+			"site": { "gap": 12, "tabletGap": 8, "mobileGap": 4 },
+			"instance": { "gap": 20 },
+			"expected": { "gap": 12 }
+		},
+		{
+			"name": "an attribute without a default is own once it is set",
+			"site": { "gap": 12, "tabletGap": 8, "mobileGap": 4 },
+			"instance": { "tabletGap": 6 },
+			"expected": { "gap": 12, "tabletGap": 8 }
+		},
+		{
+			"name": "an attribute outside the groups is always kept",
+			"site": { "sizePreset": "large", "mobilePadding": [6, 12, 6, 12] },
+			"instance": { "sizePreset": "small", "padding": [2, 10, 2, 10] },
+			"expected": { "sizePreset": "large" }
+		}
+	]
+}

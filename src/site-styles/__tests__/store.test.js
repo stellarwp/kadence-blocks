@@ -10,8 +10,10 @@ import {
 	toKadenceColor,
 	toStoredForm,
 	unmerge,
+	withoutOverridden,
 	withStoredForm,
 } from '../store';
+import cascadeConformance from './fixtures/cascade-conformance.json';
 import conformance from './fixtures/merge-conformance.json';
 import scopeConformance from './fixtures/scope-conformance.json';
 import singleButton from './fixtures/singlebtn-entry.json';
@@ -35,6 +37,23 @@ describe('merge', () => {
 describe('scopeSiteAttributes', () => {
 	it.each(scopeConformance.map((c) => [c.name, c]))('%s', (name, c) => {
 		expect(scopeSiteAttributes(c.site, c.instance, c.scope, c.defaultStyle)).toEqual(c.expected);
+	});
+});
+
+describe('withoutOverridden', () => {
+	const { groups, defaults, cases } = cascadeConformance;
+	const definitions = Object.fromEntries(Object.entries(defaults).map(([name, value]) => [name, { default: value }]));
+
+	it.each(cases.map((c) => [c.name, c]))('%s', (name, c) => {
+		expect(withoutOverridden(c.site, c.instance, definitions, groups)).toEqual(c.expected);
+	});
+
+	it('leaves the site values it is given untouched', () => {
+		const site = { padding: [20, 40, 20, 40], mobilePadding: [6, 12, 6, 12] };
+
+		withoutOverridden(site, { padding: [2, 10, 2, 10] }, definitions, groups);
+
+		expect(site).toEqual({ padding: [20, 40, 20, 40], mobilePadding: [6, 12, 6, 12] });
 	});
 });
 
@@ -225,6 +244,57 @@ describe('write guard', () => {
 
 		expect(outlineSite).toEqual({ typography: site.typography });
 		expect(mergeAttributes({ ...stored, inheritStyles: 'outline' }, outlineSite, definitions).background).toBe('');
+	});
+
+	describe('with a unit shared by the values', () => {
+		const groups = [{ unit: 'paddingUnit', values: ['padding', 'tabletPadding', 'mobilePadding'] }];
+		const unitDefinitions = {
+			paddingUnit: { default: 'px' },
+			padding: { default: ['', '', '', ''] },
+			tabletPadding: { default: ['', '', '', ''] },
+			mobilePadding: { default: ['', '', '', ''] },
+		};
+		const emSite = { paddingUnit: 'em', padding: [1, 2, 1, 2] };
+		const stored = { paddingUnit: 'px', padding: ['', '', '', ''] };
+
+		it("stores the site's unit with the values the user changes, so they stay in the unit they were shown in", () => {
+			const shown = mergeAttributes(stored, emSite, unitDefinitions);
+
+			expect(guardWrite({ padding: [2, 2, 1, 2] }, shown, stored, emSite, groups)).toEqual({
+				padding: [2, '', '', ''],
+				paddingUnit: 'em',
+			});
+		});
+
+		it('stores no unit when the one shown is the one already stored', () => {
+			const pxSite = { padding: [20, 40, 20, 40] };
+			const shown = mergeAttributes(stored, pxSite, unitDefinitions);
+
+			expect(guardWrite({ padding: [30, 40, 20, 40] }, shown, stored, pxSite, groups)).toEqual({
+				padding: [30, '', '', ''],
+			});
+		});
+
+		it('stores no unit for a write that changes nothing, such as a reset of a value without a site value', () => {
+			const withTablet = { ...stored, tabletPadding: ['', '', '', ''] };
+			const shown = mergeAttributes(withTablet, emSite, unitDefinitions);
+
+			expect(guardWrite({ tabletPadding: ['', '', '', ''] }, shown, withTablet, emSite, groups)).toEqual({
+				tabletPadding: ['', '', '', ''],
+			});
+		});
+
+		it('keeps the unit the user picks', () => {
+			const shown = mergeAttributes(stored, emSite, unitDefinitions);
+
+			expect(guardWrite({ paddingUnit: 'rem' }, shown, stored, emSite, groups)).toEqual({ paddingUnit: 'rem' });
+		});
+
+		it('leaves a write that touches no value of the group alone', () => {
+			const shown = mergeAttributes(stored, emSite, unitDefinitions);
+
+			expect(guardWrite({ text: 'Buy' }, shown, stored, emSite, groups)).toEqual({ text: 'Buy' });
+		});
 	});
 
 	it('unmerge returns the stored value for an unchanged write', () => {

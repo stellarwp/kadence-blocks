@@ -2,6 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Site_Styles;
 
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Groups_Site_Styles;
 use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Scopes_Site_Styles;
 
 /**
@@ -9,10 +10,11 @@ use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Scopes_Site_Styles;
  * Kadence builds its markup and CSS, so the existing builders render them.
  *
  * Precedence is decided per leaf: an instance leaf that differs from the
- * block's default wins, every other leaf takes the site value. Stored values
- * of attributes the block excludes are ignored. A block that
- * scopes its site styles gives each instance only the site values its style
- * takes.
+ * block's default wins, every other leaf takes the site value. A block that
+ * groups its values per device drops the site values an own value of the
+ * instance covers first. Stored values of attributes the block excludes are
+ * ignored. A block that scopes its site styles gives each instance only the
+ * site values its style takes.
  *
  * @since TBD Merges only the values the block lists for the overlay (classes and editor inline styles). Core's global stylesheet renders the core keys, and `Site_Rules` the rest.
  */
@@ -111,9 +113,6 @@ final class Overlay {
 		}
 
 		$registered = Supported_Blocks::registered_defaults( $block_name );
-		/** This filter is documented in includes/blocks/class-kadence-blocks-abstract-block.php */
-		$filtered = apply_filters( 'kadence_blocks_block_default_attributes', $registered, $block_name );
-		$filtered = is_array( $filtered ) ? $filtered : $registered;
 
 		if ( $block instanceof Scopes_Site_Styles ) {
 			$scope_attribute = $block->site_styles_scope_attribute();
@@ -128,13 +127,73 @@ final class Overlay {
 			);
 		}
 
-		foreach ( $site as $name => $value ) {
-			$instance            = $attributes[ $name ] ?? null;
-			$default             = ( array_key_exists( $name, $filtered ) && $instance === $filtered[ $name ] ) ? $instance : ( $registered[ $name ] ?? null );
-			$attributes[ $name ] = self::merge( $instance, $value, $default );
+		if ( ! $site ) {
+			return $attributes;
+		}
+
+		/** This filter is documented in includes/blocks/class-kadence-blocks-abstract-block.php */
+		$filtered = apply_filters( 'kadence_blocks_block_default_attributes', $registered, $block_name );
+		$filtered = is_array( $filtered ) ? $filtered : $registered;
+		$groups   = $block instanceof Groups_Site_Styles ? $block->site_styles_groups() : [];
+		$grouped  = [];
+		$defaults = [];
+
+		foreach ( $groups as $group ) {
+			$grouped = array_merge( $grouped, $group['values'], isset( $group['unit'] ) ? [ $group['unit'] ] : [] );
+		}
+
+		foreach ( array_merge( array_keys( $site ), $grouped ) as $name ) {
+			$instance          = $attributes[ $name ] ?? null;
+			$defaults[ $name ] = ( array_key_exists( $name, $filtered ) && $instance === $filtered[ $name ] ) ? $instance : ( $registered[ $name ] ?? null );
+		}
+
+		foreach ( self::without_overridden( $site, $attributes, $defaults, $groups ) as $name => $value ) {
+			$attributes[ $name ] = self::merge( $attributes[ $name ] ?? null, $value, $defaults[ $name ] );
 		}
 
 		return $attributes;
+	}
+
+	/**
+	 * Drops the site values an own value of the instance covers. An own value
+	 * holds for the narrower devices after it, as in CSS, so the site's value for
+	 * one of them must not replace it. Values are in one unit: when the instance
+	 * has an own value or an own unit in a group and its unit is not the site's,
+	 * no site value of the group is shown.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed>                                   $site       Attribute name => site value.
+	 * @param array<string, mixed>                                   $attributes The instance's attributes.
+	 * @param array<string, mixed>                                   $defaults   Attribute name => the default the instance's value is compared with.
+	 * @param array<int, array{unit?: string, values: list<string>}> $groups     The attribute groups.
+	 *
+	 * @return array<string, mixed> The site values the instance takes.
+	 */
+	public static function without_overridden( array $site, array $attributes, array $defaults, array $groups ): array {
+		$is_own = static fn( string $name ): bool => null !== ( $attributes[ $name ] ?? null ) && $attributes[ $name ] !== ( $defaults[ $name ] ?? null );
+
+		foreach ( $groups as $group ) {
+			$unit  = $group['unit'] ?? null;
+			$names = null === $unit ? $group['values'] : array_merge( $group['values'], [ $unit ] );
+
+			if ( null !== $unit && array_filter( $names, $is_own ) !== [] && ( $attributes[ $unit ] ?? $defaults[ $unit ] ?? null ) !== ( $site[ $unit ] ?? $defaults[ $unit ] ?? null ) ) {
+				$site = array_diff_key( $site, array_flip( $names ) );
+				continue;
+			}
+
+			$overridden = false;
+
+			foreach ( $group['values'] as $name ) {
+				if ( $overridden ) {
+					unset( $site[ $name ] );
+				}
+
+				$overridden = $overridden || $is_own( $name );
+			}
+		}
+
+		return $site;
 	}
 
 	/**

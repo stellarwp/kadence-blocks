@@ -217,6 +217,54 @@ export function scopeSiteAttributes(site, attributes, scope, defaultStyle) {
 }
 
 /**
+ * Drops the site values an own value of the instance covers. An own value holds
+ * for the narrower devices after it, as in CSS, so the site's value for one of
+ * them must not replace it. Values are in one unit: when the instance has an own
+ * value or an own unit in a group and its unit is not the site's, no site value
+ * of the group is shown.
+ *
+ * @param {Attributes}                    site        The site values.
+ * @param {Attributes}                    attributes  The instance's attributes.
+ * @param {Object<string, {default: *}>} definitions The block type's attribute definitions.
+ * @param {import('./supported-blocks').SiteStylesGroup[]} [groups] The attribute groups; a block without any keeps every site value.
+ *
+ * @since TBD
+ *
+ * @return {Attributes} The site values the instance takes.
+ */
+export function withoutOverridden(site, attributes, definitions, groups = []) {
+	const isOwn = (name) => {
+		const instance = attributes[name];
+
+		return instance !== undefined && instance !== null && !isEqual(instance, definitions[name]?.default);
+	};
+	let kept = { ...site };
+
+	groups.forEach(({ unit, values }) => {
+		const names = unit ? [...values, unit] : values;
+		const instanceUnit = attributes[unit] ?? definitions[unit]?.default;
+		const siteUnit = site[unit] ?? definitions[unit]?.default;
+
+		if (unit && names.some(isOwn) && instanceUnit !== siteUnit) {
+			kept = omit(kept, names);
+			return;
+		}
+
+		let overridden = false;
+
+		values.forEach((name) => {
+			if (overridden) {
+				delete kept[name];
+			}
+
+			overridden = overridden || isOwn(name);
+		});
+	});
+
+	return kept;
+}
+
+/**
  * Merges a block's site values into its attributes.
  *
  * @param {Attributes}                    attributes  The instance's attributes.
@@ -266,15 +314,17 @@ export function unmerge(next, shown, stored) {
  * Filters a write from a block shown with site values merged in, so no site
  * value is stored in the instance: for each written attribute that has a site
  * value, only the changed leaves are kept, and an unchanged attribute is
- * dropped.
+ * dropped. The values of a group keep the unit they were shown in, so a value
+ * the user changes while the site's unit is shown is stored with that unit.
  *
  * @param {Attributes} written The attributes being written.
  * @param {Attributes} shown   The attributes the block was shown.
  * @param {Attributes} stored  The instance's stored attributes.
  * @param {Attributes} site    The site values.
+ * @param {import('./supported-blocks').SiteStylesGroup[]} [groups] The attribute groups.
  * @return {Attributes} The attributes to store.
  */
-export function guardWrite(written, shown, stored, site) {
+export function guardWrite(written, shown, stored, site, groups = []) {
 	const kept = {};
 
 	Object.keys(written).forEach((name) => {
@@ -287,6 +337,15 @@ export function guardWrite(written, shown, stored, site) {
 
 		if (!isEqual(value, stored[name])) {
 			kept[name] = value;
+		}
+	});
+
+	groups.forEach(({ unit, values }) => {
+		const unitShown = shown[unit] !== undefined && !isEqual(shown[unit], stored[unit]);
+		const changed = values.some((name) => name in kept && !isEqual(kept[name], stored[name]));
+
+		if (unit && !(unit in kept) && unitShown && changed) {
+			kept[unit] = shown[unit];
 		}
 	});
 

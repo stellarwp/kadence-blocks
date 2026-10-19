@@ -7,9 +7,16 @@
  * @property {string}                 slug      Key under `settings.custom.kadence` in Global Styles.
  * @property {string[]}               exclude   Attributes never stored site-wide: content attributes, identifiers and the scope attribute.
  * @property {string[]}               overlay   Site values merged into the instance's attributes; CSS renders the rest.
+ * @property {SiteStylesGroup[]}      [groups]  Overlay attributes that make up one setting; an own value drops the site values it covers.
  * @property {Object<string, string>} attributesMap Block attribute => path in the block's core style, e.g. `color.background`.
  * @property {Object}                 supports  Core supports added in FSE mode.
  * @property {SiteStylesScope}        [scope]   For a block whose instances take site values by a style they pick.
+ */
+
+/**
+ * @typedef {Object} SiteStylesGroup
+ * @property {string}   [unit]  The attribute holding the unit the values share.
+ * @property {string[]} values  The attributes of the setting, from the widest device to the narrowest.
  */
 
 /**

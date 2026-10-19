@@ -4,6 +4,7 @@ declare( strict_types=1 );
 
 namespace Tests\wpunit\Resources\Site_Styles;
 
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Groups_Site_Styles;
 use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Scopes_Site_Styles;
 use KadenceWP\KadenceBlocks\Site_Styles\Supported_Blocks;
 use Tests\Support\Classes\TestCase;
@@ -74,6 +75,30 @@ final class SupportedBlocksTest extends TestCase {
 			foreach ( $block->site_styles_overlay_attributes() as $attribute ) {
 				$this->assertArrayHasKey( $attribute, $attributes, "{$name}: the overlay lists {$attribute}, which the block doesn't have." );
 				$this->assertNotContains( $attribute, $excluded, "{$name}: the overlay lists {$attribute}, which is never stored site-wide." );
+			}
+		}
+	}
+
+	/**
+	 * Every attribute in a supported block's groups is one the block has and lists for the overlay.
+	 *
+	 * @return void
+	 */
+	public function testEveryGroupAttributeIsAnOverlayAttributeOfItsBlock(): void {
+		$grouped = array_filter(
+			$this->container->get( Supported_Blocks::class )->all(),
+			static fn( $block ): bool => $block instanceof Groups_Site_Styles
+		);
+
+		$this->assertArrayHasKey( 'kadence/singlebtn', $grouped );
+		foreach ( $grouped as $name => $block ) {
+			$attributes = WP_Block_Type_Registry::get_instance()->get_registered( $name )->attributes;
+
+			foreach ( $block->site_styles_groups() as $group ) {
+				foreach ( array_merge( isset( $group['unit'] ) ? [ $group['unit'] ] : [], $group['values'] ) as $attribute ) {
+					$this->assertArrayHasKey( $attribute, $attributes, "{$name}: a group lists {$attribute}, which the block doesn't have." );
+					$this->assertContains( $attribute, $block->site_styles_overlay_attributes(), "{$name}: a group lists {$attribute}, which the overlay doesn't." );
+				}
 			}
 		}
 	}
