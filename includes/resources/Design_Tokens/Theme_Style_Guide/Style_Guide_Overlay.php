@@ -57,7 +57,7 @@ final class Style_Guide_Overlay {
 	/**
 	 * Per-request memo of the active palette set's slot slug => color. Null until a snapshot was read.
 	 *
-	 * @since TBD
+	 * @since 3.8.0.1
 	 *
 	 * @var array<string, string>|null
 	 */
@@ -114,7 +114,7 @@ final class Style_Guide_Overlay {
 	 * The slot slug => color map of the palette set the theme has saved as active. Empty when the Kadence
 	 * theme is not active.
 	 *
-	 * @since TBD
+	 * @since 3.8.0.1
 	 *
 	 * @return array<string, string>
 	 */

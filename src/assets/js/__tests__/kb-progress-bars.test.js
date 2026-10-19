@@ -10,7 +10,7 @@ const SCRIPT = '../kb-progress-bars.js';
  * @param {string} prefix The prefix as it reaches the script via wp_localize_script.
  * @param {string} suffix The suffix as it reaches the script via wp_localize_script.
  *
- * @since TBD
+ * @since 3.8.0.1
  *
  * @return {HTMLElement} The rendered progress label.
  */

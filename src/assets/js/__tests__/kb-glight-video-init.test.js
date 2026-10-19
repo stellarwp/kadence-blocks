@@ -10,7 +10,7 @@ const SCRIPT = '../kb-glight-video-init.js';
  *
  * @param {string} anchorHtml The anchor markup to bind.
  *
- * @since TBD
+ * @since 3.8.0.1
  *
  * @return {HTMLElement} The bound anchor.
  */
@@ -67,9 +67,9 @@ describe('kb-glight-video-init', () => {
 	});
 
 	it('keeps https and relative links', () => {
-		expect(bindAnchor('<a class="ktblocksvideopop" href="https://example.com/v.mp4">open</a>').getAttribute('href')).toBe(
-			'https://example.com/v.mp4'
-		);
+		expect(
+			bindAnchor('<a class="ktblocksvideopop" href="https://example.com/v.mp4">open</a>').getAttribute('href')
+		).toBe('https://example.com/v.mp4');
 		expect(bindAnchor('<a class="ktblocksvideopop" href="/v.mp4">open</a>').getAttribute('href')).toBe('/v.mp4');
 	});
 });

@@ -46,7 +46,7 @@
 		 *
 		 * @param {string} text The plain text to escape.
 		 *
-		 * @since TBD
+		 * @since 3.8.0.1
 		 *
 		 * @return {string} The escaped text.
 		 */

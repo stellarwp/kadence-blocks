@@ -534,7 +534,7 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 	 *
 	 * Entities are decoded until the value is stable, then tags are removed.
 	 *
-	 * @since TBD
+	 * @since 3.8.0.1
 	 *
 	 * @param mixed $value The raw attribute value.
 	 *

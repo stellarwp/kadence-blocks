@@ -69,7 +69,7 @@ final class Palette_Filter {
 	/**
 	 * Supplies the color the active palette set has saved for a slot.
 	 *
-	 * @since TBD
+	 * @since 3.8.0.1
 	 *
 	 * @var Style_Guide_Overlay
 	 */
@@ -166,7 +166,7 @@ final class Palette_Filter {
 	 * Known limit: a slot saved with the same color in both sets is indistinguishable, so it still gets
 	 * the token color.
 	 *
-	 * @since TBD
+	 * @since 3.8.0.1
 	 *
 	 * @param mixed  $value  The value the theme resolved for the slot.
 	 * @param string $subkey The slot being read.

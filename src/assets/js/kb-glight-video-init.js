@@ -14,7 +14,7 @@
 		 *
 		 * @param {string} text The plain text to escape.
 		 *
-		 * @since TBD
+		 * @since 3.8.0.1
 		 *
 		 * @return {string} The escaped text.
 		 */
@@ -36,7 +36,7 @@
 		 *
 		 * @param {HTMLElement} el The anchor GLightbox will be bound to.
 		 *
-		 * @since TBD
+		 * @since 3.8.0.1
 		 *
 		 * @return {void}
 		 */

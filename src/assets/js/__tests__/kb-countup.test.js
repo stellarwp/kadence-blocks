@@ -11,7 +11,7 @@ const PAYLOAD_SINGLE_ENCODED = '&lt;img src=x onerror=window.__xss=1&gt;';
  *
  * @param {Object} data The data-* attributes to set.
  *
- * @since TBD
+ * @since 3.8.0.1
  *
  * @return {Object} The options passed to the CountUp constructor.
  */
@@ -44,20 +44,17 @@ describe('kb-countup', () => {
 		delete window.__xss;
 	});
 
-	it.each(['prefix', 'suffix', 'separator'])(
-		'outputs a double entity-encoded %s as literal text',
-		(attribute) => {
-			const options = runCountUp({ [attribute]: PAYLOAD_DOUBLE_ENCODED });
+	it.each(['prefix', 'suffix', 'separator'])('outputs a double entity-encoded %s as literal text', (attribute) => {
+		const options = runCountUp({ [attribute]: PAYLOAD_DOUBLE_ENCODED });
 
-			expect(options[attribute]).not.toMatch(/[<>]/);
+		expect(options[attribute]).not.toMatch(/[<>]/);
 
-			// Parse the option as HTML and confirm no element is created.
-			const probe = document.createElement('div');
-			probe.innerHTML = options[attribute];
-			expect(probe.querySelector('img')).toBeNull();
-			expect(probe.textContent).toContain('<img');
-		}
-	);
+		// Parse the option as HTML and confirm no element is created.
+		const probe = document.createElement('div');
+		probe.innerHTML = options[attribute];
+		expect(probe.querySelector('img')).toBeNull();
+		expect(probe.textContent).toContain('<img');
+	});
 
 	it('escapes a decimal separator written with innerHTML', () => {
 		const options = runCountUp({ decimal: '<img src=x onerror=window.__xss=1>' });

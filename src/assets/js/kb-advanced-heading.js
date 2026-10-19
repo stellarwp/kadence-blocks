@@ -34,7 +34,7 @@ const kbAdvHeadingTypedListener = setInterval(function () {
 		 *
 		 * @param {string} input The escaped string.
 		 *
-		 * @since TBD
+		 * @since 3.8.0.1
 		 *
 		 * @return {string} The plain text.
 		 */
