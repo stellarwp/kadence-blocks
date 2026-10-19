@@ -91,11 +91,13 @@ class Kadence_Blocks_Spacer_Block extends Kadence_Blocks_Abstract_Block implemen
 			$divider_width       = ( ! empty( $attributes['dividerWidth'] ) ? $attributes['dividerWidth'] : '80' );
 			$divider_width_units = ( isset( $attributes['dividerWidthUnits'] ) && ! empty( $attributes['dividerWidthUnits'] ) ? $attributes['dividerWidthUnits'] : '%' );
 			$css->add_property( 'width', $divider_width . $divider_width_units );
+			// In the Kadence theme's Full Site Editing mode the band takes its own tablet and mobile heights, as the editor shows it; classic mode keeps its output.
+			$is_fse_mode = kadence_blocks_is_fse_mode();
 			if ( ( ! empty( $attributes['tabletDividerHeight'] ) ) || ( isset( $attributes['tabletDividerWidth'] ) && ! empty( $attributes['tabletDividerWidth'] ) ) ) {
 				$css->set_media_state( 'tablet' );
 				$css->set_selector( '.wp-block-kadence-spacer.kt-block-spacer-' . $unique_id . ' .kt-divider-stripe' );
 				if ( ! empty( $attributes['tabletDividerHeight'] ) ) {
-					$css->add_property( 'height', $attributes['tabletSpacerHeight'] . 'px !important' );
+					$css->add_property( 'height', ( $is_fse_mode ? $attributes['tabletDividerHeight'] : $attributes['tabletSpacerHeight'] ) . 'px !important' );
 				}
 				if ( ! empty( $attributes['tabletDividerWidth'] ) ) {
 					$css->add_property( 'width', $attributes['tabletDividerWidth'] . $divider_width_units . '!important' );
@@ -106,7 +108,7 @@ class Kadence_Blocks_Spacer_Block extends Kadence_Blocks_Abstract_Block implemen
 				$css->set_media_state( 'mobile' );
 				$css->set_selector( '.wp-block-kadence-spacer.kt-block-spacer-' . $unique_id . ' .kt-divider-stripe' );
 				if ( ! empty( $attributes['mobileDividerHeight'] ) ) {
-					$css->add_property( 'height', $attributes['mobileSpacerHeight'] . 'px !important' );
+					$css->add_property( 'height', ( $is_fse_mode ? $attributes['mobileDividerHeight'] : $attributes['mobileSpacerHeight'] ) . 'px !important' );
 				}
 				if ( ! empty( $attributes['mobileDividerWidth'] ) ) {
 					$css->add_property( 'width', $attributes['mobileDividerWidth'] . $divider_width_units . '!important' );

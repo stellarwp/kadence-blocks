@@ -13,7 +13,8 @@ use KadenceWP\KadenceBlocks\Site_Styles\Site_Rules;
 
 /**
  * Covers the instance CSS of Spacers with site-level styles: untouched spacers take the site values, a
- * spacer's own values keep their whole group, and a stripe divider takes only its height and width.
+ * spacer's own values keep their whole group, and a stripe divider takes only its height and width and keeps
+ * its own band heights.
  */
 final class SiteStylesSpacerTest extends WPTestCase {
 	protected \IntegrationTester $tester;
@@ -88,6 +89,52 @@ final class SiteStylesSpacerTest extends WPTestCase {
 	}
 
 	/**
+	 * In FSE mode a stripe's tablet and mobile band heights are its own divider heights, as the editor shows
+	 * them, not the site's tablet and mobile spacer heights.
+	 *
+	 * @return void
+	 */
+	public function testAStripeBandTakesItsOwnTabletAndMobileHeights(): void {
+		$this->tester->enable_fse_mode();
+		$this->store_site_values();
+
+		$css = $this->spacer_css(
+			[
+				'dividerStyle'        => 'stripe',
+				'tabletDividerHeight' => 25,
+				'mobileDividerHeight' => 15,
+			]
+		);
+
+		$this->assertStringContainsString( 'height:25px !important', $css );
+		$this->assertStringContainsString( 'height:15px !important', $css );
+		$this->assertStringNotContainsString( 'height:20px !important', $css );
+		$this->assertStringNotContainsString( 'height:10px !important', $css );
+	}
+
+	/**
+	 * In classic mode a stripe's tablet and mobile band heights still print from its spacer heights.
+	 *
+	 * @return void
+	 */
+	public function testClassicModeKeepsAStripeBandOnItsSpacerHeights(): void {
+		$css = $this->spacer_css(
+			[
+				'dividerStyle'        => 'stripe',
+				'tabletSpacerHeight'  => 30,
+				'mobileSpacerHeight'  => 35,
+				'tabletDividerHeight' => 25,
+				'mobileDividerHeight' => 15,
+			]
+		);
+
+		$this->assertStringContainsString( 'height:30px !important', $css );
+		$this->assertStringContainsString( 'height:35px !important', $css );
+		$this->assertStringNotContainsString( 'height:25px !important', $css );
+		$this->assertStringNotContainsString( 'height:15px !important', $css );
+	}
+
+	/**
 	 * In classic mode, stored site values change nothing.
 	 *
 	 * @return void
@@ -135,6 +182,7 @@ final class SiteStylesSpacerTest extends WPTestCase {
 							'spacer' => [
 								'spacerHeight'       => 40,
 								'tabletSpacerHeight' => 20,
+								'mobileSpacerHeight' => 10,
 								'spacerHeightUnits'  => 'rem',
 								'dividerHeight'      => 8,
 								'dividerColor'       => '#ff0000',
