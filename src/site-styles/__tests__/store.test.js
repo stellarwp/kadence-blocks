@@ -400,6 +400,17 @@ describe('write guard', () => {
 			});
 		});
 
+		it('keeps the unit the user picks in the same write as a value, even when it is the stored one', () => {
+			const shown = mergeAttributes(stored, emSite, unitDefinitions);
+
+			expect(
+				guardWrite({ padding: [2, 2, 1, 2], paddingUnit: 'px' }, shown, stored, emSite, [], {}, cascades)
+			).toEqual({
+				padding: [2, '', '', ''],
+				paddingUnit: 'px',
+			});
+		});
+
 		it('keeps the unit the user picks', () => {
 			const shown = mergeAttributes(stored, emSite, unitDefinitions);
 

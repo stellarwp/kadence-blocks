@@ -386,7 +386,14 @@ export function guardWrite(written, shown, stored, site, groups = [], definition
 		const unitShown = shown[unit] !== undefined && !isEqual(shown[unit], stored[unit]);
 		const changed = values.some((name) => name in kept && !isEqual(kept[name], stored[name]));
 
-		if (unit && !(unit in kept) && unitShown && changed) {
+		if (!unit || unit in kept || !changed) {
+			return;
+		}
+
+		// A unit written with the values that differs from the one shown was picked, even when it is the stored one.
+		if (unit in written && !isEqual(written[unit], shown[unit])) {
+			kept[unit] = written[unit];
+		} else if (unitShown) {
 			kept[unit] = shown[unit];
 		}
 	});
