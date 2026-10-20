@@ -142,6 +142,29 @@ final class SupportedBlocksTest extends TestCase {
 	}
 
 	/**
+	 * Show More takes its collapsed height, fade, padding and margin through the overlay, in four groups,
+	 * with no scope, no site rules and no core surface, and keeps its expand behavior per block.
+	 *
+	 * @return void
+	 */
+	public function testShowMoreDescribesItsSiteStyles(): void {
+		$block = $this->container->get( Supported_Blocks::class )->get( 'kadence/show-more' );
+
+		$this->assertNotNull( $block );
+		$this->assertSame( 'show-more', $block->get_slug() );
+		$this->assertNotInstanceOf( Scopes_Site_Styles::class, $block );
+		$this->assertInstanceOf( Groups_Site_Styles::class, $block );
+		$this->assertSame( [], $block->site_styles_attributes_map() );
+		$this->assertSame( [], $block->site_styles_supports() );
+		$this->assertSame( [], $block->site_styles_selectors() );
+		$this->assertCount( 14, $block->site_styles_overlay_attributes() );
+		$this->assertSame( $block->site_styles_overlay_attributes(), array_merge( ...$block->site_styles_attribute_groups() ) );
+		foreach ( [ 'showHideMore', 'defaultExpandedDesktop', 'defaultExpandedTablet', 'defaultExpandedMobile', 'align', 'id', 'inQueryBlock' ] as $attribute ) {
+			$this->assertContains( $attribute, Supported_Blocks::excluded_attributes( $block ) );
+		}
+	}
+
+	/**
 	 * Spacer's style is its divider style, and an instance without one takes the block's default.
 	 *
 	 * @dataProvider spacerStyleProvider

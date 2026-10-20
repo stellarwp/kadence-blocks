@@ -23,7 +23,7 @@ final class SiteStylesEditorParamsTest extends WPTestCase {
 	}
 
 	/**
-	 * In FSE mode the editor scripts get the supported blocks, and Single Button's and Spacer's entries match the
+	 * In FSE mode the editor scripts get the supported blocks, and Single Button's, Spacer's and Show More's entries match the
 	 * fixtures the JS tests read.
 	 *
 	 * @return void
@@ -35,12 +35,16 @@ final class SiteStylesEditorParamsTest extends WPTestCase {
 
 		$blocks = $this->site_styles( Editor_Params::EARLY_FILTERS_HANDLE )['blocks'];
 
-		$this->assertEqualsCanonicalizing( [ 'kadence/advancedbtn', 'kadence/singlebtn', 'kadence/icon', 'kadence/single-icon', 'kadence/spacer' ], array_keys( $blocks ) );
+		$this->assertEqualsCanonicalizing( [ 'kadence/advancedbtn', 'kadence/singlebtn', 'kadence/icon', 'kadence/single-icon', 'kadence/spacer', 'kadence/show-more' ], array_keys( $blocks ) );
 		$this->assertEquals( json_decode( $json, true ), $blocks['kadence/singlebtn'] );
 
 		$spacer = file_get_contents( KADENCE_BLOCKS_PATH . 'src/site-styles/__tests__/fixtures/spacer-entry.json' );
 		$this->assertIsString( $spacer );
 		$this->assertEquals( json_decode( $spacer, true ), $blocks['kadence/spacer'] );
+
+		$show_more = file_get_contents( KADENCE_BLOCKS_PATH . 'src/site-styles/__tests__/fixtures/show-more-entry.json' );
+		$this->assertIsString( $show_more );
+		$this->assertEquals( json_decode( $show_more, true ), $blocks['kadence/show-more'] );
 	}
 
 	public function testClassicModeGivesFalseAndNoBlocks(): void {
@@ -67,7 +71,7 @@ final class SiteStylesEditorParamsTest extends WPTestCase {
 
 		// wp_localize_script() turns booleans into strings, like every flag in kadence_blocks_params.
 		$this->assertSame( '1', $params['isFseMode'] );
-		$this->assertEqualsCanonicalizing( [ 'kadence/advancedbtn', 'kadence/singlebtn', 'kadence/icon', 'kadence/single-icon', 'kadence/spacer' ], $params['siteStylesBlocks'] );
+		$this->assertEqualsCanonicalizing( [ 'kadence/advancedbtn', 'kadence/singlebtn', 'kadence/icon', 'kadence/single-icon', 'kadence/spacer', 'kadence/show-more' ], $params['siteStylesBlocks'] );
 	}
 
 	/**
