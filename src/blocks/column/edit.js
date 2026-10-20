@@ -625,7 +625,7 @@ function SectionEdit(props) {
 			const tempMobileBorderHoverWidth = JSON.parse(JSON.stringify(tempMobileBorderHoverStyle));
 			Object.assign(borderPatch, {
 				mobileBorderHoverStyle: tempMobileBorderHoverWidth,
-				mobileBorderWidth: ['', '', '', ''],
+				mobileBorderHoverWidth: ['', '', '', ''],
 			});
 		}
 		if (Object.keys(borderPatch).length) {
