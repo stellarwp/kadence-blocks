@@ -13,6 +13,8 @@
 		carouselItem: {},
 		lightboxes: {},
 		foundClasses: {},
+		// Anchors the gallery block renders, so markup injected elsewhere inside the container is never bound.
+		linkSelector: '.kadence-blocks-gallery-item a.kb-gallery-item-link',
 		simulateClick(elem) {
 			// Create our event (with options)
 			const evt = new MouseEvent('click', {
@@ -71,6 +73,64 @@
 
 			return body.innerHTML;
 		},
+		/**
+		 * Escape a plain-text string so it is safe to be written with innerHTML.
+		 *
+		 * @param {string} text The plain text to escape.
+		 *
+		 * @since TBD
+		 *
+		 * @return {string} The escaped text.
+		 */
+		escapeHtml(text) {
+			const map = {
+				'&': '&amp;',
+				'<': '&lt;',
+				'>': '&gt;',
+				'"': '&quot;',
+				"'": '&#x27;',
+			};
+			return String(text).replace(/[&<>"']/g, (match) => map[match]);
+		},
+		/**
+		 * Make the slide data on a gallery anchor safe before GLightbox reads it.
+		 *
+		 * GLightbox writes the slide title and description with innerHTML, taking them from the data-glightbox,
+		 * data-title and data-description attributes or the title attribute, all of which the browser has already
+		 * entity-decoded. Drop the other slide settings, escape the title, and reduce the description to the
+		 * caption markup the gallery already allows.
+		 *
+		 * @param {HTMLElement} el The anchor GLightbox will be bound to.
+		 *
+		 * @since TBD
+		 *
+		 * @return {void}
+		 */
+		sanitizeSlideData(el) {
+			const rawTitle = el.dataset.title || el.getAttribute('title') || '';
+			const description = el.getAttribute('data-description');
+			[
+				'data-glightbox',
+				'data-description',
+				'data-content',
+				'data-href',
+				'data-type',
+				'data-desc-position',
+				'data-effect',
+			].forEach((name) => el.removeAttribute(name));
+			el.setAttribute('data-title', kadenceBlocksGLight.escapeHtml(rawTitle));
+			if (description) {
+				el.setAttribute(
+					'data-description',
+					kadenceBlocksGLight.strip_tags(description, '<a><br><b><i><u><p><ol><ul><li><strong><small>')
+				);
+			}
+
+			// el.protocol is the resolved scheme.
+			if (el.hasAttribute('href') && !['http:', 'https:'].includes(el.protocol)) {
+				el.removeAttribute('href');
+			}
+		},
 		findGalleries() {
 			const foundGalleries = document.querySelectorAll('.kb-gallery-magnific-init');
 			if (!foundGalleries.length) {
@@ -82,8 +142,9 @@
 					const filter = foundGalleries[i].getAttribute('data-image-filter');
 					const skin = filter ? 'kadence-dark kb-gal-light-filter-' + filter : 'kadence-dark';
 					const showCaption = foundGalleries[i].getAttribute('data-lightbox-caption');
-					const galleryLinks = foundGalleries[i].querySelectorAll('a.kb-gallery-item-link');
+					const galleryLinks = foundGalleries[i].querySelectorAll(kadenceBlocksGLight.linkSelector);
 					for (let l = 0; l < galleryLinks.length; l++) {
+						kadenceBlocksGLight.sanitizeSlideData(galleryLinks[l]);
 						galleryLinks[l].setAttribute('aria-label', kb_glightbox.lightBoxAriaLabel + ' ' + (l + 1));
 					}
 					kadenceBlocksGLight.foundClasses[i] = false;
@@ -96,7 +157,7 @@
 					}
 					if ('true' == showCaption && !foundGalleries[i].classList.contains('kb-gallery-non-static')) {
 						// Static gallery is basically only for backward compatibility.
-						const foundImages = foundGalleries[i].querySelectorAll('a.kb-gallery-item-link');
+						const foundImages = foundGalleries[i].querySelectorAll(kadenceBlocksGLight.linkSelector);
 						for (let x = 0; x < foundImages.length; x++) {
 							const caption = foundImages[x].querySelector('.kadence-blocks-gallery-item__caption');
 							if (caption) {
@@ -119,7 +180,9 @@
 									selector:
 										'.' +
 										kadenceBlocksGLight.foundClasses[i] +
-										' .kb-slide-item:not(.splide__slide--clone) a.kb-gallery-item-link:not([target="_blank"])',
+										' .kb-slide-item:not(.splide__slide--clone) ' +
+										kadenceBlocksGLight.linkSelector +
+										':not([target="_blank"])',
 									touchNavigation: true,
 									skin,
 									loop: true,
@@ -136,7 +199,9 @@
 										selector:
 											'.' +
 											kadenceBlocksGLight.foundClasses[i] +
-											' .kb-slide-item:not(.splide__slide--clone) a.kb-gallery-item-link:not([target="_blank"])',
+											' .kb-slide-item:not(.splide__slide--clone) ' +
+											kadenceBlocksGLight.linkSelector +
+											':not([target="_blank"])',
 										touchNavigation: true,
 										skin,
 										loop: true,
@@ -155,7 +220,9 @@
 							selector:
 								'.' +
 								kadenceBlocksGLight.foundClasses[i] +
-								' a.kb-gallery-item-link:not([target="_blank"])',
+								' ' +
+								kadenceBlocksGLight.linkSelector +
+								':not([target="_blank"])',
 							touchNavigation: true,
 							skin,
 							loop: true,

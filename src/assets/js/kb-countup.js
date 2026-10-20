@@ -35,7 +35,19 @@
 			// Check if the countup element is within the active slide
 			return activeSlide.contains(el);
 		},
-		stripHtml(html) {
+		/**
+		 * Decode a string that may contain markup into plain text.
+		 *
+		 * The result is decoded text, not escaped output: entities are resolved, so it must not be written
+		 * with innerHTML without escaping it first.
+		 *
+		 * @param {string} html The string to convert.
+		 *
+		 * @since TBD
+		 *
+		 * @return {string} The decoded plain text.
+		 */
+		htmlToText(html) {
 			const wrappedHtml = `<pre>${html}</pre>`;
 			const doc = new DOMParser().parseFromString(wrappedHtml, 'text/html');
 
@@ -69,10 +81,10 @@
 				const self = window.kadenceCountUp.countUpItems[n],
 					start = self.dataset.start,
 					end = self.dataset.end,
-					prefix = window.kadenceCountUp.stripHtml(self.dataset.prefix),
-					suffix = window.kadenceCountUp.stripHtml(self.dataset.suffix),
+					prefix = window.kadenceCountUp.htmlToText(self.dataset.prefix),
+					suffix = window.kadenceCountUp.htmlToText(self.dataset.suffix),
 					duration = self.dataset.duration,
-					separator = window.kadenceCountUp.stripHtml(self.dataset.separator),
+					separator = window.kadenceCountUp.htmlToText(self.dataset.separator),
 					decimal = self.dataset.decimal ? self.dataset.decimal : false,
 					decimalSpaces = self.dataset.decimalSpaces ? self.dataset.decimalSpaces : false,
 					el = self.querySelector('.kb-count-up-process');
