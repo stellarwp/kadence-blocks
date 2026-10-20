@@ -3,6 +3,7 @@
 namespace KadenceWP\KadenceBlocks\Site_Styles;
 
 use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Groups_Site_Styles;
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Legacy_Group_Attributes;
 use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Scopes_Site_Styles;
 
 /**
@@ -138,7 +139,7 @@ final class Overlay {
 				$defaults[ $name ] = self::default_value( $name, $attributes[ $name ] ?? null, $registered, $filtered );
 			}
 
-			$site = self::group( $site, $attributes, $groups, $defaults );
+			$site = self::group( $site, $attributes, $groups, $defaults, $block instanceof Legacy_Group_Attributes ? $block->site_styles_legacy_group_attributes() : [] );
 		}
 
 		foreach ( $site as $name => $value ) {
@@ -176,24 +177,23 @@ final class Overlay {
 	/**
 	 * Drops the site values of every group the instance sets itself. The
 	 * instance sets a group when it has a value other than the block's
-	 * default for any of the group's attributes, the same test `merge()` uses.
+	 * default for any of the group's attributes, the same test `merge()` uses,
+	 * or when an older attribute that stands in for the group holds a value.
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, mixed>     $site       Attribute name => site value.
-	 * @param array<string, mixed>     $attributes The instance's attributes.
-	 * @param array<int, list<string>> $groups     Groups of attribute names.
-	 * @param array<string, mixed>     $defaults   Attribute name => the block's default value.
+	 * @param array<string, mixed>        $site       Attribute name => site value.
+	 * @param array<string, mixed>        $attributes The instance's attributes.
+	 * @param array<int, list<string>>    $groups     Groups of attribute names.
+	 * @param array<string, mixed>        $defaults   Attribute name => the block's default value.
+	 * @param array<string, list<string>> $legacy     First attribute of a group => older attributes that stand in for it.
 	 *
 	 * @return array<string, mixed> The site values the instance takes.
 	 */
-	public static function group( array $site, array $attributes, array $groups, array $defaults ): array {
+	public static function group( array $site, array $attributes, array $groups, array $defaults, array $legacy = [] ): array {
 		foreach ( $groups as $group ) {
-			foreach ( $group as $name ) {
-				if ( isset( $attributes[ $name ] ) && $attributes[ $name ] !== ( $defaults[ $name ] ?? null ) ) {
-					$site = array_diff_key( $site, array_flip( $group ) );
-					break;
-				}
+			if ( self::sets_group( $attributes, $group, $defaults, $legacy[ $group[0] ] ?? [] ) ) {
+				$site = array_diff_key( $site, array_flip( $group ) );
 			}
 		}
 
@@ -241,5 +241,57 @@ final class Overlay {
 	 */
 	private static function default_value( string $name, $instance, array $registered, array $filtered ) {
 		return ( array_key_exists( $name, $filtered ) && $instance === $filtered[ $name ] ) ? $instance : ( $registered[ $name ] ?? null );
+	}
+
+	/**
+	 * Whether the instance sets a group: a value other than the default for
+	 * any of its attributes, or a value in any older attribute standing in for it.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $attributes The instance's attributes.
+	 * @param array<int, string>   $group      The group's attribute names.
+	 * @param array<string, mixed> $defaults   Attribute name => the block's default value.
+	 * @param array<int, string>   $legacy     Older attributes that stand in for the group.
+	 *
+	 * @return bool
+	 */
+	private static function sets_group( array $attributes, array $group, array $defaults, array $legacy ): bool {
+		foreach ( $group as $name ) {
+			if ( isset( $attributes[ $name ] ) && $attributes[ $name ] !== ( $defaults[ $name ] ?? null ) ) {
+				return true;
+			}
+		}
+
+		foreach ( $legacy as $name ) {
+			if ( isset( $attributes[ $name ] ) && self::holds_value( $attributes[ $name ] ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Whether a value holds a number or a string that isn't empty, anywhere in it.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $value The value.
+	 *
+	 * @return bool
+	 */
+	private static function holds_value( $value ): bool {
+		if ( is_array( $value ) ) {
+			foreach ( $value as $leaf ) {
+				if ( self::holds_value( $leaf ) ) {
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		return is_int( $value ) || is_float( $value ) || ( is_string( $value ) && '' !== $value );
 	}
 }

@@ -222,19 +222,24 @@ export function scopeSiteAttributes(site, attributes, scope, defaultStyle) {
 /**
  * Drops the site values of every group the instance sets itself. The instance
  * sets a group when it has a value other than the block's default for any of
- * the group's attributes, the same test `merge()` uses.
+ * the group's attributes, the same test `merge()` uses, or when an older
+ * attribute that stands in for the group holds a value.
  *
- * @param {Attributes}                    site        The site values.
- * @param {Attributes}                    attributes  The instance's attributes.
- * @param {string[][]}                    groups      Groups of attribute names.
- * @param {Object<string, {default: *}>} definitions The block type's attribute definitions.
+ * @param {Attributes}                    site         The site values.
+ * @param {Attributes}                    attributes   The instance's attributes.
+ * @param {string[][]}                    groups       Groups of attribute names.
+ * @param {Object<string, {default: *}>} definitions  The block type's attribute definitions.
+ * @param {Object<string, string[]>}      [legacy]     First attribute of a group => older attributes that stand in for it.
  *
  * @since TBD
  *
  * @return {Attributes} The site values the instance takes.
  */
-export function groupSiteAttributes(site, attributes, groups, definitions) {
-	return groups.reduce((kept, group) => (setsGroup(attributes, group, definitions) ? omit(kept, group) : kept), site);
+export function groupSiteAttributes(site, attributes, groups, definitions, legacy = {}) {
+	return groups.reduce(
+		(kept, group) => (setsGroup(attributes, group, definitions, legacy) ? omit(kept, group) : kept),
+		site
+	);
 }
 
 /**
@@ -300,9 +305,10 @@ export function unmerge(next, shown, stored) {
  * @param {Attributes}                    site          The site values.
  * @param {string[][]}                    [groups]      The block's groups of attribute names.
  * @param {Object<string, {default: *}>} [definitions] The block type's attribute definitions.
+ * @param {Object<string, string[]>}      [legacy]      First attribute of a group => older attributes that stand in for it.
  * @return {Attributes} The attributes to store.
  */
-export function guardWrite(written, shown, stored, site, groups = [], definitions = {}) {
+export function guardWrite(written, shown, stored, site, groups = [], definitions = {}, legacy = {}) {
 	const kept = {};
 
 	Object.keys(written).forEach((name) => {
@@ -319,7 +325,10 @@ export function guardWrite(written, shown, stored, site, groups = [], definition
 	});
 
 	groups.forEach((group) => {
-		if (setsGroup(stored, group, definitions) || !setsGroup({ ...stored, ...kept }, group, definitions)) {
+		if (
+			setsGroup(stored, group, definitions, legacy) ||
+			!setsGroup({ ...stored, ...kept }, group, definitions, legacy)
+		) {
 			return;
 		}
 
@@ -356,22 +365,43 @@ export function panelAttributes(blockName, defaults, site, current) {
 
 /**
  * Whether an instance sets a group itself: it has a value other than the
- * block's default for any of the group's attributes.
+ * block's default for any of the group's attributes, or a value in an older
+ * attribute that stands in for the group.
  *
  * @param {Attributes}                    attributes  The instance's attributes.
  * @param {string[]}                      group       The group's attribute names.
  * @param {Object<string, {default: *}>} definitions The block type's attribute definitions.
+ * @param {Object<string, string[]>}      [legacy]    First attribute of a group => older attributes that stand in for it.
  *
  * @since TBD
  *
  * @return {boolean} Whether the instance sets the group.
  */
-function setsGroup(attributes, group, definitions) {
-	return group.some((name) => {
+function setsGroup(attributes, group, definitions, legacy = {}) {
+	const ownsMember = group.some((name) => {
 		const value = attributes[name];
 
 		return undefined !== value && null !== value && !isEqual(value, definitions[name]?.default);
 	});
+
+	return ownsMember || (legacy[group[0]] || []).some((name) => holdsValue(attributes[name]));
+}
+
+/**
+ * Whether a value holds a number or a string that isn't empty, anywhere in it.
+ *
+ * @param {*} value A value.
+ *
+ * @since TBD
+ *
+ * @return {boolean} Whether it holds a value.
+ */
+function holdsValue(value) {
+	if (isObjectLike(value)) {
+		return Object.values(value).some(holdsValue);
+	}
+
+	return 'number' === typeof value || ('string' === typeof value && '' !== value);
 }
 
 /**

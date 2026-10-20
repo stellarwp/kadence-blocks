@@ -12,6 +12,7 @@
  * @property {SiteStylesScope}        [scope]   For a block whose instances take site values by a style they pick.
  * @property {boolean}                [siteRules] For a scoped block whose site values off its overlay list render through site rules.
  * @property {string[][]}             [groups]  Site attributes that only make sense together; an instance that sets any attribute of a group takes none of the group's site values.
+ * @property {Object<string, string[]>} [legacyGroups] Older attributes that stand in for a group, keyed by the group's first attribute; an instance with a value in any of them sets the group.
  */
 
 /**

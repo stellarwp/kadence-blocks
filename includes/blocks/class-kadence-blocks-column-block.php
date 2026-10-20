@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Groups_Site_Styles;
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Legacy_Group_Attributes;
 use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Supports_Site_Styles;
 
 /**
@@ -20,7 +20,7 @@ use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Supports_Site_Styles;
  *
  * @category class
  */
-class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block implements Supports_Site_Styles, Groups_Site_Styles {
+class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block implements Supports_Site_Styles, Legacy_Group_Attributes {
 	/**
 	 * Instance of this class
 	 *
@@ -1018,6 +1018,21 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block implemen
 			[ 'borderHoverStyle', 'tabletBorderHoverStyle', 'mobileBorderHoverStyle' ],
 			[ 'borderHoverRadius', 'tabletBorderHoverRadius', 'mobileBorderHoverRadius', 'borderHoverRadiusUnit' ],
 			[ 'displayHoverShadow', 'shadowHover' ],
+		];
+	}
+
+	/**
+	 * Sections saved before the padding and border arrays carry separate side
+	 * numbers and the old border colors and widths, which build_css() renders
+	 * instead of the padding, border and hover border.
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_legacy_group_attributes(): array {
+		return [
+			'padding'          => [ 'topPadding', 'rightPadding', 'bottomPadding', 'leftPadding', 'topPaddingT', 'rightPaddingT', 'bottomPaddingT', 'leftPaddingT', 'topPaddingM', 'rightPaddingM', 'bottomPaddingM', 'leftPaddingM' ],
+			'borderStyle'      => [ 'border', 'borderWidth', 'tabletBorderWidth', 'mobileBorderWidth' ],
+			'borderHoverStyle' => [ 'borderHover', 'borderHoverWidth', 'tabletBorderHoverWidth', 'mobileBorderHoverWidth' ],
 		];
 	}
 
