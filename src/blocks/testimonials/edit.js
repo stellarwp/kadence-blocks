@@ -2106,7 +2106,8 @@ function KadenceTestimonials(props) {
 		{
 			orientation: 'horizontal',
 			templateLock: false,
-			templateInsertUpdatesSelection: true,
+			// The Kadence panel keeps its own block selected, so its controls stay on screen.
+			templateInsertUpdatesSelection: !isSiteStylesPanel,
 			template: [['kadence/testimonial']],
 			allowedBlocks: ['kadence/testimonial'],
 		}
@@ -3696,7 +3697,7 @@ function KadenceTestimonials(props) {
 							<InnerBlocks
 								template={[['kadence/testimonial']]}
 								templateLock={false}
-								templateInsertUpdatesSelection={true}
+								templateInsertUpdatesSelection={!isSiteStylesPanel}
 								allowedBlocks={['kadence/testimonial']}
 							/>
 						</div>
