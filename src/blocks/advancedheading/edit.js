@@ -568,13 +568,14 @@ function KadenceAdvancedHeading(props) {
 	useEffect(() => {
 		/*
 		 * FSE mode ignores Block Defaults, which is where "Advanced Text as default block" keeps the paragraph tag.
-		 * A tag or level the block arrives with, from a transform for example, is not a fresh default block.
+		 * A block that arrives with a tag, a level or text, from a transform for example, is not a fresh default block.
 		 */
 		if (
 			isFseMode() &&
 			!isSiteStylesPanel &&
 			!uniqueID &&
 			isDefaultEditorBlock &&
+			!content &&
 			'heading' === htmlTag &&
 			2 === level
 		) {
