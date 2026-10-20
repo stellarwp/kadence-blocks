@@ -1024,7 +1024,9 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block implemen
 	/**
 	 * Sections saved before the padding and border arrays carry separate side
 	 * numbers and the old border colors and widths, which build_css() renders
-	 * instead of the padding, border and hover border.
+	 * instead of the padding, border and hover border. The old border width
+	 * keeps the hover border too, so a Section showing its own or no border
+	 * doesn't gain the site border only on hover.
 	 *
 	 * @since TBD
 	 */
@@ -1032,7 +1034,7 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block implemen
 		return [
 			'padding'          => [ 'topPadding', 'rightPadding', 'bottomPadding', 'leftPadding', 'topPaddingT', 'rightPaddingT', 'bottomPaddingT', 'leftPaddingT', 'topPaddingM', 'rightPaddingM', 'bottomPaddingM', 'leftPaddingM' ],
 			'borderStyle'      => [ 'border', 'borderWidth', 'tabletBorderWidth', 'mobileBorderWidth' ],
-			'borderHoverStyle' => [ 'borderHover', 'borderHoverWidth', 'tabletBorderHoverWidth', 'mobileBorderHoverWidth' ],
+			'borderHoverStyle' => [ 'borderHover', 'borderHoverWidth', 'tabletBorderHoverWidth', 'mobileBorderHoverWidth', 'borderWidth' ],
 		];
 	}
 

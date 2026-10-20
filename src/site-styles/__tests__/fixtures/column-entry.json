@@ -217,7 +217,8 @@
 			"borderHover",
 			"borderHoverWidth",
 			"tabletBorderHoverWidth",
-			"mobileBorderHoverWidth"
+			"mobileBorderHoverWidth",
+			"borderWidth"
 		]
 	}
 }

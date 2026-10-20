@@ -128,6 +128,32 @@ final class SiteStylesSectionTest extends WPTestCase {
 	}
 
 	/**
+	 * A Section the current editor never saved renders its default old border widths, so it takes neither the
+	 * site border nor the site hover border, while one the editor saved takes both.
+	 *
+	 * @return void
+	 */
+	public function testANeverSavedSectionTakesNoSiteHoverBorder(): void {
+		$this->tester->enable_fse_mode();
+		$this->store_site_values(
+			[
+				'borderStyle'      => [ self::site_border() ],
+				'borderHoverStyle' => [ self::site_border( '#00ff00' ) ],
+			]
+		);
+
+		$never_saved = $this->section_css( [], false );
+
+		$this->assertStringNotContainsString( '#ff00ff', $never_saved );
+		$this->assertStringNotContainsString( '#00ff00', $never_saved );
+
+		$saved = $this->section_css( [] );
+
+		$this->assertStringContainsString( 'border-top:3px dashed #ff00ff', $saved );
+		$this->assertStringContainsString( 'border-top:3px dashed #00ff00', $saved );
+	}
+
+	/**
 	 * In classic mode, stored site values change nothing.
 	 *
 	 * @return void
@@ -169,12 +195,14 @@ final class SiteStylesSectionTest extends WPTestCase {
 	}
 
 	/**
-	 * A site border of 3px dashed magenta on every side, in the shape the border control stores.
+	 * A site border of 3px dashed on every side, in the shape the border control stores.
+	 *
+	 * @param string $color The border color.
 	 *
 	 * @return array<string, mixed> The border.
 	 */
-	private static function site_border(): array {
-		$side = [ '#ff00ff', 'dashed', 3 ];
+	private static function site_border( string $color = '#ff00ff' ): array {
+		$side = [ $color, 'dashed', 3 ];
 
 		return [
 			'top'    => $side,
@@ -221,19 +249,20 @@ final class SiteStylesSectionTest extends WPTestCase {
 	}
 
 	/**
-	 * Renders a Section saved by the current editor, which stores blank border widths, and returns its instance
-	 * CSS.
+	 * Renders a Section and returns its instance CSS.
 	 *
-	 * @param array<string, mixed> $attributes The Section's own attributes.
+	 * @param array<string, mixed> $attributes      The Section's own attributes.
+	 * @param bool                 $saved_by_editor Whether the current editor saved it, which stores blank border
+	 *                                              widths in place of the default zeros.
 	 *
 	 * @return string The CSS.
 	 */
-	private function section_css( array $attributes ): string {
+	private function section_css( array $attributes, bool $saved_by_editor = true ): string {
 		$attributes = array_merge(
+			$saved_by_editor ? [ 'borderWidth' => [ '', '', '', '' ] ] : [],
 			[
-				'uniqueID'    => 'col_test',
-				'borderWidth' => [ '', '', '', '' ],
-				'kbVersion'   => 2,
+				'uniqueID'  => 'col_test',
+				'kbVersion' => 2,
 			],
 			$attributes
 		);
