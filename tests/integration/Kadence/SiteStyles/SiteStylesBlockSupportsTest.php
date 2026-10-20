@@ -38,7 +38,7 @@ final class SiteStylesBlockSupportsTest extends WPTestCase {
 
 	public function testOtherBlocksAreUntouched(): void {
 		$this->tester->enable_fse_mode();
-		$metadata = $this->metadata( 'kadence/infobox' );
+		$metadata = $this->metadata( 'kadence/lottie' );
 
 		$this->assertSame( $metadata, apply_filters( 'block_type_metadata', $metadata ) );
 	}

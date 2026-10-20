@@ -86,10 +86,10 @@ final class SiteStylesStoreTest extends WPTestCase {
 	public function testAnUnsupportedBlockGivesNoValues(): void {
 		$this->tester->enable_fse_mode();
 		$this->tester->store_user_global_styles(
-			[ 'settings' => [ 'custom' => [ 'kadence' => [ 'infobox' => [ 'borderRadius' => [ 20, 20, 20, 20 ] ] ] ] ] ]
+			[ 'settings' => [ 'custom' => [ 'kadence' => [ 'lottie' => [ 'borderRadius' => [ 20, 20, 20, 20 ] ] ] ] ] ]
 		);
 
-		$this->assertSame( [], $this->store()->attributes( 'kadence/infobox' ) );
+		$this->assertSame( [], $this->store()->attributes( 'kadence/lottie' ) );
 	}
 
 	private function store(): Store {

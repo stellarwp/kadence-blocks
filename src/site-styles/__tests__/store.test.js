@@ -21,6 +21,7 @@ import section from './fixtures/column-entry.json';
 import showMore from './fixtures/show-more-entry.json';
 import rowLayout from './fixtures/rowlayout-entry.json';
 import countUp from './fixtures/countup-entry.json';
+import infoBox from './fixtures/infobox-entry.json';
 
 const BLOCK = 'kadence/singlebtn';
 const UNSCOPED = 'kadence/show-more';
@@ -241,6 +242,32 @@ describe('siteAttributes', () => {
 		});
 	});
 
+	it("keeps only Info Box's overlay attributes, leaving its content, media and layout to each box", () => {
+		window.kadenceSiteStyles.blocks['kadence/infobox'] = infoBox;
+		const record = {
+			settings: {
+				custom: {
+					kadence: {
+						infobox: {
+							containerBackground: '#fff3cd',
+							titleColor: '#123456',
+							mediaIcon: [{ size: 99 }],
+							hAlign: 'left',
+							fullHeight: true,
+							containerBorder: '#00ffff',
+							kadenceBlockCSS: 'selector { color: red; }',
+						},
+					},
+				},
+			},
+		};
+
+		expect(siteAttributes(record, 'kadence/infobox')).toEqual({
+			containerBackground: '#fff3cd',
+			titleColor: '#123456',
+		});
+	});
+
 	it("keeps only Show More's overlay attributes, leaving its expand behavior to each block", () => {
 		window.kadenceSiteStyles.blocks['kadence/show-more'] = showMore;
 		const record = {
@@ -276,7 +303,7 @@ describe('siteAttributes', () => {
 	it('gives nothing for a missing record, an empty store or an unsupported block', () => {
 		expect(siteAttributes(undefined, BLOCK)).toEqual({});
 		expect(siteAttributes({ settings: { custom: { kadence: { singlebtn: [] } } } }, BLOCK)).toEqual({});
-		expect(siteAttributes({ settings: { custom: { kadence: { infobox: { a: 1 } } } } }, 'kadence/infobox')).toEqual(
+		expect(siteAttributes({ settings: { custom: { kadence: { lottie: { a: 1 } } } } }, 'kadence/lottie')).toEqual(
 			{}
 		);
 	});
