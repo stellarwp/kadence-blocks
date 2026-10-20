@@ -6,8 +6,8 @@
  * merge and the scoping follow the same rules as the PHP overlay (the
  * fixtures in `__tests__/fixtures/` pin both).
  */
-import { cloneDeep, get, isEmpty, isEqual, kebabCase, omit, pick, set, unset } from 'lodash';
-import { isTokenAlias, resolveTokenAlias } from '../extension/design-tokens/alias';
+import { cloneDeep, escapeRegExp, get, isEmpty, isEqual, kebabCase, omit, pick, set, unset } from 'lodash';
+import { TOKEN_VAR_PREFIX, isTokenAlias, resolveTokenAlias } from '../extension/design-tokens/alias';
 import { getSupportedBlock } from './supported-blocks';
 
 /**
@@ -16,7 +16,7 @@ import { getSupportedBlock } from './supported-blocks';
  *
  * @since TBD
  */
-const TOKEN_VAR = /^var\(--kb-token--([a-z0-9-]+)\)$/;
+const TOKEN_VAR = new RegExp('^var\\(' + escapeRegExp(TOKEN_VAR_PREFIX) + '([a-z0-9-]+)\\)$');
 
 /**
  * @typedef {Object<string, *>} Attributes Block attribute name => value.
