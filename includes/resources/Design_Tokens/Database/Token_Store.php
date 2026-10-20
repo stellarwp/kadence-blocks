@@ -604,6 +604,10 @@ final class Token_Store extends Query {
 	 * The write paths keep reading the table directly: they compare against what is stored right now,
 	 * not what this request saw earlier.
 	 *
+	 * An object cache drop-in that does not define wp_cache_add_non_persistent_groups() (core guards
+	 * the same call in wp_start_object_cache()) could keep the group across requests, so without it
+	 * every read goes to the table, as before 3.8.1.
+	 *
 	 * @since 3.8.1
 	 *
 	 * @param string $slug The token library slug.
@@ -611,13 +615,17 @@ final class Token_Store extends Query {
 	 * @return array<string, mixed>|null The row, or null when the library has none.
 	 */
 	private function row( string $slug ): ?array {
-		wp_cache_add_non_persistent_groups( [ self::ROW_CACHE_GROUP ] );
+		$can_cache = function_exists( 'wp_cache_add_non_persistent_groups' );
 
-		$found  = false;
-		$cached = wp_cache_get( $this->row_cache_key( $slug ), self::ROW_CACHE_GROUP, false, $found );
+		if ( $can_cache ) {
+			wp_cache_add_non_persistent_groups( [ self::ROW_CACHE_GROUP ] );
 
-		if ( $found && is_array( $cached ) && array_key_exists( 'row', $cached ) ) {
-			return is_array( $cached['row'] ) ? $cached['row'] : null;
+			$found  = false;
+			$cached = wp_cache_get( $this->row_cache_key( $slug ), self::ROW_CACHE_GROUP, false, $found );
+
+			if ( $found && is_array( $cached ) && array_key_exists( 'row', $cached ) ) {
+				return is_array( $cached['row'] ) ? $cached['row'] : null;
+			}
 		}
 
 		$row = $this->qb()
@@ -626,8 +634,10 @@ final class Token_Store extends Query {
 
 		$row = is_array( $row ) ? $row : null;
 
-		// Wrapped, so a missing row is a cache hit rather than the false a miss returns.
-		wp_cache_set( $this->row_cache_key( $slug ), [ 'row' => $row ], self::ROW_CACHE_GROUP );
+		if ( $can_cache ) {
+			// Wrapped, so a missing row is a cache hit rather than the false a miss returns.
+			wp_cache_set( $this->row_cache_key( $slug ), [ 'row' => $row ], self::ROW_CACHE_GROUP );
+		}
 
 		return $row;
 	}
