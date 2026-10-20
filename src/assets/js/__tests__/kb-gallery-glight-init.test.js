@@ -67,7 +67,7 @@ describe('kb-gallery-glight-init', () => {
 		expect(probe.querySelector('b').textContent).toBe('Hi');
 	});
 
-	it('drops other slide settings and non-web hrefs', () => {
+	it('drops other slide settings and non-web links', () => {
 		bindGallery(
 			item('data-content="x" data-type="inline" data-href="javascript:1" href="javascript:window.__xss=1"')
 		);
