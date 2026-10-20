@@ -157,7 +157,8 @@ export function toStoredForm(attributes, definitions, blockName) {
  * `settings.custom.kadence` and `settings.custom` are removed once they are
  * empty too. WordPress saves an empty object as an empty array, which a later
  * write couldn't add a key to, so an empty array already stored on the way to
- * a value is replaced before writing.
+ * a value, the top-level styles and settings included, is replaced before
+ * writing.
  *
  * @param {GlobalStylesRecord}                                 record    The edited Global Styles record.
  * @param {string}                                             blockName Block name.
@@ -166,8 +167,8 @@ export function toStoredForm(attributes, definitions, blockName) {
  */
 export function withStoredForm(record, blockName, stored) {
 	const { slug, attributesMap } = getSupportedBlock(blockName);
-	const styles = cloneDeep(record.styles || {});
-	const settings = cloneDeep(record.settings || {});
+	const styles = cloneDeep(isEmpty(record.styles) ? {} : record.styles);
+	const settings = cloneDeep(isEmpty(record.settings) ? {} : record.settings);
 
 	Object.values(attributesMap).forEach((path) => {
 		const target = ['blocks', blockName, ...path.split('.')];

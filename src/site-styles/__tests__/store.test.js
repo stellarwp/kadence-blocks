@@ -247,6 +247,22 @@ describe('withStoredForm and empty settings', () => {
 		});
 	});
 
+	it('writes a core color over an empty styles list', () => {
+		const result = withStoredForm({ styles: [] }, BLOCK, { core: { 'color.background': '#cc0000' }, custom: {} });
+
+		expect(JSON.parse(JSON.stringify(result.styles))).toEqual({
+			blocks: { [BLOCK]: { color: { background: '#cc0000' } } },
+		});
+	});
+
+	it('writes a custom value over an empty settings list', () => {
+		const result = withStoredForm({ settings: [] }, BLOCK, { core: {}, custom: { sizePreset: 'large' } });
+
+		expect(JSON.parse(JSON.stringify(result.settings))).toEqual({
+			custom: { kadence: { singlebtn: { sizePreset: 'large' } } },
+		});
+	});
+
 	it('removes a stored empty block entry list when nothing is written', () => {
 		expect(withStoredForm({ styles: { blocks: { [BLOCK]: [] } } }, BLOCK, { core: {}, custom: {} }).styles).toEqual(
 			{}
