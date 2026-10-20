@@ -42,6 +42,7 @@ import {
 import { useEffect, useState } from '@wordpress/element';
 import { plusCircle } from '@wordpress/icons';
 import { ToolbarButton, ToolbarGroup, ToggleControl } from '@wordpress/components';
+import { useIsSiteStylesPanel } from '../../site-styles/use-is-site-styles-panel';
 
 function KadenceIcons(props) {
 	const { attributes, className, setAttributes, iconsBlock, insertIcon, insertIcons, clientId, context } = props;
@@ -76,6 +77,7 @@ function KadenceIcons(props) {
 	}, []);
 
 	uniqueIdHelper(props);
+	const isSiteStylesPanel = useIsSiteStylesPanel();
 
 	useEffect(() => {
 		if (uniqueID && !iconsBlock.innerBlocks.length) {
@@ -210,7 +212,8 @@ function KadenceIcons(props) {
 								setAttributes({ wrapIcons: value });
 							}}
 						/>
-						{undefined !== iconsBlock?.innerBlocks?.length && iconsBlock.innerBlocks.length > 1 && (
+						{/* The panel's block has one inner block, and its gap is a site value all the same. */}
+						{(isSiteStylesPanel || iconsBlock?.innerBlocks?.length > 1) && (
 							<ResponsiveGapSizeControl
 								label={__('Icons Gap', 'kadence-blocks')}
 								value={undefined !== gap?.[0] ? gap[0] : ''}

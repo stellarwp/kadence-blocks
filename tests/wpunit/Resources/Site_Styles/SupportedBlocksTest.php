@@ -61,6 +61,23 @@ final class SupportedBlocksTest extends TestCase {
 		}
 	}
 
+	/**
+	 * Every attribute a supported block lists for the overlay exists on the block and is never excluded.
+	 *
+	 * @return void
+	 */
+	public function testEveryOverlayAttributeIsAStoredAttributeOfItsBlock(): void {
+		foreach ( $this->container->get( Supported_Blocks::class )->all() as $name => $block ) {
+			$attributes = WP_Block_Type_Registry::get_instance()->get_registered( $name )->attributes;
+			$excluded   = Supported_Blocks::excluded_attributes( $block );
+
+			foreach ( $block->site_styles_overlay_attributes() as $attribute ) {
+				$this->assertArrayHasKey( $attribute, $attributes, "{$name}: the overlay lists {$attribute}, which the block doesn't have." );
+				$this->assertNotContains( $attribute, $excluded, "{$name}: the overlay lists {$attribute}, which is never stored site-wide." );
+			}
+		}
+	}
+
 	public function testEveryScopedBlockExcludesItsScopeAndScopesOnlyItsAttributes(): void {
 		$scoped = array_filter(
 			$this->container->get( Supported_Blocks::class )->all(),
