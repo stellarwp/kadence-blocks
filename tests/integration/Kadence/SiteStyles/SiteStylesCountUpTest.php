@@ -91,7 +91,7 @@ final class SiteStylesCountUpTest extends WPTestCase {
 
 	/**
 	 * Stored content and behavior settings are never applied: the numbers, timing and title toggle belong to
-	 * each block.
+	 * each block, so they stay out of an untouched block's attributes and a block's own values stay as they are.
 	 *
 	 * @return void
 	 */
@@ -99,18 +99,32 @@ final class SiteStylesCountUpTest extends WPTestCase {
 		$this->tester->enable_fse_mode();
 		$this->store_site_values();
 		$expected = $this->count_up_css( [] );
+		$content  = [
+			'start'        => 5,
+			'end'          => 50,
+			'duration'     => 9,
+			'displayTitle' => false,
+			'prefix'       => '$',
+		];
 
-		$this->store_site_values(
-			[
-				'start'        => 5,
-				'end'          => 50,
-				'duration'     => 9,
-				'displayTitle' => false,
-				'prefix'       => '$',
-			]
-		);
+		$this->store_site_values( $content );
 
 		$this->assertSame( $expected, $this->count_up_css( [] ) );
+
+		$untouched = apply_filters( 'kadence_blocks_countup_render_block_attributes', [ 'uniqueID' => 'cu_test' ] );
+		foreach ( array_keys( $content ) as $attribute ) {
+			$this->assertArrayNotHasKey( $attribute, $untouched );
+		}
+
+		$own = [
+			'uniqueID'     => 'cu_test',
+			'start'        => 1,
+			'end'          => 10,
+			'duration'     => 2,
+			'displayTitle' => true,
+			'prefix'       => '#',
+		];
+		$this->assertSame( $own, array_intersect_key( apply_filters( 'kadence_blocks_countup_render_block_attributes', $own ), $own ) );
 	}
 
 	/**
