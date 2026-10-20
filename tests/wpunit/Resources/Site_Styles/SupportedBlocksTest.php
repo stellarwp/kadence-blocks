@@ -109,6 +109,6 @@ final class SupportedBlocksTest extends TestCase {
 	}
 
 	public function testAnUnsupportedBlockGivesNothing(): void {
-		$this->assertNull( $this->container->get( Supported_Blocks::class )->get( 'kadence/advancedheading' ) );
+		$this->assertNull( $this->container->get( Supported_Blocks::class )->get( 'kadence/infobox' ) );
 	}
 }

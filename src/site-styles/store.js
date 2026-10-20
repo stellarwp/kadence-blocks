@@ -7,6 +7,7 @@
  * fixtures in `__tests__/fixtures/` pin both).
  */
 import { cloneDeep, get, isEmpty, isEqual, kebabCase, omit, pick, set, unset } from 'lodash';
+import { resolveTokenAlias } from '../extension/design-tokens/alias';
 import { getSupportedBlock } from './supported-blocks';
 
 /**
@@ -26,8 +27,9 @@ import { getSupportedBlock } from './supported-blocks';
  * `var(--global-paletteN)`: core's preset variables aren't defined in every
  * editor frame. Both stored forms are accepted, the `var:preset` reference and
  * the `var(--wp--preset--color--…)` value the edited record can hold. Another
- * preset reference becomes its CSS variable, as the style engine writes it;
- * any other value is kept.
+ * preset reference becomes its CSS variable, as the style engine writes it. A
+ * design token's CSS variable becomes its `{alias}`, which the color controls
+ * pick; any other value is kept.
  *
  * @param {string} value The stored color.
  * @return {string} The Kadence color value.
@@ -43,17 +45,23 @@ export function toKadenceColor(value) {
 
 	const preset = /^var:preset\|color\|(.+)$/.exec(value);
 
-	return preset ? `var(--wp--preset--color--${kebabCase(preset[1])})` : value;
+	if (preset) {
+		return `var(--wp--preset--color--${kebabCase(preset[1])})`;
+	}
+
+	const token = /^var\(--kb-token--([\w-]+)\)$/.exec(value);
+
+	return token ? `{${token[1].replace(/--/g, '.')}}` : value;
 }
 
 /**
  * Converts a Kadence color attribute value to the form stored in core's style.
  *
  * @param {string} value The Kadence color value.
- * @return {string} `var:preset|color|theme-paletteN` for a palette color, the value otherwise.
+ * @return {string} `var:preset|color|theme-paletteN` for a palette color, the CSS variable of a design token's `{alias}`, which core can't resolve, the value otherwise.
  */
 export function toCoreColor(value) {
-	return /^palette\d+$/.test(value) ? `var:preset|color|theme-${value}` : value;
+	return /^palette\d+$/.test(value) ? `var:preset|color|theme-${value}` : resolveTokenAlias(value);
 }
 
 /**

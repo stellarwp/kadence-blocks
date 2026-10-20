@@ -22,7 +22,7 @@ import backwardCompatibility from './deprecated';
  * Internal block libraries
  */
 import { registerBlockType, createBlock } from '@wordpress/blocks';
-import { __, _x } from '@wordpress/i18n';
+import { __, _x, sprintf } from '@wordpress/i18n';
 
 /**
  * Register: a Gutenberg Block.
@@ -94,7 +94,11 @@ registerBlockType('kadence/advancedheading', {
 	deprecated: backwardCompatibility,
 	example: {
 		attributes: {
-			content: __('Example Heading', 'kadence-blocks'),
+			content: sprintf(
+				/* translators: %s: A highlighted word, which shows the heading's highlight styles. */
+				__('Example %s', 'kadence-blocks'),
+				`<mark class="kt-highlight">${__('Heading', 'kadence-blocks')}</mark>`
+			),
 		},
 	},
 });

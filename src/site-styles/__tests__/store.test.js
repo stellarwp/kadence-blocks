@@ -44,6 +44,8 @@ describe('toKadenceColor', () => {
 		['var(--wp--preset--color--theme-palette13)', 'palette13'],
 		['var:preset|color|vivid-red', 'var(--wp--preset--color--vivid-red)'],
 		['var:preset|color|accent2', 'var(--wp--preset--color--accent-2)'],
+		['var(--kb-token--primitive--color--brand--accent)', '{primitive.color.brand.accent}'],
+		['var(--kb-token--semantic--border-width--default)', '{semantic.border-width.default}'],
 		['#cc0000', '#cc0000'],
 	])('%s → %s', (stored, expected) => {
 		expect(toKadenceColor(stored)).toBe(expected);
@@ -52,6 +54,13 @@ describe('toKadenceColor', () => {
 	it('round-trips a palette color with toCoreColor', () => {
 		expect(toKadenceColor(toCoreColor('palette7'))).toBe('palette7');
 		expect(toCoreColor('#cc0000')).toBe('#cc0000');
+	});
+
+	it('stores a design token as its CSS variable, which core can print, and round-trips it', () => {
+		const stored = toCoreColor('{primitive.color.brand.accent}');
+
+		expect(stored).toBe('var(--kb-token--primitive--color--brand--accent)');
+		expect(toKadenceColor(stored)).toBe('{primitive.color.brand.accent}');
 	});
 });
 
