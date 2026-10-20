@@ -154,6 +154,23 @@ final class SiteStylesSectionTest extends WPTestCase {
 	}
 
 	/**
+	 * The CSS built in the page head reads raw attributes without the default old border widths, and still
+	 * takes no site border for a Section the editor never saved, as the render pass does, while it takes the
+	 * other site values.
+	 *
+	 * @return void
+	 */
+	public function testTheHeadPassTakesNoSiteBorderForANeverSavedSection(): void {
+		$this->tester->enable_fse_mode();
+		$this->store_site_values( [ 'borderStyle' => [ self::site_border() ] ] );
+
+		$attributes = apply_filters( 'kadence_blocks_column_render_block_attributes', [ 'uniqueID' => 'col_test' ] );
+
+		$this->assertArrayNotHasKey( 'borderStyle', $attributes );
+		$this->assertSame( [ 2, 2, 2, 2 ], $attributes['padding'] );
+	}
+
+	/**
 	 * In classic mode, stored site values change nothing.
 	 *
 	 * @return void

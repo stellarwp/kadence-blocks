@@ -139,7 +139,10 @@ final class Overlay {
 				$defaults[ $name ] = self::default_value( $name, $attributes[ $name ] ?? null, $registered, $filtered );
 			}
 
-			$site = self::group( $site, $attributes, $groups, $defaults, $block instanceof Legacy_Group_Attributes ? $block->site_styles_legacy_group_attributes() : [] );
+			$legacy = $block instanceof Legacy_Group_Attributes ? $block->site_styles_legacy_group_attributes() : [];
+			// The head pass reads raw attributes, without the defaults an older attribute renders with.
+			$with_legacy_defaults = $legacy ? $attributes + array_intersect_key( $registered, array_flip( array_merge( ...array_values( $legacy ) ) ) ) : $attributes;
+			$site                 = self::group( $site, $with_legacy_defaults, $groups, $defaults, $legacy );
 		}
 
 		foreach ( $site as $name => $value ) {
