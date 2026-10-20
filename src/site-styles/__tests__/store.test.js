@@ -22,6 +22,7 @@ import showMore from './fixtures/show-more-entry.json';
 import rowLayout from './fixtures/rowlayout-entry.json';
 import countUp from './fixtures/countup-entry.json';
 import infoBox from './fixtures/infobox-entry.json';
+import countdown from './fixtures/countdown-entry.json';
 
 const BLOCK = 'kadence/singlebtn';
 const UNSCOPED = 'kadence/show-more';
@@ -266,6 +267,27 @@ describe('siteAttributes', () => {
 			containerBackground: '#fff3cd',
 			titleColor: '#123456',
 		});
+	});
+
+	it("keeps only Countdown's overlay attributes, leaving its timing and layout to each block", () => {
+		window.kadenceSiteStyles.blocks['kadence/countdown'] = countdown;
+		const record = {
+			settings: {
+				custom: {
+					kadence: {
+						countdown: {
+							background: '#fff3cd',
+							numberColor: '#cc0000',
+							timerLayout: 'inline',
+							preLabelColor: '#ff0000',
+							date: '2030-01-01T00:00:00',
+						},
+					},
+				},
+			},
+		};
+
+		expect(siteAttributes(record, 'kadence/countdown')).toEqual({ background: '#fff3cd', numberColor: '#cc0000' });
 	});
 
 	it("keeps only Show More's overlay attributes, leaving its expand behavior to each block", () => {
