@@ -371,6 +371,38 @@ final class SupportedBlocksTest extends TestCase {
 	}
 
 	/**
+	 * Progress Bar takes its colors, thickness, radius, fonts, spacing, alignment and max width through the
+	 * overlay, in ten groups, scoped so a mask bar takes no site thickness, with no site rules and no core
+	 * surface, and keeps its type, content, number and animation settings per block.
+	 *
+	 * @return void
+	 */
+	public function testProgressBarDescribesItsSiteStyles(): void {
+		$block = $this->container->get( Supported_Blocks::class )->get( 'kadence/progress-bar' );
+
+		$this->assertNotNull( $block );
+		$this->assertSame( 'progress-bar', $block->get_slug() );
+		$this->assertInstanceOf( Scopes_Site_Styles::class, $block );
+		$this->assertNotInstanceOf( Prints_Site_Rules::class, $block );
+		$this->assertNotInstanceOf( Legacy_Group_Attributes::class, $block );
+		$this->assertInstanceOf( Groups_Site_Styles::class, $block );
+		$this->assertSame( [], $block->site_styles_attributes_map() );
+		$this->assertSame( [], $block->site_styles_supports() );
+		$this->assertSame( [], $block->site_styles_selectors() );
+		$this->assertCount( 25, $block->site_styles_overlay_attributes() );
+		$this->assertCount( 10, $block->site_styles_attribute_groups() );
+		$this->assertSame( 'barType', $block->site_styles_scope_attribute() );
+		$this->assertSame( [ 'line-mask' ], array_keys( $block->site_styles_scoped_attributes() ) );
+		$this->assertSame(
+			array_values( array_diff( $block->site_styles_overlay_attributes(), [ 'progressWidth', 'progressWidthTablet', 'progressWidthMobile' ] ) ),
+			$block->site_styles_scoped_attributes()['line-mask']
+		);
+		foreach ( [ 'barType', 'label', 'labelPosition', 'labelLayout', 'displayLabel', 'displayPercent', 'progressAmount', 'progressMax', 'numberSuffix', 'duration', 'easing', 'delayUntilInView', 'maskSvg' ] as $attribute ) {
+			$this->assertContains( $attribute, Supported_Blocks::excluded_attributes( $block ) );
+		}
+	}
+
+	/**
 	 * Spacer's style is its divider style, and an instance without one takes the block's default.
 	 *
 	 * @dataProvider spacerStyleProvider
