@@ -1,0 +1,96 @@
+{
+	"slug": "countup",
+	"exclude": [
+		"uniqueID",
+		"anchor",
+		"inQueryBlock",
+		"noCustomDefaults",
+		"metadata",
+		"lock",
+		"className",
+		"kadenceDynamic",
+		"kbPreset",
+		"kbPalette",
+		"title",
+		"displayTitle",
+		"titleHoverColor",
+		"titleMinHeight",
+		"numberHoverColor",
+		"numberMinHeight",
+		"start",
+		"end",
+		"startDecimal",
+		"endDecimal",
+		"prefix",
+		"suffix",
+		"duration",
+		"separator",
+		"decimal",
+		"decimalSpaces",
+		"style"
+	],
+	"overlay": [
+		"titleFont",
+		"titleAlign",
+		"titlePadding",
+		"titleTabletPadding",
+		"titleMobilePadding",
+		"titlePaddingType",
+		"titleMargin",
+		"titleTabletMargin",
+		"titleMobileMargin",
+		"titleMarginType",
+		"numberFont",
+		"numberAlign",
+		"numberPadding",
+		"numberTabletPadding",
+		"numberMobilePadding",
+		"numberPaddingType",
+		"numberMargin",
+		"numberTabletMargin",
+		"numberMobileMargin",
+		"numberMarginType",
+		"titleColor",
+		"numberColor"
+	],
+	"attributesMap": [],
+	"supports": [],
+	"groups": [
+		[
+			"titleFont"
+		],
+		[
+			"titleAlign"
+		],
+		[
+			"titlePadding",
+			"titleTabletPadding",
+			"titleMobilePadding",
+			"titlePaddingType"
+		],
+		[
+			"titleMargin",
+			"titleTabletMargin",
+			"titleMobileMargin",
+			"titleMarginType"
+		],
+		[
+			"numberFont"
+		],
+		[
+			"numberAlign"
+		],
+		[
+			"numberPadding",
+			"numberTabletPadding",
+			"numberMobilePadding",
+			"numberPaddingType"
+		],
+		[
+			"numberMargin",
+			"numberTabletMargin",
+			"numberMobileMargin",
+			"numberMarginType"
+		]
+	]
+}
