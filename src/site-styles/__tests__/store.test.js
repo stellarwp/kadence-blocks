@@ -24,6 +24,7 @@ import countUp from './fixtures/countup-entry.json';
 import infoBox from './fixtures/infobox-entry.json';
 import countdown from './fixtures/countdown-entry.json';
 import table from './fixtures/table-entry.json';
+import posts from './fixtures/posts-entry.json';
 
 const BLOCK = 'kadence/singlebtn';
 const UNSCOPED = 'kadence/show-more';
@@ -311,6 +312,27 @@ describe('siteAttributes', () => {
 		};
 
 		expect(siteAttributes(record, 'kadence/table')).toEqual({ headerAlign: 'left', cellPaddingType: 'px' });
+	});
+
+	it("keeps only Posts' look, leaving its parts, labels and query to each block", () => {
+		window.kadenceSiteStyles.blocks['kadence/posts'] = posts;
+		const record = {
+			settings: {
+				custom: {
+					kadence: {
+						posts: {
+							loopStyle: 'unboxed',
+							categoriesStyle: 'pill',
+							image: false,
+							readmoreLabel: 'Site label',
+							postType: 'page',
+						},
+					},
+				},
+			},
+		};
+
+		expect(siteAttributes(record, 'kadence/posts')).toEqual({ loopStyle: 'unboxed', categoriesStyle: 'pill' });
 	});
 
 	it("keeps only Show More's overlay attributes, leaving its expand behavior to each block", () => {
