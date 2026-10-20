@@ -7,6 +7,9 @@ const mockTypes = {
 	'kadence/singlebtn': { title: 'Single Button', parent: ['kadence/advancedbtn'] },
 	'kadence/advancedbtn': { title: 'Buttons (Adv)' },
 	'third-party/button': { title: 'Single Button' },
+	'kadence/spacer': { title: 'Spacer / Divider' },
+	'kadence/rowlayout': { title: 'Row Layout' },
+	'kadence/column': { title: 'Section', parent: ['kadence/rowlayout'] },
 };
 
 jest.mock(
@@ -28,6 +31,7 @@ beforeEach(() => {
 			'kadence/singlebtn': { supports: colors },
 			'kadence/icon': { supports: {} },
 			'kadence/single-icon': { supports: colors },
+			'kadence/spacer': { supports: {} },
 		},
 	};
 });
@@ -47,6 +51,20 @@ describe('screenBlockName', () => {
 
 	it('ignores a title another registered block shares, since the screen cannot tell them apart', () => {
 		expect(screenBlockName('Single Button')).toBeUndefined();
+	});
+
+	it("finds a supported block core doesn't list when no other block's screen opens it", () => {
+		expect(screenBlockName('Spacer / Divider')).toBe('kadence/spacer');
+	});
+
+	it("finds a supported block core doesn't list when only unsupported blocks are placed in it", () => {
+		window.kadenceSiteStyles.blocks['kadence/rowlayout'] = { supports: {} };
+
+		expect(screenBlockName('Row Layout')).toBe('kadence/rowlayout');
+	});
+
+	it('ignores a block that is not supported', () => {
+		expect(screenBlockName('Row Layout')).toBeUndefined();
 	});
 
 	it('finds nothing without a title', () => {

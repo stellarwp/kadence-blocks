@@ -2,16 +2,50 @@
  * Renders supported blocks in the editor with the site-level values they list
  * for the overlay merged in, and keeps those values out of what the block
  * stores. Core's Global Styles and the block's site rules render the rest.
+ *
+ * The one exception is a change that starts an instance setting one of its
+ * block's groups: the group then takes no site values, so the whole group is
+ * stored as shown and the block keeps looking as it did apart from the change.
  */
 import { createHigherOrderComponent } from '@wordpress/compose';
 import { getBlockType } from '@wordpress/blocks';
+import { useRegistry } from '@wordpress/data';
 import { useCallback, useMemo } from '@wordpress/element';
 import { pick } from 'lodash';
 import { getSupportedBlock, isFseMode } from './supported-blocks';
-import { guardWrite, mergeAttributes, scopeSiteAttributes, siteAttributes } from './store';
+import { groupSiteAttributes, guardWrite, mergeAttributes, scopeSiteAttributes, siteAttributes } from './store';
 import { scopeStyle } from './scope-style';
 import { useGlobalStylesRecord } from './use-global-styles-record';
 import { isVirtualBlock } from './virtual-blocks';
+
+/**
+ * The site values an instance takes: the overlay values in the record, scoped
+ * by the instance's style and without the groups it sets itself.
+ *
+ * @param {Object}            record     The edited Global Styles record.
+ * @param {string}            name       Block name.
+ * @param {Object<string, *>} attributes The instance's stored attributes.
+ *
+ * @since TBD
+ *
+ * @return {Object<string, *>} Attribute name => site value.
+ */
+function instanceSiteAttributes(record, name, attributes) {
+	const { scope, overlay, groups } = getSupportedBlock(name);
+	const definitions = getBlockType(name)?.attributes || {};
+	let values = pick(siteAttributes(record, name), overlay);
+
+	if (scope) {
+		values = scopeSiteAttributes(
+			values,
+			{ [scope.attribute]: scopeStyle(name, attributes, scope) },
+			scope,
+			definitions[scope.attribute]?.default
+		);
+	}
+
+	return groups ? groupSiteAttributes(values, attributes, groups, definitions) : values;
+}
 
 /**
  * @param {Object}   props           The block edit props plus the wrapped component.
@@ -19,21 +53,10 @@ import { isVirtualBlock } from './virtual-blocks';
  * @return {Element} The block edit with merged attributes and a guarded `setAttributes`.
  */
 function SiteStylesBlockEdit({ BlockEdit, ...props }) {
-	const { name, attributes, setAttributes } = props;
+	const { name, clientId, attributes, setAttributes } = props;
 	const record = useGlobalStylesRecord();
-	const { scope, overlay } = getSupportedBlock(name);
-	const style = scope ? scopeStyle(name, attributes, scope) : undefined;
-	const site = useMemo(() => {
-		const values = pick(siteAttributes(record, name), overlay);
-
-		if (!scope) {
-			return values;
-		}
-
-		const definitions = getBlockType(name)?.attributes || {};
-
-		return scopeSiteAttributes(values, { [scope.attribute]: style }, scope, definitions[scope.attribute]?.default);
-	}, [record, name, scope, overlay, style]);
+	const registry = useRegistry();
+	const site = useMemo(() => instanceSiteAttributes(record, name, attributes), [record, name, attributes]);
 	const hasSiteValues = Object.keys(site).length > 0;
 	const shown = useMemo(
 		() => (hasSiteValues ? mergeAttributes(attributes, site, getBlockType(name)?.attributes || {}) : attributes),
@@ -41,14 +64,20 @@ function SiteStylesBlockEdit({ BlockEdit, ...props }) {
 	);
 	const guardedSetAttributes = useCallback(
 		(written) => {
-			const next = typeof written === 'function' ? written(shown) : written;
-			const kept = guardWrite(next, shown, attributes, site);
+			// The stored attributes as of this write, not the last render: a second write before a re-render
+			// has to see the first, or it would start a group again from the values the first one replaced.
+			const stored = registry.select('core/block-editor').getBlockAttributes(clientId) || attributes;
+			const definitions = getBlockType(name)?.attributes || {};
+			const storedSite = stored === attributes ? site : instanceSiteAttributes(record, name, stored);
+			const storedShown = stored === attributes ? shown : mergeAttributes(stored, storedSite, definitions);
+			const next = typeof written === 'function' ? written(storedShown) : written;
+			const kept = guardWrite(next, storedShown, stored, storedSite, getSupportedBlock(name).groups, definitions);
 
 			if (Object.keys(kept).length) {
 				setAttributes(kept);
 			}
 		},
-		[shown, attributes, site, setAttributes]
+		[registry, clientId, attributes, site, shown, record, name, setAttributes]
 	);
 
 	if (!hasSiteValues) {

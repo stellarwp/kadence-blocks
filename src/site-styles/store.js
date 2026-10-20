@@ -6,7 +6,7 @@
  * merge and the scoping follow the same rules as the PHP overlay (the
  * fixtures in `__tests__/fixtures/` pin both).
  */
-import { cloneDeep, get, isEmpty, isEqual, kebabCase, omit, pick, set, unset } from 'lodash';
+import { cloneDeep, get, isEmpty, isEqual, kebabCase, omit, pick, pickBy, set, unset } from 'lodash';
 import { getSupportedBlock } from './supported-blocks';
 
 /**
@@ -59,7 +59,8 @@ export function toCoreColor(value) {
 /**
  * Reads a block's site-level values from the Global Styles record, as block
  * attributes: `settings.custom.kadence.<slug>` plus the colors in core's style.
- * Stored values of attributes the block excludes are ignored.
+ * Stored values of attributes that can't be site values are ignored, and so
+ * are cleared ones.
  *
  * @param {GlobalStylesRecord|undefined} record    The edited Global Styles record.
  * @param {string}                       blockName Block name.
@@ -74,7 +75,9 @@ export function siteAttributes(record, blockName) {
 
 	const custom = record.settings?.custom?.kadence?.[block.slug];
 	const attributes =
-		custom && typeof custom === 'object' && !Array.isArray(custom) ? omit(custom, block.exclude) : {};
+		custom && typeof custom === 'object' && !Array.isArray(custom)
+			? pickBy(custom, (value, name) => undefined !== value && isSiteAttribute(block, name))
+			: {};
 	const styles = record.styles?.blocks?.[blockName] || {};
 
 	// Every mapped path is `color.<key>`: the server keeps no other.
@@ -91,9 +94,9 @@ export function siteAttributes(record, blockName) {
 
 /**
  * Splits a block's attributes into what Global Styles stores: only settings
- * that differ from the block's defaults, without content attributes; values
- * core also edits go to their path in core's style, the rest to
- * `settings.custom.kadence`.
+ * that can be site values and differ from the block's defaults; values core
+ * also edits go to their path in core's style, the rest to
+ * `settings.custom.kadence`. A cleared value isn't stored.
  *
  * @param {Attributes}                    attributes The block's attributes.
  * @param {Object<string, {default: *}>} definitions The block type's attribute definitions.
@@ -112,7 +115,7 @@ export function toStoredForm(attributes, definitions, blockName) {
 	Object.entries(attributes).forEach(([name, value]) => {
 		const definition = definitions[name];
 
-		if (block.exclude.includes(name) || !definition || isEqual(value, definition.default)) {
+		if (undefined === value || !isSiteAttribute(block, name) || !definition || isEqual(value, definition.default)) {
 			return;
 		}
 
@@ -217,6 +220,24 @@ export function scopeSiteAttributes(site, attributes, scope, defaultStyle) {
 }
 
 /**
+ * Drops the site values of every group the instance sets itself. The instance
+ * sets a group when it has a value other than the block's default for any of
+ * the group's attributes, the same test `merge()` uses.
+ *
+ * @param {Attributes}                    site        The site values.
+ * @param {Attributes}                    attributes  The instance's attributes.
+ * @param {string[][]}                    groups      Groups of attribute names.
+ * @param {Object<string, {default: *}>} definitions The block type's attribute definitions.
+ *
+ * @since TBD
+ *
+ * @return {Attributes} The site values the instance takes.
+ */
+export function groupSiteAttributes(site, attributes, groups, definitions) {
+	return groups.reduce((kept, group) => (setsGroup(attributes, group, definitions) ? omit(kept, group) : kept), site);
+}
+
+/**
  * Merges a block's site values into its attributes.
  *
  * @param {Attributes}                    attributes  The instance's attributes.
@@ -268,13 +289,20 @@ export function unmerge(next, shown, stored) {
  * value, only the changed leaves are kept, and an unchanged attribute is
  * dropped.
  *
- * @param {Attributes} written The attributes being written.
- * @param {Attributes} shown   The attributes the block was shown.
- * @param {Attributes} stored  The instance's stored attributes.
- * @param {Attributes} site    The site values.
+ * A write that starts the instance setting one of its block's groups is the
+ * exception. The group then takes no site values, so the whole group is
+ * stored as shown, with the written values, and the block keeps looking as it
+ * did apart from the change.
+ *
+ * @param {Attributes}                    written       The attributes being written.
+ * @param {Attributes}                    shown         The attributes the block was shown.
+ * @param {Attributes}                    stored        The instance's stored attributes.
+ * @param {Attributes}                    site          The site values.
+ * @param {string[][]}                    [groups]      The block's groups of attribute names.
+ * @param {Object<string, {default: *}>} [definitions] The block type's attribute definitions.
  * @return {Attributes} The attributes to store.
  */
-export function guardWrite(written, shown, stored, site) {
+export function guardWrite(written, shown, stored, site, groups = [], definitions = {}) {
 	const kept = {};
 
 	Object.keys(written).forEach((name) => {
@@ -288,6 +316,20 @@ export function guardWrite(written, shown, stored, site) {
 		if (!isEqual(value, stored[name])) {
 			kept[name] = value;
 		}
+	});
+
+	groups.forEach((group) => {
+		if (setsGroup(stored, group, definitions) || !setsGroup({ ...stored, ...kept }, group, definitions)) {
+			return;
+		}
+
+		group.forEach((name) => {
+			const value = name in written ? written[name] : shown[name];
+
+			if (!isEqual(value, stored[name])) {
+				kept[name] = value;
+			}
+		});
 	});
 
 	return kept;
@@ -313,9 +355,55 @@ export function panelAttributes(blockName, defaults, site, current) {
 }
 
 /**
+ * Whether an instance sets a group itself: it has a value other than the
+ * block's default for any of the group's attributes.
+ *
+ * @param {Attributes}                    attributes  The instance's attributes.
+ * @param {string[]}                      group       The group's attribute names.
+ * @param {Object<string, {default: *}>} definitions The block type's attribute definitions.
+ *
+ * @since TBD
+ *
+ * @return {boolean} Whether the instance sets the group.
+ */
+function setsGroup(attributes, group, definitions) {
+	return group.some((name) => {
+		const value = attributes[name];
+
+		return undefined !== value && null !== value && !isEqual(value, definitions[name]?.default);
+	});
+}
+
+/**
  * @param {*} value A value.
  * @return {boolean} Whether it's an array or a plain object.
  */
 function isObjectLike(value) {
 	return value !== null && typeof value === 'object';
+}
+
+/**
+ * Whether an attribute can be one of a block's site values. An excluded
+ * attribute never is. For a block without site rules, scoped or not, only its
+ * overlay attributes and the ones core's style stores can show a site value;
+ * that also keeps out attributes the server doesn't register, which other
+ * scripts add to the block in the editor.
+ *
+ * @param {import('./supported-blocks').SupportedBlock} block The block's entry.
+ * @param {string}                                       name  Attribute name.
+ *
+ * @since TBD
+ *
+ * @return {boolean} Whether the attribute can be a site value.
+ */
+function isSiteAttribute(block, name) {
+	if (block.exclude.includes(name)) {
+		return false;
+	}
+
+	return (
+		Boolean(block.siteRules) ||
+		block.overlay.includes(name) ||
+		Object.prototype.hasOwnProperty.call(block.attributesMap, name)
+	);
 }

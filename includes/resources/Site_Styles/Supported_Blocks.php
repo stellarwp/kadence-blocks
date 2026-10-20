@@ -2,6 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Site_Styles;
 
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Prints_Site_Rules;
 use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Scopes_Site_Styles;
 use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Supports_Site_Styles;
 use WP_Block_Type_Registry;
@@ -65,6 +66,10 @@ final class Supported_Blocks {
 	 * for every block, the attributes its `block.json` marks as content, and
 	 * its scope attribute when it scopes its site styles.
 	 *
+	 * A block that doesn't print site rules, scoped or not, shows a site value
+	 * only through its overlay attributes and the attributes core's style
+	 * stores. It excludes every other attribute too.
+	 *
 	 * @since TBD
 	 *
 	 * @param Supports_Site_Styles $block The block.
@@ -90,6 +95,18 @@ final class Supported_Blocks {
 
 		if ( $block instanceof Scopes_Site_Styles ) {
 			$excluded[] = $block->site_styles_scope_attribute();
+		}
+
+		if ( $block instanceof Prints_Site_Rules ) {
+			return $excluded;
+		}
+
+		$rendered = array_merge( $block->site_styles_overlay_attributes(), array_keys( $block->site_styles_attributes_map() ) );
+
+		foreach ( array_keys( $attributes ) as $name ) {
+			if ( is_string( $name ) && ! in_array( $name, $rendered, true ) && ! in_array( $name, $excluded, true ) ) {
+				$excluded[] = $name;
+			}
 		}
 
 		return $excluded;

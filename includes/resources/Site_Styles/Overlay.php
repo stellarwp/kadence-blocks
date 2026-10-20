@@ -2,6 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Site_Styles;
 
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Groups_Site_Styles;
 use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Scopes_Site_Styles;
 
 /**
@@ -12,7 +13,8 @@ use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Scopes_Site_Styles;
  * block's default wins, every other leaf takes the site value. Stored values
  * of attributes the block excludes are ignored. A block that
  * scopes its site styles gives each instance only the site values its style
- * takes.
+ * takes, and a block that groups them gives a group the instance sets itself
+ * none of the group's site values.
  *
  * @since TBD Merges only the values the block lists for the overlay (classes and editor inline styles). Core's global stylesheet renders the core keys, and `Site_Rules` the rest.
  */
@@ -128,10 +130,20 @@ final class Overlay {
 			);
 		}
 
+		if ( $block instanceof Groups_Site_Styles ) {
+			$groups   = $block->site_styles_attribute_groups();
+			$defaults = [];
+
+			foreach ( array_merge( ...$groups ) as $name ) {
+				$defaults[ $name ] = self::default_value( $name, $attributes[ $name ] ?? null, $registered, $filtered );
+			}
+
+			$site = self::group( $site, $attributes, $groups, $defaults );
+		}
+
 		foreach ( $site as $name => $value ) {
 			$instance            = $attributes[ $name ] ?? null;
-			$default             = ( array_key_exists( $name, $filtered ) && $instance === $filtered[ $name ] ) ? $instance : ( $registered[ $name ] ?? null );
-			$attributes[ $name ] = self::merge( $instance, $value, $default );
+			$attributes[ $name ] = self::merge( $instance, $value, self::default_value( $name, $instance, $registered, $filtered ) );
 		}
 
 		return $attributes;
@@ -162,6 +174,33 @@ final class Overlay {
 	}
 
 	/**
+	 * Drops the site values of every group the instance sets itself. The
+	 * instance sets a group when it has a value other than the block's
+	 * default for any of the group's attributes, the same test `merge()` uses.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed>     $site       Attribute name => site value.
+	 * @param array<string, mixed>     $attributes The instance's attributes.
+	 * @param array<int, list<string>> $groups     Groups of attribute names.
+	 * @param array<string, mixed>     $defaults   Attribute name => the block's default value.
+	 *
+	 * @return array<string, mixed> The site values the instance takes.
+	 */
+	public static function group( array $site, array $attributes, array $groups, array $defaults ): array {
+		foreach ( $groups as $group ) {
+			foreach ( $group as $name ) {
+				if ( isset( $attributes[ $name ] ) && $attributes[ $name ] !== ( $defaults[ $name ] ?? null ) ) {
+					$site = array_diff_key( $site, array_flip( $group ) );
+					break;
+				}
+			}
+		}
+
+		return $site;
+	}
+
+	/**
 	 * Merges one attribute's site value into the instance value, leaf by leaf.
 	 *
 	 * @since TBD
@@ -184,5 +223,23 @@ final class Overlay {
 		}
 
 		return $instance;
+	}
+
+	/**
+	 * The default an instance value is measured against. A value that matches
+	 * the filtered default came from Block Defaults when the block was
+	 * inserted, so it counts as the default too.
+	 *
+	 * @since TBD
+	 *
+	 * @param string               $name       Attribute name.
+	 * @param mixed                $instance   The instance value, null when the instance doesn't have it.
+	 * @param array<string, mixed> $registered Attribute name => the default the block registers.
+	 * @param array<string, mixed> $filtered   Attribute name => the default after Block Defaults.
+	 *
+	 * @return mixed The default.
+	 */
+	private static function default_value( string $name, $instance, array $registered, array $filtered ) {
+		return ( array_key_exists( $name, $filtered ) && $instance === $filtered[ $name ] ) ? $instance : ( $registered[ $name ] ?? null );
 	}
 }
