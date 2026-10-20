@@ -193,6 +193,41 @@ final class SupportedBlocksTest extends TestCase {
 	}
 
 	/**
+	 * Row Layout takes its padding, margin, gutters, max width, border, radius, shadow, background color and
+	 * text colors through the overlay, in eight groups, with no scope, no site rules and no core surface, and
+	 * keeps its structure, layout, media and behavior settings per block.
+	 *
+	 * @return void
+	 */
+	public function testRowLayoutDescribesItsSiteStyles(): void {
+		$block = $this->container->get( Supported_Blocks::class )->get( 'kadence/rowlayout' );
+
+		$this->assertNotNull( $block );
+		$this->assertSame( 'rowlayout', $block->get_slug() );
+		$this->assertNotInstanceOf( Scopes_Site_Styles::class, $block );
+		$this->assertNotInstanceOf( Prints_Site_Rules::class, $block );
+		$this->assertInstanceOf( Groups_Site_Styles::class, $block );
+		$this->assertSame( [], $block->site_styles_attributes_map() );
+		$this->assertSame( [], $block->site_styles_supports() );
+		$this->assertSame( [], $block->site_styles_selectors() );
+		$this->assertCount( 35, $block->site_styles_overlay_attributes() );
+		$this->assertCount( 8, $block->site_styles_attribute_groups() );
+		$this->assertInstanceOf( Legacy_Group_Attributes::class, $block );
+		$this->assertSame(
+			[
+				'padding'     => [ 'topPadding', 'rightPadding', 'bottomPadding', 'leftPadding', 'topPaddingM', 'rightPaddingM', 'bottomPaddingM', 'leftPaddingM' ],
+				'margin'      => [ 'topMargin', 'bottomMargin', 'topMarginT', 'bottomMarginT', 'topMarginM', 'bottomMarginM' ],
+				'borderStyle' => [ 'border', 'tabletBorder', 'mobileBorder', 'borderWidth', 'tabletBorderWidth', 'mobileBorderWidth' ],
+			],
+			$block->site_styles_legacy_group_attributes()
+		);
+		$this->assertSame( array_values( array_unique( $block->site_styles_overlay_attributes() ) ), $block->site_styles_overlay_attributes() );
+		foreach ( [ 'kbVersion', 'columns', 'colLayout', 'firstColumnWidth', 'topPadding', 'topMarginT', 'border', 'borderWidth', 'tabletBorder', 'bgColorClass', 'backgroundSettingTab', 'bgImg', 'gradient', 'overlay', 'topSep', 'minHeight', 'verticalAlignment', 'inheritMaxWidth', 'columnsInnerHeight', 'breakoutLeft', 'zIndex', 'htmlTag', 'vsdesk', 'rcpAccess', 'templateLock' ] as $attribute ) {
+			$this->assertContains( $attribute, Supported_Blocks::excluded_attributes( $block ) );
+		}
+	}
+
+	/**
 	 * Spacer's style is its divider style, and an instance without one takes the block's default.
 	 *
 	 * @dataProvider spacerStyleProvider
@@ -277,6 +312,7 @@ final class SupportedBlocksTest extends TestCase {
 		$this->assertContains( 'kadence/spacer', $checked );
 		$this->assertContains( 'kadence/icon', $checked );
 		$this->assertContains( 'kadence/single-icon', $checked );
+		$this->assertContains( 'kadence/rowlayout', $checked );
 	}
 
 	/**
@@ -325,6 +361,7 @@ final class SupportedBlocksTest extends TestCase {
 		}
 
 		$this->assertContains( 'kadence/column', $checked );
+		$this->assertContains( 'kadence/rowlayout', $checked );
 	}
 
 	/**

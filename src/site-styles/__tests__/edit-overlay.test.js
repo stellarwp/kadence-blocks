@@ -2,15 +2,18 @@
 /**
  * The editor overlay with a block that groups its site values: a group the instance sets itself shows no
  * site value, and a change that starts the instance setting a group stores the group as shown. Spacer's
- * own entry scopes its site values by divider style as well, and Section's has older attributes that stand
- * in for its padding and border groups.
+ * own entry scopes its site values by divider style as well, and Section's and Row Layout's have older
+ * attributes that stand in for their padding, margin and border groups, which their migrations replace.
  */
 import { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import block from '../../blocks/spacer/block.json';
 import sectionBlock from '../../blocks/column/block.json';
+import rowBlock from '../../blocks/rowlayout/block.json';
+import { runRowLayoutMigrations } from '../../blocks/rowlayout/migrations';
 import entry from './fixtures/spacer-entry.json';
 import sectionEntry from './fixtures/column-entry.json';
+import rowEntry from './fixtures/rowlayout-entry.json';
 
 const BLOCK = 'kadence/spacer';
 const HEIGHT = ['spacerHeight', 'tabletSpacerHeight', 'mobileSpacerHeight', 'spacerHeightUnits'];
@@ -29,6 +32,7 @@ let mockDefinitions = DEFINITIONS;
 let mockStored = {};
 
 jest.mock('@kadence/components', () => ({}));
+jest.mock('@kadence/helpers', () => ({ KadenceColorOutput: (color) => color }));
 jest.mock('../use-global-styles-record', () => ({ useGlobalStylesRecord: () => mockRecord }));
 jest.mock('../virtual-blocks', () => ({ isVirtualBlock: () => false }));
 jest.mock('@wordpress/compose', () => ({ createHigherOrderComponent: (hoc) => hoc }), { virtual: true });
@@ -440,5 +444,198 @@ describe("editor overlay with Section's entry", () => {
 			borderStyle: OWN_BORDER,
 			tabletBorderStyle: SITE.tabletBorderStyle,
 		});
+	});
+});
+
+describe("editor overlay with Row Layout's entry", () => {
+	const ROW = 'kadence/rowlayout';
+	const border = (color) => [
+		{
+			top: [color, 'dashed', 3],
+			right: [color, 'dashed', 3],
+			bottom: [color, 'dashed', 3],
+			left: [color, 'dashed', 3],
+			unit: 'px',
+		},
+	];
+	const SITE = {
+		padding: [2, '', 2, ''],
+		tabletPadding: [1, '', 1, ''],
+		paddingUnit: 'vw',
+		margin: ['', '', 3, ''],
+		tabletMargin: ['', '', 2, ''],
+		marginUnit: 'em',
+		columnGutter: 'custom',
+		customGutter: [3, '', ''],
+		gutterType: 'rem',
+		borderStyle: border('#ff00ff'),
+		tabletBorderStyle: border('#0000ff'),
+		mobileBorderStyle: border('#00ffff'),
+		bgColor: '#ff0000',
+	};
+	const DEFAULTS = { ...registeredDefaults(rowBlock.attributes), kbVersion: 2 };
+
+	/**
+	 * Renders a row whose writes update the stored attributes, as the block editor does.
+	 *
+	 * @param {Object} attributes The row's stored attributes.
+	 *
+	 * @since TBD
+	 *
+	 * @return {Object} The props the row's edit component got.
+	 */
+	const renderRow = (attributes) =>
+		render(
+			attributes,
+			(kept) => {
+				mockStored = { ...mockStored, ...kept };
+			},
+			ROW
+		);
+
+	beforeAll(() => {
+		global.IS_REACT_ACT_ENVIRONMENT = true;
+	});
+
+	beforeEach(() => {
+		mockDefinitions = rowBlock.attributes;
+		window.kadenceSiteStyles = { isFseMode: true, blocks: { [ROW]: rowEntry } };
+		mockRecord = { settings: { custom: { kadence: { rowlayout: SITE } } } };
+	});
+
+	afterEach(() => {
+		mockDefinitions = DEFINITIONS;
+		delete window.kadenceSiteStyles;
+	});
+
+	/**
+	 * An untouched row shows every site value.
+	 *
+	 * @return {void}
+	 */
+	it('shows an untouched row every site value', () => {
+		expect(render(DEFAULTS, undefined, ROW).attributes).toEqual({ ...DEFAULTS, ...SITE });
+	});
+
+	/**
+	 * An old row with a padding number, a tablet margin number and a tablet border width shows its own
+	 * padding, margin and border, and still takes the site gutter and background.
+	 *
+	 * @return {void}
+	 */
+	it('shows an old row its own padding, margin and border', () => {
+		const old = { ...DEFAULTS, topPadding: 10, topMarginT: 10, tabletBorderWidth: [2, '', '', ''] };
+
+		expect(render(old, undefined, ROW).attributes).toEqual({
+			...old,
+			columnGutter: SITE.columnGutter,
+			customGutter: SITE.customGutter,
+			gutterType: SITE.gutterType,
+			bgColor: SITE.bgColor,
+		});
+	});
+
+	/**
+	 * The migrations of an old row's padding, margin and borders store the row's own values and none of the
+	 * site's.
+	 *
+	 * @return {void}
+	 */
+	it('migrates an old row without storing site values', () => {
+		const old = {
+			...DEFAULTS,
+			kbVersion: '',
+			topPadding: 10,
+			rightPaddingM: 5,
+			bottomMargin: 20,
+			topMarginT: 15,
+			border: '#ff0000',
+			borderWidth: [2, 2, 2, 2],
+		};
+		const props = renderRow(old);
+
+		runRowLayoutMigrations(props.attributes, props.setAttributes);
+
+		expect(mockStored).toEqual({
+			...old,
+			kbVersion: 2,
+			topPadding: '',
+			rightPaddingM: '',
+			bottomMargin: '',
+			topMarginT: '',
+			border: '',
+			borderWidth: ['', '', '', ''],
+			padding: [10, '', 25, ''],
+			mobilePadding: ['', 5, '', ''],
+			margin: ['', '', 20, ''],
+			tabletMargin: [15, '', '', ''],
+			borderStyle: [
+				{
+					top: ['#ff0000', '', 2],
+					right: ['#ff0000', '', 2],
+					bottom: ['#ff0000', '', 2],
+					left: ['#ff0000', '', 2],
+					unit: 'px',
+				},
+			],
+		});
+	});
+
+	/**
+	 * A tablet-only old border migrates to the tablet border alone: the desktop and mobile borders it never
+	 * showed stay unset.
+	 *
+	 * @return {void}
+	 */
+	it('migrates a tablet-only old border without storing the site desktop or mobile border', () => {
+		const props = renderRow({ ...DEFAULTS, tabletBorder: '#ff0000', tabletBorderWidth: [2, 2, 2, 2] });
+
+		runRowLayoutMigrations(props.attributes, props.setAttributes);
+
+		expect(mockStored.borderStyle).toEqual(DEFAULTS.borderStyle);
+		expect(mockStored.mobileBorderStyle).toEqual(DEFAULTS.mobileBorderStyle);
+		expect(mockStored.tabletBorderStyle[0].top).toEqual(['#ff0000', '', 2]);
+	});
+
+	/**
+	 * An old named gutter migrates to its custom size and keeps the row's own unit against a site unit.
+	 *
+	 * @return {void}
+	 */
+	it('migrates an old named gutter with its own unit', () => {
+		const props = renderRow({ ...DEFAULTS, columnGutter: 'wide' });
+
+		runRowLayoutMigrations(props.attributes, props.setAttributes);
+
+		expect(mockStored.columnGutter).toBe('custom');
+		expect(mockStored.customGutter).toEqual([40, '', '']);
+		expect(mockStored.gutterType).toBe('px');
+	});
+
+	/**
+	 * The unique ID helper writes every shown attribute with a new ID. For a new row, and for an old row after
+	 * its migrations, that stores no site value: the old row's write puts back the older padding number it
+	 * showed before migrating, as it does in classic mode, so the row keeps its own padding.
+	 *
+	 * @return {void}
+	 */
+	it('stores no site value from the unique ID write of every shown attribute', () => {
+		const fresh = renderRow({ ...DEFAULTS, uniqueID: '' });
+
+		fresh.setAttributes({ ...fresh.attributes, uniqueID: '_new' });
+
+		expect(mockStored).toEqual({ ...DEFAULTS, uniqueID: '_new' });
+
+		const old = { ...DEFAULTS, uniqueID: '_old', topPadding: 10, border: '#ff0000', borderWidth: [2, 2, 2, 2] };
+		const props = renderRow(old);
+
+		runRowLayoutMigrations(props.attributes, props.setAttributes);
+		props.setAttributes({ ...props.attributes, uniqueID: '_copy' });
+
+		expect(mockStored.topPadding).toBe(10);
+		expect(mockStored.tabletPadding).toEqual(DEFAULTS.tabletPadding);
+		expect(mockStored.paddingUnit).toBe(DEFAULTS.paddingUnit);
+		expect(mockStored.tabletBorderStyle).toEqual(DEFAULTS.tabletBorderStyle);
+		expect(mockStored.mobileBorderStyle).toEqual(DEFAULTS.mobileBorderStyle);
 	});
 });
