@@ -61,6 +61,7 @@ import { __ } from '@wordpress/i18n';
 import { getSettings as getDateSettings } from '@wordpress/date';
 
 import { applyFilters } from '@wordpress/hooks';
+import { useIsSiteStylesPanel } from '../../site-styles/use-is-site-styles-panel';
 
 import { useSelect, useDispatch } from '@wordpress/data';
 
@@ -243,6 +244,7 @@ function KadenceCountdown(props) {
 	const [itemPaddingControl, setItemPaddingControl] = useState('linked');
 	const [previewExpired, setPreviewExpired] = useState(false);
 	const [activeTab, setActiveTab] = useState('general');
+	const isSiteStylesPanel = useIsSiteStylesPanel();
 
 	const paddingMouseOver = mouseOverVisualizer();
 	const marginMouseOver = mouseOverVisualizer();
@@ -1264,9 +1266,11 @@ function KadenceCountdown(props) {
 							panelName={'countdown'}
 							setActiveTab={(value) => setActiveTab(value)}
 							activeTab={activeTab}
+							allowedTabs={isSiteStylesPanel ? ['style', 'advanced'] : null}
+							initialOpen={isSiteStylesPanel ? 'style' : undefined}
 						/>
 
-						{activeTab === 'general' && (
+						{activeTab === 'general' && !isSiteStylesPanel && (
 							<>
 								<Panel className={'components-panel__body is-opened'}>
 									{1 === isNested && (
@@ -1841,7 +1845,7 @@ function KadenceCountdown(props) {
 										/>
 									</KadencePanelBody>
 								)}
-								{enableTimer && '' !== preLabel && (
+								{!isSiteStylesPanel && enableTimer && '' !== preLabel && (
 									<KadencePanelBody
 										title={__('Pre Text', 'kadence-blocks')}
 										initialOpen={false}
@@ -1893,7 +1897,7 @@ function KadenceCountdown(props) {
 										/>
 									</KadencePanelBody>
 								)}
-								{enableTimer && '' !== postLabel && (
+								{!isSiteStylesPanel && enableTimer && '' !== postLabel && (
 									<KadencePanelBody
 										title={__('Post Text', 'kadence-blocks')}
 										initialOpen={false}
@@ -2053,35 +2057,39 @@ function KadenceCountdown(props) {
 									/>
 								</KadencePanelBody>
 
-								<KadencePanelBody
-									title={__('Visibility Settings', 'kadence-blocks')}
-									initialOpen={false}
-									panelName={'visibilitySettings'}
-									blockSlug={'kadence/countdown'}
-								>
-									<ToggleControl
-										label={__('Hide on Desktop', 'kadence-blocks')}
-										checked={undefined !== vsdesk ? vsdesk : false}
-										onChange={(value) => setAttributes({ vsdesk: value })}
-									/>
-									<ToggleControl
-										label={__('Hide on Tablet', 'kadence-blocks')}
-										checked={undefined !== vstablet ? vstablet : false}
-										onChange={(value) => setAttributes({ vstablet: value })}
-									/>
-									<ToggleControl
-										label={__('Hide on Mobile', 'kadence-blocks')}
-										checked={undefined !== vsmobile ? vsmobile : false}
-										onChange={(value) => setAttributes({ vsmobile: value })}
-									/>
-								</KadencePanelBody>
+								{!isSiteStylesPanel && (
+									<KadencePanelBody
+										title={__('Visibility Settings', 'kadence-blocks')}
+										initialOpen={false}
+										panelName={'visibilitySettings'}
+										blockSlug={'kadence/countdown'}
+									>
+										<ToggleControl
+											label={__('Hide on Desktop', 'kadence-blocks')}
+											checked={undefined !== vsdesk ? vsdesk : false}
+											onChange={(value) => setAttributes({ vsdesk: value })}
+										/>
+										<ToggleControl
+											label={__('Hide on Tablet', 'kadence-blocks')}
+											checked={undefined !== vstablet ? vstablet : false}
+											onChange={(value) => setAttributes({ vstablet: value })}
+										/>
+										<ToggleControl
+											label={__('Hide on Mobile', 'kadence-blocks')}
+											checked={undefined !== vsmobile ? vsmobile : false}
+											onChange={(value) => setAttributes({ vsmobile: value })}
+										/>
+									</KadencePanelBody>
+								)}
 
-								<KadenceBlockDefaults
-									attributes={attributes}
-									defaultAttributes={metadata.attributes}
-									blockSlug={metadata.name}
-									excludedAttrs={nonTransAttrs}
-								/>
+								{!isSiteStylesPanel && (
+									<KadenceBlockDefaults
+										attributes={attributes}
+										defaultAttributes={metadata.attributes}
+										blockSlug={metadata.name}
+										excludedAttrs={nonTransAttrs}
+									/>
+								)}
 							</>
 						)}
 					</InspectorControls>
