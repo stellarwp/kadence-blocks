@@ -1,3 +1,4 @@
+// cspell:ignore Upsell -- the block's existing Pro sticky settings placeholder.
 import { flow } from 'lodash';
 import { __, sprintf } from '@wordpress/i18n';
 import React, { useState, useEffect, useMemo } from '@wordpress/element';

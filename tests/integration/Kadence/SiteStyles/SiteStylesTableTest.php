@@ -2,7 +2,7 @@
 
 declare( strict_types=1 );
 
-// cspell:ignore tabletb
+// cspell:ignore tabletb containertb
 
 namespace Tests\integration\Kadence\SiteStyles;
 
