@@ -57,15 +57,14 @@ final class Token_Store extends Query {
 	private const DEFAULT_SLUG = 'default';
 
 	/**
-	 * Rows read in this request, keyed by slug. A library with no row is kept as null, so a site that
-	 * never saved a library reads the table once per slug instead of once per lookup. Every write drops
-	 * the slug it touched before signalling, so a listener reading back sees the new row.
+	 * @var string Non-persistent object cache group for rows read in this request. A library with no
+	 *             row is cached too, so a site that never saved a library reads the table once per slug
+	 *             instead of once per lookup. Being an object cache group keeps it per site on multisite
+	 *             and lets WordPress flush it; every write drops the slug it touched before signalling.
 	 *
-	 * @since TBD
-	 *
-	 * @var array<string, array<string, mixed>|null>
+	 * @since 3.8.1
 	 */
-	private array $rows = [];
+	private const ROW_CACHE_GROUP = 'kb_design_tokens_rows';
 
 	/**
 	 * The action hook that fires after any write, for callers that need to react to changes.
@@ -151,7 +150,7 @@ final class Token_Store extends Query {
 			return '';
 		}
 
-		return (string) ( $row['document'] ?? '' );
+		return Cast::to_string( $row['document'] ?? '' );
 	}
 
 	/**
@@ -200,7 +199,7 @@ final class Token_Store extends Query {
 			return '';
 		}
 
-		return (string) ( $row['version'] ?? '' );
+		return Cast::to_string( $row['version'] ?? '' );
 	}
 
 	/**
@@ -219,7 +218,7 @@ final class Token_Store extends Query {
 			return '';
 		}
 
-		return (string) ( $row['title'] ?? '' );
+		return Cast::to_string( $row['title'] ?? '' );
 	}
 
 	/**
@@ -605,35 +604,59 @@ final class Token_Store extends Query {
 	 * The write paths keep reading the table directly: they compare against what is stored right now,
 	 * not what this request saw earlier.
 	 *
-	 * @since TBD
+	 * @since 3.8.1
 	 *
 	 * @param string $slug The token library slug.
 	 *
 	 * @return array<string, mixed>|null The row, or null when the library has none.
 	 */
 	private function row( string $slug ): ?array {
-		if ( ! array_key_exists( $slug, $this->rows ) ) {
-			$row = $this->qb()
-						->where( 'slug', $slug )
-						->get( ARRAY_A );
+		wp_cache_add_non_persistent_groups( [ self::ROW_CACHE_GROUP ] );
 
-			$this->rows[ $slug ] = is_array( $row ) ? $row : null;
+		$found  = false;
+		$cached = wp_cache_get( $this->row_cache_key( $slug ), self::ROW_CACHE_GROUP, false, $found );
+
+		if ( $found && is_array( $cached ) && array_key_exists( 'row', $cached ) ) {
+			return is_array( $cached['row'] ) ? $cached['row'] : null;
 		}
 
-		return $this->rows[ $slug ];
+		$row = $this->qb()
+					->where( 'slug', $slug )
+					->get( ARRAY_A );
+
+		$row = is_array( $row ) ? $row : null;
+
+		// Wrapped, so a missing row is a cache hit rather than the false a miss returns.
+		wp_cache_set( $this->row_cache_key( $slug ), [ 'row' => $row ], self::ROW_CACHE_GROUP );
+
+		return $row;
 	}
 
 	/**
 	 * Drop a library's remembered row after a write, so the next read sees the table.
 	 *
-	 * @since TBD
+	 * @since 3.8.1
 	 *
 	 * @param string $slug The token library slug that was written.
 	 *
 	 * @return void
 	 */
 	private function forget_row( string $slug ): void {
-		unset( $this->rows[ $slug ] );
+		wp_cache_delete( $this->row_cache_key( $slug ), self::ROW_CACHE_GROUP );
+	}
+
+	/**
+	 * The row cache key for a slug. The table is part of it, so two stores on different tables never
+	 * share an entry.
+	 *
+	 * @since 3.8.1
+	 *
+	 * @param string $slug The token library slug.
+	 *
+	 * @return string
+	 */
+	private function row_cache_key( string $slug ): string {
+		return $this->table . ':' . $slug;
 	}
 
 	/**
