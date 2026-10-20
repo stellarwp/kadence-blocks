@@ -228,8 +228,8 @@ final class SupportedBlocksTest extends TestCase {
 	}
 
 	/**
-	 * Count Up takes its title and number fonts, colors, alignment, padding and margin through the overlay,
-	 * in eight groups, with no scope, no site rules and no core surface, and keeps its numbers, timing and
+	 * Count Up takes its title and number fonts, colors, alignment, min height, padding and margin through
+	 * the overlay, in ten groups, with no scope, no site rules and no core surface, and keeps its numbers, timing and
 	 * title toggle per block.
 	 *
 	 * @return void
@@ -246,10 +246,10 @@ final class SupportedBlocksTest extends TestCase {
 		$this->assertSame( [], $block->site_styles_attributes_map() );
 		$this->assertSame( [], $block->site_styles_supports() );
 		$this->assertSame( [], $block->site_styles_selectors() );
-		$this->assertCount( 22, $block->site_styles_overlay_attributes() );
-		$this->assertCount( 8, $block->site_styles_attribute_groups() );
+		$this->assertCount( 24, $block->site_styles_overlay_attributes() );
+		$this->assertCount( 10, $block->site_styles_attribute_groups() );
 		$this->assertSame( array_values( array_unique( $block->site_styles_overlay_attributes() ) ), $block->site_styles_overlay_attributes() );
-		foreach ( [ 'title', 'displayTitle', 'start', 'end', 'prefix', 'suffix', 'duration', 'separator', 'decimal', 'decimalSpaces', 'titleMinHeight', 'numberMinHeight', 'titleHoverColor', 'numberHoverColor' ] as $attribute ) {
+		foreach ( [ 'title', 'displayTitle', 'start', 'end', 'prefix', 'suffix', 'duration', 'separator', 'decimal', 'decimalSpaces', 'titleHoverColor', 'numberHoverColor' ] as $attribute ) {
 			$this->assertContains( $attribute, Supported_Blocks::excluded_attributes( $block ) );
 		}
 	}

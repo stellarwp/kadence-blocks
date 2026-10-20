@@ -14,9 +14,7 @@
 		"title",
 		"displayTitle",
 		"titleHoverColor",
-		"titleMinHeight",
 		"numberHoverColor",
-		"numberMinHeight",
 		"start",
 		"end",
 		"startDecimal",
@@ -32,6 +30,7 @@
 	"overlay": [
 		"titleFont",
 		"titleAlign",
+		"titleMinHeight",
 		"titlePadding",
 		"titleTabletPadding",
 		"titleMobilePadding",
@@ -42,6 +41,7 @@
 		"titleMarginType",
 		"numberFont",
 		"numberAlign",
+		"numberMinHeight",
 		"numberPadding",
 		"numberTabletPadding",
 		"numberMobilePadding",
@@ -63,6 +63,9 @@
 			"titleAlign"
 		],
 		[
+			"titleMinHeight"
+		],
+		[
 			"titlePadding",
 			"titleTabletPadding",
 			"titleMobilePadding",
@@ -79,6 +82,9 @@
 		],
 		[
 			"numberAlign"
+		],
+		[
+			"numberMinHeight"
 		],
 		[
 			"numberPadding",

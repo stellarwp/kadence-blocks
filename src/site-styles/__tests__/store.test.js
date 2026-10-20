@@ -237,6 +237,7 @@ describe('siteAttributes', () => {
 		expect(siteAttributes(record, 'kadence/countup')).toEqual({
 			numberColor: '#cc0000',
 			titleAlign: ['center', '', ''],
+			titleMinHeight: [40, '', ''],
 		});
 	});
 

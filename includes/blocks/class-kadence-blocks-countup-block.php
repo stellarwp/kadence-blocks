@@ -323,8 +323,9 @@ class Kadence_Blocks_Countup_Block extends Kadence_Blocks_Abstract_Block impleme
 	}
 
 	/**
-	 * Each font keeps its size with its unit, each alignment its devices, and
-	 * each padding and margin its devices and unit, for the title and the number.
+	 * Each font keeps its size with its unit, each alignment and min height its
+	 * devices, and each padding and margin its devices and unit, for the title
+	 * and the number.
 	 *
 	 * @since TBD
 	 */
@@ -332,10 +333,12 @@ class Kadence_Blocks_Countup_Block extends Kadence_Blocks_Abstract_Block impleme
 		return [
 			[ 'titleFont' ],
 			[ 'titleAlign' ],
+			[ 'titleMinHeight' ],
 			[ 'titlePadding', 'titleTabletPadding', 'titleMobilePadding', 'titlePaddingType' ],
 			[ 'titleMargin', 'titleTabletMargin', 'titleMobileMargin', 'titleMarginType' ],
 			[ 'numberFont' ],
 			[ 'numberAlign' ],
+			[ 'numberMinHeight' ],
 			[ 'numberPadding', 'numberTabletPadding', 'numberMobilePadding', 'numberPaddingType' ],
 			[ 'numberMargin', 'numberTabletMargin', 'numberMobileMargin', 'numberMarginType' ],
 		];

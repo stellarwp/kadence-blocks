@@ -33,8 +33,8 @@ final class SiteStylesCountUpTest extends WPTestCase {
 	}
 
 	/**
-	 * An untouched block takes every site value: the title and number fonts, colors, alignment, padding and
-	 * margin.
+	 * An untouched block takes every site value: the title and number fonts, colors, alignment, min height,
+	 * padding and margin.
 	 *
 	 * @return void
 	 */
@@ -52,6 +52,7 @@ final class SiteStylesCountUpTest extends WPTestCase {
 		$this->assertStringContainsString( 'text-align:center', $css );
 		$this->assertStringContainsString( 'padding-top:12px', $css );
 		$this->assertStringContainsString( 'margin-bottom:2em', $css );
+		$this->assertStringContainsString( 'min-height:90px', $css );
 	}
 
 	/**
@@ -190,8 +191,8 @@ final class SiteStylesCountUpTest extends WPTestCase {
 	}
 
 	/**
-	 * Stores site values for the title and number fonts, colors, alignment, padding and margin, plus any
-	 * extra values.
+	 * Stores site values for the title and number fonts, colors, alignment, min height, padding and margin,
+	 * plus any extra values.
 	 *
 	 * @param array<string, mixed> $extra Additional site values.
 	 *
@@ -230,6 +231,7 @@ final class SiteStylesCountUpTest extends WPTestCase {
 									'numberColor'      => '#cc0000',
 									'numberMargin'     => [ '', '', 2, '' ],
 									'numberMarginType' => 'em',
+									'numberMinHeight'  => [ 90, '', '' ],
 								],
 								$extra
 							),
