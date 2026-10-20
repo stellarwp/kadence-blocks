@@ -78,6 +78,27 @@ final class SiteStylesRowLayoutTest extends WPTestCase {
 	}
 
 	/**
+	 * A gradient row takes the site background color's class, as an untouched row does, but its gradient
+	 * paints the background, so the site color never prints for it.
+	 *
+	 * @return void
+	 */
+	public function testAGradientRowTakesTheBackgroundClassButNotTheSiteColor(): void {
+		$this->tester->enable_fse_mode();
+		$this->store_site_values();
+		$gradient = [
+			'backgroundSettingTab' => 'gradient',
+			'gradient'             => 'linear-gradient(180deg,#000000 0%,#ffffff 100%)',
+		];
+
+		$css = $this->row_css( $gradient );
+
+		$this->assertStringContainsString( 'background-image:linear-gradient(180deg,#000000 0%,#ffffff 100%)', $css );
+		$this->assertStringNotContainsString( 'background-color:#ff0000', $css );
+		$this->assertTrue( $this->has_background_class( $this->row_html( $gradient ) ) );
+	}
+
+	/**
 	 * A row with its own padding keeps its own unit and takes no site tablet padding, while the groups it
 	 * doesn't set still take the site values.
 	 *

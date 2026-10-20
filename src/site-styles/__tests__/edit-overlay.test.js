@@ -582,6 +582,26 @@ describe("editor overlay with Row Layout's entry", () => {
 	});
 
 	/**
+	 * A row the editor parses with an old deprecation gets that schema's 25px top and bottom padding numbers:
+	 * it shows and migrates them as its own padding, with no site padding stored.
+	 *
+	 * @return {void}
+	 */
+	it('migrates the padding numbers an old deprecation gives a row as its own', () => {
+		const { padding, ...withoutPadding } = DEFAULTS;
+		const props = renderRow({ ...withoutPadding, kbVersion: '', topPadding: 25, bottomPadding: 25 });
+
+		expect(props.attributes.padding).toBeUndefined();
+		expect(props.attributes.paddingUnit).toBe(DEFAULTS.paddingUnit);
+
+		runRowLayoutMigrations(props.attributes, props.setAttributes);
+
+		expect(mockStored.padding).toEqual([25, '', 25, '']);
+		expect(mockStored.tabletPadding).toEqual(DEFAULTS.tabletPadding);
+		expect(mockStored.paddingUnit).toBe(DEFAULTS.paddingUnit);
+	});
+
+	/**
 	 * A tablet-only old border migrates to the tablet border alone: the desktop and mobile borders it never
 	 * showed stay unset.
 	 *
