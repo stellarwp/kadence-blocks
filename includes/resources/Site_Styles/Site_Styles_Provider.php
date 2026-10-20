@@ -4,6 +4,7 @@ namespace KadenceWP\KadenceBlocks\Site_Styles;
 
 use Kadence_Blocks_Advancedbtn_Block;
 use Kadence_Blocks_Icon_Block;
+use Kadence_Blocks_Show_More_Block;
 use Kadence_Blocks_Single_Icon_Block;
 use Kadence_Blocks_Singlebtn_Block;
 use Kadence_Blocks_Spacer_Block;
@@ -31,6 +32,7 @@ final class Site_Styles_Provider extends Provider {
 						Kadence_Blocks_Icon_Block::get_instance(),
 						Kadence_Blocks_Single_Icon_Block::get_instance(),
 						Kadence_Blocks_Spacer_Block::get_instance(),
+						Kadence_Blocks_Show_More_Block::get_instance(),
 					]
 				);
 			}
