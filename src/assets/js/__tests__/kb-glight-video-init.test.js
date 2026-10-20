@@ -1,5 +1,5 @@
 /* eslint-env jest */
-// cspell:ignore glight ktblocksvideopop plyr
+// cspell:ignore glight ktblocksvideopop plyr zoomable
 /**
  * Tests for the video lightbox init's handling of caption data on bound anchors.
  */
@@ -52,6 +52,14 @@ describe('kb-glight-video-init', () => {
 		['data-href', 'data-href="javascript:window.__xss=1"'],
 		['data-type', 'data-type="inline" data-content="&lt;b&gt;x&lt;/b&gt;"'],
 		['data-glightbox content', 'data-glightbox="content: &lt;img src=x onerror=window.__xss=1&gt;"'],
+		['data-width', 'data-width="1px;&quot; onmouseover=&quot;window.__xss=1"'],
+		['data-height', 'data-height="1px;&quot; onmouseover=&quot;window.__xss=1"'],
+		['data-sizes', 'data-sizes="100vw"'],
+		['data-srcset', 'data-srcset="x.jpg 1x"'],
+		['data-alt', 'data-alt="x"'],
+		['data-zoomable', 'data-zoomable="true"'],
+		['data-draggable', 'data-draggable="true"'],
+		['data-video-provider', 'data-video-provider="x"'],
 		['data-video-provider', 'data-video-provider="youtube&quot;&gt;&lt;img src=x onerror=window.__xss=1&gt;"'],
 	])('drops slide settings supplied through %s', (name, attribute) => {
 		const anchor = bindAnchor(`<a class="ktblocksvideopop" href="x.jpg" ${attribute}>open</a>`);
@@ -72,5 +80,14 @@ describe('kb-glight-video-init', () => {
 			bindAnchor('<a class="ktblocksvideopop" href="https://example.com/v.mp4">open</a>').getAttribute('href')
 		).toBe('https://example.com/v.mp4');
 		expect(bindAnchor('<a class="ktblocksvideopop" href="/v.mp4">open</a>').getAttribute('href')).toBe('/v.mp4');
+	});
+
+	it('leaves unrelated data attributes, such as the tooltip ones, in place', () => {
+		const anchor = bindAnchor(
+			'<a class="ktblocksvideopop" href="x.mp4" data-kb-tooltip-content="Tip" data-tooltip-placement="top">Watch</a>'
+		);
+
+		expect(anchor.getAttribute('data-kb-tooltip-content')).toBe('Tip');
+		expect(anchor.getAttribute('data-tooltip-placement')).toBe('top');
 	});
 });

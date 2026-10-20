@@ -10,13 +10,14 @@ const PAYLOAD = '&lt;img src=x onerror=window.__xss=1&gt;';
  * Render a gallery, load the script, and return the GLightbox mock.
  *
  * @param {string} itemsHtml The markup placed inside the gallery container.
+ * @param {string} containerAttributes Extra attributes for the gallery container.
  *
  * @since TBD
  *
  * @return {jest.Mock} The GLightbox constructor mock.
  */
-function bindGallery(itemsHtml) {
-	document.body.innerHTML = `<div class="kb-gallery-magnific-init kb-gallery-id-abc">${itemsHtml}</div>`;
+function bindGallery(itemsHtml, containerAttributes = '') {
+	document.body.innerHTML = `<div class="kb-gallery-magnific-init kb-gallery-id-abc" ${containerAttributes}>${itemsHtml}</div>`;
 	window.kb_glightbox = { lightBoxAriaLabel: 'Open', moreText: 'More' };
 	window.GLightbox = jest.fn();
 	jest.isolateModules(() => require(SCRIPT));
@@ -110,13 +111,10 @@ describe('kb-gallery-glight-init', () => {
 		expect(names.sort()).toEqual(['data-alt', 'data-description', 'data-title']);
 	});
 
-	it('escapes the alt so it cannot break out of the alt attribute', () => {
-		bindGallery(item('data-alt="x&quot; onerror=&quot;window.__xss=1"'));
-		const anchor = document.querySelector('a.kb-gallery-item-link');
-		const probe = document.createElement('div');
-		probe.innerHTML = `<img alt="${anchor.dataset.alt}">`;
+	it('leaves the alt as written, because GLightbox assigns it as a DOM property', () => {
+		bindGallery(item('data-alt="Tom &amp; Jerry"'));
 
-		expect(probe.querySelector('img').hasAttribute('onerror')).toBe(false);
+		expect(document.querySelector('a.kb-gallery-item-link').dataset.alt).toBe('Tom & Jerry');
 	});
 
 	it('wraps a description starting with a period so GLightbox does not use it as a selector', () => {
@@ -143,5 +141,43 @@ describe('kb-gallery-glight-init', () => {
 		jest.isolateModules(() => require(SCRIPT));
 
 		expect(anchor.getAttribute('data-title')).toBe(first);
+	});
+
+	it('keeps only the attributes the gallery caption filter allows', () => {
+		bindGallery(
+			item(
+				'data-description="&lt;a href=&quot;https://example.com&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot; style=&quot;position:fixed&quot; id=&quot;gslide-next&quot; class=&quot;x&quot;&gt;Go&lt;/a&gt;&lt;b style=&quot;color:red&quot;&gt;Hi&lt;/b&gt;"'
+			)
+		);
+		const probe = document.createElement('div');
+		probe.innerHTML = document.querySelector('a.kb-gallery-item-link').getAttribute('data-description');
+		const link = probe.querySelector('a');
+
+		expect(link.getAttribute('href')).toBe('https://example.com');
+		expect(link.getAttribute('target')).toBe('_blank');
+		expect(link.getAttribute('rel')).toBe('noopener');
+		['style', 'id', 'class'].forEach((attr) => expect(link.hasAttribute(attr)).toBe(false));
+		expect(probe.querySelector('b').hasAttribute('style')).toBe(false);
+	});
+
+	it('wraps a static gallery caption starting with a period', () => {
+		// jsdom does not implement innerText, which the static caption code reads.
+		Object.defineProperty(HTMLElement.prototype, 'innerText', {
+			configurable: true,
+			get() {
+				return this.textContent;
+			},
+		});
+		bindGallery(
+			'<div class="kadence-blocks-gallery-item"><a class="kb-gallery-item-link" href="x.jpg">' +
+				'<figcaption class="kadence-blocks-gallery-item__caption">.kb-secret</figcaption></a></div>',
+			'data-lightbox-caption="true"'
+		);
+		const description = document.querySelector('a.kb-gallery-item-link').getAttribute('data-description');
+
+		delete HTMLElement.prototype.innerText;
+
+		expect(description.charAt(0)).toBe('<');
+		expect(description).toContain('.kb-secret');
 	});
 });

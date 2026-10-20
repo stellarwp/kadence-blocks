@@ -20,6 +20,9 @@
 		sanitizedKey: Symbol.for('kadenceBlocksGLightSanitized'),
 		// The only data attributes GLightbox may read from a gallery anchor.
 		allowedDataAttributes: ['data-title', 'data-description', 'data-alt'],
+		// The tags a caption may use, and the attributes each may keep (matches the gallery's server-side filter).
+		allowedCaptionTags: '<a><br><b><i><u><p><ol><ul><li><strong><small>',
+		allowedCaptionAttributes: { a: ['href', 'target', 'rel'] },
 		simulateClick(elem) {
 			// Create our event (with options)
 			const evt = new MouseEvent('click', {
@@ -71,8 +74,9 @@
 					element.replaceWith(...element.childNodes);
 					return;
 				}
+				const allowedAttributes = kadenceBlocksGLight.allowedCaptionAttributes[element.localName] || [];
 				[...element.attributes].forEach(({ name, value }) => {
-					if (name.startsWith('on') || ('href' === name && !isSafeUrl(value))) {
+					if (!allowedAttributes.includes(name) || ('href' === name && !isSafeUrl(value))) {
 						element.removeAttribute(name);
 					}
 				});
@@ -100,13 +104,29 @@
 			return String(text).replace(/[&<>"']/g, (match) => map[match]);
 		},
 		/**
+		 * Reduce a caption to the markup the gallery allows, in a form GLightbox will not misread.
+		 *
+		 * @param {string} raw The caption, as markup.
+		 *
+		 * @since TBD
+		 *
+		 * @return {string} The safe caption.
+		 */
+		sanitizeDescription(raw) {
+			const description = kadenceBlocksGLight.strip_tags(raw, kadenceBlocksGLight.allowedCaptionTags);
+
+			// GLightbox treats a description starting with a period as a CSS selector to copy HTML from.
+			return '.' === description.charAt(0) ? '<p>' + description + '</p>' : description;
+		},
+		/**
 		 * Make the slide data on a gallery anchor safe before GLightbox reads it.
 		 *
 		 * GLightbox reads every one of its settings from the anchor's data attributes and writes several of them
-		 * (title, description, alt, video provider, width) into markup it sets with innerHTML. The browser has
-		 * already entity-decoded those attributes, so remove every data attribute that is not on the allow list,
-		 * escape the title and alt, reduce the description to the caption markup the gallery already allows, and
-		 * remove the description sources GLightbox would otherwise resolve itself.
+		 * (title, description, video provider, width) into markup it sets with innerHTML. The browser has already
+		 * entity-decoded those attributes, so remove every data attribute that is not on the allow list, escape the
+		 * title, reduce the description to the caption markup the gallery already allows, and remove the
+		 * description sources GLightbox would otherwise resolve itself. The alt is left as is, because GLightbox
+		 * assigns it as a DOM property rather than writing it as markup.
 		 *
 		 * @param {HTMLElement} el The anchor GLightbox will be bound to.
 		 *
@@ -121,8 +141,7 @@
 			el[kadenceBlocksGLight.sanitizedKey] = true;
 
 			const rawTitle = el.dataset.title || el.getAttribute('title') || '';
-			const rawAlt = el.getAttribute('data-alt');
-			let description = el.getAttribute('data-description');
+			const description = el.getAttribute('data-description');
 
 			[...el.attributes].forEach(({ name }) => {
 				if (name.startsWith('data-') && !kadenceBlocksGLight.allowedDataAttributes.includes(name)) {
@@ -133,19 +152,8 @@
 			el.querySelectorAll('.glightbox-desc').forEach((child) => child.remove());
 
 			el.setAttribute('data-title', kadenceBlocksGLight.escapeHtml(rawTitle));
-			if (null !== rawAlt) {
-				el.setAttribute('data-alt', kadenceBlocksGLight.escapeHtml(rawAlt));
-			}
 			if (description) {
-				description = kadenceBlocksGLight.strip_tags(
-					description,
-					'<a><br><b><i><u><p><ol><ul><li><strong><small>'
-				);
-				// GLightbox treats a description starting with a period as a CSS selector to copy HTML from.
-				if ('.' === description.charAt(0)) {
-					description = '<p>' + description + '</p>';
-				}
-				el.setAttribute('data-description', description);
+				el.setAttribute('data-description', kadenceBlocksGLight.sanitizeDescription(description));
 			} else {
 				el.removeAttribute('data-description');
 			}
@@ -187,10 +195,7 @@
 							if (caption) {
 								foundImages[x].setAttribute(
 									'data-description',
-									kadenceBlocksGLight.strip_tags(
-										caption.innerText,
-										'<a><br><b><i><u><p><ol><ul><li><strong><small>'
-									)
+									kadenceBlocksGLight.sanitizeDescription(caption.innerText)
 								);
 							}
 						}

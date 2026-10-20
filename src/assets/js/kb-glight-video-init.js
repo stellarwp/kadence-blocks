@@ -1,5 +1,5 @@
 /* global GLightbox */
-// cspell:ignore gbtn gclose glight ktblocksvideopop lighbox lightboxes plyr
+// cspell:ignore gbtn gclose glight ktblocksvideopop lighbox lightboxes plyr zoomable
 /**
  * File kb-glight-video-init.js.
  * Gets video lighbox working for buttons.
@@ -31,7 +31,7 @@
 		/**
 		 * Make an anchor's slide data safe before GLightbox reads it.
 		 *
-		 * Only the href and a text caption are used, so other slide settings are dropped, the caption is
+		 * Only the href and a text caption are used, so every other GLightbox slide setting is dropped, the caption is
 		 * escaped, and the href is limited to web or relative URLs.
 		 *
 		 * @param {HTMLElement} el The anchor GLightbox will be bound to.
@@ -42,15 +42,24 @@
 		 */
 		sanitizeSlideData(el) {
 			const rawTitle = el.dataset.title || el.getAttribute('title') || '';
+			// Every setting GLightbox reads from an anchor's dataset. Unrelated data attributes, such as the
+			// tooltip ones the button renders, are left alone.
 			[
 				'data-glightbox',
-				'data-description',
-				'data-content',
 				'data-href',
+				'data-sizes',
+				'data-srcset',
 				'data-type',
+				'data-video-provider',
+				'data-description',
+				'data-alt',
 				'data-desc-position',
 				'data-effect',
-				'data-video-provider',
+				'data-width',
+				'data-height',
+				'data-content',
+				'data-zoomable',
+				'data-draggable',
 			].forEach((name) => el.removeAttribute(name));
 			el.setAttribute('data-title', kadenceBlocksVideoLightbox.escapeHtml(rawTitle));
 
