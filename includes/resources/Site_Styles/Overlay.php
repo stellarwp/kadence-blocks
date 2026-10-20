@@ -114,9 +114,14 @@ final class Overlay {
 		}
 
 		$registered = Supported_Blocks::registered_defaults( $block_name );
-		/** This filter is documented in includes/blocks/class-kadence-blocks-abstract-block.php */
-		$filtered = apply_filters( 'kadence_blocks_block_default_attributes', $registered, $block_name );
-		$filtered = is_array( $filtered ) ? $filtered : $registered;
+		$filtered   = $registered;
+
+		// Only a value off its registered default can match a Block Defaults value, so the filter runs only for one.
+		if ( self::has_own_value( $attributes, $block->site_styles_overlay_attributes(), $registered ) ) {
+			/** This filter is documented in includes/blocks/class-kadence-blocks-abstract-block.php */
+			$filtered = apply_filters( 'kadence_blocks_block_default_attributes', $registered, $block_name );
+			$filtered = is_array( $filtered ) ? $filtered : $registered;
+		}
 
 		if ( $block instanceof Scopes_Site_Styles ) {
 			$scope_attribute = $block->site_styles_scope_attribute();
@@ -296,5 +301,27 @@ final class Overlay {
 		}
 
 		return is_int( $value ) || is_float( $value ) || ( is_string( $value ) && '' !== $value );
+	}
+
+	/**
+	 * Whether the instance has any of the attributes set to a value other than
+	 * its registered default.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $attributes The instance's attributes.
+	 * @param string[]             $names      Attribute names.
+	 * @param array<string, mixed> $registered Attribute name => the default the block registers.
+	 *
+	 * @return bool
+	 */
+	private static function has_own_value( array $attributes, array $names, array $registered ): bool {
+		foreach ( $names as $name ) {
+			if ( isset( $attributes[ $name ] ) && $attributes[ $name ] !== ( $registered[ $name ] ?? null ) ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }
