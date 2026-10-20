@@ -48,6 +48,7 @@ import apiFetch from '@wordpress/api-fetch';
 const { postTypes, taxonomies, postQueryEndpoint } = kadence_blocks_params;
 import { addQueryArgs } from '@wordpress/url';
 import { decodeEntities } from '@wordpress/html-entities';
+import { useIsSiteStylesPanel } from '../../site-styles/use-is-site-styles-panel';
 
 /**
  * Build Kadence Posts Block.
@@ -164,6 +165,7 @@ function KadencePosts(props) {
 	const debouncedGetTaxonomyTerms = debounce(getTaxonomyTerms, 200);
 
 	uniqueIdHelper(props);
+	const isSiteStylesPanel = useIsSiteStylesPanel();
 
 	useEffect(() => {
 		getPosts();
@@ -354,105 +356,150 @@ function KadencePosts(props) {
 					panelName={'posts'}
 					setActiveTab={(value) => setActiveTab(value)}
 					activeTab={activeTab}
+					allowedTabs={isSiteStylesPanel ? ['general', 'style'] : null}
+					initialOpen={isSiteStylesPanel ? 'general' : undefined}
 				/>
 
 				{activeTab === 'general' && (
 					<>
-						<KadencePanelBody panelName={'kb-posts-settings'}>
-							<SelectControl
-								label={__('Select Posts Type:', 'kadence-blocks')}
-								options={postTypes}
-								value={postType}
-								onChange={(value) => {
-									setAttributes({ postType: value });
-									setAttributes({ taxType: '' });
-									setAttributes({ categories: [] });
-								}}
-							/>
-							<SelectControl
-								label={__('Order by', 'kadence-blocks')}
-								options={[
-									{
-										label: __('Newest to Oldest', 'kadence-blocks'),
-										value: 'date/desc',
-									},
-									{
-										label: __('Oldest to Newest', 'kadence-blocks'),
-										value: 'date/asc',
-									},
-									{
-										label: __('Modified Ascending', 'kadence-blocks'),
-										value: 'modified/asc',
-									},
-									{
-										label: __('Modified Decending', 'kadence-blocks'),
-										value: 'modified/desc',
-									},
-									{
-										/* translators: label for ordering posts by title in ascending order */
-										label: __('A → Z', 'kadence-blocks'),
-										value: 'title/asc',
-									},
-									{
-										/* translators: label for ordering posts by title in descending order */
-										label: __('Z → A', 'kadence-blocks'),
-										value: 'title/desc',
-									},
-									{
-										/* translators: label for ordering posts by title in descending order */
-										label: __('Menu Order', 'kadence-blocks'),
-										value: 'menu_order/asc',
-									},
-									{
-										/* translators: label for ordering posts by title in descending order */
-										label: __('Random', 'kadence-blocks'),
-										value: 'rand/desc',
-									},
-								]}
-								value={`${orderBy}/${order}`}
-								onChange={(value) => {
-									const [newOrderBy, newOrder] = value.split('/');
-									if (newOrder !== order) {
-										setAttributes({ order: newOrder });
-									}
-									if (newOrderBy !== orderBy) {
-										setAttributes({ orderBy: newOrderBy });
-									}
-								}}
-							/>
-							<RangeControl
-								key="query-controls-range-control"
-								label={__('Number of items', 'kadence-blocks')}
-								value={postsToShow}
-								onChange={(value) => setAttributes({ postsToShow: value })}
-								min={1}
-								max={300}
-							/>
-							<RangeControl
-								key="query-controls-range-control"
-								label={__('Offset Starting Post', 'kadence-blocks')}
-								value={offsetQuery}
-								onChange={(value) => setAttributes({ offsetQuery: value })}
-								min={0}
-								max={100}
-							/>
-							{((postType && postType !== 'post') || postTax) && (
-								<>
-									<Fragment>
-										<div className="term-select-form-row">
-											<TaxonomySelect
-												label={__('Select Taxonomy', 'kadence-blocks')}
-												value={getTaxSelectValue()}
-												source={postType}
-												termIsMulti={true}
-												termIsOptional={false}
-												onChange={(val) => {
-													saveTaxSelectValue(val);
-												}}
+						{!isSiteStylesPanel && (
+							<KadencePanelBody panelName={'kb-posts-settings'}>
+								<SelectControl
+									label={__('Select Posts Type:', 'kadence-blocks')}
+									options={postTypes}
+									value={postType}
+									onChange={(value) => {
+										setAttributes({ postType: value });
+										setAttributes({ taxType: '' });
+										setAttributes({ categories: [] });
+									}}
+								/>
+								<SelectControl
+									label={__('Order by', 'kadence-blocks')}
+									options={[
+										{
+											label: __('Newest to Oldest', 'kadence-blocks'),
+											value: 'date/desc',
+										},
+										{
+											label: __('Oldest to Newest', 'kadence-blocks'),
+											value: 'date/asc',
+										},
+										{
+											label: __('Modified Ascending', 'kadence-blocks'),
+											value: 'modified/asc',
+										},
+										{
+											label: __('Modified Decending', 'kadence-blocks'),
+											value: 'modified/desc',
+										},
+										{
+											/* translators: label for ordering posts by title in ascending order */
+											label: __('A → Z', 'kadence-blocks'),
+											value: 'title/asc',
+										},
+										{
+											/* translators: label for ordering posts by title in descending order */
+											label: __('Z → A', 'kadence-blocks'),
+											value: 'title/desc',
+										},
+										{
+											/* translators: label for ordering posts by title in descending order */
+											label: __('Menu Order', 'kadence-blocks'),
+											value: 'menu_order/asc',
+										},
+										{
+											/* translators: label for ordering posts by title in descending order */
+											label: __('Random', 'kadence-blocks'),
+											value: 'rand/desc',
+										},
+									]}
+									value={`${orderBy}/${order}`}
+									onChange={(value) => {
+										const [newOrderBy, newOrder] = value.split('/');
+										if (newOrder !== order) {
+											setAttributes({ order: newOrder });
+										}
+										if (newOrderBy !== orderBy) {
+											setAttributes({ orderBy: newOrderBy });
+										}
+									}}
+								/>
+								<RangeControl
+									key="query-controls-range-control"
+									label={__('Number of items', 'kadence-blocks')}
+									value={postsToShow}
+									onChange={(value) => setAttributes({ postsToShow: value })}
+									min={1}
+									max={300}
+								/>
+								<RangeControl
+									key="query-controls-range-control"
+									label={__('Offset Starting Post', 'kadence-blocks')}
+									value={offsetQuery}
+									onChange={(value) => setAttributes({ offsetQuery: value })}
+									min={0}
+									max={100}
+								/>
+								{((postType && postType !== 'post') || postTax) && (
+									<>
+										<Fragment>
+											<div className="term-select-form-row">
+												<TaxonomySelect
+													label={__('Select Taxonomy', 'kadence-blocks')}
+													value={getTaxSelectValue()}
+													source={postType}
+													termIsMulti={true}
+													termIsOptional={false}
+													onChange={(val) => {
+														saveTaxSelectValue(val);
+													}}
+												/>
+											</div>
+										</Fragment>
+										<Fragment>
+											<RadioControl
+												help={__(
+													'Whether to include or exclude items from selected terms.',
+													'kadence-blocks'
+												)}
+												selected={undefined !== excludeTax ? excludeTax : 'include'}
+												options={[
+													{ label: __('Include', 'kadence-blocks'), value: 'include' },
+													{ label: __('Exclude', 'kadence-blocks'), value: 'exclude' },
+												]}
+												onChange={(value) => setAttributes({ excludeTax: value })}
 											/>
-										</div>
-									</Fragment>
-									<Fragment>
+										</Fragment>
+										{(!postType || postType === 'post') && (
+											<ToggleControl
+												label={__('Select the post Taxonomy', 'kadence-blocks')}
+												checked={postTax}
+												onChange={(value) => setAttributes({ postTax: value })}
+											/>
+										)}
+									</>
+								)}
+								{(!postType || (postType === 'post' && !postTax)) && (
+									<>
+										<KadenceSelectTerms
+											placeholder={__('Filter by Category', 'kadence-blocks')}
+											restBase={'wp/v2/categories'}
+											fieldId={'tax-select-category'}
+											value={categories}
+											onChange={(value) => {
+												setAttributes({ categories: value ? value : [] });
+											}}
+										/>
+										<KadenceSelectTerms
+											placeholder={__('Filter by Tag', 'kadence-blocks')}
+											restBase={'wp/v2/tags'}
+											fieldId={'tax-select-tags'}
+											value={tags}
+											onChange={(value) => {
+												setAttributes({ tags: value ? value : [] });
+											}}
+										/>
 										<RadioControl
 											help={__(
 												'Whether to include or exclude items from selected terms.',
@@ -465,70 +512,29 @@ function KadencePosts(props) {
 											]}
 											onChange={(value) => setAttributes({ excludeTax: value })}
 										/>
-									</Fragment>
-									{(!postType || postType === 'post') && (
 										<ToggleControl
 											label={__('Select the post Taxonomy', 'kadence-blocks')}
 											checked={postTax}
 											onChange={(value) => setAttributes({ postTax: value })}
 										/>
-									)}
-								</>
-							)}
-							{(!postType || (postType === 'post' && !postTax)) && (
-								<>
-									<KadenceSelectTerms
-										placeholder={__('Filter by Category', 'kadence-blocks')}
-										restBase={'wp/v2/categories'}
-										fieldId={'tax-select-category'}
-										value={categories}
-										onChange={(value) => {
-											setAttributes({ categories: value ? value : [] });
-										}}
-									/>
-									<KadenceSelectTerms
-										placeholder={__('Filter by Tag', 'kadence-blocks')}
-										restBase={'wp/v2/tags'}
-										fieldId={'tax-select-tags'}
-										value={tags}
-										onChange={(value) => {
-											setAttributes({ tags: value ? value : [] });
-										}}
-									/>
-									<RadioControl
-										help={__(
-											'Whether to include or exclude items from selected terms.',
-											'kadence-blocks'
-										)}
-										selected={undefined !== excludeTax ? excludeTax : 'include'}
-										options={[
-											{ label: __('Include', 'kadence-blocks'), value: 'include' },
-											{ label: __('Exclude', 'kadence-blocks'), value: 'exclude' },
-										]}
-										onChange={(value) => setAttributes({ excludeTax: value })}
-									/>
-									<ToggleControl
-										label={__('Select the post Taxonomy', 'kadence-blocks')}
-										checked={postTax}
-										onChange={(value) => setAttributes({ postTax: value })}
-									/>
-								</>
-							)}
-							<ToggleControl
-								label={__('Show Unique', 'kadence-blocks')}
-								help={__(
-									'Exclude posts in this block from showing in others on the same page.',
-									'kadence-blocks'
+									</>
 								)}
-								checked={showUnique}
-								onChange={(value) => setAttributes({ showUnique: value })}
-							/>
-							<ToggleControl
-								label={__('Allow Sticky Posts?', 'kadence-blocks')}
-								checked={allowSticky}
-								onChange={(value) => setAttributes({ allowSticky: value })}
-							/>
-						</KadencePanelBody>
+								<ToggleControl
+									label={__('Show Unique', 'kadence-blocks')}
+									help={__(
+										'Exclude posts in this block from showing in others on the same page.',
+										'kadence-blocks'
+									)}
+									checked={showUnique}
+									onChange={(value) => setAttributes({ showUnique: value })}
+								/>
+								<ToggleControl
+									label={__('Allow Sticky Posts?', 'kadence-blocks')}
+									checked={allowSticky}
+									onChange={(value) => setAttributes({ allowSticky: value })}
+								/>
+							</KadencePanelBody>
+						)}
 						<KadencePanelBody
 							title={__('Layout Settings', 'kadence-blocks')}
 							initialOpen={false}
@@ -599,7 +605,7 @@ function KadencePosts(props) {
 								tagLevel={titleFont[0].level}
 								tagLowLevel={2}
 								tagHighLevel={7}
-								onTagLevel={(value) => saveTitleFont({ level: value })}
+								onTagLevel={isSiteStylesPanel ? undefined : (value) => saveTitleFont({ level: value })}
 								fontSize={titleFont[0].size}
 								onFontSize={(value) => saveTitleFont({ size: value })}
 								fontSizeType={titleFont[0].sizeType}
@@ -623,11 +629,13 @@ function KadencePosts(props) {
 							panelName={'imageSettings'}
 							blockSlug={'kadence/posts'}
 						>
-							<ToggleControl
-								label={__('Enable Image', 'kadence-blocks')}
-								checked={image}
-								onChange={(value) => setAttributes({ image: value })}
-							/>
+							{!isSiteStylesPanel && (
+								<ToggleControl
+									label={__('Enable Image', 'kadence-blocks')}
+									checked={image}
+									onChange={(value) => setAttributes({ image: value })}
+								/>
+							)}
 							{image && (
 								<>
 									<SelectControl
@@ -710,11 +718,13 @@ function KadencePosts(props) {
 								panelName={'categorySettings'}
 								blockSlug={'kadence/posts'}
 							>
-								<ToggleControl
-									label={__('Enable Above Title Category', 'kadence-blocks')}
-									checked={aboveCategories}
-									onChange={(value) => setAttributes({ aboveCategories: value })}
-								/>
+								{!isSiteStylesPanel && (
+									<ToggleControl
+										label={__('Enable Above Title Category', 'kadence-blocks')}
+										checked={aboveCategories}
+										onChange={(value) => setAttributes({ aboveCategories: value })}
+									/>
+								)}
 								{aboveCategories && (
 									<>
 										{kadence_blocks_params?.isKadenceT === '1' && (
@@ -774,7 +784,7 @@ function KadencePosts(props) {
 					</>
 				)}
 
-				{activeTab === 'advanced' && (
+				{activeTab === 'advanced' && !isSiteStylesPanel && (
 					<>
 						<KadencePanelBody
 							title={__('Meta Settings', 'kadence-blocks')}
