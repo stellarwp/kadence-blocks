@@ -88,16 +88,20 @@ final class SiteStylesSectionTest extends WPTestCase {
 	}
 
 	/**
-	 * A Section saved before the padding arrays keeps its own padding numbers and unit: its older side numbers
-	 * set the padding group, so it takes no site padding or padding unit.
+	 * A Section saved before the padding arrays keeps its own padding numbers and unit on any device: its older
+	 * side numbers set the padding group, so it takes no site padding or padding unit.
+	 *
+	 * @dataProvider olderPaddingProvider
+	 *
+	 * @param string $attribute The older side number the Section has.
 	 *
 	 * @return void
 	 */
-	public function testOlderPaddingNumbersKeepTheirOwnUnit(): void {
+	public function testOlderPaddingNumbersKeepTheirOwnUnit( string $attribute ): void {
 		$this->tester->enable_fse_mode();
 		$this->store_site_values();
 
-		$css = $this->section_css( [ 'topPadding' => 10 ] );
+		$css = $this->section_css( [ $attribute => 10 ] );
 
 		$this->assertStringContainsString( 'padding-top:10px', $css );
 		$this->assertStringNotContainsString( 'vw', $css );
@@ -209,6 +213,15 @@ final class SiteStylesSectionTest extends WPTestCase {
 				'borderWidth' => [ 1, 1, 1, 1 ],
 			],
 		];
+	}
+
+	/**
+	 * @return Generator
+	 */
+	public function olderPaddingProvider(): Generator {
+		yield 'desktop' => [ 'attribute' => 'topPadding' ];
+		yield 'tablet' => [ 'attribute' => 'topPaddingT' ];
+		yield 'mobile' => [ 'attribute' => 'topPaddingM' ];
 	}
 
 	/**

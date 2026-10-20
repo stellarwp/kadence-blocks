@@ -490,5 +490,89 @@
 			"tabletBorderStyle": "dashed",
 			"background": "#ff0000"
 		}
+	},
+	{
+		"name": "an older color string sets the group it stands in for",
+		"site": {
+			"padding": [2, 2, 2, 2],
+			"paddingType": "vw",
+			"borderStyle": "solid",
+			"tabletBorderStyle": "dashed",
+			"background": "#ff0000"
+		},
+		"instance": {
+			"border": "#00ffff",
+			"borderWidth": ["", "", "", ""]
+		},
+		"groups": [
+			["padding", "tabletPadding", "mobilePadding", "paddingType"],
+			["borderStyle", "tabletBorderStyle"],
+			["background", "backgroundOpacity"]
+		],
+		"legacy": {
+			"padding": ["topPadding"],
+			"borderStyle": ["border", "borderWidth"]
+		},
+		"defaults": {
+			"padding": ["", "", "", ""],
+			"tabletPadding": ["", "", "", ""],
+			"mobilePadding": ["", "", "", ""],
+			"paddingType": "px",
+			"borderStyle": "",
+			"tabletBorderStyle": "",
+			"background": "",
+			"backgroundOpacity": 1,
+			"topPadding": "",
+			"borderWidth": [0, 0, 0, 0],
+			"border": ""
+		},
+		"expected": {
+			"padding": [2, 2, 2, 2],
+			"paddingType": "vw",
+			"background": "#ff0000"
+		}
+	},
+	{
+		"name": "an older color left empty doesn't set its group",
+		"site": {
+			"padding": [2, 2, 2, 2],
+			"paddingType": "vw",
+			"borderStyle": "solid",
+			"tabletBorderStyle": "dashed",
+			"background": "#ff0000"
+		},
+		"instance": {
+			"border": "",
+			"borderWidth": ["", "", "", ""]
+		},
+		"groups": [
+			["padding", "tabletPadding", "mobilePadding", "paddingType"],
+			["borderStyle", "tabletBorderStyle"],
+			["background", "backgroundOpacity"]
+		],
+		"legacy": {
+			"padding": ["topPadding"],
+			"borderStyle": ["border", "borderWidth"]
+		},
+		"defaults": {
+			"padding": ["", "", "", ""],
+			"tabletPadding": ["", "", "", ""],
+			"mobilePadding": ["", "", "", ""],
+			"paddingType": "px",
+			"borderStyle": "",
+			"tabletBorderStyle": "",
+			"background": "",
+			"backgroundOpacity": 1,
+			"topPadding": "",
+			"borderWidth": [0, 0, 0, 0],
+			"border": ""
+		},
+		"expected": {
+			"padding": [2, 2, 2, 2],
+			"paddingType": "vw",
+			"borderStyle": "solid",
+			"tabletBorderStyle": "dashed",
+			"background": "#ff0000"
+		}
 	}
 ]
