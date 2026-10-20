@@ -142,6 +142,31 @@ final class SupportedBlocksTest extends TestCase {
 	}
 
 	/**
+	 * Section takes its padding, min height, background, borders, radius, shadows and text colors through the
+	 * overlay, in nine groups, with no scope, no site rules and no core surface, and keeps its layout,
+	 * structure and behavior settings per block.
+	 *
+	 * @return void
+	 */
+	public function testSectionDescribesItsSiteStyles(): void {
+		$block = $this->container->get( Supported_Blocks::class )->get( 'kadence/column' );
+
+		$this->assertNotNull( $block );
+		$this->assertSame( 'column', $block->get_slug() );
+		$this->assertNotInstanceOf( Scopes_Site_Styles::class, $block );
+		$this->assertInstanceOf( Groups_Site_Styles::class, $block );
+		$this->assertSame( [], $block->site_styles_attributes_map() );
+		$this->assertSame( [], $block->site_styles_supports() );
+		$this->assertSame( [], $block->site_styles_selectors() );
+		$this->assertCount( 33, $block->site_styles_overlay_attributes() );
+		$this->assertCount( 9, $block->site_styles_attribute_groups() );
+		$this->assertSame( array_values( array_unique( $block->site_styles_overlay_attributes() ) ), $block->site_styles_overlay_attributes() );
+		foreach ( [ 'margin', 'textAlign', 'maxWidth', 'direction', 'htmlTag', 'zIndex', 'sticky', 'backgroundType', 'backgroundImg', 'overlay', 'topPadding', 'borderWidth', 'kbVersion', 'templateLock' ] as $attribute ) {
+			$this->assertContains( $attribute, Supported_Blocks::excluded_attributes( $block ) );
+		}
+	}
+
+	/**
 	 * Show More takes its collapsed height, fade, padding and margin through the overlay, in four groups,
 	 * with no scope, no site rules and no core surface, and keeps its expand behavior per block.
 	 *

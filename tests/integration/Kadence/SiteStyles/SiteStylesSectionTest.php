@@ -1,0 +1,184 @@
+<?php
+
+declare( strict_types=1 );
+
+namespace Tests\integration\Kadence\SiteStyles;
+
+use Codeception\TestCase\WPTestCase;
+use Generator;
+use KadenceWP\KadenceBlocks\App;
+use KadenceWP\KadenceBlocks\Site_Styles\Site_Rules;
+
+/**
+ * Covers the instance CSS of Sections with site-level styles: untouched Sections take the site values, and a
+ * Section's own values keep their whole group.
+ */
+final class SiteStylesSectionTest extends WPTestCase {
+	protected \IntegrationTester $tester;
+
+	/**
+	 * Without site values, a Section's CSS in FSE mode is the same as in classic mode.
+	 *
+	 * @dataProvider sectionProvider
+	 *
+	 * @param array<string, mixed> $attributes The Section's own attributes.
+	 *
+	 * @return void
+	 */
+	public function testWithoutSiteValuesTheCssMatchesClassicMode( array $attributes ): void {
+		$classic = $this->section_css( $attributes );
+		$this->tester->enable_fse_mode();
+
+		$this->assertSame( $classic, $this->section_css( $attributes ) );
+	}
+
+	/**
+	 * An untouched Section takes every site value: padding on each device, the min height, the background,
+	 * the radius and the text and link colors.
+	 *
+	 * @return void
+	 */
+	public function testAnUntouchedSectionTakesTheSiteValues(): void {
+		$this->tester->enable_fse_mode();
+		$this->store_site_values();
+
+		$css = $this->section_css( [] );
+
+		$this->assertStringContainsString( 'padding-top:2vw', $css );
+		$this->assertStringContainsString( 'padding-top:1vw', $css );
+		$this->assertStringContainsString( 'min-height:50vh', $css );
+		$this->assertStringContainsString( 'background-color:#ff0000', $css );
+		$this->assertStringContainsString( 'border-top-left-radius:6px', $css );
+		$this->assertStringContainsString( 'color:#123456', $css );
+		$this->assertStringContainsString( 'color:#00aa00', $css );
+	}
+
+	/**
+	 * A Section with its own padding keeps its own unit and takes no site tablet padding, while the groups it
+	 * doesn't set still take the site values.
+	 *
+	 * @return void
+	 */
+	public function testAnOwnPaddingKeepsItsWholeGroup(): void {
+		$this->tester->enable_fse_mode();
+		$this->store_site_values();
+
+		$css = $this->section_css( [ 'padding' => [ 20, 20, 20, 20 ] ] );
+
+		$this->assertStringContainsString( 'padding-top:20px', $css );
+		$this->assertStringNotContainsString( 'vw', $css );
+		$this->assertStringContainsString( 'background-color:#ff0000', $css );
+		$this->assertStringContainsString( 'min-height:50vh', $css );
+	}
+
+	/**
+	 * A Section with its own background keeps its own opacity too.
+	 *
+	 * @return void
+	 */
+	public function testAnOwnBackgroundKeepsItsOpacity(): void {
+		$this->tester->enable_fse_mode();
+		$this->store_site_values( [ 'backgroundOpacity' => 0.5 ] );
+
+		$css = $this->section_css( [ 'background' => '#0000ff' ] );
+
+		$this->assertStringContainsString( 'background-color:#0000ff', $css );
+		$this->assertStringNotContainsString( 'rgba(255, 0, 0', $css );
+		$this->assertStringNotContainsString( '0.5', $css );
+	}
+
+	/**
+	 * In classic mode, stored site values change nothing.
+	 *
+	 * @return void
+	 */
+	public function testClassicModeIgnoresTheSiteValues(): void {
+		$untouched = $this->section_css( [] );
+		$this->store_site_values();
+
+		$this->assertSame( $untouched, $this->section_css( [] ) );
+	}
+
+	/**
+	 * The site rules print nothing for Section, since every site value goes through the overlay.
+	 *
+	 * @return void
+	 */
+	public function testTheSiteRulesPrintNothing(): void {
+		$this->tester->enable_fse_mode();
+		$this->store_site_values();
+		$this->section_css( [] );
+
+		$this->assertSame( '', App::instance()->container()->get( Site_Rules::class )->css( 'kadence/column' ) );
+	}
+
+	/**
+	 * @return Generator
+	 */
+	public function sectionProvider(): Generator {
+		yield 'untouched' => [ 'attributes' => [] ];
+		yield 'own padding' => [ 'attributes' => [ 'padding' => [ 20, 20, 20, 20 ] ] ];
+		yield 'own background' => [ 'attributes' => [ 'background' => '#0000ff' ] ];
+	}
+
+	/**
+	 * Stores site values for the main Section groups, plus any extra values.
+	 *
+	 * @param array<string, mixed> $extra Additional site values.
+	 *
+	 * @return void
+	 */
+	private function store_site_values( array $extra = [] ): void {
+		$this->tester->store_user_global_styles(
+			[
+				'settings' => [
+					'custom' => [
+						'kadence' => [
+							'column' => array_merge(
+								[
+									'padding'          => [ 2, 2, 2, 2 ],
+									'tabletPadding'    => [ 1, 1, 1, 1 ],
+									'paddingType'      => 'vw',
+									'height'           => [ 50, '', '' ],
+									'heightUnit'       => 'vh',
+									'background'       => '#ff0000',
+									'borderRadius'     => [ 6, 6, 6, 6 ],
+									'borderRadiusUnit' => 'px',
+									'textColor'        => '#123456',
+									'linkColor'        => '#00aa00',
+								],
+								$extra
+							),
+						],
+					],
+				],
+			]
+		);
+	}
+
+	/**
+	 * Renders a Section saved by the current editor, which stores blank border widths, and returns its instance
+	 * CSS.
+	 *
+	 * @param array<string, mixed> $attributes The Section's own attributes.
+	 *
+	 * @return string The CSS.
+	 */
+	private function section_css( array $attributes ): string {
+		$attributes = array_merge(
+			[
+				'uniqueID'    => 'col_test',
+				'borderWidth' => [ '', '', '', '' ],
+				'kbVersion'   => 2,
+			],
+			$attributes
+		);
+		$markup     = sprintf(
+			'<!-- wp:kadence/column %s --><div class="wp-block-kadence-column kadence-column%s"><div class="kt-inside-inner-col"></div></div><!-- /wp:kadence/column -->',
+			wp_json_encode( $attributes ),
+			$attributes['uniqueID']
+		);
+
+		return $this->tester->rendered_block_css( $markup, 'column' );
+	}
+}

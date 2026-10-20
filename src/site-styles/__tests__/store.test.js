@@ -17,6 +17,7 @@ import conformance from './fixtures/merge-conformance.json';
 import groupConformance from './fixtures/group-conformance.json';
 import scopeConformance from './fixtures/scope-conformance.json';
 import singleButton from './fixtures/singlebtn-entry.json';
+import section from './fixtures/column-entry.json';
 import showMore from './fixtures/show-more-entry.json';
 
 const BLOCK = 'kadence/singlebtn';
@@ -160,6 +161,28 @@ describe('siteAttributes', () => {
 		};
 
 		expect(siteAttributes(record, UNSCOPED)).toEqual({ heightDesktop: 300, textColor: '#222222' });
+	});
+
+	it("keeps only Section's overlay attributes, leaving its layout and Pro settings to each block", () => {
+		window.kadenceSiteStyles.blocks['kadence/column'] = section;
+		const record = {
+			settings: {
+				custom: {
+					kadence: {
+						column: {
+							padding: [2, 2, 2, 2],
+							textColor: '#222222',
+							margin: [10, 0, 10, 0],
+							backdropFilterType: 'blur',
+							kadenceAnimation: 'fade-in',
+							kadenceBlockCSS: 'selector { color: red; }',
+						},
+					},
+				},
+			},
+		};
+
+		expect(siteAttributes(record, 'kadence/column')).toEqual({ padding: [2, 2, 2, 2], textColor: '#222222' });
 	});
 
 	it("keeps only Show More's overlay attributes, leaving its expand behavior to each block", () => {
