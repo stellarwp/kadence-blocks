@@ -54,6 +54,20 @@
 			return doc.body.textContent || '';
 		},
 		/**
+		 * Deprecated alias of htmlToText().
+		 *
+		 * @param {string} html The string to convert.
+		 *
+		 * @since TBD
+		 *
+		 * @deprecated TBD Use htmlToText().
+		 *
+		 * @return {string} The decoded plain text.
+		 */
+		stripHtml(html) {
+			return window.kadenceCountUp.htmlToText(html);
+		},
+		/**
 		 * Escape a plain-text string so it is safe to write with innerHTML.
 		 *
 		 * @param {string} text The plain text to escape.

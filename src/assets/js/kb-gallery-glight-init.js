@@ -15,6 +15,11 @@
 		foundClasses: {},
 		// Anchors the gallery block renders, so markup injected elsewhere inside the container is never bound.
 		linkSelector: '.kadence-blocks-gallery-item a.kb-gallery-item-link',
+		// Marks an anchor as sanitized on the element itself, so a re-run (even from a second copy of this script)
+		// does not escape its title a second time.
+		sanitizedKey: Symbol.for('kadenceBlocksGLightSanitized'),
+		// The only data attributes GLightbox may read from a gallery anchor.
+		allowedDataAttributes: ['data-title', 'data-description', 'data-alt'],
 		simulateClick(elem) {
 			// Create our event (with options)
 			const evt = new MouseEvent('click', {
@@ -31,9 +36,11 @@
 		// 	);
 		// },
 		handleClones(element) {
-			const foundClones = element.querySelectorAll('.kb-slide-item.splide__slide--clone a.kb-gallery-item-link');
+			const foundClones = element.querySelectorAll(
+				'.kb-slide-item.splide__slide--clone ' + kadenceBlocksGLight.linkSelector
+			);
 			const foundRegular = element.querySelectorAll(
-				'.kb-slide-item:not(.splide__slide--clone) a.kb-gallery-item-link'
+				'.kb-slide-item:not(.splide__slide--clone) ' + kadenceBlocksGLight.linkSelector
 			);
 			for (let c = 0; c < foundClones.length; c++) {
 				foundClones[c].addEventListener('click', function (event) {
@@ -95,10 +102,11 @@
 		/**
 		 * Make the slide data on a gallery anchor safe before GLightbox reads it.
 		 *
-		 * GLightbox writes the slide title and description with innerHTML, taking them from the data-glightbox,
-		 * data-title and data-description attributes or the title attribute, all of which the browser has already
-		 * entity-decoded. Drop the other slide settings, escape the title, and reduce the description to the
-		 * caption markup the gallery already allows.
+		 * GLightbox reads every one of its settings from the anchor's data attributes and writes several of them
+		 * (title, description, alt, video provider, width) into markup it sets with innerHTML. The browser has
+		 * already entity-decoded those attributes, so remove every data attribute that is not on the allow list,
+		 * escape the title and alt, reduce the description to the caption markup the gallery already allows, and
+		 * remove the description sources GLightbox would otherwise resolve itself.
 		 *
 		 * @param {HTMLElement} el The anchor GLightbox will be bound to.
 		 *
@@ -107,23 +115,39 @@
 		 * @return {void}
 		 */
 		sanitizeSlideData(el) {
+			if (el[kadenceBlocksGLight.sanitizedKey]) {
+				return;
+			}
+			el[kadenceBlocksGLight.sanitizedKey] = true;
+
 			const rawTitle = el.dataset.title || el.getAttribute('title') || '';
-			const description = el.getAttribute('data-description');
-			[
-				'data-glightbox',
-				'data-description',
-				'data-content',
-				'data-href',
-				'data-type',
-				'data-desc-position',
-				'data-effect',
-			].forEach((name) => el.removeAttribute(name));
+			const rawAlt = el.getAttribute('data-alt');
+			let description = el.getAttribute('data-description');
+
+			[...el.attributes].forEach(({ name }) => {
+				if (name.startsWith('data-') && !kadenceBlocksGLight.allowedDataAttributes.includes(name)) {
+					el.removeAttribute(name);
+				}
+			});
+			// GLightbox falls back to the innerHTML of a .glightbox-desc child when there is no description.
+			el.querySelectorAll('.glightbox-desc').forEach((child) => child.remove());
+
 			el.setAttribute('data-title', kadenceBlocksGLight.escapeHtml(rawTitle));
+			if (null !== rawAlt) {
+				el.setAttribute('data-alt', kadenceBlocksGLight.escapeHtml(rawAlt));
+			}
 			if (description) {
-				el.setAttribute(
-					'data-description',
-					kadenceBlocksGLight.strip_tags(description, '<a><br><b><i><u><p><ol><ul><li><strong><small>')
+				description = kadenceBlocksGLight.strip_tags(
+					description,
+					'<a><br><b><i><u><p><ol><ul><li><strong><small>'
 				);
+				// GLightbox treats a description starting with a period as a CSS selector to copy HTML from.
+				if ('.' === description.charAt(0)) {
+					description = '<p>' + description + '</p>';
+				}
+				el.setAttribute('data-description', description);
+			} else {
+				el.removeAttribute('data-description');
 			}
 
 			// el.protocol is the resolved scheme.

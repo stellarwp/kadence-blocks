@@ -154,10 +154,36 @@
 
 			return futureDate.getTime();
 		},
-		stripHtml(html) {
+		/**
+		 * Decode a string that may contain markup into plain text.
+		 *
+		 * The result is decoded text, not escaped output: entities are resolved, so it must not be written
+		 * with innerHTML without escaping it first.
+		 *
+		 * @param {string} html The string to convert.
+		 *
+		 * @since TBD
+		 *
+		 * @return {string} The decoded plain text.
+		 */
+		htmlToText(html) {
 			const wrappedHtml = `<pre>${html}</pre>`;
 			const doc = new DOMParser().parseFromString(wrappedHtml, 'text/html');
 			return doc.body.textContent || '';
+		},
+		/**
+		 * Deprecated alias of htmlToText().
+		 *
+		 * @param {string} html The string to convert.
+		 *
+		 * @since TBD
+		 *
+		 * @deprecated TBD Use htmlToText().
+		 *
+		 * @return {string} The decoded plain text.
+		 */
+		stripHtml(html) {
+			return window.kadenceCountdown.htmlToText(html);
 		},
 		createSafeElement(type, className, content) {
 			const element = document.createElement(type);
@@ -366,7 +392,7 @@
 						completeContent.setAttribute('aria-live', 'polite');
 						completeContent.setAttribute('aria-atomic', 'true');
 						// Announce the content change
-						const completeText = window.kadenceCountdown.stripHtml(
+						const completeText = window.kadenceCountdown.htmlToText(
 							completeContent.textContent || completeContent.innerText || ''
 						);
 						if (completeText.trim()) {
@@ -389,10 +415,14 @@
 						const timeNumbers = window.kadenceCountdown.timers[id].stopWatch;
 						const units = window.kadenceCountdown.timers[id].units;
 						const labels = {
-							days: window.kadenceCountdown.stripHtml(window.kadenceCountdown.timers[id].daysLabel),
-							hours: window.kadenceCountdown.stripHtml(window.kadenceCountdown.timers[id].hoursLabel),
-							minutes: window.kadenceCountdown.stripHtml(window.kadenceCountdown.timers[id].minutesLabel),
-							seconds: window.kadenceCountdown.stripHtml(window.kadenceCountdown.timers[id].secondsLabel),
+							days: window.kadenceCountdown.htmlToText(window.kadenceCountdown.timers[id].daysLabel),
+							hours: window.kadenceCountdown.htmlToText(window.kadenceCountdown.timers[id].hoursLabel),
+							minutes: window.kadenceCountdown.htmlToText(
+								window.kadenceCountdown.timers[id].minutesLabel
+							),
+							seconds: window.kadenceCountdown.htmlToText(
+								window.kadenceCountdown.timers[id].secondsLabel
+							),
 						};
 						const parts = {};
 
@@ -440,7 +470,7 @@
 							const preInner = this.createSafeElement(
 								'span',
 								'kb-pre-timer-inner',
-								this.stripHtml(window.kadenceCountdown.timers[id].preLabel)
+								this.htmlToText(window.kadenceCountdown.timers[id].preLabel)
 							);
 							preTimer.appendChild(preInner);
 							element.appendChild(preTimer);
@@ -456,14 +486,14 @@
 							const numberSpan = this.createSafeElement(
 								'span',
 								'kb-countdown-number',
-								this.calculateNumberDesign(this.stripHtml(parts[part].toString()), timeNumbers)
+								this.calculateNumberDesign(this.htmlToText(parts[part].toString()), timeNumbers)
 							);
 							itemContainer.appendChild(numberSpan);
 
 							const labelSpan = this.createSafeElement(
 								'span',
 								'kb-countdown-label',
-								this.stripHtml(labels[part])
+								this.htmlToText(labels[part])
 							);
 							itemContainer.appendChild(labelSpan);
 
@@ -491,7 +521,7 @@
 							const postInner = this.createSafeElement(
 								'span',
 								'kb-post-timer-inner',
-								this.stripHtml(window.kadenceCountdown.timers[id].postLabel)
+								this.htmlToText(window.kadenceCountdown.timers[id].postLabel)
 							);
 							postTimer.appendChild(postInner);
 							element.appendChild(postTimer);
@@ -513,10 +543,10 @@
 				const timeNumbers = window.kadenceCountdown.timers[id].stopWatch;
 				const units = window.kadenceCountdown.timers[id].units;
 				const labels = {
-					days: window.kadenceCountdown.stripHtml(window.kadenceCountdown.timers[id].daysLabel),
-					hours: window.kadenceCountdown.stripHtml(window.kadenceCountdown.timers[id].hoursLabel),
-					minutes: window.kadenceCountdown.stripHtml(window.kadenceCountdown.timers[id].minutesLabel),
-					seconds: window.kadenceCountdown.stripHtml(window.kadenceCountdown.timers[id].secondsLabel),
+					days: window.kadenceCountdown.htmlToText(window.kadenceCountdown.timers[id].daysLabel),
+					hours: window.kadenceCountdown.htmlToText(window.kadenceCountdown.timers[id].hoursLabel),
+					minutes: window.kadenceCountdown.htmlToText(window.kadenceCountdown.timers[id].minutesLabel),
+					seconds: window.kadenceCountdown.htmlToText(window.kadenceCountdown.timers[id].secondsLabel),
 				};
 
 				let calculateHours = Math.floor((total / (1000 * 60 * 60)) % 24);
@@ -567,7 +597,7 @@
 					const preInner = this.createSafeElement(
 						'span',
 						'kb-pre-timer-inner',
-						this.stripHtml(window.kadenceCountdown.timers[id].preLabel)
+						this.htmlToText(window.kadenceCountdown.timers[id].preLabel)
 					);
 					preTimer.appendChild(preInner);
 					element.appendChild(preTimer);
@@ -583,14 +613,14 @@
 					const numberSpan = this.createSafeElement(
 						'span',
 						'kb-countdown-number',
-						this.calculateNumberDesign(this.stripHtml(parts[part].toString()), timeNumbers)
+						this.calculateNumberDesign(this.htmlToText(parts[part].toString()), timeNumbers)
 					);
 					itemContainer.appendChild(numberSpan);
 
 					const labelSpan = this.createSafeElement(
 						'span',
 						'kb-countdown-label',
-						this.stripHtml(labels[part])
+						this.htmlToText(labels[part])
 					);
 					itemContainer.appendChild(labelSpan);
 
@@ -618,7 +648,7 @@
 					const postInner = this.createSafeElement(
 						'span',
 						'kb-post-timer-inner',
-						this.stripHtml(window.kadenceCountdown.timers[id].postLabel)
+						this.htmlToText(window.kadenceCountdown.timers[id].postLabel)
 					);
 					postTimer.appendChild(postInner);
 					element.appendChild(postTimer);

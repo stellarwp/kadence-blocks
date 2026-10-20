@@ -178,6 +178,20 @@
 			const doc = new DOMParser().parseFromString(wrappedHtml, 'text/html');
 			return doc.body.textContent || '';
 		},
+		/**
+		 * Deprecated alias of htmlToText().
+		 *
+		 * @param {string} html The string to convert.
+		 *
+		 * @since TBD
+		 *
+		 * @deprecated TBD Use htmlToText().
+		 *
+		 * @return {string} The decoded plain text.
+		 */
+		stripHtml(html) {
+			return kadenceProgressBars.htmlToText(html);
+		},
 		initAll() {
 			if (!kadenceProgressBars?.items) {
 				return;
