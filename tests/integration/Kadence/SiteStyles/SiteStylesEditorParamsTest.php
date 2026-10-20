@@ -29,7 +29,7 @@ final class SiteStylesEditorParamsTest extends WPTestCase {
 
 		$blocks = $this->site_styles( Editor_Params::EARLY_FILTERS_HANDLE )['blocks'];
 
-		$this->assertEqualsCanonicalizing( [ 'kadence/advancedbtn', 'kadence/singlebtn', 'kadence/icon', 'kadence/single-icon' ], array_keys( $blocks ) );
+		$this->assertEqualsCanonicalizing( [ 'kadence/advancedbtn', 'kadence/singlebtn', 'kadence/icon', 'kadence/single-icon', 'kadence/tableofcontents' ], array_keys( $blocks ) );
 		$this->assertEquals( json_decode( $json, true ), $blocks['kadence/singlebtn'] );
 	}
 
@@ -52,7 +52,7 @@ final class SiteStylesEditorParamsTest extends WPTestCase {
 
 		// wp_localize_script() turns booleans into strings, like every flag in kadence_blocks_params.
 		$this->assertSame( '1', $params['isFseMode'] );
-		$this->assertEqualsCanonicalizing( [ 'kadence/advancedbtn', 'kadence/singlebtn', 'kadence/icon', 'kadence/single-icon' ], $params['siteStylesBlocks'] );
+		$this->assertEqualsCanonicalizing( [ 'kadence/advancedbtn', 'kadence/singlebtn', 'kadence/icon', 'kadence/single-icon', 'kadence/tableofcontents' ], $params['siteStylesBlocks'] );
 	}
 
 	/**

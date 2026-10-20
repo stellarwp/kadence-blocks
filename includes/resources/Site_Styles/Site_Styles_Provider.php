@@ -6,6 +6,7 @@ use Kadence_Blocks_Advancedbtn_Block;
 use Kadence_Blocks_Icon_Block;
 use Kadence_Blocks_Single_Icon_Block;
 use Kadence_Blocks_Singlebtn_Block;
+use Kadence_Blocks_Tableofcontents_Block;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provider;
 
 /**
@@ -29,6 +30,7 @@ final class Site_Styles_Provider extends Provider {
 						Kadence_Blocks_Singlebtn_Block::get_instance(),
 						Kadence_Blocks_Icon_Block::get_instance(),
 						Kadence_Blocks_Single_Icon_Block::get_instance(),
+						Kadence_Blocks_Tableofcontents_Block::get_instance(),
 					]
 				);
 			}

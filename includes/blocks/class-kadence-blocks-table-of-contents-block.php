@@ -5,6 +5,8 @@
  * @package Kadence Blocks
  */
 
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Supports_Site_Styles;
+
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -15,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @category class
  */
-class Kadence_Blocks_Tableofcontents_Block extends Kadence_Blocks_Abstract_Block {
+class Kadence_Blocks_Tableofcontents_Block extends Kadence_Blocks_Abstract_Block implements Supports_Site_Styles {
 
 	/**
 	 * Instance of this class
@@ -318,6 +320,68 @@ class Kadence_Blocks_Tableofcontents_Block extends Kadence_Blocks_Abstract_Block
 		$toc_plugins['kadence-blocks/kadence-blocks.php'] = 'Kadence Blocks';
 
 		return $toc_plugins;
+	}
+
+	/**
+	 * The editor paints the title and the list inline, and the list's columns, style and
+	 * link style are classes the render builds from the attributes, so every style value
+	 * goes through the overlay. What the block does with the headings (which to list, the
+	 * title text and toggle, scrolling, searching) stays per table.
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_overlay_attributes(): array {
+		return array_merge(
+			[ 'columns', 'listStyle', 'linkStyle', 'listGap', 'displayShadow', 'shadow', 'maxWidth', 'maxWidthType' ],
+			[ 'containerBackground', 'containerPadding', 'tabletContainerPadding', 'mobileContainerPadding', 'containerPaddingUnit' ],
+			[ 'containerMargin', 'containerTabletMargin', 'containerMobileMargin', 'containerMarginUnit' ],
+			[ 'borderStyle', 'tabletBorderStyle', 'mobileBorderStyle', 'borderRadius', 'tabletBorderRadius', 'mobileBorderRadius', 'borderRadiusUnit' ],
+			[ 'titleAlign', 'titleColor', 'titleSize', 'titleSizeType', 'titleLineHeight', 'titleLineType', 'titleLetterSpacing', 'titleTextTransform' ],
+			[ 'titleTypography', 'titleGoogleFont', 'titleLoadGoogleFont', 'titleFontSubset', 'titleFontVariant', 'titleFontWeight', 'titleFontStyle' ],
+			[ 'titlePadding', 'tabletTitlePadding', 'mobileTitlePadding', 'titlePaddingType', 'titleBorderStyle', 'tabletTitleBorderStyle', 'mobileTitleBorderStyle' ],
+			[ 'contentHoverColor', 'contentSize', 'contentSizeType', 'contentLineHeight', 'contentLineType', 'contentLetterSpacing', 'contentTextTransform' ],
+			[ 'contentTypography', 'contentGoogleFont', 'contentLoadGoogleFont', 'contentFontSubset', 'contentFontVariant', 'contentFontWeight', 'contentFontStyle' ],
+			[ 'contentMargin', 'tabletContentMargin', 'mobileContentMargin', 'contentMarginType' ]
+		);
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_attributes_map(): array {
+		return [ 'contentColor' => 'color.text' ];
+	}
+
+	/**
+	 * The text color is the list's, which is what the block's own content color paints.
+	 *
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_supports(): array {
+		return [
+			'color' => [
+				'text'                            => true,
+				'background'                      => false,
+				'gradients'                       => false,
+				'__experimentalSkipSerialization' => true,
+			],
+		];
+	}
+
+	/**
+	 * The list, which the editor and the front end both render inside the block's wrapper. Only
+	 * the color goes there, so the block's other core styles, such as Additional CSS, keep the wrapper.
+	 *
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_selectors(): array {
+		return [ 'color' => '.wp-block-kadence-tableofcontents .kb-table-of-content-list' ];
 	}
 
 }
