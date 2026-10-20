@@ -99,6 +99,25 @@ final class SiteStylesRowLayoutTest extends WPTestCase {
 	}
 
 	/**
+	 * A row with its own overlay but no background color takes the site background color under the overlay,
+	 * which keeps its own color.
+	 *
+	 * @return void
+	 */
+	public function testASiteBackgroundPaintsUnderARowsOwnOverlay(): void {
+		$overlay = [ 'overlay' => '#000000' ];
+		$classic = $this->overlay_colors( $this->row_css( $overlay ) );
+
+		$this->tester->enable_fse_mode();
+		$this->store_site_values();
+		$css = $this->row_css( $overlay );
+
+		$this->assertStringContainsString( '.kb-row-layout-idrow_test{background-color:#ff0000;}', $css );
+		$this->assertSame( $classic, $this->overlay_colors( $css ) );
+		$this->assertStringContainsString( '#000000', $classic );
+	}
+
+	/**
 	 * A row with its own padding keeps its own unit and takes no site tablet padding, while the groups it
 	 * doesn't set still take the site values.
 	 *
@@ -590,6 +609,20 @@ final class SiteStylesRowLayoutTest extends WPTestCase {
 		$tags = new WP_HTML_Tag_Processor( $html );
 
 		return $tags->next_tag( [ 'class_name' => 'kb-row-layout-wrap' ] ) && $tags->has_class( 'kt-row-has-bg' );
+	}
+
+	/**
+	 * The color declarations of the row's overlay layer.
+	 *
+	 * @param string $css The CSS.
+	 *
+	 * @return string The declarations, in order.
+	 */
+	private function overlay_colors( string $css ): string {
+		preg_match_all( '/\\.kb-row-layout-idrow_test > \\.kt-row-layout-overlay\\{([^}]*)\\}/', $css, $rules );
+		preg_match_all( '/(?:background[^:;]*|opacity|mix-blend-mode):[^;]*;/', implode( '', $rules[1] ), $declarations );
+
+		return implode( '', $declarations[0] );
 	}
 
 	/**
