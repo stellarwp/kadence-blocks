@@ -93,6 +93,7 @@ import { plusCircle } from '@wordpress/icons';
 
 import classnames from 'classnames';
 import { migrateToInnerblocks } from './utils';
+import { useIsSiteStylesPanel } from '../../site-styles/use-is-site-styles-panel';
 
 /**
  * Build the overlay edit
@@ -288,7 +289,13 @@ function KadenceTestimonials(props) {
 		});
 	};
 
+	const isSiteStylesPanel = useIsSiteStylesPanel();
+
 	useEffect(() => {
+		// The Kadence panel's block holds site values and has no testimonials.
+		if (isSiteStylesPanel) {
+			return;
+		}
 		// Update from old gutter settings.
 		if (columnGap !== '') {
 			setAttributes({ gap: [columnGap, '', ''], columnGap: '' });
@@ -591,6 +598,9 @@ function KadenceTestimonials(props) {
 	const innerBlockLength = testimonialBlock?.innerBlocks ? testimonialBlock.innerBlocks.length : 0;
 
 	useEffect(() => {
+		if (isSiteStylesPanel) {
+			return;
+		}
 		if (uniqueID && !innerBlockLength) {
 			if (
 				testimonials?.length &&
@@ -2166,7 +2176,7 @@ function KadenceTestimonials(props) {
 						{activeTab === 'general' && (
 							<>
 								<KadencePanelBody panelName={'kb-testimonials-settings'}>
-									{showSettings('layoutSettings', 'kadence/testimonials') && (
+									{showSettings('layoutSettings', 'kadence/testimonials') && !isSiteStylesPanel && (
 										<SelectControl
 											label={__('Layout', 'kadence-blocks')}
 											value={layout}
@@ -2177,7 +2187,7 @@ function KadenceTestimonials(props) {
 											onChange={(value) => setAttributes({ layout: value })}
 										/>
 									)}
-									{showSettings('styleSettings', 'kadence/testimonials') && (
+									{showSettings('styleSettings', 'kadence/testimonials') && !isSiteStylesPanel && (
 										<Fragment>
 											<p className="components-base-control__label">
 												{__('Testimonial Style', 'kadence-blocks')}
@@ -2208,7 +2218,7 @@ function KadenceTestimonials(props) {
 
 									{showSettings('columnSettings', 'kadence/testimonials') && (
 										<Fragment>
-											{columnControls}
+											{!isSiteStylesPanel && columnControls}
 											<ResponsiveRangeControls
 												label={__('Column Gutter', 'kadence-blocks')}
 												value={undefined !== gap?.[0] ? gap[0] : ''}
@@ -2252,7 +2262,7 @@ function KadenceTestimonials(props) {
 									)}
 								</KadencePanelBody>
 
-								{layout && layout === 'carousel' && (
+								{layout && layout === 'carousel' && !isSiteStylesPanel && (
 									<Fragment>
 										{showSettings('carouselSettings', 'kadence/testimonials') && (
 											<KadencePanelBody
@@ -2494,7 +2504,7 @@ function KadenceTestimonials(props) {
 									</KadencePanelBody>
 								)}
 
-								{showSettings('iconSettings', 'kadence/testimonials') && (
+								{showSettings('iconSettings', 'kadence/testimonials') && !isSiteStylesPanel && (
 									<KadencePanelBody
 										title={__('Icon Settings', 'kadence-blocks')}
 										initialOpen={false}
@@ -2654,115 +2664,143 @@ function KadenceTestimonials(props) {
 										initialOpen={false}
 										panelName={'kb-testimonials-title-settings'}
 									>
-										<ToggleControl
-											label={__('Show Title', 'kadence-blocks')}
-											checked={displayTitle}
-											onChange={(value) => setAttributes({ displayTitle: value })}
-										/>
+										{!isSiteStylesPanel && (
+											<ToggleControl
+												label={__('Show Title', 'kadence-blocks')}
+												checked={displayTitle}
+												onChange={(value) => setAttributes({ displayTitle: value })}
+											/>
+										)}
 										{displayTitle && (
 											<Fragment>
-												<PopColorControl
-													label={__('Color Settings', 'kadence-blocks')}
-													value={titleFont[0].color ? titleFont[0].color : ''}
-													default={''}
-													onChange={(value) => saveTitleFont({ color: value })}
-												/>
-												<TypographyControls
-													fontGroup={'heading'}
-													tagLevel={titleFont[0].level}
-													tagLowLevel={2}
-													onTagLevel={(value) => saveTitleFont({ level: value })}
-													fontSize={titleFont[0].size}
-													onFontSize={(value) => saveTitleFont({ size: value })}
-													fontSizeType={titleFont[0].sizeType}
-													onFontSizeType={(value) => saveTitleFont({ sizeType: value })}
-													lineHeight={titleFont[0].lineHeight}
-													onLineHeight={(value) => saveTitleFont({ lineHeight: value })}
-													lineHeightType={titleFont[0].lineType}
-													onLineHeightType={(value) => saveTitleFont({ lineType: value })}
-													letterSpacing={titleFont[0].letterSpacing}
-													onLetterSpacing={(value) => saveTitleFont({ letterSpacing: value })}
-													textTransform={titleFont[0].textTransform}
-													onTextTransform={(value) => saveTitleFont({ textTransform: value })}
-													fontFamily={titleFont[0].family}
-													onFontFamily={(value) => saveTitleFont({ family: value })}
-													onFontChange={(select) => {
-														saveTitleFont({
-															family: select.value,
-															google: select.google,
-														});
-													}}
-													onFontArrayChange={(values) => saveTitleFont(values)}
-													googleFont={titleFont[0].google}
-													onGoogleFont={(value) => saveTitleFont({ google: value })}
-													loadGoogleFont={titleFont[0].loadGoogle}
-													onLoadGoogleFont={(value) => saveTitleFont({ loadGoogle: value })}
-													fontVariant={titleFont[0].variant}
-													onFontVariant={(value) => saveTitleFont({ variant: value })}
-													fontWeight={titleFont[0].weight}
-													onFontWeight={(value) => saveTitleFont({ weight: value })}
-													fontStyle={titleFont[0].style}
-													onFontStyle={(value) => saveTitleFont({ style: value })}
-													fontSubset={titleFont[0].subset}
-													onFontSubset={(value) => saveTitleFont({ subset: value })}
-												/>
-												<ResponsiveMeasureRangeControl
-													label={__('Padding', 'kadence-blocks')}
-													value={titlePadding}
-													onChange={(value) => setAttributes({ titlePadding: value })}
-													tabletValue={tabletTitlePadding}
-													onChangeTablet={(value) =>
-														setAttributes({ tabletTitlePadding: value })
-													}
-													mobileValue={mobileTitlePadding}
-													onChangeMobile={(value) =>
-														setAttributes({ mobileTitlePadding: value })
-													}
-													min={
-														titlePaddingUnit === 'em' || titlePaddingUnit === 'rem' ? 0 : 0
-													}
-													max={
-														titlePaddingUnit === 'em' || titlePaddingUnit === 'rem'
-															? 12
-															: 999
-													}
-													step={
-														titlePaddingUnit === 'em' || titlePaddingUnit === 'rem'
-															? 0.1
-															: 1
-													}
-													unit={titlePaddingUnit}
-													units={['px', 'em', 'rem']}
-													onUnit={(value) => setAttributes({ titlePaddingUnit: value })}
-												/>
-												<ResponsiveMeasureRangeControl
-													label={__('Margin', 'kadence-blocks')}
-													value={titleMargin}
-													onChange={(value) => setAttributes({ titleMargin: value })}
-													tabletValue={tabletTitleMargin}
-													onChangeTablet={(value) =>
-														setAttributes({ tabletTitleMargin: value })
-													}
-													mobileValue={mobileTitleMargin}
-													onChangeMobile={(value) =>
-														setAttributes({ mobileTitleMargin: value })
-													}
-													min={
-														titleMarginUnit === 'em' || titleMarginUnit === 'rem'
-															? -2
-															: -999
-													}
-													max={
-														titleMarginUnit === 'em' || titleMarginUnit === 'rem' ? 12 : 999
-													}
-													step={
-														titleMarginUnit === 'em' || titleMarginUnit === 'rem' ? 0.1 : 1
-													}
-													unit={titleMarginUnit}
-													units={['px', 'em', 'rem']}
-													onUnit={(value) => setAttributes({ titleMarginUnit: value })}
-													allowAuto={true}
-												/>
+												{!isSiteStylesPanel && (
+													<>
+														<PopColorControl
+															label={__('Color Settings', 'kadence-blocks')}
+															value={titleFont[0].color ? titleFont[0].color : ''}
+															default={''}
+															onChange={(value) => saveTitleFont({ color: value })}
+														/>
+														<TypographyControls
+															fontGroup={'heading'}
+															tagLevel={titleFont[0].level}
+															tagLowLevel={2}
+															onTagLevel={(value) => saveTitleFont({ level: value })}
+															fontSize={titleFont[0].size}
+															onFontSize={(value) => saveTitleFont({ size: value })}
+															fontSizeType={titleFont[0].sizeType}
+															onFontSizeType={(value) =>
+																saveTitleFont({ sizeType: value })
+															}
+															lineHeight={titleFont[0].lineHeight}
+															onLineHeight={(value) =>
+																saveTitleFont({ lineHeight: value })
+															}
+															lineHeightType={titleFont[0].lineType}
+															onLineHeightType={(value) =>
+																saveTitleFont({ lineType: value })
+															}
+															letterSpacing={titleFont[0].letterSpacing}
+															onLetterSpacing={(value) =>
+																saveTitleFont({ letterSpacing: value })
+															}
+															textTransform={titleFont[0].textTransform}
+															onTextTransform={(value) =>
+																saveTitleFont({ textTransform: value })
+															}
+															fontFamily={titleFont[0].family}
+															onFontFamily={(value) => saveTitleFont({ family: value })}
+															onFontChange={(select) => {
+																saveTitleFont({
+																	family: select.value,
+																	google: select.google,
+																});
+															}}
+															onFontArrayChange={(values) => saveTitleFont(values)}
+															googleFont={titleFont[0].google}
+															onGoogleFont={(value) => saveTitleFont({ google: value })}
+															loadGoogleFont={titleFont[0].loadGoogle}
+															onLoadGoogleFont={(value) =>
+																saveTitleFont({ loadGoogle: value })
+															}
+															fontVariant={titleFont[0].variant}
+															onFontVariant={(value) => saveTitleFont({ variant: value })}
+															fontWeight={titleFont[0].weight}
+															onFontWeight={(value) => saveTitleFont({ weight: value })}
+															fontStyle={titleFont[0].style}
+															onFontStyle={(value) => saveTitleFont({ style: value })}
+															fontSubset={titleFont[0].subset}
+															onFontSubset={(value) => saveTitleFont({ subset: value })}
+														/>
+														<ResponsiveMeasureRangeControl
+															label={__('Padding', 'kadence-blocks')}
+															value={titlePadding}
+															onChange={(value) => setAttributes({ titlePadding: value })}
+															tabletValue={tabletTitlePadding}
+															onChangeTablet={(value) =>
+																setAttributes({ tabletTitlePadding: value })
+															}
+															mobileValue={mobileTitlePadding}
+															onChangeMobile={(value) =>
+																setAttributes({ mobileTitlePadding: value })
+															}
+															min={
+																titlePaddingUnit === 'em' || titlePaddingUnit === 'rem'
+																	? 0
+																	: 0
+															}
+															max={
+																titlePaddingUnit === 'em' || titlePaddingUnit === 'rem'
+																	? 12
+																	: 999
+															}
+															step={
+																titlePaddingUnit === 'em' || titlePaddingUnit === 'rem'
+																	? 0.1
+																	: 1
+															}
+															unit={titlePaddingUnit}
+															units={['px', 'em', 'rem']}
+															onUnit={(value) =>
+																setAttributes({ titlePaddingUnit: value })
+															}
+														/>
+														<ResponsiveMeasureRangeControl
+															label={__('Margin', 'kadence-blocks')}
+															value={titleMargin}
+															onChange={(value) => setAttributes({ titleMargin: value })}
+															tabletValue={tabletTitleMargin}
+															onChangeTablet={(value) =>
+																setAttributes({ tabletTitleMargin: value })
+															}
+															mobileValue={mobileTitleMargin}
+															onChangeMobile={(value) =>
+																setAttributes({ mobileTitleMargin: value })
+															}
+															min={
+																titleMarginUnit === 'em' || titleMarginUnit === 'rem'
+																	? -2
+																	: -999
+															}
+															max={
+																titleMarginUnit === 'em' || titleMarginUnit === 'rem'
+																	? 12
+																	: 999
+															}
+															step={
+																titleMarginUnit === 'em' || titleMarginUnit === 'rem'
+																	? 0.1
+																	: 1
+															}
+															unit={titleMarginUnit}
+															units={['px', 'em', 'rem']}
+															onUnit={(value) =>
+																setAttributes({ titleMarginUnit: value })
+															}
+															allowAuto={true}
+														/>
+													</>
+												)}
 												<ResponsiveRangeControls
 													label={__('Title Min Height', 'kadence-blocks')}
 													value={
@@ -2830,7 +2868,7 @@ function KadenceTestimonials(props) {
 										)}
 									</KadencePanelBody>
 								)}
-								{showSettings('ratingSettings', 'kadence/testimonials') && (
+								{showSettings('ratingSettings', 'kadence/testimonials') && !isSiteStylesPanel && (
 									<KadencePanelBody
 										title={__('Rating Settings', 'kadence-blocks')}
 										initialOpen={false}
@@ -2931,11 +2969,13 @@ function KadenceTestimonials(props) {
 										initialOpen={false}
 										panelName={'kb-testimonials-content-settings'}
 									>
-										<ToggleControl
-											label={__('Show Content', 'kadence-blocks')}
-											checked={displayContent}
-											onChange={(value) => setAttributes({ displayContent: value })}
-										/>
+										{!isSiteStylesPanel && (
+											<ToggleControl
+												label={__('Show Content', 'kadence-blocks')}
+												checked={displayContent}
+												onChange={(value) => setAttributes({ displayContent: value })}
+											/>
+										)}
 										{displayContent && (
 											<Fragment>
 												<PopColorControl
@@ -3051,7 +3091,7 @@ function KadenceTestimonials(props) {
 										)}
 									</KadencePanelBody>
 								)}
-								{showSettings('mediaSettings', 'kadence/testimonials') && (
+								{showSettings('mediaSettings', 'kadence/testimonials') && !isSiteStylesPanel && (
 									<KadencePanelBody
 										title={__('Media Settings', 'kadence-blocks')}
 										initialOpen={false}
@@ -3264,11 +3304,13 @@ function KadenceTestimonials(props) {
 										initialOpen={false}
 										panelName={'kb-testimonials-name-settings'}
 									>
-										<ToggleControl
-											label={__('Show Name', 'kadence-blocks')}
-											checked={displayName}
-											onChange={(value) => setAttributes({ displayName: value })}
-										/>
+										{!isSiteStylesPanel && (
+											<ToggleControl
+												label={__('Show Name', 'kadence-blocks')}
+												checked={displayName}
+												onChange={(value) => setAttributes({ displayName: value })}
+											/>
+										)}
 										{displayName && (
 											<Fragment>
 												<PopColorControl
@@ -3323,11 +3365,13 @@ function KadenceTestimonials(props) {
 										initialOpen={false}
 										panelName={'kb-testimonails-occupation-settings'}
 									>
-										<ToggleControl
-											label={__('Show Occupation', 'kadence-blocks')}
-											checked={displayOccupation}
-											onChange={(value) => setAttributes({ displayOccupation: value })}
-										/>
+										{!isSiteStylesPanel && (
+											<ToggleControl
+												label={__('Show Occupation', 'kadence-blocks')}
+												checked={displayOccupation}
+												onChange={(value) => setAttributes({ displayOccupation: value })}
+											/>
+										)}
 										{displayOccupation && (
 											<Fragment>
 												<PopColorControl
@@ -3407,14 +3451,16 @@ function KadenceTestimonials(props) {
 										onMouseOver={paddingMouseOver.onMouseOver}
 										onMouseOut={paddingMouseOver.onMouseOut}
 									/>
-									<RangeControl
-										label={__('Container Max Width (px)', 'kadence-blocks')}
-										value={containerMaxWidth}
-										onChange={(value) => setAttributes({ containerMaxWidth: value })}
-										step={5}
-										min={50}
-										max={2000}
-									/>
+									{!isSiteStylesPanel && (
+										<RangeControl
+											label={__('Container Max Width (px)', 'kadence-blocks')}
+											value={containerMaxWidth}
+											onChange={(value) => setAttributes({ containerMaxWidth: value })}
+											step={5}
+											min={50}
+											max={2000}
+										/>
+									)}
 									<ResponsiveRangeControls
 										label={__('Container Min Height', 'kadence-blocks')}
 										value={
@@ -3478,7 +3524,8 @@ function KadenceTestimonials(props) {
 										showUnit={true}
 										units={['px']}
 									/>
-									{containerMinHeight &&
+									{!isSiteStylesPanel &&
+										containerMinHeight &&
 										(containerMinHeight[0] || containerMinHeight[1] || containerMinHeight[2]) && (
 											<>
 												<div className="kt-btn-size-settings-container">
@@ -3554,15 +3601,19 @@ function KadenceTestimonials(props) {
 									</KadencePanelBody>
 								)}
 
-								<div className="kt-sidebar-settings-spacer"></div>
+								{!isSiteStylesPanel && (
+									<>
+										<div className="kt-sidebar-settings-spacer"></div>
 
-								<KadenceBlockDefaults
-									attributes={attributes}
-									defaultAttributes={metadata.attributes}
-									blockSlug={metadata.name}
-									excludedAttrs={nonTransAttrs}
-									preventMultiple={['testimonials']}
-								/>
+										<KadenceBlockDefaults
+											attributes={attributes}
+											defaultAttributes={metadata.attributes}
+											blockSlug={metadata.name}
+											excludedAttrs={nonTransAttrs}
+											preventMultiple={['testimonials']}
+										/>
+									</>
+								)}
 							</>
 						)}
 					</InspectorControls>

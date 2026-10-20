@@ -10,12 +10,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Groups_Site_Styles;
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Supports_Site_Styles;
+
 /**
  * Class to Build the Testimonial Block.
  *
  * @category class
  */
-class Kadence_Blocks_Testimonial_Block extends Kadence_Blocks_Abstract_Block {
+class Kadence_Blocks_Testimonial_Block extends Kadence_Blocks_Abstract_Block implements Supports_Site_Styles, Groups_Site_Styles {
 
 	/**
 	 * Instance of this class
@@ -386,6 +389,55 @@ class Kadence_Blocks_Testimonial_Block extends Kadence_Blocks_Abstract_Block {
 		$content .= '</div>';
 
 		return $content;
+	}
+
+	/**
+	 * The media icon's size and color are printed on its SVG in the markup and
+	 * painted inline by the editor, so every site value goes through the
+	 * overlay.
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_overlay_attributes(): array {
+		return array_merge( array_merge( ...$this->site_styles_attribute_groups() ), [ 'color' ] );
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_attributes_map(): array {
+		return [];
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_supports(): array {
+		return [];
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_selectors(): array {
+		return [];
+	}
+
+	/**
+	 * The icon size keeps its tablet and mobile values.
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_attribute_groups(): array {
+		return [
+			[ 'isize', 'tabletIsize', 'mobileIsize' ],
+		];
 	}
 }
 
