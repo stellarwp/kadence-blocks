@@ -21,6 +21,8 @@ trait SiteValuesTrait {
 	/**
 	 * The block type a test registered again, to restore.
 	 *
+	 * @since TBD
+	 *
 	 * @var WP_Block_Type|null
 	 */
 	private ?WP_Block_Type $registered = null;
@@ -28,8 +30,8 @@ trait SiteValuesTrait {
 	/**
 	 * Stores Kadence-only site values for one block.
 	 *
-	 * @param string                                     $slug   The block's key under `settings.custom.kadence`.
-	 * @param array<string, int|string|list<int|string>> $values The site values.
+	 * @param string                                                                               $slug   The block's key under `settings.custom.kadence`.
+	 * @param array<string, bool|float|int|string|list<bool|float|int|string|array<string, bool>>> $values The site values.
 	 *
 	 * @return void
 	 */
