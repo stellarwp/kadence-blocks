@@ -104,6 +104,7 @@ import { ColorControl } from '../../token-controls';
 import { EditorColorControlGroup } from '../../extension/design-tokens/components/EditorColorControlGroup';
 import { presetFontVariant } from './preset-font-variant';
 import { isFseMode } from '../../site-styles/supported-blocks';
+import { isConvertedHeading } from './converted-headings';
 import { useIsSiteStylesPanel } from '../../site-styles/use-is-site-styles-panel';
 import metadata from './block.json';
 /**
@@ -568,13 +569,14 @@ function KadenceAdvancedHeading(props) {
 	useEffect(() => {
 		/*
 		 * FSE mode ignores Block Defaults, which is where "Advanced Text as default block" keeps the paragraph tag.
-		 * A block that arrives with a tag, a level or text, from a transform for example, is not a fresh default block.
+		 * A block that arrives with a tag, a level or text, or from converting a core Heading, is not a fresh default block.
 		 */
 		if (
 			isFseMode() &&
 			!isSiteStylesPanel &&
 			!uniqueID &&
 			isDefaultEditorBlock &&
+			!isConvertedHeading(clientId) &&
 			!content &&
 			'heading' === htmlTag &&
 			2 === level

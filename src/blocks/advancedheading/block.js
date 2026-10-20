@@ -17,6 +17,7 @@ import edit from './edit';
 import save from './save';
 import metadata from './block.json';
 import backwardCompatibility from './deprecated';
+import { markConvertedHeading } from './converted-headings';
 
 /**
  * Internal block libraries
@@ -60,10 +61,13 @@ registerBlockType('kadence/advancedheading', {
 				type: 'block',
 				blocks: ['core/heading'],
 				transform: ({ content, level }) => {
-					return createBlock('kadence/advancedheading', {
+					const block = createBlock('kadence/advancedheading', {
 						content,
 						level,
 					});
+					markConvertedHeading(block.clientId);
+
+					return block;
 				},
 			},
 		],
