@@ -207,19 +207,6 @@ class Kadence_Blocks_Single_Icon_Block extends Kadence_Blocks_Abstract_Block imp
 	}
 
 	/**
-	 * The icon's `kt-svg-style-<style>` class.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $style The style, e.g. `stacked`.
-	 *
-	 * @return string Class name.
-	 */
-	public function site_styles_scope_class( string $style ): string {
-		return 'kt-svg-style-' . sanitize_key( $style );
-	}
-
-	/**
 	 * The site attributes every icon style renders.
 	 *
 	 * @since TBD

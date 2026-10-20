@@ -14,8 +14,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
-use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Groups_Site_Styles;
-use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Scopes_Site_Styles;
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Cascades_Site_Styles;
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Prints_Site_Rules;
 use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Supports_Site_Styles;
 use KadenceWP\KadenceBlocks\Utils\Cast;
 
@@ -24,7 +24,7 @@ use KadenceWP\KadenceBlocks\Utils\Cast;
  *
  * @category class
  */
-class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block implements Supports_Site_Styles, Scopes_Site_Styles, Groups_Site_Styles {
+class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block implements Supports_Site_Styles, Prints_Site_Rules, Cascades_Site_Styles {
 
 	/**
 	 * Instance of this class
@@ -581,10 +581,10 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block imple
 	 * @since TBD
 	 */
 	public function site_styles_overlay_attributes(): array {
-		$grouped = [];
+		$cascaded = [];
 
-		foreach ( $this->site_styles_groups() as $group ) {
-			$grouped = array_merge( $grouped, isset( $group['unit'] ) ? [ $group['unit'] ] : [], $group['values'] );
+		foreach ( $this->site_styles_cascades() as $cascade ) {
+			$cascaded = array_merge( $cascaded, isset( $cascade['unit'] ) ? [ $cascade['unit'] ] : [], $cascade['values'] );
 		}
 
 		return array_merge(
@@ -604,7 +604,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block imple
 				'displayHoverShadow',
 				'shadowHover',
 			],
-			$grouped
+			$cascaded
 		);
 	}
 
@@ -613,7 +613,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block imple
 	 *
 	 * @since TBD
 	 */
-	public function site_styles_groups(): array {
+	public function site_styles_cascades(): array {
 		return [
 			[
 				'unit'   => 'paddingUnit',

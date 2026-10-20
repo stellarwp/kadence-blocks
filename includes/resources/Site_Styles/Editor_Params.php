@@ -2,7 +2,9 @@
 
 namespace KadenceWP\KadenceBlocks\Site_Styles;
 
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Cascades_Site_Styles;
 use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Groups_Site_Styles;
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Prints_Site_Rules;
 use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Scopes_Site_Styles;
 
 /**
@@ -70,8 +72,16 @@ final class Editor_Params {
 					];
 				}
 
+				if ( $block instanceof Prints_Site_Rules ) {
+					$blocks[ $name ]['siteRules'] = true;
+				}
+
 				if ( $block instanceof Groups_Site_Styles ) {
-					$blocks[ $name ]['groups'] = $block->site_styles_groups();
+					$blocks[ $name ]['groups'] = $block->site_styles_attribute_groups();
+				}
+
+				if ( $block instanceof Cascades_Site_Styles ) {
+					$blocks[ $name ]['cascades'] = $block->site_styles_cascades();
 				}
 			}
 		}

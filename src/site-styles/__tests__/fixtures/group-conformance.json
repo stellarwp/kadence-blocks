@@ -1,0 +1,332 @@
+[
+	{
+		"name": "an untouched instance takes every group's site values",
+		"site": {
+			"spacerHeight": 40,
+			"tabletSpacerHeight": 30,
+			"spacerHeightUnits": "rem",
+			"dividerColor": "#ff0000",
+			"dividerOpacity": 50,
+			"dividerWidth": 50
+		},
+		"instance": {},
+		"groups": [
+			["spacerHeight", "tabletSpacerHeight", "mobileSpacerHeight", "spacerHeightUnits"],
+			["dividerColor", "dividerOpacity"]
+		],
+		"defaults": {
+			"spacerHeight": 60,
+			"tabletSpacerHeight": "",
+			"mobileSpacerHeight": "",
+			"spacerHeightUnits": "px",
+			"dividerColor": "#eee",
+			"dividerOpacity": 100,
+			"dividerWidth": 80,
+			"padding": ["", "", "", ""],
+			"paddingUnit": "px"
+		},
+		"expected": {
+			"spacerHeight": 40,
+			"tabletSpacerHeight": 30,
+			"spacerHeightUnits": "rem",
+			"dividerColor": "#ff0000",
+			"dividerOpacity": 50,
+			"dividerWidth": 50
+		}
+	},
+	{
+		"name": "an instance's own height keeps the site's height, unit and tablet height out",
+		"site": {
+			"spacerHeight": 40,
+			"tabletSpacerHeight": 30,
+			"spacerHeightUnits": "rem",
+			"dividerColor": "#ff0000",
+			"dividerOpacity": 50,
+			"dividerWidth": 50
+		},
+		"instance": {
+			"spacerHeight": 120
+		},
+		"groups": [
+			["spacerHeight", "tabletSpacerHeight", "mobileSpacerHeight", "spacerHeightUnits"],
+			["dividerColor", "dividerOpacity"]
+		],
+		"defaults": {
+			"spacerHeight": 60,
+			"tabletSpacerHeight": "",
+			"mobileSpacerHeight": "",
+			"spacerHeightUnits": "px",
+			"dividerColor": "#eee",
+			"dividerOpacity": 100,
+			"dividerWidth": 80,
+			"padding": ["", "", "", ""],
+			"paddingUnit": "px"
+		},
+		"expected": {
+			"dividerColor": "#ff0000",
+			"dividerOpacity": 50,
+			"dividerWidth": 50
+		}
+	},
+	{
+		"name": "an instance's own unit alone sets its group",
+		"site": {
+			"spacerHeight": 40,
+			"tabletSpacerHeight": 30,
+			"spacerHeightUnits": "rem",
+			"dividerColor": "#ff0000",
+			"dividerOpacity": 50,
+			"dividerWidth": 50
+		},
+		"instance": {
+			"spacerHeightUnits": "vh"
+		},
+		"groups": [
+			["spacerHeight", "tabletSpacerHeight", "mobileSpacerHeight", "spacerHeightUnits"],
+			["dividerColor", "dividerOpacity"]
+		],
+		"defaults": {
+			"spacerHeight": 60,
+			"tabletSpacerHeight": "",
+			"mobileSpacerHeight": "",
+			"spacerHeightUnits": "px",
+			"dividerColor": "#eee",
+			"dividerOpacity": 100,
+			"dividerWidth": 80,
+			"padding": ["", "", "", ""],
+			"paddingUnit": "px"
+		},
+		"expected": {
+			"dividerColor": "#ff0000",
+			"dividerOpacity": 50,
+			"dividerWidth": 50
+		}
+	},
+	{
+		"name": "an instance's own opacity keeps the site's color out",
+		"site": {
+			"spacerHeight": 40,
+			"tabletSpacerHeight": 30,
+			"spacerHeightUnits": "rem",
+			"dividerColor": "#ff0000",
+			"dividerOpacity": 50,
+			"dividerWidth": 50
+		},
+		"instance": {
+			"dividerOpacity": 80
+		},
+		"groups": [
+			["spacerHeight", "tabletSpacerHeight", "mobileSpacerHeight", "spacerHeightUnits"],
+			["dividerColor", "dividerOpacity"]
+		],
+		"defaults": {
+			"spacerHeight": 60,
+			"tabletSpacerHeight": "",
+			"mobileSpacerHeight": "",
+			"spacerHeightUnits": "px",
+			"dividerColor": "#eee",
+			"dividerOpacity": 100,
+			"dividerWidth": 80,
+			"padding": ["", "", "", ""],
+			"paddingUnit": "px"
+		},
+		"expected": {
+			"spacerHeight": 40,
+			"tabletSpacerHeight": 30,
+			"spacerHeightUnits": "rem",
+			"dividerWidth": 50
+		}
+	},
+	{
+		"name": "values equal to the defaults set no group",
+		"site": {
+			"spacerHeight": 40,
+			"tabletSpacerHeight": 30,
+			"spacerHeightUnits": "rem",
+			"dividerColor": "#ff0000",
+			"dividerOpacity": 50,
+			"dividerWidth": 50
+		},
+		"instance": {
+			"spacerHeight": 60,
+			"spacerHeightUnits": "px",
+			"dividerOpacity": 100
+		},
+		"groups": [
+			["spacerHeight", "tabletSpacerHeight", "mobileSpacerHeight", "spacerHeightUnits"],
+			["dividerColor", "dividerOpacity"]
+		],
+		"defaults": {
+			"spacerHeight": 60,
+			"tabletSpacerHeight": "",
+			"mobileSpacerHeight": "",
+			"spacerHeightUnits": "px",
+			"dividerColor": "#eee",
+			"dividerOpacity": 100,
+			"dividerWidth": 80,
+			"padding": ["", "", "", ""],
+			"paddingUnit": "px"
+		},
+		"expected": {
+			"spacerHeight": 40,
+			"tabletSpacerHeight": 30,
+			"spacerHeightUnits": "rem",
+			"dividerColor": "#ff0000",
+			"dividerOpacity": 50,
+			"dividerWidth": 50
+		}
+	},
+	{
+		"name": "a null value sets no group",
+		"site": {
+			"spacerHeight": 40,
+			"tabletSpacerHeight": 30,
+			"spacerHeightUnits": "rem",
+			"dividerColor": "#ff0000",
+			"dividerOpacity": 50,
+			"dividerWidth": 50
+		},
+		"instance": {
+			"spacerHeight": null
+		},
+		"groups": [
+			["spacerHeight", "tabletSpacerHeight", "mobileSpacerHeight", "spacerHeightUnits"],
+			["dividerColor", "dividerOpacity"]
+		],
+		"defaults": {
+			"spacerHeight": 60,
+			"tabletSpacerHeight": "",
+			"mobileSpacerHeight": "",
+			"spacerHeightUnits": "px",
+			"dividerColor": "#eee",
+			"dividerOpacity": 100,
+			"dividerWidth": 80,
+			"padding": ["", "", "", ""],
+			"paddingUnit": "px"
+		},
+		"expected": {
+			"spacerHeight": 40,
+			"tabletSpacerHeight": 30,
+			"spacerHeightUnits": "rem",
+			"dividerColor": "#ff0000",
+			"dividerOpacity": 50,
+			"dividerWidth": 50
+		}
+	},
+	{
+		"name": "a site value outside every group still applies",
+		"site": {
+			"spacerHeight": 40,
+			"tabletSpacerHeight": 30,
+			"spacerHeightUnits": "rem",
+			"dividerColor": "#ff0000",
+			"dividerOpacity": 50,
+			"dividerWidth": 50
+		},
+		"instance": {
+			"spacerHeight": 120,
+			"dividerOpacity": 80
+		},
+		"groups": [
+			["spacerHeight", "tabletSpacerHeight", "mobileSpacerHeight", "spacerHeightUnits"],
+			["dividerColor", "dividerOpacity"]
+		],
+		"defaults": {
+			"spacerHeight": 60,
+			"tabletSpacerHeight": "",
+			"mobileSpacerHeight": "",
+			"spacerHeightUnits": "px",
+			"dividerColor": "#eee",
+			"dividerOpacity": 100,
+			"dividerWidth": 80,
+			"padding": ["", "", "", ""],
+			"paddingUnit": "px"
+		},
+		"expected": {
+			"dividerWidth": 50
+		}
+	},
+	{
+		"name": "one side of an array value sets its group",
+		"site": {
+			"padding": [20, 20, 20, 20],
+			"paddingUnit": "rem"
+		},
+		"instance": {
+			"padding": ["10", "", "", ""]
+		},
+		"groups": [["padding", "paddingUnit"]],
+		"defaults": {
+			"spacerHeight": 60,
+			"tabletSpacerHeight": "",
+			"mobileSpacerHeight": "",
+			"spacerHeightUnits": "px",
+			"dividerColor": "#eee",
+			"dividerOpacity": 100,
+			"dividerWidth": 80,
+			"padding": ["", "", "", ""],
+			"paddingUnit": "px"
+		},
+		"expected": {}
+	},
+	{
+		"name": "an array value equal to its default sets no group",
+		"site": {
+			"padding": [20, 20, 20, 20],
+			"paddingUnit": "rem"
+		},
+		"instance": {
+			"padding": ["", "", "", ""]
+		},
+		"groups": [["padding", "paddingUnit"]],
+		"defaults": {
+			"spacerHeight": 60,
+			"tabletSpacerHeight": "",
+			"mobileSpacerHeight": "",
+			"spacerHeightUnits": "px",
+			"dividerColor": "#eee",
+			"dividerOpacity": 100,
+			"dividerWidth": 80,
+			"padding": ["", "", "", ""],
+			"paddingUnit": "px"
+		},
+		"expected": {
+			"padding": [20, 20, 20, 20],
+			"paddingUnit": "rem"
+		}
+	},
+	{
+		"name": "a block without groups takes every site value",
+		"site": {
+			"spacerHeight": 40,
+			"tabletSpacerHeight": 30,
+			"spacerHeightUnits": "rem",
+			"dividerColor": "#ff0000",
+			"dividerOpacity": 50,
+			"dividerWidth": 50
+		},
+		"instance": {
+			"spacerHeight": 120
+		},
+		"groups": [],
+		"defaults": {
+			"spacerHeight": 60,
+			"tabletSpacerHeight": "",
+			"mobileSpacerHeight": "",
+			"spacerHeightUnits": "px",
+			"dividerColor": "#eee",
+			"dividerOpacity": 100,
+			"dividerWidth": 80,
+			"padding": ["", "", "", ""],
+			"paddingUnit": "px"
+		},
+		"expected": {
+			"spacerHeight": 40,
+			"tabletSpacerHeight": 30,
+			"spacerHeightUnits": "rem",
+			"dividerColor": "#ff0000",
+			"dividerOpacity": 50,
+			"dividerWidth": 50
+		}
+	}
+]

@@ -22,6 +22,12 @@ final class SiteStylesEditorParamsTest extends WPTestCase {
 		$this->assertTrue( $this->site_styles( Editor_Params::PLUGIN_HANDLE )['isFseMode'] );
 	}
 
+	/**
+	 * In FSE mode the editor scripts get the supported blocks, and Single Button's entry matches the fixture the JS
+	 * tests read.
+	 *
+	 * @return void
+	 */
 	public function testFseModeGivesTheSupportedBlocksAsTheJsTestsSeeThem(): void {
 		$this->tester->enable_fse_mode();
 		$json = file_get_contents( KADENCE_BLOCKS_PATH . 'src/site-styles/__tests__/fixtures/singlebtn-entry.json' );
@@ -37,6 +43,11 @@ final class SiteStylesEditorParamsTest extends WPTestCase {
 		$this->assertStringContainsString( 'window.kadenceSiteStyles = window.kadenceSiteStyles || {"isFseMode":false,"blocks":{}};', $this->script_data( Editor_Params::EARLY_FILTERS_HANDLE ) );
 	}
 
+	/**
+	 * The editor params carry the FSE mode flag and the names of the supported blocks.
+	 *
+	 * @return void
+	 */
 	public function testTheEditorParamsCarryTheFlag(): void {
 		$this->tester->enable_fse_mode();
 		wp_register_script( 'kadence-blocks-js', false, [], null, false );

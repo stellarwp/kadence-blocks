@@ -50,7 +50,7 @@
 		"tabletMargin",
 		"mobileMargin"
 	],
-	"groups": [
+	"cascades": [
 		{ "unit": "paddingUnit", "values": ["padding", "tabletPadding", "mobilePadding"] },
 		{ "unit": "marginUnit", "values": ["margin", "tabletMargin", "mobileMargin"] }
 	],
@@ -94,5 +94,6 @@
 			"inherit": [],
 			"inherit-secondary": []
 		}
-	}
+	},
+	"siteRules": true
 }

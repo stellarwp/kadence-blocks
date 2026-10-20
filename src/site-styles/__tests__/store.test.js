@@ -1,5 +1,6 @@
 /* eslint-env jest */
 import {
+	groupSiteAttributes,
 	guardWrite,
 	merge,
 	mergeAttributes,
@@ -15,10 +16,36 @@ import {
 } from '../store';
 import cascadeConformance from './fixtures/cascade-conformance.json';
 import conformance from './fixtures/merge-conformance.json';
+import groupConformance from './fixtures/group-conformance.json';
 import scopeConformance from './fixtures/scope-conformance.json';
 import singleButton from './fixtures/singlebtn-entry.json';
 
 const BLOCK = 'kadence/singlebtn';
+const UNSCOPED = 'kadence/show-more';
+
+/**
+ * A block entry without a scope: only its overlay attributes and its attributes map can be site values.
+ */
+const unscopedEntry = {
+	slug: 'show-more',
+	exclude: ['uniqueID', 'showHideMore'],
+	overlay: ['heightDesktop', 'paddingDesktop'],
+	attributesMap: { textColor: 'color.text' },
+	supports: {},
+};
+
+/**
+ * A scoped block entry without site rules: like a block without a scope, only its overlay attributes and its
+ * attributes map can be site values.
+ */
+const scopedEntry = {
+	slug: 'spacer',
+	exclude: ['uniqueID', 'dividerStyle', 'hAlign'],
+	overlay: ['spacerHeight'],
+	attributesMap: {},
+	supports: {},
+	scope: { attribute: 'dividerStyle', attributes: { stripe: ['spacerHeight'] } },
+};
 
 beforeEach(() => {
 	window.kadenceSiteStyles = { isFseMode: true, blocks: { 'kadence/singlebtn': singleButton } };
@@ -40,18 +67,28 @@ describe('scopeSiteAttributes', () => {
 	});
 });
 
+describe('groupSiteAttributes', () => {
+	it.each(groupConformance.map((c) => [c.name, c]))('%s', (name, c) => {
+		const definitions = Object.fromEntries(
+			Object.entries(c.defaults).map(([key, value]) => [key, { default: value }])
+		);
+
+		expect(groupSiteAttributes(c.site, c.instance, c.groups, definitions)).toEqual(c.expected);
+	});
+});
+
 describe('withoutOverridden', () => {
-	const { groups, defaults, cases } = cascadeConformance;
+	const { cascades, defaults, cases } = cascadeConformance;
 	const definitions = Object.fromEntries(Object.entries(defaults).map(([name, value]) => [name, { default: value }]));
 
 	it.each(cases.map((c) => [c.name, c]))('%s', (name, c) => {
-		expect(withoutOverridden(c.site, c.instance, definitions, groups)).toEqual(c.expected);
+		expect(withoutOverridden(c.site, c.instance, definitions, cascades)).toEqual(c.expected);
 	});
 
 	it('leaves the site values it is given untouched', () => {
 		const site = { padding: [20, 40, 20, 40], mobilePadding: [6, 12, 6, 12] };
 
-		withoutOverridden(site, { padding: [2, 10, 2, 10] }, definitions, groups);
+		withoutOverridden(site, { padding: [2, 10, 2, 10] }, definitions, cascades);
 
 		expect(site).toEqual({ padding: [20, 40, 20, 40], mobilePadding: [6, 12, 6, 12] });
 	});
@@ -111,6 +148,49 @@ describe('siteAttributes', () => {
 		expect(siteAttributes(record, BLOCK)).toEqual({ borderRadius: [20, 20, 20, 20] });
 	});
 
+	it('ignores cleared values', () => {
+		const record = {
+			settings: { custom: { kadence: { singlebtn: { borderRadius: undefined, sizePreset: 'large' } } } },
+		};
+
+		const attributes = siteAttributes(record, BLOCK);
+
+		expect(attributes).toEqual({ sizePreset: 'large' });
+		expect(attributes).not.toHaveProperty('borderRadius');
+	});
+
+	it('keeps only the overlay attributes and the mapped colors of a block without a scope', () => {
+		window.kadenceSiteStyles.blocks[UNSCOPED] = unscopedEntry;
+		const record = {
+			settings: {
+				custom: {
+					kadence: {
+						'show-more': {
+							heightDesktop: 300,
+							showHideMore: false,
+							defaultExpandedDesktop: true,
+							kadenceBlockCSS: 'selector { color: red; }',
+						},
+					},
+				},
+			},
+			styles: { blocks: { [UNSCOPED]: { color: { text: '#222222' } } } },
+		};
+
+		expect(siteAttributes(record, UNSCOPED)).toEqual({ heightDesktop: 300, textColor: '#222222' });
+	});
+
+	it('keeps only the overlay attributes of a scoped block without site rules', () => {
+		window.kadenceSiteStyles.blocks['kadence/spacer'] = scopedEntry;
+		const record = {
+			settings: {
+				custom: { kadence: { spacer: { spacerHeight: 100, hAlign: 'left', kadenceAnimation: 'fade-in' } } },
+			},
+		};
+
+		expect(siteAttributes(record, 'kadence/spacer')).toEqual({ spacerHeight: 100 });
+	});
+
 	it('gives nothing for a missing record, an empty store or an unsupported block', () => {
 		expect(siteAttributes(undefined, BLOCK)).toEqual({});
 		expect(siteAttributes({ settings: { custom: { kadence: { singlebtn: [] } } } }, BLOCK)).toEqual({});
@@ -164,6 +244,40 @@ describe('toStoredForm', () => {
 		expect(toStoredForm({ background: '', sizePreset: 'standard' }, definitions, BLOCK)).toEqual({
 			core: {},
 			custom: {},
+		});
+	});
+
+	it('stores no cleared value', () => {
+		const stored = toStoredForm({ borderRadius: undefined, sizePreset: 'large' }, definitions, BLOCK);
+
+		expect(stored).toEqual({ core: {}, custom: { sizePreset: 'large' } });
+		expect(stored.custom).not.toHaveProperty('borderRadius');
+	});
+
+	it('stores only the overlay attributes and the mapped colors of a block without a scope', () => {
+		window.kadenceSiteStyles.blocks[UNSCOPED] = unscopedEntry;
+		const attributes = {
+			uniqueID: 'abc',
+			heightDesktop: 300,
+			paddingDesktop: ['', '', '', ''],
+			showHideMore: false,
+			defaultExpandedDesktop: true,
+			kadenceBlockCSS: 'selector { color: red; }',
+			textColor: '#222222',
+		};
+		const unscopedDefinitions = {
+			uniqueID: { default: '' },
+			heightDesktop: { default: 250 },
+			paddingDesktop: { default: ['', '', '', ''] },
+			showHideMore: { default: true },
+			defaultExpandedDesktop: { default: false },
+			kadenceBlockCSS: { default: '' },
+			textColor: { default: '' },
+		};
+
+		expect(toStoredForm(attributes, unscopedDefinitions, UNSCOPED)).toEqual({
+			core: { 'color.text': '#222222' },
+			custom: { heightDesktop: 300 },
 		});
 	});
 });
@@ -247,7 +361,7 @@ describe('write guard', () => {
 	});
 
 	describe('with a unit shared by the values', () => {
-		const groups = [{ unit: 'paddingUnit', values: ['padding', 'tabletPadding', 'mobilePadding'] }];
+		const cascades = [{ unit: 'paddingUnit', values: ['padding', 'tabletPadding', 'mobilePadding'] }];
 		const unitDefinitions = {
 			paddingUnit: { default: 'px' },
 			padding: { default: ['', '', '', ''] },
@@ -260,7 +374,7 @@ describe('write guard', () => {
 		it("stores the site's unit with the values the user changes, so they stay in the unit they were shown in", () => {
 			const shown = mergeAttributes(stored, emSite, unitDefinitions);
 
-			expect(guardWrite({ padding: [2, 2, 1, 2] }, shown, stored, emSite, groups)).toEqual({
+			expect(guardWrite({ padding: [2, 2, 1, 2] }, shown, stored, emSite, [], {}, cascades)).toEqual({
 				padding: [2, '', '', ''],
 				paddingUnit: 'em',
 			});
@@ -270,7 +384,7 @@ describe('write guard', () => {
 			const pxSite = { padding: [20, 40, 20, 40] };
 			const shown = mergeAttributes(stored, pxSite, unitDefinitions);
 
-			expect(guardWrite({ padding: [30, 40, 20, 40] }, shown, stored, pxSite, groups)).toEqual({
+			expect(guardWrite({ padding: [30, 40, 20, 40] }, shown, stored, pxSite, [], {}, cascades)).toEqual({
 				padding: [30, '', '', ''],
 			});
 		});
@@ -279,7 +393,9 @@ describe('write guard', () => {
 			const withTablet = { ...stored, tabletPadding: ['', '', '', ''] };
 			const shown = mergeAttributes(withTablet, emSite, unitDefinitions);
 
-			expect(guardWrite({ tabletPadding: ['', '', '', ''] }, shown, withTablet, emSite, groups)).toEqual({
+			expect(
+				guardWrite({ tabletPadding: ['', '', '', ''] }, shown, withTablet, emSite, [], {}, cascades)
+			).toEqual({
 				tabletPadding: ['', '', '', ''],
 			});
 		});
@@ -287,18 +403,88 @@ describe('write guard', () => {
 		it('keeps the unit the user picks', () => {
 			const shown = mergeAttributes(stored, emSite, unitDefinitions);
 
-			expect(guardWrite({ paddingUnit: 'rem' }, shown, stored, emSite, groups)).toEqual({ paddingUnit: 'rem' });
+			expect(guardWrite({ paddingUnit: 'rem' }, shown, stored, emSite, [], {}, cascades)).toEqual({
+				paddingUnit: 'rem',
+			});
 		});
 
-		it('leaves a write that touches no value of the group alone', () => {
+		it('leaves a write that touches no value of the cascade alone', () => {
 			const shown = mergeAttributes(stored, emSite, unitDefinitions);
 
-			expect(guardWrite({ text: 'Buy' }, shown, stored, emSite, groups)).toEqual({ text: 'Buy' });
+			expect(guardWrite({ text: 'Buy' }, shown, stored, emSite, [], {}, cascades)).toEqual({ text: 'Buy' });
 		});
 	});
 
 	it('unmerge returns the stored value for an unchanged write', () => {
 		expect(unmerge('palette2', 'palette2', '')).toBe('');
+	});
+});
+
+describe('write guard with groups', () => {
+	const groups = [['spacerHeight', 'tabletSpacerHeight', 'mobileSpacerHeight', 'spacerHeightUnits']];
+	const definitions = {
+		spacerHeight: { default: 60 },
+		tabletSpacerHeight: { default: '' },
+		mobileSpacerHeight: { default: '' },
+		spacerHeightUnits: { default: 'px' },
+		dividerWidth: { default: 80 },
+	};
+	const untouched = { spacerHeight: 60, tabletSpacerHeight: '', mobileSpacerHeight: '', spacerHeightUnits: 'px' };
+	const site = { tabletSpacerHeight: 30, spacerHeightUnits: 'rem', dividerWidth: 50 };
+	const shown = { ...untouched, tabletSpacerHeight: 30, spacerHeightUnits: 'rem', dividerWidth: 50 };
+
+	it('stores the whole group as shown when a change starts the instance setting it', () => {
+		expect(guardWrite({ spacerHeight: 5 }, shown, untouched, site, groups, definitions)).toEqual({
+			spacerHeight: 5,
+			tabletSpacerHeight: 30,
+			spacerHeightUnits: 'rem',
+		});
+	});
+
+	it('copies nothing for a change outside every group', () => {
+		expect(guardWrite({ dividerWidth: 40 }, shown, untouched, site, groups, definitions)).toEqual({
+			dividerWidth: 40,
+		});
+	});
+
+	it('copies nothing when the write leaves the group unset', () => {
+		expect(
+			guardWrite({ spacerHeight: 60, spacerHeightUnits: 'rem' }, shown, untouched, site, groups, definitions)
+		).toEqual({ spacerHeight: 60 });
+	});
+
+	it('stores only the change for a group the instance already sets', () => {
+		const stored = { ...untouched, spacerHeight: 120 };
+		const ownSite = { dividerWidth: 50 };
+
+		expect(
+			guardWrite(
+				{ tabletSpacerHeight: 40 },
+				{ ...stored, dividerWidth: 50 },
+				stored,
+				ownSite,
+				groups,
+				definitions
+			)
+		).toEqual({ tabletSpacerHeight: 40 });
+	});
+
+	it('keeps the written value whole, not just its changed leaves, when the group starts', () => {
+		const padGroups = [['padding', 'paddingUnit']];
+		const padDefinitions = { padding: { default: ['', '', '', ''] }, paddingUnit: { default: 'px' } };
+		const padStored = { padding: ['', '', '', ''], paddingUnit: 'px' };
+		const padSite = { padding: [20, 20, 20, 20], paddingUnit: 'rem' };
+
+		expect(
+			guardWrite(
+				{ padding: [10, 20, 20, 20] },
+				{ padding: [20, 20, 20, 20], paddingUnit: 'rem' },
+				padStored,
+				padSite,
+				padGroups,
+				padDefinitions
+			)
+		).toEqual({ padding: [10, 20, 20, 20], paddingUnit: 'rem' });
 	});
 });
 
