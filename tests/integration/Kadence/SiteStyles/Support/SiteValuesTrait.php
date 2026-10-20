@@ -120,7 +120,7 @@ trait SiteValuesTrait {
 	 */
 	private function unaccounted_attributes( Supports_Site_Styles $block ): array {
 		$registered = WP_Block_Type_Registry::get_instance()->get_registered( $block->get_name() );
-		$names      = $registered ? array_keys( (array) $registered->attributes ) : [];
+		$names      = $registered ? array_keys( $registered->attributes ?? [] ) : [];
 		$names      = array_diff(
 			$names,
 			[ 'style', 'textColor', 'backgroundColor', 'gradient' ],
