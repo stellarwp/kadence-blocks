@@ -115,8 +115,11 @@
 		sanitizeDescription(raw) {
 			const description = kadenceBlocksGLight.strip_tags(raw, kadenceBlocksGLight.allowedCaptionTags);
 
-			// GLightbox treats a description starting with a period as a CSS selector to copy HTML from.
-			return '.' === description.charAt(0) ? '<p>' + description + '</p>' : description;
+			// GLightbox treats a description starting with a period as a CSS selector to copy HTML from, and turns
+			// the exact strings "true" and "false" into booleans that break its config parsing.
+			return '.' === description.charAt(0) || 'true' === description || 'false' === description
+				? '<p>' + description + '</p>'
+				: description;
 		},
 		/**
 		 * Make the slide data on a gallery anchor safe before GLightbox reads it.

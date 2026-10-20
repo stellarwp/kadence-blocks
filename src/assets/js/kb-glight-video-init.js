@@ -9,6 +9,9 @@
 	var kadenceBlocksVideoLightbox = {
 		lightboxes: {},
 		foundClasses: {},
+		// Marks an anchor as sanitized on the element itself, so a re-run (even from a second copy of this script)
+		// does not escape its title a second time.
+		sanitizedKey: Symbol.for('kadenceBlocksVideoLightboxSanitized'),
 		/**
 		 * Escape a plain-text string so it is safe to be written with innerHTML.
 		 *
@@ -41,6 +44,11 @@
 		 * @return {void}
 		 */
 		sanitizeSlideData(el) {
+			if (el[kadenceBlocksVideoLightbox.sanitizedKey]) {
+				return;
+			}
+			el[kadenceBlocksVideoLightbox.sanitizedKey] = true;
+
 			const rawTitle = el.dataset.title || el.getAttribute('title') || '';
 			// Every setting GLightbox reads from an anchor's dataset. Unrelated data attributes, such as the
 			// tooltip ones the button renders, are left alone.

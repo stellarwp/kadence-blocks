@@ -180,4 +180,22 @@ describe('kb-gallery-glight-init', () => {
 		expect(description.charAt(0)).toBe('<');
 		expect(description).toContain('.kb-secret');
 	});
+
+	it.each([['true'], ['false']])(
+		'wraps a description of exactly "%s" so GLightbox does not read it as a boolean',
+		(value) => {
+			bindGallery(item(`data-description="${value}"`));
+			const description = document.querySelector('a.kb-gallery-item-link').getAttribute('data-description');
+
+			expect(description).toBe(`<p>${value}</p>`);
+		}
+	);
+
+	it('leaves a description that merely contains the word true unwrapped', () => {
+		bindGallery(item('data-description="Very true story"'));
+
+		expect(document.querySelector('a.kb-gallery-item-link').getAttribute('data-description')).toBe(
+			'Very true story'
+		);
+	});
 });

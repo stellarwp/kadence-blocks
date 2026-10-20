@@ -90,4 +90,13 @@ describe('kb-glight-video-init', () => {
 		expect(anchor.getAttribute('data-kb-tooltip-content')).toBe('Tip');
 		expect(anchor.getAttribute('data-tooltip-placement')).toBe('top');
 	});
+
+	it('does not escape the title a second time when the init runs again', () => {
+		const anchor = bindAnchor('<a class="ktblocksvideopop" href="x.mp4" title="Tom &amp; Jerry">Watch</a>');
+		const first = anchor.getAttribute('data-title');
+		jest.isolateModules(() => require(SCRIPT));
+
+		expect(first).toBe('Tom &amp; Jerry');
+		expect(anchor.getAttribute('data-title')).toBe(first);
+	});
 });
