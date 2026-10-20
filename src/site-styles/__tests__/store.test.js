@@ -26,6 +26,8 @@ import countdown from './fixtures/countdown-entry.json';
 import table from './fixtures/table-entry.json';
 import posts from './fixtures/posts-entry.json';
 import progressBar from './fixtures/progress-bar-entry.json';
+import testimonials from './fixtures/testimonials-entry.json';
+import testimonial from './fixtures/testimonial-entry.json';
 
 const BLOCK = 'kadence/singlebtn';
 const UNSCOPED = 'kadence/show-more';
@@ -313,6 +315,41 @@ describe('siteAttributes', () => {
 		};
 
 		expect(siteAttributes(record, 'kadence/table')).toEqual({ headerAlign: 'left', cellPaddingType: 'px' });
+	});
+
+	it("keeps only Testimonials' container, spacing and fonts, leaving what its testimonials read to each block", () => {
+		window.kadenceSiteStyles.blocks['kadence/testimonials'] = testimonials;
+		const record = {
+			settings: {
+				custom: {
+					kadence: {
+						testimonials: {
+							containerBackground: '#fff3cd',
+							gap: [40, '', ''],
+							style: 'bubble',
+							layout: 'carousel',
+							titleFont: [{ color: '#00ff00' }],
+						},
+					},
+				},
+			},
+		};
+
+		expect(siteAttributes(record, 'kadence/testimonials')).toEqual({
+			containerBackground: '#fff3cd',
+			gap: [40, '', ''],
+		});
+	});
+
+	it("keeps only Testimonial's icon size and color, leaving its media, icon and rating to each testimonial", () => {
+		window.kadenceSiteStyles.blocks['kadence/testimonial'] = testimonial;
+		const record = {
+			settings: {
+				custom: { kadence: { testimonial: { isize: 80, color: '#ff0000', media: 'icon', rating: 2 } } },
+			},
+		};
+
+		expect(siteAttributes(record, 'kadence/testimonial')).toEqual({ isize: 80, color: '#ff0000' });
 	});
 
 	it("keeps only Progress Bar's look, leaving its type, content and animation to each bar", () => {
