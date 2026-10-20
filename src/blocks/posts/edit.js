@@ -1,3 +1,4 @@
+// cspell:ignore Decending -- the block's existing sort label, a translated string.
 /**
  * BLOCK: Kadence Posts
  *
