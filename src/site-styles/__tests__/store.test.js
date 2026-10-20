@@ -73,7 +73,7 @@ describe('groupSiteAttributes', () => {
 			Object.entries(c.defaults).map(([key, value]) => [key, { default: value }])
 		);
 
-		expect(groupSiteAttributes(c.site, c.instance, c.groups, definitions)).toEqual(c.expected);
+		expect(groupSiteAttributes(c.site, c.instance, c.groups, definitions, c.legacy)).toEqual(c.expected);
 	});
 });
 
@@ -409,6 +409,15 @@ describe('write guard with groups', () => {
 			spacerHeight: 5,
 			tabletSpacerHeight: 30,
 			spacerHeightUnits: 'rem',
+		});
+	});
+
+	it('copies nothing when an older attribute already sets the group', () => {
+		const legacy = { spacerHeight: ['legacyHeight'] };
+		const stored = { ...untouched, legacyHeight: 80 };
+
+		expect(guardWrite({ spacerHeight: 5 }, shown, stored, site, groups, definitions, legacy)).toEqual({
+			spacerHeight: 5,
 		});
 	});
 

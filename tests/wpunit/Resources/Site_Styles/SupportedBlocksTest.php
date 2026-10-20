@@ -6,6 +6,7 @@ namespace Tests\wpunit\Resources\Site_Styles;
 
 use Generator;
 use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Groups_Site_Styles;
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Legacy_Group_Attributes;
 use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Prints_Site_Rules;
 use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Scopes_Site_Styles;
 use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Supports_Site_Styles;
@@ -160,6 +161,8 @@ final class SupportedBlocksTest extends TestCase {
 		$this->assertSame( [], $block->site_styles_selectors() );
 		$this->assertCount( 33, $block->site_styles_overlay_attributes() );
 		$this->assertCount( 9, $block->site_styles_attribute_groups() );
+		$this->assertInstanceOf( Legacy_Group_Attributes::class, $block );
+		$this->assertSame( [ 'padding', 'borderStyle', 'borderHoverStyle' ], array_keys( $block->site_styles_legacy_group_attributes() ) );
 		$this->assertSame( array_values( array_unique( $block->site_styles_overlay_attributes() ) ), $block->site_styles_overlay_attributes() );
 		foreach ( [ 'margin', 'textAlign', 'maxWidth', 'direction', 'htmlTag', 'zIndex', 'sticky', 'backgroundType', 'backgroundImg', 'overlay', 'topPadding', 'borderWidth', 'kbVersion', 'templateLock' ] as $attribute ) {
 			$this->assertContains( $attribute, Supported_Blocks::excluded_attributes( $block ) );
@@ -291,6 +294,37 @@ final class SupportedBlocksTest extends TestCase {
 		);
 
 		$this->assertSame( [ 'kadence/singlebtn' ], $printing );
+	}
+
+	/**
+	 * Every older attribute a supported block lists stands in for one of its groups, keyed by the group's first
+	 * attribute, and is a registered attribute that is never a site value.
+	 *
+	 * @return void
+	 */
+	public function testEveryLegacyAttributeStandsInForAGroupAndIsExcluded(): void {
+		$checked = [];
+
+		foreach ( $this->container->get( Supported_Blocks::class )->all() as $name => $block ) {
+			if ( ! $block instanceof Legacy_Group_Attributes ) {
+				continue;
+			}
+
+			$leads      = array_map( static fn( array $group ): string => $group[0], $block->site_styles_attribute_groups() );
+			$attributes = WP_Block_Type_Registry::get_instance()->get_registered( $name )->attributes;
+			$excluded   = Supported_Blocks::excluded_attributes( $block );
+
+			foreach ( $block->site_styles_legacy_group_attributes() as $lead => $legacy ) {
+				$this->assertContains( $lead, $leads, "{$name}: {$lead} isn't the first attribute of a group." );
+				foreach ( $legacy as $attribute ) {
+					$this->assertArrayHasKey( $attribute, $attributes, "{$name}: the older attribute {$attribute} isn't registered." );
+					$this->assertContains( $attribute, $excluded, "{$name}: the older attribute {$attribute} can be a site value." );
+				}
+			}
+			$checked[] = $name;
+		}
+
+		$this->assertContains( 'kadence/column', $checked );
 	}
 
 	/**

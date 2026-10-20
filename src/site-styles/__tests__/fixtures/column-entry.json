@@ -191,5 +191,33 @@
 			"displayHoverShadow",
 			"shadowHover"
 		]
-	]
+	],
+	"legacyGroups": {
+		"padding": [
+			"topPadding",
+			"rightPadding",
+			"bottomPadding",
+			"leftPadding",
+			"topPaddingT",
+			"rightPaddingT",
+			"bottomPaddingT",
+			"leftPaddingT",
+			"topPaddingM",
+			"rightPaddingM",
+			"bottomPaddingM",
+			"leftPaddingM"
+		],
+		"borderStyle": [
+			"border",
+			"borderWidth",
+			"tabletBorderWidth",
+			"mobileBorderWidth"
+		],
+		"borderHoverStyle": [
+			"borderHover",
+			"borderHoverWidth",
+			"tabletBorderHoverWidth",
+			"mobileBorderHoverWidth"
+		]
+	}
 }

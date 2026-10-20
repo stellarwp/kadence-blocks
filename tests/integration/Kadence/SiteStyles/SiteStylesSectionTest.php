@@ -88,6 +88,46 @@ final class SiteStylesSectionTest extends WPTestCase {
 	}
 
 	/**
+	 * A Section saved before the padding arrays keeps its own padding numbers and unit: its older side numbers
+	 * set the padding group, so it takes no site padding or padding unit.
+	 *
+	 * @return void
+	 */
+	public function testOlderPaddingNumbersKeepTheirOwnUnit(): void {
+		$this->tester->enable_fse_mode();
+		$this->store_site_values();
+
+		$css = $this->section_css( [ 'topPadding' => 10 ] );
+
+		$this->assertStringContainsString( 'padding-top:10px', $css );
+		$this->assertStringNotContainsString( 'vw', $css );
+		$this->assertStringContainsString( 'background-color:#ff0000', $css );
+	}
+
+	/**
+	 * A Section saved by the current editor takes the site border, while one saved before the border arrays
+	 * keeps its own border and takes none.
+	 *
+	 * @return void
+	 */
+	public function testOnlySectionsWithoutOlderBordersTakeTheSiteBorder(): void {
+		$this->tester->enable_fse_mode();
+		$this->store_site_values( [ 'borderStyle' => [ self::site_border() ] ] );
+
+		$this->assertStringContainsString( 'border-top:3px dashed #ff00ff', $this->section_css( [] ) );
+
+		$older = $this->section_css(
+			[
+				'border'      => '#00ffff',
+				'borderWidth' => [ 1, 1, 1, 1 ],
+			]
+		);
+
+		$this->assertStringNotContainsString( '#ff00ff', $older );
+		$this->assertStringContainsString( 'border-top-width:1px', $older );
+	}
+
+	/**
 	 * In classic mode, stored site values change nothing.
 	 *
 	 * @return void
@@ -119,6 +159,30 @@ final class SiteStylesSectionTest extends WPTestCase {
 		yield 'untouched' => [ 'attributes' => [] ];
 		yield 'own padding' => [ 'attributes' => [ 'padding' => [ 20, 20, 20, 20 ] ] ];
 		yield 'own background' => [ 'attributes' => [ 'background' => '#0000ff' ] ];
+		yield 'older padding numbers' => [ 'attributes' => [ 'topPadding' => 10 ] ];
+		yield 'older border' => [
+			'attributes' => [
+				'border'      => '#00ffff',
+				'borderWidth' => [ 1, 1, 1, 1 ],
+			],
+		];
+	}
+
+	/**
+	 * A site border of 3px dashed magenta on every side, in the shape the border control stores.
+	 *
+	 * @return array<string, mixed> The border.
+	 */
+	private static function site_border(): array {
+		$side = [ '#ff00ff', 'dashed', 3 ];
+
+		return [
+			'top'    => $side,
+			'right'  => $side,
+			'bottom' => $side,
+			'left'   => $side,
+			'unit'   => 'px',
+		];
 	}
 
 	/**
