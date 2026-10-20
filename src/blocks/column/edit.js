@@ -431,7 +431,8 @@ function SectionEdit(props) {
 				leftMarginM: '',
 			});
 		}
-		// Update from old border settings.
+		// Update from old border settings in one write, so the site styles overlay still sees the old attributes.
+		const borderPatch = {};
 		const tempBorderStyle = JSON.parse(
 			JSON.stringify(
 				attributes.borderStyle
@@ -454,7 +455,7 @@ function SectionEdit(props) {
 			tempBorderStyle[0].bottom[0] = border;
 			tempBorderStyle[0].left[0] = border;
 			updateBorderStyle = true;
-			setAttributes({ border: '' });
+			borderPatch.border = '';
 		}
 		if ('' !== borderWidth?.[0] || '' !== borderWidth?.[1] || '' !== borderWidth?.[2] || '' !== borderWidth?.[3]) {
 			tempBorderStyle[0].top[2] = borderWidth?.[0] || '';
@@ -462,10 +463,10 @@ function SectionEdit(props) {
 			tempBorderStyle[0].bottom[2] = borderWidth?.[2] || '';
 			tempBorderStyle[0].left[2] = borderWidth?.[3] || '';
 			updateBorderStyle = true;
-			setAttributes({ borderWidth: ['', '', '', ''] });
+			borderPatch.borderWidth = ['', '', '', ''];
 		}
 		if (updateBorderStyle) {
-			setAttributes({ borderStyle: tempBorderStyle });
+			borderPatch.borderStyle = tempBorderStyle;
 		}
 		const tempBorderHoverStyle = JSON.parse(
 			JSON.stringify(
@@ -489,7 +490,7 @@ function SectionEdit(props) {
 			tempBorderHoverStyle[0].bottom[0] = borderHover;
 			tempBorderHoverStyle[0].left[0] = borderHover;
 			updateBorderHoverStyle = true;
-			setAttributes({ borderHover: '' });
+			borderPatch.borderHover = '';
 		}
 		if (
 			'' !== borderHoverWidth?.[0] ||
@@ -502,10 +503,10 @@ function SectionEdit(props) {
 			tempBorderHoverStyle[0].bottom[2] = borderHoverWidth?.[2] || '';
 			tempBorderHoverStyle[0].left[2] = borderHoverWidth?.[3] || '';
 			updateBorderHoverStyle = true;
-			setAttributes({ borderHoverWidth: ['', '', '', ''] });
+			borderPatch.borderHoverWidth = ['', '', '', ''];
 		}
 		if (updateBorderHoverStyle) {
-			setAttributes({ borderHoverStyle: tempBorderHoverStyle });
+			borderPatch.borderHoverStyle = tempBorderHoverStyle;
 		}
 		const tempTabBorderStyle = JSON.parse(
 			JSON.stringify(
@@ -533,7 +534,7 @@ function SectionEdit(props) {
 			tempTabBorderStyle[0].bottom[2] = tabletBorderWidth?.[2] || '';
 			tempTabBorderStyle[0].left[2] = tabletBorderWidth?.[3] || '';
 			const tempTabBorderWidth = JSON.parse(JSON.stringify(tempTabBorderStyle));
-			setAttributes({ tabletBorderStyle: tempTabBorderWidth, tabletBorderWidth: ['', '', '', ''] });
+			Object.assign(borderPatch, { tabletBorderStyle: tempTabBorderWidth, tabletBorderWidth: ['', '', '', ''] });
 		}
 		const tempTabBorderHoverStyle = JSON.parse(
 			JSON.stringify(
@@ -561,7 +562,7 @@ function SectionEdit(props) {
 			tempTabBorderHoverStyle[0].bottom[2] = tabletBorderHoverWidth?.[2] || '';
 			tempTabBorderHoverStyle[0].left[2] = tabletBorderHoverWidth?.[3] || '';
 			const tempTabBorderHoverWidth = JSON.parse(JSON.stringify(tempTabBorderHoverStyle));
-			setAttributes({
+			Object.assign(borderPatch, {
 				tabletBorderHoverStyle: tempTabBorderHoverWidth,
 				tabletBorderHoverWidth: ['', '', '', ''],
 			});
@@ -591,7 +592,10 @@ function SectionEdit(props) {
 			tempMobileBorderStyle[0].right[2] = mobileBorderWidth?.[1] || '';
 			tempMobileBorderStyle[0].bottom[2] = mobileBorderWidth?.[2] || '';
 			tempMobileBorderStyle[0].left[2] = mobileBorderWidth?.[3] || '';
-			setAttributes({ mobileBorderStyle: tempMobileBorderStyle, mobileBorderWidth: ['', '', '', ''] });
+			Object.assign(borderPatch, {
+				mobileBorderStyle: tempMobileBorderStyle,
+				mobileBorderWidth: ['', '', '', ''],
+			});
 		}
 		const tempMobileBorderHoverStyle = JSON.parse(
 			JSON.stringify(
@@ -619,7 +623,13 @@ function SectionEdit(props) {
 			tempMobileBorderHoverStyle[0].bottom[2] = mobileBorderHoverWidth?.[2] || '';
 			tempMobileBorderHoverStyle[0].left[2] = mobileBorderHoverWidth?.[3] || '';
 			const tempMobileBorderHoverWidth = JSON.parse(JSON.stringify(tempMobileBorderHoverStyle));
-			setAttributes({ mobileBorderHoverStyle: tempMobileBorderHoverWidth, mobileBorderWidth: ['', '', '', ''] });
+			Object.assign(borderPatch, {
+				mobileBorderHoverStyle: tempMobileBorderHoverWidth,
+				mobileBorderWidth: ['', '', '', ''],
+			});
+		}
+		if (Object.keys(borderPatch).length) {
+			setAttributes(borderPatch);
 		}
 		if (!kbVersion || kbVersion < 2) {
 			// Update Align and Text Align settings for 3.2.0
