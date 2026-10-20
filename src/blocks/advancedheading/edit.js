@@ -566,8 +566,18 @@ function KadenceAdvancedHeading(props) {
 	}, []);
 
 	useEffect(() => {
-		// FSE mode ignores Block Defaults, which is where "Advanced Text as default block" keeps the paragraph tag.
-		if (isFseMode() && !isSiteStylesPanel && !uniqueID && isDefaultEditorBlock) {
+		/*
+		 * FSE mode ignores Block Defaults, which is where "Advanced Text as default block" keeps the paragraph tag.
+		 * A tag or level the block arrives with, from a transform for example, is not a fresh default block.
+		 */
+		if (
+			isFseMode() &&
+			!isSiteStylesPanel &&
+			!uniqueID &&
+			isDefaultEditorBlock &&
+			'heading' === htmlTag &&
+			2 === level
+		) {
 			setAttributes({ htmlTag: 'p' });
 		}
 	}, []);
