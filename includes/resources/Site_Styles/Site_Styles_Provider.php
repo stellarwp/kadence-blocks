@@ -6,6 +6,7 @@ use Kadence_Blocks_Advancedbtn_Block;
 use Kadence_Blocks_Column_Block;
 use Kadence_Blocks_Countup_Block;
 use Kadence_Blocks_Icon_Block;
+use Kadence_Blocks_Infobox_Block;
 use Kadence_Blocks_Rowlayout_Block;
 use Kadence_Blocks_Show_More_Block;
 use Kadence_Blocks_Single_Icon_Block;
@@ -39,6 +40,7 @@ final class Site_Styles_Provider extends Provider {
 						Kadence_Blocks_Column_Block::get_instance(),
 						Kadence_Blocks_Rowlayout_Block::get_instance(),
 						Kadence_Blocks_Countup_Block::get_instance(),
+						Kadence_Blocks_Infobox_Block::get_instance(),
 					]
 				);
 			}
