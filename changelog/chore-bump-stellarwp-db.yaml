@@ -1,0 +1,4 @@
+significance: patch
+type: fix
+entry: Database queries no longer load WordPress admin files on every request, which could cause a fatal error on multisite.
+timestamp: 2026-10-20T13:30:18.000Z
