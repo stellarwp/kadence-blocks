@@ -2,7 +2,7 @@
 
 declare( strict_types=1 );
 
-// cspell:ignore boxib
+// cspell:ignore boxib textcontent
 
 namespace Tests\integration\Kadence\SiteStyles;
 
