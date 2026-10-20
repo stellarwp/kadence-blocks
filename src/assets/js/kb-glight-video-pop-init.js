@@ -1,5 +1,5 @@
 /* global GLightbox */
-// cspell:ignore glight lighbox plyr zoomable
+// cspell:ignore Efects glight lighbox ligthbox plyr zoomable
 /**
  * File kb-glight-video-init.js.
  * Gets video lighbox working for video popup.
