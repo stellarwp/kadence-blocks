@@ -38,9 +38,6 @@
 		/**
 		 * Decode a string that may contain markup into plain text.
 		 *
-		 * The result is decoded text, not escaped output: entities are resolved, so it must not be written
-		 * with innerHTML without escaping it first.
-		 *
 		 * @param {string} html The string to convert.
 		 *
 		 * @return {string} The decoded plain text.
@@ -52,7 +49,7 @@
 			return doc.body.textContent || '';
 		},
 		/**
-		 * Escape a plain-text string so it is safe to write with innerHTML.
+		 * Escape a plain-text string for use in markup.
 		 *
 		 * @param {string} text The plain text to escape.
 		 *

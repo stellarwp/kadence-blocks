@@ -157,9 +157,6 @@
 		/**
 		 * Decode a string that may contain markup into plain text.
 		 *
-		 * The result is decoded text, not escaped output: entities are resolved, so it must not be written
-		 * with innerHTML without escaping it first.
-		 *
 		 * @param {string} html The string to convert.
 		 *
 		 * @return {string} The decoded plain text.

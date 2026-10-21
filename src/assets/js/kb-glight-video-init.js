@@ -9,11 +9,10 @@
 	var kadenceBlocksVideoLightbox = {
 		lightboxes: {},
 		foundClasses: {},
-		// Marks an anchor as sanitized on the element itself, so a re-run (even from a second copy of this script)
-		// does not escape its title a second time.
+		// Marks an anchor as already processed.
 		sanitizedKey: Symbol.for('kadenceBlocksVideoLightboxSanitized'),
 		/**
-		 * Escape a plain-text string so it is safe to be written with innerHTML.
+		 * Escape a plain-text string for use in markup.
 		 *
 		 * @param {string} text The plain text to escape.
 		 *
@@ -32,10 +31,9 @@
 			return String(text).replace(/[&<>"']/g, (match) => map[match]);
 		},
 		/**
-		 * Make an anchor's slide data safe before GLightbox reads it.
+		 * Normalize an anchor's slide data before GLightbox reads it.
 		 *
-		 * Only the href and a text caption are used, so every other GLightbox slide setting is dropped, the caption is
-		 * escaped, and the href is limited to web or relative URLs.
+		 * Only the href and a text caption are kept, and the href is limited to web or relative URLs.
 		 *
 		 * @param {HTMLElement} el The anchor GLightbox will be bound to.
 		 *
@@ -50,7 +48,7 @@
 			el[kadenceBlocksVideoLightbox.sanitizedKey] = true;
 
 			const rawTitle = el.dataset.title || el.getAttribute('title') || '';
-			// Every setting GLightbox reads from an anchor's dataset. Unrelated data attributes, such as the
+			// The GLightbox data attributes. Unrelated data attributes, such as the
 			// tooltip ones the button renders, are left alone.
 			[
 				'data-glightbox',
@@ -71,7 +69,7 @@
 			].forEach((name) => el.removeAttribute(name));
 			el.setAttribute('data-title', kadenceBlocksVideoLightbox.escapeHtml(rawTitle));
 
-			// el.protocol is the resolved scheme.
+			// Limit the href to web URLs.
 			if (el.hasAttribute('href') && !['http:', 'https:'].includes(el.protocol)) {
 				el.removeAttribute('href');
 			}

@@ -44,14 +44,18 @@ describe('simplelightbox', () => {
 	});
 
 	it.each([
-		['title', 'title="&lt;img src=x onerror=window.__xss=1&gt;"', {}],
-		['data-caption', 'data-caption="&lt;img src=x onerror=window.__xss=1&gt;"', { captionAttribute: 'data-caption' }],
+		['title', 'title="&lt;img src=x onerror=window.__probe=1&gt;"', {}],
+		[
+			'data-caption',
+			'data-caption="&lt;img src=x onerror=window.__probe=1&gt;"',
+			{ captionAttribute: 'data-caption' },
+		],
 	])('shows a caption supplied through %s as text, not markup', (name, attribute, options) => {
 		const node = prepare(`<a href="https://example.com/a.jpg" ${attribute}>open</a>`, options);
 
 		const caption = node.querySelector('.slbCaption');
 		expect(caption.querySelector('img')).toBeNull();
-		expect(caption.textContent).toBe('<img src=x onerror=window.__xss=1>');
+		expect(caption.textContent).toBe('<img src=x onerror=window.__probe=1>');
 	});
 
 	it('shows a plain caption unchanged', () => {
@@ -61,16 +65,16 @@ describe('simplelightbox', () => {
 	});
 
 	it('keeps an image URL containing a quote inside the src attribute', () => {
-		const node = prepare('<a href="https://example.com/a.jpg&quot; onerror=&quot;window.__xss=1">open</a>');
+		const node = prepare('<a href="https://example.com/a.jpg&quot; onerror=&quot;window.__probe=1">open</a>');
 
 		const image = node.querySelector('.slbImage');
 		expect(image.hasAttribute('onerror')).toBe(false);
-		expect(image.getAttribute('src')).toBe('https://example.com/a.jpg" onerror="window.__xss=1');
+		expect(image.getAttribute('src')).toBe('https://example.com/a.jpg" onerror="window.__probe=1');
 	});
 
 	it('keeps a video URL containing a quote inside the iframe src attribute', () => {
 		const node = prepare(
-			'<a href="https://example.com/&quot; onload=&quot;window.__xss=1&quot; x=&quot;/vimeo.com">open</a>',
+			'<a href="https://example.com/&quot; onload=&quot;window.__probe=1&quot; x=&quot;/vimeo.com">open</a>',
 			{ videoRegex: /vimeo.com/ }
 		);
 
@@ -78,8 +82,8 @@ describe('simplelightbox', () => {
 		expect(iframe.hasAttribute('onload')).toBe(false);
 	});
 
-	it('does not give the iframe a javascript: URL', () => {
-		const node = prepare('<a href="javascript:window.__xss=1//vimeo.com">open</a>', { videoRegex: /vimeo.com/ });
+	it('does not give the iframe a non-web URL', () => {
+		const node = prepare('<a href="javascript:window.__probe=1//vimeo.com">open</a>', { videoRegex: /vimeo.com/ });
 
 		expect(node.querySelector('.slbIframe').hasAttribute('src')).toBe(false);
 	});

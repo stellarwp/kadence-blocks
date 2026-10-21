@@ -4,7 +4,7 @@
  * Tests for the gallery lightbox init's handling of slide data on bound anchors.
  */
 const SCRIPT = '../kb-gallery-glight-init.js';
-const PAYLOAD = '&lt;img src=x onerror=window.__xss=1&gt;';
+const MARKUP = '&lt;img src=x onerror=window.__probe=1&gt;';
 
 /**
  * Render a gallery, load the script, and return the GLightbox mock.
@@ -40,10 +40,10 @@ function item(attributes) {
 
 describe('kb-gallery-glight-init', () => {
 	it.each([
-		['title', `title="${PAYLOAD}"`],
-		['data-title', `data-title="${PAYLOAD}"`],
-		['data-glightbox', `data-glightbox="title: ${PAYLOAD}"`],
-	])('escapes a caption supplied through %s before GLightbox reads it', (name, attribute) => {
+		['title', `title="${MARKUP}"`],
+		['data-title', `data-title="${MARKUP}"`],
+		['data-glightbox', `data-glightbox="title: ${MARKUP}"`],
+	])('normalizes a caption supplied through %s before GLightbox reads it', (name, attribute) => {
 		bindGallery(item(attribute));
 		const anchor = document.querySelector('a.kb-gallery-item-link');
 
@@ -53,10 +53,10 @@ describe('kb-gallery-glight-init', () => {
 		expect(probe.querySelector('img')).toBeNull();
 	});
 
-	it('removes script handlers from the description but keeps allowed caption markup', () => {
+	it('keeps only the allowed caption markup in the description', () => {
 		bindGallery(
 			item(
-				'data-description="&lt;b onclick=window.__xss=1&gt;Hi&lt;/b&gt;&lt;img src=x onerror=window.__xss=1&gt;"'
+				'data-description="&lt;b onclick=window.__probe=1&gt;Hi&lt;/b&gt;&lt;img src=x onerror=window.__probe=1&gt;"'
 			)
 		);
 		const anchor = document.querySelector('a.kb-gallery-item-link');
@@ -70,7 +70,7 @@ describe('kb-gallery-glight-init', () => {
 
 	it('drops other slide settings and non-web links', () => {
 		bindGallery(
-			item('data-content="x" data-type="inline" data-href="javascript:1" href="javascript:window.__xss=1"')
+			item('data-content="x" data-type="inline" data-href="javascript:1" href="javascript:window.__probe=1"')
 		);
 		const anchor = document.querySelector('a.kb-gallery-item-link');
 
@@ -90,9 +90,9 @@ describe('kb-gallery-glight-init', () => {
 	});
 
 	it.each([
-		['data-video-provider', `data-video-provider="x&quot;&gt;${PAYLOAD}"`],
-		['data-width', 'data-width="1px;&quot; onmouseover=&quot;window.__xss=1"'],
-		['data-height', 'data-height="1px;&quot; onmouseover=&quot;window.__xss=1"'],
+		['data-video-provider', `data-video-provider="x&quot;&gt;${MARKUP}"`],
+		['data-width', 'data-width="1px;&quot; onmouseover=&quot;window.__probe=1"'],
+		['data-height', 'data-height="1px;&quot; onmouseover=&quot;window.__probe=1"'],
 		['data-srcset', 'data-srcset="x.jpg 1x"'],
 		['data-gallery', 'data-gallery="other"'],
 	])('removes %s, which GLightbox would write into markup', (name, attribute) => {
@@ -111,13 +111,13 @@ describe('kb-gallery-glight-init', () => {
 		expect(names.sort()).toEqual(['data-alt', 'data-description', 'data-title']);
 	});
 
-	it('leaves the alt as written, because GLightbox assigns it as a DOM property', () => {
+	it('leaves the alt as written', () => {
 		bindGallery(item('data-alt="Tom &amp; Jerry"'));
 
 		expect(document.querySelector('a.kb-gallery-item-link').dataset.alt).toBe('Tom & Jerry');
 	});
 
-	it('wraps a description starting with a period so GLightbox does not use it as a selector', () => {
+	it('wraps a description starting with a period', () => {
 		bindGallery(item('data-description=".kb-secret"'));
 		const description = document.querySelector('a.kb-gallery-item-link').getAttribute('data-description');
 
@@ -125,10 +125,10 @@ describe('kb-gallery-glight-init', () => {
 		expect(description).toContain('.kb-secret');
 	});
 
-	it('removes a glightbox-desc child that GLightbox would use as the description', () => {
+	it('removes description content nested inside the anchor', () => {
 		bindGallery(
 			'<div class="kadence-blocks-gallery-item"><a class="kb-gallery-item-link" href="x.jpg">' +
-				'<div class="glightbox-desc"><b onclick="window.__xss=1">x</b></div></a></div>'
+				'<div class="glightbox-desc"><b onclick="window.__probe=1">x</b></div></a></div>'
 		);
 
 		expect(document.querySelector('.glightbox-desc')).toBeNull();
@@ -181,15 +181,12 @@ describe('kb-gallery-glight-init', () => {
 		expect(description).toContain('.kb-secret');
 	});
 
-	it.each([['true'], ['false']])(
-		'wraps a description of exactly "%s" so GLightbox does not read it as a boolean',
-		(value) => {
-			bindGallery(item(`data-description="${value}"`));
-			const description = document.querySelector('a.kb-gallery-item-link').getAttribute('data-description');
+	it.each([['true'], ['false']])('wraps a description of exactly "%s"', (value) => {
+		bindGallery(item(`data-description="${value}"`));
+		const description = document.querySelector('a.kb-gallery-item-link').getAttribute('data-description');
 
-			expect(description).toBe(`<p>${value}</p>`);
-		}
-	);
+		expect(description).toBe(`<p>${value}</p>`);
+	});
 
 	it('leaves a description that merely contains the word true unwrapped', () => {
 		bindGallery(item('data-description="Very true story"'));

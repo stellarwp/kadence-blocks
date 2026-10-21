@@ -263,7 +263,7 @@
 				const $iframeCont = parseHtml(
 					'<div class="slbIframeCont"><iframe class="slbIframe" frameborder="0" allowfullscreen></iframe></div>'
 				);
-				// Set the URL as an attribute value, not markup, and only for web URLs.
+				// Set the URL as an attribute, and only for web URLs.
 				if (isWebUrl(videoURL)) {
 					$iframeCont.querySelector('.slbIframe').setAttribute('src', videoURL);
 				}
@@ -272,11 +272,11 @@
 				const $imageCont = parseHtml('<div class="slbImageWrap"><img class="slbImage" /></div>');
 
 				this.$currentImage = $imageCont.querySelector('.slbImage');
-				// Set the URL as an attribute value, not markup.
+				// Set the URL as an attribute.
 				this.$currentImage.setAttribute('src', url);
 
 				if (this.options.showCaptions && this.captions[position]) {
-					// Captions are plain text (an attribute or text content), so set them as text and never as markup.
+					// Captions are plain text.
 					const $caption = parseHtml('<div class="slbCaption"></div>');
 					$caption.textContent = this.captions[position];
 					$imageCont.appendChild($caption);

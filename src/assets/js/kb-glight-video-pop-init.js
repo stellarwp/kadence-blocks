@@ -11,13 +11,12 @@
 		cache: [],
 		wrapper: [],
 		trigger: [],
-		// The effect each anchor asked for, kept here because the attribute itself is removed before GLightbox reads it.
+		// The effect each anchor asked for, kept here because the attribute is removed during normalizing.
 		effects: new WeakMap(),
-		// Marks an anchor as sanitized on the element itself, so a re-run (even from a second copy of this script)
-		// does not escape its title a second time.
+		// Marks an anchor as already processed.
 		sanitizedKey: Symbol.for('kadenceBlocksProVideoLightboxSanitized'),
 		/**
-		 * Escape a plain-text string so it is safe to be written with innerHTML.
+		 * Escape a plain-text string for use in markup.
 		 *
 		 * @param {string} text The plain text to escape.
 		 *
@@ -52,12 +51,10 @@
 			}
 		},
 		/**
-		 * Make an anchor's slide data safe before GLightbox reads it.
+		 * Normalize an anchor's slide data before GLightbox reads it.
 		 *
-		 * GLightbox reads every one of its slide settings from the anchor's data attributes and writes several of
-		 * them (title, description, video provider, width) into markup it sets with innerHTML. Only the href and a
-		 * text caption are used here, so every other GLightbox setting is dropped, the caption is escaped, and the
-		 * href is limited to web or relative URLs. The attributes this script reads itself are left alone.
+		 * Only the href and a text caption are kept, and the href is limited to web or relative URLs. The attributes
+		 * this script reads itself are left alone.
 		 *
 		 * @param {HTMLElement} el The anchor GLightbox will be bound to.
 		 *
@@ -73,7 +70,7 @@
 
 			const rawTitle = el.dataset.title || el.getAttribute('title') || '';
 			kadenceBlocksProVideoLightbox.effects.set(el, el.getAttribute('data-effect'));
-			// Every setting GLightbox reads from an anchor's dataset.
+			// The GLightbox data attributes.
 			[
 				'data-glightbox',
 				'data-href',
@@ -93,7 +90,7 @@
 			].forEach((name) => el.removeAttribute(name));
 			el.setAttribute('data-title', kadenceBlocksProVideoLightbox.escapeHtml(rawTitle));
 
-			// el.protocol is the resolved scheme.
+			// Limit the href to web URLs.
 			if (el.hasAttribute('href') && !['http:', 'https:'].includes(el.protocol)) {
 				el.removeAttribute('href');
 			}

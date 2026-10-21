@@ -13,14 +13,13 @@
 		carouselItem: {},
 		lightboxes: {},
 		foundClasses: {},
-		// Anchors the gallery block renders, so markup injected elsewhere inside the container is never bound.
+		// The anchors the gallery block renders.
 		linkSelector: '.kadence-blocks-gallery-item a.kb-gallery-item-link',
-		// Marks an anchor as sanitized on the element itself, so a re-run (even from a second copy of this script)
-		// does not escape its title a second time.
+		// Marks an anchor as already processed.
 		sanitizedKey: Symbol.for('kadenceBlocksGLightSanitized'),
-		// The only data attributes GLightbox may read from a gallery anchor.
+		// The data attributes kept on a gallery anchor.
 		allowedDataAttributes: ['data-title', 'data-description', 'data-alt'],
-		// The tags a caption may use, and the attributes each may keep (matches the gallery's server-side filter).
+		// The caption tags and attributes the gallery allows (matches the gallery's server-side filter).
 		allowedCaptionTags: '<a><br><b><i><u><p><ol><ul><li><strong><small>',
 		allowedCaptionAttributes: { a: ['href', 'target', 'rel'] },
 		simulateClick(elem) {
@@ -85,7 +84,7 @@
 			return body.innerHTML;
 		},
 		/**
-		 * Escape a plain-text string so it is safe to be written with innerHTML.
+		 * Escape a plain-text string for use in markup.
 		 *
 		 * @param {string} text The plain text to escape.
 		 *
@@ -104,7 +103,7 @@
 			return String(text).replace(/[&<>"']/g, (match) => map[match]);
 		},
 		/**
-		 * Reduce a caption to the markup the gallery allows, in a form GLightbox will not misread.
+		 * Reduce a caption to the markup the gallery allows.
 		 *
 		 * @param {string} raw The caption, as markup.
 		 *
@@ -115,21 +114,16 @@
 		sanitizeDescription(raw) {
 			const description = kadenceBlocksGLight.strip_tags(raw, kadenceBlocksGLight.allowedCaptionTags);
 
-			// GLightbox treats a description starting with a period as a CSS selector to copy HTML from, and turns
-			// the exact strings "true" and "false" into booleans that break its config parsing.
+			// Wrap values that would otherwise be read as something other than text.
 			return '.' === description.charAt(0) || 'true' === description || 'false' === description
 				? '<p>' + description + '</p>'
 				: description;
 		},
 		/**
-		 * Make the slide data on a gallery anchor safe before GLightbox reads it.
+		 * Normalize the slide data on a gallery anchor before GLightbox reads it.
 		 *
-		 * GLightbox reads every one of its settings from the anchor's data attributes and writes several of them
-		 * (title, description, video provider, width) into markup it sets with innerHTML. The browser has already
-		 * entity-decoded those attributes, so remove every data attribute that is not on the allow list, escape the
-		 * title, reduce the description to the caption markup the gallery already allows, and remove the
-		 * description sources GLightbox would otherwise resolve itself. The alt is left as is, because GLightbox
-		 * assigns it as a DOM property rather than writing it as markup.
+		 * Only the allowed data attributes are kept, the title is escaped, and the description is reduced to the
+		 * caption markup the gallery already allows.
 		 *
 		 * @param {HTMLElement} el The anchor GLightbox will be bound to.
 		 *
@@ -151,7 +145,7 @@
 					el.removeAttribute(name);
 				}
 			});
-			// GLightbox falls back to the innerHTML of a .glightbox-desc child when there is no description.
+			// Remove description content nested inside the anchor.
 			el.querySelectorAll('.glightbox-desc').forEach((child) => child.remove());
 
 			el.setAttribute('data-title', kadenceBlocksGLight.escapeHtml(rawTitle));
@@ -161,7 +155,7 @@
 				el.removeAttribute('data-description');
 			}
 
-			// el.protocol is the resolved scheme.
+			// Limit the href to web URLs.
 			if (el.hasAttribute('href') && !['http:', 'https:'].includes(el.protocol)) {
 				el.removeAttribute('href');
 			}

@@ -25,9 +25,9 @@ function bindAnchor(anchorHtml) {
 
 describe('kb-glight-video-pop-init', () => {
 	it.each([
-		['title', 'title="&lt;img src=x onerror=window.__xss=1&gt;"'],
-		['data-title', 'data-title="&lt;img src=x onerror=window.__xss=1&gt;"'],
-	])('escapes a caption supplied through %s before GLightbox reads it', (name, attribute) => {
+		['title', 'title="&lt;img src=x onerror=window.__probe=1&gt;"'],
+		['data-title', 'data-title="&lt;img src=x onerror=window.__probe=1&gt;"'],
+	])('normalizes a caption supplied through %s before GLightbox reads it', (name, attribute) => {
 		const { anchor } = bindAnchor(
 			`<a class="kadence-video-popup-link" data-popup-class="p1" href="https://youtu.be/x" ${attribute}>open</a>`
 		);
@@ -48,20 +48,20 @@ describe('kb-glight-video-pop-init', () => {
 	});
 
 	it.each([
-		['data-glightbox', 'data-glightbox="title: &lt;img src=x onerror=window.__xss=1&gt;"'],
-		['data-description', 'data-description="&lt;img src=x onerror=window.__xss=1&gt;"'],
-		['data-content', 'data-content="&lt;img src=x onerror=window.__xss=1&gt;"'],
-		['data-href', 'data-href="javascript:window.__xss=1"'],
+		['data-glightbox', 'data-glightbox="title: &lt;img src=x onerror=window.__probe=1&gt;"'],
+		['data-description', 'data-description="&lt;img src=x onerror=window.__probe=1&gt;"'],
+		['data-content', 'data-content="&lt;img src=x onerror=window.__probe=1&gt;"'],
+		['data-href', 'data-href="javascript:window.__probe=1"'],
 		['data-type', 'data-type="inline"'],
-		['data-width', 'data-width="1px;&quot; onmouseover=&quot;window.__xss=1"'],
-		['data-height', 'data-height="1px;&quot; onmouseover=&quot;window.__xss=1"'],
+		['data-width', 'data-width="1px;&quot; onmouseover=&quot;window.__probe=1"'],
+		['data-height', 'data-height="1px;&quot; onmouseover=&quot;window.__probe=1"'],
 		['data-sizes', 'data-sizes="100vw"'],
 		['data-srcset', 'data-srcset="x.jpg 1x"'],
 		['data-alt', 'data-alt="x"'],
 		['data-zoomable', 'data-zoomable="true"'],
 		['data-draggable', 'data-draggable="true"'],
 		['data-desc-position', 'data-desc-position="left"'],
-		['data-video-provider', 'data-video-provider="youtube&quot;&gt;&lt;img src=x onerror=window.__xss=1&gt;"'],
+		['data-video-provider', 'data-video-provider="youtube&quot;&gt;&lt;img src=x onerror=window.__probe=1&gt;"'],
 	])('drops slide settings supplied through %s', (name, attribute) => {
 		const { anchor } = bindAnchor(
 			`<a class="kadence-video-popup-link" data-popup-class="p1" href="https://youtu.be/x" ${attribute}>open</a>`
@@ -72,7 +72,7 @@ describe('kb-glight-video-pop-init', () => {
 
 	it('removes an href that is not a web or relative URL', () => {
 		const { anchor } = bindAnchor(
-			'<a class="kadence-video-popup-link" data-popup-class="p1" href="javascript:window.__xss=1">open</a>'
+			'<a class="kadence-video-popup-link" data-popup-class="p1" href="javascript:window.__probe=1">open</a>'
 		);
 
 		expect(anchor.hasAttribute('href')).toBe(false);
