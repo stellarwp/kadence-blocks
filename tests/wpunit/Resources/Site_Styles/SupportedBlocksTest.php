@@ -292,6 +292,33 @@ final class SupportedBlocksTest extends TestCase {
 	}
 
 	/**
+	 * Countdown takes its container and count item styles and its number and label colors and fonts through
+	 * the overlay, in nine groups, with no scope, no site rules and no core surface, and keeps its timing,
+	 * content, pre and post text, layout and visibility settings per block.
+	 *
+	 * @return void
+	 */
+	public function testCountdownDescribesItsSiteStyles(): void {
+		$block = $this->container->get( Supported_Blocks::class )->get( 'kadence/countdown' );
+
+		$this->assertNotNull( $block );
+		$this->assertSame( 'countdown', $block->get_slug() );
+		$this->assertNotInstanceOf( Scopes_Site_Styles::class, $block );
+		$this->assertNotInstanceOf( Prints_Site_Rules::class, $block );
+		$this->assertNotInstanceOf( Legacy_Group_Attributes::class, $block );
+		$this->assertInstanceOf( Groups_Site_Styles::class, $block );
+		$this->assertSame( [], $block->site_styles_attributes_map() );
+		$this->assertSame( [], $block->site_styles_supports() );
+		$this->assertSame( [], $block->site_styles_selectors() );
+		$this->assertCount( 28, $block->site_styles_overlay_attributes() );
+		$this->assertCount( 9, $block->site_styles_attribute_groups() );
+		$this->assertSame( array_values( array_unique( $block->site_styles_overlay_attributes() ) ), $block->site_styles_overlay_attributes() );
+		foreach ( [ 'countdownType', 'date', 'timestamp', 'expireAction', 'timerLayout', 'countdownDivider', 'enableTimer', 'counterAlign', 'preLabel', 'preLabelColor', 'preLabelFont', 'postLabelFont', 'daysLabel', 'vsdesk' ] as $attribute ) {
+			$this->assertContains( $attribute, Supported_Blocks::excluded_attributes( $block ) );
+		}
+	}
+
+	/**
 	 * Spacer's style is its divider style, and an instance without one takes the block's default.
 	 *
 	 * @dataProvider spacerStyleProvider

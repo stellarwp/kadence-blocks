@@ -24,7 +24,7 @@ final class SiteStylesEditorParamsTest extends WPTestCase {
 
 	/**
 	 * In FSE mode the editor scripts get the supported blocks, and Single Button's, Spacer's, Show More's, Section's, Row Layout's,
-	 * Count Up's and Info Box's entries match the fixtures the JS tests read.
+	 * Count Up's, Info Box's and Countdown's entries match the fixtures the JS tests read.
 	 *
 	 * @return void
 	 */
@@ -35,7 +35,7 @@ final class SiteStylesEditorParamsTest extends WPTestCase {
 
 		$blocks = $this->site_styles( Editor_Params::EARLY_FILTERS_HANDLE )['blocks'];
 
-		$this->assertEqualsCanonicalizing( [ 'kadence/advancedbtn', 'kadence/singlebtn', 'kadence/icon', 'kadence/single-icon', 'kadence/spacer', 'kadence/show-more', 'kadence/column', 'kadence/rowlayout', 'kadence/countup', 'kadence/infobox' ], array_keys( $blocks ) );
+		$this->assertEqualsCanonicalizing( [ 'kadence/advancedbtn', 'kadence/singlebtn', 'kadence/icon', 'kadence/single-icon', 'kadence/spacer', 'kadence/show-more', 'kadence/column', 'kadence/rowlayout', 'kadence/countup', 'kadence/infobox', 'kadence/countdown' ], array_keys( $blocks ) );
 		$this->assertEquals( json_decode( $json, true ), $blocks['kadence/singlebtn'] );
 
 		$spacer = file_get_contents( KADENCE_BLOCKS_PATH . 'src/site-styles/__tests__/fixtures/spacer-entry.json' );
@@ -61,6 +61,10 @@ final class SiteStylesEditorParamsTest extends WPTestCase {
 		$info_box = file_get_contents( KADENCE_BLOCKS_PATH . 'src/site-styles/__tests__/fixtures/infobox-entry.json' );
 		$this->assertIsString( $info_box );
 		$this->assertEquals( json_decode( $info_box, true ), $blocks['kadence/infobox'] );
+
+		$countdown = file_get_contents( KADENCE_BLOCKS_PATH . 'src/site-styles/__tests__/fixtures/countdown-entry.json' );
+		$this->assertIsString( $countdown );
+		$this->assertEquals( json_decode( $countdown, true ), $blocks['kadence/countdown'] );
 	}
 
 	public function testClassicModeGivesFalseAndNoBlocks(): void {
@@ -87,7 +91,7 @@ final class SiteStylesEditorParamsTest extends WPTestCase {
 
 		// wp_localize_script() turns booleans into strings, like every flag in kadence_blocks_params.
 		$this->assertSame( '1', $params['isFseMode'] );
-		$this->assertEqualsCanonicalizing( [ 'kadence/advancedbtn', 'kadence/singlebtn', 'kadence/icon', 'kadence/single-icon', 'kadence/spacer', 'kadence/show-more', 'kadence/column', 'kadence/rowlayout', 'kadence/countup', 'kadence/infobox' ], $params['siteStylesBlocks'] );
+		$this->assertEqualsCanonicalizing( [ 'kadence/advancedbtn', 'kadence/singlebtn', 'kadence/icon', 'kadence/single-icon', 'kadence/spacer', 'kadence/show-more', 'kadence/column', 'kadence/rowlayout', 'kadence/countup', 'kadence/infobox', 'kadence/countdown' ], $params['siteStylesBlocks'] );
 	}
 
 	/**
