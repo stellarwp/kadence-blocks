@@ -43,29 +43,13 @@
 		 *
 		 * @param {string} html The string to convert.
 		 *
-		 * @since TBD
-		 *
 		 * @return {string} The decoded plain text.
 		 */
-		htmlToText(html) {
+		stripHtml(html) {
 			const wrappedHtml = `<pre>${html}</pre>`;
 			const doc = new DOMParser().parseFromString(wrappedHtml, 'text/html');
 
 			return doc.body.textContent || '';
-		},
-		/**
-		 * Deprecated alias of htmlToText().
-		 *
-		 * @param {string} html The string to convert.
-		 *
-		 * @since TBD
-		 *
-		 * @deprecated TBD Use htmlToText().
-		 *
-		 * @return {string} The decoded plain text.
-		 */
-		stripHtml(html) {
-			return window.kadenceCountUp.htmlToText(html);
 		},
 		/**
 		 * Escape a plain-text string so it is safe to write with innerHTML.
@@ -95,10 +79,10 @@
 				const self = window.kadenceCountUp.countUpItems[n],
 					start = self.dataset.start,
 					end = self.dataset.end,
-					prefix = window.kadenceCountUp.htmlToText(self.dataset.prefix),
-					suffix = window.kadenceCountUp.htmlToText(self.dataset.suffix),
+					prefix = window.kadenceCountUp.stripHtml(self.dataset.prefix),
+					suffix = window.kadenceCountUp.stripHtml(self.dataset.suffix),
 					duration = self.dataset.duration,
-					separator = window.kadenceCountUp.htmlToText(self.dataset.separator),
+					separator = window.kadenceCountUp.stripHtml(self.dataset.separator),
 					decimal = self.dataset.decimal ? self.dataset.decimal : false,
 					decimalSpaces = self.dataset.decimalSpaces ? self.dataset.decimalSpaces : false,
 					el = self.querySelector('.kb-count-up-process');

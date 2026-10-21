@@ -59,8 +59,8 @@
 		},
 		triggerAnimation(element, index, item) {
 			if (kadenceProgressBars.cache[item.simple_id][index]) {
-				const prefix = item?.prefix ? kadenceProgressBars.htmlToText(item.prefix) : '';
-				const suffix = item?.suffix ? kadenceProgressBars.htmlToText(item.suffix) : '';
+				const prefix = item?.prefix ? kadenceProgressBars.stripHtml(item.prefix) : '';
+				const suffix = item?.suffix ? kadenceProgressBars.stripHtml(item.suffix) : '';
 				kadenceProgressBars.cache[item.simple_id][index].animate(item.progress_real / item.progress_max, {
 					duration: item.duration * 1000,
 					step(state, bar) {
@@ -169,28 +169,12 @@
 		 *
 		 * @param {string} html The string to convert.
 		 *
-		 * @since TBD
-		 *
-		 * @return {string} The decoded plain text.
-		 */
-		htmlToText(html) {
-			const wrappedHtml = `<pre>${html}</pre>`;
-			const doc = new DOMParser().parseFromString(wrappedHtml, 'text/html');
-			return doc.body.textContent || '';
-		},
-		/**
-		 * Deprecated alias of htmlToText().
-		 *
-		 * @param {string} html The string to convert.
-		 *
-		 * @since TBD
-		 *
-		 * @deprecated TBD Use htmlToText().
-		 *
 		 * @return {string} The decoded plain text.
 		 */
 		stripHtml(html) {
-			return kadenceProgressBars.htmlToText(html);
+			const wrappedHtml = `<pre>${html}</pre>`;
+			const doc = new DOMParser().parseFromString(wrappedHtml, 'text/html');
+			return doc.body.textContent || '';
 		},
 		initAll() {
 			if (!kadenceProgressBars?.items) {
