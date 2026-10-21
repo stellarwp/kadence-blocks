@@ -17,6 +17,7 @@ import { hideCoreColorControls } from './site-styles/instance-controls';
 import { withSiteStyles } from './site-styles/edit-overlay';
 import { gateBlockDefaults } from './site-styles/block-defaults';
 import { isFseMode } from './site-styles/supported-blocks';
+import { useIsSiteStylesPanel } from './site-styles/use-is-site-styles-panel';
 import { blockPresets, activeLibrary, activePresetFor, blockDefaultPreset } from './extension/preset-picker';
 import { PresetButton } from './extension/preset-picker/PresetButton';
 import { designTokenInspectorControl } from './extension/preset-picker/inspector-control';
@@ -352,11 +353,14 @@ addFilter('editor.BlockListBlock', 'kadence/kb-palette-attr', withBlockPaletteAt
  * A block whose `kbPreset` support requests `inlinePicker` renders `PresetButton` itself, from inside its own
  * inspector layout, so this filter renders neither control for it.
  *
+ * Neither control renders in the Kadence panel, which stores no preset or palette pick.
+ *
  * @since 3.8.0
  */
 const withPresetPicker = createHigherOrderComponent((BlockEdit) => {
 	return (props) => {
 		const { name, attributes, setAttributes, isSelected } = props;
+		const isSiteStylesPanel = useIsSiteStylesPanel();
 
 		const hasPreset = hasBlockSupport(name, 'kbPreset');
 		const hasPalette = hasBlockSupport(name, 'kbPalette');
@@ -372,6 +376,7 @@ const withPresetPicker = createHigherOrderComponent((BlockEdit) => {
 			inlinePicker: hasPreset && Boolean(getBlockSupport(name, 'kbPreset')?.inlinePicker),
 			presetCount: blockPresets(name, library).length,
 			paletteCount: selectablePalettes().length,
+			isSiteStylesPanel,
 		});
 
 		if (control === null) {

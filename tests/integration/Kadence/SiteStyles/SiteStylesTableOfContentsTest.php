@@ -168,16 +168,17 @@ final class SiteStylesTableOfContentsTest extends WPTestCase {
 	}
 
 	/**
-	 * Every attribute of the table is a site value, core's, or explained here: the attributes older tables
-	 * migrate from, and the Tablet and Mobile max widths, which the front end has never printed.
+	 * The attributes older tables migrate from, and the Tablet and Mobile max widths, which the front end has never
+	 * printed, stay per table: no site value can reach them.
 	 *
 	 * @return void
 	 */
-	public function testEveryAttributeIsEitherASiteValueOrExplained(): void {
-		$this->assertSame(
-			[ 'containerBorder', 'containerBorderColor', 'mobileMaxWidth', 'tabletMaxWidth', 'titleBorder', 'titleBorderColor' ],
-			$this->unaccounted_attributes( Kadence_Blocks_Tableofcontents_Block::get_instance() )
-		);
+	public function testTheAttributesLeftPerTableAreNoSiteValues(): void {
+		$excluded = Supported_Blocks::excluded_attributes( Kadence_Blocks_Tableofcontents_Block::get_instance() );
+
+		foreach ( [ 'containerBorder', 'containerBorderColor', 'mobileMaxWidth', 'tabletMaxWidth', 'titleBorder', 'titleBorderColor' ] as $attribute ) {
+			$this->assertContains( $attribute, $excluded, $attribute );
+		}
 	}
 
 	/**

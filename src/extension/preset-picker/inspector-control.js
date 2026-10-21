@@ -15,12 +15,26 @@
  * @param {boolean} options.inlinePicker Whether its `kbPreset` support requests `inlinePicker`.
  * @param {number}  options.presetCount  How many presets the active library defines for it.
  * @param {number}  options.paletteCount How many palettes are selectable.
+ * @param {boolean} [options.isSiteStylesPanel] Whether the block renders in the Kadence panel.
  *
  * @since 3.8.0
  *
  * @return {?string} `'preset'`, `'palette'`, or null when the filter renders nothing.
  */
-export function designTokenInspectorControl({ hasPreset, hasPalette, inlinePicker, presetCount, paletteCount }) {
+export function designTokenInspectorControl({
+	hasPreset,
+	hasPalette,
+	inlinePicker,
+	presetCount,
+	paletteCount,
+	isSiteStylesPanel = false,
+}) {
+	// The Kadence panel edits site values, and a preset or palette pick is never one, so a pick made there
+	// would be dropped on save.
+	if (isSiteStylesPanel) {
+		return null;
+	}
+
 	// A block whose kbPreset support requests `inlinePicker` renders PresetButton from inside its own
 	// inspector layout. That is a placement choice, not a different control — the filter renders the same
 	// component for every other block — so when a block has opted in, it renders neither control.

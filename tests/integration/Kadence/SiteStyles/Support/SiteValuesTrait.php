@@ -5,8 +5,6 @@ declare( strict_types=1 );
 namespace Tests\integration\Kadence\SiteStyles\Support;
 
 use Kadence_Blocks_Abstract_Block;
-use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Supports_Site_Styles;
-use KadenceWP\KadenceBlocks\Site_Styles\Supported_Blocks;
 use ReflectionProperty;
 use WP_Block_Type;
 use WP_Block_Type_Registry;
@@ -110,29 +108,5 @@ trait SiteValuesTrait {
 		$metadata = new ReflectionProperty( WP_Theme_JSON::class, 'blocks_metadata' );
 		$metadata->setAccessible( true );
 		$metadata->setValue( null, [] );
-	}
-
-	/**
-	 * The block's attributes that neither take a site value nor are kept out of the site values: not
-	 * excluded, not on the overlay list, not a core key. Core's color supports add the four it names.
-	 *
-	 * @param Supports_Site_Styles $block The block.
-	 *
-	 * @return list<string> Attribute names, sorted.
-	 */
-	private function unaccounted_attributes( Supports_Site_Styles $block ): array {
-		$registered = WP_Block_Type_Registry::get_instance()->get_registered( $block->get_name() );
-		$names      = $registered ? array_keys( $registered->attributes ?? [] ) : [];
-		$names      = array_diff(
-			$names,
-			[ 'style', 'textColor', 'backgroundColor', 'gradient' ],
-			Supported_Blocks::excluded_attributes( $block ),
-			$block->site_styles_overlay_attributes(),
-			array_keys( $block->site_styles_attributes_map() )
-		);
-
-		sort( $names );
-
-		return $names;
 	}
 }

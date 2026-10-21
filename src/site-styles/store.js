@@ -6,9 +6,17 @@
  * merge and the scoping follow the same rules as the PHP overlay (the
  * fixtures in `__tests__/fixtures/` pin both).
  */
-import { cloneDeep, get, isEmpty, isEqual, kebabCase, omit, pick, set, unset } from 'lodash';
-import { resolveTokenAlias } from '../extension/design-tokens/alias';
+import { cloneDeep, escapeRegExp, get, isEmpty, isEqual, kebabCase, omit, pick, pickBy, set, unset } from 'lodash';
+import { TOKEN_VAR_PREFIX, isTokenAlias, resolveTokenAlias } from '../extension/design-tokens/alias';
 import { getSupportedBlock } from './supported-blocks';
+
+/**
+ * A design token's CSS variable, as `resolveTokenAlias()` writes it: `var(--kb-token--<id>)`,
+ * with every `.` of the id written as `--`. Token ids never hold `--` themselves.
+ *
+ * @since TBD
+ */
+const TOKEN_VAR = new RegExp('^var\\(' + escapeRegExp(TOKEN_VAR_PREFIX) + '([a-z0-9-]+)\\)$');
 
 /**
  * @typedef {Object<string, *>} Attributes Block attribute name => value.
@@ -28,8 +36,8 @@ import { getSupportedBlock } from './supported-blocks';
  * editor frame. Both stored forms are accepted, the `var:preset` reference and
  * the `var(--wp--preset--color--…)` value the edited record can hold. Another
  * preset reference becomes its CSS variable, as the style engine writes it. A
- * design token's CSS variable becomes its `{alias}`, which the color controls
- * pick; any other value is kept.
+ * design token's CSS variable becomes its `{token}` reference again, so the
+ * Kadence control shows the token; any other value is kept.
  *
  * @param {string} value The stored color.
  * @return {string} The Kadence color value.
@@ -49,7 +57,7 @@ export function toKadenceColor(value) {
 		return `var(--wp--preset--color--${kebabCase(preset[1])})`;
 	}
 
-	const token = /^var\(--kb-token--([\w-]+)\)$/.exec(value);
+	const token = TOKEN_VAR.exec(value);
 
 	return token ? `{${token[1].replace(/--/g, '.')}}` : value;
 }
@@ -57,17 +65,25 @@ export function toKadenceColor(value) {
 /**
  * Converts a Kadence color attribute value to the form stored in core's style.
  *
+ * A design token's `{token}` reference is stored as its CSS variable, since
+ * core prints the stored value as is.
+ *
  * @param {string} value The Kadence color value.
- * @return {string} `var:preset|color|theme-paletteN` for a palette color, the CSS variable of a design token's `{alias}`, which core can't resolve, the value otherwise.
+ * @return {string} `var:preset|color|theme-paletteN` for a palette color, `var(--kb-token--…)` for a design token, the value otherwise.
  */
 export function toCoreColor(value) {
-	return /^palette\d+$/.test(value) ? `var:preset|color|theme-${value}` : resolveTokenAlias(value);
+	if (isTokenAlias(value)) {
+		return resolveTokenAlias(value);
+	}
+
+	return /^palette\d+$/.test(value) ? `var:preset|color|theme-${value}` : value;
 }
 
 /**
  * Reads a block's site-level values from the Global Styles record, as block
  * attributes: `settings.custom.kadence.<slug>` plus the colors in core's style.
- * Stored values of attributes the block excludes are ignored.
+ * Stored values of attributes that can't be site values are ignored, and so
+ * are cleared ones.
  *
  * @param {GlobalStylesRecord|undefined} record    The edited Global Styles record.
  * @param {string}                       blockName Block name.
@@ -82,7 +98,9 @@ export function siteAttributes(record, blockName) {
 
 	const custom = record.settings?.custom?.kadence?.[block.slug];
 	const attributes =
-		custom && typeof custom === 'object' && !Array.isArray(custom) ? omit(custom, block.exclude) : {};
+		custom && typeof custom === 'object' && !Array.isArray(custom)
+			? pickBy(custom, (value, name) => undefined !== value && isSiteAttribute(block, name))
+			: {};
 	const styles = record.styles?.blocks?.[blockName] || {};
 
 	// Every mapped path is `color.<key>`: the server keeps no other.
@@ -99,9 +117,9 @@ export function siteAttributes(record, blockName) {
 
 /**
  * Splits a block's attributes into what Global Styles stores: only settings
- * that differ from the block's defaults, without content attributes; values
- * core also edits go to their path in core's style, the rest to
- * `settings.custom.kadence`.
+ * that can be site values and differ from the block's defaults; values core
+ * also edits go to their path in core's style, the rest to
+ * `settings.custom.kadence`. A cleared value isn't stored.
  *
  * @param {Attributes}                    attributes The block's attributes.
  * @param {Object<string, {default: *}>} definitions The block type's attribute definitions.
@@ -120,7 +138,7 @@ export function toStoredForm(attributes, definitions, blockName) {
 	Object.entries(attributes).forEach(([name, value]) => {
 		const definition = definitions[name];
 
-		if (block.exclude.includes(name) || !definition || isEqual(value, definition.default)) {
+		if (undefined === value || !isSiteAttribute(block, name) || !definition || isEqual(value, definition.default)) {
 			return;
 		}
 
@@ -137,7 +155,13 @@ export function toStoredForm(attributes, definitions, blockName) {
 /**
  * Writes a block's stored form into a copy of the Global Styles record's
  * styles and settings. A mapped path without a value is removed, with any
- * object it leaves empty inside the block's styles.
+ * object it leaves empty, up to `styles.blocks`.
+ *
+ * `settings.custom.kadence` and `settings.custom` are removed once they are
+ * empty too. WordPress saves an empty object as an empty array, which a later
+ * write couldn't add a key to, so an empty array already stored on the way to
+ * a value, the top-level styles and settings included, is replaced before
+ * writing.
  *
  * @param {GlobalStylesRecord}                                 record    The edited Global Styles record.
  * @param {string}                                             blockName Block name.
@@ -146,34 +170,74 @@ export function toStoredForm(attributes, definitions, blockName) {
  */
 export function withStoredForm(record, blockName, stored) {
 	const { slug, attributesMap } = getSupportedBlock(blockName);
-	const styles = cloneDeep(record.styles || {});
-	const settings = cloneDeep(record.settings || {});
+	const styles = cloneDeep(isEmpty(record.styles) ? {} : record.styles);
+	const settings = cloneDeep(isEmpty(record.settings) ? {} : record.settings);
 
 	Object.values(attributesMap).forEach((path) => {
 		const target = ['blocks', blockName, ...path.split('.')];
 
 		if (undefined !== stored.core[path]) {
+			for (let length = 1; length < target.length; length++) {
+				replaceEmptyList(styles, target.slice(0, length));
+			}
+
 			set(styles, target, stored.core[path]);
 			return;
 		}
 
 		unset(styles, target);
 
-		// Up to, not including, the block's own entry.
 		let parent = target.slice(0, -1);
-		while (parent.length > 2 && isEmpty(get(styles, parent))) {
+		while (parent.length && isEmpty(get(styles, parent))) {
 			unset(styles, parent);
 			parent = parent.slice(0, -1);
 		}
 	});
 
 	if (Object.keys(stored.custom).length) {
+		replaceEmptyList(settings, ['custom']);
+		replaceEmptyList(settings, ['custom', 'kadence']);
 		set(settings, ['custom', 'kadence', slug], stored.custom);
 	} else {
 		unset(settings, ['custom', 'kadence', slug]);
+		unsetIfEmpty(settings, ['custom', 'kadence']);
+		unsetIfEmpty(settings, ['custom']);
 	}
 
 	return { styles, settings };
+}
+
+/**
+ * Replaces an empty array at a path with an empty object, so named keys can be
+ * set under it. WordPress returns an empty object it saved as an empty array.
+ *
+ * @param {Object}   object The object to change.
+ * @param {string[]} path   The path.
+ *
+ * @since TBD
+ */
+function replaceEmptyList(object, path) {
+	const value = get(object, path);
+
+	if (Array.isArray(value) && !value.length) {
+		set(object, path, {});
+	}
+}
+
+/**
+ * Removes the value at a path when it is an empty object or array.
+ *
+ * @param {Object}   object The object to change.
+ * @param {string[]} path   The path.
+ *
+ * @since TBD
+ */
+function unsetIfEmpty(object, path) {
+	const value = get(object, path);
+
+	if (value !== null && typeof value === 'object' && isEmpty(value)) {
+		unset(object, path);
+	}
 }
 
 /**
@@ -222,6 +286,24 @@ export function scopeSiteAttributes(site, attributes, scope, defaultStyle) {
 	}
 
 	return pick(site, scope.attributes[style]);
+}
+
+/**
+ * Drops the site values of every group the instance sets itself. The instance
+ * sets a group when it has a value other than the block's default for any of
+ * the group's attributes, the same test `merge()` uses.
+ *
+ * @param {Attributes}                    site        The site values.
+ * @param {Attributes}                    attributes  The instance's attributes.
+ * @param {string[][]}                    groups      Groups of attribute names.
+ * @param {Object<string, {default: *}>} definitions The block type's attribute definitions.
+ *
+ * @since TBD
+ *
+ * @return {Attributes} The site values the instance takes.
+ */
+export function groupSiteAttributes(site, attributes, groups, definitions) {
+	return groups.reduce((kept, group) => (setsGroup(attributes, group, definitions) ? omit(kept, group) : kept), site);
 }
 
 /**
@@ -276,13 +358,20 @@ export function unmerge(next, shown, stored) {
  * value, only the changed leaves are kept, and an unchanged attribute is
  * dropped.
  *
- * @param {Attributes} written The attributes being written.
- * @param {Attributes} shown   The attributes the block was shown.
- * @param {Attributes} stored  The instance's stored attributes.
- * @param {Attributes} site    The site values.
+ * A write that starts the instance setting one of its block's groups is the
+ * exception. The group then takes no site values, so the whole group is
+ * stored as shown, with the written values, and the block keeps looking as it
+ * did apart from the change.
+ *
+ * @param {Attributes}                    written       The attributes being written.
+ * @param {Attributes}                    shown         The attributes the block was shown.
+ * @param {Attributes}                    stored        The instance's stored attributes.
+ * @param {Attributes}                    site          The site values.
+ * @param {string[][]}                    [groups]      The block's groups of attribute names.
+ * @param {Object<string, {default: *}>} [definitions] The block type's attribute definitions.
  * @return {Attributes} The attributes to store.
  */
-export function guardWrite(written, shown, stored, site) {
+export function guardWrite(written, shown, stored, site, groups = [], definitions = {}) {
 	const kept = {};
 
 	Object.keys(written).forEach((name) => {
@@ -296,6 +385,20 @@ export function guardWrite(written, shown, stored, site) {
 		if (!isEqual(value, stored[name])) {
 			kept[name] = value;
 		}
+	});
+
+	groups.forEach((group) => {
+		if (setsGroup(stored, group, definitions) || !setsGroup({ ...stored, ...kept }, group, definitions)) {
+			return;
+		}
+
+		group.forEach((name) => {
+			const value = name in written ? written[name] : shown[name];
+
+			if (!isEqual(value, stored[name])) {
+				kept[name] = value;
+			}
+		});
 	});
 
 	return kept;
@@ -321,9 +424,55 @@ export function panelAttributes(blockName, defaults, site, current) {
 }
 
 /**
+ * Whether an instance sets a group itself: it has a value other than the
+ * block's default for any of the group's attributes.
+ *
+ * @param {Attributes}                    attributes  The instance's attributes.
+ * @param {string[]}                      group       The group's attribute names.
+ * @param {Object<string, {default: *}>} definitions The block type's attribute definitions.
+ *
+ * @since TBD
+ *
+ * @return {boolean} Whether the instance sets the group.
+ */
+function setsGroup(attributes, group, definitions) {
+	return group.some((name) => {
+		const value = attributes[name];
+
+		return undefined !== value && null !== value && !isEqual(value, definitions[name]?.default);
+	});
+}
+
+/**
  * @param {*} value A value.
  * @return {boolean} Whether it's an array or a plain object.
  */
 function isObjectLike(value) {
 	return value !== null && typeof value === 'object';
+}
+
+/**
+ * Whether an attribute can be one of a block's site values. An excluded
+ * attribute never is. For a block without site rules, scoped or not, only its
+ * overlay attributes and the ones core's style stores can show a site value;
+ * that also keeps out attributes the server doesn't register, which other
+ * scripts add to the block in the editor.
+ *
+ * @param {import('./supported-blocks').SupportedBlock} block The block's entry.
+ * @param {string}                                       name  Attribute name.
+ *
+ * @since TBD
+ *
+ * @return {boolean} Whether the attribute can be a site value.
+ */
+function isSiteAttribute(block, name) {
+	if (block.exclude.includes(name)) {
+		return false;
+	}
+
+	return (
+		Boolean(block.siteRules) ||
+		block.overlay.includes(name) ||
+		Object.prototype.hasOwnProperty.call(block.attributesMap, name)
+	);
 }

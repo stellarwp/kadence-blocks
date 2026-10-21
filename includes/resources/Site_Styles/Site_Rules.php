@@ -4,7 +4,7 @@ namespace KadenceWP\KadenceBlocks\Site_Styles;
 
 use Kadence_Blocks_Abstract_Block;
 use Kadence_Blocks_CSS;
-use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Scopes_Site_Styles;
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Prints_Site_Rules;
 use KadenceWP\KadenceBlocks\Utils\Cast;
 
 /**
@@ -99,7 +99,7 @@ final class Site_Rules {
 	public function css( string $block_name ): string {
 		$block = $this->blocks->get( $block_name );
 
-		if ( ! $block instanceof Scopes_Site_Styles || ! $block instanceof Kadence_Blocks_Abstract_Block ) {
+		if ( ! $block instanceof Prints_Site_Rules || ! $block instanceof Kadence_Blocks_Abstract_Block ) {
 			return '';
 		}
 

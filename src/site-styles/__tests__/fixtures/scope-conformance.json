@@ -428,5 +428,114 @@
 			],
 			"displayShadow": true
 		}
+	},
+	{
+		"name": "a stripe divider takes only the spacer height and divider width",
+		"site": {
+			"spacerHeight": 40,
+			"spacerHeightUnits": "rem",
+			"dividerHeight": 8,
+			"dividerWidth": 50,
+			"dividerColor": "#ff0000",
+			"dividerOpacity": 50
+		},
+		"instance": {
+			"dividerStyle": "stripe"
+		},
+		"scope": {
+			"attribute": "dividerStyle",
+			"attributes": {
+				"stripe": [
+					"spacerHeight",
+					"tabletSpacerHeight",
+					"mobileSpacerHeight",
+					"spacerHeightUnits",
+					"dividerWidth",
+					"tabletDividerWidth",
+					"mobileDividerWidth",
+					"dividerWidthUnits"
+				]
+			}
+		},
+		"defaultStyle": "solid",
+		"expected": {
+			"spacerHeight": 40,
+			"spacerHeightUnits": "rem",
+			"dividerWidth": 50
+		}
+	},
+	{
+		"name": "a dashed divider takes every site value",
+		"site": {
+			"spacerHeight": 40,
+			"spacerHeightUnits": "rem",
+			"dividerHeight": 8,
+			"dividerWidth": 50,
+			"dividerColor": "#ff0000",
+			"dividerOpacity": 50
+		},
+		"instance": {
+			"dividerStyle": "dashed"
+		},
+		"scope": {
+			"attribute": "dividerStyle",
+			"attributes": {
+				"stripe": [
+					"spacerHeight",
+					"tabletSpacerHeight",
+					"mobileSpacerHeight",
+					"spacerHeightUnits",
+					"dividerWidth",
+					"tabletDividerWidth",
+					"mobileDividerWidth",
+					"dividerWidthUnits"
+				]
+			}
+		},
+		"defaultStyle": "solid",
+		"expected": {
+			"spacerHeight": 40,
+			"spacerHeightUnits": "rem",
+			"dividerHeight": 8,
+			"dividerWidth": 50,
+			"dividerColor": "#ff0000",
+			"dividerOpacity": 50
+		}
+	},
+	{
+		"name": "a divider without a style takes every site value, as a solid one does",
+		"site": {
+			"spacerHeight": 40,
+			"spacerHeightUnits": "rem",
+			"dividerHeight": 8,
+			"dividerWidth": 50,
+			"dividerColor": "#ff0000",
+			"dividerOpacity": 50
+		},
+		"instance": {},
+		"scope": {
+			"attribute": "dividerStyle",
+			"attributes": {
+				"stripe": [
+					"spacerHeight",
+					"tabletSpacerHeight",
+					"mobileSpacerHeight",
+					"spacerHeightUnits",
+					"dividerWidth",
+					"tabletDividerWidth",
+					"mobileDividerWidth",
+					"dividerWidthUnits"
+				]
+			}
+		},
+		"defaultStyle": "solid",
+		"expected": {
+			"spacerHeight": 40,
+			"spacerHeightUnits": "rem",
+			"dividerHeight": 8,
+			"dividerWidth": 50,
+			"dividerColor": "#ff0000",
+			"dividerOpacity": 50
+		}
 	}
 ]

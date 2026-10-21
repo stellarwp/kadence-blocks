@@ -4,12 +4,14 @@ declare( strict_types=1 );
 
 namespace Tests\wpunit\Resources\Site_Styles;
 
+use Generator;
 use KadenceWP\KadenceBlocks\Site_Styles\Overlay;
 use Tests\Support\Classes\TestCase;
 
 /**
  * Covers merging a site-level value into an instance value, part by part,
- * and scoping site values by the instance's style.
+ * scoping site values by the instance's style, and keeping the site values
+ * of a group the instance sets itself out.
  */
 final class OverlayMergeTest extends TestCase {
 
@@ -70,5 +72,42 @@ final class OverlayMergeTest extends TestCase {
 	 */
 	public function testScopesLikeTheEditor( array $site, array $instance, array $scope, $default_style, array $expected ): void {
 		$this->assertSame( $expected, Overlay::scope( $site, $instance, $scope, $default_style ) );
+	}
+
+	/**
+	 * Drops a group's site values like the editor does, for the cases shared with it.
+	 *
+	 * @dataProvider groupProvider
+	 *
+	 * @param array<string, mixed> $site     The site values.
+	 * @param array<string, mixed> $instance The instance's attributes.
+	 * @param list<list<string>>   $groups   The block's groups.
+	 * @param array<string, mixed> $defaults Attribute name => the block's default.
+	 * @param array<string, mixed> $expected The site values the instance takes.
+	 *
+	 * @return void
+	 */
+	public function testGroupsLikeTheEditor( array $site, array $instance, array $groups, array $defaults, array $expected ): void {
+		$this->assertSame( $expected, Overlay::group( $site, $instance, $groups, $defaults ) );
+	}
+
+	/**
+	 * The grouping cases shared with the editor, in `src/site-styles/__tests__/fixtures/`.
+	 *
+	 * @return Generator
+	 */
+	public function groupProvider(): Generator {
+		$json = file_get_contents( KADENCE_BLOCKS_PATH . 'src/site-styles/__tests__/fixtures/group-conformance.json' );
+		$this->assertIsString( $json );
+
+		foreach ( json_decode( $json, true ) as $case ) {
+			yield $case['name'] => [
+				'site'     => $case['site'],
+				'instance' => $case['instance'],
+				'groups'   => $case['groups'],
+				'defaults' => $case['defaults'],
+				'expected' => $case['expected'],
+			];
+		}
 	}
 }

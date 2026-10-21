@@ -5,6 +5,9 @@ declare( strict_types=1 );
 namespace Tests\integration\Kadence\SiteStyles;
 
 use Codeception\TestCase\WPTestCase;
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Supports_Site_Styles;
+use KadenceWP\KadenceBlocks\Site_Styles\Kses_Keeper;
+use KadenceWP\KadenceBlocks\Site_Styles\Supported_Blocks;
 use WP_Theme_JSON_Resolver;
 
 /**
@@ -96,6 +99,31 @@ final class SiteStylesKsesTest extends WPTestCase {
 	}
 
 	/**
+	 * A block without a scope keeps only its overlay attributes when core's KSES filters remove the Kadence values,
+	 * so attributes the editor adds outside the server registry are dropped too.
+	 *
+	 * @return void
+	 */
+	public function testABlockWithoutAScopeKeepsOnlyItsOverlayAttributes(): void {
+		$keeper = new Kses_Keeper( new Supported_Blocks( [ $this->unscoped_show_more() ] ) );
+		$base   = [
+			'version'                     => 3,
+			'isGlobalStylesUserThemeJSON' => true,
+		];
+		$values = [
+			'heightDesktop'   => 300,
+			'showHideMore'    => false,
+			'kadenceBlockCSS' => 'selector { color: red; }',
+			'uniqueID'        => 'abc',
+		];
+
+		$keeper->capture( wp_slash( (string) wp_json_encode( $base + [ 'settings' => [ 'custom' => [ 'kadence' => [ 'show-more' => $values ] ] ] ] ) ) );
+		$restored = json_decode( wp_unslash( $keeper->restore( wp_slash( (string) wp_json_encode( $base ) ) ) ), true );
+
+		$this->assertSame( [ 'show-more' => [ 'heightDesktop' => 300 ] ], $restored['settings']['custom']['kadence'] );
+	}
+
+	/**
 	 * Saves Global Styles as a user without `unfiltered_html`, so core's KSES
 	 * filters run.
 	 *
@@ -129,5 +157,39 @@ final class SiteStylesKsesTest extends WPTestCase {
 		$post = WP_Theme_JSON_Resolver::get_user_data_from_wp_global_styles( wp_get_theme() );
 
 		return json_decode( $post['post_content'], true );
+	}
+
+	/**
+	 * A Show More stand-in without a scope, whose only site value is `heightDesktop`.
+	 *
+	 * @return Supports_Site_Styles The block.
+	 */
+	private function unscoped_show_more(): Supports_Site_Styles {
+		return new class() implements Supports_Site_Styles {
+
+			public function get_name(): string {
+				return 'kadence/show-more';
+			}
+
+			public function get_slug(): string {
+				return 'show-more';
+			}
+
+			public function site_styles_overlay_attributes(): array {
+				return [ 'heightDesktop' ];
+			}
+
+			public function site_styles_attributes_map(): array {
+				return [];
+			}
+
+			public function site_styles_supports(): array {
+				return [];
+			}
+
+			public function site_styles_selectors(): array {
+				return [];
+			}
+		};
 	}
 }
