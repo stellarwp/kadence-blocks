@@ -3,6 +3,7 @@
 namespace KadenceWP\KadenceBlocks\Site_Styles;
 
 use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Groups_Site_Styles;
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Legacy_Group_Attributes;
 use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Prints_Site_Rules;
 use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Scopes_Site_Styles;
 
@@ -77,6 +78,10 @@ final class Editor_Params {
 
 				if ( $block instanceof Groups_Site_Styles ) {
 					$blocks[ $name ]['groups'] = $block->site_styles_attribute_groups();
+				}
+
+				if ( $block instanceof Legacy_Group_Attributes ) {
+					$blocks[ $name ]['legacyGroups'] = $block->site_styles_legacy_group_attributes();
 				}
 			}
 		}

@@ -81,14 +81,15 @@ final class OverlayMergeTest extends TestCase {
 	 *
 	 * @param array<string, mixed> $site     The site values.
 	 * @param array<string, mixed> $instance The instance's attributes.
-	 * @param list<list<string>>   $groups   The block's groups.
-	 * @param array<string, mixed> $defaults Attribute name => the block's default.
-	 * @param array<string, mixed> $expected The site values the instance takes.
+	 * @param list<list<string>>          $groups   The block's groups.
+	 * @param array<string, mixed>        $defaults Attribute name => the block's default.
+	 * @param array<string, mixed>        $expected The site values the instance takes.
+	 * @param array<string, list<string>> $legacy   First attribute of a group => older attributes that stand in for it.
 	 *
 	 * @return void
 	 */
-	public function testGroupsLikeTheEditor( array $site, array $instance, array $groups, array $defaults, array $expected ): void {
-		$this->assertSame( $expected, Overlay::group( $site, $instance, $groups, $defaults ) );
+	public function testGroupsLikeTheEditor( array $site, array $instance, array $groups, array $defaults, array $expected, array $legacy ): void {
+		$this->assertSame( $expected, Overlay::group( $site, $instance, $groups, $defaults, $legacy ) );
 	}
 
 	/**
@@ -107,6 +108,7 @@ final class OverlayMergeTest extends TestCase {
 				'groups'   => $case['groups'],
 				'defaults' => $case['defaults'],
 				'expected' => $case['expected'],
+				'legacy'   => $case['legacy'] ?? [],
 			];
 		}
 	}

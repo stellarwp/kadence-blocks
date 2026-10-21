@@ -17,6 +17,7 @@ import conformance from './fixtures/merge-conformance.json';
 import groupConformance from './fixtures/group-conformance.json';
 import scopeConformance from './fixtures/scope-conformance.json';
 import singleButton from './fixtures/singlebtn-entry.json';
+import section from './fixtures/column-entry.json';
 import showMore from './fixtures/show-more-entry.json';
 
 const BLOCK = 'kadence/singlebtn';
@@ -72,7 +73,7 @@ describe('groupSiteAttributes', () => {
 			Object.entries(c.defaults).map(([key, value]) => [key, { default: value }])
 		);
 
-		expect(groupSiteAttributes(c.site, c.instance, c.groups, definitions)).toEqual(c.expected);
+		expect(groupSiteAttributes(c.site, c.instance, c.groups, definitions, c.legacy)).toEqual(c.expected);
 	});
 });
 
@@ -178,6 +179,28 @@ describe('siteAttributes', () => {
 		};
 
 		expect(siteAttributes(record, UNSCOPED)).toEqual({ heightDesktop: 300, textColor: '#222222' });
+	});
+
+	it("keeps only Section's overlay attributes, leaving its layout and Pro settings to each block", () => {
+		window.kadenceSiteStyles.blocks['kadence/column'] = section;
+		const record = {
+			settings: {
+				custom: {
+					kadence: {
+						column: {
+							padding: [2, 2, 2, 2],
+							textColor: '#222222',
+							margin: [10, 0, 10, 0],
+							backdropFilterType: 'blur',
+							kadenceAnimation: 'fade-in',
+							kadenceBlockCSS: 'selector { color: red; }',
+						},
+					},
+				},
+			},
+		};
+
+		expect(siteAttributes(record, 'kadence/column')).toEqual({ padding: [2, 2, 2, 2], textColor: '#222222' });
 	});
 
 	it("keeps only Show More's overlay attributes, leaving its expand behavior to each block", () => {
@@ -480,6 +503,15 @@ describe('write guard with groups', () => {
 			spacerHeight: 5,
 			tabletSpacerHeight: 30,
 			spacerHeightUnits: 'rem',
+		});
+	});
+
+	it('copies nothing when an older attribute already sets the group', () => {
+		const legacy = { spacerHeight: ['legacyHeight'] };
+		const stored = { ...untouched, legacyHeight: 80 };
+
+		expect(guardWrite({ spacerHeight: 5 }, shown, stored, site, groups, definitions, legacy)).toEqual({
+			spacerHeight: 5,
 		});
 	});
 
