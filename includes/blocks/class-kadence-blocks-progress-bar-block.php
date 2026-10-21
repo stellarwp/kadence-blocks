@@ -149,6 +149,13 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block im
 			$default_font = $this->get_default_font();
 			$diff         = $this->array_recursive_diff( $attributes['numberFont'], $default_font );
 
+			// The line height unit goes with the line height it belongs to; a font saved without a unit keeps the label's.
+			if ( ! isset( $diff['lineHeight'] ) ) {
+				unset( $diff['lineType'] );
+			} elseif ( array_key_exists( 'lineType', $attributes['numberFont'] ) ) {
+				$diff['lineType'] = $attributes['numberFont']['lineType'];
+			}
+
 			$attributes['numberFont'] = array_merge( $attributes['labelFont'], $diff );
 			$css->render_typography( $attributes, 'numberFont' );
 		} elseif ( isset( $attributes['numberFont'] ) ) {
@@ -471,7 +478,7 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block im
 				'',
 				'',
 			],
-			'linetype'      => 'px',
+			'lineType'      => '',
 			'letterSpacing' => [
 				'',
 				'',

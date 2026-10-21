@@ -136,6 +136,27 @@ final class SiteStylesProgressBarTest extends WPTestCase {
 	}
 
 	/**
+	 * An untouched bar's number takes the site label line height with its unit, as the editor shows it.
+	 *
+	 * @return void
+	 */
+	public function testAnUntouchedNumberTakesTheSiteLabelLineHeightWithItsUnit(): void {
+		$this->tester->enable_fse_mode();
+		$this->store_site_values(
+			[
+				'labelFont' => [
+					'lineHeight' => [ '24', '', '' ],
+					'lineType'   => 'px',
+				],
+			]
+		);
+
+		[ 'css' => $css ] = $this->render( [] );
+
+		$this->assertMatchesRegularExpression( '/\.kt-progress-percent\{[^}]*?line-height:24px/', $css );
+	}
+
+	/**
 	 * Stored type, content, number and animation settings are never applied: they belong to each bar.
 	 *
 	 * @return void
