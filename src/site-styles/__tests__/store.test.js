@@ -20,6 +20,7 @@ import singleButton from './fixtures/singlebtn-entry.json';
 import section from './fixtures/column-entry.json';
 import showMore from './fixtures/show-more-entry.json';
 import rowLayout from './fixtures/rowlayout-entry.json';
+import countUp from './fixtures/countup-entry.json';
 
 const BLOCK = 'kadence/singlebtn';
 const UNSCOPED = 'kadence/show-more';
@@ -228,6 +229,34 @@ describe('siteAttributes', () => {
 		};
 
 		expect(siteAttributes(record, 'kadence/rowlayout')).toEqual({ padding: [2, '', 2, ''], bgColor: '#ff0000' });
+	});
+
+	it("keeps only Count Up's overlay attributes, leaving its numbers and timing to each block", () => {
+		window.kadenceSiteStyles.blocks['kadence/countup'] = countUp;
+		const record = {
+			settings: {
+				custom: {
+					kadence: {
+						countup: {
+							numberColor: '#cc0000',
+							titleAlign: ['center', '', ''],
+							start: 5,
+							end: 50,
+							duration: 9,
+							displayTitle: false,
+							titleMinHeight: [40, '', ''],
+							kadenceBlockCSS: 'selector { color: red; }',
+						},
+					},
+				},
+			},
+		};
+
+		expect(siteAttributes(record, 'kadence/countup')).toEqual({
+			numberColor: '#cc0000',
+			titleAlign: ['center', '', ''],
+			titleMinHeight: [40, '', ''],
+		});
 	});
 
 	it("keeps only Show More's overlay attributes, leaving its expand behavior to each block", () => {
