@@ -319,6 +319,33 @@ final class SupportedBlocksTest extends TestCase {
 	}
 
 	/**
+	 * Table takes its fonts, alignments, row backgrounds, borders, cell padding, row height, spacing and max
+	 * width through the overlay, in thirteen groups, with no scope, no site rules and no core surface, and
+	 * keeps its structure, headers, caption, column settings and max height per table.
+	 *
+	 * @return void
+	 */
+	public function testTableDescribesItsSiteStyles(): void {
+		$block = $this->container->get( Supported_Blocks::class )->get( 'kadence/table' );
+
+		$this->assertNotNull( $block );
+		$this->assertSame( 'table', $block->get_slug() );
+		$this->assertNotInstanceOf( Scopes_Site_Styles::class, $block );
+		$this->assertNotInstanceOf( Prints_Site_Rules::class, $block );
+		$this->assertNotInstanceOf( Legacy_Group_Attributes::class, $block );
+		$this->assertInstanceOf( Groups_Site_Styles::class, $block );
+		$this->assertSame( [], $block->site_styles_attributes_map() );
+		$this->assertSame( [], $block->site_styles_supports() );
+		$this->assertSame( [], $block->site_styles_selectors() );
+		$this->assertCount( 40, $block->site_styles_overlay_attributes() );
+		$this->assertCount( 13, $block->site_styles_attribute_groups() );
+		$this->assertSame( array_values( array_unique( $block->site_styles_overlay_attributes() ) ), $block->site_styles_overlay_attributes() );
+		foreach ( [ 'columns', 'isFirstRowHeader', 'isFirstColumnHeader', 'columnSettings', 'columnBackgrounds', 'columnBackgroundsHover', 'enableCaption', 'caption', 'maxHeight', 'maxHeightUnit' ] as $attribute ) {
+			$this->assertContains( $attribute, Supported_Blocks::excluded_attributes( $block ) );
+		}
+	}
+
+	/**
 	 * Spacer's style is its divider style, and an instance without one takes the block's default.
 	 *
 	 * @dataProvider spacerStyleProvider

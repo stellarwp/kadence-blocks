@@ -13,6 +13,7 @@ use Kadence_Blocks_Show_More_Block;
 use Kadence_Blocks_Single_Icon_Block;
 use Kadence_Blocks_Singlebtn_Block;
 use Kadence_Blocks_Spacer_Block;
+use Kadence_Blocks_Table_Block;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provider;
 
 /**
@@ -43,6 +44,7 @@ final class Site_Styles_Provider extends Provider {
 						Kadence_Blocks_Countup_Block::get_instance(),
 						Kadence_Blocks_Infobox_Block::get_instance(),
 						Kadence_Blocks_Countdown_Block::get_instance(),
+						Kadence_Blocks_Table_Block::get_instance(),
 					]
 				);
 			}
