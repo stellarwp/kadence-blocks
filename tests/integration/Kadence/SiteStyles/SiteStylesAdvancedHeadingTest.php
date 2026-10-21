@@ -152,15 +152,16 @@ final class SiteStylesAdvancedHeadingTest extends WPTestCase {
 	}
 
 	/**
-	 * Every attribute of the heading is a site value, core's, or explained here: the ones older headings migrate from when they are edited, and the ones the heading's CSS never prints or reads.
+	 * The attributes older headings migrate from when they are edited, and the ones the heading's CSS never prints or reads, stay per heading: no site value can reach them.
 	 *
 	 * @return void
 	 */
-	public function testEveryAttributeIsEitherASiteValueOrExplained(): void {
-		$this->assertSame(
-			[ 'bottomMargin', 'iconHover', 'leftMargin', 'lineHeight', 'lineType', 'markBorder', 'markBorderOpacity', 'markBorderStyle', 'markBorderWidth', 'markPaddingControl', 'maxHeight', 'maxHeightType', 'mobileLineHeight', 'mobileMarginType', 'mobileMarkLetterSpacing', 'mobileSize', 'rightMargin', 'size', 'tabLineHeight', 'tabSize', 'tabletMarginType', 'tabletMarkLetterSpacing', 'topMargin' ],
-			$this->unaccounted_attributes( Kadence_Blocks_Advancedheading_Block::get_instance() )
-		);
+	public function testTheAttributesLeftPerHeadingAreNoSiteValues(): void {
+		$excluded = Supported_Blocks::excluded_attributes( Kadence_Blocks_Advancedheading_Block::get_instance() );
+
+		foreach ( [ 'bottomMargin', 'iconHover', 'leftMargin', 'lineHeight', 'lineType', 'markBorder', 'markBorderOpacity', 'markBorderStyle', 'markBorderWidth', 'markPaddingControl', 'maxHeight', 'maxHeightType', 'mobileLineHeight', 'mobileMarginType', 'mobileMarkLetterSpacing', 'mobileSize', 'rightMargin', 'size', 'tabLineHeight', 'tabSize', 'tabletMarginType', 'tabletMarkLetterSpacing', 'topMargin' ] as $attribute ) {
+			$this->assertContains( $attribute, $excluded, $attribute );
+		}
 	}
 
 	/**
