@@ -342,6 +342,33 @@ final class SiteStylesOverlayTest extends WPTestCase {
 
 
 	/**
+	 * The Block Defaults filter runs only for an instance with a value of its own: an untouched instance
+	 * measures every site value against the registered defaults alone.
+	 *
+	 * @return void
+	 */
+	public function testTheBlockDefaultsFilterRunsOnlyForAnInstanceWithItsOwnValue(): void {
+		$this->tester->enable_fse_mode();
+		$this->tester->store_user_global_styles( [ 'settings' => [ 'custom' => [ 'kadence' => [ 'spacer' => [ 'spacerHeight' => 40 ] ] ] ] ] );
+		$before = did_filter( 'kadence_blocks_block_default_attributes' );
+
+		$untouched = apply_filters( 'kadence_blocks_spacer_render_block_attributes', [ 'uniqueID' => 'sp_a' ] );
+
+		$this->assertSame( 40, $untouched['spacerHeight'] );
+		$this->assertSame( $before, did_filter( 'kadence_blocks_block_default_attributes' ) );
+
+		apply_filters(
+			'kadence_blocks_spacer_render_block_attributes',
+			[
+				'uniqueID'     => 'sp_b',
+				'spacerHeight' => 120,
+			]
+		);
+
+		$this->assertSame( $before + 1, did_filter( 'kadence_blocks_block_default_attributes' ) );
+	}
+
+	/**
 	 * A Spacer stand-in that groups its heights with their unit, and also takes a site divider width.
 	 *
 	 * @return Supports_Site_Styles The block.

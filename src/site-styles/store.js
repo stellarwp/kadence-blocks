@@ -6,8 +6,17 @@
  * merge and the scoping follow the same rules as the PHP overlay (the
  * fixtures in `__tests__/fixtures/` pin both).
  */
-import { cloneDeep, get, isEmpty, isEqual, kebabCase, omit, pick, pickBy, set, unset } from 'lodash';
+import { cloneDeep, escapeRegExp, get, isEmpty, isEqual, kebabCase, omit, pick, pickBy, set, unset } from 'lodash';
+import { TOKEN_VAR_PREFIX, isTokenAlias, resolveTokenAlias } from '../extension/design-tokens/alias';
 import { getSupportedBlock } from './supported-blocks';
+
+/**
+ * A design token's CSS variable, as `resolveTokenAlias()` writes it: `var(--kb-token--<id>)`,
+ * with every `.` of the id written as `--`. Token ids never hold `--` themselves.
+ *
+ * @since TBD
+ */
+const TOKEN_VAR = new RegExp('^var\\(' + escapeRegExp(TOKEN_VAR_PREFIX) + '([a-z0-9-]+)\\)$');
 
 /**
  * @typedef {Object<string, *>} Attributes Block attribute name => value.
@@ -26,8 +35,9 @@ import { getSupportedBlock } from './supported-blocks';
  * `var(--global-paletteN)`: core's preset variables aren't defined in every
  * editor frame. Both stored forms are accepted, the `var:preset` reference and
  * the `var(--wp--preset--color--…)` value the edited record can hold. Another
- * preset reference becomes its CSS variable, as the style engine writes it;
- * any other value is kept.
+ * preset reference becomes its CSS variable, as the style engine writes it. A
+ * design token's CSS variable becomes its `{token}` reference again, so the
+ * Kadence control shows the token; any other value is kept.
  *
  * @param {string} value The stored color.
  * @return {string} The Kadence color value.
@@ -43,16 +53,29 @@ export function toKadenceColor(value) {
 
 	const preset = /^var:preset\|color\|(.+)$/.exec(value);
 
-	return preset ? `var(--wp--preset--color--${kebabCase(preset[1])})` : value;
+	if (preset) {
+		return `var(--wp--preset--color--${kebabCase(preset[1])})`;
+	}
+
+	const token = TOKEN_VAR.exec(value);
+
+	return token ? `{${token[1].replace(/--/g, '.')}}` : value;
 }
 
 /**
  * Converts a Kadence color attribute value to the form stored in core's style.
  *
+ * A design token's `{token}` reference is stored as its CSS variable, since
+ * core prints the stored value as is.
+ *
  * @param {string} value The Kadence color value.
- * @return {string} `var:preset|color|theme-paletteN` for a palette color, the value otherwise.
+ * @return {string} `var:preset|color|theme-paletteN` for a palette color, `var(--kb-token--…)` for a design token, the value otherwise.
  */
 export function toCoreColor(value) {
+	if (isTokenAlias(value)) {
+		return resolveTokenAlias(value);
+	}
+
 	return /^palette\d+$/.test(value) ? `var:preset|color|theme-${value}` : value;
 }
 
@@ -132,7 +155,13 @@ export function toStoredForm(attributes, definitions, blockName) {
 /**
  * Writes a block's stored form into a copy of the Global Styles record's
  * styles and settings. A mapped path without a value is removed, with any
- * object it leaves empty inside the block's styles.
+ * object it leaves empty, up to `styles.blocks`.
+ *
+ * `settings.custom.kadence` and `settings.custom` are removed once they are
+ * empty too. WordPress saves an empty object as an empty array, which a later
+ * write couldn't add a key to, so an empty array already stored on the way to
+ * a value, the top-level styles and settings included, is replaced before
+ * writing.
  *
  * @param {GlobalStylesRecord}                                 record    The edited Global Styles record.
  * @param {string}                                             blockName Block name.
@@ -141,34 +170,74 @@ export function toStoredForm(attributes, definitions, blockName) {
  */
 export function withStoredForm(record, blockName, stored) {
 	const { slug, attributesMap } = getSupportedBlock(blockName);
-	const styles = cloneDeep(record.styles || {});
-	const settings = cloneDeep(record.settings || {});
+	const styles = cloneDeep(isEmpty(record.styles) ? {} : record.styles);
+	const settings = cloneDeep(isEmpty(record.settings) ? {} : record.settings);
 
 	Object.values(attributesMap).forEach((path) => {
 		const target = ['blocks', blockName, ...path.split('.')];
 
 		if (undefined !== stored.core[path]) {
+			for (let length = 1; length < target.length; length++) {
+				replaceEmptyList(styles, target.slice(0, length));
+			}
+
 			set(styles, target, stored.core[path]);
 			return;
 		}
 
 		unset(styles, target);
 
-		// Up to, not including, the block's own entry.
 		let parent = target.slice(0, -1);
-		while (parent.length > 2 && isEmpty(get(styles, parent))) {
+		while (parent.length && isEmpty(get(styles, parent))) {
 			unset(styles, parent);
 			parent = parent.slice(0, -1);
 		}
 	});
 
 	if (Object.keys(stored.custom).length) {
+		replaceEmptyList(settings, ['custom']);
+		replaceEmptyList(settings, ['custom', 'kadence']);
 		set(settings, ['custom', 'kadence', slug], stored.custom);
 	} else {
 		unset(settings, ['custom', 'kadence', slug]);
+		unsetIfEmpty(settings, ['custom', 'kadence']);
+		unsetIfEmpty(settings, ['custom']);
 	}
 
 	return { styles, settings };
+}
+
+/**
+ * Replaces an empty array at a path with an empty object, so named keys can be
+ * set under it. WordPress returns an empty object it saved as an empty array.
+ *
+ * @param {Object}   object The object to change.
+ * @param {string[]} path   The path.
+ *
+ * @since TBD
+ */
+function replaceEmptyList(object, path) {
+	const value = get(object, path);
+
+	if (Array.isArray(value) && !value.length) {
+		set(object, path, {});
+	}
+}
+
+/**
+ * Removes the value at a path when it is an empty object or array.
+ *
+ * @param {Object}   object The object to change.
+ * @param {string[]} path   The path.
+ *
+ * @since TBD
+ */
+function unsetIfEmpty(object, path) {
+	const value = get(object, path);
+
+	if (value !== null && typeof value === 'object' && isEmpty(value)) {
+		unset(object, path);
+	}
 }
 
 /**
@@ -222,19 +291,24 @@ export function scopeSiteAttributes(site, attributes, scope, defaultStyle) {
 /**
  * Drops the site values of every group the instance sets itself. The instance
  * sets a group when it has a value other than the block's default for any of
- * the group's attributes, the same test `merge()` uses.
+ * the group's attributes, the same test `merge()` uses, or when an older
+ * attribute that stands in for the group holds a value.
  *
- * @param {Attributes}                    site        The site values.
- * @param {Attributes}                    attributes  The instance's attributes.
- * @param {string[][]}                    groups      Groups of attribute names.
- * @param {Object<string, {default: *}>} definitions The block type's attribute definitions.
+ * @param {Attributes}                    site         The site values.
+ * @param {Attributes}                    attributes   The instance's attributes.
+ * @param {string[][]}                    groups       Groups of attribute names.
+ * @param {Object<string, {default: *}>} definitions  The block type's attribute definitions.
+ * @param {Object<string, string[]>}      [legacy]     First attribute of a group => older attributes that stand in for it.
  *
  * @since TBD
  *
  * @return {Attributes} The site values the instance takes.
  */
-export function groupSiteAttributes(site, attributes, groups, definitions) {
-	return groups.reduce((kept, group) => (setsGroup(attributes, group, definitions) ? omit(kept, group) : kept), site);
+export function groupSiteAttributes(site, attributes, groups, definitions, legacy = {}) {
+	return groups.reduce(
+		(kept, group) => (setsGroup(attributes, group, definitions, legacy) ? omit(kept, group) : kept),
+		site
+	);
 }
 
 /**
@@ -349,10 +423,11 @@ export function unmerge(next, shown, stored) {
  * @param {Attributes}                    site          The site values.
  * @param {string[][]}                    [groups]      The block's groups of attribute names.
  * @param {Object<string, {default: *}>} [definitions] The block type's attribute definitions.
+ * @param {Object<string, string[]>}      [legacy]      First attribute of a group => older attributes that stand in for it.
  * @param {import('./supported-blocks').SiteStylesCascade[]} [cascades] The block's cascades.
  * @return {Attributes} The attributes to store.
  */
-export function guardWrite(written, shown, stored, site, groups = [], definitions = {}, cascades = []) {
+export function guardWrite(written, shown, stored, site, groups = [], definitions = {}, legacy = {}, cascades = []) {
 	const kept = {};
 
 	Object.keys(written).forEach((name) => {
@@ -369,7 +444,10 @@ export function guardWrite(written, shown, stored, site, groups = [], definition
 	});
 
 	groups.forEach((group) => {
-		if (setsGroup(stored, group, definitions) || !setsGroup({ ...stored, ...kept }, group, definitions)) {
+		if (
+			setsGroup(stored, group, definitions, legacy) ||
+			!setsGroup({ ...stored, ...kept }, group, definitions, legacy)
+		) {
 			return;
 		}
 
@@ -422,22 +500,43 @@ export function panelAttributes(blockName, defaults, site, current) {
 
 /**
  * Whether an instance sets a group itself: it has a value other than the
- * block's default for any of the group's attributes.
+ * block's default for any of the group's attributes, or a value in an older
+ * attribute that stands in for the group.
  *
  * @param {Attributes}                    attributes  The instance's attributes.
  * @param {string[]}                      group       The group's attribute names.
  * @param {Object<string, {default: *}>} definitions The block type's attribute definitions.
+ * @param {Object<string, string[]>}      [legacy]    First attribute of a group => older attributes that stand in for it.
  *
  * @since TBD
  *
  * @return {boolean} Whether the instance sets the group.
  */
-function setsGroup(attributes, group, definitions) {
-	return group.some((name) => {
+function setsGroup(attributes, group, definitions, legacy = {}) {
+	const ownsMember = group.some((name) => {
 		const value = attributes[name];
 
 		return undefined !== value && null !== value && !isEqual(value, definitions[name]?.default);
 	});
+
+	return ownsMember || (legacy[group[0]] || []).some((name) => holdsValue(attributes[name]));
+}
+
+/**
+ * Whether a value holds a number or a string that isn't empty, anywhere in it.
+ *
+ * @param {*} value A value.
+ *
+ * @since TBD
+ *
+ * @return {boolean} Whether it holds a value.
+ */
+function holdsValue(value) {
+	if (isObjectLike(value)) {
+		return Object.values(value).some(holdsValue);
+	}
+
+	return 'number' === typeof value || ('string' === typeof value && '' !== value);
 }
 
 /**

@@ -67,9 +67,101 @@ final class UserDataFilterTest extends TestCase {
 		$this->assertSame( [ 'background' => '#cc0000' ], $filtered->get_data()['styles']['blocks']['kadence/singlebtn']['color'] ?? null );
 	}
 
+	/**
+	 * In FSE mode, a design-token reference in a supported block's style renders as its CSS variable.
+	 *
+	 * @return void
+	 */
+	public function testFseModeRendersDesignTokenReferencesAsCssVariables(): void {
+		$style = $this->filtered_style(
+			[
+				'color' => [
+					'background' => '{primitive.color.notice.error}',
+					'text'       => '#ffffff',
+				],
+			]
+		);
+
+		$this->assertSame( 'var(--kb-token--primitive--color--notice--error)', $style['color']['background'] ?? null );
+		$this->assertSame( '#ffffff', $style['color']['text'] ?? null );
+	}
+
+	/**
+	 * In FSE mode, a design-token reference in a supported block's tablet or mobile style renders as its CSS variable.
+	 *
+	 * @return void
+	 */
+	public function testFseModeRendersDesignTokenReferencesInResponsiveStates(): void {
+		if ( ! method_exists( 'WP_Theme_JSON', 'get_viewport_media_queries' ) ) {
+			$this->markTestSkipped( 'Responsive style states need WordPress 7.1.' );
+		}
+
+		$style = $this->filtered_style( [ '@mobile' => [ 'color' => [ 'background' => '{primitive.color.notice.error}' ] ] ] );
+
+		$this->assertSame( 'var(--kb-token--primitive--color--notice--error)', $style['@mobile']['color']['background'] ?? null );
+	}
+
+	/**
+	 * In FSE mode, a design token the active library doesn't define is left out, in either stored form, and a
+	 * defined one stored as its CSS variable is kept.
+	 *
+	 * @return void
+	 */
+	public function testFseModeLeavesOutUndefinedDesignTokens(): void {
+		$style = $this->filtered_style(
+			[
+				'color' => [
+					'background' => '{primitive.color.notice.does-not-exist}',
+					'text'       => 'var(--kb-token--primitive--color--notice--does-not-exist)',
+					'gradient'   => 'var(--kb-token--primitive--color--notice--error)',
+				],
+			]
+		);
+
+		$this->assertArrayNotHasKey( 'background', $style['color'] ?? [] );
+		$this->assertArrayNotHasKey( 'text', $style['color'] ?? [] );
+		$this->assertSame( 'var(--kb-token--primitive--color--notice--error)', $style['color']['gradient'] ?? null );
+	}
+
+	/**
+	 * In FSE mode, data with no Kadence values and no design-token references comes back as the same object.
+	 *
+	 * @return void
+	 */
+	public function testFseModeReturnsDataWithoutTokenReferencesAsIs(): void {
+		add_filter( 'kadence_blocks_is_fse_mode', '__return_true' );
+
+		$data = [
+			'version' => 3,
+			'styles'  => self::DATA['styles'],
+		];
+
+		$theme_json = new WP_Theme_JSON_Data( $data, 'custom' );
+
+		$this->assertSame( $theme_json, $this->container->get( User_Data_Filter::class )->filter( $theme_json ) );
+	}
+
 	public function testUnchangedGutenbergDataIsReturnedAsIs(): void {
 		$theme_json = new GutenbergThemeJsonData( [ 'version' => 3 ], 'custom' );
 
 		$this->assertSame( $theme_json, $this->container->get( User_Data_Filter::class )->filter( $theme_json ) );
+	}
+
+	/**
+	 * Runs a Single Button style through the filter in FSE mode.
+	 *
+	 * @param array<string, mixed> $style The block's style.
+	 *
+	 * @return array<string, mixed> The block's style after the filter.
+	 */
+	private function filtered_style( array $style ): array {
+		add_filter( 'kadence_blocks_is_fse_mode', '__return_true' );
+
+		$data = [
+			'version' => 3,
+			'styles'  => [ 'blocks' => [ 'kadence/singlebtn' => $style ] ],
+		];
+
+		return $this->container->get( User_Data_Filter::class )->filter( new WP_Theme_JSON_Data( $data, 'custom' ) )->get_data()['styles']['blocks']['kadence/singlebtn'] ?? [];
 	}
 }

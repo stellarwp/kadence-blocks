@@ -1,6 +1,7 @@
 /**
- * The style a scoped block instance takes site values as, matching
- * `Kadence_Blocks_Singlebtn_Block::site_styles_scope_style()`.
+ * The style a scoped block instance takes site values as, matching the
+ * block's `site_styles_scope_style()`: a preset's class for Single Button, and
+ * the scope attribute for a block without presets, such as Spacer.
  */
 import { activePresetFor, blockPresetThemeClass, storedPresetFor } from '../extension/preset-picker';
 

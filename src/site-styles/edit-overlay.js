@@ -39,7 +39,7 @@ import { isVirtualBlock } from './virtual-blocks';
  * @return {Object<string, *>} Attribute name => site value.
  */
 function instanceSiteAttributes(record, name, attributes) {
-	const { scope, overlay, groups, cascades } = getSupportedBlock(name);
+	const { scope, overlay, groups, legacyGroups, cascades } = getSupportedBlock(name);
 	const definitions = getBlockType(name)?.attributes || {};
 	let values = pick(siteAttributes(record, name), overlay);
 
@@ -53,7 +53,7 @@ function instanceSiteAttributes(record, name, attributes) {
 	}
 
 	if (groups) {
-		values = groupSiteAttributes(values, attributes, groups, definitions);
+		values = groupSiteAttributes(values, attributes, groups, definitions, legacyGroups);
 	}
 
 	return cascades ? withoutOverridden(values, attributes, definitions, cascades) : values;
@@ -83,8 +83,8 @@ function SiteStylesBlockEdit({ BlockEdit, ...props }) {
 			const storedSite = stored === attributes ? site : instanceSiteAttributes(record, name, stored);
 			const storedShown = stored === attributes ? shown : mergeAttributes(stored, storedSite, definitions);
 			const next = typeof written === 'function' ? written(storedShown) : written;
-			const { groups, cascades } = getSupportedBlock(name);
-			const kept = guardWrite(next, storedShown, stored, storedSite, groups, definitions, cascades);
+			const { groups, legacyGroups, cascades } = getSupportedBlock(name);
+			const kept = guardWrite(next, storedShown, stored, storedSite, groups, definitions, legacyGroups, cascades);
 
 			if (Object.keys(kept).length) {
 				setAttributes(kept);
