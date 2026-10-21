@@ -2,6 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Site_Styles;
 
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Cascades_Site_Styles;
 use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Groups_Site_Styles;
 use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Legacy_Group_Attributes;
 use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Prints_Site_Rules;
@@ -82,6 +83,10 @@ final class Editor_Params {
 
 				if ( $block instanceof Legacy_Group_Attributes ) {
 					$blocks[ $name ]['legacyGroups'] = $block->site_styles_legacy_group_attributes();
+				}
+
+				if ( $block instanceof Cascades_Site_Styles ) {
+					$blocks[ $name ]['cascades'] = $block->site_styles_cascades();
 				}
 			}
 		}

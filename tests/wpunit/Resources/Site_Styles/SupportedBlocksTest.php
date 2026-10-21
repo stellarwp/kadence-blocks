@@ -5,6 +5,7 @@ declare( strict_types=1 );
 namespace Tests\wpunit\Resources\Site_Styles;
 
 use Generator;
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Cascades_Site_Styles;
 use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Groups_Site_Styles;
 use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Legacy_Group_Attributes;
 use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Prints_Site_Rules;
@@ -79,6 +80,30 @@ final class SupportedBlocksTest extends TestCase {
 			foreach ( $block->site_styles_overlay_attributes() as $attribute ) {
 				$this->assertArrayHasKey( $attribute, $attributes, "{$name}: the overlay lists {$attribute}, which the block doesn't have." );
 				$this->assertNotContains( $attribute, $excluded, "{$name}: the overlay lists {$attribute}, which is never stored site-wide." );
+			}
+		}
+	}
+
+	/**
+	 * Every attribute in a supported block's cascades is one the block has and lists for the overlay.
+	 *
+	 * @return void
+	 */
+	public function testEveryCascadeAttributeIsAnOverlayAttributeOfItsBlock(): void {
+		$cascaded = array_filter(
+			$this->container->get( Supported_Blocks::class )->all(),
+			static fn( $block ): bool => $block instanceof Cascades_Site_Styles
+		);
+
+		$this->assertArrayHasKey( 'kadence/singlebtn', $cascaded );
+		foreach ( $cascaded as $name => $block ) {
+			$attributes = WP_Block_Type_Registry::get_instance()->get_registered( $name )->attributes;
+
+			foreach ( $block->site_styles_cascades() as $cascade ) {
+				foreach ( array_merge( isset( $cascade['unit'] ) ? [ $cascade['unit'] ] : [], $cascade['values'] ) as $attribute ) {
+					$this->assertArrayHasKey( $attribute, $attributes, "{$name}: a cascade lists {$attribute}, which the block doesn't have." );
+					$this->assertContains( $attribute, $block->site_styles_overlay_attributes(), "{$name}: a cascade lists {$attribute}, which the overlay doesn't." );
+				}
 			}
 		}
 	}

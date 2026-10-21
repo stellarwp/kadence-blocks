@@ -3,7 +3,9 @@
  * The editor overlay with a block that groups its site values: a group the instance sets itself shows no
  * site value, and a change that starts the instance setting a group stores the group as shown. Spacer's
  * own entry scopes its site values by divider style as well, and Section's and Row Layout's have older
- * attributes that stand in for their padding, margin and border groups, which their migrations replace.
+ * attributes that stand in for their padding, margin and border groups, which their migrations replace. A
+ * block that cascades them is different: an own value drops the site values it covers, and a change stores
+ * the unit shown.
  */
 import { act } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -16,6 +18,8 @@ import sectionEntry from './fixtures/column-entry.json';
 import rowEntry from './fixtures/rowlayout-entry.json';
 
 const BLOCK = 'kadence/spacer';
+const BUTTON = 'kadence/singlebtn';
+const PADDING = ['padding', 'tabletPadding', 'mobilePadding', 'paddingUnit'];
 const HEIGHT = ['spacerHeight', 'tabletSpacerHeight', 'mobileSpacerHeight', 'spacerHeightUnits'];
 const UNTOUCHED = { spacerHeight: 60, tabletSpacerHeight: '', mobileSpacerHeight: '', spacerHeightUnits: 'px' };
 const DEFINITIONS = {
@@ -24,6 +28,13 @@ const DEFINITIONS = {
 	mobileSpacerHeight: { default: '' },
 	spacerHeightUnits: { default: 'px' },
 	dividerWidth: { default: 80 },
+};
+
+const BUTTON_DEFINITIONS = {
+	padding: { default: ['', '', '', ''] },
+	tabletPadding: { default: ['', '', '', ''] },
+	mobilePadding: { default: ['', '', '', ''] },
+	paddingUnit: { default: 'px' },
 };
 
 let mockRecord = {};
@@ -657,5 +668,99 @@ describe("editor overlay with Row Layout's entry", () => {
 		expect(mockStored.paddingUnit).toBe(DEFAULTS.paddingUnit);
 		expect(mockStored.tabletBorderStyle).toEqual(DEFAULTS.tabletBorderStyle);
 		expect(mockStored.mobileBorderStyle).toEqual(DEFAULTS.mobileBorderStyle);
+	});
+});
+
+describe('editor overlay with cascades', () => {
+	const EMPTY = ['', '', '', ''];
+	const BUTTON_ATTRIBUTES = { padding: EMPTY, tabletPadding: EMPTY, mobilePadding: EMPTY, paddingUnit: 'px' };
+
+	beforeAll(() => {
+		global.IS_REACT_ACT_ENVIRONMENT = true;
+	});
+
+	beforeEach(() => {
+		mockDefinitions = BUTTON_DEFINITIONS;
+		window.kadenceSiteStyles = {
+			isFseMode: true,
+			blocks: {
+				[BUTTON]: {
+					slug: 'singlebtn',
+					exclude: ['uniqueID'],
+					overlay: PADDING,
+					attributesMap: {},
+					supports: {},
+					cascades: [{ unit: 'paddingUnit', values: ['padding', 'tabletPadding', 'mobilePadding'] }],
+				},
+			},
+		};
+		mockRecord = {
+			settings: {
+				custom: {
+					kadence: {
+						singlebtn: {
+							padding: [20, 40, 20, 40],
+							mobilePadding: [6, 12, 6, 12],
+							paddingUnit: 'em',
+						},
+					},
+				},
+			},
+		};
+	});
+
+	afterEach(() => {
+		mockDefinitions = DEFINITIONS;
+		delete window.kadenceSiteStyles;
+	});
+
+	/**
+	 * An instance that sets nothing itself shows every site value, in the site's unit.
+	 *
+	 * @return {void}
+	 */
+	it('shows an untouched instance every site value', () => {
+		expect(render(BUTTON_ATTRIBUTES, () => {}, BUTTON).attributes).toEqual({
+			padding: [20, 40, 20, 40],
+			tabletPadding: EMPTY,
+			mobilePadding: [6, 12, 6, 12],
+			paddingUnit: 'em',
+		});
+	});
+
+	/**
+	 * An own padding in another unit than the site's shows as it is: no site value is converted to its unit.
+	 *
+	 * @return {void}
+	 */
+	it("shows an own padding in another unit than the site's as it is", () => {
+		const own = { ...BUTTON_ATTRIBUTES, padding: [2, 10, 2, 10] };
+
+		expect(render(own, () => {}, BUTTON).attributes).toEqual(own);
+	});
+
+	/**
+	 * An own desktop padding holds for the narrower devices, so the site's mobile padding isn't shown.
+	 *
+	 * @return {void}
+	 */
+	it("drops the site's narrower devices after an own value in the site's unit", () => {
+		mockRecord.settings.custom.kadence.singlebtn.paddingUnit = 'px';
+		const own = { ...BUTTON_ATTRIBUTES, padding: [2, 10, 2, 10] };
+
+		expect(render(own, () => {}, BUTTON).attributes).toEqual(own);
+	});
+
+	/**
+	 * Changing one side of the site's padding stores the unit it was shown in, so the other sides stay in it.
+	 *
+	 * @return {void}
+	 */
+	it('stores the unit shown with a value the user changes', () => {
+		const setAttributes = jest.fn();
+
+		render(BUTTON_ATTRIBUTES, setAttributes, BUTTON).setAttributes({ padding: [2, 40, 20, 40] });
+
+		expect(setAttributes).toHaveBeenCalledWith({ padding: [2, '', '', ''], paddingUnit: 'em' });
 	});
 });

@@ -62,6 +62,18 @@ final class SiteStylesSiteRulesTest extends WPTestCase {
 		$this->assertSame( '', $this->site_rules()->css( 'kadence/singlebtn' ) );
 	}
 
+	/**
+	 * Box values reach the button through its attributes, so they print no site rule of their own.
+	 *
+	 * @return void
+	 */
+	public function testBoxValuesPrintNoSiteRules(): void {
+		$this->tester->enable_fse_mode();
+		$this->tester->store_single_button_box_values();
+
+		$this->assertSame( '', $this->site_rules()->css( 'kadence/singlebtn' ) );
+	}
+
 	public function testTheFrontEndLoadsTheCopyForTheColorsTheSiteSets(): void {
 		$stylesheets = App::instance()->container()->get( Fse_Stylesheets::class );
 		$front_end   = KADENCE_BLOCKS_URL . 'dist/style-blocks-advancedbtn.css?ver=1';

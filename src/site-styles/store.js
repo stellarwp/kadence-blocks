@@ -312,6 +312,54 @@ export function groupSiteAttributes(site, attributes, groups, definitions, legac
 }
 
 /**
+ * Drops the site values an own value of the instance covers. An own value holds
+ * for the narrower devices after it, as in CSS, so the site's value for one of
+ * them must not replace it. Values are in one unit: when the instance has an own
+ * value or an own unit in a cascade and its unit is not the site's, no site value
+ * of the cascade is shown.
+ *
+ * @param {Attributes}                    site        The site values.
+ * @param {Attributes}                    attributes  The instance's attributes.
+ * @param {Object<string, {default: *}>} definitions The block type's attribute definitions.
+ * @param {import('./supported-blocks').SiteStylesCascade[]} [cascades] The attribute cascades; a block without any keeps every site value.
+ *
+ * @since TBD
+ *
+ * @return {Attributes} The site values the instance takes.
+ */
+export function withoutOverridden(site, attributes, definitions, cascades = []) {
+	const isOwn = (name) => {
+		const instance = attributes[name];
+
+		return instance !== undefined && instance !== null && !isEqual(instance, definitions[name]?.default);
+	};
+	let kept = { ...site };
+
+	cascades.forEach(({ unit, values }) => {
+		const names = unit ? [...values, unit] : values;
+		const instanceUnit = attributes[unit] ?? definitions[unit]?.default;
+		const siteUnit = site[unit] ?? definitions[unit]?.default;
+
+		if (unit && names.some(isOwn) && instanceUnit !== siteUnit) {
+			kept = omit(kept, names);
+			return;
+		}
+
+		let overridden = false;
+
+		values.forEach((name) => {
+			if (overridden) {
+				delete kept[name];
+			}
+
+			overridden = overridden || isOwn(name);
+		});
+	});
+
+	return kept;
+}
+
+/**
  * Merges a block's site values into its attributes.
  *
  * @param {Attributes}                    attributes  The instance's attributes.
@@ -361,7 +409,8 @@ export function unmerge(next, shown, stored) {
  * Filters a write from a block shown with site values merged in, so no site
  * value is stored in the instance: for each written attribute that has a site
  * value, only the changed leaves are kept, and an unchanged attribute is
- * dropped.
+ * dropped. The values of a cascade keep the unit they were shown in, so a value
+ * the user changes while the site's unit is shown is stored with that unit.
  *
  * A write that starts the instance setting one of its block's groups is the
  * exception. The group then takes no site values, so the whole group is
@@ -375,9 +424,10 @@ export function unmerge(next, shown, stored) {
  * @param {string[][]}                    [groups]      The block's groups of attribute names.
  * @param {Object<string, {default: *}>} [definitions] The block type's attribute definitions.
  * @param {Object<string, string[]>}      [legacy]      First attribute of a group => older attributes that stand in for it.
+ * @param {import('./supported-blocks').SiteStylesCascade[]} [cascades] The block's cascades.
  * @return {Attributes} The attributes to store.
  */
-export function guardWrite(written, shown, stored, site, groups = [], definitions = {}, legacy = {}) {
+export function guardWrite(written, shown, stored, site, groups = [], definitions = {}, legacy = {}, cascades = []) {
 	const kept = {};
 
 	Object.keys(written).forEach((name) => {
@@ -408,6 +458,22 @@ export function guardWrite(written, shown, stored, site, groups = [], definition
 				kept[name] = value;
 			}
 		});
+	});
+
+	cascades.forEach(({ unit, values }) => {
+		const unitShown = shown[unit] !== undefined && !isEqual(shown[unit], stored[unit]);
+		const changed = values.some((name) => name in kept && !isEqual(kept[name], stored[name]));
+
+		if (!unit || unit in kept || !changed) {
+			return;
+		}
+
+		// A unit written with the values that differs from the one shown was picked, even when it is the stored one.
+		if (unit in written && !isEqual(written[unit], shown[unit])) {
+			kept[unit] = written[unit];
+		} else if (unitShown) {
+			kept[unit] = shown[unit];
+		}
 	});
 
 	return kept;

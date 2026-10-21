@@ -2,6 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Site_Styles;
 
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Cascades_Site_Styles;
 use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Groups_Site_Styles;
 use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Legacy_Group_Attributes;
 use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Scopes_Site_Styles;
@@ -12,10 +13,11 @@ use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Scopes_Site_Styles;
  *
  * Precedence is decided per leaf: an instance leaf that differs from the
  * block's default wins, every other leaf takes the site value. Stored values
- * of attributes the block excludes are ignored. A block that
- * scopes its site styles gives each instance only the site values its style
- * takes, and a block that groups them gives a group the instance sets itself
- * none of the group's site values.
+ * of attributes the block excludes are ignored. A block that scopes its site
+ * styles gives each instance only the site values its style takes, a block
+ * that groups them gives a group the instance sets itself none of the group's
+ * site values, and a block that cascades them drops the site values an own
+ * value of the instance covers.
  *
  * @since TBD Merges only the values the block lists for the overlay (classes and editor inline styles). Core's global stylesheet renders the core keys, and `Site_Rules` the rest.
  */
@@ -136,6 +138,10 @@ final class Overlay {
 			);
 		}
 
+		if ( ! $site ) {
+			return $attributes;
+		}
+
 		if ( $block instanceof Groups_Site_Styles ) {
 			$groups   = $block->site_styles_attribute_groups();
 			$defaults = [];
@@ -150,12 +156,67 @@ final class Overlay {
 			$site                 = self::group( $site, $with_legacy_defaults, $groups, $defaults, $legacy );
 		}
 
+		if ( $block instanceof Cascades_Site_Styles ) {
+			$cascades = $block->site_styles_cascades();
+			$defaults = [];
+
+			foreach ( $cascades as $cascade ) {
+				foreach ( array_merge( $cascade['values'], isset( $cascade['unit'] ) ? [ $cascade['unit'] ] : [] ) as $name ) {
+					$defaults[ $name ] = self::default_value( $name, $attributes[ $name ] ?? null, $registered, $filtered );
+				}
+			}
+
+			$site = self::without_overridden( $site, $attributes, $defaults, $cascades );
+		}
+
 		foreach ( $site as $name => $value ) {
 			$instance            = $attributes[ $name ] ?? null;
 			$attributes[ $name ] = self::merge( $instance, $value, self::default_value( $name, $instance, $registered, $filtered ) );
 		}
 
 		return $attributes;
+	}
+
+	/**
+	 * Drops the site values an own value of the instance covers. An own value
+	 * holds for the narrower devices after it, as in CSS, so the site's value for
+	 * one of them must not replace it. Values are in one unit: when the instance
+	 * has an own value or an own unit in a cascade and its unit is not the site's,
+	 * no site value of the cascade is shown.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed>                                   $site       Attribute name => site value.
+	 * @param array<string, mixed>                                   $attributes The instance's attributes.
+	 * @param array<string, mixed>                                   $defaults   Attribute name => the default the instance's value is compared with.
+	 * @param array<int, array{unit?: string, values: list<string>}> $cascades   The attribute cascades.
+	 *
+	 * @return array<string, mixed> The site values the instance takes.
+	 */
+	public static function without_overridden( array $site, array $attributes, array $defaults, array $cascades ): array {
+		$is_own = static fn( string $name ): bool => null !== ( $attributes[ $name ] ?? null ) && $attributes[ $name ] !== ( $defaults[ $name ] ?? null );
+
+		foreach ( $cascades as $cascade ) {
+			$unit  = $cascade['unit'] ?? null;
+			$names = null === $unit ? $cascade['values'] : array_merge( $cascade['values'], [ $unit ] );
+
+			if ( null !== $unit && array_filter( $names, $is_own ) !== [] && ( $attributes[ $unit ] ?? $defaults[ $unit ] ?? null ) !== ( $site[ $unit ] ?? $defaults[ $unit ] ?? null ) ) {
+				$site = array_diff_key( $site, array_flip( $names ) );
+				continue;
+			}
+
+			$overridden = false;
+
+			foreach ( $cascade['values'] as $name ) {
+				if ( $overridden ) {
+					unset( $site[ $name ] );
+				}
+
+				$overridden = $overridden || $is_own( $name );
+			}
+		}
+
+		return $site;
 	}
 
 	/**
