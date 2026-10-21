@@ -98,6 +98,7 @@ import {
 	TextareaControl,
 } from '@wordpress/components';
 import { applyFilters } from '@wordpress/hooks';
+import { useIsSiteStylesPanel } from '../../site-styles/use-is-site-styles-panel';
 
 import { image, starFilled, plusCircleFilled } from '@wordpress/icons';
 
@@ -203,6 +204,7 @@ function KadenceInfoBox(props) {
 	const [mediaPaddingControl, setMediaPaddingControl] = useState('linked');
 	const [mediaMarginControl, setMediaMarginControl] = useState('linked');
 	const [activeTab, setActiveTab] = useState('general');
+	const isSiteStylesPanel = useIsSiteStylesPanel();
 
 	const { createSuccessNotice } = useDispatch(noticesStore);
 
@@ -228,6 +230,11 @@ function KadenceInfoBox(props) {
 	uniqueIdHelper(props);
 
 	useEffect(() => {
+		// The Kadence panel's block holds site values, not saved content to migrate.
+		if (isSiteStylesPanel) {
+			return;
+		}
+
 		if (
 			mediaStyle[0].borderWidth[0] === mediaStyle[0].borderWidth[1] &&
 			mediaStyle[0].borderWidth[0] === mediaStyle[0].borderWidth[2] &&
@@ -255,9 +262,10 @@ function KadenceInfoBox(props) {
 		} else {
 			setMediaMarginControl('individual');
 		}
-		// Update from old border settings.
+		// Update from old border settings in one write, so the site styles overlay still sees the old attributes.
+		const borderPatch = {};
 		if ('' !== containerBorderRadius) {
-			setAttributes({
+			Object.assign(borderPatch, {
 				borderRadius: [
 					containerBorderRadius,
 					containerBorderRadius,
@@ -301,7 +309,7 @@ function KadenceInfoBox(props) {
 				undefined !== containerBorderOpacity ? containerBorderOpacity : 1
 			);
 			updateBorderStyle = true;
-			setAttributes({ containerBorder: '' });
+			borderPatch.containerBorder = '';
 		}
 		if (
 			'' !== containerBorderWidth?.[0] ||
@@ -314,10 +322,10 @@ function KadenceInfoBox(props) {
 			tempBorderStyle[0].bottom[2] = containerBorderWidth?.[2] || '';
 			tempBorderStyle[0].left[2] = containerBorderWidth?.[3] || '';
 			updateBorderStyle = true;
-			setAttributes({ containerBorderWidth: ['', '', '', ''] });
+			borderPatch.containerBorderWidth = ['', '', '', ''];
 		}
 		if (updateBorderStyle) {
-			setAttributes({ borderStyle: tempBorderStyle });
+			borderPatch.borderStyle = tempBorderStyle;
 		}
 		const tempBorderHoverStyle = JSON.parse(
 			JSON.stringify(
@@ -351,10 +359,10 @@ function KadenceInfoBox(props) {
 				containerHoverBorder,
 				undefined !== containerHoverBorderOpacity ? containerHoverBorderOpacity : 1
 			);
-			setAttributes({ containerHoverBorder: '', borderHoverStyle: tempBorderHoverStyle });
+			Object.assign(borderPatch, { containerHoverBorder: '', borderHoverStyle: tempBorderHoverStyle });
 		}
 		if ('' !== containerBackgroundOpacity && 1 !== containerBackgroundOpacity && containerBackground) {
-			setAttributes({
+			Object.assign(borderPatch, {
 				containerBackground: ConvertColor(
 					containerBackground,
 					undefined !== containerBackgroundOpacity ? containerBackgroundOpacity : 1
@@ -367,13 +375,16 @@ function KadenceInfoBox(props) {
 			1 !== containerHoverBackgroundOpacity &&
 			containerHoverBackground
 		) {
-			setAttributes({
+			Object.assign(borderPatch, {
 				containerHoverBackground: ConvertColor(
 					containerHoverBackground,
 					undefined !== containerHoverBackgroundOpacity ? containerHoverBackgroundOpacity : 1
 				),
 				containerHoverBackgroundOpacity: '',
 			});
+		}
+		if (Object.keys(borderPatch).length) {
+			setAttributes(borderPatch);
 		}
 	}, []);
 
@@ -2148,9 +2159,11 @@ function KadenceInfoBox(props) {
 						panelName={'infobox'}
 						setActiveTab={(value) => setActiveTab(value)}
 						activeTab={activeTab}
+						allowedTabs={isSiteStylesPanel ? ['style', 'advanced'] : null}
+						initialOpen={isSiteStylesPanel ? 'style' : undefined}
 					/>
 
-					{activeTab === 'general' && (
+					{activeTab === 'general' && !isSiteStylesPanel && (
 						<>
 							<KadencePanelBody panelName={'kb-info-all-settings'}>
 								<>
@@ -2470,7 +2483,7 @@ function KadenceInfoBox(props) {
 									</KadencePanelBody>
 								</>
 							)}
-							{showSettings('mediaSettings', 'kadence/infobox') && (
+							{!isSiteStylesPanel && showSettings('mediaSettings', 'kadence/infobox') && (
 								<KadencePanelBody
 									title={__('Media Settings', 'kadence-blocks')}
 									initialOpen={false}
@@ -3424,11 +3437,13 @@ function KadenceInfoBox(props) {
 									initialOpen={false}
 									panelName={'kb-info-title-settings'}
 								>
-									<ToggleControl
-										label={__('Show Title', 'kadence-blocks')}
-										checked={displayTitle}
-										onChange={(value) => setAttributes({ displayTitle: value })}
-									/>
+									{!isSiteStylesPanel && (
+										<ToggleControl
+											label={__('Show Title', 'kadence-blocks')}
+											checked={displayTitle}
+											onChange={(value) => setAttributes({ displayTitle: value })}
+										/>
+									)}
 									{displayTitle && (
 										<Fragment>
 											<PopColorControl
@@ -3445,11 +3460,19 @@ function KadenceInfoBox(props) {
 												fontGroup={'heading'}
 												tagLevel={titleFont[0].level}
 												htmlTag={titleTagType}
-												onTagLevelHTML={(value, tag) => {
-													saveTitleFont({ level: value });
-													setAttributes({ titleTagType: tag });
-												}}
-												onTagLevel={(value) => saveTitleFont({ level: value })}
+												onTagLevelHTML={
+													isSiteStylesPanel
+														? undefined
+														: (value, tag) => {
+																saveTitleFont({ level: value });
+																setAttributes({ titleTagType: tag });
+															}
+												}
+												onTagLevel={
+													isSiteStylesPanel
+														? undefined
+														: (value) => saveTitleFont({ level: value })
+												}
 												fontSize={titleFont[0].size}
 												onFontSize={(value) => saveTitleFont({ size: value })}
 												fontSizeType={titleFont[0].sizeType}
@@ -3585,11 +3608,13 @@ function KadenceInfoBox(props) {
 									initialOpen={false}
 									panelName={'kb-info-text-settings'}
 								>
-									<ToggleControl
-										label={__('Show Text', 'kadence-blocks')}
-										checked={displayText}
-										onChange={(value) => setAttributes({ displayText: value })}
-									/>
+									{!isSiteStylesPanel && (
+										<ToggleControl
+											label={__('Show Text', 'kadence-blocks')}
+											checked={displayText}
+											onChange={(value) => setAttributes({ displayText: value })}
+										/>
+									)}
 									{displayText && (
 										<Fragment>
 											<PopColorControl
@@ -3756,7 +3781,7 @@ function KadenceInfoBox(props) {
 								</KadencePanelBody>
 							)}
 
-							{showSettings('learnMoreSettings', 'kadence/infobox') && (
+							{!isSiteStylesPanel && showSettings('learnMoreSettings', 'kadence/infobox') && (
 								<KadencePanelBody
 									title={__('Learn More Settings', 'kadence-blocks')}
 									initialOpen={false}
@@ -4052,25 +4077,29 @@ function KadenceInfoBox(props) {
 										setAttributes({ maxWidth: '', tabletMaxWidth: '', mobileMaxWidth: '' });
 									}}
 								/>
-								<ToggleControl
-									label={__('Set Height 100%', 'kadence-blocks')}
-									help={__(
-										'This will only work if the parent container is set to a height or you are in a row layout with 100% inner block height.',
-										'kadence-blocks'
-									)}
-									checked={undefined !== fullHeight ? fullHeight : false}
-									onChange={(value) => setAttributes({ fullHeight: value })}
-								/>
+								{!isSiteStylesPanel && (
+									<ToggleControl
+										label={__('Set Height 100%', 'kadence-blocks')}
+										help={__(
+											'This will only work if the parent container is set to a height or you are in a row layout with 100% inner block height.',
+											'kadence-blocks'
+										)}
+										checked={undefined !== fullHeight ? fullHeight : false}
+										onChange={(value) => setAttributes({ fullHeight: value })}
+									/>
+								)}
 							</KadencePanelBody>
 
 							<div className="kt-sidebar-settings-spacer"></div>
 
-							<KadenceBlockDefaults
-								attributes={attributes}
-								defaultAttributes={metadata.attributes}
-								blockSlug={metadata.name}
-								excludedAttrs={nonTransAttrs}
-							/>
+							{!isSiteStylesPanel && (
+								<KadenceBlockDefaults
+									attributes={attributes}
+									defaultAttributes={metadata.attributes}
+									blockSlug={metadata.name}
+									excludedAttrs={nonTransAttrs}
+								/>
+							)}
 						</>
 					)}
 				</InspectorControls>

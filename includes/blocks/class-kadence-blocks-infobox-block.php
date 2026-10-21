@@ -10,12 +10,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Legacy_Group_Attributes;
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Supports_Site_Styles;
+
 /**
  * Class to Build the Info Box Block.
  *
  * @category class
  */
-class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
+class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block implements Supports_Site_Styles, Legacy_Group_Attributes {
 	/**
 	 * Instance of this class
 	 *
@@ -911,6 +914,91 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		return $css->css_output();
+	}
+
+	/**
+	 * The editor paints every Info Box value itself, inline or in its own style
+	 * tag, and the instance rule outranks core's, so every site value goes
+	 * through the overlay.
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_overlay_attributes(): array {
+		return array_merge( array_merge( ...$this->site_styles_attribute_groups() ), [ 'titleColor', 'titleHoverColor', 'textColor', 'textHoverColor' ] );
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_attributes_map(): array {
+		return [];
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_supports(): array {
+		return [];
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_selectors(): array {
+		return [];
+	}
+
+	/**
+	 * Each spacing, border, radius, shadow, max width and min height takes its
+	 * devices and unit with it, and each font and the text spacing are kept
+	 * whole.
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_attribute_groups(): array {
+		return [
+			[ 'containerBackground' ],
+			[ 'containerHoverBackground' ],
+			[ 'borderStyle', 'tabletBorderStyle', 'mobileBorderStyle' ],
+			[ 'borderRadius', 'tabletBorderRadius', 'mobileBorderRadius', 'borderRadiusUnit' ],
+			[ 'borderHoverStyle', 'tabletBorderHoverStyle', 'mobileBorderHoverStyle' ],
+			[ 'borderHoverRadius', 'tabletBorderHoverRadius', 'mobileBorderHoverRadius', 'borderHoverRadiusUnit' ],
+			[ 'containerPadding', 'containerTabletPadding', 'containerMobilePadding', 'containerPaddingType' ],
+			[ 'containerMargin', 'tabletContainerMargin', 'mobileContainerMargin', 'containerMarginUnit' ],
+			[ 'displayShadow', 'shadow', 'tabletShadow', 'mobileShadow', 'shadowHover', 'tabletShadowHover', 'mobileShadowHover' ],
+			[ 'maxWidth', 'tabletMaxWidth', 'mobileMaxWidth', 'maxWidthUnit', 'maxWidthTabletUnit', 'maxWidthMobileUnit' ],
+			[ 'titleFont' ],
+			[ 'titleMinHeight', 'titleMinHeightUnit' ],
+			[ 'textFont' ],
+			[ 'textSpacing' ],
+			[ 'textMinHeight', 'textMinHeightUnit' ],
+		];
+	}
+
+	/**
+	 * Info Boxes saved before the border arrays carry the old border color,
+	 * width and radius, which build_css() renders instead of the border and
+	 * radius, and the old background opacities, which build_css() applies to
+	 * any background. The old width and radius keep the hover border and
+	 * radius too, so an old box doesn't gain the site border only on hover.
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_legacy_group_attributes(): array {
+		return [
+			'containerBackground'      => [ 'containerBackgroundOpacity' ],
+			'containerHoverBackground' => [ 'containerHoverBackgroundOpacity' ],
+			'borderStyle'              => [ 'containerBorder', 'containerBorderWidth', 'containerBorderRadius' ],
+			'borderRadius'             => [ 'containerBorder', 'containerBorderWidth', 'containerBorderRadius' ],
+			'borderHoverStyle'         => [ 'containerHoverBorder', 'containerBorderWidth' ],
+			'borderHoverRadius'        => [ 'containerHoverBorder', 'containerBorderRadius' ],
+		];
 	}
 }
 

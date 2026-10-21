@@ -255,6 +255,43 @@ final class SupportedBlocksTest extends TestCase {
 	}
 
 	/**
+	 * Info Box takes its container, title and text styles through the overlay, in fifteen groups, with the
+	 * older border and background attributes standing in for their groups, no scope, no site rules and no
+	 * core surface, and keeps its content, media, Learn More and layout settings per box.
+	 *
+	 * @return void
+	 */
+	public function testInfoBoxDescribesItsSiteStyles(): void {
+		$block = $this->container->get( Supported_Blocks::class )->get( 'kadence/infobox' );
+
+		$this->assertNotNull( $block );
+		$this->assertSame( 'infobox', $block->get_slug() );
+		$this->assertNotInstanceOf( Scopes_Site_Styles::class, $block );
+		$this->assertNotInstanceOf( Prints_Site_Rules::class, $block );
+		$this->assertInstanceOf( Legacy_Group_Attributes::class, $block );
+		$this->assertSame( [], $block->site_styles_attributes_map() );
+		$this->assertSame( [], $block->site_styles_supports() );
+		$this->assertSame( [], $block->site_styles_selectors() );
+		$this->assertCount( 48, $block->site_styles_overlay_attributes() );
+		$this->assertCount( 15, $block->site_styles_attribute_groups() );
+		$this->assertSame(
+			[
+				'containerBackground'      => [ 'containerBackgroundOpacity' ],
+				'containerHoverBackground' => [ 'containerHoverBackgroundOpacity' ],
+				'borderStyle'              => [ 'containerBorder', 'containerBorderWidth', 'containerBorderRadius' ],
+				'borderRadius'             => [ 'containerBorder', 'containerBorderWidth', 'containerBorderRadius' ],
+				'borderHoverStyle'         => [ 'containerHoverBorder', 'containerBorderWidth' ],
+				'borderHoverRadius'        => [ 'containerHoverBorder', 'containerBorderRadius' ],
+			],
+			$block->site_styles_legacy_group_attributes()
+		);
+		$this->assertSame( array_values( array_unique( $block->site_styles_overlay_attributes() ) ), $block->site_styles_overlay_attributes() );
+		foreach ( [ 'title', 'contentText', 'link', 'mediaType', 'mediaIcon', 'mediaStyle', 'mediaNumber', 'learnMoreStyles', 'hAlign', 'mediaAlign', 'imageRatio', 'titleTagType', 'fullHeight', 'kbVersion', 'containerBorder', 'containerBorderOpacity' ] as $attribute ) {
+			$this->assertContains( $attribute, Supported_Blocks::excluded_attributes( $block ) );
+		}
+	}
+
+	/**
 	 * Spacer's style is its divider style, and an instance without one takes the block's default.
 	 *
 	 * @dataProvider spacerStyleProvider

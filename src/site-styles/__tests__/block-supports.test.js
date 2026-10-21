@@ -31,6 +31,6 @@ describe('addSiteStylesSupports', () => {
 	it('leaves other blocks alone', () => {
 		window.kadenceSiteStyles = { isFseMode: true, blocks: { 'kadence/singlebtn': singleButton } };
 
-		expect(addSiteStylesSupports(settings, 'kadence/infobox')).toBe(settings);
+		expect(addSiteStylesSupports(settings, 'kadence/lottie')).toBe(settings);
 	});
 });

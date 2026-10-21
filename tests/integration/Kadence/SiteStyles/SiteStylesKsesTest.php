@@ -63,7 +63,7 @@ final class SiteStylesKsesTest extends WPTestCase {
 								'tooltipPlacement' => 'bottom',
 								'isSubmit'         => true,
 							],
-							'infobox'   => [ 'borderRadius' => [ 20, 20, 20, 20 ] ],
+							'lottie'    => [ 'borderRadius' => [ 20, 20, 20, 20 ] ],
 						],
 					],
 				],
