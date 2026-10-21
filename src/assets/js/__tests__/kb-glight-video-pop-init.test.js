@@ -92,6 +92,16 @@ describe('kb-glight-video-pop-init', () => {
 		expect(anchor.hasAttribute('href')).toBe(false);
 	});
 
+	it('keeps a popup class value from widening the lightbox selector', () => {
+		const { glightbox } = bindAnchor(
+			'<a class="kadence-video-popup-link" data-popup-class=\'p1"], a.other, [x="\' href="https://youtu.be/x">open</a>' +
+				'<a class="other" data-content="x" href="https://example.com/">other</a>'
+		);
+		const matched = [...document.querySelectorAll(glightbox.mock.calls[0][0].selector)];
+
+		expect(matched).not.toContain(document.querySelector('a.other'));
+	});
+
 	it('keeps the https link and the attributes the script reads itself', () => {
 		const { anchor } = bindAnchor(
 			'<a class="kadence-video-popup-link" data-popup-class="p1" data-popup-auto="true" data-media-ratio="4:3" href="https://youtu.be/x">open</a>'

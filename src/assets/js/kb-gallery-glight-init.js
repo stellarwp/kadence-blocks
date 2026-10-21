@@ -163,6 +163,20 @@
 				el.removeAttribute('href');
 			}
 		},
+		/**
+		 * Normalize every anchor a selector matches, so the lightbox only binds anchors that have been processed.
+		 *
+		 * @param {string} selector The selector the lightbox will bind.
+		 *
+		 * @since TBD
+		 *
+		 * @return {string} The selector.
+		 */
+		sanitizeMatching(selector) {
+			document.querySelectorAll(selector).forEach(kadenceBlocksGLight.sanitizeSlideData);
+
+			return selector;
+		},
 		findGalleries() {
 			const foundGalleries = document.querySelectorAll('.kb-gallery-magnific-init');
 			if (!foundGalleries.length) {
@@ -206,12 +220,13 @@
 							kadenceBlocksGLight.handleClones(kadenceBlocksGLight.carouselItem[i]);
 							if (kadenceBlocksGLight.foundClasses[i]) {
 								kadenceBlocksGLight.lightboxes[i] = new GLightbox({
-									selector:
+									selector: kadenceBlocksGLight.sanitizeMatching(
 										'.' +
-										kadenceBlocksGLight.foundClasses[i] +
-										' .kb-slide-item:not(.splide__slide--clone) ' +
-										kadenceBlocksGLight.linkSelector +
-										':not([target="_blank"])',
+											kadenceBlocksGLight.foundClasses[i] +
+											' .kb-slide-item:not(.splide__slide--clone) ' +
+											kadenceBlocksGLight.linkSelector +
+											':not([target="_blank"])'
+									),
 									touchNavigation: true,
 									skin,
 									loop: true,
@@ -225,12 +240,13 @@
 								if (kadenceBlocksGLight.carouselItem[i].classList.contains('is-initialized')) {
 									kadenceBlocksGLight.handleClones(kadenceBlocksGLight.carouselItem[i]);
 									kadenceBlocksGLight.lightboxes[i] = new GLightbox({
-										selector:
+										selector: kadenceBlocksGLight.sanitizeMatching(
 											'.' +
-											kadenceBlocksGLight.foundClasses[i] +
-											' .kb-slide-item:not(.splide__slide--clone) ' +
-											kadenceBlocksGLight.linkSelector +
-											':not([target="_blank"])',
+												kadenceBlocksGLight.foundClasses[i] +
+												' .kb-slide-item:not(.splide__slide--clone) ' +
+												kadenceBlocksGLight.linkSelector +
+												':not([target="_blank"])'
+										),
 										touchNavigation: true,
 										skin,
 										loop: true,
@@ -246,12 +262,13 @@
 						}
 					} else if (kadenceBlocksGLight.foundClasses[i]) {
 						kadenceBlocksGLight.lightboxes[i] = new GLightbox({
-							selector:
+							selector: kadenceBlocksGLight.sanitizeMatching(
 								'.' +
-								kadenceBlocksGLight.foundClasses[i] +
-								' ' +
-								kadenceBlocksGLight.linkSelector +
-								':not([target="_blank"])',
+									kadenceBlocksGLight.foundClasses[i] +
+									' ' +
+									kadenceBlocksGLight.linkSelector +
+									':not([target="_blank"])'
+							),
 							touchNavigation: true,
 							skin,
 							loop: true,

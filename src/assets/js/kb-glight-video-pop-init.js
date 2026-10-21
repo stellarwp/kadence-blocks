@@ -99,6 +99,20 @@
 			}
 		},
 		/**
+		 * Normalize every anchor a selector matches, so the lightbox only binds anchors that have been processed.
+		 *
+		 * @param {string} selector The selector the lightbox will bind.
+		 *
+		 * @since TBD
+		 *
+		 * @return {string} The selector.
+		 */
+		sanitizeMatching(selector) {
+			document.querySelectorAll(selector).forEach(kadenceBlocksProVideoLightbox.sanitizeSlideData);
+
+			return selector;
+		},
+		/**
 		 * Initiate the script to process all
 		 */
 		initAll() {
@@ -206,7 +220,11 @@
 					}
 
 					const lightbox = GLightbox({
-						selector: '.kadence-video-popup-link[data-popup-class="' + popupClassWithId + '"]',
+						selector: kadenceBlocksProVideoLightbox.sanitizeMatching(
+							'.kadence-video-popup-link[data-popup-class="' +
+								(/^[\w-]+$/.test(popupClassWithId || '') ? popupClassWithId : '') +
+								'"]'
+						),
 						touchNavigation: true,
 						skin: 'kadence-dark',
 						loop: false,

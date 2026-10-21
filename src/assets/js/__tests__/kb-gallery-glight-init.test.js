@@ -91,6 +91,19 @@ describe('kb-gallery-glight-init', () => {
 		expect(document.querySelector('a.kb-gallery-item-link').hasAttribute('href')).toBe(false);
 	});
 
+	it('normalizes anchors the lightbox selector matches outside the gallery container', () => {
+		document.body.innerHTML =
+			`<div class="kb-gallery-magnific-init kb-gallery-id-abc">${item('')}</div>` +
+			`<div class="kb-light-gallery-0">${item('data-content="x" href="https://example.com/a&quot; b"')}</div>`;
+		window.kb_glightbox = { lightBoxAriaLabel: 'Open', moreText: 'More' };
+		window.GLightbox = jest.fn();
+		jest.isolateModules(() => require(SCRIPT));
+		const outside = document.querySelectorAll('a.kb-gallery-item-link')[1];
+
+		expect(outside.hasAttribute('data-content')).toBe(false);
+		expect(outside.hasAttribute('href')).toBe(false);
+	});
+
 	it('leaves anchors that are not gallery items untouched and unbound', () => {
 		const glightbox = bindGallery(
 			item('') + '<a class="kb-gallery-item-link" href="y.jpg" data-glightbox="title: injected">x</a>'

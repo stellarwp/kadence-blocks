@@ -87,6 +87,17 @@ describe('kb-glight-video-init', () => {
 		expect(anchor.hasAttribute('href')).toBe(false);
 	});
 
+	it('normalizes anchors the lightbox selector matches that do not have the button class', () => {
+		bindAnchor(
+			'<a class="ktblocksvideopop" href="https://example.com/v.mp4">open</a>' +
+				'<a class="kb-video-pop-0" data-content="x" href="https://example.com/a&quot; b">other</a>'
+		);
+		const other = document.querySelector('a.kb-video-pop-0:not(.ktblocksvideopop)');
+
+		expect(other.hasAttribute('data-content')).toBe(false);
+		expect(other.hasAttribute('href')).toBe(false);
+	});
+
 	it('keeps https and relative links', () => {
 		expect(
 			bindAnchor('<a class="ktblocksvideopop" href="https://example.com/v.mp4">open</a>').getAttribute('href')

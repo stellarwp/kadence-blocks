@@ -78,6 +78,20 @@
 			}
 		},
 		/**
+		 * Normalize every anchor a selector matches, so the lightbox only binds anchors that have been processed.
+		 *
+		 * @param {string} selector The selector the lightbox will bind.
+		 *
+		 * @since TBD
+		 *
+		 * @return {string} The selector.
+		 */
+		sanitizeMatching(selector) {
+			document.querySelectorAll(selector).forEach(kadenceBlocksVideoLightbox.sanitizeSlideData);
+
+			return selector;
+		},
+		/**
 		 * Initiate the script to process all
 		 */
 		initAll() {
@@ -93,7 +107,9 @@
 					foundVideos[i].classList.add('kb-video-pop-' + i);
 					kadenceBlocksVideoLightbox.sanitizeSlideData(foundVideos[i]);
 					kadenceBlocksVideoLightbox.lightboxes[i] = new GLightbox({
-						selector: '.' + kadenceBlocksVideoLightbox.foundClasses[i],
+						selector: kadenceBlocksVideoLightbox.sanitizeMatching(
+							'.' + kadenceBlocksVideoLightbox.foundClasses[i]
+						),
 						touchNavigation: true,
 						skin: 'kadence-dark',
 						loop: false,
