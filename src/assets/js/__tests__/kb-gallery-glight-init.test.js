@@ -79,6 +79,18 @@ describe('kb-gallery-glight-init', () => {
 		});
 	});
 
+	it.each([
+		['https://example.com/&quot; x=&quot;y'],
+		['https://exa&quot;mple.com/v.mp4'],
+		['https://example.com/a&#39;b'],
+		['https://example.com/a&lt;b'],
+		['https://example.com/a b'],
+	])('removes an https href containing a quote, bracket or space (%s)', (href) => {
+		bindGallery(item(`href="${href}"`));
+
+		expect(document.querySelector('a.kb-gallery-item-link').hasAttribute('href')).toBe(false);
+	});
+
 	it('leaves anchors that are not gallery items untouched and unbound', () => {
 		const glightbox = bindGallery(
 			item('') + '<a class="kb-gallery-item-link" href="y.jpg" data-glightbox="title: injected">x</a>'

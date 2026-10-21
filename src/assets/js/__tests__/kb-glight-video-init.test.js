@@ -75,6 +75,18 @@ describe('kb-glight-video-init', () => {
 		expect(anchor.hasAttribute('href')).toBe(false);
 	});
 
+	it.each([
+		['https://example.com/&quot; x=&quot;y'],
+		['https://exa&quot;mple.com/v.mp4'],
+		['https://example.com/a&#39;b'],
+		['https://example.com/a&lt;b'],
+		['https://example.com/a b'],
+	])('removes an https href containing a quote, bracket or space (%s)', (href) => {
+		const anchor = bindAnchor(`<a class="ktblocksvideopop" href="${href}">open</a>`);
+
+		expect(anchor.hasAttribute('href')).toBe(false);
+	});
+
 	it('keeps https and relative links', () => {
 		expect(
 			bindAnchor('<a class="ktblocksvideopop" href="https://example.com/v.mp4">open</a>').getAttribute('href')

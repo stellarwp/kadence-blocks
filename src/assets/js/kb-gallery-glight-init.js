@@ -155,8 +155,11 @@
 				el.removeAttribute('data-description');
 			}
 
-			// Limit the href to web URLs.
-			if (el.hasAttribute('href') && !['http:', 'https:'].includes(el.protocol)) {
+			// Limit the href to web URLs that contain no quote, bracket, backtick or whitespace characters.
+			if (
+				el.hasAttribute('href') &&
+				(!['http:', 'https:'].includes(el.protocol) || /["'<>`\s]/.test(el.getAttribute('href').trim()))
+			) {
 				el.removeAttribute('href');
 			}
 		},
