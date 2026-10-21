@@ -36,7 +36,7 @@ final class SiteStylesEditorParamsTest extends WPTestCase {
 
 		$blocks = $this->site_styles( Editor_Params::EARLY_FILTERS_HANDLE )['blocks'];
 
-		$this->assertEqualsCanonicalizing( [ 'kadence/advancedbtn', 'kadence/singlebtn', 'kadence/icon', 'kadence/single-icon', 'kadence/spacer', 'kadence/show-more', 'kadence/column', 'kadence/rowlayout', 'kadence/countup', 'kadence/infobox', 'kadence/countdown', 'kadence/table', 'kadence/posts' ], array_keys( $blocks ) );
+		$this->assertEqualsCanonicalizing( [ 'kadence/advancedbtn', 'kadence/singlebtn', 'kadence/icon', 'kadence/single-icon', 'kadence/spacer', 'kadence/show-more', 'kadence/column', 'kadence/rowlayout', 'kadence/countup', 'kadence/infobox', 'kadence/countdown', 'kadence/table', 'kadence/posts', 'kadence/progress-bar' ], array_keys( $blocks ) );
 		$this->assertEquals( json_decode( $json, true ), $blocks['kadence/singlebtn'] );
 
 		$spacer = file_get_contents( KADENCE_BLOCKS_PATH . 'src/site-styles/__tests__/fixtures/spacer-entry.json' );
@@ -74,6 +74,10 @@ final class SiteStylesEditorParamsTest extends WPTestCase {
 		$posts = file_get_contents( KADENCE_BLOCKS_PATH . 'src/site-styles/__tests__/fixtures/posts-entry.json' );
 		$this->assertIsString( $posts );
 		$this->assertEquals( json_decode( $posts, true ), $blocks['kadence/posts'] );
+
+		$progress_bar = file_get_contents( KADENCE_BLOCKS_PATH . 'src/site-styles/__tests__/fixtures/progress-bar-entry.json' );
+		$this->assertIsString( $progress_bar );
+		$this->assertEquals( json_decode( $progress_bar, true ), $blocks['kadence/progress-bar'] );
 	}
 
 	public function testClassicModeGivesFalseAndNoBlocks(): void {
@@ -100,7 +104,7 @@ final class SiteStylesEditorParamsTest extends WPTestCase {
 
 		// wp_localize_script() turns booleans into strings, like every flag in kadence_blocks_params.
 		$this->assertSame( '1', $params['isFseMode'] );
-		$this->assertEqualsCanonicalizing( [ 'kadence/advancedbtn', 'kadence/singlebtn', 'kadence/icon', 'kadence/single-icon', 'kadence/spacer', 'kadence/show-more', 'kadence/column', 'kadence/rowlayout', 'kadence/countup', 'kadence/infobox', 'kadence/countdown', 'kadence/table', 'kadence/posts' ], $params['siteStylesBlocks'] );
+		$this->assertEqualsCanonicalizing( [ 'kadence/advancedbtn', 'kadence/singlebtn', 'kadence/icon', 'kadence/single-icon', 'kadence/spacer', 'kadence/show-more', 'kadence/column', 'kadence/rowlayout', 'kadence/countup', 'kadence/infobox', 'kadence/countdown', 'kadence/table', 'kadence/posts', 'kadence/progress-bar' ], $params['siteStylesBlocks'] );
 	}
 
 	/**

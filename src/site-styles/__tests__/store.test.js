@@ -25,6 +25,7 @@ import infoBox from './fixtures/infobox-entry.json';
 import countdown from './fixtures/countdown-entry.json';
 import table from './fixtures/table-entry.json';
 import posts from './fixtures/posts-entry.json';
+import progressBar from './fixtures/progress-bar-entry.json';
 
 const BLOCK = 'kadence/singlebtn';
 const UNSCOPED = 'kadence/show-more';
@@ -330,6 +331,27 @@ describe('siteAttributes', () => {
 		};
 
 		expect(siteAttributes(record, 'kadence/table')).toEqual({ headerAlign: 'left', cellPaddingType: 'px' });
+	});
+
+	it("keeps only Progress Bar's look, leaving its type, content and animation to each bar", () => {
+		window.kadenceSiteStyles.blocks['kadence/progress-bar'] = progressBar;
+		const record = {
+			settings: {
+				custom: {
+					kadence: {
+						'progress-bar': {
+							progressColor: '#ff0000',
+							progressWidth: 4,
+							barType: 'circle',
+							label: 'Site label',
+							duration: 5,
+						},
+					},
+				},
+			},
+		};
+
+		expect(siteAttributes(record, 'kadence/progress-bar')).toEqual({ progressColor: '#ff0000', progressWidth: 4 });
 	});
 
 	it("keeps only Posts' look, leaving its parts, labels and query to each block", () => {

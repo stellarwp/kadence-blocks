@@ -1,7 +1,10 @@
 <?php
+// cspell:ignore linetype .
 
 namespace Tests\wpunit\Blocks;
 
+use Generator;
+use Kadence_Blocks_CSS;
 use Kadence_Blocks_Progress_Bar_Block;
 use Tests\Support\Classes\KadenceBlocksUnit;
 
@@ -65,5 +68,81 @@ class ProgressBarTest extends KadenceBlocksUnit {
 		$this->assertStringContainsString( 'kb-progress-bar-container372_bebd31-3e', $html );
 		$this->assertStringContainsString( 'id="current-progress-above372_bebd31-3e"', $html );
 		$this->assertStringContainsString( '>$42 USD</span>', $html );
+	}
+
+	/**
+	 * The number's line height prints with the unit of the line height it shows: its own unit with its own line
+	 * height, the label's unit with the label's, and the label's unit for a font saved before it had a unit.
+	 *
+	 * @dataProvider numberLineHeightProvider
+	 *
+	 * @param array<string, mixed>|null $number_font The number font, or null for an untouched number.
+	 * @param string                    $expected    The line height the number prints.
+	 *
+	 * @return void
+	 */
+	public function testTheNumberLineHeightKeepsItsUnit( ?array $number_font, string $expected ): void {
+		$attributes = [
+			'uniqueID'  => '4_ddd',
+			'labelFont' => [
+				'lineHeight' => [ '24', '', '' ],
+				'lineType'   => 'px',
+			],
+		];
+		if ( null !== $number_font ) {
+			$attributes['numberFont'] = $number_font;
+		}
+
+		$this->assertSame( $expected, $this->number_line_height( $attributes ) );
+	}
+
+	/**
+	 * @return Generator
+	 */
+	public function numberLineHeightProvider(): Generator {
+		yield 'untouched number' => [
+			'number_font' => null,
+			'expected'    => '24px',
+		];
+		yield 'own unit only' => [
+			'number_font' => [ 'lineType' => 'em' ],
+			'expected'    => '24px',
+		];
+		yield 'own unitless line height' => [
+			'number_font' => [
+				'lineHeight' => [ '2', '', '' ],
+				'lineType'   => '',
+			],
+			'expected'    => '2',
+		];
+		yield 'own line height saved without a unit' => [
+			'number_font' => [
+				'lineHeight' => [ '30', '', '' ],
+				'linetype'   => 'px',
+			],
+			'expected'    => '30px',
+		];
+		yield 'own line height and unit' => [
+			'number_font' => [
+				'lineHeight' => [ '2', '', '' ],
+				'lineType'   => 'em',
+			],
+			'expected'    => '2em',
+		];
+	}
+
+	/**
+	 * Renders a Progress Bar and returns the line height its number prints.
+	 *
+	 * @param array<string, mixed> $attributes The bar's attributes.
+	 *
+	 * @return string The number's line height, or an empty string when it prints none.
+	 */
+	private function number_line_height( array $attributes ): string {
+		Kadence_Blocks_CSS::$styles = [];
+		$html                       = $this->render( (string) wp_json_encode( $attributes ) );
+		preg_match( '/\.kt-progress-percent\{[^}]*?line-height:([^;}]+)/', implode( '', Kadence_Blocks_CSS::$styles ) . $html, $matches );
+
+		return $matches[1] ?? '';
 	}
 }

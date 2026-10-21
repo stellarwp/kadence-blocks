@@ -9,6 +9,7 @@ use Kadence_Blocks_Countup_Block;
 use Kadence_Blocks_Icon_Block;
 use Kadence_Blocks_Infobox_Block;
 use Kadence_Blocks_Posts_Block;
+use Kadence_Blocks_Progress_Bar_Block;
 use Kadence_Blocks_Rowlayout_Block;
 use Kadence_Blocks_Show_More_Block;
 use Kadence_Blocks_Single_Icon_Block;
@@ -47,6 +48,7 @@ final class Site_Styles_Provider extends Provider {
 						Kadence_Blocks_Countdown_Block::get_instance(),
 						Kadence_Blocks_Table_Block::get_instance(),
 						Kadence_Blocks_Posts_Block::get_instance(),
+						Kadence_Blocks_Progress_Bar_Block::get_instance(),
 					]
 				);
 			}
