@@ -403,6 +403,62 @@ final class SupportedBlocksTest extends TestCase {
 	}
 
 	/**
+	 * Testimonials takes its container, spacing, shadow, gap and fonts through the overlay, in fourteen groups,
+	 * with older border, radius and gap stand-ins, no scope, no site rules and no core surface, and keeps every
+	 * setting its testimonials read through block context per block.
+	 *
+	 * @return void
+	 */
+	public function testTestimonialsDescribesItsSiteStyles(): void {
+		$block = $this->container->get( Supported_Blocks::class )->get( 'kadence/testimonials' );
+
+		$this->assertNotNull( $block );
+		$this->assertSame( 'testimonials', $block->get_slug() );
+		$this->assertNotInstanceOf( Scopes_Site_Styles::class, $block );
+		$this->assertNotInstanceOf( Prints_Site_Rules::class, $block );
+		$this->assertInstanceOf( Legacy_Group_Attributes::class, $block );
+		$this->assertSame( [], $block->site_styles_attributes_map() );
+		$this->assertSame( [], $block->site_styles_supports() );
+		$this->assertSame( [], $block->site_styles_selectors() );
+		$this->assertCount( 31, $block->site_styles_overlay_attributes() );
+		$this->assertCount( 14, $block->site_styles_attribute_groups() );
+		$this->assertSame(
+			[
+				'borderStyle'                     => [ 'containerBorderWidth', 'containerBorder' ],
+				'responsiveContainerBorderRadius' => [ 'containerBorderRadius' ],
+				'gap'                             => [ 'columnGap' ],
+			],
+			$block->site_styles_legacy_group_attributes()
+		);
+		$context = array_values( (array) ( \WP_Block_Type_Registry::get_instance()->get_registered( 'kadence/testimonials' )->provides_context ?? [] ) );
+		$this->assertNotEmpty( $context );
+		foreach ( array_merge( $context, [ 'columns', 'hAlign', 'autoPlay', 'iconMargin', 'titlePadding', 'mediaMargin', 'ratingMargin' ] ) as $attribute ) {
+			$this->assertContains( $attribute, Supported_Blocks::excluded_attributes( $block ) );
+		}
+	}
+
+	/**
+	 * Testimonial takes its media icon size and color through the overlay, with the size kept with its tablet
+	 * and mobile values, and keeps its media type, icon, line width and rating per block.
+	 *
+	 * @return void
+	 */
+	public function testTestimonialDescribesItsSiteStyles(): void {
+		$block = $this->container->get( Supported_Blocks::class )->get( 'kadence/testimonial' );
+
+		$this->assertNotNull( $block );
+		$this->assertSame( 'testimonial', $block->get_slug() );
+		$this->assertNotInstanceOf( Scopes_Site_Styles::class, $block );
+		$this->assertInstanceOf( Groups_Site_Styles::class, $block );
+		$this->assertSame( [], $block->site_styles_attributes_map() );
+		$this->assertSame( [ 'isize', 'tabletIsize', 'mobileIsize', 'color' ], $block->site_styles_overlay_attributes() );
+		$this->assertSame( [ [ 'isize', 'tabletIsize', 'mobileIsize' ] ], $block->site_styles_attribute_groups() );
+		foreach ( [ 'media', 'icon', 'istroke', 'rating', 'ititle', 'url', 'content', 'name' ] as $attribute ) {
+			$this->assertContains( $attribute, Supported_Blocks::excluded_attributes( $block ) );
+		}
+	}
+
+	/**
 	 * Spacer's style is its divider style, and an instance without one takes the block's default.
 	 *
 	 * @dataProvider spacerStyleProvider

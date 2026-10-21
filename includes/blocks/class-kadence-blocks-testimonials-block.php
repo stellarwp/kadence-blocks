@@ -12,12 +12,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Legacy_Group_Attributes;
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Supports_Site_Styles;
+
 /**
  * Class to Build the Testimonials Block.
  *
  * @category class
  */
-class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
+class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block implements Supports_Site_Styles, Legacy_Group_Attributes {
 
 	/**
 	 * Instance of this class
@@ -960,6 +963,87 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 				),
 			)
 		);
+	}
+
+	/**
+	 * The editor paints every container, spacing and font value in its own
+	 * style tag, and the instance rules outrank core's, so every site value
+	 * goes through the overlay. Values the testimonials read through block
+	 * context stay per block, since the context carries the stored values.
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_overlay_attributes(): array {
+		return array_merge( ...$this->site_styles_attribute_groups() );
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_attributes_map(): array {
+		return [];
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_supports(): array {
+		return [];
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_selectors(): array {
+		return [];
+	}
+
+	/**
+	 * Each color keeps its opacity, each spacing set, border and radius keeps
+	 * its tablet and mobile values and its unit, the shadow keeps its toggle,
+	 * and each font is kept whole.
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_attribute_groups(): array {
+		return [
+			[ 'containerBackground', 'containerBackgroundOpacity' ],
+			[ 'borderStyle', 'tabletBorderStyle', 'mobileBorderStyle' ],
+			[ 'responsiveContainerBorderRadius', 'tabletContainerBorderRadius', 'mobileContainerBorderRadius', 'containerBorderRadiusUnit' ],
+			[ 'containerPadding', 'tabletContainerPadding', 'mobileContainerPadding', 'containerPaddingType' ],
+			[ 'containerMinHeight' ],
+			[ 'titleMinHeight' ],
+			[ 'contentMinHeight' ],
+			[ 'displayShadow', 'shadow' ],
+			[ 'wrapperPadding', 'wrapperTabletPadding', 'wrapperMobilePadding', 'wrapperPaddingType' ],
+			[ 'wrapperMargin', 'tabletWrapperMargin', 'mobileWrapperMargin', 'wrapperMarginUnit' ],
+			[ 'gap', 'gapUnit' ],
+			[ 'contentFont' ],
+			[ 'nameFont' ],
+			[ 'occupationFont' ],
+		];
+	}
+
+	/**
+	 * Testimonials saved before the responsive settings carry the old border
+	 * width and color and the old radius, which build_css() renders instead of
+	 * the border and radius, and the old column gap, which the carousel reads
+	 * instead of the gap.
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_legacy_group_attributes(): array {
+		return [
+			'borderStyle'                     => [ 'containerBorderWidth', 'containerBorder' ],
+			'responsiveContainerBorderRadius' => [ 'containerBorderRadius' ],
+			'gap'                             => [ 'columnGap' ],
+		];
 	}
 }
 
