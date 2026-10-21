@@ -17,6 +17,7 @@ import conformance from './fixtures/merge-conformance.json';
 import groupConformance from './fixtures/group-conformance.json';
 import scopeConformance from './fixtures/scope-conformance.json';
 import singleButton from './fixtures/singlebtn-entry.json';
+import showMore from './fixtures/show-more-entry.json';
 
 const BLOCK = 'kadence/singlebtn';
 const UNSCOPED = 'kadence/show-more';
@@ -177,6 +178,27 @@ describe('siteAttributes', () => {
 		};
 
 		expect(siteAttributes(record, UNSCOPED)).toEqual({ heightDesktop: 300, textColor: '#222222' });
+	});
+
+	it("keeps only Show More's overlay attributes, leaving its expand behavior to each block", () => {
+		window.kadenceSiteStyles.blocks['kadence/show-more'] = showMore;
+		const record = {
+			settings: {
+				custom: {
+					kadence: {
+						'show-more': {
+							heightDesktop: 400,
+							enableFadeOut: true,
+							showHideMore: false,
+							defaultExpandedDesktop: true,
+							kadenceBlockCSS: 'selector { color: red; }',
+						},
+					},
+				},
+			},
+		};
+
+		expect(siteAttributes(record, 'kadence/show-more')).toEqual({ heightDesktop: 400, enableFadeOut: true });
 	});
 
 	it('keeps only the overlay attributes of a scoped block without site rules', () => {
