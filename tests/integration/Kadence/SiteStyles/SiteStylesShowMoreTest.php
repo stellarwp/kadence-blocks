@@ -14,6 +14,13 @@ use KadenceWP\KadenceBlocks\Site_Styles\Site_Rules;
  * a block's own values keep their whole group, and the expand behavior stays per block.
  */
 final class SiteStylesShowMoreTest extends WPTestCase {
+	/**
+	 * The suite actor.
+	 *
+	 * @since TBD
+	 *
+	 * @var \IntegrationTester
+	 */
 	protected \IntegrationTester $tester;
 
 	/**
