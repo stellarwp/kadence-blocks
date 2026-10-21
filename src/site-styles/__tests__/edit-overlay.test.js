@@ -1,16 +1,27 @@
 /* eslint-env jest */
 /**
  * The editor overlay with a block that groups its site values: a group the instance sets itself shows no
- * site value, and a change that starts the instance setting a group stores the group as shown.
+ * site value, and a change that starts the instance setting a group stores the group as shown. Spacer's
+ * own entry scopes its site values by divider style as well.
  */
 import { act } from 'react';
 import { createRoot } from 'react-dom/client';
+import block from '../../blocks/spacer/block.json';
+import entry from './fixtures/spacer-entry.json';
 
 const BLOCK = 'kadence/spacer';
 const HEIGHT = ['spacerHeight', 'tabletSpacerHeight', 'mobileSpacerHeight', 'spacerHeightUnits'];
 const UNTOUCHED = { spacerHeight: 60, tabletSpacerHeight: '', mobileSpacerHeight: '', spacerHeightUnits: 'px' };
+const DEFINITIONS = {
+	spacerHeight: { default: 60 },
+	tabletSpacerHeight: { default: '' },
+	mobileSpacerHeight: { default: '' },
+	spacerHeightUnits: { default: 'px' },
+	dividerWidth: { default: 80 },
+};
 
 let mockRecord = {};
+let mockDefinitions = DEFINITIONS;
 // The block editor store's copy of the instance's attributes, which a write updates at once.
 let mockStored = {};
 
@@ -30,15 +41,7 @@ jest.mock(
 jest.mock(
 	'@wordpress/blocks',
 	() => ({
-		getBlockType: () => ({
-			attributes: {
-				spacerHeight: { default: 60 },
-				tabletSpacerHeight: { default: '' },
-				mobileSpacerHeight: { default: '' },
-				spacerHeightUnits: { default: 'px' },
-				dividerWidth: { default: 80 },
-			},
-		}),
+		getBlockType: () => ({ attributes: mockDefinitions }),
 	}),
 	{ virtual: true }
 );
@@ -182,5 +185,119 @@ describe('editor overlay with groups', () => {
 			mobileSpacerHeight: 10,
 			spacerHeightUnits: 'rem',
 		});
+	});
+});
+
+describe("editor overlay with Spacer's entry", () => {
+	const SITE = {
+		spacerHeight: 40,
+		tabletSpacerHeight: 30,
+		spacerHeightUnits: 'rem',
+		dividerHeight: 6,
+		dividerColor: '#ff0000',
+		dividerOpacity: 50,
+		dividerWidth: 50,
+	};
+	// An instance as the block editor holds it: every registered default filled in.
+	const DEFAULTS = Object.fromEntries(
+		Object.entries(block.attributes)
+			.filter(([, definition]) => 'default' in definition)
+			.map(([name, definition]) => [name, definition.default])
+	);
+
+	beforeAll(() => {
+		global.IS_REACT_ACT_ENVIRONMENT = true;
+	});
+
+	beforeEach(() => {
+		mockDefinitions = block.attributes;
+		window.kadenceSiteStyles = { isFseMode: true, blocks: { [BLOCK]: entry } };
+		mockRecord = { settings: { custom: { kadence: { spacer: SITE } } } };
+	});
+
+	afterEach(() => {
+		mockDefinitions = DEFINITIONS;
+		delete window.kadenceSiteStyles;
+	});
+
+	/**
+	 * A stripe shows the site height and divider width, but not the divider color, opacity or height its
+	 * markup and band use.
+	 *
+	 * @return {void}
+	 */
+	it('shows a stripe only the height and divider width', () => {
+		expect(render({ ...DEFAULTS, dividerStyle: 'stripe' }).attributes).toEqual({
+			...DEFAULTS,
+			dividerStyle: 'stripe',
+			spacerHeight: 40,
+			tabletSpacerHeight: 30,
+			spacerHeightUnits: 'rem',
+			dividerWidth: 50,
+		});
+	});
+
+	/**
+	 * A dashed divider isn't scoped, so it shows every site value.
+	 *
+	 * @return {void}
+	 */
+	it('shows a dashed divider every site value', () => {
+		expect(render({ ...DEFAULTS, dividerStyle: 'dashed' }).attributes).toEqual({
+			...DEFAULTS,
+			...SITE,
+			dividerStyle: 'dashed',
+		});
+	});
+
+	/**
+	 * A stripe with its own height keeps its group, so of the values its style takes it shows only the
+	 * divider width.
+	 *
+	 * @return {void}
+	 */
+	it('applies the groups after the scope', () => {
+		expect(render({ ...DEFAULTS, dividerStyle: 'stripe', spacerHeight: 120 }).attributes).toEqual({
+			...DEFAULTS,
+			dividerStyle: 'stripe',
+			spacerHeight: 120,
+			dividerWidth: 50,
+		});
+	});
+
+	/**
+	 * A dashed divider with its own color keeps its own opacity too, and still takes the other groups.
+	 *
+	 * @return {void}
+	 */
+	it('keeps a divider color with its opacity', () => {
+		expect(render({ ...DEFAULTS, dividerStyle: 'dashed', dividerColor: '#00ff00' }).attributes).toEqual({
+			...DEFAULTS,
+			...SITE,
+			dividerStyle: 'dashed',
+			dividerColor: '#00ff00',
+			dividerOpacity: 100,
+		});
+	});
+
+	/**
+	 * A change to a stripe stores a group as shown only for values its style takes: the height copies the site
+	 * unit and tablet height, while a color change copies no site opacity, since a stripe never showed it.
+	 *
+	 * @return {void}
+	 */
+	it("stores a stripe's group as its style shows it", () => {
+		const setAttributes = jest.fn();
+		const props = render({ ...DEFAULTS, dividerStyle: 'stripe' }, setAttributes);
+
+		props.setAttributes({ spacerHeight: 5 });
+		props.setAttributes({ dividerColor: '#000000' });
+
+		expect(setAttributes).toHaveBeenNthCalledWith(1, {
+			spacerHeight: 5,
+			tabletSpacerHeight: 30,
+			spacerHeightUnits: 'rem',
+		});
+		expect(setAttributes).toHaveBeenNthCalledWith(2, { dividerColor: '#000000' });
 	});
 });
