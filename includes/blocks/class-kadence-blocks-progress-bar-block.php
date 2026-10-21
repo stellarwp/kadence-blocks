@@ -463,6 +463,11 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block im
 		}
 	}
 
+	/**
+	 * The font defaults from block.json, so only the number's own values replace the label's.
+	 *
+	 * @return array<string, mixed>
+	 */
 	private function get_default_font() {
 		return [
 			'color'         => '',

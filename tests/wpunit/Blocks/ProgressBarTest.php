@@ -1,4 +1,5 @@
 <?php
+// cspell:ignore linetype .
 
 namespace Tests\wpunit\Blocks;
 
