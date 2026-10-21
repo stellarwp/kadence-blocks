@@ -9,7 +9,9 @@ const mockTypes = {
 	'third-party/button': { title: 'Single Button' },
 	'kadence/spacer': { title: 'Spacer / Divider' },
 	'kadence/rowlayout': { title: 'Row Layout' },
-	'kadence/column': { title: 'Section', parent: ['kadence/rowlayout'] },
+	'kadence/column': { title: 'Section' },
+	'kadence/iconlist': { title: 'Icon List' },
+	'kadence/listitem': { title: 'List Item', parent: ['kadence/iconlist'] },
 };
 
 jest.mock(
@@ -58,13 +60,22 @@ describe('screenBlockName', () => {
 	});
 
 	it("finds a supported block core doesn't list when only unsupported blocks are placed in it", () => {
-		window.kadenceSiteStyles.blocks['kadence/rowlayout'] = { supports: {} };
+		window.kadenceSiteStyles.blocks['kadence/iconlist'] = { supports: {} };
 
-		expect(screenBlockName('Row Layout')).toBe('kadence/rowlayout');
+		expect(screenBlockName('Icon List')).toBe('kadence/iconlist');
 	});
 
 	it('ignores a block that is not supported', () => {
-		expect(screenBlockName('Row Layout')).toBeUndefined();
+		expect(screenBlockName('Icon List')).toBeUndefined();
+	});
+
+	it('finds Row Layout and Section from their own screens, since neither is placed only in the other', () => {
+		window.kadenceSiteStyles.blocks['kadence/rowlayout'] = { supports: {} };
+		window.kadenceSiteStyles.blocks['kadence/column'] = { supports: {} };
+
+		expect(screenBlockName('Row Layout')).toBe('kadence/rowlayout');
+		expect(screenBlockName('Section')).toBe('kadence/column');
+		expect(launchBlockNames('kadence/column')).toEqual(['kadence/column']);
 	});
 
 	it('finds nothing without a title', () => {

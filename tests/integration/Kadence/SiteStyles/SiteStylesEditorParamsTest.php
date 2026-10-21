@@ -23,8 +23,8 @@ final class SiteStylesEditorParamsTest extends WPTestCase {
 	}
 
 	/**
-	 * In FSE mode the editor scripts get the supported blocks, and Single Button's, Spacer's, Show More's and Section's entries match the
-	 * fixtures the JS tests read.
+	 * In FSE mode the editor scripts get the supported blocks, and Single Button's, Spacer's, Show More's, Section's and Row Layout's
+	 * entries match the fixtures the JS tests read.
 	 *
 	 * @return void
 	 */
@@ -35,7 +35,7 @@ final class SiteStylesEditorParamsTest extends WPTestCase {
 
 		$blocks = $this->site_styles( Editor_Params::EARLY_FILTERS_HANDLE )['blocks'];
 
-		$this->assertEqualsCanonicalizing( [ 'kadence/advancedbtn', 'kadence/singlebtn', 'kadence/icon', 'kadence/single-icon', 'kadence/spacer', 'kadence/show-more', 'kadence/column' ], array_keys( $blocks ) );
+		$this->assertEqualsCanonicalizing( [ 'kadence/advancedbtn', 'kadence/singlebtn', 'kadence/icon', 'kadence/single-icon', 'kadence/spacer', 'kadence/show-more', 'kadence/column', 'kadence/rowlayout' ], array_keys( $blocks ) );
 		$this->assertEquals( json_decode( $json, true ), $blocks['kadence/singlebtn'] );
 
 		$spacer = file_get_contents( KADENCE_BLOCKS_PATH . 'src/site-styles/__tests__/fixtures/spacer-entry.json' );
@@ -49,6 +49,10 @@ final class SiteStylesEditorParamsTest extends WPTestCase {
 		$section = file_get_contents( KADENCE_BLOCKS_PATH . 'src/site-styles/__tests__/fixtures/column-entry.json' );
 		$this->assertIsString( $section );
 		$this->assertEquals( json_decode( $section, true ), $blocks['kadence/column'] );
+
+		$row = file_get_contents( KADENCE_BLOCKS_PATH . 'src/site-styles/__tests__/fixtures/rowlayout-entry.json' );
+		$this->assertIsString( $row );
+		$this->assertEquals( json_decode( $row, true ), $blocks['kadence/rowlayout'] );
 	}
 
 	public function testClassicModeGivesFalseAndNoBlocks(): void {
@@ -75,7 +79,7 @@ final class SiteStylesEditorParamsTest extends WPTestCase {
 
 		// wp_localize_script() turns booleans into strings, like every flag in kadence_blocks_params.
 		$this->assertSame( '1', $params['isFseMode'] );
-		$this->assertEqualsCanonicalizing( [ 'kadence/advancedbtn', 'kadence/singlebtn', 'kadence/icon', 'kadence/single-icon', 'kadence/spacer', 'kadence/show-more', 'kadence/column' ], $params['siteStylesBlocks'] );
+		$this->assertEqualsCanonicalizing( [ 'kadence/advancedbtn', 'kadence/singlebtn', 'kadence/icon', 'kadence/single-icon', 'kadence/spacer', 'kadence/show-more', 'kadence/column', 'kadence/rowlayout' ], $params['siteStylesBlocks'] );
 	}
 
 	/**

@@ -19,6 +19,7 @@ import scopeConformance from './fixtures/scope-conformance.json';
 import singleButton from './fixtures/singlebtn-entry.json';
 import section from './fixtures/column-entry.json';
 import showMore from './fixtures/show-more-entry.json';
+import rowLayout from './fixtures/rowlayout-entry.json';
 
 const BLOCK = 'kadence/singlebtn';
 const UNSCOPED = 'kadence/show-more';
@@ -201,6 +202,32 @@ describe('siteAttributes', () => {
 		};
 
 		expect(siteAttributes(record, 'kadence/column')).toEqual({ padding: [2, 2, 2, 2], textColor: '#222222' });
+	});
+
+	it("keeps only Row Layout's overlay attributes, leaving its structure, layout and Pro settings to each row", () => {
+		window.kadenceSiteStyles.blocks['kadence/rowlayout'] = rowLayout;
+		const record = {
+			settings: {
+				custom: {
+					kadence: {
+						rowlayout: {
+							padding: [2, '', 2, ''],
+							bgColor: '#ff0000',
+							kbVersion: 2,
+							columns: 3,
+							colLayout: 'left-golden',
+							verticalAlignment: 'middle',
+							minHeight: 400,
+							inheritMaxWidth: true,
+							kadenceBlockCSS: 'selector { color: red; }',
+							kadenceConditional: { postData: { enable: true } },
+						},
+					},
+				},
+			},
+		};
+
+		expect(siteAttributes(record, 'kadence/rowlayout')).toEqual({ padding: [2, '', 2, ''], bgColor: '#ff0000' });
 	});
 
 	it("keeps only Show More's overlay attributes, leaving its expand behavior to each block", () => {
