@@ -10,12 +10,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Groups_Site_Styles;
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Supports_Site_Styles;
+
 /**
  * Class to Build the Table Block.
  *
  * @category class
  */
-class Kadence_Blocks_Table_Block extends Kadence_Blocks_Abstract_Block {
+class Kadence_Blocks_Table_Block extends Kadence_Blocks_Abstract_Block implements Supports_Site_Styles, Groups_Site_Styles {
 
 	/**
 	 * Instance of this class
@@ -298,6 +301,68 @@ class Kadence_Blocks_Table_Block extends Kadence_Blocks_Abstract_Block {
 
 	}
 
+	/**
+	 * The editor paints every Table value itself, in its own style tag, and the
+	 * instance rule outranks core's, so every site value goes through the
+	 * overlay.
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_overlay_attributes(): array {
+		return array_merge( ...$this->site_styles_attribute_groups() );
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_attributes_map(): array {
+		return [];
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_supports(): array {
+		return [];
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_selectors(): array {
+		return [];
+	}
+
+	/**
+	 * Each font is kept whole, each alignment, border, spacing and row height
+	 * takes its devices and unit with it, the row backgrounds their toggle, and
+	 * the max width its unit and scroll setting.
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_attribute_groups(): array {
+		return [
+			[ 'dataTypography' ],
+			[ 'headerTypography' ],
+			[ 'captionTypography' ],
+			[ 'textAlign', 'textAlignTablet', 'textAlignMobile' ],
+			[ 'headerAlign', 'headerAlignTablet', 'headerAlignMobile' ],
+			[ 'captionAlign', 'captionAlignTablet', 'captionAlignMobile' ],
+			[ 'evenOddBackground', 'backgroundColorEven', 'backgroundColorOdd', 'backgroundHoverColorEven', 'backgroundHoverColorOdd' ],
+			[ 'borderStyle', 'tabletBorderStyle', 'mobileBorderStyle', 'borderOnRowOnly' ],
+			[ 'cellPadding', 'tabletCellPadding', 'mobileCellPadding', 'cellPaddingType' ],
+			[ 'rowMinHeight', 'tabletRowMinHeight', 'mobileRowMinHeight', 'rowMinHeightType' ],
+			[ 'padding', 'tabletPadding', 'mobilePadding', 'paddingType' ],
+			[ 'margin', 'tabletMargin', 'mobileMargin', 'marginType' ],
+			[ 'maxWidth', 'maxWidthUnit', 'overflowXScroll' ],
+		];
+	}
 }
 
 Kadence_Blocks_Table_Block::get_instance();

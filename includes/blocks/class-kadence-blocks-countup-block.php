@@ -10,12 +10,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Groups_Site_Styles;
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Supports_Site_Styles;
+
 /**
  * Class to Build the Countup Block.
  *
  * @category class
  */
-class Kadence_Blocks_Countup_Block extends Kadence_Blocks_Abstract_Block {
+class Kadence_Blocks_Countup_Block extends Kadence_Blocks_Abstract_Block implements Supports_Site_Styles, Groups_Site_Styles {
 
 	/**
 	 * Instance of this class
@@ -281,7 +284,66 @@ class Kadence_Blocks_Countup_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		return $content;
 	}
-	
+
+	/**
+	 * The editor paints every Count Up value itself, inline, and the instance
+	 * rule outranks core's, so every site value goes through the overlay.
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_overlay_attributes(): array {
+		return array_merge( array_merge( ...$this->site_styles_attribute_groups() ), [ 'titleColor', 'numberColor' ] );
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_attributes_map(): array {
+		return [];
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_supports(): array {
+		return [];
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_selectors(): array {
+		return [];
+	}
+
+	/**
+	 * Each font keeps its size with its unit, each alignment and min height its
+	 * devices, and each padding and margin its devices and unit, for the title
+	 * and the number.
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_attribute_groups(): array {
+		return [
+			[ 'titleFont' ],
+			[ 'titleAlign' ],
+			[ 'titleMinHeight' ],
+			[ 'titlePadding', 'titleTabletPadding', 'titleMobilePadding', 'titlePaddingType' ],
+			[ 'titleMargin', 'titleTabletMargin', 'titleMobileMargin', 'titleMarginType' ],
+			[ 'numberFont' ],
+			[ 'numberAlign' ],
+			[ 'numberMinHeight' ],
+			[ 'numberPadding', 'numberTabletPadding', 'numberMobilePadding', 'numberPaddingType' ],
+			[ 'numberMargin', 'numberTabletMargin', 'numberMobileMargin', 'numberMarginType' ],
+		];
+	}
+
 	/**
 	 * Registers scripts and styles.
 	 */

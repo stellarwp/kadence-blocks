@@ -12,12 +12,19 @@ import { createHigherOrderComponent } from '@wordpress/compose';
 import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
 import { useDispatch, select } from '@wordpress/data';
+import { addSiteStylesSupports } from './site-styles/block-supports';
+import { hideCoreColorControls } from './site-styles/instance-controls';
+import { withSiteStyles } from './site-styles/edit-overlay';
+import { gateBlockDefaults } from './site-styles/block-defaults';
+import { isFseMode } from './site-styles/supported-blocks';
+import { useIsSiteStylesPanel } from './site-styles/use-is-site-styles-panel';
 import { blockPresets, activeLibrary, activePresetFor, blockDefaultPreset } from './extension/preset-picker';
 import { PresetButton } from './extension/preset-picker/PresetButton';
 import { designTokenInspectorControl } from './extension/preset-picker/inspector-control';
 import { PalettePicker, selectablePalettes } from './extension/palette-picker';
 import { registerTokenAliasFilters } from './extension/design-tokens/register-filters';
 import { registerColorControlFilters } from './extension/design-tokens/register-color-control-filters';
+import { registerCustomColorFilters } from './extension/custom-colors/register-custom-color-filters';
 import { registerComponentTokenFilters } from './extension/design-tokens/register-component-filters';
 import { registerTokenSwatchPalettePreview } from './extension/design-tokens/palette-swatch-preview';
 
@@ -28,6 +35,10 @@ registerTokenAliasFilters();
 // Keep token-backed global-palette colors visible in the shared Kadence color controls when the
 // "Use only Custom Colors" override is on, through the color control's swatch filter seam.
 registerColorControlFilters();
+
+// Keep the Kadence Blocks custom colors in the shared Kadence color controls when the override is on in FSE
+// mode, where Global Styles owns the editor palette and leaves them out.
+registerCustomColorFilters();
 
 // Inject the design-token picker UI into the token-agnostic @kadence/components control seams, so a
 // control that receives a `context` gets the chip/picker without the package knowing about tokens.
@@ -92,6 +103,10 @@ function convertArrayTitleToString(arr) {
 }
 
 addFilter('blocks.registerBlockType', 'kadence/block-label', blockMetadataAttribute);
+addFilter('blocks.registerBlockType', 'kadence/site-styles-supports', addSiteStylesSupports);
+addFilter('blockEditor.useSetting.before', 'kadence/site-styles-instance-controls', hideCoreColorControls);
+addFilter('editor.BlockEdit', 'kadence/site-styles-overlay', withSiteStyles);
+addFilter('blocks.registerBlockType', 'kadence/site-styles-block-defaults', gateBlockDefaults);
 
 /**
  * Add the kbPreset and/or kbPalette attributes to a block, each gated on its own block support so the two
@@ -338,11 +353,14 @@ addFilter('editor.BlockListBlock', 'kadence/kb-palette-attr', withBlockPaletteAt
  * A block whose `kbPreset` support requests `inlinePicker` renders `PresetButton` itself, from inside its own
  * inspector layout, so this filter renders neither control for it.
  *
+ * Neither control renders in the Kadence panel, which stores no preset or palette pick.
+ *
  * @since 3.8.0
  */
 const withPresetPicker = createHigherOrderComponent((BlockEdit) => {
 	return (props) => {
 		const { name, attributes, setAttributes, isSelected } = props;
+		const isSiteStylesPanel = useIsSiteStylesPanel();
 
 		const hasPreset = hasBlockSupport(name, 'kbPreset');
 		const hasPalette = hasBlockSupport(name, 'kbPalette');
@@ -358,6 +376,7 @@ const withPresetPicker = createHigherOrderComponent((BlockEdit) => {
 			inlinePicker: hasPreset && Boolean(getBlockSupport(name, 'kbPreset')?.inlinePicker),
 			presetCount: blockPresets(name, library).length,
 			paletteCount: selectablePalettes().length,
+			isSiteStylesPanel,
 		});
 
 		if (control === null) {
@@ -483,6 +502,7 @@ const kadenceHeaderTemplatePartNotice = createHigherOrderComponent((BlockEdit) =
 	};
 }, 'withTemplatePartNotice');
 
-if (!window.wpWidgets) {
+// In the Kadence theme's FSE mode the header part is the theme's own header, which Replace would empty.
+if (!window.wpWidgets && !isFseMode()) {
 	addFilter('editor.BlockEdit', 'kadence-blocks/with-template-part-notice', kadenceHeaderTemplatePartNotice);
 }

@@ -1,0 +1,541 @@
+[
+	{
+		"name": "a Fill button takes every site value",
+		"site": {
+			"background": "#cc0000",
+			"color": "#ffffff",
+			"typography": [
+				{
+					"size": [
+						"24",
+						"",
+						""
+					],
+					"family": "Georgia, serif"
+				}
+			],
+			"padding": [
+				30,
+				30,
+				30,
+				30
+			],
+			"displayShadow": true
+		},
+		"instance": {
+			"inheritStyles": "fill"
+		},
+		"scope": {
+			"attribute": "inheritStyles",
+			"attributes": {
+				"outline": [
+					"typography",
+					"padding"
+				],
+				"inherit": [],
+				"inherit-secondary": []
+			}
+		},
+		"defaultStyle": "fill",
+		"expected": {
+			"background": "#cc0000",
+			"color": "#ffffff",
+			"typography": [
+				{
+					"size": [
+						"24",
+						"",
+						""
+					],
+					"family": "Georgia, serif"
+				}
+			],
+			"padding": [
+				30,
+				30,
+				30,
+				30
+			],
+			"displayShadow": true
+		}
+	},
+	{
+		"name": "a button without a style takes the default style's values",
+		"site": {
+			"background": "#cc0000",
+			"color": "#ffffff",
+			"typography": [
+				{
+					"size": [
+						"24",
+						"",
+						""
+					],
+					"family": "Georgia, serif"
+				}
+			],
+			"padding": [
+				30,
+				30,
+				30,
+				30
+			],
+			"displayShadow": true
+		},
+		"instance": {},
+		"scope": {
+			"attribute": "inheritStyles",
+			"attributes": {
+				"outline": [
+					"typography",
+					"padding"
+				],
+				"inherit": [],
+				"inherit-secondary": []
+			}
+		},
+		"defaultStyle": "fill",
+		"expected": {
+			"background": "#cc0000",
+			"color": "#ffffff",
+			"typography": [
+				{
+					"size": [
+						"24",
+						"",
+						""
+					],
+					"family": "Georgia, serif"
+				}
+			],
+			"padding": [
+				30,
+				30,
+				30,
+				30
+			],
+			"displayShadow": true
+		}
+	},
+	{
+		"name": "an Outline button takes only its scoped values",
+		"site": {
+			"background": "#cc0000",
+			"color": "#ffffff",
+			"typography": [
+				{
+					"size": [
+						"24",
+						"",
+						""
+					],
+					"family": "Georgia, serif"
+				}
+			],
+			"padding": [
+				30,
+				30,
+				30,
+				30
+			],
+			"displayShadow": true
+		},
+		"instance": {
+			"inheritStyles": "outline"
+		},
+		"scope": {
+			"attribute": "inheritStyles",
+			"attributes": {
+				"outline": [
+					"typography",
+					"padding"
+				],
+				"inherit": [],
+				"inherit-secondary": []
+			}
+		},
+		"defaultStyle": "fill",
+		"expected": {
+			"typography": [
+				{
+					"size": [
+						"24",
+						"",
+						""
+					],
+					"family": "Georgia, serif"
+				}
+			],
+			"padding": [
+				30,
+				30,
+				30,
+				30
+			]
+		}
+	},
+	{
+		"name": "a button whose default style is Outline takes only its scoped values",
+		"site": {
+			"background": "#cc0000",
+			"color": "#ffffff",
+			"typography": [
+				{
+					"size": [
+						"24",
+						"",
+						""
+					],
+					"family": "Georgia, serif"
+				}
+			],
+			"padding": [
+				30,
+				30,
+				30,
+				30
+			],
+			"displayShadow": true
+		},
+		"instance": {},
+		"scope": {
+			"attribute": "inheritStyles",
+			"attributes": {
+				"outline": [
+					"typography",
+					"padding"
+				],
+				"inherit": [],
+				"inherit-secondary": []
+			}
+		},
+		"defaultStyle": "outline",
+		"expected": {
+			"typography": [
+				{
+					"size": [
+						"24",
+						"",
+						""
+					],
+					"family": "Georgia, serif"
+				}
+			],
+			"padding": [
+				30,
+				30,
+				30,
+				30
+			]
+		}
+	},
+	{
+		"name": "a Theme Base button takes no site value",
+		"site": {
+			"background": "#cc0000",
+			"color": "#ffffff",
+			"typography": [
+				{
+					"size": [
+						"24",
+						"",
+						""
+					],
+					"family": "Georgia, serif"
+				}
+			],
+			"padding": [
+				30,
+				30,
+				30,
+				30
+			],
+			"displayShadow": true
+		},
+		"instance": {
+			"inheritStyles": "inherit"
+		},
+		"scope": {
+			"attribute": "inheritStyles",
+			"attributes": {
+				"outline": [
+					"typography",
+					"padding"
+				],
+				"inherit": [],
+				"inherit-secondary": []
+			}
+		},
+		"defaultStyle": "fill",
+		"expected": {}
+	},
+	{
+		"name": "a Theme Secondary button takes no site value",
+		"site": {
+			"background": "#cc0000",
+			"color": "#ffffff",
+			"typography": [
+				{
+					"size": [
+						"24",
+						"",
+						""
+					],
+					"family": "Georgia, serif"
+				}
+			],
+			"padding": [
+				30,
+				30,
+				30,
+				30
+			],
+			"displayShadow": true
+		},
+		"instance": {
+			"inheritStyles": "inherit-secondary"
+		},
+		"scope": {
+			"attribute": "inheritStyles",
+			"attributes": {
+				"outline": [
+					"typography",
+					"padding"
+				],
+				"inherit": [],
+				"inherit-secondary": []
+			}
+		},
+		"defaultStyle": "fill",
+		"expected": {}
+	},
+	{
+		"name": "an unlisted style takes every site value",
+		"site": {
+			"background": "#cc0000",
+			"color": "#ffffff",
+			"typography": [
+				{
+					"size": [
+						"24",
+						"",
+						""
+					],
+					"family": "Georgia, serif"
+				}
+			],
+			"padding": [
+				30,
+				30,
+				30,
+				30
+			],
+			"displayShadow": true
+		},
+		"instance": {
+			"inheritStyles": "custom"
+		},
+		"scope": {
+			"attribute": "inheritStyles",
+			"attributes": {
+				"outline": [
+					"typography",
+					"padding"
+				],
+				"inherit": [],
+				"inherit-secondary": []
+			}
+		},
+		"defaultStyle": "fill",
+		"expected": {
+			"background": "#cc0000",
+			"color": "#ffffff",
+			"typography": [
+				{
+					"size": [
+						"24",
+						"",
+						""
+					],
+					"family": "Georgia, serif"
+				}
+			],
+			"padding": [
+				30,
+				30,
+				30,
+				30
+			],
+			"displayShadow": true
+		}
+	},
+	{
+		"name": "a style that isn't a string takes every site value",
+		"site": {
+			"background": "#cc0000",
+			"color": "#ffffff",
+			"typography": [
+				{
+					"size": [
+						"24",
+						"",
+						""
+					],
+					"family": "Georgia, serif"
+				}
+			],
+			"padding": [
+				30,
+				30,
+				30,
+				30
+			],
+			"displayShadow": true
+		},
+		"instance": {
+			"inheritStyles": null
+		},
+		"scope": {
+			"attribute": "inheritStyles",
+			"attributes": {
+				"outline": [
+					"typography",
+					"padding"
+				],
+				"inherit": [],
+				"inherit-secondary": []
+			}
+		},
+		"defaultStyle": null,
+		"expected": {
+			"background": "#cc0000",
+			"color": "#ffffff",
+			"typography": [
+				{
+					"size": [
+						"24",
+						"",
+						""
+					],
+					"family": "Georgia, serif"
+				}
+			],
+			"padding": [
+				30,
+				30,
+				30,
+				30
+			],
+			"displayShadow": true
+		}
+	},
+	{
+		"name": "a stripe divider takes only the spacer height and divider width",
+		"site": {
+			"spacerHeight": 40,
+			"spacerHeightUnits": "rem",
+			"dividerHeight": 8,
+			"dividerWidth": 50,
+			"dividerColor": "#ff0000",
+			"dividerOpacity": 50
+		},
+		"instance": {
+			"dividerStyle": "stripe"
+		},
+		"scope": {
+			"attribute": "dividerStyle",
+			"attributes": {
+				"stripe": [
+					"spacerHeight",
+					"tabletSpacerHeight",
+					"mobileSpacerHeight",
+					"spacerHeightUnits",
+					"dividerWidth",
+					"tabletDividerWidth",
+					"mobileDividerWidth",
+					"dividerWidthUnits"
+				]
+			}
+		},
+		"defaultStyle": "solid",
+		"expected": {
+			"spacerHeight": 40,
+			"spacerHeightUnits": "rem",
+			"dividerWidth": 50
+		}
+	},
+	{
+		"name": "a dashed divider takes every site value",
+		"site": {
+			"spacerHeight": 40,
+			"spacerHeightUnits": "rem",
+			"dividerHeight": 8,
+			"dividerWidth": 50,
+			"dividerColor": "#ff0000",
+			"dividerOpacity": 50
+		},
+		"instance": {
+			"dividerStyle": "dashed"
+		},
+		"scope": {
+			"attribute": "dividerStyle",
+			"attributes": {
+				"stripe": [
+					"spacerHeight",
+					"tabletSpacerHeight",
+					"mobileSpacerHeight",
+					"spacerHeightUnits",
+					"dividerWidth",
+					"tabletDividerWidth",
+					"mobileDividerWidth",
+					"dividerWidthUnits"
+				]
+			}
+		},
+		"defaultStyle": "solid",
+		"expected": {
+			"spacerHeight": 40,
+			"spacerHeightUnits": "rem",
+			"dividerHeight": 8,
+			"dividerWidth": 50,
+			"dividerColor": "#ff0000",
+			"dividerOpacity": 50
+		}
+	},
+	{
+		"name": "a divider without a style takes every site value, as a solid one does",
+		"site": {
+			"spacerHeight": 40,
+			"spacerHeightUnits": "rem",
+			"dividerHeight": 8,
+			"dividerWidth": 50,
+			"dividerColor": "#ff0000",
+			"dividerOpacity": 50
+		},
+		"instance": {},
+		"scope": {
+			"attribute": "dividerStyle",
+			"attributes": {
+				"stripe": [
+					"spacerHeight",
+					"tabletSpacerHeight",
+					"mobileSpacerHeight",
+					"spacerHeightUnits",
+					"dividerWidth",
+					"tabletDividerWidth",
+					"mobileDividerWidth",
+					"dividerWidthUnits"
+				]
+			}
+		},
+		"defaultStyle": "solid",
+		"expected": {
+			"spacerHeight": 40,
+			"spacerHeightUnits": "rem",
+			"dividerHeight": 8,
+			"dividerWidth": 50,
+			"dividerColor": "#ff0000",
+			"dividerOpacity": 50
+		}
+	}
+]
