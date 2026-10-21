@@ -90,6 +90,24 @@ describe('toKadenceColor', () => {
 		expect(toKadenceColor(toCoreColor('palette7'))).toBe('palette7');
 		expect(toCoreColor('#cc0000')).toBe('#cc0000');
 	});
+
+	it('reads a design token variable back as its token reference', () => {
+		expect(toKadenceColor('var(--kb-token--primitive--color--notice--error)')).toBe(
+			'{primitive.color.notice.error}'
+		);
+		expect(toKadenceColor('var(--kb-token--semantic--color--brand-accent)')).toBe('{semantic.color.brand-accent}');
+		expect(toKadenceColor('var(--kb-token--Primitive--color)')).toBe('var(--kb-token--Primitive--color)');
+	});
+});
+
+describe('toCoreColor', () => {
+	it('stores a design token reference as its CSS variable, which core can print', () => {
+		expect(toCoreColor('{primitive.color.notice.error}')).toBe('var(--kb-token--primitive--color--notice--error)');
+	});
+
+	it('round-trips a design token reference with toKadenceColor', () => {
+		expect(toKadenceColor(toCoreColor('{semantic.color.brand-accent}'))).toBe('{semantic.color.brand-accent}');
+	});
 });
 
 describe('siteAttributes', () => {
@@ -288,10 +306,86 @@ describe('withStoredForm', () => {
 
 		const onlyText = withStoredForm(record, BLOCK, { core: { 'color.text': '#fff' }, custom: {} });
 		expect(onlyText.styles.blocks[BLOCK]).toEqual({ color: { text: '#fff', gradient: 'g' } });
-		expect(onlyText.settings.custom.kadence).toEqual({});
+		expect(onlyText.settings).toEqual({});
 
-		const record2 = { styles: { blocks: { [BLOCK]: { color: { background: '#000' } } } } };
-		expect(withStoredForm(record2, BLOCK, { core: {}, custom: {} }).styles.blocks[BLOCK]).toEqual({});
+		const record2 = {
+			styles: { blocks: { [BLOCK]: { color: { background: '#000' } }, 'core/paragraph': { a: 1 } } },
+		};
+		expect(withStoredForm(record2, BLOCK, { core: {}, custom: {} }).styles).toEqual({
+			blocks: { 'core/paragraph': { a: 1 } },
+		});
+
+		const record3 = { styles: { blocks: { [BLOCK]: { color: { background: '#000' } } } } };
+		expect(withStoredForm(record3, BLOCK, { core: {}, custom: {} }).styles).toEqual({});
+	});
+});
+
+describe('withStoredForm and empty settings', () => {
+	it('keeps other custom settings and other blocks when the last value of a block goes', () => {
+		const record = {
+			settings: {
+				custom: { theme: 'x', kadence: { singlebtn: { borderRadius: [1, 1, 1, 1] }, other: { a: 1 } } },
+			},
+		};
+
+		expect(withStoredForm(record, BLOCK, { core: {}, custom: {} }).settings).toEqual({
+			custom: { theme: 'x', kadence: { other: { a: 1 } } },
+		});
+		expect(
+			withStoredForm({ settings: { custom: { theme: 'x', kadence: { singlebtn: { a: 1 } } } } }, BLOCK, {
+				core: {},
+				custom: {},
+			}).settings
+		).toEqual({ custom: { theme: 'x' } });
+	});
+
+	it.each([
+		['an empty kadence list', { custom: { kadence: [] } }],
+		['an empty custom list', { custom: [] }],
+	])('writes a value over %s, as WordPress returns an empty object it saved', (name, settings) => {
+		const result = withStoredForm({ settings }, BLOCK, { core: {}, custom: { sizePreset: 'large' } });
+
+		expect(JSON.parse(JSON.stringify(result.settings))).toEqual({
+			custom: { kadence: { singlebtn: { sizePreset: 'large' } } },
+		});
+	});
+
+	it.each([
+		['an empty blocks list', { blocks: [] }],
+		['an empty block entry list', { blocks: { [BLOCK]: [] } }],
+		['an empty color list', { blocks: { [BLOCK]: { color: [] } } }],
+	])('writes a core color over %s', (name, styles) => {
+		const result = withStoredForm({ styles }, BLOCK, { core: { 'color.background': '#cc0000' }, custom: {} });
+
+		expect(JSON.parse(JSON.stringify(result.styles))).toEqual({
+			blocks: { [BLOCK]: { color: { background: '#cc0000' } } },
+		});
+	});
+
+	it('writes a core color over an empty styles list', () => {
+		const result = withStoredForm({ styles: [] }, BLOCK, { core: { 'color.background': '#cc0000' }, custom: {} });
+
+		expect(JSON.parse(JSON.stringify(result.styles))).toEqual({
+			blocks: { [BLOCK]: { color: { background: '#cc0000' } } },
+		});
+	});
+
+	it('writes a custom value over an empty settings list', () => {
+		const result = withStoredForm({ settings: [] }, BLOCK, { core: {}, custom: { sizePreset: 'large' } });
+
+		expect(JSON.parse(JSON.stringify(result.settings))).toEqual({
+			custom: { kadence: { singlebtn: { sizePreset: 'large' } } },
+		});
+	});
+
+	it('removes a stored empty block entry list when nothing is written', () => {
+		expect(withStoredForm({ styles: { blocks: { [BLOCK]: [] } } }, BLOCK, { core: {}, custom: {} }).styles).toEqual(
+			{}
+		);
+	});
+
+	it('reads no custom values from an empty kadence list', () => {
+		expect(siteAttributes({ settings: { custom: { kadence: [] } } }, BLOCK)).toEqual({});
 	});
 });
 
