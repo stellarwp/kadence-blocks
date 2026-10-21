@@ -64,6 +64,22 @@ class Kadence_Blocks_Testimonial_Block extends Kadence_Blocks_Abstract_Block imp
 
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 
+		// The icon's width and height attributes carry the desktop size, so only tablet and mobile need rules.
+		if ( isset( $attributes['media'] ) && 'icon' === $attributes['media'] ) {
+			$css->set_selector( '.kt-testimonial-item-' . $unique_id . ' .kt-svg-testimonial-icon svg' );
+			foreach ( [
+				'tablet' => 'tabletIsize',
+				'mobile' => 'mobileIsize',
+			] as $device => $key ) {
+				if ( isset( $attributes[ $key ] ) && is_numeric( $attributes[ $key ] ) ) {
+					$css->set_media_state( $device );
+					$css->add_property( 'width', $attributes[ $key ] . 'px' );
+					$css->add_property( 'height', $attributes[ $key ] . 'px' );
+				}
+			}
+			$css->set_media_state( 'desktop' );
+		}
+
 		return $css->css_output();
 	}
 
@@ -392,9 +408,9 @@ class Kadence_Blocks_Testimonial_Block extends Kadence_Blocks_Abstract_Block imp
 	}
 
 	/**
-	 * The media icon's size and color are printed on its SVG in the markup and
-	 * painted inline by the editor, so every site value goes through the
-	 * overlay.
+	 * The media icon's desktop size and color are printed on its SVG, its tablet
+	 * and mobile sizes in the instance rule, and the editor paints them all
+	 * inline, so every site value goes through the overlay.
 	 *
 	 * @since TBD
 	 */

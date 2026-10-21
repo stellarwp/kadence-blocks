@@ -235,6 +235,39 @@ final class SiteStylesTestimonialsTest extends WPTestCase {
 	}
 
 	/**
+	 * An untouched icon testimonial prints the site tablet and mobile icon sizes, and one with its own size
+	 * keeps its whole size group.
+	 *
+	 * @return void
+	 */
+	public function testATestimonialTakesTheSiteTabletAndMobileIconSizes(): void {
+		$this->tester->enable_fse_mode();
+		$this->store(
+			'testimonial',
+			[
+				'isize'       => 80,
+				'tabletIsize' => 40,
+				'mobileIsize' => 30,
+			]
+		);
+
+		$this->render( [], [ 'media' => 'icon' ] );
+		$untouched = $this->testimonial_css();
+		$this->render(
+			[],
+			[
+				'media' => 'icon',
+				'isize' => 30,
+			]
+		);
+		$own = $this->testimonial_css();
+
+		$this->assertStringContainsString( '.kt-testimonial-item-ts_item .kt-svg-testimonial-icon svg{width:40px;height:40px;}', $untouched );
+		$this->assertStringContainsString( '.kt-testimonial-item-ts_item .kt-svg-testimonial-icon svg{width:30px;height:30px;}', $untouched );
+		$this->assertStringNotContainsString( 'kt-svg-testimonial-icon', $own );
+	}
+
+	/**
 	 * In classic mode, stored testimonial site values change nothing.
 	 *
 	 * @return void
@@ -388,5 +421,21 @@ final class SiteStylesTestimonialsTest extends WPTestCase {
 			'css'  => $css,
 			'html' => (string) preg_replace( '/<style[^>]*>.*?<\/style>/s', '', $html ),
 		];
+	}
+
+	/**
+	 * Returns the CSS the last render built for the testimonial itself.
+	 *
+	 * @return string The testimonial's CSS.
+	 */
+	private function testimonial_css(): string {
+		$css = '';
+		foreach ( Kadence_Blocks_CSS::$styles as $style_id => $style ) {
+			if ( str_starts_with( $style_id, 'kb-testimonial' ) && ! str_starts_with( $style_id, 'kb-testimonials' ) ) {
+				$css .= $style;
+			}
+		}
+
+		return $css;
 	}
 }
