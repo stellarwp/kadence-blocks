@@ -23,8 +23,9 @@ final class SiteStylesEditorParamsTest extends WPTestCase {
 	}
 
 	/**
-	 * In FSE mode the editor scripts get the supported blocks, and Single Button's, Spacer's and Show More's entries match the
-	 * fixtures the JS tests read.
+	 * In FSE mode the editor scripts get the supported blocks, and Single Button's, Spacer's, Show More's, Section's, Row Layout's,
+	 * Count Up's, Info Box's, Countdown's, Table's and Posts' entries match the fixtures the JS
+	 * tests read.
 	 *
 	 * @return void
 	 */
@@ -35,7 +36,7 @@ final class SiteStylesEditorParamsTest extends WPTestCase {
 
 		$blocks = $this->site_styles( Editor_Params::EARLY_FILTERS_HANDLE )['blocks'];
 
-		$this->assertEqualsCanonicalizing( [ 'kadence/advancedbtn', 'kadence/singlebtn', 'kadence/icon', 'kadence/single-icon', 'kadence/spacer', 'kadence/show-more', 'kadence/tableofcontents' ], array_keys( $blocks ) );
+		$this->assertEqualsCanonicalizing( [ 'kadence/advancedbtn', 'kadence/singlebtn', 'kadence/icon', 'kadence/single-icon', 'kadence/spacer', 'kadence/show-more', 'kadence/column', 'kadence/rowlayout', 'kadence/countup', 'kadence/infobox', 'kadence/countdown', 'kadence/table', 'kadence/posts', 'kadence/progress-bar', 'kadence/testimonials', 'kadence/testimonial', 'kadence/tableofcontents' ], array_keys( $blocks ) );
 		$this->assertEquals( json_decode( $json, true ), $blocks['kadence/singlebtn'] );
 
 		$spacer = file_get_contents( KADENCE_BLOCKS_PATH . 'src/site-styles/__tests__/fixtures/spacer-entry.json' );
@@ -45,6 +46,46 @@ final class SiteStylesEditorParamsTest extends WPTestCase {
 		$show_more = file_get_contents( KADENCE_BLOCKS_PATH . 'src/site-styles/__tests__/fixtures/show-more-entry.json' );
 		$this->assertIsString( $show_more );
 		$this->assertEquals( json_decode( $show_more, true ), $blocks['kadence/show-more'] );
+
+		$section = file_get_contents( KADENCE_BLOCKS_PATH . 'src/site-styles/__tests__/fixtures/column-entry.json' );
+		$this->assertIsString( $section );
+		$this->assertEquals( json_decode( $section, true ), $blocks['kadence/column'] );
+
+		$row = file_get_contents( KADENCE_BLOCKS_PATH . 'src/site-styles/__tests__/fixtures/rowlayout-entry.json' );
+		$this->assertIsString( $row );
+		$this->assertEquals( json_decode( $row, true ), $blocks['kadence/rowlayout'] );
+
+		$count_up = file_get_contents( KADENCE_BLOCKS_PATH . 'src/site-styles/__tests__/fixtures/countup-entry.json' );
+		$this->assertIsString( $count_up );
+		$this->assertEquals( json_decode( $count_up, true ), $blocks['kadence/countup'] );
+
+		$info_box = file_get_contents( KADENCE_BLOCKS_PATH . 'src/site-styles/__tests__/fixtures/infobox-entry.json' );
+		$this->assertIsString( $info_box );
+		$this->assertEquals( json_decode( $info_box, true ), $blocks['kadence/infobox'] );
+
+		$countdown = file_get_contents( KADENCE_BLOCKS_PATH . 'src/site-styles/__tests__/fixtures/countdown-entry.json' );
+		$this->assertIsString( $countdown );
+		$this->assertEquals( json_decode( $countdown, true ), $blocks['kadence/countdown'] );
+
+		$table = file_get_contents( KADENCE_BLOCKS_PATH . 'src/site-styles/__tests__/fixtures/table-entry.json' );
+		$this->assertIsString( $table );
+		$this->assertEquals( json_decode( $table, true ), $blocks['kadence/table'] );
+
+		$posts = file_get_contents( KADENCE_BLOCKS_PATH . 'src/site-styles/__tests__/fixtures/posts-entry.json' );
+		$this->assertIsString( $posts );
+		$this->assertEquals( json_decode( $posts, true ), $blocks['kadence/posts'] );
+
+		$progress_bar = file_get_contents( KADENCE_BLOCKS_PATH . 'src/site-styles/__tests__/fixtures/progress-bar-entry.json' );
+		$this->assertIsString( $progress_bar );
+		$this->assertEquals( json_decode( $progress_bar, true ), $blocks['kadence/progress-bar'] );
+
+		$testimonials = file_get_contents( KADENCE_BLOCKS_PATH . 'src/site-styles/__tests__/fixtures/testimonials-entry.json' );
+		$this->assertIsString( $testimonials );
+		$this->assertEquals( json_decode( $testimonials, true ), $blocks['kadence/testimonials'] );
+
+		$testimonial = file_get_contents( KADENCE_BLOCKS_PATH . 'src/site-styles/__tests__/fixtures/testimonial-entry.json' );
+		$this->assertIsString( $testimonial );
+		$this->assertEquals( json_decode( $testimonial, true ), $blocks['kadence/testimonial'] );
 	}
 
 	public function testClassicModeGivesFalseAndNoBlocks(): void {
@@ -71,7 +112,7 @@ final class SiteStylesEditorParamsTest extends WPTestCase {
 
 		// wp_localize_script() turns booleans into strings, like every flag in kadence_blocks_params.
 		$this->assertSame( '1', $params['isFseMode'] );
-		$this->assertEqualsCanonicalizing( [ 'kadence/advancedbtn', 'kadence/singlebtn', 'kadence/icon', 'kadence/single-icon', 'kadence/spacer', 'kadence/show-more', 'kadence/tableofcontents' ], $params['siteStylesBlocks'] );
+		$this->assertEqualsCanonicalizing( [ 'kadence/advancedbtn', 'kadence/singlebtn', 'kadence/icon', 'kadence/single-icon', 'kadence/spacer', 'kadence/show-more', 'kadence/column', 'kadence/rowlayout', 'kadence/countup', 'kadence/infobox', 'kadence/countdown', 'kadence/table', 'kadence/posts', 'kadence/progress-bar', 'kadence/testimonials', 'kadence/testimonial', 'kadence/tableofcontents' ], $params['siteStylesBlocks'] );
 	}
 
 	/**

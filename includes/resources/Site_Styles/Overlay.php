@@ -2,7 +2,9 @@
 
 namespace KadenceWP\KadenceBlocks\Site_Styles;
 
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Cascades_Site_Styles;
 use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Groups_Site_Styles;
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Legacy_Group_Attributes;
 use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Scopes_Site_Styles;
 
 /**
@@ -11,10 +13,11 @@ use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Scopes_Site_Styles;
  *
  * Precedence is decided per leaf: an instance leaf that differs from the
  * block's default wins, every other leaf takes the site value. Stored values
- * of attributes the block excludes are ignored. A block that
- * scopes its site styles gives each instance only the site values its style
- * takes, and a block that groups them gives a group the instance sets itself
- * none of the group's site values.
+ * of attributes the block excludes are ignored. A block that scopes its site
+ * styles gives each instance only the site values its style takes, a block
+ * that groups them gives a group the instance sets itself none of the group's
+ * site values, and a block that cascades them drops the site values an own
+ * value of the instance covers.
  *
  * @since TBD Merges only the values the block lists for the overlay (classes and editor inline styles). Core's global stylesheet renders the core keys, and `Site_Rules` the rest.
  */
@@ -113,9 +116,14 @@ final class Overlay {
 		}
 
 		$registered = Supported_Blocks::registered_defaults( $block_name );
-		/** This filter is documented in includes/blocks/class-kadence-blocks-abstract-block.php */
-		$filtered = apply_filters( 'kadence_blocks_block_default_attributes', $registered, $block_name );
-		$filtered = is_array( $filtered ) ? $filtered : $registered;
+		$filtered   = $registered;
+
+		// Only a value off its registered default can match a Block Defaults value, so the filter runs only for one.
+		if ( self::has_own_value( $attributes, $block->site_styles_overlay_attributes(), $registered ) ) {
+			/** This filter is documented in includes/blocks/class-kadence-blocks-abstract-block.php */
+			$filtered = apply_filters( 'kadence_blocks_block_default_attributes', $registered, $block_name );
+			$filtered = is_array( $filtered ) ? $filtered : $registered;
+		}
 
 		if ( $block instanceof Scopes_Site_Styles ) {
 			$scope_attribute = $block->site_styles_scope_attribute();
@@ -130,6 +138,10 @@ final class Overlay {
 			);
 		}
 
+		if ( ! $site ) {
+			return $attributes;
+		}
+
 		if ( $block instanceof Groups_Site_Styles ) {
 			$groups   = $block->site_styles_attribute_groups();
 			$defaults = [];
@@ -138,7 +150,23 @@ final class Overlay {
 				$defaults[ $name ] = self::default_value( $name, $attributes[ $name ] ?? null, $registered, $filtered );
 			}
 
-			$site = self::group( $site, $attributes, $groups, $defaults );
+			$legacy = $block instanceof Legacy_Group_Attributes ? $block->site_styles_legacy_group_attributes() : [];
+			// The head pass reads raw attributes, without the defaults an older attribute renders with.
+			$with_legacy_defaults = $legacy ? $attributes + array_intersect_key( $registered, array_flip( array_merge( ...array_values( $legacy ) ) ) ) : $attributes;
+			$site                 = self::group( $site, $with_legacy_defaults, $groups, $defaults, $legacy );
+		}
+
+		if ( $block instanceof Cascades_Site_Styles ) {
+			$cascades = $block->site_styles_cascades();
+			$defaults = [];
+
+			foreach ( $cascades as $cascade ) {
+				foreach ( array_merge( $cascade['values'], isset( $cascade['unit'] ) ? [ $cascade['unit'] ] : [] ) as $name ) {
+					$defaults[ $name ] = self::default_value( $name, $attributes[ $name ] ?? null, $registered, $filtered );
+				}
+			}
+
+			$site = self::without_overridden( $site, $attributes, $defaults, $cascades );
 		}
 
 		foreach ( $site as $name => $value ) {
@@ -147,6 +175,48 @@ final class Overlay {
 		}
 
 		return $attributes;
+	}
+
+	/**
+	 * Drops the site values an own value of the instance covers. An own value
+	 * holds for the narrower devices after it, as in CSS, so the site's value for
+	 * one of them must not replace it. Values are in one unit: when the instance
+	 * has an own value or an own unit in a cascade and its unit is not the site's,
+	 * no site value of the cascade is shown.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed>                                   $site       Attribute name => site value.
+	 * @param array<string, mixed>                                   $attributes The instance's attributes.
+	 * @param array<string, mixed>                                   $defaults   Attribute name => the default the instance's value is compared with.
+	 * @param array<int, array{unit?: string, values: list<string>}> $cascades   The attribute cascades.
+	 *
+	 * @return array<string, mixed> The site values the instance takes.
+	 */
+	public static function without_overridden( array $site, array $attributes, array $defaults, array $cascades ): array {
+		$is_own = static fn( string $name ): bool => null !== ( $attributes[ $name ] ?? null ) && $attributes[ $name ] !== ( $defaults[ $name ] ?? null );
+
+		foreach ( $cascades as $cascade ) {
+			$unit  = $cascade['unit'] ?? null;
+			$names = null === $unit ? $cascade['values'] : array_merge( $cascade['values'], [ $unit ] );
+
+			if ( null !== $unit && array_filter( $names, $is_own ) !== [] && ( $attributes[ $unit ] ?? $defaults[ $unit ] ?? null ) !== ( $site[ $unit ] ?? $defaults[ $unit ] ?? null ) ) {
+				$site = array_diff_key( $site, array_flip( $names ) );
+				continue;
+			}
+
+			$overridden = false;
+
+			foreach ( $cascade['values'] as $name ) {
+				if ( $overridden ) {
+					unset( $site[ $name ] );
+				}
+
+				$overridden = $overridden || $is_own( $name );
+			}
+		}
+
+		return $site;
 	}
 
 	/**
@@ -176,24 +246,23 @@ final class Overlay {
 	/**
 	 * Drops the site values of every group the instance sets itself. The
 	 * instance sets a group when it has a value other than the block's
-	 * default for any of the group's attributes, the same test `merge()` uses.
+	 * default for any of the group's attributes, the same test `merge()` uses,
+	 * or when an older attribute that stands in for the group holds a value.
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, mixed>     $site       Attribute name => site value.
-	 * @param array<string, mixed>     $attributes The instance's attributes.
-	 * @param array<int, list<string>> $groups     Groups of attribute names.
-	 * @param array<string, mixed>     $defaults   Attribute name => the block's default value.
+	 * @param array<string, mixed>        $site       Attribute name => site value.
+	 * @param array<string, mixed>        $attributes The instance's attributes.
+	 * @param array<int, list<string>>    $groups     Groups of attribute names.
+	 * @param array<string, mixed>        $defaults   Attribute name => the block's default value.
+	 * @param array<string, list<string>> $legacy     First attribute of a group => older attributes that stand in for it.
 	 *
 	 * @return array<string, mixed> The site values the instance takes.
 	 */
-	public static function group( array $site, array $attributes, array $groups, array $defaults ): array {
+	public static function group( array $site, array $attributes, array $groups, array $defaults, array $legacy = [] ): array {
 		foreach ( $groups as $group ) {
-			foreach ( $group as $name ) {
-				if ( isset( $attributes[ $name ] ) && $attributes[ $name ] !== ( $defaults[ $name ] ?? null ) ) {
-					$site = array_diff_key( $site, array_flip( $group ) );
-					break;
-				}
+			if ( self::sets_group( $attributes, $group, $defaults, $legacy[ $group[0] ] ?? [] ) ) {
+				$site = array_diff_key( $site, array_flip( $group ) );
 			}
 		}
 
@@ -241,5 +310,79 @@ final class Overlay {
 	 */
 	private static function default_value( string $name, $instance, array $registered, array $filtered ) {
 		return ( array_key_exists( $name, $filtered ) && $instance === $filtered[ $name ] ) ? $instance : ( $registered[ $name ] ?? null );
+	}
+
+	/**
+	 * Whether the instance sets a group: a value other than the default for
+	 * any of its attributes, or a value in any older attribute standing in for it.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $attributes The instance's attributes.
+	 * @param array<int, string>   $group      The group's attribute names.
+	 * @param array<string, mixed> $defaults   Attribute name => the block's default value.
+	 * @param array<int, string>   $legacy     Older attributes that stand in for the group.
+	 *
+	 * @return bool
+	 */
+	private static function sets_group( array $attributes, array $group, array $defaults, array $legacy ): bool {
+		foreach ( $group as $name ) {
+			if ( isset( $attributes[ $name ] ) && $attributes[ $name ] !== ( $defaults[ $name ] ?? null ) ) {
+				return true;
+			}
+		}
+
+		foreach ( $legacy as $name ) {
+			if ( isset( $attributes[ $name ] ) && self::holds_value( $attributes[ $name ] ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Whether a value holds a number or a string that isn't empty, anywhere in it.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $value The value.
+	 *
+	 * @return bool
+	 */
+	private static function holds_value( $value ): bool {
+		if ( is_array( $value ) ) {
+			foreach ( $value as $leaf ) {
+				if ( self::holds_value( $leaf ) ) {
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		return is_int( $value ) || is_float( $value ) || ( is_string( $value ) && '' !== $value );
+	}
+
+	/**
+	 * Whether the instance has any of the attributes set to a value other than
+	 * its registered default.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $attributes The instance's attributes.
+	 * @param string[]             $names      Attribute names.
+	 * @param array<string, mixed> $registered Attribute name => the default the block registers.
+	 *
+	 * @return bool
+	 */
+	private static function has_own_value( array $attributes, array $names, array $registered ): bool {
+		foreach ( $names as $name ) {
+			if ( isset( $attributes[ $name ] ) && $attributes[ $name ] !== ( $registered[ $name ] ?? null ) ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }

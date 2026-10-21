@@ -25,6 +25,15 @@ final class Store {
 	private Supported_Blocks $blocks;
 
 	/**
+	 * The last user Global Styles read, and the key it was read under.
+	 *
+	 * @since TBD
+	 *
+	 * @var array{key: string, data: array<string, mixed>}|null
+	 */
+	private ?array $user_data = null;
+
+	/**
 	 * @since TBD
 	 *
 	 * @param Supported_Blocks $blocks The supported blocks.
@@ -102,17 +111,27 @@ final class Store {
 	}
 
 	/**
+	 * Reads the user Global Styles once per site, theme and change to posts or
+	 * terms, since every supported block instance on a page asks for them.
+	 *
 	 * @return array<string, mixed> The decoded user Global Styles post, empty when there is none.
 	 */
 	private function user_data(): array {
-		$post = WP_Theme_JSON_Resolver::get_user_data_from_wp_global_styles( wp_get_theme() );
+		$key = implode( '|', [ get_current_blog_id(), get_stylesheet(), wp_cache_get_last_changed( 'posts' ), wp_cache_get_last_changed( 'terms' ) ] );
 
-		if ( empty( $post['post_content'] ) ) {
-			return [];
+		if ( null !== $this->user_data && $key === $this->user_data['key'] ) {
+			return $this->user_data['data'];
 		}
 
-		$data = json_decode( $post['post_content'], true );
+		$post = WP_Theme_JSON_Resolver::get_user_data_from_wp_global_styles( wp_get_theme() );
+		$data = empty( $post['post_content'] ) ? null : json_decode( $post['post_content'], true );
+		$data = is_array( $data ) ? $data : [];
 
-		return is_array( $data ) ? $data : [];
+		$this->user_data = [
+			'key'  => $key,
+			'data' => $data,
+		];
+
+		return $data;
 	}
 }

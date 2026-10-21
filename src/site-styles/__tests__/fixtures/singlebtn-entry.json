@@ -36,7 +36,23 @@
 		"iconPadding",
 		"tabletIconPadding",
 		"mobileIconPadding",
-		"iconPaddingUnit"
+		"iconPaddingUnit",
+		"displayShadow",
+		"shadow",
+		"displayHoverShadow",
+		"shadowHover",
+		"paddingUnit",
+		"padding",
+		"tabletPadding",
+		"mobilePadding",
+		"marginUnit",
+		"margin",
+		"tabletMargin",
+		"mobileMargin"
+	],
+	"cascades": [
+		{ "unit": "paddingUnit", "values": ["padding", "tabletPadding", "mobilePadding"] },
+		{ "unit": "marginUnit", "values": ["margin", "tabletMargin", "mobileMargin"] }
 	],
 	"attributesMap": { "background": "color.background", "color": "color.text" },
 	"supports": {

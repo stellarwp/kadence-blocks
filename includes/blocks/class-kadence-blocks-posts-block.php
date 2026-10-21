@@ -10,12 +10,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Groups_Site_Styles;
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Supports_Site_Styles;
+
 /**
  * Class to Build the Posts Block.
  *
  * @category class
  */
-class Kadence_Blocks_Posts_Block extends Kadence_Blocks_Abstract_Block {
+class Kadence_Blocks_Posts_Block extends Kadence_Blocks_Abstract_Block implements Supports_Site_Styles, Groups_Site_Styles {
 
 	/**
 	 * Instance of this class
@@ -360,6 +363,60 @@ class Kadence_Blocks_Posts_Block extends Kadence_Blocks_Abstract_Block {
 				}
 			}
 		}
+	}
+
+	/**
+	 * The editor and the post templates paint every Posts look value, and the
+	 * instance rules and classes outrank core's, so every site value goes
+	 * through the overlay.
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_overlay_attributes(): array {
+		return array_merge( array_merge( ...$this->site_styles_attribute_groups() ), [ 'loopStyle' ] );
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_attributes_map(): array {
+		return [];
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_supports(): array {
+		return [];
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_selectors(): array {
+		return [];
+	}
+
+	/**
+	 * The columns keep their tablet count and image position, the title font is
+	 * kept whole, the image ratio keeps its size, and the category style keeps
+	 * its divider and colors.
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_attribute_groups(): array {
+		return [
+			[ 'columns', 'tabletColumns', 'alignImage' ],
+			[ 'titleFont' ],
+			[ 'imageRatio', 'imageSize' ],
+			[ 'categoriesStyle', 'categoriesDivider', 'customKadenceArchiveColors' ],
+		];
 	}
 }
 

@@ -12,12 +12,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Legacy_Group_Attributes;
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Supports_Site_Styles;
+
 /**
  * Class to Build the RowLayout Block.
  *
  * @category class
  */
-class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
+class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block implements Supports_Site_Styles, Legacy_Group_Attributes {
 	/**
 	 * Instance of this class
 	 *
@@ -1901,6 +1904,80 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 				),
 			)
 		);
+	}
+
+	/**
+	 * The editor paints every Row Layout value itself, inline or in its own
+	 * style tag, the column gutters feed the custom column widths, and the
+	 * background color adds a class, so every site value goes through the
+	 * overlay.
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_overlay_attributes(): array {
+		return array_merge( array_merge( ...$this->site_styles_attribute_groups() ), [ 'bgColor', 'textColor', 'linkColor', 'linkHoverColor' ] );
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_attributes_map(): array {
+		return [];
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_supports(): array {
+		return [];
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_selectors(): array {
+		return [];
+	}
+
+	/**
+	 * Each spacing, gutter and max width takes its unit and its tablet and
+	 * mobile values with it, the radius takes its overflow, and the shadow its
+	 * toggle.
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_attribute_groups(): array {
+		return [
+			[ 'padding', 'tabletPadding', 'mobilePadding', 'paddingUnit' ],
+			[ 'margin', 'tabletMargin', 'mobileMargin', 'marginUnit' ],
+			[ 'columnGutter', 'tabletGutter', 'mobileGutter', 'customGutter', 'gutterType' ],
+			[ 'collapseGutter', 'tabletRowGutter', 'mobileRowGutter', 'customRowGutter', 'rowGutterType' ],
+			[ 'maxWidth', 'responsiveMaxWidth', 'maxWidthUnit' ],
+			[ 'borderStyle', 'tabletBorderStyle', 'mobileBorderStyle' ],
+			[ 'borderRadius', 'tabletBorderRadius', 'mobileBorderRadius', 'borderRadiusUnit', 'borderRadiusOverflow' ],
+			[ 'displayBoxShadow', 'boxShadow' ],
+		];
+	}
+
+	/**
+	 * Rows saved before the padding, margin and border arrays carry separate
+	 * side numbers and the old border colors and widths, which build_css()
+	 * renders instead of the padding, margin and border.
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_legacy_group_attributes(): array {
+		return [
+			'padding'     => [ 'topPadding', 'rightPadding', 'bottomPadding', 'leftPadding', 'topPaddingM', 'rightPaddingM', 'bottomPaddingM', 'leftPaddingM' ],
+			'margin'      => [ 'topMargin', 'bottomMargin', 'topMarginT', 'bottomMarginT', 'topMarginM', 'bottomMarginM' ],
+			'borderStyle' => [ 'border', 'tabletBorder', 'mobileBorder', 'borderWidth', 'tabletBorderWidth', 'mobileBorderWidth' ],
+		];
 	}
 
 	/**

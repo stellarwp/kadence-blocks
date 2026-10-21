@@ -80,6 +80,49 @@ final class UserGlobalStyles extends Module {
 	}
 
 	/**
+	 * Stores site values for the Single Button's padding, margin, shadow and hover shadow: the
+	 * settings that sit behind the design token preset's variables.
+	 *
+	 * @return array{padding: list<int>, mobilePadding: list<int>, margin: list<int>, mobileMargin: list<int>, displayShadow: bool, shadow: list<array<string, mixed>>, displayHoverShadow: bool, shadowHover: list<array<string, mixed>>} The stored values, by attribute.
+	 */
+	public function store_single_button_box_values(): array {
+		$values = [
+			'padding'            => [ 20, 40, 20, 40 ],
+			'mobilePadding'      => [ 6, 12, 6, 12 ],
+			'margin'             => [ 10, 12, 10, 12 ],
+			'mobileMargin'       => [ 4, 6, 4, 6 ],
+			'displayShadow'      => true,
+			'shadow'             => [
+				[
+					'color'   => '#000000',
+					'opacity' => 0.5,
+					'spread'  => 0,
+					'blur'    => 10,
+					'hOffset' => 4,
+					'vOffset' => 4,
+					'inset'   => false,
+				],
+			],
+			'displayHoverShadow' => true,
+			'shadowHover'        => [
+				[
+					'color'   => '#ff0000',
+					'opacity' => 1,
+					'spread'  => 0,
+					'blur'    => 8,
+					'hOffset' => 0,
+					'vOffset' => 4,
+					'inset'   => false,
+				],
+			],
+		];
+
+		$this->store_user_global_styles( [ 'settings' => [ 'custom' => [ 'kadence' => [ 'singlebtn' => $values ] ] ] ] );
+
+		return $values;
+	}
+
+	/**
 	 * @return int An administrator's user ID, created when the site has none.
 	 */
 	private function administrator_id(): int {

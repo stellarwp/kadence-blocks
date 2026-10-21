@@ -13,14 +13,22 @@ import { useRegistry } from '@wordpress/data';
 import { useCallback, useMemo } from '@wordpress/element';
 import { pick } from 'lodash';
 import { getSupportedBlock, isFseMode } from './supported-blocks';
-import { groupSiteAttributes, guardWrite, mergeAttributes, scopeSiteAttributes, siteAttributes } from './store';
+import {
+	groupSiteAttributes,
+	guardWrite,
+	mergeAttributes,
+	scopeSiteAttributes,
+	siteAttributes,
+	withoutOverridden,
+} from './store';
 import { scopeStyle } from './scope-style';
 import { useGlobalStylesRecord } from './use-global-styles-record';
 import { isVirtualBlock } from './virtual-blocks';
 
 /**
  * The site values an instance takes: the overlay values in the record, scoped
- * by the instance's style and without the groups it sets itself.
+ * by the instance's style and without the groups it sets itself and the
+ * values its own ones cover.
  *
  * @param {Object}            record     The edited Global Styles record.
  * @param {string}            name       Block name.
@@ -31,7 +39,7 @@ import { isVirtualBlock } from './virtual-blocks';
  * @return {Object<string, *>} Attribute name => site value.
  */
 function instanceSiteAttributes(record, name, attributes) {
-	const { scope, overlay, groups } = getSupportedBlock(name);
+	const { scope, overlay, groups, legacyGroups, cascades } = getSupportedBlock(name);
 	const definitions = getBlockType(name)?.attributes || {};
 	let values = pick(siteAttributes(record, name), overlay);
 
@@ -44,7 +52,11 @@ function instanceSiteAttributes(record, name, attributes) {
 		);
 	}
 
-	return groups ? groupSiteAttributes(values, attributes, groups, definitions) : values;
+	if (groups) {
+		values = groupSiteAttributes(values, attributes, groups, definitions, legacyGroups);
+	}
+
+	return cascades ? withoutOverridden(values, attributes, definitions, cascades) : values;
 }
 
 /**
@@ -71,7 +83,8 @@ function SiteStylesBlockEdit({ BlockEdit, ...props }) {
 			const storedSite = stored === attributes ? site : instanceSiteAttributes(record, name, stored);
 			const storedShown = stored === attributes ? shown : mergeAttributes(stored, storedSite, definitions);
 			const next = typeof written === 'function' ? written(storedShown) : written;
-			const kept = guardWrite(next, storedShown, stored, storedSite, getSupportedBlock(name).groups, definitions);
+			const { groups, legacyGroups, cascades } = getSupportedBlock(name);
+			const kept = guardWrite(next, storedShown, stored, storedSite, groups, definitions, legacyGroups, cascades);
 
 			if (Object.keys(kept).length) {
 				setAttributes(kept);
