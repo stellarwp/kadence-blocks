@@ -3,6 +3,7 @@
 namespace KadenceWP\KadenceBlocks\Site_Styles;
 
 use Kadence_Blocks_Advancedbtn_Block;
+use Kadence_Blocks_Advancedheading_Block;
 use Kadence_Blocks_Column_Block;
 use Kadence_Blocks_Countdown_Block;
 use Kadence_Blocks_Countup_Block;
@@ -55,6 +56,7 @@ final class Site_Styles_Provider extends Provider {
 						Kadence_Blocks_Testimonials_Block::get_instance(),
 						Kadence_Blocks_Testimonial_Block::get_instance(),
 						Kadence_Blocks_Tableofcontents_Block::get_instance(),
+						Kadence_Blocks_Advancedheading_Block::get_instance(),
 					]
 				);
 			}

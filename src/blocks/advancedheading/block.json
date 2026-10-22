@@ -14,7 +14,8 @@
 		},
 		"level": {
 			"type": "number",
-			"default": 2
+			"default": 2,
+			"__experimentalRole": "content"
 		},
 		"uniqueID": {
 			"type": "string"
@@ -315,7 +316,8 @@
 			"type": "string"
 		},
 		"colorClass": {
-			"type": "string"
+			"type": "string",
+			"__experimentalRole": "content"
 		},
 		"tabletAlign": {
 			"type": "string"
@@ -378,32 +380,38 @@
 		},
 		"htmlTag": {
 			"type": "string",
-			"default": "heading"
+			"default": "heading",
+			"__experimentalRole": "content"
 		},
 		"loadItalic": {
 			"type": "boolean",
 			"default": false
 		},
 		"link": {
-			"type": "string"
+			"type": "string",
+			"__experimentalRole": "content"
 		},
 		"linkTarget": {
 			"type": "boolean",
-			"default": false
+			"default": false,
+			"__experimentalRole": "content"
 		},
 		"linkNoFollow": {
 			"type": "boolean",
-			"default": false
+			"default": false,
+			"__experimentalRole": "content"
 		},
 		"linkSponsored": {
 			"type": "boolean",
-			"default": false
+			"default": false,
+			"__experimentalRole": "content"
 		},
 		"background": {
 			"type": "string"
 		},
 		"backgroundColorClass": {
-			"type": "string"
+			"type": "string",
+			"__experimentalRole": "content"
 		},
 		"linkStyle": {
 			"type": "string"
@@ -448,7 +456,8 @@
 		},
 		"icon": {
 			"type": "string",
-			"default": ""
+			"default": "",
+			"__experimentalRole": "content"
 		},
 		"iconColor": {
 			"type": "string",
@@ -548,7 +557,8 @@
 		},
 		"iconTitle": {
 			"type": "string",
-			"default": ""
+			"default": "",
+			"__experimentalRole": "content"
 		},
 		"markBorderRadius": {
 			"type": "array",
@@ -568,19 +578,23 @@
 		},
 		"altTitle": {
 			"type": "string",
-			"default": ""
+			"default": "",
+			"__experimentalRole": "content"
 		},
 		"iconTooltip": {
 			"type": "string",
-			"default": ""
+			"default": "",
+			"__experimentalRole": "content"
 		},
 		"iconTooltipPlacement": {
 			"type": "string",
-			"default": ""
+			"default": "",
+			"__experimentalRole": "content"
 		},
 		"iconTooltipDash": {
 			"type": "boolean",
-			"default": false
+			"default": false,
+			"__experimentalRole": "content"
 		},
 		"enableTextGradient": {
 			"type": "boolean",
