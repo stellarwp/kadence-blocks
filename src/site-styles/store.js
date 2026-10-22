@@ -314,9 +314,10 @@ export function groupSiteAttributes(site, attributes, groups, definitions, legac
 /**
  * Drops the site values an own value of the instance covers. An own value holds
  * for the narrower devices after it, as in CSS, so the site's value for one of
- * them must not replace it. Values are in one unit: when the instance has an own
- * value or an own unit in a cascade and its unit is not the site's, no site value
- * of the cascade is shown.
+ * them must not replace it. A value with sides is covered side by side: only the
+ * sides the instance sets are dropped, and the site's other sides still show.
+ * Values are in one unit: when the instance has an own value or an own unit in a
+ * cascade and its unit is not the site's, no site value of the cascade is shown.
  *
  * @param {Attributes}                    site        The site values.
  * @param {Attributes}                    attributes  The instance's attributes.
@@ -345,18 +346,55 @@ export function withoutOverridden(site, attributes, definitions, cascades = []) 
 			return;
 		}
 
-		let overridden = false;
+		// The sides set on a wider device; `true` when an own value without sides covers all of them.
+		let covered = new Set();
 
 		values.forEach((name) => {
-			if (overridden) {
-				delete kept[name];
+			if (name in kept && (covered === true || covered.size)) {
+				kept = withoutCoveredSides(kept, name, covered, definitions[name]?.default);
 			}
 
-			overridden = overridden || isOwn(name);
+			if (covered !== true && isOwn(name)) {
+				const own = attributes[name];
+
+				covered = isObjectLike(own)
+					? new Set([...covered, ...Object.keys(own).filter((key) => holdsValue(own[key]))])
+					: true;
+			}
 		});
 	});
 
 	return kept;
+}
+
+/**
+ * Blanks the covered sides of one site value, and drops it when no side is left.
+ *
+ * @param {Attributes}       site         The site values.
+ * @param {string}           name         The attribute name.
+ * @param {Set<string>|true} covered      The covered sides, or `true` for all of them.
+ * @param {*}                defaultValue The attribute's default, whose sides blank the covered ones.
+ *
+ * @since TBD
+ *
+ * @return {Attributes} The site values without the covered sides.
+ */
+function withoutCoveredSides(site, name, covered, defaultValue) {
+	const value = site[name];
+
+	if (covered === true || !isObjectLike(value)) {
+		return omit(site, name);
+	}
+
+	const sides = Array.isArray(value) ? [...value] : { ...value };
+
+	covered.forEach((key) => {
+		if (key in sides) {
+			sides[key] = isObjectLike(defaultValue) && key in defaultValue ? defaultValue[key] : '';
+		}
+	});
+
+	return holdsValue(sides) ? { ...site, [name]: sides } : omit(site, name);
 }
 
 /**
@@ -409,13 +447,17 @@ export function unmerge(next, shown, stored) {
  * Filters a write from a block shown with site values merged in, so no site
  * value is stored in the instance: for each written attribute that has a site
  * value, only the changed leaves are kept, and an unchanged attribute is
- * dropped. The values of a cascade keep the unit they were shown in, so a value
- * the user changes while the site's unit is shown is stored with that unit.
+ * dropped.
  *
- * A write that starts the instance setting one of its block's groups is the
- * exception. The group then takes no site values, so the whole group is
- * stored as shown, with the written values, and the block keeps looking as it
- * did apart from the change.
+ * A write that starts the instance setting one of its block's groups or
+ * cascades is the exception. The whole group or cascade, with a cascade's
+ * unit, is then stored as shown, with the written values, so the block keeps
+ * looking as it did apart from the change and later site changes don't reach
+ * it. A side the write changes holds for the narrower devices, as an own value
+ * does, so their copy leaves it out. Values are in one unit, so a cascade that
+ * took the site's other sides could not follow a site in another unit. Picking
+ * a unit other than the one shown starts a cascade too, even the block's default
+ * unit, which on its own would store nothing.
  *
  * @param {Attributes}                    written       The attributes being written.
  * @param {Attributes}                    shown         The attributes the block was shown.
@@ -461,6 +503,31 @@ export function guardWrite(written, shown, stored, site, groups = [], definition
 	});
 
 	cascades.forEach(({ unit, values }) => {
+		const names = unit ? [...values, unit] : values;
+		/*
+		 * A unit other than the one shown was picked. `setsGroup` ignores a value equal to the block's
+		 * default, so a pick of the default unit is tested on its own.
+		 */
+		const picksUnit = Boolean(unit) && unit in written && !isEqual(written[unit], shown[unit]);
+
+		if (
+			!setsGroup(stored, names, definitions) &&
+			(picksUnit || setsGroup({ ...stored, ...kept }, names, definitions))
+		) {
+			// The sides just changed hold for the narrower devices, so the copy of those leaves them out.
+			const copied = withoutOverridden(pick(shown, values), pick(kept, values), definitions, [{ values }]);
+
+			names.forEach((name) => {
+				const value = name in written ? written[name] : copiedValue(name, unit, shown, copied, stored);
+
+				if (!isEqual(value, stored[name])) {
+					kept[name] = value;
+				}
+			});
+
+			return;
+		}
+
 		const unitShown = shown[unit] !== undefined && !isEqual(shown[unit], stored[unit]);
 		const changed = values.some((name) => name in kept && !isEqual(kept[name], stored[name]));
 
@@ -468,8 +535,7 @@ export function guardWrite(written, shown, stored, site, groups = [], definition
 			return;
 		}
 
-		// A unit written with the values that differs from the one shown was picked, even when it is the stored one.
-		if (unit in written && !isEqual(written[unit], shown[unit])) {
+		if (picksUnit) {
 			kept[unit] = written[unit];
 		} else if (unitShown) {
 			kept[unit] = shown[unit];
@@ -477,6 +543,28 @@ export function guardWrite(written, shown, stored, site, groups = [], definition
 	});
 
 	return kept;
+}
+
+/**
+ * The value a cascade's first write copies for an attribute it doesn't write:
+ * the unit as shown, or a value as shown without the sides the write covers.
+ *
+ * @param {string}     name   The attribute name.
+ * @param {string}     unit   The cascade's unit attribute, if any.
+ * @param {Attributes} shown  The attributes the block was shown.
+ * @param {Attributes} copied The cascade's shown values without the covered sides.
+ * @param {Attributes} stored The instance's stored attributes.
+ *
+ * @since TBD
+ *
+ * @return {*} The value to store.
+ */
+function copiedValue(name, unit, shown, copied, stored) {
+	if (name === unit) {
+		return shown[name];
+	}
+
+	return name in copied ? copied[name] : stored[name];
 }
 
 /**

@@ -42,10 +42,34 @@
 			"expected": { "padding": [20, 40, 20, 40] }
 		},
 		{
-			"name": "an own tablet value keeps the desktop site value and drops the mobile one",
+			"name": "an own desktop side drops only that side of the tablet and mobile site values",
+			"site": { "padding": [20, 40, 20, 40], "tabletPadding": [10, 20, 10, 20], "mobilePadding": [6, 12, 6, 12] },
+			"instance": { "padding": [30, "", "", ""] },
+			"expected": {
+				"padding": [20, 40, 20, 40],
+				"tabletPadding": ["", 20, 10, 20],
+				"mobilePadding": ["", 12, 6, 12]
+			}
+		},
+		{
+			"name": "an own tablet side keeps the desktop site value and drops that side of the mobile one",
 			"site": { "padding": [20, 40, 20, 40], "tabletPadding": [10, 20, 10, 20], "mobilePadding": [6, 12, 6, 12] },
 			"instance": { "tabletPadding": [30, "", "", ""] },
-			"expected": { "padding": [20, 40, 20, 40], "tabletPadding": [10, 20, 10, 20] }
+			"expected": {
+				"padding": [20, 40, 20, 40],
+				"tabletPadding": [10, 20, 10, 20],
+				"mobilePadding": ["", 12, 6, 12]
+			}
+		},
+		{
+			"name": "own sides on two devices drop the sides they cover from the narrower site values",
+			"site": { "padding": [20, 40, 20, 40], "tabletPadding": [10, 20, 10, 20], "mobilePadding": [6, 12, 6, 12] },
+			"instance": { "padding": [30, "", "", ""], "tabletPadding": ["", 50, "", ""] },
+			"expected": {
+				"padding": [20, 40, 20, 40],
+				"tabletPadding": ["", 20, 10, 20],
+				"mobilePadding": ["", "", 6, 12]
+			}
 		},
 		{
 			"name": "an own mobile value keeps the desktop and tablet site values",
@@ -58,10 +82,14 @@
 			}
 		},
 		{
-			"name": "an own tablet and mobile value together drop only the mobile site value",
+			"name": "an own tablet and mobile value together drop only the mobile site side the tablet value covers",
 			"site": { "padding": [20, 40, 20, 40], "tabletPadding": [10, 20, 10, 20], "mobilePadding": [6, 12, 6, 12] },
 			"instance": { "tabletPadding": [30, "", "", ""], "mobilePadding": [20, "", "", ""] },
-			"expected": { "padding": [20, 40, 20, 40], "tabletPadding": [10, 20, 10, 20] }
+			"expected": {
+				"padding": [20, 40, 20, 40],
+				"tabletPadding": [10, 20, 10, 20],
+				"mobilePadding": ["", 12, 6, 12]
+			}
 		},
 		{
 			"name": "an own desktop value in another unit than the site's drops every site value of the group",
