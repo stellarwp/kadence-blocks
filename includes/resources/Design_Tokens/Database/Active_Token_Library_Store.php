@@ -144,7 +144,8 @@ final class Active_Token_Library_Store {
 	 * Whether a slug names a readable token library.
 	 *
 	 * The default library is always known — it renders from baseline even before it has a row — and any
-	 * other slug is known once it has a stored row. Mirrors Documents_Controller's read gate.
+	 * other slug is known once it has a stored row. Mirrors Documents_Controller's read gate. An empty
+	 * slug (the pointer was never set) can never have a row, so it is answered without a query.
 	 *
 	 * @since 3.8.0
 	 *
@@ -153,6 +154,10 @@ final class Active_Token_Library_Store {
 	 * @return bool
 	 */
 	private function is_known( string $slug ): bool {
+		if ( $slug === '' ) {
+			return false;
+		}
+
 		return $slug === Token_Store::default_slug() || $this->store->exists( $slug );
 	}
 

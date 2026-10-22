@@ -1,0 +1,4 @@
+significance: patch
+type: fix
+entry: Design tokens no longer query the database on every lookup; each token library is read once per request, including when none is saved.
+timestamp: 2026-10-20T02:11:50.000Z
