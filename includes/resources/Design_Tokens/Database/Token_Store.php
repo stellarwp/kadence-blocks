@@ -57,6 +57,16 @@ final class Token_Store extends Query {
 	private const DEFAULT_SLUG = 'default';
 
 	/**
+	 * @var string Non-persistent object cache group for rows read in this request. A library with no
+	 *             row is cached too, so a site that never saved a library reads the table once per slug
+	 *             instead of once per lookup. Being an object cache group keeps it per site on multisite
+	 *             and lets WordPress flush it; every write drops the slug it touched before signalling.
+	 *
+	 * @since 3.8.1
+	 */
+	private const ROW_CACHE_GROUP = 'kb_design_tokens_rows';
+
+	/**
 	 * The action hook that fires after any write, for callers that need to react to changes.
 	 *
 	 * @since 3.8.0
@@ -134,15 +144,13 @@ final class Token_Store extends Query {
 	 *                (caller should then render entirely from baseline).
 	 */
 	public function get_document( string $slug = self::DEFAULT_SLUG ): string {
-		$row = $this->qb()
-					->where( 'slug', $slug )
-					->get( ARRAY_A );
+		$row = $this->row( $slug );
 
-		if ( ! is_array( $row ) ) {
+		if ( $row === null ) {
 			return '';
 		}
 
-		return (string) ( $row['document'] ?? '' );
+		return Cast::to_string( $row['document'] ?? '' );
 	}
 
 	/**
@@ -185,15 +193,13 @@ final class Token_Store extends Query {
 	 *                exists (i.e. the library renders from baseline).
 	 */
 	public function get_version( string $slug = self::DEFAULT_SLUG ): string {
-		$row = $this->qb()
-					->where( 'slug', $slug )
-					->get( ARRAY_A );
+		$row = $this->row( $slug );
 
-		if ( ! is_array( $row ) ) {
+		if ( $row === null ) {
 			return '';
 		}
 
-		return (string) ( $row['version'] ?? '' );
+		return Cast::to_string( $row['version'] ?? '' );
 	}
 
 	/**
@@ -206,15 +212,13 @@ final class Token_Store extends Query {
 	 * @return string The stored title, or an empty string when no row exists or none was ever set.
 	 */
 	public function get_title( string $slug = self::DEFAULT_SLUG ): string {
-		$row = $this->qb()
-					->where( 'slug', $slug )
-					->get( ARRAY_A );
+		$row = $this->row( $slug );
 
-		if ( ! is_array( $row ) ) {
+		if ( $row === null ) {
 			return '';
 		}
 
-		return (string) ( $row['title'] ?? '' );
+		return Cast::to_string( $row['title'] ?? '' );
 	}
 
 	/**
@@ -249,6 +253,7 @@ final class Token_Store extends Query {
 		// slug then makes the loser throw DatabaseQueryException. Fine for
 		// admin-driven single-library saves in v1; revisit if writes become concurrent.
 		$this->qb()->upsert( $data, [ 'slug' ] );
+		$this->forget_row( $slug );
 
 		// Everything below is reached only on a successful write — a failed upsert
 		// throws above, so nothing is archived and no change is signalled for a
@@ -302,8 +307,12 @@ final class Token_Store extends Query {
 				$this->qb()->insert( $data );
 			} catch ( DatabaseQueryException $e ) {
 				// Duplicate-key on concurrent first write → conflict, not 500.
+				$this->forget_row( $slug );
+
 				return false;
 			}
+
+			$this->forget_row( $slug );
 
 			$this->changed( $slug );
 
@@ -322,6 +331,8 @@ final class Token_Store extends Query {
 						->where( 'slug', $slug )
 						->where( 'version', $expected_version )
 						->update( $data );
+
+		$this->forget_row( $slug );
 
 		// Zero affected rows means the version changed concurrently.
 		if ( (int) $affected === 0 ) {
@@ -379,8 +390,12 @@ final class Token_Store extends Query {
 			} catch ( DatabaseQueryException $e ) {
 				// Duplicate-key on a concurrent first write → the row now exists and carries someone
 				// else's title; report the miss rather than a fatal.
+				$this->forget_row( $slug );
+
 				return false;
 			}
+
+			$this->forget_row( $slug );
 
 			return true;
 		}
@@ -393,6 +408,8 @@ final class Token_Store extends Query {
 					'updated_at' => current_time( 'mysql', true ),
 				]
 			);
+
+		$this->forget_row( $slug );
 
 		// Deliberately not gated on the affected-row count: MySQL reports zero rows affected when an
 		// UPDATE sets a column to the value it already holds, which is a no-op, not a failure. A real
@@ -439,6 +456,8 @@ final class Token_Store extends Query {
 						->where( 'version', $expected_version )
 						->delete();
 
+		$this->forget_row( $slug );
+
 		// Zero affected rows means the version changed concurrently.
 		if ( (int) $affected === 0 ) {
 			return false;
@@ -481,6 +500,8 @@ final class Token_Store extends Query {
 					'updated_at' => current_time( 'mysql', true ),
 				]
 			);
+
+		$this->forget_row( $slug );
 
 		// Reached only on a successful write — a failed write throws above.
 		$this->changed( $slug );
@@ -530,11 +551,7 @@ final class Token_Store extends Query {
 	 * @return bool
 	 */
 	public function exists( string $slug ): bool {
-		return is_array(
-			$this->qb()
-				->where( 'slug', $slug )
-				->get( ARRAY_A )
-		);
+		return $this->row( $slug ) !== null;
 	}
 
 	/**
@@ -575,8 +592,81 @@ final class Token_Store extends Query {
 			->where( 'slug', $slug )
 			->delete();
 
+		$this->forget_row( $slug );
+
 		// Reached only on a successful delete — a failed delete throws above.
 		$this->deleted( $slug );
+	}
+
+	/**
+	 * A library's row, read from the table once per request.
+	 *
+	 * The write paths keep reading the table directly: they compare against what is stored right now,
+	 * not what this request saw earlier.
+	 *
+	 * An object cache drop-in that does not define wp_cache_add_non_persistent_groups() (core guards
+	 * the same call in wp_start_object_cache()) could keep the group across requests, so without it
+	 * every read goes to the table, as before 3.8.1.
+	 *
+	 * @since 3.8.1
+	 *
+	 * @param string $slug The token library slug.
+	 *
+	 * @return array<string, mixed>|null The row, or null when the library has none.
+	 */
+	private function row( string $slug ): ?array {
+		$can_cache = function_exists( 'wp_cache_add_non_persistent_groups' );
+
+		if ( $can_cache ) {
+			wp_cache_add_non_persistent_groups( [ self::ROW_CACHE_GROUP ] );
+
+			$found  = false;
+			$cached = wp_cache_get( $this->row_cache_key( $slug ), self::ROW_CACHE_GROUP, false, $found );
+
+			if ( $found && is_array( $cached ) && array_key_exists( 'row', $cached ) ) {
+				return is_array( $cached['row'] ) ? $cached['row'] : null;
+			}
+		}
+
+		$row = $this->qb()
+					->where( 'slug', $slug )
+					->get( ARRAY_A );
+
+		$row = is_array( $row ) ? $row : null;
+
+		if ( $can_cache ) {
+			// Wrapped, so a missing row is a cache hit rather than the false a miss returns.
+			wp_cache_set( $this->row_cache_key( $slug ), [ 'row' => $row ], self::ROW_CACHE_GROUP );
+		}
+
+		return $row;
+	}
+
+	/**
+	 * Drop a library's remembered row after a write, so the next read sees the table.
+	 *
+	 * @since 3.8.1
+	 *
+	 * @param string $slug The token library slug that was written.
+	 *
+	 * @return void
+	 */
+	private function forget_row( string $slug ): void {
+		wp_cache_delete( $this->row_cache_key( $slug ), self::ROW_CACHE_GROUP );
+	}
+
+	/**
+	 * The row cache key for a slug. The table is part of it, so two stores on different tables never
+	 * share an entry.
+	 *
+	 * @since 3.8.1
+	 *
+	 * @param string $slug The token library slug.
+	 *
+	 * @return string
+	 */
+	private function row_cache_key( string $slug ): string {
+		return $this->table . ':' . $slug;
 	}
 
 	/**
