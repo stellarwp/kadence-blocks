@@ -154,6 +154,13 @@
 
 			return futureDate.getTime();
 		},
+		/**
+		 * Decode a string that may contain markup into plain text.
+		 *
+		 * @param {string} html The string to convert.
+		 *
+		 * @return {string} The decoded plain text.
+		 */
 		stripHtml(html) {
 			const wrappedHtml = `<pre>${html}</pre>`;
 			const doc = new DOMParser().parseFromString(wrappedHtml, 'text/html');

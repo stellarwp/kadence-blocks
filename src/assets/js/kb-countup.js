@@ -35,6 +35,13 @@
 			// Check if the countup element is within the active slide
 			return activeSlide.contains(el);
 		},
+		/**
+		 * Decode a string that may contain markup into plain text.
+		 *
+		 * @param {string} html The string to convert.
+		 *
+		 * @return {string} The decoded plain text.
+		 */
 		stripHtml(html) {
 			const wrappedHtml = `<pre>${html}</pre>`;
 			const doc = new DOMParser().parseFromString(wrappedHtml, 'text/html');
@@ -42,7 +49,7 @@
 			return doc.body.textContent || '';
 		},
 		/**
-		 * Escape a plain-text string so it is safe to write with innerHTML.
+		 * Escape a plain-text string for use in markup.
 		 *
 		 * @param {string} text The plain text to escape.
 		 *
