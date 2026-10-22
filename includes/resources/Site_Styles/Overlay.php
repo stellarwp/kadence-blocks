@@ -180,9 +180,11 @@ final class Overlay {
 	/**
 	 * Drops the site values an own value of the instance covers. An own value
 	 * holds for the narrower devices after it, as in CSS, so the site's value for
-	 * one of them must not replace it. Values are in one unit: when the instance
-	 * has an own value or an own unit in a cascade and its unit is not the site's,
-	 * no site value of the cascade is shown.
+	 * one of them must not replace it. A value with sides is covered side by side:
+	 * only the sides the instance sets are dropped, and the site's other sides
+	 * still show. Values are in one unit: when the instance has an own value or an
+	 * own unit in a cascade and its unit is not the site's, no site value of the
+	 * cascade is shown.
 	 *
 	 * @since TBD
 	 *
@@ -205,14 +207,19 @@ final class Overlay {
 				continue;
 			}
 
-			$overridden = false;
+			// The sides set on a wider device; `true` when an own value without sides covers all of them.
+			$covered = [];
 
 			foreach ( $cascade['values'] as $name ) {
-				if ( $overridden ) {
-					unset( $site[ $name ] );
+				if ( array_key_exists( $name, $site ) && ( true === $covered || $covered ) ) {
+					$site = self::without_sides( $site, $name, $covered, $defaults[ $name ] ?? null );
 				}
 
-				$overridden = $overridden || $is_own( $name );
+				if ( true !== $covered && $is_own( $name ) ) {
+					$covered = is_array( $attributes[ $name ] )
+						? array_unique( array_merge( $covered, array_keys( array_filter( $attributes[ $name ], [ self::class, 'holds_value' ] ) ) ) )
+						: true;
+				}
 			}
 		}
 
@@ -362,6 +369,39 @@ final class Overlay {
 		}
 
 		return is_int( $value ) || is_float( $value ) || ( is_string( $value ) && '' !== $value );
+	}
+
+	/**
+	 * Blanks the covered sides of one site value, and drops it when no side is left.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed>   $site     Attribute name => site value.
+	 * @param string                 $name     The attribute name.
+	 * @param array<int|string>|true $covered  The covered sides, or `true` for all of them.
+	 * @param mixed                  $fallback The attribute's default, whose sides blank the covered ones.
+	 *
+	 * @return array<string, mixed> The site values without the covered sides.
+	 */
+	private static function without_sides( array $site, string $name, $covered, $fallback ): array {
+		$sides = $site[ $name ];
+		unset( $site[ $name ] );
+
+		if ( true === $covered || ! is_array( $sides ) ) {
+			return $site;
+		}
+
+		foreach ( $covered as $key ) {
+			if ( array_key_exists( $key, $sides ) ) {
+				$sides[ $key ] = is_array( $fallback ) && array_key_exists( $key, $fallback ) ? $fallback[ $key ] : '';
+			}
+		}
+
+		if ( self::holds_value( $sides ) ) {
+			$site[ $name ] = $sides;
+		}
+
+		return $site;
 	}
 
 	/**

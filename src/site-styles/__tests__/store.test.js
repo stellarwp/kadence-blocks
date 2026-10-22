@@ -716,24 +716,41 @@ describe('write guard', () => {
 			tabletPadding: { default: ['', '', '', ''] },
 			mobilePadding: { default: ['', '', '', ''] },
 		};
-		const emSite = { paddingUnit: 'em', padding: [1, 2, 1, 2] };
+		const emSite = { paddingUnit: 'em', padding: [1, 2, 1, 2], mobilePadding: [0.5, 1, 0.5, 1] };
 		const stored = { paddingUnit: 'px', padding: ['', '', '', ''] };
 
-		it("stores the site's unit with the values the user changes, so they stay in the unit they were shown in", () => {
+		it('stores the whole box as shown on the first change, in the unit it was shown in, without the narrower sides the change covers', () => {
 			const shown = mergeAttributes(stored, emSite, unitDefinitions);
 
-			expect(guardWrite({ padding: [2, 2, 1, 2] }, shown, stored, emSite, [], {}, {}, cascades)).toEqual({
-				padding: [2, '', '', ''],
+			expect(
+				guardWrite({ padding: [2, 2, 1, 2] }, shown, stored, emSite, [], unitDefinitions, {}, cascades)
+			).toEqual({
+				padding: [2, 2, 1, 2],
+				mobilePadding: ['', 1, 0.5, 1],
 				paddingUnit: 'em',
 			});
 		});
 
-		it('stores no unit when the one shown is the one already stored', () => {
-			const pxSite = { padding: [20, 40, 20, 40] };
+		it("stores the site's other sides and devices with one changed side, and no unit already stored", () => {
+			const pxSite = { padding: [20, 40, 20, 40], mobilePadding: [6, 12, 6, 12] };
 			const shown = mergeAttributes(stored, pxSite, unitDefinitions);
 
-			expect(guardWrite({ padding: [30, 40, 20, 40] }, shown, stored, pxSite, [], {}, {}, cascades)).toEqual({
-				padding: [30, '', '', ''],
+			expect(
+				guardWrite({ padding: [30, 40, 20, 40] }, shown, stored, pxSite, [], unitDefinitions, {}, cascades)
+			).toEqual({
+				padding: [30, 40, 20, 40],
+				mobilePadding: ['', 12, 6, 12],
+			});
+		});
+
+		it('stores only the changed side once the instance owns the box', () => {
+			const owned = { paddingUnit: 'em', padding: [2, 2, 1, 2], mobilePadding: [0.5, 1, 0.5, 1] };
+			const shown = mergeAttributes(owned, emSite, unitDefinitions);
+
+			expect(
+				guardWrite({ padding: [3, 2, 1, 2] }, shown, owned, emSite, [], unitDefinitions, {}, cascades)
+			).toEqual({
+				padding: [3, 2, 1, 2],
 			});
 		});
 
@@ -742,35 +759,59 @@ describe('write guard', () => {
 			const shown = mergeAttributes(withTablet, emSite, unitDefinitions);
 
 			expect(
-				guardWrite({ tabletPadding: ['', '', '', ''] }, shown, withTablet, emSite, [], {}, {}, cascades)
+				guardWrite(
+					{ tabletPadding: ['', '', '', ''] },
+					shown,
+					withTablet,
+					emSite,
+					[],
+					unitDefinitions,
+					{},
+					cascades
+				)
 			).toEqual({
 				tabletPadding: ['', '', '', ''],
 			});
 		});
 
-		it('keeps the unit the user picks in the same write as a value, even when it is the stored one', () => {
+		it('stores the values in the unit the user picks in the same write, which stays when it is the stored one', () => {
 			const shown = mergeAttributes(stored, emSite, unitDefinitions);
 
 			expect(
-				guardWrite({ padding: [2, 2, 1, 2], paddingUnit: 'px' }, shown, stored, emSite, [], {}, {}, cascades)
+				guardWrite(
+					{ padding: [2, 2, 1, 2], paddingUnit: 'px' },
+					shown,
+					stored,
+					emSite,
+					[],
+					unitDefinitions,
+					{},
+					cascades
+				)
 			).toEqual({
-				padding: [2, '', '', ''],
-				paddingUnit: 'px',
+				padding: [2, 2, 1, 2],
+				mobilePadding: ['', 1, 0.5, 1],
 			});
 		});
 
-		it('keeps the unit the user picks', () => {
+		it('stores the values shown with the unit the user picks', () => {
 			const shown = mergeAttributes(stored, emSite, unitDefinitions);
 
-			expect(guardWrite({ paddingUnit: 'rem' }, shown, stored, emSite, [], {}, {}, cascades)).toEqual({
+			expect(
+				guardWrite({ paddingUnit: 'rem' }, shown, stored, emSite, [], unitDefinitions, {}, cascades)
+			).toEqual({
 				paddingUnit: 'rem',
+				padding: [1, 2, 1, 2],
+				mobilePadding: [0.5, 1, 0.5, 1],
 			});
 		});
 
 		it('leaves a write that touches no value of the cascade alone', () => {
 			const shown = mergeAttributes(stored, emSite, unitDefinitions);
 
-			expect(guardWrite({ text: 'Buy' }, shown, stored, emSite, [], {}, {}, cascades)).toEqual({ text: 'Buy' });
+			expect(guardWrite({ text: 'Buy' }, shown, stored, emSite, [], unitDefinitions, {}, cascades)).toEqual({
+				text: 'Buy',
+			});
 		});
 	});
 
