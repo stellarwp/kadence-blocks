@@ -138,4 +138,32 @@ describe('kb-glight-video-pop-init', () => {
 
 		expect(titleSeenAtFirstCall).toBe(false);
 	});
+
+	describe('on a mobile viewport', () => {
+		const originalWidth = window.innerWidth;
+
+		beforeEach(() => {
+			window.innerWidth = 500;
+		});
+
+		afterEach(() => {
+			window.innerWidth = originalWidth;
+		});
+
+		it('uses a plain mobile link in place of the desktop link', () => {
+			const { anchor } = bindAnchor(
+				'<a class="kadence-video-popup-link" data-popup-class="p1" href="https://youtu.be/x" data-href-mobile="https://youtu.be/m">open</a>'
+			);
+
+			expect(anchor.getAttribute('href')).toBe('https://youtu.be/m');
+		});
+
+		it('ignores a mobile link that contains quote or whitespace characters', () => {
+			const { anchor } = bindAnchor(
+				'<a class="kadence-video-popup-link" data-popup-class="p1" href="https://youtu.be/x" data-href-mobile=\'https://youtu.be/m" x="y\'>open</a>'
+			);
+
+			expect(anchor.getAttribute('href')).toBe('https://youtu.be/x');
+		});
+	});
 });

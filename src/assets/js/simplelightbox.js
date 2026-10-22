@@ -41,6 +41,15 @@
 		return div.childNodes[0];
 	}
 
+	/**
+	 * Check whether a URL uses HTTP or HTTPS.
+	 *
+	 * @param {string} url The URL to check.
+	 *
+	 * @since 3.8.0.2
+	 *
+	 * @return {boolean} Whether the URL uses HTTP or HTTPS.
+	 */
 	function isWebUrl(url) {
 		try {
 			return ['http:', 'https:'].includes(new URL(url, window.location.href).protocol);

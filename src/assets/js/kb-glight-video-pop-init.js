@@ -35,7 +35,7 @@
 			return String(text).replace(/[&<>"']/g, (match) => map[match]);
 		},
 		/**
-		 * Check that a URL is a web or relative URL.
+		 * Check that a URL is a web or relative URL with no quote, bracket, backtick or whitespace characters.
 		 *
 		 * @param {string} url The URL to check.
 		 *
@@ -44,6 +44,9 @@
 		 * @return {boolean} Whether the URL resolves to http or https.
 		 */
 		isWebUrl(url) {
+			if (/["'<>`\s]/.test(String(url).trim())) {
+				return false;
+			}
 			try {
 				return ['http:', 'https:'].includes(new URL(url, window.location.href).protocol);
 			} catch (error) {
