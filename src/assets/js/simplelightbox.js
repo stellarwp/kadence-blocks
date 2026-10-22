@@ -1,3 +1,4 @@
+// cspell:ignore behavoiur tmpl youtu
 (function (root, factory) {
 	if (typeof define === 'function' && define.amd) {
 		define([], factory);
@@ -38,6 +39,14 @@
 		div.innerHTML = html.trim();
 
 		return div.childNodes[0];
+	}
+
+	function isWebUrl(url) {
+		try {
+			return ['http:', 'https:'].includes(new URL(url, window.location.href).protocol);
+		} catch (error) {
+			return false;
+		}
 	}
 
 	function matches(el, selector) {
@@ -251,23 +260,26 @@
 			this.loading(true);
 			if (this.options.videoRegex.test(url)) {
 				const videoURL = this.getVideoURL(url);
-				callback.call(
-					self,
-					parseHtml(
-						'<div class="slbIframeCont"><iframe class="slbIframe" frameborder="0" allowfullscreen src="' +
-							videoURL +
-							'"></iframe></div>'
-					)
+				const $iframeCont = parseHtml(
+					'<div class="slbIframeCont"><iframe class="slbIframe" frameborder="0" allowfullscreen></iframe></div>'
 				);
+				// Set the URL as an attribute, and only for web URLs.
+				if (isWebUrl(videoURL)) {
+					$iframeCont.querySelector('.slbIframe').setAttribute('src', videoURL);
+				}
+				callback.call(self, $iframeCont);
 			} else {
-				const $imageCont = parseHtml(
-					'<div class="slbImageWrap"><img class="slbImage" src="' + url + '" /></div>'
-				);
+				const $imageCont = parseHtml('<div class="slbImageWrap"><img class="slbImage" /></div>');
 
 				this.$currentImage = $imageCont.querySelector('.slbImage');
+				// Set the URL as an attribute.
+				this.$currentImage.setAttribute('src', url);
 
 				if (this.options.showCaptions && this.captions[position]) {
-					$imageCont.appendChild(parseHtml('<div class="slbCaption">' + this.captions[position] + '</div>'));
+					// Captions are plain text.
+					const $caption = parseHtml('<div class="slbCaption"></div>');
+					$caption.textContent = this.captions[position];
+					$imageCont.appendChild($caption);
 				}
 
 				this.loadImage(url, function () {

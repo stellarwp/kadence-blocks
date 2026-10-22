@@ -1,0 +1,4 @@
+significance: patch
+type: security
+entry: Improved handling of user-provided content in front-end scripts.
+timestamp: 2026-10-20T19:03:01.000Z

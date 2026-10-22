@@ -1,5 +1,5 @@
 /* global GLightbox */
-// cspell:ignore gbtn gclose glight ktblocksvideopop lighbox lightboxes plyr
+// cspell:ignore gbtn gclose glight ktblocksvideopop lighbox lightboxes plyr zoomable
 /**
  * File kb-glight-video-init.js.
  * Gets video lighbox working for buttons.
@@ -9,8 +9,10 @@
 	var kadenceBlocksVideoLightbox = {
 		lightboxes: {},
 		foundClasses: {},
+		// Marks an anchor as already processed.
+		sanitizedKey: Symbol.for('kadenceBlocksVideoLightboxSanitized'),
 		/**
-		 * Escape a plain-text string so it is safe to be written with innerHTML.
+		 * Escape a plain-text string for use in markup.
 		 *
 		 * @param {string} text The plain text to escape.
 		 *
@@ -29,10 +31,9 @@
 			return String(text).replace(/[&<>"']/g, (match) => map[match]);
 		},
 		/**
-		 * Make an anchor's slide data safe before GLightbox reads it.
+		 * Normalize an anchor's slide data before GLightbox reads it.
 		 *
-		 * Only the href and a text caption are used, so other slide settings are dropped, the caption is
-		 * escaped, and the href is limited to web or relative URLs.
+		 * Only the href and a text caption are kept, and the href is limited to web or relative URLs.
 		 *
 		 * @param {HTMLElement} el The anchor GLightbox will be bound to.
 		 *
@@ -41,23 +42,54 @@
 		 * @return {void}
 		 */
 		sanitizeSlideData(el) {
+			if (el[kadenceBlocksVideoLightbox.sanitizedKey]) {
+				return;
+			}
+			el[kadenceBlocksVideoLightbox.sanitizedKey] = true;
+
 			const rawTitle = el.dataset.title || el.getAttribute('title') || '';
+			// The GLightbox data attributes. Unrelated data attributes, such as the
+			// tooltip ones the button renders, are left alone.
 			[
 				'data-glightbox',
-				'data-description',
-				'data-content',
 				'data-href',
+				'data-sizes',
+				'data-srcset',
 				'data-type',
+				'data-video-provider',
+				'data-description',
+				'data-alt',
 				'data-desc-position',
 				'data-effect',
-				'data-video-provider',
+				'data-width',
+				'data-height',
+				'data-content',
+				'data-zoomable',
+				'data-draggable',
 			].forEach((name) => el.removeAttribute(name));
 			el.setAttribute('data-title', kadenceBlocksVideoLightbox.escapeHtml(rawTitle));
 
-			// el.protocol is the resolved scheme.
-			if (el.hasAttribute('href') && !['http:', 'https:'].includes(el.protocol)) {
+			// Limit the href to web URLs that contain no quote, bracket, backtick or whitespace characters.
+			if (
+				el.hasAttribute('href') &&
+				(!['http:', 'https:'].includes(el.protocol) || /["'<>`\s]/.test(el.getAttribute('href').trim()))
+			) {
 				el.removeAttribute('href');
 			}
+		},
+		/**
+		 * Normalize every anchor a selector matches, so the lightbox only binds anchors that have been processed.
+		 *
+		 * @param {string} selector The selector the lightbox will bind.
+		 *
+		 * @since TBD
+		 *
+		 * @return {string} The selector.
+		 */
+		sanitizeMatching(selector) {
+			document.querySelectorAll(selector).forEach(kadenceBlocksVideoLightbox.sanitizeSlideData);
+
+			return selector;
 		},
 		/**
 		 * Initiate the script to process all
@@ -75,7 +107,9 @@
 					foundVideos[i].classList.add('kb-video-pop-' + i);
 					kadenceBlocksVideoLightbox.sanitizeSlideData(foundVideos[i]);
 					kadenceBlocksVideoLightbox.lightboxes[i] = new GLightbox({
-						selector: '.' + kadenceBlocksVideoLightbox.foundClasses[i],
+						selector: kadenceBlocksVideoLightbox.sanitizeMatching(
+							'.' + kadenceBlocksVideoLightbox.foundClasses[i]
+						),
 						touchNavigation: true,
 						skin: 'kadence-dark',
 						loop: false,

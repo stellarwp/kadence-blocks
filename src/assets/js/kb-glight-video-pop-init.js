@@ -1,4 +1,5 @@
 /* global GLightbox */
+// cspell:ignore Efects glight lighbox ligthbox plyr zoomable
 /**
  * File kb-glight-video-init.js.
  * Gets video lighbox working for video popup.
@@ -10,6 +11,107 @@
 		cache: [],
 		wrapper: [],
 		trigger: [],
+		// The effect each anchor asked for, kept here because the attribute is removed during normalizing.
+		effects: new WeakMap(),
+		// Marks an anchor as already processed.
+		sanitizedKey: Symbol.for('kadenceBlocksProVideoLightboxSanitized'),
+		/**
+		 * Escape a plain-text string for use in markup.
+		 *
+		 * @param {string} text The plain text to escape.
+		 *
+		 * @since TBD
+		 *
+		 * @return {string} The escaped text.
+		 */
+		escapeHtml(text) {
+			const map = {
+				'&': '&amp;',
+				'<': '&lt;',
+				'>': '&gt;',
+				'"': '&quot;',
+				"'": '&#x27;',
+			};
+			return String(text).replace(/[&<>"']/g, (match) => map[match]);
+		},
+		/**
+		 * Check that a URL is a web or relative URL.
+		 *
+		 * @param {string} url The URL to check.
+		 *
+		 * @since TBD
+		 *
+		 * @return {boolean} Whether the URL resolves to http or https.
+		 */
+		isWebUrl(url) {
+			try {
+				return ['http:', 'https:'].includes(new URL(url, window.location.href).protocol);
+			} catch (error) {
+				return false;
+			}
+		},
+		/**
+		 * Normalize an anchor's slide data before GLightbox reads it.
+		 *
+		 * Only the href and a text caption are kept, and the href is limited to web or relative URLs. The attributes
+		 * this script reads itself are left alone.
+		 *
+		 * @param {HTMLElement} el The anchor GLightbox will be bound to.
+		 *
+		 * @since TBD
+		 *
+		 * @return {void}
+		 */
+		sanitizeSlideData(el) {
+			if (el[kadenceBlocksProVideoLightbox.sanitizedKey]) {
+				return;
+			}
+			el[kadenceBlocksProVideoLightbox.sanitizedKey] = true;
+
+			const rawTitle = el.dataset.title || el.getAttribute('title') || '';
+			kadenceBlocksProVideoLightbox.effects.set(el, el.getAttribute('data-effect'));
+			// The GLightbox data attributes.
+			[
+				'data-glightbox',
+				'data-href',
+				'data-sizes',
+				'data-srcset',
+				'data-type',
+				'data-video-provider',
+				'data-description',
+				'data-alt',
+				'data-desc-position',
+				'data-effect',
+				'data-width',
+				'data-height',
+				'data-content',
+				'data-zoomable',
+				'data-draggable',
+			].forEach((name) => el.removeAttribute(name));
+			el.setAttribute('data-title', kadenceBlocksProVideoLightbox.escapeHtml(rawTitle));
+
+			// Limit the href to web URLs that contain no quote, bracket, backtick or whitespace characters.
+			if (
+				el.hasAttribute('href') &&
+				(!['http:', 'https:'].includes(el.protocol) || /["'<>`\s]/.test(el.getAttribute('href').trim()))
+			) {
+				el.removeAttribute('href');
+			}
+		},
+		/**
+		 * Normalize every anchor a selector matches, so the lightbox only binds anchors that have been processed.
+		 *
+		 * @param {string} selector The selector the lightbox will bind.
+		 *
+		 * @since TBD
+		 *
+		 * @return {string} The selector.
+		 */
+		sanitizeMatching(selector) {
+			document.querySelectorAll(selector).forEach(kadenceBlocksProVideoLightbox.sanitizeSlideData);
+
+			return selector;
+		},
 		/**
 		 * Initiate the script to process all
 		 */
@@ -17,9 +119,11 @@
 			const allowedEffects = ['zoom', 'zoomBack', 'fade', 'slide', 'slideBack', 'flip', 'none'];
 
 			kadenceBlocksProVideoLightbox.cache = document.querySelectorAll('.kadence-video-popup-link');
+			// Sanitize every anchor first, because one GLightbox instance binds all anchors that share a popup class.
+			kadenceBlocksProVideoLightbox.cache.forEach(kadenceBlocksProVideoLightbox.sanitizeSlideData);
 			for (let i = 0; i < kadenceBlocksProVideoLightbox.cache.length; i++) {
 				var effect = allowedEffects[0];
-				var attrEffect = kadenceBlocksProVideoLightbox.cache[i].getAttribute('data-effect');
+				var attrEffect = kadenceBlocksProVideoLightbox.effects.get(kadenceBlocksProVideoLightbox.cache[i]);
 				if (allowedEffects.includes(attrEffect)) {
 					effect = attrEffect;
 				} else if ('fade-right' == attrEffect || 'fade-left' == attrEffect) {
@@ -110,13 +214,17 @@
 				} else {
 					if (device === 'mobile') {
 						const mobileHref = kadenceBlocksProVideoLightbox.cache[i]?.getAttribute('data-href-mobile');
-						if (mobileHref) {
+						if (mobileHref && kadenceBlocksProVideoLightbox.isWebUrl(mobileHref)) {
 							kadenceBlocksProVideoLightbox.cache[i].setAttribute('href', mobileHref);
 						}
 					}
 
 					const lightbox = GLightbox({
-						selector: '.kadence-video-popup-link[data-popup-class="' + popupClassWithId + '"]',
+						selector: kadenceBlocksProVideoLightbox.sanitizeMatching(
+							'.kadence-video-popup-link[data-popup-class="' +
+								(/^[\w-]+$/.test(popupClassWithId || '') ? popupClassWithId : '') +
+								'"]'
+						),
 						touchNavigation: true,
 						skin: 'kadence-dark',
 						loop: false,
