@@ -111,7 +111,7 @@ import metadata from './block.json';
  * Internal block libraries
  */
 import { __, sprintf } from '@wordpress/i18n';
-import { useDispatch, useSelect } from '@wordpress/data';
+import { select, useDispatch, useSelect } from '@wordpress/data';
 import { createBlock } from '@wordpress/blocks';
 import {
 	InspectorControls,
@@ -457,7 +457,7 @@ function KadenceAdvancedHeading(props) {
 					}
 
 					// The stored attributes, so the site values the heading shows do not become its own.
-					const newAttributes = { ...wp.data.select('core/block-editor').getBlockAttributes(clientId) };
+					const newAttributes = { ...select('core/block-editor').getBlockAttributes(clientId) };
 					newAttributes.uniqueID = attributes.uniqueID + '_' + thisIndex;
 
 					return wp.blocks.createBlock('kadence/advancedheading', {
@@ -1374,7 +1374,7 @@ function KadenceAdvancedHeading(props) {
 							return createBlock('core/paragraph');
 						}
 						return createBlock('kadence/advancedheading', {
-							...wp.data.select('core/block-editor').getBlockAttributes(clientId),
+							...select('core/block-editor').getBlockAttributes(clientId),
 							content: value ?? '',
 						});
 					}}
