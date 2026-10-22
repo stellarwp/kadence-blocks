@@ -82,7 +82,7 @@
 		 *
 		 * @param {string} selector The selector the lightbox will bind.
 		 *
-		 * @since TBD
+		 * @since 3.8.0.2
 		 *
 		 * @return {string} The selector.
 		 */

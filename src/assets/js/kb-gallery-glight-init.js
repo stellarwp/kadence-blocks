@@ -88,7 +88,7 @@
 		 *
 		 * @param {string} text The plain text to escape.
 		 *
-		 * @since TBD
+		 * @since 3.8.0.2
 		 *
 		 * @return {string} The escaped text.
 		 */
@@ -107,7 +107,7 @@
 		 *
 		 * @param {string} raw The caption, as markup.
 		 *
-		 * @since TBD
+		 * @since 3.8.0.2
 		 *
 		 * @return {string} The safe caption.
 		 */
@@ -127,7 +127,7 @@
 		 *
 		 * @param {HTMLElement} el The anchor GLightbox will be bound to.
 		 *
-		 * @since TBD
+		 * @since 3.8.0.2
 		 *
 		 * @return {void}
 		 */
@@ -168,7 +168,7 @@
 		 *
 		 * @param {string} selector The selector the lightbox will bind.
 		 *
-		 * @since TBD
+		 * @since 3.8.0.2
 		 *
 		 * @return {string} The selector.
 		 */

@@ -10,7 +10,7 @@ const SCRIPT = '../kb-glight-video-pop-init.js';
  *
  * @param {string} anchorHtml The anchor markup to bind.
  *
- * @since TBD
+ * @since 3.8.0.2
  *
  * @return {{anchor: HTMLElement, glightbox: jest.Mock}} The bound anchor and the GLightbox mock.
  */

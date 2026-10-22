@@ -12,7 +12,7 @@ const MARKUP = '&lt;img src=x onerror=window.__probe=1&gt;';
  * @param {string} itemsHtml The markup placed inside the gallery container.
  * @param {string} containerAttributes Extra attributes for the gallery container.
  *
- * @since TBD
+ * @since 3.8.0.2
  *
  * @return {jest.Mock} The GLightbox constructor mock.
  */
@@ -30,7 +30,7 @@ function bindGallery(itemsHtml, containerAttributes = '') {
  *
  * @param {string} attributes The anchor attributes.
  *
- * @since TBD
+ * @since 3.8.0.2
  *
  * @return {string} The item markup.
  */

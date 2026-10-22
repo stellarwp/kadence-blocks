@@ -62,7 +62,7 @@ final class Token_Store extends Query {
 	 * instead of once per lookup. Being an object cache group keeps it per site on multisite
 	 * and lets WordPress flush it; every write drops the slug it touched before signalling.
 	 *
-	 * @since 3.8.1
+	 * @since 3.8.0.2
 	 *
 	 * @var string
 	 */
@@ -610,7 +610,7 @@ final class Token_Store extends Query {
 	 * the same call in wp_start_object_cache()) could keep the group across requests, so without it
 	 * every read goes to the table, as before 3.8.1.
 	 *
-	 * @since 3.8.1
+	 * @since 3.8.0.2
 	 *
 	 * @param string $slug The token library slug.
 	 *
@@ -647,7 +647,7 @@ final class Token_Store extends Query {
 	/**
 	 * Drop a library's remembered row after a write, so the next read sees the table.
 	 *
-	 * @since 3.8.1
+	 * @since 3.8.0.2
 	 *
 	 * @param string $slug The token library slug that was written.
 	 *
@@ -661,7 +661,7 @@ final class Token_Store extends Query {
 	 * The row cache key for a slug. The table is part of it, so two stores on different tables never
 	 * share an entry.
 	 *
-	 * @since 3.8.1
+	 * @since 3.8.0.2
 	 *
 	 * @param string $slug The token library slug.
 	 *

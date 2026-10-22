@@ -11,7 +11,7 @@ const SimpleLightbox = require('../simplelightbox.js');
  * @param {string} anchorHtml The anchor markup to bind.
  * @param {Object} options    Options for the lightbox.
  *
- * @since TBD
+ * @since 3.8.0.2
  *
  * @return {HTMLElement} The node SimpleLightbox prepared for the first item.
  */
