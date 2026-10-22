@@ -36,7 +36,7 @@ final class SiteStylesEditorParamsTest extends WPTestCase {
 
 		$blocks = $this->site_styles( Editor_Params::EARLY_FILTERS_HANDLE )['blocks'];
 
-		$this->assertEqualsCanonicalizing( [ 'kadence/advancedbtn', 'kadence/singlebtn', 'kadence/icon', 'kadence/single-icon', 'kadence/spacer', 'kadence/show-more', 'kadence/column', 'kadence/rowlayout', 'kadence/countup', 'kadence/infobox', 'kadence/countdown', 'kadence/table', 'kadence/posts', 'kadence/progress-bar', 'kadence/testimonials', 'kadence/testimonial' ], array_keys( $blocks ) );
+		$this->assertEqualsCanonicalizing( [ 'kadence/advancedbtn', 'kadence/singlebtn', 'kadence/icon', 'kadence/single-icon', 'kadence/spacer', 'kadence/show-more', 'kadence/column', 'kadence/rowlayout', 'kadence/countup', 'kadence/infobox', 'kadence/countdown', 'kadence/table', 'kadence/posts', 'kadence/progress-bar', 'kadence/testimonials', 'kadence/testimonial', 'kadence/tableofcontents' ], array_keys( $blocks ) );
 		$this->assertEquals( json_decode( $json, true ), $blocks['kadence/singlebtn'] );
 
 		$spacer = file_get_contents( KADENCE_BLOCKS_PATH . 'src/site-styles/__tests__/fixtures/spacer-entry.json' );
@@ -112,7 +112,7 @@ final class SiteStylesEditorParamsTest extends WPTestCase {
 
 		// wp_localize_script() turns booleans into strings, like every flag in kadence_blocks_params.
 		$this->assertSame( '1', $params['isFseMode'] );
-		$this->assertEqualsCanonicalizing( [ 'kadence/advancedbtn', 'kadence/singlebtn', 'kadence/icon', 'kadence/single-icon', 'kadence/spacer', 'kadence/show-more', 'kadence/column', 'kadence/rowlayout', 'kadence/countup', 'kadence/infobox', 'kadence/countdown', 'kadence/table', 'kadence/posts', 'kadence/progress-bar', 'kadence/testimonials', 'kadence/testimonial' ], $params['siteStylesBlocks'] );
+		$this->assertEqualsCanonicalizing( [ 'kadence/advancedbtn', 'kadence/singlebtn', 'kadence/icon', 'kadence/single-icon', 'kadence/spacer', 'kadence/show-more', 'kadence/column', 'kadence/rowlayout', 'kadence/countup', 'kadence/infobox', 'kadence/countdown', 'kadence/table', 'kadence/posts', 'kadence/progress-bar', 'kadence/testimonials', 'kadence/testimonial', 'kadence/tableofcontents' ], $params['siteStylesBlocks'] );
 	}
 
 	/**
