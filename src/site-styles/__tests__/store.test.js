@@ -806,6 +806,47 @@ describe('write guard', () => {
 			});
 		});
 
+		it("stores the values shown when the user picks the default unit over the site's", () => {
+			const shown = mergeAttributes(stored, emSite, unitDefinitions);
+
+			expect(guardWrite({ paddingUnit: 'px' }, shown, stored, emSite, [], unitDefinitions, {}, cascades)).toEqual(
+				{
+					padding: [1, 2, 1, 2],
+					mobilePadding: [0.5, 1, 0.5, 1],
+				}
+			);
+		});
+
+		it("stores the default unit too when the instance doesn't store one", () => {
+			const withoutUnit = { padding: ['', '', '', ''] };
+			const shown = mergeAttributes(withoutUnit, emSite, unitDefinitions);
+
+			expect(
+				guardWrite({ paddingUnit: 'px' }, shown, withoutUnit, emSite, [], unitDefinitions, {}, cascades)
+			).toEqual({
+				paddingUnit: 'px',
+				padding: [1, 2, 1, 2],
+				mobilePadding: [0.5, 1, 0.5, 1],
+			});
+		});
+
+		it('stores only the unit when an instance that owns the box picks the default unit', () => {
+			const owned = { paddingUnit: 'em', padding: [1, 2, 1, 2] };
+			const shown = mergeAttributes(owned, emSite, unitDefinitions);
+
+			expect(guardWrite({ paddingUnit: 'px' }, shown, owned, emSite, [], unitDefinitions, {}, cascades)).toEqual({
+				paddingUnit: 'px',
+			});
+		});
+
+		it('stores nothing when the user picks the unit already shown', () => {
+			const shown = mergeAttributes(stored, emSite, unitDefinitions);
+
+			expect(guardWrite({ paddingUnit: 'em' }, shown, stored, emSite, [], unitDefinitions, {}, cascades)).toEqual(
+				{}
+			);
+		});
+
 		it('leaves a write that touches no value of the cascade alone', () => {
 			const shown = mergeAttributes(stored, emSite, unitDefinitions);
 

@@ -752,6 +752,20 @@ describe('editor overlay with cascades', () => {
 	});
 
 	/**
+	 * Picking the block's default unit over the site's stores the whole box as shown, so the pick sticks
+	 * even though the unit is the one the instance already stores.
+	 *
+	 * @return {void}
+	 */
+	it("stores the whole box when the user picks the default unit over the site's", () => {
+		const setAttributes = jest.fn();
+
+		render(BUTTON_ATTRIBUTES, setAttributes, BUTTON).setAttributes({ paddingUnit: 'px' });
+
+		expect(setAttributes).toHaveBeenCalledWith({ padding: [20, 40, 20, 40], mobilePadding: [6, 12, 6, 12] });
+	});
+
+	/**
 	 * Changing one side of the site's padding stores the whole box as shown: every side, every device and
 	 * the unit, so the button keeps looking as it did apart from the change. The changed side holds for the
 	 * narrower devices, as an own value does, so their copy leaves it out.

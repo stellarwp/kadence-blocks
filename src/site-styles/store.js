@@ -455,7 +455,9 @@ export function unmerge(next, shown, stored) {
  * looking as it did apart from the change and later site changes don't reach
  * it. A side the write changes holds for the narrower devices, as an own value
  * does, so their copy leaves it out. Values are in one unit, so a cascade that
- * took the site's other sides could not follow a site in another unit.
+ * took the site's other sides could not follow a site in another unit. Picking
+ * a unit other than the one shown starts a cascade too, even the block's default
+ * unit, which on its own would store nothing.
  *
  * @param {Attributes}                    written       The attributes being written.
  * @param {Attributes}                    shown         The attributes the block was shown.
@@ -502,8 +504,16 @@ export function guardWrite(written, shown, stored, site, groups = [], definition
 
 	cascades.forEach(({ unit, values }) => {
 		const names = unit ? [...values, unit] : values;
+		/*
+		 * A unit other than the one shown was picked. `setsGroup` ignores a value equal to the block's
+		 * default, so a pick of the default unit is tested on its own.
+		 */
+		const picksUnit = Boolean(unit) && unit in written && !isEqual(written[unit], shown[unit]);
 
-		if (!setsGroup(stored, names, definitions) && setsGroup({ ...stored, ...kept }, names, definitions)) {
+		if (
+			!setsGroup(stored, names, definitions) &&
+			(picksUnit || setsGroup({ ...stored, ...kept }, names, definitions))
+		) {
 			// The sides just changed hold for the narrower devices, so the copy of those leaves them out.
 			const copied = withoutOverridden(pick(shown, values), pick(kept, values), definitions, [{ values }]);
 
@@ -525,8 +535,7 @@ export function guardWrite(written, shown, stored, site, groups = [], definition
 			return;
 		}
 
-		// A unit written with the values that differs from the one shown was picked, even when it is the stored one.
-		if (unit in written && !isEqual(written[unit], shown[unit])) {
+		if (picksUnit) {
 			kept[unit] = written[unit];
 		} else if (unitShown) {
 			kept[unit] = shown[unit];
