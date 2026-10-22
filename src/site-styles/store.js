@@ -351,7 +351,7 @@ export function withoutOverridden(site, attributes, definitions, cascades = []) 
 
 		values.forEach((name) => {
 			if (name in kept && (covered === true || covered.size)) {
-				kept = withoutSides(kept, name, covered, definitions[name]?.default);
+				kept = withoutCoveredSides(kept, name, covered, definitions[name]?.default);
 			}
 
 			if (covered !== true && isOwn(name)) {
@@ -370,16 +370,16 @@ export function withoutOverridden(site, attributes, definitions, cascades = []) 
 /**
  * Blanks the covered sides of one site value, and drops it when no side is left.
  *
- * @param {Attributes}       site     The site values.
- * @param {string}           name     The attribute name.
- * @param {Set<string>|true} covered  The covered sides, or `true` for all of them.
- * @param {*}                fallback The attribute's default, whose sides blank the covered ones.
+ * @param {Attributes}       site         The site values.
+ * @param {string}           name         The attribute name.
+ * @param {Set<string>|true} covered      The covered sides, or `true` for all of them.
+ * @param {*}                defaultValue The attribute's default, whose sides blank the covered ones.
  *
  * @since TBD
  *
  * @return {Attributes} The site values without the covered sides.
  */
-function withoutSides(site, name, covered, fallback) {
+function withoutCoveredSides(site, name, covered, defaultValue) {
 	const value = site[name];
 
 	if (covered === true || !isObjectLike(value)) {
@@ -390,11 +390,11 @@ function withoutSides(site, name, covered, fallback) {
 
 	covered.forEach((key) => {
 		if (key in sides) {
-			sides[key] = isObjectLike(fallback) && key in fallback ? fallback[key] : '';
+			sides[key] = isObjectLike(defaultValue) && key in defaultValue ? defaultValue[key] : '';
 		}
 	});
 
-	return Object.values(sides).some(holdsValue) ? { ...site, [name]: sides } : omit(site, name);
+	return holdsValue(sides) ? { ...site, [name]: sides } : omit(site, name);
 }
 
 /**
@@ -510,7 +510,7 @@ export function guardWrite(written, shown, stored, site, groups = [], definition
 			names.forEach((name) => {
 				const value = name in written ? written[name] : copiedValue(name, unit, shown, copied, stored);
 
-				if (value !== undefined && !isEqual(value, stored[name])) {
+				if (!isEqual(value, stored[name])) {
 					kept[name] = value;
 				}
 			});

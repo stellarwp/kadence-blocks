@@ -212,12 +212,12 @@ final class Overlay {
 
 			foreach ( $cascade['values'] as $name ) {
 				if ( array_key_exists( $name, $site ) && ( true === $covered || $covered ) ) {
-					$site = self::without_sides( $site, $name, $covered, $defaults[ $name ] ?? null );
+					$site = self::without_covered_sides( $site, $name, $covered, $defaults[ $name ] ?? null );
 				}
 
 				if ( true !== $covered && $is_own( $name ) ) {
 					$covered = is_array( $attributes[ $name ] )
-						? array_unique( array_merge( $covered, array_keys( array_filter( $attributes[ $name ], [ self::class, 'holds_value' ] ) ) ) )
+						? array_unique( array_merge( $covered, array_keys( array_filter( $attributes[ $name ], static fn( $side ): bool => self::holds_value( $side ) ) ) ) )
 						: true;
 				}
 			}
@@ -376,29 +376,32 @@ final class Overlay {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, mixed>   $site     Attribute name => site value.
-	 * @param string                 $name     The attribute name.
-	 * @param array<int|string>|true $covered  The covered sides, or `true` for all of them.
-	 * @param mixed                  $fallback The attribute's default, whose sides blank the covered ones.
+	 * @param array<string, mixed>   $site          Attribute name => site value.
+	 * @param string                 $name          The attribute name.
+	 * @param array<int|string>|true $covered       The covered sides, or `true` for all of them.
+	 * @param mixed                  $default_value The attribute's default, whose sides blank the covered ones.
 	 *
 	 * @return array<string, mixed> The site values without the covered sides.
 	 */
-	private static function without_sides( array $site, string $name, $covered, $fallback ): array {
+	private static function without_covered_sides( array $site, string $name, $covered, $default_value ): array {
 		$sides = $site[ $name ];
-		unset( $site[ $name ] );
 
 		if ( true === $covered || ! is_array( $sides ) ) {
+			unset( $site[ $name ] );
+
 			return $site;
 		}
 
 		foreach ( $covered as $key ) {
 			if ( array_key_exists( $key, $sides ) ) {
-				$sides[ $key ] = is_array( $fallback ) && array_key_exists( $key, $fallback ) ? $fallback[ $key ] : '';
+				$sides[ $key ] = is_array( $default_value ) && array_key_exists( $key, $default_value ) ? $default_value[ $key ] : '';
 			}
 		}
 
 		if ( self::holds_value( $sides ) ) {
 			$site[ $name ] = $sides;
+		} else {
+			unset( $site[ $name ] );
 		}
 
 		return $site;
