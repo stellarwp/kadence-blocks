@@ -33,9 +33,11 @@ interface Supports_Site_Styles {
 
 	/**
 	 * Site values that must reach the instance's attributes: settings that change
-	 * the markup's classes, and settings the block's editor applies as inline
-	 * styles. No stylesheet rule can reach either. Every other value renders
-	 * through CSS.
+	 * the markup's classes, settings the block's editor applies as inline styles,
+	 * and settings the block's own rule already points at a variable, which
+	 * outranks a site rule. No site rule can reach any of them. Every other value
+	 * renders through CSS. An instance can't pick the block's default over a
+	 * site value, as it can't tell it from no value.
 	 *
 	 * @since TBD
 	 *

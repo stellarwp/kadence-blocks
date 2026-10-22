@@ -291,19 +291,72 @@ export function scopeSiteAttributes(site, attributes, scope, defaultStyle) {
 /**
  * Drops the site values of every group the instance sets itself. The instance
  * sets a group when it has a value other than the block's default for any of
- * the group's attributes, the same test `merge()` uses.
+ * the group's attributes, the same test `merge()` uses, or when an older
+ * attribute that stands in for the group holds a value.
  *
- * @param {Attributes}                    site        The site values.
- * @param {Attributes}                    attributes  The instance's attributes.
- * @param {string[][]}                    groups      Groups of attribute names.
- * @param {Object<string, {default: *}>} definitions The block type's attribute definitions.
+ * @param {Attributes}                    site         The site values.
+ * @param {Attributes}                    attributes   The instance's attributes.
+ * @param {string[][]}                    groups       Groups of attribute names.
+ * @param {Object<string, {default: *}>} definitions  The block type's attribute definitions.
+ * @param {Object<string, string[]>}      [legacy]     First attribute of a group => older attributes that stand in for it.
  *
  * @since TBD
  *
  * @return {Attributes} The site values the instance takes.
  */
-export function groupSiteAttributes(site, attributes, groups, definitions) {
-	return groups.reduce((kept, group) => (setsGroup(attributes, group, definitions) ? omit(kept, group) : kept), site);
+export function groupSiteAttributes(site, attributes, groups, definitions, legacy = {}) {
+	return groups.reduce(
+		(kept, group) => (setsGroup(attributes, group, definitions, legacy) ? omit(kept, group) : kept),
+		site
+	);
+}
+
+/**
+ * Drops the site values an own value of the instance covers. An own value holds
+ * for the narrower devices after it, as in CSS, so the site's value for one of
+ * them must not replace it. Values are in one unit: when the instance has an own
+ * value or an own unit in a cascade and its unit is not the site's, no site value
+ * of the cascade is shown.
+ *
+ * @param {Attributes}                    site        The site values.
+ * @param {Attributes}                    attributes  The instance's attributes.
+ * @param {Object<string, {default: *}>} definitions The block type's attribute definitions.
+ * @param {import('./supported-blocks').SiteStylesCascade[]} [cascades] The attribute cascades; a block without any keeps every site value.
+ *
+ * @since TBD
+ *
+ * @return {Attributes} The site values the instance takes.
+ */
+export function withoutOverridden(site, attributes, definitions, cascades = []) {
+	const isOwn = (name) => {
+		const instance = attributes[name];
+
+		return instance !== undefined && instance !== null && !isEqual(instance, definitions[name]?.default);
+	};
+	let kept = { ...site };
+
+	cascades.forEach(({ unit, values }) => {
+		const names = unit ? [...values, unit] : values;
+		const instanceUnit = attributes[unit] ?? definitions[unit]?.default;
+		const siteUnit = site[unit] ?? definitions[unit]?.default;
+
+		if (unit && names.some(isOwn) && instanceUnit !== siteUnit) {
+			kept = omit(kept, names);
+			return;
+		}
+
+		let overridden = false;
+
+		values.forEach((name) => {
+			if (overridden) {
+				delete kept[name];
+			}
+
+			overridden = overridden || isOwn(name);
+		});
+	});
+
+	return kept;
 }
 
 /**
@@ -356,7 +409,8 @@ export function unmerge(next, shown, stored) {
  * Filters a write from a block shown with site values merged in, so no site
  * value is stored in the instance: for each written attribute that has a site
  * value, only the changed leaves are kept, and an unchanged attribute is
- * dropped.
+ * dropped. The values of a cascade keep the unit they were shown in, so a value
+ * the user changes while the site's unit is shown is stored with that unit.
  *
  * A write that starts the instance setting one of its block's groups is the
  * exception. The group then takes no site values, so the whole group is
@@ -369,9 +423,11 @@ export function unmerge(next, shown, stored) {
  * @param {Attributes}                    site          The site values.
  * @param {string[][]}                    [groups]      The block's groups of attribute names.
  * @param {Object<string, {default: *}>} [definitions] The block type's attribute definitions.
+ * @param {Object<string, string[]>}      [legacy]      First attribute of a group => older attributes that stand in for it.
+ * @param {import('./supported-blocks').SiteStylesCascade[]} [cascades] The block's cascades.
  * @return {Attributes} The attributes to store.
  */
-export function guardWrite(written, shown, stored, site, groups = [], definitions = {}) {
+export function guardWrite(written, shown, stored, site, groups = [], definitions = {}, legacy = {}, cascades = []) {
 	const kept = {};
 
 	Object.keys(written).forEach((name) => {
@@ -388,7 +444,10 @@ export function guardWrite(written, shown, stored, site, groups = [], definition
 	});
 
 	groups.forEach((group) => {
-		if (setsGroup(stored, group, definitions) || !setsGroup({ ...stored, ...kept }, group, definitions)) {
+		if (
+			setsGroup(stored, group, definitions, legacy) ||
+			!setsGroup({ ...stored, ...kept }, group, definitions, legacy)
+		) {
 			return;
 		}
 
@@ -399,6 +458,22 @@ export function guardWrite(written, shown, stored, site, groups = [], definition
 				kept[name] = value;
 			}
 		});
+	});
+
+	cascades.forEach(({ unit, values }) => {
+		const unitShown = shown[unit] !== undefined && !isEqual(shown[unit], stored[unit]);
+		const changed = values.some((name) => name in kept && !isEqual(kept[name], stored[name]));
+
+		if (!unit || unit in kept || !changed) {
+			return;
+		}
+
+		// A unit written with the values that differs from the one shown was picked, even when it is the stored one.
+		if (unit in written && !isEqual(written[unit], shown[unit])) {
+			kept[unit] = written[unit];
+		} else if (unitShown) {
+			kept[unit] = shown[unit];
+		}
 	});
 
 	return kept;
@@ -425,22 +500,43 @@ export function panelAttributes(blockName, defaults, site, current) {
 
 /**
  * Whether an instance sets a group itself: it has a value other than the
- * block's default for any of the group's attributes.
+ * block's default for any of the group's attributes, or a value in an older
+ * attribute that stands in for the group.
  *
  * @param {Attributes}                    attributes  The instance's attributes.
  * @param {string[]}                      group       The group's attribute names.
  * @param {Object<string, {default: *}>} definitions The block type's attribute definitions.
+ * @param {Object<string, string[]>}      [legacy]    First attribute of a group => older attributes that stand in for it.
  *
  * @since TBD
  *
  * @return {boolean} Whether the instance sets the group.
  */
-function setsGroup(attributes, group, definitions) {
-	return group.some((name) => {
+function setsGroup(attributes, group, definitions, legacy = {}) {
+	const ownsMember = group.some((name) => {
 		const value = attributes[name];
 
 		return undefined !== value && null !== value && !isEqual(value, definitions[name]?.default);
 	});
+
+	return ownsMember || (legacy[group[0]] || []).some((name) => holdsValue(attributes[name]));
+}
+
+/**
+ * Whether a value holds a number or a string that isn't empty, anywhere in it.
+ *
+ * @param {*} value A value.
+ *
+ * @since TBD
+ *
+ * @return {boolean} Whether it holds a value.
+ */
+function holdsValue(value) {
+	if (isObjectLike(value)) {
+		return Object.values(value).some(holdsValue);
+	}
+
+	return 'number' === typeof value || ('string' === typeof value && '' !== value);
 }
 
 /**

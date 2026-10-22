@@ -14,6 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Cascades_Site_Styles;
 use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Prints_Site_Rules;
 use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Supports_Site_Styles;
 use KadenceWP\KadenceBlocks\Utils\Cast;
@@ -23,7 +24,7 @@ use KadenceWP\KadenceBlocks\Utils\Cast;
  *
  * @category class
  */
-class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block implements Supports_Site_Styles, Prints_Site_Rules {
+class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block implements Supports_Site_Styles, Prints_Site_Rules, Cascades_Site_Styles {
 
 	/**
 	 * Instance of this class
@@ -571,22 +572,57 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block imple
 	/**
 	 * The size preset and width type set classes on the markup, and the width
 	 * renders only with a fixed width type; the editor sets the icon size and
-	 * padding inline.
+	 * icon padding inline. Padding, margin and the shadows are here because a
+	 * design token preset points them at its variables in the button's own rule,
+	 * which outranks a site rule: as attributes they land after that bridge in
+	 * the same rule and win it. As for every overlay value, a button can't pick
+	 * the block's default over a site value, as it can't tell it from none.
 	 *
 	 * @since TBD
 	 */
 	public function site_styles_overlay_attributes(): array {
+		$cascaded = [];
+
+		foreach ( $this->site_styles_cascades() as $cascade ) {
+			$cascaded = array_merge( $cascaded, isset( $cascade['unit'] ) ? [ $cascade['unit'] ] : [], $cascade['values'] );
+		}
+
+		return array_merge(
+			[
+				'sizePreset',
+				'widthType',
+				'width',
+				'widthUnit',
+				'iconSize',
+				'iconSizeUnit',
+				'iconPadding',
+				'tabletIconPadding',
+				'mobileIconPadding',
+				'iconPaddingUnit',
+				'displayShadow',
+				'shadow',
+				'displayHoverShadow',
+				'shadowHover',
+			],
+			$cascaded
+		);
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_cascades(): array {
 		return [
-			'sizePreset',
-			'widthType',
-			'width',
-			'widthUnit',
-			'iconSize',
-			'iconSizeUnit',
-			'iconPadding',
-			'tabletIconPadding',
-			'mobileIconPadding',
-			'iconPaddingUnit',
+			[
+				'unit'   => 'paddingUnit',
+				'values' => [ 'padding', 'tabletPadding', 'mobilePadding' ],
+			],
+			[
+				'unit'   => 'marginUnit',
+				'values' => [ 'margin', 'tabletMargin', 'mobileMargin' ],
+			],
 		];
 	}
 

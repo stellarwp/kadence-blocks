@@ -10,12 +10,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Groups_Site_Styles;
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Supports_Site_Styles;
+
 /**
  * Class to Build the Countdown Block.
  *
  * @category class
  */
-class Kadence_Blocks_Countdown_Block extends Kadence_Blocks_Abstract_Block {
+class Kadence_Blocks_Countdown_Block extends Kadence_Blocks_Abstract_Block implements Supports_Site_Styles, Groups_Site_Styles {
 
 	/**
 	 * Instance of this class
@@ -661,7 +664,64 @@ class Kadence_Blocks_Countdown_Block extends Kadence_Blocks_Abstract_Block {
 		wp_set_script_translations( 'kadence-blocks-countdown', 'kadence-blocks' );
 	}
 
+	/**
+	 * The editor paints every Countdown value itself, in its own style tag, and
+	 * the instance rule outranks core's, so every site value goes through the
+	 * overlay.
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_overlay_attributes(): array {
+		return array_merge( array_merge( ...$this->site_styles_attribute_groups() ), [ 'background', 'itemBackground', 'numberColor', 'labelColor' ] );
+	}
 
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_attributes_map(): array {
+		return [];
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_supports(): array {
+		return [];
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_selectors(): array {
+		return [];
+	}
+
+	/**
+	 * Each spacing and border takes its devices and unit or color with it, each
+	 * radius its sides, and each font is kept whole, for the container and the
+	 * count items.
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_attribute_groups(): array {
+		return [
+			[ 'containerPadding', 'containerTabletPadding', 'containerMobilePadding', 'paddingType' ],
+			[ 'containerMargin', 'containerTabletMargin', 'containerMobileMargin', 'marginType' ],
+			[ 'border', 'borderWidth', 'tabletBorderWidth', 'mobileBorderWidth' ],
+			[ 'borderRadius' ],
+			[ 'itemPadding', 'itemTabletPadding', 'itemMobilePadding', 'itemPaddingType' ],
+			[ 'itemBorder', 'itemBorderWidth', 'itemTabletBorderWidth', 'itemMobileBorderWidth' ],
+			[ 'itemBorderRadius' ],
+			[ 'numberFont' ],
+			[ 'labelFont' ],
+		];
+	}
 }
 
 Kadence_Blocks_Countdown_Block::get_instance();

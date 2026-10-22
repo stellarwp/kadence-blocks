@@ -75,6 +75,7 @@ function LayoutControls({
 	innerItemCount,
 	widthString,
 	previewDevice,
+	isSiteStylesPanel,
 }) {
 	const {
 		uniqueID,
@@ -322,40 +323,42 @@ function LayoutControls({
 				{showSettings('basicLayout', 'kadence/rowlayout') && (
 					<>
 						<KadencePanelBody panelName={'kb-row-basic-layout'}>
-							<StepControls
-								label={__('Columns', 'kadence-blocks')}
-								value={columns}
-								onChange={(nextColumns) => {
-									updateColumns(innerItemCount, nextColumns);
-									setAttributes({
-										columns: nextColumns,
-										colLayout: 'equal',
-										firstColumnWidth: undefined,
-										secondColumnWidth: undefined,
-										thirdColumnWidth: undefined,
-										fourthColumnWidth: undefined,
-										fifthColumnWidth: undefined,
-										sixthColumnWidth: undefined,
-										firstColumnWidthTablet: undefined,
-										secondColumnWidthTablet: undefined,
-										thirdColumnWidthTablet: undefined,
-										fourthColumnWidthTablet: undefined,
-										fifthColumnWidthTablet: undefined,
-										sixthColumnWidthTablet: undefined,
-										firstColumnWidthMobile: undefined,
-										secondColumnWidthMobile: undefined,
-										thirdColumnWidthMobile: undefined,
-										fourthColumnWidthMobile: undefined,
-										fifthColumnWidthMobile: undefined,
-										sixthColumnWidthMobile: undefined,
-										tabletLayout: 'inherit',
-										mobileLayout: 'row',
-									});
-								}}
-								min={1}
-								max={6}
-							/>
-							{columns > 1 && (
+							{!isSiteStylesPanel && (
+								<StepControls
+									label={__('Columns', 'kadence-blocks')}
+									value={columns}
+									onChange={(nextColumns) => {
+										updateColumns(innerItemCount, nextColumns);
+										setAttributes({
+											columns: nextColumns,
+											colLayout: 'equal',
+											firstColumnWidth: undefined,
+											secondColumnWidth: undefined,
+											thirdColumnWidth: undefined,
+											fourthColumnWidth: undefined,
+											fifthColumnWidth: undefined,
+											sixthColumnWidth: undefined,
+											firstColumnWidthTablet: undefined,
+											secondColumnWidthTablet: undefined,
+											thirdColumnWidthTablet: undefined,
+											fourthColumnWidthTablet: undefined,
+											fifthColumnWidthTablet: undefined,
+											sixthColumnWidthTablet: undefined,
+											firstColumnWidthMobile: undefined,
+											secondColumnWidthMobile: undefined,
+											thirdColumnWidthMobile: undefined,
+											fourthColumnWidthMobile: undefined,
+											fifthColumnWidthMobile: undefined,
+											sixthColumnWidthMobile: undefined,
+											tabletLayout: 'inherit',
+											mobileLayout: 'row',
+										});
+									}}
+									min={1}
+									max={6}
+								/>
+							)}
+							{!isSiteStylesPanel && columns > 1 && (
 								<SmallResponsiveControl
 									label={__('Layout', 'kadence-blocks')}
 									desktopChildren={
@@ -552,32 +555,35 @@ function LayoutControls({
 								units={['px', 'em', 'rem']}
 								reset={true}
 							/>
-							{(colLayout === 'grid-layout' ||
-								innerItemCount > columns ||
-								previewDevice != 'Desktop') && (
-								<>
-									<SelectControl
-										label={__('Collapse Order', 'kadence-blocks')}
-										value={collapseOrder}
-										options={[
-											{ value: 'left-to-right', label: __('Normal ->', 'kadence-blocks') },
-											{ value: 'right-to-left', label: __('Reverse <-', 'kadence-blocks') },
-										]}
-										onChange={(value) => setAttributes({ collapseOrder: value })}
-									/>
-								</>
-							)}
+							{!isSiteStylesPanel &&
+								(colLayout === 'grid-layout' ||
+									innerItemCount > columns ||
+									previewDevice != 'Desktop') && (
+									<>
+										<SelectControl
+											label={__('Collapse Order', 'kadence-blocks')}
+											value={collapseOrder}
+											options={[
+												{ value: 'left-to-right', label: __('Normal ->', 'kadence-blocks') },
+												{ value: 'right-to-left', label: __('Reverse <-', 'kadence-blocks') },
+											]}
+											onChange={(value) => setAttributes({ collapseOrder: value })}
+										/>
+									</>
+								)}
 						</KadencePanelBody>
 						<KadencePanelBody
 							title={__('Content Max Width', 'kadence-blocks')}
 							initialOpen={true}
 							panelName={'kb-row-max-width'}
 						>
-							<ToggleControl
-								label={__('Inherit Max Width from Theme?', 'kadence-blocks')}
-								checked={undefined !== inheritMaxWidth ? inheritMaxWidth : false}
-								onChange={(value) => setAttributes({ inheritMaxWidth: value })}
-							/>
+							{!isSiteStylesPanel && (
+								<ToggleControl
+									label={__('Inherit Max Width from Theme?', 'kadence-blocks')}
+									checked={undefined !== inheritMaxWidth ? inheritMaxWidth : false}
+									onChange={(value) => setAttributes({ inheritMaxWidth: value })}
+								/>
+							)}
 							{inheritMaxWidth !== true && (
 								<ResponsiveRangeControls
 									label={__('Custom Content Max Width', 'kadence-blocks')}
@@ -645,7 +651,7 @@ function LayoutControls({
 				)}
 			</>
 			<div className="kt-sidebar-settings-spacer"></div>
-			{showSettings('dividers', 'kadence/rowlayout') && (
+			{!isSiteStylesPanel && showSettings('dividers', 'kadence/rowlayout') && (
 				<>
 					<KadencePanelBody
 						title={__('Top Divider', 'kadence-blocks')}

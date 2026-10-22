@@ -11,13 +11,25 @@ import {
 	toKadenceColor,
 	toStoredForm,
 	unmerge,
+	withoutOverridden,
 	withStoredForm,
 } from '../store';
+import cascadeConformance from './fixtures/cascade-conformance.json';
 import conformance from './fixtures/merge-conformance.json';
 import groupConformance from './fixtures/group-conformance.json';
 import scopeConformance from './fixtures/scope-conformance.json';
 import singleButton from './fixtures/singlebtn-entry.json';
+import section from './fixtures/column-entry.json';
 import showMore from './fixtures/show-more-entry.json';
+import rowLayout from './fixtures/rowlayout-entry.json';
+import countUp from './fixtures/countup-entry.json';
+import infoBox from './fixtures/infobox-entry.json';
+import countdown from './fixtures/countdown-entry.json';
+import table from './fixtures/table-entry.json';
+import posts from './fixtures/posts-entry.json';
+import progressBar from './fixtures/progress-bar-entry.json';
+import testimonials from './fixtures/testimonials-entry.json';
+import testimonial from './fixtures/testimonial-entry.json';
 
 const BLOCK = 'kadence/singlebtn';
 const UNSCOPED = 'kadence/show-more';
@@ -72,7 +84,24 @@ describe('groupSiteAttributes', () => {
 			Object.entries(c.defaults).map(([key, value]) => [key, { default: value }])
 		);
 
-		expect(groupSiteAttributes(c.site, c.instance, c.groups, definitions)).toEqual(c.expected);
+		expect(groupSiteAttributes(c.site, c.instance, c.groups, definitions, c.legacy)).toEqual(c.expected);
+	});
+});
+
+describe('withoutOverridden', () => {
+	const { cascades, defaults, cases } = cascadeConformance;
+	const definitions = Object.fromEntries(Object.entries(defaults).map(([name, value]) => [name, { default: value }]));
+
+	it.each(cases.map((c) => [c.name, c]))('%s', (name, c) => {
+		expect(withoutOverridden(c.site, c.instance, definitions, cascades)).toEqual(c.expected);
+	});
+
+	it('leaves the site values it is given untouched', () => {
+		const site = { padding: [20, 40, 20, 40], mobilePadding: [6, 12, 6, 12] };
+
+		withoutOverridden(site, { padding: [2, 10, 2, 10] }, definitions, cascades);
+
+		expect(site).toEqual({ padding: [20, 40, 20, 40], mobilePadding: [6, 12, 6, 12] });
 	});
 });
 
@@ -180,6 +209,228 @@ describe('siteAttributes', () => {
 		expect(siteAttributes(record, UNSCOPED)).toEqual({ heightDesktop: 300, textColor: '#222222' });
 	});
 
+	it("keeps only Section's overlay attributes, leaving its layout and Pro settings to each block", () => {
+		window.kadenceSiteStyles.blocks['kadence/column'] = section;
+		const record = {
+			settings: {
+				custom: {
+					kadence: {
+						column: {
+							padding: [2, 2, 2, 2],
+							textColor: '#222222',
+							margin: [10, 0, 10, 0],
+							backdropFilterType: 'blur',
+							kadenceAnimation: 'fade-in',
+							kadenceBlockCSS: 'selector { color: red; }',
+						},
+					},
+				},
+			},
+		};
+
+		expect(siteAttributes(record, 'kadence/column')).toEqual({ padding: [2, 2, 2, 2], textColor: '#222222' });
+	});
+
+	it("keeps only Row Layout's overlay attributes, leaving its structure, layout and Pro settings to each row", () => {
+		window.kadenceSiteStyles.blocks['kadence/rowlayout'] = rowLayout;
+		const record = {
+			settings: {
+				custom: {
+					kadence: {
+						rowlayout: {
+							padding: [2, '', 2, ''],
+							bgColor: '#ff0000',
+							kbVersion: 2,
+							columns: 3,
+							colLayout: 'left-golden',
+							verticalAlignment: 'middle',
+							minHeight: 400,
+							inheritMaxWidth: true,
+							kadenceBlockCSS: 'selector { color: red; }',
+							kadenceConditional: { postData: { enable: true } },
+						},
+					},
+				},
+			},
+		};
+
+		expect(siteAttributes(record, 'kadence/rowlayout')).toEqual({ padding: [2, '', 2, ''], bgColor: '#ff0000' });
+	});
+
+	it("keeps only Count Up's overlay attributes, leaving its numbers and timing to each block", () => {
+		window.kadenceSiteStyles.blocks['kadence/countup'] = countUp;
+		const record = {
+			settings: {
+				custom: {
+					kadence: {
+						countup: {
+							numberColor: '#cc0000',
+							titleAlign: ['center', '', ''],
+							start: 5,
+							end: 50,
+							duration: 9,
+							displayTitle: false,
+							titleMinHeight: [40, '', ''],
+							kadenceBlockCSS: 'selector { color: red; }',
+						},
+					},
+				},
+			},
+		};
+
+		expect(siteAttributes(record, 'kadence/countup')).toEqual({
+			numberColor: '#cc0000',
+			titleAlign: ['center', '', ''],
+			titleMinHeight: [40, '', ''],
+		});
+	});
+
+	it("keeps only Info Box's overlay attributes, leaving its content, media and layout to each box", () => {
+		window.kadenceSiteStyles.blocks['kadence/infobox'] = infoBox;
+		const record = {
+			settings: {
+				custom: {
+					kadence: {
+						infobox: {
+							containerBackground: '#fff3cd',
+							titleColor: '#123456',
+							mediaIcon: [{ size: 99 }],
+							hAlign: 'left',
+							fullHeight: true,
+							containerBorder: '#00ffff',
+							kadenceBlockCSS: 'selector { color: red; }',
+						},
+					},
+				},
+			},
+		};
+
+		expect(siteAttributes(record, 'kadence/infobox')).toEqual({
+			containerBackground: '#fff3cd',
+			titleColor: '#123456',
+		});
+	});
+
+	it("keeps only Countdown's overlay attributes, leaving its timing and layout to each block", () => {
+		window.kadenceSiteStyles.blocks['kadence/countdown'] = countdown;
+		const record = {
+			settings: {
+				custom: {
+					kadence: {
+						countdown: {
+							background: '#fff3cd',
+							numberColor: '#cc0000',
+							timerLayout: 'inline',
+							preLabelColor: '#ff0000',
+							date: '2030-01-01T00:00:00',
+						},
+					},
+				},
+			},
+		};
+
+		expect(siteAttributes(record, 'kadence/countdown')).toEqual({ background: '#fff3cd', numberColor: '#cc0000' });
+	});
+
+	it("keeps only Table's overlay attributes, leaving its structure and columns to each table", () => {
+		window.kadenceSiteStyles.blocks['kadence/table'] = table;
+		const record = {
+			settings: {
+				custom: {
+					kadence: {
+						table: {
+							headerAlign: 'left',
+							cellPaddingType: 'px',
+							columns: 4,
+							isFirstRowHeader: false,
+							columnBackgrounds: ['#ff0000'],
+							maxHeight: [200, '', ''],
+						},
+					},
+				},
+			},
+		};
+
+		expect(siteAttributes(record, 'kadence/table')).toEqual({ headerAlign: 'left', cellPaddingType: 'px' });
+	});
+
+	it("keeps only Testimonials' container, spacing and fonts, leaving what its testimonials read to each block", () => {
+		window.kadenceSiteStyles.blocks['kadence/testimonials'] = testimonials;
+		const record = {
+			settings: {
+				custom: {
+					kadence: {
+						testimonials: {
+							containerBackground: '#fff3cd',
+							gap: [40, '', ''],
+							style: 'bubble',
+							layout: 'carousel',
+							titleFont: [{ color: '#00ff00' }],
+						},
+					},
+				},
+			},
+		};
+
+		expect(siteAttributes(record, 'kadence/testimonials')).toEqual({
+			containerBackground: '#fff3cd',
+			gap: [40, '', ''],
+		});
+	});
+
+	it("keeps only Testimonial's icon size and color, leaving its media, icon and rating to each testimonial", () => {
+		window.kadenceSiteStyles.blocks['kadence/testimonial'] = testimonial;
+		const record = {
+			settings: {
+				custom: { kadence: { testimonial: { isize: 80, color: '#ff0000', media: 'icon', rating: 2 } } },
+			},
+		};
+
+		expect(siteAttributes(record, 'kadence/testimonial')).toEqual({ isize: 80, color: '#ff0000' });
+	});
+
+	it("keeps only Progress Bar's look, leaving its type, content and animation to each bar", () => {
+		window.kadenceSiteStyles.blocks['kadence/progress-bar'] = progressBar;
+		const record = {
+			settings: {
+				custom: {
+					kadence: {
+						'progress-bar': {
+							progressColor: '#ff0000',
+							progressWidth: 4,
+							barType: 'circle',
+							label: 'Site label',
+							duration: 5,
+						},
+					},
+				},
+			},
+		};
+
+		expect(siteAttributes(record, 'kadence/progress-bar')).toEqual({ progressColor: '#ff0000', progressWidth: 4 });
+	});
+
+	it("keeps only Posts' look, leaving its parts, labels and query to each block", () => {
+		window.kadenceSiteStyles.blocks['kadence/posts'] = posts;
+		const record = {
+			settings: {
+				custom: {
+					kadence: {
+						posts: {
+							loopStyle: 'unboxed',
+							categoriesStyle: 'pill',
+							image: false,
+							readmoreLabel: 'Site label',
+							postType: 'page',
+						},
+					},
+				},
+			},
+		};
+
+		expect(siteAttributes(record, 'kadence/posts')).toEqual({ loopStyle: 'unboxed', categoriesStyle: 'pill' });
+	});
+
 	it("keeps only Show More's overlay attributes, leaving its expand behavior to each block", () => {
 		window.kadenceSiteStyles.blocks['kadence/show-more'] = showMore;
 		const record = {
@@ -215,7 +466,7 @@ describe('siteAttributes', () => {
 	it('gives nothing for a missing record, an empty store or an unsupported block', () => {
 		expect(siteAttributes(undefined, BLOCK)).toEqual({});
 		expect(siteAttributes({ settings: { custom: { kadence: { singlebtn: [] } } } }, BLOCK)).toEqual({});
-		expect(siteAttributes({ settings: { custom: { kadence: { infobox: { a: 1 } } } } }, 'kadence/infobox')).toEqual(
+		expect(siteAttributes({ settings: { custom: { kadence: { lottie: { a: 1 } } } } }, 'kadence/lottie')).toEqual(
 			{}
 		);
 	});
@@ -457,6 +708,72 @@ describe('write guard', () => {
 		expect(mergeAttributes({ ...stored, inheritStyles: 'outline' }, outlineSite, definitions).background).toBe('');
 	});
 
+	describe('with a unit shared by the values', () => {
+		const cascades = [{ unit: 'paddingUnit', values: ['padding', 'tabletPadding', 'mobilePadding'] }];
+		const unitDefinitions = {
+			paddingUnit: { default: 'px' },
+			padding: { default: ['', '', '', ''] },
+			tabletPadding: { default: ['', '', '', ''] },
+			mobilePadding: { default: ['', '', '', ''] },
+		};
+		const emSite = { paddingUnit: 'em', padding: [1, 2, 1, 2] };
+		const stored = { paddingUnit: 'px', padding: ['', '', '', ''] };
+
+		it("stores the site's unit with the values the user changes, so they stay in the unit they were shown in", () => {
+			const shown = mergeAttributes(stored, emSite, unitDefinitions);
+
+			expect(guardWrite({ padding: [2, 2, 1, 2] }, shown, stored, emSite, [], {}, {}, cascades)).toEqual({
+				padding: [2, '', '', ''],
+				paddingUnit: 'em',
+			});
+		});
+
+		it('stores no unit when the one shown is the one already stored', () => {
+			const pxSite = { padding: [20, 40, 20, 40] };
+			const shown = mergeAttributes(stored, pxSite, unitDefinitions);
+
+			expect(guardWrite({ padding: [30, 40, 20, 40] }, shown, stored, pxSite, [], {}, {}, cascades)).toEqual({
+				padding: [30, '', '', ''],
+			});
+		});
+
+		it('stores no unit for a write that changes nothing, such as a reset of a value without a site value', () => {
+			const withTablet = { ...stored, tabletPadding: ['', '', '', ''] };
+			const shown = mergeAttributes(withTablet, emSite, unitDefinitions);
+
+			expect(
+				guardWrite({ tabletPadding: ['', '', '', ''] }, shown, withTablet, emSite, [], {}, {}, cascades)
+			).toEqual({
+				tabletPadding: ['', '', '', ''],
+			});
+		});
+
+		it('keeps the unit the user picks in the same write as a value, even when it is the stored one', () => {
+			const shown = mergeAttributes(stored, emSite, unitDefinitions);
+
+			expect(
+				guardWrite({ padding: [2, 2, 1, 2], paddingUnit: 'px' }, shown, stored, emSite, [], {}, {}, cascades)
+			).toEqual({
+				padding: [2, '', '', ''],
+				paddingUnit: 'px',
+			});
+		});
+
+		it('keeps the unit the user picks', () => {
+			const shown = mergeAttributes(stored, emSite, unitDefinitions);
+
+			expect(guardWrite({ paddingUnit: 'rem' }, shown, stored, emSite, [], {}, {}, cascades)).toEqual({
+				paddingUnit: 'rem',
+			});
+		});
+
+		it('leaves a write that touches no value of the cascade alone', () => {
+			const shown = mergeAttributes(stored, emSite, unitDefinitions);
+
+			expect(guardWrite({ text: 'Buy' }, shown, stored, emSite, [], {}, {}, cascades)).toEqual({ text: 'Buy' });
+		});
+	});
+
 	it('unmerge returns the stored value for an unchanged write', () => {
 		expect(unmerge('palette2', 'palette2', '')).toBe('');
 	});
@@ -480,6 +797,15 @@ describe('write guard with groups', () => {
 			spacerHeight: 5,
 			tabletSpacerHeight: 30,
 			spacerHeightUnits: 'rem',
+		});
+	});
+
+	it('copies nothing when an older attribute already sets the group', () => {
+		const legacy = { spacerHeight: ['legacyHeight'] };
+		const stored = { ...untouched, legacyHeight: 80 };
+
+		expect(guardWrite({ spacerHeight: 5 }, shown, stored, site, groups, definitions, legacy)).toEqual({
+			spacerHeight: 5,
 		});
 	});
 

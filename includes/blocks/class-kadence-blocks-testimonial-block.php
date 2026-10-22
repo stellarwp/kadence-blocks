@@ -10,12 +10,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Groups_Site_Styles;
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Supports_Site_Styles;
+
 /**
  * Class to Build the Testimonial Block.
  *
  * @category class
  */
-class Kadence_Blocks_Testimonial_Block extends Kadence_Blocks_Abstract_Block {
+class Kadence_Blocks_Testimonial_Block extends Kadence_Blocks_Abstract_Block implements Supports_Site_Styles, Groups_Site_Styles {
 
 	/**
 	 * Instance of this class
@@ -60,6 +63,22 @@ class Kadence_Blocks_Testimonial_Block extends Kadence_Blocks_Abstract_Block {
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
 
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
+
+		// The icon's width and height attributes carry the desktop size, so only tablet and mobile need rules.
+		if ( isset( $attributes['media'] ) && 'icon' === $attributes['media'] ) {
+			$css->set_selector( '.kt-testimonial-item-' . $unique_id . ' .kt-svg-testimonial-icon svg' );
+			foreach ( [
+				'tablet' => 'tabletIsize',
+				'mobile' => 'mobileIsize',
+			] as $device => $key ) {
+				if ( isset( $attributes[ $key ] ) && is_numeric( $attributes[ $key ] ) ) {
+					$css->set_media_state( $device );
+					$css->add_property( 'width', $attributes[ $key ] . 'px' );
+					$css->add_property( 'height', $attributes[ $key ] . 'px' );
+				}
+			}
+			$css->set_media_state( 'desktop' );
+		}
 
 		return $css->css_output();
 	}
@@ -386,6 +405,55 @@ class Kadence_Blocks_Testimonial_Block extends Kadence_Blocks_Abstract_Block {
 		$content .= '</div>';
 
 		return $content;
+	}
+
+	/**
+	 * The media icon's desktop size and color are printed on its SVG, its tablet
+	 * and mobile sizes in the instance rule, and the editor paints them all
+	 * inline, so every site value goes through the overlay.
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_overlay_attributes(): array {
+		return array_merge( array_merge( ...$this->site_styles_attribute_groups() ), [ 'color' ] );
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_attributes_map(): array {
+		return [];
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_supports(): array {
+		return [];
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_selectors(): array {
+		return [];
+	}
+
+	/**
+	 * The icon size keeps its tablet and mobile values.
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_attribute_groups(): array {
+		return [
+			[ 'isize', 'tabletIsize', 'mobileIsize' ],
+		];
 	}
 }
 

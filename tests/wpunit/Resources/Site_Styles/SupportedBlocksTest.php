@@ -5,7 +5,9 @@ declare( strict_types=1 );
 namespace Tests\wpunit\Resources\Site_Styles;
 
 use Generator;
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Cascades_Site_Styles;
 use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Groups_Site_Styles;
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Legacy_Group_Attributes;
 use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Prints_Site_Rules;
 use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Scopes_Site_Styles;
 use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Supports_Site_Styles;
@@ -82,6 +84,30 @@ final class SupportedBlocksTest extends TestCase {
 		}
 	}
 
+	/**
+	 * Every attribute in a supported block's cascades is one the block has and lists for the overlay.
+	 *
+	 * @return void
+	 */
+	public function testEveryCascadeAttributeIsAnOverlayAttributeOfItsBlock(): void {
+		$cascaded = array_filter(
+			$this->container->get( Supported_Blocks::class )->all(),
+			static fn( $block ): bool => $block instanceof Cascades_Site_Styles
+		);
+
+		$this->assertArrayHasKey( 'kadence/singlebtn', $cascaded );
+		foreach ( $cascaded as $name => $block ) {
+			$attributes = WP_Block_Type_Registry::get_instance()->get_registered( $name )->attributes;
+
+			foreach ( $block->site_styles_cascades() as $cascade ) {
+				foreach ( array_merge( isset( $cascade['unit'] ) ? [ $cascade['unit'] ] : [], $cascade['values'] ) as $attribute ) {
+					$this->assertArrayHasKey( $attribute, $attributes, "{$name}: a cascade lists {$attribute}, which the block doesn't have." );
+					$this->assertContains( $attribute, $block->site_styles_overlay_attributes(), "{$name}: a cascade lists {$attribute}, which the overlay doesn't." );
+				}
+			}
+		}
+	}
+
 	public function testEveryScopedBlockExcludesItsScopeAndScopesOnlyItsAttributes(): void {
 		$scoped = array_filter(
 			$this->container->get( Supported_Blocks::class )->all(),
@@ -113,7 +139,7 @@ final class SupportedBlocksTest extends TestCase {
 	}
 
 	public function testAnUnsupportedBlockGivesNothing(): void {
-		$this->assertNull( $this->container->get( Supported_Blocks::class )->get( 'kadence/infobox' ) );
+		$this->assertNull( $this->container->get( Supported_Blocks::class )->get( 'kadence/form' ) );
 	}
 
 	/**
@@ -142,6 +168,33 @@ final class SupportedBlocksTest extends TestCase {
 	}
 
 	/**
+	 * Section takes its padding, min height, background, borders, radius, shadows and text colors through the
+	 * overlay, in nine groups, with no scope, no site rules and no core surface, and keeps its layout,
+	 * structure and behavior settings per block.
+	 *
+	 * @return void
+	 */
+	public function testSectionDescribesItsSiteStyles(): void {
+		$block = $this->container->get( Supported_Blocks::class )->get( 'kadence/column' );
+
+		$this->assertNotNull( $block );
+		$this->assertSame( 'column', $block->get_slug() );
+		$this->assertNotInstanceOf( Scopes_Site_Styles::class, $block );
+		$this->assertInstanceOf( Groups_Site_Styles::class, $block );
+		$this->assertSame( [], $block->site_styles_attributes_map() );
+		$this->assertSame( [], $block->site_styles_supports() );
+		$this->assertSame( [], $block->site_styles_selectors() );
+		$this->assertCount( 33, $block->site_styles_overlay_attributes() );
+		$this->assertCount( 9, $block->site_styles_attribute_groups() );
+		$this->assertInstanceOf( Legacy_Group_Attributes::class, $block );
+		$this->assertSame( [ 'padding', 'borderStyle', 'borderHoverStyle' ], array_keys( $block->site_styles_legacy_group_attributes() ) );
+		$this->assertSame( array_values( array_unique( $block->site_styles_overlay_attributes() ) ), $block->site_styles_overlay_attributes() );
+		foreach ( [ 'margin', 'textAlign', 'maxWidth', 'direction', 'htmlTag', 'zIndex', 'sticky', 'backgroundType', 'backgroundImg', 'overlay', 'topPadding', 'borderWidth', 'kbVersion', 'templateLock' ] as $attribute ) {
+			$this->assertContains( $attribute, Supported_Blocks::excluded_attributes( $block ) );
+		}
+	}
+
+	/**
 	 * Show More takes its collapsed height, fade, padding and margin through the overlay, in four groups,
 	 * with no scope, no site rules and no core surface, and keeps its expand behavior per block.
 	 *
@@ -160,6 +213,272 @@ final class SupportedBlocksTest extends TestCase {
 		$this->assertCount( 14, $block->site_styles_overlay_attributes() );
 		$this->assertSame( $block->site_styles_overlay_attributes(), array_merge( ...$block->site_styles_attribute_groups() ) );
 		foreach ( [ 'showHideMore', 'defaultExpandedDesktop', 'defaultExpandedTablet', 'defaultExpandedMobile', 'align', 'id', 'inQueryBlock' ] as $attribute ) {
+			$this->assertContains( $attribute, Supported_Blocks::excluded_attributes( $block ) );
+		}
+	}
+
+	/**
+	 * Row Layout takes its padding, margin, gutters, max width, border, radius, shadow, background color and
+	 * text colors through the overlay, in eight groups, with no scope, no site rules and no core surface, and
+	 * keeps its structure, layout, media and behavior settings per block.
+	 *
+	 * @return void
+	 */
+	public function testRowLayoutDescribesItsSiteStyles(): void {
+		$block = $this->container->get( Supported_Blocks::class )->get( 'kadence/rowlayout' );
+
+		$this->assertNotNull( $block );
+		$this->assertSame( 'rowlayout', $block->get_slug() );
+		$this->assertNotInstanceOf( Scopes_Site_Styles::class, $block );
+		$this->assertNotInstanceOf( Prints_Site_Rules::class, $block );
+		$this->assertInstanceOf( Groups_Site_Styles::class, $block );
+		$this->assertSame( [], $block->site_styles_attributes_map() );
+		$this->assertSame( [], $block->site_styles_supports() );
+		$this->assertSame( [], $block->site_styles_selectors() );
+		$this->assertCount( 35, $block->site_styles_overlay_attributes() );
+		$this->assertCount( 8, $block->site_styles_attribute_groups() );
+		$this->assertInstanceOf( Legacy_Group_Attributes::class, $block );
+		$this->assertSame(
+			[
+				'padding'     => [ 'topPadding', 'rightPadding', 'bottomPadding', 'leftPadding', 'topPaddingM', 'rightPaddingM', 'bottomPaddingM', 'leftPaddingM' ],
+				'margin'      => [ 'topMargin', 'bottomMargin', 'topMarginT', 'bottomMarginT', 'topMarginM', 'bottomMarginM' ],
+				'borderStyle' => [ 'border', 'tabletBorder', 'mobileBorder', 'borderWidth', 'tabletBorderWidth', 'mobileBorderWidth' ],
+			],
+			$block->site_styles_legacy_group_attributes()
+		);
+		$this->assertSame( array_values( array_unique( $block->site_styles_overlay_attributes() ) ), $block->site_styles_overlay_attributes() );
+		foreach ( [ 'kbVersion', 'columns', 'colLayout', 'firstColumnWidth', 'topPadding', 'topMarginT', 'border', 'borderWidth', 'tabletBorder', 'bgColorClass', 'backgroundSettingTab', 'bgImg', 'gradient', 'overlay', 'topSep', 'minHeight', 'verticalAlignment', 'inheritMaxWidth', 'columnsInnerHeight', 'breakoutLeft', 'zIndex', 'htmlTag', 'vsdesk', 'rcpAccess', 'templateLock' ] as $attribute ) {
+			$this->assertContains( $attribute, Supported_Blocks::excluded_attributes( $block ) );
+		}
+	}
+
+	/**
+	 * Count Up takes its title and number fonts, colors, alignment, min height, padding and margin through
+	 * the overlay, in ten groups, with no scope, no site rules and no core surface, and keeps its numbers, timing and
+	 * title toggle per block.
+	 *
+	 * @return void
+	 */
+	public function testCountUpDescribesItsSiteStyles(): void {
+		$block = $this->container->get( Supported_Blocks::class )->get( 'kadence/countup' );
+
+		$this->assertNotNull( $block );
+		$this->assertSame( 'countup', $block->get_slug() );
+		$this->assertNotInstanceOf( Scopes_Site_Styles::class, $block );
+		$this->assertNotInstanceOf( Prints_Site_Rules::class, $block );
+		$this->assertNotInstanceOf( Legacy_Group_Attributes::class, $block );
+		$this->assertInstanceOf( Groups_Site_Styles::class, $block );
+		$this->assertSame( [], $block->site_styles_attributes_map() );
+		$this->assertSame( [], $block->site_styles_supports() );
+		$this->assertSame( [], $block->site_styles_selectors() );
+		$this->assertCount( 24, $block->site_styles_overlay_attributes() );
+		$this->assertCount( 10, $block->site_styles_attribute_groups() );
+		$this->assertSame( array_values( array_unique( $block->site_styles_overlay_attributes() ) ), $block->site_styles_overlay_attributes() );
+		foreach ( [ 'title', 'displayTitle', 'start', 'end', 'prefix', 'suffix', 'duration', 'separator', 'decimal', 'decimalSpaces', 'titleHoverColor', 'numberHoverColor' ] as $attribute ) {
+			$this->assertContains( $attribute, Supported_Blocks::excluded_attributes( $block ) );
+		}
+	}
+
+	/**
+	 * Info Box takes its container, title and text styles through the overlay, in fifteen groups, with the
+	 * older border and background attributes standing in for their groups, no scope, no site rules and no
+	 * core surface, and keeps its content, media, Learn More and layout settings per box.
+	 *
+	 * @return void
+	 */
+	public function testInfoBoxDescribesItsSiteStyles(): void {
+		$block = $this->container->get( Supported_Blocks::class )->get( 'kadence/infobox' );
+
+		$this->assertNotNull( $block );
+		$this->assertSame( 'infobox', $block->get_slug() );
+		$this->assertNotInstanceOf( Scopes_Site_Styles::class, $block );
+		$this->assertNotInstanceOf( Prints_Site_Rules::class, $block );
+		$this->assertInstanceOf( Legacy_Group_Attributes::class, $block );
+		$this->assertSame( [], $block->site_styles_attributes_map() );
+		$this->assertSame( [], $block->site_styles_supports() );
+		$this->assertSame( [], $block->site_styles_selectors() );
+		$this->assertCount( 48, $block->site_styles_overlay_attributes() );
+		$this->assertCount( 15, $block->site_styles_attribute_groups() );
+		$this->assertSame(
+			[
+				'containerBackground'      => [ 'containerBackgroundOpacity' ],
+				'containerHoverBackground' => [ 'containerHoverBackgroundOpacity' ],
+				'borderStyle'              => [ 'containerBorder', 'containerBorderWidth', 'containerBorderRadius' ],
+				'borderRadius'             => [ 'containerBorder', 'containerBorderWidth', 'containerBorderRadius' ],
+				'borderHoverStyle'         => [ 'containerHoverBorder', 'containerBorderWidth' ],
+				'borderHoverRadius'        => [ 'containerHoverBorder', 'containerBorderRadius' ],
+			],
+			$block->site_styles_legacy_group_attributes()
+		);
+		$this->assertSame( array_values( array_unique( $block->site_styles_overlay_attributes() ) ), $block->site_styles_overlay_attributes() );
+		foreach ( [ 'title', 'contentText', 'link', 'mediaType', 'mediaIcon', 'mediaStyle', 'mediaNumber', 'learnMoreStyles', 'hAlign', 'mediaAlign', 'imageRatio', 'titleTagType', 'fullHeight', 'kbVersion', 'containerBorder', 'containerBorderOpacity' ] as $attribute ) {
+			$this->assertContains( $attribute, Supported_Blocks::excluded_attributes( $block ) );
+		}
+	}
+
+	/**
+	 * Countdown takes its container and count item styles and its number and label colors and fonts through
+	 * the overlay, in nine groups, with no scope, no site rules and no core surface, and keeps its timing,
+	 * content, pre and post text, layout and visibility settings per block.
+	 *
+	 * @return void
+	 */
+	public function testCountdownDescribesItsSiteStyles(): void {
+		$block = $this->container->get( Supported_Blocks::class )->get( 'kadence/countdown' );
+
+		$this->assertNotNull( $block );
+		$this->assertSame( 'countdown', $block->get_slug() );
+		$this->assertNotInstanceOf( Scopes_Site_Styles::class, $block );
+		$this->assertNotInstanceOf( Prints_Site_Rules::class, $block );
+		$this->assertNotInstanceOf( Legacy_Group_Attributes::class, $block );
+		$this->assertInstanceOf( Groups_Site_Styles::class, $block );
+		$this->assertSame( [], $block->site_styles_attributes_map() );
+		$this->assertSame( [], $block->site_styles_supports() );
+		$this->assertSame( [], $block->site_styles_selectors() );
+		$this->assertCount( 28, $block->site_styles_overlay_attributes() );
+		$this->assertCount( 9, $block->site_styles_attribute_groups() );
+		$this->assertSame( array_values( array_unique( $block->site_styles_overlay_attributes() ) ), $block->site_styles_overlay_attributes() );
+		foreach ( [ 'countdownType', 'date', 'timestamp', 'expireAction', 'timerLayout', 'countdownDivider', 'enableTimer', 'counterAlign', 'preLabel', 'preLabelColor', 'preLabelFont', 'postLabelFont', 'daysLabel', 'vsdesk' ] as $attribute ) {
+			$this->assertContains( $attribute, Supported_Blocks::excluded_attributes( $block ) );
+		}
+	}
+
+	/**
+	 * Table takes its fonts, alignments, row backgrounds, borders, cell padding, row height, spacing and max
+	 * width through the overlay, in thirteen groups, with no scope, no site rules and no core surface, and
+	 * keeps its structure, headers, caption, column settings and max height per table.
+	 *
+	 * @return void
+	 */
+	public function testTableDescribesItsSiteStyles(): void {
+		$block = $this->container->get( Supported_Blocks::class )->get( 'kadence/table' );
+
+		$this->assertNotNull( $block );
+		$this->assertSame( 'table', $block->get_slug() );
+		$this->assertNotInstanceOf( Scopes_Site_Styles::class, $block );
+		$this->assertNotInstanceOf( Prints_Site_Rules::class, $block );
+		$this->assertNotInstanceOf( Legacy_Group_Attributes::class, $block );
+		$this->assertInstanceOf( Groups_Site_Styles::class, $block );
+		$this->assertSame( [], $block->site_styles_attributes_map() );
+		$this->assertSame( [], $block->site_styles_supports() );
+		$this->assertSame( [], $block->site_styles_selectors() );
+		$this->assertCount( 40, $block->site_styles_overlay_attributes() );
+		$this->assertCount( 13, $block->site_styles_attribute_groups() );
+		$this->assertSame( array_values( array_unique( $block->site_styles_overlay_attributes() ) ), $block->site_styles_overlay_attributes() );
+		foreach ( [ 'columns', 'isFirstRowHeader', 'isFirstColumnHeader', 'columnSettings', 'columnBackgrounds', 'columnBackgroundsHover', 'enableCaption', 'caption', 'maxHeight', 'maxHeightUnit' ] as $attribute ) {
+			$this->assertContains( $attribute, Supported_Blocks::excluded_attributes( $block ) );
+		}
+	}
+
+	/**
+	 * Posts takes its look through the overlay, in four groups, with no scope, no site rules and no core
+	 * surface, and keeps which parts show, the labels and the query per block.
+	 *
+	 * @return void
+	 */
+	public function testPostsDescribesItsSiteStyles(): void {
+		$block = $this->container->get( Supported_Blocks::class )->get( 'kadence/posts' );
+
+		$this->assertNotNull( $block );
+		$this->assertSame( 'posts', $block->get_slug() );
+		$this->assertNotInstanceOf( Scopes_Site_Styles::class, $block );
+		$this->assertNotInstanceOf( Prints_Site_Rules::class, $block );
+		$this->assertNotInstanceOf( Legacy_Group_Attributes::class, $block );
+		$this->assertInstanceOf( Groups_Site_Styles::class, $block );
+		$this->assertSame( [], $block->site_styles_attributes_map() );
+		$this->assertSame( [], $block->site_styles_supports() );
+		$this->assertSame( [], $block->site_styles_selectors() );
+		$this->assertCount( 10, $block->site_styles_overlay_attributes() );
+		$this->assertCount( 4, $block->site_styles_attribute_groups() );
+		foreach ( [ 'postType', 'postsToShow', 'order', 'image', 'aboveCategories', 'meta', 'author', 'authorImageSize', 'date', 'comments', 'excerpt', 'readmore', 'readmoreLabel' ] as $attribute ) {
+			$this->assertContains( $attribute, Supported_Blocks::excluded_attributes( $block ) );
+		}
+	}
+
+	/**
+	 * Progress Bar takes its colors, thickness, radius, fonts, spacing, alignment and max width through the
+	 * overlay, in ten groups, scoped so a mask bar takes no site thickness, with no site rules and no core
+	 * surface, and keeps its type, content, number and animation settings per block.
+	 *
+	 * @return void
+	 */
+	public function testProgressBarDescribesItsSiteStyles(): void {
+		$block = $this->container->get( Supported_Blocks::class )->get( 'kadence/progress-bar' );
+
+		$this->assertNotNull( $block );
+		$this->assertSame( 'progress-bar', $block->get_slug() );
+		$this->assertInstanceOf( Scopes_Site_Styles::class, $block );
+		$this->assertNotInstanceOf( Prints_Site_Rules::class, $block );
+		$this->assertNotInstanceOf( Legacy_Group_Attributes::class, $block );
+		$this->assertInstanceOf( Groups_Site_Styles::class, $block );
+		$this->assertSame( [], $block->site_styles_attributes_map() );
+		$this->assertSame( [], $block->site_styles_supports() );
+		$this->assertSame( [], $block->site_styles_selectors() );
+		$this->assertCount( 25, $block->site_styles_overlay_attributes() );
+		$this->assertCount( 10, $block->site_styles_attribute_groups() );
+		$this->assertSame( 'barType', $block->site_styles_scope_attribute() );
+		$this->assertSame( [ 'line-mask' ], array_keys( $block->site_styles_scoped_attributes() ) );
+		$this->assertSame(
+			array_values( array_diff( $block->site_styles_overlay_attributes(), [ 'progressWidth', 'progressWidthTablet', 'progressWidthMobile' ] ) ),
+			$block->site_styles_scoped_attributes()['line-mask']
+		);
+		foreach ( [ 'barType', 'label', 'labelPosition', 'labelLayout', 'displayLabel', 'displayPercent', 'progressAmount', 'progressMax', 'numberSuffix', 'duration', 'easing', 'delayUntilInView', 'maskSvg' ] as $attribute ) {
+			$this->assertContains( $attribute, Supported_Blocks::excluded_attributes( $block ) );
+		}
+	}
+
+	/**
+	 * Testimonials takes its container, spacing, shadow, gap and fonts through the overlay, in fourteen groups,
+	 * with older border, radius and gap stand-ins, no scope, no site rules and no core surface, and keeps every
+	 * setting its testimonials read through block context per block.
+	 *
+	 * @return void
+	 */
+	public function testTestimonialsDescribesItsSiteStyles(): void {
+		$block = $this->container->get( Supported_Blocks::class )->get( 'kadence/testimonials' );
+
+		$this->assertNotNull( $block );
+		$this->assertSame( 'testimonials', $block->get_slug() );
+		$this->assertNotInstanceOf( Scopes_Site_Styles::class, $block );
+		$this->assertNotInstanceOf( Prints_Site_Rules::class, $block );
+		$this->assertInstanceOf( Legacy_Group_Attributes::class, $block );
+		$this->assertSame( [], $block->site_styles_attributes_map() );
+		$this->assertSame( [], $block->site_styles_supports() );
+		$this->assertSame( [], $block->site_styles_selectors() );
+		$this->assertCount( 31, $block->site_styles_overlay_attributes() );
+		$this->assertCount( 14, $block->site_styles_attribute_groups() );
+		$this->assertSame(
+			[
+				'borderStyle'                     => [ 'containerBorderWidth', 'containerBorder' ],
+				'responsiveContainerBorderRadius' => [ 'containerBorderRadius' ],
+				'gap'                             => [ 'columnGap' ],
+			],
+			$block->site_styles_legacy_group_attributes()
+		);
+		$context = array_values( (array) ( \WP_Block_Type_Registry::get_instance()->get_registered( 'kadence/testimonials' )->provides_context ?? [] ) );
+		$this->assertNotEmpty( $context );
+		foreach ( array_merge( $context, [ 'columns', 'hAlign', 'autoPlay', 'iconMargin', 'titlePadding', 'mediaMargin', 'ratingMargin' ] ) as $attribute ) {
+			$this->assertContains( $attribute, Supported_Blocks::excluded_attributes( $block ) );
+		}
+	}
+
+	/**
+	 * Testimonial takes its media icon size and color through the overlay, with the size kept with its tablet
+	 * and mobile values, and keeps its media type, icon, line width and rating per block.
+	 *
+	 * @return void
+	 */
+	public function testTestimonialDescribesItsSiteStyles(): void {
+		$block = $this->container->get( Supported_Blocks::class )->get( 'kadence/testimonial' );
+
+		$this->assertNotNull( $block );
+		$this->assertSame( 'testimonial', $block->get_slug() );
+		$this->assertNotInstanceOf( Scopes_Site_Styles::class, $block );
+		$this->assertInstanceOf( Groups_Site_Styles::class, $block );
+		$this->assertSame( [], $block->site_styles_attributes_map() );
+		$this->assertSame( [ 'isize', 'tabletIsize', 'mobileIsize', 'color' ], $block->site_styles_overlay_attributes() );
+		$this->assertSame( [ [ 'isize', 'tabletIsize', 'mobileIsize' ] ], $block->site_styles_attribute_groups() );
+		foreach ( [ 'media', 'icon', 'istroke', 'rating', 'ititle', 'url', 'content', 'name' ] as $attribute ) {
 			$this->assertContains( $attribute, Supported_Blocks::excluded_attributes( $block ) );
 		}
 	}
@@ -249,6 +568,7 @@ final class SupportedBlocksTest extends TestCase {
 		$this->assertContains( 'kadence/spacer', $checked );
 		$this->assertContains( 'kadence/icon', $checked );
 		$this->assertContains( 'kadence/single-icon', $checked );
+		$this->assertContains( 'kadence/rowlayout', $checked );
 	}
 
 	/**
@@ -266,6 +586,38 @@ final class SupportedBlocksTest extends TestCase {
 		);
 
 		$this->assertSame( [ 'kadence/singlebtn' ], $printing );
+	}
+
+	/**
+	 * Every older attribute a supported block lists stands in for one of its groups, keyed by the group's first
+	 * attribute, and is a registered attribute that is never a site value.
+	 *
+	 * @return void
+	 */
+	public function testEveryLegacyAttributeStandsInForAGroupAndIsExcluded(): void {
+		$checked = [];
+
+		foreach ( $this->container->get( Supported_Blocks::class )->all() as $name => $block ) {
+			if ( ! $block instanceof Legacy_Group_Attributes ) {
+				continue;
+			}
+
+			$leads      = array_map( static fn( array $group ): string => $group[0], $block->site_styles_attribute_groups() );
+			$attributes = WP_Block_Type_Registry::get_instance()->get_registered( $name )->attributes;
+			$excluded   = Supported_Blocks::excluded_attributes( $block );
+
+			foreach ( $block->site_styles_legacy_group_attributes() as $lead => $legacy ) {
+				$this->assertContains( $lead, $leads, "{$name}: {$lead} isn't the first attribute of a group." );
+				foreach ( $legacy as $attribute ) {
+					$this->assertArrayHasKey( $attribute, $attributes, "{$name}: the older attribute {$attribute} isn't registered." );
+					$this->assertContains( $attribute, $excluded, "{$name}: the older attribute {$attribute} can be a site value." );
+				}
+			}
+			$checked[] = $name;
+		}
+
+		$this->assertContains( 'kadence/column', $checked );
+		$this->assertContains( 'kadence/rowlayout', $checked );
 	}
 
 	/**

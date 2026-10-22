@@ -10,12 +10,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Groups_Site_Styles;
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Scopes_Site_Styles;
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Supports_Site_Styles;
+use KadenceWP\KadenceBlocks\Utils\Cast;
+
 /**
  * Class to Build the Progress Bar Block.
  *
  * @category class
  */
-class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
+class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block implements Supports_Site_Styles, Scopes_Site_Styles, Groups_Site_Styles {
 
 	/**
 	 * Instance of this class
@@ -143,6 +148,13 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 		if ( isset( $attributes['numberFont'], $attributes['labelFont'] ) ) {
 			$default_font = $this->get_default_font();
 			$diff         = $this->array_recursive_diff( $attributes['numberFont'], $default_font );
+
+			// The line height unit goes with the line height it belongs to; a font saved without a unit keeps the label's.
+			if ( ! isset( $diff['lineHeight'] ) ) {
+				unset( $diff['lineType'] );
+			} elseif ( array_key_exists( 'lineType', $attributes['numberFont'] ) ) {
+				$diff['lineType'] = $attributes['numberFont']['lineType'];
+			}
 
 			$attributes['numberFont'] = array_merge( $attributes['labelFont'], $diff );
 			$css->render_typography( $attributes, 'numberFont' );
@@ -451,6 +463,11 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 		}
 	}
 
+	/**
+	 * The font defaults from block.json, so only the number's own values replace the label's.
+	 *
+	 * @return array<string, mixed>
+	 */
 	private function get_default_font() {
 		return [
 			'color'         => '',
@@ -466,7 +483,7 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 				'',
 				'',
 			],
-			'linetype'      => 'px',
+			'lineType'      => '',
 			'letterSpacing' => [
 				'',
 				'',
@@ -556,6 +573,108 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 		wp_register_script( 'kadence-blocks-scroll-magic', KADENCE_BLOCKS_URL . 'includes/assets/js/scroll-magic.min.js', [], KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-progress', KADENCE_BLOCKS_URL . 'includes/assets/js/progressBar.min.js', [], KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-' . $this->block_name, KADENCE_BLOCKS_URL . 'includes/assets/js/kb-progress-bars.min.js', [ 'kadence-blocks-scroll-magic', 'kadence-blocks-progress' ], KADENCE_BLOCKS_VERSION, true );
+	}
+
+	/**
+	 * The bar's colors and thickness are drawn by the progress script, and the
+	 * editor paints every other value inline, so every site value goes through
+	 * the overlay.
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_overlay_attributes(): array {
+		return array_merge( ...$this->site_styles_attribute_groups() );
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_attributes_map(): array {
+		return [];
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_supports(): array {
+		return [];
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_selectors(): array {
+		return [];
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_scope_attribute(): string {
+		return 'barType';
+	}
+
+	/**
+	 * The bar's own type, from its `barType` attribute.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $attributes The instance's attributes.
+	 *
+	 * @return string|null The type, or null when the instance has none.
+	 */
+	public function site_styles_scope_style( array $attributes ): ?string {
+		return isset( $attributes['barType'] ) ? Cast::to_string( $attributes['barType'] ) : null;
+	}
+
+	/**
+	 * A mask bar uses the thickness as its shape height, so it takes every site
+	 * value except the thickness. Other types take every value.
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_scoped_attributes(): array {
+		return [ 'line-mask' => array_values( array_diff( $this->site_styles_overlay_attributes(), $this->site_styles_thickness_attributes() ) ) ];
+	}
+
+	/**
+	 * Each color keeps its opacity, each font is kept whole, and each spacing
+	 * set, alignment and width keeps its tablet and mobile values and its unit.
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_attribute_groups(): array {
+		return [
+			[ 'progressColor', 'progressOpacity' ],
+			[ 'barBackground', 'barBackgroundOpacity' ],
+			$this->site_styles_thickness_attributes(),
+			[ 'progressBorderRadius' ],
+			[ 'labelFont' ],
+			[ 'numberFont' ],
+			[ 'labelPadding', 'tabletLabelPadding', 'mobileLabelPadding', 'labelPaddingType' ],
+			[ 'hAlign', 'thAlign', 'mhAlign' ],
+			[ 'margin', 'tabletMargin', 'mobileMargin', 'marginType' ],
+			[ 'containerMaxWidth', 'tabletContainerMaxWidth', 'mobileContainerMaxWidth', 'containerMaxWidthUnits' ],
+		];
+	}
+
+	/**
+	 * The bar thickness on each device.
+	 *
+	 * @since TBD
+	 *
+	 * @return list<string> Attribute names.
+	 */
+	private function site_styles_thickness_attributes(): array {
+		return [ 'progressWidth', 'progressWidthTablet', 'progressWidthMobile' ];
 	}
 }
 
