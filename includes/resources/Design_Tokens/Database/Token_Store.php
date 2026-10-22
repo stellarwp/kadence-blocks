@@ -57,12 +57,14 @@ final class Token_Store extends Query {
 	private const DEFAULT_SLUG = 'default';
 
 	/**
-	 * @var string Non-persistent object cache group for rows read in this request. A library with no
-	 *             row is cached too, so a site that never saved a library reads the table once per slug
-	 *             instead of once per lookup. Being an object cache group keeps it per site on multisite
-	 *             and lets WordPress flush it; every write drops the slug it touched before signalling.
+	 * Non-persistent object cache group for rows read in this request. A library with no
+	 * row is cached too, so a site that never saved a library reads the table once per slug
+	 * instead of once per lookup. Being an object cache group keeps it per site on multisite
+	 * and lets WordPress flush it; every write drops the slug it touched before signalling.
 	 *
 	 * @since 3.8.1
+	 *
+	 * @var string
 	 */
 	private const ROW_CACHE_GROUP = 'kb_design_tokens_rows';
 
