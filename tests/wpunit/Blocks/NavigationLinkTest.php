@@ -120,4 +120,77 @@ class NavigationItemTest extends KadenceBlocksUnit {
 		$this->assertStringContainsString( 'Sale <strong>50%</strong>', $html );
 		$this->assertStringContainsString( 'Read <em>more</em>', $html );
 	}
+
+	public function testPostLinkUsesPermalink() {
+		$post_id = self::factory()->post->create();
+
+		$url = $this->block->get_url(
+			[
+				'id'          => $post_id,
+				'kind'        => 'post-type',
+				'type'        => 'post',
+				'url'         => 'https://example.com/old-slug/',
+				'disableLink' => false,
+			]
+		);
+
+		$this->assertSame( get_permalink( $post_id ), $url );
+	}
+
+	public function testOldTermLinkWithMatchingPostIdKeepsStoredUrl() {
+		// Term links saved by the menu builder before the fix have kind post-type and no type.
+		$post_id = self::factory()->post->create();
+
+		$url = $this->block->get_url(
+			[
+				'id'          => $post_id,
+				'kind'        => 'post-type',
+				'url'         => 'https://example.com/category/news/',
+				'disableLink' => false,
+			]
+		);
+
+		$this->assertSame( 'https://example.com/category/news/', $url );
+	}
+
+	public function testTermLinkKeepsStoredUrl() {
+		$post_id = self::factory()->post->create();
+
+		$url = $this->block->get_url(
+			[
+				'id'          => $post_id,
+				'kind'        => 'taxonomy',
+				'type'        => 'category',
+				'url'         => 'https://example.com/category/news/',
+				'disableLink' => false,
+			]
+		);
+
+		$this->assertSame( 'https://example.com/category/news/', $url );
+	}
+
+	public function testOldTermLinkIsNotCurrentOnPostWithSameId() {
+		$post_id = self::factory()->post->create();
+		$this->go_to( get_permalink( $post_id ) );
+
+		$this->assertFalse(
+			$this->block->is_current(
+				[
+					'id'   => $post_id,
+					'kind' => 'post-type',
+					'url'  => 'https://example.com/category/news/',
+				]
+			)
+		);
+		$this->assertTrue(
+			$this->block->is_current(
+				[
+					'id'   => $post_id,
+					'kind' => 'post-type',
+					'type' => 'post',
+					'url'  => 'https://example.com/old-slug/',
+				]
+			)
+		);
+	}
 }
