@@ -1,0 +1,4 @@
+significance: patch
+type: fix
+entry: Fixed Advanced Text blocks using the div or span tag not showing up for translation in WPML.
+timestamp: 2026-10-13T15:02:58.000Z
