@@ -59,11 +59,13 @@ class Kadence_LottieAnimation_get_REST_Controller extends WP_REST_Controller {
 			return new WP_Error( 'not_found', __('Lottie animation not found', 'kadence-blocks'), array( 'status' => 404 ) );
 		}
 
-		if( json_decode($post->post_content) === null ) {
+		$animation = json_decode( $post->post_content );
+
+		if ( ! is_array( $animation ) && ! is_object( $animation ) ) {
 			return new WP_Error( 'invalid_json', __('Lottie animation file contains invalid json', 'kadence-blocks'), array( 'status' => 404 ) );
 		}
 
-		return json_decode($post->post_content);
+		return rest_ensure_response( Kadence_Blocks_Lottie_Sanitizer::strip_expressions( $animation ) );
 	}
 
 }

@@ -2,8 +2,13 @@
 
 namespace Tests\wpunit\Blocks;
 
+use Generator;
 use Kadence_Blocks_Lottie_Block;
+use Kadence_Blocks_Lottie_Sanitizer;
+use Kadence_LottieAnimation_get_REST_Controller;
+use Kadence_LottieAnimation_post_REST_Controller;
 use Tests\Support\Classes\KadenceBlocksUnit;
+use WP_REST_Request;
 
 class LottieTest extends KadenceBlocksUnit {
 	/**
@@ -27,10 +32,41 @@ class LottieTest extends KadenceBlocksUnit {
 	 */
 	protected $block;
 
+	/**
+	 * Sets up the block instance.
+	 *
+	 * @return void
+	 */
+	protected function setUp(): void {
+		parent::setUp();
+		$this->block = new Kadence_Blocks_Lottie_Block();
+	}
+
+	/**
+	 * Restores the global post and current user changed by a test.
+	 *
+	 * @return void
+	 */
+	protected function tearDown(): void {
+		unset( $GLOBALS['post'] );
+		wp_set_current_user( 0 );
+		parent::tearDown();
+	}
+
+	/**
+	 * The Lottie custom post type is registered.
+	 *
+	 * @return void
+	 */
 	public function testLottieCptRegistered() {
 		$this->assertTrue( $this->tester->is_cpt_registered( $this->post_type ), 'Lottie CPT is registered' );
 	}
 
+	/**
+	 * The player and interactivity scripts are registered.
+	 *
+	 * @return void
+	 */
 	public function testIsScriptRegistered() {
 		$this->block->register_scripts();
 
@@ -40,10 +76,224 @@ class LottieTest extends KadenceBlocksUnit {
 			'Lottie interactivity registered' );
 	}
 
-	protected function setUp(): void {
-		parent::setUp();
-		$this->block = new Kadence_Blocks_Lottie_Block();
+	/**
+	 * The sanitizer removes string expressions but keeps numeric easing handles named `x`.
+	 *
+	 * @dataProvider expressionProvider
+	 *
+	 * @param array $input    The decoded Lottie data.
+	 * @param array $expected The data expected after sanitizing.
+	 *
+	 * @return void
+	 */
+	public function testSanitizerStripsOnlyStringExpressions( array $input, array $expected ): void {
+		$this->assertSame( $expected, Kadence_Blocks_Lottie_Sanitizer::strip_expressions( $input ) );
 	}
 
+	/**
+	 * The sanitizer removes expressions from decoded JSON objects, not only arrays.
+	 *
+	 * @return void
+	 */
+	public function testSanitizerStripsExpressionsFromObjects(): void {
+		$data = json_decode( '{"layers":[{"ks":{"o":{"a":0,"k":50,"x":"alert(1)"},"p":{"i":{"x":[0.5],"y":[1]}}}}]}' );
 
+		$clean = Kadence_Blocks_Lottie_Sanitizer::strip_expressions( $data );
+
+		$this->assertFalse( isset( $clean->layers[0]->ks->o->x ), 'Expression string is removed.' );
+		$this->assertSame( [ 0.5 ], $clean->layers[0]->ks->p->i->x, 'Numeric easing handle is kept.' );
+	}
+
+	/**
+	 * Creating an animation through the REST route requires the capability the post type itself uses.
+	 *
+	 * @return void
+	 */
+	public function testCreateAnimationRequiresEditThemeOptions(): void {
+		$controller = new Kadence_LottieAnimation_post_REST_Controller();
+		$request    = new WP_REST_Request( 'POST', '/kb-lottieanimation/v1/animations' );
+
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'author' ] ) );
+		$this->assertFalse( $controller->create_animation_permission_check( $request ), 'An author cannot create animations.' );
+
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		$this->assertTrue( $controller->create_animation_permission_check( $request ), 'An administrator can create animations.' );
+	}
+
+	/**
+	 * Expression strings are removed from an animation before it is stored.
+	 *
+	 * @return void
+	 */
+	public function testCreateAnimationStoresNoExpressions(): void {
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+
+		$request = new WP_REST_Request( 'POST', '/kb-lottieanimation/v1/animations' );
+		$request->set_header( 'content-type', 'application/json' );
+		$request->set_body(
+			wp_json_encode(
+				[
+					'title'      => 'Expression test',
+					'lottieFile' => [ 'layers' => [ [ 'ks' => [ 'o' => [ 'a' => 0, 'k' => 50, 'x' => 'globalThis.fetch("/")' ] ] ] ] ],
+				]
+			)
+		);
+
+		$result = ( new Kadence_LottieAnimation_post_REST_Controller() )->create_animation( $request );
+
+		$this->assertArrayHasKey( 'value', $result );
+		$stored = get_post_field( 'post_content', $result['value'] );
+		$this->assertStringNotContainsString( 'globalThis', $stored, 'The expression is not stored.' );
+		$this->assertStringContainsString( '"k":50', $stored, 'The rest of the animation is kept.' );
+	}
+
+	/**
+	 * An animation stored before the fix is served without its expressions.
+	 *
+	 * @return void
+	 */
+	public function testGetAnimationStripsLegacyExpressions(): void {
+		$post_id = wp_insert_post(
+			[
+				'post_title'   => 'Legacy',
+				'post_type'    => $this->post_type,
+				'post_status'  => 'publish',
+				'post_content' => wp_slash( '{"layers":[{"ks":{"o":{"a":0,"k":50,"x":"globalThis.fetch(\"/\")"}}}]}' ),
+			]
+		);
+
+		$request = new WP_REST_Request( 'GET', '/kb-lottieanimation/v1/animations/' . $post_id );
+		$request->set_param( 'id', $post_id . '.json' );
+
+		$response = ( new Kadence_LottieAnimation_get_REST_Controller() )->get_animation( $request );
+
+		$data = $response->get_data();
+
+		$this->assertStringNotContainsString( 'globalThis', wp_json_encode( $data ), 'The served animation has no expression.' );
+		$this->assertSame( 50, $data->layers[0]->ks->o->k, 'The rest of the animation is kept.' );
+	}
+
+	/**
+	 * An external URL chosen in a post by a user without `unfiltered_html` is not rendered.
+	 *
+	 * @return void
+	 */
+	public function testExternalUrlFromContributorPostIsNotRendered(): void {
+		$html = $this->renderForAuthorRole( 'contributor', 'https://attacker.example/animation.json' );
+
+		$this->assertStringNotContainsString( 'attacker.example', $html );
+		$this->assertStringContainsString( '<dotlottie-player', $html, 'The player still renders with the default animation.' );
+	}
+
+	/**
+	 * An external URL chosen in a post by a user with `unfiltered_html` is rendered.
+	 *
+	 * @return void
+	 */
+	public function testExternalUrlFromAdministratorPostIsRendered(): void {
+		$html = $this->renderForAuthorRole( 'administrator', 'https://assets.example/animation.json' );
+
+		$this->assertStringContainsString( 'src="https://assets.example/animation.json"', $html );
+	}
+
+	/**
+	 * A URL on this site is rendered even when the post author lacks `unfiltered_html`.
+	 *
+	 * @return void
+	 */
+	public function testSameSiteUrlFromContributorPostIsRendered(): void {
+		$url  = home_url( '/wp-json/kb-lottieanimation/v1/animations/1.json' );
+		$html = $this->renderForAuthorRole( 'contributor', $url );
+
+		$this->assertStringContainsString( 'src="' . esc_attr( $url ) . '"', $html );
+	}
+
+	/**
+	 * Non-numeric scroll frame values never reach the inline script.
+	 *
+	 * @return void
+	 */
+	public function testScrollFramesAreCastToNumbers(): void {
+		$html = $this->renderForAuthorRole(
+			'administrator',
+			'https://assets.example/animation.json',
+			[
+				'onlyPlayOnScroll' => true,
+				'startFrame'       => '1]});alert(1);//',
+				'endFrame'         => '50',
+			]
+		);
+
+		$this->assertStringNotContainsString( 'alert(1)', $html );
+		$this->assertStringContainsString( 'frames: [1, 50]', $html );
+	}
+
+	/**
+	 * Provides decoded Lottie data and the expected result after sanitizing.
+	 *
+	 * @return Generator
+	 */
+	public function expressionProvider(): Generator {
+		yield 'string expression is removed' => [
+			'input'    => [ 'o' => [ 'a' => 0, 'k' => 50, 'x' => 'alert(1)' ] ],
+			'expected' => [ 'o' => [ 'a' => 0, 'k' => 50 ] ],
+		];
+
+		yield 'numeric easing handle is kept' => [
+			'input'    => [ 'i' => [ 'x' => [ 0.5 ], 'y' => [ 1 ] ] ],
+			'expected' => [ 'i' => [ 'x' => [ 0.5 ], 'y' => [ 1 ] ] ],
+		];
+
+		yield 'scalar easing handle is kept' => [
+			'input'    => [ 'i' => [ 'x' => 0.5, 'y' => 1 ] ],
+			'expected' => [ 'i' => [ 'x' => 0.5, 'y' => 1 ] ],
+		];
+
+		yield 'deeply nested expression is removed' => [
+			'input'    => [ 'layers' => [ [ 'ef' => [ [ 'ef' => [ [ 'v' => [ 'x' => 'evil()', 'k' => 1 ] ] ] ] ] ] ] ],
+			'expected' => [ 'layers' => [ [ 'ef' => [ [ 'ef' => [ [ 'v' => [ 'k' => 1 ] ] ] ] ] ] ] ],
+		];
+
+		yield 'data without expressions is unchanged' => [
+			'input'    => [ 'v' => '5.7.0', 'fr' => 30, 'layers' => [] ],
+			'expected' => [ 'v' => '5.7.0', 'fr' => 30, 'layers' => [] ],
+		];
+	}
+
+	/**
+	 * Renders the block as it appears in a post written by a user with the given role.
+	 *
+	 * @param string $role      The role of the post author.
+	 * @param string $file_url  The external animation URL set on the block.
+	 * @param array  $overrides Attributes that replace the defaults used for rendering.
+	 *
+	 * @return string The rendered block HTML.
+	 */
+	private function renderForAuthorRole( string $role, string $file_url, array $overrides = [] ): string {
+		$author  = static::factory()->user->create( [ 'role' => $role ] );
+		$post_id = static::factory()->post->create( [ 'post_author' => $author ] );
+
+		$GLOBALS['post'] = get_post( $post_id );
+
+		$unique_id  = 'lottietest01';
+		$attributes = array_merge(
+			[
+				'uniqueID'         => $unique_id,
+				'fileSrc'          => 'url',
+				'fileUrl'          => $file_url,
+				'loop'             => false,
+				'playbackSpeed'    => 1,
+				'showControls'     => false,
+				'autoplay'         => true,
+				'onlyPlayOnHover'  => false,
+				'bouncePlayback'   => false,
+				'delay'            => 0,
+				'onlyPlayOnScroll' => false,
+				'waitUntilInView'  => false,
+			],
+			$overrides
+		);
+
+		return $this->block->build_html( $attributes, $unique_id, '', $this->generate_block_instance( 'kadence/' . $this->block_name, $attributes ) );
+	}
 }

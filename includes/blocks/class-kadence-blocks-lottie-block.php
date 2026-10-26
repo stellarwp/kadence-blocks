@@ -141,7 +141,7 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 
 				if ( isset( $attributes['onlyPlayOnScroll'] ) && $attributes['onlyPlayOnScroll'] === true ) {
 					$play_type = 'seek';
-					$frames    = "frames: [" . ( ! empty( $attributes['startFrame'] ) ? $attributes['startFrame'] : '0' ) . ", " . ( ! empty( $attributes['endFrame'] ) ? $attributes['endFrame'] : '100' ) . "]";
+					$frames    = "frames: [" . ( ! empty( $attributes['startFrame'] ) ? (float) $attributes['startFrame'] : '0' ) . ", " . ( ! empty( $attributes['endFrame'] ) ? (float) $attributes['endFrame'] : '100' ) . "]";
 				} else {
 					$play_type = 'play';
 					$frames    = '';
@@ -232,7 +232,7 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 				$content .= '<dotlottie-player ';
 
 					foreach( $playerProps as $key => $value ){
-						$content .= $key . '="' . $value . '" ';
+						$content .= esc_attr( $key ) . '="' . esc_attr( $value ) . '" ';
 					}
 
 				$content .= 'src="' . $this->getAnimationUrl( $attributes ) . '"
@@ -252,7 +252,9 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 		$rest_url = get_rest_url();
 
 		if ( $attributes['fileSrc'] === 'url' ) {
-			$url = esc_attr( $attributes['fileUrl'] );
+			if ( $this->is_external_url_allowed( $attributes['fileUrl'] ) ) {
+				$url = esc_attr( $attributes['fileUrl'] );
+			}
 		} else {
 			$url = $rest_url . 'kb-lottieanimation/v1/animations/' . esc_attr( $attributes['localFile'][0]['value'] ) . '.json';
 		}
@@ -279,6 +281,37 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 
 		wp_register_script( 'kadence-blocks-lottieinteractivity-js', KADENCE_BLOCKS_URL . 'includes/assets/js/lottie-interactivity.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-dotlottie-player-js', KADENCE_BLOCKS_URL . 'includes/assets/js/lottie-dotlottie.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+	}
+
+	/**
+	 * Whether an external animation URL may be rendered for the current post.
+	 *
+	 * The player evaluates animation expressions, so a URL chosen by a user who lacks
+	 * `unfiltered_html` is only accepted when it points at this site. Blocks rendered
+	 * outside a post (widgets, for example) can only be authored by privileged users.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $file_url The animation URL from the block attributes.
+	 *
+	 * @return bool
+	 */
+	private function is_external_url_allowed( $file_url ) {
+		$post_id = (int) get_the_ID();
+
+		if ( ! $post_id ) {
+			return true;
+		}
+
+		$author_id = (int) get_post_field( 'post_author', $post_id );
+		if ( $author_id && user_can( $author_id, 'unfiltered_html' ) ) {
+			return true;
+		}
+
+		$url_host  = wp_parse_url( (string) $file_url, PHP_URL_HOST );
+		$site_host = wp_parse_url( home_url(), PHP_URL_HOST );
+
+		return $url_host && $site_host && strtolower( $url_host ) === strtolower( $site_host );
 	}
 }
 

@@ -45,7 +45,7 @@ class Kadence_LottieAnimation_post_REST_Controller extends WP_REST_Controller {
 	 * @return true|WP_Error True if the request has search access, WP_Error object otherwise.
 	 */
 	public function create_animation_permission_check( $request ) {
-		return current_user_can( 'publish_posts' );
+		return current_user_can( 'edit_theme_options' );
 	}
 
 	/**
@@ -66,6 +66,8 @@ class Kadence_LottieAnimation_post_REST_Controller extends WP_REST_Controller {
 		} else {
 			return array( 'error' => true, 'message' => __( 'Please enter an animation title', 'kadence-blocks' ) );
 		}
+
+		$jsonParams['lottieFile'] = Kadence_Blocks_Lottie_Sanitizer::strip_expressions( $jsonParams['lottieFile'] );
 
 		// Replace new line characters with space.
 		array_walk_recursive($jsonParams['lottieFile'], function(&$value, $key) {
