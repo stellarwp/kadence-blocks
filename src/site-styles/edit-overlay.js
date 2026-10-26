@@ -4,8 +4,9 @@
  * stores. Core's Global Styles and the block's site rules render the rest.
  *
  * The one exception is a change that starts an instance setting one of its
- * block's groups: the group then takes no site values, so the whole group is
- * stored as shown and the block keeps looking as it did apart from the change.
+ * block's groups or cascades, such as a button's padding: the whole group or
+ * cascade is then stored as shown, so the block keeps looking as it did apart
+ * from the change.
  */
 import { createHigherOrderComponent } from '@wordpress/compose';
 import { getBlockType } from '@wordpress/blocks';

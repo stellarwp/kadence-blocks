@@ -111,6 +111,27 @@ final class SiteStylesOverlayTest extends WPTestCase {
 	}
 
 	/**
+	 * A button that sets one side of its padding keeps that side on every device, and its other sides take the site's value for each device.
+	 *
+	 * @return void
+	 */
+	public function testAnOwnPaddingSideKeepsTheSitesOtherSidesOnEachDevice(): void {
+		$this->tester->enable_fse_mode();
+		$site = $this->tester->store_single_button_box_values();
+
+		$own = apply_filters(
+			'kadence_blocks_singlebtn_render_block_attributes',
+			[
+				'uniqueID' => 'a',
+				'padding'  => [ 30, '', '', '' ],
+			]
+		);
+
+		$this->assertSame( [ 30, $site['padding'][1], $site['padding'][2], $site['padding'][3] ], $own['padding'] );
+		$this->assertSame( [ '', $site['mobilePadding'][1], $site['mobilePadding'][2], $site['mobilePadding'][3] ], $own['mobilePadding'] );
+	}
+
+	/**
 	 * A button's own padding stays in its own unit: when the site pads in another unit, none of the site's padding reaches the button, so its values are never shown in the site's unit.
 	 *
 	 * @dataProvider siteUnitProvider
