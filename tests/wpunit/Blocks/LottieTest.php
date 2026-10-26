@@ -1,5 +1,7 @@
 <?php
 
+// cspell:ignore lottieinteractivity lottietest .
+
 namespace Tests\wpunit\Blocks;
 
 use Generator;
@@ -134,7 +136,19 @@ class LottieTest extends KadenceBlocksUnit {
 			wp_json_encode(
 				[
 					'title'      => 'Expression test',
-					'lottieFile' => [ 'layers' => [ [ 'ks' => [ 'o' => [ 'a' => 0, 'k' => 50, 'x' => 'globalThis.fetch("/")' ] ] ] ] ],
+					'lottieFile' => [
+						'layers' => [
+							[
+								'ks' => [
+									'o' => [
+										'a' => 0,
+										'k' => 50,
+										'x' => 'globalThis.fetch("/")',
+									],
+								],
+							],
+						],
+					],
 				]
 			)
 		);
@@ -205,7 +219,7 @@ class LottieTest extends KadenceBlocksUnit {
 		$url  = home_url( '/wp-json/kb-lottieanimation/v1/animations/1.json' );
 		$html = $this->renderForAuthorRole( 'contributor', $url );
 
-		$this->assertStringContainsString( 'src="' . esc_attr( $url ) . '"', $html );
+		$this->assertStringContainsString( 'src="' . esc_url( $url ) . '"', $html );
 	}
 
 	/**
@@ -235,28 +249,98 @@ class LottieTest extends KadenceBlocksUnit {
 	 */
 	public function expressionProvider(): Generator {
 		yield 'string expression is removed' => [
-			'input'    => [ 'o' => [ 'a' => 0, 'k' => 50, 'x' => 'alert(1)' ] ],
-			'expected' => [ 'o' => [ 'a' => 0, 'k' => 50 ] ],
+			'input'    => [
+				'o' => [
+					'a' => 0,
+					'k' => 50,
+					'x' => 'alert(1)',
+				],
+			],
+			'expected' => [
+				'o' => [
+					'a' => 0,
+					'k' => 50,
+				],
+			],
 		];
 
 		yield 'numeric easing handle is kept' => [
-			'input'    => [ 'i' => [ 'x' => [ 0.5 ], 'y' => [ 1 ] ] ],
-			'expected' => [ 'i' => [ 'x' => [ 0.5 ], 'y' => [ 1 ] ] ],
+			'input'    => [
+				'i' => [
+					'x' => [ 0.5 ],
+					'y' => [ 1 ],
+				],
+			],
+			'expected' => [
+				'i' => [
+					'x' => [ 0.5 ],
+					'y' => [ 1 ],
+				],
+			],
 		];
 
 		yield 'scalar easing handle is kept' => [
-			'input'    => [ 'i' => [ 'x' => 0.5, 'y' => 1 ] ],
-			'expected' => [ 'i' => [ 'x' => 0.5, 'y' => 1 ] ],
+			'input'    => [
+				'i' => [
+					'x' => 0.5,
+					'y' => 1,
+				],
+			],
+			'expected' => [
+				'i' => [
+					'x' => 0.5,
+					'y' => 1,
+				],
+			],
 		];
 
 		yield 'deeply nested expression is removed' => [
-			'input'    => [ 'layers' => [ [ 'ef' => [ [ 'ef' => [ [ 'v' => [ 'x' => 'evil()', 'k' => 1 ] ] ] ] ] ] ] ],
-			'expected' => [ 'layers' => [ [ 'ef' => [ [ 'ef' => [ [ 'v' => [ 'k' => 1 ] ] ] ] ] ] ] ],
+			'input'    => [
+				'layers' => [
+					[
+						'ef' => [
+							[
+								'ef' => [
+									[
+										'v' => [
+											'x' => 'evil()',
+											'k' => 1,
+										],
+									],
+								],
+							],
+						],
+					],
+				],
+			],
+			'expected' => [
+				'layers' => [
+					[
+						'ef' => [
+							[
+								'ef' => [
+									[
+										'v' => [ 'k' => 1 ],
+									],
+								],
+							],
+						],
+					],
+				],
+			],
 		];
 
 		yield 'data without expressions is unchanged' => [
-			'input'    => [ 'v' => '5.7.0', 'fr' => 30, 'layers' => [] ],
-			'expected' => [ 'v' => '5.7.0', 'fr' => 30, 'layers' => [] ],
+			'input'    => [
+				'v'      => '5.7.0',
+				'fr'     => 30,
+				'layers' => [],
+			],
+			'expected' => [
+				'v'      => '5.7.0',
+				'fr'     => 30,
+				'layers' => [],
+			],
 		];
 	}
 

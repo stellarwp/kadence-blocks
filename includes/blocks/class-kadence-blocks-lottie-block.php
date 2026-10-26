@@ -5,6 +5,10 @@
  * @package Kadence Blocks
  */
 
+// cspell:ignore Loittie lottieinteractivity .
+
+use KadenceWP\KadenceBlocks\Utils\Cast;
+
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -110,12 +114,12 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 	/**
 	 * Return dynamically generated HTML for block
 	 *
-	 * @param $attributes
-	 * @param $unique_id
-	 * @param $content
-	 * @param WP_Block $block_instance The instance of the WP_Block class that represents the block being rendered.
+	 * @param array<string, mixed> $attributes     The block attributes.
+	 * @param string               $unique_id      The block unique ID.
+	 * @param string               $content        The saved block content.
+	 * @param WP_Block             $block_instance The instance of the WP_Block class that represents the block being rendered.
 	 *
-	 * @return mixed
+	 * @return string
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
 		if ( ! wp_script_is( 'kadence-blocks-dotlottie-player-js', 'enqueued' ) ) {
@@ -123,7 +127,7 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		if ( isset( $attributes['uniqueID'] ) ) {
-			$unique_id              = $attributes['uniqueID'];
+			$unique_id              = Cast::to_string( $attributes['uniqueID'] );
 			$player_style_id        = 'kb-lottie-player' . esc_attr( $unique_id );
 			$player_simple_style_id = str_replace( array( '-' ), '', $player_style_id );
 			$style_id               = 'kb-lottie' . esc_attr( $unique_id );
@@ -141,7 +145,9 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 
 				if ( isset( $attributes['onlyPlayOnScroll'] ) && $attributes['onlyPlayOnScroll'] === true ) {
 					$play_type = 'seek';
-					$frames    = "frames: [" . ( ! empty( $attributes['startFrame'] ) ? (float) $attributes['startFrame'] : '0' ) . ", " . ( ! empty( $attributes['endFrame'] ) ? (float) $attributes['endFrame'] : '100' ) . "]";
+					$start_frame = ! empty( $attributes['startFrame'] ) ? (float) $attributes['startFrame'] : '0';
+					$end_frame   = ! empty( $attributes['endFrame'] ) ? (float) $attributes['endFrame'] : '100';
+					$frames      = 'frames: [' . $start_frame . ', ' . $end_frame . ']';
 				} else {
 					$play_type = 'play';
 					$frames    = '';
@@ -247,6 +253,13 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 		return $content;
 	}
 
+	/**
+	 * Gets the animation URL for the player.
+	 *
+	 * @param array{fileSrc: string, fileUrl: string, localFile: array<int, array{value: string}>} $attributes The block attributes.
+	 *
+	 * @return string The escaped animation URL.
+	 */
 	public function getAnimationUrl( $attributes ) {
 		$url      = '';
 		$rest_url = get_rest_url();
