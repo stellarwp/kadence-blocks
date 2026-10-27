@@ -464,7 +464,7 @@ final class SiteStylesOverlayTest extends WPTestCase {
 	 *
 	 * @param array{padding: list<int>, mobilePadding: list<int>} $site The site's box values.
 	 *
-	 * @return array<string, mixed> The button's attributes.
+	 * @return array{uniqueID: string, padding: list<int>, mobilePadding: list<int|string>, metadata: array{name: string, kbSiteCopies: array<string, list<list<int>>>}} The button's attributes.
 	 */
 	private function button_with_copied_sides( array $site ): array {
 		return [

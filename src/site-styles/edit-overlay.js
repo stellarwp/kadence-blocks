@@ -67,6 +67,19 @@ function instanceSiteAttributes(record, name, attributes) {
 }
 
 /**
+ * @param {Object<string, *>} attributes The instance's attributes.
+ *
+ * @since TBD
+ *
+ * @return {boolean} Whether the instance lists site values copied into it.
+ */
+function hasCopies(attributes) {
+	const copies = attributes.metadata?.kbSiteCopies;
+
+	return null !== copies && 'object' === typeof copies && Object.keys(copies).length > 0;
+}
+
+/**
  * @param {Object}   props           The block edit props plus the wrapped component.
  * @param {Function} props.BlockEdit The wrapped block edit component.
  * @return {Element} The block edit with merged attributes and a guarded `setAttributes`.
@@ -138,19 +151,6 @@ export const withSiteStyles = createHigherOrderComponent(
 	},
 	'withSiteStyles'
 );
-
-/**
- * @param {Object<string, *>} attributes The instance's attributes.
- *
- * @since TBD
- *
- * @return {boolean} Whether the instance lists site values copied into it.
- */
-function hasCopies(attributes) {
-	const copies = attributes.metadata?.kbSiteCopies;
-
-	return null !== copies && 'object' === typeof copies && Object.keys(copies).length > 0;
-}
 
 /**
  * Shows a block without the site values copied into it, and keeps the copies

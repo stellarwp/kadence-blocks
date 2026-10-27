@@ -17,11 +17,11 @@ import {
 	withoutSiteCopies,
 	withStoredForm,
 } from '../store';
-import copiesConformance from './fixtures/copies-conformance.json';
 import cascadeConformance from './fixtures/cascade-conformance.json';
 import conformance from './fixtures/merge-conformance.json';
 import groupConformance from './fixtures/group-conformance.json';
 import scopeConformance from './fixtures/scope-conformance.json';
+import copiesConformance from './fixtures/copies-conformance.json';
 import singleButton from './fixtures/singlebtn-entry.json';
 import section from './fixtures/column-entry.json';
 import showMore from './fixtures/show-more-entry.json';

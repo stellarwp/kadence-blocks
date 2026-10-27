@@ -114,9 +114,11 @@ final class Overlay {
 		}
 
 		if ( ! kadence_blocks_is_fse_mode() ) {
-			return null === self::site_copies( $attributes )
-				? $attributes
-				: self::without_site_copies( $attributes, Supported_Blocks::registered_defaults( $block_name ) );
+			if ( null === self::site_copies( $attributes ) ) {
+				return $attributes;
+			}
+
+			return self::without_site_copies( $attributes, Supported_Blocks::registered_defaults( $block_name ) );
 		}
 
 		$site = array_intersect_key( $this->store->attributes( $block_name ), array_flip( $block->site_styles_overlay_attributes() ) );
