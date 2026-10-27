@@ -1108,6 +1108,23 @@ describe('keepSiteCopies', () => {
 		});
 	});
 
+	it('drops a changed side from the list when the user types the copied site value', () => {
+		expect(keepSiteCopies({ padding: [30, 40, '', ''] }, shown, stored)).toEqual({
+			padding: [30, 40, 20, 40],
+			metadata: { name: '', kbSiteCopies: { padding: [[2], [3]], mobilePadding: [[1], [2], [3]] } },
+		});
+	});
+
+	it('drops a whole copied value from the list when the user turns it back on', () => {
+		const shadow = { displayShadow: true, metadata: { kbSiteCopies: { displayShadow: [[]] } } };
+		const hidden = withoutSiteCopies(shadow, { displayShadow: { default: false } });
+
+		expect(keepSiteCopies({ displayShadow: true }, hidden, shadow)).toEqual({
+			displayShadow: true,
+			metadata: {},
+		});
+	});
+
 	it('passes through a write to an attribute without copies', () => {
 		expect(keepSiteCopies({ text: 'Go' }, shown, stored)).toEqual({ text: 'Go' });
 	});

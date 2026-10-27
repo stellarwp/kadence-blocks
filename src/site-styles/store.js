@@ -700,7 +700,7 @@ export function keepSiteCopies(written, shown, stored) {
 		}
 
 		kept[name] = unmerge(written[name], shown[name], stored[name]);
-		copies = withCopies(copies, name, leafPaths(kept[name], stored[name]), []);
+		copies = withCopies(copies, name, leafPaths(written[name], shown[name]), []);
 	});
 
 	return withCopiesMetadata(kept, stored, previous, copies);
