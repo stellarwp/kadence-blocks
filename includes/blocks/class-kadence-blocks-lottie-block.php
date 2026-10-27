@@ -50,6 +50,17 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 	protected $has_style = true;
 
 	/**
+	 * Hooks the save-time sanitizing of external animation URLs.
+	 *
+	 * @since TBD
+	 */
+	public function __construct() {
+		parent::__construct();
+
+		add_filter( 'wp_insert_post_data', [ $this, 'strip_external_urls_on_save' ] );
+	}
+
+	/**
 	 * Instance Control
 	 */
 	public static function get_instance() {
@@ -113,6 +124,8 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 
 	/**
 	 * Return dynamically generated HTML for block
+	 *
+	 * @since TBD
 	 *
 	 * @param array<string, mixed> $attributes     The block attributes.
 	 * @param string               $unique_id      The block unique ID.
@@ -256,6 +269,8 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 	/**
 	 * Gets the animation URL for the player.
 	 *
+	 * @since TBD
+	 *
 	 * @param array{fileSrc: string, fileUrl: string, localFile: array<int, array{value: string}>} $attributes The block attributes.
 	 *
 	 * @return string The escaped animation URL.
@@ -269,7 +284,11 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 				$url = esc_attr( $attributes['fileUrl'] );
 			}
 		} else {
-			$url = $rest_url . 'kb-lottieanimation/v1/animations/' . esc_attr( $attributes['localFile'][0]['value'] ) . '.json';
+			$animation_id = $attributes['localFile'][0]['value'] ?? '';
+
+			if ( is_scalar( $animation_id ) && preg_match( '/^[a-zA-Z0-9]+$/', (string) $animation_id ) ) {
+				$url = $rest_url . 'kb-lottieanimation/v1/animations/' . $animation_id . '.json';
+			}
 		}
 
 		if ( $url === '' || $url === $rest_url . 'kb-lottieanimation/v1/animations/' ) {
@@ -277,6 +296,35 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		return $url;
+	}
+
+	/**
+	 * Removes external animation URLs from Lottie blocks in content saved by a user without `unfiltered_html`.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $data The slashed post data being saved.
+	 *
+	 * @return array<string, mixed> The post data.
+	 */
+	public function strip_external_urls_on_save( $data ) {
+		if ( current_user_can( 'unfiltered_html' ) || empty( $data['post_content'] ) || ! is_string( $data['post_content'] ) ) {
+			return $data;
+		}
+
+		if ( false === strpos( $data['post_content'], 'wp:kadence/lottie' ) ) {
+			return $data;
+		}
+
+		$changed = false;
+		$blocks  = $this->strip_external_urls_from_blocks( parse_blocks( wp_unslash( $data['post_content'] ) ), $changed );
+
+		if ( $changed ) {
+			// The blocks come from parse_blocks() and only had an attribute removed, so they keep the shape serialize_blocks() expects.
+			$data['post_content'] = wp_slash( serialize_blocks( $blocks ) ); // @phpstan-ignore argument.type
+		}
+
+		return $data;
 	}
 
 	/**
@@ -299,10 +347,6 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 	/**
 	 * Whether an external animation URL may be rendered for the current post.
 	 *
-	 * The player evaluates animation expressions, so a URL chosen by a user who lacks
-	 * `unfiltered_html` is only accepted when it points at this site. Blocks rendered
-	 * outside a post (widgets, for example) can only be authored by privileged users.
-	 *
 	 * @since TBD
 	 *
 	 * @param string $file_url The animation URL from the block attributes.
@@ -321,10 +365,66 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 			return true;
 		}
 
-		$url_host  = wp_parse_url( (string) $file_url, PHP_URL_HOST );
+		return $this->is_same_site_url( $file_url );
+	}
+
+	/**
+	 * Whether a URL points at this site's host.
+	 *
+	 * Browsers read a backslash as a slash, which PHP does not, so URLs containing one
+	 * (or whitespace and control characters) are rejected instead of compared.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $file_url The animation URL.
+	 *
+	 * @return bool
+	 */
+	private function is_same_site_url( $file_url ) {
+		if ( ! is_string( $file_url ) || preg_match( '/[\\\\\s\x00-\x1f\x7f]/', $file_url ) ) {
+			return false;
+		}
+
+		$scheme = wp_parse_url( $file_url, PHP_URL_SCHEME );
+		if ( $scheme && ! in_array( strtolower( $scheme ), [ 'http', 'https' ], true ) ) {
+			return false;
+		}
+
+		$url_host  = wp_parse_url( $file_url, PHP_URL_HOST );
 		$site_host = wp_parse_url( home_url(), PHP_URL_HOST );
 
 		return $url_host && $site_host && strtolower( $url_host ) === strtolower( $site_host );
+	}
+
+	/**
+	 * Recursively removes external URLs from Lottie blocks.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<int|string, mixed> $blocks  The parsed blocks.
+	 * @param bool                     $changed Set to true when a block was changed.
+	 *
+	 * @return array<int|string, mixed> The parsed blocks.
+	 */
+	private function strip_external_urls_from_blocks( array $blocks, bool &$changed ) {
+		foreach ( $blocks as $index => $block ) {
+			if ( ! is_array( $block ) ) {
+				continue;
+			}
+
+			if ( 'kadence/lottie' === ( $block['blockName'] ?? '' ) && is_array( $block['attrs'] ?? null ) && isset( $block['attrs']['fileUrl'] ) && ! $this->is_same_site_url( $block['attrs']['fileUrl'] ) ) {
+				unset( $block['attrs']['fileUrl'] );
+				$changed = true;
+			}
+
+			if ( ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {
+				$block['innerBlocks'] = $this->strip_external_urls_from_blocks( $block['innerBlocks'], $changed );
+			}
+
+			$blocks[ $index ] = $block;
+		}
+
+		return $blocks;
 	}
 }
 

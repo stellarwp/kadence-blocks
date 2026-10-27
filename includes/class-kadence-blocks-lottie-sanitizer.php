@@ -13,10 +13,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Removes executable expressions from Lottie animation data.
  *
- * The bundled player evaluates a property's `x` string as JavaScript. Easing handles
- * also use an `x` key, but those hold numbers or arrays of numbers, so only string
- * values are treated as expressions.
- *
  * @since TBD
  */
 class Kadence_Blocks_Lottie_Sanitizer {

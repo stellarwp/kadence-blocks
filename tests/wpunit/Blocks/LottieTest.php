@@ -223,6 +223,154 @@ class LottieTest extends KadenceBlocksUnit {
 	}
 
 	/**
+	 * URLs whose host differs between PHP and browsers are not rendered for a contributor's post.
+	 *
+	 * @dataProvider ambiguousUrlProvider
+	 *
+	 * @param string $url The animation URL.
+	 *
+	 * @return void
+	 */
+	public function testAmbiguousUrlFromContributorPostIsNotRendered( string $url ): void {
+		$site_host = wp_parse_url( home_url(), PHP_URL_HOST );
+		$html      = $this->renderForAuthorRole( 'contributor', str_replace( 'site.test', $site_host, $url ) );
+
+		$this->assertStringNotContainsString( 'attacker.example', $html );
+	}
+
+	/**
+	 * Provides URLs that PHP reads as this site but a browser sends elsewhere.
+	 *
+	 * @return Generator
+	 */
+	public function ambiguousUrlProvider(): Generator {
+		yield 'backslash before credentials' => [ 'url' => 'https://attacker.example\\@site.test/a.json' ];
+		yield 'backslash in path' => [ 'url' => 'https://site.test\\.attacker.example/a.json' ];
+		yield 'tab in host' => [ 'url' => "https://attacker.example\t@site.test/a.json" ];
+		yield 'javascript scheme' => [ 'url' => 'javascript://site.test/path' ];
+	}
+
+	/**
+	 * A local animation id that is not alphanumeric never reaches the player URL.
+	 *
+	 * @dataProvider localFileValueProvider
+	 *
+	 * @param string $value    The stored local file value.
+	 * @param bool   $expected Whether the value is used in the URL.
+	 *
+	 * @return void
+	 */
+	public function testLocalFileValueMustBeAlphanumeric( string $value, bool $expected ): void {
+		$url = $this->block->getAnimationUrl(
+			[
+				'fileSrc'   => 'local',
+				'fileUrl'   => '',
+				'localFile' => [ [ 'value' => $value ] ],
+			]
+		);
+
+		if ( $expected ) {
+			$this->assertStringContainsString( 'animations/' . $value . '.json', $url );
+		} else {
+			$this->assertStringNotContainsString( $value, $url );
+			$this->assertStringContainsString( 'lottiefiles.com', $url, 'The default animation is used.' );
+		}
+	}
+
+	/**
+	 * Provides local file values and whether they are accepted.
+	 *
+	 * @return Generator
+	 */
+	public function localFileValueProvider(): Generator {
+		yield 'post id' => [
+			'value'    => '123',
+			'expected' => true,
+		];
+		yield 'path traversal' => [
+			'value'    => '../../../uploads/evil',
+			'expected' => false,
+		];
+		yield 'query string' => [
+			'value'    => '1?x=y',
+			'expected' => false,
+		];
+	}
+
+	/**
+	 * A missing local file does not raise a notice and falls back to the default animation.
+	 *
+	 * @return void
+	 */
+	public function testMissingLocalFileFallsBackToDefault(): void {
+		$url = $this->block->getAnimationUrl(
+			[
+				'fileSrc'   => 'local',
+				'fileUrl'   => '',
+				'localFile' => [],
+			]
+		);
+
+		$this->assertStringContainsString( 'lottiefiles.com', $url );
+	}
+
+	/**
+	 * Saving as a user without `unfiltered_html` removes external URLs, including from nested blocks.
+	 *
+	 * @return void
+	 */
+	public function testSavingAsContributorStripsExternalUrls(): void {
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'contributor' ] ) );
+
+		$same_site = home_url( '/wp-json/kb-lottieanimation/v1/animations/1.json' );
+		$content   = '<!-- wp:group --><div class="wp-block-group">'
+			. '<!-- wp:kadence/lottie {"uniqueID":"a1","fileUrl":"https://attacker.example/a.json"} /-->'
+			. '<!-- wp:kadence/lottie {"uniqueID":"a2","fileUrl":"' . $same_site . '"} /-->'
+			. '</div><!-- /wp:group -->';
+
+		$saved = $this->block->strip_external_urls_on_save( [ 'post_content' => wp_slash( $content ) ] );
+
+		$this->assertStringNotContainsString( 'attacker.example', $saved['post_content'] );
+		$this->assertStringContainsString( 'a1', $saved['post_content'], 'The block is kept.' );
+		$this->assertStringContainsString( 'animations/1.json', $saved['post_content'], 'The same-site URL is kept.' );
+	}
+
+	/**
+	 * Saving as a user with `unfiltered_html` leaves external URLs alone.
+	 *
+	 * @return void
+	 */
+	public function testSavingAsAdministratorKeepsExternalUrls(): void {
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+
+		$data  = [ 'post_content' => '<!-- wp:kadence/lottie {"uniqueID":"a1","fileUrl":"https://assets.example/a.json"} /-->' ];
+		$saved = $this->block->strip_external_urls_on_save( $data );
+
+		$this->assertSame( $data, $saved );
+	}
+
+	/**
+	 * A contributor's saved post loses the external URL even when it is nested in a Query Loop.
+	 *
+	 * @return void
+	 */
+	public function testContributorPostSavedThroughCoreDoesNotKeepExternalUrl(): void {
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'contributor' ] ) );
+
+		$post_id = wp_insert_post(
+			[
+				'post_title'   => 'Loop',
+				'post_status'  => 'draft',
+				'post_content' => '<!-- wp:query --><div class="wp-block-query"><!-- wp:post-template -->'
+					. '<!-- wp:kadence/lottie {"uniqueID":"a1","fileUrl":"https://attacker.example/a.json"} /-->'
+					. '<!-- /wp:post-template --></div><!-- /wp:query -->',
+			]
+		);
+
+		$this->assertStringNotContainsString( 'attacker.example', get_post_field( 'post_content', $post_id ) );
+	}
+
+	/**
 	 * Non-numeric scroll frame values never reach the inline script.
 	 *
 	 * @return void
