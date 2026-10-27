@@ -1125,6 +1125,12 @@ describe('keepSiteCopies', () => {
 		});
 	});
 
+	it('keeps the list when a write replaces the metadata without it', () => {
+		expect(keepSiteCopies({ metadata: { name: 'Hero' } }, shown, stored)).toEqual({
+			metadata: { name: 'Hero', kbSiteCopies: copies },
+		});
+	});
+
 	it('passes through a write to an attribute without copies', () => {
 		expect(keepSiteCopies({ text: 'Go' }, shown, stored)).toEqual({ text: 'Go' });
 	});

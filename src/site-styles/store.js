@@ -708,7 +708,8 @@ export function keepSiteCopies(written, shown, stored) {
 
 /**
  * The write with the list of copied site values updated in its `metadata`,
- * when the list changed. An empty list is removed.
+ * when the list changed or the write replaces the metadata without it. An
+ * empty list is removed.
  *
  * @param {Attributes}                   kept     The attributes to store.
  * @param {Attributes}                   stored   The instance's stored attributes.
@@ -720,7 +721,9 @@ export function keepSiteCopies(written, shown, stored) {
  * @return {Attributes} The attributes to store.
  */
 export function withCopiesMetadata(kept, stored, previous, copies) {
-	if (isEqual(copies, previous || {})) {
+	const keepsList = !('metadata' in kept) || isEqual(kept.metadata?.kbSiteCopies ?? {}, copies);
+
+	if (isEqual(copies, previous || {}) && keepsList) {
 		return kept;
 	}
 
