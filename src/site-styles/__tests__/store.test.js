@@ -2,18 +2,22 @@
 import {
 	groupSiteAttributes,
 	guardWrite,
+	keepSiteCopies,
 	merge,
 	mergeAttributes,
 	panelAttributes,
 	scopeSiteAttributes,
 	siteAttributes,
+	siteCopies,
 	toCoreColor,
 	toKadenceColor,
 	toStoredForm,
 	unmerge,
 	withoutOverridden,
+	withoutSiteCopies,
 	withStoredForm,
 } from '../store';
+import copiesConformance from './fixtures/copies-conformance.json';
 import cascadeConformance from './fixtures/cascade-conformance.json';
 import conformance from './fixtures/merge-conformance.json';
 import groupConformance from './fixtures/group-conformance.json';
@@ -956,6 +960,161 @@ describe('panelAttributes', () => {
 		expect(panelAttributes(BLOCK, { inheritStyles: 'fill' }, { sizePreset: 'large' }, {})).toEqual({
 			inheritStyles: 'fill',
 			sizePreset: 'large',
+		});
+	});
+});
+
+describe('withoutSiteCopies', () => {
+	const { defaults, cases } = copiesConformance;
+	const definitions = Object.fromEntries(Object.entries(defaults).map(([name, value]) => [name, { default: value }]));
+
+	it.each(cases.map((c) => [c.name, c]))('%s', (name, c) => {
+		expect(withoutSiteCopies(c.instance, definitions)).toEqual(c.expected);
+	});
+
+	it('leaves the attributes and the defaults it is given untouched', () => {
+		const instance = { padding: [30, 40, 20, 40], metadata: { kbSiteCopies: { padding: [[1]] } } };
+
+		withoutSiteCopies(instance, definitions);
+
+		expect(instance.padding).toEqual([30, 40, 20, 40]);
+		expect(definitions.padding.default).toEqual(['', '', '', '']);
+	});
+});
+
+describe('siteCopies', () => {
+	const cascades = [{ unit: 'paddingUnit', values: ['padding', 'tabletPadding', 'mobilePadding'] }];
+	const definitions = {
+		paddingUnit: { default: 'px' },
+		padding: { default: ['', '', '', ''] },
+		tabletPadding: { default: ['', '', '', ''] },
+		mobilePadding: { default: ['', '', '', ''] },
+	};
+	const pxSite = { padding: [20, 40, 20, 40], mobilePadding: [6, 12, 6, 12] };
+	const stored = { paddingUnit: 'px', padding: ['', '', '', ''] };
+
+	/**
+	 * Runs a write through the guard, then lists the site values it copied.
+	 *
+	 * @param {Object} written  The attributes being written.
+	 * @param {Object} instance The instance's stored attributes.
+	 * @param {Object} site     The site values.
+	 * @param {Object} previous The copies already listed.
+	 *
+	 * @since TBD
+	 *
+	 * @return {Object} Attribute name => the copied leaves' paths.
+	 */
+	function copiesOf(written, instance, site, previous) {
+		const instanceSite = withoutOverridden(site, instance, definitions, cascades);
+		const shown = mergeAttributes(instance, instanceSite, definitions);
+		const kept = guardWrite(written, shown, instance, instanceSite, [], definitions, {}, cascades);
+
+		return siteCopies(kept, written, shown, instance, instanceSite, previous);
+	}
+
+	it("lists the site's sides the first change copies, on every device", () => {
+		expect(copiesOf({ padding: [30, 40, 20, 40] }, stored, pxSite)).toEqual({
+			padding: [[1], [2], [3]],
+			mobilePadding: [[1], [2], [3]],
+		});
+	});
+
+	it("doesn't list the copied unit, which the changed side was typed in", () => {
+		const emSite = { paddingUnit: 'em', padding: [1, 2, 1, 2], mobilePadding: [0.5, 1, 0.5, 1] };
+
+		expect(copiesOf({ padding: [2, 2, 1, 2] }, stored, emSite)).toEqual({
+			padding: [[1], [2], [3]],
+			mobilePadding: [[1], [2], [3]],
+		});
+	});
+
+	it('lists every side when the user only picks the unit', () => {
+		const emSite = { paddingUnit: 'em', padding: [1, 2, 1, 2], mobilePadding: [0.5, 1, 0.5, 1] };
+
+		expect(copiesOf({ paddingUnit: 'px' }, stored, emSite)).toEqual({
+			padding: [[0], [1], [2], [3]],
+			mobilePadding: [[0], [1], [2], [3]],
+		});
+	});
+
+	it('drops a copied side the user changes later, and keeps the rest', () => {
+		const owned = { paddingUnit: 'px', padding: [30, 40, 20, 40], mobilePadding: ['', 12, 6, 12] };
+		const previous = { padding: [[1], [2], [3]], mobilePadding: [[1], [2], [3]] };
+
+		expect(copiesOf({ padding: [30, 50, 20, 40] }, owned, pxSite, previous)).toEqual({
+			padding: [[2], [3]],
+			mobilePadding: [[1], [2], [3]],
+		});
+	});
+
+	it('lists nothing for a box the instance already sets', () => {
+		const owned = { paddingUnit: 'px', padding: [2, 10, 2, 10] };
+
+		expect(copiesOf({ padding: [3, 10, 2, 10] }, owned, pxSite)).toEqual({});
+	});
+
+	it("lists a group's copied members and leaves, but not the changed leaf or a copied unit", () => {
+		const shadowDefault = { color: '#000000', opacity: 0.2, spread: 0, blur: 2 };
+		const siteShadow = { color: '#333333', opacity: 0.5, spread: 0, blur: 10 };
+		const groups = [['displayShadow', 'shadow', 'shadowUnit']];
+		const groupDefinitions = {
+			displayShadow: { default: false },
+			shadow: { default: [shadowDefault] },
+			shadowUnit: { default: 'px' },
+		};
+		const instance = { displayShadow: false, shadow: [shadowDefault], shadowUnit: 'px' };
+		const site = { displayShadow: true, shadow: [siteShadow], shadowUnit: 'rem' };
+		const shown = mergeAttributes(instance, site, groupDefinitions);
+		const written = { shadow: [{ ...siteShadow, color: '#ff0000' }] };
+		const kept = guardWrite(written, shown, instance, site, groups, groupDefinitions);
+
+		expect(siteCopies(kept, written, shown, instance, site)).toEqual({
+			displayShadow: [[]],
+			shadow: [
+				[0, 'opacity'],
+				[0, 'blur'],
+			],
+		});
+	});
+});
+
+describe('keepSiteCopies', () => {
+	const definitions = {
+		padding: { default: ['', '', '', ''] },
+		mobilePadding: { default: ['', '', '', ''] },
+	};
+	const copies = { padding: [[1], [2], [3]], mobilePadding: [[1], [2], [3]] };
+	const stored = {
+		padding: [30, 40, 20, 40],
+		mobilePadding: ['', 12, 6, 12],
+		metadata: { name: '', kbSiteCopies: copies },
+	};
+	const shown = withoutSiteCopies(stored, definitions);
+
+	it('keeps the copied sides the user leaves alone, and drops the changed one from the list', () => {
+		expect(keepSiteCopies({ padding: [30, 50, '', ''] }, shown, stored)).toEqual({
+			padding: [30, 50, 20, 40],
+			metadata: { name: '', kbSiteCopies: { padding: [[2], [3]], mobilePadding: [[1], [2], [3]] } },
+		});
+	});
+
+	it('removes the list once the last copied side is changed', () => {
+		const one = { ...stored, metadata: { name: '', kbSiteCopies: { padding: [[1]] } } };
+
+		expect(keepSiteCopies({ padding: [30, 50, '', ''] }, withoutSiteCopies(one, definitions), one)).toEqual({
+			padding: [30, 50, '', ''],
+			metadata: { name: '' },
+		});
+	});
+
+	it('passes through a write to an attribute without copies', () => {
+		expect(keepSiteCopies({ text: 'Go' }, shown, stored)).toEqual({ text: 'Go' });
+	});
+
+	it('passes through a write to an instance without copies', () => {
+		expect(keepSiteCopies({ padding: [1, 2, 3, 4] }, { padding: [] }, { padding: [] })).toEqual({
+			padding: [1, 2, 3, 4],
 		});
 	});
 });

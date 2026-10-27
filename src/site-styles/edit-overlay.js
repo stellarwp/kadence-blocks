@@ -6,7 +6,9 @@
  * The one exception is a change that starts an instance setting one of its
  * block's groups or cascades, such as a button's padding: the whole group or
  * cascade is then stored as shown, so the block keeps looking as it did apart
- * from the change.
+ * from the change. The site values it copies are listed in the block's
+ * `metadata.kbSiteCopies`, and with FSE mode off the block shows them at its
+ * defaults, as the front end does.
  */
 import { createHigherOrderComponent } from '@wordpress/compose';
 import { getBlockType } from '@wordpress/blocks';
@@ -17,10 +19,14 @@ import { getSupportedBlock, isFseMode } from './supported-blocks';
 import {
 	groupSiteAttributes,
 	guardWrite,
+	keepSiteCopies,
 	mergeAttributes,
 	scopeSiteAttributes,
 	siteAttributes,
+	siteCopies,
+	withCopiesMetadata,
 	withoutOverridden,
+	withoutSiteCopies,
 } from './store';
 import { scopeStyle } from './scope-style';
 import { useGlobalStylesRecord } from './use-global-styles-record';
@@ -85,7 +91,23 @@ function SiteStylesBlockEdit({ BlockEdit, ...props }) {
 			const storedShown = stored === attributes ? shown : mergeAttributes(stored, storedSite, definitions);
 			const next = typeof written === 'function' ? written(storedShown) : written;
 			const { groups, legacyGroups, cascades } = getSupportedBlock(name);
-			const kept = guardWrite(next, storedShown, stored, storedSite, groups, definitions, legacyGroups, cascades);
+			const guarded = guardWrite(
+				next,
+				storedShown,
+				stored,
+				storedSite,
+				groups,
+				definitions,
+				legacyGroups,
+				cascades
+			);
+			const previous = stored.metadata?.kbSiteCopies;
+			const kept = withCopiesMetadata(
+				guarded,
+				stored,
+				previous,
+				siteCopies(guarded, next, storedShown, stored, storedSite, previous)
+			);
 
 			if (Object.keys(kept).length) {
 				setAttributes(kept);
@@ -94,7 +116,8 @@ function SiteStylesBlockEdit({ BlockEdit, ...props }) {
 		[registry, clientId, attributes, site, shown, record, name, setAttributes]
 	);
 
-	if (!hasSiteValues) {
+	// A block with copies keeps its list up to date even while the site has no values.
+	if (!hasSiteValues && !hasCopies(attributes)) {
 		return <BlockEdit {...props} />;
 	}
 
@@ -114,4 +137,68 @@ export const withSiteStyles = createHigherOrderComponent(
 		return <SiteStylesBlockEdit {...props} BlockEdit={BlockEdit} />;
 	},
 	'withSiteStyles'
+);
+
+/**
+ * @param {Object<string, *>} attributes The instance's attributes.
+ *
+ * @since TBD
+ *
+ * @return {boolean} Whether the instance lists site values copied into it.
+ */
+function hasCopies(attributes) {
+	const copies = attributes.metadata?.kbSiteCopies;
+
+	return null !== copies && 'object' === typeof copies && Object.keys(copies).length > 0;
+}
+
+/**
+ * Shows a block without the site values copied into it, and keeps the copies
+ * the user leaves alone when they write.
+ *
+ * @param {Object}   props           The block edit props plus the wrapped component.
+ * @param {Function} props.BlockEdit The wrapped block edit component.
+ *
+ * @since TBD
+ *
+ * @return {Element} The block edit without its copied site values.
+ */
+function SiteCopiesHiddenBlockEdit({ BlockEdit, ...props }) {
+	const { name, clientId, attributes, setAttributes } = props;
+	const registry = useRegistry();
+	const shown = useMemo(
+		() => withoutSiteCopies(attributes, getBlockType(name)?.attributes || {}),
+		[attributes, name]
+	);
+	const keepingSetAttributes = useCallback(
+		(written) => {
+			const stored = registry.select('core/block-editor').getBlockAttributes(clientId) || attributes;
+			const storedShown =
+				stored === attributes ? shown : withoutSiteCopies(stored, getBlockType(name)?.attributes || {});
+			const next = typeof written === 'function' ? written(storedShown) : written;
+
+			setAttributes(keepSiteCopies(next, storedShown, stored));
+		},
+		[registry, clientId, attributes, shown, name, setAttributes]
+	);
+
+	return <BlockEdit {...props} attributes={shown} setAttributes={keepingSetAttributes} />;
+}
+
+/**
+ * The `editor.BlockEdit` filter for FSE mode off: a block that lists site
+ * values copied into it shows them at the block's defaults, as the front end
+ * does, since the site's values no longer apply.
+ *
+ * @since TBD
+ */
+export const withSiteCopiesHidden = createHigherOrderComponent(
+	(BlockEdit) => (props) => {
+		if (isFseMode() || !hasCopies(props.attributes) || isVirtualBlock(props.clientId)) {
+			return <BlockEdit {...props} />;
+		}
+
+		return <SiteCopiesHiddenBlockEdit {...props} BlockEdit={BlockEdit} />;
+	},
+	'withSiteCopiesHidden'
 );

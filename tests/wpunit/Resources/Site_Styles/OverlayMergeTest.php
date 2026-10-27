@@ -151,4 +151,39 @@ final class OverlayMergeTest extends TestCase {
 	public function testCascadesLikeTheEditor( array $site, array $instance, array $defaults, array $cascades, array $expected ): void {
 		$this->assertSame( $expected, Overlay::without_overridden( $site, $instance, $defaults, $cascades ) );
 	}
+
+	/**
+	 * The copied site value cases shared with the editor, in `src/site-styles/__tests__/fixtures/`.
+	 *
+	 * @return Generator
+	 */
+	public function copiesProvider(): Generator {
+		$json = file_get_contents( KADENCE_BLOCKS_PATH . 'src/site-styles/__tests__/fixtures/copies-conformance.json' );
+		$this->assertIsString( $json );
+
+		$fixture = json_decode( $json, true );
+
+		foreach ( $fixture['cases'] as $case ) {
+			yield $case['name'] => [
+				'instance' => $case['instance'],
+				'defaults' => $fixture['defaults'],
+				'expected' => $case['expected'],
+			];
+		}
+	}
+
+	/**
+	 * With FSE mode off, the site values the editor copied into an instance are reset to the block's defaults, like the editor shows them.
+	 *
+	 * @dataProvider copiesProvider
+	 *
+	 * @param array<string, mixed> $instance The instance's attributes.
+	 * @param array<string, mixed> $defaults The attributes' registered defaults.
+	 * @param array<string, mixed> $expected The attributes without the copied site values.
+	 *
+	 * @return void
+	 */
+	public function testDropsTheCopiesLikeTheEditor( array $instance, array $defaults, array $expected ): void {
+		$this->assertSame( $expected, Overlay::without_site_copies( $instance, $defaults ) );
+	}
 }

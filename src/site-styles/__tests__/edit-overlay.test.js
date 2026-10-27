@@ -64,7 +64,7 @@ jest.mock(
 	{ virtual: true }
 );
 
-const { withSiteStyles } = require('../edit-overlay');
+const { withSiteCopiesHidden, withSiteStyles } = require('../edit-overlay');
 
 /**
  * An instance as the block editor holds it: every registered default filled in.
@@ -95,13 +95,29 @@ function registeredDefaults(definitions) {
  * @return {Object} The props the block's edit component got.
  */
 function render(attributes, setAttributes = () => {}, name = BLOCK) {
+	return renderWith(withSiteStyles, attributes, setAttributes, name);
+}
+
+/**
+ * Renders an instance through an `editor.BlockEdit` filter.
+ *
+ * @param {Function} filter        The filter's higher-order component.
+ * @param {Object}   attributes    The instance's stored attributes.
+ * @param {Function} setAttributes The block editor's attribute setter.
+ * @param {string}   name          Block name.
+ *
+ * @since TBD
+ *
+ * @return {Object} The props the block's edit component got.
+ */
+function renderWith(filter, attributes, setAttributes = () => {}, name = BLOCK) {
 	let props;
 
 	mockStored = attributes;
 	const root = createRoot(document.createElement('div'));
 
 	act(() => {
-		const Edit = withSiteStyles((given) => {
+		const Edit = filter((given) => {
 			props = given;
 
 			return null;
@@ -189,6 +205,7 @@ describe('editor overlay with groups', () => {
 			spacerHeight: 5,
 			tabletSpacerHeight: 30,
 			spacerHeightUnits: 'rem',
+			metadata: { kbSiteCopies: { tabletSpacerHeight: [[]] } },
 		});
 	});
 
@@ -219,6 +236,7 @@ describe('editor overlay with groups', () => {
 			spacerHeight: 5,
 			tabletSpacerHeight: 30,
 			mobileSpacerHeight: 10,
+			metadata: { kbSiteCopies: { tabletSpacerHeight: [[]] } },
 			spacerHeightUnits: 'rem',
 		});
 	});
@@ -328,6 +346,7 @@ describe("editor overlay with Spacer's entry", () => {
 			spacerHeight: 5,
 			tabletSpacerHeight: 30,
 			spacerHeightUnits: 'rem',
+			metadata: { kbSiteCopies: { tabletSpacerHeight: [[]] } },
 		});
 		expect(setAttributes).toHaveBeenNthCalledWith(2, { dividerColor: '#000000' });
 	});
@@ -454,6 +473,9 @@ describe("editor overlay with Section's entry", () => {
 		expect(setAttributes).toHaveBeenLastCalledWith({
 			borderStyle: OWN_BORDER,
 			tabletBorderStyle: SITE.tabletBorderStyle,
+			metadata: expect.objectContaining({
+				kbSiteCopies: { borderStyle: expect.any(Array), tabletBorderStyle: expect.any(Array) },
+			}),
 		});
 	});
 });
@@ -762,7 +784,11 @@ describe('editor overlay with cascades', () => {
 
 		render(BUTTON_ATTRIBUTES, setAttributes, BUTTON).setAttributes({ paddingUnit: 'px' });
 
-		expect(setAttributes).toHaveBeenCalledWith({ padding: [20, 40, 20, 40], mobilePadding: [6, 12, 6, 12] });
+		expect(setAttributes).toHaveBeenCalledWith({
+			padding: [20, 40, 20, 40],
+			mobilePadding: [6, 12, 6, 12],
+			metadata: { kbSiteCopies: { padding: [[0], [1], [2], [3]], mobilePadding: [[0], [1], [2], [3]] } },
+		});
 	});
 
 	/**
@@ -781,6 +807,148 @@ describe('editor overlay with cascades', () => {
 			padding: [2, 40, 20, 40],
 			mobilePadding: ['', 12, 6, 12],
 			paddingUnit: 'em',
+			metadata: { kbSiteCopies: { padding: [[1], [2], [3]], mobilePadding: [[1], [2], [3]] } },
 		});
+	});
+});
+
+describe('copied site values', () => {
+	const EMPTY = ['', '', '', ''];
+	const COPIES = { padding: [[1], [2], [3]], mobilePadding: [[1], [2], [3]] };
+	const EDITED = {
+		padding: [30, 40, 20, 40],
+		tabletPadding: EMPTY,
+		mobilePadding: ['', 12, 6, 12],
+		paddingUnit: 'px',
+		metadata: { name: 'Hero', kbSiteCopies: COPIES },
+	};
+
+	beforeAll(() => {
+		global.IS_REACT_ACT_ENVIRONMENT = true;
+	});
+
+	beforeEach(() => {
+		mockDefinitions = BUTTON_DEFINITIONS;
+		window.kadenceSiteStyles = {
+			isFseMode: true,
+			blocks: {
+				[BUTTON]: {
+					slug: 'singlebtn',
+					exclude: ['uniqueID', 'metadata'],
+					overlay: PADDING,
+					attributesMap: {},
+					supports: {},
+					cascades: [{ unit: 'paddingUnit', values: ['padding', 'tabletPadding', 'mobilePadding'] }],
+				},
+			},
+		};
+		mockRecord = {
+			settings: {
+				custom: { kadence: { singlebtn: { padding: [20, 40, 20, 40], mobilePadding: [6, 12, 6, 12] } } },
+			},
+		};
+	});
+
+	afterEach(() => {
+		mockDefinitions = DEFINITIONS;
+		delete window.kadenceSiteStyles;
+	});
+
+	/**
+	 * The first change lists the site's sides it copies in the block's metadata, next to what is there.
+	 *
+	 * @return {void}
+	 */
+	it('lists the copied sides in the metadata, next to its name', () => {
+		const setAttributes = jest.fn();
+		const untouched = { padding: EMPTY, tabletPadding: EMPTY, mobilePadding: EMPTY, paddingUnit: 'px' };
+
+		renderWith(withSiteStyles, { ...untouched, metadata: { name: 'Hero' } }, setAttributes, BUTTON).setAttributes({
+			padding: [30, 40, 20, 40],
+		});
+
+		expect(setAttributes).toHaveBeenCalledWith({
+			padding: [30, 40, 20, 40],
+			mobilePadding: ['', 12, 6, 12],
+			metadata: { name: 'Hero', kbSiteCopies: COPIES },
+		});
+	});
+
+	/**
+	 * A copied side the user changes in FSE mode becomes their own, even when the site has no values left.
+	 *
+	 * @return {void}
+	 */
+	it('drops a changed side from the list when the site has no values', () => {
+		const setAttributes = jest.fn();
+
+		mockRecord = {};
+		renderWith(withSiteStyles, EDITED, setAttributes, BUTTON).setAttributes({ padding: [30, 50, 20, 40] });
+
+		expect(setAttributes).toHaveBeenCalledWith({
+			padding: [30, 50, 20, 40],
+			metadata: { name: 'Hero', kbSiteCopies: { padding: [[2], [3]], mobilePadding: [[1], [2], [3]] } },
+		});
+	});
+
+	/**
+	 * With FSE mode off, the block shows its own values, with the copied ones at the block's defaults.
+	 *
+	 * @return {void}
+	 */
+	it('shows the defaults for the copied sides with FSE mode off', () => {
+		window.kadenceSiteStyles = { isFseMode: false, blocks: {} };
+
+		expect(renderWith(withSiteCopiesHidden, EDITED, () => {}, BUTTON).attributes).toEqual({
+			...EDITED,
+			padding: [30, '', '', ''],
+			mobilePadding: EMPTY,
+		});
+	});
+
+	/**
+	 * With FSE mode off, a write keeps the copied sides the user leaves alone and makes the changed one theirs.
+	 *
+	 * @return {void}
+	 */
+	it('keeps the untouched copies when the user changes a side with FSE mode off', () => {
+		const setAttributes = jest.fn();
+
+		window.kadenceSiteStyles = { isFseMode: false, blocks: {} };
+		renderWith(withSiteCopiesHidden, EDITED, setAttributes, BUTTON).setAttributes({ padding: [30, 50, '', ''] });
+
+		expect(setAttributes).toHaveBeenCalledWith({
+			padding: [30, 50, 20, 40],
+			metadata: { name: 'Hero', kbSiteCopies: { padding: [[2], [3]], mobilePadding: [[1], [2], [3]] } },
+		});
+	});
+
+	/**
+	 * In FSE mode the copies are the block's values, so the filter leaves the block alone.
+	 *
+	 * @return {void}
+	 */
+	it('leaves the block alone in FSE mode', () => {
+		const setAttributes = jest.fn();
+		const props = renderWith(withSiteCopiesHidden, EDITED, setAttributes, BUTTON);
+
+		expect(props.attributes).toBe(EDITED);
+		expect(props.setAttributes).toBe(setAttributes);
+	});
+
+	/**
+	 * A block without copies is left alone with FSE mode off.
+	 *
+	 * @return {void}
+	 */
+	it('leaves a block without copies alone with FSE mode off', () => {
+		const setAttributes = jest.fn();
+		const own = { padding: [2, 10, 2, 10], metadata: { name: '' } };
+
+		window.kadenceSiteStyles = { isFseMode: false, blocks: {} };
+		const props = renderWith(withSiteCopiesHidden, own, setAttributes, BUTTON);
+
+		expect(props.attributes).toBe(own);
+		expect(props.setAttributes).toBe(setAttributes);
 	});
 });

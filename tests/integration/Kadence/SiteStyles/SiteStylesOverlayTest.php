@@ -132,6 +132,37 @@ final class SiteStylesOverlayTest extends WPTestCase {
 	}
 
 	/**
+	 * With FSE mode off, the site sides the editor copied into a button go back to the block's defaults, and the side the user set stays.
+	 *
+	 * @return void
+	 */
+	public function testCopiedSiteSidesGoBackToTheDefaultsWithFseModeOff(): void {
+		$site     = $this->tester->store_single_button_box_values();
+		$defaults = Supported_Blocks::registered_defaults( 'kadence/singlebtn' );
+
+		$own = apply_filters( 'kadence_blocks_singlebtn_render_block_attributes', $this->button_with_copied_sides( $site ) );
+
+		$this->assertSame( [ 30, $defaults['padding'][1], $defaults['padding'][2], $defaults['padding'][3] ], $own['padding'] );
+		$this->assertSame( $defaults['mobilePadding'], $own['mobilePadding'] );
+	}
+
+	/**
+	 * In FSE mode, the site sides the editor copied into a button are the button's own, so they render as stored.
+	 *
+	 * @return void
+	 */
+	public function testCopiedSiteSidesStayInFseMode(): void {
+		$this->tester->enable_fse_mode();
+		$site   = $this->tester->store_single_button_box_values();
+		$button = $this->button_with_copied_sides( $site );
+
+		$own = apply_filters( 'kadence_blocks_singlebtn_render_block_attributes', $button );
+
+		$this->assertSame( $button['padding'], $own['padding'] );
+		$this->assertSame( $button['mobilePadding'], $own['mobilePadding'] );
+	}
+
+	/**
 	 * A button's own padding stays in its own unit: when the site pads in another unit, none of the site's padding reaches the button, so its values are never shown in the site's unit.
 	 *
 	 * @dataProvider siteUnitProvider
@@ -425,5 +456,28 @@ final class SiteStylesOverlayTest extends WPTestCase {
 				return [ [ 'spacerHeight', 'tabletSpacerHeight', 'mobileSpacerHeight', 'spacerHeightUnits' ] ];
 			}
 		};
+	}
+
+	/**
+	 * A button as the editor stores it after the user set its top padding to 30 in FSE mode: the site's other
+	 * sides copied on every device, and listed in its metadata.
+	 *
+	 * @param array{padding: list<int>, mobilePadding: list<int>} $site The site's box values.
+	 *
+	 * @return array<string, mixed> The button's attributes.
+	 */
+	private function button_with_copied_sides( array $site ): array {
+		return [
+			'uniqueID'      => 'a',
+			'padding'       => [ 30, $site['padding'][1], $site['padding'][2], $site['padding'][3] ],
+			'mobilePadding' => [ '', $site['mobilePadding'][1], $site['mobilePadding'][2], $site['mobilePadding'][3] ],
+			'metadata'      => [
+				'name'         => '',
+				'kbSiteCopies' => [
+					'padding'       => [ [ 1 ], [ 2 ], [ 3 ] ],
+					'mobilePadding' => [ [ 1 ], [ 2 ], [ 3 ] ],
+				],
+			],
+		];
 	}
 }

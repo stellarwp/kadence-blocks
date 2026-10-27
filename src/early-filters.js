@@ -14,7 +14,7 @@ import { useState } from '@wordpress/element';
 import { useDispatch, select } from '@wordpress/data';
 import { addSiteStylesSupports } from './site-styles/block-supports';
 import { hideCoreColorControls } from './site-styles/instance-controls';
-import { withSiteStyles } from './site-styles/edit-overlay';
+import { withSiteCopiesHidden, withSiteStyles } from './site-styles/edit-overlay';
 import { gateBlockDefaults } from './site-styles/block-defaults';
 import { isFseMode } from './site-styles/supported-blocks';
 import { useIsSiteStylesPanel } from './site-styles/use-is-site-styles-panel';
@@ -106,6 +106,7 @@ addFilter('blocks.registerBlockType', 'kadence/block-label', blockMetadataAttrib
 addFilter('blocks.registerBlockType', 'kadence/site-styles-supports', addSiteStylesSupports);
 addFilter('blockEditor.useSetting.before', 'kadence/site-styles-instance-controls', hideCoreColorControls);
 addFilter('editor.BlockEdit', 'kadence/site-styles-overlay', withSiteStyles);
+addFilter('editor.BlockEdit', 'kadence/site-styles-copies', withSiteCopiesHidden);
 addFilter('blocks.registerBlockType', 'kadence/site-styles-block-defaults', gateBlockDefaults);
 
 /**
