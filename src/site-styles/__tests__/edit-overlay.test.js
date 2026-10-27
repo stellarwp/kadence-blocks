@@ -7,7 +7,7 @@
  * block that cascades them is different: an own value drops the site values it covers, and a change stores
  * the unit shown.
  */
-import { act } from 'react';
+import { act, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import block from '../../blocks/spacer/block.json';
 import sectionBlock from '../../blocks/column/block.json';
@@ -950,5 +950,35 @@ describe('copied site values', () => {
 
 		expect(props.attributes).toBe(own);
 		expect(props.setAttributes).toBe(setAttributes);
+	});
+
+	/**
+	 * With FSE mode off, the block keeps its edit component mounted when the user changes the last copied side.
+	 *
+	 * @return {void}
+	 */
+	it('keeps the block mounted when the last copy leaves the list with FSE mode off', () => {
+		const root = createRoot(document.createElement('div'));
+		let mounts = 0;
+		const Edit = withSiteCopiesHidden(() => {
+			useEffect(() => {
+				mounts++;
+			}, []);
+
+			return null;
+		});
+		const renderBlock = (attributes) =>
+			act(() => {
+				root.render(<Edit name={BUTTON} clientId="abc" attributes={attributes} setAttributes={() => {}} />);
+			});
+
+		window.kadenceSiteStyles = { isFseMode: false, blocks: {} };
+		renderBlock(EDITED);
+		renderBlock({ ...EDITED, metadata: { name: 'Hero' } });
+		act(() => {
+			root.unmount();
+		});
+
+		expect(mounts).toBe(1);
 	});
 });

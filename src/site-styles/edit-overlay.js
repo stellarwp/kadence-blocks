@@ -182,6 +182,11 @@ function SiteCopiesHiddenBlockEdit({ BlockEdit, ...props }) {
 		[registry, clientId, attributes, shown, name, setAttributes]
 	);
 
+	// Checked here rather than in the filter, so the block stays mounted when its last copy leaves the list.
+	if (!hasCopies(attributes)) {
+		return <BlockEdit {...props} />;
+	}
+
 	return <BlockEdit {...props} attributes={shown} setAttributes={keepingSetAttributes} />;
 }
 
@@ -194,7 +199,7 @@ function SiteCopiesHiddenBlockEdit({ BlockEdit, ...props }) {
  */
 export const withSiteCopiesHidden = createHigherOrderComponent(
 	(BlockEdit) => (props) => {
-		if (isFseMode() || !hasCopies(props.attributes) || isVirtualBlock(props.clientId)) {
+		if (isFseMode() || isVirtualBlock(props.clientId)) {
 			return <BlockEdit {...props} />;
 		}
 
