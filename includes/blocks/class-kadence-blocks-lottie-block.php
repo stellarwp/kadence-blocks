@@ -345,7 +345,7 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 	}
 
 	/**
-	 * Whether an external animation URL may be rendered for the current post.
+	 * Whether an animation URL may be rendered for the current post.
 	 *
 	 * @since TBD
 	 *
@@ -365,14 +365,15 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 			return true;
 		}
 
-		return $this->is_same_site_url( $file_url );
+		return $this->is_site_animation_url( $file_url );
 	}
 
 	/**
-	 * Whether a URL points at this site's host.
+	 * Whether a URL points at this site's animations REST route.
 	 *
-	 * Browsers read a backslash as a slash, which PHP does not, so URLs containing one
-	 * (or whitespace and control characters) are rejected instead of compared.
+	 * Media files and other site URLs skip the animation sanitizer, so only the route that
+	 * sanitizes on serve is accepted. Browsers read a backslash as a slash, which PHP does not,
+	 * so URLs containing one (or whitespace and control characters) are rejected.
 	 *
 	 * @since TBD
 	 *
@@ -380,20 +381,14 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 	 *
 	 * @return bool
 	 */
-	private function is_same_site_url( $file_url ) {
+	private function is_site_animation_url( $file_url ) {
 		if ( ! is_string( $file_url ) || preg_match( '/[\\\\\s\x00-\x1f\x7f]/', $file_url ) ) {
 			return false;
 		}
 
-		$scheme = wp_parse_url( $file_url, PHP_URL_SCHEME );
-		if ( $scheme && ! in_array( strtolower( $scheme ), [ 'http', 'https' ], true ) ) {
-			return false;
-		}
+		$route = preg_replace( '#^https?:#i', '', get_rest_url( null, 'kb-lottieanimation/v1/animations/' ) );
 
-		$url_host  = wp_parse_url( $file_url, PHP_URL_HOST );
-		$site_host = wp_parse_url( home_url(), PHP_URL_HOST );
-
-		return $url_host && $site_host && strtolower( $url_host ) === strtolower( $site_host );
+		return (bool) preg_match( '#^https?:' . preg_quote( (string) $route, '#' ) . '[a-zA-Z0-9]+(\.json)?(\?[^\#]*)?$#i', $file_url );
 	}
 
 	/**
@@ -412,7 +407,7 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 				continue;
 			}
 
-			if ( 'kadence/lottie' === ( $block['blockName'] ?? '' ) && is_array( $block['attrs'] ?? null ) && isset( $block['attrs']['fileUrl'] ) && ! $this->is_same_site_url( $block['attrs']['fileUrl'] ) ) {
+			if ( 'kadence/lottie' === ( $block['blockName'] ?? '' ) && is_array( $block['attrs'] ?? null ) && isset( $block['attrs']['fileUrl'] ) && ! $this->is_site_animation_url( $block['attrs']['fileUrl'] ) ) {
 				unset( $block['attrs']['fileUrl'] );
 				$changed = true;
 			}

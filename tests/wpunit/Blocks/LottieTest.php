@@ -211,15 +211,42 @@ class LottieTest extends KadenceBlocksUnit {
 	}
 
 	/**
-	 * A URL on this site is rendered even when the post author lacks `unfiltered_html`.
+	 * The animations REST route URL is rendered even when the post author lacks `unfiltered_html`.
 	 *
 	 * @return void
 	 */
-	public function testSameSiteUrlFromContributorPostIsRendered(): void {
-		$url  = home_url( '/wp-json/kb-lottieanimation/v1/animations/1.json' );
+	public function testAnimationRouteUrlFromContributorPostIsRendered(): void {
+		$url  = get_rest_url( null, 'kb-lottieanimation/v1/animations/1.json' );
 		$html = $this->renderForAuthorRole( 'contributor', $url );
 
 		$this->assertStringContainsString( 'src="' . esc_url( $url ) . '"', $html );
+	}
+
+	/**
+	 * Other URLs on this site, such as media files, are not rendered for a contributor's post.
+	 *
+	 * @dataProvider siteUrlProvider
+	 *
+	 * @param string $path The path appended to the site URL.
+	 *
+	 * @return void
+	 */
+	public function testNonRouteSiteUrlFromContributorPostIsNotRendered( string $path ): void {
+		$url  = ( 0 === strpos( $path, '?' ) ? home_url( '/' ) : home_url() ) . $path;
+		$html = $this->renderForAuthorRole( 'contributor', $url );
+
+		$this->assertStringNotContainsString( $path, $html );
+	}
+
+	/**
+	 * Provides same-site URLs that are not the animations route.
+	 *
+	 * @return Generator
+	 */
+	public function siteUrlProvider(): Generator {
+		yield 'media file' => [ 'path' => '/wp-content/uploads/2026/10/evil.json' ];
+		yield 'dot segments through the route' => [ 'path' => '/wp-json/kb-lottieanimation/v1/animations/../../../../wp-content/uploads/evil.json' ];
+		yield 'other rest route' => [ 'path' => '/wp-json/wp/v2/media/1' ];
 	}
 
 	/**
@@ -322,7 +349,7 @@ class LottieTest extends KadenceBlocksUnit {
 	public function testSavingAsContributorStripsExternalUrls(): void {
 		wp_set_current_user( static::factory()->user->create( [ 'role' => 'contributor' ] ) );
 
-		$same_site = home_url( '/wp-json/kb-lottieanimation/v1/animations/1.json' );
+		$same_site = get_rest_url( null, 'kb-lottieanimation/v1/animations/1.json' );
 		$content   = '<!-- wp:group --><div class="wp-block-group">'
 			. '<!-- wp:kadence/lottie {"uniqueID":"a1","fileUrl":"https://attacker.example/a.json"} /-->'
 			. '<!-- wp:kadence/lottie {"uniqueID":"a2","fileUrl":"' . $same_site . '"} /-->'
@@ -333,6 +360,28 @@ class LottieTest extends KadenceBlocksUnit {
 		$this->assertStringNotContainsString( 'attacker.example', $saved['post_content'] );
 		$this->assertStringContainsString( 'a1', $saved['post_content'], 'The block is kept.' );
 		$this->assertStringContainsString( 'animations/1.json', $saved['post_content'], 'The same-site URL is kept.' );
+	}
+
+	/**
+	 * Saving as a contributor removes a media file URL on this site but keeps a plain-permalink animations route URL.
+	 *
+	 * @return void
+	 */
+	public function testSavingAsContributorKeepsOnlyAnimationRouteUrls(): void {
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'contributor' ] ) );
+
+		$this->setPlainPermalinks();
+
+		$route   = get_rest_url( null, 'kb-lottieanimation/v1/animations/7' );
+		$media   = home_url( '/wp-content/uploads/2026/10/evil.json' );
+		$content = '<!-- wp:kadence/lottie {"uniqueID":"a1","fileUrl":"' . $media . '"} /-->'
+			. '<!-- wp:kadence/lottie {"uniqueID":"a2","fileUrl":"' . $route . '"} /-->';
+
+		$saved = $this->block->strip_external_urls_on_save( [ 'post_content' => wp_slash( $content ) ] );
+
+		$this->assertStringNotContainsString( 'evil.json', $saved['post_content'], 'The media URL is removed.' );
+		$this->assertStringContainsString( 'animations', $saved['post_content'], 'The route URL is kept.' );
+		$this->assertStringContainsString( 'rest_route', $saved['post_content'], 'The plain-permalink form is used.' );
 	}
 
 	/**
@@ -427,6 +476,34 @@ class LottieTest extends KadenceBlocksUnit {
 			],
 		];
 
+		yield 'array expression is removed' => [
+			'input'    => [
+				'o' => [
+					'k' => 50,
+					'x' => [ 'alert(1)', 'alert(2)' ],
+				],
+			],
+			'expected' => [
+				'o' => [
+					'k' => 50,
+				],
+			],
+		];
+
+		yield 'nested array expression is removed' => [
+			'input'    => [
+				'o' => [
+					'k' => 50,
+					'x' => [ 0.5, [ 'alert(1)' ] ],
+				],
+			],
+			'expected' => [
+				'o' => [
+					'k' => 50,
+				],
+			],
+		];
+
 		yield 'scalar easing handle is kept' => [
 			'input'    => [
 				'i' => [
@@ -490,6 +567,17 @@ class LottieTest extends KadenceBlocksUnit {
 				'layers' => [],
 			],
 		];
+	}
+
+	/**
+	 * Switches the site to plain permalinks so the REST URL uses the `rest_route` query form.
+	 *
+	 * @return void
+	 */
+	private function setPlainPermalinks(): void {
+		global $wp_rewrite;
+
+		$wp_rewrite->set_permalink_structure( '' );
 	}
 
 	/**
