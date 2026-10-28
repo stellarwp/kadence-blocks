@@ -88,11 +88,11 @@
 						}
 
 						if (elementAbove) {
-							elementAbove.innerHTML = prefix + value + suffix;
+							elementAbove.textContent = prefix + value + suffix;
 						} else if (elementInside) {
-							elementInside.innerHTML = prefix + value + suffix;
+							elementInside.textContent = prefix + value + suffix;
 						} else if (elementBelow) {
-							elementBelow.innerHTML = prefix + value + suffix;
+							elementBelow.textContent = prefix + value + suffix;
 						}
 					},
 				});
@@ -161,6 +161,13 @@
 				kadenceProgressBars.initSingleBarElement(barContainers[n], n, item);
 			}
 		},
+		/**
+		 * Decode a string that may contain markup into plain text.
+		 *
+		 * @param {string} html The string to convert.
+		 *
+		 * @return {string} The decoded plain text.
+		 */
 		stripHtml(html) {
 			const wrappedHtml = `<pre>${html}</pre>`;
 			const doc = new DOMParser().parseFromString(wrappedHtml, 'text/html');

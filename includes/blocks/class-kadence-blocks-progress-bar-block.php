@@ -5,6 +5,10 @@
  * @package Kadence Blocks
  */
 
+/*
+ * cspell:ignore aligncenter kses linetype
+ */
+
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -247,7 +251,7 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block im
 		return $css->css_output();
 	}
 	/**
-	 * Builds HTML for block.
+	 * {@inheritDoc}
 	 *
 	 * @since 3.7.8.1 Escape the container class output.
 	 */
@@ -259,8 +263,8 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block im
 		$progress_color = ! empty( $attributes['progressColor'] ) ? $css->sanitize_color( $attributes['progressColor'], $attributes['progressOpacity'] ) : 'var(--global-palette1, #2B6CB0)';
 		$bar_background = ! empty( $attributes['barBackground'] ) ? $css->sanitize_color( $attributes['barBackground'], $attributes['barBackgroundOpacity'] ) : 'var(--global-palette7, #EDF2F7)';
 
-		$prefix          = isset( $attributes['numberPrefix'] ) ? esc_attr( $attributes['numberPrefix'] ) : '';
-		$suffix          = isset( $attributes['numberSuffix'] ) ? esc_attr( $attributes['numberSuffix'] ) : '';
+		$prefix          = isset( $attributes['numberPrefix'] ) ? $this->to_plain_text( $attributes['numberPrefix'] ) : '';
+		$suffix          = isset( $attributes['numberSuffix'] ) ? $this->to_plain_text( $attributes['numberSuffix'] ) : '';
 		$progress_min    = 0;
 		$progress_amount = ! empty( $attributes['progressAmount'] ) ? $attributes['progressAmount'] : 0;
 		$progress_max    = ! empty( $attributes['progressMax'] ) ? $attributes['progressMax'] : 100;
@@ -418,7 +422,7 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block im
 	 *
 	 * @since 3.7.8.1 Escape the rendered output.
 	 *
-	 * @param $attributes
+	 * @param array<string, mixed> $attributes The block attributes.
 	 *
 	 * @return string
 	 */
@@ -427,8 +431,8 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block im
 			return '';
 		}
 
-		$prefix          = $attributes['numberPrefix'] ?? '';
-		$suffix          = $attributes['numberSuffix'] ?? '';
+		$prefix          = isset( $attributes['numberPrefix'] ) ? $this->to_plain_text( $attributes['numberPrefix'] ) : '';
+		$suffix          = isset( $attributes['numberSuffix'] ) ? $this->to_plain_text( $attributes['numberSuffix'] ) : '';
 		$progress_amount = ! empty( $attributes['progressAmount'] ) ? $attributes['progressAmount'] : 0;
 		$progress_max    = ! empty( $attributes['progressMax'] ) ? $attributes['progressMax'] : 100;
 
@@ -539,6 +543,34 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block im
 			}
 		}
 		return $a_return;
+	}
+	/**
+	 * Reduce a stored value to plain text for the front-end script.
+	 *
+	 * Entities are decoded until the value is stable, then tags are removed.
+	 *
+	 * @since 3.8.0.1
+	 *
+	 * @param mixed $value The raw attribute value.
+	 *
+	 * @return string The plain-text value.
+	 */
+	private function to_plain_text( $value ): string {
+		$text = Cast::to_string( $value );
+
+		for ( $i = 0; $i < 5; $i++ ) {
+			$decoded = html_entity_decode( $text );
+			if ( $decoded === $text ) {
+				break;
+			}
+			$text = $decoded;
+		}
+
+		// wp_strip_all_tags() trims, so carry any edge whitespace (e.g. " pts") across.
+		preg_match( '/^\s*/u', $text, $lead );
+		preg_match( '/\s*$/u', $text, $trail );
+
+		return Cast::to_string( $lead[0] ?? '' ) . wp_strip_all_tags( $text ) . Cast::to_string( $trail[0] ?? '' );
 	}
 	/**
 	 * Enqueue the block's items.

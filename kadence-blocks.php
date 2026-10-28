@@ -5,7 +5,7 @@
  * Description: Advanced Page Building Blocks for Gutenberg. Create custom column layouts, backgrounds, dual buttons, icons etc.
  * Author: Kadence WP
  * Author URI: https://www.kadencewp.com
- * Version: 3.8.0
+ * Version: 3.8.1
  * Requires PHP: 7.4
  * Text Domain: kadence-blocks
  * License: GPL2+
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 define( 'KADENCE_BLOCKS_PATH', realpath( plugin_dir_path( __FILE__ ) ) . DIRECTORY_SEPARATOR );
 define( 'KADENCE_BLOCKS_URL', plugin_dir_url( __FILE__ ) );
-define( 'KADENCE_BLOCKS_VERSION', '3.8.0' );
+define( 'KADENCE_BLOCKS_VERSION', '3.8.1' );
 
 /**
  * Plugin basename, e.g. "kadence-blocks/kadence-blocks.php".
@@ -117,6 +117,7 @@ function kadence_blocks_init(): void {
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-prebuilt-library-rest-api.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-mailerlite-form-rest-api.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-fluentcrm-form-rest-api.php';
+	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-lottie-sanitizer.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-lottieanimation-get-rest-api.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-lottieanimation-post-rest-api.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-vector-post-rest-api.php';

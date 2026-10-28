@@ -40,42 +40,50 @@ class Kadence_LottieAnimation_post_REST_Controller extends WP_REST_Controller {
 	/**
 	 * Checks if a given request has access to search content.
 	 *
+	 * @since 3.8.1
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return true|WP_Error True if the request has search access, WP_Error object otherwise.
 	 */
 	public function create_animation_permission_check( $request ) {
-		return current_user_can( 'publish_posts' );
+		return current_user_can( 'edit_theme_options' );
 	}
 
 	/**
 	 * Create a lottie animation post from object
 	 *
+	 * @since 3.8.1
+	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return Array
 	 */
 	public function create_animation( $request ) {
-		$jsonParams = $request->get_json_params();
+		$json_params = $request->get_json_params();
 
-		if ( empty( $jsonParams['lottieFile'] ) || ! is_array( $jsonParams['lottieFile'] ) || json_encode( $jsonParams['lottieFile'] ) === false ) {
+		if ( empty( $json_params['lottieFile'] ) || ! is_array( $json_params['lottieFile'] ) || json_encode( $json_params['lottieFile'] ) === false ) {
 			return new WP_Error( 'invalid_json', __( 'Lottie animation contains invalid JSON', 'kadence-blocks' ), array( 'status' => 200 ) );
 		}
 
-		if ( ! empty( trim( $jsonParams['title'] ) ) ) {
-			$title = trim( $jsonParams['title'] );
+		if ( ! empty( trim( $json_params['title'] ) ) ) {
+			$title = trim( $json_params['title'] );
 		} else {
 			return array( 'error' => true, 'message' => __( 'Please enter an animation title', 'kadence-blocks' ) );
 		}
 
+		$json_params['lottieFile'] = Kadence_Blocks_Lottie_Sanitizer::strip_expressions( $json_params['lottieFile'] );
+
 		// Replace new line characters with space.
-		array_walk_recursive($jsonParams['lottieFile'], function(&$value, $key) {
-			$value = str_replace(array("\n", "\r"), ' ', $value);
-		});
+		array_walk_recursive(
+			$json_params['lottieFile'],
+			function ( &$value, $key ) {
+				$value = str_replace( [ "\n", "\r" ], ' ', $value );
+			}
+		);
 
 		// Create post object
 		$my_post = array(
 			'post_title'     => $title,
-			'post_content'   => json_encode( $jsonParams['lottieFile'], JSON_NUMERIC_CHECK ),
+			'post_content'   => json_encode( $json_params['lottieFile'], JSON_NUMERIC_CHECK ),
 			'post_type'      => 'kadence_lottie',
 			'post_status'    => 'publish',
 			'post_mime_type' => 'application/json',

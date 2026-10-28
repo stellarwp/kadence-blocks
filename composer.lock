@@ -1020,16 +1020,16 @@
         },
         {
             "name": "stellarwp/db",
-            "version": "1.3.0",
+            "version": "1.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/stellarwp/db.git",
-                "reference": "34d6c66adf323f4839c2199d6e1119c79fc87a4f"
+                "reference": "b7eb19523302c25b40b9a8d6484ab72c900ab5d7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stellarwp/db/zipball/34d6c66adf323f4839c2199d6e1119c79fc87a4f",
-                "reference": "34d6c66adf323f4839c2199d6e1119c79fc87a4f",
+                "url": "https://api.github.com/repos/stellarwp/db/zipball/b7eb19523302c25b40b9a8d6484ab72c900ab5d7",
+                "reference": "b7eb19523302c25b40b9a8d6484ab72c900ab5d7",
                 "shasum": ""
             },
             "require-dev": {
@@ -1070,9 +1070,9 @@
             "description": "A WPDB wrapper and query builder library.",
             "support": {
                 "issues": "https://github.com/stellarwp/db/issues",
-                "source": "https://github.com/stellarwp/db/tree/1.3.0"
+                "source": "https://github.com/stellarwp/db/tree/1.3.1"
             },
-            "time": "2026-02-25T17:01:46+00:00"
+            "time": "2026-10-19T16:29:39+00:00"
         },
         {
             "name": "stellarwp/harbor",

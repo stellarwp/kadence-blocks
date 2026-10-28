@@ -5,6 +5,10 @@
  * @package Kadence Blocks
  */
 
+// cspell:ignore Loittie lottieinteractivity .
+
+use KadenceWP\KadenceBlocks\Utils\Cast;
+
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -44,6 +48,17 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 	 * @var string
 	 */
 	protected $has_style = true;
+
+	/**
+	 * Hooks the save-time sanitizing of external animation URLs.
+	 *
+	 * @since 3.8.1
+	 */
+	public function __construct() {
+		parent::__construct();
+
+		add_filter( 'wp_insert_post_data', [ $this, 'strip_external_urls_on_save' ] );
+	}
 
 	/**
 	 * Instance Control
@@ -110,12 +125,14 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 	/**
 	 * Return dynamically generated HTML for block
 	 *
-	 * @param $attributes
-	 * @param $unique_id
-	 * @param $content
-	 * @param WP_Block $block_instance The instance of the WP_Block class that represents the block being rendered.
+	 * @since 3.8.1
 	 *
-	 * @return mixed
+	 * @param array<string, mixed> $attributes     The block attributes.
+	 * @param string               $unique_id      The block unique ID.
+	 * @param string               $content        The saved block content.
+	 * @param WP_Block             $block_instance The instance of the WP_Block class that represents the block being rendered.
+	 *
+	 * @return string
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
 		if ( ! wp_script_is( 'kadence-blocks-dotlottie-player-js', 'enqueued' ) ) {
@@ -123,7 +140,7 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		if ( isset( $attributes['uniqueID'] ) ) {
-			$unique_id              = $attributes['uniqueID'];
+			$unique_id              = Cast::to_string( $attributes['uniqueID'] );
 			$player_style_id        = 'kb-lottie-player' . esc_attr( $unique_id );
 			$player_simple_style_id = str_replace( array( '-' ), '', $player_style_id );
 			$style_id               = 'kb-lottie' . esc_attr( $unique_id );
@@ -141,7 +158,9 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 
 				if ( isset( $attributes['onlyPlayOnScroll'] ) && $attributes['onlyPlayOnScroll'] === true ) {
 					$play_type = 'seek';
-					$frames    = "frames: [" . ( ! empty( $attributes['startFrame'] ) ? $attributes['startFrame'] : '0' ) . ", " . ( ! empty( $attributes['endFrame'] ) ? $attributes['endFrame'] : '100' ) . "]";
+					$start_frame = ! empty( $attributes['startFrame'] ) ? (float) $attributes['startFrame'] : '0';
+					$end_frame   = ! empty( $attributes['endFrame'] ) ? (float) $attributes['endFrame'] : '100';
+					$frames      = 'frames: [' . $start_frame . ', ' . $end_frame . ']';
 				} else {
 					$play_type = 'play';
 					$frames    = '';
@@ -232,7 +251,7 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 				$content .= '<dotlottie-player ';
 
 					foreach( $playerProps as $key => $value ){
-						$content .= $key . '="' . $value . '" ';
+						$content .= esc_attr( $key ) . '="' . esc_attr( $value ) . '" ';
 					}
 
 				$content .= 'src="' . $this->getAnimationUrl( $attributes ) . '"
@@ -247,14 +266,29 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 		return $content;
 	}
 
+	/**
+	 * Gets the animation URL for the player.
+	 *
+	 * @since 3.8.1
+	 *
+	 * @param array{fileSrc: string, fileUrl: string, localFile: array<int, array{value: string}>} $attributes The block attributes.
+	 *
+	 * @return string The escaped animation URL.
+	 */
 	public function getAnimationUrl( $attributes ) {
 		$url      = '';
 		$rest_url = get_rest_url();
 
 		if ( $attributes['fileSrc'] === 'url' ) {
-			$url = esc_attr( $attributes['fileUrl'] );
+			if ( $this->is_external_url_allowed( $attributes['fileUrl'] ) ) {
+				$url = esc_attr( $attributes['fileUrl'] );
+			}
 		} else {
-			$url = $rest_url . 'kb-lottieanimation/v1/animations/' . esc_attr( $attributes['localFile'][0]['value'] ) . '.json';
+			$animation_id = $attributes['localFile'][0]['value'] ?? '';
+
+			if ( is_scalar( $animation_id ) && preg_match( '/^[a-zA-Z0-9]+$/', (string) $animation_id ) ) {
+				$url = $rest_url . 'kb-lottieanimation/v1/animations/' . $animation_id . '.json';
+			}
 		}
 
 		if ( $url === '' || $url === $rest_url . 'kb-lottieanimation/v1/animations/' ) {
@@ -262,6 +296,35 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		return $url;
+	}
+
+	/**
+	 * Removes external animation URLs from Lottie blocks in content saved by a user without `unfiltered_html`.
+	 *
+	 * @since 3.8.1
+	 *
+	 * @param array<string, mixed> $data The slashed post data being saved.
+	 *
+	 * @return array<string, mixed> The post data.
+	 */
+	public function strip_external_urls_on_save( $data ) {
+		if ( current_user_can( 'unfiltered_html' ) || empty( $data['post_content'] ) || ! is_string( $data['post_content'] ) ) {
+			return $data;
+		}
+
+		if ( false === strpos( $data['post_content'], 'wp:kadence/lottie' ) ) {
+			return $data;
+		}
+
+		$changed = false;
+		$blocks  = $this->strip_external_urls_from_blocks( parse_blocks( wp_unslash( $data['post_content'] ) ), $changed );
+
+		if ( $changed ) {
+			// The blocks come from parse_blocks() and only had an attribute removed, so they keep the shape serialize_blocks() expects.
+			$data['post_content'] = wp_slash( serialize_blocks( $blocks ) ); // @phpstan-ignore argument.type
+		}
+
+		return $data;
 	}
 
 	/**
@@ -279,6 +342,84 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 
 		wp_register_script( 'kadence-blocks-lottieinteractivity-js', KADENCE_BLOCKS_URL . 'includes/assets/js/lottie-interactivity.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-dotlottie-player-js', KADENCE_BLOCKS_URL . 'includes/assets/js/lottie-dotlottie.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+	}
+
+	/**
+	 * Whether an animation URL may be rendered for the current post.
+	 *
+	 * @since 3.8.1
+	 *
+	 * @param string $file_url The animation URL from the block attributes.
+	 *
+	 * @return bool
+	 */
+	private function is_external_url_allowed( $file_url ) {
+		$post_id = (int) get_the_ID();
+
+		if ( ! $post_id ) {
+			return true;
+		}
+
+		$author_id = (int) get_post_field( 'post_author', $post_id );
+		if ( $author_id && user_can( $author_id, 'unfiltered_html' ) ) {
+			return true;
+		}
+
+		return $this->is_site_animation_url( $file_url );
+	}
+
+	/**
+	 * Whether a URL points at this site's animations REST route.
+	 *
+	 * Media files and other site URLs skip the animation sanitizer, so only the route that
+	 * sanitizes on serve is accepted. Browsers read a backslash as a slash, which PHP does not,
+	 * so URLs containing one (or whitespace and control characters) are rejected.
+	 *
+	 * @since 3.8.1
+	 *
+	 * @param mixed $file_url The animation URL.
+	 *
+	 * @return bool
+	 */
+	private function is_site_animation_url( $file_url ) {
+		if ( ! is_string( $file_url ) || preg_match( '/[\\\\\s\x00-\x1f\x7f]/', $file_url ) ) {
+			return false;
+		}
+
+		$route = preg_replace( '#^https?:#i', '', get_rest_url( null, 'kb-lottieanimation/v1/animations/' ) );
+
+		return (bool) preg_match( '#^https?:' . preg_quote( (string) $route, '#' ) . '[a-zA-Z0-9]+(\.json)?(\?[^\#]*)?$#i', $file_url );
+	}
+
+	/**
+	 * Recursively removes external URLs from Lottie blocks.
+	 *
+	 * @since 3.8.1
+	 *
+	 * @param array<int|string, mixed> $blocks  The parsed blocks.
+	 * @param bool                     $changed Set to true when a block was changed.
+	 *
+	 * @return array<int|string, mixed> The parsed blocks.
+	 */
+	private function strip_external_urls_from_blocks( array $blocks, bool &$changed ) {
+		foreach ( $blocks as $index => $block ) {
+			if ( ! is_array( $block ) ) {
+				continue;
+			}
+
+			if ( 'kadence/lottie' === ( $block['blockName'] ?? '' ) && is_array( $block['attrs'] ?? null ) && isset( $block['attrs']['fileUrl'] ) && ! $this->is_site_animation_url( $block['attrs']['fileUrl'] ) ) {
+				unset( $block['attrs']['fileUrl'] );
+				$changed = true;
+			}
+
+			if ( ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {
+				$block['innerBlocks'] = $this->strip_external_urls_from_blocks( $block['innerBlocks'], $changed );
+			}
+
+			$blocks[ $index ] = $block;
+		}
+
+		return $blocks;
 	}
 }
 

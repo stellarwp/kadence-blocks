@@ -55,6 +55,15 @@ final class Style_Guide_Overlay {
 	private ?array $values = null;
 
 	/**
+	 * Per-request memo of the active palette set's slot slug => color. Null until a snapshot was read.
+	 *
+	 * @since 3.8.0.1
+	 *
+	 * @var array<string, string>|null
+	 */
+	private ?array $active_palette = null;
+
+	/**
 	 * @since 3.8.0
 	 *
 	 * @param Style_Guide_Source $source   The Style Guide source.
@@ -102,6 +111,31 @@ final class Style_Guide_Overlay {
 	}
 
 	/**
+	 * The slot slug => color map of the palette set the theme has saved as active. Empty when the Kadence
+	 * theme is not active.
+	 *
+	 * @since 3.8.0.1
+	 *
+	 * @return array<string, string>
+	 */
+	public function active_palette(): array {
+		if ( $this->active_palette !== null ) {
+			return $this->active_palette;
+		}
+
+		$snapshot = $this->source->snapshot();
+
+		if ( $snapshot === null ) {
+			// Not memoized, for the same reason as values(): the theme may not be loaded yet.
+			return [];
+		}
+
+		$this->active_palette = $this->mapper->active_set( $snapshot['palette'] );
+
+		return $this->active_palette;
+	}
+
+	/**
 	 * A short fingerprint of values(): empty when there is nothing to overlay, so a cache key that
 	 * folds it in is unchanged on non-Kadence sites.
 	 *
@@ -130,7 +164,8 @@ final class Style_Guide_Overlay {
 	 * @return void
 	 */
 	public function flush(): void {
-		$this->values = null;
+		$this->values         = null;
+		$this->active_palette = null;
 	}
 
 	/**

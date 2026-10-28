@@ -1,10 +1,11 @@
 <?php
-// cspell:ignore linetype .
+// cspell:ignore linetype ignore aaaonmouseoveralert alignnone .
 
 namespace Tests\wpunit\Blocks;
 
 use Generator;
 use Kadence_Blocks_CSS;
+
 use Kadence_Blocks_Progress_Bar_Block;
 use Tests\Support\Classes\KadenceBlocksUnit;
 
@@ -52,7 +53,52 @@ class ProgressBarTest extends KadenceBlocksUnit {
 
 		$this->assertStringNotContainsString( '<img', $html );
 		$this->assertStringNotContainsString( '<script>', $html );
-		$this->assertStringContainsString( '&lt;img src=x onerror=alert(1)&gt;', $html );
+		$this->assertStringNotContainsString( 'onerror', $html );
+	}
+
+	/**
+	 * A multiply entity-encoded prefix and suffix reach the localized script data as plain text with no markup.
+	 *
+	 * @return void
+	 */
+	public function testEncodedNumberPrefixAndSuffixAreLocalizedAsPlainText(): void {
+		$this->render( '{"uniqueID":"4_ddd","numberPrefix":"&amp;lt;img src=x onerror=alert(1)&amp;gt;$","numberSuffix":"&amp;lt;b&amp;gt;%"}' );
+		$this->block->data_enqueue();
+
+		$data = (string) wp_scripts()->get_data( 'kadence-blocks-progress-bar', 'data' );
+		$this->assertNotSame( '', $data, 'The block localizes its items.' );
+
+		// No tag or encoded tag may remain in the localized data.
+		$this->assertStringNotContainsString( '<img', $data );
+		$this->assertStringNotContainsString( '&lt;img', $data );
+		$this->assertStringContainsString( '\"prefix\":\"$\",\"suffix\":\"%\"', $data );
+	}
+
+	/**
+	 * A multiply entity-encoded prefix and suffix render in the initial label with their tags removed, matching the animated label.
+	 *
+	 * @return void
+	 */
+	public function testEncodedNumberPrefixAndSuffixRenderAsPlainTextInInitialLabel(): void {
+		$html = $this->render( '{"uniqueID":"6_fff","numberPrefix":"&amp;lt;b&amp;gt;$","numberSuffix":"%"}' );
+
+		$this->assertStringContainsString( '>$90%</span>', $html );
+		$this->assertStringNotContainsString( '&amp;lt;', $html );
+		$this->assertStringNotContainsString( '&lt;b', $html );
+	}
+
+	/**
+	 * A prefix and suffix keep their leading and trailing spaces in the localized script data.
+	 *
+	 * @return void
+	 */
+	public function testNumberPrefixAndSuffixKeepEdgeWhitespaceWhenLocalized(): void {
+		$this->render( '{"uniqueID":"5_eee","numberPrefix":"USD ","numberSuffix":" pts"}' );
+		$this->block->data_enqueue();
+
+		$data = (string) wp_scripts()->get_data( 'kadence-blocks-progress-bar', 'data' );
+
+		$this->assertStringContainsString( '\"prefix\":\"USD \",\"suffix\":\" pts\"', $data );
 	}
 
 	public function testAlignIsEscapedInContainerClasses() {
