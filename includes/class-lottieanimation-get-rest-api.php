@@ -46,7 +46,7 @@ class Kadence_LottieAnimation_get_REST_Controller extends WP_REST_Controller {
 	/**
 	 * Retrieves Lottie Animation JSON from post
 	 *
-	 * @since TBD
+	 * @since 3.8.1
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.

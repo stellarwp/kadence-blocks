@@ -40,7 +40,7 @@ class Kadence_LottieAnimation_post_REST_Controller extends WP_REST_Controller {
 	/**
 	 * Checks if a given request has access to search content.
 	 *
-	 * @since TBD
+	 * @since 3.8.1
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return true|WP_Error True if the request has search access, WP_Error object otherwise.
@@ -52,7 +52,7 @@ class Kadence_LottieAnimation_post_REST_Controller extends WP_REST_Controller {
 	/**
 	 * Create a lottie animation post from object
 	 *
-	 * @since TBD
+	 * @since 3.8.1
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return Array

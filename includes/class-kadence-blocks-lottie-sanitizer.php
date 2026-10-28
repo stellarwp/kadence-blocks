@@ -13,14 +13,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Removes executable expressions from Lottie animation data.
  *
- * @since TBD
+ * @since 3.8.1
  */
 class Kadence_Blocks_Lottie_Sanitizer {
 
 	/**
 	 * Recursively removes expressions from decoded Lottie data.
 	 *
-	 * @since TBD
+	 * @since 3.8.1
 	 *
 	 * @param array<mixed>|object $data Decoded Lottie JSON.
 	 *
@@ -53,7 +53,7 @@ class Kadence_Blocks_Lottie_Sanitizer {
 	/**
 	 * Whether a value is a number or an array made only of numbers.
 	 *
-	 * @since TBD
+	 * @since 3.8.1
 	 *
 	 * @param mixed $value The value of an `x` key.
 	 *

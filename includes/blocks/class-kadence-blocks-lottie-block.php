@@ -52,7 +52,7 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 	/**
 	 * Hooks the save-time sanitizing of external animation URLs.
 	 *
-	 * @since TBD
+	 * @since 3.8.1
 	 */
 	public function __construct() {
 		parent::__construct();
@@ -125,7 +125,7 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 	/**
 	 * Return dynamically generated HTML for block
 	 *
-	 * @since TBD
+	 * @since 3.8.1
 	 *
 	 * @param array<string, mixed> $attributes     The block attributes.
 	 * @param string               $unique_id      The block unique ID.
@@ -269,7 +269,7 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 	/**
 	 * Gets the animation URL for the player.
 	 *
-	 * @since TBD
+	 * @since 3.8.1
 	 *
 	 * @param array{fileSrc: string, fileUrl: string, localFile: array<int, array{value: string}>} $attributes The block attributes.
 	 *
@@ -301,7 +301,7 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 	/**
 	 * Removes external animation URLs from Lottie blocks in content saved by a user without `unfiltered_html`.
 	 *
-	 * @since TBD
+	 * @since 3.8.1
 	 *
 	 * @param array<string, mixed> $data The slashed post data being saved.
 	 *
@@ -347,7 +347,7 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 	/**
 	 * Whether an animation URL may be rendered for the current post.
 	 *
-	 * @since TBD
+	 * @since 3.8.1
 	 *
 	 * @param string $file_url The animation URL from the block attributes.
 	 *
@@ -375,7 +375,7 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 	 * sanitizes on serve is accepted. Browsers read a backslash as a slash, which PHP does not,
 	 * so URLs containing one (or whitespace and control characters) are rejected.
 	 *
-	 * @since TBD
+	 * @since 3.8.1
 	 *
 	 * @param mixed $file_url The animation URL.
 	 *
@@ -394,7 +394,7 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 	/**
 	 * Recursively removes external URLs from Lottie blocks.
 	 *
-	 * @since TBD
+	 * @since 3.8.1
 	 *
 	 * @param array<int|string, mixed> $blocks  The parsed blocks.
 	 * @param bool                     $changed Set to true when a block was changed.
