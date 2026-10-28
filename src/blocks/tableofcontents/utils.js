@@ -1,3 +1,5 @@
+import { __ } from '@wordpress/i18n';
+
 /**
  * @typedef WPHeadingData
  *
@@ -5,6 +7,21 @@
  * @property {string} content The plain text content of the heading.
  * @property {number} level   The heading level.
  */
+
+/**
+ * Headings that stand in for a page's own in the Kadence panel, whose block has no page to read them from.
+ *
+ * @since TBD
+ *
+ * @return {WPHeadingData[]} The sample headings.
+ */
+export function getSampleHeadings() {
+	return [
+		{ anchor: '#getting-started', content: __('Getting started', 'kadence-blocks'), level: 2 },
+		{ anchor: '#installation', content: __('Installation', 'kadence-blocks'), level: 3 },
+		{ anchor: '#usage', content: __('Usage', 'kadence-blocks'), level: 2 },
+	];
+}
 
 /**
  * Extracts text, anchor, and level from a list of heading elements.

@@ -5,6 +5,10 @@
  * @package Kadence Blocks
  */
 
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Scopes_Site_Styles;
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Supports_Site_Styles;
+use KadenceWP\KadenceBlocks\Utils\Cast;
+
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -15,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @category class
  */
-class Kadence_Blocks_Single_Icon_Block extends Kadence_Blocks_Abstract_Block {
+class Kadence_Blocks_Single_Icon_Block extends Kadence_Blocks_Abstract_Block implements Supports_Site_Styles, Scopes_Site_Styles {
 	/**
 	 * Instance of this class
 	 *
@@ -124,6 +128,104 @@ class Kadence_Blocks_Single_Icon_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		wp_register_script( 'kadence-blocks-popper', KADENCE_BLOCKS_URL . 'includes/assets/js/popper.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-tippy', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-tippy.min.js', array( 'kadence-blocks-popper' ), KADENCE_BLOCKS_VERSION, true );
+	}
+
+	/**
+	 * The editor paints every style inline, so every Kadence-only value goes through the overlay.
+	 * The stroke width is in the saved markup, which no site value can reach, so it stays per icon.
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_overlay_attributes(): array {
+		return array_merge( $this->site_styles_icon_attributes(), $this->site_styles_box_attributes() );
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_attributes_map(): array {
+		return [ 'color' => 'color.text' ];
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_supports(): array {
+		return [
+			'color' => [
+				'text'                            => true,
+				'background'                      => false,
+				'gradients'                       => false,
+				'__experimentalSkipSerialization' => true,
+			],
+		];
+	}
+
+	/**
+	 * Core's default root, the block wrapper on the front end and in the editor. The icon
+	 * inherits the color: its token chain falls back to `currentColor`.
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_selectors(): array {
+		return [];
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_scope_attribute(): string {
+		return 'style';
+	}
+
+	/**
+	 * The icon's own style, from its `style` attribute.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $attributes The instance's attributes.
+	 *
+	 * @return string|null The style, or null when the instance has none.
+	 */
+	public function site_styles_scope_style( array $attributes ): ?string {
+		return isset( $attributes['style'] ) ? Cast::to_string( $attributes['style'] ) : null;
+	}
+
+	/**
+	 * Only Stacked icons render the box, so Default icons take the icon values only.
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_scoped_attributes(): array {
+		return [ 'default' => $this->site_styles_icon_attributes() ];
+	}
+
+	/**
+	 * The site attributes every icon style renders.
+	 *
+	 * @since TBD
+	 *
+	 * @return list<string> Attribute names.
+	 */
+	private function site_styles_icon_attributes(): array {
+		return [ 'size', 'tabletSize', 'mobileSize', 'hColor', 'margin', 'tabletMargin', 'mobileMargin', 'marginUnit' ];
+	}
+
+	/**
+	 * The site attributes only the Stacked style renders: the box around the icon.
+	 *
+	 * @since TBD
+	 *
+	 * @return list<string> Attribute names.
+	 */
+	private function site_styles_box_attributes(): array {
+		return [ 'background', 'hBackground', 'border', 'hBorder', 'borderRadius', 'borderWidth', 'padding', 'tabletPadding', 'mobilePadding', 'paddingUnit' ];
 	}
 }
 

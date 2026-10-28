@@ -1,0 +1,897 @@
+/**
+ * Site-level values: converting between block attributes and the Global
+ * Styles record, and merging them into instance attributes.
+ *
+ * Pure functions, shared by the editor overlay and the Kadence panel; the
+ * merge and the scoping follow the same rules as the PHP overlay (the
+ * fixtures in `__tests__/fixtures/` pin both).
+ */
+import {
+	cloneDeep,
+	escapeRegExp,
+	get,
+	has,
+	isEmpty,
+	isEqual,
+	kebabCase,
+	omit,
+	pick,
+	pickBy,
+	set,
+	uniqWith,
+	unset,
+} from 'lodash';
+import { TOKEN_VAR_PREFIX, isTokenAlias, resolveTokenAlias } from '../extension/design-tokens/alias';
+import { getSupportedBlock } from './supported-blocks';
+
+/**
+ * A design token's CSS variable, as `resolveTokenAlias()` writes it: `var(--kb-token--<id>)`,
+ * with every `.` of the id written as `--`. Token ids never hold `--` themselves.
+ *
+ * @since TBD
+ */
+const TOKEN_VAR = new RegExp('^var\\(' + escapeRegExp(TOKEN_VAR_PREFIX) + '([a-z0-9-]+)\\)$');
+
+/**
+ * @typedef {Object<string, *>} Attributes Block attribute name => value.
+ */
+
+/**
+ * @typedef {Object} GlobalStylesRecord The parts of the edited `globalStyles` record this module reads.
+ * @property {Object} [settings] Global Styles settings; `custom.kadence.<slug>` holds the site-level values.
+ * @property {Object} [styles]   Global Styles styles; `blocks.<name>` holds, at the mapped paths, the values core also edits.
+ */
+
+/**
+ * Converts a color from core's style to a Kadence color attribute value.
+ *
+ * A Kadence palette reference becomes `paletteN`, rendered by Kadence as
+ * `var(--global-paletteN)`: core's preset variables aren't defined in every
+ * editor frame. Both stored forms are accepted, the `var:preset` reference and
+ * the `var(--wp--preset--color--…)` value the edited record can hold. Another
+ * preset reference becomes its CSS variable, as the style engine writes it. A
+ * design token's CSS variable becomes its `{token}` reference again, so the
+ * Kadence control shows the token; any other value is kept.
+ *
+ * @param {string} value The stored color.
+ * @return {string} The Kadence color value.
+ */
+export function toKadenceColor(value) {
+	const palette =
+		/^var:preset\|color\|theme-(palette\d+)$/.exec(value) ||
+		/^var\(--wp--preset--color--theme-(palette\d+)\)$/.exec(value);
+
+	if (palette) {
+		return palette[1];
+	}
+
+	const preset = /^var:preset\|color\|(.+)$/.exec(value);
+
+	if (preset) {
+		return `var(--wp--preset--color--${kebabCase(preset[1])})`;
+	}
+
+	const token = TOKEN_VAR.exec(value);
+
+	return token ? `{${token[1].replace(/--/g, '.')}}` : value;
+}
+
+/**
+ * Converts a Kadence color attribute value to the form stored in core's style.
+ *
+ * A design token's `{token}` reference is stored as its CSS variable, since
+ * core prints the stored value as is.
+ *
+ * @param {string} value The Kadence color value.
+ * @return {string} `var:preset|color|theme-paletteN` for a palette color, `var(--kb-token--…)` for a design token, the value otherwise.
+ */
+export function toCoreColor(value) {
+	if (isTokenAlias(value)) {
+		return resolveTokenAlias(value);
+	}
+
+	return /^palette\d+$/.test(value) ? `var:preset|color|theme-${value}` : value;
+}
+
+/**
+ * Reads a block's site-level values from the Global Styles record, as block
+ * attributes: `settings.custom.kadence.<slug>` plus the colors in core's style.
+ * Stored values of attributes that can't be site values are ignored, and so
+ * are cleared ones.
+ *
+ * @param {GlobalStylesRecord|undefined} record    The edited Global Styles record.
+ * @param {string}                       blockName Block name.
+ * @return {Attributes} Attribute name => site value; empty for an unsupported block.
+ */
+export function siteAttributes(record, blockName) {
+	const block = getSupportedBlock(blockName);
+
+	if (!block || !record) {
+		return {};
+	}
+
+	const custom = record.settings?.custom?.kadence?.[block.slug];
+	const attributes =
+		custom && typeof custom === 'object' && !Array.isArray(custom)
+			? pickBy(custom, (value, name) => undefined !== value && isSiteAttribute(block, name))
+			: {};
+	const styles = record.styles?.blocks?.[blockName] || {};
+
+	// Every mapped path is `color.<key>`: the server keeps no other.
+	Object.entries(block.attributesMap).forEach(([attribute, path]) => {
+		const value = get(styles, path);
+
+		if (typeof value === 'string' && value !== '') {
+			attributes[attribute] = toKadenceColor(value);
+		}
+	});
+
+	return attributes;
+}
+
+/**
+ * Splits a block's attributes into what Global Styles stores: only settings
+ * that can be site values and differ from the block's defaults; values core
+ * also edits go to their path in core's style, the rest to
+ * `settings.custom.kadence`. A cleared value isn't stored.
+ *
+ * @param {Attributes}                    attributes The block's attributes.
+ * @param {Object<string, {default: *}>} definitions The block type's attribute definitions.
+ * @param {string}                        blockName  Block name.
+ * @return {{core: Object<string, string>, custom: Attributes}} Core style path => value, and the custom values.
+ */
+export function toStoredForm(attributes, definitions, blockName) {
+	const block = getSupportedBlock(blockName);
+	const core = {};
+	const custom = {};
+
+	if (!block) {
+		return { core, custom };
+	}
+
+	Object.entries(attributes).forEach(([name, value]) => {
+		const definition = definitions[name];
+
+		if (undefined === value || !isSiteAttribute(block, name) || !definition || isEqual(value, definition.default)) {
+			return;
+		}
+
+		if (block.attributesMap[name] && typeof value === 'string') {
+			core[block.attributesMap[name]] = toCoreColor(value);
+		} else {
+			custom[name] = value;
+		}
+	});
+
+	return { core, custom };
+}
+
+/**
+ * Writes a block's stored form into a copy of the Global Styles record's
+ * styles and settings. A mapped path without a value is removed, with any
+ * object it leaves empty, up to `styles.blocks`.
+ *
+ * `settings.custom.kadence` and `settings.custom` are removed once they are
+ * empty too. WordPress saves an empty object as an empty array, which a later
+ * write couldn't add a key to, so an empty array already stored on the way to
+ * a value, the top-level styles and settings included, is replaced before
+ * writing.
+ *
+ * @param {GlobalStylesRecord}                                 record    The edited Global Styles record.
+ * @param {string}                                             blockName Block name.
+ * @param {{core: Object<string, string>, custom: Attributes}} stored    The block's stored form, from `toStoredForm()`.
+ * @return {{styles: Object, settings: Object}} The edited styles and settings.
+ */
+export function withStoredForm(record, blockName, stored) {
+	const { slug, attributesMap } = getSupportedBlock(blockName);
+	const styles = cloneDeep(isEmpty(record.styles) ? {} : record.styles);
+	const settings = cloneDeep(isEmpty(record.settings) ? {} : record.settings);
+
+	Object.values(attributesMap).forEach((path) => {
+		const target = ['blocks', blockName, ...path.split('.')];
+
+		if (undefined !== stored.core[path]) {
+			for (let length = 1; length < target.length; length++) {
+				replaceEmptyList(styles, target.slice(0, length));
+			}
+
+			set(styles, target, stored.core[path]);
+			return;
+		}
+
+		unset(styles, target);
+
+		let parent = target.slice(0, -1);
+		while (parent.length && isEmpty(get(styles, parent))) {
+			unset(styles, parent);
+			parent = parent.slice(0, -1);
+		}
+	});
+
+	if (Object.keys(stored.custom).length) {
+		replaceEmptyList(settings, ['custom']);
+		replaceEmptyList(settings, ['custom', 'kadence']);
+		set(settings, ['custom', 'kadence', slug], stored.custom);
+	} else {
+		unset(settings, ['custom', 'kadence', slug]);
+		unsetIfEmpty(settings, ['custom', 'kadence']);
+		unsetIfEmpty(settings, ['custom']);
+	}
+
+	return { styles, settings };
+}
+
+/**
+ * Replaces an empty array at a path with an empty object, so named keys can be
+ * set under it. WordPress returns an empty object it saved as an empty array.
+ *
+ * @param {Object}   object The object to change.
+ * @param {string[]} path   The path.
+ *
+ * @since TBD
+ */
+function replaceEmptyList(object, path) {
+	const value = get(object, path);
+
+	if (Array.isArray(value) && !value.length) {
+		set(object, path, {});
+	}
+}
+
+/**
+ * Removes the value at a path when it is an empty object or array.
+ *
+ * @param {Object}   object The object to change.
+ * @param {string[]} path   The path.
+ *
+ * @since TBD
+ */
+function unsetIfEmpty(object, path) {
+	const value = get(object, path);
+
+	if (value !== null && typeof value === 'object' && isEmpty(value)) {
+		unset(object, path);
+	}
+}
+
+/**
+ * Merges one attribute's site value into the instance value, leaf by leaf: an
+ * instance leaf that differs from the block's default wins.
+ *
+ * @param {*} instance     The instance value, undefined or null when the instance doesn't have it.
+ * @param {*} site         The site value.
+ * @param {*} defaultValue The block's default value.
+ * @return {*} The merged value.
+ */
+export function merge(instance, site, defaultValue) {
+	if (instance === undefined || instance === null || isEqual(instance, defaultValue)) {
+		return site;
+	}
+
+	if (isObjectLike(instance) && isObjectLike(site) && isObjectLike(defaultValue)) {
+		const merged = Array.isArray(instance) ? [...instance] : { ...instance };
+
+		Object.keys(site).forEach((key) => {
+			merged[key] = merge(instance[key], site[key], defaultValue[key]);
+		});
+
+		return merged;
+	}
+
+	return instance;
+}
+
+/**
+ * Keeps the site values the instance's style takes. The style is the
+ * instance's own value of the scope attribute, or the block's default. A style
+ * that isn't listed takes every site value.
+ *
+ * @param {Attributes}                                            site         The site values.
+ * @param {Attributes}                                            attributes   The instance's attributes.
+ * @param {import('./supported-blocks').SiteStylesScope} scope        The block's scope.
+ * @param {*}                                                     defaultStyle The scope attribute's default.
+ * @return {Attributes} The site values the instance takes.
+ */
+export function scopeSiteAttributes(site, attributes, scope, defaultStyle) {
+	const style = attributes[scope.attribute] ?? defaultStyle;
+
+	if (typeof style !== 'string' || !Object.prototype.hasOwnProperty.call(scope.attributes, style)) {
+		return site;
+	}
+
+	return pick(site, scope.attributes[style]);
+}
+
+/**
+ * Drops the site values of every group the instance sets itself. The instance
+ * sets a group when it has a value other than the block's default for any of
+ * the group's attributes, the same test `merge()` uses, or when an older
+ * attribute that stands in for the group holds a value.
+ *
+ * @param {Attributes}                    site         The site values.
+ * @param {Attributes}                    attributes   The instance's attributes.
+ * @param {string[][]}                    groups       Groups of attribute names.
+ * @param {Object<string, {default: *}>} definitions  The block type's attribute definitions.
+ * @param {Object<string, string[]>}      [legacy]     First attribute of a group => older attributes that stand in for it.
+ *
+ * @since TBD
+ *
+ * @return {Attributes} The site values the instance takes.
+ */
+export function groupSiteAttributes(site, attributes, groups, definitions, legacy = {}) {
+	return groups.reduce(
+		(kept, group) => (setsGroup(attributes, group, definitions, legacy) ? omit(kept, group) : kept),
+		site
+	);
+}
+
+/**
+ * Drops the site values an own value of the instance covers. An own value holds
+ * for the narrower devices after it, as in CSS, so the site's value for one of
+ * them must not replace it. A value with sides is covered side by side: only the
+ * sides the instance sets are dropped, and the site's other sides still show.
+ * Values are in one unit: when the instance has an own value or an own unit in a
+ * cascade and its unit is not the site's, no site value of the cascade is shown.
+ *
+ * @param {Attributes}                    site        The site values.
+ * @param {Attributes}                    attributes  The instance's attributes.
+ * @param {Object<string, {default: *}>} definitions The block type's attribute definitions.
+ * @param {import('./supported-blocks').SiteStylesCascade[]} [cascades] The attribute cascades; a block without any keeps every site value.
+ *
+ * @since TBD
+ *
+ * @return {Attributes} The site values the instance takes.
+ */
+export function withoutOverridden(site, attributes, definitions, cascades = []) {
+	const isOwn = (name) => {
+		const instance = attributes[name];
+
+		return instance !== undefined && instance !== null && !isEqual(instance, definitions[name]?.default);
+	};
+	let kept = { ...site };
+
+	cascades.forEach(({ unit, values }) => {
+		const names = unit ? [...values, unit] : values;
+		const instanceUnit = attributes[unit] ?? definitions[unit]?.default;
+		const siteUnit = site[unit] ?? definitions[unit]?.default;
+
+		if (unit && names.some(isOwn) && instanceUnit !== siteUnit) {
+			kept = omit(kept, names);
+			return;
+		}
+
+		// The sides set on a wider device; `true` when an own value without sides covers all of them.
+		let covered = new Set();
+
+		values.forEach((name) => {
+			if (name in kept && (covered === true || covered.size)) {
+				kept = withoutCoveredSides(kept, name, covered, definitions[name]?.default);
+			}
+
+			if (covered !== true && isOwn(name)) {
+				const own = attributes[name];
+
+				covered = isObjectLike(own)
+					? new Set([...covered, ...Object.keys(own).filter((key) => holdsValue(own[key]))])
+					: true;
+			}
+		});
+	});
+
+	return kept;
+}
+
+/**
+ * Blanks the covered sides of one site value, and drops it when no side is left.
+ *
+ * @param {Attributes}       site         The site values.
+ * @param {string}           name         The attribute name.
+ * @param {Set<string>|true} covered      The covered sides, or `true` for all of them.
+ * @param {*}                defaultValue The attribute's default, whose sides blank the covered ones.
+ *
+ * @since TBD
+ *
+ * @return {Attributes} The site values without the covered sides.
+ */
+function withoutCoveredSides(site, name, covered, defaultValue) {
+	const value = site[name];
+
+	if (covered === true || !isObjectLike(value)) {
+		return omit(site, name);
+	}
+
+	const sides = Array.isArray(value) ? [...value] : { ...value };
+
+	covered.forEach((key) => {
+		if (key in sides) {
+			sides[key] = isObjectLike(defaultValue) && key in defaultValue ? defaultValue[key] : '';
+		}
+	});
+
+	return holdsValue(sides) ? { ...site, [name]: sides } : omit(site, name);
+}
+
+/**
+ * Merges a block's site values into its attributes.
+ *
+ * @param {Attributes}                    attributes  The instance's attributes.
+ * @param {Attributes}                    site        The site values.
+ * @param {Object<string, {default: *}>} definitions The block type's attribute definitions.
+ * @return {Attributes} The attributes with the site values merged in.
+ */
+export function mergeAttributes(attributes, site, definitions) {
+	const merged = { ...attributes };
+
+	Object.keys(site).forEach((name) => {
+		merged[name] = merge(attributes[name], site[name], definitions[name]?.default);
+	});
+
+	return merged;
+}
+
+/**
+ * Keeps only what the user changed in a write to an attribute shown with the
+ * site value merged in, merged onto the instance's stored value, leaf by leaf.
+ *
+ * @param {*} next   The value written.
+ * @param {*} shown  The value the block was shown (instance merged with site).
+ * @param {*} stored The instance's stored value.
+ * @return {*} The value to store.
+ */
+export function unmerge(next, shown, stored) {
+	if (isEqual(next, shown)) {
+		return stored;
+	}
+
+	if (isObjectLike(next) && isObjectLike(shown) && Array.isArray(next) === Array.isArray(shown)) {
+		const base = isObjectLike(stored) ? stored : {};
+		const result = Array.isArray(next) ? [...(Array.isArray(stored) ? stored : [])] : { ...base };
+
+		Object.keys(next).forEach((key) => {
+			result[key] = unmerge(next[key], shown[key], base[key]);
+		});
+
+		return result;
+	}
+
+	return next;
+}
+
+/**
+ * Filters a write from a block shown with site values merged in, so no site
+ * value is stored in the instance: for each written attribute that has a site
+ * value, only the changed leaves are kept, and an unchanged attribute is
+ * dropped.
+ *
+ * A write that starts the instance setting one of its block's groups or
+ * cascades is the exception. The whole group or cascade, with a cascade's
+ * unit, is then stored as shown, with the written values, so the block keeps
+ * looking as it did apart from the change and later site changes don't reach
+ * it. A side the write changes holds for the narrower devices, as an own value
+ * does, so their copy leaves it out. Values are in one unit, so a cascade that
+ * took the site's other sides could not follow a site in another unit. Picking
+ * a unit other than the one shown starts a cascade too, even the block's default
+ * unit, which on its own would store nothing.
+ *
+ * @param {Attributes}                    written       The attributes being written.
+ * @param {Attributes}                    shown         The attributes the block was shown.
+ * @param {Attributes}                    stored        The instance's stored attributes.
+ * @param {Attributes}                    site          The site values.
+ * @param {string[][]}                    [groups]      The block's groups of attribute names.
+ * @param {Object<string, {default: *}>} [definitions] The block type's attribute definitions.
+ * @param {Object<string, string[]>}      [legacy]      First attribute of a group => older attributes that stand in for it.
+ * @param {import('./supported-blocks').SiteStylesCascade[]} [cascades] The block's cascades.
+ * @return {Attributes} The attributes to store.
+ */
+export function guardWrite(written, shown, stored, site, groups = [], definitions = {}, legacy = {}, cascades = []) {
+	const kept = {};
+
+	Object.keys(written).forEach((name) => {
+		if (!(name in site)) {
+			kept[name] = written[name];
+			return;
+		}
+
+		const value = unmerge(written[name], shown[name], stored[name]);
+
+		if (!isEqual(value, stored[name])) {
+			kept[name] = value;
+		}
+	});
+
+	groups.forEach((group) => {
+		if (
+			setsGroup(stored, group, definitions, legacy) ||
+			!setsGroup({ ...stored, ...kept }, group, definitions, legacy)
+		) {
+			return;
+		}
+
+		group.forEach((name) => {
+			const value = name in written ? written[name] : shown[name];
+
+			if (!isEqual(value, stored[name])) {
+				kept[name] = value;
+			}
+		});
+	});
+
+	cascades.forEach(({ unit, values }) => {
+		const names = unit ? [...values, unit] : values;
+		/*
+		 * A unit other than the one shown was picked. `setsGroup` ignores a value equal to the block's
+		 * default, so a pick of the default unit is tested on its own.
+		 */
+		const picksUnit = Boolean(unit) && unit in written && !isEqual(written[unit], shown[unit]);
+
+		if (
+			!setsGroup(stored, names, definitions) &&
+			(picksUnit || setsGroup({ ...stored, ...kept }, names, definitions))
+		) {
+			// The sides just changed hold for the narrower devices, so the copy of those leaves them out.
+			const copied = withoutOverridden(pick(shown, values), pick(kept, values), definitions, [{ values }]);
+
+			names.forEach((name) => {
+				const value = name in written ? written[name] : copiedValue(name, unit, shown, copied, stored);
+
+				if (!isEqual(value, stored[name])) {
+					kept[name] = value;
+				}
+			});
+
+			return;
+		}
+
+		const unitShown = shown[unit] !== undefined && !isEqual(shown[unit], stored[unit]);
+		const changed = values.some((name) => name in kept && !isEqual(kept[name], stored[name]));
+
+		if (!unit || unit in kept || !changed) {
+			return;
+		}
+
+		if (picksUnit) {
+			kept[unit] = written[unit];
+		} else if (unitShown) {
+			kept[unit] = shown[unit];
+		}
+	});
+
+	return kept;
+}
+
+/**
+ * The value a cascade's first write copies for an attribute it doesn't write:
+ * the unit as shown, or a value as shown without the sides the write covers.
+ *
+ * @param {string}     name   The attribute name.
+ * @param {string}     unit   The cascade's unit attribute, if any.
+ * @param {Attributes} shown  The attributes the block was shown.
+ * @param {Attributes} copied The cascade's shown values without the covered sides.
+ * @param {Attributes} stored The instance's stored attributes.
+ *
+ * @since TBD
+ *
+ * @return {*} The value to store.
+ */
+function copiedValue(name, unit, shown, copied, stored) {
+	if (name === unit) {
+		return shown[name];
+	}
+
+	return name in copied ? copied[name] : stored[name];
+}
+
+/**
+ * Lists the site values a guarded write copies into the instance, so they can
+ * be told apart from the user's own once FSE mode is off. A copied leaf is one
+ * the write stores that the user didn't set: it differs from what the user
+ * wrote over the stored value. A leaf the user changes comes off the list. A
+ * unit is never listed: it belongs to the values the user typed in it.
+ *
+ * @param {Attributes}                  kept       The attributes the guard stores.
+ * @param {Attributes}                  written    The attributes being written.
+ * @param {Attributes}                  shown      The attributes the block was shown.
+ * @param {Attributes}                  stored     The instance's stored attributes.
+ * @param {Attributes}                  site       The site values.
+ * @param {Object<string, Array<Array>>} [previous] The copies already listed, by attribute name.
+ *
+ * @since TBD
+ *
+ * @return {Object<string, Array<Array>>} Attribute name => the copied leaves' paths.
+ */
+export function siteCopies(kept, written, shown, stored, site, previous = {}) {
+	let copies = { ...previous };
+
+	Object.keys(kept).forEach((name) => {
+		if ('metadata' === name) {
+			return;
+		}
+
+		let own = stored[name];
+
+		if (name in written) {
+			own = name in site ? unmerge(written[name], shown[name], stored[name]) : written[name];
+		}
+
+		const copied = isUnit(kept[name]) ? [] : leafPaths(kept[name], own);
+
+		copies = withCopies(copies, name, leafPaths(own, stored[name]), copied);
+	});
+
+	return copies;
+}
+
+/**
+ * The attributes with the site values copied into them reset to the block's
+ * defaults, as they show once FSE mode is off. Each listed leaf takes the
+ * default's leaf, or an empty value when the default has none; a whole value
+ * takes the default, or is dropped without one. Mirrors the PHP overlay.
+ *
+ * @param {Attributes}                    attributes  The instance's attributes.
+ * @param {Object<string, {default: *}>} definitions The block type's attribute definitions.
+ *
+ * @since TBD
+ *
+ * @return {Attributes} The attributes without the copied site values.
+ */
+export function withoutSiteCopies(attributes, definitions) {
+	const copies = attributes.metadata?.kbSiteCopies;
+
+	if (!isObjectLike(copies)) {
+		return attributes;
+	}
+
+	const result = { ...attributes };
+
+	Object.keys(copies).forEach((name) => {
+		if (!(name in result) || !Array.isArray(copies[name])) {
+			return;
+		}
+
+		const fallback = definitions[name]?.default;
+		let value = cloneDeep(result[name]);
+
+		copies[name].filter(Array.isArray).forEach((path) => {
+			if (!path.length) {
+				value = cloneDeep(fallback);
+			} else if (isObjectLike(value) && has(value, path)) {
+				set(value, path, cloneDeep(get(fallback, path, '')));
+			}
+		});
+
+		if (undefined === value) {
+			delete result[name];
+		} else {
+			result[name] = value;
+		}
+	});
+
+	return result;
+}
+
+/**
+ * Filters a write to an instance shown without its copied site values, as in
+ * the editor with FSE mode off: a copied leaf the user leaves as shown keeps
+ * its stored value, for when the mode is back on, and a leaf the user changes
+ * becomes their own and comes off the list.
+ *
+ * @param {Attributes} written The attributes being written.
+ * @param {Attributes} shown   The attributes the block was shown.
+ * @param {Attributes} stored  The instance's stored attributes.
+ *
+ * @since TBD
+ *
+ * @return {Attributes} The attributes to store.
+ */
+export function keepSiteCopies(written, shown, stored) {
+	const previous = stored.metadata?.kbSiteCopies;
+
+	if (!isObjectLike(previous)) {
+		return written;
+	}
+
+	const kept = {};
+	let copies = previous;
+
+	Object.keys(written).forEach((name) => {
+		if ('metadata' === name || !(name in previous)) {
+			kept[name] = written[name];
+			return;
+		}
+
+		kept[name] = unmerge(written[name], shown[name], stored[name]);
+		copies = withCopies(copies, name, leafPaths(written[name], shown[name]), []);
+	});
+
+	return withCopiesMetadata(kept, stored, previous, copies);
+}
+
+/**
+ * The write with the list of copied site values updated in its `metadata`,
+ * when the list changed or the write replaces the metadata without it. An
+ * empty list is removed.
+ *
+ * @param {Attributes}                   kept     The attributes to store.
+ * @param {Attributes}                   stored   The instance's stored attributes.
+ * @param {Object<string, Array<Array>>} previous The copies listed before the write.
+ * @param {Object<string, Array<Array>>} copies   The copies after it.
+ *
+ * @since TBD
+ *
+ * @return {Attributes} The attributes to store.
+ */
+export function withCopiesMetadata(kept, stored, previous, copies) {
+	const keepsList = !('metadata' in kept) || isEqual(kept.metadata?.kbSiteCopies ?? {}, copies);
+
+	if (isEqual(copies, previous || {}) && keepsList) {
+		return kept;
+	}
+
+	const metadata = { ...(kept.metadata ?? stored.metadata ?? {}) };
+
+	if (isEmpty(copies)) {
+		delete metadata.kbSiteCopies;
+	} else {
+		metadata.kbSiteCopies = copies;
+	}
+
+	return { ...kept, metadata };
+}
+
+/**
+ * The copies with an attribute's list updated: the leaves the user changed
+ * come off it, the ones just copied go on.
+ *
+ * @param {Object<string, Array<Array>>} copies  Attribute name => the copied leaves' paths.
+ * @param {string}                       name    The attribute name.
+ * @param {Array<Array>}                 changed The paths of the leaves the user changed.
+ * @param {Array<Array>}                 copied  The paths of the leaves just copied.
+ *
+ * @since TBD
+ *
+ * @return {Object<string, Array<Array>>} The updated copies.
+ */
+function withCopies(copies, name, changed, copied) {
+	const covers = (path, other) => other.every((key, index) => isEqual(path[index], key));
+	const kept = (Array.isArray(copies[name]) ? copies[name] : []).filter(
+		(path) => !changed.some((other) => covers(path, other) || covers(other, path))
+	);
+	const paths = uniqWith([...kept, ...copied], isEqual);
+
+	if (paths.length) {
+		return { ...copies, [name]: paths };
+	}
+
+	return omit(copies, name);
+}
+
+/**
+ * The paths of the leaves where a value differs from another. A leaf missing
+ * from the other counts as empty, and two empty leaves are the same.
+ *
+ * @param {*} value The value.
+ * @param {*} other The value it is compared with.
+ *
+ * @since TBD
+ *
+ * @return {Array<Array>} The paths of the differing leaves; `[[]]` when the value differs as a whole.
+ */
+function leafPaths(value, other) {
+	if (isObjectLike(value)) {
+		const isArray = Array.isArray(value);
+		const base = isObjectLike(other) && Array.isArray(other) === isArray ? other : {};
+
+		return Object.keys(value).flatMap((key) =>
+			leafPaths(value[key], base[key]).map((path) => [isArray ? Number(key) : key, ...path])
+		);
+	}
+
+	const isEmptyLeaf = (leaf) => undefined === leaf || null === leaf || '' === leaf;
+
+	return isEqual(value, other) || (isEmptyLeaf(value) && isEmptyLeaf(other)) ? [] : [[]];
+}
+
+/**
+ * @param {*} value A value.
+ *
+ * @since TBD
+ *
+ * @return {boolean} Whether it's a CSS unit, such as a cascade's or a group's unit attribute holds.
+ */
+function isUnit(value) {
+	return 'string' === typeof value && /^(px|em|rem|%|vh|vw)$/.test(value);
+}
+
+/**
+ * The attributes of the Kadence panel's virtual block: the block's defaults
+ * and site values, and the current block's values of the attributes never
+ * stored site-wide, e.g. its unique ID or an icon's style, so a change to the
+ * record doesn't reset them.
+ *
+ * @param {string}     blockName Block name.
+ * @param {Attributes} defaults  The block's default attributes.
+ * @param {Attributes} site      The site values.
+ * @param {Attributes} current   The current virtual block's attributes, empty before it exists.
+ *
+ * @since TBD
+ *
+ * @return {Attributes} The virtual block's attributes.
+ */
+export function panelAttributes(blockName, defaults, site, current) {
+	return { ...defaults, ...site, ...pick(current, getSupportedBlock(blockName)?.exclude || []) };
+}
+
+/**
+ * Whether an instance sets a group itself: it has a value other than the
+ * block's default for any of the group's attributes, or a value in an older
+ * attribute that stands in for the group.
+ *
+ * @param {Attributes}                    attributes  The instance's attributes.
+ * @param {string[]}                      group       The group's attribute names.
+ * @param {Object<string, {default: *}>} definitions The block type's attribute definitions.
+ * @param {Object<string, string[]>}      [legacy]    First attribute of a group => older attributes that stand in for it.
+ *
+ * @since TBD
+ *
+ * @return {boolean} Whether the instance sets the group.
+ */
+function setsGroup(attributes, group, definitions, legacy = {}) {
+	const ownsMember = group.some((name) => {
+		const value = attributes[name];
+
+		return undefined !== value && null !== value && !isEqual(value, definitions[name]?.default);
+	});
+
+	return ownsMember || (legacy[group[0]] || []).some((name) => holdsValue(attributes[name]));
+}
+
+/**
+ * Whether a value holds a number or a string that isn't empty, anywhere in it.
+ *
+ * @param {*} value A value.
+ *
+ * @since TBD
+ *
+ * @return {boolean} Whether it holds a value.
+ */
+function holdsValue(value) {
+	if (isObjectLike(value)) {
+		return Object.values(value).some(holdsValue);
+	}
+
+	return 'number' === typeof value || ('string' === typeof value && '' !== value);
+}
+
+/**
+ * @param {*} value A value.
+ * @return {boolean} Whether it's an array or a plain object.
+ */
+function isObjectLike(value) {
+	return value !== null && typeof value === 'object';
+}
+
+/**
+ * Whether an attribute can be one of a block's site values. An excluded
+ * attribute never is. For a block without site rules, scoped or not, only its
+ * overlay attributes and the ones core's style stores can show a site value;
+ * that also keeps out attributes the server doesn't register, which other
+ * scripts add to the block in the editor.
+ *
+ * @param {import('./supported-blocks').SupportedBlock} block The block's entry.
+ * @param {string}                                       name  Attribute name.
+ *
+ * @since TBD
+ *
+ * @return {boolean} Whether the attribute can be a site value.
+ */
+function isSiteAttribute(block, name) {
+	if (block.exclude.includes(name)) {
+		return false;
+	}
+
+	return (
+		Boolean(block.siteRules) ||
+		block.overlay.includes(name) ||
+		Object.prototype.hasOwnProperty.call(block.attributesMap, name)
+	);
+}

@@ -1,0 +1,122 @@
+{
+	"defaults": {
+		"padding": ["", "", "", ""],
+		"mobilePadding": ["", "", "", ""],
+		"paddingUnit": "px",
+		"borderRadius": [0, 0, 0, 0],
+		"displayShadow": false,
+		"shadow": [{ "color": "#000000", "opacity": 0.2, "blur": 2 }]
+	},
+	"cases": [
+		{
+			"name": "resets the copied sides to the default's empty sides, and keeps the unit and the own side",
+			"instance": {
+				"padding": [30, 40, 20, 40],
+				"mobilePadding": ["", 12, 6, 12],
+				"paddingUnit": "em",
+				"metadata": {
+					"name": "",
+					"kbSiteCopies": { "padding": [[1], [2], [3]], "mobilePadding": [[1], [2], [3]] }
+				}
+			},
+			"expected": {
+				"padding": [30, "", "", ""],
+				"mobilePadding": ["", "", "", ""],
+				"paddingUnit": "em",
+				"metadata": {
+					"name": "",
+					"kbSiteCopies": { "padding": [[1], [2], [3]], "mobilePadding": [[1], [2], [3]] }
+				}
+			}
+		},
+		{
+			"name": "resets a copied side to the default's side",
+			"instance": {
+				"borderRadius": [4, 4, 4, 4],
+				"metadata": { "kbSiteCopies": { "borderRadius": [[1], [2]] } }
+			},
+			"expected": { "borderRadius": [4, 0, 0, 4], "metadata": { "kbSiteCopies": { "borderRadius": [[1], [2]] } } }
+		},
+		{
+			"name": "resets a whole copied value to the default, and drops one without a default",
+			"instance": {
+				"displayShadow": true,
+				"shadowNote": "copied",
+				"metadata": { "kbSiteCopies": { "displayShadow": [[]], "shadowNote": [[]] } }
+			},
+			"expected": {
+				"displayShadow": false,
+				"metadata": { "kbSiteCopies": { "displayShadow": [[]], "shadowNote": [[]] } }
+			}
+		},
+		{
+			"name": "resets the copied leaves of a shadow and keeps the own color",
+			"instance": {
+				"shadow": [{ "color": "#ff0000", "opacity": 0.5, "blur": 10 }],
+				"metadata": {
+					"kbSiteCopies": {
+						"shadow": [
+							[0, "opacity"],
+							[0, "blur"]
+						]
+					}
+				}
+			},
+			"expected": {
+				"shadow": [{ "color": "#ff0000", "opacity": 0.2, "blur": 2 }],
+				"metadata": {
+					"kbSiteCopies": {
+						"shadow": [
+							[0, "opacity"],
+							[0, "blur"]
+						]
+					}
+				}
+			}
+		},
+		{
+			"name": "resets a copied leaf the default doesn't have to an empty value",
+			"instance": {
+				"shadow": [
+					{ "color": "#ff0000", "opacity": 0.2, "blur": 2 },
+					{ "color": "#00ff00", "opacity": 0.4, "blur": 2 }
+				],
+				"metadata": { "kbSiteCopies": { "shadow": [[1, "color"]] } }
+			},
+			"expected": {
+				"shadow": [
+					{ "color": "#ff0000", "opacity": 0.2, "blur": 2 },
+					{ "color": "", "opacity": 0.4, "blur": 2 }
+				],
+				"metadata": { "kbSiteCopies": { "shadow": [[1, "color"]] } }
+			}
+		},
+		{
+			"name": "skips a leaf the value no longer has, and an attribute the instance doesn't hold",
+			"instance": {
+				"padding": [30, 40],
+				"metadata": { "kbSiteCopies": { "padding": [[1], [3]], "mobilePadding": [[1]] } }
+			},
+			"expected": {
+				"padding": [30, ""],
+				"metadata": { "kbSiteCopies": { "padding": [[1], [3]], "mobilePadding": [[1]] } }
+			}
+		},
+		{
+			"name": "leaves an instance without copies alone",
+			"instance": { "padding": [30, 40, 20, 40], "metadata": { "name": "Hero" } },
+			"expected": { "padding": [30, 40, 20, 40], "metadata": { "name": "Hero" } }
+		},
+		{
+			"name": "ignores copies that aren't lists of paths",
+			"instance": {
+				"padding": [30, 40, 20, 40],
+				"metadata": { "kbSiteCopies": { "padding": "all", "borderRadius": [1] } }
+			},
+			"expected": {
+				"padding": [30, 40, 20, 40],
+				"metadata": { "kbSiteCopies": { "padding": "all", "borderRadius": [1] } }
+			}
+		}
+	]
+}

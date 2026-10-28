@@ -6,7 +6,6 @@
  * @package Kadence Blocks
  */
 
-
 /**
  * Class to setup new rest calls.
  */
@@ -254,7 +253,10 @@ class Kadence_Blocks_Post_Rest_Controller extends WP_REST_Controller {
 		$posts = array();
 
 		foreach ( $query->posts as $post ) {
-			$posts[] = $this->prepare_query_item_for_response( $post, $request );
+			$post = get_post( $post );
+			if ( $post instanceof WP_Post ) {
+				$posts[] = $this->prepare_query_item_for_response( $post, $request );
+			}
 		}
 
 		return rest_ensure_response( $posts );
@@ -337,7 +339,7 @@ class Kadence_Blocks_Post_Rest_Controller extends WP_REST_Controller {
 	/**
 	 * Prepares a single result for response.
 	 *
-	 * @param int             $id      ID of the item to prepare.
+	 * @param WP_Post         $post    The post to prepare.
 	 * @param WP_REST_Request $request Request object.
 	 * @return WP_REST_Response Response object.
 	 */

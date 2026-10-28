@@ -1,5 +1,15 @@
 {
     "version": "0.2",
+    "dictionaryDefinitions": [
+        {
+            "name": "wordpress",
+            "path": "./.cspell/wordpress.txt",
+            "addWords": true
+        }
+    ],
+    "dictionaries": [
+        "wordpress"
+    ],
     "ignoreRegExpList": [
         "github:[\\w.@/#-]+"
     ],
@@ -18,7 +28,8 @@
         "languages/**",
         "vendor/**",
         "node_modules/**",
-        "**/*.svg"
+        "**/*.svg",
+        "tests/_data/**"
     ],
     "words": [
         "absint",
@@ -33,6 +44,7 @@
         "algoliasearch",
         "alignleft",
         "alignright",
+        "archivetrans",
         "autoplay",
         "axios",
         "badhref",
@@ -97,7 +109,10 @@
         "inheritdoc",
         "innerblocks",
         "Inno",
+        "isize",
+        "istroke",
         "ithemes",
+        "ititle",
         "kadence",
         "kadenceblocks",
         "kadencewp",
@@ -144,6 +159,7 @@
         "postfields",
         "progressbar",
         "puprc",
+        "readmore",
         "recaptcha",
         "recognised",
         "renameable",
@@ -186,6 +202,7 @@
         "textcolor",
         "thumbslider",
         "trailingslashit",
+        "twentytwentythree",
         "uncollapsed",
         "undefed",
         "unitless",

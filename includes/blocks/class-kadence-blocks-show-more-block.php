@@ -10,12 +10,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Groups_Site_Styles;
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Supports_Site_Styles;
+
 /**
  * Class to Build the Show More Block.
  *
  * @category class
  */
-class Kadence_Blocks_Show_More_Block extends Kadence_Blocks_Abstract_Block {
+class Kadence_Blocks_Show_More_Block extends Kadence_Blocks_Abstract_Block implements Supports_Site_Styles, Groups_Site_Styles {
 
 	/**
 	 * Instance of this class
@@ -273,6 +276,58 @@ class Kadence_Blocks_Show_More_Block extends Kadence_Blocks_Abstract_Block {
 		);
 	}
 
+	/**
+	 * The instance rule always prints the collapsed height, and the editor sets
+	 * the spacing inline and the height and fade in a style tag that always
+	 * prints, so every site value goes through the overlay.
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_overlay_attributes(): array {
+		return array_merge( ...$this->site_styles_attribute_groups() );
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_attributes_map(): array {
+		return [];
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_supports(): array {
+		return [];
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_selectors(): array {
+		return [];
+	}
+
+	/**
+	 * The collapsed height, the padding and the margin each take their unit and
+	 * their tablet and mobile values with them, and the fade takes its size.
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_attribute_groups(): array {
+		return [
+			[ 'heightDesktop', 'heightTablet', 'heightMobile', 'heightType' ],
+			[ 'enableFadeOut', 'fadeOutSize' ],
+			[ 'paddingDesktop', 'paddingTablet', 'paddingMobile', 'paddingUnit' ],
+			[ 'marginDesktop', 'marginTablet', 'marginMobile', 'marginUnit' ],
+		];
+	}
 }
 
 Kadence_Blocks_Show_More_Block::get_instance();

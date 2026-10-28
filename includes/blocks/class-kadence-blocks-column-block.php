@@ -12,12 +12,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Legacy_Group_Attributes;
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Supports_Site_Styles;
+
 /**
  * Class to Build the Column Block.
  *
  * @category class
  */
-class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
+class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block implements Supports_Site_Styles, Legacy_Group_Attributes {
 	/**
 	 * Instance of this class
 	 *
@@ -958,6 +961,81 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 
 		// Do not remove: The Optimizer uses this.
 		return apply_filters( 'kadence_blocks_column_html', $html, $attributes, $unique_id, $block_instance );
+	}
+
+	/**
+	 * The editor paints every Section value itself, inline or in its own style
+	 * tag, so every site value goes through the overlay.
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_overlay_attributes(): array {
+		return array_merge( array_merge( ...$this->site_styles_attribute_groups() ), [ 'backgroundHover', 'textColor', 'linkColor', 'linkHoverColor', 'textColorHover', 'linkColorHover', 'linkHoverColorHover' ] );
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_attributes_map(): array {
+		return [];
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_supports(): array {
+		return [];
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_selectors(): array {
+		return [];
+	}
+
+	/**
+	 * Each spacing, height, radius and shadow takes its unit, its tablet and
+	 * mobile values, or its toggle with it, and the background takes its
+	 * opacity. The hover border, radius and shadow group the same way.
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_attribute_groups(): array {
+		return [
+			[ 'padding', 'tabletPadding', 'mobilePadding', 'paddingType' ],
+			[ 'height', 'heightUnit' ],
+			[ 'background', 'backgroundOpacity' ],
+			[ 'borderStyle', 'tabletBorderStyle', 'mobileBorderStyle' ],
+			[ 'borderRadius', 'tabletBorderRadius', 'mobileBorderRadius', 'borderRadiusUnit' ],
+			[ 'displayShadow', 'shadow' ],
+			[ 'borderHoverStyle', 'tabletBorderHoverStyle', 'mobileBorderHoverStyle' ],
+			[ 'borderHoverRadius', 'tabletBorderHoverRadius', 'mobileBorderHoverRadius', 'borderHoverRadiusUnit' ],
+			[ 'displayHoverShadow', 'shadowHover' ],
+		];
+	}
+
+	/**
+	 * Sections saved before the padding and border arrays carry separate side
+	 * numbers and the old border colors and widths, which build_css() renders
+	 * instead of the padding, border and hover border. The old border width
+	 * keeps the hover border too, so a Section showing its own or no border
+	 * doesn't gain the site border only on hover.
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_legacy_group_attributes(): array {
+		return [
+			'padding'          => [ 'topPadding', 'rightPadding', 'bottomPadding', 'leftPadding', 'topPaddingT', 'rightPaddingT', 'bottomPaddingT', 'leftPaddingT', 'topPaddingM', 'rightPaddingM', 'bottomPaddingM', 'leftPaddingM' ],
+			'borderStyle'      => [ 'border', 'borderWidth', 'tabletBorderWidth', 'mobileBorderWidth' ],
+			'borderHoverStyle' => [ 'borderHover', 'borderHoverWidth', 'tabletBorderHoverWidth', 'mobileBorderHoverWidth', 'borderWidth' ],
+		];
 	}
 
 	/**

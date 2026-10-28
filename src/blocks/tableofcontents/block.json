@@ -25,7 +25,8 @@
 					"h5": true,
 					"h6": true
 				}
-			]
+			],
+			"__experimentalRole": "content"
 		},
 		"columns": {
 			"type": "number",
@@ -69,14 +70,16 @@
 		},
 		"enableTitle": {
 			"type": "boolean",
-			"default": true
+			"default": true,
+			"__experimentalRole": "content"
 		},
 		"titleAlign": {
 			"type": "string"
 		},
 		"title": {
 			"type": "string",
-			"default": "Table of Contents"
+			"default": "Table of Contents",
+			"__experimentalRole": "content"
 		},
 		"titleColor": {
 			"type": "string"
@@ -152,7 +155,8 @@
 			"type": "string"
 		},
 		"titleCollapseBorderColor": {
-			"type": "string"
+			"type": "string",
+			"__experimentalRole": "content"
 		},
 		"titleTextTransform": {
 			"type": "string",
@@ -160,15 +164,18 @@
 		},
 		"enableToggle": {
 			"type": "boolean",
-			"default": false
+			"default": false,
+			"__experimentalRole": "content"
 		},
 		"startClosed": {
 			"type": "boolean",
-			"default": false
+			"default": false,
+			"__experimentalRole": "content"
 		},
 		"toggleIcon": {
 			"type": "string",
-			"default": "arrow"
+			"default": "arrow",
+			"__experimentalRole": "content"
 		},
 		"contentColor": {
 			"type": "string"
@@ -299,18 +306,22 @@
 		},
 		"enableScrollSpy": {
 			"type": "boolean",
-			"default": false
+			"default": false,
+			"__experimentalRole": "content"
 		},
 		"contentActiveColor": {
-			"type": "string"
+			"type": "string",
+			"__experimentalRole": "content"
 		},
 		"enableSmoothScroll": {
 			"type": "boolean",
-			"default": false
+			"default": false,
+			"__experimentalRole": "content"
 		},
 		"smoothScrollOffset": {
 			"type": "number",
-			"default": 40
+			"default": 40,
+			"__experimentalRole": "content"
 		},
 		"containerMargin": {
 			"type": "array",
@@ -330,11 +341,13 @@
 		},
 		"enableDynamicSearch": {
 			"type": "boolean",
-			"default": false
+			"default": false,
+			"__experimentalRole": "content"
 		},
 		"enableTemplateSearch": {
 			"type": "boolean",
-			"default": false
+			"default": false,
+			"__experimentalRole": "content"
 		},
 		"borderStyle": {
 			"type": "array",
@@ -410,7 +423,8 @@
 		},
 		"enableTitleToggle": {
 			"type": "boolean",
-			"default": false
+			"default": false,
+			"__experimentalRole": "content"
 		}
 	}
 }

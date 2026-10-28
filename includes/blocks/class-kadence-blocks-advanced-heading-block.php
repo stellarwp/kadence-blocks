@@ -8,6 +8,7 @@
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
+use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Supports_Site_Styles;
 use KadenceWP\KadenceBlocks\Utils\Cast;
 
 // Exit if accessed directly.
@@ -20,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @category class
  */
-class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block {
+class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block implements Supports_Site_Styles {
 
 	/**
 	 * Instance of this class
@@ -697,6 +698,73 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		wp_register_script( 'kadence-blocks-popper', KADENCE_BLOCKS_URL . 'includes/assets/js/popper.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-tippy', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-tippy.min.js', array( 'kadence-blocks-popper' ), KADENCE_BLOCKS_VERSION, true );
 	}
+	/**
+	 * The editor paints the heading with inline styles and builds the markup around an icon from
+	 * its attributes, so every style value goes through the overlay. The tag, the link, the icon
+	 * and its tooltip, and the palette classes in the saved markup describe one heading and stay
+	 * per heading, as do the attributes older headings migrate from when they are edited.
+	 *
+	 * @since TBD
+	 *
+	 * @return list<string>
+	 */
+	public function site_styles_overlay_attributes(): array {
+		return array_merge(
+			[ 'align', 'tabletAlign', 'mobileAlign', 'maxWidth', 'maxWidthType', 'textOrientation', 'tabletTextOrientation', 'mobileTextOrientation' ],
+			[ 'padding', 'tabletPadding', 'mobilePadding', 'paddingType', 'margin', 'tabletMargin', 'mobileMargin', 'marginType' ],
+			[ 'fontSize', 'sizeType', 'fontHeight', 'fontHeightType', 'letterSpacing', 'tabletLetterSpacing', 'mobileLetterSpacing', 'letterSpacingType', 'textTransform' ],
+			[ 'typography', 'googleFont', 'loadGoogleFont', 'loadItalic', 'fontSubset', 'fontVariant', 'fontWeight', 'fontStyle' ],
+			[ 'background', 'enableTextGradient', 'textGradient', 'linkStyle', 'linkColor', 'linkHoverColor', 'enableTextShadow', 'textShadow', 'textShadowTablet', 'textShadowMobile' ],
+			[ 'borderStyle', 'tabletBorderStyle', 'mobileBorderStyle', 'borderRadius', 'tabletBorderRadius', 'mobileBorderRadius', 'borderRadiusUnit' ],
+			[ 'iconColor', 'iconColorHover', 'iconSide', 'iconPadding', 'tabletIconPadding', 'mobileIconPadding', 'iconPaddingUnit', 'iconSize', 'iconSizeUnit', 'iconVerticalAlign' ],
+			[ 'markColor', 'markBG', 'markBGOpacity', 'enableMarkGradient', 'enableMarkBackgroundGradient', 'markGradient', 'markBackgroundGradient', 'markTextTransform' ],
+			[ 'markSize', 'markSizeType', 'markLineHeight', 'markLineType', 'markLetterSpacing', 'markLetterSpacingType' ],
+			[ 'markTypography', 'markGoogleFont', 'markLoadGoogleFont', 'markFontSubset', 'markFontVariant', 'markFontWeight', 'markFontStyle' ],
+			[ 'markPadding', 'markTabPadding', 'markMobilePadding', 'markPaddingType' ],
+			[ 'markBorderStyles', 'tabletMarkBorderStyles', 'mobileMarkBorderStyles', 'markBorderRadius', 'tabletMarkBorderRadius', 'mobileMarkBorderRadius', 'markBorderRadiusUnit' ],
+			[ 'inlineImageWidth', 'inlineImageBorderStyles', 'tabletInlineImageBorderStyles', 'mobileInlineImageBorderStyles', 'inlineImageVerticalAlign', 'useRatio', 'ratio' ],
+			[ 'inlineImageBorderRadius', 'tabletInlineImageBorderRadius', 'mobileInlineImageBorderRadius', 'inlineImageBorderRadiusUnit' ]
+		);
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_attributes_map(): array {
+		return [ 'color' => 'color.text' ];
+	}
+
+	/**
+	 * The background is not core's: the design tokens' default rule for the heading sets it at
+	 * the same specificity as core's rule and prints after it, so only an overlay value shows.
+	 *
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_supports(): array {
+		return [
+			'color' => [
+				'background'                      => false,
+				'text'                            => true,
+				'gradients'                       => false,
+				'__experimentalSkipSerialization' => true,
+			],
+		];
+	}
+
+	/**
+	 * Core's default root, the block's class: the heading element on the front end, and the
+	 * wrapper around it in the editor, where the color reaches the heading by inheritance.
+	 *
+	 * @since TBD
+	 */
+	public function site_styles_selectors(): array {
+		return [];
+	}
+
 	/**
 	 * Get the text content.
 	 *
