@@ -19,6 +19,10 @@ use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Scopes_Site_Styles;
  * site values, and a block that cascades them drops the site values an own
  * value of the instance covers.
  *
+ * With FSE mode off no site value applies, and the site values the editor
+ * copied into an instance, listed in its `metadata.kbSiteCopies`, go back to
+ * the block's defaults, so only the user's own values show.
+ *
  * @since TBD Merges only the values the block lists for the overlay (classes and editor inline styles). Core's global stylesheet renders the core keys, and `Site_Rules` the rest.
  */
 final class Overlay {
@@ -107,6 +111,14 @@ final class Overlay {
 
 		if ( null === $block ) {
 			return $attributes;
+		}
+
+		if ( ! kadence_blocks_is_fse_mode() ) {
+			if ( null === self::site_copies( $attributes ) ) {
+				return $attributes;
+			}
+
+			return self::without_site_copies( $attributes, Supported_Blocks::registered_defaults( $block_name ) );
 		}
 
 		$site = array_intersect_key( $this->store->attributes( $block_name ), array_flip( $block->site_styles_overlay_attributes() ) );
@@ -302,6 +314,51 @@ final class Overlay {
 	}
 
 	/**
+	 * Resets the site values the editor copied into an instance to the block's
+	 * defaults, as they show once FSE mode is off. Each listed leaf takes the
+	 * default's leaf, or an empty value when the default has none. A whole value
+	 * takes the default, or is dropped without one. Mirrors the editor's
+	 * `withoutSiteCopies()`.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $attributes The instance's attributes.
+	 * @param array<string, mixed> $defaults   Attribute name => the default the block registers.
+	 *
+	 * @return array<string, mixed> The attributes without the copied site values.
+	 */
+	public static function without_site_copies( array $attributes, array $defaults ): array {
+		$copies = self::site_copies( $attributes );
+
+		if ( null === $copies ) {
+			return $attributes;
+		}
+
+		foreach ( $copies as $name => $paths ) {
+			if ( ! is_string( $name ) || ! array_key_exists( $name, $attributes ) || ! is_array( $paths ) ) {
+				continue;
+			}
+
+			foreach ( $paths as $path ) {
+				if ( ! is_array( $path ) ) {
+					continue;
+				}
+
+				if ( $path ) {
+					$attributes[ $name ] = self::with_default_leaf( $attributes[ $name ], array_values( $path ), $defaults[ $name ] ?? null );
+				} elseif ( array_key_exists( $name, $defaults ) ) {
+					$attributes[ $name ] = $defaults[ $name ];
+				} else {
+					unset( $attributes[ $name ] );
+					continue 2;
+				}
+			}
+		}
+
+		return $attributes;
+	}
+
+	/**
 	 * The default an instance value is measured against. A value that matches
 	 * the filtered default came from Block Defaults when the block was
 	 * inserted, so it counts as the default too.
@@ -405,6 +462,52 @@ final class Overlay {
 		}
 
 		return $site;
+	}
+
+	/**
+	 * The site values the editor copied into an instance, as listed in its metadata.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $attributes The instance's attributes.
+	 *
+	 * @return array<mixed>|null Attribute name => the copied leaves' paths, or null when none are listed.
+	 */
+	private static function site_copies( array $attributes ): ?array {
+		$metadata = $attributes['metadata'] ?? null;
+		$copies   = is_array( $metadata ) ? ( $metadata['kbSiteCopies'] ?? null ) : null;
+
+		return is_array( $copies ) && $copies ? $copies : null;
+	}
+
+	/**
+	 * Sets one leaf of a value to the default's leaf, or to an empty value when
+	 * the default has none. A leaf the value doesn't have is left out.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed                 $value         The value.
+	 * @param list<int|string|null> $path          The keys leading to the leaf.
+	 * @param mixed                 $default_value The default for the same value.
+	 *
+	 * @return mixed The value with the leaf reset.
+	 */
+	private static function with_default_leaf( $value, array $path, $default_value ) {
+		$key = array_shift( $path );
+
+		if ( ! is_array( $value ) || ! ( is_int( $key ) || is_string( $key ) ) || ! array_key_exists( $key, $value ) ) {
+			return $value;
+		}
+
+		$has_default = is_array( $default_value ) && array_key_exists( $key, $default_value );
+
+		if ( $path ) {
+			$value[ $key ] = self::with_default_leaf( $value[ $key ], $path, $has_default ? $default_value[ $key ] : null );
+		} else {
+			$value[ $key ] = $has_default ? $default_value[ $key ] : '';
+		}
+
+		return $value;
 	}
 
 	/**

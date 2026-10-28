@@ -6,7 +6,21 @@
  * merge and the scoping follow the same rules as the PHP overlay (the
  * fixtures in `__tests__/fixtures/` pin both).
  */
-import { cloneDeep, escapeRegExp, get, isEmpty, isEqual, kebabCase, omit, pick, pickBy, set, unset } from 'lodash';
+import {
+	cloneDeep,
+	escapeRegExp,
+	get,
+	has,
+	isEmpty,
+	isEqual,
+	kebabCase,
+	omit,
+	pick,
+	pickBy,
+	set,
+	uniqWith,
+	unset,
+} from 'lodash';
 import { TOKEN_VAR_PREFIX, isTokenAlias, resolveTokenAlias } from '../extension/design-tokens/alias';
 import { getSupportedBlock } from './supported-blocks';
 
@@ -565,6 +579,227 @@ function copiedValue(name, unit, shown, copied, stored) {
 	}
 
 	return name in copied ? copied[name] : stored[name];
+}
+
+/**
+ * Lists the site values a guarded write copies into the instance, so they can
+ * be told apart from the user's own once FSE mode is off. A copied leaf is one
+ * the write stores that the user didn't set: it differs from what the user
+ * wrote over the stored value. A leaf the user changes comes off the list. A
+ * unit is never listed: it belongs to the values the user typed in it.
+ *
+ * @param {Attributes}                  kept       The attributes the guard stores.
+ * @param {Attributes}                  written    The attributes being written.
+ * @param {Attributes}                  shown      The attributes the block was shown.
+ * @param {Attributes}                  stored     The instance's stored attributes.
+ * @param {Attributes}                  site       The site values.
+ * @param {Object<string, Array<Array>>} [previous] The copies already listed, by attribute name.
+ *
+ * @since TBD
+ *
+ * @return {Object<string, Array<Array>>} Attribute name => the copied leaves' paths.
+ */
+export function siteCopies(kept, written, shown, stored, site, previous = {}) {
+	let copies = { ...previous };
+
+	Object.keys(kept).forEach((name) => {
+		if ('metadata' === name) {
+			return;
+		}
+
+		let own = stored[name];
+
+		if (name in written) {
+			own = name in site ? unmerge(written[name], shown[name], stored[name]) : written[name];
+		}
+
+		const copied = isUnit(kept[name]) ? [] : leafPaths(kept[name], own);
+
+		copies = withCopies(copies, name, leafPaths(own, stored[name]), copied);
+	});
+
+	return copies;
+}
+
+/**
+ * The attributes with the site values copied into them reset to the block's
+ * defaults, as they show once FSE mode is off. Each listed leaf takes the
+ * default's leaf, or an empty value when the default has none; a whole value
+ * takes the default, or is dropped without one. Mirrors the PHP overlay.
+ *
+ * @param {Attributes}                    attributes  The instance's attributes.
+ * @param {Object<string, {default: *}>} definitions The block type's attribute definitions.
+ *
+ * @since TBD
+ *
+ * @return {Attributes} The attributes without the copied site values.
+ */
+export function withoutSiteCopies(attributes, definitions) {
+	const copies = attributes.metadata?.kbSiteCopies;
+
+	if (!isObjectLike(copies)) {
+		return attributes;
+	}
+
+	const result = { ...attributes };
+
+	Object.keys(copies).forEach((name) => {
+		if (!(name in result) || !Array.isArray(copies[name])) {
+			return;
+		}
+
+		const fallback = definitions[name]?.default;
+		let value = cloneDeep(result[name]);
+
+		copies[name].filter(Array.isArray).forEach((path) => {
+			if (!path.length) {
+				value = cloneDeep(fallback);
+			} else if (isObjectLike(value) && has(value, path)) {
+				set(value, path, cloneDeep(get(fallback, path, '')));
+			}
+		});
+
+		if (undefined === value) {
+			delete result[name];
+		} else {
+			result[name] = value;
+		}
+	});
+
+	return result;
+}
+
+/**
+ * Filters a write to an instance shown without its copied site values, as in
+ * the editor with FSE mode off: a copied leaf the user leaves as shown keeps
+ * its stored value, for when the mode is back on, and a leaf the user changes
+ * becomes their own and comes off the list.
+ *
+ * @param {Attributes} written The attributes being written.
+ * @param {Attributes} shown   The attributes the block was shown.
+ * @param {Attributes} stored  The instance's stored attributes.
+ *
+ * @since TBD
+ *
+ * @return {Attributes} The attributes to store.
+ */
+export function keepSiteCopies(written, shown, stored) {
+	const previous = stored.metadata?.kbSiteCopies;
+
+	if (!isObjectLike(previous)) {
+		return written;
+	}
+
+	const kept = {};
+	let copies = previous;
+
+	Object.keys(written).forEach((name) => {
+		if ('metadata' === name || !(name in previous)) {
+			kept[name] = written[name];
+			return;
+		}
+
+		kept[name] = unmerge(written[name], shown[name], stored[name]);
+		copies = withCopies(copies, name, leafPaths(written[name], shown[name]), []);
+	});
+
+	return withCopiesMetadata(kept, stored, previous, copies);
+}
+
+/**
+ * The write with the list of copied site values updated in its `metadata`,
+ * when the list changed or the write replaces the metadata without it. An
+ * empty list is removed.
+ *
+ * @param {Attributes}                   kept     The attributes to store.
+ * @param {Attributes}                   stored   The instance's stored attributes.
+ * @param {Object<string, Array<Array>>} previous The copies listed before the write.
+ * @param {Object<string, Array<Array>>} copies   The copies after it.
+ *
+ * @since TBD
+ *
+ * @return {Attributes} The attributes to store.
+ */
+export function withCopiesMetadata(kept, stored, previous, copies) {
+	const keepsList = !('metadata' in kept) || isEqual(kept.metadata?.kbSiteCopies ?? {}, copies);
+
+	if (isEqual(copies, previous || {}) && keepsList) {
+		return kept;
+	}
+
+	const metadata = { ...(kept.metadata ?? stored.metadata ?? {}) };
+
+	if (isEmpty(copies)) {
+		delete metadata.kbSiteCopies;
+	} else {
+		metadata.kbSiteCopies = copies;
+	}
+
+	return { ...kept, metadata };
+}
+
+/**
+ * The copies with an attribute's list updated: the leaves the user changed
+ * come off it, the ones just copied go on.
+ *
+ * @param {Object<string, Array<Array>>} copies  Attribute name => the copied leaves' paths.
+ * @param {string}                       name    The attribute name.
+ * @param {Array<Array>}                 changed The paths of the leaves the user changed.
+ * @param {Array<Array>}                 copied  The paths of the leaves just copied.
+ *
+ * @since TBD
+ *
+ * @return {Object<string, Array<Array>>} The updated copies.
+ */
+function withCopies(copies, name, changed, copied) {
+	const covers = (path, other) => other.every((key, index) => isEqual(path[index], key));
+	const kept = (Array.isArray(copies[name]) ? copies[name] : []).filter(
+		(path) => !changed.some((other) => covers(path, other) || covers(other, path))
+	);
+	const paths = uniqWith([...kept, ...copied], isEqual);
+
+	if (paths.length) {
+		return { ...copies, [name]: paths };
+	}
+
+	return omit(copies, name);
+}
+
+/**
+ * The paths of the leaves where a value differs from another. A leaf missing
+ * from the other counts as empty, and two empty leaves are the same.
+ *
+ * @param {*} value The value.
+ * @param {*} other The value it is compared with.
+ *
+ * @since TBD
+ *
+ * @return {Array<Array>} The paths of the differing leaves; `[[]]` when the value differs as a whole.
+ */
+function leafPaths(value, other) {
+	if (isObjectLike(value)) {
+		const isArray = Array.isArray(value);
+		const base = isObjectLike(other) && Array.isArray(other) === isArray ? other : {};
+
+		return Object.keys(value).flatMap((key) =>
+			leafPaths(value[key], base[key]).map((path) => [isArray ? Number(key) : key, ...path])
+		);
+	}
+
+	const isEmptyLeaf = (leaf) => undefined === leaf || null === leaf || '' === leaf;
+
+	return isEqual(value, other) || (isEmptyLeaf(value) && isEmptyLeaf(other)) ? [] : [[]];
+}
+
+/**
+ * @param {*} value A value.
+ *
+ * @since TBD
+ *
+ * @return {boolean} Whether it's a CSS unit, such as a cascade's or a group's unit attribute holds.
+ */
+function isUnit(value) {
+	return 'string' === typeof value && /^(px|em|rem|%|vh|vw)$/.test(value);
 }
 
 /**
