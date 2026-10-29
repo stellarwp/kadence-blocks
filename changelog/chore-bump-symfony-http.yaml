@@ -1,0 +1,4 @@
+significance: patch
+type: update
+entry: Updated bundled Symfony HTTP libraries to their latest patch releases.
+timestamp: 2026-10-29T00:00:00.000Z
