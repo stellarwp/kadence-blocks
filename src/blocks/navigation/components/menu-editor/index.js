@@ -73,8 +73,8 @@ export default function MenuEditor({
 					label: post.name,
 					url: post.link,
 					id: post.id,
-					type: post.type,
-					kind: 'post-type',
+					type: post.taxonomy,
+					kind: 'taxonomy',
 					uniqueID: Math.random().toString(36).substr(2, 9),
 				})
 			);
