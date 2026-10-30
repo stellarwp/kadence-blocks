@@ -197,5 +197,6 @@ const CustomColorPicker = CustomPicker(ColorPickerBody);
  * @return {JSX.Element} The picker.
  */
 export function ColorPicker({ color, onChange }) {
-	return <CustomColorPicker color={color} onChange={(next) => onChange(toCssColor(next.rgb))} />;
+	// `CustomPicker` swaps an undefined color for its own default, which would fill the hex field.
+	return <CustomColorPicker color={color ?? ''} onChange={(next) => onChange(toCssColor(next.rgb))} />;
 }

@@ -56,6 +56,12 @@ describe('ColorPicker hex field', () => {
 		expect(hexInput().value).toBe('');
 	});
 
+	it('is blank when the color is undefined', () => {
+		act(() => root.render(createElement(ColorPicker, { onChange: () => {} })));
+
+		expect(hexInput().value).toBe('');
+	});
+
 	it('saves black typed into an empty picker', () => {
 		const onChange = jest.fn();
 		act(() => root.render(createElement(ColorPicker, { color: '', onChange })));
