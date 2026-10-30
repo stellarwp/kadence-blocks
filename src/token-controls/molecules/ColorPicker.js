@@ -143,13 +143,14 @@ function ColorPickerFields({ hex, rgb, hsl, onChange }) {
  * @param {{r:number,g:number,b:number,a:number}}  props.rgb      The current RGB state.
  * @param {{h:number,s:number,l:number,a:number}}  props.hsl      The current HSL state.
  * @param {Object}                                 props.hsv      The current HSV state (`Saturation` needs this in addition to `hsl`).
+ * @param {string}                                 props.color    The color passed in, '' when there is none.
  * @param {Function}                               props.onChange The internal `react-color` change handler.
  *
  * @since 3.8.0
  *
  * @return {JSX.Element} The picker body.
  */
-function ColorPickerBody({ hex, rgb, hsl, hsv, onChange }) {
+function ColorPickerBody({ hex, rgb, hsl, hsv, color, onChange }) {
 	return (
 		<div className="kadence-blocks-style-library__color-picker">
 			<div className="kadence-blocks-style-library__color-picker-saturation">
@@ -172,8 +173,11 @@ function ColorPickerBody({ hex, rgb, hsl, hsv, onChange }) {
 					/>
 				</div>
 			</div>
-			{/* EditableInput's hex field expects no leading "#" — it re-adds one on display. */}
-			<ColorPickerFields hex={hex.replace('#', '')} rgb={rgb} hsl={hsl} onChange={onChange} />
+			{/*
+			 * EditableInput's hex field expects no leading "#" — it re-adds one on display. With no color,
+			 * react-color still holds black, so the field stays blank to let typing black register.
+			 */}
+			<ColorPickerFields hex={color ? hex.replace('#', '') : ''} rgb={rgb} hsl={hsl} onChange={onChange} />
 		</div>
 	);
 }
