@@ -229,6 +229,7 @@ export function CustomTab({ number, unit, units, onUnit, min, max, step, onNumbe
  *                                          `hoveredEntry` is `null`. Omit for no preview; additive
  *                                          only, so every existing `TokenPopover` consumer that
  *                                          does not pass it is unaffected.
+ * @param {string}   [props.listTitle]      The first tab's title. Defaults to "Style Library".
  *
  * @since 3.8.0
  *
@@ -248,6 +249,7 @@ export function TokenPopover({
 	onClose,
 	showValue = true,
 	renderPreview,
+	listTitle = '',
 }) {
 	return (
 		<TabPanel
@@ -259,7 +261,7 @@ export function TokenPopover({
 					title: (
 						<span className="kadence-token-field__tab-title">
 							<Icon icon={globe} size={20} />
-							{__('Style Library', 'kadence-blocks')}
+							{listTitle || __('Style Library', 'kadence-blocks')}
 						</span>
 					),
 				},
