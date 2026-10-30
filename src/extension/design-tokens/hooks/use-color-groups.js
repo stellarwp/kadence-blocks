@@ -17,8 +17,9 @@
 /**
  * WordPress dependencies
  */
-import { useEffect, useState } from '@wordpress/element';
+import { useEffect, useMemo, useState } from '@wordpress/element';
 import { useSelect } from '@wordpress/data';
+import { useSettings } from '@wordpress/block-editor';
 import apiFetch from '@wordpress/api-fetch';
 
 /**
@@ -26,6 +27,8 @@ import apiFetch from '@wordpress/api-fetch';
  */
 import { mapPaletteToColorControlGroups } from '../../../token-controls/helpers/palette-groups';
 import { designTokensNamespace, hasDesignTokensRest } from '../rest';
+import { globalStylesColorGroups } from '../global-styles-color-groups';
+import { isFseMode } from '../../../site-styles/supported-blocks';
 
 /**
  * One in-flight-or-resolved fetch per palette id, shared by every `useColorGroups` instance across the
@@ -227,14 +230,32 @@ function fetchColorGroups(paletteId, library) {
  *
  * @since 3.8.0
  *
+ * In the Kadence theme's FSE mode the groups are the Global Styles palette instead, and no palette
+ * is fetched.
+ *
  * @return {Array} `[{ id, label, swatches: [{ id, label, value, alias }] }]`, or `[]` while loading.
  */
 export function useColorGroups(clientId) {
 	const [groups, setGroups] = useState([]);
 	const paletteId = useSelect((select) => resolveEffectivePaletteId(select, clientId), [clientId]);
 	const library = librarySlug();
+	const fseMode = isFseMode();
+	const [theme, defaultColors, custom, defaultPalette] = useSettings(
+		'color.palette.theme',
+		'color.palette.default',
+		'color.palette.custom',
+		'color.defaultPalette'
+	);
+	const globalStylesGroups = useMemo(
+		() => (fseMode ? globalStylesColorGroups({ theme, defaultColors, custom, defaultPalette }) : null),
+		[fseMode, theme, defaultColors, custom, defaultPalette]
+	);
 
 	useEffect(() => {
+		if (fseMode) {
+			return;
+		}
+
 		let cancelled = false;
 		let timer;
 		let attempts = 0;
@@ -282,7 +303,7 @@ export function useColorGroups(clientId) {
 			cancelled = true;
 			clearTimeout(timer);
 		};
-	}, [clientId, paletteId, library]);
+	}, [clientId, paletteId, library, fseMode]);
 
-	return groups;
+	return globalStylesGroups ?? groups;
 }
