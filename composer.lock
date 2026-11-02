@@ -1750,16 +1750,16 @@
         },
         {
             "name": "symfony/http-client",
-            "version": "v5.4.49",
+            "version": "v5.4.54",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-client.git",
-                "reference": "d77d8e212cde7b5c4a64142bf431522f19487c28"
+                "reference": "240dce305e7b4ca31eeaa65ac9f24e033e21aae7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-client/zipball/d77d8e212cde7b5c4a64142bf431522f19487c28",
-                "reference": "d77d8e212cde7b5c4a64142bf431522f19487c28",
+                "url": "https://api.github.com/repos/symfony/http-client/zipball/240dce305e7b4ca31eeaa65ac9f24e033e21aae7",
+                "reference": "240dce305e7b4ca31eeaa65ac9f24e033e21aae7",
                 "shasum": ""
             },
             "require": {
@@ -1821,7 +1821,7 @@
                 "http"
             ],
             "support": {
-                "source": "https://github.com/symfony/http-client/tree/v5.4.49"
+                "source": "https://github.com/symfony/http-client/tree/v5.4.54"
             },
             "funding": [
                 {
@@ -1833,11 +1833,15 @@
                     "type": "github"
                 },
                 {
+                    "url": "https://github.com/nicolas-grekas",
+                    "type": "github"
+                },
+                {
                     "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-11-28T08:37:04+00:00"
+            "time": "2026-10-14T13:53:45+00:00"
         },
         {
             "name": "symfony/http-client-contracts",
@@ -1919,16 +1923,16 @@
         },
         {
             "name": "symfony/http-foundation",
-            "version": "v5.4.50",
+            "version": "v5.4.54",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-foundation.git",
-                "reference": "1a0706e8b8041046052ea2695eb8aeee04f97609"
+                "reference": "ec778b2a79fb1c571a23275a41865a17653b9138"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/1a0706e8b8041046052ea2695eb8aeee04f97609",
-                "reference": "1a0706e8b8041046052ea2695eb8aeee04f97609",
+                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/ec778b2a79fb1c571a23275a41865a17653b9138",
+                "reference": "ec778b2a79fb1c571a23275a41865a17653b9138",
                 "shasum": ""
             },
             "require": {
@@ -1975,7 +1979,7 @@
             "description": "Defines an object-oriented layer for the HTTP specification",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/http-foundation/tree/v5.4.50"
+                "source": "https://github.com/symfony/http-foundation/tree/v5.4.54"
             },
             "funding": [
                 {
@@ -1995,7 +1999,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-11-03T12:58:48+00:00"
+            "time": "2026-09-30T11:07:08+00:00"
         },
         {
             "name": "symfony/mime",
@@ -13483,7 +13487,7 @@
     "platform": {
         "ext-json": "*"
     },
-    "platform-dev": {},
+    "platform-dev": [],
     "platform-overrides": {
         "php": "7.4"
     },
