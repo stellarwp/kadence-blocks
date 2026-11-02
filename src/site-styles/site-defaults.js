@@ -1,0 +1,146 @@
+/**
+ * The site values a block's inspector shows as its defaults in FSE mode. Most
+ * site values render through site rules rather than the instance's
+ * attributes, so without these a control would show the design token's value
+ * while the block renders the site's.
+ */
+import { getBlockType } from '@wordpress/blocks';
+import { useMemo } from '@wordpress/element';
+import { presetSlotAt } from '../extension/token-indicators/kinds/dimension';
+import { scopeSiteAttributes, siteAttributes } from './store';
+import { scopeStyle } from './scope-style';
+import { getSupportedBlock, isFseMode } from './supported-blocks';
+import { useGlobalStylesRecord } from './use-global-styles-record';
+import { isVirtualBlock } from './virtual-blocks';
+
+/**
+ * @param {*} value A site value.
+ *
+ * @since TBD
+ *
+ * @return {boolean} Whether the value is unset.
+ */
+function isEmpty(value) {
+	if (Array.isArray(value)) {
+		return value.every(isEmpty);
+	}
+
+	return undefined === value || null === value || '' === value;
+}
+
+/**
+ * A site measure as the corners a binding's preset value holds, each with its unit.
+ *
+ * @param {Array|*} value The site value, a list of corners or sides.
+ * @param {string}  unit  The unit the value is in.
+ *
+ * @since TBD
+ *
+ * @return {Array|undefined} The corners, '' for one the site leaves unset; undefined without a value.
+ */
+function toMeasure(value, unit) {
+	if (isEmpty(value)) {
+		return undefined;
+	}
+
+	return (Array.isArray(value) ? value : [value, value, value, value]).map((side) =>
+		isEmpty(side) ? '' : `${side}${unit}`
+	);
+}
+
+/**
+ * The site values a block instance renders with: the record's values, scoped
+ * by the instance's style. Empty outside FSE mode, for an unsupported block,
+ * and for the Kadence panel's own blocks, which edit the site values.
+ *
+ * @param {string} name       Block name.
+ * @param {string} clientId   The instance's client ID.
+ * @param {Object} attributes The instance's attributes.
+ *
+ * @since TBD
+ *
+ * @return {Object<string, *>} Attribute name => site value.
+ */
+export function useSiteDefaults(name, clientId, attributes) {
+	const enabled = isFseMode() && !!getSupportedBlock(name) && !isVirtualBlock(clientId);
+	const record = useGlobalStylesRecord(enabled);
+	const block = getSupportedBlock(name);
+	const style = enabled && block.scope ? scopeStyle(name, attributes, block.scope) : undefined;
+
+	return useMemo(() => {
+		if (!enabled || !record) {
+			return {};
+		}
+
+		const values = siteAttributes(record, name);
+		const { scope } = block;
+
+		return scope
+			? scopeSiteAttributes(
+					values,
+					{ [scope.attribute]: style },
+					scope,
+					getBlockType(name)?.attributes?.[scope.attribute]?.default
+				)
+			: values;
+	}, [enabled, record, name, block, style]);
+}
+
+/**
+ * Puts site values in place of the design token values a block's controls
+ * fall back to. A measure takes the unit the site stores for it, or the
+ * block's default unit, and the site's own values per device in place of the
+ * preset's. Border entries keep their token values.
+ *
+ * @param {Object}            binding    attribute => binding entry, from `usePresetBinding()`.
+ * @param {Object<string, *>} site       Attribute name => site value, from `useSiteDefaults()`.
+ * @param {string}            blockName  Block name.
+ *
+ * @since TBD
+ *
+ * @return {Object} The binding, with a site value as the preset value where the site sets one.
+ */
+export function withSiteDefaults(binding, site, blockName) {
+	if (!Object.keys(site).length) {
+		return binding;
+	}
+
+	const definitions = getBlockType(blockName)?.attributes || {};
+	const next = { ...binding };
+
+	Object.entries(binding).forEach(([attr, entry]) => {
+		if ('border' === entry.kind) {
+			return;
+		}
+
+		if ('dimension' !== entry.kind) {
+			if (!isEmpty(site[attr])) {
+				next[attr] = { ...entry, presetValue: site[attr], bound: false };
+			}
+
+			return;
+		}
+
+		const unitAttr = `${attr}Unit`;
+		const unit = site[unitAttr] || definitions[unitAttr]?.default || 'px';
+		const desktop = toMeasure(site[attr], unit);
+		const tablet = toMeasure(site[entry.responsiveAttrs?.tablet], unit);
+		const mobile = toMeasure(site[entry.responsiveAttrs?.mobile], unit);
+
+		if (!desktop && !tablet && !mobile) {
+			return;
+		}
+
+		next[attr] = {
+			...entry,
+			// A corner the site leaves unset still falls back to the preset's.
+			presetValue: desktop
+				? desktop.map((corner, index) => ('' !== corner ? corner : presetSlotAt(entry.presetValue, index)))
+				: entry.presetValue,
+			responsive: { tablet, mobile },
+			bound: false,
+		};
+	});
+
+	return next;
+}

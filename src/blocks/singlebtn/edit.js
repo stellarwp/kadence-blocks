@@ -107,6 +107,7 @@ import { BUTTON_MARGIN_FALLBACK, BUTTON_PADDING_FALLBACK } from '../../token-con
 import { useColorGroups } from '../../extension/design-tokens/hooks/use-color-groups';
 import { resolveColorLiteral } from '../../extension/design-tokens/color-literal';
 import SiteRules from '../../site-styles/site-rules';
+import { useSiteDefaults, withSiteDefaults } from '../../site-styles/site-defaults';
 
 /**
  * The selectors the block's site rules use in place of the instance's, as on the front end.
@@ -313,7 +314,13 @@ export default function KadenceButtonEdit(props) {
 	);
 	// Design-token indicators: the per-attribute bound/overridden state for the selected preset, plus a
 	// reset that clears the mapped attribute back to the preset value (served by the existing scoped CSS).
-	const tokenBinding = usePresetBinding('kadence/singlebtn', attributes, undefined, previewDevice);
+	// In FSE mode the site's values take the token values' place as the controls' defaults.
+	const siteDefaults = useSiteDefaults(name, clientId, attributes);
+	const tokenBinding = withSiteDefaults(
+		usePresetBinding('kadence/singlebtn', attributes, undefined, previewDevice),
+		siteDefaults,
+		name
+	);
 	const resetToken = (attr) => resetAttr(attr, setAttributes, tokenBinding[attr]?.kind, metadata.attributes);
 	// One fetch of the block's effective palette groups, shared by every `ColorControl` instance on
 	// this block — the palette data is identical for all fourteen of them.
