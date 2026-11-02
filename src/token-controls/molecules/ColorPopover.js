@@ -90,7 +90,8 @@ export function ColorPopover({
 					// A CSS-variable literal (the old editor's legacy palette storage shape) is not something
 					// `react-color` can parse — handing it over renders black and the first touch overwrites a
 					// working color, with no way back. Seeding '' instead opens the picker neutral; the swatch
-					// still paints the real color since it renders the literal via CSS `background`.
+					// still paints the real color since it renders the literal via CSS `background`. The picker
+					// shows blank fields for '', so a color typed in, black included, always counts as a change.
 					color={
 						entry && resolveLiteral
 							? resolveLiteral(entry)

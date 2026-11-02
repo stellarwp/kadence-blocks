@@ -85,6 +85,14 @@ describe('ColorPicker', () => {
 		expect(fields().map((input) => input.value)).toEqual(['', '', '', '', '']);
 	});
 
+	it('shows blank HSL fields while no color is set', () => {
+		render({ color: '', onChange: jest.fn() });
+		const nextFormat = container.querySelector('button[aria-label="Next color format"]');
+		act(() => nextFormat.click());
+
+		expect(fields().map((input) => input.value)).toEqual(['', '', '', '', '']);
+	});
+
 	it('reports black entered in one step into a picker with no color set', () => {
 		const onChange = jest.fn();
 
