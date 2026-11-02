@@ -1,0 +1,6 @@
+significance: patch
+type: fix
+entry: Sites licensed through the Nexcess Plugin Stack are now recognized as licensed,
+  so the design library, the Nexcess banner and license status work the same as
+  with a Kadence plan.
+timestamp: 2026-11-02T17:11:01.000Z

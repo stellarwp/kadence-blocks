@@ -77,6 +77,25 @@ final class AudienceTest extends TestCase {
 	}
 
 	/**
+	 * A Plugin Stack key holds only the stack product, with no Kadence entry.
+	 */
+	public function test_it_shows_the_banner_with_a_nexcess_plugin_stack_license(): void {
+		if ( ! function_exists( 'uopz_set_return' ) ) {
+			$this->markTestSkipped( 'Needs uopz to stand in for Harbor.' );
+		}
+
+		uopz_set_return(
+			'lw_harbor_is_product_license_active',
+			static function ( string $product ): bool {
+				return 'nexcess-plugin-stack' === $product;
+			},
+			true
+		);
+
+		$this->assertTrue( $this->audience()->should_display() );
+	}
+
+	/**
 	 * @dataProvider paid_plugins
 	 */
 	public function test_it_shows_the_banner_with_a_valid_paid_plugin_license( string $slug ): void {
