@@ -10,8 +10,10 @@ import { createRoot } from 'react-dom/client';
  */
 import { ColorPicker } from '../molecules/ColorPicker';
 
-// `Checkboard` only paints the checkered backdrop behind a translucent color, through a canvas jsdom
-// doesn't implement, so it is stood in for here. Everything the tests assert on stays real.
+/*
+ * `Checkboard` only paints the checkered backdrop behind a translucent color, through a canvas jsdom
+ * doesn't implement, so it is stood in for here. Everything the tests assert on stays real.
+ */
 jest.mock('react-color/lib/components/common/Checkboard', () => ({
 	__esModule: true,
 	Checkboard: () => null,
@@ -106,6 +108,7 @@ describe('ColorPicker', () => {
 	it('shows the fields of a color that is set', () => {
 		render({ color: '#336699', onChange: jest.fn() });
 
+		// #336699 is rgb(51, 102, 153) at full opacity.
 		expect(fields().map((input) => input.value)).toEqual(['336699', '51', '102', '153', '1']);
 	});
 
