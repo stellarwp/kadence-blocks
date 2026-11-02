@@ -10,6 +10,7 @@ jest.mock('@wordpress/data', () => ({}), { virtual: true });
 jest.mock('@wordpress/element', () => ({}), { virtual: true });
 
 import { siteBorderDefaults, withSiteDefaults } from '../site-defaults';
+import { presetValueForDevice } from '../../extension/token-indicators/kinds/dimension';
 
 const radius = {
 	kind: 'dimension',
@@ -47,7 +48,7 @@ describe('withSiteDefaults', () => {
 		);
 
 		expect(result.borderRadius.presetValue).toEqual(['20em', '20em', '20em', '20em']);
-		expect(result.borderRadius.responsive).toEqual({ tablet: undefined, mobile: ['4em', '', '4em', ''] });
+		expect(result.borderRadius.responsive).toEqual({ tablet: ['', '', '', ''], mobile: ['4em', '', '4em', ''] });
 		expect(result.borderRadius.bound).toBe(false);
 	});
 
@@ -55,6 +56,19 @@ describe('withSiteDefaults', () => {
 		const result = withSiteDefaults(binding, { borderRadius: [20, '', 20, ''] }, 'kadence/singlebtn');
 
 		expect(result.borderRadius.presetValue).toEqual(['20px', '3px', '20px', '3px']);
+	});
+
+	it("keeps the preset's breakpoint value for a corner the site leaves unset", () => {
+		const result = withSiteDefaults(binding, { borderRadius: [20, '', 20, ''] }, 'kadence/singlebtn');
+
+		// The preset sets 2px on Tablet: the corners the site sets keep 20px, the others take 2px.
+		expect(result.borderRadius.responsive.tablet).toEqual(['', '2px', '', '2px']);
+		expect(presetValueForDevice(result.borderRadius.presetValue, result.borderRadius.responsive, 'Tablet')).toEqual(
+			['20px', '2px', '20px', '2px']
+		);
+		expect(presetValueForDevice(result.borderRadius.presetValue, result.borderRadius.responsive, 'Mobile')).toEqual(
+			['20px', '2px', '20px', '2px']
+		);
 	});
 
 	it('keeps the token values of a border', () => {

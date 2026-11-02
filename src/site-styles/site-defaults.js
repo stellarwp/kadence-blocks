@@ -131,13 +131,35 @@ export function withSiteDefaults(binding, site, blockName) {
 			return;
 		}
 
+		const preset = entry.responsive || {};
+		const isSet = (corners, index) => !!corners && '' !== corners[index];
+		/*
+		 * A breakpoint's corner: the site's own, then unset ('') when the site sets the corner at a wider
+		 * device, so the device resolver falls through to it, then the preset's for that breakpoint.
+		 */
+		const breakpoint = (own, wider, presetCorners) =>
+			[0, 1, 2, 3].map((index) => {
+				if (isSet(own, index)) {
+					return own[index];
+				}
+
+				if (wider.some((corners) => isSet(corners, index)) || undefined === presetCorners) {
+					return '';
+				}
+
+				return presetSlotAt(presetCorners, index);
+			});
+
 		next[attr] = {
 			...entry,
 			// A corner the site leaves unset still falls back to the preset's.
 			presetValue: desktop
 				? desktop.map((corner, index) => ('' !== corner ? corner : presetSlotAt(entry.presetValue, index)))
 				: entry.presetValue,
-			responsive: { tablet, mobile },
+			responsive: {
+				tablet: breakpoint(tablet, [desktop], preset.tablet),
+				mobile: breakpoint(mobile, [tablet, desktop], preset.mobile),
+			},
 			bound: false,
 		};
 	});
