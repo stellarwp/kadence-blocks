@@ -78,6 +78,8 @@ final class AudienceTest extends TestCase {
 
 	/**
 	 * A Plugin Stack key holds only the stack product, with no Kadence entry.
+	 *
+	 * @return void
 	 */
 	public function test_it_shows_the_banner_with_a_nexcess_plugin_stack_license(): void {
 		if ( ! function_exists( 'uopz_set_return' ) ) {
