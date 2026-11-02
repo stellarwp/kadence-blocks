@@ -50,10 +50,21 @@ import './ColorPicker.scss';
  */
 function ColorPickerFields({ hex, rgb, hsl, unset, onChange }) {
 	const [view, setView] = useState('rgb');
+	const [hexResets, setHexResets] = useState(0);
 	const inputStyle = { input: { width: '100%' } };
 
 	// A color that isn't set shows nothing, so any value entered, black included, is a change a field reports.
 	const shown = (value) => (unset ? '' : value);
+
+	/*
+	 * `EditableInput` puts a field's last value back when it loses focus, but not a blank one, so hex text
+	 * that is not a color would stay on a field with no color set. Remounting the field drops it.
+	 */
+	const handleHexBlur = () => {
+		if (unset) {
+			setHexResets((count) => count + 1);
+		}
+	};
 
 	const handleFieldChange = (data) => {
 		const change = deriveFieldsChange(view, data, { rgb, hsl });
@@ -65,8 +76,17 @@ function ColorPickerFields({ hex, rgb, hsl, unset, onChange }) {
 
 	return (
 		<div className="kadence-blocks-style-library__color-picker-fields">
-			<div className="kadence-blocks-style-library__color-picker-field kadence-blocks-style-library__color-picker-field--hex">
-				<EditableInput style={inputStyle} label="hex" value={shown(hex)} onChange={handleFieldChange} />
+			<div
+				className="kadence-blocks-style-library__color-picker-field kadence-blocks-style-library__color-picker-field--hex"
+				onBlur={handleHexBlur}
+			>
+				<EditableInput
+					key={hexResets}
+					style={inputStyle}
+					label="hex"
+					value={shown(hex)}
+					onChange={handleFieldChange}
+				/>
 			</div>
 			{view === 'rgb' ? (
 				<>

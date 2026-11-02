@@ -105,6 +105,18 @@ describe('ColorPicker', () => {
 		expect(onChange).toHaveBeenCalledWith('#000000');
 	});
 
+	it('clears hex text that is not a color when the field loses focus with no color set', () => {
+		const onChange = jest.fn();
+
+		render({ color: '', onChange });
+		act(() => fields()[0].focus());
+		enterAtOnce(fields()[0], '12345');
+		act(() => fields()[0].blur());
+
+		expect(onChange).not.toHaveBeenCalled();
+		expect(fields()[0].value).toBe('');
+	});
+
 	it('shows the fields of a color that is set', () => {
 		render({ color: '#336699', onChange: jest.fn() });
 
