@@ -33,6 +33,17 @@ jest.mock(
 	{ virtual: true }
 );
 
+// The hook reads the Global Styles palette in FSE mode. `mockSettings` holds what each path returns.
+let mockSettings = {};
+
+jest.mock(
+	'@wordpress/block-editor',
+	() => ({
+		useSettings: (...paths) => paths.map((path) => mockSettings[path]),
+	}),
+	{ virtual: true }
+);
+
 import { useColorGroups } from '../hooks/use-color-groups';
 
 const PALETTE_NODE = {
@@ -163,6 +174,7 @@ describe('useColorGroups', () => {
 			nonce: 'abc',
 		};
 		window.kadenceDesignTokensPalettes = { active: 'default', current: 'default', palettes: [], slots: {} };
+		mockSettings = {};
 	});
 
 	afterEach(() => {
@@ -174,6 +186,26 @@ describe('useColorGroups', () => {
 		delete global.IS_REACT_ACT_ENVIRONMENT;
 		delete window.kadenceDesignTokensRest;
 		delete window.kadenceDesignTokensPalettes;
+		delete window.kadenceSiteStyles;
+	});
+
+	/**
+	 * In FSE mode the groups are the Global Styles palette, and no Style Library palette is fetched.
+	 *
+	 * @return {void}
+	 */
+	it('returns the Global Styles palette in FSE mode without fetching', () => {
+		window.kadenceSiteStyles = { isFseMode: true };
+		mockSettings = {
+			'color.palette.theme': [{ slug: 'theme-palette1', name: 'Palette Color 1', color: '#c3e085' }],
+			'color.palette.custom': [{ slug: 'qa-purple', name: 'QA Purple', color: '#7a1fa2' }],
+		};
+
+		const { box } = renderHook('block-1');
+
+		expect(mockApiFetch).not.toHaveBeenCalled();
+		expect(box.current.map((group) => group.id)).toEqual(['theme', 'custom']);
+		expect(box.current[0].swatches[0].alias).toBe('palette1');
 	});
 
 	/**
