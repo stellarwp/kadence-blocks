@@ -26,14 +26,16 @@ export const GLOBAL_STYLES_SOURCE = 'global-styles';
  * do, so it renders through `--global-palette1` and follows later Global Styles edits. Any other
  * color stores its literal.
  *
- * @param {Object} color A palette entry (`{ slug, color }`).
+ * @param {Object} color  A palette entry (`{ slug, color }`).
+ * @param {string} origin The palette origin the entry came from.
  *
  * @since TBD
  *
  * @return {string} The value to store.
  */
-function storedValue(color) {
-	const match = /^theme-(palette\d+)$/.exec(color.slug || '');
+function storedValue(color, origin) {
+	// Only the theme origin's slugs map to the global palette; a user color may reuse the same slug.
+	const match = 'theme' === origin ? /^theme-(palette\d+)$/.exec(color.slug || '') : null;
 
 	return match ? match[1] : color.color;
 }
@@ -64,7 +66,7 @@ function toGroup(id, label, colors) {
 			id: `${id}:${color.slug}`,
 			label: color.name || color.slug,
 			value: color.color,
-			alias: storedValue(color),
+			alias: storedValue(color, id),
 			fixed: true,
 		})),
 	};

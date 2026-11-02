@@ -15,6 +15,19 @@ const CUSTOM = [{ slug: 'qa-purple', name: 'QA Purple', color: '#7a1fa2' }];
 
 describe('globalStylesColorGroups', () => {
 	/**
+	 * A custom color that reuses a theme palette slug stores its own literal, not the slug.
+	 *
+	 * @return {void}
+	 */
+	it('stores the literal for a custom color with a theme palette slug', () => {
+		const [custom] = globalStylesColorGroups({
+			custom: [{ slug: 'theme-palette1', name: 'Mine', color: '#123456' }],
+		});
+
+		expect(custom.swatches[0].alias).toBe('#123456');
+	});
+
+	/**
 	 * Theme, default and custom colors come back as groups in core's order.
 	 *
 	 * @return {void}
