@@ -41,15 +41,17 @@ import './ColorPicker.scss';
  * @param {string}                                             props.hex     The current hex value (no leading "#").
  * @param {{r:number,g:number,b:number,a:number}}              props.rgb     The current RGB state.
  * @param {{h:number,s:number,l:number,a:number}}               props.hsl     The current HSL state.
+ * @param {boolean}                                             props.unset   Whether there is no color, which leaves every field blank.
  * @param {Function}                                            props.onChange Called with a `react-color`-shaped change payload.
  *
  * @since 3.8.0
  *
  * @return {JSX.Element} The fields row.
  */
-function ColorPickerFields({ hex, rgb, hsl, onChange }) {
+function ColorPickerFields({ hex, rgb, hsl, unset, onChange }) {
 	const [view, setView] = useState('rgb');
 	const inputStyle = { input: { width: '100%' } };
+	const shown = (value) => (unset ? '' : value);
 
 	const handleFieldChange = (data) => {
 		const change = deriveFieldsChange(view, data, { rgb, hsl });
@@ -62,21 +64,21 @@ function ColorPickerFields({ hex, rgb, hsl, onChange }) {
 	return (
 		<div className="kadence-blocks-style-library__color-picker-fields">
 			<div className="kadence-blocks-style-library__color-picker-field kadence-blocks-style-library__color-picker-field--hex">
-				<EditableInput style={inputStyle} label="hex" value={hex} onChange={handleFieldChange} />
+				<EditableInput style={inputStyle} label="hex" value={shown(hex)} onChange={handleFieldChange} />
 			</div>
 			{view === 'rgb' ? (
 				<>
 					<div className="kadence-blocks-style-library__color-picker-field">
-						<EditableInput style={inputStyle} label="r" value={rgb.r} onChange={handleFieldChange} />
+						<EditableInput style={inputStyle} label="r" value={shown(rgb.r)} onChange={handleFieldChange} />
 					</div>
 					<div className="kadence-blocks-style-library__color-picker-field">
-						<EditableInput style={inputStyle} label="g" value={rgb.g} onChange={handleFieldChange} />
+						<EditableInput style={inputStyle} label="g" value={shown(rgb.g)} onChange={handleFieldChange} />
 					</div>
 					<div className="kadence-blocks-style-library__color-picker-field">
-						<EditableInput style={inputStyle} label="b" value={rgb.b} onChange={handleFieldChange} />
+						<EditableInput style={inputStyle} label="b" value={shown(rgb.b)} onChange={handleFieldChange} />
 					</div>
 					<div className="kadence-blocks-style-library__color-picker-field">
-						<EditableInput style={inputStyle} label="a" value={rgb.a} onChange={handleFieldChange} />
+						<EditableInput style={inputStyle} label="a" value={shown(rgb.a)} onChange={handleFieldChange} />
 					</div>
 				</>
 			) : (
@@ -85,7 +87,7 @@ function ColorPickerFields({ hex, rgb, hsl, onChange }) {
 						<EditableInput
 							style={inputStyle}
 							label="h"
-							value={Math.round(hsl.h)}
+							value={shown(Math.round(hsl.h))}
 							onChange={handleFieldChange}
 						/>
 					</div>
@@ -93,7 +95,7 @@ function ColorPickerFields({ hex, rgb, hsl, onChange }) {
 						<EditableInput
 							style={inputStyle}
 							label="s"
-							value={`${Math.round(hsl.s * 100)}%`}
+							value={shown(`${Math.round(hsl.s * 100)}%`)}
 							onChange={handleFieldChange}
 						/>
 					</div>
@@ -101,12 +103,12 @@ function ColorPickerFields({ hex, rgb, hsl, onChange }) {
 						<EditableInput
 							style={inputStyle}
 							label="l"
-							value={`${Math.round(hsl.l * 100)}%`}
+							value={shown(`${Math.round(hsl.l * 100)}%`)}
 							onChange={handleFieldChange}
 						/>
 					</div>
 					<div className="kadence-blocks-style-library__color-picker-field">
-						<EditableInput style={inputStyle} label="a" value={hsl.a} onChange={handleFieldChange} />
+						<EditableInput style={inputStyle} label="a" value={shown(hsl.a)} onChange={handleFieldChange} />
 					</div>
 				</>
 			)}
@@ -175,9 +177,9 @@ function ColorPickerBody({ hex, rgb, hsl, hsv, color, onChange }) {
 			</div>
 			{/*
 			 * EditableInput's hex field expects no leading "#" — it re-adds one on display. With no color,
-			 * react-color still holds black, so the field stays blank to let typing black register.
+			 * react-color still holds black, so the fields stay blank to let typing black register.
 			 */}
-			<ColorPickerFields hex={color ? hex.replace('#', '') : ''} rgb={rgb} hsl={hsl} onChange={onChange} />
+			<ColorPickerFields hex={hex.replace('#', '')} rgb={rgb} hsl={hsl} unset={!color} onChange={onChange} />
 		</div>
 	);
 }

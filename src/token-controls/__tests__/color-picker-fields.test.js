@@ -41,6 +41,12 @@ function hexInput() {
 	return container.querySelector('.kadence-blocks-style-library__color-picker-field--hex input');
 }
 
+function fieldValues() {
+	return [...container.querySelectorAll('.kadence-blocks-style-library__color-picker-fields input')].map(
+		(input) => input.value
+	);
+}
+
 function type(input, value) {
 	const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
 	act(() => {
@@ -62,6 +68,16 @@ describe('ColorPicker hex field', () => {
 		expect(hexInput().value).toBe('');
 	});
 
+	it('leaves the RGB and HSL fields blank when there is no color', () => {
+		act(() => root.render(createElement(ColorPicker, { color: '', onChange: () => {} })));
+
+		expect(fieldValues()).toEqual(['', '', '', '', '']);
+
+		act(() => container.querySelector('button[aria-label="Next color format"]').click());
+
+		expect(fieldValues()).toEqual(['', '', '', '', '']);
+	});
+
 	it('saves black typed into an empty picker', () => {
 		const onChange = jest.fn();
 		act(() => root.render(createElement(ColorPicker, { color: '', onChange })));
@@ -74,6 +90,6 @@ describe('ColorPicker hex field', () => {
 	it('shows the hex of a set color', () => {
 		act(() => root.render(createElement(ColorPicker, { color: '#ff0080', onChange: () => {} })));
 
-		expect(hexInput().value).toBe('FF0080');
+		expect(fieldValues()).toEqual(['FF0080', '255', '0', '128', '1']);
 	});
 });
