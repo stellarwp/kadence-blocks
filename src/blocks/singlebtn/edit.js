@@ -385,7 +385,7 @@ export default function KadenceButtonEdit(props) {
 	const borderColorDefault = siteBorder.color ?? tokenBinding.borderStyle?.presetValue?.color;
 	const borderHoverWidthDefault = siteHoverBorder.width ?? borderHoverWidthPresetValue ?? borderWidthDefault;
 	const borderHoverColorDefault =
-		siteHoverBorder.color ?? tokenBinding.borderHoverStyle?.presetValue?.color ?? siteBorder.color;
+		siteHoverBorder.color ?? tokenBinding.borderHoverStyle?.presetValue?.color ?? borderColorDefault;
 
 	// Read directly: `button-shadow` declares no `control_attr`, so `usePresetBinding` skips it.
 	const shadowPresetValue = presetPropertyValueForDevice(
