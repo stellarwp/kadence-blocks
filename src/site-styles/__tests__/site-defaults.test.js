@@ -9,7 +9,7 @@ jest.mock(
 jest.mock('@wordpress/data', () => ({}), { virtual: true });
 jest.mock('@wordpress/element', () => ({}), { virtual: true });
 
-import { withSiteDefaults } from '../site-defaults';
+import { siteBorderDefaults, withSiteDefaults } from '../site-defaults';
 
 const radius = {
 	kind: 'dimension',
@@ -61,5 +61,52 @@ describe('withSiteDefaults', () => {
 		const result = withSiteDefaults(binding, { borderStyle: [{ top: ['#000', 'solid', 2] }] }, 'kadence/singlebtn');
 
 		expect(result.borderStyle).toBe(binding.borderStyle);
+	});
+});
+
+describe('siteBorderDefaults', () => {
+	const responsive = { tablet: 'tabletBorderStyle', mobile: 'mobileBorderStyle' };
+	const border = (top, unit = 'px') => [{ top, right: ['', '', ''], bottom: ['', '', ''], left: ['', '', ''], unit }];
+
+	it('has no defaults without a site border', () => {
+		expect(siteBorderDefaults({}, 'borderStyle', responsive, 'Desktop')).toEqual({
+			width: undefined,
+			color: undefined,
+		});
+	});
+
+	it('takes the width with its unit and the color of the first side the site sets', () => {
+		const site = {
+			borderStyle: [
+				{
+					top: ['', '', ''],
+					right: ['#00ff00', 'solid', 3],
+					bottom: ['', '', ''],
+					left: ['', '', ''],
+					unit: 'em',
+				},
+			],
+		};
+
+		expect(siteBorderDefaults(site, 'borderStyle', responsive, 'Desktop')).toEqual({
+			width: '3em',
+			color: '#00ff00',
+		});
+	});
+
+	it('takes a narrower device value first and falls back per axis to wider devices', () => {
+		const site = {
+			borderStyle: border(['#000000', 'solid', 2]),
+			tabletBorderStyle: border(['', '', 4]),
+		};
+
+		expect(siteBorderDefaults(site, 'borderStyle', responsive, 'Mobile')).toEqual({
+			width: '4px',
+			color: '#000000',
+		});
+		expect(siteBorderDefaults(site, 'borderStyle', responsive, 'Desktop')).toEqual({
+			width: '2px',
+			color: '#000000',
+		});
 	});
 });

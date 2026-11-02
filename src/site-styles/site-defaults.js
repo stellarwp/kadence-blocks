@@ -144,3 +144,47 @@ export function withSiteDefaults(binding, site, blockName) {
 
 	return next;
 }
+
+/**
+ * The site's border width and color for a device, as the single defaults a
+ * border control shows: the first side the site sets, from the device's own
+ * value up through the wider devices', as the site rules cascade.
+ *
+ * @param {Object<string, *>}                  site       Attribute name => site value, from `useSiteDefaults()`.
+ * @param {string}                             attr       The desktop border attribute, e.g. `borderStyle`.
+ * @param {{tablet: string, mobile: string}}   responsive The tablet and mobile border attributes.
+ * @param {string}                             device     The active preview device ('Desktop' | 'Tablet' | 'Mobile').
+ *
+ * @since TBD
+ *
+ * @return {{width: (string|undefined), color: (string|undefined)}} The site's width with its unit, and its color.
+ */
+export function siteBorderDefaults(site, attr, responsive, device) {
+	const attrs =
+		'Mobile' === device
+			? [responsive.mobile, responsive.tablet, attr]
+			: 'Tablet' === device
+				? [responsive.tablet, attr]
+				: [attr];
+	const borders = attrs.map((name) => site[name]?.[0]).filter((border) => border && 'object' === typeof border);
+	const first = (index) => {
+		for (const border of borders) {
+			for (const side of ['top', 'right', 'bottom', 'left']) {
+				const value = border[side]?.[index];
+
+				if (!isEmpty(value)) {
+					return { value, unit: border.unit || 'px' };
+				}
+			}
+		}
+
+		return undefined;
+	};
+	const color = first(0);
+	const width = first(2);
+
+	return {
+		width: width ? `${width.value}${width.unit}` : undefined,
+		color: color?.value,
+	};
+}

@@ -107,7 +107,7 @@ import { BUTTON_MARGIN_FALLBACK, BUTTON_PADDING_FALLBACK } from '../../token-con
 import { useColorGroups } from '../../extension/design-tokens/hooks/use-color-groups';
 import { resolveColorLiteral } from '../../extension/design-tokens/color-literal';
 import SiteRules from '../../site-styles/site-rules';
-import { useSiteDefaults, withSiteDefaults } from '../../site-styles/site-defaults';
+import { siteBorderDefaults, useSiteDefaults, withSiteDefaults } from '../../site-styles/site-defaults';
 
 /**
  * The selectors the block's site rules use in place of the instance's, as on the front end.
@@ -354,19 +354,38 @@ export default function KadenceButtonEdit(props) {
 	);
 
 	// The same value for the HOVER width field, read from the hover property rather than the resting one.
-	// Falling straight through to `borderWidthPresetValue` would report the resting width on a preset that
-	// sets a different hover width -- the field would read 1px while the page rendered 2px. The resting
-	// value stays as the second step, because that is what the button really paints on hover when the
-	// preset carries no hover width: the state rule is only emitted for a property the preset resolves, so
-	// with none the button keeps its resting border through `:hover`.
-	const borderHoverWidthPresetValue =
-		presetPropertyValueForDevice(
-			'kadence/singlebtn',
-			'button-border-hover-width',
-			attributes,
-			undefined,
-			previewDevice
-		) ?? borderWidthPresetValue;
+	// Falling straight through to the resting width would report it on a preset that sets a different hover
+	// width -- the field would read 1px while the page rendered 2px. The resting value stays as the later
+	// step below, because that is what the button really paints on hover when the preset carries no hover
+	// width: the state rule is only emitted for a property the preset resolves, so with none the button
+	// keeps its resting border through `:hover`.
+	const borderHoverWidthPresetValue = presetPropertyValueForDevice(
+		'kadence/singlebtn',
+		'button-border-hover-width',
+		attributes,
+		undefined,
+		previewDevice
+	);
+
+	// The border defaults in FSE mode: the site's border first, then the preset's. On hover: the site's hover
+	// border, the preset's hover border, then the resting default.
+	const siteBorder = siteBorderDefaults(
+		siteDefaults,
+		'borderStyle',
+		{ tablet: 'tabletBorderStyle', mobile: 'mobileBorderStyle' },
+		previewDevice
+	);
+	const siteHoverBorder = siteBorderDefaults(
+		siteDefaults,
+		'borderHoverStyle',
+		{ tablet: 'tabletBorderHoverStyle', mobile: 'mobileBorderHoverStyle' },
+		previewDevice
+	);
+	const borderWidthDefault = siteBorder.width ?? borderWidthPresetValue;
+	const borderColorDefault = siteBorder.color ?? tokenBinding.borderStyle?.presetValue?.color;
+	const borderHoverWidthDefault = siteHoverBorder.width ?? borderHoverWidthPresetValue ?? borderWidthDefault;
+	const borderHoverColorDefault =
+		siteHoverBorder.color ?? tokenBinding.borderHoverStyle?.presetValue?.color ?? siteBorder.color;
 
 	// Read directly: `button-shadow` declares no `control_attr`, so `usePresetBinding` skips it.
 	const shadowPresetValue = presetPropertyValueForDevice(
@@ -1331,10 +1350,8 @@ export default function KadenceButtonEdit(props) {
 															previewDevice={previewDevice}
 															onDeviceChange={setPreviewDevice}
 															widthTokens={borderWidthPickableTokens}
-															defaultValue={borderHoverWidthPresetValue}
-															defaultColor={
-																tokenBinding.borderHoverStyle?.presetValue?.color
-															}
+															defaultValue={borderHoverWidthDefault}
+															defaultColor={borderHoverColorDefault}
 															renderColor={renderBorderColor}
 															state={
 																tokenBinding.borderHoverStyle ??
@@ -1476,8 +1493,8 @@ export default function KadenceButtonEdit(props) {
 															previewDevice={previewDevice}
 															onDeviceChange={setPreviewDevice}
 															widthTokens={borderWidthPickableTokens}
-															defaultValue={borderWidthPresetValue}
-															defaultColor={tokenBinding.borderStyle?.presetValue?.color}
+															defaultValue={borderWidthDefault}
+															defaultColor={borderColorDefault}
 															renderColor={renderBorderColor}
 															state={tokenBinding.borderStyle}
 															onReset={() => resetToken('borderStyle')}
