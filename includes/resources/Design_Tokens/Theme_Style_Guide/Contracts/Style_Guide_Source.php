@@ -20,7 +20,7 @@ interface Style_Guide_Source {
 	 *
 	 * @since 3.8.0
 	 *
-	 * @return array{palette: array<string, mixed>, settings: array<string, mixed>}|null
+	 * @return array{palette: array<string, mixed>, settings: array<string, mixed>, complement?: string}|null
 	 */
 	public function snapshot(): ?array;
 }

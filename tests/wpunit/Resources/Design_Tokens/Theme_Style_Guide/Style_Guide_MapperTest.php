@@ -546,7 +546,18 @@ final class Style_Guide_MapperTest extends TestCase {
 			'expected' => '#ff0000',
 		];
 		yield 'palette10 complement marker' => [
-			'colors'   => [ 'palette10' => '#FfFfFf' ],
+			'colors'   => [
+				'palette1'  => '#2B6CB0',
+				'palette10' => '#FfFfFf',
+			],
+			'token_id' => 'primitive.color.extended.complement',
+			'expected' => '#a46900',
+		];
+		yield 'palette10 complement marker with a non-hex palette1' => [
+			'colors'   => [
+				'palette1'  => 'rgb(43, 108, 176)',
+				'palette10' => '#FfFfFf',
+			],
 			'token_id' => 'primitive.color.extended.complement',
 			'expected' => 'oklch(from var(--global-palette1) calc(l + 0.10 * (1 - l)) calc(c * 1.00) calc(h + 180) / 100%)',
 		];
@@ -554,6 +565,73 @@ final class Style_Guide_MapperTest extends TestCase {
 			'colors'   => [ 'palette15' => '#f5a524' ],
 			'token_id' => 'primitive.color.extended.rating',
 			'expected' => '#f5a524',
+		];
+	}
+
+	/**
+	 * A complement-marked palette10 is skipped when the active set has no usable palette1 to derive it from.
+	 *
+	 * @return void
+	 */
+	public function testComplementMarkerWithoutPalette1IsSkipped(): void {
+		$values = ( new Style_Guide_Mapper() )->map(
+			Fake_Style_Guide_Source::with_palette( [ 'palette10' => '#FfFfFf' ] )->snapshot(),
+			[ 'palette10' => 'primitive.color.extended.complement' ]
+		);
+
+		$this->assertArrayNotHasKey( 'primitive.color.extended.complement', $values );
+	}
+
+	/**
+	 * A complement formula a site swapped in through the theme's filter is kept as written, and one that could
+	 * break out of its CSS declaration is skipped.
+	 *
+	 * @dataProvider filteredComplementProvider
+	 *
+	 * @param string      $formula  The filtered complement formula.
+	 * @param string|null $expected The token value, or null when it is skipped.
+	 *
+	 * @return void
+	 */
+	public function testFilteredComplementFormula( string $formula, ?string $expected ): void {
+		$snapshot               = Fake_Style_Guide_Source::with_palette(
+			[
+				'palette1'  => '#2B6CB0',
+				'palette10' => '#FfFfFf',
+			]
+		)->snapshot();
+		$snapshot['complement'] = $formula;
+
+		$values = ( new Style_Guide_Mapper() )->map( $snapshot, [ 'palette10' => 'primitive.color.extended.complement' ] );
+
+		$this->assertSame( $expected, $values['primitive.color.extended.complement'] ?? null );
+	}
+
+	/**
+	 * Filtered complement formulas.
+	 *
+	 * @return Generator
+	 */
+	public function filteredComplementProvider(): Generator {
+		yield 'custom formula' => [
+			'formula'  => 'color-mix(in oklch, var(--global-palette1), white 20%)',
+			'expected' => 'color-mix(in oklch, var(--global-palette1), white 20%)',
+		];
+		yield 'plain hex' => [
+			'formula'  => '#123456',
+			'expected' => '#123456',
+		];
+		yield 'declaration break' => [
+			'formula'  => 'red; } body { display: none',
+			'expected' => null,
+		];
+		yield 'comment opener' => [
+			'formula'  => 'red /* x',
+			'expected' => null,
+		];
+		yield 'empty' => [
+			'formula'  => '',
+			'expected' => null,
 		];
 	}
 

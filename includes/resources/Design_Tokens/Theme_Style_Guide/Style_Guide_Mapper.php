@@ -56,9 +56,9 @@ final class Style_Guide_Mapper {
 	private const COMPLEMENT_SLOT = 'palette10';
 
 	/**
-	 * The color the theme renders for a complement-marked palette10: palette1 rotated half way round the
-	 * hue wheel and lightened slightly. Mirrors the theme's own default, so the token renders the same
-	 * color as --global-palette10.
+	 * The theme's default formula for a complement-marked palette10: palette1 rotated half way round the
+	 * hue wheel and lightened slightly. Sites can swap it through the theme's
+	 * kadence_palette_complement_color filter.
 	 *
 	 * @since TBD
 	 *
@@ -114,12 +114,23 @@ final class Style_Guide_Mapper {
 	private const GRADIENT_PATTERN = '/^(linear|radial|conic)-gradient\((?!.*\/\*).+\)$/i';
 
 	/**
+	 * The theme's default complement formula, for the reader to pass through the theme's filter.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_complement_color(): string {
+		return self::COMPLEMENT_COLOR;
+	}
+
+	/**
 	 * Map a snapshot onto the tokens that claim palette slots.
 	 *
 	 * @since 3.8.0
 	 *
-	 * @param array{palette: array<string, mixed>, settings: array<string, mixed>} $snapshot    The reader's snapshot.
-	 * @param array<string, string>                                                $slot_tokens Slot slug => token id, from the registry.
+	 * @param array{palette: array<string, mixed>, settings: array<string, mixed>, complement?: string} $snapshot    The reader's snapshot.
+	 * @param array<string, string>                                                                     $slot_tokens Slot slug => token id, from the registry.
 	 *
 	 * @return array<string, string> Token id => literal color, gradient or alias, for every claimed slot with a
 	 *                               usable color and every button setting with a usable value.
@@ -129,7 +140,7 @@ final class Style_Guide_Mapper {
 		$values = [];
 
 		foreach ( $slot_tokens as $slug => $token_id ) {
-			$color = self::is_complement_marker( $set, $slug ) ? self::COMPLEMENT_COLOR : self::color_of( $set, $slug );
+			$color = self::is_complement_marker( $set, $slug ) ? self::complement_of( $set, $snapshot['complement'] ?? self::COMPLEMENT_COLOR ) : self::color_of( $set, $slug );
 
 			if ( $color === null ) {
 				continue;
@@ -249,6 +260,36 @@ final class Style_Guide_Mapper {
 	 */
 	private static function is_complement_marker( array $set, string $slug ): bool {
 		return $slug === self::COMPLEMENT_SLOT && trim( $set[ $slug ] ?? '' ) === self::COMPLEMENT_MARKER;
+	}
+
+	/**
+	 * The color a complement-marked palette10 renders as. With the theme's default formula that is palette1's
+	 * complement worked out as a hex, so pages without the theme's CSS variables can show it. A formula a
+	 * site swapped in through the theme's filter is kept as written, and so is the default when palette1 is
+	 * not a hex. Null when there is nothing usable.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, string> $set     Slot slug => color of the active set.
+	 * @param mixed                 $formula The complement formula the theme renders. Anything but a string
+	 *                                       falls back to the default, since a filter can return anything.
+	 *
+	 * @return string|null
+	 */
+	private static function complement_of( array $set, $formula ): ?string {
+		$formula = is_string( $formula ) ? trim( $formula ) : self::COMPLEMENT_COLOR;
+
+		if ( $formula !== self::COMPLEMENT_COLOR ) {
+			return $formula !== '' && preg_match( '/\/\*|[;{}]/', $formula ) !== 1 ? $formula : null;
+		}
+
+		$base = self::color_of( $set, 'palette1' );
+
+		if ( $base === null ) {
+			return null;
+		}
+
+		return Complement_Color::of( $base ) ?? $formula;
 	}
 
 	/**
