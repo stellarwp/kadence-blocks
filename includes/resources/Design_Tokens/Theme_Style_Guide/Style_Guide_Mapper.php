@@ -209,6 +209,26 @@ final class Style_Guide_Mapper {
 	}
 
 	/**
+	 * The active set as the theme reads it back: a complement-marked palette10 becomes the formula the theme
+	 * renders in its place, so a palette10 read from the active set matches it.
+	 *
+	 * @since TBD
+	 *
+	 * @param array{palette: array<string, mixed>, settings: array<string, mixed>, complement?: string} $snapshot The reader's snapshot.
+	 *
+	 * @return array<string, string>
+	 */
+	public function rendered_set( array $snapshot ): array {
+		$set = $this->active_set( $snapshot['palette'] );
+
+		if ( self::is_complement_marker( $set, self::COMPLEMENT_SLOT ) ) {
+			$set[ self::COMPLEMENT_SLOT ] = $snapshot['complement'] ?? self::COMPLEMENT_COLOR;
+		}
+
+		return $set;
+	}
+
+	/**
 	 * The slot slug => color map of the palette set the theme renders.
 	 *
 	 * Mirrors the theme's palette_option(): the "active" pointer names the set; a missing or empty

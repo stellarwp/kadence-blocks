@@ -203,17 +203,32 @@ final class Palette_FilterTest extends TestCase {
 	}
 
 	/**
-	 * A complement-marked palette10 keeps the color the theme derives from palette1: the theme hands the
-	 * filter its derived color, which differs from the saved marker.
+	 * A complement-marked palette10 read from the active set gets the token color: the theme hands the filter
+	 * its complement formula for the marker, and that counts as the active set's value.
 	 *
 	 * @return void
 	 */
-	public function testComplementMarkedPalette10KeepsTheThemeColor(): void {
+	public function testComplementMarkedPalette10GetsTheTokenColor(): void {
 		$this->swap_style_guide_source( Fake_Style_Guide_Source::with_palette( [ 'palette10' => '#FfFfFf' ] ) );
 
-		$derived = 'oklch(from var(--global-palette1) calc(l + 0.10 * (1 - l)) calc(c * 1.00) calc(h + 180) / 100%)';
+		$resolved = $this->container->get( Token_Resolver::class )->resolve();
+		$derived  = 'oklch(from var(--global-palette1) calc(l + 0.10 * (1 - l)) calc(c * 1.00) calc(h + 180) / 100%)';
 
-		$this->assertSame( $derived, $this->filter->filter( $derived, 'palette10' ) );
+		$this->assertSame(
+			$resolved->value( 'primitive.color.extended.complement' ),
+			$this->filter->filter( $derived, 'palette10' )
+		);
+	}
+
+	/**
+	 * With the complement marker active, a palette10 color read from another palette set still passes through.
+	 *
+	 * @return void
+	 */
+	public function testPalette10FromAnotherSetPassesThroughWhenTheActiveSetIsMarked(): void {
+		$this->swap_style_guide_source( Fake_Style_Guide_Source::with_palette( [ 'palette10' => '#FfFfFf' ] ) );
+
+		$this->assertSame( '#abcdef', $this->filter->filter( '#abcdef', 'palette10' ) );
 	}
 
 	/**

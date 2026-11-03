@@ -751,6 +751,7 @@ final class Palettes_Controller extends Controller {
 		$deltas   = $this->palettes->stored_swatch_values( $id, $slug );
 		$own      = $this->palettes->palette( $id, $slug ) ?? [];
 		$baseline = $this->palettes->baseline_swatch_values();
+		$complete = $this->palettes->complete_swatch_values( $id, $slug );
 
 		$token_key    = Extensions::get_swatch_token_key();
 		$label_key    = Extensions::get_label_key();
@@ -783,10 +784,15 @@ final class Palettes_Controller extends Controller {
 				// A swatch this palette does not store falls back to the template's value, and the template
 				// itself may not carry one — a default-palette swatch left at the baseline keeps its row but
 				// stores no `$value`. The baseline answers that last case, so the row shows the color the
-				// token really renders as (on a Kadence site, the theme's Style Guide color).
+				// token really renders as (on a Kadence site, the theme's Style Guide color). A complement
+				// worked out from the primary shows that worked-out color.
 				$value = $has_own
 					? $deltas[ $token ]
 					: ( is_string( $template_value ) && $template_value !== '' ? $template_value : ( $baseline[ $token ] ?? '' ) );
+
+				if ( ! $has_own && $token === Effective_Palettes::get_complement_token() && isset( $complete[ $token ] ) ) {
+					$value = $complete[ $token ];
+				}
 
 				// There is something to reset exactly when the palette stores its own value — true for every
 				// palette now that the default stores only the swatches it changes.
@@ -1435,6 +1441,20 @@ final class Palettes_Controller extends Controller {
 			return $node;
 		}
 
+		$values = $baseline;
+
+		foreach ( $groups as $group ) {
+			foreach ( is_array( $group ) && is_array( $group[ $swatches_key ] ?? null ) ? $group[ $swatches_key ] : [] as $swatch ) {
+				if ( is_array( $swatch ) && is_string( $swatch[ $token_key ] ?? null ) && is_string( $swatch[ $value_key ] ?? null ) ) {
+					$values[ $swatch[ $token_key ] ] = $swatch[ $value_key ];
+				}
+			}
+		}
+
+		// A complement that is just the one worked out from the primary isn't a choice either: storing it would
+		// stop it following the primary.
+		$derived = $this->palettes->is_derived_complement( $values ) ? Effective_Palettes::get_complement_token() : null;
+
 		foreach ( $groups as $gi => $group ) {
 			if ( ! is_array( $group ) || ! isset( $group[ $swatches_key ] ) || ! is_array( $group[ $swatches_key ] ) ) {
 				continue;
@@ -1447,7 +1467,7 @@ final class Palettes_Controller extends Controller {
 
 				$token = $swatch[ $token_key ];
 
-				if ( ! array_key_exists( $token, $baseline ) || ( $swatch[ $value_key ] ?? null ) !== $baseline[ $token ] ) {
+				if ( $token !== $derived && ( ! array_key_exists( $token, $baseline ) || ( $swatch[ $value_key ] ?? null ) !== $baseline[ $token ] ) ) {
 					continue;
 				}
 
