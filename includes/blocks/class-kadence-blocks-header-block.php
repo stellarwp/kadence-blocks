@@ -186,6 +186,8 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 	/**
 	 * Build HTML for dynamic blocks
 	 *
+	 * @since TBD Always outputs the transparent data attributes as "1".
+	 *
 	 * @param          $attributes
 	 * @param          $unique_id
 	 * @param          $content
@@ -281,13 +283,13 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 			$wrapper_args['data-auto-transparent-spacing'] = $header_attributes['autoTransparentSpacing'];
 		}
 		if ( $is_transparent ) {
-			$wrapper_args['data-transparent'] = $is_transparent;
+			$wrapper_args['data-transparent'] = '1';
 		}
 		if ( $is_transparent_tablet ) {
-			$wrapper_args['data-transparent-tablet'] = $is_transparent_tablet;
+			$wrapper_args['data-transparent-tablet'] = '1';
 		}
 		if ( $is_transparent_mobile ) {
-			$wrapper_args['data-transparent-mobile'] = $is_transparent_mobile;
+			$wrapper_args['data-transparent-mobile'] = '1';
 		}
 		if ( $header_attributes['shrinkMain'] ) {
 			$wrapper_args['data-shrink-main'] = $header_attributes['shrinkMain'];
