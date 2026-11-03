@@ -616,6 +616,28 @@ final class Style_Guide_MapperTest extends TestCase {
 	}
 
 	/**
+	 * A complement filter that returns something other than a string falls back to the theme's formula, both
+	 * for the token and for the active set the theme's palette reads are compared against.
+	 *
+	 * @return void
+	 */
+	public function testNonStringComplementFallsBackToTheFormula(): void {
+		$snapshot               = Fake_Style_Guide_Source::with_palette(
+			[
+				'palette1'  => '#2B6CB0',
+				'palette10' => '#FfFfFf',
+			]
+		)->snapshot();
+		$snapshot['complement'] = [ 'not', 'a', 'string' ];
+
+		$mapper = new Style_Guide_Mapper();
+		$values = $mapper->map( $snapshot, [ 'palette10' => 'primitive.color.extended.complement' ] );
+
+		$this->assertSame( '#a46900', $values['primitive.color.extended.complement'] );
+		$this->assertSame( Style_Guide_Mapper::get_complement_color(), $mapper->rendered_set( $snapshot )['palette10'] );
+	}
+
+	/**
 	 * Filtered complement formulas.
 	 *
 	 * @return Generator

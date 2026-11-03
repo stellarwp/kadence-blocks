@@ -129,8 +129,8 @@ final class Style_Guide_Mapper {
 	 *
 	 * @since 3.8.0
 	 *
-	 * @param array{palette: array<string, mixed>, settings: array<string, mixed>, complement?: string} $snapshot    The reader's snapshot.
-	 * @param array<string, string>                                                                     $slot_tokens Slot slug => token id, from the registry.
+	 * @param array{palette: array<string, mixed>, settings: array<string, mixed>, complement?: mixed} $snapshot    The reader's snapshot.
+	 * @param array<string, string>                                                                    $slot_tokens Slot slug => token id, from the registry.
 	 *
 	 * @return array<string, string> Token id => literal color, gradient or alias, for every claimed slot with a
 	 *                               usable color and every button setting with a usable value.
@@ -214,7 +214,7 @@ final class Style_Guide_Mapper {
 	 *
 	 * @since TBD
 	 *
-	 * @param array{palette: array<string, mixed>, settings: array<string, mixed>, complement?: string} $snapshot The reader's snapshot.
+	 * @param array{palette: array<string, mixed>, settings: array<string, mixed>, complement?: mixed} $snapshot The reader's snapshot.
 	 *
 	 * @return array<string, string>
 	 */
@@ -222,7 +222,8 @@ final class Style_Guide_Mapper {
 		$set = $this->active_set( $snapshot['palette'] );
 
 		if ( self::is_complement_marker( $set, self::COMPLEMENT_SLOT ) ) {
-			$set[ self::COMPLEMENT_SLOT ] = $snapshot['complement'] ?? self::COMPLEMENT_COLOR;
+			$formula                      = $snapshot['complement'] ?? null;
+			$set[ self::COMPLEMENT_SLOT ] = is_string( $formula ) ? $formula : self::COMPLEMENT_COLOR;
 		}
 
 		return $set;
