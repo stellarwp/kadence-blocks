@@ -190,10 +190,10 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 	 *
 	 * @since TBD Always outputs the transparent data attributes as "1".
 	 *
-	 * @param          $attributes
-	 * @param          $unique_id
-	 * @param          $content
-	 * @param WP_Block $block_instance The instance of the WP_Block class that represents the block being rendered.
+	 * @param array<string, mixed> $attributes     The block attributes.
+	 * @param string               $unique_id      The unique ID for the block.
+	 * @param string               $content        The block inner content.
+	 * @param WP_Block             $block_instance The instance of the WP_Block class that represents the block being rendered.
 	 *
 	 * @return mixed
 	 */
@@ -201,7 +201,7 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		if ( empty( $attributes['id'] ) ) {
 			return '';
 		}
-		$header_block = get_post( $attributes['id'] );
+		$header_block = get_post( $attributes['id'] ); // @phpstan-ignore argument.type
 
 		if ( ! $header_block || 'kadence_header' !== $header_block->post_type ) {
 			return '';
@@ -225,7 +225,7 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		self::$seen_refs[ $attributes['id'] ] = true;
 
 
-		$header_attributes = $this->get_attributes_with_defaults_cpt( $attributes['id'], 'kadence_header', '_kad_header_' );
+		$header_attributes = $this->get_attributes_with_defaults_cpt( $attributes['id'], 'kadence_header', '_kad_header_' ); // @phpstan-ignore argument.type
 		$header_attributes = json_decode( json_encode( $header_attributes ), true );
 		// Remove the advanced Header block so it doesn't try and re-render.
 		$content = preg_replace( '/<!-- wp:kadence\/header {.*?} -->/', '', $header_block->post_content );
