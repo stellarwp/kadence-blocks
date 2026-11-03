@@ -73,29 +73,58 @@ final class Complement_ColorTest extends TestCase {
 			'color'    => ' #2B6CB0 ',
 			'expected' => '#a46900',
 		];
+		yield 'rgb with commas' => [
+			'color'    => 'rgb(43, 108, 176)',
+			'expected' => '#a46900',
+		];
+		yield 'rgba ignores the alpha' => [
+			'color'    => 'rgba(43,108,176,0.5)',
+			'expected' => '#a46900',
+		];
+		yield 'rgb with spaces and alpha' => [
+			'color'    => 'rgb(43 108 176 / 50%)',
+			'expected' => '#a46900',
+		];
+		yield 'rgb percentages' => [
+			'color'    => 'rgb(17% 42% 69%)',
+			'expected' => '#a46900',
+		];
+		yield 'hsl' => [
+			'color'    => 'hsl(211, 61%, 43%)',
+			'expected' => '#a46900',
+		];
+		yield 'hsl with deg and alpha' => [
+			'color'    => 'hsl(211deg 61% 43% / 0.5)',
+			'expected' => '#a46900',
+		];
+		yield 'hsla with a negative hue' => [
+			'color'    => 'hsla(-149, 61%, 43%, 1)',
+			'expected' => '#a46900',
+		];
 	}
 
 	/**
-	 * A color that is not a hex has no complement.
+	 * A value that is not a hex, rgb() or hsl() color has no complement.
 	 *
-	 * @dataProvider notHexProvider
+	 * @dataProvider unreadableProvider
 	 *
 	 * @param string $color The color.
 	 *
 	 * @return void
 	 */
-	public function testNonHexHasNoComplement( string $color ): void {
+	public function testUnreadableColorHasNoComplement( string $color ): void {
 		$this->assertNull( Complement_Color::of( $color ) );
 	}
 
 	/**
-	 * Colors that are not hex.
+	 * Values Complement_Color can't read.
 	 *
 	 * @return Generator
 	 */
-	public function notHexProvider(): Generator {
+	public function unreadableProvider(): Generator {
 		yield 'named color' => [ 'color' => 'red' ];
-		yield 'rgb' => [ 'color' => 'rgb(43, 108, 176)' ];
+		yield 'rgb with words' => [ 'color' => 'rgb(a, b, c)' ];
+		yield 'hsl missing a value' => [ 'color' => 'hsl(1, 2)' ];
 		yield 'css variable' => [ 'color' => 'var(--global-palette1)' ];
 		yield 'five digits' => [ 'color' => '#12345' ];
 		yield 'empty' => [ 'color' => '' ];

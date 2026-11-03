@@ -26,6 +26,15 @@ final class Complement_Color {
 	private const HEX_PATTERN = '/^#([0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/i';
 
 	/**
+	 * Matches an rgb(), rgba(), hsl() or hsla() color, capturing the function name and its arguments.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const FUNCTION_PATTERN = '/^(rgba?|hsla?)\(\s*([^)]*)\)$/i';
+
+	/**
 	 * The share of the remaining lightness the theme adds.
 	 *
 	 * @since TBD
@@ -35,7 +44,7 @@ final class Complement_Color {
 	private const LIGHTEN = 0.10;
 
 	/**
-	 * The complement of a hex color as a six digit hex, or null when the color is not a hex.
+	 * The complement of a hex, rgb() or hsl() color as a six digit hex, or null for any other value.
 	 *
 	 * @since TBD
 	 *
@@ -65,7 +74,8 @@ final class Complement_Color {
 	}
 
 	/**
-	 * A hex color's red, green and blue channels from 0 to 1, or null when it is not a hex.
+	 * A color's red, green and blue channels from 0 to 1, or null when it is not a hex, rgb() or hsl() color.
+	 * Any alpha is ignored, since the theme renders the complement fully opaque.
 	 *
 	 * @since TBD
 	 *
@@ -74,6 +84,10 @@ final class Complement_Color {
 	 * @return float[]|null
 	 */
 	private static function rgb_of( string $color ): ?array {
+		if ( preg_match( self::FUNCTION_PATTERN, $color, $match ) === 1 ) {
+			return self::rgb_of_function( strtolower( substr( $match[1], 0, 3 ) ), $match[2] );
+		}
+
 		if ( preg_match( self::HEX_PATTERN, $color, $match ) !== 1 ) {
 			return null;
 		}
@@ -89,6 +103,58 @@ final class Complement_Color {
 			hexdec( substr( $digits, 2, 2 ) ) / 255,
 			hexdec( substr( $digits, 4, 2 ) ) / 255,
 		];
+	}
+
+	/**
+	 * The red, green and blue channels of an rgb() or hsl() color's arguments, in either the comma or the
+	 * space separated syntax, or null when they are not numbers.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $name      "rgb" or "hsl".
+	 * @param string $arguments The text between the parentheses.
+	 *
+	 * @return float[]|null
+	 */
+	private static function rgb_of_function( string $name, string $arguments ): ?array {
+		$parts = preg_split( '/\s*[,\/]\s*|\s+/', trim( $arguments ) );
+
+		if ( ! is_array( $parts ) || count( $parts ) < 3 ) {
+			return null;
+		}
+
+		$numbers = [];
+
+		foreach ( array_slice( $parts, 0, 3 ) as $index => $part ) {
+			$is_percent = substr( $part, -1 ) === '%';
+			$number     = $is_percent ? substr( $part, 0, -1 ) : ( $index === 0 && $name === 'hsl' ? preg_replace( '/deg$/i', '', $part ) : $part );
+
+			if ( ! is_numeric( $number ) ) {
+				return null;
+			}
+
+			$numbers[] = [ (float) $number, $is_percent ];
+		}
+
+		if ( $name === 'rgb' ) {
+			return array_map(
+				static fn( array $number ): float => max( 0.0, min( 1.0, $number[1] ? $number[0] / 100 : $number[0] / 255 ) ),
+				$numbers
+			);
+		}
+
+		$hue        = fmod( fmod( $numbers[0][0], 360 ) + 360, 360 );
+		$saturation = max( 0.0, min( 1.0, $numbers[1][0] / 100 ) );
+		$lightness  = max( 0.0, min( 1.0, $numbers[2][0] / 100 ) );
+		$amount     = $saturation * min( $lightness, 1 - $lightness );
+
+		$channel = static function ( int $offset ) use ( $hue, $lightness, $amount ): float {
+			$k = fmod( $offset + $hue / 30, 12 );
+
+			return $lightness - $amount * max( -1, min( $k - 3, 9 - $k, 1 ) );
+		};
+
+		return [ $channel( 0 ), $channel( 8 ), $channel( 4 ) ];
 	}
 
 	/**

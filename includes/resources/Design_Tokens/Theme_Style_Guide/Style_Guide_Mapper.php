@@ -285,8 +285,8 @@ final class Style_Guide_Mapper {
 	/**
 	 * The color a complement-marked palette10 renders as. With the theme's default formula that is palette1's
 	 * complement worked out as a hex, so pages without the theme's CSS variables can show it. A formula a
-	 * site swapped in through the theme's filter is kept as written, and so is the default when palette1 is
-	 * not a hex. Null when there is nothing usable.
+	 * site swapped in through the theme's filter is kept as written, and so is the default when palette1 can't
+	 * be read as a color. Null when there is nothing usable.
 	 *
 	 * @since TBD
 	 *

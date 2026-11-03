@@ -553,9 +553,17 @@ final class Style_Guide_MapperTest extends TestCase {
 			'token_id' => 'primitive.color.extended.complement',
 			'expected' => '#a46900',
 		];
-		yield 'palette10 complement marker with a non-hex palette1' => [
+		yield 'palette10 complement marker with an rgb palette1' => [
 			'colors'   => [
 				'palette1'  => 'rgb(43, 108, 176)',
+				'palette10' => '#FfFfFf',
+			],
+			'token_id' => 'primitive.color.extended.complement',
+			'expected' => '#a46900',
+		];
+		yield 'palette10 complement marker with an unreadable palette1' => [
+			'colors'   => [
+				'palette1'  => 'rgb(a, b, c)',
 				'palette10' => '#FfFfFf',
 			],
 			'token_id' => 'primitive.color.extended.complement',
