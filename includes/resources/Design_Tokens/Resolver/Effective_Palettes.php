@@ -108,9 +108,11 @@ final class Effective_Palettes {
 	 * @return array<string, mixed>
 	 */
 	public function for_overrides( array $overrides ): array {
-		$stored = $this->palettes_of( $overrides );
+		$baseline = $this->palettes_of( $this->baseline->document() );
+		$stored   = $this->palettes_of( $overrides );
+		$section  = $this->mutator->merge( $this->without_superseded_groups( $baseline, $stored ), $stored );
 
-		return $this->mutator->merge( $this->without_superseded_groups( $this->palettes_of( $this->baseline->document() ), $stored ), $stored );
+		return $this->with_missing_baseline_swatches( $section, $baseline );
 	}
 
 	/**
@@ -410,6 +412,88 @@ final class Effective_Palettes {
 		}
 
 		return $baseline;
+	}
+
+	/**
+	 * Add back any shipped swatch the default palette's stored groups don't list, so a palette saved before a
+	 * newer release added swatches still shows them. Without this the stored groups hide the new swatches,
+	 * and every later save of the palette is refused for dropping a shipped swatch it never had.
+	 *
+	 * A missing swatch joins its shipped group when the stored palette still has a group with that id, and
+	 * otherwise lands in a copy of that group appended after the stored ones. A shipped swatch the site moved
+	 * to another group is already listed, so it is left where it is.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $section  The effective colorPalettes section.
+	 * @param array<string, mixed> $baseline The baseline colorPalettes section.
+	 *
+	 * @return array<string, mixed> The section with the default palette's missing shipped swatches added.
+	 */
+	private function with_missing_baseline_swatches( array $section, array $baseline ): array {
+		$id           = $this->pointer_of( $baseline, Extensions::get_default_key() );
+		$groups_key   = Extensions::get_groups_key();
+		$swatches_key = Extensions::get_swatches_key();
+		$token_key    = Extensions::get_swatch_token_key();
+		$group_id_key = Extensions::get_group_id_key();
+
+		$shipped_palette = $baseline[ $id ] ?? null;
+		$palette         = $section[ $id ] ?? null;
+
+		if ( ! is_array( $shipped_palette ) || ! is_array( $palette ) ) {
+			return $section;
+		}
+
+		$shipped = $shipped_palette[ $groups_key ] ?? null;
+		$groups  = $palette[ $groups_key ] ?? null;
+
+		if ( ! is_array( $shipped ) || ! is_array( $groups ) ) {
+			return $section;
+		}
+
+		$present = [];
+
+		foreach ( $groups as $group ) {
+			foreach ( is_array( $group ) && is_array( $group[ $swatches_key ] ?? null ) ? $group[ $swatches_key ] : [] as $swatch ) {
+				if ( is_array( $swatch ) && is_string( $swatch[ $token_key ] ?? null ) ) {
+					$present[ $swatch[ $token_key ] ] = true;
+				}
+			}
+		}
+
+		foreach ( $shipped as $shipped_group ) {
+			if ( ! is_array( $shipped_group ) || ! is_array( $shipped_group[ $swatches_key ] ?? null ) ) {
+				continue;
+			}
+
+			$missing = [];
+
+			foreach ( $shipped_group[ $swatches_key ] as $swatch ) {
+				if ( is_array( $swatch ) && is_string( $swatch[ $token_key ] ?? null ) && ! isset( $present[ $swatch[ $token_key ] ] ) ) {
+					$missing[] = $swatch;
+				}
+			}
+
+			if ( $missing === [] ) {
+				continue;
+			}
+
+			foreach ( $groups as $index => $group ) {
+				if ( is_array( $group ) && is_array( $group[ $swatches_key ] ?? null ) && ( $group[ $group_id_key ] ?? null ) === ( $shipped_group[ $group_id_key ] ?? null ) ) {
+					$groups[ $index ][ $swatches_key ] = array_merge( $group[ $swatches_key ], $missing );
+
+					continue 2;
+				}
+			}
+
+			$shipped_group[ $swatches_key ] = $missing;
+			$groups[]                       = $shipped_group;
+		}
+
+		$palette[ $groups_key ] = $groups;
+		$section[ $id ]         = $palette;
+
+		return $section;
 	}
 
 	/**

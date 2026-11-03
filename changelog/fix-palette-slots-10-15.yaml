@@ -1,0 +1,4 @@
+significance: patch
+type: fix
+entry: Design tokens now map the theme's palette colors 10 through 15, and the Style Library shows them in a new Extended group, including on sites with a saved palette.
+timestamp: 2026-11-03T00:00:00.000Z

@@ -89,7 +89,7 @@ final class Button_Colors_IntegrationTest extends TestCase {
 	}
 
 	/**
-	 * A button background the theme stores as a literal, a gradient or an unclaimed slot resolves to that
+	 * A button background the theme stores as a literal or a gradient resolves to that
 	 * exact value rather than to a palette primitive.
 	 *
 	 * @dataProvider literalBackgroundProvider
@@ -127,10 +127,22 @@ final class Button_Colors_IntegrationTest extends TestCase {
 			'stored'   => 'linear-gradient(135deg,rgb(6,147,227) 0%,rgb(20,39,109) 100%)',
 			'expected' => 'linear-gradient(135deg,rgb(6,147,227) 0%,rgb(20,39,109) 100%)',
 		];
-		yield 'unclaimed slot' => [
-			'stored'   => 'palette11',
-			'expected' => '#b10011',
-		];
+	}
+
+	/**
+	 * A button background on an extended slot aliases the primitive that claims it, so it resolves to the
+	 * theme's color for that slot.
+	 *
+	 * @return void
+	 */
+	public function testExtendedSlotBackgroundAliasesItsPrimitive(): void {
+		$settings                                = self::THEME_DEFAULT_SETTINGS;
+		$settings['buttons_background']['color'] = 'palette11';
+
+		$resolved = $this->resolver_for( $this->source( $settings ) )->resolve();
+
+		$this->assertSame( 'primitive.color.extended.success', $resolved->target( 'semantic.color.button-bg' ) );
+		$this->assertSame( '#b10011', $resolved->value( 'semantic.color.button-bg' ) );
 	}
 
 	/**

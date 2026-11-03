@@ -47,6 +47,26 @@ final class Style_Guide_Mapper {
 	private const COMPLEMENT_MARKER = '#FfFfFf';
 
 	/**
+	 * The slot the theme reads the complement marker on.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const COMPLEMENT_SLOT = 'palette10';
+
+	/**
+	 * The color the theme renders for a complement-marked palette10: palette1 rotated half way round the
+	 * hue wheel and lightened slightly. Mirrors the theme's own default, so the token renders the same
+	 * color as --global-palette10.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const COMPLEMENT_COLOR = 'oklch(from var(--global-palette1) calc(l + 0.10 * (1 - l)) calc(c * 1.00) calc(h + 180) / 100%)';
+
+	/**
 	 * Accepts hex, rgb()/rgba(), hsl()/hsla(). Anything else (an empty string, a CSS var, a bare word) is
 	 * skipped so a bad theme value never reaches the resolver. A palette slot never carries a gradient; a
 	 * button setting may, and GRADIENT_PATTERN admits it there.
@@ -73,8 +93,7 @@ final class Style_Guide_Mapper {
 	];
 
 	/**
-	 * Matches a theme palette reference such as "palette4". Wider than the projection's palette1…9 pattern
-	 * because the theme lets a setting point at any of its fifteen slots.
+	 * Matches a theme palette reference such as "palette4", any of the theme's fifteen slots.
 	 *
 	 * @since 3.8.0
 	 *
@@ -110,7 +129,7 @@ final class Style_Guide_Mapper {
 		$values = [];
 
 		foreach ( $slot_tokens as $slug => $token_id ) {
-			$color = self::color_of( $set, $slug );
+			$color = self::is_complement_marker( $set, $slug ) ? self::COMPLEMENT_COLOR : self::color_of( $set, $slug );
 
 			if ( $color === null ) {
 				continue;
@@ -144,8 +163,8 @@ final class Style_Guide_Mapper {
 	}
 
 	/**
-	 * A theme color setting as a token value: a palette1…9 reference becomes an alias of the primitive that
-	 * claims the slot, a palette10…15 reference becomes the active set's literal, a color or gradient
+	 * A theme color setting as a token value: a palette reference becomes an alias of the primitive that
+	 * claims the slot, or the active set's literal for a slot no primitive claims, a color or gradient
 	 * literal stays as it is. Anything else is null.
 	 *
 	 * @since 3.8.0
@@ -216,6 +235,20 @@ final class Style_Guide_Mapper {
 		}
 
 		return $set;
+	}
+
+	/**
+	 * Whether the active set marks palette10 as the complement of palette1 rather than storing a color.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, string> $set  Slot slug => color of the active set.
+	 * @param string                $slug The slot slug.
+	 *
+	 * @return bool
+	 */
+	private static function is_complement_marker( array $set, string $slug ): bool {
+		return $slug === self::COMPLEMENT_SLOT && trim( $set[ $slug ] ?? '' ) === self::COMPLEMENT_MARKER;
 	}
 
 	/**

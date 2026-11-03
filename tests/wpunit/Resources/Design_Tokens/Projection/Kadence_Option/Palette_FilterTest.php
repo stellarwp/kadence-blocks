@@ -101,13 +101,9 @@ final class Palette_FilterTest extends TestCase {
 	 * @return Generator
 	 */
 	public function passthroughProvider(): Generator {
-		yield 'complement slot' => [
-			'value'  => '#FfFfFf',
-			'subkey' => 'palette10',
-		];
-		yield 'rating slot' => [
-			'value'  => '#f5a524',
-			'subkey' => 'palette15',
+		yield 'slot past palette15' => [
+			'value'  => '#abcdef',
+			'subkey' => 'palette16',
 		];
 		yield 'non-string subkey' => [
 			'value'  => '#abcdef',
@@ -204,6 +200,20 @@ final class Palette_FilterTest extends TestCase {
 			'value'  => '#aaaaaa',
 			'subkey' => 'palette3',
 		];
+	}
+
+	/**
+	 * A complement-marked palette10 keeps the color the theme derives from palette1: the theme hands the
+	 * filter its derived color, which differs from the saved marker.
+	 *
+	 * @return void
+	 */
+	public function testComplementMarkedPalette10KeepsTheThemeColor(): void {
+		$this->swap_style_guide_source( Fake_Style_Guide_Source::with_palette( [ 'palette10' => '#FfFfFf' ] ) );
+
+		$derived = 'oklch(from var(--global-palette1) calc(l + 0.10 * (1 - l)) calc(c * 1.00) calc(h + 180) / 100%)';
+
+		$this->assertSame( $derived, $this->filter->filter( $derived, 'palette10' ) );
 	}
 
 	/**
