@@ -1,0 +1,4 @@
+significance: patch
+type: fix
+entry: Fixed a fatal error on the WPML Theme and plugins localization screen caused by untranslated license strings.
+timestamp: 2026-11-03T00:00:00.000Z
