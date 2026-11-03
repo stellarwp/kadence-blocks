@@ -5,6 +5,8 @@
  * @package Kadence Blocks
  */
 
+// cspell:ignore archivetrans autoembed posttrans .
+
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -477,7 +479,7 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 			}
 		}
 
-		// Keeping support of  enable/disable strings for backwards compatability with the filters.
+		// Keeping support of  enable/disable strings for backwards compatibility with the filters.
 		return isset( $transparent ) && ( $transparent === true || $transparent === 'enable' );
 	}
 }
