@@ -1,5 +1,5 @@
 <?php declare( strict_types=1 );
-// cspell:ignore oklch oklab unclipped .
+// cspell:ignore oklch oklab unclipped Ottosson Ottosson's bottosson .
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Theme_Style_Guide;
 
@@ -158,7 +158,7 @@ final class Complement_Color {
 	}
 
 	/**
-	 * An sRGB channel decoded to linear light.
+	 * An sRGB channel decoded to linear light, using the standard sRGB transfer curve.
 	 *
 	 * @since TBD
 	 *
@@ -184,7 +184,8 @@ final class Complement_Color {
 	}
 
 	/**
-	 * Linear sRGB to OKLab.
+	 * Linear sRGB to OKLab. The constants are Björn Ottosson's published OKLab matrices, the same ones
+	 * CSS Color 4 uses: https://bottosson.github.io/posts/oklab/
 	 *
 	 * @since TBD
 	 *
@@ -207,7 +208,7 @@ final class Complement_Color {
 	}
 
 	/**
-	 * OKLab to linear sRGB, unclipped.
+	 * OKLab to linear sRGB, unclipped. The inverse matrices from the same OKLab source.
 	 *
 	 * @since TBD
 	 *
