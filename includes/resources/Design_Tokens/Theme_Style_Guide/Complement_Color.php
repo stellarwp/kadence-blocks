@@ -1,5 +1,5 @@
 <?php declare( strict_types=1 );
-// cspell:ignore oklch oklab unclipped Ottosson Ottosson's bottosson .
+// cspell:ignore oklch oklab unclipped Björn Ottosson bottosson .
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Theme_Style_Guide;
 
