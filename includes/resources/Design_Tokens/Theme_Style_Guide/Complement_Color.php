@@ -126,7 +126,7 @@ final class Complement_Color {
 		$numbers = [];
 
 		foreach ( array_slice( $parts, 0, 3 ) as $index => $part ) {
-			$is_percent = substr( $part, -1 ) === '%';
+			$is_percent = str_ends_with( $part, '%' );
 			$number     = $is_percent ? substr( $part, 0, -1 ) : ( $index === 0 && $name === 'hsl' ? preg_replace( '/deg$/i', '', $part ) : $part );
 
 			if ( ! is_numeric( $number ) ) {

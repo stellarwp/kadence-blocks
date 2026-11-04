@@ -740,6 +740,7 @@ final class Palettes_Controller extends Controller {
 	 *     it reads as not overridden and there is nothing to undo.
 	 *
 	 * @since 3.8.0
+	 * @since TBD Shows the complement worked out from the primary.
 	 *
 	 * @param string $id   The palette id.
 	 * @param string $slug The token library slug.
@@ -1396,7 +1397,7 @@ final class Palettes_Controller extends Controller {
 	 */
 	private function write_palette_node( string $slug, string $id, array $node ) {
 		if ( $id === $this->palettes->default_palette( $slug ) ) {
-			$node = $this->reduce_default_to_overrides( $node );
+			$node = $this->reduce_default_to_overrides( $node, $id, $slug );
 		}
 
 		$document  = $this->mutator->remove_by_keys( $this->stored_document( $slug ), $this->palette_keys( $id ) );
@@ -1422,13 +1423,21 @@ final class Palettes_Controller extends Controller {
 	 * Runs here rather than in {@see prepare_for_storage()} because the swatch endpoints reach the store
 	 * without passing through that method; this is the one choke point all three write paths share.
 	 *
+	 * A complement worked out from the primary is not compared with the baseline. It is dropped when it
+	 * matches the color worked out from the primary being written, or when the site hadn't stored one and it
+	 * is unchanged from what it showed before this write (a primary change leaves the old worked-out color in
+	 * the node). Any other color, the shipped one included, is a choice to keep.
+	 *
 	 * @since 3.8.0
+	 * @since TBD Keeps a complement the site picked, and drops one that only follows the primary.
 	 *
 	 * @param array<string, mixed> $node The default palette node being written.
+	 * @param string               $id   The default palette id.
+	 * @param string               $slug The token library slug.
 	 *
 	 * @return array<string, mixed>
 	 */
-	private function reduce_default_to_overrides( array $node ): array {
+	private function reduce_default_to_overrides( array $node, string $id, string $slug ): array {
 		$baseline     = $this->palettes->baseline_swatch_values();
 		$groups_key   = Extensions::get_groups_key();
 		$swatches_key = Extensions::get_swatches_key();
@@ -1451,9 +1460,11 @@ final class Palettes_Controller extends Controller {
 			}
 		}
 
-		// A complement that is just the one worked out from the primary isn't a choice either: storing it would
-		// stop it following the primary.
-		$derived = $this->palettes->is_derived_complement( $values ) ? Effective_Palettes::get_complement_token() : null;
+		$complement = Effective_Palettes::get_complement_token();
+		$derives    = $this->palettes->derives_complement();
+		$follows    = $this->palettes->is_derived_complement( $values )
+			|| ( ! array_key_exists( $complement, $this->palettes->stored_swatch_values( $id, $slug ) )
+				&& ( $values[ $complement ] ?? null ) === ( $this->palettes->complete_swatch_values( $id, $slug )[ $complement ] ?? null ) );
 
 		foreach ( $groups as $gi => $group ) {
 			if ( ! is_array( $group ) || ! isset( $group[ $swatches_key ] ) || ! is_array( $group[ $swatches_key ] ) ) {
@@ -1467,7 +1478,11 @@ final class Palettes_Controller extends Controller {
 
 				$token = $swatch[ $token_key ];
 
-				if ( $token !== $derived && ( ! array_key_exists( $token, $baseline ) || ( $swatch[ $value_key ] ?? null ) !== $baseline[ $token ] ) ) {
+				if ( $derives && $token === $complement ) {
+					if ( ! $follows ) {
+						continue;
+					}
+				} elseif ( ! array_key_exists( $token, $baseline ) || ( $swatch[ $value_key ] ?? null ) !== $baseline[ $token ] ) {
 					continue;
 				}
 

@@ -128,6 +128,7 @@ final class Style_Guide_Mapper {
 	 * Map a snapshot onto the tokens that claim palette slots.
 	 *
 	 * @since 3.8.0
+	 * @since TBD Maps a complement-marked palette10 to palette1's complement.
 	 *
 	 * @param array{palette: array<string, mixed>, settings: array<string, mixed>, complement?: mixed} $snapshot    The reader's snapshot.
 	 * @param array<string, string>                                                                    $slot_tokens Slot slug => token id, from the registry.

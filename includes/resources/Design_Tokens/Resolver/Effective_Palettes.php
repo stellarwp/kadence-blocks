@@ -121,6 +121,7 @@ final class Effective_Palettes {
 	 * post-merge effective section before it is committed (e.g. that `$current` still names a present palette).
 	 *
 	 * @since 3.8.0
+	 * @since TBD Adds back shipped swatches a saved default palette is missing.
 	 *
 	 * @param array<string, mixed> $overrides A decoded overrides-only DTCG document.
 	 *
@@ -236,6 +237,7 @@ final class Effective_Palettes {
 	 * override fully re-skins a subtree with default fallback regardless of the library's current palette.
 	 *
 	 * @since 3.8.0
+	 * @since TBD Works the complement out from the palette's primary when it follows the theme.
 	 *
 	 * @param string $id   The palette id.
 	 * @param string $slug The token library slug.
@@ -256,6 +258,7 @@ final class Effective_Palettes {
 	 * applies at `:root`.
 	 *
 	 * @since 3.8.0
+	 * @since TBD Works the complement out from the palette's primary when it follows the theme.
 	 *
 	 * @param string $slug The token library slug.
 	 *
@@ -271,6 +274,7 @@ final class Effective_Palettes {
 	 * flattened. The resolver uses this so the overlay reads the SAME document it is resolving.
 	 *
 	 * @since 3.8.0
+	 * @since TBD Works the complement out from the palette's primary when it follows the theme.
 	 *
 	 * @param array<string, mixed> $overrides A decoded overrides-only DTCG document.
 	 *
@@ -404,6 +408,22 @@ final class Effective_Palettes {
 	 */
 	public static function get_complement_token(): string {
 		return self::COMPLEMENT_TOKEN;
+	}
+
+	/**
+	 * Whether the shipped complement is worked out from the shipped primary. On a Kadence site that uses the
+	 * theme's complement color the Style Guide gives both, so they match; with a palette10 color of its own,
+	 * or without the theme, they don't and the complement is left alone.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function derives_complement(): bool {
+		$baseline = $this->baseline_swatch_values();
+		$primary  = $baseline[ self::PRIMARY_TOKEN ] ?? null;
+
+		return is_string( $primary ) && ( $baseline[ self::COMPLEMENT_TOKEN ] ?? null ) === Complement_Color::of( $primary );
 	}
 
 	/**
@@ -575,21 +595,6 @@ final class Effective_Palettes {
 		return $values;
 	}
 
-	/**
-	 * Whether the shipped complement is worked out from the shipped primary. On a Kadence site that uses the
-	 * theme's complement color the Style Guide gives both, so they match; with a palette10 color of its own,
-	 * or without the theme, they don't and the complement is left alone.
-	 *
-	 * @since TBD
-	 *
-	 * @return bool
-	 */
-	private function derives_complement(): bool {
-		$baseline = $this->baseline_swatch_values();
-		$primary  = $baseline[ self::PRIMARY_TOKEN ] ?? null;
-
-		return is_string( $primary ) && ( $baseline[ self::COMPLEMENT_TOKEN ] ?? null ) === Complement_Color::of( $primary );
-	}
 
 	/**
 	 * Reduce a `{ token => value }` map to the entries that differ from the baseline default palette.
@@ -620,6 +625,7 @@ final class Effective_Palettes {
 	 * that palette's swatches.
 	 *
 	 * @since 3.8.0
+	 * @since TBD Takes the overrides document and works out the complement.
 	 *
 	 * @param array<string, mixed> $section   The effective colorPalettes section.
 	 * @param array<string, mixed> $overrides The decoded overrides document the section was built from.

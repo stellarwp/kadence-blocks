@@ -203,21 +203,18 @@ final class Palette_FilterTest extends TestCase {
 	}
 
 	/**
-	 * A complement-marked palette10 read from the active set gets the token color: the theme hands the filter
-	 * its complement formula for the marker, and that counts as the active set's value.
+	 * The theme's complement formula passes through when the site hasn't set the complement: it already follows
+	 * palette1 through the theme's variables, and the same formula comes back for every palette set, so a
+	 * Kadence Pro dark-mode read keeps working out its own color.
 	 *
 	 * @return void
 	 */
-	public function testComplementMarkedPalette10GetsTheTokenColor(): void {
+	public function testComplementFormulaPassesThroughWhenTheComplementIsNotSet(): void {
 		$this->swap_style_guide_source( Fake_Style_Guide_Source::with_palette( [ 'palette10' => '#FfFfFf' ] ) );
 
-		$resolved = $this->container->get( Token_Resolver::class )->resolve();
-		$derived  = 'oklch(from var(--global-palette1) calc(l + 0.10 * (1 - l)) calc(c * 1.00) calc(h + 180) / 100%)';
+		$derived = 'oklch(from var(--global-palette1) calc(l + 0.10 * (1 - l)) calc(c * 1.00) calc(h + 180) / 100%)';
 
-		$this->assertSame(
-			$resolved->value( 'primitive.color.extended.complement' ),
-			$this->filter->filter( $derived, 'palette10' )
-		);
+		$this->assertSame( $derived, $this->filter->filter( $derived, 'palette10' ) );
 	}
 
 	/**
@@ -314,7 +311,8 @@ final class Palette_FilterTest extends TestCase {
 			$corrupt_resolver,
 			$this->container->get( Active_Token_Library_Store::class ),
 			$this->container->get( Palette_Builder::class ),
-			$this->container->get( Style_Guide_Overlay::class )
+			$this->container->get( Style_Guide_Overlay::class ),
+			$this->container->get( Effective_Palettes::class )
 		);
 
 		$this->assertSame( '#old', $filter->filter( '#old', 'palette1' ) );
@@ -476,7 +474,8 @@ final class Palette_FilterTest extends TestCase {
 			$this->container->get( Token_Resolver::class ),
 			$this->container->get( Active_Token_Library_Store::class ),
 			$builder,
-			$this->container->get( Style_Guide_Overlay::class )
+			$this->container->get( Style_Guide_Overlay::class ),
+			$this->container->get( Effective_Palettes::class )
 		);
 
 		// A theme read before init:0: the registry has no palette tokens yet, so the theme's value stands.

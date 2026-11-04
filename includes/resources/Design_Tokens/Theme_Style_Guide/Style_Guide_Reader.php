@@ -51,6 +51,7 @@ final class Style_Guide_Reader implements Style_Guide_Source {
 	 * @inheritDoc
 	 *
 	 * @since 3.8.0
+	 * @since TBD Adds the filtered complement formula.
 	 */
 	public function snapshot(): ?array {
 		$theme = $this->theme();

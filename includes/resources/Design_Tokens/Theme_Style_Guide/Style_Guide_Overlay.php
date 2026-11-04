@@ -115,6 +115,7 @@ final class Style_Guide_Overlay {
 	 * palette10 as the formula the theme renders for it. Empty when the Kadence theme is not active.
 	 *
 	 * @since 3.8.0.1
+	 * @since TBD Returns a complement-marked palette10 as the formula the theme renders.
 	 *
 	 * @return array<string, string>
 	 */

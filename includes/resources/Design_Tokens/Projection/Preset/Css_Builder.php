@@ -1291,6 +1291,7 @@ final class Css_Builder {
 	 * slot and an inline binding declares its own; both reach the same --global-<slot>.
 	 *
 	 * @since 3.8.0
+	 * @since TBD Recognizes palette10…palette15.
 	 *
 	 * @param Binding $binding The preset binding.
 	 *

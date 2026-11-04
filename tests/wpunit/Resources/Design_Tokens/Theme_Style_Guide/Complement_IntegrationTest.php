@@ -171,6 +171,40 @@ final class Complement_IntegrationTest extends TestCase {
 	}
 
 	/**
+	 * Picking the theme's original complement after changing the primary keeps that choice, even though it
+	 * matches the shipped color.
+	 *
+	 * @return void
+	 */
+	public function testPickingTheOriginalComplementAfterChangingThePrimaryIsKept(): void {
+		$this->set_swatch( self::PRIMARY, '#0000ff' );
+		$this->set_swatch( self::COMPLEMENT, '#a46900' );
+
+		$this->assertSame( '#a46900', $this->palettes->stored_swatch_values( 'default' )[ self::COMPLEMENT ] ?? null );
+		$this->assertSame( '#a46900', $this->view_value( self::COMPLEMENT ) );
+		$this->assertSame( '#a46900', $this->resolved( self::COMPLEMENT ) );
+
+		$this->save_palette_as_shown();
+
+		$this->assertSame( '#a46900', $this->resolved( self::COMPLEMENT ), 'Saving the whole palette keeps the choice too.' );
+	}
+
+	/**
+	 * When the site hasn't set the complement, the theme's palette10 formula is left alone, even with a
+	 * changed primary, so a Kadence Pro dark-mode read of another palette set works out its own color.
+	 *
+	 * @return void
+	 */
+	public function testTheThemesPalette10FormulaIsLeftAloneWhenTheComplementIsNotSet(): void {
+		$this->set_swatch( self::PRIMARY, '#0000ff' );
+
+		$filter = $this->container->get( Palette_Filter::class );
+		$filter->on_tokens_changed();
+
+		$this->assertSame( self::FORMULA, $filter->filter( self::FORMULA, 'palette10' ) );
+	}
+
+	/**
 	 * Use a theme Style Guide with the given active palette colors.
 	 *
 	 * @param array<string, string> $colors Slot slug => color.
