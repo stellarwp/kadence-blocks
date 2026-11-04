@@ -525,7 +525,8 @@ class Kadence_Blocks_Frontend {
 	/**
 	 * Builds css for inner blocks
 	 *
-	 * @param array $inner_blocks array of inner blocks.
+	 * @param array                       $inner_blocks   array of inner blocks.
+	 * @param array<string, class-string> $kadence_blocks Block name => the class that builds its CSS.
 	 */
 	public function blocks_cycle_through( $inner_blocks, $kadence_blocks ) {
 		foreach ( $inner_blocks as $in_indexkey => $inner_block ) {
