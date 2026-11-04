@@ -254,3 +254,7 @@ stale this way.
   reviewer will see when they open the PR. Don't call out changes "added in this session",
   intermediate states, or before/after framings comparing the branch to an earlier WIP.
   Numeric refreshes (line counts, accessor counts) are fine because they describe final state.
+- **Changelog entries start in the past tense.** The `entry` in a `changelog/*.yaml` file opens
+  with a past-tense verb (Fixed, Added, Updated, Improved, Removed) and describes the change as a
+  site owner sees it, not the code: `Fixed a fatal error on pages using synced patterns that
+  include each other.`, not `Design tokens now map…` or `Fix the block walk…`.

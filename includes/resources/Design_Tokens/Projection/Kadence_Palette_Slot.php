@@ -8,7 +8,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Definition;
 /**
  * Normalizes a token's "kadence_slot" projection into a Kadence color-palette slot.
  *
- * The Kadence ecosystem keys nine color slots palette1…palette9. That slug is the identifier in KB's own
+ * The Kadence ecosystem keys fifteen color slots palette1…palette15. That slug is the identifier in KB's own
  * kadence_blocks_colors option, in the Kadence theme's kadence_global_palette option, and as the suffix
  * of the --global-paletteN CSS variable. Every consumer resolves through this one class so the slot they
  * target can never drift: the Css_Var legacy bridge (which rewrites the --global-paletteN filter on
@@ -36,13 +36,14 @@ final class Kadence_Palette_Slot {
 	private const PROJECTION = 'kadence_slot';
 
 	/**
-	 * Matches the nine Kadence palette slots, palette1…palette9.
+	 * Matches the fifteen Kadence palette slots, palette1…palette15.
 	 *
 	 * @since 3.8.0
+	 * @since TBD Admits the extended slots palette10…palette15.
 	 *
 	 * @var string
 	 */
-	private const SLOT_PATTERN = '/^palette[1-9]$/';
+	private const SLOT_PATTERN = '/^palette([1-9]|1[0-5])$/';
 
 	/**
 	 * The palette slot slug, e.g. "palette1". This is the entry slug in both palette options and the
@@ -55,7 +56,7 @@ final class Kadence_Palette_Slot {
 	public string $slug;
 
 	/**
-	 * @param string $slug Palette slot slug (palette1…palette9).
+	 * @param string $slug Palette slot slug (palette1…palette15).
 	 */
 	private function __construct( string $slug ) {
 		$this->slug = $slug;
@@ -83,7 +84,7 @@ final class Kadence_Palette_Slot {
 	 * @return self|null
 	 */
 	public static function from_token( Token_Definition $token ): ?self {
-		// A missing projection (?? null), a non-string value, and a string that is not palette1…palette9
+		// A missing projection (?? null), a non-string value, and a string that is not palette1…palette15
 		// all collapse to "not a palette slot" here, so no separate has_projection() guard is needed.
 		$slot = $token->projections[ self::PROJECTION ] ?? null;
 
