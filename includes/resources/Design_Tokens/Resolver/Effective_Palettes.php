@@ -3,6 +3,7 @@
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Resolver;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Document_Path;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Mutator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Contracts\Baseline_Document;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Extensions;
@@ -250,7 +251,7 @@ final class Effective_Palettes {
 		$default    = $this->swatch_values_of( $section, $default_id );
 		$stored     = array_merge( $this->stored_swatch_values( $default_id, $slug ), $this->stored_swatch_values( $id, $slug ) );
 
-		return $this->with_derived_complement( array_merge( $default, $this->swatch_values_of( $section, $id ) ), $stored );
+		return $this->with_derived_complement( array_merge( $default, $this->swatch_values_of( $section, $id ) ), $stored, $this->raw( $slug ) );
 	}
 
 	/**
@@ -570,19 +571,25 @@ final class Effective_Palettes {
 	/**
 	 * Work the complement out from the palette's primary color when the theme derives it that way and the
 	 * palette doesn't store a complement of its own, so overriding the primary in the Style Library moves the
-	 * complement with it, as the theme's own formula does.
+	 * complement with it, as the theme's own formula does. A complement set directly in the token document is
+	 * left alone too.
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, string> $values token dot-path => value, for one palette.
-	 * @param array<string, string> $stored token dot-path => value the palette (or the default it falls back to) stores.
+	 * @param array<string, string> $values    token dot-path => value, for one palette.
+	 * @param array<string, string> $stored    token dot-path => value the palette (or the default it falls back to) stores.
+	 * @param array<string, mixed>  $overrides The decoded overrides document.
 	 *
 	 * @return array<string, string>
 	 */
-	private function with_derived_complement( array $values, array $stored ): array {
-		$primary = $values[ self::PRIMARY_TOKEN ] ?? null;
+	private function with_derived_complement( array $values, array $stored, array $overrides ): array {
+		if ( array_key_exists( self::COMPLEMENT_TOKEN, $stored ) || Document_Path::has_value( $overrides, self::COMPLEMENT_TOKEN ) || ! $this->derives_complement() ) {
+			return $values;
+		}
 
-		if ( ! is_string( $primary ) || array_key_exists( self::COMPLEMENT_TOKEN, $stored ) || ! $this->derives_complement() ) {
+		$primary = $this->rendered_primary( $values, $overrides );
+
+		if ( $primary === null ) {
 			return $values;
 		}
 
@@ -595,6 +602,27 @@ final class Effective_Palettes {
 		return $values;
 	}
 
+	/**
+	 * The primary color a palette renders: its own when it re-tints the primary, otherwise one set directly in
+	 * the token document, which the palette overlay then leaves in place.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, string> $values    token dot-path => value, for one palette.
+	 * @param array<string, mixed>  $overrides The decoded overrides document.
+	 *
+	 * @return string|null
+	 */
+	private function rendered_primary( array $values, array $overrides ): ?string {
+		$primary = $values[ self::PRIMARY_TOKEN ] ?? null;
+		$direct  = Document_Path::node_at( $overrides, self::PRIMARY_TOKEN )[ Sentinels::get_value_key() ] ?? null;
+
+		if ( is_string( $direct ) && $primary === ( $this->baseline_swatch_values()[ self::PRIMARY_TOKEN ] ?? null ) ) {
+			$primary = $direct;
+		}
+
+		return is_string( $primary ) ? $primary : null;
+	}
 
 	/**
 	 * Reduce a `{ token => value }` map to the entries that differ from the baseline default palette.
@@ -640,7 +668,7 @@ final class Effective_Palettes {
 			$this->swatch_values_of( $stored, $id )
 		);
 
-		return $this->with_derived_complement( $this->swatch_values_of( $section, $id ), $stored );
+		return $this->with_derived_complement( $this->swatch_values_of( $section, $id ), $stored, $overrides );
 	}
 
 	/**

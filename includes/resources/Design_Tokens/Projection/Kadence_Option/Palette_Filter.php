@@ -4,6 +4,7 @@
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Kadence_Option;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Document_Path;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Palettes;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
@@ -200,7 +201,7 @@ final class Palette_Filter {
 
 	/**
 	 * Whether the theme's value is built on its own CSS variables, like the complement formula on
-	 * `var(--global-palette1)`, and the site hasn't set this color in the Style Library.
+	 * `var(--global-palette1)`, and the site hasn't set this color in the Style Library or the token document.
 	 *
 	 * Such a value already follows the Style Library through the variables it reads, and it is the same
 	 * formula in every palette set, so the filter can't tell a dark-mode read from an active one. Leaving it
@@ -231,7 +232,7 @@ final class Palette_Filter {
 			$this->palettes->stored_swatch_values( $this->palettes->current( $slug ), $slug )
 		);
 
-		return ! array_key_exists( $token, $stored );
+		return ! array_key_exists( $token, $stored ) && ! Document_Path::has_value( $this->palettes->raw( $slug ), $token );
 	}
 
 	/**

@@ -205,6 +205,51 @@ final class Complement_IntegrationTest extends TestCase {
 	}
 
 	/**
+	 * A primary set directly in the token document moves the complement with it.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function testComplementFollowsAPrimarySetInTheTokenDocument(): void {
+		$this->save_tokens( [ self::PRIMARY => '#0000ff' ] );
+
+		$this->assertSame( '#0000ff', $this->resolved( self::PRIMARY ) );
+		$this->assertSame( '#b33700', $this->resolved( self::COMPLEMENT ) );
+	}
+
+	/**
+	 * A complement set directly in the token document wins over the one worked out from a changed primary.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function testAComplementSetInTheTokenDocumentWins(): void {
+		$this->save_tokens( [ self::COMPLEMENT => '#123456' ] );
+		$this->set_swatch( self::PRIMARY, '#0000ff' );
+
+		$this->assertSame( '#123456', $this->resolved( self::COMPLEMENT ) );
+	}
+
+	/**
+	 * The theme's palette10 read gets the token color when the complement is set directly in the token
+	 * document.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function testTheThemesPalette10ReadGetsAComplementSetInTheTokenDocument(): void {
+		$this->save_tokens( [ self::COMPLEMENT => '#123456' ] );
+
+		$filter = $this->container->get( Palette_Filter::class );
+		$filter->on_tokens_changed();
+
+		$this->assertSame( '#123456', $filter->filter( self::FORMULA, 'palette10' ) );
+	}
+
+	/**
 	 * Use a theme Style Guide with the given active palette colors.
 	 *
 	 * @param array<string, string> $colors Slot slug => color.
@@ -230,6 +275,36 @@ final class Complement_IntegrationTest extends TestCase {
 		$request->set_param( '$value', $value );
 
 		$this->assertNotWPError( $this->container->get( Palettes_Controller::class )->update_swatch( $request ) );
+		$this->reset_caches();
+	}
+
+	/**
+	 * Set color tokens directly in the stored token document, keeping what it already holds.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, string> $values Token dot-path => color.
+	 *
+	 * @return void
+	 */
+	private function save_tokens( array $values ): void {
+		$document = $this->store->get_decoded_document();
+
+		foreach ( $values as $token => $value ) {
+			$node = &$document;
+
+			foreach ( explode( '.', $token ) as $segment ) {
+				$node = &$node[ $segment ];
+			}
+
+			$node = [
+				'$type'  => 'color',
+				'$value' => $value,
+			];
+			unset( $node );
+		}
+
+		$this->store->save_document( (string) wp_json_encode( $document ) );
 		$this->reset_caches();
 	}
 
