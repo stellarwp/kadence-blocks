@@ -104,7 +104,7 @@ final class Css_Builder {
 
 	/**
 	 * Kadence theme global custom-property slots a preset may retarget beyond the numbered palette
-	 * (palette1..9). These are the button's own color slots — the exact --global-* properties the
+	 * (palette1..15). These are the button's own color slots — the exact --global-* properties the
 	 * button render path already consumes — so a preset re-skins the button with no change to its
 	 * render path.
 	 *
@@ -1285,12 +1285,13 @@ final class Css_Builder {
 	/**
 	 * The Kadence global custom-property slot a binding targets, or null when it targets none.
 	 *
-	 * Recognizes the numbered palette slots (palette1..9 → --global-paletteN) and the named button
+	 * Recognizes the numbered palette slots (palette1..15 → --global-paletteN) and the named button
 	 * slots in {@see NAMED_GLOBAL_SLOTS} (e.g. palette-btn-bg → --global-palette-btn-bg). Reads the
 	 * binding's effective projections so a token-reference binding inherits the referenced token's
 	 * slot and an inline binding declares its own; both reach the same --global-<slot>.
 	 *
 	 * @since 3.8.0
+	 * @since TBD Recognizes palette10…palette15.
 	 *
 	 * @param Binding $binding The preset binding.
 	 *
@@ -1303,7 +1304,7 @@ final class Css_Builder {
 			return null;
 		}
 
-		if ( preg_match( '/^palette[1-9]$/', $slot ) === 1 || in_array( $slot, self::NAMED_GLOBAL_SLOTS, true ) ) {
+		if ( preg_match( '/^palette([1-9]|1[0-5])$/', $slot ) === 1 || in_array( $slot, self::NAMED_GLOBAL_SLOTS, true ) ) {
 			return $slot;
 		}
 

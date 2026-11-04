@@ -47,6 +47,26 @@ final class Style_Guide_Mapper {
 	private const COMPLEMENT_MARKER = '#FfFfFf';
 
 	/**
+	 * The slot the theme reads the complement marker on.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const COMPLEMENT_SLOT = 'palette10';
+
+	/**
+	 * The theme's default formula for a complement-marked palette10: palette1 rotated half way round the
+	 * hue wheel and lightened slightly. Sites can swap it through the theme's
+	 * kadence_palette_complement_color filter.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const COMPLEMENT_COLOR = 'oklch(from var(--global-palette1) calc(l + 0.10 * (1 - l)) calc(c * 1.00) calc(h + 180) / 100%)';
+
+	/**
 	 * Accepts hex, rgb()/rgba(), hsl()/hsla(). Anything else (an empty string, a CSS var, a bare word) is
 	 * skipped so a bad theme value never reaches the resolver. A palette slot never carries a gradient; a
 	 * button setting may, and GRADIENT_PATTERN admits it there.
@@ -73,8 +93,7 @@ final class Style_Guide_Mapper {
 	];
 
 	/**
-	 * Matches a theme palette reference such as "palette4". Wider than the projection's palette1…9 pattern
-	 * because the theme lets a setting point at any of its fifteen slots.
+	 * Matches a theme palette reference such as "palette4", any of the theme's fifteen slots.
 	 *
 	 * @since 3.8.0
 	 *
@@ -95,12 +114,24 @@ final class Style_Guide_Mapper {
 	private const GRADIENT_PATTERN = '/^(linear|radial|conic)-gradient\((?!.*\/\*).+\)$/i';
 
 	/**
+	 * The theme's default complement formula, for the reader to pass through the theme's filter.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_complement_color(): string {
+		return self::COMPLEMENT_COLOR;
+	}
+
+	/**
 	 * Map a snapshot onto the tokens that claim palette slots.
 	 *
 	 * @since 3.8.0
+	 * @since TBD Maps a complement-marked palette10 to palette1's complement.
 	 *
-	 * @param array{palette: array<string, mixed>, settings: array<string, mixed>} $snapshot    The reader's snapshot.
-	 * @param array<string, string>                                                $slot_tokens Slot slug => token id, from the registry.
+	 * @param array{palette: array<string, mixed>, settings: array<string, mixed>, complement?: mixed} $snapshot    The reader's snapshot.
+	 * @param array<string, string>                                                                    $slot_tokens Slot slug => token id, from the registry.
 	 *
 	 * @return array<string, string> Token id => literal color, gradient or alias, for every claimed slot with a
 	 *                               usable color and every button setting with a usable value.
@@ -110,7 +141,7 @@ final class Style_Guide_Mapper {
 		$values = [];
 
 		foreach ( $slot_tokens as $slug => $token_id ) {
-			$color = self::color_of( $set, $slug );
+			$color = self::is_complement_marker( $set, $slug ) ? self::complement_of( $set, $snapshot['complement'] ?? self::COMPLEMENT_COLOR ) : self::color_of( $set, $slug );
 
 			if ( $color === null ) {
 				continue;
@@ -144,8 +175,8 @@ final class Style_Guide_Mapper {
 	}
 
 	/**
-	 * A theme color setting as a token value: a palette1…9 reference becomes an alias of the primitive that
-	 * claims the slot, a palette10…15 reference becomes the active set's literal, a color or gradient
+	 * A theme color setting as a token value: a palette reference becomes an alias of the primitive that
+	 * claims the slot, or the active set's literal for a slot no primitive claims, a color or gradient
 	 * literal stays as it is. Anything else is null.
 	 *
 	 * @since 3.8.0
@@ -176,6 +207,27 @@ final class Style_Guide_Mapper {
 		}
 
 		return null;
+	}
+
+	/**
+	 * The active set as the theme reads it back: a complement-marked palette10 becomes the formula the theme
+	 * renders in its place, so a palette10 read from the active set matches it.
+	 *
+	 * @since TBD
+	 *
+	 * @param array{palette: array<string, mixed>, settings: array<string, mixed>, complement?: mixed} $snapshot The reader's snapshot.
+	 *
+	 * @return array<string, string>
+	 */
+	public function rendered_set( array $snapshot ): array {
+		$set = $this->active_set( $snapshot['palette'] );
+
+		if ( self::is_complement_marker( $set, self::COMPLEMENT_SLOT ) ) {
+			$formula                      = $snapshot['complement'] ?? null;
+			$set[ self::COMPLEMENT_SLOT ] = is_string( $formula ) ? $formula : self::COMPLEMENT_COLOR;
+		}
+
+		return $set;
 	}
 
 	/**
@@ -216,6 +268,50 @@ final class Style_Guide_Mapper {
 		}
 
 		return $set;
+	}
+
+	/**
+	 * Whether the active set marks palette10 as the complement of palette1 rather than storing a color.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, string> $set  Slot slug => color of the active set.
+	 * @param string                $slug The slot slug.
+	 *
+	 * @return bool
+	 */
+	private static function is_complement_marker( array $set, string $slug ): bool {
+		return $slug === self::COMPLEMENT_SLOT && trim( $set[ $slug ] ?? '' ) === self::COMPLEMENT_MARKER;
+	}
+
+	/**
+	 * The color a complement-marked palette10 renders as. With the theme's default formula that is palette1's
+	 * complement worked out as a hex, so pages without the theme's CSS variables can show it. A formula a
+	 * site swapped in through the theme's filter is kept as written, and so is the default when palette1 can't
+	 * be read as a color. Null when there is nothing usable.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, string> $set     Slot slug => color of the active set.
+	 * @param mixed                 $formula The complement formula the theme renders. Anything but a string
+	 *                                       falls back to the default, since a filter can return anything.
+	 *
+	 * @return string|null
+	 */
+	private static function complement_of( array $set, $formula ): ?string {
+		$formula = is_string( $formula ) ? trim( $formula ) : self::COMPLEMENT_COLOR;
+
+		if ( $formula !== self::COMPLEMENT_COLOR ) {
+			return $formula !== '' && preg_match( '/\/\*|[;{}]/', $formula ) !== 1 ? $formula : null;
+		}
+
+		$base = self::color_of( $set, 'palette1' );
+
+		if ( $base === null ) {
+			return null;
+		}
+
+		return Complement_Color::of( $base ) ?? $formula;
 	}
 
 	/**

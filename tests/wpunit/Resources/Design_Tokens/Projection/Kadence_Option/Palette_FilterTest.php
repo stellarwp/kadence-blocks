@@ -101,13 +101,9 @@ final class Palette_FilterTest extends TestCase {
 	 * @return Generator
 	 */
 	public function passthroughProvider(): Generator {
-		yield 'complement slot' => [
-			'value'  => '#FfFfFf',
-			'subkey' => 'palette10',
-		];
-		yield 'rating slot' => [
-			'value'  => '#f5a524',
-			'subkey' => 'palette15',
+		yield 'slot past palette15' => [
+			'value'  => '#abcdef',
+			'subkey' => 'palette16',
 		];
 		yield 'non-string subkey' => [
 			'value'  => '#abcdef',
@@ -207,6 +203,32 @@ final class Palette_FilterTest extends TestCase {
 	}
 
 	/**
+	 * The theme's complement formula passes through when the site hasn't set the complement: it already follows
+	 * palette1 through the theme's variables, and the same formula comes back for every palette set, so a
+	 * Kadence Pro dark-mode read keeps working out its own color.
+	 *
+	 * @return void
+	 */
+	public function testComplementFormulaPassesThroughWhenTheComplementIsNotSet(): void {
+		$this->swap_style_guide_source( Fake_Style_Guide_Source::with_palette( [ 'palette10' => '#FfFfFf' ] ) );
+
+		$derived = 'oklch(from var(--global-palette1) calc(l + 0.10 * (1 - l)) calc(c * 1.00) calc(h + 180) / 100%)';
+
+		$this->assertSame( $derived, $this->filter->filter( $derived, 'palette10' ) );
+	}
+
+	/**
+	 * With the complement marker active, a palette10 color read from another palette set still passes through.
+	 *
+	 * @return void
+	 */
+	public function testPalette10FromAnotherSetPassesThroughWhenTheActiveSetIsMarked(): void {
+		$this->swap_style_guide_source( Fake_Style_Guide_Source::with_palette( [ 'palette10' => '#FfFfFf' ] ) );
+
+		$this->assertSame( '#abcdef', $this->filter->filter( '#abcdef', 'palette10' ) );
+	}
+
+	/**
 	 * The comparison with the saved active color ignores case and surrounding whitespace.
 	 *
 	 * @return void
@@ -289,7 +311,8 @@ final class Palette_FilterTest extends TestCase {
 			$corrupt_resolver,
 			$this->container->get( Active_Token_Library_Store::class ),
 			$this->container->get( Palette_Builder::class ),
-			$this->container->get( Style_Guide_Overlay::class )
+			$this->container->get( Style_Guide_Overlay::class ),
+			$this->container->get( Effective_Palettes::class )
 		);
 
 		$this->assertSame( '#old', $filter->filter( '#old', 'palette1' ) );
@@ -451,7 +474,8 @@ final class Palette_FilterTest extends TestCase {
 			$this->container->get( Token_Resolver::class ),
 			$this->container->get( Active_Token_Library_Store::class ),
 			$builder,
-			$this->container->get( Style_Guide_Overlay::class )
+			$this->container->get( Style_Guide_Overlay::class ),
+			$this->container->get( Effective_Palettes::class )
 		);
 
 		// A theme read before init:0: the registry has no palette tokens yet, so the theme's value stands.
