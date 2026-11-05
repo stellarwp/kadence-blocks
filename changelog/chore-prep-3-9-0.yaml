@@ -1,4 +1,4 @@
-significance: patch
+significance: minor
 type: feature
 entry: Added site-wide block styles for the Kadence theme's Full Site Editing
   mode, so Kadence blocks can be styled once in Appearance > Editor > Styles and
