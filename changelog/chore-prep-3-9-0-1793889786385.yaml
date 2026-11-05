@@ -1,0 +1,6 @@
+significance: patch
+type: tweak
+entry: Matched block color controls and content widths to Global Styles when the
+  Kadence theme is in Full Site Editing mode, keeping custom color swatches
+  visible with Use only Custom Colors on.
+timestamp: 2026-11-05T14:43:06.385Z

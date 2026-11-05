@@ -1,0 +1,6 @@
+significance: patch
+type: feature
+entry: Added site-wide block styles for the Kadence theme's Full Site Editing
+  mode, so Kadence blocks can be styled once in Appearance > Editor > Styles and
+  every block on the site follows them.
+timestamp: 2026-11-05T14:43:04.428Z
