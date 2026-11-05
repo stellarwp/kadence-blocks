@@ -134,7 +134,7 @@ class Kadence_Blocks_Single_Icon_Block extends Kadence_Blocks_Abstract_Block imp
 	 * The editor paints every style inline, so every Kadence-only value goes through the overlay.
 	 * The stroke width is in the saved markup, which no site value can reach, so it stays per icon.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_overlay_attributes(): array {
 		return array_merge( $this->site_styles_icon_attributes(), $this->site_styles_box_attributes() );
@@ -143,7 +143,7 @@ class Kadence_Blocks_Single_Icon_Block extends Kadence_Blocks_Abstract_Block imp
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_attributes_map(): array {
 		return [ 'color' => 'color.text' ];
@@ -152,7 +152,7 @@ class Kadence_Blocks_Single_Icon_Block extends Kadence_Blocks_Abstract_Block imp
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_supports(): array {
 		return [
@@ -169,7 +169,7 @@ class Kadence_Blocks_Single_Icon_Block extends Kadence_Blocks_Abstract_Block imp
 	 * Core's default root, the block wrapper on the front end and in the editor. The icon
 	 * inherits the color: its token chain falls back to `currentColor`.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_selectors(): array {
 		return [];
@@ -178,7 +178,7 @@ class Kadence_Blocks_Single_Icon_Block extends Kadence_Blocks_Abstract_Block imp
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_scope_attribute(): string {
 		return 'style';
@@ -187,7 +187,7 @@ class Kadence_Blocks_Single_Icon_Block extends Kadence_Blocks_Abstract_Block imp
 	/**
 	 * The icon's own style, from its `style` attribute.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @param array<string, mixed> $attributes The instance's attributes.
 	 *
@@ -200,7 +200,7 @@ class Kadence_Blocks_Single_Icon_Block extends Kadence_Blocks_Abstract_Block imp
 	/**
 	 * Only Stacked icons render the box, so Default icons take the icon values only.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_scoped_attributes(): array {
 		return [ 'default' => $this->site_styles_icon_attributes() ];
@@ -209,7 +209,7 @@ class Kadence_Blocks_Single_Icon_Block extends Kadence_Blocks_Abstract_Block imp
 	/**
 	 * The site attributes every icon style renders.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @return list<string> Attribute names.
 	 */
@@ -220,7 +220,7 @@ class Kadence_Blocks_Single_Icon_Block extends Kadence_Blocks_Abstract_Block imp
 	/**
 	 * The site attributes only the Stacked style renders: the box around the icon.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @return list<string> Attribute names.
 	 */

@@ -24,7 +24,7 @@ use function KadenceWP\KadenceBlocks\StellarWP\Uplink\validate_license;
  * The mode can change within a request when its setting is saved, so the
  * result is never cached.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return bool
  */
@@ -34,7 +34,7 @@ function kadence_blocks_is_fse_mode(): bool {
 	/**
 	 * Filters whether the Kadence theme runs in its Full Site Editing mode.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @param bool $is_fse_mode Whether the mode is on.
 	 */

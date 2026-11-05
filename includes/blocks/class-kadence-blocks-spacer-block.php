@@ -172,7 +172,7 @@ class Kadence_Blocks_Spacer_Block extends Kadence_Blocks_Abstract_Block implemen
 	 * The editor paints every value inline, and each desktop value has a default
 	 * the instance rule prints, so every site value goes through the overlay.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_overlay_attributes(): array {
 		return array_merge( ...$this->site_styles_attribute_groups() );
@@ -181,7 +181,7 @@ class Kadence_Blocks_Spacer_Block extends Kadence_Blocks_Abstract_Block implemen
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_attributes_map(): array {
 		return [];
@@ -190,7 +190,7 @@ class Kadence_Blocks_Spacer_Block extends Kadence_Blocks_Abstract_Block implemen
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_supports(): array {
 		return [];
@@ -199,7 +199,7 @@ class Kadence_Blocks_Spacer_Block extends Kadence_Blocks_Abstract_Block implemen
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_selectors(): array {
 		return [];
@@ -208,7 +208,7 @@ class Kadence_Blocks_Spacer_Block extends Kadence_Blocks_Abstract_Block implemen
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_scope_attribute(): string {
 		return 'dividerStyle';
@@ -217,7 +217,7 @@ class Kadence_Blocks_Spacer_Block extends Kadence_Blocks_Abstract_Block implemen
 	/**
 	 * The divider's own style, from its `dividerStyle` attribute.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @param array<string, mixed> $attributes The instance's attributes.
 	 *
@@ -232,7 +232,7 @@ class Kadence_Blocks_Spacer_Block extends Kadence_Blocks_Abstract_Block implemen
 	 * uses the divider height as its band height, so it takes only the spacer
 	 * height and the divider width. Other styles take every value.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_scoped_attributes(): array {
 		return [ 'stripe' => array_merge( $this->site_styles_spacer_height_attributes(), $this->site_styles_divider_width_attributes() ) ];
@@ -242,7 +242,7 @@ class Kadence_Blocks_Spacer_Block extends Kadence_Blocks_Abstract_Block implemen
 	 * Each height, width and color takes its unit, its tablet and mobile values,
 	 * or its opacity with it.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_attribute_groups(): array {
 		return [
@@ -256,7 +256,7 @@ class Kadence_Blocks_Spacer_Block extends Kadence_Blocks_Abstract_Block implemen
 	/**
 	 * The spacer height on each device and its unit.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @return list<string> Attribute names.
 	 */
@@ -267,7 +267,7 @@ class Kadence_Blocks_Spacer_Block extends Kadence_Blocks_Abstract_Block implemen
 	/**
 	 * The divider width on each device and its unit.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @return list<string> Attribute names.
 	 */

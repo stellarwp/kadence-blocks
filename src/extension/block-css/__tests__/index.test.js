@@ -67,7 +67,7 @@ require('../index');
 /**
  * Renders a selected block through the Custom CSS filter.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {string} The text the block and its inspector render.
  */

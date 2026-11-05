@@ -412,7 +412,7 @@ class Kadence_Blocks_Testimonial_Block extends Kadence_Blocks_Abstract_Block imp
 	 * and mobile sizes in the instance rule, and the editor paints them all
 	 * inline, so every site value goes through the overlay.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_overlay_attributes(): array {
 		return array_merge( array_merge( ...$this->site_styles_attribute_groups() ), [ 'color' ] );
@@ -421,7 +421,7 @@ class Kadence_Blocks_Testimonial_Block extends Kadence_Blocks_Abstract_Block imp
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_attributes_map(): array {
 		return [];
@@ -430,7 +430,7 @@ class Kadence_Blocks_Testimonial_Block extends Kadence_Blocks_Abstract_Block imp
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_supports(): array {
 		return [];
@@ -439,7 +439,7 @@ class Kadence_Blocks_Testimonial_Block extends Kadence_Blocks_Abstract_Block imp
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_selectors(): array {
 		return [];
@@ -448,7 +448,7 @@ class Kadence_Blocks_Testimonial_Block extends Kadence_Blocks_Abstract_Block imp
 	/**
 	 * The icon size keeps its tablet and mobile values.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_attribute_groups(): array {
 		return [

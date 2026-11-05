@@ -14,6 +14,8 @@ import { useSelect } from '@wordpress/data';
 export const SITE_STYLES_PANEL_SETTING = 'kadenceSiteStylesPanel';
 
 /**
+ * @since 3.9.0
+ *
  * @return {boolean} Whether the block renders in the Kadence panel.
  */
 export function useIsSiteStylesPanel() {

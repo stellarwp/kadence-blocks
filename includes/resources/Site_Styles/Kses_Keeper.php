@@ -20,12 +20,14 @@ use WP_Block_Type_Registry;
  * When the user has `unfiltered_html`, core's filter doesn't run, the value is
  * never missing, and nothing changes.
  *
- * @since TBD
+ * @since 3.9.0
  */
 final class Kses_Keeper {
 
 	/**
 	 * The supported blocks.
+	 *
+	 * @since 3.9.0
 	 *
 	 * @var Supported_Blocks
 	 */
@@ -34,12 +36,14 @@ final class Kses_Keeper {
 	/**
 	 * The incoming `settings.custom.kadence` value, per save filter.
 	 *
+	 * @since 3.9.0
+	 *
 	 * @var array<array-key, array<string, mixed>> Filter name => value.
 	 */
 	private array $incoming = [];
 
 	/**
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @param Supported_Blocks $blocks The supported blocks.
 	 */
@@ -50,7 +54,7 @@ final class Kses_Keeper {
 	/**
 	 * Remembers the incoming Kadence values, before core's filters run.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @param mixed $content The slashed post content.
 	 *
@@ -73,7 +77,7 @@ final class Kses_Keeper {
 	 * Puts back a sanitized copy of the Kadence values when core's filters
 	 * removed them.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @param mixed $content The slashed post content, after core's filters.
 	 *
@@ -104,6 +108,8 @@ final class Kses_Keeper {
 	}
 
 	/**
+	 * @since 3.9.0
+	 *
 	 * @param array<string, mixed> $kadence The incoming `settings.custom.kadence` value.
 	 *
 	 * @return array<string, array<string, mixed>> Supported block slug => sanitized attributes.
@@ -135,6 +141,8 @@ final class Kses_Keeper {
 	}
 
 	/**
+	 * @since 3.9.0
+	 *
 	 * @param array<string, mixed> $data Decoded user Global Styles.
 	 *
 	 * @return array<string, mixed>|null The `settings.custom.kadence` value, null when there is none.
@@ -150,6 +158,8 @@ final class Kses_Keeper {
 	}
 
 	/**
+	 * @since 3.9.0
+	 *
 	 * @param mixed $content Slashed post content.
 	 *
 	 * @return array<string, mixed>|null The decoded content when it is user Global Styles, null otherwise.

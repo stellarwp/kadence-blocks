@@ -14,7 +14,7 @@ const HOOK = 'kadence.components.popColorControl.colors';
 /**
  * The stored custom colors from the localized color settings, or an empty list when absent or malformed.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {Array} The custom colors ({ color, name, slug }).
  */
@@ -39,7 +39,7 @@ function storedCustomColors() {
  * @param {Object}  context          The control context.
  * @param {boolean} context.override Whether "Use only Custom Colors" is on.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {Array} The swatches, with any missing custom colors appended.
  */
@@ -57,7 +57,7 @@ function addCustomColors(colors, { override } = {}) {
 /**
  * Register the custom-color listener on the color-control swatch filter. Idempotent.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {void}
  */

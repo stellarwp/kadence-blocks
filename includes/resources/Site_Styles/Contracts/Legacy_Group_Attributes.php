@@ -11,7 +11,7 @@ namespace KadenceWP\KadenceBlocks\Site_Styles\Contracts;
  * sets the group itself: it takes none of the group's site values, and a
  * migration that writes the group stores no site value either.
  *
- * @since TBD
+ * @since 3.9.0
  */
 interface Legacy_Group_Attributes extends Groups_Site_Styles {
 
@@ -20,7 +20,7 @@ interface Legacy_Group_Attributes extends Groups_Site_Styles {
 	 * stand in for. An instance sets the group when any of them holds a
 	 * number or a string that isn't empty, anywhere in its value.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @return array<string, list<string>> First attribute of a group => older attribute names.
 	 */

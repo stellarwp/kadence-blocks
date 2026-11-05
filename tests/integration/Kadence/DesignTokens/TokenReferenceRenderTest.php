@@ -24,7 +24,7 @@ final class TokenReferenceRenderTest extends WPTestCase {
 	/**
 	 * The suite actor.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @var IntegrationTester
 	 */
@@ -33,7 +33,7 @@ final class TokenReferenceRenderTest extends WPTestCase {
 	/**
 	 * The variable the heading color references.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @var string
 	 */
@@ -42,7 +42,7 @@ final class TokenReferenceRenderTest extends WPTestCase {
 	/**
 	 * The saved override the variable is defined with.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @var string
 	 */
@@ -52,7 +52,7 @@ final class TokenReferenceRenderTest extends WPTestCase {
 	 * An Advanced Heading whose color is a stored token reference. With the
 	 * Kadence theme active, the empty color class makes it emit color CSS.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @var array<string, string>
 	 */
@@ -65,7 +65,7 @@ final class TokenReferenceRenderTest extends WPTestCase {
 	/**
 	 * The front-end style handle the token CSS is attached to.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @var string
 	 */
@@ -74,7 +74,7 @@ final class TokenReferenceRenderTest extends WPTestCase {
 	/**
 	 * The token library store.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @var Token_Store
 	 */

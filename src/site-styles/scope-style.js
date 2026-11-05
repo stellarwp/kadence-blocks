@@ -16,6 +16,9 @@ const THEME_SECONDARY = 'theme-secondary';
  * @param {string} name       The block name.
  * @param {Object} attributes The instance's attributes.
  * @param {Object} scope      The block's scope, `{ attribute, attributes }`.
+ *
+ * @since 3.9.0
+ *
  * @return {*} The style, as a key of `scope.attributes`, or undefined for the block's default.
  */
 export function scopeStyle(name, attributes, scope) {

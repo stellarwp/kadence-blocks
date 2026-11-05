@@ -16,7 +16,7 @@ import { isVirtualBlock } from './virtual-blocks';
 /**
  * @param {*} value A site value.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {boolean} Whether the value is unset.
  */
@@ -34,7 +34,7 @@ function isEmpty(value) {
  * @param {Array|*} value The site value, a list of corners or sides.
  * @param {string}  unit  The unit the value is in.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {Array|undefined} The corners, '' for one the site leaves unset; undefined without a value.
  */
@@ -57,7 +57,7 @@ function toMeasure(value, unit) {
  * @param {string} clientId   The instance's client ID.
  * @param {Object} attributes The instance's attributes.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {Object<string, *>} Attribute name => site value.
  */
@@ -96,7 +96,7 @@ export function useSiteDefaults(name, clientId, attributes) {
  * @param {Object<string, *>} site       Attribute name => site value, from `useSiteDefaults()`.
  * @param {string}            blockName  Block name.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {Object} The binding, with a site value as the preset value where the site sets one.
  */
@@ -177,7 +177,7 @@ export function withSiteDefaults(binding, site, blockName) {
  * @param {{tablet: string, mobile: string}}   responsive The tablet and mobile border attributes.
  * @param {string}                             device     The active preview device ('Desktop' | 'Tablet' | 'Mobile').
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {{width: (string|undefined), color: (string|undefined)}} The site's width with its unit, and its color.
  */

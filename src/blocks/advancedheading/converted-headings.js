@@ -9,7 +9,7 @@ const convertedHeadings = new Set();
  *
  * @param {string} clientId The new block's client ID.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {void}
  */
@@ -22,7 +22,7 @@ export function markConvertedHeading(clientId) {
  *
  * @param {string} clientId The block's client ID.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {boolean} True for a converted heading.
  */

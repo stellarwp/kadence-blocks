@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.6
 Tested up to: 7.1
-Stable tag: 3.8.1.1
+Stable tag: 3.9.0
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -168,6 +168,12 @@ Please report security bugs found in the source code of the Kadence Blocks plugi
 Please report security bugs found in the Kadence Blocks plugin's source code through the Patchstack Vulnerability Disclosure Program https://patchstack.com/database/vdp/kadence-blocks. The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
 
 == Changelog ==
+
+= 3.9.0 =
+Release Date: 5th November 2026
+* Add: Added site-wide block styles for the Kadence theme's Full Site Editing mode, so Kadence blocks can be styled once in Appearance > Editor > Styles and every block on the site follows them.
+* Tweak: Matched block color controls and content widths to Global Styles when the Kadence theme is in Full Site Editing mode, keeping custom color swatches visible with Use only Custom Colors on.
+* Tweak: Explained on the Style Library screen that site colors are set in Global Styles when the Kadence theme is in Full Site Editing mode.
 
 = 3.8.1.1 =
 Release Date: 2nd November 2026

@@ -19,7 +19,7 @@ trait SiteValuesTrait {
 	/**
 	 * The block type a test registered again, to restore.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @var WP_Block_Type|null
 	 */

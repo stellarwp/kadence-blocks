@@ -11,6 +11,9 @@ import { getSupportedBlock, isFseMode } from './supported-blocks';
  *
  * @param {Object} settings Block settings.
  * @param {string} name     Block name.
+ *
+ * @since 3.9.0
+ *
  * @return {Object} The settings, with the gate for a supported block.
  */
 export function gateBlockDefaults(settings, name) {

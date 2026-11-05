@@ -9,6 +9,9 @@ const store = createReduxStore(STORE_NAME, {
 	/**
 	 * @param {{blockName: (string|null)}} state  The state.
 	 * @param {Object}                     action The action.
+	 *
+	 * @since 3.9.0
+	 *
 	 * @return {{blockName: (string|null)}} The next state.
 	 */
 	reducer(state = { blockName: null }, action) {
@@ -26,6 +29,9 @@ const store = createReduxStore(STORE_NAME, {
 		 * Opens the Kadence panel for a block.
 		 *
 		 * @param {string} blockName Block name, e.g. `kadence/singlebtn`.
+		 *
+		 * @since 3.9.0
+		 *
 		 * @return {Object} The action.
 		 */
 		openSiteStyles(blockName) {
@@ -33,6 +39,8 @@ const store = createReduxStore(STORE_NAME, {
 		},
 		/**
 		 * Closes the Kadence panel.
+		 *
+		 * @since 3.9.0
 		 *
 		 * @return {Object} The action.
 		 */
@@ -43,6 +51,9 @@ const store = createReduxStore(STORE_NAME, {
 	selectors: {
 		/**
 		 * @param {{blockName: (string|null)}} state The state.
+		 *
+		 * @since 3.9.0
+		 *
 		 * @return {string|null} The block whose panel is open, null when it's closed.
 		 */
 		getOpenBlockName(state) {
@@ -53,6 +64,8 @@ const store = createReduxStore(STORE_NAME, {
 
 /**
  * Registers the store.
+ *
+ * @since 3.9.0
  */
 export function registerSiteStylesStore() {
 	register(store);

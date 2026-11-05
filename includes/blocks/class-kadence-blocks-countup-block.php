@@ -289,7 +289,7 @@ class Kadence_Blocks_Countup_Block extends Kadence_Blocks_Abstract_Block impleme
 	 * The editor paints every Count Up value itself, inline, and the instance
 	 * rule outranks core's, so every site value goes through the overlay.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_overlay_attributes(): array {
 		return array_merge( array_merge( ...$this->site_styles_attribute_groups() ), [ 'titleColor', 'numberColor' ] );
@@ -298,7 +298,7 @@ class Kadence_Blocks_Countup_Block extends Kadence_Blocks_Abstract_Block impleme
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_attributes_map(): array {
 		return [];
@@ -307,7 +307,7 @@ class Kadence_Blocks_Countup_Block extends Kadence_Blocks_Abstract_Block impleme
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_supports(): array {
 		return [];
@@ -316,7 +316,7 @@ class Kadence_Blocks_Countup_Block extends Kadence_Blocks_Abstract_Block impleme
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_selectors(): array {
 		return [];
@@ -327,7 +327,7 @@ class Kadence_Blocks_Countup_Block extends Kadence_Blocks_Abstract_Block impleme
 	 * devices, and each padding and margin its devices and unit, for the title
 	 * and the number.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_attribute_groups(): array {
 		return [

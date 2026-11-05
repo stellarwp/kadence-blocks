@@ -29,7 +29,7 @@ export const GLOBAL_STYLES_SOURCE = 'global-styles';
  * @param {Object} color  A palette entry (`{ slug, color }`).
  * @param {string} origin The palette origin the entry came from.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {string} The value to store.
  */
@@ -49,7 +49,7 @@ function storedValue(color, origin) {
  * @param {string} label  The group label.
  * @param {*}      colors The origin's palette entries (`{ slug, name, color }`).
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {?Object} `{ id, label, source, swatches: [{ id, label, value, alias, fixed }] }`, or null.
  */
@@ -81,7 +81,7 @@ function toGroup(id, label, colors) {
  * @param {Array}   [origins.custom]         The site's own palette entries.
  * @param {boolean} [origins.defaultPalette] Whether the default palette is on.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {Array} The non-empty groups, theme first.
  */

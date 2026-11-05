@@ -1001,7 +1001,7 @@ describe('siteCopies', () => {
 	 * @param {Object} site     The site values.
 	 * @param {Object} previous The copies already listed.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @return {Object} Attribute name => the copied leaves' paths.
 	 */

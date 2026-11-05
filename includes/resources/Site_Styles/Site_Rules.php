@@ -16,14 +16,14 @@ use KadenceWP\KadenceBlocks\Utils\Cast;
  * `:where()`, so each site rule is one class weaker than the instance rule for
  * the same property.
  *
- * @since TBD
+ * @since 3.9.0
  */
 final class Site_Rules {
 
 	/**
 	 * The handle of the inline stylesheet.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @var string
 	 */
@@ -32,12 +32,16 @@ final class Site_Rules {
 	/**
 	 * The unique ID the builder runs under.
 	 *
+	 * @since 3.9.0
+	 *
 	 * @var string
 	 */
 	private const PLACEHOLDER = 'site-rules';
 
 	/**
 	 * The site-level values.
+	 *
+	 * @since 3.9.0
 	 *
 	 * @var Store
 	 */
@@ -46,12 +50,14 @@ final class Site_Rules {
 	/**
 	 * The supported blocks.
 	 *
+	 * @since 3.9.0
+	 *
 	 * @var Supported_Blocks
 	 */
 	private Supported_Blocks $blocks;
 
 	/**
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @param Store            $store  The site-level values.
 	 * @param Supported_Blocks $blocks The supported blocks.
@@ -67,7 +73,7 @@ final class Site_Rules {
 	 * wins a tie with a parent block's rule, such as the Advanced Button's font
 	 * weight.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function enqueue(): void {
 		$css = '';
@@ -90,7 +96,7 @@ final class Site_Rules {
 	/**
 	 * Builds a block's site rules, one set per style that takes site values.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @param string $block_name Block name, e.g. `kadence/singlebtn`.
 	 *
@@ -135,6 +141,8 @@ final class Site_Rules {
 	}
 
 	/**
+	 * @since 3.9.0
+	 *
 	 * @param Kadence_Blocks_Abstract_Block $block       The block.
 	 * @param array<string, mixed>          $base        The block's defaults, with the style.
 	 * @param array<string, mixed>          $values      The site values the style takes.
@@ -152,6 +160,8 @@ final class Site_Rules {
 	 * Runs the block's builder without leaving its output in the page's
 	 * instance CSS. Google fonts it registers stay, so a site font loads.
 	 *
+	 * @since 3.9.0
+	 *
 	 * @param Kadence_Blocks_Abstract_Block $block      The block.
 	 * @param array<string, mixed>          $attributes The attributes to build.
 	 *
@@ -168,6 +178,8 @@ final class Site_Rules {
 
 	/**
 	 * Splits CSS into rules, each rule inside a media query wrapped in its own.
+	 *
+	 * @since 3.9.0
 	 *
 	 * @param string $css Minified CSS, as the builders output it.
 	 *

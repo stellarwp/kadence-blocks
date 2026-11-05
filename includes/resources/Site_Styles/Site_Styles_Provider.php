@@ -26,11 +26,13 @@ use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provi
  * Site-level block styles in the Kadence theme's FSE mode: Global Styles values
  * that every instance of a supported block follows unless it sets its own.
  *
- * @since TBD
+ * @since 3.9.0
  */
 final class Site_Styles_Provider extends Provider {
 
 	/**
+	 * @since 3.9.0
+	 *
 	 * @inheritDoc
 	 */
 	public function register(): void {

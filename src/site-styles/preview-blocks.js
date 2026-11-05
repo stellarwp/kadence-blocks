@@ -12,6 +12,9 @@ import { getSupportedBlock } from './supported-blocks';
  *
  * @param {string}            blockName  Block name.
  * @param {Object<string, *>} attributes The block's attributes (defaults merged with site values).
+ *
+ * @since 3.9.0
+ *
  * @return {{blocks: Object[], clientId: string}} The blocks to preview, and the client ID of the previewed block.
  */
 export function previewBlocks(blockName, attributes) {

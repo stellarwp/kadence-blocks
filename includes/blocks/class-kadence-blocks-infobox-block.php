@@ -921,7 +921,7 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block impleme
 	 * tag, and the instance rule outranks core's, so every site value goes
 	 * through the overlay.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_overlay_attributes(): array {
 		return array_merge( array_merge( ...$this->site_styles_attribute_groups() ), [ 'titleColor', 'titleHoverColor', 'textColor', 'textHoverColor' ] );
@@ -930,7 +930,7 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block impleme
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_attributes_map(): array {
 		return [];
@@ -939,7 +939,7 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block impleme
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_supports(): array {
 		return [];
@@ -948,7 +948,7 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block impleme
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_selectors(): array {
 		return [];
@@ -959,7 +959,7 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block impleme
 	 * devices and unit with it, and each font and the text spacing are kept
 	 * whole.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_attribute_groups(): array {
 		return [
@@ -988,7 +988,7 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block impleme
 	 * any background. The old width and radius keep the hover border and
 	 * radius too, so an old box doesn't gain the site border only on hover.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_legacy_group_attributes(): array {
 		return [

@@ -24,7 +24,7 @@ final class StyleLibraryDataTest extends WPTestCase {
 	/**
 	 * The suite actor.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @var IntegrationTester
 	 */
@@ -33,7 +33,7 @@ final class StyleLibraryDataTest extends WPTestCase {
 	/**
 	 * The seeded library's slug.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @var string
 	 */
@@ -42,7 +42,7 @@ final class StyleLibraryDataTest extends WPTestCase {
 	/**
 	 * The option that holds the active library slug.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @var string
 	 */
@@ -51,7 +51,7 @@ final class StyleLibraryDataTest extends WPTestCase {
 	/**
 	 * The token library store.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @var Token_Store
 	 */
@@ -60,7 +60,7 @@ final class StyleLibraryDataTest extends WPTestCase {
 	/**
 	 * The active library store.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @var Active_Token_Library_Store
 	 */

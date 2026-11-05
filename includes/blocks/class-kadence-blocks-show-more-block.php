@@ -281,7 +281,7 @@ class Kadence_Blocks_Show_More_Block extends Kadence_Blocks_Abstract_Block imple
 	 * the spacing inline and the height and fade in a style tag that always
 	 * prints, so every site value goes through the overlay.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_overlay_attributes(): array {
 		return array_merge( ...$this->site_styles_attribute_groups() );
@@ -290,7 +290,7 @@ class Kadence_Blocks_Show_More_Block extends Kadence_Blocks_Abstract_Block imple
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_attributes_map(): array {
 		return [];
@@ -299,7 +299,7 @@ class Kadence_Blocks_Show_More_Block extends Kadence_Blocks_Abstract_Block imple
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_supports(): array {
 		return [];
@@ -308,7 +308,7 @@ class Kadence_Blocks_Show_More_Block extends Kadence_Blocks_Abstract_Block imple
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_selectors(): array {
 		return [];
@@ -318,7 +318,7 @@ class Kadence_Blocks_Show_More_Block extends Kadence_Blocks_Abstract_Block imple
 	 * The collapsed height, the padding and the margin each take their unit and
 	 * their tablet and mobile values with them, and the fade takes its size.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_attribute_groups(): array {
 		return [

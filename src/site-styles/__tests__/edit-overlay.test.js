@@ -71,7 +71,7 @@ const { withSiteCopiesHidden, withSiteStyles } = require('../edit-overlay');
  *
  * @param {Object} definitions The block's attribute definitions.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {Object} Attribute name => default.
  */
@@ -90,7 +90,7 @@ function registeredDefaults(definitions) {
  * @param {Function} setAttributes The block editor's attribute setter.
  * @param {string}   name          Block name.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {Object} The props the block's edit component got.
  */
@@ -106,7 +106,7 @@ function render(attributes, setAttributes = () => {}, name = BLOCK) {
  * @param {Function} setAttributes The block editor's attribute setter.
  * @param {string}   name          Block name.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {Object} The props the block's edit component got.
  */
@@ -513,7 +513,7 @@ describe("editor overlay with Row Layout's entry", () => {
 	 *
 	 * @param {Object} attributes The row's stored attributes.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @return {Object} The props the row's edit component got.
 	 */

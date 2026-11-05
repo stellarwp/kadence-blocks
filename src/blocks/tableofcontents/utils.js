@@ -11,7 +11,7 @@ import { __ } from '@wordpress/i18n';
 /**
  * Headings that stand in for a page's own in the Kadence panel, whose block has no page to read them from.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {WPHeadingData[]} The sample headings.
  */

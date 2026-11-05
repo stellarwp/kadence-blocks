@@ -669,7 +669,7 @@ class Kadence_Blocks_Countdown_Block extends Kadence_Blocks_Abstract_Block imple
 	 * the instance rule outranks core's, so every site value goes through the
 	 * overlay.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_overlay_attributes(): array {
 		return array_merge( array_merge( ...$this->site_styles_attribute_groups() ), [ 'background', 'itemBackground', 'numberColor', 'labelColor' ] );
@@ -678,7 +678,7 @@ class Kadence_Blocks_Countdown_Block extends Kadence_Blocks_Abstract_Block imple
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_attributes_map(): array {
 		return [];
@@ -687,7 +687,7 @@ class Kadence_Blocks_Countdown_Block extends Kadence_Blocks_Abstract_Block imple
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_supports(): array {
 		return [];
@@ -696,7 +696,7 @@ class Kadence_Blocks_Countdown_Block extends Kadence_Blocks_Abstract_Block imple
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_selectors(): array {
 		return [];
@@ -707,7 +707,7 @@ class Kadence_Blocks_Countdown_Block extends Kadence_Blocks_Abstract_Block imple
 	 * radius its sides, and each font is kept whole, for the container and the
 	 * count items.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_attribute_groups(): array {
 		return [

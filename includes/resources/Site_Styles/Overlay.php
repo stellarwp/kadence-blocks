@@ -23,12 +23,14 @@ use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Scopes_Site_Styles;
  * copied into an instance, listed in its `metadata.kbSiteCopies`, go back to
  * the block's defaults, so only the user's own values show.
  *
- * @since TBD Merges only the values the block lists for the overlay (classes and editor inline styles). Core's global stylesheet renders the core keys, and `Site_Rules` the rest.
+ * @since 3.9.0 Merges only the values the block lists for the overlay (classes and editor inline styles). Core's global stylesheet renders the core keys, and `Site_Rules` the rest.
  */
 final class Overlay {
 
 	/**
 	 * The site-level values.
+	 *
+	 * @since 3.9.0
 	 *
 	 * @var Store
 	 */
@@ -37,12 +39,14 @@ final class Overlay {
 	/**
 	 * The supported blocks.
 	 *
+	 * @since 3.9.0
+	 *
 	 * @var Supported_Blocks
 	 */
 	private Supported_Blocks $blocks;
 
 	/**
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @param Store            $store  The site-level values.
 	 * @param Supported_Blocks $blocks The supported blocks.
@@ -58,7 +62,7 @@ final class Overlay {
 	 * two: the CSS built in the page head keeps the hyphen, the block render
 	 * replaces it with an underscore.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @return array<string, string> Filter name => block name.
 	 */
@@ -78,7 +82,7 @@ final class Overlay {
 	 * Filters a block's attributes before rendering. The block is identified by
 	 * the filter being run.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @param mixed $attributes The block's attributes.
 	 *
@@ -99,7 +103,7 @@ final class Overlay {
 	 * render, or the defaults the design tokens supply, merged in for the page
 	 * head's CSS. A value equal to either is not the instance's own.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @param string               $block_name Block name, e.g. `kadence/singlebtn`.
 	 * @param array<string, mixed> $attributes The instance's attributes.
@@ -198,7 +202,7 @@ final class Overlay {
 	 * own unit in a cascade and its unit is not the site's, no site value of the
 	 * cascade is shown.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @param array<string, mixed>                                   $site       Attribute name => site value.
 	 * @param array<string, mixed>                                   $attributes The instance's attributes.
@@ -243,7 +247,7 @@ final class Overlay {
 	 * instance's own value of the scope attribute, or the block's default. A
 	 * style that isn't listed takes every site value.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @param array<string, mixed>                                              $site          Attribute name => site value.
 	 * @param array<string, mixed>                                              $attributes    The instance's attributes.
@@ -268,7 +272,7 @@ final class Overlay {
 	 * default for any of the group's attributes, the same test `merge()` uses,
 	 * or when an older attribute that stands in for the group holds a value.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @param array<string, mixed>        $site       Attribute name => site value.
 	 * @param array<string, mixed>        $attributes The instance's attributes.
@@ -291,7 +295,7 @@ final class Overlay {
 	/**
 	 * Merges one attribute's site value into the instance value, leaf by leaf.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @param mixed $instance The instance value, null when the instance doesn't have the attribute.
 	 * @param mixed $site     The site value.
@@ -320,7 +324,7 @@ final class Overlay {
 	 * takes the default, or is dropped without one. Mirrors the editor's
 	 * `withoutSiteCopies()`.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @param array<string, mixed> $attributes The instance's attributes.
 	 * @param array<string, mixed> $defaults   Attribute name => the default the block registers.
@@ -363,7 +367,7 @@ final class Overlay {
 	 * the filtered default came from Block Defaults when the block was
 	 * inserted, so it counts as the default too.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @param string               $name       Attribute name.
 	 * @param mixed                $instance   The instance value, null when the instance doesn't have it.
@@ -380,7 +384,7 @@ final class Overlay {
 	 * Whether the instance sets a group: a value other than the default for
 	 * any of its attributes, or a value in any older attribute standing in for it.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @param array<string, mixed> $attributes The instance's attributes.
 	 * @param array<int, string>   $group      The group's attribute names.
@@ -408,7 +412,7 @@ final class Overlay {
 	/**
 	 * Whether a value holds a number or a string that isn't empty, anywhere in it.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @param mixed $value The value.
 	 *
@@ -431,7 +435,7 @@ final class Overlay {
 	/**
 	 * Blanks the covered sides of one site value, and drops it when no side is left.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @param array<string, mixed>   $site          Attribute name => site value.
 	 * @param string                 $name          The attribute name.
@@ -467,7 +471,7 @@ final class Overlay {
 	/**
 	 * The site values the editor copied into an instance, as listed in its metadata.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @param array<string, mixed> $attributes The instance's attributes.
 	 *
@@ -484,7 +488,7 @@ final class Overlay {
 	 * Sets one leaf of a value to the default's leaf, or to an empty value when
 	 * the default has none. A leaf the value doesn't have is left out.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @param mixed                 $value         The value.
 	 * @param list<int|string|null> $path          The keys leading to the leaf.
@@ -514,7 +518,7 @@ final class Overlay {
 	 * Whether the instance has any of the attributes set to a value other than
 	 * its registered default.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @param array<string, mixed> $attributes The instance's attributes.
 	 * @param string[]             $names      Attribute names.
