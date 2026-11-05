@@ -253,8 +253,7 @@ function kadence_blocks_get_authorized_license_key(): string {
 
 	if (
 		function_exists( 'lw_harbor_get_unified_license_key' )
-		&& function_exists( 'lw_harbor_is_product_license_active' )
-		&& lw_harbor_is_product_license_active( 'kadence' )
+		&& kadence_blocks_is_harbor_license_active()
 	) {
 		$unified_key = lw_harbor_get_unified_license_key();
 		if ( ! empty( $unified_key ) ) {
@@ -402,7 +401,25 @@ function kadence_blocks_is_license_authorized(): bool {
 		return true;
 	}
 
-	return lw_harbor_is_product_license_active( 'kadence' );
+	return kadence_blocks_is_harbor_license_active();
+}
+
+/**
+ * Whether a Nexcess license covers Kadence, from Harbor's stored state only.
+ *
+ * A Nexcess Plugin Stack license holds only the stack product, not Kadence, and
+ * always includes Kadence's paid plugins, so it counts too.
+ *
+ * @since TBD
+ *
+ * @return bool
+ */
+function kadence_blocks_is_harbor_license_active(): bool {
+	if ( ! function_exists( 'lw_harbor_is_product_license_active' ) ) {
+		return false;
+	}
+
+	return lw_harbor_is_product_license_active( 'kadence' ) || lw_harbor_is_product_license_active( 'nexcess-plugin-stack' );
 }
 
 /**

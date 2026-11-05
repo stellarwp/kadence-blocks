@@ -21,7 +21,7 @@ final class Home_Content_View_Model {
 	 */
 	public function exports(): array {
 		$is_authorized = ! kadence_blocks_is_ai_disabled() && kadence_blocks_is_legacy_license_authorized();
-		$is_liquid_web = ! $is_authorized && lw_harbor_is_product_license_active( 'kadence' );
+		$is_liquid_web = ! $is_authorized && kadence_blocks_is_harbor_license_active();
 
 		return [
 			'bannerConfig'  => $this->banner_config( $is_authorized, $is_liquid_web ),
