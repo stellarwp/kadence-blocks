@@ -612,7 +612,7 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block im
 	 * editor paints every other value inline, so every site value goes through
 	 * the overlay.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_overlay_attributes(): array {
 		return array_merge( ...$this->site_styles_attribute_groups() );
@@ -621,7 +621,7 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block im
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_attributes_map(): array {
 		return [];
@@ -630,7 +630,7 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block im
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_supports(): array {
 		return [];
@@ -639,7 +639,7 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block im
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_selectors(): array {
 		return [];
@@ -648,7 +648,7 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block im
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_scope_attribute(): string {
 		return 'barType';
@@ -657,7 +657,7 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block im
 	/**
 	 * The bar's own type, from its `barType` attribute.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @param array<string, mixed> $attributes The instance's attributes.
 	 *
@@ -671,7 +671,7 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block im
 	 * A mask bar uses the thickness as its shape height, so it takes every site
 	 * value except the thickness. Other types take every value.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_scoped_attributes(): array {
 		return [ 'line-mask' => array_values( array_diff( $this->site_styles_overlay_attributes(), $this->site_styles_thickness_attributes() ) ) ];
@@ -681,7 +681,7 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block im
 	 * Each color keeps its opacity, each font is kept whole, and each spacing
 	 * set, alignment and width keeps its tablet and mobile values and its unit.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_attribute_groups(): array {
 		return [
@@ -701,7 +701,7 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block im
 	/**
 	 * The bar thickness on each device.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @return list<string> Attribute names.
 	 */

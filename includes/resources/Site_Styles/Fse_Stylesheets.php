@@ -13,7 +13,7 @@ namespace KadenceWP\KadenceBlocks\Site_Styles;
  * color. The editor always gets every key, so a value set in the Styles screen
  * shows before it is saved. Classic mode keeps the original files.
  *
- * @since TBD
+ * @since 3.9.0
  */
 final class Fse_Stylesheets {
 
@@ -21,7 +21,7 @@ final class Fse_Stylesheets {
 	 * Stylesheets with an FSE copy, by file name in `dist/`, and the block whose
 	 * default rule they hold. `style-*` files are the front end's.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @var array<string, string>
 	 */
@@ -33,7 +33,7 @@ final class Fse_Stylesheets {
 	/**
 	 * The site-level values.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @var Store
 	 */
@@ -42,14 +42,14 @@ final class Fse_Stylesheets {
 	/**
 	 * The supported blocks.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @var Supported_Blocks
 	 */
 	private Supported_Blocks $blocks;
 
 	/**
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @param Store            $store  The site-level values.
 	 * @param Supported_Blocks $blocks The supported blocks.
@@ -62,7 +62,7 @@ final class Fse_Stylesheets {
 	/**
 	 * Points a stylesheet with an FSE copy to the copy it needs.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @param string|mixed $src The stylesheet URL.
 	 *

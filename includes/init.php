@@ -98,7 +98,7 @@ function kadence_blocks_post_block_get_excerpt_length() {
 /**
  * Add global styles into the backend editor.
  *
- * @since TBD Follows the Global Styles content size in the Kadence theme's Full Site Editing mode.
+ * @since 3.9.0 Follows the Global Styles content size in the Kadence theme's Full Site Editing mode.
  */
 function kadence_blocks_add_global_gutenberg_inline_styles() {
 	global $content_width;

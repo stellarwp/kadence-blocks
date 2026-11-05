@@ -15,14 +15,14 @@ use KadenceWP\KadenceBlocks\Site_Styles\Contracts\Scopes_Site_Styles;
  * out `selectors`: the editor gets them from core's server-side block
  * definitions, which Kadence's JS registration doesn't override.
  *
- * @since TBD
+ * @since 3.9.0
  */
 final class Editor_Params {
 
 	/**
 	 * The script that registers the early `blocks.registerBlockType` filters.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public const EARLY_FILTERS_HANDLE = 'kadence-blocks-early-filters-js';
 
@@ -30,21 +30,21 @@ final class Editor_Params {
 	 * The editor plugins script, which hosts the Kadence panel. It runs before
 	 * the early filters script.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public const PLUGIN_HANDLE = 'kadence-blocks-plugin-js';
 
 	/**
 	 * The supported blocks.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @var Supported_Blocks
 	 */
 	private Supported_Blocks $blocks;
 
 	/**
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @param Supported_Blocks $blocks The supported blocks.
 	 */
@@ -56,7 +56,7 @@ final class Editor_Params {
 	 * Adds the data before each script that reads it, whichever runs first.
 	 * Runs after the scripts are enqueued.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function add_script_data(): void {
 		$is_fse_mode = kadence_blocks_is_fse_mode();

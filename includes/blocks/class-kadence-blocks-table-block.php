@@ -306,7 +306,7 @@ class Kadence_Blocks_Table_Block extends Kadence_Blocks_Abstract_Block implement
 	 * instance rule outranks core's, so every site value goes through the
 	 * overlay.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_overlay_attributes(): array {
 		return array_merge( ...$this->site_styles_attribute_groups() );
@@ -315,7 +315,7 @@ class Kadence_Blocks_Table_Block extends Kadence_Blocks_Abstract_Block implement
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_attributes_map(): array {
 		return [];
@@ -324,7 +324,7 @@ class Kadence_Blocks_Table_Block extends Kadence_Blocks_Abstract_Block implement
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_supports(): array {
 		return [];
@@ -333,7 +333,7 @@ class Kadence_Blocks_Table_Block extends Kadence_Blocks_Abstract_Block implement
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_selectors(): array {
 		return [];
@@ -344,7 +344,7 @@ class Kadence_Blocks_Table_Block extends Kadence_Blocks_Abstract_Block implement
 	 * takes its devices and unit with it, the row backgrounds their toggle, and
 	 * the max width its unit and scroll setting.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_attribute_groups(): array {
 		return [

@@ -21,7 +21,7 @@ final class SiteStylesPilotBlocksTest extends WPTestCase {
 	protected IntegrationTester $tester;
 
 	/**
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @var WP_Block_Type|null
 	 */

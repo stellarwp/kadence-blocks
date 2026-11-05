@@ -12,7 +12,7 @@ import { getSupportedBlock } from '../../site-styles/supported-blocks';
 /**
  * @param {string} name Block name.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {boolean} Whether core lists the block, i.e. it gets core supports.
  */
@@ -23,7 +23,7 @@ function isListedByCore(name) {
 /**
  * @param {string} name Block name.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {boolean} Whether another supported block's screen opens the block's panel: a supported block can be
  * placed in it.
@@ -43,7 +43,7 @@ function isOpenedFromAnotherScreen(name) {
  *
  * @param {string|undefined} title The screen's title.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {string|undefined} Block name.
  */
@@ -65,7 +65,7 @@ export function screenBlockName(title) {
  *
  * @param {string} blockName Block name.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {string[]} Block names.
  */

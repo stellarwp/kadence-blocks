@@ -13,14 +13,14 @@ use WP_Theme_JSON_Resolver;
  * resolver: `settings.custom.kadence` is removed from what core renders, so the
  * resolver never returns it.
  *
- * @since TBD
+ * @since 3.9.0
  */
 final class Store {
 
 	/**
 	 * The supported blocks.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @var Supported_Blocks
 	 */
@@ -29,14 +29,14 @@ final class Store {
 	/**
 	 * The last user Global Styles read, and the key it was read under.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @var array{key: string, data: array<string, mixed>}|null
 	 */
 	private ?array $user_data = null;
 
 	/**
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @param Supported_Blocks $blocks The supported blocks.
 	 */
@@ -49,7 +49,7 @@ final class Store {
 	 * attributes. The colors in core's style for the block are left to core's
 	 * global stylesheet.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @param string $block_name Block name, e.g. `kadence/singlebtn`.
 	 *
@@ -71,7 +71,7 @@ final class Store {
 	 * Returns the mapped paths in a block's core style that hold a site value
 	 * on any device, e.g. `color.background`.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @param string $block_name Block name, e.g. `kadence/singlebtn`.
 	 *
@@ -116,7 +116,7 @@ final class Store {
 	 * Reads the user Global Styles once per site, theme and change to posts or
 	 * terms, since every supported block instance on a page asks for them.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @return array<string, mixed> The decoded user Global Styles post, empty when there is none.
 	 */

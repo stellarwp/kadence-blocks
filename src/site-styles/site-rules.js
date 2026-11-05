@@ -34,7 +34,7 @@ const cache = new Map();
  *
  * @param {string} css Minified CSS.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {string[]} The rules.
  */
@@ -62,7 +62,7 @@ export function splitRules(css) {
  * @param {string}                 after     CSS with the defaults plus the site values.
  * @param {Object<string, string>} selectors Instance selector => site selector.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {string} The site rules.
  */
@@ -84,7 +84,7 @@ export function siteRulesFrom(before, after, selectors) {
  * @param {Object}   attributes     The attributes to render.
  * @param {string}   previewDevice  The editor's preview device.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {string} The CSS the component prints.
  */
@@ -107,7 +107,7 @@ function renderedCss(StyleComponent, attributes, previewDevice) {
  * @param {Object}   record         The edited Global Styles record.
  * @param {string}   previewDevice  The editor's preview device.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {string} The block's site rules, empty without Kadence-only site values.
  */
@@ -162,7 +162,7 @@ function siteRulesCss(name, StyleComponent, selectors, record, previewDevice) {
  * @param {string}   id  The style element's ID.
  * @param {string}   css The CSS, empty to remove the element.
  *
- * @since TBD
+ * @since 3.9.0
  */
 export function writeToHead(doc, id, css) {
 	const existing = doc.getElementById(id);
@@ -187,7 +187,7 @@ const owners = new WeakMap();
  * @param {Document} doc The document the style element is in.
  * @param {string}   id  The style element's ID.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {Function} Releases the element: the last release removes it.
  */
@@ -211,7 +211,7 @@ export function retain(doc, id) {
  * @param {Function} props.StyleComponent The block's style component, which takes `attributes` and `previewDevice`.
  * @param {Function} props.selectors      (placeholder, style) => instance selector => site selector.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {Element} An empty style element that marks the document.
  */
@@ -248,7 +248,7 @@ function SiteRulesStyle({ name, StyleComponent, selectors }) {
  *
  * @param {Object} props The `SiteRulesStyle` props.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {Element|null} The style marker, or nothing.
  */

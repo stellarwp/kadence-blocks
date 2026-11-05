@@ -578,7 +578,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block imple
 	 * the same rule and win it. As for every overlay value, a button can't pick
 	 * the block's default over a site value, as it can't tell it from none.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_overlay_attributes(): array {
 		$cascaded = [];
@@ -611,7 +611,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block imple
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_cascades(): array {
 		return [
@@ -629,7 +629,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block imple
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_attributes_map(): array {
 		return [
@@ -641,7 +641,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block imple
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_supports(): array {
 		return [
@@ -657,7 +657,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block imple
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_selectors(): array {
 		/*
@@ -670,7 +670,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block imple
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_scope_attribute(): string {
 		return 'inheritStyles';
@@ -680,7 +680,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block imple
 	 * The style the button renders as. A class-painted preset (Outline, or a theme style) sets it, since
 	 * presets replace `inheritStyles`; otherwise it's the button's `inheritStyles`, as in `build_html()`.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @param array<string, mixed> $attributes The instance's attributes.
 	 *
@@ -711,7 +711,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block imple
 	 * keeps its transparent background and theme outline colors; the theme
 	 * button styles take none.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_scoped_attributes(): array {
 		$shape = [
@@ -755,7 +755,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block imple
 	/**
 	 * The button's `kb-btn-global-<style>` class.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @param string $style The style, e.g. `fill`.
 	 *

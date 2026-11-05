@@ -7,7 +7,7 @@ namespace KadenceWP\KadenceBlocks\Site_Styles\Contracts;
  * on a style each instance picks, e.g. a button's Fill / Outline / Inherit.
  * One that also prints site rules implements `Prints_Site_Rules`.
  *
- * @since TBD
+ * @since 3.9.0
  */
 interface Scopes_Site_Styles {
 
@@ -15,7 +15,7 @@ interface Scopes_Site_Styles {
 	 * The attribute that holds the instance's style, e.g. `inheritStyles`.
 	 * It must also be excluded, so it is never stored site-wide.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @return string Attribute name.
 	 */
@@ -25,7 +25,7 @@ interface Scopes_Site_Styles {
 	 * The style an instance takes site values as. Usually its scope attribute's
 	 * value, but a block can read it from what the instance actually renders.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @param array<string, mixed> $attributes The instance's attributes.
 	 *
@@ -37,7 +37,7 @@ interface Scopes_Site_Styles {
 	 * The site attributes each style takes. A style that isn't listed takes
 	 * all of them; an empty list takes none.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @return array<string, list<string>> Style => attribute names.
 	 */

@@ -14,7 +14,7 @@ import { getSupportedBlock } from './supported-blocks';
  * @param {string} clientId  The block's client ID.
  * @param {string} blockName The block name.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {*} `false` for a shared color setting of a supported block, the value otherwise.
  */

@@ -370,7 +370,7 @@ class Kadence_Blocks_Posts_Block extends Kadence_Blocks_Abstract_Block implement
 	 * instance rules and classes outrank core's, so every site value goes
 	 * through the overlay.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_overlay_attributes(): array {
 		return array_merge( array_merge( ...$this->site_styles_attribute_groups() ), [ 'loopStyle' ] );
@@ -379,7 +379,7 @@ class Kadence_Blocks_Posts_Block extends Kadence_Blocks_Abstract_Block implement
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_attributes_map(): array {
 		return [];
@@ -388,7 +388,7 @@ class Kadence_Blocks_Posts_Block extends Kadence_Blocks_Abstract_Block implement
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_supports(): array {
 		return [];
@@ -397,7 +397,7 @@ class Kadence_Blocks_Posts_Block extends Kadence_Blocks_Abstract_Block implement
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_selectors(): array {
 		return [];
@@ -408,7 +408,7 @@ class Kadence_Blocks_Posts_Block extends Kadence_Blocks_Abstract_Block implement
 	 * kept whole, the image ratio keeps its size, and the category style keeps
 	 * its divider and colors.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_attribute_groups(): array {
 		return [

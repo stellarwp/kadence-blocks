@@ -103,7 +103,7 @@ class Kadence_Blocks_Icon_Block extends Kadence_Blocks_Abstract_Block implements
 	 * The editor paints the layout inline. The block and vertical alignments are
 	 * classes in the saved markup, which no site value can reach, so they stay per icon.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_overlay_attributes(): array {
 		return [ 'textAlignment', 'tabletTextAlignment', 'mobileTextAlignment', 'wrapIcons', 'gap', 'gapUnit' ];
@@ -112,7 +112,7 @@ class Kadence_Blocks_Icon_Block extends Kadence_Blocks_Abstract_Block implements
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_attributes_map(): array {
 		return [];
@@ -121,7 +121,7 @@ class Kadence_Blocks_Icon_Block extends Kadence_Blocks_Abstract_Block implements
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_supports(): array {
 		return [];
@@ -130,7 +130,7 @@ class Kadence_Blocks_Icon_Block extends Kadence_Blocks_Abstract_Block implements
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_selectors(): array {
 		return [];

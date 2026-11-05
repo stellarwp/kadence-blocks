@@ -33,7 +33,7 @@ import { STORE_NAME } from './store';
  * @param {Object} props           Component props.
  * @param {string} props.blockName Block name.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {Element} The item.
  */
@@ -67,7 +67,7 @@ function LaunchItem({ blockName }) {
 /**
  * @param {Element|null} heading The screen heading.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {string|undefined} The supported block whose screen this is. The heading
  * is matched, not the URL: in canvas mode the URL keeps the last block screen
@@ -80,7 +80,7 @@ function headingBlockName(heading) {
 /**
  * Starts adding the item to supported blocks' Styles screens.
  *
- * @since TBD
+ * @since 3.9.0
  */
 export function watchStylesScreens() {
 	let root = null;

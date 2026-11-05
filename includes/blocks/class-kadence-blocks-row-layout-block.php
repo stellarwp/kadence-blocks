@@ -333,7 +333,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block imple
 	 * @param string             $unique_id       the blocks attr ID.
 	 * @param string             $unique_style_id the blocks alternate ID for queries.
 	 *
-	 * @since TBD Starts the breakout media query at the Global Styles content size in the Kadence theme's Full Site Editing mode, when it is a plain length.
+	 * @since 3.9.0 Starts the breakout media query at the Global Styles content size in the Kadence theme's Full Site Editing mode, when it is a plain length.
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
@@ -1912,7 +1912,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block imple
 	 * background color adds a class, so every site value goes through the
 	 * overlay.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_overlay_attributes(): array {
 		return array_merge( array_merge( ...$this->site_styles_attribute_groups() ), [ 'bgColor', 'textColor', 'linkColor', 'linkHoverColor' ] );
@@ -1921,7 +1921,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block imple
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_attributes_map(): array {
 		return [];
@@ -1930,7 +1930,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block imple
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_supports(): array {
 		return [];
@@ -1939,7 +1939,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block imple
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_selectors(): array {
 		return [];
@@ -1950,7 +1950,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block imple
 	 * mobile values with it, the radius takes its overflow, and the shadow its
 	 * toggle.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_attribute_groups(): array {
 		return [
@@ -1970,7 +1970,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block imple
 	 * side numbers and the old border colors and widths, which build_css()
 	 * renders instead of the padding, margin and border.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_legacy_group_attributes(): array {
 		return [
@@ -1988,7 +1988,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block imple
 	 * media query `em` uses the browser's default font size, while the content width uses
 	 * the font size the content inherits.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @return string The length, for example `650px` or `42rem`, or an empty string.
 	 */

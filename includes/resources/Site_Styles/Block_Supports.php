@@ -8,21 +8,21 @@ namespace KadenceWP\KadenceBlocks\Site_Styles;
  * the matching controls. The static `block.json` files stay unchanged, so
  * blocks-only sites and other themes see nothing new.
  *
- * @since TBD
+ * @since 3.9.0
  */
 final class Block_Supports {
 
 	/**
 	 * The supported blocks.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @var Supported_Blocks
 	 */
 	private Supported_Blocks $blocks;
 
 	/**
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @param Supported_Blocks $blocks The supported blocks.
 	 */
@@ -31,7 +31,7 @@ final class Block_Supports {
 	}
 
 	/**
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @param mixed $metadata Block metadata read from `block.json`.
 	 *

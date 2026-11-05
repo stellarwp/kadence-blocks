@@ -22,7 +22,7 @@ final class Screen {
 	 * Output the Style Library screen markup.
 	 *
 	 * @since 3.8.0
-	 * @since TBD Prints a notice about Global Styles in the Kadence theme's Full Site Editing mode.
+	 * @since 3.9.0 Prints a notice about Global Styles in the Kadence theme's Full Site Editing mode.
 	 *
 	 * @return void
 	 */
@@ -43,7 +43,7 @@ final class Screen {
 	 * Print a notice that site-wide colors are managed in Global Styles while the Kadence theme
 	 * runs in its Full Site Editing mode.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @return void
 	 */

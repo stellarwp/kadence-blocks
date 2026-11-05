@@ -115,7 +115,7 @@ import { siteBorderDefaults, useSiteDefaults, withSiteDefaults } from '../../sit
  * @param {string} placeholder The unique ID the style component rendered under.
  * @param {string} style       The button style the rules are for, e.g. `fill`.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {Object<string, string>} Instance selector => site selector.
  */

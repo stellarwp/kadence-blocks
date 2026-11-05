@@ -26,21 +26,21 @@ use WP_Theme_JSON_Data_Gutenberg;
  * everything. The REST endpoint the Site Editor loads reads the post directly
  * and still returns the values.
  *
- * @since TBD
+ * @since 3.9.0
  */
 final class User_Data_Filter {
 
 	/**
 	 * The supported blocks.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @var Supported_Blocks
 	 */
 	private Supported_Blocks $blocks;
 
 	/**
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @param Supported_Blocks $blocks The supported blocks.
 	 */
@@ -53,7 +53,7 @@ final class User_Data_Filter {
 	 * since the Gutenberg plugin passes its own WP_Theme_JSON_Data_Gutenberg, which doesn't
 	 * extend core's class.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @param WP_Theme_JSON_Data|WP_Theme_JSON_Data_Gutenberg $theme_json The user-origin Global Styles.
 	 *
@@ -103,7 +103,7 @@ final class User_Data_Filter {
 	}
 
 	/**
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @param array<array-key, mixed> $style A block's style, or part of it.
 	 *
@@ -133,7 +133,7 @@ final class User_Data_Filter {
 	}
 
 	/**
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @param mixed $value A style value.
 	 *

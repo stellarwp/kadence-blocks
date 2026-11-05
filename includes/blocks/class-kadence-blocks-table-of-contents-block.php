@@ -328,7 +328,7 @@ class Kadence_Blocks_Tableofcontents_Block extends Kadence_Blocks_Abstract_Block
 	 * goes through the overlay. What the block does with the headings (which to list, the
 	 * title text and toggle, scrolling, searching) stays per table.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_overlay_attributes(): array {
 		return array_merge(
@@ -348,7 +348,7 @@ class Kadence_Blocks_Tableofcontents_Block extends Kadence_Blocks_Abstract_Block
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_attributes_map(): array {
 		return [ 'contentColor' => 'color.text' ];
@@ -359,7 +359,7 @@ class Kadence_Blocks_Tableofcontents_Block extends Kadence_Blocks_Abstract_Block
 	 *
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_supports(): array {
 		return [
@@ -378,7 +378,7 @@ class Kadence_Blocks_Tableofcontents_Block extends Kadence_Blocks_Abstract_Block
 	 *
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_selectors(): array {
 		return [ 'color' => '.wp-block-kadence-tableofcontents .kb-table-of-content-list' ];

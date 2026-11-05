@@ -11,7 +11,7 @@ namespace KadenceWP\KadenceBlocks\Site_Styles\Contracts;
  * Unlike `Groups_Site_Styles`, an instance that sets one attribute of a cascade
  * still takes the site values of the devices its own value doesn't cover.
  *
- * @since TBD
+ * @since 3.9.0
  */
 interface Cascades_Site_Styles {
 
@@ -24,7 +24,7 @@ interface Cascades_Site_Styles {
 	 * the cascade is dropped, as a value can't be shown in the other unit. Each
 	 * attribute must also be listed by `site_styles_overlay_attributes()`.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @return list<array{unit?: string, values: list<string>}> The cascades.
 	 */

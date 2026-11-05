@@ -29,7 +29,7 @@ final class DesignTokens extends Module {
 	/**
 	 * The per-request memos the token projections keep, by class.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @var array<class-string, string[]>
 	 */
@@ -44,7 +44,7 @@ final class DesignTokens extends Module {
 	/**
 	 * Whether the current test read through the token caches.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @var bool
 	 */
@@ -53,7 +53,7 @@ final class DesignTokens extends Module {
 	/**
 	 * Whether the current test replaced the style and script registries.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @var bool
 	 */
@@ -62,7 +62,7 @@ final class DesignTokens extends Module {
 	/**
 	 * The styles registry before the test replaced it.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @var WP_Styles|null
 	 */
@@ -71,7 +71,7 @@ final class DesignTokens extends Module {
 	/**
 	 * The scripts registry before the test replaced it.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @var WP_Scripts|null
 	 */

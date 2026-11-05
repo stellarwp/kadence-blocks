@@ -14,7 +14,7 @@ import './editor.scss';
  * Mounts the modal host in its own React root, so it works in the Site
  * Editor's browse mode, where plugin sidebars aren't rendered.
  *
- * @since TBD
+ * @since 3.9.0
  */
 function mountModal() {
 	const container = document.createElement('div');

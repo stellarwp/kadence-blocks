@@ -28,7 +28,7 @@ import { getSupportedBlock } from './supported-blocks';
  * A design token's CSS variable, as `resolveTokenAlias()` writes it: `var(--kb-token--<id>)`,
  * with every `.` of the id written as `--`. Token ids never hold `--` themselves.
  *
- * @since TBD
+ * @since 3.9.0
  */
 const TOKEN_VAR = new RegExp('^var\\(' + escapeRegExp(TOKEN_VAR_PREFIX) + '([a-z0-9-]+)\\)$');
 
@@ -55,7 +55,7 @@ const TOKEN_VAR = new RegExp('^var\\(' + escapeRegExp(TOKEN_VAR_PREFIX) + '([a-z
  *
  * @param {string} value The stored color.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {string} The Kadence color value.
  */
@@ -87,7 +87,7 @@ export function toKadenceColor(value) {
  *
  * @param {string} value The Kadence color value.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {string} `var:preset|color|theme-paletteN` for a palette color, `var(--kb-token--…)` for a design token, the value otherwise.
  */
@@ -108,7 +108,7 @@ export function toCoreColor(value) {
  * @param {GlobalStylesRecord|undefined} record    The edited Global Styles record.
  * @param {string}                       blockName Block name.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {Attributes} Attribute name => site value; empty for an unsupported block.
  */
@@ -148,7 +148,7 @@ export function siteAttributes(record, blockName) {
  * @param {Object<string, {default: *}>} definitions The block type's attribute definitions.
  * @param {string}                        blockName  Block name.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {{core: Object<string, string>, custom: Attributes}} Core style path => value, and the custom values.
  */
@@ -193,7 +193,7 @@ export function toStoredForm(attributes, definitions, blockName) {
  * @param {string}                                             blockName Block name.
  * @param {{core: Object<string, string>, custom: Attributes}} stored    The block's stored form, from `toStoredForm()`.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {{styles: Object, settings: Object}} The edited styles and settings.
  */
@@ -243,7 +243,7 @@ export function withStoredForm(record, blockName, stored) {
  * @param {Object}   object The object to change.
  * @param {string[]} path   The path.
  *
- * @since TBD
+ * @since 3.9.0
  */
 function replaceEmptyList(object, path) {
 	const value = get(object, path);
@@ -259,7 +259,7 @@ function replaceEmptyList(object, path) {
  * @param {Object}   object The object to change.
  * @param {string[]} path   The path.
  *
- * @since TBD
+ * @since 3.9.0
  */
 function unsetIfEmpty(object, path) {
 	const value = get(object, path);
@@ -277,7 +277,7 @@ function unsetIfEmpty(object, path) {
  * @param {*} site         The site value.
  * @param {*} defaultValue The block's default value.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {*} The merged value.
  */
@@ -309,7 +309,7 @@ export function merge(instance, site, defaultValue) {
  * @param {import('./supported-blocks').SiteStylesScope} scope        The block's scope.
  * @param {*}                                                     defaultStyle The scope attribute's default.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {Attributes} The site values the instance takes.
  */
@@ -335,7 +335,7 @@ export function scopeSiteAttributes(site, attributes, scope, defaultStyle) {
  * @param {Object<string, {default: *}>} definitions  The block type's attribute definitions.
  * @param {Object<string, string[]>}      [legacy]     First attribute of a group => older attributes that stand in for it.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {Attributes} The site values the instance takes.
  */
@@ -359,7 +359,7 @@ export function groupSiteAttributes(site, attributes, groups, definitions, legac
  * @param {Object<string, {default: *}>} definitions The block type's attribute definitions.
  * @param {import('./supported-blocks').SiteStylesCascade[]} [cascades] The attribute cascades; a block without any keeps every site value.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {Attributes} The site values the instance takes.
  */
@@ -410,7 +410,7 @@ export function withoutOverridden(site, attributes, definitions, cascades = []) 
  * @param {Set<string>|true} covered      The covered sides, or `true` for all of them.
  * @param {*}                defaultValue The attribute's default, whose sides blank the covered ones.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {Attributes} The site values without the covered sides.
  */
@@ -439,7 +439,7 @@ function withoutCoveredSides(site, name, covered, defaultValue) {
  * @param {Attributes}                    site        The site values.
  * @param {Object<string, {default: *}>} definitions The block type's attribute definitions.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {Attributes} The attributes with the site values merged in.
  */
@@ -461,7 +461,7 @@ export function mergeAttributes(attributes, site, definitions) {
  * @param {*} shown  The value the block was shown (instance merged with site).
  * @param {*} stored The instance's stored value.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {*} The value to store.
  */
@@ -509,7 +509,7 @@ export function unmerge(next, shown, stored) {
  * @param {Object<string, string[]>}      [legacy]      First attribute of a group => older attributes that stand in for it.
  * @param {import('./supported-blocks').SiteStylesCascade[]} [cascades] The block's cascades.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {Attributes} The attributes to store.
  */
@@ -599,7 +599,7 @@ export function guardWrite(written, shown, stored, site, groups = [], definition
  * @param {Attributes} copied The cascade's shown values without the covered sides.
  * @param {Attributes} stored The instance's stored attributes.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {*} The value to store.
  */
@@ -625,7 +625,7 @@ function copiedValue(name, unit, shown, copied, stored) {
  * @param {Attributes}                  site       The site values.
  * @param {Object<string, Array<Array>>} [previous] The copies already listed, by attribute name.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {Object<string, Array<Array>>} Attribute name => the copied leaves' paths.
  */
@@ -660,7 +660,7 @@ export function siteCopies(kept, written, shown, stored, site, previous = {}) {
  * @param {Attributes}                    attributes  The instance's attributes.
  * @param {Object<string, {default: *}>} definitions The block type's attribute definitions.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {Attributes} The attributes without the copied site values.
  */
@@ -709,7 +709,7 @@ export function withoutSiteCopies(attributes, definitions) {
  * @param {Attributes} shown   The attributes the block was shown.
  * @param {Attributes} stored  The instance's stored attributes.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {Attributes} The attributes to store.
  */
@@ -746,7 +746,7 @@ export function keepSiteCopies(written, shown, stored) {
  * @param {Object<string, Array<Array>>} previous The copies listed before the write.
  * @param {Object<string, Array<Array>>} copies   The copies after it.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {Attributes} The attributes to store.
  */
@@ -777,7 +777,7 @@ export function withCopiesMetadata(kept, stored, previous, copies) {
  * @param {Array<Array>}                 changed The paths of the leaves the user changed.
  * @param {Array<Array>}                 copied  The paths of the leaves just copied.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {Object<string, Array<Array>>} The updated copies.
  */
@@ -802,7 +802,7 @@ function withCopies(copies, name, changed, copied) {
  * @param {*} value The value.
  * @param {*} other The value it is compared with.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {Array<Array>} The paths of the differing leaves; `[[]]` when the value differs as a whole.
  */
@@ -824,7 +824,7 @@ function leafPaths(value, other) {
 /**
  * @param {*} value A value.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {boolean} Whether it's a CSS unit, such as a cascade's or a group's unit attribute holds.
  */
@@ -843,7 +843,7 @@ function isUnit(value) {
  * @param {Attributes} site      The site values.
  * @param {Attributes} current   The current virtual block's attributes, empty before it exists.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {Attributes} The virtual block's attributes.
  */
@@ -861,7 +861,7 @@ export function panelAttributes(blockName, defaults, site, current) {
  * @param {Object<string, {default: *}>} definitions The block type's attribute definitions.
  * @param {Object<string, string[]>}      [legacy]    First attribute of a group => older attributes that stand in for it.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {boolean} Whether the instance sets the group.
  */
@@ -880,7 +880,7 @@ function setsGroup(attributes, group, definitions, legacy = {}) {
  *
  * @param {*} value A value.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {boolean} Whether it holds a value.
  */
@@ -895,7 +895,7 @@ function holdsValue(value) {
 /**
  * @param {*} value A value.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {boolean} Whether it's an array or a plain object.
  */
@@ -913,7 +913,7 @@ function isObjectLike(value) {
  * @param {import('./supported-blocks').SupportedBlock} block The block's entry.
  * @param {string}                                       name  Attribute name.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {boolean} Whether the attribute can be a site value.
  */

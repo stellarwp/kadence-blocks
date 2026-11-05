@@ -41,7 +41,7 @@ import { isVirtualBlock } from './virtual-blocks';
  * @param {string}            name       Block name.
  * @param {Object<string, *>} attributes The instance's stored attributes.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {Object<string, *>} Attribute name => site value.
  */
@@ -69,7 +69,7 @@ function instanceSiteAttributes(record, name, attributes) {
 /**
  * @param {Object<string, *>} attributes The instance's attributes.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {boolean} Whether the instance lists site values copied into it.
  */
@@ -83,7 +83,7 @@ function hasCopies(attributes) {
  * @param {Object}   props           The block edit props plus the wrapped component.
  * @param {Function} props.BlockEdit The wrapped block edit component.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {Element} The block edit with merged attributes and a guarded `setAttributes`.
  */
@@ -144,7 +144,7 @@ function SiteStylesBlockEdit({ BlockEdit, ...props }) {
  * The `editor.BlockEdit` filter: wraps supported blocks in FSE mode, except
  * the Kadence panel's virtual and preview blocks.
  *
- * @since TBD
+ * @since 3.9.0
  */
 export const withSiteStyles = createHigherOrderComponent(
 	(BlockEdit) => (props) => {
@@ -164,7 +164,7 @@ export const withSiteStyles = createHigherOrderComponent(
  * @param {Object}   props           The block edit props plus the wrapped component.
  * @param {Function} props.BlockEdit The wrapped block edit component.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {Element} The block edit without its copied site values.
  */
@@ -200,7 +200,7 @@ function SiteCopiesHiddenBlockEdit({ BlockEdit, ...props }) {
  * values copied into it shows them at the block's defaults, as the front end
  * does, since the site's values no longer apply.
  *
- * @since TBD
+ * @since 3.9.0
  */
 export const withSiteCopiesHidden = createHigherOrderComponent(
 	(BlockEdit) => (props) => {

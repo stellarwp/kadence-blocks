@@ -17,7 +17,7 @@ final class SiteStylesShowMoreTest extends WPTestCase {
 	/**
 	 * The suite actor.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @var \IntegrationTester
 	 */

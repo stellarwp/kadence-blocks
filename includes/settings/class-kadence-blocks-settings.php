@@ -324,7 +324,7 @@ class Kadence_Blocks_Settings {
 	 * Load Gutenberg Palette in editor.
 	 *
 	 * @param array $settings The settings.
-	 * @since TBD Adds nothing in the Kadence theme's Full Site Editing mode, where Global Styles owns the palette.
+	 * @since 3.9.0 Adds nothing in the Kadence theme's Full Site Editing mode, where Global Styles owns the palette.
 	 */
 	public function load_color_palette_editor_settings( $settings ) {
 		if ( kadence_blocks_is_fse_mode() ) {
@@ -427,7 +427,7 @@ class Kadence_Blocks_Settings {
 	 *
 	 * @param WP_Theme_JSON_Data $theme_json The theme.json data object.
 	 * @return WP_Theme_JSON_Data Modified theme.json data.
-	 * @since TBD Adds nothing in the Kadence theme's Full Site Editing mode, where Global Styles owns the palette.
+	 * @since 3.9.0 Adds nothing in the Kadence theme's Full Site Editing mode, where Global Styles owns the palette.
 	 */
 	public function load_color_palette_theme_json( $theme_json ) {
 		if ( kadence_blocks_is_fse_mode() ) {
@@ -501,7 +501,7 @@ class Kadence_Blocks_Settings {
 	/**
 	 * Load Gutenberg Palette
 	 *
-	 * @since TBD Skips the theme palette support in the Kadence theme's Full Site Editing mode, where Global Styles owns the palette; the color class CSS stays for colors already applied to content.
+	 * @since 3.9.0 Skips the theme palette support in the Kadence theme's Full Site Editing mode, where Global Styles owns the palette; the color class CSS stays for colors already applied to content.
 	 */
 	public function load_color_palette() {
 		$palette = json_decode( get_option( 'kadence_blocks_colors' ) );

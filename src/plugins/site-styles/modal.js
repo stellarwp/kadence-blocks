@@ -11,7 +11,7 @@ import SiteStylesPanel from './panel';
 /**
  * Renders the modal while a block's panel is open.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {Element|null} The modal, or nothing.
  */

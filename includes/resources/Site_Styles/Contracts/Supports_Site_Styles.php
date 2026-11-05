@@ -7,14 +7,14 @@ namespace KadenceWP\KadenceBlocks\Site_Styles\Contracts;
  * block's class describes what the module needs to store, render and show its
  * site-level values.
  *
- * @since TBD
+ * @since 3.9.0
  */
 interface Supports_Site_Styles {
 
 	/**
 	 * The block type name, e.g. `kadence/singlebtn`. `Kadence_Blocks_Abstract_Block` provides it.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @return string The block type name.
 	 */
@@ -25,7 +25,7 @@ interface Supports_Site_Styles {
 	 * `settings.custom.kadence` and in the block's render-attributes filter.
 	 * `Kadence_Blocks_Abstract_Block` provides it.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @return string The block slug.
 	 */
@@ -39,7 +39,7 @@ interface Supports_Site_Styles {
 	 * renders through CSS. An instance can't pick the block's default over a
 	 * site value, as it can't tell it from no value.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @return list<string> Attribute names.
 	 */
@@ -51,7 +51,7 @@ interface Supports_Site_Styles {
 	 * stylesheet renders them, devices included. Only `color.*` paths are
 	 * supported for now.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @return array<string, string> Attribute name => path in the block's core style, e.g. `color.background`.
 	 */
@@ -60,7 +60,7 @@ interface Supports_Site_Styles {
 	/**
 	 * The core supports the block type gets in FSE mode.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @return array<string, mixed> Block supports, as in `block.json`.
 	 */
@@ -69,7 +69,7 @@ interface Supports_Site_Styles {
 	/**
 	 * The core selectors the block type gets in FSE mode.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @return array<string, string> Block selectors, as in `block.json`.
 	 */

@@ -12,7 +12,7 @@ import { getSupportedBlock, isFseMode } from './supported-blocks';
  * @param {Object} settings Block settings.
  * @param {string} name     Block name.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {Object} The settings, with the FSE-only supports for a supported block.
  */

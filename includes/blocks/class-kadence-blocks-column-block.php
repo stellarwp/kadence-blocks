@@ -967,7 +967,7 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block implemen
 	 * The editor paints every Section value itself, inline or in its own style
 	 * tag, so every site value goes through the overlay.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_overlay_attributes(): array {
 		return array_merge( array_merge( ...$this->site_styles_attribute_groups() ), [ 'backgroundHover', 'textColor', 'linkColor', 'linkHoverColor', 'textColorHover', 'linkColorHover', 'linkHoverColorHover' ] );
@@ -976,7 +976,7 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block implemen
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_attributes_map(): array {
 		return [];
@@ -985,7 +985,7 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block implemen
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_supports(): array {
 		return [];
@@ -994,7 +994,7 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block implemen
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_selectors(): array {
 		return [];
@@ -1005,7 +1005,7 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block implemen
 	 * mobile values, or its toggle with it, and the background takes its
 	 * opacity. The hover border, radius and shadow group the same way.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_attribute_groups(): array {
 		return [
@@ -1028,7 +1028,7 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block implemen
 	 * keeps the hover border too, so a Section showing its own or no border
 	 * doesn't gain the site border only on hover.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_legacy_group_attributes(): array {
 		return [

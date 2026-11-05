@@ -971,7 +971,7 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block im
 	 * goes through the overlay. Values the testimonials read through block
 	 * context stay per block, since the context carries the stored values.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_overlay_attributes(): array {
 		return array_merge( ...$this->site_styles_attribute_groups() );
@@ -980,7 +980,7 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block im
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_attributes_map(): array {
 		return [];
@@ -989,7 +989,7 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block im
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_supports(): array {
 		return [];
@@ -998,7 +998,7 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block im
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_selectors(): array {
 		return [];
@@ -1009,7 +1009,7 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block im
 	 * its tablet and mobile values and its unit, the shadow keeps its toggle,
 	 * and each font is kept whole.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_attribute_groups(): array {
 		return [
@@ -1036,7 +1036,7 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block im
 	 * the border and radius, and the old column gap, which the carousel reads
 	 * instead of the gap.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_legacy_group_attributes(): array {
 		return [

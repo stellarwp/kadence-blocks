@@ -605,7 +605,7 @@ class Kadence_Blocks_Advancedbtn_Block extends Kadence_Blocks_Abstract_Block imp
 	 * The editor paints the layout inline. The typography, width and `btns`
 	 * attributes only style buttons saved before the Single Button block.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_overlay_attributes(): array {
 		return [ 'hAlign', 'thAlign', 'mhAlign', 'vAlign', 'tvAlign', 'mvAlign', 'orientation', 'gap', 'gapUnit', 'padding', 'tabletPadding', 'mobilePadding', 'paddingUnit', 'margin', 'marginUnit' ];
@@ -614,7 +614,7 @@ class Kadence_Blocks_Advancedbtn_Block extends Kadence_Blocks_Abstract_Block imp
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_attributes_map(): array {
 		return [];
@@ -623,7 +623,7 @@ class Kadence_Blocks_Advancedbtn_Block extends Kadence_Blocks_Abstract_Block imp
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_supports(): array {
 		return [];
@@ -632,7 +632,7 @@ class Kadence_Blocks_Advancedbtn_Block extends Kadence_Blocks_Abstract_Block imp
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_selectors(): array {
 		return [];

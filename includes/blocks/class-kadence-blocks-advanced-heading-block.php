@@ -704,7 +704,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 	 * and its tooltip, and the palette classes in the saved markup describe one heading and stay
 	 * per heading, as do the attributes older headings migrate from when they are edited.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @return list<string>
 	 */
@@ -730,7 +730,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_attributes_map(): array {
 		return [ 'color' => 'color.text' ];
@@ -742,7 +742,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 	 *
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_supports(): array {
 		return [
@@ -759,7 +759,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 	 * Core's default root, the block's class: the heading element on the front end, and the
 	 * wrapper around it in the editor, where the color reaches the heading by inheritance.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	public function site_styles_selectors(): array {
 		return [];

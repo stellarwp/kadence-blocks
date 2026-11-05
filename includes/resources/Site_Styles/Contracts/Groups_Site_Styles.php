@@ -16,7 +16,7 @@ namespace KadenceWP\KadenceBlocks\Site_Styles\Contracts;
  * whole group as shown, so the block keeps looking as it did apart from the
  * change. An instance nobody changes stores no site value.
  *
- * @since TBD
+ * @since 3.9.0
  */
 interface Groups_Site_Styles {
 
@@ -24,7 +24,7 @@ interface Groups_Site_Styles {
 	 * The groups. Every attribute in a group must be on the block's overlay
 	 * list, and an attribute can be in only one group.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @return list<list<string>> Groups of attribute names.
 	 */

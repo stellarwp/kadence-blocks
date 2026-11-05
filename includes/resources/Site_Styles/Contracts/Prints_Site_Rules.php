@@ -10,7 +10,7 @@ namespace KadenceWP\KadenceBlocks\Site_Styles\Contracts;
  * A block without site rules renders only its overlay values and the values
  * core's style stores, so it excludes every other attribute.
  *
- * @since TBD
+ * @since 3.9.0
  */
 interface Prints_Site_Rules extends Scopes_Site_Styles {
 
@@ -18,7 +18,7 @@ interface Prints_Site_Rules extends Scopes_Site_Styles {
 	 * The class an instance of the style carries, which scopes the site rules
 	 * printed for that style.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @param string $style The style, e.g. `fill`.
 	 *

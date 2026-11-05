@@ -17,7 +17,7 @@ import SiteStylesPreview from './preview';
 /**
  * @param {string} blockName Block name.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {Object} Attribute name => default value.
  */
@@ -38,7 +38,7 @@ function defaultAttributes(blockName) {
  * @param {Object} props          Component props.
  * @param {string} props.clientId The virtual block's client ID.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {null} Nothing.
  */
@@ -56,7 +56,7 @@ function SelectVirtualBlock({ clientId }) {
  * @param {Object} props           Component props.
  * @param {string} props.blockName Block name.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {Element} The panel body.
  */

@@ -455,7 +455,7 @@ class Editor_Assets {
 	/**
 	 * The blocks that take site-level styles, for the editor scripts.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @return list<string> Block names.
 	 */

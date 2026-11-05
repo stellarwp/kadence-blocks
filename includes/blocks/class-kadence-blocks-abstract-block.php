@@ -135,7 +135,7 @@ class Kadence_Blocks_Abstract_Block {
 	/**
 	 * The block type name, e.g. `kadence/singlebtn`.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @return string The block type name.
 	 */
@@ -147,7 +147,7 @@ class Kadence_Blocks_Abstract_Block {
 	 * The block name without its namespace, e.g. `singlebtn`, as in the block's
 	 * `kadence_blocks_<slug>_render_block_attributes` filter.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @return string The block slug.
 	 */

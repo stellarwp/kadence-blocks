@@ -101,7 +101,7 @@ describe('header template part notice', () => {
 /**
  * Renders a selected block through the early filters' preset picker.
  *
- * @since TBD
+ * @since 3.9.0
  *
  * @return {string} The text the block and its inspector render.
  */

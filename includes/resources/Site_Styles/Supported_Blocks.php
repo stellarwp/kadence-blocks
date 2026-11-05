@@ -11,7 +11,7 @@ use WP_Block_Type_Registry;
  * The blocks that take site-level styles, keyed by block name. Each block's
  * class describes its site styles through `Supports_Site_Styles`.
  *
- * @since TBD
+ * @since 3.9.0
  */
 final class Supported_Blocks {
 
@@ -21,21 +21,21 @@ final class Supported_Blocks {
 	 * bindings, which it adds to blocks outside their `block.json`. `kbPreset`
 	 * and `kbPalette` are each instance's design-token picks.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 */
 	private const ALWAYS_EXCLUDED = [ 'uniqueID', 'anchor', 'inQueryBlock', 'noCustomDefaults', 'metadata', 'lock', 'className', 'kadenceDynamic', 'kbPreset', 'kbPalette' ];
 
 	/**
 	 * Block name => block.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @var array<string, Supports_Site_Styles>
 	 */
 	private array $blocks = [];
 
 	/**
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @param Supports_Site_Styles[] $blocks The supported blocks.
 	 */
@@ -46,7 +46,7 @@ final class Supported_Blocks {
 	}
 
 	/**
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @return array<string, Supports_Site_Styles> Block name => block.
 	 */
@@ -55,7 +55,7 @@ final class Supported_Blocks {
 	}
 
 	/**
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @param string $block_name Block name, e.g. `kadence/singlebtn`.
 	 *
@@ -74,7 +74,7 @@ final class Supported_Blocks {
 	 * only through its overlay attributes and the attributes core's style
 	 * stores. It excludes every other attribute too.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @param Supports_Site_Styles $block The block.
 	 *
@@ -119,7 +119,7 @@ final class Supported_Blocks {
 	/**
 	 * The defaults a block's registration declares.
 	 *
-	 * @since TBD
+	 * @since 3.9.0
 	 *
 	 * @param string $block_name Block name, e.g. `kadence/singlebtn`.
 	 *
