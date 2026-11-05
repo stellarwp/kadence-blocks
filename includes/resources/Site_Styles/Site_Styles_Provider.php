@@ -31,6 +31,8 @@ use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provi
 final class Site_Styles_Provider extends Provider {
 
 	/**
+	 * @since TBD
+	 *
 	 * @inheritDoc
 	 */
 	public function register(): void {

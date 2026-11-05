@@ -7,6 +7,8 @@
  */
 
 /**
+ * @since TBD
+ *
  * @return {Set<string>} The shared set of virtual block client IDs.
  */
 function virtualClientIds() {
@@ -19,6 +21,8 @@ function virtualClientIds() {
 
 /**
  * @param {string} clientId A block client ID.
+ *
+ * @since TBD
  */
 export function addVirtualBlock(clientId) {
 	virtualClientIds().add(clientId);
@@ -26,6 +30,8 @@ export function addVirtualBlock(clientId) {
 
 /**
  * @param {string} clientId A block client ID.
+ *
+ * @since TBD
  */
 export function removeVirtualBlock(clientId) {
 	virtualClientIds().delete(clientId);
@@ -33,6 +39,9 @@ export function removeVirtualBlock(clientId) {
 
 /**
  * @param {string} clientId A block client ID.
+ *
+ * @since TBD
+ *
  * @return {boolean} Whether the block is virtual.
  */
 export function isVirtualBlock(clientId) {

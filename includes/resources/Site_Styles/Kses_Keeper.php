@@ -27,12 +27,16 @@ final class Kses_Keeper {
 	/**
 	 * The supported blocks.
 	 *
+	 * @since TBD
+	 *
 	 * @var Supported_Blocks
 	 */
 	private Supported_Blocks $blocks;
 
 	/**
 	 * The incoming `settings.custom.kadence` value, per save filter.
+	 *
+	 * @since TBD
 	 *
 	 * @var array<array-key, array<string, mixed>> Filter name => value.
 	 */
@@ -104,6 +108,8 @@ final class Kses_Keeper {
 	}
 
 	/**
+	 * @since TBD
+	 *
 	 * @param array<string, mixed> $kadence The incoming `settings.custom.kadence` value.
 	 *
 	 * @return array<string, array<string, mixed>> Supported block slug => sanitized attributes.
@@ -135,6 +141,8 @@ final class Kses_Keeper {
 	}
 
 	/**
+	 * @since TBD
+	 *
 	 * @param array<string, mixed> $data Decoded user Global Styles.
 	 *
 	 * @return array<string, mixed>|null The `settings.custom.kadence` value, null when there is none.
@@ -150,6 +158,8 @@ final class Kses_Keeper {
 	}
 
 	/**
+	 * @since TBD
+	 *
 	 * @param mixed $content Slashed post content.
 	 *
 	 * @return array<string, mixed>|null The decoded content when it is user Global Styles, null otherwise.

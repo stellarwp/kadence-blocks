@@ -30,6 +30,9 @@
 
 /**
  * @param {string} name Block name, e.g. `kadence/singlebtn`.
+ *
+ * @since TBD
+ *
  * @return {SupportedBlock|undefined} The block's entry, undefined when it isn't supported.
  */
 export function getSupportedBlock(name) {
@@ -39,6 +42,8 @@ export function getSupportedBlock(name) {
 }
 
 /**
+ * @since TBD
+ *
  * @return {string[]} The names of every supported block.
  */
 export function getSupportedBlockNames() {
@@ -46,6 +51,8 @@ export function getSupportedBlockNames() {
 }
 
 /**
+ * @since TBD
+ *
  * @return {boolean} Whether the Kadence theme runs in its FSE mode, from the data the server adds.
  */
 export function isFseMode() {
@@ -53,6 +60,8 @@ export function isFseMode() {
 }
 
 /**
+ * @since TBD
+ *
  * @return {Object<string, SupportedBlock>} Block name => entry; empty outside FSE mode or without the server data.
  */
 function getBlocks() {

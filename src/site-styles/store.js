@@ -54,6 +54,9 @@ const TOKEN_VAR = new RegExp('^var\\(' + escapeRegExp(TOKEN_VAR_PREFIX) + '([a-z
  * Kadence control shows the token; any other value is kept.
  *
  * @param {string} value The stored color.
+ *
+ * @since TBD
+ *
  * @return {string} The Kadence color value.
  */
 export function toKadenceColor(value) {
@@ -83,6 +86,9 @@ export function toKadenceColor(value) {
  * core prints the stored value as is.
  *
  * @param {string} value The Kadence color value.
+ *
+ * @since TBD
+ *
  * @return {string} `var:preset|color|theme-paletteN` for a palette color, `var(--kb-token--…)` for a design token, the value otherwise.
  */
 export function toCoreColor(value) {
@@ -101,6 +107,9 @@ export function toCoreColor(value) {
  *
  * @param {GlobalStylesRecord|undefined} record    The edited Global Styles record.
  * @param {string}                       blockName Block name.
+ *
+ * @since TBD
+ *
  * @return {Attributes} Attribute name => site value; empty for an unsupported block.
  */
 export function siteAttributes(record, blockName) {
@@ -138,6 +147,9 @@ export function siteAttributes(record, blockName) {
  * @param {Attributes}                    attributes The block's attributes.
  * @param {Object<string, {default: *}>} definitions The block type's attribute definitions.
  * @param {string}                        blockName  Block name.
+ *
+ * @since TBD
+ *
  * @return {{core: Object<string, string>, custom: Attributes}} Core style path => value, and the custom values.
  */
 export function toStoredForm(attributes, definitions, blockName) {
@@ -180,6 +192,9 @@ export function toStoredForm(attributes, definitions, blockName) {
  * @param {GlobalStylesRecord}                                 record    The edited Global Styles record.
  * @param {string}                                             blockName Block name.
  * @param {{core: Object<string, string>, custom: Attributes}} stored    The block's stored form, from `toStoredForm()`.
+ *
+ * @since TBD
+ *
  * @return {{styles: Object, settings: Object}} The edited styles and settings.
  */
 export function withStoredForm(record, blockName, stored) {
@@ -261,6 +276,9 @@ function unsetIfEmpty(object, path) {
  * @param {*} instance     The instance value, undefined or null when the instance doesn't have it.
  * @param {*} site         The site value.
  * @param {*} defaultValue The block's default value.
+ *
+ * @since TBD
+ *
  * @return {*} The merged value.
  */
 export function merge(instance, site, defaultValue) {
@@ -290,6 +308,9 @@ export function merge(instance, site, defaultValue) {
  * @param {Attributes}                                            attributes   The instance's attributes.
  * @param {import('./supported-blocks').SiteStylesScope} scope        The block's scope.
  * @param {*}                                                     defaultStyle The scope attribute's default.
+ *
+ * @since TBD
+ *
  * @return {Attributes} The site values the instance takes.
  */
 export function scopeSiteAttributes(site, attributes, scope, defaultStyle) {
@@ -417,6 +438,9 @@ function withoutCoveredSides(site, name, covered, defaultValue) {
  * @param {Attributes}                    attributes  The instance's attributes.
  * @param {Attributes}                    site        The site values.
  * @param {Object<string, {default: *}>} definitions The block type's attribute definitions.
+ *
+ * @since TBD
+ *
  * @return {Attributes} The attributes with the site values merged in.
  */
 export function mergeAttributes(attributes, site, definitions) {
@@ -436,6 +460,9 @@ export function mergeAttributes(attributes, site, definitions) {
  * @param {*} next   The value written.
  * @param {*} shown  The value the block was shown (instance merged with site).
  * @param {*} stored The instance's stored value.
+ *
+ * @since TBD
+ *
  * @return {*} The value to store.
  */
 export function unmerge(next, shown, stored) {
@@ -481,6 +508,9 @@ export function unmerge(next, shown, stored) {
  * @param {Object<string, {default: *}>} [definitions] The block type's attribute definitions.
  * @param {Object<string, string[]>}      [legacy]      First attribute of a group => older attributes that stand in for it.
  * @param {import('./supported-blocks').SiteStylesCascade[]} [cascades] The block's cascades.
+ *
+ * @since TBD
+ *
  * @return {Attributes} The attributes to store.
  */
 export function guardWrite(written, shown, stored, site, groups = [], definitions = {}, legacy = {}, cascades = []) {
@@ -864,6 +894,9 @@ function holdsValue(value) {
 
 /**
  * @param {*} value A value.
+ *
+ * @since TBD
+ *
  * @return {boolean} Whether it's an array or a plain object.
  */
 function isObjectLike(value) {

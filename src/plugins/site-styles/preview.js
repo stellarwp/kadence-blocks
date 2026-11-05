@@ -17,6 +17,9 @@ import { usePreviewHover } from './preview-hover';
  * @param {Object} props            Component props.
  * @param {string} props.blockName  Block name.
  * @param {Object} props.attributes The virtual block's attributes (defaults merged with site values).
+ *
+ * @since TBD
+ *
  * @return {Element} The preview column.
  */
 export default function SiteStylesPreview({ blockName, attributes }) {

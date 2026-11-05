@@ -33,6 +33,8 @@ final class User_Data_Filter {
 	/**
 	 * The supported blocks.
 	 *
+	 * @since TBD
+	 *
 	 * @var Supported_Blocks
 	 */
 	private Supported_Blocks $blocks;
@@ -101,6 +103,8 @@ final class User_Data_Filter {
 	}
 
 	/**
+	 * @since TBD
+	 *
 	 * @param array<array-key, mixed> $style A block's style, or part of it.
 	 *
 	 * @return array<array-key, mixed> The style, with each design token as its CSS variable and each undefined one removed.
@@ -129,6 +133,8 @@ final class User_Data_Filter {
 	}
 
 	/**
+	 * @since TBD
+	 *
 	 * @param mixed $value A style value.
 	 *
 	 * @return string|null The `{token}` reference the value names, null when it names no design token.

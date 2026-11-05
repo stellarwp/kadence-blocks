@@ -11,6 +11,9 @@ import { getSupportedBlock, isFseMode } from './supported-blocks';
  *
  * @param {Object} settings Block settings.
  * @param {string} name     Block name.
+ *
+ * @since TBD
+ *
  * @return {Object} The settings, with the FSE-only supports for a supported block.
  */
 export function addSiteStylesSupports(settings, name) {

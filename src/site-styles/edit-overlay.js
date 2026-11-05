@@ -82,6 +82,9 @@ function hasCopies(attributes) {
 /**
  * @param {Object}   props           The block edit props plus the wrapped component.
  * @param {Function} props.BlockEdit The wrapped block edit component.
+ *
+ * @since TBD
+ *
  * @return {Element} The block edit with merged attributes and a guarded `setAttributes`.
  */
 function SiteStylesBlockEdit({ BlockEdit, ...props }) {
@@ -140,6 +143,8 @@ function SiteStylesBlockEdit({ BlockEdit, ...props }) {
 /**
  * The `editor.BlockEdit` filter: wraps supported blocks in FSE mode, except
  * the Kadence panel's virtual and preview blocks.
+ *
+ * @since TBD
  */
 export const withSiteStyles = createHigherOrderComponent(
 	(BlockEdit) => (props) => {

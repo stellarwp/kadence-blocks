@@ -20,6 +20,8 @@ final class Store {
 	/**
 	 * The supported blocks.
 	 *
+	 * @since TBD
+	 *
 	 * @var Supported_Blocks
 	 */
 	private Supported_Blocks $blocks;
@@ -113,6 +115,8 @@ final class Store {
 	/**
 	 * Reads the user Global Styles once per site, theme and change to posts or
 	 * terms, since every supported block instance on a page asks for them.
+	 *
+	 * @since TBD
 	 *
 	 * @return array<string, mixed> The decoded user Global Styles post, empty when there is none.
 	 */

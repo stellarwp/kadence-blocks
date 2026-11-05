@@ -15,6 +15,8 @@ final class Block_Supports {
 	/**
 	 * The supported blocks.
 	 *
+	 * @since TBD
+	 *
 	 * @var Supported_Blocks
 	 */
 	private Supported_Blocks $blocks;

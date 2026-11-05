@@ -6,6 +6,9 @@ import { useSelect } from '@wordpress/data';
 
 /**
  * @param {boolean} enabled Whether to read the record at all.
+ *
+ * @since TBD
+ *
  * @return {Object|undefined} The edited user Global Styles record, undefined while it loads or when disabled.
  */
 export function useGlobalStylesRecord(enabled = true) {
@@ -26,6 +29,8 @@ export function useGlobalStylesRecord(enabled = true) {
 }
 
 /**
+ * @since TBD
+ *
  * @return {{id: (number|undefined), record: (Object|undefined)}} The current Global Styles ID and its edited record.
  */
 export function useGlobalStylesEntity() {

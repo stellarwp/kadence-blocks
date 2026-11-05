@@ -21,6 +21,8 @@ final class Fse_Stylesheets {
 	 * Stylesheets with an FSE copy, by file name in `dist/`, and the block whose
 	 * default rule they hold. `style-*` files are the front end's.
 	 *
+	 * @since TBD
+	 *
 	 * @var array<string, string>
 	 */
 	private const FILES = [
@@ -31,12 +33,16 @@ final class Fse_Stylesheets {
 	/**
 	 * The site-level values.
 	 *
+	 * @since TBD
+	 *
 	 * @var Store
 	 */
 	private Store $store;
 
 	/**
 	 * The supported blocks.
+	 *
+	 * @since TBD
 	 *
 	 * @var Supported_Blocks
 	 */

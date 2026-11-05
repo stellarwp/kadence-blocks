@@ -33,6 +33,9 @@ const cache = new Map();
  * Splits CSS into rules, each rule inside a media query wrapped in its own.
  *
  * @param {string} css Minified CSS.
+ *
+ * @since TBD
+ *
  * @return {string[]} The rules.
  */
 export function splitRules(css) {
@@ -58,6 +61,9 @@ export function splitRules(css) {
  * @param {string}                 before    CSS with the block's defaults.
  * @param {string}                 after     CSS with the defaults plus the site values.
  * @param {Object<string, string>} selectors Instance selector => site selector.
+ *
+ * @since TBD
+ *
  * @return {string} The site rules.
  */
 export function siteRulesFrom(before, after, selectors) {
@@ -77,6 +83,9 @@ export function siteRulesFrom(before, after, selectors) {
  * @param {Function} StyleComponent The block's style component.
  * @param {Object}   attributes     The attributes to render.
  * @param {string}   previewDevice  The editor's preview device.
+ *
+ * @since TBD
+ *
  * @return {string} The CSS the component prints.
  */
 function renderedCss(StyleComponent, attributes, previewDevice) {
@@ -97,6 +106,9 @@ function renderedCss(StyleComponent, attributes, previewDevice) {
  * @param {Function} selectors      (placeholder, style) => instance selector => site selector.
  * @param {Object}   record         The edited Global Styles record.
  * @param {string}   previewDevice  The editor's preview device.
+ *
+ * @since TBD
+ *
  * @return {string} The block's site rules, empty without Kadence-only site values.
  */
 function siteRulesCss(name, StyleComponent, selectors, record, previewDevice) {
@@ -149,6 +161,8 @@ function siteRulesCss(name, StyleComponent, selectors, record, previewDevice) {
  * @param {Document} doc The document to write to.
  * @param {string}   id  The style element's ID.
  * @param {string}   css The CSS, empty to remove the element.
+ *
+ * @since TBD
  */
 export function writeToHead(doc, id, css) {
 	const existing = doc.getElementById(id);
@@ -172,6 +186,9 @@ const owners = new WeakMap();
  *
  * @param {Document} doc The document the style element is in.
  * @param {string}   id  The style element's ID.
+ *
+ * @since TBD
+ *
  * @return {Function} Releases the element: the last release removes it.
  */
 export function retain(doc, id) {
@@ -193,6 +210,9 @@ export function retain(doc, id) {
  * @param {string}   props.name           Block name.
  * @param {Function} props.StyleComponent The block's style component, which takes `attributes` and `previewDevice`.
  * @param {Function} props.selectors      (placeholder, style) => instance selector => site selector.
+ *
+ * @since TBD
+ *
  * @return {Element} An empty style element that marks the document.
  */
 function SiteRulesStyle({ name, StyleComponent, selectors }) {
@@ -227,6 +247,9 @@ function SiteRulesStyle({ name, StyleComponent, selectors }) {
  * Prints the block's site rules in FSE mode, for a supported block.
  *
  * @param {Object} props The `SiteRulesStyle` props.
+ *
+ * @since TBD
+ *
  * @return {Element|null} The style marker, or nothing.
  */
 export default function SiteRules(props) {

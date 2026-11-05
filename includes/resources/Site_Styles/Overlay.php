@@ -30,12 +30,16 @@ final class Overlay {
 	/**
 	 * The site-level values.
 	 *
+	 * @since TBD
+	 *
 	 * @var Store
 	 */
 	private Store $store;
 
 	/**
 	 * The supported blocks.
+	 *
+	 * @since TBD
 	 *
 	 * @var Supported_Blocks
 	 */

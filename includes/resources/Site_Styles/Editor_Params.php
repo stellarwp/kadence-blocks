@@ -21,17 +21,23 @@ final class Editor_Params {
 
 	/**
 	 * The script that registers the early `blocks.registerBlockType` filters.
+	 *
+	 * @since TBD
 	 */
 	public const EARLY_FILTERS_HANDLE = 'kadence-blocks-early-filters-js';
 
 	/**
 	 * The editor plugins script, which hosts the Kadence panel. It runs before
 	 * the early filters script.
+	 *
+	 * @since TBD
 	 */
 	public const PLUGIN_HANDLE = 'kadence-blocks-plugin-js';
 
 	/**
 	 * The supported blocks.
+	 *
+	 * @since TBD
 	 *
 	 * @var Supported_Blocks
 	 */

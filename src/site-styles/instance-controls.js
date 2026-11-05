@@ -13,6 +13,9 @@ import { getSupportedBlock } from './supported-blocks';
  * @param {string} path      The setting path, e.g. `color.background`.
  * @param {string} clientId  The block's client ID.
  * @param {string} blockName The block name.
+ *
+ * @since TBD
+ *
  * @return {*} `false` for a shared color setting of a supported block, the value otherwise.
  */
 export function hideCoreColorControls(value, path, clientId, blockName) {

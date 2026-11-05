@@ -16,6 +16,9 @@ import SiteStylesPreview from './preview';
 
 /**
  * @param {string} blockName Block name.
+ *
+ * @since TBD
+ *
  * @return {Object} Attribute name => default value.
  */
 function defaultAttributes(blockName) {
@@ -34,6 +37,9 @@ function defaultAttributes(blockName) {
  *
  * @param {Object} props          Component props.
  * @param {string} props.clientId The virtual block's client ID.
+ *
+ * @since TBD
+ *
  * @return {null} Nothing.
  */
 function SelectVirtualBlock({ clientId }) {
@@ -49,6 +55,9 @@ function SelectVirtualBlock({ clientId }) {
 /**
  * @param {Object} props           Component props.
  * @param {string} props.blockName Block name.
+ *
+ * @since TBD
+ *
  * @return {Element} The panel body.
  */
 export default function SiteStylesPanel({ blockName }) {

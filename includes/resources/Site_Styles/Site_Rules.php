@@ -32,6 +32,8 @@ final class Site_Rules {
 	/**
 	 * The unique ID the builder runs under.
 	 *
+	 * @since TBD
+	 *
 	 * @var string
 	 */
 	private const PLACEHOLDER = 'site-rules';
@@ -39,12 +41,16 @@ final class Site_Rules {
 	/**
 	 * The site-level values.
 	 *
+	 * @since TBD
+	 *
 	 * @var Store
 	 */
 	private Store $store;
 
 	/**
 	 * The supported blocks.
+	 *
+	 * @since TBD
 	 *
 	 * @var Supported_Blocks
 	 */
@@ -135,6 +141,8 @@ final class Site_Rules {
 	}
 
 	/**
+	 * @since TBD
+	 *
 	 * @param Kadence_Blocks_Abstract_Block $block       The block.
 	 * @param array<string, mixed>          $base        The block's defaults, with the style.
 	 * @param array<string, mixed>          $values      The site values the style takes.
@@ -152,6 +160,8 @@ final class Site_Rules {
 	 * Runs the block's builder without leaving its output in the page's
 	 * instance CSS. Google fonts it registers stay, so a site font loads.
 	 *
+	 * @since TBD
+	 *
 	 * @param Kadence_Blocks_Abstract_Block $block      The block.
 	 * @param array<string, mixed>          $attributes The attributes to build.
 	 *
@@ -168,6 +178,8 @@ final class Site_Rules {
 
 	/**
 	 * Splits CSS into rules, each rule inside a media query wrapped in its own.
+	 *
+	 * @since TBD
 	 *
 	 * @param string $css Minified CSS, as the builders output it.
 	 *

@@ -19,6 +19,8 @@ const writtenRules = new WeakMap();
  * @param {CSSRuleList} rules   The rules to copy from.
  * @param {string[]}    wrapper The enclosing group rules' preludes (`@media …`, `@supports …`), outermost first.
  * @param {string[]}    out     The copied rules.
+ *
+ * @since TBD
  */
 function copyHoverRules(rules, wrapper, out) {
 	for (const rule of rules) {
@@ -44,6 +46,9 @@ function copyHoverRules(rules, wrapper, out) {
 
 /**
  * @param {Document} doc The preview frame's document.
+ *
+ * @since TBD
+ *
  * @return {string[]} Every `:hover` rule in the frame, rewritten to the hover class.
  */
 function hoverRules(doc) {
@@ -69,6 +74,8 @@ function hoverRules(doc) {
  *
  * @param {Document} doc   The preview frame's document.
  * @param {string[]} rules The rewritten hover rules.
+ *
+ * @since TBD
  */
 function writeHoverSheet(doc, rules) {
 	let style = doc.getElementById(STYLE_ID);
@@ -105,6 +112,8 @@ function writeHoverSheet(doc, rules) {
  * @param {Document} doc      The preview frame's document.
  * @param {boolean}  on       Whether to show the hover state.
  * @param {string}   clientId The previewed block's client ID.
+ *
+ * @since TBD
  */
 function setPreviewHover(doc, on, clientId) {
 	if (!on) {
@@ -131,6 +140,8 @@ function setPreviewHover(doc, on, clientId) {
  * @param {{current: ?HTMLElement}} containerRef The element that holds the preview frame.
  * @param {boolean}                 on           Whether to show the hover state.
  * @param {string}                  clientId     The previewed block's client ID.
+ *
+ * @since TBD
  */
 export function usePreviewHover(containerRef, on, clientId) {
 	useEffect(() => {
