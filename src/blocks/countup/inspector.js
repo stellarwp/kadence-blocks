@@ -27,6 +27,7 @@ import {
 import { __ } from '@wordpress/i18n';
 import { useState, Component, Fragment } from '@wordpress/element';
 import metadata from './block.json';
+import { useIsSiteStylesPanel } from '../../site-styles/use-is-site-styles-panel';
 
 import {
 	TextControl,
@@ -49,6 +50,7 @@ function Inspector({
 	titleMarginMouseOver,
 }) {
 	const [activeTab, setActiveTab] = useState('general');
+	const isSiteStylesPanel = useIsSiteStylesPanel();
 
 	const {
 		end,
@@ -149,9 +151,11 @@ function Inspector({
 				panelName={'countup'}
 				setActiveTab={(value) => setActiveTab(value)}
 				activeTab={activeTab}
+				allowedTabs={isSiteStylesPanel ? ['style'] : null}
+				initialOpen={isSiteStylesPanel ? 'style' : undefined}
 			/>
 
-			{activeTab === 'general' && (
+			{activeTab === 'general' && !isSiteStylesPanel && (
 				<>
 					<KadencePanelBody
 						title={__('Count Up Settings', 'kadence-blocks')}
@@ -248,11 +252,13 @@ function Inspector({
 						panelName={'titleStyle'}
 						blockSlug={'kadence/countup'}
 					>
-						<ToggleControl
-							label={__('Show Title', 'kadence-blocks')}
-							checked={displayTitle}
-							onChange={(value) => setAttributes({ displayTitle: value })}
-						/>
+						{!isSiteStylesPanel && (
+							<ToggleControl
+								label={__('Show Title', 'kadence-blocks')}
+								checked={displayTitle}
+								onChange={(value) => setAttributes({ displayTitle: value })}
+							/>
+						)}
 						{displayTitle && (
 							<>
 								<PopColorControl
@@ -422,10 +428,16 @@ function Inspector({
 									otherTags={{ p: true, span: true, div: true }}
 									tagLevel={titleFont[0].level}
 									htmlTag={titleFont[0].htmlTag}
-									onTagLevel={(value) => saveTitleFont({ level: value })}
-									onTagLevelHTML={(level, tag) => {
-										saveTitleFont({ level, htmlTag: tag });
-									}}
+									onTagLevel={
+										isSiteStylesPanel ? undefined : (value) => saveTitleFont({ level: value })
+									}
+									onTagLevelHTML={
+										isSiteStylesPanel
+											? undefined
+											: (level, tag) => {
+													saveTitleFont({ level, htmlTag: tag });
+												}
+									}
 									fontSize={titleFont[0].size}
 									onFontSize={(value) => saveTitleFont({ size: value })}
 									fontSizeType={titleFont[0].sizeType}
@@ -737,7 +749,7 @@ function Inspector({
 				</>
 			)}
 
-			{activeTab === 'advanced' && (
+			{activeTab === 'advanced' && !isSiteStylesPanel && (
 				<>
 					<KadenceBlockDefaults
 						attributes={attributes}

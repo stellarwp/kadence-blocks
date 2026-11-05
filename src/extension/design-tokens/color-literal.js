@@ -14,6 +14,7 @@
  * Internal dependencies
  */
 import { tokenCssVar } from '../../token-controls/helpers/token-css-var';
+import { isTokenAlias } from '../../token-controls/helpers/token-summary';
 
 /**
  * Resolve a token entry's current literal color from the top-document `<html>`.
@@ -32,6 +33,11 @@ import { tokenCssVar } from '../../token-controls/helpers/token-css-var';
 export function resolveColorLiteral(entry) {
 	if (typeof document === 'undefined' || !document.documentElement) {
 		return '';
+	}
+
+	// A Global Styles palette entry stores a slug or literal, not a token alias, and carries its color.
+	if (entry.alias && !isTokenAlias(entry.alias)) {
+		return entry.value || '';
 	}
 
 	const id = entry.alias ? entry.alias.slice(1, -1) : entry.id;

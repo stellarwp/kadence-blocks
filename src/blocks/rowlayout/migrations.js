@@ -328,6 +328,9 @@ function migrateBorderSettings(attributes, setAttributes) {
 		mobileBorderStyle,
 	} = attributes;
 
+	// One write, so the site styles overlay still sees the old attributes.
+	const borderPatch = {};
+
 	// Desktop border
 	const tempBorderStyle = JSON.parse(
 		JSON.stringify(
@@ -351,7 +354,7 @@ function migrateBorderSettings(attributes, setAttributes) {
 		tempBorderStyle[0].bottom[0] = border;
 		tempBorderStyle[0].left[0] = border;
 		updateBorderStyle = true;
-		setAttributes({ border: '' });
+		borderPatch.border = '';
 	}
 	if ('' !== borderWidth?.[0] || '' !== borderWidth?.[1] || '' !== borderWidth?.[2] || '' !== borderWidth?.[3]) {
 		tempBorderStyle[0].top[2] = borderWidth?.[0] || '';
@@ -359,10 +362,10 @@ function migrateBorderSettings(attributes, setAttributes) {
 		tempBorderStyle[0].bottom[2] = borderWidth?.[2] || '';
 		tempBorderStyle[0].left[2] = borderWidth?.[3] || '';
 		updateBorderStyle = true;
-		setAttributes({ borderWidth: ['', '', '', ''] });
+		borderPatch.borderWidth = ['', '', '', ''];
 	}
 	if (updateBorderStyle) {
-		setAttributes({ borderStyle: tempBorderStyle });
+		borderPatch.borderStyle = tempBorderStyle;
 	}
 
 	// Tablet border
@@ -388,7 +391,7 @@ function migrateBorderSettings(attributes, setAttributes) {
 		tempTabletBorderStyle[0].bottom[0] = tabletBorder;
 		tempTabletBorderStyle[0].left[0] = tabletBorder;
 		updateTabletBorderStyle = true;
-		setAttributes({ tabletBorder: '' });
+		borderPatch.tabletBorder = '';
 	}
 	if (
 		'' !== tabletBorderWidth?.[0] ||
@@ -401,10 +404,10 @@ function migrateBorderSettings(attributes, setAttributes) {
 		tempTabletBorderStyle[0].bottom[2] = tabletBorderWidth?.[2] || '';
 		tempTabletBorderStyle[0].left[2] = tabletBorderWidth?.[3] || '';
 		updateTabletBorderStyle = true;
-		setAttributes({ tabletBorderWidth: ['', '', '', ''] });
+		borderPatch.tabletBorderWidth = ['', '', '', ''];
 	}
 	if (updateTabletBorderStyle) {
-		setAttributes({ tabletBorderStyle: tempTabletBorderStyle });
+		borderPatch.tabletBorderStyle = tempTabletBorderStyle;
 	}
 
 	// Mobile border
@@ -430,7 +433,7 @@ function migrateBorderSettings(attributes, setAttributes) {
 		tempMobileBorderStyle[0].bottom[0] = mobileBorder;
 		tempMobileBorderStyle[0].left[0] = mobileBorder;
 		updateMobileBorderStyle = true;
-		setAttributes({ mobileBorder: '' });
+		borderPatch.mobileBorder = '';
 	}
 	if (
 		'' !== mobileBorderWidth?.[0] ||
@@ -443,10 +446,14 @@ function migrateBorderSettings(attributes, setAttributes) {
 		tempMobileBorderStyle[0].bottom[2] = mobileBorderWidth?.[2] || '';
 		tempMobileBorderStyle[0].left[2] = mobileBorderWidth?.[3] || '';
 		updateMobileBorderStyle = true;
-		setAttributes({ mobileBorderWidth: ['', '', '', ''] });
+		borderPatch.mobileBorderWidth = ['', '', '', ''];
 	}
 	if (updateMobileBorderStyle) {
-		setAttributes({ mobileBorderStyle: tempMobileBorderStyle });
+		borderPatch.mobileBorderStyle = tempMobileBorderStyle;
+	}
+
+	if (Object.keys(borderPatch).length) {
+		setAttributes(borderPatch);
 	}
 }
 

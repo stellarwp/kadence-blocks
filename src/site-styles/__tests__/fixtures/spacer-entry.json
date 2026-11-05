@@ -1,0 +1,66 @@
+{
+	"slug": "spacer",
+	"exclude": [
+		"uniqueID",
+		"anchor",
+		"inQueryBlock",
+		"noCustomDefaults",
+		"metadata",
+		"lock",
+		"className",
+		"kadenceDynamic",
+		"kbPreset",
+		"kbPalette",
+		"dividerStyle",
+		"blockAlignment",
+		"hAlign",
+		"dividerEnable",
+		"rotate",
+		"strokeWidth",
+		"strokeGap",
+		"tabletHAlign",
+		"mobileHAlign",
+		"vsdesk",
+		"vstablet",
+		"vsmobile",
+		"style"
+	],
+	"overlay": [
+		"spacerHeight",
+		"tabletSpacerHeight",
+		"mobileSpacerHeight",
+		"spacerHeightUnits",
+		"dividerHeight",
+		"tabletDividerHeight",
+		"mobileDividerHeight",
+		"dividerWidth",
+		"tabletDividerWidth",
+		"mobileDividerWidth",
+		"dividerWidthUnits",
+		"dividerColor",
+		"dividerOpacity"
+	],
+	"attributesMap": [],
+	"supports": [],
+	"scope": {
+		"attribute": "dividerStyle",
+		"attributes": {
+			"stripe": [
+				"spacerHeight",
+				"tabletSpacerHeight",
+				"mobileSpacerHeight",
+				"spacerHeightUnits",
+				"dividerWidth",
+				"tabletDividerWidth",
+				"mobileDividerWidth",
+				"dividerWidthUnits"
+			]
+		}
+	},
+	"groups": [
+		["spacerHeight", "tabletSpacerHeight", "mobileSpacerHeight", "spacerHeightUnits"],
+		["dividerHeight", "tabletDividerHeight", "mobileDividerHeight"],
+		["dividerWidth", "tabletDividerWidth", "mobileDividerWidth", "dividerWidthUnits"],
+		["dividerColor", "dividerOpacity"]
+	]
+}

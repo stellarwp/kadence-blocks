@@ -1,0 +1,87 @@
+{
+	"slug": "posts",
+	"exclude": [
+		"uniqueID",
+		"anchor",
+		"inQueryBlock",
+		"noCustomDefaults",
+		"metadata",
+		"lock",
+		"className",
+		"kadenceDynamic",
+		"kbPreset",
+		"kbPalette",
+		"postsToShow",
+		"offsetQuery",
+		"allowSticky",
+		"postType",
+		"postTax",
+		"taxType",
+		"order",
+		"orderBy",
+		"excludeTax",
+		"categories",
+		"tags",
+		"image",
+		"aboveCategories",
+		"meta",
+		"metaDivider",
+		"author",
+		"authorImage",
+		"authorLink",
+		"authorImageSize",
+		"authorEnabledLabel",
+		"authorLabel",
+		"date",
+		"dateEnabledLabel",
+		"dateLabel",
+		"dateUpdated",
+		"dateUpdatedEnabledLabel",
+		"dateUpdatedLabel",
+		"metaCategories",
+		"metaCategoriesEnabledLabel",
+		"metaCategoriesLabel",
+		"comments",
+		"excerpt",
+		"excerptCustomLength",
+		"excerptLength",
+		"readmore",
+		"readmoreLabel",
+		"mobileColumns",
+		"showUnique",
+		"style"
+	],
+	"overlay": [
+		"columns",
+		"tabletColumns",
+		"alignImage",
+		"titleFont",
+		"imageRatio",
+		"imageSize",
+		"categoriesStyle",
+		"categoriesDivider",
+		"customKadenceArchiveColors",
+		"loopStyle"
+	],
+	"attributesMap": [],
+	"supports": [],
+	"groups": [
+		[
+			"columns",
+			"tabletColumns",
+			"alignImage"
+		],
+		[
+			"titleFont"
+		],
+		[
+			"imageRatio",
+			"imageSize"
+		],
+		[
+			"categoriesStyle",
+			"categoriesDivider",
+			"customKadenceArchiveColors"
+		]
+	]
+}
