@@ -25,6 +25,8 @@
 			<key name="minutesLabel" />
 			<key name="secondsLabel" />
 		</gutenberg-block>
+		<gutenberg-block type="kadence/countdown-inner" translate="0"/>
+		<gutenberg-block type="kadence/countdown-timer" translate="0"/>
 		<gutenberg-block type="kadence/countup" translate="1">
 			<key name="title" />
 		</gutenberg-block>
@@ -49,6 +51,13 @@
 		<gutenberg-block type="kadence/iconlist" translate="1">
 			<xpath>//li[contains(@class, "kt-svg-icon-list-item-wrap")]//span</xpath>
 			<xpath>//li[contains(@class, "kt-svg-icon-list-item-wrap")]//a/@href</xpath>
+		</gutenberg-block>
+		<gutenberg-block type="kadence/listitem" translate="1">
+			<key name="link" type="link" />
+			<key name="iconTitle" />
+			<xpath>//span[contains(@class, "kt-svg-icon-list-text")]</xpath>
+			<xpath>//span[contains(@class, "kb-tooltip-hidden-content")]</xpath>
+			<xpath type="link">//a[contains(@class, "kt-svg-icon-link")]/@href</xpath>
 		</gutenberg-block>
 		<gutenberg-block type="kadence/testimonials" translate="1">
 			<xpath>//div[@class="kt-testimonial-title-wrap"]//*[self::h1 or self::h2 or self::h3 or self::h4 or self::h5 or self::h6 or self::p]</xpath>
@@ -105,7 +114,7 @@
 				</key>
 			</key>
 		</gutenberg-block>
-		<gutenberg-block type="kadence/advanced-form" translate="1">
+		<gutenberg-block type="kadence/advanced-form" translate="0">
 			<key name="id" type="post-ids" sub-type="kadence_form" />
 		</gutenberg-block>
 		<gutenberg-block type="kadence/advanced-form-accept" translate="1">
@@ -145,6 +154,10 @@
 			<key name="label" />
 			<key name="ariaDescription" />
 			<key name="helpText" />
+		</gutenberg-block>
+		<gutenberg-block type="kadence/advanced-form-hidden" translate="1">
+			<key name="label" />
+			<key name="defaultValue" />
 		</gutenberg-block>
 		<gutenberg-block type="kadence/advanced-form-number" translate="1">
 			<key name="label" />
@@ -232,7 +245,38 @@
 				</key>
 			</key>
 		</gutenberg-block>
-		<gutenberg-block type="kadence/navigation" translate="1">
+		<gutenberg-block type="kadence/googlemaps" translate="0"/>
+		<gutenberg-block type="kadence/lottie" translate="1">
+			<key name="label" />
+		</gutenberg-block>
+		<gutenberg-block type="kadence/search" translate="1">
+			<key name="label" />
+			<key name="inputPlaceholder" />
+		</gutenberg-block>
+		<gutenberg-block type="kadence/show-more" translate="0"/>
+		<gutenberg-block type="kadence/table" translate="1">
+			<key name="caption" />
+		</gutenberg-block>
+		<gutenberg-block type="kadence/table-row" translate="0"/>
+		<gutenberg-block type="kadence/table-data" translate="0"/>
+		<gutenberg-block type="kadence/tableofcontents" translate="1">
+			<key name="title" />
+		</gutenberg-block>
+		<gutenberg-block type="kadence/vector" translate="0"/>
+		<gutenberg-block type="kadence/videopopup" translate="1">
+			<key name="url" type="link" />
+			<key name="urlMobile" type="link" />
+			<key name="ariaLabel" />
+			<key name="playBtn">
+				<key name="*">
+					<key name="title" />
+				</key>
+			</key>
+			<xpath type="link">//a[contains(@class, "kadence-video-popup-link")]/@href</xpath>
+			<xpath type="link">//a[contains(@class, "kadence-video-popup-link")]/@data-href-mobile</xpath>
+			<xpath>//a[contains(@class, "kadence-video-popup-link")]/@aria-label</xpath>
+		</gutenberg-block>
+		<gutenberg-block type="kadence/navigation" translate="0">
 			<key name="id" type="post-ids" sub-type="kadence_navigation" />
 		</gutenberg-block>
 		<gutenberg-block type="kadence/navigation-link" translate="1">
@@ -240,8 +284,22 @@
 			<key name="description" />
 			<key name="title" />
 		</gutenberg-block>
-		<gutenberg-block type="kadence/header" translate="1">
+		<gutenberg-block type="kadence/header" translate="0">
 			<key name="id" type="post-ids" sub-type="kadence_header" />
+		</gutenberg-block>
+		<gutenberg-block type="kadence/header-container-desktop" translate="0"/>
+		<gutenberg-block type="kadence/header-container-tablet" translate="0"/>
+		<gutenberg-block type="kadence/header-row" translate="0"/>
+		<gutenberg-block type="kadence/header-section" translate="0"/>
+		<gutenberg-block type="kadence/header-column" translate="0"/>
+		<gutenberg-block type="kadence/off-canvas" translate="1">
+			<key name="closeLabel" />
+		</gutenberg-block>
+		<gutenberg-block type="kadence/off-canvas-trigger" translate="1">
+			<key name="label" />
+		</gutenberg-block>
+		<gutenberg-block type="kadence/identity" translate="1">
+			<key name="link" type="link" />
 		</gutenberg-block>
 	</gutenberg-blocks>
 	<custom-types>
