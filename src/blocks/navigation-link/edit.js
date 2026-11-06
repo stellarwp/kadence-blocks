@@ -346,7 +346,8 @@ export default function Edit(props) {
 	const { maxNestingLevel } = context;
 
 	const isPostType = kind === 'post-type' || type === 'post' || type === 'page';
-	const hasSyncedLink = isPostType && kind === 'post-type' && id && !disableLink;
+	// Older term links were saved as post-type with no type, so they must not sync by id.
+	const hasSyncedLink = isPostType && kind === 'post-type' && type && id && !disableLink;
 
 	const { insertBlock, replaceInnerBlocks, __unstableMarkNextChangeAsNotPersistent } = useDispatch(blockEditorStore);
 	const [isLinkOpen, setIsLinkOpen] = useState(false);
