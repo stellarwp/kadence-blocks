@@ -129,7 +129,7 @@ defined( 'ABSPATH' ) || exit;
 									<p style="font-family: sans-serif; font-size: 14px; font-weight: Bold; margin: 0; Margin-bottom: 15px;"><?php echo esc_html( $data['label'] ); ?></p>
 									<?php if( !empty( $data['type'] ) && $data['type'] === 'file' && ! empty( $data['value'] ) ) { ?>
 										<?php
-										$file_name = ! empty( $data['file_name'] ) ? $data['file_name'] : esc_html__( 'View File', 'kadence-blocks' ); 
+										$file_name = ! empty( $data['file_name'] ) ? $data['file_name'] : esc_html__( 'View File', 'kadence-blocks' );
 										$file_name_array = explode( ', ', $file_name );
 										if ( count( $file_name_array ) > 1 ) {
 											$file_value_array = explode( ', ', $data['value'] );
