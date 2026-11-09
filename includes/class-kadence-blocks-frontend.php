@@ -53,6 +53,16 @@ class Kadence_Blocks_Frontend {
 	private static $instance = null;
 
 	/**
+	 * The ids of the posts whose blocks the CSS walk is inside right now, so content that includes itself,
+	 * directly or through other posts, is walked once instead of forever.
+	 *
+	 * @since TBD
+	 *
+	 * @var array<int, true>
+	 */
+	private $walking = [];
+
+	/**
 	 * Instance Control
 	 */
 	public static function get_instance() {
@@ -467,8 +477,7 @@ class Kadence_Blocks_Frontend {
 						if ( isset( $blockattr['ref'] ) ) {
 							$reusable_block = get_post( $blockattr['ref'] );
 							if ( $reusable_block && 'wp_block' === $reusable_block->post_type ) {
-								$reuse_data_block = parse_blocks( $reusable_block->post_content );
-								$this->blocks_cycle_through( $reuse_data_block, $kadence_blocks );
+								$this->cycle_through_post( $reusable_block, $kadence_blocks );
 							}
 						}
 					}
@@ -479,8 +488,7 @@ class Kadence_Blocks_Frontend {
 						if ( isset( $blockattr['id'] ) ) {
 							$form_block = get_post( $blockattr['id'] );
 							if ( $form_block && 'kadence_form' === $form_block->post_type ) {
-								$form_data_block = parse_blocks( $form_block->post_content );
-								$this->blocks_cycle_through( $form_data_block, $kadence_blocks );
+								$this->cycle_through_post( $form_block, $kadence_blocks );
 							}
 						}
 					}
@@ -491,8 +499,7 @@ class Kadence_Blocks_Frontend {
 						if ( isset( $blockattr['id'] ) ) {
 							$header_block = get_post( $blockattr['id'] );
 							if ( $header_block && 'kadence_header' === $header_block->post_type ) {
-								$header_data_block = parse_blocks( $header_block->post_content );
-								$this->blocks_cycle_through( $header_data_block, $kadence_blocks );
+								$this->cycle_through_post( $header_block, $kadence_blocks );
 							}
 						}
 					}
@@ -503,8 +510,7 @@ class Kadence_Blocks_Frontend {
 						if ( isset( $blockattr['id'] ) ) {
 							$navigation_block = get_post( $blockattr['id'] );
 							if ( $navigation_block && 'kadence_navigation' === $navigation_block->post_type ) {
-								$navigation_data_block = parse_blocks( $navigation_block->post_content );
-								$this->blocks_cycle_through( $navigation_data_block, $kadence_blocks );
+								$this->cycle_through_post( $navigation_block, $kadence_blocks );
 							}
 						}
 					}
@@ -519,7 +525,8 @@ class Kadence_Blocks_Frontend {
 	/**
 	 * Builds css for inner blocks
 	 *
-	 * @param array $inner_blocks array of inner blocks.
+	 * @param array                       $inner_blocks   array of inner blocks.
+	 * @param array<string, class-string> $kadence_blocks Block name => the class that builds its CSS.
 	 */
 	public function blocks_cycle_through( $inner_blocks, $kadence_blocks ) {
 		foreach ( $inner_blocks as $in_indexkey => $inner_block ) {
@@ -543,12 +550,7 @@ class Kadence_Blocks_Frontend {
 						if ( isset( $blockattr['ref'] ) ) {
 							$reusable_block = get_post( $blockattr['ref'] );
 							if ( $reusable_block && 'wp_block' === $reusable_block->post_type ) {
-								$reuse_data_block = parse_blocks( $reusable_block->post_content );
-								// This is a block inside itself.
-								if ( isset( $reuse_data_block[0] ) && isset( $reuse_data_block[0]['blockName'] ) && 'core/block' === $reuse_data_block[0]['blockName'] && isset( $reuse_data_block[0]['attrs'] ) && isset( $reuse_data_block[0]['attrs']['ref'] ) && $reuse_data_block[0]['attrs']['ref'] === $blockattr['ref'] ) {
-									return;
-								}
-								$this->blocks_cycle_through( $reuse_data_block, $kadence_blocks );
+								$this->cycle_through_post( $reusable_block, $kadence_blocks );
 							}
 						}
 					}
@@ -559,8 +561,7 @@ class Kadence_Blocks_Frontend {
 						if ( isset( $blockattr['id'] ) ) {
 							$form_block = get_post( $blockattr['id'] );
 							if ( $form_block && 'kadence_form' === $form_block->post_type ) {
-								$form_data_block = parse_blocks( $form_block->post_content );
-								$this->blocks_cycle_through( $form_data_block, $kadence_blocks );
+								$this->cycle_through_post( $form_block, $kadence_blocks );
 							}
 						}
 					}
@@ -571,8 +572,7 @@ class Kadence_Blocks_Frontend {
 						if ( isset( $blockattr['id'] ) ) {
 							$header_block = get_post( $blockattr['id'] );
 							if ( $header_block && 'kadence_header' === $header_block->post_type ) {
-								$header_data_block = parse_blocks( $header_block->post_content );
-								$this->blocks_cycle_through( $header_data_block, $kadence_blocks );
+								$this->cycle_through_post( $header_block, $kadence_blocks );
 							}
 						}
 					}
@@ -583,8 +583,7 @@ class Kadence_Blocks_Frontend {
 						if ( isset( $blockattr['id'] ) ) {
 							$navigation_block = get_post( $blockattr['id'] );
 							if ( $navigation_block && 'kadence_navigation' === $navigation_block->post_type ) {
-								$navigation_data_block = parse_blocks( $navigation_block->post_content );
-								$this->blocks_cycle_through( $navigation_data_block, $kadence_blocks );
+								$this->cycle_through_post( $navigation_block, $kadence_blocks );
 							}
 						}
 					}
@@ -593,6 +592,31 @@ class Kadence_Blocks_Frontend {
 					$this->blocks_cycle_through( $inner_block['innerBlocks'], $kadence_blocks );
 				}
 			}
+		}
+	}
+
+	/**
+	 * Walk the blocks of a post a block points to (a synced pattern, form, header or navigation), skipping a
+	 * post the walk is already inside so content that includes itself can't loop forever.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post                     $post           The post the block points to.
+	 * @param array<string, class-string> $kadence_blocks Block name => the class that builds its CSS.
+	 *
+	 * @return void
+	 */
+	private function cycle_through_post( $post, $kadence_blocks ) {
+		if ( isset( $this->walking[ $post->ID ] ) ) {
+			return;
+		}
+
+		$this->walking[ $post->ID ] = true;
+
+		try {
+			$this->blocks_cycle_through( parse_blocks( $post->post_content ), $kadence_blocks );
+		} finally {
+			unset( $this->walking[ $post->ID ] );
 		}
 	}
 }
