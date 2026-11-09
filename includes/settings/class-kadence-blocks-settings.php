@@ -1440,6 +1440,7 @@ class Kadence_Blocks_Settings {
 							</div>
 							<div class="kt-dashboard-spacer"></div>
 						<?php } ?>
+						<?php do_action( 'kadence_blocks_settings_after_admin_bar' ); ?>
 					</div>
 					<div class="side-panel">
 						<?php do_action( 'kadence_blocks_dash_side_panel' ); ?>
