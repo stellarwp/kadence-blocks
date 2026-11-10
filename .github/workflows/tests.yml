@@ -142,9 +142,9 @@ jobs:
 
         env:
             COMPOSER_AUTH: '{"github-oauth": {"github.com": "${{ secrets.GH_BOT_TOKEN }}"}}'
-            KADENCE_THEME_GIT_REF: ${{ inputs.kadence_theme_git_ref || vars.KADENCE_THEME_GIT_REF || 'release/fse' }}
+            KADENCE_THEME_GIT_REF: ${{ inputs.kadence_theme_git_ref || vars.KADENCE_THEME_GIT_REF || 'master' }}
 
-        name: Integration (Kadence theme ${{ inputs.kadence_theme_git_ref || vars.KADENCE_THEME_GIT_REF || 'release/fse' }})
+        name: Integration (Kadence theme ${{ inputs.kadence_theme_git_ref || vars.KADENCE_THEME_GIT_REF || 'master' }})
         steps:
             - name: Checkout the repository
               uses: actions/checkout@v6
