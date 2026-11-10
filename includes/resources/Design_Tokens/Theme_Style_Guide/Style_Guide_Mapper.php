@@ -49,7 +49,7 @@ final class Style_Guide_Mapper {
 	/**
 	 * The slot the theme reads the complement marker on.
 	 *
-	 * @since TBD
+	 * @since 3.9.1
 	 *
 	 * @var string
 	 */
@@ -60,7 +60,7 @@ final class Style_Guide_Mapper {
 	 * hue wheel and lightened slightly. Sites can swap it through the theme's
 	 * kadence_palette_complement_color filter.
 	 *
-	 * @since TBD
+	 * @since 3.9.1
 	 *
 	 * @var string
 	 */
@@ -116,7 +116,7 @@ final class Style_Guide_Mapper {
 	/**
 	 * The theme's default complement formula, for the reader to pass through the theme's filter.
 	 *
-	 * @since TBD
+	 * @since 3.9.1
 	 *
 	 * @return string
 	 */
@@ -128,7 +128,7 @@ final class Style_Guide_Mapper {
 	 * Map a snapshot onto the tokens that claim palette slots.
 	 *
 	 * @since 3.8.0
-	 * @since TBD Maps a complement-marked palette10 to palette1's complement.
+	 * @since 3.9.1 Maps a complement-marked palette10 to palette1's complement.
 	 *
 	 * @param array{palette: array<string, mixed>, settings: array<string, mixed>, complement?: mixed} $snapshot    The reader's snapshot.
 	 * @param array<string, string>                                                                    $slot_tokens Slot slug => token id, from the registry.
@@ -213,7 +213,7 @@ final class Style_Guide_Mapper {
 	 * The active set as the theme reads it back: a complement-marked palette10 becomes the formula the theme
 	 * renders in its place, so a palette10 read from the active set matches it.
 	 *
-	 * @since TBD
+	 * @since 3.9.1
 	 *
 	 * @param array{palette: array<string, mixed>, settings: array<string, mixed>, complement?: mixed} $snapshot The reader's snapshot.
 	 *
@@ -273,7 +273,7 @@ final class Style_Guide_Mapper {
 	/**
 	 * Whether the active set marks palette10 as the complement of palette1 rather than storing a color.
 	 *
-	 * @since TBD
+	 * @since 3.9.1
 	 *
 	 * @param array<string, string> $set  Slot slug => color of the active set.
 	 * @param string                $slug The slot slug.
@@ -290,7 +290,7 @@ final class Style_Guide_Mapper {
 	 * site swapped in through the theme's filter is kept as written, and so is the default when palette1 can't
 	 * be read as a color. Null when there is nothing usable.
 	 *
-	 * @since TBD
+	 * @since 3.9.1
 	 *
 	 * @param array<string, string> $set     Slot slug => color of the active set.
 	 * @param mixed                 $formula The complement formula the theme renders. Anything but a string

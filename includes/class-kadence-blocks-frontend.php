@@ -56,7 +56,7 @@ class Kadence_Blocks_Frontend {
 	 * The ids of the posts whose blocks the CSS walk is inside right now, so content that includes itself,
 	 * directly or through other posts, is walked once instead of forever.
 	 *
-	 * @since TBD
+	 * @since 3.9.1
 	 *
 	 * @var array<int, true>
 	 */
@@ -599,7 +599,7 @@ class Kadence_Blocks_Frontend {
 	 * Walk the blocks of a post a block points to (a synced pattern, form, header or navigation), skipping a
 	 * post the walk is already inside so content that includes itself can't loop forever.
 	 *
-	 * @since TBD
+	 * @since 3.9.1
 	 *
 	 * @param WP_Post                     $post           The post the block points to.
 	 * @param array<string, class-string> $kadence_blocks Block name => the class that builds its CSS.

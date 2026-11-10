@@ -740,7 +740,7 @@ final class Palettes_Controller extends Controller {
 	 *     it reads as not overridden and there is nothing to undo.
 	 *
 	 * @since 3.8.0
-	 * @since TBD Shows the complement worked out from the primary.
+	 * @since 3.9.1 Shows the complement worked out from the primary.
 	 *
 	 * @param string $id   The palette id.
 	 * @param string $slug The token library slug.
@@ -1429,7 +1429,7 @@ final class Palettes_Controller extends Controller {
 	 * the node). Any other color, the shipped one included, is a choice to keep.
 	 *
 	 * @since 3.8.0
-	 * @since TBD Keeps a complement the site picked, and drops one that only follows the primary.
+	 * @since 3.9.1 Keeps a complement the site picked, and drops one that only follows the primary.
 	 *
 	 * @param array<string, mixed> $node The default palette node being written.
 	 * @param string               $id   The default palette id.

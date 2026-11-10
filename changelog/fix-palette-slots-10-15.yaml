@@ -1,4 +1,0 @@
-significance: patch
-type: fix
-entry: Fixed theme palette colors 10 through 15 missing from the Style Library. They now show in a new Extended group, including on sites with a saved palette.
-timestamp: 2026-11-03T00:00:00.000Z

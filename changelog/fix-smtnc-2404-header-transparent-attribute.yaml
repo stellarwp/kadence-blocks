@@ -1,5 +1,0 @@
-significance: patch
-type: fix
-entry: Restored the auto spacing under a transparent Header (Adv) on WordPress
-  7.1 when a page turned the transparent header on in its own settings.
-timestamp: 2026-11-03T15:58:12.781Z

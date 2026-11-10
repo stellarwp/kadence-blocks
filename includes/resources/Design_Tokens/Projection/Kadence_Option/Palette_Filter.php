@@ -90,7 +90,7 @@ final class Palette_Filter {
 	 * Reads which colors the active library's palettes store, to tell a color the site set apart from one
 	 * that only follows the theme.
 	 *
-	 * @since TBD
+	 * @since 3.9.1
 	 *
 	 * @var Effective_Palettes
 	 */
@@ -136,7 +136,7 @@ final class Palette_Filter {
 	 * Return the resolved token color for a palette slot a token claims, or the theme's own value.
 	 *
 	 * @since 3.8.0
-	 * @since TBD Leaves a theme value built on the theme's own CSS variables alone unless the site set that color.
+	 * @since 3.9.1 Leaves a theme value built on the theme's own CSS variables alone unless the site set that color.
 	 *
 	 * @param mixed $value  The value the theme resolved for this slot.
 	 * @param mixed $subkey The slot being read, e.g. "palette1". Not type-hinted because the theme
@@ -208,7 +208,7 @@ final class Palette_Filter {
 	 * alone keeps each set working out its own color. A color the site set is still returned, with the same
 	 * limit as two sets saving the same color.
 	 *
-	 * @since TBD
+	 * @since 3.9.1
 	 *
 	 * @param mixed  $value  The value the theme resolved for the slot.
 	 * @param string $subkey The slot being read.

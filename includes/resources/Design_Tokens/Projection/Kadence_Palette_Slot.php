@@ -39,7 +39,7 @@ final class Kadence_Palette_Slot {
 	 * Matches the fifteen Kadence palette slots, palette1…palette15.
 	 *
 	 * @since 3.8.0
-	 * @since TBD Admits the extended slots palette10…palette15.
+	 * @since 3.9.1 Admits the extended slots palette10…palette15.
 	 *
 	 * @var string
 	 */

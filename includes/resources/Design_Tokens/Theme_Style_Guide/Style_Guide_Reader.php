@@ -51,7 +51,7 @@ final class Style_Guide_Reader implements Style_Guide_Source {
 	 * @inheritDoc
 	 *
 	 * @since 3.8.0
-	 * @since TBD Adds the filtered complement formula.
+	 * @since 3.9.1 Adds the filtered complement formula.
 	 */
 	public function snapshot(): ?array {
 		$theme = $this->theme();
@@ -73,7 +73,7 @@ final class Style_Guide_Reader implements Style_Guide_Source {
 		 * Filters the formula the Kadence theme renders for its complement palette color. This is the
 		 * theme's own filter, applied here so the Style Library shows what the theme renders.
 		 *
-		 * @since TBD
+		 * @since 3.9.1
 		 *
 		 * @param string $formula The complement formula.
 		 *

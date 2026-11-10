@@ -207,7 +207,7 @@ final class Complement_IntegrationTest extends TestCase {
 	/**
 	 * A primary set directly in the token document moves the complement with it.
 	 *
-	 * @since TBD
+	 * @since 3.9.1
 	 *
 	 * @return void
 	 */
@@ -221,7 +221,7 @@ final class Complement_IntegrationTest extends TestCase {
 	/**
 	 * A complement set directly in the token document wins over the one worked out from a changed primary.
 	 *
-	 * @since TBD
+	 * @since 3.9.1
 	 *
 	 * @return void
 	 */
@@ -236,7 +236,7 @@ final class Complement_IntegrationTest extends TestCase {
 	 * The theme's palette10 read gets the token color when the complement is set directly in the token
 	 * document.
 	 *
-	 * @since TBD
+	 * @since 3.9.1
 	 *
 	 * @return void
 	 */
@@ -281,7 +281,7 @@ final class Complement_IntegrationTest extends TestCase {
 	/**
 	 * Set color tokens directly in the stored token document, keeping what it already holds.
 	 *
-	 * @since TBD
+	 * @since 3.9.1
 	 *
 	 * @param array<string, string> $values Token dot-path => color.
 	 *

@@ -11,7 +11,7 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Theme_Style_Guide;
  * without the theme's CSS variables can't resolve that, so this does the same math in PHP. A color the
  * turn pushes outside sRGB is clipped per channel, which is what browsers do when they render it.
  *
- * @since TBD
+ * @since 3.9.1
  */
 final class Complement_Color {
 
@@ -19,7 +19,7 @@ final class Complement_Color {
 	 * Matches a 3, 4, 6 or 8 digit hex color. Any alpha digits are ignored, since the theme renders the
 	 * complement fully opaque.
 	 *
-	 * @since TBD
+	 * @since 3.9.1
 	 *
 	 * @var string
 	 */
@@ -28,7 +28,7 @@ final class Complement_Color {
 	/**
 	 * Matches an rgb(), rgba(), hsl() or hsla() color, capturing the function name and its arguments.
 	 *
-	 * @since TBD
+	 * @since 3.9.1
 	 *
 	 * @var string
 	 */
@@ -37,7 +37,7 @@ final class Complement_Color {
 	/**
 	 * The share of the remaining lightness the theme adds.
 	 *
-	 * @since TBD
+	 * @since 3.9.1
 	 *
 	 * @var float
 	 */
@@ -46,7 +46,7 @@ final class Complement_Color {
 	/**
 	 * The complement of a hex, rgb() or hsl() color as a six digit hex, or null for any other value.
 	 *
-	 * @since TBD
+	 * @since 3.9.1
 	 *
 	 * @param string $color The base color, palette1.
 	 *
@@ -77,7 +77,7 @@ final class Complement_Color {
 	 * A color's red, green and blue channels from 0 to 1, or null when it is not a hex, rgb() or hsl() color.
 	 * Any alpha is ignored, since the theme renders the complement fully opaque.
 	 *
-	 * @since TBD
+	 * @since 3.9.1
 	 *
 	 * @param string $color The color.
 	 *
@@ -109,7 +109,7 @@ final class Complement_Color {
 	 * The red, green and blue channels of an rgb() or hsl() color's arguments, in either the comma or the
 	 * space separated syntax, or null when they are not numbers.
 	 *
-	 * @since TBD
+	 * @since 3.9.1
 	 *
 	 * @param string $name      "rgb" or "hsl".
 	 * @param string $arguments The text between the parentheses.
@@ -160,7 +160,7 @@ final class Complement_Color {
 	/**
 	 * An sRGB channel decoded to linear light, using the standard sRGB transfer curve.
 	 *
-	 * @since TBD
+	 * @since 3.9.1
 	 *
 	 * @param float $channel The channel, 0 to 1.
 	 *
@@ -173,7 +173,7 @@ final class Complement_Color {
 	/**
 	 * A linear-light channel encoded back to sRGB.
 	 *
-	 * @since TBD
+	 * @since 3.9.1
 	 *
 	 * @param float $channel The linear channel.
 	 *
@@ -187,7 +187,7 @@ final class Complement_Color {
 	 * Linear sRGB to OKLab. The constants are Björn Ottosson's published OKLab matrices, the same ones
 	 * CSS Color 4 uses: https://bottosson.github.io/posts/oklab/
 	 *
-	 * @since TBD
+	 * @since 3.9.1
 	 *
 	 * @param float[] $rgb Linear red, green and blue.
 	 *
@@ -210,7 +210,7 @@ final class Complement_Color {
 	/**
 	 * OKLab to linear sRGB, unclipped. The inverse matrices from the same OKLab source.
 	 *
-	 * @since TBD
+	 * @since 3.9.1
 	 *
 	 * @param float $lightness The lightness.
 	 * @param float $a         The green to red axis.

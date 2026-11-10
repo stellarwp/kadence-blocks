@@ -188,7 +188,7 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 	/**
 	 * Build HTML for dynamic blocks
 	 *
-	 * @since TBD Always outputs the transparent data attributes as "1".
+	 * @since 3.9.1 Always outputs the transparent data attributes as "1".
 	 *
 	 * @param array<string, mixed> $attributes     The block attributes.
 	 * @param string               $unique_id      The unique ID for the block.

@@ -36,7 +36,7 @@ final class Effective_Palettes {
 	/**
 	 * The swatch the complement is worked out from: the theme's palette1.
 	 *
-	 * @since TBD
+	 * @since 3.9.1
 	 *
 	 * @var string
 	 */
@@ -45,7 +45,7 @@ final class Effective_Palettes {
 	/**
 	 * The swatch for the theme's complement color, palette10.
 	 *
-	 * @since TBD
+	 * @since 3.9.1
 	 *
 	 * @var string
 	 */
@@ -122,7 +122,7 @@ final class Effective_Palettes {
 	 * post-merge effective section before it is committed (e.g. that `$current` still names a present palette).
 	 *
 	 * @since 3.8.0
-	 * @since TBD Adds back shipped swatches a saved default palette is missing.
+	 * @since 3.9.1 Adds back shipped swatches a saved default palette is missing.
 	 *
 	 * @param array<string, mixed> $overrides A decoded overrides-only DTCG document.
 	 *
@@ -238,7 +238,7 @@ final class Effective_Palettes {
 	 * override fully re-skins a subtree with default fallback regardless of the library's current palette.
 	 *
 	 * @since 3.8.0
-	 * @since TBD Works the complement out from the palette's primary when it follows the theme.
+	 * @since 3.9.1 Works the complement out from the palette's primary when it follows the theme.
 	 *
 	 * @param string $id   The palette id.
 	 * @param string $slug The token library slug.
@@ -259,7 +259,7 @@ final class Effective_Palettes {
 	 * applies at `:root`.
 	 *
 	 * @since 3.8.0
-	 * @since TBD Works the complement out from the palette's primary when it follows the theme.
+	 * @since 3.9.1 Works the complement out from the palette's primary when it follows the theme.
 	 *
 	 * @param string $slug The token library slug.
 	 *
@@ -275,7 +275,7 @@ final class Effective_Palettes {
 	 * flattened. The resolver uses this so the overlay reads the SAME document it is resolving.
 	 *
 	 * @since 3.8.0
-	 * @since TBD Works the complement out from the palette's primary when it follows the theme.
+	 * @since 3.9.1 Works the complement out from the palette's primary when it follows the theme.
 	 *
 	 * @param array<string, mixed> $overrides A decoded overrides-only DTCG document.
 	 *
@@ -403,7 +403,7 @@ final class Effective_Palettes {
 	/**
 	 * The complement swatch's token dot-path.
 	 *
-	 * @since TBD
+	 * @since 3.9.1
 	 *
 	 * @return string
 	 */
@@ -416,7 +416,7 @@ final class Effective_Palettes {
 	 * theme's complement color the Style Guide gives both, so they match; with a palette10 color of its own,
 	 * or without the theme, they don't and the complement is left alone.
 	 *
-	 * @since TBD
+	 * @since 3.9.1
 	 *
 	 * @return bool
 	 */
@@ -433,7 +433,7 @@ final class Effective_Palettes {
 	 * is itself worked out from the shipped primary, which is the case on a Kadence site using the theme's
 	 * complement color.
 	 *
-	 * @since TBD
+	 * @since 3.9.1
 	 *
 	 * @param array<string, string> $values token dot-path => value, for one palette.
 	 *
@@ -495,7 +495,7 @@ final class Effective_Palettes {
 	 * otherwise lands in a copy of that group appended after the stored ones. A shipped swatch the site moved
 	 * to another group is already listed, so it is left where it is.
 	 *
-	 * @since TBD
+	 * @since 3.9.1
 	 *
 	 * @param array<string, mixed> $section  The effective colorPalettes section.
 	 * @param array<string, mixed> $baseline The baseline colorPalettes section.
@@ -574,7 +574,7 @@ final class Effective_Palettes {
 	 * complement with it, as the theme's own formula does. A complement set directly in the token document is
 	 * left alone too.
 	 *
-	 * @since TBD
+	 * @since 3.9.1
 	 *
 	 * @param array<string, string> $values    token dot-path => value, for one palette.
 	 * @param array<string, string> $stored    token dot-path => value the palette (or the default it falls back to) stores.
@@ -606,7 +606,7 @@ final class Effective_Palettes {
 	 * The primary color a palette renders: its own when it re-tints the primary, otherwise one set directly in
 	 * the token document, which the palette overlay then leaves in place.
 	 *
-	 * @since TBD
+	 * @since 3.9.1
 	 *
 	 * @param array<string, string> $values    token dot-path => value, for one palette.
 	 * @param array<string, mixed>  $overrides The decoded overrides document.
@@ -653,7 +653,7 @@ final class Effective_Palettes {
 	 * that palette's swatches.
 	 *
 	 * @since 3.8.0
-	 * @since TBD Takes the overrides document and works out the complement.
+	 * @since 3.9.1 Takes the overrides document and works out the complement.
 	 *
 	 * @param array<string, mixed> $section   The effective colorPalettes section.
 	 * @param array<string, mixed> $overrides The decoded overrides document the section was built from.
