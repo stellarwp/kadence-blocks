@@ -21,6 +21,8 @@ package-lock.json
 /diff.txt
 /diffcs.txt
 /phpcs.json
+# Kadence theme checkout for the integration suite, see dev_scripts/integration-theme.sh
+/tests/_themes/
 
 # Scratch workspace for subagent-driven-development runs.
 .superpowers/

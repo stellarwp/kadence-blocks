@@ -5,6 +5,7 @@
 
 import metadata from './block.json';
 import TestimonialItemWrap from './carousel-item-wrap';
+import { useIsSiteStylesPanel } from '../../site-styles/use-is-site-styles-panel';
 
 /**
  * Import External
@@ -128,6 +129,7 @@ function KadenceTestimonials(props) {
 	}, []);
 
 	uniqueIdHelper(props);
+	const isSiteStylesPanel = useIsSiteStylesPanel();
 
 	const previewIconSize = getPreviewSize(
 		previewDevice,
@@ -145,23 +147,27 @@ function KadenceTestimonials(props) {
 	const renderTestimonialSettings = () => {
 		return (
 			<>
-				<SelectControl
-					label={__('Media Type', 'kadence-blocks')}
-					value={media}
-					options={[
-						{ value: 'image', label: __('Image', 'kadence-blocks') },
-						{ value: 'icon', label: __('Icon', 'kadence-blocks') },
-					]}
-					onChange={(value) => setAttributes({ media: value })}
-				/>
-				{'icon' === media && (
+				{!isSiteStylesPanel && (
+					<SelectControl
+						label={__('Media Type', 'kadence-blocks')}
+						value={media}
+						options={[
+							{ value: 'image', label: __('Image', 'kadence-blocks') },
+							{ value: 'icon', label: __('Icon', 'kadence-blocks') },
+						]}
+						onChange={(value) => setAttributes({ media: value })}
+					/>
+				)}
+				{(isSiteStylesPanel || 'icon' === media) && (
 					<Fragment>
-						<KadenceIconPicker
-							value={icon}
-							onChange={(value) => {
-								setAttributes({ icon: value });
-							}}
-						/>
+						{!isSiteStylesPanel && (
+							<KadenceIconPicker
+								value={icon}
+								onChange={(value) => {
+									setAttributes({ icon: value });
+								}}
+							/>
+						)}
 						<ResponsiveRangeControls
 							label={__('Icon Size', 'kadence-blocks')}
 							value={undefined !== isize ? isize : ''}
@@ -177,7 +183,7 @@ function KadenceTestimonials(props) {
 							showUnit={true}
 							units={['px']}
 						/>
-						{icon && 'fe' === icon.substring(0, 2) && (
+						{icon && 'fe' === icon.substring(0, 2) && !isSiteStylesPanel && (
 							<RangeControl
 								label={__('Line Width', 'kadence-blocks')}
 								value={istroke}
@@ -191,22 +197,24 @@ function KadenceTestimonials(props) {
 						)}
 						<PopColorControl
 							label={__('Icon Color', 'kadence-blocks')}
-							value={color ? color : '#555555'}
-							default={'#555555'}
+							value={color || isSiteStylesPanel ? color : '#555555'}
+							default={isSiteStylesPanel ? '' : '#555555'}
 							onChange={(value) => setAttributes({ color: value })}
 						/>
 					</Fragment>
 				)}
-				<RangeControl
-					label={__('Rating', 'kadence-blocks')}
-					value={rating}
-					onChange={(value) => {
-						setAttributes({ rating: value });
-					}}
-					step={1}
-					min={1}
-					max={5}
-				/>
+				{!isSiteStylesPanel && (
+					<RangeControl
+						label={__('Rating', 'kadence-blocks')}
+						value={rating}
+						onChange={(value) => {
+							setAttributes({ rating: value });
+						}}
+						step={1}
+						min={1}
+						max={5}
+					/>
+				)}
 			</>
 		);
 	};
@@ -558,7 +566,7 @@ function KadenceTestimonials(props) {
 							<SelectParentBlock clientId={clientId} />
 							<InspectorControlTabs
 								panelName={'testimonial'}
-								allowedTabs={['general', 'advanced']}
+								allowedTabs={isSiteStylesPanel ? ['general'] : ['general', 'advanced']}
 								setActiveTab={(value) => setActiveTab(value)}
 								activeTab={activeTab}
 							/>
@@ -577,7 +585,7 @@ function KadenceTestimonials(props) {
 								</>
 							)}
 
-							{activeTab === 'advanced' && (
+							{activeTab === 'advanced' && !isSiteStylesPanel && (
 								<>
 									<KadenceBlockDefaults
 										attributes={attributes}

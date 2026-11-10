@@ -18,6 +18,7 @@ import {
 	KadencePanelBody,
 	KadenceRadioButtons,
 	KadenceImageControl,
+	KadenceBlockDefaults,
 } from '@kadence/components';
 
 import {
@@ -35,7 +36,7 @@ import { lineBar, circleBar, semiCircleBar, lineMask } from '@kadence/icons';
  */
 import { __ } from '@wordpress/i18n';
 import { useSelect, useDispatch } from '@wordpress/data';
-import { useState, useEffect, Fragment } from '@wordpress/element';
+import { useState, useEffect, useRef, Fragment } from '@wordpress/element';
 import { map, range } from 'lodash';
 import {
 	RichText,
@@ -59,6 +60,8 @@ import { Circle, SemiCircle, Line } from 'progressbar.js';
  * Internal dependencies
  */
 import classnames from 'classnames';
+import { useIsSiteStylesPanel } from '../../site-styles/use-is-site-styles-panel';
+import { getSupportedBlock } from '../../site-styles/supported-blocks';
 
 export function Edit(props) {
 	const { attributes, setAttributes, isSelected, clientId } = props;
@@ -123,6 +126,9 @@ export function Edit(props) {
 	);
 
 	uniqueIdHelper(props);
+	const isSiteStylesPanel = useIsSiteStylesPanel();
+	// The bar's own document: the editor canvas, or the Kadence panel's preview.
+	const barRef = useRef(null);
 
 	const saveLabelFont = (value) => {
 		setAttributes({
@@ -365,11 +371,7 @@ export function Edit(props) {
 			borderRadius: barType === 'line' ? previewProgressBorderRadius + 'px' : '',
 		},
 		step(state, bar) {
-			const iFrameSelector = document.getElementsByName('editor-canvas');
-			const selector =
-				iFrameSelector.length > 0
-					? document.getElementsByName('editor-canvas')[0].contentWindow.document
-					: document;
+			const selector = barRef.current ? barRef.current.ownerDocument : document;
 
 			const elementAbove = selector.getElementById('current-progress-above' + uniqueID);
 			const elementInside = selector.getElementById('current-progress-inside' + uniqueID);
@@ -410,14 +412,10 @@ export function Edit(props) {
 		},
 	};
 
-	const container = '#kb-progress-bar' + uniqueID;
-	const iFrameSelector = document.getElementsByName('editor-canvas');
-	const selector =
-		iFrameSelector.length > 0 ? document.getElementsByName('editor-canvas')[0].contentWindow.document : document;
 	let progressItem = null;
 
 	useEffect(() => {
-		const containerDiv = selector.querySelector(container);
+		const containerDiv = barRef.current;
 		if (containerDiv === null) {
 			return;
 		}
@@ -459,7 +457,6 @@ export function Edit(props) {
 		labelLayout,
 		decimal,
 		uniqueID,
-		selector,
 		displayPercent,
 		numberPrefix,
 		numberSuffix,
@@ -638,72 +635,74 @@ export function Edit(props) {
 
 				{activeTab === 'general' && (
 					<>
-						<PanelBody>
-							<ButtonGroup
-								className="kt-style-btn-group"
-								aria-label={__('Progress Bar Layout', 'kadence-blocks')}
-							>
-								{map(layoutPresetOptions, ({ name, key, icon }) => (
-									<Button
-										key={key}
-										className="kt-style-btn"
-										isSmall
-										label={name}
-										aria-pressed={false}
-										onClick={() => {
-											const attributeUpdates = { barType: key };
-											// Update defaults if switching back from line mask
-											if (barType === 'line-mask' && key !== 'line-mask') {
-												if (5 === progressMax && 4 === progressAmount) {
-													attributeUpdates.progressMax = 100;
-													attributeUpdates.progressAmount = 90;
-													if ('' === numberSuffix) {
-														attributeUpdates.numberSuffix = '%';
+						{!isSiteStylesPanel && (
+							<PanelBody>
+								<ButtonGroup
+									className="kt-style-btn-group"
+									aria-label={__('Progress Bar Layout', 'kadence-blocks')}
+								>
+									{map(layoutPresetOptions, ({ name, key, icon }) => (
+										<Button
+											key={key}
+											className="kt-style-btn"
+											isSmall
+											label={name}
+											aria-pressed={false}
+											onClick={() => {
+												const attributeUpdates = { barType: key };
+												// Update defaults if switching back from line mask
+												if (barType === 'line-mask' && key !== 'line-mask') {
+													if (5 === progressMax && 4 === progressAmount) {
+														attributeUpdates.progressMax = 100;
+														attributeUpdates.progressAmount = 90;
+														if ('' === numberSuffix) {
+															attributeUpdates.numberSuffix = '%';
+														}
 													}
+													attributeUpdates.decimal = 'none';
+													attributeUpdates.displayPercent = true;
 												}
-												attributeUpdates.decimal = 'none';
-												attributeUpdates.displayPercent = true;
-											}
-											if (key !== 'line' && labelPosition === 'inside') {
-												attributeUpdates.hAlign = 'center';
-												attributeUpdates.thAlign = '';
-												attributeUpdates.mhAlign = '';
-											}
-											// Update from default if they choose the line mask option
-											if (key === 'line-mask') {
-												if (100 == progressMax && 90 == progressAmount) {
-													attributeUpdates.progressMax = 5;
-													attributeUpdates.progressAmount = 4;
-													if ('' !== numberSuffix) {
-														attributeUpdates.numberSuffix = '';
+												if (key !== 'line' && labelPosition === 'inside') {
+													attributeUpdates.hAlign = 'center';
+													attributeUpdates.thAlign = '';
+													attributeUpdates.mhAlign = '';
+												}
+												// Update from default if they choose the line mask option
+												if (key === 'line-mask') {
+													if (100 == progressMax && 90 == progressAmount) {
+														attributeUpdates.progressMax = 5;
+														attributeUpdates.progressAmount = 4;
+														if ('' !== numberSuffix) {
+															attributeUpdates.numberSuffix = '';
+														}
 													}
+													if (labelPosition === 'inside') {
+														attributeUpdates.labelPosition = 'bottom';
+													}
+													if ('' == label) {
+														attributeUpdates.displayLabel = false;
+													}
+													attributeUpdates.decimal = 'one';
+													attributeUpdates.displayPercent = false;
 												}
-												if (labelPosition === 'inside') {
-													attributeUpdates.labelPosition = 'bottom';
-												}
-												if ('' == label) {
-													attributeUpdates.displayLabel = false;
-												}
-												attributeUpdates.decimal = 'one';
-												attributeUpdates.displayPercent = false;
-											}
-											setAttributes(attributeUpdates);
-										}}
-										style={{
-											border: barType === key ? '2px solid #2B6CB0' : '0',
-											//marginRight: '4px',
-											//width      : '75px',
-										}}
-									>
-										{icon}
-									</Button>
-								))}
-							</ButtonGroup>
-						</PanelBody>
+												setAttributes(attributeUpdates);
+											}}
+											style={{
+												border: barType === key ? '2px solid #2B6CB0' : '0',
+												//marginRight: '4px',
+												//width      : '75px',
+											}}
+										>
+											{icon}
+										</Button>
+									))}
+								</ButtonGroup>
+							</PanelBody>
+						)}
 
 						{/* These are the wordpress and Kadence components mostly that are imported at the top */}
 						<KadencePanelBody>
-							{barType == 'line-mask' && (
+							{barType == 'line-mask' && !isSiteStylesPanel && (
 								<>
 									<SelectControl
 										label={__('Mask Shape', 'kadence-blocks')}
@@ -863,158 +862,168 @@ export function Edit(props) {
 									unit={'px'}
 								/>
 							)}
-							<KadenceRadioButtons
-								label={__('Number Format', 'kadence-blocks')}
-								value={decimal}
-								className={'kb-letter-case'}
-								options={[
-									{
-										value: 'none',
-										label: __('1', 'kadence-blocks'),
-										tooltip: __('Whole Number', 'kadence-blocks'),
-									},
-									{
-										value: 'one',
-										label: __('0.1', 'kadence-blocks'),
-										tooltip: __('One Decimal Space', 'kadence-blocks'),
-									},
-									{
-										value: 'two',
-										label: __('0.01', 'kadence-blocks'),
-										tooltip: __('Two Decimal Spaces', 'kadence-blocks'),
-									},
-								]}
-								allowClear={false}
-								onChange={(value) => setAttributes({ decimal: value })}
-							/>
-							<RangeControl
-								label={__('Progress', 'kadence-blocks')}
-								value={progressAmount}
-								onChange={(value) => setAttributes({ progressAmount: value })}
-								min={0}
-								max={progressMax}
-								step={decimal === 'two' ? 0.01 : decimal === 'one' ? 0.1 : 1}
-							/>
-							<RangeControl
-								label={__('Max Progress', 'kadence-blocks')}
-								value={progressMax}
-								onChange={(value) => {
-									setAttributes({ progressMax: value });
-								}}
-								min={1}
-								max={1000}
-								step={decimal === 'two' ? 0.01 : decimal === 'one' ? 0.1 : 1}
-							/>
-							<TextControl
-								label={__('Aria Label', 'kadence-blocks')}
-								value={ariaLabel}
-								onChange={(value) => setAttributes({ ariaLabel: value })}
-								help={__(
-									'Describe the purpose of this progress bar for screen readers, leave blank if label describes and the bar is purely decorative.',
-									'kadence-blocks'
-								)}
-								className={'kb-textbox-style'}
-							/>
-						</KadencePanelBody>
-
-						<KadencePanelBody
-							title={__('Number Settings', 'kadence-blocks')}
-							initialOpen={true}
-							panelName={'kb-progress-number-settings'}
-						>
-							<ToggleControl
-								label={__('Show Number', 'kadence-blocks')}
-								checked={displayPercent}
-								onChange={(value) => setAttributes({ displayPercent: value })}
-							/>
-
-							{displayPercent && (
+							{!isSiteStylesPanel && (
 								<>
-									<TextControl
-										label={__('Number Prefix', 'kadence-blocks')}
-										value={numberPrefix}
-										onChange={(value) => setAttributes({ numberPrefix: value })}
-										onBlur={() => {
-											setRerender(Math.random());
+									<KadenceRadioButtons
+										label={__('Number Format', 'kadence-blocks')}
+										value={decimal}
+										className={'kb-letter-case'}
+										options={[
+											{
+												value: 'none',
+												label: __('1', 'kadence-blocks'),
+												tooltip: __('Whole Number', 'kadence-blocks'),
+											},
+											{
+												value: 'one',
+												label: __('0.1', 'kadence-blocks'),
+												tooltip: __('One Decimal Space', 'kadence-blocks'),
+											},
+											{
+												value: 'two',
+												label: __('0.01', 'kadence-blocks'),
+												tooltip: __('Two Decimal Spaces', 'kadence-blocks'),
+											},
+										]}
+										allowClear={false}
+										onChange={(value) => setAttributes({ decimal: value })}
+									/>
+									<RangeControl
+										label={__('Progress', 'kadence-blocks')}
+										value={progressAmount}
+										onChange={(value) => setAttributes({ progressAmount: value })}
+										min={0}
+										max={progressMax}
+										step={decimal === 'two' ? 0.01 : decimal === 'one' ? 0.1 : 1}
+									/>
+									<RangeControl
+										label={__('Max Progress', 'kadence-blocks')}
+										value={progressMax}
+										onChange={(value) => {
+											setAttributes({ progressMax: value });
 										}}
+										min={1}
+										max={1000}
+										step={decimal === 'two' ? 0.01 : decimal === 'one' ? 0.1 : 1}
 									/>
 									<TextControl
-										label={__('Number Suffix', 'kadence-blocks')}
-										value={numberSuffix}
-										onChange={(value) => setAttributes({ numberSuffix: value })}
-										onBlur={() => {
-											setRerender(Math.random());
-										}}
+										label={__('Aria Label', 'kadence-blocks')}
+										value={ariaLabel}
+										onChange={(value) => setAttributes({ ariaLabel: value })}
+										help={__(
+											'Describe the purpose of this progress bar for screen readers, leave blank if label describes and the bar is purely decorative.',
+											'kadence-blocks'
+										)}
+										className={'kb-textbox-style'}
 									/>
-									{progressMax !== 100 && (
-										<ToggleControl
-											label={__('Percentage relative to 100%', 'kadence-blocks')}
-											checked={numberIsRelative}
-											onChange={(value) => setAttributes({ numberIsRelative: value })}
-										/>
-									)}
 								</>
 							)}
 						</KadencePanelBody>
 
-						<KadencePanelBody
-							title={__('Animation', 'kadence-blocks')}
-							initialOpen={false}
-							panelName={'kb-progress-bar-timing'}
-						>
-							<RangeControl
-								label={__('Duration', 'kadence-blocks')}
-								value={duration}
-								onChange={(value) => setAttributes({ duration: value })}
-								min={0}
-								max={25}
-								step={0.1}
-							/>
+						{!isSiteStylesPanel && (
+							<>
+								<KadencePanelBody
+									title={__('Number Settings', 'kadence-blocks')}
+									initialOpen={true}
+									panelName={'kb-progress-number-settings'}
+								>
+									<ToggleControl
+										label={__('Show Number', 'kadence-blocks')}
+										checked={displayPercent}
+										onChange={(value) => setAttributes({ displayPercent: value })}
+									/>
 
-							<ToggleControl
-								label={__('Wait until visible to animate', 'kadence-blocks')}
-								help={__(
-									'The animation wont start until the progress bar is visible in the viewport. This does not apply in the editor',
-									'kadence-blocks'
-								)}
-								checked={delayUntilInView}
-								onChange={(value) => setAttributes({ delayUntilInView: value })}
-							/>
+									{displayPercent && (
+										<>
+											<TextControl
+												label={__('Number Prefix', 'kadence-blocks')}
+												value={numberPrefix}
+												onChange={(value) => setAttributes({ numberPrefix: value })}
+												onBlur={() => {
+													setRerender(Math.random());
+												}}
+											/>
+											<TextControl
+												label={__('Number Suffix', 'kadence-blocks')}
+												value={numberSuffix}
+												onChange={(value) => setAttributes({ numberSuffix: value })}
+												onBlur={() => {
+													setRerender(Math.random());
+												}}
+											/>
+											{progressMax !== 100 && (
+												<ToggleControl
+													label={__('Percentage relative to 100%', 'kadence-blocks')}
+													checked={numberIsRelative}
+													onChange={(value) => setAttributes({ numberIsRelative: value })}
+												/>
+											)}
+										</>
+									)}
+								</KadencePanelBody>
 
-							<SelectControl
-								label={__('Type', 'kadence-blocks')}
-								options={[
-									{ value: 'linear', label: __('Linear', 'kadence-blocks') },
-									{ value: 'easeIn', label: __('Ease In', 'kadence-blocks') },
-									{ value: 'easeOut', label: __('Ease Out', 'kadence-blocks') },
-									{ value: 'easeInOut', label: __('Ease In Out', 'kadence-blocks') },
-								]}
-								value={easing}
-								onChange={(value) => setAttributes({ easing: value })}
-							/>
-						</KadencePanelBody>
+								<KadencePanelBody
+									title={__('Animation', 'kadence-blocks')}
+									initialOpen={false}
+									panelName={'kb-progress-bar-timing'}
+								>
+									<RangeControl
+										label={__('Duration', 'kadence-blocks')}
+										value={duration}
+										onChange={(value) => setAttributes({ duration: value })}
+										min={0}
+										max={25}
+										step={0.1}
+									/>
+
+									<ToggleControl
+										label={__('Wait until visible to animate', 'kadence-blocks')}
+										help={__(
+											'The animation wont start until the progress bar is visible in the viewport. This does not apply in the editor',
+											'kadence-blocks'
+										)}
+										checked={delayUntilInView}
+										onChange={(value) => setAttributes({ delayUntilInView: value })}
+									/>
+
+									<SelectControl
+										label={__('Type', 'kadence-blocks')}
+										options={[
+											{ value: 'linear', label: __('Linear', 'kadence-blocks') },
+											{ value: 'easeIn', label: __('Ease In', 'kadence-blocks') },
+											{ value: 'easeOut', label: __('Ease Out', 'kadence-blocks') },
+											{ value: 'easeInOut', label: __('Ease In Out', 'kadence-blocks') },
+										]}
+										value={easing}
+										onChange={(value) => setAttributes({ easing: value })}
+									/>
+								</KadencePanelBody>
+							</>
+						)}
 					</>
 				)}
 
 				{activeTab === 'style' && (
 					<Fragment>
 						<KadencePanelBody>
-							<KadenceRadioButtons
-								label={__('Text Position', 'kadence-blocks')}
-								value={labelPosition}
-								options={[
-									{ value: 'above', label: __('Above', 'kadence-blocks') },
-									{
-										value: 'inside',
-										label: __('Inside', 'kadence-blocks'),
-										isDisabled: barType === 'line-mask',
-									},
-									{ value: 'below', label: __('Below', 'kadence-blocks') },
-								]}
-								className={'kb-letter-case'}
-								allowClear={false}
-								onChange={(value) => setAttributes({ labelPosition: value })}
-							/>
+							{!isSiteStylesPanel && (
+								<KadenceRadioButtons
+									label={__('Text Position', 'kadence-blocks')}
+									value={labelPosition}
+									options={[
+										{ value: 'above', label: __('Above', 'kadence-blocks') },
+										{
+											value: 'inside',
+											label: __('Inside', 'kadence-blocks'),
+											isDisabled: barType === 'line-mask',
+										},
+										{ value: 'below', label: __('Below', 'kadence-blocks') },
+									]}
+									className={'kb-letter-case'}
+									allowClear={false}
+									onChange={(value) => setAttributes({ labelPosition: value })}
+								/>
+							)}
 
 							{/* {labelPosition !== 'inside' || barType === 'line' ? ( <ResponsiveAlignControls
 								label={__( 'Text Alignment', 'kadence-blocks' )}
@@ -1045,7 +1054,7 @@ export function Edit(props) {
 								/>
 							)}
 
-							{displayLabel && displayPercent ? (
+							{displayLabel && displayPercent && !isSiteStylesPanel ? (
 								<SelectControl
 									label={__('Text Layout', 'kadence-blocks')}
 									options={[
@@ -1059,17 +1068,21 @@ export function Edit(props) {
 								/>
 							) : null}
 
-							<ToggleControl
-								label={__('Show Label', 'kadence-blocks')}
-								checked={displayLabel}
-								onChange={(value) => setAttributes({ displayLabel: value })}
-							/>
+							{!isSiteStylesPanel && (
+								<>
+									<ToggleControl
+										label={__('Show Label', 'kadence-blocks')}
+										checked={displayLabel}
+										onChange={(value) => setAttributes({ displayLabel: value })}
+									/>
 
-							<ToggleControl
-								label={__('Show Number', 'kadence-blocks')}
-								checked={displayPercent}
-								onChange={(value) => setAttributes({ displayPercent: value })}
-							/>
+									<ToggleControl
+										label={__('Show Number', 'kadence-blocks')}
+										checked={displayPercent}
+										onChange={(value) => setAttributes({ displayPercent: value })}
+									/>
+								</>
+							)}
 						</KadencePanelBody>
 
 						<KadencePanelBody
@@ -1277,7 +1290,7 @@ export function Edit(props) {
 								units={['px', 'vh', '%']}
 							/>
 						</KadencePanelBody>
-						{displayPercent && (
+						{displayPercent && !isSiteStylesPanel && (
 							<KadencePanelBody initialOpen={true} panelName={'kb-progress-preload-settings'}>
 								<ToggleControl
 									label={__('Show max progress on page load', 'kadence-blocks')}
@@ -1290,6 +1303,10 @@ export function Edit(props) {
 								/>
 							</KadencePanelBody>
 						)}
+						{/* Progress Bar has no Block Defaults; in FSE mode this points to its site styles. */}
+						{getSupportedBlock('kadence/progress-bar') && !isSiteStylesPanel && (
+							<KadenceBlockDefaults blockSlug={'kadence/progress-bar'} />
+						)}
 					</>
 				)}
 			</InspectorControls>
@@ -1297,7 +1314,7 @@ export function Edit(props) {
 			<div>
 				{'above' === labelPosition && (displayLabel || displayPercent) && RenderLabel('above')}
 
-				<div id={'kb-progress-bar' + uniqueID} class="kb-progress-bar"></div>
+				<div id={'kb-progress-bar' + uniqueID} class="kb-progress-bar" ref={barRef}></div>
 				{'inside' === labelPosition && (displayLabel || displayPercent) && RenderLabel('inside')}
 				{'below' === labelPosition && (displayLabel || displayPercent) && RenderLabel('below')}
 			</div>

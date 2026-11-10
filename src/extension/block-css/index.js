@@ -19,6 +19,7 @@ import { createHigherOrderComponent } from '@wordpress/compose';
 import { addFilter } from '@wordpress/hooks';
 import { __, sprintf } from '@wordpress/i18n';
 import { showSettings } from '@kadence/helpers';
+import { SITE_STYLES_PANEL_SETTING } from '../../site-styles/use-is-site-styles-panel';
 /**
  * Add Block CSS attributes
  *
@@ -47,7 +48,10 @@ const BlockCSSComponent = createHigherOrderComponent((BlockEdit) => {
 			return <BlockEdit {...props} />;
 		}
 		const { hasBlockCSS, openTab } = useSelect((select) => {
-			const hasSupport = select(blocksStore).hasBlockSupport(props.name, 'kbcss');
+			// The Kadence panel stores no custom CSS: it isn't a site value.
+			const hasSupport =
+				select(blocksStore).hasBlockSupport(props.name, 'kbcss') &&
+				true !== select('core/block-editor').getSettings()[SITE_STYLES_PANEL_SETTING];
 			let openTab = 'general';
 			if (hasSupport) {
 				openTab =

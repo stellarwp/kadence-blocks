@@ -103,12 +103,15 @@ import { pickableTokensForControl, pickableTokensForKey } from '../../extension/
 import { ColorControl } from '../../token-controls';
 import { EditorColorControlGroup } from '../../extension/design-tokens/components/EditorColorControlGroup';
 import { presetFontVariant } from './preset-font-variant';
+import { isFseMode } from '../../site-styles/supported-blocks';
+import { isConvertedHeading } from './converted-headings';
+import { useIsSiteStylesPanel } from '../../site-styles/use-is-site-styles-panel';
 import metadata from './block.json';
 /**
  * Internal block libraries
  */
 import { __, sprintf } from '@wordpress/i18n';
-import { useDispatch, useSelect } from '@wordpress/data';
+import { select, useDispatch, useSelect } from '@wordpress/data';
 import { createBlock } from '@wordpress/blocks';
 import {
 	InspectorControls,
@@ -293,6 +296,7 @@ function KadenceAdvancedHeading(props) {
 		ratio,
 	} = attributes;
 
+	const isSiteStylesPanel = useIsSiteStylesPanel();
 	const [activeTab, setActiveTab] = useState('style');
 	const [contentRef, setContentRef] = useState();
 
@@ -452,7 +456,8 @@ function KadenceAdvancedHeading(props) {
 						return null;
 					}
 
-					const newAttributes = { ...attributes };
+					// The stored attributes, so the site values the heading shows do not become its own.
+					const newAttributes = { ...select('core/block-editor').getBlockAttributes(clientId) };
 					newAttributes.uniqueID = attributes.uniqueID + '_' + thisIndex;
 
 					return wp.blocks.createBlock('kadence/advancedheading', {
@@ -525,7 +530,7 @@ function KadenceAdvancedHeading(props) {
 			)
 		);
 		let updateBorderStyle = false;
-		if ('' !== markBorder) {
+		if (markBorder) {
 			tempBorderStyle[0].top[0] = KadenceColorOutput(markBorder, markBorderOpacity);
 			tempBorderStyle[0].right[0] = KadenceColorOutput(markBorder, markBorderOpacity);
 			tempBorderStyle[0].bottom[0] = KadenceColorOutput(markBorder, markBorderOpacity);
@@ -558,6 +563,25 @@ function KadenceAdvancedHeading(props) {
 		// update enableTextShadow if textShadow[0].enable is true for previous unresponsive setting
 		if (!enableTextShadow && textShadow[0].enable) {
 			setAttributes({ enableTextShadow: true });
+		}
+	}, []);
+
+	useEffect(() => {
+		/*
+		 * FSE mode ignores Block Defaults, which is where "Advanced Text as default block" keeps the paragraph tag.
+		 * A block that arrives with a tag, a level or text, or from converting a core Heading, is not a fresh default block.
+		 */
+		if (
+			isFseMode() &&
+			!isSiteStylesPanel &&
+			!uniqueID &&
+			isDefaultEditorBlock &&
+			!isConvertedHeading(clientId) &&
+			!content &&
+			'heading' === htmlTag &&
+			2 === level
+		) {
+			setAttributes({ htmlTag: 'p' });
 		}
 	}, []);
 
@@ -1350,7 +1374,7 @@ function KadenceAdvancedHeading(props) {
 							return createBlock('core/paragraph');
 						}
 						return createBlock('kadence/advancedheading', {
-							...attributes,
+							...select('core/block-editor').getBlockAttributes(clientId),
 							content: value ?? '',
 						});
 					}}
@@ -1781,17 +1805,19 @@ function KadenceAdvancedHeading(props) {
 					{activeTab === 'general' && (
 						<>
 							<KadencePanelBody panelName={'kb-adv-heading-general-settings'}>
-								<TagSelect
-									label={__('HTML Tag', 'kadence-blocks')}
-									value={'heading' === htmlTag ? level : htmlTag}
-									onChange={(value) => {
-										if ('div' === value || 'p' === value || 'span' === value) {
-											setAttributes({ level: 2, htmlTag: value });
-										} else {
-											setAttributes({ level: value, htmlTag: 'heading' });
-										}
-									}}
-								/>
+								{!isSiteStylesPanel && (
+									<TagSelect
+										label={__('HTML Tag', 'kadence-blocks')}
+										value={'heading' === htmlTag ? level : htmlTag}
+										onChange={(value) => {
+											if ('div' === value || 'p' === value || 'span' === value) {
+												setAttributes({ level: 2, htmlTag: value });
+											} else {
+												setAttributes({ level: value, htmlTag: 'heading' });
+											}
+										}}
+									/>
+								)}
 								<ResponsiveAlignControls
 									label={__('Text Alignment', 'kadence-blocks')}
 									value={align ? align : ''}
@@ -1880,21 +1906,23 @@ function KadenceAdvancedHeading(props) {
 										]}
 										onChange={(value) => setAttributes({ linkStyle: value })}
 									/>
-									<URLInputControl
-										label={__('Text Wrap Link', 'kadence-blocks')}
-										url={link}
-										onChangeUrl={(value) => setAttributes({ link: value })}
-										additionalControls={true}
-										opensInNewTab={undefined !== linkTarget ? linkTarget : false}
-										onChangeTarget={(value) => setAttributes({ linkTarget: value })}
-										linkNoFollow={undefined !== linkNoFollow ? linkNoFollow : false}
-										onChangeFollow={(value) => setAttributes({ linkNoFollow: value })}
-										linkSponsored={undefined !== linkSponsored ? linkSponsored : false}
-										onChangeSponsored={(value) => setAttributes({ linkSponsored: value })}
-										dynamicAttribute={'link'}
-										allowClear={true}
-										{...props}
-									/>
+									{!isSiteStylesPanel && (
+										<URLInputControl
+											label={__('Text Wrap Link', 'kadence-blocks')}
+											url={link}
+											onChangeUrl={(value) => setAttributes({ link: value })}
+											additionalControls={true}
+											opensInNewTab={undefined !== linkTarget ? linkTarget : false}
+											onChangeTarget={(value) => setAttributes({ linkTarget: value })}
+											linkNoFollow={undefined !== linkNoFollow ? linkNoFollow : false}
+											onChangeFollow={(value) => setAttributes({ linkNoFollow: value })}
+											linkSponsored={undefined !== linkSponsored ? linkSponsored : false}
+											onChangeSponsored={(value) => setAttributes({ linkSponsored: value })}
+											dynamicAttribute={'link'}
+											allowClear={true}
+											{...props}
+										/>
+									)}
 								</KadencePanelBody>
 							)}
 						</>
@@ -2345,7 +2373,7 @@ function KadenceAdvancedHeading(props) {
 									onChangeTablet={(value) => setAttributes({ tabletTextOrientation: value })}
 									onChangeMobile={(value) => setAttributes({ mobileTextOrientation: value })}
 								/>
-								{textOrientation !== 'horizontal' && textOrientation !== '' && (
+								{!isSiteStylesPanel && textOrientation !== 'horizontal' && textOrientation !== '' && (
 									<ResponsiveRangeControls
 										reset={() => {
 											setAttributes({
@@ -2417,15 +2445,17 @@ function KadenceAdvancedHeading(props) {
 									initialOpen={false}
 									panelName={'kb-adv-heading-icon'}
 								>
-									<div className="kt-select-icon-container">
-										<KadenceIconPicker
-											value={icon}
-											onChange={(value) => {
-												setAttributes({ icon: value });
-											}}
-											allowClear={true}
-										/>
-									</div>
+									{!isSiteStylesPanel && (
+										<div className="kt-select-icon-container">
+											<KadenceIconPicker
+												value={icon}
+												onChange={(value) => {
+													setAttributes({ icon: value });
+												}}
+												allowClear={true}
+											/>
+										</div>
+									)}
 									<SelectControl
 										label={__('Icon Location', 'kadence-blocks')}
 										value={iconSide}
@@ -2526,53 +2556,63 @@ function KadenceAdvancedHeading(props) {
 										units={['px', 'em', 'rem']}
 										onUnit={(value) => setAttributes({ iconPaddingUnit: value })}
 									/>
-									<TextControl
-										label={__('Title for screen readers', 'kadence-blocks')}
-										help={__(
-											'If no title added screen readers will ignore, good if the icon is purely decorative.',
-											'kadence-blocks'
-										)}
-										value={iconTitle}
-										onChange={(value) => {
-											setAttributes({ iconTitle: value });
-										}}
-									/>
-									<TextareaControl
-										label={__('Icon Tooltip Content', 'kadence-blocks')}
-										value={iconTooltip}
-										onChange={(newValue) => setAttributes({ iconTooltip: newValue })}
-									/>
-									<SelectControl
-										label={__('Icon Tooltip Placement', 'kadence-blocks')}
-										value={iconTooltipPlacement || 'top'}
-										options={[
-											{ label: __('Top', 'kadence-blocks'), value: 'top' },
-											{ label: __('Top Start', 'kadence-blocks'), value: 'top-start' },
-											{ label: __('Top End', 'kadence-blocks'), value: 'top-end' },
-											{ label: __('Right', 'kadence-blocks'), value: 'right' },
-											{ label: __('Right Start', 'kadence-blocks'), value: 'right-start' },
-											{ label: __('Right End', 'kadence-blocks'), value: 'right-end' },
-											{ label: __('Bottom', 'kadence-blocks'), value: 'bottom' },
-											{ label: __('Bottom Start', 'kadence-blocks'), value: 'bottom-start' },
-											{ label: __('Bottom End', 'kadence-blocks'), value: 'bottom-end' },
-											{ label: __('Left', 'kadence-blocks'), value: 'left' },
-											{ label: __('Left Start', 'kadence-blocks'), value: 'left-start' },
-											{ label: __('Left End', 'kadence-blocks'), value: 'left-end' },
-											{ label: __('Auto', 'kadence-blocks'), value: 'auto' },
-											{ label: __('Auto Start', 'kadence-blocks'), value: 'auto-start' },
-											{ label: __('Auto End', 'kadence-blocks'), value: 'auto-end' },
-										]}
-										onChange={(val) => {
-											setAttributes({ iconTooltipPlacement: val });
-										}}
-									/>
-									<ToggleControl
-										label={__('Show indicator underline', 'kadence-blocks')}
-										checked={iconTooltipDash}
-										onChange={(value) => {
-											setAttributes({ iconTooltipDash: value });
-										}}
-									/>
+									{!isSiteStylesPanel && (
+										<>
+											<TextControl
+												label={__('Title for screen readers', 'kadence-blocks')}
+												help={__(
+													'If no title added screen readers will ignore, good if the icon is purely decorative.',
+													'kadence-blocks'
+												)}
+												value={iconTitle}
+												onChange={(value) => {
+													setAttributes({ iconTitle: value });
+												}}
+											/>
+											<TextareaControl
+												label={__('Icon Tooltip Content', 'kadence-blocks')}
+												value={iconTooltip}
+												onChange={(newValue) => setAttributes({ iconTooltip: newValue })}
+											/>
+											<SelectControl
+												label={__('Icon Tooltip Placement', 'kadence-blocks')}
+												value={iconTooltipPlacement || 'top'}
+												options={[
+													{ label: __('Top', 'kadence-blocks'), value: 'top' },
+													{ label: __('Top Start', 'kadence-blocks'), value: 'top-start' },
+													{ label: __('Top End', 'kadence-blocks'), value: 'top-end' },
+													{ label: __('Right', 'kadence-blocks'), value: 'right' },
+													{
+														label: __('Right Start', 'kadence-blocks'),
+														value: 'right-start',
+													},
+													{ label: __('Right End', 'kadence-blocks'), value: 'right-end' },
+													{ label: __('Bottom', 'kadence-blocks'), value: 'bottom' },
+													{
+														label: __('Bottom Start', 'kadence-blocks'),
+														value: 'bottom-start',
+													},
+													{ label: __('Bottom End', 'kadence-blocks'), value: 'bottom-end' },
+													{ label: __('Left', 'kadence-blocks'), value: 'left' },
+													{ label: __('Left Start', 'kadence-blocks'), value: 'left-start' },
+													{ label: __('Left End', 'kadence-blocks'), value: 'left-end' },
+													{ label: __('Auto', 'kadence-blocks'), value: 'auto' },
+													{ label: __('Auto Start', 'kadence-blocks'), value: 'auto-start' },
+													{ label: __('Auto End', 'kadence-blocks'), value: 'auto-end' },
+												]}
+												onChange={(val) => {
+													setAttributes({ iconTooltipPlacement: val });
+												}}
+											/>
+											<ToggleControl
+												label={__('Show indicator underline', 'kadence-blocks')}
+												checked={iconTooltipDash}
+												onChange={(value) => {
+													setAttributes({ iconTooltipDash: value });
+												}}
+											/>
+										</>
+									)}
 								</KadencePanelBody>
 							)}
 							{showSettings('highlightSettings', 'kadence/advancedheading') && (
@@ -2995,12 +3035,14 @@ function KadenceAdvancedHeading(props) {
 								</>
 							)}
 
-							<KadenceBlockDefaults
-								attributes={attributes}
-								defaultAttributes={metadata.attributes}
-								blockSlug={metadata.name}
-								excludedAttrs={nonTransAttrs}
-							/>
+							{!isSiteStylesPanel && (
+								<KadenceBlockDefaults
+									attributes={attributes}
+									defaultAttributes={metadata.attributes}
+									blockSlug={metadata.name}
+									excludedAttrs={nonTransAttrs}
+								/>
+							)}
 						</>
 					)}
 				</InspectorControls>
@@ -3008,32 +3050,34 @@ function KadenceAdvancedHeading(props) {
 
 			<DynamicInlineReplaceControl dynamicAttribute={'content'} {...props} />
 
-			<InspectorAdvancedControls>
-				{htmlTag === 'heading' && (
+			{!isSiteStylesPanel && (
+				<InspectorAdvancedControls>
+					{htmlTag === 'heading' && (
+						<TextControl
+							label={__('Alternative title for table of contents', 'kadence-blocks')}
+							help={__(
+								'If using table of contents block you can define a custom title here.',
+								'kadence-blocks'
+							)}
+							value={altTitle}
+							onChange={(value) => {
+								setAttributes({ altTitle: value });
+							}}
+						/>
+					)}
 					<TextControl
-						label={__('Alternative title for table of contents', 'kadence-blocks')}
-						help={__(
-							'If using table of contents block you can define a custom title here.',
-							'kadence-blocks'
-						)}
-						value={altTitle}
-						onChange={(value) => {
-							setAttributes({ altTitle: value });
+						label={__('HTML Anchor', 'kadence-blocks')}
+						help={__('Anchors lets you link directly to a section on a page.', 'kadence-blocks')}
+						value={anchor || ''}
+						onChange={(nextValue) => {
+							nextValue = nextValue.replace(ANCHOR_REGEX, '-');
+							setAttributes({
+								anchor: nextValue,
+							});
 						}}
 					/>
-				)}
-				<TextControl
-					label={__('HTML Anchor', 'kadence-blocks')}
-					help={__('Anchors lets you link directly to a section on a page.', 'kadence-blocks')}
-					value={anchor || ''}
-					onChange={(nextValue) => {
-						nextValue = nextValue.replace(ANCHOR_REGEX, '-');
-						setAttributes({
-							anchor: nextValue,
-						});
-					}}
-				/>
-			</InspectorAdvancedControls>
+				</InspectorAdvancedControls>
+			)}
 
 			{kadenceAnimation && (
 				<div className={`kt-animation-wrap-${kadenceAnimation}`}>

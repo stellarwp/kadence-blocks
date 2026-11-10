@@ -49,7 +49,8 @@ export function colorSelection(groups, value) {
 		// black) and there is no path back to the original value once the picker overwrites it — so it
 		// is routed to Style Library, never to the destructive Custom tab, exactly like an unresolved
 		// alias.
-		initialTab: isTokenAlias(value) || isCssVariableReference(value) || !value ? 'style-library' : 'custom',
+		initialTab:
+			entry || isTokenAlias(value) || isCssVariableReference(value) || !value ? 'style-library' : 'custom',
 	};
 }
 

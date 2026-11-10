@@ -48,5 +48,7 @@ registerBlockType('kadence/icon', {
 	edit,
 	save,
 	deprecated,
-	example: {},
+	example: {
+		innerBlocks: [{ name: 'kadence/single-icon' }],
+	},
 });
