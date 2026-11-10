@@ -137,6 +137,27 @@ final class ConsentTest extends TestCase {
 	}
 
 	/**
+	 * An administrator submitting a field value other than '1' withdraws consent.
+	 *
+	 * @return void
+	 */
+	public function testAdminRequestWithAnUnexpectedFieldValueWithdrawsConsent(): void {
+		wp_set_current_user( self::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		$this->status->set_status( true, $this->slug );
+		$_REQUEST['_wpnonce']          = wp_create_nonce( Consent::get_action() );
+		$_POST[ Consent::get_field() ] = '';
+
+		try {
+			$this->consent->handle_request();
+			$this->fail( 'Expected a redirect.' );
+		} catch ( RuntimeException $e ) {
+			$this->assertSame( 'redirected', $e->getMessage() );
+		}
+
+		$this->assertFalse( $this->consent->is_enabled() );
+	}
+
+	/**
 	 * A user without manage_options is rejected and the stored consent is untouched.
 	 *
 	 * @return void

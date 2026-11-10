@@ -58,6 +58,15 @@ final class Consent {
 	 */
 	private Opt_In_Template $template;
 
+	/**
+	 * Constructor.
+	 *
+	 * @since TBD
+	 *
+	 * @param Status            $status     The telemetry opt-in status store.
+	 * @param Opt_In_Subscriber $subscriber The telemetry library's opt-in handler.
+	 * @param Opt_In_Template   $template   The telemetry library's opt-in prompt.
+	 */
 	public function __construct(
 		Status $status,
 		Opt_In_Subscriber $subscriber,
@@ -73,7 +82,7 @@ final class Consent {
 	 *
 	 * @since TBD
 	 *
-	 * @return string
+	 * @return string The action name.
 	 */
 	public static function get_action(): string {
 		return self::ACTION;
@@ -84,7 +93,7 @@ final class Consent {
 	 *
 	 * @since TBD
 	 *
-	 * @return string
+	 * @return string The field name.
 	 */
 	public static function get_field(): string {
 		return self::FIELD;
@@ -95,7 +104,7 @@ final class Consent {
 	 *
 	 * @since TBD
 	 *
-	 * @return bool
+	 * @return bool True when opted in.
 	 */
 	public function is_enabled(): bool {
 		$option = $this->status->get_option();
@@ -148,7 +157,9 @@ final class Consent {
 			);
 		}
 
-		if ( isset( $_POST[ self::FIELD ] ) ) {
+		$value = isset( $_POST[ self::FIELD ] ) ? sanitize_text_field( wp_unslash( $_POST[ self::FIELD ] ) ) : '';
+
+		if ( '1' === $value ) {
 			$this->enable();
 		} else {
 			$this->disable();
