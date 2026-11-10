@@ -12,7 +12,7 @@
 # containers, where the plugins directory sits next to the themes directory.
 #
 # Environment
-# KADENCE_THEME_GIT_REF - branch or tag to check out (default: release/fse)
+# KADENCE_THEME_GIT_REF - branch or tag to check out (default: master)
 # KADENCE_THEME_GIT_URL - repository to clone (default: stellarwp/kadence on GitHub)
 # SLIC_THEMES_DIR       - host path of slic's themes directory (default: read from `slic info`)
 # SLIC_BIN              - slic executable (default: slic)
@@ -23,7 +23,7 @@ set -euo pipefail
 
 PLUGIN_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 THEME_DIR="${PLUGIN_DIR}/tests/_themes/kadence"
-THEME_REF="${KADENCE_THEME_GIT_REF:-release/fse}"
+THEME_REF="${KADENCE_THEME_GIT_REF:-master}"
 THEME_URL="${KADENCE_THEME_GIT_URL:-https://github.com/stellarwp/kadence.git}"
 SLIC_BIN="${SLIC_BIN:-slic}"
 
