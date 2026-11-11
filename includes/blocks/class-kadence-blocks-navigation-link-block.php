@@ -863,7 +863,9 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		global $wp;
 
 		$link_matches = untrailingslashit( $attributes['url'] ) === untrailingslashit( home_url( $wp->request ) );
-		return ( ! empty( $attributes['id'] ) && get_queried_object_id() === (int) $attributes['id'] && ! empty( get_queried_object()->post_type ) ) || $link_matches;
+		// Only post links can match by id. Term ids can collide with post ids.
+		$is_post_link = ! empty( $attributes['type'] ) && ( empty( $attributes['kind'] ) || $attributes['kind'] === 'post-type' );
+		return ( $is_post_link && ! empty( $attributes['id'] ) && get_queried_object_id() === (int) $attributes['id'] && ! empty( get_queried_object()->post_type ) ) || $link_matches;
 	}
 
 	/**
@@ -873,10 +875,11 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 	 * @return string
 	 */
 	public function get_url( $attributes ) {
+		// Older term links were saved as post-type with no type, so they must not sync by id.
 		$kind            = ! empty( $attributes['kind'] ) ? $attributes['kind'] : '';
 		$type            = ! empty( $attributes['type'] ) ? $attributes['type'] : '';
 		$is_post_type    = $kind === 'post-type' || $type === 'post' || $type === 'page';
-		$has_synced_link = $is_post_type && $kind === 'post-type' && ! empty( $attributes['id'] ) && ( isset( $attributes['disableLink'] ) && ! $attributes['disableLink'] );
+		$has_synced_link = $is_post_type && $kind === 'post-type' && ! empty( $type ) && ! empty( $attributes['id'] ) && ( isset( $attributes['disableLink'] ) && ! $attributes['disableLink'] );
 
 		if ( $has_synced_link && ! empty( $attributes['id'] ) ) {
 			$permalink = get_permalink( $attributes['id'] );
