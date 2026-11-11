@@ -76,7 +76,7 @@ final class Palette_CatalogTest extends TestCase {
 	public function testItExposesTheSlotToTokenAliasMap(): void {
 		$slots = $this->catalog->all()['slots'];
 
-		$this->assertCount( 9, $slots );
+		$this->assertCount( 15, $slots );
 		$this->assertSame( '{primitive.color.brand.primary}', $slots['palette1'] );
 		$this->assertSame( '{primitive.color.brand.secondary}', $slots['palette2'] );
 		$this->assertSame( '{primitive.color.neutral.900}', $slots['palette3'] );
@@ -86,6 +86,12 @@ final class Palette_CatalogTest extends TestCase {
 		$this->assertSame( '{primitive.color.neutral.100}', $slots['palette7'] );
 		$this->assertSame( '{primitive.color.neutral.50}', $slots['palette8'] );
 		$this->assertSame( '{primitive.color.neutral.0}', $slots['palette9'] );
+		$this->assertSame( '{primitive.color.extended.complement}', $slots['palette10'] );
+		$this->assertSame( '{primitive.color.extended.success}', $slots['palette11'] );
+		$this->assertSame( '{primitive.color.extended.info}', $slots['palette12'] );
+		$this->assertSame( '{primitive.color.extended.alert}', $slots['palette13'] );
+		$this->assertSame( '{primitive.color.extended.warning}', $slots['palette14'] );
+		$this->assertSame( '{primitive.color.extended.rating}', $slots['palette15'] );
 	}
 
 	/**

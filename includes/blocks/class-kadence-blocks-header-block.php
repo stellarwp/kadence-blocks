@@ -5,6 +5,8 @@
  * @package Kadence Blocks
  */
 
+// cspell:ignore archivetrans autoembed posttrans .
+
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -186,10 +188,12 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 	/**
 	 * Build HTML for dynamic blocks
 	 *
-	 * @param          $attributes
-	 * @param          $unique_id
-	 * @param          $content
-	 * @param WP_Block $block_instance The instance of the WP_Block class that represents the block being rendered.
+	 * @since 3.9.1 Always outputs the transparent data attributes as "1".
+	 *
+	 * @param array<string, mixed> $attributes     The block attributes.
+	 * @param string               $unique_id      The unique ID for the block.
+	 * @param string               $content        The block inner content.
+	 * @param WP_Block             $block_instance The instance of the WP_Block class that represents the block being rendered.
 	 *
 	 * @return mixed
 	 */
@@ -197,7 +201,7 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		if ( empty( $attributes['id'] ) ) {
 			return '';
 		}
-		$header_block = get_post( $attributes['id'] );
+		$header_block = get_post( $attributes['id'] ); // @phpstan-ignore argument.type
 
 		if ( ! $header_block || 'kadence_header' !== $header_block->post_type ) {
 			return '';
@@ -221,7 +225,7 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		self::$seen_refs[ $attributes['id'] ] = true;
 
 
-		$header_attributes = $this->get_attributes_with_defaults_cpt( $attributes['id'], 'kadence_header', '_kad_header_' );
+		$header_attributes = $this->get_attributes_with_defaults_cpt( $attributes['id'], 'kadence_header', '_kad_header_' ); // @phpstan-ignore argument.type
 		$header_attributes = json_decode( json_encode( $header_attributes ), true );
 		// Remove the advanced Header block so it doesn't try and re-render.
 		$content = preg_replace( '/<!-- wp:kadence\/header {.*?} -->/', '', $header_block->post_content );
@@ -281,13 +285,13 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 			$wrapper_args['data-auto-transparent-spacing'] = $header_attributes['autoTransparentSpacing'];
 		}
 		if ( $is_transparent ) {
-			$wrapper_args['data-transparent'] = $is_transparent;
+			$wrapper_args['data-transparent'] = '1';
 		}
 		if ( $is_transparent_tablet ) {
-			$wrapper_args['data-transparent-tablet'] = $is_transparent_tablet;
+			$wrapper_args['data-transparent-tablet'] = '1';
 		}
 		if ( $is_transparent_mobile ) {
-			$wrapper_args['data-transparent-mobile'] = $is_transparent_mobile;
+			$wrapper_args['data-transparent-mobile'] = '1';
 		}
 		if ( $header_attributes['shrinkMain'] ) {
 			$wrapper_args['data-shrink-main'] = $header_attributes['shrinkMain'];
@@ -475,7 +479,7 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 			}
 		}
 
-		// Keeping support of  enable/disable strings for backwards compatability with the filters.
+		// Keeping support of  enable/disable strings for backwards compatibility with the filters.
 		return isset( $transparent ) && ( $transparent === true || $transparent === 'enable' );
 	}
 }

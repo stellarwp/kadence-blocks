@@ -3,10 +3,12 @@
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Resolver;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Document_Path;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Mutator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Contracts\Baseline_Document;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Extensions;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Sentinels;
+use KadenceWP\KadenceBlocks\Design_Tokens\Theme_Style_Guide\Complement_Color;
 
 /**
  * Reads the effective colorPalettes section: the shipped baseline's palettes deep-merged with a library's stored
@@ -30,6 +32,24 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Sentinels;
  * @since 3.8.0
  */
 final class Effective_Palettes {
+
+	/**
+	 * The swatch the complement is worked out from: the theme's palette1.
+	 *
+	 * @since 3.9.1
+	 *
+	 * @var string
+	 */
+	private const PRIMARY_TOKEN = 'primitive.color.brand.primary';
+
+	/**
+	 * The swatch for the theme's complement color, palette10.
+	 *
+	 * @since 3.9.1
+	 *
+	 * @var string
+	 */
+	private const COMPLEMENT_TOKEN = 'primitive.color.extended.complement';
 
 	/**
 	 * @var Baseline_Document The shipped baseline the palette definitions are merged onto.
@@ -102,15 +122,18 @@ final class Effective_Palettes {
 	 * post-merge effective section before it is committed (e.g. that `$current` still names a present palette).
 	 *
 	 * @since 3.8.0
+	 * @since 3.9.1 Adds back shipped swatches a saved default palette is missing.
 	 *
 	 * @param array<string, mixed> $overrides A decoded overrides-only DTCG document.
 	 *
 	 * @return array<string, mixed>
 	 */
 	public function for_overrides( array $overrides ): array {
-		$stored = $this->palettes_of( $overrides );
+		$baseline = $this->palettes_of( $this->baseline->document() );
+		$stored   = $this->palettes_of( $overrides );
+		$section  = $this->mutator->merge( $this->without_superseded_groups( $baseline, $stored ), $stored );
 
-		return $this->mutator->merge( $this->without_superseded_groups( $this->palettes_of( $this->baseline->document() ), $stored ), $stored );
+		return $this->with_missing_baseline_swatches( $section, $baseline );
 	}
 
 	/**
@@ -215,6 +238,7 @@ final class Effective_Palettes {
 	 * override fully re-skins a subtree with default fallback regardless of the library's current palette.
 	 *
 	 * @since 3.8.0
+	 * @since 3.9.1 Works the complement out from the palette's primary when it follows the theme.
 	 *
 	 * @param string $id   The palette id.
 	 * @param string $slug The token library slug.
@@ -222,10 +246,12 @@ final class Effective_Palettes {
 	 * @return array<string, string> token dot-path => literal-or-alias value.
 	 */
 	public function effective_swatch_values( string $id, string $slug = 'default' ): array {
-		$section = $this->section( $slug );
-		$default = $this->swatch_values_of( $section, $this->pointer_of( $section, Extensions::get_default_key() ) );
+		$section    = $this->section( $slug );
+		$default_id = $this->pointer_of( $section, Extensions::get_default_key() );
+		$default    = $this->swatch_values_of( $section, $default_id );
+		$stored     = array_merge( $this->stored_swatch_values( $default_id, $slug ), $this->stored_swatch_values( $id, $slug ) );
 
-		return array_merge( $default, $this->swatch_values_of( $section, $id ) );
+		return $this->with_derived_complement( array_merge( $default, $this->swatch_values_of( $section, $id ) ), $stored, $this->raw( $slug ) );
 	}
 
 	/**
@@ -233,13 +259,14 @@ final class Effective_Palettes {
 	 * applies at `:root`.
 	 *
 	 * @since 3.8.0
+	 * @since 3.9.1 Works the complement out from the palette's primary when it follows the theme.
 	 *
 	 * @param string $slug The token library slug.
 	 *
 	 * @return array<string, string>
 	 */
 	public function current_swatch_values( string $slug = 'default' ): array {
-		return $this->current_swatch_values_for_section( $this->section( $slug ) );
+		return $this->current_swatch_values_for_section( $this->section( $slug ), $this->raw( $slug ) );
 	}
 
 	/**
@@ -248,13 +275,14 @@ final class Effective_Palettes {
 	 * flattened. The resolver uses this so the overlay reads the SAME document it is resolving.
 	 *
 	 * @since 3.8.0
+	 * @since 3.9.1 Works the complement out from the palette's primary when it follows the theme.
 	 *
 	 * @param array<string, mixed> $overrides A decoded overrides-only DTCG document.
 	 *
 	 * @return array<string, string>
 	 */
 	public function current_swatch_values_for_overrides( array $overrides ): array {
-		return $this->current_swatch_values_for_section( $this->for_overrides( $overrides ) );
+		return $this->current_swatch_values_for_section( $this->for_overrides( $overrides ), $overrides );
 	}
 
 	/**
@@ -373,6 +401,52 @@ final class Effective_Palettes {
 	}
 
 	/**
+	 * The complement swatch's token dot-path.
+	 *
+	 * @since 3.9.1
+	 *
+	 * @return string
+	 */
+	public static function get_complement_token(): string {
+		return self::COMPLEMENT_TOKEN;
+	}
+
+	/**
+	 * Whether the shipped complement is worked out from the shipped primary. On a Kadence site that uses the
+	 * theme's complement color the Style Guide gives both, so they match; with a palette10 color of its own,
+	 * or without the theme, they don't and the complement is left alone.
+	 *
+	 * @since 3.9.1
+	 *
+	 * @return bool
+	 */
+	public function derives_complement(): bool {
+		$baseline = $this->baseline_swatch_values();
+		$primary  = $baseline[ self::PRIMARY_TOKEN ] ?? null;
+
+		return is_string( $primary ) && ( $baseline[ self::COMPLEMENT_TOKEN ] ?? null ) === Complement_Color::of( $primary );
+	}
+
+	/**
+	 * Whether a complement swatch value is just the one worked out from the palette's primary color, so it
+	 * follows the primary rather than being a color of its own. Always false unless the shipped complement
+	 * is itself worked out from the shipped primary, which is the case on a Kadence site using the theme's
+	 * complement color.
+	 *
+	 * @since 3.9.1
+	 *
+	 * @param array<string, string> $values token dot-path => value, for one palette.
+	 *
+	 * @return bool
+	 */
+	public function is_derived_complement( array $values ): bool {
+		$complement = $values[ self::COMPLEMENT_TOKEN ] ?? null;
+		$primary    = $values[ self::PRIMARY_TOKEN ] ?? null;
+
+		return $this->derives_complement() && is_string( $complement ) && is_string( $primary ) && $complement === Complement_Color::of( $primary );
+	}
+
+	/**
 	 * Strip the `groups` list from every baseline palette node the overrides also define groups for, so the
 	 * stored list REPLACES the baseline's instead of being merged onto it.
 	 *
@@ -413,6 +487,144 @@ final class Effective_Palettes {
 	}
 
 	/**
+	 * Add back any shipped swatch the default palette's stored groups don't list, so a palette saved before a
+	 * newer release added swatches still shows them. Without this the stored groups hide the new swatches,
+	 * and every later save of the palette is refused for dropping a shipped swatch it never had.
+	 *
+	 * A missing swatch joins its shipped group when the stored palette still has a group with that id, and
+	 * otherwise lands in a copy of that group appended after the stored ones. A shipped swatch the site moved
+	 * to another group is already listed, so it is left where it is.
+	 *
+	 * @since 3.9.1
+	 *
+	 * @param array<string, mixed> $section  The effective colorPalettes section.
+	 * @param array<string, mixed> $baseline The baseline colorPalettes section.
+	 *
+	 * @return array<string, mixed> The section with the default palette's missing shipped swatches added.
+	 */
+	private function with_missing_baseline_swatches( array $section, array $baseline ): array {
+		$id           = $this->pointer_of( $baseline, Extensions::get_default_key() );
+		$groups_key   = Extensions::get_groups_key();
+		$swatches_key = Extensions::get_swatches_key();
+		$token_key    = Extensions::get_swatch_token_key();
+		$group_id_key = Extensions::get_group_id_key();
+
+		$shipped_palette = $baseline[ $id ] ?? null;
+		$palette         = $section[ $id ] ?? null;
+
+		if ( ! is_array( $shipped_palette ) || ! is_array( $palette ) ) {
+			return $section;
+		}
+
+		$shipped = $shipped_palette[ $groups_key ] ?? null;
+		$groups  = $palette[ $groups_key ] ?? null;
+
+		if ( ! is_array( $shipped ) || ! is_array( $groups ) ) {
+			return $section;
+		}
+
+		$present = [];
+
+		foreach ( $groups as $group ) {
+			foreach ( is_array( $group ) && is_array( $group[ $swatches_key ] ?? null ) ? $group[ $swatches_key ] : [] as $swatch ) {
+				if ( is_array( $swatch ) && is_string( $swatch[ $token_key ] ?? null ) ) {
+					$present[ $swatch[ $token_key ] ] = true;
+				}
+			}
+		}
+
+		foreach ( $shipped as $shipped_group ) {
+			if ( ! is_array( $shipped_group ) || ! is_array( $shipped_group[ $swatches_key ] ?? null ) ) {
+				continue;
+			}
+
+			$missing = [];
+
+			foreach ( $shipped_group[ $swatches_key ] as $swatch ) {
+				if ( is_array( $swatch ) && is_string( $swatch[ $token_key ] ?? null ) && ! isset( $present[ $swatch[ $token_key ] ] ) ) {
+					$missing[] = $swatch;
+				}
+			}
+
+			if ( $missing === [] ) {
+				continue;
+			}
+
+			foreach ( $groups as $index => $group ) {
+				if ( is_array( $group ) && is_array( $group[ $swatches_key ] ?? null ) && ( $group[ $group_id_key ] ?? null ) === ( $shipped_group[ $group_id_key ] ?? null ) ) {
+					$groups[ $index ][ $swatches_key ] = array_merge( $group[ $swatches_key ], $missing );
+
+					continue 2;
+				}
+			}
+
+			$shipped_group[ $swatches_key ] = $missing;
+			$groups[]                       = $shipped_group;
+		}
+
+		$palette[ $groups_key ] = $groups;
+		$section[ $id ]         = $palette;
+
+		return $section;
+	}
+
+	/**
+	 * Work the complement out from the palette's primary color when the theme derives it that way and the
+	 * palette doesn't store a complement of its own, so overriding the primary in the Style Library moves the
+	 * complement with it, as the theme's own formula does. A complement set directly in the token document is
+	 * left alone too.
+	 *
+	 * @since 3.9.1
+	 *
+	 * @param array<string, string> $values    token dot-path => value, for one palette.
+	 * @param array<string, string> $stored    token dot-path => value the palette (or the default it falls back to) stores.
+	 * @param array<string, mixed>  $overrides The decoded overrides document.
+	 *
+	 * @return array<string, string>
+	 */
+	private function with_derived_complement( array $values, array $stored, array $overrides ): array {
+		if ( array_key_exists( self::COMPLEMENT_TOKEN, $stored ) || Document_Path::has_value( $overrides, self::COMPLEMENT_TOKEN ) || ! $this->derives_complement() ) {
+			return $values;
+		}
+
+		$primary = $this->rendered_primary( $values, $overrides );
+
+		if ( $primary === null ) {
+			return $values;
+		}
+
+		$complement = Complement_Color::of( $primary );
+
+		if ( $complement !== null ) {
+			$values[ self::COMPLEMENT_TOKEN ] = $complement;
+		}
+
+		return $values;
+	}
+
+	/**
+	 * The primary color a palette renders: its own when it re-tints the primary, otherwise one set directly in
+	 * the token document, which the palette overlay then leaves in place.
+	 *
+	 * @since 3.9.1
+	 *
+	 * @param array<string, string> $values    token dot-path => value, for one palette.
+	 * @param array<string, mixed>  $overrides The decoded overrides document.
+	 *
+	 * @return string|null
+	 */
+	private function rendered_primary( array $values, array $overrides ): ?string {
+		$primary = $values[ self::PRIMARY_TOKEN ] ?? null;
+		$direct  = Document_Path::node_at( $overrides, self::PRIMARY_TOKEN )[ Sentinels::get_value_key() ] ?? null;
+
+		if ( is_string( $direct ) && $primary === ( $this->baseline_swatch_values()[ self::PRIMARY_TOKEN ] ?? null ) ) {
+			$primary = $direct;
+		}
+
+		return is_string( $primary ) ? $primary : null;
+	}
+
+	/**
 	 * Reduce a `{ token => value }` map to the entries that differ from the baseline default palette.
 	 *
 	 * @since 3.8.0
@@ -441,13 +653,22 @@ final class Effective_Palettes {
 	 * that palette's swatches.
 	 *
 	 * @since 3.8.0
+	 * @since 3.9.1 Takes the overrides document and works out the complement.
 	 *
-	 * @param array<string, mixed> $section The effective colorPalettes section.
+	 * @param array<string, mixed> $section   The effective colorPalettes section.
+	 * @param array<string, mixed> $overrides The decoded overrides document the section was built from.
 	 *
 	 * @return array<string, string>
 	 */
-	private function current_swatch_values_for_section( array $section ): array {
-		return $this->swatch_values_of( $section, $this->current_of( $section ) );
+	private function current_swatch_values_for_section( array $section, array $overrides ): array {
+		$id     = $this->current_of( $section );
+		$stored = $this->palettes_of( $overrides );
+		$stored = array_merge(
+			$this->swatch_values_of( $stored, $this->pointer_of( $section, Extensions::get_default_key() ) ),
+			$this->swatch_values_of( $stored, $id )
+		);
+
+		return $this->with_derived_complement( $this->swatch_values_of( $section, $id ), $stored, $overrides );
 	}
 
 	/**
