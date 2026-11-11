@@ -48,11 +48,12 @@ final class Audience {
 	 * is active, from stored state only.
 	 *
 	 * @since 3.8.0
+	 * @since TBD An active Nexcess Plugin Stack license counts.
 	 *
 	 * @return bool
 	 */
 	private function has_active_plan(): bool {
-		if ( lw_harbor_is_product_license_active( 'kadence' ) ) {
+		if ( kadence_blocks_is_harbor_license_active() ) {
 			return true;
 		}
 
