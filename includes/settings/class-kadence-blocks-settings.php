@@ -204,7 +204,7 @@ class Kadence_Blocks_Settings {
 			'plugin_logo_alt'    => 'KadenceWP Logo',
 			'plugin_name'        => 'Kadence Blocks',
 			'plugin_slug'        => 'kadence-blocks',
-			'permissions_url'    => 'https://www.kadencewp.com/in-app-telemetry/',
+			'permissions_url'    => 'https://www.liquidweb.com/policies/kadence-in-app-telemetry/',
 			'tos_url'            => 'https://www.kadencewp.com/terms-and-conditions/',
 			'privacy_url'        => 'https://www.kadencewp.com/privacy-policy/',
 			'heading'            => __( 'Help us make Kadence Blocks even better.', 'kadence-blocks' ),

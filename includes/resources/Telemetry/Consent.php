@@ -193,7 +193,7 @@ final class Consent {
 					</label>
 				</p>
 				<p>
-					<a href="https://www.kadencewp.com/in-app-telemetry/" target="_blank" rel="noopener noreferrer">
+					<a href="https://www.liquidweb.com/policies/kadence-in-app-telemetry/" target="_blank" rel="noopener noreferrer">
 						<?php echo esc_html__( 'Learn what data is shared', 'kadence-blocks' ); ?>
 					</a>
 				</p>
