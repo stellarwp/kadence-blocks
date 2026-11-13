@@ -255,9 +255,9 @@ final class Preset_Catalog {
 	 *
 	 * @since 3.8.0
 	 *
-	 * @param string   $block The block name.
-	 * @param string   $slug  The token library slug.
-	 * @param string[] $names The preset slugs to resolve, in catalog order.
+	 * @param string          $block    The block name.
+	 * @param string          $slug     The token library slug.
+	 * @param string[]        $names    The preset slugs to resolve, in catalog order.
 	 * @param Preset_Bindings $bindings The block's preset bindings.
 	 *
 	 * @return array<string, array<string, string|string[]>> preset slug => ( property => literal value or
@@ -284,7 +284,7 @@ final class Preset_Catalog {
 	 * to nothing and the field would render empty and collapse. The theme values it carries for display hold
 	 * the width the class paints; a uniform per-side list is returned as the single width a width field takes.
 	 *
-	 * @since TBD
+	 * @since 3.9.2
 	 *
 	 * @param string          $block    The block name.
 	 * @param string          $preset   The preset slug.
