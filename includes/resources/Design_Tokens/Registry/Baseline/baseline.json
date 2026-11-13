@@ -846,7 +846,9 @@
 							"button-border-style": "solid",
 							"button-border-color": "{semantic.color.button-bg}"
 						},
-						"tokens": {}
+						"tokens": {
+							"button-border-width": "2px"
+						}
 					}
 				},
 				"kadence/single-icon": {
