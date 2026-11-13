@@ -83,29 +83,25 @@ function deviceForBreakpoint(breakpoint) {
 
 /**
  * Whether a native border value shows the same color, style, and width on every side — the state a
- * linked view can honestly represent. A breakpoint that has never been written reads as uniform too:
- * there is nothing stored to differ side to side, and (unlike radius corners) a border preset only
- * ever sets one width for every side, so there is no per-side preset difference an early "uniform"
- * read could hide.
+ * linked view can honestly represent. An unset side reads as its default style, so a breakpoint that
+ * has never been written is uniform unless the default style differs per side (the hover border's
+ * defaults follow the resting styles side by side); a per-side difference opens the unlinked view
+ * rather than hiding behind the first side's style.
  *
- * @param {?Array} native `[{top,right,bottom,left,unit}]` or undefined.
+ * @param {?Array}               native         `[{top,right,bottom,left,unit}]` or undefined.
+ * @param {?(string|string[])}   [defaultStyle] The style an unset side reads as, one or one per side.
  *
  * @since 3.8.0
  *
  * @return {boolean} Whether every side currently matches.
  */
-function isUniformBorder(native) {
-	const source = native?.[0];
-
-	if (!source) {
-		return true;
-	}
-
+function isUniformBorder(native, defaultStyle = 'none') {
+	const source = native?.[0] || {};
 	const uniform = (values) => values.every((entry) => entry === values[0]);
 
 	return (
 		uniform(SIDES.map((side) => source[side]?.[0] || '')) &&
-		uniform(SIDES.map((side) => source[side]?.[1] || 'none')) &&
+		uniform(SIDES.map((side, index) => source[side]?.[1] || readSlot(defaultStyle, index) || 'none')) &&
 		uniform(SIDES.map((side) => source[side]?.[2]))
 	);
 }
@@ -301,7 +297,7 @@ export function EditorBorderControl({
 	// explicit choice onto another; resets on remount, matching `singlebtn/edit.js`'s
 	// `borderRadiusModeOverride` for radius.
 	const [linkOverride, setLinkOverride] = useState({});
-	const linked = linkOverride[breakpoint] ?? isUniformBorder(activeNative);
+	const linked = linkOverride[breakpoint] ?? isUniformBorder(activeNative, defaultStyle || 'none');
 
 	const toggleLink = () => {
 		if (linked) {

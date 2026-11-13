@@ -212,6 +212,24 @@ describe('EditorBorderControl native <-> control value bridging', () => {
 	});
 
 	/**
+	 * An unset border whose default style differs per side opens unlinked, so every side shows its own
+	 * style; one default style for all sides keeps the linked view.
+	 *
+	 * @since 3.9.2
+	 *
+	 * @return {void}
+	 */
+	it('opens unlinked only when the per-side default styles differ', () => {
+		const mixed = renderEditorBorderControl({ value: undefined, defaultStyle: ['none', 'solid', 'solid', 'none'] });
+
+		expect(mixed.borderControl.props.isLinked).toBe(false);
+
+		const single = renderEditorBorderControl({ value: undefined, defaultStyle: 'solid' });
+
+		expect(single.borderControl.props.isLinked).toBe(true);
+	});
+
+	/**
 	 * Writing a width on a preset that paints a colored border also writes that color: an empty color on a
 	 * border with a width renders as transparent, which would hide the border the preset paints.
 	 *
