@@ -1,0 +1,4 @@
+significance: patch
+type: security
+entry: Improved handling of default field values in Advanced Form.
+timestamp: 2026-11-13T13:28:25.000Z

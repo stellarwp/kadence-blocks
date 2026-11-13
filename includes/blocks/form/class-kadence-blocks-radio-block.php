@@ -10,6 +10,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Class to Build the Advanced Form Radio Block.
+ */
 class Kadence_Blocks_Radio_Block extends Kadence_Blocks_Advanced_Form_Input_Block {
 
 	/**
@@ -114,6 +117,19 @@ class Kadence_Blocks_Radio_Block extends Kadence_Blocks_Advanced_Form_Input_Bloc
 
 		$content = sprintf( '<div %1$s>%2$s</div>', $wrapper_attributes, $inner_content );
 		return $content;
+	}
+
+	/**
+	 * Get the default value for matching against the field options.
+	 *
+	 * @since TBD
+	 *
+	 * @param array{defaultValue?: string, defaultParameter?: string} $attributes The block attributes.
+	 *
+	 * @return string The default value.
+	 */
+	public function get_default( $attributes ) {
+		return $this->get_raw_default( $attributes );
 	}
 }
 

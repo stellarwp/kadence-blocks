@@ -226,11 +226,33 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 	/**
 	 * Generate the default attribute
 	 *
-	 * @param $block
+	 * @since 3.2.19
+	 * @since TBD Improved handling of values from the URL.
 	 *
-	 * @return string
+	 * @param array{defaultValue?: string, defaultParameter?: string} $attributes The block attributes.
+	 *
+	 * @return string The default value.
 	 */
 	public function get_default( $attributes ) {
+		$default = $this->get_raw_default( $attributes );
+
+		if ( ! empty( $attributes['defaultParameter'] ) ) {
+			$default = str_replace( [ '[', ']' ], [ '&#091;', '&#093;' ], $default );
+		}
+
+		return $default;
+	}
+
+	/**
+	 * Get the default value for matching against option values. Use get_default() for output.
+	 *
+	 * @since TBD
+	 *
+	 * @param array{defaultValue?: string, defaultParameter?: string} $attributes The block attributes.
+	 *
+	 * @return string The default value.
+	 */
+	protected function get_raw_default( $attributes ): string {
 		$default = '';
 		if ( isset( $attributes['defaultValue'] ) && $attributes['defaultValue'] !== '' ) {
 			$default = do_shortcode( $attributes['defaultValue'] );
