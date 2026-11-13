@@ -108,6 +108,19 @@ class AdvancedFormFieldDefaultTest extends KadenceBlocksTestCase {
 	}
 
 	/**
+	 * A URL value sent as a list returns an empty default.
+	 *
+	 * @return void
+	 */
+	public function testListUrlDefaultIsEmpty(): void {
+		$_GET[ self::PARAMETER ] = [ self::BRACKETED_VALUE ];
+
+		$default = Kadence_Blocks_Text_Input_Block::get_instance()->get_default( [ 'defaultParameter' => self::PARAMETER ] );
+
+		$this->assertSame( '', $default );
+	}
+
+	/**
 	 * A saved default keeps its rendered output when the URL has no value for the field.
 	 *
 	 * @return void

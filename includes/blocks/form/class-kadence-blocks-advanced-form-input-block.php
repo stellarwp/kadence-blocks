@@ -227,7 +227,7 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 	 * Generate the default attribute
 	 *
 	 * @since 3.2.19
-	 * @since TBD Improved handling of values from the URL.
+	 * @since TBD Improved handling of default values.
 	 *
 	 * @param array{defaultValue?: string, defaultParameter?: string} $attributes The block attributes.
 	 *
@@ -243,29 +243,6 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 		return $default;
 	}
 
-	/**
-	 * Get the default value for matching against option values. Use get_default() for output.
-	 *
-	 * @since TBD
-	 *
-	 * @param array{defaultValue?: string, defaultParameter?: string} $attributes The block attributes.
-	 *
-	 * @return string The default value.
-	 */
-	protected function get_raw_default( $attributes ): string {
-		$default = '';
-		if ( isset( $attributes['defaultValue'] ) && $attributes['defaultValue'] !== '' ) {
-			$default = do_shortcode( $attributes['defaultValue'] );
-		}
-
-		if ( ! empty( $attributes['defaultParameter'] ) ) {
-			if ( isset( $_GET[ $attributes['defaultParameter'] ] ) ) {
-				$default = sanitize_text_field( kadence_blocks_wc_clean( wp_unslash( $_GET[ $attributes['defaultParameter'] ] ) ) );
-			}
-		}
-
-		return $default;
-	}
 	/**
 	 * Generate the aria-describedby attribute
 	 *
@@ -422,5 +399,29 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 		}
 
 		return '';
+	}
+
+	/**
+	 * Get the default value for matching against option values. Use get_default() for output.
+	 *
+	 * @since TBD
+	 *
+	 * @param array{defaultValue?: string, defaultParameter?: string} $attributes The block attributes.
+	 *
+	 * @return string The default value.
+	 */
+	protected function get_raw_default( $attributes ): string {
+		$default = '';
+		if ( isset( $attributes['defaultValue'] ) && $attributes['defaultValue'] !== '' ) {
+			$default = do_shortcode( $attributes['defaultValue'] );
+		}
+
+		if ( ! empty( $attributes['defaultParameter'] ) ) {
+			if ( isset( $_GET[ $attributes['defaultParameter'] ] ) ) {
+				$default = sanitize_text_field( kadence_blocks_wc_clean( wp_unslash( $_GET[ $attributes['defaultParameter'] ] ) ) );
+			}
+		}
+
+		return $default;
 	}
 }
