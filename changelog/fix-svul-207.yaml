@@ -1,0 +1,4 @@
+significance: patch
+type: security
+entry: Updated how forms are handled when importing patterns from the Design Library.
+timestamp: 2026-11-13T19:33:38.000Z

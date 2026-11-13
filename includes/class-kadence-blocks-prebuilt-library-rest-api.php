@@ -2,7 +2,7 @@
 /**
  * REST API for Kadence prebuilt library.
  *
- * CSpell:ignore ploaceholder postid numberxnumber inbetween
+ * CSpell:ignore ploaceholder postid numberxnumber inbetween sendinblue getresponse convertkit activecampaign
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -107,6 +107,42 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * Maximum size for REST array parameters.
 	 */
 	const MAX_REST_ARRAY_SIZE = 50;
+	/**
+	 * Post types that can be created when importing a pattern.
+	 *
+	 * @since TBD
+	 *
+	 * @var string[]
+	 */
+	private const IMPORTABLE_POST_TYPES = [
+		'kadence_header',
+		'kadence_navigation',
+		'kadence_form',
+		'kadence_query',
+		'kadence_query_card',
+	];
+	/**
+	 * Form settings that are only imported for users who can publish forms.
+	 *
+	 * @since TBD
+	 *
+	 * @var string[]
+	 */
+	private const FORM_DELIVERY_META_KEYS = [
+		'_kad_form_actions',
+		'_kad_form_email',
+		'_kad_form_autoEmail',
+		'_kad_form_webhook',
+		'_kad_form_redirect',
+		'_kad_form_entry',
+		'_kad_form_mailerlite',
+		'_kad_form_fluentcrm',
+		'_kad_form_sendinblue',
+		'_kad_form_mailchimp',
+		'_kad_form_getresponse',
+		'_kad_form_convertkit',
+		'_kad_form_activecampaign',
+	];
 	/**
 	 * The library folder.
 	 *
@@ -924,6 +960,9 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	/**
 	 * Creates the forms if needed.
 	 *
+	 * @since 3.5.7
+	 * @since TBD Use the shared list of importable post types.
+	 *
 	 * @param string $content The content to process.
 	 */
 	public function process_cpt( $content, $cpt_blocks, $style ) {
@@ -934,19 +973,11 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			'kadence/query',
 			'kadence/query-card',
 		];
-		$valid_cpt_block_post_types = [
-			'kadence_header',
-			'kadence_navigation',
-			'kadence_form',
-			'kadence_query',
-			'kadence_query_card',
-		];
-
 
 		foreach ( $cpt_blocks as $cpt_block_name => $cpt_block_content ) {
 			if ( in_array( $cpt_block_name, $valid_cpt_block_names ) ) {
 				foreach ( $cpt_block_content as $cpt_key => $cpt_data ) {
-					if ( in_array( $cpt_data['post_type'], $valid_cpt_block_post_types ) ) {
+					if ( in_array( $cpt_data['post_type'] ?? '', self::IMPORTABLE_POST_TYPES, true ) ) {
 						$old_id = $cpt_data['ID'];
 						$id_map = [];
 						if ( ! empty( $cpt_data['inner_posts'] ) && is_array( $cpt_data['inner_posts'] ) ) {
@@ -993,11 +1024,21 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	/**
 	 * Install CPT.
 	 *
+	 * @since 3.5.7
+	 * @since TBD Only install importable post types, using the capabilities and settings allowed for the current user.
+	 *
 	 * @param array  $cpt_data The cpt data.
 	 * @param string $style The style.
 	 * @return int The cpt id.
 	 */
 	public function install_single_cpt( $cpt_data, $id_map = [], $style = 'light' ) {
+		$post_type = $cpt_data['post_type'] ?? '';
+		if ( ! in_array( $post_type, self::IMPORTABLE_POST_TYPES, true ) ) {
+			return 0;
+		}
+		$can_publish   = $this->can_publish_cpt( $post_type );
+		$restrict_meta = ! $can_publish && 'kadence_form' === $post_type;
+
 		// Check if the post already exists.
 		$title       = ! empty( $style ) && 'light' !== $style ? $cpt_data['post_title'] . ' ' . ucfirst( $style ) : $cpt_data['post_title'];
 		$post_exists = get_posts(
@@ -1015,7 +1056,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				'post_type'    => $cpt_data['post_type'],
 				'post_title'   => $title,
 				'post_content' => '',
-				'post_status'  => current_user_can( 'publish_posts' ) ? 'publish' : 'pending',
+				'post_status'  => $can_publish ? 'publish' : 'pending',
 			],
 			true
 		);
@@ -1023,7 +1064,13 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		if ( ! is_wp_error( $new_post_id ) ) {
 			if ( ! empty( $cpt_data['meta'] ) ) {
 				foreach ( $cpt_data['meta'] as $meta_key => $meta_values ) {
+					if ( $restrict_meta && ! $this->is_presentation_form_meta_key( $meta_key ) ) {
+						continue;
+					}
 					foreach ( $meta_values as $meta_value ) {
+						if ( $restrict_meta ) {
+							$meta_value = $this->filter_meta_value( $meta_value );
+						}
 						if ( ! empty( $style ) && 'light' !== $style ) {
 							$meta_value = $this->cpt_switch_meta_color( $meta_value, $meta_key, $style );
 						}
@@ -3385,5 +3432,59 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		$status = (int) $response['response']['code'];
 
 		return $status === WP_Http::CONFLICT;
+	}
+
+	/**
+	 * Checks whether the current user can publish an imported post of the given type.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $post_type The post type.
+	 *
+	 * @return bool Whether the imported post can be published.
+	 */
+	private function can_publish_cpt( string $post_type ): bool {
+		if ( 'kadence_form' !== $post_type ) {
+			return current_user_can( 'publish_posts' );
+		}
+
+		$post_type_object = get_post_type_object( $post_type );
+
+		return $post_type_object
+			&& current_user_can( $post_type_object->cap->create_posts )
+			&& current_user_can( $post_type_object->cap->publish_posts );
+	}
+
+	/**
+	 * Checks whether a supplied form meta key is a registered presentation setting.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|string $meta_key The supplied meta key.
+	 *
+	 * @return bool Whether the meta key is a presentation setting.
+	 */
+	private function is_presentation_form_meta_key( $meta_key ): bool {
+		return is_string( $meta_key )
+			&& ! in_array( $meta_key, self::FORM_DELIVERY_META_KEYS, true )
+			&& registered_meta_key_exists( 'post', $meta_key, 'kadence_form' );
+	}
+
+	/**
+	 * Filters the text of a supplied meta value the way post content is filtered.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $meta_value The supplied meta value.
+	 *
+	 * @return mixed The filtered meta value.
+	 */
+	private function filter_meta_value( $meta_value ) {
+		return map_deep(
+			$meta_value,
+			static function ( $value ) {
+				return is_string( $value ) ? wp_kses_post( $value ) : $value;
+			}
+		);
 	}
 }
