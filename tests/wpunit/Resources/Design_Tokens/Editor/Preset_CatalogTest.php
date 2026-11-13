@@ -90,17 +90,24 @@ final class Preset_CatalogTest extends TestCase {
 	}
 
 	/**
-	 * A class-painted preset resolves no width of its own, so the catalog carries the width its class paints
-	 * (the single value of a uniform per-side list) for the width field to show instead of rendering empty.
+	 * A class-painted preset resolves no border of its own, so the catalog carries the border its class paints
+	 * (width, style and color; the single value of a uniform per-side list) for the border control to start
+	 * from instead of reading as unset.
 	 *
 	 * @return void
 	 */
-	public function testAClassPaintedPresetCarriesTheWidthItsClassPaints(): void {
+	public function testAClassPaintedPresetCarriesTheBorderItsClassPaints(): void {
 		$values = $this->catalog->all()['libraries'][ Token_Store::default_slug() ][ self::BUTTON ]['values'];
 
 		$this->assertSame( '2px', $values['outline']['button-border-width'] );
-		// Only the width is carried over; the preset still resolves nothing else of its own.
-		$this->assertSame( [ 'button-border-width' ], array_keys( $values['outline'] ) );
+		$this->assertSame( 'solid', $values['outline']['button-border-style'] );
+		// The alias the preset paints resolves to a literal color, not a reference.
+		$this->assertMatchesRegularExpression( '/^#[0-9a-f]{3,8}$/i', $values['outline']['button-border-color'] );
+		// Only the border is carried over; the preset still resolves nothing else of its own.
+		$this->assertEqualsCanonicalizing(
+			[ 'button-border-width', 'button-border-style', 'button-border-color' ],
+			array_keys( $values['outline'] )
+		);
 		// A preset painted through variables is untouched.
 		$this->assertSame( '0', $values['default']['button-border-width'] );
 	}

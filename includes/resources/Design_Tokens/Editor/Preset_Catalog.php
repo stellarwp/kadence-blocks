@@ -268,7 +268,7 @@ final class Preset_Catalog {
 
 		foreach ( $names as $name ) {
 			try {
-				$values[ $name ] = $this->presets->resolve_literal( $block, $name, $slug ) + $this->theme_widths( $block, $name, $slug, $bindings );
+				$values[ $name ] = $this->presets->resolve_literal( $block, $name, $slug ) + $this->theme_borders( $block, $name, $slug, $bindings );
 			} catch ( Unknown_Preset_Exception $e ) {
 				continue; // Preset undefined in this library — skip, fail soft.
 			}
@@ -278,11 +278,13 @@ final class Preset_Catalog {
 	}
 
 	/**
-	 * The border width a class-painted preset renders, for the editor's width field to show.
+	 * The border a class-painted preset renders (width, style and color), for the editor's border control to
+	 * start from.
 	 *
-	 * A class-painted preset stores no tokens of its own (its look is its class), so its width would resolve
-	 * to nothing and the field would render empty and collapse. The theme values it carries for display hold
-	 * the width the class paints; a uniform per-side list is returned as the single width a width field takes.
+	 * A class-painted preset stores no tokens of its own (its look is its class), so its border would resolve
+	 * to nothing: the width field would render empty and collapse, and the style and color would read as unset
+	 * while the button paints a border. The theme values it carries for display hold what the class paints;
+	 * a uniform per-side list is returned as the single value a border field takes.
 	 *
 	 * @since 3.9.2
 	 *
@@ -291,30 +293,32 @@ final class Preset_Catalog {
 	 * @param string          $slug     The token library slug.
 	 * @param Preset_Bindings $bindings The block's preset bindings.
 	 *
-	 * @return array<string, string> property => width, empty for a preset not painted by a class.
+	 * @return array<string, string> property => value, empty for a preset not painted by a class.
 	 */
-	private function theme_widths( string $block, string $preset, string $slug, Preset_Bindings $bindings ): array {
+	private function theme_borders( string $block, string $preset, string $slug, Preset_Bindings $bindings ): array {
 		if ( $this->presets->theme_class( $block, $preset, $slug ) === '' ) {
 			return [];
 		}
 
-		$theme_values = $this->presets->theme_values( $block, $preset, $slug );
-		$widths       = [];
+		$properties = [];
 
 		foreach ( $bindings->bindings as $property => $binding ) {
-			if ( $binding->axis() !== 'border-width' || ! isset( $theme_values[ $property ] ) ) {
-				continue;
-			}
-
-			$width = $theme_values[ $property ];
-			$width = is_array( $width ) && count( array_unique( $width ) ) === 1 ? reset( $width ) : $width;
-
-			if ( is_string( $width ) && $width !== '' ) {
-				$widths[ (string) $property ] = $width;
+			if ( in_array( $binding->axis(), [ 'border-width', 'border-style', 'border-color' ], true ) ) {
+				$properties[] = (string) $property;
 			}
 		}
 
-		return $widths;
+		$borders = [];
+
+		foreach ( $this->presets->theme_literals( $block, $preset, $slug, $properties ) as $property => $value ) {
+			$value = is_array( $value ) && count( array_unique( $value ) ) === 1 ? reset( $value ) : $value;
+
+			if ( is_string( $value ) ) {
+				$borders[ $property ] = $value;
+			}
+		}
+
+		return $borders;
 	}
 
 	/**
