@@ -90,6 +90,22 @@ final class Preset_CatalogTest extends TestCase {
 	}
 
 	/**
+	 * A class-painted preset resolves no width of its own, so the catalog carries the width its class paints
+	 * (the single value of a uniform per-side list) for the width field to show instead of rendering empty.
+	 *
+	 * @return void
+	 */
+	public function testAClassPaintedPresetCarriesTheWidthItsClassPaints(): void {
+		$values = $this->catalog->all()['libraries'][ Token_Store::default_slug() ][ self::BUTTON ]['values'];
+
+		$this->assertSame( '2px', $values['outline']['button-border-width'] );
+		// Only the width is carried over; the preset still resolves nothing else of its own.
+		$this->assertSame( [ 'button-border-width' ], array_keys( $values['outline'] ) );
+		// A preset painted through variables is untouched.
+		$this->assertSame( '0', $values['default']['button-border-width'] );
+	}
+
+	/**
 	 * The picker lists the shipped presets first, then the theme's, then the user's, so the order is the
 	 * same on every site whatever was stored when.
 	 *

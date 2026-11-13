@@ -161,7 +161,7 @@ final class Preset_Catalog {
 				// declaration says there is none.
 				'presets'    => $bindings->label === null ? [] : $this->preset_options( $block, $slug, $names ),
 				'properties' => $this->properties_for( $bindings ),
-				'values'     => $this->values_for( $block, $slug, $names ),
+				'values'     => $this->values_for( $block, $slug, $names, $bindings ),
 				'references' => $this->references_for( $block, $slug, $names ),
 				'responsive' => $this->responsive_for( $block, $slug, $names ),
 				'overridden' => $this->overridden_for( $block, $slug, $names ),
@@ -258,22 +258,63 @@ final class Preset_Catalog {
 	 * @param string   $block The block name.
 	 * @param string   $slug  The token library slug.
 	 * @param string[] $names The preset slugs to resolve, in catalog order.
+	 * @param Preset_Bindings $bindings The block's preset bindings.
 	 *
 	 * @return array<string, array<string, string|string[]>> preset slug => ( property => literal value or
 	 *                                                       per-corner slot list ).
 	 */
-	private function values_for( string $block, string $slug, array $names ): array {
+	private function values_for( string $block, string $slug, array $names, Preset_Bindings $bindings ): array {
 		$values = [];
 
 		foreach ( $names as $name ) {
 			try {
-				$values[ $name ] = $this->presets->resolve_literal( $block, $name, $slug );
+				$values[ $name ] = $this->presets->resolve_literal( $block, $name, $slug ) + $this->theme_widths( $block, $name, $slug, $bindings );
 			} catch ( Unknown_Preset_Exception $e ) {
 				continue; // Preset undefined in this library — skip, fail soft.
 			}
 		}
 
 		return $values;
+	}
+
+	/**
+	 * The border width a class-painted preset renders, for the editor's width field to show.
+	 *
+	 * A class-painted preset stores no tokens of its own (its look is its class), so its width would resolve
+	 * to nothing and the field would render empty and collapse. The theme values it carries for display hold
+	 * the width the class paints; a uniform per-side list is returned as the single width a width field takes.
+	 *
+	 * @since TBD
+	 *
+	 * @param string          $block    The block name.
+	 * @param string          $preset   The preset slug.
+	 * @param string          $slug     The token library slug.
+	 * @param Preset_Bindings $bindings The block's preset bindings.
+	 *
+	 * @return array<string, string> property => width, empty for a preset not painted by a class.
+	 */
+	private function theme_widths( string $block, string $preset, string $slug, Preset_Bindings $bindings ): array {
+		if ( $this->presets->theme_class( $block, $preset, $slug ) === '' ) {
+			return [];
+		}
+
+		$theme_values = $this->presets->theme_values( $block, $preset, $slug );
+		$widths       = [];
+
+		foreach ( $bindings->bindings as $property => $binding ) {
+			if ( $binding->axis() !== 'border-width' || ! isset( $theme_values[ $property ] ) ) {
+				continue;
+			}
+
+			$width = $theme_values[ $property ];
+			$width = is_array( $width ) && count( array_unique( $width ) ) === 1 ? reset( $width ) : $width;
+
+			if ( is_string( $width ) && $width !== '' ) {
+				$widths[ (string) $property ] = $width;
+			}
+		}
+
+		return $widths;
 	}
 
 	/**

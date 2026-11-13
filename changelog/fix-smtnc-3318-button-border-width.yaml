@@ -1,0 +1,4 @@
+significance: patch
+type: fix
+entry: Fixed the Buttons (Adv) border width field being empty and not clickable when a preset other than Default is selected.
+timestamp: 2026-11-13T00:00:00.000Z
