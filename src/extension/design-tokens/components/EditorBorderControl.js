@@ -118,9 +118,9 @@ function isUniformBorder(native) {
  * not a token id.
  *
  * @param {?Array}  native         `[{top,right,bottom,left,unit}]` or undefined.
- * @param {?string} [defaultStyle] The style an unset side reads as: the active preset's own style, so the
- *                                 control starts from the border the button paints. `'none'` when the
- *                                 preset resolves none.
+ * @param {?(string|string[])} [defaultStyle] The style an unset side reads as: the active preset's own
+ *                                 style, so the control starts from the border the button paints, or one
+ *                                 per side. `'none'` when there is none.
  *
  * @since 3.8.0
  *
@@ -147,7 +147,7 @@ function fromNativeBorder(native, defaultStyle = 'none') {
 			// unit suffix appended; only a literal numeric width does.
 			return isTokenAlias(size) ? size : `${size}${unit}`;
 		}),
-		style: SIDES.map((side) => source[side]?.[1] || defaultStyle),
+		style: SIDES.map((side, index) => source[side]?.[1] || readSlot(defaultStyle, index) || 'none'),
 		color: SIDES.map((side) => source[side]?.[0] || ''),
 	};
 }
@@ -250,7 +250,8 @@ function toNativeBorder(value, unit = 'px', defaultColor = '') {
  *                                         border width, never a per-side default.
  * @param {?string}   [props.defaultColor] What the color axis falls back to when unset — the active
  *                                         preset's border color, shown muted as "Default".
- * @param {?string}   [props.defaultStyle] What the style axis falls back to when unset — the active
+ * @param {?(string|string[])} [props.defaultStyle] What the style axis falls back to when unset (one style,
+ *                                         or one per side) — the active
  *                                         preset's border style (e.g. `solid` for Outline). Without it an
  *                                         unset style reads as `none`, and editing the width would write
  *                                         `none` and hide a border the preset paints.

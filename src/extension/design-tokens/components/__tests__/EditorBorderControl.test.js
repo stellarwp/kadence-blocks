@@ -195,6 +195,23 @@ describe('EditorBorderControl native <-> control value bridging', () => {
 	});
 
 	/**
+	 * A per-side default style applies to each side on its own, so an unset hover border follows the
+	 * resting style of every side rather than one side's style for all of them.
+	 *
+	 * @since 3.9.2
+	 *
+	 * @return {void}
+	 */
+	it('starts an unset border from a per-side default style', () => {
+		const { borderControl } = renderEditorBorderControl({
+			value: undefined,
+			defaultStyle: ['none', 'solid', 'solid', 'none'],
+		});
+
+		expect(borderControl.props.value.style).toEqual(['none', 'solid', 'solid', 'none']);
+	});
+
+	/**
 	 * Writing a width on a preset that paints a colored border also writes that color: an empty color on a
 	 * border with a width renders as transparent, which would hide the border the preset paints.
 	 *
