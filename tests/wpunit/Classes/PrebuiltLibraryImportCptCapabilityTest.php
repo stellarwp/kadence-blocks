@@ -10,41 +10,44 @@ use Tests\wpunit\KadenceBlocksTestCase;
 use WP_Post;
 
 /**
- * Verifies how the prebuilt-library import creates the posts a pattern depends on,
- * based on the current user's capabilities for the post type.
+ * Tests the post types created by a pattern import.
  */
 class PrebuiltLibraryImportCptCapabilityTest extends KadenceBlocksTestCase {
 
 	/**
-	 * A user who cannot publish forms gets a pending form that keeps its presentation settings.
+	 * The imported post status matches the user's capabilities.
+	 *
+	 * @dataProvider postStatusProvider
+	 *
+	 * @param string $role            The role to import as.
+	 * @param string $post_type       The imported post type.
+	 * @param string $expected_status The expected post status.
 	 *
 	 * @return void
 	 */
-	public function testImportedFormIsPendingForUserWithoutFormCapabilities(): void {
-		$this->act_as( 'author' );
-		$style = [ 'size' => 'standard' ];
+	public function testImportedPostStatusFollowsThePostTypeCapabilities( string $role, string $post_type, string $expected_status ): void {
+		$this->act_as( $role );
 
-		$this->import( [ $this->form_item( 'Imported Form', [ '_kad_form_style' => [ $style ] ] ) ] );
+		$this->import( [ $this->cpt_item( $post_type, 'Imported Item' ) ] );
 
-		$form = $this->find_post( 'kadence_form', 'Imported Form' );
-		$this->assertInstanceOf( WP_Post::class, $form );
-		$this->assertSame( 'pending', $form->post_status );
-		$this->assertSame( $style, get_post_meta( $form->ID, '_kad_form_style', true ) );
+		$post = $this->find_post( $post_type, 'Imported Item' );
+		$this->assertInstanceOf( WP_Post::class, $post );
+		$this->assertSame( $expected_status, $post->post_status );
 	}
 
 	/**
-	 * A user who cannot publish forms does not import settings outside the presentation ones.
+	 * Only presentation meta is imported when the user cannot publish forms.
 	 *
 	 * @dataProvider restrictedMetaKeyProvider
 	 *
-	 * @param string $meta_key The meta key supplied with the form.
+	 * @param string $meta_key The meta key.
 	 *
 	 * @return void
 	 */
-	public function testRestrictedFormMetaIsNotImportedForUserWithoutFormCapabilities( string $meta_key ): void {
+	public function testOnlyPresentationFormMetaIsImportedForUserWithoutFormCapabilities( string $meta_key ): void {
 		$this->act_as( 'author' );
 
-		$this->import( [ $this->form_item( 'Imported Form', [ $meta_key => [ [ 'value' => 'supplied' ] ] ] ) ] );
+		$this->import( [ $this->cpt_item( 'kadence_form', 'Imported Form', [ $meta_key => [ [ 'value' => 'example' ] ] ] ) ] );
 
 		$form = $this->find_post( 'kadence_form', 'Imported Form' );
 		$this->assertInstanceOf( WP_Post::class, $form );
@@ -52,18 +55,18 @@ class PrebuiltLibraryImportCptCapabilityTest extends KadenceBlocksTestCase {
 	}
 
 	/**
-	 * A user who cannot publish forms has the text of the kept settings filtered like post content.
+	 * Form meta is sanitized when the user cannot publish forms.
 	 *
 	 * @return void
 	 */
-	public function testKeptFormMetaIsFilteredForUserWithoutFormCapabilities(): void {
+	public function testFormMetaIsSanitizedForUserWithoutFormCapabilities(): void {
 		$this->act_as( 'author' );
 		$messages = [
-			'success' => '<b>Thanks</b><script>window.example = true;</script>',
+			'success' => '<b>Thanks</b><iframe src="https://example.com"></iframe>',
 			'html'    => true,
 		];
 
-		$this->import( [ $this->form_item( 'Imported Form', [ '_kad_form_messages' => [ $messages ] ] ) ] );
+		$this->import( [ $this->cpt_item( 'kadence_form', 'Imported Form', [ '_kad_form_messages' => [ $messages ] ] ) ] );
 
 		$form     = $this->find_post( 'kadence_form', 'Imported Form' );
 		$expected = [
@@ -76,7 +79,7 @@ class PrebuiltLibraryImportCptCapabilityTest extends KadenceBlocksTestCase {
 	}
 
 	/**
-	 * A user who can publish forms gets a published form with every supplied setting.
+	 * A user who can publish forms gets a published form with all meta.
 	 *
 	 * @return void
 	 */
@@ -84,11 +87,12 @@ class PrebuiltLibraryImportCptCapabilityTest extends KadenceBlocksTestCase {
 		$this->act_as( 'editor' );
 		$email    = [ 'emailTo' => 'forms@example.com' ];
 		$style    = [ 'size' => 'standard' ];
-		$messages = [ 'success' => '<b>Thanks</b><script>window.example = true;</script>' ];
+		$messages = [ 'success' => '<b>Thanks</b><iframe src="https://example.com"></iframe>' ];
 
 		$this->import(
 			[
-				$this->form_item(
+				$this->cpt_item(
+					'kadence_form',
 					'Imported Form',
 					[
 						'_kad_form_email'    => [ $email ],
@@ -108,16 +112,35 @@ class PrebuiltLibraryImportCptCapabilityTest extends KadenceBlocksTestCase {
 	}
 
 	/**
-	 * A nested form follows the same rules as a top-level one.
+	 * A repeated import reuses the user's own pending post.
+	 *
+	 * @return void
+	 */
+	public function testRepeatedImportReusesTheUsersPendingPost(): void {
+		$this->act_as( 'author' );
+		$this->import( [ $this->cpt_item( 'kadence_form', 'Imported Form' ) ] );
+		$this->import( [ $this->cpt_item( 'kadence_form', 'Imported Form' ) ] );
+
+		$this->assertCount( 1, $this->find_posts( 'kadence_form', 'Imported Form' ) );
+
+		$this->act_as( 'author' );
+		$this->import( [ $this->cpt_item( 'kadence_form', 'Imported Form' ) ] );
+
+		$this->assertCount( 2, $this->find_posts( 'kadence_form', 'Imported Form' ) );
+	}
+
+	/**
+	 * A nested form is handled like a top-level one.
 	 *
 	 * @return void
 	 */
 	public function testNestedFormFollowsTheSameRules(): void {
 		$this->act_as( 'author' );
 		$style                 = [ 'size' => 'standard' ];
-		$parent                = $this->form_item( 'Parent Form' );
+		$parent                = $this->cpt_item( 'kadence_form', 'Parent Form' );
 		$parent['inner_posts'] = [
-			$this->form_item(
+			$this->cpt_item(
+				'kadence_form',
 				'Nested Form',
 				[
 					'_kad_form_email' => [ [ 'emailTo' => 'forms@example.com' ] ],
@@ -136,21 +159,14 @@ class PrebuiltLibraryImportCptCapabilityTest extends KadenceBlocksTestCase {
 	}
 
 	/**
-	 * A nested item is only created when its post type is one the import supports.
+	 * A nested item of an unsupported post type is not created.
 	 *
 	 * @return void
 	 */
 	public function testNestedItemOfUnsupportedPostTypeIsNotCreated(): void {
 		$this->act_as( 'administrator' );
-		$parent                = $this->form_item( 'Parent Form' );
-		$parent['inner_posts'] = [
-			[
-				'ID'           => 9002,
-				'post_type'    => 'page',
-				'post_title'   => 'Nested Page',
-				'post_content' => '',
-			],
-		];
+		$parent                = $this->cpt_item( 'kadence_form', 'Parent Form' );
+		$parent['inner_posts'] = [ $this->cpt_item( 'page', 'Nested Page' ) ];
 
 		$this->import( [ $parent ] );
 
@@ -159,7 +175,45 @@ class PrebuiltLibraryImportCptCapabilityTest extends KadenceBlocksTestCase {
 	}
 
 	/**
-	 * Form meta keys that are not presentation settings.
+	 * Roles and post types with the expected post status.
+	 *
+	 * @return Generator
+	 */
+	public function postStatusProvider(): Generator {
+		yield 'author form' => [
+			'role'            => 'author',
+			'post_type'       => 'kadence_form',
+			'expected_status' => 'pending',
+		];
+		yield 'author header' => [
+			'role'            => 'author',
+			'post_type'       => 'kadence_header',
+			'expected_status' => 'pending',
+		];
+		yield 'author navigation' => [
+			'role'            => 'author',
+			'post_type'       => 'kadence_navigation',
+			'expected_status' => 'pending',
+		];
+		yield 'editor header' => [
+			'role'            => 'editor',
+			'post_type'       => 'kadence_header',
+			'expected_status' => 'pending',
+		];
+		yield 'administrator header' => [
+			'role'            => 'administrator',
+			'post_type'       => 'kadence_header',
+			'expected_status' => 'publish',
+		];
+		yield 'administrator navigation' => [
+			'role'            => 'administrator',
+			'post_type'       => 'kadence_navigation',
+			'expected_status' => 'publish',
+		];
+	}
+
+	/**
+	 * Form meta keys that are not presentation meta.
 	 *
 	 * @return Generator
 	 */
@@ -192,39 +246,38 @@ class PrebuiltLibraryImportCptCapabilityTest extends KadenceBlocksTestCase {
 	}
 
 	/**
-	 * Builds a form item as a pattern supplies it.
+	 * Builds a pattern item.
 	 *
-	 * @param string                                $title The form title.
-	 * @param array<string, array<int, array<mixed>>> $meta  The supplied meta, keyed by meta key.
+	 * @param string                                  $post_type The post type.
+	 * @param string                                  $title     The post title.
+	 * @param array<string, array<int, array<mixed>>> $meta      The meta, keyed by meta key.
 	 *
 	 * @return array{ID: int, post_type: string, post_title: string, post_content: string, meta: array<string, array<int, array<mixed>>>, inner_posts?: array<int, array<mixed>>}
 	 */
-	private function form_item( string $title, array $meta = [] ): array {
+	private function cpt_item( string $post_type, string $title, array $meta = [] ): array {
 		return [
 			'ID'           => 9001,
-			'post_type'    => 'kadence_form',
+			'post_type'    => $post_type,
 			'post_title'   => $title,
-			'post_content' => '<!-- wp:kadence/advanced-form /-->',
+			'post_content' => '',
 			'meta'         => $meta,
 		];
 	}
 
 	/**
-	 * Runs the import for a pattern holding the given form items.
+	 * Imports a pattern with the given items.
 	 *
-	 * Built without the constructor so the test does not depend on the DI container.
-	 *
-	 * @param array<int, array{ID: int, post_type: string, post_title: string, post_content: string, meta: array<string, array<int, array<mixed>>>, inner_posts?: array<int, array<mixed>>}> $form_items The form items the pattern depends on.
+	 * @param array<int, array{ID: int, post_type: string, post_title: string, post_content: string, meta: array<string, array<int, array<mixed>>>, inner_posts?: array<int, array<mixed>>}> $items The pattern items.
 	 *
 	 * @return void
 	 */
-	private function import( array $form_items ): void {
+	private function import( array $items ): void {
 		$controller = ( new ReflectionClass( Kadence_Blocks_Prebuilt_Library_REST_Controller::class ) )
 			->newInstanceWithoutConstructor();
 
 		$controller->process_cpt(
 			'<!-- wp:kadence/advanced-form {"id":9001} /-->',
-			[ 'kadence/advanced-form' => $form_items ],
+			[ 'kadence/advanced-form' => $items ],
 			''
 		);
 	}
@@ -238,15 +291,25 @@ class PrebuiltLibraryImportCptCapabilityTest extends KadenceBlocksTestCase {
 	 * @return WP_Post|null The post, or null when none exists.
 	 */
 	private function find_post( string $post_type, string $title ): ?WP_Post {
-		$posts = get_posts(
+		return $this->find_posts( $post_type, $title )[0] ?? null;
+	}
+
+	/**
+	 * Finds every post of any status by type and title.
+	 *
+	 * @param string $post_type The post type.
+	 * @param string $title     The post title.
+	 *
+	 * @return WP_Post[] The matching posts.
+	 */
+	private function find_posts( string $post_type, string $title ): array {
+		return get_posts(
 			[
 				'post_type'   => $post_type,
 				'title'       => $title,
 				'post_status' => 'any',
-				'numberposts' => 1,
+				'numberposts' => -1,
 			]
 		);
-
-		return $posts[0] ?? null;
 	}
 }

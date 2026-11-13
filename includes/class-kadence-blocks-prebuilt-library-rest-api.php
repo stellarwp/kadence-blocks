@@ -108,7 +108,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 */
 	const MAX_REST_ARRAY_SIZE = 50;
 	/**
-	 * Post types that can be created when importing a pattern.
+	 * Post types a pattern import can create.
 	 *
 	 * @since TBD
 	 *
@@ -122,13 +122,13 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		'kadence_query_card',
 	];
 	/**
-	 * Form settings that are only imported for users who can publish forms.
+	 * Form meta keys for site-specific settings.
 	 *
 	 * @since TBD
 	 *
 	 * @var string[]
 	 */
-	private const FORM_DELIVERY_META_KEYS = [
+	private const SITE_SPECIFIC_FORM_META_KEYS = [
 		'_kad_form_actions',
 		'_kad_form_email',
 		'_kad_form_autoEmail',
@@ -961,7 +961,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * Creates the forms if needed.
 	 *
 	 * @since 3.5.7
-	 * @since TBD Use the shared list of importable post types.
+	 * @since TBD Updated the post type check.
 	 *
 	 * @param string $content The content to process.
 	 */
@@ -1025,7 +1025,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * Install CPT.
 	 *
 	 * @since 3.5.7
-	 * @since TBD Only install importable post types, using the capabilities and settings allowed for the current user.
+	 * @since TBD Updated the post status and meta handling.
 	 *
 	 * @param array  $cpt_data The cpt data.
 	 * @param string $style The style.
@@ -1041,12 +1041,19 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 
 		// Check if the post already exists.
 		$title       = ! empty( $style ) && 'light' !== $style ? $cpt_data['post_title'] . ' ' . ucfirst( $style ) : $cpt_data['post_title'];
-		$post_exists = get_posts(
-			[
-				'post_type' => $cpt_data['post_type'],
-				'title'     => $title,
-			]
-		);
+		$lookup      = [
+			'post_type' => $post_type,
+			'title'     => $title,
+		];
+		$post_exists = get_posts( $lookup );
+		if ( ! $post_exists && ! $can_publish ) {
+			$post_exists = get_posts(
+				$lookup + [
+					'post_status' => 'pending',
+					'author'      => get_current_user_id(),
+				]
+			);
+		}
 		if ( $post_exists ) {
 			return $post_exists[0]->ID;
 		}
@@ -1069,7 +1076,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 					}
 					foreach ( $meta_values as $meta_value ) {
 						if ( $restrict_meta ) {
-							$meta_value = $this->filter_meta_value( $meta_value );
+							$meta_value = $this->sanitize_meta_value( $meta_value );
 						}
 						if ( ! empty( $style ) && 'light' !== $style ) {
 							$meta_value = $this->cpt_switch_meta_color( $meta_value, $meta_key, $style );
@@ -3435,19 +3442,15 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	}
 
 	/**
-	 * Checks whether the current user can publish an imported post of the given type.
+	 * Checks whether the current user can publish the given post type.
 	 *
 	 * @since TBD
 	 *
 	 * @param string $post_type The post type.
 	 *
-	 * @return bool Whether the imported post can be published.
+	 * @return bool Whether the user can publish the post type.
 	 */
 	private function can_publish_cpt( string $post_type ): bool {
-		if ( 'kadence_form' !== $post_type ) {
-			return current_user_can( 'publish_posts' );
-		}
-
 		$post_type_object = get_post_type_object( $post_type );
 
 		return $post_type_object
@@ -3456,30 +3459,30 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	}
 
 	/**
-	 * Checks whether a supplied form meta key is a registered presentation setting.
+	 * Checks whether a form meta key is a presentation setting.
 	 *
 	 * @since TBD
 	 *
-	 * @param int|string $meta_key The supplied meta key.
+	 * @param int|string $meta_key The meta key.
 	 *
 	 * @return bool Whether the meta key is a presentation setting.
 	 */
 	private function is_presentation_form_meta_key( $meta_key ): bool {
 		return is_string( $meta_key )
-			&& ! in_array( $meta_key, self::FORM_DELIVERY_META_KEYS, true )
+			&& ! in_array( $meta_key, self::SITE_SPECIFIC_FORM_META_KEYS, true )
 			&& registered_meta_key_exists( 'post', $meta_key, 'kadence_form' );
 	}
 
 	/**
-	 * Filters the text of a supplied meta value the way post content is filtered.
+	 * Sanitizes the strings in a meta value.
 	 *
 	 * @since TBD
 	 *
-	 * @param mixed $meta_value The supplied meta value.
+	 * @param mixed $meta_value The meta value.
 	 *
-	 * @return mixed The filtered meta value.
+	 * @return mixed The sanitized meta value.
 	 */
-	private function filter_meta_value( $meta_value ) {
+	private function sanitize_meta_value( $meta_value ) {
 		return map_deep(
 			$meta_value,
 			static function ( $value ) {
