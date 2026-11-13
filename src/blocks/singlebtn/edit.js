@@ -96,6 +96,7 @@ import {
 } from '../../extension/token-indicators/normalize';
 import { EditorBoxControl } from '../../extension/design-tokens/components/EditorBoxControl';
 import { EditorBorderControl } from '../../extension/design-tokens/components/EditorBorderControl';
+import { borderLineStyle } from '../../extension/design-tokens/border-sides';
 import { EditorShadowControl } from '../../extension/design-tokens/components/EditorShadowControl';
 import { ShadowColorField } from '../../extension/design-tokens/components/shadow-color';
 import { BorderColorField } from '../../extension/design-tokens/components/border-color';
@@ -391,7 +392,8 @@ export default function KadenceButtonEdit(props) {
 		siteHoverBorder.color ?? tokenBinding.borderHoverStyle?.presetValue?.color ?? borderColorDefault;
 	// What an unset style reads as: the site's, then the active preset's own at the preview device, so a
 	// class-painted preset (Outline) starts from the solid border it paints rather than `none`. Hover falls
-	// back to the resting style.
+	// back to the style stored for resting (so an explicit `none` is not shown as `solid` on hover), then to
+	// the resting default.
 	const borderStyleDefault =
 		siteBorder.style ??
 		presetPropertyValueForDevice('kadence/singlebtn', 'button-border-style', attributes, undefined, previewDevice);
@@ -404,6 +406,7 @@ export default function KadenceButtonEdit(props) {
 			undefined,
 			previewDevice
 		) ??
+		(borderLineStyle(previewDevice, 'top', [borderStyle, tabletBorderStyle, mobileBorderStyle]) || undefined) ??
 		borderStyleDefault;
 
 	// Read directly: `button-shadow` declares no `control_attr`, so `usePresetBinding` skips it.

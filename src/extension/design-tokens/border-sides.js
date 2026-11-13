@@ -11,7 +11,7 @@
  *
  * @return {string} The line style, or ''.
  */
-function borderLineStyle(device, side, [desktop, tablet, mobile]) {
+export function borderLineStyle(device, side, [desktop, tablet, mobile]) {
 	const chain = 'Mobile' === device ? [mobile, tablet, desktop] : 'Tablet' === device ? [tablet, desktop] : [desktop];
 
 	return chain.map((value) => value?.[0]?.[side]?.[1]).find((style) => style) || '';
