@@ -389,10 +389,22 @@ export default function KadenceButtonEdit(props) {
 	const borderHoverWidthDefault = siteHoverBorder.width ?? borderHoverWidthPresetValue ?? borderWidthDefault;
 	const borderHoverColorDefault =
 		siteHoverBorder.color ?? tokenBinding.borderHoverStyle?.presetValue?.color ?? borderColorDefault;
-	// What an unset style reads as: the preset's own, so a class-painted preset (Outline) starts from the solid
-	// border it paints rather than `none`.
-	const borderStyleDefault = tokenBinding.borderStyle?.presetValue?.style;
-	const borderHoverStyleDefault = tokenBinding.borderHoverStyle?.presetValue?.style ?? borderStyleDefault;
+	// What an unset style reads as: the site's, then the active preset's own at the preview device, so a
+	// class-painted preset (Outline) starts from the solid border it paints rather than `none`. Hover falls
+	// back to the resting style.
+	const borderStyleDefault =
+		siteBorder.style ??
+		presetPropertyValueForDevice('kadence/singlebtn', 'button-border-style', attributes, undefined, previewDevice);
+	const borderHoverStyleDefault =
+		siteHoverBorder.style ??
+		presetPropertyValueForDevice(
+			'kadence/singlebtn',
+			'button-border-hover-style',
+			attributes,
+			undefined,
+			previewDevice
+		) ??
+		borderStyleDefault;
 
 	// Read directly: `button-shadow` declares no `control_attr`, so `usePresetBinding` skips it.
 	const shadowPresetValue = presetPropertyValueForDevice(

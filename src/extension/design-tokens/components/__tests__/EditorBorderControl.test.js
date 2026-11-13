@@ -167,6 +167,8 @@ describe('EditorBorderControl native <-> control value bridging', () => {
 	 * An unset border reads as the preset's own style instead of `none`, so a preset that paints a solid
 	 * border starts the control from `solid`, and editing the width keeps that border visible.
 	 *
+	 * @since 3.9.2
+	 *
 	 * @return {void}
 	 */
 	it('starts an unset border from the preset style and keeps it when the width is edited', () => {
@@ -196,6 +198,8 @@ describe('EditorBorderControl native <-> control value bridging', () => {
 	 * Writing a width on a preset that paints a colored border also writes that color: an empty color on a
 	 * border with a width renders as transparent, which would hide the border the preset paints.
 	 *
+	 * @since 3.9.2
+	 *
 	 * @return {void}
 	 */
 	it('writes the preset color with a width so the border stays visible', () => {
@@ -223,6 +227,8 @@ describe('EditorBorderControl native <-> control value bridging', () => {
 	/**
 	 * A color the user picked always wins over the preset's, and a border with no width writes no color.
 	 *
+	 * @since 3.9.2
+	 *
 	 * @return {void}
 	 */
 	it('keeps a picked color over the preset color and writes none without a width', () => {
@@ -235,21 +241,19 @@ describe('EditorBorderControl native <-> control value bridging', () => {
 			borderControl.props.onChange({ width: '2px', style: 'solid', color: '#ff0000' });
 		});
 
-		expect(onChange).toHaveBeenLastCalledWith([
-			expect.objectContaining({ top: ['#ff0000', 'solid', 2] }),
-		]);
+		expect(onChange).toHaveBeenLastCalledWith([expect.objectContaining({ top: ['#ff0000', 'solid', 2] })]);
 
 		act(() => {
 			borderControl.props.onChange({ width: '', style: 'solid', color: '' });
 		});
 
-		expect(onChange).toHaveBeenLastCalledWith([
-			expect.objectContaining({ top: ['', 'solid', ''] }),
-		]);
+		expect(onChange).toHaveBeenLastCalledWith([expect.objectContaining({ top: ['', 'solid', ''] })]);
 	});
 
 	/**
 	 * A stored style always wins over the preset's, so an explicit `dashed` is never replaced.
+	 *
+	 * @since 3.9.2
 	 *
 	 * @return {void}
 	 */
