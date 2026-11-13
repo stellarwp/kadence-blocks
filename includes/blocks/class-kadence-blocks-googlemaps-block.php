@@ -65,94 +65,14 @@ class Kadence_Blocks_Googlemaps_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param string $unique_style_id the blocks alternate ID for queries.
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
+		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-googlemaps-css.php';
 
-		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
-		$css->set_selector( '.kb-google-maps-container' . $unique_id );
+		$bridge  = function ( $member, ...$args ) {
+			return method_exists( $this, $member ) ? $this->$member( ...$args ) : $this->$member;
+		};
+		$builder = new Kadence_Blocks_Googlemaps_Css( new Kadence_Blocks_Css_Block_Context( $this->block_name, $bridge ) );
 
-		/*
-		 * Max-Width
-		 */
-		foreach ( [ 'Desktop', 'Tablet', 'Mobile' ] as $breakpoint ) {
-			$css->set_media_state( strtolower( $breakpoint ) );
-
-			if ( isset( $attributes[ 'width' . $breakpoint ] ) && is_numeric( $attributes[ 'width' . $breakpoint ] ) ) {
-				$css->add_property( 'max-width', $attributes[ 'width' . $breakpoint ] . 'px' );
-			}
-			if ( $breakpoint !== 'Desktop' ) {
-				$css->set_media_state( 'desktop' );
-			}
-		}
-
-		/*
-		 * Height
-		 */
-		foreach ( [ 'Desktop', 'Tablet', 'Mobile' ] as $breakpoint ) {
-			if ( $breakpoint == 'Desktop' ) {
-				$height = ( isset( $attributes[ 'height' . $breakpoint ] ) && is_numeric( $attributes[ 'height' . $breakpoint ] ) ? $attributes[ 'height' . $breakpoint ] : 450 );
-				$css->add_property( 'height', $height . 'px' );
-			} else {
-				$css->set_media_state( strtolower( $breakpoint ) );
-				if ( isset( $attributes[ 'height' . $breakpoint ] ) && is_numeric( $attributes[ 'height' . $breakpoint ] ) ) {
-					$css->add_property( 'height', $attributes[ 'height' . $breakpoint ] . 'px' );
-				}
-				$css->set_media_state( 'desktop' );
-			}
-		}
-
-
-		/*
-		 * Margin
-		 */
-		$margin_args = array(
-			'desktop_key' => 'marginDesktop',
-			'tablet_key'  => 'marginTablet',
-			'mobile_key'  => 'marginMobile',
-			'unit_key'    => 'marginUnit',
-		);
-		$css->render_measure_output( $attributes, 'margin', 'margin', $margin_args );
-
-		/*
-		 * Padding
-		 */
-		$padding_args = array(
-			'desktop_key' => 'paddingDesktop',
-			'tablet_key'  => 'paddingTablet',
-			'mobile_key'  => 'paddingMobile',
-			'unit_key'    => 'paddingUnit',
-		);
-		$css->render_measure_output( $attributes, 'padding', 'padding', $padding_args );
-
-
-		/*
-		 * Align
-		 */
-		foreach ( [ 'Desktop', 'Tablet', 'Mobile' ] as $index => $breakpoint ) {
-			$css->set_media_state( strtolower( $breakpoint ) );
-
-			if ( ! empty( $attributes['textAlign'][ $index ] ) ) {
-				if ( $attributes['textAlign'][ $index ] === 'center' ) {
-					$css->add_property( 'margin-left', 'auto !important' );
-					$css->add_property( 'margin-right', 'auto !important' );
-				} elseif ( $attributes['textAlign'][ $index ] === 'left' ) {
-					$css->add_property( 'margin-right', 'auto !important' );
-				} elseif ( $attributes['textAlign'][ $index ] === 'right' ) {
-					$css->add_property( 'margin-left', 'auto !important' );
-				}
-			}
-
-			$css->set_media_state( 'desktop' );
-		}
-
-		/*
-		 * Filters
-		 */
-		if ( isset( $attributes['mapFilter'] ) && $attributes['mapFilter'] !== 'standard' ) {
-			$css->set_selector( '.kb-google-maps-container' . $unique_id );
-			$filter_level = ( isset( $attributes['mapFilterAmount'] ) && is_numeric( $attributes['mapFilterAmount'] ) ? $attributes['mapFilterAmount'] : 50 );
-			$css->add_property( 'filter', $attributes['mapFilter'] . '(' . $filter_level . '%)' );
-		}
-
-		return $css->css_output();
+		return $builder->build( $attributes, $css, $unique_id, $unique_style_id );
 	}
 	/**
 	 * Return dynamically generated HTML for block

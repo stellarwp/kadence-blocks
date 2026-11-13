@@ -78,107 +78,14 @@ class Kadence_Blocks_Header_Row_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param string $unique_style_id the blocks alternate ID for queries.
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
-		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
+		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-header-row-css.php';
 
-		$layout         = ( ! empty( $attributes['layout'] ) ? $attributes['layout'] : 'standard' );
-		$bg             = $attributes['background'];
-		$bg_transparent = $attributes['backgroundTransparent'];
-		$sizes = array( 'Desktop', 'Tablet', 'Mobile' );
+		$bridge  = function ( $member, ...$args ) {
+			return method_exists( $this, $member ) ? $this->$member( ...$args ) : $this->$member;
+		};
+		$builder = new Kadence_Blocks_Header_Row_Css( new Kadence_Blocks_Css_Block_Context( $this->block_name, $bridge ) );
 
-		foreach ( $sizes as $size ) {
-			$this->sized_dynamic_styles( $css, $attributes, $unique_id, $size );
-		}
-		$css->set_media_state( 'desktop' );
-
-		// Min Height.
-		$css->set_selector( '.wp-block-kadence-header-row.wp-block-kadence-header-row' . $unique_id . ' .kadence-header-row-inner' );
-		if ( ! empty( $attributes['minHeight'] ) ) {
-			$css->add_property( 'min-height', $attributes['minHeight'] . ( ! empty( $attributes['minHeightUnit'] ) ? $attributes['minHeightUnit'] : 'px' ) );
-		}
-		if ( $css->is_number( $attributes['minHeightTablet'] ) ) {
-			$css->set_media_state( 'tablet' );
-			$css->add_property( 'min-height', $attributes['minHeightTablet'] . ( ! empty( $attributes['minHeightUnit'] ) ? $attributes['minHeightUnit'] : 'px' ) );
-			$css->set_media_state( 'desktop' );
-		}
-		if ( $css->is_number( $attributes['minHeightMobile'] ) ) {
-			$css->set_media_state( 'mobile' );
-			$css->add_property( 'min-height', $attributes['minHeightMobile'] . ( ! empty( $attributes['minHeightUnit'] ) ? $attributes['minHeightUnit'] : 'px' ) );
-			$css->set_media_state( 'desktop' );
-		}
-		if ( ! empty( $attributes['maxWidth'] ) ) {
-			$css->add_property( 'max-width', $attributes['maxWidth'] . ( ! empty( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px' ) );
-		}
-		if ( $css->is_number( $attributes['maxWidthTablet'] ) ) {
-			$css->set_media_state( 'tablet' );
-			$css->add_property( 'max-width', $attributes['maxWidthTablet'] . ( ! empty( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px' ) );
-			$css->set_media_state( 'desktop' );
-		}
-		if ( $css->is_number( $attributes['maxWidthMobile'] ) ) {
-			$css->set_media_state( 'mobile' );
-			$css->add_property( 'max-width', $attributes['maxWidthMobile'] . ( ! empty( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px' ) );
-			$css->set_media_state( 'desktop' );
-		}
-		// Background Variables.
-		$css->set_selector( '.wp-block-kadence-header-row' . $unique_id );
-		$css->render_background( $bg, $css, '--kb-header-row-bg' );
-		$css->render_background( $bg, $css, '--kb-stuck-header-bg' );
-		$css->render_background( $bg_transparent, $css, '--kb-transparent-header-row-bg' );
-		if ( 'contained' !== $layout ) {
-			$css->set_selector( '.wp-block-kadence-header-row' . $unique_id .  ', .wp-block-kadence-header-row' . $unique_id . '.item-is-stuck.item-is-stuck');
-			$css->render_measure_output( $attributes, 'borderRadius', 'border-radius', array(
-				'desktop_key' => 'borderRadius',
-				'tablet_key'  => 'borderRadiusTablet',
-				'mobile_key'  => 'borderRadiusMobile',
-			) );
-			$css->render_border_styles( $attributes, 'border', false, array(
-				'desktop_key' => 'border',
-				'tablet_key'  => 'borderTablet',
-				'mobile_key'  => 'borderMobile',
-			) );
-		}
-		// Container.
-		if ( 'contained' === $layout ) {
-			$css->set_selector( '.wp-block-kadence-header-row' . $unique_id . ' .kadence-header-row-inner' );
-			$css->render_measure_output( $attributes, 'borderRadius', 'border-radius', array(
-				'desktop_key' => 'borderRadius',
-				'tablet_key'  => 'borderRadiusTablet',
-				'mobile_key'  => 'borderRadiusMobile',
-			) );
-			$css->render_border_styles( $attributes, 'border', false, array(
-				'desktop_key' => 'border',
-				'tablet_key'  => 'borderTablet',
-				'mobile_key'  => 'borderMobile',
-			) );
-		}
-		$css->set_selector( '.wp-block-kadence-header-row' . $unique_id . ' .kadence-header-row-inner' );
-		$css->render_measure_output( $attributes, 'padding', 'padding', array(
-			'desktop_key' => 'padding',
-			'tablet_key'  => 'paddingTablet',
-			'mobile_key'  => 'paddingMobile',
-			'unit_key'    => 'paddingUnit'
-		) );
-		$css->render_measure_output( $attributes, 'margin', 'margin', array(
-			'desktop_key' => 'margin',
-			'tablet_key'  => 'marginTablet',
-			'mobile_key'  => 'marginMobile',
-			'unit_key'    => 'marginUnit'
-		) );
-
-		// Pass down to sections.
-		$css->set_selector( '.wp-block-kadence-header-row' . $unique_id . ' .wp-block-kadence-header-column, .wp-block-kadence-header-row' . $unique_id . ' .wp-block-kadence-header-section' );
-		// $css->render_row_gap( $attributes, array( 'itemGap', 'itemGapTablet', 'itemGapMobile' ), 'gap', '', 'itemGapUnit' );
-		$css->render_gap( $attributes, 'itemGap', 'gap', 'itemGapUnit', array(
-			'desktop_key' => 'itemGap',
-			'tablet_key'  => 'itemGapTablet',
-			'mobile_key'  => 'itemGapMobile',
-		) );
-
-		$css->set_media_state( 'desktop' );
-		if ( isset( $attributes['kadenceBlockCSS'] ) && ! empty( $attributes['kadenceBlockCSS'] ) ) {
-			$css->add_css_string( str_replace( 'selector', '.wp-block-kadence-header-row' . $unique_id, $attributes['kadenceBlockCSS'] ) );
-		}
-
-		return $css->css_output();
+		return $builder->build( $attributes, $css, $unique_id, $unique_style_id );
 	}
 
 	/**

@@ -78,51 +78,14 @@ class Kadence_Blocks_Off_Canvas_Trigger_Block extends Kadence_Blocks_Abstract_Bl
 	 * @param string             $unique_style_id the blocks alternate ID for queries.
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
-		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
+		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-off-canvas-trigger-css.php';
 
-		$sizes = array( 'Desktop', 'Tablet', 'Mobile' );
+		$bridge  = function ( $member, ...$args ) {
+			return method_exists( $this, $member ) ? $this->$member( ...$args ) : $this->$member;
+		};
+		$builder = new Kadence_Blocks_Off_Canvas_Trigger_Css( new Kadence_Blocks_Css_Block_Context( $this->block_name, $bridge ) );
 
-		foreach ( $sizes as $size ) {
-			$this->sized_dynamic_styles( $css, $attributes, $unique_id, $size );
-		}
-		$css->set_media_state( 'desktop' );
-
-		// For the close icon container styles, they need to get applied to the hover state too, due to resets on hover styles in the css
-		//container
-		$css->set_selector( '.wp-block-kadence-off-canvas-trigger' . $unique_id . ', .wp-block-kadence-off-canvas-trigger' . $unique_id . ':hover' );
-		$css->render_measure_output( $attributes, 'padding', 'padding', array(
-			'desktop_key' => 'padding',
-			'tablet_key'  => 'paddingTablet',
-			'mobile_key'  => 'paddingMobile',
-		) );
-		$css->render_measure_output( $attributes, 'margin', 'margin', array(
-			'desktop_key' => 'margin',
-			'tablet_key'  => 'marginTablet',
-			'mobile_key'  => 'marginMobile',
-		) );
-		$css->render_measure_output( $attributes, 'borderRadius', 'border-radius', array(
-			'desktop_key' => 'borderRadius',
-			'tablet_key'  => 'borderRadiusTablet',
-			'mobile_key'  => 'borderRadiusMobile',
-		) );
-		$css->render_border_styles( $attributes, 'border', false, array(
-			'desktop_key' => 'border',
-			'tablet_key'  => 'borderTablet',
-			'mobile_key'  => 'borderMobile',
-		));
-
-		//container hover
-		$css->set_selector( '.wp-block-kadence-off-canvas-trigger' . $unique_id . ':hover' );
-		$css->render_border_styles( $attributes, 'borderHover', false, array(
-			'desktop_key' => 'borderHover',
-			'tablet_key'  => 'borderHoverTablet',
-			'mobile_key'  => 'borderHoverMobile',
-		) );
-
-		//icon
-		$css->set_selector( '.wp-block-kadence-off-canvas-trigger' . $unique_id . ' svg' );
-
-		return $css->css_output();
+		return $builder->build( $attributes, $css, $unique_id, $unique_style_id );
 	}
 
 

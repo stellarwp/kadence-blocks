@@ -61,26 +61,14 @@ class Kadence_Blocks_Testimonial_Block extends Kadence_Blocks_Abstract_Block imp
 	 * @param string             $unique_style_id the blocks alternate ID for queries.
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
+		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-testimonial-css.php';
 
-		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
+		$bridge  = function ( $member, ...$args ) {
+			return method_exists( $this, $member ) ? $this->$member( ...$args ) : $this->$member;
+		};
+		$builder = new Kadence_Blocks_Testimonial_Css( new Kadence_Blocks_Css_Block_Context( $this->block_name, $bridge ) );
 
-		// The icon's width and height attributes carry the desktop size, so only tablet and mobile need rules.
-		if ( isset( $attributes['media'] ) && 'icon' === $attributes['media'] ) {
-			$css->set_selector( '.kt-testimonial-item-' . $unique_id . ' .kt-svg-testimonial-icon svg' );
-			foreach ( [
-				'tablet' => 'tabletIsize',
-				'mobile' => 'mobileIsize',
-			] as $device => $key ) {
-				if ( isset( $attributes[ $key ] ) && is_numeric( $attributes[ $key ] ) ) {
-					$css->set_media_state( $device );
-					$css->add_property( 'width', $attributes[ $key ] . 'px' );
-					$css->add_property( 'height', $attributes[ $key ] . 'px' );
-				}
-			}
-			$css->set_media_state( 'desktop' );
-		}
-
-		return $css->css_output();
+		return $builder->build( $attributes, $css, $unique_id, $unique_style_id );
 	}
 
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {

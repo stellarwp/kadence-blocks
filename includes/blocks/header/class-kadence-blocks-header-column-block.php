@@ -78,13 +78,14 @@ class Kadence_Blocks_Header_Column_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param string             $unique_style_id the blocks alternate ID for queries.
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
+		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-header-column-css.php';
 
-		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
+		$bridge  = function ( $member, ...$args ) {
+			return method_exists( $this, $member ) ? $this->$member( ...$args ) : $this->$member;
+		};
+		$builder = new Kadence_Blocks_Header_Column_Css( new Kadence_Blocks_Css_Block_Context( $this->block_name, $bridge ) );
 
-		$css->set_selector( '.wp-block-kadence-header-column' . $unique_id );
-
-
-		return $css->css_output();
+		return $builder->build( $attributes, $css, $unique_id, $unique_style_id );
 	}
 
 	/**

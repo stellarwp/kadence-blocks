@@ -78,81 +78,14 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param string $unique_style_id the blocks alternate ID for queries.
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
-		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
+		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-off-canvas-css.php';
 
-		$sizes = array( 'Desktop', 'Tablet', 'Mobile' );
+		$bridge  = function ( $member, ...$args ) {
+			return method_exists( $this, $member ) ? $this->$member( ...$args ) : $this->$member;
+		};
+		$builder = new Kadence_Blocks_Off_Canvas_Css( new Kadence_Blocks_Css_Block_Context( $this->block_name, $bridge ) );
 
-		foreach ( $sizes as $size ) {
-			$this->sized_dynamic_styles( $css, $attributes, $unique_id, $size );
-		}
-		$css->set_media_state( 'desktop' );
-
-		// container.
-		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-inner-wrap' );
-		$css->render_border_styles( $attributes, 'border', false, array(
-			'desktop_key' => 'border',
-			'tablet_key'  => 'borderTablet',
-			'mobile_key'  => 'borderMobile',
-		) );
-		$css->render_measure_output( $attributes, 'borderRadius', 'border-radius', array(
-			'desktop_key' => 'borderRadius',
-			'tablet_key'  => 'borderRadiusTablet',
-			'mobile_key'  => 'borderRadiusMobile',
-		) );
-
-		// inner container.
-		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-inner');
-		$css->render_measure_output( $attributes, 'padding', 'padding', array(
-			'desktop_key' => 'padding',
-			'tablet_key'  => 'paddingTablet',
-			'mobile_key'  => 'paddingMobile',
-		) );
-
-		// For the close icon container styles.
-		// close icon container.
-		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-close' );
-		$css->render_measure_output(
-			$attributes,
-			'closeIconPadding',
-			'padding',
-			[
-				'desktop_key' => 'closeIconPadding',
-				'tablet_key'  => 'closeIconPaddingTablet',
-				'mobile_key'  => 'closeIconPaddingMobile',
-				'unit_key'    => 'closeIconPaddingUnit',
-			]
-		);
-		$css->render_measure_output( $attributes, 'closeIconMargin', 'margin', array(
-			'desktop_key' => 'closeIconMargin',
-			'tablet_key'  => 'closeIconMarginTablet',
-			'mobile_key'  => 'closeIconMarginMobile',
-			'unit_key'    => 'closeIconMarginUnit',
-		) );
-		$css->render_measure_output( $attributes, 'closeIconBorderRadius', 'border-radius', array(
-			'desktop_key' => 'closeIconBorderRadius',
-			'tablet_key'  => 'closeIconBorderRadiusTablet',
-			'mobile_key'  => 'closeIconBorderRadiusMobile',
-		) );
-		$css->render_border_styles( $attributes, 'closeIconBorder', false, array(
-			'desktop_key' => 'closeIconBorder',
-			'tablet_key'  => 'closeIconBorderTablet',
-			'mobile_key'  => 'closeIconBorderMobile',
-		) );
-
-		// Close icon container hover.
-		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-close:hover, .wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-close:focus-visible' );
-		$css->render_border_styles(
-			$attributes,
-			'closeIconBorderHover',
-			false,
-			[
-				'desktop_key' => 'closeIconBorderHover',
-				'tablet_key'  => 'closeIconBorderHoverTablet',
-				'mobile_key'  => 'closeIconBorderHoverMobile',
-			]
-		);
-
-		return $css->css_output();
+		return $builder->build( $attributes, $css, $unique_id, $unique_style_id );
 	}
 
 	/**

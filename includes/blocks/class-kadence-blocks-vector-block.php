@@ -72,23 +72,14 @@ class Kadence_Blocks_Vector_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param string $unique_style_id the blocks alternate ID for queries.
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
+		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-vector-css.php';
 
-		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
-		$css->set_selector( '.kb-vector-container' . $unique_id );
+		$bridge  = function ( $member, ...$args ) {
+			return method_exists( $this, $member ) ? $this->$member( ...$args ) : $this->$member;
+		};
+		$builder = new Kadence_Blocks_Vector_Css( new Kadence_Blocks_Css_Block_Context( $this->block_name, $bridge ) );
 
-		$css->render_measure_output( $attributes, 'margin', 'margin');
-		$css->render_measure_output( $attributes, 'padding', 'padding' );
-		
-		// Center the SVG when alignment is not set
-		if ( empty( $attributes['align'] ) ) {
-			$css->add_property( 'display', 'flex' );
-			$css->add_property( 'justify-content', 'center' );
-		}
-
-		$css->set_selector( '.kb-vector-container' . $unique_id . ' svg' );
-		$css->render_responsive_range( $attributes, 'maxWidth', 'max-width', 'maxWidthUnit' );
-
-		return $css->css_output();
+		return $builder->build( $attributes, $css, $unique_id, $unique_style_id );
 	}
 
 	/**

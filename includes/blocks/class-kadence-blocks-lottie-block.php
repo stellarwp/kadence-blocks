@@ -80,46 +80,14 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param string $unique_style_id the blocks alternate ID for queries.
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
+		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-lottie-css.php';
 
-		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
-		$css->set_selector( '.kb-lottie-container' . $unique_id );
+		$bridge  = function ( $member, ...$args ) {
+			return method_exists( $this, $member ) ? $this->$member( ...$args ) : $this->$member;
+		};
+		$builder = new Kadence_Blocks_Lottie_Css( new Kadence_Blocks_Css_Block_Context( $this->block_name, $bridge ) );
 
-		/*
-		 * Margin
-		 */
-		$margin_args = array(
-			'desktop_key' => 'marginDesktop',
-			'tablet_key'  => 'marginTablet',
-			'mobile_key'  => 'marginMobile',
-			'unit_key'    => 'marginUnit',
-		);
-		$css->render_measure_output( $attributes, 'margin', 'margin', $margin_args );
-
-		/*
-		 * Padding
-		 */
-		$padding_args = array(
-			'desktop_key' => 'paddingDesktop',
-			'tablet_key'  => 'paddingTablet',
-			'mobile_key'  => 'paddingMobile',
-			'unit_key'    => 'paddingUnit',
-		);
-		$css->render_measure_output( $attributes, 'padding', 'padding', $padding_args );
-
-		$width = ( !isset( $attributes['width'] ) || '0' === $attributes['width'] ) ? 'auto' : $attributes['width'] . 'px';
-
-		if ( isset( $attributes['useRatio'] ) && $attributes['useRatio'] ) {
-			$css->add_property( 'max-width', $width );
-			$css->add_property( 'margin', '0 auto' );
-			$css->set_selector( '.kb-lottie-container' . $unique_id . ' .kb-is-ratio-animation' );
-			$css->add_property( 'padding-bottom', isset( $attributes['ratio'] ) && is_numeric( $attributes['ratio'] ) ? $attributes['ratio'] . '%' : '100%' );
-		}
-
-		if ( ! isset( $attributes['useRatio'] ) || ! $attributes['useRatio'] ) {
-			$css->set_selector( '.kb-lottie-container' . $unique_id . ' dotlottie-player' );
-			$css->add_property( 'max-width', $width );
-		}
-		return $css->css_output();
+		return $builder->build( $attributes, $css, $unique_id, $unique_style_id );
 	}
 
 	/**

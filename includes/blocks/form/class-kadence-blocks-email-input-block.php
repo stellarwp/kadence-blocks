@@ -51,14 +51,14 @@ class Kadence_Blocks_Email_Input_Block extends Kadence_Blocks_Advanced_Form_Inpu
 	 * @param string $unique_style_id the blocks alternate ID for queries.
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
-		$class_id = $this->class_id( $attributes );
-		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
-		$css->set_selector( '.wp-block-kadence-advanced-form .kb-field' . $class_id );
+		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-email-input-css.php';
 
-		$css->render_responsive_range( $attributes, 'maxWidth', 'max-width', 'maxWidthUnit' );
-		$css->render_responsive_range( $attributes, 'minWidth', 'min-width', 'minWidthUnit' );
+		$bridge  = function ( $member, ...$args ) {
+			return method_exists( $this, $member ) ? $this->$member( ...$args ) : $this->$member;
+		};
+		$builder = new Kadence_Blocks_Email_Input_Css( new Kadence_Blocks_Css_Block_Context( $this->block_name, $bridge ) );
 
-		return $css->css_output();
+		return $builder->build( $attributes, $css, $unique_id, $unique_style_id );
 	}
 
 	/**

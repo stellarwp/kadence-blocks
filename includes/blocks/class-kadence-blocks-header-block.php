@@ -73,34 +73,14 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param string             $unique_style_id the blocks alternate ID for queries.
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
-		if ( empty( $attributes['id'] ) ) {
-			return;
-		}
-		$header_attributes = $this->get_attributes_with_defaults_cpt( $attributes['id'], 'kadence_header', '_kad_header_' );
+		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-header-css.php';
 
-		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
+		$bridge  = function ( $member, ...$args ) {
+			return method_exists( $this, $member ) ? $this->$member( ...$args ) : $this->$member;
+		};
+		$builder = new Kadence_Blocks_Header_Css( new Kadence_Blocks_Css_Block_Context( $this->block_name, $bridge ) );
 
-		$sizes = array( 'Desktop', 'Tablet', 'Mobile' );
-
-		foreach ( $sizes as $size ) {
-			$this->sized_dynamic_styles( $css, $header_attributes, $unique_id, $size );
-		}
-		$css->set_media_state( 'desktop' );
-
-		// Normal state styles.-cpt-id .kb-header-container
-		$css->set_selector( '.wp-block-kadence-header' . $unique_id . ' .kb-header-container' );
-		$css->render_measure_output( $header_attributes, 'margin', 'margin', [ 'unit_key' => 'marginUnit' ] );
-		$css->render_measure_output( $header_attributes, 'padding', 'padding', [ 'unit_key' => 'paddingUnit' ] );
-		$css->render_typography( $header_attributes );
-
-		if ( ! empty( $header_attributes['pro_backdropFilterString'] ) && class_exists( 'Kadence_Blocks_Pro' ) ) {
-			$css->set_selector( '.wp-block-kadence-header' . $unique_id . ' .kb-header-container:not(:has(.item-is-stuck)), .wp-block-kadence-header' . $unique_id . ' .item-is-stuck' );
-			$css->add_property( 'position', 'relative' );
-			$css->add_property( 'z-index', '10' );
-			$css->add_property( 'backdrop-filter', $header_attributes['pro_backdropFilterString'] );
-		}
-
-		return $css->css_output();
+		return $builder->build( $attributes, $css, $unique_id, $unique_style_id );
 	}
 
 	/**

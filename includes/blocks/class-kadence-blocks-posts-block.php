@@ -61,69 +61,14 @@ class Kadence_Blocks_Posts_Block extends Kadence_Blocks_Abstract_Block implement
 	 * @param string             $unique_style_id the blocks alternate ID for queries.
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
+		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-posts-css.php';
 
-		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
+		$bridge  = function ( $member, ...$args ) {
+			return method_exists( $this, $member ) ? $this->$member( ...$args ) : $this->$member;
+		};
+		$builder = new Kadence_Blocks_Posts_Css( new Kadence_Blocks_Css_Block_Context( $this->block_name, $bridge ) );
 
-		$title_font = ( isset( $attributes ) && is_array( $attributes ) && isset( $attributes['titleFont'] ) && is_array( $attributes['titleFont'] ) && isset( $attributes['titleFont'][0] ) && is_array( $attributes['titleFont'][0] ) ? $attributes['titleFont'][0] : [] );
-		$css->set_selector( '.kb-posts-id-' . $unique_id . ' .entry.loop-entry .entry-header .entry-title' );
-		if ( isset( $title_font['size'] ) && is_array( $title_font['size'] ) && isset( $title_font['size'][0] ) && ! empty( $title_font['size'][0] ) ) {
-			$css->add_property( 'font-size', $css->get_font_size( $title_font['size'][0], ( ! isset( $title_font['sizeType'] ) ? 'px' : $title_font['sizeType'] ) ) );
-		}
-		if ( isset( $title_font['lineHeight'] ) && is_array( $title_font['lineHeight'] ) && isset( $title_font['lineHeight'][0] ) && ! empty( $title_font['lineHeight'][0] ) ) {
-			$css->add_property( 'line-height', $title_font['lineHeight'][0] . ( ! isset( $title_font['lineType'] ) ? 'px' : $title_font['lineType'] ) );
-		}
-		if ( isset( $title_font['letterSpacing'] ) && is_array( $title_font['letterSpacing'] ) && isset( $title_font['letterSpacing'][0] ) && ! empty( $title_font['letterSpacing'][0] ) ) {
-			$css->add_property( 'letter-spacing', $title_font['letterSpacing'][0] . ( ! isset( $title_font['letterType'] ) ? 'px' : $title_font['letterType'] ) );
-		}
-		if ( isset( $title_font['textTransform'] ) && ! empty( $title_font['textTransform'] ) ) {
-			$css->add_property( 'text-transform', $title_font['textTransform'] );
-		}
-		if ( isset( $attributes['loopStyle'] ) && 'unboxed' === $attributes['loopStyle'] ) {
-			if ( class_exists( 'Kadence\Theme' ) ) {
-				$css->set_selector( '.kb-posts-id-' . $unique_id . ' .loop-entry' );
-				$css->add_property( 'background', 'transparent' );
-				$css->add_property( 'box-shadow', 'none' );
-				$css->set_selector( '.kb-posts-id-' . $unique_id . ' .loop-entry > .entry-content-wrap' );
-				$css->add_property( 'padding', '0px' );
-				$css->set_selector( '.kb-posts-id-' . $unique_id . ' .loop-entry .post-thumbnail' );
-				$css->add_property( 'margin-bottom', '1em' );
-			}
-		} elseif ( class_exists( 'Kadence\Theme' ) && defined( 'KADENCE_VERSION' ) ) {
-			if ( version_compare( KADENCE_VERSION, '1.0.16', '<' ) ) {
-				$css->set_selector( '.wp-block-kadence-posts.kb-posts-id-' . $unique_id . ' .entry.loop-entry > .entry-content-wrap' );
-				$css->add_property( 'padding', '2rem' );
-			}
-		}
-		$css->set_media_state( 'tablet' );
-		$css->set_selector( '.kb-posts-id-' . $unique_id . ' .entry.loop-entry .entry-header .entry-title' );
-		if ( isset( $title_font['size'] ) && is_array( $title_font['size'] ) && ! empty( $title_font['size'][1] ) ) {
-			$css->add_property( 'font-size', $css->get_font_size( $title_font['size'][1], ( ! isset( $title_font['sizeType'] ) ? 'px' : $title_font['sizeType'] ) ) );
-		}
-		if ( isset( $title_font['lineHeight'] ) && is_array( $title_font['lineHeight'] ) && ! empty( $title_font['lineHeight'][1] ) ) {
-			$css->add_property( 'line-height', $title_font['lineHeight'][1] . ( ! isset( $title_font['lineType'] ) ? 'px' : $title_font['lineType'] ) );
-		}
-		if ( isset( $title_font['letterSpacing'] ) && is_array( $title_font['letterSpacing'] ) && isset( $title_font['letterSpacing'][1] ) && ! empty( $title_font['letterSpacing'][1] ) ) {
-			$css->add_property( 'letter-spacing', $title_font['letterSpacing'][1] . ( ! isset( $title_font['letterType'] ) ? 'px' : $title_font['letterType'] ) );
-		}
-		$css->set_media_state( 'desktop' );
-
-		$css->set_media_state( 'mobile' );
-		$css->set_selector( '.kb-posts-id-' . $unique_id . ' .entry.loop-entry .entry-header .entry-title' );
-		if ( isset( $title_font['size'] ) && is_array( $title_font['size'] ) && isset( $title_font['size'][2] ) && ! empty( $title_font['size'][2] ) ) {
-			$css->add_property( 'font-size', $css->get_font_size( $title_font['size'][2], ( ! isset( $title_font['sizeType'] ) ? 'px' : $title_font['sizeType'] ) ) );
-		}
-		if ( isset( $title_font['lineHeight'] ) && is_array( $title_font['lineHeight'] ) && isset( $title_font['lineHeight'][2] ) && ! empty( $title_font['lineHeight'][2] ) ) {
-			$css->add_property( 'line-height', $title_font['lineHeight'][2] . ( ! isset( $title_font['lineType'] ) ? 'px' : $title_font['lineType'] ) );
-		}
-		if ( isset( $title_font['letterSpacing'] ) && is_array( $title_font['letterSpacing'] ) && isset( $title_font['letterSpacing'][2] ) && ! empty( $title_font['letterSpacing'][2] ) ) {
-			$css->add_property( 'letter-spacing', $title_font['letterSpacing'][2] . ( ! isset( $title_font['letterType'] ) ? 'px' : $title_font['letterType'] ) );
-		}
-		$css->set_media_state( 'desktop' );
-
-		$css->set_selector( '.kb-posts-id-' . $unique_id . ' .kb-post-list-item' );
-		$css->add_property( 'display', 'grid' );
-
-		return $css->css_output();
+		return $builder->build( $attributes, $css, $unique_id, $unique_style_id );
 	}
 	/**
 	 * Return dynamically generated HTML for block

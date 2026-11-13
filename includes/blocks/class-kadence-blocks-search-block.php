@@ -65,110 +65,14 @@ class Kadence_Blocks_Search_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param string $unique_style_id the blocks alternate ID for queries.
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
-		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
-		$css->set_selector( '.kb-search' . $unique_id );
+		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-search-css.php';
 
-		/*
-		 * Margin
-		 */
-		$css->render_measure_output( $attributes, 'margin', 'margin' );
+		$bridge  = function ( $member, ...$args ) {
+			return method_exists( $this, $member ) ? $this->$member( ...$args ) : $this->$member;
+		};
+		$builder = new Kadence_Blocks_Search_Css( new Kadence_Blocks_Css_Block_Context( $this->block_name, $bridge ) );
 
-		/*
-		 * Padding
-		 */
-		$css->render_measure_output( $attributes, 'padding', 'padding' );
-
-
-		// Modal Background
-		$css->set_selector( '.kb-search' . $unique_id . ' .kb-search-modal' );
-		if( $attributes['modalBackgroundType'] === 'gradient') {
-			$css->add_property( '--kb-search-modal-background', $attributes['modalGradientActive'] );
-		} else {
-			$css->add_property( '--kb-search-modal-background', $css->render_color( $attributes['modalBackgroundColor'] ) );
-		}
-
-		// Input Styles.
-		$css->set_selector( '.kb-search' . $unique_id . ' .kb-search-input[type="text"]' );
-		$css->render_typography( $attributes, 'inputTypography' );
-		$css->render_measure_range( $attributes, 'inputBorderRadius', 'border-radius', $attributes['inputBorderRadiusUnit'] );
-		$css->render_measure_output( $attributes, 'inputPadding', 'padding' );
-		$css->render_border_styles( $attributes, 'inputBorderStyles' );
-		$css->add_property('color', $css->render_color( $attributes['inputColor'] ) );
-
-		if ( $attributes['inputBackgroundType'] === 'gradient' ) {
-			$css->add_property( 'background', $attributes['inputGradient'] );
-		} else {
-			$css->add_property( 'background', $css->render_color( $attributes['inputBackgroundColor'] ) );
-		}
-
-		$css->set_selector( '.kb-search' . $unique_id . ' .kb-search-input[type="text"]::placeholder' );
-		$css->add_property('color', $css->render_color( $attributes['inputPlaceholderColor'] ) );
-
-		$css->set_selector( '.kb-search' . $unique_id . ' .kb-search-input-wrapper' );
-		$css->render_measure_output( $attributes, 'inputMargin', 'margin' );
-
-		// SVG colors.
-		$css->set_selector( '.kb-search' . $unique_id . ' .kb-search-icon svg' );
-		if ( !empty( $attributes['inputIcon'] ) && 'fe' === substr( $attributes['inputIcon'], 0, 2 ) ) {
-			$css->add_property( 'stroke', $css->render_color( $attributes['inputIconColor'] ) );
-			$css->add_property( 'fill', 'none' );
-		} else {
-			$css->add_property( 'fill', $css->render_color( $attributes['inputIconColor'] ) );
-			$css->add_property( 'stroke', 'none' );
-		}
-
-		if( !empty($attributes['displayStyle'] ) && $attributes['displayStyle'] === 'modal' ) {
-			$css->set_selector( '.kb-search' . $unique_id . ' .kb-search-input-wrapper:hover .kb-search-icon svg' );
-		} else {
-			$css->set_selector( '.kb-search' . $unique_id . ':hover .kb-search-icon svg' );
-		}
-		if ( !empty( $attributes['inputIcon'] ) && 'fe' === substr( $attributes['inputIcon'], 0, 2 ) ) {
-			$css->add_property( 'stroke', $css->render_color( $attributes['inputIconHoverColor'] ) );
-			$css->add_property( 'fill', 'none' );
-		} else {
-			$css->add_property( 'fill', $css->render_color( $attributes['inputIconHoverColor'] ) );
-			$css->add_property( 'stroke', 'none' );
-		}
-
-		$css->set_selector( '.kb-search' . $unique_id . ' .kb-search-close-btn svg' );
-		if ( !empty( $attributes['closeIcon'] ) && 'fe' === substr( $attributes['closeIcon'], 0, 2 ) ) {
-			$css->add_property( 'stroke', $css->render_color( $attributes['closeIconColor'] ) );
-			$css->add_property( 'fill', 'none' );
-		} else {
-			$css->add_property( 'fill', $css->render_color( $attributes['closeIconColor'] ) );
-			$css->add_property( 'stroke', 'none' );
-		}
-
-		// The closeIconSize is a range control, so we need to render it as a range.
-		$css->set_selector( '.kb-search' . $unique_id . ' .kb-search-close-btn' );
-		if( !empty( $attributes['closeIconSize'][0] )) {
-			$css->add_property( 'font-size', $attributes['closeIconSize'][0]. 'px' );
-		}
-		if( !empty( $attributes['closeIconSize'][1] )) {
-			$css->set_media_state('tablet');
-			$css->add_property( 'font-size', $attributes['closeIconSize'][1]. 'px' );
-			$css->set_media_state('desktop');
-		}
-		if( !empty( $attributes['closeIconSize'][2] )) {
-			$css->set_media_state('mobile');
-			$css->add_property( 'font-size', $attributes['closeIconSize'][2]. 'px' );
-			$css->set_media_state('desktop');
-		}
-
-		$css->set_selector( '.kb-search' . $unique_id . ' .kb-search-close-btn:hover svg' );
-		if ( !empty( $attributes['closeIcon'] ) && 'fe' === substr( $attributes['closeIcon'], 0, 2 ) ) {
-			$css->add_property( 'stroke', $css->render_color( $attributes['closeIconHoverColor'] ) );
-			$css->add_property( 'fill', 'none' );
-		} else {
-			$css->add_property( 'fill', $css->render_color( $attributes['closeIconHoverColor'] ) );
-			$css->add_property( 'stroke', 'none' );
-		}
-
-		$css->set_selector( '.kb-search.kb-search' . $unique_id . ' form, .kb-search.kb-search' . $unique_id . ' .kb-search-modal-content form form' );
-		$css->render_responsive_range( $attributes, 'inputMaxWidth', 'max-width', 'inputMaxWidthType' );
-		$css->render_responsive_range( $attributes, 'inputMinWidth', 'min-width', 'inputMinWidthType' );
-
-		return $css->css_output();
+		return $builder->build( $attributes, $css, $unique_id, $unique_style_id );
 	}
 
 	/**

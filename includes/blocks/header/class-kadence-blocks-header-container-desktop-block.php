@@ -78,10 +78,14 @@ class Kadence_Blocks_Header_Container_Desktop_Block extends Kadence_Blocks_Abstr
 	 * @param string $unique_style_id the blocks alternate ID for queries.
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
+		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-header-container-desktop-css.php';
 
-		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
+		$bridge  = function ( $member, ...$args ) {
+			return method_exists( $this, $member ) ? $this->$member( ...$args ) : $this->$member;
+		};
+		$builder = new Kadence_Blocks_Header_Container_Desktop_Css( new Kadence_Blocks_Css_Block_Context( $this->block_name, $bridge ) );
 
-		return $css->css_output();
+		return $builder->build( $attributes, $css, $unique_id, $unique_style_id );
 	}
 	/**
 	 * The innerblocks are stored on the $content variable. We just wrap with our data, if needed

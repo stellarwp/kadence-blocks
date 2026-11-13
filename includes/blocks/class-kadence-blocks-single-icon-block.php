@@ -60,40 +60,14 @@ class Kadence_Blocks_Single_Icon_Block extends Kadence_Blocks_Abstract_Block imp
 	 * @param string $unique_style_id the blocks alternate ID for queries.
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
-		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
-		if ( isset( $attributes ) && is_array( $attributes ) ) {
-			$css->set_selector( '.kt-svg-item-' . $unique_id . ' .kb-svg-icon-wrap, .kt-svg-style-stacked.kt-svg-item-' . $unique_id . ' .kb-svg-icon-wrap' );
-			$css->render_color_output( $attributes, 'color', 'color' );
+		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-single-icon-css.php';
 
-			$css->render_responsive_size(
-				$attributes,
-				array(
-					'size',
-					'tabletSize',
-					'mobileSize',
-				),
-				'font-size'
-			);
+		$bridge  = function ( $member, ...$args ) {
+			return method_exists( $this, $member ) ? $this->$member( ...$args ) : $this->$member;
+		};
+		$builder = new Kadence_Blocks_Single_Icon_Css( new Kadence_Blocks_Css_Block_Context( $this->block_name, $bridge ) );
 
-			$css->render_measure_output( $attributes, 'margin', 'margin', array( 'unit_key' => 'marginUnit' ) );
-
-			if ( isset( $attributes['style'] ) && 'stacked' === $attributes['style'] ) {
-				$css->render_color_output( $attributes, 'background', 'background' );
-				$css->render_color_output( $attributes, 'border', 'border-color' );
-				$css->render_range( $attributes, 'borderWidth', 'border-width' );
-				$css->render_range( $attributes, 'borderRadius', 'border-radius', '%' );
-				$css->render_measure_output( $attributes, 'padding', 'padding', array( 'unit_key' => 'paddingUnit' ) );
-				$css->set_selector( '.kt-svg-item-' . $unique_id . ':hover .kb-svg-icon-wrap' );
-				$css->render_color_output( $attributes, 'hBackground', 'background' );
-				$css->render_color_output( $attributes, 'hBorder', 'border-color' );
-			}
-
-			// Hover.
-			$css->set_selector( '.kt-svg-item-' . $unique_id . ':hover .kb-svg-icon-wrap' );
-			$css->render_color_output( $attributes, 'hColor', 'color' );
-		}
-
-		return $css->css_output();
+		return $builder->build( $attributes, $css, $unique_id, $unique_style_id );
 	}
 	/**
 	 * Return dynamically generated HTML for block
