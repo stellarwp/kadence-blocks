@@ -815,6 +815,9 @@
  * order.
  */
 .kb-token-control__row:has(.kb-border-control__box) .kadence-token-field__trigger.components-button {
+	// An unset width renders no label or value, so the stripped-down trigger would collapse to 0px tall and
+	// could not be clicked. Match the 20px swatch beside it.
+	min-height: 20px;
 	padding: 0;
 	border: 0;
 	border-radius: 0;

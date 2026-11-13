@@ -85,16 +85,17 @@ describe('siteBorderDefaults', () => {
 	it('has no defaults without a site border', () => {
 		expect(siteBorderDefaults({}, 'borderStyle', responsive, 'Desktop')).toEqual({
 			width: undefined,
+			style: undefined,
 			color: undefined,
 		});
 	});
 
-	it('takes the width with its unit and the color of the first side the site sets', () => {
+	it('takes the width with its unit, the style and the color of the first side the site sets', () => {
 		const site = {
 			borderStyle: [
 				{
 					top: ['', '', ''],
-					right: ['#00ff00', 'solid', 3],
+					right: ['#00ff00', 'dashed', 3],
 					bottom: ['', '', ''],
 					left: ['', '', ''],
 					unit: 'em',
@@ -104,6 +105,7 @@ describe('siteBorderDefaults', () => {
 
 		expect(siteBorderDefaults(site, 'borderStyle', responsive, 'Desktop')).toEqual({
 			width: '3em',
+			style: 'dashed',
 			color: '#00ff00',
 		});
 	});
@@ -116,10 +118,12 @@ describe('siteBorderDefaults', () => {
 
 		expect(siteBorderDefaults(site, 'borderStyle', responsive, 'Mobile')).toEqual({
 			width: '4px',
+			style: 'solid',
 			color: '#000000',
 		});
 		expect(siteBorderDefaults(site, 'borderStyle', responsive, 'Desktop')).toEqual({
 			width: '2px',
+			style: 'solid',
 			color: '#000000',
 		});
 	});

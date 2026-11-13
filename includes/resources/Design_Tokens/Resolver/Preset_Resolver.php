@@ -412,6 +412,42 @@ final class Preset_Resolver {
 	}
 
 	/**
+	 * The flattened literals of some of the theme values a class-painted preset carries for display.
+	 *
+	 * The counterpart of resolve_literal() for the values the theme renders: an alias resolves through the
+	 * library's tokens, and a literal or per-side list passes through. A property whose value does not
+	 * resolve is omitted.
+	 *
+	 * @since 3.9.2
+	 *
+	 * @param string   $block      The block name.
+	 * @param string   $preset     The preset slug.
+	 * @param string   $slug       The token library slug.
+	 * @param string[] $properties The property keys to read.
+	 *
+	 * @return array<string, string|string[]> property => flattened literal.
+	 */
+	public function theme_literals( string $block, string $preset, string $slug, array $properties ): array {
+		$theme_values = $this->theme_values( $block, $preset, $slug );
+		$resolved     = $this->resolver->resolve( $slug );
+		$literals     = [];
+
+		foreach ( $properties as $property ) {
+			if ( ! isset( $theme_values[ $property ] ) ) {
+				continue;
+			}
+
+			$flat = $this->flatten( $theme_values[ $property ], $resolved );
+
+			if ( $flat !== null && $flat !== '' ) {
+				$literals[ $property ] = $flat;
+			}
+		}
+
+		return $literals;
+	}
+
+	/**
 	 * Whether a slug names a theme-discovered preset.
 	 *
 	 * @since 3.8.0

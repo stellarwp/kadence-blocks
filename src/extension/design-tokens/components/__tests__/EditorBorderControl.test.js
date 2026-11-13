@@ -164,6 +164,141 @@ describe('EditorBorderControl native <-> control value bridging', () => {
 	});
 
 	/**
+	 * An unset border reads as the preset's own style instead of `none`, so a preset that paints a solid
+	 * border starts the control from `solid`, and editing the width keeps that border visible.
+	 *
+	 * @since 3.9.2
+	 *
+	 * @return {void}
+	 */
+	it('starts an unset border from the preset style and keeps it when the width is edited', () => {
+		const { borderControl, onChange } = renderEditorBorderControl({
+			value: undefined,
+			defaultStyle: 'solid',
+		});
+
+		expect(borderControl.props.value).toEqual({ width: '', style: 'solid', color: '' });
+
+		act(() => {
+			borderControl.props.onChange({ width: '4px', style: 'solid', color: '' });
+		});
+
+		expect(onChange).toHaveBeenCalledWith([
+			{
+				top: ['', 'solid', 4],
+				right: ['', 'solid', 4],
+				bottom: ['', 'solid', 4],
+				left: ['', 'solid', 4],
+				unit: 'px',
+			},
+		]);
+	});
+
+	/**
+	 * A per-side default style applies to each side on its own, so an unset hover border follows the
+	 * resting style of every side rather than one side's style for all of them.
+	 *
+	 * @since 3.9.2
+	 *
+	 * @return {void}
+	 */
+	it('starts an unset border from a per-side default style', () => {
+		const { borderControl } = renderEditorBorderControl({
+			value: undefined,
+			defaultStyle: ['none', 'solid', 'solid', 'none'],
+		});
+
+		expect(borderControl.props.value.style).toEqual(['none', 'solid', 'solid', 'none']);
+	});
+
+	/**
+	 * An unset border whose default style differs per side opens unlinked, so every side shows its own
+	 * style; one default style for all sides keeps the linked view.
+	 *
+	 * @since 3.9.2
+	 *
+	 * @return {void}
+	 */
+	it('opens unlinked only when the per-side default styles differ', () => {
+		const mixed = renderEditorBorderControl({ value: undefined, defaultStyle: ['none', 'solid', 'solid', 'none'] });
+
+		expect(mixed.borderControl.props.isLinked).toBe(false);
+
+		const single = renderEditorBorderControl({ value: undefined, defaultStyle: 'solid' });
+
+		expect(single.borderControl.props.isLinked).toBe(true);
+	});
+
+	/**
+	 * Writing a width on a preset that paints a colored border also writes that color: an empty color on a
+	 * border with a width renders as transparent, which would hide the border the preset paints.
+	 *
+	 * @since 3.9.2
+	 *
+	 * @return {void}
+	 */
+	it('writes the preset color with a width so the border stays visible', () => {
+		const { borderControl, onChange } = renderEditorBorderControl({
+			value: undefined,
+			defaultStyle: 'solid',
+			defaultColor: '#2B6CB0',
+		});
+
+		act(() => {
+			borderControl.props.onChange({ width: '4px', style: 'solid', color: '' });
+		});
+
+		expect(onChange).toHaveBeenCalledWith([
+			{
+				top: ['#2B6CB0', 'solid', 4],
+				right: ['#2B6CB0', 'solid', 4],
+				bottom: ['#2B6CB0', 'solid', 4],
+				left: ['#2B6CB0', 'solid', 4],
+				unit: 'px',
+			},
+		]);
+	});
+
+	/**
+	 * A color the user picked always wins over the preset's, and a border with no width writes no color.
+	 *
+	 * @since 3.9.2
+	 *
+	 * @return {void}
+	 */
+	it('keeps a picked color over the preset color and writes none without a width', () => {
+		const { borderControl, onChange } = renderEditorBorderControl({
+			value: undefined,
+			defaultColor: '#2B6CB0',
+		});
+
+		act(() => {
+			borderControl.props.onChange({ width: '2px', style: 'solid', color: '#ff0000' });
+		});
+
+		expect(onChange).toHaveBeenLastCalledWith([expect.objectContaining({ top: ['#ff0000', 'solid', 2] })]);
+
+		act(() => {
+			borderControl.props.onChange({ width: '', style: 'solid', color: '' });
+		});
+
+		expect(onChange).toHaveBeenLastCalledWith([expect.objectContaining({ top: ['', 'solid', ''] })]);
+	});
+
+	/**
+	 * A stored style always wins over the preset's, so an explicit `dashed` is never replaced.
+	 *
+	 * @since 3.9.2
+	 *
+	 * @return {void}
+	 */
+	it('keeps a stored style over the preset style', () => {
+		const { borderControl } = renderEditorBorderControl({ defaultStyle: 'dotted' });
+
+		expect(borderControl.props.value.style).toEqual(['solid', 'dashed', 'dotted', 'double']);
+	});
+
+	/**
 	 * Changing a width slot writes the native shape back with the other three sides' width, style,
 	 * and color intact — the round-trip must be lossless for a representative value.
 	 *

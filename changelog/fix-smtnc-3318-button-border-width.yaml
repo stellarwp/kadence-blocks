@@ -1,0 +1,4 @@
+significance: patch
+type: fix
+entry: Fixed the Buttons (Adv) border controls not matching the button when a preset such as Outline is selected. The width field was empty and not clickable, and the style and color read as none, so changing the width hid the border.
+timestamp: 2026-11-13T00:00:00.000Z

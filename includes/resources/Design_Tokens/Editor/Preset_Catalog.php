@@ -9,6 +9,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Preset_Bindings;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Presets;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Unknown_Preset_Exception;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Alias;
 
 /**
  * Builds the per-library preset catalog the block editor's preset picker, "save as new preset" form, and
@@ -161,7 +162,7 @@ final class Preset_Catalog {
 				// declaration says there is none.
 				'presets'    => $bindings->label === null ? [] : $this->preset_options( $block, $slug, $names ),
 				'properties' => $this->properties_for( $bindings ),
-				'values'     => $this->values_for( $block, $slug, $names ),
+				'values'     => $this->values_for( $block, $slug, $names, $bindings ),
 				'references' => $this->references_for( $block, $slug, $names ),
 				'responsive' => $this->responsive_for( $block, $slug, $names ),
 				'overridden' => $this->overridden_for( $block, $slug, $names ),
@@ -253,27 +254,84 @@ final class Preset_Catalog {
 	 * a joined string, so the editor's compare and the control's inherited-default display read each corner
 	 * on its own — a joined shorthand is not parseable as a single length.
 	 *
+	 * A class-painted preset's border comes from its theme values instead, see theme_borders().
+	 *
 	 * @since 3.8.0
 	 *
-	 * @param string   $block The block name.
-	 * @param string   $slug  The token library slug.
-	 * @param string[] $names The preset slugs to resolve, in catalog order.
+	 * @param string          $block    The block name.
+	 * @param string          $slug     The token library slug.
+	 * @param string[]        $names    The preset slugs to resolve, in catalog order.
+	 * @param Preset_Bindings $bindings The block's preset bindings.
 	 *
 	 * @return array<string, array<string, string|string[]>> preset slug => ( property => literal value or
 	 *                                                       per-corner slot list ).
 	 */
-	private function values_for( string $block, string $slug, array $names ): array {
+	private function values_for( string $block, string $slug, array $names, Preset_Bindings $bindings ): array {
 		$values = [];
 
 		foreach ( $names as $name ) {
 			try {
-				$values[ $name ] = $this->presets->resolve_literal( $block, $name, $slug );
+				$values[ $name ] = $this->presets->resolve_literal( $block, $name, $slug ) + $this->theme_borders( $block, $name, $slug, $bindings );
 			} catch ( Unknown_Preset_Exception $e ) {
 				continue; // Preset undefined in this library — skip, fail soft.
 			}
 		}
 
 		return $values;
+	}
+
+	/**
+	 * The border a class-painted preset renders (width, style and color), for the editor's border control to
+	 * start from.
+	 *
+	 * A class-painted preset stores no tokens of its own (its look is its class), so its border would resolve
+	 * to nothing: the width field would render empty and collapse, and the style and color would read as unset
+	 * while the button paints a border. The theme values it carries for display hold what the class paints;
+	 * a uniform per-side list is returned as the single value a border field takes.
+	 *
+	 * The color is the one exception to this map's flattened literals: a color the theme sets as a token alias
+	 * stays that alias (when it resolves), because the editor writes it into the block with a width and a
+	 * literal there would stop following the theme's button color. The color control shows an alias as its
+	 * default and compares it as stored, the same as a color picked from the token list.
+	 *
+	 * @since 3.9.2
+	 *
+	 * @param string          $block    The block name.
+	 * @param string          $preset   The preset slug.
+	 * @param string          $slug     The token library slug.
+	 * @param Preset_Bindings $bindings The block's preset bindings.
+	 *
+	 * @return array<string, string> property => value, empty for a preset not painted by a class.
+	 */
+	private function theme_borders( string $block, string $preset, string $slug, Preset_Bindings $bindings ): array {
+		if ( $this->presets->theme_class( $block, $preset, $slug ) === '' ) {
+			return [];
+		}
+
+		$properties = [];
+
+		foreach ( $bindings->bindings as $property => $binding ) {
+			if ( in_array( $binding->axis(), [ 'border-width', 'border-style', 'border-color' ], true ) ) {
+				$properties[] = (string) $property;
+			}
+		}
+
+		$theme_values = $this->presets->theme_values( $block, $preset, $slug );
+		$borders      = [];
+
+		foreach ( $this->presets->theme_literals( $block, $preset, $slug, $properties ) as $property => $value ) {
+			$value = is_array( $value ) && count( array_unique( $value ) ) === 1 ? reset( $value ) : $value;
+
+			if ( $bindings->bindings[ $property ]->axis() === 'border-color' && Alias::is_alias( $theme_values[ $property ] ) ) {
+				$value = $theme_values[ $property ];
+			}
+
+			if ( is_string( $value ) ) {
+				$borders[ $property ] = $value;
+			}
+		}
+
+		return $borders;
 	}
 
 	/**
