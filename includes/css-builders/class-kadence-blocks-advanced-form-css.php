@@ -12,55 +12,33 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since TBD
  */
-final class Kadence_Blocks_Advanced_Form_Css {
+final class Kadence_Blocks_Advanced_Form_Css extends Kadence_Blocks_Css_Block_Builder {
 
 	/**
-	 * What this builder needs from the block.
+	 * Whether the block has CSS to build.
 	 *
 	 * @since TBD
 	 *
-	 * @var Kadence_Blocks_Css_Block_Context
-	 */
-	private $context;
-
-	/**
-	 * Create the builder.
+	 * @param array $attributes The block attributes.
 	 *
-	 * @since TBD
-	 *
-	 * @param Kadence_Blocks_Css_Block_Context $context What this builder needs from the block.
+	 * @return bool
 	 */
-	public function __construct( Kadence_Blocks_Css_Block_Context $context ) {
-		$this->context = $context;
+	protected function applies( $attributes ): bool {
+		return isset( $attributes['id'] );
 	}
 
 	/**
-	 * Build the block CSS.
+	 * Values worked out once from the attributes, for the sections to read.
 	 *
 	 * @since TBD
 	 *
-	 * @param array                                     $attributes      The block attributes.
-	 * @param Kadence_Blocks_CSS|Kadence_Blocks_Pro_CSS $css             The CSS builder.
-	 * @param string                                    $unique_id       The block unique id.
-	 * @param string                                    $unique_style_id The unique id used for the style handle.
+	 * @param array  $attributes The block attributes.
+	 * @param string $unique_id The block unique id.
 	 *
-	 * @return string|null
+	 * @return array
 	 */
-	public function build( $attributes, $css, $unique_id, $unique_style_id ) {
-		if ( ! isset( $attributes['id'] ) ) {
-			return null;
-		}
-
-		$settings = Kadence_Blocks_Advanced_Form_Settings::from_post_attributes( $this->context->call( 'get_form_attributes', $attributes['id'] ) );
-		$input    = new Kadence_Blocks_Css_Build_Input( $attributes, $css, $unique_id, $unique_style_id, $this->context, [ 'settings' => $settings ] );
-
-		$css->set_style_id( 'kb-' . $this->context->block_name() . $unique_style_id );
-
-		foreach ( $this->sections() as $section ) {
-			$section->write( $input );
-		}
-
-		return $css->css_output();
+	protected function derived( $attributes, $unique_id ): array {
+		return [ 'settings' => Kadence_Blocks_Advanced_Form_Settings::from_post_attributes( $this->context->call( 'get_form_attributes', $attributes['id'] ) ) ];
 	}
 
 	/**
@@ -72,7 +50,7 @@ final class Kadence_Blocks_Advanced_Form_Css {
 	 *
 	 * @return Kadence_Blocks_Css_Section[]
 	 */
-	private function sections(): array {
+	protected function sections(): array {
 		return array_merge(
 			$this->container_sections(),
 			$this->field_sections(),

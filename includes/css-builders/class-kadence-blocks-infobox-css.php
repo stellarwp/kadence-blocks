@@ -12,61 +12,24 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since TBD
  */
-final class Kadence_Blocks_Infobox_Css {
+final class Kadence_Blocks_Infobox_Css extends Kadence_Blocks_Css_Block_Builder {
 
 	/**
-	 * What this builder needs from the block.
+	 * Values worked out once from the attributes, for the sections to read.
 	 *
 	 * @since TBD
 	 *
-	 * @var Kadence_Blocks_Css_Block_Context
+	 * @param array  $attributes The block attributes.
+	 * @param string $unique_id The block unique id.
+	 *
+	 * @return array
 	 */
-	private $context;
-
-	/**
-	 * Create the builder.
-	 *
-	 * @since TBD
-	 *
-	 * @param Kadence_Blocks_Css_Block_Context $context What this builder needs from the block.
-	 */
-	public function __construct( Kadence_Blocks_Css_Block_Context $context ) {
-		$this->context = $context;
-	}
-
-	/**
-	 * Build the block CSS.
-	 *
-	 * @since TBD
-	 *
-	 * @param array                                     $attributes      The block attributes.
-	 * @param Kadence_Blocks_CSS|Kadence_Blocks_Pro_CSS $css             The CSS builder.
-	 * @param string                                    $unique_id       The block unique id.
-	 * @param string                                    $unique_style_id The unique id used for the style handle.
-	 *
-	 * @return string|null
-	 */
-	public function build( $attributes, $css, $unique_id, $unique_style_id ) {
-		$input = new Kadence_Blocks_Css_Build_Input(
-			$attributes,
-			$css,
-			$unique_id,
-			$unique_style_id,
-			$this->context,
-			[
-				'base'      => ! empty( $attributes['kbVersion'] ) && $attributes['kbVersion'] > 1 ? '.kt-info-box' . $unique_id : '#kt-info-box' . $unique_id,
-				'title_tag' => ( new Kadence_Blocks_Infobox_Title_Tag() )->resolve( $attributes, $this->context ),
-				'media'     => new Kadence_Blocks_Infobox_Media( $attributes ),
-			]
-		);
-
-		$css->set_style_id( 'kb-' . $this->context->block_name() . $unique_style_id );
-
-		foreach ( $this->sections() as $section ) {
-			$section->write( $input );
-		}
-
-		return $css->css_output();
+	protected function derived( $attributes, $unique_id ): array {
+		return [
+			'base'      => ! empty( $attributes['kbVersion'] ) && $attributes['kbVersion'] > 1 ? '.kt-info-box' . $unique_id : '#kt-info-box' . $unique_id,
+			'title_tag' => ( new Kadence_Blocks_Infobox_Title_Tag() )->resolve( $attributes, $this->context ),
+			'media'     => new Kadence_Blocks_Infobox_Media( $attributes ),
+		];
 	}
 
 	/**
@@ -78,7 +41,7 @@ final class Kadence_Blocks_Infobox_Css {
 	 *
 	 * @return Kadence_Blocks_Css_Section[]
 	 */
-	private function sections(): array {
+	protected function sections(): array {
 		return array_merge(
 			$this->container_sections(),
 			$this->media_sections(),

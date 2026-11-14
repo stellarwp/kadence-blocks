@@ -28,11 +28,12 @@ final class Kadence_Blocks_Navigation_Link_Css extends Kadence_Blocks_Css_Block_
 	 *
 	 * @since TBD
 	 *
-	 * @param array $attributes The block attributes.
+	 * @param array  $attributes The block attributes.
+	 * @param string $unique_id  The block unique id.
 	 *
 	 * @return array
 	 */
-	protected function derived( $attributes ): array {
+	protected function derived( $attributes, $unique_id ): array {
 		return [ 'ratio' => new Kadence_Blocks_Navigation_Link_Media_Ratio( $attributes ) ];
 	}
 

@@ -12,64 +12,36 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since TBD
  */
-final class Kadence_Blocks_Header_Css {
+final class Kadence_Blocks_Header_Css extends Kadence_Blocks_Css_Block_Builder {
 
 	/**
-	 * What this builder needs from the block.
+	 * Whether the block has CSS to build.
 	 *
 	 * @since TBD
 	 *
-	 * @var Kadence_Blocks_Css_Block_Context
-	 */
-	private $context;
-
-	/**
-	 * Create the builder.
+	 * @param array $attributes The block attributes.
 	 *
-	 * @since TBD
-	 *
-	 * @param Kadence_Blocks_Css_Block_Context $context What this builder needs from the block.
+	 * @return bool
 	 */
-	public function __construct( Kadence_Blocks_Css_Block_Context $context ) {
-		$this->context = $context;
+	protected function applies( $attributes ): bool {
+		return ! empty( $attributes['id'] );
 	}
 
 	/**
-	 * Build the block CSS.
+	 * Values worked out once from the attributes, for the sections to read.
 	 *
 	 * @since TBD
 	 *
-	 * @param array                                     $attributes      The block attributes.
-	 * @param Kadence_Blocks_CSS|Kadence_Blocks_Pro_CSS $css             The CSS builder.
-	 * @param string                                    $unique_id       The block unique id.
-	 * @param string                                    $unique_style_id The unique id used for the style handle.
+	 * @param array  $attributes The block attributes.
+	 * @param string $unique_id The block unique id.
 	 *
-	 * @return string|null
+	 * @return array
 	 */
-	public function build( $attributes, $css, $unique_id, $unique_style_id ) {
-		if ( empty( $attributes['id'] ) ) {
-			return;
-		}
-
-		$input = new Kadence_Blocks_Css_Build_Input(
-			$attributes,
-			$css,
-			$unique_id,
-			$unique_style_id,
-			$this->context,
-			[
-				'post'        => $this->post_attributes()->for_post( $attributes['id'] ),
-				'environment' => new Kadence_Blocks_Header_Site_Environment(),
-			]
-		);
-
-		$css->set_style_id( 'kb-' . $this->context->block_name() . $unique_style_id );
-
-		foreach ( $this->sections() as $section ) {
-			$section->write( $input );
-		}
-
-		return $css->css_output();
+	protected function derived( $attributes, $unique_id ): array {
+		return [
+			'post'        => $this->post_attributes()->for_post( $attributes['id'] ),
+			'environment' => new Kadence_Blocks_Header_Site_Environment(),
+		];
 	}
 
 	/**
@@ -81,7 +53,7 @@ final class Kadence_Blocks_Header_Css {
 	 *
 	 * @return Kadence_Blocks_Css_Section[]
 	 */
-	private function sections(): array {
+	protected function sections(): array {
 		return [
 			new Kadence_Blocks_Css_Derived_Scope_Section(
 				'post',

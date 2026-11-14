@@ -46,11 +46,12 @@ final class Kadence_Blocks_Spacer_Css extends Kadence_Blocks_Css_Block_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $attributes The block attributes.
+	 * @param array  $attributes The block attributes.
+	 * @param string $unique_id  The block unique id.
 	 *
 	 * @return array
 	 */
-	protected function derived( $attributes ): array {
+	protected function derived( $attributes, $unique_id ): array {
 		return [ 'width_units' => Kadence_Blocks_Spacer_Width_Units::resolve( $attributes ) ];
 	}
 

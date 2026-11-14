@@ -19,11 +19,12 @@ final class Kadence_Blocks_Videopopup_Css extends Kadence_Blocks_Css_Block_Build
 	 *
 	 * @since TBD
 	 *
-	 * @param array $attributes The block attributes.
+	 * @param array  $attributes The block attributes.
+	 * @param string $unique_id  The block unique id.
 	 *
 	 * @return array
 	 */
-	protected function derived( $attributes ): array {
+	protected function derived( $attributes, $unique_id ): array {
 		return [ 'environment' => new Kadence_Blocks_Videopopup_Site_Environment() ];
 	}
 

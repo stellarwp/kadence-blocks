@@ -64,11 +64,12 @@ final class Kadence_Blocks_Tabs_Css extends Kadence_Blocks_Css_Block_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $attributes The block attributes.
+	 * @param array  $attributes The block attributes.
+	 * @param string $unique_id  The block unique id.
 	 *
 	 * @return array
 	 */
-	protected function derived( $attributes ): array {
+	protected function derived( $attributes, $unique_id ): array {
 		return array_merge( Kadence_Blocks_Tabs_Layouts::resolve( $attributes ), [ 'gap' => Kadence_Blocks_Tabs_Gap::resolve( $attributes ) ] );
 	}
 

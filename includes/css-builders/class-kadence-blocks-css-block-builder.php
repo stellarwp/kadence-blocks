@@ -50,7 +50,11 @@ abstract class Kadence_Blocks_Css_Block_Builder {
 	 * @return string|null
 	 */
 	public function build( $attributes, $css, $unique_id, $unique_style_id ) {
-		$input = new Kadence_Blocks_Css_Build_Input( $attributes, $css, $unique_id, $unique_style_id, $this->context, $this->derived( $attributes ) );
+		if ( ! $this->applies( $attributes ) ) {
+			return null;
+		}
+
+		$input = new Kadence_Blocks_Css_Build_Input( $attributes, $css, $unique_id, $unique_style_id, $this->context, $this->derived( $attributes, $unique_id ) );
 
 		$css->set_style_id( 'kb-' . $this->context->block_name() . $unique_style_id );
 
@@ -62,15 +66,29 @@ abstract class Kadence_Blocks_Css_Block_Builder {
 	}
 
 	/**
-	 * Values worked out once from the attributes, for the sections to read with `$input->derived()`.
+	 * Whether the block has CSS to build. Blocks that read their settings from a post need the id of that post.
 	 *
 	 * @since TBD
 	 *
 	 * @param array $attributes The block attributes.
 	 *
+	 * @return bool
+	 */
+	protected function applies( $attributes ): bool {
+		return true;
+	}
+
+	/**
+	 * Values worked out once from the attributes, for the sections to read with `$input->derived()`.
+	 *
+	 * @since TBD
+	 *
+	 * @param array  $attributes The block attributes.
+	 * @param string $unique_id  The block unique id.
+	 *
 	 * @return array
 	 */
-	protected function derived( $attributes ): array {
+	protected function derived( $attributes, $unique_id ): array {
 		return [];
 	}
 
