@@ -8,10 +8,10 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Calls the helper methods of one block, or reads its properties, for a CSS builder, whatever their visibility.
+ * Calls the public helper methods of one block for a CSS builder.
  *
- * Blocks keep most of their helpers protected or private. This class is the one place that reaches them, so builders do
- * not need the block to expose its helpers to everything else, and the block does not need a closure to do it.
+ * Builders only use what a block exposes publicly; there is no reflection, so a helper a builder needs must be a
+ * public method of the block. Asking for anything else fails loudly.
  *
  * @since TBD
  */
@@ -52,79 +52,35 @@ final class Kadence_Blocks_Css_Block_Bridge {
 	}
 
 	/**
-	 * Call a helper method of the block, or read a property of it when it has no such method.
+	 * Call a public helper method of the block.
 	 *
 	 * @since TBD
 	 *
-	 * @param string  $member    The helper method or property name.
-	 * @param mixed[] $arguments The arguments of the helper. A property is read without them.
+	 * @param string  $member    The helper method name.
+	 * @param mixed[] $arguments The arguments of the helper.
 	 *
-	 * @throws BadMethodCallException When the block has neither.
+	 * @throws BadMethodCallException When the block has no public method of that name.
 	 *
 	 * @return mixed
 	 */
 	public function call( $member, array $arguments = [] ) {
-		if ( is_callable( [ $this->block, $member ] ) ) {
-			return $this->block->$member( ...$arguments );
+		if ( ! $this->has( $member ) ) {
+			throw new BadMethodCallException( sprintf( '%s has no public helper method named %s.', get_class( $this->block ), $member ) );
 		}
 
-		if ( method_exists( $this->block, $member ) ) {
-			return $this->method( $member )->invokeArgs( $this->block, $arguments );
-		}
-
-		return $this->property( $member );
+		return $this->block->$member( ...$arguments );
 	}
 
 	/**
-	 * Whether the block has a helper method or a property, of any visibility.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $member The helper method or property name.
-	 *
-	 * @return bool
-	 */
-	public function has( $member ): bool {
-		return method_exists( $this->block, $member ) || property_exists( $this->block, $member );
-	}
-
-	/**
-	 * The reflection of a helper method that is not public.
+	 * Whether the block has a public helper method of that name.
 	 *
 	 * @since TBD
 	 *
 	 * @param string $member The helper method name.
 	 *
-	 * @return ReflectionMethod
+	 * @return bool
 	 */
-	private function method( $member ): ReflectionMethod {
-		$method = new ReflectionMethod( $this->block, $member );
-
-		$method->setAccessible( true );
-
-		return $method;
-	}
-
-	/**
-	 * Read a property of the block, of any visibility.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $member The property name.
-	 *
-	 * @throws BadMethodCallException When the block has no such property.
-	 *
-	 * @return mixed
-	 */
-	private function property( $member ) {
-		if ( ! property_exists( $this->block, $member ) ) {
-			throw new BadMethodCallException( sprintf( '%s has no helper method or property named %s.', get_class( $this->block ), $member ) );
-		}
-
-		$property = new ReflectionProperty( $this->block, $member );
-
-		$property->setAccessible( true );
-
-		return $property->getValue( $this->block );
+	public function has( $member ): bool {
+		return is_callable( [ $this->block, $member ] );
 	}
 }

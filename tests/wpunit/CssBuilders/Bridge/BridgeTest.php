@@ -9,25 +9,19 @@ use Kadence_Blocks_Css_Block_Context;
 use Tests\Support\Classes\TestCase;
 
 /**
- * The bridge lets builders call the helpers of a block, whatever their visibility.
+ * The bridge lets builders call the public helpers of a block and refuses everything else.
  */
 final class BridgeTest extends TestCase {
 
 	/**
-	 * A helper is called with its arguments and its result comes back, for every visibility.
-	 *
-	 * @dataProvider helperProvider
-	 *
-	 * @param string  $member    The helper.
-	 * @param mixed[] $arguments The arguments.
-	 * @param string  $expected  The result.
+	 * A public helper is called with its arguments and its result comes back.
 	 *
 	 * @return void
 	 */
-	public function testCallsHelpersOfEveryVisibility( string $member, array $arguments, string $expected ): void {
+	public function testCallsPublicHelpers(): void {
 		$bridge = new Kadence_Blocks_Css_Block_Bridge( new Fake_Block() );
 
-		$this->assertSame( $expected, $bridge->call( $member, $arguments ) );
+		$this->assertSame( 'public x', $bridge->call( 'public_helper', [ 'x' ] ) );
 	}
 
 	/**
@@ -40,64 +34,47 @@ final class BridgeTest extends TestCase {
 		$context = new Kadence_Blocks_Css_Block_Context( 'fake', new Kadence_Blocks_Css_Block_Bridge( $block ) );
 
 		$this->assertTrue( is_callable( new Kadence_Blocks_Css_Block_Bridge( $block ) ) );
-		$this->assertSame( 'protected a b', $context->call( 'protected_helper', 'a', 'b' ) );
-		$this->assertSame( [ 'protected:ab' ], $block->log );
+		$this->assertSame( 'public a', $context->call( 'public_helper', 'a' ) );
 	}
 
 	/**
-	 * Asking for a helper the block does not have fails loudly instead of returning nothing.
+	 * Asking for a helper the block does not have, or does not expose publicly, fails loudly instead of returning nothing.
+	 *
+	 * @dataProvider unavailableProvider
+	 *
+	 * @param string $member The helper.
 	 *
 	 * @return void
 	 */
-	public function testUnknownHelperThrows(): void {
+	public function testUnavailableHelperThrows( string $member ): void {
 		$this->expectException( BadMethodCallException::class );
-		$this->expectExceptionMessage( 'Tests\wpunit\CssBuilders\Bridge\Fake_Block has no helper method or property named missing.' );
+		$this->expectExceptionMessage( 'Tests\wpunit\CssBuilders\Bridge\Fake_Block has no public helper method named ' . $member . '.' );
 
-		( new Kadence_Blocks_Css_Block_Bridge( new Fake_Block() ) )->call( 'missing' );
+		( new Kadence_Blocks_Css_Block_Bridge( new Fake_Block() ) )->call( $member );
 	}
 
 	/**
-	 * A property of the block is read when it has no helper method of that name, whatever its visibility.
-	 *
-	 * @return void
-	 */
-	public function testReadsProperties(): void {
-		$bridge = new Kadence_Blocks_Css_Block_Bridge( new Fake_Block() );
-
-		$this->assertSame( [ 'one', 'two' ], $bridge->call( 'hidden_list' ) );
-		$this->assertTrue( $bridge->has( 'hidden_list' ) );
-	}
-
-	/**
-	 * The bridge tells which helpers the block has.
+	 * The bridge tells which public helpers the block has.
 	 *
 	 * @return void
 	 */
 	public function testHas(): void {
 		$bridge = new Kadence_Blocks_Css_Block_Bridge( new Fake_Block() );
 
-		$this->assertTrue( $bridge->has( 'private_helper' ) );
+		$this->assertTrue( $bridge->has( 'public_helper' ) );
+		$this->assertFalse( $bridge->has( 'protected_helper' ) );
+		$this->assertFalse( $bridge->has( 'private_helper' ) );
+		$this->assertFalse( $bridge->has( 'hidden_list' ) );
 		$this->assertFalse( $bridge->has( 'missing' ) );
 	}
 
 	/**
 	 * @return Generator
 	 */
-	public function helperProvider(): Generator {
-		yield 'public' => [
-			'member'    => 'public_helper',
-			'arguments' => [ 'x' ],
-			'expected'  => 'public x',
-		];
-		yield 'protected' => [
-			'member'    => 'protected_helper',
-			'arguments' => [ 'x', 'y' ],
-			'expected'  => 'protected x y',
-		];
-		yield 'private' => [
-			'member'    => 'private_helper',
-			'arguments' => [],
-			'expected'  => 'private',
-		];
+	public function unavailableProvider(): Generator {
+		yield 'missing' => [ 'member' => 'missing' ];
+		yield 'protected' => [ 'member' => 'protected_helper' ];
+		yield 'private' => [ 'member' => 'private_helper' ];
+		yield 'property' => [ 'member' => 'hidden_list' ];
 	}
 }

@@ -654,7 +654,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block imple
 	 *
 	 * @return void
 	 */
-	private function render_preset_spacing( Kadence_Blocks_CSS $css, array $attributes ): void {
+	public function render_preset_spacing( Kadence_Blocks_CSS $css, array $attributes ): void {
 		$resolved = $this->resolved_preset( $attributes );
 
 		if ( $resolved === null || $resolved['class'] !== '' ) {
@@ -698,7 +698,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block imple
 	 *
 	 * @return void
 	 */
-	private function render_preset_border( Kadence_Blocks_CSS $css, array $attributes ): void {
+	public function render_preset_border( Kadence_Blocks_CSS $css, array $attributes ): void {
 		$resolved = $this->resolved_preset( $attributes );
 
 		if ( $resolved === null || $resolved['class'] !== '' ) {

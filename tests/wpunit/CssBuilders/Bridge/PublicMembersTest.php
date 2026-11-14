@@ -37,9 +37,13 @@ final class PublicMembersTest extends KadenceBlocksTestCase {
 	 * @return string[]
 	 */
 	private function bridged_members( string $directory ): array {
-		preg_match_all( "/->call\(\s*'([a-z_0-9]+)'/", $this->source( $directory ), $found );
+		$source = $this->source( $directory );
 
-		return array_values( array_unique( $found[1] ) );
+		// Direct calls, and member names handed to a preset section, which calls them later.
+		preg_match_all( "/->call\(\s*'([A-Za-z_0-9]+)'/", $source, $direct );
+		preg_match_all( "/_Preset_Css\(\s*'([A-Za-z_0-9]+)'/", $source, $presets );
+
+		return array_values( array_unique( array_merge( $direct[1], $presets[1] ) ) );
 	}
 
 	/**

@@ -10,8 +10,8 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Gives a CSS builder the block name and access to the block's own helpers.
  *
- * Blocks keep their helpers protected. The block hands this class one bridge callable, created inside
- * the block, so builders can reach those helpers without the block exposing them to anything else.
+ * The block hands this class a bridge callable that calls the block's public helper methods, so builders never
+ * hold the block itself.
  *
  * @since TBD
  */
@@ -27,7 +27,7 @@ final class Kadence_Blocks_Css_Block_Context {
 	private $block_name;
 
 	/**
-	 * Calls a helper method or reads a property on the block.
+	 * Calls a public helper method on the block.
 	 *
 	 * @since TBD
 	 *
@@ -60,11 +60,11 @@ final class Kadence_Blocks_Css_Block_Context {
 	}
 
 	/**
-	 * Call one of the block's helper methods, or read one of its properties.
+	 * Call one of the block's public helper methods.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $member The helper method or property name.
+	 * @param string $member The helper method name.
 	 * @param mixed  ...$args Arguments passed to the helper.
 	 *
 	 * @return mixed
