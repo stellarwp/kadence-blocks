@@ -215,7 +215,6 @@ final class TestimonialsSectionsTest extends Testimonials_Test_Case {
 	 */
 	public function sectionProvider(): Generator {
 		// Data providers run before the tests are set up.
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/testimonials/loader.php';
 
 		yield 'min height of a device' => [
 			'section'    => new \Kadence_Blocks_Testimonials_Min_Height_Css( 'titleMinHeight', 1 ),
@@ -648,7 +647,6 @@ final class TestimonialsSectionsTest extends Testimonials_Test_Case {
 	 * @return Generator
 	 */
 	public function conditionProvider(): Generator {
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/testimonials/loader.php';
 
 		yield 'style in the list' => [
 			'condition'  => new \Kadence_Blocks_Testimonials_Style_Condition( [ 'bubble', 'inlineimage' ], true ),

@@ -23,7 +23,6 @@ final class SearchSectionsTest extends Free_Section_Test_Case {
 	 * @return void
 	 */
 	public function testFeatherCondition( $icon, bool $expected ): void {
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/search/loader.php';
 
 		$condition = new Kadence_Blocks_Search_Feather_Condition( 'icon' );
 

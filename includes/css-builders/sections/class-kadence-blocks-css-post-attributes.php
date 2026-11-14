@@ -7,7 +7,6 @@
 
 defined( 'ABSPATH' ) || exit;
 
-
 /**
  * Where the attributes of a post come from.
  *

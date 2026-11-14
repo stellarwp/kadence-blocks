@@ -46,7 +46,6 @@ final class FormSectionsTest extends Free_Section_Test_Case {
 
 		$this->calls = [];
 
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/form/loader.php';
 	}
 
 	/**
@@ -166,7 +165,6 @@ final class FormSectionsTest extends Free_Section_Test_Case {
 	 */
 	public function sectionProvider(): Generator {
 		// Data providers run before the tests are set up.
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/form/loader.php';
 
 		yield from $this->gapProvider();
 		yield from $this->fontProvider2();
@@ -465,7 +463,6 @@ final class FormSectionsTest extends Free_Section_Test_Case {
 	 * @return Generator
 	 */
 	public function conditionProvider(): Generator {
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/form/loader.php';
 
 		yield 'a field with a color' => [
 			'condition'  => new Kadence_Blocks_Form_Field_Style_Condition(),

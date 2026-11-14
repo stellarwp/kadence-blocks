@@ -92,7 +92,6 @@ final class SubmitSectionsTest extends Button_Test_Case {
 	 * @return void
 	 */
 	public function testBuilderUsesTheClassIdOfTheBlock(): void {
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-submit-css.php';
 
 		$context = new Kadence_Blocks_Css_Block_Context(
 			'submit',

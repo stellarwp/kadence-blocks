@@ -15,19 +15,6 @@ final class FormFieldsCssTest extends Entry_Build_Test_Case {
 	private const MOBILE = '@media all and (max-width: 767px)';
 
 	/**
-	 * Load the builders.
-	 *
-	 * @return void
-	 */
-	protected function setUp(): void {
-		parent::setUp();
-
-		foreach ( self::BUILDERS as $file ) {
-			require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-' . $file . '-css.php';
-		}
-	}
-
-	/**
 	 * The builders of the fields, with the file of the builder: the one the text, email, date and other fields share, and the captcha's.
 	 *
 	 * @var array<string, string>

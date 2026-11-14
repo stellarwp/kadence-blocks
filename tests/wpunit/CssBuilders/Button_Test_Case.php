@@ -25,9 +25,6 @@ abstract class Button_Test_Case extends Free_Section_Test_Case {
 
 		$this->calls = [];
 
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/sections/loader.php';
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/singlebtn/loader.php';
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/submit/loader.php';
 	}
 
 	/**

@@ -124,7 +124,6 @@ final class InfoboxSectionsTest extends Infobox_Test_Case {
 	 */
 	public function sectionProvider(): Generator {
 		// Data providers run before the tests are set up.
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/infobox/loader.php';
 
 		yield from $this->layoutProvider();
 		yield from $this->mediaProvider();
@@ -520,7 +519,6 @@ final class InfoboxSectionsTest extends Infobox_Test_Case {
 	 * @return Generator
 	 */
 	public function conditionProvider(): Generator {
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/infobox/loader.php';
 
 		yield 'learn more on the bottom' => [
 			'condition'  => new Kadence_Blocks_Infobox_Learn_More_Layout_Condition(),

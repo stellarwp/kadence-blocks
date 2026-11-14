@@ -27,7 +27,6 @@ final class PostsSectionsTest extends Free_Section_Test_Case {
 	protected function setUp(): void {
 		parent::setUp();
 
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-posts-css.php';
 	}
 
 	/**
@@ -143,7 +142,6 @@ final class PostsSectionsTest extends Free_Section_Test_Case {
 	 * @return Generator
 	 */
 	public function sectionProvider(): Generator {
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-posts-css.php';
 
 		$font = [
 			'size'          => [ 20, 18, 16 ],

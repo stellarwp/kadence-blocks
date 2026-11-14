@@ -7,8 +7,6 @@
 
 defined( 'ABSPATH' ) || exit;
 
-require_once __DIR__ . '/class-kadence-blocks-table-environment.php';
-
 /**
  * What the site offers the table.
  *

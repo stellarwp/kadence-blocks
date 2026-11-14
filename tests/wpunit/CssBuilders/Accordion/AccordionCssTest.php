@@ -43,7 +43,6 @@ final class AccordionCssTest extends Free_Section_Test_Case {
 	 * @return Generator
 	 */
 	public function accordionProvider(): Generator {
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-accordion-css.php';
 
 		yield 'an accordion with nothing saved' => [
 			'attributes' => [],

@@ -38,7 +38,6 @@ final class IconCssTest extends Entry_Build_Test_Case {
 	protected function setUp(): void {
 		parent::setUp();
 
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-icon-css.php';
 	}
 
 	/**
@@ -131,7 +130,6 @@ final class IconCssTest extends Entry_Build_Test_Case {
 	 * @return Generator
 	 */
 	public function itemsProvider(): Generator {
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/icon/loader.php';
 
 		yield 'a list of icons' => [
 			'attributes' => [ 'icons' => [ [ 'a' => 1 ], [ 'a' => 2 ] ] ],

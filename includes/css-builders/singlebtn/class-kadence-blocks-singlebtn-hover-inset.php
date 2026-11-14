@@ -7,12 +7,6 @@
 
 defined( 'ABSPATH' ) || exit;
 
-require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-css-section.php';
-require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-css-build-input.php';
-require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/sections/loader.php';
-require_once KADENCE_BLOCKS_PATH . 'includes/css-writers/loader.php';
-require_once __DIR__ . '/class-kadence-blocks-singlebtn-visible-shadow-condition.php';
-
 /**
  * Moves the hover shadow of a gradient button to its overlay when the shadow is an inset one.
  *

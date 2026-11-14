@@ -7,10 +7,6 @@
 
 defined( 'ABSPATH' ) || exit;
 
-require_once __DIR__ . '/class-kadence-blocks-css-block-context.php';
-require_once __DIR__ . '/class-kadence-blocks-css-section.php';
-require_once __DIR__ . '/class-kadence-blocks-css-build-input.php';
-
 /**
  * Builds the CSS of one block by writing its sections, in order, through the shared CSS builder.
  *

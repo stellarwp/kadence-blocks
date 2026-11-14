@@ -133,7 +133,6 @@ final class AdvancedheadingSectionsTest extends Advancedheading_Test_Case {
 	 * @return Generator
 	 */
 	public function conditionProvider(): Generator {
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/advancedheading/loader.php';
 
 		yield 'gradient needs both' => [
 			'condition'  => new Kadence_Blocks_Advancedheading_Text_Gradient_Condition(),
@@ -204,7 +203,6 @@ final class AdvancedheadingSectionsTest extends Advancedheading_Test_Case {
 	 * @return Generator
 	 */
 	public function sectionProvider(): Generator {
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/advancedheading/loader.php';
 
 		yield 'top margin with the unit' => [
 			'section'    => new Kadence_Blocks_Advancedheading_Top_Margin_Css(),

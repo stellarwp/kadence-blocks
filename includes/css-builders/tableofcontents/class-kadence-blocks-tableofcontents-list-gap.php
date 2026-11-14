@@ -7,9 +7,6 @@
 
 defined( 'ABSPATH' ) || exit;
 
-require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-css-section.php';
-require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-css-build-input.php';
-
 /**
  * Writes the gap under an entry and above its sub list for one device.
  *

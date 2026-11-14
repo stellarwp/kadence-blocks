@@ -7,8 +7,6 @@
 
 defined( 'ABSPATH' ) || exit;
 
-require_once __DIR__ . '/class-kadence-blocks-rowlayout-environment.php';
-
 /**
  * The environment of the site the code runs on.
  *

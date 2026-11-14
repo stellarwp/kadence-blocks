@@ -144,7 +144,6 @@ final class ColumnSectionsTest extends Column_Test_Case {
 	 * @return void
 	 */
 	private static function load_sections(): void {
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/column/loader.php';
 	}
 
 	/**

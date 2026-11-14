@@ -214,7 +214,6 @@ final class TabsSectionsTest extends Tabs_Test_Case {
 	 */
 	public function sectionProvider(): Generator {
 		// Data providers run before the tests are set up.
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/tabs/loader.php';
 
 		yield from $this->valueProvider();
 		yield from $this->verticalProvider();
@@ -540,7 +539,6 @@ final class TabsSectionsTest extends Tabs_Test_Case {
 	 * @return Generator
 	 */
 	public function conditionProvider(): Generator {
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/tabs/loader.php';
 
 		yield 'a border width' => [
 			'condition'  => new Kadence_Blocks_Tabs_Content_Border_Condition(),
@@ -753,7 +751,6 @@ final class TabsSectionsTest extends Tabs_Test_Case {
 	 * @return Generator
 	 */
 	public function googleFontProvider(): Generator {
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/tabs/loader.php';
 
 		$title    = Kadence_Blocks_Tabs_Google_Font_Css::class;
 		$subtitle = Kadence_Blocks_Tabs_Subtitle_Google_Font_Css::class;

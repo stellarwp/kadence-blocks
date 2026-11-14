@@ -33,7 +33,6 @@ final class ValueSectionsTest extends Free_Section_Test_Case {
 	 * @return Generator
 	 */
 	public function sectionProvider(): Generator {
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/sections/loader.php';
 
 		yield from $this->attributeProvider();
 		yield from $this->itemProvider();

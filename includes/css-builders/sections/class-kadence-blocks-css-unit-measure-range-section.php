@@ -7,9 +7,6 @@
 
 defined( 'ABSPATH' ) || exit;
 
-require_once __DIR__ . '/../class-kadence-blocks-css-section.php';
-require_once __DIR__ . '/../class-kadence-blocks-css-build-input.php';
-
 /**
  * Writes the sides of a range attribute, in the unit another attribute stores.
  *

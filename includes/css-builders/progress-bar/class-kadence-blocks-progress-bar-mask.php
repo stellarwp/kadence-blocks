@@ -7,12 +7,6 @@
 
 defined( 'ABSPATH' ) || exit;
 
-require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-css-section.php';
-require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-css-build-input.php';
-require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/sections/loader.php';
-require_once KADENCE_BLOCKS_PATH . 'includes/css-writers/loader.php';
-require_once __DIR__ . '/class-kadence-blocks-progress-bar-mask-size.php';
-
 /**
  * The mask of a bar made of masks: the image, how often it repeats and the size on every device.
  *

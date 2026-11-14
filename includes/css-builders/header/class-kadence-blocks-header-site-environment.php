@@ -7,8 +7,6 @@
 
 defined( 'ABSPATH' ) || exit;
 
-require_once __DIR__ . '/class-kadence-blocks-header-environment.php';
-
 /**
  * What the site offers the header: whether Kadence Blocks Pro is active.
  *

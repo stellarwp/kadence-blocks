@@ -28,7 +28,6 @@ final class WriterTest extends TestCase {
 	protected function setUp(): void {
 		parent::setUp();
 
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-writers/loader.php';
 		$this->css = new Kadence_Blocks_CSS();
 		$this->css->set_style_id( 'writer-test' );
 		$this->css->set_selector( '.a' );

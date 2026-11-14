@@ -7,9 +7,6 @@
 
 defined( 'ABSPATH' ) || exit;
 
-require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-css-section.php';
-require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-css-build-input.php';
-
 /**
  * Writes the font family, and loads it when it is a Google font.
  *

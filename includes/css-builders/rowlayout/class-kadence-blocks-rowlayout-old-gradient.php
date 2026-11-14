@@ -7,7 +7,6 @@
 
 defined( 'ABSPATH' ) || exit;
 
-
 /**
  * Puts together the old gradient of an overlay.
  *

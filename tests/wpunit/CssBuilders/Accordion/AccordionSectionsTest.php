@@ -141,7 +141,6 @@ final class AccordionSectionsTest extends Accordion_Test_Case {
 	 */
 	public function sectionProvider(): Generator {
 		// Data providers run before the tests are set up.
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/accordion/loader.php';
 
 		yield from $this->layoutProvider();
 		yield from $this->titleProvider();
@@ -299,7 +298,6 @@ final class AccordionSectionsTest extends Accordion_Test_Case {
 	 * @return Generator
 	 */
 	public function conditionProvider(): Generator {
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/accordion/loader.php';
 
 		yield 'a margin of the titles' => [
 			'condition'  => new Kadence_Blocks_Accordion_Title_Margin_Condition(),

@@ -7,7 +7,6 @@
 
 defined( 'ABSPATH' ) || exit;
 
-
 /**
  * Works out the HTML tag of the title of the info box.
  *

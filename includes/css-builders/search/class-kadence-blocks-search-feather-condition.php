@@ -7,9 +7,6 @@
 
 defined( 'ABSPATH' ) || exit;
 
-require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-css-build-input.php';
-require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/sections/loader.php';
-
 /**
  * Tells whether an icon attribute names a Feather icon, which is drawn with a stroke instead of a fill.
  *

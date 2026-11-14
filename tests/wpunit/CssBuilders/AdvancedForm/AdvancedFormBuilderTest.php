@@ -70,7 +70,6 @@ final class AdvancedFormBuilderTest extends TestCase {
 	 * @return Kadence_Blocks_Advanced_Form_Css
 	 */
 	private function builder( array $settings ): Kadence_Blocks_Advanced_Form_Css {
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-advanced-form-css.php';
 
 		$this->calls = [];
 

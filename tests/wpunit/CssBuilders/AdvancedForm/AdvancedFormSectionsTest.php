@@ -31,7 +31,6 @@ final class AdvancedFormSectionsTest extends Free_Section_Test_Case {
 	protected function setUp(): void {
 		parent::setUp();
 
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/advanced-form/loader.php';
 	}
 
 	/**
@@ -55,7 +54,6 @@ final class AdvancedFormSectionsTest extends Free_Section_Test_Case {
 	 * @return Generator
 	 */
 	public function sectionProvider(): Generator {
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/advanced-form/loader.php';
 
 		$shadow = [ true, '#123456', 0.5, '1', '2', '3', '4', false ];
 

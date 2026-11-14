@@ -200,7 +200,6 @@ final class RowlayoutSectionsTest extends Rowlayout_Test_Case {
 	 */
 	public function sectionProvider(): Generator {
 		// Data providers run before the tests are set up.
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/rowlayout/loader.php';
 
 		yield from $this->spacingProvider();
 		yield from $this->layoutProvider();

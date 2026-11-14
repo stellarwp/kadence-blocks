@@ -625,10 +625,10 @@
         "with_attributes": 1
     },
     "Kadence_Blocks_Css_Builders": {
-        "add_directory": 1,
+        "add_classmap": 2,
+        "autoload": 1,
         "build": 7,
-        "create": 3,
-        "directories": 0
+        "create": 3
     },
     "Kadence_Blocks_Css_Button_Background_Section": {
         "write": 1

@@ -36,7 +36,6 @@ abstract class Rowlayout_Test_Case extends Free_Section_Test_Case {
 		$this->calls   = [];
 		$this->answers = [];
 
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/rowlayout/loader.php';
 	}
 
 	/**
@@ -101,7 +100,6 @@ abstract class Rowlayout_Test_Case extends Free_Section_Test_Case {
 	 */
 	protected function environment( bool $generatepress = false, bool $theme = false, $width = null, bool $fse = false ): Kadence_Blocks_Rowlayout_Environment {
 		// Data providers build environments before the test is set up.
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/rowlayout/loader.php';
 
 		return new class( $generatepress, $theme, $width, $fse ) implements Kadence_Blocks_Rowlayout_Environment {
 

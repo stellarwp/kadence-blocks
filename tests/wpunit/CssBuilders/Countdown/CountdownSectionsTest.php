@@ -388,6 +388,5 @@ final class CountdownSectionsTest extends Free_Section_Test_Case {
 	 * @return void
 	 */
 	private function load(): void {
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/countdown/loader.php';
 	}
 }

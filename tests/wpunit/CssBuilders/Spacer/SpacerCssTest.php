@@ -45,7 +45,6 @@ final class SpacerCssTest extends Free_Section_Test_Case {
 	 * @return Generator
 	 */
 	public function spacerProvider(): Generator {
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-spacer-css.php';
 
 		yield 'a spacer with a height on every device' => [
 			'attributes' => [

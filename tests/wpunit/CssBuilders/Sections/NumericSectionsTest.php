@@ -33,7 +33,6 @@ final class NumericSectionsTest extends Free_Section_Test_Case {
 	 * @return Generator
 	 */
 	public function sectionProvider(): Generator {
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/sections/loader.php';
 
 		yield 'a number gets the unit' => [
 			'section'    => new Kadence_Blocks_Css_Numeric_Unit_Section( 'height', 'size', 'px' ),
@@ -98,7 +97,6 @@ final class NumericSectionsTest extends Free_Section_Test_Case {
 	 * @return void
 	 */
 	public function testCondition( $value, bool $expected ): void {
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/sections/loader.php';
 
 		$condition = new Kadence_Blocks_Css_Numeric_Attribute_Condition( 'size' );
 

@@ -7,7 +7,6 @@
 
 defined( 'ABSPATH' ) || exit;
 
-
 /**
  * The aspect ratio of the image of the media of the navigation link: either a preset or the one of the
  * saved image.

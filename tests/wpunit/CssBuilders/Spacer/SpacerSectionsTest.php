@@ -154,7 +154,6 @@ final class SpacerSectionsTest extends Spacer_Test_Case {
 	 * @return Generator
 	 */
 	public function sectionProvider(): Generator {
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/spacer/loader.php';
 
 		yield from $this->heightProvider();
 		yield from $this->dividerProvider();

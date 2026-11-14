@@ -24,7 +24,6 @@ final class ProgressBarTableSectionsTest extends Free_Section_Test_Case {
 	protected function setUp(): void {
 		parent::setUp();
 
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/sections/loader.php';
 	}
 
 	/**
@@ -46,7 +45,6 @@ final class ProgressBarTableSectionsTest extends Free_Section_Test_Case {
 	 * @return Generator
 	 */
 	public function sectionProvider(): Generator {
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/sections/loader.php';
 
 		$names = [ 'width', 'tabletWidth', 'mobileWidth' ];
 

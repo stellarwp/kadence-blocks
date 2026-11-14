@@ -7,63 +7,85 @@
 
 defined( 'ABSPATH' ) || exit;
 
-require_once __DIR__ . '/class-kadence-blocks-css-block-bridge.php';
-require_once __DIR__ . '/class-kadence-blocks-css-block-context.php';
-
 /**
- * Builds the CSS of a block with the builder class made for it.
+ * Builds the CSS of a block with the builder class made for it, and loads the builder classes on demand.
  *
- * A block's `build_css()` only names its builder and hands over what it was given. The builder file is found in the
- * registered directories, so Kadence Blocks Pro adds its own directory and its blocks work the same way.
+ * A block's `build_css()` only names its builder and hands over what it was given. Every plugin that has builder
+ * classes registers a generated class map (see bin/generate-css-classmap.php), so Kadence Blocks Pro adds its own and
+ * its blocks work the same way. Nothing in the builder folders requires anything: PHP asks this class for a file when
+ * it first meets a class.
  *
  * @since TBD
  */
 final class Kadence_Blocks_Css_Builders {
 
 	/**
-	 * The directories that hold builder files, in the order they are searched.
+	 * The registered class maps: each is a list of class names with their file, and the directory the files are in.
 	 *
 	 * @since TBD
 	 *
-	 * @var string[]
+	 * @var array<int, array{map: array<string, string>, base: string}>
 	 */
-	private static $directories = [];
+	private static $maps = [];
 
 	/**
-	 * Register a directory that holds builder files, named after their class: `class-kadence-blocks-spacer-css.php`.
+	 * Whether the autoloader is registered with PHP.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $directory The directory.
+	 * @var bool
+	 */
+	private static $registered = false;
+
+	/**
+	 * Register the class map of a plugin, so the classes it lists load on demand.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $classmap_file The generated class map file.
+	 * @param string $base          The directory the paths in the class map are relative to.
 	 *
 	 * @return void
 	 */
-	public static function add_directory( $directory ): void {
-		$directory = trailingslashit( $directory );
+	public static function add_classmap( $classmap_file, $base ): void {
+		self::$maps[] = [
+			'map'  => require $classmap_file,
+			'base' => trailingslashit( $base ),
+		];
 
-		if ( ! in_array( $directory, self::$directories, true ) ) {
-			self::$directories[] = $directory;
+		if ( ! self::$registered ) {
+			spl_autoload_register( [ self::class, 'autoload' ] );
+
+			self::$registered = true;
 		}
 	}
 
 	/**
-	 * The registered directories, the one of Kadence Blocks first.
+	 * Load the file of a class that a registered class map lists.
 	 *
 	 * @since TBD
 	 *
-	 * @return string[]
+	 * @param string $class_name The class PHP is looking for.
+	 *
+	 * @return void
 	 */
-	public static function directories(): array {
-		return array_merge( [ trailingslashit( KADENCE_BLOCKS_PATH ) . 'includes/css-builders/' ], self::$directories );
+	public static function autoload( $class_name ): void {
+		foreach ( self::$maps as $registered ) {
+			if ( isset( $registered['map'][ $class_name ] ) ) {
+				require_once $registered['base'] . $registered['map'][ $class_name ];
+
+				return;
+			}
+		}
 	}
 
 	/**
-	 * Build the CSS of a block.
+	 * Build the CSS of a block with its builder class.
 	 *
 	 * @since TBD
 	 *
 	 * @param string                                    $builder_class   The builder class.
-	 * @param object                                    $block           The block, whose helpers the builder may call.
+	 * @param object                                    $block           The block whose CSS is built.
 	 * @param string                                    $block_name      The block name without the namespace.
 	 * @param array                                     $attributes      The block attributes.
 	 * @param Kadence_Blocks_CSS|Kadence_Blocks_Pro_CSS $css             The CSS builder.
@@ -82,44 +104,18 @@ final class Kadence_Blocks_Css_Builders {
 	 * @since TBD
 	 *
 	 * @param string $builder_class The builder class.
-	 * @param object $block         The block, whose helpers the builder may call.
+	 * @param object $block         The block whose CSS is built.
 	 * @param string $block_name    The block name without the namespace.
 	 *
-	 * @throws RuntimeException When no registered directory holds the builder file.
+	 * @throws RuntimeException When no registered class map has the builder class.
 	 *
 	 * @return object
 	 */
 	public static function create( $builder_class, $block, $block_name ) {
-		self::load( $builder_class );
+		if ( ! class_exists( $builder_class ) ) {
+			throw new RuntimeException( sprintf( 'No CSS builder class %s in the registered class maps.', $builder_class ) );
+		}
 
 		return new $builder_class( new Kadence_Blocks_Css_Block_Context( $block_name, new Kadence_Blocks_Css_Block_Bridge( $block ) ) );
-	}
-
-	/**
-	 * Load the file of a builder class, unless it is loaded.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $builder_class The builder class.
-	 *
-	 * @throws RuntimeException When no registered directory holds the builder file.
-	 *
-	 * @return void
-	 */
-	private static function load( $builder_class ): void {
-		if ( class_exists( $builder_class, false ) ) {
-			return;
-		}
-
-		$file = 'class-' . strtolower( str_replace( '_', '-', $builder_class ) ) . '.php';
-
-		foreach ( self::directories() as $directory ) {
-			if ( is_file( $directory . $file ) ) {
-				require_once $directory . $file;
-				return;
-			}
-		}
-
-		throw new RuntimeException( sprintf( 'No CSS builder file %s in the registered directories.', $file ) );
 	}
 }

@@ -7,7 +7,6 @@
 
 defined( 'ABSPATH' ) || exit;
 
-
 /**
  * Names the CSS property of each side of a box, keyed by the position of the side in the saved list.
  *

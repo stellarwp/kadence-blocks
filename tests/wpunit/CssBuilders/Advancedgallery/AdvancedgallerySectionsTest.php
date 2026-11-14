@@ -144,7 +144,6 @@ final class AdvancedgallerySectionsTest extends Advancedgallery_Test_Case {
 	 */
 	public function sectionProvider(): Generator {
 		// Data providers run before the tests are set up.
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/advancedgallery/loader.php';
 
 		yield from $this->gutterProvider();
 		yield from $this->imageProvider();
@@ -405,7 +404,6 @@ final class AdvancedgallerySectionsTest extends Advancedgallery_Test_Case {
 	 * @return Generator
 	 */
 	public function conditionProvider(): Generator {
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/advancedgallery/loader.php';
 
 		yield 'a masonry gallery is one of the types' => [
 			'condition'  => new Kadence_Blocks_Advancedgallery_Type_Condition( [ 'masonry', 'grid' ] ),
@@ -562,7 +560,6 @@ final class AdvancedgallerySectionsTest extends Advancedgallery_Test_Case {
 	 * @return Generator
 	 */
 	public function settingsProvider(): Generator {
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/advancedgallery/loader.php';
 
 		yield 'a gallery with nothing saved' => [
 			'attributes' => [],
@@ -598,7 +595,6 @@ final class AdvancedgallerySectionsTest extends Advancedgallery_Test_Case {
 	 * @return Generator
 	 */
 	public function entryProvider(): Generator {
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/advancedgallery/loader.php';
 
 		yield 'the first shadow that was saved' => [
 			'attributes'    => [ 'shadow' => [ [ 'blur' => 3 ], [ 'blur' => 9 ] ] ],

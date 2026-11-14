@@ -127,7 +127,6 @@ final class ImageSectionsTest extends Image_Test_Case {
 	 * @return Generator
 	 */
 	public function unsavedProvider(): Generator {
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/image/loader.php';
 
 		yield 'a border width of a side that does not exist' => [
 			'section'    => new Kadence_Blocks_Image_Border_Width_Section( 'borderWidthDesktop' ),
@@ -151,7 +150,6 @@ final class ImageSectionsTest extends Image_Test_Case {
 	 */
 	public function sectionProvider(): Generator {
 		// Data providers run before the tests are set up.
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/image/loader.php';
 
 		yield from $this->basicProvider();
 		yield from $this->maskProvider();
@@ -386,7 +384,6 @@ final class ImageSectionsTest extends Image_Test_Case {
 	 * @return Generator
 	 */
 	public function conditionProvider(): Generator {
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/image/loader.php';
 
 		$aligned = new Kadence_Blocks_Image_Align_Condition( [ 'left', 'right' ], true );
 		$plain   = new Kadence_Blocks_Image_Align_Condition( [ 'wide', 'full' ], false );

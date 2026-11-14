@@ -24,8 +24,6 @@ final class TableRowDataCssTest extends Entry_Build_Test_Case {
 	protected function setUp(): void {
 		parent::setUp();
 
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-table-row-css.php';
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-table-data-css.php';
 	}
 
 	/**

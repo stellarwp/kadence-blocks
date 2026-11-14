@@ -485,7 +485,5 @@ final class ProgressBarSectionsTest extends ProgressBar_Test_Case {
 	 * @return void
 	 */
 	private function load(): void {
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/progress-bar/loader.php';
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/sections/loader.php';
 	}
 }

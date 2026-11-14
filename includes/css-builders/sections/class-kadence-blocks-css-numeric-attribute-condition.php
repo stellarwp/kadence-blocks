@@ -7,9 +7,6 @@
 
 defined( 'ABSPATH' ) || exit;
 
-require_once __DIR__ . '/class-kadence-blocks-css-input-condition.php';
-require_once __DIR__ . '/../class-kadence-blocks-css-build-input.php';
-
 /**
  * Tells whether an attribute is numeric.
  *

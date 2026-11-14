@@ -15,7 +15,6 @@ final class HeaderSectionCssTest extends Entry_Build_Test_Case {
 	 * @return void
 	 */
 	public function testSectionIsHiddenOnTablet(): void {
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-header-section-css.php';
 
 		$this->assertSameCss(
 			'.wp-block-kadence-header-desktopabc{display:block;}@media all and (max-width: 1024px){.wp-block-kadence-header-desktopabc{display:none;}}',

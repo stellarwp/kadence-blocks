@@ -7,7 +7,6 @@
 
 defined( 'ABSPATH' ) || exit;
 
-
 /**
  * The layout values of the column on one device, after falling back to the larger devices.
  *

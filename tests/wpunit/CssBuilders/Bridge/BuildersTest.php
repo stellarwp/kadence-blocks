@@ -8,12 +8,12 @@ use RuntimeException;
 use Tests\Support\Classes\TestCase;
 
 /**
- * The factory finds the builder file of a block, loads it and runs the builder with a context for the block.
+ * The factory loads the builder class of a block from a registered class map and runs it with a context for the block.
  */
 final class BuildersTest extends TestCase {
 
 	/**
-	 * A directory with a builder file, in the temporary directory.
+	 * A directory with a builder file and its class map, in the temporary directory.
 	 *
 	 * @var string
 	 */
@@ -35,14 +35,14 @@ final class BuildersTest extends TestCase {
 	}
 
 	/**
-	 * The builder file is found in a registered directory, and the builder gets the block name and the block helpers.
+	 * The builder class is loaded from a registered class map, and the builder gets the block name and the block helpers.
 	 *
 	 * @return void
 	 */
-	public function testBuildsWithTheBuilderOfARegisteredDirectory(): void {
+	public function testBuildsWithTheBuilderOfARegisteredClassMap(): void {
 		$class = $this->write_builder();
 
-		Kadence_Blocks_Css_Builders::add_directory( $this->directory );
+		Kadence_Blocks_Css_Builders::add_classmap( $this->directory . 'classmap.php', $this->directory );
 
 		$block  = new Fake_Block();
 		$result = Kadence_Blocks_Css_Builders::build( $class, $block, 'fake', [ 'a' => 1 ], new Kadence_Blocks_CSS(), 'abc', 'def' );
@@ -52,18 +52,14 @@ final class BuildersTest extends TestCase {
 	}
 
 	/**
-	 * A directory is only registered once, and the directory of Kadence Blocks is always searched first.
+	 * A class nobody mapped is left to the other autoloaders.
 	 *
 	 * @return void
 	 */
-	public function testDirectories(): void {
-		Kadence_Blocks_Css_Builders::add_directory( $this->directory );
-		Kadence_Blocks_Css_Builders::add_directory( rtrim( $this->directory, '/' ) );
+	public function testUnmappedClassesAreIgnored(): void {
+		Kadence_Blocks_Css_Builders::autoload( 'Kadence_Blocks_Never_Mapped' );
 
-		$directories = Kadence_Blocks_Css_Builders::directories();
-
-		$this->assertSame( KADENCE_BLOCKS_PATH . 'includes/css-builders/', $directories[0] );
-		$this->assertSame( 1, count( array_keys( $directories, $this->directory, true ) ) );
+		$this->assertFalse( class_exists( 'Kadence_Blocks_Never_Mapped', false ) );
 	}
 
 	/**
@@ -78,13 +74,13 @@ final class BuildersTest extends TestCase {
 	}
 
 	/**
-	 * A builder nobody registered fails with a message that names the file it looked for.
+	 * A builder no class map lists fails with a message that names the class.
 	 *
 	 * @return void
 	 */
 	public function testMissingBuilderThrows(): void {
 		$this->expectException( RuntimeException::class );
-		$this->expectExceptionMessage( 'No CSS builder file class-kadence-blocks-nothing-here-css.php in the registered directories.' );
+		$this->expectExceptionMessage( 'No CSS builder class Kadence_Blocks_Nothing_Here_Css in the registered class maps.' );
 
 		Kadence_Blocks_Css_Builders::create( 'Kadence_Blocks_Nothing_Here_Css', new Fake_Block(), 'nothing' );
 	}
@@ -111,6 +107,7 @@ final class %s {
 PHP;
 
 		file_put_contents( $file, sprintf( $code, $class ) );
+		file_put_contents( $this->directory . 'classmap.php', '<?php return [ \'' . $class . '\' => \'' . basename( $file ) . '\' ];' );
 
 		return $class;
 	}

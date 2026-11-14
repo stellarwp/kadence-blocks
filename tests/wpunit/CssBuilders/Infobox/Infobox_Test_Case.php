@@ -26,7 +26,6 @@ abstract class Infobox_Test_Case extends Free_Section_Test_Case {
 
 		$this->calls = [];
 
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/infobox/loader.php';
 	}
 
 	/**

@@ -7,9 +7,6 @@
 
 defined( 'ABSPATH' ) || exit;
 
-require_once __DIR__ . '/../class-kadence-blocks-css-section.php';
-require_once __DIR__ . '/../class-kadence-blocks-css-build-input.php';
-
 /**
  * Asks the block for its dynamic styles on desktop, then on tablet and then on mobile, and goes back to desktop.
  *

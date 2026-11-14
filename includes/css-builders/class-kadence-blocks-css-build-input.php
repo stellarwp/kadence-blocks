@@ -7,8 +7,6 @@
 
 defined( 'ABSPATH' ) || exit;
 
-require_once __DIR__ . '/class-kadence-blocks-css-block-context.php';
-
 /**
  * An immutable bundle of the block attributes, the CSS builder, the ids and the values derived while building.
  *

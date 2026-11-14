@@ -7,8 +7,6 @@
 
 defined( 'ABSPATH' ) || exit;
 
-require_once __DIR__ . '/class-kadence-blocks-videopopup-environment.php';
-
 /**
  * Looks the Pro video popup block up on the site.
  *

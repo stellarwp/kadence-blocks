@@ -21,7 +21,6 @@ final class IdentityCssTest extends Entry_Build_Test_Case {
 	protected function setUp(): void {
 		parent::setUp();
 
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-identity-css.php';
 	}
 
 	/**
@@ -101,7 +100,6 @@ final class IdentityCssTest extends Entry_Build_Test_Case {
 	 * @return Generator
 	 */
 	public function layoutProvider(): Generator {
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/identity/loader.php';
 
 		foreach ( [ 'logo-left', 'logo-right', 'logo-right-stacked', 'logo-left-stacked' ] as $layout ) {
 			yield $layout => [

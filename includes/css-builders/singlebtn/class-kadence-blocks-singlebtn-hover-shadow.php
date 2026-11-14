@@ -7,12 +7,6 @@
 
 defined( 'ABSPATH' ) || exit;
 
-require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-css-section.php';
-require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-css-build-input.php';
-require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/sections/loader.php';
-require_once KADENCE_BLOCKS_PATH . 'includes/css-writers/loader.php';
-require_once __DIR__ . '/class-kadence-blocks-singlebtn-visible-shadow-condition.php';
-
 /**
  * Writes the hover box shadow of a button: the editor shadow, or the preset hover shadow of a button
  * that paints its own shape.

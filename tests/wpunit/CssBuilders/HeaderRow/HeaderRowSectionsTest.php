@@ -40,7 +40,6 @@ final class HeaderRowSectionsTest extends Free_Section_Test_Case {
 	 * @return Generator
 	 */
 	public function sectionProvider(): Generator {
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/header-row/loader.php';
 
 		yield from $this->dimensionProvider();
 		yield from $this->backgroundProvider();
@@ -105,7 +104,6 @@ final class HeaderRowSectionsTest extends Free_Section_Test_Case {
 	 * @return void
 	 */
 	public function testSizedStylesAreAskedForEachSize(): void {
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/header-row/loader.php';
 
 		$calls   = [];
 		$css     = new Kadence_Blocks_CSS();

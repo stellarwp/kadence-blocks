@@ -7,8 +7,6 @@
 
 defined( 'ABSPATH' ) || exit;
 
-require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-css-block-context.php';
-
 /**
  * Builds the CSS for the header column block.
  *
@@ -53,7 +51,6 @@ final class Kadence_Blocks_Header_Column_Css {
 		$css->set_style_id( 'kb-' . $this->context->block_name() . $unique_style_id );
 
 		$css->set_selector( '.wp-block-kadence-header-column' . $unique_id );
-
 
 		return $css->css_output();
 	}

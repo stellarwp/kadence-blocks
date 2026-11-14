@@ -6,7 +6,7 @@ Every block's `build_css()` is one line:
 return Kadence_Blocks_Css_Builders::build( 'Kadence_Blocks_X_Css', $this, $this->block_name, $attributes, $css, $unique_id, $unique_style_id );
 ```
 
-`Kadence_Blocks_Css_Builders` loads the entry class (`class-<kebab-name>.php`) from the registered directories, wraps the
+`Kadence_Blocks_Css_Builders` loads the entry class on demand, wraps the
 block in `Kadence_Blocks_Css_Block_Context` (which reaches block members through `Kadence_Blocks_Css_Block_Bridge`),
 and calls the entry class `build()`. An entry class extends `Kadence_Blocks_Css_Block_Builder`, which owns the
 `build()` template (input, style id, write each section in order), and only declares `sections()` (and `derived()`
@@ -16,7 +16,10 @@ share an entry class, such as `Kadence_Blocks_Form_Field_Css` for the advanced f
 
 ## Updating Free and Pro in any order
 
-* Pro registers its own directory with `Kadence_Blocks_Css_Builders::add_directory()`.
+* Classes load through a generated class map, never through `require_once`: no file in `css-builders/` or `css-writers/`
+  requires anything. Each plugin registers its map with `Kadence_Blocks_Css_Builders::add_classmap()`. After adding,
+  moving or removing a class run `php bin/generate-css-classmap.php includes includes/css-builders/classmap.php css-builders css-writers`
+  (Pro: `... css-builders`); `ClassmapTest` fails when a map is stale.
 * Pro bundles a copy of the Free runtime classes in `kadence-blocks-pro/includes/css-runtime/`. Its autoloader
   (`Kadence_Blocks_Pro_Css_Runtime`) uses Free's file when it exists and the bundled copy otherwise, so old Free +
   new Pro works.

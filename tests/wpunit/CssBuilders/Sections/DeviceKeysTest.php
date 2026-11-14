@@ -19,7 +19,6 @@ final class DeviceKeysTest extends TestCase {
 	protected function setUp(): void {
 		parent::setUp();
 
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/sections/loader.php';
 	}
 
 	/**

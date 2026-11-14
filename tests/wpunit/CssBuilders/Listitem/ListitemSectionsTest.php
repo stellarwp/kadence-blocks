@@ -27,7 +27,6 @@ final class ListitemSectionsTest extends Free_Section_Test_Case {
 	protected function setUp(): void {
 		parent::setUp();
 
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/listitem/loader.php';
 	}
 
 	/**
@@ -120,7 +119,6 @@ final class ListitemSectionsTest extends Free_Section_Test_Case {
 	 * @return Generator
 	 */
 	public function conditionProvider(): Generator {
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/listitem/loader.php';
 
 		yield 'a style that is not the default' => [
 			'condition'  => new Kadence_Blocks_Listitem_Styled_Condition(),
@@ -158,7 +156,6 @@ final class ListitemSectionsTest extends Free_Section_Test_Case {
 	 * @return Generator
 	 */
 	public function sectionProvider(): Generator {
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/listitem/loader.php';
 
 		yield 'a number is the size of the icon' => [
 			'section'    => new Kadence_Blocks_Listitem_Size_Css(),

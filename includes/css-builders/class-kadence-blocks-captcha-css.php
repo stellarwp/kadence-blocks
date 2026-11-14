@@ -7,8 +7,6 @@
 
 defined( 'ABSPATH' ) || exit;
 
-require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-form-field-css.php';
-
 /**
  * Builds the CSS for the captcha block: the width limits of a field, and hiding the recaptcha badge when asked to.
  *

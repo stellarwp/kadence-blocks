@@ -34,7 +34,6 @@ final class GooglemapsSectionsTest extends Free_Section_Test_Case {
 	 * @return Generator
 	 */
 	public function sectionProvider(): Generator {
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/googlemaps/loader.php';
 
 		yield from $this->alignProvider();
 		yield from $this->filterProvider();

@@ -38,7 +38,6 @@ final class CountupSectionsTest extends Free_Section_Test_Case {
 	 * @return Generator
 	 */
 	public function sectionProvider(): Generator {
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/countup/loader.php';
 
 		yield 'a numeric height of tablet is written in pixels' => [
 			'section'    => new Kadence_Blocks_Countup_Number_Height_Css( 1 ),
@@ -77,7 +76,6 @@ final class CountupSectionsTest extends Free_Section_Test_Case {
 	 * @return void
 	 */
 	public function testScalarHeightFails( $value ): void {
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/countup/loader.php';
 
 		$this->expectException( Error::class );
 
@@ -111,7 +109,6 @@ final class CountupSectionsTest extends Free_Section_Test_Case {
 	 * @return Generator
 	 */
 	public function conditionProvider(): Generator {
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/countup/loader.php';
 
 		$height = new Kadence_Blocks_Countup_Min_Height_Condition( 'height' );
 		$font   = new Kadence_Blocks_Countup_Font_Condition( 'font' );

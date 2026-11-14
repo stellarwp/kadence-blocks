@@ -295,7 +295,5 @@ final class TableSectionsTest extends Table_Test_Case {
 	 * @return void
 	 */
 	private function load(): void {
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/table/loader.php';
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/sections/loader.php';
 	}
 }

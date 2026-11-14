@@ -7,8 +7,6 @@
 
 defined( 'ABSPATH' ) || exit;
 
-require_once __DIR__ . '/class-kadence-blocks-advancedgallery-color.php';
-
 /**
  * Builds the sections of one element that has a color for each state.
  *

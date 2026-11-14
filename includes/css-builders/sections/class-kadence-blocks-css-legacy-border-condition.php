@@ -7,9 +7,6 @@
 
 defined( 'ABSPATH' ) || exit;
 
-require_once __DIR__ . '/../class-kadence-blocks-css-build-input.php';
-require_once __DIR__ . '/class-kadence-blocks-css-input-condition.php';
-
 /**
  * Whether a border still stores the legacy widths, that are not responsive.
  *

@@ -7,7 +7,6 @@
 
 defined( 'ABSPATH' ) || exit;
 
-
 /**
  * What the row layout needs to know about the site it runs on.
  *

@@ -7,8 +7,6 @@
 
 defined( 'ABSPATH' ) || exit;
 
-require_once __DIR__ . '/../class-kadence-blocks-css-build-input.php';
-
 /**
  * Tells whether a part of the block CSS applies.
  *

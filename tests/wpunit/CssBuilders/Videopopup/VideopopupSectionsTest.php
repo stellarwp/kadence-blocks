@@ -201,7 +201,6 @@ final class VideopopupSectionsTest extends Videopopup_Test_Case {
 	 */
 	public function sectionProvider(): Generator {
 		// Data providers run before the tests are set up.
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-videopopup-css.php';
 
 		yield from $this->widthProvider();
 		yield from $this->spacingProvider();
@@ -355,7 +354,6 @@ final class VideopopupSectionsTest extends Videopopup_Test_Case {
 	 * @return Generator
 	 */
 	public function conditionProvider(): Generator {
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-videopopup-css.php';
 
 		yield 'a list is a list' => [ new Kadence_Blocks_Videopopup_Array_Condition( 'a' ), [ 'a' => [] ], true ];
 		yield 'a string is not a list' => [ new Kadence_Blocks_Videopopup_Array_Condition( 'a' ), [ 'a' => 'x' ], false ];

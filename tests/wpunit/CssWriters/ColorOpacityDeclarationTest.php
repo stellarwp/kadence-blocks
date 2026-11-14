@@ -22,7 +22,6 @@ final class ColorOpacityDeclarationTest extends TestCase {
 	protected function setUp(): void {
 		parent::setUp();
 
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-writers/loader.php';
 		$this->css = new Kadence_Blocks_CSS();
 		$this->css->set_style_id( 'color-opacity-test' );
 		$this->css->set_selector( '.a' );

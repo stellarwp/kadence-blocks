@@ -131,7 +131,6 @@ final class TableofcontentsSectionsTest extends Tableofcontents_Test_Case {
 	 * @return Generator
 	 */
 	public function sectionProvider(): Generator {
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-tableofcontents-css.php';
 
 		yield from $this->containerProvider();
 		yield from $this->fontProvider();

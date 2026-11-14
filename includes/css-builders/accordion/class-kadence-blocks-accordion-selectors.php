@@ -7,7 +7,6 @@
 
 defined( 'ABSPATH' ) || exit;
 
-
 /**
  * The selectors of the accordion CSS. `{id}` stands for the block unique id.
  *

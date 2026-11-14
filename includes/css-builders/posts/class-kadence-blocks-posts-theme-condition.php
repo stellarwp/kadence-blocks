@@ -7,9 +7,6 @@
 
 defined( 'ABSPATH' ) || exit;
 
-require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/sections/loader.php';
-require_once __DIR__ . '/class-kadence-blocks-posts-environment.php';
-
 /**
  * Met when the Kadence theme is active.
  *

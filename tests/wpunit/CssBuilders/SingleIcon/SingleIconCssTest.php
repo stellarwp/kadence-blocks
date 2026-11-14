@@ -44,7 +44,6 @@ final class SingleIconCssTest extends Entry_Build_Test_Case {
 	protected function setUp(): void {
 		parent::setUp();
 
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-single-icon-css.php';
 	}
 
 	/**
@@ -114,7 +113,6 @@ final class SingleIconCssTest extends Entry_Build_Test_Case {
 	 * @return Generator
 	 */
 	public function attributesProvider(): Generator {
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/single-icon/loader.php';
 
 		yield 'a list' => [
 			'attributes' => [ 'color' => '#fff' ],

@@ -7,7 +7,6 @@
 
 defined( 'ABSPATH' ) || exit;
 
-
 /**
  * The selectors of the parts of the show more block. `{id}` stands for the block unique id.
  *

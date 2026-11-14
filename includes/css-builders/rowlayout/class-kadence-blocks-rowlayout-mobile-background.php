@@ -7,17 +7,6 @@
 
 defined( 'ABSPATH' ) || exit;
 
-require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-css-section.php';
-require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-css-build-input.php';
-require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/sections/loader.php';
-require_once KADENCE_BLOCKS_PATH . 'includes/css-writers/loader.php';
-require_once __DIR__ . '/class-kadence-blocks-rowlayout-selector.php';
-require_once __DIR__ . '/class-kadence-blocks-rowlayout-environment.php';
-require_once __DIR__ . '/class-kadence-blocks-rowlayout-background-facts.php';
-require_once __DIR__ . '/class-kadence-blocks-rowlayout-responsive-image.php';
-require_once __DIR__ . '/class-kadence-blocks-rowlayout-jarallax.php';
-require_once __DIR__ . '/class-kadence-blocks-rowlayout-video-hide.php';
-
 /**
  * Writes the background of the row on mobile.
  *

@@ -7,10 +7,6 @@
 
 defined( 'ABSPATH' ) || exit;
 
-require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-css-block-builder.php';
-require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/sections/loader.php';
-require_once __DIR__ . '/form/loader.php';
-
 /**
  * Builds the CSS for the form block by running one section after another.
  *

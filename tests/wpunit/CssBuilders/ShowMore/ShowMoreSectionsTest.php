@@ -26,7 +26,6 @@ final class ShowMoreSectionsTest extends Free_Section_Test_Case {
 	protected function setUp(): void {
 		parent::setUp();
 
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-show-more-css.php';
 	}
 
 	/**

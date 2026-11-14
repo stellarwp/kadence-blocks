@@ -72,6 +72,7 @@ function kadence_blocks_init(): void {
 	require_once KADENCE_BLOCKS_PATH . 'includes/settings/class-kadence-blocks-helper.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-css.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-css-builders.php';
+	Kadence_Blocks_Css_Builders::add_classmap( KADENCE_BLOCKS_PATH . 'includes/css-builders/classmap.php', KADENCE_BLOCKS_PATH . 'includes/' );
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-frontend.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-table-of-contents.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-duplicate-post.php';
