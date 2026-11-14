@@ -18,6 +18,7 @@ use Kadence_Blocks_Tableofcontents_Max_Width;
 use Kadence_Blocks_Tableofcontents_Mobile_Line_Height;
 use Kadence_Blocks_Tableofcontents_Shadow;
 use Kadence_Blocks_Tableofcontents_Text_Property;
+use Tests\Support\Classes\Null_Block_Bridge;
 
 /**
  * The sections of the table of contents CSS, one by one.
@@ -81,9 +82,7 @@ final class TableofcontentsSectionsTest extends Tableofcontents_Test_Case {
 		$builder = new Kadence_Blocks_Tableofcontents_Css(
 			new Kadence_Blocks_Css_Block_Context(
 				'tableofcontents',
-				static function () {
-					return null;
-				}
+				new Null_Block_Bridge()
 			)
 		);
 

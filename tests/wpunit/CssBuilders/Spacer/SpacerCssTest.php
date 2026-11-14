@@ -7,6 +7,7 @@ use Kadence_Blocks_CSS;
 use Kadence_Blocks_Css_Block_Context;
 use Kadence_Blocks_Spacer_Css;
 use Tests\wpunit\CssBuilders\Free_Section_Test_Case;
+use Tests\Support\Classes\Null_Block_Bridge;
 
 /**
  * The whole spacer CSS, with the exact rules for a few spacers.
@@ -32,9 +33,7 @@ final class SpacerCssTest extends Free_Section_Test_Case {
 	public function testBuild( array $attributes, string $expected ): void {
 		$context = new Kadence_Blocks_Css_Block_Context(
 			'spacer',
-			static function () {
-				return null;
-			}
+			new Null_Block_Bridge()
 		);
 		$css     = ( new Kadence_Blocks_Spacer_Css( $context ) )->build( $attributes, new Kadence_Blocks_CSS(), 'abc', 'abc-' . md5( $expected ) );
 

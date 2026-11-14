@@ -10,6 +10,7 @@ use Kadence_Blocks_Show_More_Fade_Out;
 use Kadence_Blocks_Show_More_Max_Height;
 use Kadence_Blocks_Show_More_Selector;
 use Tests\wpunit\CssBuilders\Free_Section_Test_Case;
+use Tests\Support\Classes\Null_Block_Bridge;
 
 /**
  * The classes that build the CSS of the show more block, one at a time, and the builder that runs them.
@@ -25,7 +26,6 @@ final class ShowMoreSectionsTest extends Free_Section_Test_Case {
 
 	protected function setUp(): void {
 		parent::setUp();
-
 	}
 
 	/**
@@ -356,9 +356,7 @@ final class ShowMoreSectionsTest extends Free_Section_Test_Case {
 	private function build( array $attributes, string $style_id ): string {
 		$context = new Kadence_Blocks_Css_Block_Context(
 			'show-more',
-			static function () {
-				return null;
-			}
+			new Null_Block_Bridge()
 		);
 
 		return (string) ( new Kadence_Blocks_Show_More_Css( $context ) )->build( $attributes, new Kadence_Blocks_CSS(), 'abc', $style_id );

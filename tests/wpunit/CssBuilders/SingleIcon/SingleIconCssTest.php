@@ -8,6 +8,7 @@ use Kadence_Blocks_Css_Block_Context;
 use Kadence_Blocks_Css_Build_Input;
 use Kadence_Blocks_Single_Icon_Array_Condition;
 use Tests\wpunit\CssBuilders\Entry_Build_Test_Case;
+use Tests\Support\Classes\Null_Block_Bridge;
 
 /**
  * The CSS of the single icon block, with the exact rules for a few icons, and the class it is made of.
@@ -43,7 +44,6 @@ final class SingleIconCssTest extends Entry_Build_Test_Case {
 
 	protected function setUp(): void {
 		parent::setUp();
-
 	}
 
 	/**
@@ -100,9 +100,7 @@ final class SingleIconCssTest extends Entry_Build_Test_Case {
 	public function testArrayCondition( $attributes, bool $expected ): void {
 		$context = new Kadence_Blocks_Css_Block_Context(
 			'single-icon',
-			static function () {
-				return null;
-			}
+			new Null_Block_Bridge()
 		);
 		$input   = new Kadence_Blocks_Css_Build_Input( $attributes, new Kadence_Blocks_CSS(), 'abc', 'abc', $context );
 

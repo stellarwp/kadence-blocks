@@ -4,6 +4,7 @@ namespace Tests\wpunit\CssBuilders;
 
 use Kadence_Blocks_CSS;
 use Kadence_Blocks_Css_Block_Context;
+use Tests\Support\Classes\Null_Block_Bridge;
 
 /**
  * Shared helpers for tests of a whole CSS builder, with the block replaced by a fake.
@@ -24,9 +25,7 @@ abstract class Entry_Build_Test_Case extends Free_Section_Test_Case {
 	protected function build_entry( string $builder, string $block_name, array $attributes, ?callable $bridge = null, string $unique_id = 'abc' ): string {
 		$context = new Kadence_Blocks_Css_Block_Context(
 			$block_name,
-			$bridge ?? static function () {
-				return null;
-			}
+			$bridge ?? new Null_Block_Bridge()
 		);
 
 		return (string) ( new $builder( $context ) )->build( $attributes, new Kadence_Blocks_CSS(), $unique_id, $unique_id . '-' . md5( (string) wp_json_encode( $attributes ) ) );

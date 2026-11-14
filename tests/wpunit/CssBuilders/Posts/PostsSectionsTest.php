@@ -16,6 +16,7 @@ use Kadence_Blocks_Posts_Title_Metric;
 use Kadence_Blocks_CSS;
 use Kadence_Blocks_Css_Block_Context;
 use Tests\wpunit\CssBuilders\Free_Section_Test_Case;
+use Tests\Support\Classes\Null_Block_Bridge;
 
 /**
  * The sections, conditions and the environment of the posts CSS, one by one.
@@ -26,7 +27,6 @@ final class PostsSectionsTest extends Free_Section_Test_Case {
 
 	protected function setUp(): void {
 		parent::setUp();
-
 	}
 
 	/**
@@ -101,9 +101,7 @@ final class PostsSectionsTest extends Free_Section_Test_Case {
 	public function testBuildWritesTheTitleAndTheGrid(): void {
 		$context = new Kadence_Blocks_Css_Block_Context(
 			'posts',
-			static function () {
-				return null;
-			} 
+			new Null_Block_Bridge() 
 		);
 		$font    = [
 			'size'          => [ 20, 18, 16 ],
@@ -297,9 +295,7 @@ final class PostsSectionsTest extends Free_Section_Test_Case {
 		$builder = new Kadence_Blocks_Posts_Css(
 			new Kadence_Blocks_Css_Block_Context(
 				'posts',
-				static function () {
-					return null;
-				} 
+				new Null_Block_Bridge() 
 			)
 		);
 		$method  = new \ReflectionMethod( $builder, 'loop_style_section' );

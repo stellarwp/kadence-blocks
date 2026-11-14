@@ -8,6 +8,7 @@ use Kadence_Blocks_Css_Build_Input;
 use Kadence_Blocks_Css_Section;
 use Tests\Support\Classes\Css_Normalizer;
 use Tests\Support\Classes\TestCase;
+use Tests\Support\Classes\Null_Block_Bridge;
 
 /**
  * Shared helpers for tests of the CSS section classes.
@@ -65,9 +66,7 @@ abstract class Free_Section_Test_Case extends TestCase {
 	protected function input( array $attributes, Kadence_Blocks_CSS $css, string $unique_id = 'abc' ): Kadence_Blocks_Css_Build_Input {
 		$context = new Kadence_Blocks_Css_Block_Context(
 			'section-test',
-			static function () {
-				return null;
-			} 
+			new Null_Block_Bridge() 
 		);
 
 		return new Kadence_Blocks_Css_Build_Input( $attributes, $css, $unique_id, $unique_id, $context );

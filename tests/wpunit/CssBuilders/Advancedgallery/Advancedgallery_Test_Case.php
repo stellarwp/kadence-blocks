@@ -8,6 +8,7 @@ use Kadence_Blocks_Css_Block_Context;
 use Kadence_Blocks_Css_Build_Input;
 use Kadence_Blocks_Css_Section;
 use Tests\wpunit\CssBuilders\Free_Section_Test_Case;
+use Tests\Support\Classes\Null_Block_Bridge;
 
 /**
  * Shared helpers for tests of the Advancedgallery CSS sections.
@@ -16,7 +17,6 @@ abstract class Advancedgallery_Test_Case extends Free_Section_Test_Case {
 
 	protected function setUp(): void {
 		parent::setUp();
-
 	}
 
 	/**
@@ -49,9 +49,7 @@ abstract class Advancedgallery_Test_Case extends Free_Section_Test_Case {
 	protected function gallery_input( array $attributes, Kadence_Blocks_CSS $css ): Kadence_Blocks_Css_Build_Input {
 		$context = new Kadence_Blocks_Css_Block_Context(
 			'advancedgallery',
-			static function () {
-				return null;
-			}
+			new Null_Block_Bridge()
 		);
 
 		return new Kadence_Blocks_Css_Build_Input( $attributes, $css, 'abc', 'abc', $context, Kadence_Blocks_Advancedgallery_Settings::derive( $attributes ) );

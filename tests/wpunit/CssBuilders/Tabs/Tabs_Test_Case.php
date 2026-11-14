@@ -9,6 +9,7 @@ use Kadence_Blocks_Css_Section;
 use Kadence_Blocks_Tabs_Gap;
 use Kadence_Blocks_Tabs_Layouts;
 use Tests\wpunit\CssBuilders\Free_Section_Test_Case;
+use Tests\Support\Classes\Null_Block_Bridge;
 
 /**
  * Shared helpers for tests of the Tabs CSS sections.
@@ -17,7 +18,6 @@ abstract class Tabs_Test_Case extends Free_Section_Test_Case {
 
 	protected function setUp(): void {
 		parent::setUp();
-
 	}
 
 	/**
@@ -50,9 +50,7 @@ abstract class Tabs_Test_Case extends Free_Section_Test_Case {
 	protected function tabs_input( array $attributes, Kadence_Blocks_CSS $css ): Kadence_Blocks_Css_Build_Input {
 		$context = new Kadence_Blocks_Css_Block_Context(
 			'tabs',
-			static function () {
-				return null;
-			}
+			new Null_Block_Bridge()
 		);
 
 		return new Kadence_Blocks_Css_Build_Input(

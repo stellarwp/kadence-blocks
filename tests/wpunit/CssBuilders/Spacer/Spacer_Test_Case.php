@@ -8,6 +8,7 @@ use Kadence_Blocks_Css_Build_Input;
 use Kadence_Blocks_Css_Section;
 use Kadence_Blocks_Spacer_Width_Units;
 use Tests\wpunit\CssBuilders\Free_Section_Test_Case;
+use Tests\Support\Classes\Null_Block_Bridge;
 
 /**
  * Shared helpers for tests of the Spacer CSS sections.
@@ -16,7 +17,6 @@ abstract class Spacer_Test_Case extends Free_Section_Test_Case {
 
 	protected function setUp(): void {
 		parent::setUp();
-
 	}
 
 	/**
@@ -49,9 +49,7 @@ abstract class Spacer_Test_Case extends Free_Section_Test_Case {
 	protected function spacer_input( array $attributes, Kadence_Blocks_CSS $css ): Kadence_Blocks_Css_Build_Input {
 		$context = new Kadence_Blocks_Css_Block_Context(
 			'spacer',
-			static function () {
-				return null;
-			}
+			new Null_Block_Bridge()
 		);
 
 		return new Kadence_Blocks_Css_Build_Input( $attributes, $css, 'abc', 'abc', $context, [ 'width_units' => Kadence_Blocks_Spacer_Width_Units::resolve( $attributes ) ] );
