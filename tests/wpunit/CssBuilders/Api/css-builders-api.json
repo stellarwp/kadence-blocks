@@ -1,12 +1,4 @@
 {
-    "Kadence_Blocks_Accept_Css": {
-        "__construct": 1,
-        "build": 4
-    },
-    "Kadence_Blocks_Accordion_Css": {
-        "__construct": 1,
-        "build": 4
-    },
     "Kadence_Blocks_Accordion_Grid_Css": {
         "__construct": 1,
         "write": 1
@@ -54,10 +46,6 @@
     "Kadence_Blocks_Advanced_Form_Color_Css": {
         "__construct": 3,
         "write": 1
-    },
-    "Kadence_Blocks_Advanced_Form_Css": {
-        "__construct": 1,
-        "build": 4
     },
     "Kadence_Blocks_Advanced_Form_Dark_Scheme_Css": {
         "write": 1
@@ -149,10 +137,6 @@
     "Kadence_Blocks_Advancedbtn_Buttons_Css": {
         "write": 1
     },
-    "Kadence_Blocks_Advancedbtn_Css": {
-        "__construct": 1,
-        "build": 4
-    },
     "Kadence_Blocks_Advancedbtn_Flex_Axes": {
         "__construct": 0,
         "horizontal": 0,
@@ -214,10 +198,6 @@
     },
     "Kadence_Blocks_Advancedgallery_Color_Rows": {
         "sections": 3
-    },
-    "Kadence_Blocks_Advancedgallery_Css": {
-        "__construct": 1,
-        "build": 4
     },
     "Kadence_Blocks_Advancedgallery_Dot_Outline_Css": {
         "__construct": 2,
@@ -283,10 +263,6 @@
     "Kadence_Blocks_Advancedheading_Color_Output_Css": {
         "__construct": 2,
         "write": 1
-    },
-    "Kadence_Blocks_Advancedheading_Css": {
-        "__construct": 1,
-        "build": 4
     },
     "Kadence_Blocks_Advancedheading_Device_Letter_Spacing_Css": {
         "__construct": 1,
@@ -376,14 +352,6 @@
         "__construct": 5,
         "write": 1
     },
-    "Kadence_Blocks_Captcha_Css": {
-        "__construct": 1,
-        "build": 4
-    },
-    "Kadence_Blocks_Checkbox_Css": {
-        "__construct": 1,
-        "build": 4
-    },
     "Kadence_Blocks_Column_Backdrop_Filter_Css": {
         "write": 1
     },
@@ -404,10 +372,6 @@
     "Kadence_Blocks_Column_Color_Rule_Css": {
         "__construct": 2,
         "write": 1
-    },
-    "Kadence_Blocks_Column_Css": {
-        "__construct": 1,
-        "build": 4
     },
     "Kadence_Blocks_Column_Desktop_Horizontal_Css": {
         "write": 1
@@ -556,10 +520,6 @@
         "__construct": 2,
         "is_met": 1
     },
-    "Kadence_Blocks_Countdown_Css": {
-        "__construct": 1,
-        "build": 4
-    },
     "Kadence_Blocks_Countdown_Font": {
         "__construct": 1,
         "from_input": 2,
@@ -603,10 +563,6 @@
     "Kadence_Blocks_Countdown_Sides_Css": {
         "__construct": 3,
         "write": 1
-    },
-    "Kadence_Blocks_Countup_Css": {
-        "__construct": 1,
-        "build": 4
     },
     "Kadence_Blocks_Countup_Font_Condition": {
         "__construct": 1,
@@ -758,6 +714,9 @@
     },
     "Kadence_Blocks_Css_Fallback_Color_Section": {
         "__construct": 3,
+        "write": 1
+    },
+    "Kadence_Blocks_Css_Field_Selector_Section": {
         "write": 1
     },
     "Kadence_Blocks_Css_Font_Weight_Format": {
@@ -948,18 +907,6 @@
         "numeric_sides": 3,
         "numeric_with_unit": 3
     },
-    "Kadence_Blocks_Date_Input_Css": {
-        "__construct": 1,
-        "build": 4
-    },
-    "Kadence_Blocks_Email_Input_Css": {
-        "__construct": 1,
-        "build": 4
-    },
-    "Kadence_Blocks_File_Css": {
-        "__construct": 1,
-        "build": 4
-    },
     "Kadence_Blocks_Form_Active_Style_Condition": {
         "is_met": 1
     },
@@ -973,10 +920,6 @@
     "Kadence_Blocks_Form_Checkbox_Style_Css": {
         "__construct": 2,
         "write": 1
-    },
-    "Kadence_Blocks_Form_Css": {
-        "__construct": 1,
-        "build": 4
     },
     "Kadence_Blocks_Form_Field_Style_Condition": {
         "is_met": 1
@@ -1034,31 +977,11 @@
         "__construct": 1,
         "write": 1
     },
-    "Kadence_Blocks_Googlemaps_Css": {
-        "__construct": 1,
-        "build": 4
-    },
     "Kadence_Blocks_Googlemaps_Filter_Css": {
         "write": 1
     },
     "Kadence_Blocks_Header_Backdrop_Condition": {
         "is_met": 1
-    },
-    "Kadence_Blocks_Header_Column_Css": {
-        "__construct": 1,
-        "build": 4
-    },
-    "Kadence_Blocks_Header_Container_Desktop_Css": {
-        "__construct": 1,
-        "build": 4
-    },
-    "Kadence_Blocks_Header_Container_Tablet_Css": {
-        "__construct": 1,
-        "build": 4
-    },
-    "Kadence_Blocks_Header_Css": {
-        "__construct": 1,
-        "build": 4
     },
     "Kadence_Blocks_Header_Environment": {
         "has_pro": 0
@@ -1067,24 +990,12 @@
         "__construct": 2,
         "write": 1
     },
-    "Kadence_Blocks_Header_Row_Css": {
-        "__construct": 1,
-        "build": 4
-    },
     "Kadence_Blocks_Header_Row_Dimension_Css": {
         "__construct": 3,
         "write": 1
     },
-    "Kadence_Blocks_Header_Section_Css": {
-        "__construct": 1,
-        "build": 4
-    },
     "Kadence_Blocks_Header_Site_Environment": {
         "has_pro": 0
-    },
-    "Kadence_Blocks_Icon_Css": {
-        "__construct": 1,
-        "build": 4
     },
     "Kadence_Blocks_Icon_Flex_Align_Css": {
         "write": 1
@@ -1100,10 +1011,6 @@
     "Kadence_Blocks_Iconlist_Columns_Condition": {
         "__construct": 1,
         "is_met": 1
-    },
-    "Kadence_Blocks_Iconlist_Css": {
-        "__construct": 1,
-        "build": 4
     },
     "Kadence_Blocks_Iconlist_Environment": {
         "is_rtl": 0
@@ -1137,10 +1044,6 @@
     },
     "Kadence_Blocks_Identity_Aligned_Layout_Condition": {
         "is_met": 1
-    },
-    "Kadence_Blocks_Identity_Css": {
-        "__construct": 1,
-        "build": 4
     },
     "Kadence_Blocks_Identity_Vertical_Align_Css": {
         "write": 1
@@ -1190,10 +1093,6 @@
         "device_sections": 1,
         "font_sections": 0,
         "sections": 0
-    },
-    "Kadence_Blocks_Image_Css": {
-        "__construct": 1,
-        "build": 4
     },
     "Kadence_Blocks_Image_Drop_Shadow_Condition": {
         "is_met": 1
@@ -1258,10 +1157,6 @@
     },
     "Kadence_Blocks_Infobox_Container_Background_Css": {
         "write": 1
-    },
-    "Kadence_Blocks_Infobox_Css": {
-        "__construct": 1,
-        "build": 4
     },
     "Kadence_Blocks_Infobox_Dimension_Ratio_Css": {
         "write": 1
@@ -1399,10 +1294,6 @@
     "Kadence_Blocks_Listitem_Border_Style_Css": {
         "write": 1
     },
-    "Kadence_Blocks_Listitem_Css": {
-        "__construct": 1,
-        "build": 4
-    },
     "Kadence_Blocks_Listitem_Font_Family_Css": {
         "write": 1
     },
@@ -1433,26 +1324,14 @@
         "__construct": 4,
         "write": 1
     },
-    "Kadence_Blocks_Lottie_Css": {
-        "__construct": 1,
-        "build": 4
-    },
     "Kadence_Blocks_Lottie_Max_Width_Css": {
         "write": 1
     },
     "Kadence_Blocks_Lottie_Width": {
         "resolve": 1
     },
-    "Kadence_Blocks_Navigation_Css": {
-        "__construct": 1,
-        "build": 4
-    },
     "Kadence_Blocks_Navigation_Dropdown_Shadow_Css": {
         "write": 1
-    },
-    "Kadence_Blocks_Navigation_Link_Css": {
-        "__construct": 1,
-        "build": 4
     },
     "Kadence_Blocks_Navigation_Link_Disabled_Link_Condition": {
         "is_met": 1
@@ -1483,22 +1362,6 @@
     "Kadence_Blocks_Navigation_Plain_Attributes": {
         "__construct": 1,
         "for_post": 1
-    },
-    "Kadence_Blocks_Number_Input_Css": {
-        "__construct": 1,
-        "build": 4
-    },
-    "Kadence_Blocks_Off_Canvas_Css": {
-        "__construct": 1,
-        "build": 4
-    },
-    "Kadence_Blocks_Off_Canvas_Trigger_Css": {
-        "__construct": 1,
-        "build": 4
-    },
-    "Kadence_Blocks_Posts_Css": {
-        "__construct": 1,
-        "build": 4
     },
     "Kadence_Blocks_Posts_Environment": {
         "has_kadence_theme": 0,
@@ -1534,10 +1397,6 @@
     "Kadence_Blocks_Progress_Bar_Alignment_Css": {
         "__construct": 1,
         "write": 1
-    },
-    "Kadence_Blocks_Progress_Bar_Css": {
-        "__construct": 1,
-        "build": 4
     },
     "Kadence_Blocks_Progress_Bar_First_Radius_Css": {
         "write": 1
@@ -1588,10 +1447,6 @@
     "Kadence_Blocks_Progress_Bar_Radius_Css": {
         "__construct": 1,
         "write": 1
-    },
-    "Kadence_Blocks_Radio_Css": {
-        "__construct": 1,
-        "build": 4
     },
     "Kadence_Blocks_Rowlayout_Background_Color_Css": {
         "__construct": 1,
@@ -1656,10 +1511,6 @@
     "Kadence_Blocks_Rowlayout_Compat_Margin_Css": {
         "__construct": 1,
         "write": 1
-    },
-    "Kadence_Blocks_Rowlayout_Css": {
-        "__construct": 1,
-        "build": 4
     },
     "Kadence_Blocks_Rowlayout_Custom_Css": {
         "write": 1
@@ -1809,21 +1660,9 @@
     "Kadence_Blocks_Rowlayout_Z_Index_Css": {
         "write": 1
     },
-    "Kadence_Blocks_Search_Css": {
-        "__construct": 1,
-        "build": 4
-    },
     "Kadence_Blocks_Search_Feather_Condition": {
         "__construct": 1,
         "is_met": 1
-    },
-    "Kadence_Blocks_Select_Css": {
-        "__construct": 1,
-        "build": 4
-    },
-    "Kadence_Blocks_Show_More_Css": {
-        "__construct": 1,
-        "build": 4
     },
     "Kadence_Blocks_Show_More_Fade_Out": {
         "write": 1
@@ -1846,14 +1685,6 @@
     },
     "Kadence_Blocks_Single_Icon_Array_Condition": {
         "is_met": 1
-    },
-    "Kadence_Blocks_Single_Icon_Css": {
-        "__construct": 1,
-        "build": 4
-    },
-    "Kadence_Blocks_Singlebtn_Css": {
-        "__construct": 1,
-        "build": 4
     },
     "Kadence_Blocks_Singlebtn_Dynamic_Css": {
         "write": 1
@@ -1892,10 +1723,6 @@
     "Kadence_Blocks_Spacer_Color_Css": {
         "write": 1
     },
-    "Kadence_Blocks_Spacer_Css": {
-        "__construct": 1,
-        "build": 4
-    },
     "Kadence_Blocks_Spacer_Device_Divider_Height_Css": {
         "__construct": 3,
         "write": 1
@@ -1930,10 +1757,6 @@
         "__construct": 2,
         "write": 1
     },
-    "Kadence_Blocks_Submit_Css": {
-        "__construct": 1,
-        "build": 4
-    },
     "Kadence_Blocks_Submit_Hover_Before_Css": {
         "write": 1
     },
@@ -1958,24 +1781,12 @@
         "__construct": 2,
         "write": 1
     },
-    "Kadence_Blocks_Table_Css": {
-        "__construct": 1,
-        "build": 4
-    },
-    "Kadence_Blocks_Table_Data_Css": {
-        "__construct": 1,
-        "build": 4
-    },
     "Kadence_Blocks_Table_Environment": {
         "write_pro_styles": 4
     },
     "Kadence_Blocks_Table_Pro_Styles_Css": {
         "__construct": 1,
         "write": 1
-    },
-    "Kadence_Blocks_Table_Row_Css": {
-        "__construct": 1,
-        "build": 4
     },
     "Kadence_Blocks_Table_Selector_Css": {
         "__construct": 1,
@@ -1988,10 +1799,6 @@
     "Kadence_Blocks_Tableofcontents_Border_Condition": {
         "__construct": 2,
         "is_met": 1
-    },
-    "Kadence_Blocks_Tableofcontents_Css": {
-        "__construct": 1,
-        "build": 4
     },
     "Kadence_Blocks_Tableofcontents_Font_Family": {
         "__construct": 1,
@@ -2036,10 +1843,6 @@
     },
     "Kadence_Blocks_Tabs_Content_Border_Condition": {
         "is_met": 1
-    },
-    "Kadence_Blocks_Tabs_Css": {
-        "__construct": 1,
-        "build": 4
     },
     "Kadence_Blocks_Tabs_Font_Size_Css": {
         "__construct": 1,
@@ -2130,14 +1933,6 @@
         "__construct": 1,
         "write": 1
     },
-    "Kadence_Blocks_Telephone_Input_Css": {
-        "__construct": 1,
-        "build": 4
-    },
-    "Kadence_Blocks_Testimonial_Css": {
-        "__construct": 1,
-        "build": 4
-    },
     "Kadence_Blocks_Testimonials_Array_Item_Condition": {
         "__construct": 1,
         "is_met": 1
@@ -2168,10 +1963,6 @@
     "Kadence_Blocks_Testimonials_Color_Output_Css": {
         "__construct": 3,
         "write": 1
-    },
-    "Kadence_Blocks_Testimonials_Css": {
-        "__construct": 1,
-        "build": 4
     },
     "Kadence_Blocks_Testimonials_Default_Color_Css": {
         "__construct": 4,
@@ -2277,22 +2068,6 @@
         "__construct": 5,
         "write": 1
     },
-    "Kadence_Blocks_Text_Input_Css": {
-        "__construct": 1,
-        "build": 4
-    },
-    "Kadence_Blocks_Textarea_Input_Css": {
-        "__construct": 1,
-        "build": 4
-    },
-    "Kadence_Blocks_Time_Input_Css": {
-        "__construct": 1,
-        "build": 4
-    },
-    "Kadence_Blocks_Vector_Css": {
-        "__construct": 1,
-        "build": 4
-    },
     "Kadence_Blocks_Videopopup_Array_Condition": {
         "__construct": 1,
         "is_met": 1
@@ -2305,10 +2080,6 @@
     },
     "Kadence_Blocks_Videopopup_Column_Width_Css": {
         "write": 1
-    },
-    "Kadence_Blocks_Videopopup_Css": {
-        "__construct": 1,
-        "build": 4
     },
     "Kadence_Blocks_Videopopup_Environment": {
         "pro_block": 0

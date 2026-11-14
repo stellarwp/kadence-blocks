@@ -9,6 +9,7 @@ defined( 'ABSPATH' ) || exit;
 
 
 require_once __DIR__ . '/class-kadence-blocks-css-selector-section.php';
+require_once __DIR__ . '/class-kadence-blocks-css-field-selector-section.php';
 require_once __DIR__ . '/class-kadence-blocks-css-gate-section.php';
 require_once __DIR__ . '/class-kadence-blocks-css-enabled-section.php';
 require_once __DIR__ . '/class-kadence-blocks-css-device-section.php';

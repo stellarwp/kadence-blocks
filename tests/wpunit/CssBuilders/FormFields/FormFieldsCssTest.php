@@ -28,24 +28,13 @@ final class FormFieldsCssTest extends Entry_Build_Test_Case {
 	}
 
 	/**
-	 * The builders of the fields, by the name of the block, with the file of the builder.
+	 * The builders of the fields, with the file of the builder: the one the text, email, date and other fields share, and the captcha's.
 	 *
 	 * @var array<string, string>
 	 */
 	private const BUILDERS = [
-		'Kadence_Blocks_Text_Input_Css'      => 'text-input',
-		'Kadence_Blocks_Textarea_Input_Css'  => 'textarea-input',
-		'Kadence_Blocks_Email_Input_Css'     => 'email-input',
-		'Kadence_Blocks_Date_Input_Css'      => 'date-input',
-		'Kadence_Blocks_Number_Input_Css'    => 'number-input',
-		'Kadence_Blocks_Telephone_Input_Css' => 'telephone-input',
-		'Kadence_Blocks_Time_Input_Css'      => 'time-input',
-		'Kadence_Blocks_Accept_Css'          => 'accept',
-		'Kadence_Blocks_Checkbox_Css'        => 'checkbox',
-		'Kadence_Blocks_Radio_Css'           => 'radio',
-		'Kadence_Blocks_Select_Css'          => 'select',
-		'Kadence_Blocks_File_Css'            => 'file',
-		'Kadence_Blocks_Captcha_Css'         => 'captcha',
+		'Kadence_Blocks_Form_Field_Css' => 'form-field',
+		'Kadence_Blocks_Captcha_Css'    => 'captcha',
 	];
 
 	/**

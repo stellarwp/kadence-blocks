@@ -98,13 +98,28 @@ final class ApiContractTest extends KadenceBlocksTestCase {
 			foreach ( $files as $file ) {
 				preg_match( '/^(?:final |abstract )?(?:class|interface) (Kadence_Blocks_\w+)/m', (string) file_get_contents( $file->getPathname() ), $match ); // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown -- Local source files.
 
-				if ( 'php' === $file->getExtension() && ! empty( $match[1] ) ) {
+				if ( 'php' === $file->getExtension() && ! empty( $match[1] ) && ! $this->is_entry_class( $match[1], $file->getPathname() ) ) {
 					$map[ $match[1] ] = $file->getPathname();
 				}
 			}
 		}
 
 		return $map;
+	}
+
+	/**
+	 * Whether a class is the CSS builder of one Free block, which only that block uses.
+	 *
+	 * Kadence Blocks Pro never builds Free blocks, so these can change or go. The section classes they list are the
+	 * shared part and stay in the contract.
+	 *
+	 * @param string $class_name The class.
+	 * @param string $path       Its file.
+	 *
+	 * @return bool
+	 */
+	private function is_entry_class( string $class_name, string $path ): bool {
+		return '_Css' === substr( $class_name, -4 ) && dirname( $path ) === KADENCE_BLOCKS_PATH . 'includes/css-builders';
 	}
 
 	/**

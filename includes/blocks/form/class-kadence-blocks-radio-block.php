@@ -47,7 +47,7 @@ class Kadence_Blocks_Radio_Block extends Kadence_Blocks_Advanced_Form_Input_Bloc
 	 * @param string $unique_style_id the blocks alternate ID for queries.
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
-		return Kadence_Blocks_Css_Builders::build( 'Kadence_Blocks_Radio_Css', $this, $this->block_name, $attributes, $css, $unique_id, $unique_style_id );
+		return Kadence_Blocks_Css_Builders::build( 'Kadence_Blocks_Form_Field_Css', $this, $this->block_name, $attributes, $css, $unique_id, $unique_style_id );
 	}
 
 	/**

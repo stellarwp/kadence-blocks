@@ -8,8 +8,11 @@ return Kadence_Blocks_Css_Builders::build( 'Kadence_Blocks_X_Css', $this, $this-
 
 `Kadence_Blocks_Css_Builders` loads the entry class (`class-<kebab-name>.php`) from the registered directories, wraps the
 block in `Kadence_Blocks_Css_Block_Context` (which reaches block members through `Kadence_Blocks_Css_Block_Bridge`),
-and calls the entry class `build()`. The entry class loops over small `Kadence_Blocks_Css_Section` classes, each
-writing one group of rules through `Kadence_Blocks_Css`. Generic sections live in `sections/` and are reused by Pro.
+and calls the entry class `build()`. An entry class extends `Kadence_Blocks_Css_Block_Builder`, which owns the
+`build()` template (input, style id, write each section in order), and only declares `sections()` (and `derived()`
+when sections need values worked out from the attributes). Each `Kadence_Blocks_Css_Section` writes one group of rules
+through `Kadence_Blocks_Css`. Generic sections live in `sections/` and are reused by Pro. Blocks whose CSS is the same
+share an entry class, such as `Kadence_Blocks_Form_Field_Css` for the advanced form fields.
 
 ## Updating Free and Pro in any order
 
