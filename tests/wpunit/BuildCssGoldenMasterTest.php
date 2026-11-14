@@ -80,8 +80,8 @@ final class BuildCssGoldenMasterTest extends TestCase {
 				mkdir( dirname( $file ), 0775, true );
 			}
 			if ( 'fonts' === getenv( 'BUILD_CSS_GOLDEN_WRITE' ) && is_readable( $file ) ) {
-				// Add only the Google fonts to a golden file that already exists, so the recorded CSS stays as it was.
-				$results = array_merge( json_decode( (string) file_get_contents( $file ), true ), [ 'fonts' => $results['fonts'] ] );
+				// Add only the Google fonts and the queued scripts and styles to a golden file that already exists, so the recorded CSS stays as it was.
+				$results = array_merge( json_decode( (string) file_get_contents( $file ), true ), [ 'fonts' => $results['fonts'], 'queues' => $results['queues'] ] );
 			}
 			file_put_contents( $file, json_encode( $results, JSON_PRETTY_PRINT ) . "\n" );
 			$this->assertNotEmpty( $results['hashes'] );
@@ -93,6 +93,10 @@ final class BuildCssGoldenMasterTest extends TestCase {
 		$golden = json_decode( (string) file_get_contents( $file ), true );
 
 		$this->assertSame( $golden['semantic'], $results['semantic'], $this->first_difference( $golden['semantic'], $results['semantic'] ) );
+
+		if ( isset( $golden['queues'] ) ) {
+			$this->assertSame( $golden['queues'], $results['queues'], 'The scripts and styles queued changed. ' . $this->first_difference( $golden['queues'], $results['queues'] ) );
+		}
 
 		if ( isset( $golden['fonts'] ) ) {
 			$this->assertSame( $golden['fonts'], $results['fonts'], 'The Google fonts registered for loading changed. ' . $this->first_difference( $golden['fonts'], $results['fonts'] ) );
@@ -185,7 +189,8 @@ final class BuildCssGoldenMasterTest extends TestCase {
 			$semantic[] = $normalizer->hash( $css );
 		}
 
-		$fonts = $this->google_fonts_for( $block, $schema, $pool );
+		$fonts  = $this->google_fonts_for( $block, $schema, $pool );
+		$queues = $this->queues_for( $block, $schema, $pool );
 
 		$this->dump_cases( $schema, $pool );
 
@@ -196,6 +201,7 @@ final class BuildCssGoldenMasterTest extends TestCase {
 			'hashes'   => $hashes,
 			'semantic' => $semantic,
 			'fonts'    => $fonts,
+			'queues'   => $queues,
 		];
 	}
 
@@ -261,6 +267,39 @@ final class BuildCssGoldenMasterTest extends TestCase {
 		$css = $this->css_for( $block, $attributes );
 		file_put_contents( $base . '.new.css', $css );
 		file_put_contents( $base . '.new.normalized.json', json_encode( ( new Css_Normalizer() )->normalize( $css ), JSON_PRETTY_PRINT ) );
+	}
+
+	/**
+	 * The scripts and styles each generated attribute set queues while its CSS is built.
+	 *
+	 * Blocks enqueue assets from `build_css()`, which the CSS text does not show. A case that queues nothing is an
+	 * empty string.
+	 *
+	 * @param Kadence_Blocks_Abstract_Block $block                              $block  The block.
+	 * @param array<string, array<string, mixed>> $schema The attribute schema.
+	 * @param string[]                            $pool   The string pool.
+	 *
+	 * @return string[]
+	 */
+	private function queues_for( Kadence_Blocks_Abstract_Block $block, array $schema, array $pool ): array {
+		$queues = [];
+		for ( $seed = 1; $seed <= self::CASES_PER_BLOCK; $seed++ ) {
+			wp_scripts()->queue = [];
+			wp_styles()->queue  = [];
+			$this->css_for( $block, ( new Build_Css_Fuzzer( $seed, $pool ) )->attributes( $schema ) );
+
+			$queued = [
+				'js'  => array_values( array_unique( wp_scripts()->queue ) ),
+				'css' => array_values( array_unique( wp_styles()->queue ) ),
+			];
+			sort( $queued['js'] );
+			sort( $queued['css'] );
+			$queues[] = $queued['js'] || $queued['css'] ? json_encode( $queued ) : '';
+		}
+		wp_scripts()->queue = [];
+		wp_styles()->queue  = [];
+
+		return $queues;
 	}
 
 	/**
