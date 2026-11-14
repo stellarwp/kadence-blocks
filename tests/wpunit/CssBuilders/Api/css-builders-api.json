@@ -634,6 +634,10 @@
         "call": 1,
         "has": 1
     },
+    "Kadence_Blocks_Css_Block_Builder": {
+        "__construct": 1,
+        "build": 4
+    },
     "Kadence_Blocks_Css_Block_Context": {
         "__construct": 2,
         "block_name": 0,

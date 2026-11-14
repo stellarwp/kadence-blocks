@@ -7,9 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-css-block-context.php';
-require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-css-section.php';
-require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-css-build-input.php';
+require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-css-block-builder.php';
 require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/sections/loader.php';
 require_once KADENCE_BLOCKS_PATH . 'includes/css-writers/loader.php';
 require_once __DIR__ . '/singlebtn/loader.php';
@@ -19,50 +17,19 @@ require_once __DIR__ . '/singlebtn/loader.php';
  *
  * @since TBD
  */
-final class Kadence_Blocks_Singlebtn_Css {
+final class Kadence_Blocks_Singlebtn_Css extends Kadence_Blocks_Css_Block_Builder {
 
 	/**
-	 * What this builder needs from the block.
+	 * Values worked out once from the attributes, for the sections to read.
 	 *
 	 * @since TBD
 	 *
-	 * @var Kadence_Blocks_Css_Block_Context
+	 * @param array $attributes The block attributes.
+	 *
+	 * @return array
 	 */
-	private $context;
-
-	/**
-	 * Create the builder.
-	 *
-	 * @since TBD
-	 *
-	 * @param Kadence_Blocks_Css_Block_Context $context What this builder needs from the block.
-	 */
-	public function __construct( Kadence_Blocks_Css_Block_Context $context ) {
-		$this->context = $context;
-	}
-
-	/**
-	 * Build the block CSS.
-	 *
-	 * @since TBD
-	 *
-	 * @param array                                     $attributes      The block attributes.
-	 * @param Kadence_Blocks_CSS|Kadence_Blocks_Pro_CSS $css             The CSS builder.
-	 * @param string                                    $unique_id       The block unique id.
-	 * @param string                                    $unique_style_id The unique id used for the style handle.
-	 *
-	 * @return string|null
-	 */
-	public function build( $attributes, $css, $unique_id, $unique_style_id ) {
-		$input = new Kadence_Blocks_Css_Build_Input( $attributes, $css, $unique_id, $unique_style_id, $this->context, Kadence_Blocks_Css_Button_Types::derive( $attributes ) );
-
-		$css->set_style_id( 'kb-' . $this->context->block_name() . $unique_style_id );
-
-		foreach ( $this->sections() as $section ) {
-			$section->write( $input );
-		}
-
-		return $css->css_output();
+	protected function derived( $attributes ): array {
+		return Kadence_Blocks_Css_Button_Types::derive( $attributes );
 	}
 
 	/**
@@ -72,7 +39,7 @@ final class Kadence_Blocks_Singlebtn_Css {
 	 *
 	 * @return Kadence_Blocks_Css_Section[]
 	 */
-	private function sections(): array {
+	protected function sections(): array {
 		return [
 			new Kadence_Blocks_Singlebtn_Dynamic_Css(),
 			new Kadence_Blocks_Css_Button_Width_Section( '.wp-block-kadence-advancedbtn .kb-btn{id}.kb-button, ul.menu .wp-block-kadence-advancedbtn .kb-btn{id}.kb-button', 'ul.menu .wp-block-kadence-advancedbtn .kb-btn{id}.kb-button' ),
