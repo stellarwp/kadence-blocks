@@ -45,6 +45,68 @@ final class TableofcontentsSectionsTest extends Tableofcontents_Test_Case {
 	}
 
 	/**
+	 * A Google font is only registered for loading when the block was not told to leave it unloaded.
+	 *
+	 * The CSS text is the same either way, so this reads the fonts collected for loading once the CSS is output.
+	 *
+	 * @dataProvider googleFontProvider
+	 *
+	 * @param array<string, mixed> $attributes The block attributes.
+	 * @param string[]             $expected   The fonts registered for loading.
+	 *
+	 * @return void
+	 */
+	public function testGoogleFontRegistration( array $attributes, array $expected ): void {
+		$fonts = new \ReflectionProperty( \Kadence_Blocks_Google_Fonts::class, 'gfonts' );
+		$fonts->setAccessible( true );
+		$fonts->setValue( null, [] );
+
+		$this->write_section( new Kadence_Blocks_Tableofcontents_Font_Family( 'content' ), $attributes );
+
+		$registered = array_keys( $fonts->getValue() );
+		$fonts->setValue( null, [] );
+
+		$this->assertSame( $expected, $registered );
+	}
+
+	/**
+	 * @return Generator
+	 */
+	public function googleFontProvider(): Generator {
+		yield 'a Google font that is told to load' => [
+			'attributes' => [
+				'contentTypography'     => 'Lato',
+				'contentGoogleFont'     => true,
+				'contentLoadGoogleFont' => true,
+			],
+			'expected'   => [ 'Lato' ],
+		];
+		yield 'a Google font with no load setting loads' => [
+			'attributes' => [
+				'contentTypography' => 'Lato',
+				'contentGoogleFont' => true,
+			],
+			'expected'   => [ 'Lato' ],
+		];
+		yield 'a Google font that is told not to load' => [
+			'attributes' => [
+				'contentTypography'     => 'Lato',
+				'contentGoogleFont'     => true,
+				'contentLoadGoogleFont' => false,
+			],
+			'expected'   => [],
+		];
+		yield 'a font that is not a Google font' => [
+			'attributes' => [
+				'contentTypography'     => 'Lato',
+				'contentGoogleFont'     => false,
+				'contentLoadGoogleFont' => true,
+			],
+			'expected'   => [],
+		];
+	}
+
+	/**
 	 * A border condition is met, or not, for the attributes.
 	 *
 	 * @dataProvider conditionProvider

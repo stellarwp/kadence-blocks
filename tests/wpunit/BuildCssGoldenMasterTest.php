@@ -5,6 +5,7 @@ namespace Tests\wpunit;
 use Generator;
 use Kadence_Blocks_Abstract_Block;
 use Kadence_Blocks_CSS;
+use Kadence_Blocks_Google_Fonts;
 use ReflectionMethod;
 use ReflectionProperty;
 use Tests\Support\Classes\Build_Css_Fuzzer;
@@ -78,6 +79,10 @@ final class BuildCssGoldenMasterTest extends TestCase {
 			if ( ! is_dir( dirname( $file ) ) ) {
 				mkdir( dirname( $file ), 0775, true );
 			}
+			if ( 'fonts' === getenv( 'BUILD_CSS_GOLDEN_WRITE' ) && is_readable( $file ) ) {
+				// Add only the Google fonts to a golden file that already exists, so the recorded CSS stays as it was.
+				$results = array_merge( json_decode( (string) file_get_contents( $file ), true ), [ 'fonts' => $results['fonts'] ] );
+			}
 			file_put_contents( $file, json_encode( $results, JSON_PRETTY_PRINT ) . "\n" );
 			$this->assertNotEmpty( $results['hashes'] );
 
@@ -88,6 +93,10 @@ final class BuildCssGoldenMasterTest extends TestCase {
 		$golden = json_decode( (string) file_get_contents( $file ), true );
 
 		$this->assertSame( $golden['semantic'], $results['semantic'], $this->first_difference( $golden['semantic'], $results['semantic'] ) );
+
+		if ( isset( $golden['fonts'] ) ) {
+			$this->assertSame( $golden['fonts'], $results['fonts'], 'The Google fonts registered for loading changed. ' . $this->first_difference( $golden['fonts'], $results['fonts'] ) );
+		}
 	}
 
 	/**
@@ -176,6 +185,8 @@ final class BuildCssGoldenMasterTest extends TestCase {
 			$semantic[] = $normalizer->hash( $css );
 		}
 
+		$fonts = $this->google_fonts_for( $block, $schema, $pool );
+
 		$this->dump_cases( $schema, $pool );
 
 		return [
@@ -184,6 +195,7 @@ final class BuildCssGoldenMasterTest extends TestCase {
 			'pool'     => $pool,
 			'hashes'   => $hashes,
 			'semantic' => $semantic,
+			'fonts'    => $fonts,
 		];
 	}
 
@@ -249,6 +261,62 @@ final class BuildCssGoldenMasterTest extends TestCase {
 		$css = $this->css_for( $block, $attributes );
 		file_put_contents( $base . '.new.css', $css );
 		file_put_contents( $base . '.new.normalized.json', json_encode( ( new Css_Normalizer() )->normalize( $css ), JSON_PRETTY_PRINT ) );
+	}
+
+	/**
+	 * The Google fonts each generated attribute set registers for loading, with the fuzzed Google font settings turned on.
+	 *
+	 * The CSS text does not show whether a font is loaded, so this pins that decision separately. A case with no fonts is
+	 * an empty string.
+	 *
+	 * @param Kadence_Blocks_Abstract_Block               $block  The block.
+	 * @param array<string, array<string, mixed>>         $schema The attribute schema.
+	 * @param string[]                                    $pool   The string pool.
+	 *
+	 * @return string[]
+	 */
+	private function google_fonts_for( Kadence_Blocks_Abstract_Block $block, array $schema, array $pool ): array {
+		$registry = new ReflectionProperty( Kadence_Blocks_Google_Fonts::class, 'gfonts' );
+		$registry->setAccessible( true );
+
+		$fonts = [];
+		for ( $seed = 1; $seed <= self::CASES_PER_BLOCK; $seed++ ) {
+			$registry->setValue( null, [] );
+			$this->css_for( $block, $this->with_google_fonts( ( new Build_Css_Fuzzer( $seed, $pool ) )->attributes( $schema ) ) );
+
+			$registered = $registry->getValue();
+			ksort( $registered );
+			$fonts[] = $registered ? sha1( json_encode( $registered ) ) : '';
+		}
+		$registry->setValue( null, [] );
+
+		return $fonts;
+	}
+
+	/**
+	 * Turn on every Google font setting and give every font family a name, at any depth.
+	 *
+	 * @param array<string, mixed> $attributes The generated attributes.
+	 *
+	 * @return array<string, mixed>
+	 */
+	private function with_google_fonts( array $attributes ): array {
+		foreach ( $attributes as $key => $value ) {
+			if ( is_array( $value ) ) {
+				$attributes[ $key ] = $this->with_google_fonts( $value );
+				continue;
+			}
+
+			if ( is_string( $key ) && false !== stripos( $key, 'google' ) ) {
+				$attributes[ $key ] = true;
+			}
+
+			if ( is_string( $key ) && is_string( $value ) && preg_match( '/(^family$|Typography$|FontFamily$|^font$)/', $key ) ) {
+				$attributes[ $key ] = 'Lato';
+			}
+		}
+
+		return $attributes;
 	}
 
 	/**
