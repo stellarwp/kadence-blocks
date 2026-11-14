@@ -78,14 +78,7 @@ class Kadence_Blocks_Header_Row_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param string $unique_style_id the blocks alternate ID for queries.
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-header-row-css.php';
-
-		$bridge  = function ( $member, ...$args ) {
-			return method_exists( $this, $member ) ? $this->$member( ...$args ) : $this->$member;
-		};
-		$builder = new Kadence_Blocks_Header_Row_Css( new Kadence_Blocks_Css_Block_Context( $this->block_name, $bridge ) );
-
-		return $builder->build( $attributes, $css, $unique_id, $unique_style_id );
+		return Kadence_Blocks_Css_Builders::build( 'Kadence_Blocks_Header_Row_Css', $this, $this->block_name, $attributes, $css, $unique_id, $unique_style_id );
 	}
 
 	/**

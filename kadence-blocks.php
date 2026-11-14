@@ -21,6 +21,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 define( 'KADENCE_BLOCKS_PATH', realpath( plugin_dir_path( __FILE__ ) ) . DIRECTORY_SEPARATOR );
 define( 'KADENCE_BLOCKS_URL', plugin_dir_url( __FILE__ ) );
 define( 'KADENCE_BLOCKS_VERSION', '3.9.1' );
+// The version of the CSS builder classes other plugins may use. Raise it when a builder class they use changes or goes.
+define( 'KADENCE_BLOCKS_CSS_BUILDERS_VERSION', '1.0.0' );
 
 /**
  * Plugin basename, e.g. "kadence-blocks/kadence-blocks.php".
@@ -69,6 +71,7 @@ function kadence_blocks_init(): void {
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-google-fonts.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/settings/class-kadence-blocks-helper.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-css.php';
+	require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-css-builders.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-frontend.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-table-of-contents.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-duplicate-post.php';

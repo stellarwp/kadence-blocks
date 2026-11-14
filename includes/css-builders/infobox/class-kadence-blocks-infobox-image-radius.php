@@ -34,18 +34,34 @@ final class Kadence_Blocks_Infobox_Image_Radius_Css implements Kadence_Blocks_Cs
 		$radius  = $style['borderRadius'] ?? null;
 		$padding = $style['padding'] ?? null;
 
-		if ( empty( $radius ) || ! is_array( $padding ) || empty(
-			array_filter(
-				$padding,
-				static function ( $value ) {
-					return $value > 0;
-				} 
-			) 
-		) ) {
+		if ( empty( $radius ) || ! $this->has_padding( $padding ) ) {
 			return;
 		}
 
 		Kadence_Blocks_Infobox_Selector::set( $input, '{base} .kt-blocks-info-box-media .kadence-info-box-image-intrisic img' );
 		$input->css()->add_property( 'border-radius', $radius . ( $style['borderRadiusUnit'] ?? 'px' ) );
+	}
+
+	/**
+	 * Whether any side of the padding is above zero.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $padding The saved padding.
+	 *
+	 * @return bool
+	 */
+	private function has_padding( $padding ): bool {
+		if ( ! is_array( $padding ) ) {
+			return false;
+		}
+
+		foreach ( $padding as $side ) {
+			if ( $side > 0 ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }

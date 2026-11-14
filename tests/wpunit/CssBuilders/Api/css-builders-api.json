@@ -1,0 +1,2340 @@
+{
+    "Kadence_Blocks_Accept_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Accordion_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Accordion_Grid_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Accordion_Icon_Color_Css": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Accordion_Icon_State_Condition": {
+        "__construct": 2,
+        "is_met": 1
+    },
+    "Kadence_Blocks_Accordion_Layout_Css": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Accordion_Row_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Accordion_Selectors": {
+        "named": 1
+    },
+    "Kadence_Blocks_Accordion_Title_Margin_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Accordion_Title_Margin_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Accordion_Title_Styles_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Advanced_Form_Active_Border_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Advanced_Form_Border_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Advanced_Form_Border_Variable_Css": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Advanced_Form_Color_Css": {
+        "__construct": 3,
+        "write": 1
+    },
+    "Kadence_Blocks_Advanced_Form_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Advanced_Form_Dark_Scheme_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Advanced_Form_Fill_Css": {
+        "__construct": 5,
+        "write": 1
+    },
+    "Kadence_Blocks_Advanced_Form_Gap_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Advanced_Form_Max_Width_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Advanced_Form_Measure_Css": {
+        "__construct": 4,
+        "write": 1
+    },
+    "Kadence_Blocks_Advanced_Form_Message_Spacing_Css": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Advanced_Form_Message_Typography_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Advanced_Form_Normal_Style_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Advanced_Form_Settings": {
+        "__construct": 1,
+        "all": 0,
+        "border": 1,
+        "filled": 2,
+        "from_post_attributes": 1,
+        "group": 1
+    },
+    "Kadence_Blocks_Advanced_Form_Shadow_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Advanced_Form_Typography_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedbtn_Alignment_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedbtn_Button_Assets_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedbtn_Button_Background_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedbtn_Button_Border_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedbtn_Button_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedbtn_Button_Device_Css": {
+        "__construct": 3,
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedbtn_Button_Gap_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedbtn_Button_Hover_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedbtn_Button_Hover_Gradient_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedbtn_Button_Hover_Solid_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedbtn_Button_Icon_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedbtn_Button_Selector_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedbtn_Button_Size_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedbtn_Button_Type": {
+        "is_gradient": 1
+    },
+    "Kadence_Blocks_Advancedbtn_Buttons_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedbtn_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Advancedbtn_Flex_Axes": {
+        "__construct": 0,
+        "horizontal": 0,
+        "horizontal_value": 1,
+        "vertical": 0,
+        "vertical_value": 1,
+        "with_orientation": 1
+    },
+    "Kadence_Blocks_Advancedbtn_Group_Gap_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedbtn_Group_Margin_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedbtn_Typography_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedbtn_Video_Assets_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedgallery_Arrow_Position_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Advancedgallery_Arrow_Size_Css": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedgallery_Border_Width_Css": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedgallery_Caption_Background_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Advancedgallery_Caption_Background_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedgallery_Caption_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Advancedgallery_Caption_Placement_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Advancedgallery_Caption_Typography_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedgallery_Carousel_Height_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedgallery_Carousel_Style_Condition": {
+        "__construct": 2,
+        "is_met": 1
+    },
+    "Kadence_Blocks_Advancedgallery_Color_Css": {
+        "__construct": 3,
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedgallery_Color_Rows": {
+        "sections": 3
+    },
+    "Kadence_Blocks_Advancedgallery_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Advancedgallery_Dot_Outline_Css": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedgallery_Filled_Condition": {
+        "__construct": 1,
+        "is_met": 1
+    },
+    "Kadence_Blocks_Advancedgallery_Gutter_Css": {
+        "__construct": 3,
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedgallery_Image_Radius_Css": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedgallery_Margin_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedgallery_Responsive_Range_Css": {
+        "__construct": 3,
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedgallery_Settings": {
+        "derive": 1
+    },
+    "Kadence_Blocks_Advancedgallery_Shadow_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Advancedgallery_Shadow_Css": {
+        "__construct": 3,
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedgallery_Shadow_Entry": {
+        "__construct": 2,
+        "first": 1
+    },
+    "Kadence_Blocks_Advancedgallery_Shadow_Entry_Condition": {
+        "__construct": 1,
+        "is_met": 1
+    },
+    "Kadence_Blocks_Advancedgallery_Type_Condition": {
+        "__construct": 1,
+        "carousel": 0,
+        "is_met": 1
+    },
+    "Kadence_Blocks_Advancedheading_Align_Important_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedheading_Aspect_Ratio_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedheading_Attribute_Property_Css": {
+        "__construct": 3,
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedheading_Border_Radius_Css": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedheading_Color_Output_Css": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedheading_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Advancedheading_Device_Letter_Spacing_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedheading_Filled_Alpha_Color_Css": {
+        "__construct": 4,
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedheading_Font_Family_Css": {
+        "__construct": 4,
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedheading_Font_Size_Css": {
+        "__construct": 4,
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedheading_Font_Weight_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedheading_Icon_Align_Items_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedheading_Icon_Line_Height_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedheading_Inline_Width_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Advancedheading_Letter_Spacing_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedheading_Line_Height_Css": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedheading_Margin_Side_Css": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedheading_Mark_Border_Style_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedheading_Mark_Color_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedheading_Max_Width_Align_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedheading_Orientation_Css": {
+        "__construct": 3,
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedheading_Preset_Typography_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedheading_Range_Css": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedheading_Render_Color_Css": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedheading_Selector_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedheading_Text_Gradient_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Advancedheading_Text_Shadow_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Advancedheading_Text_Shadow_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedheading_Themed_Color_Css": {
+        "__construct": 4,
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedheading_Top_Margin_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Advancedheading_Unit_Value_Css": {
+        "__construct": 5,
+        "write": 1
+    },
+    "Kadence_Blocks_Captcha_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Checkbox_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Column_Backdrop_Filter_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Column_Background_Color_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Column_Background_Image_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Column_Border_Color_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Column_Collapse_Order_Css": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Column_Color_Rule_Css": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Column_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Column_Desktop_Horizontal_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Column_Desktop_Vertical_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Column_Device": {
+        "__construct": 1,
+        "direction": 0,
+        "flex_wrap": 0,
+        "horizontal_align": 0,
+        "is_horizontal": 0,
+        "is_vertical": 0,
+        "max_width_unit": 0,
+        "text_align": 0,
+        "vertical_align": 0
+    },
+    "Kadence_Blocks_Column_Flex_Basis_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Column_Flex_Display_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Column_Flex_Grow_Css": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Column_Flex_Values": {
+        "cross": 1,
+        "main": 1,
+        "text": 1
+    },
+    "Kadence_Blocks_Column_Horizontal_Gap_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Column_Horizontal_Gap_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Column_Hover_Color_Css": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Column_Layout": {
+        "__construct": 1,
+        "device": 1,
+        "is_version_two": 0
+    },
+    "Kadence_Blocks_Column_Max_Width_Desktop_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Column_Max_Width_Fallback_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Column_Max_Width_Mobile_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Column_Max_Width_Tablet_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Column_Min_Height_Css": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Column_Mobile_Children_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Column_Mobile_Cross_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Column_Opacity_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Column_Orientation_Css": {
+        "__construct": 3,
+        "write": 1
+    },
+    "Kadence_Blocks_Column_Row_Align_Css": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Column_Row_Alignment_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Column_Row_Children_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Column_Row_Direction_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Column_Row_Wrap_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Column_Selector": {
+        "set": 2
+    },
+    "Kadence_Blocks_Column_Selector_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Column_Start_Justify_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Column_Sticky_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Column_Sticky_Offset_Css": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Column_Tablet_Children_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Column_Tablet_Cross_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Column_Text_Align_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Column_Text_Justify_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Column_Vertical_Flow_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Column_Vertical_Gap_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Column_Vertical_To_Horizontal_Css": {
+        "__construct": 3,
+        "write": 1
+    },
+    "Kadence_Blocks_Column_Z_Index_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Countdown_Any_Condition": {
+        "__construct": 2,
+        "is_met": 1
+    },
+    "Kadence_Blocks_Countdown_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Countdown_Font": {
+        "__construct": 1,
+        "from_input": 2,
+        "get": 1,
+        "is_empty": 0,
+        "is_google": 0,
+        "measure": 3,
+        "size": 2
+    },
+    "Kadence_Blocks_Countdown_Font_Family_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Countdown_Font_Measure_Css": {
+        "__construct": 5,
+        "write": 1
+    },
+    "Kadence_Blocks_Countdown_Font_Size_Css": {
+        "__construct": 3,
+        "write": 1
+    },
+    "Kadence_Blocks_Countdown_Font_Used_Condition": {
+        "__construct": 2,
+        "is_met": 1
+    },
+    "Kadence_Blocks_Countdown_Font_Value_Css": {
+        "__construct": 3,
+        "write": 1
+    },
+    "Kadence_Blocks_Countdown_Font_Weight_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Countdown_Side_Map": {
+        "border_width": 0,
+        "padding": 0,
+        "radius": 0,
+        "vertical_border_width": 0,
+        "vertical_padding": 0
+    },
+    "Kadence_Blocks_Countdown_Sides_Css": {
+        "__construct": 3,
+        "write": 1
+    },
+    "Kadence_Blocks_Countup_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Countup_Font_Condition": {
+        "__construct": 1,
+        "is_met": 1
+    },
+    "Kadence_Blocks_Countup_Min_Height_Condition": {
+        "__construct": 1,
+        "is_met": 1
+    },
+    "Kadence_Blocks_Countup_Number_Height_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Css_Alpha_Color_Section": {
+        "__construct": 3,
+        "write": 1
+    },
+    "Kadence_Blocks_Css_Attribute_Section": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Css_Block_Bridge": {
+        "__construct": 1,
+        "__invoke": 1,
+        "call": 1,
+        "has": 1
+    },
+    "Kadence_Blocks_Css_Block_Context": {
+        "__construct": 2,
+        "block_name": 0,
+        "call": 1
+    },
+    "Kadence_Blocks_Css_Border_Color_Section": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Css_Border_Radius_Section": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Css_Border_Styles_Section": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Css_Build_Input": {
+        "__construct": 5,
+        "attribute": 1,
+        "attributes": 0,
+        "context": 0,
+        "css": 0,
+        "derived": 1,
+        "item": 2,
+        "unique_id": 0,
+        "unique_style_id": 0,
+        "with": 2,
+        "with_attributes": 1
+    },
+    "Kadence_Blocks_Css_Builders": {
+        "add_directory": 1,
+        "build": 7,
+        "create": 3,
+        "directories": 0
+    },
+    "Kadence_Blocks_Css_Button_Background_Section": {
+        "write": 1
+    },
+    "Kadence_Blocks_Css_Button_Fixed_Width_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Css_Button_Hover_Background_Section": {
+        "write": 1
+    },
+    "Kadence_Blocks_Css_Button_Icon_Section": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Css_Button_States_Section": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Css_Button_Types": {
+        "derive": 1
+    },
+    "Kadence_Blocks_Css_Button_Visibility_Section": {
+        "__construct": 5,
+        "write": 1
+    },
+    "Kadence_Blocks_Css_Button_Width_Section": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Css_Choice_Section": {
+        "__construct": 3,
+        "write": 1
+    },
+    "Kadence_Blocks_Css_Color_Format": {
+        "__construct": 1,
+        "format": 1
+    },
+    "Kadence_Blocks_Css_Color_Opacity_Declaration": {
+        "__construct": 1,
+        "write": 3
+    },
+    "Kadence_Blocks_Css_Color_Output_Section": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Css_Color_Section": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Css_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Css_Context_Post_Attributes": {
+        "__construct": 3,
+        "for_post": 1
+    },
+    "Kadence_Blocks_Css_Custom_Section": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Css_Declaration": {
+        "__construct": 3,
+        "write": 2
+    },
+    "Kadence_Blocks_Css_Derived_Scope_Section": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Css_Device_Keys": {
+        "arguments": 1
+    },
+    "Kadence_Blocks_Css_Device_Section": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Css_Empty_Condition": {
+        "__construct": 1,
+        "is_met": 1
+    },
+    "Kadence_Blocks_Css_Enabled_Section": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Css_Fallback_Color_Section": {
+        "__construct": 3,
+        "write": 1
+    },
+    "Kadence_Blocks_Css_Font_Weight_Format": {
+        "__construct": 1,
+        "format": 1
+    },
+    "Kadence_Blocks_Css_Gap_Section": {
+        "__construct": 3,
+        "write": 1
+    },
+    "Kadence_Blocks_Css_Gate_Section": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Css_Input_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Css_Item_Section": {
+        "__construct": 3,
+        "write": 1
+    },
+    "Kadence_Blocks_Css_Item_Value_Section": {
+        "__construct": 3,
+        "write": 1
+    },
+    "Kadence_Blocks_Css_Legacy_Border_Condition": {
+        "__construct": 1,
+        "is_met": 1
+    },
+    "Kadence_Blocks_Css_Legacy_Condition": {
+        "__construct": 3,
+        "is_met": 1,
+        "sides": 1
+    },
+    "Kadence_Blocks_Css_Legacy_Shadow_Section": {
+        "__construct": 3,
+        "write": 1
+    },
+    "Kadence_Blocks_Css_Legacy_Sides_Section": {
+        "__construct": 3,
+        "write": 1
+    },
+    "Kadence_Blocks_Css_Measure_Range_Section": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Css_Measure_Section": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Css_Not_Empty_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Css_Numeric_Attribute_Condition": {
+        "__construct": 1,
+        "is_met": 1
+    },
+    "Kadence_Blocks_Css_Numeric_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Css_Numeric_Unit_Section": {
+        "__construct": 3,
+        "write": 1
+    },
+    "Kadence_Blocks_Css_Post_Attributes": {
+        "for_post": 1
+    },
+    "Kadence_Blocks_Css_Range_Section": {
+        "__construct": 3,
+        "write": 1
+    },
+    "Kadence_Blocks_Css_Raw_Format": {
+        "format": 1
+    },
+    "Kadence_Blocks_Css_Rendered_Color_Section": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Css_Responsive_Range_Section": {
+        "__construct": 3,
+        "write": 1
+    },
+    "Kadence_Blocks_Css_Responsive_Size_Section": {
+        "__construct": 3,
+        "write": 1
+    },
+    "Kadence_Blocks_Css_Rule_Section": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Css_Sanitized_Color_Format": {
+        "__construct": 1,
+        "format": 1
+    },
+    "Kadence_Blocks_Css_Sanitized_Color_Section": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Css_Scoped_Section": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Css_Section": {
+        "write": 1
+    },
+    "Kadence_Blocks_Css_Selector_Section": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Css_Shadow_Section": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Css_Side_List_Section": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Css_Sides": {
+        "__construct": 2,
+        "write": 3
+    },
+    "Kadence_Blocks_Css_Sized_Dynamic_Section": {
+        "write": 1
+    },
+    "Kadence_Blocks_Css_Spacing_Section": {
+        "__construct": 3,
+        "write": 1
+    },
+    "Kadence_Blocks_Css_Static_Section": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Css_Stops_Gradient": {
+        "value": 3
+    },
+    "Kadence_Blocks_Css_Strict_Condition": {
+        "__construct": 2,
+        "is_met": 1
+    },
+    "Kadence_Blocks_Css_String_Format": {
+        "__construct": 1,
+        "format": 1
+    },
+    "Kadence_Blocks_Css_Suffixed_Section": {
+        "__construct": 3,
+        "write": 1
+    },
+    "Kadence_Blocks_Css_Switched_Off_Condition": {
+        "__construct": 1,
+        "is_met": 1
+    },
+    "Kadence_Blocks_Css_Text_Align_Section": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Css_Typed_Section": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Css_Typography_Section": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Css_Unit_Format": {
+        "__construct": 1,
+        "format": 1
+    },
+    "Kadence_Blocks_Css_Unit_Measure_Range_Section": {
+        "__construct": 3,
+        "write": 1
+    },
+    "Kadence_Blocks_Css_Value_Format": {
+        "format": 1
+    },
+    "Kadence_Blocks_Css_Value_Section": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Css_Writer": {
+        "__construct": 1,
+        "color_with_opacity": 3,
+        "not_empty": 2,
+        "not_empty_color": 2,
+        "not_empty_font_weight": 2,
+        "not_empty_sanitized_color": 2,
+        "not_empty_string": 2,
+        "not_empty_with_unit": 3,
+        "numeric_sides": 3,
+        "numeric_with_unit": 3
+    },
+    "Kadence_Blocks_Date_Input_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Email_Input_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_File_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Form_Active_Style_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Form_Background_Css": {
+        "__construct": 5,
+        "write": 1
+    },
+    "Kadence_Blocks_Form_Border_Width_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Form_Checkbox_Style_Css": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Form_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Form_Field_Style_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Form_Font_Device_Css": {
+        "__construct": 6,
+        "write": 1
+    },
+    "Kadence_Blocks_Form_Font_Size_Css": {
+        "__construct": 4,
+        "write": 1
+    },
+    "Kadence_Blocks_Form_Font_Text_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Form_Google_Font_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Form_Gutter_Css": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Form_Honey_Pot_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Form_Hover_Inset_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Form_Padding_Css": {
+        "__construct": 3,
+        "write": 1
+    },
+    "Kadence_Blocks_Form_Radius_Css": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Form_Row_Gap_Css": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Form_Scripts_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Form_Selector": {
+        "set": 2
+    },
+    "Kadence_Blocks_Form_Submit_Gradient_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Form_Submit_Width_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Googlemaps_Align_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Googlemaps_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Googlemaps_Filter_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Header_Backdrop_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Header_Column_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Header_Container_Desktop_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Header_Container_Tablet_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Header_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Header_Environment": {
+        "has_pro": 0
+    },
+    "Kadence_Blocks_Header_Row_Background_Css": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Header_Row_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Header_Row_Dimension_Css": {
+        "__construct": 3,
+        "write": 1
+    },
+    "Kadence_Blocks_Header_Section_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Header_Site_Environment": {
+        "has_pro": 0
+    },
+    "Kadence_Blocks_Icon_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Icon_Flex_Align_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Icon_Item_Selector_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Icon_Items_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Iconlist_Columns_Condition": {
+        "__construct": 1,
+        "is_met": 1
+    },
+    "Kadence_Blocks_Iconlist_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Iconlist_Environment": {
+        "is_rtl": 0
+    },
+    "Kadence_Blocks_Iconlist_Gap_Css": {
+        "__construct": 4,
+        "write": 1
+    },
+    "Kadence_Blocks_Iconlist_Google_Font_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Iconlist_Label_Gap_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Iconlist_Legacy_Size_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Iconlist_List_Styles_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Iconlist_Outer_Margin_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Iconlist_Site_Environment": {
+        "is_rtl": 0
+    },
+    "Kadence_Blocks_Iconlist_Suffixed_Css": {
+        "__construct": 4,
+        "write": 1
+    },
+    "Kadence_Blocks_Identity_Aligned_Layout_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Identity_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Identity_Vertical_Align_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Image_Align_Condition": {
+        "__construct": 2,
+        "is_met": 1
+    },
+    "Kadence_Blocks_Image_All_Condition": {
+        "__construct": 1,
+        "is_met": 1
+    },
+    "Kadence_Blocks_Image_Border_Color_Section": {
+        "write": 1
+    },
+    "Kadence_Blocks_Image_Border_Width_Section": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Image_Box_Shadow_Section": {
+        "write": 1
+    },
+    "Kadence_Blocks_Image_Caption_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Image_Caption_Device_Condition": {
+        "__construct": 1,
+        "is_met": 1
+    },
+    "Kadence_Blocks_Image_Caption_Device_Section": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Image_Caption_Font_Family_Section": {
+        "write": 1
+    },
+    "Kadence_Blocks_Image_Caption_Font_Size_Section": {
+        "write": 1
+    },
+    "Kadence_Blocks_Image_Caption_Letter_Spacing_Section": {
+        "write": 1
+    },
+    "Kadence_Blocks_Image_Caption_Line_Height_Section": {
+        "write": 1
+    },
+    "Kadence_Blocks_Image_Caption_Sections": {
+        "device_sections": 1,
+        "font_sections": 0,
+        "sections": 0
+    },
+    "Kadence_Blocks_Image_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Image_Drop_Shadow_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Image_Drop_Shadow_Section": {
+        "write": 1
+    },
+    "Kadence_Blocks_Image_Filled_Condition": {
+        "__construct": 1,
+        "is_met": 1
+    },
+    "Kadence_Blocks_Image_Layout_Sections": {
+        "aligned": 0,
+        "alignment_sections": 0,
+        "desktop_width_sections": 0,
+        "device_sections": 1,
+        "device_width_sections": 0,
+        "margin_sections": 0,
+        "not_full_width": 0,
+        "padding_sections": 0,
+        "plain_sections": 1,
+        "ratio_sections": 0,
+        "sections": 0
+    },
+    "Kadence_Blocks_Image_Mask_Custom_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Image_Mask_Custom_Section": {
+        "write": 1
+    },
+    "Kadence_Blocks_Image_Mask_Enabled_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Image_Mask_Preset_Section": {
+        "write": 1
+    },
+    "Kadence_Blocks_Image_Mask_Writer": {
+        "write": 5
+    },
+    "Kadence_Blocks_Image_Numeric_Condition": {
+        "__construct": 1,
+        "is_met": 1
+    },
+    "Kadence_Blocks_Image_Overlay_Opacity_Section": {
+        "write": 1
+    },
+    "Kadence_Blocks_Image_Overlay_Type_Condition": {
+        "__construct": 1,
+        "is_met": 1
+    },
+    "Kadence_Blocks_Image_Px_Section": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Image_Style_Sections": {
+        "border_sections": 0,
+        "border_width_sections": 0,
+        "effect_sections": 0,
+        "mask_sections": 0,
+        "overlay_sections": 0,
+        "sections": 0
+    },
+    "Kadence_Blocks_Infobox_Container_Background_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Infobox_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Infobox_Dimension_Ratio_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Infobox_Draw_Border_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Infobox_Draw_Border_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Infobox_Flex_Align_Css": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Infobox_Font_Device_Css": {
+        "__construct": 4,
+        "write": 1
+    },
+    "Kadence_Blocks_Infobox_Font_Family_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Infobox_Font_Size_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Infobox_Font_Weight_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Infobox_Full_Height_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Infobox_Icon_Size_Css": {
+        "__construct": 3,
+        "write": 1
+    },
+    "Kadence_Blocks_Infobox_Image_Max_Width_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Infobox_Image_Radius_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Infobox_Image_Size_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Infobox_Learn_More_Border_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Infobox_Learn_More_Layout_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Infobox_Learn_More_Layout_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Infobox_Letter_Spacing_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Infobox_Margin_Placement": {
+        "__construct": 1,
+        "is_met": 1
+    },
+    "Kadence_Blocks_Infobox_Max_Width_Css": {
+        "__construct": 3,
+        "write": 1
+    },
+    "Kadence_Blocks_Infobox_Media": {
+        "__construct": 1,
+        "icon": 0,
+        "image": 0,
+        "number": 0,
+        "style": 0
+    },
+    "Kadence_Blocks_Infobox_Media_Align_Mobile_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Infobox_Media_Align_Tablet_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Infobox_Media_Radius_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Infobox_Min_Height_Css": {
+        "__construct": 3,
+        "write": 1
+    },
+    "Kadence_Blocks_Infobox_Number_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Infobox_Numeric_Sides_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Infobox_Ratio_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Infobox_Ratio_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Infobox_Selector": {
+        "set": 2
+    },
+    "Kadence_Blocks_Infobox_Selector_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Infobox_Shadow_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Infobox_Stretch_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Infobox_Svg_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Infobox_Svg_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Infobox_Text_Align_Css": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Infobox_Title_Tag": {
+        "resolve": 2
+    },
+    "Kadence_Blocks_Infobox_Unit_Radius_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Listitem_Alpha_Color_Css": {
+        "__construct": 3,
+        "write": 1
+    },
+    "Kadence_Blocks_Listitem_Border_Radius_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Listitem_Border_Style_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Listitem_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Listitem_Font_Family_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Listitem_Font_Size_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Listitem_Font_Weight_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Listitem_Important_Css": {
+        "__construct": 4,
+        "write": 1
+    },
+    "Kadence_Blocks_Listitem_Mark_Color_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Listitem_Plain_Background_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Listitem_Size_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Listitem_Styled_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Listitem_Unit_Css": {
+        "__construct": 4,
+        "write": 1
+    },
+    "Kadence_Blocks_Lottie_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Lottie_Max_Width_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Lottie_Width": {
+        "resolve": 1
+    },
+    "Kadence_Blocks_Navigation_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Navigation_Dropdown_Shadow_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Navigation_Link_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Navigation_Link_Disabled_Link_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Navigation_Link_Dropdown_Shadow": {
+        "write": 1
+    },
+    "Kadence_Blocks_Navigation_Link_Highlight_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Navigation_Link_Media_Intrinsic": {
+        "write": 1
+    },
+    "Kadence_Blocks_Navigation_Link_Media_Max_Width": {
+        "write": 1
+    },
+    "Kadence_Blocks_Navigation_Link_Media_Padding": {
+        "write": 1
+    },
+    "Kadence_Blocks_Navigation_Link_Media_Ratio": {
+        "__construct": 1,
+        "has_ratio": 0,
+        "padding": 0
+    },
+    "Kadence_Blocks_Navigation_Link_Sized_Styles": {
+        "write": 1
+    },
+    "Kadence_Blocks_Navigation_Plain_Attributes": {
+        "__construct": 1,
+        "for_post": 1
+    },
+    "Kadence_Blocks_Number_Input_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Off_Canvas_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Off_Canvas_Trigger_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Posts_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Posts_Environment": {
+        "has_kadence_theme": 0,
+        "kadence_version": 0
+    },
+    "Kadence_Blocks_Posts_Old_Theme_Condition": {
+        "__construct": 1,
+        "is_met": 1
+    },
+    "Kadence_Blocks_Posts_Site_Environment": {
+        "has_kadence_theme": 0,
+        "kadence_version": 0
+    },
+    "Kadence_Blocks_Posts_Theme_Condition": {
+        "__construct": 1,
+        "is_met": 1
+    },
+    "Kadence_Blocks_Posts_Title_Font_Size_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Posts_Title_Letter_Spacing_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Posts_Title_Line_Height_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Posts_Title_Metric": {
+        "read": 3
+    },
+    "Kadence_Blocks_Progress_Bar_Alignment_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Progress_Bar_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Progress_Bar_First_Radius_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Progress_Bar_Inside_Line_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Progress_Bar_Label_Column_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Progress_Bar_Line_Bar_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Progress_Bar_Line_Mask_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Progress_Bar_Mask": {
+        "__construct": 1,
+        "aspect_ratio": 0,
+        "image": 0,
+        "position": 0,
+        "repeat": 0,
+        "size": 1
+    },
+    "Kadence_Blocks_Progress_Bar_Mask_Bar_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Progress_Bar_Mask_Dimensions_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Progress_Bar_Mask_Image_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Progress_Bar_Mask_Size": {
+        "__construct": 3,
+        "desktop": 2,
+        "height_css": 0,
+        "responsive": 2,
+        "width_css": 0
+    },
+    "Kadence_Blocks_Progress_Bar_Number_Font_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Progress_Bar_Number_Font_Merge": {
+        "resolve": 3
+    },
+    "Kadence_Blocks_Progress_Bar_Radius_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Radio_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Rowlayout_Background_Color_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Rowlayout_Background_Facts": {
+        "__construct": 1,
+        "has_main_parallax": 0,
+        "has_parallax_image": 0,
+        "has_tablet_parallax": 0,
+        "is_inline": 0,
+        "mobile": 0,
+        "tablet": 0,
+        "type": 0
+    },
+    "Kadence_Blocks_Rowlayout_Blend_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Rowlayout_Border_Color_Css": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Rowlayout_Breakout_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Rowlayout_Breakout_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Rowlayout_Breakout_Margin_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Rowlayout_Breakout_Values": {
+        "__construct": 2,
+        "inherit_width": 0,
+        "padding": 1
+    },
+    "Kadence_Blocks_Rowlayout_Breakout_Variables_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Rowlayout_Breakout_Wide_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Rowlayout_Clip_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Rowlayout_Color_Output_Css": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Rowlayout_Columns": {
+        "__construct": 1,
+        "count": 0,
+        "has_custom_widths": 2,
+        "is_collapsing": 1,
+        "layout_for": 1,
+        "widths": 1,
+        "widths_for": 2
+    },
+    "Kadence_Blocks_Rowlayout_Compat_Margin_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Rowlayout_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Rowlayout_Custom_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Rowlayout_Default_Padding_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Rowlayout_Environment": {
+        "content_width": 0,
+        "has_generatepress": 0,
+        "has_kadence_theme": 0,
+        "is_fse_mode": 0
+    },
+    "Kadence_Blocks_Rowlayout_Filtered_Media_Css": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Rowlayout_Gap_Css": {
+        "__construct": 4,
+        "write": 1
+    },
+    "Kadence_Blocks_Rowlayout_Gradient_Css": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Rowlayout_Grid_Css": {
+        "__construct": 3,
+        "write": 1
+    },
+    "Kadence_Blocks_Rowlayout_Image_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Rowlayout_Inherited_Width_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Rowlayout_Jarallax_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Rowlayout_Many_Columns_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Rowlayout_Max_Width_Css": {
+        "__construct": 3,
+        "write": 1
+    },
+    "Kadence_Blocks_Rowlayout_Media_Queries_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Rowlayout_Min_Height_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Rowlayout_Min_Height_Device_Css": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Rowlayout_Mobile_Background_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Rowlayout_Old_Gradient": {
+        "compose": 6
+    },
+    "Kadence_Blocks_Rowlayout_Order_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Rowlayout_Overlay_Color_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Rowlayout_Overlay_Old_Gradient_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Rowlayout_Overlay_Opacity_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Rowlayout_Padding_Entries_Css": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Rowlayout_Padding_Fallback_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Rowlayout_Radius_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Rowlayout_Responsive_Image": {
+        "attachment": 2,
+        "write": 4
+    },
+    "Kadence_Blocks_Rowlayout_Responsive_Overlay_Css": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Rowlayout_Selector": {
+        "set": 2
+    },
+    "Kadence_Blocks_Rowlayout_Selector_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Rowlayout_Selectors": {
+        "__construct": 2,
+        "base": 0,
+        "inner": 0,
+        "is_updated": 0,
+        "resolve": 1
+    },
+    "Kadence_Blocks_Rowlayout_Separator_Css": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Rowlayout_Separator_Layer_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Rowlayout_Site_Environment": {
+        "content_width": 0,
+        "has_generatepress": 0,
+        "has_kadence_theme": 0,
+        "is_fse_mode": 0
+    },
+    "Kadence_Blocks_Rowlayout_Slider_Pause_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Rowlayout_Tablet_Background_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Rowlayout_Tablet_Gap_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Rowlayout_Tablet_Layout_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Rowlayout_Vertical_Alignment_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Rowlayout_Vertical_Padding_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Rowlayout_Video_Hide_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Rowlayout_Visibility_Css": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Rowlayout_Z_Index_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Search_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Search_Feather_Condition": {
+        "__construct": 1,
+        "is_met": 1
+    },
+    "Kadence_Blocks_Select_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Show_More_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Show_More_Fade_Out": {
+        "write": 1
+    },
+    "Kadence_Blocks_Show_More_Max_Height": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Show_More_Selector": {
+        "buttons": 0,
+        "column": 0,
+        "excerpt": 0,
+        "expanded_first_button": 0,
+        "open_column": 0,
+        "open_first_button": 0,
+        "open_full_width_second_button": 0,
+        "open_second_button": 0,
+        "root": 0,
+        "second_button": 0
+    },
+    "Kadence_Blocks_Single_Icon_Array_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Single_Icon_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Singlebtn_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Singlebtn_Dynamic_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Singlebtn_Hover_Before_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Singlebtn_Hover_Inset_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Singlebtn_Hover_Shadow_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Singlebtn_Preset_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Singlebtn_Shadow_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Singlebtn_Text_Color_Css": {
+        "__construct": 5,
+        "write": 1
+    },
+    "Kadence_Blocks_Singlebtn_Visible_Shadow_Condition": {
+        "__construct": 2,
+        "is_met": 1,
+        "shadow": 1
+    },
+    "Kadence_Blocks_Spacer_Blur_Fix_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Spacer_Border_Width_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Spacer_Color_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Spacer_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Spacer_Device_Divider_Height_Css": {
+        "__construct": 3,
+        "write": 1
+    },
+    "Kadence_Blocks_Spacer_Device_Divider_Width_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Spacer_Device_Height_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Spacer_Divider_Width_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Spacer_Environment": {
+        "is_fse_mode": 0
+    },
+    "Kadence_Blocks_Spacer_Height_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Spacer_Site_Environment": {
+        "is_fse_mode": 0
+    },
+    "Kadence_Blocks_Spacer_Stripe_Height_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Spacer_Width_Units": {
+        "resolve": 1
+    },
+    "Kadence_Blocks_Submit_Align_Css": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Submit_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Submit_Hover_Before_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Submit_Hover_Inset_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Submit_Inherit_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Table_Column_Background_Css": {
+        "__construct": 3,
+        "write": 1
+    },
+    "Kadence_Blocks_Table_Column_Backgrounds_Css": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Table_Column_Settings_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Table_Column_Width_Css": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Table_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Table_Data_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Table_Environment": {
+        "write_pro_styles": 4
+    },
+    "Kadence_Blocks_Table_Pro_Styles_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Table_Row_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Table_Selector_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Table_Site_Environment": {
+        "__construct": 0,
+        "write_pro_styles": 4
+    },
+    "Kadence_Blocks_Tableofcontents_Border_Condition": {
+        "__construct": 2,
+        "is_met": 1
+    },
+    "Kadence_Blocks_Tableofcontents_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Tableofcontents_Font_Family": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Tableofcontents_Font_Size": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Tableofcontents_Letter_Spacing": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Tableofcontents_Line_Height": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Tableofcontents_List_Gap": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Tableofcontents_Max_Width": {
+        "write": 1
+    },
+    "Kadence_Blocks_Tableofcontents_Mobile_Line_Height": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Tableofcontents_Shadow": {
+        "write": 1
+    },
+    "Kadence_Blocks_Tableofcontents_Text_Property": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Tabs_Active_Background_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Tabs_Column_Width_Css": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Tabs_Content_Border_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Tabs_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Tabs_Font_Size_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Tabs_Gap": {
+        "resolve": 1
+    },
+    "Kadence_Blocks_Tabs_Gap_List_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Tabs_Gap_Title_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Tabs_Google_Font_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Tabs_Gutter_Css": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Tabs_Icon_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Tabs_Layouts": {
+        "resolve": 1
+    },
+    "Kadence_Blocks_Tabs_Line_Height_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Tabs_Percent_Width_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Tabs_Quad_Pixels_Css": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Tabs_Responsive_Range_Css": {
+        "__construct": 5,
+        "write": 1
+    },
+    "Kadence_Blocks_Tabs_Row_Layout_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Tabs_Rtl_Margin": {
+        "write": 2
+    },
+    "Kadence_Blocks_Tabs_Sanitized_Color_Css": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Tabs_Subtitle": {
+        "device_sections": 2,
+        "sections": 0,
+        "selector": 0
+    },
+    "Kadence_Blocks_Tabs_Subtitle_Device_Condition": {
+        "__construct": 1,
+        "is_met": 1
+    },
+    "Kadence_Blocks_Tabs_Subtitle_Device_Size_Css": {
+        "__construct": 4,
+        "write": 1
+    },
+    "Kadence_Blocks_Tabs_Subtitle_Google_Font_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Tabs_Subtitle_Size_Css": {
+        "__construct": 3,
+        "write": 1
+    },
+    "Kadence_Blocks_Tabs_Title_Margin_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Tabs_Unit_Value_Css": {
+        "__construct": 4,
+        "write": 1
+    },
+    "Kadence_Blocks_Tabs_Vertical": {
+        "sections": 1
+    },
+    "Kadence_Blocks_Tabs_Vertical_Layout_Condition": {
+        "__construct": 2,
+        "is_met": 1
+    },
+    "Kadence_Blocks_Tabs_Vertical_Width_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Telephone_Input_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Testimonial_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Testimonials_Array_Item_Condition": {
+        "__construct": 1,
+        "is_met": 1
+    },
+    "Kadence_Blocks_Testimonials_Border_Radius_Css": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Testimonials_Bubble_Arrow_Color_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Testimonials_Bubble_Arrow_Margin_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Testimonials_Carousel_Assets_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Testimonials_Carousel_Device_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Testimonials_Carousel_Layout": {
+        "__construct": 1,
+        "columns": 1,
+        "gap": 1,
+        "unit": 0
+    },
+    "Kadence_Blocks_Testimonials_Color_Output_Css": {
+        "__construct": 3,
+        "write": 1
+    },
+    "Kadence_Blocks_Testimonials_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Testimonials_Default_Color_Css": {
+        "__construct": 4,
+        "write": 1
+    },
+    "Kadence_Blocks_Testimonials_Filled_Sides_Condition": {
+        "__construct": 2,
+        "is_met": 1
+    },
+    "Kadence_Blocks_Testimonials_Font_Device_Condition": {
+        "__construct": 4,
+        "is_met": 1
+    },
+    "Kadence_Blocks_Testimonials_Font_Device_Size_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Testimonials_Font_Family_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Testimonials_Font_Gate_Condition": {
+        "__construct": 2,
+        "is_met": 1
+    },
+    "Kadence_Blocks_Testimonials_Font_Line_Height_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Testimonials_Font_Size_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Testimonials_Font_Spacing_Css": {
+        "__construct": 3,
+        "write": 1
+    },
+    "Kadence_Blocks_Testimonials_Font_Weight_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Testimonials_Gap_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Testimonials_Google_Fonts_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Testimonials_Icon_Border_Radius_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Testimonials_Icon_Overlap_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Testimonials_Indexed_Unit_Css": {
+        "__construct": 4,
+        "write": 1
+    },
+    "Kadence_Blocks_Testimonials_Item_Icons_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Testimonials_Max_Width_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Testimonials_Media_Displayed_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Testimonials_Media_Ratio_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Testimonials_Media_Width_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Testimonials_Min_Height": {
+        "is_set": 3
+    },
+    "Kadence_Blocks_Testimonials_Min_Height_Css": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Testimonials_Nested_Filled_Condition": {
+        "__construct": 3,
+        "is_met": 1
+    },
+    "Kadence_Blocks_Testimonials_Range_Css": {
+        "__construct": 3,
+        "write": 1
+    },
+    "Kadence_Blocks_Testimonials_Rating_Color_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Testimonials_Rating_Size_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Testimonials_Shadow_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Testimonials_Style_Condition": {
+        "__construct": 2,
+        "is_met": 1
+    },
+    "Kadence_Blocks_Testimonials_Unit_Css": {
+        "__construct": 4,
+        "write": 1
+    },
+    "Kadence_Blocks_Testimonials_Wrapper_Side_Css": {
+        "__construct": 5,
+        "write": 1
+    },
+    "Kadence_Blocks_Text_Input_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Textarea_Input_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Time_Input_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Vector_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Videopopup_Array_Condition": {
+        "__construct": 1,
+        "is_met": 1
+    },
+    "Kadence_Blocks_Videopopup_Assets_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Videopopup_Background_Color_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Videopopup_Column_Width_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Videopopup_Css": {
+        "__construct": 1,
+        "build": 4
+    },
+    "Kadence_Blocks_Videopopup_Environment": {
+        "pro_block": 0
+    },
+    "Kadence_Blocks_Videopopup_Max_Width_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Videopopup_Media_State_Css": {
+        "__construct": 1,
+        "write": 1
+    },
+    "Kadence_Blocks_Videopopup_Popup_Width_Css": {
+        "__construct": 2,
+        "write": 1
+    },
+    "Kadence_Blocks_Videopopup_Private_Vimeo_Condition": {
+        "is_met": 1
+    },
+    "Kadence_Blocks_Videopopup_Pro_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Videopopup_Ratio_Padding_Css": {
+        "write": 1
+    },
+    "Kadence_Blocks_Videopopup_Site_Environment": {
+        "__construct": 0,
+        "pro_block": 0
+    },
+    "Kadence_Blocks_Videopopup_Spacing_Css": {
+        "__construct": 1,
+        "write": 1
+    }
+}

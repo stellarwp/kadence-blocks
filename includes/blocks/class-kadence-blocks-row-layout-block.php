@@ -336,14 +336,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block imple
 	 * @since 3.9.0 Starts the breakout media query at the Global Styles content size in the Kadence theme's Full Site Editing mode, when it is a plain length.
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
-		require_once KADENCE_BLOCKS_PATH . 'includes/css-builders/class-kadence-blocks-rowlayout-css.php';
-
-		$bridge  = function ( $member, ...$args ) {
-			return method_exists( $this, $member ) ? $this->$member( ...$args ) : $this->$member;
-		};
-		$builder = new Kadence_Blocks_Rowlayout_Css( new Kadence_Blocks_Css_Block_Context( $this->block_name, $bridge ) );
-
-		return $builder->build( $attributes, $css, $unique_id, $unique_style_id );
+		return Kadence_Blocks_Css_Builders::build( 'Kadence_Blocks_Rowlayout_Css', $this, $this->block_name, $attributes, $css, $unique_id, $unique_style_id );
 	}
 	/**
 	 * Render svg divider.
