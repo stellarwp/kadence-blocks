@@ -148,7 +148,7 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block implemen
 	 * @param object $css The css object.
 	 * @param string $unique_id The unique id.
 	 */
-	private function set_vertical_align( $media_state, $media_vertical_align, $media_direction, $css, $unique_id ) {
+	public function set_vertical_align( $media_state, $media_vertical_align, $media_direction, $css, $unique_id ) {
 		// Restart $align variable to avoid inherit from above value assignment
 		$align = 'center';
 		$justify_content = '';

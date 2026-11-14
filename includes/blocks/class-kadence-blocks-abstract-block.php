@@ -857,7 +857,7 @@ class Kadence_Blocks_Abstract_Block {
 	 *
 	 * @return bool Whether the item paints a visible shadow.
 	 */
-	protected function has_visible_shadow( array $shadow_item ): bool {
+	public function has_visible_shadow( array $shadow_item ): bool {
 		// A bound item's visibility is decided by its binding alone; the stored legs are never consulted
 		// for one. Backed, its real value lives in the token and is unknown here, so it counts as visible
 		// or the caller's `box-shadow: none` reset would erase a shadow the token does paint. Unbacked, it

@@ -41,6 +41,15 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block impleme
 	protected $allowed_html_tags = array( 'heading', 'p', 'span', 'div' );
 
 	/**
+	 * The HTML tags the title may use, for the CSS builder.
+	 *
+	 * @return string[]
+	 */
+	public function allowed_html_tags(): array {
+		return $this->allowed_html_tags;
+	}
+
+	/**
 	 * Instance Control
 	 */
 	public static function get_instance() {

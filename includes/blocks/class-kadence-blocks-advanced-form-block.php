@@ -231,7 +231,7 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param int $post_id Post ID.
 	 * @return array
 	 */
-	private function get_form_attributes( $post_id ) {
+	public function get_form_attributes( $post_id ) {
 
 		if ( ! empty( $this->form_attributes[ $post_id ] ) ) {
 			return $this->form_attributes[ $post_id ];

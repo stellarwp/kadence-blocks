@@ -753,7 +753,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block imple
 	 *
 	 * @return bool Whether a preset box-shadow declaration was emitted.
 	 */
-	private function render_preset_shadow( Kadence_Blocks_CSS $css, array $attributes ): bool {
+	public function render_preset_shadow( Kadence_Blocks_CSS $css, array $attributes ): bool {
 		$resolved = $this->resolved_preset( $attributes );
 
 		if ( $resolved === null || $resolved['class'] !== '' ) {
@@ -824,7 +824,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block imple
 	 *
 	 * @return string The rendered box-shadow declaration.
 	 */
-	private function render_button_shadow( $css, $shadow ): string {
+	public function render_button_shadow( $css, $shadow ): string {
 		return (string) $css->render_shadow(
 			is_array( $shadow ) ? $shadow : [],
 			[
@@ -850,7 +850,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block imple
 	 *
 	 * @return bool
 	 */
-	private function paints_own_shape( array $attributes ): bool {
+	public function paints_own_shape( array $attributes ): bool {
 		$resolved = $this->resolved_preset( $attributes );
 
 		if ( $resolved !== null ) {

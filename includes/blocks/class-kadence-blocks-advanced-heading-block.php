@@ -396,7 +396,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 	 * @param string $textOrientation The specified text orientation. Possible values are 'horizontal', 'stacked', 'sideways-down', and 'sideways-up'.
 	 * @return void
 	 */
-	private function handle_text_orientation($css, $textOrientation) {
+	public function handle_text_orientation($css, $textOrientation) {
 		switch ($textOrientation) {
 			case 'horizontal':
 				$css->add_property('writing-mode', 'horizontal-tb');
@@ -427,7 +427,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 	 *
 	 * @return void
 	 */
-	private function handle_max_height($css, $attributes, $deviceIndex, $orientationKey) {
+	public function handle_max_height($css, $attributes, $deviceIndex, $orientationKey) {
 		if (
 			isset($attributes['maxHeight']) &&
 			is_array($attributes['maxHeight']) &&
@@ -605,7 +605,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 	 *
 	 * @return void
 	 */
-	private function render_preset_typography( Kadence_Blocks_CSS $css, array $attributes ): void {
+	public function render_preset_typography( Kadence_Blocks_CSS $css, array $attributes ): void {
 		try {
 			$registry = kadence_blocks()->get( Token_Registry::class );
 			$library  = kadence_blocks()->get( Active_Token_Library_Store::class );

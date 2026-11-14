@@ -982,7 +982,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block imple
 	 *
 	 * @return string The length, for example `650px` or `42rem`, or an empty string.
 	 */
-	private function get_global_styles_content_size_length(): string {
+	public function get_global_styles_content_size_length(): string {
 		$content_size = wp_get_global_settings( [ 'layout', 'contentSize' ] );
 
 		if ( is_string( $content_size ) && preg_match( '/^\d+(\.\d+)?(px|rem)$/', trim( $content_size ) ) ) {

@@ -287,7 +287,7 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block im
 	 *
 	 * @return void
 	 */
-	private function responsive_alignment( $alignment, $css ) {
+	public function responsive_alignment( $alignment, $css ) {
 
 		if ( $alignment === 'space-between' ) {
 			$css->add_property( 'justify-content', 'space-between' );
@@ -307,7 +307,7 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block im
 	 *
 	 * @return array<string, mixed>
 	 */
-	private function get_default_font() {
+	public function get_default_font() {
 		return [
 			'color'         => '',
 			'level'         => 6,
@@ -360,7 +360,7 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block im
 	 *
 	 * @return array
 	 */
-	private function array_recursive_diff( $a_array, $b_array ) {
+	public function array_recursive_diff( $a_array, $b_array ) {
 		$a_return = [];
 
 		foreach ( $a_array as $m_key => $m_value ) {
