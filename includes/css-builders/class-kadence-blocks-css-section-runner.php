@@ -76,7 +76,7 @@ final class Kadence_Blocks_Css_Section_Runner {
 	 *
 	 * @return bool
 	 */
-	public static function is_section( $section ): bool {
+	private static function is_section( $section ): bool {
 		if ( $section instanceof Kadence_Blocks_Css_Section ) {
 			return true;
 		}
