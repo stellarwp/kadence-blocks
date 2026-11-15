@@ -58,9 +58,7 @@ abstract class Kadence_Blocks_Css_Block_Builder {
 
 		$css->set_style_id( 'kb-' . $this->context->block_name() . $unique_style_id );
 
-		foreach ( $this->sections() as $section ) {
-			$section->write( $input );
-		}
+		Kadence_Blocks_Css_Section_Runner::run( $this->sections(), $input );
 
 		return $css->css_output();
 	}

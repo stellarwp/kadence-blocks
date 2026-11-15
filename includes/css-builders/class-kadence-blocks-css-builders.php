@@ -95,7 +95,23 @@ final class Kadence_Blocks_Css_Builders {
 	 * @return string|null
 	 */
 	public static function build( $builder_class, $block, $block_name, $attributes, $css, $unique_id, $unique_style_id ) {
-		return self::create( $builder_class, $block, $block_name )->build( $attributes, $css, $unique_id, $unique_style_id );
+		$output = self::create( $builder_class, $block, $block_name )->build( $attributes, $css, $unique_id, $unique_style_id );
+
+		/**
+		 * Fires after the CSS of a block was built, for code that reacts to a block being built, such as loading assets.
+		 *
+		 * The CSS itself is already stored by the CSS builder; changing it is done with the `kadence_blocks_css_sections` filter.
+		 *
+		 * @since TBD
+		 *
+		 * @param string      $block_name The block name without the namespace, such as `infobox`.
+		 * @param array       $attributes The block attributes.
+		 * @param string|null $output     The CSS built.
+		 * @param string      $unique_id  The block unique id.
+		 */
+		do_action( 'kadence_blocks_css_built', $block_name, $attributes, $output, $unique_id );
+
+		return $output;
 	}
 
 	/**
@@ -112,6 +128,20 @@ final class Kadence_Blocks_Css_Builders {
 	 * @return object
 	 */
 	public static function create( $builder_class, $block, $block_name ) {
+		/**
+		 * Filters the class that builds the CSS of a block, so a plugin can replace the builder of any block.
+		 *
+		 * The class must exist, take a Kadence_Blocks_Css_Block_Context in its constructor and have a `build()` method
+		 * like Kadence_Blocks_Css_Block_Builder.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $builder_class The builder class.
+		 * @param string $block_name    The block name without the namespace, such as `infobox`.
+		 * @param object $block         The block whose CSS is built.
+		 */
+		$builder_class = (string) apply_filters( 'kadence_blocks_css_builder_class', $builder_class, $block_name, $block );
+
 		if ( ! class_exists( $builder_class ) ) {
 			throw new RuntimeException( sprintf( 'No CSS builder class %s in the registered class maps.', $builder_class ) );
 		}

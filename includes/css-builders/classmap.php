@@ -227,6 +227,7 @@ return [
 	'Kadence_Blocks_Css_Sanitized_Color_Section' => 'css-builders/sections/class-kadence-blocks-css-sanitized-color-section.php',
 	'Kadence_Blocks_Css_Scoped_Section' => 'css-builders/sections/class-kadence-blocks-css-scoped-section.php',
 	'Kadence_Blocks_Css_Section' => 'css-builders/class-kadence-blocks-css-section.php',
+	'Kadence_Blocks_Css_Section_Runner' => 'css-builders/class-kadence-blocks-css-section-runner.php',
 	'Kadence_Blocks_Css_Selector_Section' => 'css-builders/sections/class-kadence-blocks-css-selector-section.php',
 	'Kadence_Blocks_Css_Shadow_Section' => 'css-builders/sections/class-kadence-blocks-css-shadow-section.php',
 	'Kadence_Blocks_Css_Side_List_Section' => 'css-builders/sections/class-kadence-blocks-css-side-list-section.php',

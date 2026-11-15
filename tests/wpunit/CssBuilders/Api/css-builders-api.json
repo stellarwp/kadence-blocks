@@ -822,6 +822,10 @@
     "Kadence_Blocks_Css_Section": {
         "write": 1
     },
+    "Kadence_Blocks_Css_Section_Runner": {
+        "is_section": 1,
+        "run": 2
+    },
     "Kadence_Blocks_Css_Selector_Section": {
         "__construct": 1,
         "write": 1
