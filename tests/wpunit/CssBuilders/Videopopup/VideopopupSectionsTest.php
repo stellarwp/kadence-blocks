@@ -158,9 +158,11 @@ final class VideopopupSectionsTest extends Videopopup_Test_Case {
 	}
 
 	/**
-	 * A non numeric image size stops the ratio, the way the original arithmetic did.
+	 * A non numeric image size stops the ratio, the way the original arithmetic did. Pins the PHP 8 error for garbage input; PHP 7.4 only warns, in the original code too.
 	 *
 	 * @return void
+	 *
+	 * @requires PHP >= 8.0
 	 */
 	public function testRatioPaddingOfNonNumericSizeThrows(): void {
 		$this->expectException( \TypeError::class );

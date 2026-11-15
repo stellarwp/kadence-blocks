@@ -11,6 +11,11 @@ use Tests\Support\Classes\TestCase;
 /**
  * Hundreds of random show more blocks: the heights, the fade out and the devices that start open. Each must mean what the CSS from the original,
  * undecomposed builder meant, or fail the way the original failed.
+ *
+ * Recorded from the original code on PHP 8: that code compares loosely (0 == 'row') and differs on PHP 7.4, where the original and the new
+ * code still give identical output (checked by running both trees on 7.4 side by side).
+ *
+ * @requires PHP >= 8.0
  */
 final class ShowMoreMatrixTest extends TestCase {
 

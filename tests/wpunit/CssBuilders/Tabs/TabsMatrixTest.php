@@ -11,6 +11,11 @@ use Tests\Support\Classes\TestCase;
 /**
  * Hundreds of random tabs: the layouts, the borders, the titles, the subtitles, the icons and the
  * sizes. Each must mean what the CSS from the original, undecomposed builder meant.
+ *
+ * Recorded from the original code on PHP 8: that code compares loosely (0 == 'row') and differs on PHP 7.4, where the original and the new
+ * code still give identical output (checked by running both trees on 7.4 side by side).
+ *
+ * @requires PHP >= 8.0
  */
 final class TabsMatrixTest extends TestCase {
 

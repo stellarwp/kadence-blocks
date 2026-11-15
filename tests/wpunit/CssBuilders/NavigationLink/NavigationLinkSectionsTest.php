@@ -308,7 +308,7 @@ final class NavigationLinkSectionsTest extends NavigationLink_Test_Case {
 	}
 
 	/**
-	 * An image of a width that cannot divide breaks the builder the way it broke the original, even when a preset replaces the ratio of the image.
+	 * An image of a width that cannot divide breaks the builder the way it broke the original, even when a preset replaces the ratio of the image. Pins the PHP 8 error for garbage input; PHP 7.4 only warns, in the original code too.
 	 *
 	 * @dataProvider brokenImageProvider
 	 *
@@ -316,6 +316,8 @@ final class NavigationLinkSectionsTest extends NavigationLink_Test_Case {
 	 * @param string               $error      The class of the error.
 	 *
 	 * @return void
+	 *
+	 * @requires PHP >= 8.0
 	 */
 	public function testMediaRatioOfAnImageThatCannotDivideBreaks( array $attributes, string $error ): void {
 		$this->expectException( $error );

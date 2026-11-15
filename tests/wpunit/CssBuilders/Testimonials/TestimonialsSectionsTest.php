@@ -51,9 +51,11 @@ final class TestimonialsSectionsTest extends Testimonials_Test_Case {
 	}
 
 	/**
-	 * A list that is missing in the saved settings of the icon is an error, as it always was.
+	 * A list that is missing in the saved settings of the icon is an error, as it always was. Pins the PHP 8 error for garbage input; PHP 7.4 only warns, in the original code too.
 	 *
 	 * @return void
+	 *
+	 * @requires PHP >= 8.0
 	 */
 	public function testNestedListThatIsMissingIsAnError(): void {
 		$this->expectException( TypeError::class );

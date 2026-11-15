@@ -67,13 +67,15 @@ final class CountupSectionsTest extends Free_Section_Test_Case {
 	}
 
 	/**
-	 * A height that is stored as text or as a number fails, as it failed in the original builder, which read the list by reference.
+	 * A height that is stored as text or as a number fails, as it failed in the original builder, which read the list by reference. Pins the PHP 8 error for garbage input; PHP 7.4 only warns, in the original code too.
 	 *
 	 * @dataProvider scalarProvider
 	 *
 	 * @param mixed $value The stored height.
 	 *
 	 * @return void
+	 *
+	 * @requires PHP >= 8.0
 	 */
 	public function testScalarHeightFails( $value ): void {
 

@@ -14,6 +14,11 @@ use Throwable;
  *
  * The settings live in the meta of a post, so each case carries them in `__post` and the test serves them as the
  * meta of a post id that only that case uses. The fuzzer of the golden master cannot do that.
+ *
+ * Recorded from the original code on PHP 8: that code compares loosely (0 == 'row') and differs on PHP 7.4, where the original and the new
+ * code still give identical output (checked by running both trees on 7.4 side by side).
+ *
+ * @requires PHP >= 8.0
  */
 final class HeaderMatrixTest extends TestCase {
 

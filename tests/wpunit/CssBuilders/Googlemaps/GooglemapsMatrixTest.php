@@ -10,6 +10,11 @@ use Tests\Support\Classes\TestCase;
 
 /**
  * Hundreds of random maps and hand made ones: the sizes, the margins, the alignment and the filters. Each must mean what the CSS from the original, undecomposed builder meant, or fail the way the original failed.
+ *
+ * Recorded from the original code on PHP 8: that code compares loosely (0 == 'row') and differs on PHP 7.4, where the original and the new
+ * code still give identical output (checked by running both trees on 7.4 side by side).
+ *
+ * @requires PHP >= 8.0
  */
 final class GooglemapsMatrixTest extends TestCase {
 

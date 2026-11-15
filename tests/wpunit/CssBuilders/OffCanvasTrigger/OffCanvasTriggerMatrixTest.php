@@ -11,6 +11,11 @@ use Throwable;
 
 /**
  * Hundreds of random off canvas triggers: the colors, the icon sizes, the measures and the borders on every device. Each must mean what the CSS from the original, undecomposed builder meant.
+ *
+ * Recorded from the original code on PHP 8: that code compares loosely (0 == 'row') and differs on PHP 7.4, where the original and the new
+ * code still give identical output (checked by running both trees on 7.4 side by side).
+ *
+ * @requires PHP >= 8.0
  */
 final class OffCanvasTriggerMatrixTest extends TestCase {
 

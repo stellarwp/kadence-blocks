@@ -138,6 +138,7 @@ final class HeaderCssTest extends Entry_Build_Test_Case {
 		$unused   = [];
 		$builder  = new Kadence_Blocks_Header_Css( new Kadence_Blocks_Css_Block_Context( 'header', $this->block( [], $unused ) ) );
 		$method   = new ReflectionMethod( $builder, 'backdrop_sections' );
+		$method->setAccessible( true ); // Needed before PHP 8.1.
 		$sections = $method->invoke( $builder );
 		$css      = new Kadence_Blocks_CSS();
 		$css->set_style_id( 'header-backdrop' );

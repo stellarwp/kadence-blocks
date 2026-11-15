@@ -11,6 +11,11 @@ use Tests\Support\Classes\TestCase;
 /**
  * Over a thousand random layouts: the columns and their order, the breakout, the backgrounds, the overlays, the separators and the legacy
  * attributes. Each must mean what the CSS from the original, undecomposed builder meant, as the site it runs on is.
+ *
+ * Recorded from the original code on PHP 8: that code compares loosely (0 == 'row') and differs on PHP 7.4, where the original and the new
+ * code still give identical output (checked by running both trees on 7.4 side by side).
+ *
+ * @requires PHP >= 8.0
  */
 final class RowlayoutMatrixTest extends TestCase {
 

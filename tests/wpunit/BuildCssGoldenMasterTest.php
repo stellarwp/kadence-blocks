@@ -26,6 +26,11 @@ use Throwable;
  * To record the golden files from the current code, run with `BUILD_CSS_GOLDEN_WRITE=1`. Set
  * `BUILD_CSS_ONLY` to a block class name to run a single block, and `BUILD_CSS_DEBUG` to print the
  * errors `build_css()` throws.
+ *
+ * Recorded from the original code on PHP 8: that code compares loosely (0 == 'row') and differs on PHP 7.4, where the original and the new
+ * code still give identical output (checked by running both trees on 7.4 side by side).
+ *
+ * @requires PHP >= 8.0
  */
 final class BuildCssGoldenMasterTest extends TestCase {
 

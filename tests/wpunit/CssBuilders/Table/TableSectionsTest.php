@@ -167,9 +167,11 @@ final class TableSectionsTest extends Table_Test_Case {
 	}
 
 	/**
-	 * A column of the table fails the way it always did when its position cannot be added to.
+	 * A column of the table fails the way it always did when its position cannot be added to. Pins the PHP 8 error for garbage input; PHP 7.4 only warns, in the original code too.
 	 *
 	 * @return void
+	 *
+	 * @requires PHP >= 8.0
 	 */
 	public function testColumnWithAPositionThatIsNoNumberFails(): void {
 		$this->expectException( \TypeError::class );

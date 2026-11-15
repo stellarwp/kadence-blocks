@@ -122,3 +122,19 @@ between the two, but are not meant to be a stable API for other plugins: use the
   `css-builders-api.json`. After an intentional addition run the suite with `KB_UPDATE_API_SNAPSHOT=1` and bump
   `KADENCE_BLOCKS_CSS_BUILDERS_VERSION`.
 * After changing a shared Free class, run `php bin/bundle-css-runtime.php` in Pro; `RuntimeTest` fails if the bundle drifts.
+
+### PHP versions
+
+The plugins support PHP 7.4 and later; the tests and their recordings run on PHP 8.x.
+
+* The matrix tests and the golden masters were recorded from the original code on PHP 8. That code compares loosely
+  (`0 == 'row'` is true on 7.4 and false on 8), so for odd attribute values it gives other CSS on PHP 7.4 than on PHP 8. They
+  are marked `@requires PHP >= 8.0` and are skipped on 7.4, with the reason in their docblock. A few tests that pin the
+  `TypeError` PHP 8 throws for garbage input carry the same mark.
+* The new code behaves on PHP 7.4 exactly as the original code does there. That is checked by running the original tree and the
+  new tree side by side on PHP 7.4 over the same generated attributes (about 400 cases per block) and comparing the CSS and the
+  Google fonts. Run it again after a change to a builder: the PHP 7.4 test image and the comparison tests live in
+  `~/kadence-test` of the maintainer (`Dockerfile.php74`, `compose-php74.yml`, `compose-orig74.yml`, `CssDumpTest.php`,
+  `FontsDumpTest.php`); the Pro tests and the block tests that do not depend on the recordings run on 7.4 as they are.
+* Run `php -l` on PHP 7.4 over the changed files at least; the PHP compatibility check of the CI (PHPCompatibility 9.3.5) does not
+  know the syntax and the functions that PHP 8 added, such as `match` and `str_contains`.

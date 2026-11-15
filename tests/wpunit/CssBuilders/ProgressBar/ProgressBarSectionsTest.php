@@ -256,9 +256,11 @@ final class ProgressBarSectionsTest extends ProgressBar_Test_Case {
 	}
 
 	/**
-	 * A label font that was saved as a string fails the way it always did: it cannot be merged.
+	 * A label font that was saved as a string fails the way it always did: it cannot be merged. Pins the PHP 8 error for garbage input; PHP 7.4 only warns, in the original code too.
 	 *
 	 * @return void
+	 *
+	 * @requires PHP >= 8.0
 	 */
 	public function testLabelFontSavedAsStringFails(): void {
 		$this->expectException( \TypeError::class );
