@@ -13,6 +13,12 @@ defined( 'ABSPATH' ) || exit;
  * A block builder only lists its sections. The sections share one CSS builder, its current selector and its media
  * state, so the order of the list matters.
  *
+ * To build the CSS of a block of another plugin, extend this class, return the sections from `sections()`, make the class
+ * loadable and call `Kadence_Blocks_Css_Builders::build()` from the block's `build_css()`. Override `applies()` to skip
+ * blocks that have nothing to build and `derived()` for values several sections need. Other code can still add or
+ * remove sections with the `kadence_blocks_css_sections` filter and replace the whole builder with the
+ * `kadence_blocks_css_builder_class` filter.
+ *
  * @since TBD
  */
 abstract class Kadence_Blocks_Css_Block_Builder {
