@@ -71,3 +71,35 @@ Build the CSS of a block from another plugin the same way Kadence Blocks Pro doe
 `Kadence_Blocks_Css_Block_Builder` and lists its sections, make it loadable (a class map registered with
 `Kadence_Blocks_Css_Builders::add_classmap()`, or any autoloader), and have the block's `build_css()` call
 `Kadence_Blocks_Css_Builders::build( 'My_Plugin_Block_Css', $this, $this->block_name, $attributes, $css, $unique_id, $unique_style_id )`.
+
+### Sections you can reuse
+
+Another plugin does not have to write every section. These generic ones live in `sections/`; the docblock of each class
+says what its arguments mean, and `tests/wpunit/CssBuilders/Hooks/ThirdPartyTest.php` builds a block from some of them.
+
+| Section | Writes |
+|---|---|
+| `Kadence_Blocks_Css_Selector_Section( $selectors )` | Sets the selector the sections after it write under. `{id}` stands for the block unique id. |
+| `Kadence_Blocks_Css_Static_Section( $property, $value )` | One property with a value that never changes. |
+| `Kadence_Blocks_Css_Color_Section( $property, $attribute )` | A color property when its attribute is not empty. |
+| `Kadence_Blocks_Css_Responsive_Range_Section( $attribute, $property, $unit_attribute )` | A width or size saved per device, with its unit. |
+| `Kadence_Blocks_Css_Range_Section( $attribute, $property, $unit )` | A range attribute as a size with a unit. |
+| `Kadence_Blocks_Css_Gap_Section( $attribute, $property, $unit_attribute, $arguments = [] )` | A gap with its unit. |
+| `Kadence_Blocks_Css_Measure_Section( $property, $attribute, $arguments = [] )` | Padding, margin or border radius saved as four sides. |
+| `Kadence_Blocks_Css_Typography_Section( $attribute )` | The typography saved in one attribute. |
+| `Kadence_Blocks_Css_Text_Align_Section( $attribute, $arguments )` | The text alignment of every device. |
+| `Kadence_Blocks_Css_Enabled_Section( $attribute, $sections )` | Runs sections only while a switch attribute is on. |
+| `Kadence_Blocks_Css_Gate_Section( $keys, $sections )` | Runs sections only when one of a list of attributes was saved. |
+| `Kadence_Blocks_Css_Choice_Section( $condition, $then, $otherwise )` | Runs one set of sections when a condition is met and another when it is not. |
+| `Kadence_Blocks_Css_Device_Section( $device, $sections )` | Runs sections for `tablet` or `mobile`, then returns to desktop. |
+| `Kadence_Blocks_Css_Item_Section( $attribute, $index, $sections )` | Runs sections when one entry of a list attribute is filled. |
+
+### What you can rely on
+
+Only the following are public API, and they only ever grow: the `Kadence_Blocks_Css_Section` interface,
+`Kadence_Blocks_Css_Build_Input` (`attribute()`, `attributes()`, `item()`, `css()`, `unique_id()`, `unique_style_id()`,
+`derived()`, `context()`), `Kadence_Blocks_Css_Block_Builder` (`sections()`, `applies()`, `derived()`),
+`Kadence_Blocks_Css_Builders` (`build()`, `add_classmap()`), `Kadence_Blocks_Css_Section_Runner::run()`, the sections in
+the table above, and the hooks. The sections and builders named after one block (`Kadence_Blocks_Infobox_*`,
+`Kadence_Blocks_Pro_Slider_*`) are shared between Kadence Blocks and Kadence Blocks Pro and are kept compatible
+between the two, but are not meant to be a stable API for other plugins: use the generic sections or write your own.
