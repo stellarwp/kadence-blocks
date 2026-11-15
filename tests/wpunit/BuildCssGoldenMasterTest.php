@@ -81,7 +81,14 @@ final class BuildCssGoldenMasterTest extends TestCase {
 			}
 			if ( 'fonts' === getenv( 'BUILD_CSS_GOLDEN_WRITE' ) && is_readable( $file ) ) {
 				// Add only the Google fonts and the queued scripts and styles to a golden file that already exists, so the recorded CSS stays as it was.
-				$results = array_merge( json_decode( (string) file_get_contents( $file ), true ), [ 'fonts' => $results['fonts'], 'queues' => $results['queues'] ] );
+				$results = array_merge(
+					json_decode( (string) file_get_contents( $file ), true ),
+					[
+						'fonts'   => $results['fonts'],
+						'queues'  => $results['queues'],
+						'filters' => $results['filters'],
+					] 
+				);
 			}
 			file_put_contents( $file, json_encode( $results, JSON_PRETTY_PRINT ) . "\n" );
 			$this->assertNotEmpty( $results['hashes'] );
@@ -93,6 +100,10 @@ final class BuildCssGoldenMasterTest extends TestCase {
 		$golden = json_decode( (string) file_get_contents( $file ), true );
 
 		$this->assertSame( $golden['semantic'], $results['semantic'], $this->first_difference( $golden['semantic'], $results['semantic'] ) );
+
+		if ( isset( $golden['filters'] ) ) {
+			$this->assertSame( $golden['filters'], $results['filters'], 'The CSS under a filter changed.' );
+		}
 
 		if ( isset( $golden['queues'] ) ) {
 			$this->assertSame( $golden['queues'], $results['queues'], 'The scripts and styles queued changed. ' . $this->first_difference( $golden['queues'], $results['queues'] ) );
@@ -189,8 +200,9 @@ final class BuildCssGoldenMasterTest extends TestCase {
 			$semantic[] = $normalizer->hash( $css );
 		}
 
-		$fonts  = $this->google_fonts_for( $block, $schema, $pool );
-		$queues = $this->queues_for( $block, $schema, $pool );
+		$fonts   = $this->google_fonts_for( $block, $schema, $pool );
+		$queues  = $this->queues_for( $block, $schema, $pool );
+		$filters = $this->filtered_css_for( $block, $schema, $pool, $class_name );
 
 		$this->dump_cases( $schema, $pool );
 
@@ -202,6 +214,7 @@ final class BuildCssGoldenMasterTest extends TestCase {
 			'semantic' => $semantic,
 			'fonts'    => $fonts,
 			'queues'   => $queues,
+			'filters'  => $filters,
 		];
 	}
 
@@ -267,6 +280,46 @@ final class BuildCssGoldenMasterTest extends TestCase {
 		$css = $this->css_for( $block, $attributes );
 		file_put_contents( $base . '.new.css', $css );
 		file_put_contents( $base . '.new.normalized.json', json_encode( ( new Css_Normalizer() )->normalize( $css ), JSON_PRETTY_PRINT ) );
+	}
+
+	/**
+	 * The CSS of the blocks that read a filter, under each setting of it: media queries switched off, and the fixed
+	 * background on mobile turned on and off. Other blocks have none.
+	 *
+	 * @param Kadence_Blocks_Abstract_Block       $block      The block.
+	 * @param array<string, array<string, mixed>> $schema     The attribute schema.
+	 * @param string[]                            $pool       The string pool.
+	 * @param string                              $class_name The block class.
+	 *
+	 * @return array<string, string[]>
+	 */
+	private function filtered_css_for( Kadence_Blocks_Abstract_Block $block, array $schema, array $pool, string $class_name ): array {
+		$settings = [
+			'no_media_queries'    => [ 'kadence_blocks_css_output_media_queries', false ],
+			'fixed_on_mobile'     => [ 'kadence_blocks_attachment_fixed_on_mobile', true ],
+			'not_fixed_on_mobile' => [ 'kadence_blocks_attachment_fixed_on_mobile', false ],
+		];
+
+		if ( ! in_array( $class_name, [ 'Kadence_Blocks_Column_Block', 'Kadence_Blocks_Rowlayout_Block' ], true ) ) {
+			return [];
+		}
+
+		$normalizer = new Css_Normalizer();
+		$filtered   = [];
+		foreach ( $settings as $name => [ $hook, $value ] ) {
+			$callback = static function () use ( $value ) {
+				return $value;
+			};
+			add_filter( $hook, $callback );
+
+			for ( $seed = 1; $seed <= self::CASES_PER_BLOCK; $seed++ ) {
+				$filtered[ $name ][] = $normalizer->hash( $this->css_for( $block, ( new Build_Css_Fuzzer( $seed, $pool ) )->attributes( $schema ) ) );
+			}
+
+			remove_filter( $hook, $callback );
+		}
+
+		return $filtered;
 	}
 
 	/**

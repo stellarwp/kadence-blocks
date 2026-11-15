@@ -1612,5 +1612,6 @@
         "{\"js\":[\"kadence-blocks-pro-glight-video-init\",\"kadence-glightbox\"],\"css\":[\"kadence-glightbox\"]}",
         "{\"js\":[\"kadence-blocks-pro-glight-video-init\",\"kadence-glightbox\"],\"css\":[\"kadence-glightbox\"]}",
         "{\"js\":[\"kadence-blocks-pro-glight-video-init\",\"kadence-glightbox\"],\"css\":[\"kadence-glightbox\"]}"
-    ]
+    ],
+    "filters": []
 }

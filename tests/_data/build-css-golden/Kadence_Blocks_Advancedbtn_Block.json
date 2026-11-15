@@ -1622,5 +1622,6 @@
         "",
         "{\"js\":[],\"css\":[\"kb-button-deprecated-styles\"]}",
         "{\"js\":[],\"css\":[\"kb-button-deprecated-styles\"]}"
-    ]
+    ],
+    "filters": []
 }

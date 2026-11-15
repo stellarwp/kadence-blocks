@@ -1615,5 +1615,6 @@
         "{\"js\":[\"kadence-blocks-form\"],\"css\":[]}",
         "{\"js\":[\"kadence-blocks-form\"],\"css\":[]}",
         "{\"js\":[\"kadence-blocks-form\",\"kadence-blocks-google-recaptcha-v3\"],\"css\":[]}"
-    ]
+    ],
+    "filters": []
 }
