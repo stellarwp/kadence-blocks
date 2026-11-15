@@ -162,21 +162,105 @@ final class HooksTest extends TestCase {
 	}
 
 	/**
-	 * A replacement that does not exist fails as loudly as a missing builder.
+	 * A value from the filter that is not a usable builder is ignored with a notice, and the builder of the block runs: a mistake
+	 * in a filter must not stop the page.
+	 *
+	 * @dataProvider unusableBuilderProvider
+	 *
+	 * @param mixed $value What the filter returns.
 	 *
 	 * @return void
 	 */
-	public function testAMissingReplacementThrows(): void {
+	public function testAnUnusableReplacementIsIgnoredWithANotice( $value ): void {
+		$this->setExpectedIncorrectUsage( 'kadence_blocks_css_builder_class' );
+
 		add_filter(
 			'kadence_blocks_css_builder_class',
-			static function () {
-				return 'Not_A_Builder_Class';
+			static function () use ( $value ) {
+				return $value;
 			}
 		);
 
-		$this->expectException( \RuntimeException::class );
+		$this->assertSameCss( '', (string) $this->build() );
+	}
 
-		$this->build();
+	/**
+	 * The values a filter should not return.
+	 *
+	 * @return \Generator
+	 */
+	public static function unusableBuilderProvider(): \Generator {
+		yield 'a list' => [ [ 'Kadence_Blocks_Header_Column_Css' ] ];
+		yield 'nothing' => [ null ];
+		yield 'a number' => [ 5 ];
+		yield 'a class that does not exist' => [ 'Not_A_Builder_Class' ];
+		yield 'a class without a build method' => [ \stdClass::class ];
+	}
+
+	/**
+	 * A filter that returns the builder it was given changes nothing and raises no notice.
+	 *
+	 * @return void
+	 */
+	public function testTheSameBuilderIsNotAMistake(): void {
+		add_filter(
+			'kadence_blocks_css_builder_class',
+			static function ( $builder_class ) {
+				return $builder_class;
+			}
+		);
+
+		$this->assertSameCss( '', (string) $this->build() );
+	}
+
+	/**
+	 * A class map file that does not exist is reported with a notice and ignored, instead of stopping the page.
+	 *
+	 * @return void
+	 */
+	public function testAMissingClassMapIsIgnoredWithANotice(): void {
+		$this->setExpectedIncorrectUsage( 'Kadence_Blocks_Css_Builders::add_classmap' );
+
+		Kadence_Blocks_Css_Builders::add_classmap( sys_get_temp_dir() . '/kb-no-such-classmap-' . uniqid( '', true ) . '.php', sys_get_temp_dir() );
+
+		$this->assertSameCss( '', (string) $this->build() );
+	}
+
+	/**
+	 * A class map file that does not return a list is reported and ignored too.
+	 *
+	 * @return void
+	 */
+	public function testAClassMapThatReturnsNoListIsIgnoredWithANotice(): void {
+		$this->setExpectedIncorrectUsage( 'Kadence_Blocks_Css_Builders::add_classmap' );
+
+		$file = (string) tempnam( sys_get_temp_dir(), 'kbmap' );
+		file_put_contents( $file, '<?php return "nope";' ); // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_file_put_contents -- Test file in the temporary directory.
+
+		Kadence_Blocks_Css_Builders::add_classmap( $file, sys_get_temp_dir() );
+		unlink( $file ); // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_unlink -- Test file in the temporary directory.
+
+		$this->assertSameCss( '', (string) $this->build() );
+	}
+
+	/**
+	 * A class map that is registered twice is read once.
+	 *
+	 * @return void
+	 */
+	public function testAClassMapIsRegisteredOnce(): void {
+		$file = (string) tempnam( sys_get_temp_dir(), 'kbmap' );
+		file_put_contents( $file, '<?php $GLOBALS["kb_classmap_reads"] = ( $GLOBALS["kb_classmap_reads"] ?? 0 ) + 1; return [];' ); // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_file_put_contents -- Test file in the temporary directory.
+
+		unset( $GLOBALS['kb_classmap_reads'] );
+
+		Kadence_Blocks_Css_Builders::add_classmap( $file, sys_get_temp_dir() );
+		Kadence_Blocks_Css_Builders::add_classmap( $file, sys_get_temp_dir() );
+		unlink( $file ); // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_unlink -- Test file in the temporary directory.
+
+		$this->assertSame( 1, $GLOBALS['kb_classmap_reads'] );
+
+		unset( $GLOBALS['kb_classmap_reads'] );
 	}
 
 	/**

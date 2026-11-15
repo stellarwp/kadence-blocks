@@ -20,11 +20,11 @@ defined( 'ABSPATH' ) || exit;
 final class Kadence_Blocks_Css_Builders {
 
 	/**
-	 * The registered class maps: each is a list of class names with their file, and the directory the files are in.
+	 * The registered class maps by the file they come from: each is a list of class names with their file, and the directory the files are in.
 	 *
 	 * @since TBD
 	 *
-	 * @var array<int, array{map: array<string, string>, base: string}>
+	 * @var array<string, array{map: array<string, string>, base: string}>
 	 */
 	private static $maps = [];
 
@@ -40,6 +40,9 @@ final class Kadence_Blocks_Css_Builders {
 	/**
 	 * Register the class map of a plugin, so the classes it lists load on demand.
 	 *
+	 * A class map that is registered twice counts once. One that is missing or is not a list of classes is reported with a notice and
+	 * ignored, so a mistake of a plugin does not stop the page.
+	 *
 	 * @since TBD
 	 *
 	 * @param string $classmap_file The generated class map file.
@@ -48,8 +51,20 @@ final class Kadence_Blocks_Css_Builders {
 	 * @return void
 	 */
 	public static function add_classmap( $classmap_file, $base ): void {
-		self::$maps[] = [
-			'map'  => require $classmap_file,
+		if ( isset( self::$maps[ $classmap_file ] ) ) {
+			return;
+		}
+
+		$map = is_readable( $classmap_file ) ? require $classmap_file : null;
+
+		if ( ! is_array( $map ) ) {
+			_doing_it_wrong( __METHOD__, esc_html( sprintf( 'The class map %s is missing or does not return a list of classes, so the builders it should list are not loaded.', $classmap_file ) ), 'TBD' );
+
+			return;
+		}
+
+		self::$maps[ $classmap_file ] = [
+			'map'  => $map,
 			'base' => trailingslashit( $base ),
 		];
 
@@ -131,8 +146,9 @@ final class Kadence_Blocks_Css_Builders {
 		/**
 		 * Filters the class that builds the CSS of a block, so a plugin can replace the builder of any block.
 		 *
-		 * The class must exist, take a Kadence_Blocks_Css_Block_Context in its constructor and have a `build()` method
-		 * like Kadence_Blocks_Css_Block_Builder.
+		 * The class must exist, take a Kadence_Blocks_Css_Block_Context in its constructor and have a public `build()` method
+		 * like Kadence_Blocks_Css_Block_Builder. A value that is not a usable builder is ignored with a notice and the builder
+		 * of the block runs, so a mistake in a filter does not stop the page.
 		 *
 		 * @since TBD
 		 *
@@ -140,12 +156,31 @@ final class Kadence_Blocks_Css_Builders {
 		 * @param string $block_name    The block name without the namespace, such as `infobox`.
 		 * @param object $block         The block whose CSS is built.
 		 */
-		$builder_class = (string) apply_filters( 'kadence_blocks_css_builder_class', $builder_class, $block_name, $block );
+		$filtered = apply_filters( 'kadence_blocks_css_builder_class', $builder_class, $block_name, $block );
 
-		if ( ! class_exists( $builder_class ) ) {
-			throw new RuntimeException( sprintf( 'No CSS builder class %s in the registered class maps.', $builder_class ) );
+		if ( self::is_builder( $filtered ) ) {
+			$builder_class = $filtered;
+		} elseif ( $filtered !== $builder_class ) {
+			_doing_it_wrong( 'kadence_blocks_css_builder_class', esc_html( 'The filter must return the name of a class that exists and has a public build() method. The builder of the block is used instead.' ), 'TBD' );
+		}
+
+		if ( ! self::is_builder( $builder_class ) ) {
+			throw new RuntimeException( sprintf( 'No CSS builder class %s in the registered class maps.', is_string( $builder_class ) ? $builder_class : gettype( $builder_class ) ) );
 		}
 
 		return new $builder_class( new Kadence_Blocks_Css_Block_Context( $block_name, new Kadence_Blocks_Css_Block_Bridge( $block ) ) );
+	}
+
+	/**
+	 * Whether a value is the name of a class that can build the CSS of a block.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $builder_class The value.
+	 *
+	 * @return bool
+	 */
+	private static function is_builder( $builder_class ): bool {
+		return is_string( $builder_class ) && class_exists( $builder_class ) && in_array( 'build', get_class_methods( $builder_class ), true );
 	}
 }

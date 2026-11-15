@@ -41,7 +41,7 @@ The hooks below are public. Their names and arguments only ever grow (see the ad
 | Hook | Kind | What it is for |
 |---|---|---|
 | `kadence_blocks_css_sections` (`$sections`, `$block_name`, `$attributes`) | filter | Add, remove, replace or reorder the sections that write a block's CSS. Items must implement `Kadence_Blocks_Css_Section`; anything else is dropped with a `_doing_it_wrong` notice. Applies to the top-level sections of every block builder. |
-| `kadence_blocks_css_builder_class` (`$builder_class`, `$block_name`, `$block`) | filter | Replace the builder class of a block. The class must exist, take a `Kadence_Blocks_Css_Block_Context` in its constructor and have a `build()` method; extending `Kadence_Blocks_Css_Block_Builder` does all of that. |
+| `kadence_blocks_css_builder_class` (`$builder_class`, `$block_name`, `$block`) | filter | Replace the builder class of a block. The class must exist, take a `Kadence_Blocks_Css_Block_Context` in its constructor and have a public `build()` method; extending `Kadence_Blocks_Css_Block_Builder` does all of that. A value that is not a usable builder is ignored with a `_doing_it_wrong` notice and the builder of the block runs, so a mistake in a filter does not stop the page. |
 | `kadence_blocks_css_built` (`$block_name`, `$attributes`, `$output`, `$unique_id`) | action | React to a block being built, for example to load assets or keep a log. The CSS itself is already stored by the CSS builder. |
 | `kadence_blocks_css_output_media_queries` | filter | Existing: switch the media query output off. |
 | `kadence_blocks_attachment_fixed_on_mobile` | filter | Existing: keep a fixed background fixed on mobile. |
