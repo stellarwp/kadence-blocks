@@ -15,6 +15,21 @@ when it needs them. Each `Kadence_Blocks_Css_Section` writes one group of rules
 through `Kadence_Blocks_Css`. Generic sections live in `sections/` and are reused by Pro. Blocks whose CSS is the same
 share an entry class, such as `Kadence_Blocks_Form_Field_Css` for the advanced form fields.
 
+## How the CSS of a block is built
+
+```mermaid
+flowchart TD
+    A["Block::build_css()"] --> B["Kadence_Blocks_Css_Builders::build()"]
+    B -->|"filter: kadence_blocks_css_builder_class"| C["Builder (extends Kadence_Blocks_Css_Block_Builder)"]
+    C -->|"applies() guard, derived() values"| D["Kadence_Blocks_Css_Section_Runner::run()"]
+    D -->|"filter: kadence_blocks_css_sections"| E["Sections, in order"]
+    E -->|"set_selector(), add_property()"| F["Kadence_Blocks_CSS (stores the CSS)"]
+    B -->|"action: kadence_blocks_css_built"| G["Code that reacts to a built block"]
+```
+
+A block hands its attributes to the factory; the builder lists the sections; each section writes one group of rules. Blocks
+reach their own helpers (such as `class_id()`) only through public methods, called through the block context.
+
 ## Updating Free and Pro in any order
 
 * Classes load through a generated class map, never through `require_once`: no file in `css-builders/` or `css-writers/`
