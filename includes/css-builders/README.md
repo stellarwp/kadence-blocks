@@ -105,6 +105,41 @@ the table above, and the hooks. The sections and builders named after one block 
 `Kadence_Blocks_Pro_Slider_*`) are shared between Kadence Blocks and Kadence Blocks Pro and are kept compatible
 between the two, but are not meant to be a stable API for other plugins: use the generic sections or write your own.
 
+## Adding a builder for a new block
+
+1. **Write the builder** in `includes/css-builders/class-kadence-blocks-<name>-css.php`: a `final class Kadence_Blocks_<Name>_Css extends Kadence_Blocks_Css_Block_Builder`
+   whose `sections()` returns the sections in the order they are written (a selector section first, then the sections that write
+   under it). Reuse the generic sections listed above; put a section that is only for this block in a folder named after the block
+   (`includes/css-builders/<name>/class-kadence-blocks-<name>-<what>.php`). One class per file, no `require`.
+2. **Make it loadable.** Regenerate the class map and commit it:
+
+   ```bash
+   php bin/generate-css-classmap.php includes includes/css-builders/classmap.php css-builders css-writers
+   ```
+
+   `tests/wpunit/CssBuilders/Classmap/ClassmapTest.php` fails until you do. In Kadence Blocks Pro use the same command with only `css-builders`.
+3. **Call it from the block**: `build_css()` is the one line shown at the top. The helpers the builder needs from the block (such as
+   `class_id()` or `enqueue_script()`) must be public methods of the block; the builder reaches them with
+   `$this->context->call( 'method', ... )`.
+4. **Test it.** Add a test next to the others in `tests/wpunit/CssBuilders/<Name>/`: extend `Entry_Build_Test_Case` to build the whole block
+   (`build_entry()`), or `Free_Section_Test_Case` to write one section (`write_section()`), and assert the CSS with `assertSameCss()`. Run it:
+
+   ```bash
+   vendor/bin/codecept run wpunit CssBuilders/<Name>
+   ```
+5. **Pin it** when the block has a `block.json` (it is then built from generated attributes by `BuildCssGoldenMasterTest`). Recording writes what the block does now:
+   its CSS, and the Google fonts, scripts and styles it queues and the filter results it causes. Commit the data file that appears in `tests/_data/build-css-golden/`:
+
+   ```bash
+   BUILD_CSS_GOLDEN_WRITE=1 BUILD_CSS_ONLY=Kadence_Blocks_<Name>_Block vendor/bin/codecept run wpunit BuildCssGoldenMasterTest.php
+   ```
+
+   Use `BUILD_CSS_GOLDEN_WRITE=fonts` instead only to add the fonts, queues and filters to a data file that already exists, when you must not
+   re-record its CSS (for example after the original code was the reference).
+6. **Before you merge:** the whole suite (`vendor/bin/codecept run wpunit`), `phpcs` on the new files, and, when a class that Kadence Blocks Pro uses changed,
+   `php bin/bundle-css-runtime.php` in Pro (`RuntimeTest` fails when the bundled copy drifted). A new public method of a shared class also needs
+   `KB_UPDATE_API_SNAPSHOT=1` once, and a row in the README when it is a hook or a reusable section.
+
 ## Maintaining this code
 
 ### Updating Free and Pro in any order
