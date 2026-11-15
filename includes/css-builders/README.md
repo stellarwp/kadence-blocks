@@ -158,6 +158,22 @@ between the two, but are not meant to be a stable API for other plugins: use the
   `KADENCE_BLOCKS_CSS_BUILDERS_VERSION`.
 * After changing a shared Free class, run `php bin/bundle-css-runtime.php` in Pro; `RuntimeTest` fails if the bundle drifts.
 
+### Old blocks
+
+Blocks that older releases of the plugin saved must keep their look. `tests/wpunit/LegacyContentTest.php` (and the same test in Kadence Blocks Pro)
+builds the cases in `tests/_data/legacy/`, one file per block, and compares each with what the original builders did.
+
+* A case is a set of attributes shaped like the ones an older release saved: only some of the attributes the block had then, with realistic
+  values. They were generated from the attribute definitions (`block.json`) of the release tags, which git keeps, so they include the
+  attributes the block had in versions that were later extended.
+* Every case is built twice, as saved and as WordPress prepares it when it renders the block (the current defaults filled in).
+* The expected result is the meaning of the CSS (`Css_Normalizer`), a signature of its cascade (`Cascade_Signature`: the declarations that can still win, in
+  the order they are written), the Google fonts and the scripts and styles the block queues.
+* The expectations were recorded from the **original** builders, before they were split into classes. Record the cases of a new block
+  the same way: write the attributes, then record the expectations with the code as it was released, never with the builders you are changing, or the test only proves that
+  the code agrees with itself. When a change of CSS is intended, the case is re-recorded in the same commit and the reason goes in its message.
+* Like the golden masters it is skipped before PHP 8 (see PHP versions).
+
 ### PHP versions
 
 The plugins support PHP 7.4 and later; the tests and their recordings run on PHP 8.x.
