@@ -313,13 +313,42 @@ final class BuildCssGoldenMasterTest extends TestCase {
 			add_filter( $hook, $callback );
 
 			for ( $seed = 1; $seed <= self::CASES_PER_BLOCK; $seed++ ) {
-				$filtered[ $name ][] = $normalizer->hash( $this->css_for( $block, ( new Build_Css_Fuzzer( $seed, $pool ) )->attributes( $schema ) ) );
+				$attributes = ( new Build_Css_Fuzzer( $seed, $pool ) )->attributes( $schema );
+
+				// The fuzzer rarely picks a fixed background image, which is what the fixed on mobile filter is about.
+				$filtered[ $name ][] = $normalizer->hash( $this->css_for( $block, 'fixed_on_mobile' === $name || 'not_fixed_on_mobile' === $name ? $this->with_fixed_backgrounds( $attributes ) : $attributes ) );
 			}
 
 			remove_filter( $hook, $callback );
 		}
 
 		return $filtered;
+	}
+
+	/**
+	 * Give every background image a file and a fixed attachment, at any depth.
+	 *
+	 * @param array<string, mixed> $attributes The generated attributes.
+	 *
+	 * @return array<string, mixed>
+	 */
+	private function with_fixed_backgrounds( array $attributes ): array {
+		foreach ( $attributes as $key => $value ) {
+			if ( is_array( $value ) ) {
+				$attributes[ $key ] = $this->with_fixed_backgrounds( $value );
+				continue;
+			}
+
+			if ( is_string( $key ) && preg_match( '/ImgAttachment$/', $key ) ) {
+				$attributes[ $key ] = 'fixed';
+			}
+
+			if ( in_array( $key, [ 'bgImg', 'overlayBgImg' ], true ) ) {
+				$attributes[ $key ] = 'a.jpg';
+			}
+		}
+
+		return $attributes;
 	}
 
 	/**
