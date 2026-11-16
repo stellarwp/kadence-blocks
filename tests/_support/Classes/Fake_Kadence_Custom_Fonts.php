@@ -30,6 +30,8 @@ final class Fake_Kadence_Custom_Fonts {
 	}
 
 	/**
+	 * The `kt_font` posts, or whatever `$behavior` returns or throws.
+	 *
 	 * @return mixed
 	 */
 	public static function kt_font_query() {
@@ -52,6 +54,8 @@ final class Fake_Kadence_Custom_Fonts {
 	}
 
 	/**
+	 * Clear the memoized query and any `$behavior`.
+	 *
 	 * @return void
 	 */
 	public static function reset(): void {

@@ -2,6 +2,7 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Admin\Feed;
 
+use Generator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Font_Catalog;
 use Tests\Support\Classes\Fake_Kadence_Custom_Fonts;
 use Tests\Support\Classes\TestCase;
@@ -384,26 +385,62 @@ final class Font_CatalogTest extends TestCase {
 	}
 
 	/**
-	 * @return array<string, array{0: callable}>
+	 * Commas inside a quoted family name stay part of the name, from either filter.
+	 *
+	 * @return void
 	 */
-	public function unexpectedQueryResults(): array {
-		return [
-			'null'                => [ static fn() => null ],
-			'a string'            => [ static fn() => 'nope' ],
-			'false'               => [ static fn() => false ],
-			'not WP_Post entries' => [ static fn() => [ 'a', 42, null, new \stdClass() ] ],
-			'throws an exception' => [
-				static function () {
-										throw new \RuntimeException( 'changed' ); },
-			],
-			'throws a type error' => [
-				static function () {
-									throw new \TypeError( 'changed' ); },
-			],
+	public function testACommaInsideAQuotedFamilyNameIsKept(): void {
+		add_filter( 'kadence_blocks_custom_fonts', static fn() => [ '"Brand, Display", sans-serif' => [ 'name' => 'Brand, Display' ] ] );
+		$callback = static fn( $names ) => array_merge( $names, [ "'Other, Name'", 'Plain Name, Arial' ] );
+		add_filter( 'kadence_blocks_font_catalog_custom_names', $callback );
+
+		try {
+			$result = $this->catalog->all();
+		} finally {
+			remove_filter( 'kadence_blocks_font_catalog_custom_names', $callback );
+		}
+
+		$this->assertSame( [ 'Brand, Display', 'Other, Name', 'Plain Name' ], $result['custom'] );
+	}
+
+	/**
+	 * What the Custom Fonts query returns or throws instead of its usual list.
+	 *
+	 * @return Generator
+	 */
+	public function unexpectedQueryResults(): Generator {
+		yield 'null' => [
+			'behavior' => static fn() => null,
+		];
+
+		yield 'a string' => [
+			'behavior' => static fn() => 'nope',
+		];
+
+		yield 'false' => [
+			'behavior' => static fn() => false,
+		];
+
+		yield 'not WP_Post entries' => [
+			'behavior' => static fn() => [ 'a', 42, null, new \stdClass() ],
+		];
+
+		yield 'throws an exception' => [
+			'behavior' => static function () {
+				throw new \RuntimeException( 'changed' );
+			},
+		];
+
+		yield 'throws a type error' => [
+			'behavior' => static function () {
+				throw new \TypeError( 'changed' );
+			},
 		];
 	}
 
 	/**
+	 * Create a published `kt_font` post naming a family, as the Custom Fonts plugin stores it.
+	 *
 	 * @param string $name The family name.
 	 *
 	 * @return int The post ID.

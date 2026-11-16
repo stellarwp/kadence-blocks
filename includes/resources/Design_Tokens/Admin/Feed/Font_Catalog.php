@@ -209,6 +209,8 @@ final class Font_Catalog {
 			}
 		}
 
+		$names = array_values( array_unique( $names ) );
+
 		/**
 		 * Filters the custom font family names listed in the font dropdowns.
 		 *
@@ -218,7 +220,7 @@ final class Font_Catalog {
 		 *
 		 * @return array<mixed> The custom family names.
 		 */
-		$filtered = apply_filters( self::CUSTOM_NAMES_FILTER, array_values( array_unique( $names ) ) );
+		$filtered = apply_filters( self::CUSTOM_NAMES_FILTER, $names );
 
 		if ( ! is_array( $filtered ) ) {
 			return [];
@@ -227,7 +229,7 @@ final class Font_Catalog {
 		$clean = [];
 
 		foreach ( array_filter( $filtered, 'is_string' ) as $name ) {
-			$family = $this->family_of( $name );
+			$family = in_array( $name, $names, true ) ? $name : $this->family_of( $name );
 
 			if ( $family !== '' ) {
 				$clean[] = $family;
@@ -239,7 +241,8 @@ final class Font_Catalog {
 
 	/**
 	 * The family name a catalog entry names, taken from a font-stack expression when it carries
-	 * one: the first family, with its surrounding quotes removed.
+	 * one: the first family, with its surrounding quotes removed. Commas inside a quoted first family
+	 * belong to its name.
 	 *
 	 * A registered fallback puts the whole stack in the key (`"My Font", sans-serif`). Catalogued
 	 * verbatim, that string becomes the picked font's `$value`, which Css_Renderer quotes as one
@@ -256,6 +259,10 @@ final class Font_Catalog {
 	 * @return string The family name, or "" when the entry names none.
 	 */
 	private function family_of( string $entry ): string {
+		if ( preg_match( '/^\s*(["\'])(.*?)\1/s', $entry, $quoted ) ) {
+			return trim( $quoted[2] );
+		}
+
 		$first = explode( ',', $entry )[0];
 
 		return trim( $first, " \t\n\r\0\x0B\"'" );
