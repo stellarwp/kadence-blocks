@@ -184,7 +184,7 @@ function toNativeSize(slot, unit) {
  * @param {string}  side  The border side.
  * @param {number}  axis  The index within the side's `[color, style, size]` tuple.
  *
- * @since 3.9.2
+ * @since TBD
  *
  * @return {string} The stored value, or `''`.
  */

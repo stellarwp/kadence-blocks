@@ -417,7 +417,7 @@ final class Preset_Resolver {
 	 * An alias resolves through the library's tokens; a literal or per-side list passes through. A property
 	 * whose value does not resolve is omitted.
 	 *
-	 * @since 3.9.2
+	 * @since TBD
 	 *
 	 * @param string   $block      The block name.
 	 * @param string   $preset     The preset slug.
