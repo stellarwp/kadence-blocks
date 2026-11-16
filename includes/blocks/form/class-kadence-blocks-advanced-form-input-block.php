@@ -227,7 +227,7 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 	 * Generate the default attribute
 	 *
 	 * @since 3.2.19
-	 * @since TBD Improved handling of default values.
+	 * @since 3.9.1.1 Improved handling of default values.
 	 *
 	 * @param array{defaultValue?: string, defaultParameter?: string} $attributes The block attributes.
 	 *
@@ -404,7 +404,7 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 	/**
 	 * Get the default value for matching against option values. Use get_default() for output.
 	 *
-	 * @since TBD
+	 * @since 3.9.1.1
 	 *
 	 * @param array{defaultValue?: string, defaultParameter?: string} $attributes The block attributes.
 	 *

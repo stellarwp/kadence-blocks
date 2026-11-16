@@ -121,7 +121,7 @@ class Kadence_Blocks_Select_Block extends Kadence_Blocks_Advanced_Form_Input_Blo
 	/**
 	 * Get the default value for matching against the field options.
 	 *
-	 * @since TBD
+	 * @since 3.9.1.1
 	 *
 	 * @param array{defaultValue?: string, defaultParameter?: string} $attributes The block attributes.
 	 *

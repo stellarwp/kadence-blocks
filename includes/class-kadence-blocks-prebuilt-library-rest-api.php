@@ -110,7 +110,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	/**
 	 * Post types a pattern import can create.
 	 *
-	 * @since TBD
+	 * @since 3.9.1.1
 	 *
 	 * @var string[]
 	 */
@@ -124,7 +124,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	/**
 	 * Form meta keys for site-specific settings.
 	 *
-	 * @since TBD
+	 * @since 3.9.1.1
 	 *
 	 * @var string[]
 	 */
@@ -961,7 +961,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * Creates the forms if needed.
 	 *
 	 * @since 3.5.7
-	 * @since TBD Updated the post type check.
+	 * @since 3.9.1.1 Updated the post type check.
 	 *
 	 * @param string                                                 $content    The content to process.
 	 * @param array<string, array<int|string, array<string, mixed>>> $cpt_blocks The CPT blocks found in the content, keyed by block name.
@@ -1030,7 +1030,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * Install CPT.
 	 *
 	 * @since 3.5.7
-	 * @since TBD Updated the post status and meta handling.
+	 * @since 3.9.1.1 Updated the post status and meta handling.
 	 *
 	 * @param array                  $cpt_data The cpt data.
 	 * @param array<int|string, int> $id_map   The map of old ids to new ids.
@@ -3450,7 +3450,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	/**
 	 * Checks whether the current user can publish the given post type.
 	 *
-	 * @since TBD
+	 * @since 3.9.1.1
 	 *
 	 * @param string $post_type The post type.
 	 *
@@ -3467,7 +3467,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	/**
 	 * Checks whether a form meta key is a presentation setting.
 	 *
-	 * @since TBD
+	 * @since 3.9.1.1
 	 *
 	 * @param int|string $meta_key The meta key.
 	 *
@@ -3482,7 +3482,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	/**
 	 * Sanitizes the strings in a meta value.
 	 *
-	 * @since TBD
+	 * @since 3.9.1.1
 	 *
 	 * @param mixed $meta_value The meta value.
 	 *
