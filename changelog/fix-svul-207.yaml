@@ -1,0 +1,4 @@
+significance: patch
+type: security
+entry: Improved handling of imported content in the Design Library.
+timestamp: 2026-11-13T19:33:38.000Z
