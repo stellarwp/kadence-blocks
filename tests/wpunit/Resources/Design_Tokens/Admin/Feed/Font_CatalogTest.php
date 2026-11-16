@@ -3,6 +3,7 @@
 namespace Tests\wpunit\Resources\Design_Tokens\Admin\Feed;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Font_Catalog;
+use Tests\Support\Classes\Fake_Kadence_Custom_Fonts;
 use Tests\Support\Classes\TestCase;
 
 /**
@@ -21,6 +22,8 @@ final class Font_CatalogTest extends TestCase {
 	protected function setUp(): void {
 		parent::setUp();
 
+		Fake_Kadence_Custom_Fonts::install();
+
 		$this->catalog = $this->container->get( Font_Catalog::class );
 	}
 
@@ -29,6 +32,12 @@ final class Font_CatalogTest extends TestCase {
 	 */
 	protected function tearDown(): void {
 		remove_all_filters( 'kadence_blocks_custom_fonts' );
+
+		foreach ( get_posts( [ 'post_type' => 'kt_font', 'numberposts' => -1, 'post_status' => 'any' ] ) as $font ) {
+			wp_delete_post( $font->ID, true );
+		}
+
+		Fake_Kadence_Custom_Fonts::reset();
 
 		parent::tearDown();
 	}
@@ -232,5 +241,169 @@ final class Font_CatalogTest extends TestCase {
 		$result = $this->catalog->all();
 
 		$this->assertSame( [], $result['custom'] );
+	}
+
+	/**
+	 * Fonts added with the Kadence Custom Fonts plugin never pass through the PHP filter, so the catalog
+	 * reads that plugin's `kt_font` posts itself. This is what puts them in the Style Library dropdown and
+	 * the editor's `kadenceDesignTokensFonts.custom` global alike.
+	 *
+	 * @return void
+	 */
+	public function testCustomNamesIncludeFontsFromTheKadenceCustomFontsPlugin(): void {
+		$this->make_kt_font( 'Brand Sans' );
+		$this->make_kt_font( 'Zeta Display' );
+
+		$result = $this->catalog->all();
+
+		$this->assertSame( [ 'Brand Sans', 'Zeta Display' ], $result['custom'] );
+	}
+
+	/**
+	 * An Adobe Fonts entry carries its families in the `_kad_typekit` meta rather than a single name.
+	 *
+	 * @return void
+	 */
+	public function testCustomNamesIncludeAdobeFamiliesFromTheKadenceCustomFontsPlugin(): void {
+		$id = $this->make_kt_font( 'Ignored' );
+		update_post_meta( $id, '_kad_font_type', 'adobe' );
+		update_post_meta( $id, '_kad_typekit', [ 'families' => [ 'proxima-nova' => [ 'name' => 'Proxima Nova' ], 'bad' => 'x' ] ] );
+
+		$this->assertSame( [ 'Proxima Nova' ], $this->catalog->all()['custom'] );
+	}
+
+	/**
+	 * A font both the filter and the plugin report is listed once, and one the plugin shares with the
+	 * Google list is dropped from custom like any other duplicate.
+	 *
+	 * @return void
+	 */
+	public function testPluginFontsAreDeduplicatedAgainstTheFilterAndGoogle(): void {
+		add_filter( 'kadence_blocks_custom_fonts', static fn() => [ 'Brand Sans' => [ 'name' => 'Brand Sans' ] ] );
+		$this->make_kt_font( 'Brand Sans' );
+		$this->make_kt_font( 'Abel' );
+
+		$this->assertSame( [ 'Brand Sans' ], $this->catalog->all()['custom'] );
+	}
+
+	/**
+	 * Any plugin can add families to every font dropdown through one filter. Entries are normalized like
+	 * the older filter's (fallback stack and wrapping quotes dropped), deduplicated against what is
+	 * already listed and against Google, and anything that is not a string is ignored.
+	 *
+	 * @return void
+	 */
+	public function testCatalogFilterAddsNormalizedNamesToTheCustomList(): void {
+		$callback = static fn( $names ) => array_merge( $names, [ '"Brand Sans", sans-serif', 'Zeta Display', 'zeta display', 42, '', 'Abel' ] );
+		add_filter( 'kadence_blocks_font_catalog_custom_names', $callback );
+
+		try {
+			$result = $this->catalog->all();
+		} finally {
+			remove_filter( 'kadence_blocks_font_catalog_custom_names', $callback );
+		}
+
+		$this->assertSame( [ 'Brand Sans', 'Zeta Display', 'zeta display' ], $result['custom'] );
+	}
+
+	/**
+	 * The catalog filter sees names from the older filter, so a callback can reorder or remove them.
+	 *
+	 * @return void
+	 */
+	public function testCatalogFilterReceivesTheNamesFromTheOlderFilter(): void {
+		add_filter( 'kadence_blocks_custom_fonts', static fn() => [ 'Old Font' => [ 'name' => 'Old Font' ] ] );
+		$callback = static fn( $names ) => array_reverse( array_merge( $names, [ 'New Font' ] ) );
+		add_filter( 'kadence_blocks_font_catalog_custom_names', $callback );
+
+		try {
+			$result = $this->catalog->all();
+		} finally {
+			remove_filter( 'kadence_blocks_font_catalog_custom_names', $callback );
+		}
+
+		$this->assertSame( [ 'New Font', 'Old Font' ], $result['custom'] );
+	}
+
+	/**
+	 * A callback that returns something other than a list cannot take the catalog down with it.
+	 *
+	 * @return void
+	 */
+	public function testCatalogFilterReturningNonArrayFailsSoftToAnEmptyCustomList(): void {
+		$callback = static fn() => 'nope';
+		add_filter( 'kadence_blocks_font_catalog_custom_names', $callback );
+
+		try {
+			$result = $this->catalog->all();
+		} finally {
+			remove_filter( 'kadence_blocks_font_catalog_custom_names', $callback );
+		}
+
+		$this->assertSame( [], $result['custom'] );
+	}
+
+	/**
+	 * A malformed return from the older filter must not hide the families the catalog filter adds.
+	 *
+	 * @return void
+	 */
+	public function testMalformedOlderFilterDoesNotHidePluginFonts(): void {
+		add_filter( 'kadence_blocks_custom_fonts', static fn() => 'not-an-array' );
+		$this->make_kt_font( 'Brand Sans' );
+
+		$this->assertSame( [ 'Brand Sans' ], $this->catalog->all()['custom'] );
+	}
+
+	/**
+	 * Custom Fonts and Blocks update in any order, so whatever a future Custom Fonts release returns from its
+	 * query, the catalog keeps working and simply lists no plugin fonts.
+	 *
+	 * @dataProvider unexpectedQueryResults
+	 *
+	 * @param callable $behavior What the plugin's font query does instead.
+	 *
+	 * @return void
+	 */
+	public function testAnUnexpectedCustomFontsQueryFailsSoft( callable $behavior ): void {
+		add_filter( 'kadence_blocks_custom_fonts', static fn() => [ 'Old Font' => [ 'name' => 'Old Font' ] ] );
+		Fake_Kadence_Custom_Fonts::$behavior = $behavior;
+
+		$this->assertSame( [ 'Old Font' ], $this->catalog->all()['custom'] );
+	}
+
+	/**
+	 * @return array<string, array{0: callable}>
+	 */
+	public function unexpectedQueryResults(): array {
+		return [
+			'null'                  => [ static fn() => null ],
+			'a string'              => [ static fn() => 'nope' ],
+			'false'                 => [ static fn() => false ],
+			'not WP_Post entries'   => [ static fn() => [ 'a', 42, null, new \stdClass() ] ],
+			'throws an exception'   => [ static function () { throw new \RuntimeException( 'changed' ); } ],
+			'throws a type error'   => [ static function () { throw new \TypeError( 'changed' ); } ],
+		];
+	}
+
+	/**
+	 * @param string $name The family name.
+	 *
+	 * @return int The post ID.
+	 */
+	private function make_kt_font( string $name ): int {
+		$id = self::factory()->post->create(
+			[
+				'post_type'   => 'kt_font',
+				'post_status' => 'publish',
+				'post_title'  => $name,
+				'menu_order'  => 0,
+			]
+		);
+		update_post_meta( $id, '_kad_font_name', $name );
+		update_post_meta( $id, '_kad_font_type', 'upload' );
+		Fake_Kadence_Custom_Fonts::reset();
+
+		return $id;
 	}
 }

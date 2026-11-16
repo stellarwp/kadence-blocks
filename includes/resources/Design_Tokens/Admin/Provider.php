@@ -5,6 +5,7 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Admin;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Builder;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Feed_Assembler;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Font_Catalog;
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Kadence_Custom_Fonts_Names;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Localizer;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Preset_Nav;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Presets;
@@ -33,10 +34,15 @@ final class Provider extends Provider_Contract {
 		$this->container->singleton( Preset_Nav::class );
 		$this->container->singleton( Feed_Assembler::class );
 		$this->container->singleton( Font_Catalog::class );
+		$this->container->singleton( Kadence_Custom_Fonts_Names::class );
 		$this->container->singleton( Localizer::class );
 		$this->container->singleton( Screen::class );
 		$this->container->singleton( Asset_Loader::class );
 		$this->container->singleton( Menu::class );
+
+		// Fonts the Kadence Custom Fonts plugin registers (it hooks no PHP filter of its own) reach every font
+		// dropdown through the same catalog filter any other plugin would use.
+		add_filter( 'kadence_blocks_font_catalog_custom_names', $this->container->callback( Kadence_Custom_Fonts_Names::class, 'add_names' ) );
 
 		// Register after Kadence_Blocks_Settings::add_menu() so the kadence-blocks parent exists.
 		add_action( 'admin_menu', $this->container->callback( Menu::class, 'register_site_menu' ), 20 );
