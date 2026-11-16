@@ -226,24 +226,23 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 	/**
 	 * Generate the default attribute
 	 *
-	 * @param $block
+	 * @since 3.2.19
+	 * @since 3.9.1.1 Improved handling of default values.
 	 *
-	 * @return string
+	 * @param array{defaultValue?: string, defaultParameter?: string} $attributes The block attributes.
+	 *
+	 * @return string The default value.
 	 */
 	public function get_default( $attributes ) {
-		$default = '';
-		if ( isset( $attributes['defaultValue'] ) && $attributes['defaultValue'] !== '' ) {
-			$default = do_shortcode( $attributes['defaultValue'] );
-		}
+		$default = $this->get_raw_default( $attributes );
 
 		if ( ! empty( $attributes['defaultParameter'] ) ) {
-			if ( isset( $_GET[ $attributes['defaultParameter'] ] ) ) {
-				$default = sanitize_text_field( kadence_blocks_wc_clean( wp_unslash( $_GET[ $attributes['defaultParameter'] ] ) ) );
-			}
+			$default = str_replace( [ '[', ']' ], [ '&#091;', '&#093;' ], $default );
 		}
 
 		return $default;
 	}
+
 	/**
 	 * Generate the aria-describedby attribute
 	 *
@@ -400,5 +399,29 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 		}
 
 		return '';
+	}
+
+	/**
+	 * Get the default value for matching against option values. Use get_default() for output.
+	 *
+	 * @since 3.9.1.1
+	 *
+	 * @param array{defaultValue?: string, defaultParameter?: string} $attributes The block attributes.
+	 *
+	 * @return string The default value.
+	 */
+	protected function get_raw_default( $attributes ): string {
+		$default = '';
+		if ( isset( $attributes['defaultValue'] ) && $attributes['defaultValue'] !== '' ) {
+			$default = do_shortcode( $attributes['defaultValue'] );
+		}
+
+		if ( ! empty( $attributes['defaultParameter'] ) ) {
+			if ( isset( $_GET[ $attributes['defaultParameter'] ] ) ) {
+				$default = sanitize_text_field( kadence_blocks_wc_clean( wp_unslash( $_GET[ $attributes['defaultParameter'] ] ) ) );
+			}
+		}
+
+		return $default;
 	}
 }
