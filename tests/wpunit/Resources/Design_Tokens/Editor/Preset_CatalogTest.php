@@ -90,9 +90,8 @@ final class Preset_CatalogTest extends TestCase {
 	}
 
 	/**
-	 * A class-painted preset resolves no border of its own, so the catalog carries the border its class paints
-	 * (width, style and color; the single value of a uniform per-side list, and the color as the theme's
-	 * alias) for the border control to start from instead of reading as unset.
+	 * The catalog carries a class-painted preset's border from its theme values: a uniform width as one value,
+	 * the style, and the color as the theme's alias.
 	 *
 	 * @return void
 	 */
@@ -101,9 +100,9 @@ final class Preset_CatalogTest extends TestCase {
 
 		$this->assertSame( '2px', $values['outline']['button-border-width'] );
 		$this->assertSame( 'solid', $values['outline']['button-border-style'] );
-		// The color stays the theme's alias, so a color written into the block keeps following the theme.
+		// The color is the theme's alias.
 		$this->assertSame( '{semantic.color.button-bg}', $values['outline']['button-border-color'] );
-		// Only the border is carried over; the preset still resolves nothing else of its own.
+		// Only border properties are added.
 		$this->assertEqualsCanonicalizing(
 			[ 'button-border-width', 'button-border-style', 'button-border-color' ],
 			array_keys( $values['outline'] )

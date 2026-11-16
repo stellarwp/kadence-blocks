@@ -412,11 +412,10 @@ final class Preset_Resolver {
 	}
 
 	/**
-	 * The flattened literals of some of the theme values a class-painted preset carries for display.
+	 * The flattened literals of the given theme values of a class-painted preset.
 	 *
-	 * The counterpart of resolve_literal() for the values the theme renders: an alias resolves through the
-	 * library's tokens, and a literal or per-side list passes through. A property whose value does not
-	 * resolve is omitted.
+	 * An alias resolves through the library's tokens; a literal or per-side list passes through. A property
+	 * whose value does not resolve is omitted.
 	 *
 	 * @since 3.9.2
 	 *

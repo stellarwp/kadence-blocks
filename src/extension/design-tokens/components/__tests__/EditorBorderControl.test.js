@@ -154,7 +154,11 @@ describe('EditorBorderControl native <-> control value bridging', () => {
 	 * @return {void}
 	 */
 	it('reads an unset native value as an empty scalar', () => {
-		const { borderControl } = renderEditorBorderControl({ previewDevice: 'Tablet', tabletValue: undefined });
+		const { borderControl } = renderEditorBorderControl({
+			previewDevice: 'Tablet',
+			value: undefined,
+			tabletValue: undefined,
+		});
 
 		expect(borderControl.props.value).toEqual({
 			width: '',
@@ -164,8 +168,7 @@ describe('EditorBorderControl native <-> control value bridging', () => {
 	});
 
 	/**
-	 * An unset border reads as the preset's own style instead of `none`, so a preset that paints a solid
-	 * border starts the control from `solid`, and editing the width keeps that border visible.
+	 * An unset border reads as the default style, and a width edit writes that style.
 	 *
 	 * @since 3.9.2
 	 *
@@ -195,8 +198,7 @@ describe('EditorBorderControl native <-> control value bridging', () => {
 	});
 
 	/**
-	 * A per-side default style applies to each side on its own, so an unset hover border follows the
-	 * resting style of every side rather than one side's style for all of them.
+	 * A per-side default style applies to each side.
 	 *
 	 * @since 3.9.2
 	 *
@@ -212,8 +214,7 @@ describe('EditorBorderControl native <-> control value bridging', () => {
 	});
 
 	/**
-	 * An unset border whose default style differs per side opens unlinked, so every side shows its own
-	 * style; one default style for all sides keeps the linked view.
+	 * An unset border whose default style differs per side opens unlinked; one default style opens linked.
 	 *
 	 * @since 3.9.2
 	 *
@@ -230,8 +231,7 @@ describe('EditorBorderControl native <-> control value bridging', () => {
 	});
 
 	/**
-	 * Writing a width on a preset that paints a colored border also writes that color: an empty color on a
-	 * border with a width renders as transparent, which would hide the border the preset paints.
+	 * A width edit with no color writes a token alias default color.
 	 *
 	 * @since 3.9.2
 	 *
@@ -241,7 +241,7 @@ describe('EditorBorderControl native <-> control value bridging', () => {
 		const { borderControl, onChange } = renderEditorBorderControl({
 			value: undefined,
 			defaultStyle: 'solid',
-			defaultColor: '#2B6CB0',
+			defaultColor: '{semantic.color.button-bg}',
 		});
 
 		act(() => {
@@ -250,17 +250,68 @@ describe('EditorBorderControl native <-> control value bridging', () => {
 
 		expect(onChange).toHaveBeenCalledWith([
 			{
-				top: ['#2B6CB0', 'solid', 4],
-				right: ['#2B6CB0', 'solid', 4],
-				bottom: ['#2B6CB0', 'solid', 4],
-				left: ['#2B6CB0', 'solid', 4],
+				top: ['{semantic.color.button-bg}', 'solid', 4],
+				right: ['{semantic.color.button-bg}', 'solid', 4],
+				bottom: ['{semantic.color.button-bg}', 'solid', 4],
+				left: ['{semantic.color.button-bg}', 'solid', 4],
 				unit: 'px',
 			},
 		]);
 	});
 
 	/**
-	 * A color the user picked always wins over the preset's, and a border with no width writes no color.
+	 * A width edit with no color does not write a literal default color.
+	 *
+	 * @since 3.9.2
+	 *
+	 * @return {void}
+	 */
+	it('does not write a literal default color', () => {
+		const { borderControl, onChange } = renderEditorBorderControl({ value: undefined, defaultColor: '#2B6CB0' });
+
+		act(() => {
+			borderControl.props.onChange({ width: '4px', style: 'solid', color: '' });
+		});
+
+		expect(onChange).toHaveBeenLastCalledWith([expect.objectContaining({ top: ['', 'solid', 4] })]);
+	});
+
+	/**
+	 * On Tablet, the control shows the desktop style, and a width edit writes empty color and style slots.
+	 *
+	 * @since 3.9.2
+	 *
+	 * @return {void}
+	 */
+	it('keeps the desktop color and style inherited when a width is written on Tablet', () => {
+		const desktop = [
+			{
+				top: ['#ff0000', 'dashed', 2],
+				right: ['#ff0000', 'dashed', 2],
+				bottom: ['#ff0000', 'dashed', 2],
+				left: ['#ff0000', 'dashed', 2],
+				unit: 'px',
+			},
+		];
+		const { borderControl, onChangeTablet } = renderEditorBorderControl({
+			value: desktop,
+			tabletValue: undefined,
+			previewDevice: 'Tablet',
+			defaultStyle: 'solid',
+			defaultColor: '{semantic.color.button-bg}',
+		});
+
+		expect(borderControl.props.value.style).toBe('dashed');
+
+		act(() => {
+			borderControl.props.onChange({ width: '4px', style: 'dashed', color: '' });
+		});
+
+		expect(onChangeTablet).toHaveBeenLastCalledWith([expect.objectContaining({ top: ['', '', 4] })]);
+	});
+
+	/**
+	 * A picked color is written as is, and a side with no width writes no color.
 	 *
 	 * @since 3.9.2
 	 *
@@ -269,7 +320,7 @@ describe('EditorBorderControl native <-> control value bridging', () => {
 	it('keeps a picked color over the preset color and writes none without a width', () => {
 		const { borderControl, onChange } = renderEditorBorderControl({
 			value: undefined,
-			defaultColor: '#2B6CB0',
+			defaultColor: '{semantic.color.button-bg}',
 		});
 
 		act(() => {
@@ -286,7 +337,7 @@ describe('EditorBorderControl native <-> control value bridging', () => {
 	});
 
 	/**
-	 * A stored style always wins over the preset's, so an explicit `dashed` is never replaced.
+	 * A stored style is shown instead of the default style.
 	 *
 	 * @since 3.9.2
 	 *
@@ -618,7 +669,11 @@ describe('EditorBorderControl linked view', () => {
 	 * @return {void}
 	 */
 	it('reads an unset value as linked', () => {
-		const { borderControl } = renderEditorBorderControl({ previewDevice: 'Tablet', tabletValue: undefined });
+		const { borderControl } = renderEditorBorderControl({
+			previewDevice: 'Tablet',
+			value: undefined,
+			tabletValue: undefined,
+		});
 
 		expect(borderControl.props.isLinked).toBe(true);
 	});

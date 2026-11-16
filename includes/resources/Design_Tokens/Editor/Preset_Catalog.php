@@ -281,18 +281,10 @@ final class Preset_Catalog {
 	}
 
 	/**
-	 * The border a class-painted preset renders (width, style and color), for the editor's border control to
-	 * start from.
+	 * The border a class-painted preset renders (width, style and color), read from its theme values.
 	 *
-	 * A class-painted preset stores no tokens of its own (its look is its class), so its border would resolve
-	 * to nothing: the width field would render empty and collapse, and the style and color would read as unset
-	 * while the button paints a border. The theme values it carries for display hold what the class paints;
-	 * a uniform per-side list is returned as the single value a border field takes.
-	 *
-	 * The color is the one exception to this map's flattened literals: a color the theme sets as a token alias
-	 * stays that alias (when it resolves), because the editor writes it into the block with a width and a
-	 * literal there would stop following the theme's button color. The color control shows an alias as its
-	 * default and compares it as stored, the same as a color picked from the token list.
+	 * A uniform per-side list is returned as a single value. A color set as a token alias is returned as that
+	 * alias when it resolves; the other values are flattened literals.
 	 *
 	 * @since 3.9.2
 	 *

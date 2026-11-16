@@ -390,10 +390,8 @@ export default function KadenceButtonEdit(props) {
 	const borderHoverWidthDefault = siteHoverBorder.width ?? borderHoverWidthPresetValue ?? borderWidthDefault;
 	const borderHoverColorDefault =
 		siteHoverBorder.color ?? tokenBinding.borderHoverStyle?.presetValue?.color ?? borderColorDefault;
-	// What an unset style reads as: the site's, then the active preset's own at the preview device, so a
-	// class-painted preset (Outline) starts from the solid border it paints rather than `none`. Hover falls
-	// back to the style stored for resting, side by side (so an explicit `none` is not shown as `solid` on
-	// hover), then to the resting default.
+	// Unset style defaults: the site's style, then the active preset's at the preview device. Hover: the
+	// site's hover style, the preset's hover style, the stored resting style per side, then the resting default.
 	const borderStyleDefault =
 		siteBorder.style ??
 		presetPropertyValueForDevice('kadence/singlebtn', 'button-border-style', attributes, undefined, previewDevice);

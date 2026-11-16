@@ -83,10 +83,8 @@ function deviceForBreakpoint(breakpoint) {
 
 /**
  * Whether a native border value shows the same color, style, and width on every side — the state a
- * linked view can honestly represent. An unset side reads as its default style, so a breakpoint that
- * has never been written is uniform unless the default style differs per side (the hover border's
- * defaults follow the resting styles side by side); a per-side difference opens the unlinked view
- * rather than hiding behind the first side's style.
+ * linked view can honestly represent. An unset side reads as its default style, so a border with nothing
+ * stored is uniform unless the default style differs per side.
  *
  * @param {?Array}               native         `[{top,right,bottom,left,unit}]` or undefined.
  * @param {?(string|string[])}   [defaultStyle] The style an unset side reads as, one or one per side.
@@ -114,9 +112,7 @@ function isUniformBorder(native, defaultStyle = 'none') {
  * not a token id.
  *
  * @param {?Array}  native         `[{top,right,bottom,left,unit}]` or undefined.
- * @param {?(string|string[])} [defaultStyle] The style an unset side reads as: the active preset's own
- *                                 style, so the control starts from the border the button paints, or one
- *                                 per side. `'none'` when there is none.
+ * @param {?(string|string[])} [defaultStyle] The style an unset side reads as, one or one per side.
  *
  * @since 3.8.0
  *
@@ -182,10 +178,25 @@ function toNativeSize(slot, unit) {
 }
 
 /**
+ * The first value a wider breakpoint stores for one side's axis.
+ *
+ * @param {Array[]} wider The wider breakpoints' native values, nearest first.
+ * @param {string}  side  The border side.
+ * @param {number}  axis  The index within the side's `[color, style, size]` tuple.
+ *
+ * @since 3.9.2
+ *
+ * @return {string} The stored value, or `''`.
+ */
+function inheritedSlot(wider, side, axis) {
+	return wider.map((native) => native?.[0]?.[side]?.[axis]).find((slot) => slot) || '';
+}
+
+/**
  * Convert `BorderControl`'s `{ width, style, color }` shape back to the native
  * `[{top,right,bottom,left,unit}]` attribute shape.
  *
- * **Color always comes straight from `value.color`, with no fallback.** `value.color` is whatever
+ * **Color comes from `value.color` and never falls back to the stored color.** `value.color` is whatever
  * `BorderControl` currently holds for color — either untouched (in which case it is exactly what
  * `fromNativeBorder` derived from `previousNative`, since a width/style-only edit merges
  * `{ ...value, ...next }` and leaves `color` alone) or freshly written by the caller's `renderColor`
@@ -194,29 +205,32 @@ function toNativeSize(slot, unit) {
  * explicit clear (`''`) the same as "nothing changed" and silently write the old color back,
  * making the border color impossible to clear.
  *
- * The one fallback is the preset's own color (`defaultColor`), for a side that has a width: an empty color
- * on a border that has a width renders as `transparent`, so writing the width alone would hide a border
- * the preset paints in a color (Outline). Clearing a color therefore goes back to the preset's color.
+ * A side with no stored style writes `''` when its style equals the one a wider breakpoint stores. A side
+ * with a width and no color writes `defaultColor` when it is a token alias and no wider breakpoint stores a
+ * color for that side.
  *
- * @param {Object}  value          `{ width, style, color }` from `BorderControl`.
- * @param {string}  [unit]         The border's shared unit (defaults to `'px'`, matching the native default
- *                                 in `ResponsiveBorderControl`'s `deskDefault`).
- * @param {?string} [defaultColor] The active preset's border color, written for a side that has a width but
- *                                 no color of its own.
+ * @param {Object}  value                  `{ width, style, color }` from `BorderControl`.
+ * @param {string}  [unit]                 The border's shared unit (defaults to `'px'`, matching the native
+ *                                         default in `ResponsiveBorderControl`'s `deskDefault`).
+ * @param {Object}  [options]              Write options.
+ * @param {?string} [options.defaultColor] The active preset's border color.
+ * @param {?Array}  [options.previous]     The breakpoint's stored native value.
+ * @param {Array[]} [options.wider]        The wider breakpoints' native values, nearest first.
  *
  * @since 3.8.0
  *
  * @return {Array} `[{top,right,bottom,left,unit}]`.
  */
-function toNativeBorder(value, unit = 'px', defaultColor = '') {
+function toNativeBorder(value, unit = 'px', { defaultColor = '', previous, wider = [] } = {}) {
+	const stored = previous?.[0] || {};
 	const sides = SIDES.reduce((acc, side, index) => {
 		const size = toNativeSize(readSlot(value.width, index), unit);
+		const color = readSlot(value.color, index);
+		const style = readSlot(value.style, index) || 'none';
+		const inheritedStyle = !stored[side]?.[1] && inheritedSlot(wider, side, 1);
+		const fillColor = size !== '' && !inheritedSlot(wider, side, 0) && isTokenAlias(defaultColor);
 
-		acc[side] = [
-			readSlot(value.color, index) || (size === '' ? '' : defaultColor || ''),
-			readSlot(value.style, index) || 'none',
-			size,
-		];
+		acc[side] = [color || (fillColor ? defaultColor : ''), style === inheritedStyle ? '' : style, size];
 		return acc;
 	}, {});
 
@@ -246,11 +260,8 @@ function toNativeBorder(value, unit = 'px', defaultColor = '') {
  *                                         border width, never a per-side default.
  * @param {?string}   [props.defaultColor] What the color axis falls back to when unset — the active
  *                                         preset's border color, shown muted as "Default".
- * @param {?(string|string[])} [props.defaultStyle] What the style axis falls back to when unset (one style,
- *                                         or one per side) — the active
- *                                         preset's border style (e.g. `solid` for Outline). Without it an
- *                                         unset style reads as `none`, and editing the width would write
- *                                         `none` and hide a border the preset paints.
+ * @param {?(string|string[])} [props.defaultStyle] What the style axis falls back to when unset, one style or one
+ *                                         per side. `none` when omitted.
  * @param {?Function} [props.renderColor]  The block's existing color field for `value.color`.
  * @param {?Object}   [props.state]        The block's own binding state (`{ bound, overridden }`).
  * @param {?Function} [props.onReset]      Reset handler for the indicator.
@@ -288,6 +299,14 @@ export function EditorBorderControl({
 
 	const activeNative = nativeForBreakpoint[breakpoint];
 	const activeSetter = setterForBreakpoint[breakpoint];
+	const widerForBreakpoint = { desktop: [], tablet: [value], mobile: [tabletValue, value] };
+	const wider = widerForBreakpoint[breakpoint];
+	const sideStyles = SIDES.map(
+		(side, index) => inheritedSlot(wider, side, 1) || readSlot(defaultStyle, index) || 'none'
+	);
+	const shownStyles = sideStyles.every((style) => style === sideStyles[0]) ? sideStyles[0] : sideStyles;
+	const shownColor = inheritedSlot(wider, 'top', 0) || defaultColor;
+	const writeOptions = { defaultColor, previous: activeNative, wider };
 	// Follows the active device's own stored unit, falling back to the desktop unit (matching
 	// `ResponsiveBorderControl`'s own `mobileUnit`/`tabletUnit` fallback), and finally 'px'.
 	const activeUnit = activeNative?.[0]?.unit || value?.[0]?.unit || 'px';
@@ -297,7 +316,7 @@ export function EditorBorderControl({
 	// explicit choice onto another; resets on remount, matching `singlebtn/edit.js`'s
 	// `borderRadiusModeOverride` for radius.
 	const [linkOverride, setLinkOverride] = useState({});
-	const linked = linkOverride[breakpoint] ?? isUniformBorder(activeNative, defaultStyle || 'none');
+	const linked = linkOverride[breakpoint] ?? isUniformBorder(activeNative, shownStyles);
 
 	const toggleLink = () => {
 		if (linked) {
@@ -309,7 +328,7 @@ export function EditorBorderControl({
 		// matching `BorderControl`'s own uncontrolled relink rule and `BoxControl`'s relink comment.
 		// Reads the stored border only: an unset width stays unset through a relink rather than being
 		// written out as an override of the muted default it was merely displaying.
-		const current = fromNativeBorder(activeNative, defaultStyle || 'none');
+		const current = fromNativeBorder(activeNative, shownStyles);
 
 		activeSetter(
 			toNativeBorder(
@@ -319,7 +338,7 @@ export function EditorBorderControl({
 					color: readSlot(current.color, 0),
 				},
 				activeUnit,
-				defaultColor
+				writeOptions
 			)
 		);
 		// Equal sides derive linked on their own once the collapsed value comes back through `value`
@@ -335,11 +354,11 @@ export function EditorBorderControl({
 			<BreakpointProvider value={breakpoint} onChange={changeBreakpoint}>
 				<BorderControl
 					label={label}
-					value={fromNativeBorder(activeNative, defaultStyle || 'none')}
-					onChange={(next) => activeSetter(toNativeBorder(next, activeUnit, defaultColor))}
+					value={fromNativeBorder(activeNative, shownStyles)}
+					onChange={(next) => activeSetter(toNativeBorder(next, activeUnit, writeOptions))}
 					widthTokens={widthTokens}
 					defaultValue={defaultValue}
-					defaultColor={defaultColor}
+					defaultColor={shownColor}
 					// The editor's own mark, not this library's: it is the same indicator the block's other
 					// controls show, and two marks meaning the same thing should not look different.
 					indicator={<TokenIndicator state={state} onReset={onReset} />}
