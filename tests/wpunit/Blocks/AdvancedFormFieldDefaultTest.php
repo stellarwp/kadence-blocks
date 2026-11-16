@@ -18,6 +18,7 @@ use Kadence_Blocks_Textarea_Input_Block;
 use Kadence_Blocks_Time_Input_Block;
 use Tests\wpunit\KadenceBlocksTestCase;
 use WP_Block;
+use WP_Block_Supports;
 
 /**
  * Default values of the Advanced Form field blocks.
@@ -237,6 +238,19 @@ class AdvancedFormFieldDefaultTest extends KadenceBlocksTestCase {
 			$attributes
 		);
 
-		return $field_class::get_instance()->build_html( $attributes, $attributes['uniqueID'], '', new WP_Block( [ 'blockName' => 'kadence/advanced-form-field' ] ) );
+		/*
+		 * get_block_wrapper_attributes() reads the block core is currently rendering; outside a real render
+		 * nothing sets it, so the test stands in for the block parser here.
+		 */
+		WP_Block_Supports::$block_to_render = [
+			'blockName' => 'kadence/advanced-form-field',
+			'attrs'     => $attributes,
+		];
+
+		try {
+			return $field_class::get_instance()->build_html( $attributes, $attributes['uniqueID'], '', new WP_Block( [ 'blockName' => 'kadence/advanced-form-field' ] ) );
+		} finally {
+			WP_Block_Supports::$block_to_render = null;
+		}
 	}
 }
