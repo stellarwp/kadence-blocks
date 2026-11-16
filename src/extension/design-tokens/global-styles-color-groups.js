@@ -73,6 +73,31 @@ function toGroup(id, label, colors) {
 }
 
 /**
+ * The active theme's own palette as `ColorControl` groups, for a site that is not on the Kadence theme.
+ *
+ * Unlike `globalStylesColorGroups` the group has no Global Styles source: it sits beside the Style
+ * Library groups, so the popover keeps titling its list for the Style Library.
+ *
+ * @param {Array} theme The theme palette entries (`{ slug, name, color }`).
+ *
+ * @since TBD
+ *
+ * @return {Array} The theme group, or an empty array when the theme has no colors.
+ */
+export function themeColorGroups(theme) {
+	const group = toGroup('theme', __('Theme', 'kadence-blocks'), theme);
+
+	if (!group) {
+		return [];
+	}
+
+	// Drop the Global Styles marker `toGroup` adds.
+	const { source, ...themeGroup } = group;
+
+	return [themeGroup];
+}
+
+/**
  * Build `ColorControl`'s `groups` from the Global Styles palette origins.
  *
  * @param {Object}  origins                  The palette origins.
