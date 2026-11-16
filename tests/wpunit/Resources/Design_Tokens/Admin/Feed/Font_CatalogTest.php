@@ -33,7 +33,13 @@ final class Font_CatalogTest extends TestCase {
 	protected function tearDown(): void {
 		remove_all_filters( 'kadence_blocks_custom_fonts' );
 
-		foreach ( get_posts( [ 'post_type' => 'kt_font', 'numberposts' => -1, 'post_status' => 'any' ] ) as $font ) {
+		foreach ( get_posts(
+			[
+				'post_type'   => 'kt_font',
+				'numberposts' => -1,
+				'post_status' => 'any',
+			] 
+		) as $font ) {
 			wp_delete_post( $font->ID, true );
 		}
 
@@ -265,7 +271,16 @@ final class Font_CatalogTest extends TestCase {
 	public function testCustomNamesIncludeAdobeFamiliesFromTheKadenceCustomFontsPlugin(): void {
 		$id = $this->make_kt_font( 'Ignored' );
 		update_post_meta( $id, '_kad_font_type', 'adobe' );
-		update_post_meta( $id, '_kad_typekit', [ 'families' => [ 'proxima-nova' => [ 'name' => 'Proxima Nova' ], 'bad' => 'x' ] ] );
+		update_post_meta(
+			$id,
+			'_kad_typekit',
+			[
+				'families' => [
+					'proxima-nova' => [ 'name' => 'Proxima Nova' ],
+					'bad'          => 'x',
+				],
+			] 
+		);
 
 		$this->assertSame( [ 'Proxima Nova' ], $this->catalog->all()['custom'] );
 	}
@@ -373,12 +388,18 @@ final class Font_CatalogTest extends TestCase {
 	 */
 	public function unexpectedQueryResults(): array {
 		return [
-			'null'                  => [ static fn() => null ],
-			'a string'              => [ static fn() => 'nope' ],
-			'false'                 => [ static fn() => false ],
-			'not WP_Post entries'   => [ static fn() => [ 'a', 42, null, new \stdClass() ] ],
-			'throws an exception'   => [ static function () { throw new \RuntimeException( 'changed' ); } ],
-			'throws a type error'   => [ static function () { throw new \TypeError( 'changed' ); } ],
+			'null'                => [ static fn() => null ],
+			'a string'            => [ static fn() => 'nope' ],
+			'false'               => [ static fn() => false ],
+			'not WP_Post entries' => [ static fn() => [ 'a', 42, null, new \stdClass() ] ],
+			'throws an exception' => [
+				static function () {
+										throw new \RuntimeException( 'changed' ); },
+			],
+			'throws a type error' => [
+				static function () {
+									throw new \TypeError( 'changed' ); },
+			],
 		];
 	}
 

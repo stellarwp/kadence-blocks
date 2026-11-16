@@ -44,7 +44,7 @@ describe('buildFontCatalogOptions', () => {
 		expect(options.map((option) => option.value)).toEqual(['Zeta', 'Alpha', 'Mid']);
 	});
 
-	it('lists a favorited custom font once, as a favorite', () => {
+	it('lists a custom font that is also a favorite once, as a favorite', () => {
 		expect(buildFontCatalogOptions({ favorites: ['Brand Sans'], custom: ['Brand Sans'] })).toEqual([
 			{ value: 'Brand Sans', label: 'Brand Sans', badge: 'Favorite' },
 		]);

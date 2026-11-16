@@ -216,7 +216,7 @@ final class Font_Catalog {
 		 *
 		 * @param string[] $names The custom family names.
 		 *
-		 * @return string[] The custom family names.
+		 * @return array<mixed> The custom family names.
 		 */
 		$filtered = apply_filters( self::CUSTOM_NAMES_FILTER, array_values( array_unique( $names ) ) );
 
@@ -226,8 +226,8 @@ final class Font_Catalog {
 
 		$clean = [];
 
-		foreach ( $filtered as $name ) {
-			$family = is_string( $name ) ? $this->family_of( $name ) : '';
+		foreach ( array_filter( $filtered, 'is_string' ) as $name ) {
+			$family = $this->family_of( $name );
 
 			if ( $family !== '' ) {
 				$clean[] = $family;

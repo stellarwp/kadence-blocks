@@ -38,7 +38,14 @@ final class Fake_Kadence_Custom_Fonts {
 		}
 
 		if ( null === self::$font_query ) {
-			self::$font_query = get_posts( [ 'post_type' => 'kt_font', 'numberposts' => -1, 'order' => 'ASC', 'orderby' => 'ID' ] );
+			self::$font_query = get_posts(
+				[
+					'post_type'   => 'kt_font',
+					'numberposts' => -1,
+					'order'       => 'ASC',
+					'orderby'     => 'ID',
+				] 
+			);
 		}
 
 		return self::$font_query;
