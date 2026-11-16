@@ -150,9 +150,7 @@ export function getFontCatalog() {
 }
 
 /**
- * The font-family picker's full option list, assembled by the shared `buildFontCatalogOptions()` the
- * block editor's Font Family fields use too, so the screens agree on order and badges: custom fonts,
- * favorites, then every Google family, each name once.
+ * The font-family picker's option list, built by `buildFontCatalogOptions()`.
  *
  * The theme's "inherit heading/body font" rows are deliberately absent: they resolve through custom
  * properties the block editor's canvas carries, and a preset storing one would name a variable rather
@@ -169,9 +167,7 @@ export function fontCatalogOptions(feed) {
 }
 
 /**
- * The same option list, from favorites already read out of the feed with `fontOptions()`. The
- * Typography screen reads the feed once for its own cards and passes the result here rather than
- * parsing it a second time.
+ * The same option list, from favorites already read from the feed with `fontOptions()`.
  *
  * @param {Array<{label: string}>} fonts The library's favorites (`fontOptions()`).
  *

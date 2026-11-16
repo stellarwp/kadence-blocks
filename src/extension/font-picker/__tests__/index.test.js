@@ -105,8 +105,6 @@ describe('fontCatalogOptions', () => {
 		expect(fontCatalogOptions()).toEqual([{ value: 'abril fatface', label: 'abril fatface', badge: 'Favorite' }]);
 	});
 
-	// Kadence Custom Fonts registers its fonts only through this JS filter, never the PHP filter behind
-	// `kadenceDesignTokensFonts.custom`, so the picker has to read the filter itself.
 	describe('fonts registered through the kadence.typography_options filter', () => {
 		afterEach(() => {
 			removeFilter('kadence.typography_options', 'test/custom-fonts');

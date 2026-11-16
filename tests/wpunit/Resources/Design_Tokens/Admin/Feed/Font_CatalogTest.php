@@ -244,9 +244,7 @@ final class Font_CatalogTest extends TestCase {
 	}
 
 	/**
-	 * Fonts added with the Kadence Custom Fonts plugin never pass through the PHP filter, so the catalog
-	 * reads that plugin's `kt_font` posts itself. This is what puts them in the Style Library dropdown and
-	 * the editor's `kadenceDesignTokensFonts.custom` global alike.
+	 * Custom names include the Kadence Custom Fonts plugin's fonts.
 	 *
 	 * @return void
 	 */
@@ -260,7 +258,7 @@ final class Font_CatalogTest extends TestCase {
 	}
 
 	/**
-	 * An Adobe Fonts entry carries its families in the `_kad_typekit` meta rather than a single name.
+	 * Custom names include the families of a Kadence Custom Fonts Adobe Fonts entry.
 	 *
 	 * @return void
 	 */
@@ -273,8 +271,8 @@ final class Font_CatalogTest extends TestCase {
 	}
 
 	/**
-	 * A font both the filter and the plugin report is listed once, and one the plugin shares with the
-	 * Google list is dropped from custom like any other duplicate.
+	 * A font reported by both the filter and the plugin is listed once, and one in the Google list is
+	 * dropped from the custom names.
 	 *
 	 * @return void
 	 */
@@ -287,9 +285,8 @@ final class Font_CatalogTest extends TestCase {
 	}
 
 	/**
-	 * Any plugin can add families to every font dropdown through one filter. Entries are normalized like
-	 * the older filter's (fallback stack and wrapping quotes dropped), deduplicated against what is
-	 * already listed and against Google, and anything that is not a string is ignored.
+	 * Names added through the catalog filter are normalized, de-duplicated against the list and Google, and
+	 * non-strings are ignored.
 	 *
 	 * @return void
 	 */
@@ -307,7 +304,7 @@ final class Font_CatalogTest extends TestCase {
 	}
 
 	/**
-	 * The catalog filter sees names from the older filter, so a callback can reorder or remove them.
+	 * The catalog filter receives the names from `kadence_blocks_custom_fonts`.
 	 *
 	 * @return void
 	 */
@@ -326,7 +323,7 @@ final class Font_CatalogTest extends TestCase {
 	}
 
 	/**
-	 * A callback that returns something other than a list cannot take the catalog down with it.
+	 * A catalog filter callback returning a non-array leaves an empty custom list.
 	 *
 	 * @return void
 	 */
@@ -344,7 +341,7 @@ final class Font_CatalogTest extends TestCase {
 	}
 
 	/**
-	 * A malformed return from the older filter must not hide the families the catalog filter adds.
+	 * A malformed `kadence_blocks_custom_fonts` return does not hide the catalog filter's names.
 	 *
 	 * @return void
 	 */
@@ -356,8 +353,7 @@ final class Font_CatalogTest extends TestCase {
 	}
 
 	/**
-	 * Custom Fonts and Blocks update in any order, so whatever a future Custom Fonts release returns from its
-	 * query, the catalog keeps working and simply lists no plugin fonts.
+	 * An unexpected result or exception from the Custom Fonts query adds no names and raises no error.
 	 *
 	 * @dataProvider unexpectedQueryResults
 	 *

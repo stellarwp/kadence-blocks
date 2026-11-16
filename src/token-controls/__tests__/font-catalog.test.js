@@ -12,7 +12,6 @@ describe('buildFontCatalogOptions', () => {
 		expect(buildFontCatalogOptions({})).toEqual([]);
 	});
 
-	// A site's own faces must not sit under ~1,900 Google names, which is where the picker used to put them.
 	it('orders custom, theme, favorites, then google', () => {
 		const options = buildFontCatalogOptions({
 			favorites: ['Georgia'],

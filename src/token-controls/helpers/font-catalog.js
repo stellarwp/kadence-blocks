@@ -1,10 +1,6 @@
 /**
- * The one place the font-family picker's option list is assembled.
- *
- * Three dropdowns list the same fonts: the block editor's Typography and Highlight Font Family fields
- * (both mounted through `src/extension/font-picker`) and the Style Library's Typography screen. Each
- * reads its names from a different global, but what a site's list looks like — what leads, what is
- * badged, what appears once — is decided here, so it cannot drift between them.
+ * Builds the option list shared by the font-family pickers: the block editor's Typography and Highlight
+ * Font Family fields and the Style Library's Typography screen.
  */
 
 /**
@@ -13,7 +9,7 @@
 import { __ } from '@wordpress/i18n';
 
 /**
- * Normalize a family name for comparison: trimmed, wrapping quotes removed, case-folded.
+ * Normalize a family name for comparison.
  *
  * @param {*} name The family name.
  *
@@ -32,16 +28,9 @@ function familyKey(name) {
 /**
  * Build the picker's option list.
  *
- * Order, top to bottom: the site's own custom fonts, the theme's global font rows, the favorites,
- * then every Google family. This is the order the shared `TypographyControls` select has always used
- * (custom fonts, then the theme's rows, then the rest), so a site's own faces are never buried under
- * ~1,900 Google names. Favorites sit above Google for the same reason.
- *
- * Every name appears exactly once, matched case-insensitively across favorites, Google and custom. A
- * favorite wins over any other source, so a favorited custom font renders once, as a favorite; a
- * custom font that duplicates a Google one renders once, as the Google one (the server diffs the two
- * lists by exact string, so `inter` beside Google's `Inter` reaches here as two names for one font).
- * Theme rows are exempt: their values are `var()` references, not family names.
+ * Order: custom fonts, theme rows, favorites, then Google fonts. A name is listed once, matched ignoring
+ * case, whitespace and wrapping quotes; favorites take precedence over Google, and Google over custom.
+ * Theme rows are not de-duplicated.
  *
  * @param {Object}                                                 sources
  * @param {string[]}                                               [sources.favorites] Favorite family names.
@@ -67,7 +56,7 @@ export function buildFontCatalogOptions({ favorites = [], google = [], custom = 
 		return true;
 	};
 
-	// Claimed in precedence order (favorite, then Google, then custom), rendered in display order.
+	// Names are claimed in precedence order and listed in display order.
 	const favoriteOptions = favorites
 		.filter(unique)
 		.map((name) => ({ value: name, label: name, badge: __('Favorite', 'kadence-blocks') }));

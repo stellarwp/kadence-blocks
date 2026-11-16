@@ -40,8 +40,6 @@ final class Provider extends Provider_Contract {
 		$this->container->singleton( Asset_Loader::class );
 		$this->container->singleton( Menu::class );
 
-		// Fonts the Kadence Custom Fonts plugin registers (it hooks no PHP filter of its own) reach every font
-		// dropdown through the same catalog filter any other plugin would use.
 		add_filter( 'kadence_blocks_font_catalog_custom_names', $this->container->callback( Kadence_Custom_Fonts_Names::class, 'add_names' ) );
 
 		// Register after Kadence_Blocks_Settings::add_menu() so the kadence-blocks parent exists.

@@ -20,9 +20,7 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed;
  * itself be a font-stack expression such as `"My Font", sans-serif`), so a string key is taken as
  * a name; an integer-keyed string entry (a plain list of names) passes through as-is.
  *
- * The final list of custom names passes through `kadence_blocks_font_catalog_custom_names`, which is what the
- * block editor's Typography and Highlight pickers and the Style Library's Typography screen all read, so a
- * plugin that keeps its fonts somewhere other than the filter above can add them in one place.
+ * The custom names then pass through the `kadence_blocks_font_catalog_custom_names` filter.
  *
  * @since 3.8.0
  */
@@ -56,7 +54,7 @@ final class Font_Catalog {
 	private const CUSTOM_FONTS_FILTER = 'kadence_blocks_custom_fonts';
 
 	/**
-	 * The filter over the normalized custom family names every font dropdown lists.
+	 * The filter applied to the normalized custom family names.
 	 *
 	 * @since TBD
 	 *
@@ -197,7 +195,6 @@ final class Font_Catalog {
 		 */
 		$fonts = apply_filters( self::CUSTOM_FONTS_FILTER, [] );
 
-		// A malformed return from the older filter loses only its own names, not the catalog filter's.
 		if ( ! is_array( $fonts ) ) {
 			$fonts = [];
 		}
@@ -213,13 +210,7 @@ final class Font_Catalog {
 		}
 
 		/**
-		 * Filters the site's custom font family names, as listed in every font dropdown: the block
-		 * editor's Typography and Highlight Font Family fields and the Style Library's Typography
-		 * screen. Add a family here when it is registered somewhere other than the
-		 * `kadence_blocks_custom_fonts` filter, for example a plugin's own post type or a JS-only hook.
-		 *
-		 * Unlike `kadence_blocks_custom_fonts`, this carries only names and is not read by the
-		 * editor's older font selects, so a callback here cannot list a font twice in them.
+		 * Filters the custom font family names listed in the font dropdowns.
 		 *
 		 * @since TBD
 		 *

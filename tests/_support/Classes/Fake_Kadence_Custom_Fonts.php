@@ -3,9 +3,8 @@
 namespace Tests\Support\Classes;
 
 /**
- * Test double for the Kadence Custom Fonts plugin's public query, aliased to the global class name the
- * plugin uses. Same static method and the same per-request memoization, plus hooks so a test can make the
- * query return something unexpected or throw, as a future release of that plugin might.
+ * Test double for the Kadence Custom Fonts plugin's `kt_font_query()`, aliased to the plugin's global class
+ * name. `$behavior` replaces the query result.
  */
 final class Fake_Kadence_Custom_Fonts {
 

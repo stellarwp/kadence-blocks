@@ -16,8 +16,8 @@
  * - `window.kadence_blocks_params.g_font_names` — the ~1,900 Google names the editor already
  *   carries on every screen. Read from there rather than shipped a second time.
  *
- * Add-ons that register fonts only through the `kadence.typography_options` JS filter (Kadence Custom
- * Fonts) are read from that filter on top of the two globals — see `filteredCustomNames()`.
+ * Families added through the `kadence.typography_options` JS filter are read in addition — see
+ * `filteredCustomNames()`.
  *
  * Because both are page-load values, a favorite added in another tab is not reflected until reload —
  * the same staleness the token pool documents, and harmless for the same reason: the value written
@@ -97,18 +97,10 @@ function fontPool() {
 }
 
 /**
- * The family names add-ons register through the `kadence.typography_options` JS filter.
+ * The family names registered through the `kadence.typography_options` JS filter.
  *
- * The shared `TypographyControls` select runs that filter over its option groups, and Kadence Custom
- * Fonts registers its fonts nowhere else — it never touches the `kadence_blocks_custom_fonts` PHP
- * filter behind `kadenceDesignTokensFonts.custom`. Reading the filter here keeps those fonts in the
- * picker that replaced the select.
- *
- * The filter is run over an empty list, so only what an add-on contributes comes back. Entries a
- * Google lookup serves (`google: true`) and the theme's `var()` references are skipped: the picker
- * already lists the first from `g_font_names` and the second from `themeFontOptions()`. A callback
- * that expects the stock groups and throws without them is swallowed rather than allowed to take the
- * picker down with it.
+ * The filter runs over an empty list. Google entries and `var()` references are skipped, and a callback
+ * that throws is ignored.
  *
  * @since TBD
  *
@@ -161,14 +153,9 @@ export function favoriteFonts() {
 }
 
 /**
- * The font-family picker's full option list, assembled by the shared `buildFontCatalogOptions()` so the
- * editor's two Font Family fields and the Style Library's Typography screen order and badge it
- * identically: custom fonts, the Kadence theme's global font entries, favorites, then every Google
- * family, each name once.
+ * The font-family picker's option list, built by `buildFontCatalogOptions()`.
  *
- * Custom names are the server's list (`kadenceDesignTokensFonts.custom`) plus whatever add-ons register
- * through the `kadence.typography_options` JS filter. The theme entries are exempt from the dedupe:
- * their values are `var()` references, not family names.
+ * Custom names are `kadenceDesignTokensFonts.custom` plus the families from the JS filter.
  *
  * @since 3.8.0
  *
