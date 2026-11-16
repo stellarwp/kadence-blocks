@@ -963,9 +963,9 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @since 3.5.7
 	 * @since TBD Updated the post type check.
 	 *
-	 * @param string $content    The content to process.
-	 * @param array  $cpt_blocks The CPT blocks found in the content.
-	 * @param string $style      The style.
+	 * @param string                                                 $content    The content to process.
+	 * @param array<string, array<int|string, array<string, mixed>>> $cpt_blocks The CPT blocks found in the content, keyed by block name.
+	 * @param string                                                 $style      The style.
 	 *
 	 * @return string The processed content.
 	 */
@@ -1008,9 +1008,9 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	/**
 	 * Install CPT.
 	 *
-	 * @param array  $cpt_data The cpt data.
-	 * @param array  $id_map   The map of old ids to new ids.
-	 * @param string $style    The style.
+	 * @param array                  $cpt_data The cpt data.
+	 * @param array<int|string, int> $id_map   The map of old ids to new ids.
+	 * @param string                 $style    The style.
 	 * @return int The cpt id.
 	 */
 	public function install_inner_posts_cpt( $cpt_data, $id_map = [], $style = 'light' ) {
@@ -1032,9 +1032,9 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @since 3.5.7
 	 * @since TBD Updated the post status and meta handling.
 	 *
-	 * @param array  $cpt_data The cpt data.
-	 * @param array  $id_map   The map of old ids to new ids.
-	 * @param string $style    The style.
+	 * @param array                  $cpt_data The cpt data.
+	 * @param array<int|string, int> $id_map   The map of old ids to new ids.
+	 * @param string                 $style    The style.
 	 * @return int The cpt id.
 	 */
 	public function install_single_cpt( $cpt_data, $id_map = [], $style = 'light' ) {
