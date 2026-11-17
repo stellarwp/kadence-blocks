@@ -20,8 +20,6 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed;
  * itself be a font-stack expression such as `"My Font", sans-serif`), so a string key is taken as
  * a name; an integer-keyed string entry (a plain list of names) passes through as-is.
  *
- * The custom names then pass through the `kadence_blocks_font_catalog_custom_names` filter.
- *
  * @since 3.8.0
  */
 final class Font_Catalog {
@@ -243,8 +241,7 @@ final class Font_Catalog {
 
 	/**
 	 * The family name a catalog entry names, taken from a font-stack expression when it carries
-	 * one: the first family, with its surrounding quotes removed. Commas inside a quoted first family
-	 * belong to its name.
+	 * one: the first family, with its surrounding quotes removed.
 	 *
 	 * A registered fallback puts the whole stack in the key (`"My Font", sans-serif`). Catalogued
 	 * verbatim, that string becomes the picked font's `$value`, which Css_Renderer quotes as one

@@ -3,8 +3,7 @@
 namespace Tests\Support\Classes;
 
 /**
- * Test double for the Kadence Custom Fonts plugin's `kt_font_query()`, aliased to the plugin's global class
- * name. `$behavior` replaces the query result.
+ * Test double for the Kadence Custom Fonts `kt_font_query()`.
  */
 final class Fake_Kadence_Custom_Fonts {
 

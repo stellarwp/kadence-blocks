@@ -3,19 +3,14 @@
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed;
 
 /**
- * Adds the families registered with the Kadence Custom Fonts plugin to the font catalog.
- *
- * Hooked to `kadence_blocks_font_catalog_custom_names`.
+ * Adds the Kadence Custom Fonts families to the font catalog.
  *
  * @since TBD
  */
 final class Kadence_Custom_Fonts_Names {
 
 	/**
-	 * Append the family names of the Kadence Custom Fonts posts.
-	 *
-	 * An Adobe Fonts entry lists its families in the `_kad_typekit` meta; any other entry names one
-	 * family in `_kad_font_name`.
+	 * Appends the family names of the Kadence Custom Fonts posts.
 	 *
 	 * @since TBD
 	 *

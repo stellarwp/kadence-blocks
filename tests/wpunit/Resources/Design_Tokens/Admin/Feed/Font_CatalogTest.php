@@ -287,8 +287,7 @@ final class Font_CatalogTest extends TestCase {
 	}
 
 	/**
-	 * A font reported by both the filter and the plugin is listed once, and one in the Google list is
-	 * dropped from the custom names.
+	 * Fonts reported more than once, or also in Google, are listed once.
 	 *
 	 * @return void
 	 */
@@ -301,8 +300,7 @@ final class Font_CatalogTest extends TestCase {
 	}
 
 	/**
-	 * Names added through the catalog filter are normalized, de-duplicated against the list and Google, and
-	 * non-strings are ignored.
+	 * Names added through the catalog filter are normalized and de-duplicated.
 	 *
 	 * @return void
 	 */

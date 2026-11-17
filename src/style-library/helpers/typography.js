@@ -150,11 +150,7 @@ export function getFontCatalog() {
 }
 
 /**
- * The font-family picker's option list, built by `buildFontCatalogOptions()`.
- *
- * The theme's "inherit heading/body font" rows are deliberately absent: they resolve through custom
- * properties the block editor's canvas carries, and a preset storing one would name a variable rather
- * than a face.
+ * The font-family picker's option list, without the theme's inherit rows.
  *
  * @param {{ favoriteFonts?: string[] }} feed The design-tokens feed.
  *

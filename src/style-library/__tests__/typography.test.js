@@ -136,8 +136,7 @@ describe('fontCatalogOptions', () => {
 	});
 
 	/**
-	 * Site-registered custom families lead, then favorites (badged), then Google, so a site's own faces
-	 * are never buried in a list nearly two thousand names long.
+	 * Lists custom families first, then favorites, then Google.
 	 *
 	 * @return {void}
 	 */

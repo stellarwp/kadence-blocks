@@ -1,6 +1,5 @@
 /**
- * Builds the option list shared by the font-family pickers: the block editor's Typography and Highlight
- * Font Family fields and the Style Library's Typography screen.
+ * Builds the option list shared by the font-family pickers.
  */
 
 /**
@@ -26,11 +25,7 @@ function familyKey(name) {
 }
 
 /**
- * Build the picker's option list.
- *
- * Order: custom fonts, theme rows, favorites, then Google fonts. A name is listed once, matched ignoring
- * case, whitespace and wrapping quotes; favorites take precedence over Google, and Google over custom.
- * Theme rows are not de-duplicated.
+ * Builds the picker's option list: custom, theme, favorites, then Google.
  *
  * @param {Object}                                                 sources
  * @param {string[]}                                               [sources.favorites] Favorite family names.
@@ -56,7 +51,6 @@ export function buildFontCatalogOptions({ favorites = [], google = [], custom = 
 		return true;
 	};
 
-	// Names are claimed in precedence order and listed in display order.
 	const favoriteOptions = favorites
 		.filter(unique)
 		.map((name) => ({ value: name, label: name, badge: __('Favorite', 'kadence-blocks') }));

@@ -16,9 +16,6 @@
  * - `window.kadence_blocks_params.g_font_names` — the ~1,900 Google names the editor already
  *   carries on every screen. Read from there rather than shipped a second time.
  *
- * Families added through the `kadence.typography_options` JS filter are read in addition — see
- * `filteredCustomNames()`.
- *
  * Because both are page-load values, a favorite added in another tab is not reflected until reload —
  * the same staleness the token pool documents, and harmless for the same reason: the value written
  * is the family name itself, which cannot go stale.
@@ -99,9 +96,6 @@ function fontPool() {
 /**
  * The family names registered through the `kadence.typography_options` JS filter.
  *
- * The filter runs over an empty list. Google entries and `var()` references are skipped, and a callback
- * that throws is ignored.
- *
  * @since TBD
  *
  * @return {string[]} The family names, in filter order.
@@ -153,9 +147,7 @@ export function favoriteFonts() {
 }
 
 /**
- * The font-family picker's option list, built by `buildFontCatalogOptions()`.
- *
- * Custom names are `kadenceDesignTokensFonts.custom` plus the families from the JS filter.
+ * The font-family picker's option list.
  *
  * @since 3.8.0
  *
