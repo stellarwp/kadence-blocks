@@ -48,7 +48,7 @@ describe('kb-splide-init', () => {
 		delete window.Splide;
 	});
 
-	it('sets up a block carousel without options from data-splide', () => {
+	it('sets up a block carousel from its own settings', () => {
 		const splide = initCarousels(testimonials(OPTIONS));
 
 		expect(splide).toHaveBeenCalledTimes(1);
@@ -56,7 +56,7 @@ describe('kb-splide-init', () => {
 	});
 
 	it.each(['comment-body', 'wp-block-comment-content', 'wp-block-latest-comments'])(
-		'skips a carousel inside .%s',
+		'does not set up a carousel in excluded area %#',
 		(className) => {
 			const splide = initCarousels(`<div class="${className}">${testimonials()}</div>`);
 
@@ -64,7 +64,7 @@ describe('kb-splide-init', () => {
 		}
 	);
 
-	it('sets up a thumbnail gallery and its nav without options from data-splide', () => {
+	it('sets up a thumbnail gallery and its nav from its own settings', () => {
 		const splide = initCarousels(
 			'<div class="wp-block-kadence-advancedgallery">' +
 				`<div id="kb-slider-x" class="kt-blocks-carousel-init splide" data-slider-type="thumbnail" data-slider-nav="kb-thumb-slider-x" ${OPTIONS}><div class="kb-slide-item">a</div></div>` +
