@@ -54,6 +54,8 @@ class ColorPaletteInjectionTest extends KadenceBlocksTestCase {
 
 	protected function tearDown(): void {
 		remove_all_filters( 'kadence_blocks_is_kadence_theme' );
+		remove_action( 'wp_head', [ Kadence_Blocks_Settings::get_instance(), 'print_color_palette_css' ], 8 );
+		remove_filter( 'block_editor_settings_all', [ Kadence_Blocks_Settings::get_instance(), 'add_color_palette_css_to_block_editor' ], 999 );
 		remove_theme_support( 'editor-color-palette' );
 		delete_option( 'kadence_blocks_colors' );
 
@@ -114,6 +116,41 @@ class ColorPaletteInjectionTest extends KadenceBlocksTestCase {
 		$this->assertContains( self::LEGACY_SLUG, array_column( $support[0], 'slug' ) );
 		$this->assertNotContains( 'palette1', array_column( $support[0], 'slug' ) );
 		$this->assertNotContains( 'palette15', array_column( $support[0], 'slug' ) );
+	}
+
+	/**
+	 * A stored palette made only of token slots still registers both color class CSS callbacks, while the slots stay out of the theme support palette.
+	 *
+	 * @return void
+	 */
+	public function test_css_callbacks_register_for_a_token_only_palette_off_the_kadence_theme(): void {
+		update_option(
+			'kadence_blocks_colors',
+			wp_json_encode(
+				[
+					'palette'  => [
+						[
+							'color' => '#3182CE',
+							'name'  => 'Brand Primary',
+							'slug'  => 'palette1',
+						],
+					],
+					'override' => false,
+				]
+			)
+		);
+		$settings = Kadence_Blocks_Settings::get_instance();
+
+		$settings->load_color_palette();
+
+		$this->assertSame( 8, has_action( 'wp_head', [ $settings, 'print_color_palette_css' ] ) );
+		$this->assertSame( 999, has_filter( 'block_editor_settings_all', [ $settings, 'add_color_palette_css_to_block_editor' ] ) );
+
+		$support = get_theme_support( 'editor-color-palette' );
+
+		if ( is_array( $support ) ) {
+			$this->assertNotContains( 'palette1', array_column( $support[0], 'slug' ) );
+		}
 	}
 
 	/**

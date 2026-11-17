@@ -91,10 +91,10 @@ export function themeColorGroups(theme) {
 		return [];
 	}
 
-	// Drop the Global Styles marker `toGroup` adds.
+	// Drop the Global Styles marker `toGroup` adds, and store each literal rather than a Kadence palette slot.
 	const { source, ...themeGroup } = group;
 
-	return [themeGroup];
+	return [{ ...themeGroup, swatches: themeGroup.swatches.map((swatch) => ({ ...swatch, alias: swatch.value })) }];
 }
 
 /**

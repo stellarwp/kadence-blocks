@@ -255,7 +255,9 @@ export function useColorGroups(clientId) {
 
 	// Off the Kadence theme the Style Library list does not include the theme's own colors, so they lead it.
 	// The Kadence theme already mirrors its palette in the Style Library.
-	const isKadenceTheme = true === window.kadence_blocks_params?.isKadenceT;
+	// `wp_localize_script` turns the PHP boolean into '1' (or ''), so accept the string as well as `true`.
+	const kadenceThemeFlag = window.kadence_blocks_params?.isKadenceT;
+	const isKadenceTheme = true === kadenceThemeFlag || '1' === kadenceThemeFlag;
 	const themeGroups = useMemo(
 		() => (fseMode || isKadenceTheme ? [] : themeColorGroups(theme)),
 		[fseMode, isKadenceTheme, theme]

@@ -587,7 +587,7 @@ describe('useColorGroups', () => {
 	 * @return {Promise<void>}
 	 */
 	it('lists the theme colors before the Style Library off the Kadence theme', async () => {
-		window.kadence_blocks_params = { isKadenceT: false };
+		window.kadence_blocks_params = { isKadenceT: '' };
 		mockSettings = {
 			'color.palette.theme': [
 				{ slug: 'base', name: 'Base', color: '#ffffff' },
@@ -612,11 +612,14 @@ describe('useColorGroups', () => {
 
 	/**
 	 * The Kadence theme already mirrors its palette in the Style Library, so no theme group is added.
+	 * `wp_localize_script` sends the flag as '1', so that string counts as active alongside boolean `true`.
+	 *
+	 * @param {string|boolean} flag The localized `isKadenceT` value on the Kadence theme.
 	 *
 	 * @return {Promise<void>}
 	 */
-	it('adds no theme group on the Kadence theme', async () => {
-		window.kadence_blocks_params = { isKadenceT: true };
+	it.each([['1'], [true]])('adds no theme group on the Kadence theme when the flag is %p', async (flag) => {
+		window.kadence_blocks_params = { isKadenceT: flag };
 		mockSettings = { 'color.palette.theme': [{ slug: 'base', name: 'Base', color: '#ffffff' }] };
 		setOwnPalette('brand-own');
 		mockApiFetch.mockResolvedValueOnce(PALETTE_NODE);

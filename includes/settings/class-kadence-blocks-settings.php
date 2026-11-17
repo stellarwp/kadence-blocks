@@ -517,7 +517,9 @@ class Kadence_Blocks_Settings {
 					'slug'  => $item->slug,
 				];
 			}
-			$san_palette = $this->without_token_slots( $san_palette );
+			// The color class CSS covers every stored entry, so it is registered from the stored palette, not the filtered one.
+			$has_stored_palette = isset( $san_palette[0] );
+			$san_palette        = $this->without_token_slots( $san_palette );
 			if ( isset( $san_palette[0] ) ) {
 				if ( ( isset( $palette->override ) && true !== $palette->override ) || ! isset( $palette->override ) ) {
 					$theme_palette = get_theme_support( 'editor-color-palette' );
@@ -589,6 +591,8 @@ class Kadence_Blocks_Settings {
 				if ( ! kadence_blocks_is_fse_mode() ) {
 					add_theme_support( 'editor-color-palette', $new_palette );
 				}
+			}
+			if ( $has_stored_palette ) {
 				add_action( 'wp_head', [ $this, 'print_color_palette_css' ], 8 );
 				add_filter( 'block_editor_settings_all', [ $this, 'add_color_palette_css_to_block_editor' ], 999 );
 			}
