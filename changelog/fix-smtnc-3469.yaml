@@ -1,0 +1,4 @@
+significance: patch
+type: fix
+entry: Typography changes on a Navigation (Adv) block, such as the font size on mobile, now update the preview in the editor.
+timestamp: 2026-11-17T14:00:09.000Z

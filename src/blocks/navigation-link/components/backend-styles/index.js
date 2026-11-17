@@ -1,3 +1,4 @@
+import renderFont from '../../../navigation/helpers/renderFont';
 import { KadenceBlocksCSS, getPreviewSize, useEditorElement } from '@kadence/helpers';
 import { useRef } from '@wordpress/element';
 
@@ -1316,25 +1317,25 @@ export default function BackendStyles(props) {
 	}
 
 	css.set_selector(`.kb-nav-link-${uniqueID} > .kb-link-wrap.kb-link-wrap.kb-link-wrap > .kb-nav-link-content`);
-	css.render_font(typography ? typography : [], previewDevice);
+	renderFont(css, typography, previewDevice);
 
 	css.set_selector(`.kb-nav-link-${uniqueID} .sub-menu li.menu-item > .kb-link-wrap > .kb-nav-link-content`);
-	css.render_font(dropdownTypography ? dropdownTypography : [], previewDevice);
+	renderFont(css, dropdownTypography, previewDevice);
 
 	css.set_selector(
 		`.wp-block-kadence-navigation .navigation .menu-container > ul li.kb-nav-link-${uniqueID} > .kb-link-wrap > a .link-highlight-label`
 	);
-	css.render_font(highlightTypography ? highlightTypography : [], previewDevice);
+	renderFont(css, highlightTypography, previewDevice);
 
 	css.set_selector(
 		`.wp-block-kadence-navigation .navigation .menu-container ul .kb-nav-link-${uniqueID} > .kb-link-wrap > a .kb-nav-label-description:not(.specificity)`
 	);
-	css.render_font(descriptionTypography ? descriptionTypography : [], previewDevice);
+	renderFont(css, descriptionTypography, previewDevice);
 
 	css.set_selector(
 		`.wp-block-kadence-navigation .navigation .menu-container ul .kb-nav-link-${uniqueID} .sub-menu .kb-link-wrap > a .kb-nav-label-description:not(.specificity)`
 	);
-	css.render_font(dropdownDescriptionTypography ? dropdownDescriptionTypography : [], previewDevice);
+	renderFont(css, dropdownDescriptionTypography, previewDevice);
 
 	css.set_selector(`.kb-nav-link-${uniqueID}.menu-item > .kb-link-wrap > a:hover .link-highlight-label`);
 	css.add_property('transition', 'color 0.35s ease-in-out, background-color 0.35s ease-in-out');

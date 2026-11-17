@@ -1,3 +1,4 @@
+import renderFont from '../../helpers/renderFont';
 import { KadenceBlocksCSS, getPreviewSize, getSpacingOptionOutput } from '@kadence/helpers';
 
 export default function BackendStyles(props) {
@@ -831,25 +832,25 @@ export default function BackendStyles(props) {
 	css.set_selector(
 		`.wp-block-kadence-navigation${uniqueID} .menu-container > .menu > .wp-block-kadence-navigation-link > .kb-link-wrap`
 	);
-	css.render_font(typography ? typography : [], previewDevice);
+	renderFont(css, typography, previewDevice);
 
 	//submenu links only, do not bleed
 	css.set_selector(
 		`.wp-block-kadence-navigation${uniqueID} .sub-menu > .menu-item > .kb-link-wrap > .kb-nav-link-content`
 	);
-	css.render_font(dropdownTypography ? dropdownTypography : [], previewDevice);
+	renderFont(css, dropdownTypography, previewDevice);
 
 	//nav item (top level only) descriptions
 	css.set_selector(
 		`.wp-block-kadence-navigation${uniqueID} .menu-container > .menu > .wp-block-kadence-navigation-link > .kb-link-wrap .kb-nav-label-description`
 	);
-	css.render_font(descriptionTypography ? descriptionTypography : [], previewDevice);
+	renderFont(css, descriptionTypography, previewDevice);
 
 	//submenu link descriptions only, do not bleed
 	css.set_selector(
 		`.wp-block-kadence-navigation${uniqueID} .sub-menu > .menu-item > .kb-link-wrap .kb-nav-label-description`
 	);
-	css.render_font(dropdownDescriptionTypography ? dropdownDescriptionTypography : [], previewDevice);
+	renderFont(css, dropdownDescriptionTypography, previewDevice);
 
 	if (previewStyle.includes('fullheight')) {
 		css.set_selector(`.wp-block-kadence-header .wp-block-kadence-navigation${uniqueID}`);
