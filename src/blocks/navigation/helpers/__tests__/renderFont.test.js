@@ -27,7 +27,7 @@ const typography = [
 
 function build(callback) {
 	const css = new KadenceBlocksCSS();
-	css.set_selector('.wp-block-kadence-navigationabc .kb-link-wrap');
+	css.set_selector('.kb-link-wrap');
 	callback(css);
 	return css.css_output();
 }
@@ -41,7 +41,7 @@ describe('navigation renderFont', () => {
 	it('emits plain declarations inside the selector block', () => {
 		const output = build((css) => renderFont(css, typography, 'Mobile'));
 		expect(output).not.toContain('{{');
-		expect(output).toContain('.wp-block-kadence-navigationabc .kb-link-wrap{');
+		expect(output).toContain('.kb-link-wrap{');
 		expect(output).toContain('font-size:40px;');
 		expect(output).toContain('font-weight:700;');
 		expect(output).toContain('text-transform:uppercase;');
