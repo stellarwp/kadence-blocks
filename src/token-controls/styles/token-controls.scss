@@ -815,6 +815,8 @@
  * order.
  */
 .kb-token-control__row:has(.kb-border-control__box) .kadence-token-field__trigger.components-button {
+	// Keeps the trigger as tall as the swatch when it shows no label or value.
+	min-height: 20px;
 	padding: 0;
 	border: 0;
 	border-radius: 0;

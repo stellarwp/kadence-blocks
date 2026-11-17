@@ -179,7 +179,8 @@ export function withSiteDefaults(binding, site, blockName) {
  *
  * @since 3.9.0
  *
- * @return {{width: (string|undefined), color: (string|undefined)}} The site's width with its unit, and its color.
+ * @return {{width: (string|undefined), style: (string|undefined), color: (string|undefined)}} The site's width with
+ *         its unit, its style, and its color.
  */
 export function siteBorderDefaults(site, attr, responsive, device) {
 	const attrs =
@@ -203,10 +204,12 @@ export function siteBorderDefaults(site, attr, responsive, device) {
 		return undefined;
 	};
 	const color = first(0);
+	const style = first(1);
 	const width = first(2);
 
 	return {
 		width: width ? `${width.value}${width.unit}` : undefined,
+		style: style?.value,
 		color: color?.value,
 	};
 }

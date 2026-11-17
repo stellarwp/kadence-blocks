@@ -96,6 +96,7 @@ import {
 } from '../../extension/token-indicators/normalize';
 import { EditorBoxControl } from '../../extension/design-tokens/components/EditorBoxControl';
 import { EditorBorderControl } from '../../extension/design-tokens/components/EditorBorderControl';
+import { borderLineStyle } from '../../extension/design-tokens/border-sides';
 import { EditorShadowControl } from '../../extension/design-tokens/components/EditorShadowControl';
 import { ShadowColorField } from '../../extension/design-tokens/components/shadow-color';
 import { BorderColorField } from '../../extension/design-tokens/components/border-color';
@@ -389,6 +390,25 @@ export default function KadenceButtonEdit(props) {
 	const borderHoverWidthDefault = siteHoverBorder.width ?? borderHoverWidthPresetValue ?? borderWidthDefault;
 	const borderHoverColorDefault =
 		siteHoverBorder.color ?? tokenBinding.borderHoverStyle?.presetValue?.color ?? borderColorDefault;
+	// Unset style defaults: the site's style, then the active preset's at the preview device. Hover: the
+	// site's hover style, the preset's hover style, the stored resting style per side, then the resting default.
+	const borderStyleDefault =
+		siteBorder.style ??
+		presetPropertyValueForDevice('kadence/singlebtn', 'button-border-style', attributes, undefined, previewDevice);
+	const restingSideStyles = ['top', 'right', 'bottom', 'left'].map((side) =>
+		borderLineStyle(previewDevice, side, [borderStyle, tabletBorderStyle, mobileBorderStyle])
+	);
+	const borderHoverStyleDefault =
+		siteHoverBorder.style ??
+		presetPropertyValueForDevice(
+			'kadence/singlebtn',
+			'button-border-hover-style',
+			attributes,
+			undefined,
+			previewDevice
+		) ??
+		(restingSideStyles.some(Boolean) ? restingSideStyles.map((style) => style || borderStyleDefault) : undefined) ??
+		borderStyleDefault;
 
 	// Read directly: `button-shadow` declares no `control_attr`, so `usePresetBinding` skips it.
 	const shadowPresetValue = presetPropertyValueForDevice(
@@ -1355,6 +1375,7 @@ export default function KadenceButtonEdit(props) {
 															widthTokens={borderWidthPickableTokens}
 															defaultValue={borderHoverWidthDefault}
 															defaultColor={borderHoverColorDefault}
+															defaultStyle={borderHoverStyleDefault}
 															renderColor={renderBorderColor}
 															state={
 																tokenBinding.borderHoverStyle ??
@@ -1498,6 +1519,7 @@ export default function KadenceButtonEdit(props) {
 															widthTokens={borderWidthPickableTokens}
 															defaultValue={borderWidthDefault}
 															defaultColor={borderColorDefault}
+															defaultStyle={borderStyleDefault}
 															renderColor={renderBorderColor}
 															state={tokenBinding.borderStyle}
 															onReset={() => resetToken('borderStyle')}
