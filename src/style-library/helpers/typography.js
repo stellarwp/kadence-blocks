@@ -155,6 +155,7 @@ export function getFontCatalog() {
  * @param {{ favoriteFonts?: string[] }} feed The design-tokens feed.
  *
  * @since 3.8.0
+ * @since TBD Lists custom fonts first, then favorites, then Google.
  *
  * @return {Array<{value: string, label: string, badge?: string}>} The option list.
  */

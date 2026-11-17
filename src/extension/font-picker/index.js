@@ -149,7 +149,8 @@ export function favoriteFonts() {
 /**
  * The font-family picker's option list.
  *
- * @since TBD
+ * @since 3.8.0
+ * @since TBD Adds fonts registered through the `kadence.typography_options` filter.
  *
  * @return {Array<{value: string, label: string, badge?: string}>} The option list.
  */

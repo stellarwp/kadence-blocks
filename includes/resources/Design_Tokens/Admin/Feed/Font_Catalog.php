@@ -174,6 +174,7 @@ final class Font_Catalog {
 	/**
 	 * The site's custom font names, normalized from the custom-fonts filter's associative shape.
 	 *
+	 * @since 3.8.0
 	 * @since TBD Passes the names through the kadence_blocks_font_catalog_custom_names filter and de-duplicates them.
 	 *
 	 * @return string[]
@@ -250,6 +251,7 @@ final class Font_Catalog {
 	 * single-family stack, the same rule that keeps a generic fallback from being invented for a
 	 * Google family.
 	 *
+	 * @since 3.8.0
 	 * @since TBD Keeps commas inside a quoted first family.
 	 *
 	 * @param string $entry The catalog entry, a family name or a font-stack expression.
