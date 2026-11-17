@@ -77,5 +77,17 @@ class ListitemParentContextTest extends KadenceBlocksTestCase {
 			'width'    => '',
 			'expected' => '<li><img src="x.gif" alt="fe_checkCircle" data-width="2" /></li>',
 		];
+
+		yield 'zero width falls back to default' => [
+			'icon'     => 'fe_checkCircle',
+			'width'    => '0',
+			'expected' => '<li><img src="x.gif" alt="fe_checkCircle" data-width="2" /></li>',
+		];
+
+		yield 'decimal zero width falls back to default' => [
+			'icon'     => 'fe_checkCircle',
+			'width'    => '0.0',
+			'expected' => '<li><img src="x.gif" alt="fe_checkCircle" data-width="2" /></li>',
+		];
 	}
 }
