@@ -2,6 +2,10 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed;
 
+use Kadence_Custom_Fonts;
+use Throwable;
+use WP_Post;
+
 /**
  * Adds the Kadence Custom Fonts families to the font catalog.
  *
@@ -24,8 +28,8 @@ final class Kadence_Custom_Fonts_Names {
 		}
 
 		try {
-			$posts = \Kadence_Custom_Fonts::kt_font_query();
-		} catch ( \Throwable $e ) {
+			$posts = Kadence_Custom_Fonts::kt_font_query();
+		} catch ( Throwable $e ) {
 			return $names;
 		}
 
@@ -34,7 +38,7 @@ final class Kadence_Custom_Fonts_Names {
 		}
 
 		foreach ( $posts as $post ) {
-			if ( ! $post instanceof \WP_Post ) {
+			if ( ! $post instanceof WP_Post ) {
 				continue;
 			}
 

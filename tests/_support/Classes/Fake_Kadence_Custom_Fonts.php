@@ -10,16 +10,16 @@ final class Fake_Kadence_Custom_Fonts {
 	/**
 	 * @since TBD
 	 *
-	 * @var array|null
+	 * @var callable|null Replaces the query result when set.
 	 */
-	private static $font_query = null;
+	public static $behavior = null;
 
 	/**
 	 * @since TBD
 	 *
-	 * @var callable|null Replaces the query result when set.
+	 * @var array|null
 	 */
-	public static $behavior = null;
+	private static $font_query = null;
 
 	/**
 	 * Define the global `Kadence_Custom_Fonts` name once, when the real plugin is not loaded.

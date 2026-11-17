@@ -4,8 +4,11 @@ namespace Tests\wpunit\Resources\Design_Tokens\Admin\Feed;
 
 use Generator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Font_Catalog;
+use RuntimeException;
+use stdClass;
 use Tests\Support\Classes\Fake_Kadence_Custom_Fonts;
 use Tests\Support\Classes\TestCase;
+use TypeError;
 
 /**
  * Covers the font catalog reader/normalizer the Typography screen's searchable dropdown reads.
@@ -420,7 +423,7 @@ final class Font_CatalogTest extends TestCase {
 	}
 
 	/**
-	 * A plugin font whose name contains a comma is listed whole when no legacy filter registers it.
+	 * A plugin font name containing a comma is listed whole.
 	 *
 	 * @return void
 	 */
@@ -449,18 +452,18 @@ final class Font_CatalogTest extends TestCase {
 		];
 
 		yield 'not WP_Post entries' => [
-			'behavior' => static fn() => [ 'a', 42, null, new \stdClass() ],
+			'behavior' => static fn() => [ 'a', 42, null, new stdClass() ],
 		];
 
 		yield 'throws an exception' => [
 			'behavior' => static function () {
-				throw new \RuntimeException( 'changed' );
+				throw new RuntimeException( 'changed' );
 			},
 		];
 
 		yield 'throws a type error' => [
 			'behavior' => static function () {
-				throw new \TypeError( 'changed' );
+				throw new TypeError( 'changed' );
 			},
 		];
 	}
