@@ -404,6 +404,24 @@ final class Font_CatalogTest extends TestCase {
 	}
 
 	/**
+	 * Only a matching pair of quotes is removed, so an apostrophe that belongs to a family name is kept.
+	 *
+	 * @return void
+	 */
+	public function testAnUnmatchedApostropheInAFamilyNameIsKept(): void {
+		$callback = static fn( $names ) => array_merge( $names, [ "'90s Grotesk", '"Matched"' ] );
+		add_filter( 'kadence_blocks_font_catalog_custom_names', $callback );
+
+		try {
+			$result = $this->catalog->all();
+		} finally {
+			remove_filter( 'kadence_blocks_font_catalog_custom_names', $callback );
+		}
+
+		$this->assertSame( [ "'90s Grotesk", 'Matched' ], $result['custom'] );
+	}
+
+	/**
 	 * A plugin font whose name contains a comma is listed whole when no legacy filter registers it.
 	 *
 	 * @return void

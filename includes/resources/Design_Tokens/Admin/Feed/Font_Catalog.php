@@ -229,7 +229,8 @@ final class Font_Catalog {
 		$clean = [];
 
 		foreach ( array_filter( $filtered, 'is_string' ) as $name ) {
-			$family = trim( $name, " \t\n\r\0\x0B\"'" );
+			$trimmed = trim( $name );
+			$family  = preg_match( '/^(["\'])(.*)\1$/s', $trimmed, $matched ) ? $matched[2] : $trimmed;
 
 			if ( $family !== '' ) {
 				$clean[] = $family;
