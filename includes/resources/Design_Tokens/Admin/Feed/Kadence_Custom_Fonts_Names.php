@@ -14,8 +14,6 @@ use WP_Post;
 final class Kadence_Custom_Fonts_Names {
 
 	/**
-	 * Appends the family names of the Kadence Custom Fonts posts.
-	 *
 	 * @since TBD
 	 *
 	 * @param mixed $names The custom family names so far.
