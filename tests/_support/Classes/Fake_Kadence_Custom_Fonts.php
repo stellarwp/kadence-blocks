@@ -9,8 +9,6 @@ namespace Tests\Support\Classes;
 final class Fake_Kadence_Custom_Fonts {
 
 	/**
-	 * The memoized query result.
-	 *
 	 * @since TBD
 	 *
 	 * @var array|null
@@ -18,11 +16,9 @@ final class Fake_Kadence_Custom_Fonts {
 	private static $font_query = null;
 
 	/**
-	 * Replaces the query result when set.
-	 *
 	 * @since TBD
 	 *
-	 * @var callable|null
+	 * @var callable|null Replaces the query result when set.
 	 */
 	public static $behavior = null;
 
