@@ -216,7 +216,7 @@ final class Font_Catalog {
 		 *
 		 * @since TBD
 		 *
-		 * @param string[] $names The custom family names.
+		 * @param string[] $names The custom family names, each a family name rather than a font stack.
 		 *
 		 * @return array<mixed> The custom family names.
 		 */
@@ -229,7 +229,7 @@ final class Font_Catalog {
 		$clean = [];
 
 		foreach ( array_filter( $filtered, 'is_string' ) as $name ) {
-			$family = in_array( $name, $names, true ) ? $name : $this->family_of( $name );
+			$family = trim( $name, " \t\n\r\0\x0B\"'" );
 
 			if ( $family !== '' ) {
 				$clean[] = $family;

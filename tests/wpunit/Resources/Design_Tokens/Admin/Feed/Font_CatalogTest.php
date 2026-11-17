@@ -307,7 +307,7 @@ final class Font_CatalogTest extends TestCase {
 	 * @return void
 	 */
 	public function testCatalogFilterAddsNormalizedNamesToTheCustomList(): void {
-		$callback = static fn( $names ) => array_merge( $names, [ '"Brand Sans", sans-serif', 'Zeta Display', 'zeta display', 42, '', 'Abel' ] );
+		$callback = static fn( $names ) => array_merge( $names, [ '"Brand Sans"', 'Zeta Display', 'zeta display', 42, '', 'Abel' ] );
 		add_filter( 'kadence_blocks_font_catalog_custom_names', $callback );
 
 		try {
@@ -391,7 +391,7 @@ final class Font_CatalogTest extends TestCase {
 	 */
 	public function testACommaInsideAQuotedFamilyNameIsKept(): void {
 		add_filter( 'kadence_blocks_custom_fonts', static fn() => [ '"Brand, Display", sans-serif' => [ 'name' => 'Brand, Display' ] ] );
-		$callback = static fn( $names ) => array_merge( $names, [ "'Other, Name'", 'Plain Name, Arial' ] );
+		$callback = static fn( $names ) => array_merge( $names, [ "'Other, Name'" ] );
 		add_filter( 'kadence_blocks_font_catalog_custom_names', $callback );
 
 		try {
@@ -400,7 +400,18 @@ final class Font_CatalogTest extends TestCase {
 			remove_filter( 'kadence_blocks_font_catalog_custom_names', $callback );
 		}
 
-		$this->assertSame( [ 'Brand, Display', 'Other, Name', 'Plain Name' ], $result['custom'] );
+		$this->assertSame( [ 'Brand, Display', 'Other, Name' ], $result['custom'] );
+	}
+
+	/**
+	 * A plugin font whose name contains a comma is listed whole when no legacy filter registers it.
+	 *
+	 * @return void
+	 */
+	public function testAPluginFontNameWithACommaIsKeptWhole(): void {
+		$this->make_kt_font( 'Brand, Display' );
+
+		$this->assertSame( [ 'Brand, Display' ], $this->catalog->all()['custom'] );
 	}
 
 	/**
