@@ -1,6 +1,6 @@
 /* eslint-env jest */
 
-import { borderSideDeclarations } from '../border-sides';
+import { borderLineStyle, borderSideDeclarations } from '../border-sides';
 
 /**
  * Builds a border attribute value with the same color and line style on every side and no width.
@@ -69,5 +69,21 @@ describe('borderSideDeclarations', () => {
 		expect(
 			borderSideDeclarations('Mobile', [withoutWidth('', 'double'), undefined, undefined], { top: ['', ''] })
 		).toEqual([['border-top-style', 'double']]);
+	});
+});
+
+describe('borderLineStyle', () => {
+	const side = (style) => [{ top: ['', style, ''], right: ['', '', ''], bottom: ['', '', ''], left: ['', '', ''] }];
+
+	it('reads the stored style, including an explicit none', () => {
+		expect(borderLineStyle('Desktop', 'top', [side('none'), undefined, undefined])).toBe('none');
+	});
+
+	it('is empty when no style is stored', () => {
+		expect(borderLineStyle('Desktop', 'top', [undefined, undefined, undefined])).toBe('');
+	});
+
+	it('falls back through the wider devices', () => {
+		expect(borderLineStyle('Mobile', 'top', [side('dashed'), side(''), undefined])).toBe('dashed');
 	});
 });
