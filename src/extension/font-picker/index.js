@@ -149,7 +149,7 @@ export function favoriteFonts() {
 /**
  * The font-family picker's option list.
  *
- * @since 3.8.0
+ * @since TBD
  *
  * @return {Array<{value: string, label: string, badge?: string}>} The option list.
  */
