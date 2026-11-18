@@ -416,6 +416,7 @@ final class User_Primitives_Controller extends Controller {
 	 * direct `$value` aliases.
 	 *
 	 * @since 3.8.0
+	 * @since TBD Reverts block preset tokens that use the deleted primitive.
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -491,7 +492,9 @@ final class User_Primitives_Controller extends Controller {
 		$reverted = [];
 
 		foreach ( $references as $ref ) {
-			$candidate  = $this->mutator->remove( $candidate, $ref->path );
+			$candidate  = $ref->keys !== []
+				? $this->mutator->remove_by_keys( $candidate, $ref->keys )
+				: $this->mutator->remove( $candidate, $ref->path );
 			$reverted[] = $ref->path;
 		}
 
@@ -511,11 +514,13 @@ final class User_Primitives_Controller extends Controller {
 	 * Rename a user-defined primitive and rewrite direct alias references in the primitive and
 	 * semantic layers.
 	 *
-	 * Rejects the rename when an unsupported reference exists (e.g. a composite field or an
-	 * extension preset alias) — the cascade cannot rewrite those, so proceeding would
+	 * Also rewrites direct aliases held by block preset tokens. Rejects the rename when an
+	 * unsupported reference exists (e.g. a composite field or a composite preset value) — the
+	 * cascade cannot rewrite those, so proceeding would
 	 * leave them silently pointing at an id that no longer exists.
 	 *
 	 * @since 3.8.0
+	 * @since TBD Rewrites aliases held by block preset tokens.
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -623,6 +628,15 @@ final class User_Primitives_Controller extends Controller {
 		$rewritten = [];
 		$candidate = $this->rewrite_aliases( $candidate, $old_alias, $new_alias, $rewritten );
 
+		foreach ( $references as $ref ) {
+			if ( $ref->keys === [] ) {
+				continue;
+			}
+
+			$candidate   = $this->replace_at_keys( $candidate, $ref->keys, $new_alias );
+			$rewritten[] = $ref->path;
+		}
+
 		// The gate above already required every reference to be rewritable, and rewrite_aliases()
 		// just rewrote them, so skip the pipeline's own unsupported-reference check: it would
 		// otherwise reject the primitive-layer alias this cascade just finished rewriting.
@@ -712,6 +726,38 @@ final class User_Primitives_Controller extends Controller {
 		$label = $label !== '' ? $label : ucwords( str_replace( '-', ' ', $slug ) );
 
 		return mb_substr( $label, 0, 60 );
+	}
+
+	/**
+	 * Replace the value at a literal key chain, for tokens whose keys a dot-path cannot express
+	 * (block preset tokens live under "com.kadence.designTokens" and "kadence/singlebtn").
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $node  The current node.
+	 * @param string[]             $keys  The remaining literal keys to the value.
+	 * @param string               $value The replacement value.
+	 *
+	 * @return array<string, mixed>
+	 */
+	private function replace_at_keys( array $node, array $keys, string $value ): array {
+		$head = Cast::to_string( array_shift( $keys ) );
+
+		if ( ! array_key_exists( $head, $node ) ) {
+			return $node;
+		}
+
+		if ( $keys === [] ) {
+			$node[ $head ] = $value;
+
+			return $node;
+		}
+
+		if ( is_array( $node[ $head ] ) ) {
+			$node[ $head ] = $this->replace_at_keys( $node[ $head ], $keys, $value );
+		}
+
+		return $node;
 	}
 
 	/**

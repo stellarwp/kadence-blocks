@@ -4,19 +4,20 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Document;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Extensions;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Layers;
+use KadenceWP\KadenceBlocks\Utils\Cast;
 
 /**
  * Scans all alias locations in a stored overrides document for references to a given id.
  *
  * Every location is classified with a kind and whether the rename/delete cascade supports it.
- * The cascade supports direct $value aliases in the primitive and semantic layers: `all_supported()`
- * reflects that, and gates the rename/delete cascades that rewrite or revert those locations.
- * All other locations (composite fields, extension presets) produce unsupported references
- * that block deletion or rename.
+ * The cascade supports direct $value aliases in the primitive and semantic layers, and direct
+ * aliases held by block preset tokens: `all_supported()` reflects that, and gates the rename/delete
+ * cascades that rewrite or revert those locations. All other locations (composite fields, composite
+ * values inside presets) produce unsupported references that block deletion or rename.
  *
- * A narrower question — whether a fresh write may introduce a reference from outside the
- * semantic layer — is answered by `all_semantic_overrides()` instead; a primitive-layer direct
- * alias is cascade-supported but not a legal location for a brand-new write to create.
+ * A narrower question — whether a fresh write may introduce a reference — is answered by
+ * `find_disallowed()` instead; a primitive-layer direct alias is cascade-supported but not a legal
+ * location for a brand-new write to create.
  *
  * @since 3.8.0
  */
@@ -26,6 +27,7 @@ final class Token_Reference_Policy {
 	 * Find all references to $primitive_id in the document.
 	 *
 	 * @since 3.8.0
+	 * @since TBD A direct alias held by a block preset token is reported as a supported preset override.
 	 *
 	 * @param array<string, mixed> $document     The decoded stored overrides document.
 	 * @param string               $primitive_id The canonical dot-path of the target primitive.
@@ -84,6 +86,52 @@ final class Token_Reference_Policy {
 		}
 
 		return true;
+	}
+
+	/**
+	 * The references a fresh write may not introduce into the reserved user-primitive namespace.
+	 *
+	 * Only a direct semantic-layer alias or a direct block preset alias is a legal location for a
+	 * brand-new write to create. A primitive-layer alias is rewritable by the rename cascade, but is
+	 * not a location a write may use to introduce one from outside those two.
+	 *
+	 * @since TBD
+	 *
+	 * @param Token_Reference[] $references
+	 *
+	 * @return Token_Reference[]
+	 */
+	public function find_disallowed( array $references ): array {
+		$writable = [
+			Token_Reference::get_kind_semantic_override(),
+			Token_Reference::get_kind_preset_override(),
+		];
+
+		return array_values(
+			array_filter(
+				$references,
+				static fn( Token_Reference $ref ): bool => ! in_array( $ref->kind, $writable, true )
+			)
+		);
+	}
+
+	/**
+	 * Describe references as kind and path pairs for an error response.
+	 *
+	 * @since TBD
+	 *
+	 * @param Token_Reference[] $references
+	 *
+	 * @return array<int, array{kind: string, path: string}>
+	 */
+	public function describe( array $references ): array {
+		return array_map(
+			static fn( Token_Reference $ref ): array => [
+				'kind' => $ref->kind,
+				'path' => $ref->path,
+			],
+			$references
+		);
 	}
 
 	/**
@@ -223,7 +271,7 @@ final class Token_Reference_Policy {
 
 			$base = Extensions::get_extensions_key() . '.' . Extensions::get_namespace() . '.' . $section;
 
-			$this->scan_extension_section( $ext[ $section ], $base, $alias, $references );
+			$this->scan_extension_section( $ext[ $section ], $section, $base, $alias, $references );
 		}
 	}
 
@@ -231,13 +279,16 @@ final class Token_Reference_Policy {
 	 * @since 3.8.0
 	 *
 	 * @param array<string, mixed> $section
+	 * @param string               $section_name
 	 * @param string               $prefix
 	 * @param string               $alias
 	 * @param Token_Reference[]    $references
 	 *
 	 * @return void
 	 */
-	private function scan_extension_section( array $section, string $prefix, string $alias, array &$references ): void {
+	private function scan_extension_section( array $section, string $section_name, string $prefix, string $alias, array &$references ): void {
+		$ext_keys = [ Extensions::get_extensions_key(), Extensions::get_namespace(), $section_name ];
+
 		foreach ( $section as $group => $presets ) {
 			if ( ! is_array( $presets ) ) {
 				continue;
@@ -258,7 +309,8 @@ final class Token_Reference_Policy {
 					$path = $prefix . '.' . $group . '.' . $preset_name . '.' . Extensions::get_tokens_key() . '.' . $token_path;
 
 					if ( $value === $alias ) {
-						$references[] = new Token_Reference( Token_Reference::get_kind_extension(), $path, false );
+						$keys         = array_merge( $ext_keys, [ Cast::to_string( $group ), Cast::to_string( $preset_name ), Extensions::get_tokens_key(), Cast::to_string( $token_path ) ] );
+						$references[] = new Token_Reference( Token_Reference::get_kind_preset_override(), $path, true, $keys );
 
 						continue;
 					}

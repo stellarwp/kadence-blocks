@@ -1,0 +1,4 @@
+significance: patch
+type: fix
+entry: Fixed the Style Library failing with "unsupported reference to a user primitive" when adding custom colors or editing tokens after a block preset used a custom color. Updated deleting and renaming a custom color to also update the presets that use it.
+timestamp: 2026-11-18T17:10:00.000Z

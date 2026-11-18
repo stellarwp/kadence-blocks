@@ -1610,6 +1610,7 @@ final class Documents_Controller extends Controller {
 	 * and needs no validation or dry-run, since an empty document cannot carry an alias cycle.
 	 *
 	 * @since 3.8.0
+	 * @since TBD A block preset alias to a user primitive is accepted, and the 422 lists the blocking references.
 	 *
 	 * @param array<string, mixed> $candidate The full candidate overrides document to validate and store.
 	 * @param string               $slug      The token library slug.
@@ -1648,15 +1649,18 @@ final class Documents_Controller extends Controller {
 		}
 
 		foreach ( array_keys( $this->user_primitive_index->all( $candidate ) ) as $user_primitive_id ) {
-			$references = $this->reference_policy->find( $candidate, (string) $user_primitive_id );
+			$blocking = $this->reference_policy->find_disallowed(
+				$this->reference_policy->find( $candidate, Cast::to_string( $user_primitive_id ) )
+			);
 
-			if ( ! $this->reference_policy->all_semantic_overrides( $references ) ) {
+			if ( $blocking !== [] ) {
 				return new WP_Error(
 					'rest_design_tokens_user_primitive_reference_unsupported',
 					__( 'The document contains an unsupported reference to a user primitive.', 'kadence-blocks' ),
 					[
-						'status' => WP_Http::UNPROCESSABLE_ENTITY,
-						'slug'   => $slug,
+						'status'     => WP_Http::UNPROCESSABLE_ENTITY,
+						'slug'       => $slug,
+						'references' => $this->reference_policy->describe( $blocking ),
 					]
 				);
 			}
@@ -2431,12 +2435,13 @@ final class Documents_Controller extends Controller {
 	 * anywhere other than a direct semantic-layer override.
 	 *
 	 * Reuses Token_Reference_Policy::find(), the same classifier the delete-reference-preview endpoint
-	 * uses, rather than re-implementing alias-location parsing here. Uses `all_semantic_overrides()`
+	 * uses, rather than re-implementing alias-location parsing here. Uses `find_disallowed()`
 	 * rather than `all_supported()`: a primitive-layer direct alias is rewritable by the rename cascade,
 	 * but this guard is about a brand-new write introducing the reference, which only the semantic
-	 * layer may legitimately do.
+	 * layer or a block preset may legitimately do.
 	 *
 	 * @since 3.8.0
+	 * @since TBD A block preset alias to a user primitive is no longer treated as disallowed.
 	 *
 	 * @param array<string, mixed> $partial The incoming partial (not the merged candidate).
 	 *
@@ -2458,7 +2463,7 @@ final class Documents_Controller extends Controller {
 				continue;
 			}
 
-			if ( ! $this->reference_policy->all_semantic_overrides( $this->reference_policy->find( $partial, $referenced_id ) ) ) {
+			if ( $this->reference_policy->find_disallowed( $this->reference_policy->find( $partial, $referenced_id ) ) !== [] ) {
 				return true;
 			}
 		}
