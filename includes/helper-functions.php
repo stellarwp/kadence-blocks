@@ -253,8 +253,7 @@ function kadence_blocks_get_authorized_license_key(): string {
 
 	if (
 		function_exists( 'lw_harbor_get_unified_license_key' )
-		&& function_exists( 'lw_harbor_is_product_license_active' )
-		&& lw_harbor_is_product_license_active( 'kadence' )
+		&& kadence_blocks_is_harbor_license_active()
 	) {
 		$unified_key = lw_harbor_get_unified_license_key();
 		if ( ! empty( $unified_key ) ) {
@@ -402,7 +401,26 @@ function kadence_blocks_is_license_authorized(): bool {
 		return true;
 	}
 
-	return lw_harbor_is_product_license_active( 'kadence' );
+	return kadence_blocks_is_harbor_license_active();
+}
+
+/**
+ * Whether Harbor holds an active license that grants Kadence.
+ *
+ * A Nexcess Plugin Stack key is stored under its own `nexcess-plugin-stack`
+ * product slug and lists Kadence only as a capability, so checking the
+ * `kadence` slug alone treats a valid Plugin Stack key as unlicensed.
+ *
+ * @since TBD
+ *
+ * @return bool
+ */
+function kadence_blocks_is_harbor_license_active(): bool {
+	if ( ! function_exists( 'lw_harbor_is_product_license_active' ) ) {
+		return false;
+	}
+
+	return lw_harbor_is_product_license_active( 'kadence' ) || lw_harbor_is_product_license_active( 'nexcess-plugin-stack' );
 }
 
 /**

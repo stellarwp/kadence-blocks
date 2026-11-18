@@ -1,0 +1,4 @@
+significance: patch
+type: fix
+entry: Fixed the Design Library and Starter Templates not receiving the license key on sites licensed through the Nexcess Plugin Stack.
+timestamp: 2026-11-18T20:53:30.000Z

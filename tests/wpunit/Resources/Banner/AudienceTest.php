@@ -76,6 +76,20 @@ final class AudienceTest extends TestCase {
 		$this->assertTrue( $this->audience()->should_display() );
 	}
 
+	public function test_it_shows_the_banner_with_a_nexcess_plugin_stack_license(): void {
+		if ( ! function_exists( 'uopz_set_return' ) ) {
+			$this->markTestSkipped( 'Needs uopz to stand in for Harbor.' );
+		}
+
+		uopz_set_return(
+			'lw_harbor_is_product_license_active',
+			static fn ( string $product ): bool => 'nexcess-plugin-stack' === $product,
+			true
+		);
+
+		$this->assertTrue( $this->audience()->should_display() );
+	}
+
 	/**
 	 * @dataProvider paid_plugins
 	 */
