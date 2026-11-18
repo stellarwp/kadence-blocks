@@ -31,6 +31,6 @@ export function kadenceHelpersMock(extra = {}) {
 export function reactWithImmediateUseMemo() {
 	return {
 		...jest.requireActual('react'),
-		useMemo: (callback) => callback(),
+		useMemo: jest.fn((callback) => callback()),
 	};
 }

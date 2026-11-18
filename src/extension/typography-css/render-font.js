@@ -33,9 +33,36 @@ function depthAfter(depth, token) {
 }
 
 /**
+ * Matches a complete quoted string, including its closing quote.
+ */
+const CLOSED_STRING = /^(?:"(?:[^"\\]|\\[\s\S])*"|'(?:[^'\\]|\\[\s\S])*')$/;
+
+/**
+ * Returns whether a token is a string or comment that is never closed.
+ *
+ * @param {string} token The CSS token.
+ *
+ * @since TBD
+ *
+ * @return {boolean} True for an unclosed string or comment.
+ */
+function isUnclosed(token) {
+	if (token.startsWith('/*')) {
+		return token.length < 4 || !token.endsWith('*/');
+	}
+
+	if ('"' === token[0] || "'" === token[0]) {
+		return !CLOSED_STRING.test(token);
+	}
+
+	return false;
+}
+
+/**
  * Splits the body of a CSS rule into declarations at the semicolons that end them.
  *
  * Semicolons inside quoted strings, escape sequences, comments and parentheses do not end a declaration.
+ * A declaration with an unclosed string or comment is left out.
  *
  * @param {string} body The declarations of a rule, without the surrounding braces.
  *
@@ -47,19 +74,24 @@ function splitDeclarations(body) {
 	const declarations = [];
 	let current = '';
 	let depth = 0;
+	let malformed = false;
 
 	for (const [token] of body.matchAll(TOKEN)) {
 		if (';' === token && 0 === depth) {
-			declarations.push(current);
+			if (!malformed) {
+				declarations.push(current);
+			}
 			current = '';
+			malformed = false;
 			continue;
 		}
 
 		depth = depthAfter(depth, token);
+		malformed = malformed || isUnclosed(token);
 		current += token;
 	}
 
-	if (current.trim()) {
+	if (current.trim() && !malformed) {
 		declarations.push(current);
 	}
 
@@ -90,7 +122,8 @@ function normalizeFirstItem(item) {
 /**
  * Adds the typography declarations for the previewed device to the CSS builder's current selector.
  *
- * The first typography item is normalized by `normalizeFirstItem()` before `typographyStyle()` reads it.
+ * The first typography item is normalized by `normalizeFirstItem()` before `typographyStyle()` reads it, and one
+ * is always passed so the hooks `typographyStyle()` runs do not change between renders.
  *
  * @param {KadenceBlocksCSS} css           The CSS builder, with its selector already set.
  * @param {Array}            typography    The block's typography attribute.
@@ -101,14 +134,14 @@ function normalizeFirstItem(item) {
  * @return {void}
  */
 export default function renderFont(css, typography, previewDevice) {
-	const [first] = typography ? typography : [];
-	const rule = typographyStyle(first ? [normalizeFirstItem(first)] : [], '', previewDevice);
+	const [first = {}] = typography ? typography : [];
+	const rule = typographyStyle([normalizeFirstItem(first)], '', previewDevice);
 	const body = rule.replace(/^\s*\{/, '').replace(/\}\s*$/, '');
 
 	splitDeclarations(body).forEach((declaration) => {
 		const separator = declaration.indexOf(':');
 		if (separator > 0) {
-			css.add_property(declaration.slice(0, separator).trim(), declaration.slice(separator + 1).trim());
+			css.add_property(declaration.slice(0, separator).trim(), declaration.slice(separator + 1).trimStart());
 		}
 	});
 }

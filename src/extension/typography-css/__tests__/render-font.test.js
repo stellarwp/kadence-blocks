@@ -95,11 +95,33 @@ describe('renderFont', () => {
 		expect(output).toContain('font-weight:700;');
 	});
 
-	it('keeps an unclosed quote and an unclosed comment in the value', () => {
-		const quoted = build((css) => renderFont(css, [{ family: '"Brand; Display' }], 'Desktop'));
-		const commented = build((css) => renderFont(css, [{ family: 'Brand /* ; Display' }], 'Desktop'));
-		expect(quoted).toContain('font-family:"Brand; Display;');
-		expect(commented).toContain('font-family:Brand /* ; Display;');
+	it('drops a declaration with an unclosed quote or comment so later rules still parse', () => {
+		['"Brand; Display', 'Brand /* ; Display'].forEach((family) => {
+			const output = build((css) => {
+				renderFont(css, [{ family }], 'Desktop');
+				css.set_selector('.next');
+				renderFont(css, [{ weight: '700' }], 'Desktop');
+			});
+			expect(output).not.toContain('font-family');
+			expect(output).toContain('.next{font-weight:700;}');
+		});
+	});
+
+	it('keeps an escaped trailing space in a font family', () => {
+		const output = build((css) => renderFont(css, [{ family: 'Foo\\ ' }], 'Desktop'));
+		expect(output).toContain('font-family:Foo\\ ;');
+	});
+
+	it('runs the same number of hooks with and without typography', () => {
+		const { useMemo } = jest.requireMock('react');
+		const count = (typography) => {
+			useMemo.mockClear();
+			build((css) => renderFont(css, typography, 'Desktop'));
+			return useMemo.mock.calls.length;
+		};
+
+		expect(count([])).toBe(count([{ size: ['10', '', ''], sizeType: 'px', weight: '700' }]));
+		expect(count(undefined)).toBe(count([{}]));
 	});
 
 	it('outputs a letter spacing of zero', () => {
