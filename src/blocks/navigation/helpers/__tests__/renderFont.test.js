@@ -68,6 +68,34 @@ describe('navigation renderFont', () => {
 		expect(build((css) => renderFont(css, data, 'Desktop'))).toContain('font-family:"Open Sans", sans-serif;');
 	});
 
+	it('keeps a semicolon inside a quoted font family intact', () => {
+		const data = [{ family: '"Brand; Display", sans-serif', weight: '700' }];
+		const output = build((css) => renderFont(css, data, 'Desktop'));
+		expect(output).toContain('font-family:"Brand; Display", sans-serif;');
+		expect(output).toContain('font-weight:700;');
+	});
+
+	it('uses the letter spacing unit saved as letterType', () => {
+		const data = [{ letterSpacing: ['0.2', '', ''], letterType: 'em' }];
+		expect(build((css) => renderFont(css, data, 'Desktop'))).toContain('letter-spacing:0.2em;');
+	});
+
+	it('prefers an explicit letterSpacingType over letterType', () => {
+		const data = [{ letterSpacing: ['2', '', ''], letterSpacingType: 'rem', letterType: 'em' }];
+		expect(build((css) => renderFont(css, data, 'Desktop'))).toContain('letter-spacing:2rem;');
+	});
+
+	it('defaults the letter spacing unit to px', () => {
+		const data = [{ letterSpacing: ['3', '', ''] }];
+		expect(build((css) => renderFont(css, data, 'Desktop'))).toContain('letter-spacing:3px;');
+	});
+
+	it('does not change the typography it is given', () => {
+		const data = [{ letterSpacing: ['0.2', '', ''], letterType: 'em' }];
+		build((css) => renderFont(css, data, 'Desktop'));
+		expect(data).toEqual([{ letterSpacing: ['0.2', '', ''], letterType: 'em' }]);
+	});
+
 	it('outputs nothing when there is no typography', () => {
 		expect(build((css) => renderFont(css, [], 'Desktop'))).toBe('');
 		expect(build((css) => renderFont(css, undefined, 'Desktop'))).toBe('');
