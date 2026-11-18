@@ -194,6 +194,8 @@ class Kadence_Blocks_Listitem_Block extends Kadence_Blocks_Abstract_Block {
 	/**
 	 * Return dynamically generated HTML for block
 	 *
+	 * @since TBD Sanitized the icon name and stroke width inherited from the parent list before inserting them.
+	 *
 	 * @param $attributes
 	 * @param $unique_id
 	 * @param $content
