@@ -1,7 +1,7 @@
 /* eslint-env jest */
 
 import { KadenceBlocksCSS } from '@kadence/helpers';
-import renderFont from '../renderFont';
+import renderFont, { renderFontRules } from '../renderFont';
 
 jest.mock('@kadence/helpers', () => require('../test-utils').kadenceHelpersMock());
 jest.mock('react', () => require('../test-utils').reactWithImmediateUseMemo());
@@ -138,5 +138,22 @@ describe('navigation renderFont', () => {
 	it('outputs nothing when there is no typography', () => {
 		expect(build((css) => renderFont(css, [], 'Desktop'))).toBe('');
 		expect(build((css) => renderFont(css, undefined, 'Desktop'))).toBe('');
+	});
+
+	it('renders each typography under its own selector', () => {
+		const output = build((css) =>
+			renderFontRules(
+				css,
+				[
+					['.first', [{ size: ['10', '', ''], sizeType: 'px' }]],
+					['.second', [{ size: ['20', '', ''], sizeType: 'px' }]],
+					['.empty', []],
+				],
+				'Desktop'
+			)
+		);
+		expect(output).toContain('.first{font-size:10px;}');
+		expect(output).toContain('.second{font-size:20px;}');
+		expect(output).not.toContain('.empty');
 	});
 });

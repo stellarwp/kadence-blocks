@@ -101,9 +101,8 @@ function normalizeFirstItem(item) {
  * @return {void}
  */
 export default function renderFont(css, typography, previewDevice) {
-	const items = typography ? typography : [];
-	const normalized = items.length ? [normalizeFirstItem(items[0]), ...items.slice(1)] : [];
-	const rule = typographyStyle(normalized, '', previewDevice);
+	const [first] = typography ? typography : [];
+	const rule = typographyStyle(first ? [normalizeFirstItem(first)] : [], '', previewDevice);
 	const body = rule.replace(/^\s*\{/, '').replace(/\}\s*$/, '');
 
 	splitDeclarations(body).forEach((declaration) => {
@@ -111,5 +110,23 @@ export default function renderFont(css, typography, previewDevice) {
 		if (separator > 0) {
 			css.add_property(declaration.slice(0, separator).trim(), declaration.slice(separator + 1).trim());
 		}
+	});
+}
+
+/**
+ * Adds the typography declarations of each rule, under that rule's selector.
+ *
+ * @param {KadenceBlocksCSS} css           The CSS builder.
+ * @param {Array}            rules         Pairs of a selector and the typography attribute rendered under it.
+ * @param {string}           previewDevice The device being previewed in the editor.
+ *
+ * @since TBD
+ *
+ * @return {void}
+ */
+export function renderFontRules(css, rules, previewDevice) {
+	rules.forEach(([selector, typography]) => {
+		css.set_selector(selector);
+		renderFont(css, typography, previewDevice);
 	});
 }
