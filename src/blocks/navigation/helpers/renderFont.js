@@ -9,11 +9,14 @@ import { typographyStyle } from '@kadence/helpers';
  * @param {KadenceBlocksCSS} css           The CSS builder, with its selector already set.
  * @param {Array}            typography    The block's typography attribute.
  * @param {string}           previewDevice The device being previewed in the editor.
+ *
+ * @since TBD
+ *
+ * @return {void}
  */
 export default function renderFont(css, typography, previewDevice) {
 	const rule = typographyStyle(typography ? typography : [], '', previewDevice);
 
-	// Strip the surrounding braces so only the declarations remain.
 	rule.replace(/^\s*\{/, '')
 		.replace(/\}\s*$/, '')
 		.split(';')

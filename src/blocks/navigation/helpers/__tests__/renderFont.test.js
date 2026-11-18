@@ -25,6 +25,15 @@ const typography = [
 	},
 ];
 
+/**
+ * Builds the CSS for a single selector with the given callback.
+ *
+ * @param {Function} callback Receives the CSS builder after its selector is set.
+ *
+ * @since TBD
+ *
+ * @return {string} The generated CSS.
+ */
 function build(callback) {
 	const css = new KadenceBlocksCSS();
 	css.set_selector('.kb-link-wrap');

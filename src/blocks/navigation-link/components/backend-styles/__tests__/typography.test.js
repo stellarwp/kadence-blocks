@@ -1,0 +1,73 @@
+/* eslint-env jest */
+
+import BackendStyles from '../index';
+import metadata from '../../../block.json';
+
+jest.mock('@kadence/helpers', () => ({
+	KadenceBlocksCSS: jest.requireActual('../../../../../../node_modules/@kadence/helpers/dist/cjs/css').default,
+	getPreviewSize: jest.requireActual('../../../../../../node_modules/@kadence/helpers/dist/cjs/get-preview-size')
+		.default,
+	typographyStyle: jest.requireActual('../../../../../../node_modules/@kadence/helpers/dist/cjs/typography-style')
+		.default,
+	useEditorElement: jest.fn(() => null),
+}));
+
+jest.mock('react', () => ({
+	...jest.requireActual('react'),
+	useMemo: (callback) => callback(),
+}));
+
+const typographyGroups = [
+	'typography',
+	'dropdownTypography',
+	'highlightTypography',
+	'descriptionTypography',
+	'dropdownDescriptionTypography',
+];
+
+const defaults = Object.fromEntries(
+	Object.entries(metadata.attributes)
+		.filter(([, definition]) => undefined !== definition.default)
+		.map(([name, definition]) => [name, definition.default])
+);
+
+/**
+ * Renders the navigation link editor styles and returns the generated CSS.
+ *
+ * @param {string} previewDevice The previewed device.
+ * @param {Object} attributes    The block attributes to merge over the defaults.
+ *
+ * @since TBD
+ *
+ * @return {string} The generated CSS.
+ */
+function render(previewDevice, attributes = {}) {
+	const element = BackendStyles({
+		attributes: { ...defaults, uniqueID: 'abc', ...attributes },
+		isSelected: false,
+		previewDevice,
+		currentRef: { current: null },
+		subMenuRef: { current: null },
+		showSubMenusWithLogic: false,
+		context: {},
+	});
+	return element.props.children;
+}
+
+describe('navigation link BackendStyles typography', () => {
+	it('outputs the previewed font size as a valid declaration for each typography group', () => {
+		const attributes = {};
+		typographyGroups.forEach((group, index) => {
+			attributes[group] = [{ size: ['10', '20', String(30 + index)], sizeType: 'px' }];
+		});
+
+		const css = render('Mobile', attributes);
+
+		expect(css).not.toContain('{{');
+		[30, 31, 32, 33, 34].forEach((size) => expect(css).toContain(`{font-size:${size}px;}`));
+	});
+
+	it('outputs no typography rule when no typography is set', () => {
+		expect(render('Mobile')).not.toContain('font-size');
+	});
+});
