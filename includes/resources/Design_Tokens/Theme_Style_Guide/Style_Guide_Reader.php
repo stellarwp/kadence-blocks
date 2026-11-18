@@ -51,6 +51,7 @@ final class Style_Guide_Reader implements Style_Guide_Source {
 	 * @inheritDoc
 	 *
 	 * @since 3.8.0
+	 * @since 3.9.1 Adds the filtered complement formula.
 	 */
 	public function snapshot(): ?array {
 		$theme = $this->theme();
@@ -68,9 +69,22 @@ final class Style_Guide_Reader implements Style_Guide_Source {
 			}
 		}
 
+		/**
+		 * Filters the formula the Kadence theme renders for its complement palette color. This is the
+		 * theme's own filter, applied here so the Style Library shows what the theme renders.
+		 *
+		 * @since 3.9.1
+		 *
+		 * @param string $formula The complement formula.
+		 *
+		 * @return string The complement formula.
+		 */
+		$complement = apply_filters( 'kadence_palette_complement_color', Style_Guide_Mapper::get_complement_color() );
+
 		return [
-			'palette'  => $this->palette( $theme ),
-			'settings' => $settings,
+			'palette'    => $this->palette( $theme ),
+			'settings'   => $settings,
+			'complement' => $complement,
 		];
 	}
 

@@ -80,6 +80,32 @@
 					"$value": "#3182CE"
 				}
 			},
+			"extended": {
+				"complement": {
+					"$type": "color",
+					"$value": "#ED8936"
+				},
+				"success": {
+					"$type": "color",
+					"$value": "#13612e"
+				},
+				"info": {
+					"$type": "color",
+					"$value": "#1159af"
+				},
+				"alert": {
+					"$type": "color",
+					"$value": "#b82105"
+				},
+				"warning": {
+					"$type": "color",
+					"$value": "#f7630c"
+				},
+				"rating": {
+					"$type": "color",
+					"$value": "#f5a524"
+				}
+			},
 			"transparent": {
 				"$type": "color",
 				"$value": "transparent"
@@ -724,6 +750,18 @@
 								{ "token": "primitive.color.notice.warning", "label": "Warning", "$value": "#DD6B20" },
 								{ "token": "primitive.color.notice.error", "label": "Error", "$value": "#E53E3E" },
 								{ "token": "primitive.color.notice.info", "label": "Info", "$value": "#3182CE" }
+							]
+						},
+						{
+							"id": "extended",
+							"label": "Extended",
+							"swatches": [
+								{ "token": "primitive.color.extended.complement", "label": "Complement", "$value": "#ED8936" },
+								{ "token": "primitive.color.extended.success", "label": "Success", "$value": "#13612e" },
+								{ "token": "primitive.color.extended.info", "label": "Info", "$value": "#1159af" },
+								{ "token": "primitive.color.extended.alert", "label": "Alert", "$value": "#b82105" },
+								{ "token": "primitive.color.extended.warning", "label": "Warning", "$value": "#f7630c" },
+								{ "token": "primitive.color.extended.rating", "label": "Rating", "$value": "#f5a524" }
 							]
 						}
 					]

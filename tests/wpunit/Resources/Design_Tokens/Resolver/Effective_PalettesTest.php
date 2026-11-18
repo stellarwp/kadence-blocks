@@ -152,18 +152,17 @@ final class Effective_PalettesTest extends TestCase {
 	}
 
 	/**
-	 * A stored default palette whose groups list is SHORTER than the baseline's replaces it wholesale: the
-	 * removed swatch is gone, and the baseline's tail swatch is not left behind as a duplicate of its
-	 * successor.
+	 * A stored default palette whose groups list is SHORTER than the baseline's keeps its own order, and a
+	 * shipped swatch it doesn't list is added back once, at the end of its group, never as a duplicate.
 	 *
 	 * The merge descends a swatches list positionally, so without the structure replace, dropping the
 	 * fourth of five swatches shifts the fifth onto index 3 and leaves the baseline's index 4 untouched —
-	 * the removed swatch reappears, the survivor is listed twice, and the duplicate then trips the palette
-	 * write's own no-repeated-token guard, wedging every later save.
+	 * the survivor is listed twice, and the duplicate then trips the palette write's own no-repeated-token
+	 * guard, wedging every later save.
 	 *
 	 * @return void
 	 */
-	public function testAStoredDefaultPaletteReplacesTheBaselineGroups(): void {
+	public function testAStoredDefaultPaletteKeepsItsOrderAndGetsMissingShippedSwatchesBack(): void {
 		$this->store->save_document(
 			(string) wp_json_encode( $this->default_palette_overrides( [ $this->accent_group_without_the_button_swatch() ] ) ),
 			'default'
@@ -171,7 +170,6 @@ final class Effective_PalettesTest extends TestCase {
 
 		$tokens = $this->swatch_tokens_of_group( 'default', 'accent' );
 
-		$this->assertNotContains( 'primitive.color.brand.button', $tokens, 'A removed swatch must not survive the baseline merge.' );
 		$this->assertSame( array_unique( $tokens ), $tokens, 'The baseline tail swatch must not be left behind as a duplicate.' );
 		$this->assertSame(
 			[
@@ -179,18 +177,19 @@ final class Effective_PalettesTest extends TestCase {
 				'primitive.color.brand.secondary',
 				'primitive.color.brand.accent',
 				'primitive.color.brand.button-hover',
+				'primitive.color.brand.button',
 			],
 			$tokens
 		);
 	}
 
 	/**
-	 * The same structure replace applies to whole groups: a stored default palette carrying fewer groups than
-	 * the baseline does not leak the baseline's trailing groups back into the effective section.
+	 * A stored default palette carrying fewer groups than the baseline keeps its groups first, and each
+	 * shipped group it doesn't list follows once, in shipped order.
 	 *
 	 * @return void
 	 */
-	public function testAStoredDefaultPaletteDroppingGroupsDoesNotLeakTheBaselineTail(): void {
+	public function testAStoredDefaultPaletteMissingGroupsGetsThemBackAfterItsOwn(): void {
 		$this->store->save_document(
 			(string) wp_json_encode( $this->default_palette_overrides( [ $this->accent_group_without_the_button_swatch() ] ) ),
 			'default'
@@ -200,8 +199,8 @@ final class Effective_PalettesTest extends TestCase {
 		$groups = $node['groups'] ?? [];
 
 		$this->assertIsArray( $groups );
-		$this->assertCount( 1, $groups, 'Only the stored group may survive; the baseline groups after it are superseded.' );
-		$this->assertSame( 'accent', $groups[0]['id'] );
+		$this->assertSame( [ 'accent', 'contrast', 'background', 'notices', 'extended' ], array_column( $groups, 'id' ) );
+		$this->assertSame( 'primitive.color.brand.button-hover', $groups[0]['swatches'][3]['token'], 'The stored group keeps its own order.' );
 	}
 
 	/**

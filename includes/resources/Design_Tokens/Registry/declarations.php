@@ -191,21 +191,29 @@ $font_size_primitive_tokens = array_map(
  * (palette1..9), so --global-paletteN follows the primitive and the legacy kadence_blocks_colors palette
  * stays in sync. Baseline values are the plugin's own shipped defaults (brand at 1-2, a dark→light neutral
  * ramp at 3-9, white at 9) — they match what the plugin emits when the Kadence theme is absent, NOT the
- * theme's own defaults, which differ at slots 1 and 2. On a Kadence site the theme Style Guide layer
- * re-values these nine primitives from the active palette set, so resolution starts from the colors the
- * site already renders. Semantic colors deliberately do NOT claim a slot — they deliver at the block
- * level — so writing a semantic never re-skins the palette.
+ * theme's own defaults, which differ at slots 1 and 2. The extended primitives claim the theme's six
+ * extended slots (palette10..15: complement, success, info, alert, warning, rating), with the theme's
+ * defaults as their baseline. On a Kadence site the theme Style Guide layer re-values every slot-claiming
+ * primitive from the active palette set, so resolution starts from the colors the site already renders.
+ * Semantic colors deliberately do NOT claim a slot — they deliver at the block level — so writing a
+ * semantic never re-skins the palette.
  */
 $palette_slots = [
-	'primitive.color.brand.primary'   => [ 'palette1', __( 'Brand Primary', 'kadence-blocks' ) ],
-	'primitive.color.brand.secondary' => [ 'palette2', __( 'Brand Secondary', 'kadence-blocks' ) ],
-	'primitive.color.neutral.900'     => [ 'palette3', __( 'Neutral 900', 'kadence-blocks' ) ],
-	'primitive.color.neutral.700'     => [ 'palette4', __( 'Neutral 700', 'kadence-blocks' ) ],
-	'primitive.color.neutral.600'     => [ 'palette5', __( 'Neutral 600', 'kadence-blocks' ) ],
-	'primitive.color.neutral.500'     => [ 'palette6', __( 'Neutral 500', 'kadence-blocks' ) ],
-	'primitive.color.neutral.100'     => [ 'palette7', __( 'Neutral 100', 'kadence-blocks' ) ],
-	'primitive.color.neutral.50'      => [ 'palette8', __( 'Neutral 50', 'kadence-blocks' ) ],
-	'primitive.color.neutral.0'       => [ 'palette9', __( 'Neutral 0', 'kadence-blocks' ) ],
+	'primitive.color.brand.primary'       => [ 'palette1', __( 'Brand Primary', 'kadence-blocks' ) ],
+	'primitive.color.brand.secondary'     => [ 'palette2', __( 'Brand Secondary', 'kadence-blocks' ) ],
+	'primitive.color.neutral.900'         => [ 'palette3', __( 'Neutral 900', 'kadence-blocks' ) ],
+	'primitive.color.neutral.700'         => [ 'palette4', __( 'Neutral 700', 'kadence-blocks' ) ],
+	'primitive.color.neutral.600'         => [ 'palette5', __( 'Neutral 600', 'kadence-blocks' ) ],
+	'primitive.color.neutral.500'         => [ 'palette6', __( 'Neutral 500', 'kadence-blocks' ) ],
+	'primitive.color.neutral.100'         => [ 'palette7', __( 'Neutral 100', 'kadence-blocks' ) ],
+	'primitive.color.neutral.50'          => [ 'palette8', __( 'Neutral 50', 'kadence-blocks' ) ],
+	'primitive.color.neutral.0'           => [ 'palette9', __( 'Neutral 0', 'kadence-blocks' ) ],
+	'primitive.color.extended.complement' => [ 'palette10', __( 'Complement', 'kadence-blocks' ) ],
+	'primitive.color.extended.success'    => [ 'palette11', __( 'Success', 'kadence-blocks' ) ],
+	'primitive.color.extended.info'       => [ 'palette12', __( 'Info', 'kadence-blocks' ) ],
+	'primitive.color.extended.alert'      => [ 'palette13', __( 'Alert', 'kadence-blocks' ) ],
+	'primitive.color.extended.warning'    => [ 'palette14', __( 'Warning', 'kadence-blocks' ) ],
+	'primitive.color.extended.rating'     => [ 'palette15', __( 'Rating', 'kadence-blocks' ) ],
 ];
 
 $palette_tokens = [];

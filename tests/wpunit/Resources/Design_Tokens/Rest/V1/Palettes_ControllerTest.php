@@ -1208,6 +1208,71 @@ final class Palettes_ControllerTest extends TestCase {
 	}
 
 	/**
+	 * A default palette saved before the Extended group shipped can still be edited: the group is filled in
+	 * from the baseline, so the shipped-swatch guard does not refuse the write.
+	 *
+	 * @return void
+	 */
+	public function testADefaultPaletteSavedBeforeTheExtendedGroupStillSaves(): void {
+		$this->store_default_groups_without( 'extended' );
+
+		$result = $this->controller->update_swatch(
+			$this->swatch_request( 'PUT', 'default', 'primitive.color.brand.primary', '#0000ff' )
+		);
+
+		$this->assertNotInstanceOf( WP_Error::class, $result );
+		$this->assertSame( '#0000ff', $this->palettes->swatch_values( 'default' )['primitive.color.brand.primary'] );
+
+		$read = new WP_REST_Request( WP_REST_Server::READABLE );
+		$read->set_param( 'id', 'default' );
+		$view = $this->controller->get_item( $read )->get_data();
+
+		$save = new WP_REST_Request( 'PUT' );
+		$save->set_param( 'id', 'default' );
+		$save->set_param( 'label', $view['label'] );
+		$save->set_param( 'groups', $view['groups'] );
+
+		$result = $this->controller->update_item( $save );
+
+		$this->assertNotInstanceOf( WP_Error::class, $result, 'Saving the whole palette the Style Library shows also goes through.' );
+	}
+
+	/**
+	 * A default palette saved before the Extended group shipped shows that group, after its own groups.
+	 *
+	 * @return void
+	 */
+	public function testADefaultPaletteSavedBeforeTheExtendedGroupShowsIt(): void {
+		$this->store_default_groups_without( 'extended' );
+
+		$swatches = $this->view_swatches( 'default' );
+
+		$this->assertArrayHasKey( 'primitive.color.extended.success', $swatches );
+		$this->assertSame( '#13612e', $swatches['primitive.color.extended.success']['$value'] );
+		$this->assertSame( 'extended', array_column( $this->palettes->palette( 'default' )['groups'], 'id' )[4] );
+	}
+
+	/**
+	 * A shipped swatch the site moved into another group is not added a second time.
+	 *
+	 * @return void
+	 */
+	public function testAShippedSwatchMovedToAnotherGroupIsNotDuplicated(): void {
+		$this->store_default_groups_without( 'extended', 'primitive.color.extended.rating' );
+
+		$tokens = [];
+
+		foreach ( $this->palettes->palette( 'default' )['groups'] as $group ) {
+			foreach ( $group['swatches'] as $swatch ) {
+				$tokens[] = $swatch['token'];
+			}
+		}
+
+		$this->assertSame( 1, array_count_values( $tokens )['primitive.color.extended.rating'] );
+		$this->assertContains( 'primitive.color.extended.success', $tokens );
+	}
+
+	/**
 	 * A palette's effective view flattened to `{ token => swatch }`, so a case can assert on one swatch's flags
 	 * without walking the group structure.
 	 *
@@ -1403,5 +1468,63 @@ final class Palettes_ControllerTest extends TestCase {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Store the default palette's shipped groups minus one group, the way a site saved it before that group
+	 * shipped. Rows carry no `$value`, like an unedited default swatch.
+	 *
+	 * @param string      $group_id   The shipped group to leave out.
+	 * @param string|null $keep_token A swatch from that group to keep, moved into the first group instead.
+	 *
+	 * @return void
+	 */
+	private function store_default_groups_without( string $group_id, ?string $keep_token = null ): void {
+		$groups = [];
+		$moved  = [];
+
+		foreach ( $this->palettes->palette( 'default' )['groups'] ?? [] as $group ) {
+			$swatches = [];
+
+			foreach ( $group['swatches'] ?? [] as $swatch ) {
+				$row = [
+					'token' => $swatch['token'],
+					'label' => $swatch['label'],
+				];
+
+				if ( $group['id'] !== $group_id ) {
+					$swatches[] = $row;
+				} elseif ( $swatch['token'] === $keep_token ) {
+					$moved[] = $row;
+				}
+			}
+
+			if ( $group['id'] !== $group_id ) {
+				$groups[] = [
+					'id'       => $group['id'],
+					'label'    => $group['label'],
+					'swatches' => $swatches,
+				];
+			}
+		}
+
+		$groups[0]['swatches'] = array_merge( $groups[0]['swatches'], $moved );
+
+		$this->store->save_document(
+			(string) wp_json_encode(
+				[
+					'$extensions' => [
+						'com.kadence.designTokens' => [
+							'colorPalettes' => [
+								'default' => [
+									'label'  => 'Default',
+									'groups' => $groups,
+								],
+							],
+						],
+					],
+				]
+			)
+		);
 	}
 }

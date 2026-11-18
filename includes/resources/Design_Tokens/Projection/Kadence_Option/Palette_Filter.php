@@ -4,7 +4,9 @@
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Kadence_Option;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Document_Path;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Palettes;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 use KadenceWP\KadenceBlocks\Design_Tokens\Theme_Style_Guide\Style_Guide_Overlay;
 use RuntimeException;
@@ -85,6 +87,16 @@ final class Palette_Filter {
 	private Palette_Builder $builder;
 
 	/**
+	 * Reads which colors the active library's palettes store, to tell a color the site set apart from one
+	 * that only follows the theme.
+	 *
+	 * @since 3.9.1
+	 *
+	 * @var Effective_Palettes
+	 */
+	private Effective_Palettes $palettes;
+
+	/**
 	 * Per-request memo of slug => { color, name }. Null until first built; cleared when any input it is
 	 * built from changes: a token write, an active-library switch, or a change to the theme's Style Guide.
 	 *
@@ -102,25 +114,29 @@ final class Palette_Filter {
 	 * @param Active_Token_Library_Store $active   The active-library pointer.
 	 * @param Palette_Builder            $builder  The palette entries builder.
 	 * @param Style_Guide_Overlay        $overlay  The Style Guide overlay.
+	 * @param Effective_Palettes         $palettes The palettes reader.
 	 */
 	public function __construct(
 		Token_Registry $registry,
 		Token_Resolver $resolver,
 		Active_Token_Library_Store $active,
 		Palette_Builder $builder,
-		Style_Guide_Overlay $overlay
+		Style_Guide_Overlay $overlay,
+		Effective_Palettes $palettes
 	) {
 		$this->registry = $registry;
 		$this->resolver = $resolver;
 		$this->active   = $active;
 		$this->builder  = $builder;
 		$this->overlay  = $overlay;
+		$this->palettes = $palettes;
 	}
 
 	/**
 	 * Return the resolved token color for a palette slot a token claims, or the theme's own value.
 	 *
 	 * @since 3.8.0
+	 * @since 3.9.1 Leaves a theme value built on the theme's own CSS variables alone unless the site set that color.
 	 *
 	 * @param mixed $value  The value the theme resolved for this slot.
 	 * @param mixed $subkey The slot being read, e.g. "palette1". Not type-hinted because the theme
@@ -135,7 +151,7 @@ final class Palette_Filter {
 
 		$entries = $this->entries();
 
-		if ( ! isset( $entries[ $subkey ] ) || $this->is_other_palette_set( $value, $subkey ) ) {
+		if ( ! isset( $entries[ $subkey ] ) || $this->is_other_palette_set( $value, $subkey ) || $this->follows_theme_variables( $value, $subkey ) ) {
 			return $value;
 		}
 
@@ -181,6 +197,42 @@ final class Palette_Filter {
 		}
 
 		return strtolower( trim( $value ) ) !== strtolower( trim( $saved ) );
+	}
+
+	/**
+	 * Whether the theme's value is built on its own CSS variables, like the complement formula on
+	 * `var(--global-palette1)`, and the site hasn't set this color in the Style Library or the token document.
+	 *
+	 * Such a value already follows the Style Library through the variables it reads, and it is the same
+	 * formula in every palette set, so the filter can't tell a dark-mode read from an active one. Leaving it
+	 * alone keeps each set working out its own color. A color the site set is still returned, with the same
+	 * limit as two sets saving the same color.
+	 *
+	 * @since 3.9.1
+	 *
+	 * @param mixed  $value  The value the theme resolved for the slot.
+	 * @param string $subkey The slot being read.
+	 *
+	 * @return bool
+	 */
+	private function follows_theme_variables( $value, string $subkey ): bool {
+		if ( ! is_string( $value ) || strpos( $value, 'var(' ) === false ) {
+			return false;
+		}
+
+		$token = $this->overlay->slot_tokens()[ $subkey ] ?? null;
+
+		if ( $token === null ) {
+			return false;
+		}
+
+		$slug   = $this->active->get();
+		$stored = array_merge(
+			$this->palettes->stored_swatch_values( $this->palettes->default_palette( $slug ), $slug ),
+			$this->palettes->stored_swatch_values( $this->palettes->current( $slug ), $slug )
+		);
+
+		return ! array_key_exists( $token, $stored ) && ! Document_Path::has_value( $this->palettes->raw( $slug ), $token );
 	}
 
 	/**
