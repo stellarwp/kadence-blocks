@@ -1,4 +1,4 @@
 significance: patch
 type: security
-entry: Hardened carousel setup across multiple blocks.
+entry: Hardened carousel setup across multiple blocks. Props to Santh for reporting.
 timestamp: 2026-11-17T14:06:16.222Z
