@@ -6,7 +6,7 @@ import { typographyStyle } from '@kadence/helpers';
 /**
  * Matches one `property:value;` declaration, treating quoted strings, including escaped quotes, as part of the value.
  */
-const DECLARATION = /([\w-]+)\s*:\s*((?:"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|[^;"'])*);/g;
+const DECLARATION = /([\w-]+)\s*:\s*((?:"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|\\.|[^;"'\\])*);/g;
 
 /**
  * Returns a copy of the first typography item that `typographyStyle()` can read.
