@@ -82,6 +82,26 @@ describe('navigation renderFont', () => {
 		expect(output).toContain('font-weight:700;');
 	});
 
+	it('keeps a semicolon inside a CSS comment in a font family intact', () => {
+		const output = build((css) => {
+			renderFont(css, [{ family: 'var(--brand-font /* ; */, sans-serif)' }], 'Desktop');
+			css.set_selector('.next');
+			renderFont(css, [{ weight: '700' }], 'Desktop');
+		});
+		expect(output).toContain('font-family:var(--brand-font /* ; */, sans-serif);');
+		expect(output).toContain('.next{font-weight:700;}');
+	});
+
+	it('outputs a unitless line height when the saved line type is a dash', () => {
+		const data = [{ lineHeight: ['', '', 1.4], lineType: '-' }];
+		expect(build((css) => renderFont(css, data, 'Mobile'))).toContain('line-height:1.4;');
+	});
+
+	it('keeps an explicit line height unit', () => {
+		const data = [{ lineHeight: ['', '', 24], lineType: 'px' }];
+		expect(build((css) => renderFont(css, data, 'Mobile'))).toContain('line-height:24px;');
+	});
+
 	it('outputs a letter spacing of zero', () => {
 		const data = [{ letterSpacing: [0, '', ''], letterType: 'em' }];
 		expect(build((css) => renderFont(css, data, 'Desktop'))).toContain('letter-spacing:0em;');

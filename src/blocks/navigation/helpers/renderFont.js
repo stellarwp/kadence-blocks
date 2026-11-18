@@ -4,9 +4,51 @@
 import { typographyStyle } from '@kadence/helpers';
 
 /**
- * Matches one `property:value;` declaration, treating quoted strings, including escaped quotes, as part of the value.
+ * Splits the body of a CSS rule into declarations at the semicolons that end them.
+ *
+ * Semicolons inside quoted strings, escape sequences, comments and parentheses do not end a declaration.
+ *
+ * @param {string} body The declarations of a rule, without the surrounding braces.
+ *
+ * @since TBD
+ *
+ * @return {string[]} The declarations, without their terminating semicolon.
  */
-const DECLARATION = /([\w-]+)\s*:\s*((?:"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|\\.|[^;"'\\])*);/g;
+function splitDeclarations(body) {
+	const declarations = [];
+	let current = '';
+	let quote = '';
+	let depth = 0;
+
+	for (let index = 0; index < body.length; index++) {
+		const char = body[index];
+		let chunk = char;
+
+		if ('\\' === char) {
+			chunk = body.slice(index, index + 2);
+		} else if (quote) {
+			quote = char === quote ? '' : quote;
+		} else if ('/' === char && '*' === body[index + 1]) {
+			const end = body.indexOf('*/', index + 2);
+			chunk = body.slice(index, -1 === end ? body.length : end + 2);
+		} else if ('"' === char || "'" === char) {
+			quote = char;
+		} else if ('(' === char) {
+			depth++;
+		} else if (')' === char && depth > 0) {
+			depth--;
+		} else if (';' === char && 0 === depth) {
+			declarations.push(current);
+			current = '';
+			continue;
+		}
+
+		current += chunk;
+		index += chunk.length - 1;
+	}
+
+	return declarations;
+}
 
 /**
  * Returns a copy of the first typography item that `typographyStyle()` can read.
@@ -15,11 +57,12 @@ const DECLARATION = /([\w-]+)\s*:\s*((?:"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|\\.|
  *
  * @since TBD
  *
- * @return {Object} The item with `letterSpacingType` set and a numeric zero letter spacing as the string '0'.
+ * @return {Object} The item with `letterSpacingType` set, a numeric zero letter spacing as the string '0' and a dash line type as no unit.
  */
 function normalizeFirstItem(item) {
 	return {
 		...item,
+		lineType: '-' === item.lineType ? '' : item.lineType,
 		letterSpacing: Array.isArray(item.letterSpacing)
 			? item.letterSpacing.map((value) => (0 === value ? '0' : value))
 			: item.letterSpacing,
@@ -31,7 +74,7 @@ function normalizeFirstItem(item) {
  * Adds the typography declarations for the previewed device to the CSS builder's current selector.
  *
  * The letter spacing unit saved as `letterType` is passed on as `letterSpacingType`, which is the key
- * `typographyStyle()` reads. A numeric zero letter spacing is kept as '0'. Semicolons inside quoted values stay part of the value.
+ * `typographyStyle()` reads. A numeric zero letter spacing is kept as '0' and a dash line type means no unit.
  *
  * @param {KadenceBlocksCSS} css           The CSS builder, with its selector already set.
  * @param {Array}            typography    The block's typography attribute.
@@ -47,7 +90,10 @@ export default function renderFont(css, typography, previewDevice) {
 	const rule = typographyStyle(normalized, '', previewDevice);
 	const body = rule.replace(/^\s*\{/, '').replace(/\}\s*$/, '');
 
-	for (const [, property, value] of body.matchAll(DECLARATION)) {
-		css.add_property(property, value.trim());
-	}
+	splitDeclarations(body).forEach((declaration) => {
+		const separator = declaration.indexOf(':');
+		if (separator > 0) {
+			css.add_property(declaration.slice(0, separator).trim(), declaration.slice(separator + 1).trim());
+		}
+	});
 }
