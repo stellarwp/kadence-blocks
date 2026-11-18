@@ -4,18 +4,32 @@
 import { typographyStyle } from '@kadence/helpers';
 
 /**
- * Returns the length of the CSS comment that starts at the given index.
+ * Matches one CSS token: an escape sequence, a quoted string, a comment, a parenthesis, a semicolon, or a run of
+ * other characters. An unclosed string or comment runs to the end of the text.
+ */
+const TOKEN =
+	/\\[\s\S]|"(?:[^"\\]|\\[\s\S])*(?:"|$)|'(?:[^'\\]|\\[\s\S])*(?:'|$)|\/\*[\s\S]*?(?:\*\/|$)|[();]|[^\\"'/();]+|[\s\S]/g;
+
+/**
+ * Returns the parenthesis depth after the given token.
  *
- * @param {string} text  The CSS text.
- * @param {number} index The index of the opening slash.
+ * @param {number} depth The depth before the token.
+ * @param {string} token The CSS token.
  *
  * @since TBD
  *
- * @return {number} The length of the comment, up to the end of the text when it is not closed.
+ * @return {number} The depth after the token.
  */
-function commentLength(text, index) {
-	const end = text.indexOf('*/', index + 2);
-	return -1 === end ? text.length - index : end + 2 - index;
+function depthAfter(depth, token) {
+	if ('(' === token) {
+		return depth + 1;
+	}
+
+	if (')' === token) {
+		return Math.max(0, depth - 1);
+	}
+
+	return depth;
 }
 
 /**
@@ -32,35 +46,17 @@ function commentLength(text, index) {
 function splitDeclarations(body) {
 	const declarations = [];
 	let current = '';
-	let quote = '';
 	let depth = 0;
-	let index = 0;
 
-	while (index < body.length) {
-		const char = body[index];
-		let length = 1;
-
-		if ('\\' === char) {
-			length = 2;
-		} else if (quote) {
-			quote = char === quote ? '' : quote;
-		} else if ('/' === char && '*' === body[index + 1]) {
-			length = commentLength(body, index);
-		} else if ('"' === char || "'" === char) {
-			quote = char;
-		} else if ('(' === char) {
-			depth++;
-		} else if (')' === char && depth > 0) {
-			depth--;
-		} else if (';' === char && 0 === depth) {
+	for (const [token] of body.matchAll(TOKEN)) {
+		if (';' === token && 0 === depth) {
 			declarations.push(current);
 			current = '';
-			index++;
 			continue;
 		}
 
-		current += body.slice(index, index + length);
-		index += length;
+		depth = depthAfter(depth, token);
+		current += token;
 	}
 
 	if (current.trim()) {

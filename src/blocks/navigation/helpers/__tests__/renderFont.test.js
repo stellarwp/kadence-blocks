@@ -87,6 +87,21 @@ describe('navigation renderFont', () => {
 		expect(build((css) => renderFont(css, data, 'Mobile'))).toContain('line-height:24px;');
 	});
 
+	it('keeps a semicolon inside parentheses intact', () => {
+		const output = build((css) =>
+			renderFont(css, [{ family: 'var(--brand;font, sans-serif)', weight: '700' }], 'Desktop')
+		);
+		expect(output).toContain('font-family:var(--brand;font, sans-serif);');
+		expect(output).toContain('font-weight:700;');
+	});
+
+	it('keeps an unclosed quote and an unclosed comment in the value', () => {
+		const quoted = build((css) => renderFont(css, [{ family: '"Brand; Display' }], 'Desktop'));
+		const commented = build((css) => renderFont(css, [{ family: 'Brand /* ; Display' }], 'Desktop'));
+		expect(quoted).toContain('font-family:"Brand; Display;');
+		expect(commented).toContain('font-family:Brand /* ; Display;');
+	});
+
 	it('outputs a letter spacing of zero', () => {
 		const data = [{ letterSpacing: [0, '', ''], letterType: 'em' }];
 		expect(build((css) => renderFont(css, data, 'Desktop'))).toContain('letter-spacing:0em;');
