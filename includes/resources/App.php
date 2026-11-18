@@ -17,6 +17,7 @@ use KadenceWP\KadenceBlocks\Log\Log_Provider;
 use KadenceWP\KadenceBlocks\Optimizer\Optimizer_Provider;
 use KadenceWP\KadenceBlocks\Shutdown\Shutdown_Provider;
 use KadenceWP\KadenceBlocks\Site_Styles\Site_Styles_Provider;
+use KadenceWP\KadenceBlocks\Telemetry\Telemetry_Provider;
 use KadenceWP\KadenceBlocks\StellarWP\ContainerContract\ContainerInterface;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Container;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Providable;
@@ -58,6 +59,7 @@ final class App {
 		Site_Styles_Provider::class,
 		Design_Tokens_Provider::class,
 		Shutdown_Provider::class,
+		Telemetry_Provider::class,
 	];
 
 	/**
