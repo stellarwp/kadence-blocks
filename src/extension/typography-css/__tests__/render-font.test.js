@@ -1,7 +1,7 @@
 /* eslint-env jest */
 
 import { KadenceBlocksCSS } from '@kadence/helpers';
-import renderFont, { renderFontRules } from '../renderFont';
+import renderFont, { renderFontRules } from '../render-font';
 
 jest.mock('@kadence/helpers', () => require('../test-utils').kadenceHelpersMock());
 jest.mock('react', () => require('../test-utils').reactWithImmediateUseMemo());

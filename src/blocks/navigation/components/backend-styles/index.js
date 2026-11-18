@@ -1,4 +1,4 @@
-import { renderFontRules } from '../../helpers/renderFont';
+import { renderFontRules } from '../../../../extension/typography-css/render-font';
 import { KadenceBlocksCSS, getPreviewSize, getSpacingOptionOutput } from '@kadence/helpers';
 
 export default function BackendStyles(props) {

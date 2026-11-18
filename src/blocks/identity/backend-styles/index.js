@@ -1,5 +1,6 @@
 import { KadenceBlocksCSS, getPreviewSize, getSpacingOptionOutput } from '@kadence/helpers';
 import { KadenceWebfontLoader } from '@kadence/components';
+import { renderFontRules } from '../../../extension/typography-css/render-font';
 
 export default function BackendStyles(props) {
 	const { attributes, clientId, previewDevice } = props;
@@ -40,11 +41,14 @@ export default function BackendStyles(props) {
 		css.add_property('align-items', textVerticalAlign);
 	}
 
-	css.set_selector(`.kb-identity${uniqueID} .wp-block-site-title`);
-	css.render_font(titleTypography ? titleTypography : [], previewDevice);
-
-	css.set_selector(`.kb-identity${uniqueID} .wp-block-site-tagline`);
-	css.render_font(taglineTypography ? taglineTypography : [], previewDevice);
+	renderFontRules(
+		css,
+		[
+			[`.kb-identity${uniqueID} .wp-block-site-title`, titleTypography],
+			[`.kb-identity${uniqueID} .wp-block-site-tagline`, taglineTypography],
+		],
+		previewDevice
+	);
 
 	const cssOutput = css.css_output();
 

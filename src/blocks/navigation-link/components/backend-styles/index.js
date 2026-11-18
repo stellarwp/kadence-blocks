@@ -1,4 +1,4 @@
-import { renderFontRules } from '../../../navigation/helpers/renderFont';
+import { renderFontRules } from '../../../../extension/typography-css/render-font';
 import { KadenceBlocksCSS, getPreviewSize, useEditorElement } from '@kadence/helpers';
 import { useRef } from '@wordpress/element';
 

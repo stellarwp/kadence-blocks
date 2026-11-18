@@ -1,6 +1,6 @@
 /* eslint-env jest */
 
-const HELPERS_DIST = '../../../../node_modules/@kadence/helpers/dist/cjs';
+const HELPERS_DIST = '../../../node_modules/@kadence/helpers/dist/cjs';
 
 /**
  * Returns a `@kadence/helpers` module with the real CSS builder, preview size, spacing and typography helpers.

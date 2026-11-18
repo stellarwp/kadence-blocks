@@ -6,6 +6,7 @@ import {
 	getBorderStyle,
 } from '@kadence/helpers';
 import { memo } from '@wordpress/element';
+import renderFont from '../../../../extension/typography-css/render-font';
 
 function BackendStyles(props) {
 	const { attributes, previewDevice } = props;
@@ -81,7 +82,7 @@ function BackendStyles(props) {
 	);
 
 	css.set_selector(`.kb-table${uniqueID}`);
-	css.render_font(dataTypography ? dataTypography : [], previewDevice);
+	renderFont(css, dataTypography, previewDevice);
 
 	css.set_selector(`.kb-table-container${uniqueID}`);
 	css.render_measure_output(padding, tabletPadding, mobilePadding, previewDevice, 'padding', paddingType);
@@ -157,7 +158,7 @@ function BackendStyles(props) {
 	}
 
 	css.set_selector(`.kb-table${uniqueID} th`);
-	css.render_font(headerTypography ? headerTypography : [], previewDevice);
+	renderFont(css, headerTypography, previewDevice);
 	css.add_property('text-align', previewHeaderAlign);
 	css.set_selector(`.kb-table${uniqueID} tr th`);
 	css.render_measure_output(
@@ -175,7 +176,7 @@ function BackendStyles(props) {
 	}
 
 	css.set_selector(`.kb-table${uniqueID} caption`);
-	css.render_font(captionTypography ? captionTypography : [], previewDevice);
+	renderFont(css, captionTypography, previewDevice);
 	css.add_property('text-align', previewCaptionAlign);
 
 	css.set_selector(`.kb-table${uniqueID} td`);

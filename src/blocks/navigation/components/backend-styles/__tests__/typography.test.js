@@ -2,8 +2,8 @@
 
 import BackendStyles from '../index';
 
-jest.mock('@kadence/helpers', () => require('../../../helpers/test-utils').kadenceHelpersMock());
-jest.mock('react', () => require('../../../helpers/test-utils').reactWithImmediateUseMemo());
+jest.mock('@kadence/helpers', () => require('../../../../../extension/typography-css/test-utils').kadenceHelpersMock());
+jest.mock('react', () => require('../../../../../extension/typography-css/test-utils').reactWithImmediateUseMemo());
 
 const uniqueID = 'abc';
 const block = `.wp-block-kadence-navigation${uniqueID}`;

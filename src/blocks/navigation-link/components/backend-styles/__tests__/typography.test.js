@@ -4,9 +4,9 @@ import BackendStyles from '../index';
 import metadata from '../../../block.json';
 
 jest.mock('@kadence/helpers', () =>
-	require('../../../../navigation/helpers/test-utils').kadenceHelpersMock({ useEditorElement: () => null })
+	require('../../../../../extension/typography-css/test-utils').kadenceHelpersMock({ useEditorElement: () => null })
 );
-jest.mock('react', () => require('../../../../navigation/helpers/test-utils').reactWithImmediateUseMemo());
+jest.mock('react', () => require('../../../../../extension/typography-css/test-utils').reactWithImmediateUseMemo());
 
 const uniqueID = 'abc';
 
