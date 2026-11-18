@@ -2,21 +2,8 @@
 
 import BackendStyles from '../index';
 
-jest.mock('@kadence/helpers', () => ({
-	KadenceBlocksCSS: jest.requireActual('../../../../../../node_modules/@kadence/helpers/dist/cjs/css').default,
-	getPreviewSize: jest.requireActual('../../../../../../node_modules/@kadence/helpers/dist/cjs/get-preview-size')
-		.default,
-	getSpacingOptionOutput: jest.requireActual(
-		'../../../../../../node_modules/@kadence/helpers/dist/cjs/spacing-utilities'
-	).getSpacingOptionOutput,
-	typographyStyle: jest.requireActual('../../../../../../node_modules/@kadence/helpers/dist/cjs/typography-style')
-		.default,
-}));
-
-jest.mock('react', () => ({
-	...jest.requireActual('react'),
-	useMemo: (callback) => callback(),
-}));
+jest.mock('@kadence/helpers', () => require('../../../helpers/test-utils').kadenceHelpersMock());
+jest.mock('react', () => require('../../../helpers/test-utils').reactWithImmediateUseMemo());
 
 const uniqueID = 'abc';
 const block = `.wp-block-kadence-navigation${uniqueID}`;

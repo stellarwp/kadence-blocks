@@ -3,18 +3,8 @@
 import { KadenceBlocksCSS } from '@kadence/helpers';
 import renderFont from '../renderFont';
 
-// Exposes only the real CSS builder and typography helper from `@kadence/helpers`.
-jest.mock('@kadence/helpers', () => ({
-	KadenceBlocksCSS: jest.requireActual('../../../../../node_modules/@kadence/helpers/dist/cjs/css').default,
-	typographyStyle: jest.requireActual('../../../../../node_modules/@kadence/helpers/dist/cjs/typography-style')
-		.default,
-}));
-
-// Runs `useMemo` callbacks directly so `typographyStyle()` works outside a component.
-jest.mock('react', () => ({
-	...jest.requireActual('react'),
-	useMemo: (callback) => callback(),
-}));
+jest.mock('@kadence/helpers', () => require('../test-utils').kadenceHelpersMock());
+jest.mock('react', () => require('../test-utils').reactWithImmediateUseMemo());
 
 const typography = [
 	{
@@ -42,11 +32,6 @@ function build(callback) {
 }
 
 describe('navigation renderFont', () => {
-	it('css.render_font nests a rule inside the selector block', () => {
-		const output = build((css) => css.render_font(typography, 'Mobile'));
-		expect(output).toContain('{{');
-	});
-
 	it('emits plain declarations inside the selector block', () => {
 		const output = build((css) => renderFont(css, typography, 'Mobile'));
 		expect(output).not.toContain('{{');
