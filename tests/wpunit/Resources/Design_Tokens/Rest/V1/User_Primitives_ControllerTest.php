@@ -1429,6 +1429,44 @@ final class User_Primitives_ControllerTest extends TestCase {
 		$this->assertSame( $version, $this->store->get_version( $slug ) );
 	}
 
+	/**
+	 * The deletion preview reports a block's default preset as a blocker, matching what the delete refuses.
+	 *
+	 * @return void
+	 */
+	public function testReferencesPreviewMarksADefaultPresetColorAsNotDeletable(): void {
+		$slug = Token_Store::default_slug();
+		$id   = 'primitive.color.custom.preset-color';
+		$doc  = $this->doc_with_primitive( $id, 'Preset Color' );
+
+		$doc[ Extensions::get_extensions_key() ][ Extensions::get_namespace() ][ Extensions::get_section_presets() ] = [
+			'kadence/singlebtn' => [
+				Extensions::get_default_key() => 'brand-preset',
+				'brand-preset'                => [
+					Extensions::get_tokens_key() => [
+						'button-bg' => '{' . $id . '}',
+					],
+				],
+			],
+		];
+
+		$this->store->save_document( wp_json_encode( $doc ) );
+
+		$data = $this->controller->get_references( $this->make_get_request( $slug, $id ) )->get_data();
+
+		$this->assertFalse( $data['deletable'] );
+		$this->assertSame(
+			[
+				[
+					'kind'    => 'default_preset',
+					'block'   => 'kadence/singlebtn',
+					'default' => 'brand-preset',
+				],
+			],
+			$data['blockers']
+		);
+	}
+
 	// -------------------------------------------------------------------------
 	// delete_item — system primitive (baseline) cannot be deleted
 	// -------------------------------------------------------------------------

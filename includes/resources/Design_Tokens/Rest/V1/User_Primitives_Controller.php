@@ -254,6 +254,7 @@ final class User_Primitives_Controller extends Controller {
 	 * Return the set of alias references to a user primitive and whether deletion is safe.
 	 *
 	 * @since 3.8.0
+	 * @since TBD Reports a block's default preset as a blocker when deleting would remove it.
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -284,6 +285,23 @@ final class User_Primitives_Controller extends Controller {
 		$references  = $this->policy->find( $stored, $id );
 		$all_support = $this->policy->all_supported( $references );
 		$ref_payload = [];
+		$blockers    = [];
+
+		if ( $all_support ) {
+			[ $candidate ] = $this->apply_delete_cascade( $stored, $id, $references );
+			$default_error = $this->guard_preset_defaults( $candidate, $references );
+
+			if ( $default_error instanceof WP_Error ) {
+				$error_data  = $default_error->get_error_data();
+				$error_data  = is_array( $error_data ) ? $error_data : [];
+				$all_support = false;
+				$blockers[]  = [
+					'kind'    => 'default_preset',
+					'block'   => Cast::to_string( $error_data['block'] ?? '' ),
+					'default' => Cast::to_string( $error_data['default'] ?? '' ),
+				];
+			}
+		}
 
 		foreach ( $references as $ref ) {
 			$ref_payload[] = [
@@ -301,6 +319,7 @@ final class User_Primitives_Controller extends Controller {
 				'version'    => $this->pipeline->get_version( $slug ),
 				'deletable'  => $all_support,
 				'references' => $ref_payload,
+				'blockers'   => $blockers,
 			],
 			WP_Http::OK
 		);
@@ -502,17 +521,7 @@ final class User_Primitives_Controller extends Controller {
 			);
 		}
 
-		$candidate = $this->mutator->remove( $stored, $id );
-		$candidate = $this->index->remove( $candidate, $id );
-
-		$reverted = [];
-
-		foreach ( $references as $ref ) {
-			$candidate  = $ref->keys !== []
-				? $this->mutator->remove_by_keys( $candidate, $ref->keys )
-				: $this->mutator->remove( $candidate, $ref->path );
-			$reverted[] = $ref->path;
-		}
+		[ $candidate, $reverted ] = $this->apply_delete_cascade( $stored, $id, $references );
 
 		$error = $this->guard_preset_defaults( $candidate, $references );
 
@@ -843,6 +852,34 @@ final class User_Primitives_Controller extends Controller {
 		}
 
 		return $node;
+	}
+
+	/**
+	 * Remove a primitive and revert every supported reference to it, without saving.
+	 *
+	 * Shared by the delete route and the deletion preview so both judge the same post-cascade document.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $stored     The stored overrides document.
+	 * @param string               $id         The primitive id being deleted.
+	 * @param Token_Reference[]    $references The supported references to the primitive.
+	 *
+	 * @return array{0: array<string, mixed>, 1: string[]} The candidate document and the reverted paths.
+	 */
+	private function apply_delete_cascade( array $stored, string $id, array $references ): array {
+		$candidate = $this->mutator->remove( $stored, $id );
+		$candidate = $this->index->remove( $candidate, $id );
+		$reverted  = [];
+
+		foreach ( $references as $ref ) {
+			$candidate  = $ref->keys !== []
+				? $this->mutator->remove_by_keys( $candidate, $ref->keys )
+				: $this->mutator->remove( $candidate, $ref->path );
+			$reverted[] = $ref->path;
+		}
+
+		return [ $candidate, $reverted ];
 	}
 
 	/**
