@@ -1396,6 +1396,39 @@ final class User_Primitives_ControllerTest extends TestCase {
 		$this->assertFalse( strpos( wp_json_encode( $stored ), 'preset-color' ) );
 	}
 
+	/**
+	 * Deleting the only color of a custom preset that is its block's default is rejected, so the stored
+	 * document never keeps a `$default` naming a preset the cascade removed.
+	 *
+	 * @return void
+	 */
+	public function testDeleteIsRejectedWhenItWouldLeaveADanglingPresetDefault(): void {
+		$slug = Token_Store::default_slug();
+		$id   = 'primitive.color.custom.preset-color';
+		$doc  = $this->doc_with_primitive( $id, 'Preset Color' );
+
+		$doc[ Extensions::get_extensions_key() ][ Extensions::get_namespace() ][ Extensions::get_section_presets() ] = [
+			'kadence/singlebtn' => [
+				Extensions::get_default_key() => 'brand-preset',
+				'brand-preset'                => [
+					Extensions::get_tokens_key() => [
+						'button-bg' => '{' . $id . '}',
+					],
+				],
+			],
+		];
+
+		$this->store->save_document( wp_json_encode( $doc ) );
+		$version = $this->store->get_version( $slug );
+
+		$result = $this->controller->delete_item( $this->make_delete_request( $slug, $id, $version ) );
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'rest_design_tokens_default_preset_in_use', $result->get_error_code() );
+		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $result->get_error_data()['status'] );
+		$this->assertSame( $version, $this->store->get_version( $slug ) );
+	}
+
 	// -------------------------------------------------------------------------
 	// delete_item — system primitive (baseline) cannot be deleted
 	// -------------------------------------------------------------------------

@@ -11,6 +11,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Document\Mutator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Reserved_Namespace;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Token_Label_Index;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Token_Order_Index;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Token_Reference;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Token_Reference_Policy;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\User_Primitive_Document_Validator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\User_Primitive_Index;
@@ -1666,6 +1667,20 @@ final class Documents_Controller extends Controller {
 			}
 		}
 
+		$dangling = $this->find_dangling_preset_alias( $candidate );
+
+		if ( $dangling !== null ) {
+			return new WP_Error(
+				'rest_design_tokens_unresolvable',
+				__( 'A preset alias does not resolve to a token.', 'kadence-blocks' ),
+				[
+					'status' => WP_Http::UNPROCESSABLE_ENTITY,
+					'slug'   => $slug,
+					'alias'  => $dangling,
+				]
+			);
+		}
+
 		$result = $this->validator->validate( $candidate, Dtcg_Validator::get_context_overrides() );
 
 		if ( ! $result->is_valid() ) {
@@ -2469,6 +2484,42 @@ final class Documents_Controller extends Controller {
 		}
 
 		return false;
+	}
+
+	/**
+	 * The first `$extensions` alias (a direct preset token or a value inside a composite one) in a candidate that points at a custom primitive the document does not define.
+	 *
+	 * Preset token values live under `$extensions`, which the Resolver's dry-run never walks, so a preset alias to
+	 * a missing custom primitive would otherwise be saved and then silently dropped at projection. Only the
+	 * reserved custom namespace is checked: those ids exist solely as user-created primitives, so the document's
+	 * own provenance map is the source of truth for them.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $candidate The full candidate overrides document.
+	 *
+	 * @return string|null The dangling alias, or null when every preset alias to a custom primitive resolves.
+	 */
+	private function find_dangling_preset_alias( array $candidate ): ?string {
+		$encoded = wp_json_encode( $candidate );
+
+		if ( ! is_string( $encoded ) || ! preg_match_all( '/\{([a-z0-9.-]+)\}/', $encoded, $matches ) ) {
+			return null;
+		}
+
+		foreach ( array_unique( $matches[1] ) as $referenced_id ) {
+			if ( ! Reserved_Namespace::is_reserved_id( $referenced_id ) || $this->user_primitive_index->has( $candidate, $referenced_id ) ) {
+				continue;
+			}
+
+			foreach ( $this->reference_policy->find( $candidate, $referenced_id ) as $reference ) {
+				if ( in_array( $reference->kind, [ Token_Reference::get_kind_preset_override(), Token_Reference::get_kind_extension() ], true ) ) {
+					return '{' . $referenced_id . '}';
+				}
+			}
+		}
+
+		return null;
 	}
 
 	/**

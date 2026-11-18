@@ -4,11 +4,14 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Mutator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Reserved_Namespace;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Token_Reference;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Token_Reference_Policy;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\User_Primitive_Index;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Presets;
 use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Contracts\Controller;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Contracts\Baseline_Document;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Extensions;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Layers;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Token_Type;
 use KadenceWP\KadenceBlocks\Utils\Cast;
@@ -144,7 +147,17 @@ final class User_Primitives_Controller extends Controller {
 	private Token_Registry $registry;
 
 	/**
+	 * Reads the baseline-merged block presets for a candidate document.
+	 *
+	 * @since TBD
+	 *
+	 * @var Effective_Presets
+	 */
+	private Effective_Presets $presets;
+
+	/**
 	 * @since 3.8.0
+	 * @since TBD Added the `$presets` parameter.
 	 *
 	 * @param Document_Write_Pipeline $pipeline The shared DTCG write pipeline.
 	 * @param User_Primitive_Index    $index    Reads the userPrimitives provenance map.
@@ -152,6 +165,7 @@ final class User_Primitives_Controller extends Controller {
 	 * @param Mutator                 $mutator  Pure document transforms.
 	 * @param Baseline_Document       $baseline Baseline document.
 	 * @param Token_Registry          $registry Token registry.
+	 * @param Effective_Presets       $presets  Reads the baseline-merged block presets.
 	 */
 	public function __construct(
 		Document_Write_Pipeline $pipeline,
@@ -159,7 +173,8 @@ final class User_Primitives_Controller extends Controller {
 		Token_Reference_Policy $policy,
 		Mutator $mutator,
 		Baseline_Document $baseline,
-		Token_Registry $registry
+		Token_Registry $registry,
+		Effective_Presets $presets
 	) {
 		$this->pipeline  = $pipeline;
 		$this->index     = $index;
@@ -167,6 +182,7 @@ final class User_Primitives_Controller extends Controller {
 		$this->mutator   = $mutator;
 		$this->baseline  = $baseline;
 		$this->registry  = $registry;
+		$this->presets   = $presets;
 		$this->rest_base = 'documents';
 	}
 
@@ -498,6 +514,12 @@ final class User_Primitives_Controller extends Controller {
 			$reverted[] = $ref->path;
 		}
 
+		$error = $this->guard_preset_defaults( $candidate, $references );
+
+		if ( $error instanceof WP_Error ) {
+			return $error;
+		}
+
 		$response = $this->pipeline->validate_and_save( $candidate, $slug, '', $version );
 
 		if ( $response instanceof WP_REST_Response && ! empty( $reverted ) ) {
@@ -821,6 +843,58 @@ final class User_Primitives_Controller extends Controller {
 		}
 
 		return $node;
+	}
+
+	/**
+	 * Reject a delete that would leave a block's `$default` naming a preset the cascade just removed.
+	 *
+	 * Reverting the deleted primitive's preset tokens can empty a custom preset, which is then pruned. When
+	 * that preset was the block's default, the stored document would point at nothing, and the preset
+	 * routes (which guard the default) would reject any later write. Only the blocks the cascade touched are
+	 * checked, so an unrelated, already-dangling default never blocks the delete.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $candidate  The candidate document after the cascade.
+	 * @param Token_Reference[]    $references The references the cascade reverted.
+	 *
+	 * @return WP_Error|null A WP_Error when a touched block's default is dangling, null otherwise.
+	 */
+	private function guard_preset_defaults( array $candidate, array $references ): ?WP_Error {
+		$blocks = [];
+
+		foreach ( $references as $ref ) {
+			if ( $ref->kind === Token_Reference::get_kind_preset_override() && isset( $ref->keys[3] ) ) {
+				$blocks[ $ref->keys[3] ] = true;
+			}
+		}
+
+		if ( $blocks === [] ) {
+			return null;
+		}
+
+		$effective = $this->presets->for_overrides( $candidate );
+
+		foreach ( array_keys( $blocks ) as $block ) {
+			$node    = isset( $effective[ $block ] ) && is_array( $effective[ $block ] ) ? $effective[ $block ] : [];
+			$default = Cast::to_string( $node[ Extensions::get_default_key() ] ?? '' );
+
+			if ( $default === '' || isset( $node[ $default ] ) ) {
+				continue;
+			}
+
+			return new WP_Error(
+				'rest_design_tokens_default_preset_in_use',
+				__( 'This primitive is the only token of the default preset of a block. Choose another default preset before deleting it.', 'kadence-blocks' ),
+				[
+					'status'  => WP_Http::UNPROCESSABLE_ENTITY,
+					'block'   => (string) $block,
+					'default' => $default,
+				]
+			);
+		}
+
+		return null;
 	}
 
 	/**
