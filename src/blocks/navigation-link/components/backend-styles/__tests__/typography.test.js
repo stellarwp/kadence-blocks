@@ -17,6 +17,8 @@ jest.mock('react', () => ({
 	useMemo: (callback) => callback(),
 }));
 
+const uniqueID = 'abc';
+
 const typographyGroups = [
 	'typography',
 	'dropdownTypography',
@@ -43,7 +45,7 @@ const defaults = Object.fromEntries(
  */
 function render(previewDevice, attributes = {}) {
 	const element = BackendStyles({
-		attributes: { ...defaults, uniqueID: 'abc', ...attributes },
+		attributes: { ...defaults, uniqueID, ...attributes },
 		isSelected: false,
 		previewDevice,
 		currentRef: { current: null },
@@ -64,7 +66,15 @@ describe('navigation link BackendStyles typography', () => {
 		const css = render('Mobile', attributes);
 
 		expect(css).not.toContain('{{');
-		[30, 31, 32, 33, 34].forEach((size) => expect(css).toContain(`{font-size:${size}px;}`));
+		const menu = '.wp-block-kadence-navigation .navigation .menu-container';
+		const selectors = [
+			`.kb-nav-link-${uniqueID} > .kb-link-wrap.kb-link-wrap.kb-link-wrap > .kb-nav-link-content`,
+			`.kb-nav-link-${uniqueID} .sub-menu li.menu-item > .kb-link-wrap > .kb-nav-link-content`,
+			`${menu} > ul li.kb-nav-link-${uniqueID} > .kb-link-wrap > a .link-highlight-label`,
+			`${menu} ul .kb-nav-link-${uniqueID} > .kb-link-wrap > a .kb-nav-label-description:not(.specificity)`,
+			`${menu} ul .kb-nav-link-${uniqueID} .sub-menu .kb-link-wrap > a .kb-nav-label-description:not(.specificity)`,
+		];
+		selectors.forEach((selector, index) => expect(css).toContain(`${selector}{font-size:${30 + index}px;}`));
 	});
 
 	it('outputs no typography rule when no typography is set', () => {

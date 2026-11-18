@@ -68,6 +68,18 @@ describe('navigation renderFont', () => {
 		expect(build((css) => renderFont(css, data, 'Desktop'))).toContain('font-family:"Open Sans", sans-serif;');
 	});
 
+	it('keeps an escaped quote inside a quoted font family intact', () => {
+		const data = [{ family: '"Brand\\"; Display", sans-serif', weight: '700' }];
+		const output = build((css) => renderFont(css, data, 'Desktop'));
+		expect(output).toContain('font-family:"Brand\\"; Display", sans-serif;');
+		expect(output).toContain('font-weight:700;');
+	});
+
+	it('outputs a letter spacing of zero', () => {
+		const data = [{ letterSpacing: [0, '', ''], letterType: 'em' }];
+		expect(build((css) => renderFont(css, data, 'Desktop'))).toContain('letter-spacing:0em;');
+	});
+
 	it('keeps a semicolon inside a quoted font family intact', () => {
 		const data = [{ family: '"Brand; Display", sans-serif', weight: '700' }];
 		const output = build((css) => renderFont(css, data, 'Desktop'));

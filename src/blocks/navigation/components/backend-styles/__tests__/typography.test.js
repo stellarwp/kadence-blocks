@@ -18,6 +18,9 @@ jest.mock('react', () => ({
 	useMemo: (callback) => callback(),
 }));
 
+const uniqueID = 'abc';
+const block = `.wp-block-kadence-navigation${uniqueID}`;
+
 const typographyGroups = ['typography', 'dropdownTypography', 'descriptionTypography', 'dropdownDescriptionTypography'];
 
 /**
@@ -32,7 +35,7 @@ const typographyGroups = ['typography', 'dropdownTypography', 'descriptionTypogr
  */
 function render(previewDevice, metaAttributes = {}) {
 	const element = BackendStyles({
-		attributes: { uniqueID: 'abc', id: 1, templateKey: '' },
+		attributes: { uniqueID, id: 1, templateKey: '' },
 		isSelected: false,
 		previewDevice,
 		metaAttributes: { spacing: [], spacingTablet: [], spacingMobile: [], style: 'standard', ...metaAttributes },
@@ -51,7 +54,13 @@ describe('navigation BackendStyles typography', () => {
 		const css = render('Mobile', metaAttributes);
 
 		expect(css).not.toContain('{{');
-		[30, 31, 32, 33].forEach((size) => expect(css).toContain(`{font-size:${size}px;}`));
+		const selectors = [
+			`${block} .menu-container > .menu > .wp-block-kadence-navigation-link > .kb-link-wrap`,
+			`${block} .sub-menu > .menu-item > .kb-link-wrap > .kb-nav-link-content`,
+			`${block} .menu-container > .menu > .wp-block-kadence-navigation-link > .kb-link-wrap .kb-nav-label-description`,
+			`${block} .sub-menu > .menu-item > .kb-link-wrap .kb-nav-label-description`,
+		];
+		selectors.forEach((selector, index) => expect(css).toContain(`${selector}{font-size:${30 + index}px;}`));
 	});
 
 	it('outputs no typography rule when no typography is set', () => {
