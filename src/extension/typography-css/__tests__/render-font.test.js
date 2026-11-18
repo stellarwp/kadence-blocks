@@ -120,8 +120,10 @@ describe('renderFont', () => {
 			return useMemo.mock.calls.length;
 		};
 
-		expect(count([])).toBe(count([{ size: ['10', '', ''], sizeType: 'px', weight: '700' }]));
-		expect(count(undefined)).toBe(count([{}]));
+		const populated = count([{ size: ['10', '', ''], sizeType: 'px', weight: '700' }]);
+
+		expect(populated).toBeGreaterThan(0);
+		[[], undefined, [{}]].forEach((typography) => expect(count(typography)).toBe(populated));
 	});
 
 	it('outputs a letter spacing of zero', () => {
