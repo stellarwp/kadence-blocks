@@ -728,6 +728,7 @@
 							"swatches": [
 								{ "token": "primitive.color.neutral.900", "label": "Strongest", "$value": "#1A202C" },
 								{ "token": "primitive.color.neutral.700", "label": "Strong", "$value": "#2D3748" },
+								{ "token": "primitive.color.neutral.600", "label": "Medium Strong", "$value": "#4A5568" },
 								{ "token": "primitive.color.neutral.500", "label": "Medium", "$value": "#718096" },
 								{ "token": "primitive.color.neutral.300", "label": "Subtle", "$value": "#CBD5E0" },
 								{ "token": "primitive.color.neutral.200", "label": "Border", "$value": "#E2E8F0" }

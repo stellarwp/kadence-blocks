@@ -1,0 +1,4 @@
+significance: patch
+type: fix
+entry: Restored fonts added with Kadence Custom Fonts to the Font Family fields of the Text (Adv) block and the Style Library, which 3.8.0 had dropped.
+timestamp: 2026-11-16T13:01:55.000Z

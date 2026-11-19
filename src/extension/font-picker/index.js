@@ -25,21 +25,12 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
+import { applyFilters } from '@wordpress/hooks';
 
 /**
- * The muted badge a site-registered custom font carries in the catalog list, matching the Style
- * Library's Typography screen.
- *
- * @since 3.8.0
+ * Internal dependencies
  */
-const CUSTOM_BADGE = __('Custom', 'kadence-blocks');
-
-/**
- * The muted badge a favorite carries where it sits pinned above the catalog.
- *
- * @since 3.8.0
- */
-const FAVORITE_BADGE = __('Favorite', 'kadence-blocks');
+import { buildFontCatalogOptions } from '../../token-controls/helpers/font-catalog';
 
 /**
  * The muted badge the Kadence theme's two global font entries carry, so a row whose value is a CSS
@@ -103,6 +94,33 @@ function fontPool() {
 }
 
 /**
+ * The family names registered through the `kadence.typography_options` JS filter.
+ *
+ * @since TBD
+ *
+ * @return {string[]} The family names, in filter order.
+ */
+function filteredCustomNames() {
+	let groups;
+
+	try {
+		groups = applyFilters('kadence.typography_options', []);
+	} catch (error) {
+		return [];
+	}
+
+	if (!Array.isArray(groups)) {
+		return [];
+	}
+
+	return groups
+		.flatMap((group) => (Array.isArray(group?.options) ? group.options : []))
+		.filter((option) => option && option.google !== true && typeof option.value === 'string')
+		.map((option) => option.value.trim())
+		.filter((value) => value !== '' && !value.startsWith('var('));
+}
+
+/**
  * The Google family names the editor already localizes, fail-safe to an empty list.
  *
  * @since 3.8.0
@@ -129,54 +147,22 @@ export function favoriteFonts() {
 }
 
 /**
- * The font-family picker's full option list: the Kadence theme's global font entries first, then
- * favorites, then every Google family, then every site-registered custom family.
- *
- * The theme entries lead for the same reason the shared select put them first — they are the two
- * rows that follow the site's own typography settings, so they are what most blocks want. They are
- * exempt from the dedupe below: their values are `var()` references, not family names, so they
- * cannot collide with one.
- *
- * Every name appears exactly once, matched case-insensitively across all three name sources: a
- * favorite keeps its pinned position rather than repeating mid-list, and a custom font that
- * duplicates a Google one renders once — the same rule the Style Library's Typography dropdown
- * applies, so the two screens list the same names in the same order.
+ * The font-family picker's option list.
  *
  * @since 3.8.0
+ * @since TBD Adds fonts registered through the `kadence.typography_options` filter.
  *
  * @return {Array<{value: string, label: string, badge?: string}>} The option list.
  */
 export function fontCatalogOptions() {
-	// One set across all three sources, not just the favorites. The custom list is diffed against the
-	// Google list server-side by exact string, so a theme registering `inter` alongside Google's
-	// `Inter` reaches here as two names for one font.
-	const seen = new Set();
-	const unique = (name) => {
-		const key = name.toLowerCase();
-
-		if (seen.has(key)) {
-			return false;
-		}
-
-		seen.add(key);
-
-		return true;
-	};
-
-	const favorites = favoriteFonts().filter(unique);
-	const { custom } = fontPool();
-
-	return [
-		...themeFontOptions(),
-		...favorites.map((name) => ({ value: name, label: name, badge: FAVORITE_BADGE })),
-		...googleNames()
-			.filter(unique)
-			.map((name) => ({ value: name, label: name })),
-		...custom
-			.filter((name) => typeof name === 'string' && name.trim() !== '')
-			.filter(unique)
-			.map((name) => ({ value: name, label: name, badge: CUSTOM_BADGE })),
-	];
+	return buildFontCatalogOptions({
+		favorites: favoriteFonts(),
+		google: googleNames(),
+		custom: [...fontPool().custom, ...filteredCustomNames()].filter(
+			(name) => typeof name === 'string' && name.trim() !== ''
+		),
+		theme: themeFontOptions(),
+	});
 }
 
 /**

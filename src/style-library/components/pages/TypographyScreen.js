@@ -36,7 +36,7 @@ import {
 	fontActionFor,
 	fontOptions,
 	fontSizeDisplayValue,
-	getFontCatalog,
+	catalogOptionsForFonts,
 } from '../../helpers/typography';
 import './TypographyScreen.scss';
 
@@ -47,21 +47,6 @@ import './TypographyScreen.scss';
  * @since 3.8.0
  */
 const SAMPLE_TEXT = __('Visualize your font', 'kadence-blocks');
-
-/**
- * The muted badge a catalog custom font carries in the dropdown menu, matching the `SelectDropdown`
- * badge treatment used elsewhere in the app.
- *
- * @since 3.8.0
- */
-const CUSTOM_BADGE = __('Custom', 'kadence-blocks');
-
-/**
- * The muted badge a favorite carries where it sits pinned above the catalog.
- *
- * @since 3.8.0
- */
-const FAVORITE_BADGE = __('Favorite', 'kadence-blocks');
 
 /**
  * The contextual favorite button's labels, keyed by the action it is offering and by whether that
@@ -144,36 +129,6 @@ function samplePreviewRenderer(fontStack) {
 			</span>
 		);
 	};
-}
-
-/**
- * Build the catalog dropdown's option list: the library's favorites first, then every Google family
- * name, then every custom family name — each carrying its catalog family name as `value` (never a
- * token id — see `SearchableSelectDropdown`'s module docblock), favorites tagged with the muted
- * `Favorite` badge and custom names with `Custom`.
- *
- * Pinning favorites to the top IS the feature: it is what replaces the font tabs this screen used
- * to carry, and it matches how the block editor's font picker surfaces the same list. A favorite
- * family is filtered out of the catalog runs below so it appears exactly once, keeping its pinned
- * position rather than showing again mid-list.
- *
- * @param {Array<{label: string}>} fonts The library's favorites (`fontOptions()`).
- *
- * @since 3.8.0
- *
- * @return {Array<{value: string, label: string, badge?: string}>} The dropdown's option list.
- */
-function buildCatalogOptions(fonts) {
-	const { google, custom } = getFontCatalog();
-	const favorites = fonts.map((font) => font.label);
-	const pinned = new Set(favorites.map((name) => name.toLowerCase()));
-	const unpinned = (name) => !pinned.has(name.toLowerCase());
-
-	return [
-		...favorites.map((name) => ({ value: name, label: name, badge: FAVORITE_BADGE })),
-		...google.filter(unpinned).map((name) => ({ value: name, label: name })),
-		...custom.filter(unpinned).map((name) => ({ value: name, label: name, badge: CUSTOM_BADGE })),
-	];
 }
 
 /**
@@ -335,7 +290,7 @@ export function TypographyScreen(props) {
 	const fonts = useMemo(() => fontOptions(library.feed), [library.feed]);
 
 	// Rebuilt whenever the favorites change, since they are pinned to the top of the same list.
-	const catalogOptions = useMemo(() => buildCatalogOptions(fonts), [fonts]);
+	const catalogOptions = useMemo(() => catalogOptionsForFonts(fonts), [fonts]);
 
 	// The previewed family, as a plain catalog name. One piece of state, not a favorite id plus a
 	// pending pick: the sample previews whatever the dropdown holds, favorite or not. Splitting the
