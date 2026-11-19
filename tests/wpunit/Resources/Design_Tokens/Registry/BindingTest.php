@@ -576,7 +576,13 @@ final class BindingTest extends TestCase {
 	 * @return void
 	 */
 	public function testAlwaysEmitIsFalseWhenAbsent(): void {
-		$binding = Binding::from_array( 'padding', [ 'token' => 'semantic.spacing.heading-padding', 'css_prop' => 'padding' ] );
+		$binding = Binding::from_array(
+			'padding',
+			[
+				'token'    => 'semantic.spacing.heading-padding',
+				'css_prop' => 'padding',
+			]
+		);
 
 		$this->assertFalse( $binding->is_always_emitted() );
 	}
