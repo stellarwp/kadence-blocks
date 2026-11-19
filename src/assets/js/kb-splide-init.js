@@ -2,6 +2,7 @@
 
 (function () {
 	'use strict';
+	var commentAreas = '.comment-body, .wp-block-comment-content, .wp-block-latest-comments';
 	var kadenceBlocksSplide = {
 		initAll() {
 			const advancedSliders = document.querySelectorAll(
@@ -89,6 +90,9 @@
 
 			for (let i = 0; i < elementList.length; i++) {
 				const listElement = elementList[i];
+				if (listElement?.closest(commentAreas)) {
+					continue;
+				}
 				let thisSlider;
 				let slideCount;
 				let initElement; // for adding is-initialized class later
@@ -142,6 +146,8 @@
 					slideCount = this.createSplideElements(thisSlider);
 				}
 
+				// Slider options come only from the block's own data attributes.
+				thisSlider.removeAttribute('data-splide');
 				thisSlider.classList.add('kb-splide');
 
 				const parsedData = this.parseDataset(thisSlider.dataset);
@@ -266,6 +272,7 @@
 					if (!navSlider.classList.contains('splide')) {
 						navSlider.classList.add('splide');
 					}
+					navSlider.removeAttribute('data-splide');
 					navSlider.classList.add('kb-splide');
 
 					this.createSplideElements(navSlider);
