@@ -5,6 +5,7 @@ namespace Tests\wpunit\Resources\Design_Tokens\Resolver;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Palettes;
+use KadenceWP\KadenceBlocks\Design_Tokens\Theme_Style_Guide\Style_Guide_Overlay;
 use Tests\Support\Classes\TestCase;
 
 /**
@@ -263,9 +264,42 @@ final class Effective_PalettesTest extends TestCase {
 		$this->assertArrayHasKey( 'primitive.color.brand.button', $baseline );
 		$this->assertArrayHasKey( 'primitive.color.neutral.0', $baseline );
 
-		// Registered and projected into a palette slot, but the shipped palette lists no swatch for it.
-		$this->assertArrayNotHasKey( 'primitive.color.neutral.600', $baseline );
+		// A registered color the shipped palette lists no swatch for.
+		$this->assertArrayNotHasKey( 'semantic.color.button-bg', $baseline );
 		$this->assertArrayNotHasKey( 'primitive.color.custom.abc123', $baseline );
+	}
+
+	/**
+	 * Every token that claims a Kadence theme palette slot has a swatch in the shipped palette, so each theme
+	 * global color can be edited in the Style Library and picked from the block color controls.
+	 *
+	 * @return void
+	 */
+	public function testEveryPaletteSlotTokenHasAShippedSwatch(): void {
+		$baseline = $this->palettes->baseline_swatch_values();
+
+		foreach ( $this->container->get( Style_Guide_Overlay::class )->slot_tokens() as $slot => $token ) {
+			$this->assertArrayHasKey( $token, $baseline, sprintf( 'Theme %s (%s) has no swatch in the shipped palette.', $slot, $token ) );
+		}
+	}
+
+	/**
+	 * The contrast group lists the theme's contrast colors in slot order, palette3 through palette6.
+	 *
+	 * @return void
+	 */
+	public function testTheContrastGroupListsThemeSlotsInOrder(): void {
+		$tokens = $this->swatch_tokens_of_group( 'default', 'contrast' );
+
+		$this->assertSame(
+			[
+				'primitive.color.neutral.900',
+				'primitive.color.neutral.700',
+				'primitive.color.neutral.600',
+				'primitive.color.neutral.500',
+			],
+			array_slice( $tokens, 0, 4 )
+		);
 	}
 
 	/**
