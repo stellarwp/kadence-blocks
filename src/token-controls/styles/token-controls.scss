@@ -300,8 +300,7 @@
 		margin-bottom: 0;
 	}
 
-	// The unit of a breakpoint that cannot change it: the stored unit in a disabled select. The wrapper
-	// takes focus and hover, which a disabled control does not, so the tooltip can show.
+	// The disabled unit select of a pinned breakpoint, wrapped so it takes focus and hover.
 	.kadence-token-field__unit--pinned {
 		cursor: not-allowed;
 
@@ -316,7 +315,7 @@
 		}
 	}
 
-	// States that the unit is shared by every device.
+	// The note under the controls that says the unit is shared by every device.
 	.kadence-token-field__unit-note {
 		flex: 0 0 100%;
 		margin: 8px 0 0;

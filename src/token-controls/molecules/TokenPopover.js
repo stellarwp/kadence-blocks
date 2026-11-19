@@ -140,17 +140,14 @@ function StyleLibraryTab({
 }
 
 /**
- * Explains why a breakpoint cannot change the unit.
+ * Gets the text shown as the tooltip and the note when a breakpoint cannot change the unit.
  *
  * @since TBD
  *
- * @return {string} The explanation, shown as a tooltip on the disabled unit and as the note under it.
+ * @return {string} The text.
  */
 function pinnedUnitMessage() {
-	return __(
-		'The unit is set on Desktop and applies to every device. Switch to Desktop to change it.',
-		'kadence-blocks'
-	);
+	return __('To change the unit for all devices, switch to Desktop.', 'kadence-blocks');
 }
 
 /**
@@ -163,7 +160,7 @@ function pinnedUnitMessage() {
  * @param {Array}    [props.units]   Selectable units; the switcher needs these and `onUnit`.
  * @param {Function} [props.onUnit]  Writes the control's unit.
  * @param {boolean}  [props.unitShared] Whether the unit applies to every breakpoint, which adds a note.
- * @param {boolean}  [props.unitPinned] Whether this breakpoint cannot change the unit, so it shows read-only.
+ * @param {boolean}  [props.unitPinned] Whether the unit is pinned on this breakpoint, which disables the select.
  * @param {number}   [props.min]     Slider and number minimum.
  * @param {number}   [props.max]     Slider and number maximum; the slider renders when present.
  * @param {number}   [props.step]    Slider and number step.
@@ -237,7 +234,7 @@ export function CustomTab({
 			)}
 			{unitShared && (
 				<p className="kadence-token-field__unit-note">
-					{unitPinned ? pinnedUnitMessage() : __('The unit applies to every device.', 'kadence-blocks')}
+					{unitPinned ? pinnedUnitMessage() : __('Unit selection applies to all devices.', 'kadence-blocks')}
 				</p>
 			)}
 		</div>

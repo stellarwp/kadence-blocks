@@ -96,7 +96,7 @@ describe('CustomTab unit', () => {
 		renderTab({ unitShared: true });
 
 		expect(container.querySelector('.kadence-token-field__unit-note').textContent).toBe(
-			'The unit applies to every device.'
+			'Unit selection applies to all devices.'
 		);
 		expect(container.querySelector('.kadence-token-field__unit--pinned')).toBeNull();
 	});
@@ -110,7 +110,7 @@ describe('CustomTab unit', () => {
 		renderTab({ unitShared: true, unitPinned: true, units: ['rem'] });
 
 		const pinned = container.querySelector('.kadence-token-field__unit--pinned select');
-		const message = 'The unit is set on Desktop and applies to every device. Switch to Desktop to change it.';
+		const message = 'To change the unit for all devices, switch to Desktop.';
 
 		expect(pinned.disabled).toBe(true);
 		expect(pinned.value).toBe('rem');

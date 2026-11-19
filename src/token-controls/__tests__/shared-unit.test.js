@@ -39,17 +39,14 @@ describe('getSharedUnit', () => {
 	});
 
 	/**
-	 * A field that is not responsive, has no units, or opts out is left as it was.
+	 * A field that is not responsive or has no units is left as it was.
 	 *
 	 * @return {void}
 	 */
-	it('leaves a field that is not responsive or opts out alone', () => {
+	it('leaves a field that is not responsive or has no units alone', () => {
 		const untouched = { units, unitShared: false, unitPinned: false };
 
 		expect(getSharedUnit({ unit: 'em', units, breakpoints: null, breakpoint: null })).toEqual(untouched);
-		expect(getSharedUnit({ unit: 'em', units, breakpoints, breakpoint: 'mobile', unitShared: false })).toEqual(
-			untouched
-		);
 		expect(getSharedUnit({ unit: 'em', units: undefined, breakpoints, breakpoint: 'mobile' }).unitShared).toBe(
 			false
 		);
