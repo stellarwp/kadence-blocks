@@ -5,6 +5,7 @@ namespace Tests\wpunit\Resources\Design_Tokens\Rest\V1;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Projected_Css_Controller;
+use KadenceWP\KadenceBlocks\Utils\Cast;
 use Tests\Support\Classes\TestCase;
 use WP_Error;
 use WP_Http;
@@ -81,8 +82,9 @@ final class Projected_Css_ControllerTest extends TestCase {
 	}
 
 	/**
-	 * The aggregated CSS carries the EDITOR-scoped block-default rule for Advanced Heading — the shipped
-	 * declaration's `editor_selector` re-targets the rule at the block's real heading element, scoped under
+	 * The aggregated CSS carries the EDITOR-scoped block-default rule for Advanced Heading, once the library
+	 * overrides one of its defaults — the shipped declaration's `editor_selector` re-targets the rule at the
+	 * block's real heading element, scoped under
 	 * `.editor-styles-wrapper` — not the bare front-end rule on the `useBlockProps()` wrapper div. Proves the
 	 * live re-injection path (this endpoint) matches the selector the editor's own page-load enqueue used,
 	 * rather than the front-end build.
@@ -90,6 +92,29 @@ final class Projected_Css_ControllerTest extends TestCase {
 	 * @return void
 	 */
 	public function testItServesTheEditorScopedBlockDefaultRuleForAdvancedHeadingNotTheFrontEndOne(): void {
+		$this->store->save_document(
+			Cast::to_string(
+				wp_json_encode(
+					[
+						'$extensions' => [
+							'com.kadence.designTokens' => [
+								'presets' => [
+									'kadence/advancedheading' => [
+										'$default' => 'default',
+										'default'  => [
+											'label'  => 'Default',
+											'tokens' => [ 'padding' => [ '$value' => '20px' ] ],
+										],
+									],
+								],
+							],
+						],
+					]
+				)
+			),
+			Token_Store::default_slug()
+		);
+
 		$css = $this->css();
 
 		$this->assertStringContainsString(
@@ -101,9 +126,9 @@ final class Projected_Css_ControllerTest extends TestCase {
 		// legitimately appears in this aggregate, emitted by the selectable-preset projector's class-less
 		// `$default` rule, which sets the block's `--kb-heading-*` custom properties on the wrapper. That rule
 		// is a variable definition and paints nothing; the front-end BLOCK-DEFAULT rule is the one that would
-		// wrongly style the wrapper, and it opens with the first bound property, `color`.
+		// wrongly style the wrapper, and it opens with the overridden property, `padding`.
 		$this->assertStringNotContainsString(
-			'.wp-block-kadence-advancedheading{color:',
+			'.wp-block-kadence-advancedheading{padding:',
 			$css,
 			'The bare front-end Advanced Heading block-default rule (on the wrapper div) should not be present.'
 		);

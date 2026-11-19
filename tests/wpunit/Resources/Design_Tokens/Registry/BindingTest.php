@@ -547,4 +547,55 @@ final class BindingTest extends TestCase {
 			]
 		);
 	}
+
+	/**
+	 * A binding parses the always-emit flag into its own field, exposed via is_always_emitted(), separate from
+	 * the projection targets.
+	 *
+	 * @return void
+	 */
+	public function testItParsesTheAlwaysEmitFlag(): void {
+		$binding = Binding::from_array(
+			'size',
+			[
+				'token'       => 'semantic.icon-size.icon',
+				'css_prop'    => 'font-size',
+				'always_emit' => true,
+			]
+		);
+
+		$this->assertTrue( $binding->is_always_emitted() );
+		// Not a projection target: it must not leak into the projections effective_projections() merges.
+		$this->assertArrayNotHasKey( 'always_emit', $binding->projections );
+	}
+
+	/**
+	 * A binding that declares no always-emit flag is not always emitted, the ordinary case where an untouched
+	 * default stays out of the block-default CSS.
+	 *
+	 * @return void
+	 */
+	public function testAlwaysEmitIsFalseWhenAbsent(): void {
+		$binding = Binding::from_array( 'padding', [ 'token' => 'semantic.spacing.heading-padding', 'css_prop' => 'padding' ] );
+
+		$this->assertFalse( $binding->is_always_emitted() );
+	}
+
+	/**
+	 * A non-boolean always-emit flag is rejected, so a typo such as the string "true" fails loudly at
+	 * registration instead of silently reading as set.
+	 *
+	 * @return void
+	 */
+	public function testItRejectsANonBooleanAlwaysEmitFlag(): void {
+		$this->expectException( InvalidArgumentException::class );
+
+		Binding::from_array(
+			'size',
+			[
+				'token'       => 'semantic.icon-size.icon',
+				'always_emit' => 'true',
+			]
+		);
+	}
 }
