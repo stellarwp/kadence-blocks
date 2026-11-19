@@ -123,11 +123,11 @@ describe('FontFamilyField', () => {
 	 *
 	 * @return {void}
 	 */
-	it('pins the library favorites above the full catalog', () => {
+	it('lists custom fonts, then the library favorites, above the rest of the catalog', () => {
 		renderField('', jest.fn());
 
 		expect(latestSelectorProps.favorites).toEqual(['Inter']);
-		expect(latestSelectorProps.catalogOptions.map((option) => option.value)).toEqual(['Inter', 'Abel', 'My Font']);
+		expect(latestSelectorProps.catalogOptions.map((option) => option.value)).toEqual(['My Font', 'Inter', 'Abel']);
 	});
 
 	/**

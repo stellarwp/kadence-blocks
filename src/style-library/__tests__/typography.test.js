@@ -136,18 +136,17 @@ describe('fontCatalogOptions', () => {
 	});
 
 	/**
-	 * Favorites lead and carry a badge, so the faces a site has kept sit at the top of a list otherwise
-	 * nearly two thousand names long; Google follows, then site-registered custom families.
+	 * Lists custom families first, then favorites, then Google.
 	 *
 	 * @return {void}
 	 */
-	it('lists favorites first, then google, then custom', () => {
+	it('lists custom first, then favorites, then google', () => {
 		window.kadenceDesignTokensFontCatalog = { google: ['Abel', 'Inter'], custom: ['My Font'], weights: {} };
 
 		expect(fontCatalogOptions({ favoriteFonts: ['Inter'] })).toEqual([
+			{ value: 'My Font', label: 'My Font', badge: 'Custom' },
 			{ value: 'Inter', label: 'Inter', badge: 'Favorite' },
 			{ value: 'Abel', label: 'Abel' },
-			{ value: 'My Font', label: 'My Font', badge: 'Custom' },
 		]);
 	});
 
