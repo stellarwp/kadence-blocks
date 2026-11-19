@@ -24,6 +24,8 @@ final class Palettes_ControllerTest extends TestCase {
 	/**
 	 * A user-added color registered for each test, with no swatch in the shipped palette.
 	 *
+	 * @since TBD
+	 *
 	 * @var string
 	 */
 	private const USER_COLOR = 'primitive.color.custom.user-color';
