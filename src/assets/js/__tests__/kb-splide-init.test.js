@@ -12,7 +12,7 @@ const OPTIONS = 'data-splide="{&quot;perPage&quot;:9}"';
  *
  * @param {string} html The page markup.
  *
- * @since TBD
+ * @since 3.9.1.2
  *
  * @return {jest.Mock} The Splide constructor mock.
  */
@@ -35,7 +35,7 @@ function initCarousels(html) {
  *
  * @param {string} attributes Extra attributes for the carousel root.
  *
- * @since TBD
+ * @since 3.9.1.2
  *
  * @return {string} The carousel markup.
  */

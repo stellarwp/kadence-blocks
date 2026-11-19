@@ -196,10 +196,10 @@ class Kadence_Blocks_Listitem_Block extends Kadence_Blocks_Abstract_Block {
 	 *
 	 * @since 3.9.1.2 Sanitized the icon name and stroke width inherited from the parent list before inserting them.
 	 *
-	 * @param $attributes
-	 * @param $unique_id
-	 * @param $content
-	 * @param WP_Block $block_instance The instance of the WP_Block class that represents the block being rendered.
+	 * @param array<string, mixed> $attributes The block attributes.
+	 * @param string               $unique_id  The unique block ID.
+	 * @param string               $content    The rendered block content.
+	 * @param WP_Block             $block_instance The instance of the WP_Block class that represents the block being rendered.
 	 *
 	 * @return mixed
 	 */
