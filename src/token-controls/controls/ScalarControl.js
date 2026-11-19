@@ -21,6 +21,7 @@
  */
 import { ControlShell } from '../templates/ControlShell';
 import { TokenSelector } from '../organisms/TokenSelector';
+import { getSharedUnit } from '../helpers/shared-unit';
 
 /**
  * Render a scalar token control.
@@ -36,6 +37,8 @@ import { TokenSelector } from '../organisms/TokenSelector';
  *                                                  attribute stores a bare number in one fixed unit
  *                                                  wants.
  * @param {?Function}    [props.onUnit]             Writes the unit.
+ * @param {boolean}      [props.unitShared]         Whether one unit serves every breakpoint, so only the first
+ *                                                  one can change it. On by default for a responsive field.
  * @param {*}            [props.defaultValue]       What the value falls back to when unset.
  * @param {boolean}      [props.inherited]          Whether that default came from another breakpoint.
  * @param {?*}           [props.icon]               A glyph shown beside the field.
@@ -65,6 +68,7 @@ export function ScalarControl({
 	unit = '',
 	units,
 	onUnit,
+	unitShared = true,
 	defaultValue,
 	inherited = false,
 	icon = null,
@@ -81,6 +85,8 @@ export function ScalarControl({
 	max,
 	step,
 }) {
+	const sharedUnit = getSharedUnit({ unit, units, breakpoints, breakpoint, unitShared });
+
 	return (
 		<ControlShell
 			label={label}
@@ -97,8 +103,10 @@ export function ScalarControl({
 			<TokenSelector
 				value={value}
 				unit={unit}
-				units={units}
+				units={sharedUnit.units}
 				onUnit={onUnit}
+				unitShared={sharedUnit.unitShared}
+				unitPinned={sharedUnit.unitPinned}
 				defaultValue={defaultValue}
 				inherited={inherited}
 				icon={icon}

@@ -17,6 +17,7 @@ import {
 	RangeControl,
 	SelectControl,
 	TabPanel,
+	Tooltip,
 	__experimentalNumberControl as NumberControl,
 } from '@wordpress/components';
 import { globe, settings, undo } from '@wordpress/icons';
@@ -139,6 +140,20 @@ function StyleLibraryTab({
 }
 
 /**
+ * Explains why a breakpoint cannot change the unit.
+ *
+ * @since TBD
+ *
+ * @return {string} The explanation, shown as a tooltip on the disabled unit and as the note under it.
+ */
+function pinnedUnitMessage() {
+	return __(
+		'The unit is set on Desktop and applies to every device. Switch to Desktop to change it.',
+		'kadence-blocks'
+	);
+}
+
+/**
  * The `Custom` tab body: a literal number, an optional unit switcher, and a slider when the field
  * declares an upper bound.
  *
@@ -147,6 +162,8 @@ function StyleLibraryTab({
  * @param {string}   [props.unit]    The control's current unit.
  * @param {Array}    [props.units]   Selectable units; the switcher needs these and `onUnit`.
  * @param {Function} [props.onUnit]  Writes the control's unit.
+ * @param {boolean}  [props.unitShared] Whether the unit applies to every breakpoint, which adds a note.
+ * @param {boolean}  [props.unitPinned] Whether this breakpoint cannot change the unit, so it shows read-only.
  * @param {number}   [props.min]     Slider and number minimum.
  * @param {number}   [props.max]     Slider and number maximum; the slider renders when present.
  * @param {number}   [props.step]    Slider and number step.
@@ -156,7 +173,18 @@ function StyleLibraryTab({
  *
  * @return {Object} The rendered tab body.
  */
-export function CustomTab({ number, unit, units, onUnit, min, max, step, onNumber }) {
+export function CustomTab({
+	number,
+	unit,
+	units,
+	onUnit,
+	unitShared = false,
+	unitPinned = false,
+	min,
+	max,
+	step,
+	onNumber,
+}) {
 	return (
 		<div className="kadence-token-field__custom">
 			<NumberControl
@@ -169,7 +197,7 @@ export function CustomTab({ number, unit, units, onUnit, min, max, step, onNumbe
 				step={step}
 				onChange={onNumber}
 			/>
-			{units && units.length > 0 && onUnit && (
+			{units && units.length > 0 && onUnit && !unitPinned && (
 				<SelectControl
 					className="kadence-token-field__unit"
 					label={__('Unit', 'kadence-blocks')}
@@ -178,6 +206,20 @@ export function CustomTab({ number, unit, units, onUnit, min, max, step, onNumbe
 					options={units.map((option) => ({ label: option, value: option }))}
 					onChange={onUnit}
 				/>
+			)}
+			{unitPinned && (
+				<Tooltip text={pinnedUnitMessage()} className="kadence-token-field__unit-tooltip">
+					<span className="kadence-token-field__unit kadence-token-field__unit--pinned" tabIndex={0}>
+						<SelectControl
+							label={__('Unit', 'kadence-blocks')}
+							hideLabelFromVision
+							value={unit}
+							options={[{ label: unit, value: unit }]}
+							disabled
+							onChange={() => {}}
+						/>
+					</span>
+				</Tooltip>
 			)}
 			{typeof max === 'number' && (
 				<RangeControl
@@ -192,6 +234,11 @@ export function CustomTab({ number, unit, units, onUnit, min, max, step, onNumbe
 					withInputField={false}
 					onChange={(next) => onNumber(next)}
 				/>
+			)}
+			{unitShared && (
+				<p className="kadence-token-field__unit-note">
+					{unitPinned ? pinnedUnitMessage() : __('The unit applies to every device.', 'kadence-blocks')}
+				</p>
 			)}
 		</div>
 	);

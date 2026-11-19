@@ -105,6 +105,7 @@ import { EditorColorControlGroup } from '../../extension/design-tokens/component
 import { presetFontVariant } from './preset-font-variant';
 import { isFseMode } from '../../site-styles/supported-blocks';
 import { isConvertedHeading } from './converted-headings';
+import { getUnitsForDevice } from '../../token-controls/helpers/shared-unit';
 import { useIsSiteStylesPanel } from '../../site-styles/use-is-site-styles-panel';
 import metadata from './block.json';
 /**
@@ -2062,7 +2063,11 @@ function KadenceAdvancedHeading(props) {
 												onUnit={(value) => {
 													setAttributes({ sizeType: value });
 												}}
-												units={['px', 'em', 'rem', 'vw']}
+												units={getUnitsForDevice(
+													['px', 'em', 'rem', 'vw'],
+													sizeType ? sizeType : 'px',
+													previewDevice
+												)}
 											/>
 										)}
 										<div className="kb-advanced-heading-font-settings">
@@ -2104,7 +2109,11 @@ function KadenceAdvancedHeading(props) {
 													step={fontHeightType === 'px' ? 1 : 0.1}
 													unit={fontHeightType ? fontHeightType : ''}
 													onUnit={(value) => setAttributes({ fontHeightType: value })}
-													units={['-', 'px', 'em', 'rem']}
+													units={getUnitsForDevice(
+														['-', 'px', 'em', 'rem'],
+														fontHeightType ? fontHeightType : '-',
+														previewDevice
+													)}
 													compressedDevice={true}
 												/>
 												<KadenceRadioButtons

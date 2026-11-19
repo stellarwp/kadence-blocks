@@ -1,0 +1,4 @@
+significance: patch
+type: tweak
+entry: Changed the font size, padding and border radius unit controls to show the unit as disabled on tablet and mobile, with a note that it is set on desktop and applies to every device, so changing it there no longer looks like a per device choice.
+timestamp: 2026-11-19T00:00:00.000Z

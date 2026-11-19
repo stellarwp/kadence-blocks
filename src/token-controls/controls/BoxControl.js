@@ -26,6 +26,7 @@ import { ControlShell } from '../templates/ControlShell';
 import { SlotGrid } from '../templates/SlotGrid';
 import { TokenSelector } from '../organisms/TokenSelector';
 import { isSlotList, readSlot, toShorthand, toSlotList } from '../helpers/value-shapes';
+import { getSharedUnit } from '../helpers/shared-unit';
 
 /**
  * Render a box-shaped token control.
@@ -38,6 +39,8 @@ import { isSlotList, readSlot, toShorthand, toSlotList } from '../helpers/value-
  * @param {string}    [props.unit]               The unit shared by every slot.
  * @param {Array}     [props.units]              Selectable units for the Custom tab.
  * @param {?Function} [props.onUnit]             Writes the shared unit.
+ * @param {boolean}   [props.unitShared]         Whether one unit serves every breakpoint, so only the first
+ *                                               one can change it. On by default for a responsive field.
  * @param {*}         [props.defaultValue]       What each slot falls back to when unset. Takes the
  *                                               same shapes as `value` — a scalar answers for every
  *                                               slot, a slot list answers per corner.
@@ -74,6 +77,7 @@ export function BoxControl({
 	unit = '',
 	units,
 	onUnit,
+	unitShared = true,
 	defaultValue,
 	inherited = false,
 	slotIcons = null,
@@ -94,6 +98,7 @@ export function BoxControl({
 	max,
 	step,
 }) {
+	const sharedUnit = getSharedUnit({ unit, units, breakpoints, breakpoint, unitShared });
 	const controlled = typeof onToggleLink === 'function';
 	const linked = controlled ? Boolean(isLinked) : !isSlotList(value);
 	const collapseSlots = collapse ?? !controlled;
@@ -129,8 +134,10 @@ export function BoxControl({
 						key={index ?? 'linked'}
 						value={slot}
 						unit={unit}
-						units={units}
+						units={sharedUnit.units}
 						onUnit={onUnit}
+						unitShared={sharedUnit.unitShared}
+						unitPinned={sharedUnit.unitPinned}
 						// The linked field stands for every side at once, so it states the whole default as CSS
 						// shorthand rather than just the first side's share of it. An unlinked slot takes its own.
 						defaultValue={index === null ? toShorthand(defaultValue) : readSlot(defaultValue, index)}
