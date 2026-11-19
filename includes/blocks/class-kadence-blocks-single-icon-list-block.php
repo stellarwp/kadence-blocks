@@ -194,7 +194,7 @@ class Kadence_Blocks_Listitem_Block extends Kadence_Blocks_Abstract_Block {
 	/**
 	 * Return dynamically generated HTML for block
 	 *
-	 * @since TBD Sanitized the icon name and stroke width inherited from the parent list before inserting them.
+	 * @since 3.9.1.2 Sanitized the icon name and stroke width inherited from the parent list before inserting them.
 	 *
 	 * @param $attributes
 	 * @param $unique_id
@@ -240,7 +240,7 @@ class Kadence_Blocks_Listitem_Block extends Kadence_Blocks_Abstract_Block {
 	/**
 	 * Restricts an icon name inherited from the parent list to characters valid in an icon name.
 	 *
-	 * @since TBD
+	 * @since 3.9.1.2
 	 *
 	 * @param mixed $icon The icon name from the parent block context.
 	 *
@@ -253,7 +253,7 @@ class Kadence_Blocks_Listitem_Block extends Kadence_Blocks_Abstract_Block {
 	/**
 	 * Restricts an icon stroke width inherited from the parent list to a plain number.
 	 *
-	 * @since TBD
+	 * @since 3.9.1.2
 	 *
 	 * @param mixed $width The stroke width from the parent block context.
 	 *
