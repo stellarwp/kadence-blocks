@@ -39,6 +39,7 @@ import { getSharedUnit } from '../helpers/shared-unit';
  * @param {string}    [props.unit]               The unit shared by every slot.
  * @param {Array}     [props.units]              Selectable units for the Custom tab.
  * @param {?Function} [props.onUnit]             Writes the shared unit.
+ * @param {boolean}   [props.unitShared]         Whether one unit serves every breakpoint, so only the first can change it.
  * @param {*}         [props.defaultValue]       What each slot falls back to when unset. Takes the
  *                                               same shapes as `value` — a scalar answers for every
  *                                               slot, a slot list answers per corner.
@@ -75,6 +76,7 @@ export function BoxControl({
 	unit = '',
 	units,
 	onUnit,
+	unitShared = false,
 	defaultValue,
 	inherited = false,
 	slotIcons = null,
@@ -95,7 +97,7 @@ export function BoxControl({
 	max,
 	step,
 }) {
-	const sharedUnit = getSharedUnit({ unit, units, breakpoints, breakpoint });
+	const sharedUnit = getSharedUnit({ unit, units, breakpoints, breakpoint, unitShared });
 	const controlled = typeof onToggleLink === 'function';
 	const linked = controlled ? Boolean(isLinked) : !isSlotList(value);
 	const collapseSlots = collapse ?? !controlled;

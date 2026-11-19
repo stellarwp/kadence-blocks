@@ -17,7 +17,7 @@ describe('getSharedUnit', () => {
 	 * @return {void}
 	 */
 	it('keeps every unit selectable on the first breakpoint', () => {
-		expect(getSharedUnit({ unit: 'em', units, breakpoints, breakpoint: 'desktop' })).toEqual({
+		expect(getSharedUnit({ unit: 'em', units, breakpoints, breakpoint: 'desktop', unitShared: true })).toEqual({
 			units,
 			unitShared: true,
 			unitPinned: false,
@@ -30,12 +30,14 @@ describe('getSharedUnit', () => {
 	 * @return {void}
 	 */
 	it('pins the unit on the other breakpoints', () => {
-		expect(getSharedUnit({ unit: 'em', units, breakpoints, breakpoint: 'tablet' })).toEqual({
+		expect(getSharedUnit({ unit: 'em', units, breakpoints, breakpoint: 'tablet', unitShared: true })).toEqual({
 			units: ['em'],
 			unitShared: true,
 			unitPinned: true,
 		});
-		expect(getSharedUnit({ unit: 'em', units, breakpoints, breakpoint: 'mobile' }).units).toEqual(['em']);
+		expect(getSharedUnit({ unit: 'em', units, breakpoints, breakpoint: 'mobile', unitShared: true }).units).toEqual(
+			['em']
+		);
 	});
 
 	/**
@@ -46,10 +48,26 @@ describe('getSharedUnit', () => {
 	it('leaves a field that is not responsive or has no units alone', () => {
 		const untouched = { units, unitShared: false, unitPinned: false };
 
-		expect(getSharedUnit({ unit: 'em', units, breakpoints: null, breakpoint: null })).toEqual(untouched);
-		expect(getSharedUnit({ unit: 'em', units: undefined, breakpoints, breakpoint: 'mobile' }).unitShared).toBe(
-			false
+		expect(getSharedUnit({ unit: 'em', units, breakpoints: null, breakpoint: null, unitShared: true })).toEqual(
+			untouched
 		);
+		expect(
+			getSharedUnit({ unit: 'em', units: undefined, breakpoints, breakpoint: 'mobile', unitShared: true })
+				.unitShared
+		).toBe(false);
+	});
+
+	/**
+	 * A field that stores a unit per breakpoint does not opt in, so every breakpoint keeps every unit.
+	 *
+	 * @return {void}
+	 */
+	it('leaves a field that stores a unit per breakpoint alone', () => {
+		expect(getSharedUnit({ unit: 'em', units, breakpoints, breakpoint: 'mobile' })).toEqual({
+			units,
+			unitShared: false,
+			unitPinned: false,
+		});
 	});
 
 	/**
@@ -58,7 +76,9 @@ describe('getSharedUnit', () => {
 	 * @return {void}
 	 */
 	it('does not pin a breakpoint when no unit is stored', () => {
-		expect(getSharedUnit({ unit: '', units, breakpoints, breakpoint: 'mobile' }).units).toEqual(units);
+		expect(getSharedUnit({ unit: '', units, breakpoints, breakpoint: 'mobile', unitShared: true }).units).toEqual(
+			units
+		);
 	});
 });
 

@@ -37,6 +37,7 @@ import { getSharedUnit } from '../helpers/shared-unit';
  *                                                  attribute stores a bare number in one fixed unit
  *                                                  wants.
  * @param {?Function}    [props.onUnit]             Writes the unit.
+ * @param {boolean}      [props.unitShared]         Whether one unit serves every breakpoint, so only the first can change it.
  * @param {*}            [props.defaultValue]       What the value falls back to when unset.
  * @param {boolean}      [props.inherited]          Whether that default came from another breakpoint.
  * @param {?*}           [props.icon]               A glyph shown beside the field.
@@ -66,6 +67,7 @@ export function ScalarControl({
 	unit = '',
 	units,
 	onUnit,
+	unitShared = false,
 	defaultValue,
 	inherited = false,
 	icon = null,
@@ -82,7 +84,7 @@ export function ScalarControl({
 	max,
 	step,
 }) {
-	const sharedUnit = getSharedUnit({ unit, units, breakpoints, breakpoint });
+	const sharedUnit = getSharedUnit({ unit, units, breakpoints, breakpoint, unitShared });
 
 	return (
 		<ControlShell
