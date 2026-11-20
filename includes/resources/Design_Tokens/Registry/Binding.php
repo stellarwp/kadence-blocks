@@ -240,6 +240,22 @@ final class Binding {
 	private const AXIS = 'axis';
 
 	/**
+	 * Declaration key marking a `css_prop` binding whose `$default` declaration must be emitted even when the
+	 * library never overrode it.
+	 *
+	 * By default the block-default-CSS projector declares a property only when the library overrides it, so an
+	 * untouched site leaves a theme's or a utility class's own rules in charge. A binding opts out of that when
+	 * the block has nothing of its own to fall back on: the Single Icon's size is blanked on a fresh block, so
+	 * the default declaration is the only thing sizing it. Editor-only like CONTROL_ATTR: never a projection
+	 * target.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const ALWAYS_EMIT = 'always_emit';
+
+	/**
 	 * The inline string targets and their validation: each, when present, must be a non-empty string.
 	 *
 	 * @since 3.8.0
@@ -308,7 +324,18 @@ final class Binding {
 	public ?string $axis;
 
 	/**
+	 * Whether the block-default-CSS projector emits this binding's `$default` declaration even when the library
+	 * never overrode it. See {@see self::ALWAYS_EMIT}.
+	 *
+	 * @since TBD
+	 *
+	 * @var bool
+	 */
+	public bool $always_emit;
+
+	/**
 	 * @since 3.8.0
+	 * @since TBD Added the `$always_emit` parameter.
 	 *
 	 * @param string                $property     The block property this binding drives.
 	 * @param string|null           $token        Referenced token id, or null when inline.
@@ -316,14 +343,16 @@ final class Binding {
 	 * @param string|null           $control_attr     The editor control attribute, or null when none declared.
 	 * @param array<string, string> $responsive_attrs Breakpoint => attribute, empty when none declared.
 	 * @param string|null           $axis             The composite-control axis, or null when none declared.
+	 * @param bool                  $always_emit      Whether the untouched `$default` declaration is still emitted.
 	 */
-	private function __construct( string $property, ?string $token, array $projections, ?string $control_attr, array $responsive_attrs = [], ?string $axis = null ) {
+	private function __construct( string $property, ?string $token, array $projections, ?string $control_attr, array $responsive_attrs = [], ?string $axis = null, bool $always_emit = false ) {
 		$this->property         = $property;
 		$this->token            = $token;
 		$this->projections      = $projections;
 		$this->control_attr     = $control_attr;
 		$this->responsive_attrs = $responsive_attrs;
 		$this->axis             = $axis;
+		$this->always_emit      = $always_emit;
 	}
 
 	/**
@@ -368,7 +397,8 @@ final class Binding {
 			$inline,
 			self::control_attr_of( $property, $spec ),
 			self::responsive_attrs_of( $property, $spec ),
-			self::axis_of( $property, $spec )
+			self::axis_of( $property, $spec ),
+			self::always_emit_of( $property, $spec )
 		);
 	}
 
@@ -602,6 +632,18 @@ final class Binding {
 	}
 
 	/**
+	 * Whether this binding's `$default` declaration is emitted even when the library never overrode it, for
+	 * the block whose own markup has nothing to fall back on (see {@see self::ALWAYS_EMIT}).
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function is_always_emitted(): bool {
+		return $this->always_emit;
+	}
+
+	/**
 	 * Extract and validate the inline projection targets from a binding declaration.
 	 *
 	 * @since 3.8.0
@@ -740,6 +782,34 @@ final class Binding {
 		if ( ! is_string( $value ) || $value === '' ) {
 			throw new InvalidArgumentException(
 				sprintf( 'Binding "%s" target "%s" must be a non-empty string.', $property, self::AXIS )
+			);
+		}
+
+		return $value;
+	}
+
+	/**
+	 * Read and validate the optional always-emit flag, which must be a boolean when present.
+	 *
+	 * @since TBD
+	 *
+	 * @param string               $property The block property (for the error message).
+	 * @param array<string, mixed> $spec     The binding declaration.
+	 *
+	 * @throws InvalidArgumentException When the declared flag is not a boolean.
+	 *
+	 * @return bool The flag, false when the binding declares none.
+	 */
+	private static function always_emit_of( string $property, array $spec ): bool {
+		if ( ! array_key_exists( self::ALWAYS_EMIT, $spec ) ) {
+			return false;
+		}
+
+		$value = $spec[ self::ALWAYS_EMIT ];
+
+		if ( ! is_bool( $value ) ) {
+			throw new InvalidArgumentException(
+				sprintf( 'Binding "%s" target "%s" must be a boolean.', $property, self::ALWAYS_EMIT )
 			);
 		}
 
