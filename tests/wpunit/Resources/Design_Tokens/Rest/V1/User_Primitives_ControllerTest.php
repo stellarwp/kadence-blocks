@@ -280,10 +280,42 @@ final class User_Primitives_ControllerTest extends TestCase {
 	}
 
 	// -------------------------------------------------------------------------
-	// get_references — extension section reference (unsupported)
+	// get_references — extension section reference
 	// -------------------------------------------------------------------------
 
 	/**
+	 * A direct alias held by a block preset token is deletable and previews as a revert.
+	 *
+	 * @return void
+	 */
+	public function testPresetTokenReferenceIsSupportedAndDeletable(): void {
+		$slug = Token_Store::default_slug();
+		$id   = 'primitive.color.custom.preset-color';
+		$doc  = $this->doc_with_primitive( $id, 'Preset Color' );
+
+		$doc[ Extensions::get_extensions_key() ][ Extensions::get_namespace() ][ Extensions::get_section_presets() ] = [
+			'kadence/singlebtn' => [
+				'default' => [
+					Extensions::get_tokens_key() => [
+						'button-bg' => '{' . $id . '}',
+					],
+				],
+			],
+		];
+
+		$this->store->save_document( wp_json_encode( $doc ) );
+
+		$data = $this->controller->get_references( $this->make_get_request( $slug, $id ) )->get_data();
+
+		$this->assertTrue( $data['deletable'] );
+		$this->assertCount( 1, $data['references'] );
+		$this->assertSame( Token_Reference::get_kind_preset_override(), $data['references'][0]['kind'] );
+		$this->assertSame( 'revert_to_baseline', $data['references'][0]['action'] );
+	}
+
+	/**
+	 * A composite value inside a preset token is unsupported and blocks deletion.
+	 *
 	 * @return void
 	 */
 	public function testExtensionSectionReferenceIsUnsupportedAndBlocksDeletion(): void {
@@ -295,7 +327,7 @@ final class User_Primitives_ControllerTest extends TestCase {
 			'color' => [
 				'my-preset' => [
 					Extensions::get_tokens_key() => [
-						'semantic.color.accent' => '{' . $id . '}',
+						'semantic.shadow.accent' => [ 'color' => '{' . $id . '}' ],
 					],
 				],
 			],
@@ -1296,10 +1328,12 @@ final class User_Primitives_ControllerTest extends TestCase {
 	}
 
 	// -------------------------------------------------------------------------
-	// delete_item — unsupported extension reference blocks delete
+	// delete_item — preset references
 	// -------------------------------------------------------------------------
 
 	/**
+	 * A composite value inside a preset token cannot be reverted by the cascade, so it blocks the delete.
+	 *
 	 * @return void
 	 */
 	public function testDeleteReturns422ForUnsupportedExtensionReference(): void {
@@ -1311,7 +1345,7 @@ final class User_Primitives_ControllerTest extends TestCase {
 			'color' => [
 				'preset-a' => [
 					Extensions::get_tokens_key() => [
-						'semantic.color.bg' => '{' . $id . '}',
+						'semantic.shadow.bg' => [ 'color' => '{' . $id . '}' ],
 					],
 				],
 			],
@@ -1325,6 +1359,112 @@ final class User_Primitives_ControllerTest extends TestCase {
 		$this->assertInstanceOf( WP_Error::class, $result );
 		$this->assertSame( 'rest_design_tokens_unsupported_references', $result->get_error_code() );
 		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $result->get_error_data()['status'] );
+	}
+
+	/**
+	 * Deleting a custom color that a block preset uses removes that preset token, so the preset falls
+	 * back to its default, and reports the reverted path.
+	 *
+	 * @return void
+	 */
+	public function testDeleteRevertsABlockPresetTokenThatUsesTheColor(): void {
+		$slug = Token_Store::default_slug();
+		$id   = 'primitive.color.custom.preset-color';
+		$doc  = $this->doc_with_primitive( $id, 'Preset Color' );
+
+		$doc[ Extensions::get_extensions_key() ][ Extensions::get_namespace() ][ Extensions::get_section_presets() ] = [
+			'kadence/singlebtn' => [
+				'default' => [
+					Extensions::get_tokens_key() => [
+						'button-bg' => '{' . $id . '}',
+					],
+				],
+			],
+		];
+
+		$this->store->save_document( wp_json_encode( $doc ) );
+		$version = $this->store->get_version( $slug );
+
+		$result = $this->controller->delete_item( $this->make_delete_request( $slug, $id, $version ) );
+
+		$this->assertInstanceOf( WP_REST_Response::class, $result );
+		$this->assertCount( 1, $result->get_data()['revertedPaths'] );
+
+		$stored = json_decode( $this->store->get_document( $slug ), true );
+
+		$this->assertArrayNotHasKey( Extensions::get_section_presets(), $stored[ Extensions::get_extensions_key() ][ Extensions::get_namespace() ] ?? [] );
+		$this->assertFalse( strpos( wp_json_encode( $stored ), 'preset-color' ) );
+	}
+
+	/**
+	 * Deleting the only color of a custom preset that is its block's default is rejected, so the stored
+	 * document never keeps a `$default` naming a preset the cascade removed.
+	 *
+	 * @return void
+	 */
+	public function testDeleteIsRejectedWhenItWouldLeaveADanglingPresetDefault(): void {
+		$slug = Token_Store::default_slug();
+		$id   = 'primitive.color.custom.preset-color';
+		$doc  = $this->doc_with_primitive( $id, 'Preset Color' );
+
+		$doc[ Extensions::get_extensions_key() ][ Extensions::get_namespace() ][ Extensions::get_section_presets() ] = [
+			'kadence/singlebtn' => [
+				Extensions::get_default_key() => 'brand-preset',
+				'brand-preset'                => [
+					Extensions::get_tokens_key() => [
+						'button-bg' => '{' . $id . '}',
+					],
+				],
+			],
+		];
+
+		$this->store->save_document( wp_json_encode( $doc ) );
+		$version = $this->store->get_version( $slug );
+
+		$result = $this->controller->delete_item( $this->make_delete_request( $slug, $id, $version ) );
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'rest_design_tokens_default_preset_in_use', $result->get_error_code() );
+		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $result->get_error_data()['status'] );
+		$this->assertSame( $version, $this->store->get_version( $slug ) );
+	}
+
+	/**
+	 * The deletion preview reports a block's default preset as a blocker, matching what the delete refuses.
+	 *
+	 * @return void
+	 */
+	public function testReferencesPreviewMarksADefaultPresetColorAsNotDeletable(): void {
+		$slug = Token_Store::default_slug();
+		$id   = 'primitive.color.custom.preset-color';
+		$doc  = $this->doc_with_primitive( $id, 'Preset Color' );
+
+		$doc[ Extensions::get_extensions_key() ][ Extensions::get_namespace() ][ Extensions::get_section_presets() ] = [
+			'kadence/singlebtn' => [
+				Extensions::get_default_key() => 'brand-preset',
+				'brand-preset'                => [
+					Extensions::get_tokens_key() => [
+						'button-bg' => '{' . $id . '}',
+					],
+				],
+			],
+		];
+
+		$this->store->save_document( wp_json_encode( $doc ) );
+
+		$data = $this->controller->get_references( $this->make_get_request( $slug, $id ) )->get_data();
+
+		$this->assertFalse( $data['deletable'] );
+		$this->assertSame(
+			[
+				[
+					'kind'    => 'default_preset',
+					'block'   => 'kadence/singlebtn',
+					'default' => 'brand-preset',
+				],
+			],
+			$data['blockers']
+		);
 	}
 
 	// -------------------------------------------------------------------------
@@ -1561,10 +1701,9 @@ final class User_Primitives_ControllerTest extends TestCase {
 	// -------------------------------------------------------------------------
 
 	/**
-	 * A rename is blocked when an unsupported reference exists (here, an extension-section
-	 * alias). The rename/delete cascade can only rewrite direct `$value` aliases in the primitive
-	 * and semantic layers, so proceeding would leave the extension reference silently pointing at
-	 * an id that no longer exists.
+	 * A rename is blocked when an unsupported reference exists (here, a composite value inside an
+	 * extension-section preset token). The cascade can only rewrite direct aliases, so proceeding would
+	 * leave the composite reference silently pointing at an id that no longer exists.
 	 *
 	 * @return void
 	 */
@@ -1582,8 +1721,8 @@ final class User_Primitives_ControllerTest extends TestCase {
 			],
 		];
 
-		// Extension token referencing the same primitive (unsupported — blocks the rename).
-		$ext_ref_value = '{' . $old_id . '}';
+		// Composite extension value referencing the same primitive (unsupported — blocks the rename).
+		$ext_ref_value = [ 'color' => '{' . $old_id . '}' ];
 		$doc[ Extensions::get_extensions_key() ][ Extensions::get_namespace() ][ Extensions::get_section_foundation_presets() ] = [
 			'color' => [
 				'preset-x' => [
@@ -1604,6 +1743,39 @@ final class User_Primitives_ControllerTest extends TestCase {
 		$this->assertInstanceOf( WP_Error::class, $result );
 		$this->assertSame( 'rest_design_tokens_unsupported_references', $result->get_error_code() );
 		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $result->get_error_data()['status'] );
+	}
+
+	/**
+	 * A rename rewrites the alias a block preset token holds, so the preset keeps pointing at the color.
+	 *
+	 * @return void
+	 */
+	public function testRenameRewritesABlockPresetTokenAlias(): void {
+		$slug   = Token_Store::default_slug();
+		$old_id = 'primitive.color.custom.preset-src';
+		$doc    = $this->doc_with_primitive( $old_id, 'Preset Src' );
+
+		$doc[ Extensions::get_extensions_key() ][ Extensions::get_namespace() ][ Extensions::get_section_presets() ] = [
+			'kadence/singlebtn' => [
+				'default' => [
+					Extensions::get_tokens_key() => [
+						'button-bg' => '{' . $old_id . '}',
+					],
+				],
+			],
+		];
+
+		$this->store->save_document( wp_json_encode( $doc ) );
+		$version = $this->store->get_version( $slug );
+
+		$result = $this->controller->rename_item( $this->make_rename_request( $slug, $old_id, 'preset-dst', $version ) );
+
+		$this->assertInstanceOf( WP_REST_Response::class, $result );
+
+		$stored = json_decode( $this->store->get_document( $slug ), true );
+		$tokens = $stored[ Extensions::get_extensions_key() ][ Extensions::get_namespace() ][ Extensions::get_section_presets() ]['kadence/singlebtn']['default'][ Extensions::get_tokens_key() ];
+
+		$this->assertSame( '{primitive.color.custom.preset-dst}', $tokens['button-bg'] );
 	}
 
 	/**

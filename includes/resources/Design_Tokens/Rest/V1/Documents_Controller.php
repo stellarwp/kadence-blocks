@@ -11,6 +11,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Document\Mutator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Reserved_Namespace;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Token_Label_Index;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Token_Order_Index;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Token_Reference;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Token_Reference_Policy;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\User_Primitive_Document_Validator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\User_Primitive_Index;
@@ -1610,6 +1611,7 @@ final class Documents_Controller extends Controller {
 	 * and needs no validation or dry-run, since an empty document cannot carry an alias cycle.
 	 *
 	 * @since 3.8.0
+	 * @since TBD A block preset alias to a user primitive is accepted, and the 422 lists the blocking references.
 	 *
 	 * @param array<string, mixed> $candidate The full candidate overrides document to validate and store.
 	 * @param string               $slug      The token library slug.
@@ -1648,18 +1650,35 @@ final class Documents_Controller extends Controller {
 		}
 
 		foreach ( array_keys( $this->user_primitive_index->all( $candidate ) ) as $user_primitive_id ) {
-			$references = $this->reference_policy->find( $candidate, (string) $user_primitive_id );
+			$blocking = $this->reference_policy->find_disallowed(
+				$this->reference_policy->find( $candidate, Cast::to_string( $user_primitive_id ) )
+			);
 
-			if ( ! $this->reference_policy->all_semantic_overrides( $references ) ) {
+			if ( $blocking !== [] ) {
 				return new WP_Error(
 					'rest_design_tokens_user_primitive_reference_unsupported',
 					__( 'The document contains an unsupported reference to a user primitive.', 'kadence-blocks' ),
 					[
-						'status' => WP_Http::UNPROCESSABLE_ENTITY,
-						'slug'   => $slug,
+						'status'     => WP_Http::UNPROCESSABLE_ENTITY,
+						'slug'       => $slug,
+						'references' => $this->reference_policy->describe( $blocking ),
 					]
 				);
 			}
+		}
+
+		$dangling = $this->find_dangling_preset_alias( $candidate );
+
+		if ( $dangling !== null ) {
+			return new WP_Error(
+				'rest_design_tokens_unresolvable',
+				__( 'A preset alias does not resolve to a token.', 'kadence-blocks' ),
+				[
+					'status' => WP_Http::UNPROCESSABLE_ENTITY,
+					'slug'   => $slug,
+					'alias'  => $dangling,
+				]
+			);
 		}
 
 		$result = $this->validator->validate( $candidate, Dtcg_Validator::get_context_overrides() );
@@ -2431,12 +2450,13 @@ final class Documents_Controller extends Controller {
 	 * anywhere other than a direct semantic-layer override.
 	 *
 	 * Reuses Token_Reference_Policy::find(), the same classifier the delete-reference-preview endpoint
-	 * uses, rather than re-implementing alias-location parsing here. Uses `all_semantic_overrides()`
+	 * uses, rather than re-implementing alias-location parsing here. Uses `find_disallowed()`
 	 * rather than `all_supported()`: a primitive-layer direct alias is rewritable by the rename cascade,
 	 * but this guard is about a brand-new write introducing the reference, which only the semantic
-	 * layer may legitimately do.
+	 * layer or a block preset may legitimately do.
 	 *
 	 * @since 3.8.0
+	 * @since TBD A block preset alias to a user primitive is no longer treated as disallowed.
 	 *
 	 * @param array<string, mixed> $partial The incoming partial (not the merged candidate).
 	 *
@@ -2458,12 +2478,48 @@ final class Documents_Controller extends Controller {
 				continue;
 			}
 
-			if ( ! $this->reference_policy->all_semantic_overrides( $this->reference_policy->find( $partial, $referenced_id ) ) ) {
+			if ( $this->reference_policy->find_disallowed( $this->reference_policy->find( $partial, $referenced_id ) ) !== [] ) {
 				return true;
 			}
 		}
 
 		return false;
+	}
+
+	/**
+	 * The first `$extensions` alias (a direct preset token or a value inside a composite one) in a candidate that points at a custom primitive the document does not define.
+	 *
+	 * Preset token values live under `$extensions`, which the Resolver's dry-run never walks, so a preset alias to
+	 * a missing custom primitive would otherwise be saved and then silently dropped at projection. Only the
+	 * reserved custom namespace is checked: those ids exist solely as user-created primitives, so the document's
+	 * own provenance map is the source of truth for them.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $candidate The full candidate overrides document.
+	 *
+	 * @return string|null The dangling alias, or null when every preset alias to a custom primitive resolves.
+	 */
+	private function find_dangling_preset_alias( array $candidate ): ?string {
+		$encoded = wp_json_encode( $candidate );
+
+		if ( ! is_string( $encoded ) || ! preg_match_all( '/\{([a-z0-9.-]+)\}/', $encoded, $matches ) ) {
+			return null;
+		}
+
+		foreach ( array_unique( $matches[1] ) as $referenced_id ) {
+			if ( ! Reserved_Namespace::is_reserved_id( $referenced_id ) || $this->user_primitive_index->has( $candidate, $referenced_id ) ) {
+				continue;
+			}
+
+			foreach ( $this->reference_policy->find( $candidate, $referenced_id ) as $reference ) {
+				if ( in_array( $reference->kind, [ Token_Reference::get_kind_preset_override(), Token_Reference::get_kind_extension() ], true ) ) {
+					return '{' . $referenced_id . '}';
+				}
+			}
+		}
+
+		return null;
 	}
 
 	/**

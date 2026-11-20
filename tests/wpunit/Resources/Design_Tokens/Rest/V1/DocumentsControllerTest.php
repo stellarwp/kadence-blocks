@@ -385,6 +385,96 @@ final class DocumentsControllerTest extends TestCase {
 	}
 
 	/**
+	 * A block preset alias to a custom primitive the document does not define is rejected, so it is
+	 * never saved only to be dropped silently at projection.
+	 *
+	 * @return void
+	 */
+	public function testPatchRejectsAPresetAliasToAMissingCustomPrimitive(): void {
+		$response = $this->controller->patch_item(
+			$this->write_request(
+				'PATCH',
+				Token_Store::default_slug(),
+				[
+					'$extensions' => [
+						'com.kadence.designTokens' => [
+							'presets' => [
+								'kadence/singlebtn' => [
+									'brand' => [
+										'tokens' => [
+											'button-bg' => '{primitive.color.custom.ghost}',
+										],
+									],
+								],
+							],
+						],
+					],
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $response );
+		$this->assertSame( 'rest_design_tokens_unresolvable', $response->get_error_code() );
+		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $response->get_error_data()['status'] );
+	}
+
+	/**
+	 * A missing custom primitive referenced from inside a composite preset value is rejected on a POST write
+	 * (PATCH already rejects it as a reserved path), and a label that merely contains alias-looking text is
+	 * not mistaken for a preset reference.
+	 *
+	 * @return void
+	 */
+	public function testWriteRejectsACompositePresetAliasButIgnoresAliasTextInALabel(): void {
+		$label_only = $this->controller->patch_item(
+			$this->write_request(
+				'PATCH',
+				Token_Store::default_slug(),
+				[
+					'primitive' => [
+						'color' => [
+							'brand' => [
+								'note' => [
+									Token_Type::get_type_key() => 'color',
+									Sentinels::get_value_key() => '#112233',
+									'$description'             => 'see {primitive.color.custom.ghost}',
+								],
+							],
+						],
+					],
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_REST_Response::class, $label_only );
+
+		$composite = $this->controller->create_item(
+			$this->write_request(
+				'POST',
+				Token_Store::default_slug(),
+				[
+					'$extensions' => [
+						'com.kadence.designTokens' => [
+							'presets' => [
+								'kadence/singlebtn' => [
+									'brand' => [
+										'tokens' => [
+											'border' => [ 'color' => '{primitive.color.custom.ghost}' ],
+										],
+									],
+								],
+							],
+						],
+					],
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $composite );
+		$this->assertSame( 'rest_design_tokens_unresolvable', $composite->get_error_code() );
+	}
+
+	/**
 	 * A write-through patch preserves the stored `$extensions` layer verbatim. The `presets` entry uses a
 	 * block the registry does not recognize, so the endpoint must round-trip the opaque extension data
 	 * untouched rather than validate or strip it.
