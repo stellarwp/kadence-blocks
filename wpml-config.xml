@@ -177,6 +177,11 @@
 			<key name="errorMessage" />
 			<key name="requiredMessage" />
 			<key name="helpText" />
+			<key name="options">
+				<key name="*">
+					<key name="label" />
+				</key>
+			</key>
 		</gutenberg-block>
 		<gutenberg-block type="kadence/advanced-form-submit" translate="1">
 			<key name="label" />
