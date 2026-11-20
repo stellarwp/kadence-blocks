@@ -1,0 +1,4 @@
+significance: patch
+type: fix
+entry: Fixed typography changes on the Navigation (Adv), Site Identity and Table (Adv) blocks, such as the font size and weight, not showing in the editor preview.
+timestamp: 2026-11-18T18:19:43.000Z
