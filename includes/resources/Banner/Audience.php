@@ -52,7 +52,7 @@ final class Audience {
 	 * @return bool
 	 */
 	private function has_active_plan(): bool {
-		if ( lw_harbor_is_product_license_active( 'kadence' ) ) {
+		if ( kadence_blocks_is_harbor_license_active() ) {
 			return true;
 		}
 
