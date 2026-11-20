@@ -282,9 +282,10 @@
 	text-align: center;
 }
 
-// The Custom tab: the value input, unit switcher, and slider on a single centered row.
+// The Custom tab: the value input, unit switcher, and slider on a centered row, with the unit note below.
 .kadence-token-field__custom {
 	display: flex;
+	flex-wrap: wrap;
 	align-items: center;
 	gap: 8px;
 	padding: 12px;
@@ -297,6 +298,30 @@
 	.kadence-token-field__unit {
 		flex: 0 0 auto;
 		margin-bottom: 0;
+	}
+
+	// The disabled unit select of a pinned breakpoint, wrapped so it takes focus and hover.
+	.kadence-token-field__unit--pinned {
+		cursor: not-allowed;
+
+		&:focus-visible {
+			outline: 2px solid var(--wp-admin-theme-color, #007cba);
+			outline-offset: 1px;
+		}
+
+		select {
+			opacity: 0.6;
+			cursor: not-allowed;
+		}
+	}
+
+	// The note under the controls that says the unit is shared by every device.
+	.kadence-token-field__unit-note {
+		flex: 0 0 100%;
+		margin: 8px 0 0;
+		color: #757575;
+		font-size: 11px;
+		line-height: 1.4;
 	}
 
 	.kadence-token-field__slider {
@@ -442,8 +467,9 @@
 	}
 }
 
-// The hint's tooltip wraps instead of running the sidebar's width as one line.
-.components-tooltip.kadence-token-field__stale-tooltip {
+// The hint's tooltip, and the disabled unit's, wrap instead of running the sidebar's width as one line.
+.components-tooltip.kadence-token-field__stale-tooltip,
+.components-tooltip.kadence-token-field__unit-tooltip {
 	max-width: 220px;
 	white-space: normal;
 	text-align: left;

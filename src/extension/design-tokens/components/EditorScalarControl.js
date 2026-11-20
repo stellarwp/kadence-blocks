@@ -94,6 +94,7 @@ export function EditorScalarControl({
 				unit={unit}
 				units={units}
 				onUnit={onUnit}
+				unitShared
 				min={min}
 				max={max}
 				step={step}
