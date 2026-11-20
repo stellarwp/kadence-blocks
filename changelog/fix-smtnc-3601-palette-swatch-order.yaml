@@ -1,0 +1,4 @@
+significance: patch
+type: fix
+entry: Fixed a newly shipped Style Library color appearing at the end of its color group on sites that had already saved their palette, instead of in its shipped position.
+timestamp: 2026-11-20T00:00:00.000Z
