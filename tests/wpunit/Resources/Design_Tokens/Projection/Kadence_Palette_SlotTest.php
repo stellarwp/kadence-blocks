@@ -21,6 +21,57 @@ final class Kadence_Palette_SlotTest extends TestCase {
 		);
 	}
 
+	/**
+	 * A slug is a palette slot only when it is palette1 to palette15 exactly.
+	 *
+	 * @dataProvider slotSlugProvider
+	 *
+	 * @param string $slug     The palette entry slug.
+	 * @param bool   $expected Whether the slug is a palette slot.
+	 *
+	 * @return void
+	 */
+	public function testIsSlotMatchesOnlyThePaletteSlots( string $slug, bool $expected ): void {
+		$this->assertSame( $expected, Kadence_Palette_Slot::is_slot( $slug ) );
+	}
+
+	/**
+	 * Slugs paired with whether they are palette slots.
+	 *
+	 * @return Generator
+	 */
+	public function slotSlugProvider(): Generator {
+		yield 'first slot' => [
+			'slug'     => 'palette1',
+			'expected' => true,
+		];
+
+		yield 'last slot' => [
+			'slug'     => 'palette15',
+			'expected' => true,
+		];
+
+		yield 'past the last slot' => [
+			'slug'     => 'palette16',
+			'expected' => false,
+		];
+
+		yield 'zero' => [
+			'slug'     => 'palette0',
+			'expected' => false,
+		];
+
+		yield 'legacy user slug' => [
+			'slug'     => 'kb-palette-1',
+			'expected' => false,
+		];
+
+		yield 'trailing characters' => [
+			'slug'     => 'palette1-dark',
+			'expected' => false,
+		];
+	}
+
 	public function testGetProjectionKeyReturnsPaletteSlotKey(): void {
 		$this->assertSame( 'kadence_slot', Kadence_Palette_Slot::get_projection_key() );
 	}

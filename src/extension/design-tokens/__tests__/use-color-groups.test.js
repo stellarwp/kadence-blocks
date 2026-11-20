@@ -580,4 +580,57 @@ describe('useColorGroups', () => {
 			path: '/kb-design-tokens/v1/palettes/inner-palette?library=default',
 		});
 	});
+
+	/**
+	 * Off the Kadence theme the theme's own colors lead the Style Library groups.
+	 *
+	 * @return {Promise<void>}
+	 */
+	it('lists the theme colors before the Style Library off the Kadence theme', async () => {
+		window.kadence_blocks_params = { isKadenceT: '' };
+		mockSettings = {
+			'color.palette.theme': [
+				{ slug: 'base', name: 'Base', color: '#ffffff' },
+				{ slug: 'contrast', name: 'Contrast', color: '#111111' },
+			],
+		};
+		setOwnPalette('brand-own');
+		mockApiFetch.mockResolvedValueOnce(PALETTE_NODE);
+
+		const { box } = renderHook('block-1');
+		await act(async () => {
+			await Promise.resolve();
+		});
+
+		expect(box.current.map((group) => group.id)).toEqual(['theme', 'accent']);
+		expect(box.current[0].swatches.map((swatch) => swatch.value)).toEqual(['#ffffff', '#111111']);
+		// A Global Styles source would make the popover title the whole list "Palette".
+		expect(box.current[0].source).toBeUndefined();
+
+		delete window.kadence_blocks_params;
+	});
+
+	/**
+	 * The Kadence theme already mirrors its palette in the Style Library, so no theme group is added.
+	 * `wp_localize_script` sends the flag as '1', so that string counts as active alongside boolean `true`.
+	 *
+	 * @param {string|boolean} flag The localized `isKadenceT` value on the Kadence theme.
+	 *
+	 * @return {Promise<void>}
+	 */
+	it.each([['1'], [true]])('adds no theme group on the Kadence theme when the flag is %p', async (flag) => {
+		window.kadence_blocks_params = { isKadenceT: flag };
+		mockSettings = { 'color.palette.theme': [{ slug: 'base', name: 'Base', color: '#ffffff' }] };
+		setOwnPalette('brand-own');
+		mockApiFetch.mockResolvedValueOnce(PALETTE_NODE);
+
+		const { box } = renderHook('block-1');
+		await act(async () => {
+			await Promise.resolve();
+		});
+
+		expect(box.current).toEqual(MAPPED_GROUPS);
+
+		delete window.kadence_blocks_params;
+	});
 });

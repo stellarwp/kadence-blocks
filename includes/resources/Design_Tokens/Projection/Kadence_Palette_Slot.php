@@ -88,10 +88,23 @@ final class Kadence_Palette_Slot {
 		// all collapse to "not a palette slot" here, so no separate has_projection() guard is needed.
 		$slot = $token->projections[ self::PROJECTION ] ?? null;
 
-		if ( ! is_string( $slot ) || preg_match( self::SLOT_PATTERN, $slot ) !== 1 ) {
+		if ( ! is_string( $slot ) || ! self::is_slot( $slot ) ) {
 			return null;
 		}
 
 		return new self( $slot );
+	}
+
+	/**
+	 * Whether a slug is one of the fifteen palette slots, palette1…palette15.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $slug The palette entry slug.
+	 *
+	 * @return bool
+	 */
+	public static function is_slot( string $slug ): bool {
+		return preg_match( self::SLOT_PATTERN, $slug ) === 1;
 	}
 }

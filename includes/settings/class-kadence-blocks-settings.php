@@ -12,6 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_disconnect_url;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_domain;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\build_auth_url;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Kadence_Palette_Slot;
 use KadenceWP\KadenceBlocks\Home\Home_Content_View_Model;
 
 /**
@@ -341,6 +342,7 @@ class Kadence_Blocks_Settings {
 					'slug'  => $item['slug'],
 				];
 			}
+			$san_palette = $this->without_token_slots( $san_palette );
 			if ( isset( $san_palette[0] ) ) {
 				if ( ( isset( $palette['override'] ) && true !== $palette['override'] ) || ! isset( $palette['override'] ) ) {
 					$theme_palette = get_theme_support( 'editor-color-palette' );
@@ -443,6 +445,7 @@ class Kadence_Blocks_Settings {
 					'slug'  => $item['slug'],
 				];
 			}
+			$san_palette = $this->without_token_slots( $san_palette );
 			if ( ! empty( $san_palette ) ) {
 				$data = $theme_json->get_data();
 				$override = isset( $palette['override'] ) && true === $palette['override'];
@@ -514,6 +517,9 @@ class Kadence_Blocks_Settings {
 					'slug'  => $item->slug,
 				];
 			}
+			// The color class CSS covers every stored entry, so it is registered from the stored palette, not the filtered one.
+			$has_stored_palette = isset( $san_palette[0] );
+			$san_palette        = $this->without_token_slots( $san_palette );
 			if ( isset( $san_palette[0] ) ) {
 				if ( ( isset( $palette->override ) && true !== $palette->override ) || ! isset( $palette->override ) ) {
 					$theme_palette = get_theme_support( 'editor-color-palette' );
@@ -585,6 +591,8 @@ class Kadence_Blocks_Settings {
 				if ( ! kadence_blocks_is_fse_mode() ) {
 					add_theme_support( 'editor-color-palette', $new_palette );
 				}
+			}
+			if ( $has_stored_palette ) {
 				add_action( 'wp_head', [ $this, 'print_color_palette_css' ], 8 );
 				add_filter( 'block_editor_settings_all', [ $this, 'add_color_palette_css_to_block_editor' ], 999 );
 			}
@@ -1763,6 +1771,34 @@ class Kadence_Blocks_Settings {
 		$settings_link = '<a href="' . esc_url( $this->settings_link() ) . '">' . __( 'Settings', 'kadence-blocks' ) . '</a>';
 		array_push( $links, $settings_link );
 		return $links;
+	}
+
+	/**
+	 * Drop the Design Tokens palette slots from a palette bound for the core editor palette.
+	 *
+	 * The Design Tokens projector stores palette1 to palette15 in kadence_blocks_colors on every site. Off the
+	 * Kadence theme they belong to the Style Library only, so they are not added to a theme's own palette.
+	 * Entries a user defined themselves keep their slug and stay.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<int, array{color: string, name: string, slug: string}> $palette The sanitized palette entries.
+	 *
+	 * @return array<int, array{color: string, name: string, slug: string}> The entries to add to the core palette.
+	 */
+	private function without_token_slots( array $palette ): array {
+		if ( kadence_blocks_is_kadence_theme() ) {
+			return $palette;
+		}
+
+		return array_values(
+			array_filter(
+				$palette,
+				static function ( array $entry ): bool {
+					return ! is_string( $entry['slug'] ) || ! Kadence_Palette_Slot::is_slot( $entry['slug'] );
+				}
+			)
+		);
 	}
 }
 Kadence_Blocks_Settings::get_instance();
