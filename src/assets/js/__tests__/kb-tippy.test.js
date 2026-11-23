@@ -44,6 +44,19 @@ describe('kb-tippy', () => {
 		expect(instance.popper.querySelector('s')).toBeNull();
 	});
 
+	it.each([
+		[
+			'the text attribute',
+			'<a class="kb-tooltips" data-kb-tooltip-content="&lt;b&gt;Tip&lt;/b&gt;&lt;s&gt;x&lt;/s&gt;">a</a>',
+		],
+		['the id attribute', '<span data-tooltip-id="src">a</span><span id="src"><b>Tip</b><s>x</s></span>'],
+	])('keeps only the allowed tags from %s', (name, html) => {
+		const instance = initTooltip(html);
+
+		expect(instance.popper.querySelector('b')).not.toBeNull();
+		expect(instance.popper.querySelector('s')).toBeNull();
+	});
+
 	it('ignores other per-element tooltip options', () => {
 		const instance = initTooltip(
 			'<a class="kb-tooltips" data-kb-tooltip-content="Tip" data-tooltip-trigger="manual" data-tooltip-offset="[1,1]">a</a>'
