@@ -44,7 +44,7 @@ final class Binding {
 	private const TOKEN = 'token';
 
 	/**
-	 * Inline target: a Kadence palette slot (palette1..9) → `--global-paletteN`.
+	 * Inline target: a Kadence palette slot (palette1..15) → `--global-paletteN`.
 	 *
 	 * @since 3.8.0
 	 *

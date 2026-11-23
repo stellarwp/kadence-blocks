@@ -65,7 +65,7 @@ import { ColorControl } from '../../token-controls';
  * Build the row edit
  */
 function StyleControls(props) {
-	const { clientId, attributes, setAttributes, isSelected, context } = props;
+	const { clientId, attributes, setAttributes, isSelected, context, isSiteStylesPanel } = props;
 	const {
 		uniqueID,
 		columns,
@@ -1622,16 +1622,20 @@ function StyleControls(props) {
 					initialOpen={true}
 					panelName={'kb-row-bg-settings'}
 				>
-					<SmallResponsiveControl
-						label={__('Background', 'kadence-blocks')}
-						hasPadding={true}
-						desktopChildren={deskControls}
-						tabletChildren={tabletControls}
-						mobileChildren={mobileControls}
-					/>
+					{isSiteStylesPanel ? (
+						backgroundColorField
+					) : (
+						<SmallResponsiveControl
+							label={__('Background', 'kadence-blocks')}
+							hasPadding={true}
+							desktopChildren={deskControls}
+							tabletChildren={tabletControls}
+							mobileChildren={mobileControls}
+						/>
+					)}
 				</KadencePanelBody>
 			)}
-			{showSettings('backgroundOverlay', 'kadence/rowlayout') && (
+			{!isSiteStylesPanel && showSettings('backgroundOverlay', 'kadence/rowlayout') && (
 				<KadencePanelBody
 					title={__('Background Overlay Settings', 'kadence-blocks')}
 					initialOpen={false}

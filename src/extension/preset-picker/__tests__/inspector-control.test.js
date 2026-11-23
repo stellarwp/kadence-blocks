@@ -39,6 +39,17 @@ describe('designTokenInspectorControl', () => {
 	});
 
 	/**
+	 * The Kadence panel edits site values, and a preset or palette pick is never one, so neither control renders
+	 * there, whatever the block supports.
+	 *
+	 * @return {void}
+	 */
+	it('renders neither control in the Kadence panel', () => {
+		expect(designTokenInspectorControl(options({ isSiteStylesPanel: true }))).toBeNull();
+		expect(designTokenInspectorControl(options({ isSiteStylesPanel: true, hasPreset: false }))).toBeNull();
+	});
+
+	/**
 	 * A single preset is still worth a control: it names what the block is following, and it carries
 	 * reset-to-preset and "Save As a New Preset" so a site owner can branch from it.
 	 *

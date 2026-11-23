@@ -511,6 +511,192 @@ final class Style_Guide_MapperTest extends TestCase {
 	}
 
 	/**
+	 * The extended slots palette10…15 re-value the primitives that claim them, and a complement-marked
+	 * palette10 becomes the theme's complement of palette1 instead of being skipped.
+	 *
+	 * @dataProvider extendedSlotProvider
+	 *
+	 * @param array<string, string> $colors   Slot slug => the color the theme stores.
+	 * @param string                $token_id The primitive claiming the slot under test.
+	 * @param string                $expected The token value it is re-valued with.
+	 *
+	 * @return void
+	 */
+	public function testMapsExtendedSlots( array $colors, string $token_id, string $expected ): void {
+		$values = ( new Style_Guide_Mapper() )->map(
+			Fake_Style_Guide_Source::with_palette( $colors )->snapshot(),
+			[
+				'palette10' => 'primitive.color.extended.complement',
+				'palette15' => 'primitive.color.extended.rating',
+			]
+		);
+
+		$this->assertSame( $expected, $values[ $token_id ] );
+	}
+
+	/**
+	 * Extended slot colors, including the complement marker.
+	 *
+	 * @return Generator
+	 */
+	public function extendedSlotProvider(): Generator {
+		yield 'palette10 color' => [
+			'colors'   => [ 'palette10' => '#ff0000' ],
+			'token_id' => 'primitive.color.extended.complement',
+			'expected' => '#ff0000',
+		];
+		yield 'palette10 complement marker' => [
+			'colors'   => [
+				'palette1'  => '#2B6CB0',
+				'palette10' => '#FfFfFf',
+			],
+			'token_id' => 'primitive.color.extended.complement',
+			'expected' => '#a46900',
+		];
+		yield 'palette10 complement marker with an rgb palette1' => [
+			'colors'   => [
+				'palette1'  => 'rgb(43, 108, 176)',
+				'palette10' => '#FfFfFf',
+			],
+			'token_id' => 'primitive.color.extended.complement',
+			'expected' => '#a46900',
+		];
+		yield 'palette10 complement marker with an unreadable palette1' => [
+			'colors'   => [
+				'palette1'  => 'rgb(a, b, c)',
+				'palette10' => '#FfFfFf',
+			],
+			'token_id' => 'primitive.color.extended.complement',
+			'expected' => 'oklch(from var(--global-palette1) calc(l + 0.10 * (1 - l)) calc(c * 1.00) calc(h + 180) / 100%)',
+		];
+		yield 'palette15 color' => [
+			'colors'   => [ 'palette15' => '#f5a524' ],
+			'token_id' => 'primitive.color.extended.rating',
+			'expected' => '#f5a524',
+		];
+	}
+
+	/**
+	 * A complement-marked palette10 is skipped when the active set has no usable palette1 to derive it from.
+	 *
+	 * @return void
+	 */
+	public function testComplementMarkerWithoutPalette1IsSkipped(): void {
+		$values = ( new Style_Guide_Mapper() )->map(
+			Fake_Style_Guide_Source::with_palette( [ 'palette10' => '#FfFfFf' ] )->snapshot(),
+			[ 'palette10' => 'primitive.color.extended.complement' ]
+		);
+
+		$this->assertArrayNotHasKey( 'primitive.color.extended.complement', $values );
+	}
+
+	/**
+	 * A complement formula a site swapped in through the theme's filter is kept as written, and one that could
+	 * break out of its CSS declaration is skipped.
+	 *
+	 * @dataProvider filteredComplementProvider
+	 *
+	 * @param string      $formula  The filtered complement formula.
+	 * @param string|null $expected The token value, or null when it is skipped.
+	 *
+	 * @return void
+	 */
+	public function testFilteredComplementFormula( string $formula, ?string $expected ): void {
+		$snapshot               = Fake_Style_Guide_Source::with_palette(
+			[
+				'palette1'  => '#2B6CB0',
+				'palette10' => '#FfFfFf',
+			]
+		)->snapshot();
+		$snapshot['complement'] = $formula;
+
+		$values = ( new Style_Guide_Mapper() )->map( $snapshot, [ 'palette10' => 'primitive.color.extended.complement' ] );
+
+		$this->assertSame( $expected, $values['primitive.color.extended.complement'] ?? null );
+	}
+
+	/**
+	 * A complement filter that returns something other than a string falls back to the theme's formula, both
+	 * for the token and for the active set the theme's palette reads are compared against.
+	 *
+	 * @return void
+	 */
+	public function testNonStringComplementFallsBackToTheFormula(): void {
+		$snapshot               = Fake_Style_Guide_Source::with_palette(
+			[
+				'palette1'  => '#2B6CB0',
+				'palette10' => '#FfFfFf',
+			]
+		)->snapshot();
+		$snapshot['complement'] = [ 'not', 'a', 'string' ];
+
+		$mapper = new Style_Guide_Mapper();
+		$values = $mapper->map( $snapshot, [ 'palette10' => 'primitive.color.extended.complement' ] );
+
+		$this->assertSame( '#a46900', $values['primitive.color.extended.complement'] );
+		$this->assertSame( Style_Guide_Mapper::get_complement_color(), $mapper->rendered_set( $snapshot )['palette10'] );
+	}
+
+	/**
+	 * Filtered complement formulas.
+	 *
+	 * @return Generator
+	 */
+	public function filteredComplementProvider(): Generator {
+		yield 'custom formula' => [
+			'formula'  => 'color-mix(in oklch, var(--global-palette1), white 20%)',
+			'expected' => 'color-mix(in oklch, var(--global-palette1), white 20%)',
+		];
+		yield 'plain hex' => [
+			'formula'  => '#123456',
+			'expected' => '#123456',
+		];
+		yield 'declaration break' => [
+			'formula'  => 'red; } body { display: none',
+			'expected' => null,
+		];
+		yield 'comment opener' => [
+			'formula'  => 'red /* x',
+			'expected' => null,
+		];
+		yield 'empty' => [
+			'formula'  => '',
+			'expected' => null,
+		];
+	}
+
+	/**
+	 * The complement marker is only read on palette10: on any other extended slot it is skipped.
+	 *
+	 * @return void
+	 */
+	public function testComplementMarkerOutsidePalette10IsSkipped(): void {
+		$values = ( new Style_Guide_Mapper() )->map(
+			Fake_Style_Guide_Source::with_palette( [ 'palette15' => '#FfFfFf' ] )->snapshot(),
+			[ 'palette15' => 'primitive.color.extended.rating' ]
+		);
+
+		$this->assertArrayNotHasKey( 'primitive.color.extended.rating', $values );
+	}
+
+	/**
+	 * A button setting pointing at a claimed palette10 becomes an alias of the complement primitive.
+	 *
+	 * @return void
+	 */
+	public function testButtonSettingOnClaimedPalette10BecomesAnAlias(): void {
+		$snapshot             = Fake_Style_Guide_Source::with_palette( [ 'palette10' => '#FfFfFf' ] )->snapshot();
+		$snapshot['settings'] = [ 'buttons_background' => [ 'color' => 'palette10' ] ];
+
+		$values = ( new Style_Guide_Mapper() )->map(
+			$snapshot,
+			[ 'palette10' => 'primitive.color.extended.complement' ]
+		);
+
+		$this->assertSame( '{primitive.color.extended.complement}', $values['semantic.color.button-bg'] );
+	}
+
+	/**
 	 * A snapshot carrying all three palette sets, each with its own color on palette1.
 	 *
 	 * @param string $active The set to mark active.

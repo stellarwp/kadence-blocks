@@ -111,10 +111,11 @@ final class Style_Guide_Overlay {
 	}
 
 	/**
-	 * The slot slug => color map of the palette set the theme has saved as active. Empty when the Kadence
-	 * theme is not active.
+	 * The slot slug => color map of the palette set the theme has saved as active, with a complement-marked
+	 * palette10 as the formula the theme renders for it. Empty when the Kadence theme is not active.
 	 *
 	 * @since 3.8.0.1
+	 * @since 3.9.1 Returns a complement-marked palette10 as the formula the theme renders.
 	 *
 	 * @return array<string, string>
 	 */
@@ -130,7 +131,7 @@ final class Style_Guide_Overlay {
 			return [];
 		}
 
-		$this->active_palette = $this->mapper->active_set( $snapshot['palette'] );
+		$this->active_palette = $this->mapper->rendered_set( $snapshot );
 
 		return $this->active_palette;
 	}

@@ -71,6 +71,7 @@ import GridVisualizer from './gridvisualizer';
 import { getGutterTotal, getPreviewGutterSize, getSpacingOptionOutput } from './utils';
 import { SPACING_SIZES_MAP, COLUMN_WIDTH_MAP } from './constants';
 import { runRowLayoutMigrations } from './migrations';
+import { useIsSiteStylesPanel } from '../../site-styles/use-is-site-styles-panel';
 /**
  * Import Css
  */
@@ -231,6 +232,7 @@ const KadenceRowLayout = (props) => {
 		},
 		[clientId]
 	);
+	const isSiteStylesPanel = useIsSiteStylesPanel();
 
 	const { updateBlockAttributes, replaceInnerBlocks, insertBlock } = useDispatch(blockEditorStore);
 	const {
@@ -306,6 +308,11 @@ const KadenceRowLayout = (props) => {
 	};
 
 	useEffect(() => {
+		// The Kadence panel's block holds site values, not saved content to migrate.
+		if (isSiteStylesPanel) {
+			return;
+		}
+
 		const isInQueryBlock = getInQueryBlock(context, inQueryBlock);
 		if (attributes.inQueryBlock !== isInQueryBlock) {
 			attributes.inQueryBlock = isInQueryBlock;
@@ -811,6 +818,7 @@ const KadenceRowLayout = (props) => {
 									innerItemCount={innerItemCount}
 									widthString={widthStrings[0]}
 									previewDevice={previewDevice}
+									isSiteStylesPanel={isSiteStylesPanel}
 								/>
 							</>
 						)}
@@ -822,6 +830,7 @@ const KadenceRowLayout = (props) => {
 								isSelected={isSelected}
 								context={context}
 								name={name}
+								isSiteStylesPanel={isSiteStylesPanel}
 							/>
 						)}
 						{activeTab === 'advanced' && (
@@ -926,7 +935,7 @@ const KadenceRowLayout = (props) => {
 									</KadencePanelBody>
 								)}
 								<div className="kt-sidebar-settings-spacer"></div>
-								{showSettings('structure', 'kadence/rowlayout') && (
+								{!isSiteStylesPanel && showSettings('structure', 'kadence/rowlayout') && (
 									<>
 										<KadencePanelBody
 											title={__('Structure Settings', 'kadence-blocks')}
@@ -1131,11 +1140,13 @@ const KadenceRowLayout = (props) => {
 									</>
 								)}
 
-								<KadenceBlockDefaults
-									attributes={attributes}
-									defaultAttributes={metadata.attributes}
-									blockSlug={metadata.name}
-								/>
+								{!isSiteStylesPanel && (
+									<KadenceBlockDefaults
+										attributes={attributes}
+										defaultAttributes={metadata.attributes}
+										blockSlug={metadata.name}
+									/>
+								)}
 							</>
 						)}
 					</InspectorControls>

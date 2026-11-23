@@ -61,12 +61,15 @@ export function ColorPopover({
 	selection = null,
 }) {
 	const { allSwatches, entry, initialTab } = selection ?? colorSelection(groups, value);
+	// Groups built from the Global Styles palette (FSE mode) are not Style Library tokens.
+	const fromPalette = groups.some((group) => 'global-styles' === group.source);
 
 	return (
 		<TokenPopover
 			value={value}
 			tokens={allSwatches}
 			initialTab={initialTab}
+			listTitle={fromPalette ? __('Palette', 'kadence-blocks') : ''}
 			renderList={({ onPick: pick, onClose: close }) => (
 				<>
 					{onClear && (

@@ -1,0 +1,64 @@
+{
+	"slug": "show-more",
+	"exclude": [
+		"uniqueID",
+		"anchor",
+		"inQueryBlock",
+		"noCustomDefaults",
+		"metadata",
+		"lock",
+		"className",
+		"kadenceDynamic",
+		"kbPreset",
+		"kbPalette",
+		"align",
+		"id",
+		"showHideMore",
+		"defaultExpandedMobile",
+		"defaultExpandedTablet",
+		"defaultExpandedDesktop",
+		"style"
+	],
+	"overlay": [
+		"heightDesktop",
+		"heightTablet",
+		"heightMobile",
+		"heightType",
+		"enableFadeOut",
+		"fadeOutSize",
+		"paddingDesktop",
+		"paddingTablet",
+		"paddingMobile",
+		"paddingUnit",
+		"marginDesktop",
+		"marginTablet",
+		"marginMobile",
+		"marginUnit"
+	],
+	"attributesMap": [],
+	"supports": [],
+	"groups": [
+		[
+			"heightDesktop",
+			"heightTablet",
+			"heightMobile",
+			"heightType"
+		],
+		[
+			"enableFadeOut",
+			"fadeOutSize"
+		],
+		[
+			"paddingDesktop",
+			"paddingTablet",
+			"paddingMobile",
+			"paddingUnit"
+		],
+		[
+			"marginDesktop",
+			"marginTablet",
+			"marginMobile",
+			"marginUnit"
+		]
+	]
+}

@@ -1,0 +1,45 @@
+{
+	"slug": "testimonial",
+	"exclude": [
+		"uniqueID",
+		"anchor",
+		"inQueryBlock",
+		"noCustomDefaults",
+		"metadata",
+		"lock",
+		"className",
+		"kadenceDynamic",
+		"kbPreset",
+		"kbPalette",
+		"url",
+		"id",
+		"title",
+		"content",
+		"name",
+		"occupation",
+		"alt",
+		"width",
+		"height",
+		"maxWidth",
+		"subtype",
+		"media",
+		"icon",
+		"istroke",
+		"ititle",
+		"rating",
+		"sizes",
+		"useBlockQuoteTags",
+		"style"
+	],
+	"overlay": [
+		"isize",
+		"tabletIsize",
+		"mobileIsize",
+		"color"
+	],
+	"attributesMap": [],
+	"supports": [],
+	"groups": [
+		["isize", "tabletIsize", "mobileIsize"]
+	]
+}

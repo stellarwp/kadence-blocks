@@ -101,6 +101,28 @@ describe('colorSelection', () => {
 	});
 
 	/**
+	 * A stored value that matches a listed swatch (a Global Styles palette pick) opens on the list,
+	 * even though it is not a token alias.
+	 *
+	 * @return {void}
+	 */
+	it('opens on the list for a value that matches a listed swatch', () => {
+		const paletteGroups = [
+			{
+				id: 'theme',
+				label: 'Theme',
+				swatches: [
+					{ id: 'theme:theme-palette1', label: 'One', value: '#c3e085', alias: 'palette1', fixed: true },
+				],
+			},
+		];
+		const selection = colorSelection(paletteGroups, 'palette1');
+
+		expect(selection.entry.label).toBe('One');
+		expect(selection.initialTab).toBe('style-library');
+	});
+
+	/**
 	 * A legacy `var(--...)` literal (the old editor's global-palette storage shape) is real and
 	 * working but `react-color` cannot parse it, so it must open on Style Library, never the
 	 * destructive Custom tab.

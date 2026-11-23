@@ -29,6 +29,7 @@ import { mouseOverVisualizer, getSpacingOptionOutput, uniqueIdHelper, getInQuery
 import { useBlockProps, useInnerBlocksProps, BlockControls, store as blockEditorStore } from '@wordpress/block-editor';
 import { useEffect, useRef, useState } from '@wordpress/element';
 import { uniqueId } from 'lodash';
+import { useIsSiteStylesPanel } from '../../site-styles/use-is-site-styles-panel';
 
 /**
  * External dependencies
@@ -97,6 +98,7 @@ export function Edit(props) {
 		}
 	}, [clientId]);
 	const [activeTab, setActiveTab] = useState('general');
+	const isSiteStylesPanel = useIsSiteStylesPanel();
 
 	const paddingMouseOver = mouseOverVisualizer();
 	const marginMouseOver = mouseOverVisualizer();
@@ -291,11 +293,13 @@ export function Edit(props) {
 							panelName={'showMoreSettings'}
 							blockSlug={'kadence/show-more'}
 						>
-							<ToggleControl
-								label={__('Display "hide" button once expanded', 'kadence-blocks')}
-								checked={showHideMore}
-								onChange={(value) => setAttributes({ showHideMore: value })}
-							/>
+							{!isSiteStylesPanel && (
+								<ToggleControl
+									label={__('Display "hide" button once expanded', 'kadence-blocks')}
+									checked={showHideMore}
+									onChange={(value) => setAttributes({ showHideMore: value })}
+								/>
+							)}
 
 							<ResponsiveRangeControls
 								label={__('Maximum Preview Height', 'kadence-blocks')}
@@ -385,36 +389,40 @@ export function Edit(props) {
 							/>
 						</KadencePanelBody>
 
-						<div className="kt-sidebar-settings-spacer"></div>
+						{!isSiteStylesPanel && (
+							<>
+								<div className="kt-sidebar-settings-spacer"></div>
 
-						<KadencePanelBody
-							title={__('Expand Settings', 'kadence-blocks')}
-							panelName={'expandSettings'}
-							blockSlug={'kadence/show-more'}
-							initialOpen={false}
-						>
-							<ToggleControl
-								label={__('Default Expanded on Desktop', 'kadence-blocks')}
-								checked={defaultExpandedDesktop}
-								onChange={(value) => setAttributes({ defaultExpandedDesktop: value })}
-							/>
-							<ToggleControl
-								label={__('Default Expanded on Tablet', 'kadence-blocks')}
-								checked={defaultExpandedTablet}
-								onChange={(value) => setAttributes({ defaultExpandedTablet: value })}
-							/>
-							<ToggleControl
-								label={__('Default Expanded on Mobile', 'kadence-blocks')}
-								checked={defaultExpandedMobile}
-								onChange={(value) => setAttributes({ defaultExpandedMobile: value })}
-							/>
-						</KadencePanelBody>
+								<KadencePanelBody
+									title={__('Expand Settings', 'kadence-blocks')}
+									panelName={'expandSettings'}
+									blockSlug={'kadence/show-more'}
+									initialOpen={false}
+								>
+									<ToggleControl
+										label={__('Default Expanded on Desktop', 'kadence-blocks')}
+										checked={defaultExpandedDesktop}
+										onChange={(value) => setAttributes({ defaultExpandedDesktop: value })}
+									/>
+									<ToggleControl
+										label={__('Default Expanded on Tablet', 'kadence-blocks')}
+										checked={defaultExpandedTablet}
+										onChange={(value) => setAttributes({ defaultExpandedTablet: value })}
+									/>
+									<ToggleControl
+										label={__('Default Expanded on Mobile', 'kadence-blocks')}
+										checked={defaultExpandedMobile}
+										onChange={(value) => setAttributes({ defaultExpandedMobile: value })}
+									/>
+								</KadencePanelBody>
 
-						<KadenceBlockDefaults
-							attributes={attributes}
-							defaultAttributes={metadata.attributes}
-							blockSlug={metadata.name}
-						/>
+								<KadenceBlockDefaults
+									attributes={attributes}
+									defaultAttributes={metadata.attributes}
+									blockSlug={metadata.name}
+								/>
+							</>
+						)}
 					</>
 				)}
 			</KadenceInspectorControls>

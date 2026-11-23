@@ -56,10 +56,12 @@
 			"default": "center"
 		},
 		"tabletTextAlignment": {
-			"type": "string"
+			"type": "string",
+			"default": ""
 		},
 		"mobileTextAlignment": {
-			"type": "string"
+			"type": "string",
+			"default": ""
 		},
 		"wrapIcons": {
 			"type": "boolean",

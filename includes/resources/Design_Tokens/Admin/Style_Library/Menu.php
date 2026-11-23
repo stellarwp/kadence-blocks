@@ -66,7 +66,8 @@ final class Menu {
 	/**
 	 * The core hooks that print admin notices inside `#wpbody-content`
 	 * (`wp-admin/admin-header.php`), where the Style Library app mounts. Emptied on this screen
-	 * so a notice never renders inside — or beside — the app frame.
+	 * so other notices never render inside or beside the app frame. In the Kadence theme's Full
+	 * Site Editing mode, Screen prints its own Global Styles notice above it.
 	 *
 	 * @since 3.8.0
 	 *

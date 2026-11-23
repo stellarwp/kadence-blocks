@@ -19,8 +19,9 @@ interface Style_Guide_Source {
 	 * not active), so callers can tell "nothing to read" from "read, but empty".
 	 *
 	 * @since 3.8.0
+	 * @since 3.9.1 Adds the optional complement formula.
 	 *
-	 * @return array{palette: array<string, mixed>, settings: array<string, mixed>}|null
+	 * @return array{palette: array<string, mixed>, settings: array<string, mixed>, complement?: mixed}|null
 	 */
 	public function snapshot(): ?array;
 }

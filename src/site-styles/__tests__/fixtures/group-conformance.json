@@ -1,0 +1,578 @@
+[
+	{
+		"name": "an untouched instance takes every group's site values",
+		"site": {
+			"spacerHeight": 40,
+			"tabletSpacerHeight": 30,
+			"spacerHeightUnits": "rem",
+			"dividerColor": "#ff0000",
+			"dividerOpacity": 50,
+			"dividerWidth": 50
+		},
+		"instance": {},
+		"groups": [
+			["spacerHeight", "tabletSpacerHeight", "mobileSpacerHeight", "spacerHeightUnits"],
+			["dividerColor", "dividerOpacity"]
+		],
+		"defaults": {
+			"spacerHeight": 60,
+			"tabletSpacerHeight": "",
+			"mobileSpacerHeight": "",
+			"spacerHeightUnits": "px",
+			"dividerColor": "#eee",
+			"dividerOpacity": 100,
+			"dividerWidth": 80,
+			"padding": ["", "", "", ""],
+			"paddingUnit": "px"
+		},
+		"expected": {
+			"spacerHeight": 40,
+			"tabletSpacerHeight": 30,
+			"spacerHeightUnits": "rem",
+			"dividerColor": "#ff0000",
+			"dividerOpacity": 50,
+			"dividerWidth": 50
+		}
+	},
+	{
+		"name": "an instance's own height keeps the site's height, unit and tablet height out",
+		"site": {
+			"spacerHeight": 40,
+			"tabletSpacerHeight": 30,
+			"spacerHeightUnits": "rem",
+			"dividerColor": "#ff0000",
+			"dividerOpacity": 50,
+			"dividerWidth": 50
+		},
+		"instance": {
+			"spacerHeight": 120
+		},
+		"groups": [
+			["spacerHeight", "tabletSpacerHeight", "mobileSpacerHeight", "spacerHeightUnits"],
+			["dividerColor", "dividerOpacity"]
+		],
+		"defaults": {
+			"spacerHeight": 60,
+			"tabletSpacerHeight": "",
+			"mobileSpacerHeight": "",
+			"spacerHeightUnits": "px",
+			"dividerColor": "#eee",
+			"dividerOpacity": 100,
+			"dividerWidth": 80,
+			"padding": ["", "", "", ""],
+			"paddingUnit": "px"
+		},
+		"expected": {
+			"dividerColor": "#ff0000",
+			"dividerOpacity": 50,
+			"dividerWidth": 50
+		}
+	},
+	{
+		"name": "an instance's own unit alone sets its group",
+		"site": {
+			"spacerHeight": 40,
+			"tabletSpacerHeight": 30,
+			"spacerHeightUnits": "rem",
+			"dividerColor": "#ff0000",
+			"dividerOpacity": 50,
+			"dividerWidth": 50
+		},
+		"instance": {
+			"spacerHeightUnits": "vh"
+		},
+		"groups": [
+			["spacerHeight", "tabletSpacerHeight", "mobileSpacerHeight", "spacerHeightUnits"],
+			["dividerColor", "dividerOpacity"]
+		],
+		"defaults": {
+			"spacerHeight": 60,
+			"tabletSpacerHeight": "",
+			"mobileSpacerHeight": "",
+			"spacerHeightUnits": "px",
+			"dividerColor": "#eee",
+			"dividerOpacity": 100,
+			"dividerWidth": 80,
+			"padding": ["", "", "", ""],
+			"paddingUnit": "px"
+		},
+		"expected": {
+			"dividerColor": "#ff0000",
+			"dividerOpacity": 50,
+			"dividerWidth": 50
+		}
+	},
+	{
+		"name": "an instance's own opacity keeps the site's color out",
+		"site": {
+			"spacerHeight": 40,
+			"tabletSpacerHeight": 30,
+			"spacerHeightUnits": "rem",
+			"dividerColor": "#ff0000",
+			"dividerOpacity": 50,
+			"dividerWidth": 50
+		},
+		"instance": {
+			"dividerOpacity": 80
+		},
+		"groups": [
+			["spacerHeight", "tabletSpacerHeight", "mobileSpacerHeight", "spacerHeightUnits"],
+			["dividerColor", "dividerOpacity"]
+		],
+		"defaults": {
+			"spacerHeight": 60,
+			"tabletSpacerHeight": "",
+			"mobileSpacerHeight": "",
+			"spacerHeightUnits": "px",
+			"dividerColor": "#eee",
+			"dividerOpacity": 100,
+			"dividerWidth": 80,
+			"padding": ["", "", "", ""],
+			"paddingUnit": "px"
+		},
+		"expected": {
+			"spacerHeight": 40,
+			"tabletSpacerHeight": 30,
+			"spacerHeightUnits": "rem",
+			"dividerWidth": 50
+		}
+	},
+	{
+		"name": "values equal to the defaults set no group",
+		"site": {
+			"spacerHeight": 40,
+			"tabletSpacerHeight": 30,
+			"spacerHeightUnits": "rem",
+			"dividerColor": "#ff0000",
+			"dividerOpacity": 50,
+			"dividerWidth": 50
+		},
+		"instance": {
+			"spacerHeight": 60,
+			"spacerHeightUnits": "px",
+			"dividerOpacity": 100
+		},
+		"groups": [
+			["spacerHeight", "tabletSpacerHeight", "mobileSpacerHeight", "spacerHeightUnits"],
+			["dividerColor", "dividerOpacity"]
+		],
+		"defaults": {
+			"spacerHeight": 60,
+			"tabletSpacerHeight": "",
+			"mobileSpacerHeight": "",
+			"spacerHeightUnits": "px",
+			"dividerColor": "#eee",
+			"dividerOpacity": 100,
+			"dividerWidth": 80,
+			"padding": ["", "", "", ""],
+			"paddingUnit": "px"
+		},
+		"expected": {
+			"spacerHeight": 40,
+			"tabletSpacerHeight": 30,
+			"spacerHeightUnits": "rem",
+			"dividerColor": "#ff0000",
+			"dividerOpacity": 50,
+			"dividerWidth": 50
+		}
+	},
+	{
+		"name": "a null value sets no group",
+		"site": {
+			"spacerHeight": 40,
+			"tabletSpacerHeight": 30,
+			"spacerHeightUnits": "rem",
+			"dividerColor": "#ff0000",
+			"dividerOpacity": 50,
+			"dividerWidth": 50
+		},
+		"instance": {
+			"spacerHeight": null
+		},
+		"groups": [
+			["spacerHeight", "tabletSpacerHeight", "mobileSpacerHeight", "spacerHeightUnits"],
+			["dividerColor", "dividerOpacity"]
+		],
+		"defaults": {
+			"spacerHeight": 60,
+			"tabletSpacerHeight": "",
+			"mobileSpacerHeight": "",
+			"spacerHeightUnits": "px",
+			"dividerColor": "#eee",
+			"dividerOpacity": 100,
+			"dividerWidth": 80,
+			"padding": ["", "", "", ""],
+			"paddingUnit": "px"
+		},
+		"expected": {
+			"spacerHeight": 40,
+			"tabletSpacerHeight": 30,
+			"spacerHeightUnits": "rem",
+			"dividerColor": "#ff0000",
+			"dividerOpacity": 50,
+			"dividerWidth": 50
+		}
+	},
+	{
+		"name": "a site value outside every group still applies",
+		"site": {
+			"spacerHeight": 40,
+			"tabletSpacerHeight": 30,
+			"spacerHeightUnits": "rem",
+			"dividerColor": "#ff0000",
+			"dividerOpacity": 50,
+			"dividerWidth": 50
+		},
+		"instance": {
+			"spacerHeight": 120,
+			"dividerOpacity": 80
+		},
+		"groups": [
+			["spacerHeight", "tabletSpacerHeight", "mobileSpacerHeight", "spacerHeightUnits"],
+			["dividerColor", "dividerOpacity"]
+		],
+		"defaults": {
+			"spacerHeight": 60,
+			"tabletSpacerHeight": "",
+			"mobileSpacerHeight": "",
+			"spacerHeightUnits": "px",
+			"dividerColor": "#eee",
+			"dividerOpacity": 100,
+			"dividerWidth": 80,
+			"padding": ["", "", "", ""],
+			"paddingUnit": "px"
+		},
+		"expected": {
+			"dividerWidth": 50
+		}
+	},
+	{
+		"name": "one side of an array value sets its group",
+		"site": {
+			"padding": [20, 20, 20, 20],
+			"paddingUnit": "rem"
+		},
+		"instance": {
+			"padding": ["10", "", "", ""]
+		},
+		"groups": [["padding", "paddingUnit"]],
+		"defaults": {
+			"spacerHeight": 60,
+			"tabletSpacerHeight": "",
+			"mobileSpacerHeight": "",
+			"spacerHeightUnits": "px",
+			"dividerColor": "#eee",
+			"dividerOpacity": 100,
+			"dividerWidth": 80,
+			"padding": ["", "", "", ""],
+			"paddingUnit": "px"
+		},
+		"expected": {}
+	},
+	{
+		"name": "an array value equal to its default sets no group",
+		"site": {
+			"padding": [20, 20, 20, 20],
+			"paddingUnit": "rem"
+		},
+		"instance": {
+			"padding": ["", "", "", ""]
+		},
+		"groups": [["padding", "paddingUnit"]],
+		"defaults": {
+			"spacerHeight": 60,
+			"tabletSpacerHeight": "",
+			"mobileSpacerHeight": "",
+			"spacerHeightUnits": "px",
+			"dividerColor": "#eee",
+			"dividerOpacity": 100,
+			"dividerWidth": 80,
+			"padding": ["", "", "", ""],
+			"paddingUnit": "px"
+		},
+		"expected": {
+			"padding": [20, 20, 20, 20],
+			"paddingUnit": "rem"
+		}
+	},
+	{
+		"name": "a block without groups takes every site value",
+		"site": {
+			"spacerHeight": 40,
+			"tabletSpacerHeight": 30,
+			"spacerHeightUnits": "rem",
+			"dividerColor": "#ff0000",
+			"dividerOpacity": 50,
+			"dividerWidth": 50
+		},
+		"instance": {
+			"spacerHeight": 120
+		},
+		"groups": [],
+		"defaults": {
+			"spacerHeight": 60,
+			"tabletSpacerHeight": "",
+			"mobileSpacerHeight": "",
+			"spacerHeightUnits": "px",
+			"dividerColor": "#eee",
+			"dividerOpacity": 100,
+			"dividerWidth": 80,
+			"padding": ["", "", "", ""],
+			"paddingUnit": "px"
+		},
+		"expected": {
+			"spacerHeight": 40,
+			"tabletSpacerHeight": 30,
+			"spacerHeightUnits": "rem",
+			"dividerColor": "#ff0000",
+			"dividerOpacity": 50,
+			"dividerWidth": 50
+		}
+	},
+	{
+		"name": "an older attribute holding a number sets the group it stands in for",
+		"site": {
+			"padding": [2, 2, 2, 2],
+			"paddingType": "vw",
+			"borderStyle": "solid",
+			"tabletBorderStyle": "dashed",
+			"background": "#ff0000"
+		},
+		"instance": {
+			"topPadding": 10,
+			"borderWidth": ["", "", "", ""]
+		},
+		"groups": [
+			["padding", "tabletPadding", "mobilePadding", "paddingType"],
+			["borderStyle", "tabletBorderStyle"],
+			["background", "backgroundOpacity"]
+		],
+		"legacy": {
+			"padding": ["topPadding"],
+			"borderStyle": ["borderWidth"]
+		},
+		"defaults": {
+			"padding": ["", "", "", ""],
+			"tabletPadding": ["", "", "", ""],
+			"mobilePadding": ["", "", "", ""],
+			"paddingType": "px",
+			"borderStyle": "",
+			"tabletBorderStyle": "",
+			"background": "",
+			"backgroundOpacity": 1,
+			"topPadding": "",
+			"borderWidth": [0, 0, 0, 0]
+		},
+		"expected": {
+			"borderStyle": "solid",
+			"tabletBorderStyle": "dashed",
+			"background": "#ff0000"
+		}
+	},
+	{
+		"name": "an older attribute left empty doesn't set its group",
+		"site": {
+			"padding": [2, 2, 2, 2],
+			"paddingType": "vw",
+			"borderStyle": "solid",
+			"tabletBorderStyle": "dashed",
+			"background": "#ff0000"
+		},
+		"instance": {
+			"topPadding": "",
+			"borderWidth": ["", "", "", ""]
+		},
+		"groups": [
+			["padding", "tabletPadding", "mobilePadding", "paddingType"],
+			["borderStyle", "tabletBorderStyle"],
+			["background", "backgroundOpacity"]
+		],
+		"legacy": {
+			"padding": ["topPadding"],
+			"borderStyle": ["borderWidth"]
+		},
+		"defaults": {
+			"padding": ["", "", "", ""],
+			"tabletPadding": ["", "", "", ""],
+			"mobilePadding": ["", "", "", ""],
+			"paddingType": "px",
+			"borderStyle": "",
+			"tabletBorderStyle": "",
+			"background": "",
+			"backgroundOpacity": 1,
+			"topPadding": "",
+			"borderWidth": [0, 0, 0, 0]
+		},
+		"expected": {
+			"padding": [2, 2, 2, 2],
+			"paddingType": "vw",
+			"borderStyle": "solid",
+			"tabletBorderStyle": "dashed",
+			"background": "#ff0000"
+		}
+	},
+	{
+		"name": "an older width array of zeros sets its group",
+		"site": {
+			"padding": [2, 2, 2, 2],
+			"paddingType": "vw",
+			"borderStyle": "solid",
+			"tabletBorderStyle": "dashed",
+			"background": "#ff0000"
+		},
+		"instance": {
+			"borderWidth": [0, 0, 0, 0]
+		},
+		"groups": [
+			["padding", "tabletPadding", "mobilePadding", "paddingType"],
+			["borderStyle", "tabletBorderStyle"],
+			["background", "backgroundOpacity"]
+		],
+		"legacy": {
+			"padding": ["topPadding"],
+			"borderStyle": ["borderWidth"]
+		},
+		"defaults": {
+			"padding": ["", "", "", ""],
+			"tabletPadding": ["", "", "", ""],
+			"mobilePadding": ["", "", "", ""],
+			"paddingType": "px",
+			"borderStyle": "",
+			"tabletBorderStyle": "",
+			"background": "",
+			"backgroundOpacity": 1,
+			"topPadding": "",
+			"borderWidth": [0, 0, 0, 0]
+		},
+		"expected": {
+			"padding": [2, 2, 2, 2],
+			"paddingType": "vw",
+			"background": "#ff0000"
+		}
+	},
+	{
+		"name": "an older width array of blanks doesn't set its group",
+		"site": {
+			"padding": [2, 2, 2, 2],
+			"paddingType": "vw",
+			"borderStyle": "solid",
+			"tabletBorderStyle": "dashed",
+			"background": "#ff0000"
+		},
+		"instance": {
+			"borderWidth": ["", "", "", ""]
+		},
+		"groups": [
+			["padding", "tabletPadding", "mobilePadding", "paddingType"],
+			["borderStyle", "tabletBorderStyle"],
+			["background", "backgroundOpacity"]
+		],
+		"legacy": {
+			"padding": ["topPadding"],
+			"borderStyle": ["borderWidth"]
+		},
+		"defaults": {
+			"padding": ["", "", "", ""],
+			"tabletPadding": ["", "", "", ""],
+			"mobilePadding": ["", "", "", ""],
+			"paddingType": "px",
+			"borderStyle": "",
+			"tabletBorderStyle": "",
+			"background": "",
+			"backgroundOpacity": 1,
+			"topPadding": "",
+			"borderWidth": [0, 0, 0, 0]
+		},
+		"expected": {
+			"padding": [2, 2, 2, 2],
+			"paddingType": "vw",
+			"borderStyle": "solid",
+			"tabletBorderStyle": "dashed",
+			"background": "#ff0000"
+		}
+	},
+	{
+		"name": "an older color string sets the group it stands in for",
+		"site": {
+			"padding": [2, 2, 2, 2],
+			"paddingType": "vw",
+			"borderStyle": "solid",
+			"tabletBorderStyle": "dashed",
+			"background": "#ff0000"
+		},
+		"instance": {
+			"border": "#00ffff",
+			"borderWidth": ["", "", "", ""]
+		},
+		"groups": [
+			["padding", "tabletPadding", "mobilePadding", "paddingType"],
+			["borderStyle", "tabletBorderStyle"],
+			["background", "backgroundOpacity"]
+		],
+		"legacy": {
+			"padding": ["topPadding"],
+			"borderStyle": ["border", "borderWidth"]
+		},
+		"defaults": {
+			"padding": ["", "", "", ""],
+			"tabletPadding": ["", "", "", ""],
+			"mobilePadding": ["", "", "", ""],
+			"paddingType": "px",
+			"borderStyle": "",
+			"tabletBorderStyle": "",
+			"background": "",
+			"backgroundOpacity": 1,
+			"topPadding": "",
+			"borderWidth": [0, 0, 0, 0],
+			"border": ""
+		},
+		"expected": {
+			"padding": [2, 2, 2, 2],
+			"paddingType": "vw",
+			"background": "#ff0000"
+		}
+	},
+	{
+		"name": "an older color left empty doesn't set its group",
+		"site": {
+			"padding": [2, 2, 2, 2],
+			"paddingType": "vw",
+			"borderStyle": "solid",
+			"tabletBorderStyle": "dashed",
+			"background": "#ff0000"
+		},
+		"instance": {
+			"border": "",
+			"borderWidth": ["", "", "", ""]
+		},
+		"groups": [
+			["padding", "tabletPadding", "mobilePadding", "paddingType"],
+			["borderStyle", "tabletBorderStyle"],
+			["background", "backgroundOpacity"]
+		],
+		"legacy": {
+			"padding": ["topPadding"],
+			"borderStyle": ["border", "borderWidth"]
+		},
+		"defaults": {
+			"padding": ["", "", "", ""],
+			"tabletPadding": ["", "", "", ""],
+			"mobilePadding": ["", "", "", ""],
+			"paddingType": "px",
+			"borderStyle": "",
+			"tabletBorderStyle": "",
+			"background": "",
+			"backgroundOpacity": 1,
+			"topPadding": "",
+			"borderWidth": [0, 0, 0, 0],
+			"border": ""
+		},
+		"expected": {
+			"padding": [2, 2, 2, 2],
+			"paddingType": "vw",
+			"borderStyle": "solid",
+			"tabletBorderStyle": "dashed",
+			"background": "#ff0000"
+		}
+	}
+]

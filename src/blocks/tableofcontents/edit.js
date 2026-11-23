@@ -60,7 +60,8 @@ import metadata from './block.json';
  * Internal dependencies
  */
 import TableOfContentsList from './list';
-import { getHeadingsFromContent, linearToNestedHeadingList } from './utils';
+import { getHeadingsFromContent, getSampleHeadings, linearToNestedHeadingList } from './utils';
+import { useIsSiteStylesPanel } from '../../site-styles/use-is-site-styles-panel';
 
 import { ENTER } from '@wordpress/keycodes';
 import { withSelect, useSelect, useDispatch } from '@wordpress/data';
@@ -169,7 +170,8 @@ function KadenceTableOfContents(props) {
 		titlePaddingType,
 	} = attributes;
 
-	const [activeTab, setActiveTab] = useState('general');
+	const isSiteStylesPanel = useIsSiteStylesPanel();
+	const [activeTab, setActiveTab] = useState(isSiteStylesPanel ? 'style' : 'general');
 	const [headings, setHeadings] = useState([]);
 	const [showContent, setShowContent] = useState(true);
 
@@ -254,7 +256,7 @@ function KadenceTableOfContents(props) {
 			)
 		);
 		let updateTitleBorderStyle = false;
-		if ('' !== titleBorderColor) {
+		if (titleBorderColor) {
 			tempTitleBorderStyle[0].top[0] = titleBorderColor;
 			tempTitleBorderStyle[0].right[0] = titleBorderColor;
 			tempTitleBorderStyle[0].bottom[0] = titleBorderColor;
@@ -285,6 +287,9 @@ function KadenceTableOfContents(props) {
 			latestHeadings = getHeadingsFromContent(pagesOfContent[pageIndex - 1], attributes);
 		} else {
 			latestHeadings = getHeadingsFromContent(postContent, attributes);
+		}
+		if (isSiteStylesPanel && !latestHeadings.length) {
+			latestHeadings = getSampleHeadings();
 		}
 		if (!isEqual(headings, latestHeadings)) {
 			setHeadings(latestHeadings);
@@ -731,6 +736,8 @@ function KadenceTableOfContents(props) {
 					panelName={'tableofcontents'}
 					setActiveTab={(value) => setActiveTab(value)}
 					activeTab={activeTab}
+					allowedTabs={isSiteStylesPanel ? ['style', 'advanced'] : null}
+					initialOpen={isSiteStylesPanel ? 'style' : undefined}
 				/>
 
 				{activeTab === 'general' && (
@@ -916,76 +923,80 @@ function KadenceTableOfContents(props) {
 							/>
 						</KadencePanelBody>
 
-						<div className="kt-sidebar-settings-spacer"></div>
+						{!isSiteStylesPanel && (
+							<>
+								<div className="kt-sidebar-settings-spacer"></div>
 
-						<KadencePanelBody
-							title={__('Non static content', 'kadence-blocks')}
-							panelName={'nonStaticContent'}
-							initialOpen={false}
-							blockSlug={'kadence/tableofcontents'}
-						>
-							<ToggleControl
-								label={__('Search for Headings in Non static post content?', 'kadence-blocks')}
-								checked={enableDynamicSearch}
-								onChange={(value) => setAttributes({ enableDynamicSearch: value })}
-							/>
-							{isKadenceT && enableDynamicSearch && (
-								<ToggleControl
-									label={__('Search for Headings in Template?', 'kadence-blocks')}
-									help={__(
-										'Expands heading search to use dynamic template from elements.',
-										'kadence-blocks'
+								<KadencePanelBody
+									title={__('Non static content', 'kadence-blocks')}
+									panelName={'nonStaticContent'}
+									initialOpen={false}
+									blockSlug={'kadence/tableofcontents'}
+								>
+									<ToggleControl
+										label={__('Search for Headings in Non static post content?', 'kadence-blocks')}
+										checked={enableDynamicSearch}
+										onChange={(value) => setAttributes({ enableDynamicSearch: value })}
+									/>
+									{isKadenceT && enableDynamicSearch && (
+										<ToggleControl
+											label={__('Search for Headings in Template?', 'kadence-blocks')}
+											help={__(
+												'Expands heading search to use dynamic template from elements.',
+												'kadence-blocks'
+											)}
+											checked={enableTemplateSearch}
+											onChange={(value) => setAttributes({ enableTemplateSearch: value })}
+										/>
 									)}
-									checked={enableTemplateSearch}
-									onChange={(value) => setAttributes({ enableTemplateSearch: value })}
-								/>
-							)}
-						</KadencePanelBody>
+								</KadencePanelBody>
 
-						<KadencePanelBody
-							title={__('Scroll Settings', 'kadence-blocks')}
-							initialOpen={false}
-							panelName={'scrollSettings'}
-							blockSlug={'kadence/tableofcontents'}
-						>
-							<ToggleControl
-								label={__('Enable Smooth Scroll to ID', 'kadence-blocks')}
-								checked={enableSmoothScroll}
-								onChange={(value) => setAttributes({ enableSmoothScroll: value })}
-							/>
-							{enableSmoothScroll && (
-								<RangeControl
-									label={__('Scroll Offset', 'kadence-blocks')}
-									value={smoothScrollOffset ? smoothScrollOffset : ''}
-									onChange={(value) => setAttributes({ smoothScrollOffset: value })}
-									min={0}
-									max={400}
-									step={1}
-								/>
-							)}
-							<ToggleControl
-								label={__(
-									'Enable Highlighting Heading when scrolling in active area.',
-									'kadence-blocks'
-								)}
-								checked={enableScrollSpy}
-								onChange={(value) => setAttributes({ enableScrollSpy: value })}
-							/>
-							{enableScrollSpy && (
-								<PopColorControl
-									label={__('List Items Active Color', 'kadence-blocks')}
-									value={contentActiveColor ? contentActiveColor : ''}
-									default={''}
-									onChange={(value) => setAttributes({ contentActiveColor: value })}
-								/>
-							)}
-						</KadencePanelBody>
+								<KadencePanelBody
+									title={__('Scroll Settings', 'kadence-blocks')}
+									initialOpen={false}
+									panelName={'scrollSettings'}
+									blockSlug={'kadence/tableofcontents'}
+								>
+									<ToggleControl
+										label={__('Enable Smooth Scroll to ID', 'kadence-blocks')}
+										checked={enableSmoothScroll}
+										onChange={(value) => setAttributes({ enableSmoothScroll: value })}
+									/>
+									{enableSmoothScroll && (
+										<RangeControl
+											label={__('Scroll Offset', 'kadence-blocks')}
+											value={smoothScrollOffset ? smoothScrollOffset : ''}
+											onChange={(value) => setAttributes({ smoothScrollOffset: value })}
+											min={0}
+											max={400}
+											step={1}
+										/>
+									)}
+									<ToggleControl
+										label={__(
+											'Enable Highlighting Heading when scrolling in active area.',
+											'kadence-blocks'
+										)}
+										checked={enableScrollSpy}
+										onChange={(value) => setAttributes({ enableScrollSpy: value })}
+									/>
+									{enableScrollSpy && (
+										<PopColorControl
+											label={__('List Items Active Color', 'kadence-blocks')}
+											value={contentActiveColor ? contentActiveColor : ''}
+											default={''}
+											onChange={(value) => setAttributes({ contentActiveColor: value })}
+										/>
+									)}
+								</KadencePanelBody>
 
-						<KadenceBlockDefaults
-							attributes={attributes}
-							defaultAttributes={metadata.attributes}
-							blockSlug={metadata.name}
-						/>
+								<KadenceBlockDefaults
+									attributes={attributes}
+									defaultAttributes={metadata.attributes}
+									blockSlug={metadata.name}
+								/>
+							</>
+						)}
 					</>
 				)}
 
@@ -997,11 +1008,13 @@ function KadenceTableOfContents(props) {
 							panelName={'titleSettings'}
 							blockSlug={'kadence/tableofcontents'}
 						>
-							<ToggleControl
-								label={__('Enable Title', 'kadence-blocks')}
-								checked={enableTitle}
-								onChange={(value) => setAttributes({ enableTitle: value })}
-							/>
+							{!isSiteStylesPanel && (
+								<ToggleControl
+									label={__('Enable Title', 'kadence-blocks')}
+									checked={enableTitle}
+									onChange={(value) => setAttributes({ enableTitle: value })}
+								/>
+							)}
 							{enableTitle && (
 								<Fragment>
 									<PopColorControl
@@ -1050,7 +1063,7 @@ function KadenceTableOfContents(props) {
 										value={titlePadding}
 										onChange={(value) => setAttributes({ titlePadding: value })}
 										tabletValue={tabletTitlePadding}
-										onChangeTablet={(value) => setAttributes({ mobileTitlePadding: value })}
+										onChangeTablet={(value) => setAttributes({ tabletTitlePadding: value })}
 										mobileValue={mobileTitlePadding}
 										onChangeMobile={(value) => setAttributes({ mobileTitlePadding: value })}
 										min={titlePaddingType === 'em' || titlePaddingType === 'rem' ? 0 : 0}
@@ -1081,6 +1094,30 @@ function KadenceTableOfContents(props) {
 							panelName={'listSettings'}
 							blockSlug={'kadence/tableofcontents'}
 						>
+							{isSiteStylesPanel && (
+								<>
+									<SelectControl
+										label={__('List Columns', 'kadence-blocks')}
+										value={columns}
+										options={[
+											{ value: 1, label: __('One Column', 'kadence-blocks') },
+											{ value: 2, label: __('Two columns', 'kadence-blocks') },
+											{ value: 3, label: __('Three Columns', 'kadence-blocks') },
+										]}
+										onChange={(value) => setAttributes({ columns: parseInt(value, 10) })}
+									/>
+									<SelectControl
+										label={__('List Style', 'kadence-blocks')}
+										value={listStyle}
+										options={[
+											{ value: 'disc', label: __('Bullets', 'kadence-blocks') },
+											{ value: 'numbered', label: __('Numbered', 'kadence-blocks') },
+											{ value: 'none', label: __('None', 'kadence-blocks') },
+										]}
+										onChange={(value) => setAttributes({ listStyle: value })}
+									/>
+								</>
+							)}
 							<ResponsiveRangeControls
 								label={__('List Item Gap', 'kadence-blocks')}
 								value={listGap?.[0] ? listGap[0] : ''}

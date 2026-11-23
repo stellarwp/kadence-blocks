@@ -28,5 +28,6 @@ parameters:
 			- includes/*-array.php
 	scanFiles:
 		- .phpstan/phpstan-wp-polyfills.php
+		- .phpstan/phpstan-gutenberg-stubs.php
 	bootstrapFiles:
 		- .phpstan/phpstan-stubs.php

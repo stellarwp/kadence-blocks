@@ -76,6 +76,7 @@ import { resolveColorLiteral } from '../../extension/design-tokens/color-literal
 import { tokenDimension } from '../../extension/design-tokens/token-dimension';
 import { pickableTokensForControl } from '../../extension/token-picker';
 import { ColorControl, isTokenAlias } from '../../token-controls';
+import { useIsSiteStylesPanel } from '../../site-styles/use-is-site-styles-panel';
 //import ResizeGridSection from './resize-grid-section';
 /**
  * Import WordPress
@@ -263,6 +264,7 @@ function SectionEdit(props) {
 	} = attributes;
 	const [activeTab, setActiveTab] = useState('general');
 	const [dynamicBackgroundImg, setDynamicBackgroundImg] = useState('');
+	const isSiteStylesPanel = useIsSiteStylesPanel();
 
 	const debouncedSetDynamicState = debounce(setDynamicState, 200);
 
@@ -363,6 +365,11 @@ function SectionEdit(props) {
 	});
 
 	useEffect(() => {
+		// The Kadence panel's block holds site values, not saved content to migrate.
+		if (isSiteStylesPanel) {
+			return;
+		}
+
 		const isInQueryBlock = getInQueryBlock(context, inQueryBlock);
 		if (attributes.inQueryBlock !== isInQueryBlock) {
 			attributes.inQueryBlock = isInQueryBlock;
@@ -424,7 +431,8 @@ function SectionEdit(props) {
 				leftMarginM: '',
 			});
 		}
-		// Update from old border settings.
+		// Update from old border settings in one write, so the site styles overlay still sees the old attributes.
+		const borderPatch = {};
 		const tempBorderStyle = JSON.parse(
 			JSON.stringify(
 				attributes.borderStyle
@@ -447,7 +455,7 @@ function SectionEdit(props) {
 			tempBorderStyle[0].bottom[0] = border;
 			tempBorderStyle[0].left[0] = border;
 			updateBorderStyle = true;
-			setAttributes({ border: '' });
+			borderPatch.border = '';
 		}
 		if ('' !== borderWidth?.[0] || '' !== borderWidth?.[1] || '' !== borderWidth?.[2] || '' !== borderWidth?.[3]) {
 			tempBorderStyle[0].top[2] = borderWidth?.[0] || '';
@@ -455,10 +463,10 @@ function SectionEdit(props) {
 			tempBorderStyle[0].bottom[2] = borderWidth?.[2] || '';
 			tempBorderStyle[0].left[2] = borderWidth?.[3] || '';
 			updateBorderStyle = true;
-			setAttributes({ borderWidth: ['', '', '', ''] });
+			borderPatch.borderWidth = ['', '', '', ''];
 		}
 		if (updateBorderStyle) {
-			setAttributes({ borderStyle: tempBorderStyle });
+			borderPatch.borderStyle = tempBorderStyle;
 		}
 		const tempBorderHoverStyle = JSON.parse(
 			JSON.stringify(
@@ -482,7 +490,7 @@ function SectionEdit(props) {
 			tempBorderHoverStyle[0].bottom[0] = borderHover;
 			tempBorderHoverStyle[0].left[0] = borderHover;
 			updateBorderHoverStyle = true;
-			setAttributes({ borderHover: '' });
+			borderPatch.borderHover = '';
 		}
 		if (
 			'' !== borderHoverWidth?.[0] ||
@@ -495,10 +503,10 @@ function SectionEdit(props) {
 			tempBorderHoverStyle[0].bottom[2] = borderHoverWidth?.[2] || '';
 			tempBorderHoverStyle[0].left[2] = borderHoverWidth?.[3] || '';
 			updateBorderHoverStyle = true;
-			setAttributes({ borderHoverWidth: ['', '', '', ''] });
+			borderPatch.borderHoverWidth = ['', '', '', ''];
 		}
 		if (updateBorderHoverStyle) {
-			setAttributes({ borderHoverStyle: tempBorderHoverStyle });
+			borderPatch.borderHoverStyle = tempBorderHoverStyle;
 		}
 		const tempTabBorderStyle = JSON.parse(
 			JSON.stringify(
@@ -526,7 +534,7 @@ function SectionEdit(props) {
 			tempTabBorderStyle[0].bottom[2] = tabletBorderWidth?.[2] || '';
 			tempTabBorderStyle[0].left[2] = tabletBorderWidth?.[3] || '';
 			const tempTabBorderWidth = JSON.parse(JSON.stringify(tempTabBorderStyle));
-			setAttributes({ tabletBorderStyle: tempTabBorderWidth, tabletBorderWidth: ['', '', '', ''] });
+			Object.assign(borderPatch, { tabletBorderStyle: tempTabBorderWidth, tabletBorderWidth: ['', '', '', ''] });
 		}
 		const tempTabBorderHoverStyle = JSON.parse(
 			JSON.stringify(
@@ -554,7 +562,7 @@ function SectionEdit(props) {
 			tempTabBorderHoverStyle[0].bottom[2] = tabletBorderHoverWidth?.[2] || '';
 			tempTabBorderHoverStyle[0].left[2] = tabletBorderHoverWidth?.[3] || '';
 			const tempTabBorderHoverWidth = JSON.parse(JSON.stringify(tempTabBorderHoverStyle));
-			setAttributes({
+			Object.assign(borderPatch, {
 				tabletBorderHoverStyle: tempTabBorderHoverWidth,
 				tabletBorderHoverWidth: ['', '', '', ''],
 			});
@@ -584,7 +592,10 @@ function SectionEdit(props) {
 			tempMobileBorderStyle[0].right[2] = mobileBorderWidth?.[1] || '';
 			tempMobileBorderStyle[0].bottom[2] = mobileBorderWidth?.[2] || '';
 			tempMobileBorderStyle[0].left[2] = mobileBorderWidth?.[3] || '';
-			setAttributes({ mobileBorderStyle: tempMobileBorderStyle, mobileBorderWidth: ['', '', '', ''] });
+			Object.assign(borderPatch, {
+				mobileBorderStyle: tempMobileBorderStyle,
+				mobileBorderWidth: ['', '', '', ''],
+			});
 		}
 		const tempMobileBorderHoverStyle = JSON.parse(
 			JSON.stringify(
@@ -612,7 +623,13 @@ function SectionEdit(props) {
 			tempMobileBorderHoverStyle[0].bottom[2] = mobileBorderHoverWidth?.[2] || '';
 			tempMobileBorderHoverStyle[0].left[2] = mobileBorderHoverWidth?.[3] || '';
 			const tempMobileBorderHoverWidth = JSON.parse(JSON.stringify(tempMobileBorderHoverStyle));
-			setAttributes({ mobileBorderHoverStyle: tempMobileBorderHoverWidth, mobileBorderWidth: ['', '', '', ''] });
+			Object.assign(borderPatch, {
+				mobileBorderHoverStyle: tempMobileBorderHoverWidth,
+				mobileBorderHoverWidth: ['', '', '', ''],
+			});
+		}
+		if (Object.keys(borderPatch).length) {
+			setAttributes(borderPatch);
 		}
 		if (!kbVersion || kbVersion < 2) {
 			// Update Align and Text Align settings for 3.2.0
@@ -1613,8 +1630,14 @@ function SectionEdit(props) {
 						/>
 					</BlockControls>
 					<InspectorControls>
-						<InspectorControlTabs panelName={'column'} setActiveTab={setActiveTab} activeTab={activeTab} />
-						{activeTab === 'general' && (
+						<InspectorControlTabs
+							panelName={'column'}
+							setActiveTab={setActiveTab}
+							activeTab={activeTab}
+							allowedTabs={isSiteStylesPanel ? ['style', 'advanced'] : null}
+							initialOpen={isSiteStylesPanel ? 'style' : undefined}
+						/>
+						{activeTab === 'general' && !isSiteStylesPanel && (
 							<>
 								{showSettings('textAlign', 'kadence/column') && (
 									<KadencePanelBody
@@ -2506,30 +2529,32 @@ function SectionEdit(props) {
 											onMouseOver={paddingMouseOver.onMouseOver}
 											onMouseOut={paddingMouseOver.onMouseOut}
 										/>
-										<ResponsiveMeasureRangeControl
-											label={__('Margin', 'kadence-blocks')}
-											value={margin}
-											tabletValue={tabletMargin}
-											mobileValue={mobileMargin}
-											onChange={(value) => {
-												setAttributes({ margin: value });
-											}}
-											onChangeTablet={(value) => {
-												setAttributes({ tabletMargin: value });
-											}}
-											onChangeMobile={(value) => {
-												setAttributes({ mobileMargin: value });
-											}}
-											min={marginType === 'em' || marginType === 'rem' ? -24 : -999}
-											max={marginType === 'em' || marginType === 'rem' ? 24 : 999}
-											step={marginType === 'em' || marginType === 'rem' ? 0.1 : 1}
-											unit={marginType}
-											units={['px', 'em', 'rem', '%', 'vh', 'vw']}
-											onUnit={(value) => setAttributes({ marginType: value })}
-											onMouseOver={marginMouseOver.onMouseOver}
-											onMouseOut={marginMouseOver.onMouseOut}
-											allowAuto={true}
-										/>
+										{!isSiteStylesPanel && (
+											<ResponsiveMeasureRangeControl
+												label={__('Margin', 'kadence-blocks')}
+												value={margin}
+												tabletValue={tabletMargin}
+												mobileValue={mobileMargin}
+												onChange={(value) => {
+													setAttributes({ margin: value });
+												}}
+												onChangeTablet={(value) => {
+													setAttributes({ tabletMargin: value });
+												}}
+												onChangeMobile={(value) => {
+													setAttributes({ mobileMargin: value });
+												}}
+												min={marginType === 'em' || marginType === 'rem' ? -24 : -999}
+												max={marginType === 'em' || marginType === 'rem' ? 24 : 999}
+												step={marginType === 'em' || marginType === 'rem' ? 0.1 : 1}
+												unit={marginType}
+												units={['px', 'em', 'rem', '%', 'vh', 'vw']}
+												onUnit={(value) => setAttributes({ marginType: value })}
+												onMouseOver={marginMouseOver.onMouseOver}
+												onMouseOut={marginMouseOver.onMouseOut}
+												allowAuto={true}
+											/>
+										)}
 									</KadencePanelBody>
 								)}
 								<div className="kt-sidebar-settings-spacer"></div>
@@ -2539,20 +2564,22 @@ function SectionEdit(props) {
 										initialOpen={false}
 										panelName={'kb-col-container-style-settings'}
 									>
-										<SelectControl
-											label={__('Container HTML tag', 'kadence-blocks')}
-											value={htmlTag}
-											options={[
-												{ value: 'div', label: 'div' },
-												{ value: 'header', label: 'header' },
-												{ value: 'section', label: 'section' },
-												{ value: 'article', label: 'article' },
-												{ value: 'main', label: 'main' },
-												{ value: 'aside', label: 'aside' },
-												{ value: 'footer', label: 'footer' },
-											]}
-											onChange={(value) => setAttributes({ htmlTag: value })}
-										/>
+										{!isSiteStylesPanel && (
+											<SelectControl
+												label={__('Container HTML tag', 'kadence-blocks')}
+												value={htmlTag}
+												options={[
+													{ value: 'div', label: 'div' },
+													{ value: 'header', label: 'header' },
+													{ value: 'section', label: 'section' },
+													{ value: 'article', label: 'article' },
+													{ value: 'main', label: 'main' },
+													{ value: 'aside', label: 'aside' },
+													{ value: 'footer', label: 'footer' },
+												]}
+												onChange={(value) => setAttributes({ htmlTag: value })}
+											/>
+										)}
 										<ResponsiveRangeControls
 											label={__('Min Height', 'kadence-blocks')}
 											value={undefined !== height && undefined !== height[0] ? height[0] : ''}
@@ -2611,202 +2638,222 @@ function SectionEdit(props) {
 											units={['px', 'vw', 'vh']}
 											reset={true}
 										/>
-										<ResponsiveRangeControls
-											label={__('Flex Grow', 'kadence-blocks')}
-											value={
-												undefined !== flexGrow && undefined !== flexGrow[0] ? flexGrow[0] : ''
-											}
-											onChange={(value) => {
-												setAttributes({
-													flexGrow: [
-														value,
-														undefined !== flexGrow && undefined !== flexGrow[1]
-															? flexGrow[1]
-															: '',
-														undefined !== flexGrow && undefined !== flexGrow[2]
-															? flexGrow[2]
-															: '',
-													],
-												});
-											}}
-											tabletValue={
-												undefined !== flexGrow && undefined !== flexGrow[1] ? flexGrow[1] : ''
-											}
-											onChangeTablet={(value) => {
-												setAttributes({
-													flexGrow: [
+										{!isSiteStylesPanel && (
+											<>
+												<ResponsiveRangeControls
+													label={__('Flex Grow', 'kadence-blocks')}
+													value={
 														undefined !== flexGrow && undefined !== flexGrow[0]
 															? flexGrow[0]
-															: '',
-														value,
-														undefined !== flexGrow && undefined !== flexGrow[2]
-															? flexGrow[2]
-															: '',
-													],
-												});
-											}}
-											mobileValue={
-												undefined !== flexGrow && undefined !== flexGrow[2] ? flexGrow[2] : ''
-											}
-											onChangeMobile={(value) => {
-												setAttributes({
-													flexGrow: [
-														undefined !== flexGrow && undefined !== flexGrow[0]
-															? flexGrow[0]
-															: '',
+															: ''
+													}
+													onChange={(value) => {
+														setAttributes({
+															flexGrow: [
+																value,
+																undefined !== flexGrow && undefined !== flexGrow[1]
+																	? flexGrow[1]
+																	: '',
+																undefined !== flexGrow && undefined !== flexGrow[2]
+																	? flexGrow[2]
+																	: '',
+															],
+														});
+													}}
+													tabletValue={
 														undefined !== flexGrow && undefined !== flexGrow[1]
 															? flexGrow[1]
-															: '',
-														value,
-													],
-												});
-											}}
-											min={0}
-											max={200}
-											step={1}
-											showUnits={false}
-											reset={true}
-										/>
-										<RangeControl
-											label={__('Z Index Control', 'kadence-blocks')}
-											value={zIndex}
-											onChange={(value) => {
-												setAttributes({
-													zIndex: value,
-												});
-											}}
-											min={-200}
-											max={200}
-											reset={true}
-										/>
-										{inRowBlock && (
-											<RangeControl
-												label={__('Mobile Collapse Order', 'kadence-blocks')}
-												value={collapseOrder}
-												onChange={(value) => {
-													setAttributes({
-														collapseOrder: value,
-													});
-												}}
-												min={-10}
-												max={10}
-												reset={true}
-											/>
+															: ''
+													}
+													onChangeTablet={(value) => {
+														setAttributes({
+															flexGrow: [
+																undefined !== flexGrow && undefined !== flexGrow[0]
+																	? flexGrow[0]
+																	: '',
+																value,
+																undefined !== flexGrow && undefined !== flexGrow[2]
+																	? flexGrow[2]
+																	: '',
+															],
+														});
+													}}
+													mobileValue={
+														undefined !== flexGrow && undefined !== flexGrow[2]
+															? flexGrow[2]
+															: ''
+													}
+													onChangeMobile={(value) => {
+														setAttributes({
+															flexGrow: [
+																undefined !== flexGrow && undefined !== flexGrow[0]
+																	? flexGrow[0]
+																	: '',
+																undefined !== flexGrow && undefined !== flexGrow[1]
+																	? flexGrow[1]
+																	: '',
+																value,
+															],
+														});
+													}}
+													min={0}
+													max={200}
+													step={1}
+													showUnits={false}
+													reset={true}
+												/>
+												<RangeControl
+													label={__('Z Index Control', 'kadence-blocks')}
+													value={zIndex}
+													onChange={(value) => {
+														setAttributes({
+															zIndex: value,
+														});
+													}}
+													min={-200}
+													max={200}
+													reset={true}
+												/>
+												{inRowBlock && (
+													<RangeControl
+														label={__('Mobile Collapse Order', 'kadence-blocks')}
+														value={collapseOrder}
+														onChange={(value) => {
+															setAttributes({
+																collapseOrder: value,
+															});
+														}}
+														min={-10}
+														max={10}
+														reset={true}
+													/>
+												)}
+											</>
 										)}
 									</KadencePanelBody>
 								)}
-								<KadencePanelBody
-									title={__('Sticky Settings', 'kadence-blocks')}
-									initialOpen={false}
-									panelName={'kb-col-sticky-settings'}
-								>
-									<ToggleControl
-										label={__('Make sticky', 'kadence-blocks')}
-										help={__(
-											'This will stick the section to viewport for the height of outer container.',
-											'kadence-blocks'
-										)}
-										checked={undefined !== sticky ? sticky : false}
-										onChange={(value) => setAttributes({ sticky: value })}
-									/>
-									{sticky && (
-										<ResponsiveRangeControls
-											label={__('Sticky Header Offset', 'kadence-blocks')}
-											value={
-												undefined !== stickyOffset && undefined !== stickyOffset[0]
-													? stickyOffset[0]
-													: ''
-											}
-											onChange={(value) => {
-												setAttributes({
-													stickyOffset: [
-														value,
-														undefined !== stickyOffset && undefined !== stickyOffset[1]
-															? stickyOffset[1]
-															: '',
-														undefined !== stickyOffset && undefined !== stickyOffset[2]
-															? stickyOffset[2]
-															: '',
-													],
-												});
-											}}
-											tabletValue={
-												undefined !== stickyOffset && undefined !== stickyOffset[1]
-													? stickyOffset[1]
-													: ''
-											}
-											onChangeTablet={(value) => {
-												setAttributes({
-													stickyOffset: [
+								{!isSiteStylesPanel && (
+									<>
+										<KadencePanelBody
+											title={__('Sticky Settings', 'kadence-blocks')}
+											initialOpen={false}
+											panelName={'kb-col-sticky-settings'}
+										>
+											<ToggleControl
+												label={__('Make sticky', 'kadence-blocks')}
+												help={__(
+													'This will stick the section to viewport for the height of outer container.',
+													'kadence-blocks'
+												)}
+												checked={undefined !== sticky ? sticky : false}
+												onChange={(value) => setAttributes({ sticky: value })}
+											/>
+											{sticky && (
+												<ResponsiveRangeControls
+													label={__('Sticky Header Offset', 'kadence-blocks')}
+													value={
 														undefined !== stickyOffset && undefined !== stickyOffset[0]
 															? stickyOffset[0]
-															: '',
-														value,
-														undefined !== stickyOffset && undefined !== stickyOffset[2]
-															? stickyOffset[2]
-															: '',
-													],
-												});
-											}}
-											mobileValue={
-												undefined !== stickyOffset && undefined !== stickyOffset[2]
-													? stickyOffset[2]
-													: ''
-											}
-											onChangeMobile={(value) => {
-												setAttributes({
-													stickyOffset: [
-														undefined !== stickyOffset && undefined !== stickyOffset[0]
-															? stickyOffset[0]
-															: '',
+															: ''
+													}
+													onChange={(value) => {
+														setAttributes({
+															stickyOffset: [
+																value,
+																undefined !== stickyOffset &&
+																undefined !== stickyOffset[1]
+																	? stickyOffset[1]
+																	: '',
+																undefined !== stickyOffset &&
+																undefined !== stickyOffset[2]
+																	? stickyOffset[2]
+																	: '',
+															],
+														});
+													}}
+													tabletValue={
 														undefined !== stickyOffset && undefined !== stickyOffset[1]
 															? stickyOffset[1]
-															: '',
-														value,
-													],
-												});
-											}}
-											min={0}
-											max={stickyOffsetUnit === 'px' ? 2000 : 100}
-											step={1}
-											unit={stickyOffsetUnit ? stickyOffsetUnit : 'px'}
-											onUnit={(value) => {
-												setAttributes({ stickyOffsetUnit: value });
-											}}
-											units={['px', 'rem', 'vh']}
-											defaultValue={1}
-											reset={true}
+															: ''
+													}
+													onChangeTablet={(value) => {
+														setAttributes({
+															stickyOffset: [
+																undefined !== stickyOffset &&
+																undefined !== stickyOffset[0]
+																	? stickyOffset[0]
+																	: '',
+																value,
+																undefined !== stickyOffset &&
+																undefined !== stickyOffset[2]
+																	? stickyOffset[2]
+																	: '',
+															],
+														});
+													}}
+													mobileValue={
+														undefined !== stickyOffset && undefined !== stickyOffset[2]
+															? stickyOffset[2]
+															: ''
+													}
+													onChangeMobile={(value) => {
+														setAttributes({
+															stickyOffset: [
+																undefined !== stickyOffset &&
+																undefined !== stickyOffset[0]
+																	? stickyOffset[0]
+																	: '',
+																undefined !== stickyOffset &&
+																undefined !== stickyOffset[1]
+																	? stickyOffset[1]
+																	: '',
+																value,
+															],
+														});
+													}}
+													min={0}
+													max={stickyOffsetUnit === 'px' ? 2000 : 100}
+													step={1}
+													unit={stickyOffsetUnit ? stickyOffsetUnit : 'px'}
+													onUnit={(value) => {
+														setAttributes({ stickyOffsetUnit: value });
+													}}
+													units={['px', 'rem', 'vh']}
+													defaultValue={1}
+													reset={true}
+												/>
+											)}
+										</KadencePanelBody>
+										<KadencePanelBody
+											title={__('Visibility Settings', 'kadence-blocks')}
+											panelName={'kb-col-visibility-settings'}
+											initialOpen={false}
+										>
+											<ToggleControl
+												label={__('Hide on Desktop', 'kadence-blocks')}
+												checked={undefined !== vsdesk ? vsdesk : false}
+												onChange={(value) => setAttributes({ vsdesk: value })}
+											/>
+											<ToggleControl
+												label={__('Hide on Tablet', 'kadence-blocks')}
+												checked={undefined !== vstablet ? vstablet : false}
+												onChange={(value) => setAttributes({ vstablet: value })}
+											/>
+											<ToggleControl
+												label={__('Hide on Mobile', 'kadence-blocks')}
+												checked={undefined !== vsmobile ? vsmobile : false}
+												onChange={(value) => setAttributes({ vsmobile: value })}
+											/>
+										</KadencePanelBody>
+										{inFormBlock && <KadenceFormConditionals {...props} />}
+										<KadenceBlockDefaults
+											attributes={attributes}
+											defaultAttributes={metadata.attributes}
+											blockSlug={metadata.name}
+											excludedAttrs={nonTransAttrs}
 										/>
-									)}
-								</KadencePanelBody>
-								<KadencePanelBody
-									title={__('Visibility Settings', 'kadence-blocks')}
-									panelName={'kb-col-visibility-settings'}
-									initialOpen={false}
-								>
-									<ToggleControl
-										label={__('Hide on Desktop', 'kadence-blocks')}
-										checked={undefined !== vsdesk ? vsdesk : false}
-										onChange={(value) => setAttributes({ vsdesk: value })}
-									/>
-									<ToggleControl
-										label={__('Hide on Tablet', 'kadence-blocks')}
-										checked={undefined !== vstablet ? vstablet : false}
-										onChange={(value) => setAttributes({ vstablet: value })}
-									/>
-									<ToggleControl
-										label={__('Hide on Mobile', 'kadence-blocks')}
-										checked={undefined !== vsmobile ? vsmobile : false}
-										onChange={(value) => setAttributes({ vsmobile: value })}
-									/>
-								</KadencePanelBody>
-								{inFormBlock && <KadenceFormConditionals {...props} />}
-								<KadenceBlockDefaults
-									attributes={attributes}
-									defaultAttributes={metadata.attributes}
-									blockSlug={metadata.name}
-									excludedAttrs={nonTransAttrs}
-								/>
+									</>
+								)}
 							</>
 						)}
 
@@ -2820,13 +2867,17 @@ function SectionEdit(props) {
 									<HoverToggleControl
 										hover={
 											<>
-												<BackgroundTypeControl
-													label={__('Hover Type', 'kadence-blocks')}
-													type={backgroundHoverType ? backgroundHoverType : 'normal'}
-													onChange={(value) => setAttributes({ backgroundHoverType: value })}
-													allowedTypes={['normal', 'gradient']}
-												/>
-												{'gradient' === backgroundHoverType && (
+												{!isSiteStylesPanel && (
+													<BackgroundTypeControl
+														label={__('Hover Type', 'kadence-blocks')}
+														type={backgroundHoverType ? backgroundHoverType : 'normal'}
+														onChange={(value) =>
+															setAttributes({ backgroundHoverType: value })
+														}
+														allowedTypes={['normal', 'gradient']}
+													/>
+												)}
+												{!isSiteStylesPanel && 'gradient' === backgroundHoverType && (
 													<GradientControl
 														value={gradientHover}
 														onChange={(value) => setAttributes({ gradientHover: value })}
@@ -2853,113 +2904,117 @@ function SectionEdit(props) {
 															onClear={() => setAttributes({ backgroundHover: '' })}
 															resolveLiteral={resolveColorLiteral}
 														/>
-														<KadenceBackgroundControl
-															label={__('Background Image', 'kadence-blocks')}
-															hasImage={hasHoverBackgroundImage}
-															imageURL={
-																backgroundImgHover &&
-																backgroundImgHover[0] &&
-																backgroundImgHover[0].bgImg
-																	? backgroundImgHover[0].bgImg
-																	: ''
-															}
-															imageID={
-																backgroundImgHover &&
-																backgroundImgHover[0] &&
-																backgroundImgHover[0].bgImgID
-																	? backgroundImgHover[0].bgImgID
-																	: ''
-															}
-															imagePosition={
-																backgroundImgHover &&
-																backgroundImgHover[0] &&
-																backgroundImgHover[0].bgImgPosition
-																	? backgroundImgHover[0].bgImgPosition
-																	: 'center center'
-															}
-															imageSize={
-																backgroundImgHover &&
-																backgroundImgHover[0] &&
-																backgroundImgHover[0].bgImgSize
-																	? backgroundImgHover[0].bgImgSize
-																	: 'cover'
-															}
-															imageRepeat={
-																backgroundImgHover &&
-																backgroundImgHover[0] &&
-																backgroundImgHover[0].bgImgRepeat
-																	? backgroundImgHover[0].bgImgRepeat
-																	: 'no-repeat'
-															}
-															imageAttachment={
-																backgroundImgHover &&
-																backgroundImgHover[0] &&
-																backgroundImgHover[0].bgImgAttachment
-																	? backgroundImgHover[0].bgImgAttachment
-																	: 'scroll'
-															}
-															onRemoveImage={onRemoveHoverBGImage}
-															onSaveImage={(img) => {
-																saveHoverBackgroundImage({
-																	bgImgID: img.id,
-																	bgImg: img.url,
-																});
-															}}
-															onSaveURL={(newURL) => {
-																if (
-																	newURL !==
-																	(backgroundImgHover &&
+														{!isSiteStylesPanel && (
+															<KadenceBackgroundControl
+																label={__('Background Image', 'kadence-blocks')}
+																hasImage={hasHoverBackgroundImage}
+																imageURL={
+																	backgroundImgHover &&
 																	backgroundImgHover[0] &&
 																	backgroundImgHover[0].bgImg
 																		? backgroundImgHover[0].bgImg
-																		: '')
-																) {
-																	saveHoverBackgroundImage({
-																		bgImgID: undefined,
-																		bgImg: newURL,
-																	});
+																		: ''
 																}
-															}}
-															onSavePosition={(value) =>
-																saveHoverBackgroundImage({ bgImgPosition: value })
-															}
-															onSaveSize={(value) =>
-																saveHoverBackgroundImage({ bgImgSize: value })
-															}
-															onSaveRepeat={(value) =>
-																saveHoverBackgroundImage({ bgImgRepeat: value })
-															}
-															onSaveAttachment={(value) =>
-																saveHoverBackgroundImage({ bgImgAttachment: value })
-															}
-															disableMediaButtons={
-																backgroundImgHover &&
-																backgroundImgHover[0] &&
-																backgroundImgHover[0].bgImg
-																	? backgroundImgHover[0].bgImg
-																	: ''
-															}
-															dynamicAttribute="backgroundImgHover:0:bgImg"
-															isSelected={isSelected}
-															attributes={attributes}
-															setAttributes={setAttributes}
-															name={'kadence/column'}
-															clientId={clientId}
-															context={context}
-														/>
+																imageID={
+																	backgroundImgHover &&
+																	backgroundImgHover[0] &&
+																	backgroundImgHover[0].bgImgID
+																		? backgroundImgHover[0].bgImgID
+																		: ''
+																}
+																imagePosition={
+																	backgroundImgHover &&
+																	backgroundImgHover[0] &&
+																	backgroundImgHover[0].bgImgPosition
+																		? backgroundImgHover[0].bgImgPosition
+																		: 'center center'
+																}
+																imageSize={
+																	backgroundImgHover &&
+																	backgroundImgHover[0] &&
+																	backgroundImgHover[0].bgImgSize
+																		? backgroundImgHover[0].bgImgSize
+																		: 'cover'
+																}
+																imageRepeat={
+																	backgroundImgHover &&
+																	backgroundImgHover[0] &&
+																	backgroundImgHover[0].bgImgRepeat
+																		? backgroundImgHover[0].bgImgRepeat
+																		: 'no-repeat'
+																}
+																imageAttachment={
+																	backgroundImgHover &&
+																	backgroundImgHover[0] &&
+																	backgroundImgHover[0].bgImgAttachment
+																		? backgroundImgHover[0].bgImgAttachment
+																		: 'scroll'
+																}
+																onRemoveImage={onRemoveHoverBGImage}
+																onSaveImage={(img) => {
+																	saveHoverBackgroundImage({
+																		bgImgID: img.id,
+																		bgImg: img.url,
+																	});
+																}}
+																onSaveURL={(newURL) => {
+																	if (
+																		newURL !==
+																		(backgroundImgHover &&
+																		backgroundImgHover[0] &&
+																		backgroundImgHover[0].bgImg
+																			? backgroundImgHover[0].bgImg
+																			: '')
+																	) {
+																		saveHoverBackgroundImage({
+																			bgImgID: undefined,
+																			bgImg: newURL,
+																		});
+																	}
+																}}
+																onSavePosition={(value) =>
+																	saveHoverBackgroundImage({ bgImgPosition: value })
+																}
+																onSaveSize={(value) =>
+																	saveHoverBackgroundImage({ bgImgSize: value })
+																}
+																onSaveRepeat={(value) =>
+																	saveHoverBackgroundImage({ bgImgRepeat: value })
+																}
+																onSaveAttachment={(value) =>
+																	saveHoverBackgroundImage({ bgImgAttachment: value })
+																}
+																disableMediaButtons={
+																	backgroundImgHover &&
+																	backgroundImgHover[0] &&
+																	backgroundImgHover[0].bgImg
+																		? backgroundImgHover[0].bgImg
+																		: ''
+																}
+																dynamicAttribute="backgroundImgHover:0:bgImg"
+																isSelected={isSelected}
+																attributes={attributes}
+																setAttributes={setAttributes}
+																name={'kadence/column'}
+																clientId={clientId}
+																context={context}
+															/>
+														)}
 													</>
 												)}
 											</>
 										}
 										normal={
 											<>
-												<BackgroundTypeControl
-													label={__('Type', 'kadence-blocks')}
-													type={backgroundType ? backgroundType : 'normal'}
-													onChange={(value) => setAttributes({ backgroundType: value })}
-													allowedTypes={['normal', 'gradient']}
-												/>
-												{'gradient' === backgroundType && (
+												{!isSiteStylesPanel && (
+													<BackgroundTypeControl
+														label={__('Type', 'kadence-blocks')}
+														type={backgroundType ? backgroundType : 'normal'}
+														onChange={(value) => setAttributes({ backgroundType: value })}
+														allowedTypes={['normal', 'gradient']}
+													/>
+												)}
+												{!isSiteStylesPanel && 'gradient' === backgroundType && (
 													<GradientControl
 														value={gradient}
 														onChange={(value) => setAttributes({ gradient: value })}
@@ -3006,100 +3061,102 @@ function SectionEdit(props) {
 																step={0.01}
 															/>
 														)}
-														<KadenceBackgroundControl
-															label={__('Background Image', 'kadence-blocks')}
-															hasImage={hasBackgroundImage}
-															imageURL={
-																backgroundImg &&
-																backgroundImg[0] &&
-																backgroundImg[0].bgImg
-																	? backgroundImg[0].bgImg
-																	: ''
-															}
-															imageID={
-																backgroundImg &&
-																backgroundImg[0] &&
-																backgroundImg[0].bgImgID
-																	? backgroundImg[0].bgImgID
-																	: ''
-															}
-															imagePosition={
-																backgroundImg &&
-																backgroundImg[0] &&
-																backgroundImg[0].bgImgPosition
-																	? backgroundImg[0].bgImgPosition
-																	: 'center center'
-															}
-															imageSize={
-																backgroundImg &&
-																backgroundImg[0] &&
-																backgroundImg[0].bgImgSize
-																	? backgroundImg[0].bgImgSize
-																	: 'cover'
-															}
-															imageRepeat={
-																backgroundImg &&
-																backgroundImg[0] &&
-																backgroundImg[0].bgImgRepeat
-																	? backgroundImg[0].bgImgRepeat
-																	: 'no-repeat'
-															}
-															imageAttachment={
-																backgroundImg &&
-																backgroundImg[0] &&
-																backgroundImg[0].bgImgAttachment
-																	? backgroundImg[0].bgImgAttachment
-																	: 'scroll'
-															}
-															onRemoveImage={onRemoveBGImage}
-															onSaveImage={(img) => {
-																saveBackgroundImage({
-																	bgImgID: img.id,
-																	bgImg: img.url,
-																});
-															}}
-															onSaveURL={(newURL) => {
-																if (
-																	newURL !==
-																	(backgroundImg &&
+														{!isSiteStylesPanel && (
+															<KadenceBackgroundControl
+																label={__('Background Image', 'kadence-blocks')}
+																hasImage={hasBackgroundImage}
+																imageURL={
+																	backgroundImg &&
 																	backgroundImg[0] &&
 																	backgroundImg[0].bgImg
 																		? backgroundImg[0].bgImg
-																		: '')
-																) {
-																	saveBackgroundImage({
-																		bgImgID: undefined,
-																		bgImg: newURL,
-																	});
+																		: ''
 																}
-															}}
-															onSavePosition={(value) =>
-																saveBackgroundImage({ bgImgPosition: value })
-															}
-															onSaveSize={(value) =>
-																saveBackgroundImage({ bgImgSize: value })
-															}
-															onSaveRepeat={(value) =>
-																saveBackgroundImage({ bgImgRepeat: value })
-															}
-															onSaveAttachment={(value) =>
-																saveBackgroundImage({ bgImgAttachment: value })
-															}
-															disableMediaButtons={
-																backgroundImg &&
-																backgroundImg[0] &&
-																backgroundImg[0].bgImg
-																	? backgroundImg[0].bgImg
-																	: ''
-															}
-															dynamicAttribute="backgroundImg:0:bgImg"
-															isSelected={isSelected}
-															attributes={attributes}
-															setAttributes={setAttributes}
-															name={'kadence/column'}
-															clientId={clientId}
-															context={context}
-														/>
+																imageID={
+																	backgroundImg &&
+																	backgroundImg[0] &&
+																	backgroundImg[0].bgImgID
+																		? backgroundImg[0].bgImgID
+																		: ''
+																}
+																imagePosition={
+																	backgroundImg &&
+																	backgroundImg[0] &&
+																	backgroundImg[0].bgImgPosition
+																		? backgroundImg[0].bgImgPosition
+																		: 'center center'
+																}
+																imageSize={
+																	backgroundImg &&
+																	backgroundImg[0] &&
+																	backgroundImg[0].bgImgSize
+																		? backgroundImg[0].bgImgSize
+																		: 'cover'
+																}
+																imageRepeat={
+																	backgroundImg &&
+																	backgroundImg[0] &&
+																	backgroundImg[0].bgImgRepeat
+																		? backgroundImg[0].bgImgRepeat
+																		: 'no-repeat'
+																}
+																imageAttachment={
+																	backgroundImg &&
+																	backgroundImg[0] &&
+																	backgroundImg[0].bgImgAttachment
+																		? backgroundImg[0].bgImgAttachment
+																		: 'scroll'
+																}
+																onRemoveImage={onRemoveBGImage}
+																onSaveImage={(img) => {
+																	saveBackgroundImage({
+																		bgImgID: img.id,
+																		bgImg: img.url,
+																	});
+																}}
+																onSaveURL={(newURL) => {
+																	if (
+																		newURL !==
+																		(backgroundImg &&
+																		backgroundImg[0] &&
+																		backgroundImg[0].bgImg
+																			? backgroundImg[0].bgImg
+																			: '')
+																	) {
+																		saveBackgroundImage({
+																			bgImgID: undefined,
+																			bgImg: newURL,
+																		});
+																	}
+																}}
+																onSavePosition={(value) =>
+																	saveBackgroundImage({ bgImgPosition: value })
+																}
+																onSaveSize={(value) =>
+																	saveBackgroundImage({ bgImgSize: value })
+																}
+																onSaveRepeat={(value) =>
+																	saveBackgroundImage({ bgImgRepeat: value })
+																}
+																onSaveAttachment={(value) =>
+																	saveBackgroundImage({ bgImgAttachment: value })
+																}
+																disableMediaButtons={
+																	backgroundImg &&
+																	backgroundImg[0] &&
+																	backgroundImg[0].bgImg
+																		? backgroundImg[0].bgImg
+																		: ''
+																}
+																dynamicAttribute="backgroundImg:0:bgImg"
+																isSelected={isSelected}
+																attributes={attributes}
+																setAttributes={setAttributes}
+																name={'kadence/column'}
+																clientId={clientId}
+																context={context}
+															/>
+														)}
 													</>
 												)}
 											</>
@@ -3107,311 +3164,327 @@ function SectionEdit(props) {
 									/>
 								</KadencePanelBody>
 
-								<>
-									{applyFilters(
-										'kadence.styleControlsBackdropFilter',
-										styleControlsBackdropFilter,
-										props
-									)}
-								</>
+								{!isSiteStylesPanel && (
+									<>
+										{applyFilters(
+											'kadence.styleControlsBackdropFilter',
+											styleControlsBackdropFilter,
+											props
+										)}
+									</>
+								)}
 
-								<KadencePanelBody
-									title={__('Background Overlay', 'kadence-blocks')}
-									initialOpen={false}
-									panelName={'kb-col-bg-overlay-settings'}
-								>
-									<HoverToggleControl
-										hover={
-											<>
-												<BackgroundTypeControl
-													label={__('Hover Type', 'kadence-blocks')}
-													type={overlayHoverType ? overlayHoverType : 'normal'}
-													onChange={(value) => setAttributes({ overlayHoverType: value })}
-													allowedTypes={['normal', 'gradient']}
-												/>
-												<RangeControl
-													label={__('Overlay Opacity', 'kadence-blocks')}
-													value={overlayHoverOpacity}
-													onChange={(value) => {
-														setAttributes({
-															overlayHoverOpacity: value,
-														});
-													}}
-													step={0.01}
-													min={0}
-													max={1}
-													reset={true}
-												/>
-												{'gradient' === overlayHoverType && (
-													<GradientControl
-														value={overlayGradientHover}
-														onChange={(value) =>
-															setAttributes({ overlayGradientHover: value })
-														}
-														gradients={[]}
+								{!isSiteStylesPanel && (
+									<KadencePanelBody
+										title={__('Background Overlay', 'kadence-blocks')}
+										initialOpen={false}
+										panelName={'kb-col-bg-overlay-settings'}
+									>
+										<HoverToggleControl
+											hover={
+												<>
+													<BackgroundTypeControl
+														label={__('Hover Type', 'kadence-blocks')}
+														type={overlayHoverType ? overlayHoverType : 'normal'}
+														onChange={(value) => setAttributes({ overlayHoverType: value })}
+														allowedTypes={['normal', 'gradient']}
 													/>
-												)}
-												{'gradient' !== overlayHoverType && (
-													<>
-														<PopColorControl
-															label={__('Background Color', 'kadence-blocks')}
-															value={overlayHover ? overlayHover : ''}
-															default={''}
-															onChange={(value) => setAttributes({ overlayHover: value })}
+													<RangeControl
+														label={__('Overlay Opacity', 'kadence-blocks')}
+														value={overlayHoverOpacity}
+														onChange={(value) => {
+															setAttributes({
+																overlayHoverOpacity: value,
+															});
+														}}
+														step={0.01}
+														min={0}
+														max={1}
+														reset={true}
+													/>
+													{'gradient' === overlayHoverType && (
+														<GradientControl
+															value={overlayGradientHover}
+															onChange={(value) =>
+																setAttributes({ overlayGradientHover: value })
+															}
+															gradients={[]}
 														/>
-														<KadenceBackgroundControl
-															label={__('Background Image', 'kadence-blocks')}
-															hasImage={hasHoverOverlayImage}
-															imageURL={
-																overlayImgHover &&
-																overlayImgHover[0] &&
-																overlayImgHover[0].bgImg
-																	? overlayImgHover[0].bgImg
-																	: ''
-															}
-															imageID={
-																overlayImgHover &&
-																overlayImgHover[0] &&
-																overlayImgHover[0].bgImgID
-																	? overlayImgHover[0].bgImgID
-																	: ''
-															}
-															imagePosition={
-																overlayImgHover &&
-																overlayImgHover[0] &&
-																overlayImgHover[0].bgImgPosition
-																	? overlayImgHover[0].bgImgPosition
-																	: 'center center'
-															}
-															imageSize={
-																overlayImgHover &&
-																overlayImgHover[0] &&
-																overlayImgHover[0].bgImgSize
-																	? overlayImgHover[0].bgImgSize
-																	: 'cover'
-															}
-															imageRepeat={
-																overlayImgHover &&
-																overlayImgHover[0] &&
-																overlayImgHover[0].bgImgRepeat
-																	? overlayImgHover[0].bgImgRepeat
-																	: 'no-repeat'
-															}
-															imageAttachment={
-																overlayImgHover &&
-																overlayImgHover[0] &&
-																overlayImgHover[0].bgImgAttachment
-																	? overlayImgHover[0].bgImgAttachment
-																	: 'scroll'
-															}
-															onRemoveImage={onRemoveHoverOverlayImage}
-															onSaveImage={(img) => {
-																saveHoverOverlayImage({
-																	bgImgID: img.id,
-																	bgImg: img.url,
-																});
-															}}
-															onSaveURL={(newURL) => {
-																if (
-																	newURL !==
-																	(overlayImgHover &&
+													)}
+													{'gradient' !== overlayHoverType && (
+														<>
+															<PopColorControl
+																label={__('Background Color', 'kadence-blocks')}
+																value={overlayHover ? overlayHover : ''}
+																default={''}
+																onChange={(value) =>
+																	setAttributes({ overlayHover: value })
+																}
+															/>
+															<KadenceBackgroundControl
+																label={__('Background Image', 'kadence-blocks')}
+																hasImage={hasHoverOverlayImage}
+																imageURL={
+																	overlayImgHover &&
 																	overlayImgHover[0] &&
 																	overlayImgHover[0].bgImg
 																		? overlayImgHover[0].bgImg
-																		: '')
-																) {
+																		: ''
+																}
+																imageID={
+																	overlayImgHover &&
+																	overlayImgHover[0] &&
+																	overlayImgHover[0].bgImgID
+																		? overlayImgHover[0].bgImgID
+																		: ''
+																}
+																imagePosition={
+																	overlayImgHover &&
+																	overlayImgHover[0] &&
+																	overlayImgHover[0].bgImgPosition
+																		? overlayImgHover[0].bgImgPosition
+																		: 'center center'
+																}
+																imageSize={
+																	overlayImgHover &&
+																	overlayImgHover[0] &&
+																	overlayImgHover[0].bgImgSize
+																		? overlayImgHover[0].bgImgSize
+																		: 'cover'
+																}
+																imageRepeat={
+																	overlayImgHover &&
+																	overlayImgHover[0] &&
+																	overlayImgHover[0].bgImgRepeat
+																		? overlayImgHover[0].bgImgRepeat
+																		: 'no-repeat'
+																}
+																imageAttachment={
+																	overlayImgHover &&
+																	overlayImgHover[0] &&
+																	overlayImgHover[0].bgImgAttachment
+																		? overlayImgHover[0].bgImgAttachment
+																		: 'scroll'
+																}
+																onRemoveImage={onRemoveHoverOverlayImage}
+																onSaveImage={(img) => {
 																	saveHoverOverlayImage({
-																		bgImgID: undefined,
-																		bgImg: newURL,
+																		bgImgID: img.id,
+																		bgImg: img.url,
 																	});
+																}}
+																onSaveURL={(newURL) => {
+																	if (
+																		newURL !==
+																		(overlayImgHover &&
+																		overlayImgHover[0] &&
+																		overlayImgHover[0].bgImg
+																			? overlayImgHover[0].bgImg
+																			: '')
+																	) {
+																		saveHoverOverlayImage({
+																			bgImgID: undefined,
+																			bgImg: newURL,
+																		});
+																	}
+																}}
+																onSavePosition={(value) =>
+																	saveHoverOverlayImage({ bgImgPosition: value })
 																}
-															}}
-															onSavePosition={(value) =>
-																saveHoverOverlayImage({ bgImgPosition: value })
-															}
-															onSaveSize={(value) =>
-																saveHoverOverlayImage({ bgImgSize: value })
-															}
-															onSaveRepeat={(value) =>
-																saveHoverOverlayImage({ bgImgRepeat: value })
-															}
-															onSaveAttachment={(value) =>
-																saveHoverOverlayImage({ bgImgAttachment: value })
-															}
-															disableMediaButtons={
-																overlayImgHover &&
-																overlayImgHover[0] &&
-																overlayImgHover[0].bgImg
-																	? overlayImgHover[0].bgImg
-																	: ''
-															}
-															dynamicAttribute="overlayImgHover:0:bgImg"
-															isSelected={isSelected}
-															attributes={attributes}
-															setAttributes={setAttributes}
-															name={'kadence/column'}
-															clientId={clientId}
-															context={context}
-														/>
-														<SelectControl
-															label={__('Hover Blend Mode', 'kadence-blocks')}
-															value={
-																hoverOverlayBlendMode ? hoverOverlayBlendMode : 'none'
-															}
-															options={BLEND_OPTIONS}
-															onChange={(value) =>
-																setAttributes({ hoverOverlayBlendMode: value })
-															}
-														/>
-														<p>
-															{__(
-																'Notice: Blend Mode not supported in all browsers',
-																'kadence-blocks'
-															)}
-														</p>
-													</>
-												)}
-											</>
-										}
-										normal={
-											<>
-												<BackgroundTypeControl
-													label={__('Type', 'kadence-blocks')}
-													type={overlayType ? overlayType : 'normal'}
-													onChange={(value) => setAttributes({ overlayType: value })}
-													allowedTypes={['normal', 'gradient']}
-												/>
-												<RangeControl
-													label={__('Overlay Opacity', 'kadence-blocks')}
-													value={overlayOpacity}
-													defaultValue={metadata.attributes.overlayOpacity.default}
-													onChange={(value) => {
-														setAttributes({
-															overlayOpacity: value,
-														});
-													}}
-													step={0.01}
-													min={0}
-													max={1}
-													reset={true}
-												/>
-												{'gradient' === overlayType && (
-													<GradientControl
-														value={overlayGradient}
-														onChange={(value) => setAttributes({ overlayGradient: value })}
-														gradients={[]}
+																onSaveSize={(value) =>
+																	saveHoverOverlayImage({ bgImgSize: value })
+																}
+																onSaveRepeat={(value) =>
+																	saveHoverOverlayImage({ bgImgRepeat: value })
+																}
+																onSaveAttachment={(value) =>
+																	saveHoverOverlayImage({ bgImgAttachment: value })
+																}
+																disableMediaButtons={
+																	overlayImgHover &&
+																	overlayImgHover[0] &&
+																	overlayImgHover[0].bgImg
+																		? overlayImgHover[0].bgImg
+																		: ''
+																}
+																dynamicAttribute="overlayImgHover:0:bgImg"
+																isSelected={isSelected}
+																attributes={attributes}
+																setAttributes={setAttributes}
+																name={'kadence/column'}
+																clientId={clientId}
+																context={context}
+															/>
+															<SelectControl
+																label={__('Hover Blend Mode', 'kadence-blocks')}
+																value={
+																	hoverOverlayBlendMode
+																		? hoverOverlayBlendMode
+																		: 'none'
+																}
+																options={BLEND_OPTIONS}
+																onChange={(value) =>
+																	setAttributes({ hoverOverlayBlendMode: value })
+																}
+															/>
+															<p>
+																{__(
+																	'Notice: Blend Mode not supported in all browsers',
+																	'kadence-blocks'
+																)}
+															</p>
+														</>
+													)}
+												</>
+											}
+											normal={
+												<>
+													<BackgroundTypeControl
+														label={__('Type', 'kadence-blocks')}
+														type={overlayType ? overlayType : 'normal'}
+														onChange={(value) => setAttributes({ overlayType: value })}
+														allowedTypes={['normal', 'gradient']}
 													/>
-												)}
-												{'gradient' !== overlayType && (
-													<>
-														<PopColorControl
-															label={__('Background Color', 'kadence-blocks')}
-															value={overlay ? overlay : ''}
-															default={''}
-															onChange={(value) => setAttributes({ overlay: value })}
-														/>
-														<KadenceBackgroundControl
-															label={__('Background Image', 'kadence-blocks')}
-															hasImage={hasOverlayImage}
-															imageURL={
-																overlayImg && overlayImg[0] && overlayImg[0].bgImg
-																	? overlayImg[0].bgImg
-																	: ''
-															}
-															imageID={
-																overlayImg && overlayImg[0] && overlayImg[0].bgImgID
-																	? overlayImg[0].bgImgID
-																	: ''
-															}
-															imagePosition={
-																overlayImg &&
-																overlayImg[0] &&
-																overlayImg[0].bgImgPosition
-																	? overlayImg[0].bgImgPosition
-																	: 'center center'
-															}
-															imageSize={
-																overlayImg && overlayImg[0] && overlayImg[0].bgImgSize
-																	? overlayImg[0].bgImgSize
-																	: 'cover'
-															}
-															imageRepeat={
-																overlayImg && overlayImg[0] && overlayImg[0].bgImgRepeat
-																	? overlayImg[0].bgImgRepeat
-																	: 'no-repeat'
-															}
-															imageAttachment={
-																overlayImg &&
-																overlayImg[0] &&
-																overlayImg[0].bgImgAttachment
-																	? overlayImg[0].bgImgAttachment
-																	: 'scroll'
-															}
-															onRemoveImage={onRemoveOverlayImage}
-															onSaveImage={(img) => {
-																saveOverlayImage({
-																	bgImgID: img.id,
-																	bgImg: img.url,
-																});
-															}}
-															onSaveURL={(newURL) => {
-																if (
-																	newURL !==
-																	(overlayImg && overlayImg[0] && overlayImg[0].bgImg
-																		? overlayImg[0].bgImg
-																		: '')
-																) {
-																	saveOverlayImage({
-																		bgImgID: undefined,
-																		bgImg: newURL,
-																	});
-																}
-															}}
-															onSavePosition={(value) =>
-																saveOverlayImage({ bgImgPosition: value })
-															}
-															onSaveSize={(value) =>
-																saveOverlayImage({ bgImgSize: value })
-															}
-															onSaveRepeat={(value) =>
-																saveOverlayImage({ bgImgRepeat: value })
-															}
-															onSaveAttachment={(value) =>
-																saveOverlayImage({ bgImgAttachment: value })
-															}
-															disableMediaButtons={
-																overlayImg && overlayImg[0] && overlayImg[0].bgImg
-																	? overlayImg[0].bgImg
-																	: ''
-															}
-															dynamicAttribute="overlayImg:0:bgImg"
-															isSelected={isSelected}
-															attributes={attributes}
-															setAttributes={setAttributes}
-															name={'kadence/column'}
-															clientId={clientId}
-															context={context}
-														/>
-														<SelectControl
-															label={__('Blend Mode', 'kadence-blocks')}
-															value={overlayBlendMode ? overlayBlendMode : 'none'}
-															options={BLEND_OPTIONS}
+													<RangeControl
+														label={__('Overlay Opacity', 'kadence-blocks')}
+														value={overlayOpacity}
+														defaultValue={metadata.attributes.overlayOpacity.default}
+														onChange={(value) => {
+															setAttributes({
+																overlayOpacity: value,
+															});
+														}}
+														step={0.01}
+														min={0}
+														max={1}
+														reset={true}
+													/>
+													{'gradient' === overlayType && (
+														<GradientControl
+															value={overlayGradient}
 															onChange={(value) =>
-																setAttributes({ overlayBlendMode: value })
+																setAttributes({ overlayGradient: value })
 															}
+															gradients={[]}
 														/>
-														<p>
-															{__(
-																'Notice: Blend Mode not supported in all browsers',
-																'kadence-blocks'
-															)}
-														</p>
-													</>
-												)}
-											</>
-										}
-									/>
-								</KadencePanelBody>
+													)}
+													{'gradient' !== overlayType && (
+														<>
+															<PopColorControl
+																label={__('Background Color', 'kadence-blocks')}
+																value={overlay ? overlay : ''}
+																default={''}
+																onChange={(value) => setAttributes({ overlay: value })}
+															/>
+															<KadenceBackgroundControl
+																label={__('Background Image', 'kadence-blocks')}
+																hasImage={hasOverlayImage}
+																imageURL={
+																	overlayImg && overlayImg[0] && overlayImg[0].bgImg
+																		? overlayImg[0].bgImg
+																		: ''
+																}
+																imageID={
+																	overlayImg && overlayImg[0] && overlayImg[0].bgImgID
+																		? overlayImg[0].bgImgID
+																		: ''
+																}
+																imagePosition={
+																	overlayImg &&
+																	overlayImg[0] &&
+																	overlayImg[0].bgImgPosition
+																		? overlayImg[0].bgImgPosition
+																		: 'center center'
+																}
+																imageSize={
+																	overlayImg &&
+																	overlayImg[0] &&
+																	overlayImg[0].bgImgSize
+																		? overlayImg[0].bgImgSize
+																		: 'cover'
+																}
+																imageRepeat={
+																	overlayImg &&
+																	overlayImg[0] &&
+																	overlayImg[0].bgImgRepeat
+																		? overlayImg[0].bgImgRepeat
+																		: 'no-repeat'
+																}
+																imageAttachment={
+																	overlayImg &&
+																	overlayImg[0] &&
+																	overlayImg[0].bgImgAttachment
+																		? overlayImg[0].bgImgAttachment
+																		: 'scroll'
+																}
+																onRemoveImage={onRemoveOverlayImage}
+																onSaveImage={(img) => {
+																	saveOverlayImage({
+																		bgImgID: img.id,
+																		bgImg: img.url,
+																	});
+																}}
+																onSaveURL={(newURL) => {
+																	if (
+																		newURL !==
+																		(overlayImg &&
+																		overlayImg[0] &&
+																		overlayImg[0].bgImg
+																			? overlayImg[0].bgImg
+																			: '')
+																	) {
+																		saveOverlayImage({
+																			bgImgID: undefined,
+																			bgImg: newURL,
+																		});
+																	}
+																}}
+																onSavePosition={(value) =>
+																	saveOverlayImage({ bgImgPosition: value })
+																}
+																onSaveSize={(value) =>
+																	saveOverlayImage({ bgImgSize: value })
+																}
+																onSaveRepeat={(value) =>
+																	saveOverlayImage({ bgImgRepeat: value })
+																}
+																onSaveAttachment={(value) =>
+																	saveOverlayImage({ bgImgAttachment: value })
+																}
+																disableMediaButtons={
+																	overlayImg && overlayImg[0] && overlayImg[0].bgImg
+																		? overlayImg[0].bgImg
+																		: ''
+																}
+																dynamicAttribute="overlayImg:0:bgImg"
+																isSelected={isSelected}
+																attributes={attributes}
+																setAttributes={setAttributes}
+																name={'kadence/column'}
+																clientId={clientId}
+																context={context}
+															/>
+															<SelectControl
+																label={__('Blend Mode', 'kadence-blocks')}
+																value={overlayBlendMode ? overlayBlendMode : 'none'}
+																options={BLEND_OPTIONS}
+																onChange={(value) =>
+																	setAttributes({ overlayBlendMode: value })
+																}
+															/>
+															<p>
+																{__(
+																	'Notice: Blend Mode not supported in all browsers',
+																	'kadence-blocks'
+																)}
+															</p>
+														</>
+													)}
+												</>
+											}
+										/>
+									</KadencePanelBody>
+								)}
 								<KadencePanelBody
 									title={__('Border Styles', 'kadence-blocks')}
 									initialOpen={false}
