@@ -156,6 +156,7 @@
         "phpcs",
         "phpstan",
         "pickable",
+        "plyr",
         "postfields",
         "progressbar",
         "puprc",
