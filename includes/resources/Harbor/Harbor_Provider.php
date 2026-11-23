@@ -59,7 +59,7 @@ final class Harbor_Provider extends Provider {
 			return true;
 		}
 
-		return ! kadence_blocks_is_legacy_license_authorized() && lw_harbor_is_product_license_active( 'kadence' );
+		return ! kadence_blocks_is_legacy_license_authorized() && kadence_blocks_is_harbor_license_active();
 	}
 
 	/**
@@ -74,7 +74,7 @@ final class Harbor_Provider extends Provider {
 			return $message;
 		}
 
-		if ( lw_harbor_is_product_license_active( 'kadence' ) ) {
+		if ( kadence_blocks_is_harbor_license_active() ) {
 			return __( 'We\'re building something new. Kadence AI as you know it is no longer available for new activations — but great things are on the way. Stay tuned for what\'s next.', 'kadence-blocks' );
 		}
 
