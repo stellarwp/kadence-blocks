@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.6
 Tested up to: 7.1
-Stable tag: 3.9.1
+Stable tag: 3.9.1.2
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -168,6 +168,16 @@ Please report security bugs found in the source code of the Kadence Blocks plugi
 Please report security bugs found in the Kadence Blocks plugin's source code through the Patchstack Vulnerability Disclosure Program https://patchstack.com/database/vdp/kadence-blocks. The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
 
 == Changelog ==
+
+= 3.9.1.2 =
+Release Date: 19th November 2026
+* Security: Hardened carousel setup across multiple blocks. Props to Santh for reporting.
+* Security: Improved handling of icon settings in the Icon List block.
+
+= 3.9.1.1 =
+Release Date: 16th November 2026
+* Security: Improved handling of default field values in Advanced Form.
+* Security: Improved handling of imported content in the Design Library.
 
 = 3.9.1 =
 Release Date: 11th November 2026

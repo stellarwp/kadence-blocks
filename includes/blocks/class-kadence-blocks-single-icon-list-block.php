@@ -5,6 +5,8 @@
  * @package Kadence Blocks
  */
 
+use KadenceWP\KadenceBlocks\Utils\Cast;
+
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -192,10 +194,12 @@ class Kadence_Blocks_Listitem_Block extends Kadence_Blocks_Abstract_Block {
 	/**
 	 * Return dynamically generated HTML for block
 	 *
-	 * @param $attributes
-	 * @param $unique_id
-	 * @param $content
-	 * @param WP_Block $block_instance The instance of the WP_Block class that represents the block being rendered.
+	 * @since 3.9.1.2 Sanitized the icon name and stroke width inherited from the parent list before inserting them.
+	 *
+	 * @param array<string, mixed> $attributes The block attributes.
+	 * @param string               $unique_id  The unique block ID.
+	 * @param string               $content    The rendered block content.
+	 * @param WP_Block             $block_instance The instance of the WP_Block class that represents the block being rendered.
 	 *
 	 * @return mixed
 	 */
@@ -204,17 +208,14 @@ class Kadence_Blocks_Listitem_Block extends Kadence_Blocks_Abstract_Block {
 			$this->enqueue_script( 'kadence-blocks-tippy' );
 		}
 		if ( isset( $block_instance ) && is_object( $block_instance ) && isset( $block_instance->context['kadence/listIcon'] ) ) {
-			$parent_default = $block_instance->context['kadence/listIcon'];
+			$parent_default = $this->sanitize_icon_name( $block_instance->context['kadence/listIcon'] );
 
-			$content = str_replace( 'USE_PARENT_DEFAULT_ICON', $parent_default, $content );
+			$content = str_replace( 'USE_PARENT_DEFAULT_ICON', esc_attr( $parent_default ), $content );
 		}
 		if ( isset( $block_instance ) && is_object( $block_instance ) && isset( $block_instance->context['kadence/listIconWidth'] ) ) {
-			$parent_default_width = $block_instance->context['kadence/listIconWidth'];
-			if ( empty( $parent_default_width ) ) {
-				$parent_default_width = 2;
-			}
+			$parent_default_width = $this->sanitize_icon_width( $block_instance->context['kadence/listIconWidth'] );
 
-			$content = str_replace( 'USE_PARENT_DEFAULT_WIDTH', $parent_default_width, $content );
+			$content = str_replace( 'USE_PARENT_DEFAULT_WIDTH', esc_attr( $parent_default_width ), $content );
 		}
 		return $content;
 	}
@@ -234,6 +235,35 @@ class Kadence_Blocks_Listitem_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		wp_register_script( 'kadence-blocks-popper', KADENCE_BLOCKS_URL . 'includes/assets/js/popper.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-tippy', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-tippy.min.js', array( 'kadence-blocks-popper' ), KADENCE_BLOCKS_VERSION, true );
+	}
+
+	/**
+	 * Restricts an icon name inherited from the parent list to characters valid in an icon name.
+	 *
+	 * @since 3.9.1.2
+	 *
+	 * @param mixed $icon The icon name from the parent block context.
+	 *
+	 * @return string The icon name, or an empty string when none of it is valid.
+	 */
+	private function sanitize_icon_name( $icon ): string {
+		return preg_replace( '/[^A-Za-z0-9_-]/', '', Cast::to_string( $icon ) ) ?? '';
+	}
+
+	/**
+	 * Restricts an icon stroke width inherited from the parent list to a plain number.
+	 *
+	 * @since 3.9.1.2
+	 *
+	 * @param mixed $width The stroke width from the parent block context.
+	 *
+	 * @return string The width, or the default of 2 when it is empty or not numeric.
+	 */
+	private function sanitize_icon_width( $width ): string {
+		$width = Cast::to_string( $width );
+
+		/* A width of zero is as unusable as an empty one, so it falls back to the default too. */
+		return 1 === preg_match( '/^(?!0+(\.0+)?$)\d+(\.\d+)?$/', $width ) ? $width : '2';
 	}
 }
 
