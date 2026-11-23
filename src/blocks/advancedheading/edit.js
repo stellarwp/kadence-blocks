@@ -1462,14 +1462,15 @@ function KadenceAdvancedHeading(props) {
 			if (contentHtml.querySelectorAll('.kt-typed-text')[0]) {
 				const typedElement = contentHtml.querySelectorAll('.kt-typed-text')[0];
 				const dataStrings = typedElement.getAttribute('data-strings');
-				const strings = dataStrings ? JSON.parse(dataStrings.replaceAll('&', '&amp;')) : [];
+				const strings = dataStrings ? JSON.parse(dataStrings) : [];
 
 				// Adding the default/existing string twice is required for displaying properly
-				strings.unshift(typedElement.textContent.replaceAll('&', '&amp;'));
-				strings.unshift(typedElement.textContent.replaceAll('&', '&amp;'));
+				strings.unshift(typedElement.textContent);
+				strings.unshift(typedElement.textContent);
 
 				const options = {
 					strings,
+					contentType: null,
 					cursorChar: typedElement.getAttribute('data-cursor-char')
 						? sanitizeString(typedElement.getAttribute('data-cursor-char'))
 						: '_',
