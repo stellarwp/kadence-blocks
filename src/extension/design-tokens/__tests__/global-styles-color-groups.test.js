@@ -2,7 +2,7 @@
 /**
  * Internal dependencies
  */
-import { globalStylesColorGroups } from '../global-styles-color-groups';
+import { globalStylesColorGroups, themeColorGroups } from '../global-styles-color-groups';
 
 jest.mock('@wordpress/i18n', () => ({ __: (text) => text }));
 
@@ -101,5 +101,51 @@ describe('globalStylesColorGroups', () => {
 			alias: '#7a1fa2',
 			fixed: true,
 		});
+	});
+});
+
+describe('themeColorGroups', () => {
+	/**
+	 * A non-Kadence theme color stores its literal, even when its slug looks like a Kadence palette slot.
+	 *
+	 * @return {void}
+	 */
+	it('stores the literal for a theme color whose slug looks like a palette slot', () => {
+		const [theme] = themeColorGroups(THEME);
+
+		expect(theme.swatches.map((swatch) => swatch.alias)).toEqual(['#c3e085', '#1159af']);
+	});
+
+	/**
+	 * The theme group carries no Global Styles source, so it sits beside the Style Library groups.
+	 *
+	 * @return {void}
+	 */
+	it('leaves the group without a Global Styles source', () => {
+		const [theme] = themeColorGroups(THEME);
+
+		expect(theme.id).toBe('theme');
+		expect(theme.source).toBeUndefined();
+	});
+
+	/**
+	 * A theme without colors adds no group.
+	 *
+	 * @return {void}
+	 */
+	it('returns no group when the theme has no colors', () => {
+		expect(themeColorGroups([])).toEqual([]);
+		expect(themeColorGroups(undefined)).toEqual([]);
+	});
+
+	/**
+	 * Global Styles groups keep the Kadence slot alias for a theme palette slot.
+	 *
+	 * @return {void}
+	 */
+	it('does not change the Global Styles slot alias', () => {
+		const [theme] = globalStylesColorGroups({ theme: THEME });
+
+		expect(theme.swatches.map((swatch) => swatch.alias)).toEqual(['palette1', 'palette12']);
 	});
 });

@@ -1,0 +1,4 @@
+significance: patch
+type: fix
+entry: Fixed the Kadence Blocks style library colors being added to the editor color palette of themes other than Kadence, and the Row Layout color pickers not listing the active theme's colors.
+timestamp: 2026-11-16T16:30:00.000Z
