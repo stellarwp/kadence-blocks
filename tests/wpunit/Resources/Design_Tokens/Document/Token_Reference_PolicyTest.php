@@ -185,24 +185,102 @@ final class Token_Reference_PolicyTest extends TestCase {
 	}
 
 	// -------------------------------------------------------------------------
-	// extension preset tokens map (unsupported)
+	// extension preset tokens map
 	// -------------------------------------------------------------------------
 
 	/**
+	 * A direct alias held by a block preset token is a supported reference that carries the literal key
+	 * chain, because the preset's keys contain dots and slashes a dot-path cannot address.
+	 *
 	 * @return void
 	 */
-	public function testExtensionPresetTokensMapAliasReturnsUnsupportedExtensionReference(): void {
+	public function testPresetTokenDirectAliasReturnsSupportedPresetOverrideReference(): void {
 		$id      = 'primitive.color.custom.brand';
 		$section = Extensions::get_section_presets();
 		$doc     = [
 			Extensions::get_extensions_key() => [
 				Extensions::get_namespace() => [
 					$section => [
-						'buttons' => [
+						'kadence/singlebtn' => [
 							Extensions::get_default_key() => 'default',
 							'dark'                        => [
 								Extensions::get_tokens_key() => [
-									'semantic.color.button-bg' => '{' . $id . '}',
+									'button-bg' => '{' . $id . '}',
+								],
+							],
+						],
+					],
+				],
+			],
+		];
+
+		$refs = $this->policy->find( $doc, $id );
+
+		$this->assertCount( 1, $refs );
+		$this->assertSame( Token_Reference::get_kind_preset_override(), $refs[0]->kind );
+		$this->assertTrue( $refs[0]->supported );
+		$this->assertSame(
+			[
+				Extensions::get_extensions_key(),
+				Extensions::get_namespace(),
+				$section,
+				'kadence/singlebtn',
+				'dark',
+				Extensions::get_tokens_key(),
+				'button-bg',
+			],
+			$refs[0]->keys
+		);
+	}
+
+	/**
+	 * The same direct alias under the foundation presets section is also a supported preset reference.
+	 *
+	 * @return void
+	 */
+	public function testFoundationPresetTokenDirectAliasReturnsSupportedPresetOverrideReference(): void {
+		$id  = 'primitive.color.custom.brand';
+		$doc = [
+			Extensions::get_extensions_key() => [
+				Extensions::get_namespace() => [
+					Extensions::get_section_foundation_presets() => [
+						'color' => [
+							'preset-a' => [
+								Extensions::get_tokens_key() => [
+									'semantic.color.bg' => '{' . $id . '}',
+								],
+							],
+						],
+					],
+				],
+			],
+		];
+
+		$refs = $this->policy->find( $doc, $id );
+
+		$this->assertCount( 1, $refs );
+		$this->assertSame( Token_Reference::get_kind_preset_override(), $refs[0]->kind );
+		$this->assertTrue( $refs[0]->supported );
+	}
+
+	/**
+	 * An alias nested inside a composite preset value cannot be rewritten by the cascade, so it stays an
+	 * unsupported extension reference.
+	 *
+	 * @return void
+	 */
+	public function testPresetTokenCompositeValueAliasReturnsUnsupportedExtensionReference(): void {
+		$id  = 'primitive.color.custom.brand';
+		$doc = [
+			Extensions::get_extensions_key() => [
+				Extensions::get_namespace() => [
+					Extensions::get_section_presets() => [
+						'kadence/singlebtn' => [
+							'dark' => [
+								Extensions::get_tokens_key() => [
+									'button-shadow' => [
+										'color' => '{' . $id . '}',
+									],
 								],
 							],
 						],
@@ -216,6 +294,58 @@ final class Token_Reference_PolicyTest extends TestCase {
 		$this->assertCount( 1, $refs );
 		$this->assertSame( Token_Reference::get_kind_extension(), $refs[0]->kind );
 		$this->assertFalse( $refs[0]->supported );
+	}
+
+	/**
+	 * Semantic-layer and preset aliases are the only locations a fresh write may introduce.
+	 *
+	 * @return void
+	 */
+	public function testFindDisallowedAllowsSemanticAndPresetReferences(): void {
+		$refs = [
+			new Token_Reference( Token_Reference::get_kind_semantic_override(), 'semantic.color.a', true ),
+			new Token_Reference( Token_Reference::get_kind_preset_override(), 'preset.path', true, [ 'a' ] ),
+		];
+
+		$this->assertSame( [], $this->policy->find_disallowed( $refs ) );
+	}
+
+	/**
+	 * Primitive-layer, composite and composite-preset references are returned as the blockers.
+	 *
+	 * @return void
+	 */
+	public function testFindDisallowedReturnsEveryOtherKind(): void {
+		$primitive = new Token_Reference( Token_Reference::get_kind_primitive_override(), 'primitive.color.a', true );
+		$composite = new Token_Reference( Token_Reference::get_kind_composite_field(), 'semantic.shadow.b.$value.color', false );
+		$extension = new Token_Reference( Token_Reference::get_kind_extension(), 'ext.path', false );
+		$semantic  = new Token_Reference( Token_Reference::get_kind_semantic_override(), 'semantic.color.a', true );
+
+		$this->assertSame(
+			[ $primitive, $composite, $extension ],
+			$this->policy->find_disallowed( [ $primitive, $semantic, $composite, $extension ] )
+		);
+	}
+
+	/**
+	 * The error description keeps only each reference's kind and path.
+	 *
+	 * @return void
+	 */
+	public function testDescribeReturnsKindAndPathPairs(): void {
+		$refs = [
+			new Token_Reference( Token_Reference::get_kind_preset_override(), 'preset.path', true, [ 'a', 'b' ] ),
+		];
+
+		$this->assertSame(
+			[
+				[
+					'kind' => Token_Reference::get_kind_preset_override(),
+					'path' => 'preset.path',
+				],
+			],
+			$this->policy->describe( $refs )
+		);
 	}
 
 	// -------------------------------------------------------------------------

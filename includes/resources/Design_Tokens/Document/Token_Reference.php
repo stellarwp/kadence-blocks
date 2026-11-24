@@ -37,6 +37,18 @@ final class Token_Reference {
 	public bool $supported;
 
 	/**
+	 * The literal key chain from the document root to the referencing token.
+	 *
+	 * Empty when the dot-path alone addresses the token. Set for locations whose keys carry dots or
+	 * slashes ("com.kadence.designTokens", "kadence/singlebtn"), which a dot-path cannot express.
+	 *
+	 * @since TBD
+	 *
+	 * @var string[]
+	 */
+	public array $keys;
+
+	/**
 	 * Semantic layer override with a direct $value alias.
 	 *
 	 * @since 3.8.0
@@ -73,16 +85,28 @@ final class Token_Reference {
 	private const KIND_PRIMITIVE_OVERRIDE = 'primitive_override';
 
 	/**
-	 * @since 3.8.0
+	 * Direct alias held by a block preset token under $extensions.presets or $extensions.foundationPresets.
 	 *
-	 * @param string $kind      One of the KIND_* values.
-	 * @param string $path      Canonical dot-path of the referencing token.
-	 * @param bool   $supported Whether the cascade can handle this reference.
+	 * @since TBD
+	 *
+	 * @var string
 	 */
-	public function __construct( string $kind, string $path, bool $supported ) {
+	private const KIND_PRESET_OVERRIDE = 'preset_override';
+
+	/**
+	 * @since 3.8.0
+	 * @since TBD Added the $keys parameter.
+	 *
+	 * @param string   $kind      One of the KIND_* values.
+	 * @param string   $path      Canonical dot-path of the referencing token.
+	 * @param bool     $supported Whether the cascade can handle this reference.
+	 * @param string[] $keys      Literal key chain to the token, when the dot-path cannot address it.
+	 */
+	public function __construct( string $kind, string $path, bool $supported, array $keys = [] ) {
 		$this->kind      = $kind;
 		$this->path      = $path;
 		$this->supported = $supported;
+		$this->keys      = $keys;
 	}
 
 	/**
@@ -119,5 +143,14 @@ final class Token_Reference {
 	 */
 	public static function get_kind_extension(): string {
 		return self::KIND_EXTENSION;
+	}
+
+	/**
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_kind_preset_override(): string {
+		return self::KIND_PRESET_OVERRIDE;
 	}
 }

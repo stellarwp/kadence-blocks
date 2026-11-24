@@ -4,11 +4,14 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Mutator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Reserved_Namespace;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Token_Reference;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Token_Reference_Policy;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\User_Primitive_Index;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Presets;
 use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Contracts\Controller;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Contracts\Baseline_Document;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Extensions;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Layers;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Token_Type;
 use KadenceWP\KadenceBlocks\Utils\Cast;
@@ -144,7 +147,17 @@ final class User_Primitives_Controller extends Controller {
 	private Token_Registry $registry;
 
 	/**
+	 * Reads the baseline-merged block presets for a candidate document.
+	 *
+	 * @since TBD
+	 *
+	 * @var Effective_Presets
+	 */
+	private Effective_Presets $presets;
+
+	/**
 	 * @since 3.8.0
+	 * @since TBD Added the `$presets` parameter.
 	 *
 	 * @param Document_Write_Pipeline $pipeline The shared DTCG write pipeline.
 	 * @param User_Primitive_Index    $index    Reads the userPrimitives provenance map.
@@ -152,6 +165,7 @@ final class User_Primitives_Controller extends Controller {
 	 * @param Mutator                 $mutator  Pure document transforms.
 	 * @param Baseline_Document       $baseline Baseline document.
 	 * @param Token_Registry          $registry Token registry.
+	 * @param Effective_Presets       $presets  Reads the baseline-merged block presets.
 	 */
 	public function __construct(
 		Document_Write_Pipeline $pipeline,
@@ -159,7 +173,8 @@ final class User_Primitives_Controller extends Controller {
 		Token_Reference_Policy $policy,
 		Mutator $mutator,
 		Baseline_Document $baseline,
-		Token_Registry $registry
+		Token_Registry $registry,
+		Effective_Presets $presets
 	) {
 		$this->pipeline  = $pipeline;
 		$this->index     = $index;
@@ -167,6 +182,7 @@ final class User_Primitives_Controller extends Controller {
 		$this->mutator   = $mutator;
 		$this->baseline  = $baseline;
 		$this->registry  = $registry;
+		$this->presets   = $presets;
 		$this->rest_base = 'documents';
 	}
 
@@ -238,6 +254,7 @@ final class User_Primitives_Controller extends Controller {
 	 * Return the set of alias references to a user primitive and whether deletion is safe.
 	 *
 	 * @since 3.8.0
+	 * @since TBD Reports a block's default preset as a blocker when deleting would remove it.
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -268,6 +285,23 @@ final class User_Primitives_Controller extends Controller {
 		$references  = $this->policy->find( $stored, $id );
 		$all_support = $this->policy->all_supported( $references );
 		$ref_payload = [];
+		$blockers    = [];
+
+		if ( $all_support ) {
+			[ $candidate ] = $this->apply_delete_cascade( $stored, $id, $references );
+			$default_error = $this->guard_preset_defaults( $candidate, $references );
+
+			if ( $default_error instanceof WP_Error ) {
+				$error_data  = $default_error->get_error_data();
+				$error_data  = is_array( $error_data ) ? $error_data : [];
+				$all_support = false;
+				$blockers[]  = [
+					'kind'    => 'default_preset',
+					'block'   => Cast::to_string( $error_data['block'] ?? '' ),
+					'default' => Cast::to_string( $error_data['default'] ?? '' ),
+				];
+			}
+		}
 
 		foreach ( $references as $ref ) {
 			$ref_payload[] = [
@@ -285,6 +319,7 @@ final class User_Primitives_Controller extends Controller {
 				'version'    => $this->pipeline->get_version( $slug ),
 				'deletable'  => $all_support,
 				'references' => $ref_payload,
+				'blockers'   => $blockers,
 			],
 			WP_Http::OK
 		);
@@ -416,6 +451,7 @@ final class User_Primitives_Controller extends Controller {
 	 * direct `$value` aliases.
 	 *
 	 * @since 3.8.0
+	 * @since TBD Reverts block preset tokens that use the deleted primitive.
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -485,14 +521,12 @@ final class User_Primitives_Controller extends Controller {
 			);
 		}
 
-		$candidate = $this->mutator->remove( $stored, $id );
-		$candidate = $this->index->remove( $candidate, $id );
+		[ $candidate, $reverted ] = $this->apply_delete_cascade( $stored, $id, $references );
 
-		$reverted = [];
+		$error = $this->guard_preset_defaults( $candidate, $references );
 
-		foreach ( $references as $ref ) {
-			$candidate  = $this->mutator->remove( $candidate, $ref->path );
-			$reverted[] = $ref->path;
+		if ( $error instanceof WP_Error ) {
+			return $error;
 		}
 
 		$response = $this->pipeline->validate_and_save( $candidate, $slug, '', $version );
@@ -511,11 +545,13 @@ final class User_Primitives_Controller extends Controller {
 	 * Rename a user-defined primitive and rewrite direct alias references in the primitive and
 	 * semantic layers.
 	 *
-	 * Rejects the rename when an unsupported reference exists (e.g. a composite field or an
-	 * extension preset alias) — the cascade cannot rewrite those, so proceeding would
+	 * Also rewrites direct aliases held by block preset tokens. Rejects the rename when an
+	 * unsupported reference exists (e.g. a composite field or a composite preset value) — the
+	 * cascade cannot rewrite those, so proceeding would
 	 * leave them silently pointing at an id that no longer exists.
 	 *
 	 * @since 3.8.0
+	 * @since TBD Rewrites aliases held by block preset tokens.
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -623,6 +659,15 @@ final class User_Primitives_Controller extends Controller {
 		$rewritten = [];
 		$candidate = $this->rewrite_aliases( $candidate, $old_alias, $new_alias, $rewritten );
 
+		foreach ( $references as $ref ) {
+			if ( $ref->keys === [] ) {
+				continue;
+			}
+
+			$candidate   = $this->replace_at_keys( $candidate, $ref->keys, $new_alias );
+			$rewritten[] = $ref->path;
+		}
+
 		// The gate above already required every reference to be rewritable, and rewrite_aliases()
 		// just rewrote them, so skip the pipeline's own unsupported-reference check: it would
 		// otherwise reject the primitive-layer alias this cascade just finished rewriting.
@@ -715,6 +760,38 @@ final class User_Primitives_Controller extends Controller {
 	}
 
 	/**
+	 * Replace the value at a literal key chain, for tokens whose keys a dot-path cannot express
+	 * (block preset tokens live under "com.kadence.designTokens" and "kadence/singlebtn").
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $node  The current node.
+	 * @param string[]             $keys  The remaining literal keys to the value.
+	 * @param string               $value The replacement value.
+	 *
+	 * @return array<string, mixed>
+	 */
+	private function replace_at_keys( array $node, array $keys, string $value ): array {
+		$head = Cast::to_string( array_shift( $keys ) );
+
+		if ( ! array_key_exists( $head, $node ) ) {
+			return $node;
+		}
+
+		if ( $keys === [] ) {
+			$node[ $head ] = $value;
+
+			return $node;
+		}
+
+		if ( is_array( $node[ $head ] ) ) {
+			$node[ $head ] = $this->replace_at_keys( $node[ $head ], $keys, $value );
+		}
+
+		return $node;
+	}
+
+	/**
 	 * Replace all direct `$value` alias strings that match `$old_alias` with `$new_alias`
 	 * in the primitive and semantic layers of `$document`, the same layers scanned by
 	 * `Token_Reference_Policy`. Collects dot-paths of rewritten tokens.
@@ -775,6 +852,86 @@ final class User_Primitives_Controller extends Controller {
 		}
 
 		return $node;
+	}
+
+	/**
+	 * Remove a primitive and revert every supported reference to it, without saving.
+	 *
+	 * Shared by the delete route and the deletion preview so both judge the same post-cascade document.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $stored     The stored overrides document.
+	 * @param string               $id         The primitive id being deleted.
+	 * @param Token_Reference[]    $references The supported references to the primitive.
+	 *
+	 * @return array{0: array<string, mixed>, 1: string[]} The candidate document and the reverted paths.
+	 */
+	private function apply_delete_cascade( array $stored, string $id, array $references ): array {
+		$candidate = $this->mutator->remove( $stored, $id );
+		$candidate = $this->index->remove( $candidate, $id );
+		$reverted  = [];
+
+		foreach ( $references as $ref ) {
+			$candidate  = $ref->keys !== []
+				? $this->mutator->remove_by_keys( $candidate, $ref->keys )
+				: $this->mutator->remove( $candidate, $ref->path );
+			$reverted[] = $ref->path;
+		}
+
+		return [ $candidate, $reverted ];
+	}
+
+	/**
+	 * Reject a delete that would leave a block's `$default` naming a preset the cascade just removed.
+	 *
+	 * Reverting the deleted primitive's preset tokens can empty a custom preset, which is then pruned. When
+	 * that preset was the block's default, the stored document would point at nothing, and the preset
+	 * routes (which guard the default) would reject any later write. Only the blocks the cascade touched are
+	 * checked, so an unrelated, already-dangling default never blocks the delete.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $candidate  The candidate document after the cascade.
+	 * @param Token_Reference[]    $references The references the cascade reverted.
+	 *
+	 * @return WP_Error|null A WP_Error when a touched block's default is dangling, null otherwise.
+	 */
+	private function guard_preset_defaults( array $candidate, array $references ): ?WP_Error {
+		$blocks = [];
+
+		foreach ( $references as $ref ) {
+			if ( $ref->kind === Token_Reference::get_kind_preset_override() && isset( $ref->keys[3] ) ) {
+				$blocks[ $ref->keys[3] ] = true;
+			}
+		}
+
+		if ( $blocks === [] ) {
+			return null;
+		}
+
+		$effective = $this->presets->for_overrides( $candidate );
+
+		foreach ( array_keys( $blocks ) as $block ) {
+			$node    = isset( $effective[ $block ] ) && is_array( $effective[ $block ] ) ? $effective[ $block ] : [];
+			$default = Cast::to_string( $node[ Extensions::get_default_key() ] ?? '' );
+
+			if ( $default === '' || isset( $node[ $default ] ) ) {
+				continue;
+			}
+
+			return new WP_Error(
+				'rest_design_tokens_default_preset_in_use',
+				__( 'This primitive is the only token of the default preset of a block. Choose another default preset before deleting it.', 'kadence-blocks' ),
+				[
+					'status'  => WP_Http::UNPROCESSABLE_ENTITY,
+					'block'   => (string) $block,
+					'default' => $default,
+				]
+			);
+		}
+
+		return null;
 	}
 
 	/**
