@@ -2739,6 +2739,13 @@
 // Load Kadence Tippy
 (function () {
 	'use strict';
+	/**
+	 * Placements accepted from the placement attribute.
+	 *
+	 * @since TBD
+	 *
+	 * @type {string[]}
+	 */
 	const PLACEMENTS = [
 		'auto',
 		'auto-start',
