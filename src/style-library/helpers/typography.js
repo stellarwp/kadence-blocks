@@ -13,14 +13,10 @@
  */
 
 /**
- * WordPress dependencies
- */
-import { __ } from '@wordpress/i18n';
-
-/**
  * Internal dependencies
  */
 import { displayDimension } from '../../token-controls';
+import { buildFontCatalogOptions } from '../../token-controls/helpers/font-catalog';
 
 /**
  * Strip a pair of wrapping quotes (single or double) from a font-family name, the same trimming a
@@ -154,49 +150,36 @@ export function getFontCatalog() {
 }
 
 /**
- * The font-family picker's full option list: the library's favorites first, then every Google family,
- * then every site-registered custom family.
- *
- * Favorites lead and carry a badge, so the faces a site has kept sit at the top of a list otherwise
- * nearly two thousand names long. Every name appears exactly once, matched case-insensitively across
- * all three sources — the custom list is diffed against the Google one server-side by exact string, so
- * a theme registering `inter` alongside Google's `Inter` reaches here as two names for one font.
- *
- * This mirrors the editor's own `fontCatalogOptions()`, which builds the same list from editor globals
- * that do not exist on this page. The theme's "inherit heading/body font" rows are deliberately absent:
- * they resolve through custom properties the block editor's canvas carries, and a preset storing one
- * would name a variable rather than a face.
+ * The font-family picker's option list, without the theme's inherit rows.
  *
  * @param {{ favoriteFonts?: string[] }} feed The design-tokens feed.
  *
  * @since 3.8.0
+ * @since 3.9.2 Lists custom fonts first, then favorites, then Google.
  *
  * @return {Array<{value: string, label: string, badge?: string}>} The option list.
  */
 export function fontCatalogOptions(feed) {
-	const seen = new Set();
-	const unique = (name) => {
-		const key = unquoteFamily(String(name ?? '').trim()).toLowerCase();
+	return catalogOptionsForFonts(fontOptions(feed));
+}
 
-		if (key === '' || seen.has(key)) {
-			return false;
-		}
-
-		seen.add(key);
-
-		return true;
-	};
-
+/**
+ * The same option list, from favorites already read from the feed with `fontOptions()`.
+ *
+ * @param {Array<{label: string}>} fonts The library's favorites (`fontOptions()`).
+ *
+ * @since 3.9.2
+ *
+ * @return {Array<{value: string, label: string, badge?: string}>} The option list.
+ */
+export function catalogOptionsForFonts(fonts) {
 	const { google, custom } = getFontCatalog();
 
-	return [
-		...fontOptions(feed)
-			.map((font) => font.label)
-			.filter(unique)
-			.map((name) => ({ value: name, label: name, badge: __('Favorite', 'kadence-blocks') })),
-		...google.filter(unique).map((name) => ({ value: name, label: name })),
-		...custom.filter(unique).map((name) => ({ value: name, label: name, badge: __('Custom', 'kadence-blocks') })),
-	];
+	return buildFontCatalogOptions({
+		favorites: fonts.map((font) => font.label),
+		google,
+		custom,
+	});
 }
 
 /**

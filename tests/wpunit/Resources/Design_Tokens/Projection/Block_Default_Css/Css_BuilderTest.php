@@ -13,6 +13,7 @@ use KadenceWP\KadenceBlocks\Monolog\Handler\TestHandler;
 use KadenceWP\KadenceBlocks\Monolog\Logger;
 use KadenceWP\KadenceBlocks\Psr\Log\LoggerInterface;
 use KadenceWP\KadenceBlocks\Psr\Log\NullLogger;
+use KadenceWP\KadenceBlocks\Utils\Cast;
 use ReflectionProperty;
 use Tests\Support\Classes\TestCase;
 
@@ -60,9 +61,14 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
+	 * An overridden Image radius is emitted as a single-class rule on the `img` descendant, pointing the css
+	 * prop at the token variable with the resolved length as its fallback.
+	 *
 	 * @return void
 	 */
 	public function testItEmitsALowSpecificityRulePointingTheCssPropAtTheTokenVar(): void {
+		$this->seed_default_overrides( [ 'kadence/image' => [ 'borderRadius' => '{semantic.radius.media}' ] ] );
+
 		$var = Css_Var::from_id( 'semantic.radius.media' );
 
 		// Image's $default binds borderRadius to semantic.radius.media, which holds a literal 0 in the
@@ -87,13 +93,15 @@ final class Css_BuilderTest extends TestCase {
 	 * @return void
 	 */
 	public function testTheShippedDeclarationsEmitTheImageSurfaceRules(): void {
+		$this->seed_shipped_defaults();
+
 		$registry = $this->container->get( Token_Registry::class );
 
 		$css = $this->builder( $registry )->css();
 
 		// The <img> surfaces group into one rule, opening with the first bound property (background-color).
 		$this->assertStringContainsString(
-			'.wp-block-kadence-image img{' . $this->declaration( 'background-color', 'kb-img-bg', 'semantic.color.image-bg', 'transparent' ),
+			':where(.wp-block-kadence-image img){' . $this->declaration( 'background-color', 'kb-img-bg', 'semantic.color.image-bg', 'transparent' ),
 			$css
 		);
 		$this->assertStringContainsString( $this->declaration( 'border-color', 'kb-img-border-color', 'semantic.color.border', '#E2E8F0' ), $css );
@@ -136,6 +144,8 @@ final class Css_BuilderTest extends TestCase {
 	 * @return void
 	 */
 	public function testTheImageBorderWidthDefaultResolvesToZero(): void {
+		$this->seed_shipped_defaults();
+
 		$registry = $this->container->get( Token_Registry::class );
 
 		$css = $this->builder( $registry )->css();
@@ -159,6 +169,8 @@ final class Css_BuilderTest extends TestCase {
 	 * @return void
 	 */
 	public function testTheShippedDeclarationsEmitTheSingleIconColorRule(): void {
+		$this->seed_shipped_defaults();
+
 		$registry = $this->container->get( Token_Registry::class );
 
 		$css = $this->builder( $registry )->css();
@@ -218,6 +230,8 @@ final class Css_BuilderTest extends TestCase {
 	 * @return void
 	 */
 	public function testTheShippedImageShadowResolvesAComposedShadowWithAnAliasedColor(): void {
+		$this->seed_shipped_defaults();
+
 		$registry = $this->container->get( Token_Registry::class );
 
 		$css = $this->builder( $registry )->css();
@@ -229,9 +243,14 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
+	 * Row Layout and Column follow their background and radius tokens through a block-default rule once the
+	 * library overrides those defaults, the row on the block root and the column on its inner child.
+	 *
 	 * @return void
 	 */
 	public function testTheShippedDeclarationsEmitTheRowLayoutAndColumnColorRules(): void {
+		$this->seed_shipped_defaults();
+
 		// Row Layout / Column follow the tokens through a low-specificity block-default rule: the row on the
 		// block root, the column on its inner `.kt-inside-inner-col` child. Background follows each block's own
 		// background token (which aliases the transparent primitive, so an uncustomized block stays transparent
@@ -241,15 +260,40 @@ final class Css_BuilderTest extends TestCase {
 		$css = $this->builder( $registry )->css();
 
 		$this->assertStringContainsString(
-			'.wp-block-kadence-rowlayout{' . $this->declaration( 'background-color', 'kb-row-bg', 'semantic.color.rowlayout-bg', 'transparent' ),
+			':where(.wp-block-kadence-rowlayout){' . $this->declaration( 'background-color', 'kb-row-bg', 'semantic.color.rowlayout-bg', 'transparent' ),
 			$css
 		);
 		$this->assertStringContainsString( $this->declaration( 'border-radius', 'kb-row-radius', 'semantic.radius.rowlayout', '0' ), $css );
 		$this->assertStringContainsString(
-			'.wp-block-kadence-column> .kt-inside-inner-col{' . $this->declaration( 'background-color', 'kb-col-bg', 'semantic.color.column-bg', 'transparent' ),
+			':where(.wp-block-kadence-column> .kt-inside-inner-col){' . $this->declaration( 'background-color', 'kb-col-bg', 'semantic.color.column-bg', 'transparent' ),
 			$css
 		);
 		$this->assertStringContainsString( $this->declaration( 'border-radius', 'kb-col-radius', 'semantic.radius.column', '0' ), $css );
+	}
+
+	/**
+	 * A background-color default carries no specificity, so a class-based color on the block — such as the
+	 * `has-<slug>-background-color` utility class an external color framework generates — wins over it.
+	 * Every other bound property keeps its single-class selector.
+	 *
+	 * @return void
+	 */
+	public function testOnlyTheBackgroundColorDefaultIsWrappedInWhereToCarryNoSpecificity(): void {
+		$this->seed_shipped_defaults();
+
+		$registry = $this->container->get( Token_Registry::class );
+
+		$css = $this->builder( $registry )->css();
+
+		$this->assertStringContainsString(
+			':where(.wp-block-kadence-rowlayout){' . $this->declaration( 'background-color', 'kb-row-bg', 'semantic.color.rowlayout-bg', 'transparent' ) . '}',
+			$css
+		);
+		$this->assertStringNotContainsString( '.wp-block-kadence-rowlayout{background-color', $css );
+		$this->assertStringContainsString(
+			'.wp-block-kadence-rowlayout{' . $this->declaration( 'border-radius', 'kb-row-radius', 'semantic.radius.rowlayout', '0' ),
+			$css
+		);
 	}
 
 	/**
@@ -262,12 +306,14 @@ final class Css_BuilderTest extends TestCase {
 	 * @return void
 	 */
 	public function testTheShippedDeclarationsEmitTheAdvancedHeadingSurfaceRule(): void {
+		$this->seed_shipped_defaults();
+
 		$registry = $this->container->get( Token_Registry::class );
 
 		$css = $this->builder( $registry )->css();
 
 		$this->assertStringContainsString(
-			'.wp-block-kadence-advancedheading{' . $this->declaration( 'background-color', 'kb-heading-bg', 'semantic.color.heading-bg', 'transparent' ),
+			':where(.wp-block-kadence-advancedheading){' . $this->declaration( 'background-color', 'kb-heading-bg', 'semantic.color.heading-bg', 'transparent' ),
 			$css
 		);
 		$this->assertStringContainsString( $this->declaration( 'padding', 'kb-heading-padding', 'semantic.spacing.heading-padding', '0' ), $css );
@@ -301,12 +347,14 @@ final class Css_BuilderTest extends TestCase {
 	 * @return void
 	 */
 	public function testTheEditorBuildRetargetsTheAdvancedHeadingRuleAtTheRealHeadingElement(): void {
+		$this->seed_shipped_defaults();
+
 		$registry = $this->container->get( Token_Registry::class );
 
 		$css = $this->builder( $registry )->editor_css();
 
 		$this->assertStringContainsString(
-			'.editor-styles-wrapper .wp-block-kadence-advancedheading .kadence-advancedheading-text{' . $this->declaration( 'background-color', 'kb-heading-bg', 'semantic.color.heading-bg', 'transparent' ),
+			'.editor-styles-wrapper :where(.wp-block-kadence-advancedheading .kadence-advancedheading-text){' . $this->declaration( 'background-color', 'kb-heading-bg', 'semantic.color.heading-bg', 'transparent' ),
 			$css
 		);
 		$this->assertStringContainsString( $this->declaration( 'padding', 'kb-heading-padding', 'semantic.spacing.heading-padding', '0' ), $css );
@@ -343,13 +391,15 @@ final class Css_BuilderTest extends TestCase {
 	 * @return void
 	 */
 	public function testTheEditorBuildRetargetsTheColumnRuleAtTheEditorsOwnInnerElement(): void {
+		$this->seed_shipped_defaults();
+
 		$registry = $this->container->get( Token_Registry::class );
 
 		$editor = $this->builder( $registry )->editor_css();
 		$front  = $this->builder( $registry )->css();
 
 		$this->assertStringContainsString(
-			'.wp-block-kadence-column> .kadence-inner-column-inner{' . $this->declaration( 'background-color', 'kb-col-bg', 'semantic.color.column-bg', 'transparent' ),
+			':where(.wp-block-kadence-column> .kadence-inner-column-inner){' . $this->declaration( 'background-color', 'kb-col-bg', 'semantic.color.column-bg', 'transparent' ),
 			$editor
 		);
 		$this->assertStringContainsString( $this->declaration( 'border-radius', 'kb-col-radius', 'semantic.radius.column', '0' ), $editor );
@@ -367,12 +417,14 @@ final class Css_BuilderTest extends TestCase {
 	 * @return void
 	 */
 	public function testABindingWithNoEditorCssSelectorReusesItsFrontEndSelector(): void {
+		$this->seed_shipped_defaults();
+
 		$registry = $this->container->get( Token_Registry::class );
 
 		$editor = $this->builder( $registry )->editor_css();
 
 		$this->assertStringContainsString(
-			'.wp-block-kadence-rowlayout{' . $this->declaration( 'background-color', 'kb-row-bg', 'semantic.color.rowlayout-bg', 'transparent' ),
+			':where(.wp-block-kadence-rowlayout){' . $this->declaration( 'background-color', 'kb-row-bg', 'semantic.color.rowlayout-bg', 'transparent' ),
 			$editor
 		);
 		$this->assertStringContainsString( '.wp-block-kadence-image img{', $editor );
@@ -388,6 +440,8 @@ final class Css_BuilderTest extends TestCase {
 	 * @return void
 	 */
 	public function testABlockWithNoEditorSelectorEmitsIdenticalFrontEndAndEditorCss(): void {
+		$this->seed_default_overrides( [ 'kadence/image' => [ 'borderRadius' => '{semantic.radius.media}' ] ] );
+
 		$builder = $this->builder( $this->image_registry() );
 
 		$this->assertSame( $builder->css(), $builder->editor_css() );
@@ -451,9 +505,14 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
+	 * A bare `img` css selector gains the descendant combinator, so it produces the same rule as the explicit
+	 * ` img` form without a load-bearing leading space.
+	 *
 	 * @return void
 	 */
 	public function testItInsertsTheDescendantCombinatorForABareCssSelector(): void {
+		$this->seed_default_overrides( [ 'kadence/image' => [ 'borderRadius' => '{semantic.radius.media}' ] ] );
+
 		$var = Css_Var::from_id( 'semantic.radius.media' );
 
 		// A bare `img` selector must not need a load-bearing leading space: the builder inserts the
@@ -472,6 +531,8 @@ final class Css_BuilderTest extends TestCase {
 	 * @return void
 	 */
 	public function testItSkipsAndLogsABindingReferencingAnUnresolvedToken(): void {
+		$this->seed_default_overrides( [ 'kadence/image' => [ 'borderRadius' => '4px' ] ] );
+
 		$handler = new TestHandler();
 		$logger  = new Logger( 'test' );
 		$logger->pushHandler( $handler );
@@ -496,6 +557,8 @@ final class Css_BuilderTest extends TestCase {
 	 * @return void
 	 */
 	public function testACssVarBindingWrapsTheDeclarationInThePresetVariable(): void {
+		$this->seed_default_overrides( [ 'kadence/image' => [ 'borderRadius' => '{semantic.radius.media}' ] ] );
+
 		$var = Css_Var::from_id( 'semantic.radius.media' );
 
 		$css = $this->builder( $this->image_registry( 'kb-img-radius' ) )->css();
@@ -513,6 +576,8 @@ final class Css_BuilderTest extends TestCase {
 	 * @return void
 	 */
 	public function testABindingWithoutACssVarEmitsTheUnwrappedTokenVariable(): void {
+		$this->seed_default_overrides( [ 'kadence/image' => [ 'borderRadius' => '{semantic.radius.media}' ] ] );
+
 		$var = Css_Var::from_id( 'semantic.radius.media' );
 
 		$css = $this->builder( $this->image_registry() )->css();
@@ -544,6 +609,23 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
+	 * A base-less background-color default is wrapped in `:where()` inside its media block too, so a
+	 * class-based color wins at the breakpoint just as it does at desktop.
+	 *
+	 * @return void
+	 */
+	public function testABaseLessBackgroundColorDefaultIsWrappedInWhereInsideItsMediaBlock(): void {
+		$this->seed_base_less_image_radius( 'backgroundColor', '#FF0000' );
+
+		$css = $this->builder( $this->image_registry( 'kb-img-bg', 'backgroundColor', 'background-color' ) )->css( 'default', $this->breakpoints() );
+
+		$this->assertStringContainsString(
+			'@media all and (max-width: 1024px){:where(.wp-block-kadence-image img){background-color:var(--kb-img-bg);}}',
+			$css
+		);
+	}
+
+	/**
 	 * A base-less property whose binding declares no css_var has no variable the preset projection could
 	 * redeclare, so nothing is emitted for it at any breakpoint.
 	 *
@@ -568,6 +650,110 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
+	 * An untouched library emits exactly one rule, the Single Icon's size. A fresh icon holds no size of its own,
+	 * so that declaration is the only thing sizing it, while every other default is left out.
+	 *
+	 * @return void
+	 */
+	public function testAnUntouchedLibraryStillSizesTheSingleIcon(): void {
+		$css = $this->builder( $this->container->get( Token_Registry::class ) )->css();
+
+		$this->assertSame(
+			'.wp-block-kadence-single-icon *.kb-svg-icon-wrap{' . $this->declaration( 'font-size', 'kb-icon-size', 'semantic.icon-size.icon', '50px' ) . '}',
+			$css
+		);
+	}
+
+	/**
+	 * An Advanced Text block in a library that never overrode its default gets no block-default rule, on either
+	 * surface, so a theme rule or utility class such as `.padding-bottom-2xl` is never reset by a value that only
+	 * restates the browser's own initial state.
+	 *
+	 * @return void
+	 */
+	public function testAnUntouchedLibraryEmitsNoAdvancedHeadingRule(): void {
+		$builder = $this->builder( $this->container->get( Token_Registry::class ) );
+
+		$this->assertStringNotContainsString( '.wp-block-kadence-advancedheading', $builder->css() );
+		$this->assertStringNotContainsString( 'kadence-advancedheading-text', $builder->editor_css() );
+	}
+
+	/**
+	 * Once the library overrides the Advanced Text default padding, the rule is emitted for that property alone:
+	 * the untouched background, border and radius stay out of it, so they cannot reset a theme's own values.
+	 *
+	 * @return void
+	 */
+	public function testAnOverriddenAdvancedHeadingPaddingEmitsOnlyThePaddingDeclaration(): void {
+		$this->seed_default_overrides( [ 'kadence/advancedheading' => [ 'padding' => '20px' ] ] );
+
+		$css  = $this->builder( $this->container->get( Token_Registry::class ) )->css();
+		$rule = $this->rule( $css, '.wp-block-kadence-advancedheading{' );
+
+		$this->assertSame(
+			'.wp-block-kadence-advancedheading{' . $this->declaration( 'padding', 'kb-heading-padding', 'semantic.spacing.heading-padding', '20px' ) . '}',
+			$rule
+		);
+	}
+
+	/**
+	 * Store the given properties as overrides on each block's `$default` preset, leaving every other property
+	 * on the shipped baseline.
+	 *
+	 * @param array<string, array<string, string>> $overrides Block => property => the value the library stores.
+	 *
+	 * @return void
+	 */
+	private function seed_default_overrides( array $overrides ): void {
+		$presets = [];
+
+		foreach ( $overrides as $block => $properties ) {
+			$tokens = [];
+
+			foreach ( $properties as $property => $value ) {
+				$tokens[ $property ] = [ '$value' => $value ];
+			}
+
+			$presets[ $block ] = [
+				'$default' => 'default',
+				'default'  => [
+					'label'  => 'Default',
+					'tokens' => $tokens,
+				],
+			];
+		}
+
+		$document = [
+			'$extensions' => [
+				'com.kadence.designTokens' => [
+					'presets' => $presets,
+				],
+			],
+		];
+
+		$this->container->get( Token_Store::class )->save_document( Cast::to_string( wp_json_encode( $document ) ), Token_Store::default_slug() );
+	}
+
+	/**
+	 * Store every shipped `$default` preset value of the blocks this projector styles as an override, so the
+	 * library owns each property and the builder emits the full rule the shipped declarations describe.
+	 *
+	 * @return void
+	 */
+	private function seed_shipped_defaults(): void {
+		$baseline  = json_decode( Cast::to_string( file_get_contents( KADENCE_BLOCKS_PATH . 'includes/resources/Design_Tokens/Registry/Baseline/baseline.json' ) ), true );
+		$presets   = $baseline['$extensions']['com.kadence.designTokens']['presets'];
+		$blocks    = [ 'kadence/image', 'kadence/rowlayout', 'kadence/column', 'kadence/single-icon', 'kadence/advancedheading' ];
+		$overrides = [];
+
+		foreach ( $blocks as $block ) {
+			$overrides[ $block ] = $presets[ $block ][ $presets[ $block ]['$default'] ]['tokens'];
+		}
+
+		$this->seed_default_overrides( $overrides );
+	}
+
+	/**
 	 * The breakpoint map the tests hand the builder, mirroring the shipped defaults.
 	 *
 	 * @return array<string, string>
@@ -580,12 +766,15 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
-	 * Store an Image `$default` preset whose borderRadius has no desktop base and one tablet override,
+	 * Store an Image `$default` preset whose given property has no desktop base and one tablet override,
 	 * so the builder has a base-less property to emit a media-scoped rule for.
+	 *
+	 * @param string $property The preset property to leave base-less; defaults to `borderRadius`.
+	 * @param string $value    The tablet override value.
 	 *
 	 * @return void
 	 */
-	private function seed_base_less_image_radius(): void {
+	private function seed_base_less_image_radius( string $property = 'borderRadius', string $value = '4px' ): void {
 		$document = [
 			'$extensions' => [
 				'com.kadence.designTokens' => [
@@ -595,11 +784,11 @@ final class Css_BuilderTest extends TestCase {
 							'default'  => [
 								'label'  => 'Default',
 								'tokens' => [
-									'borderRadius' => [
+									$property => [
 										'$value'      => null,
 										'$extensions' => [
 											'com.kadence.designTokens' => [
-												'responsive' => [ 'tablet' => '4px' ],
+												'responsive' => [ 'tablet' => $value ],
 											],
 										],
 									],
@@ -665,15 +854,17 @@ final class Css_BuilderTest extends TestCase {
 	 * A registry holding the media-radius token and the Image preset bindings binding borderRadius to it via a
 	 * css_prop target, so the builder emits the block-default radius rule.
 	 *
-	 * @param string|null $css_var The KB-owned custom property the binding drives (without its leading `--`),
-	 *                             or null to declare none.
+	 * @param string|null $css_var  The KB-owned custom property the binding drives (without its leading `--`),
+	 *                              or null to declare none.
+	 * @param string      $property The preset property the binding is keyed by; defaults to `borderRadius`.
+	 * @param string      $css_prop The CSS property the binding declares; defaults to `border-radius`.
 	 *
 	 * @return Token_Registry
 	 */
-	private function image_registry( ?string $css_var = null ): Token_Registry {
+	private function image_registry( ?string $css_var = null, string $property = 'borderRadius', string $css_prop = 'border-radius' ): Token_Registry {
 		$binding = [
 			'token'        => 'semantic.radius.media',
-			'css_prop'     => 'border-radius',
+			'css_prop'     => $css_prop,
 			'css_selector' => 'img',
 		];
 
@@ -693,7 +884,7 @@ final class Css_BuilderTest extends TestCase {
 			[
 				'block'    => 'kadence/image',
 				'bindings' => [
-					'borderRadius' => $binding,
+					$property => $binding,
 				],
 			]
 		);

@@ -2,8 +2,13 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Admin\Feed;
 
+use Generator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Font_Catalog;
+use RuntimeException;
+use stdClass;
+use Tests\Support\Classes\Fake_Kadence_Custom_Fonts;
 use Tests\Support\Classes\TestCase;
+use TypeError;
 
 /**
  * Covers the font catalog reader/normalizer the Typography screen's searchable dropdown reads.
@@ -21,6 +26,8 @@ final class Font_CatalogTest extends TestCase {
 	protected function setUp(): void {
 		parent::setUp();
 
+		Fake_Kadence_Custom_Fonts::install();
+
 		$this->catalog = $this->container->get( Font_Catalog::class );
 	}
 
@@ -29,6 +36,18 @@ final class Font_CatalogTest extends TestCase {
 	 */
 	protected function tearDown(): void {
 		remove_all_filters( 'kadence_blocks_custom_fonts' );
+
+		foreach ( get_posts(
+			[
+				'post_type'   => 'kt_font',
+				'numberposts' => -1,
+				'post_status' => 'any',
+			] 
+		) as $font ) {
+			wp_delete_post( $font->ID, true );
+		}
+
+		Fake_Kadence_Custom_Fonts::reset();
 
 		parent::tearDown();
 	}
@@ -232,5 +251,243 @@ final class Font_CatalogTest extends TestCase {
 		$result = $this->catalog->all();
 
 		$this->assertSame( [], $result['custom'] );
+	}
+
+	/**
+	 * Custom names include the Kadence Custom Fonts plugin's fonts.
+	 *
+	 * @return void
+	 */
+	public function testCustomNamesIncludeFontsFromTheKadenceCustomFontsPlugin(): void {
+		$this->make_kt_font( 'Brand Sans' );
+		$this->make_kt_font( 'Zeta Display' );
+
+		$result = $this->catalog->all();
+
+		$this->assertSame( [ 'Brand Sans', 'Zeta Display' ], $result['custom'] );
+	}
+
+	/**
+	 * Custom names include the families of a Kadence Custom Fonts Adobe Fonts entry.
+	 *
+	 * @return void
+	 */
+	public function testCustomNamesIncludeAdobeFamiliesFromTheKadenceCustomFontsPlugin(): void {
+		$id = $this->make_kt_font( 'Ignored' );
+		update_post_meta( $id, '_kad_font_type', 'adobe' );
+		update_post_meta(
+			$id,
+			'_kad_typekit',
+			[
+				'families' => [
+					'proxima-nova' => [ 'name' => 'Proxima Nova' ],
+					'bad'          => 'x',
+				],
+			] 
+		);
+
+		$this->assertSame( [ 'Proxima Nova' ], $this->catalog->all()['custom'] );
+	}
+
+	/**
+	 * Fonts reported more than once, or also in Google, are listed once.
+	 *
+	 * @return void
+	 */
+	public function testPluginFontsAreDeduplicatedAgainstTheFilterAndGoogle(): void {
+		add_filter( 'kadence_blocks_custom_fonts', static fn() => [ 'Brand Sans' => [ 'name' => 'Brand Sans' ] ] );
+		$this->make_kt_font( 'Brand Sans' );
+		$this->make_kt_font( 'Abel' );
+
+		$this->assertSame( [ 'Brand Sans' ], $this->catalog->all()['custom'] );
+	}
+
+	/**
+	 * Names added through the catalog filter are normalized and de-duplicated.
+	 *
+	 * @return void
+	 */
+	public function testCatalogFilterAddsNormalizedNamesToTheCustomList(): void {
+		$callback = static fn( $names ) => array_merge( $names, [ '"Brand Sans"', 'Zeta Display', 'zeta display', 42, '', 'Abel' ] );
+		add_filter( 'kadence_blocks_font_catalog_custom_names', $callback );
+
+		try {
+			$result = $this->catalog->all();
+		} finally {
+			remove_filter( 'kadence_blocks_font_catalog_custom_names', $callback );
+		}
+
+		$this->assertSame( [ 'Brand Sans', 'Zeta Display', 'zeta display' ], $result['custom'] );
+	}
+
+	/**
+	 * The catalog filter receives the names from `kadence_blocks_custom_fonts`.
+	 *
+	 * @return void
+	 */
+	public function testCatalogFilterReceivesTheNamesFromTheOlderFilter(): void {
+		add_filter( 'kadence_blocks_custom_fonts', static fn() => [ 'Old Font' => [ 'name' => 'Old Font' ] ] );
+		$callback = static fn( $names ) => array_reverse( array_merge( $names, [ 'New Font' ] ) );
+		add_filter( 'kadence_blocks_font_catalog_custom_names', $callback );
+
+		try {
+			$result = $this->catalog->all();
+		} finally {
+			remove_filter( 'kadence_blocks_font_catalog_custom_names', $callback );
+		}
+
+		$this->assertSame( [ 'New Font', 'Old Font' ], $result['custom'] );
+	}
+
+	/**
+	 * A catalog filter callback returning a non-array leaves an empty custom list.
+	 *
+	 * @return void
+	 */
+	public function testCatalogFilterReturningNonArrayFailsSoftToAnEmptyCustomList(): void {
+		$callback = static fn() => 'nope';
+		add_filter( 'kadence_blocks_font_catalog_custom_names', $callback );
+
+		try {
+			$result = $this->catalog->all();
+		} finally {
+			remove_filter( 'kadence_blocks_font_catalog_custom_names', $callback );
+		}
+
+		$this->assertSame( [], $result['custom'] );
+	}
+
+	/**
+	 * A malformed `kadence_blocks_custom_fonts` return does not hide the catalog filter's names.
+	 *
+	 * @return void
+	 */
+	public function testMalformedOlderFilterDoesNotHidePluginFonts(): void {
+		add_filter( 'kadence_blocks_custom_fonts', static fn() => 'not-an-array' );
+		$this->make_kt_font( 'Brand Sans' );
+
+		$this->assertSame( [ 'Brand Sans' ], $this->catalog->all()['custom'] );
+	}
+
+	/**
+	 * An unexpected result or exception from the Custom Fonts query adds no names and raises no error.
+	 *
+	 * @dataProvider unexpectedQueryResults
+	 *
+	 * @param callable $behavior What the plugin's font query does instead.
+	 *
+	 * @return void
+	 */
+	public function testAnUnexpectedCustomFontsQueryFailsSoft( callable $behavior ): void {
+		add_filter( 'kadence_blocks_custom_fonts', static fn() => [ 'Old Font' => [ 'name' => 'Old Font' ] ] );
+		Fake_Kadence_Custom_Fonts::$behavior = $behavior;
+
+		$this->assertSame( [ 'Old Font' ], $this->catalog->all()['custom'] );
+	}
+
+	/**
+	 * Commas inside a quoted family name stay part of the name, from either filter.
+	 *
+	 * @return void
+	 */
+	public function testACommaInsideAQuotedFamilyNameIsKept(): void {
+		add_filter( 'kadence_blocks_custom_fonts', static fn() => [ '"Brand, Display", sans-serif' => [ 'name' => 'Brand, Display' ] ] );
+		$callback = static fn( $names ) => array_merge( $names, [ "'Other, Name'" ] );
+		add_filter( 'kadence_blocks_font_catalog_custom_names', $callback );
+
+		try {
+			$result = $this->catalog->all();
+		} finally {
+			remove_filter( 'kadence_blocks_font_catalog_custom_names', $callback );
+		}
+
+		$this->assertSame( [ 'Brand, Display', 'Other, Name' ], $result['custom'] );
+	}
+
+	/**
+	 * Only a matching pair of quotes is removed, so an apostrophe that belongs to a family name is kept.
+	 *
+	 * @return void
+	 */
+	public function testAnUnmatchedApostropheInAFamilyNameIsKept(): void {
+		$callback = static fn( $names ) => array_merge( $names, [ "'90s Grotesk", '"Matched"' ] );
+		add_filter( 'kadence_blocks_font_catalog_custom_names', $callback );
+
+		try {
+			$result = $this->catalog->all();
+		} finally {
+			remove_filter( 'kadence_blocks_font_catalog_custom_names', $callback );
+		}
+
+		$this->assertSame( [ "'90s Grotesk", 'Matched' ], $result['custom'] );
+	}
+
+	/**
+	 * A plugin font name containing a comma is listed whole.
+	 *
+	 * @return void
+	 */
+	public function testAPluginFontNameWithACommaIsKeptWhole(): void {
+		$this->make_kt_font( 'Brand, Display' );
+
+		$this->assertSame( [ 'Brand, Display' ], $this->catalog->all()['custom'] );
+	}
+
+	/**
+	 * What the Custom Fonts query returns or throws instead of its usual list.
+	 *
+	 * @return Generator
+	 */
+	public function unexpectedQueryResults(): Generator {
+		yield 'null' => [
+			'behavior' => static fn() => null,
+		];
+
+		yield 'a string' => [
+			'behavior' => static fn() => 'nope',
+		];
+
+		yield 'false' => [
+			'behavior' => static fn() => false,
+		];
+
+		yield 'not WP_Post entries' => [
+			'behavior' => static fn() => [ 'a', 42, null, new stdClass() ],
+		];
+
+		yield 'throws an exception' => [
+			'behavior' => static function () {
+				throw new RuntimeException( 'changed' );
+			},
+		];
+
+		yield 'throws a type error' => [
+			'behavior' => static function () {
+				throw new TypeError( 'changed' );
+			},
+		];
+	}
+
+	/**
+	 * Create a published `kt_font` post naming a family, as the Custom Fonts plugin stores it.
+	 *
+	 * @param string $name The family name.
+	 *
+	 * @return int The post ID.
+	 */
+	private function make_kt_font( string $name ): int {
+		$id = self::factory()->post->create(
+			[
+				'post_type'   => 'kt_font',
+				'post_status' => 'publish',
+				'post_title'  => $name,
+				'menu_order'  => 0,
+			]
+		);
+		update_post_meta( $id, '_kad_font_name', $name );
+		update_post_meta( $id, '_kad_font_type', 'upload' );
+		Fake_Kadence_Custom_Fonts::reset();
+
+		return $id;
 	}
 }

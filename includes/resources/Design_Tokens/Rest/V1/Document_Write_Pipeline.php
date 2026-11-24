@@ -12,6 +12,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Dangling_Alias_Exce
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Dtcg_Validator;
 use KadenceWP\KadenceBlocks\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
+use KadenceWP\KadenceBlocks\Utils\Cast;
 use WP_Error;
 use WP_Http;
 use WP_REST_Response;
@@ -191,6 +192,7 @@ final class Document_Write_Pipeline {
 	 * Validate a candidate document, dry-run resolve it, then conditionally persist.
 	 *
 	 * @since 3.8.0
+	 * @since 3.9.2 A block preset alias to a user primitive is accepted, and the 422 lists the blocking references.
 	 *
 	 * @param array<string, mixed> $candidate                            Full candidate overrides document.
 	 * @param string               $slug                                 Token library slug.
@@ -240,15 +242,18 @@ final class Document_Write_Pipeline {
 
 			if ( ! $skip_user_primitive_reference_check ) {
 				foreach ( array_keys( $this->user_primitive_index->all( $candidate ) ) as $user_primitive_id ) {
-					$references = $this->reference_policy->find( $candidate, (string) $user_primitive_id );
+					$blocking = $this->reference_policy->find_disallowed(
+						$this->reference_policy->find( $candidate, Cast::to_string( $user_primitive_id ) )
+					);
 
-					if ( ! $this->reference_policy->all_semantic_overrides( $references ) ) {
+					if ( $blocking !== [] ) {
 						return new WP_Error(
 							'rest_design_tokens_user_primitive_reference_unsupported',
 							__( 'The document contains an unsupported reference to a user primitive.', 'kadence-blocks' ),
 							[
-								'status' => WP_Http::UNPROCESSABLE_ENTITY,
-								'slug'   => $slug,
+								'status'     => WP_Http::UNPROCESSABLE_ENTITY,
+								'slug'       => $slug,
+								'references' => $this->reference_policy->describe( $blocking ),
 							]
 						);
 					}

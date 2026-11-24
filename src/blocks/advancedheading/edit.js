@@ -105,6 +105,7 @@ import { EditorColorControlGroup } from '../../extension/design-tokens/component
 import { presetFontVariant } from './preset-font-variant';
 import { isFseMode } from '../../site-styles/supported-blocks';
 import { isConvertedHeading } from './converted-headings';
+import { getUnitsForDevice } from '../../token-controls/helpers/shared-unit';
 import { useIsSiteStylesPanel } from '../../site-styles/use-is-site-styles-panel';
 import metadata from './block.json';
 /**
@@ -1462,14 +1463,15 @@ function KadenceAdvancedHeading(props) {
 			if (contentHtml.querySelectorAll('.kt-typed-text')[0]) {
 				const typedElement = contentHtml.querySelectorAll('.kt-typed-text')[0];
 				const dataStrings = typedElement.getAttribute('data-strings');
-				const strings = dataStrings ? JSON.parse(dataStrings.replaceAll('&', '&amp;')) : [];
+				const strings = dataStrings ? JSON.parse(dataStrings) : [];
 
 				// Adding the default/existing string twice is required for displaying properly
-				strings.unshift(typedElement.textContent.replaceAll('&', '&amp;'));
-				strings.unshift(typedElement.textContent.replaceAll('&', '&amp;'));
+				strings.unshift(typedElement.textContent);
+				strings.unshift(typedElement.textContent);
 
 				const options = {
 					strings,
+					contentType: null,
 					cursorChar: typedElement.getAttribute('data-cursor-char')
 						? sanitizeString(typedElement.getAttribute('data-cursor-char'))
 						: '_',
@@ -2062,7 +2064,11 @@ function KadenceAdvancedHeading(props) {
 												onUnit={(value) => {
 													setAttributes({ sizeType: value });
 												}}
-												units={['px', 'em', 'rem', 'vw']}
+												units={getUnitsForDevice(
+													['px', 'em', 'rem', 'vw'],
+													sizeType ? sizeType : 'px',
+													previewDevice
+												)}
 											/>
 										)}
 										<div className="kb-advanced-heading-font-settings">
@@ -2104,7 +2110,11 @@ function KadenceAdvancedHeading(props) {
 													step={fontHeightType === 'px' ? 1 : 0.1}
 													unit={fontHeightType ? fontHeightType : ''}
 													onUnit={(value) => setAttributes({ fontHeightType: value })}
-													units={['-', 'px', 'em', 'rem']}
+													units={getUnitsForDevice(
+														['-', 'px', 'em', 'rem'],
+														fontHeightType ? fontHeightType : '-',
+														previewDevice
+													)}
 													compressedDevice={true}
 												/>
 												<KadenceRadioButtons

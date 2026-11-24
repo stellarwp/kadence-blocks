@@ -109,6 +109,8 @@ export function TokenSelector({
 	unit = '',
 	units,
 	onUnit,
+	unitShared = false,
+	unitPinned = false,
 	defaultValue,
 	inherited,
 	icon,
@@ -224,7 +226,18 @@ export function TokenSelector({
 						resolvedDefault={resolvedDefault}
 						inherited={inherited}
 						initialTab={initialTab}
-						custom={{ number, unit, units, onUnit, min, max, step, onNumber: writeNumber }}
+						custom={{
+							number,
+							unit,
+							units,
+							onUnit,
+							unitShared,
+							unitPinned,
+							min,
+							max,
+							step,
+							onNumber: writeNumber,
+						}}
 						renderCustom={renderCustom}
 						onPick={onPick}
 						onClear={onClear}

@@ -42,6 +42,28 @@ function kadence_blocks_is_fse_mode(): bool {
 }
 
 /**
+ * Whether the Kadence theme is the active theme.
+ *
+ * @since 3.9.2
+ *
+ * @return bool
+ */
+function kadence_blocks_is_kadence_theme(): bool {
+	$is_kadence_theme = class_exists( 'Kadence\Theme' );
+
+	/**
+	 * Filters whether the Kadence theme is the active theme.
+	 *
+	 * @since 3.9.2
+	 *
+	 * @param bool $is_kadence_theme Whether the Kadence theme is active.
+	 *
+	 * @return bool Whether the Kadence theme is active.
+	 */
+	return wp_validate_boolean( apply_filters( 'kadence_blocks_is_kadence_theme', $is_kadence_theme ) );
+}
+
+/**
  * Check if we are in AMP Mode.
  */
 function kadence_blocks_is_not_amp() {
@@ -410,7 +432,7 @@ function kadence_blocks_is_license_authorized(): bool {
  * A Nexcess Plugin Stack license holds only the stack product, not Kadence, and
  * always includes Kadence's paid plugins, so it counts too.
  *
- * @since TBD
+ * @since 3.9.2
  *
  * @return bool
  */

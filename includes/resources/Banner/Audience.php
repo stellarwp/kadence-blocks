@@ -48,7 +48,7 @@ final class Audience {
 	 * is active, from stored state only.
 	 *
 	 * @since 3.8.0
-	 * @since TBD An active Nexcess Plugin Stack license counts.
+	 * @since 3.9.2 An active Nexcess Plugin Stack license counts.
 	 *
 	 * @return bool
 	 */

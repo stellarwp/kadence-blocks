@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.6
 Tested up to: 7.1
-Stable tag: 3.9.1.2
+Stable tag: 3.9.2
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -168,6 +168,21 @@ Please report security bugs found in the source code of the Kadence Blocks plugi
 Please report security bugs found in the Kadence Blocks plugin's source code through the Patchstack Vulnerability Disclosure Program https://patchstack.com/database/vdp/kadence-blocks. The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
 
 == Changelog ==
+
+= 3.9.2 =
+Release Date: 24th November 2026
+* Add: Added a setting on the Kadence Blocks Settings page to opt in to or withdraw usage data sharing consent at any time.
+* Add: Added support for Nexcess Plugin Stack licenses.
+* Fix: Restored fonts added with Kadence Custom Fonts to the Font Family fields of the Text (Adv) block and the Style Library, which 3.8.0 had dropped.
+* Fix: Fixed block background colors from external color frameworks such as Automatic CSS and Core Framework being overridden by the Style Library defaults.
+* Fix: Fixed the Kadence Blocks style library colors being added to the editor color palette of themes other than Kadence, and the Row Layout color pickers not listing the active theme's colors.
+* Fix: Fixed the Buttons (Adv) border controls not matching the button when a preset such as Outline is selected. The width field was empty and not clickable, and the style and color read as none, so changing the width hid the border.
+* Fix: Fixed the Style Library failing with "unsupported reference to a user primitive" when adding custom colors or editing tokens after a block preset used a custom color. Updated deleting and renaming a custom color to also update the presets that use it.
+* Fix: Fixed typography changes on the Navigation (Adv), Site Identity and Table (Adv) blocks, such as the font size and weight, not showing in the editor preview.
+* Fix: Fixed theme Global Color 5 missing from the Style Library and block color pickers, which also shifted Global Color 6 into its place.
+* Fix: Fixed Kadence Blocks 3.8 resetting padding, backgrounds, borders and radius on Advanced Text, Image, Row, Column and Icon blocks, which overrode theme styles and utility classes such as padding-bottom-2xl.
+* Security: Strengthened the handling of content in several blocks. Props to AndrewN for reporting.
+* Tweak: Changed the font size, padding and border radius unit controls to disable the unit on tablet and mobile, with a note that the unit applies to all devices and is changed on desktop, so changing it on one device no longer looks like a per device choice.
 
 = 3.9.1.2 =
 Release Date: 19th November 2026

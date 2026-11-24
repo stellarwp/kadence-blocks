@@ -1,5 +1,6 @@
 /* eslint-env jest */
 // cspell:ignore Abril Fatface .
+import { addFilter, removeFilter } from '@wordpress/hooks';
 import { favoriteFonts, favoriteFontsManageUrl, fontCatalogOptions, isGoogleFamily } from '../index';
 
 const originalFonts = window.kadenceDesignTokensFonts;
@@ -34,15 +35,15 @@ describe('fontCatalogOptions', () => {
 		expect(fontCatalogOptions()).toEqual([]);
 	});
 
-	it('pins favorites first, then google names, then custom names', () => {
+	it('lists custom names first, then favorites, then google names', () => {
 		window.kadenceDesignTokensFonts = { favorites: ['Georgia'], custom: ['My Font'] };
 		window.kadence_blocks_params = { g_font_names: ['Abel', 'Abril Fatface'] };
 
 		expect(fontCatalogOptions()).toEqual([
+			{ value: 'My Font', label: 'My Font', badge: 'Custom' },
 			{ value: 'Georgia', label: 'Georgia', badge: 'Favorite' },
 			{ value: 'Abel', label: 'Abel' },
 			{ value: 'Abril Fatface', label: 'Abril Fatface' },
-			{ value: 'My Font', label: 'My Font', badge: 'Custom' },
 		]);
 	});
 
@@ -72,10 +73,11 @@ describe('fontCatalogOptions', () => {
 	// site. They store a `var()` at the theme's typography settings rather than naming a face, so a
 	// block set to one follows the site's Heading/Body font.
 	it('leads with the theme global fonts when the Kadence theme is active', () => {
-		window.kadenceDesignTokensFonts = { favorites: ['Georgia'], custom: [] };
+		window.kadenceDesignTokensFonts = { favorites: ['Georgia'], custom: ['My Font'] };
 		window.kadence_blocks_params = { g_font_names: ['Abel'], isKadenceT: true };
 
 		expect(fontCatalogOptions()).toEqual([
+			{ value: 'My Font', label: 'My Font', badge: 'Custom' },
 			{
 				value: 'var( --global-heading-font-family, inherit )',
 				label: 'Inherit Heading Font Family',
@@ -101,6 +103,81 @@ describe('fontCatalogOptions', () => {
 		window.kadence_blocks_params = { g_font_names: ['Abril Fatface'] };
 
 		expect(fontCatalogOptions()).toEqual([{ value: 'abril fatface', label: 'abril fatface', badge: 'Favorite' }]);
+	});
+
+	describe('fonts registered through the kadence.typography_options filter', () => {
+		afterEach(() => {
+			removeFilter('kadence.typography_options', 'test/custom-fonts');
+		});
+
+		it('lists them at the top with the Custom badge', () => {
+			window.kadenceDesignTokensFonts = { favorites: [], custom: [] };
+			window.kadence_blocks_params = { g_font_names: ['Abel'] };
+			addFilter('kadence.typography_options', 'test/custom-fonts', (groups) => [
+				{
+					type: 'group',
+					label: 'Custom Fonts',
+					options: [{ label: 'Brand Sans', value: 'Brand Sans', google: false }],
+				},
+				...groups,
+			]);
+
+			expect(fontCatalogOptions()).toEqual([
+				{ value: 'Brand Sans', label: 'Brand Sans', badge: 'Custom' },
+				{ value: 'Abel', label: 'Abel' },
+			]);
+		});
+
+		it('lists each once when the PHP filter already carries the same font', () => {
+			window.kadenceDesignTokensFonts = { favorites: [], custom: ['Brand Sans'] };
+			window.kadence_blocks_params = { g_font_names: [] };
+			addFilter('kadence.typography_options', 'test/custom-fonts', (groups) => [
+				...groups,
+				{ type: 'group', label: 'Custom Fonts', options: [{ value: 'brand sans' }, { value: 'Zeta Display' }] },
+			]);
+
+			expect(fontCatalogOptions()).toEqual([
+				{ value: 'Brand Sans', label: 'Brand Sans', badge: 'Custom' },
+				{ value: 'Zeta Display', label: 'Zeta Display', badge: 'Custom' },
+			]);
+		});
+
+		it('skips Google entries and var() references, and tolerates malformed groups', () => {
+			window.kadenceDesignTokensFonts = { favorites: [], custom: [] };
+			window.kadence_blocks_params = { g_font_names: [] };
+			addFilter('kadence.typography_options', 'test/custom-fonts', (groups) => [
+				...groups,
+				null,
+				{ type: 'group', label: 'No options' },
+				{
+					type: 'group',
+					label: 'Mixed',
+					options: [
+						{ value: 'Abel', google: true },
+						{ value: 'var( --global-body-font-family, inherit )' },
+						{ value: 42 },
+						{ value: '   ' },
+						{ value: ' Kept ' },
+					],
+				},
+			]);
+
+			expect(fontCatalogOptions()).toEqual([{ value: 'Kept', label: 'Kept', badge: 'Custom' }]);
+		});
+
+		it('survives a callback that throws or a filter that returns a non-array', () => {
+			window.kadenceDesignTokensFonts = { favorites: [], custom: ['My Font'] };
+			window.kadence_blocks_params = { g_font_names: [] };
+
+			addFilter('kadence.typography_options', 'test/custom-fonts', () => {
+				throw new Error('expects the stock groups');
+			});
+			expect(fontCatalogOptions()).toEqual([{ value: 'My Font', label: 'My Font', badge: 'Custom' }]);
+
+			removeFilter('kadence.typography_options', 'test/custom-fonts');
+			addFilter('kadence.typography_options', 'test/custom-fonts', () => 'nope');
+			expect(fontCatalogOptions()).toEqual([{ value: 'My Font', label: 'My Font', badge: 'Custom' }]);
+		});
 	});
 });
 

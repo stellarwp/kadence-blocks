@@ -1036,6 +1036,7 @@ final class Css_Builder {
 	 * that declares their var.
 	 *
 	 * @since 3.8.0
+	 * @since 3.9.2 A property counts as covered only when the library overrides it on the `$default`, or its binding is always emitted.
 	 *
 	 * @param string                                                                                                                                                                                                                                                    $block        The block name.
 	 * @param string                                                                                                                                                                                                                                                    $preset       The named preset's slug.
@@ -1057,19 +1058,28 @@ final class Css_Builder {
 		$by_suffix = [];
 
 		foreach ( $properties ?? $this->with_desktop_base( $data['presets'][ $preset ] ) as $property => $info ) {
-			// "Covered" means the `$default` collected the property. The block-default layer additionally
-			// requires the binding to be token-backed with a non-empty literal before it declares one, so
-			// a binding failing only that would go uncovered there and skipped here; no shipped binding
-			// does, and the extra rule would be harmless indirection rather than a wrong value.
-			if ( $info['target'] === null || $info['prop'] === null || $info['direct'] || isset( $covered[ $property ] ) ) {
+			$binding = $bindings !== null ? $bindings->binding( Cast::to_string( $property ) ) : null;
+
+			/*
+			 * "Covered" means the block-default layer declares the property: the `$default` collected it AND
+			 * either the library overrides it or its binding is always emitted. An untouched default is left
+			 * out of that layer, so without this a named preset's value would have nothing to be read through.
+			 * The block-default layer additionally requires the binding to be token-backed with a non-empty
+			 * literal before it declares one, so a binding failing only that would go uncovered there and
+			 * skipped here; no shipped binding does, and the extra rule would be harmless indirection rather
+			 * than a wrong value.
+			 */
+			$declared_by_default = isset( $covered[ $property ] )
+				&& ( isset( $data['activated'][ $property ] ) || ( $binding !== null && $binding->is_always_emitted() ) );
+
+			if ( $info['target'] === null || $info['prop'] === null || $info['direct'] || $declared_by_default ) {
 				continue;
 			}
 
 			// A binding may paint a descendant rather than the block root (an image's `img`, a column's
 			// `> .kt-inside-inner-col`). Group by that suffix the way the block-default layer does, so the
 			// declaration lands on the element the binding names instead of on the block wrapper.
-			$binding = $bindings !== null ? $bindings->binding( (string) $property ) : null;
-			$suffix  = $binding !== null
+			$suffix = $binding !== null
 				? $this->selector_suffix( $editor ? $binding->editor_css_selector() : $binding->css_selector() )
 				: '';
 

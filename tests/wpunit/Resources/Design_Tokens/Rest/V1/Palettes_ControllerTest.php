@@ -5,6 +5,7 @@ namespace Tests\wpunit\Resources\Design_Tokens\Rest\V1;
 
 use Generator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Palettes;
 use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Palettes_Controller;
 use Tests\Support\Classes\TestCase;
@@ -19,6 +20,15 @@ use WP_REST_Server;
  * setting the library's $current palette, and the write guards.
  */
 final class Palettes_ControllerTest extends TestCase {
+
+	/**
+	 * A user-added color registered for each test, with no swatch in the shipped palette.
+	 *
+	 * @since 3.9.2
+	 *
+	 * @var string
+	 */
+	private const USER_COLOR = 'primitive.color.custom.user-color';
 
 	/**
 	 * @var Effective_Palettes
@@ -46,12 +56,16 @@ final class Palettes_ControllerTest extends TestCase {
 		$this->store      = $this->container->get( Token_Store::class );
 
 		wp_set_current_user( $this->factory()->user->create( [ 'role' => 'administrator' ] ) );
+
+		$this->container->get( Token_Registry::class )->register_user_primitive( self::USER_COLOR, 'color', 'User Color' );
 	}
 
 	/**
 	 * @return void
 	 */
 	protected function tearDown(): void {
+		$this->container->get( Token_Registry::class )->deregister_user_primitive( self::USER_COLOR );
+
 		wp_set_current_user( 0 );
 
 		parent::tearDown();
@@ -272,16 +286,15 @@ final class Palettes_ControllerTest extends TestCase {
 	 * @return void
 	 */
 	public function testGetItemMarksBaselineSwatches(): void {
-		// primitive.color.neutral.600 is a registered color the shipped palette lists no swatch for, so it stands
-		// in for a user-added color without needing a minted primitive.
+		// A registered user color the shipped palette lists no swatch for.
 		$this->controller->update_swatch(
-			$this->swatch_request( 'PUT', 'default', 'primitive.color.neutral.600', '#4A5568' )
+			$this->swatch_request( 'PUT', 'default', self::USER_COLOR, '#4A5568' )
 		);
 
 		$swatches = $this->view_swatches( 'default' );
 
 		$this->assertTrue( $swatches['primitive.color.brand.button']['baseline'] );
-		$this->assertFalse( $swatches['primitive.color.neutral.600']['baseline'] );
+		$this->assertFalse( $swatches[ self::USER_COLOR ]['baseline'] );
 	}
 
 	/**
@@ -947,18 +960,17 @@ final class Palettes_ControllerTest extends TestCase {
 	 * @return void
 	 */
 	public function testDeleteSwatchRemovesANonBaselineSwatchFromTheDefaultPalette(): void {
-		// primitive.color.neutral.600 is a registered color the shipped palette lists no swatch for, so it stands
-		// in for a user-added color without needing a minted primitive.
+		// A registered user color the shipped palette lists no swatch for.
 		$this->controller->update_swatch(
-			$this->swatch_request( 'PUT', 'default', 'primitive.color.neutral.600', '#4A5568' )
+			$this->swatch_request( 'PUT', 'default', self::USER_COLOR, '#4A5568' )
 		);
-		$this->assertArrayHasKey( 'primitive.color.neutral.600', $this->palettes->swatch_values( 'default' ) );
+		$this->assertArrayHasKey( self::USER_COLOR, $this->palettes->swatch_values( 'default' ) );
 
 		$this->controller->delete_swatch(
-			$this->swatch_request( 'DELETE', 'default', 'primitive.color.neutral.600' )
+			$this->swatch_request( 'DELETE', 'default', self::USER_COLOR )
 		);
 
-		$this->assertArrayNotHasKey( 'primitive.color.neutral.600', $this->palettes->swatch_values( 'default' ) );
+		$this->assertArrayNotHasKey( self::USER_COLOR, $this->palettes->swatch_values( 'default' ) );
 	}
 
 	/**
@@ -998,7 +1010,7 @@ final class Palettes_ControllerTest extends TestCase {
 
 		yield 'a token no palette carries' => [
 			'id'    => 'default',
-			'token' => 'primitive.color.neutral.600',
+			'token' => self::USER_COLOR,
 		];
 	}
 
@@ -1107,8 +1119,7 @@ final class Palettes_ControllerTest extends TestCase {
 		// request adds — the helper reads the EFFECTIVE palette, which would otherwise include it by then.
 		$without = $this->default_palette_request();
 
-		// primitive.color.neutral.600 is a registered color the shipped palette lists no swatch for, so it stands
-		// in for a user-added color without needing a minted primitive.
+		// A registered user color the shipped palette lists no swatch for.
 		$added  = $this->default_palette_request();
 		$groups = $added->get_param( 'groups' );
 
@@ -1117,8 +1128,8 @@ final class Palettes_ControllerTest extends TestCase {
 			'label'    => 'Extras',
 			'swatches' => [
 				[
-					'token'  => 'primitive.color.neutral.600',
-					'label'  => 'Neutral 600',
+					'token'  => self::USER_COLOR,
+					'label'  => 'User Color',
 					'$value' => '#4A5568',
 				],
 			],
@@ -1127,11 +1138,11 @@ final class Palettes_ControllerTest extends TestCase {
 		$added->set_param( 'groups', $groups );
 
 		$this->assertNotInstanceOf( WP_Error::class, $this->controller->update_item( $added ) );
-		$this->assertArrayHasKey( 'primitive.color.neutral.600', $this->palettes->swatch_values( 'default' ) );
+		$this->assertArrayHasKey( self::USER_COLOR, $this->palettes->swatch_values( 'default' ) );
 
 		// Now save the palette back without it: the lock does not apply, so the row goes away for good.
 		$this->assertNotInstanceOf( WP_Error::class, $this->controller->update_item( $without ) );
-		$this->assertArrayNotHasKey( 'primitive.color.neutral.600', $this->palettes->swatch_values( 'default' ) );
+		$this->assertArrayNotHasKey( self::USER_COLOR, $this->palettes->swatch_values( 'default' ) );
 	}
 
 	/**

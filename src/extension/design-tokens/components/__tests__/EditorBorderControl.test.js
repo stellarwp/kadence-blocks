@@ -154,13 +154,199 @@ describe('EditorBorderControl native <-> control value bridging', () => {
 	 * @return {void}
 	 */
 	it('reads an unset native value as an empty scalar', () => {
-		const { borderControl } = renderEditorBorderControl({ previewDevice: 'Tablet', tabletValue: undefined });
+		const { borderControl } = renderEditorBorderControl({
+			previewDevice: 'Tablet',
+			value: undefined,
+			tabletValue: undefined,
+		});
 
 		expect(borderControl.props.value).toEqual({
 			width: '',
 			style: 'none',
 			color: '',
 		});
+	});
+
+	/**
+	 * An unset border reads as the default style, and a width edit writes that style.
+	 *
+	 * @since 3.9.2
+	 *
+	 * @return {void}
+	 */
+	it('starts an unset border from the preset style and keeps it when the width is edited', () => {
+		const { borderControl, onChange } = renderEditorBorderControl({
+			value: undefined,
+			defaultStyle: 'solid',
+		});
+
+		expect(borderControl.props.value).toEqual({ width: '', style: 'solid', color: '' });
+
+		act(() => {
+			borderControl.props.onChange({ width: '4px', style: 'solid', color: '' });
+		});
+
+		expect(onChange).toHaveBeenCalledWith([
+			{
+				top: ['', 'solid', 4],
+				right: ['', 'solid', 4],
+				bottom: ['', 'solid', 4],
+				left: ['', 'solid', 4],
+				unit: 'px',
+			},
+		]);
+	});
+
+	/**
+	 * A per-side default style applies to each side.
+	 *
+	 * @since 3.9.2
+	 *
+	 * @return {void}
+	 */
+	it('starts an unset border from a per-side default style', () => {
+		const { borderControl } = renderEditorBorderControl({
+			value: undefined,
+			defaultStyle: ['none', 'solid', 'solid', 'none'],
+		});
+
+		expect(borderControl.props.value.style).toEqual(['none', 'solid', 'solid', 'none']);
+	});
+
+	/**
+	 * An unset border whose default style differs per side opens unlinked; one default style opens linked.
+	 *
+	 * @since 3.9.2
+	 *
+	 * @return {void}
+	 */
+	it('opens unlinked only when the per-side default styles differ', () => {
+		const mixed = renderEditorBorderControl({ value: undefined, defaultStyle: ['none', 'solid', 'solid', 'none'] });
+
+		expect(mixed.borderControl.props.isLinked).toBe(false);
+
+		const single = renderEditorBorderControl({ value: undefined, defaultStyle: 'solid' });
+
+		expect(single.borderControl.props.isLinked).toBe(true);
+	});
+
+	/**
+	 * A width edit with no color writes a token alias default color.
+	 *
+	 * @since 3.9.2
+	 *
+	 * @return {void}
+	 */
+	it('writes the preset color with a width so the border stays visible', () => {
+		const { borderControl, onChange } = renderEditorBorderControl({
+			value: undefined,
+			defaultStyle: 'solid',
+			defaultColor: '{semantic.color.button-bg}',
+		});
+
+		act(() => {
+			borderControl.props.onChange({ width: '4px', style: 'solid', color: '' });
+		});
+
+		expect(onChange).toHaveBeenCalledWith([
+			{
+				top: ['{semantic.color.button-bg}', 'solid', 4],
+				right: ['{semantic.color.button-bg}', 'solid', 4],
+				bottom: ['{semantic.color.button-bg}', 'solid', 4],
+				left: ['{semantic.color.button-bg}', 'solid', 4],
+				unit: 'px',
+			},
+		]);
+	});
+
+	/**
+	 * A width edit with no color does not write a literal default color.
+	 *
+	 * @since 3.9.2
+	 *
+	 * @return {void}
+	 */
+	it('does not write a literal default color', () => {
+		const { borderControl, onChange } = renderEditorBorderControl({ value: undefined, defaultColor: '#2B6CB0' });
+
+		act(() => {
+			borderControl.props.onChange({ width: '4px', style: 'solid', color: '' });
+		});
+
+		expect(onChange).toHaveBeenLastCalledWith([expect.objectContaining({ top: ['', 'solid', 4] })]);
+	});
+
+	/**
+	 * On Tablet, the control shows the desktop style, and a width edit writes empty color and style slots.
+	 *
+	 * @since 3.9.2
+	 *
+	 * @return {void}
+	 */
+	it('keeps the desktop color and style inherited when a width is written on Tablet', () => {
+		const desktop = [
+			{
+				top: ['#ff0000', 'dashed', 2],
+				right: ['#ff0000', 'dashed', 2],
+				bottom: ['#ff0000', 'dashed', 2],
+				left: ['#ff0000', 'dashed', 2],
+				unit: 'px',
+			},
+		];
+		const { borderControl, onChangeTablet } = renderEditorBorderControl({
+			value: desktop,
+			tabletValue: undefined,
+			previewDevice: 'Tablet',
+			defaultStyle: 'solid',
+			defaultColor: '{semantic.color.button-bg}',
+		});
+
+		expect(borderControl.props.value.style).toBe('dashed');
+
+		act(() => {
+			borderControl.props.onChange({ width: '4px', style: 'dashed', color: '' });
+		});
+
+		expect(onChangeTablet).toHaveBeenLastCalledWith([expect.objectContaining({ top: ['', '', 4] })]);
+	});
+
+	/**
+	 * A picked color is written as is, and a side with no width writes no color.
+	 *
+	 * @since 3.9.2
+	 *
+	 * @return {void}
+	 */
+	it('keeps a picked color over the preset color and writes none without a width', () => {
+		const { borderControl, onChange } = renderEditorBorderControl({
+			value: undefined,
+			defaultColor: '{semantic.color.button-bg}',
+		});
+
+		act(() => {
+			borderControl.props.onChange({ width: '2px', style: 'solid', color: '#ff0000' });
+		});
+
+		expect(onChange).toHaveBeenLastCalledWith([expect.objectContaining({ top: ['#ff0000', 'solid', 2] })]);
+
+		act(() => {
+			borderControl.props.onChange({ width: '', style: 'solid', color: '' });
+		});
+
+		expect(onChange).toHaveBeenLastCalledWith([expect.objectContaining({ top: ['', 'solid', ''] })]);
+	});
+
+	/**
+	 * A stored style is shown instead of the default style.
+	 *
+	 * @since 3.9.2
+	 *
+	 * @return {void}
+	 */
+	it('keeps a stored style over the preset style', () => {
+		const { borderControl } = renderEditorBorderControl({ defaultStyle: 'dotted' });
+
+		expect(borderControl.props.value.style).toEqual(['solid', 'dashed', 'dotted', 'double']);
 	});
 
 	/**
@@ -483,7 +669,11 @@ describe('EditorBorderControl linked view', () => {
 	 * @return {void}
 	 */
 	it('reads an unset value as linked', () => {
-		const { borderControl } = renderEditorBorderControl({ previewDevice: 'Tablet', tabletValue: undefined });
+		const { borderControl } = renderEditorBorderControl({
+			previewDevice: 'Tablet',
+			value: undefined,
+			tabletValue: undefined,
+		});
 
 		expect(borderControl.props.isLinked).toBe(true);
 	});

@@ -52,6 +52,15 @@ final class Font_Catalog {
 	private const CUSTOM_FONTS_FILTER = 'kadence_blocks_custom_fonts';
 
 	/**
+	 * The filter applied to the normalized custom family names.
+	 *
+	 * @since 3.9.2
+	 *
+	 * @var string
+	 */
+	private const CUSTOM_NAMES_FILTER = 'kadence_blocks_font_catalog_custom_names';
+
+	/**
 	 * The catalog: every Google family name, every custom family name not already among them, and the
 	 * weights each Google family ships.
 	 *
@@ -166,6 +175,7 @@ final class Font_Catalog {
 	 * The site's custom font names, normalized from the custom-fonts filter's associative shape.
 	 *
 	 * @since 3.8.0
+	 * @since 3.9.2 Passes the names through the kadence_blocks_font_catalog_custom_names filter and de-duplicates them.
 	 *
 	 * @return string[]
 	 */
@@ -185,7 +195,7 @@ final class Font_Catalog {
 		$fonts = apply_filters( self::CUSTOM_FONTS_FILTER, [] );
 
 		if ( ! is_array( $fonts ) ) {
-			return [];
+			$fonts = [];
 		}
 
 		$names = [];
@@ -198,7 +208,35 @@ final class Font_Catalog {
 			}
 		}
 
-		return $names;
+		$names = array_values( array_unique( $names ) );
+
+		/**
+		 * Filters the custom font family names listed in the font dropdowns.
+		 *
+		 * @since 3.9.2
+		 *
+		 * @param string[] $names The custom family names, each a family name rather than a font stack.
+		 *
+		 * @return array<mixed> The custom family names.
+		 */
+		$filtered = apply_filters( self::CUSTOM_NAMES_FILTER, $names );
+
+		if ( ! is_array( $filtered ) ) {
+			return [];
+		}
+
+		$clean = [];
+
+		foreach ( array_filter( $filtered, 'is_string' ) as $name ) {
+			$trimmed = trim( $name );
+			$family  = preg_match( '/^(["\'])(.*)\1$/s', $trimmed, $matched ) ? $matched[2] : $trimmed;
+
+			if ( $family !== '' ) {
+				$clean[] = $family;
+			}
+		}
+
+		return array_values( array_unique( $clean ) );
 	}
 
 	/**
@@ -214,12 +252,17 @@ final class Font_Catalog {
 	 * Google family.
 	 *
 	 * @since 3.8.0
+	 * @since 3.9.2 Keeps commas inside a quoted first family.
 	 *
 	 * @param string $entry The catalog entry, a family name or a font-stack expression.
 	 *
 	 * @return string The family name, or "" when the entry names none.
 	 */
 	private function family_of( string $entry ): string {
+		if ( preg_match( '/^\s*(["\'])(.*?)\1/s', $entry, $quoted ) ) {
+			return trim( $quoted[2] );
+		}
+
 		$first = explode( ',', $entry )[0];
 
 		return trim( $first, " \t\n\r\0\x0B\"'" );

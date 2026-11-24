@@ -8,6 +8,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Preset\Css_Builder;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
+use KadenceWP\KadenceBlocks\Utils\Cast;
 use ReflectionProperty;
 use Tests\Support\Classes\TestCase;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Version;
@@ -299,40 +300,34 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
-	 * A property the Default DOES define is consumed by the block-default layer's declaration, so the
-	 * gap rule carries nothing for it: background stays a var retarget only, while color, which the Default
-	 * leaves unset, is declared outright.
+	 * A property the Default overrides is consumed by the block-default layer's declaration, so the gap rule
+	 * carries nothing for it: background stays a var retarget only, while color, which the Default leaves
+	 * unset, is declared outright.
 	 *
 	 * @return void
 	 */
-	public function testTheGapRuleSkipsAPropertyTheDefaultDefines(): void {
-		$this->store->save_document(
-			(string) wp_json_encode(
-				[
-					'$extensions' => [
-						'com.kadence.designTokens' => [
-							'presets' => [
-								'kadence/advancedheading' => [
-									'display' => [
-										'label'  => 'Display',
-										'tokens' => [
-											'color'      => '{semantic.color.text}',
-											'background' => '{semantic.color.heading-bg}',
-										],
-									],
-								],
-							],
-						],
-					],
-				]
-			)
-		);
+	public function testTheGapRuleSkipsAPropertyTheDefaultOverrides(): void {
+		$this->seedDisplayPresetWithDefaultTokens( [ 'background' => '{semantic.color.heading-bg}' ] );
 
 		$css = $this->builder( $this->registry )->css( 'default' );
 
 		$this->assertStringContainsString( 'kb-preset--display{color:var(--kb-token--preset--kadence-advancedheading--display--color);}', $css );
-		$this->assertStringNotContainsString( 'kb-preset--display{background', $css );
-		$this->assertStringNotContainsString( ';background:var(--kb-token--preset--kadence-advancedheading--display--background)', $css );
+		$this->assertStringNotContainsString( 'background-color:var(--kb-token--preset--kadence-advancedheading--display--background)', $css );
+	}
+
+	/**
+	 * A property the Default never overrode is not declared by the block-default layer, so nothing would read
+	 * a named preset's var retarget for it; the gap rule declares it outright, alongside color.
+	 *
+	 * @return void
+	 */
+	public function testTheGapRuleDeclaresAPropertyTheUntouchedDefaultLeavesOut(): void {
+		$this->seedDisplayPresetWithDefaultTokens( [] );
+
+		$css = $this->builder( $this->registry )->css( 'default' );
+
+		$this->assertStringContainsString( 'color:var(--kb-token--preset--kadence-advancedheading--display--color)', $css );
+		$this->assertStringContainsString( 'background-color:var(--kb-token--preset--kadence-advancedheading--display--background)', $css );
 	}
 
 	/**
@@ -1920,5 +1915,47 @@ final class Css_BuilderTest extends TestCase {
 		];
 
 		$this->store->save_document( (string) wp_json_encode( $document ), Token_Store::default_slug() );
+	}
+
+	/**
+	 * Store a heading `display` preset setting color and background, and a Default preset overriding the given
+	 * tokens (none leaves the Default untouched).
+	 *
+	 * @param array<string, string> $default_tokens The properties the Default preset overrides.
+	 *
+	 * @return void
+	 */
+	private function seedDisplayPresetWithDefaultTokens( array $default_tokens ): void {
+		$presets = [
+			'display' => [
+				'label'  => 'Display',
+				'tokens' => [
+					'color'      => '{semantic.color.text}',
+					'background' => '{semantic.color.heading-bg}',
+				],
+			],
+		];
+
+		if ( $default_tokens !== [] ) {
+			$presets['$default'] = 'default';
+			$presets['default']  = [
+				'label'  => 'Default',
+				'tokens' => $default_tokens,
+			];
+		}
+
+		$this->store->save_document(
+			Cast::to_string(
+				wp_json_encode(
+					[
+						'$extensions' => [
+							'com.kadence.designTokens' => [
+								'presets' => [ 'kadence/advancedheading' => $presets ],
+							],
+						],
+					]
+				)
+			)
+		);
 	}
 }

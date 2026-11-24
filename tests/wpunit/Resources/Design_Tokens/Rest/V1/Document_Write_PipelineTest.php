@@ -182,6 +182,57 @@ final class Document_Write_PipelineTest extends TestCase {
 		$this->assertInstanceOf( WP_Error::class, $result );
 		$this->assertSame( 'rest_design_tokens_user_primitive_reference_unsupported', $result->get_error_code() );
 		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $result->get_error_data()['status'] );
+		$this->assertSame(
+			[
+				[
+					'kind' => 'primitive_override',
+					'path' => 'primitive.color.alias-to-custom',
+				],
+			],
+			$result->get_error_data()['references']
+		);
+	}
+
+	/**
+	 * A block preset that uses a custom color does not block later writes to the library, so adding
+	 * another custom color after setting a preset color succeeds.
+	 *
+	 * @return void
+	 */
+	public function testValidateAndSaveAcceptsABlockPresetThatUsesAUserPrimitive(): void {
+		$id        = 'primitive.color.custom.brand';
+		$candidate = [
+			'primitive'                      => [
+				'color' => [
+					'custom' => [
+						'brand' => [
+							'$type'  => 'color',
+							'$value' => '#3182CE',
+						],
+					],
+				],
+			],
+			Extensions::get_extensions_key() => [
+				Extensions::get_namespace() => [
+					Extensions::get_section_user_primitives() => [
+						$id => [ 'label' => 'Brand' ],
+					],
+					Extensions::get_section_presets()         => [
+						'kadence/singlebtn' => [
+							'default' => [
+								Extensions::get_tokens_key() => [
+									'button-bg' => '{' . $id . '}',
+								],
+							],
+						],
+					],
+				],
+			],
+		];
+
+		$result = $this->pipeline->validate_and_save( $candidate, Token_Store::default_slug(), '', '', WP_Http::CREATED );
+
+		$this->assertInstanceOf( WP_REST_Response::class, $result );
 	}
 
 	// -------------------------------------------------------------------------

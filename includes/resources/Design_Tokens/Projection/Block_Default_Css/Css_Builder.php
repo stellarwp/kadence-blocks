@@ -45,6 +45,12 @@ use RuntimeException;
  * editor-canvas parity is the reason this CSS approach is preferred over an attribute/slug/control
  * approach for these families. Nothing here is `!important`.
  *
+ * A property is declared only when the library overrides it (see
+ * {@see Preset_Resolver::overridden_default_properties()}). An untouched default restates the browser's own
+ * initial value, and at class specificity printed after the theme it would still reset a theme rule or a
+ * utility class the block never asked to change. A binding opts out with `always_emit` when the block has
+ * nothing of its own to fall back on, which is the Single Icon's size.
+ *
  * Only a binding that declares a `css_prop` and references a token contributes, and only the block's
  * `$default` preset is read. A binding that ALSO declares a `css_var` has its declaration wrapped in that
  * variable — `var(--<css_var>, var(<token-var>, <literal>))` — which is the seam through which a block's
@@ -58,6 +64,7 @@ use RuntimeException;
  * already consumes that variable at every width through its resting rule.
  *
  * @since 3.8.0
+ * @since 3.9.2 Declares a `$default` property only when the library overrides it, or its binding is always emitted.
  */
 final class Css_Builder {
 
@@ -72,6 +79,21 @@ final class Css_Builder {
 	 * @var string
 	 */
 	private const CACHE_GROUP = 'kb_design_tokens';
+
+	/**
+	 * The css_props whose default rule is wrapped in `:where()` so it carries no specificity.
+	 *
+	 * A color can arrive as a utility class on the block (`has-<slug>-background-color`, which an external
+	 * color framework generates), and that class is a single-class rule of its own. A default of the same
+	 * specificity that loads later would repaint the block, so the default must lose to any class-based color.
+	 * Properties outside this list keep their single-class selector, since lowering them would let the block's
+	 * own stylesheet or a theme's element rule override the token default.
+	 *
+	 * @since 3.9.2
+	 *
+	 * @var list<string>
+	 */
+	private const ZERO_SPECIFICITY_PROPS = [ 'background-color' ];
 
 	/**
 	 * The registry the preset bindings are read from.
@@ -251,18 +273,28 @@ final class Css_Builder {
 				$responsive = [];
 			}
 
+			/*
+			 * Only a property the library overrides is declared. An untouched default restates the browser's own
+			 * initial value (`padding:0`, `background-color:transparent`), and at class specificity printed after
+			 * the theme it would still reset a theme rule or utility class the block never asked to change.
+			 */
+			$overridden = $this->presets->overridden_default_properties( $block, $slug );
+
 			// The canonical id map of the library — the exact set the Css_Var projector emits a
 			// `--kb-token--<id>` variable for. resolve_default() above already warmed this memoized
 			// resolution, so it is a free lookup here (and cannot throw when resolve_default() did not).
 			$resolved = $this->resolver->resolve( $slug );
 
-			$selector = $editor && $bindings->editor_selector !== null
-				? '.editor-styles-wrapper ' . $bindings->editor_selector
-				: '.wp-block-' . str_replace( '/', '-', $block );
+			$editor_selector = $editor ? $bindings->editor_selector : null;
+			$prefix          = $editor_selector !== null ? '.editor-styles-wrapper ' : '';
+			$root            = $editor_selector ?? '.wp-block-' . str_replace( '/', '-', $block );
 
-			// Group declarations by selector suffix so a block with several dimension props on the same
-			// element emits one rule, and props on a descendant (e.g. " img") get their own.
-			$by_suffix = [];
+			/*
+			 * Group declarations by their full selector so a block with several dimension props on the same
+			 * element emits one rule, props on a descendant (e.g. " img") get their own, and a zero-specificity
+			 * property is kept out of the single-class rule its siblings share.
+			 */
+			$by_selector = [];
 
 			foreach ( $values as $property => $value ) {
 				$binding = $bindings->binding( $property );
@@ -280,6 +312,10 @@ final class Css_Builder {
 				// per-instance rule, so emitting one here would repaint content that never opted into a state.
 				// See Binding::CSS_STATE.
 				if ( $binding->is_state() ) {
+					continue;
+				}
+
+				if ( ! isset( $overridden[ $property ] ) && ! $binding->is_always_emitted() ) {
 					continue;
 				}
 
@@ -318,11 +354,11 @@ final class Css_Builder {
 					$editor ? $binding->editor_css_selector() : $binding->css_selector()
 				);
 
-				$by_suffix[ $suffix ][] = $prop . ':' . $this->declaration_value( $binding, $var, $literal );
+				$by_selector[ $this->rule_selector( $prefix, $root, $suffix, $prop ) ][] = $prop . ':' . $this->declaration_value( $binding, $var, $literal );
 			}
 
-			foreach ( $by_suffix as $suffix => $declarations ) {
-				$css .= $selector . $suffix . '{' . implode( ';', $declarations ) . ';}';
+			foreach ( $by_selector as $rule_selector => $declarations ) {
+				$css .= $rule_selector . '{' . implode( ';', $declarations ) . ';}';
 			}
 
 			// A property the `$default` preset overrides at a breakpoint but leaves unset at desktop has no
@@ -336,7 +372,7 @@ final class Css_Builder {
 					continue;
 				}
 
-				$media_by_suffix = [];
+				$media_by_selector = [];
 
 				foreach ( array_keys( $overrides ) as $property ) {
 					if ( array_key_exists( $property, $values ) ) {
@@ -358,16 +394,41 @@ final class Css_Builder {
 
 					$suffix = $this->selector_suffix( $editor ? $binding->editor_css_selector() : $binding->css_selector() );
 
-					$media_by_suffix[ $suffix ][] = $prop . ':var(--' . $css_var . ')';
+					$media_by_selector[ $this->rule_selector( $prefix, $root, $suffix, $prop ) ][] = $prop . ':var(--' . $css_var . ')';
 				}
 
-				foreach ( $media_by_suffix as $suffix => $declarations ) {
-					$css .= '@media all and ' . $query . '{' . $selector . $suffix . '{' . implode( ';', $declarations ) . ';}}';
+				foreach ( $media_by_selector as $rule_selector => $declarations ) {
+					$css .= '@media all and ' . $query . '{' . $rule_selector . '{' . implode( ';', $declarations ) . ';}}';
 				}
 			}
 		}
 
 		return $css;
+	}
+
+	/**
+	 * The selector a bound property's rule is emitted under.
+	 *
+	 * A property in {@see self::ZERO_SPECIFICITY_PROPS} wraps the root and its descendant suffix in `:where()`
+	 * so the default carries no specificity and any class-based color wins. The editor's
+	 * `.editor-styles-wrapper` prefix stays outside the wrapper, which keeps the editor rule outranking the
+	 * theme's per-tag element styles. Every other property keeps the single-class selector.
+	 *
+	 * @since 3.9.2
+	 *
+	 * @param string $prefix The editor wrapper prefix, or an empty string on the front end.
+	 * @param string $root   The block root selector.
+	 * @param string $suffix The composed descendant suffix, or an empty string.
+	 * @param string $prop   The CSS property the rule declares.
+	 *
+	 * @return string The selector.
+	 */
+	private function rule_selector( string $prefix, string $root, string $suffix, string $prop ): string {
+		if ( in_array( $prop, self::ZERO_SPECIFICITY_PROPS, true ) ) {
+			return $prefix . ':where(' . $root . $suffix . ')';
+		}
+
+		return $prefix . $root . $suffix;
 	}
 
 	/**

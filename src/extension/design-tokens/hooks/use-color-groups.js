@@ -27,7 +27,7 @@ import apiFetch from '@wordpress/api-fetch';
  */
 import { mapPaletteToColorControlGroups } from '../../../token-controls/helpers/palette-groups';
 import { designTokensNamespace, hasDesignTokensRest } from '../rest';
-import { globalStylesColorGroups } from '../global-styles-color-groups';
+import { globalStylesColorGroups, themeColorGroups } from '../global-styles-color-groups';
 import { isFseMode } from '../../../site-styles/supported-blocks';
 
 /**
@@ -233,6 +233,8 @@ function fetchColorGroups(paletteId, library) {
  * In the Kadence theme's FSE mode the groups are the Global Styles palette instead, and no palette
  * is fetched.
  *
+ * @since 3.9.2 Off the Kadence theme the theme's own palette is listed ahead of the Style Library groups.
+ *
  * @return {Array} `[{ id, label, swatches: [{ id, label, value, alias }] }]`, or `[]` while loading.
  */
 export function useColorGroups(clientId) {
@@ -249,6 +251,16 @@ export function useColorGroups(clientId) {
 	const globalStylesGroups = useMemo(
 		() => (fseMode ? globalStylesColorGroups({ theme, defaultColors, custom, defaultPalette }) : null),
 		[fseMode, theme, defaultColors, custom, defaultPalette]
+	);
+
+	// Off the Kadence theme the Style Library list does not include the theme's own colors, so they lead it.
+	// The Kadence theme already mirrors its palette in the Style Library.
+	// `wp_localize_script` turns the PHP boolean into '1' (or ''), so accept the string as well as `true`.
+	const kadenceThemeFlag = window.kadence_blocks_params?.isKadenceT;
+	const isKadenceTheme = true === kadenceThemeFlag || '1' === kadenceThemeFlag;
+	const themeGroups = useMemo(
+		() => (fseMode || isKadenceTheme ? [] : themeColorGroups(theme)),
+		[fseMode, isKadenceTheme, theme]
 	);
 
 	useEffect(() => {
@@ -305,5 +317,9 @@ export function useColorGroups(clientId) {
 		};
 	}, [clientId, paletteId, library, fseMode]);
 
-	return globalStylesGroups ?? groups;
+	if (globalStylesGroups) {
+		return globalStylesGroups;
+	}
+
+	return [...themeGroups, ...groups];
 }
