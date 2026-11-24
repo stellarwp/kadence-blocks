@@ -279,6 +279,8 @@ final class Css_BuilderTest extends TestCase {
 	 * @return void
 	 */
 	public function testOnlyTheBackgroundColorDefaultIsWrappedInWhereToCarryNoSpecificity(): void {
+		$this->seed_shipped_defaults();
+
 		$registry = $this->container->get( Token_Registry::class );
 
 		$css = $this->builder( $registry )->css();
