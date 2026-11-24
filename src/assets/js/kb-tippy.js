@@ -2736,7 +2736,12 @@
 
 	return tippy;
 });
-// Load Kadence Tippy
+/**
+ * Kadence tooltips setup.
+ *
+ * @since 3.2.42
+ * @since TBD Updated how tooltip options are set.
+ */
 (function () {
 	'use strict';
 	/**
