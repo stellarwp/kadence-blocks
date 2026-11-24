@@ -1121,6 +1121,12 @@ return [
 					'css_selector'     => '*.kb-svg-icon-wrap',
 					'css_var'          => 'kb-icon-size',
 					'control_attr'     => 'size',
+
+					/*
+					 * A fresh icon holds no size of its own (see Icon_Size_Adapter), so the default declaration
+					 * is the only thing sizing it and must be emitted even for an untouched library.
+					 */
+					'always_emit'      => true,
 					// The block names its per-device size attributes by a prefix convention, which is a naming
 					// rule rather than something safely derivable, so the editor is told them rather than
 					// guessing — the same reason the Button's radius binding declares its own.

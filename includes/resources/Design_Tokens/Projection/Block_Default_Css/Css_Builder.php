@@ -45,6 +45,12 @@ use RuntimeException;
  * editor-canvas parity is the reason this CSS approach is preferred over an attribute/slug/control
  * approach for these families. Nothing here is `!important`.
  *
+ * A property is declared only when the library overrides it (see
+ * {@see Preset_Resolver::overridden_default_properties()}). An untouched default restates the browser's own
+ * initial value, and at class specificity printed after the theme it would still reset a theme rule or a
+ * utility class the block never asked to change. A binding opts out with `always_emit` when the block has
+ * nothing of its own to fall back on, which is the Single Icon's size.
+ *
  * Only a binding that declares a `css_prop` and references a token contributes, and only the block's
  * `$default` preset is read. A binding that ALSO declares a `css_var` has its declaration wrapped in that
  * variable — `var(--<css_var>, var(<token-var>, <literal>))` — which is the seam through which a block's
@@ -58,6 +64,7 @@ use RuntimeException;
  * already consumes that variable at every width through its resting rule.
  *
  * @since 3.8.0
+ * @since TBD Declares a `$default` property only when the library overrides it, or its binding is always emitted.
  */
 final class Css_Builder {
 
@@ -266,6 +273,13 @@ final class Css_Builder {
 				$responsive = [];
 			}
 
+			/*
+			 * Only a property the library overrides is declared. An untouched default restates the browser's own
+			 * initial value (`padding:0`, `background-color:transparent`), and at class specificity printed after
+			 * the theme it would still reset a theme rule or utility class the block never asked to change.
+			 */
+			$overridden = $this->presets->overridden_default_properties( $block, $slug );
+
 			// The canonical id map of the library — the exact set the Css_Var projector emits a
 			// `--kb-token--<id>` variable for. resolve_default() above already warmed this memoized
 			// resolution, so it is a free lookup here (and cannot throw when resolve_default() did not).
@@ -298,6 +312,10 @@ final class Css_Builder {
 				// per-instance rule, so emitting one here would repaint content that never opted into a state.
 				// See Binding::CSS_STATE.
 				if ( $binding->is_state() ) {
+					continue;
+				}
+
+				if ( ! isset( $overridden[ $property ] ) && ! $binding->is_always_emitted() ) {
 					continue;
 				}
 
