@@ -1,4 +1,4 @@
 significance: patch
 type: security
-entry: Strengthened the setup of tooltips, typed text and video popups. Props to AndrewN for reporting.
+entry: Strengthened the handling of content in several blocks. Props to AndrewN for reporting.
 timestamp: 2026-11-23T17:48:01.793Z
