@@ -1129,7 +1129,7 @@
 					d.setAttribute('data-id', r),
 					d.setAttribute('data-index', i);
 				var v = A(s.settings.plyr, 'config') ? s.settings.plyr.config : {},
-					f = new Plyr('#' + r, v);
+					f = new Plyr(d.querySelector('#' + r), v);
 				f.on('ready', function (e) {
 					(a[r] = e.detail.plyr), b(n) && n();
 				}),

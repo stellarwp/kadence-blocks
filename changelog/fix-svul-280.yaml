@@ -1,0 +1,4 @@
+significance: patch
+type: security
+entry: Strengthened the handling of content in several blocks. Props to AndrewN for reporting.
+timestamp: 2026-11-23T17:48:01.793Z

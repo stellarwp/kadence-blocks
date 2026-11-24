@@ -2736,9 +2736,38 @@
 
 	return tippy;
 });
-// Load Kadence Tippy
+/**
+ * Kadence tooltips setup.
+ *
+ * @since 3.2.42
+ * @since TBD Updated how tooltip options are set.
+ */
 (function () {
 	'use strict';
+	/**
+	 * Placements accepted from the placement attribute.
+	 *
+	 * @since TBD
+	 *
+	 * @type {string[]}
+	 */
+	const PLACEMENTS = [
+		'auto',
+		'auto-start',
+		'auto-end',
+		'top',
+		'top-start',
+		'top-end',
+		'bottom',
+		'bottom-start',
+		'bottom-end',
+		'right',
+		'right-start',
+		'right-end',
+		'left',
+		'left-start',
+		'left-end',
+	];
 	window.kadenceTippy = {
 		strip_tags(input) {
 			const allowedTags = ['br', 'b', 'i', 'u', 'p', 'ol', 'ul', 'li', 'strong', 'small'];
@@ -2773,6 +2802,7 @@
 				});
 				tippy('[data-kb-tooltip-content]', {
 					allowHTML: true,
+					ignoreAttributes: true,
 					interactive: true,
 					hideOnEsc: true,
 					popperOptions: {
@@ -2790,6 +2820,7 @@
 						return window.kadenceTippy.strip_tags(content);
 					},
 					onCreate: (instance) => {
+						instance.setProps({ placement: window.kadenceTippy.getPlacement(instance.reference) });
 						if (
 							instance?.reference?.role == null &&
 							!window.kadenceTippy.isInteractiveElement(instance.reference)
@@ -2806,6 +2837,7 @@
 				});
 				tippy('[data-tooltip-id]', {
 					allowHTML: true,
+					ignoreAttributes: true,
 					interactive: true,
 					hideOnEsc: true,
 					popperOptions: {
@@ -2824,6 +2856,7 @@
 						return toolContent ? window.kadenceTippy.strip_tags(toolContent.innerHTML) : '';
 					},
 					onCreate: (instance) => {
+						instance.setProps({ placement: window.kadenceTippy.getPlacement(instance.reference) });
 						if (
 							instance?.reference?.role == null &&
 							!window.kadenceTippy.isInteractiveElement(instance.reference)
@@ -2833,6 +2866,20 @@
 					},
 				});
 			}
+		},
+		/**
+		 * Get the tooltip placement set on an element, limited to the supported placements.
+		 *
+		 * @param {HTMLElement} reference The tooltip reference element.
+		 *
+		 * @since TBD
+		 *
+		 * @return {string} The placement.
+		 */
+		getPlacement(reference) {
+			const placement = reference.getAttribute('data-tooltip-placement');
+
+			return PLACEMENTS.includes(placement) ? placement : 'top';
 		},
 		isInteractiveElement(element) {
 			const { nodeName } = element;
