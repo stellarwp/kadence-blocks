@@ -10,7 +10,7 @@ const SCRIPT = '../vendor/glightbox.js';
  *
  * @param {string} href The video URL.
  *
- * @since TBD
+ * @since 3.9.2
  *
  * @return {*} The first argument passed to the player.
  */

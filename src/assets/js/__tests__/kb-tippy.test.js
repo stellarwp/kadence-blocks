@@ -12,7 +12,7 @@ jest.mock('@popperjs/core', () => ({ createPopper: jest.fn() }), { virtual: true
  *
  * @param {string} html The markup to render.
  *
- * @since TBD
+ * @since 3.9.2
  *
  * @return {Object} The tooltip instance.
  */

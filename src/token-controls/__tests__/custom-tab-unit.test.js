@@ -3,7 +3,7 @@
  * The Custom tab shows a unit that every device shares as a disabled select with an explanation on the
  * devices that cannot change it, and renders as before when the unit is not shared.
  *
- * @since TBD
+ * @since 3.9.2
  */
 /**
  * External dependencies

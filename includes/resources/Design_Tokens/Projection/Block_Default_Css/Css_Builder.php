@@ -64,7 +64,7 @@ use RuntimeException;
  * already consumes that variable at every width through its resting rule.
  *
  * @since 3.8.0
- * @since TBD Declares a `$default` property only when the library overrides it, or its binding is always emitted.
+ * @since 3.9.2 Declares a `$default` property only when the library overrides it, or its binding is always emitted.
  */
 final class Css_Builder {
 
@@ -89,7 +89,7 @@ final class Css_Builder {
 	 * Properties outside this list keep their single-class selector, since lowering them would let the block's
 	 * own stylesheet or a theme's element rule override the token default.
 	 *
-	 * @since TBD
+	 * @since 3.9.2
 	 *
 	 * @var list<string>
 	 */
@@ -414,7 +414,7 @@ final class Css_Builder {
 	 * `.editor-styles-wrapper` prefix stays outside the wrapper, which keeps the editor rule outranking the
 	 * theme's per-tag element styles. Every other property keeps the single-class selector.
 	 *
-	 * @since TBD
+	 * @since 3.9.2
 	 *
 	 * @param string $prefix The editor wrapper prefix, or an empty string on the front end.
 	 * @param string $root   The block root selector.

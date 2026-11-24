@@ -3,7 +3,7 @@
  * A unit stored once for every breakpoint can only be changed on the first breakpoint. The other
  * breakpoints show it pinned, so choosing a unit there cannot change the wider breakpoints too.
  *
- * @since TBD
+ * @since 3.9.2
  */
 import { getSharedUnit, getUnitsForDevice } from '../helpers/shared-unit';
 

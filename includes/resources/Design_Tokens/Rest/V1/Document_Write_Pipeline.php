@@ -192,7 +192,7 @@ final class Document_Write_Pipeline {
 	 * Validate a candidate document, dry-run resolve it, then conditionally persist.
 	 *
 	 * @since 3.8.0
-	 * @since TBD A block preset alias to a user primitive is accepted, and the 422 lists the blocking references.
+	 * @since 3.9.2 A block preset alias to a user primitive is accepted, and the 422 lists the blocking references.
 	 *
 	 * @param array<string, mixed> $candidate                            Full candidate overrides document.
 	 * @param string               $slug                                 Token library slug.

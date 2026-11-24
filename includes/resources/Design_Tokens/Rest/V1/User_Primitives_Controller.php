@@ -149,7 +149,7 @@ final class User_Primitives_Controller extends Controller {
 	/**
 	 * Reads the baseline-merged block presets for a candidate document.
 	 *
-	 * @since TBD
+	 * @since 3.9.2
 	 *
 	 * @var Effective_Presets
 	 */
@@ -157,7 +157,7 @@ final class User_Primitives_Controller extends Controller {
 
 	/**
 	 * @since 3.8.0
-	 * @since TBD Added the `$presets` parameter.
+	 * @since 3.9.2 Added the `$presets` parameter.
 	 *
 	 * @param Document_Write_Pipeline $pipeline The shared DTCG write pipeline.
 	 * @param User_Primitive_Index    $index    Reads the userPrimitives provenance map.
@@ -254,7 +254,7 @@ final class User_Primitives_Controller extends Controller {
 	 * Return the set of alias references to a user primitive and whether deletion is safe.
 	 *
 	 * @since 3.8.0
-	 * @since TBD Reports a block's default preset as a blocker when deleting would remove it.
+	 * @since 3.9.2 Reports a block's default preset as a blocker when deleting would remove it.
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -451,7 +451,7 @@ final class User_Primitives_Controller extends Controller {
 	 * direct `$value` aliases.
 	 *
 	 * @since 3.8.0
-	 * @since TBD Reverts block preset tokens that use the deleted primitive.
+	 * @since 3.9.2 Reverts block preset tokens that use the deleted primitive.
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -551,7 +551,7 @@ final class User_Primitives_Controller extends Controller {
 	 * leave them silently pointing at an id that no longer exists.
 	 *
 	 * @since 3.8.0
-	 * @since TBD Rewrites aliases held by block preset tokens.
+	 * @since 3.9.2 Rewrites aliases held by block preset tokens.
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -763,7 +763,7 @@ final class User_Primitives_Controller extends Controller {
 	 * Replace the value at a literal key chain, for tokens whose keys a dot-path cannot express
 	 * (block preset tokens live under "com.kadence.designTokens" and "kadence/singlebtn").
 	 *
-	 * @since TBD
+	 * @since 3.9.2
 	 *
 	 * @param array<string, mixed> $node  The current node.
 	 * @param string[]             $keys  The remaining literal keys to the value.
@@ -859,7 +859,7 @@ final class User_Primitives_Controller extends Controller {
 	 *
 	 * Shared by the delete route and the deletion preview so both judge the same post-cascade document.
 	 *
-	 * @since TBD
+	 * @since 3.9.2
 	 *
 	 * @param array<string, mixed> $stored     The stored overrides document.
 	 * @param string               $id         The primitive id being deleted.
@@ -890,7 +890,7 @@ final class User_Primitives_Controller extends Controller {
 	 * routes (which guard the default) would reject any later write. Only the blocks the cascade touched are
 	 * checked, so an unrelated, already-dangling default never blocks the delete.
 	 *
-	 * @since TBD
+	 * @since 3.9.2
 	 *
 	 * @param array<string, mixed> $candidate  The candidate document after the cascade.
 	 * @param Token_Reference[]    $references The references the cascade reverted.

@@ -98,7 +98,7 @@ final class Kadence_Palette_Slot {
 	/**
 	 * Whether a slug is one of the fifteen palette slots, palette1…palette15.
 	 *
-	 * @since TBD
+	 * @since 3.9.2
 	 *
 	 * @param string $slug The palette entry slug.
 	 *

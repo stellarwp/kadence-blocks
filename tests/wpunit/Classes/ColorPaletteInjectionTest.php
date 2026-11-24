@@ -16,7 +16,7 @@ class ColorPaletteInjectionTest extends KadenceBlocksTestCase {
 	/**
 	 * Slug of a legacy, user-defined Kadence Blocks palette entry.
 	 *
-	 * @since TBD
+	 * @since 3.9.2
 	 *
 	 * @var string
 	 */

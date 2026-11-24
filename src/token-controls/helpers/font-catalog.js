@@ -12,7 +12,7 @@ import { __ } from '@wordpress/i18n';
  *
  * @param {*} name The family name.
  *
- * @since TBD
+ * @since 3.9.2
  *
  * @return {string} The comparison key, or "" for anything that is not a usable name.
  */
@@ -33,7 +33,7 @@ function familyKey(name) {
  * @param {string[]}                                               [sources.custom]    Site-registered family names.
  * @param {Array<{value: string, label: string, badge?: string}>} [sources.theme]     Theme global font rows, already shaped as options.
  *
- * @since TBD
+ * @since 3.9.2
  *
  * @return {Array<{value: string, label: string, badge?: string}>} The option list.
  */

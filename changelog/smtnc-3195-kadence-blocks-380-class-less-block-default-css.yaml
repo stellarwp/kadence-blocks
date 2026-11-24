@@ -1,6 +1,0 @@
-significance: patch
-type: fix
-entry: Fixed Kadence Blocks 3.8 resetting padding, backgrounds, borders and
-  radius on Advanced Text, Image, Row, Column and Icon blocks, which overrode
-  theme styles and utility classes such as padding-bottom-2xl.
-timestamp: 2026-11-19T03:23:27.645Z

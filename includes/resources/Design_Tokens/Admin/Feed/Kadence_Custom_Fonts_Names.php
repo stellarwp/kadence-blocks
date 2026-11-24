@@ -9,12 +9,12 @@ use WP_Post;
 /**
  * Adds the Kadence Custom Fonts families to the font catalog.
  *
- * @since TBD
+ * @since 3.9.2
  */
 final class Kadence_Custom_Fonts_Names {
 
 	/**
-	 * @since TBD
+	 * @since 3.9.2
 	 *
 	 * @param mixed $names The custom family names so far.
 	 *

@@ -249,7 +249,7 @@ final class Binding {
 	 * the default declaration is the only thing sizing it. Editor-only like CONTROL_ATTR: never a projection
 	 * target.
 	 *
-	 * @since TBD
+	 * @since 3.9.2
 	 *
 	 * @var string
 	 */
@@ -327,7 +327,7 @@ final class Binding {
 	 * Whether the block-default-CSS projector emits this binding's `$default` declaration even when the library
 	 * never overrode it. See {@see self::ALWAYS_EMIT}.
 	 *
-	 * @since TBD
+	 * @since 3.9.2
 	 *
 	 * @var bool
 	 */
@@ -335,7 +335,7 @@ final class Binding {
 
 	/**
 	 * @since 3.8.0
-	 * @since TBD Added the `$always_emit` parameter.
+	 * @since 3.9.2 Added the `$always_emit` parameter.
 	 *
 	 * @param string                $property     The block property this binding drives.
 	 * @param string|null           $token        Referenced token id, or null when inline.
@@ -635,7 +635,7 @@ final class Binding {
 	 * Whether this binding's `$default` declaration is emitted even when the library never overrode it, for
 	 * the block whose own markup has nothing to fall back on (see {@see self::ALWAYS_EMIT}).
 	 *
-	 * @since TBD
+	 * @since 3.9.2
 	 *
 	 * @return bool
 	 */
@@ -791,7 +791,7 @@ final class Binding {
 	/**
 	 * Read and validate the optional always-emit flag, which must be a boolean when present.
 	 *
-	 * @since TBD
+	 * @since 3.9.2
 	 *
 	 * @param string               $property The block property (for the error message).
 	 * @param array<string, mixed> $spec     The binding declaration.

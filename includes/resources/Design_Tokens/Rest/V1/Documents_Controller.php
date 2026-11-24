@@ -1611,7 +1611,7 @@ final class Documents_Controller extends Controller {
 	 * and needs no validation or dry-run, since an empty document cannot carry an alias cycle.
 	 *
 	 * @since 3.8.0
-	 * @since TBD A block preset alias to a user primitive is accepted, and the 422 lists the blocking references.
+	 * @since 3.9.2 A block preset alias to a user primitive is accepted, and the 422 lists the blocking references.
 	 *
 	 * @param array<string, mixed> $candidate The full candidate overrides document to validate and store.
 	 * @param string               $slug      The token library slug.
@@ -2456,7 +2456,7 @@ final class Documents_Controller extends Controller {
 	 * layer or a block preset may legitimately do.
 	 *
 	 * @since 3.8.0
-	 * @since TBD A block preset alias to a user primitive is no longer treated as disallowed.
+	 * @since 3.9.2 A block preset alias to a user primitive is no longer treated as disallowed.
 	 *
 	 * @param array<string, mixed> $partial The incoming partial (not the merged candidate).
 	 *
@@ -2494,7 +2494,7 @@ final class Documents_Controller extends Controller {
 	 * reserved custom namespace is checked: those ids exist solely as user-created primitives, so the document's
 	 * own provenance map is the source of truth for them.
 	 *
-	 * @since TBD
+	 * @since 3.9.2
 	 *
 	 * @param array<string, mixed> $candidate The full candidate overrides document.
 	 *

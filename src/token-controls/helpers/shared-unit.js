@@ -11,7 +11,7 @@
  * @param {?string} [args.breakpoint]  The active breakpoint.
  * @param {boolean} [args.unitShared]  Whether one unit serves every breakpoint.
  *
- * @since TBD
+ * @since 3.9.2
  *
  * @return {{units: (Array|undefined), unitShared: boolean, unitPinned: boolean}} The units to offer, and
  *     whether the unit is shared and pinned on this breakpoint.
@@ -35,7 +35,7 @@ export function getSharedUnit({ unit = '', units, breakpoints = null, breakpoint
  * @param {string} unit   The stored unit.
  * @param {string} device The active device: 'Desktop', 'Tablet' or 'Mobile'.
  *
- * @since TBD
+ * @since 3.9.2
  *
  * @return {Array} The units to offer on that device.
  */

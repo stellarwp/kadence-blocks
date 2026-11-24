@@ -27,7 +27,7 @@ final class Token_Reference_Policy {
 	 * Find all references to $primitive_id in the document.
 	 *
 	 * @since 3.8.0
-	 * @since TBD A direct alias held by a block preset token is reported as a supported preset override.
+	 * @since 3.9.2 A direct alias held by a block preset token is reported as a supported preset override.
 	 *
 	 * @param array<string, mixed> $document     The decoded stored overrides document.
 	 * @param string               $primitive_id The canonical dot-path of the target primitive.
@@ -95,7 +95,7 @@ final class Token_Reference_Policy {
 	 * brand-new write to create. A primitive-layer alias is rewritable by the rename cascade, but is
 	 * not a location a write may use to introduce one from outside those two.
 	 *
-	 * @since TBD
+	 * @since 3.9.2
 	 *
 	 * @param Token_Reference[] $references
 	 *
@@ -118,7 +118,7 @@ final class Token_Reference_Policy {
 	/**
 	 * Describe references as kind and path pairs for an error response.
 	 *
-	 * @since TBD
+	 * @since 3.9.2
 	 *
 	 * @param Token_Reference[] $references
 	 *

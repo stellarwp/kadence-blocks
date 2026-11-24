@@ -96,7 +96,7 @@ function fontPool() {
 /**
  * The family names registered through the `kadence.typography_options` JS filter.
  *
- * @since TBD
+ * @since 3.9.2
  *
  * @return {string[]} The family names, in filter order.
  */
@@ -150,7 +150,7 @@ export function favoriteFonts() {
  * The font-family picker's option list.
  *
  * @since 3.8.0
- * @since TBD Adds fonts registered through the `kadence.typography_options` filter.
+ * @since 3.9.2 Adds fonts registered through the `kadence.typography_options` filter.
  *
  * @return {Array<{value: string, label: string, badge?: string}>} The option list.
  */

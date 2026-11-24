@@ -2740,14 +2740,14 @@
  * Kadence tooltips setup.
  *
  * @since 3.2.42
- * @since TBD Updated how tooltip options are set.
+ * @since 3.9.2 Updated how tooltip options are set.
  */
 (function () {
 	'use strict';
 	/**
 	 * Placements accepted from the placement attribute.
 	 *
-	 * @since TBD
+	 * @since 3.9.2
 	 *
 	 * @type {string[]}
 	 */
@@ -2872,7 +2872,7 @@
 		 *
 		 * @param {HTMLElement} reference The tooltip reference element.
 		 *
-		 * @since TBD
+		 * @since 3.9.2
 		 *
 		 * @return {string} The placement.
 		 */

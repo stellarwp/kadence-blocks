@@ -286,7 +286,7 @@ final class Preset_Catalog {
 	 * A uniform per-side list is returned as a single value. A color set as a token alias is returned as that
 	 * alias when it resolves; the other values are flattened literals.
 	 *
-	 * @since TBD
+	 * @since 3.9.2
 	 *
 	 * @param string          $block    The block name.
 	 * @param string          $preset   The preset slug.

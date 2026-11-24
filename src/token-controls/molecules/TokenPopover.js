@@ -142,7 +142,7 @@ function StyleLibraryTab({
 /**
  * Gets the text shown as the tooltip and the note when a breakpoint cannot change the unit.
  *
- * @since TBD
+ * @since 3.9.2
  *
  * @return {string} The text.
  */

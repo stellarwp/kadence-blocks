@@ -16,7 +16,7 @@ final class Consent {
 	/**
 	 * The admin-post action and nonce name.
 	 *
-	 * @since TBD
+	 * @since 3.9.2
 	 *
 	 * @var string
 	 */
@@ -25,7 +25,7 @@ final class Consent {
 	/**
 	 * The checkbox field name.
 	 *
-	 * @since TBD
+	 * @since 3.9.2
 	 *
 	 * @var string
 	 */
@@ -34,7 +34,7 @@ final class Consent {
 	/**
 	 * The telemetry opt-in status store.
 	 *
-	 * @since TBD
+	 * @since 3.9.2
 	 *
 	 * @var Status
 	 */
@@ -43,7 +43,7 @@ final class Consent {
 	/**
 	 * The telemetry library's opt-in handler.
 	 *
-	 * @since TBD
+	 * @since 3.9.2
 	 *
 	 * @var Opt_In_Subscriber
 	 */
@@ -52,7 +52,7 @@ final class Consent {
 	/**
 	 * The telemetry library's opt-in prompt.
 	 *
-	 * @since TBD
+	 * @since 3.9.2
 	 *
 	 * @var Opt_In_Template
 	 */
@@ -61,7 +61,7 @@ final class Consent {
 	/**
 	 * Constructor.
 	 *
-	 * @since TBD
+	 * @since 3.9.2
 	 *
 	 * @param Status            $status     The telemetry opt-in status store.
 	 * @param Opt_In_Subscriber $subscriber The telemetry library's opt-in handler.
@@ -80,7 +80,7 @@ final class Consent {
 	/**
 	 * The admin-post action and nonce name.
 	 *
-	 * @since TBD
+	 * @since 3.9.2
 	 *
 	 * @return string The action name.
 	 */
@@ -91,7 +91,7 @@ final class Consent {
 	/**
 	 * The checkbox field name.
 	 *
-	 * @since TBD
+	 * @since 3.9.2
 	 *
 	 * @return string The field name.
 	 */
@@ -102,7 +102,7 @@ final class Consent {
 	/**
 	 * Whether this plugin is currently opted in to usage data sharing.
 	 *
-	 * @since TBD
+	 * @since 3.9.2
 	 *
 	 * @return bool True when opted in.
 	 */
@@ -115,7 +115,7 @@ final class Consent {
 	/**
 	 * Opt in, registering the site with the telemetry server.
 	 *
-	 * @since TBD
+	 * @since 3.9.2
 	 *
 	 * @return void
 	 */
@@ -131,7 +131,7 @@ final class Consent {
 	/**
 	 * Withdraw consent, which stops any further collection and sending.
 	 *
-	 * @since TBD
+	 * @since 3.9.2
 	 *
 	 * @return void
 	 */
@@ -142,7 +142,7 @@ final class Consent {
 	/**
 	 * Handle the settings form submission.
 	 *
-	 * @since TBD
+	 * @since 3.9.2
 	 *
 	 * @return void
 	 */
@@ -172,7 +172,7 @@ final class Consent {
 	/**
 	 * Render the settings section.
 	 *
-	 * @since TBD
+	 * @since 3.9.2
 	 *
 	 * @return void
 	 */

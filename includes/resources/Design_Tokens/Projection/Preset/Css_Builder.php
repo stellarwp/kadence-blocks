@@ -1036,7 +1036,7 @@ final class Css_Builder {
 	 * that declares their var.
 	 *
 	 * @since 3.8.0
-	 * @since TBD A property counts as covered only when the library overrides it on the `$default`, or its binding is always emitted.
+	 * @since 3.9.2 A property counts as covered only when the library overrides it on the `$default`, or its binding is always emitted.
 	 *
 	 * @param string                                                                                                                                                                                                                                                    $block        The block name.
 	 * @param string                                                                                                                                                                                                                                                    $preset       The named preset's slug.

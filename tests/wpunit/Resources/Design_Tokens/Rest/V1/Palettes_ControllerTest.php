@@ -24,7 +24,7 @@ final class Palettes_ControllerTest extends TestCase {
 	/**
 	 * A user-added color registered for each test, with no swatch in the shipped palette.
 	 *
-	 * @since TBD
+	 * @since 3.9.2
 	 *
 	 * @var string
 	 */

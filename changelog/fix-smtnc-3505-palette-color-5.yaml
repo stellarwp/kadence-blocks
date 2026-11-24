@@ -1,4 +1,0 @@
-significance: patch
-type: fix
-entry: Fixed theme Global Color 5 missing from the Style Library and block color pickers, which also shifted Global Color 6 into its place.
-timestamp: 2026-11-19T00:00:00.000Z

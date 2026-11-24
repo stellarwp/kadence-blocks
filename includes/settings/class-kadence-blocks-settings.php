@@ -1452,7 +1452,7 @@ class Kadence_Blocks_Settings {
 						/**
 						 * Fires after the admin bar section on the Kadence Blocks settings page.
 						 *
-						 * @since TBD
+						 * @since 3.9.2
 						 */
 						do_action( 'kadence_blocks_settings_after_admin_bar' );
 						?>
@@ -1780,7 +1780,7 @@ class Kadence_Blocks_Settings {
 	 * Kadence theme they belong to the Style Library only, so they are not added to a theme's own palette.
 	 * Entries a user defined themselves keep their slug and stay.
 	 *
-	 * @since TBD
+	 * @since 3.9.2
 	 *
 	 * @param array<int, array{color: string, name: string, slug: string}> $palette The sanitized palette entries.
 	 *

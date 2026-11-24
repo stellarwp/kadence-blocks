@@ -233,7 +233,7 @@ function fetchColorGroups(paletteId, library) {
  * In the Kadence theme's FSE mode the groups are the Global Styles palette instead, and no palette
  * is fetched.
  *
- * @since TBD Off the Kadence theme the theme's own palette is listed ahead of the Style Library groups.
+ * @since 3.9.2 Off the Kadence theme the theme's own palette is listed ahead of the Style Library groups.
  *
  * @return {Array} `[{ id, label, swatches: [{ id, label, value, alias }] }]`, or `[]` while loading.
  */

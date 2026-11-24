@@ -170,7 +170,7 @@ describe('EditorBorderControl native <-> control value bridging', () => {
 	/**
 	 * An unset border reads as the default style, and a width edit writes that style.
 	 *
-	 * @since TBD
+	 * @since 3.9.2
 	 *
 	 * @return {void}
 	 */
@@ -200,7 +200,7 @@ describe('EditorBorderControl native <-> control value bridging', () => {
 	/**
 	 * A per-side default style applies to each side.
 	 *
-	 * @since TBD
+	 * @since 3.9.2
 	 *
 	 * @return {void}
 	 */
@@ -216,7 +216,7 @@ describe('EditorBorderControl native <-> control value bridging', () => {
 	/**
 	 * An unset border whose default style differs per side opens unlinked; one default style opens linked.
 	 *
-	 * @since TBD
+	 * @since 3.9.2
 	 *
 	 * @return {void}
 	 */
@@ -233,7 +233,7 @@ describe('EditorBorderControl native <-> control value bridging', () => {
 	/**
 	 * A width edit with no color writes a token alias default color.
 	 *
-	 * @since TBD
+	 * @since 3.9.2
 	 *
 	 * @return {void}
 	 */
@@ -262,7 +262,7 @@ describe('EditorBorderControl native <-> control value bridging', () => {
 	/**
 	 * A width edit with no color does not write a literal default color.
 	 *
-	 * @since TBD
+	 * @since 3.9.2
 	 *
 	 * @return {void}
 	 */
@@ -279,7 +279,7 @@ describe('EditorBorderControl native <-> control value bridging', () => {
 	/**
 	 * On Tablet, the control shows the desktop style, and a width edit writes empty color and style slots.
 	 *
-	 * @since TBD
+	 * @since 3.9.2
 	 *
 	 * @return {void}
 	 */
@@ -313,7 +313,7 @@ describe('EditorBorderControl native <-> control value bridging', () => {
 	/**
 	 * A picked color is written as is, and a side with no width writes no color.
 	 *
-	 * @since TBD
+	 * @since 3.9.2
 	 *
 	 * @return {void}
 	 */
@@ -339,7 +339,7 @@ describe('EditorBorderControl native <-> control value bridging', () => {
 	/**
 	 * A stored style is shown instead of the default style.
 	 *
-	 * @since TBD
+	 * @since 3.9.2
 	 *
 	 * @return {void}
 	 */

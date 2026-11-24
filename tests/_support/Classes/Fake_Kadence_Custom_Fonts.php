@@ -8,14 +8,14 @@ namespace Tests\Support\Classes;
 final class Fake_Kadence_Custom_Fonts {
 
 	/**
-	 * @since TBD
+	 * @since 3.9.2
 	 *
 	 * @var callable|null Replaces the query result when set.
 	 */
 	public static $behavior = null;
 
 	/**
-	 * @since TBD
+	 * @since 3.9.2
 	 *
 	 * @var array|null
 	 */

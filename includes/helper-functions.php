@@ -44,7 +44,7 @@ function kadence_blocks_is_fse_mode(): bool {
 /**
  * Whether the Kadence theme is the active theme.
  *
- * @since TBD
+ * @since 3.9.2
  *
  * @return bool
  */
@@ -54,7 +54,7 @@ function kadence_blocks_is_kadence_theme(): bool {
 	/**
 	 * Filters whether the Kadence theme is the active theme.
 	 *
-	 * @since TBD
+	 * @since 3.9.2
 	 *
 	 * @param bool $is_kadence_theme Whether the Kadence theme is active.
 	 *
@@ -432,7 +432,7 @@ function kadence_blocks_is_license_authorized(): bool {
  * A Nexcess Plugin Stack license holds only the stack product, not Kadence, and
  * always includes Kadence's paid plugins, so it counts too.
  *
- * @since TBD
+ * @since 3.9.2
  *
  * @return bool
  */

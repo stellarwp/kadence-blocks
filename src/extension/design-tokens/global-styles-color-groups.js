@@ -80,7 +80,7 @@ function toGroup(id, label, colors) {
  *
  * @param {Array} theme The theme palette entries (`{ slug, name, color }`).
  *
- * @since TBD
+ * @since 3.9.2
  *
  * @return {Array} The theme group, or an empty array when the theme has no colors.
  */

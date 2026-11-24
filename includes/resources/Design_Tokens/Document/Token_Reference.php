@@ -42,7 +42,7 @@ final class Token_Reference {
 	 * Empty when the dot-path alone addresses the token. Set for locations whose keys carry dots or
 	 * slashes ("com.kadence.designTokens", "kadence/singlebtn"), which a dot-path cannot express.
 	 *
-	 * @since TBD
+	 * @since 3.9.2
 	 *
 	 * @var string[]
 	 */
@@ -87,7 +87,7 @@ final class Token_Reference {
 	/**
 	 * Direct alias held by a block preset token under $extensions.presets or $extensions.foundationPresets.
 	 *
-	 * @since TBD
+	 * @since 3.9.2
 	 *
 	 * @var string
 	 */
@@ -95,7 +95,7 @@ final class Token_Reference {
 
 	/**
 	 * @since 3.8.0
-	 * @since TBD Added the $keys parameter.
+	 * @since 3.9.2 Added the $keys parameter.
 	 *
 	 * @param string   $kind      One of the KIND_* values.
 	 * @param string   $path      Canonical dot-path of the referencing token.
@@ -146,7 +146,7 @@ final class Token_Reference {
 	}
 
 	/**
-	 * @since TBD
+	 * @since 3.9.2
 	 *
 	 * @return string
 	 */

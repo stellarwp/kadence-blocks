@@ -54,7 +54,7 @@ final class Font_Catalog {
 	/**
 	 * The filter applied to the normalized custom family names.
 	 *
-	 * @since TBD
+	 * @since 3.9.2
 	 *
 	 * @var string
 	 */
@@ -175,7 +175,7 @@ final class Font_Catalog {
 	 * The site's custom font names, normalized from the custom-fonts filter's associative shape.
 	 *
 	 * @since 3.8.0
-	 * @since TBD Passes the names through the kadence_blocks_font_catalog_custom_names filter and de-duplicates them.
+	 * @since 3.9.2 Passes the names through the kadence_blocks_font_catalog_custom_names filter and de-duplicates them.
 	 *
 	 * @return string[]
 	 */
@@ -213,7 +213,7 @@ final class Font_Catalog {
 		/**
 		 * Filters the custom font family names listed in the font dropdowns.
 		 *
-		 * @since TBD
+		 * @since 3.9.2
 		 *
 		 * @param string[] $names The custom family names, each a family name rather than a font stack.
 		 *
@@ -252,7 +252,7 @@ final class Font_Catalog {
 	 * Google family.
 	 *
 	 * @since 3.8.0
-	 * @since TBD Keeps commas inside a quoted first family.
+	 * @since 3.9.2 Keeps commas inside a quoted first family.
 	 *
 	 * @param string $entry The catalog entry, a family name or a font-stack expression.
 	 *
