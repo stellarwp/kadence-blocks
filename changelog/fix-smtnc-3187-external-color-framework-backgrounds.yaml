@@ -1,0 +1,4 @@
+significance: patch
+type: fix
+entry: Fixed block background colors from external color frameworks such as Automatic CSS and Core Framework being overridden by the Style Library defaults.
+timestamp: 2026-11-19T00:00:00.000Z
