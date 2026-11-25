@@ -496,6 +496,7 @@ final class Effective_Palettes {
 	 * to another group is already listed, so it is left where it is.
 	 *
 	 * @since 3.9.1
+	 * @since TBD A missing swatch joins its group in its shipped position instead of at the end.
 	 *
 	 * @param array<string, mixed> $section  The effective colorPalettes section.
 	 * @param array<string, mixed> $baseline The baseline colorPalettes section.
@@ -552,7 +553,7 @@ final class Effective_Palettes {
 
 			foreach ( $groups as $index => $group ) {
 				if ( is_array( $group ) && is_array( $group[ $swatches_key ] ?? null ) && ( $group[ $group_id_key ] ?? null ) === ( $shipped_group[ $group_id_key ] ?? null ) ) {
-					$groups[ $index ][ $swatches_key ] = array_merge( $group[ $swatches_key ], $missing );
+					$groups[ $index ][ $swatches_key ] = $this->with_swatches_in_shipped_order( $group[ $swatches_key ], $shipped_group[ $swatches_key ], $missing );
 
 					continue 2;
 				}
@@ -566,6 +567,71 @@ final class Effective_Palettes {
 		$section[ $id ]         = $palette;
 
 		return $section;
+	}
+
+	/**
+	 * Insert missing shipped swatches into a stored group, each right after the nearest earlier shipped swatch
+	 * the group lists, or at the start when none does. Swatches the site added or reordered keep their place.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<int, mixed> $stored  The stored group's swatches.
+	 * @param array<int, mixed> $shipped The shipped group's swatches, in shipped order.
+	 * @param array<int, mixed> $missing The shipped swatches the stored palette doesn't list.
+	 *
+	 * @return array<int, mixed> The stored swatches with the missing ones inserted.
+	 */
+	private function with_swatches_in_shipped_order( array $stored, array $shipped, array $missing ): array {
+		$token_key = Extensions::get_swatch_token_key();
+		$swatches  = array_values( $stored );
+		$missing   = array_column( $missing, null, $token_key );
+		$anchor    = null;
+
+		foreach ( $shipped as $swatch ) {
+			if ( ! is_array( $swatch ) || ! is_string( $swatch[ $token_key ] ?? null ) ) {
+				continue;
+			}
+
+			$token = $swatch[ $token_key ];
+
+			if ( isset( $missing[ $token ] ) ) {
+				$at = $anchor === null ? 0 : $this->swatch_index( $swatches, $anchor ) + 1;
+
+				array_splice( $swatches, $at, 0, [ $missing[ $token ] ] );
+				$anchor = $token;
+
+				continue;
+			}
+
+			// A shipped swatch the site moved to another group is not in this one, so it can't anchor.
+			if ( $this->swatch_index( $swatches, $token ) !== -1 ) {
+				$anchor = $token;
+			}
+		}
+
+		return $swatches;
+	}
+
+	/**
+	 * Find a swatch's position in a group's swatch list by its token.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<int, mixed> $swatches The group's swatches.
+	 * @param string            $token    The swatch token to find.
+	 *
+	 * @return int The swatch's index, or -1 when the group doesn't list it.
+	 */
+	private function swatch_index( array $swatches, string $token ): int {
+		$token_key = Extensions::get_swatch_token_key();
+
+		foreach ( $swatches as $index => $swatch ) {
+			if ( is_array( $swatch ) && ( $swatch[ $token_key ] ?? null ) === $token ) {
+				return $index;
+			}
+		}
+
+		return -1;
 	}
 
 	/**

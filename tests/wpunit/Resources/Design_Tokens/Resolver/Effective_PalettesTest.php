@@ -6,6 +6,7 @@ namespace Tests\wpunit\Resources\Design_Tokens\Resolver;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Palettes;
 use KadenceWP\KadenceBlocks\Design_Tokens\Theme_Style_Guide\Style_Guide_Overlay;
+use Generator;
 use Tests\Support\Classes\TestCase;
 
 /**
@@ -154,7 +155,7 @@ final class Effective_PalettesTest extends TestCase {
 
 	/**
 	 * A stored default palette whose groups list is SHORTER than the baseline's keeps its own order, and a
-	 * shipped swatch it doesn't list is added back once, at the end of its group, never as a duplicate.
+	 * shipped swatch it doesn't list is added back once, in its shipped position, never as a duplicate.
 	 *
 	 * The merge descends a swatches list positionally, so without the structure replace, dropping the
 	 * fourth of five swatches shifts the fifth onto index 3 and leaves the baseline's index 4 untouched —
@@ -177,11 +178,126 @@ final class Effective_PalettesTest extends TestCase {
 				'primitive.color.brand.primary',
 				'primitive.color.brand.secondary',
 				'primitive.color.brand.accent',
-				'primitive.color.brand.button-hover',
 				'primitive.color.brand.button',
+				'primitive.color.brand.button-hover',
 			],
 			$tokens
 		);
+	}
+
+	/**
+	 * A shipped swatch missing from a stored group is added back right after the nearest earlier shipped swatch
+	 * the group lists, or at the start when it lists none, while the group's own swatches keep their order.
+	 *
+	 * @dataProvider missingShippedSwatchProvider
+	 *
+	 * @param string   $group_id The group the stored palette lists.
+	 * @param string[] $stored   The stored group's swatch tokens, in stored order.
+	 * @param string[] $expected The effective group's swatch tokens, in order.
+	 *
+	 * @return void
+	 */
+	public function testAMissingShippedSwatchIsAddedBackInItsShippedPosition( string $group_id, array $stored, array $expected ): void {
+		$this->store->save_document(
+			(string) wp_json_encode( $this->default_palette_overrides( [ $this->group_of_tokens( $group_id, $stored ) ] ) ),
+			'default'
+		);
+
+		$this->assertSame( $expected, $this->swatch_tokens_of_group( 'default', $group_id ) );
+	}
+
+	/**
+	 * @return Generator
+	 */
+	public function missingShippedSwatchProvider(): Generator {
+		yield 'a swatch missing from the middle of its group' => [
+			'group_id' => 'contrast',
+			'stored'   => [
+				'primitive.color.neutral.900',
+				'primitive.color.neutral.700',
+				'primitive.color.neutral.500',
+				'primitive.color.neutral.300',
+				'primitive.color.neutral.200',
+			],
+			'expected' => [
+				'primitive.color.neutral.900',
+				'primitive.color.neutral.700',
+				'primitive.color.neutral.600',
+				'primitive.color.neutral.500',
+				'primitive.color.neutral.300',
+				'primitive.color.neutral.200',
+			],
+		];
+
+		yield 'adjacent missing swatches keep their shipped order' => [
+			'group_id' => 'contrast',
+			'stored'   => [
+				'primitive.color.neutral.900',
+				'primitive.color.neutral.300',
+				'primitive.color.neutral.200',
+			],
+			'expected' => [
+				'primitive.color.neutral.900',
+				'primitive.color.neutral.700',
+				'primitive.color.neutral.600',
+				'primitive.color.neutral.500',
+				'primitive.color.neutral.300',
+				'primitive.color.neutral.200',
+			],
+		];
+
+		yield 'a missing first swatch goes to the start' => [
+			'group_id' => 'accent',
+			'stored'   => [
+				'primitive.color.brand.secondary',
+				'primitive.color.brand.accent',
+				'primitive.color.brand.button',
+				'primitive.color.brand.button-hover',
+			],
+			'expected' => [
+				'primitive.color.brand.primary',
+				'primitive.color.brand.secondary',
+				'primitive.color.brand.accent',
+				'primitive.color.brand.button',
+				'primitive.color.brand.button-hover',
+			],
+		];
+
+		yield 'a reordered group keeps its order' => [
+			'group_id' => 'accent',
+			'stored'   => [
+				'primitive.color.brand.accent',
+				'primitive.color.brand.primary',
+				'primitive.color.brand.secondary',
+				'primitive.color.brand.button-hover',
+			],
+			'expected' => [
+				'primitive.color.brand.accent',
+				'primitive.color.brand.button',
+				'primitive.color.brand.primary',
+				'primitive.color.brand.secondary',
+				'primitive.color.brand.button-hover',
+			],
+		];
+
+		yield 'a swatch the site added keeps its place' => [
+			'group_id' => 'accent',
+			'stored'   => [
+				'primitive.color.brand.primary',
+				'primitive.color.custom.brand',
+				'primitive.color.brand.secondary',
+				'primitive.color.brand.accent',
+				'primitive.color.brand.button-hover',
+			],
+			'expected' => [
+				'primitive.color.brand.primary',
+				'primitive.color.custom.brand',
+				'primitive.color.brand.secondary',
+				'primitive.color.brand.accent',
+				'primitive.color.brand.button',
+				'primitive.color.brand.button-hover',
+			],
+		];
 	}
 
 	/**
@@ -201,7 +317,7 @@ final class Effective_PalettesTest extends TestCase {
 
 		$this->assertIsArray( $groups );
 		$this->assertSame( [ 'accent', 'contrast', 'background', 'notices', 'extended' ], array_column( $groups, 'id' ) );
-		$this->assertSame( 'primitive.color.brand.button-hover', $groups[0]['swatches'][3]['token'], 'The stored group keeps its own order.' );
+		$this->assertSame( 'primitive.color.brand.button-hover', $groups[0]['swatches'][4]['token'], 'The stored group keeps its own order.' );
 	}
 
 	/**
@@ -356,6 +472,32 @@ final class Effective_PalettesTest extends TestCase {
 					'$value' => '#2f2ffc',
 				],
 			],
+		];
+	}
+
+	/**
+	 * A stored group node listing the given swatch tokens, in the given order.
+	 *
+	 * @param string   $group_id The group id.
+	 * @param string[] $tokens   The swatch token dot-paths.
+	 *
+	 * @return array<string, mixed> The group node.
+	 */
+	private function group_of_tokens( string $group_id, array $tokens ): array {
+		$swatches = [];
+
+		foreach ( $tokens as $token ) {
+			$swatches[] = [
+				'token'  => $token,
+				'label'  => $token,
+				'$value' => '#000000',
+			];
+		}
+
+		return [
+			'id'       => $group_id,
+			'label'    => $group_id,
+			'swatches' => $swatches,
 		];
 	}
 
