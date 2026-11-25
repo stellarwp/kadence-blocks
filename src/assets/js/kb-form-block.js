@@ -354,7 +354,8 @@
 		 * @return {Promise<string|null>} The token to send, or null when the form has no v3 field.
 		 */
 		refreshRecaptchaToken(form) {
-			const input = form.querySelector('.kb_recaptcha_response');
+			// Older saved forms render the field with an id instead of the class.
+			const input = form.querySelector('input[name="recaptcha_response"]');
 			if (!input) {
 				return Promise.resolve(null);
 			}

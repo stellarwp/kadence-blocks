@@ -9,16 +9,20 @@ const SCRIPT = '../kb-form-block.js';
  * Render a classic form, load the script, and capture outgoing requests.
  *
  * @param {Object|undefined} grecaptcha The grecaptcha mock, or undefined for none.
+ * @param {string}           tokenField The hidden token field markup.
  *
  * @since TBD
  *
  * @return {Object} The form and the list of sent request bodies.
  */
-function setup(grecaptcha) {
+function setup(
+	grecaptcha,
+	tokenField = '<input type="hidden" name="recaptcha_response" class="kb_recaptcha_response kb_recaptcha_1" value="stale-token" />'
+) {
 	document.body.innerHTML = `
 		<form class="kb-form">
 			<input type="text" name="kb_field_0" data-type="text" data-required="yes" value="Jane" />
-			<input type="hidden" name="recaptcha_response" class="kb_recaptcha_response kb_recaptcha_1" value="stale-token" />
+			${tokenField}
 			<button type="submit" class="kb-forms-submit">Submit</button>
 		</form>`;
 
@@ -75,6 +79,21 @@ describe('kb-form-block reCAPTCHA v3', () => {
 
 		expect(grecaptcha.execute).toHaveBeenCalledWith('site-key', { action: 'kb_form' });
 		expect(sent).toHaveLength(1);
+		expect(sent[0].get('recaptcha_response')).toBe('fresh-token');
+	});
+
+	it('refreshes the id-only token field from older saved forms', async () => {
+		const grecaptcha = {
+			ready: jest.fn((callback) => callback()),
+			execute: jest.fn(() => Promise.resolve('fresh-token')),
+		};
+		const { form, sent } = setup(
+			grecaptcha,
+			'<input type="hidden" name="recaptcha_response" id="kb_recaptcha_response" value="stale-token" />'
+		);
+
+		await submit(form);
+
 		expect(sent[0].get('recaptcha_response')).toBe('fresh-token');
 	});
 
