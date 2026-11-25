@@ -107,6 +107,21 @@ class LottieTest extends KadenceBlocksUnit {
 	}
 
 	/**
+	 * Split position X and mask expansion survive sanitizing a decoded JSON object, while an expression beside them is removed.
+	 *
+	 * @return void
+	 */
+	public function testSanitizerKeepsAnimatedXPropertiesInObjects(): void {
+		$data = json_decode( '{"layers":[{"ks":{"p":{"s":true,"x":{"a":1,"k":[{"t":0,"s":[0]},{"t":30,"s":[200]}],"ix":3},"y":{"a":0,"k":100,"ix":4}}}},{"masksProperties":[{"mode":"a","x":{"a":1,"k":[{"t":0,"s":[0]},{"t":30,"s":[20]}],"ix":4}}]},{"ks":{"o":{"a":0,"k":100,"x":"var $bm_rt = loopOut(\'cycle\');"}}}]}' );
+
+		$clean = Kadence_Blocks_Lottie_Sanitizer::strip_expressions( $data );
+
+		$this->assertSame( 3, $clean->layers[0]->ks->p->x->ix, 'Split position X is kept.' );
+		$this->assertSame( 4, $clean->layers[1]->masksProperties[0]->x->ix, 'Mask expansion is kept.' );
+		$this->assertFalse( isset( $clean->layers[2]->ks->o->x ), 'Expression string is removed.' );
+	}
+
+	/**
 	 * Creating an animation through the REST route requires the capability the post type itself uses.
 	 *
 	 * @return void
@@ -565,6 +580,110 @@ class LottieTest extends KadenceBlocksUnit {
 				'v'      => '5.7.0',
 				'fr'     => 30,
 				'layers' => [],
+			],
+		];
+
+		yield 'split position X property is kept' => [
+			'input'    => [
+				'p' => [
+					's' => true,
+					'x' => [
+						'a'  => 1,
+						'k'  => [
+							[
+								't' => 0,
+								's' => [ 0 ],
+								'i' => [ 'x' => [ 0.5 ], 'y' => [ 1 ] ],
+								'o' => [ 'x' => [ 0.5 ], 'y' => [ 0 ] ],
+							],
+							[
+								't' => 30,
+								's' => [ 200 ],
+							],
+						],
+						'ix' => 3,
+					],
+					'y' => [
+						'a'  => 0,
+						'k'  => 100,
+						'ix' => 4,
+					],
+				],
+			],
+			'expected' => [
+				'p' => [
+					's' => true,
+					'x' => [
+						'a'  => 1,
+						'k'  => [
+							[
+								't' => 0,
+								's' => [ 0 ],
+								'i' => [ 'x' => [ 0.5 ], 'y' => [ 1 ] ],
+								'o' => [ 'x' => [ 0.5 ], 'y' => [ 0 ] ],
+							],
+							[
+								't' => 30,
+								's' => [ 200 ],
+							],
+						],
+						'ix' => 3,
+					],
+					'y' => [
+						'a'  => 0,
+						'k'  => 100,
+						'ix' => 4,
+					],
+				],
+			],
+		];
+
+		yield 'mask expansion property is kept' => [
+			'input'    => [
+				'masksProperties' => [
+					[
+						'mode' => 'a',
+						'x'    => [
+							'a'  => 0,
+							'k'  => 10,
+							'ix' => 4,
+						],
+					],
+				],
+			],
+			'expected' => [
+				'masksProperties' => [
+					[
+						'mode' => 'a',
+						'x'    => [
+							'a'  => 0,
+							'k'  => 10,
+							'ix' => 4,
+						],
+					],
+				],
+			],
+		];
+
+		yield 'expression inside an x property is removed' => [
+			'input'    => [
+				'p' => [
+					's' => true,
+					'x' => [
+						'a' => 0,
+						'k' => 100,
+						'x' => 'evil()',
+					],
+				],
+			],
+			'expected' => [
+				'p' => [
+					's' => true,
+					'x' => [
+						'a' => 0,
+						'k' => 100,
+					],
+				],
 			],
 		];
 	}

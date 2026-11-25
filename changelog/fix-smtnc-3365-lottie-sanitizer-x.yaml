@@ -1,0 +1,4 @@
+significance: patch
+type: fix
+entry: Fixed Lottie animations that use split position or mask expansion freezing or not loading since 3.8.1.
+timestamp: 2026-11-25T00:00:00.000Z
