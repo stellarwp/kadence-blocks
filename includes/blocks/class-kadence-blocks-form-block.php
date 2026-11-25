@@ -894,14 +894,16 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 			'kadence-blocks-form',
 			'kadence_blocks_form_params',
 			array(
-				'ajaxurl'       => admin_url( 'admin-ajax.php' ),
-				'error_message' => __( 'Please fix the errors to proceed', 'kadence-blocks' ),
-				'nonce'         => wp_create_nonce( 'kb_form_nonce' ),
-				'required'      => __( 'is required', 'kadence-blocks' ),
-				'mismatch'      => __( 'does not match', 'kadence-blocks' ),
-				'validation'    => __( 'is not valid', 'kadence-blocks' ),
-				'duplicate'     => __( 'requires a unique entry and this value has already been used', 'kadence-blocks' ),
-				'item'          => __( 'Item', 'kadence-blocks' ),
+				'ajaxurl'            => admin_url( 'admin-ajax.php' ),
+				'error_message'      => __( 'Please fix the errors to proceed', 'kadence-blocks' ),
+				'nonce'              => wp_create_nonce( 'kb_form_nonce' ),
+				'required'           => __( 'is required', 'kadence-blocks' ),
+				'mismatch'           => __( 'does not match', 'kadence-blocks' ),
+				'validation'         => __( 'is not valid', 'kadence-blocks' ),
+				'duplicate'          => __( 'requires a unique entry and this value has already been used', 'kadence-blocks' ),
+				'item'               => __( 'Item', 'kadence-blocks' ),
+				// Used to get a fresh v3 token at submit time.
+				'recaptcha_site_key' => $recaptcha_site_key,
 			)
 		);
 

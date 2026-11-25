@@ -1,0 +1,4 @@
+significance: patch
+type: fix
+entry: Fixed the Form block rejecting submissions with a reCAPTCHA error when Google reCAPTCHA v3 was enabled and the page had been open for more than two minutes.
+timestamp: 2026-11-25T14:01:18.000Z

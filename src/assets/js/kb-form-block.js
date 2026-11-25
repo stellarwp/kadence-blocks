@@ -331,73 +331,129 @@
 			const form_data = window.kadenceForm.validateForm(form);
 			if (form_data) {
 				const el = document.createElement('div');
-				let waitingForRedirect = false;
 				el.classList.add('kb-form-loading');
 				el.innerHTML = '<div class="kb-form-loading-spin"><div></div><div></div><div></div><div></div></div>';
 				form.append(el);
 				submitButton.setAttribute('disabled', 'disabled');
 				submitButton.classList.add('button-primary-disabled');
-				const request = new XMLHttpRequest();
-				request.open('POST', kadence_blocks_form_params.ajaxurl, true);
-				request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-				request.onload = function () {
-					if (this.status >= 200 && this.status < 400) {
-						// If successful
-						//console.log( JSON.parse( this.response ) );
-						const response = JSON.parse(this.response);
-						if (response.success) {
-							const event = new CustomEvent('kb-form-success', {
-								detail: form.querySelector('input[name="_kb_form_id"]')
-									? form.querySelector('input[name="_kb_form_id"]').value
-									: '',
-							});
-							// Dispatch the event.
-							window.document.body.dispatchEvent(event);
-							if (response.redirect) {
-								waitingForRedirect = true;
-								window.location = response.redirect;
-							} else {
-								window.kadenceForm.insertAfter(
-									window.kadenceForm.createElementFromHTML(response.html),
-									form
-								);
-								if (form.querySelector('.g-recaptcha')) {
-									grecaptcha.reset();
-								}
-								window.kadenceForm.clearForm(form);
+				window.kadenceForm.refreshRecaptchaToken(form).then(function (token) {
+					if (null !== token) {
+						form_data.set('recaptcha_response', token);
+					}
+					window.kadenceForm.sendRequest(form, form_data, submitButton);
+				});
+			}
+		},
+		/**
+		 * Gets a fresh reCAPTCHA v3 token, since tokens expire two minutes after they are issued.
+		 *
+		 * @param {HTMLFormElement} form The form being submitted.
+		 *
+		 * @since TBD
+		 *
+		 * @return {Promise<string|null>} The token to send, or null when the form has no v3 field.
+		 */
+		refreshRecaptchaToken(form) {
+			const input = form.querySelector('.kb_recaptcha_response');
+			if (!input) {
+				return Promise.resolve(null);
+			}
+			const siteKey = kadence_blocks_form_params.recaptcha_site_key;
+			if (
+				!siteKey ||
+				typeof grecaptcha === 'undefined' ||
+				typeof grecaptcha.ready !== 'function' ||
+				typeof grecaptcha.execute !== 'function'
+			) {
+				return Promise.resolve(input.value);
+			}
+			return new Promise(function (resolve) {
+				grecaptcha.ready(function () {
+					Promise.resolve(grecaptcha.execute(siteKey, { action: 'kb_form' }))
+						.then(function (token) {
+							if (token) {
+								input.value = token;
 							}
-						} else if (response.data) {
+							resolve(input.value);
+						})
+						.catch(function () {
+							// Let the server decide on the existing token.
+							resolve(input.value);
+						});
+				});
+			});
+		},
+		/**
+		 * Posts the form data and renders the response.
+		 *
+		 * @param {HTMLFormElement}  form         The form being submitted.
+		 * @param {URLSearchParams}  form_data    The data to send.
+		 * @param {HTMLElement}      submitButton The form's submit button.
+		 *
+		 * @since TBD
+		 */
+		sendRequest(form, form_data, submitButton) {
+			let waitingForRedirect = false;
+			const request = new XMLHttpRequest();
+			request.open('POST', kadence_blocks_form_params.ajaxurl, true);
+			request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+			request.onload = function () {
+				if (this.status >= 200 && this.status < 400) {
+					// If successful
+					//console.log( JSON.parse( this.response ) );
+					const response = JSON.parse(this.response);
+					if (response.success) {
+						const event = new CustomEvent('kb-form-success', {
+							detail: form.querySelector('input[name="_kb_form_id"]')
+								? form.querySelector('input[name="_kb_form_id"]').value
+								: '',
+						});
+						// Dispatch the event.
+						window.document.body.dispatchEvent(event);
+						if (response.redirect) {
+							waitingForRedirect = true;
+							window.location = response.redirect;
+						} else {
 							window.kadenceForm.insertAfter(
-								window.kadenceForm.createElementFromHTML(response.data.html),
+								window.kadenceForm.createElementFromHTML(response.html),
 								form
 							);
-							if (response.data.required) {
-								if (form.querySelector('[name="' + response.data.required + '"]')) {
-									window.kadenceForm.markError(
-										form.querySelector('[name="' + response.data.required + '"]'),
-										'required',
-										form
-									);
-								}
+							if (form.querySelector('.g-recaptcha')) {
+								grecaptcha.reset();
+							}
+							window.kadenceForm.clearForm(form);
+						}
+					} else if (response.data) {
+						window.kadenceForm.insertAfter(
+							window.kadenceForm.createElementFromHTML(response.data.html),
+							form
+						);
+						if (response.data.required) {
+							if (form.querySelector('[name="' + response.data.required + '"]')) {
+								window.kadenceForm.markError(
+									form.querySelector('[name="' + response.data.required + '"]'),
+									'required',
+									form
+								);
 							}
 						}
 					}
-					if (form.querySelector('.g-recaptcha')) {
-						grecaptcha.reset();
-					}
-					// Prevents double submission while redirect is happening.
-					if (!waitingForRedirect) {
-						submitButton.removeAttribute('disabled');
-						submitButton.classList.remove('button-primary-disabled');
-					}
-					form.querySelector('.kb-form-loading').remove();
-				};
-				request.onerror = function () {
-					// Connection error
-					console.log('Connection error');
-				};
-				request.send(form_data.toString());
-			}
+				}
+				if (form.querySelector('.g-recaptcha')) {
+					grecaptcha.reset();
+				}
+				// Prevents double submission while redirect is happening.
+				if (!waitingForRedirect) {
+					submitButton.removeAttribute('disabled');
+					submitButton.classList.remove('button-primary-disabled');
+				}
+				form.querySelector('.kb-form-loading').remove();
+			};
+			request.onerror = function () {
+				// Connection error
+				console.log('Connection error');
+			};
+			request.send(form_data.toString());
 		},
 		checkParentClass(element, classname) {
 			if (!element?.className) {
